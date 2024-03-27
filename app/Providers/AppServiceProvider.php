@@ -18,7 +18,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Paginator::useBootstrapThree();
-        $this->loadJsonTranslationsFrom(resource_path('scripts/locales'));
 
         if (InstallUtils::isDbCreated()) {
             $this->addMenus();

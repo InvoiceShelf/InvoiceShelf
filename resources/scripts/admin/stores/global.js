@@ -79,7 +79,7 @@ export const useGlobalStore = (useWindow = false) => {
               companyStore.selectedCompanyCurrency =
                 response.data.current_company_currency
 
-              global.locale =
+              global.locale.value =
                 response.data.current_user_settings.language || 'en'
 
               this.isAppLoaded = true
