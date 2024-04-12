@@ -1524,5 +1524,7 @@
   "pdf_bill_to": "Rechnungsanschrift",
   "pdf_ship_to": "Lieferanschrift",
   "pdf_received_from": "Erhalten von:",
-  "pdf_tax_label": "Steuer"
+  "pdf_tax_label": "Steuer",
+  "pdf_tax_id": "Steuer-Nr.",
+  "pdf_vat_id": "USt.-ID"
 }
