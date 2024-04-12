@@ -84,6 +84,14 @@
             class="mt-2"
           />
         </div>
+
+        <BaseInputGroup :label="$t('settings.company_info.tax_id')">
+          <BaseInput v-model="companyForm.tax_id" type="text" />
+        </BaseInputGroup>
+
+        <BaseInputGroup :label="$t('settings.company_info.vat_id')">
+          <BaseInput v-model="companyForm.vat_id" type="text" />
+        </BaseInputGroup>
       </BaseInputGrid>
 
       <BaseButton
@@ -161,6 +169,8 @@ let isSaving = ref(false)
 const companyForm = reactive({
   name: null,
   logo: null,
+  tax_id: null,
+  vat_id: null,
   address: {
     address_street_1: '',
     address_street_2: '',
