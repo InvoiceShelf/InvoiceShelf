@@ -85,13 +85,15 @@
           />
         </div>
 
-        <BaseInputGroup :label="$t('settings.company_info.tax_id')">
-          <BaseInput v-model="companyForm.tax_id" type="text" />
-        </BaseInputGroup>
+        <div class="space-y-6">
+          <BaseInputGroup :label="$t('settings.company_info.tax_id')">
+            <BaseInput v-model="companyForm.tax_id" type="text" />
+          </BaseInputGroup>
 
-        <BaseInputGroup :label="$t('settings.company_info.vat_id')">
-          <BaseInput v-model="companyForm.vat_id" type="text" />
-        </BaseInputGroup>
+          <BaseInputGroup :label="$t('settings.company_info.vat_id')">
+            <BaseInput v-model="companyForm.vat_id" type="text" />
+          </BaseInputGroup>
+        </div>
       </BaseInputGrid>
 
       <BaseButton
@@ -119,24 +121,7 @@
         <div class="mt-5">
           <button
             type="button"
-            class="
-              inline-flex
-              items-center
-              justify-center
-              px-4
-              py-2
-              border border-transparent
-              font-medium
-              rounded-md
-              text-red-700
-              bg-red-100
-              hover:bg-red-200
-              focus:outline-none
-              focus:ring-2
-              focus:ring-offset-2
-              focus:ring-red-500
-              sm:text-sm
-            "
+            class="inline-flex items-center justify-center px-4 py-2 border border-transparent font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm"
             @click="removeCompany"
           >
             {{ $t('general.delete') }}
@@ -204,7 +189,7 @@ const rules = computed(() => {
       required: helpers.withMessage(t('validation.required'), required),
       minLength: helpers.withMessage(
         t('validation.name_min_length'),
-        minLength(3)
+        minLength(3),
       ),
     },
     address: {
@@ -217,7 +202,7 @@ const rules = computed(() => {
 
 const v$ = useVuelidate(
   rules,
-  computed(() => companyForm)
+  computed(() => companyForm),
 )
 
 globalStore.fetchCountries()
@@ -253,7 +238,7 @@ async function updateCompanyData() {
           JSON.stringify({
             name: logoFileName.value,
             data: logoFileBlob.value,
-          })
+          }),
         )
       }
       logoData.append('is_company_logo_removed', isCompanyLogoRemoved.value)

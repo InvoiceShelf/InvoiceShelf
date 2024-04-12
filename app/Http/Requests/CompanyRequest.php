@@ -29,6 +29,12 @@ class CompanyRequest extends FormRequest
                 'required',
                 Rule::unique('companies')->ignore($this->header('company'), 'id'),
             ],
+            'vat_id' => [
+                'nullable',
+            ],
+            'tax_id' => [
+                'nullable',
+            ],
             'slug' => [
                 'nullable',
             ],

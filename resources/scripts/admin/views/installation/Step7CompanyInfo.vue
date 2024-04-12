@@ -132,26 +132,24 @@
           </BaseInputGroup>
         </div>
 
-        <div>
-          <BaseInputGroup :label="$t('settings.company_info.tax_id')">
-            <BaseInput
-              v-model.trim="companyForm.tax_id"
-              type="text"
-              name="tax_id"
-            />
-          </BaseInputGroup>
+        <BaseInputGroup :label="$t('settings.company_info.tax_id')">
+          <BaseInput
+            v-model.trim="companyForm.tax_id"
+            type="text"
+            name="tax_id"
+          />
+        </BaseInputGroup>
 
-          <BaseInputGroup
-            :label="$t('settings.company_info.vat_id')"
-            class="mt-4"
-          >
-            <BaseInput
-              v-model.trim="companyForm.vat_id"
-              type="text"
-              name="vat_id"
-            />
-          </BaseInputGroup>
-        </div>
+        <BaseInputGroup
+          :label="$t('settings.company_info.vat_id')"
+          class="mt-4"
+        >
+          <BaseInput
+            v-model.trim="companyForm.vat_id"
+            type="text"
+            name="vat_id"
+          />
+        </BaseInputGroup>
       </div>
 
       <BaseButton :loading="isSaving" :disabled="isSaving" class="mt-4">
