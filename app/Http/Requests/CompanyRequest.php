@@ -44,6 +44,8 @@ class CompanyRequest extends FormRequest
             ->only([
                 'name',
                 'slug',
+                'vat_id',
+                'tax_id'
             ])
             ->toArray();
     }
