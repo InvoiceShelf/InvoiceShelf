@@ -12,9 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('companies', function (Blueprint $table) {
-            //
-            $table->string("vat_id");
-            $table->string("tax_id");
+            $table->after("unique_hash", function (Blueprint $table) {
+                $table->string("vat_id");
+                $table->string("tax_id");
+            });
         });
     }
 
