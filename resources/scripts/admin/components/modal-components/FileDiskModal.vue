@@ -21,13 +21,7 @@
       >
         <template #default="slotProps">
           <div
-            class="
-              z-0
-              flex
-              justify-end
-              p-4
-              border-t border-solid border-gray-light
-            "
+            class="z-0 flex justify-end p-4 border-t border-solid border-gray-light"
           >
             <BaseButton
               class="mr-3 text-sm"
@@ -66,12 +60,14 @@ import { computed, ref, watchEffect } from 'vue'
 import Dropbox from '@/scripts/admin/components/modal-components/disks/DropboxDisk.vue'
 import Local from '@/scripts/admin/components/modal-components/disks/LocalDisk.vue'
 import S3 from '@/scripts/admin/components/modal-components/disks/S3Disk.vue'
+import S3compat from '@/scripts/admin/components/modal-components/disks/S3CompatDisk.vue'
 import DoSpaces from '@/scripts/admin/components/modal-components/disks/DoSpacesDisk.vue'
 export default {
   components: {
     Dropbox,
     Local,
     S3,
+    S3compat,
     DoSpaces,
   },
   setup() {
@@ -109,20 +105,28 @@ export default {
     }
 
     async function createNewDisk(data) {
-      Object.assign(diskStore.diskConfigData, data)
-      isLoading.value = true
+      try {
+        Object.assign(diskStore.diskConfigData, data)
+        isLoading.value = true
 
-      let formData = {
-        id: modalStore.id,
-        ...data,
+        let formData = {
+          id: modalStore.id,
+          ...data,
+        }
+
+        let response = null
+        const action = isEdit.value
+          ? diskStore.updateDisk
+          : diskStore.createDisk
+
+        response = await action(formData)
+        modalStore.refreshData()
+        closeDiskModal()
+      } catch (e) {
+        // error is handled by the disk store
+      } finally {
+        isLoading.value = false
       }
-
-      let response = null
-      const action = isEdit.value ? diskStore.updateDisk : diskStore.createDisk
-      response = await action(formData)
-      isLoading.value = false
-      modalStore.refreshData()
-      closeDiskModal()
     }
 
     function closeDiskModal() {
