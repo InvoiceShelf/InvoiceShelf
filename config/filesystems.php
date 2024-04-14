@@ -51,7 +51,7 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
         ],
 
@@ -62,6 +62,16 @@ return [
             'region' => env('AWS_REGION'),
             'bucket' => env('AWS_BUCKET'),
             'root' => env('AWS_ROOT'),
+        ],
+
+        's3compat' => [
+            'driver' => 's3',
+            'endpoint' => env('S3_COMPAT_ENDPOINT'),
+            'use_path_style_endpoint' => true,
+            'key' => env('S3_COMPAT_KEY'),
+            'secret' => env('S3_COMPAT_SECRET'),
+            'region' => env('S3_COMPAT_REGION'),
+            'bucket' => env('S3_COMPAT_BUCKET'),
         ],
 
         'media' => [
