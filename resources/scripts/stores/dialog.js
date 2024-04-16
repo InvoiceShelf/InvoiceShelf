@@ -15,7 +15,6 @@ export const useDialogStore = (useWindow = false) => {
       variant: 'danger', // primary || danger
       yesLabel: global.t('settings.custom_fields.yes'),
       noLabel: global.t('settings.custom_fields.no'),
-      noLabel: 'No',
       resolve: null,
       hideNoButton: false,
     }),
