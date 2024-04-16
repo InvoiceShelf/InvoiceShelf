@@ -106,7 +106,7 @@ export const useUserStore = (useWindow = false) => {
             .then((response) => {
               if (data.settings.language) {
                 this.currentUserSettings.language = data.settings.language
-                global.locale = data.settings.language
+                global.locale.value = data.settings.language
               }
               if (data.settings.default_estimate_template) {
                 this.currentUserSettings.default_estimate_template =
