@@ -94,6 +94,16 @@ class DiskController extends Controller
 
                 break;
 
+            case 's3compat':
+                $diskData = [
+                    'endpoint' => '',
+                    'key' => '',
+                    'secret' => '',
+                    'region' => '',
+                    'bucket' => '',
+                    'root' => '',
+                ];
+
             case 'doSpaces':
                 $diskData = [
                     'key' => '',
@@ -159,6 +169,10 @@ class DiskController extends Controller
             [
                 'name' => 'Amazon S3',
                 'value' => 's3',
+            ],
+            [
+                'name' => 'S3 Compatible Storage',
+                'value' => 's3compat',
             ],
             [
                 'name' => 'Digital Ocean Spaces',

@@ -51,6 +51,17 @@ export const useDiskStore = (useWindow = false) => {
         bucket: '',
         root: '',
       },
+
+      s3CompatDiskConfigData: {
+        name: '',
+        selected_driver: 's3compat',
+        key: '',
+        secret: '',
+        region: '',
+        bucket: '',
+        root: '',
+        endpoint: '',
+      },
     }),
 
     getters: {

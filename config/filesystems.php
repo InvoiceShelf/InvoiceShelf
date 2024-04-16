@@ -64,6 +64,16 @@ return [
             'root' => env('AWS_ROOT'),
         ],
 
+        's3compat' => [
+            'driver' => 's3',
+            'endpoint' => env('S3_COMPAT_ENDPOINT'),
+            'use_path_style_endpoint' => true,
+            'key' => env('S3_COMPAT_KEY'),
+            'secret' => env('S3_COMPAT_SECRET'),
+            'region' => env('S3_COMPAT_REGION'),
+            'bucket' => env('S3_COMPAT_BUCKET'),
+        ],
+
         'media' => [
             'driver' => 'local',
             'root' => public_path('media'),
