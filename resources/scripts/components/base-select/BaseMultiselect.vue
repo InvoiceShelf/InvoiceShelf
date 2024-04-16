@@ -475,9 +475,10 @@ export default {
         spinner:
           'bg-multiselect-spinner bg-center bg-no-repeat w-4 h-4 z-10 mr-3.5 animate-spin shrink-0 grow-0',
         dropdown:
-          'max-h-60 shadow-lg absolute -left-px -right-px -bottom-1 translate-y-full border border-gray-300 mt-1 overflow-y-auto z-50 bg-white flex flex-col rounded-md',
+          'max-h-60 shadow-lg absolute -left-px -right-px -bottom-1 border border-gray-300 mt-1 overflow-y-auto z-50 bg-white flex flex-col rounded-md',
         dropdownTop:
           '-translate-y-full -top-2 bottom-auto flex-col-reverse rounded-md',
+        dropdownBottom: 'translate-y-full',
         dropdownHidden: 'hidden',
         options: 'flex flex-col p-0 m-0 list-none',
         optionsTop: 'flex-col-reverse',

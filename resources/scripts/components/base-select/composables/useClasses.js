@@ -112,6 +112,7 @@ export default function useClasses(props, context, dependencies) {
       spinner: classes.spinner,
       dropdown: [classes.dropdown]
         .concat(openDirection.value === 'top' ? classes.dropdownTop : [])
+        .concat(openDirection.value === 'bottom' ? classes.dropdownBottom : [])
         .concat(
           !isOpen.value || !showOptions.value || !showDropdown.value
             ? classes.dropdownHidden
