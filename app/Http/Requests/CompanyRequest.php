@@ -51,7 +51,7 @@ class CompanyRequest extends FormRequest
                 'name',
                 'slug',
                 'vat_id',
-                'tax_id'
+                'tax_id',
             ])
             ->toArray();
     }
