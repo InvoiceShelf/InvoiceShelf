@@ -88,7 +88,7 @@ class EnvironmentManager
     private function encode($str)
     {
 
-        if (strpos($str, ' ') !== false || preg_match('/'.preg_quote('^\'£$%^&*()}{@#~?><,@|-=-_+-¬', '/').'/', $str)) {
+        if ((strpos($str, ' ') !== false || preg_match('/'.preg_quote('^\'£$%^&*()}{@#~?><,@|-=-_+-¬', '/').'/', $str)) && ($str[0] != '"' || $str[strlen($str)-1] != '"')) {
             $str = '"'.$str.'"';
         }
 
