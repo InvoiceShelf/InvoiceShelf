@@ -64,8 +64,6 @@ class EnvironmentManager
                 if ($entry[0] == $data_key) {
                     $env[$env_key] = $data_key.'='.$this->encode($data_value);
                     $updated = true;
-                } else {
-                    $env[$env_key] = $this->encode($env_value);
                 }
             }
 
