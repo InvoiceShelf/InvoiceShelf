@@ -69,6 +69,8 @@ class CompaniesRequest extends FormRequest
         return collect($this->validated())
             ->only([
                 'name',
+                'vat_id',
+                'tax_id',
             ])
             ->merge([
                 'owner_id' => $this->user()->id,

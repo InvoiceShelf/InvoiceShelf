@@ -863,6 +863,8 @@
     "company_info": {
       "company_info": "Firmeninfo",
       "company_name": "Name des Unternehmens",
+      "vat_id": "Umsatzsteuer-Identifikationsnummer",
+      "tax_id": "Steuernummer",
       "company_logo": "Firmenlogo",
       "section_description": "Informationen zu Ihrem Unternehmen, die auf Rechnungen, Angeboten und anderen von InvoiceShelf erstellten Dokumenten angezeigt werden.",
       "phone": "Telefon",
@@ -1528,5 +1530,7 @@
   "pdf_bill_to": "Rechnungsanschrift",
   "pdf_ship_to": "Lieferanschrift",
   "pdf_received_from": "Erhalten von:",
-  "pdf_tax_label": "Steuer"
+  "pdf_tax_label": "Steuer",
+  "pdf_tax_id": "Steuer-Nr.",
+  "pdf_vat_id": "USt.-ID"
 }

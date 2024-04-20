@@ -131,6 +131,25 @@
             />
           </BaseInputGroup>
         </div>
+
+        <BaseInputGroup :label="$t('settings.company_info.tax_id')">
+          <BaseInput
+            v-model.trim="companyForm.tax_id"
+            type="text"
+            name="tax_id"
+          />
+        </BaseInputGroup>
+
+        <BaseInputGroup
+          :label="$t('settings.company_info.vat_id')"
+          class="mt-4"
+        >
+          <BaseInput
+            v-model.trim="companyForm.vat_id"
+            type="text"
+            name="vat_id"
+          />
+        </BaseInputGroup>
       </div>
 
       <BaseButton :loading="isSaving" :disabled="isSaving" class="mt-4">
@@ -162,6 +181,8 @@ let logoFileName = ref(null)
 
 const companyForm = reactive({
   name: null,
+  tax_id: null,
+  vat_id: null,
   address: {
     address_street_1: '',
     address_street_2: '',
@@ -200,13 +221,13 @@ const rules = {
       address_street_1: {
         maxLength: helpers.withMessage(
           t('validation.address_maxlength', { count: 255 }),
-          maxLength(255)
+          maxLength(255),
         ),
       },
       address_street_2: {
         maxLength: helpers.withMessage(
           t('validation.address_maxlength', { count: 255 }),
-          maxLength(255)
+          maxLength(255),
         ),
       },
     },
@@ -241,7 +262,7 @@ async function next() {
         JSON.stringify({
           name: logoFileName.value,
           data: logoFileBlob.value,
-        })
+        }),
       )
       await companyStore.updateCompanyLogo(logoData)
     }
