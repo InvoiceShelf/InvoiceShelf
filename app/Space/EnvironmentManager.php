@@ -64,8 +64,6 @@ class EnvironmentManager
                 if ($entry[0] == $data_key) {
                     $env[$env_key] = $data_key.'='.$this->encode($data_value);
                     $updated = true;
-                } else {
-                    $env[$env_key] = $this->encode($env_value);
                 }
             }
 
@@ -90,7 +88,7 @@ class EnvironmentManager
     private function encode($str)
     {
 
-        if (strpos($str, ' ') !== false || preg_match('/'.preg_quote('^\'£$%^&*()}{@#~?><,@|-=-_+-¬', '/').'/', $str)) {
+        if ((strpos($str, ' ') !== false || preg_match('/'.preg_quote('^\'£$%^&*()}{@#~?><,@|-=-_+-¬', '/').'/', $str)) && ($str[0] != '"' || $str[strlen($str) - 1] != '"')) {
             $str = '"'.$str.'"';
         }
 
