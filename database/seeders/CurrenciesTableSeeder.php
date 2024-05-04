@@ -623,7 +623,7 @@ class CurrenciesTableSeeder extends Seeder
                 'precision' => '3',
                 'thousand_separator' => ',',
                 'decimal_separator' => '.',
-            ]
+            ],
         ];
 
         foreach ($currencies as $currency) {
