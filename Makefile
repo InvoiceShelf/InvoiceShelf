@@ -25,6 +25,7 @@ dist-gen: clean composer npm-build
 	@cp -r public/robots.txt                InvoiceShelf/public
 	@cp -r public/web.config                InvoiceShelf/public
 	@cp -r resources                        InvoiceShelf
+	@cp -r lang								InvoiceShelf
 	@cp -r routes                           InvoiceShelf
 	@cp -r storage                          InvoiceShelf
 	@cp -r vendor                           InvoiceShelf 2> /dev/null || true
