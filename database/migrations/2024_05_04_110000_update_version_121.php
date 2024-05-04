@@ -18,6 +18,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Setting::setSetting('version', '1.1.0');
+        Setting::setSetting('version', '1.2.0');
     }
 };
