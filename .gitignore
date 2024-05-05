@@ -1,5 +1,6 @@
 /Modules
 /node_modules
+/laradock
 /public/storage
 /public/hot
 /public/build
