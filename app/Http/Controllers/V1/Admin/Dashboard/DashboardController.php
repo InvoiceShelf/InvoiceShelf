@@ -90,7 +90,7 @@ class DashboardController extends Controller
                 ($receipt_totals[$i] - $expense_totals[$i])
             );
             $i++;
-            array_push($months, $start->format('M'));
+            array_push($months, $start->translatedFormat('M'));
             $monthCounter++;
             $end->startOfMonth();
             $start->addMonth()->startOfMonth();

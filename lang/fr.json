@@ -100,16 +100,25 @@
     "pay_invoice": "Payer facture",
     "login_successfully": "Identifié avec succès!",
     "logged_out_successfully": "Déconnecté avec succès",
-    "mark_as_default": "Marquer par défaut"
+    "mark_as_default": "Marquer par défaut",
+    "no_data_found": "Aucune donnée pour le moment",
+    "pagination": {
+      "previous": "Précédent",
+      "next": "Suivant",
+      "showing": "Affichage de",
+      "to": "à",
+      "of": "sur",
+      "results": "résultats"
+    }
   },
   "dashboard": {
     "select_year": "Sélectionnez l'année",
     "cards": {
       "due_amount": "Encours clients",
-      "customers": "Clients",
-      "invoices": "Factures",
-      "estimates": "Devis",
-      "payments": "Paiements"
+      "customers": "Client | Clients",
+      "invoices": "Facture | Factures",
+      "estimates": "Devis | Devis",
+      "payments": "Paiement | Paiements"
     },
     "chart_info": {
       "total_sales": "Ventes",

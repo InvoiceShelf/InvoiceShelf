@@ -113,7 +113,7 @@ class Estimate extends Model implements HasMedia
     {
         $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id);
 
-        return Carbon::parse($this->estimate_date)->format($dateFormat);
+        return Carbon::parse($this->estimate_date)->translatedFormat($dateFormat);
     }
 
     public function scopeEstimatesBetween($query, $start, $end)

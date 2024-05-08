@@ -183,7 +183,7 @@ class Invoice extends Model implements HasMedia
     {
         $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id);
 
-        return Carbon::parse($this->due_date)->format($dateFormat);
+        return Carbon::parse($this->due_date)->translatedFormat($dateFormat);
     }
 
     public function getFormattedInvoiceDateAttribute($value)
