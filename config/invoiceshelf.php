@@ -1,6 +1,7 @@
 <?php
 
 use InvoiceShelf\Models\Customer;
+use InvoiceShelf\Models\Installer;
 use InvoiceShelf\Models\CustomField;
 use InvoiceShelf\Models\Estimate;
 use InvoiceShelf\Models\ExchangeRateProvider;
@@ -302,6 +303,16 @@ return [
             'model' => Customer::class,
         ],
         [
+            'title' => 'navigation.installers',
+            'group' => 1,
+            'link' => '/admin/installers',
+            'icon' => 'UserIcon',
+            'name' => 'Installers',
+            'owner_only' => false,
+            'ability' => 'view-installer',
+            'model' => Installer::class,
+        ],
+        [
             'title' => 'navigation.items',
             'group' => 1,
             'link' => '/admin/items',
@@ -499,6 +510,7 @@ return [
     */
     'custom_field_models' => [
         'Customer',
+        'Installer',
         'Estimate',
         'Invoice',
         'Payment',

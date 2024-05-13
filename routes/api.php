@@ -10,6 +10,8 @@ use InvoiceShelf\Http\Controllers\V1\Admin\Company\CompaniesController;
 use InvoiceShelf\Http\Controllers\V1\Admin\Company\CompanyController as AdminCompanyController;
 use InvoiceShelf\Http\Controllers\V1\Admin\Customer\CustomersController;
 use InvoiceShelf\Http\Controllers\V1\Admin\Customer\CustomerStatsController;
+use InvoiceShelf\Http\Controllers\V1\Admin\Installer\InstallersController;
+use InvoiceShelf\Http\Controllers\V1\Admin\Installer\InstallerStatsController;
 use InvoiceShelf\Http\Controllers\V1\Admin\CustomField\CustomFieldsController;
 use InvoiceShelf\Http\Controllers\V1\Admin\Dashboard\DashboardController;
 use InvoiceShelf\Http\Controllers\V1\Admin\Estimate\ChangeEstimateStatusController;
@@ -238,6 +240,16 @@ Route::prefix('/v1')->group(function () {
             Route::get('customers/{customer}/stats', CustomerStatsController::class);
 
             Route::resource('customers', CustomersController::class);
+
+            // Installers
+            //----------------------------------
+
+            Route::post('/installers/delete', [InstallersController::class, 'delete']);
+
+            Route::get('installers/{installer}/stats', InstallerStatsController::class);
+
+            Route::resource('installers', InstallersController::class);
+
 
             // Items
             //----------------------------------

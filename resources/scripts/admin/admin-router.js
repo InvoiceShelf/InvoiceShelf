@@ -20,6 +20,13 @@ const CustomerCreate = () =>
   import('@/scripts/admin/views/customers/Create.vue')
 const CustomerView = () => import('@/scripts/admin/views/customers/View.vue')
 
+// Installer
+const InstallerIndex = () =>
+  import('@/scripts/admin/views/installers/Index.vue')
+const InstallerCreate = () =>
+  import('@/scripts/admin/views/installers/Create.vue')
+const InstallerView = () => import('@/scripts/admin/views/installers/View.vue')
+
 //Settings
 const SettingsIndex = () =>
   import('@/scripts/admin/views/settings/SettingsIndex.vue')
@@ -194,6 +201,30 @@ export default [
         name: 'customers.view',
         meta: { ability: abilities.VIEW_CUSTOMER },
         component: CustomerView,
+      },
+      // Installers
+      {
+        path: 'installers',
+        meta: { ability: abilities.VIEW_INSTALLER },
+        component: InstallerIndex,
+      },
+      {
+        path: 'installers/create',
+        name: 'installers.create',
+        meta: { ability: abilities.CREATE_INSTALLER },
+        component: InstallerCreate,
+      },
+      {
+        path: 'installers/:id/edit',
+        name: 'installers.edit',
+        meta: { ability: abilities.EDIT_INSTALLER },
+        component: InstallerCreate,
+      },
+      {
+        path: 'installers/:id/view',
+        name: 'installers.view',
+        meta: { ability: abilities.VIEW_INSTALLER },
+        component: InstallerView,
       },
       // Payments
       {

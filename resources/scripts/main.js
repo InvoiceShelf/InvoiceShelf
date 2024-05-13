@@ -7,10 +7,7 @@ import * as pinia from 'pinia'
 import * as Vue from 'vue'
 import * as Vuelidate from '@vuelidate/core'
 
-import.meta.glob([
-  '../static/img/**',
-  '../static/fonts/**',
-]);
+import.meta.glob(['../static/img/**', '../static/fonts/**'])
 
 window.pinia = pinia
 window.Vuelidate = Vuelidate

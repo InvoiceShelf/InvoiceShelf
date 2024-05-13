@@ -1,6 +1,7 @@
 <?php
 
 use InvoiceShelf\Models\Customer;
+use InvoiceShelf\Models\Installer;
 use InvoiceShelf\Models\CustomField;
 use InvoiceShelf\Models\Estimate;
 use InvoiceShelf\Models\ExchangeRateProvider;
@@ -47,6 +48,78 @@ return [
                 'view-customer',
             ],
         ],
+        [
+            'name' => 'view customer',
+            'ability' => 'view-customer',
+            'model' => Customer::class,
+        ],
+        [
+            'name' => 'create customer',
+            'ability' => 'create-customer',
+            'model' => Customer::class,
+            'depends_on' => [
+                'view-customer',
+                'view-custom-field',
+            ],
+        ],
+        [
+            'name' => 'edit customer',
+            'ability' => 'edit-customer',
+            'model' => Customer::class,
+            'depends_on' => [
+                'view-customer',
+                'view-custom-field',
+            ],
+        ],
+        [
+            'name' => 'delete customer',
+            'ability' => 'delete-customer',
+            'model' => Customer::class,
+            'depends_on' => [
+                'view-customer',
+            ],
+        ],
+
+
+
+        [
+            'name' => 'view installer',
+            'ability' => 'view-installer',
+            'model' => Installer::class,
+        ],
+        [
+            'name' => 'create installer',
+            'ability' => 'create-installer',
+            'model' => Installer::class,
+            'depends_on' => [
+                'view-installer',
+                'view-custom-field',
+            ],
+        ],
+        [
+            'name' => 'edit installer',
+            'ability' => 'edit-installer',
+            'model' => Installer::class,
+            'depends_on' => [
+                'view-installer',
+                'view-custom-field',
+            ],
+        ],
+        [
+            'name' => 'delete installer',
+            'ability' => 'delete-installer',
+            'model' => Installer::class,
+            'depends_on' => [
+                'view-installer',
+            ],
+        ],
+
+
+
+
+
+
+
 
         // Item
         [
