@@ -250,7 +250,6 @@ Route::prefix('/v1')->group(function () {
 
             Route::resource('installers', InstallersController::class);
 
-
             // Items
             //----------------------------------
 

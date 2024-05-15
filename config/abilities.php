@@ -49,7 +49,6 @@ return [
             ],
         ],
 
-
         // Installer
         [
             'name' => 'view installer',
@@ -82,13 +81,6 @@ return [
                 'view-installer',
             ],
         ],
-
-
-
-
-
-
-
 
         // Item
         [
