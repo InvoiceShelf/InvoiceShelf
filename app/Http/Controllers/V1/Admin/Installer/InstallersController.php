@@ -78,7 +78,7 @@ class InstallersController extends Controller
     {
         $this->authorize('update', $installer);
 
-        $Installer = Installer::updateInstaller($request, $installer);
+        $installer = Installer::updateInstaller($request, $installer);
 
         if (is_string($installer)) {
             return respondJson('you_cannot_edit_currency', 'Cannot change currency once transactions created');

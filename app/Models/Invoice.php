@@ -108,6 +108,11 @@ class Invoice extends Model implements HasMedia
         return $this->belongsTo(Customer::class, 'customer_id');
     }
 
+    public function installer()
+    {
+        return $this->belongsTo(Installer::class, 'installer_id');
+    }
+
     public function recurringInvoice()
     {
         return $this->belongsTo(RecurringInvoice::class);
@@ -284,6 +289,10 @@ class Invoice extends Model implements HasMedia
             $query->whereCustomer($filters->get('customer_id'));
         }
 
+        if ($filters->get('installer_id')) {
+            $query->whereInstaller($filters->get('installer_id'));
+        }
+
         if ($filters->get('orderByField') || $filters->get('orderBy')) {
             $field = $filters->get('orderByField') ? $filters->get('orderByField') : 'sequence_number';
             $orderBy = $filters->get('orderBy') ? $filters->get('orderBy') : 'desc';
@@ -309,6 +318,10 @@ class Invoice extends Model implements HasMedia
     public function scopeWhereCustomer($query, $customer_id)
     {
         $query->where('invoices.customer_id', $customer_id);
+    }
+    public function scopeWhereInstaller($query, $installer_id)
+    {
+        $query->where('invoices.installer_id', $installer_id);
     }
 
     public function scopePaginateData($query, $limit)

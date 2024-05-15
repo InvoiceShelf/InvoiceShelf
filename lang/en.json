@@ -279,7 +279,7 @@
     "portal_access_text": "Would you like to allow this Installer to login to the Installer Portal?",
     "portal_access_url": "Installer Portal Login URL",
     "portal_access_url_help": "Please copy & forward the above given URL to your Installer for providing access.",
-    "billing_address": "Billing Address",
+    "billing_address": "Installer Address",
     "shipping_address": "Shipping Address",
     "copy_billing_address": "Copy from Billing",
     "no_installers": "No Installers yet!",

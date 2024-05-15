@@ -15,7 +15,7 @@
           </BaseButton>
         </router-link>
 
-        <BaseDropdown
+        <!-- <BaseDropdown
           v-if="canCreateTransaction()"
           position="bottom-end"
           :content-loading="isLoading"
@@ -69,7 +69,7 @@
               {{ $t('expenses.new_expense') }}
             </BaseDropdownItem>
           </router-link>
-        </BaseDropdown>
+        </BaseDropdown> -->
 
         <InstallerDropdown
           v-if="hasAtleastOneAbility()"

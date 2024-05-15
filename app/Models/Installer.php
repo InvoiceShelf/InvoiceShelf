@@ -73,10 +73,10 @@ class Installer extends Authenticatable implements HasMedia
         return $this->hasMany(Invoice::class);
     }
 
-    public function payments()
-    {
-        return $this->hasMany(Payment::class);
-    }
+    // public function payments()
+    // {
+    //     return $this->hasMany(Payment::class);
+    // }
 
     public function addresses()
     {
@@ -134,9 +134,9 @@ class Installer extends Authenticatable implements HasMedia
         foreach ($ids as $id) {
             $installer = self::find($id);
 
-            if ($installer->estimates()->exists()) {
-                $installer->estimates()->delete();
-            }
+            // if ($installer->estimates()->exists()) {
+            //     $installer->estimates()->delete();
+            // }
 
             if ($installer->invoices()->exists()) {
                 $installer->invoices->map(function ($invoice) {
@@ -147,27 +147,27 @@ class Installer extends Authenticatable implements HasMedia
                 });
             }
 
-            if ($installer->payments()->exists()) {
-                $installer->payments()->delete();
-            }
+            // if ($installer->payments()->exists()) {
+            //     $installer->payments()->delete();
+            // }
 
             if ($installer->addresses()->exists()) {
                 $installer->addresses()->delete();
             }
 
-            if ($installer->expenses()->exists()) {
-                $installer->expenses()->delete();
-            }
+            // if ($installer->expenses()->exists()) {
+            //     $installer->expenses()->delete();
+            // }
 
-            if ($installer->recurringInvoices()->exists()) {
-                foreach ($installer->recurringInvoices as $recurringInvoice) {
-                    if ($recurringInvoice->items()->exists()) {
-                        $recurringInvoice->items()->delete();
-                    }
+            // if ($installer->recurringInvoices()->exists()) {
+            //     foreach ($installer->recurringInvoices as $recurringInvoice) {
+            //         if ($recurringInvoice->items()->exists()) {
+            //             $recurringInvoice->items()->delete();
+            //         }
 
-                    $recurringInvoice->delete();
-                }
-            }
+            //         $recurringInvoice->delete();
+            //     }
+            // }
 
             $installer->delete();
         }
@@ -204,21 +204,21 @@ class Installer extends Authenticatable implements HasMedia
 
     public static function updateInstaller($request, $installer)
     {
-        $condition = $installer->estimates()->exists() || $installer->invoices()->exists() || $installer->payments()->exists() || $installer->recurringInvoices()->exists();
+        //$condition = $installer->estimates()->exists() || $installer->invoices()->exists() || $installer->payments()->exists() || $installer->recurringInvoices()->exists();
 
-        if (($installer->currency_id !== $request->currency_id) && $condition) {
-            return 'you_cannot_edit_currency';
-        }
+        // if (($installer->currency_id !== $request->currency_id) && $condition) {
+        //     return 'you_cannot_edit_currency';
+        // }
 
         $installer->update($request->getInstallerPayload());
 
         $installer->addresses()->delete();
 
-        if ($request->shipping) {
-            if ($request->hasAddress($request->shipping)) {
-                $installer->addresses()->create($request->getShippingAddress());
-            }
-        }
+        // if ($request->shipping) {
+        //     if ($request->hasAddress($request->shipping)) {
+        //         $installer->addresses()->create($request->getShippingAddress());
+        //     }
+        // }
 
         if ($request->billing) {
             if ($request->hasAddress($request->billing)) {

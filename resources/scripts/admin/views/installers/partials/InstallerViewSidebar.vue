@@ -160,12 +160,12 @@
               "
             />
           </div>
-          <div class="flex-1 font-bold text-right whitespace-nowrap">
+          <!-- <div class="flex-1 font-bold text-right whitespace-nowrap">
             <BaseFormatMoney
               :amount="installer.due_amount!==null ? installer.due_amount : 0"
               :currency="installer.currency"
             />
-          </div>
+          </div> -->
         </router-link>
       </div>
       <div v-if="isFetching" class="flex justify-center p-4 items-center">

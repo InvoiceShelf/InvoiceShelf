@@ -171,12 +171,16 @@
           </span>
         </template>
 
-        <template #cell-due_amount="{ row }">
+        <!-- <template #cell-due_amount="{ row }">
           <BaseFormatMoney
             :amount="row.data.due_amount || 0"
             :currency="row.data.currency"
           />
-        </template>
+        </template> -->
+
+        <!-- <template #cell-address="{ row }">
+          <span>{{ row.data.phone ? row.data.phone : '-' }}</span>                      
+        </template> -->
 
         <template #cell-created_at="{ row }">
           <span>{{ row.data.formatted_created_at }}</span>
@@ -258,7 +262,7 @@ const installerColumns = computed(() => {
       tdClass: 'font-medium text-gray-900',
     },
     { key: 'phone', label: t('installers.phone') },
-    { key: 'due_amount', label: t('installers.amount_due') },
+    //{ key: 'due_amount', label: t('installers.amount_due') },
     {
       key: 'created_at',
       label: t('items.added_on'),

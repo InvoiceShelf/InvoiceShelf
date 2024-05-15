@@ -1,6 +1,6 @@
 <template>
   <BaseCard class="flex flex-col mt-6">
-    <ChartPlaceholder v-if="installerStore.isFetchingViewData" />
+    <!-- <ChartPlaceholder v-if="installerStore.isFetchingViewData" />
 
     <div v-else class="grid grid-cols-12">
       <div class="col-span-12 xl:col-span-9 xxl:col-span-10">
@@ -114,7 +114,7 @@
           </span>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <InstallerInfo />
   </BaseCard>
@@ -195,7 +195,7 @@ async function loadInstaller() {
   })
 
   if (response.data) {
-    Object.assign(chartData, response.data.meta.chartData)
+    //Object.assign(chartData, response.data.meta.chartData)
     Object.assign(data, response.data.data)
   }
 

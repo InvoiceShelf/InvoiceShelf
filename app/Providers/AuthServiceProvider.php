@@ -6,6 +6,7 @@ use Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use InvoiceShelf\Policies\CompanyPolicy;
 use InvoiceShelf\Policies\CustomerPolicy;
+use InvoiceShelf\Policies\InstallerPolicy;
 use InvoiceShelf\Policies\DashboardPolicy;
 use InvoiceShelf\Policies\EstimatePolicy;
 use InvoiceShelf\Policies\ExpensePolicy;
@@ -29,6 +30,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         \InvoiceShelf\Models\Customer::class => \InvoiceShelf\Policies\CustomerPolicy::class,
+        \InvoiceShelf\Models\Installer::class => \InvoiceShelf\Policies\InstallerPolicy::class,
         \InvoiceShelf\Models\Invoice::class => \InvoiceShelf\Policies\InvoicePolicy::class,
         \InvoiceShelf\Models\Estimate::class => \InvoiceShelf\Policies\EstimatePolicy::class,
         \InvoiceShelf\Models\Payment::class => \InvoiceShelf\Policies\PaymentPolicy::class,
@@ -74,6 +76,8 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('delete multiple items', [ItemPolicy::class, 'deleteMultiple']);
         Gate::define('delete multiple customers', [CustomerPolicy::class, 'deleteMultiple']);
+        Gate::define('delete multiple installers', [InstallerPolicy::class, 'deleteMultiple']);
+        Gate::define('delete multiple users', [UserPolicy::class, 'deleteMultiple']);
         Gate::define('delete multiple users', [UserPolicy::class, 'deleteMultiple']);
         Gate::define('delete multiple invoices', [InvoicePolicy::class, 'deleteMultiple']);
         Gate::define('delete multiple estimates', [EstimatePolicy::class, 'deleteMultiple']);

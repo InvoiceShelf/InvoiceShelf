@@ -51,48 +51,48 @@ class InstallerStatsController extends Controller
             $start->subYear()->startOfMonth();
             $end->subYear()->endOfMonth();
         }
-        while ($monthCounter < 12) {
-            array_push(
-                $invoiceTotals,
-                Invoice::whereBetween(
-                    'invoice_date',
-                    [$start->format('Y-m-d'), $end->format('Y-m-d')]
-                )
-                    ->whereCompany()
-                    ->whereInstaller($installer->id)
-                    ->sum('total') ?? 0
-            );
-            array_push(
-                $expenseTotals,
-                Expense::whereBetween(
-                    'expense_date',
-                    [$start->format('Y-m-d'), $end->format('Y-m-d')]
-                )
-                    ->whereCompany()
-                    ->whereUser($installer->id)
-                    ->sum('amount') ?? 0
-            );
-            array_push(
-                $receiptTotals,
-                Payment::whereBetween(
-                    'payment_date',
-                    [$start->format('Y-m-d'), $end->format('Y-m-d')]
-                )
-                    ->whereCompany()
-                    ->whereInstaller($installer->id)
-                    ->sum('amount') ?? 0
-            );
-            array_push(
-                $netProfits,
-                ($receiptTotals[$i] - $expenseTotals[$i])
-            );
-            $i++;
-            array_push($months, $start->format('M'));
-            $monthCounter++;
-            $end->startOfMonth();
-            $start->addMonth()->startOfMonth();
-            $end->addMonth()->endOfMonth();
-        }
+        // while ($monthCounter < 12) {
+        //     array_push(
+        //         $invoiceTotals,
+        //         Invoice::whereBetween(
+        //             'invoice_date',
+        //             [$start->format('Y-m-d'), $end->format('Y-m-d')]
+        //         )
+        //             ->whereCompany()
+        //             ->whereInstaller($installer->id)
+        //             ->sum('total') ?? 0
+        //     );
+        //     array_push(
+        //         $expenseTotals,
+        //         Expense::whereBetween(
+        //             'expense_date',
+        //             [$start->format('Y-m-d'), $end->format('Y-m-d')]
+        //         )
+        //             ->whereCompany()
+        //             ->whereUser($installer->id)
+        //             ->sum('amount') ?? 0
+        //     );
+        //     array_push(
+        //         $receiptTotals,
+        //         Payment::whereBetween(
+        //             'payment_date',
+        //             [$start->format('Y-m-d'), $end->format('Y-m-d')]
+        //         )
+        //             ->whereCompany()
+        //             ->whereInstaller($installer->id)
+        //             ->sum('amount') ?? 0
+        //     );
+        //     array_push(
+        //         $netProfits,
+        //         ($receiptTotals[$i] - $expenseTotals[$i])
+        //     );
+        //     $i++;
+        //     array_push($months, $start->format('M'));
+        //     $monthCounter++;
+        //     $end->startOfMonth();
+        //     $start->addMonth()->startOfMonth();
+        //     $end->addMonth()->endOfMonth();
+        // }
 
         $start->subMonth()->endOfMonth();
 
@@ -103,13 +103,13 @@ class InstallerStatsController extends Controller
             ->whereCompany()
             ->whereInstaller($installer->id)
             ->sum('total');
-        $totalReceipts = Payment::whereBetween(
-            'payment_date',
-            [$startDate->format('Y-m-d'), $start->format('Y-m-d')]
-        )
-            ->whereCompany()
-            ->whereInstaller($installer->id)
-            ->sum('amount');
+        // $totalReceipts = Payment::whereBetween(
+        //     'payment_date',
+        //     [$startDate->format('Y-m-d'), $start->format('Y-m-d')]
+        // )
+        //     ->whereCompany()
+        //     ->whereInstaller($installer->id)
+        //     ->sum('amount');
         $totalExpenses = Expense::whereBetween(
             'expense_date',
             [$startDate->format('Y-m-d'), $start->format('Y-m-d')]
@@ -117,17 +117,17 @@ class InstallerStatsController extends Controller
             ->whereCompany()
             ->whereUser($installer->id)
             ->sum('amount');
-        $netProfit = (int) $totalReceipts - (int) $totalExpenses;
+        //$netProfit = (int) $totalReceipts - (int) $totalExpenses;
 
         $chartData = [
             'months' => $months,
             'invoiceTotals' => $invoiceTotals,
             'expenseTotals' => $expenseTotals,
             'receiptTotals' => $receiptTotals,
-            'netProfit' => $netProfit,
+            //'netProfit' => $netProfit,
             'netProfits' => $netProfits,
             'salesTotal' => $salesTotal,
-            'totalReceipts' => $totalReceipts,
+            //'totalReceipts' => $totalReceipts,
             'totalExpenses' => $totalExpenses,
         ];
 

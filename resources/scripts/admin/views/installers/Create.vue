@@ -397,7 +397,7 @@
         <BaseDivider class="mb-5 md:mb-8" />
 
         <!-- Billing Address Copy Button  -->
-        <div
+        <!-- <div
           class="flex items-center justify-start mb-6 md:justify-end md:mb-0"
         >
           <div class="p-1">
@@ -417,9 +417,9 @@
               {{ $t('installers.copy_billing_address') }}
             </BaseButton>
           </div>
-        </div>
+        </div> -->
 
-        <!-- Shipping Address  -->
+        <!-- Shipping Address 
         <div
           v-if="installerStore.currentInstaller.shipping"
           class="grid grid-cols-5 gap-4 mb-8"
@@ -548,7 +548,7 @@
               </BaseInputGroup>
             </div>
           </BaseInputGrid>
-        </div>
+        </div> -->
 
         <BaseDivider
           v-if="customFieldStore.customFields.length > 0"

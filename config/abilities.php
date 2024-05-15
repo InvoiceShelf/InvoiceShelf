@@ -48,40 +48,9 @@ return [
                 'view-customer',
             ],
         ],
-        [
-            'name' => 'view customer',
-            'ability' => 'view-customer',
-            'model' => Customer::class,
-        ],
-        [
-            'name' => 'create customer',
-            'ability' => 'create-customer',
-            'model' => Customer::class,
-            'depends_on' => [
-                'view-customer',
-                'view-custom-field',
-            ],
-        ],
-        [
-            'name' => 'edit customer',
-            'ability' => 'edit-customer',
-            'model' => Customer::class,
-            'depends_on' => [
-                'view-customer',
-                'view-custom-field',
-            ],
-        ],
-        [
-            'name' => 'delete customer',
-            'ability' => 'delete-customer',
-            'model' => Customer::class,
-            'depends_on' => [
-                'view-customer',
-            ],
-        ],
 
 
-
+        // Installer
         [
             'name' => 'view installer',
             'ability' => 'view-installer',

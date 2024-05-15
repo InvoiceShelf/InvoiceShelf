@@ -99,6 +99,11 @@ class Payment extends Model implements HasMedia
         return $this->belongsTo(Customer::class, 'customer_id');
     }
 
+    public function installer()
+    {
+        return $this->belongsTo(Installer::class, 'installer_id');
+    }
+
     public function company()
     {
         return $this->belongsTo(Company::class);
@@ -321,6 +326,10 @@ class Payment extends Model implements HasMedia
             $query->whereCustomer($filters->get('customer_id'));
         }
 
+        if ($filters->get('installer_id')) {
+            $query->whereInstaller($filters->get('installer_id'));
+        }
+
         if ($filters->get('from_date') && $filters->get('to_date')) {
             $start = Carbon::createFromFormat('Y-m-d', $filters->get('from_date'));
             $end = Carbon::createFromFormat('Y-m-d', $filters->get('to_date'));
@@ -360,6 +369,11 @@ class Payment extends Model implements HasMedia
     public function scopeWhereCustomer($query, $customer_id)
     {
         $query->where('payments.customer_id', $customer_id);
+    }
+
+    public function scopeWhereInstaller($query, $installer_id)
+    {
+        $query->where('payments.installer_id', $installer_id);
     }
 
     public function getPDFData()

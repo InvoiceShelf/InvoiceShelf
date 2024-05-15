@@ -7,6 +7,12 @@ export default {
   EDIT_CUSTOMER: 'edit-customer',
   VIEW_CUSTOMER: 'view-customer',
 
+  // installers
+  CREATE_INSTALLER: 'create-installer',
+  DELETE_INSTALLER: 'delete-installer',
+  EDIT_INSTALLER: 'edit-installer',
+  VIEW_INSTALLER: 'view-installer',
+
   // Items
   CREATE_ITEM: 'create-item',
   DELETE_ITEM: 'delete-item',

@@ -32,6 +32,11 @@ class Address extends Model
         return $this->belongsTo(Customer::class);
     }
 
+    public function installer()
+    {
+        return $this->belongsTo(Installer::class);
+    }
+
     public function company()
     {
         return $this->belongsTo(Company::class);
