@@ -69,14 +69,14 @@ class Payment extends Model implements HasMedia
     {
         $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id);
 
-        return Carbon::parse($this->created_at)->format($dateFormat);
+        return Carbon::parse($this->created_at)->translatedFormat($dateFormat);
     }
 
     public function getFormattedPaymentDateAttribute($value)
     {
         $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id);
 
-        return Carbon::parse($this->payment_date)->format($dateFormat);
+        return Carbon::parse($this->payment_date)->translatedFormat($dateFormat);
     }
 
     public function getPaymentPdfUrlAttribute()

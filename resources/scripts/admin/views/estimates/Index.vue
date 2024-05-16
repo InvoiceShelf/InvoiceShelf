@@ -216,7 +216,7 @@
 
         <template #cell-status="{ row }">
           <BaseEstimateStatusBadge :status="row.data.status" class="px-3 py-1">
-            {{ row.data.status }}
+            <BaseEstimateStatusLabel :status="row.data.status"/>
           </BaseEstimateStatusBadge>
         </template>
 
@@ -249,6 +249,7 @@ import abilities from '@/scripts/admin/stub/abilities'
 import ObservatoryIcon from '@/scripts/components/icons/empty/ObservatoryIcon.vue'
 import EstimateDropDown from '@/scripts/admin/components/dropdowns/EstimateIndexDropdown.vue'
 import SendEstimateModal from '@/scripts/admin/components/modal-components/SendEstimateModal.vue'
+import BaseEstimateStatusLabel from "@/scripts/components/base/BaseEstimateStatusLabel.vue";
 
 const estimateStore = useEstimateStore()
 const dialogStore = useDialogStore()
@@ -258,12 +259,12 @@ const tableComponent = ref(null)
 const { t } = useI18n()
 const showFilters = ref(false)
 const status = ref([
-  'DRAFT',
-  'SENT',
-  'VIEWED',
-  'EXPIRED',
-  'ACCEPTED',
-  'REJECTED',
+  {label: t('estimates.draft'), value: 'DRAFT'},
+  {label: t('estimates.sent'), value: 'SENT'},
+  {label: t('estimates.viewed'), value: 'VIEWED'},
+  {label: t('estimates.expired'), value: 'EXPIRED'},
+  {label: t('estimates.accepted'), value: 'ACCEPTED'},
+  {label: t('estimates.rejected'), value: 'REJECTED'},
 ])
 
 const isRequestOngoing = ref(true)

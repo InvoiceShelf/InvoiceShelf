@@ -190,7 +190,7 @@ class Invoice extends Model implements HasMedia
     {
         $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id);
 
-        return Carbon::parse($this->invoice_date)->format($dateFormat);
+        return Carbon::parse($this->invoice_date)->translatedFormat($dateFormat);
     }
 
     public function scopeWhereStatus($query, $status)

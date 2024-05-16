@@ -251,7 +251,7 @@ const paymentColumns = computed(() => {
     { key: 'payment_number', label: t('payments.payment_number') },
     { key: 'name', label: t('payments.customer') },
     { key: 'payment_mode', label: t('payments.payment_mode') },
-    { key: 'invoice_number', label: t('invoices.invoice_number') },
+    { key: 'invoice_number', label: t('payments.invoice') },
     { key: 'amount', label: t('payments.amount') },
     {
       key: 'actions',

@@ -106,7 +106,7 @@ class Item extends Model
     {
         $dateFormat = CompanySetting::getSetting('carbon_date_format', request()->header('company'));
 
-        return Carbon::parse($this->created_at)->format($dateFormat);
+        return Carbon::parse($this->created_at)->translatedFormat($dateFormat);
     }
 
     public function taxes()

@@ -104,6 +104,7 @@ use InvoiceShelf\Http\Controllers\V1\Installation\FilePermissionsController;
 use InvoiceShelf\Http\Controllers\V1\Installation\FinishController;
 use InvoiceShelf\Http\Controllers\V1\Installation\LoginController;
 use InvoiceShelf\Http\Controllers\V1\Installation\OnboardingWizardController;
+use InvoiceShelf\Http\Controllers\V1\Installation\LanguagesController;
 use InvoiceShelf\Http\Controllers\V1\Installation\RequirementsController;
 use InvoiceShelf\Http\Controllers\V1\Webhook\CronJobController;
 
@@ -163,6 +164,10 @@ Route::prefix('/v1')->group(function () {
         Route::get('/wizard-step', [OnboardingWizardController::class, 'getStep']);
 
         Route::post('/wizard-step', [OnboardingWizardController::class, 'updateStep']);
+
+        Route::post('/wizard-language', [OnboardingWizardController::class, 'saveLanguage']);
+
+        Route::get('/languages', [LanguagesController::class, 'languages']);
 
         Route::get('/requirements', [RequirementsController::class, 'requirements']);
 
