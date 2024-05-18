@@ -266,8 +266,8 @@ class EnvironmentManager
                     'MAIL_ENCRYPTION' => $request->get('mail_encryption'),
                     'MAIL_FROM_ADDRESS' => $request->get('from_mail'),
                     'MAIL_FROM_NAME' => $request->get('from_mail'),
-                    'SES_KEY' => $request->get('from_mail'),
-                    'SES_SECRET' => $request->get('from_name'),
+                    'SES_KEY' => $request->get('mail_ses_key'),
+                    'SES_SECRET' => $request->get('mail_ses_secret'),
                 ];
 
                 break;
