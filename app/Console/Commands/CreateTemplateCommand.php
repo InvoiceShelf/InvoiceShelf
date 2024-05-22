@@ -52,7 +52,6 @@ class CreateTemplateCommand extends Command
         }
 
         Storage::disk('views')->copy("/app/pdf/{$type}/{$type}1.blade.php", "/app/pdf/{$type}/{$templateName}.blade.php");
-        copy(public_path("/build/img/PDF/{$type}1.png"), public_path("/build/img/PDF/{$templateName}.png"));
         copy(resource_path("/static/img/PDF/{$type}1.png"), resource_path("/static/img/PDF/{$templateName}.png"));
 
         $path = resource_path("views/app/pdf/{$type}/{$templateName}.blade.php");
