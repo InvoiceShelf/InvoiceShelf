@@ -66,6 +66,7 @@
 
 <script setup>
 import { ref, computed, watch, reactive, inject } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { useRecurringInvoiceStore } from '@/scripts/admin/stores/recurring-invoice'
 import Invoices from './Invoices.vue'
@@ -73,6 +74,7 @@ import Invoices from './Invoices.vue'
 const recurringInvoiceStore = useRecurringInvoiceStore()
 
 const route = useRoute()
+const { t } = useI18n()
 
 let isLoading = computed(() => {
   return recurringInvoiceStore.isFetchingViewData
