@@ -129,7 +129,7 @@
         :invalid="v.status.$error"
         :placeholder="$t('recurring_invoices.select_a_status')"
         value-prop="value"
-        label="value"
+        label="translatedValue"
       />
     </BaseInputGroup>
 
@@ -181,6 +181,7 @@
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n'
 import { useGlobalStore } from '@/scripts/admin/stores/global'
 import { useDebounceFn } from '@vueuse/core'
 import { useRecurringInvoiceStore } from '@/scripts/admin/stores/recurring-invoice'
@@ -205,15 +206,16 @@ const props = defineProps({
 })
 
 const route = useRoute()
+const { t } = useI18n()
 const recurringInvoiceStore = useRecurringInvoiceStore()
 const globalStore = useGlobalStore()
 
 const isLoadingNextDate = ref(false)
 
 const limits = reactive([
-  { label: 'None', value: 'NONE' },
-  { label: 'Date', value: 'DATE' },
-  { label: 'Count', value: 'COUNT' },
+  { label: t('settings.roles.none'), value: 'NONE' },
+  { label: t('recurring_invoices.limit_date'), value: 'DATE' },
+  { label: t('recurring_invoices.limit_count'), value: 'COUNT' },
 ])
 
 const isCustomFrequency = computed(() => {
@@ -225,11 +227,19 @@ const isCustomFrequency = computed(() => {
 })
 
 const getStatusOptions = computed(() => {
+  let statusOptions;
   if (props.isEdit) {
-    return globalStore.config.recurring_invoice_status.update_status
+    statusOptions = globalStore.config.recurring_invoice_status.update_status;
+  } else {
+    statusOptions = globalStore.config.recurring_invoice_status.create_status;
   }
-  return globalStore.config.recurring_invoice_status.create_status
-})
+  return statusOptions.map(option => {
+    return {
+      ...option,
+      translatedValue: t(option.key)
+    };
+  });
+});
 
 watch(
   () => recurringInvoiceStore.newRecurringInvoice.selectedFrequency,
