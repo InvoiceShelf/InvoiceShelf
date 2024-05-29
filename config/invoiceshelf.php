@@ -8,6 +8,7 @@ use InvoiceShelf\Models\ExchangeRateProvider;
 use InvoiceShelf\Models\Expense;
 use InvoiceShelf\Models\Invoice;
 use InvoiceShelf\Models\Item;
+use InvoiceShelf\Models\Schedule;
 use InvoiceShelf\Models\Note;
 use InvoiceShelf\Models\Payment;
 use InvoiceShelf\Models\RecurringInvoice;
@@ -321,6 +322,16 @@ return [
             'owner_only' => false,
             'ability' => 'view-item',
             'model' => Item::class,
+        ],
+        [
+            'title' => 'navigation.schedules',
+            'group' => 2,
+            'link' => '/admin/schedules',
+            'icon' => 'CalendarIcon',
+            'name' => 'Schedules',
+            'owner_only' => false,
+            'ability' => 'view-schedule',
+            'model' => Schedule::class,
         ],
         [
             'title' => 'navigation.estimates',

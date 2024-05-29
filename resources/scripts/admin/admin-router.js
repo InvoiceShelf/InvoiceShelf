@@ -68,6 +68,10 @@ const RolesSettings = () =>
 const ItemsIndex = () => import('@/scripts/admin/views/items/Index.vue')
 const ItemCreate = () => import('@/scripts/admin/views/items/Create.vue')
 
+// Schedule
+const ScheduleIndex = () => import('@/scripts/admin/views/schedule/Index.vue')
+const ScheduleCreate = () => import('@/scripts/admin/views/schedule/Create.vue')
+
 // Expenses
 const ExpensesIndex = () => import('@/scripts/admin/views/expenses/Index.vue')
 const ExpenseCreate = () => import('@/scripts/admin/views/expenses/Create.vue')
@@ -378,6 +382,25 @@ export default [
         name: 'items.edit',
         meta: { ability: abilities.EDIT_ITEM },
         component: ItemCreate,
+      },
+
+      // Schedules
+      {
+        path: 'schedules',
+        meta: { ability: abilities.VIEW_SCHEDULE },
+        component: ScheduleIndex,
+      },
+      {
+        path: 'schedules/create',
+        name: 'schedules.create',
+        meta: { ability: abilities.CREATE_SCHEDULE },
+        component: ScheduleCreate,
+      },
+      {
+        path: 'schedules/:id/edit',
+        name: 'schedules.edit',
+        meta: { ability: abilities.EDIT_SCHEDULE },
+        component: ScheduleCreate,
       },
 
       // Expenses
