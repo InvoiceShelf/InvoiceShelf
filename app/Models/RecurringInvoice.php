@@ -2,12 +2,12 @@
 
 namespace InvoiceShelf\Models;
 
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Carbon\Carbon;
 use Cron;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use InvoiceShelf\Http\Requests\RecurringInvoiceRequest;
 use InvoiceShelf\Services\SerialNumberFormatter;
 use InvoiceShelf\Traits\HasCustomFieldsTrait;

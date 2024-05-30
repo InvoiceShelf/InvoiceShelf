@@ -2,14 +2,14 @@
 
 namespace InvoiceShelf\Models;
 
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\Str;
@@ -81,7 +81,7 @@ class Invoice extends Model implements HasMedia
 
     public function emailLogs(): MorphMany
     {
-        return $this->morphMany('App\Models\EmailLog', 'mailable');
+        return $this->morphMany('InvoiceShelf\Models\EmailLog', 'mailable');
     }
 
     public function items(): HasMany

@@ -2,12 +2,12 @@
 
 namespace InvoiceShelf\Models;
 
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Schema;
@@ -61,7 +61,7 @@ class User extends Authenticatable implements HasMedia
      * Find the user instance for the given username.
      *
      * @param  string  $username
-     * @return \App\User
+     * @return \InvoiceShelf\User
      */
     public function findForPassport($username)
     {

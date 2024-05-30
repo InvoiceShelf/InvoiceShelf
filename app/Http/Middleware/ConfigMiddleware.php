@@ -2,18 +2,17 @@
 
 namespace InvoiceShelf\Http\Middleware;
 
-use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Http\Request;
 use Closure;
+use Illuminate\Http\Request;
 use InvoiceShelf\Models\FileDisk;
 use InvoiceShelf\Space\InstallUtils;
+use Symfony\Component\HttpFoundation\Response;
 
 class ConfigMiddleware
 {
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return mixed
      */
     public function handle(Request $request, Closure $next): Response

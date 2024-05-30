@@ -2,10 +2,10 @@
 
 namespace InvoiceShelf\Http\Middleware;
 
-use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Http\Request;
 use Closure;
+use Illuminate\Http\Request;
 use Silber\Bouncer\Bouncer;
+use Symfony\Component\HttpFoundation\Response;
 
 class ScopeBouncer
 {
@@ -27,7 +27,6 @@ class ScopeBouncer
     /**
      * Set the proper Bouncer scope for the incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return mixed
      */
     public function handle(Request $request, Closure $next): Response

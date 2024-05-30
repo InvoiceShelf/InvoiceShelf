@@ -1,9 +1,9 @@
 <?php
 
-use App\Providers\AppServiceProvider;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use InvoiceShelf\Providers\AppServiceProvider;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withProviders([
@@ -39,9 +39,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->statefulApi();
         $middleware->throttleApi('180,1');
 
-        $middleware->replace(\Illuminate\Http\Middleware\TrustProxies::class, \App\Http\Middleware\TrustProxies::class);
+        $middleware->replace(\Illuminate\Http\Middleware\TrustProxies::class, \InvoiceShelf\Http\Middleware\TrustProxies::class);
 
-        $middleware->replaceInGroup('web', \Illuminate\Cookie\Middleware\EncryptCookies::class, \App\Http\Middleware\EncryptCookies::class);
+        $middleware->replaceInGroup('web', \Illuminate\Cookie\Middleware\EncryptCookies::class, \InvoiceShelf\Http\Middleware\EncryptCookies::class);
 
         $middleware->alias([
             'auth' => \InvoiceShelf\Http\Middleware\Authenticate::class,

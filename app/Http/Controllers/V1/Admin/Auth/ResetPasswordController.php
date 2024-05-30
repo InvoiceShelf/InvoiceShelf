@@ -2,13 +2,12 @@
 
 namespace InvoiceShelf\Http\Controllers\V1\Admin\Auth;
 
-use App\Providers\AppServiceProvider;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Providers\RouteServiceProvider;
+use InvoiceShelf\Providers\AppServiceProvider;
 
 class ResetPasswordController extends Controller
 {

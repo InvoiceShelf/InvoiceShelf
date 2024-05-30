@@ -2,10 +2,10 @@
 
 namespace InvoiceShelf\Models;
 
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class EmailLog extends Model
 {

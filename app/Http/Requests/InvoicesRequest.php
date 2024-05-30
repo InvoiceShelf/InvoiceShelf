@@ -12,8 +12,6 @@ class InvoicesRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
     public function authorize(): bool
     {
@@ -22,8 +20,6 @@ class InvoicesRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.s
-     *
-     * @return array
      */
     public function rules(): array
     {

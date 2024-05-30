@@ -2,12 +2,11 @@
 
 namespace InvoiceShelf\Http\Controllers\V1\Admin\Auth;
 
-use App\Providers\AppServiceProvider;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Validator;
 use InvoiceShelf\Http\Controllers\Controller;
 use InvoiceShelf\Models\User;
-use InvoiceShelf\Providers\RouteServiceProvider;
+use InvoiceShelf\Providers\AppServiceProvider;
 
 class RegisterController extends Controller
 {
@@ -58,7 +57,7 @@ class RegisterController extends Controller
     /**
      * Create a new user instance after a valid registration.
      *
-     * @return \App\User
+     * @return \InvoiceShelf\User
      */
     protected function create(array $data)
     {

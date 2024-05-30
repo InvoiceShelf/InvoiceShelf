@@ -2,10 +2,9 @@
 
 namespace InvoiceShelf\Http\Controllers\V1\Admin\Auth;
 
-use App\Providers\AppServiceProvider;
 use Illuminate\Foundation\Auth\VerifiesEmails;
 use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Providers\RouteServiceProvider;
+use InvoiceShelf\Providers\AppServiceProvider;
 
 class VerificationController extends Controller
 {

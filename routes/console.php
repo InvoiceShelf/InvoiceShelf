@@ -11,7 +11,6 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote')->hourly();
 
-
 if (InstallUtils::isDbCreated()) {
     Schedule::command('check:invoices:status')
         ->daily();

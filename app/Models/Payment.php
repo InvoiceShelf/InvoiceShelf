@@ -2,12 +2,12 @@
 
 namespace InvoiceShelf\Models;
 
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use InvoiceShelf\Jobs\GeneratePaymentPdfJob;
 use InvoiceShelf\Mail\SendPaymentMail;
 use InvoiceShelf\Services\SerialNumberFormatter;
@@ -96,7 +96,7 @@ class Payment extends Model implements HasMedia
 
     public function emailLogs(): MorphMany
     {
-        return $this->morphMany('App\Models\EmailLog', 'mailable');
+        return $this->morphMany('InvoiceShelf\Models\EmailLog', 'mailable');
     }
 
     public function customer(): BelongsTo
