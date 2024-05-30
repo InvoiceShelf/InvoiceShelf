@@ -1,10 +1,11 @@
 <?php
 
-namespace InvoiceShelf\Models;
+namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class EmailLog extends Model
 {
@@ -12,7 +13,7 @@ class EmailLog extends Model
 
     protected $guarded = ['id'];
 
-    public function mailable()
+    public function mailable(): MorphTo
     {
         return $this->morphTo();
     }

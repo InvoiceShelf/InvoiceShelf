@@ -1,13 +1,13 @@
 <?php
 
-namespace InvoiceShelf\Space;
+namespace App\Space;
 
+use App\Http\Requests\DatabaseEnvironmentRequest;
+use App\Http\Requests\DiskEnvironmentRequest;
+use App\Http\Requests\DomainEnvironmentRequest;
+use App\Http\Requests\MailEnvironmentRequest;
 use Exception;
 use Illuminate\Support\Facades\DB;
-use InvoiceShelf\Http\Requests\DatabaseEnvironmentRequest;
-use InvoiceShelf\Http\Requests\DiskEnvironmentRequest;
-use InvoiceShelf\Http\Requests\DomainEnvironmentRequest;
-use InvoiceShelf\Http\Requests\MailEnvironmentRequest;
 
 class EnvironmentManager
 {

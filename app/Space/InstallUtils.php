@@ -1,6 +1,6 @@
 <?php
 
-namespace InvoiceShelf\Space;
+namespace App\Space;
 
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Log;

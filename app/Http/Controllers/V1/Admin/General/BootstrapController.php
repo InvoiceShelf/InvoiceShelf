@@ -1,17 +1,17 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\General;
+namespace App\Http\Controllers\V1\Admin\General;
 
+use App\Http\Controllers\Controller;
+use App\Http\Resources\CompanyResource;
+use App\Http\Resources\UserResource;
+use App\Models\Company;
+use App\Models\CompanySetting;
+use App\Models\Currency;
+use App\Models\Module;
+use App\Models\Setting;
+use App\Traits\GeneratesMenuTrait;
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Resources\CompanyResource;
-use InvoiceShelf\Http\Resources\UserResource;
-use InvoiceShelf\Models\Company;
-use InvoiceShelf\Models\CompanySetting;
-use InvoiceShelf\Models\Currency;
-use InvoiceShelf\Models\Module;
-use InvoiceShelf\Models\Setting;
-use InvoiceShelf\Traits\GeneratesMenuTrait;
 use Silber\Bouncer\BouncerFacade;
 
 class BootstrapController extends Controller

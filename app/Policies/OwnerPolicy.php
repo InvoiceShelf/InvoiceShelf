@@ -1,9 +1,9 @@
 <?php
 
-namespace InvoiceShelf\Policies;
+namespace App\Policies;
 
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use InvoiceShelf\Models\User;
 
 class OwnerPolicy
 {

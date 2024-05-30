@@ -1,6 +1,6 @@
 <?php
 
-namespace InvoiceShelf\Bouncer\Scopes;
+namespace App\Bouncer\Scopes;
 
 use Silber\Bouncer\Database\Scope\Scope;
 

@@ -1,12 +1,12 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\ExchangeRate;
+namespace App\Http\Controllers\V1\Admin\ExchangeRate;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\ExchangeRateProviderRequest;
+use App\Http\Resources\ExchangeRateProviderResource;
+use App\Models\ExchangeRateProvider;
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests\ExchangeRateProviderRequest;
-use InvoiceShelf\Http\Resources\ExchangeRateProviderResource;
-use InvoiceShelf\Models\ExchangeRateProvider;
 
 class ExchangeRateProviderController extends Controller
 {

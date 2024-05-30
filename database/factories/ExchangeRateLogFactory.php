@@ -2,10 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Models\Currency;
+use App\Models\ExchangeRateLog;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use InvoiceShelf\Models\Currency;
-use InvoiceShelf\Models\ExchangeRateLog;
-use InvoiceShelf\Models\User;
 
 class ExchangeRateLogFactory extends Factory
 {
@@ -18,16 +18,14 @@ class ExchangeRateLogFactory extends Factory
 
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'company_id' => Currency::find(1)->id,
             'base_currency_id' => User::find(1)->companies()->first()->id,
             'currency_id' => Currency::find(4)->id,
-            'exchange_rate' => $this->faker->randomDigitNotNull,
+            'exchange_rate' => $this->faker->randomDigitNotNull(),
         ];
     }
 }

@@ -1,10 +1,10 @@
 <?php
 
+use App\Http\Controllers\V1\Admin\Settings\TaxTypesController;
+use App\Http\Requests\TaxTypeRequest;
+use App\Models\TaxType;
+use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
-use InvoiceShelf\Http\Controllers\V1\Admin\Settings\TaxTypesController;
-use InvoiceShelf\Http\Requests\TaxTypeRequest;
-use InvoiceShelf\Models\TaxType;
-use InvoiceShelf\Models\User;
 use Laravel\Sanctum\Sanctum;
 
 use function Pest\Laravel\deleteJson;

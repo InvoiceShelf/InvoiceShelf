@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\Unit;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use InvoiceShelf\Models\Unit;
-use InvoiceShelf\Models\User;
 
 class UnitFactory extends Factory
 {
@@ -17,13 +17,11 @@ class UnitFactory extends Factory
 
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
-            'name' => $this->faker->name,
+            'name' => $this->faker->name(),
             'company_id' => User::find(1)->companies()->first()->id,
         ];
     }

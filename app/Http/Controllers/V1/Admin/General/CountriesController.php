@@ -1,11 +1,11 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\General;
+namespace App\Http\Controllers\V1\Admin\General;
 
+use App\Http\Controllers\Controller;
+use App\Http\Resources\CountryResource;
+use App\Models\Country;
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Resources\CountryResource;
-use InvoiceShelf\Models\Country;
 
 class CountriesController extends Controller
 {

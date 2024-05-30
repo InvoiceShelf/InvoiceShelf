@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\CompanySetting;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use InvoiceShelf\Models\CompanySetting;
-use InvoiceShelf\Models\User;
 
 class CompanySettingFactory extends Factory
 {
@@ -17,14 +17,12 @@ class CompanySettingFactory extends Factory
 
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
-            'option' => $this->faker->word,
-            'value' => $this->faker->word,
+            'option' => $this->faker->word(),
+            'value' => $this->faker->word(),
             'company_id' => User::find(1)->companies()->first()->id,
         ];
     }

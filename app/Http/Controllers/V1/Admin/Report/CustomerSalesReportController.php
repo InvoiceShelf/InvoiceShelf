@@ -1,15 +1,15 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Report;
+namespace App\Http\Controllers\V1\Admin\Report;
 
+use App\Http\Controllers\Controller;
+use App\Models\Company;
+use App\Models\CompanySetting;
+use App\Models\Currency;
+use App\Models\Customer;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Models\Company;
-use InvoiceShelf\Models\CompanySetting;
-use InvoiceShelf\Models\Currency;
-use InvoiceShelf\Models\Customer;
 use PDF;
 
 class CustomerSalesReportController extends Controller

@@ -1,9 +1,9 @@
 <?php
 
-namespace InvoiceShelf\Policies;
+namespace App\Policies;
 
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use InvoiceShelf\Models\User;
 use Silber\Bouncer\Database\Role;
 
 class RolePolicy
@@ -15,7 +15,7 @@ class RolePolicy
      *
      * @return mixed
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
         if ($user->isOwner()) {
             return true;
@@ -29,7 +29,7 @@ class RolePolicy
      *
      * @return mixed
      */
-    public function view(User $user, Role $role)
+    public function view(User $user, Role $role): bool
     {
         if ($user->isOwner()) {
             return true;
@@ -43,7 +43,7 @@ class RolePolicy
      *
      * @return mixed
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
         if ($user->isOwner()) {
             return true;
@@ -57,7 +57,7 @@ class RolePolicy
      *
      * @return mixed
      */
-    public function update(User $user, Role $role)
+    public function update(User $user, Role $role): bool
     {
         if ($user->isOwner()) {
             return true;
@@ -71,7 +71,7 @@ class RolePolicy
      *
      * @return mixed
      */
-    public function delete(User $user, Role $role)
+    public function delete(User $user, Role $role): bool
     {
         if ($user->isOwner()) {
             return true;
@@ -85,7 +85,7 @@ class RolePolicy
      *
      * @return mixed
      */
-    public function restore(User $user, Role $role)
+    public function restore(User $user, Role $role): bool
     {
         if ($user->isOwner()) {
             return true;
@@ -99,7 +99,7 @@ class RolePolicy
      *
      * @return mixed
      */
-    public function forceDelete(User $user, Role $role)
+    public function forceDelete(User $user, Role $role): bool
     {
         if ($user->isOwner()) {
             return true;

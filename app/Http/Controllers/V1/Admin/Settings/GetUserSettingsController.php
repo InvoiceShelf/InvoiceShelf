@@ -1,9 +1,9 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Settings;
+namespace App\Http\Controllers\V1\Admin\Settings;
 
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests\GetSettingsRequest;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\GetSettingsRequest;
 
 class GetUserSettingsController extends Controller
 {

@@ -2,11 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\Currency;
+use App\Models\Customer;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
-use InvoiceShelf\Models\Currency;
-use InvoiceShelf\Models\Customer;
-use InvoiceShelf\Models\User;
 
 class CustomerFactory extends Factory
 {
@@ -19,20 +19,18 @@ class CustomerFactory extends Factory
 
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
-            'name' => $this->faker->name,
-            'company_name' => $this->faker->company,
-            'contact_name' => $this->faker->name,
-            'prefix' => $this->faker->randomDigitNotNull,
-            'website' => $this->faker->url,
+            'name' => $this->faker->name(),
+            'company_name' => $this->faker->company(),
+            'contact_name' => $this->faker->name(),
+            'prefix' => $this->faker->randomDigitNotNull(),
+            'website' => $this->faker->url(),
             'enable_portal' => true,
-            'email' => $this->faker->unique()->safeEmail,
-            'phone' => $this->faker->phoneNumber,
+            'email' => $this->faker->unique()->safeEmail(),
+            'phone' => $this->faker->phoneNumber(),
             'company_id' => User::find(1)->companies()->first()->id,
             'password' => Hash::make('secret'),
             'currency_id' => Currency::find(1)->id,

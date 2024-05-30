@@ -4,14 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddSalesTaxFieldsToInvoicesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('invoices', function (Blueprint $table) {
             $table->string('sales_tax_type')->nullable();
@@ -21,10 +19,8 @@ class AddSalesTaxFieldsToInvoicesTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('invoices', function (Blueprint $table) {
             $table->dropColumn([
@@ -33,4 +29,4 @@ class AddSalesTaxFieldsToInvoicesTable extends Migration
             ]);
         });
     }
-}
+};

@@ -1,10 +1,10 @@
 <?php
 
+use App\Http\Controllers\V1\Admin\Item\UnitsController;
+use App\Http\Requests\UnitRequest;
+use App\Models\Unit;
+use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
-use InvoiceShelf\Http\Controllers\V1\Admin\Item\UnitsController;
-use InvoiceShelf\Http\Requests\UnitRequest;
-use InvoiceShelf\Models\Unit;
-use InvoiceShelf\Models\User;
 use Laravel\Sanctum\Sanctum;
 
 use function Pest\Laravel\deleteJson;

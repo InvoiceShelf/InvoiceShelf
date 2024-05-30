@@ -1,16 +1,16 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Customer;
+namespace App\Http\Controllers\V1\Admin\Customer;
 
+use App\Http\Controllers\Controller;
+use App\Http\Resources\CustomerResource;
+use App\Models\CompanySetting;
+use App\Models\Customer;
+use App\Models\Expense;
+use App\Models\Invoice;
+use App\Models\Payment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Resources\CustomerResource;
-use InvoiceShelf\Models\CompanySetting;
-use InvoiceShelf\Models\Customer;
-use InvoiceShelf\Models\Expense;
-use InvoiceShelf\Models\Invoice;
-use InvoiceShelf\Models\Payment;
 
 class CustomerStatsController extends Controller
 {

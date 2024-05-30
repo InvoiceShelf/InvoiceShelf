@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Policies;
+namespace App\Policies;
 
+use App\Models\TaxType;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use InvoiceShelf\Models\TaxType;
-use InvoiceShelf\Models\User;
 use Silber\Bouncer\BouncerFacade;
 
 class TaxTypePolicy
@@ -16,7 +16,7 @@ class TaxTypePolicy
      *
      * @return mixed
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
         if (BouncerFacade::can('view-tax-type', TaxType::class)) {
             return true;
@@ -30,7 +30,7 @@ class TaxTypePolicy
      *
      * @return mixed
      */
-    public function view(User $user, TaxType $taxType)
+    public function view(User $user, TaxType $taxType): bool
     {
         if (BouncerFacade::can('view-tax-type', $taxType) && $user->hasCompany($taxType->company_id)) {
             return true;
@@ -44,7 +44,7 @@ class TaxTypePolicy
      *
      * @return mixed
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
         if (BouncerFacade::can('create-tax-type', TaxType::class)) {
             return true;
@@ -58,7 +58,7 @@ class TaxTypePolicy
      *
      * @return mixed
      */
-    public function update(User $user, TaxType $taxType)
+    public function update(User $user, TaxType $taxType): bool
     {
         if (BouncerFacade::can('edit-tax-type', $taxType) && $user->hasCompany($taxType->company_id)) {
             return true;
@@ -72,7 +72,7 @@ class TaxTypePolicy
      *
      * @return mixed
      */
-    public function delete(User $user, TaxType $taxType)
+    public function delete(User $user, TaxType $taxType): bool
     {
         if (BouncerFacade::can('delete-tax-type', $taxType) && $user->hasCompany($taxType->company_id)) {
             return true;
@@ -86,7 +86,7 @@ class TaxTypePolicy
      *
      * @return mixed
      */
-    public function restore(User $user, TaxType $taxType)
+    public function restore(User $user, TaxType $taxType): bool
     {
         if (BouncerFacade::can('delete-tax-type', $taxType) && $user->hasCompany($taxType->company_id)) {
             return true;
@@ -100,7 +100,7 @@ class TaxTypePolicy
      *
      * @return mixed
      */
-    public function forceDelete(User $user, TaxType $taxType)
+    public function forceDelete(User $user, TaxType $taxType): bool
     {
         if (BouncerFacade::can('delete-tax-type', $taxType) && $user->hasCompany($taxType->company_id)) {
             return true;

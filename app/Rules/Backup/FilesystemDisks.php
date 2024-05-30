@@ -1,10 +1,11 @@
 <?php
 
-namespace InvoiceShelf\Rules\Backup;
+namespace App\Rules\Backup;
 
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class FilesystemDisks implements Rule
+class FilesystemDisks implements ValidationRule
 {
     /**
      * Create a new rule instance.
@@ -13,30 +14,18 @@ class FilesystemDisks implements Rule
      */
     public function __construct()
     {
-        //
+        // Initialization, if needed
     }
 
     /**
-     * Determine if the validation rule passes.
-     *
-     * @param  string  $attribute
-     * @param  mixed  $value
-     * @return bool
+     * Run the validation rule.
      */
-    public function passes($attribute, $value)
+    public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $configuredFileSystemDisks = config('filesystem.disks');
+        $configuredFileSystemDisks = array_keys(config('filesystems.disks'));
 
-        return in_array($value, $configuredFileSystemDisks);
-    }
-
-    /**
-     * Get the validation error message.
-     *
-     * @return string
-     */
-    public function message()
-    {
-        return 'This disk is not configured as a filesystem disk.';
+        if (! in_array($value, $configuredFileSystemDisks)) {
+            $fail('This disk is not configured as a filesystem disk.');
+        }
     }
 }
