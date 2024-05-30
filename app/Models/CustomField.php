@@ -22,9 +22,12 @@ class CustomField extends Model
         'defaultAnswer',
     ];
 
-    protected $casts = [
-        'options' => 'array',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'options' => 'array',
+        ];
+    }
 
     public function setTimeAnswerAttribute($value)
     {

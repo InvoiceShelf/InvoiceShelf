@@ -15,10 +15,13 @@ class Tax extends Model
         'id',
     ];
 
-    protected $casts = [
-        'amount' => 'integer',
-        'percent' => 'float',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'amount' => 'integer',
+            'percent' => 'float',
+        ];
+    }
 
     public function taxType()
     {

@@ -48,15 +48,6 @@ class Invoice extends Model implements HasMedia
         'due_date',
     ];
 
-    protected $casts = [
-        'total' => 'integer',
-        'tax' => 'integer',
-        'sub_total' => 'integer',
-        'discount' => 'float',
-        'discount_val' => 'integer',
-        'exchange_rate' => 'float',
-    ];
-
     protected $guarded = [
         'id',
     ];
@@ -67,6 +58,18 @@ class Invoice extends Model implements HasMedia
         'formattedDueDate',
         'invoicePdfUrl',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'total' => 'integer',
+            'tax' => 'integer',
+            'sub_total' => 'integer',
+            'discount' => 'float',
+            'discount_val' => 'integer',
+            'exchange_rate' => 'float',
+        ];
+    }
 
     public function transactions()
     {

@@ -13,13 +13,16 @@ class Item extends Model
 
     protected $guarded = ['id'];
 
-    protected $casts = [
-        'price' => 'integer',
-    ];
-
     protected $appends = [
         'formattedCreatedAt',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'price' => 'integer',
+        ];
+    }
 
     public function unit()
     {

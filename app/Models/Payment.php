@@ -42,10 +42,13 @@ class Payment extends Model implements HasMedia
         'paymentPdfUrl',
     ];
 
-    protected $casts = [
-        'notes' => 'string',
-        'exchange_rate' => 'float',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'notes' => 'string',
+            'exchange_rate' => 'float',
+        ];
+    }
 
     protected static function booted()
     {

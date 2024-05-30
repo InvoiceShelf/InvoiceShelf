@@ -18,9 +18,12 @@ class FileDisk extends Model
         'id',
     ];
 
-    protected $casts = [
-        'set_as_default' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'set_as_default' => 'boolean',
+        ];
+    }
 
     public function setCredentialsAttribute($value)
     {

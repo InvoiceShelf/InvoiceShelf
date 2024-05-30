@@ -29,10 +29,13 @@ class Expense extends Model implements HasMedia
         'receiptMeta',
     ];
 
-    protected $casts = [
-        'notes' => 'string',
-        'exchange_rate' => 'float',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'notes' => 'string',
+            'exchange_rate' => 'float',
+        ];
+    }
 
     public function category()
     {

@@ -53,14 +53,17 @@ class Estimate extends Model implements HasMedia
 
     protected $guarded = ['id'];
 
-    protected $casts = [
-        'total' => 'integer',
-        'tax' => 'integer',
-        'sub_total' => 'integer',
-        'discount' => 'float',
-        'discount_val' => 'integer',
-        'exchange_rate' => 'float',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'total' => 'integer',
+            'tax' => 'integer',
+            'sub_total' => 'integer',
+            'discount' => 'float',
+            'discount_val' => 'integer',
+            'exchange_rate' => 'float',
+        ];
+    }
 
     public function getEstimatePdfUrlAttribute()
     {

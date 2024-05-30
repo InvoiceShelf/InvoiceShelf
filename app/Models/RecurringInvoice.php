@@ -43,10 +43,13 @@ class RecurringInvoice extends Model
         'formattedLimitDate',
     ];
 
-    protected $casts = [
-        'exchange_rate' => 'float',
-        'send_automatically' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'exchange_rate' => 'float',
+            'send_automatically' => 'boolean',
+        ];
+    }
 
     public function getFormattedStartsAtAttribute()
     {

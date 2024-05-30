@@ -40,9 +40,12 @@ class Customer extends Authenticatable implements HasMedia
         'avatar',
     ];
 
-    protected $casts = [
-        'enable_portal' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'enable_portal' => 'boolean',
+        ];
+    }
 
     public function getFormattedCreatedAtAttribute($value)
     {

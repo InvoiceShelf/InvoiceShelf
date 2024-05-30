@@ -17,14 +17,17 @@ class InvoiceItem extends Model
         'id',
     ];
 
-    protected $casts = [
-        'price' => 'integer',
-        'total' => 'integer',
-        'discount' => 'float',
-        'quantity' => 'float',
-        'discount_val' => 'integer',
-        'tax' => 'integer',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'price' => 'integer',
+            'total' => 'integer',
+            'discount' => 'float',
+            'quantity' => 'float',
+            'discount_val' => 'integer',
+            'tax' => 'integer',
+        ];
+    }
 
     public function invoice()
     {

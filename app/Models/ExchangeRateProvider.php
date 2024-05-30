@@ -15,11 +15,14 @@ class ExchangeRateProvider extends Model
         'id',
     ];
 
-    protected $casts = [
-        'currencies' => 'array',
-        'driver_config' => 'array',
-        'active' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'currencies' => 'array',
+            'driver_config' => 'array',
+            'active' => 'boolean',
+        ];
+    }
 
     public function company()
     {

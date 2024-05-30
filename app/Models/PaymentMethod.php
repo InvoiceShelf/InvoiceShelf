@@ -17,10 +17,13 @@ class PaymentMethod extends Model
 
     public const TYPE_MODULE = 'MODULE';
 
-    protected $casts = [
-        'settings' => 'array',
-        'use_test_env' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'settings' => 'array',
+            'use_test_env' => 'boolean',
+        ];
+    }
 
     public function setSettingsAttribute($value)
     {

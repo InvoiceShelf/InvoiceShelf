@@ -13,9 +13,12 @@ class ExchangeRateLog extends Model
         'id',
     ];
 
-    protected $casts = [
-        'exchange_rate' => 'float',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'exchange_rate' => 'float',
+        ];
+    }
 
     public function currency()
     {
