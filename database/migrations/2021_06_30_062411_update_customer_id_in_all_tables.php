@@ -74,33 +74,35 @@ return new class extends Migration
             }
         }
 
-        Schema::table('estimates', function (Blueprint $table) {
-            if (config('database.default') !== 'sqlite') {
-                $table->dropForeign(['user_id']);
-            }
-            $table->dropColumn('user_id');
-        });
+        if (config('database.default') !== 'sqlite') {
+            Schema::table('estimates', function (Blueprint $table) {
+                if (config('database.default') !== 'sqlite') {
+                    $table->dropForeign(['user_id']);
+                }
+                $table->dropColumn('user_id');
+            });
 
-        Schema::table('expenses', function (Blueprint $table) {
-            if (config('database.default') !== 'sqlite') {
-                $table->dropForeign(['user_id']);
-            }
-            $table->dropColumn('user_id');
-        });
+            Schema::table('expenses', function (Blueprint $table) {
+                if (config('database.default') !== 'sqlite') {
+                    $table->dropForeign(['user_id']);
+                }
+                $table->dropColumn('user_id');
+            });
 
-        Schema::table('invoices', function (Blueprint $table) {
-            if (config('database.default') !== 'sqlite') {
-                $table->dropForeign(['user_id']);
-            }
-            $table->dropColumn('user_id');
-        });
+            Schema::table('invoices', function (Blueprint $table) {
+                if (config('database.default') !== 'sqlite') {
+                    $table->dropForeign(['user_id']);
+                }
+                $table->dropColumn('user_id');
+            });
 
-        Schema::table('payments', function (Blueprint $table) {
-            if (config('database.default') !== 'sqlite') {
-                $table->dropForeign(['user_id']);
-            }
-            $table->dropColumn('user_id');
-        });
+            Schema::table('payments', function (Blueprint $table) {
+                if (config('database.default') !== 'sqlite') {
+                    $table->dropForeign(['user_id']);
+                }
+                $table->dropColumn('user_id');
+            });
+        }
 
         Schema::table('items', function (Blueprint $table) {
             $table->dropColumn('unit');
