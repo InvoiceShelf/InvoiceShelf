@@ -2,6 +2,7 @@
 
 namespace InvoiceShelf\Http\Controllers\V1\Admin\Auth;
 
+use App\Providers\AppServiceProvider;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Validator;
 use InvoiceShelf\Http\Controllers\Controller;
@@ -28,7 +29,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    protected $redirectTo = AppServiceProvider::HOME;
 
     /**
      * Create a new controller instance.
