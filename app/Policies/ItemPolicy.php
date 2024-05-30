@@ -16,7 +16,7 @@ class ItemPolicy
      *
      * @return mixed
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
         if (BouncerFacade::can('view-item', Item::class)) {
             return true;
@@ -30,7 +30,7 @@ class ItemPolicy
      *
      * @return mixed
      */
-    public function view(User $user, Item $item)
+    public function view(User $user, Item $item): bool
     {
         if (BouncerFacade::can('view-item', $item) && $user->hasCompany($item->company_id)) {
             return true;
@@ -44,7 +44,7 @@ class ItemPolicy
      *
      * @return mixed
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
         if (BouncerFacade::can('create-item', Item::class)) {
             return true;
@@ -58,7 +58,7 @@ class ItemPolicy
      *
      * @return mixed
      */
-    public function update(User $user, Item $item)
+    public function update(User $user, Item $item): bool
     {
         if (BouncerFacade::can('edit-item', $item) && $user->hasCompany($item->company_id)) {
             return true;
@@ -72,7 +72,7 @@ class ItemPolicy
      *
      * @return mixed
      */
-    public function delete(User $user, Item $item)
+    public function delete(User $user, Item $item): bool
     {
         if (BouncerFacade::can('delete-item', $item) && $user->hasCompany($item->company_id)) {
             return true;
@@ -86,7 +86,7 @@ class ItemPolicy
      *
      * @return mixed
      */
-    public function restore(User $user, Item $item)
+    public function restore(User $user, Item $item): bool
     {
         if (BouncerFacade::can('delete-item', $item) && $user->hasCompany($item->company_id)) {
             return true;
@@ -100,7 +100,7 @@ class ItemPolicy
      *
      * @return mixed
      */
-    public function forceDelete(User $user, Item $item)
+    public function forceDelete(User $user, Item $item): bool
     {
         if (BouncerFacade::can('delete-item', $item) && $user->hasCompany($item->company_id)) {
             return true;

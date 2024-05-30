@@ -21,7 +21,7 @@ class CustomFieldValueFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'custom_field_valuable_type' => $this->faker->name(),

@@ -15,7 +15,7 @@ class ModuleResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
-    public function toArray($request)
+    public function toArray($request): array
     {
         $this->checkPurchased();
         $this->installed_module = ModelsModule::where('name', $this->module_name)->first();

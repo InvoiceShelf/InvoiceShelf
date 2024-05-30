@@ -16,7 +16,7 @@ class CustomerPolicy
      *
      * @return mixed
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
         if (BouncerFacade::can('view-customer', Customer::class)) {
             return true;
@@ -30,7 +30,7 @@ class CustomerPolicy
      *
      * @return mixed
      */
-    public function view(User $user, Customer $customer)
+    public function view(User $user, Customer $customer): bool
     {
         if (BouncerFacade::can('view-customer', $customer)) {
             return true;
@@ -44,7 +44,7 @@ class CustomerPolicy
      *
      * @return mixed
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
         if (BouncerFacade::can('create-customer', Customer::class)) {
             return true;
@@ -58,7 +58,7 @@ class CustomerPolicy
      *
      * @return mixed
      */
-    public function update(User $user, Customer $customer)
+    public function update(User $user, Customer $customer): bool
     {
         if (BouncerFacade::can('edit-customer', $customer)) {
             return true;
@@ -72,7 +72,7 @@ class CustomerPolicy
      *
      * @return mixed
      */
-    public function delete(User $user, Customer $customer)
+    public function delete(User $user, Customer $customer): bool
     {
         if (BouncerFacade::can('delete-customer', $customer)) {
             return true;
@@ -86,7 +86,7 @@ class CustomerPolicy
      *
      * @return mixed
      */
-    public function restore(User $user, Customer $customer)
+    public function restore(User $user, Customer $customer): bool
     {
         if (BouncerFacade::can('delete-customer', $customer)) {
             return true;
@@ -100,7 +100,7 @@ class CustomerPolicy
      *
      * @return mixed
      */
-    public function forceDelete(User $user, Customer $customer)
+    public function forceDelete(User $user, Customer $customer): bool
     {
         if (BouncerFacade::can('delete-customer', $customer)) {
             return true;

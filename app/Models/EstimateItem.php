@@ -2,6 +2,8 @@
 
 namespace InvoiceShelf\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use InvoiceShelf\Traits\HasCustomFieldsTrait;
@@ -27,17 +29,17 @@ class EstimateItem extends Model
         ];
     }
 
-    public function estimate()
+    public function estimate(): BelongsTo
     {
         return $this->belongsTo(Estimate::class);
     }
 
-    public function item()
+    public function item(): BelongsTo
     {
         return $this->belongsTo(Item::class);
     }
 
-    public function taxes()
+    public function taxes(): HasMany
     {
         return $this->hasMany(Tax::class);
     }

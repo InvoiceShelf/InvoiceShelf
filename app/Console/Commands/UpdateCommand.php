@@ -42,7 +42,7 @@ class UpdateCommand extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
         set_time_limit(3600); // 1 hour
 

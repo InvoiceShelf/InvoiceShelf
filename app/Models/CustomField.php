@@ -2,6 +2,8 @@
 
 namespace InvoiceShelf\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -53,12 +55,12 @@ class CustomField extends Model
         return $this->customFieldValues()->exists();
     }
 
-    public function company()
+    public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
     }
 
-    public function customFieldValues()
+    public function customFieldValues(): HasMany
     {
         return $this->hasMany(CustomFieldValue::class);
     }

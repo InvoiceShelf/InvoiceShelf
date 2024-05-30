@@ -12,7 +12,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('tax_types', function (Blueprint $table) {
             $table->enum('type', ['GENERAL', 'MODULE'])->default(TaxType::TYPE_GENERAL);
@@ -33,7 +33,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('tax_types', function (Blueprint $table) {
             $table->dropColumn('type');

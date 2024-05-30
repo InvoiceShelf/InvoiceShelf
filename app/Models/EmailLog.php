@@ -2,6 +2,7 @@
 
 namespace InvoiceShelf\Models;
 
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +13,7 @@ class EmailLog extends Model
 
     protected $guarded = ['id'];
 
-    public function mailable()
+    public function mailable(): MorphTo
     {
         return $this->morphTo();
     }

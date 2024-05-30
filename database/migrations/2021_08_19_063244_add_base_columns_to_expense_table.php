@@ -11,7 +11,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('expenses', function (Blueprint $table) {
             $table->decimal('exchange_rate', 19, 6)->nullable();
@@ -25,7 +25,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('expenses', function (Blueprint $table) {
             $table->dropColumn([

@@ -36,7 +36,7 @@ class CreateTemplateCommand extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         $templateName = $this->argument('name');
         $type = $this->option('type');

@@ -68,7 +68,7 @@ class EstimateFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         $sequenceNumber = (new SerialNumberFormatter())
             ->setModel(new Estimate())

@@ -2,6 +2,7 @@
 
 namespace InvoiceShelf\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -23,42 +24,42 @@ class Tax extends Model
         ];
     }
 
-    public function taxType()
+    public function taxType(): BelongsTo
     {
         return $this->belongsTo(TaxType::class);
     }
 
-    public function invoice()
+    public function invoice(): BelongsTo
     {
         return $this->belongsTo(Invoice::class);
     }
 
-    public function recurringInvoice()
+    public function recurringInvoice(): BelongsTo
     {
         return $this->belongsTo(RecurringInvoice::class);
     }
 
-    public function estimate()
+    public function estimate(): BelongsTo
     {
         return $this->belongsTo(Estimate::class);
     }
 
-    public function currency()
+    public function currency(): BelongsTo
     {
         return $this->belongsTo(Currency::class);
     }
 
-    public function invoiceItem()
+    public function invoiceItem(): BelongsTo
     {
         return $this->belongsTo(InvoiceItem::class);
     }
 
-    public function estimateItem()
+    public function estimateItem(): BelongsTo
     {
         return $this->belongsTo(EstimateItem::class);
     }
 
-    public function item()
+    public function item(): BelongsTo
     {
         return $this->belongsTo(Item::class);
     }

@@ -2,6 +2,9 @@
 
 namespace InvoiceShelf\Models;
 
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use App;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Carbon\Carbon;
@@ -70,37 +73,37 @@ class Estimate extends Model implements HasMedia
         return url('/estimates/pdf/'.$this->unique_hash);
     }
 
-    public function emailLogs()
+    public function emailLogs(): MorphMany
     {
         return $this->morphMany('App\Models\EmailLog', 'mailable');
     }
 
-    public function items()
+    public function items(): HasMany
     {
         return $this->hasMany(\InvoiceShelf\Models\EstimateItem::class);
     }
 
-    public function customer()
+    public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class, 'customer_id');
     }
 
-    public function creator()
+    public function creator(): BelongsTo
     {
         return $this->belongsTo(\InvoiceShelf\Models\User::class, 'creator_id');
     }
 
-    public function company()
+    public function company(): BelongsTo
     {
         return $this->belongsTo(\InvoiceShelf\Models\Company::class);
     }
 
-    public function currency()
+    public function currency(): BelongsTo
     {
         return $this->belongsTo(Currency::class);
     }
 
-    public function taxes()
+    public function taxes(): HasMany
     {
         return $this->hasMany(Tax::class);
     }

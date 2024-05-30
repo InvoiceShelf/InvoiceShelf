@@ -17,7 +17,7 @@ class UnitPolicy
      *
      * @return mixed
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
         if (BouncerFacade::can('view-item', Item::class)) {
             return true;
@@ -31,7 +31,7 @@ class UnitPolicy
      *
      * @return mixed
      */
-    public function view(User $user, Unit $unit)
+    public function view(User $user, Unit $unit): bool
     {
         if (BouncerFacade::can('view-item', Item::class) && $user->hasCompany($unit->company_id)) {
             return true;
@@ -45,7 +45,7 @@ class UnitPolicy
      *
      * @return mixed
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
         if (BouncerFacade::can('view-item', Item::class)) {
             return true;
@@ -59,7 +59,7 @@ class UnitPolicy
      *
      * @return mixed
      */
-    public function update(User $user, Unit $unit)
+    public function update(User $user, Unit $unit): bool
     {
         if (BouncerFacade::can('view-item', Item::class) && $user->hasCompany($unit->company_id)) {
             return true;
@@ -73,7 +73,7 @@ class UnitPolicy
      *
      * @return mixed
      */
-    public function delete(User $user, Unit $unit)
+    public function delete(User $user, Unit $unit): bool
     {
         if (BouncerFacade::can('view-item', Item::class) && $user->hasCompany($unit->company_id)) {
             return true;
@@ -87,7 +87,7 @@ class UnitPolicy
      *
      * @return mixed
      */
-    public function restore(User $user, Unit $unit)
+    public function restore(User $user, Unit $unit): bool
     {
         if (BouncerFacade::can('view-item', Item::class) && $user->hasCompany($unit->company_id)) {
             return true;
@@ -101,7 +101,7 @@ class UnitPolicy
      *
      * @return mixed
      */
-    public function forceDelete(User $user, Unit $unit)
+    public function forceDelete(User $user, Unit $unit): bool
     {
         if (BouncerFacade::can('view-item', Item::class) && $user->hasCompany($unit->company_id)) {
             return true;

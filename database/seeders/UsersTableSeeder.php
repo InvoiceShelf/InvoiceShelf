@@ -16,7 +16,7 @@ class UsersTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $user = User::create([
             'email' => 'admin@invoiceshelf.com',

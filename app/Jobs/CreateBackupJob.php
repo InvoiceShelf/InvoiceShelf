@@ -34,7 +34,7 @@ class CreateBackupJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $fileDisk = FileDisk::find($this->data['file_disk_id']);
         $fileDisk->setConfig();

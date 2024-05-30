@@ -11,7 +11,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('custom_field_values', function (Blueprint $table) {
             $table->bigIncrements('id');
@@ -37,7 +37,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('custom_field_values', function (Blueprint $table) {
             if (config('database.default') !== 'sqlite') {

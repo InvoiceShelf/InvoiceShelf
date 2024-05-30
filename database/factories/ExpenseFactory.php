@@ -23,7 +23,7 @@ class ExpenseFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'expense_date' => $this->faker->date('Y-m-d', 'now'),

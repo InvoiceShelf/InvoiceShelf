@@ -16,7 +16,7 @@ class PaymentPolicy
      *
      * @return mixed
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
         if (BouncerFacade::can('view-payment', Payment::class)) {
             return true;
@@ -30,7 +30,7 @@ class PaymentPolicy
      *
      * @return mixed
      */
-    public function view(User $user, Payment $payment)
+    public function view(User $user, Payment $payment): bool
     {
         if (BouncerFacade::can('view-payment', $payment) && $user->hasCompany($payment->company_id)) {
             return true;
@@ -44,7 +44,7 @@ class PaymentPolicy
      *
      * @return mixed
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
         if (BouncerFacade::can('create-payment', Payment::class)) {
             return true;
@@ -58,7 +58,7 @@ class PaymentPolicy
      *
      * @return mixed
      */
-    public function update(User $user, Payment $payment)
+    public function update(User $user, Payment $payment): bool
     {
         if (BouncerFacade::can('edit-payment', $payment) && $user->hasCompany($payment->company_id)) {
             return true;
@@ -72,7 +72,7 @@ class PaymentPolicy
      *
      * @return mixed
      */
-    public function delete(User $user, Payment $payment)
+    public function delete(User $user, Payment $payment): bool
     {
         if (BouncerFacade::can('delete-payment', $payment) && $user->hasCompany($payment->company_id)) {
             return true;
@@ -86,7 +86,7 @@ class PaymentPolicy
      *
      * @return mixed
      */
-    public function restore(User $user, Payment $payment)
+    public function restore(User $user, Payment $payment): bool
     {
         if (BouncerFacade::can('delete-payment', $payment) && $user->hasCompany($payment->company_id)) {
             return true;
@@ -100,7 +100,7 @@ class PaymentPolicy
      *
      * @return mixed
      */
-    public function forceDelete(User $user, Payment $payment)
+    public function forceDelete(User $user, Payment $payment): bool
     {
         if (BouncerFacade::can('delete-payment', $payment) && $user->hasCompany($payment->company_id)) {
             return true;

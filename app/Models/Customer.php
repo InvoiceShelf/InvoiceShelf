@@ -2,6 +2,9 @@
 
 namespace InvoiceShelf\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -61,57 +64,57 @@ class Customer extends Authenticatable implements HasMedia
         }
     }
 
-    public function estimates()
+    public function estimates(): HasMany
     {
         return $this->hasMany(Estimate::class);
     }
 
-    public function expenses()
+    public function expenses(): HasMany
     {
         return $this->hasMany(Expense::class);
     }
 
-    public function invoices()
+    public function invoices(): HasMany
     {
         return $this->hasMany(Invoice::class);
     }
 
-    public function payments()
+    public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
     }
 
-    public function addresses()
+    public function addresses(): HasMany
     {
         return $this->hasMany(Address::class);
     }
 
-    public function recurringInvoices()
+    public function recurringInvoices(): HasMany
     {
         return $this->hasMany(RecurringInvoice::class);
     }
 
-    public function currency()
+    public function currency(): BelongsTo
     {
         return $this->belongsTo(Currency::class);
     }
 
-    public function creator()
+    public function creator(): BelongsTo
     {
         return $this->belongsTo(Customer::class, 'creator_id');
     }
 
-    public function company()
+    public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
     }
 
-    public function billingAddress()
+    public function billingAddress(): HasOne
     {
         return $this->hasOne(Address::class)->where('type', Address::BILLING_TYPE);
     }
 
-    public function shippingAddress()
+    public function shippingAddress(): HasOne
     {
         return $this->hasOne(Address::class)->where('type', Address::SHIPPING_TYPE);
     }

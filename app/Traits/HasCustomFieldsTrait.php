@@ -2,11 +2,12 @@
 
 namespace InvoiceShelf\Traits;
 
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use InvoiceShelf\Models\CustomField;
 
 trait HasCustomFieldsTrait
 {
-    public function fields()
+    public function fields(): MorphMany
     {
         return $this->morphMany(\InvoiceShelf\Models\CustomFieldValue::class, 'custom_field_valuable');
     }

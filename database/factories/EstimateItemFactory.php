@@ -22,7 +22,7 @@ class EstimateItemFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'item_id' => Item::factory(),

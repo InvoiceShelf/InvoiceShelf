@@ -39,7 +39,7 @@ class ResetApp extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         if (! $this->confirmToProceed()) {
             return;

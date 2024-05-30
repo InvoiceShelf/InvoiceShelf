@@ -16,7 +16,7 @@ class EstimatePolicy
      *
      * @return mixed
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
         if (BouncerFacade::can('view-estimate', Estimate::class)) {
             return true;
@@ -30,7 +30,7 @@ class EstimatePolicy
      *
      * @return mixed
      */
-    public function view(User $user, Estimate $estimate)
+    public function view(User $user, Estimate $estimate): bool
     {
         if (BouncerFacade::can('view-estimate', $estimate) && $user->hasCompany($estimate->company_id)) {
             return true;
@@ -44,7 +44,7 @@ class EstimatePolicy
      *
      * @return mixed
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
         if (BouncerFacade::can('create-estimate', Estimate::class)) {
             return true;
@@ -58,7 +58,7 @@ class EstimatePolicy
      *
      * @return mixed
      */
-    public function update(User $user, Estimate $estimate)
+    public function update(User $user, Estimate $estimate): bool
     {
         if (BouncerFacade::can('edit-estimate', $estimate) && $user->hasCompany($estimate->company_id)) {
             return true;
@@ -72,7 +72,7 @@ class EstimatePolicy
      *
      * @return mixed
      */
-    public function delete(User $user, Estimate $estimate)
+    public function delete(User $user, Estimate $estimate): bool
     {
         if (BouncerFacade::can('delete-estimate', $estimate) && $user->hasCompany($estimate->company_id)) {
             return true;
@@ -86,7 +86,7 @@ class EstimatePolicy
      *
      * @return mixed
      */
-    public function restore(User $user, Estimate $estimate)
+    public function restore(User $user, Estimate $estimate): bool
     {
         if (BouncerFacade::can('delete-estimate', $estimate) && $user->hasCompany($estimate->company_id)) {
             return true;
@@ -100,7 +100,7 @@ class EstimatePolicy
      *
      * @return mixed
      */
-    public function forceDelete(User $user, Estimate $estimate)
+    public function forceDelete(User $user, Estimate $estimate): bool
     {
         if (BouncerFacade::can('delete-estimate', $estimate) && $user->hasCompany($estimate->company_id)) {
             return true;

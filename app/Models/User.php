@@ -2,6 +2,10 @@
 
 namespace InvoiceShelf\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -92,72 +96,72 @@ class User extends Authenticatable implements HasMedia
         return Carbon::parse($this->created_at)->format($dateFormat);
     }
 
-    public function estimates()
+    public function estimates(): HasMany
     {
         return $this->hasMany(Estimate::class, 'creator_id');
     }
 
-    public function customers()
+    public function customers(): HasMany
     {
         return $this->hasMany(Customer::class, 'creator_id');
     }
 
-    public function recurringInvoices()
+    public function recurringInvoices(): HasMany
     {
         return $this->hasMany(RecurringInvoice::class, 'creator_id');
     }
 
-    public function currency()
+    public function currency(): BelongsTo
     {
         return $this->belongsTo(Currency::class, 'currency_id');
     }
 
-    public function creator()
+    public function creator(): BelongsTo
     {
         return $this->belongsTo(\InvoiceShelf\Models\User::class, 'creator_id');
     }
 
-    public function companies()
+    public function companies(): BelongsToMany
     {
         return $this->belongsToMany(Company::class, 'user_company', 'user_id', 'company_id');
     }
 
-    public function expenses()
+    public function expenses(): HasMany
     {
         return $this->hasMany(Expense::class, 'creator_id');
     }
 
-    public function payments()
+    public function payments(): HasMany
     {
         return $this->hasMany(Payment::class, 'creator_id');
     }
 
-    public function invoices()
+    public function invoices(): HasMany
     {
         return $this->hasMany(Invoice::class, 'creator_id');
     }
 
-    public function items()
+    public function items(): HasMany
     {
         return $this->hasMany(Item::class, 'creator_id');
     }
 
-    public function settings()
+    public function settings(): HasMany
     {
         return $this->hasMany(UserSetting::class, 'user_id');
     }
 
-    public function addresses()
+    public function addresses(): HasMany
     {
         return $this->hasMany(Address::class);
     }
 
-    public function billingAddress()
+    public function billingAddress(): HasOne
     {
         return $this->hasOne(Address::class)->where('type', Address::BILLING_TYPE);
     }
 
-    public function shippingAddress()
+    public function shippingAddress(): HasOne
     {
         return $this->hasOne(Address::class)->where('type', Address::SHIPPING_TYPE);
     }

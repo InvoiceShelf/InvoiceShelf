@@ -22,7 +22,7 @@ class EmailLogFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'from' => $this->faker->unique()->safeEmail(),

@@ -15,7 +15,7 @@ class DemoSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $user = User::whereIs('super admin')->first();
 

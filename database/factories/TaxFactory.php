@@ -22,7 +22,7 @@ class TaxFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'tax_type_id' => TaxType::factory(),

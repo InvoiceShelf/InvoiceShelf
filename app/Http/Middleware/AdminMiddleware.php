@@ -2,6 +2,8 @@
 
 namespace InvoiceShelf\Http\Middleware;
 
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Request;
 use Auth;
 use Closure;
 
@@ -14,7 +16,7 @@ class AdminMiddleware
      * @param  null  $guard
      * @return mixed
      */
-    public function handle($request, Closure $next, $guard = null)
+    public function handle(Request $request, Closure $next, $guard = null): Response
     {
         if (Auth::guard($guard)->guest() || ! Auth::user()->isSuperAdminOrAdmin()) {
             if ($request->ajax() || $request->wantsJson()) {

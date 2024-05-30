@@ -35,7 +35,7 @@ class GenerateInvoicePdfJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $this->invoice->generatePDF('invoice', $this->invoice->invoice_number, $this->deleteExistingFile);
 

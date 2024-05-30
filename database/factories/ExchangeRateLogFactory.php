@@ -21,7 +21,7 @@ class ExchangeRateLogFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'company_id' => Currency::find(1)->id,

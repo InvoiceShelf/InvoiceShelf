@@ -16,7 +16,7 @@ class RecurringInvoicePolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
         if (BouncerFacade::can('view-recurring-invoice', RecurringInvoice::class)) {
             return true;
@@ -30,7 +30,7 @@ class RecurringInvoicePolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, RecurringInvoice $recurringInvoice)
+    public function view(User $user, RecurringInvoice $recurringInvoice): bool
     {
         if (BouncerFacade::can('view-recurring-invoice', $recurringInvoice) && $user->hasCompany($recurringInvoice->company_id)) {
             return true;
@@ -44,7 +44,7 @@ class RecurringInvoicePolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
         if (BouncerFacade::can('create-recurring-invoice', RecurringInvoice::class)) {
             return true;
@@ -58,7 +58,7 @@ class RecurringInvoicePolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, RecurringInvoice $recurringInvoice)
+    public function update(User $user, RecurringInvoice $recurringInvoice): bool
     {
         if (BouncerFacade::can('edit-recurring-invoice', $recurringInvoice) && $user->hasCompany($recurringInvoice->company_id)) {
             return true;
@@ -72,7 +72,7 @@ class RecurringInvoicePolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, RecurringInvoice $recurringInvoice)
+    public function delete(User $user, RecurringInvoice $recurringInvoice): bool
     {
         if (BouncerFacade::can('delete-recurring-invoice', $recurringInvoice) && $user->hasCompany($recurringInvoice->company_id)) {
             return true;
@@ -86,7 +86,7 @@ class RecurringInvoicePolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, RecurringInvoice $recurringInvoice)
+    public function restore(User $user, RecurringInvoice $recurringInvoice): bool
     {
         if (BouncerFacade::can('delete-recurring-invoice', $recurringInvoice) && $user->hasCompany($recurringInvoice->company_id)) {
             return true;
@@ -100,7 +100,7 @@ class RecurringInvoicePolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, RecurringInvoice $recurringInvoice)
+    public function forceDelete(User $user, RecurringInvoice $recurringInvoice): bool
     {
         if (BouncerFacade::can('delete-recurring-invoice', $recurringInvoice) && $user->hasCompany($recurringInvoice->company_id)) {
             return true;

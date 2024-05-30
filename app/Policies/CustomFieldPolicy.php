@@ -16,7 +16,7 @@ class CustomFieldPolicy
      *
      * @return mixed
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
         if (BouncerFacade::can('view-custom-field', CustomField::class)) {
             return true;
@@ -30,7 +30,7 @@ class CustomFieldPolicy
      *
      * @return mixed
      */
-    public function view(User $user, CustomField $customField)
+    public function view(User $user, CustomField $customField): bool
     {
         if (BouncerFacade::can('view-custom-field', $customField) && $user->hasCompany($customField->company_id)) {
             return true;
@@ -44,7 +44,7 @@ class CustomFieldPolicy
      *
      * @return mixed
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
         if (BouncerFacade::can('create-custom-field', CustomField::class)) {
             return true;
@@ -58,7 +58,7 @@ class CustomFieldPolicy
      *
      * @return mixed
      */
-    public function update(User $user, CustomField $customField)
+    public function update(User $user, CustomField $customField): bool
     {
         if (BouncerFacade::can('edit-custom-field', $customField) && $user->hasCompany($customField->company_id)) {
             return true;
@@ -72,7 +72,7 @@ class CustomFieldPolicy
      *
      * @return mixed
      */
-    public function delete(User $user, CustomField $customField)
+    public function delete(User $user, CustomField $customField): bool
     {
         if (BouncerFacade::can('delete-custom-field', $customField) && $user->hasCompany($customField->company_id)) {
             return true;
@@ -86,7 +86,7 @@ class CustomFieldPolicy
      *
      * @return mixed
      */
-    public function restore(User $user, CustomField $customField)
+    public function restore(User $user, CustomField $customField): bool
     {
         if (BouncerFacade::can('delete-custom-field', $customField) && $user->hasCompany($customField->company_id)) {
             return true;
@@ -100,7 +100,7 @@ class CustomFieldPolicy
      *
      * @return mixed
      */
-    public function forceDelete(User $user, CustomField $customField)
+    public function forceDelete(User $user, CustomField $customField): bool
     {
         if (BouncerFacade::can('delete-custom-field', $customField) && $user->hasCompany($customField->company_id)) {
             return true;

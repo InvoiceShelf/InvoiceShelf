@@ -11,7 +11,7 @@ class DashboardPolicy
 {
     use HandlesAuthorization;
 
-    public function view(User $user, Company $company)
+    public function view(User $user, Company $company): bool
     {
         if (BouncerFacade::can('dashboard') && $user->hasCompany($company->id)) {
             return true;

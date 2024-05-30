@@ -21,7 +21,7 @@ class RecurringInvoiceFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'starts_at' => $this->faker->iso8601(),
