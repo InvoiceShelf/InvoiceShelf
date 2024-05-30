@@ -40,8 +40,8 @@ return [
     */
 
     'middleware' => [
-        'verify_csrf_token' => InvoiceShelf\Http\Middleware\VerifyCsrfToken::class,
-        'encrypt_cookies' => InvoiceShelf\Http\Middleware\EncryptCookies::class,
+        'validate_csrf_token' => Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class,
+        'encrypt_cookies' => Illuminate\Cookie\Middleware\EncryptCookies::class,
     ],
 
 ];
