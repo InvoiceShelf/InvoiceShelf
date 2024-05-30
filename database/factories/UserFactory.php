@@ -24,13 +24,13 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->name,
-            'company_name' => $this->faker->company,
-            'contact_name' => $this->faker->name,
-            'website' => $this->faker->url,
+            'name' => $this->faker->name(),
+            'company_name' => $this->faker->company(),
+            'contact_name' => $this->faker->name(),
+            'website' => $this->faker->url(),
             'enable_portal' => true,
-            'email' => $this->faker->unique()->safeEmail,
-            'phone' => $this->faker->phoneNumber,
+            'email' => $this->faker->unique()->safeEmail(),
+            'phone' => $this->faker->phoneNumber(),
             'role' => 'super admin',
             'password' => Hash::make('secret'),
             'currency_id' => Currency::first()->id,

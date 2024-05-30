@@ -22,7 +22,7 @@ class ExchangeRateProviderFactory extends Factory
     public function definition()
     {
         return [
-            'driver' => $this->faker->word,
+            'driver' => $this->faker->word(),
             'key' => str_random(10),
             'active' => $this->faker->randomElement([true, false]),
         ];

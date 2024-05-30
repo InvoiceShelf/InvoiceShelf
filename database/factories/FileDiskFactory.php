@@ -22,7 +22,7 @@ class FileDiskFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->word,
+            'name' => $this->faker->word(),
             'driver' => 'local',
             'set_as_default' => false,
             'credentials' => [

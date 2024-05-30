@@ -24,8 +24,8 @@ class NoteFactory extends Factory
     {
         return [
             'type' => $this->faker->randomElement(['Invoice', 'Estimate', 'Payment']),
-            'name' => $this->faker->word,
-            'notes' => $this->faker->text,
+            'name' => $this->faker->word(),
+            'notes' => $this->faker->text(),
             'company_id' => User::find(1)->companies()->first()->id,
         ];
     }

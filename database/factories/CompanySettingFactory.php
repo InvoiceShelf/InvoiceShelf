@@ -23,8 +23,8 @@ class CompanySettingFactory extends Factory
     public function definition()
     {
         return [
-            'option' => $this->faker->word,
-            'value' => $this->faker->word,
+            'option' => $this->faker->word(),
+            'value' => $this->faker->word(),
             'company_id' => User::find(1)->companies()->first()->id,
         ];
     }

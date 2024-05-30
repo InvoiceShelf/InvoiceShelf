@@ -35,14 +35,14 @@ class PaymentFactory extends Factory
             'company_id' => User::find(1)->companies()->first()->id,
             'payment_date' => $this->faker->date('Y-m-d', 'now'),
             'notes' => $this->faker->text(80),
-            'amount' => $this->faker->randomDigitNotNull,
+            'amount' => $this->faker->randomDigitNotNull(),
             'sequence_number' => $sequenceNumber->nextSequenceNumber,
             'customer_sequence_number' => $sequenceNumber->nextCustomerSequenceNumber,
             'payment_number' => $sequenceNumber->getNextNumber(),
             'unique_hash' => str_random(60),
             'payment_method_id' => PaymentMethod::find(1)->id,
             'customer_id' => Customer::factory(),
-            'base_amount' => $this->faker->randomDigitNotNull,
+            'base_amount' => $this->faker->randomDigitNotNull(),
             'currency_id' => Currency::find(1)->id,
         ];
     }

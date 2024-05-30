@@ -33,9 +33,9 @@ class TaxFactory extends Factory
                 return TaxType::find($item['tax_type_id'])->name;
             },
             'company_id' => User::find(1)->companies()->first()->id,
-            'amount' => $this->faker->randomDigitNotNull,
-            'compound_tax' => $this->faker->randomDigitNotNull,
-            'base_amount' => $this->faker->randomDigitNotNull,
+            'amount' => $this->faker->randomDigitNotNull(),
+            'compound_tax' => $this->faker->randomDigitNotNull(),
+            'base_amount' => $this->faker->randomDigitNotNull(),
             'currency_id' => Currency::where('name', 'US Dollar')->first()->id,
         ];
     }

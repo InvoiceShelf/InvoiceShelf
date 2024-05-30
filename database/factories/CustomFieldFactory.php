@@ -23,9 +23,9 @@ class CustomFieldFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->name,
-            'label' => $this->faker->name,
-            'order' => $this->faker->randomDigitNotNull,
+            'name' => $this->faker->name(),
+            'label' => $this->faker->name(),
+            'order' => $this->faker->randomDigitNotNull(),
             'is_required' => $this->faker->randomElement([true, false]),
             'model_type' => $this->faker->randomElement(['Customer', 'Invoice', 'Estimate', 'Expense', 'Payment']),
             'slug' => function (array $item) {

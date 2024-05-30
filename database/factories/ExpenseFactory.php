@@ -29,12 +29,12 @@ class ExpenseFactory extends Factory
             'expense_date' => $this->faker->date('Y-m-d', 'now'),
             'expense_category_id' => ExpenseCategory::factory(),
             'company_id' => User::find(1)->companies()->first()->id,
-            'amount' => $this->faker->randomDigitNotNull,
-            'notes' => $this->faker->text,
+            'amount' => $this->faker->randomDigitNotNull(),
+            'notes' => $this->faker->text(),
             'attachment_receipt' => null,
             'customer_id' => Customer::factory(),
-            'exchange_rate' => $this->faker->randomDigitNotNull,
-            'base_amount' => $this->faker->randomDigitNotNull,
+            'exchange_rate' => $this->faker->randomDigitNotNull(),
+            'base_amount' => $this->faker->randomDigitNotNull(),
             'currency_id' => Currency::find(1)->id,
         ];
     }

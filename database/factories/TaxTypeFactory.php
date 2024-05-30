@@ -23,10 +23,10 @@ class TaxTypeFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->word,
+            'name' => $this->faker->word(),
             'company_id' => User::find(1)->companies()->first()->id,
             'percent' => $this->faker->numberBetween($min = 0, $max = 100),
-            'description' => $this->faker->text,
+            'description' => $this->faker->text(),
             'compound_tax' => 0,
             'collective_tax' => 0,
         ];

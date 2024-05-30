@@ -23,9 +23,9 @@ class ExpenseCategoryFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->word,
+            'name' => $this->faker->word(),
             'company_id' => User::find(1)->companies()->first()->id,
-            'description' => $this->faker->text,
+            'description' => $this->faker->text(),
         ];
     }
 }

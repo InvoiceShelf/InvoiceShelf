@@ -98,16 +98,16 @@ class InvoiceFactory extends Factory
             'discount_per_item' => 'NO',
             'paid_status' => Invoice::STATUS_UNPAID,
             'company_id' => User::find(1)->companies()->first()->id,
-            'sub_total' => $this->faker->randomDigitNotNull,
-            'total' => $this->faker->randomDigitNotNull,
+            'sub_total' => $this->faker->randomDigitNotNull(),
+            'total' => $this->faker->randomDigitNotNull(),
             'discount_type' => $this->faker->randomElement(['percentage', 'fixed']),
             'discount_val' => function (array $invoice) {
-                return $invoice['discount_type'] == 'percentage' ? $this->faker->numberBetween($min = 0, $max = 100) : $this->faker->randomDigitNotNull;
+                return $invoice['discount_type'] == 'percentage' ? $this->faker->numberBetween($min = 0, $max = 100) : $this->faker->randomDigitNotNull();
             },
             'discount' => function (array $invoice) {
                 return $invoice['discount_type'] == 'percentage' ? (($invoice['discount_val'] * $invoice['total']) / 100) : $invoice['discount_val'];
             },
-            'tax' => $this->faker->randomDigitNotNull,
+            'tax' => $this->faker->randomDigitNotNull(),
             'due_amount' => function (array $invoice) {
                 return $invoice['total'];
             },
@@ -115,12 +115,12 @@ class InvoiceFactory extends Factory
             'unique_hash' => str_random(60),
             'customer_id' => Customer::factory(),
             'recurring_invoice_id' => RecurringInvoice::factory(),
-            'exchange_rate' => $this->faker->randomDigitNotNull,
-            'base_discount_val' => $this->faker->randomDigitNotNull,
-            'base_sub_total' => $this->faker->randomDigitNotNull,
-            'base_total' => $this->faker->randomDigitNotNull,
-            'base_tax' => $this->faker->randomDigitNotNull,
-            'base_due_amount' => $this->faker->randomDigitNotNull,
+            'exchange_rate' => $this->faker->randomDigitNotNull(),
+            'base_discount_val' => $this->faker->randomDigitNotNull(),
+            'base_sub_total' => $this->faker->randomDigitNotNull(),
+            'base_total' => $this->faker->randomDigitNotNull(),
+            'base_tax' => $this->faker->randomDigitNotNull(),
+            'base_due_amount' => $this->faker->randomDigitNotNull(),
             'currency_id' => Currency::find(1)->id,
         ];
     }

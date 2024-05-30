@@ -24,9 +24,9 @@ class CustomFieldValueFactory extends Factory
     public function definition()
     {
         return [
-            'custom_field_valuable_type' => $this->faker->name,
+            'custom_field_valuable_type' => $this->faker->name(),
             'custom_field_valuable_id' => 1,
-            'type' => $this->faker->name,
+            'type' => $this->faker->name(),
             'custom_field_id' => CustomField::factory(),
             'company_id' => User::find(1)->companies()->first()->id,
         ];

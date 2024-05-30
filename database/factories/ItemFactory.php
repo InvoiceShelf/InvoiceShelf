@@ -25,10 +25,10 @@ class ItemFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->name,
-            'description' => $this->faker->text,
+            'name' => $this->faker->name(),
+            'description' => $this->faker->text(),
             'company_id' => User::find(1)->companies()->first()->id,
-            'price' => $this->faker->randomDigitNotNull,
+            'price' => $this->faker->randomDigitNotNull(),
             'unit_id' => Unit::factory(),
             'creator_id' => User::where('role', 'super admin')->first()->company_id,
             'currency_id' => Currency::find(1)->id,

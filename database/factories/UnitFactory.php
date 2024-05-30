@@ -23,7 +23,7 @@ class UnitFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->name,
+            'name' => $this->faker->name(),
             'company_id' => User::find(1)->companies()->first()->id,
         ];
     }
