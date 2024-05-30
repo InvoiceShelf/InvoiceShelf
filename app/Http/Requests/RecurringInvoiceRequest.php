@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Models\CompanySetting;
 use App\Models\Customer;
 use App\Models\RecurringInvoice;
+use Illuminate\Foundation\Http\FormRequest;
 
 class RecurringInvoiceRequest extends FormRequest
 {

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\V1\Admin\Payment;
 
-use Illuminate\Http\Request;
-use Illuminate\Mail\Markdown;
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
+use Illuminate\Http\Request;
+use Illuminate\Mail\Markdown;
 
 class SendPaymentPreviewController extends Controller
 {

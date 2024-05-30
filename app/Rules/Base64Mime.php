@@ -2,9 +2,10 @@
 
 namespace App\Rules;
 
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class Base64Mime implements Rule
+class Base64Mime implements ValidationRule
 {
     private $attribute;
 
@@ -20,40 +21,34 @@ class Base64Mime implements Rule
         $this->extensions = $extensions;
     }
 
-    /**
-     * Determine if the validation rule passes.
-     *
-     * @param  string  $attribute
-     * @param  mixed  $value
-     * @return bool
-     */
-    public function passes($attribute, $value)
+    public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         $this->attribute = $attribute;
+        $failed = false;
 
         try {
             $decoded = json_decode(trim($value));
             $name = ! empty($decoded->name) ? $decoded->name : '';
             $data = ! empty($decoded->data) ? $decoded->data : '';
         } catch (\Exception $e) {
-            return false;
+            $failed = true;
         }
 
         $extension = pathinfo($name, PATHINFO_EXTENSION);
         if (! in_array($extension, $this->extensions)) {
-            return false;
+            $failed = true;
         }
 
         $pattern = '/^data:\w+\/[\w\+]+;base64,[\w\+\=\/]+$/';
 
         if (! preg_match($pattern, $data)) {
-            return false;
+            $failed = true;
         }
 
         $data = explode(',', $data);
 
         if (! isset($data[1]) || empty($data[1])) {
-            return false;
+            $failed = true;
         }
 
         try {
@@ -62,34 +57,26 @@ class Base64Mime implements Rule
             $result = finfo_buffer($f, $data, FILEINFO_EXTENSION);
 
             if ($result === '???') {
-                return false;
+                $failed = true;
             }
 
             if (strpos($result, '/')) {
                 foreach (explode('/', $result) as $ext) {
                     if (in_array($ext, $this->extensions)) {
-                        return true;
+                        $failed = false;
                     }
                 }
             } else {
                 if (in_array($result, $this->extensions)) {
-                    return true;
+                    $failed = false;
                 }
             }
         } catch (\Exception $e) {
-            return false;
+            $failed = true;
         }
 
-        return false;
-    }
-
-    /**
-     * Get the validation error message.
-     *
-     * @return string
-     */
-    public function message()
-    {
-        return 'The '.$this->attribute.' must be a json with file of type: '.implode(', ', $this->extensions).' encoded in base64.';
+        if ($failed) {
+            $fail('The '.$this->attribute.' must be a json with file of type: '.implode(', ', $this->extensions).' encoded in base64.');
+        }
     }
 }

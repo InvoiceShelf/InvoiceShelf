@@ -2,10 +2,11 @@
 
 namespace App\Rules\Backup;
 
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Str;
 
-class PathToZip implements Rule
+class PathToZip implements ValidationRule
 {
     /**
      * Create a new rule instance.
@@ -14,28 +15,16 @@ class PathToZip implements Rule
      */
     public function __construct()
     {
-        //
+        // Initialization, if needed
     }
 
     /**
-     * Determine if the validation rule passes.
-     *
-     * @param  string  $attribute
-     * @param  mixed  $value
-     * @return bool
+     * Run the validation rule.
      */
-    public function passes($attribute, $value)
+    public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        return Str::endsWith($value, '.zip');
-    }
-
-    /**
-     * Get the validation error message.
-     *
-     * @return string
-     */
-    public function message()
-    {
-        return 'The given value must be a path to a zip file.';
+        if (! Str::endsWith($value, '.zip')) {
+            $fail('The given value must be a path to a zip file.');
+        }
     }
 }

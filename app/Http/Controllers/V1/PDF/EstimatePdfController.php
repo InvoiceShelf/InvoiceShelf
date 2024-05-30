@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\V1\PDF;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Estimate;
+use Illuminate\Http\Request;
 
 class EstimatePdfController extends Controller
 {

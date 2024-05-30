@@ -2,11 +2,11 @@
 
 namespace App\Mail;
 
+use App\Models\EmailLog;
+use App\Models\Invoice;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use App\Models\EmailLog;
-use App\Models\Invoice;
 use Vinkla\Hashids\Facades\Hashids;
 
 class SendInvoiceMail extends Mailable

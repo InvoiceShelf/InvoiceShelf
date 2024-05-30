@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\V1\Installation;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use App\Space\InstallUtils;
+use Illuminate\Http\Request;
 
 class OnboardingWizardController extends Controller
 {

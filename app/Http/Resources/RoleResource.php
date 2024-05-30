@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources;
 
+use App\Models\CompanySetting;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Models\CompanySetting;
 
 class RoleResource extends JsonResource
 {

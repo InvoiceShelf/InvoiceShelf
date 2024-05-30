@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\V1\Customer\General;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Customer\CustomerProfileRequest;
 use App\Http\Resources\Customer\CustomerResource;
 use App\Models\Company;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {

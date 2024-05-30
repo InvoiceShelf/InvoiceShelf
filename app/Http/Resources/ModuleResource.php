@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Resources\Json\JsonResource;
 use App\Models\Module as ModelsModule;
 use App\Models\Setting;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Nwidart\Modules\Facades\Module;
 
 class ModuleResource extends JsonResource

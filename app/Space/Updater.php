@@ -2,10 +2,10 @@
 
 namespace App\Space;
 
+use App\Events\UpdateFinished;
 use Artisan;
 use File;
 use GuzzleHttp\Exception\RequestException;
-use App\Events\UpdateFinished;
 use ZipArchive;
 
 // Implementation taken from Akaunting - https://github.com/akaunting/akaunting

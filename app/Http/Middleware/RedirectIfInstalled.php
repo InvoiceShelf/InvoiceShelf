@@ -2,10 +2,10 @@
 
 namespace App\Http\Middleware;
 
-use Closure;
-use Illuminate\Http\Request;
 use App\Models\Setting;
 use App\Space\InstallUtils;
+use Closure;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class RedirectIfInstalled

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\V1\Admin\Role;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class AbilitiesController extends Controller
 {

@@ -2,10 +2,10 @@
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use App\Models\Expense;
 use App\Models\ExpenseCategory;
 use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 use Silber\Bouncer\BouncerFacade;
 
 class ExpenseCategoryPolicy

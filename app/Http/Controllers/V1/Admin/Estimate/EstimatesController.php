@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\V1\Admin\Estimate;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DeleteEstimatesRequest;
 use App\Http\Requests\EstimatesRequest;
 use App\Http\Resources\EstimateResource;
 use App\Jobs\GenerateEstimatePdfJob;
 use App\Models\Estimate;
+use Illuminate\Http\Request;
 
 class EstimatesController extends Controller
 {

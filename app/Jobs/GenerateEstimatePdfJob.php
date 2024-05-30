@@ -33,7 +33,7 @@ class GenerateEstimatePdfJob implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle(): int
     {
         $this->estimate->generatePDF('estimate', $this->estimate->estimate_number, $this->deleteExistingFile);
 

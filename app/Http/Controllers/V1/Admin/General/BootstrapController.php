@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\V1\Admin\General;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CompanyResource;
 use App\Http\Resources\UserResource;
@@ -12,6 +11,7 @@ use App\Models\Currency;
 use App\Models\Module;
 use App\Models\Setting;
 use App\Traits\GeneratesMenuTrait;
+use Illuminate\Http\Request;
 use Silber\Bouncer\BouncerFacade;
 
 class BootstrapController extends Controller

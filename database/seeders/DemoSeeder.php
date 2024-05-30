@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Address;
 use App\Models\Setting;
 use App\Models\User;
 use App\Space\InstallUtils;
+use Illuminate\Database\Seeder;
 
 class DemoSeeder extends Seeder
 {

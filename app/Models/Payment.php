@@ -2,17 +2,17 @@
 
 namespace App\Models;
 
+use App\Jobs\GeneratePaymentPdfJob;
+use App\Mail\SendPaymentMail;
+use App\Services\SerialNumberFormatter;
+use App\Traits\GeneratesPdfTrait;
+use App\Traits\HasCustomFieldsTrait;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use App\Jobs\GeneratePaymentPdfJob;
-use App\Mail\SendPaymentMail;
-use App\Services\SerialNumberFormatter;
-use App\Traits\GeneratesPdfTrait;
-use App\Traits\HasCustomFieldsTrait;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Vinkla\Hashids\Facades\Hashids;

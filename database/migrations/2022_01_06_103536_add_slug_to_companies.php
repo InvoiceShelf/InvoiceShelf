@@ -1,8 +1,8 @@
 <?php
 
+use App\Models\Company;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Str;
-use App\Models\Company;
 
 return new class extends Migration
 {

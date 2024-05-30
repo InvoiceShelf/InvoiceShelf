@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Address;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
-use App\Models\Address;
 
 class CustomerRequest extends FormRequest
 {

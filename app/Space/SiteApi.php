@@ -2,9 +2,9 @@
 
 namespace App\Space;
 
+use App\Models\Setting;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use App\Models\Setting;
 
 // Implementation taken from Akaunting - https://github.com/akaunting/akaunting
 trait SiteApi

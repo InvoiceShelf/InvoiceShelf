@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\V1\Admin\General;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\NotesRequest;
 use App\Http\Resources\NoteResource;
 use App\Models\Note;
+use Illuminate\Http\Request;
 
 class NotesController extends Controller
 {

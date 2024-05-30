@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\V1\Admin\Item;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use App\Http\Requests\DeleteItemsRequest;
 use App\Http\Resources\ItemResource;
 use App\Models\Item;
 use App\Models\TaxType;
+use Illuminate\Http\Request;
 
 class ItemsController extends Controller
 {

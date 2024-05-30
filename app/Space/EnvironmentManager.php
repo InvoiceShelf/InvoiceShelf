@@ -2,12 +2,12 @@
 
 namespace App\Space;
 
-use Exception;
-use Illuminate\Support\Facades\DB;
 use App\Http\Requests\DatabaseEnvironmentRequest;
 use App\Http\Requests\DiskEnvironmentRequest;
 use App\Http\Requests\DomainEnvironmentRequest;
 use App\Http\Requests\MailEnvironmentRequest;
+use Exception;
+use Illuminate\Support\Facades\DB;
 
 class EnvironmentManager
 {

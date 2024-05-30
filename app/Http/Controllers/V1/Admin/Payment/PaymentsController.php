@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\V1\Admin\Payment;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DeletePaymentsRequest;
 use App\Http\Requests\PaymentRequest;
 use App\Http\Resources\PaymentResource;
 use App\Models\Payment;
+use Illuminate\Http\Request;
 
 class PaymentsController extends Controller
 {

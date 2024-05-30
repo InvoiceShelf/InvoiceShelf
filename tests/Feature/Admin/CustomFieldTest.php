@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\V1\Admin\CustomField\CustomFieldsController;
 use App\Http\Requests\CustomFieldRequest;
 use App\Models\CustomField;
 use App\Models\User;
+use Illuminate\Support\Facades\Artisan;
 use Laravel\Sanctum\Sanctum;
 
 use function Pest\Laravel\deleteJson;

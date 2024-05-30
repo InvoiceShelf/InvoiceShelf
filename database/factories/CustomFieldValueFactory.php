@@ -2,10 +2,10 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\CustomField;
 use App\Models\CustomFieldValue;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CustomFieldValueFactory extends Factory
 {

@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\V1\Admin\Settings;
 
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DiskEnvironmentRequest;
 use App\Http\Resources\FileDiskResource;
 use App\Models\FileDisk;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class DiskController extends Controller
 {

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\V1\Admin\Settings;
 
-use Illuminate\Support\Arr;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateSettingsRequest;
 use App\Models\Company;
 use App\Models\CompanySetting;
+use Illuminate\Support\Arr;
 
 class UpdateCompanySettingsController extends Controller
 {

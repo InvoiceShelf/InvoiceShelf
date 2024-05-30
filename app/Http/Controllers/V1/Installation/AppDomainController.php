@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\V1\Installation;
 
-use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DomainEnvironmentRequest;
 use App\Space\EnvironmentManager;
+use Illuminate\Support\Facades\Artisan;
 
 class AppDomainController extends Controller
 {

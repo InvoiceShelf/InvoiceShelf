@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\V1\Admin\Payment\PaymentMethodsController;
 use App\Http\Requests\PaymentMethodRequest;
 use App\Models\PaymentMethod;
 use App\Models\User;
+use Illuminate\Support\Facades\Artisan;
 use Laravel\Sanctum\Sanctum;
 
 use function Pest\Laravel\deleteJson;

@@ -2,14 +2,14 @@
 
 namespace App\Space;
 
-use Artisan;
-use File;
-use GuzzleHttp\Exception\RequestException;
 use App\Events\ModuleEnabledEvent;
 use App\Events\ModuleInstalledEvent;
 use App\Http\Resources\ModuleResource;
 use App\Models\Module as ModelsModule;
 use App\Models\Setting;
+use Artisan;
+use File;
+use GuzzleHttp\Exception\RequestException;
 use Nwidart\Modules\Facades\Module;
 use ZipArchive;
 

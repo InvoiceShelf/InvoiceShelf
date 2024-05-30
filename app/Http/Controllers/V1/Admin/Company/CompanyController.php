@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\V1\Admin\Company;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CompanyResource;
 use App\Models\Company;
+use Illuminate\Http\Request;
 
 class CompanyController extends Controller
 {

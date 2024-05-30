@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\V1\Admin\Auth;
 
+use App\Http\Controllers\Controller;
+use App\Providers\AppServiceProvider;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use App\Http\Controllers\Controller;
-use App\Providers\AppServiceProvider;
 
 class ResetPasswordController extends Controller
 {

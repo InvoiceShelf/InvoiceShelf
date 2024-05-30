@@ -3,6 +3,10 @@
 namespace App\Models;
 
 use App;
+use App\Mail\SendInvoiceMail;
+use App\Services\SerialNumberFormatter;
+use App\Traits\GeneratesPdfTrait;
+use App\Traits\HasCustomFieldsTrait;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,10 +17,6 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\Str;
-use App\Mail\SendInvoiceMail;
-use App\Services\SerialNumberFormatter;
-use App\Traits\GeneratesPdfTrait;
-use App\Traits\HasCustomFieldsTrait;
 use Nwidart\Modules\Facades\Module;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;

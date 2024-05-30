@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\V1\Admin\Settings;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GetSettingRequest;
 use App\Models\Setting;
+use Illuminate\Http\Request;
 
 class GetSettingsController extends Controller
 {

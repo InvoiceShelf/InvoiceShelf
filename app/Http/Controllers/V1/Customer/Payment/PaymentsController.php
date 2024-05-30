@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\V1\Customer\Payment;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Customer\PaymentResource;
 use App\Models\Company;
 use App\Models\Payment;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PaymentsController extends Controller
 {

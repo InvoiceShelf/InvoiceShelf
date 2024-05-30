@@ -2,8 +2,8 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Resources\Json\JsonResource;
 use App\Models\CompanySetting;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class CustomFieldValueResource extends JsonResource
 {

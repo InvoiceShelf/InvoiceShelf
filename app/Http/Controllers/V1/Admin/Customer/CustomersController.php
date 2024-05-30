@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\V1\Admin\Customer;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use App\Http\Requests\DeleteCustomersRequest;
 use App\Http\Resources\CustomerResource;
 use App\Models\Customer;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CustomersController extends Controller
 {

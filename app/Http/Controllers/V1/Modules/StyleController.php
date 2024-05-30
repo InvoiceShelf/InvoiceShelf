@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\V1\Modules;
 
-use DateTime;
-use Illuminate\Support\Arr;
 use App\Http\Controllers\Controller;
 use App\Services\Module\ModuleFacade;
+use DateTime;
+use Illuminate\Support\Arr;
 use Request;
 
 class StyleController extends Controller

@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\V1\Installation;
 
-use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Space\FilePermissionChecker;
+use Illuminate\Http\JsonResponse;
 
 class FilePermissionsController extends Controller
 {

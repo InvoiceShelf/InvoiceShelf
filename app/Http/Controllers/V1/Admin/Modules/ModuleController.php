@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\V1\Admin\Modules;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ModuleResource;
 use App\Space\ModuleInstaller;
+use Illuminate\Http\Request;
 
 class ModuleController extends Controller
 {

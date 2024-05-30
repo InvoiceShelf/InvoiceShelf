@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\V1\Admin\Invoice;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use App\Http\Requests\DeleteInvoiceRequest;
 use App\Http\Resources\InvoiceResource;
 use App\Jobs\GenerateInvoicePdfJob;
 use App\Models\Invoice;
+use Illuminate\Http\Request;
 
 class InvoicesController extends Controller
 {

@@ -33,7 +33,7 @@ class GeneratePaymentPdfJob implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle(): int
     {
         $this->payment->generatePDF('payment', $this->payment->payment_number, $this->deleteExistingFile);
 

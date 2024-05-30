@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\V1\Admin\General;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\User;
+use Illuminate\Http\Request;
 
 class SearchController extends Controller
 {

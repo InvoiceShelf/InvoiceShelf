@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\V1\Admin\General;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Currency;
 use App\Models\Estimate;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\Tax;
+use Illuminate\Http\Request;
 
 class GetAllUsedCurrenciesController extends Controller
 {

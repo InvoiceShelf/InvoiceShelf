@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\V1\Admin\ExchangeRate;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use App\Http\Controllers\Controller;
 use App\Models\CompanySetting;
 use App\Models\Currency;
 use App\Models\ExchangeRateLog;
 use App\Models\ExchangeRateProvider;
 use App\Traits\ExchangeRateProvidersTrait;
+use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class GetExchangeRateController extends Controller
 {

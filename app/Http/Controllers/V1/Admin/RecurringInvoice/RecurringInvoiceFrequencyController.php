@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\V1\Admin\RecurringInvoice;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\RecurringInvoice;
+use Illuminate\Http\Request;
 
 class RecurringInvoiceFrequencyController extends Controller
 {

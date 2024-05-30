@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\V1\Customer;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PaymentResource;
 use App\Models\EmailLog;
 use App\Models\Payment;
+use Illuminate\Http\Request;
 
 class PaymentPdfController extends Controller
 {

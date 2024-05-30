@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\V1\Customer;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\EstimateResource;
 use App\Mail\EstimateViewedMail;
@@ -10,6 +9,7 @@ use App\Models\CompanySetting;
 use App\Models\Customer;
 use App\Models\EmailLog;
 use App\Models\Estimate;
+use Illuminate\Http\Request;
 
 class EstimatePdfController extends Controller
 {

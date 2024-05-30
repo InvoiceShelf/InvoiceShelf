@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\V1\Admin\ExchangeRate;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ExchangeRateProviderRequest;
 use App\Http\Resources\ExchangeRateProviderResource;
 use App\Models\ExchangeRateProvider;
+use Illuminate\Http\Request;
 
 class ExchangeRateProviderController extends Controller
 {

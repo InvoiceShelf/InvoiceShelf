@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\V1\Admin\CustomField;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CustomFieldRequest;
 use App\Http\Resources\CustomFieldResource;
 use App\Models\CustomField;
+use Illuminate\Http\Request;
 
 class CustomFieldsController extends Controller
 {

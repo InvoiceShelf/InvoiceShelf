@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\V1\Customer\Estimate;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Customer\EstimateResource;
 use App\Models\Company;
 use App\Models\Estimate;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AcceptEstimateController extends Controller
 {

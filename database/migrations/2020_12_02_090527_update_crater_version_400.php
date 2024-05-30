@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
 use App\Models\Address;
 use App\Models\CompanySetting;
 use App\Models\Estimate;
@@ -11,6 +10,7 @@ use App\Models\Item;
 use App\Models\Payment;
 use App\Models\Setting;
 use App\Models\User;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {

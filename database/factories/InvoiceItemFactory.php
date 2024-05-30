@@ -2,11 +2,11 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\InvoiceItem;
 use App\Models\Item;
 use App\Models\RecurringInvoice;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class InvoiceItemFactory extends Factory
 {

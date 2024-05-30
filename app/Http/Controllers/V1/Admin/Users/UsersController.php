@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\V1\Admin\Users;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DeleteUserRequest;
 use App\Http\Requests\UserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Illuminate\Http\Request;
 
 class UsersController extends Controller
 {

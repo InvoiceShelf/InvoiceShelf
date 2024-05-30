@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\V1\Admin\Auth;
 
-use Illuminate\Foundation\Auth\ConfirmsPasswords;
 use App\Http\Controllers\Controller;
 use App\Providers\AppServiceProvider;
+use Illuminate\Foundation\Auth\ConfirmsPasswords;
 
 class ConfirmPasswordController extends Controller
 {

@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\Customer;
 
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\V1\Customer\General\ProfileController;
 use App\Http\Requests\Customer\CustomerProfileRequest;
 use App\Models\Customer;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\Sanctum;
 
 use function Pest\Laravel\getJson;

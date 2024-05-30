@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\Setting;
 use App\Space\Updater;
+use Illuminate\Console\Command;
 
 // Implementation taken from Akaunting - https://github.com/akaunting/akaunting
 class UpdateCommand extends Command

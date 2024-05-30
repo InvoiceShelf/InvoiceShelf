@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\V1\Admin\Settings;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TaxTypeRequest;
 use App\Http\Resources\TaxTypeResource;
 use App\Models\TaxType;
+use Illuminate\Http\Request;
 
 class TaxTypesController extends Controller
 {

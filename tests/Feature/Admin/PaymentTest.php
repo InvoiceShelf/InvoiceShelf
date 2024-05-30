@@ -1,12 +1,12 @@
 <?php
 
-use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\V1\Admin\Payment\PaymentsController;
 use App\Http\Requests\PaymentRequest;
 use App\Mail\SendPaymentMail;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\User;
+use Illuminate\Support\Facades\Artisan;
 use Laravel\Sanctum\Sanctum;
 
 use function Pest\Laravel\getJson;

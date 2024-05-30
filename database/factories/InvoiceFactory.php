@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Currency;
 use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\RecurringInvoice;
 use App\Models\User;
 use App\Services\SerialNumberFormatter;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class InvoiceFactory extends Factory
 {

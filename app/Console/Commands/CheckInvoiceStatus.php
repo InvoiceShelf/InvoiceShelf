@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Invoice;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use App\Models\Invoice;
 
 class CheckInvoiceStatus extends Command
 {

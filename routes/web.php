@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\V1\Admin\Auth\LoginController;
 use App\Http\Controllers\V1\Admin\Expense\ShowReceiptController;
 use App\Http\Controllers\V1\Admin\Report\CustomerSalesReportController;
@@ -19,6 +18,7 @@ use App\Http\Controllers\V1\PDF\EstimatePdfController;
 use App\Http\Controllers\V1\PDF\InvoicePdfController;
 use App\Http\Controllers\V1\PDF\PaymentPdfController;
 use App\Models\Company;
+use Illuminate\Support\Facades\Route;
 
 // Module Asset Includes
 // ----------------------------------------------

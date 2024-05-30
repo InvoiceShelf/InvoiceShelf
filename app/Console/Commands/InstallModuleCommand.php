@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Space\ModuleInstaller;
+use Illuminate\Console\Command;
 
 class InstallModuleCommand extends Command
 {

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\V1\Admin\Role;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RoleRequest;
 use App\Http\Resources\RoleResource;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Silber\Bouncer\BouncerFacade;
 use Silber\Bouncer\Database\Role;
 

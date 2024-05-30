@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Artisan;
 use App\Models\Address;
 use App\Models\Customer;
+use Illuminate\Support\Facades\Artisan;
 
 beforeEach(function () {
     Artisan::call('db:seed', ['--class' => 'DatabaseSeeder', '--force' => true]);

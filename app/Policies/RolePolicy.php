@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 use Silber\Bouncer\Database\Role;
 
 class RolePolicy

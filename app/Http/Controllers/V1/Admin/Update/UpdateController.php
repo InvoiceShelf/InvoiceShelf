@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\V1\Admin\Update;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use App\Space\Updater;
+use Illuminate\Http\Request;
 
 class UpdateController extends Controller
 {

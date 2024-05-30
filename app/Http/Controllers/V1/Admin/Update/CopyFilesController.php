@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\V1\Admin\Update;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Space\Updater;
+use Illuminate\Http\Request;
 
 class CopyFilesController extends Controller
 {

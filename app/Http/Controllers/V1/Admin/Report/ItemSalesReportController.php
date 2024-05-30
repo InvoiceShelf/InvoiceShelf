@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\V1\Admin\Report;
 
-use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\CompanySetting;
 use App\Models\Currency;
 use App\Models\InvoiceItem;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use PDF;
 
 class ItemSalesReportController extends Controller

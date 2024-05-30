@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\V1\Admin\Expense;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ExpenseCategoryRequest;
 use App\Http\Resources\ExpenseCategoryResource;
 use App\Models\ExpenseCategory;
+use Illuminate\Http\Request;
 
 class ExpenseCategoriesController extends Controller
 {

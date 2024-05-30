@@ -1,11 +1,11 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Artisan;
 use App\Http\Requests\InvoicesRequest;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use App\Models\Tax;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 
 beforeEach(function () {
     Artisan::call('db:seed', ['--class' => 'DatabaseSeeder', '--force' => true]);

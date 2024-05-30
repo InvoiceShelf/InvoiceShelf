@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\V1\Installation;
 
-use Auth;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Auth;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {

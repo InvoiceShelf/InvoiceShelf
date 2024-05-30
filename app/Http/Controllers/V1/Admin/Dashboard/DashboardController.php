@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\V1\Admin\Dashboard;
 
-use Carbon\Carbon;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\CompanySetting;
@@ -12,6 +10,8 @@ use App\Models\Estimate;
 use App\Models\Expense;
 use App\Models\Invoice;
 use App\Models\Payment;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Silber\Bouncer\BouncerFacade;
 
 class DashboardController extends Controller

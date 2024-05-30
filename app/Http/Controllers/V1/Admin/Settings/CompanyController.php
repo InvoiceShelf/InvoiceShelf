@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\V1\Admin\Settings;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AvatarRequest;
 use App\Http\Requests\CompanyLogoRequest;
@@ -11,6 +10,7 @@ use App\Http\Requests\ProfileRequest;
 use App\Http\Resources\CompanyResource;
 use App\Http\Resources\UserResource;
 use App\Models\Company;
+use Illuminate\Http\Request;
 
 class CompanyController extends Controller
 {

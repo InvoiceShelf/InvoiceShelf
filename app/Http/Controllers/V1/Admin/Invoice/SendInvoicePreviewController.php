@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\V1\Admin\Invoice;
 
-use Illuminate\Mail\Markdown;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SendInvoiceRequest;
 use App\Models\Invoice;
+use Illuminate\Mail\Markdown;
 
 class SendInvoicePreviewController extends Controller
 {

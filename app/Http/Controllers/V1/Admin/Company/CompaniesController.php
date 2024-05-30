@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\V1\Admin\Company;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CompaniesRequest;
 use App\Http\Resources\CompanyResource;
 use App\Models\Company;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Silber\Bouncer\BouncerFacade;
 use Vinkla\Hashids\Facades\Hashids;
 

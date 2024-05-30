@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Customer;
 
+use App\Models\Customer;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Customer;
 use Laravel\Sanctum\Sanctum;
 
 use function Pest\Laravel\getJson;

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\V1\Customer;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Customer\InvoiceResource as CustomerInvoiceResource;
 use App\Mail\InvoiceViewedMail;
@@ -10,6 +9,7 @@ use App\Models\CompanySetting;
 use App\Models\Customer;
 use App\Models\EmailLog;
 use App\Models\Invoice;
+use Illuminate\Http\Request;
 
 class InvoicePdfController extends Controller
 {

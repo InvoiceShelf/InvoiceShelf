@@ -1,9 +1,9 @@
 <?php
 
+use App\Models\TaxType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Models\TaxType;
 
 return new class extends Migration
 {

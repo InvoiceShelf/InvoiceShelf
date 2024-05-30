@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\V1\Admin\General;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Estimate;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Services\SerialNumberFormatter;
+use Illuminate\Http\Request;
 
 class NextNumberController extends Controller
 {

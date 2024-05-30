@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\V1\Customer\Expense;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Customer\ExpenseResource;
 use App\Models\Company;
 use App\Models\Expense;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ExpensesController extends Controller
 {

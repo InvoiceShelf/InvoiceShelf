@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use App\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Carbon;
 
 class FileDisk extends Model
 {

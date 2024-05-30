@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Estimate;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use App\Models\Estimate;
 
 class CheckEstimateStatus extends Command
 {

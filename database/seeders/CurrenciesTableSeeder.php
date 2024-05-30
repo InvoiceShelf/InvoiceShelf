@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Currency;
+use Illuminate\Database\Seeder;
 
 class CurrenciesTableSeeder extends Seeder
 {

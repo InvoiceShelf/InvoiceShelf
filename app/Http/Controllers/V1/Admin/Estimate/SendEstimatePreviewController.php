@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\V1\Admin\Estimate;
 
-use Illuminate\Mail\Markdown;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SendEstimatesRequest;
 use App\Models\Estimate;
+use Illuminate\Mail\Markdown;
 
 class SendEstimatePreviewController extends Controller
 {

@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\PaymentMethod;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use App\Models\PaymentMethod;
 
 class PaymentMethodRequest extends FormRequest
 {

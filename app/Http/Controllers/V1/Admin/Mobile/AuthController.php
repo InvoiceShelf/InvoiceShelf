@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\V1\Admin\Mobile;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginRequest;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\LoginRequest;
-use App\Models\User;
 
 class AuthController extends Controller
 {

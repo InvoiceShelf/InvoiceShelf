@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\V1\Admin\Auth;
 
-use Illuminate\Foundation\Auth\VerifiesEmails;
 use App\Http\Controllers\Controller;
 use App\Providers\AppServiceProvider;
+use Illuminate\Foundation\Auth\VerifiesEmails;
 
 class VerificationController extends Controller
 {

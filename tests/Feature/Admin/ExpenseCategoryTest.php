@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\V1\Admin\Expense\ExpenseCategoriesController;
 use App\Http\Requests\ExpenseCategoryRequest;
 use App\Models\ExpenseCategory;
 use App\Models\User;
+use Illuminate\Support\Facades\Artisan;
 use Laravel\Sanctum\Sanctum;
 
 use function Pest\Laravel\deleteJson;

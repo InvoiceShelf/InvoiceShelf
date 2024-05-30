@@ -2,11 +2,11 @@
 
 namespace App\Traits;
 
-use Carbon\Carbon;
-use Illuminate\Support\Facades\App;
 use App\Models\Address;
 use App\Models\CompanySetting;
 use App\Models\FileDisk;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\App;
 
 trait GeneratesPdfTrait
 {

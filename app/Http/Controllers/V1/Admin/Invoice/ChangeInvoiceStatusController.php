@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\V1\Admin\Invoice;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Invoice;
+use Illuminate\Http\Request;
 
 class ChangeInvoiceStatusController extends Controller
 {

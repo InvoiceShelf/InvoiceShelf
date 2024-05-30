@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\V1\Admin\Estimate\EstimatesController;
 use App\Http\Controllers\V1\Admin\Estimate\SendEstimateController;
 use App\Http\Requests\DeleteEstimatesRequest;
@@ -11,6 +10,7 @@ use App\Models\Estimate;
 use App\Models\EstimateItem;
 use App\Models\Tax;
 use App\Models\User;
+use Illuminate\Support\Facades\Artisan;
 use Laravel\Sanctum\Sanctum;
 
 use function Pest\Laravel\getJson;

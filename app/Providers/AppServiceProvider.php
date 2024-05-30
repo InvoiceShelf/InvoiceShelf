@@ -2,10 +2,6 @@
 
 namespace App\Providers;
 
-use Gate;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\Broadcast;
-use Illuminate\Support\ServiceProvider;
 use App\Bouncer\Scopes\DefaultScope;
 use App\Policies\CompanyPolicy;
 use App\Policies\CustomerPolicy;
@@ -23,6 +19,10 @@ use App\Policies\ReportPolicy;
 use App\Policies\SettingsPolicy;
 use App\Policies\UserPolicy;
 use App\Space\InstallUtils;
+use Gate;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\ServiceProvider;
 use Silber\Bouncer\Database\Models as BouncerModels;
 
 class AppServiceProvider extends ServiceProvider

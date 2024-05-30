@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\TaxType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use App\Models\TaxType;
 
 class TaxTypeRequest extends FormRequest
 {

@@ -1,10 +1,10 @@
 <?php
 
+use App\Models\Estimate;
+use App\Models\Invoice;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Models\Estimate;
-use App\Models\Invoice;
 
 return new class extends Migration
 {

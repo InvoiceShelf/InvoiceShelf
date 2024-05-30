@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\V1\Admin\ExchangeRate;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\ExchangeRateProvider;
 use App\Traits\ExchangeRateProvidersTrait;
+use Illuminate\Http\Request;
 
 class GetSupportedCurrenciesController extends Controller
 {

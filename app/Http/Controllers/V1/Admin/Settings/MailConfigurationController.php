@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\V1\Admin\Settings;
 
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MailEnvironmentRequest;
 use App\Mail\TestMail;
 use App\Models\Setting;
 use App\Space\EnvironmentManager;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Mail;
 
 class MailConfigurationController extends Controller

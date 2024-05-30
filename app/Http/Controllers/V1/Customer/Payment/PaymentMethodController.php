@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\V1\Customer\Payment;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Customer\PaymentMethodResource;
 use App\Models\Company;
 use App\Models\PaymentMethod;
+use Illuminate\Http\Request;
 
 class PaymentMethodController extends Controller
 {

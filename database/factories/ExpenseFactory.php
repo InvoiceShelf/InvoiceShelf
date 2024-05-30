@@ -2,12 +2,12 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Currency;
 use App\Models\Customer;
 use App\Models\Expense;
 use App\Models\ExpenseCategory;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ExpenseFactory extends Factory
 {

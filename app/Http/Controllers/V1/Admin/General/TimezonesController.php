@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\V1\Admin\General;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Space\TimeZones;
+use Illuminate\Http\Request;
 
 class TimezonesController extends Controller
 {

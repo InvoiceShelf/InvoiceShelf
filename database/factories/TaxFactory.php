@@ -2,11 +2,11 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Currency;
 use App\Models\Tax;
 use App\Models\TaxType;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class TaxFactory extends Factory
 {

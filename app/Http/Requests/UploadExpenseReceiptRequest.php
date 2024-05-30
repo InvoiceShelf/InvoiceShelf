@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Rules\Base64Mime;
+use Illuminate\Foundation\Http\FormRequest;
 
 class UploadExpenseReceiptRequest extends FormRequest
 {

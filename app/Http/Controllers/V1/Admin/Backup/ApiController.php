@@ -4,8 +4,8 @@
 
 namespace App\Http\Controllers\V1\Admin\Backup;
 
-use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 
 class ApiController extends Controller
 {
