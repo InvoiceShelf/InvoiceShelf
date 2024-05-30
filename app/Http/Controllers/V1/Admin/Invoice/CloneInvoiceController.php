@@ -37,10 +37,10 @@ class CloneInvoiceController extends Controller
         );
 
         if ($dueDateEnabled === 'YES') {
-            $dueDateDays = CompanySetting::getSetting(
+            $dueDateDays = intval(CompanySetting::getSetting(
                 'invoice_due_date_days',
                 $request->header('company')
-            );
+            ));
             $due_date = Carbon::now()->addDays($dueDateDays)->format('Y-m-d');
         }
 

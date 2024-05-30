@@ -35,15 +35,16 @@ class CustomerStatsController extends Controller
         $start = Carbon::now();
         $end = Carbon::now();
         $terms = explode('-', $fiscalYear);
+        $companyStartMonth = intval($terms[0]);
 
-        if ($terms[0] <= $start->month) {
-            $startDate->month($terms[0])->startOfMonth();
-            $start->month($terms[0])->startOfMonth();
-            $end->month($terms[0])->endOfMonth();
+        if ($companyStartMonth <= $start->month) {
+            $startDate->month($companyStartMonth)->startOfMonth();
+            $start->month($companyStartMonth)->startOfMonth();
+            $end->month($companyStartMonth)->endOfMonth();
         } else {
-            $startDate->subYear()->month($terms[0])->startOfMonth();
-            $start->subYear()->month($terms[0])->startOfMonth();
-            $end->subYear()->month($terms[0])->endOfMonth();
+            $startDate->subYear()->month($companyStartMonth)->startOfMonth();
+            $start->subYear()->month($companyStartMonth)->startOfMonth();
+            $end->subYear()->month($companyStartMonth)->endOfMonth();
         }
 
         if ($request->has('previous_year')) {
