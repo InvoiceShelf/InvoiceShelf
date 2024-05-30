@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 use InvoiceShelf\Models\Note;
 use InvoiceShelf\Models\User;
 
-class AddCompanyToNotesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -44,4 +44,4 @@ class AddCompanyToNotesTable extends Migration
             }
         });
     }
-}
+};

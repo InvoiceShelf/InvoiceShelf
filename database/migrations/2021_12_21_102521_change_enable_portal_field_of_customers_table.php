@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use InvoiceShelf\Models\Customer;
 
-class ChangeEnablePortalFieldOfCustomersTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -37,4 +37,4 @@ class ChangeEnablePortalFieldOfCustomersTable extends Migration
     {
         //
     }
-}
+};

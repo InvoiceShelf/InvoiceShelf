@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 use InvoiceShelf\Models\Company;
 use InvoiceShelf\Models\User;
 
-class AddOwnerIdToCompaniesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -57,4 +57,4 @@ class AddOwnerIdToCompaniesTable extends Migration
             }
         });
     }
-}
+};

@@ -5,7 +5,7 @@ use InvoiceShelf\Models\CompanySetting;
 use InvoiceShelf\Models\Expense;
 use InvoiceShelf\Models\User;
 
-class CalculateBaseValuesForExpenses extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -42,4 +42,4 @@ class CalculateBaseValuesForExpenses extends Migration
     {
         //
     }
-}
+};

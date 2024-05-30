@@ -14,7 +14,7 @@ use InvoiceShelf\Models\Invoice;
 use InvoiceShelf\Models\Payment;
 use InvoiceShelf\Models\User;
 
-class UpdateCustomerIdInAllTables extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -121,4 +121,4 @@ class UpdateCustomerIdInAllTables extends Migration
     {
         //
     }
-}
+};

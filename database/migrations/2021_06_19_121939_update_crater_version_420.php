@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use InvoiceShelf\Models\Setting;
 
-class UpdateCraterVersion420 extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -24,4 +24,4 @@ class UpdateCraterVersion420 extends Migration
     {
         //
     }
-}
+};

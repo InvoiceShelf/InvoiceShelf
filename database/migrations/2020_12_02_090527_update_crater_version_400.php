@@ -12,7 +12,7 @@ use InvoiceShelf\Models\Payment;
 use InvoiceShelf\Models\Setting;
 use InvoiceShelf\Models\User;
 
-class UpdateCraterVersion400 extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -130,4 +130,4 @@ class UpdateCraterVersion400 extends Migration
 
         CompanySetting::setSettings($settings, $user->company_id);
     }
-}
+};

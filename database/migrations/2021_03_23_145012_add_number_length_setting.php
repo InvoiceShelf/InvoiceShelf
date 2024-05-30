@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use InvoiceShelf\Models\CompanySetting;
 use InvoiceShelf\Models\User;
 
-class AddNumberLengthSetting extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -42,4 +42,4 @@ class AddNumberLengthSetting extends Migration
     {
         //
     }
-}
+};

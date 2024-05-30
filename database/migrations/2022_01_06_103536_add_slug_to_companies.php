@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Str;
 use InvoiceShelf\Models\Company;
 
-class AddSlugToCompanies extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -32,4 +32,4 @@ class AddSlugToCompanies extends Migration
     {
         //
     }
-}
+};

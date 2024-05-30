@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use InvoiceShelf\Models\Invoice;
 
-class CalculateBaseDueAmount extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -31,4 +31,4 @@ class CalculateBaseDueAmount extends Migration
     {
         //
     }
-}
+};

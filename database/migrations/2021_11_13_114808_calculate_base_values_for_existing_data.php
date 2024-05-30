@@ -6,7 +6,7 @@ use InvoiceShelf\Models\Customer;
 use InvoiceShelf\Models\Item;
 use InvoiceShelf\Models\User;
 
-class CalculateBaseValuesForExistingData extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -141,4 +141,4 @@ class CalculateBaseValuesForExistingData extends Migration
     {
         //
     }
-}
+};

@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use InvoiceShelf\Models\Invoice;
 
-class ChangeOverDueStatusToSent extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -32,4 +32,4 @@ class ChangeOverDueStatusToSent extends Migration
     {
         //
     }
-}
+};

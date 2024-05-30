@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 use InvoiceShelf\Models\Customer;
 use InvoiceShelf\Models\User;
 
-class AddSequenceColumn extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -98,4 +98,4 @@ class AddSequenceColumn extends Migration
             $table->dropColumn('customer_sequence_number');
         });
     }
-}
+};

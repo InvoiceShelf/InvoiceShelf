@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Silber\Bouncer\Database\Models;
 
-class CreateBouncerTables extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -110,4 +110,4 @@ class CreateBouncerTables extends Migration
         Schema::drop(Models::table('roles'));
         Schema::drop(Models::table('abilities'));
     }
-}
+};

@@ -7,7 +7,7 @@ use InvoiceShelf\Models\Company;
 use InvoiceShelf\Models\CompanySetting;
 use InvoiceShelf\Models\User;
 
-class AddFieldsToEmailLogsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -47,4 +47,4 @@ class AddFieldsToEmailLogsTable extends Migration
             $table->dropColumn('token');
         });
     }
-}
+};

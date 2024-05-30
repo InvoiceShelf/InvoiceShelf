@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 use InvoiceShelf\Models\Estimate;
 use InvoiceShelf\Models\Invoice;
 
-class RemoveTemplateIdFromInvoicesAndEstimatesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -60,4 +60,4 @@ class RemoveTemplateIdFromInvoicesAndEstimatesTable extends Migration
     {
         //
     }
-}
+};

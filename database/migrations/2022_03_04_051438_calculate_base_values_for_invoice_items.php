@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use InvoiceShelf\Models\InvoiceItem;
 use InvoiceShelf\Models\Tax;
 
-class CalculateBaseValuesForInvoiceItems extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -35,4 +35,4 @@ class CalculateBaseValuesForInvoiceItems extends Migration
     {
         //
     }
-}
+};

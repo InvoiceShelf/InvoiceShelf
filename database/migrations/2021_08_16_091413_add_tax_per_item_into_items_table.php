@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use InvoiceShelf\Models\Item;
 
-class AddTaxPerItemIntoItemsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -41,4 +41,4 @@ class AddTaxPerItemIntoItemsTable extends Migration
             $table->dropColumn('tax_per_item');
         });
     }
-}
+};

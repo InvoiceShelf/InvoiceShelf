@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use InvoiceShelf\Models\Setting;
 
-class UpdateCraterVersion320 extends Migration
+return new class extends Migration
 {
     public const VERSION = '3.2.0';
 
@@ -26,4 +26,4 @@ class UpdateCraterVersion320 extends Migration
     {
         //
     }
-}
+};
