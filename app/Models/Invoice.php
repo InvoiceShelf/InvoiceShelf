@@ -80,7 +80,7 @@ class Invoice extends Model implements HasMedia
 
     public function items()
     {
-        return $this->hasMany('InvoiceShelf\Models\InvoiceItem');
+        return $this->hasMany(\InvoiceShelf\Models\InvoiceItem::class);
     }
 
     public function taxes()

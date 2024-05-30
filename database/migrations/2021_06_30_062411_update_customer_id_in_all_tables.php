@@ -58,9 +58,9 @@ class UpdateCustomerIdInAllTables extends Migration
                 ]);
 
                 CustomFieldValue::where('custom_field_valuable_id', $user->id)
-                    ->where('custom_field_valuable_type', 'InvoiceShelf\Models\User')
+                    ->where('custom_field_valuable_type', \InvoiceShelf\Models\User::class)
                     ->update([
-                        'custom_field_valuable_type' => 'InvoiceShelf\Models\Customer',
+                        'custom_field_valuable_type' => \InvoiceShelf\Models\Customer::class,
                         'custom_field_valuable_id' => $newCustomer->id,
                     ]);
             }

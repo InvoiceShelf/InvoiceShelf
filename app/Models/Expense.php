@@ -61,7 +61,7 @@ class Expense extends Model implements HasMedia
 
     public function creator()
     {
-        return $this->belongsTo('InvoiceShelf\Models\User', 'creator_id');
+        return $this->belongsTo(\InvoiceShelf\Models\User::class, 'creator_id');
     }
 
     public function getFormattedExpenseDateAttribute($value)

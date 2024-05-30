@@ -8,7 +8,7 @@ trait HasCustomFieldsTrait
 {
     public function fields()
     {
-        return $this->morphMany('InvoiceShelf\Models\CustomFieldValue', 'custom_field_valuable');
+        return $this->morphMany(\InvoiceShelf\Models\CustomFieldValue::class, 'custom_field_valuable');
     }
 
     protected static function booted()

@@ -74,7 +74,7 @@ class Estimate extends Model implements HasMedia
 
     public function items()
     {
-        return $this->hasMany('InvoiceShelf\Models\EstimateItem');
+        return $this->hasMany(\InvoiceShelf\Models\EstimateItem::class);
     }
 
     public function customer()
@@ -84,12 +84,12 @@ class Estimate extends Model implements HasMedia
 
     public function creator()
     {
-        return $this->belongsTo('InvoiceShelf\Models\User', 'creator_id');
+        return $this->belongsTo(\InvoiceShelf\Models\User::class, 'creator_id');
     }
 
     public function company()
     {
-        return $this->belongsTo('InvoiceShelf\Models\Company');
+        return $this->belongsTo(\InvoiceShelf\Models\Company::class);
     }
 
     public function currency()
