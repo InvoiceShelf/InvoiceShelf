@@ -3,9 +3,9 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use InvoiceShelf\Models\Currency;
-use InvoiceShelf\Models\ExchangeRateLog;
-use InvoiceShelf\Models\User;
+use App\Models\Currency;
+use App\Models\ExchangeRateLog;
+use App\Models\User;
 
 class ExchangeRateLogFactory extends Factory
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace InvoiceShelf\Models;
+namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,8 +9,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use InvoiceShelf\Notifications\CustomerMailResetPasswordNotification;
-use InvoiceShelf\Traits\HasCustomFieldsTrait;
+use App\Notifications\CustomerMailResetPasswordNotification;
+use App\Traits\HasCustomFieldsTrait;
 use Laravel\Sanctum\HasApiTokens;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 use Spatie\MediaLibrary\HasMedia;

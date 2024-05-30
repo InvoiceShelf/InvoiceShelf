@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Auth;
+namespace App\Http\Controllers\V1\Admin\Auth;
 
 use Illuminate\Foundation\Auth\ConfirmsPasswords;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Providers\AppServiceProvider;
+use App\Http\Controllers\Controller;
+use App\Providers\AppServiceProvider;
 
 class ConfirmPasswordController extends Controller
 {

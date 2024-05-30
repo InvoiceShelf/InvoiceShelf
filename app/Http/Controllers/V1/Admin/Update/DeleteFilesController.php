@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Update;
+namespace App\Http\Controllers\V1\Admin\Update;
 
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Space\Updater;
+use App\Http\Controllers\Controller;
+use App\Space\Updater;
 
 class DeleteFilesController extends Controller
 {

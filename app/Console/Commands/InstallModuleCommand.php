@@ -1,9 +1,9 @@
 <?php
 
-namespace InvoiceShelf\Console\Commands;
+namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use InvoiceShelf\Space\ModuleInstaller;
+use App\Space\ModuleInstaller;
 
 class InstallModuleCommand extends Command
 {

@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Artisan;
-use InvoiceShelf\Models\Company;
-use InvoiceShelf\Models\CompanySetting;
+use App\Models\Company;
+use App\Models\CompanySetting;
 
 use function Pest\Faker\fake;
 

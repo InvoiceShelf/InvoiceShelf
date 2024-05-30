@@ -4,9 +4,9 @@ namespace Tests\Feature\Customer;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
-use InvoiceShelf\Http\Controllers\V1\Customer\General\ProfileController;
-use InvoiceShelf\Http\Requests\Customer\CustomerProfileRequest;
-use InvoiceShelf\Models\Customer;
+use App\Http\Controllers\V1\Customer\General\ProfileController;
+use App\Http\Requests\Customer\CustomerProfileRequest;
+use App\Models\Customer;
 use Laravel\Sanctum\Sanctum;
 
 use function Pest\Laravel\getJson;

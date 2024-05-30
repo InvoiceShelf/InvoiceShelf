@@ -1,6 +1,6 @@
 <?php
 
-namespace InvoiceShelf\Models;
+namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
-use InvoiceShelf\Traits\HasCustomFieldsTrait;
+use App\Traits\HasCustomFieldsTrait;
 
 class InvoiceItem extends Model
 {

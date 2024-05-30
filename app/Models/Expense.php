@@ -1,13 +1,13 @@
 <?php
 
-namespace InvoiceShelf\Models;
+namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;
-use InvoiceShelf\Traits\HasCustomFieldsTrait;
+use App\Traits\HasCustomFieldsTrait;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -65,7 +65,7 @@ class Expense extends Model implements HasMedia
 
     public function creator(): BelongsTo
     {
-        return $this->belongsTo(\InvoiceShelf\Models\User::class, 'creator_id');
+        return $this->belongsTo(\App\Models\User::class, 'creator_id');
     }
 
     public function getFormattedExpenseDateAttribute($value)

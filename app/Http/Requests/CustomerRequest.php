@@ -1,11 +1,11 @@
 <?php
 
-namespace InvoiceShelf\Http\Requests;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
-use InvoiceShelf\Models\Address;
+use App\Models\Address;
 
 class CustomerRequest extends FormRequest
 {

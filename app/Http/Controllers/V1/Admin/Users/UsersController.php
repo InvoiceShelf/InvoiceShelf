@@ -1,13 +1,13 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Users;
+namespace App\Http\Controllers\V1\Admin\Users;
 
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests\DeleteUserRequest;
-use InvoiceShelf\Http\Requests\UserRequest;
-use InvoiceShelf\Http\Resources\UserResource;
-use InvoiceShelf\Models\User;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\DeleteUserRequest;
+use App\Http\Requests\UserRequest;
+use App\Http\Resources\UserResource;
+use App\Models\User;
 
 class UsersController extends Controller
 {

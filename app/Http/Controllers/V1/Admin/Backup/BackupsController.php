@@ -2,13 +2,13 @@
 
 // Implementation taken from nova-backup-tool - https://github.com/spatie/nova-backup-tool/
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Backup;
+namespace App\Http\Controllers\V1\Admin\Backup;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use InvoiceShelf\Jobs\CreateBackupJob;
-use InvoiceShelf\Rules\Backup\PathToZip;
+use App\Jobs\CreateBackupJob;
+use App\Rules\Backup\PathToZip;
 use Spatie\Backup\BackupDestination\Backup;
 use Spatie\Backup\BackupDestination\BackupDestination;
 use Spatie\Backup\Helpers\Format;

@@ -3,8 +3,8 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use InvoiceShelf\Models\TaxType;
-use InvoiceShelf\Models\User;
+use App\Models\TaxType;
+use App\Models\User;
 
 class TaxTypeFactory extends Factory
 {

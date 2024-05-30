@@ -2,10 +2,10 @@
 
 // Implementation taken from nova-backup-tool - https://github.com/spatie/nova-backup-tool/
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Backup;
+namespace App\Http\Controllers\V1\Admin\Backup;
 
 use Illuminate\Http\Request;
-use InvoiceShelf\Rules\Backup\PathToZip;
+use App\Rules\Backup\PathToZip;
 use Spatie\Backup\BackupDestination\Backup;
 use Spatie\Backup\BackupDestination\BackupDestination;
 use Symfony\Component\HttpFoundation\Response;

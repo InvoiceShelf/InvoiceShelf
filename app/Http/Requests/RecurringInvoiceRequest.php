@@ -1,11 +1,11 @@
 <?php
 
-namespace InvoiceShelf\Http\Requests;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use InvoiceShelf\Models\CompanySetting;
-use InvoiceShelf\Models\Customer;
-use InvoiceShelf\Models\RecurringInvoice;
+use App\Models\CompanySetting;
+use App\Models\Customer;
+use App\Models\RecurringInvoice;
 
 class RecurringInvoiceRequest extends FormRequest
 {

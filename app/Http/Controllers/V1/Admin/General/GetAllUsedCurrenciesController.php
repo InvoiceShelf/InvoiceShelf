@@ -1,14 +1,14 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\General;
+namespace App\Http\Controllers\V1\Admin\General;
 
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Models\Currency;
-use InvoiceShelf\Models\Estimate;
-use InvoiceShelf\Models\Invoice;
-use InvoiceShelf\Models\Payment;
-use InvoiceShelf\Models\Tax;
+use App\Http\Controllers\Controller;
+use App\Models\Currency;
+use App\Models\Estimate;
+use App\Models\Invoice;
+use App\Models\Payment;
+use App\Models\Tax;
 
 class GetAllUsedCurrenciesController extends Controller
 {

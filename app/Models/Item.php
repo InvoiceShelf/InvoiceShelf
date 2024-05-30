@@ -1,6 +1,6 @@
 <?php
 
-namespace InvoiceShelf\Models;
+namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -38,7 +38,7 @@ class Item extends Model
 
     public function creator(): BelongsTo
     {
-        return $this->belongsTo(\InvoiceShelf\Models\User::class, 'creator_id');
+        return $this->belongsTo(\App\Models\User::class, 'creator_id');
     }
 
     public function currency(): BelongsTo

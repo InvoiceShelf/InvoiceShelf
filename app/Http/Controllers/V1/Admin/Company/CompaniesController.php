@@ -1,13 +1,13 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Company;
+namespace App\Http\Controllers\V1\Admin\Company;
 
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests\CompaniesRequest;
-use InvoiceShelf\Http\Resources\CompanyResource;
-use InvoiceShelf\Models\Company;
-use InvoiceShelf\Models\User;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\CompaniesRequest;
+use App\Http\Resources\CompanyResource;
+use App\Models\Company;
+use App\Models\User;
 use Silber\Bouncer\BouncerFacade;
 use Vinkla\Hashids\Facades\Hashids;
 

@@ -1,11 +1,11 @@
 <?php
 
-namespace InvoiceShelf\Http\Middleware;
+namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use InvoiceShelf\Models\Setting;
-use InvoiceShelf\Space\InstallUtils;
+use App\Models\Setting;
+use App\Space\InstallUtils;
 use Symfony\Component\HttpFoundation\Response;
 
 class InstallationMiddleware

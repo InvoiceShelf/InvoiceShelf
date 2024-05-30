@@ -1,15 +1,15 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Customer;
+namespace App\Http\Controllers\V1\Customer;
 
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Resources\EstimateResource;
-use InvoiceShelf\Mail\EstimateViewedMail;
-use InvoiceShelf\Models\CompanySetting;
-use InvoiceShelf\Models\Customer;
-use InvoiceShelf\Models\EmailLog;
-use InvoiceShelf\Models\Estimate;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\EstimateResource;
+use App\Mail\EstimateViewedMail;
+use App\Models\CompanySetting;
+use App\Models\Customer;
+use App\Models\EmailLog;
+use App\Models\Estimate;
 
 class EstimatePdfController extends Controller
 {

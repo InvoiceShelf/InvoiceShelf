@@ -1,6 +1,6 @@
 <?php
 
-namespace InvoiceShelf\Models;
+namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,9 +11,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Schema;
-use InvoiceShelf\Http\Requests\UserRequest;
-use InvoiceShelf\Notifications\MailResetPasswordNotification;
-use InvoiceShelf\Traits\HasCustomFieldsTrait;
+use App\Http\Requests\UserRequest;
+use App\Notifications\MailResetPasswordNotification;
+use App\Traits\HasCustomFieldsTrait;
 use Laravel\Sanctum\HasApiTokens;
 use Silber\Bouncer\BouncerFacade;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
@@ -61,7 +61,7 @@ class User extends Authenticatable implements HasMedia
      * Find the user instance for the given username.
      *
      * @param  string  $username
-     * @return \InvoiceShelf\User
+     * @return \App\User
      */
     public function findForPassport($username)
     {
@@ -118,7 +118,7 @@ class User extends Authenticatable implements HasMedia
 
     public function creator(): BelongsTo
     {
-        return $this->belongsTo(\InvoiceShelf\Models\User::class, 'creator_id');
+        return $this->belongsTo(\App\Models\User::class, 'creator_id');
     }
 
     public function companies(): BelongsToMany

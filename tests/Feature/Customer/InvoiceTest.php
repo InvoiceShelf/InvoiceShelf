@@ -4,8 +4,8 @@ namespace Tests\Feature\Customer;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
-use InvoiceShelf\Models\Customer;
-use InvoiceShelf\Models\Invoice;
+use App\Models\Customer;
+use App\Models\Invoice;
 use Laravel\Sanctum\Sanctum;
 
 use function Pest\Laravel\getJson;

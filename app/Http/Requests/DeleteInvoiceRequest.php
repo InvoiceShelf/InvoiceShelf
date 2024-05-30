@@ -1,11 +1,11 @@
 <?php
 
-namespace InvoiceShelf\Http\Requests;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use InvoiceShelf\Models\Invoice;
-use InvoiceShelf\Rules\RelationNotExist;
+use App\Models\Invoice;
+use App\Rules\RelationNotExist;
 
 class DeleteInvoiceRequest extends FormRequest
 {

@@ -1,13 +1,13 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Customer\Expense;
+namespace App\Http\Controllers\V1\Customer\Expense;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Resources\Customer\ExpenseResource;
-use InvoiceShelf\Models\Company;
-use InvoiceShelf\Models\Expense;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\Customer\ExpenseResource;
+use App\Models\Company;
+use App\Models\Expense;
 
 class ExpensesController extends Controller
 {
@@ -40,7 +40,7 @@ class ExpensesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \InvoiceShelf\Models\Expense  $expense
+     * @param  \App\Models\Expense  $expense
      * @return \Illuminate\Http\Response
      */
     public function show(Company $company, $id)

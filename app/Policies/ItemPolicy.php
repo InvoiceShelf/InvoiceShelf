@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Policies;
+namespace App\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
-use InvoiceShelf\Models\Item;
-use InvoiceShelf\Models\User;
+use App\Models\Item;
+use App\Models\User;
 use Silber\Bouncer\BouncerFacade;
 
 class ItemPolicy

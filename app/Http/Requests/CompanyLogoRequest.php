@@ -1,9 +1,9 @@
 <?php
 
-namespace InvoiceShelf\Http\Requests;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use InvoiceShelf\Rules\Base64Mime;
+use App\Rules\Base64Mime;
 
 class CompanyLogoRequest extends FormRequest
 {

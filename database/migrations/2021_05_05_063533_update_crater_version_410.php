@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use InvoiceShelf\Models\Setting;
+use App\Models\Setting;
 
 return new class extends Migration
 {

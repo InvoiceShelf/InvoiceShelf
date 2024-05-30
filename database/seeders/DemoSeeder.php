@@ -3,10 +3,10 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use InvoiceShelf\Models\Address;
-use InvoiceShelf\Models\Setting;
-use InvoiceShelf\Models\User;
-use InvoiceShelf\Space\InstallUtils;
+use App\Models\Address;
+use App\Models\Setting;
+use App\Models\User;
+use App\Space\InstallUtils;
 
 class DemoSeeder extends Seeder
 {

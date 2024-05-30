@@ -1,12 +1,12 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\General;
+namespace App\Http\Controllers\V1\Admin\General;
 
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests\NotesRequest;
-use InvoiceShelf\Http\Resources\NoteResource;
-use InvoiceShelf\Models\Note;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\NotesRequest;
+use App\Http\Resources\NoteResource;
+use App\Models\Note;
 
 class NotesController extends Controller
 {

@@ -19,7 +19,7 @@ return [
     'providers' => [
         'customers' => [
             'driver' => 'eloquent',
-            'model' => \InvoiceShelf\Models\Customer::class,
+            'model' => \App\Models\Customer::class,
         ],
     ],
 

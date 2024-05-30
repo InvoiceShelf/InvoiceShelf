@@ -3,12 +3,12 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use InvoiceShelf\Models\Currency;
-use InvoiceShelf\Models\Customer;
-use InvoiceShelf\Models\Payment;
-use InvoiceShelf\Models\PaymentMethod;
-use InvoiceShelf\Models\User;
-use InvoiceShelf\Services\SerialNumberFormatter;
+use App\Models\Currency;
+use App\Models\Customer;
+use App\Models\Payment;
+use App\Models\PaymentMethod;
+use App\Models\User;
+use App\Services\SerialNumberFormatter;
 
 class PaymentFactory extends Factory
 {

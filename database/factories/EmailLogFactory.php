@@ -3,10 +3,10 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use InvoiceShelf\Models\EmailLog;
-use InvoiceShelf\Models\Estimate;
-use InvoiceShelf\Models\Invoice;
-use InvoiceShelf\Models\Payment;
+use App\Models\EmailLog;
+use App\Models\Estimate;
+use App\Models\Invoice;
+use App\Models\Payment;
 
 class EmailLogFactory extends Factory
 {

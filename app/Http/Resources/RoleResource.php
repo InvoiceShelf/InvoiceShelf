@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Http\Resources;
+namespace App\Http\Resources;
 
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
-use InvoiceShelf\Models\CompanySetting;
+use App\Models\CompanySetting;
 
 class RoleResource extends JsonResource
 {

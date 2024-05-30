@@ -1,17 +1,17 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Dashboard;
+namespace App\Http\Controllers\V1\Admin\Dashboard;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Models\Company;
-use InvoiceShelf\Models\CompanySetting;
-use InvoiceShelf\Models\Customer;
-use InvoiceShelf\Models\Estimate;
-use InvoiceShelf\Models\Expense;
-use InvoiceShelf\Models\Invoice;
-use InvoiceShelf\Models\Payment;
+use App\Http\Controllers\Controller;
+use App\Models\Company;
+use App\Models\CompanySetting;
+use App\Models\Customer;
+use App\Models\Estimate;
+use App\Models\Expense;
+use App\Models\Invoice;
+use App\Models\Payment;
 use Silber\Bouncer\BouncerFacade;
 
 class DashboardController extends Controller

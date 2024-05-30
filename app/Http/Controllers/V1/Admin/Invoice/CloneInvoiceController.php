@@ -1,14 +1,14 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Invoice;
+namespace App\Http\Controllers\V1\Admin\Invoice;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Resources\InvoiceResource;
-use InvoiceShelf\Models\CompanySetting;
-use InvoiceShelf\Models\Invoice;
-use InvoiceShelf\Services\SerialNumberFormatter;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\InvoiceResource;
+use App\Models\CompanySetting;
+use App\Models\Invoice;
+use App\Services\SerialNumberFormatter;
 use Vinkla\Hashids\Facades\Hashids;
 
 class CloneInvoiceController extends Controller

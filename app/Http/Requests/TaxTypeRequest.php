@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Http\Requests;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use InvoiceShelf\Models\TaxType;
+use App\Models\TaxType;
 
 class TaxTypeRequest extends FormRequest
 {

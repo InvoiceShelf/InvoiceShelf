@@ -1,6 +1,6 @@
 <?php
 
-namespace InvoiceShelf\Rules;
+namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 

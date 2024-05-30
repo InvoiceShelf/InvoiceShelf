@@ -1,14 +1,14 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Item;
+namespace App\Http\Controllers\V1\Admin\Item;
 
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests;
-use InvoiceShelf\Http\Requests\DeleteItemsRequest;
-use InvoiceShelf\Http\Resources\ItemResource;
-use InvoiceShelf\Models\Item;
-use InvoiceShelf\Models\TaxType;
+use App\Http\Controllers\Controller;
+use App\Http\Requests;
+use App\Http\Requests\DeleteItemsRequest;
+use App\Http\Resources\ItemResource;
+use App\Models\Item;
+use App\Models\TaxType;
 
 class ItemsController extends Controller
 {
@@ -40,7 +40,7 @@ class ItemsController extends Controller
     /**
      * Create Item.
      *
-     * @param  InvoiceShelf\Http\Requests\ItemsRequest  $request
+     * @param  App\Http\Requests\ItemsRequest  $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function store(Requests\ItemsRequest $request)
@@ -67,7 +67,7 @@ class ItemsController extends Controller
     /**
      * Update an existing Item.
      *
-     * @param  InvoiceShelf\Http\Requests\ItemsRequest  $request
+     * @param  App\Http\Requests\ItemsRequest  $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function update(Requests\ItemsRequest $request, Item $item)

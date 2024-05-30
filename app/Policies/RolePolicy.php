@@ -1,9 +1,9 @@
 <?php
 
-namespace InvoiceShelf\Policies;
+namespace App\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
-use InvoiceShelf\Models\User;
+use App\Models\User;
 use Silber\Bouncer\Database\Role;
 
 class RolePolicy

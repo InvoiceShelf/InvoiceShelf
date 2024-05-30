@@ -2,10 +2,10 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
-use InvoiceShelf\Http\Requests\InvoicesRequest;
-use InvoiceShelf\Models\Invoice;
-use InvoiceShelf\Models\InvoiceItem;
-use InvoiceShelf\Models\Tax;
+use App\Http\Requests\InvoicesRequest;
+use App\Models\Invoice;
+use App\Models\InvoiceItem;
+use App\Models\Tax;
 
 beforeEach(function () {
     Artisan::call('db:seed', ['--class' => 'DatabaseSeeder', '--force' => true]);

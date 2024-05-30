@@ -1,13 +1,13 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Expense;
+namespace App\Http\Controllers\V1\Admin\Expense;
 
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests\DeleteExpensesRequest;
-use InvoiceShelf\Http\Requests\ExpenseRequest;
-use InvoiceShelf\Http\Resources\ExpenseResource;
-use InvoiceShelf\Models\Expense;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\DeleteExpensesRequest;
+use App\Http\Requests\ExpenseRequest;
+use App\Http\Resources\ExpenseResource;
+use App\Models\Expense;
 
 class ExpensesController extends Controller
 {

@@ -1,12 +1,12 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Item;
+namespace App\Http\Controllers\V1\Admin\Item;
 
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests\UnitRequest;
-use InvoiceShelf\Http\Resources\UnitResource;
-use InvoiceShelf\Models\Unit;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\UnitRequest;
+use App\Http\Resources\UnitResource;
+use App\Models\Unit;
 
 class UnitsController extends Controller
 {

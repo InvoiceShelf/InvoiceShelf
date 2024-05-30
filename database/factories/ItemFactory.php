@@ -3,10 +3,10 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use InvoiceShelf\Models\Currency;
-use InvoiceShelf\Models\Item;
-use InvoiceShelf\Models\Unit;
-use InvoiceShelf\Models\User;
+use App\Models\Currency;
+use App\Models\Item;
+use App\Models\Unit;
+use App\Models\User;
 
 class ItemFactory extends Factory
 {

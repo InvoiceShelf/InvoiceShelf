@@ -1,12 +1,12 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Expense;
+namespace App\Http\Controllers\V1\Admin\Expense;
 
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests\ExpenseCategoryRequest;
-use InvoiceShelf\Http\Resources\ExpenseCategoryResource;
-use InvoiceShelf\Models\ExpenseCategory;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\ExpenseCategoryRequest;
+use App\Http\Resources\ExpenseCategoryResource;
+use App\Models\ExpenseCategory;
 
 class ExpenseCategoriesController extends Controller
 {
@@ -60,7 +60,7 @@ class ExpenseCategoriesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \InvoiceShelf\Models\ExpenseCategory  $ExpenseCategory
+     * @param  \App\Models\ExpenseCategory  $ExpenseCategory
      * @return \Illuminate\Http\Response
      */
     public function update(ExpenseCategoryRequest $request, ExpenseCategory $category)
@@ -75,7 +75,7 @@ class ExpenseCategoriesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \InvoiceShelf\ExpensesCategory  $category
+     * @param  \App\ExpensesCategory  $category
      * @return \Illuminate\Http\Response
      */
     public function destroy(ExpenseCategory $category)

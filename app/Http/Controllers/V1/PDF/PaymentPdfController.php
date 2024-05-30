@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\PDF;
+namespace App\Http\Controllers\V1\PDF;
 
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Models\Payment;
+use App\Http\Controllers\Controller;
+use App\Models\Payment;
 
 class PaymentPdfController extends Controller
 {

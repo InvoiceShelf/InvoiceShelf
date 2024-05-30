@@ -3,8 +3,8 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use InvoiceShelf\Models\CustomField;
-use InvoiceShelf\Models\User;
+use App\Models\CustomField;
+use App\Models\User;
 
 class CustomFieldFactory extends Factory
 {

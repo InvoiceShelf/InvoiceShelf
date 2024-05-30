@@ -1,16 +1,16 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use InvoiceShelf\Models\Address;
-use InvoiceShelf\Models\CompanySetting;
-use InvoiceShelf\Models\Estimate;
-use InvoiceShelf\Models\Expense;
-use InvoiceShelf\Models\FileDisk;
-use InvoiceShelf\Models\Invoice;
-use InvoiceShelf\Models\Item;
-use InvoiceShelf\Models\Payment;
-use InvoiceShelf\Models\Setting;
-use InvoiceShelf\Models\User;
+use App\Models\Address;
+use App\Models\CompanySetting;
+use App\Models\Estimate;
+use App\Models\Expense;
+use App\Models\FileDisk;
+use App\Models\Invoice;
+use App\Models\Item;
+use App\Models\Payment;
+use App\Models\Setting;
+use App\Models\User;
 
 return new class extends Migration
 {

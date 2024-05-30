@@ -3,8 +3,8 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use InvoiceShelf\Models\Note;
-use InvoiceShelf\Models\User;
+use App\Models\Note;
+use App\Models\User;
 
 class NoteFactory extends Factory
 {

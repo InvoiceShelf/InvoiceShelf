@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Policies;
+namespace App\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
-use InvoiceShelf\Models\Invoice;
-use InvoiceShelf\Models\User;
+use App\Models\Invoice;
+use App\Models\User;
 use Silber\Bouncer\BouncerFacade;
 
 class InvoicePolicy
@@ -112,7 +112,7 @@ class InvoicePolicy
     /**
      * Determine whether the user can send email of the model.
      *
-     * @param  \InvoiceShelf\Models\Payment  $payment
+     * @param  \App\Models\Payment  $payment
      * @return mixed
      */
     public function send(User $user, Invoice $invoice)

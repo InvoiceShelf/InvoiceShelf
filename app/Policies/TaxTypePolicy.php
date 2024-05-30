@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Policies;
+namespace App\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
-use InvoiceShelf\Models\TaxType;
-use InvoiceShelf\Models\User;
+use App\Models\TaxType;
+use App\Models\User;
 use Silber\Bouncer\BouncerFacade;
 
 class TaxTypePolicy

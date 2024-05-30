@@ -1,12 +1,12 @@
 <?php
 
-namespace InvoiceShelf\Mail;
+namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use InvoiceShelf\Models\EmailLog;
-use InvoiceShelf\Models\Invoice;
+use App\Models\EmailLog;
+use App\Models\Invoice;
 use Vinkla\Hashids\Facades\Hashids;
 
 class SendInvoiceMail extends Mailable

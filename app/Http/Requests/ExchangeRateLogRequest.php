@@ -1,9 +1,9 @@
 <?php
 
-namespace InvoiceShelf\Http\Requests;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use InvoiceShelf\Models\CompanySetting;
+use App\Models\CompanySetting;
 
 class ExchangeRateLogRequest extends FormRequest
 {

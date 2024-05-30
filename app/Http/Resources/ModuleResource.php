@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Http\Resources;
+namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use InvoiceShelf\Models\Module as ModelsModule;
-use InvoiceShelf\Models\Setting;
+use App\Models\Module as ModelsModule;
+use App\Models\Setting;
 use Nwidart\Modules\Facades\Module;
 
 class ModuleResource extends JsonResource

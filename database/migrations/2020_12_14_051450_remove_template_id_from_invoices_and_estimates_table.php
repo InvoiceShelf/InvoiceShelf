@@ -3,8 +3,8 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use InvoiceShelf\Models\Estimate;
-use InvoiceShelf\Models\Invoice;
+use App\Models\Estimate;
+use App\Models\Invoice;
 
 return new class extends Migration
 {

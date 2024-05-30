@@ -4,15 +4,15 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
-use InvoiceShelf\Models\Address;
-use InvoiceShelf\Models\Customer;
-use InvoiceShelf\Models\CustomField;
-use InvoiceShelf\Models\CustomFieldValue;
-use InvoiceShelf\Models\Estimate;
-use InvoiceShelf\Models\Expense;
-use InvoiceShelf\Models\Invoice;
-use InvoiceShelf\Models\Payment;
-use InvoiceShelf\Models\User;
+use App\Models\Address;
+use App\Models\Customer;
+use App\Models\CustomField;
+use App\Models\CustomFieldValue;
+use App\Models\Estimate;
+use App\Models\Expense;
+use App\Models\Invoice;
+use App\Models\Payment;
+use App\Models\User;
 
 return new class extends Migration
 {
@@ -56,9 +56,9 @@ return new class extends Migration
                 ]);
 
                 CustomFieldValue::where('custom_field_valuable_id', $user->id)
-                    ->where('custom_field_valuable_type', \InvoiceShelf\Models\User::class)
+                    ->where('custom_field_valuable_type', \App\Models\User::class)
                     ->update([
-                        'custom_field_valuable_type' => \InvoiceShelf\Models\Customer::class,
+                        'custom_field_valuable_type' => \App\Models\Customer::class,
                         'custom_field_valuable_id' => $newCustomer->id,
                     ]);
             }

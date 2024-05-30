@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use InvoiceShelf\Models\InvoiceItem;
-use InvoiceShelf\Models\Tax;
+use App\Models\InvoiceItem;
+use App\Models\Tax;
 
 return new class extends Migration
 {

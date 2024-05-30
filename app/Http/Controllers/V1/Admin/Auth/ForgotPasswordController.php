@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Auth;
+namespace App\Http\Controllers\V1\Admin\Auth;
 
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
 
 class ForgotPasswordController extends Controller
 {

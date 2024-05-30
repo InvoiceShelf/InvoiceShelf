@@ -1,13 +1,13 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\General;
+namespace App\Http\Controllers\V1\Admin\General;
 
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Models\Estimate;
-use InvoiceShelf\Models\Invoice;
-use InvoiceShelf\Models\Payment;
-use InvoiceShelf\Services\SerialNumberFormatter;
+use App\Http\Controllers\Controller;
+use App\Models\Estimate;
+use App\Models\Invoice;
+use App\Models\Payment;
+use App\Services\SerialNumberFormatter;
 
 class NextNumberController extends Controller
 {

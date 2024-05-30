@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Artisan;
-use InvoiceShelf\Models\Invoice;
-use InvoiceShelf\Models\InvoiceItem;
-use InvoiceShelf\Models\Item;
+use App\Models\Invoice;
+use App\Models\InvoiceItem;
+use App\Models\Item;
 
 beforeEach(function () {
     Artisan::call('db:seed', ['--class' => 'DatabaseSeeder', '--force' => true]);

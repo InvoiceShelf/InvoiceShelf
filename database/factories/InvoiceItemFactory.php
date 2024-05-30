@@ -3,10 +3,10 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use InvoiceShelf\Models\InvoiceItem;
-use InvoiceShelf\Models\Item;
-use InvoiceShelf\Models\RecurringInvoice;
-use InvoiceShelf\Models\User;
+use App\Models\InvoiceItem;
+use App\Models\Item;
+use App\Models\RecurringInvoice;
+use App\Models\User;
 
 class InvoiceItemFactory extends Factory
 {

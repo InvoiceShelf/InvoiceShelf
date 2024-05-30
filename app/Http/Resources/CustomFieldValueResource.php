@@ -1,9 +1,9 @@
 <?php
 
-namespace InvoiceShelf\Http\Resources;
+namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use InvoiceShelf\Models\CompanySetting;
+use App\Models\CompanySetting;
 
 class CustomFieldValueResource extends JsonResource
 {

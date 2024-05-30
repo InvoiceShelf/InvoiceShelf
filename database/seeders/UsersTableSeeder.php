@@ -3,9 +3,9 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use InvoiceShelf\Models\Company;
-use InvoiceShelf\Models\Setting;
-use InvoiceShelf\Models\User;
+use App\Models\Company;
+use App\Models\Setting;
+use App\Models\User;
 use Silber\Bouncer\BouncerFacade;
 use Vinkla\Hashids\Facades\Hashids;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace InvoiceShelf\Models;
+namespace App\Models;
 
 use Carbon\Carbon;
 use Cron;
@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use InvoiceShelf\Http\Requests\RecurringInvoiceRequest;
-use InvoiceShelf\Services\SerialNumberFormatter;
-use InvoiceShelf\Traits\HasCustomFieldsTrait;
+use App\Http\Requests\RecurringInvoiceRequest;
+use App\Services\SerialNumberFormatter;
+use App\Traits\HasCustomFieldsTrait;
 use Vinkla\Hashids\Facades\Hashids;
 
 class RecurringInvoice extends Model

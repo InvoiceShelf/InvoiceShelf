@@ -3,8 +3,8 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use InvoiceShelf\Models\CompanySetting;
-use InvoiceShelf\Models\User;
+use App\Models\CompanySetting;
+use App\Models\User;
 
 class CompanySettingFactory extends Factory
 {

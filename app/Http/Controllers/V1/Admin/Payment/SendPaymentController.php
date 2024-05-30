@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Payment;
+namespace App\Http\Controllers\V1\Admin\Payment;
 
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests\SendPaymentRequest;
-use InvoiceShelf\Models\Payment;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\SendPaymentRequest;
+use App\Models\Payment;
 
 class SendPaymentController extends Controller
 {

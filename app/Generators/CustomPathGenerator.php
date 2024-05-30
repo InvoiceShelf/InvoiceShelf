@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Generators;
+namespace App\Generators;
 
-use InvoiceShelf\Models\Estimate;
-use InvoiceShelf\Models\Invoice;
-use InvoiceShelf\Models\Payment;
+use App\Models\Estimate;
+use App\Models\Invoice;
+use App\Models\Payment;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\MediaLibrary\Support\PathGenerator\PathGenerator;
 

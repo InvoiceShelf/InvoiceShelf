@@ -1,12 +1,12 @@
 <?php
 
-namespace InvoiceShelf\Http\Requests;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use InvoiceShelf\Models\CompanySetting;
-use InvoiceShelf\Models\Customer;
-use InvoiceShelf\Models\Invoice;
+use App\Models\CompanySetting;
+use App\Models\Customer;
+use App\Models\Invoice;
 
 class InvoicesRequest extends FormRequest
 {

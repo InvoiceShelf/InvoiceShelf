@@ -1,28 +1,28 @@
 <?php
 
-namespace InvoiceShelf\Providers;
+namespace App\Providers;
 
 use Gate;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\ServiceProvider;
-use InvoiceShelf\Bouncer\Scopes\DefaultScope;
-use InvoiceShelf\Policies\CompanyPolicy;
-use InvoiceShelf\Policies\CustomerPolicy;
-use InvoiceShelf\Policies\DashboardPolicy;
-use InvoiceShelf\Policies\EstimatePolicy;
-use InvoiceShelf\Policies\ExpensePolicy;
-use InvoiceShelf\Policies\InvoicePolicy;
-use InvoiceShelf\Policies\ItemPolicy;
-use InvoiceShelf\Policies\ModulesPolicy;
-use InvoiceShelf\Policies\NotePolicy;
-use InvoiceShelf\Policies\OwnerPolicy;
-use InvoiceShelf\Policies\PaymentPolicy;
-use InvoiceShelf\Policies\RecurringInvoicePolicy;
-use InvoiceShelf\Policies\ReportPolicy;
-use InvoiceShelf\Policies\SettingsPolicy;
-use InvoiceShelf\Policies\UserPolicy;
-use InvoiceShelf\Space\InstallUtils;
+use App\Bouncer\Scopes\DefaultScope;
+use App\Policies\CompanyPolicy;
+use App\Policies\CustomerPolicy;
+use App\Policies\DashboardPolicy;
+use App\Policies\EstimatePolicy;
+use App\Policies\ExpensePolicy;
+use App\Policies\InvoicePolicy;
+use App\Policies\ItemPolicy;
+use App\Policies\ModulesPolicy;
+use App\Policies\NotePolicy;
+use App\Policies\OwnerPolicy;
+use App\Policies\PaymentPolicy;
+use App\Policies\RecurringInvoicePolicy;
+use App\Policies\ReportPolicy;
+use App\Policies\SettingsPolicy;
+use App\Policies\UserPolicy;
+use App\Space\InstallUtils;
 use Silber\Bouncer\Database\Models as BouncerModels;
 
 class AppServiceProvider extends ServiceProvider

@@ -1,6 +1,6 @@
 <?php
 
-namespace InvoiceShelf\Models;
+namespace App\Models;
 
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Carbon\Carbon;
@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use InvoiceShelf\Jobs\GeneratePaymentPdfJob;
-use InvoiceShelf\Mail\SendPaymentMail;
-use InvoiceShelf\Services\SerialNumberFormatter;
-use InvoiceShelf\Traits\GeneratesPdfTrait;
-use InvoiceShelf\Traits\HasCustomFieldsTrait;
+use App\Jobs\GeneratePaymentPdfJob;
+use App\Mail\SendPaymentMail;
+use App\Services\SerialNumberFormatter;
+use App\Traits\GeneratesPdfTrait;
+use App\Traits\HasCustomFieldsTrait;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Vinkla\Hashids\Facades\Hashids;
@@ -96,7 +96,7 @@ class Payment extends Model implements HasMedia
 
     public function emailLogs(): MorphMany
     {
-        return $this->morphMany('InvoiceShelf\Models\EmailLog', 'mailable');
+        return $this->morphMany('App\Models\EmailLog', 'mailable');
     }
 
     public function customer(): BelongsTo
@@ -116,7 +116,7 @@ class Payment extends Model implements HasMedia
 
     public function creator(): BelongsTo
     {
-        return $this->belongsTo(\InvoiceShelf\Models\User::class, 'creator_id');
+        return $this->belongsTo(\App\Models\User::class, 'creator_id');
     }
 
     public function currency(): BelongsTo

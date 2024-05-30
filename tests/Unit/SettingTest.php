@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Artisan;
-use InvoiceShelf\Models\Setting;
+use App\Models\Setting;
 
 use function Pest\Faker\fake;
 

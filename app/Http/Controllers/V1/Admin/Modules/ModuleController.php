@@ -1,11 +1,11 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Modules;
+namespace App\Http\Controllers\V1\Admin\Modules;
 
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Resources\ModuleResource;
-use InvoiceShelf\Space\ModuleInstaller;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\ModuleResource;
+use App\Space\ModuleInstaller;
 
 class ModuleController extends Controller
 {

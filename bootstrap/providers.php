@@ -1,8 +1,8 @@
 <?php
 
 return [
-    InvoiceShelf\Providers\AppServiceProvider::class,
-    InvoiceShelf\Providers\RouteServiceProvider::class,
-    InvoiceShelf\Providers\DropboxServiceProvider::class,
-    InvoiceShelf\Providers\ViewServiceProvider::class,
+    App\Providers\AppServiceProvider::class,
+    App\Providers\RouteServiceProvider::class,
+    App\Providers\DropboxServiceProvider::class,
+    App\Providers\ViewServiceProvider::class,
 ];

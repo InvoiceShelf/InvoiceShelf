@@ -1,13 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Artisan;
-use InvoiceShelf\Http\Controllers\V1\Admin\Invoice\InvoicesController;
-use InvoiceShelf\Http\Requests\InvoicesRequest;
-use InvoiceShelf\Mail\SendInvoiceMail;
-use InvoiceShelf\Models\Invoice;
-use InvoiceShelf\Models\InvoiceItem;
-use InvoiceShelf\Models\Tax;
-use InvoiceShelf\Models\User;
+use App\Http\Controllers\V1\Admin\Invoice\InvoicesController;
+use App\Http\Requests\InvoicesRequest;
+use App\Mail\SendInvoiceMail;
+use App\Models\Invoice;
+use App\Models\InvoiceItem;
+use App\Models\Tax;
+use App\Models\User;
 use Laravel\Sanctum\Sanctum;
 
 use function Pest\Laravel\getJson;

@@ -1,6 +1,6 @@
 <?php
 
-namespace InvoiceShelf\Providers;
+namespace App\Providers;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;

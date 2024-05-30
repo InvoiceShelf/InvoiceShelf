@@ -1,10 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Artisan;
-use InvoiceShelf\Http\Controllers\V1\Admin\Company\CompaniesController;
-use InvoiceShelf\Http\Requests\CompaniesRequest;
-use InvoiceShelf\Models\Company;
-use InvoiceShelf\Models\User;
+use App\Http\Controllers\V1\Admin\Company\CompaniesController;
+use App\Http\Requests\CompaniesRequest;
+use App\Models\Company;
+use App\Models\User;
 use Laravel\Sanctum\Sanctum;
 
 use function Pest\Laravel\getJson;

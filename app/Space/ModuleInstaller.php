@@ -1,15 +1,15 @@
 <?php
 
-namespace InvoiceShelf\Space;
+namespace App\Space;
 
 use Artisan;
 use File;
 use GuzzleHttp\Exception\RequestException;
-use InvoiceShelf\Events\ModuleEnabledEvent;
-use InvoiceShelf\Events\ModuleInstalledEvent;
-use InvoiceShelf\Http\Resources\ModuleResource;
-use InvoiceShelf\Models\Module as ModelsModule;
-use InvoiceShelf\Models\Setting;
+use App\Events\ModuleEnabledEvent;
+use App\Events\ModuleInstalledEvent;
+use App\Http\Resources\ModuleResource;
+use App\Models\Module as ModelsModule;
+use App\Models\Setting;
 use Nwidart\Modules\Facades\Module;
 use ZipArchive;
 

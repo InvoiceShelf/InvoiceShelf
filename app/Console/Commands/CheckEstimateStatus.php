@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Console\Commands;
+namespace App\Console\Commands;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use InvoiceShelf\Models\Estimate;
+use App\Models\Estimate;
 
 class CheckEstimateStatus extends Command
 {

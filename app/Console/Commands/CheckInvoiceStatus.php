@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Console\Commands;
+namespace App\Console\Commands;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use InvoiceShelf\Models\Invoice;
+use App\Models\Invoice;
 
 class CheckInvoiceStatus extends Command
 {

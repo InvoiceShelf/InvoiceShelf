@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use InvoiceShelf\Models\Currency;
+use App\Models\Currency;
 
 class CurrenciesTableSeeder extends Seeder
 {

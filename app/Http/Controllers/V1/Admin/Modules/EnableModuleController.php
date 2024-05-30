@@ -1,11 +1,11 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Modules;
+namespace App\Http\Controllers\V1\Admin\Modules;
 
 use Illuminate\Http\Request;
-use InvoiceShelf\Events\ModuleEnabledEvent;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Models\Module as ModelsModule;
+use App\Events\ModuleEnabledEvent;
+use App\Http\Controllers\Controller;
+use App\Models\Module as ModelsModule;
 use Nwidart\Modules\Facades\Module;
 
 class EnableModuleController extends Controller

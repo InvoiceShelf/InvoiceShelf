@@ -1,11 +1,11 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Modules;
+namespace App\Http\Controllers\V1\Modules;
 
 use DateTime;
 use Illuminate\Support\Arr;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Services\Module\ModuleFacade;
+use App\Http\Controllers\Controller;
+use App\Services\Module\ModuleFacade;
 use Request;
 
 class ScriptController extends Controller

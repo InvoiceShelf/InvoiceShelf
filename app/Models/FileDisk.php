@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Models;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use InvoiceShelf\Carbon;
+use App\Carbon;
 
 class FileDisk extends Model
 {

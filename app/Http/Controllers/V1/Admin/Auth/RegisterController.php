@@ -1,12 +1,12 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Auth;
+namespace App\Http\Controllers\V1\Admin\Auth;
 
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Validator;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Models\User;
-use InvoiceShelf\Providers\AppServiceProvider;
+use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Providers\AppServiceProvider;
 
 class RegisterController extends Controller
 {
@@ -57,7 +57,7 @@ class RegisterController extends Controller
     /**
      * Create a new user instance after a valid registration.
      *
-     * @return \InvoiceShelf\User
+     * @return \App\User
      */
     protected function create(array $data)
     {

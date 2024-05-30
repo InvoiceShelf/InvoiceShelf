@@ -3,12 +3,12 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use InvoiceShelf\Models\Currency;
-use InvoiceShelf\Models\Customer;
-use InvoiceShelf\Models\Invoice;
-use InvoiceShelf\Models\RecurringInvoice;
-use InvoiceShelf\Models\User;
-use InvoiceShelf\Services\SerialNumberFormatter;
+use App\Models\Currency;
+use App\Models\Customer;
+use App\Models\Invoice;
+use App\Models\RecurringInvoice;
+use App\Models\User;
+use App\Services\SerialNumberFormatter;
 
 class InvoiceFactory extends Factory
 {

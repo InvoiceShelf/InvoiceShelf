@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Policies;
+namespace App\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
-use InvoiceShelf\Models\Estimate;
-use InvoiceShelf\Models\User;
+use App\Models\Estimate;
+use App\Models\User;
 use Silber\Bouncer\BouncerFacade;
 
 class EstimatePolicy
@@ -112,7 +112,7 @@ class EstimatePolicy
     /**
      * Determine whether the user can send email of the model.
      *
-     * @param  \InvoiceShelf\Models\Estimate  $payment
+     * @param  \App\Models\Estimate  $payment
      * @return mixed
      */
     public function send(User $user, Estimate $estimate)

@@ -1,11 +1,11 @@
 <?php
 
-namespace InvoiceShelf\Policies;
+namespace App\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
-use InvoiceShelf\Models\Payment;
-use InvoiceShelf\Models\PaymentMethod;
-use InvoiceShelf\Models\User;
+use App\Models\Payment;
+use App\Models\PaymentMethod;
+use App\Models\User;
 use Silber\Bouncer\BouncerFacade;
 
 class PaymentMethodPolicy

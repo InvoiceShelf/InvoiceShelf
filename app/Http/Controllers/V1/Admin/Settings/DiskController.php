@@ -1,13 +1,13 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Settings;
+namespace App\Http\Controllers\V1\Admin\Settings;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests\DiskEnvironmentRequest;
-use InvoiceShelf\Http\Resources\FileDiskResource;
-use InvoiceShelf\Models\FileDisk;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\DiskEnvironmentRequest;
+use App\Http\Resources\FileDiskResource;
+use App\Models\FileDisk;
 
 class DiskController extends Controller
 {
@@ -43,7 +43,7 @@ class DiskController extends Controller
     }
 
     /**
-     * @param  \InvoiceShelf\Models\FileDisk  $file_disk
+     * @param  \App\Models\FileDisk  $file_disk
      * @return JsonResponse
      */
     public function update(FileDisk $disk, Request $request)
@@ -136,7 +136,7 @@ class DiskController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \InvoiceShelf\Models\FileDisk  $taxType
+     * @param  \App\Models\FileDisk  $taxType
      * @return \Illuminate\Http\Response
      */
     public function destroy(FileDisk $disk)

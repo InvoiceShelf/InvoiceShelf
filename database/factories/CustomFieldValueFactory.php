@@ -3,9 +3,9 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use InvoiceShelf\Models\CustomField;
-use InvoiceShelf\Models\CustomFieldValue;
-use InvoiceShelf\Models\User;
+use App\Models\CustomField;
+use App\Models\CustomFieldValue;
+use App\Models\User;
 
 class CustomFieldValueFactory extends Factory
 {

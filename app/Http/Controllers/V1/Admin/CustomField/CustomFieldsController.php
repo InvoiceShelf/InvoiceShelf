@@ -1,12 +1,12 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\CustomField;
+namespace App\Http\Controllers\V1\Admin\CustomField;
 
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests\CustomFieldRequest;
-use InvoiceShelf\Http\Resources\CustomFieldResource;
-use InvoiceShelf\Models\CustomField;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\CustomFieldRequest;
+use App\Http\Resources\CustomFieldResource;
+use App\Models\CustomField;
 
 class CustomFieldsController extends Controller
 {

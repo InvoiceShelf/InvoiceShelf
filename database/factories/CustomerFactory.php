@@ -4,9 +4,9 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
-use InvoiceShelf\Models\Currency;
-use InvoiceShelf\Models\Customer;
-use InvoiceShelf\Models\User;
+use App\Models\Currency;
+use App\Models\Customer;
+use App\Models\User;
 
 class CustomerFactory extends Factory
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Role;
+namespace App\Http\Controllers\V1\Admin\Role;
 
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
 
 class AbilitiesController extends Controller
 {

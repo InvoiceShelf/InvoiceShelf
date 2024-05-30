@@ -1,6 +1,6 @@
 <?php
 
-namespace InvoiceShelf\Notifications;
+namespace App\Notifications;
 
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Bus\Queueable;

@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Console\Commands;
+namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use InvoiceShelf\Models\Setting;
-use InvoiceShelf\Space\Updater;
+use App\Models\Setting;
+use App\Space\Updater;
 
 // Implementation taken from Akaunting - https://github.com/akaunting/akaunting
 class UpdateCommand extends Command

@@ -1,6 +1,6 @@
 <?php
 
-namespace InvoiceShelf\Models;
+namespace App\Models;
 
 use App;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
@@ -13,10 +13,10 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\Str;
-use InvoiceShelf\Mail\SendInvoiceMail;
-use InvoiceShelf\Services\SerialNumberFormatter;
-use InvoiceShelf\Traits\GeneratesPdfTrait;
-use InvoiceShelf\Traits\HasCustomFieldsTrait;
+use App\Mail\SendInvoiceMail;
+use App\Services\SerialNumberFormatter;
+use App\Traits\GeneratesPdfTrait;
+use App\Traits\HasCustomFieldsTrait;
 use Nwidart\Modules\Facades\Module;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -81,12 +81,12 @@ class Invoice extends Model implements HasMedia
 
     public function emailLogs(): MorphMany
     {
-        return $this->morphMany('InvoiceShelf\Models\EmailLog', 'mailable');
+        return $this->morphMany('App\Models\EmailLog', 'mailable');
     }
 
     public function items(): HasMany
     {
-        return $this->hasMany(\InvoiceShelf\Models\InvoiceItem::class);
+        return $this->hasMany(\App\Models\InvoiceItem::class);
     }
 
     public function taxes(): HasMany

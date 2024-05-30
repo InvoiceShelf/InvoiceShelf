@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Installation;
+namespace App\Http\Controllers\V1\Installation;
 
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Space\InstallUtils;
+use App\Http\Controllers\Controller;
+use App\Space\InstallUtils;
 
 class FinishController extends Controller
 {

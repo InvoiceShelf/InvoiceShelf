@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Str;
-use InvoiceShelf\Models\Company;
+use App\Models\Company;
 
 return new class extends Migration
 {

@@ -1,10 +1,10 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use InvoiceShelf\Models\CompanySetting;
-use InvoiceShelf\Models\Customer;
-use InvoiceShelf\Models\Item;
-use InvoiceShelf\Models\User;
+use App\Models\CompanySetting;
+use App\Models\Customer;
+use App\Models\Item;
+use App\Models\User;
 
 return new class extends Migration
 {

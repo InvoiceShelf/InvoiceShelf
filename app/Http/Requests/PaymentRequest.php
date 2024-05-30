@@ -1,11 +1,11 @@
 <?php
 
-namespace InvoiceShelf\Http\Requests;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use InvoiceShelf\Models\CompanySetting;
-use InvoiceShelf\Models\Customer;
+use App\Models\CompanySetting;
+use App\Models\Customer;
 
 class PaymentRequest extends FormRequest
 {

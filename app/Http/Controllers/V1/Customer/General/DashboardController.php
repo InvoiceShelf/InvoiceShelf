@@ -1,13 +1,13 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Customer\General;
+namespace App\Http\Controllers\V1\Customer\General;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Models\Estimate;
-use InvoiceShelf\Models\Invoice;
-use InvoiceShelf\Models\Payment;
+use App\Http\Controllers\Controller;
+use App\Models\Estimate;
+use App\Models\Invoice;
+use App\Models\Payment;
 
 class DashboardController extends Controller
 {

@@ -1,15 +1,15 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Customer;
+namespace App\Http\Controllers\V1\Customer;
 
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Resources\Customer\InvoiceResource as CustomerInvoiceResource;
-use InvoiceShelf\Mail\InvoiceViewedMail;
-use InvoiceShelf\Models\CompanySetting;
-use InvoiceShelf\Models\Customer;
-use InvoiceShelf\Models\EmailLog;
-use InvoiceShelf\Models\Invoice;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\Customer\InvoiceResource as CustomerInvoiceResource;
+use App\Mail\InvoiceViewedMail;
+use App\Models\CompanySetting;
+use App\Models\Customer;
+use App\Models\EmailLog;
+use App\Models\Invoice;
 
 class InvoicePdfController extends Controller
 {

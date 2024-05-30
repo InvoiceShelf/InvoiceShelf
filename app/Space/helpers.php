@@ -1,11 +1,11 @@
 <?php
 
 use Illuminate\Support\Str;
-use InvoiceShelf\Models\CompanySetting;
-use InvoiceShelf\Models\Currency;
-use InvoiceShelf\Models\CustomField;
-use InvoiceShelf\Models\Setting;
-use InvoiceShelf\Space\InstallUtils;
+use App\Models\CompanySetting;
+use App\Models\Currency;
+use App\Models\CustomField;
+use App\Models\Setting;
+use App\Space\InstallUtils;
 
 /**
  * Get company setting

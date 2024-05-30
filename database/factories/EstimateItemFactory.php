@@ -3,10 +3,10 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use InvoiceShelf\Models\Estimate;
-use InvoiceShelf\Models\EstimateItem;
-use InvoiceShelf\Models\Item;
-use InvoiceShelf\Models\User;
+use App\Models\Estimate;
+use App\Models\EstimateItem;
+use App\Models\Item;
+use App\Models\User;
 
 class EstimateItemFactory extends Factory
 {

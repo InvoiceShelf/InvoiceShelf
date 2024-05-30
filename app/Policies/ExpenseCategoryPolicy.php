@@ -1,11 +1,11 @@
 <?php
 
-namespace InvoiceShelf\Policies;
+namespace App\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
-use InvoiceShelf\Models\Expense;
-use InvoiceShelf\Models\ExpenseCategory;
-use InvoiceShelf\Models\User;
+use App\Models\Expense;
+use App\Models\ExpenseCategory;
+use App\Models\User;
 use Silber\Bouncer\BouncerFacade;
 
 class ExpenseCategoryPolicy

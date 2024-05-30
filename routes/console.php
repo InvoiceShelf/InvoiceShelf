@@ -3,9 +3,9 @@
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
-use InvoiceShelf\Models\CompanySetting;
-use InvoiceShelf\Models\RecurringInvoice;
-use InvoiceShelf\Space\InstallUtils;
+use App\Models\CompanySetting;
+use App\Models\RecurringInvoice;
+use App\Space\InstallUtils;
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());

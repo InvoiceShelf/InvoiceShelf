@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\RecurringInvoice;
+namespace App\Http\Controllers\V1\Admin\RecurringInvoice;
 
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Models\RecurringInvoice;
+use App\Http\Controllers\Controller;
+use App\Models\RecurringInvoice;
 
 class RecurringInvoiceFrequencyController extends Controller
 {

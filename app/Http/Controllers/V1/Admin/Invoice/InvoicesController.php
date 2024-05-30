@@ -1,14 +1,14 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Invoice;
+namespace App\Http\Controllers\V1\Admin\Invoice;
 
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests;
-use InvoiceShelf\Http\Requests\DeleteInvoiceRequest;
-use InvoiceShelf\Http\Resources\InvoiceResource;
-use InvoiceShelf\Jobs\GenerateInvoicePdfJob;
-use InvoiceShelf\Models\Invoice;
+use App\Http\Controllers\Controller;
+use App\Http\Requests;
+use App\Http\Requests\DeleteInvoiceRequest;
+use App\Http\Resources\InvoiceResource;
+use App\Jobs\GenerateInvoicePdfJob;
+use App\Models\Invoice;
 
 class InvoicesController extends Controller
 {

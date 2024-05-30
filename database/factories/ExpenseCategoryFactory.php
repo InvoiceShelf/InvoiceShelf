@@ -3,8 +3,8 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use InvoiceShelf\Models\ExpenseCategory;
-use InvoiceShelf\Models\User;
+use App\Models\ExpenseCategory;
+use App\Models\User;
 
 class ExpenseCategoryFactory extends Factory
 {

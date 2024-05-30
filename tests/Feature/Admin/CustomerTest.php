@@ -1,11 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Artisan;
-use InvoiceShelf\Http\Controllers\V1\Admin\Customer\CustomersController;
-use InvoiceShelf\Http\Requests\CustomerRequest;
-use InvoiceShelf\Models\Customer;
-use InvoiceShelf\Models\Invoice;
-use InvoiceShelf\Models\User;
+use App\Http\Controllers\V1\Admin\Customer\CustomersController;
+use App\Http\Requests\CustomerRequest;
+use App\Models\Customer;
+use App\Models\Invoice;
+use App\Models\User;
 use Laravel\Sanctum\Sanctum;
 
 use function Pest\Laravel\getJson;

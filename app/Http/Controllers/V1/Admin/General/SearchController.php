@@ -1,11 +1,11 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\General;
+namespace App\Http\Controllers\V1\Admin\General;
 
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Models\Customer;
-use InvoiceShelf\Models\User;
+use App\Http\Controllers\Controller;
+use App\Models\Customer;
+use App\Models\User;
 
 class SearchController extends Controller
 {

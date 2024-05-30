@@ -2,11 +2,11 @@
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
-use InvoiceShelf\Http\Controllers\V1\Admin\RecurringInvoice\RecurringInvoiceController;
-use InvoiceShelf\Http\Requests\RecurringInvoiceRequest;
-use InvoiceShelf\Models\InvoiceItem;
-use InvoiceShelf\Models\RecurringInvoice;
-use InvoiceShelf\Models\User;
+use App\Http\Controllers\V1\Admin\RecurringInvoice\RecurringInvoiceController;
+use App\Http\Requests\RecurringInvoiceRequest;
+use App\Models\InvoiceItem;
+use App\Models\RecurringInvoice;
+use App\Models\User;
 use Laravel\Sanctum\Sanctum;
 
 use function Pest\Laravel\getJson;

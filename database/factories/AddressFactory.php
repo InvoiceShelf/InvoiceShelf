@@ -3,9 +3,9 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use InvoiceShelf\Models\Address;
-use InvoiceShelf\Models\Customer;
-use InvoiceShelf\Models\User;
+use App\Models\Address;
+use App\Models\Customer;
+use App\Models\User;
 
 class AddressFactory extends Factory
 {

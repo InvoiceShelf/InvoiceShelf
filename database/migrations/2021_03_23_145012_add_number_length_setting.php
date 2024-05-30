@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use InvoiceShelf\Models\CompanySetting;
-use InvoiceShelf\Models\User;
+use App\Models\CompanySetting;
+use App\Models\User;
 
 return new class extends Migration
 {
