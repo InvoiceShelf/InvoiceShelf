@@ -30,7 +30,7 @@ return new class extends Migration
                 $table->dropColumn('company_id');
             });
         }
-        
+
     }
 
     /**
