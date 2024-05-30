@@ -139,7 +139,7 @@ Route::prefix('/v1')->group(function () {
     // Authentication & Password Reset
     //----------------------------------
 
-    Route::group(['prefix' => 'auth'], function () {
+    Route::prefix('auth')->group(function () {
         Route::post('login', [AuthController::class, 'login']);
 
         Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
@@ -467,7 +467,7 @@ Route::prefix('/v1')->group(function () {
         // Authentication & Password Reset
         //----------------------------------
 
-        Route::group(['prefix' => 'auth'], function () {
+        Route::prefix('auth')->group(function () {
 
             // Send reset password mail
             Route::post('password/email', [AuthForgotPasswordController::class, 'sendResetLinkEmail']);
