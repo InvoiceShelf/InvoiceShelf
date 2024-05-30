@@ -5,6 +5,7 @@ namespace InvoiceShelf\Http\Controllers;
 use Illuminate\Http\Request;
 use InvoiceShelf\Models\Schedule;
 use InvoiceShelf\Models\Installer;
+use InvoiceShelf\Models\Customer;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -13,20 +14,40 @@ class ScheduleController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+     
+    protected $company_id;
+
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $user = Auth::user();
+            if ($user) {
+                $this->company_id = $user->companies->first()->id;
+            }    
+            return $next($request);
+        });
+    }
+
     public function index()
     {        
-        $user = Auth::user();
-        $company_id = $user ->companies->first()->id;
-        $schedules = Schedule::where('company_id',$company_id)->get();        
+        $schedules = Schedule::where('company_id',$this->company_id)
+        ->with('customer')
+        ->with('installer')
+        ->get();
         return response()->json($schedules);
     }
 
     public function getInstallers()
-    {        
-        $user = Auth::user();
-        $company_id = $user ->companies->first()->id;        
-        $installers = Installer::where('company_id',$company_id)->get();
+    {               
+        $installers = Installer::where('company_id',$this->company_id)->get();
         return response()->json($installers);
+    }
+
+    public function getCustomers()
+    {           
+        $customers = Customer::where('company_id',$this->company_id)->get();
+        return response()->json($customers);
     }
 
     /**
@@ -43,11 +64,12 @@ class ScheduleController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-        $company_id = $user ->companies->first()->id;
 
         $request->validate([
-            'title' => 'required|string',            
+            'title' => 'required|string',
             'start' => 'required',
+            'customer_id' => 'required',
+            'installer_id' => 'required',
         ]);
 
         $schedule = Schedule::create([
@@ -56,7 +78,8 @@ class ScheduleController extends Controller
             'end' => $request->end,
             'description' => $request->description,
             'user_id' => $user->id,
-            'company_id' => $company_id,
+            'company_id' => $this->company_id,
+            'customer_id' => $request->customer_id,
             'installer_id' => $request->installer_id,
         ]);
 

@@ -21,12 +21,14 @@ class CreateSchedulesTable extends Migration
 
             $table->integer('user_id')->unsigned()->nullable();
             $table->integer('company_id')->unsigned()->nullable();
+            $table->bigInteger('customer_id')->unsigned()->nullable();
             $table->bigInteger('installer_id')->unsigned()->nullable();
                         
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('company_id')->references('id')->on('companies');
+            $table->foreign('customer_id')->references('id')->on('customers');
             $table->foreign('installer_id')->references('id')->on('installers');
         });
     }

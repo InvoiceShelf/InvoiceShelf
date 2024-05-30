@@ -9,7 +9,7 @@ class Schedule extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title','start','end','description','user_id','company_id','installer_id'];
+    protected $fillable = ['title','start','end','description','user_id','company_id','customer_id','installer_id'];
 
     public function company()
     {
@@ -24,5 +24,10 @@ class Schedule extends Model
     public function installer()
     {
         return $this->belongsTo(Installer::class);
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
     }
 }

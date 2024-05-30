@@ -151,4 +151,4 @@ Route::get('/login', function () {
 Route::get('schedules', [ScheduleController::class, 'index'])->name('schedule.index')->middleware(['redirect-if-unauthenticated']);
 Route::post('schedules', [ScheduleController::class, 'store'])->name('schedule.store')->middleware(['redirect-if-unauthenticated']);
 Route::get('get-installers', [ScheduleController::class, 'getInstallers'])->name('schedule.get-installers')->middleware(['redirect-if-unauthenticated']);
-
+Route::get('get-customers', [ScheduleController::class, 'getCustomers'])->name('schedule.get-customers')->middleware(['redirect-if-unauthenticated']);
