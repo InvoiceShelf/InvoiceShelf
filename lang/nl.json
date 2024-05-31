@@ -863,6 +863,8 @@
     "company_info": {
       "company_info": "Bedrijfsinfo",
       "company_name": "Bedrijfsnaam",
+      "tax_id": "Tax Identification Number",
+      "vat_id": "VAT Identification Number",
       "company_logo": "Bedrijfslogo",
       "section_description": "Informatie over uw bedrijf die wordt weergegeven op facturen, offertes en andere documenten die door InvoiceShelf zijn gemaakt.",
       "phone": "Telefoon",
@@ -1267,6 +1269,12 @@
       "aws_region": "AWS Regio",
       "aws_bucket": "AWS Bucket",
       "aws_root": "AWS Root",
+      "s3_endpoint": "S3 Endpoint",
+      "s3_key": "S3 Key",
+      "s3_secret": "S3 Secret",
+      "s3_region": "S3 Region",
+      "s3_bucket": "S3 Bucket",
+      "s3_root": "S3 Root",
       "do_spaces_type": "Do Spaces type",
       "do_spaces_key": "Do Spaces Key",
       "do_spaces_secret": "Do Spaces Secret",
@@ -1522,5 +1530,7 @@
   "pdf_bill_to": "Rekening naar,",
   "pdf_ship_to": "Verzend naar,",
   "pdf_received_from": "Ontvangen van:",
-  "pdf_tax_label": "Btw"
+  "pdf_tax_label": "Btw",
+  "pdf_tax_id": "Tax-ID",
+  "pdf_vat_id": "VAT-ID"
 }
