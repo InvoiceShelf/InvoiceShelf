@@ -1,10 +1,10 @@
 {
   "navigation": {
-    "dashboard": "Dashboard",
-    "customers": "Customers",
-    "items": "Items",
-    "invoices": "Invoices",
-    "recurring-invoices": "Recurring Invoices",
+    "dashboard": "Контролна табла",
+    "customers": "Корисници",
+    "items": "Ставки",
+    "invoices": "Фактури",
+    "recurring-invoices": "Повторливи фактури",
     "expenses": "Expenses",
     "estimates": "Estimates",
     "payments": "Payments",
