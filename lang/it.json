@@ -863,6 +863,8 @@
     "company_info": {
       "company_info": "Info azienda",
       "company_name": "Nome azienda",
+      "tax_id": "Tax Identification Number",
+      "vat_id": "VAT Identification Number",
       "company_logo": "Logo azienda",
       "section_description": "Informazioni sulla tua azienda che saranno mostrate in fattura, preventivi ed altri documenti creati dell'applicazione.",
       "phone": "Telefono",
@@ -1267,6 +1269,12 @@
       "aws_region": "Regione AWS",
       "aws_bucket": "Bucket AWS",
       "aws_root": "Root AWS",
+      "s3_endpoint": "S3 Endpoint",
+      "s3_key": "S3 Key",
+      "s3_secret": "S3 Secret",
+      "s3_region": "S3 Region",
+      "s3_bucket": "S3 Bucket",
+      "s3_root": "S3 Root",
       "do_spaces_type": "tipo Do Spaces",
       "do_spaces_key": "chiave Do Spaces",
       "do_spaces_secret": "segreto Do Spaces",
@@ -1522,5 +1530,7 @@
   "pdf_bill_to": "Fattura a,",
   "pdf_ship_to": "Invia a,",
   "pdf_received_from": "Ricevuto da:",
-  "pdf_tax_label": "Tassa"
+  "pdf_tax_label": "Tassa",
+  "pdf_tax_id": "Tax-ID",
+  "pdf_vat_id": "VAT-ID"
 }
