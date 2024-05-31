@@ -16,14 +16,15 @@ use App\Policies\OwnerPolicy;
 use App\Policies\PaymentPolicy;
 use App\Policies\RecurringInvoicePolicy;
 use App\Policies\ReportPolicy;
+use App\Policies\RolePolicy;
 use App\Policies\SettingsPolicy;
 use App\Policies\UserPolicy;
 use App\Space\InstallUtils;
 use Gate;
-use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\ServiceProvider;
 use Silber\Bouncer\Database\Models as BouncerModels;
+use Silber\Bouncer\Database\Role;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -41,11 +42,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Paginator::useBootstrapThree();
 
         if (InstallUtils::isDbCreated()) {
             $this->addMenus();
         }
+
+        Gate::policy(Role::class, RolePolicy::class);
 
         $this->bootAuth();
         $this->bootBroadcast();

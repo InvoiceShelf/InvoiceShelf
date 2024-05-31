@@ -91,8 +91,8 @@ class User extends Authenticatable implements HasMedia
 
     public function getFormattedCreatedAtAttribute($value)
     {
-        $company_id = (CompanySetting::where('company_id', request()->header('company'))->exists()) 
-            ? request()->header('company') 
+        $company_id = (CompanySetting::where('company_id', request()->header('company'))->exists())
+            ? request()->header('company')
             : $this->companies()->first()->id;
         $dateFormat = CompanySetting::getSetting('carbon_date_format', $company_id);
 
