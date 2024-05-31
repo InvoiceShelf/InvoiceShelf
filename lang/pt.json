@@ -863,6 +863,8 @@
     "company_info": {
       "company_info": "Informação da Empresa",
       "company_name": "Nome da Empresa",
+      "tax_id": "Tax Identification Number",
+      "vat_id": "VAT Identification Number",
       "company_logo": "Logotipo da Empresa",
       "section_description": "Informações sobre sua empresa que serão exibidas em Faturas, Orçamentos e outros documentos criados pela InvoiceShelf.",
       "phone": "Telefone",
@@ -1267,6 +1269,12 @@
       "aws_region": "Região AWS",
       "aws_bucket": "Bucket AWS",
       "aws_root": "Root AWS",
+      "s3_endpoint": "S3 Endpoint",
+      "s3_key": "S3 Key",
+      "s3_secret": "S3 Secret",
+      "s3_region": "S3 Region",
+      "s3_bucket": "S3 Bucket",
+      "s3_root": "S3 Root",
       "do_spaces_type": "Tipo de Spaces Do",
       "do_spaces_key": "Chave de Spaces Do",
       "do_spaces_secret": "Senha de Spaces Do",
@@ -1522,5 +1530,7 @@
   "pdf_bill_to": "Cobrar a,",
   "pdf_ship_to": "Envie a,",
   "pdf_received_from": "Remetente:",
-  "pdf_tax_label": "Tax"
+  "pdf_tax_label": "Tax",
+  "pdf_tax_id": "Tax-ID",
+  "pdf_vat_id": "VAT-ID"
 }
