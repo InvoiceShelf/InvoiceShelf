@@ -99,7 +99,8 @@
     "note": "หมายเหตุ",
     "pay_invoice": "ชำระใบวางบิล",
     "login_successfully": "เข้าสู่ระบบเรียบร้อยแล้ว!",
-    "logged_out_successfully": "ออกจากระบบเรียบร้อยแล้ว"
+    "logged_out_successfully": "ออกจากระบบเรียบร้อยแล้ว",
+    "mark_as_default": "Mark as default"
   },
   "dashboard": {
     "select_year": "เลือกปี",
@@ -353,7 +354,8 @@
       "amount": "จำนวนเงิน (บาท)",
       "select_an_item": "พิมพ์หรือคลิกเพื่อเลือกรายการ",
       "type_item_description": "คำอธิบาย (ไม่จำเป็น)"
-    }
+    },
+    "mark_as_default_estimate_template_description": "If enabled, the selected template will be automatically selected for new estimates."
   },
   "invoices": {
     "title": "ใบวางบิล",
@@ -444,7 +446,8 @@
     "deleted_message": "ลบใบวางบิลเรียบร้อยแล้ว | ลบใบวางบิลเรียบร้อยแล้ว",
     "marked_as_sent_message": "ใบวางบิลที่ทำเครื่องหมายว่าส่งเรียบร้อยแล้ว",
     "something_went_wrong": "มีบางอย่างผิดพลาด",
-    "invalid_due_amount_message": "จำนวนใบวางบิลทั้งหมดต้องไม่น้อยกว่าจำนวนเงินที่ชำระทั้งหมดสำหรับใบวางบิลนี้โปรดอัปเดตใบวางบิลหรือลบการชำระเงินที่เกี่ยวข้องเพื่อดำเนินการต่อ"
+    "invalid_due_amount_message": "จำนวนใบวางบิลทั้งหมดต้องไม่น้อยกว่าจำนวนเงินที่ชำระทั้งหมดสำหรับใบวางบิลนี้โปรดอัปเดตใบวางบิลหรือลบการชำระเงินที่เกี่ยวข้องเพื่อดำเนินการต่อ",
+    "mark_as_default_invoice_template_description": "If enabled, the selected template will be automatically selected for new invoices."
   },
   "recurring_invoices": {
     "title": "ใบวางบิลประจำ",
@@ -523,6 +526,7 @@
     "cloned_successfully": "ทำสำเนาใบวางบิลประจำเสร็จเรียบร้อยแล้ว",
     "clone_invoice": "ทำสำเนาใบวางบิลประจำ",
     "confirm_clone": "ใบวางบิลประจำนี้จะถูกคัดลอกลงในใบวางบิลประจำใหม่",
+    "add_customer_email": "Please add an email address for this customer to send invoices automatically.",
     "item": {
       "title": "ชื่อรายการ",
       "description": "คำอธิบาย",
@@ -859,6 +863,8 @@
     "company_info": {
       "company_info": "ข้อมูลบริษัท",
       "company_name": "ชื่อบริษัท",
+      "tax_id": "Tax Identification Number",
+      "vat_id": "VAT Identification Number",
       "company_logo": "โลโก้บริษัท",
       "section_description": "ข้อมูลเกี่ยวกับ บริษัท ของคุณที่จะแสดงในใบวางบิล, ใบเสนอราคาและเอกสารอื่น ๆ",
       "phone": "โทรศัพท์",
@@ -1263,6 +1269,12 @@
       "aws_region": "ภูมิภาค AWS",
       "aws_bucket": "AWS บัคเก็ต",
       "aws_root": "รากของ AWS",
+      "s3_endpoint": "S3 Endpoint",
+      "s3_key": "S3 Key",
+      "s3_secret": "S3 Secret",
+      "s3_region": "S3 Region",
+      "s3_bucket": "S3 Bucket",
+      "s3_root": "S3 Root",
       "do_spaces_type": "ประเภท Do Space",
       "do_spaces_key": "ปุ่มเว้นวรรค",
       "do_spaces_secret": "ทำช่องว่างลับ",
@@ -1519,7 +1531,6 @@
   "pdf_ship_to": "ที่อยู่สำหรับจัดส่ง,",
   "pdf_received_from": "ได้รับจาก:",
   "pdf_tax_label": "ภาษี",
-  "pdf_company_name": "ผู้เสนอราคา",
-  "pdf_customer": "ลูกค้า",
-  "pdf_address": "ที่อยู่"
+  "pdf_tax_id": "Tax-ID",
+  "pdf_vat_id": "VAT-ID"
 }
