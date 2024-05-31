@@ -863,6 +863,8 @@
     "company_info": {
       "company_info": "Πληροφορίες Εταιρίας",
       "company_name": "Όνομα Εταιρείας",
+      "tax_id": "Tax Identification Number",
+      "vat_id": "VAT Identification Number",
       "company_logo": "Λογότυπο Εταιρείας",
       "section_description": "Πληροφορίες σχετικά με την εταιρεία σας που θα εμφανίζονται σε τιμολόγια, εκτιμήσεις και άλλα έγγραφα που δημιουργούνται από την InvoiceShelf.",
       "phone": "Τηλέφωνο",
@@ -1267,6 +1269,12 @@
       "aws_region": "Περιοχή AWS",
       "aws_bucket": "SES Μυστικό",
       "aws_root": "Ρίζα AWS",
+      "s3_endpoint": "S3 Endpoint",
+      "s3_key": "S3 Key",
+      "s3_secret": "S3 Secret",
+      "s3_region": "S3 Region",
+      "s3_bucket": "S3 Bucket",
+      "s3_root": "S3 Root",
       "do_spaces_type": "Τύπος κενών",
       "do_spaces_key": "Τύπος κενών",
       "do_spaces_secret": "Μυστικό Όριο Χώρων",
@@ -1522,5 +1530,7 @@
   "pdf_bill_to": "Χρέωση σε,",
   "pdf_ship_to": "Αποστολή σε,",
   "pdf_received_from": "Λήψη από",
-  "pdf_tax_label": "Φόρος"
+  "pdf_tax_label": "Φόρος",
+  "pdf_tax_id": "Tax-ID",
+  "pdf_vat_id": "VAT-ID"
 }
