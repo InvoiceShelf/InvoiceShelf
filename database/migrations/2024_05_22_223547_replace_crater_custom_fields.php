@@ -9,7 +9,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::update("UPDATE custom_field_values SET custom_field_valuable_type = REPLACE(custom_field_valuable_type, 'Crater', 'InvoiceShelf')");
+        DB::table('custom_field_values')->update([ 'custom_field_valuable_type' => DB::raw("REPLACE(custom_field_valuable_type, 'Crater', 'InvoiceShelf')") ]);
     }
 
     /**
@@ -17,6 +17,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::update("UPDATE custom_field_values SET custom_field_valuable_type = REPLACE(custom_field_valuable_type, 'InvoiceShelf', 'Crater')");
+        DB::table('custom_field_values')->update([ 'custom_field_valuable_type' => DB::raw("REPLACE(custom_field_valuable_type, 'InvoiceShelf', 'Crater')") ]);
     }
 };
