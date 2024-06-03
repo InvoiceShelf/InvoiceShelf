@@ -47,7 +47,7 @@ class RecurringInvoiceRequest extends FormRequest
                 'required',
             ],
             'discount_val' => [
-                'integer',
+                'numeric',
                 'required',
             ],
             'sub_total' => [
@@ -56,7 +56,6 @@ class RecurringInvoiceRequest extends FormRequest
             ],
             'total' => [
                 'integer',
-                'numeric',
                 'max:99999999',
                 'required',
             ],

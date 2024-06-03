@@ -87,7 +87,7 @@ class EstimatesRequest extends FormRequest
                 'required',
             ],
             'items.*.price' => [
-                'numeric',
+                'integer',
                 'required',
             ],
         ];
