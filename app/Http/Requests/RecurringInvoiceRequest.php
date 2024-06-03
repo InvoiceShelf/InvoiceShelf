@@ -47,7 +47,7 @@ class RecurringInvoiceRequest extends FormRequest
                 'required',
             ],
             'discount_val' => [
-                'numeric',
+                'integer',
                 'required',
             ],
             'sub_total' => [
