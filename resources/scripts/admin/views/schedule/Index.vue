@@ -19,14 +19,14 @@
     </BasePageHeader>
     <!-- CALENDAR-->
     <div id='calendar'></div>
+    <!-- <FullCalendar :options="calendarOptions" /> -->
   </BasePage>
 
-
-
   <!-- MODAL -->
-  <div class="modal fade" id="schedule_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="namespace">
+    <div class="modal" id="schedule_modal" tabindex="-1" data-bs-theme="light"> 
       <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+        <div class="modal-content bg-light">
 
           <div class="modal-header">
             <h1 class="modal-title fs-5" id="exampleModalLabel">Add Schedule</h1>
@@ -81,19 +81,290 @@
             </form>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>            
             <button type="button" id="saveBtn" class="btn btn-primary">Save changes</button>
           </div>
 
         </div>
       </div>  
-  </div>
+    </div>
+</div>
   
 
 </template>
 
+<!-- <script>
+import FullCalendar from '@fullcalendar/vue3'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import interactionPlugin from '@fullcalendar/interaction'
+import timeGridPlugin from '@fullcalendar/timegrid'; 
+import listPlugin from '@fullcalendar/list';
+//import bootstrapPlugin from '@fullcalendar/bootstrap';
+
+// import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
+//import "bootstrap/dist/css/bootstrap.min.css";
+// import '../../dist/custom-bootstrap.css'; // Custom Bootstrap CSS
+// import '../../../../../dist/custom-bootstrap.css';
+//import "bootstrap";
+
+
+export default 
+{
+  components: 
+  {
+    FullCalendar
+  },
+  data() 
+  {
+    return{
+      calendarOptions:
+      {
+        plugins: [ dayGridPlugin, interactionPlugin,timeGridPlugin,listPlugin ],        
+        initialView: 'dayGridMonth',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridDay,listWeek'
+        },
+        //themeSystem: 'bootstrap',
+        timeZone:'UTC',        
+        events: '/schedules',
+        eventBackgroundColor: '#ddd',
+        eventBorderColor: '#ccc',
+        eventTextColor: '#000',
+        eventDisplay:'block',
+        //events: '/get-schedules?user_id='+userStore.currentUser.id+'&company_id='+userStore.currentUser.companies[0].id,
+        editable: true,
+        selectable: true,
+
+        // eventClick: function(info) {
+        //     // Get the event data
+        //     var event = info.event;
+        //     alert('Event: ' + event.title + '\nStart: ' + event.start + '\nEnd: ' + event.end + '\nID: ' + event.id);
+        // },
+
+        //SHOW TOOLTIP
+        // eventDidMount: function(info) {
+        //   var tooltip = new Tooltip(info.el, {
+        //     title: info.event.extendedProps.description,
+        //     placement: 'top',
+        //     trigger: 'hover',
+        //     container: 'body'
+        //   });
+        // },
+
+        //CREATE SCHEDULE
+          dateClick: function(info)
+          {
+            $('.field').val('');        
+            $('.error').empty();
+
+            $('#start').val(moment(info.dateStr).format('YYYY-MM-DDTHH:mm'));        
+            $('#schedule_modal').modal('toggle');
+
+            $('#saveBtn').click(function()
+            {
+              var title = $('#title').val();
+              var description = $('#description').val();          
+              var start = $('#start').val();
+              var end = $('#end').val();
+              var customer_id = $('#customer').val();
+              var installer_id = $('#installer').val();
+
+              $.ajax({
+                url:"/schedules",
+                type:"POST",
+                dataType:'json',
+                data:{ title, start, end, description, customer_id, installer_id },
+                success:function(response)
+                {
+                    $('#schedule_modal').modal('hide');
+                    var newEvent = {
+                      'id': response.id,
+                      'title': response.title,
+                      'start' : response.start,
+                      'end'  : response.end
+                    }
+                    calendar.addEvent(newEvent);
+
+                },
+                error:function(error)
+                {
+                    if(error) {
+                        $('#titleError').html(error.responseJSON.errors.title);
+                        $('#startError').html(error.responseJSON.errors.start);
+                        $('#customerError').html(error.responseJSON.errors.customer_id);
+                        $('#installerError').html(error.responseJSON.errors.installer_id);
+                    }
+                },
+              });
+
+            });
+  
+        },
+
+        eventMouseEnter: function(info) {
+            // Extract event details
+            var eventObj = info.event;
+
+            var tooltipContent = `
+            <strong>Description:</strong> ${eventObj.extendedProps.description}<br>
+            <strong>Customer:</strong> ${eventObj.extendedProps.customer.name}<br>
+            <strong>Installer:</strong> ${eventObj.extendedProps.installer.name}`;
+
+            // Create tooltip
+            var tooltip = new bootstrap.Tooltip(info.el, {
+                title: tooltipContent,
+                html: true,
+                placement: 'top',
+                trigger: 'manual'
+            });
+
+            // Show tooltip
+            tooltip.show();
+
+            // Store tooltip instance for later hiding
+            $(info.el).data('tooltip', tooltip);
+
+            // // Fetch additional information based on customer_id
+            // $.ajax({
+            //     url: '/get-customer-name', // Your API endpoint to get customer name
+            //     type: 'GET',
+            //     data: { customer_id: eventObj.extendedProps.customer_id },
+            //     success: function(response) {
+            //         var tooltipContent = `<strong>Description:</strong> ${eventObj.extendedProps.description}<br><strong>Customer:</strong> ${response.customer_name}`;
+
+            //         // Create tooltip
+            //         var tooltip = new bootstrap.Tooltip(info.el, {
+            //             title: tooltipContent,
+            //             html: true,
+            //             placement: 'top',
+            //             trigger: 'manual'
+            //         });
+
+            //         // Show tooltip
+            //         tooltip.show();
+
+            //         // Store tooltip instance for later hiding
+            //         $(info.el).data('tooltip', tooltip);
+            //     }
+            // });
+        },
+        eventMouseLeave: function(info) {
+            // Hide and dispose the tooltip
+            var tooltip = $(info.el).data('tooltip');
+            if (tooltip) {
+                tooltip.dispose();
+            }
+        }
+
+      }//calendar_options
+    }//return
+  },//data
+  
+  //AFTER LOAD COMPLETE HTML ELEMENTS
+  mounted() {
+    //Customer Select Initializing
+    $.ajax({
+      url:"/get-customers",
+      type:"GET",
+      dataType:'json',
+      success:function(response)
+      {        
+        $('#customer').empty();
+        $('#customer').append('<option value=""></option>');
+        response.forEach(function(customer) {
+            $('#customer').append('<option value="' + customer.id + '">' + customer.name + '</option>');
+        });
+      },
+      error:function(error)
+      {
+          alert('Something went wrong to get the customers list: '+error);
+      },
+    });
+
+    //Installer Select Initializing
+    $.ajax({
+      url:"/get-installers",
+      type:"GET",
+      dataType:'json',
+      success:function(response)
+      {
+        $('#installer').empty();
+        $('#installer').append('<option value=""></option>');
+        response.forEach(function(installer) {
+            $('#installer').append('<option value="' + installer.id + '">' + installer.name + '</option>');
+        });
+      },
+      error:function(error)
+      {
+          alert('Something went wrong to get the installers list: '+error);
+      },
+    });
+  }
+  // methods:
+  // {
+  //   bla()
+  //   {
+      
+  //       alert('popopop');
+     
+  //   }
+  // },
+
+
+
+}//export defautl
+
+// import { Calendar } from '@fullcalendar/core';
+// import dayGridPlugin from '@fullcalendar/daygrid';
+// import timeGridPlugin from '@fullcalendar/timegrid';
+// import listPlugin from '@fullcalendar/list';
+// import interactionPlugin from '@fullcalendar/interaction'
+
+// import { onMounted } from 'vue'
+
+// onMounted(() => {
+
+//   // let calendarEl = document.getElementById('calendar');
+//   // let calendar = new Calendar(calendarEl, {
+//   //   plugins: [ dayGridPlugin, interactionPlugin, timeGridPlugin,listPlugin ],
+//   //   initialView: 'dayGridMonth',
+//   //   headerToolbar: {
+//   //     left: 'prev,next today',
+//   //     center: 'title',
+//   //     right: 'dayGridMonth,timeGridDay,listWeek'
+//   //   },
+//   //   events: '/schedules',
+//   // });
+//   // calendar.render();
+
+// });
+
+
+
+</script> -->
+
+
+
+
+
 <!-- FULL CALENDAR-->
+
+
+
 <script setup>
+
+import { Calendar } from '@fullcalendar/core';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import listPlugin from '@fullcalendar/list';
+import interactionPlugin from '@fullcalendar/interaction'
+
+import "bootstrap";
+
 import { onMounted } from 'vue'
 import { useUserStore } from '@/scripts/admin/stores/user'
 
@@ -147,8 +418,11 @@ const userStore = useUserStore()
   });
 
   onMounted(() => {
+
+
     var calendarEl = document.getElementById('calendar');
-    var calendar = new FullCalendar.Calendar(calendarEl, {
+    var calendar = new Calendar(calendarEl, {
+      plugins: [ dayGridPlugin, interactionPlugin, timeGridPlugin,listPlugin ],
       //themeSystem: 'bootstrap5',
       initialView: 'dayGridMonth',
       headerToolbar: {
@@ -174,14 +448,14 @@ const userStore = useUserStore()
       // },
 
       //SHOW TOOLTIP
-      eventDidMount: function(info) {
-        var tooltip = new Tooltip(info.el, {
-          title: info.event.extendedProps.description,
-          placement: 'top',
-          trigger: 'hover',
-          container: 'body'
-        });
-      },
+      // eventDidMount: function(info) {
+      //   var tooltip = new Tooltip(info.el, {
+      //     title: info.event.extendedProps.description,
+      //     placement: 'top',
+      //     trigger: 'hover',
+      //     container: 'body'
+      //   });
+      // },
 
       //CREATE SCHEDULE
       dateClick: function(info)
@@ -233,60 +507,60 @@ const userStore = useUserStore()
  
       },
 
-      eventMouseEnter: function(info) {
-          // Extract event details
-          var eventObj = info.event;
+      // eventMouseEnter: function(info) {
+      //     // Extract event details
+      //     var eventObj = info.event;
 
-          var tooltipContent = `
-          <strong>Description:</strong> ${eventObj.extendedProps.description}<br>
-          <strong>Customer:</strong> ${eventObj.extendedProps.customer.name}<br>
-          <strong>Installer:</strong> ${eventObj.extendedProps.installer.name}`;
+      //     var tooltipContent = `
+      //     <strong>Description:</strong> ${eventObj.extendedProps.description}<br>
+      //     <strong>Customer:</strong> ${eventObj.extendedProps.customer.name}<br>
+      //     <strong>Installer:</strong> ${eventObj.extendedProps.installer.name}`;
 
-          // Create tooltip
-          var tooltip = new bootstrap.Tooltip(info.el, {
-              title: tooltipContent,
-              html: true,
-              placement: 'top',
-              trigger: 'manual'
-          });
+      //     // Create tooltip
+      //     var tooltip = new bootstrap.Tooltip(info.el, {
+      //         title: tooltipContent,
+      //         html: true,
+      //         placement: 'top',
+      //         trigger: 'manual'
+      //     });
 
-          // Show tooltip
-          tooltip.show();
+      //     // Show tooltip
+      //     tooltip.show();
 
-          // Store tooltip instance for later hiding
-          $(info.el).data('tooltip', tooltip);
+      //     // Store tooltip instance for later hiding
+      //     $(info.el).data('tooltip', tooltip);
 
-          // // Fetch additional information based on customer_id
-          // $.ajax({
-          //     url: '/get-customer-name', // Your API endpoint to get customer name
-          //     type: 'GET',
-          //     data: { customer_id: eventObj.extendedProps.customer_id },
-          //     success: function(response) {
-          //         var tooltipContent = `<strong>Description:</strong> ${eventObj.extendedProps.description}<br><strong>Customer:</strong> ${response.customer_name}`;
+      //     // // Fetch additional information based on customer_id
+      //     // $.ajax({
+      //     //     url: '/get-customer-name', // Your API endpoint to get customer name
+      //     //     type: 'GET',
+      //     //     data: { customer_id: eventObj.extendedProps.customer_id },
+      //     //     success: function(response) {
+      //     //         var tooltipContent = `<strong>Description:</strong> ${eventObj.extendedProps.description}<br><strong>Customer:</strong> ${response.customer_name}`;
 
-          //         // Create tooltip
-          //         var tooltip = new bootstrap.Tooltip(info.el, {
-          //             title: tooltipContent,
-          //             html: true,
-          //             placement: 'top',
-          //             trigger: 'manual'
-          //         });
+      //     //         // Create tooltip
+      //     //         var tooltip = new bootstrap.Tooltip(info.el, {
+      //     //             title: tooltipContent,
+      //     //             html: true,
+      //     //             placement: 'top',
+      //     //             trigger: 'manual'
+      //     //         });
 
-          //         // Show tooltip
-          //         tooltip.show();
+      //     //         // Show tooltip
+      //     //         tooltip.show();
 
-          //         // Store tooltip instance for later hiding
-          //         $(info.el).data('tooltip', tooltip);
-          //     }
-          // });
-      },
-      eventMouseLeave: function(info) {
-          // Hide and dispose the tooltip
-          var tooltip = $(info.el).data('tooltip');
-          if (tooltip) {
-              tooltip.dispose();
-          }
-      }
+      //     //         // Store tooltip instance for later hiding
+      //     //         $(info.el).data('tooltip', tooltip);
+      //     //     }
+      //     // });
+      // },
+      // eventMouseLeave: function(info) {
+      //     // Hide and dispose the tooltip
+      //     var tooltip = $(info.el).data('tooltip');
+      //     if (tooltip) {
+      //         tooltip.dispose();
+      //     }
+      // }
 
 
 
@@ -313,7 +587,15 @@ const userStore = useUserStore()
 
 <style scoped>
 
-@import 'bootstrap.min.css';
+/* @import '../../../../../custom-bootstrap.css'; */
+/* @import '../../../../../resources/sass/custom-bootstrap.scss'; */
+
+/* @import 'bootstrap/dist/css/bootstrap.min.css'; */
+
+/* @import "~@fullcalendar/core/main.css";
+@import "~@fullcalendar/daygrid/main.css"; */
+
+ /*@import 'bootstrap.min.css';*/
 
 
 /* .fc .fc-view {

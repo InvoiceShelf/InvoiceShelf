@@ -34,6 +34,7 @@ export default defineConfig({
         }),
         laravel({
             input: [
+                'resources/sass/custom-bootstrap.scss',
                 'resources/scripts/main.js',
             ],
             refresh: true,
