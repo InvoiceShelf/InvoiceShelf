@@ -7,7 +7,6 @@ use InvoiceShelf\Http\Controllers\Controller;
 
 class LanguagesController extends Controller
 {
-
     /**
      * Display the languages page.
      *

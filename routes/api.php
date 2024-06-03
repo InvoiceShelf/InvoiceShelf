@@ -102,9 +102,9 @@ use InvoiceShelf\Http\Controllers\V1\Installation\AppDomainController;
 use InvoiceShelf\Http\Controllers\V1\Installation\DatabaseConfigurationController;
 use InvoiceShelf\Http\Controllers\V1\Installation\FilePermissionsController;
 use InvoiceShelf\Http\Controllers\V1\Installation\FinishController;
+use InvoiceShelf\Http\Controllers\V1\Installation\LanguagesController;
 use InvoiceShelf\Http\Controllers\V1\Installation\LoginController;
 use InvoiceShelf\Http\Controllers\V1\Installation\OnboardingWizardController;
-use InvoiceShelf\Http\Controllers\V1\Installation\LanguagesController;
 use InvoiceShelf\Http\Controllers\V1\Installation\RequirementsController;
 use InvoiceShelf\Http\Controllers\V1\Webhook\CronJobController;
 
