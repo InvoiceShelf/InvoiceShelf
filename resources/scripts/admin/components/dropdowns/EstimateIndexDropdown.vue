@@ -45,6 +45,18 @@
       {{ $t('general.delete') }}
     </BaseDropdownItem>
 
+    <!-- Clone Estimate into new estimate  -->
+    <BaseDropdownItem
+      v-if="userStore.hasAbilities(abilities.CREATE_ESTIMATE)"
+      @click="cloneEstimateData(row)"
+    >
+      <BaseIcon
+        name="DocumentTextIcon"
+        class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+      />
+      {{ $t('invoices.clone_invoice') }}
+    </BaseDropdownItem>
+
     <!-- View Estimate -->
     <router-link
       v-if="
@@ -333,5 +345,25 @@ function copyPdfUrl() {
     type: 'success',
     message: t('general.copied_pdf_url_clipboard'),
   })
+}
+
+async function cloneEstimateData(data) {
+  dialogStore
+    .openDialog({
+      title: t('general.are_you_sure'),
+      message: t('estimates.confirm_clone'),
+      yesLabel: t('general.ok'),
+      noLabel: t('general.cancel'),
+      variant: 'primary',
+      hideNoButton: false,
+      size: 'lg',
+    })
+    .then((res) => {
+      if (res) {
+        estimateStore.cloneEstimate(data).then((res) => {
+          router.push(`/admin/estimates/${res.data.data.id}/edit`)
+        })
+      }
+    })
 }
 </script>
