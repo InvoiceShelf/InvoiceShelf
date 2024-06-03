@@ -165,7 +165,7 @@
         </template>
 
         <template #cell-name="{ row }">
-          <BaseText :text="row.data.customer.name" :length="30" tag="span" />
+          <BaseText :text="row.data.customer.name" tag="span" />
         </template>
 
         <template #cell-payment_mode="{ row }">

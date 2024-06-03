@@ -201,7 +201,6 @@
           <router-link :to="{ path: `recurring-invoices/${row.data.id}/view` }">
             <BaseText
               :text="row.data.customer.name"
-              :length="30"
               tag="span"
               class="font-medium text-primary-500 flex flex-col"
             />
@@ -212,7 +211,6 @@
                   ? row.data.customer.contact_name
                   : ''
               "
-              :length="30"
               tag="span"
               class="text-xs text-gray-400"
             />
