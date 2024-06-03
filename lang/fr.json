@@ -1613,10 +1613,11 @@
   "pdf_vat_id": "VAT-ID",
   "mail_thanks": "Merci",
   "mail_view_estimate":"Voir le Devis",
-  "mail_viewed_estimate": "a consulté ce Devis.",
+  "mail_viewed_estimate": ":name a consulté ce Devis.",
   "mail_view_invoice": "Voir la Facture",
-  "mail_viewed_invoice": "a consulté cette Facture.",
+  "mail_viewed_invoice": ":name a consulté cette Facture.",
   "mail_view_payment": "Voir le Paiement",
   "notification_view_estimate": "[Notification] Un Devis a été consulté",
-  "notification_view_invoice": "[Notification] Une Facture a été consultée"
+  "notification_view_invoice": "[Notification] Une Facture a été consultée",
+  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "Vous avez reçu une nouvelle facture de <b>{COMPANY_NAME}</b>.</br> Vous pouvez la télécharger en cliquant sur le bouton :"
 }

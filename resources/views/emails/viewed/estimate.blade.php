@@ -1,5 +1,5 @@
 @component('mail::message')
-{{ $data['user']['name'] }} @lang('mail_viewed_estimate')
+@lang('mail_viewed_estimate', ['name' => $data['user']['name']])
 
 @component('mail::button', ['url' => url('/admin/estimates/'.$data['estimate']['id'].'/view')])@lang('mail_view_estimate')
 @endcomponent

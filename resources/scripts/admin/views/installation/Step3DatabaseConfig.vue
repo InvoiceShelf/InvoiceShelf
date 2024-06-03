@@ -22,7 +22,7 @@ import Sqlite from './database/SqliteDatabase.vue'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import { useInstallationStore } from '@/scripts/admin/stores/installation'
 import { useI18n } from 'vue-i18n'
-console.log('ollal')
+
 export default {
   components: {
     Mysql,
