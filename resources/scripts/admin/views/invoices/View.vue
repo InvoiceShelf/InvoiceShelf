@@ -423,7 +423,6 @@ onSearched = debounce(onSearched, 500)
             <div class="flex-2">
               <BaseText
                 :text="invoice.customer.name"
-                :length="30"
                 class="
                   pr-2
                   mb-2

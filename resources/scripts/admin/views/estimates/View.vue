@@ -180,7 +180,6 @@
             <div class="flex-2">
               <BaseText
                 :text="estimate.customer.name"
-                :length="30"
                 class="
                   pr-2
                   mb-2

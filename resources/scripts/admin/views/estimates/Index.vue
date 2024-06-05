@@ -211,7 +211,7 @@
         </template>
 
         <template #cell-name="{ row }">
-          <BaseText :text="row.data.customer.name" :length="30" />
+          <BaseText :text="row.data.customer.name" />
         </template>
 
         <template #cell-status="{ row }">
