@@ -1,7 +1,7 @@
 <?php
 
+use App\Models\CustomField;
 use Illuminate\Support\Facades\Artisan;
-use InvoiceShelf\Models\CustomField;
 
 beforeEach(function () {
     Artisan::call('db:seed', ['--class' => 'DatabaseSeeder', '--force' => true]);

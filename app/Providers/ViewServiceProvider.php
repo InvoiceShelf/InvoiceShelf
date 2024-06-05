@@ -1,6 +1,6 @@
 <?php
 
-namespace InvoiceShelf\Providers;
+namespace App\Providers;
 
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -9,20 +9,16 @@ class ViewServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
         //
     }
 
     /**
      * Bootstrap services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         View::share('login_page_logo', get_app_setting('login_page_logo'));
         View::share('login_page_heading', get_app_setting('login_page_heading'));

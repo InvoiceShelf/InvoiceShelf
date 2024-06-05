@@ -1,9 +1,9 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Settings;
+namespace App\Http\Controllers\V1\Admin\Settings;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
 
 class GetCompanyMailConfigurationController extends Controller
 {

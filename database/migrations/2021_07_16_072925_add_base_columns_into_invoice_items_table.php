@@ -4,14 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddBaseColumnsIntoInvoiceItemsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('invoice_items', function (Blueprint $table) {
             $table->unsignedBigInteger('base_price')->nullable();
@@ -24,10 +22,8 @@ class AddBaseColumnsIntoInvoiceItemsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('invoice_items', function (Blueprint $table) {
             $table->dropColumn([
@@ -39,4 +35,4 @@ class AddBaseColumnsIntoInvoiceItemsTable extends Migration
             ]);
         });
     }
-}
+};

@@ -1,30 +1,26 @@
 <?php
 
-namespace InvoiceShelf\Http\Requests;
+namespace App\Http\Requests;
 
+use App\Models\CompanySetting;
+use App\Models\Customer;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use InvoiceShelf\Models\CompanySetting;
-use InvoiceShelf\Models\Customer;
 
 class PaymentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         $rules = [
             'payment_date' => [

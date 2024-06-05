@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Installation;
+namespace App\Http\Controllers\V1\Installation;
 
+use App\Http\Controllers\Controller;
+use App\Space\FilePermissionChecker;
 use Illuminate\Http\JsonResponse;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Space\FilePermissionChecker;
 
 class FilePermissionsController extends Controller
 {

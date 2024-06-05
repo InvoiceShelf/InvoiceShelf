@@ -1,13 +1,13 @@
 <?php
 
-namespace InvoiceShelf\Space;
+namespace App\Space;
 
+use App\Http\Requests\DatabaseEnvironmentRequest;
+use App\Http\Requests\DiskEnvironmentRequest;
+use App\Http\Requests\DomainEnvironmentRequest;
+use App\Http\Requests\MailEnvironmentRequest;
 use Exception;
 use Illuminate\Support\Facades\DB;
-use InvoiceShelf\Http\Requests\DatabaseEnvironmentRequest;
-use InvoiceShelf\Http\Requests\DiskEnvironmentRequest;
-use InvoiceShelf\Http\Requests\DomainEnvironmentRequest;
-use InvoiceShelf\Http\Requests\MailEnvironmentRequest;
 
 class EnvironmentManager
 {
@@ -103,9 +103,9 @@ class EnvironmentManager
      */
     public function saveDatabaseVariables(DatabaseEnvironmentRequest $request)
     {
-
         $dbEnv = [
             'APP_URL' => $request->get('app_url'),
+            'APP_LOCALE' => $request->get('app_locale'),
             'DB_CONNECTION' => $request->get('database_connection'),
             'SANCTUM_STATEFUL_DOMAINS' => $request->get('app_domain'),
             'SESSION_DOMAIN' => explode(':', $request->get('app_domain'))[0],

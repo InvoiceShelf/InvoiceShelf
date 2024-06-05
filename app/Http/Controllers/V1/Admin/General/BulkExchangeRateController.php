@@ -1,14 +1,14 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\General;
+namespace App\Http\Controllers\V1\Admin\General;
 
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests\BulkExchangeRateRequest;
-use InvoiceShelf\Models\CompanySetting;
-use InvoiceShelf\Models\Estimate;
-use InvoiceShelf\Models\Invoice;
-use InvoiceShelf\Models\Payment;
-use InvoiceShelf\Models\Tax;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\BulkExchangeRateRequest;
+use App\Models\CompanySetting;
+use App\Models\Estimate;
+use App\Models\Invoice;
+use App\Models\Payment;
+use App\Models\Tax;
 
 class BulkExchangeRateController extends Controller
 {

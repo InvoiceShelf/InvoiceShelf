@@ -1,13 +1,13 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Customer\General;
+namespace App\Http\Controllers\V1\Customer\General;
 
+use App\Http\Controllers\Controller;
+use App\Http\Resources\Customer\CustomerResource;
+use App\Models\Currency;
+use App\Models\Module;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Resources\Customer\CustomerResource;
-use InvoiceShelf\Models\Currency;
-use InvoiceShelf\Models\Module;
 
 class BootstrapController extends Controller
 {
@@ -34,6 +34,7 @@ class BootstrapController extends Controller
                 'menu' => $menu,
                 'current_customer_currency' => Currency::find($customer->currency_id),
                 'modules' => Module::where('enabled', true)->pluck('name'),
+                'current_company_language' => CompanySetting::getSetting('language', $customer->company_id),
             ]]);
     }
 }

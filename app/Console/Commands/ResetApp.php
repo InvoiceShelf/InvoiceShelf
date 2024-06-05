@@ -1,6 +1,6 @@
 <?php
 
-namespace InvoiceShelf\Console\Commands;
+namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Console\ConfirmableTrait;
@@ -39,7 +39,7 @@ class ResetApp extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         if (! $this->confirmToProceed()) {
             return;

@@ -1,6 +1,6 @@
 <?php
 
-namespace InvoiceShelf\Mail;
+namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
@@ -31,6 +31,7 @@ class EstimateViewedMail extends Mailable
     public function build()
     {
         return $this->from(config('mail.from.address'), config('mail.from.name'))
+            ->subject(__('notification_view_estimate'))
             ->markdown('emails.viewed.estimate', ['data', $this->data]);
     }
 }

@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\PaymentMethod;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use InvoiceShelf\Models\PaymentMethod;
-use InvoiceShelf\Models\User;
 
 class PaymentMethodFactory extends Factory
 {
@@ -17,13 +17,11 @@ class PaymentMethodFactory extends Factory
 
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
-            'name' => $this->faker->name,
+            'name' => $this->faker->name(),
             'company_id' => User::find(1)->companies()->first()->id,
         ];
     }

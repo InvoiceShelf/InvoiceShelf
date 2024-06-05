@@ -17,7 +17,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Module Styles -->
-    @foreach(\InvoiceShelf\Services\Module\ModuleFacade::allStyles() as $name => $path)
+    @foreach(\App\Services\Module\ModuleFacade::allStyles() as $name => $path)
         <link rel="stylesheet" href="/modules/styles/{{ $name }}">
     @endforeach
 
@@ -29,7 +29,7 @@
     @if(isset($current_theme)) theme-{{ $current_theme }} @else theme-{{get_app_setting('admin_portal_theme') ?? 'invoiceshelf'}} @endif ">
 
     <!-- Module Scripts -->
-    @foreach (\InvoiceShelf\Services\Module\ModuleFacade::allScripts() as $name => $path)
+    @foreach (\App\Services\Module\ModuleFacade::allScripts() as $name => $path)
         @if (\Illuminate\Support\Str::startsWith($path, ['http://', 'https://']))
             <script type="module" src="{!! $path !!}"></script>
         @else

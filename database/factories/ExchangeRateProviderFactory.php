@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\ExchangeRateProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use InvoiceShelf\Models\ExchangeRateProvider;
 
 class ExchangeRateProviderFactory extends Factory
 {
@@ -16,13 +16,11 @@ class ExchangeRateProviderFactory extends Factory
 
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
-            'driver' => $this->faker->word,
+            'driver' => $this->faker->word(),
             'key' => str_random(10),
             'active' => $this->faker->randomElement([true, false]),
         ];

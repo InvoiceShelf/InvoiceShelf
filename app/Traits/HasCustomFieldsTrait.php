@@ -1,14 +1,15 @@
 <?php
 
-namespace InvoiceShelf\Traits;
+namespace App\Traits;
 
-use InvoiceShelf\Models\CustomField;
+use App\Models\CustomField;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 trait HasCustomFieldsTrait
 {
-    public function fields()
+    public function fields(): MorphMany
     {
-        return $this->morphMany('InvoiceShelf\Models\CustomFieldValue', 'custom_field_valuable');
+        return $this->morphMany(\App\Models\CustomFieldValue::class, 'custom_field_valuable');
     }
 
     protected static function booted()

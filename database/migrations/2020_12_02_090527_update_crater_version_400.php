@@ -1,25 +1,23 @@
 <?php
 
+use App\Models\Address;
+use App\Models\CompanySetting;
+use App\Models\Estimate;
+use App\Models\Expense;
+use App\Models\FileDisk;
+use App\Models\Invoice;
+use App\Models\Item;
+use App\Models\Payment;
+use App\Models\Setting;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
-use InvoiceShelf\Models\Address;
-use InvoiceShelf\Models\CompanySetting;
-use InvoiceShelf\Models\Estimate;
-use InvoiceShelf\Models\Expense;
-use InvoiceShelf\Models\FileDisk;
-use InvoiceShelf\Models\Invoice;
-use InvoiceShelf\Models\Item;
-use InvoiceShelf\Models\Payment;
-use InvoiceShelf\Models\Setting;
-use InvoiceShelf\Models\User;
 
-class UpdateCraterVersion400 extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         // seed the file disk
         $this->fileDiskSeed();
@@ -51,10 +49,8 @@ class UpdateCraterVersion400 extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         //
     }
@@ -130,4 +126,4 @@ class UpdateCraterVersion400 extends Migration
 
         CompanySetting::setSettings($settings, $user->company_id);
     }
-}
+};

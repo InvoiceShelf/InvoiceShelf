@@ -7,17 +7,20 @@
 
     <BaseDescriptionList>
       <BaseDescriptionListItem
+        v-if="selectedViewCustomer.name"
         :content-loading="contentLoading"
         :label="$t('customers.display_name')"
         :value="selectedViewCustomer?.name"
       />
 
       <BaseDescriptionListItem
+        v-if="selectedViewCustomer.contact_name"
         :content-loading="contentLoading"
         :label="$t('customers.primary_contact_name')"
         :value="selectedViewCustomer?.contact_name"
       />
       <BaseDescriptionListItem
+        v-if="selectedViewCustomer.email"
         :content-loading="contentLoading"
         :label="$t('customers.email')"
         :value="selectedViewCustomer?.email"
@@ -36,11 +39,13 @@
       />
 
       <BaseDescriptionListItem
+        v-if="selectedViewCustomer.phone"
         :content-loading="contentLoading"
         :label="$t('customers.phone_number')"
         :value="selectedViewCustomer?.phone"
       />
       <BaseDescriptionListItem
+        v-if="selectedViewCustomer.website"
         :content-loading="contentLoading"
         :label="$t('customers.website')"
         :value="selectedViewCustomer?.website"
@@ -89,8 +94,8 @@
           v-if="field.type === 'Switch'"
           class="text-sm font-bold leading-5 text-black non-italic"
         >
-          <span v-if="field.default_answer === 1"> Yes </span>
-          <span v-else> No </span>
+          <span v-if="field.default_answer === 1"> {{ $t('general.yes') }} </span>
+          <span v-else> {{ $t('general.no') }} </span>
         </p>
         <p v-else class="text-sm font-bold leading-5 text-black non-italic">
           {{ field.default_answer }}

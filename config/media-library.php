@@ -71,7 +71,7 @@ return [
     /*
      * The class that contains the strategy for determining a media file's path.
      */
-    'path_generator' => \InvoiceShelf\Generators\CustomPathGenerator::class,
+    'path_generator' => \App\Generators\CustomPathGenerator::class,
 
     /*
      * The class that contains the strategy for determining how to remove files.

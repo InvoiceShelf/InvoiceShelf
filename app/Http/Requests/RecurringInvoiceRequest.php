@@ -1,30 +1,26 @@
 <?php
 
-namespace InvoiceShelf\Http\Requests;
+namespace App\Http\Requests;
 
+use App\Models\CompanySetting;
+use App\Models\Customer;
+use App\Models\RecurringInvoice;
 use Illuminate\Foundation\Http\FormRequest;
-use InvoiceShelf\Models\CompanySetting;
-use InvoiceShelf\Models\Customer;
-use InvoiceShelf\Models\RecurringInvoice;
 
 class RecurringInvoiceRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         $companyCurrency = CompanySetting::getSetting('currency', $this->header('company'));
 
@@ -56,7 +52,7 @@ class RecurringInvoiceRequest extends FormRequest
             ],
             'total' => [
                 'integer',
-                'max:99999999',
+                'max:999999999999',
                 'required',
             ],
             'tax' => [

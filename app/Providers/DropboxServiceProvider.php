@@ -1,6 +1,6 @@
 <?php
 
-namespace InvoiceShelf\Providers;
+namespace App\Providers;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
@@ -12,20 +12,16 @@ class DropboxServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
         //
     }
 
     /**
      * Bootstrap services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         Storage::extend('dropbox', function ($app, $config) {
             $client = new DropboxClient(

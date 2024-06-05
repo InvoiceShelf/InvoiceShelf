@@ -1,16 +1,16 @@
 <?php
 
-use InvoiceShelf\Models\Customer;
-use InvoiceShelf\Models\CustomField;
-use InvoiceShelf\Models\Estimate;
-use InvoiceShelf\Models\ExchangeRateProvider;
-use InvoiceShelf\Models\Expense;
-use InvoiceShelf\Models\Invoice;
-use InvoiceShelf\Models\Item;
-use InvoiceShelf\Models\Note;
-use InvoiceShelf\Models\Payment;
-use InvoiceShelf\Models\RecurringInvoice;
-use InvoiceShelf\Models\TaxType;
+use App\Models\Customer;
+use App\Models\CustomField;
+use App\Models\Estimate;
+use App\Models\ExchangeRateProvider;
+use App\Models\Expense;
+use App\Models\Invoice;
+use App\Models\Item;
+use App\Models\Note;
+use App\Models\Payment;
+use App\Models\RecurringInvoice;
+use App\Models\TaxType;
 
 return [
     'abilities' => [

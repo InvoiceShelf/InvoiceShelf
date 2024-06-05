@@ -1,13 +1,13 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Customer\Estimate;
+namespace App\Http\Controllers\V1\Customer\Estimate;
 
+use App\Http\Controllers\Controller;
+use App\Http\Resources\Customer\EstimateResource;
+use App\Models\Company;
+use App\Models\Estimate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Resources\Customer\EstimateResource;
-use InvoiceShelf\Models\Company;
-use InvoiceShelf\Models\Estimate;
 
 class AcceptEstimateController extends Controller
 {

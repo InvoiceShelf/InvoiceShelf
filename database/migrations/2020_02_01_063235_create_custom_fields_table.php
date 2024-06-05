@@ -4,14 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCustomFieldsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('custom_fields', function (Blueprint $table) {
             $table->bigIncrements('id');
@@ -38,10 +36,8 @@ class CreateCustomFieldsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('custom_fields', function (Blueprint $table) {
             if (config('database.default') !== 'sqlite') {
@@ -50,4 +46,4 @@ class CreateCustomFieldsTable extends Migration
         });
         Schema::dropIfExists('custom_fields');
     }
-}
+};

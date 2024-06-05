@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Auth;
+namespace App\Http\Controllers\V1\Admin\Auth;
 
+use App\Http\Controllers\Controller;
+use App\Providers\AppServiceProvider;
 use Illuminate\Foundation\Auth\VerifiesEmails;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Providers\RouteServiceProvider;
 
 class VerificationController extends Controller
 {
@@ -26,7 +26,7 @@ class VerificationController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    protected $redirectTo = AppServiceProvider::HOME;
 
     /**
      * Create a new controller instance.

@@ -1,17 +1,15 @@
 <?php
 
+use App\Models\InvoiceItem;
+use App\Models\Tax;
 use Illuminate\Database\Migrations\Migration;
-use InvoiceShelf\Models\InvoiceItem;
-use InvoiceShelf\Models\Tax;
 
-class CalculateBaseValuesForInvoiceItems extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         $taxes = Tax::whereRelation('invoiceItem', 'base_amount', null)->get();
 
@@ -28,11 +26,9 @@ class CalculateBaseValuesForInvoiceItems extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         //
     }
-}
+};
