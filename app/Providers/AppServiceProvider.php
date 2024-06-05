@@ -35,7 +35,16 @@ class AppServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/home';
+    public const HOME = '/admin/dashboard';
+
+    /**
+     * The path to the "customer home" route for your application.
+     *
+     * This is used by Laravel authentication to redirect customers after login.
+     *
+     * @var string
+     */
+    public const CUSTOMER_HOME = '/customer/dashboard';
 
     /**
      * Bootstrap any application services.
