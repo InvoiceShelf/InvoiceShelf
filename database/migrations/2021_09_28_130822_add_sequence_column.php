@@ -1,19 +1,17 @@
 <?php
 
+use App\Models\Customer;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use InvoiceShelf\Models\Customer;
-use InvoiceShelf\Models\User;
 
-class AddSequenceColumn extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('customers', function (Blueprint $table) {
             $table->string('prefix')->nullable()->after('id');
@@ -80,10 +78,8 @@ class AddSequenceColumn extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('invoices', function (Blueprint $table) {
             $table->dropColumn('sequence_number');
@@ -98,4 +94,4 @@ class AddSequenceColumn extends Migration
             $table->dropColumn('customer_sequence_number');
         });
     }
-}
+};

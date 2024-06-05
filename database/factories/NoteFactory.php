@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\Note;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use InvoiceShelf\Models\Note;
-use InvoiceShelf\Models\User;
 
 class NoteFactory extends Factory
 {
@@ -17,15 +17,13 @@ class NoteFactory extends Factory
 
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'type' => $this->faker->randomElement(['Invoice', 'Estimate', 'Payment']),
-            'name' => $this->faker->word,
-            'notes' => $this->faker->text,
+            'name' => $this->faker->word(),
+            'notes' => $this->faker->text(),
             'company_id' => User::find(1)->companies()->first()->id,
         ];
     }

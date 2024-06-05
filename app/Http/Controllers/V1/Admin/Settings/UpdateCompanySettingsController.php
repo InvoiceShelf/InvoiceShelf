@@ -1,12 +1,12 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Settings;
+namespace App\Http\Controllers\V1\Admin\Settings;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateSettingsRequest;
+use App\Models\Company;
+use App\Models\CompanySetting;
 use Illuminate\Support\Arr;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests\UpdateSettingsRequest;
-use InvoiceShelf\Models\Company;
-use InvoiceShelf\Models\CompanySetting;
 
 class UpdateCompanySettingsController extends Controller
 {

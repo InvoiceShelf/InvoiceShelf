@@ -1,11 +1,11 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Payment;
+namespace App\Http\Controllers\V1\Admin\Payment;
 
+use App\Http\Controllers\Controller;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Mail\Markdown;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Models\Payment;
 
 class SendPaymentPreviewController extends Controller
 {

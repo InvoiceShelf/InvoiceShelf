@@ -1,15 +1,15 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\ExchangeRate;
+namespace App\Http\Controllers\V1\Admin\ExchangeRate;
 
+use App\Http\Controllers\Controller;
+use App\Models\CompanySetting;
+use App\Models\Currency;
+use App\Models\ExchangeRateLog;
+use App\Models\ExchangeRateProvider;
+use App\Traits\ExchangeRateProvidersTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Models\CompanySetting;
-use InvoiceShelf\Models\Currency;
-use InvoiceShelf\Models\ExchangeRateLog;
-use InvoiceShelf\Models\ExchangeRateProvider;
-use InvoiceShelf\Traits\ExchangeRateProvidersTrait;
 
 class GetExchangeRateController extends Controller
 {

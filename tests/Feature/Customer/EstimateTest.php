@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Customer;
 
+use App\Models\Customer;
+use App\Models\Estimate;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
-use InvoiceShelf\Models\Customer;
-use InvoiceShelf\Models\Estimate;
 use Laravel\Sanctum\Sanctum;
 
 use function Pest\Laravel\getJson;

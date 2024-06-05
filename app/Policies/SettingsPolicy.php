@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Policies;
+namespace App\Policies;
 
+use App\Models\Company;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use InvoiceShelf\Models\Company;
-use InvoiceShelf\Models\User;
 
 class SettingsPolicy
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace InvoiceShelf\Console\Commands;
+namespace App\Console\Commands;
 
+use App\Space\ModuleInstaller;
 use Illuminate\Console\Command;
-use InvoiceShelf\Space\ModuleInstaller;
 
 class InstallModuleCommand extends Command
 {
@@ -33,10 +33,8 @@ class InstallModuleCommand extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         ModuleInstaller::complete($this->argument('module'), $this->argument('version'));
 

@@ -10,7 +10,6 @@ use JMac\Testing\Traits\AdditionalAssertions;
 abstract class TestCase extends BaseTestCase
 {
     use AdditionalAssertions;
-    use CreatesApplication;
 
     protected function setUp(): void
     {

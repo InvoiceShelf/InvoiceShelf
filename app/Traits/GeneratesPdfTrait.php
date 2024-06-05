@@ -1,12 +1,12 @@
 <?php
 
-namespace InvoiceShelf\Traits;
+namespace App\Traits;
 
+use App\Models\Address;
+use App\Models\CompanySetting;
+use App\Models\FileDisk;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
-use InvoiceShelf\Models\Address;
-use InvoiceShelf\Models\CompanySetting;
-use InvoiceShelf\Models\FileDisk;
 
 trait GeneratesPdfTrait
 {

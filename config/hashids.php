@@ -9,12 +9,12 @@
  * @see https://github.com/vinkla/laravel-hashids
  */
 
-use InvoiceShelf\Models\Company;
-use InvoiceShelf\Models\EmailLog;
-use InvoiceShelf\Models\Estimate;
-use InvoiceShelf\Models\Invoice;
-use InvoiceShelf\Models\Payment;
-use InvoiceShelf\Models\Transaction;
+use App\Models\Company;
+use App\Models\EmailLog;
+use App\Models\Estimate;
+use App\Models\Invoice;
+use App\Models\Payment;
+use App\Models\Transaction;
 
 return [
 

@@ -2,10 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Models\Customer;
+use App\Models\RecurringInvoice;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use InvoiceShelf\Models\Customer;
-use InvoiceShelf\Models\RecurringInvoice;
-use InvoiceShelf\Models\User;
 
 class RecurringInvoiceFactory extends Factory
 {
@@ -18,10 +18,8 @@ class RecurringInvoiceFactory extends Factory
 
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'starts_at' => $this->faker->iso8601(),
@@ -29,19 +27,19 @@ class RecurringInvoiceFactory extends Factory
             'status' => $this->faker->randomElement(['COMPLETED', 'ON_HOLD', 'ACTIVE']),
             'tax_per_item' => 'NO',
             'discount_per_item' => 'NO',
-            'sub_total' => $this->faker->randomDigitNotNull,
-            'total' => $this->faker->randomDigitNotNull,
-            'tax' => $this->faker->randomDigitNotNull,
-            'due_amount' => $this->faker->randomDigitNotNull,
-            'discount' => $this->faker->randomDigitNotNull,
-            'discount_val' => $this->faker->randomDigitNotNull,
+            'sub_total' => $this->faker->randomDigitNotNull(),
+            'total' => $this->faker->randomDigitNotNull(),
+            'tax' => $this->faker->randomDigitNotNull(),
+            'due_amount' => $this->faker->randomDigitNotNull(),
+            'discount' => $this->faker->randomDigitNotNull(),
+            'discount_val' => $this->faker->randomDigitNotNull(),
             'customer_id' => Customer::factory(),
             'company_id' => User::find(1)->companies()->first()->id,
             'frequency' => '* * 18 * *',
             'limit_by' => $this->faker->randomElement(['NONE', 'COUNT', 'DATE']),
-            'limit_count' => $this->faker->randomDigit,
+            'limit_count' => $this->faker->randomDigit(),
             'limit_date' => $this->faker->date(),
-            'exchange_rate' => $this->faker->randomDigitNotNull,
+            'exchange_rate' => $this->faker->randomDigitNotNull(),
         ];
     }
 }

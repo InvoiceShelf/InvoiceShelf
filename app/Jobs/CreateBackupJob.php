@@ -1,13 +1,13 @@
 <?php
 
-namespace InvoiceShelf\Jobs;
+namespace App\Jobs;
 
+use App\Models\FileDisk;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use InvoiceShelf\Models\FileDisk;
 use Spatie\Backup\Tasks\Backup\BackupJobFactory;
 
 class CreateBackupJob implements ShouldQueue
@@ -31,10 +31,8 @@ class CreateBackupJob implements ShouldQueue
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $fileDisk = FileDisk::find($this->data['file_disk_id']);
         $fileDisk->setConfig();

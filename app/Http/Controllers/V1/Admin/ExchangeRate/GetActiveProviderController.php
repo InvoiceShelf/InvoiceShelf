@@ -1,11 +1,11 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\ExchangeRate;
+namespace App\Http\Controllers\V1\Admin\ExchangeRate;
 
+use App\Http\Controllers\Controller;
+use App\Models\Currency;
+use App\Models\ExchangeRateProvider;
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Models\Currency;
-use InvoiceShelf\Models\ExchangeRateProvider;
 
 class GetActiveProviderController extends Controller
 {

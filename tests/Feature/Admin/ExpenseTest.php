@@ -1,10 +1,10 @@
 <?php
 
+use App\Http\Controllers\V1\Admin\Expense\ExpensesController;
+use App\Http\Requests\ExpenseRequest;
+use App\Models\Expense;
+use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
-use InvoiceShelf\Http\Controllers\V1\Admin\Expense\ExpensesController;
-use InvoiceShelf\Http\Requests\ExpenseRequest;
-use InvoiceShelf\Models\Expense;
-use InvoiceShelf\Models\User;
 use Laravel\Sanctum\Sanctum;
 
 use function Pest\Laravel\getJson;

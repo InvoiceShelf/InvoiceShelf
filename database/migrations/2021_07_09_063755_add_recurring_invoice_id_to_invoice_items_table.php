@@ -4,14 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddRecurringInvoiceIdToInvoiceItemsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('invoice_items', function (Blueprint $table) {
             $table->integer('invoice_id')->unsigned()->nullable()->change();
@@ -22,10 +20,8 @@ class AddRecurringInvoiceIdToInvoiceItemsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('invoice_items', function (Blueprint $table) {
             if (config('database.default') !== 'sqlite') {
@@ -34,4 +30,4 @@ class AddRecurringInvoiceIdToInvoiceItemsTable extends Migration
             $table->dropColumn('recurring_invoice_id');
         });
     }
-}
+};

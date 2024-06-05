@@ -1,6 +1,6 @@
 <?php
 
-namespace InvoiceShelf\Events;
+namespace App\Events;
 
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;

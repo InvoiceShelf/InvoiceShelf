@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Models;
+namespace App\Models;
 
+use App\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use InvoiceShelf\Carbon;
 
 class FileDisk extends Model
 {
@@ -18,9 +18,12 @@ class FileDisk extends Model
         'id',
     ];
 
-    protected $casts = [
-        'set_as_default' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'set_as_default' => 'boolean',
+        ];
+    }
 
     public function setCredentialsAttribute($value)
     {

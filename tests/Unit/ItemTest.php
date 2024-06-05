@@ -1,11 +1,11 @@
 <?php
 
+use App\Models\Estimate;
+use App\Models\EstimateItem;
+use App\Models\Invoice;
+use App\Models\InvoiceItem;
+use App\Models\Item;
 use Illuminate\Support\Facades\Artisan;
-use InvoiceShelf\Models\Estimate;
-use InvoiceShelf\Models\EstimateItem;
-use InvoiceShelf\Models\Invoice;
-use InvoiceShelf\Models\InvoiceItem;
-use InvoiceShelf\Models\Item;
 
 beforeEach(function () {
     Artisan::call('db:seed', ['--class' => 'DatabaseSeeder', '--force' => true]);

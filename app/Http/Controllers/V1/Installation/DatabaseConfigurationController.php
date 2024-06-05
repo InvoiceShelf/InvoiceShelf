@@ -1,12 +1,12 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Installation;
+namespace App\Http\Controllers\V1\Installation;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\DatabaseEnvironmentRequest;
+use App\Space\EnvironmentManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests\DatabaseEnvironmentRequest;
-use InvoiceShelf\Space\EnvironmentManager;
 
 class DatabaseConfigurationController extends Controller
 {

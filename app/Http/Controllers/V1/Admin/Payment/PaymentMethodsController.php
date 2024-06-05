@@ -1,12 +1,12 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Payment;
+namespace App\Http\Controllers\V1\Admin\Payment;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\PaymentMethodRequest;
+use App\Http\Resources\PaymentMethodResource;
+use App\Models\PaymentMethod;
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests\PaymentMethodRequest;
-use InvoiceShelf\Http\Resources\PaymentMethodResource;
-use InvoiceShelf\Models\PaymentMethod;
 
 class PaymentMethodsController extends Controller
 {
