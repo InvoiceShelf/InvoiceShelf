@@ -1,9 +1,9 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\PDF;
+namespace App\Http\Controllers\V1\PDF;
 
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Models\Expense;
+use App\Http\Controllers\Controller;
+use App\Models\Expense;
 
 class DownloadReceiptController extends Controller
 {

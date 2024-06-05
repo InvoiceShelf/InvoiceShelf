@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Policies;
+namespace App\Policies;
 
+use App\Models\Note;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use InvoiceShelf\Models\Note;
-use InvoiceShelf\Models\User;
 use Silber\Bouncer\BouncerFacade;
 
 class NotePolicy

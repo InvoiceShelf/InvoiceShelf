@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\CustomField;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use InvoiceShelf\Models\CustomField;
-use InvoiceShelf\Models\User;
 
 class CustomFieldFactory extends Factory
 {
@@ -17,15 +17,13 @@ class CustomFieldFactory extends Factory
 
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
-            'name' => $this->faker->name,
-            'label' => $this->faker->name,
-            'order' => $this->faker->randomDigitNotNull,
+            'name' => $this->faker->name(),
+            'label' => $this->faker->name(),
+            'order' => $this->faker->randomDigitNotNull(),
             'is_required' => $this->faker->randomElement([true, false]),
             'model_type' => $this->faker->randomElement(['Customer', 'Invoice', 'Estimate', 'Expense', 'Payment']),
             'slug' => function (array $item) {

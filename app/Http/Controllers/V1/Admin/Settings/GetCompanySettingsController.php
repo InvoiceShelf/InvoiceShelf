@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Settings;
+namespace App\Http\Controllers\V1\Admin\Settings;
 
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests\GetSettingsRequest;
-use InvoiceShelf\Models\CompanySetting;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\GetSettingsRequest;
+use App\Models\CompanySetting;
 
 class GetCompanySettingsController extends Controller
 {

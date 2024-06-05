@@ -4,14 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddUnitNameToPdf extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('invoice_items', function (Blueprint $table) {
             $table->string('unit_name')->nullable()->after('quantity');
@@ -23,10 +21,8 @@ class AddUnitNameToPdf extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('invoice_items', function (Blueprint $table) {
             $table->dropColumn('unit_name');
@@ -35,4 +31,4 @@ class AddUnitNameToPdf extends Migration
             $table->dropColumn('unit_name');
         });
     }
-}
+};

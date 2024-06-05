@@ -2,12 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Models\Currency;
+use App\Models\Customer;
+use App\Models\Estimate;
+use App\Models\User;
+use App\Services\SerialNumberFormatter;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use InvoiceShelf\Models\Currency;
-use InvoiceShelf\Models\Customer;
-use InvoiceShelf\Models\Estimate;
-use InvoiceShelf\Models\User;
-use InvoiceShelf\Services\SerialNumberFormatter;
 
 class EstimateFactory extends Factory
 {
@@ -65,10 +65,8 @@ class EstimateFactory extends Factory
 
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         $sequenceNumber = (new SerialNumberFormatter())
             ->setModel(new Estimate())
@@ -85,26 +83,26 @@ class EstimateFactory extends Factory
             'company_id' => User::find(1)->companies()->first()->id,
             'status' => Estimate::STATUS_DRAFT,
             'template_name' => 'estimate1',
-            'sub_total' => $this->faker->randomDigitNotNull,
-            'total' => $this->faker->randomDigitNotNull,
+            'sub_total' => $this->faker->randomDigitNotNull(),
+            'total' => $this->faker->randomDigitNotNull(),
             'discount_type' => $this->faker->randomElement(['percentage', 'fixed']),
             'discount_val' => function (array $estimate) {
-                return $estimate['discount_type'] == 'percentage' ? $this->faker->numberBetween($min = 0, $max = 100) : $this->faker->randomDigitNotNull;
+                return $estimate['discount_type'] == 'percentage' ? $this->faker->numberBetween($min = 0, $max = 100) : $this->faker->randomDigitNotNull();
             },
             'discount' => function (array $estimate) {
                 return $estimate['discount_type'] == 'percentage' ? (($estimate['discount_val'] * $estimate['total']) / 100) : $estimate['discount_val'];
             },
             'tax_per_item' => 'YES',
             'discount_per_item' => 'No',
-            'tax' => $this->faker->randomDigitNotNull,
+            'tax' => $this->faker->randomDigitNotNull(),
             'notes' => $this->faker->text(80),
             'unique_hash' => str_random(60),
             'customer_id' => Customer::factory(),
-            'exchange_rate' => $this->faker->randomDigitNotNull,
-            'base_discount_val' => $this->faker->randomDigitNotNull,
-            'base_sub_total' => $this->faker->randomDigitNotNull,
-            'base_total' => $this->faker->randomDigitNotNull,
-            'base_tax' => $this->faker->randomDigitNotNull,
+            'exchange_rate' => $this->faker->randomDigitNotNull(),
+            'base_discount_val' => $this->faker->randomDigitNotNull(),
+            'base_sub_total' => $this->faker->randomDigitNotNull(),
+            'base_total' => $this->faker->randomDigitNotNull(),
+            'base_tax' => $this->faker->randomDigitNotNull(),
             'currency_id' => Currency::find(1)->id,
         ];
     }

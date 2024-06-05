@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Webhook;
+namespace App\Http\Controllers\V1\Webhook;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
-use InvoiceShelf\Http\Controllers\Controller;
 
 class CronJobController extends Controller
 {

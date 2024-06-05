@@ -1,9 +1,9 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers;
+namespace App\Http\Controllers;
 
+use App\Models\Setting;
 use Illuminate\Http\Request;
-use InvoiceShelf\Models\Setting;
 
 class AppVersionController extends Controller
 {

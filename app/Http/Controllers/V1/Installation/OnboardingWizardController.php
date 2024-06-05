@@ -1,11 +1,11 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Installation;
+namespace App\Http\Controllers\V1\Installation;
 
+use App\Http\Controllers\Controller;
+use App\Models\Setting;
+use App\Space\InstallUtils;
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Models\Setting;
-use InvoiceShelf\Space\InstallUtils;
 
 class OnboardingWizardController extends Controller
 {

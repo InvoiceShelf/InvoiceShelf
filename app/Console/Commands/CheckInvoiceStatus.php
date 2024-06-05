@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Console\Commands;
+namespace App\Console\Commands;
 
+use App\Models\Invoice;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use InvoiceShelf\Models\Invoice;
 
 class CheckInvoiceStatus extends Command
 {
@@ -37,7 +37,7 @@ class CheckInvoiceStatus extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $date = Carbon::now();
         $invoices = Invoice::whereNotIn('status', [Invoice::STATUS_COMPLETED, Invoice::STATUS_DRAFT])

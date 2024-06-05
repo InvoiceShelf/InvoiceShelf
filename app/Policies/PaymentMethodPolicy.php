@@ -1,11 +1,11 @@
 <?php
 
-namespace InvoiceShelf\Policies;
+namespace App\Policies;
 
+use App\Models\Payment;
+use App\Models\PaymentMethod;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use InvoiceShelf\Models\Payment;
-use InvoiceShelf\Models\PaymentMethod;
-use InvoiceShelf\Models\User;
 use Silber\Bouncer\BouncerFacade;
 
 class PaymentMethodPolicy
@@ -17,7 +17,7 @@ class PaymentMethodPolicy
      *
      * @return mixed
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
         if (BouncerFacade::can('view-payment', Payment::class)) {
             return true;
@@ -31,7 +31,7 @@ class PaymentMethodPolicy
      *
      * @return mixed
      */
-    public function view(User $user, PaymentMethod $paymentMethod)
+    public function view(User $user, PaymentMethod $paymentMethod): bool
     {
         if (BouncerFacade::can('view-payment', Payment::class) && $user->hasCompany($paymentMethod->company_id)) {
             return true;
@@ -45,7 +45,7 @@ class PaymentMethodPolicy
      *
      * @return mixed
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
         if (BouncerFacade::can('view-payment', Payment::class)) {
             return true;
@@ -59,7 +59,7 @@ class PaymentMethodPolicy
      *
      * @return mixed
      */
-    public function update(User $user, PaymentMethod $paymentMethod)
+    public function update(User $user, PaymentMethod $paymentMethod): bool
     {
         if (BouncerFacade::can('view-payment', Payment::class) && $user->hasCompany($paymentMethod->company_id)) {
             return true;
@@ -73,7 +73,7 @@ class PaymentMethodPolicy
      *
      * @return mixed
      */
-    public function delete(User $user, PaymentMethod $paymentMethod)
+    public function delete(User $user, PaymentMethod $paymentMethod): bool
     {
         if (BouncerFacade::can('view-payment', Payment::class) && $user->hasCompany($paymentMethod->company_id)) {
             return true;
@@ -87,7 +87,7 @@ class PaymentMethodPolicy
      *
      * @return mixed
      */
-    public function restore(User $user, PaymentMethod $paymentMethod)
+    public function restore(User $user, PaymentMethod $paymentMethod): bool
     {
         if (BouncerFacade::can('view-payment', Payment::class) && $user->hasCompany($paymentMethod->company_id)) {
             return true;
@@ -101,7 +101,7 @@ class PaymentMethodPolicy
      *
      * @return mixed
      */
-    public function forceDelete(User $user, PaymentMethod $paymentMethod)
+    public function forceDelete(User $user, PaymentMethod $paymentMethod): bool
     {
         if (BouncerFacade::can('view-payment', Payment::class) && $user->hasCompany($paymentMethod->company_id)) {
             return true;

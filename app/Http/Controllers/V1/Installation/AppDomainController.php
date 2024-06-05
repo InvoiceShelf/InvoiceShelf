@@ -1,11 +1,11 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Installation;
+namespace App\Http\Controllers\V1\Installation;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\DomainEnvironmentRequest;
+use App\Space\EnvironmentManager;
 use Illuminate\Support\Facades\Artisan;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests\DomainEnvironmentRequest;
-use InvoiceShelf\Space\EnvironmentManager;
 
 class AppDomainController extends Controller
 {

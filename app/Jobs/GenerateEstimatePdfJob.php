@@ -1,6 +1,6 @@
 <?php
 
-namespace InvoiceShelf\Jobs;
+namespace App\Jobs;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -32,10 +32,8 @@ class GenerateEstimatePdfJob implements ShouldQueue
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): int
     {
         $this->estimate->generatePDF('estimate', $this->estimate->estimate_number, $this->deleteExistingFile);
 

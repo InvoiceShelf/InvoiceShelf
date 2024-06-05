@@ -1,11 +1,11 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Modules;
+namespace App\Http\Controllers\V1\Admin\Modules;
 
+use App\Events\ModuleDisabledEvent;
+use App\Http\Controllers\Controller;
+use App\Models\Module as ModelsModule;
 use Illuminate\Http\Request;
-use InvoiceShelf\Events\ModuleDisabledEvent;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Models\Module as ModelsModule;
 use Nwidart\Modules\Facades\Module;
 
 class DisableModuleController extends Controller
