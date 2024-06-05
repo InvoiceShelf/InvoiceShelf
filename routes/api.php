@@ -106,6 +106,7 @@ use App\Http\Controllers\V1\Installation\LoginController;
 use App\Http\Controllers\V1\Installation\OnboardingWizardController;
 use App\Http\Controllers\V1\Installation\RequirementsController;
 use App\Http\Controllers\V1\Webhook\CronJobController;
+use App\Http\Controllers\V1\Installation\LanguagesController;
 use Illuminate\Support\Facades\Route;
 
 /*

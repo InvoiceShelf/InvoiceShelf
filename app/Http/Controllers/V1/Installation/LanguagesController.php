@@ -1,9 +1,9 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Installation;
+namespace App\Http\Controllers\V1\Installation;
 
 use Illuminate\Http\JsonResponse;
-use InvoiceShelf\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
 
 class LanguagesController extends Controller
 {
