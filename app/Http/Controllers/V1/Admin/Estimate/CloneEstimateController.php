@@ -1,14 +1,14 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Estimate;
+namespace App\Http\Controllers\V1\Admin\Estimate;
 
+use App\Http\Controllers\Controller;
+use App\Http\Resources\EstimateResource;
+use App\Models\CompanySetting;
+use App\Models\Estimate;
+use App\Services\SerialNumberFormatter;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Resources\EstimateResource;
-use InvoiceShelf\Models\CompanySetting;
-use InvoiceShelf\Models\Estimate;
-use InvoiceShelf\Services\SerialNumberFormatter;
 use Vinkla\Hashids\Facades\Hashids;
 
 class CloneEstimateController extends Controller
