@@ -45,18 +45,6 @@
       {{ $t('general.delete') }}
     </BaseDropdownItem>
 
-    <!-- Clone Estimate into new estimate  -->
-    <BaseDropdownItem
-      v-if="userStore.hasAbilities(abilities.CREATE_ESTIMATE)"
-      @click="cloneEstimateData(row)"
-    >
-      <BaseIcon
-        name="DocumentTextIcon"
-        class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
-      />
-      {{ $t('invoices.clone_invoice') }}
-    </BaseDropdownItem>
-
     <!-- View Estimate -->
     <router-link
       v-if="
@@ -73,6 +61,18 @@
         {{ $t('general.view') }}
       </BaseDropdownItem>
     </router-link>
+
+    <!-- Clone Estimate into new estimate  -->
+    <BaseDropdownItem
+      v-if="userStore.hasAbilities(abilities.CREATE_ESTIMATE)"
+      @click="cloneEstimateData(row)"
+    >
+      <BaseIcon
+        name="DocumentTextIcon"
+        class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+      />
+      {{ $t('estimates.clone_estimate') }}
+    </BaseDropdownItem>
 
     <!-- Convert into Invoice  -->
     <BaseDropdownItem
