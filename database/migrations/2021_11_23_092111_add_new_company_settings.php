@@ -1,17 +1,15 @@
 <?php
 
+use App\Models\Company;
+use App\Models\CompanySetting;
 use Illuminate\Database\Migrations\Migration;
-use InvoiceShelf\Models\Company;
-use InvoiceShelf\Models\CompanySetting;
 
-class AddNewCompanySettings extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         $companies = Company::all();
 
@@ -50,11 +48,9 @@ class AddNewCompanySettings extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         //
     }
-}
+};

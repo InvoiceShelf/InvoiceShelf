@@ -1,7 +1,7 @@
 <?php
 
+use App\Models\TaxType;
 use Illuminate\Support\Facades\Artisan;
-use InvoiceShelf\Models\TaxType;
 
 beforeEach(function () {
     Artisan::call('db:seed', ['--class' => 'DatabaseSeeder', '--force' => true]);

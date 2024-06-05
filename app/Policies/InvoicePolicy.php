@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Policies;
+namespace App\Policies;
 
+use App\Models\Invoice;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use InvoiceShelf\Models\Invoice;
-use InvoiceShelf\Models\User;
 use Silber\Bouncer\BouncerFacade;
 
 class InvoicePolicy
@@ -16,7 +16,7 @@ class InvoicePolicy
      *
      * @return mixed
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
         if (BouncerFacade::can('view-invoice', Invoice::class)) {
             return true;
@@ -30,7 +30,7 @@ class InvoicePolicy
      *
      * @return mixed
      */
-    public function view(User $user, Invoice $invoice)
+    public function view(User $user, Invoice $invoice): bool
     {
         if (BouncerFacade::can('view-invoice', $invoice) && $user->hasCompany($invoice->company_id)) {
             return true;
@@ -44,7 +44,7 @@ class InvoicePolicy
      *
      * @return mixed
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
         if (BouncerFacade::can('create-invoice', Invoice::class)) {
             return true;
@@ -58,7 +58,7 @@ class InvoicePolicy
      *
      * @return mixed
      */
-    public function update(User $user, Invoice $invoice)
+    public function update(User $user, Invoice $invoice): bool
     {
         if (BouncerFacade::can('edit-invoice', $invoice) && $user->hasCompany($invoice->company_id)) {
             return $invoice->allow_edit;
@@ -72,7 +72,7 @@ class InvoicePolicy
      *
      * @return mixed
      */
-    public function delete(User $user, Invoice $invoice)
+    public function delete(User $user, Invoice $invoice): bool
     {
         if (BouncerFacade::can('delete-invoice', $invoice) && $user->hasCompany($invoice->company_id)) {
             return true;
@@ -86,7 +86,7 @@ class InvoicePolicy
      *
      * @return mixed
      */
-    public function restore(User $user, Invoice $invoice)
+    public function restore(User $user, Invoice $invoice): bool
     {
         if (BouncerFacade::can('delete-invoice', $invoice) && $user->hasCompany($invoice->company_id)) {
             return true;
@@ -100,7 +100,7 @@ class InvoicePolicy
      *
      * @return mixed
      */
-    public function forceDelete(User $user, Invoice $invoice)
+    public function forceDelete(User $user, Invoice $invoice): bool
     {
         if (BouncerFacade::can('delete-invoice', $invoice) && $user->hasCompany($invoice->company_id)) {
             return true;
@@ -112,7 +112,7 @@ class InvoicePolicy
     /**
      * Determine whether the user can send email of the model.
      *
-     * @param  \InvoiceShelf\Models\Payment  $payment
+     * @param  \App\Models\Payment  $payment
      * @return mixed
      */
     public function send(User $user, Invoice $invoice)

@@ -4,14 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddCustomerIdToEstimatesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('estimates', function (Blueprint $table) {
             $table->unsignedBigInteger('customer_id')->nullable();
@@ -21,10 +19,8 @@ class AddCustomerIdToEstimatesTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('estimates', function (Blueprint $table) {
             if (config('database.default') !== 'sqlite') {
@@ -33,4 +29,4 @@ class AddCustomerIdToEstimatesTable extends Migration
             $table->dropColumn('customer_id');
         });
     }
-}
+};

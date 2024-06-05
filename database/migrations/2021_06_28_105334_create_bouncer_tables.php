@@ -5,14 +5,12 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Silber\Bouncer\Database\Models;
 
-class CreateBouncerTables extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (Schema::hasTable('role_has_permissions')) {
             Schema::drop('role_has_permissions');
@@ -100,14 +98,12 @@ class CreateBouncerTables extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop(Models::table('permissions'));
         Schema::drop(Models::table('assigned_roles'));
         Schema::drop(Models::table('roles'));
         Schema::drop(Models::table('abilities'));
     }
-}
+};

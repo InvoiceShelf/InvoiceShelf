@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Console\Commands;
+namespace App\Console\Commands;
 
+use App\Models\Estimate;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use InvoiceShelf\Models\Estimate;
 
 class CheckEstimateStatus extends Command
 {
@@ -37,7 +37,7 @@ class CheckEstimateStatus extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $date = Carbon::now();
         $status = [Estimate::STATUS_ACCEPTED, Estimate::STATUS_REJECTED, Estimate::STATUS_EXPIRED];

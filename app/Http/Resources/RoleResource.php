@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Http\Resources;
+namespace App\Http\Resources;
 
+use App\Models\CompanySetting;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
-use InvoiceShelf\Models\CompanySetting;
 
 class RoleResource extends JsonResource
 {
@@ -12,9 +12,8 @@ class RoleResource extends JsonResource
      * Transform the resource into an array.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return array
      */
-    public function toArray($request)
+    public function toArray($request): array
     {
         return [
             'id' => $this->id,

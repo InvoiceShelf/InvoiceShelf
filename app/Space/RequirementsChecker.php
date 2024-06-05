@@ -1,6 +1,6 @@
 <?php
 
-namespace InvoiceShelf\Space;
+namespace App\Space;
 
 use Illuminate\Support\Str;
 use PDO;

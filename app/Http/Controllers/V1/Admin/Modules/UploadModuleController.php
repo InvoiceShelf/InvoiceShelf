@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Modules;
+namespace App\Http\Controllers\V1\Admin\Modules;
 
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests\UploadModuleRequest;
-use InvoiceShelf\Space\ModuleInstaller;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\UploadModuleRequest;
+use App\Space\ModuleInstaller;
 
 class UploadModuleController extends Controller
 {

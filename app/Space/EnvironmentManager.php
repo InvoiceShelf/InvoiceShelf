@@ -1,13 +1,13 @@
 <?php
 
-namespace InvoiceShelf\Space;
+namespace App\Space;
 
+use App\Http\Requests\DatabaseEnvironmentRequest;
+use App\Http\Requests\DiskEnvironmentRequest;
+use App\Http\Requests\DomainEnvironmentRequest;
+use App\Http\Requests\MailEnvironmentRequest;
 use Exception;
 use Illuminate\Support\Facades\DB;
-use InvoiceShelf\Http\Requests\DatabaseEnvironmentRequest;
-use InvoiceShelf\Http\Requests\DiskEnvironmentRequest;
-use InvoiceShelf\Http\Requests\DomainEnvironmentRequest;
-use InvoiceShelf\Http\Requests\MailEnvironmentRequest;
 
 class EnvironmentManager
 {
@@ -265,9 +265,9 @@ class EnvironmentManager
                     'MAIL_PASSWORD' => config('mail.password'),
                     'MAIL_ENCRYPTION' => $request->get('mail_encryption'),
                     'MAIL_FROM_ADDRESS' => $request->get('from_mail'),
-                    'MAIL_FROM_NAME' => $request->get('from_mail'),
-                    'SES_KEY' => $request->get('from_mail'),
-                    'SES_SECRET' => $request->get('from_name'),
+                    'MAIL_FROM_NAME' => $request->get('from_name'),
+                    'SES_KEY' => $request->get('mail_ses_key'),
+                    'SES_SECRET' => $request->get('mail_ses_secret'),
                 ];
 
                 break;

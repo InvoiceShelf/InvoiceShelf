@@ -1,29 +1,25 @@
 <?php
 
-namespace InvoiceShelf\Http\Requests;
+namespace App\Http\Requests;
 
+use App\Models\TaxType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use InvoiceShelf\Models\TaxType;
 
 class TaxTypeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         $rules = [
             'name' => [

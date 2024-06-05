@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Policies;
+namespace App\Policies;
 
+use App\Models\ExchangeRateProvider;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use InvoiceShelf\Models\ExchangeRateProvider;
-use InvoiceShelf\Models\User;
 use Silber\Bouncer\BouncerFacade;
 
 class ExchangeRateProviderPolicy
@@ -16,7 +16,7 @@ class ExchangeRateProviderPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
         if (BouncerFacade::can('view-exchange-rate-provider', ExchangeRateProvider::class)) {
             return true;
@@ -30,7 +30,7 @@ class ExchangeRateProviderPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, ExchangeRateProvider $exchangeRateProvider)
+    public function view(User $user, ExchangeRateProvider $exchangeRateProvider): bool
     {
         if (BouncerFacade::can('view-exchange-rate-provider', $exchangeRateProvider) && $user->hasCompany($exchangeRateProvider->company_id)) {
             return true;
@@ -44,7 +44,7 @@ class ExchangeRateProviderPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
         if (BouncerFacade::can('create-exchange-rate-provider', ExchangeRateProvider::class)) {
             return true;
@@ -58,7 +58,7 @@ class ExchangeRateProviderPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, ExchangeRateProvider $exchangeRateProvider)
+    public function update(User $user, ExchangeRateProvider $exchangeRateProvider): bool
     {
         if (BouncerFacade::can('edit-exchange-rate-provider', $exchangeRateProvider) && $user->hasCompany($exchangeRateProvider->company_id)) {
             return true;
@@ -72,7 +72,7 @@ class ExchangeRateProviderPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, ExchangeRateProvider $exchangeRateProvider)
+    public function delete(User $user, ExchangeRateProvider $exchangeRateProvider): bool
     {
         if (BouncerFacade::can('delete-exchange-rate-provider', $exchangeRateProvider) && $user->hasCompany($exchangeRateProvider->company_id)) {
             return true;
@@ -86,7 +86,7 @@ class ExchangeRateProviderPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, ExchangeRateProvider $exchangeRateProvider)
+    public function restore(User $user, ExchangeRateProvider $exchangeRateProvider): bool
     {
         //
     }
@@ -96,7 +96,7 @@ class ExchangeRateProviderPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, ExchangeRateProvider $exchangeRateProvider)
+    public function forceDelete(User $user, ExchangeRateProvider $exchangeRateProvider): bool
     {
         //
     }

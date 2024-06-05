@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Console\Commands;
+namespace App\Console\Commands;
 
+use App\Models\Setting;
+use App\Space\Updater;
 use Illuminate\Console\Command;
-use InvoiceShelf\Models\Setting;
-use InvoiceShelf\Space\Updater;
 
 // Implementation taken from Akaunting - https://github.com/akaunting/akaunting
 class UpdateCommand extends Command
@@ -42,7 +42,7 @@ class UpdateCommand extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
         set_time_limit(3600); // 1 hour
 

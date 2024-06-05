@@ -1,12 +1,13 @@
 <?php
 
-namespace InvoiceShelf\Models;
+namespace App\Models;
 
+use App\Traits\HasCustomFieldsTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;
-use InvoiceShelf\Traits\HasCustomFieldsTrait;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -29,39 +30,42 @@ class Expense extends Model implements HasMedia
         'receiptMeta',
     ];
 
-    protected $casts = [
-        'notes' => 'string',
-        'exchange_rate' => 'float',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'notes' => 'string',
+            'exchange_rate' => 'float',
+        ];
+    }
 
-    public function category()
+    public function category(): BelongsTo
     {
         return $this->belongsTo(ExpenseCategory::class, 'expense_category_id');
     }
 
-    public function customer()
+    public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class, 'customer_id');
     }
 
-    public function company()
+    public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class, 'company_id');
     }
 
-    public function paymentMethod()
+    public function paymentMethod(): BelongsTo
     {
         return $this->belongsTo(PaymentMethod::class);
     }
 
-    public function currency()
+    public function currency(): BelongsTo
     {
         return $this->belongsTo(Currency::class, 'currency_id');
     }
 
-    public function creator()
+    public function creator(): BelongsTo
     {
-        return $this->belongsTo('InvoiceShelf\Models\User', 'creator_id');
+        return $this->belongsTo(\App\Models\User::class, 'creator_id');
     }
 
     public function getFormattedExpenseDateAttribute($value)
