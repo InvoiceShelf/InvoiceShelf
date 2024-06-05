@@ -29,6 +29,6 @@ class RoleResource extends JsonResource
     {
         $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->scope);
 
-        return Carbon::parse($this->created_at)->format($dateFormat);
+        return Carbon::parse($this->created_at)->translatedFormat($dateFormat);
     }
 }

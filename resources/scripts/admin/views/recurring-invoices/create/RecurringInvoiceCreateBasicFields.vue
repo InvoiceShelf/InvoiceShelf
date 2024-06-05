@@ -129,7 +129,7 @@
         :invalid="v.status.$error"
         :placeholder="$t('recurring_invoices.select_a_status')"
         value-prop="value"
-        label="value"
+        label="key"
       />
     </BaseInputGroup>
 
@@ -186,6 +186,7 @@ import { useDebounceFn } from '@vueuse/core'
 import { useRecurringInvoiceStore } from '@/scripts/admin/stores/recurring-invoice'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 import ExchangeRateConverter from '@/scripts/admin/components/estimate-invoice-common/ExchangeRateConverter.vue'
 
@@ -207,13 +208,14 @@ const props = defineProps({
 const route = useRoute()
 const recurringInvoiceStore = useRecurringInvoiceStore()
 const globalStore = useGlobalStore()
+const { t } = useI18n()
 
 const isLoadingNextDate = ref(false)
 
 const limits = reactive([
-  { label: 'None', value: 'NONE' },
-  { label: 'Date', value: 'DATE' },
-  { label: 'Count', value: 'COUNT' },
+  { label: t('recurring_invoices.limit.none'), value: 'NONE' },
+  { label: t('recurring_invoices.limit.date'), value: 'DATE' },
+  { label: t('recurring_invoices.limit.count'), value: 'COUNT' },
 ])
 
 const isCustomFrequency = computed(() => {
@@ -226,9 +228,17 @@ const isCustomFrequency = computed(() => {
 
 const getStatusOptions = computed(() => {
   if (props.isEdit) {
-    return globalStore.config.recurring_invoice_status.update_status
+    return globalStore.config.recurring_invoice_status.update_status.map((item) => {
+      return Object.assign({}, item, {
+        key: t(item.key),
+      })
+    })
   }
-  return globalStore.config.recurring_invoice_status.create_status
+  return globalStore.config.recurring_invoice_status.create_status.map((item) => {
+    return Object.assign({}, item, {
+      key: t(item.key),
+    })
+  })
 })
 
 watch(

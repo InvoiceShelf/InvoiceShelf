@@ -42,8 +42,8 @@ class TaxSummaryReportController extends Controller
         }
 
         $dateFormat = CompanySetting::getSetting('carbon_date_format', $company->id);
-        $from_date = Carbon::createFromFormat('Y-m-d', $request->from_date)->format($dateFormat);
-        $to_date = Carbon::createFromFormat('Y-m-d', $request->to_date)->format($dateFormat);
+        $from_date = Carbon::createFromFormat('Y-m-d', $request->from_date)->translatedFormat($dateFormat);
+        $to_date = Carbon::createFromFormat('Y-m-d', $request->to_date)->translatedFormat($dateFormat);
         $currency = Currency::findOrFail(CompanySetting::getSetting('currency', $company->id));
 
         $colors = [

@@ -103,9 +103,9 @@ class EnvironmentManager
      */
     public function saveDatabaseVariables(DatabaseEnvironmentRequest $request)
     {
-
         $dbEnv = [
             'APP_URL' => $request->get('app_url'),
+            'APP_LOCALE' => $request->get('app_locale'),
             'DB_CONNECTION' => $request->get('database_connection'),
             'SANCTUM_STATEFUL_DOMAINS' => $request->get('app_domain'),
             'SESSION_DOMAIN' => explode(':', $request->get('app_domain'))[0],

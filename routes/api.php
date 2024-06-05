@@ -164,6 +164,10 @@ Route::prefix('/v1')->group(function () {
 
         Route::post('/wizard-step', [OnboardingWizardController::class, 'updateStep']);
 
+        Route::post('/wizard-language', [OnboardingWizardController::class, 'saveLanguage']);
+
+        Route::get('/languages', [LanguagesController::class, 'languages']);
+
         Route::get('/requirements', [RequirementsController::class, 'requirements']);
 
         Route::get('/permissions', [FilePermissionsController::class, 'permissions']);

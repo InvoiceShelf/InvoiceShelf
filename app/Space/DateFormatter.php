@@ -47,7 +47,7 @@ class DateFormatter
 
         foreach (static::$formats as $format) {
             $new[] = [
-                'display_date' => Carbon::now()->format($format['carbon_format']),
+                'display_date' => Carbon::now()->translatedFormat($format['carbon_format']),
                 'carbon_format_value' => $format['carbon_format'],
                 'moment_format_value' => $format['moment_format'],
             ];

@@ -54,7 +54,7 @@ class Customer extends Authenticatable implements HasMedia
     {
         $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id);
 
-        return Carbon::parse($this->created_at)->format($dateFormat);
+        return Carbon::parse($this->created_at)->translatedFormat($dateFormat);
     }
 
     public function setPasswordAttribute($value)

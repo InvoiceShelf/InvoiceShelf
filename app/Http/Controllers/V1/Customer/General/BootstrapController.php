@@ -34,6 +34,7 @@ class BootstrapController extends Controller
                 'menu' => $menu,
                 'current_customer_currency' => Currency::find($customer->currency_id),
                 'modules' => Module::where('enabled', true)->pluck('name'),
+                'current_company_language' => CompanySetting::getSetting('language', $customer->company_id),
             ]]);
     }
 }

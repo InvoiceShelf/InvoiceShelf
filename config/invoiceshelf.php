@@ -78,18 +78,18 @@ return [
     * List of Fiscal Years
     */
     'fiscal_years' => [
-        ['key' => 'january-december', 'value' => '1-12'],
-        ['key' => 'february-january', 'value' => '2-1'],
-        ['key' => 'march-february', 'value' => '3-2'],
-        ['key' => 'april-march', 'value' => '4-3'],
-        ['key' => 'may-april', 'value' => '5-4'],
-        ['key' => 'june-may', 'value' => '6-5'],
-        ['key' => 'july-june', 'value' => '7-6'],
-        ['key' => 'august-july', 'value' => '8-7'],
-        ['key' => 'september-august', 'value' => '9-8'],
-        ['key' => 'october-september', 'value' => '10-9'],
-        ['key' => 'november-october', 'value' => '11-10'],
-        ['key' => 'december-november', 'value' => '12-11'],
+        ['key' => 'settings.preferences.fiscal_years.january_december', 'value' => '1-12'],
+        ['key' => 'settings.preferences.fiscal_years.february_january', 'value' => '2-1'],
+        ['key' => 'settings.preferences.fiscal_years.march_february', 'value' => '3-2'],
+        ['key' => 'settings.preferences.fiscal_years.april_march', 'value' => '4-3'],
+        ['key' => 'settings.preferences.fiscal_years.may_april', 'value' => '5-4'],
+        ['key' => 'settings.preferences.fiscal_years.june_may', 'value' => '6-5'],
+        ['key' => 'settings.preferences.fiscal_years.july_june', 'value' => '7-6'],
+        ['key' => 'settings.preferences.fiscal_years.august_july', 'value' => '8-7'],
+        ['key' => 'settings.preferences.fiscal_years.september_august', 'value' => '9-8'],
+        ['key' => 'settings.preferences.fiscal_years.october_september', 'value' => '10-9'],
+        ['key' => 'settings.preferences.fiscal_years.november_october', 'value' => '11-10'],
+        ['key' => 'settings.preferences.fiscal_years.december_november', 'value' => '12-11'],
     ],
 
     /*
@@ -408,7 +408,7 @@ return [
     */
     'customer_menu' => [
         [
-            'title' => 'Dashboard',
+            'title' => 'navigation.dashboard',
             'link' => '/customer/dashboard',
             'icon' => '',
             'name' => '',
@@ -418,7 +418,7 @@ return [
             'model' => '',
         ],
         [
-            'title' => 'Invoices',
+            'title' => 'navigation.invoices',
             'link' => '/customer/invoices',
             'icon' => '',
             'name' => '',
@@ -428,7 +428,7 @@ return [
             'model' => '',
         ],
         [
-            'title' => 'Estimates',
+            'title' => 'navigation.estimates',
             'link' => '/customer/estimates',
             'icon' => '',
             'name' => '',
@@ -438,7 +438,7 @@ return [
             'model' => '',
         ],
         [
-            'title' => 'Payments',
+            'title' => 'navigation.payments',
             'link' => '/customer/payments',
             'icon' => '',
             'name' => '',
@@ -448,7 +448,7 @@ return [
             'model' => '',
         ],
         [
-            'title' => 'Settings',
+            'title' => 'navigation.settings',
             'link' => '/customer/settings',
             'icon' => '',
             'name' => '',

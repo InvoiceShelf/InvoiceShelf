@@ -35,7 +35,7 @@
         "
         @click="pageClicked(pagination.currentPage - 1)"
       >
-        Previous
+        {{ $t('general.pagination.previous') }}
       </a>
       <a
         href="#"
@@ -60,13 +60,13 @@
         "
         @click="pageClicked(pagination.currentPage + 1)"
       >
-        Next
+        {{ $t('general.pagination.next') }}
       </a>
     </div>
     <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
       <div>
         <p class="text-sm text-gray-700">
-          Showing
+          {{ $t('general.pagination.showing') }}
           {{ ' ' }}
           <span
             v-if="pagination.limit && pagination.currentPage"
@@ -77,7 +77,7 @@
             }}
           </span>
           {{ ' ' }}
-          to
+          {{ $t('general.pagination.to') }}
           {{ ' ' }}
           <span
             v-if="pagination.limit && pagination.currentPage"
@@ -96,13 +96,13 @@
             </span>
           </span>
           {{ ' ' }}
-          of
+          {{ $t('general.pagination.of') }}
           {{ ' ' }}
           <span v-if="pagination.totalCount" class="font-medium">
             {{ pagination.totalCount }}
           </span>
           {{ ' ' }}
-          results
+          {{ $t('general.pagination.results') }}
         </p>
       </div>
       <div>
