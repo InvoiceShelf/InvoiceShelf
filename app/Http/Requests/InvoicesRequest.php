@@ -79,7 +79,7 @@ class InvoicesRequest extends FormRequest
                 'required',
             ],
             'items.*.quantity' => [
-                'integer',
+                'numeric',
                 'required',
             ],
             'items.*.price' => [

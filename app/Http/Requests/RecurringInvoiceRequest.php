@@ -52,7 +52,6 @@ class RecurringInvoiceRequest extends FormRequest
             ],
             'total' => [
                 'integer',
-                'numeric',
                 'max:999999999999',
                 'required',
             ],
