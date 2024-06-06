@@ -38,6 +38,20 @@ export const useCompanyStore = (useWindow = false) => {
         })
       },
 
+      fetchCompanyCurrency() {
+        return new Promise((resolve, reject) => {
+          axios
+            .get('/api/v1/company/currency')
+            .then((response) => {
+              resolve(response)
+            })
+            .catch((err) => {
+              handleError(err)
+              reject(err)
+            })
+        })
+      },
+
       updateCompany(data) {
         return new Promise((resolve, reject) => {
           axios
@@ -157,7 +171,6 @@ export const useCompanyStore = (useWindow = false) => {
                   message: global.t(message),
                 })
               }
-
               resolve(response)
             })
             .catch((err) => {

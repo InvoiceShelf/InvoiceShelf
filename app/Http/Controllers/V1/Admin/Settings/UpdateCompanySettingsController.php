@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateSettingsRequest;
 use App\Models\Company;
 use App\Models\CompanySetting;
+use App\Models\Currency;
 use Illuminate\Support\Arr;
 
 class UpdateCompanySettingsController extends Controller
@@ -34,7 +35,13 @@ class UpdateCompanySettingsController extends Controller
             ]);
         }
 
-        CompanySetting::setSettings($data, $request->header('company'));
+        $companySettings = CompanySetting::setSettings($data, $request->header('company'));
+
+        $currency = Currency::find($data['currency']);
+        $currency->update([
+            'thousand_separator' => $data['currency_thousand_separator'],
+            'decimal_separator' => $data['currency_decimal_separator'],
+        ]);
 
         return response()->json([
             'success' => true,
