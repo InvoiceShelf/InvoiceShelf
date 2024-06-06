@@ -863,6 +863,8 @@
     "company_info": {
       "company_info": "公司資訊",
       "company_name": "公司名稱",
+      "tax_id": "Tax Identification Number",
+      "vat_id": "VAT Identification Number",
       "company_logo": "公司Logo",
       "section_description": "公司的資料會顯示在發票, 報價及其他文件上.",
       "phone": "電話",
@@ -1267,6 +1269,12 @@
       "aws_region": "AWS區域",
       "aws_bucket": "AWS Bucket",
       "aws_root": "AWS Root",
+      "s3_endpoint": "S3 Endpoint",
+      "s3_key": "S3 Key",
+      "s3_secret": "S3 Secret",
+      "s3_region": "S3 Region",
+      "s3_bucket": "S3 Bucket",
+      "s3_root": "S3 Root",
       "do_spaces_type": "Do Space 類型",
       "do_spaces_key": "Do Space 匙",
       "do_spaces_secret": "Do Spaces 金鑰",
@@ -1522,5 +1530,7 @@
   "pdf_bill_to": "帳單地址,",
   "pdf_ship_to": "送貨地址,",
   "pdf_received_from": "接收自",
-  "pdf_tax_label": "Tax"
+  "pdf_tax_label": "Tax",
+  "pdf_tax_id": "Tax-ID",
+  "pdf_vat_id": "VAT-ID"
 }

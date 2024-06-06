@@ -863,6 +863,8 @@
     "company_info": {
       "company_info": "Thông tin công ty",
       "company_name": "Tên công ty",
+      "tax_id": "Tax Identification Number",
+      "vat_id": "VAT Identification Number",
       "company_logo": "Logo công ty",
       "section_description": "Thông tin về công ty của bạn sẽ được hiển thị trên hóa đơn, ước tính và các tài liệu khác do InvoiceShelf tạo.",
       "phone": "Điện thoại",
@@ -1267,6 +1269,12 @@
       "aws_region": "Khu vực AWS",
       "aws_bucket": "Nhóm AWS",
       "aws_root": "Gốc AWS",
+      "s3_endpoint": "S3 Endpoint",
+      "s3_key": "S3 Key",
+      "s3_secret": "S3 Secret",
+      "s3_region": "S3 Region",
+      "s3_bucket": "S3 Bucket",
+      "s3_root": "S3 Root",
       "do_spaces_type": "Làm kiểu Spaces",
       "do_spaces_key": "Do phím Spaces",
       "do_spaces_secret": "Làm bí mật về không gian",
@@ -1522,5 +1530,7 @@
   "pdf_bill_to": "Hoa đơn để,",
   "pdf_ship_to": "Tàu,",
   "pdf_received_from": "Nhận được tư:",
-  "pdf_tax_label": "Tax"
+  "pdf_tax_label": "Tax",
+  "pdf_tax_id": "Tax-ID",
+  "pdf_vat_id": "VAT-ID"
 }

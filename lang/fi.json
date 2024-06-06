@@ -863,6 +863,8 @@
     "company_info": {
       "company_info": "Yritystiedot",
       "company_name": "Yrityksen nimi",
+      "tax_id": "Tax Identification Number",
+      "vat_id": "VAT Identification Number",
       "company_logo": "Yrityksen logo",
       "section_description": "Yrityksesi tiedot jotka näytetään laskulla, tarjouksella ja muilla dokumenteilla luotuna InvoiceShelf:in toimesta.",
       "phone": "Puhelin",
@@ -1267,6 +1269,12 @@
       "aws_region": "AWS regioona",
       "aws_bucket": "AWS hakemisto",
       "aws_root": "AWS juurihakemisto",
+      "s3_endpoint": "S3 Endpoint",
+      "s3_key": "S3 Key",
+      "s3_secret": "S3 Secret",
+      "s3_region": "S3 Region",
+      "s3_bucket": "S3 Bucket",
+      "s3_root": "S3 Root",
       "do_spaces_type": "Do Spaces tyyppi",
       "do_spaces_key": "Do Spaces avain",
       "do_spaces_secret": "Do Spaces salaus",
@@ -1522,5 +1530,7 @@
   "pdf_bill_to": "Laskutetaan,",
   "pdf_ship_to": "Toimitetaan,",
   "pdf_received_from": "Vastaanotettu:",
-  "pdf_tax_label": "Tax"
+  "pdf_tax_label": "Tax",
+  "pdf_tax_id": "Tax-ID",
+  "pdf_vat_id": "VAT-ID"
 }

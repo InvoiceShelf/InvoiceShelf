@@ -863,6 +863,8 @@
     "company_info": {
       "company_info": "Företagsinfo",
       "company_name": "Företagsnamn",
+      "tax_id": "Tax Identification Number",
+      "vat_id": "VAT Identification Number",
       "company_logo": "Företagslogga",
       "section_description": "Information om ditt företags som kommer visas på fakturor, kostnadsförslag och andra dokument skapade av InvoiceShelf.",
       "phone": "Telefon",
@@ -1267,6 +1269,12 @@
       "aws_region": "Region",
       "aws_bucket": "Bucket",
       "aws_root": "Sökväg",
+      "s3_endpoint": "S3 Endpoint",
+      "s3_key": "S3 Key",
+      "s3_secret": "S3 Secret",
+      "s3_region": "S3 Region",
+      "s3_bucket": "S3 Bucket",
+      "s3_root": "S3 Root",
       "do_spaces_type": "Do Spaces type",
       "do_spaces_key": "Nyckel",
       "do_spaces_secret": "Lösenord",
@@ -1522,5 +1530,7 @@
   "pdf_bill_to": "Faktureras till,",
   "pdf_ship_to": "Skickas till,",
   "pdf_received_from": "Från:",
-  "pdf_tax_label": "Tax"
+  "pdf_tax_label": "Tax",
+  "pdf_tax_id": "Tax-ID",
+  "pdf_vat_id": "VAT-ID"
 }

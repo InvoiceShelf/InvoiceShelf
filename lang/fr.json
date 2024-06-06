@@ -863,6 +863,8 @@
     "company_info": {
       "company_info": "Coordonnées de la société",
       "company_name": "Nom",
+      "tax_id": "Tax Identification Number",
+      "vat_id": "VAT Identification Number",
       "company_logo": "Logo",
       "section_description": "Saisissez ici les coordonnées de votre entreprise qui s'afficheront sur tous vos documents.",
       "phone": "Téléphone",
@@ -1267,6 +1269,12 @@
       "aws_region": "Région AWS",
       "aws_bucket": "Bucket",
       "aws_root": "Répertoire",
+      "s3_endpoint": "S3 Endpoint",
+      "s3_key": "S3 Key",
+      "s3_secret": "S3 Secret",
+      "s3_region": "S3 Region",
+      "s3_bucket": "S3 Bucket",
+      "s3_root": "S3 Root",
       "do_spaces_type": "Type",
       "do_spaces_key": "Key",
       "do_spaces_secret": "Secret",
@@ -1522,5 +1530,7 @@
   "pdf_bill_to": "Facturer à",
   "pdf_ship_to": "Expédier à",
   "pdf_received_from": "Reçu de :",
-  "pdf_tax_label": "Taxe"
+  "pdf_tax_label": "Taxe",
+  "pdf_tax_id": "Tax-ID",
+  "pdf_vat_id": "VAT-ID"
 }

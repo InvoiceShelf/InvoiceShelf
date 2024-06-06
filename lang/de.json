@@ -863,8 +863,8 @@
     "company_info": {
       "company_info": "Firmeninfo",
       "company_name": "Name des Unternehmens",
-      "vat_id": "Umsatzsteuer-Identifikationsnummer",
       "tax_id": "Steuernummer",
+      "vat_id": "Umsatzsteuer-Identifikationsnummer",
       "company_logo": "Firmenlogo",
       "section_description": "Informationen zu Ihrem Unternehmen, die auf Rechnungen, Angeboten und anderen von InvoiceShelf erstellten Dokumenten angezeigt werden.",
       "phone": "Telefon",
