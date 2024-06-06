@@ -11,6 +11,7 @@ return new class extends Migration
     public function up(): void
     {
         $this->replaceModelTypes('InvoiceShelf', 'App');
+        $this->replaceModelTypes('Crater', 'App');
     }
 
     /**
