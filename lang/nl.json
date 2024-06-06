@@ -863,8 +863,8 @@
     "company_info": {
       "company_info": "Bedrijfsinfo",
       "company_name": "Bedrijfsnaam",
-      "tax_id": "Tax Identification Number",
-      "vat_id": "VAT Identification Number",
+      "tax_id": "Fiscaal Identificatienummer",
+      "vat_id": "BTW Nummer",
       "company_logo": "Bedrijfslogo",
       "section_description": "Informatie over uw bedrijf die wordt weergegeven op facturen, offertes en andere documenten die door InvoiceShelf zijn gemaakt.",
       "phone": "Telefoon",
@@ -1154,7 +1154,7 @@
       "payment_mode_confirm_delete": "You will not be able to recover this Payment Mode",
       "payments_attached": "This payment method is already attached to payments. Please delete the attached payments to proceed with deletion.",
       "expenses_attached": "This payment method is already attached to expenses. Please delete the attached expenses to proceed with deletion.",
-      "deleted_message": "Payment Mode deleted successfully"
+      "deleted_message": "Betaalmethode succesvol verwijderd"
     },
     "expense_category": {
       "title": "Onkostencategorieën",
@@ -1180,8 +1180,8 @@
       "discount_setting": "Kortingsinstelling",
       "discount_per_item": "Korting per item",
       "discount_setting_description": "Schakel dit in als u korting wilt toevoegen aan afzonderlijke factuuritems. Standaard wordt korting rechtstreeks aan de factuur toegevoegd.",
-      "expire_public_links": "Automatically Expire Public Links",
-      "expire_setting_description": "Specify whether you would like to expire all the links sent by application to view invoices, estimates & payments, etc after a specified duration.",
+      "expire_public_links": "Publieke links automatisch laten vervallen",
+      "expire_setting_description": "Geef aan of je alle links die eerder zijn verstuurd door de applicatie om facturen, offertes en betalingen, etc. te bekijken wilt laten verlopen na een bepaalde periode.",
       "save": "Opslaan",
       "preference": "Voorkeur | Voorkeuren",
       "general_settings": "Standaardvoorkeuren voor het systeem.",
