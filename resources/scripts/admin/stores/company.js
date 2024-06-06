@@ -171,6 +171,7 @@ export const useCompanyStore = (useWindow = false) => {
                   message: global.t(message),
                 })
               }
+              
               resolve(response)
             })
             .catch((err) => {
