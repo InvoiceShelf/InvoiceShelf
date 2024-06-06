@@ -37,11 +37,13 @@ class UpdateCompanySettingsController extends Controller
 
         CompanySetting::setSettings($data, $request->header('company'));
 
-        $currency = Currency::findOrFail($data['currency']);
-        $currency->update([
-            'thousand_separator' => $data['currency_thousand_separator'],
-            'decimal_separator' => $data['currency_decimal_separator'],
-        ]);
+        if (isset($data['currency_thousand_separator']) && isset($data['currency_decimal_separator'])) {
+            $currency = Currency::findOrFail($data['currency']);
+            $currency->update([
+                'thousand_separator' => $data['currency_thousand_separator'],
+                'decimal_separator' => $data['currency_decimal_separator'],
+            ]);
+        }
 
         return response()->json([
             'success' => true,
