@@ -12,6 +12,7 @@ use App\Http\Controllers\V1\Admin\Customer\CustomerStatsController;
 use App\Http\Controllers\V1\Admin\CustomField\CustomFieldsController;
 use App\Http\Controllers\V1\Admin\Dashboard\DashboardController;
 use App\Http\Controllers\V1\Admin\Estimate\ChangeEstimateStatusController;
+use App\Http\Controllers\V1\Admin\Estimate\CloneEstimateController;
 use App\Http\Controllers\V1\Admin\Estimate\ConvertEstimateController;
 use App\Http\Controllers\V1\Admin\Estimate\EstimatesController;
 use App\Http\Controllers\V1\Admin\Estimate\EstimateTemplatesController;
@@ -284,6 +285,8 @@ Route::prefix('/v1')->group(function () {
             Route::get('/estimates/{estimate}/send/preview', SendEstimatePreviewController::class);
 
             Route::post('/estimates/{estimate}/send', SendEstimateController::class);
+
+            Route::post('/estimates/{estimate}/clone', CloneEstimateController::class);
 
             Route::post('/estimates/{estimate}/status', ChangeEstimateStatusController::class);
 

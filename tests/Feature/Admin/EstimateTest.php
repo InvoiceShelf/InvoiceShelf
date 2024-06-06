@@ -65,6 +65,18 @@ test('create estimate', function () {
     ]);
 });
 
+test('clone estimate', function () {
+
+    $estimate = Estimate::factory()->create();
+
+    $beforeCount = Estimate::count();
+
+    $response = $this->post("/api/v1/estimates/{$estimate->id}/clone");
+
+    $this->assertDatabaseCount('estimates', $beforeCount + 1);
+
+});
+
 test('store validates using a form request', function () {
     $this->assertActionUsesFormRequest(
         EstimatesController::class,
