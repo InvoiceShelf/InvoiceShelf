@@ -1,8 +1,6 @@
 // custom-bootstrap.scss
 
-
-
 // Override Bootstrap class names with your prefix
-.namespace {    
-    @import "../../node_modules/bootstrap/scss/bootstrap";
+.namespace_bootstrap {
+  @import '../../node_modules/bootstrap/scss/bootstrap';
 }

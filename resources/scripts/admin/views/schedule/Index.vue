@@ -3,7 +3,11 @@
     <BasePageHeader :title="$t('schedules.title')">
       <BaseBreadcrumb>
         <BaseBreadcrumbItem :title="$t('general.home')" to="dashboard" />
-        <BaseBreadcrumbItem :title="$t('schedules.schedule', 2)" to="#" active />
+        <BaseBreadcrumbItem
+          :title="$t('schedules.schedule', 2)"
+          to="#"
+          active
+        />
       </BaseBreadcrumb>
 
       <template #actions>
@@ -18,603 +22,336 @@
       </template>
     </BasePageHeader>
     <!-- CALENDAR-->
-    <div id='calendar'></div>
+    <div id="calendar"></div>
     <!-- <FullCalendar :options="calendarOptions" /> -->
   </BasePage>
 
   <!-- MODAL -->
-  <div class="namespace">
-    <div class="modal" id="schedule_modal" tabindex="-1" data-bs-theme="light"> 
+  <div class="namespace_bootstrap">
+    <div class="modal" id="schedule_modal" tabindex="-1" data-bs-theme="light">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-light">
-
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">Add Schedule</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <h1 class="modal-title fs-5" id="exampleModalLabel">
+              Add Schedule
+            </h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
           </div>
 
           <div class="modal-body">
             <form>
               <div class="mb-3">
                 <label class="form-label">Title</label>
-                <input type="text" class="form-control field" id="title" name="title">
+                <input
+                  type="text"
+                  class="form-control field"
+                  id="title"
+                  name="title"
+                />
                 <span id="titleError" class="text-danger error"></span>
               </div>
 
               <div class="mb-3">
                 <label class="form-label">Description</label>
-                <input type="text" class="form-control field" id="description" name="description">
+                <input
+                  type="text"
+                  class="form-control field"
+                  id="description"
+                  name="description"
+                />
               </div>
 
-              <div class="mb-3">
-                <label class="form-label">Customer</label>
-                <select class="form-select field" id="customer" name="customer">
-                  
-                </select>
-                <span id="customerError" class="text-danger error"></span>            
-              </div>
-
-              <div class="mb-3">
-                <label class="form-label">Installer</label>
-                <select class="form-select field" id="installer" name="installer">
-                  
-                </select>
-                <span id="installerError" class="text-danger error"></span>               
+              <div class="row">
+                <div class="col-6">
+                  <div class="mb-3">
+                    <label class="form-label">Customer</label>
+                    <select
+                      class="form-select field"
+                      id="customer"
+                      name="customer"
+                    ></select>
+                    <span id="customerError" class="text-danger error"></span>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="mb-3">
+                    <label class="form-label">Installer</label>
+                    <select
+                      class="form-select field"
+                      id="installer"
+                      name="installer"
+                    ></select>
+                    <span id="installerError" class="text-danger error"></span>
+                  </div>
+                </div>
               </div>
 
               <div class="row">
                 <div class="col-6">
                   <div class="mb-3">
                     <label class="form-label">Start Date/Time</label>
-                    <input type="datetime-local" class="form-control" id="start" name="start">
+                    <input
+                      type="datetime-local"
+                      class="form-control"
+                      id="start"
+                      name="start"
+                    />
                     <span id="startError" class="text-danger error"></span>
                   </div>
                 </div>
                 <div class="col-6">
                   <div class="mb-3">
                     <label class="form-label">End Date/Time</label>
-                    <input type="datetime-local" class="form-control field" id="end" name="end">
+                    <input
+                      type="datetime-local"
+                      class="form-control field"
+                      id="end"
+                      name="end"
+                    />
                   </div>
                 </div>
               </div>
-
             </form>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>            
-            <button type="button" id="saveBtn" class="btn btn-primary">Save changes</button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="button" id="saveBtn" class="btn btn-primary">
+              {{ buttonText }}
+            </button>
           </div>
-
         </div>
-      </div>  
+      </div>
     </div>
-</div>
-  
-
+  </div>
 </template>
 
-<!-- <script>
-import FullCalendar from '@fullcalendar/vue3'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import interactionPlugin from '@fullcalendar/interaction'
-import timeGridPlugin from '@fullcalendar/timegrid'; 
-import listPlugin from '@fullcalendar/list';
-//import bootstrapPlugin from '@fullcalendar/bootstrap';
-
-// import 'bootstrap/dist/css/bootstrap.min.css';
-// import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-
-//import "bootstrap/dist/css/bootstrap.min.css";
-// import '../../dist/custom-bootstrap.css'; // Custom Bootstrap CSS
-// import '../../../../../dist/custom-bootstrap.css';
-//import "bootstrap";
-
-
-export default 
-{
-  components: 
-  {
-    FullCalendar
-  },
-  data() 
-  {
-    return{
-      calendarOptions:
-      {
-        plugins: [ dayGridPlugin, interactionPlugin,timeGridPlugin,listPlugin ],        
-        initialView: 'dayGridMonth',
-        headerToolbar: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth,timeGridDay,listWeek'
-        },
-        //themeSystem: 'bootstrap',
-        timeZone:'UTC',        
-        events: '/schedules',
-        eventBackgroundColor: '#ddd',
-        eventBorderColor: '#ccc',
-        eventTextColor: '#000',
-        eventDisplay:'block',
-        //events: '/get-schedules?user_id='+userStore.currentUser.id+'&company_id='+userStore.currentUser.companies[0].id,
-        editable: true,
-        selectable: true,
-
-        // eventClick: function(info) {
-        //     // Get the event data
-        //     var event = info.event;
-        //     alert('Event: ' + event.title + '\nStart: ' + event.start + '\nEnd: ' + event.end + '\nID: ' + event.id);
-        // },
-
-        //SHOW TOOLTIP
-        // eventDidMount: function(info) {
-        //   var tooltip = new Tooltip(info.el, {
-        //     title: info.event.extendedProps.description,
-        //     placement: 'top',
-        //     trigger: 'hover',
-        //     container: 'body'
-        //   });
-        // },
-
-        //CREATE SCHEDULE
-          dateClick: function(info)
-          {
-            $('.field').val('');        
-            $('.error').empty();
-
-            $('#start').val(moment(info.dateStr).format('YYYY-MM-DDTHH:mm'));        
-            $('#schedule_modal').modal('toggle');
-
-            $('#saveBtn').click(function()
-            {
-              var title = $('#title').val();
-              var description = $('#description').val();          
-              var start = $('#start').val();
-              var end = $('#end').val();
-              var customer_id = $('#customer').val();
-              var installer_id = $('#installer').val();
-
-              $.ajax({
-                url:"/schedules",
-                type:"POST",
-                dataType:'json',
-                data:{ title, start, end, description, customer_id, installer_id },
-                success:function(response)
-                {
-                    $('#schedule_modal').modal('hide');
-                    var newEvent = {
-                      'id': response.id,
-                      'title': response.title,
-                      'start' : response.start,
-                      'end'  : response.end
-                    }
-                    calendar.addEvent(newEvent);
-
-                },
-                error:function(error)
-                {
-                    if(error) {
-                        $('#titleError').html(error.responseJSON.errors.title);
-                        $('#startError').html(error.responseJSON.errors.start);
-                        $('#customerError').html(error.responseJSON.errors.customer_id);
-                        $('#installerError').html(error.responseJSON.errors.installer_id);
-                    }
-                },
-              });
-
-            });
-  
-        },
-
-        eventMouseEnter: function(info) {
-            // Extract event details
-            var eventObj = info.event;
-
-            var tooltipContent = `
-            <strong>Description:</strong> ${eventObj.extendedProps.description}<br>
-            <strong>Customer:</strong> ${eventObj.extendedProps.customer.name}<br>
-            <strong>Installer:</strong> ${eventObj.extendedProps.installer.name}`;
-
-            // Create tooltip
-            var tooltip = new bootstrap.Tooltip(info.el, {
-                title: tooltipContent,
-                html: true,
-                placement: 'top',
-                trigger: 'manual'
-            });
-
-            // Show tooltip
-            tooltip.show();
-
-            // Store tooltip instance for later hiding
-            $(info.el).data('tooltip', tooltip);
-
-            // // Fetch additional information based on customer_id
-            // $.ajax({
-            //     url: '/get-customer-name', // Your API endpoint to get customer name
-            //     type: 'GET',
-            //     data: { customer_id: eventObj.extendedProps.customer_id },
-            //     success: function(response) {
-            //         var tooltipContent = `<strong>Description:</strong> ${eventObj.extendedProps.description}<br><strong>Customer:</strong> ${response.customer_name}`;
-
-            //         // Create tooltip
-            //         var tooltip = new bootstrap.Tooltip(info.el, {
-            //             title: tooltipContent,
-            //             html: true,
-            //             placement: 'top',
-            //             trigger: 'manual'
-            //         });
-
-            //         // Show tooltip
-            //         tooltip.show();
-
-            //         // Store tooltip instance for later hiding
-            //         $(info.el).data('tooltip', tooltip);
-            //     }
-            // });
-        },
-        eventMouseLeave: function(info) {
-            // Hide and dispose the tooltip
-            var tooltip = $(info.el).data('tooltip');
-            if (tooltip) {
-                tooltip.dispose();
-            }
-        }
-
-      }//calendar_options
-    }//return
-  },//data
-  
-  //AFTER LOAD COMPLETE HTML ELEMENTS
-  mounted() {
-    //Customer Select Initializing
-    $.ajax({
-      url:"/get-customers",
-      type:"GET",
-      dataType:'json',
-      success:function(response)
-      {        
-        $('#customer').empty();
-        $('#customer').append('<option value=""></option>');
-        response.forEach(function(customer) {
-            $('#customer').append('<option value="' + customer.id + '">' + customer.name + '</option>');
-        });
-      },
-      error:function(error)
-      {
-          alert('Something went wrong to get the customers list: '+error);
-      },
-    });
-
-    //Installer Select Initializing
-    $.ajax({
-      url:"/get-installers",
-      type:"GET",
-      dataType:'json',
-      success:function(response)
-      {
-        $('#installer').empty();
-        $('#installer').append('<option value=""></option>');
-        response.forEach(function(installer) {
-            $('#installer').append('<option value="' + installer.id + '">' + installer.name + '</option>');
-        });
-      },
-      error:function(error)
-      {
-          alert('Something went wrong to get the installers list: '+error);
-      },
-    });
-  }
-  // methods:
-  // {
-  //   bla()
-  //   {
-      
-  //       alert('popopop');
-     
-  //   }
-  // },
-
-
-
-}//export defautl
-
-// import { Calendar } from '@fullcalendar/core';
-// import dayGridPlugin from '@fullcalendar/daygrid';
-// import timeGridPlugin from '@fullcalendar/timegrid';
-// import listPlugin from '@fullcalendar/list';
-// import interactionPlugin from '@fullcalendar/interaction'
-
-// import { onMounted } from 'vue'
-
-// onMounted(() => {
-
-//   // let calendarEl = document.getElementById('calendar');
-//   // let calendar = new Calendar(calendarEl, {
-//   //   plugins: [ dayGridPlugin, interactionPlugin, timeGridPlugin,listPlugin ],
-//   //   initialView: 'dayGridMonth',
-//   //   headerToolbar: {
-//   //     left: 'prev,next today',
-//   //     center: 'title',
-//   //     right: 'dayGridMonth,timeGridDay,listWeek'
-//   //   },
-//   //   events: '/schedules',
-//   // });
-//   // calendar.render();
-
-// });
-
-
-
-</script> -->
-
-
-
-
-
 <!-- FULL CALENDAR-->
-
-
-
 <script setup>
-
-import { Calendar } from '@fullcalendar/core';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import listPlugin from '@fullcalendar/list';
+import { Calendar } from '@fullcalendar/core'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import timeGridPlugin from '@fullcalendar/timegrid'
+import listPlugin from '@fullcalendar/list'
 import interactionPlugin from '@fullcalendar/interaction'
 
-import "bootstrap";
+import moment from 'moment'
+import 'bootstrap'
 
+import { ref, computed } from 'vue'
 import { onMounted } from 'vue'
-import { useUserStore } from '@/scripts/admin/stores/user'
+//import { useUserStore } from '@/scripts/admin/stores/user'
+import { useNotificationStore } from '@/scripts/stores/notification'
+import { useI18n } from 'vue-i18n'
 
-const userStore = useUserStore()
+const { t } = useI18n()
+const notificationStore = useNotificationStore()
+
+//To verify se button is update or save
+let id = ref(null)
+const buttonText = computed(() => {
+  return id.value ? 'Update' : 'Save'
+})
+
+//const userStore = useUserStore()
 // console.log(userStore.currentUser);
 // console.log(userStore.currentUser.id);
 
-  $.ajaxSetup({
-    headers: {
-      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    }
-  });
+$.ajaxSetup({
+  headers: {
+    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+  },
+})
 
-
-  //Customer Select Initializing
-  $.ajax({
-      url:"/get-customers",
-      type:"GET",
-      dataType:'json',
-      success:function(response)
-      {        
-        $('#customer').empty();
-        $('#customer').append('<option value=""></option>');
-        response.forEach(function(customer) {
-            $('#customer').append('<option value="' + customer.id + '">' + customer.name + '</option>');
-        });
-      },
-      error:function(error)
-      {
-          alert('Something went wrong to get the customers list: '+error);
-      },
-  });
-
-  //Installer Select Initializing
-  $.ajax({
-      url:"/get-installers",
-      type:"GET",
-      dataType:'json',
-      success:function(response)
-      {
-        $('#installer').empty();
-        $('#installer').append('<option value=""></option>');
-        response.forEach(function(installer) {
-            $('#installer').append('<option value="' + installer.id + '">' + installer.name + '</option>');
-        });
-      },
-      error:function(error)
-      {
-          alert('Something went wrong to get the installers list: '+error);
-      },
-  });
-
-  onMounted(() => {
-
-
-    var calendarEl = document.getElementById('calendar');
-    var calendar = new Calendar(calendarEl, {
-      plugins: [ dayGridPlugin, interactionPlugin, timeGridPlugin,listPlugin ],
-      //themeSystem: 'bootstrap5',
-      initialView: 'dayGridMonth',
-      headerToolbar: {
-          left: 'prev,next today',
-          center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay'
-      },
-      timeZone:'UTC',
-      
-      events: '/schedules',
-      eventBackgroundColor: '#ddd',
-      eventBorderColor: '#ccc',
-      eventTextColor: '#000',
-      eventDisplay:'block',
-      //events: '/get-schedules?user_id='+userStore.currentUser.id+'&company_id='+userStore.currentUser.companies[0].id,
-      editable: true,
-      selectable: true,
-    
-      // eventClick: function(info) {
-      //     // Get the event data
-      //     var event = info.event;
-      //     alert('Event: ' + event.title + '\nStart: ' + event.start + '\nEnd: ' + event.end + '\nID: ' + event.id);
-      // },
-
-      //SHOW TOOLTIP
-      // eventDidMount: function(info) {
-      //   var tooltip = new Tooltip(info.el, {
-      //     title: info.event.extendedProps.description,
-      //     placement: 'top',
-      //     trigger: 'hover',
-      //     container: 'body'
-      //   });
-      // },
-
-      //CREATE SCHEDULE
-      dateClick: function(info)
-      {
-        $('.field').val('');        
-        $('.error').empty();
-
-        $('#start').val(moment(info.dateStr).format('YYYY-MM-DDTHH:mm'));        
-        $('#schedule_modal').modal('toggle');
-
-        $('#saveBtn').click(function()
-        {
-          var title = $('#title').val();
-          var description = $('#description').val();          
-          var start = $('#start').val();
-          var end = $('#end').val();
-          var customer_id = $('#customer').val();
-          var installer_id = $('#installer').val();
-
-          $.ajax({
-            url:"/schedules",
-            type:"POST",
-            dataType:'json',
-            data:{ title, start, end, description, customer_id, installer_id },
-            success:function(response)
-            {
-                $('#schedule_modal').modal('hide');
-                var newEvent = {
-                  'id': response.id,
-                  'title': response.title,
-                  'start' : response.start,
-                  'end'  : response.end
-                }
-                calendar.addEvent(newEvent);
-
-            },
-            error:function(error)
-            {
-                if(error) {
-                    $('#titleError').html(error.responseJSON.errors.title);
-                    $('#startError').html(error.responseJSON.errors.start);
-                    $('#customerError').html(error.responseJSON.errors.customer_id);
-                    $('#installerError').html(error.responseJSON.errors.installer_id);
-                }
-            },
-          });
-
-        });
- 
-      },
-
-      // eventMouseEnter: function(info) {
-      //     // Extract event details
-      //     var eventObj = info.event;
-
-      //     var tooltipContent = `
-      //     <strong>Description:</strong> ${eventObj.extendedProps.description}<br>
-      //     <strong>Customer:</strong> ${eventObj.extendedProps.customer.name}<br>
-      //     <strong>Installer:</strong> ${eventObj.extendedProps.installer.name}`;
-
-      //     // Create tooltip
-      //     var tooltip = new bootstrap.Tooltip(info.el, {
-      //         title: tooltipContent,
-      //         html: true,
-      //         placement: 'top',
-      //         trigger: 'manual'
-      //     });
-
-      //     // Show tooltip
-      //     tooltip.show();
-
-      //     // Store tooltip instance for later hiding
-      //     $(info.el).data('tooltip', tooltip);
-
-      //     // // Fetch additional information based on customer_id
-      //     // $.ajax({
-      //     //     url: '/get-customer-name', // Your API endpoint to get customer name
-      //     //     type: 'GET',
-      //     //     data: { customer_id: eventObj.extendedProps.customer_id },
-      //     //     success: function(response) {
-      //     //         var tooltipContent = `<strong>Description:</strong> ${eventObj.extendedProps.description}<br><strong>Customer:</strong> ${response.customer_name}`;
-
-      //     //         // Create tooltip
-      //     //         var tooltip = new bootstrap.Tooltip(info.el, {
-      //     //             title: tooltipContent,
-      //     //             html: true,
-      //     //             placement: 'top',
-      //     //             trigger: 'manual'
-      //     //         });
-
-      //     //         // Show tooltip
-      //     //         tooltip.show();
-
-      //     //         // Store tooltip instance for later hiding
-      //     //         $(info.el).data('tooltip', tooltip);
-      //     //     }
-      //     // });
-      // },
-      // eventMouseLeave: function(info) {
-      //     // Hide and dispose the tooltip
-      //     var tooltip = $(info.el).data('tooltip');
-      //     if (tooltip) {
-      //         tooltip.dispose();
-      //     }
-      // }
-
-
-
-
-
-
-
-
-    });
-
-    $('#schedule_modal').on('hidden.bs.modal',function() {      
-      $('#saveBtn').unbind();
-    });
-
-    $('#add_schedule').click(function(){
-      $('#schedule_modal').modal('toggle');
+//Customer Select Initializing
+$.ajax({
+  url: '/get-customers',
+  type: 'GET',
+  dataType: 'json',
+  success: function (response) {
+    $('#customer').empty()
+    $('#customer').append('<option value=""></option>')
+    response.forEach(function (customer) {
+      $('#customer').append(
+        '<option value="' + customer.id + '">' + customer.name + '</option>',
+      )
     })
+  },
+  error: function (error) {
+    alert('Something went wrong to get the customers list: ' + error)
+  },
+})
 
-    calendar.render();
+//Installer Select Initializing
+$.ajax({
+  url: '/get-installers',
+  type: 'GET',
+  dataType: 'json',
+  success: function (response) {
+    $('#installer').empty()
+    $('#installer').append('<option value=""></option>')
+    response.forEach(function (installer) {
+      $('#installer').append(
+        '<option value="' + installer.id + '">' + installer.name + '</option>',
+      )
+    })
+  },
+  error: function (error) {
+    alert('Something went wrong to get the installers list: ' + error)
+  },
+})
 
-  });
+onMounted(() => {
+  var calendarEl = document.getElementById('calendar')
 
+  var calendar = new Calendar(calendarEl, {
+    plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin],
+    initialView: 'dayGridMonth',
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth',
+    },
+    events: '/schedules',
+    eventBackgroundColor: '#ddd',
+    eventBorderColor: '#ccc',
+    eventTextColor: '#000',
+    eventDisplay: 'block',
+    editable: true,
+    selectable: true,
+
+    //CREATE SCHEDULE
+    dateClick: function (info) {
+      $('.field').val('')
+      $('.error').empty()
+      //reset id Ref
+      id.value = null
+
+      $('#start').val(moment(info.dateStr).format('YYYY-MM-DDTHH:mm'))
+      $('#schedule_modal').modal('toggle')
+      //reassign saveBtn click event
+      saveBtn()
+    },
+
+    //CLICK ON THE SCHEDULE
+    eventClick: function (info) {
+      // Get the event data
+      var event = info.event
+
+      $('#title').val(event.title)
+      $('#start').val(moment(event.start).format('YYYY-MM-DDTHH:mm'))
+      $('#end').val(moment(event.end).format('YYYY-MM-DDTHH:mm'))
+      $('#description').val(event.extendedProps.description)
+      $('#customer').val(event.extendedProps.customer_id)
+      $('#installer').val(event.extendedProps.installer_id)
+
+      $('#schedule_modal').modal('toggle')
+
+      if (event.id) {
+        id.value = event.id
+        //reassign saveBtn click event
+        saveBtn()
+      }
+    },
+  })
+
+  //SAVE OR UPDATE SCHEDULE
+  function saveBtn() {
+    $('#saveBtn').click(function () {
+      var title = $('#title').val()
+      var description = $('#description').val()
+      var start = $('#start').val()
+      var end = $('#end').val()
+      var customer_id = $('#customer').val()
+      var installer_id = $('#installer').val()
+
+      //UPDATE
+      if (id.value) {
+        $.ajax({
+          url: '/schedules/' + id.value,
+          type: 'PUT',
+          dataType: 'json',
+          data: { title, start, end, description, customer_id, installer_id },
+          success: function (response) {
+            $('#schedule_modal').modal('toggle')
+
+            var event = calendar.getEventById(id.value)
+            event.setProp('title', response.title)
+            event.setStart(response.start)
+            event.setEnd(response.end)
+            event.setExtendedProp('description', response.description)
+            event.setExtendedProp('customer_id', response.customer_id)
+            event.setExtendedProp('installer_id', response.installer_id)
+
+            notificationStore.showNotification({
+              type: 'success',
+              message: t('schedules.updated_message'),
+            })
+            //reset id Ref
+            id.value = null
+          },
+          error: function (error) {
+            if (error) {
+              $('#titleError').html(error.responseJSON.errors.title)
+              $('#startError').html(error.responseJSON.errors.start)
+              $('#customerError').html(error.responseJSON.errors.customer_id)
+              $('#installerError').html(error.responseJSON.errors.installer_id)
+            }
+          },
+        })
+      }
+      //SAVE
+      else {
+        $.ajax({
+          url: '/schedules',
+          type: 'POST',
+          dataType: 'json',
+          data: { title, start, end, description, customer_id, installer_id },
+          success: function (response) {
+            $('#schedule_modal').modal('toggle')
+            var newEvent = response
+            calendar.addEvent(newEvent)
+            notificationStore.showNotification({
+              type: 'success',
+              message: t('schedules.created_message'),
+            })
+          },
+          error: function (error) {
+            if (error) {
+              $('#titleError').html(error.responseJSON.errors.title)
+              $('#startError').html(error.responseJSON.errors.start)
+              $('#customerError').html(error.responseJSON.errors.customer_id)
+              $('#installerError').html(error.responseJSON.errors.installer_id)
+            }
+          },
+        })
+      }
+    })
+  }
+
+  $('#schedule_modal').on('hidden.bs.modal', function () {
+    $('#saveBtn').off()
+  })
+
+  $('#add_schedule').click(function () {
+    $('.field').val('')
+    $('.error').empty()
+    $('#schedule_modal').modal('toggle')
+    //reassign saveBtn click event
+    saveBtn()
+  })
+
+  calendar.render()
+})
 </script>
 
-<style scoped>
-
-/* @import '../../../../../custom-bootstrap.css'; */
-/* @import '../../../../../resources/sass/custom-bootstrap.scss'; */
-
-/* @import 'bootstrap/dist/css/bootstrap.min.css'; */
-
-/* @import "~@fullcalendar/core/main.css";
-@import "~@fullcalendar/daygrid/main.css"; */
-
- /*@import 'bootstrap.min.css';*/
-
-
-/* .fc .fc-view {
-  background-color: #fff !important;
-  background: #fff !important;
-} */
-
-/* .fc-toolbar {
-  background-color: #e2e8f0;
-} */
-
-/* .fc-day, .fc-daygrid-day {
-  background-color: #ffffff;
-} */
-
-/* .fc > .fc-event {
-  background-color: #337ab7 !important;
-  border-color: #2e6da4 !important;
-  color: #ffffff !important;
-}  */
-</style>
-
+<style scoped></style>

@@ -15,7 +15,7 @@ class ScheduleController extends Controller
      * Display a listing of the resource.
      */
 
-     
+
     protected $company_id;
 
     public function __construct()
@@ -24,29 +24,29 @@ class ScheduleController extends Controller
             $user = Auth::user();
             if ($user) {
                 $this->company_id = $user->companies->first()->id;
-            }    
+            }
             return $next($request);
         });
     }
 
     public function index()
-    {        
-        $schedules = Schedule::where('company_id',$this->company_id)
-        ->with('customer')
-        ->with('installer')
-        ->get();
+    {
+        $schedules = Schedule::where('company_id', $this->company_id)
+            ->with('customer')
+            ->with('installer')
+            ->get();
         return response()->json($schedules);
     }
 
     public function getInstallers()
-    {               
-        $installers = Installer::where('company_id',$this->company_id)->get();
+    {
+        $installers = Installer::where('company_id', $this->company_id)->get();
         return response()->json($installers);
     }
 
     public function getCustomers()
-    {           
-        $customers = Customer::where('company_id',$this->company_id)->get();
+    {
+        $customers = Customer::where('company_id', $this->company_id)->get();
         return response()->json($customers);
     }
 
@@ -65,12 +65,20 @@ class ScheduleController extends Controller
     {
         $user = Auth::user();
 
-        $request->validate([
-            'title' => 'required|string',
-            'start' => 'required',
-            'customer_id' => 'required',
-            'installer_id' => 'required',
-        ]);
+        $request->validate(
+            [
+                'title' => 'required',
+                'start' => 'required',
+                'customer_id' => 'required',
+                'installer_id' => 'required',
+            ],
+            [
+                'title.required' => 'The title is required.',
+                'start.required' => 'The start date is required.',
+                'customer_id.required' => 'The customer is required.',
+                'installer_id.required' => 'The installer is required.',
+            ]
+        );
 
         $schedule = Schedule::create([
             'title' => $request->title,
@@ -105,9 +113,39 @@ class ScheduleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Schedule $schedule)
+    public function update(Request $request, $id)
     {
-        //
+        $user = Auth::user();
+
+        $request->validate(
+            [
+                'title' => 'required',
+                'start' => 'required',
+                'customer_id' => 'required',
+                'installer_id' => 'required',
+            ],
+            [
+                'title.required' => 'The title is required.',
+                'start.required' => 'The start date is required.',
+                'customer_id.required' => 'The customer is required.',
+                'installer_id.required' => 'The installer is required.',
+            ]
+        );
+
+        $schedule = Schedule::findOrFail($id);
+
+        $schedule->update([
+            'title' => $request->title,
+            'start' => $request->start,
+            'end' => $request->end,
+            'description' => $request->description,
+            'user_id' => $user->id,
+            'company_id' => $this->company_id,
+            'customer_id' => $request->customer_id,
+            'installer_id' => $request->installer_id,
+        ]);
+
+        return response()->json($schedule);
     }
 
     /**

@@ -164,7 +164,7 @@
 
         <!-- Portal Access-->
 
-        <div class="grid grid-cols-5 gap-4 mb-8">
+        <!-- <div class="grid grid-cols-5 gap-4 mb-8">
           <h6 class="col-span-5 text-lg font-semibold text-left lg:col-span-1">
             {{ $t('installers.portal_access') }}
           </h6>
@@ -257,7 +257,7 @@
               ></BaseInput>
             </BaseInputGroup>
           </BaseInputGrid>
-        </div>
+        </div> -->
 
         <BaseDivider class="mb-5 md:mb-8" />
 
@@ -396,160 +396,6 @@
 
         <BaseDivider class="mb-5 md:mb-8" />
 
-        <!-- Billing Address Copy Button  -->
-        <!-- <div
-          class="flex items-center justify-start mb-6 md:justify-end md:mb-0"
-        >
-          <div class="p-1">
-            <BaseButton
-              type="button"
-              :content-loading="isFetchingInitialData"
-              size="sm"
-              variant="primary-outline"
-              @click="installerStore.copyAddress(true)"
-            >
-              <template #left="slotProps">
-                <BaseIcon
-                  name="DocumentDuplicateIcon"
-                  :class="slotProps.class"
-                />
-              </template>
-              {{ $t('installers.copy_billing_address') }}
-            </BaseButton>
-          </div>
-        </div> -->
-
-        <!-- Shipping Address 
-        <div
-          v-if="installerStore.currentInstaller.shipping"
-          class="grid grid-cols-5 gap-4 mb-8"
-        >
-          <h6 class="col-span-5 text-lg font-semibold text-left lg:col-span-1">
-            {{ $t('installers.shipping_address') }}
-          </h6>
-
-          <BaseInputGrid class="col-span-5 lg:col-span-4">
-            <BaseInputGroup
-              :content-loading="isFetchingInitialData"
-              :label="$t('installers.name')"
-            >
-              <BaseInput
-                v-model.trim="installerStore.currentInstaller.shipping.name"
-                :content-loading="isFetchingInitialData"
-                type="text"
-                name="address_name"
-              />
-            </BaseInputGroup>
-
-            <BaseInputGroup
-              :label="$t('installers.country')"
-              :content-loading="isFetchingInitialData"
-            >
-              <BaseMultiselect
-                v-model="installerStore.currentInstaller.shipping.country_id"
-                value-prop="id"
-                label="name"
-                track-by="name"
-                resolve-on-load
-                searchable
-                :content-loading="isFetchingInitialData"
-                :options="globalStore.countries"
-                :placeholder="$t('general.select_country')"
-                class="w-full"
-              />
-            </BaseInputGroup>
-
-            <BaseInputGroup
-              :label="$t('installers.state')"
-              :content-loading="isFetchingInitialData"
-            >
-              <BaseInput
-                v-model="installerStore.currentInstaller.shipping.state"
-                :content-loading="isFetchingInitialData"
-                name="shipping.state"
-                type="text"
-              />
-            </BaseInputGroup>
-
-            <BaseInputGroup
-              :content-loading="isFetchingInitialData"
-              :label="$t('installers.city')"
-            >
-              <BaseInput
-                v-model="installerStore.currentInstaller.shipping.city"
-                :content-loading="isFetchingInitialData"
-                name="shipping.city"
-                type="text"
-              />
-            </BaseInputGroup>
-
-            <BaseInputGroup
-              :label="$t('installers.address')"
-              :content-loading="isFetchingInitialData"
-              :error="
-                (v$.currentInstaller.shipping.address_street_1.$error &&
-                  v$.currentInstaller.shipping.address_street_1.$errors[0]
-                    .$message) ||
-                (v$.currentInstaller.shipping.address_street_2.$error &&
-                  v$.currentInstaller.shipping.address_street_2.$errors[0]
-                    .$message)
-              "
-            >
-              <BaseTextarea
-                v-model.trim="
-                  installerStore.currentInstaller.shipping.address_street_1
-                "
-                :content-loading="isFetchingInitialData"
-                type="text"
-                :placeholder="$t('general.street_1')"
-                name="shipping_street1"
-                @input="v$.currentInstaller.shipping.address_street_1.$touch()"
-              />
-
-              <BaseTextarea
-                v-model.trim="
-                  installerStore.currentInstaller.shipping.address_street_2
-                "
-                :content-loading="isFetchingInitialData"
-                type="text"
-                :placeholder="$t('general.street_2')"
-                name="shipping_street2"
-                class="mt-3"
-                :container-class="`mt-3`"
-                @input="v$.currentInstaller.shipping.address_street_2.$touch()"
-              />
-            </BaseInputGroup>
-
-            <div class="space-y-6">
-              <BaseInputGroup
-                :content-loading="isFetchingInitialData"
-                :label="$t('installers.phone')"
-                class="text-left"
-              >
-                <BaseInput
-                  v-model.trim="installerStore.currentInstaller.shipping.phone"
-                  :content-loading="isFetchingInitialData"
-                  type="text"
-                  name="phone"
-                />
-              </BaseInputGroup>
-
-              <BaseInputGroup
-                :label="$t('installers.zip_code')"
-                :content-loading="isFetchingInitialData"
-                class="mt-2 text-left"
-              >
-                <BaseInput
-                  v-model.trim="installerStore.currentInstaller.shipping.zip"
-                  :content-loading="isFetchingInitialData"
-                  type="text"
-                  name="zip"
-                />
-              </BaseInputGroup>
-            </div>
-          </BaseInputGrid>
-        </div> -->
-
         <BaseDivider
           v-if="customFieldStore.customFields.length > 0"
           class="mb-5 md:mb-8"
@@ -626,7 +472,7 @@ const isEdit = computed(() => route.name === 'installers.edit')
 let isLoadingContent = computed(() => installerStore.isFetchingInitialSettings)
 
 const pageTitle = computed(() =>
-  isEdit.value ? t('installers.edit_installer') : t('installers.new_installer')
+  isEdit.value ? t('installers.edit_installer') : t('installers.new_installer'),
 )
 
 const rules = computed(() => {
@@ -636,13 +482,13 @@ const rules = computed(() => {
         required: helpers.withMessage(t('validation.required'), required),
         minLength: helpers.withMessage(
           t('validation.name_min_length', { count: 3 }),
-          minLength(3)
+          minLength(3),
         ),
       },
       prefix: {
         minLength: helpers.withMessage(
           t('validation.name_min_length', { count: 3 }),
-          minLength(3)
+          minLength(3),
         ),
       },
       currency_id: {
@@ -652,7 +498,7 @@ const rules = computed(() => {
       email: {
         required: helpers.withMessage(
           t('validation.required'),
-          requiredIf(installerStore.currentInstaller.enable_portal == true)
+          requiredIf(installerStore.currentInstaller.enable_portal == true),
         ),
         email: helpers.withMessage(t('validation.email_incorrect'), email),
       },
@@ -661,18 +507,18 @@ const rules = computed(() => {
           t('validation.required'),
           requiredIf(
             installerStore.currentInstaller.enable_portal == true &&
-              !installerStore.currentInstaller.password_added
-          )
+              !installerStore.currentInstaller.password_added,
+          ),
         ),
         minLength: helpers.withMessage(
           t('validation.password_min_length', { count: 8 }),
-          minLength(8)
+          minLength(8),
         ),
       },
       confirm_password: {
         sameAsPassword: helpers.withMessage(
           t('validation.password_incorrect'),
-          sameAs(installerStore.currentInstaller.password)
+          sameAs(installerStore.currentInstaller.password),
         ),
       },
 
@@ -683,14 +529,14 @@ const rules = computed(() => {
         address_street_1: {
           maxLength: helpers.withMessage(
             t('validation.address_maxlength', { count: 255 }),
-            maxLength(255)
+            maxLength(255),
           ),
         },
 
         address_street_2: {
           maxLength: helpers.withMessage(
             t('validation.address_maxlength', { count: 255 }),
-            maxLength(255)
+            maxLength(255),
           ),
         },
       },
@@ -699,14 +545,14 @@ const rules = computed(() => {
         address_street_1: {
           maxLength: helpers.withMessage(
             t('validation.address_maxlength', { count: 255 }),
-            maxLength(255)
+            maxLength(255),
           ),
         },
 
         address_street_2: {
           maxLength: helpers.withMessage(
             t('validation.address_maxlength', { count: 255 }),
-            maxLength(255)
+            maxLength(255),
           ),
         },
       },

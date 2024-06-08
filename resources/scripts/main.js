@@ -9,8 +9,9 @@ import * as Vuelidate from '@vuelidate/core'
 
 import.meta.glob(['../static/img/**', '../static/fonts/**'])
 
-import $ from 'jquery';
-window.$ = window.jQuery = $;
+import '../sass/custom-bootstrap.scss'
+import $ from 'jquery'
+window.$ = window.jQuery = $
 
 window.pinia = pinia
 window.Vuelidate = Vuelidate
