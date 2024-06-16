@@ -4,6 +4,7 @@ namespace App\Http\Controllers\V1\Customer\General;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Customer\CustomerResource;
+use App\Models\CompanySetting;
 use App\Models\Currency;
 use App\Models\Module;
 use Illuminate\Http\Request;
