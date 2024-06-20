@@ -32,6 +32,7 @@ return new class extends Migration
             'email_logs' => 'mailable_type',
             'notifications' => 'notifiable_type',
             'personal_access_tokens' => 'tokenable_type',
+            'custom_fields' => 'model_type',
             'custom_field_values' => 'custom_field_valuable_type',
             'abilities' => 'entity_type',
             'assigned_roles' => 'entity_type',
