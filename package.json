@@ -61,6 +61,7 @@
     "path": "^0.12.7",
     "pinia": "^2.1.7",
     "popper.js": "^1.16.1",
+    "select2": "^4.1.0-rc.0",
     "v-money3": "^3.24.1",
     "v-tooltip": "^4.0.0-beta.17",
     "vite": "^5.0.0",
@@ -68,6 +69,8 @@
     "vue-flatpickr-component": "^11.0.3",
     "vue-i18n": "^9.9.0",
     "vue-router": "^4.2.5",
+    "vue-select": "^4.0.0-beta.6",
+    "vue3-select2-component": "^0.1.7",
     "vuedraggable": "^4.1.0"
   }
 }

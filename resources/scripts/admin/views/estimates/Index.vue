@@ -121,16 +121,7 @@
 
     <div v-show="!showEmptyScreen" class="relative table-container">
       <div
-        class="
-          relative
-          flex
-          items-center
-          justify-between
-          h-10
-          mt-5
-          list-none
-          border-b-2 border-gray-200 border-solid
-        "
+        class="relative flex items-center justify-between h-10 mt-5 list-none border-b-2 border-gray-200 border-solid"
       >
         <!-- Tabs -->
         <BaseTabGroup class="-mb-5" @change="setStatusFilter">
@@ -148,14 +139,7 @@
         >
           <template #activator>
             <span
-              class="
-                flex
-                text-sm
-                font-medium
-                cursor-pointer
-                select-none
-                text-primary-400
-              "
+              class="flex text-sm font-medium cursor-pointer select-none text-primary-400"
             >
               {{ $t('general.actions') }}
               <BaseIcon name="ChevronDownIcon" />
@@ -279,7 +263,7 @@ let filters = reactive({
 })
 
 const showEmptyScreen = computed(
-  () => !estimateStore.totalEstimateCount && !isRequestOngoing.value
+  () => !estimateStore.totalEstimateCount && !isRequestOngoing.value,
 )
 
 const selectField = computed({
@@ -325,7 +309,7 @@ debouncedWatch(
   () => {
     setFilters()
   },
-  { debounce: 500 }
+  { debounce: 500 },
 )
 
 onUnmounted(() => {

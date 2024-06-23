@@ -7,6 +7,17 @@
       <BaseIcon v-else name="DotsHorizontalIcon" class="h-5 text-gray-500" />
     </template>
 
+    <!-- Schedule -->
+    <router-link :to="`/admin/schedules`">
+      <BaseDropdownItem>
+        <BaseIcon
+          name="CalendarIcon"
+          class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+        />
+        Schedule
+      </BaseDropdownItem>
+    </router-link>
+
     <!-- Edit Invoice  -->
     <router-link
       v-if="userStore.hasAbilities(abilities.EDIT_INVOICE)"

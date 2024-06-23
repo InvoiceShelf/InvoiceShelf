@@ -21,6 +21,11 @@
         .fc-view {
             background-color: #fff;
         }
+
+        .fc-event {
+            pointer-events: auto;
+            /* Ensure pointer events are enabled */
+        }
     </style>
 
     <!-- Module Styles -->

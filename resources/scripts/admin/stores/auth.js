@@ -55,7 +55,7 @@ export const useAuthStore = (useWindow = false) => {
               })
 
               window.router.push('/login')
-                // resetStore.clearPinia()
+              // resetStore.clearPinia()
               resolve(response)
             })
             .catch((err) => {

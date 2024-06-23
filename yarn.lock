@@ -54,11 +54,6 @@
   resolved "https://registry.npmjs.org/@eslint/js/-/js-8.56.0.tgz"
   integrity sha512-gMsVel9D7f2HLkBma9VbtzZRehRogVRfbr++f06nL2vnCGCNlzOD+/MUov/F4p8myyAHspEhVobgjpX64q5m6A==
 
-"@fullcalendar/bootstrap@^6.1.13":
-  version "6.1.13"
-  resolved "https://registry.npmjs.org/@fullcalendar/bootstrap/-/bootstrap-6.1.13.tgz"
-  integrity sha512-2HInrEkhNYi/FRfVSxQIQhP4hp5PkMQQD/6GKzAWdFfWjVwKH9BAsHyVAQcBWUzAh0C/z65Kd5yu1X8h6MqHSw==
-
 "@fullcalendar/core@^6.1.13", "@fullcalendar/core@~6.1.13":
   version "6.1.13"
   resolved "https://registry.npmjs.org/@fullcalendar/core/-/core-6.1.13.tgz"
@@ -1475,7 +1470,7 @@ jiti@^1.19.1:
   resolved "https://registry.npmjs.org/jiti/-/jiti-1.21.0.tgz"
   integrity sha512-gFqAIbuKyyso/3G2qhiO2OM6shY6EPP/R0+mkDbyspxKazh8BXDC5FiFsUjlczgdNz/vfra0da2y+aHrusLG/Q==
 
-jquery@^3.7.1:
+jquery@^3.3.1, jquery@^3.7.1:
   version "3.7.1"
   resolved "https://registry.npmjs.org/jquery/-/jquery-3.7.1.tgz"
   integrity sha512-m4avr8yL8kmFN8psrbFFFmB/If14iN5o9nw/NgnnM+kybDJpRsAynV2BsfpTYrTRysYUdADVD7CkUUizgkpLfg==
@@ -2194,6 +2189,16 @@ sass@*, sass@^1.77.4:
     immutable "^4.0.0"
     source-map-js ">=0.6.2 <2.0.0"
 
+select2@^4.0.7-rc.0:
+  version "4.0.13"
+  resolved "https://registry.npmjs.org/select2/-/select2-4.0.13.tgz"
+  integrity sha512-1JeB87s6oN/TDxQQYCvS5EFoQyvV6eYMZZ0AeA4tdFDYWN3BAGZ8npr17UBFddU0lgAt3H0yjX3X6/ekOj1yjw==
+
+select2@^4.1.0-rc.0:
+  version "4.1.0-rc.0"
+  resolved "https://registry.npmjs.org/select2/-/select2-4.1.0-rc.0.tgz"
+  integrity sha512-Hr9TdhyHCZUtwznEH2CBf7967mEM0idtJ5nMtjvk3Up5tPukOLXbHUNmh10oRfeNIhj+3GD3niu+g6sVK+gK0A==
+
 semver@^7.3.6, semver@^7.5.4:
   version "7.5.4"
   resolved "https://registry.npmjs.org/semver/-/semver-7.5.4.tgz"
@@ -2524,7 +2529,12 @@ vue-router@^4.2.5:
   dependencies:
     "@vue/devtools-api" "^6.5.0"
 
-"vue@^2.0.0 || >=3.0.0", "vue@^2.6.14 || ^3.3.0", "vue@^2.7.0 || ^3.0.0", vue@^3.0.0, "vue@^3.0.0-0 || ^2.6.0", vue@^3.0.1, vue@^3.0.11, vue@^3.2.0, vue@^3.2.25, vue@^3.4, "vue@>= 3", "vue@>= 3.2.0", vue@3.4.15:
+vue-select@^4.0.0-beta.6:
+  version "4.0.0-beta.6"
+  resolved "https://registry.npmjs.org/vue-select/-/vue-select-4.0.0-beta.6.tgz"
+  integrity sha512-K+zrNBSpwMPhAxYLTCl56gaMrWZGgayoWCLqe5rWwkB8aUbAUh7u6sXjIR7v4ckp2WKC7zEEUY27g6h1MRsIHw==
+
+"vue@^2.0.0 || >=3.0.0", "vue@^2.6.14 || ^3.3.0", "vue@^2.7.0 || ^3.0.0", vue@^3.0.0, "vue@^3.0.0-0 || ^2.6.0", vue@^3.0.1, vue@^3.0.11, vue@^3.2.0, vue@^3.2.25, vue@^3.4, "vue@>= 3", "vue@>= 3.2.0", vue@3.4.15, vue@3.x:
   version "3.4.15"
   resolved "https://registry.npmjs.org/vue/-/vue-3.4.15.tgz"
   integrity sha512-jC0GH4KkWLWJOEQjOpkqU1bQsBwf4R1rsFtw5GQJbjHVKWDzO6P0nWWBTmjp1xSemAioDFj1jdaK1qa3DnMQoQ==
@@ -2534,6 +2544,14 @@ vue-router@^4.2.5:
     "@vue/runtime-dom" "3.4.15"
     "@vue/server-renderer" "3.4.15"
     "@vue/shared" "3.4.15"
+
+vue3-select2-component@^0.1.7:
+  version "0.1.7"
+  resolved "https://registry.npmjs.org/vue3-select2-component/-/vue3-select2-component-0.1.7.tgz"
+  integrity sha512-8UPZmFl02I47XwW+j8ICmHyAND8wfbavlvMrqh10wwdSVER1aF2kI9XCmfIrNlVQvxSbvc0mJjWQAHHSCW9dkw==
+  dependencies:
+    jquery "^3.3.1"
+    select2 "^4.0.7-rc.0"
 
 vuedraggable@^4.1.0:
   version "4.1.0"

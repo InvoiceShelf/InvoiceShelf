@@ -9,13 +9,15 @@ class CreateSchedulesTable extends Migration
     /**
      * Run the migrations.
      */
-    
+
     public function up()
     {
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->string('description')->nullable();
+            $table->string('color')->nullable();
+
             $table->dateTime('start');
             $table->dateTime('end')->nullable();
 
@@ -23,7 +25,7 @@ class CreateSchedulesTable extends Migration
             $table->integer('company_id')->unsigned()->nullable();
             $table->bigInteger('customer_id')->unsigned()->nullable();
             $table->bigInteger('installer_id')->unsigned()->nullable();
-                        
+
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

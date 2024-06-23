@@ -15,15 +15,15 @@ class ScheduleController extends Controller
      * Display a listing of the resource.
      */
 
-
+    protected $user;
     protected $company_id;
 
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-            $user = Auth::user();
-            if ($user) {
-                $this->company_id = $user->companies->first()->id;
+            $this->user = Auth::user();
+            if ($this->user) {
+                $this->company_id = $this->user->companies->first()->id;
             }
             return $next($request);
         });
@@ -35,6 +35,7 @@ class ScheduleController extends Controller
             ->with('customer')
             ->with('installer')
             ->get();
+
         return response()->json($schedules);
     }
 
@@ -63,8 +64,6 @@ class ScheduleController extends Controller
      */
     public function store(Request $request)
     {
-        $user = Auth::user();
-
         $request->validate(
             [
                 'title' => 'required',
@@ -85,10 +84,11 @@ class ScheduleController extends Controller
             'start' => $request->start,
             'end' => $request->end,
             'description' => $request->description,
-            'user_id' => $user->id,
+            'user_id' => $this->user->id,
             'company_id' => $this->company_id,
             'customer_id' => $request->customer_id,
             'installer_id' => $request->installer_id,
+            'color' => $request->color,
         ]);
 
         return response()->json($schedule);
@@ -115,8 +115,6 @@ class ScheduleController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $user = Auth::user();
-
         $request->validate(
             [
                 'title' => 'required',
@@ -139,10 +137,34 @@ class ScheduleController extends Controller
             'start' => $request->start,
             'end' => $request->end,
             'description' => $request->description,
-            'user_id' => $user->id,
+            'user_id' => $this->user->id,
             'company_id' => $this->company_id,
             'customer_id' => $request->customer_id,
             'installer_id' => $request->installer_id,
+            'color' => $request->color,
+        ]);
+
+        return response()->json($schedule);
+    }
+
+    public function dragdrop(Request $request, $id)
+    {
+        $schedule = Schedule::findOrFail($id);
+
+        $schedule->update([
+            'start' => $request->start,
+            'end' => $request->end,
+        ]);
+
+        return response()->json($schedule);
+    }
+
+    public function resize(Request $request, $id)
+    {
+        $schedule = Schedule::findOrFail($id);
+
+        $schedule->update([
+            'end' => $request->end,
         ]);
 
         return response()->json($schedule);
@@ -151,8 +173,17 @@ class ScheduleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Schedule $schedule)
+    public function delete($id)
     {
-        //
+        $schedule = Schedule::findOrFail($id);
+        $schedule->delete();
+
+        return response()->json($schedule);
+    }
+
+    public function getToken()
+    {
+        $csrf_token = csrf_token();
+        return response()->json($csrf_token);
     }
 }
