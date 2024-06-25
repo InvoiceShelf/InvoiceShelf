@@ -47,6 +47,34 @@
         </BaseInputGroup>
 
         <BaseInputGroup
+          :content-loading="isFetchingInitialData"
+          :label="$t('settings.currencies.thousand_separator')"
+          :error="v$.language.$error && v$.language.$errors[0].$message"
+          required
+        >
+          <BaseInput
+          :content-loading="isFetchingInitialData"
+            v-model="settingsForm.currency_thousand_separator"
+            class="w-full"
+            :invalid="v$.currency_thousand_separator.$error"
+          />
+        </BaseInputGroup>
+
+        <BaseInputGroup
+          :content-loading="isFetchingInitialData"
+          :label="$t('settings.currencies.decimal_separator')"
+          :error="v$.language.$error && v$.language.$errors[0].$message"
+          required
+        >
+          <BaseInput
+            :content-loading="isFetchingInitialData"
+            v-model="settingsForm.currency_decimal_separator"
+            class="w-full"
+            :invalid="v$.currency_decimal_separator.$error"
+          />
+        </BaseInputGroup>
+
+        <BaseInputGroup
           :label="$t('settings.preferences.time_zone')"
           :content-loading="isFetchingInitialData"
           :error="v$.time_zone.$error && v$.time_zone.$errors[0].$message"
@@ -262,6 +290,12 @@ const rules = computed(() => {
     currency: {
       required: helpers.withMessage(t('validation.required'), required),
     },
+    currency_thousand_separator: {
+      //required: helpers.withMessage(t('validation.required'), required),
+    },
+    currency_decimal_separator: {
+      required: helpers.withMessage(t('validation.required'), required),
+    },
     language: {
       required: helpers.withMessage(t('validation.required'), required),
     },
@@ -293,9 +327,20 @@ async function setInitialData() {
     globalStore.fetchCurrencies(),
     globalStore.fetchDateFormats(),
     globalStore.fetchTimeZones(),
+    fetchCurrencyData()
   ]).then(([res1]) => {
     isFetchingInitialData.value = false
   })
+}
+
+async function fetchCurrencyData() {
+  try {
+    const response = await companyStore.fetchCompanyCurrency()
+    settingsForm.currency_thousand_separator = response.data.thousand_separator
+    settingsForm.currency_decimal_separator = response.data.decimal_separator
+  } catch (error) {
+    console.error('Error fetching currency data:', error)
+  }
 }
 
 async function updatePreferencesData() {
@@ -327,8 +372,9 @@ async function submitData() {
     data: {
       settings: {
         link_expiry_days: settingsForm.link_expiry_days,
-        automatically_expire_public_links:
-          settingsForm.automatically_expire_public_links,
+        automatically_expire_public_links: settingsForm.automatically_expire_public_links,
+        currency_thousand_separator: settingsForm.currency.thousand_separator,
+        currency_decimal_separator: settingsForm.currency.decimal_separator,
       },
     },
     message: 'settings.preferences.updated_message',

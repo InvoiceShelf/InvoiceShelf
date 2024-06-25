@@ -70,6 +70,7 @@ use App\Http\Controllers\V1\Admin\Role\RolesController;
 use App\Http\Controllers\V1\Admin\Settings\CompanyController;
 use App\Http\Controllers\V1\Admin\Settings\CompanyCurrencyCheckTransactionsController;
 use App\Http\Controllers\V1\Admin\Settings\DiskController;
+use App\Http\Controllers\V1\Admin\Settings\GetCompanyCurrencyController;
 use App\Http\Controllers\V1\Admin\Settings\GetCompanyMailConfigurationController;
 use App\Http\Controllers\V1\Admin\Settings\GetCompanySettingsController;
 use App\Http\Controllers\V1\Admin\Settings\GetSettingsController;
@@ -371,6 +372,8 @@ Route::prefix('/v1')->group(function () {
             Route::post('/company/upload-logo', [CompanyController::class, 'uploadCompanyLogo']);
 
             Route::get('/company/settings', GetCompanySettingsController::class);
+
+            Route::get('/company/currency', GetCompanyCurrencyController::class);
 
             Route::post('/company/settings', UpdateCompanySettingsController::class);
 
