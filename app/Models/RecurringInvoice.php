@@ -314,7 +314,7 @@ class RecurringInvoice extends Model
             ->setCustomer($this->customer_id)
             ->setNextNumbers();
 
-        $days = CompanySetting::getSetting('invoice_due_date_days', $this->company_id);
+        $days = intval(CompanySetting::getSetting('invoice_due_date_days', $this->company_id));
 
         if (! $days || $days == 'null') {
             $days = 7;
@@ -381,7 +381,7 @@ class RecurringInvoice extends Model
                 'body' => CompanySetting::getSetting('invoice_mail_body', $this->company_id),
                 'from' => config('mail.from.address'),
                 'to' => $this->customer->email,
-                'subject' => 'New Invoice',
+                'subject' => trans('invoices')['new_invoice'],
                 'invoice' => $invoice->toArray(),
                 'customer' => $invoice->customer->toArray(),
                 'company' => Company::find($invoice->company_id),
