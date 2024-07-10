@@ -920,18 +920,18 @@
       "added_message": "Anpassat fält skapat",
       "press_enter_to_add": "Tryck på enter för att lägga till nytt alternativ",
       "model_in_use": "Kan inte uppdatera modell för fält som redan används.",
-      "type_in_use": "Cannot update type for fields which are already in use."
+      "type_in_use": "Kan inte uppdatera typ för fält som redan används."
     },
     "customization": {
       "customization": "Anpassning",
       "updated_message": "Företagsinformation uppdaterades",
       "save": "Spara",
       "insert_fields": "Lägg till fält",
-      "learn_custom_format": "Learn how to use custom format",
-      "add_new_component": "Add New Component",
-      "component": "Component",
+      "learn_custom_format": "Lär dig hur du använder anpassat format",
+      "add_new_component": "Lägg till ny komponent",
+      "component": "Komponent",
       "Parameter": "Parameter",
-      "series": "Series",
+      "series": "Ordningsföljd",
       "series_description": "To set a static prefix/postfix like 'INV' across your company. It supports character length of up to 6 chars.",
       "series_param_label": "Series Value",
       "delimiter": "Delimiter",
