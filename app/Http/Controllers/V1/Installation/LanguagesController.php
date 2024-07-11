@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\V1\Installation;
 
-use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 
 class LanguagesController extends Controller
 {

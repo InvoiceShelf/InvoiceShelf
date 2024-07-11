@@ -102,11 +102,11 @@ use App\Http\Controllers\V1\Installation\AppDomainController;
 use App\Http\Controllers\V1\Installation\DatabaseConfigurationController;
 use App\Http\Controllers\V1\Installation\FilePermissionsController;
 use App\Http\Controllers\V1\Installation\FinishController;
+use App\Http\Controllers\V1\Installation\LanguagesController;
 use App\Http\Controllers\V1\Installation\LoginController;
 use App\Http\Controllers\V1\Installation\OnboardingWizardController;
 use App\Http\Controllers\V1\Installation\RequirementsController;
 use App\Http\Controllers\V1\Webhook\CronJobController;
-use App\Http\Controllers\V1\Installation\LanguagesController;
 use Illuminate\Support\Facades\Route;
 
 /*
