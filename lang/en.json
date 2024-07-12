@@ -794,18 +794,18 @@
   "settings": {
     "menu_title": {
       "account_settings": "Account Settings",
-      "company_information": "Company Information",
+      "company_information": "Company Settings",
       "customization": "Customization",
-      "preferences": "Preferences",
+      "preferences": "General Settings",
       "notifications": "Notifications",
       "tax_types": "Tax Types",
-      "expense_category": "Expense Categories",
+      "expense_category": "Expense Settings",
       "update_app": "Update App",
       "backup": "Backup",
       "file_disk": "File Disk",
       "custom_fields": "Custom Fields",
-      "payment_modes": "Payment Modes",
-      "notes": "Notes",
+      "payment_modes": "Payment Settings",
+      "notes": "Notes Template",
       "exchange_rate": "Exchange Rate",
       "address_information": "Address Information"
     },
