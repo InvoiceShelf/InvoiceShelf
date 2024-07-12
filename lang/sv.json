@@ -755,7 +755,7 @@
       "report_type": "Rapporttyp"
     },
     "taxes": {
-      "taxes": "Momssatser",
+      "taxes": "Moms",
       "to_date": "Till datum",
       "from_date": "Från datum",
       "date_range": "Välj datumintervall"
