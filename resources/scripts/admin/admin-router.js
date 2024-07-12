@@ -321,12 +321,6 @@ export default [
             meta: { isOwner: true },
             component: Backup,
           },
-          {
-            path: 'update-app',
-            name: 'updateapp',
-            meta: { isOwner: true },
-            component: UpdateApp,
-          },
         ],
       },
 

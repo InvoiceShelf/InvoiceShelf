@@ -265,16 +265,6 @@ return [
             'ability' => '',
             'model' => '',
         ],
-        [
-            'title' => 'settings.menu_title.update_app',
-            'group' => '',
-            'name' => 'Update App',
-            'link' => '/admin/settings/update-app',
-            'icon' => 'RefreshIcon',
-            'owner_only' => true,
-            'ability' => '',
-            'model' => '',
-        ],
     ],
 
     /*
