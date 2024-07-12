@@ -384,25 +384,25 @@ export default [
 
       // Estimates
       {
-        path: 'estimates',
+        path: 'quotations',
         name: 'estimates.index',
         meta: { ability: abilities.VIEW_ESTIMATE },
         component: EstimateIndex,
       },
       {
-        path: 'estimates/create',
+        path: 'quotations/create',
         name: 'estimates.create',
         meta: { ability: abilities.CREATE_ESTIMATE },
         component: EstimateCreate,
       },
       {
-        path: 'estimates/:id/view',
+        path: 'quotations/:id/view',
         name: 'estimates.view',
         meta: { ability: abilities.VIEW_ESTIMATE },
         component: EstimateView,
       },
       {
-        path: 'estimates/:id/edit',
+        path: 'quotations/:id/edit',
         name: 'estimates.edit',
         meta: { ability: abilities.EDIT_ESTIMATE },
         component: EstimateCreate,

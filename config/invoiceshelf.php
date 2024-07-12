@@ -313,7 +313,7 @@ return [
         [
             'title' => 'navigation.estimates',
             'group' => 2,
-            'link' => '/admin/estimates',
+            'link' => '/admin/quotations',
             'icon' => 'DocumentIcon',
             'name' => 'Estimates',
             'owner_only' => false,
@@ -420,7 +420,7 @@ return [
         ],
         [
             'title' => 'Estimates',
-            'link' => '/customer/estimates',
+            'link' => '/customer/quotations',
             'icon' => '',
             'name' => '',
             'owner_only' => false,

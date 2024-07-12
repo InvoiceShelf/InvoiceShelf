@@ -62,12 +62,12 @@ export default [
         name: 'customer.invoices.view',
       },
       {
-        path: 'estimates',
+        path: 'quotations',
         component: Estimate,
         name: 'estimates.dashboard',
       },
       {
-        path: 'estimates/:id/view',
+        path: 'quotations/:id/view',
         component: EstimateView,
         name: 'customer.estimates.view',
       },
