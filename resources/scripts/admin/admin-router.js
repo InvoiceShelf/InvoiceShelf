@@ -460,20 +460,6 @@ export default [
         component: RecurringInvoiceCreate,
       },
 
-      // Modules
-      {
-        path: 'modules',
-        name: 'modules.index',
-        meta: { isOwner: true },
-        component: ModuleIndex,
-      },
-
-      {
-        path: 'modules/:slug',
-        name: 'modules.view',
-        meta: { isOwner: true },
-        component: ModuleView,
-      },
 
       // Reports
       {

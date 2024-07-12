@@ -361,16 +361,6 @@ return [
             'model' => Expense::class,
         ],
         [
-            'title' => 'navigation.modules',
-            'group' => 3,
-            'link' => '/admin/modules',
-            'icon' => 'PuzzleIcon',
-            'name' => 'Modules',
-            'owner_only' => true,
-            'ability' => '',
-            'model' => '',
-        ],
-        [
             'title' => 'navigation.users',
             'group' => 3,
             'link' => '/admin/users',
