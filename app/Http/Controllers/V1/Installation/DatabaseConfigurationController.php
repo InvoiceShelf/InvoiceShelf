@@ -25,10 +25,12 @@ class DatabaseConfigurationController extends Controller
         Artisan::call('config:clear');
         Artisan::call('cache:clear');
 
-        $results = $this->environmentManager->saveDatabaseVariables($request);
-
-        if (array_key_exists('success', $results)) {
+        if (!config('app.key') || config('app.key') === 'base64:kgk/4DW1vEVy7aEvet5FPp5un6PIGe/so8H0mvoUtW0=') { //example key
             Artisan::call('key:generate --force');
+        }
+        $results = $this->environmentManager->saveDatabaseVariables($request);
+        sleep(1);//???
+        if (array_key_exists('success', $results)) {
             Artisan::call('optimize:clear');
             Artisan::call('config:clear');
             Artisan::call('cache:clear');

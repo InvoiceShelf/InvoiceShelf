@@ -51,7 +51,7 @@ class EnvironmentManager
         }
 
         $env = $this->getEnvContents();
-
+        $hashBefore = hash("sha256", $env);
         $env = explode($this->delimiter, $env);
 
         foreach ($data as $data_key => $data_value) {
@@ -74,7 +74,11 @@ class EnvironmentManager
         }
 
         $env = implode($this->delimiter, $env);
+        $hashAfter = hash("sha256", $env);
 
+        if ($hashBefore == $hashAfter) {
+            return false;
+        }
         file_put_contents(base_path('.env'), $env);
 
         return true;
