@@ -46,8 +46,7 @@
           "
         >
           <p class="mb-3">
-            {{ copyrightText }}
-            {{ new Date().getFullYear() }}
+            Powered by NAT
           </p>
         </div>
       </div>
@@ -134,14 +133,14 @@ import LoginBackground from '@/scripts/components/svg/LoginBackground.vue'
 import LoginPlanetCrater from '@/scripts/components/svg/LoginPlanetCrater.vue'
 import LoginBottomVector from '@/scripts/components/svg/LoginBottomVector.vue'
 import LoginBackgroundOverlay from '@/scripts/components/svg/LoginBackgroundOverlay.vue'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 
 const pageHeading = computed(() => {
   if (window.login_page_heading) {
     return window.login_page_heading
   }
 
-  return 'Simple Invoicing for Individuals Small Businesses'
+  return 'Natracker for Invoicing Solution'
 })
 
 const pageDescription = computed(() => {
@@ -149,7 +148,7 @@ const pageDescription = computed(() => {
     return window.login_page_description
   }
 
-  return 'InvoiceShelf helps you track expenses, record payments & generate beautiful invoices & estimates.'
+  return 'Natracker helps you track record payments & generate beautiful invoices & quotations.'
 })
 
 const copyrightText = computed(() => {
