@@ -10,7 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Setting::setSetting('version', '1.2.3');
+        Setting::setSetting('version', '1.3.0');
     }
 
     /**
