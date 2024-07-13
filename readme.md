@@ -1,4 +1,4 @@
-<img src="https://github.com/InvoiceShelf/InvoiceShelf/assets/5760249/70c0ea3a-b497-4d9a-96f5-b15d112d6f59">
+<img src="https://github.com/user-attachments/assets/a6ae2080-e865-4fde-b41d-5a09964d7de2">
 
 ## Introduction
 
