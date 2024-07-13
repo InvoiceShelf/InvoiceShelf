@@ -46,7 +46,7 @@ class EnvironmentManager
      */
     public function updateEnv(array $data)
     {
-        if (empty($data) || ! is_array($data) || ! is_file($this->envPath)) {
+        if (empty($data) || !is_array($data) || !is_file($this->envPath)) {
             return false;
         }
 
@@ -62,14 +62,14 @@ class EnvironmentManager
 
                 // Check if new or old key
                 if ($entry[0] == $data_key) {
-                    $env[$env_key] = $data_key.'='.$this->encode($data_value);
+                    $env[$env_key] = $data_key . '=' . $this->encode($data_value);
                     $updated = true;
                 }
             }
 
             // Lets create if not available
-            if (! $updated) {
-                $env[] = $data_key.'='.$this->encode($data_value);
+            if (!$updated) {
+                $env[] = $data_key . '=' . $this->encode($data_value);
             }
         }
 
@@ -88,8 +88,8 @@ class EnvironmentManager
     private function encode($str)
     {
 
-        if ((strpos($str, ' ') !== false || preg_match('/'.preg_quote('^\'£$%^&*()}{@#~?><,@|-=-_+-¬', '/').'/', $str)) && ($str[0] != '"' || $str[strlen($str) - 1] != '"')) {
-            $str = '"'.$str.'"';
+        if ((strpos($str, ' ') !== false || preg_match('/' . preg_quote('^\'£$%^&*()}{@#~?><,@|-=-_+-¬', '/') . '/', $str)) && ($str[0] != '"' || $str[strlen($str) - 1] != '"')) {
+            $str = '"' . $str . '"';
         }
 
         return $str;
@@ -111,15 +111,26 @@ class EnvironmentManager
             'SESSION_DOMAIN' => explode(':', $request->get('app_domain'))[0],
         ];
 
-        if ($request->has('database_username') && $request->has('database_password')) {
-            $dbEnv['DB_HOST'] = $request->get('database_hostname');
-            $dbEnv['DB_PORT'] = $request->get('database_port');
-            $dbEnv['DB_DATABASE'] = $request->get('database_name');
-            $dbEnv['DB_USERNAME'] = $request->get('database_username');
-            $dbEnv['DB_PASSWORD'] = $request->get('database_password');
-
+        if ($dbEnv['DB_CONNECTION'] != 'sqlite') {
+            if ($request->has('database_username') && $request->has('database_password')) {
+                $dbEnv['DB_HOST'] = $request->get('database_hostname');
+                $dbEnv['DB_PORT'] = $request->get('database_port');
+                $dbEnv['DB_DATABASE'] = $request->get('database_name');
+                $dbEnv['DB_USERNAME'] = $request->get('database_username');
+                $dbEnv['DB_PASSWORD'] = $request->get('database_password');
+            }
         } else {
             $dbEnv['DB_DATABASE'] = $request->get('database_name');
+            if (!empty($dbEnv['DB_DATABASE'])) {
+                $sqlite_path = $dbEnv['DB_DATABASE'];
+            } else {
+                $sqlite_path = database_path('database.sqlite');
+            }
+            // Create empty SQLite database if it doesn't exist.
+            if (!file_exists($sqlite_path)) {
+                copy(database_path('stubs/sqlite.empty.db'), $sqlite_path);
+                $dbEnv['DB_DATABASE'] = $sqlite_path;
+            }
         }
 
         try {
@@ -165,7 +176,7 @@ class EnvironmentManager
             'database' => $request->get('database_name'),
         ]);
 
-        if ($request->has('database_username') && $request->has('database_password')) {
+        if ($connection !== 'sqlite' && $request->has('database_username') && $request->has('database_password')) {
             $connectionArray = array_merge($connectionArray, [
                 'username' => $request->get('database_username'),
                 'password' => $request->get('database_password'),
@@ -212,7 +223,7 @@ class EnvironmentManager
     /**
      * Returns the mail configuration
      *
-     * @param  MailEnvironmentRequest  $request
+     * @param MailEnvironmentRequest $request
      * @return array
      */
     private function getMailConfiguration($request)
@@ -419,7 +430,7 @@ class EnvironmentManager
             if ($parts_line[0] != $parts_last[0]) {
                 $formatted .= $this->delimiter;
             }
-            $formatted .= $current.$this->delimiter;
+            $formatted .= $current . $this->delimiter;
             $previous = $current;
 
         }
