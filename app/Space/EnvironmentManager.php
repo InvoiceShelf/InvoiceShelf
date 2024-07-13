@@ -120,6 +120,20 @@ class EnvironmentManager
                 $dbEnv['DB_PASSWORD'] = $request->get('database_password');
             }
         } else {
+            // Laravel 11 requires SQLite at least v3.35.0
+            // https://laravel.com/docs/11.x/database#introduction
+            if (extension_loaded('sqlite3') && class_exists('\SQLite3') && method_exists('\SQLite3', 'version')) {
+                $version = \SQLite3::version();
+                if (!empty($version['versionString']) && version_compare($version['versionString'], '3.35.0', '<')) {
+                    return [
+                        'error_message' => sprintf('The minimum SQLite version is %s. Your current SQLite version is %s which is not supported. Please upgrade SQLite and retry.', '3.35.0', $version['versionString']),
+                    ];
+                }
+            } else {
+                return [
+                    'error_message' => sprintf('SQLite3 is not present. Please install SQLite >=%s and retry.', '3.35.0'),
+                ];
+            }
             $dbEnv['DB_DATABASE'] = $request->get('database_name');
             if (!empty($dbEnv['DB_DATABASE'])) {
                 $sqlite_path = $dbEnv['DB_DATABASE'];
