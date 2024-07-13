@@ -31,6 +31,7 @@ return [
             'fileinfo',
             'zip',
             'curl',
+            'sqlite3',
         ],
         'apache' => [
             'mod_rewrite',
