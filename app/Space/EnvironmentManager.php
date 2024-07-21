@@ -255,7 +255,7 @@ class EnvironmentManager
                     'MAIL_PORT' => $request->get('mail_port'),
                     'MAIL_USERNAME' => $request->get('mail_username'),
                     'MAIL_PASSWORD' => $request->get('mail_password'),
-                    'MAIL_ENCRYPTION' => $request->get('mail_encryption'),
+                    'MAIL_ENCRYPTION' => $request->get('mail_encryption') !== 'none' ? $request->get('mail_encryption') : 'null',
                     'MAIL_FROM_ADDRESS' => $request->get('from_mail'),
                     'MAIL_FROM_NAME' => $request->get('from_name'),
                 ];

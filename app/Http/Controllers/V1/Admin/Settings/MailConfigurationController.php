@@ -50,7 +50,7 @@ class MailConfigurationController extends Controller
             'mail_port' => config('mail.port'),
             'mail_username' => config('mail.username'),
             'mail_password' => config('mail.password'),
-            'mail_encryption' => config('mail.encryption'),
+            'mail_encryption' => is_null(config('mail.encryption')) ? 'none' : config('mail.encryption'),
             'from_name' => config('mail.from.name'),
             'from_mail' => config('mail.from.address'),
             'mail_mailgun_endpoint' => config('services.mailgun.endpoint'),
