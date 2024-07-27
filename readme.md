@@ -30,7 +30,7 @@ The Web Application is made using Laravel & VueJS while the Mobile Apps are buil
 
 ## Download
 
-- [Download Link](https://invoiceshelf.com/downloads)
+- [Download Link](https://invoiceshelf.com)
 
 ## Mobile Apps
 
