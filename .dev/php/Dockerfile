@@ -14,8 +14,10 @@ RUN addgroup --gid ${GID} --system invoiceshelf && \
     sed -i "s/user = www-data/user = invoiceshelf/g" /usr/local/etc/php-fpm.d/www.conf && \
     sed -i "s/group = www-data/group = invoiceshelf/g" /usr/local/etc/php-fpm.d/www.conf
 
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Install composer & npm
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
+    curl -sL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt install -y nodejs
 
 # install dependencies
 RUN apt update && apt install -y \
@@ -43,6 +45,7 @@ RUN apt update && apt install -y \
     && docker-php-ext-install pdo_pgsql \
     && docker-php-ext-install zip \
     && docker-php-ext-install xml \
+    && docker-php-ext-install exif \
     && docker-php-source delete
 
 # Clear cache
@@ -55,6 +58,9 @@ WORKDIR /home/invoiceshelf/app
 COPY /php/entrypoint.sh /
 
 # Entrypoint
+USER invoiceshelf
 ENTRYPOINT ["/entrypoint.sh"]
 
+# Launch php-fpm
+USER root
 CMD ["php-fpm"]
