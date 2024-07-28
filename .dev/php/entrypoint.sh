@@ -18,6 +18,10 @@ if [ ! -d vendor ]; then
     composer install
 fi
 
+if [ ! -f database/database.sqlite ]; then
+    cp database/stubs/sqlite.empty.db database/database.sqlite
+fi
+
 if [ ! -f .env ]; then
     cp .env.example .env
     php artisan key:generate --force

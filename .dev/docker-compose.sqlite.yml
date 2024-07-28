@@ -32,9 +32,9 @@ services:
       ADMINER_PLUGINS: tables-filter
       ADMINER_DESIGN: konya
     volumes:
-      - ../database/database.sqlite:/database.sqlite
+      - ../database:/database
     ports:
-      - '54320:8080'
+      - '8080:8080'
     networks:
       - invoiceshelf-dev
 
