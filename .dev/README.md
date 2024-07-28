@@ -24,15 +24,15 @@ The hosts file on Windows is located at `C:\Windows\system32\drivers\etc\hosts`.
 
 You need to launch Notepad as administrator, open the file through **File > Open**, add the line from above and save the file.
 
-#### 1.2. Linux and MacOS
+#### 1.2. Linux/MacOS
 
 The hosts file on Linux and Mac is located at `/etc/hosts`.
 
 You need to open the file using your favorite editor as sudo/root, add the line from above and save the file.
 
-### 2. FileSystem configuration (Linux/MacOS Only)
+### 2. FileSystem configuration (Linux)
 
-If you are using Linux or MacOS operating system, you need to make sure that **USERID** and **GRPID** environment variables are always matching your current session user. Those two variables are required to set up the filesystem permissions correctly on Linux and Mac.
+If you are using **Linux**, you need to make sure that **USRID** and **GRPID** environment variables are set and matching your current session user ids. Those two variables are required to set up the filesystem permissions correctly on Linux.
 
 You can run it one time, every time before starting as follows:
 
@@ -49,7 +49,7 @@ this will append the `export` line to your rc file and run it on each terminal s
 
 ### 3. Clone the project
 
-Clone the InvoiceShelf project directly from origin or swap the git url with your forked url:
+Clone the InvoiceShelf project directly from InvoiceShelf git or your forked repository:
 
 ```bash 
 git clone git@github.com:InvoiceShelf/InvoiceShelf.git
@@ -57,14 +57,22 @@ git clone git@github.com:InvoiceShelf/InvoiceShelf.git
 
 ## Development Workflow
 
+We bundled separate docker-compose.yml file for each database: MySQL, PostgresSQL and SQLite, you can use any of those to spin up your development environment.
+
+| Database | Compose File              |
+|---------|---------------------------|
+| SQLite3 | docker-compose.sqlite.yml |
+| MariaDB | docker-compose.mysql.yml  |
+| PostgresSQL | dpcler-compose.pgsql.yml  |
+
 ### 1. Spinning Up
 
 To **spin up** the environment, run docker compose as follows:
 
-**Important**: If you are on Linux/MacOS and didn't added the `export` line to your .zshrc/.bashrc file, you need to repeat `step 2` before spining up, otherwise you will face permissions issue.
+**Important**: If you are on **Linux** and didn't add the `export` line to your .zshrc/.bashrc file, you need to repeat `step 2` before spinning up, otherwise you will face permissions issues.
 
 ```
-docker compose -f .dev/docker-compose.yml up
+docker compose -f .dev/docker-compose.mysql.yml up --build
 ```
 
 ### 2. Spinning Down
@@ -72,12 +80,12 @@ docker compose -f .dev/docker-compose.yml up
 To **spin down** the environment, run docker compose as follows:
 
 ```
-docker compose -f .dev/docker-compose.yml down
+docker compose -f .dev/docker-compose.mysql.yml down
 ```
 
-### 2. Working with binaries
+### 3. Working with binaries
 
-To correctly run `composer`, `artisan`, `pint`, `pest` or other binaries within this project, you must ssh into the container as follows:
+To correctly run `composer`, `npm`, `artisan`, `pint`, `pest` or other binaries within this project, you must ssh into the container as follows:
 
 ```
 docker exec -it --user invoiceshelf invoiceshelf-dev-php /bin/bash
@@ -92,6 +100,8 @@ In the `/home/invoiceshelf/app` directory you can find the application root and 
 This dockerized environment uses PHP-FPM and NGINX together to serve the website `invoiceshelf.test`
 
 Both NGINX and PHP-FPM are configured with optimal settings for development. Please don't use this in production.
+
+**URL**: http://invoiceshelf.com/
 
 ### 2. Databases
 
@@ -115,6 +125,8 @@ Adminer is UI tool for viewing the database contents and executing queries.
 
 It supports MySQL, PostgreSQL, SQLite.
 
+**URL**: http://invoiceshelf.com:8080
+
 #### MySQL/PostgresSQL
 
 To log into the MySQL or PostgresSQL, use the database information specified in the above section (2. Databases)
@@ -123,14 +135,34 @@ To log into the MySQL or PostgresSQL, use the database information specified in 
 
 To log into the SQLite, use the following credentials:
 
-| KEY  | VALUE |
-|---|---|
-| **USER** | admin  |
-| **PASS** | admin  |
-| **NAME** | /database.sqlite  |
+| KEY          | VALUE                     |
+|--------------|---------------------------|
+| **USERNAME** | admin                     |
+| **PASSWORD** | admin                     |
+| **DATABASE** | /database/database.sqlite |
 
 
+### 4. Mailpit (fake mail)
 
+To utilize Mailpit, use the following credentials:
+
+| KEY                 | VALUE       |
+|---------------------|-------------|
+| **MAIL DRIVER**     | smtp        |
+| **MAIL HOST**       | mail        |
+| **MAIL PORT**       | 1025        |
+| **MAIL ENCRYPTION** | none        |
+| **MAIL USER**       | leave empty |
+| **MAIL PASS**       | leave empty |
+| **FROM MAIL ADDR**  | your choice |
+| **FROM MAIL NAME**  | your choice |
+
+
+**URL**: http://invoiceshelf.com:8025
+
+---
+
+If you have any questions, feel free to open issue.
 
 
 
