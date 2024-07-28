@@ -101,7 +101,7 @@ This dockerized environment uses PHP-FPM and NGINX together to serve the website
 
 Both NGINX and PHP-FPM are configured with optimal settings for development. Please don't use this in production.
 
-**URL**: http://invoiceshelf.com/
+**URL**: http://invoiceshelf.test/
 
 ### 2. Databases
 
@@ -125,7 +125,7 @@ Adminer is UI tool for viewing the database contents and executing queries.
 
 It supports MySQL, PostgreSQL, SQLite.
 
-**URL**: http://invoiceshelf.com:8080
+**URL**: http://invoiceshelf.test:8080
 
 #### MySQL/PostgresSQL
 
@@ -158,7 +158,7 @@ To utilize Mailpit, use the following credentials:
 | **FROM MAIL NAME**  | your choice |
 
 
-**URL**: http://invoiceshelf.com:8025
+**URL**: http://invoiceshelf.test:8025
 
 ---
 
