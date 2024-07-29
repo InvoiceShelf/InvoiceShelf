@@ -55,12 +55,10 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 WORKDIR /home/invoiceshelf/app
 
 # Copy Files
-COPY /php/entrypoint.sh /
+COPY entrypoint.sh /entrypoint.sh
 
 # Entrypoint
-USER invoiceshelf
 ENTRYPOINT ["/entrypoint.sh"]
 
 # Launch php-fpm
-USER root
 CMD ["php-fpm"]

@@ -2,8 +2,8 @@ services:
   php-fpm:
     container_name: invoiceshelf-dev-php
     build:
-      context: .
-      dockerfile: php/Dockerfile
+      context: ./php
+      dockerfile: Dockerfile
       args:
         - UID=${USRID:-1000}
         - GID=${GRPID:-1000}
@@ -26,8 +26,8 @@ services:
   adminer:
     container_name: invoiceshelf-dev-adminer
     build:
-      context: .
-      dockerfile: adminer/Dockerfile
+      context: ./adminer
+      dockerfile: Dockerfile
     environment:
       ADMINER_PLUGINS: tables-filter
       ADMINER_DESIGN: konya
