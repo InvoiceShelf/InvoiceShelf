@@ -19,6 +19,7 @@ export const useInstallationStore = (useWindow = false) => {
         database_name: null,
         database_username: null,
         database_password: null,
+        database_overwrite: false,
         app_url: window.location.origin,
         app_locale: null
       },

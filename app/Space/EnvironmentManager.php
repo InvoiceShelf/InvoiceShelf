@@ -7,6 +7,7 @@ use App\Http\Requests\DiskEnvironmentRequest;
 use App\Http\Requests\DomainEnvironmentRequest;
 use App\Http\Requests\MailEnvironmentRequest;
 use Exception;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 
 class EnvironmentManager
@@ -149,7 +150,9 @@ class EnvironmentManager
 
         try {
             $this->checkDatabaseConnection($request);
-
+            if ($request->get('database_overwrite')) {
+                Artisan::call('db:wipe --force');
+            }
             if (\Schema::hasTable('users')) {
                 return [
                     'error' => 'database_should_be_empty',

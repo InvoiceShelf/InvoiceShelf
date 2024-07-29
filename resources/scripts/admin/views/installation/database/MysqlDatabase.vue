@@ -84,6 +84,11 @@
           :invalid="v$.database_hostname.$error"
         />
       </BaseInputGroup>
+
+    </div>
+
+    <div class="w-full">
+      <BaseCheckbox v-model="databaseData.database_overwrite" :label="$t('wizard.database.overwrite')"/>
     </div>
 
     <BaseButton
@@ -106,6 +111,8 @@ import { useInstallationStore } from '@/scripts/admin/stores/installation'
 import { helpers, required, numeric } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { useI18n } from 'vue-i18n'
+import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
+import BaseCheckbox from '@/scripts/components/base/BaseCheckbox.vue'
 
 const props = defineProps({
   configData: {

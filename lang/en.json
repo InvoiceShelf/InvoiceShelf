@@ -1440,6 +1440,7 @@
       "username": "Database Username",
       "db_name": "Database Name",
       "db_path": "Database Path",
+      "overwrite": "Overwrite existing database and proceed",
       "desc": "Create a database on your server and set the credentials using the form below."
     },
     "permissions": {
