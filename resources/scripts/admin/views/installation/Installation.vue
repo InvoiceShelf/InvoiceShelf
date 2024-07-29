@@ -9,7 +9,7 @@
     />
 
     <BaseWizard
-      :steps="8"
+      :steps="9"
       :current-step="currentStepNumber"
       @click="onNavClick"
     >
@@ -48,7 +48,7 @@ export default {
 
   setup() {
     let stepComponent = ref('step_0')
-    let currentStepNumber = ref(1)
+    let currentStepNumber = ref(0)
 
     const router = useRouter()
     const installationStore = useInstallationStore()
