@@ -339,7 +339,7 @@
             <tr>
                 <td class="text-center">
                     @if ($logo)
-                        <img class="header-logo" style="height:50px" src="{{ $logo }}" alt="Company Logo">
+                        <img class="header-logo" style="height:50px" src="{{ "data:".mime_content_type($logo).";base64,".base64_encode(file_get_contents($logo)) }}" alt="Company Logo">
                     @else
                         @if ($invoice->customer->company)
                             <h2 class="header-logo"> {{ $invoice->customer->company->name }}</h2>
