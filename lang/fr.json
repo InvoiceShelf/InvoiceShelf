@@ -76,7 +76,7 @@
     "are_you_sure": "Êtes-vous sûr ?",
     "list_is_empty": "La liste est vide.",
     "no_tax_found": "Aucune taxe trouvée !",
-    "four_zero_four": "404",
+    "four_zero_four": "Page non trouvée",
     "you_got_lost": "Oups! Vous vous êtes perdus!",
     "go_home": "Retour au tableau de bord",
     "test_mail_conf": "Envoyer un email de test",
@@ -355,7 +355,7 @@
       "select_an_item": "Sélectionnez un article",
       "type_item_description": "Taper la description de l'article (facultatif)"
     },
-    "mark_as_default_estimate_template_description": "If enabled, the selected template will be automatically selected for new estimates."
+    "mark_as_default_estimate_template_description": "Si activé, le modèle sélectionné sera automatiquement utilisé pour les prochains devis."
   },
   "invoices": {
     "title": "Factures",
@@ -447,7 +447,7 @@
     "marked_as_sent_message": "Facture supprimée | Factures supprimées",
     "something_went_wrong": "quelque chose a mal tourné",
     "invalid_due_amount_message": "Le paiement entré est supérieur au montant total dû pour cette facture. Veuillez vérifier et réessayer.",
-    "mark_as_default_invoice_template_description": "If enabled, the selected template will be automatically selected for new invoices."
+    "mark_as_default_invoice_template_description": "Si activé, le modèle sélectionné sera automatiquement utilisé pour les nouvelles factures."
   },
   "recurring_invoices": {
     "title": "Factures récurrentes",
@@ -460,7 +460,7 @@
     "unpaid": "Non payée",
     "viewed": "Consultée",
     "overdue": "En retard",
-    "active": "Active",
+    "active": "Actif",
     "completed": "Payée",
     "customer": "CLIENT",
     "paid_status": "ÉTAT DU PAIEMENT",
@@ -526,7 +526,7 @@
     "cloned_successfully": "Facture récurrente clonée",
     "clone_invoice": "Dupliquer",
     "confirm_clone": "Cette facture récurrente sera clonée dans une nouvelle facture récurrente",
-    "add_customer_email": "Please add an email address for this customer to send invoices automatically.",
+    "add_customer_email": "Veuillez ajouter une adresse e-mail pour ce client afin d'envoyer les factures automatiquement.",
     "item": {
       "title": "Nom",
       "description": "Description",
@@ -669,7 +669,7 @@
     "update_failed": "Échec de la mise à jour",
     "install_success": "Votre module a été correctement installé !",
     "customer_reviews": "Évaluations",
-    "license": "License",
+    "license": "Licence",
     "faq": "FAQ",
     "monthly": "Mensuel",
     "yearly": "Annuel",
