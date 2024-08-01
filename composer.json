@@ -9,7 +9,6 @@
     "type": "project",
     "require": {
         "php": "^8.2",
-        "ext-json": "*",
         "aws/aws-sdk-php": "^3.297",
         "barryvdh/laravel-dompdf": "^2.1",
         "doctrine/dbal": "^4.0",
