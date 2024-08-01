@@ -863,6 +863,8 @@
     "company_info": {
       "company_info": "معلومات الشركة",
       "company_name": "اسم الشركة",
+      "tax_id": "Tax Identification Number",
+      "vat_id": "VAT Identification Number",
       "company_logo": "شعار الشركة",
       "section_description": "معلومات عن شركتك سيتم عرضها على الفواتير والتقديرات والمستندات الأخرى.",
       "phone": "الهاتف",
@@ -1267,6 +1269,12 @@
       "aws_region": "منطقة AWS",
       "aws_bucket": "حاوية AWS",
       "aws_root": "AWS الجذر",
+      "s3_endpoint": "S3 Endpoint",
+      "s3_key": "S3 Key",
+      "s3_secret": "S3 Secret",
+      "s3_region": "S3 Region",
+      "s3_bucket": "S3 Bucket",
+      "s3_root": "S3 Root",
       "do_spaces_type": "هل نوع المساحات",
       "do_spaces_key": "مفتاح Do Spaces",
       "do_spaces_secret": "هل المساحات سرية",
@@ -1522,5 +1530,7 @@
   "pdf_bill_to": "مطلوب من,",
   "pdf_ship_to": "يشحن إلى,",
   "pdf_received_from": "تم الاستلام من:",
-  "pdf_tax_label": "Tax"
+  "pdf_tax_label": "Tax",
+  "pdf_tax_id": "Tax-ID",
+  "pdf_vat_id": "VAT-ID"
 }

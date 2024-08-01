@@ -863,6 +863,8 @@
     "company_info": {
       "company_info": "Informácie o spoločnosti",
       "company_name": "Názov spoločnosti",
+      "tax_id": "Tax Identification Number",
+      "vat_id": "VAT Identification Number",
       "company_logo": "Logo spoločnosti",
       "section_description": "Informácie o Vašej firme, ktoré budú zobrazené na faktúrach, cenových odhadoch a iných dokumentoch vytvorených vďaka Creater.",
       "phone": "Telefón",
@@ -1267,6 +1269,12 @@
       "aws_region": "AWS Región",
       "aws_bucket": "AWP Bucket",
       "aws_root": "AWP Cesta (root)",
+      "s3_endpoint": "S3 Endpoint",
+      "s3_key": "S3 Key",
+      "s3_secret": "S3 Secret",
+      "s3_region": "S3 Region",
+      "s3_bucket": "S3 Bucket",
+      "s3_root": "S3 Root",
       "do_spaces_type": "Do Spaces type",
       "do_spaces_key": "Do Spaces key",
       "do_spaces_secret": "Do Spaces Secret",
@@ -1522,5 +1530,7 @@
   "pdf_bill_to": "Fakturovať,",
   "pdf_ship_to": "Doručiť,",
   "pdf_received_from": "Prijaté od:",
-  "pdf_tax_label": "Tax"
+  "pdf_tax_label": "Tax",
+  "pdf_tax_id": "Tax-ID",
+  "pdf_vat_id": "VAT-ID"
 }
