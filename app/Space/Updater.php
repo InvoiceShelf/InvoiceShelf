@@ -3,6 +3,7 @@
 namespace App\Space;
 
 use App\Events\UpdateFinished;
+use App\Models\Setting;
 use Artisan;
 use File;
 use GuzzleHttp\Exception\RequestException;
@@ -138,6 +139,7 @@ class Updater
 
     public static function finishUpdate($installed, $version)
     {
+        Setting::setSetting('version', $version);
         event(new UpdateFinished($installed, $version));
 
         return [

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\V1\Installation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DatabaseEnvironmentRequest;
 use App\Space\EnvironmentManager;
+use App\Space\InstallUtils;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 
@@ -34,6 +35,8 @@ class DatabaseConfigurationController extends Controller
             Artisan::call('cache:clear');
             Artisan::call('storage:link');
             Artisan::call('migrate --seed --force');
+            // Set version.
+            InstallUtils::setCurrentVersion();
         }
 
         return response()->json($results);
