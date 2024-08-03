@@ -96,7 +96,7 @@
               {{ $t('invoices.new_invoice') }}
             </BaseDropdownItem>
           </router-link>
-          <router-link to="/admin/estimates/create">
+          <router-link to="/admin/quotations/create">
             <BaseDropdownItem
               v-if="userStore.hasAbilities(abilities.CREATE_ESTIMATE)"
             >

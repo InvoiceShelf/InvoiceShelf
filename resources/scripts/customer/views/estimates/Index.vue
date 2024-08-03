@@ -99,7 +99,7 @@
 
         <template #cell-estimate_number="{ row }">
           <router-link
-            :to="{ path: `estimates/${row.data.id}/view` }"
+            :to="{ path: `quotations/${row.data.id}/view` }"
             class="font-medium text-primary-500"
           >
             {{ row.data.estimate_number }}
@@ -121,7 +121,7 @@
             <template #activator>
               <BaseIcon name="DotsHorizontalIcon" class="h-5 text-gray-500" />
             </template>
-            <router-link :to="`estimates/${row.data.id}/view`">
+            <router-link :to="`quotations/${row.data.id}/view`">
               <BaseDropdownItem>
                 <BaseIcon name="EyeIcon" class="h-5 mr-3 text-gray-600" />
                 {{ $t('general.view') }}
@@ -137,7 +137,7 @@
 <script setup>
 import { debouncedWatch } from '@vueuse/core'
 import BaseTable from '@/scripts/components/base/base-table/BaseTable.vue'
-import { ref, computed, reactive, inject } from 'vue'
+import { computed, inject, reactive, ref } from 'vue'
 import { useGlobalStore } from '@/scripts/customer/stores/global'
 import { useEstimateStore } from '@/scripts/customer/stores/estimate'
 import { useRoute } from 'vue-router'

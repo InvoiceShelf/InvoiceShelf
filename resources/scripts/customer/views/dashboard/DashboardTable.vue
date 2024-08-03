@@ -71,7 +71,7 @@
         <template #cell-estimate_number="{ row }">
           <router-link
             :to="{
-              path: `/${globalStore.companySlug}/customer/estimates/${row.data.id}/view`,
+              path: `/${globalStore.companySlug}/customer/quotations/${row.data.id}/view`,
             }"
             class="font-medium text-primary-500"
           >

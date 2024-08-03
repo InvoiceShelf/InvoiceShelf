@@ -42,7 +42,7 @@
       v-if="userStore.hasAbilities(abilities.VIEW_ESTIMATE)"
       :icon-component="EstimateIcon"
       :loading="!dashboardStore.isDashboardDataLoaded"
-      route="/admin/estimates"
+      route="/admin/quotations"
       :label="$t('dashboard.cards.estimates')"
     >
       {{ dashboardStore.stats.totalEstimateCount }}

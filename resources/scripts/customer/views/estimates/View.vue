@@ -144,7 +144,7 @@
           v-for="(estimate, index) in estimateStore.estimates"
           :id="'estimate-' + estimate.id"
           :key="index"
-          :to="`/${globalStore.companySlug}/customer/estimates/${estimate.id}/view`"
+          :to="`/${globalStore.companySlug}/customer/quotations/${estimate.id}/view`"
           :class="[
             'flex justify-between p-4 items-center cursor-pointer hover:bg-gray-100 border-l-4 border-transparent',
             {
@@ -222,10 +222,9 @@ import { useI18n } from 'vue-i18n'
 import BaseDropdown from '@/scripts/components/base/BaseDropdown.vue'
 import BaseDropdownItem from '@/scripts/components/base/BaseDropdownItem.vue'
 import { debounce } from 'lodash'
-import { ref, reactive, computed, inject, watch } from 'vue'
+import { computed, inject, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useNotificationStore } from '@/scripts/stores/notification'
-import moment from 'moment'
 import { useEstimateStore } from '@/scripts/customer/stores/estimate'
 import { useGlobalStore } from '@/scripts/customer/stores/global'
 import { useDialogStore } from '@/scripts/stores/dialog'
@@ -275,7 +274,7 @@ const getOrderName = computed(() =>
 )
 
 const shareableLink = computed(() => {
-  return estimate.unique_hash ? `/estimates/pdf/${estimate.unique_hash}` : false
+  return estimate.unique_hash ? `/quotations/pdf/${estimate.unique_hash}` : false
 })
 
 // Watcher
@@ -427,7 +426,7 @@ async function RejectEstimate() {
 }
 
 function copyPdfUrl() {
-  let pdfUrl = `${window.location.origin}/estimates/pdf/${estimate?.unique_hash}`
+  let pdfUrl = `${window.location.origin}/quotations/pdf/${estimate?.unique_hash}`
   utils.copyTextToClipboard(pdfUrl)
   notificationStore.showNotification({
     type: 'success',

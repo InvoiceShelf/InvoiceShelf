@@ -167,7 +167,7 @@
           <router-link
             v-if="estimate"
             :id="'estimate-' + estimate.id"
-            :to="`/admin/estimates/${estimate.id}/view`"
+            :to="`/admin/quotations/${estimate.id}/view`"
             :class="[
               'flex justify-between side-estimate p-4 cursor-pointer hover:bg-gray-100 items-center border-l-4 border-transparent',
               {
@@ -335,7 +335,7 @@ const getOrderName = computed(() => {
 })
 
 const shareableLink = computed(() => {
-  return `/estimates/pdf/${estimateData.value.unique_hash}`
+  return `/quotations/pdf/${estimateData.value.unique_hash}`
 })
 
 const getCurrentEstimateId = computed(() => {
@@ -518,7 +518,7 @@ async function removeEstimate(id) {
         estimateStore
           .deleteEstimate({ ids: [id] })
           .then(() => {
-            router.push('/admin/estimates')
+            router.push('/admin/quotations')
           })
           .catch((err) => {
             console.error(err)

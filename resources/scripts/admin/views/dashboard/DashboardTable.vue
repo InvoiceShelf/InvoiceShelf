@@ -64,7 +64,7 @@
           <BaseButton
             variant="primary-outline"
             size="sm"
-            @click="$router.push('/admin/estimates')"
+            @click="$router.push('/admin/quotations')"
           >
             {{ $t('dashboard.recent_estimate_card.view_all') }}
           </BaseButton>
@@ -77,7 +77,7 @@
         >
           <template #cell-user="{ row }">
             <router-link
-              :to="{ path: `estimates/${row.data.id}/view` }"
+              :to="{ path: `quotations/${row.data.id}/view` }"
               class="font-medium text-primary-500"
             >
               {{ row.data.customer.name }}

@@ -32,7 +32,7 @@
 
         <router-link
           v-if="userStore.hasAbilities(abilities.CREATE_ESTIMATE)"
-          to="estimates/create"
+          to="quotations/create"
         >
           <BaseButton variant="primary" class="ml-4">
             <template #left="slotProps">
@@ -109,7 +109,7 @@
         <BaseButton
           v-if="userStore.hasAbilities(abilities.CREATE_ESTIMATE)"
           variant="primary-outline"
-          @click="$router.push('/admin/estimates/create')"
+          @click="$router.push('/admin/quotations/create')"
         >
           <template #left="slotProps">
             <BaseIcon name="PlusIcon" :class="slotProps.class" />
@@ -203,7 +203,7 @@
 
         <template #cell-estimate_number="{ row }">
           <router-link
-            :to="{ path: `estimates/${row.data.id}/view` }"
+            :to="{ path: `quotations/${row.data.id}/view` }"
             class="font-medium text-primary-500"
           >
             {{ row.data.estimate_number }}
@@ -237,7 +237,7 @@
 </template>
 
 <script setup>
-import { computed, onUnmounted, reactive, ref, watch, inject } from 'vue'
+import { computed, onUnmounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useEstimateStore } from '@/scripts/admin/stores/estimate'

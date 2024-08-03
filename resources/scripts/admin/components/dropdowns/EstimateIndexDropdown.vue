@@ -22,7 +22,7 @@
     <!-- Edit Estimate -->
     <router-link
       v-if="userStore.hasAbilities(abilities.EDIT_ESTIMATE)"
-      :to="`/admin/estimates/${row.id}/edit`"
+      :to="`/admin/quotations/${row.id}/edit`"
     >
       <BaseDropdownItem>
         <BaseIcon
@@ -51,7 +51,7 @@
         route.name !== 'estimates.view' &&
         userStore.hasAbilities(abilities.VIEW_ESTIMATE)
       "
-      :to="`estimates/${row.id}/view`"
+      :to="`quotations/${row.id}/view`"
     >
       <BaseDropdownItem>
         <BaseIcon
@@ -201,7 +201,7 @@ async function removeEstimate(id) {
             props.table && props.table.refresh()
 
             if (res.data) {
-              router.push('/admin/estimates')
+              router.push('/admin/quotations')
             }
             estimateStore.$patch((state) => {
               state.selectedEstimates = []
@@ -326,7 +326,7 @@ async function onMarkAsRejected(id) {
 }
 
 function copyPdfUrl() {
-  let pdfUrl = `${window.location.origin}/estimates/pdf/${props.row.unique_hash}`
+  let pdfUrl = `${window.location.origin}/quotations/pdf/${props.row.unique_hash}`
 
   let response = utils.copyTextToClipboard(pdfUrl)
   notificationStore.showNotification({
