@@ -407,12 +407,12 @@ class Invoice extends Model implements HasMedia
         $data['base_due_amount'] = $data['due_amount'] * $data['exchange_rate'];
         $data['customer_sequence_number'] = $serial->nextCustomerSequenceNumber;
 
+        $this->update($data);
+
         $statusData = $this->getInvoiceStatusByAmount($data['due_amount']);
         if (! empty($statusData)) {
-            $data = array_merge($data, $statusData);
+            $this->update($statusData);
         }
-
-        $this->update($data);
 
         $company_currency = CompanySetting::getSetting('currency', $request->header('company'));
 
@@ -710,6 +710,10 @@ class Invoice extends Model implements HasMedia
         if ($amount < 0) {
             return [];
         }
+
+        \Log::error(print_r($amount, true));
+        \Log::error(print_r($this->due_amount, true));
+        \Log::error($this->total);
 
         if ($amount == 0) {
             $data = [
