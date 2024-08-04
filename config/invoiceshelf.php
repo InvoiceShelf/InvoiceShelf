@@ -41,7 +41,7 @@ return [
     * Minimum sqlite version.
     */
 
-    'min_sqlite_version' => '3.24.0',
+    'min_sqlite_version' => '3.35.0',
 
     /*
     * Marketplace url.
@@ -71,6 +71,7 @@ return [
         ['code' => 'cs', 'name' => 'Czech'],
         ['code' => 'el', 'name' => 'Greek'],
         ['code' => 'hr', 'name' => 'Crotian'],
+        ['code' => 'mk', 'name' => 'Macedonian'],
         ['code' => 'th', 'name' => 'ไทย'],
     ],
 
