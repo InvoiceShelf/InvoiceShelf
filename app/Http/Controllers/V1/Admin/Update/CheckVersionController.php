@@ -25,8 +25,9 @@ class CheckVersionController extends Controller
 
         set_time_limit(600); // 10 minutes
 
-        $json = Updater::checkForUpdate(Setting::getSetting('version'));
+        $channel = $request->get('channel', 'stable');
+        $response = Updater::checkForUpdate(Setting::getSetting('version'), $channel);
 
-        return response()->json($json);
+        return response()->json($response);
     }
 }
