@@ -27,10 +27,15 @@
         />
       </template>
 
+      <!-- Invoice date  -->
+      <template #cell-invoice_date="{ row }">
+        {{ row.data.formatted_invoice_date }}
+      </template>
+
       <!-- Invoice status  -->
       <template #cell-status="{ row }">
         <BaseInvoiceStatusBadge :status="row.data.status" class="px-3 py-1">
-          {{ row.data.status }}
+          <BaseInvoiceStatusLabel :status="row.data.status" />
         </BaseInvoiceStatusBadge>
       </template>
 

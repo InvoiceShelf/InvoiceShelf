@@ -1,0 +1,70 @@
+services:
+  php-fpm:
+    container_name: invoiceshelf-dev-php
+    build:
+      context: ./php
+      dockerfile: Dockerfile
+      args:
+        - UID=${USRID:-1000}
+        - GID=${GRPID:-1000}
+    ports:
+      - 5173:5173
+    volumes:
+      - ../:/home/invoiceshelf/app
+    networks:
+      - invoiceshelf-dev
+
+  nginx:
+    container_name: invoiceshelf-dev-nginx
+    image: nginx:stable
+    ports:
+      - '80:80'
+    volumes:
+      - ./nginx/conf.d/dev.conf:/etc/nginx/conf.d/dev.conf
+      - ../:/home/invoiceshelf/app
+    networks:
+      - invoiceshelf-dev
+
+  db:
+    image: mariadb:10.9
+    container_name: invoiceshelf-dev-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: invoiceshelf
+      MYSQL_DATABASE: invoiceshelf
+      MYSQL_USER: invoiceshelf
+      MYSQL_PASSWORD: invoiceshelf
+    ports:
+      - "3306:3306"
+    volumes:
+      - invoiceshelf-dev-mysql:/var/lib/mysql
+    networks:
+      - invoiceshelf-dev
+
+  adminer:
+    container_name: invoiceshelf-dev-adminer
+    build:
+      context: ./adminer
+      dockerfile: Dockerfile
+    environment:
+      ADMINER_PLUGINS: tables-filter
+      ADMINER_DESIGN: konya
+    ports:
+      - '8080:8080'
+    networks:
+      - invoiceshelf-dev
+
+  mail:
+    container_name: invoiceshelf-dev-mailpit
+    image: axllent/mailpit:latest
+    restart: always
+    ports:
+      - 1025:1025
+      - 8025:8025
+    networks:
+      - invoiceshelf-dev
+
+networks:
+  invoiceshelf-dev:
+
+volumes:
+  invoiceshelf-dev-mysql:

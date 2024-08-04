@@ -211,7 +211,7 @@ const mailDriverStore = useMailDriverStore()
 const { t } = useI18n()
 
 let isShowPassword = ref(false)
-const encryptions = reactive(['tls', 'ssl', 'starttls'])
+const encryptions = reactive(['none','tls', 'ssl', 'starttls'])
 
 const getInputType = computed(() => {
   if (isShowPassword.value) {

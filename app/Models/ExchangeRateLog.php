@@ -1,9 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Models;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ExchangeRateLog extends Model
 {
@@ -13,16 +14,19 @@ class ExchangeRateLog extends Model
         'id',
     ];
 
-    protected $casts = [
-        'exchange_rate' => 'float',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'exchange_rate' => 'float',
+        ];
+    }
 
-    public function currency()
+    public function currency(): BelongsTo
     {
         return $this->belongsTo(Currency::class);
     }
 
-    public function company()
+    public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
     }

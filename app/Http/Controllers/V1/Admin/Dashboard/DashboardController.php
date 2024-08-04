@@ -1,17 +1,17 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Dashboard;
+namespace App\Http\Controllers\V1\Admin\Dashboard;
 
+use App\Http\Controllers\Controller;
+use App\Models\Company;
+use App\Models\CompanySetting;
+use App\Models\Customer;
+use App\Models\Estimate;
+use App\Models\Expense;
+use App\Models\Invoice;
+use App\Models\Payment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Models\Company;
-use InvoiceShelf\Models\CompanySetting;
-use InvoiceShelf\Models\Customer;
-use InvoiceShelf\Models\Estimate;
-use InvoiceShelf\Models\Expense;
-use InvoiceShelf\Models\Invoice;
-use InvoiceShelf\Models\Payment;
 use Silber\Bouncer\BouncerFacade;
 
 class DashboardController extends Controller
@@ -40,15 +40,16 @@ class DashboardController extends Controller
         $start = Carbon::now();
         $end = Carbon::now();
         $terms = explode('-', $fiscalYear);
+        $companyStartMonth = intval($terms[0]);
 
-        if ($terms[0] <= $start->month) {
-            $startDate->month($terms[0])->startOfMonth();
-            $start->month($terms[0])->startOfMonth();
-            $end->month($terms[0])->endOfMonth();
+        if ($companyStartMonth <= $start->month) {
+            $startDate->month($companyStartMonth)->startOfMonth();
+            $start->month($companyStartMonth)->startOfMonth();
+            $end->month($companyStartMonth)->endOfMonth();
         } else {
-            $startDate->subYear()->month($terms[0])->startOfMonth();
-            $start->subYear()->month($terms[0])->startOfMonth();
-            $end->subYear()->month($terms[0])->endOfMonth();
+            $startDate->subYear()->month($companyStartMonth)->startOfMonth();
+            $start->subYear()->month($companyStartMonth)->startOfMonth();
+            $end->subYear()->month($companyStartMonth)->endOfMonth();
         }
 
         if ($request->has('previous_year')) {
@@ -90,7 +91,7 @@ class DashboardController extends Controller
                 ($receipt_totals[$i] - $expense_totals[$i])
             );
             $i++;
-            array_push($months, $start->format('M'));
+            array_push($months, $start->translatedFormat('M'));
             $monthCounter++;
             $end->startOfMonth();
             $start->addMonth()->startOfMonth();

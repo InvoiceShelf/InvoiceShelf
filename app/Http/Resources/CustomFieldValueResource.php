@@ -1,9 +1,9 @@
 <?php
 
-namespace InvoiceShelf\Http\Resources;
+namespace App\Http\Resources;
 
+use App\Models\CompanySetting;
 use Illuminate\Http\Resources\Json\JsonResource;
-use InvoiceShelf\Models\CompanySetting;
 
 class CustomFieldValueResource extends JsonResource
 {
@@ -11,9 +11,8 @@ class CustomFieldValueResource extends JsonResource
      * Transform the resource into an array.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return array
      */
-    public function toArray($request)
+    public function toArray($request): array
     {
         return [
             'id' => $this->id,

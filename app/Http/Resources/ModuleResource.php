@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Http\Resources;
+namespace App\Http\Resources;
 
+use App\Models\Module as ModelsModule;
+use App\Models\Setting;
 use Illuminate\Http\Resources\Json\JsonResource;
-use InvoiceShelf\Models\Module as ModelsModule;
-use InvoiceShelf\Models\Setting;
 use Nwidart\Modules\Facades\Module;
 
 class ModuleResource extends JsonResource
@@ -15,7 +15,7 @@ class ModuleResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
-    public function toArray($request)
+    public function toArray($request): array
     {
         $this->checkPurchased();
         $this->installed_module = ModelsModule::where('name', $this->module_name)->first();

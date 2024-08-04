@@ -1,14 +1,14 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Settings;
+namespace App\Http\Controllers\V1\Admin\Settings;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\MailEnvironmentRequest;
+use App\Mail\TestMail;
+use App\Models\Setting;
+use App\Space\EnvironmentManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests\MailEnvironmentRequest;
-use InvoiceShelf\Mail\TestMail;
-use InvoiceShelf\Models\Setting;
-use InvoiceShelf\Space\EnvironmentManager;
 use Mail;
 
 class MailConfigurationController extends Controller
@@ -50,7 +50,7 @@ class MailConfigurationController extends Controller
             'mail_port' => config('mail.port'),
             'mail_username' => config('mail.username'),
             'mail_password' => config('mail.password'),
-            'mail_encryption' => config('mail.encryption'),
+            'mail_encryption' => is_null(config('mail.encryption')) ? 'none' : config('mail.encryption'),
             'from_name' => config('mail.from.name'),
             'from_mail' => config('mail.from.address'),
             'mail_mailgun_endpoint' => config('services.mailgun.endpoint'),

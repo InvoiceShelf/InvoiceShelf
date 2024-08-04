@@ -19,11 +19,27 @@ export const useInstallationStore = (useWindow = false) => {
         database_name: null,
         database_username: null,
         database_password: null,
+        database_overwrite: false,
         app_url: window.location.origin,
+        app_locale: null
       },
     }),
 
     actions: {
+      fetchInstallationLanguages() {
+        return new Promise((resolve, reject) => {
+          axios
+            .get(`/api/v1/installation/languages`)
+            .then((response) => {
+              resolve(response)
+            })
+            .catch((err) => {
+              handleError(err)
+              reject(err)
+            })
+        })
+      },
+
       fetchInstallationRequirements() {
         return new Promise((resolve, reject) => {
           axios
@@ -56,6 +72,20 @@ export const useInstallationStore = (useWindow = false) => {
         return new Promise((resolve, reject) => {
           axios
             .post(`/api/v1/installation/wizard-step`, data)
+            .then((response) => {
+              resolve(response)
+            })
+            .catch((err) => {
+              handleError(err)
+              reject(err)
+            })
+        })
+      },
+
+      addInstallationLanguage(data) {
+        return new Promise((resolve, reject) => {
+          axios
+            .post(`/api/v1/installation/wizard-language`, data)
             .then((response) => {
               resolve(response)
             })

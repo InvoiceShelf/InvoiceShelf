@@ -1,13 +1,13 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Customer\General;
+namespace App\Http\Controllers\V1\Customer\General;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Customer\CustomerProfileRequest;
+use App\Http\Resources\Customer\CustomerResource;
+use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests\Customer\CustomerProfileRequest;
-use InvoiceShelf\Http\Resources\Customer\CustomerResource;
-use InvoiceShelf\Models\Company;
 
 class ProfileController extends Controller
 {

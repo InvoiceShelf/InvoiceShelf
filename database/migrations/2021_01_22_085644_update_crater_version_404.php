@@ -1,27 +1,23 @@
 <?php
 
+use App\Models\Setting;
 use Illuminate\Database\Migrations\Migration;
-use InvoiceShelf\Models\Setting;
 
-class UpdateCraterVersion404 extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Setting::setSetting('version', '4.0.4');
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         //
     }
-}
+};

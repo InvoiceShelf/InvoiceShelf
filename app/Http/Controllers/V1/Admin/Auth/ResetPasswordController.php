@@ -1,13 +1,13 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Auth;
+namespace App\Http\Controllers\V1\Admin\Auth;
 
+use App\Http\Controllers\Controller;
+use App\Providers\AppServiceProvider;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Providers\RouteServiceProvider;
 
 class ResetPasswordController extends Controller
 {
@@ -29,7 +29,7 @@ class ResetPasswordController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    protected $redirectTo = AppServiceProvider::HOME;
 
     /**
      * Get the response for a successful password reset.

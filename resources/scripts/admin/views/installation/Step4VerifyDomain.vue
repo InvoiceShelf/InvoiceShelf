@@ -18,17 +18,15 @@
       </BaseInputGroup>
     </div>
 
-    <p class="mt-4 mb-0 text-sm text-gray-600">Notes:</p>
+    <p class="mt-4 mb-0 text-sm text-gray-600">{{ $t('wizard.verify_domain.notes.notes') }}</p>
     <ul class="w-full text-gray-600 list-disc list-inside">
       <li class="text-sm leading-8">
-        App domain should not contain
-        <b class="inline-block px-1 bg-gray-100 rounded-sm">https://</b> or
-        <b class="inline-block px-1 bg-gray-100 rounded-sm">http</b> in front of
-        the domain.
+        {{ $t('wizard.verify_domain.notes.not_contain') }}
+        <b class="inline-block px-1 bg-gray-100 rounded-sm">https://</b> {{ $t('wizard.verify_domain.notes.or') }}
+        <b class="inline-block px-1 bg-gray-100 rounded-sm">http</b> {{ $t('wizard.verify_domain.notes.in_front') }}
       </li>
       <li class="text-sm leading-8">
-        If you're accessing the website on a different port, please mention the
-        port. For example:
+        {{ $t('wizard.verify_domain.notes.if_you') }}
         <b class="inline-block px-1 bg-gray-100">localhost:8080</b>
       </li>
     </ul>

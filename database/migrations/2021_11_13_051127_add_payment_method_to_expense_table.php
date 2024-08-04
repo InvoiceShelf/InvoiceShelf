@@ -4,14 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddPaymentMethodToExpenseTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('expenses', function (Blueprint $table) {
             $table->integer('payment_method_id')->unsigned()->nullable();
@@ -21,10 +19,8 @@ class AddPaymentMethodToExpenseTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('expenses', function (Blueprint $table) {
             if (config('database.default') !== 'sqlite') {
@@ -33,4 +29,4 @@ class AddPaymentMethodToExpenseTable extends Migration
             $table->dropColumn('payment_method_id');
         });
     }
-}
+};

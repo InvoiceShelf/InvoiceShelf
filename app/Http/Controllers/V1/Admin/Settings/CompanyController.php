@@ -1,16 +1,16 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Settings;
+namespace App\Http\Controllers\V1\Admin\Settings;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\AvatarRequest;
+use App\Http\Requests\CompanyLogoRequest;
+use App\Http\Requests\CompanyRequest;
+use App\Http\Requests\ProfileRequest;
+use App\Http\Resources\CompanyResource;
+use App\Http\Resources\UserResource;
+use App\Models\Company;
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests\AvatarRequest;
-use InvoiceShelf\Http\Requests\CompanyLogoRequest;
-use InvoiceShelf\Http\Requests\CompanyRequest;
-use InvoiceShelf\Http\Requests\ProfileRequest;
-use InvoiceShelf\Http\Resources\CompanyResource;
-use InvoiceShelf\Http\Resources\UserResource;
-use InvoiceShelf\Models\Company;
 
 class CompanyController extends Controller
 {

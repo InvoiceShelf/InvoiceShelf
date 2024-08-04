@@ -1,11 +1,12 @@
 <?php
 
-namespace InvoiceShelf\Models;
+namespace App\Models;
 
+use App\Http\Requests\ExchangeRateProviderRequest;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Http;
-use InvoiceShelf\Http\Requests\ExchangeRateProviderRequest;
 
 class ExchangeRateProvider extends Model
 {
@@ -15,13 +16,16 @@ class ExchangeRateProvider extends Model
         'id',
     ];
 
-    protected $casts = [
-        'currencies' => 'array',
-        'driver_config' => 'array',
-        'active' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'currencies' => 'array',
+            'driver_config' => 'array',
+            'active' => 'boolean',
+        ];
+    }
 
-    public function company()
+    public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
     }

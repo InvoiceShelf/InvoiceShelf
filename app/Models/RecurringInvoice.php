@@ -1,14 +1,16 @@
 <?php
 
-namespace InvoiceShelf\Models;
+namespace App\Models;
 
+use App\Http\Requests\RecurringInvoiceRequest;
+use App\Services\SerialNumberFormatter;
+use App\Traits\HasCustomFieldsTrait;
 use Carbon\Carbon;
 use Cron;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use InvoiceShelf\Http\Requests\RecurringInvoiceRequest;
-use InvoiceShelf\Services\SerialNumberFormatter;
-use InvoiceShelf\Traits\HasCustomFieldsTrait;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Vinkla\Hashids\Facades\Hashids;
 
 class RecurringInvoice extends Model
@@ -43,23 +45,26 @@ class RecurringInvoice extends Model
         'formattedLimitDate',
     ];
 
-    protected $casts = [
-        'exchange_rate' => 'float',
-        'send_automatically' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'exchange_rate' => 'float',
+            'send_automatically' => 'boolean',
+        ];
+    }
 
     public function getFormattedStartsAtAttribute()
     {
         $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id);
 
-        return Carbon::parse($this->starts_at)->format($dateFormat);
+        return Carbon::parse($this->starts_at)->translatedFormat($dateFormat);
     }
 
     public function getFormattedNextInvoiceAtAttribute()
     {
         $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id);
 
-        return Carbon::parse($this->next_invoice_at)->format($dateFormat);
+        return Carbon::parse($this->next_invoice_at)->translatedFormat($dateFormat);
     }
 
     public function getFormattedLimitDateAttribute()
@@ -76,37 +81,37 @@ class RecurringInvoice extends Model
         return Carbon::parse($this->created_at)->format($dateFormat);
     }
 
-    public function invoices()
+    public function invoices(): HasMany
     {
         return $this->hasMany(Invoice::class);
     }
 
-    public function taxes()
+    public function taxes(): HasMany
     {
         return $this->hasMany(Tax::class);
     }
 
-    public function items()
+    public function items(): HasMany
     {
         return $this->hasMany(InvoiceItem::class);
     }
 
-    public function customer()
+    public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
     }
 
-    public function company()
+    public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
     }
 
-    public function creator()
+    public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'creator_id');
     }
 
-    public function currency()
+    public function currency(): BelongsTo
     {
         return $this->belongsTo(Currency::class);
     }
@@ -309,7 +314,7 @@ class RecurringInvoice extends Model
             ->setCustomer($this->customer_id)
             ->setNextNumbers();
 
-        $days = CompanySetting::getSetting('invoice_due_date_days', $this->company_id);
+        $days = intval(CompanySetting::getSetting('invoice_due_date_days', $this->company_id));
 
         if (! $days || $days == 'null') {
             $days = 7;
@@ -376,7 +381,7 @@ class RecurringInvoice extends Model
                 'body' => CompanySetting::getSetting('invoice_mail_body', $this->company_id),
                 'from' => config('mail.from.address'),
                 'to' => $this->customer->email,
-                'subject' => 'New Invoice',
+                'subject' => trans('invoices')['new_invoice'],
                 'invoice' => $invoice->toArray(),
                 'customer' => $invoice->customer->toArray(),
                 'company' => Company::find($invoice->company_id),

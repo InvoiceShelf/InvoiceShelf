@@ -1,12 +1,12 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\RecurringInvoice;
+namespace App\Http\Controllers\V1\Admin\RecurringInvoice;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\RecurringInvoiceRequest;
+use App\Http\Resources\RecurringInvoiceResource;
+use App\Models\RecurringInvoice;
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests\RecurringInvoiceRequest;
-use InvoiceShelf\Http\Resources\RecurringInvoiceResource;
-use InvoiceShelf\Models\RecurringInvoice;
 
 class RecurringInvoiceController extends Controller
 {
@@ -76,7 +76,7 @@ class RecurringInvoiceController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \InvoiceShelf\Models\RecurringInvoice  $recurringInvoice
+     * @param  \App\Models\RecurringInvoice  $recurringInvoice
      * @return \Illuminate\Http\Response
      */
     public function delete(Request $request)

@@ -1,10 +1,9 @@
 @component('mail::message')
-{{ $data['user']['name'] }} viewed this Invoice.
+@lang('mail_viewed_invoice', ['name' => $data['user']['name']])
 
-@component('mail::button', ['url' => url('/admin/invoices/'.$data['invoice']['id'].'/view')])
-View Invoice
+@component('mail::button', ['url' => url('/admin/invoices/'.$data['invoice']['id'].'/view')])@lang('mail_view_invoice')
 @endcomponent
 
-Thanks,<br>
+@lang('mail_thanks'),<br>
 {{ config('app.name') }}
 @endcomponent

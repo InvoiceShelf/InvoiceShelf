@@ -30,6 +30,10 @@
         <span class="text-xs text-gray-500"> ({{ row.data.slug }})</span>
       </template>
 
+      <template #cell-model_type="{ row }">
+        {{ getModelType(row.data.model_type) }}
+      </template>
+
       <template #cell-is_required="{ row }">
         <BaseBadge
           :bg-color="
@@ -146,5 +150,22 @@ function addCustomField() {
 
 async function refreshTable() {
   table.value && table.value.refresh()
+}
+
+function getModelType(type) {
+  switch (type) {
+    case 'Customer':
+      return t('settings.custom_fields.model_type.customer')
+    case 'Invoice':
+      return t('settings.custom_fields.model_type.invoice')
+    case 'Estimate':
+      return t('settings.custom_fields.model_type.estimate')
+    case 'Expense':
+      return t('settings.custom_fields.model_type.expense')
+    case 'Payment':
+      return t('settings.custom_fields.model_type.payment')
+    default:
+      return type
+  }
 }
 </script>

@@ -1,11 +1,11 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Company;
+namespace App\Http\Controllers\V1\Admin\Company;
 
+use App\Http\Controllers\Controller;
+use App\Http\Resources\CompanyResource;
+use App\Models\Company;
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Resources\CompanyResource;
-use InvoiceShelf\Models\Company;
 
 class CompanyController extends Controller
 {

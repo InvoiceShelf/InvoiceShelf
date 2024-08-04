@@ -1,11 +1,11 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Estimate;
+namespace App\Http\Controllers\V1\Admin\Estimate;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\SendEstimatesRequest;
+use App\Models\Estimate;
 use Illuminate\Mail\Markdown;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests\SendEstimatesRequest;
-use InvoiceShelf\Models\Estimate;
 
 class SendEstimatePreviewController extends Controller
 {

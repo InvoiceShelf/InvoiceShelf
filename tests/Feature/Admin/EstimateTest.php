@@ -1,16 +1,16 @@
 <?php
 
+use App\Http\Controllers\V1\Admin\Estimate\EstimatesController;
+use App\Http\Controllers\V1\Admin\Estimate\SendEstimateController;
+use App\Http\Requests\DeleteEstimatesRequest;
+use App\Http\Requests\EstimatesRequest;
+use App\Http\Requests\SendEstimatesRequest;
+use App\Mail\SendEstimateMail;
+use App\Models\Estimate;
+use App\Models\EstimateItem;
+use App\Models\Tax;
+use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
-use InvoiceShelf\Http\Controllers\V1\Admin\Estimate\EstimatesController;
-use InvoiceShelf\Http\Controllers\V1\Admin\Estimate\SendEstimateController;
-use InvoiceShelf\Http\Requests\DeleteEstimatesRequest;
-use InvoiceShelf\Http\Requests\EstimatesRequest;
-use InvoiceShelf\Http\Requests\SendEstimatesRequest;
-use InvoiceShelf\Mail\SendEstimateMail;
-use InvoiceShelf\Models\Estimate;
-use InvoiceShelf\Models\EstimateItem;
-use InvoiceShelf\Models\Tax;
-use InvoiceShelf\Models\User;
 use Laravel\Sanctum\Sanctum;
 
 use function Pest\Laravel\getJson;
@@ -63,6 +63,18 @@ test('create estimate', function () {
         'notes' => $estimate['notes'],
         'tax' => $estimate['tax'],
     ]);
+});
+
+test('clone estimate', function () {
+
+    $estimate = Estimate::factory()->create();
+
+    $beforeCount = Estimate::count();
+
+    $response = $this->post("/api/v1/estimates/{$estimate->id}/clone");
+
+    $this->assertDatabaseCount('estimates', $beforeCount + 1);
+
 });
 
 test('store validates using a form request', function () {

@@ -2,17 +2,15 @@
 
 namespace Database\Seeders;
 
+use App\Models\Currency;
 use Illuminate\Database\Seeder;
-use InvoiceShelf\Models\Currency;
 
 class CurrenciesTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
         $currencies = [
             [
