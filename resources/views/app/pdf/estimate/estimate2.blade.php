@@ -420,7 +420,7 @@
             <tr>
                 @if ($logo)
                     <td width="60%" class="header-section-left">
-                        <img class="header-logo" style="height: 50px;" src="{{ $logo }}" alt="Company Logo">
+                        <img class="header-logo" style="height:50px" src="{{ \App\Space\ImageUtils::toBase64Src($logo) }}" alt="Company Logo">
                     </td>
                 @else
                     <td width="60%" class="header-section-left" style="padding-top: 0px;">
