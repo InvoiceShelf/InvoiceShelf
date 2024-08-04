@@ -7,6 +7,8 @@ services:
       args:
         - UID=${USRID:-1000}
         - GID=${GRPID:-1000}
+    ports:
+      - 5173:5173
     volumes:
       - ../:/home/invoiceshelf/app
     networks:

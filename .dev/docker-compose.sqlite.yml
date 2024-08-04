@@ -9,6 +9,8 @@ services:
         - GID=${GRPID:-1000}
     volumes:
       - ../:/home/invoiceshelf/app
+    ports:
+      - 5173:5173
     networks:
       - invoiceshelf-dev
 
