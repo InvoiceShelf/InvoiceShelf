@@ -711,10 +711,6 @@ class Invoice extends Model implements HasMedia
             return [];
         }
 
-        \Log::error(print_r($amount, true));
-        \Log::error(print_r($this->due_amount, true));
-        \Log::error($this->total);
-
         if ($amount == 0) {
             $data = [
                 'status' => Invoice::STATUS_COMPLETED,
