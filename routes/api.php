@@ -33,6 +33,7 @@ use InvoiceShelf\Http\Controllers\V1\Admin\General\ConfigController;
 use InvoiceShelf\Http\Controllers\V1\Admin\General\CountriesController;
 use InvoiceShelf\Http\Controllers\V1\Admin\General\CurrenciesController;
 use InvoiceShelf\Http\Controllers\V1\Admin\General\DateFormatsController;
+use InvoiceShelf\Http\Controllers\V1\Admin\General\TimeFormatsController;
 use InvoiceShelf\Http\Controllers\V1\Admin\General\GetAllUsedCurrenciesController;
 use InvoiceShelf\Http\Controllers\V1\Admin\General\NextNumberController;
 use InvoiceShelf\Http\Controllers\V1\Admin\General\NotesController;
@@ -223,6 +224,8 @@ Route::prefix('/v1')->group(function () {
             Route::get('/timezones', TimezonesController::class);
 
             Route::get('/date/formats', DateFormatsController::class);
+
+            Route::get('/time/formats', TimeFormatsController::class);
 
             Route::get('/next-number', NextNumberController::class);
 
