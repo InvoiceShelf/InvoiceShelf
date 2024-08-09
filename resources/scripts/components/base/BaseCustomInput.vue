@@ -248,6 +248,8 @@ async function getFields() {
           { label: 'Address Street 2', value: 'COMPANY_ADDRESS_STREET_2' },
           { label: 'Phone', value: 'COMPANY_PHONE' },
           { label: 'Zip Code', value: 'COMPANY_ZIP_CODE' },
+          { label: 'Vat Id', value: 'COMPANY_VAT' },
+          { label: 'Tax Id', value: 'COMPANY_TAX' },
         ],
       })
     }
