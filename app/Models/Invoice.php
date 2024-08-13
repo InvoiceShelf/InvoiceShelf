@@ -191,9 +191,9 @@ class Invoice extends Model implements HasMedia
         $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id);
         $timeFormat = CompanySetting::getSetting('carbon_time_format', $this->company_id);
         $invoiceTimeEnabled = CompanySetting::getSetting('invoice_use_time', $this->company_id);
-        
+
         if ($invoiceTimeEnabled === 'YES') {
-                $dateFormat .= ' ' . $timeFormat;;
+            $dateFormat .= ' '.$timeFormat;
         }
 
         return Carbon::parse($this->invoice_date)->format($dateFormat);

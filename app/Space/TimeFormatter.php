@@ -8,12 +8,12 @@ class TimeFormatter
 {
     protected static $formats = [
         [
-            "carbon_format" => "H:i",
-            "moment_format" => "HH:mm",
+            'carbon_format' => 'H:i',
+            'moment_format' => 'HH:mm',
         ],
         [
-            "carbon_format" => "g:i a",
-            "moment_format" => "h:mm a",
+            'carbon_format' => 'g:i a',
+            'moment_format' => 'h:mm a',
         ],
     ];
 
@@ -23,13 +23,12 @@ class TimeFormatter
 
         foreach (static::$formats as $format) {
             $new[] = [
-                "display_time" => Carbon::now()->format($format['carbon_format']) ,
-                "carbon_format_value" => $format['carbon_format'],
-                "moment_format_value" => $format['moment_format'],
+                'display_time' => Carbon::now()->format($format['carbon_format']),
+                'carbon_format_value' => $format['carbon_format'],
+                'moment_format_value' => $format['moment_format'],
             ];
         }
 
         return $new;
     }
 }
-

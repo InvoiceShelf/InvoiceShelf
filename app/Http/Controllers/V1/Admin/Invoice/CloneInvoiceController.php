@@ -53,7 +53,7 @@ class CloneInvoiceController extends Controller
         );
 
         if ($invoiceTimeEnabled === 'YES') {
-                $dateFormat .= ' H:i';
+            $dateFormat .= ' H:i';
         }
 
         $newInvoice = Invoice::create([
