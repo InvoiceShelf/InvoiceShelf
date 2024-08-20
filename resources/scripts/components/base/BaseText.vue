@@ -1,9 +1,10 @@
 <template>
-  <BaseCustomTag :tag="tag" :title="text">
-    {{ displayText }}
-  </BaseCustomTag>
+  <div class="whitespace-normal">
+    <BaseCustomTag :tag="tag" :title="text" class="line-clamp-1">
+      {{ displayText }}
+    </BaseCustomTag>
+  </div>
 </template>
-
 <script setup>
 import { computed } from "vue"
 
@@ -20,12 +21,17 @@ const props = defineProps({
 
   length: {
     type: Number,
-    default: 0,
+    default: null,
   }
 })
 
-const displayText = computed(() => {
+const { text, length } = props;
 
-  return props.text.length < props.length ?  props.text : `${props.text.substring(0 , props.length)}...`
-})
+const displayText = computed(() => {
+  if (length) {
+    return text.length <= length ? text : `${text.substring(0, length)}...`;
+  }
+  return text;
+});
+
 </script>

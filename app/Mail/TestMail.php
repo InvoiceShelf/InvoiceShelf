@@ -1,6 +1,6 @@
 <?php
 
-namespace InvoiceShelf\Mail;
+namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;

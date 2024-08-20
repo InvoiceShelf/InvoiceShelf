@@ -329,6 +329,25 @@ export const useEstimateStore = (useWindow = false) => {
         })
       },
 
+      cloneEstimate(data) {
+        return new Promise((resolve, reject) => {
+          axios
+            .post(`/api/v1/estimates/${data.id}/clone`, data)
+            .then((response) => {
+              const notificationStore = useNotificationStore()
+              notificationStore.showNotification({
+                type: 'success',
+                message: global.t('estimates.cloned_successfully'),
+              })
+              resolve(response)
+            })
+            .catch((err) => {
+              handleError(err)
+              reject(err)
+            })
+        })
+      },
+
       markAsAccepted(data) {
         return new Promise((resolve, reject) => {
           axios

@@ -36,11 +36,13 @@ export default {
     const database_connection = ref('mysql')
     const isSaving = ref(false)
     const { t } = useI18n()
+    const { global } = window.i18n
 
     const notificationStore = useNotificationStore()
     const installationStore = useInstallationStore()
 
     const databaseData = computed(() => {
+      installationStore.currentDataBaseData.app_locale = global.locale.value
       return installationStore.currentDataBaseData
     })
 
@@ -74,6 +76,12 @@ export default {
           await installationStore.addInstallationFinish()
 
           emit('next', 3)
+
+          let language = {
+            profile_language: global.locale.value,
+          }
+          await installationStore.addInstallationLanguage(language)
+
 
           notificationStore.showNotification({
             type: 'success',

@@ -1,10 +1,12 @@
 <?php
 
-namespace InvoiceShelf\Models;
+namespace App\Models;
 
+use App\Traits\HasCustomFieldsTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use InvoiceShelf\Traits\HasCustomFieldsTrait;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class EstimateItem extends Model
 {
@@ -15,26 +17,29 @@ class EstimateItem extends Model
         'id',
     ];
 
-    protected $casts = [
-        'price' => 'integer',
-        'total' => 'integer',
-        'discount' => 'float',
-        'quantity' => 'float',
-        'discount_val' => 'integer',
-        'tax' => 'integer',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'price' => 'integer',
+            'total' => 'integer',
+            'discount' => 'float',
+            'quantity' => 'float',
+            'discount_val' => 'integer',
+            'tax' => 'integer',
+        ];
+    }
 
-    public function estimate()
+    public function estimate(): BelongsTo
     {
         return $this->belongsTo(Estimate::class);
     }
 
-    public function item()
+    public function item(): BelongsTo
     {
         return $this->belongsTo(Item::class);
     }
 
-    public function taxes()
+    public function taxes(): HasMany
     {
         return $this->hasMany(Tax::class);
     }

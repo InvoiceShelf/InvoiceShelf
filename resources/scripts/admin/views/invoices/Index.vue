@@ -196,7 +196,7 @@
         </template>
 
         <template #cell-name="{ row }">
-          <BaseText :text="row.data.customer.name" :length="30" />
+          <BaseText :text="row.data.customer.name" />
         </template>
 
         <!-- Invoice Number  -->
@@ -225,7 +225,7 @@
         <!-- Invoice status  -->
         <template #cell-status="{ row }">
           <BaseInvoiceStatusBadge :status="row.data.status" class="px-3 py-1">
-            {{ row.data.status }}
+            <BaseInvoiceStatusLabel :status="row.data.status" />
           </BaseInvoiceStatusBadge>
         </template>
 
@@ -249,7 +249,7 @@
               :status="row.data.paid_status"
               class="px-1 py-0.5 ml-2"
             >
-              {{ row.data.paid_status }}
+              <BaseInvoiceStatusLabel :status="row.data.paid_status" />
             </BasePaidStatusBadge>
           </div>
         </template>
@@ -277,6 +277,7 @@ import { debouncedWatch } from '@vueuse/core'
 import MoonwalkerIcon from '@/scripts/components/icons/empty/MoonwalkerIcon.vue'
 import InvoiceDropdown from '@/scripts/admin/components/dropdowns/InvoiceIndexDropdown.vue'
 import SendInvoiceModal from '@/scripts/admin/components/modal-components/SendInvoiceModal.vue'
+import BaseInvoiceStatusLabel from "@/scripts/components/base/BaseInvoiceStatusLabel.vue";
 // Stores
 const invoiceStore = useInvoiceStore()
 const dialogStore = useDialogStore()
@@ -291,12 +292,21 @@ const showFilters = ref(false)
 
 const status = ref([
   {
-    label: 'Status',
-    options: ['DRAFT', 'DUE', 'SENT', 'VIEWED', 'COMPLETED'],
+    label: t('invoices.status'),
+    options: [
+      {label: t('general.draft'), value: 'DRAFT'},
+      {label: t('general.due'), value: 'DUE'},
+      {label: t('general.sent'), value: 'SENT'},
+      {label: t('invoices.viewed'), value: 'VIEWED'},
+      {label: t('invoices.completed'), value: 'COMPLETED'}
+    ],
   },
   {
-    label: 'Paid Status',
-    options: ['UNPAID', 'PAID', 'PARTIALLY_PAID'],
+    label: t('invoices.paid_status'),
+    options: [
+      {label: t('invoices.unpaid'), value: 'UNPAID'},
+      {label: t('invoices.paid'), value: 'PAID'},
+      {label: t('invoices.partially_paid'), value: 'PARTIALLY_PAID'}],
   },
   ,
 ])

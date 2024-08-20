@@ -1,6 +1,6 @@
 <?php
 
-namespace InvoiceShelf\Services\Module;
+namespace App\Services\Module;
 
 use Illuminate\Support\Facades\Facade as BaseFacade;
 

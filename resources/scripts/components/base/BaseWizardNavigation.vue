@@ -15,13 +15,13 @@
     <a
       v-for="(number, index) in steps"
       :key="index"
-      :class="stepStyle(number)"
+      :class="stepStyle(index)"
       class="z-10"
       href="#"
       @click.prevent="$emit('click', index)"
     >
       <svg
-        v-if="currentStep > number"
+        v-if="currentStep > index"
         :class="iconClass"
         fill="currentColor"
         viewBox="0 0 20 20"

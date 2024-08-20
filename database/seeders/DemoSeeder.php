@@ -2,20 +2,18 @@
 
 namespace Database\Seeders;
 
+use App\Models\Address;
+use App\Models\Setting;
+use App\Models\User;
+use App\Space\InstallUtils;
 use Illuminate\Database\Seeder;
-use InvoiceShelf\Models\Address;
-use InvoiceShelf\Models\Setting;
-use InvoiceShelf\Models\User;
-use InvoiceShelf\Space\InstallUtils;
 
 class DemoSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
         $user = User::whereIs('super admin')->first();
 

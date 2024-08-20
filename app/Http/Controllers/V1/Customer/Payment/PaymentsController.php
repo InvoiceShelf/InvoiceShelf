@@ -1,13 +1,13 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Customer\Payment;
+namespace App\Http\Controllers\V1\Customer\Payment;
 
+use App\Http\Controllers\Controller;
+use App\Http\Resources\Customer\PaymentResource;
+use App\Models\Company;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Resources\Customer\PaymentResource;
-use InvoiceShelf\Models\Company;
-use InvoiceShelf\Models\Payment;
 
 class PaymentsController extends Controller
 {
@@ -42,7 +42,7 @@ class PaymentsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \InvoiceShelf\Models\Payment  $payment
+     * @param  \App\Models\Payment  $payment
      * @return \Illuminate\Http\Response
      */
     public function show(Company $company, $id)

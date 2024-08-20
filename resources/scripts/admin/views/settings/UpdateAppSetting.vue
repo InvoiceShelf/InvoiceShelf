@@ -8,11 +8,12 @@
         {{ $t('settings.update_app.current_version') }}
       </label>
 
-      <div
-        class="
+      <div class="w-full border-b-2 border-gray-100 border-solid pb-4">
+        <div
+          class="
           box-border
-          flex
-          w-16
+          inline-block
+          w-auto
           p-3
           my-2
           text-sm text-gray-600
@@ -21,8 +22,13 @@
           rounded-md
           version
         "
-      >
-        {{ currentVersion }}
+        >
+          {{ currentVersion }}
+        </div>
+      </div>
+
+      <div class="w-full pt-4">
+        <BaseCheckbox v-model="insiderChannel" :label="$t('settings.update_app.insider_consent')"/>
       </div>
 
       <BaseButton
@@ -71,8 +77,8 @@
         <div
           class="
             box-border
-            flex
-            w-16
+            inline-block
+            w-auto
             p-3
             my-2
             text-sm text-gray-600
@@ -204,6 +210,7 @@ import { handleError } from '@/scripts/helpers/error-handling'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 import { useExchangeRateStore } from '@/scripts/admin/stores/exchange-rate'
 import { useDialogStore } from '@/scripts/stores/dialog'
+import BaseCheckbox from "@/scripts/components/base/BaseCheckbox.vue";
 
 const notificationStore = useNotificationStore()
 const dialogStore = useDialogStore()
@@ -216,6 +223,7 @@ let isCheckingforUpdate = ref(false)
 let description = ref('')
 let changelog = ref('');
 let currentVersion = ref('')
+let insiderChannel = ref('')
 let requiredExtentions = ref(null)
 let deletedFiles = ref(null)
 let isUpdating = ref(false)
@@ -283,6 +291,7 @@ window.addEventListener('beforeunload', (event) => {
 
 axios.get('/api/v1/app/version').then((res) => {
   currentVersion.value = res.data.version
+  insiderChannel.value = res.data.channel === 'insider'
 })
 
 // comapnyStore
@@ -323,7 +332,11 @@ function statusClass(step) {
 async function checkUpdate() {
   try {
     isCheckingforUpdate.value = true
-    let response = await axios.get('/api/v1/check/update')
+    let response = await axios.get('/api/v1/check/update', {
+      params: {
+        channel: insiderChannel ? 'insider' : ''
+      }
+    });
     isCheckingforUpdate.value = false
     if (!response.data.release) {
       notificationStore.showNotification({
@@ -342,6 +355,7 @@ async function checkUpdate() {
       requiredExtentions.value = response.data.release.extensions
       isUpdateAvailable.value = true
       minPhpVesrion.value = response.data.release.min_php_version
+      deletedFiles.value = response.data.release.deleted_files
     }
   } catch (e) {
     isUpdateAvailable.value = false

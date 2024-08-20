@@ -1,14 +1,14 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Customer\Auth;
+namespace App\Http\Controllers\V1\Customer\Auth;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Customer\CustomerLoginRequest;
+use App\Models\Company;
+use App\Models\Customer;
 use Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests\Customer\CustomerLoginRequest;
-use InvoiceShelf\Models\Company;
-use InvoiceShelf\Models\Customer;
 
 class LoginController extends Controller
 {

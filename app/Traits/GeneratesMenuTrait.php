@@ -1,6 +1,6 @@
 <?php
 
-namespace InvoiceShelf\Traits;
+namespace App\Traits;
 
 trait GeneratesMenuTrait
 {

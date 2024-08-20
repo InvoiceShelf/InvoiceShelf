@@ -1,19 +1,22 @@
 <?php
 
-namespace InvoiceShelf\Models;
+namespace App\Models;
 
 use App;
+use App\Mail\SendInvoiceMail;
+use App\Services\SerialNumberFormatter;
+use App\Traits\GeneratesPdfTrait;
+use App\Traits\HasCustomFieldsTrait;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\Str;
-use InvoiceShelf\Mail\SendInvoiceMail;
-use InvoiceShelf\Services\SerialNumberFormatter;
-use InvoiceShelf\Traits\GeneratesPdfTrait;
-use InvoiceShelf\Traits\HasCustomFieldsTrait;
 use Nwidart\Modules\Facades\Module;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -48,15 +51,6 @@ class Invoice extends Model implements HasMedia
         'due_date',
     ];
 
-    protected $casts = [
-        'total' => 'integer',
-        'tax' => 'integer',
-        'sub_total' => 'integer',
-        'discount' => 'float',
-        'discount_val' => 'integer',
-        'exchange_rate' => 'float',
-    ];
-
     protected $guarded = [
         'id',
     ];
@@ -68,52 +62,64 @@ class Invoice extends Model implements HasMedia
         'invoicePdfUrl',
     ];
 
-    public function transactions()
+    protected function casts(): array
+    {
+        return [
+            'total' => 'integer',
+            'tax' => 'integer',
+            'sub_total' => 'integer',
+            'discount' => 'float',
+            'discount_val' => 'integer',
+            'exchange_rate' => 'float',
+        ];
+    }
+
+    public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);
     }
 
-    public function emailLogs()
+    public function emailLogs(): MorphMany
     {
         return $this->morphMany('App\Models\EmailLog', 'mailable');
     }
 
-    public function items()
+    public function items(): HasMany
     {
-        return $this->hasMany('InvoiceShelf\Models\InvoiceItem');
+        return $this->hasMany(\App\Models\InvoiceItem::class);
     }
 
-    public function taxes()
+    public function taxes(): HasMany
     {
         return $this->hasMany(Tax::class);
     }
 
-    public function payments()
+    public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
     }
 
-    public function currency()
+    public function currency(): BelongsTo
     {
         return $this->belongsTo(Currency::class);
     }
 
-    public function company()
+    public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
     }
 
-    public function customer()
+    public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class, 'customer_id');
     }
 
-    public function recurringInvoice()
+    public function recurringInvoice(): BelongsTo
     {
         return $this->belongsTo(RecurringInvoice::class);
     }
 
-    public function creator()
+    public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'creator_id');
     }
@@ -183,7 +189,7 @@ class Invoice extends Model implements HasMedia
     {
         $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id);
 
-        return Carbon::parse($this->due_date)->format($dateFormat);
+        return Carbon::parse($this->due_date)->translatedFormat($dateFormat);
     }
 
     public function getFormattedInvoiceDateAttribute($value)
@@ -196,7 +202,7 @@ class Invoice extends Model implements HasMedia
             $dateFormat .= ' '.$timeFormat;
         }
 
-        return Carbon::parse($this->invoice_date)->format($dateFormat);
+        return Carbon::parse($this->invoice_date)->translatedFormat($dateFormat);
     }
 
     public function scopeWhereStatus($query, $status)
@@ -407,12 +413,12 @@ class Invoice extends Model implements HasMedia
         $data['base_due_amount'] = $data['due_amount'] * $data['exchange_rate'];
         $data['customer_sequence_number'] = $serial->nextCustomerSequenceNumber;
 
+        $this->update($data);
+
         $statusData = $this->getInvoiceStatusByAmount($data['due_amount']);
         if (! empty($statusData)) {
-            $data = array_merge($data, $statusData);
+            $this->update($statusData);
         }
-
-        $this->update($data);
 
         $company_currency = CompanySetting::getSetting('currency', $request->header('company'));
 

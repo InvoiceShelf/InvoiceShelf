@@ -1,8 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Space;
+namespace App\Space;
 
+use App\Models\Setting;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use League\Flysystem\FilesystemException;
 
@@ -88,5 +90,19 @@ class InstallUtils
         }
 
         return false;
+    }
+
+    /**
+     * Set the app version
+     *
+     * @return void
+     */
+    public static function setCurrentVersion()
+    {
+        $version = preg_replace('~[\r\n]+~', '', File::get(base_path('version.md')));
+        if (! $version) {
+            return;
+        }
+        Setting::setSetting('version', $version);
     }
 }

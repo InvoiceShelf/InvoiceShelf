@@ -1,8 +1,8 @@
 <?php
 
-use InvoiceShelf\Http\Controllers\V1\Admin\Users\UsersController;
-use InvoiceShelf\Http\Requests\UserRequest;
-use InvoiceShelf\Models\User;
+use App\Http\Controllers\V1\Admin\Users\UsersController;
+use App\Http\Requests\UserRequest;
+use App\Models\User;
 use Laravel\Sanctum\Sanctum;
 
 use function Pest\Faker\fake;

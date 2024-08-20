@@ -1,13 +1,13 @@
 <?php
 
+use App\Http\Controllers\V1\Admin\Settings\CompanyController;
+use App\Http\Requests\CompanyRequest;
+use App\Http\Requests\ProfileRequest;
+use App\Models\Invoice;
+use App\Models\InvoiceItem;
+use App\Models\Tax;
+use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
-use InvoiceShelf\Http\Controllers\V1\Admin\Settings\CompanyController;
-use InvoiceShelf\Http\Requests\CompanyRequest;
-use InvoiceShelf\Http\Requests\ProfileRequest;
-use InvoiceShelf\Models\Invoice;
-use InvoiceShelf\Models\InvoiceItem;
-use InvoiceShelf\Models\Tax;
-use InvoiceShelf\Models\User;
 use Laravel\Sanctum\Sanctum;
 
 use function Pest\Laravel\getJson;

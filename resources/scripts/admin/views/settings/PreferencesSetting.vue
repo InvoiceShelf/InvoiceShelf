@@ -96,7 +96,7 @@
           <BaseMultiselect
             v-model="settingsForm.fiscal_year"
             :content-loading="isFetchingInitialData"
-            :options="globalStore.config.fiscal_years"
+            :options="fiscalYearsList"
             label="key"
             value-prop="value"
             :invalid="v$.fiscal_year.$error"
@@ -223,6 +223,14 @@ const retrospectiveEditOptions = computed(() => {
   return globalStore.config.retrospective_edits.map((option) => {
     option.title = t(option.key)
     return option
+  })
+})
+
+const fiscalYearsList = computed(() => {
+  return globalStore.config.fiscal_years.map((item) => {
+    return Object.assign({}, item, {
+      key: t(item.key),
+    })
   })
 })
 

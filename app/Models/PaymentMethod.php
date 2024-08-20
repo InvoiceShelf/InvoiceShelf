@@ -1,9 +1,11 @@
 <?php
 
-namespace InvoiceShelf\Models;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class PaymentMethod extends Model
 {
@@ -17,27 +19,30 @@ class PaymentMethod extends Model
 
     public const TYPE_MODULE = 'MODULE';
 
-    protected $casts = [
-        'settings' => 'array',
-        'use_test_env' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'settings' => 'array',
+            'use_test_env' => 'boolean',
+        ];
+    }
 
     public function setSettingsAttribute($value)
     {
         $this->attributes['settings'] = json_encode($value);
     }
 
-    public function payments()
+    public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
     }
 
-    public function expenses()
+    public function expenses(): HasMany
     {
         return $this->hasMany(Expense::class);
     }
 
-    public function company()
+    public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
     }

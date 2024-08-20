@@ -1,17 +1,17 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Expense;
+namespace App\Http\Controllers\V1\Admin\Expense;
 
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests\UploadExpenseReceiptRequest;
-use InvoiceShelf\Models\Expense;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\UploadExpenseReceiptRequest;
+use App\Models\Expense;
 
 class UploadReceiptController extends Controller
 {
     /**
      * Upload the expense receipts to storage.
      *
-     * @param  \InvoiceShelf\Http\Requests\ExpenseRequest  $request
+     * @param  \App\Http\Requests\ExpenseRequest  $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function __invoke(UploadExpenseReceiptRequest $request, Expense $expense)
