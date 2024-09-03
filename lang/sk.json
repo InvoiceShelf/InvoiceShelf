@@ -317,7 +317,7 @@
       "required": "Pole je povinné"
     },
     "accepted": "Prijátá",
-    "rejected": "Rejected",
+    "rejected": "Odmietnuté",
     "expired": "Expired",
     "sent": "Odoslaná",
     "draft": "Koncept",
@@ -483,7 +483,7 @@
     "limit_count": "Limit Count",
     "count": "Count",
     "status": "Status",
-    "select_a_status": "Select a status",
+    "select_a_status": "Vyberte stav",
     "working": "Working",
     "on_hold": "On Hold",
     "complete": "Completed",
