@@ -210,7 +210,7 @@
     "basic_info": "Informação Básica",
     "portal_access": "Clientes → Acessar portal",
     "portal_access_text": "Clientes→ Texto do portal de acesso?",
-    "portal_access_url": "Customer Portal Login URL",
+    "portal_access_url": "Portal de serviço ao consumidor URL",
     "portal_access_url_help": "Please copy & forward the above given URL to your customer for providing access.",
     "billing_address": "Endereço de cobrança",
     "shipping_address": "Endereço de entrega",
