@@ -98,9 +98,9 @@
     "do_you_wish_to_continue": "Haluatko jatkaa?",
     "note": "Viesti",
     "pay_invoice": "Maksa Lasku",
-    "login_successfully": "Logged in successfully!",
-    "logged_out_successfully": "Logged out successfully",
-    "mark_as_default": "Mark as default"
+    "login_successfully": "Sisäänkirjautuminen onnistui!",
+    "logged_out_successfully": "Uloskirjautuminen onnistui",
+    "mark_as_default": "Merkitse oletukseksi"
   },
   "dashboard": {
     "select_year": "Valitse vuosi",
@@ -109,7 +109,7 @@
       "customers": "Asiakkaat",
       "invoices": "Laskut",
       "estimates": "Tarjoukset",
-      "payments": "Payments"
+      "payments": "Maksut"
     },
     "chart_info": {
       "total_sales": "Myynti",
@@ -151,23 +151,23 @@
     "no_results_found": "Ei löytynyt vastaavuuksia"
   },
   "company_switcher": {
-    "label": "SWITCH COMPANY",
-    "no_results_found": "No Results Found",
-    "add_new_company": "Add new company",
-    "new_company": "New company",
-    "created_message": "Company created successfully"
+    "label": "VAIHDA YRITYSTÄ",
+    "no_results_found": "Ei tuloksia",
+    "add_new_company": "Lisää uusi yritys",
+    "new_company": "Uusi yritys",
+    "created_message": "Yritys luotu onnistuneesti"
   },
   "dateRange": {
-    "today": "Today",
-    "this_week": "This Week",
-    "this_month": "This Month",
-    "this_quarter": "This Quarter",
-    "this_year": "This Year",
-    "previous_week": "Previous Week",
-    "previous_month": "Previous Month",
-    "previous_quarter": "Previous Quarter",
-    "previous_year": "Previous Year",
-    "custom": "Custom"
+    "today": "Tänään",
+    "this_week": "Tällä viikolla",
+    "this_month": "Tässä kuussa",
+    "this_quarter": "Tänä vuosineljänneksellä",
+    "this_year": "Tänä vuonna",
+    "previous_week": "Viime viikolla",
+    "previous_month": "Viime kuussa",
+    "previous_quarter": "Viime vuosineljänneksellä",
+    "previous_year": "Viime vuonna",
+    "custom": "Muokattu"
   },
   "customers": {
     "title": "Asiakkaat",
