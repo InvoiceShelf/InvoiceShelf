@@ -1,13 +1,13 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Customer\Auth;
+namespace App\Http\Controllers\V1\Customer\Auth;
 
+use App\Http\Controllers\Controller;
+use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Providers\RouteServiceProvider;
 use Password;
 
 class ResetPasswordController extends Controller

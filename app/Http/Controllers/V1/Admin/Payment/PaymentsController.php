@@ -1,13 +1,13 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Payment;
+namespace App\Http\Controllers\V1\Admin\Payment;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\DeletePaymentsRequest;
+use App\Http\Requests\PaymentRequest;
+use App\Http\Resources\PaymentResource;
+use App\Models\Payment;
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests\DeletePaymentsRequest;
-use InvoiceShelf\Http\Requests\PaymentRequest;
-use InvoiceShelf\Http\Resources\PaymentResource;
-use InvoiceShelf\Models\Payment;
 
 class PaymentsController extends Controller
 {

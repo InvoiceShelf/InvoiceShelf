@@ -48,6 +48,7 @@
               <BaseMultiselect
                 v-model="customFieldStore.currentCustomField.model_type"
                 :options="modelTypes"
+                value-prop="value"
                 :can-deselect="false"
                 :invalid="v$.currentCustomField.model_type.$error"
                 :searchable="true"
@@ -229,11 +230,11 @@ const { t } = useI18n()
 let isSaving = ref(false)
 
 const modelTypes = reactive([
-  'Customer',
-  'Invoice',
-  'Estimate',
-  'Expense',
-  'Payment',
+  {label: t('settings.custom_fields.model_type.customer'), value: 'Customer'},
+  {label: t('settings.custom_fields.model_type.invoice'), value: 'Invoice'},
+  {label: t('settings.custom_fields.model_type.estimate'), value: 'Estimate'},
+  {label: t('settings.custom_fields.model_type.expense'), value: 'Expense'},
+  {label: t('settings.custom_fields.model_type.payment'), value: 'Payment'}
 ])
 
 const dataTypes = reactive([
@@ -286,9 +287,6 @@ const isRequiredField = computed({
 const rules = computed(() => {
   return {
     currentCustomField: {
-      type: {
-        required: helpers.withMessage(t('validation.required'), required),
-      },
       name: {
         required: helpers.withMessage(t('validation.required'), required),
       },

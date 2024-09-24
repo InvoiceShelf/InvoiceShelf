@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Estimate;
+namespace App\Http\Controllers\V1\Admin\Estimate;
 
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests\SendEstimatesRequest;
-use InvoiceShelf\Models\Estimate;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\SendEstimatesRequest;
+use App\Models\Estimate;
 
 class SendEstimateController extends Controller
 {

@@ -1,11 +1,12 @@
 <?php
 
-namespace InvoiceShelf\Space;
+namespace App\Space;
 
+use App\Events\UpdateFinished;
+use App\Models\Setting;
 use Artisan;
 use File;
 use GuzzleHttp\Exception\RequestException;
-use InvoiceShelf\Events\UpdateFinished;
 use ZipArchive;
 
 // Implementation taken from Akaunting - https://github.com/akaunting/akaunting
@@ -13,18 +14,18 @@ class Updater
 {
     use SiteApi;
 
-    public static function checkForUpdate($installed_version)
+    public static function checkForUpdate($installed_version, $updater_channel = 'stable')
     {
         $data = null;
-        $url = 'releases/update-check/'.$installed_version;
+        $url = sprintf('releases/update-check/%s?channel=%s', $installed_version, $updater_channel);
 
         $response = static::getRemote($url, ['timeout' => 100, 'track_redirects' => true]);
 
+        $data = (object) ['success' => false, 'release' => null];
         if ($response && ($response->getStatusCode() == 200)) {
             $data = $response->getBody()->getContents();
+            $data = json_decode($data);
         }
-
-        $data = json_decode($data);
 
         if ($data->success && $data->release && property_exists($data->release, 'extensions')) {
             $extensions = [];
@@ -138,6 +139,7 @@ class Updater
 
     public static function finishUpdate($installed, $version)
     {
+        Setting::setSetting('version', $version);
         event(new UpdateFinished($installed, $version));
 
         return [

@@ -1,19 +1,22 @@
 <?php
 
-namespace InvoiceShelf\Models;
+namespace App\Models;
 
 use App;
+use App\Mail\SendEstimateMail;
+use App\Services\SerialNumberFormatter;
+use App\Traits\GeneratesPdfTrait;
+use App\Traits\HasCustomFieldsTrait;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\Str;
-use InvoiceShelf\Mail\SendEstimateMail;
-use InvoiceShelf\Services\SerialNumberFormatter;
-use InvoiceShelf\Traits\GeneratesPdfTrait;
-use InvoiceShelf\Traits\HasCustomFieldsTrait;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Vinkla\Hashids\Facades\Hashids;
@@ -53,51 +56,54 @@ class Estimate extends Model implements HasMedia
 
     protected $guarded = ['id'];
 
-    protected $casts = [
-        'total' => 'integer',
-        'tax' => 'integer',
-        'sub_total' => 'integer',
-        'discount' => 'float',
-        'discount_val' => 'integer',
-        'exchange_rate' => 'float',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'total' => 'integer',
+            'tax' => 'integer',
+            'sub_total' => 'integer',
+            'discount' => 'float',
+            'discount_val' => 'integer',
+            'exchange_rate' => 'float',
+        ];
+    }
 
     public function getEstimatePdfUrlAttribute()
     {
         return url('/estimates/pdf/'.$this->unique_hash);
     }
 
-    public function emailLogs()
+    public function emailLogs(): MorphMany
     {
         return $this->morphMany('App\Models\EmailLog', 'mailable');
     }
 
-    public function items()
+    public function items(): HasMany
     {
-        return $this->hasMany('InvoiceShelf\Models\EstimateItem');
+        return $this->hasMany(\App\Models\EstimateItem::class);
     }
 
-    public function customer()
+    public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class, 'customer_id');
     }
 
-    public function creator()
+    public function creator(): BelongsTo
     {
-        return $this->belongsTo('InvoiceShelf\Models\User', 'creator_id');
+        return $this->belongsTo(\App\Models\User::class, 'creator_id');
     }
 
-    public function company()
+    public function company(): BelongsTo
     {
-        return $this->belongsTo('InvoiceShelf\Models\Company');
+        return $this->belongsTo(\App\Models\Company::class);
     }
 
-    public function currency()
+    public function currency(): BelongsTo
     {
         return $this->belongsTo(Currency::class);
     }
 
-    public function taxes()
+    public function taxes(): HasMany
     {
         return $this->hasMany(Tax::class);
     }
@@ -106,14 +112,14 @@ class Estimate extends Model implements HasMedia
     {
         $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id);
 
-        return Carbon::parse($this->expiry_date)->format($dateFormat);
+        return Carbon::parse($this->expiry_date)->translatedFormat($dateFormat);
     }
 
     public function getFormattedEstimateDateAttribute($value)
     {
         $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id);
 
-        return Carbon::parse($this->estimate_date)->format($dateFormat);
+        return Carbon::parse($this->estimate_date)->translatedFormat($dateFormat);
     }
 
     public function scopeEstimatesBetween($query, $start, $end)

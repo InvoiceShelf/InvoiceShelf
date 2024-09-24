@@ -1,10 +1,12 @@
 <?php
 
-namespace InvoiceShelf\Models;
+namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ExpenseCategory extends Model
 {
@@ -19,12 +21,12 @@ class ExpenseCategory extends Model
      */
     protected $appends = ['amount', 'formattedCreatedAt'];
 
-    public function expenses()
+    public function expenses(): HasMany
     {
         return $this->hasMany(Expense::class);
     }
 
-    public function company()
+    public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
     }

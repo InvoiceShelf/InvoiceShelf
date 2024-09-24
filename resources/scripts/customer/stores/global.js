@@ -2,6 +2,7 @@ import { handleError } from '@/scripts/customer/helpers/error-handling'
 import { useUserStore } from './user'
 const { defineStore } = window.pinia
 import axios from 'axios'
+const { global } = window.i18n
 export const useGlobalStore = defineStore({
   id: 'CustomerPortalGlobalStore',
   state: () => ({
@@ -29,7 +30,12 @@ export const useGlobalStore = defineStore({
             this.currency = response.data.data.currency
             this.enabledModules = response.data.meta.modules
             Object.assign(userStore.userForm, response.data.data)
-            window.i18n.locale = response.data.default_language
+
+            if(typeof global.locale !== 'string') {
+              global.locale.value =
+                response.data.meta.current_company_language || 'en'
+            }
+
             this.isAppLoaded = true
             resolve(response)
           })

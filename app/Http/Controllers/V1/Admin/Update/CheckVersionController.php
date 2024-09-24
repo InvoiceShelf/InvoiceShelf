@@ -1,11 +1,11 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Update;
+namespace App\Http\Controllers\V1\Admin\Update;
 
+use App\Http\Controllers\Controller;
+use App\Models\Setting;
+use App\Space\Updater;
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Models\Setting;
-use InvoiceShelf\Space\Updater;
 
 class CheckVersionController extends Controller
 {
@@ -25,8 +25,9 @@ class CheckVersionController extends Controller
 
         set_time_limit(600); // 10 minutes
 
-        $json = Updater::checkForUpdate(Setting::getSetting('version'));
+        $channel = $request->get('channel', 'stable');
+        $response = Updater::checkForUpdate(Setting::getSetting('version'), $channel);
 
-        return response()->json($json);
+        return response()->json($response);
     }
 }

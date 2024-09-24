@@ -19,7 +19,7 @@
       :icon-component="InvoiceIcon"
       :loading="!globalStore.getDashboardDataLoaded"
       :route="{ name: 'invoices.dashboard' }"
-      :label="$t('dashboard.cards.invoices')"
+      :label="(dashboardStore.invoiceCount <= 1 ? $t('dashboard.cards.invoices', 1) : $t('dashboard.cards.invoices', 2))"
     >
       {{ dashboardStore.invoiceCount }}
     </DashboardStatsItem>
@@ -29,7 +29,7 @@
       :icon-component="EstimateIcon"
       :loading="!globalStore.getDashboardDataLoaded"
       :route="{ name: 'estimates.dashboard' }"
-      :label="$t('dashboard.cards.estimates')"
+      :label="(dashboardStore.estimateCount <= 1 ? $t('dashboard.cards.estimates', 1) : $t('dashboard.cards.estimates', 2))"
     >
       {{ dashboardStore.estimateCount }}
     </DashboardStatsItem>
@@ -40,7 +40,7 @@
       :icon-component="PaymentIcon"
       :loading="!globalStore.getDashboardDataLoaded"
       :route="{ name: 'payments.dashboard' }"
-      :label="$t('dashboard.cards.payments')"
+      :label="(dashboardStore.paymentCount <= 1 ? $t('dashboard.cards.payments', 1 ) : $t('dashboard.cards.payments', 2))"
     >
       {{ dashboardStore.paymentCount }}
     </DashboardStatsItem>

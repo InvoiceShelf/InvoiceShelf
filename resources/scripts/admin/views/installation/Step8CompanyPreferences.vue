@@ -115,7 +115,7 @@
             <BaseMultiselect
               v-model="currentPreferences.fiscal_year"
               :content-loading="isFetchingInitialData"
-              :options="globalStore.fiscalYears"
+              :options="fiscalYearsList"
               label="key"
               value-prop="value"
               :placeholder="$t('settings.preferences.select_financial_year')"
@@ -173,6 +173,14 @@ const { tm, t } = useI18n()
 const router = useRouter()
 
 isFetchingInitialData.value = true
+
+const fiscalYearsList = computed(() => {
+  return globalStore.fiscalYears.map((item) => {
+    return Object.assign({}, item, {
+      key: t(item.key),
+    })
+  })
+})
 
 const options = reactive([
   {

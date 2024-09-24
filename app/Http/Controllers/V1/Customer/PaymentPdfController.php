@@ -1,12 +1,12 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Customer;
+namespace App\Http\Controllers\V1\Customer;
 
+use App\Http\Controllers\Controller;
+use App\Http\Resources\PaymentResource;
+use App\Models\EmailLog;
+use App\Models\Payment;
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Resources\PaymentResource;
-use InvoiceShelf\Models\EmailLog;
-use InvoiceShelf\Models\Payment;
 
 class PaymentPdfController extends Controller
 {

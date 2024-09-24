@@ -1,16 +1,16 @@
 <?php
 
-namespace InvoiceShelf\Policies;
+namespace App\Policies;
 
+use App\Models\Company;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use InvoiceShelf\Models\Company;
-use InvoiceShelf\Models\User;
 
 class CompanyPolicy
 {
     use HandlesAuthorization;
 
-    public function create(User $user)
+    public function create(User $user): bool
     {
         if ($user->isOwner()) {
             return true;
@@ -19,7 +19,7 @@ class CompanyPolicy
         return false;
     }
 
-    public function delete(User $user, Company $company)
+    public function delete(User $user, Company $company): bool
     {
         if ($user->id == $company->owner_id) {
             return true;

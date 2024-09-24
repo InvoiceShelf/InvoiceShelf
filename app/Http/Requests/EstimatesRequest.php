@@ -1,31 +1,27 @@
 <?php
 
-namespace InvoiceShelf\Http\Requests;
+namespace App\Http\Requests;
 
+use App\Models\CompanySetting;
+use App\Models\Customer;
+use App\Models\Estimate;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use InvoiceShelf\Models\CompanySetting;
-use InvoiceShelf\Models\Customer;
-use InvoiceShelf\Models\Estimate;
 
 class EstimatesRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         $rules = [
             'estimate_date' => [
@@ -59,7 +55,7 @@ class EstimatesRequest extends FormRequest
             'total' => [
                 'integer',
                 'numeric',
-                'max:99999999',
+                'max:999999999999',
                 'required',
             ],
             'tax' => [
@@ -83,7 +79,7 @@ class EstimatesRequest extends FormRequest
                 'required',
             ],
             'items.*.quantity' => [
-                'integer',
+                'numeric',
                 'required',
             ],
             'items.*.price' => [

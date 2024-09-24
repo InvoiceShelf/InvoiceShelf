@@ -2,10 +2,10 @@
 
 // Implementation taken from nova-backup-tool - https://github.com/spatie/nova-backup-tool/
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Backup;
+namespace App\Http\Controllers\V1\Admin\Backup;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
-use InvoiceShelf\Http\Controllers\Controller;
 
 class ApiController extends Controller
 {

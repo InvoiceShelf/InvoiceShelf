@@ -1,13 +1,14 @@
 <?php
 
-namespace InvoiceShelf\Space;
+namespace App\Space;
 
+use App\Http\Requests\DatabaseEnvironmentRequest;
+use App\Http\Requests\DiskEnvironmentRequest;
+use App\Http\Requests\DomainEnvironmentRequest;
+use App\Http\Requests\MailEnvironmentRequest;
 use Exception;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
-use InvoiceShelf\Http\Requests\DatabaseEnvironmentRequest;
-use InvoiceShelf\Http\Requests\DiskEnvironmentRequest;
-use InvoiceShelf\Http\Requests\DomainEnvironmentRequest;
-use InvoiceShelf\Http\Requests\MailEnvironmentRequest;
 
 class EnvironmentManager
 {
@@ -103,28 +104,55 @@ class EnvironmentManager
      */
     public function saveDatabaseVariables(DatabaseEnvironmentRequest $request)
     {
-
         $dbEnv = [
             'APP_URL' => $request->get('app_url'),
+            'APP_LOCALE' => $request->get('app_locale'),
             'DB_CONNECTION' => $request->get('database_connection'),
             'SANCTUM_STATEFUL_DOMAINS' => $request->get('app_domain'),
             'SESSION_DOMAIN' => explode(':', $request->get('app_domain'))[0],
         ];
 
-        if ($request->has('database_username') && $request->has('database_password')) {
-            $dbEnv['DB_HOST'] = $request->get('database_hostname');
-            $dbEnv['DB_PORT'] = $request->get('database_port');
-            $dbEnv['DB_DATABASE'] = $request->get('database_name');
-            $dbEnv['DB_USERNAME'] = $request->get('database_username');
-            $dbEnv['DB_PASSWORD'] = $request->get('database_password');
-
+        if ($dbEnv['DB_CONNECTION'] != 'sqlite') {
+            if ($request->has('database_username') && $request->has('database_password')) {
+                $dbEnv['DB_HOST'] = $request->get('database_hostname');
+                $dbEnv['DB_PORT'] = $request->get('database_port');
+                $dbEnv['DB_DATABASE'] = $request->get('database_name');
+                $dbEnv['DB_USERNAME'] = $request->get('database_username');
+                $dbEnv['DB_PASSWORD'] = $request->get('database_password');
+            }
         } else {
+            // Laravel 11 requires SQLite at least v3.35.0
+            // https://laravel.com/docs/11.x/database#introduction
+            if (extension_loaded('sqlite3') && class_exists('\SQLite3') && method_exists('\SQLite3', 'version')) {
+                $version = \SQLite3::version();
+                if (! empty($version['versionString']) && version_compare($version['versionString'], '3.35.0', '<')) {
+                    return [
+                        'error_message' => sprintf('The minimum SQLite version is %s. Your current SQLite version is %s which is not supported. Please upgrade SQLite and retry.', '3.35.0', $version['versionString']),
+                    ];
+                }
+            } else {
+                return [
+                    'error_message' => sprintf('SQLite3 is not present. Please install SQLite >=%s and retry.', '3.35.0'),
+                ];
+            }
             $dbEnv['DB_DATABASE'] = $request->get('database_name');
+            if (! empty($dbEnv['DB_DATABASE'])) {
+                $sqlite_path = $dbEnv['DB_DATABASE'];
+            } else {
+                $sqlite_path = database_path('database.sqlite');
+            }
+            // Create empty SQLite database if it doesn't exist.
+            if (! file_exists($sqlite_path)) {
+                copy(database_path('stubs/sqlite.empty.db'), $sqlite_path);
+                $dbEnv['DB_DATABASE'] = $sqlite_path;
+            }
         }
 
         try {
             $this->checkDatabaseConnection($request);
-
+            if ($request->get('database_overwrite')) {
+                Artisan::call('db:wipe --force');
+            }
             if (\Schema::hasTable('users')) {
                 return [
                     'error' => 'database_should_be_empty',
@@ -165,7 +193,7 @@ class EnvironmentManager
             'database' => $request->get('database_name'),
         ]);
 
-        if ($request->has('database_username') && $request->has('database_password')) {
+        if ($connection !== 'sqlite' && $request->has('database_username') && $request->has('database_password')) {
             $connectionArray = array_merge($connectionArray, [
                 'username' => $request->get('database_username'),
                 'password' => $request->get('database_password'),
@@ -230,7 +258,7 @@ class EnvironmentManager
                     'MAIL_PORT' => $request->get('mail_port'),
                     'MAIL_USERNAME' => $request->get('mail_username'),
                     'MAIL_PASSWORD' => $request->get('mail_password'),
-                    'MAIL_ENCRYPTION' => $request->get('mail_encryption'),
+                    'MAIL_ENCRYPTION' => $request->get('mail_encryption') !== 'none' ? $request->get('mail_encryption') : 'null',
                     'MAIL_FROM_ADDRESS' => $request->get('from_mail'),
                     'MAIL_FROM_NAME' => $request->get('from_name'),
                 ];
@@ -265,9 +293,9 @@ class EnvironmentManager
                     'MAIL_PASSWORD' => config('mail.password'),
                     'MAIL_ENCRYPTION' => $request->get('mail_encryption'),
                     'MAIL_FROM_ADDRESS' => $request->get('from_mail'),
-                    'MAIL_FROM_NAME' => $request->get('from_mail'),
-                    'SES_KEY' => $request->get('from_mail'),
-                    'SES_SECRET' => $request->get('from_name'),
+                    'MAIL_FROM_NAME' => $request->get('from_name'),
+                    'SES_KEY' => $request->get('mail_ses_key'),
+                    'SES_SECRET' => $request->get('mail_ses_secret'),
                 ];
 
                 break;

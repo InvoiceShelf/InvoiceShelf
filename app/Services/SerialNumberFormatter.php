@@ -1,9 +1,9 @@
 <?php
 
-namespace InvoiceShelf\Services;
+namespace App\Services;
 
-use InvoiceShelf\Models\CompanySetting;
-use InvoiceShelf\Models\Customer;
+use App\Models\CompanySetting;
+use App\Models\Customer;
 
 /**
  * SerialNumberFormatter

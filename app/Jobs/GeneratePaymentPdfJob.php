@@ -1,6 +1,6 @@
 <?php
 
-namespace InvoiceShelf\Jobs;
+namespace App\Jobs;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -32,10 +32,8 @@ class GeneratePaymentPdfJob implements ShouldQueue
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): int
     {
         $this->payment->generatePDF('payment', $this->payment->payment_number, $this->deleteExistingFile);
 

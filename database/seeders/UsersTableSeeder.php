@@ -2,10 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\Company;
+use App\Models\Setting;
+use App\Models\User;
+use App\Space\InstallUtils;
 use Illuminate\Database\Seeder;
-use InvoiceShelf\Models\Company;
-use InvoiceShelf\Models\Setting;
-use InvoiceShelf\Models\User;
 use Silber\Bouncer\BouncerFacade;
 use Vinkla\Hashids\Facades\Hashids;
 
@@ -13,10 +14,8 @@ class UsersTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
         $user = User::create([
             'email' => 'admin@invoiceshelf.com',
@@ -40,5 +39,7 @@ class UsersTableSeeder extends Seeder
         $user->assign('super admin');
 
         Setting::setSetting('profile_complete', 0);
+        // Set version.
+        InstallUtils::setCurrentVersion();
     }
 }

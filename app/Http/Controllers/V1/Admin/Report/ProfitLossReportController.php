@@ -1,16 +1,16 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Report;
+namespace App\Http\Controllers\V1\Admin\Report;
 
+use App\Http\Controllers\Controller;
+use App\Models\Company;
+use App\Models\CompanySetting;
+use App\Models\Currency;
+use App\Models\Expense;
+use App\Models\Payment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Models\Company;
-use InvoiceShelf\Models\CompanySetting;
-use InvoiceShelf\Models\Currency;
-use InvoiceShelf\Models\Expense;
-use InvoiceShelf\Models\Payment;
 use PDF;
 
 class ProfitLossReportController extends Controller
@@ -47,8 +47,8 @@ class ProfitLossReportController extends Controller
         }
 
         $dateFormat = CompanySetting::getSetting('carbon_date_format', $company->id);
-        $from_date = Carbon::createFromFormat('Y-m-d', $request->from_date)->format($dateFormat);
-        $to_date = Carbon::createFromFormat('Y-m-d', $request->to_date)->format($dateFormat);
+        $from_date = Carbon::createFromFormat('Y-m-d', $request->from_date)->translatedFormat($dateFormat);
+        $to_date = Carbon::createFromFormat('Y-m-d', $request->to_date)->translatedFormat($dateFormat);
         $currency = Currency::findOrFail(CompanySetting::getSetting('currency', $company->id));
 
         $colors = [

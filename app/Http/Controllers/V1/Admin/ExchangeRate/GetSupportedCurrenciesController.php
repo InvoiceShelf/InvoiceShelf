@@ -1,11 +1,11 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\ExchangeRate;
+namespace App\Http\Controllers\V1\Admin\ExchangeRate;
 
+use App\Http\Controllers\Controller;
+use App\Models\ExchangeRateProvider;
+use App\Traits\ExchangeRateProvidersTrait;
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Models\ExchangeRateProvider;
-use InvoiceShelf\Traits\ExchangeRateProvidersTrait;
 
 class GetSupportedCurrenciesController extends Controller
 {

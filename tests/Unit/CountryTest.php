@@ -1,8 +1,8 @@
 <?php
 
+use App\Models\Address;
+use App\Models\Country;
 use Illuminate\Support\Facades\Artisan;
-use InvoiceShelf\Models\Address;
-use InvoiceShelf\Models\Country;
 
 beforeEach(function () {
     Artisan::call('db:seed', ['--class' => 'DatabaseSeeder', '--force' => true]);

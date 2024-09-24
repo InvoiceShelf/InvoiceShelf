@@ -152,13 +152,11 @@
           <router-link :to="{ path: `customers/${row.data.id}/view` }">
             <BaseText
               :text="row.data.name"
-              :length="30"
               tag="span"
               class="font-medium text-primary-500 flex flex-col"
             />
             <BaseText
               :text="row.data.contact_name ? row.data.contact_name : ''"
-              :length="30"
               tag="span"
               class="text-xs text-gray-400"
             />

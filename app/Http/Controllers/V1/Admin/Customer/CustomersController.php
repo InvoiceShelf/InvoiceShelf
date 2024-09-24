@@ -1,14 +1,14 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Customer;
+namespace App\Http\Controllers\V1\Admin\Customer;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests;
+use App\Http\Requests\DeleteCustomersRequest;
+use App\Http\Resources\CustomerResource;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests;
-use InvoiceShelf\Http\Requests\DeleteCustomersRequest;
-use InvoiceShelf\Http\Resources\CustomerResource;
-use InvoiceShelf\Models\Customer;
 
 class CustomersController extends Controller
 {

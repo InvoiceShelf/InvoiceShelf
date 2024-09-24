@@ -180,7 +180,6 @@
             <div class="flex-2">
               <BaseText
                 :text="estimate.customer.name"
-                :length="30"
                 class="
                   pr-2
                   mb-2
@@ -212,7 +211,7 @@
                 :status="estimate.status"
                 class="px-1 text-xs"
               >
-                {{ estimate.status }}
+                <BaseEstimateStatusLabel :status="estimate.status" />
               </BaseEstimateStatusBadge>
             </div>
 

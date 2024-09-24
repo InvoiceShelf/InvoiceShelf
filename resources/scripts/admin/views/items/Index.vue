@@ -155,7 +155,7 @@
             :to="{ path: `items/${row.data.id}/edit` }"
             class="font-medium text-primary-500"
           >
-            {{ row.data.name }}
+            <BaseText :text="row.data.name" />
           </router-link>
         </template>
 

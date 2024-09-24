@@ -423,7 +423,6 @@ onSearched = debounce(onSearched, 500)
             <div class="flex-2">
               <BaseText
                 :text="invoice.customer.name"
-                :length="30"
                 class="
                   pr-2
                   mb-2
@@ -454,7 +453,7 @@ onSearched = debounce(onSearched, 500)
                 :status="invoice.status"
                 class="px-1 text-xs"
               >
-                {{ invoice.status }}
+                <BaseInvoiceStatusLabel :status="invoice.status" />
               </BaseEstimateStatusBadge>
             </div>
 

@@ -99,7 +99,7 @@
             :label="$t('payments.invoice')"
             :help-text="
               selectedInvoice
-                ? `Due Amount: ${
+                ? `${t('payments.amount_due')}: ${
                     paymentStore.currentPayment.maxPayableAmount / 100
                   }`
                 : ''

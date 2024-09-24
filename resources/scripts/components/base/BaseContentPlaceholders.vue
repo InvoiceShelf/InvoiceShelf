@@ -96,12 +96,12 @@ $base-content-placeholders-spacing: 10px !default;
 
 // Styles
 .base-content-placeholders-heading {
-  @include base-content-placeholders-spacing;
   display: flex;
+  @include base-content-placeholders-spacing;
 
   &__img {
-    @include base-content-placeholders;
     margin-right: 1.5 * $base-content-placeholders-spacing;
+    @include base-content-placeholders;
   }
 
   &__content {
@@ -112,15 +112,15 @@ $base-content-placeholders-spacing: 10px !default;
   }
 
   &__title {
-    @include base-content-placeholders;
     width: 85%;
     margin-bottom: $base-content-placeholders-spacing;
     background: $base-content-placeholders-primary-color;
+    @include base-content-placeholders;
   }
 
   &__subtitle {
-    @include base-content-placeholders;
     width: 90%;
+    @include base-content-placeholders;
   }
 }
 
@@ -128,9 +128,10 @@ $base-content-placeholders-spacing: 10px !default;
   @include base-content-placeholders-spacing;
 
   &__line {
-    @include base-content-placeholders;
     width: 100%;
     margin-bottom: $base-content-placeholders-spacing;
+
+    @include base-content-placeholders;
 
     &:first-child {
       width: 100%;

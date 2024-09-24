@@ -133,7 +133,6 @@
           <div>
             <BaseText
               :text="customer.name"
-              :length="30"
               class="
                 pr-2
                 text-sm
@@ -149,7 +148,6 @@
             <BaseText
               v-if="customer.contact_name"
               :text="customer.contact_name"
-              :length="30"
               class="
                 mt-1
                 text-xs

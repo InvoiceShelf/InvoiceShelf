@@ -1,12 +1,12 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\Settings;
+namespace App\Http\Controllers\V1\Admin\Settings;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\TaxTypeRequest;
+use App\Http\Resources\TaxTypeResource;
+use App\Models\TaxType;
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Requests\TaxTypeRequest;
-use InvoiceShelf\Http\Resources\TaxTypeResource;
-use InvoiceShelf\Models\TaxType;
 
 class TaxTypesController extends Controller
 {

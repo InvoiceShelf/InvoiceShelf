@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
+use App\Models\Currency;
+use App\Models\Customer;
+use App\Models\Payment;
+use App\Models\PaymentMethod;
+use App\Models\User;
+use App\Services\SerialNumberFormatter;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use InvoiceShelf\Models\Currency;
-use InvoiceShelf\Models\Customer;
-use InvoiceShelf\Models\Payment;
-use InvoiceShelf\Models\PaymentMethod;
-use InvoiceShelf\Models\User;
-use InvoiceShelf\Services\SerialNumberFormatter;
 
 class PaymentFactory extends Factory
 {
@@ -21,10 +21,8 @@ class PaymentFactory extends Factory
 
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         $sequenceNumber = (new SerialNumberFormatter())
             ->setModel(new Payment())
@@ -35,14 +33,14 @@ class PaymentFactory extends Factory
             'company_id' => User::find(1)->companies()->first()->id,
             'payment_date' => $this->faker->date('Y-m-d', 'now'),
             'notes' => $this->faker->text(80),
-            'amount' => $this->faker->randomDigitNotNull,
+            'amount' => $this->faker->randomDigitNotNull(),
             'sequence_number' => $sequenceNumber->nextSequenceNumber,
             'customer_sequence_number' => $sequenceNumber->nextCustomerSequenceNumber,
             'payment_number' => $sequenceNumber->getNextNumber(),
             'unique_hash' => str_random(60),
             'payment_method_id' => PaymentMethod::find(1)->id,
             'customer_id' => Customer::factory(),
-            'base_amount' => $this->faker->randomDigitNotNull,
+            'base_amount' => $this->faker->randomDigitNotNull(),
             'currency_id' => Currency::find(1)->id,
         ];
     }

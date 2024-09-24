@@ -1,16 +1,14 @@
 <?php
 
+use App\Models\Payment;
 use Illuminate\Database\Migrations\Migration;
-use InvoiceShelf\Models\Payment;
 
-class CalculateBaseAmountOfPaymentsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         $payments = Payment::where('exchange_rate', '<>', null)->get();
 
@@ -24,11 +22,9 @@ class CalculateBaseAmountOfPaymentsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         //
     }
-}
+};

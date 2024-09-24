@@ -26,7 +26,6 @@
       <div class="flex relative justify-between mb-2">
         <BaseText
           :text="selectedCustomer.name"
-          :length="30"
           class="flex-1 text-base font-medium text-left text-gray-900"
         />
         <div class="flex">
@@ -308,7 +307,6 @@
                     <BaseText
                       v-if="customer.name"
                       :text="customer.name"
-                      :length="30"
                       class="
                         m-0
                         text-base
@@ -320,7 +318,6 @@
                     <BaseText
                       v-if="customer.contact_name"
                       :text="customer.contact_name"
-                      :length="30"
                       class="
                         m-0
                         text-sm

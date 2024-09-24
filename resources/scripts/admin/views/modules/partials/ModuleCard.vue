@@ -86,7 +86,6 @@
       <base-text
         :text="data.short_description"
         class="pt-4 text-gray-500 h-16 line-clamp-2"
-        :length="110"
       >
       </base-text>
       <div

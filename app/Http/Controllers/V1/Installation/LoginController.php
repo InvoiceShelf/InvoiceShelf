@@ -1,11 +1,11 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Installation;
+namespace App\Http\Controllers\V1\Installation;
 
+use App\Http\Controllers\Controller;
+use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Models\User;
 
 class LoginController extends Controller
 {

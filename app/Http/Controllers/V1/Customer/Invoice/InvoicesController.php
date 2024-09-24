@@ -1,13 +1,13 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Customer\Invoice;
+namespace App\Http\Controllers\V1\Customer\Invoice;
 
+use App\Http\Controllers\Controller;
+use App\Http\Resources\Customer\InvoiceResource;
+use App\Models\Company;
+use App\Models\Invoice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Http\Resources\Customer\InvoiceResource;
-use InvoiceShelf\Models\Company;
-use InvoiceShelf\Models\Invoice;
 
 class InvoicesController extends Controller
 {

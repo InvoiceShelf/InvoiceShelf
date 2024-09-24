@@ -1,19 +1,17 @@
 <?php
 
+use App\Models\Estimate;
+use App\Models\Invoice;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use InvoiceShelf\Models\Estimate;
-use InvoiceShelf\Models\Invoice;
 
-class RemoveTemplateIdFromInvoicesAndEstimatesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         if (Schema::hasColumn('invoices', 'invoice_template_id')) {
             $invoices = Invoice::all();
@@ -53,11 +51,9 @@ class RemoveTemplateIdFromInvoicesAndEstimatesTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         //
     }
-}
+};

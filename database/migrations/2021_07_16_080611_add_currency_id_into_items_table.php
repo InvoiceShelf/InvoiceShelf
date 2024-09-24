@@ -4,14 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddCurrencyIdIntoItemsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('items', function (Blueprint $table) {
             $table->unsignedInteger('currency_id')->nullable();
@@ -21,10 +19,8 @@ class AddCurrencyIdIntoItemsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('items', function (Blueprint $table) {
             if (config('database.default') !== 'sqlite') {
@@ -33,4 +29,4 @@ class AddCurrencyIdIntoItemsTable extends Migration
             $table->dropColumn('currency_id');
         });
     }
-}
+};
