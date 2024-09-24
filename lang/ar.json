@@ -100,7 +100,26 @@
     "pay_invoice": "Pay Invoice",
     "login_successfully": "Logged in successfully!",
     "logged_out_successfully": "Logged out successfully",
-    "mark_as_default": "Mark as default"
+    "mark_as_default": "Mark as default",
+    "no_data_found": "No data found",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "showing": "Showing",
+      "to": "to",
+      "of": "of",
+      "results": "results"
+    },
+    "file_upload": {
+      "drag_a_file": "Drag a file here or",
+      "browse": "browse",
+      "to_choose": "to choose a file"
+    },
+    "multiselect": {
+      "the_list_is_empty": "The list is empty",
+      "no_results_found": "No results found"
+    },
+    "copy_to_clipboard": "Copy to Clipboard"
   },
   "dashboard": {
     "select_year": "اختر السنة",
@@ -551,7 +570,18 @@
       "hour": "Hour",
       "day_month": "Day of month",
       "month": "Month",
-      "day_week": "Day of week"
+      "day_week": "Day of week",
+      "every_minute": "Every Minute",
+      "every_30_minute": "Every 30 Minute",
+      "every_hour": "Every Hour",
+      "every_2_hour": "Every 2 Hour",
+      "every_day_at_midnight": "Every day at midnight",
+      "every_week": "Every Week",
+      "every_15_days_at_midnight": "Every 15 days at midnight",
+      "on_the_first_day_of_every_month_at_midnight": "On the first day of every month at 00:00",
+      "every_6_month": "Every 6 Month",
+      "every_year_on_the_first_day_of_january_at_midnight": "Every year on the first day of january at 00:00",
+      "custom": "Custom"
     },
     "confirm_delete": "You will not be able to recover this Invoice | You will not be able to recover these Invoices",
     "created_message": "Recurring Invoice created successfully",
@@ -560,7 +590,12 @@
     "marked_as_sent_message": "Recurring Invoice marked as sent successfully",
     "user_email_does_not_exist": "User email does not exist",
     "something_went_wrong": "something went wrong",
-    "invalid_due_amount_message": "Total Recurring Invoice amount cannot be less than total paid amount for this Recurring Invoice. Please update the invoice or delete the associated payments to continue."
+    "invalid_due_amount_message": "Total Recurring Invoice amount cannot be less than total paid amount for this Recurring Invoice. Please update the invoice or delete the associated payments to continue.",
+    "limit": {
+      "none": "None",
+      "date": "Date",
+      "count": "Count"
+    }
   },
   "payments": {
     "title": "المدفوعات",
@@ -598,7 +633,8 @@
     "created_message": "تم إنشاء الدفعة بنجاح",
     "updated_message": "تم تحديث الدفعة بنجاح",
     "deleted_message": "تم حذف الدفعة بنجاح | تم حذف المدفوعات بنجاح",
-    "invalid_amount_message": "قيمة الدفعة غير صحيحة!"
+    "invalid_amount_message": "قيمة الدفعة غير صحيحة!",
+    "amount_due": "Due Amount"
   },
   "expenses": {
     "title": "النفقات",
@@ -703,7 +739,8 @@
     "installed": "Installed",
     "no_modules_installed": "No Modules Installed Yet!",
     "disable_warning": "All the settings for this particular will be reverted.",
-    "what_you_get": "What you get"
+    "what_you_get": "What you get",
+    "sign_up_and_get_token": "Sign up & Get Token"
   },
   "users": {
     "title": "المستخدمون",
@@ -755,7 +792,11 @@
       "date_range": "اختر مدى التاريخ",
       "to_date": "حتى تاريخ",
       "from_date": "من تاريخ",
-      "report_type": "نوع التقرير"
+      "report_type": "نوع التقرير",
+      "sort": {
+        "by_customer": "By Customer",
+        "by_item": "By Item"
+      }
     },
     "taxes": {
       "taxes": "الضرائب",
@@ -923,7 +964,14 @@
       "added_message": "تمت إضافة الحقل المخصص بنجاح",
       "press_enter_to_add": "Press enter to add new option",
       "model_in_use": "Cannot update model for fields which are already in use.",
-      "type_in_use": "Cannot update type for fields which are already in use."
+      "type_in_use": "Cannot update type for fields which are already in use.",
+      "model_type": {
+        "customer": "Customer",
+        "invoice": "Invoice",
+        "estimate": "Estimate",
+        "expense": "Expense",
+        "payment": "Payment"
+      }
     },
     "customization": {
       "customization": "التخصيص",
@@ -1044,7 +1092,12 @@
         "note_updated": "تم تحديث الملاحظة",
         "note_confirm_delete": "لن تتمكن من استعادة هذه الملاحظة",
         "already_in_use": "الملاحظة قيد الاستخدام بالفعل",
-        "deleted_message": "تم حذف الملاحظة بنجاح"
+        "deleted_message": "تم حذف الملاحظة بنجاح",
+        "types": {
+          "estimate": "Estimate",
+          "invoice": "Invoice",
+          "payment": "Payment"
+        }
       }
     },
     "account_settings": {
@@ -1199,12 +1252,27 @@
       "on_hold": "On Hold",
       "update_status": "Update Status",
       "completed": "Completed",
-      "company_currency_unchangeable": "Company currency cannot be changed"
+      "company_currency_unchangeable": "Company currency cannot be changed",
+      "fiscal_years": {
+        "january_december": "January - December",
+        "february_january": "February - January",
+        "march_february": "March - February",
+        "april_march": "April - March",
+        "may_april": "May - April",
+        "june_may": "June - May",
+        "july_june": "July - June",
+        "august_july": "August - July",
+        "september_august": "September - August",
+        "october_september": "October - September",
+        "november_october": "November - October",
+        "december_november": "December - November"
+      }
     },
     "update_app": {
       "title": "تحديث النظام",
       "description": "يمكنك تحديث النظام بسهولة عن طريق البحث عن تحديث جديد بالنقر فوق الزر أدناه",
       "check_update": "تحقق من التحديثات",
+      "insider_consent": "Opt-in for Insider releases. Recommended for testing purposes only.",
       "avail_update": "تحديث جديد متوفر",
       "next_version": "النسخة الجديدة",
       "requirements": "المتطلبات",
@@ -1358,6 +1426,10 @@
     "next": "التالي",
     "continue": "استمرار",
     "skip": "تخطي",
+    "install_language": {
+      "title": "Choose your language",
+      "description": "Select language wizard to install InvoiceShelf"
+    },
     "database": {
       "database": "عنوان قاعدة البيانات",
       "connection": "اتصال قاعدة البيانات",
@@ -1369,6 +1441,7 @@
       "username": "اسم المستخدم لقاعدة البيانات",
       "db_name": "سم قاعدة البيانات",
       "db_path": "مسار قاعدة البيانات",
+      "overwrite": "Overwrite existing database and proceed",
       "desc": "قم بإنشاء قاعدة بيانات على الخادم الخاص بك وتعيين بيانات الاعتماد باستخدام النموذج أدناه."
     },
     "permissions": {
@@ -1384,7 +1457,14 @@
       "verify_now": "تحقق الآن",
       "success": "تم التحقق من النطاق بنجاح.",
       "failed": "Domain verification failed. Please enter valid domain name.",
-      "verify_and_continue": "التحقق والمتابعة"
+      "verify_and_continue": "التحقق والمتابعة",
+      "notes": {
+        "notes": "Notes:",
+        "not_contain": "App domain should not contain",
+        "or": "or",
+        "in_front": "in front of the domain.",
+        "if_you": "If you're accessing the website on a different port, please mention the port. For example:"
+      }
     },
     "mail": {
       "host": "خادم البريد",
@@ -1535,5 +1615,14 @@
   "pdf_received_from": "تم الاستلام من:",
   "pdf_tax_label": "Tax",
   "pdf_tax_id": "Tax-ID",
-  "pdf_vat_id": "VAT-ID"
+  "pdf_vat_id": "VAT-ID",
+  "mail_thanks": "Thanks",
+  "mail_view_estimate": "View Estimate",
+  "mail_viewed_estimate": ":name viewed this Estimate.",
+  "mail_view_invoice": "View Invoice",
+  "mail_viewed_invoice": ":name viewed this Invoice.",
+  "mail_view_payment": "View Payment",
+  "notification_view_estimate": "[Notification] Estimate viewed",
+  "notification_view_invoice": "[Notification] Invoice viewed",
+  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:"
 }
