@@ -76,7 +76,7 @@
     "are_you_sure": "Apakah Anda yakin?",
     "list_is_empty": "Daftar kosong.",
     "no_tax_found": "Tidak ada pajak!",
-    "four_zero_four": "404",
+    "four_zero_four": "404 Halaman Tidak Ditemukan",
     "you_got_lost": "Whoops! Kamu akan kehilangan kesempatan ini!",
     "go_home": "Kembali ke Beranda",
     "test_mail_conf": "Pengujian konfigurasi email",
@@ -100,16 +100,35 @@
     "pay_invoice": "Bayar tagihan",
     "login_successfully": "Login berhasil!",
     "logged_out_successfully": "Berhasil keluar",
-    "mark_as_default": "Tandai sebagai default"
+    "mark_as_default": "Tandai sebagai default",
+    "no_data_found": "No data found",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "showing": "Showing",
+      "to": "to",
+      "of": "of",
+      "results": "results"
+    },
+    "file_upload": {
+      "drag_a_file": "Drag a file here or",
+      "browse": "browse",
+      "to_choose": "to choose a file"
+    },
+    "multiselect": {
+      "the_list_is_empty": "The list is empty",
+      "no_results_found": "No results found"
+    },
+    "copy_to_clipboard": "Copy to Clipboard"
   },
   "dashboard": {
     "select_year": "Pilih tahun",
     "cards": {
       "due_amount": "Jumlah yang harus dibayar",
-      "customers": "Pelanggan",
-      "invoices": "Faktur",
-      "estimates": "Perkiraan",
-      "payments": "Pembayaran"
+      "customers": "Customer | Customers",
+      "invoices": "Invoice | Invoices",
+      "estimates": "Estimate | Estimates",
+      "payments": "Payment | Payments"
     },
     "chart_info": {
       "total_sales": "Penjualan",
@@ -181,7 +200,7 @@
     "primary_contact_name": "Nama Kontak Utama",
     "contact_name": "Nama Kontak",
     "amount_due": "Jumlah yang harus dibayar",
-    "email": "Email",
+    "email": "Surat Elektronik",
     "address": "Alamat",
     "phone": "Telepon",
     "website": "Situs Web",
@@ -280,7 +299,7 @@
     "number": "NOMOR",
     "amount_due": "Jumlah yang harus dibayar",
     "partially_paid": "Pembayaran Sebagian",
-    "total": "Total",
+    "total": "Jumlah",
     "discount": "Diskon",
     "sub_total": "Sub Total",
     "estimate_number": "Nomor Penawaran",
@@ -304,6 +323,9 @@
     "record_payment": "Rekam Pembayaran",
     "add_estimate": "Tambah Penawaran",
     "save_estimate": "Simpan Penawaran",
+    "cloned_successfully": "Estimate cloned successfully",
+    "clone_estimate": "Clone Estimate",
+    "confirm_clone": "This Estimate will be cloned into a new Estimate",
     "confirm_conversion": "Penawaran ini akan dibuat menjadi faktur baru.",
     "conversion_message": "Faktur berhasil dibuat",
     "confirm_send_estimate": "Penawaran ini akan dikirim ke pelanggam melalui email",
@@ -347,7 +369,7 @@
       "quantity": "Kuantitas",
       "price": "Harga",
       "discount": "Diskon",
-      "total": "Total",
+      "total": "Jumlah",
       "total_discount": "Total Diskon",
       "sub_total": "Sub Total",
       "tax": "Pajak",
@@ -378,7 +400,7 @@
     "number": "NOMOR",
     "amount_due": "Jumlah yang harus dibayar",
     "partially_paid": "Pembayaran Sebagian",
-    "total": "Total",
+    "total": "Jumlah",
     "discount": "Diskon",
     "sub_total": "Sub Total",
     "invoice": "Faktur | Faktur",
@@ -431,7 +453,7 @@
       "quantity": "Kuantitas",
       "price": "Harga",
       "discount": "Diskon",
-      "total": "Total",
+      "total": "Jumlah",
       "total_discount": "Total Diskon",
       "sub_total": "Sub Total",
       "tax": "Pajak",
@@ -468,7 +490,7 @@
     "number": "NOMOR",
     "amount_due": "Jumlah yang harus dibayar",
     "partially_paid": "Angsuran",
-    "total": "Total",
+    "total": "Jumlah",
     "discount": "Diskon",
     "sub_total": "Sub Total",
     "invoice": "Faktur Berulang | Faktur Berulang",
@@ -508,11 +530,11 @@
     "record_payment": "Rekam Pembayaran",
     "add_new_invoice": "Tambahkan Faktur Berulang Baru",
     "update_expense": "Perbarui Biaya",
-    "edit_invoice": "Edit Recurring Invoice",
-    "new_invoice": "New Recurring Invoice",
-    "send_automatically": "Send Automatically",
-    "send_automatically_desc": "Enable this, if you would like to send the invoice automatically to the customer when its created.",
-    "save_invoice": "Save Recurring Invoice",
+    "edit_invoice": "Perbarui Faktur Berulang",
+    "new_invoice": "Tambah Faktur Berulang",
+    "send_automatically": "Kirim Secara Otomatis",
+    "send_automatically_desc": "Aktifkan ini, jika Anda ingin mengirim faktur secara otomatis ke pelanggan saat dibuat.",
+    "save_invoice": "Simpan Faktur Berulang",
     "update_invoice": "Perbarui Faktur Berulang",
     "add_new_tax": "Tambah Pajak Baru",
     "no_invoices": "Belum ada Faktur Berulang!",
@@ -533,7 +555,7 @@
       "quantity": "Kuantitas",
       "price": "Harga",
       "discount": "Diskon",
-      "total": "Total",
+      "total": "Jumlah",
       "total_discount": "Total Diskon",
       "sub_total": "Sub Total",
       "tax": "Pajak",
@@ -548,7 +570,18 @@
       "hour": "Jam",
       "day_month": "Hari dalam bulan",
       "month": "Bulan",
-      "day_week": "Hari dalam minggu"
+      "day_week": "Hari dalam minggu",
+      "every_minute": "Every Minute",
+      "every_30_minute": "Every 30 Minute",
+      "every_hour": "Every Hour",
+      "every_2_hour": "Every 2 Hour",
+      "every_day_at_midnight": "Every day at midnight",
+      "every_week": "Every Week",
+      "every_15_days_at_midnight": "Every 15 days at midnight",
+      "on_the_first_day_of_every_month_at_midnight": "On the first day of every month at 00:00",
+      "every_6_month": "Every 6 Month",
+      "every_year_on_the_first_day_of_january_at_midnight": "Every year on the first day of january at 00:00",
+      "custom": "Custom"
     },
     "confirm_delete": "Anda tidak akan dapat memulihkan Faktur ini | Anda tidak akan dapat memulihkan Faktur ini",
     "created_message": "Faktur Berulang berhasil dibuat",
@@ -557,7 +590,12 @@
     "marked_as_sent_message": "Tandai Faktur Berulang sudah dikirim",
     "user_email_does_not_exist": "Email pengguna tidak ada",
     "something_went_wrong": "terjadi kesalahan",
-    "invalid_due_amount_message": "Jumlah Total Faktur Berulang tidak boleh kurang dari jumlah total yang dibayarkan untuk Faktur Berulang ini. Harap perbarui faktur atau hapus pembayaran terkait untuk melanjutkan."
+    "invalid_due_amount_message": "Jumlah Total Faktur Berulang tidak boleh kurang dari jumlah total yang dibayarkan untuk Faktur Berulang ini. Harap perbarui faktur atau hapus pembayaran terkait untuk melanjutkan.",
+    "limit": {
+      "none": "None",
+      "date": "Date",
+      "count": "Count"
+    }
   },
   "payments": {
     "title": "Pembayaran",
@@ -595,7 +633,8 @@
     "created_message": "Pembayaran berhasil dibuat",
     "updated_message": "Pembayaran berhasil diperbaharui",
     "deleted_message": "Pembayaran berhasil dihapus | Pembayaran berhasil dihapus",
-    "invalid_amount_message": "Jumlah pembayaran tidak valid"
+    "invalid_amount_message": "Jumlah pembayaran tidak valid",
+    "amount_due": "Due Amount"
   },
   "expenses": {
     "title": "Pengeluaran",
@@ -633,74 +672,75 @@
     "deleted_message": "Pengeluaran berhasil dihapus | Pengeluaran berhasil dihapus",
     "categories": {
       "categories_list": "Daftar Kategori",
-      "title": "Title",
-      "name": "Name",
-      "description": "Description",
-      "amount": "Amount",
-      "actions": "Actions",
-      "add_category": "Add Category",
-      "new_category": "New Category",
-      "category": "Category | Categories",
-      "select_a_category": "Select a category"
+      "title": "Judul",
+      "name": "Nama",
+      "description": "Deskripsi",
+      "amount": "Jumlah",
+      "actions": "Tindakan",
+      "add_category": "Tambah Kategori",
+      "new_category": "Kategori Baru",
+      "category": "Kategori | Kategori",
+      "select_a_category": "Pilih kategori"
     }
   },
   "login": {
-    "email": "Email",
-    "password": "Password",
-    "forgot_password": "Forgot Password?",
-    "or_signIn_with": "or Sign in with",
+    "email": "Surat Elektronik",
+    "password": "Kata Sandi",
+    "forgot_password": "Lupa Kata Sandi?",
+    "or_signIn_with": "atau Masuk dengan",
     "login": "Masuk",
     "register": "Daftar",
     "reset_password": "Atur Ulang Kata Sandi",
-    "password_reset_successfully": "Password Reset Successfully",
+    "password_reset_successfully": "Reset Kata Sandi Berhasil",
     "enter_email": "Masukkan email",
     "enter_password": "Masukkan Kata Sandi",
-    "retype_password": "Retype Password"
+    "retype_password": "Ketik Ulang Kata Sandi"
   },
   "modules": {
-    "buy_now": "Buy Now",
-    "install": "Install",
-    "price": "Price",
-    "download_zip_file": "Download ZIP file",
-    "unzipping_package": "Unzipping Package",
-    "copying_files": "Copying Files",
-    "deleting_files": "Deleting Unused files",
-    "completing_installation": "Completing Installation",
-    "update_failed": "Update Failed",
-    "install_success": "Module has been installed successfully!",
-    "customer_reviews": "Reviews",
-    "license": "License",
-    "faq": "FAQ",
-    "monthly": "Monthly",
-    "yearly": "Yearly",
-    "updated": "Updated",
-    "version": "Version",
-    "disable": "Disable",
-    "module_disabled": "Module Disabled",
-    "enable": "Enable",
-    "module_enabled": "Module Enabled",
-    "update_to": "Update To",
-    "module_updated": "Module Updated Successfully!",
-    "title": "Modules",
-    "module": "Module | Modules",
-    "api_token": "API token",
-    "invalid_api_token": "Invalid API Token.",
-    "other_modules": "Other Modules",
-    "view_all": "View All",
-    "no_reviews_found": "There are no reviews for this module yet!",
-    "module_not_purchased": "Module Not Purchased",
-    "module_not_found": "Module Not Found",
+    "buy_now": "Beli Sekarang",
+    "install": "Pasang",
+    "price": "Harga",
+    "download_zip_file": "Unduh zip",
+    "unzipping_package": "Membuka file Zip",
+    "copying_files": "Salin semua file",
+    "deleting_files": "Hapus file yang tidak digunakan",
+    "completing_installation": "Menyelesaikan Instalasi",
+    "update_failed": "Pembaruan Gagal",
+    "install_success": "Modul sudah berhasil dipasang!",
+    "customer_reviews": "Ulasan",
+    "license": "Lisensi",
+    "faq": "Pertanyaan yang sering ditanyakan",
+    "monthly": "Bulanan",
+    "yearly": "Tahunan",
+    "updated": "Terbaru",
+    "version": "Versi",
+    "disable": "Nonaktifkan",
+    "module_disabled": "Module dinonaktifkan",
+    "enable": "Aktifkan",
+    "module_enabled": "Module diaktifkan",
+    "update_to": "Perbarui Ke",
+    "module_updated": "Modul Berhasil Diperbarui!",
+    "title": "Modul",
+    "module": "Modul",
+    "api_token": "Token API",
+    "invalid_api_token": "Token API tidak valid.",
+    "other_modules": "Modul lainnya",
+    "view_all": "Lihat Semua",
+    "no_reviews_found": "Belum ada ulasan untuk produk ini!",
+    "module_not_purchased": "Produk belum dibeli",
+    "module_not_found": "Modul Tidak Ditemukan",
     "version_not_supported": "This module version doesn't support the current version of InvoiceShelf",
-    "last_updated": "Last Updated On",
-    "connect_installation": "Connect your installation",
-    "api_token_description": "Login to {url} and connect this installation by entering the API Token. Your purchased modules will show up here after the connection is established.",
+    "last_updated": "Terakhir diperbarui pada",
+    "connect_installation": "Hubungkan instalasimu",
+    "api_token_description": "Masuk ke {url} dan hubungkan instalasi ini dengan memasukkan Token API. Modul yang Anda beli akan muncul di sini setelah koneksi dibuat.",
     "view_module": "Lihat Module",
     "update_available": "Pembaruan Tersedia",
     "purchased": "Pembelian",
     "installed": "Terinstal",
     "no_modules_installed": "Belum Ada Modul yang Terpasang!",
     "disable_warning": "Semua pengaturan untuk saat ini akan dikembalikan.",
-    "what_you_get": "Apa yang bisa Anda dapatkan"
+    "what_you_get": "Apa yang bisa Anda dapatkan",
+    "sign_up_and_get_token": "Sign up & Get Token"
   },
   "users": {
     "title": "Pengguna",
@@ -719,7 +759,7 @@
     "edit_user": "Edit Pengguna",
     "no_users": "Belum ada pengguna!",
     "list_of_users": "Bagian ini akan berisi daftar pengguna.",
-    "email": "Email",
+    "email": "Surat Elektronik",
     "phone": "Telepon",
     "password": "Kata Sandi",
     "user_attached_message": "Tidak dapat menghapus item yang sudah digunakan",
@@ -737,7 +777,7 @@
     "status": "Status",
     "paid": "Lunas",
     "unpaid": "Belum dibayar",
-    "download_pdf": "Download PDF",
+    "download_pdf": "Unduh PDF",
     "view_pdf": "Lihat PDF",
     "update_report": "Update Laporan",
     "report": "Laporan | Laporan",
@@ -752,10 +792,14 @@
       "date_range": "Pilih Rentang Tanggal",
       "to_date": "Sampai tanggal",
       "from_date": "Dari tanggal",
-      "report_type": "Jenis laporan"
+      "report_type": "Jenis laporan",
+      "sort": {
+        "by_customer": "By Customer",
+        "by_item": "By Item"
+      }
     },
     "taxes": {
-      "taxes": "Taxes",
+      "taxes": "Pajak",
       "to_date": "To Date",
       "from_date": "From Date",
       "date_range": "Select Date Range"
@@ -810,7 +854,7 @@
       "address_information": "Address Information"
     },
     "address_information": {
-      "section_description": "  You can update Your Address information using form below."
+      "section_description": "  Anda dapat memperbarui informasi Alamat Anda dengan menggunakan formulir di bawah ini."
     },
     "title": "Settings",
     "setting": "Settings | Settings",
@@ -823,19 +867,19 @@
       "title": "Currencies",
       "currency": "Currency | Currencies",
       "currencies_list": "Currencies List",
-      "select_currency": "Select Currency",
-      "name": "Name",
-      "code": "Code",
-      "symbol": "Symbol",
-      "precision": "Precision",
-      "thousand_separator": "Thousand Separator",
-      "decimal_separator": "Decimal Separator",
-      "position": "Position",
-      "position_of_symbol": "Position Of Symbol",
-      "right": "Right",
-      "left": "Left",
-      "action": "Action",
-      "add_currency": "Add Currency"
+      "select_currency": "Pilih Mata Uang",
+      "name": "Nama",
+      "code": "Kode",
+      "symbol": "Simbol",
+      "precision": "Presisi",
+      "thousand_separator": "Pemisah Ribuan",
+      "decimal_separator": "Pemisah Desimal",
+      "position": "Posisi",
+      "position_of_symbol": "Posisi simbol",
+      "right": "Kanan",
+      "left": "Kiri",
+      "action": "Tindakan",
+      "add_currency": "Tambah mata uang"
     },
     "mail": {
       "host": "Mail Host",
@@ -857,12 +901,14 @@
     },
     "pdf": {
       "title": "PDF Setting",
-      "footer_text": "Footer Text",
+      "footer_text": "Teks footer",
       "pdf_layout": "PDF Layout"
     },
     "company_info": {
       "company_info": "Company info",
       "company_name": "Company Name",
+      "tax_id": "Tax Identification Number",
+      "vat_id": "VAT Identification Number",
       "company_logo": "Company Logo",
       "section_description": "Information about your company that will be displayed on invoices, estimates and other documents created by InvoiceShelf.",
       "phone": "Phone",
@@ -918,7 +964,14 @@
       "added_message": "Custom Field added successfully",
       "press_enter_to_add": "Press enter to add new option",
       "model_in_use": "Cannot update model for fields which are already in use.",
-      "type_in_use": "Cannot update type for fields which are already in use."
+      "type_in_use": "Cannot update type for fields which are already in use.",
+      "model_type": {
+        "customer": "Customer",
+        "invoice": "Invoice",
+        "estimate": "Estimate",
+        "expense": "Expense",
+        "payment": "Payment"
+      }
     },
     "customization": {
       "customization": "customization",
@@ -1039,7 +1092,12 @@
         "note_updated": "Note Updated successfully",
         "note_confirm_delete": "You will not be able to recover this Note",
         "already_in_use": "Note is already in use",
-        "deleted_message": "Note deleted successfully"
+        "deleted_message": "Note deleted successfully",
+        "types": {
+          "estimate": "Estimate",
+          "invoice": "Invoice",
+          "payment": "Payment"
+        }
       }
     },
     "account_settings": {
@@ -1194,12 +1252,27 @@
       "on_hold": "On Hold",
       "update_status": "Update Status",
       "completed": "Completed",
-      "company_currency_unchangeable": "Company currency cannot be changed"
+      "company_currency_unchangeable": "Company currency cannot be changed",
+      "fiscal_years": {
+        "january_december": "January - December",
+        "february_january": "February - January",
+        "march_february": "March - February",
+        "april_march": "April - March",
+        "may_april": "May - April",
+        "june_may": "June - May",
+        "july_june": "July - June",
+        "august_july": "August - July",
+        "september_august": "September - August",
+        "october_september": "October - September",
+        "november_october": "November - October",
+        "december_november": "December - November"
+      }
     },
     "update_app": {
       "title": "Update App",
       "description": "You can easily update InvoiceShelf by checking for a new update by clicking the button below",
       "check_update": "Check for updates",
+      "insider_consent": "Opt-in for Insider releases. Recommended for testing purposes only.",
       "avail_update": "New Update available",
       "next_version": "Next version",
       "requirements": "Requirements",
@@ -1267,6 +1340,12 @@
       "aws_region": "AWS Region",
       "aws_bucket": "AWS Bucket",
       "aws_root": "AWS Root",
+      "s3_endpoint": "S3 Endpoint",
+      "s3_key": "S3 Key",
+      "s3_secret": "S3 Secret",
+      "s3_region": "S3 Region",
+      "s3_bucket": "S3 Bucket",
+      "s3_root": "S3 Root",
       "do_spaces_type": "Do Spaces type",
       "do_spaces_key": "Do Spaces key",
       "do_spaces_secret": "Do Spaces Secret",
@@ -1347,6 +1426,10 @@
     "next": "Next",
     "continue": "Continue",
     "skip": "Skip",
+    "install_language": {
+      "title": "Choose your language",
+      "description": "Select language wizard to install InvoiceShelf"
+    },
     "database": {
       "database": "Site URL & Database",
       "connection": "Database Connection",
@@ -1358,6 +1441,7 @@
       "username": "Database Username",
       "db_name": "Database Name",
       "db_path": "Database Path",
+      "overwrite": "Overwrite existing database and proceed",
       "desc": "Create a database on your server and set the credentials using the form below."
     },
     "permissions": {
@@ -1373,7 +1457,14 @@
       "verify_now": "Verify Now",
       "success": "Domain Verify Successfully.",
       "failed": "Domain verification failed. Please enter valid domain name.",
-      "verify_and_continue": "Verify And Continue"
+      "verify_and_continue": "Verify And Continue",
+      "notes": {
+        "notes": "Notes:",
+        "not_contain": "App domain should not contain",
+        "or": "or",
+        "in_front": "in front of the domain.",
+        "if_you": "If you're accessing the website on a different port, please mention the port. For example:"
+      }
     },
     "mail": {
       "host": "Mail Host",
@@ -1522,5 +1613,16 @@
   "pdf_bill_to": "Bill to,",
   "pdf_ship_to": "Ship to,",
   "pdf_received_from": "Received from:",
-  "pdf_tax_label": "Tax"
+  "pdf_tax_label": "Tax",
+  "pdf_tax_id": "Tax-ID",
+  "pdf_vat_id": "VAT-ID",
+  "mail_thanks": "Thanks",
+  "mail_view_estimate": "View Estimate",
+  "mail_viewed_estimate": ":name viewed this Estimate.",
+  "mail_view_invoice": "View Invoice",
+  "mail_viewed_invoice": ":name viewed this Invoice.",
+  "mail_view_payment": "View Payment",
+  "notification_view_estimate": "[Notification] Estimate viewed",
+  "notification_view_invoice": "[Notification] Invoice viewed",
+  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:"
 }

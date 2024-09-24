@@ -24,7 +24,7 @@
     "cancel": "Annuleren",
     "update": "Bijwerken",
     "deselect": "Deselecteren",
-    "download": "Download",
+    "download": "Downloaden",
     "from_date": "Vanaf datum",
     "to_date": "T/m datum",
     "from": "Vanaf",
@@ -42,7 +42,7 @@
     "preview": "Voorbeeld",
     "go_back": "Ga terug",
     "back_to_login": "Terug naar Inloggen?",
-    "home": "Home",
+    "home": "Startscherm",
     "filter": "Filter",
     "delete": "Verwijderen",
     "edit": "Bewerken",
@@ -55,7 +55,7 @@
     "subtotal": "SUBTOTAAL",
     "discount": "KORTING",
     "fixed": "Gemaakt",
-    "percentage": "Percentage",
+    "percentage": "Procent",
     "tax": "BELASTING",
     "total_amount": "TOTAALBEDRAG",
     "bill_to": "Factuur aan",
@@ -80,7 +80,7 @@
     "you_got_lost": "Oeps! Je bent verdwaald!",
     "go_home": "Ga naar home",
     "test_mail_conf": "E-mailconfiguratie testen",
-    "send_mail_successfully": "Mail is succesvol verzonden",
+    "send_mail_successfully": "E-mail is succesvol verzonden",
     "setting_updated": "Instelling succesvol bijgewerkt",
     "select_state": "Selecteer staat",
     "select_country": "Selecteer land",
@@ -100,7 +100,26 @@
     "pay_invoice": "Betaal factuur",
     "login_successfully": "Succesvol ingelogd!",
     "logged_out_successfully": "Succesvol afgemeld",
-    "mark_as_default": "Markeren als standaard"
+    "mark_as_default": "Markeren als standaard",
+    "no_data_found": "No data found",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "showing": "Showing",
+      "to": "to",
+      "of": "of",
+      "results": "results"
+    },
+    "file_upload": {
+      "drag_a_file": "Drag a file here or",
+      "browse": "browse",
+      "to_choose": "to choose a file"
+    },
+    "multiselect": {
+      "the_list_is_empty": "The list is empty",
+      "no_results_found": "No results found"
+    },
+    "copy_to_clipboard": "Copy to Clipboard"
   },
   "dashboard": {
     "select_year": "Selecteer jaar",
@@ -175,7 +194,7 @@
     "add_customer": "Klant toevoegen",
     "contacts_list": "Klantenlijst",
     "name": "Naam",
-    "mail": "Mail | Mails",
+    "mail": "E-mail|E-mails",
     "statement": "Verklaring",
     "display_name": "Weergavenaam",
     "primary_contact_name": "Naam primaire contactpersoon",
@@ -362,7 +381,7 @@
   },
   "invoices": {
     "title": "Facturen",
-    "download": "Download",
+    "download": "Downloaden",
     "pay_invoice": "Betaal factuur",
     "invoices_list": "Facturenlijst",
     "invoice_information": "Factuurgegevens",
@@ -551,7 +570,18 @@
       "hour": "Uur",
       "day_month": "Dag van de maand",
       "month": "Maand",
-      "day_week": "Dag van de week"
+      "day_week": "Dag van de week",
+      "every_minute": "Every Minute",
+      "every_30_minute": "Every 30 Minute",
+      "every_hour": "Every Hour",
+      "every_2_hour": "Every 2 Hour",
+      "every_day_at_midnight": "Every day at midnight",
+      "every_week": "Every Week",
+      "every_15_days_at_midnight": "Every 15 days at midnight",
+      "on_the_first_day_of_every_month_at_midnight": "On the first day of every month at 00:00",
+      "every_6_month": "Every 6 Month",
+      "every_year_on_the_first_day_of_january_at_midnight": "Every year on the first day of january at 00:00",
+      "custom": "Custom"
     },
     "confirm_delete": "Deze factuur wordt permanent verwijderd | Deze facturen worden permanent verwijderd",
     "created_message": "Terugkerende factuur succesvol gecreëerd",
@@ -560,7 +590,12 @@
     "marked_as_sent_message": "Periodieke factuur gemarkeerd als succesvol verzonden",
     "user_email_does_not_exist": "E-mailadres van gebruiker bestaat niet",
     "something_went_wrong": "er is iets fout gegaan",
-    "invalid_due_amount_message": "Het totale factuurbedrag mag niet lager zijn dan het totale betaalde bedrag voor deze factuur. Werk de factuur bij of verwijder de bijbehorende betalingen om door te gaan."
+    "invalid_due_amount_message": "Het totale factuurbedrag mag niet lager zijn dan het totale betaalde bedrag voor deze factuur. Werk de factuur bij of verwijder de bijbehorende betalingen om door te gaan.",
+    "limit": {
+      "none": "None",
+      "date": "Date",
+      "count": "Count"
+    }
   },
   "payments": {
     "title": "Betalingen",
@@ -598,7 +633,8 @@
     "created_message": "De betaling is succesvol aangemaakt",
     "updated_message": "Betaling succesvol bijgewerkt",
     "deleted_message": "Betaling succesvol verwijderd | Betalingen zijn verwijderd",
-    "invalid_amount_message": "Het bedrag van de betaling is ongeldig"
+    "invalid_amount_message": "Het bedrag van de betaling is ongeldig",
+    "amount_due": "Due Amount"
   },
   "expenses": {
     "title": "Uitgaven",
@@ -656,7 +692,7 @@
     "register": "Registreren",
     "reset_password": "Wachtwoord opnieuw instellen",
     "password_reset_successfully": "Wachtwoord opnieuw ingesteld",
-    "enter_email": "Voer email in",
+    "enter_email": "Voer e-mail in",
     "enter_password": "Voer wachtwoord in",
     "retype_password": "Geef nogmaals het wachtwoord"
   },
@@ -703,7 +739,8 @@
     "installed": "Geïnstalleerd",
     "no_modules_installed": "Nog geen modules geïnstalleerd!",
     "disable_warning": "Alle instellingen voor dit specifiek zullen worden teruggedraaid.",
-    "what_you_get": "Wat je krijgt"
+    "what_you_get": "Wat je krijgt",
+    "sign_up_and_get_token": "Sign up & Get Token"
   },
   "users": {
     "title": "Gebruikers",
@@ -740,7 +777,7 @@
     "status": "Status",
     "paid": "Betaald",
     "unpaid": "Onbetaald",
-    "download_pdf": "Download PDF",
+    "download_pdf": "PDF downloaden",
     "view_pdf": "Bekijk PDF",
     "update_report": "Rapport bijwerken",
     "report": "Verslag | Rapporten",
@@ -755,7 +792,11 @@
       "date_range": "Selecteer datumbereik",
       "to_date": "Tot datum",
       "from_date": "Van datum",
-      "report_type": "Rapporttype"
+      "report_type": "Rapporttype",
+      "sort": {
+        "by_customer": "By Customer",
+        "by_item": "By Item"
+      }
     },
     "taxes": {
       "taxes": "Belastingen",
@@ -841,20 +882,20 @@
       "add_currency": "Valuta toevoegen"
     },
     "mail": {
-      "host": "Mail host",
+      "host": "E-mail server",
       "port": "E-mail poort",
-      "driver": "Mail-stuurprogramma",
+      "driver": "E-mail stuurprogramma",
       "secret": "Geheim",
       "mailgun_secret": "Mailgun geheim",
       "mailgun_domain": "Domein",
       "mailgun_endpoint": "Mailgun-eindpunt",
       "ses_secret": "SES geheim",
       "ses_key": "SES-sleutel",
-      "password": "Mail wachtwoord",
-      "username": "Mail gebruikersnaam",
+      "password": "E-mail wachtwoord",
+      "username": "E-mail gebruikersnaam",
       "mail_config": "E-mailconfiguratie",
-      "from_name": "Van Mail Name",
-      "from_mail": "Van e-mailadres",
+      "from_name": "Afzender naam",
+      "from_mail": "Afzender e-mailadres",
       "encryption": "E-mailversleuteling",
       "mail_config_desc": "Hieronder vindt u het formulier voor het configureren van het e-mailstuurprogramma voor het verzenden van e-mails vanuit de app. U kunt ook externe providers zoals Sendgrid, SES enz. Configureren."
     },
@@ -866,6 +907,8 @@
     "company_info": {
       "company_info": "Bedrijfsinfo",
       "company_name": "Bedrijfsnaam",
+      "tax_id": "Fiscaal Identificatienummer",
+      "vat_id": "BTW Nummer",
       "company_logo": "Bedrijfslogo",
       "section_description": "Informatie over uw bedrijf die wordt weergegeven op facturen, offertes en andere documenten die door InvoiceShelf zijn gemaakt.",
       "phone": "Telefoon",
@@ -889,7 +932,7 @@
       "add_custom_field": "Extra veld toevoegen",
       "edit_custom_field": "Veld wijzigen",
       "field_name": "Veld naam",
-      "label": "Label",
+      "label": "Etiket",
       "type": "Type",
       "name": "Naam",
       "slug": "Slug",
@@ -921,7 +964,14 @@
       "added_message": "Aangepast veld is succesvol toegevoegd",
       "press_enter_to_add": "Druk op Enter om een nieuwe optie toe te voegen",
       "model_in_use": "Kan model niet bijwerken voor velden die al in gebruik zijn.",
-      "type_in_use": "Kan type niet bijwerken voor velden die al in gebruik zijn."
+      "type_in_use": "Kan type niet bijwerken voor velden die al in gebruik zijn.",
+      "model_type": {
+        "customer": "Customer",
+        "invoice": "Invoice",
+        "estimate": "Estimate",
+        "expense": "Expense",
+        "payment": "Payment"
+      }
     },
     "customization": {
       "customization": "aanpassen",
@@ -1042,7 +1092,12 @@
         "note_updated": "Notitie bijgewerkt",
         "note_confirm_delete": "U kunt deze notitie niet terughalen",
         "already_in_use": "Notitie is reeds in gebruik",
-        "deleted_message": "Notitie verwijderd"
+        "deleted_message": "Notitie verwijderd",
+        "types": {
+          "estimate": "Estimate",
+          "invoice": "Invoice",
+          "payment": "Payment"
+        }
       }
     },
     "account_settings": {
@@ -1115,15 +1170,15 @@
       "error": " U kunt de actieve stuurprogramma niet verwijderen",
       "default_currency_error": "Deze valuta wordt al gebruikt in een van de Actieve Provider",
       "exchange_help_text": "Voer de wisselkoers in om te converteren van {currency} naar {baseCurrency}",
-      "currency_freak": "Valuta Freak",
-      "currency_layer": "Valuta-laag",
-      "open_exchange_rate": "Open Exchange Rate",
+      "currency_freak": "CurrencyFreaks",
+      "currency_layer": "Currencylayer",
+      "open_exchange_rate": "Open Exchange Rates",
       "currency_converter": "Valuta omzetter",
       "server": "Server",
       "url": "URL",
       "active": "Actief",
-      "currency_help_text": "This provider will only be used on above selected currencies",
-      "currency_in_used": "The following currencies are already active on another provider. Please remove these currencies from selection to activate this provider again."
+      "currency_help_text": "Deze aanbieder wordt alleen gebruikt voor de hier boven geselecteerde valuta",
+      "currency_in_used": "De volgende valuta zijn al actief bij een andere aanbieder. Verwijder deze valuta uit de selectie om deze aanbieder opnieuw te activeren."
     },
     "tax_types": {
       "title": "Belastingtypen",
@@ -1146,16 +1201,16 @@
     },
     "payment_modes": {
       "title": "Betaalmethodes",
-      "description": "Modes of transaction for payments",
-      "add_payment_mode": "Add Payment Mode",
-      "edit_payment_mode": "Edit Payment Mode",
-      "mode_name": "Mode Name",
+      "description": "Transactie methodes voor betalingen",
+      "add_payment_mode": "Betaalmethode toevoegen",
+      "edit_payment_mode": "Betaalmethode bewerken",
+      "mode_name": "Betaalmethode naam",
       "payment_mode_added": "Betaalwijze toegevoegd",
-      "payment_mode_updated": "Payment Mode Updated",
-      "payment_mode_confirm_delete": "You will not be able to recover this Payment Mode",
-      "payments_attached": "This payment method is already attached to payments. Please delete the attached payments to proceed with deletion.",
-      "expenses_attached": "This payment method is already attached to expenses. Please delete the attached expenses to proceed with deletion.",
-      "deleted_message": "Payment Mode deleted successfully"
+      "payment_mode_updated": "Betaalmethode bijgewerkt",
+      "payment_mode_confirm_delete": "U kunt het verwijderen van deze betaalmethode niet ongedaan maken",
+      "payments_attached": "Deze betalingsmethode is al gekoppeld aan betalingen. Verwijder de gekoppelde betalingen om verder te gaan met het verwijderen.",
+      "expenses_attached": "Deze betaalmethode is al gekoppeld aan uitgaven. Verwijder de gekoppelde kosten om door te gaan met het verwijderen.",
+      "deleted_message": "Betaalmethode succesvol verwijderd"
     },
     "expense_category": {
       "title": "Onkostencategorieën",
@@ -1181,8 +1236,8 @@
       "discount_setting": "Kortingsinstelling",
       "discount_per_item": "Korting per item",
       "discount_setting_description": "Schakel dit in als u korting wilt toevoegen aan afzonderlijke factuuritems. Standaard wordt korting rechtstreeks aan de factuur toegevoegd.",
-      "expire_public_links": "Automatically Expire Public Links",
-      "expire_setting_description": "Specify whether you would like to expire all the links sent by application to view invoices, estimates & payments, etc after a specified duration.",
+      "expire_public_links": "Publieke links automatisch laten vervallen",
+      "expire_setting_description": "Geef aan of je publieke links naar facturen, offertes en betalingen,... die zijn verstuurd door de applicatie na een bepaalde periode wilt laten verlopen.",
       "save": "Opslaan",
       "preference": "Voorkeur | Voorkeuren",
       "general_settings": "Standaardvoorkeuren voor het systeem.",
@@ -1191,18 +1246,33 @@
       "select_time_zone": "Selecteer Tijdzone",
       "select_date_format": "Selecteer datum/tijdindeling",
       "select_financial_year": "Selecteer financieel ja",
-      "recurring_invoice_status": "Recurring Invoice Status",
-      "create_status": "Create Status",
-      "active": "Active",
+      "recurring_invoice_status": "Status periodieke factuur",
+      "create_status": "Status aanmaken",
+      "active": "Geactiveerd",
       "on_hold": "In wacht",
       "update_status": "Updatestatus",
       "completed": "Voltooid",
-      "company_currency_unchangeable": "Bedrijfsvaluta kan niet worden gewijzigd"
+      "company_currency_unchangeable": "Bedrijfsvaluta kan niet worden gewijzigd",
+      "fiscal_years": {
+        "january_december": "January - December",
+        "february_january": "February - January",
+        "march_february": "March - February",
+        "april_march": "April - March",
+        "may_april": "May - April",
+        "june_may": "June - May",
+        "july_june": "July - June",
+        "august_july": "August - July",
+        "september_august": "September - August",
+        "october_september": "October - September",
+        "november_october": "November - October",
+        "december_november": "December - November"
+      }
     },
     "update_app": {
       "title": "App bijwerken",
       "description": "U kunt InvoiceShelf eenvoudig bijwerken door te controleren op een nieuwe update door op de onderstaande knop te klikken",
       "check_update": "Controleer op updates",
+      "insider_consent": "Opt-in for Insider releases. Recommended for testing purposes only.",
       "avail_update": "Nieuwe update beschikbaar",
       "next_version": "Volgende versie",
       "requirements": "Vereisten",
@@ -1220,7 +1290,7 @@
       "finishing_update": "Afwerking Update",
       "update_failed": "Update mislukt",
       "update_failed_text": "Sorry! Je update is mislukt op: {step} step ",
-      "update_warning": "All of the application files and default template files will be overwritten when you update the application using this utility. Please take a backup of your templates & database before updating."
+      "update_warning": "Alle applicatiebestanden en de standaard sjabloonbestanden worden overschreven wanneer u de applicatie aan de hand van dit hulpprogramma bijwerkt. Maak een reservekopie van uw sjabloonbestanden en databank voordat u verder gaat."
     },
     "backup": {
       "title": "Backup | Backups",
@@ -1270,6 +1340,12 @@
       "aws_region": "AWS Regio",
       "aws_bucket": "AWS Bucket",
       "aws_root": "AWS Root",
+      "s3_endpoint": "S3 Endpoint",
+      "s3_key": "S3 key",
+      "s3_secret": "S3 Secret",
+      "s3_region": "S3 Regio",
+      "s3_bucket": "S3 Bucket",
+      "s3_root": "S3 Root",
       "do_spaces_type": "Do Spaces type",
       "do_spaces_key": "Do Spaces Key",
       "do_spaces_secret": "Do Spaces Secret",
@@ -1350,6 +1426,10 @@
     "next": "De volgende",
     "continue": "Doorgaan met",
     "skip": "Overslaan",
+    "install_language": {
+      "title": "Choose your language",
+      "description": "Select language wizard to install InvoiceShelf"
+    },
     "database": {
       "database": "Site-URL en database",
       "connection": "Database verbinding",
@@ -1361,6 +1441,7 @@
       "username": "Database gebruikersnaam",
       "db_name": "Database naam",
       "db_path": "Databankpad",
+      "overwrite": "Overwrite existing database and proceed",
       "desc": "Maak een database op uw server en stel de referenties in via het onderstaande formulier."
     },
     "permissions": {
@@ -1376,7 +1457,14 @@
       "verify_now": "Nu verifiëren",
       "success": "E-mailadres succesvol geverifieerd.",
       "failed": "Domeinverificatie is mislukt. Voer een geldige domeinnaam in.",
-      "verify_and_continue": "Verifiëren en doorgaan"
+      "verify_and_continue": "Verifiëren en doorgaan",
+      "notes": {
+        "notes": "Notes:",
+        "not_contain": "App domain should not contain",
+        "or": "or",
+        "in_front": "in front of the domain.",
+        "if_you": "If you're accessing the website on a different port, please mention the port. For example:"
+      }
     },
     "mail": {
       "host": "E-mail server",
@@ -1525,5 +1613,16 @@
   "pdf_bill_to": "Rekening naar,",
   "pdf_ship_to": "Verzend naar,",
   "pdf_received_from": "Ontvangen van:",
-  "pdf_tax_label": "Btw"
+  "pdf_tax_label": "Btw",
+  "pdf_tax_id": "FIN",
+  "pdf_vat_id": "BTW",
+  "mail_thanks": "Thanks",
+  "mail_view_estimate": "View Estimate",
+  "mail_viewed_estimate": ":name viewed this Estimate.",
+  "mail_view_invoice": "View Invoice",
+  "mail_viewed_invoice": ":name viewed this Invoice.",
+  "mail_view_payment": "View Payment",
+  "notification_view_estimate": "[Notification] Estimate viewed",
+  "notification_view_invoice": "[Notification] Invoice viewed",
+  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:"
 }

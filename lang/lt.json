@@ -100,16 +100,35 @@
     "pay_invoice": "Apmokėti",
     "login_successfully": "Prisijungta sėkmingai!",
     "logged_out_successfully": "Atsijungta sėkmingai",
-    "mark_as_default": "Pažymėti kaip numatytąjį"
+    "mark_as_default": "Pažymėti kaip numatytąjį",
+    "no_data_found": "No data found",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "showing": "Showing",
+      "to": "to",
+      "of": "of",
+      "results": "results"
+    },
+    "file_upload": {
+      "drag_a_file": "Drag a file here or",
+      "browse": "browse",
+      "to_choose": "to choose a file"
+    },
+    "multiselect": {
+      "the_list_is_empty": "The list is empty",
+      "no_results_found": "No results found"
+    },
+    "copy_to_clipboard": "Copy to Clipboard"
   },
   "dashboard": {
     "select_year": "Pasirinkite metus",
     "cards": {
       "due_amount": "Mokėtina suma",
-      "customers": "Klientai",
-      "invoices": "Sąskaitos",
-      "estimates": "Įverčiai",
-      "payments": "Mokėjimai"
+      "customers": "Customer | Customers",
+      "invoices": "Invoice | Invoices",
+      "estimates": "Estimate | Estimates",
+      "payments": "Payment | Payments"
     },
     "chart_info": {
       "total_sales": "Pardavimai",
@@ -304,6 +323,9 @@
     "record_payment": "Record Payment",
     "add_estimate": "Pridėti naują Pasiūlymą",
     "save_estimate": "Išsaugoti Pasiūlymą",
+    "cloned_successfully": "Estimate cloned successfully",
+    "clone_estimate": "Clone Estimate",
+    "confirm_clone": "This Estimate will be cloned into a new Estimate",
     "confirm_conversion": "This estimate will be used to create a new Invoice.",
     "conversion_message": "Sąskaita sukurta sėkmingai",
     "confirm_send_estimate": "Šitas pasiūlymas bus išsiųstas Klientui el. paštu",
@@ -548,7 +570,18 @@
       "hour": "Hour",
       "day_month": "Day of month",
       "month": "Month",
-      "day_week": "Day of week"
+      "day_week": "Day of week",
+      "every_minute": "Every Minute",
+      "every_30_minute": "Every 30 Minute",
+      "every_hour": "Every Hour",
+      "every_2_hour": "Every 2 Hour",
+      "every_day_at_midnight": "Every day at midnight",
+      "every_week": "Every Week",
+      "every_15_days_at_midnight": "Every 15 days at midnight",
+      "on_the_first_day_of_every_month_at_midnight": "On the first day of every month at 00:00",
+      "every_6_month": "Every 6 Month",
+      "every_year_on_the_first_day_of_january_at_midnight": "Every year on the first day of january at 00:00",
+      "custom": "Custom"
     },
     "confirm_delete": "You will not be able to recover this Invoice | You will not be able to recover these Invoices",
     "created_message": "Recurring Invoice created successfully",
@@ -557,7 +590,12 @@
     "marked_as_sent_message": "Recurring Invoice marked as sent successfully",
     "user_email_does_not_exist": "User email does not exist",
     "something_went_wrong": "something went wrong",
-    "invalid_due_amount_message": "Total Recurring Invoice amount cannot be less than total paid amount for this Recurring Invoice. Please update the invoice or delete the associated payments to continue."
+    "invalid_due_amount_message": "Total Recurring Invoice amount cannot be less than total paid amount for this Recurring Invoice. Please update the invoice or delete the associated payments to continue.",
+    "limit": {
+      "none": "None",
+      "date": "Date",
+      "count": "Count"
+    }
   },
   "payments": {
     "title": "Payments",
@@ -595,7 +633,8 @@
     "created_message": "Payment created successfully",
     "updated_message": "Payment updated successfully",
     "deleted_message": "Payment deleted successfully | Payments deleted successfully",
-    "invalid_amount_message": "Payment amount is invalid"
+    "invalid_amount_message": "Payment amount is invalid",
+    "amount_due": "Due Amount"
   },
   "expenses": {
     "title": "Išlaidos",
@@ -700,7 +739,8 @@
     "installed": "Installed",
     "no_modules_installed": "No Modules Installed Yet!",
     "disable_warning": "All the settings for this particular will be reverted.",
-    "what_you_get": "What you get"
+    "what_you_get": "What you get",
+    "sign_up_and_get_token": "Sign up & Get Token"
   },
   "users": {
     "title": "Vartotojai",
@@ -752,7 +792,11 @@
       "date_range": "Select Date Range",
       "to_date": "To Date",
       "from_date": "From Date",
-      "report_type": "Report Type"
+      "report_type": "Report Type",
+      "sort": {
+        "by_customer": "By Customer",
+        "by_item": "By Item"
+      }
     },
     "taxes": {
       "taxes": "Taxes",
@@ -863,6 +907,8 @@
     "company_info": {
       "company_info": "Company info",
       "company_name": "Imonės pavadinimas",
+      "tax_id": "Tax Identification Number",
+      "vat_id": "VAT Identification Number",
       "company_logo": "Įmonės logotipas",
       "section_description": "Information about your company that will be displayed on invoices, estimates and other documents created by InvoiceShelf.",
       "phone": "Telefonas",
@@ -918,7 +964,14 @@
       "added_message": "Custom Field added successfully",
       "press_enter_to_add": "Press enter to add new option",
       "model_in_use": "Cannot update model for fields which are already in use.",
-      "type_in_use": "Cannot update type for fields which are already in use."
+      "type_in_use": "Cannot update type for fields which are already in use.",
+      "model_type": {
+        "customer": "Customer",
+        "invoice": "Invoice",
+        "estimate": "Estimate",
+        "expense": "Expense",
+        "payment": "Payment"
+      }
     },
     "customization": {
       "customization": "customization",
@@ -1039,7 +1092,12 @@
         "note_updated": "Pastaba atnaujinta sėkmingai",
         "note_confirm_delete": "Jūs nebegalėsite atkurti šitos Pastabos",
         "already_in_use": "Pastaba jau naudojama",
-        "deleted_message": "Pastaba pašalinta sėkmingai"
+        "deleted_message": "Pastaba pašalinta sėkmingai",
+        "types": {
+          "estimate": "Estimate",
+          "invoice": "Invoice",
+          "payment": "Payment"
+        }
       }
     },
     "account_settings": {
@@ -1194,12 +1252,27 @@
       "on_hold": "Užlaikytas",
       "update_status": "Atnaujinti būseną",
       "completed": "Užbaigtas",
-      "company_currency_unchangeable": "Įmonės valiuta negali būti pakeista"
+      "company_currency_unchangeable": "Įmonės valiuta negali būti pakeista",
+      "fiscal_years": {
+        "january_december": "January - December",
+        "february_january": "February - January",
+        "march_february": "March - February",
+        "april_march": "April - March",
+        "may_april": "May - April",
+        "june_may": "June - May",
+        "july_june": "July - June",
+        "august_july": "August - July",
+        "september_august": "September - August",
+        "october_september": "October - September",
+        "november_october": "November - October",
+        "december_november": "December - November"
+      }
     },
     "update_app": {
       "title": "Update App",
       "description": "You can easily update InvoiceShelf by checking for a new update by clicking the button below",
       "check_update": "Tikrinti, ar yra atnaujinimų",
+      "insider_consent": "Opt-in for Insider releases. Recommended for testing purposes only.",
       "avail_update": "Galimas naujas atnaujinimas",
       "next_version": "Naujesnė versija",
       "requirements": "Reikalavimai",
@@ -1267,6 +1340,12 @@
       "aws_region": "AWS Region",
       "aws_bucket": "AWS Bucket",
       "aws_root": "AWS Root",
+      "s3_endpoint": "S3 Endpoint",
+      "s3_key": "S3 Key",
+      "s3_secret": "S3 Secret",
+      "s3_region": "S3 Region",
+      "s3_bucket": "S3 Bucket",
+      "s3_root": "S3 Root",
       "do_spaces_type": "Do Spaces type",
       "do_spaces_key": "Do Spaces key",
       "do_spaces_secret": "Do Spaces Secret",
@@ -1347,6 +1426,10 @@
     "next": "Kitas",
     "continue": "Tęsti",
     "skip": "Praleisti",
+    "install_language": {
+      "title": "Choose your language",
+      "description": "Select language wizard to install InvoiceShelf"
+    },
     "database": {
       "database": "Site URL & Database",
       "connection": "Database Connection",
@@ -1358,6 +1441,7 @@
       "username": "Database Username",
       "db_name": "Duomenų bazės pavadinimas",
       "db_path": "Database Path",
+      "overwrite": "Overwrite existing database and proceed",
       "desc": "Create a database on your server and set the credentials using the form below."
     },
     "permissions": {
@@ -1373,7 +1457,14 @@
       "verify_now": "Patvirtinti dabar",
       "success": "Domain Verify Successfully.",
       "failed": "Domain verification failed. Please enter valid domain name.",
-      "verify_and_continue": "Verify And Continue"
+      "verify_and_continue": "Verify And Continue",
+      "notes": {
+        "notes": "Notes:",
+        "not_contain": "App domain should not contain",
+        "or": "or",
+        "in_front": "in front of the domain.",
+        "if_you": "If you're accessing the website on a different port, please mention the port. For example:"
+      }
     },
     "mail": {
       "host": "Mail Host",
@@ -1522,5 +1613,16 @@
   "pdf_bill_to": "Bill to,",
   "pdf_ship_to": "Siųsti į,",
   "pdf_received_from": "Gauta nuo:",
-  "pdf_tax_label": "Tax"
+  "pdf_tax_label": "Tax",
+  "pdf_tax_id": "Tax-ID",
+  "pdf_vat_id": "VAT-ID",
+  "mail_thanks": "Thanks",
+  "mail_view_estimate": "View Estimate",
+  "mail_viewed_estimate": ":name viewed this Estimate.",
+  "mail_view_invoice": "View Invoice",
+  "mail_viewed_invoice": ":name viewed this Invoice.",
+  "mail_view_payment": "View Payment",
+  "notification_view_estimate": "[Notification] Estimate viewed",
+  "notification_view_invoice": "[Notification] Invoice viewed",
+  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:"
 }
