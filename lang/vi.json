@@ -100,16 +100,35 @@
     "pay_invoice": "Thanh toán hóa đơn",
     "login_successfully": "Đăng nhập thành công!",
     "logged_out_successfully": "Đăng xuất thành công",
-    "mark_as_default": "Đánh dấu mặc định"
+    "mark_as_default": "Đánh dấu mặc định",
+    "no_data_found": "No data found",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "showing": "Showing",
+      "to": "to",
+      "of": "of",
+      "results": "results"
+    },
+    "file_upload": {
+      "drag_a_file": "Drag a file here or",
+      "browse": "browse",
+      "to_choose": "to choose a file"
+    },
+    "multiselect": {
+      "the_list_is_empty": "The list is empty",
+      "no_results_found": "No results found"
+    },
+    "copy_to_clipboard": "Copy to Clipboard"
   },
   "dashboard": {
     "select_year": "Chọn năm",
     "cards": {
       "due_amount": "Số tiền đến hạn",
-      "customers": "Khách hàng",
-      "invoices": "Hóa đơn",
-      "estimates": "Ước tính",
-      "payments": "Thanh toán"
+      "customers": "Customer | Customers",
+      "invoices": "Invoice | Invoices",
+      "estimates": "Estimate | Estimates",
+      "payments": "Payment | Payments"
     },
     "chart_info": {
       "total_sales": "Bán hàng",
@@ -304,6 +323,9 @@
     "record_payment": "Ghi lại Thanh toán",
     "add_estimate": "Thêm ước tính",
     "save_estimate": "Lưu ước tính",
+    "cloned_successfully": "Estimate cloned successfully",
+    "clone_estimate": "Clone Estimate",
+    "confirm_clone": "This Estimate will be cloned into a new Estimate",
     "confirm_conversion": "Ước tính này sẽ được sử dụng để tạo Hóa đơn mới.",
     "conversion_message": "Hóa đơn được tạo thành công",
     "confirm_send_estimate": "Ước tính này sẽ được gửi qua Email cho khách hàng",
@@ -548,7 +570,18 @@
       "hour": "Giờ",
       "day_month": "Ngày trong tháng",
       "month": "Tháng",
-      "day_week": "Ngày trong tuần"
+      "day_week": "Ngày trong tuần",
+      "every_minute": "Every Minute",
+      "every_30_minute": "Every 30 Minute",
+      "every_hour": "Every Hour",
+      "every_2_hour": "Every 2 Hour",
+      "every_day_at_midnight": "Every day at midnight",
+      "every_week": "Every Week",
+      "every_15_days_at_midnight": "Every 15 days at midnight",
+      "on_the_first_day_of_every_month_at_midnight": "On the first day of every month at 00:00",
+      "every_6_month": "Every 6 Month",
+      "every_year_on_the_first_day_of_january_at_midnight": "Every year on the first day of january at 00:00",
+      "custom": "Custom"
     },
     "confirm_delete": "Bạn sẽ không thể khôi phục hóa đơn này",
     "created_message": "Tạo hóa đơn định kỳ thành công",
@@ -557,7 +590,12 @@
     "marked_as_sent_message": "Hóa đơn định kỳ được đánh dấu là đã gửi thành công",
     "user_email_does_not_exist": "Email người dùng không tồn tại",
     "something_went_wrong": "đã xảy ra sự cố",
-    "invalid_due_amount_message": "Số tiền hóa đơn định kỳ tổng cộng không thể nhỏ hơn số tiền đã thanh toán cho hóa đơn định kỳ này. Vui lòng cập nhật hóa đơn hoặc xóa các khoản thanh toán liên quan để tiếp tục."
+    "invalid_due_amount_message": "Số tiền hóa đơn định kỳ tổng cộng không thể nhỏ hơn số tiền đã thanh toán cho hóa đơn định kỳ này. Vui lòng cập nhật hóa đơn hoặc xóa các khoản thanh toán liên quan để tiếp tục.",
+    "limit": {
+      "none": "None",
+      "date": "Date",
+      "count": "Count"
+    }
   },
   "payments": {
     "title": "Thanh toán",
@@ -595,7 +633,8 @@
     "created_message": "Thanh toán được tạo thành công",
     "updated_message": "Đã cập nhật thanh toán thành công",
     "deleted_message": "Đã xóa thanh toán thành công | Thanh toán đã được xóa thành công",
-    "invalid_amount_message": "Số tiền thanh toán không hợp lệ"
+    "invalid_amount_message": "Số tiền thanh toán không hợp lệ",
+    "amount_due": "Due Amount"
   },
   "expenses": {
     "title": "Chi phí",
@@ -700,7 +739,8 @@
     "installed": "Đã cài đặt",
     "no_modules_installed": "Chưa có mô-đun nào được cài đặt!",
     "disable_warning": "Tất cả các cài đặt cho mục này sẽ bị hoàn tác.",
-    "what_you_get": "Bạn đuợc"
+    "what_you_get": "Bạn đuợc",
+    "sign_up_and_get_token": "Sign up & Get Token"
   },
   "users": {
     "title": "Người dùng",
@@ -752,7 +792,11 @@
       "date_range": "Chọn phạm vi ngày",
       "to_date": "Đến nay",
       "from_date": "Từ ngày",
-      "report_type": "Loại báo cáo"
+      "report_type": "Loại báo cáo",
+      "sort": {
+        "by_customer": "By Customer",
+        "by_item": "By Item"
+      }
     },
     "taxes": {
       "taxes": "Thuế",
@@ -920,7 +964,14 @@
       "added_message": "Trường tùy chỉnh đã được thêm thành công",
       "press_enter_to_add": "Nhập để thêm tuỳ chọn mới",
       "model_in_use": "Không thể cập nhật mô hình cho các trường đang được sử dụng.",
-      "type_in_use": "Không thể cập nhật loại cho các trường đang được sử dụng."
+      "type_in_use": "Không thể cập nhật loại cho các trường đang được sử dụng.",
+      "model_type": {
+        "customer": "Customer",
+        "invoice": "Invoice",
+        "estimate": "Estimate",
+        "expense": "Expense",
+        "payment": "Payment"
+      }
     },
     "customization": {
       "customization": "sự tùy biến",
@@ -1041,7 +1092,12 @@
         "note_updated": "Đã cập nhật ghi chú thành công",
         "note_confirm_delete": "Bạn sẽ không thể khôi phục Ghi chú này",
         "already_in_use": "Ghi chú đã được sử dụng",
-        "deleted_message": "Đã xóa ghi chú thành công"
+        "deleted_message": "Đã xóa ghi chú thành công",
+        "types": {
+          "estimate": "Estimate",
+          "invoice": "Invoice",
+          "payment": "Payment"
+        }
       }
     },
     "account_settings": {
@@ -1196,12 +1252,27 @@
       "on_hold": "Đang chờ",
       "update_status": "Cập nhật trạng thái",
       "completed": "Đã hoàn thành",
-      "company_currency_unchangeable": "Không thể thay đổi đơn vị tiền tệ của doanh nghiệp"
+      "company_currency_unchangeable": "Không thể thay đổi đơn vị tiền tệ của doanh nghiệp",
+      "fiscal_years": {
+        "january_december": "January - December",
+        "february_january": "February - January",
+        "march_february": "March - February",
+        "april_march": "April - March",
+        "may_april": "May - April",
+        "june_may": "June - May",
+        "july_june": "July - June",
+        "august_july": "August - July",
+        "september_august": "September - August",
+        "october_september": "October - September",
+        "november_october": "November - October",
+        "december_november": "December - November"
+      }
     },
     "update_app": {
       "title": "Cập nhật ứng dụng",
       "description": "Bạn có thể dễ dàng cập nhật InvoiceShelf bằng cách kiểm tra bản cập nhật mới bằng cách nhấp vào nút bên dưới",
       "check_update": "Kiểm tra cập nhật",
+      "insider_consent": "Opt-in for Insider releases. Recommended for testing purposes only.",
       "avail_update": "Cập nhật mới có sẵn",
       "next_version": "Phiên bản tiếp theo",
       "requirements": "Yêu cầu",
@@ -1355,6 +1426,10 @@
     "next": "Kế tiếp",
     "continue": "Tiếp tục",
     "skip": "Nhảy",
+    "install_language": {
+      "title": "Choose your language",
+      "description": "Select language wizard to install InvoiceShelf"
+    },
     "database": {
       "database": "URL trang web",
       "connection": "Kết nối cơ sở dữ liệu",
@@ -1366,6 +1441,7 @@
       "username": "Tên người dùng cơ sở dữ liệu",
       "db_name": "Tên cơ sở dữ liệu",
       "db_path": "Đường dẫn cơ sở dữ liệu",
+      "overwrite": "Overwrite existing database and proceed",
       "desc": "Tạo cơ sở dữ liệu trên máy chủ của bạn và đặt thông tin đăng nhập bằng biểu mẫu bên dưới."
     },
     "permissions": {
@@ -1381,7 +1457,14 @@
       "verify_now": "Xác minh ngay",
       "success": "Xác minh miền thành công.",
       "failed": "Xác minh miền thất bại. Vui lòngnhập tên miền hợp lệ.",
-      "verify_and_continue": "Xác minh và tiếp tục"
+      "verify_and_continue": "Xác minh và tiếp tục",
+      "notes": {
+        "notes": "Notes:",
+        "not_contain": "App domain should not contain",
+        "or": "or",
+        "in_front": "in front of the domain.",
+        "if_you": "If you're accessing the website on a different port, please mention the port. For example:"
+      }
     },
     "mail": {
       "host": "Máy chủ Thư",
@@ -1532,5 +1615,14 @@
   "pdf_received_from": "Nhận được tư:",
   "pdf_tax_label": "Thuế",
   "pdf_tax_id": "ID Thuế",
-  "pdf_vat_id": "ID VAT"
+  "pdf_vat_id": "ID VAT",
+  "mail_thanks": "Thanks",
+  "mail_view_estimate": "View Estimate",
+  "mail_viewed_estimate": ":name viewed this Estimate.",
+  "mail_view_invoice": "View Invoice",
+  "mail_viewed_invoice": ":name viewed this Invoice.",
+  "mail_view_payment": "View Payment",
+  "notification_view_estimate": "[Notification] Estimate viewed",
+  "notification_view_invoice": "[Notification] Invoice viewed",
+  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:"
 }
