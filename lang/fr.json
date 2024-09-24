@@ -1272,6 +1272,7 @@
       "title": "Mise à jour",
       "description": "Mettez simplement InvoiceShelf à jour en cliquant sur le bouton ci-dessous.",
       "check_update": "Rechercher des mises à jour",
+      "insider_consent": "Opt-in for Insider releases. Recommended for testing purposes only.",
       "avail_update": "Nouvelle mise à jour disponible",
       "next_version": "Version suivante",
       "requirements": "Spécifications requises",
@@ -1440,6 +1441,7 @@
       "username": "Nom d'utilisateur de la base de données",
       "db_name": "Nom de la base de données",
       "db_path": "Emplacement de la base de données",
+      "overwrite": "Overwrite existing database and proceed",
       "desc": "Créez une base de données sur votre serveur et définissez les informations d'identification à l'aide du formulaire ci-dessous."
     },
     "permissions": {
@@ -1457,9 +1459,9 @@
       "failed": "La vérification du domaine a échoué. Veuillez entrer un nom de domaine valide.",
       "verify_and_continue": "Vérifier et continuer",
       "notes": {
-        "notes" : "Notes :",
-        "not_contain" : "Le domaine de l'application ne doit pas contenir",
-        "or" : "ou",
+        "notes": "Notes :",
+        "not_contain": "Le domaine de l'application ne doit pas contenir",
+        "or": "ou",
         "in_front": "devant le domaine.",
         "if_you": "Si vous accédez au site Web sur un autre port, veuillez mentionner le port. Par exemple :"
       }
@@ -1615,7 +1617,7 @@
   "pdf_tax_id": "Tax-ID",
   "pdf_vat_id": "VAT-ID",
   "mail_thanks": "Merci",
-  "mail_view_estimate":"Voir le Devis",
+  "mail_view_estimate": "Voir le Devis",
   "mail_viewed_estimate": ":name a consulté ce Devis.",
   "mail_view_invoice": "Voir la Facture",
   "mail_viewed_invoice": ":name a consulté cette Facture.",
