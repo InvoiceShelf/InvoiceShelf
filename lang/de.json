@@ -1,6 +1,6 @@
 {
   "navigation": {
-    "dashboard": "Übersicht",
+    "dashboard": "Dashboard",
     "customers": "Kunden",
     "items": "Artikel",
     "invoices": "Rechnungen",
@@ -26,7 +26,7 @@
     "deselect": "Abwählen",
     "download": "Herunterladen",
     "from_date": "Von Datum",
-    "to_date": "bis Datum",
+    "to_date": "Bis Datum",
     "from": "Von",
     "to": "An",
     "ok": "Okay",
@@ -1152,7 +1152,7 @@
       "payment_mode_added": "Zahlungsart hinzugefügt",
       "payment_mode_updated": "Zahlungsart aktualisiert",
       "payment_mode_confirm_delete": "Sie werden diese Zahlungsart nicht wiederherstellen können",
-      "payments_attached": "This payment method is already attached to payments. Please delete the attached payments to proceed with deletion.",
+      "payments_attached": "Diese Zahlungsmethode ist bereits mit anderen Beträgen verknüpft. Bitte löschen Sie die damit verbundenen Beträge, um mit der Löschung fortzufahren.",
       "expenses_attached": "This payment method is already attached to expenses. Please delete the attached expenses to proceed with deletion.",
       "deleted_message": "Zahlungsart erfolgreich gelöscht"
     },
@@ -1181,7 +1181,7 @@
       "discount_per_item": "Rabatt pro Artikel ",
       "discount_setting_description": "Aktivieren Sie diese Option, wenn Sie einzelnen Rechnungspositionen einen Rabatt hinzufügen möchten. Standardmäßig wird der Rabatt direkt zur Rechnung hinzugefügt.",
       "expire_public_links": "Öffentliche Links automatisch ablaufen lassen",
-      "expire_setting_description": "Specify whether you would like to expire all the links sent by application to view invoices, estimates & payments, etc after a specified duration.",
+      "expire_setting_description": "Geben Sie an, ob Sie alle von der Anwendung gesendeten Links zur Ansicht von Rechnungen, Kostenvoranschlägen und Zahlungen usw. nach einer bestimmten Zeit ablaufen lassen möchten.",
       "save": "Speichern",
       "preference": "Präferenz | Präferenzen",
       "general_settings": "Standardeinstellungen für das System.",
