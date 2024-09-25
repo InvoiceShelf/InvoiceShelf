@@ -1,6 +1,6 @@
 {
   "navigation": {
-    "dashboard": "Übersicht",
+    "dashboard": "Dashboard",
     "customers": "Kunden",
     "items": "Artikel",
     "invoices": "Rechnungen",
@@ -26,7 +26,7 @@
     "deselect": "Abwählen",
     "download": "Herunterladen",
     "from_date": "Von Datum",
-    "to_date": "bis Datum",
+    "to_date": "Bis Datum",
     "from": "Von",
     "to": "An",
     "ok": "Okay",
@@ -100,7 +100,26 @@
     "pay_invoice": "Rechnung bezahlen",
     "login_successfully": "Erfolgreich angemeldet!",
     "logged_out_successfully": "Erfolgreich abgemeldet",
-    "mark_as_default": "Als Standard festlegen"
+    "mark_as_default": "Als Standard festlegen",
+    "no_data_found": "No data found",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "showing": "Showing",
+      "to": "to",
+      "of": "of",
+      "results": "results"
+    },
+    "file_upload": {
+      "drag_a_file": "Drag a file here or",
+      "browse": "browse",
+      "to_choose": "to choose a file"
+    },
+    "multiselect": {
+      "the_list_is_empty": "The list is empty",
+      "no_results_found": "No results found"
+    },
+    "copy_to_clipboard": "Copy to Clipboard"
   },
   "dashboard": {
     "select_year": "Jahr wählen",
@@ -551,7 +570,18 @@
       "hour": "Stunde",
       "day_month": "Tag des Monats",
       "month": "Monat",
-      "day_week": "Tag der Woche"
+      "day_week": "Tag der Woche",
+      "every_minute": "Every Minute",
+      "every_30_minute": "Every 30 Minute",
+      "every_hour": "Every Hour",
+      "every_2_hour": "Every 2 Hour",
+      "every_day_at_midnight": "Every day at midnight",
+      "every_week": "Every Week",
+      "every_15_days_at_midnight": "Every 15 days at midnight",
+      "on_the_first_day_of_every_month_at_midnight": "On the first day of every month at 00:00",
+      "every_6_month": "Every 6 Month",
+      "every_year_on_the_first_day_of_january_at_midnight": "Every year on the first day of january at 00:00",
+      "custom": "Custom"
     },
     "confirm_delete": "Sie werden diese Rechnung nicht wiederherstellen können | Sie werden nicht in der Lage sein, diese Rechnungen wiederherzustellen",
     "created_message": "Serienrechnung erfolgreich erstellt",
@@ -560,7 +590,12 @@
     "marked_as_sent_message": "Serienrechnung als erfolgreich gesendet markiert",
     "user_email_does_not_exist": "E-Mail des Benutzers existiert nicht",
     "something_went_wrong": "etwas ist schief gelaufen",
-    "invalid_due_amount_message": "Der Gesamtbetrag der Serienrechnung darf nicht kleiner als der bezahlte Gesamtbetrag für diese Serienrechnung sein. Bitte aktualisieren Sie die Rechnung oder löschen Sie die zugehörigen Zahlungen, um fortzufahren."
+    "invalid_due_amount_message": "Der Gesamtbetrag der Serienrechnung darf nicht kleiner als der bezahlte Gesamtbetrag für diese Serienrechnung sein. Bitte aktualisieren Sie die Rechnung oder löschen Sie die zugehörigen Zahlungen, um fortzufahren.",
+    "limit": {
+      "none": "None",
+      "date": "Date",
+      "count": "Count"
+    }
   },
   "payments": {
     "title": "Zahlungen",
@@ -598,7 +633,8 @@
     "created_message": "Zahlung erfolgreich erstellt",
     "updated_message": "Zahlung erfolgreich aktualisiert",
     "deleted_message": "Zahlung erfolgreich gelöscht | Zahlungen erfolgreich gelöscht",
-    "invalid_amount_message": "Zahlungsbetrag ist ungültig"
+    "invalid_amount_message": "Zahlungsbetrag ist ungültig",
+    "amount_due": "Due Amount"
   },
   "expenses": {
     "title": "Ausgaben",
@@ -691,7 +727,7 @@
     "other_modules": "Weitere Module",
     "view_all": "Alle Anzeigen",
     "no_reviews_found": "Für dieses Modul gibt es noch keine Bewertungen!",
-    "module_not_purchased": "Module Not Purchased",
+    "module_not_purchased": "Modul noch nicht erworben",
     "module_not_found": "Modul nicht gefunden",
     "version_not_supported": "This module version doesn't support the current version of InvoiceShelf",
     "last_updated": "Zuletzt aktualisiert am",
@@ -703,7 +739,8 @@
     "installed": "Installiert",
     "no_modules_installed": "Noch keine Module installiert!",
     "disable_warning": "Alle Einstellungen für diesen speziellen Wert werden zurückgesetzt.",
-    "what_you_get": "Was Sie erhalten"
+    "what_you_get": "Was Sie erhalten",
+    "sign_up_and_get_token": "Sign up & Get Token"
   },
   "users": {
     "title": "Benutzer",
@@ -755,7 +792,11 @@
       "date_range": "Datumsbereich auswählen",
       "to_date": "bis Datum",
       "from_date": "Ab Datum",
-      "report_type": "Berichtstyp"
+      "report_type": "Berichtstyp",
+      "sort": {
+        "by_customer": "By Customer",
+        "by_item": "By Item"
+      }
     },
     "taxes": {
       "taxes": "Steuern",
@@ -866,8 +907,8 @@
     "company_info": {
       "company_info": "Firmeninfo",
       "company_name": "Name des Unternehmens",
-      "vat_id": "Umsatzsteuer-Identifikationsnummer",
       "tax_id": "Steuernummer",
+      "vat_id": "Umsatzsteuer-Identifikationsnummer",
       "company_logo": "Firmenlogo",
       "section_description": "Informationen zu Ihrem Unternehmen, die auf Rechnungen, Angeboten und anderen von InvoiceShelf erstellten Dokumenten angezeigt werden.",
       "phone": "Telefon",
@@ -923,7 +964,14 @@
       "added_message": "Benutzerdefiniertes Feld erfolgreich hinzugefügt",
       "press_enter_to_add": "Eingabetaste drücken, um neue Option hinzuzufügen",
       "model_in_use": "Das Modell kann für bereits verwendete Felder nicht aktualisiert werden.",
-      "type_in_use": "Der Typ von bereits verwendeten Feldern kann nicht aktualisiert werden."
+      "type_in_use": "Der Typ von bereits verwendeten Feldern kann nicht aktualisiert werden.",
+      "model_type": {
+        "customer": "Customer",
+        "invoice": "Invoice",
+        "estimate": "Estimate",
+        "expense": "Expense",
+        "payment": "Payment"
+      }
     },
     "customization": {
       "customization": "Personalisierung",
@@ -1044,7 +1092,12 @@
         "note_updated": "Notiz erfolgreich aktualisiert",
         "note_confirm_delete": "Dieser Hinweis wird unwiderruflich gelöscht",
         "already_in_use": "Hinweis bereits in verwendet",
-        "deleted_message": "Notiz erfolgreich gelöscht"
+        "deleted_message": "Notiz erfolgreich gelöscht",
+        "types": {
+          "estimate": "Estimate",
+          "invoice": "Invoice",
+          "payment": "Payment"
+        }
       }
     },
     "account_settings": {
@@ -1155,7 +1208,7 @@
       "payment_mode_added": "Zahlungsart hinzugefügt",
       "payment_mode_updated": "Zahlungsart aktualisiert",
       "payment_mode_confirm_delete": "Sie werden diese Zahlungsart nicht wiederherstellen können",
-      "payments_attached": "This payment method is already attached to payments. Please delete the attached payments to proceed with deletion.",
+      "payments_attached": "Diese Zahlungsmethode ist bereits mit anderen Beträgen verknüpft. Bitte löschen Sie die damit verbundenen Beträge, um mit der Löschung fortzufahren.",
       "expenses_attached": "This payment method is already attached to expenses. Please delete the attached expenses to proceed with deletion.",
       "deleted_message": "Zahlungsart erfolgreich gelöscht"
     },
@@ -1184,7 +1237,7 @@
       "discount_per_item": "Rabatt pro Artikel ",
       "discount_setting_description": "Aktivieren Sie diese Option, wenn Sie einzelnen Rechnungspositionen einen Rabatt hinzufügen möchten. Standardmäßig wird der Rabatt direkt zur Rechnung hinzugefügt.",
       "expire_public_links": "Öffentliche Links automatisch ablaufen lassen",
-      "expire_setting_description": "Specify whether you would like to expire all the links sent by application to view invoices, estimates & payments, etc after a specified duration.",
+      "expire_setting_description": "Geben Sie an, ob Sie alle von der Anwendung gesendeten Links zur Ansicht von Rechnungen, Kostenvoranschlägen und Zahlungen usw. nach einer bestimmten Zeit ablaufen lassen möchten.",
       "save": "Speichern",
       "preference": "Präferenz | Präferenzen",
       "general_settings": "Standardeinstellungen für das System.",
@@ -1199,12 +1252,27 @@
       "on_hold": "Pausiert",
       "update_status": "Status aktualisieren",
       "completed": "Abgeschlossen",
-      "company_currency_unchangeable": "Die Währung des Unternehmens kann nicht geändert werden"
+      "company_currency_unchangeable": "Die Währung des Unternehmens kann nicht geändert werden",
+      "fiscal_years": {
+        "january_december": "January - December",
+        "february_january": "February - January",
+        "march_february": "March - February",
+        "april_march": "April - March",
+        "may_april": "May - April",
+        "june_may": "June - May",
+        "july_june": "July - June",
+        "august_july": "August - July",
+        "september_august": "September - August",
+        "october_september": "October - September",
+        "november_october": "November - October",
+        "december_november": "December - November"
+      }
     },
     "update_app": {
       "title": "Applikation aktualisieren",
       "description": "Sie können InvoiceShelf ganz einfach aktualisieren, indem Sie auf die Schaltfläche unten klicken, um nach einem neuen Update zu suchen.",
       "check_update": "Nach Updates suchen",
+      "insider_consent": "Opt-in for Insider releases. Recommended for testing purposes only.",
       "avail_update": "Neues Update verfügbar",
       "next_version": "Nächste Version",
       "requirements": "Voraussetzungen",
@@ -1358,6 +1426,10 @@
     "next": "Weiter",
     "continue": "Weiter",
     "skip": "Überspringen",
+    "install_language": {
+      "title": "Choose your language",
+      "description": "Select language wizard to install InvoiceShelf"
+    },
     "database": {
       "database": "URL der Seite & Datenbank",
       "connection": "Datenbank Verbindung",
@@ -1369,6 +1441,7 @@
       "username": "Datenbank Benutzername",
       "db_name": "Datenbank Name",
       "db_path": "Datenbankpfad",
+      "overwrite": "Overwrite existing database and proceed",
       "desc": "Erstellen Sie eine Datenbank auf Ihrem Server und legen Sie die Anmeldeinformationen mithilfe des folgenden Formulars fest."
     },
     "permissions": {
@@ -1384,7 +1457,14 @@
       "verify_now": "Jetzt verifizieren",
       "success": "Domain erfolgreich verifiziert.",
       "failed": "Domainüberprüfung fehlgeschlagen. Bitte geben Sie einen gültigen Domainnamen ein.",
-      "verify_and_continue": "Verifizieren und fortfahren"
+      "verify_and_continue": "Verifizieren und fortfahren",
+      "notes": {
+        "notes": "Notes:",
+        "not_contain": "App domain should not contain",
+        "or": "or",
+        "in_front": "in front of the domain.",
+        "if_you": "If you're accessing the website on a different port, please mention the port. For example:"
+      }
     },
     "mail": {
       "host": "E-Mail-Host",
@@ -1535,5 +1615,14 @@
   "pdf_received_from": "Erhalten von:",
   "pdf_tax_label": "Steuer",
   "pdf_tax_id": "Steuer-Nr.",
-  "pdf_vat_id": "USt.-ID"
+  "pdf_vat_id": "USt.-ID",
+  "mail_thanks": "Thanks",
+  "mail_view_estimate": "View Estimate",
+  "mail_viewed_estimate": ":name viewed this Estimate.",
+  "mail_view_invoice": "View Invoice",
+  "mail_viewed_invoice": ":name viewed this Invoice.",
+  "mail_view_payment": "View Payment",
+  "notification_view_estimate": "[Notification] Estimate viewed",
+  "notification_view_invoice": "[Notification] Invoice viewed",
+  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:"
 }
