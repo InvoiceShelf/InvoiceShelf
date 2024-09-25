@@ -1,10 +1,10 @@
 <?php
 
-namespace InvoiceShelf\Http\Controllers\V1\Admin\General;
+namespace App\Http\Controllers\V1\Admin\General;
 
 use Illuminate\Http\Request;
 use InvoiceShelf\Http\Controllers\Controller;
-use InvoiceShelf\Space\TimeFormatter;
+use App\Space\TimeFormatter;
 
 class TimeFormatsController extends Controller
 {
