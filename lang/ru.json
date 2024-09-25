@@ -543,8 +543,8 @@
     },
     "frequency": {
       "title": "Frequency",
-      "select_frequency": "Select Frequency",
-      "minute": "Minute",
+      "select_frequency": "Выберите периодичность",
+      "minute": "Минута",
       "hour": "Hour",
       "day_month": "Day of month",
       "month": "Месяц",
