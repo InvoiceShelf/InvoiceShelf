@@ -116,6 +116,15 @@
                   />
                 </BaseInputGroup>
               </BaseInputGrid>
+
+              <BaseInputGroup :label="$t('customers.tax_id')">
+                <BaseInput
+                  v-model="customerStore.currentCustomer.tax_id"
+                  type="text"
+                  class="mt-1 md:mt-0"
+                />
+              </BaseInputGroup>
+
             </BaseInputGrid>
           </BaseTab>
 

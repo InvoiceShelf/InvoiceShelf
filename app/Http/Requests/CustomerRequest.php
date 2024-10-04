@@ -49,8 +49,10 @@ class CustomerRequest extends FormRequest
             'prefix' => [
                 'nullable',
             ],
+            'tax_id' => [
+                'nullable',
+            ],
             'enable_portal' => [
-
                 'boolean',
             ],
             'currency_id' => [
@@ -133,6 +135,7 @@ class CustomerRequest extends FormRequest
                 'password',
                 'phone',
                 'prefix',
+                'tax_id',
                 'company_name',
                 'contact_name',
                 'website',
