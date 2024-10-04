@@ -160,5 +160,25 @@
                 {!! format_money_pdf($invoice->total, $invoice->customer->currency)!!}
             </td>
         </tr>
+
+        @if($invoice->paid_status === App\Models\Invoice::STATUS_PARTIALLY_PAID || $invoice->paid_status === App\Models\Invoice::STATUS_PAID)
+            <tr>
+                <td class="border-0 total-border-left total-table-attribute-label">
+                    @lang('pdf_amount_paid')
+                </td>
+                <td class="py-8 border-0 total-border-right item-cell total-table-attribute-value">
+                    {!! format_money_pdf($invoice->total - $invoice->due_amount, $invoice->customer->currency)!!}
+                </td>
+            </tr>
+            <tr>
+                <td class="border-0 total-border-left total-table-attribute-label">
+                    @lang('pdf_amount_due')
+                </td>
+                <td class="py-8 border-0 total-border-right item-cell total-table-attribute-value" style="color: #5851D8">
+                    {!! format_money_pdf($invoice->due_amount, $invoice->customer->currency)!!}
+                </td>
+            </tr>
+        @endif
+
     </table>
 </div>
