@@ -231,13 +231,20 @@ test('estimate mark as rejected', function () {
 });
 
 test('create invoice from estimate', function () {
-    $estimate = Estimate::factory()->create([
-        'estimate_date' => '1988-07-18',
-        'expiry_date' => '1988-08-18',
-    ]);
+    
+    $estimate = Estimate::factory()
+        ->create([
+            'estimate_date' => now(),
+            'expiry_date' => now()->addMonth(),
+        ]);
 
-    $response = postJson("api/v1/estimates/{$estimate->id}/convert-to-invoice")
-        ->assertStatus(200);
+    $response = postJson("api/v1/estimates/{$estimate->id}/convert-to-invoice");
+
+    if ($response->status() !== 200) {
+        $this->fail('Response status is not 200. Response body: ' . json_encode($response->json()));
+    }
+
+    $response->assertStatus(200);
 });
 
 test('delete multiple estimates using a form request', function () {
