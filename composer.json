@@ -28,6 +28,7 @@
         "spatie/flysystem-dropbox": "^3.0",
         "spatie/laravel-backup": "^8.6",
         "spatie/laravel-medialibrary": "^11.3",
+        "symfony/process": "^7.1",
         "vinkla/hashids": "^12.0"
     },
     "require-dev": {

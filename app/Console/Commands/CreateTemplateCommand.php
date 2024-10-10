@@ -3,7 +3,10 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 
 class CreateTemplateCommand extends Command
 {
@@ -43,19 +46,51 @@ class CreateTemplateCommand extends Command
             $type = $this->choice('Create a template for?', ['invoice', 'estimate']);
         }
 
-        if (Storage::disk('views')->exists("/app/pdf/{$type}/{$templateName}.blade.php")) {
-            $this->info('Template with given name already exists.');
+        $templatePath = "views/app/pdf/{$type}/{$templateName}.blade.php";
+        $imagePath = "static/img/PDF/{$templateName}.png";
 
-            return 0;
+        $disk = Storage::build([
+            'driver' => 'local',
+            'root' => resource_path(),
+        ]);
+
+        if ($disk->exists($templatePath)) {
+            $this->error("Template with given name already exists.");
+
+            return 1;
         }
 
-        Storage::disk('views')->copy("/app/pdf/{$type}/{$type}1.blade.php", "/app/pdf/{$type}/{$templateName}.blade.php");
-        copy(public_path("/build/img/PDF/{$type}1.png"), public_path("/build/img/PDF/{$templateName}.png"));
-        copy(resource_path("/static/img/PDF/{$type}1.png"), resource_path("/static/img/PDF/{$templateName}.png"));
+        $toCopy = [
+            "views/app/pdf/{$type}/{$type}1.blade.php" => $templatePath,
+            "static/img/PDF/{$type}1.png" => $imagePath,
+        ];
 
-        $path = resource_path("views/app/pdf/{$type}/{$templateName}.blade.php");
+        $success = true;
+        foreach ($toCopy as $from => $to) {
+            $success = $success && $disk->copy($from, $to);
+        }
+
+        if ($success === false) {
+            $disk->delete($toCopy);
+
+            $this->error('Failed to copy templates files');
+
+            return 1;
+        }
+
+        $process = new Process(['npm', 'run', 'build']);
+        $process->setWorkingDirectory(base_path());
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            $disk->delete($toCopy);
+
+            throw new ProcessFailedException($process);
+        }
+
+        $path = $disk->path($templatePath);
         $type = ucfirst($type);
-        $this->info("{$type} Template created successfully at ".$path);
+        $this->info("{$type} Template created successfully at {$path}");
 
         return 0;
     }
