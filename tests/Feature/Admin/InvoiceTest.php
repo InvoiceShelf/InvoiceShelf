@@ -61,6 +61,67 @@ test('create invoice', function () {
     ]);
 });
 
+test('create invoice with negative and zero item quantities', function () {
+    $invoice = Invoice::factory()->raw([
+        'items' => [
+            InvoiceItem::factory()->raw([
+                'quantity' => -2,
+                'price' => 100,
+            ]),
+            InvoiceItem::factory()->raw([
+                'quantity' => 1,
+                'price' => 50,
+            ]),
+            InvoiceItem::factory()->raw([
+                'quantity' => 0,
+                'price' => 75,
+            ]),
+        ],
+        'sub_total' => -150,
+        'total' => -150,
+    ]);
+
+    $response = postJson('api/v1/invoices', $invoice);
+
+    $response->assertOk();
+
+    $this->assertDatabaseHas('invoices', [
+        'total' => -150,
+        'sub_total' => -150,
+    ]);
+
+    $this->assertDatabaseHas('invoice_items', [
+        'quantity' => -2,
+        'total' => -200,
+    ]);
+
+    $this->assertDatabaseHas('invoice_items', [
+        'quantity' => 1,
+        'total' => 50,
+    ]);
+
+    $this->assertDatabaseHas('invoice_items', [
+        'quantity' => 0,
+        'total' => 0,
+    ]);
+
+    $createdInvoice = Invoice::where('total', -150)->first();
+    $this->assertNotNull($createdInvoice);
+    $this->assertEquals(3, $createdInvoice->items()->count());
+
+    $negativeItem = $createdInvoice->items()->where('quantity', -2)->first();
+    $this->assertNotNull($negativeItem);
+    $this->assertEquals(-200, $negativeItem->total);
+
+    $positiveItem = $createdInvoice->items()->where('quantity', 1)->first();
+    $this->assertNotNull($positiveItem);
+    $this->assertEquals(50, $positiveItem->total);
+
+    $zeroItem = $createdInvoice->items()->where('quantity', 0)->first();
+    $this->assertNotNull($zeroItem);
+    $this->assertEquals(0, $zeroItem->total);
+});
+
 test('create invoice as sent', function () {
     $invoice = Invoice::factory()
         ->raw([
