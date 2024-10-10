@@ -1376,11 +1376,11 @@
     },
     "verify_domain": {
       "title": "Verificação de Domínio",
-      "desc": "O InvoiceShelfa usa a autenticação baseada na sessão que requer verificação de domínio para fins de segurança. Por favor, insira o domínio no qual você vai acessar seu aplicativo web.",
+      "desc": "O InvoiceShelf usa a autenticação baseada na sessão que requer verificação de domínio para fins de segurança. Por favor, insira o domínio que você vai acessar seu aplicativo.",
       "app_domain": "Domínio do Aplicativo",
       "verify_now": "Verificar Agora",
       "success": "Domínio Verificado com Sucesso.",
-      "failed": "Domain verification failed. Please enter valid domain name.",
+      "failed": "Falha na verificação de domínio. Digite um nome de domínio válido.",
       "verify_and_continue": "Verificar e Continuar"
     },
     "mail": {
