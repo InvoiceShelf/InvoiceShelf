@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
@@ -70,10 +71,7 @@ class CreateTemplateCommand extends Command
         }
 
         if ($success === false) {
-            $disk->delete([
-                $templatePath,
-                $imagePath,
-            ]);
+            $disk->delete($toCopy);
 
             $this->error('Failed to copy templates files');
 
@@ -85,10 +83,7 @@ class CreateTemplateCommand extends Command
         $process->run();
 
         if (!$process->isSuccessful()) {
-            $disk->delete([
-                $templatePath,
-                $imagePath,
-            ]);
+            $disk->delete($toCopy);
 
             throw new ProcessFailedException($process);
         }
