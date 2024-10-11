@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\CompanySetting;
+use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CustomFieldValueResource extends JsonResource
@@ -48,11 +49,11 @@ class CustomFieldValueResource extends JsonResource
         }
 
         if ($key == 'date_time_answer') {
-            return $answer->format('Y-m-d H:i');
+            return Carbon::parse($answer)->format('Y-m-d H:i');
         }
 
         if ($key == 'date_answer') {
-            return $answer->format(CompanySetting::getSetting('carbon_date_format', $this->company_id));
+            return Carbon::parse($answer)->format(CompanySetting::getSetting('carbon_date_format', $this->company_id));
         }
 
         return $answer;
