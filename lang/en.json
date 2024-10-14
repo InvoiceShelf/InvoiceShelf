@@ -1532,5 +1532,7 @@
   "pdf_received_from": "Received from:",
   "pdf_tax_label": "Tax",
   "pdf_tax_id": "Tax-ID",
-  "pdf_vat_id": "VAT-ID"
+  "pdf_vat_id": "VAT-ID",
+  "pdf_amount_paid": "Amount Paid",
+  "pdf_amount_due": "Amount Due"
 }
