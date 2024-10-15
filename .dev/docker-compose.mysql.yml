@@ -15,16 +15,20 @@ services:
 
   nginx:
     container_name: invoiceshelf-dev-nginx
-    image: nginx:stable
+    build:
+      context: ..
+      dockerfile: nginx.Dockerfile
+    environment:
+      - "PHP_FPM_HOST=php-fpm:9000"
     ports:
       - '80:80'
     volumes:
-      - ./nginx/conf.d/dev.conf:/etc/nginx/conf.d/dev.conf
       - ../:/var/www/html
     networks:
       invoiceshelf-dev:
         aliases:
           - invoiceshelf.test
+
   db:
     image: mariadb:10.9
     container_name: invoiceshelf-dev-mysql

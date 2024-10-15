@@ -15,11 +15,14 @@ services:
 
   nginx:
     container_name: invoiceshelf-dev-nginx
-    image: nginx:stable
+    build:
+      context: ..
+      dockerfile: nginx.Dockerfile
+    environment:
+      - "PHP_FPM_HOST=php-fpm:9000"
     ports:
       - '80:80'
     volumes:
-      - ./nginx/conf.d/dev.conf:/etc/nginx/conf.d/dev.conf
       - ../:/var/www/html
     networks:
       invoiceshelf-dev:
@@ -48,6 +51,11 @@ services:
     ports:
       - 1025:1025
       - 8025:8025
+    networks:
+      - invoiceshelf-dev
+
+  pdf:
+    image: gotenberg/gotenberg:8
     networks:
       - invoiceshelf-dev
 

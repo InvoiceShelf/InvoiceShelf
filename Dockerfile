@@ -1,5 +1,5 @@
 FROM node AS static_builder
-    WORKDIR /var/www/html/InvoiceShelf
+    WORKDIR /var/www/html
     COPY . /var/www/html
     RUN yarn && yarn build
 
@@ -32,3 +32,4 @@ FROM base AS production
     COPY --chown=www-data:www-data . /var/www/html
     RUN composer install --prefer-dist
     USER www-data
+
