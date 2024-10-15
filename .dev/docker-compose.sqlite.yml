@@ -1,5 +1,5 @@
 services:
-  invoiceshelf:
+  php-fpm:
     container_name: invoiceshelf-dev-php
     build:
       context: ..
@@ -10,8 +10,17 @@ services:
       target: development
     volumes:
       - ../:/var/www/html
+    networks:
+      - invoiceshelf-dev
+
+  nginx:
+    container_name: invoiceshelf-dev-nginx
+    image: nginx:stable
     ports:
-      - 80:8080
+      - '80:80'
+    volumes:
+      - ./nginx/conf.d/dev.conf:/etc/nginx/conf.d/dev.conf
+      - ../:/var/www/html
     networks:
       invoiceshelf-dev:
         aliases:

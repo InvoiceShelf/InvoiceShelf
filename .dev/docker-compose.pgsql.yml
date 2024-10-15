@@ -10,12 +10,22 @@ services:
       target: development
     volumes:
       - ../:/var/www/html
+    networks:
+      - invoiceshelf-dev
+
+  nginx:
+    container_name: invoiceshelf-dev-nginx
+    image: nginx:stable
     ports:
-      - 80:8080
+      - '80:80'
+    volumes:
+      - ./nginx/conf.d/dev.conf:/etc/nginx/conf.d/dev.conf
+      - ../:/var/www/html
     networks:
       invoiceshelf-dev:
         aliases:
           - invoiceshelf.test
+
   db:
     image: postgres:15
     container_name: invoiceshelf-dev-pgsql

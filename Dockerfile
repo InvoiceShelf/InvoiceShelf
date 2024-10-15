@@ -3,7 +3,7 @@ FROM node AS static_builder
     COPY . /var/www/html
     RUN yarn && yarn build
 
-FROM serversideup/php:8-fpm-nginx-alpine AS base
+FROM serversideup/php:8-fpm-alpine AS base
     USER root
     RUN install-php-extensions exif
     RUN install-php-extensions pgsql
@@ -19,12 +19,11 @@ FROM serversideup/php:8-fpm-nginx-alpine AS base
     RUN install-php-extensions curl
 
 FROM base AS development
-    ARG USRID
-    ARG GRPID
+    ARG UID
+    ARG GID
 
     USER root
-    RUN docker-php-serversideup-set-id www-data $UID:$GID  && \
-        docker-php-serversideup-set-file-permissions --owner $UID:$GID --service nginx
+    RUN docker-php-serversideup-set-id www-data $UID:$GID
     USER www-data
 
 FROM base AS production
