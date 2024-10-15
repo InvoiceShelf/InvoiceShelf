@@ -250,51 +250,47 @@ class Invoice extends Model implements HasMedia
     {
         $filters = collect($filters);
 
-        if ($filters->get('search')) {
-            $query->whereSearch($filters->get('search'));
-        }
+        $query->when($filters->get('search'), function ($query, $search) {
+            $query->whereSearch($search);
+        });
 
-        if ($filters->get('status')) {
-            if (
-                $filters->get('status') == self::STATUS_UNPAID ||
-                $filters->get('status') == self::STATUS_PARTIALLY_PAID ||
-                $filters->get('status') == self::STATUS_PAID
-            ) {
-                $query->wherePaidStatus($filters->get('status'));
-            } elseif ($filters->get('status') == 'DUE') {
-                $query->whereDueStatus($filters->get('status'));
-            } else {
-                $query->whereStatus($filters->get('status'));
-            }
-        }
+        $query->when($filters->get('status'), function ($query, $status) {
+            match ($status) {
+                self::STATUS_UNPAID, self::STATUS_PARTIALLY_PAID, self::STATUS_PAID => $query->wherePaidStatus($status),
+                'DUE' => $query->whereDueStatus($status),
+                default => $query->whereStatus($status),
+            };
+        });
 
-        if ($filters->get('paid_status')) {
-            $query->wherePaidStatus($filters->get('status'));
-        }
+        $query->when($filters->get('paid_status'), function ($query, $status) {
+            $query->wherePaidStatus($status);
+        });
 
-        if ($filters->get('invoice_id')) {
-            $query->whereInvoice($filters->get('invoice_id'));
-        }
+        $query->when($filters->get('invoice_id'), function ($query, $invoiceId) {
+            $query->whereInvoice($invoiceId);
+        });
 
-        if ($filters->get('invoice_number')) {
-            $query->whereInvoiceNumber($filters->get('invoice_number'));
-        }
+        $query->when($filters->get('invoice_number'), function ($query, $invoiceNumber) {
+            $query->whereInvoiceNumber($invoiceNumber);
+        });
 
-        if ($filters->get('from_date') && $filters->get('to_date')) {
-            $start = Carbon::createFromFormat('Y-m-d', $filters->get('from_date'));
-            $end = Carbon::createFromFormat('Y-m-d', $filters->get('to_date'));
+        $query->when($filters->get('from_date') && $filters->get('to_date'), function ($query) use ($filters) {
+            $start = Carbon::parse($filters->get('from_date'));
+            $end = Carbon::parse($filters->get('to_date'));
             $query->invoicesBetween($start, $end);
-        }
+        });
 
-        if ($filters->get('customer_id')) {
-            $query->whereCustomer($filters->get('customer_id'));
-        }
+        $query->when($filters->get('customer_id'), function ($query, $customerId) {
+            $query->where('customer_id', $customerId);
+        });
 
-        if ($filters->get('orderByField') || $filters->get('orderBy')) {
-            $field = $filters->get('orderByField') ? $filters->get('orderByField') : 'sequence_number';
-            $orderBy = $filters->get('orderBy') ? $filters->get('orderBy') : 'desc';
-            $query->whereOrder($field, $orderBy);
-        }
+        $query->when($filters->get('orderByField') || $filters->get('orderBy'), function ($query) use ($filters) {
+            $field = $filters->get('orderByField', 'sequence_number');
+            $orderBy = $filters->get('orderBy', 'desc');
+            $query->orderBy($field, $orderBy);
+        });
+
+        return $query;
     }
 
     public function scopeWhereInvoice($query, $invoice_id)
