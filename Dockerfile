@@ -19,8 +19,8 @@ FROM serversideup/php:8-fpm-nginx-alpine AS base
     RUN install-php-extensions curl
 
 FROM base AS development
-    ARG UID
-    ARG GID
+    ARG USRID
+    ARG GRPID
 
     USER root
     RUN docker-php-serversideup-set-id www-data $UID:$GID  && \
