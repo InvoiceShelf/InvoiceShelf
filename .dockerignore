@@ -23,7 +23,7 @@ vendor/
 .prettierrc.json
 CODE_OF_CONDUCT.md
 Dockerfile
-Dockerfile2
+*.Dockerfile
 LICENSE
 Makefile
 SECURITY.md
