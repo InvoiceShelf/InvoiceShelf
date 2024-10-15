@@ -2,29 +2,20 @@ services:
   php-fpm:
     container_name: invoiceshelf-dev-php
     build:
-      context: ./php
+      context: ..
       dockerfile: Dockerfile
       args:
         - UID=${USRID:-1000}
         - GID=${GRPID:-1000}
-    ports:
-      - 5173:5173
+      target: development
     volumes:
-      - ../:/home/invoiceshelf/app
-    networks:
-      - invoiceshelf-dev
-
-  nginx:
-    container_name: invoiceshelf-dev-nginx
-    image: nginx:stable
+      - ../:/var/www/html
     ports:
-      - '80:80'
-    volumes:
-      - ./nginx/conf.d/dev.conf:/etc/nginx/conf.d/dev.conf
-      - ../:/home/invoiceshelf/app
+      - 80:8080
     networks:
-      - invoiceshelf-dev
-
+      invoiceshelf-dev:
+        aliases:
+          - invoiceshelf.test
   db:
     image: postgres:15
     container_name: invoiceshelf-dev-pgsql
