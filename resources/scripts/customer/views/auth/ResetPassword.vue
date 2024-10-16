@@ -29,13 +29,15 @@
         @input="v$.password.$touch()"
       >
         <template #right>
-          <EyeOffIcon
+          <BaseIcon
             v-if="isShowPassword"
+            name="EyeOffIcon"
             class="w-5 h-5 mr-1 text-gray-500 cursor-pointer"
             @click="isShowPassword = !isShowPassword"
           />
-          <EyeIcon
+          <BaseIcon
             v-else
+            name="EyeIcon"
             class="w-5 h-5 mr-1 text-gray-500 cursor-pointer"
             @click="isShowPassword = !isShowPassword"
           /> </template
