@@ -5,9 +5,9 @@ namespace App\Models;
 use App;
 use App\Mail\SendEstimateMail;
 use App\Services\SerialNumberFormatter;
+use App\Facades\PDF;
 use App\Traits\GeneratesPdfTrait;
 use App\Traits\HasCustomFieldsTrait;
-use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -429,7 +429,7 @@ class Estimate extends Model implements HasMedia
         }
 
         return PDF::loadView('app.pdf.estimate.'.$estimateTemplate);
-    }
+}
 
     public function getCompanyAddress()
     {

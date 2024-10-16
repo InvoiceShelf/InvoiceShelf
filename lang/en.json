@@ -807,7 +807,8 @@
       "payment_modes": "Payment Modes",
       "notes": "Notes",
       "exchange_rate": "Exchange Rate",
-      "address_information": "Address Information"
+      "address_information": "Address Information",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  You can update Your Address information using form below."
@@ -859,6 +860,13 @@
       "title": "PDF Setting",
       "footer_text": "Footer Text",
       "pdf_layout": "PDF Layout"
+    },
+    "pdf_generation": {
+      "pdf_generation": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "gotenberg_host": "Gotenberg service host"
     },
     "company_info": {
       "company_info": "Company info",

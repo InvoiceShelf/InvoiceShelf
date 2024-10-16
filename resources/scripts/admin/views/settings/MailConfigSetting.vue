@@ -8,12 +8,12 @@
     <div v-if="mailDriverStore && mailDriverStore.mailConfigData" class="mt-14">
       <component
         :is="mailDriver"
-        :config-data="mailDriverStore.mailConfigData"
-        :is-saving="isSaving"
-        :mail-drivers="mailDriverStore.mail_drivers"
-        :is-fetching-initial-data="isFetchingInitialData"
-        @on-change-driver="(val) => changeDriver(val)"
-        @submit-data="saveEmailConfig"
+        :config-data="maildriverstore.mailconfigdata"
+        :is-saving="issaving"
+        :mail-drivers="maildriverstore.mail_drivers"
+        :is-fetching-initial-data="isfetchinginitialdata"
+        @on-change-driver="(val) => changedriver(val)"
+        @submit-data="saveemailconfig"
       >
         <BaseButton
           variant="primary-outline"
