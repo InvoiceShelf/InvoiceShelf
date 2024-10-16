@@ -100,26 +100,7 @@
     "pay_invoice": "Payer facture",
     "login_successfully": "Identifié avec succès!",
     "logged_out_successfully": "Déconnecté avec succès",
-    "mark_as_default": "Marquer par défaut",
-    "no_data_found": "Aucune donnée pour le moment",
-    "pagination": {
-      "previous": "Précédent",
-      "next": "Suivant",
-      "showing": "Affichage de",
-      "to": "à",
-      "of": "sur",
-      "results": "résultats"
-    },
-    "file_upload": {
-      "drag_a_file": "Déposez un fichier ici ou",
-      "browse": "parcourez",
-      "to_choose": "pour choisir un fichier"
-    },
-    "multiselect": {
-      "the_list_is_empty": "La liste est vide",
-      "no_results_found": "Aucun résultat"
-    },
-    "copy_to_clipboard": "Copier dans le presse-papier"
+    "mark_as_default": "Marquer par défaut"
   },
   "dashboard": {
     "select_year": "Sélectionnez l'année",
@@ -323,9 +304,6 @@
     "record_payment": "Enregistrer un paiement",
     "add_estimate": "Nouveau devis",
     "save_estimate": "Enregistrer",
-    "cloned_successfully": "Devis dupliqué avec succès",
-    "clone_estimate": "Dupliquer le devis",
-    "confirm_clone": "Ce devis sera dupliqué dans un nouveau devis",
     "confirm_conversion": "Ce devis sera utilisé pour créer une nouvelle facture.",
     "conversion_message": "Conversion réussie",
     "confirm_send_estimate": "Ce devis sera envoyée par email au client",
@@ -570,18 +548,7 @@
       "hour": "Heure",
       "day_month": "Jour du mois",
       "month": "Mois",
-      "day_week": "Jour de la semaine",
-      "every_minute": "Toutes les minutes",
-      "every_30_minute": "Toutes les 30 minutes",
-      "every_hour": "Toutes les heures",
-      "every_2_hour": "Toutes les 2 heures",
-      "every_day_at_midnight": "Tous les jours à minuit",
-      "every_week": "Toutes les semaines",
-      "every_15_days_at_midnight": "Tous les 15 jours à minuit",
-      "on_the_first_day_of_every_month_at_midnight": "Au premier jour du mois à minuit",
-      "every_6_month": "Tous les 6 mois",
-      "every_year_on_the_first_day_of_january_at_midnight": "Tous les ans, au premier janvier à minuit",
-      "custom": "Personnalisée"
+      "day_week": "Jour de la semaine"
     },
     "confirm_delete": "Vous ne pourrez pas récupérer cette facture | Vous ne pourrez pas récupérer ces factures",
     "created_message": "Facture récurrente créée",
@@ -590,12 +557,7 @@
     "marked_as_sent_message": "Facture récurrente envoyée",
     "user_email_does_not_exist": "L'email de l'utilisateur n'existe pas",
     "something_went_wrong": "une erreur s’est produite",
-    "invalid_due_amount_message": "Le montant total de la facture récurrente ne peut pas être inférieur au montant total payé pour cette facture récurrente. Veuillez mettre à jour la facture ou supprimer les paiements associés pour continuer.",
-    "limit": {
-      "none": "Aucun",
-      "date": "Date",
-      "count": "Nombre"
-    }
+    "invalid_due_amount_message": "Le montant total de la facture récurrente ne peut pas être inférieur au montant total payé pour cette facture récurrente. Veuillez mettre à jour la facture ou supprimer les paiements associés pour continuer."
   },
   "payments": {
     "title": "Paiements",
@@ -633,8 +595,7 @@
     "created_message": "Paiement créé",
     "updated_message": "Paiement mis à jour",
     "deleted_message": "Paiement supprimé | Paiements supprimés",
-    "invalid_amount_message": "Le montant du paiement est invalide",
-    "amount_due": "Montant dû"
+    "invalid_amount_message": "Le montant du paiement est invalide"
   },
   "expenses": {
     "title": "Dépenses",
@@ -739,8 +700,7 @@
     "installed": "Installé",
     "no_modules_installed": "Aucun module installé !",
     "disable_warning": "Tous les paramètres de ce module seront réinitialisés.",
-    "what_you_get": "Ce que vous obtenez",
-    "sign_up_and_get_token": "Inscrivez-vous et obtenez votre Jeton"
+    "what_you_get": "Ce que vous obtenez"
   },
   "users": {
     "title": "Utilisateurs",
@@ -792,11 +752,7 @@
       "date_range": "Période",
       "to_date": "Au",
       "from_date": "Du",
-      "report_type": "Trier",
-      "sort": {
-        "by_customer": "Par Client",
-        "by_item": "Par Article"
-      }
+      "report_type": "Trier"
     },
     "taxes": {
       "taxes": "Taxes",
@@ -964,14 +920,7 @@
       "added_message": "Champ personnalisé ajouté",
       "press_enter_to_add": "Appuyez sur Entrée pour ajouter une nouvelle option",
       "model_in_use": "Impossible de mettre à jour le modèle pour les champs qui sont déjà utilisés.",
-      "type_in_use": "Impossible de mettre à jour le type des champs déjà utilisés.",
-      "model_type": {
-        "customer": "Client",
-        "invoice": "Facture",
-        "estimate": "Devis",
-        "expense": "Dépense",
-        "payment": "Paiement"
-      }
+      "type_in_use": "Impossible de mettre à jour le type des champs déjà utilisés."
     },
     "customization": {
       "customization": "Personnalisation",
@@ -1092,12 +1041,7 @@
         "note_updated": "Note de bas de page mise à jour",
         "note_confirm_delete": "Vous ne pourrez pas récupérer cette note de bas de page",
         "already_in_use": "La note de bas de page est déjà utilisée",
-        "deleted_message": "Note de bas de page supprimée",
-        "types": {
-          "estimate": "Devis",
-          "invoice": "Facture",
-          "payment": "Paiement"
-        }
+        "deleted_message": "Note de bas de page supprimée"
       }
     },
     "account_settings": {
@@ -1252,27 +1196,12 @@
       "on_hold": "En attente",
       "update_status": "Mettre à jour le statut",
       "completed": "Terminé",
-      "company_currency_unchangeable": "La devise de la société ne peut pas être modifiée",
-      "fiscal_years": {
-        "january_december": "Janvier - Décembre",
-        "february_january": "Février - Janvier",
-        "march_february": "Mars - Février",
-        "april_march": "Avril - Mars",
-        "may_april": "Mai - Avril",
-        "june_may": "Juin - Mai",
-        "july_june": "Juillet - Juin",
-        "august_july": "Aout - Juillet",
-        "september_august": "Septembre - Aout",
-        "october_september": "Octobre - Septembre",
-        "november_october": "Novembre - Octobre",
-        "december_november": "Décembre - Novembre"
-      }
+      "company_currency_unchangeable": "La devise de la société ne peut pas être modifiée"
     },
     "update_app": {
       "title": "Mise à jour",
       "description": "Mettez simplement InvoiceShelf à jour en cliquant sur le bouton ci-dessous.",
       "check_update": "Rechercher des mises à jour",
-      "insider_consent": "Opt-in for Insider releases. Recommended for testing purposes only.",
       "avail_update": "Nouvelle mise à jour disponible",
       "next_version": "Version suivante",
       "requirements": "Spécifications requises",
@@ -1426,10 +1355,6 @@
     "next": "Suivant",
     "continue": "Poursuivre",
     "skip": "Ignorer",
-    "install_language": {
-      "title": "Choix de la langue",
-      "description": "Sélectionner la langue de l'assistant pour installer InvoiceShelf"
-    },
     "database": {
       "database": "URL du site et base de données",
       "connection": "Connexion à la base de données",
@@ -1441,7 +1366,6 @@
       "username": "Nom d'utilisateur de la base de données",
       "db_name": "Nom de la base de données",
       "db_path": "Emplacement de la base de données",
-      "overwrite": "Overwrite existing database and proceed",
       "desc": "Créez une base de données sur votre serveur et définissez les informations d'identification à l'aide du formulaire ci-dessous."
     },
     "permissions": {
@@ -1457,14 +1381,7 @@
       "verify_now": "Vérifier maintenant",
       "success": "Vérification du domaine réussie.",
       "failed": "La vérification du domaine a échoué. Veuillez entrer un nom de domaine valide.",
-      "verify_and_continue": "Vérifier et continuer",
-      "notes": {
-        "notes": "Notes :",
-        "not_contain": "Le domaine de l'application ne doit pas contenir",
-        "or": "ou",
-        "in_front": "devant le domaine.",
-        "if_you": "Si vous accédez au site Web sur un autre port, veuillez mentionner le port. Par exemple :"
-      }
+      "verify_and_continue": "Vérifier et continuer"
     },
     "mail": {
       "host": "Serveur email",
@@ -1616,13 +1533,13 @@
   "pdf_tax_label": "Taxe",
   "pdf_tax_id": "Tax-ID",
   "pdf_vat_id": "VAT-ID",
-  "mail_thanks": "Merci",
-  "mail_view_estimate": "Voir le Devis",
-  "mail_viewed_estimate": ":name a consulté ce Devis.",
-  "mail_view_invoice": "Voir la Facture",
-  "mail_viewed_invoice": ":name a consulté cette Facture.",
-  "mail_view_payment": "Voir le Paiement",
-  "notification_view_estimate": "[Notification] Un Devis a été consulté",
-  "notification_view_invoice": "[Notification] Une Facture a été consultée",
-  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "Vous avez reçu une nouvelle facture de <b>{COMPANY_NAME}</b>.</br> Vous pouvez la télécharger en cliquant sur le bouton :"
+  "mail_thanks": "Thanks",
+  "mail_view_estimate": "View Estimate",
+  "mail_viewed_estimate": ":name viewed this Estimate.",
+  "mail_view_invoice": "View Invoice",
+  "mail_viewed_invoice": ":name viewed this Invoice.",
+  "mail_view_payment": "View Payment",
+  "notification_view_estimate": "[Notification] Estimate viewed",
+  "notification_view_invoice": "[Notification] Invoice viewed",
+  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:"
 }

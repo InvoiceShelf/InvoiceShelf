@@ -100,26 +100,7 @@
     "pay_invoice": "Zapłać Fakturę",
     "login_successfully": "Zalogowano pomyślnie!",
     "logged_out_successfully": "Wylogowano pomyślnie",
-    "mark_as_default": "Mark as default",
-    "no_data_found": "No data found",
-    "pagination": {
-      "previous": "Previous",
-      "next": "Next",
-      "showing": "Showing",
-      "to": "to",
-      "of": "of",
-      "results": "results"
-    },
-    "file_upload": {
-      "drag_a_file": "Drag a file here or",
-      "browse": "browse",
-      "to_choose": "to choose a file"
-    },
-    "multiselect": {
-      "the_list_is_empty": "The list is empty",
-      "no_results_found": "No results found"
-    },
-    "copy_to_clipboard": "Copy to Clipboard"
+    "mark_as_default": "Mark as default"
   },
   "dashboard": {
     "select_year": "Wybierz rok",
@@ -323,9 +304,6 @@
     "record_payment": "Zarejestruj płatność",
     "add_estimate": "Dodaj ofertę",
     "save_estimate": "Zapisz ofertę",
-    "cloned_successfully": "Oferta została pomyślnie sklonowana",
-    "clone_estimate": "Sklonuj ofertę",
-    "confirm_clone": "Ta oferta zostanie sklonowana do nowej oferty",
     "confirm_conversion": "Ta oferta zostanie użyta do utworzenia nowej faktury.",
     "conversion_message": "Faktura została utworzona pomyślnie",
     "confirm_send_estimate": "Ta oferta zostanie wysłana pocztą elektroniczną do kontrahenta",
@@ -570,18 +548,7 @@
       "hour": "Godzina",
       "day_month": "Dzień miesiąca",
       "month": "Miesiąc",
-      "day_week": "Dzień tygodnia",
-      "every_minute": "Every Minute",
-      "every_30_minute": "Every 30 Minute",
-      "every_hour": "Every Hour",
-      "every_2_hour": "Every 2 Hour",
-      "every_day_at_midnight": "Every day at midnight",
-      "every_week": "Every Week",
-      "every_15_days_at_midnight": "Every 15 days at midnight",
-      "on_the_first_day_of_every_month_at_midnight": "On the first day of every month at 00:00",
-      "every_6_month": "Every 6 Month",
-      "every_year_on_the_first_day_of_january_at_midnight": "Every year on the first day of january at 00:00",
-      "custom": "Custom"
+      "day_week": "Dzień tygodnia"
     },
     "confirm_delete": "Nie będziesz w stanie odzyskać tej faktury | Nie będziesz w stanie odzyskać tych faktur",
     "created_message": "Faktura Cykliczna utworzona pomyślnie",
@@ -590,12 +557,7 @@
     "marked_as_sent_message": "Faktura Cykliczna oznaczona jako wysłana pomyślnie",
     "user_email_does_not_exist": "E-mail użytkownika nie istnieje",
     "something_went_wrong": "coś poszło nie tak",
-    "invalid_due_amount_message": "Całkowita kwota faktury cyklicznej nie może być mniejsza niż całkowita kwota zapłacona za tę fakturę cykliczną. Proszę zaktualizować fakturę lub usunąć powiązane płatności, aby kontynuować.",
-    "limit": {
-      "none": "None",
-      "date": "Date",
-      "count": "Count"
-    }
+    "invalid_due_amount_message": "Całkowita kwota faktury cyklicznej nie może być mniejsza niż całkowita kwota zapłacona za tę fakturę cykliczną. Proszę zaktualizować fakturę lub usunąć powiązane płatności, aby kontynuować."
   },
   "payments": {
     "title": "Płatności",
@@ -633,8 +595,7 @@
     "created_message": "Płatność została pomyślnie utworzona",
     "updated_message": "Płatność została pomyślnie zaktualizowana",
     "deleted_message": "Płatność usunięta pomyślnie | Płatności usunięte pomyślnie",
-    "invalid_amount_message": "Kwota płatności jest nieprawidłowa",
-    "amount_due": "Due Amount"
+    "invalid_amount_message": "Kwota płatności jest nieprawidłowa"
   },
   "expenses": {
     "title": "Wydatki",
@@ -739,8 +700,7 @@
     "installed": "Zainstalowano",
     "no_modules_installed": "Brak zainstalowanych modułów!",
     "disable_warning": "Wszystkie ustawienia dla tego konkretnego zostaną przywrócone.",
-    "what_you_get": "Co otrzymasz",
-    "sign_up_and_get_token": "Sign up & Get Token"
+    "what_you_get": "Co otrzymasz"
   },
   "users": {
     "title": "Użytkownicy",
@@ -792,11 +752,7 @@
       "date_range": "Wybierz zakres dat",
       "to_date": "Do daty",
       "from_date": "Od daty",
-      "report_type": "Typ raportu",
-      "sort": {
-        "by_customer": "By Customer",
-        "by_item": "By Item"
-      }
+      "report_type": "Typ raportu"
     },
     "taxes": {
       "taxes": "Podatki",
@@ -964,14 +920,7 @@
       "added_message": "Pole niestandardowe zostało dodane pomyślnie",
       "press_enter_to_add": "Naciśnij Enter, aby dodać nową opcję",
       "model_in_use": "Nie można zaktualizować modelu dla pól, które są już używane.",
-      "type_in_use": "Nie można zaktualizować typu dla pól, które są już używane.",
-      "model_type": {
-        "customer": "Customer",
-        "invoice": "Invoice",
-        "estimate": "Estimate",
-        "expense": "Expense",
-        "payment": "Payment"
-      }
+      "type_in_use": "Nie można zaktualizować typu dla pól, które są już używane."
     },
     "customization": {
       "customization": "dostosowywanie",
@@ -1092,12 +1041,7 @@
         "note_updated": "Notatka zaktualizowana pomyślnie",
         "note_confirm_delete": "Nie będziesz w stanie odzyskać tej notatki",
         "already_in_use": "Notatka jest już w użyciu",
-        "deleted_message": "Notatka została usunięta pomyślnie",
-        "types": {
-          "estimate": "Estimate",
-          "invoice": "Invoice",
-          "payment": "Payment"
-        }
+        "deleted_message": "Notatka została usunięta pomyślnie"
       }
     },
     "account_settings": {
@@ -1252,27 +1196,12 @@
       "on_hold": "Wstrzymane",
       "update_status": "Aktualizuj status",
       "completed": "Ukończone",
-      "company_currency_unchangeable": "Nie można zmienić waluty firmy",
-      "fiscal_years": {
-        "january_december": "January - December",
-        "february_january": "February - January",
-        "march_february": "March - February",
-        "april_march": "April - March",
-        "may_april": "May - April",
-        "june_may": "June - May",
-        "july_june": "July - June",
-        "august_july": "August - July",
-        "september_august": "September - August",
-        "october_september": "October - September",
-        "november_october": "November - October",
-        "december_november": "December - November"
-      }
+      "company_currency_unchangeable": "Nie można zmienić waluty firmy"
     },
     "update_app": {
       "title": "Aktualizuj aplikację",
       "description": "Możesz łatwo zaktualizować InvoiceShelfa poprzez kliknięcie przycisku poniżej",
       "check_update": "Sprawdź czy są dostępne nowe aktualizacje",
-      "insider_consent": "Opt-in for Insider releases. Recommended for testing purposes only.",
       "avail_update": "Dostępna nowa aktualizacja",
       "next_version": "Nowa wersja",
       "requirements": "Wymagania",
@@ -1426,10 +1355,6 @@
     "next": "Następny",
     "continue": "Kontynuuj",
     "skip": "Pomiń",
-    "install_language": {
-      "title": "Choose your language",
-      "description": "Select language wizard to install InvoiceShelf"
-    },
     "database": {
       "database": "Adres URL witryny i baza danych",
       "connection": "Połączenie z bazą danych",
@@ -1441,7 +1366,6 @@
       "username": "Nazwa użytkownika bazy danych",
       "db_name": "Nazwa bazy danych",
       "db_path": "Ścieżka do bazy danych",
-      "overwrite": "Overwrite existing database and proceed",
       "desc": "Utwórz bazę danych na swoim serwerze i ustaw dane logowania za pomocą poniższego formularza."
     },
     "permissions": {
@@ -1457,14 +1381,7 @@
       "verify_now": "Potwierdź teraz",
       "success": "Pomyślnie zweryfikowano domenę.",
       "failed": "Weryfikacja domeny nie powiodła się. Podaj prawidłową nazwę domeny.",
-      "verify_and_continue": "Weryfikuj i kontynuuj",
-      "notes": {
-        "notes": "Notes:",
-        "not_contain": "App domain should not contain",
-        "or": "or",
-        "in_front": "in front of the domain.",
-        "if_you": "If you're accessing the website on a different port, please mention the port. For example:"
-      }
+      "verify_and_continue": "Weryfikuj i kontynuuj"
     },
     "mail": {
       "host": "Adres hosta poczty",
