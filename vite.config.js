@@ -32,11 +32,8 @@ export default defineConfig({
                 },
             },
         }),
-        laravel({
-            input: [
-                'resources/scripts/main.js',
-            ],
-            refresh: true,
-        })
+        laravel([
+            'resources/scripts/main.js'
+        ])
     ]
 });
