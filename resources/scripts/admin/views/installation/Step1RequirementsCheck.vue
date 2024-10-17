@@ -71,7 +71,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useInstallationStore } from '@/scripts/admin/stores/installation.js'
 
 const emit = defineEmits(['next'])
@@ -82,6 +82,10 @@ const isSaving = ref(false)
 const isShow = ref(true)
 
 const installationStore = useInstallationStore()
+
+onMounted(async () => {
+  getRequirements()
+})
 
 const hasNext = computed(() => {
   if (requirements.value) {

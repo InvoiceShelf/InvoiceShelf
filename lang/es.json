@@ -1355,6 +1355,10 @@
     "next": "Siguiente",
     "continue": "Continuar",
     "skip": "Saltar",
+    "install_language": {
+      "title": "Elige tu idioma",
+      "description": "Selecciona el asistente de idioma para instalar InvoiceShelf"
+    },
     "database": {
       "database": "URL del sitio y base de datos",
       "connection": "Conexión de base de datos",

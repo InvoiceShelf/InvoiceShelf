@@ -142,7 +142,6 @@
 
         <BaseInputGroup
           :label="$t('settings.company_info.vat_id')"
-          class="mt-4"
         >
           <BaseInput
             v-model.trim="companyForm.vat_id"
