@@ -1539,7 +1539,7 @@
   "mail_view_invoice": "View Invoice",
   "mail_viewed_invoice": ":name viewed this Invoice.",
   "mail_view_payment": "View Payment",
-  "notification_view_estimate": "[Notification] Estimate viewed",
-  "notification_view_invoice": "[Notification] Invoice viewed",
-  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:"
+  "notification_view_estimate": "[Notification] Presupuesto visto",
+  "notification_view_invoice": "[Notification] Factura vista",
+  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "Ha recibido una nueva factura de <b>{COMPANY_NAME}</b>.</br> Por favor descárguela usando el siguiente botón:"
 }
