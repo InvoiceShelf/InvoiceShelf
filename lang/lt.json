@@ -172,6 +172,7 @@
   "customers": {
     "title": "Klientai",
     "prefix": "Priešdėlis",
+    "tax_id": "Tax ID",
     "add_customer": "Pridėti klientą",
     "contacts_list": "Klientų sąrašas",
     "name": "Vardas",

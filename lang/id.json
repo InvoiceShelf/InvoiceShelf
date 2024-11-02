@@ -172,6 +172,7 @@
   "customers": {
     "title": "Pelanggan",
     "prefix": "Awalan",
+    "tax_id": "Tax ID",
     "add_customer": "Tambah Pelanggan",
     "contacts_list": "Daftar Pelanggan",
     "name": "Nama",

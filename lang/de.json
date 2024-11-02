@@ -172,6 +172,7 @@
   "customers": {
     "title": "Kunden",
     "prefix": "Präfix",
+    "tax_id": "Tax ID",
     "add_customer": "Kunde hinzufügen",
     "contacts_list": "Kunden-Liste",
     "name": "Name",
@@ -1115,7 +1116,7 @@
       "default_currency_error": "Diese Währung wird bereits in einem der aktiven Anbieter verwendet",
       "exchange_help_text": "Wechselkurs eingeben um von {currency} nach {baseCurrency} zu konvertieren",
       "currency_freak": "CurrencyFreaks",
-      "currency_layer": "Currency Layer",
+      "currency_layer": "Währungsebene",
       "open_exchange_rate": "Open Exchange Rate",
       "currency_converter": "Währungsumrechner",
       "server": "Server",
