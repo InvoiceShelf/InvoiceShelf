@@ -172,6 +172,7 @@
   "customers": {
     "title": "Клиенты",
     "prefix": "Префикс",
+    "tax_id": "Tax ID",
     "add_customer": "Добавить клиента",
     "contacts_list": "Список клиентов",
     "name": "Имя",
