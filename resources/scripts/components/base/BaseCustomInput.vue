@@ -180,6 +180,7 @@ async function getFields() {
           { label: 'Email', value: 'CONTACT_EMAIL' },
           { label: 'Phone', value: 'CONTACT_PHONE' },
           { label: 'Website', value: 'CONTACT_WEBSITE' },
+          { label: 'Tax ID', value: 'CONTACT_TAX_ID' },
           ...customerFields.value.map((i) => ({
             label: i.label,
             value: i.slug,
