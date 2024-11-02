@@ -172,6 +172,7 @@
         :data="fetchData"
         :columns="invoiceColumns"
         :placeholder-count="invoiceStore.invoiceTotalCount >= 20 ? 10 : 5"
+        :key="tableKey"
         class="mt-10"
       >
         <!-- Select All Checkbox -->
@@ -288,6 +289,7 @@ const { t } = useI18n()
 // Local State
 const utils = inject('$utils')
 const table = ref(null)
+const tableKey = ref(0)
 const showFilters = ref(false)
 
 const status = ref([
@@ -416,9 +418,12 @@ async function fetchData({ page, filter, sort }) {
     page,
   }
 
+  console.log(data)
+
   isRequestOngoing.value = true
 
   let response = await invoiceStore.fetchInvoices(data)
+  console.log('API response:', response.data.data)
 
   isRequestOngoing.value = false
 
@@ -463,6 +468,8 @@ function setFilters() {
     state.selectedInvoices = []
     state.selectAllField = false
   })
+
+  tableKey.value += 1
 
   refreshTable()
 }

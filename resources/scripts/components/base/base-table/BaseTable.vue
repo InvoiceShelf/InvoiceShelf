@@ -188,7 +188,7 @@ const props = defineProps({
   },
 })
 
-let rows = reactive([])
+const rows = ref([])
 let isLoading = ref(false)
 
 let tableColumns = reactive(props.columns.map((column) => new Column(column)))
@@ -339,14 +339,13 @@ function lodashGet(array, key) {
   return get(array, key)
 }
 
-if (usesLocalData.value) {
-  watch(
-    () => props.data,
-    () => {
-      mapDataToRows()
-    }
-  )
-}
+watch(
+  () => props.data,
+  () => {
+    mapDataToRows()
+  },
+  { deep: true }
+)
 
 onMounted(async () => {
   await mapDataToRows()
