@@ -172,6 +172,7 @@
   "customers": {
     "title": "Klijenti",
     "prefix": "Prefix",
+    "tax_id": "Tax ID",
     "add_customer": "Dodaj Klijenta",
     "contacts_list": "Popis klijenata",
     "name": "Naziv",
