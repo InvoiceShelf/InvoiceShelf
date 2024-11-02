@@ -172,6 +172,7 @@
   "customers": {
     "title": "Müşteriler",
     "prefix": "Ön ek",
+    "tax_id": "Tax ID",
     "add_customer": "Müşteri ekle",
     "contacts_list": "Müşteri listesi",
     "name": "İsim",
