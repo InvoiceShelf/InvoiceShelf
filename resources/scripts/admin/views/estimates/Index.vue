@@ -174,6 +174,7 @@
         :data="fetchData"
         :columns="estimateColumns"
         :placeholder-count="estimateStore.totalEstimateCount >= 20 ? 10 : 5"
+        :key="tableKey"
         class="mt-10"
       >
         <template #header>
@@ -256,6 +257,7 @@ const dialogStore = useDialogStore()
 const userStore = useUserStore()
 
 const tableComponent = ref(null)
+const tableKey = ref(0)
 const { t } = useI18n()
 const showFilters = ref(false)
 const status = ref([
@@ -407,6 +409,8 @@ function setFilters() {
     state.selectedEstimates = []
     state.selectAllField = false
   })
+
+  tableKey.value += 1
 
   refreshTable()
 }

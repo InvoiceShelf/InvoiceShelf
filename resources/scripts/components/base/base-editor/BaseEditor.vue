@@ -8,598 +8,73 @@
   </BaseContentPlaceholders>
   <div
     v-else
-    class="
-      box-border
-      w-full
-      text-sm
-      leading-8
-      text-left
-      bg-white
-      border border-gray-200
-      rounded-md
-      min-h-[200px]
-      overflow-hidden
-    "
+    class="box-border w-full text-sm leading-8 text-left bg-white border border-gray-200 rounded-md min-h-[200px] overflow-hidden"
   >
     <div v-if="editor" class="editor-content">
       <div class="flex justify-end p-2 border-b border-gray-200 md:hidden">
         <BaseDropdown width-class="w-48">
           <template #activator>
             <div
-              class="
-                flex
-                items-center
-                justify-center
-                w-6
-                h-6
-                ml-2
-                text-sm text-black
-                bg-white
-                rounded-sm
-                md:h-9 md:w-9
-              "
+              class="flex items-center justify-center w-6 h-6 ml-2 text-sm text-black bg-white rounded-sm md:h-9 md:w-9"
             >
               <dots-vertical-icon class="w-6 h-6 text-gray-600" />
             </div>
           </template>
           <div class="flex flex-wrap space-x-1">
-            <span
-              class="
-                flex
-                items-center
-                justify-center
-                w-6
-                h-6
-                rounded-sm
-                cursor-pointer
-                hover:bg-gray-100
-              "
-              :class="{ 'bg-gray-200': editor.isActive('bold') }"
-              @click="editor.chain().focus().toggleBold().run()"
+            <button
+              v-for="button in editorButtons"
+              type="button"
+              :key="button.name"
+              class="p-1 rounded hover:bg-gray-100"
+              @click="button.action"
             >
-              <bold-icon class="h-3 cursor-pointer fill-current" />
-            </span>
-            <span
-              class="
-                flex
-                items-center
-                justify-center
-                w-6
-                h-6
-                rounded-sm
-                cursor-pointer
-                hover:bg-gray-100
-              "
-              :class="{ 'bg-gray-200': editor.isActive('italic') }"
-              @click="editor.chain().focus().toggleItalic().run()"
-            >
-              <italic-icon class="h-3 cursor-pointer fill-current" />
-            </span>
-            <span
-              class="
-                flex
-                items-center
-                justify-center
-                w-6
-                h-6
-                rounded-sm
-                cursor-pointer
-                hover:bg-gray-100
-              "
-              :class="{ 'bg-gray-200': editor.isActive('strike') }"
-              @click="editor.chain().focus().toggleStrike().run()"
-            >
-              <strikethrough-icon class="h-3 cursor-pointer fill-current" />
-            </span>
-            <span
-              class="
-                flex
-                items-center
-                justify-center
-                w-6
-                h-6
-                rounded-sm
-                cursor-pointer
-                hover:bg-gray-100
-              "
-              :class="{ 'bg-gray-200': editor.isActive('code') }"
-              @click="editor.chain().focus().toggleCode().run()"
-            >
-              <coding-icon class="h-3 cursor-pointer fill-current" />
-            </span>
-            <span
-              class="
-                flex
-                items-center
-                justify-center
-                w-6
-                h-6
-                rounded-sm
-                cursor-pointer
-                hover:bg-gray-100
-              "
-              :class="{ 'bg-gray-200': editor.isActive('paragraph') }"
-              @click="editor.chain().focus().setParagraph().run()"
-            >
-              <paragraph-icon class="h-3 cursor-pointer fill-current" />
-            </span>
-            <span
-              class="
-                flex
-                items-center
-                justify-center
-                w-6
-                h-6
-                rounded-sm
-                cursor-pointer
-                hover:bg-gray-100
-              "
-              :class="{
-                'bg-gray-200': editor.isActive('heading', { level: 1 }),
-              }"
-              @click="editor.chain().focus().toggleHeading({ level: 1 }).run()"
-            >
-              H1
-            </span>
-            <span
-              class="
-                flex
-                items-center
-                justify-center
-                w-6
-                h-6
-                rounded-sm
-                cursor-pointer
-                hover:bg-gray-100
-              "
-              :class="{
-                'bg-gray-200': editor.isActive('heading', { level: 2 }),
-              }"
-              @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
-            >
-              H2
-            </span>
-            <span
-              class="
-                flex
-                items-center
-                justify-center
-                w-6
-                h-6
-                rounded-sm
-                cursor-pointer
-                hover:bg-gray-100
-              "
-              :class="{
-                'bg-gray-200': editor.isActive('heading', { level: 3 }),
-              }"
-              @click="editor.chain().focus().toggleHeading({ level: 3 }).run()"
-            >
-              H3
-            </span>
-
-            <span
-              class="
-                flex
-                items-center
-                justify-center
-                w-6
-                h-6
-                rounded-sm
-                cursor-pointer
-                hover:bg-gray-100
-              "
-              :class="{ 'bg-gray-200': editor.isActive('bulletList') }"
-              @click="editor.chain().focus().toggleBulletList().run()"
-            >
-              <list-ul-icon class="h-3 cursor-pointer fill-current" />
-            </span>
-            <span
-              class="
-                flex
-                items-center
-                justify-center
-                w-6
-                h-6
-                rounded-sm
-                cursor-pointer
-                hover:bg-gray-100
-              "
-              :class="{ 'bg-gray-200': editor.isActive('orderedList') }"
-              @click="editor.chain().focus().toggleOrderedList().run()"
-            >
-              <list-icon class="h-3 cursor-pointer fill-current" />
-            </span>
-            <span
-              class="
-                flex
-                items-center
-                justify-center
-                w-6
-                h-6
-                rounded-sm
-                cursor-pointer
-                hover:bg-gray-100
-              "
-              :class="{ 'bg-gray-200': editor.isActive('blockquote') }"
-              @click="editor.chain().focus().toggleBlockquote().run()"
-            >
-              <quote-icon class="h-3 cursor-pointer fill-current" />
-            </span>
-            <span
-              class="
-                flex
-                items-center
-                justify-center
-                w-6
-                h-6
-                rounded-sm
-                cursor-pointer
-                hover:bg-gray-100
-              "
-              :class="{ 'bg-gray-200': editor.isActive('codeBlock') }"
-              @click="editor.chain().focus().toggleCodeBlock().run()"
-            >
-              <code-block-icon class="h-3 cursor-pointer fill-current" />
-            </span>
-            <span
-              class="
-                flex
-                items-center
-                justify-center
-                w-6
-                h-6
-                rounded-sm
-                cursor-pointer
-                hover:bg-gray-100
-              "
-              :class="{ 'bg-gray-200': editor.isActive('undo') }"
-              @click="editor.chain().focus().undo().run()"
-            >
-              <undo-icon class="h-3 cursor-pointer fill-current" />
-            </span>
-            <span
-              class="
-                flex
-                items-center
-                justify-center
-                w-6
-                h-6
-                rounded-sm
-                cursor-pointer
-                hover:bg-gray-100
-              "
-              :class="{ 'bg-gray-200': editor.isActive('redo') }"
-              @click="editor.chain().focus().redo().run()"
-            >
-              <redo-icon class="h-3 cursor-pointer fill-current" />
-            </span>
+              <component
+                :is="button.icon"
+                v-if="button.icon"
+                class="w-4 h-4 text-gray-700 fill-gray-700"
+              />
+              <span v-else-if="button.text" class="px-1 text-sm font-medium text-gray-600">
+                {{ button.text }}
+              </span>
+            </button>
           </div>
         </BaseDropdown>
       </div>
       <div class="hidden p-2 border-b border-gray-200 md:flex">
         <div class="flex flex-wrap space-x-1">
-          <span
-            class="
-              flex
-              items-center
-              justify-center
-              w-6
-              h-6
-              rounded-sm
-              cursor-pointer
-              hover:bg-gray-100
-            "
-            :class="{ 'bg-gray-200': editor.isActive('bold') }"
-            @click="editor.chain().focus().toggleBold().run()"
-          >
-            <bold-icon class="h-3 cursor-pointer fill-current" />
-          </span>
-          <span
-            class="
-              flex
-              items-center
-              justify-center
-              w-6
-              h-6
-              rounded-sm
-              cursor-pointer
-              hover:bg-gray-100
-            "
-            :class="{ 'bg-gray-200': editor.isActive('italic') }"
-            @click="editor.chain().focus().toggleItalic().run()"
-          >
-            <italic-icon class="h-3 cursor-pointer fill-current" />
-          </span>
-          <span
-            class="
-              flex
-              items-center
-              justify-center
-              w-6
-              h-6
-              rounded-sm
-              cursor-pointer
-              hover:bg-gray-100
-            "
-            :class="{ 'bg-gray-200': editor.isActive('strike') }"
-            @click="editor.chain().focus().toggleStrike().run()"
-          >
-            <strikethrough-icon class="h-3 cursor-pointer fill-current" />
-          </span>
-          <span
-            class="
-              flex
-              items-center
-              justify-center
-              w-6
-              h-6
-              rounded-sm
-              cursor-pointer
-              hover:bg-gray-100
-            "
-            :class="{ 'bg-gray-200': editor.isActive('code') }"
-            @click="editor.chain().focus().toggleCode().run()"
-          >
-            <coding-icon class="h-3 cursor-pointer fill-current" />
-          </span>
-          <span
-            class="
-              flex
-              items-center
-              justify-center
-              w-6
-              h-6
-              rounded-sm
-              cursor-pointer
-              hover:bg-gray-100
-            "
-            :class="{ 'bg-gray-200': editor.isActive('paragraph') }"
-            @click="editor.chain().focus().setParagraph().run()"
-          >
-            <paragraph-icon class="h-3 cursor-pointer fill-current" />
-          </span>
-          <span
-            class="
-              flex
-              items-center
-              justify-center
-              w-6
-              h-6
-              rounded-sm
-              cursor-pointer
-              hover:bg-gray-100
-            "
-            :class="{ 'bg-gray-200': editor.isActive('heading', { level: 1 }) }"
-            @click="editor.chain().focus().toggleHeading({ level: 1 }).run()"
-          >
-            H1
-          </span>
-          <span
-            class="
-              flex
-              items-center
-              justify-center
-              w-6
-              h-6
-              rounded-sm
-              cursor-pointer
-              hover:bg-gray-100
-            "
-            :class="{ 'bg-gray-200': editor.isActive('heading', { level: 2 }) }"
-            @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
-          >
-            H2
-          </span>
-          <span
-            class="
-              flex
-              items-center
-              justify-center
-              w-6
-              h-6
-              rounded-sm
-              cursor-pointer
-              hover:bg-gray-100
-            "
-            :class="{ 'bg-gray-200': editor.isActive('heading', { level: 3 }) }"
-            @click="editor.chain().focus().toggleHeading({ level: 3 }).run()"
-          >
-            H3
-          </span>
-
-          <span
-            class="
-              flex
-              items-center
-              justify-center
-              w-6
-              h-6
-              rounded-sm
-              cursor-pointer
-              hover:bg-gray-100
-            "
-            :class="{ 'bg-gray-200': editor.isActive('bulletList') }"
-            @click="editor.chain().focus().toggleBulletList().run()"
-          >
-            <list-ul-icon class="h-3 cursor-pointer fill-current" />
-          </span>
-          <span
-            class="
-              flex
-              items-center
-              justify-center
-              w-6
-              h-6
-              rounded-sm
-              cursor-pointer
-              hover:bg-gray-100
-            "
-            :class="{ 'bg-gray-200': editor.isActive('orderedList') }"
-            @click="editor.chain().focus().toggleOrderedList().run()"
-          >
-            <list-icon class="h-3 cursor-pointer fill-current" />
-          </span>
-          <span
-            class="
-              flex
-              items-center
-              justify-center
-              w-6
-              h-6
-              rounded-sm
-              cursor-pointer
-              hover:bg-gray-100
-            "
-            :class="{ 'bg-gray-200': editor.isActive('blockquote') }"
-            @click="editor.chain().focus().toggleBlockquote().run()"
-          >
-            <quote-icon class="h-3 cursor-pointer fill-current" />
-          </span>
-          <span
-            class="
-              flex
-              items-center
-              justify-center
-              w-6
-              h-6
-              rounded-sm
-              cursor-pointer
-              hover:bg-gray-100
-            "
-            :class="{ 'bg-gray-200': editor.isActive('codeBlock') }"
-            @click="editor.chain().focus().toggleCodeBlock().run()"
-          >
-            <code-block-icon class="h-3 cursor-pointer fill-current" />
-          </span>
-          <span
-            class="
-              flex
-              items-center
-              justify-center
-              w-6
-              h-6
-              rounded-sm
-              cursor-pointer
-              hover:bg-gray-100
-            "
-            :class="{ 'bg-gray-200': editor.isActive('undo') }"
-            @click="editor.chain().focus().undo().run()"
-          >
-            <undo-icon class="h-3 cursor-pointer fill-current" />
-          </span>
-          <span
-            class="
-              flex
-              items-center
-              justify-center
-              w-6
-              h-6
-              rounded-sm
-              cursor-pointer
-              hover:bg-gray-100
-            "
-            :class="{ 'bg-gray-200': editor.isActive('redo') }"
-            @click="editor.chain().focus().redo().run()"
-          >
-            <redo-icon class="h-3 cursor-pointer fill-current" />
-          </span>
-          <span
-            class="
-              flex
-              items-center
-              justify-center
-              w-6
-              h-6
-              rounded-sm
-              cursor-pointer
-              hover:bg-gray-100
-            "
-            :class="{ 'bg-gray-200': editor.isActive({ textAlign: 'left' }) }"
-            @click="editor.chain().focus().setTextAlign('left').run()"
-          >
-            <menu-alt2-icon class="h-5 cursor-pointer fill-current" />
-          </span>
-          <span
-            class="
-              flex
-              items-center
-              justify-center
-              w-6
-              h-6
-              rounded-sm
-              cursor-pointer
-              hover:bg-gray-100
-            "
-            :class="{ 'bg-gray-200': editor.isActive({ textAlign: 'right' }) }"
-            @click="editor.chain().focus().setTextAlign('right').run()"
-          >
-            <menu-alt3-icon class="h-5 cursor-pointer fill-current" />
-          </span>
-          <span
-            class="
-              flex
-              items-center
-              justify-center
-              w-6
-              h-6
-              rounded-sm
-              cursor-pointer
-              hover:bg-gray-100
-            "
-            :class="{
-              'bg-gray-200': editor.isActive({ textAlign: 'justify' }),
-            }"
-            @click="editor.chain().focus().setTextAlign('justify').run()"
-          >
-            <menu-icon class="h-5 cursor-pointer fill-current" />
-          </span>
-          <span
-            class="
-              flex
-              items-center
-              justify-center
-              w-6
-              h-6
-              rounded-sm
-              cursor-pointer
-              hover:bg-gray-100
-            "
-            :class="{ 'bg-gray-200': editor.isActive({ textAlign: 'center' }) }"
-            @click="editor.chain().focus().setTextAlign('center').run()"
-          >
-            <menu-center-icon class="h-5 cursor-pointer fill-current" />
-          </span>
+          <button
+              v-for="button in editorButtons"
+              type="button"
+              :key="button.name"
+              class="p-1 rounded hover:bg-gray-100"
+              @click="button.action"
+            >
+              <component
+                :is="button.icon"
+                v-if="button.icon"
+                class="w-4 h-4 text-gray-700 fill-gray-700"
+              />
+              <span v-else-if="button.text" class="px-1 text-sm font-medium text-gray-600">
+                {{ button.text }}
+              </span>
+            </button>
         </div>
       </div>
       <editor-content
         :editor="editor"
-        class="
-          box-border
-          relative
-          w-full
-          text-sm
-          leading-8
-          text-left
-          editor__content
-        "
+        class="box-border relative w-full text-sm leading-8 text-left editor__content"
       />
     </div>
   </div>
 </template>
 
 <script>
-import { onUnmounted, watch } from 'vue'
+import { ref, onUnmounted, watch, markRaw } from 'vue'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
-import {
-  DotsVerticalIcon,
-  MenuAlt2Icon,
-  MenuAlt3Icon,
-  MenuIcon,
-} from '@heroicons/vue/outline'
 import TextAlign from '@tiptap/extension-text-align'
-
+import Link from '@tiptap/extension-link'
+import { DotsVerticalIcon } from '@heroicons/vue/outline'
 import {
   BoldIcon,
   CodingIcon,
@@ -614,26 +89,12 @@ import {
   CodeBlockIcon,
   MenuCenterIcon,
 } from './icons/index.js'
+import { MenuAlt2Icon, MenuAlt3Icon, MenuIcon, LinkIcon } from '@heroicons/vue/solid'
 
 export default {
   components: {
     EditorContent,
-    BoldIcon,
-    CodingIcon,
-    ItalicIcon,
-    ListIcon,
-    ListUlIcon,
-    ParagraphIcon,
-    QuoteIcon,
-    StrikethroughIcon,
-    UndoIcon,
-    RedoIcon,
-    CodeBlockIcon,
     DotsVerticalIcon,
-    MenuCenterIcon,
-    MenuAlt2Icon,
-    MenuAlt3Icon,
-    MenuIcon,
   },
 
   props: {
@@ -646,7 +107,9 @@ export default {
       default: false,
     },
   },
+
   emits: ['update:modelValue'],
+
   setup(props, { emit }) {
     const editor = useEditor({
       content: props.modelValue,
@@ -656,38 +119,62 @@ export default {
           types: ['heading', 'paragraph'],
           alignments: ['left', 'right', 'center', 'justify'],
         }),
+        Link.configure({
+          openOnClick: false,
+        }),
       ],
-
-      onUpdate: () => {
-        emit('update:modelValue', editor.value.getHTML())
+      onUpdate: ({ editor }) => {
+        emit('update:modelValue', editor.getHTML())
       },
     })
 
-    watch(
-      () => props.modelValue,
-      (value) => {
-        const isSame = editor.value.getHTML() === value
-
-        if (isSame) {
-          return
+    const editorButtons = ref([
+      { name: 'bold', icon: markRaw(BoldIcon), action: () => editor.value.chain().focus().toggleBold().run() },
+      { name: 'italic', icon: markRaw(ItalicIcon), action: () => editor.value.chain().focus().toggleItalic().run() },
+      { name: 'strike', icon: markRaw(StrikethroughIcon), action: () => editor.value.chain().focus().toggleStrike().run() },
+      { name: 'code', icon: markRaw(CodingIcon), action: () => editor.value.chain().focus().toggleCode().run() },
+      { name: 'paragraph', icon: markRaw(ParagraphIcon), action: () => editor.value.chain().focus().setParagraph().run() },
+      { name: 'h1', text: 'H1', action: () => editor.value.chain().focus().toggleHeading({ level: 1 }).run() },
+      { name: 'h2', text: 'H2', action: () => editor.value.chain().focus().toggleHeading({ level: 2 }).run() },
+      { name: 'h3', text: 'H3', action: () => editor.value.chain().focus().toggleHeading({ level: 3 }).run() },
+      { name: 'bulletList', icon: markRaw(ListUlIcon), action: () => editor.value.chain().focus().toggleBulletList().run() },
+      { name: 'orderedList', icon: markRaw(ListIcon), action: () => editor.value.chain().focus().toggleOrderedList().run() },
+      { name: 'blockquote', icon: markRaw(QuoteIcon), action: () => editor.value.chain().focus().toggleBlockquote().run() },
+      { name: 'codeBlock', icon: markRaw(CodeBlockIcon), action: () => editor.value.chain().focus().toggleCodeBlock().run() },
+      { name: 'undo', icon: markRaw(UndoIcon), action: () => editor.value.chain().focus().undo().run() },
+      { name: 'redo', icon: markRaw(RedoIcon), action: () => editor.value.chain().focus().redo().run() },
+      { name: 'alignLeft', icon: markRaw(MenuAlt2Icon), action: () => editor.value.chain().focus().setTextAlign('left').run() },
+      { name: 'alignRight', icon: markRaw(MenuAlt3Icon), action: () => editor.value.chain().focus().setTextAlign('right').run() },
+      { name: 'alignJustify', icon: markRaw(MenuIcon), action: () => editor.value.chain().focus().setTextAlign('justify').run() },
+      { name: 'alignCenter', icon: markRaw(MenuCenterIcon), action: () => editor.value.chain().focus().setTextAlign('center').run() },
+      { name: 'addLink', icon: markRaw(LinkIcon), action: () => {
+        const url = window.prompt('URL')
+        if (url) {
+          editor.value.chain().focus().setLink({ href: url }).run()
         }
+      }},
+    ])
 
-        editor.value.commands.setContent(props.modelValue, false)
+    watch(() => props.modelValue, (newValue) => {
+      if (editor.value && newValue !== editor.value.getHTML()) {
+        editor.value.commands.setContent(newValue, false)
       }
-    )
+    })
 
     onUnmounted(() => {
-      setTimeout(() => {
+      if (editor.value) {
         editor.value.destroy()
-      }, 500)
+      }
     })
 
     return {
       editor,
+      editorButtons,
     }
   },
 }
 </script>
+
 <style lang="scss">
 .ProseMirror {
   min-height: 200px;
@@ -746,6 +233,11 @@ export default {
       background: none;
       font-size: 0.8rem;
     }
+  }
+
+  a {
+    color: rgb(var(--color-primary-500));
+    text-decoration: underline;
   }
 }
 

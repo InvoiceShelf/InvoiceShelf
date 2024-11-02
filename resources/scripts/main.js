@@ -14,8 +14,7 @@ import.meta.glob([
 
 window.pinia = pinia
 window.Vuelidate = Vuelidate
-
-import InvoiceShelf from './InvoiceShelf'
+import InvoiceShelf from './InvoiceShelf.js'
 
 window.Vue = Vue
 window.router = router

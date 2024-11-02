@@ -157,6 +157,24 @@
                 @input="v$.currentCustomer.prefix.$touch()"
               />
             </BaseInputGroup>
+
+            <BaseInputGroup
+              :label="$t('customers.tax_id')"
+              :error="
+                v$.currentCustomer.tax_id.$error &&
+                v$.currentCustomer.tax_id.$errors[0].$message
+              "
+              :content-loading="isFetchingInitialData"
+            >
+              <BaseInput
+                v-model="customerStore.currentCustomer.tax_id"
+                :content-loading="isFetchingInitialData"
+                type="text"
+                name="tax_id"
+                :invalid="v$.currentCustomer.tax_id.$error"
+                @input="v$.currentCustomer.tax_id.$touch()"
+              />
+            </BaseInputGroup>
           </BaseInputGrid>
         </div>
 
@@ -644,6 +662,9 @@ const rules = computed(() => {
           t('validation.name_min_length', { count: 3 }),
           minLength(3)
         ),
+      },
+      tax_id: {
+        required: helpers.withMessage(t('validation.required'), required),
       },
       currency_id: {
         required: helpers.withMessage(t('validation.required'), required),

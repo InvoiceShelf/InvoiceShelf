@@ -21,12 +21,11 @@ class InvoicesController extends Controller
     {
         $this->authorize('viewAny', Invoice::class);
 
-        $limit = $request->has('limit') ? $request->limit : 10;
+        $limit = $request->input('limit', 10);
 
         $invoices = Invoice::whereCompany()
-            ->join('customers', 'customers.id', '=', 'invoices.customer_id')
             ->applyFilters($request->all())
-            ->select('invoices.*', 'customers.name')
+            ->with('customer')
             ->latest()
             ->paginateData($limit);
 
