@@ -1356,6 +1356,10 @@
     "next": "Next",
     "continue": "Continue",
     "skip": "Skip",
+    "install_language": {
+      "title": "Choose your language",
+      "description": "Select language wizard to install InvoiceShelf"
+    },
     "database": {
       "database": "Site URL & Database",
       "connection": "Database Connection",
@@ -1367,6 +1371,7 @@
       "username": "Database Username",
       "db_name": "Database Name",
       "db_path": "Database Path",
+      "overwrite": "Overwrite existing database and proceed",
       "desc": "Create a database on your server and set the credentials using the form below."
     },
     "permissions": {
