@@ -100,26 +100,7 @@
     "pay_invoice": "Zaplatit fakturu",
     "login_successfully": "Přihlášení proběhlo úspěšně!",
     "logged_out_successfully": "Odhlášení proběhlo úspěšně",
-    "mark_as_default": "Označit jako výchozí",
-    "no_data_found": "No data found",
-    "pagination": {
-      "previous": "Previous",
-      "next": "Next",
-      "showing": "Showing",
-      "to": "to",
-      "of": "of",
-      "results": "results"
-    },
-    "file_upload": {
-      "drag_a_file": "Drag a file here or",
-      "browse": "browse",
-      "to_choose": "to choose a file"
-    },
-    "multiselect": {
-      "the_list_is_empty": "The list is empty",
-      "no_results_found": "No results found"
-    },
-    "copy_to_clipboard": "Copy to Clipboard"
+    "mark_as_default": "Označit jako výchozí"
   },
   "dashboard": {
     "select_year": "Vybrat rok",
@@ -323,9 +304,6 @@
     "record_payment": "Zaznamenat platbu",
     "add_estimate": "Přidat nabídku",
     "save_estimate": "Uložit nabídku",
-    "cloned_successfully": "Devis úspěšně zkopírován",
-    "clone_estimate": "Klonovat devis",
-    "confirm_clone": "Tento devis bude zkopírován do nového devisu",
     "confirm_conversion": "Tento odhad bude použit k vytvoření nové faktury.",
     "conversion_message": "Faktura byla úspěšně vytvořena",
     "confirm_send_estimate": "Tento odhad bude zaslán e-mailem zákazníkovi",
@@ -570,18 +548,7 @@
       "hour": "Hodina",
       "day_month": "Den v měsíci",
       "month": "Měsíc",
-      "day_week": "Den v týdnu",
-      "every_minute": "Every Minute",
-      "every_30_minute": "Every 30 Minute",
-      "every_hour": "Every Hour",
-      "every_2_hour": "Every 2 Hour",
-      "every_day_at_midnight": "Every day at midnight",
-      "every_week": "Every Week",
-      "every_15_days_at_midnight": "Every 15 days at midnight",
-      "on_the_first_day_of_every_month_at_midnight": "On the first day of every month at 00:00",
-      "every_6_month": "Every 6 Month",
-      "every_year_on_the_first_day_of_january_at_midnight": "Every year on the first day of january at 00:00",
-      "custom": "Custom"
+      "day_week": "Den v týdnu"
     },
     "confirm_delete": "Nebudete moci obnovit tuto fakturu | Nebudete moci obnovit tyto faktury",
     "created_message": "Opakující se faktura byla úspěšně vytvořena",
@@ -590,12 +557,7 @@
     "marked_as_sent_message": "Opakující se faktura označena jako úspěšně odeslána",
     "user_email_does_not_exist": "E-mail uživatele neexistuje",
     "something_went_wrong": "něco se nezdařilo",
-    "invalid_due_amount_message": "Celková částka opakované faktury nemůže být nižší než celková částka zaplacená za tuto opakující se fakturu. Pro pokračování aktualizujte fakturu nebo odstraňte související platby.",
-    "limit": {
-      "none": "None",
-      "date": "Date",
-      "count": "Count"
-    }
+    "invalid_due_amount_message": "Celková částka opakované faktury nemůže být nižší než celková částka zaplacená za tuto opakující se fakturu. Pro pokračování aktualizujte fakturu nebo odstraňte související platby."
   },
   "payments": {
     "title": "Platby",
@@ -633,8 +595,7 @@
     "created_message": "Platba úspěšně vytvořena",
     "updated_message": "Platba úspěšně upravena",
     "deleted_message": "Platba úspěšně odstraněna | Platby úspěšně odstraněny",
-    "invalid_amount_message": "Částka platby je neplatná",
-    "amount_due": "Due Amount"
+    "invalid_amount_message": "Částka platby je neplatná"
   },
   "expenses": {
     "title": "Výdaje",
@@ -739,8 +700,7 @@
     "installed": "Nainstalováno",
     "no_modules_installed": "Nejsou nainstalovány žádné moduly!",
     "disable_warning": "Všechna nastavení pro tuto konkrétní položku budou vrácena zpět.",
-    "what_you_get": "Co získáte",
-    "sign_up_and_get_token": "Sign up & Get Token"
+    "what_you_get": "Co získáte"
   },
   "users": {
     "title": "Uživatelé",
@@ -792,11 +752,7 @@
       "date_range": "Vybrat časový rozsah",
       "to_date": "Do data",
       "from_date": "Od data",
-      "report_type": "Typ hlášení",
-      "sort": {
-        "by_customer": "By Customer",
-        "by_item": "By Item"
-      }
+      "report_type": "Typ hlášení"
     },
     "taxes": {
       "taxes": "Daně",
@@ -964,14 +920,7 @@
       "added_message": "Vlastní pole bylo úspěšně přidáno",
       "press_enter_to_add": "Stiskněte Enter pro přidání nové možnosti",
       "model_in_use": "Nelze aktualizovat model pro pole, která jsou již používána.",
-      "type_in_use": "Nelze aktualizovat typ pro pole, která jsou již používána.",
-      "model_type": {
-        "customer": "Customer",
-        "invoice": "Invoice",
-        "estimate": "Estimate",
-        "expense": "Expense",
-        "payment": "Payment"
-      }
+      "type_in_use": "Nelze aktualizovat typ pro pole, která jsou již používána."
     },
     "customization": {
       "customization": "přizpůsobení",
@@ -1092,12 +1041,7 @@
         "note_updated": "Poznámka úspěšně upravena",
         "note_confirm_delete": "Nebudete moci obnovit tuto poznámku",
         "already_in_use": "Poznámka je již používána",
-        "deleted_message": "Poznámka byla úspěšně smazána",
-        "types": {
-          "estimate": "Estimate",
-          "invoice": "Invoice",
-          "payment": "Payment"
-        }
+        "deleted_message": "Poznámka byla úspěšně smazána"
       }
     },
     "account_settings": {
@@ -1252,27 +1196,12 @@
       "on_hold": "Čekající",
       "update_status": "Upravit stav",
       "completed": "Dokončeno",
-      "company_currency_unchangeable": "Měnu společnosti nelze měnit",
-      "fiscal_years": {
-        "january_december": "January - December",
-        "february_january": "February - January",
-        "march_february": "March - February",
-        "april_march": "April - March",
-        "may_april": "May - April",
-        "june_may": "June - May",
-        "july_june": "July - June",
-        "august_july": "August - July",
-        "september_august": "September - August",
-        "october_september": "October - September",
-        "november_october": "November - October",
-        "december_november": "December - November"
-      }
+      "company_currency_unchangeable": "Měnu společnosti nelze měnit"
     },
     "update_app": {
       "title": "Aktualizace aplikace",
       "description": "Kliknutím na tlačítko níže můžete jednoduše aktualizovat InvoiceShelf",
       "check_update": "Zkontrolovat aktualizace",
-      "insider_consent": "Opt-in for Insider releases. Recommended for testing purposes only.",
       "avail_update": "K dispozici je nová aktualizace",
       "next_version": "Další verze",
       "requirements": "Požadavky",
@@ -1426,10 +1355,6 @@
     "next": "Další",
     "continue": "Pokračovat",
     "skip": "Přeskočit",
-    "install_language": {
-      "title": "Choose your language",
-      "description": "Select language wizard to install InvoiceShelf"
-    },
     "database": {
       "database": "URL webu a databáze",
       "connection": "Připojení k databázi",
@@ -1441,7 +1366,6 @@
       "username": "Uživatelské jméno k databázi",
       "db_name": "Název databáze",
       "db_path": "Cesta k databázi",
-      "overwrite": "Overwrite existing database and proceed",
       "desc": "Vytvořte databázi na svém serveru a nastavte přihlašovací údaje pomocí níže uvedeného formuláře."
     },
     "permissions": {
@@ -1457,14 +1381,7 @@
       "verify_now": "Ověřit teď",
       "success": "Ověření domény bylo úspěšné.",
       "failed": "Ověření domény se nezdařilo. Zadejte prosím platný název domény.",
-      "verify_and_continue": "Ověřit a pokračovat",
-      "notes": {
-        "notes": "Notes:",
-        "not_contain": "App domain should not contain",
-        "or": "or",
-        "in_front": "in front of the domain.",
-        "if_you": "If you're accessing the website on a different port, please mention the port. For example:"
-      }
+      "verify_and_continue": "Ověřit a pokračovat"
     },
     "mail": {
       "host": "Hostitel e-mailu",

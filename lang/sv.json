@@ -100,26 +100,7 @@
     "pay_invoice": "Betala faktura",
     "login_successfully": "Inloggningen lyckades!",
     "logged_out_successfully": "Utloggningen lyckades",
-    "mark_as_default": "Markera som standard",
-    "no_data_found": "No data found",
-    "pagination": {
-      "previous": "Previous",
-      "next": "Next",
-      "showing": "Showing",
-      "to": "to",
-      "of": "of",
-      "results": "results"
-    },
-    "file_upload": {
-      "drag_a_file": "Drag a file here or",
-      "browse": "browse",
-      "to_choose": "to choose a file"
-    },
-    "multiselect": {
-      "the_list_is_empty": "The list is empty",
-      "no_results_found": "No results found"
-    },
-    "copy_to_clipboard": "Copy to Clipboard"
+    "mark_as_default": "Markera som standard"
   },
   "dashboard": {
     "select_year": "Välj år",
@@ -323,9 +304,6 @@
     "record_payment": "Registrera betalning",
     "add_estimate": "Lägg till offert",
     "save_estimate": "Spara offert",
-    "cloned_successfully": "Offert klonades framgångsrikt",
-    "clone_estimate": "Klona offert",
-    "confirm_clone": "Denna offert kommer att klonas till en ny offert",
     "confirm_conversion": "Denna offert används för att skapa ny faktura.",
     "conversion_message": "Faktura skapades",
     "confirm_send_estimate": "Denna offert skickas via epost till kund",
@@ -570,18 +548,7 @@
       "hour": "Timmar",
       "day_month": "Dag i månaden",
       "month": "Månad",
-      "day_week": "Dag i veckan",
-      "every_minute": "Every Minute",
-      "every_30_minute": "Every 30 Minute",
-      "every_hour": "Every Hour",
-      "every_2_hour": "Every 2 Hour",
-      "every_day_at_midnight": "Every day at midnight",
-      "every_week": "Every Week",
-      "every_15_days_at_midnight": "Every 15 days at midnight",
-      "on_the_first_day_of_every_month_at_midnight": "On the first day of every month at 00:00",
-      "every_6_month": "Every 6 Month",
-      "every_year_on_the_first_day_of_january_at_midnight": "Every year on the first day of january at 00:00",
-      "custom": "Custom"
+      "day_week": "Dag i veckan"
     },
     "confirm_delete": "Du kommer inte kunna återställa denna faktura | Du kommer inte kunna återställa dessa fakturor",
     "created_message": "Återkommande faktura skapad framgångsrikt",
@@ -590,12 +557,7 @@
     "marked_as_sent_message": "Återkommande faktura markerad som skickad framgångsrikt",
     "user_email_does_not_exist": "Användarens e-postadress finns inte",
     "something_went_wrong": "något gick fel",
-    "invalid_due_amount_message": "Totalsumman för den återkommande fakturan kan inte vara lägre än den betalda summan. Vänligen uppdatera fakturan eller radera de kopplade betalningarna.",
-    "limit": {
-      "none": "None",
-      "date": "Date",
-      "count": "Count"
-    }
+    "invalid_due_amount_message": "Totalsumman för den återkommande fakturan kan inte vara lägre än den betalda summan. Vänligen uppdatera fakturan eller radera de kopplade betalningarna."
   },
   "payments": {
     "title": "Betalningar",
@@ -633,8 +595,7 @@
     "created_message": "Betalning skapades",
     "updated_message": "Betalning uppdaterades",
     "deleted_message": "Betalning raderades | Betalningar raderades",
-    "invalid_amount_message": "Betalsumman är ogiltig",
-    "amount_due": "Due Amount"
+    "invalid_amount_message": "Betalsumman är ogiltig"
   },
   "expenses": {
     "title": "Utgifter",
@@ -739,8 +700,7 @@
     "installed": "Installerad",
     "no_modules_installed": "Inga moduler installerade ännu!",
     "disable_warning": "Alla inställningar för just denna kommer att återställas.",
-    "what_you_get": "Vad du får",
-    "sign_up_and_get_token": "Sign up & Get Token"
+    "what_you_get": "Vad du får"
   },
   "users": {
     "title": "Användare",
@@ -792,11 +752,7 @@
       "date_range": "Välj datumintervall",
       "to_date": "Till datum",
       "from_date": "Från datum",
-      "report_type": "Rapporttyp",
-      "sort": {
-        "by_customer": "By Customer",
-        "by_item": "By Item"
-      }
+      "report_type": "Rapporttyp"
     },
     "taxes": {
       "taxes": "Moms",
@@ -964,14 +920,7 @@
       "added_message": "Anpassat fält skapat",
       "press_enter_to_add": "Tryck på enter för att lägga till nytt alternativ",
       "model_in_use": "Kan inte uppdatera modell för fält som redan används.",
-      "type_in_use": "Kan inte uppdatera typ för fält som redan används.",
-      "model_type": {
-        "customer": "Customer",
-        "invoice": "Invoice",
-        "estimate": "Estimate",
-        "expense": "Expense",
-        "payment": "Payment"
-      }
+      "type_in_use": "Kan inte uppdatera typ för fält som redan används."
     },
     "customization": {
       "customization": "Anpassning",
@@ -1092,12 +1041,7 @@
         "note_updated": "Notering uppdaterades",
         "note_confirm_delete": "Du kommer inte kunna återställa denna notering",
         "already_in_use": "Notering används",
-        "deleted_message": "Notering raderades",
-        "types": {
-          "estimate": "Estimate",
-          "invoice": "Invoice",
-          "payment": "Payment"
-        }
+        "deleted_message": "Notering raderades"
       }
     },
     "account_settings": {
@@ -1252,27 +1196,12 @@
       "on_hold": "Pausad",
       "update_status": "Uppdatera status",
       "completed": "Slutförd",
-      "company_currency_unchangeable": "Företagets valuta kan inte ändras",
-      "fiscal_years": {
-        "january_december": "January - December",
-        "february_january": "February - January",
-        "march_february": "March - February",
-        "april_march": "April - March",
-        "may_april": "May - April",
-        "june_may": "June - May",
-        "july_june": "July - June",
-        "august_july": "August - July",
-        "september_august": "September - August",
-        "october_september": "October - September",
-        "november_october": "November - October",
-        "december_november": "December - November"
-      }
+      "company_currency_unchangeable": "Företagets valuta kan inte ändras"
     },
     "update_app": {
       "title": "Uppdatera applikationen",
       "description": "Du kan enkelt uppdatera InvoiceShelf genom att söka efter uppdateringar via knappen nedan",
       "check_update": "Sök efter uppdateringar",
-      "insider_consent": "Opt-in for Insider releases. Recommended for testing purposes only.",
       "avail_update": "Uppdatering är tillgänglig",
       "next_version": "Nästa version",
       "requirements": "Krav",
@@ -1426,10 +1355,6 @@
     "next": "Nästa",
     "continue": "Fortsätt",
     "skip": "Hoppa över",
-    "install_language": {
-      "title": "Choose your language",
-      "description": "Select language wizard to install InvoiceShelf"
-    },
     "database": {
       "database": "Sidans URL & Databas",
       "connection": "Databasanslutning",
@@ -1441,7 +1366,6 @@
       "username": "Användarnamn till databasen",
       "db_name": "Databasens namn",
       "db_path": "Databasens sökväg",
-      "overwrite": "Overwrite existing database and proceed",
       "desc": "Skapa en database på din server och ställ in autentiseringsuppgifter i formuläret nedan."
     },
     "permissions": {
@@ -1457,14 +1381,7 @@
       "verify_now": "Verifiera nu",
       "success": "Domänverifiering lyckades.",
       "failed": "Domänverifiering misslyckades. Ange giltigt domännamn.",
-      "verify_and_continue": "Verifiera och fortsätt",
-      "notes": {
-        "notes": "Notes:",
-        "not_contain": "App domain should not contain",
-        "or": "or",
-        "in_front": "in front of the domain.",
-        "if_you": "If you're accessing the website on a different port, please mention the port. For example:"
-      }
+      "verify_and_continue": "Verifiera och fortsätt"
     },
     "mail": {
       "host": "Värdadress till epost",

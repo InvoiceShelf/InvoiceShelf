@@ -100,26 +100,7 @@
     "pay_invoice": "Pagar factura",
     "login_successfully": "Logeado Satisfactoriamente!",
     "logged_out_successfully": "Logeado Satisfactoriamente",
-    "mark_as_default": "Marcar como predeterminado",
-    "no_data_found": "No data found",
-    "pagination": {
-      "previous": "Previous",
-      "next": "Next",
-      "showing": "Showing",
-      "to": "to",
-      "of": "of",
-      "results": "results"
-    },
-    "file_upload": {
-      "drag_a_file": "Drag a file here or",
-      "browse": "browse",
-      "to_choose": "to choose a file"
-    },
-    "multiselect": {
-      "the_list_is_empty": "The list is empty",
-      "no_results_found": "No results found"
-    },
-    "copy_to_clipboard": "Copy to Clipboard"
+    "mark_as_default": "Marcar como predeterminado"
   },
   "dashboard": {
     "select_year": "Seleccionar año",
@@ -128,7 +109,7 @@
       "customers": "Clientes",
       "invoices": "Facturas",
       "estimates": "Presupuestos",
-      "payments": "Ver Medios de Pago"
+      "payments": "Pagos"
     },
     "chart_info": {
       "total_sales": "Ventas",
@@ -323,9 +304,6 @@
     "record_payment": "Registro de pago",
     "add_estimate": "Agregar presupuesto",
     "save_estimate": "Guardar presupuesto",
-    "cloned_successfully": "Presupuesto clonado con éxito",
-    "clone_estimate": "Clonar presupuesto",
-    "confirm_clone": "Este presupuesto será clonado en un nuevo presupuesto",
     "confirm_conversion": "¿Quiere convertir este presupuesto en una factura?",
     "conversion_message": "Conversión exitosa",
     "confirm_send_estimate": "Este presupuesto se enviará por correo electrónico al cliente",
@@ -570,18 +548,7 @@
       "hour": "Hora",
       "day_month": "Día del mes",
       "month": "Mes",
-      "day_week": "Día de la semana",
-      "every_minute": "Every Minute",
-      "every_30_minute": "Every 30 Minute",
-      "every_hour": "Every Hour",
-      "every_2_hour": "Every 2 Hour",
-      "every_day_at_midnight": "Every day at midnight",
-      "every_week": "Every Week",
-      "every_15_days_at_midnight": "Every 15 days at midnight",
-      "on_the_first_day_of_every_month_at_midnight": "On the first day of every month at 00:00",
-      "every_6_month": "Every 6 Month",
-      "every_year_on_the_first_day_of_january_at_midnight": "Every year on the first day of january at 00:00",
-      "custom": "Custom"
+      "day_week": "Día de la semana"
     },
     "confirm_delete": "No podrá recuperar esta factura | No podrás recuperar estas facturas",
     "created_message": "Factura recurrente creada con éxito",
@@ -590,12 +557,7 @@
     "marked_as_sent_message": "Factura recurrente marcada como enviada con éxito",
     "user_email_does_not_exist": "El email del usuario no existe",
     "something_went_wrong": "algo ha ido mal",
-    "invalid_due_amount_message": "La cantidad total de la factura recurrente no puede ser menor a la cantidad total pagada. Por favor, actualiza la factura o elimina los pagos asociados para continuar.",
-    "limit": {
-      "none": "None",
-      "date": "Date",
-      "count": "Count"
-    }
+    "invalid_due_amount_message": "La cantidad total de la factura recurrente no puede ser menor a la cantidad total pagada. Por favor, actualiza la factura o elimina los pagos asociados para continuar."
   },
   "payments": {
     "title": "Pagos",
@@ -633,8 +595,7 @@
     "created_message": "Pago creado con éxito",
     "updated_message": "Pago actualizado con éxito",
     "deleted_message": "Pago eliminado con éxito | Pagos eliminados exitosamente",
-    "invalid_amount_message": "El importe del pago no es válido.",
-    "amount_due": "Due Amount"
+    "invalid_amount_message": "El importe del pago no es válido."
   },
   "expenses": {
     "title": "Gastos",
@@ -739,8 +700,7 @@
     "installed": "Instalado",
     "no_modules_installed": "¡No hay módulos instalados todavía!",
     "disable_warning": "Se revertirán todos los ajustes para este particular.",
-    "what_you_get": "Beneficios que obtiene",
-    "sign_up_and_get_token": "Sign up & Get Token"
+    "what_you_get": "Beneficios que obtiene"
   },
   "users": {
     "title": "Usuarios",
@@ -792,11 +752,7 @@
       "date_range": "Seleccionar rango de fechas",
       "to_date": "Hasta la fecha",
       "from_date": "A partir de la fecha",
-      "report_type": "Tipo de informe",
-      "sort": {
-        "by_customer": "By Customer",
-        "by_item": "By Item"
-      }
+      "report_type": "Tipo de informe"
     },
     "taxes": {
       "taxes": "Impuestos",
@@ -923,7 +879,7 @@
       "delete_company": "Eliminar empresa",
       "delete_company_description": "Una vez que elimines tu empresa, perderás todos los datos y archivos asociados a ella permanentemente.",
       "are_you_absolutely_sure": "¿Estás realmente seguro?",
-      "delete_company_modal_desc": "Est acción no se puede deshacer. Se eliminará de manera permanente {company} y todos sus datos asociados.",
+      "delete_company_modal_desc": "Esta acción no se puede deshacer. Esto eliminará de manera permanente {company} y todos sus datos asociados.",
       "delete_company_modal_label": "Por favor escribe {company} para confirmar"
     },
     "custom_fields": {
@@ -964,14 +920,7 @@
       "added_message": "Campo personalizado agregado correctamente",
       "press_enter_to_add": "Presiona Enter para añadir una nueva opción",
       "model_in_use": "No se puede actualizar el modelo para los campos que ya están en uso.",
-      "type_in_use": "No se puede actualizar el tipo de los campos que ya están en uso.",
-      "model_type": {
-        "customer": "Customer",
-        "invoice": "Invoice",
-        "estimate": "Estimate",
-        "expense": "Expense",
-        "payment": "Payment"
-      }
+      "type_in_use": "No se puede actualizar el tipo de los campos que ya están en uso."
     },
     "customization": {
       "customization": "Personalización",
@@ -1092,12 +1041,7 @@
         "note_updated": "Nota actualizada correctamente",
         "note_confirm_delete": "No podrá recuperar esta nota",
         "already_in_use": "Nota ya está en uso",
-        "deleted_message": "Nota eliminada correctamente",
-        "types": {
-          "estimate": "Estimate",
-          "invoice": "Invoice",
-          "payment": "Payment"
-        }
+        "deleted_message": "Nota eliminada correctamente"
       }
     },
     "account_settings": {
@@ -1252,27 +1196,12 @@
       "on_hold": "En espera",
       "update_status": "Actualizar estado",
       "completed": "Completado",
-      "company_currency_unchangeable": "No se puede cambiar la divisa de la empresa",
-      "fiscal_years": {
-        "january_december": "January - December",
-        "february_january": "February - January",
-        "march_february": "March - February",
-        "april_march": "April - March",
-        "may_april": "May - April",
-        "june_may": "June - May",
-        "july_june": "July - June",
-        "august_july": "August - July",
-        "september_august": "September - August",
-        "october_september": "October - September",
-        "november_october": "November - October",
-        "december_november": "December - November"
-      }
+      "company_currency_unchangeable": "No se puede cambiar la divisa de la empresa"
     },
     "update_app": {
       "title": "Actualizar aplicación",
       "description": "Puedes actualizar InvoiceShelf fácilmente comprobando si existe una nueva actualización haciendo clic en el botón de abajo",
       "check_update": "Buscar actualizaciones",
-      "insider_consent": "Opt-in for Insider releases. Recommended for testing purposes only.",
       "avail_update": "Nueva actualización disponible",
       "next_version": "Próxima versión",
       "requirements": "Requisitos",
@@ -1427,11 +1356,11 @@
     "continue": "Continuar",
     "skip": "Saltar",
     "install_language": {
-      "title": "Choose your language",
-      "description": "Select language wizard to install InvoiceShelf"
+      "title": "Elige tu idioma",
+      "description": "Selecciona el asistente de idioma para instalar InvoiceShelf"
     },
     "database": {
-      "database": "URL del sitio y base de datose",
+      "database": "URL del sitio y base de datos",
       "connection": "Conexión de base de datos",
       "host": "Host de la base de datos",
       "port": "Puerto de la base de datos",
@@ -1441,7 +1370,6 @@
       "username": "Nombre de usuario de la base de datos",
       "db_name": "Nombre de la base de datos",
       "db_path": "Ruta de la base de datos",
-      "overwrite": "Overwrite existing database and proceed",
       "desc": "Cree una base de datos en su servidor y establezca las credenciales utilizando el siguiente formulario."
     },
     "permissions": {
@@ -1457,14 +1385,7 @@
       "verify_now": "Verificar ahora",
       "success": "Dominio verificado correctamente.",
       "failed": "La verificación del dominio falló. Ingrese un nombre de dominio válido.",
-      "verify_and_continue": "Verificar y continuar",
-      "notes": {
-        "notes": "Notes:",
-        "not_contain": "App domain should not contain",
-        "or": "or",
-        "in_front": "in front of the domain.",
-        "if_you": "If you're accessing the website on a different port, please mention the port. For example:"
-      }
+      "verify_and_continue": "Verificar y continuar"
     },
     "mail": {
       "host": "Host de correo",
@@ -1492,9 +1413,9 @@
     },
     "errors": {
       "migrate_failed": "La migración falló",
-      "database_variables_save_error": "No se puede conectar a la base de datos con los valores proporcionados.",
+      "database_variables_save_error": "No se puede escribir la configuración al archivo .env. Por favor, revisa los permisos de archivo",
       "mail_variables_save_error": "La configuración del correo electrónico ha fallado.",
-      "connection_failed": "Conexión de base de datos fallida",
+      "connection_failed": "La conexión a la base de datos falló",
       "database_should_be_empty": "La base de datos debe estar vacía"
     },
     "success": {
@@ -1589,30 +1510,30 @@
   "pdf_amount_label": "Cantidad",
   "pdf_subtotal": "Subtotal",
   "pdf_total": "Total",
-  "pdf_payment_label": "Pagos",
+  "pdf_payment_label": "Pago",
   "pdf_payment_receipt_label": "RECIBO DE PAGO",
   "pdf_payment_date": "Fecha de pago",
-  "pdf_payment_number": "Numero de pago",
+  "pdf_payment_number": "Número de pago",
   "pdf_payment_mode": "Modo de pago",
   "pdf_payment_amount_received_label": "Importe recibido",
   "pdf_expense_report_label": "INFORME DE GASTOS",
   "pdf_total_expenses_label": "GASTO TOTAL",
-  "pdf_profit_loss_label": "INFORME PERDIDAS & GANANCIAS",
+  "pdf_profit_loss_label": "INFORME DE PERDIDAS Y GANANCIAS",
   "pdf_sales_customers_label": "Informe de ventas por cliente",
-  "pdf_sales_items_label": "Informe de ventas por ítem",
-  "pdf_tax_summery_label": "Informe de ventas impuestos",
+  "pdf_sales_items_label": "Informe de ventas por artículo",
+  "pdf_tax_summery_label": "Informe de resumen de impuestos",
   "pdf_income_label": "INGRESO",
   "pdf_net_profit_label": "GANANCIA NETA",
   "pdf_customer_sales_report": "Informe de ventas: Por cliente",
-  "pdf_total_sales_label": "VENTAS TOTALES",
-  "pdf_item_sales_label": "Informe de ventas: por artículo",
+  "pdf_total_sales_label": "VENTA TOTAL",
+  "pdf_item_sales_label": "Informe de ventas: Por artículo",
   "pdf_tax_report_label": "INFORME DE IMPUESTOS",
-  "pdf_total_tax_label": "TOTAL IMPUESTOS",
+  "pdf_total_tax_label": "IMPUESTO TOTAL",
   "pdf_tax_types_label": "Tipos de impuestos",
   "pdf_expenses_label": "Gastos",
   "pdf_bill_to": "Cobrar a,",
   "pdf_ship_to": "Enviar a,",
-  "pdf_received_from": "Recibido desde:",
+  "pdf_received_from": "Recibido de:",
   "pdf_tax_label": "Impuesto",
   "pdf_tax_id": "Tax-ID",
   "pdf_vat_id": "VAT-ID",

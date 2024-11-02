@@ -172,6 +172,7 @@
   "customers": {
     "title": "Customers",
     "prefix": "Prefix",
+    "tax_id": "Tax ID",
     "add_customer": "Add Customer",
     "contacts_list": "Customer List",
     "name": "Name",
@@ -1355,6 +1356,10 @@
     "next": "Next",
     "continue": "Continue",
     "skip": "Skip",
+    "install_language": {
+      "title": "Choose your language",
+      "description": "Select language wizard to install InvoiceShelf"
+    },
     "database": {
       "database": "Site URL & Database",
       "connection": "Database Connection",
@@ -1366,6 +1371,7 @@
       "username": "Database Username",
       "db_name": "Database Name",
       "db_path": "Database Path",
+      "overwrite": "Overwrite existing database and proceed",
       "desc": "Create a database on your server and set the credentials using the form below."
     },
     "permissions": {
@@ -1532,5 +1538,14 @@
   "pdf_received_from": "Received from:",
   "pdf_tax_label": "Tax",
   "pdf_tax_id": "Tax-ID",
-  "pdf_vat_id": "VAT-ID"
+  "pdf_vat_id": "VAT-ID",
+  "mail_thanks": "Thanks",
+  "mail_view_estimate": "View Estimate",
+  "mail_viewed_estimate": ":name viewed this Estimate.",
+  "mail_view_invoice": "View Invoice",
+  "mail_viewed_invoice": ":name viewed this Invoice.",
+  "mail_view_payment": "View Payment",
+  "notification_view_estimate": "[Notification] Estimate viewed",
+  "notification_view_invoice": "[Notification] Invoice viewed",
+  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:"
 }
