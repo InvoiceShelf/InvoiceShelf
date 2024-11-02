@@ -172,6 +172,7 @@
   "customers": {
     "title": "Zákazníci",
     "prefix": "Prefix",
+    "tax_id": "Tax ID",
     "add_customer": "Přidat zákazníka",
     "contacts_list": "Seznam zákazníků",
     "name": "Jméno",

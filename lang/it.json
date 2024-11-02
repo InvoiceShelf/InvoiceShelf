@@ -172,6 +172,7 @@
   "customers": {
     "title": "Clienti",
     "prefix": "Prefisso",
+    "tax_id": "Tax ID",
     "add_customer": "Aggiungi cliente",
     "contacts_list": "Lista clienti",
     "name": "Nome",

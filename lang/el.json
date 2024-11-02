@@ -172,6 +172,7 @@
   "customers": {
     "title": "Πελάτες",
     "prefix": "Πρόθεμα",
+    "tax_id": "Tax ID",
     "add_customer": "Προσθήκη Πελάτη",
     "contacts_list": "Λίστα Πελατών",
     "name": "Όνομα",

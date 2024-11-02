@@ -172,6 +172,7 @@
   "customers": {
     "title": "Klanten",
     "prefix": "Voorvoegsel",
+    "tax_id": "Tax ID",
     "add_customer": "Klant toevoegen",
     "contacts_list": "Klantenlijst",
     "name": "Naam",

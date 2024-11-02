@@ -172,6 +172,7 @@
   "customers": {
     "title": "ग्राहक",
     "prefix": "प्रीफ़िक्स",
+    "tax_id": "Tax ID",
     "add_customer": "ग्राहक जोड़ें",
     "contacts_list": "ग्राहक सूची",
     "name": "नाम",

@@ -172,6 +172,7 @@
   "customers": {
     "title": "Klienci",
     "prefix": "Przedrostek",
+    "tax_id": "Tax ID",
     "add_customer": "Dodaj klienta",
     "contacts_list": "Lista klientów",
     "name": "Nazwa",
