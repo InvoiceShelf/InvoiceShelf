@@ -254,6 +254,7 @@ async function submitForm() {
   v$.value.$touch()
 
   if (v$.value.$invalid) {
+    console.log('Form is invalid:', v$.value.$errors)
     return false
   }
 

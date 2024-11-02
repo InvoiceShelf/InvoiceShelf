@@ -374,7 +374,7 @@ class Invoice extends Model implements HasMedia
             return 'customer_cannot_be_changed_after_payment_is_added';
         }
 
-        if ($request->total < $total_paid_amount) {
+        if ($request->total >= 0 && $request->total < $total_paid_amount) {
             return 'total_invoice_amount_must_be_more_than_paid_amount';
         }
 
