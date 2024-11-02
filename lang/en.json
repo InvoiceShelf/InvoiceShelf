@@ -1535,7 +1535,7 @@
   "pdf_tax_id": "Tax-ID",
   "pdf_vat_id": "VAT-ID",
   "pdf_amount_paid": "Amount Paid",
-  "pdf_amount_due": "Amount Due"
+  "pdf_amount_due": "Amount Due",
   "mail_thanks": "Thanks",
   "mail_view_estimate": "View Estimate",
   "mail_viewed_estimate": ":name viewed this Estimate.",
