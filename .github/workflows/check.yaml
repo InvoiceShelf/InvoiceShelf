@@ -12,6 +12,8 @@ on:
             - '**/*.md'
             - 'public/build/*.js'
             - 'public/build/**/*.js'
+        branches-ignore:    
+            - 'l10n_master2'
     # Allow manually triggering the workflow.
     workflow_dispatch:
 

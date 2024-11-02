@@ -100,26 +100,7 @@
     "pay_invoice": "Maksa Lasku",
     "login_successfully": "Sisäänkirjautuminen onnistui!",
     "logged_out_successfully": "Uloskirjautuminen onnistui",
-    "mark_as_default": "Merkitse oletukseksi",
-    "no_data_found": "No data found",
-    "pagination": {
-      "previous": "Previous",
-      "next": "Next",
-      "showing": "Showing",
-      "to": "to",
-      "of": "of",
-      "results": "results"
-    },
-    "file_upload": {
-      "drag_a_file": "Drag a file here or",
-      "browse": "browse",
-      "to_choose": "to choose a file"
-    },
-    "multiselect": {
-      "the_list_is_empty": "The list is empty",
-      "no_results_found": "No results found"
-    },
-    "copy_to_clipboard": "Copy to Clipboard"
+    "mark_as_default": "Merkitse oletukseksi"
   },
   "dashboard": {
     "select_year": "Valitse vuosi",
@@ -323,9 +304,6 @@
     "record_payment": "Kirjaa maksu",
     "add_estimate": "Lisää Tarjous",
     "save_estimate": "Tallenna Tarjous",
-    "cloned_successfully": "Estimate cloned successfully",
-    "clone_estimate": "Clone Estimate",
-    "confirm_clone": "This Estimate will be cloned into a new Estimate",
     "confirm_conversion": "Tätä tarjousta käytetään laskun luomiseksi.",
     "conversion_message": "Lasku luotiin onnistuneesti",
     "confirm_send_estimate": "Tämä tarjous lähetetään sähköpostitse asiakkaalle",
@@ -570,18 +548,7 @@
       "hour": "Hour",
       "day_month": "Day of month",
       "month": "Month",
-      "day_week": "Day of week",
-      "every_minute": "Every Minute",
-      "every_30_minute": "Every 30 Minute",
-      "every_hour": "Every Hour",
-      "every_2_hour": "Every 2 Hour",
-      "every_day_at_midnight": "Every day at midnight",
-      "every_week": "Every Week",
-      "every_15_days_at_midnight": "Every 15 days at midnight",
-      "on_the_first_day_of_every_month_at_midnight": "On the first day of every month at 00:00",
-      "every_6_month": "Every 6 Month",
-      "every_year_on_the_first_day_of_january_at_midnight": "Every year on the first day of january at 00:00",
-      "custom": "Custom"
+      "day_week": "Day of week"
     },
     "confirm_delete": "You will not be able to recover this Invoice | You will not be able to recover these Invoices",
     "created_message": "Recurring Invoice created successfully",
@@ -590,12 +557,7 @@
     "marked_as_sent_message": "Toistuva lasku merkitty lähetetyksi onnistuneesti",
     "user_email_does_not_exist": "Käyttäjän sähköposti ei ole määritetty",
     "something_went_wrong": "jotain meni vikaan",
-    "invalid_due_amount_message": "Toistuvan laskun kokonaissumma ei voi olla pienempi kuin tälle toistuvalle laskulle maksettu summa. Päivitä lasku tai poista niihin liittyvät maksut jatkaaksesi.",
-    "limit": {
-      "none": "None",
-      "date": "Date",
-      "count": "Count"
-    }
+    "invalid_due_amount_message": "Toistuvan laskun kokonaissumma ei voi olla pienempi kuin tälle toistuvalle laskulle maksettu summa. Päivitä lasku tai poista niihin liittyvät maksut jatkaaksesi."
   },
   "payments": {
     "title": "Maksut",
@@ -633,8 +595,7 @@
     "created_message": "Maksu luotiin onnistuneesti",
     "updated_message": "Maksu päivitettiin onnistuneesti",
     "deleted_message": "Maksu poistettiin onnistuneesti | Maksut poistettiin onnistuneesti",
-    "invalid_amount_message": "Maksun summa ei ole oikein",
-    "amount_due": "Due Amount"
+    "invalid_amount_message": "Maksun summa ei ole oikein"
   },
   "expenses": {
     "title": "Kulut",
@@ -739,8 +700,7 @@
     "installed": "Asennetut",
     "no_modules_installed": "Ei Asennettuja Moduuleja!",
     "disable_warning": "Kaikki tämän nimenomaisen asetuksen tiedot peruutetaan.",
-    "what_you_get": "What you get",
-    "sign_up_and_get_token": "Sign up & Get Token"
+    "what_you_get": "What you get"
   },
   "users": {
     "title": "Käyttäjät",
@@ -792,11 +752,7 @@
       "date_range": "Valitse päivämäärä alue",
       "to_date": "Päivään",
       "from_date": "Päivästä",
-      "report_type": "Raporttityyppi",
-      "sort": {
-        "by_customer": "By Customer",
-        "by_item": "By Item"
-      }
+      "report_type": "Raporttityyppi"
     },
     "taxes": {
       "taxes": "Verot",
@@ -964,14 +920,7 @@
       "added_message": "räätälöity kenttä lisättiin onnistuneesti",
       "press_enter_to_add": "Press enter to add new option",
       "model_in_use": "Cannot update model for fields which are already in use.",
-      "type_in_use": "Cannot update type for fields which are already in use.",
-      "model_type": {
-        "customer": "Customer",
-        "invoice": "Invoice",
-        "estimate": "Estimate",
-        "expense": "Expense",
-        "payment": "Payment"
-      }
+      "type_in_use": "Cannot update type for fields which are already in use."
     },
     "customization": {
       "customization": "räätälöinti",
@@ -1092,12 +1041,7 @@
         "note_updated": "Viesti päivitetty onnistuneesti",
         "note_confirm_delete": "Et voi palauttaa tätä viestiä",
         "already_in_use": "Viesti on jo käytössä",
-        "deleted_message": "Viesti poistettiin onnistuneesti",
-        "types": {
-          "estimate": "Estimate",
-          "invoice": "Invoice",
-          "payment": "Payment"
-        }
+        "deleted_message": "Viesti poistettiin onnistuneesti"
       }
     },
     "account_settings": {
@@ -1252,27 +1196,12 @@
       "on_hold": "On Hold",
       "update_status": "Update Status",
       "completed": "Completed",
-      "company_currency_unchangeable": "Company currency cannot be changed",
-      "fiscal_years": {
-        "january_december": "January - December",
-        "february_january": "February - January",
-        "march_february": "March - February",
-        "april_march": "April - March",
-        "may_april": "May - April",
-        "june_may": "June - May",
-        "july_june": "July - June",
-        "august_july": "August - July",
-        "september_august": "September - August",
-        "october_september": "October - September",
-        "november_october": "November - October",
-        "december_november": "December - November"
-      }
+      "company_currency_unchangeable": "Company currency cannot be changed"
     },
     "update_app": {
       "title": "Päivitä ohjelma",
       "description": "Voit helposti päivittää InvoiceShelf ohjelman uuteen versioon klikkaamalla allaolevaa painiketta",
       "check_update": "Tarkista uudet päivitykset",
-      "insider_consent": "Opt-in for Insider releases. Recommended for testing purposes only.",
       "avail_update": "Uusi päivitys saatavilla",
       "next_version": "Seuraava versio",
       "requirements": "Vaatimukset",
@@ -1426,10 +1355,6 @@
     "next": "Seuraava",
     "continue": "Jatka",
     "skip": "Ohita",
-    "install_language": {
-      "title": "Choose your language",
-      "description": "Select language wizard to install InvoiceShelf"
-    },
     "database": {
       "database": "Sivuston URL-osoite & Tietokanta",
       "connection": "Tietokantayhteys",
@@ -1441,7 +1366,6 @@
       "username": "Tietokannan käyttäjä nimi",
       "db_name": "Tietokannan nimi",
       "db_path": "tietokannan hakemistopolku",
-      "overwrite": "Overwrite existing database and proceed",
       "desc": "Luo tietokanta serverillesi ja aseta käyttäjätiedot allaolevaan lomakkeeseen."
     },
     "permissions": {
@@ -1457,14 +1381,7 @@
       "verify_now": "Verify Now",
       "success": "Domain Verify Successfully.",
       "failed": "Domain verification failed. Please enter valid domain name.",
-      "verify_and_continue": "Verify And Continue",
-      "notes": {
-        "notes": "Notes:",
-        "not_contain": "App domain should not contain",
-        "or": "or",
-        "in_front": "in front of the domain.",
-        "if_you": "If you're accessing the website on a different port, please mention the port. For example:"
-      }
+      "verify_and_continue": "Verify And Continue"
     },
     "mail": {
       "host": "Sähköpostiserverin Host nimi",

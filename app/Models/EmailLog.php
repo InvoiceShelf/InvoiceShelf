@@ -20,10 +20,10 @@ class EmailLog extends Model
 
     public function isExpired()
     {
-        $linkexpiryDays = CompanySetting::getSetting('link_expiry_days', $this->mailable()->get()->toArray()[0]['company_id']);
+        $linkExpiryDays = (int) CompanySetting::getSetting('link_expiry_days', $this->mailable()->get()->toArray()[0]['company_id']);
         $checkExpiryLinks = CompanySetting::getSetting('automatically_expire_public_links', $this->mailable()->get()->toArray()[0]['company_id']);
 
-        $expiryDate = $this->created_at->addDays($linkexpiryDays);
+        $expiryDate = $this->created_at->addDays($linkExpiryDays);
 
         if ($checkExpiryLinks == 'YES' && Carbon::now()->format('Y-m-d') > $expiryDate->format('Y-m-d')) {
             return true;

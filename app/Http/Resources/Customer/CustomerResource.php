@@ -30,6 +30,7 @@ class CustomerResource extends JsonResource
             'formatted_created_at' => $this->formattedCreatedAt,
             'avatar' => $this->avatar,
             'prefix' => $this->prefix,
+            'tax_id' => $this->tax_id,
             'billing' => $this->when($this->billingAddress()->exists(), function () {
                 return new AddressResource($this->billingAddress);
             }),
