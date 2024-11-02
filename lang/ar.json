@@ -172,6 +172,7 @@
   "customers": {
     "title": "العملاء",
     "prefix": "Prefix",
+    "tax_id": "Tax ID",
     "add_customer": "إضافة عميل",
     "contacts_list": "قائمة العملاء",
     "name": "الاسم",
