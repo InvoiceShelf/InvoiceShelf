@@ -3,9 +3,20 @@
 namespace App\Http\Controllers\V1\Admin\Settings;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PDFConfigurationRequest;
+use App\Space\EnvironmentManager;
 
 class PDFConfigurationController extends Controller
 {
+    /**
+     * @var EnvironmentManager
+     */
+    protected $environmentManager;
+
+    public function __construct(EnvironmentManager $environmentManager)
+    {
+        $this->environmentManager = $environmentManager;
+    }
 
     public function getDrivers()
     {
@@ -33,7 +44,10 @@ class PDFConfigurationController extends Controller
         return response()->json($config);
     }
 
-    public function saveEnvironment() {
+    public function saveEnvironment(PDFConfigurationRequest $request) {
+        $this->authorize('manage email config');
+        $results = $this->environmentManager->savePDFVariables($request);
 
+        return response()->json($results);
     }
 }

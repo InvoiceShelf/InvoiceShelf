@@ -1,7 +1,7 @@
 <template>
     <BaseSettingCard
-      :title="$t('settings.pdf_generation.pdf_generation')"
-      :description="$t('settings.pdf_generation.section_description')"
+      :title="$t('settings.pdf.pdf_configuration')"
+      :description="$t('settings.pdf.section_description')"
     >
     <div v-if="pdfDriverStore && pdfDriverStore.pdfDriverConfig" class="mt-14">
       <component
@@ -34,6 +34,7 @@
 
   function changeDriver(value) {
     pdfDriverStore.pdf_driver = value
+    pdfDriverStore.pdfDriverConfig.pdf_driver = value
   }
 
   async function loadData() {
@@ -50,10 +51,11 @@
     try {
       isSaving.value = true
       await pdfDriverStore.updateConfig(value)
-      isSaving.value = false
-      return true
     } catch (e) {
       console.error(e)
+    } finally {
+      isSaving.value = false
+      return false
     }
   }
 

@@ -281,7 +281,7 @@ Route::prefix('/v1')->group(function () {
 
             Route::apiResource('recurring-invoices', RecurringInvoiceController::class);
 
-            // Estimates
+            // Estimate
             //-------------------------------------------------
 
             Route::get('/estimates/{estimate}/send/preview', SendEstimatePreviewController::class);
