@@ -3,6 +3,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
+    "watch": "vite build --watch",
     "build": "vite build",
     "serve": "vite preview",
     "test": "eslint ./resources/scripts --ext .js,.vue"
@@ -32,9 +33,9 @@
     "@stripe/stripe-js": "^2.4.0",
     "@tiptap/core": "^2.1.16",
     "@tiptap/extension-text-align": "^2.1.16",
+    "@tiptap/pm": "^2.0.0",
     "@tiptap/starter-kit": "^2.1.16",
     "@tiptap/vue-3": "^2.1.16",
-    "@tiptap/pm": "^2.0.0",
     "@types/node": "^20.11.9",
     "@vuelidate/components": "^1.2.6",
     "@vuelidate/core": "^2.0.3",
@@ -52,7 +53,7 @@
     "pinia": "^2.1.7",
     "v-money3": "^3.24.1",
     "v-tooltip": "^4.0.0-beta.17",
-    "vite": "5.3.5",
+    "vite": "^5.4.9",
     "vue": "^3.4",
     "vue-flatpickr-component": "^11.0.3",
     "vue-i18n": "^9.9.0",

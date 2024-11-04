@@ -1,5 +1,5 @@
-const colors = require('tailwindcss/colors')
-const svgToDataUri = require('mini-svg-data-uri')
+import colors from 'tailwindcss/colors';
+import svgToDataUri from 'mini-svg-data-uri';
 
 function withOpacityValue(cssVariable) {
   return ({ opacityVariable, opacityValue }) => {
