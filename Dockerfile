@@ -1,4 +1,4 @@
-FROM node AS static_builder
+FROM --platform=$BUILDPLATFORM node AS static_builder
     WORKDIR /var/www/html
     COPY . /var/www/html
     RUN yarn && yarn build
