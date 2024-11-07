@@ -49,11 +49,10 @@ class InvoicesRequest extends FormRequest
                 'required',
             ],
             'sub_total' => [
-                'integer',
+                'numeric',
                 'required',
             ],
             'total' => [
-                'integer',
                 'numeric',
                 'max:999999999999',
                 'required',
@@ -83,7 +82,7 @@ class InvoicesRequest extends FormRequest
                 'required',
             ],
             'items.*.price' => [
-                'integer',
+                'numeric',
                 'required',
             ],
         ];

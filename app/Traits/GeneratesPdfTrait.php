@@ -140,11 +140,14 @@ trait GeneratesPdfTrait
             '{COMPANY_ADDRESS_STREET_2}' => $companyAddress->address_street_2,
             '{COMPANY_PHONE}' => $companyAddress->phone,
             '{COMPANY_ZIP_CODE}' => $companyAddress->zip,
+            '{COMPANY_VAT}' => $this->company->vat_id,
+            '{COMPANY_TAX}' => $this->company->tax_id,
             '{CONTACT_DISPLAY_NAME}' => $customer->name,
             '{PRIMARY_CONTACT_NAME}' => $customer->contact_name,
             '{CONTACT_EMAIL}' => $customer->email,
             '{CONTACT_PHONE}' => $customer->phone,
             '{CONTACT_WEBSITE}' => $customer->website,
+            '{CONTACT_TAX_ID}' => __('pdf_tax_id').': '.$customer->tax_id,
         ];
 
         $customFields = $this->fields;

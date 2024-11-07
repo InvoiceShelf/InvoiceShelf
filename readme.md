@@ -59,18 +59,9 @@ Join the InvoiceShelf discord server to discuss:
 - [x] Multiple Companies
 - [x] Recurring Invoices
 - [x] Customer Portal
-- [x] Accept Payments (Stripe Integration)
-- [x] White Labeling (Easy Invoice, Email & Consumer Portal Theme customisation)
-- [ ] Modules API
-- [ ] Blockchain Integration
-- [ ] Web 3.0 Accounting
-- [ ] Vendors & Bills
-- [ ] Inventory Management 
-- [ ] Payment Reminders
-- [ ] Improve Accessibility
-- [ ] Debit & Credit Notes
-- [ ] Time Tracking
-- [ ] Full service Payroll
+- [ ] Accept Payments (Stripe Integration)
+- [ ] Improved template system (invoices and estimate)
+- [ ] Modules and templates marketplace
 
 
 ## Copyright
