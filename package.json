@@ -2,7 +2,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
+    "watch": "vite build --watch",
     "build": "vite build",
     "serve": "vite preview",
     "test": "eslint ./resources/scripts --ext .js,.vue"
@@ -53,7 +54,7 @@
     "pinia": "^2.1.7",
     "v-money3": "^3.24.1",
     "v-tooltip": "^4.0.0-beta.17",
-    "vite": "5.3.5",
+    "vite": "^5.4.9",
     "vue": "^3.4",
     "vue-flatpickr-component": "^11.0.3",
     "vue-i18n": "^9.9.0",
