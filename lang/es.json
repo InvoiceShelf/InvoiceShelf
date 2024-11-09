@@ -100,7 +100,26 @@
     "pay_invoice": "Pagar factura",
     "login_successfully": "Logeado Satisfactoriamente!",
     "logged_out_successfully": "Logeado Satisfactoriamente",
-    "mark_as_default": "Marcar como predeterminado"
+    "mark_as_default": "Marcar como predeterminado",
+    "no_data_found": "No se encontraron datos",
+    "pagination": {
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "showing": "Mostrando",
+      "to": "a",
+      "of": "de",
+      "results": "resultados"
+    },
+    "file_upload": {
+      "drag_a_file": "Arrastra un archivo aquí o",
+      "browse": "explorar",
+      "to_choose": "para elegir un archivo"
+    },
+    "multiselect": {
+      "the_list_is_empty": "La lista está vacía",
+      "no_results_found": "No se encontraron resultados"
+    },
+    "copy_to_clipboard": "Copiar al portapapeles"
   },
   "dashboard": {
     "select_year": "Seleccionar año",
@@ -1197,7 +1216,21 @@
       "on_hold": "En espera",
       "update_status": "Actualizar estado",
       "completed": "Completado",
-      "company_currency_unchangeable": "No se puede cambiar la divisa de la empresa"
+      "company_currency_unchangeable": "No se puede cambiar la divisa de la empresa",
+      "fiscal_years": {
+        "january_december": "Enero - Diciembre",
+        "february_january": "Febrero - Enero",
+        "march_february": "Marzo - Febrero",
+        "april_march": "Abril - Marzo",
+        "may_april": "Mayo - Abril",
+        "june_may": "Junio - Mayo",
+        "july_june": "Julio - Junio",
+        "august_july": "Agosto - Julio",
+        "september_august": "Septiembre - Agosto",
+        "october_september": "Octubre - Septiembre",
+        "november_october": "Noviembre - Octubre",
+        "december_november": "Diciembre - Noviembre"
+      }
     },
     "update_app": {
       "title": "Actualizar aplicación",
@@ -1332,7 +1365,7 @@
     "save_cont": "Guardar y continuar",
     "company_info": "Información de la empresa",
     "company_info_desc": "Esta información se mostrará en las facturas. Tenga en cuenta que puede editar esto más adelante en la página de configuración.",
-    "company_name": "nombre de empresa",
+    "company_name": "Nombre de empresa",
     "company_logo": "Logo de la compañía",
     "logo_preview": "Vista previa del logotipo",
     "preferences": "Preferencias",
@@ -1371,6 +1404,7 @@
       "username": "Nombre de usuario de la base de datos",
       "db_name": "Nombre de la base de datos",
       "db_path": "Ruta de la base de datos",
+      "overwrite": "Sobrescribir la base de datos existente y continua",
       "desc": "Cree una base de datos en su servidor y establezca las credenciales utilizando el siguiente formulario."
     },
     "permissions": {
