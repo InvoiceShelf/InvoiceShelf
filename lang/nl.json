@@ -1534,13 +1534,13 @@
   "pdf_tax_label": "Btw",
   "pdf_tax_id": "FIN",
   "pdf_vat_id": "BTW",
-  "mail_thanks": "Thanks",
-  "mail_view_estimate": "View Estimate",
-  "mail_viewed_estimate": ":name viewed this Estimate.",
-  "mail_view_invoice": "View Invoice",
-  "mail_viewed_invoice": ":name viewed this Invoice.",
-  "mail_view_payment": "View Payment",
-  "notification_view_estimate": "[Notification] Estimate viewed",
-  "notification_view_invoice": "[Notification] Invoice viewed",
-  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:"
+  "mail_thanks": "Bedankt",
+  "mail_view_estimate": "Bekijk offerte",
+  "mail_viewed_estimate": ":name heeft deze offerte bekeken.",
+  "mail_view_invoice": "Bekijk factuur",
+  "mail_viewed_invoice": ":name heeft deze factuur bekeken.",
+  "mail_view_payment": "Bekijk betaling",
+  "notification_view_estimate": "[Notification] Offerte bekeken",
+  "notification_view_invoice": "[Notification] Factuur bekeken",
+  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "Je hebt een factuur ontvangen van <b>{COMPANY_NAME}</b>.</br> Download via de onderstaande knop:"
 }
