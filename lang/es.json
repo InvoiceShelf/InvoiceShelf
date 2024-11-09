@@ -324,6 +324,9 @@
     "record_payment": "Registro de pago",
     "add_estimate": "Agregar presupuesto",
     "save_estimate": "Guardar presupuesto",
+    "cloned_successfully": "Estimate cloned successfully",
+    "clone_estimate": "Clone Estimate",
+    "confirm_clone": "This Estimate will be cloned into a new Estimate",
     "confirm_conversion": "¿Quiere convertir este presupuesto en una factura?",
     "conversion_message": "Conversión exitosa",
     "confirm_send_estimate": "Este presupuesto se enviará por correo electrónico al cliente",
@@ -568,7 +571,18 @@
       "hour": "Hora",
       "day_month": "Día del mes",
       "month": "Mes",
-      "day_week": "Día de la semana"
+      "day_week": "Día de la semana",
+      "every_minute": "Every Minute",
+      "every_30_minute": "Every 30 Minute",
+      "every_hour": "Every Hour",
+      "every_2_hour": "Every 2 Hour",
+      "every_day_at_midnight": "Every day at midnight",
+      "every_week": "Every Week",
+      "every_15_days_at_midnight": "Every 15 days at midnight",
+      "on_the_first_day_of_every_month_at_midnight": "On the first day of every month at 00:00",
+      "every_6_month": "Every 6 Month",
+      "every_year_on_the_first_day_of_january_at_midnight": "Every year on the first day of january at 00:00",
+      "custom": "Custom"
     },
     "confirm_delete": "No podrá recuperar esta factura | No podrás recuperar estas facturas",
     "created_message": "Factura recurrente creada con éxito",
@@ -577,7 +591,12 @@
     "marked_as_sent_message": "Factura recurrente marcada como enviada con éxito",
     "user_email_does_not_exist": "El email del usuario no existe",
     "something_went_wrong": "algo ha ido mal",
-    "invalid_due_amount_message": "La cantidad total de la factura recurrente no puede ser menor a la cantidad total pagada. Por favor, actualiza la factura o elimina los pagos asociados para continuar."
+    "invalid_due_amount_message": "La cantidad total de la factura recurrente no puede ser menor a la cantidad total pagada. Por favor, actualiza la factura o elimina los pagos asociados para continuar.",
+    "limit": {
+      "none": "None",
+      "date": "Date",
+      "count": "Count"
+    }
   },
   "payments": {
     "title": "Pagos",
@@ -615,7 +634,8 @@
     "created_message": "Pago creado con éxito",
     "updated_message": "Pago actualizado con éxito",
     "deleted_message": "Pago eliminado con éxito | Pagos eliminados exitosamente",
-    "invalid_amount_message": "El importe del pago no es válido."
+    "invalid_amount_message": "El importe del pago no es válido.",
+    "amount_due": "Due Amount"
   },
   "expenses": {
     "title": "Gastos",
@@ -720,7 +740,8 @@
     "installed": "Instalado",
     "no_modules_installed": "¡No hay módulos instalados todavía!",
     "disable_warning": "Se revertirán todos los ajustes para este particular.",
-    "what_you_get": "Beneficios que obtiene"
+    "what_you_get": "Beneficios que obtiene",
+    "sign_up_and_get_token": "Sign up & Get Token"
   },
   "users": {
     "title": "Usuarios",
@@ -772,7 +793,11 @@
       "date_range": "Seleccionar rango de fechas",
       "to_date": "Hasta la fecha",
       "from_date": "A partir de la fecha",
-      "report_type": "Tipo de informe"
+      "report_type": "Tipo de informe",
+      "sort": {
+        "by_customer": "By Customer",
+        "by_item": "By Item"
+      }
     },
     "taxes": {
       "taxes": "Impuestos",
@@ -940,7 +965,14 @@
       "added_message": "Campo personalizado agregado correctamente",
       "press_enter_to_add": "Presiona Enter para añadir una nueva opción",
       "model_in_use": "No se puede actualizar el modelo para los campos que ya están en uso.",
-      "type_in_use": "No se puede actualizar el tipo de los campos que ya están en uso."
+      "type_in_use": "No se puede actualizar el tipo de los campos que ya están en uso.",
+      "model_type": {
+        "customer": "Customer",
+        "invoice": "Invoice",
+        "estimate": "Estimate",
+        "expense": "Expense",
+        "payment": "Payment"
+      }
     },
     "customization": {
       "customization": "Personalización",
@@ -1061,7 +1093,12 @@
         "note_updated": "Nota actualizada correctamente",
         "note_confirm_delete": "No podrá recuperar esta nota",
         "already_in_use": "Nota ya está en uso",
-        "deleted_message": "Nota eliminada correctamente"
+        "deleted_message": "Nota eliminada correctamente",
+        "types": {
+          "estimate": "Estimate",
+          "invoice": "Invoice",
+          "payment": "Payment"
+        }
       }
     },
     "account_settings": {
@@ -1236,6 +1273,7 @@
       "title": "Actualizar aplicación",
       "description": "Puedes actualizar InvoiceShelf fácilmente comprobando si existe una nueva actualización haciendo clic en el botón de abajo",
       "check_update": "Buscar actualizaciones",
+      "insider_consent": "Opt-in for Insider releases. Recommended for testing purposes only.",
       "avail_update": "Nueva actualización disponible",
       "next_version": "Próxima versión",
       "requirements": "Requisitos",
@@ -1420,7 +1458,14 @@
       "verify_now": "Verificar ahora",
       "success": "Dominio verificado correctamente.",
       "failed": "La verificación del dominio falló. Ingrese un nombre de dominio válido.",
-      "verify_and_continue": "Verificar y continuar"
+      "verify_and_continue": "Verificar y continuar",
+      "notes": {
+        "notes": "Notes:",
+        "not_contain": "App domain should not contain",
+        "or": "or",
+        "in_front": "in front of the domain.",
+        "if_you": "If you're accessing the website on a different port, please mention the port. For example:"
+      }
     },
     "mail": {
       "host": "Host de correo",
