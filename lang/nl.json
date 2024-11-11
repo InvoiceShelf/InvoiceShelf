@@ -18,7 +18,7 @@
     "add_company": "Bedrijf toevoegen",
     "view_pdf": "Bekijk PDF",
     "copy_pdf_url": "Kopieer PDF-URL",
-    "download_pdf": "Download PDF",
+    "download_pdf": "PDF downloaden",
     "save": "Opslaan",
     "create": "Maak",
     "cancel": "Annuleren",
@@ -101,25 +101,25 @@
     "login_successfully": "Succesvol ingelogd!",
     "logged_out_successfully": "Succesvol afgemeld",
     "mark_as_default": "Markeren als standaard",
-    "no_data_found": "No data found",
+    "no_data_found": "Geen gegevens beschikbaar",
     "pagination": {
-      "previous": "Previous",
-      "next": "Next",
-      "showing": "Showing",
-      "to": "to",
-      "of": "of",
-      "results": "results"
+      "previous": "Vorige",
+      "next": "Volgende",
+      "showing": "Afgebeeld",
+      "to": "tot",
+      "of": "van",
+      "results": "resultaten"
     },
     "file_upload": {
-      "drag_a_file": "Drag a file here or",
-      "browse": "browse",
-      "to_choose": "to choose a file"
+      "drag_a_file": "Sleep een bestand hierheen of",
+      "browse": "bladeren",
+      "to_choose": "om een bestand te kiezen"
     },
     "multiselect": {
-      "the_list_is_empty": "The list is empty",
-      "no_results_found": "No results found"
+      "the_list_is_empty": "De lijst is leeg",
+      "no_results_found": "Geen resultaten gevonden"
     },
-    "copy_to_clipboard": "Copy to Clipboard"
+    "copy_to_clipboard": "Kopieer naar Klembord"
   },
   "dashboard": {
     "select_year": "Selecteer jaar",
