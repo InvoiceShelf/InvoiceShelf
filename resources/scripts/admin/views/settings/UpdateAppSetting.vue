@@ -454,11 +454,11 @@ function getStatus(step) {
 
 <style>
 .update-changelog ul {
-  list-style: disc!important;
+  list-style: disc !important;
   margin-left: 30px;
 }
+
 .update-changelog li {
   margin-bottom: 4px;
 }
-
 </style>

@@ -16,10 +16,9 @@
           <BaseInputGroup
             :label="$t('settings.customization.notes.name')"
             variant="vertical"
-            :error="
-              v$.currentNote.name.$error &&
+            :error="v$.currentNote.name.$error &&
               v$.currentNote.name.$errors[0].$message
-            "
+              "
             required
           >
             <BaseInput
@@ -32,10 +31,9 @@
 
           <BaseInputGroup
             :label="$t('settings.customization.notes.type')"
-            :error="
-              v$.currentNote.type.$error &&
+            :error="v$.currentNote.type.$error &&
               v$.currentNote.type.$errors[0].$message
-            "
+              "
             required
           >
             <BaseMultiselect
@@ -48,10 +46,9 @@
 
           <BaseInputGroup
             :label="$t('settings.customization.notes.notes')"
-            :error="
-              v$.currentNote.notes.$error &&
+            :error="v$.currentNote.notes.$error &&
               v$.currentNote.notes.$errors[0].$message
-            "
+              "
             required
           >
             <BaseCustomInput
@@ -123,9 +120,9 @@ const { t } = useI18n()
 
 let isSaving = ref(false)
 const types = reactive([
-  {label: t('settings.customization.notes.types.invoice'), value: 'Invoice'},
-  {label: t('settings.customization.notes.types.estimate'), value: 'Estimate'},
-  {label: t('settings.customization.notes.types.payment'), value: 'Payment'}
+  { label: t('settings.customization.notes.types.invoice'), value: 'Invoice' },
+  { label: t('settings.customization.notes.types.estimate'), value: 'Estimate' },
+  { label: t('settings.customization.notes.types.payment'), value: 'Payment' }
 ])
 let fields = ref(['customer', 'customerCustom'])
 
@@ -275,7 +272,7 @@ function closeNoteModal() {
 }
 </script>
 
-<style lang="scss">
+<style>
 .note-modal {
   .header-editior .editor-menu-bar {
     margin-left: 0.5px;

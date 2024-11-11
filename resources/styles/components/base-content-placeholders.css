@@ -1,0 +1,139 @@
+:root {
+  --base-content-placeholders-primary-color: #ccc;
+  --base-content-placeholders-secondary-color: #eee;
+  --base-content-placeholders-border-radius: 0.375rem;
+  --base-content-placeholders-line-height: 0.9375rem;
+  --base-content-placeholders-spacing: 0.625rem;
+}
+
+@keyframes vueContentPlaceholdersAnimation {
+  0% {
+    transform: translate3d(-30%, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(100%, 0, 0);
+  }
+}
+
+.base-content-placeholders-box,
+.base-content-placeholders-heading__img,
+.base-content-placeholders-heading__title,
+.base-content-placeholders-heading__subtitle,
+.base-content-placeholders-text__line {
+  position: relative;
+  overflow: hidden;
+  min-height: var(--base-content-placeholders-line-height);
+  background: var(--base-content-placeholders-secondary-color);
+}
+
+.base-content-placeholders-heading {
+  display: flex;
+}
+
+.base-content-placeholders-heading__img {
+  margin-right: calc(1.5 * var(--base-content-placeholders-spacing));
+}
+
+.base-content-placeholders-heading__title {
+  width: 85%;
+  margin-bottom: var(--base-content-placeholders-spacing);
+  background: var(--base-content-placeholders-primary-color);
+}
+
+.base-content-placeholders-heading__subtitle {
+  width: 90%;
+}
+
+.base-content-placeholders-heading__content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.base-content-placeholders-text__line {
+  width: 100%;
+  margin-bottom: var(--base-content-placeholders-spacing);
+
+  &:first-child {
+    width: 100%;
+  }
+
+  &:nth-child(2) {
+    width: 90%;
+  }
+
+  &:nth-child(3) {
+    width: 80%;
+  }
+
+  &:nth-child(4) {
+    width: 70%;
+  }
+}
+
+.base-content-circle {
+  border-radius: 100%;
+}
+
+.base-content-placeholders-is-rounded {
+  border-radius: var(--base-content-placeholders-border-radius);
+
+  & .base-content-placeholders-heading__img,
+  & .base-content-placeholders-heading__title,
+  & .base-content-placeholders-heading__subtitle,
+  & .base-content-placeholders-text__line {
+    border-radius: var(--base-content-placeholders-border-radius);
+  }
+}
+
+.base-content-placeholders-is-centered {
+  & .base-content-placeholders-heading__img,
+  & .base-content-placeholders-heading__title,
+  & .base-content-placeholders-heading__subtitle,
+  & .base-content-placeholders-text__line {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.base-content-placeholders-is-animated {
+  & .base-content-placeholders-heading__img::before,
+  & .base-content-placeholders-heading__title::before,
+  & .base-content-placeholders-heading__subtitle::before,
+  & .base-content-placeholders-text__line::before,
+  & .base-content-placeholders-box::before,
+  &.base-content-placeholders-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    max-width: 1000px;
+    height: 100%;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      color-mix(
+          in srgb,
+          var(--base-content-placeholders-secondary-color) 95%,
+          black 5%
+        )
+        15%,
+      transparent 30%
+    );
+    animation-duration: 1.5s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-name: vueContentPlaceholdersAnimation;
+    animation-timing-function: linear;
+  }
+}
+
+[class^='base-content-placeholders-'] {
+  & + .base-content-placeholders-heading,
+  & + .base-content-placeholders-text {
+    margin-top: calc(2 * var(--base-content-placeholders-spacing));
+  }
+}

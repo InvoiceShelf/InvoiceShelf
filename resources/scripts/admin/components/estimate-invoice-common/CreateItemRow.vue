@@ -375,7 +375,7 @@ const v$ = useVuelidate(
 
 function updateTax(data) {
   props.store.$patch((state) => {
-     state[props.storeProp].items[props.index]['taxes'][data.index] = data.item
+    state[props.storeProp].items[props.index]['taxes'][data.index] = data.item
   })
 
   let lastTax = props.itemData.taxes[props.itemData.taxes.length - 1]
@@ -396,7 +396,7 @@ function setDiscount() {
   const newValue = props.store[props.storeProp].items[props.index].discount
   const absoluteSubtotal = Math.abs(subtotal.value)
 
-  if (props.itemData.discount_type === 'percentage'){
+  if (props.itemData.discount_type === 'percentage') {
     updateItemAttribute('discount_val', Math.round((absoluteSubtotal * newValue) / 100))
   } else {
     updateItemAttribute('discount_val', Math.min(Math.round(newValue * 100), absoluteSubtotal))

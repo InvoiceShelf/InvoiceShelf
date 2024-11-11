@@ -1,0 +1,121 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`renders BaseContentPlaceholders with BaseContentPlaceholdersText using render function 1`] = `
+PlaywrightLocator {
+  "_container": <body>
+    
+    
+    
+  
+
+
+    <div>
+      <div
+        class="base-content-placeholders base-content-placeholders-is-animated"
+        data-testid="modal-placeholder"
+      >
+        
+        <div
+          class="shadow-md border-2 border-gray-200 border-opacity-60 rounded-lg cursor-pointer overflow-hidden h-100"
+        >
+          <div
+            class="base-content-placeholders-box base-content-placeholders-is-rounded h-48 lg:h-64 md:h-48 w-full"
+          />
+          <div
+            class="px-6 py-5 flex flex-col bg-gray-50 flex-1 justify-between"
+          >
+            <div
+              class="base-content-placeholders-text base-content-placeholders-is-rounded w-32 h-8"
+            >
+              
+              <div
+                class="w-full h-full base-content-placeholders-text__line"
+              />
+              
+            </div>
+            <div
+              class="flex items-center mt-2"
+            >
+              <div
+                class="base-content-placeholders-box h-10 w-10 rounded-full sm:inline-block mr-2"
+              />
+              <div>
+                <div
+                  class="base-content-placeholders-text base-content-placeholders-is-rounded w-32 h-8 ml-2"
+                >
+                  
+                  <div
+                    class="w-full h-full base-content-placeholders-text__line"
+                  />
+                  
+                </div>
+              </div>
+            </div>
+            <div
+              class="base-content-placeholders-text base-content-placeholders-is-rounded pt-4 w-full h-16"
+            >
+              
+              <div
+                class="w-full h-full base-content-placeholders-text__line"
+              />
+              
+            </div>
+            <div
+              class="flex justify-between mt-4 flex-col space-y-2 sm:space-y-0 sm:flex-row"
+            >
+              <div
+                class="base-content-placeholders-text base-content-placeholders-is-rounded w-32 h-8"
+              >
+                
+                <div
+                  class="w-full h-full base-content-placeholders-text__line"
+                />
+                
+              </div>
+              <div
+                class="base-content-placeholders-text base-content-placeholders-is-rounded w-32 h-8"
+              >
+                
+                <div
+                  class="w-full h-full base-content-placeholders-text__line"
+                />
+                
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </body>,
+  "_parsedSelector": {
+    "capture": undefined,
+    "parts": [
+      {
+        "body": [
+          {
+            "simples": [
+              {
+                "combinator": "",
+                "selector": {
+                  "css": "body",
+                  "functions": [],
+                },
+              },
+            ],
+          },
+        ],
+        "name": "css",
+        "source": "body",
+      },
+      {
+        "body": "[data-testid="modal-placeholder"s]",
+        "name": "internal:testid",
+        "source": "[data-testid="modal-placeholder"s]",
+      },
+    ],
+  },
+  "_pwSelector": undefined,
+  "selector": "body >> internal:testid=[data-testid="modal-placeholder"s]",
+}
+`;

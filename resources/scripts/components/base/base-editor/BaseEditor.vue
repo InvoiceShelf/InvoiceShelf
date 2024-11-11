@@ -147,12 +147,14 @@ export default {
       { name: 'alignRight', icon: markRaw(MenuAlt3Icon), action: () => editor.value.chain().focus().setTextAlign('right').run() },
       { name: 'alignJustify', icon: markRaw(MenuIcon), action: () => editor.value.chain().focus().setTextAlign('justify').run() },
       { name: 'alignCenter', icon: markRaw(MenuCenterIcon), action: () => editor.value.chain().focus().setTextAlign('center').run() },
-      { name: 'addLink', icon: markRaw(LinkIcon), action: () => {
-        const url = window.prompt('URL')
-        if (url) {
-          editor.value.chain().focus().setLink({ href: url }).run()
+      {
+        name: 'addLink', icon: markRaw(LinkIcon), action: () => {
+          const url = window.prompt('URL')
+          if (url) {
+            editor.value.chain().focus().setLink({ href: url }).run()
+          }
         }
-      }},
+      },
     ])
 
     watch(() => props.modelValue, (newValue) => {
@@ -175,7 +177,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style>
 .ProseMirror {
   min-height: 200px;
   padding: 8px 12px;
@@ -239,9 +241,9 @@ export default {
     color: rgb(var(--color-primary-500));
     text-decoration: underline;
   }
-}
 
-.ProseMirror:focus {
-  @apply border border-primary-400 ring-primary-400;
+  &:focus {
+    @apply border border-primary-400 ring-primary-400;
+  }
 }
 </style>

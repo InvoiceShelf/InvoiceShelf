@@ -36,7 +36,6 @@ return [
             'scaffold/config' => 'Config/config.php',
             'composer' => 'composer.json',
             'resources/scripts/module' => 'Resources/scripts/module.js',
-            'resources/sass/module' => 'Resources/sass/module.scss',
             'resources/scripts/stores/sample-store' => 'Resources/scripts/stores/sample-store.js',
             'resources/scripts/views/SamplePage' => 'Resources/scripts/views/SamplePage.vue',
             'lang/en' => 'Lang/en.json',
