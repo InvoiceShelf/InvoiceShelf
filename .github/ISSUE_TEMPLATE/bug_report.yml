@@ -34,7 +34,6 @@ body:
       placeholder: >-
         When doing `x`, `y`, and `z` in that order, an error occurs, but when x,
         z and then y is done, the error does not occur.
-      render: Markdown
     validations:
       required: true
   - type: textarea
@@ -52,7 +51,6 @@ body:
         4. Do X;
         5. Do Z;
         6. Do Y.
-      render: Markdown
     validations:
       required: true
   - type: textarea
@@ -61,7 +59,6 @@ body:
       label: Expected behavior
       description: A clear and concise description of what you expected to happen.
       placeholder: doing  `x`, `y`, and `z` in that order should not generate an error.
-      render: Markdown
     validations:
       required: true
   - type: textarea
@@ -70,7 +67,6 @@ body:
       label: Actual behavior
       description: A clear and concise description of what actually happen.
       placeholder: doing  `x`, `y`, and `z` in that order generate an error.
-      render: Markdown
     validations:
       required: true
   - type: markdown
