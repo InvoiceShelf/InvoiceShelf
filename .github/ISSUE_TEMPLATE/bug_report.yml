@@ -24,7 +24,7 @@ body:
     attributes:
       value: >-
         If you did all of the above, we first would like to thank you for taking
-        the time to fill out this bug report, it will help us tremendesly to
+        the time to fill out this bug report, it will help us tremendously to
         find and fix the issue sooner!
   - type: textarea
     id: bug-description
@@ -58,7 +58,7 @@ body:
       value: |-
         ## Envirment
 
-        Now lets collect some information about your envirment.
+        Now lets collect some information about your environment.
   - type: input
     id: invoiceshelf-version
     attributes:
