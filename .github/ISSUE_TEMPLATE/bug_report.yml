@@ -34,7 +34,25 @@ body:
       placeholder: >-
         When doing `x`, `y`, and `z` in that order, an error occurs, but when x,
         z and then y is done, the error does not occur.
-      render: markdown
+      render: Markdown
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to Reproduce the issue
+      description: A clear step-by-step explanation of how to reproduce your issue
+      placeholder: >-
+        ## Produces an error:
+        1. Do X;
+        2. Do Y;
+        3. Do Z;
+
+        ## Works fine:
+        4. Do X;
+        5. Do Z;
+        6. Do Y.
+      render: Markdown
     validations:
       required: true
   - type: textarea
@@ -43,6 +61,7 @@ body:
       label: Expected behavior
       description: A clear and concise description of what you expected to happen.
       placeholder: doing  `x`, `y`, and `z` in that order should not generate an error.
+      render: Markdown
     validations:
       required: true
   - type: textarea
@@ -51,6 +70,7 @@ body:
       label: Actual behavior
       description: A clear and concise description of what actually happen.
       placeholder: doing  `x`, `y`, and `z` in that order generate an error.
+      render: Markdown
     validations:
       required: true
   - type: markdown
@@ -142,6 +162,7 @@ body:
         2023-04-12 10:15:35 [NGINX] 172.16.0.11 - - [12/Apr/2023:10:15:35 +0000] "PUT /api/v1/users/123 HTTP/1.1" 200 - "https://example.com/profile" "Mozilla/5.0 (iPhone; CPU iPhone OS 14_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1"
         2023-04-12 10:15:36 [NGINX] 172.16.0.13 - - [12/Apr/2023:10:15:36 +0000] "DELETE /api/v1/products/456 HTTP/1.1" 204 - "-" "Dalvik/2.1.0 (Linux; U; Android 10; Pixel 4 Build/QD1A.190821.014.C2)"
         2023-04-12 10:15:37 [NGINX] 172.16.0.15 - - [12/Apr/2023:10:15:37 +0000] "GET /easter-egg HTTP/1.1" 200 42 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.3"
+      render: irc logs
   - type: markdown
     attributes:
       value: >-
