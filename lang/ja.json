@@ -1193,15 +1193,15 @@
       "compound_tax": "複合税",
       "percent": "パーセント",
       "action": "アクション",
-      "tax_setting_description": "Enable this if you want to add taxes to individual invoice items. By default, taxes are added directly to the invoice.",
-      "created_message": "Tax type created successfully",
-      "updated_message": "Tax type updated successfully",
-      "deleted_message": "Tax type deleted successfully",
-      "confirm_delete": "You will not be able to recover this Tax Type",
-      "already_in_use": "Tax is already in use"
+      "tax_setting_description": "個々の請求書項目に税金を追加する場合はこれを有効にします。デフォルトでは税金は請求書に直接追加されます。",
+      "created_message": "税の種類が正常に作成されました",
+      "updated_message": "税の種類が正常に更新されました",
+      "deleted_message": "税の種類が正常に削除されました",
+      "confirm_delete": "この税の種類は復元できません",
+      "already_in_use": "税は既に使用されています"
     },
     "payment_modes": {
-      "title": "Payment Modes",
+      "title": "支払い方法",
       "description": "Modes of transaction for payments",
       "add_payment_mode": "Add Payment Mode",
       "edit_payment_mode": "Edit Payment Mode",
