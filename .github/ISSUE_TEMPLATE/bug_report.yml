@@ -3,9 +3,13 @@ description: Template for bug reports
 labels:
   - bug
   - triage
+projects: ["InvoiceShelf/2"]
 assignees:
   - rihards-simanovics
+
 body:
+  # Ask user to confirm they've tried to fix or research the issue before
+  # posting a bug report.
   - type: checkboxes
     id: confirm-read-documentation
     attributes:
@@ -20,12 +24,16 @@ body:
             Ive tried clearing both cache and cookies in my browser or tried
             opening the app in the Incognito/InPrivate window.
           required: true
+
+  # Thank users for taking time to submit a bug report
   - type: markdown
     attributes:
       value: >-
         If you did all of the above, we first would like to thank you for taking
         the time to fill out this bug report, it will help us tremendously to
         find and fix the issue sooner!
+
+  # Description fo the bug
   - type: textarea
     id: bug-description
     attributes:
@@ -36,6 +44,8 @@ body:
         z and then y is done, the error does not occur.
     validations:
       required: true
+
+  # Reproduction steps
   - type: textarea
     id: reproduce
     attributes:
@@ -53,6 +63,8 @@ body:
         6. Do Y.
     validations:
       required: true
+
+  # Expected Behaviour
   - type: textarea
     id: expected-behavior
     attributes:
@@ -61,6 +73,8 @@ body:
       placeholder: doing  `x`, `y`, and `z` in that order should not generate an error.
     validations:
       required: true
+
+  # Actual Behaviour
   - type: textarea
     id: actual-behavior
     attributes:
@@ -69,12 +83,16 @@ body:
       placeholder: doing  `x`, `y`, and `z` in that order generate an error.
     validations:
       required: true
+
+  # Section break
   - type: markdown
     attributes:
       value: |-
         ## Envirment
 
         Now lets collect some information about your environment.
+
+  # App Version
   - type: input
     id: invoiceshelf-version
     attributes:
@@ -82,6 +100,8 @@ body:
       placeholder: v0.0.0
     validations:
       required: true
+
+  # PHP Version
   - type: input
     id: php-version
     attributes:
@@ -89,6 +109,8 @@ body:
       placeholder: v0.0.0
     validations:
       required: true
+
+  # DB Type
   - type: input
     id: database-type
     attributes:
@@ -96,6 +118,8 @@ body:
       placeholder: MariaDB / MySQL / PostreSQL / SQLite
     validations:
       required: true
+
+  # DB Version
   - type: input
     id: db-version
     attributes:
@@ -103,17 +127,23 @@ body:
       placeholder: v0.0.0
     validations:
       required: true
+
+  # Web Browser
   - type: input
     id: web-browser
     attributes:
       label: Web Browser
-      placeholder: "Firefox / Safari / or any other (chromium based browser) "
+      placeholder: "Firefox / Safari / or any other (chromium based browser)"
+
+  # OS Version
   - type: input
     id: server-os
     attributes:
       label: Server OS
       description: If Linux please make sure to provide both distro name and it's version
       placeholder: Windows / Linux (e.g. Ubuntu 24.04)
+
+  # Associated Logs
   - type: markdown
     attributes:
       value: >-
@@ -122,10 +152,12 @@ body:
 
         last but not least, could you please take some time to get us the logs
         for:
+
+  # Log Reverse proxy
   - type: textarea
     id: log-rev-proxy
     attributes:
-      label: Reverse-proxy
+      label: Reverse-proxy logs
       description: >-
         Please provide logs from your Apache, Nginx, Traefik, or any other
         reverse proxy application.
@@ -146,10 +178,12 @@ body:
         [2022-12-20 19:00:00] production.INFO: Server rebooted. All systems go.
         [2024-11-14 18:56:20] production.INFO: Unexpected item in the bagging area. Please wait for assistance.
       render: irc logs
+
+  # PHP/Laravel Logs
   - type: textarea
     id: log-laravel
     attributes:
-      label: Laravel/PHP
+      label: Laravel/PHP logs
       description: Please provide logs from either PHP or Laravel or both.
       placeholder: >-
         2023-04-12 10:15:32 [NGINX] 172.16.0.5 - - [12/Apr/2023:10:15:32 +0000] "GET /index.html HTTP/1.1" 200 1024 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
@@ -159,6 +193,8 @@ body:
         2023-04-12 10:15:36 [NGINX] 172.16.0.13 - - [12/Apr/2023:10:15:36 +0000] "DELETE /api/v1/products/456 HTTP/1.1" 204 - "-" "Dalvik/2.1.0 (Linux; U; Android 10; Pixel 4 Build/QD1A.190821.014.C2)"
         2023-04-12 10:15:37 [NGINX] 172.16.0.15 - - [12/Apr/2023:10:15:37 +0000] "GET /easter-egg HTTP/1.1" 200 42 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.3"
       render: irc logs
+
+  # Special thanks
   - type: markdown
     attributes:
       value: >-
