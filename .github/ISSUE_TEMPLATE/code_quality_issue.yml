@@ -1,7 +1,7 @@
 # Big thanks to https://github.com/files-community/Files/ for a template of the code_quality_issue
 
 name: Code Quality Issue
-description: Create a code quality issue to help Files keep a clean codebase
+description: Create a code quality issue to help InvoiceShelf keep a clean codebase
 labels:
   - code quality
   - triage
@@ -35,7 +35,7 @@ body:
     attributes:
       label: The code in question
       description: >-
-        A list of the different files and/or areas of the code concerned by the issue.
+        A list of the different InvoiceShelf and/or areas of the code concerned by the issue.
     validations:
       required: true
 
