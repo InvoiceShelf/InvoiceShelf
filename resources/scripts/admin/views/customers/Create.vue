@@ -663,9 +663,6 @@ const rules = computed(() => {
           minLength(3)
         ),
       },
-      tax_id: {
-        required: helpers.withMessage(t('validation.required'), required),
-      },
       currency_id: {
         required: helpers.withMessage(t('validation.required'), required),
       },
