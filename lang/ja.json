@@ -29,7 +29,7 @@
     "to_date": "終了日",
     "from": "From",
     "to": "To",
-    "ok": "Ok",
+    "ok": "はい",
     "yes": "はい",
     "no": "いいえ",
     "sort_by": "並び順",
@@ -101,25 +101,25 @@
     "login_successfully": "ログインに成功しました",
     "logged_out_successfully": "ログアウトに成功しました",
     "mark_as_default": "デフォルトに設定",
-    "no_data_found": "No data found",
+    "no_data_found": "データが見つかりません",
     "pagination": {
-      "previous": "Previous",
-      "next": "Next",
-      "showing": "Showing",
+      "previous": "前へ",
+      "next": "次へ",
+      "showing": "表示中",
       "to": "to",
       "of": "of",
-      "results": "results"
+      "results": "結果"
     },
     "file_upload": {
-      "drag_a_file": "Drag a file here or",
-      "browse": "browse",
-      "to_choose": "to choose a file"
+      "drag_a_file": "ここにファイルをドラッグするか",
+      "browse": "閲覧",
+      "to_choose": "ファイルを選択"
     },
     "multiselect": {
-      "the_list_is_empty": "The list is empty",
-      "no_results_found": "No results found"
+      "the_list_is_empty": "リストが空です",
+      "no_results_found": "結果は見つかりませんでした"
     },
-    "copy_to_clipboard": "Copy to Clipboard"
+    "copy_to_clipboard": "クリップボードへコピー"
   },
   "dashboard": {
     "select_year": "年を選択",
@@ -191,7 +191,7 @@
   "customers": {
     "title": "顧客",
     "prefix": "接頭語",
-    "tax_id": "Tax ID",
+    "tax_id": "税 ID",
     "add_customer": "顧客を追加",
     "contacts_list": "顧客リスト",
     "name": "名前",
@@ -324,9 +324,9 @@
     "record_payment": "支払いを記録",
     "add_estimate": "見積を追加",
     "save_estimate": "見積を保存",
-    "cloned_successfully": "Estimate cloned successfully",
-    "clone_estimate": "Clone Estimate",
-    "confirm_clone": "This Estimate will be cloned into a new Estimate",
+    "cloned_successfully": "見積りの複製に成功しました",
+    "clone_estimate": "見積りを複製",
+    "confirm_clone": "この見積りは新しい見積りに複製されます",
     "confirm_conversion": "この見積りは新しい請求書を作成するために使用されます。",
     "conversion_message": "請求書の作成に成功しました",
     "confirm_send_estimate": "この見積りは顧客にメールで送信されます",
@@ -572,17 +572,17 @@
       "day_month": "日にち",
       "month": "月",
       "day_week": "曜日",
-      "every_minute": "Every Minute",
-      "every_30_minute": "Every 30 Minute",
-      "every_hour": "Every Hour",
-      "every_2_hour": "Every 2 Hour",
-      "every_day_at_midnight": "Every day at midnight",
-      "every_week": "Every Week",
-      "every_15_days_at_midnight": "Every 15 days at midnight",
-      "on_the_first_day_of_every_month_at_midnight": "On the first day of every month at 00:00",
-      "every_6_month": "Every 6 Month",
-      "every_year_on_the_first_day_of_january_at_midnight": "Every year on the first day of january at 00:00",
-      "custom": "Custom"
+      "every_minute": "1分毎",
+      "every_30_minute": "30分毎",
+      "every_hour": "1時間毎",
+      "every_2_hour": "2時間毎",
+      "every_day_at_midnight": "毎日真夜中に",
+      "every_week": "毎週",
+      "every_15_days_at_midnight": "15日毎に真夜中",
+      "on_the_first_day_of_every_month_at_midnight": "毎月初日の00:00",
+      "every_6_month": "6ヶ月毎",
+      "every_year_on_the_first_day_of_january_at_midnight": "毎年元日の00:00",
+      "custom": "カスタム"
     },
     "confirm_delete": "この請求書を復元することはできません | これらの請求書を復元することはできません",
     "created_message": "定期請求書の作成に成功しました",
@@ -593,9 +593,9 @@
     "something_went_wrong": "何か問題が発生しました",
     "invalid_due_amount_message": "定期請求書の合計金額は、この定期請求書の合計支払額より少なくすることはできません。続行するには、請求書を更新するか、関連する支払いを削除してください。",
     "limit": {
-      "none": "None",
-      "date": "Date",
-      "count": "Count"
+      "none": "なし",
+      "date": "日付",
+      "count": "数"
     }
   },
   "payments": {
@@ -635,7 +635,7 @@
     "updated_message": "支払いが正常に更新されました",
     "deleted_message": "支払いが正常に削除されました",
     "invalid_amount_message": "支払い金額が無効です",
-    "amount_due": "Due Amount"
+    "amount_due": "支払額"
   },
   "expenses": {
     "title": "支出",
@@ -741,7 +741,7 @@
     "no_modules_installed": "モジュールはまだインストールされていません！",
     "disable_warning": "この特定の設定はすべて元に戻ります。",
     "what_you_get": "できること",
-    "sign_up_and_get_token": "Sign up & Get Token"
+    "sign_up_and_get_token": "サインアップしてトークンを入手"
   },
   "users": {
     "title": "ユーザー",
@@ -795,8 +795,8 @@
       "from_date": "開始日",
       "report_type": "レポートの種類",
       "sort": {
-        "by_customer": "By Customer",
-        "by_item": "By Item"
+        "by_customer": "顧客別",
+        "by_item": "アイテム別"
       }
     },
     "taxes": {
@@ -967,11 +967,11 @@
       "model_in_use": "すでに使用されているフィールドのモデルを更新することはできません。",
       "type_in_use": "すでに使用されているフィールドのタイプを更新することはできません。",
       "model_type": {
-        "customer": "Customer",
-        "invoice": "Invoice",
-        "estimate": "Estimate",
-        "expense": "Expense",
-        "payment": "Payment"
+        "customer": "顧客",
+        "invoice": "請求書",
+        "estimate": "見積り",
+        "expense": "支出",
+        "payment": "支払い"
       }
     },
     "customization": {
@@ -1086,29 +1086,29 @@
         "notes": "ノート",
         "type": "タイプ",
         "add_note": "ノートの追加",
-        "add_new_note": "Add New Note",
-        "name": "Name",
-        "edit_note": "Edit Note",
-        "note_added": "Note added successfully",
-        "note_updated": "Note Updated successfully",
-        "note_confirm_delete": "You will not be able to recover this Note",
-        "already_in_use": "Note is already in use",
-        "deleted_message": "Note deleted successfully",
+        "add_new_note": "新規ノートを追加",
+        "name": "名前",
+        "edit_note": "ノートの編集",
+        "note_added": "ノートが正常に追加されました",
+        "note_updated": "ノートが正常に更新されました",
+        "note_confirm_delete": "このノートを復元することはできません",
+        "already_in_use": "このノートはすでに使われています",
+        "deleted_message": "ノートは正常に削除されました",
         "types": {
-          "estimate": "Estimate",
-          "invoice": "Invoice",
-          "payment": "Payment"
+          "estimate": "見積り",
+          "invoice": "請求書",
+          "payment": "支払い"
         }
       }
     },
     "account_settings": {
-      "profile_picture": "Profile Picture",
-      "name": "Name",
-      "email": "Email",
-      "password": "Password",
-      "confirm_password": "Confirm Password",
-      "account_settings": "Account Settings",
-      "save": "Save",
+      "profile_picture": "プロフィール画像",
+      "name": "名前",
+      "email": "メール",
+      "password": "パスワード",
+      "confirm_password": "パスワードの確認",
+      "account_settings": "アカウント設定",
+      "save": "保存",
       "section_description": "以下のフォームを使用して、名前、メールアドレス、パスワードを更新できます。",
       "updated_message": "アカウント設定が正常に更新されました"
     },
@@ -1167,41 +1167,41 @@
       "exchange_rate_confirm_delete": "このドライバを回復することはできません",
       "created_message": "プロバイダが正常に作成されました",
       "updated_message": "プロバイダが正常に更新されました",
-      "deleted_message": "Provider Deleted Successfully",
-      "error": " You cannot Delete Active Driver",
-      "default_currency_error": "This currency is already used in one of the Active Provider",
-      "exchange_help_text": "Enter exchange rate to convert from {currency} to {baseCurrency}",
+      "deleted_message": "プロバイダーが正常に削除されました",
+      "error": " アクティブなドライバーを削除することはできません",
+      "default_currency_error": "この通貨はいずれかのアクティブなプロバイダーで既に使用されています",
+      "exchange_help_text": "{currency} から {baseCurrency} に変換する為替レートを入力してください",
       "currency_freak": "Currency Freak",
       "currency_layer": "Currency Layer",
       "open_exchange_rate": "Open Exchange Rate",
       "currency_converter": "Currency Converter",
-      "server": "Server",
+      "server": "サーバ",
       "url": "URL",
-      "active": "Active",
-      "currency_help_text": "This provider will only be used on above selected currencies",
-      "currency_in_used": "The following currencies are already active on another provider. Please remove these currencies from selection to activate this provider again."
+      "active": "有効",
+      "currency_help_text": "このプロバイダは上記の選択された通貨でのみ使用されます",
+      "currency_in_used": "次の通貨は、すでに別のプロバイダーで有効になっています。このプロバイダーを再度有効にするには、これらの通貨を選択から削除してください。"
     },
     "tax_types": {
-      "title": "Tax Types",
-      "add_tax": "Add Tax",
-      "edit_tax": "Edit Tax",
-      "description": "You can add or Remove Taxes as you please. InvoiceShelf supports Taxes on Individual Items as well as on the invoice.",
-      "add_new_tax": "Add New Tax",
-      "tax_settings": "Tax Settings",
-      "tax_per_item": "Tax Per Item",
-      "tax_name": "Tax Name",
-      "compound_tax": "Compound Tax",
-      "percent": "Percent",
-      "action": "Action",
-      "tax_setting_description": "Enable this if you want to add taxes to individual invoice items. By default, taxes are added directly to the invoice.",
-      "created_message": "Tax type created successfully",
-      "updated_message": "Tax type updated successfully",
-      "deleted_message": "Tax type deleted successfully",
-      "confirm_delete": "You will not be able to recover this Tax Type",
-      "already_in_use": "Tax is already in use"
+      "title": "税の種類",
+      "add_tax": "税を追加",
+      "edit_tax": "税の編集",
+      "description": "必要に応じて税金を追加または削除できます。InvoiceShelfは請求書だけでなく個々のアイテムに対する税金もサポートしています。",
+      "add_new_tax": "新しい税を追加",
+      "tax_settings": "税の設定",
+      "tax_per_item": "商品ごとの税",
+      "tax_name": "税の名称",
+      "compound_tax": "複合税",
+      "percent": "パーセント",
+      "action": "アクション",
+      "tax_setting_description": "個々の請求書項目に税金を追加する場合はこれを有効にします。デフォルトでは税金は請求書に直接追加されます。",
+      "created_message": "税の種類が正常に作成されました",
+      "updated_message": "税の種類が正常に更新されました",
+      "deleted_message": "税の種類が正常に削除されました",
+      "confirm_delete": "この税の種類は復元できません",
+      "already_in_use": "税は既に使用されています"
     },
     "payment_modes": {
-      "title": "Payment Modes",
+      "title": "支払い方法",
       "description": "Modes of transaction for payments",
       "add_payment_mode": "Add Payment Mode",
       "edit_payment_mode": "Edit Payment Mode",
@@ -1610,7 +1610,7 @@
   "pdf_tax_report_label": "TAX REPORT",
   "pdf_total_tax_label": "TOTAL TAX",
   "pdf_tax_types_label": "Tax Types",
-  "pdf_expenses_label": "Expenses",
+  "pdf_expenses_label": "支出",
   "pdf_bill_to": "Bill to,",
   "pdf_ship_to": "Ship to,",
   "pdf_received_from": "Received from:",
