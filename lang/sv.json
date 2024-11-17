@@ -32,7 +32,7 @@
     "ok": "Ok",
     "yes": "Ja",
     "no": "Nej",
-    "sort_by": "Sortera på",
+    "sort_by": "Sortera efter",
     "ascending": "Stigande",
     "descending": "Fallande",
     "subject": "Ämne",
@@ -44,14 +44,14 @@
     "back_to_login": "Till inloggningssidan?",
     "home": "Hem",
     "filter": "Filter",
-    "delete": "Ta bort",
-    "edit": "Editera",
+    "delete": "Radera",
+    "edit": "Redigera",
     "view": "Visa",
     "add_new_item": "Skapa artikel",
     "clear_all": "Rensa alla",
     "showing": "Visar",
     "of": "av",
-    "actions": "Funktioner",
+    "actions": "Åtgärder",
     "subtotal": "DELSUMMA",
     "discount": "RABATT",
     "fixed": "Fast",
@@ -61,7 +61,7 @@
     "bill_to": "Faktureras till",
     "ship_to": "Levereras till",
     "due": "Förfallen",
-    "draft": "Förslag",
+    "draft": "Utkast",
     "sent": "Skickat",
     "all": "Alla",
     "select_all": "Välj alla",
@@ -104,11 +104,11 @@
     "no_data_found": "No data found",
     "pagination": {
       "previous": "Previous",
-      "next": "Next",
+      "next": "Nästa",
       "showing": "Showing",
       "to": "to",
-      "of": "of",
-      "results": "results"
+      "of": "av",
+      "results": "resultat"
     },
     "file_upload": {
       "drag_a_file": "Drag a file here or",
@@ -117,18 +117,18 @@
     },
     "multiselect": {
       "the_list_is_empty": "The list is empty",
-      "no_results_found": "No results found"
+      "no_results_found": "Inga resultat hittades"
     },
-    "copy_to_clipboard": "Copy to Clipboard"
+    "copy_to_clipboard": "Kopiera till urklipp"
   },
   "dashboard": {
     "select_year": "Välj år",
     "cards": {
       "due_amount": "Förfallet belopp",
-      "customers": "Kunder",
-      "invoices": "Fakturor",
+      "customers": "Kund | Kunder",
+      "invoices": "Faktura | Fakturor",
       "estimates": "Kostnadsförslag",
-      "payments": "Payments"
+      "payments": "Betalning | Betalningar"
     },
     "chart_info": {
       "total_sales": "Försäljning",
@@ -160,14 +160,14 @@
   "tax_types": {
     "name": "Namn",
     "description": "Beskrivning",
-    "percent": "Provent",
+    "percent": "Procent",
     "compound_tax": "Sammansatt moms"
   },
   "global_search": {
     "search": "Sök...",
     "customers": "Kunder",
     "users": "Användare",
-    "no_results_found": "Hittade inga resultat"
+    "no_results_found": "Inga resultat hittades"
   },
   "company_switcher": {
     "label": "Byt företag",
@@ -204,7 +204,7 @@
     "email": "Epost",
     "address": "Adress",
     "phone": "Telefon",
-    "website": "Hemsida",
+    "website": "Webbplats",
     "overview": "Översikt",
     "invoice_prefix": "Prefix för fakturor",
     "estimate_prefix": "Prefix för offert",
@@ -226,17 +226,17 @@
     "update_customer": "Uppdatera kund",
     "customer": "Kund | Kunder",
     "new_customer": "Ny kund",
-    "edit_customer": "Ändra kund",
+    "edit_customer": "Redigera kund",
     "basic_info": "Information",
     "portal_access": "Åtkomst till portalen",
     "portal_access_text": "Vill du tillåta denna kund att logga in på kundportalen?",
     "portal_access_url": "URL för kundportalens inloggning",
     "portal_access_url_help": "Vänligen kopiera och vidarebefordra ovanstående angivna URL till din kund för att ge åtkomst.",
-    "billing_address": "Fakturaadress",
+    "billing_address": "Faktureringsadress",
     "shipping_address": "Leveransadress",
     "copy_billing_address": "Kopiera från faktura",
     "no_customers": "Inga kunder än!",
-    "no_customers_found": "Hittade inga kunder!",
+    "no_customers_found": "Inga kunder hittades!",
     "no_contact": "Inga kontakter",
     "no_contact_name": "Kontaktnamn",
     "list_of_customers": "Här kommer det finnas en lista med kunder.",
@@ -272,7 +272,7 @@
     "item": "Artikel | Artiklar",
     "add_new_item": "Skapa ny artikel",
     "new_item": "Ny artikel",
-    "edit_item": "Ändra artikel",
+    "edit_item": "Redigera objekt",
     "no_items": "Inga artiklar än!",
     "list_of_items": "Här kommer lista över artiklar vara.",
     "select_a_unit": "välj enhet",
@@ -384,7 +384,7 @@
     "title": "Fakturor",
     "download": "Ladda ner",
     "pay_invoice": "Betala faktura",
-    "invoices_list": "Fakturor",
+    "invoices_list": "Fakturalista",
     "invoice_information": "Fakturainformation",
     "days": "{days} dagar",
     "months": "{months} månader",
@@ -450,7 +450,7 @@
     "confirm_clone": "Denna faktura kopieras till en ny faktura",
     "item": {
       "title": "Artikelnamn",
-      "description": "Beskvirning",
+      "description": "Beskrivning",
       "quantity": "Antal",
       "price": "Pris",
       "discount": "Rabatt",
@@ -475,9 +475,9 @@
   "recurring_invoices": {
     "title": "Återkommande fakturor",
     "invoices_list": "Återkommande fakturor",
-    "days": "{days} Dagar",
-    "months": "{months} Månader",
-    "years": "{years} År",
+    "days": "{days} dagar",
+    "months": "{months} månader",
+    "years": "{years} år",
     "all": "Alla",
     "paid": "Betalda",
     "unpaid": "Obetalda",
@@ -594,7 +594,7 @@
     "invalid_due_amount_message": "Totalsumman för den återkommande fakturan kan inte vara lägre än den betalda summan. Vänligen uppdatera fakturan eller radera de kopplade betalningarna.",
     "limit": {
       "none": "None",
-      "date": "Date",
+      "date": "Datum",
       "count": "Count"
     }
   },
@@ -1096,8 +1096,8 @@
         "deleted_message": "Notering raderades",
         "types": {
           "estimate": "Estimate",
-          "invoice": "Invoice",
-          "payment": "Payment"
+          "invoice": "Faktura",
+          "payment": "Betalning"
         }
       }
     },
@@ -1255,15 +1255,15 @@
       "completed": "Slutförd",
       "company_currency_unchangeable": "Företagets valuta kan inte ändras",
       "fiscal_years": {
-        "january_december": "January - December",
-        "february_january": "February - January",
-        "march_february": "March - February",
-        "april_march": "April - March",
-        "may_april": "May - April",
-        "june_may": "June - May",
-        "july_june": "July - June",
-        "august_july": "August - July",
-        "september_august": "September - August",
+        "january_december": "Januari - December",
+        "february_january": "Februari - Januari",
+        "march_february": "Mars - Februari",
+        "april_march": "April - Mars",
+        "may_april": "Maj - April",
+        "june_may": "Juni - Maj",
+        "july_june": "Juli - Juni",
+        "august_july": "Augusti - Juli",
+        "september_august": "September - Augusti",
         "october_september": "October - September",
         "november_october": "November - October",
         "december_november": "December - November"
@@ -1617,12 +1617,12 @@
   "pdf_tax_label": "Moms",
   "pdf_tax_id": "Org.Nr",
   "pdf_vat_id": "Momsreg. nr",
-  "mail_thanks": "Thanks",
+  "mail_thanks": "Tack",
   "mail_view_estimate": "View Estimate",
   "mail_viewed_estimate": ":name viewed this Estimate.",
-  "mail_view_invoice": "View Invoice",
+  "mail_view_invoice": "Visa faktura",
   "mail_viewed_invoice": ":name viewed this Invoice.",
-  "mail_view_payment": "View Payment",
+  "mail_view_payment": "Visa betalning",
   "notification_view_estimate": "[Notification] Estimate viewed",
   "notification_view_invoice": "[Notification] Invoice viewed",
   "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:"
