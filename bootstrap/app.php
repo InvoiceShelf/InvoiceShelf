@@ -54,6 +54,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'customer-portal' => \App\Http\Middleware\CustomerPortalMiddleware::class,
             'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
             'install' => \App\Http\Middleware\InstallationMiddleware::class,
+            'session-domain' => \App\Http\Middleware\SetSessionDomainMiddleware::class,
             'pdf-auth' => \App\Http\Middleware\PdfMiddleware::class,
             'redirect-if-installed' => \App\Http\Middleware\RedirectIfInstalled::class,
             'redirect-if-unauthenticated' => \App\Http\Middleware\RedirectIfUnauthorized::class,
