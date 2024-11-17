@@ -72,18 +72,12 @@
           >
             <template #right>
               <BaseIcon
-                v-if="isShowPassword"
-                name="EyeOffIcon"
-                class="w-5 h-5 mr-1 text-gray-500 cursor-pointer"
+                :name="isShowPassword ? 'EyeIcon' : 'EyeOffIcon'"
+                class="mr-1 text-gray-500 cursor-pointer"
                 @click="isShowPassword = !isShowPassword"
               />
-              <BaseIcon
-                v-else
-                name="EyeIcon"
-                class="w-5 h-5 mr-1 text-gray-500 cursor-pointer"
-                @click="isShowPassword = !isShowPassword"
-              /> </template
-          ></BaseInput>
+            </template>
+          </BaseInput>
         </BaseInputGroup>
 
         <BaseInputGroup
@@ -101,18 +95,12 @@
           >
             <template #right>
               <BaseIcon
-                v-if="isShowConfirmPassword"
-                name="EyeOffIcon"
-                class="w-5 h-5 mr-1 text-gray-500 cursor-pointer"
+                :name="isShowConfirmPassword ? 'EyeIcon' : 'EyeOffIcon'"
+                class="mr-1 text-gray-500 cursor-pointer"
                 @click="isShowConfirmPassword = !isShowConfirmPassword"
               />
-              <BaseIcon
-                v-else
-                name="EyeIcon"
-                class="w-5 h-5 mr-1 text-gray-500 cursor-pointer"
-                @click="isShowConfirmPassword = !isShowConfirmPassword"
-              /> </template
-          ></BaseInput>
+            </template>
+          </BaseInput>
         </BaseInputGroup>
       </div>
 
