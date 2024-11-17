@@ -286,7 +286,7 @@
   "estimates": {
     "title": "Προσφορές",
     "accept_estimate": "Accept Estimate",
-    "reject_estimate": "Reject Estimate",
+    "reject_estimate": "Απόρριψη προσφοράς",
     "estimate": "Προσφορά | Προσφορές",
     "estimates_list": "Λίστα προσφορών",
     "days": "{days} Ημέρες",
