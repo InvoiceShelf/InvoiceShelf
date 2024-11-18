@@ -101,12 +101,12 @@
     "login_successfully": "Inloggningen lyckades!",
     "logged_out_successfully": "Utloggningen lyckades",
     "mark_as_default": "Markera som standard",
-    "no_data_found": "No data found",
+    "no_data_found": "Ingen data hittades",
     "pagination": {
-      "previous": "Previous",
+      "previous": "Föregående",
       "next": "Nästa",
-      "showing": "Showing",
-      "to": "to",
+      "showing": "Visar",
+      "to": "till",
       "of": "av",
       "results": "resultat"
     },
@@ -421,7 +421,7 @@
     "resend_invoice": "Skicka faktura igen",
     "invoice_template": "Fakturamall",
     "conversion_message": "Fakturan kopierades",
-    "template": "Mall",
+    "template": "Välj mall",
     "mark_as_sent": "Markera som skickad",
     "confirm_send_invoice": "Denna faktura skickas via epost till kunden",
     "invoice_mark_as_sent": "Denna faktura markeras som skickad",
@@ -572,12 +572,12 @@
       "day_month": "Dag i månaden",
       "month": "Månad",
       "day_week": "Dag i veckan",
-      "every_minute": "Every Minute",
+      "every_minute": "Varje minut",
       "every_30_minute": "Every 30 Minute",
-      "every_hour": "Every Hour",
+      "every_hour": "Varje timme",
       "every_2_hour": "Every 2 Hour",
       "every_day_at_midnight": "Every day at midnight",
-      "every_week": "Every Week",
+      "every_week": "Varje vecka",
       "every_15_days_at_midnight": "Every 15 days at midnight",
       "on_the_first_day_of_every_month_at_midnight": "On the first day of every month at 00:00",
       "every_6_month": "Every 6 Month",
@@ -593,7 +593,7 @@
     "something_went_wrong": "något gick fel",
     "invalid_due_amount_message": "Totalsumman för den återkommande fakturan kan inte vara lägre än den betalda summan. Vänligen uppdatera fakturan eller radera de kopplade betalningarna.",
     "limit": {
-      "none": "None",
+      "none": "Ingen",
       "date": "Datum",
       "count": "Count"
     }
@@ -795,8 +795,8 @@
       "from_date": "Från datum",
       "report_type": "Rapporttyp",
       "sort": {
-        "by_customer": "By Customer",
-        "by_item": "By Item"
+        "by_customer": "Efter kund",
+        "by_item": "Efter objekt"
       }
     },
     "taxes": {
@@ -967,11 +967,11 @@
       "model_in_use": "Kan inte uppdatera modell för fält som redan används.",
       "type_in_use": "Kan inte uppdatera typ för fält som redan används.",
       "model_type": {
-        "customer": "Customer",
-        "invoice": "Invoice",
+        "customer": "Kund",
+        "invoice": "Faktura",
         "estimate": "Estimate",
         "expense": "Expense",
-        "payment": "Payment"
+        "payment": "Betalning"
       }
     },
     "customization": {
