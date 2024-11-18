@@ -286,7 +286,7 @@
   "estimates": {
     "title": "Προσφορές",
     "accept_estimate": "Accept Estimate",
-    "reject_estimate": "Reject Estimate",
+    "reject_estimate": "Απόρριψη προσφοράς",
     "estimate": "Προσφορά | Προσφορές",
     "estimates_list": "Λίστα προσφορών",
     "days": "{days} Ημέρες",
@@ -382,7 +382,7 @@
   },
   "invoices": {
     "title": "Τιμολόγια",
-    "download": "Download",
+    "download": "Λήψη",
     "pay_invoice": "Pay Invoice",
     "invoices_list": "Λίστα Τιμολογίων",
     "invoice_information": "Invoice Information",
@@ -635,7 +635,7 @@
     "updated_message": "Η πληρωμή εστάλη επιτυχώς",
     "deleted_message": "Ο υπολογισμός διαγράφηκε επιτυχώς",
     "invalid_amount_message": "Το ποσό δεν είναι έγκυρο",
-    "amount_due": "Due Amount"
+    "amount_due": "Ποσό Οφειλής"
   },
   "expenses": {
     "title": "Έξοδα",
@@ -1095,7 +1095,7 @@
         "already_in_use": "Το όνομα είναι ήδη σε χρήση",
         "deleted_message": "Ο ρόλος διαγράφηκε με επιτυχία",
         "types": {
-          "estimate": "Estimate",
+          "estimate": "Προσφορά",
           "invoice": "Invoice",
           "payment": "Payment"
         }
@@ -1566,7 +1566,7 @@
     "invalid_address": "Please enter a valid address.",
     "invalid_key": "Please enter valid key.",
     "invalid_state": "Please enter a valid state.",
-    "invalid_city": "Please enter a valid city.",
+    "invalid_city": "Παρακαλούμε εισάγετε μια έγκυρη πόλη.",
     "invalid_postal_code": "Please enter a valid zip.",
     "invalid_format": "Please enter valid query string format.",
     "api_error": "Server not responding.",
@@ -1625,5 +1625,5 @@
   "mail_view_payment": "View Payment",
   "notification_view_estimate": "[Notification] Estimate viewed",
   "notification_view_invoice": "[Notification] Invoice viewed",
-  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:"
+  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "Λάβατε ένα νέο τιμολόγιο από <b>{COMPANY_NAME}</b>.</br> Κάντε λήψη χρησιμοποιώντας το παρακάτω κουμπί:"
 }
