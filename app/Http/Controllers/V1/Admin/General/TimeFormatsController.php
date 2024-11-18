@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\V1\Admin\General;
 
 use Illuminate\Http\Request;
-use InvoiceShelf\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
 use App\Space\TimeFormatter;
 
 class TimeFormatsController extends Controller
