@@ -191,6 +191,7 @@
   "customers": {
     "title": "Asiakkaat",
     "prefix": "Prefix",
+    "tax_id": "Tax ID",
     "add_customer": "Lisää Asiakas",
     "contacts_list": "Asiakasluettelo",
     "name": "Nimi",

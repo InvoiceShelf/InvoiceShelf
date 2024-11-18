@@ -157,6 +157,19 @@
                 @input="v$.currentCustomer.prefix.$touch()"
               />
             </BaseInputGroup>
+
+            <BaseInputGroup
+              :label="$t('customers.tax_id')"
+              :content-loading="isFetchingInitialData"
+            >
+              <BaseInput
+                v-model="customerStore.currentCustomer.tax_id"
+                :content-loading="isFetchingInitialData"
+                type="text"
+                name="tax_id"
+              />
+            </BaseInputGroup>
+
           </BaseInputGrid>
         </div>
 

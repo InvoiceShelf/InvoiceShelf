@@ -191,6 +191,7 @@
   "customers": {
     "title": "Stranke",
     "prefix": "Predznak",
+    "tax_id": "Tax ID",
     "add_customer": "Dodajte uporabnika",
     "contacts_list": "Seznam uporabnikov",
     "name": "Ime",

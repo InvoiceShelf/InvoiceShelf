@@ -1,0 +1,74 @@
+# Big thanks to https://github.com/files-community/Files/ for a template of the feature_request
+
+name: Feature Request
+labels:
+  - feature request
+  - triage
+projects: ["InvoiceShelf/2"]
+assignees:
+  - rihards-simanovics
+description: >-
+  This project thrives from differentiation from competing apps. Suggest an idea
+  for InvoiceShelf.
+body:
+  # Tip to warn of checking for existing issues
+  - type: markdown
+    attributes:
+      value: >
+        > [!TIP]
+
+        >Have you checked for similar feature requests? There's a possibility
+        your suggestion is already being tracked. Please do a thorough search
+        before creating a new issue.
+
+  # Description
+  - type: textarea
+    id: what-feature
+    attributes:
+      label: What feature or improvement do you think would benefit InvoiceShelf?
+      description: Please include your use case
+    validations:
+      required: true
+
+  # Tooltip about Requirements
+  - type: markdown
+    attributes:
+      value: >
+        ---
+
+
+        Please include a list changes required to make this improvement. A good
+        rule of thumb is to start your proposal with no more than 7 high-level
+        requirements.
+
+  # Requirements
+  - type: textarea
+    id: requirements
+    attributes:
+      label: Requirements
+      description: Describe all the requirements to make your idea happen.
+      value: |
+        - This proposal will accomplish X
+        - This proposal will accomplish Y
+        - This proposal will accomplish Z
+    validations:
+      required: true
+
+  # InvoiceShelf Version
+  - type: input
+    id: invoiceshelf_version
+    attributes:
+      label: App Version
+      description: Which version of InvoiceShelf are you using?
+      placeholder: v0.0.0
+    validations:
+      required: true
+
+  # Additional Comments
+  - type: textarea
+    id: comments
+    attributes:
+      label: Comments
+      description: >-
+        Additional information, comments or screenshots about the feature
+        request.

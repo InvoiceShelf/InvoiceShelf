@@ -18,7 +18,7 @@
     "add_company": "Bedrijf toevoegen",
     "view_pdf": "Bekijk PDF",
     "copy_pdf_url": "Kopieer PDF-URL",
-    "download_pdf": "Download PDF",
+    "download_pdf": "PDF downloaden",
     "save": "Opslaan",
     "create": "Maak",
     "cancel": "Annuleren",
@@ -101,25 +101,25 @@
     "login_successfully": "Succesvol ingelogd!",
     "logged_out_successfully": "Succesvol afgemeld",
     "mark_as_default": "Markeren als standaard",
-    "no_data_found": "No data found",
+    "no_data_found": "Geen gegevens beschikbaar",
     "pagination": {
-      "previous": "Previous",
-      "next": "Next",
-      "showing": "Showing",
-      "to": "to",
-      "of": "of",
-      "results": "results"
+      "previous": "Vorige",
+      "next": "Volgende",
+      "showing": "Afgebeeld",
+      "to": "tot",
+      "of": "van",
+      "results": "resultaten"
     },
     "file_upload": {
-      "drag_a_file": "Drag a file here or",
-      "browse": "browse",
-      "to_choose": "to choose a file"
+      "drag_a_file": "Sleep een bestand hierheen of",
+      "browse": "bladeren",
+      "to_choose": "om een bestand te kiezen"
     },
     "multiselect": {
-      "the_list_is_empty": "The list is empty",
-      "no_results_found": "No results found"
+      "the_list_is_empty": "De lijst is leeg",
+      "no_results_found": "Geen resultaten gevonden"
     },
-    "copy_to_clipboard": "Copy to Clipboard"
+    "copy_to_clipboard": "Kopieer naar Klembord"
   },
   "dashboard": {
     "select_year": "Selecteer jaar",
@@ -191,6 +191,7 @@
   "customers": {
     "title": "Klanten",
     "prefix": "Voorvoegsel",
+    "tax_id": "Tax ID",
     "add_customer": "Klant toevoegen",
     "contacts_list": "Klantenlijst",
     "name": "Naam",
@@ -323,9 +324,9 @@
     "record_payment": "Betaling registreren",
     "add_estimate": "Offerte toevoegen",
     "save_estimate": "Bewaar offerte",
-    "cloned_successfully": "Offerte succesvol gekloond",
-    "clone_estimate": "Offerte klonen",
-    "confirm_clone": "Deze offerte zal worden gekopieerd naar een nieuwe offerte",
+    "cloned_successfully": "Estimate cloned successfully",
+    "clone_estimate": "Clone Estimate",
+    "confirm_clone": "This Estimate will be cloned into a new Estimate",
     "confirm_conversion": "Deze offerte wordt gebruikt om een nieuwe factuur te maken.",
     "conversion_message": "Factuur gemaakt",
     "confirm_send_estimate": "Deze offerte wordt via e-mail naar de klant gestuurd",
@@ -1616,13 +1617,13 @@
   "pdf_tax_label": "Btw",
   "pdf_tax_id": "FIN",
   "pdf_vat_id": "BTW",
-  "mail_thanks": "Thanks",
-  "mail_view_estimate": "View Estimate",
-  "mail_viewed_estimate": ":name viewed this Estimate.",
-  "mail_view_invoice": "View Invoice",
-  "mail_viewed_invoice": ":name viewed this Invoice.",
-  "mail_view_payment": "View Payment",
-  "notification_view_estimate": "[Notification] Estimate viewed",
-  "notification_view_invoice": "[Notification] Invoice viewed",
-  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:"
+  "mail_thanks": "Bedankt",
+  "mail_view_estimate": "Bekijk offerte",
+  "mail_viewed_estimate": ":name heeft deze offerte bekeken.",
+  "mail_view_invoice": "Bekijk factuur",
+  "mail_viewed_invoice": ":name heeft deze factuur bekeken.",
+  "mail_view_payment": "Bekijk betaling",
+  "notification_view_estimate": "[Notification] Offerte bekeken",
+  "notification_view_invoice": "[Notification] Factuur bekeken",
+  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "Je hebt een factuur ontvangen van <b>{COMPANY_NAME}</b>.</br> Download via de onderstaande knop:"
 }

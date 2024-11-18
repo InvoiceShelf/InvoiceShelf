@@ -191,6 +191,7 @@
   "customers": {
     "title": "مشتریان",
     "prefix": "پيشوند",
+    "tax_id": "Tax ID",
     "add_customer": "افزودن مشتری",
     "contacts_list": "لیست مشتریان",
     "name": "نام",

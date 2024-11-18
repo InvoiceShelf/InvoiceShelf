@@ -191,6 +191,7 @@
   "customers": {
     "title": "客户",
     "prefix": "前置字串",
+    "tax_id": "Tax ID",
     "add_customer": "新增客户",
     "contacts_list": "客户列表",
     "name": "名稱",

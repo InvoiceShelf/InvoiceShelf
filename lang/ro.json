@@ -191,6 +191,7 @@
   "customers": {
     "title": "Clienţi",
     "prefix": "Prefix",
+    "tax_id": "Tax ID",
     "add_customer": "Adauga client",
     "contacts_list": "Lista clienti",
     "name": "Nume",

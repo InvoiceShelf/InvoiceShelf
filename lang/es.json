@@ -47,7 +47,7 @@
     "delete": "Eliminar",
     "edit": "Editar",
     "view": "Ver",
-    "add_new_item": "Agregar ítem nuevo",
+    "add_new_item": "Agregar un Nuevo Artículo",
     "clear_all": "Limpiar todo",
     "showing": "Mostrar",
     "of": "de",
@@ -101,25 +101,25 @@
     "login_successfully": "Logeado Satisfactoriamente!",
     "logged_out_successfully": "Logeado Satisfactoriamente",
     "mark_as_default": "Marcar como predeterminado",
-    "no_data_found": "No data found",
+    "no_data_found": "No se encontraron datos",
     "pagination": {
-      "previous": "Previous",
-      "next": "Next",
-      "showing": "Showing",
-      "to": "to",
-      "of": "of",
-      "results": "results"
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "showing": "Mostrando",
+      "to": "a",
+      "of": "de",
+      "results": "resultados"
     },
     "file_upload": {
-      "drag_a_file": "Drag a file here or",
-      "browse": "browse",
-      "to_choose": "to choose a file"
+      "drag_a_file": "Arrastra un archivo aquí o",
+      "browse": "explorar",
+      "to_choose": "para elegir un archivo"
     },
     "multiselect": {
-      "the_list_is_empty": "The list is empty",
-      "no_results_found": "No results found"
+      "the_list_is_empty": "La lista está vacía",
+      "no_results_found": "No se encontraron resultados"
     },
-    "copy_to_clipboard": "Copy to Clipboard"
+    "copy_to_clipboard": "Copiar al portapapeles"
   },
   "dashboard": {
     "select_year": "Seleccionar año",
@@ -128,7 +128,7 @@
       "customers": "Clientes",
       "invoices": "Facturas",
       "estimates": "Presupuestos",
-      "payments": "Ver Medios de Pago"
+      "payments": "Pagos"
     },
     "chart_info": {
       "total_sales": "Ventas",
@@ -191,6 +191,7 @@
   "customers": {
     "title": "Clientes",
     "prefix": "Prefijo",
+    "tax_id": "Tax ID",
     "add_customer": "Agregar cliente",
     "contacts_list": "Lista de clientes",
     "name": "Nombre",
@@ -323,9 +324,9 @@
     "record_payment": "Registro de pago",
     "add_estimate": "Agregar presupuesto",
     "save_estimate": "Guardar presupuesto",
-    "cloned_successfully": "Presupuesto clonado con éxito",
-    "clone_estimate": "Clonar presupuesto",
-    "confirm_clone": "Este presupuesto será clonado en un nuevo presupuesto",
+    "cloned_successfully": "Estimate cloned successfully",
+    "clone_estimate": "Clone Estimate",
+    "confirm_clone": "This Estimate will be cloned into a new Estimate",
     "confirm_conversion": "¿Quiere convertir este presupuesto en una factura?",
     "conversion_message": "Conversión exitosa",
     "confirm_send_estimate": "Este presupuesto se enviará por correo electrónico al cliente",
@@ -923,7 +924,7 @@
       "delete_company": "Eliminar empresa",
       "delete_company_description": "Una vez que elimines tu empresa, perderás todos los datos y archivos asociados a ella permanentemente.",
       "are_you_absolutely_sure": "¿Estás realmente seguro?",
-      "delete_company_modal_desc": "Est acción no se puede deshacer. Se eliminará de manera permanente {company} y todos sus datos asociados.",
+      "delete_company_modal_desc": "Esta acción no se puede deshacer. Esto eliminará de manera permanente {company} y todos sus datos asociados.",
       "delete_company_modal_label": "Por favor escribe {company} para confirmar"
     },
     "custom_fields": {
@@ -935,7 +936,7 @@
       "label": "Etiqueta",
       "type": "Tipo",
       "name": "Nombre",
-      "slug": "Slug",
+      "slug": "Nombre corto de URL",
       "required": "Necesaria",
       "placeholder": "Marcador de posición",
       "help_text": "texto de ayuda",
@@ -1254,18 +1255,18 @@
       "completed": "Completado",
       "company_currency_unchangeable": "No se puede cambiar la divisa de la empresa",
       "fiscal_years": {
-        "january_december": "January - December",
-        "february_january": "February - January",
-        "march_february": "March - February",
-        "april_march": "April - March",
-        "may_april": "May - April",
-        "june_may": "June - May",
-        "july_june": "July - June",
-        "august_july": "August - July",
-        "september_august": "September - August",
-        "october_september": "October - September",
-        "november_october": "November - October",
-        "december_november": "December - November"
+        "january_december": "Enero - Diciembre",
+        "february_january": "Febrero - Enero",
+        "march_february": "Marzo - Febrero",
+        "april_march": "Abril - Marzo",
+        "may_april": "Mayo - Abril",
+        "june_may": "Junio - Mayo",
+        "july_june": "Julio - Junio",
+        "august_july": "Agosto - Julio",
+        "september_august": "Septiembre - Agosto",
+        "october_september": "Octubre - Septiembre",
+        "november_october": "Noviembre - Octubre",
+        "december_november": "Diciembre - Noviembre"
       }
     },
     "update_app": {
@@ -1402,7 +1403,7 @@
     "save_cont": "Guardar y continuar",
     "company_info": "Información de la empresa",
     "company_info_desc": "Esta información se mostrará en las facturas. Tenga en cuenta que puede editar esto más adelante en la página de configuración.",
-    "company_name": "nombre de empresa",
+    "company_name": "Nombre de empresa",
     "company_logo": "Logo de la compañía",
     "logo_preview": "Vista previa del logotipo",
     "preferences": "Preferencias",
@@ -1427,11 +1428,11 @@
     "continue": "Continuar",
     "skip": "Saltar",
     "install_language": {
-      "title": "Choose your language",
-      "description": "Select language wizard to install InvoiceShelf"
+      "title": "Elige tu idioma",
+      "description": "Selecciona el asistente de idioma para instalar InvoiceShelf"
     },
     "database": {
-      "database": "URL del sitio y base de datose",
+      "database": "URL del sitio y base de datos",
       "connection": "Conexión de base de datos",
       "host": "Host de la base de datos",
       "port": "Puerto de la base de datos",
@@ -1441,7 +1442,7 @@
       "username": "Nombre de usuario de la base de datos",
       "db_name": "Nombre de la base de datos",
       "db_path": "Ruta de la base de datos",
-      "overwrite": "Overwrite existing database and proceed",
+      "overwrite": "Sobrescribir la base de datos existente y continua",
       "desc": "Cree una base de datos en su servidor y establezca las credenciales utilizando el siguiente formulario."
     },
     "permissions": {
@@ -1492,9 +1493,9 @@
     },
     "errors": {
       "migrate_failed": "La migración falló",
-      "database_variables_save_error": "No se puede conectar a la base de datos con los valores proporcionados.",
+      "database_variables_save_error": "No se puede escribir la configuración al archivo .env. Por favor, revisa los permisos de archivo",
       "mail_variables_save_error": "La configuración del correo electrónico ha fallado.",
-      "connection_failed": "Conexión de base de datos fallida",
+      "connection_failed": "La conexión a la base de datos falló",
       "database_should_be_empty": "La base de datos debe estar vacía"
     },
     "success": {
@@ -1589,40 +1590,40 @@
   "pdf_amount_label": "Cantidad",
   "pdf_subtotal": "Subtotal",
   "pdf_total": "Total",
-  "pdf_payment_label": "Pagos",
+  "pdf_payment_label": "Pago",
   "pdf_payment_receipt_label": "RECIBO DE PAGO",
   "pdf_payment_date": "Fecha de pago",
-  "pdf_payment_number": "Numero de pago",
+  "pdf_payment_number": "Número de pago",
   "pdf_payment_mode": "Modo de pago",
   "pdf_payment_amount_received_label": "Importe recibido",
   "pdf_expense_report_label": "INFORME DE GASTOS",
   "pdf_total_expenses_label": "GASTO TOTAL",
-  "pdf_profit_loss_label": "INFORME PERDIDAS & GANANCIAS",
+  "pdf_profit_loss_label": "INFORME DE PERDIDAS Y GANANCIAS",
   "pdf_sales_customers_label": "Informe de ventas por cliente",
-  "pdf_sales_items_label": "Informe de ventas por ítem",
-  "pdf_tax_summery_label": "Informe de ventas impuestos",
+  "pdf_sales_items_label": "Informe de ventas por artículo",
+  "pdf_tax_summery_label": "Informe de resumen de impuestos",
   "pdf_income_label": "INGRESO",
   "pdf_net_profit_label": "GANANCIA NETA",
   "pdf_customer_sales_report": "Informe de ventas: Por cliente",
-  "pdf_total_sales_label": "VENTAS TOTALES",
-  "pdf_item_sales_label": "Informe de ventas: por artículo",
+  "pdf_total_sales_label": "VENTA TOTAL",
+  "pdf_item_sales_label": "Informe de ventas: Por artículo",
   "pdf_tax_report_label": "INFORME DE IMPUESTOS",
-  "pdf_total_tax_label": "TOTAL IMPUESTOS",
+  "pdf_total_tax_label": "IMPUESTO TOTAL",
   "pdf_tax_types_label": "Tipos de impuestos",
   "pdf_expenses_label": "Gastos",
   "pdf_bill_to": "Cobrar a,",
   "pdf_ship_to": "Enviar a,",
-  "pdf_received_from": "Recibido desde:",
+  "pdf_received_from": "Recibido de:",
   "pdf_tax_label": "Impuesto",
-  "pdf_tax_id": "Tax-ID",
-  "pdf_vat_id": "VAT-ID",
-  "mail_thanks": "Thanks",
-  "mail_view_estimate": "View Estimate",
-  "mail_viewed_estimate": ":name viewed this Estimate.",
-  "mail_view_invoice": "View Invoice",
-  "mail_viewed_invoice": ":name viewed this Invoice.",
-  "mail_view_payment": "View Payment",
-  "notification_view_estimate": "[Notification] Estimate viewed",
-  "notification_view_invoice": "[Notification] Invoice viewed",
-  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:"
+  "pdf_tax_id": "ID de impuesto",
+  "pdf_vat_id": "ID  de IVA",
+  "mail_thanks": "Gracias",
+  "mail_view_estimate": "Ver presupuesto",
+  "mail_viewed_estimate": ":name ha visto este Presupuesto.",
+  "mail_view_invoice": "Ver factura",
+  "mail_viewed_invoice": ":name ha visto esta factura.",
+  "mail_view_payment": "Ver pago",
+  "notification_view_estimate": "[Notification] Presupuesto visto",
+  "notification_view_invoice": "[Notification] Factura vista",
+  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "Ha recibido una nueva factura de <b>{COMPANY_NAME}</b>.</br> Por favor descárguela usando el siguiente botón:"
 }

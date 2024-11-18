@@ -42,7 +42,6 @@
                 :content-loading="loading"
                 type="number"
                 small
-                min="0"
                 step="any"
                 @change="syncItemToStore()"
                 @input="v$.quantity.$touch()"
@@ -325,10 +324,6 @@ const rules = {
   },
   quantity: {
     required: helpers.withMessage(t('validation.required'), required),
-    minValue: helpers.withMessage(
-      t('validation.qty_must_greater_than_zero'),
-      minValue(0)
-    ),
     maxLength: helpers.withMessage(
       t('validation.amount_maxlength'),
       maxLength(20)
@@ -336,10 +331,6 @@ const rules = {
   },
   price: {
     required: helpers.withMessage(t('validation.required'), required),
-    minValue: helpers.withMessage(
-      t('validation.number_length_minvalue'),
-      minValue(1)
-    ),
     maxLength: helpers.withMessage(
       t('validation.price_maxlength'),
       maxLength(20)
@@ -350,7 +341,7 @@ const rules = {
       t('validation.discount_maxlength'),
       between(
         0,
-        computed(() => subtotal.value)
+        computed(() => Math.abs(subtotal.value))
       )
     ),
   },
@@ -403,11 +394,12 @@ function updateTax(data) {
 
 function setDiscount() {
   const newValue = props.store[props.storeProp].items[props.index].discount
+  const absoluteSubtotal = Math.abs(subtotal.value)
 
   if (props.itemData.discount_type === 'percentage'){
-    updateItemAttribute('discount_val', Math.round((subtotal.value * newValue) / 100))
-  }else{
-    updateItemAttribute('discount_val', Math.round(newValue * 100))
+    updateItemAttribute('discount_val', Math.round((absoluteSubtotal * newValue) / 100))
+  } else {
+    updateItemAttribute('discount_val', Math.min(Math.round(newValue * 100), absoluteSubtotal))
   }
 }
 

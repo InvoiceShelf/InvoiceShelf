@@ -191,6 +191,7 @@
   "customers": {
     "title": "Khách hàng",
     "prefix": "Tiền tố",
+    "tax_id": "Tax ID",
     "add_customer": "Thêm khách hàng",
     "contacts_list": "Danh sách khách hàng",
     "name": "Tên",

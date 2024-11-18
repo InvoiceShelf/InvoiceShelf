@@ -288,7 +288,7 @@
             <tr>
                 @if ($logo)
                     <td width="50%" class="header-section-left">
-                        <img style="height: 50px;" class="header-logo" src="{{ $logo }}" alt="Company Logo">
+                        <img style="height:50px" class="header-logo" src="{{ \App\Space\ImageUtils::toBase64Src($logo) }}" alt="Company Logo">
                     @else
                         @if ($payment->customer)
                     <td class="header-section-left" style="padding-top:0px;">

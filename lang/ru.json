@@ -191,6 +191,7 @@
   "customers": {
     "title": "Клиенты",
     "prefix": "Префикс",
+    "tax_id": "Tax ID",
     "add_customer": "Добавить клиента",
     "contacts_list": "Список клиентов",
     "name": "Имя",
@@ -565,8 +566,8 @@
     },
     "frequency": {
       "title": "Frequency",
-      "select_frequency": "Select Frequency",
-      "minute": "Minute",
+      "select_frequency": "Выберите периодичность",
+      "minute": "Минута",
       "hour": "Hour",
       "day_month": "Day of month",
       "month": "Месяц",

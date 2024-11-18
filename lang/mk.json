@@ -191,6 +191,7 @@
   "customers": {
     "title": "Customers",
     "prefix": "Prefix",
+    "tax_id": "Tax ID",
     "add_customer": "Add Customer",
     "contacts_list": "Customer List",
     "name": "Name",
