@@ -11,7 +11,7 @@
     "reports": "Rapporter",
     "settings": "Inställningar",
     "logout": "Logga ut",
-    "users": "Användare",
+    "users": "Users",
     "modules": "Moduler"
   },
   "general": {
@@ -1248,7 +1248,7 @@
       "select_date_format": "Välj datumformat",
       "select_financial_year": "Välj räkenskapsår",
       "recurring_invoice_status": "Recurring Invoice Status",
-      "create_status": "Create Status",
+      "create_status": "Skapa status",
       "active": "Aktiv",
       "on_hold": "Pausad",
       "update_status": "Uppdatera status",
@@ -1264,8 +1264,8 @@
         "july_june": "Juli - Juni",
         "august_july": "Augusti - Juli",
         "september_august": "September - Augusti",
-        "october_september": "October - September",
-        "november_october": "November - October",
+        "october_september": "Oktober - September",
+        "november_october": "November - Oktober",
         "december_november": "December - November"
       }
     },
@@ -1304,7 +1304,7 @@
       "new_disk": "Ny disk",
       "created_at": "skapad den",
       "size": "storlek",
-      "dropbox": "dropbox",
+      "dropbox": "Dropbox",
       "local": "lokal",
       "healthy": "hälsosam",
       "amount_of_backups": "antal säkerhetskopior",
@@ -1320,7 +1320,7 @@
       "title": "Lagring | Lagringar",
       "description": "InvoiceShelf använder din lokala disk som standard för att spara säkerhetskopior, avatarer och andra bildfiler. Du kan ställa in fler lagringsenheter såsom DigitalOcean, S3 och Dropbox beroende av ditt behov.",
       "created_at": "skapad den",
-      "dropbox": "dropbox",
+      "dropbox": "Dropbox",
       "name": "Namn",
       "driver": "Plats",
       "disk_type": "Typ",
@@ -1462,7 +1462,7 @@
       "notes": {
         "notes": "Notes:",
         "not_contain": "App domain should not contain",
-        "or": "or",
+        "or": "eller",
         "in_front": "in front of the domain.",
         "if_you": "If you're accessing the website on a different port, please mention the port. For example:"
       }
