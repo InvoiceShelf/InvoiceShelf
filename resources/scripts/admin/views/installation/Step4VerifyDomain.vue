@@ -87,7 +87,7 @@ async function verifyDomain() {
   try {
     await installationStore.setInstallationDomain(formData)
     await installationStore.installationLogin()
-    let driverRes = await installationStore.checkAutheticated()
+    let driverRes = await installationStore.checkAuthenticated()
 
     if (driverRes.data) {
       emit('next', 4)
