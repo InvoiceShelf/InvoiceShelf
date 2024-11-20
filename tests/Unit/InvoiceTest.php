@@ -61,7 +61,7 @@ test('create invoice', function () {
     $invoice['taxes'] = [];
     array_push($invoice['taxes'], Tax::factory()->raw());
 
-    $request = new InvoicesRequest();
+    $request = new InvoicesRequest;
 
     $request->replace($invoice);
 
@@ -111,7 +111,7 @@ test('update invoice', function () {
     array_push($newInvoice['items'], $item);
     array_push($newInvoice['taxes'], $tax);
 
-    $request = new InvoicesRequest();
+    $request = new InvoicesRequest;
 
     $request->replace($newInvoice);
 
@@ -154,7 +154,7 @@ test('create items', function () {
 
     array_push($items, $item);
 
-    $request = new InvoicesRequest();
+    $request = new InvoicesRequest;
 
     $request->replace(['items' => $items]);
 
@@ -181,7 +181,7 @@ test('create taxes', function () {
 
     array_push($taxes, $tax);
 
-    $request = new Request();
+    $request = new Request;
 
     $request->replace(['taxes' => $taxes]);
 

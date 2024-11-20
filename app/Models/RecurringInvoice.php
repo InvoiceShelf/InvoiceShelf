@@ -308,8 +308,8 @@ class RecurringInvoice extends Model
     public function createInvoice()
     {
         //get invoice_number
-        $serial = (new SerialNumberFormatter())
-            ->setModel(new Invoice())
+        $serial = (new SerialNumberFormatter)
+            ->setModel(new Invoice)
             ->setCompany($this->company_id)
             ->setCustomer($this->customer_id)
             ->setNextNumbers();
