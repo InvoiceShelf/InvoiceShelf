@@ -44,7 +44,8 @@ class PDFConfigurationController extends Controller
         return response()->json($config);
     }
 
-    public function saveEnvironment(PDFConfigurationRequest $request) {
+    public function saveEnvironment(PDFConfigurationRequest $request)
+    {
         $this->authorize('manage email config');
         $results = $this->environmentManager->savePDFVariables($request);
 

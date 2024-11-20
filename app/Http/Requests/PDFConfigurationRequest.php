@@ -40,17 +40,18 @@ class PDFConfigurationRequest extends FormRequest
                         'url',
                     ],
                     'gotenberg_papersize' => [
-                        function ($_attribute, $value, $fail) {
+                        function ($attribute, $value, $fail) {
+                            ($attribute); // unused
                             $reg = "/^\d+(pt|px|pc|mm|cm|in) \d+(pt|px|pc|mm|cm|in)$/";
-                            if (!preg_match($reg, $value)) {
+                            if (! preg_match($reg, $value)) {
                                 $fail('Invalid papersize, must be in format "210mm 297mm". Accepts: pt,px,pc,mm,cm,in');
                             }
-                        }
+                        },
                     ],
                 ];
 
                 break;
         }
-        throw new \InvalidArgumentException("Invalid PDFDriver requested");
+        throw new \InvalidArgumentException('Invalid PDFDriver requested');
     }
 }

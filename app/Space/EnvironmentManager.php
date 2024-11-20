@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 namespace App\Space;
 
@@ -95,7 +95,6 @@ class EnvironmentManager
         }
 
         return $str;
-
     }
 
     /**
@@ -226,7 +225,6 @@ class EnvironmentManager
         try {
 
             $this->updateEnv($mailEnv);
-
         } catch (Exception $e) {
             return [
                 'error' => 'mail_variables_save_error',
@@ -250,7 +248,6 @@ class EnvironmentManager
         try {
 
             $this->updateEnv($pdfEnv);
-
         } catch (Exception $e) {
             return [
                 'error' => 'pdf_variables_save_error',
@@ -289,6 +286,7 @@ class EnvironmentManager
                 ];
                 break;
         }
+
         return $pdfEnv;
     }
 
@@ -370,7 +368,6 @@ class EnvironmentManager
                 ];
 
                 break;
-
         }
 
         return $mailEnv;
@@ -388,7 +385,6 @@ class EnvironmentManager
         try {
 
             $this->updateEnv($diskEnv);
-
         } catch (Exception $e) {
             return [
                 'error' => 'disk_variables_save_error',
@@ -504,7 +500,6 @@ class EnvironmentManager
             }
             $formatted .= $current.$this->delimiter;
             $previous = $current;
-
         }
 
         file_put_contents($this->envPath, trim($formatted));

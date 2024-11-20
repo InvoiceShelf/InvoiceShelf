@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 return [
 
@@ -6,7 +6,7 @@ return [
 
     'gotenberg' => [
         'host' => env('GOTENBERG_HOST', 'http://pdf:3000'),
-        'papersize' =>  env('GOTENBERG_PAPERSIZE', '210mm 297mm'),
+        'papersize' => env('GOTENBERG_PAPERSIZE', '210mm 297mm'),
     ],
 
     'dompdf' => [],
