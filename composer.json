@@ -13,6 +13,7 @@
         "barryvdh/laravel-dompdf": "^2.1",
         "doctrine/dbal": "^4.0",
         "dragonmantank/cron-expression": "^3.3",
+        "gotenberg/gotenberg-php": "^2.8",
         "guzzlehttp/guzzle": "^7.2",
         "invoiceshelf/modules": "^1.0.0",
         "jasonmccreary/laravel-test-assertions": "^2.4",
@@ -79,7 +80,8 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "allow-plugins": {
-            "pestphp/pest-plugin": true
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
         }
     },
     "extra": {

@@ -3,11 +3,11 @@
 namespace App\Models;
 
 use App;
+use App\Facades\PDF;
 use App\Mail\SendInvoiceMail;
 use App\Services\SerialNumberFormatter;
 use App\Traits\GeneratesPdfTrait;
 use App\Traits\HasCustomFieldsTrait;
-use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -317,7 +317,7 @@ class Invoice extends Model implements HasMedia
 
         $invoice = Invoice::create($data);
 
-        $serial = (new SerialNumberFormatter())
+        $serial = (new SerialNumberFormatter)
             ->setModel($invoice)
             ->setCompany($invoice->company_id)
             ->setCustomer($invoice->customer_id)
@@ -358,7 +358,7 @@ class Invoice extends Model implements HasMedia
 
     public function updateInvoice($request)
     {
-        $serial = (new SerialNumberFormatter())
+        $serial = (new SerialNumberFormatter)
             ->setModel($this)
             ->setCompany($this->company_id)
             ->setCustomer($request->customer_id)

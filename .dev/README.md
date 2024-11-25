@@ -88,10 +88,10 @@ docker compose -f .dev/docker-compose.mysql.yml down
 To correctly run `composer`, `npm`, `artisan`, `pint`, `pest` or other binaries within this project, you must ssh into the container as follows:
 
 ```
-docker exec -it --user invoiceshelf invoiceshelf-dev-php /bin/bash
+docker exec -it invoiceshelf /bin/bash
 ```
 
-In the `/home/invoiceshelf/app` directory you can find the application root and run the commands from there.
+In the `/var/www/html` directory you can find the application root and run the commands from there.
 
 ## What is included
 
@@ -113,7 +113,7 @@ The setup parameters/credentials for each of the supported databases are as foll
 |---|---|---|---|
 | **DB_USER** | invoiceshelf  | invoiceshelf | Not applicable  |
 | **DB_PASS** | invoiceshelf  | invoiceshelf | Not applicable  |
-| **DB_NAME** | invoiceshelf  | invoiceshelf | /home/invoiceshelf/database/database.sqlite  |
+| **DB_NAME** | invoiceshelf  | invoiceshelf | /var/www/html/database/database.sqlite |
 | **DB_HOST** | db-mysql  |  db-pgsql | Not applicable  |
 | **DB_PORT** | 3036  | 5432  | Not applicable  |
 
@@ -163,13 +163,4 @@ To utilize Mailpit, use the following credentials:
 ---
 
 If you have any questions, feel free to open issue.
-
-
-
-
-
-
-
-
-
 
