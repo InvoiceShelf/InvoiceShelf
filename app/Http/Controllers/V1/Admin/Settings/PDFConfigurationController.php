@@ -20,7 +20,7 @@ class PDFConfigurationController extends Controller
 
     public function getDrivers()
     {
-        $this->authorize('manage email config');
+        $this->authorize('manage pdf config');
 
         $drivers = [
             'dompdf',
@@ -32,7 +32,7 @@ class PDFConfigurationController extends Controller
 
     public function getEnvironment()
     {
-        $this->authorize('manage email config');
+        $this->authorize('manage pdf config');
 
         $config = [
             'pdf_driver' => config('pdf.driver'),
@@ -46,7 +46,7 @@ class PDFConfigurationController extends Controller
 
     public function saveEnvironment(PDFConfigurationRequest $request)
     {
-        $this->authorize('manage email config');
+        $this->authorize('manage pdf config');
         $results = $this->environmentManager->savePDFVariables($request);
 
         return response()->json($results);
