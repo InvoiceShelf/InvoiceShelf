@@ -4,7 +4,7 @@
     "customers": "Клиенты",
     "items": "Товары",
     "invoices": "Счет-фактуры",
-    "recurring-invoices": "Recurring Invoices",
+    "recurring-invoices": "Повторяющиеся счета",
     "expenses": "Расходы",
     "estimates": "Заказы",
     "payments": "Платежи",
@@ -94,41 +94,41 @@
     "insert_note": "Вставить заметку",
     "copied_pdf_url_clipboard": "Ссылка на PDF скопирована в буфер обмена!",
     "copied_url_clipboard": "Ссылка скопирована!",
-    "docs": "Docs",
+    "docs": "Документация",
     "do_you_wish_to_continue": "Хотите продолжить?",
-    "note": "Note",
+    "note": "Заметка",
     "pay_invoice": "Оплатить счет",
     "login_successfully": "Вход выполнен!",
     "logged_out_successfully": "Вы успешно вышли",
     "mark_as_default": "Установить по умолчанию",
-    "no_data_found": "No data found",
+    "no_data_found": "Нет данных",
     "pagination": {
-      "previous": "Previous",
-      "next": "Next",
-      "showing": "Showing",
-      "to": "to",
-      "of": "of",
-      "results": "results"
+      "previous": "Назад",
+      "next": "Далее",
+      "showing": "Показано",
+      "to": "до",
+      "of": "с",
+      "results": "итоги"
     },
     "file_upload": {
-      "drag_a_file": "Drag a file here or",
-      "browse": "browse",
-      "to_choose": "to choose a file"
+      "drag_a_file": "Перетащите файл сюда или",
+      "browse": "обзор",
+      "to_choose": "для выбора файла"
     },
     "multiselect": {
-      "the_list_is_empty": "The list is empty",
-      "no_results_found": "No results found"
+      "the_list_is_empty": "Список пуст",
+      "no_results_found": "Ничего не найдено"
     },
-    "copy_to_clipboard": "Copy to Clipboard"
+    "copy_to_clipboard": "Скопировать в буфер обмена"
   },
   "dashboard": {
     "select_year": "Выберите год",
     "cards": {
       "due_amount": "Сумма",
-      "customers": "Customer | Customers",
-      "invoices": "Invoice | Invoices",
-      "estimates": "Estimate | Estimates",
-      "payments": "Payment | Payments"
+      "customers": "Клиент | Клиенты",
+      "invoices": "Счёт | Счета",
+      "estimates": "Пр. Расчёт | Пр. Расчёты",
+      "payments": "Платеж | Платежи"
     },
     "chart_info": {
       "total_sales": "Продажи",
@@ -191,7 +191,7 @@
   "customers": {
     "title": "Клиенты",
     "prefix": "Префикс",
-    "tax_id": "Tax ID",
+    "tax_id": "ИНН",
     "add_customer": "Добавить клиента",
     "contacts_list": "Список клиентов",
     "name": "Имя",
@@ -207,7 +207,7 @@
     "website": "Сайт",
     "overview": "Обзор",
     "invoice_prefix": "Префикс счета",
-    "estimate_prefix": "Estimate Prefix",
+    "estimate_prefix": "Префикс оценки",
     "payment_prefix": "Префикс платежа",
     "enable_portal": "Разрешить портал",
     "country": "Страна",
@@ -324,9 +324,9 @@
     "record_payment": "Добавить платёж",
     "add_estimate": "Добавить заказ",
     "save_estimate": "Сохранить заказ",
-    "cloned_successfully": "Estimate cloned successfully",
-    "clone_estimate": "Clone Estimate",
-    "confirm_clone": "This Estimate will be cloned into a new Estimate",
+    "cloned_successfully": "Примерный расчёт успешно клонирован",
+    "clone_estimate": "Клонировать Расчёт",
+    "confirm_clone": "Этот расчёт будет клонирован в новый расчёт",
     "confirm_conversion": "Эта смета будет использоваться для создания нового счета-фактуры.",
     "conversion_message": "Счет-фактура успешно создан",
     "confirm_send_estimate": "Эта смета будет отправлена клиенту по электронной почте",
@@ -473,8 +473,8 @@
     "mark_as_default_invoice_template_description": "Если включено, выбранный шаблон будет автоматически выбираться для новых счетов."
   },
   "recurring_invoices": {
-    "title": "Recurring Invoices",
-    "invoices_list": "Recurring Invoices List",
+    "title": "Повторяющиеся счета",
+    "invoices_list": "Список повторяющихся счетов",
     "days": "{days} Дней",
     "months": "{months} Месяц",
     "years": "{years} Год",
