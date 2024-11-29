@@ -191,7 +191,7 @@
   "customers": {
     "title": "Clients",
     "prefix": "Code client",
-    "tax_id": "Tax ID",
+    "tax_id": "N° de TVA",
     "add_customer": "Ajouter un client",
     "contacts_list": "Liste de clients",
     "name": "Nom",
