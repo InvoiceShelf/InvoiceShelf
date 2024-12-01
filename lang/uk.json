@@ -53,7 +53,7 @@
     "of": "of",
     "actions": "Дії",
     "subtotal": "SUBTOTAL",
-    "discount": "DISCOUNT",
+    "discount": "ЗНИЖКА",
     "fixed": "Фіксована",
     "percentage": "Відсоток",
     "tax": "ПОДАТОК",
@@ -133,19 +133,19 @@
     "chart_info": {
       "total_sales": "Продажі",
       "total_receipts": "Квитанції",
-      "total_expense": "Expenses",
+      "total_expense": "Витрати",
       "net_income": "Чистий дохід",
       "year": "Виберіть рік"
     },
     "monthly_chart": {
-      "title": "Sales & Expenses"
+      "title": "Продажі & Витрати"
     },
     "recent_invoices_card": {
       "title": "Due Invoices",
       "due_on": "Due On",
       "customer": "Клієнт",
       "amount_due": "Amount Due",
-      "actions": "Actions",
+      "actions": "Дії",
       "view_all": "Переглянути все"
     },
     "recent_estimate_card": {
@@ -177,11 +177,11 @@
     "created_message": "Компанія успішно створена"
   },
   "dateRange": {
-    "today": "Today",
-    "this_week": "This Week",
-    "this_month": "This Month",
-    "this_quarter": "This Quarter",
-    "this_year": "This Year",
+    "today": "Сьогодні",
+    "this_week": "Цього тижня",
+    "this_month": "Цього місяця",
+    "this_quarter": "Цього кварталу",
+    "this_year": "Цього року",
     "previous_week": "Previous Week",
     "previous_month": "Previous Month",
     "previous_quarter": "Previous Quarter",
@@ -189,23 +189,23 @@
     "custom": "Custom"
   },
   "customers": {
-    "title": "Customers",
-    "prefix": "Prefix",
+    "title": "Клієнти",
+    "prefix": "Префікс",
     "tax_id": "Tax ID",
-    "add_customer": "Add Customer",
-    "contacts_list": "Customer List",
-    "name": "Name",
+    "add_customer": "Додати Клієнта",
+    "contacts_list": "Список клієнтів",
+    "name": "Ім’я",
     "mail": "Mail | Mails",
     "statement": "Statement",
     "display_name": "Display Name",
     "primary_contact_name": "Primary Contact Name",
     "contact_name": "Contact Name",
     "amount_due": "Amount Due",
-    "email": "Email",
-    "address": "Address",
-    "phone": "Phone",
-    "website": "Website",
-    "overview": "Overview",
+    "email": "Ел. пошта",
+    "address": "Адреса",
+    "phone": "Номер телефону",
+    "website": "Веб-сайт",
+    "overview": "Перегляд",
     "invoice_prefix": "Invoice Prefix",
     "estimate_prefix": "Estimate Prefix",
     "payment_prefix": "Payment Prefix",
@@ -249,8 +249,8 @@
     "phone_number": "Phone Number",
     "create_date": "Create Date",
     "confirm_delete": "You will not be able to recover this customer and all the related Invoices, Estimates and Payments. | You will not be able to recover these customers and all the related Invoices, Estimates and Payments.",
-    "created_message": "Customer created successfully",
-    "updated_message": "Customer updated successfully",
+    "created_message": "Клієнт успішно створений",
+    "updated_message": "Клієнт успішно оновлений",
     "address_updated_message": "Address Information Updated succesfully",
     "deleted_message": "Customer deleted successfully | Customers deleted successfully",
     "edit_currency_not_allowed": "Cannot change currency once transactions created."
