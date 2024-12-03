@@ -51,7 +51,10 @@ export const useCompanyStore = (useWindow = false) => {
               })
 
               this.selectedCompany = response.data.data
-
+              const companyIndex = this.companies.findIndex((company) => company.unique_hash === this.selectedCompany.unique_hash);
+              if (companyIndex !== -1) {
+                this.companies[companyIndex] = this.selectedCompany;
+              }
               resolve(response)
             })
             .catch((err) => {
