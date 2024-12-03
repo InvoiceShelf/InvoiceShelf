@@ -565,7 +565,7 @@
       "type_item_description": "Zadejte popis položky (volitelné)"
     },
     "frequency": {
-      "title": "Četnost",
+      "title": "Frequency (using cron format)",
       "select_frequency": "Vybrat četnost",
       "minute": "Minuta",
       "hour": "Hodina",
