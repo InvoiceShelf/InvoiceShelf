@@ -938,7 +938,7 @@
       "name": "Názov",
       "slug": "Slug",
       "required": "Povinné",
-      "placeholder": "Umiestnenie",
+      "placeholder": "Zástupný text",
       "help_text": "Pomocný Text",
       "default_value": "Predvolená hodnota",
       "prefix": "Predpona",
