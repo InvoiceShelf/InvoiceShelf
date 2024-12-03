@@ -565,7 +565,7 @@
       "type_item_description": "Type item beschrijving (optioneel)"
     },
     "frequency": {
-      "title": "Frequentie",
+      "title": "Frequency (using cron format)",
       "select_frequency": "Frequentie selecteren",
       "minute": "Minuut",
       "hour": "Uur",
