@@ -565,7 +565,7 @@
       "type_item_description": "Deskripsi permintaan (opsional)"
     },
     "frequency": {
-      "title": "Frekuensi",
+      "title": "Frequency (using cron format)",
       "select_frequency": "Pilih Frekuensi",
       "minute": "Menit",
       "hour": "Jam",
