@@ -565,7 +565,7 @@
       "type_item_description": "Πληκτρολογήστε Περιγραφή Στοιχείου (προαιρετικό)"
     },
     "frequency": {
-      "title": "Συχνότητα",
+      "title": "Frequency (using cron format)",
       "select_frequency": "Επιλογή συχνοτήτων",
       "minute": "Λεπτό",
       "hour": "Ώρα",

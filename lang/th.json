@@ -565,7 +565,7 @@
       "type_item_description": "คำอธิบาย (ไม่จำเป็น)"
     },
     "frequency": {
-      "title": "ระยะเวลา",
+      "title": "Frequency (using cron format)",
       "select_frequency": "กำหนดระยะเวลารอบบิล",
       "minute": "นาที",
       "hour": "ชั่วโมง",

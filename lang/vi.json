@@ -565,7 +565,7 @@
       "type_item_description": "Nhập mô tả mặt hàng (tuỳ chọn)"
     },
     "frequency": {
-      "title": "Tần suất",
+      "title": "Frequency (using cron format)",
       "select_frequency": "Chọn tần suất",
       "minute": "Phút",
       "hour": "Giờ",
