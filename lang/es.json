@@ -565,7 +565,7 @@
       "type_item_description": "Descripción del tipo de elemento(opcional)"
     },
     "frequency": {
-      "title": "Frecuencia",
+      "title": "Frequency (using cron format)",
       "select_frequency": "Seleccionar frecuencia",
       "minute": "Minuto",
       "hour": "Hora",
