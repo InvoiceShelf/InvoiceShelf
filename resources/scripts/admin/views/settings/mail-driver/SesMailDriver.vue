@@ -154,15 +154,8 @@
         >
           <template #right>
             <BaseIcon
-              v-if="isShowPassword"
+              :name="isShowPassword ? 'EyeIcon' : 'EyeOffIcon'"
               class="mr-1 text-gray-500 cursor-pointer"
-              name="EyeOffIcon"
-              @click="isShowPassword = !isShowPassword"
-            />
-            <BaseIcon
-              v-else
-              class="mr-1 text-gray-500 cursor-pointer"
-              name="EyeIcon"
               @click="isShowPassword = !isShowPassword"
             />
           </template>
