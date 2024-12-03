@@ -565,7 +565,7 @@
       "type_item_description": "項目説明の入力（任意）"
     },
     "frequency": {
-      "title": "頻度",
+      "title": "Frequency (using cron format)",
       "select_frequency": "頻度を選択",
       "minute": "分",
       "hour": "時",
