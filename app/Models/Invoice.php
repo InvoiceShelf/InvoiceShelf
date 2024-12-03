@@ -317,7 +317,7 @@ class Invoice extends Model implements HasMedia
 
         $invoice = Invoice::create($data);
 
-        $serial = (new SerialNumberFormatter())
+        $serial = (new SerialNumberFormatter)
             ->setModel($invoice)
             ->setCompany($invoice->company_id)
             ->setCustomer($invoice->customer_id)
@@ -358,7 +358,7 @@ class Invoice extends Model implements HasMedia
 
     public function updateInvoice($request)
     {
-        $serial = (new SerialNumberFormatter())
+        $serial = (new SerialNumberFormatter)
             ->setModel($this)
             ->setCompany($this->company_id)
             ->setCustomer($request->customer_id)

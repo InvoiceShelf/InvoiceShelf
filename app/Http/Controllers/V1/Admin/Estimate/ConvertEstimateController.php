@@ -42,7 +42,7 @@ class ConvertEstimateController extends Controller
             $due_date = Carbon::now()->addDays($dueDateDays)->format('Y-m-d');
         }
 
-        $serial = (new SerialNumberFormatter())
+        $serial = (new SerialNumberFormatter)
             ->setModel($invoice)
             ->setCompany($estimate->company_id)
             ->setCustomer($estimate->customer_id)

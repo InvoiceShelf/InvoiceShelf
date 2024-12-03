@@ -93,7 +93,7 @@ class EnvironmentManager
             $str = '"'.$str.'"';
         }
 
-        return $str;
+        return $str === null ? 'null' : $str;
 
     }
 
@@ -104,14 +104,22 @@ class EnvironmentManager
      */
     public function saveDatabaseVariables(DatabaseEnvironmentRequest $request)
     {
+        $appUrl = $request->get('app_url');
+        if ($appUrl !== config('app.url')) {
+            config(['app.url' => $appUrl]);
+        }
+        [$sanctumDomain, $sessionDomain] = $this->getDomains(
+            $request->getHttpHost()
+        );
         $dbEnv = [
-            'APP_URL' => $request->get('app_url'),
+            'APP_URL' => $appUrl,
             'APP_LOCALE' => $request->get('app_locale'),
             'DB_CONNECTION' => $request->get('database_connection'),
-            'SANCTUM_STATEFUL_DOMAINS' => $request->get('app_domain'),
-            'SESSION_DOMAIN' => explode(':', $request->get('app_domain'))[0],
+            'SESSION_DOMAIN' => $sessionDomain,
         ];
-
+        if ($sanctumDomain !== null) {
+            $dbEnv['SANCTUM_STATEFUL_DOMAINS'] = $sanctumDomain;
+        }
         if ($dbEnv['DB_CONNECTION'] != 'sqlite') {
             if ($request->has('database_username') && $request->has('database_password')) {
                 $dbEnv['DB_HOST'] = $request->get('database_hostname');
@@ -410,10 +418,16 @@ class EnvironmentManager
     public function saveDomainVariables(DomainEnvironmentRequest $request)
     {
         try {
-            $this->updateEnv([
-                'SANCTUM_STATEFUL_DOMAINS' => $request->get('app_domain'),
-                'SESSION_DOMAIN' => explode(':', $request->get('app_domain'))[0],
-            ]);
+            [$sanctumDomain, $sessionDomain] = $this->getDomains(
+                $request->get('app_domain')
+            );
+            $domainEnv = [
+                'SESSION_DOMAIN' => $sessionDomain,
+            ];
+            if ($sanctumDomain !== null) {
+                $domainEnv['SANCTUM_STATEFUL_DOMAINS'] = $sanctumDomain;
+            }
+            $this->updateEnv($domainEnv);
         } catch (Exception $e) {
             return [
                 'error' => 'domain_verification_failed',
@@ -453,5 +467,26 @@ class EnvironmentManager
         }
 
         file_put_contents($this->envPath, trim($formatted));
+    }
+
+    private function getDomains(string $requestDomain): array
+    {
+        $appUrl = config('app.url');
+
+        $port = parse_url($appUrl, PHP_URL_PORT);
+        $currentDomain = parse_url($appUrl, PHP_URL_HOST).(
+            $port ? ':'.$port : ''
+        );
+
+        $requestHost = parse_url($requestDomain, PHP_URL_HOST) ?: $requestDomain;
+
+        $isSame = $currentDomain === $requestDomain;
+
+        return [
+            $isSame && env('SANCTUM_STATEFUL_DOMAINS', false) === false ?
+            null : $requestDomain,
+            $isSame && env('SESSION_DOMAIN', false) === null ?
+                null : $requestHost,
+        ];
     }
 }

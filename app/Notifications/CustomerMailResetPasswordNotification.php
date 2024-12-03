@@ -40,7 +40,7 @@ class CustomerMailResetPasswordNotification extends ResetPassword
     {
         $link = url("/{$notifiable->company->slug}/customer/reset/password/".$this->token);
 
-        return (new MailMessage())
+        return (new MailMessage)
             ->subject('Reset Password Notification')
             ->line('Hello! You are receiving this email because we received a password reset request for your account.')
             ->action('Reset Password', $link)

@@ -68,8 +68,8 @@ class EstimateFactory extends Factory
      */
     public function definition(): array
     {
-        $sequenceNumber = (new SerialNumberFormatter())
-            ->setModel(new Estimate())
+        $sequenceNumber = (new SerialNumberFormatter)
+            ->setModel(new Estimate)
             ->setCompany(User::find(1)->companies()->first()->id)
             ->setNextNumbers();
 

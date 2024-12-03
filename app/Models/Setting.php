@@ -22,7 +22,7 @@ class Setting extends Model
             return;
         }
 
-        $set = new Setting();
+        $set = new Setting;
         $set->option = $key;
         $set->value = $setting;
         $set->save();

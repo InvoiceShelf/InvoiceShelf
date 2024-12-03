@@ -113,7 +113,8 @@ Route::prefix('/customer')->group(function () {
 
 Route::get('/installation', function () {
     return view('app');
-})->name('install')->middleware('redirect-if-installed');
+})->name('install')
+    ->middleware(['redirect-if-installed']);
 
 // Move other http requests to the Vue App
 // -------------------------------------------------

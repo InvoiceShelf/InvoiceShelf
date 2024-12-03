@@ -111,9 +111,9 @@ trait GeneratesPdfTrait
     public function getFieldsArray()
     {
         $customer = $this->customer;
-        $shippingAddress = $customer->shippingAddress ?? new Address();
-        $billingAddress = $customer->billingAddress ?? new Address();
-        $companyAddress = $this->company->address ?? new Address();
+        $shippingAddress = $customer->shippingAddress ?? new Address;
+        $billingAddress = $customer->billingAddress ?? new Address;
+        $companyAddress = $this->company->address ?? new Address;
 
         $fields = [
             '{SHIPPING_ADDRESS_NAME}' => $shippingAddress->name,
