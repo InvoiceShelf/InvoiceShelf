@@ -565,7 +565,7 @@
       "type_item_description": "Opis pozycji (opcjonalnie)"
     },
     "frequency": {
-      "title": "Częstotliwość",
+      "title": "Frequency (using cron format)",
       "select_frequency": "Wybierz częstotliwość",
       "minute": "Minuta",
       "hour": "Godzina",
