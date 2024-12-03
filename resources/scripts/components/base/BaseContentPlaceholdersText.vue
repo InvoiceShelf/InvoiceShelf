@@ -1,10 +1,9 @@
 <template>
-  <div class="base-content-placeholders-text">
+  <div :class="objectClass">
     <div
       v-for="n in lines"
       :key="n"
       :class="lineClass"
-      class="w-full h-full base-content-placeholders-text__line"
     />
   </div>
 </template>
@@ -21,11 +20,20 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  animated: {
+    type: Boolean,
+    default: false,
+  },
 })
 
-const lineClass = computed(() => {
-  return {
-    'base-content-placeholders-is-rounded': props.rounded,
-  }
-})
+const objectClass = computed(() => ({
+  'base-content-placeholders-text': true,
+  'base-content-placeholders-is-rounded': props.rounded,
+  'base-content-placeholders-is-animated': props.animated,
+}))
+
+const lineClass = computed(() => ({
+  'w-full h-full base-content-placeholders-text__line': true,
+  'flex flex-col': props.lines > 1
+}))
 </script>

@@ -1,0 +1,13 @@
+:root {
+  --color-primary-50: 241, 243, 255; /* #f1f3ff */
+  --color-primary-100: 229, 231, 255; /* #e5e7ff */
+  --color-primary-200: 206, 209, 255; /* #ced1ff */
+  --color-primary-300: 167, 170, 255; /* #a7aaff */
+  --color-primary-400: 118, 117, 255; /* #7675ff */
+  --color-primary-500: 74, 61, 255; /* #4a3dff */
+  --color-primary-600: 51, 22, 255; /* #3316ff */
+  --color-primary-700: 33, 4, 253; /* #2104fd */
+  --color-primary-800: 27, 3, 211; /* #1b03d3 */
+  --color-primary-900: 25, 5, 173; /* #1905ad */
+  --color-primary-950: 9, 0, 118; /* #090076 */
+}

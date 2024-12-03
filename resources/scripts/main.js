@@ -1,5 +1,4 @@
-import '../sass/invoiceshelf.scss'
-import 'v-tooltip/dist/v-tooltip.css'
+import '../styles/invoiceshelf.css'
 import '@/scripts/plugins/axios.js'
 import * as VueRouter from 'vue-router'
 import router from '@/scripts/router/index'

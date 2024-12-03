@@ -1,0 +1,61 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`BaseContentPlaceholdersBox animated, rounded, circle 1`] = `
+PlaywrightLocator {
+  "_container": <body>
+    
+    
+    
+  
+
+
+    <div>
+      <div
+        class="base-content-placeholders flex flex-col gap-y-4"
+        data-testid="box-placeholder"
+      >
+        
+        <div
+          class="base-content-placeholders-box base-content-placeholders-is-rounded base-content-placeholders-is-animated w-full h-24"
+        />
+        <div
+          class="base-content-placeholders-box base-content-circle w-5 h-5"
+        />
+        <div
+          class="base-content-placeholders-box base-content-placeholders-is-rounded w-full h-24"
+        />
+        
+      </div>
+    </div>
+  </body>,
+  "_parsedSelector": {
+    "capture": undefined,
+    "parts": [
+      {
+        "body": [
+          {
+            "simples": [
+              {
+                "combinator": "",
+                "selector": {
+                  "css": "body",
+                  "functions": [],
+                },
+              },
+            ],
+          },
+        ],
+        "name": "css",
+        "source": "body",
+      },
+      {
+        "body": "[data-testid="box-placeholder"s]",
+        "name": "internal:testid",
+        "source": "[data-testid="box-placeholder"s]",
+      },
+    ],
+  },
+  "_pwSelector": undefined,
+  "selector": "body >> internal:testid=[data-testid="box-placeholder"s]",
+}
+`;
