@@ -565,7 +565,7 @@
       "type_item_description": "Upiši opis stavke (neobavezno)"
     },
     "frequency": {
-      "title": "Učestalost",
+      "title": "Frequency (using cron format)",
       "select_frequency": "Odaberi učestalost",
       "minute": "Minuta",
       "hour": "Sati",
