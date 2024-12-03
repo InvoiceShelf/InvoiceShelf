@@ -728,20 +728,20 @@
     "other_modules": "Other Modules",
     "view_all": "View All",
     "no_reviews_found": "There are no reviews for this module yet!",
-    "module_not_purchased": "Module Not Purchased",
-    "module_not_found": "Module Not Found",
+    "module_not_purchased": "Modul nie je kúpený",
+    "module_not_found": "Modul sa nenašiel",
     "version_not_supported": "This module version doesn't support the current version of InvoiceShelf",
-    "last_updated": "Last Updated On",
-    "connect_installation": "Connect your installation",
-    "api_token_description": "Login to {url} and connect this installation by entering the API Token. Your purchased modules will show up here after the connection is established.",
-    "view_module": "View Module",
-    "update_available": "Update Available",
-    "purchased": "Purchased",
-    "installed": "Installed",
-    "no_modules_installed": "No Modules Installed Yet!",
-    "disable_warning": "All the settings for this particular will be reverted.",
-    "what_you_get": "What you get",
-    "sign_up_and_get_token": "Sign up & Get Token"
+    "last_updated": "Naposledy upravené",
+    "connect_installation": "Pripojte vašu inštaláciu",
+    "api_token_description": "Prihláste se k {url} a pripojte túto inštaláciu zadaním API tokenu. Vaše zakúpené moduly sa zobrazia tu po naviazaní pripojenia.",
+    "view_module": "Zobraziť modul",
+    "update_available": "Dostupná aktualizácia",
+    "purchased": "Zakúpené",
+    "installed": "Nainštalované",
+    "no_modules_installed": "Nie sú nainštalované žiadne moduly!",
+    "disable_warning": "Všetky nastavenia pre túto konkrétnu položku budú vrátené späť.",
+    "what_you_get": "Čo dostanete",
+    "sign_up_and_get_token": "Prihláste sa a získajte token"
   },
   "users": {
     "title": "Uživatelia",
@@ -768,8 +768,8 @@
     "created_message": "Užívateľ úspešne vytvorený",
     "updated_message": "Užívateľ úspešne aktualizovaná",
     "deleted_message": "Užívateľ úspešne odstránený | Užívatelia úspešne odstránení",
-    "select_company_role": "Select Role for {company}",
-    "companies": "Companies"
+    "select_company_role": "Vyberte rolu pre {company}",
+    "companies": "Spoločnosti"
   },
   "reports": {
     "title": "Reporty",
@@ -795,8 +795,8 @@
       "from_date": "Od dátumu",
       "report_type": "Typ Reportu",
       "sort": {
-        "by_customer": "By Customer",
-        "by_item": "By Item"
+        "by_customer": "Podľa zákazníka",
+        "by_item": "Podľa položky"
       }
     },
     "taxes": {
@@ -851,11 +851,11 @@
       "custom_fields": "Vlastné Polia",
       "payment_modes": "Spôsoby Platby",
       "notes": "Poznámky",
-      "exchange_rate": "Exchange Rate",
-      "address_information": "Address Information"
+      "exchange_rate": "Výmenný kurz",
+      "address_information": "Informácie o adrese"
     },
     "address_information": {
-      "section_description": "  You can update Your Address information using form below."
+      "section_description": "Adresu môžete aktualizovať pomocou formulára nižšie."
     },
     "title": "Nastavenia",
     "setting": "Nastavenia | Nastavenia",
@@ -871,7 +871,7 @@
       "select_currency": "Vyberte Menu",
       "name": "Meno",
       "code": "Kód",
-      "symbol": "Symbol",
+      "symbol": "Znak meny",
       "precision": "Presnosť",
       "thousand_separator": "Oddelovač Tisíciek",
       "decimal_separator": "Oddelovač Desatinných Miest",
@@ -919,9 +919,9 @@
       "address": "Adresa",
       "zip": "PSČ",
       "save": "Uložiť",
-      "delete": "Delete",
+      "delete": "Odstrániť",
       "updated_message": "Informácie o firme úspešne aktualizované",
-      "delete_company": "Delete Company",
+      "delete_company": "Odstrániť spoločnosť",
       "delete_company_description": "Once you delete your company, you will lose all the data and files associated with it permanently.",
       "are_you_absolutely_sure": "Are you absolutely sure?",
       "delete_company_modal_desc": "This action cannot be undone. This will permanently delete {company} and all of its associated data.",
@@ -948,7 +948,7 @@
       "suffix": "Prípona",
       "yes": "Áno",
       "no": "Nie",
-      "order": "Objednať",
+      "order": "Poradie",
       "custom_field_confirm_delete": "Nebudete môcť obnovit toto vlastné pole",
       "already_in_use": "Toto vlastne pole sa už používa",
       "deleted_message": "Vlastné pole úspešne vymazané",
@@ -1611,7 +1611,7 @@
   "pdf_total_tax_label": "Celkové dane",
   "pdf_tax_types_label": "Typy daní",
   "pdf_expenses_label": "Výdaje",
-  "pdf_bill_to": "Fakturovať,",
+  "pdf_bill_to": "Odberateľ:",
   "pdf_ship_to": "Doručiť,",
   "pdf_received_from": "Prijaté od:",
   "pdf_tax_label": "Tax",
