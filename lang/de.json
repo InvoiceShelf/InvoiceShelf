@@ -565,7 +565,7 @@
       "type_item_description": "Artikel-Beschreibung (optional)"
     },
     "frequency": {
-      "title": "Intervall",
+      "title": "Frequency (using cron format)",
       "select_frequency": "Intervall auswählen",
       "minute": "Minute",
       "hour": "Stunde",
