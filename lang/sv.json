@@ -565,7 +565,7 @@
       "type_item_description": "Skriv in artikelns beskrivning (frivilligt)"
     },
     "frequency": {
-      "title": "Upprepning",
+      "title": "Frequency (using cron format)",
       "select_frequency": "Välj antal",
       "minute": "Minut",
       "hour": "Timmar",
