@@ -908,8 +908,8 @@
     "company_info": {
       "company_info": "Coordonnées de la société",
       "company_name": "Nom",
-      "tax_id": "Numéro d'identification fiscale",
-      "vat_id": "Numéro d'identification TVA",
+      "tax_id": "N° d'identification fiscale (SIREN)",
+      "vat_id": "N° d'identification TVA",
       "company_logo": "Logo",
       "section_description": "Saisissez ici les coordonnées de votre entreprise qui s'afficheront sur tous vos documents.",
       "phone": "Téléphone",
