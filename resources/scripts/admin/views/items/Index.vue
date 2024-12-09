@@ -172,6 +172,11 @@
           />
         </template>
 
+        <!-- Add new template for opening_stock -->
+        <template #cell-opening_stock="{ row }">
+          <span>{{ row.data.opening_stock || '-' }}</span>
+        </template>
+
         <template #cell-created_at="{ row }">
           <span>{{ row.data.formatted_created_at }}</span>
         </template>
@@ -249,6 +254,7 @@ const itemColumns = computed(() => {
     },
     { key: 'unit_name', label: t('items.unit') },
     { key: 'price', label: t('items.price') },
+    { key: 'opening_stock', label: t('items.opening_stock') }, // New column for opening_stock
     { key: 'created_at', label: t('items.added_on') },
 
     {
@@ -332,7 +338,7 @@ async function fetchData({ page, filter, sort }) {
       totalCount: response.data.meta.total,
       limit: 10,
     },
-  }
+
 }
 
 function removeMultipleItems() {
@@ -356,4 +362,5 @@ function removeMultipleItems() {
       }
     })
 }
+
 </script>
