@@ -332,9 +332,35 @@ async function fetchData({ page, filter, sort }) {
 
   return {
     data: response.data.data,
-    total: response.data.total,
-    perPage: response.data.per_page,
-    currentPage: response.data.current_page,
-  }
+    pagination: {
+      totalPages: response.data.meta.last_page,
+      currentPage: page,
+      totalCount: response.data.meta.total,
+      limit: 10,
+    },
+
 }
+
+function removeMultipleItems() {
+  dialogStore
+    .openDialog({
+      title: t('general.are_you_sure'),
+      message: t('items.confirm_delete', 2),
+      yesLabel: t('general.ok'),
+      noLabel: t('general.cancel'),
+      variant: 'danger',
+      hideNoButton: false,
+      size: 'lg',
+    })
+    .then((res) => {
+      if (res) {
+        itemStore.deleteMultipleItems().then((response) => {
+          if (response.data.success) {
+            table.value && table.value.refresh()
+          }
+        })
+      }
+    })
+}
+
 </script>
