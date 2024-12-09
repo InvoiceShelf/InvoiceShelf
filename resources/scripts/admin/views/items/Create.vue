@@ -17,6 +17,7 @@
     >
       <BaseCard class="w-full">
         <BaseInputGrid layout="one-column">
+          <!-- Item Name Input -->
           <BaseInputGroup
             :label="$t('items.name')"
             :content-loading="isFetchingInitialData"
@@ -34,6 +35,7 @@
             />
           </BaseInputGroup>
 
+          <!-- Item Price Input -->
           <BaseInputGroup
             :label="$t('items.price')"
             :content-loading="isFetchingInitialData"
@@ -44,6 +46,7 @@
             />
           </BaseInputGroup>
 
+          <!-- Unit Input -->
           <BaseInputGroup
             :content-loading="isFetchingInitialData"
             :label="$t('items.unit')"
@@ -70,6 +73,7 @@
             </BaseMultiselect>
           </BaseInputGroup>
 
+          <!-- Taxes Input (Conditional) -->
           <BaseInputGroup
             v-if="isTaxPerItem"
             :label="$t('items.taxes')"
@@ -91,6 +95,7 @@
             />
           </BaseInputGroup>
 
+          <!-- Item Description Input -->
           <BaseInputGroup
             :label="$t('items.description')"
             :content-loading="isFetchingInitialData"
@@ -109,6 +114,23 @@
             />
           </BaseInputGroup>
 
+          <!-- Opening Stock Input -->
+          <BaseInputGroup
+            :label="$t('items.opening_stock')"
+            :content-loading="isFetchingInitialData"
+            :error="v$.currentItem.opening_stock.$error && v$.currentItem.opening_stock.$errors[0].$message"
+          >
+            <BaseInput
+              v-model="itemStore.currentItem.opening_stock"
+              :content-loading="isFetchingInitialData"
+              :invalid="v$.currentItem.opening_stock.$error"
+              type="number"
+              min="0"
+              @input="v$.currentItem.opening_stock.$touch()"
+            />
+          </BaseInputGroup>
+
+          <!-- Submit Button -->
           <div>
             <BaseButton
               :content-loading="isFetchingInitialData"
@@ -228,6 +250,12 @@ const rules = computed(() => {
           maxLength(65000)
         ),
       },
+
+      opening_stock: {
+        required: helpers.withMessage(t('validation.required'), required),
+        numeric: helpers.withMessage(t('validation.numeric'), numeric),
+        minValue: helpers.withMessage(t('validation.min_value', { value: 0 }), minValue(0)),
+      },
     },
   }
 })
@@ -288,6 +316,9 @@ async function submitItem() {
       })
     }
 
+    // Include the opening_stock value
+    data.opening_stock = itemStore.currentItem.opening_stock
+
     const action = isEdit.value ? itemStore.updateItem : itemStore.addItem
 
     await action(data)
@@ -298,6 +329,7 @@ async function submitItem() {
     isSaving.value = false
     return
   }
+
   function closeItemModal() {
     modalStore.closeModal()
     setTimeout(() => {

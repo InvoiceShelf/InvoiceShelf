@@ -172,6 +172,11 @@
           />
         </template>
 
+        <!-- Add new template for opening_stock -->
+        <template #cell-opening_stock="{ row }">
+          <span>{{ row.data.opening_stock || '-' }}</span>
+        </template>
+
         <template #cell-created_at="{ row }">
           <span>{{ row.data.formatted_created_at }}</span>
         </template>
@@ -249,6 +254,7 @@ const itemColumns = computed(() => {
     },
     { key: 'unit_name', label: t('items.unit') },
     { key: 'price', label: t('items.price') },
+    { key: 'opening_stock', label: t('items.opening_stock') }, // New column for opening_stock
     { key: 'created_at', label: t('items.added_on') },
 
     {
@@ -326,34 +332,9 @@ async function fetchData({ page, filter, sort }) {
 
   return {
     data: response.data.data,
-    pagination: {
-      totalPages: response.data.meta.last_page,
-      currentPage: page,
-      totalCount: response.data.meta.total,
-      limit: 10,
-    },
+    total: response.data.total,
+    perPage: response.data.per_page,
+    currentPage: response.data.current_page,
   }
-}
-
-function removeMultipleItems() {
-  dialogStore
-    .openDialog({
-      title: t('general.are_you_sure'),
-      message: t('items.confirm_delete', 2),
-      yesLabel: t('general.ok'),
-      noLabel: t('general.cancel'),
-      variant: 'danger',
-      hideNoButton: false,
-      size: 'lg',
-    })
-    .then((res) => {
-      if (res) {
-        itemStore.deleteMultipleItems().then((response) => {
-          if (response.data.success) {
-            table.value && table.value.refresh()
-          }
-        })
-      }
-    })
 }
 </script>
