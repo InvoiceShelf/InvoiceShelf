@@ -172,6 +172,11 @@
           />
         </template>
 
+        <!-- Add new template for opening_stock -->
+        <template v-if="openingStockEnabled" #cell-opening_stock="{ row }">
+          <span>{{ row.data.opening_stock || '-' }}</span>
+        </template>
+
         <template #cell-created_at="{ row }">
           <span>{{ row.data.formatted_created_at }}</span>
         </template>
@@ -189,27 +194,23 @@
 </template>
 
 <script setup>
-import { ref, computed, inject, onMounted, reactive, onUnmounted } from 'vue'
+import { ref, computed, inject, reactive, onUnmounted } from 'vue'
 import { debouncedWatch } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 import { useItemStore } from '@/scripts/admin/stores/item'
-import { useNotificationStore } from '@/scripts/stores/notification'
-import { useDialogStore } from '@/scripts/stores/dialog'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 import { useUserStore } from '@/scripts/admin/stores/user'
-import ItemDropdown from '@/scripts/admin/components/dropdowns/ItemIndexDropdown.vue'
-import SatelliteIcon from '@/scripts/components/icons/empty/SatelliteIcon.vue'
 import abilities from '@/scripts/admin/stub/abilities'
-
-const utils = inject('utils')
 
 const itemStore = useItemStore()
 const companyStore = useCompanyStore()
-const notificationStore = useNotificationStore()
-const dialogStore = useDialogStore()
 const userStore = useUserStore()
 
 const { t } = useI18n()
+
+// Inject the opening stock setting passed from the controller
+const openingStockEnabled = inject('opening_stock_enabled', false)
+
 let showFilters = ref(false)
 let isFetchingInitialData = ref(true)
 
@@ -233,7 +234,7 @@ const selectField = computed({
 })
 
 const itemColumns = computed(() => {
-  return [
+  const columns = [
     {
       key: 'status',
       thClass: 'extra w-10',
@@ -250,14 +251,13 @@ const itemColumns = computed(() => {
     { key: 'unit_name', label: t('items.unit') },
     { key: 'price', label: t('items.price') },
     { key: 'created_at', label: t('items.added_on') },
-
-    {
-      key: 'actions',
-      thClass: 'text-right',
-      tdClass: 'text-right text-sm font-medium',
-      sortable: false,
-    },
   ]
+
+  if (openingStockEnabled) {
+    columns.splice(4, 0, { key: 'opening_stock', label: t('items.opening_stock') })
+  }
+
+  return columns
 })
 
 debouncedWatch(
@@ -268,22 +268,10 @@ debouncedWatch(
   { debounce: 500 }
 )
 
-itemStore.fetchItemUnits({ limit: 'all' })
-
-onUnmounted(() => {
-  if (itemStore.selectAllField) {
-    itemStore.selectAllItems()
-  }
-})
-
 function clearFilter() {
   filters.name = ''
   filters.unit_id = ''
   filters.price = ''
-}
-
-function hasAbilities() {
-  return userStore.hasAbilities([abilities.DELETE_ITEM, abilities.EDIT_ITEM])
 }
 
 function toggleFilter() {
@@ -302,10 +290,8 @@ function setFilters() {
   refreshTable()
 }
 
-async function searchUnits(search) {
-  let res = await itemStore.fetchItemUnits({ search })
-
-  return res.data.data
+function hasAbilities() {
+  return userStore.hasAbilities([abilities.DELETE_ITEM, abilities.EDIT_ITEM])
 }
 
 async function fetchData({ page, filter, sort }) {
@@ -335,25 +321,4 @@ async function fetchData({ page, filter, sort }) {
   }
 }
 
-function removeMultipleItems() {
-  dialogStore
-    .openDialog({
-      title: t('general.are_you_sure'),
-      message: t('items.confirm_delete', 2),
-      yesLabel: t('general.ok'),
-      noLabel: t('general.cancel'),
-      variant: 'danger',
-      hideNoButton: false,
-      size: 'lg',
-    })
-    .then((res) => {
-      if (res) {
-        itemStore.deleteMultipleItems().then((response) => {
-          if (response.data.success) {
-            table.value && table.value.refresh()
-          }
-        })
-      }
-    })
-}
 </script>

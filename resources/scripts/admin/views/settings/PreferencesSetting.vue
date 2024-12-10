@@ -129,6 +129,12 @@
             :description="$t('settings.preferences.expire_setting_description')"
           />
 
+          <BaseSwitchSection
+            v-model="stockManagementField"
+           :title="$t('settings.preferences.manage_stock')"
+           :description="$t('settings.preferences.manage_stock_description')"
+            />
+
           <!--pdf_link_expiry_days -->
           <BaseInputGroup
             v-if="expirePdfField"
@@ -190,6 +196,7 @@ let isFetchingInitialData = ref(false)
 
 const settingsForm = reactive({ ...companyStore.selectedCompanySettings })
 
+// Existing computed properties...
 const retrospectiveEditOptions = computed(() => {
   return globalStore.config.retrospective_edits.map((option) => {
     option.title = t(option.key)
@@ -205,6 +212,7 @@ const fiscalYearsList = computed(() => {
   })
 })
 
+// Existing watches...
 watch(
   () => settingsForm.carbon_date_format,
   (val) => {
@@ -218,6 +226,7 @@ watch(
   }
 )
 
+// Existing computed getters/setters...
 const discountPerItemField = computed({
   get: () => {
     return settingsForm.discount_per_item === 'YES'
@@ -257,6 +266,36 @@ const expirePdfField = computed({
   },
 })
 
+// NEW: Stock Management Computed Property
+const stockManagementField = computed({
+  get: () => {
+    return settingsForm.manage_stock === 'YES'
+  },
+  set: async (newValue) => {
+    const value = newValue ? 'YES' : 'NO'
+
+    let data = {
+      settings: {
+        manage_stock: value,
+      },
+    }
+
+    settingsForm.manage_stock = value
+
+    try {
+      await companyStore.updateCompanySettings({
+        data,
+        message: 'settings.preferences.stock_management_updated',
+      })
+    } catch (error) {
+      console.error('Failed to update stock management setting', error)
+      // Optionally revert the toggle if update fails
+      settingsForm.manage_stock = value === 'YES' ? 'NO' : 'YES'
+    }
+  },
+})
+
+// Validation rules
 const rules = computed(() => {
   return {
     currency: {
@@ -277,6 +316,8 @@ const rules = computed(() => {
     fiscal_year: {
       required: helpers.withMessage(t('validation.required'), required),
     },
+    // Optional: Add validation for manage_stock if needed
+    manage_stock: {},
   }
 })
 
@@ -285,6 +326,7 @@ const v$ = useVuelidate(
   computed(() => settingsForm)
 )
 
+// Initialization function
 setInitialData()
 
 async function setInitialData() {
@@ -298,6 +340,7 @@ async function setInitialData() {
   })
 }
 
+// Existing update functions...
 async function updatePreferencesData() {
   v$.value.$touch()
   if (v$.value.$invalid) {
