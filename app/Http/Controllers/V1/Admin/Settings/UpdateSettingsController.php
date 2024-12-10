@@ -19,6 +19,20 @@ class UpdateSettingsController extends Controller
     {
         $this->authorize('manage settings');
 
+        if (isset($request->settings['manage_stock'])) {
+            
+            $managedStock = $request->settings['manage_stock'];
+            
+            if (!in_array($managedStock, ['YES', 'NO'])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid stock management setting'
+                ], 400);
+            }
+        }
+    
+        
+        
         Setting::setSettings($request->settings);
 
         return response()->json([
