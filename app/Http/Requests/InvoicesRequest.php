@@ -111,7 +111,7 @@ class InvoicesRequest extends FormRequest
         return $rules;
     }
 
-    public function getInvoicePayload()
+    public function getInvoicePayload(): array
     {
         $company_currency = CompanySetting::getSetting('currency', $this->header('company'));
         $current_currency = $this->currency_id;
@@ -127,6 +127,8 @@ class InvoicesRequest extends FormRequest
                 'tax_per_item' => CompanySetting::getSetting('tax_per_item', $this->header('company')) ?? 'NO ',
                 'discount_per_item' => CompanySetting::getSetting('discount_per_item', $this->header('company')) ?? 'NO',
                 'due_amount' => $this->total,
+                'sent' => (bool) $this->sent ?? false,
+                'viewed' => (bool) $this->viewed ?? false,
                 'exchange_rate' => $exchange_rate,
                 'base_total' => $this->total * $exchange_rate,
                 'base_discount_val' => $this->discount_val * $exchange_rate,
