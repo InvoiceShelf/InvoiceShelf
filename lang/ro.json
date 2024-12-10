@@ -100,7 +100,26 @@
     "pay_invoice": "Pay Invoice",
     "login_successfully": "Logged in successfully!",
     "logged_out_successfully": "Logged out successfully",
-    "mark_as_default": "Mark as default"
+    "mark_as_default": "Mark as default",
+    "no_data_found": "No data found",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "showing": "Showing",
+      "to": "to",
+      "of": "of",
+      "results": "results"
+    },
+    "file_upload": {
+      "drag_a_file": "Drag a file here or",
+      "browse": "browse",
+      "to_choose": "to choose a file"
+    },
+    "multiselect": {
+      "the_list_is_empty": "The list is empty",
+      "no_results_found": "No results found"
+    },
+    "copy_to_clipboard": "Copy to Clipboard"
   },
   "dashboard": {
     "select_year": "Selectați anul",
@@ -172,6 +191,7 @@
   "customers": {
     "title": "Clienţi",
     "prefix": "Prefix",
+    "tax_id": "Tax ID",
     "add_customer": "Adauga client",
     "contacts_list": "Lista clienti",
     "name": "Nume",
@@ -304,6 +324,9 @@
     "record_payment": "Record Payment",
     "add_estimate": "Add Estimate",
     "save_estimate": "Save Estimate",
+    "cloned_successfully": "Estimate cloned successfully",
+    "clone_estimate": "Clone Estimate",
+    "confirm_clone": "This Estimate will be cloned into a new Estimate",
     "confirm_conversion": "This estimate will be used to create a new Invoice.",
     "conversion_message": "Invoice created successful",
     "confirm_send_estimate": "This estimate will be sent via email to the customer",
@@ -542,13 +565,24 @@
       "type_item_description": "Type Item Description (optional)"
     },
     "frequency": {
-      "title": "Frequency",
+      "title": "Frequency (using cron format)",
       "select_frequency": "Select Frequency",
       "minute": "Minute",
       "hour": "Hour",
       "day_month": "Day of month",
       "month": "Month",
-      "day_week": "Day of week"
+      "day_week": "Day of week",
+      "every_minute": "Every Minute",
+      "every_30_minute": "Every 30 Minute",
+      "every_hour": "Every Hour",
+      "every_2_hour": "Every 2 Hour",
+      "every_day_at_midnight": "Every day at midnight",
+      "every_week": "Every Week",
+      "every_15_days_at_midnight": "Every 15 days at midnight",
+      "on_the_first_day_of_every_month_at_midnight": "On the first day of every month at 00:00",
+      "every_6_month": "Every 6 Month",
+      "every_year_on_the_first_day_of_january_at_midnight": "Every year on the first day of january at 00:00",
+      "custom": "Custom"
     },
     "confirm_delete": "You will not be able to recover this Invoice | You will not be able to recover these Invoices",
     "created_message": "Recurring Invoice created successfully",
@@ -557,7 +591,12 @@
     "marked_as_sent_message": "Recurring Invoice marked as sent successfully",
     "user_email_does_not_exist": "User email does not exist",
     "something_went_wrong": "something went wrong",
-    "invalid_due_amount_message": "Total Recurring Invoice amount cannot be less than total paid amount for this Recurring Invoice. Please update the invoice or delete the associated payments to continue."
+    "invalid_due_amount_message": "Total Recurring Invoice amount cannot be less than total paid amount for this Recurring Invoice. Please update the invoice or delete the associated payments to continue.",
+    "limit": {
+      "none": "None",
+      "date": "Date",
+      "count": "Count"
+    }
   },
   "payments": {
     "title": "Payments",
@@ -595,7 +634,8 @@
     "created_message": "Payment created successfully",
     "updated_message": "Payment updated successfully",
     "deleted_message": "Payment deleted successfully | Payments deleted successfully",
-    "invalid_amount_message": "Payment amount is invalid"
+    "invalid_amount_message": "Payment amount is invalid",
+    "amount_due": "Due Amount"
   },
   "expenses": {
     "title": "Expenses",
@@ -700,7 +740,8 @@
     "installed": "Installed",
     "no_modules_installed": "No Modules Installed Yet!",
     "disable_warning": "All the settings for this particular will be reverted.",
-    "what_you_get": "What you get"
+    "what_you_get": "What you get",
+    "sign_up_and_get_token": "Sign up & Get Token"
   },
   "users": {
     "title": "Users",
@@ -752,7 +793,11 @@
       "date_range": "Select Date Range",
       "to_date": "To Date",
       "from_date": "From Date",
-      "report_type": "Report Type"
+      "report_type": "Report Type",
+      "sort": {
+        "by_customer": "By Customer",
+        "by_item": "By Item"
+      }
     },
     "taxes": {
       "taxes": "Taxes",
@@ -920,7 +965,14 @@
       "added_message": "Custom Field added successfully",
       "press_enter_to_add": "Press enter to add new option",
       "model_in_use": "Cannot update model for fields which are already in use.",
-      "type_in_use": "Cannot update type for fields which are already in use."
+      "type_in_use": "Cannot update type for fields which are already in use.",
+      "model_type": {
+        "customer": "Customer",
+        "invoice": "Invoice",
+        "estimate": "Estimate",
+        "expense": "Expense",
+        "payment": "Payment"
+      }
     },
     "customization": {
       "customization": "customization",
@@ -1041,7 +1093,12 @@
         "note_updated": "Note Updated successfully",
         "note_confirm_delete": "You will not be able to recover this Note",
         "already_in_use": "Note is already in use",
-        "deleted_message": "Note deleted successfully"
+        "deleted_message": "Note deleted successfully",
+        "types": {
+          "estimate": "Estimate",
+          "invoice": "Invoice",
+          "payment": "Payment"
+        }
       }
     },
     "account_settings": {
@@ -1196,12 +1253,27 @@
       "on_hold": "On Hold",
       "update_status": "Update Status",
       "completed": "Completed",
-      "company_currency_unchangeable": "Company currency cannot be changed"
+      "company_currency_unchangeable": "Company currency cannot be changed",
+      "fiscal_years": {
+        "january_december": "January - December",
+        "february_january": "February - January",
+        "march_february": "March - February",
+        "april_march": "April - March",
+        "may_april": "May - April",
+        "june_may": "June - May",
+        "july_june": "July - June",
+        "august_july": "August - July",
+        "september_august": "September - August",
+        "october_september": "October - September",
+        "november_october": "November - October",
+        "december_november": "December - November"
+      }
     },
     "update_app": {
       "title": "Update App",
       "description": "You can easily update InvoiceShelf by checking for a new update by clicking the button below",
       "check_update": "Check for updates",
+      "insider_consent": "Opt-in for Insider releases. Recommended for testing purposes only.",
       "avail_update": "New Update available",
       "next_version": "Next version",
       "requirements": "Requirements",
@@ -1355,6 +1427,10 @@
     "next": "Next",
     "continue": "Continue",
     "skip": "Skip",
+    "install_language": {
+      "title": "Choose your language",
+      "description": "Select language wizard to install InvoiceShelf"
+    },
     "database": {
       "database": "Site URL & Database",
       "connection": "Database Connection",
@@ -1366,6 +1442,7 @@
       "username": "Database Username",
       "db_name": "Database Name",
       "db_path": "Database Path",
+      "overwrite": "Overwrite existing database and proceed",
       "desc": "Create a database on your server and set the credentials using the form below."
     },
     "permissions": {
@@ -1381,7 +1458,14 @@
       "verify_now": "Verify Now",
       "success": "Domain Verify Successfully.",
       "failed": "Domain verification failed. Please enter valid domain name.",
-      "verify_and_continue": "Verify And Continue"
+      "verify_and_continue": "Verify And Continue",
+      "notes": {
+        "notes": "Notes:",
+        "not_contain": "App domain should not contain",
+        "or": "or",
+        "in_front": "in front of the domain.",
+        "if_you": "If you're accessing the website on a different port, please mention the port. For example:"
+      }
     },
     "mail": {
       "host": "Mail Host",

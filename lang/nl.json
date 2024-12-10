@@ -18,7 +18,7 @@
     "add_company": "Bedrijf toevoegen",
     "view_pdf": "Bekijk PDF",
     "copy_pdf_url": "Kopieer PDF-URL",
-    "download_pdf": "Download PDF",
+    "download_pdf": "PDF downloaden",
     "save": "Opslaan",
     "create": "Maak",
     "cancel": "Annuleren",
@@ -100,7 +100,26 @@
     "pay_invoice": "Betaal factuur",
     "login_successfully": "Succesvol ingelogd!",
     "logged_out_successfully": "Succesvol afgemeld",
-    "mark_as_default": "Markeren als standaard"
+    "mark_as_default": "Markeren als standaard",
+    "no_data_found": "Geen gegevens beschikbaar",
+    "pagination": {
+      "previous": "Vorige",
+      "next": "Volgende",
+      "showing": "Afgebeeld",
+      "to": "tot",
+      "of": "van",
+      "results": "resultaten"
+    },
+    "file_upload": {
+      "drag_a_file": "Sleep een bestand hierheen of",
+      "browse": "bladeren",
+      "to_choose": "om een bestand te kiezen"
+    },
+    "multiselect": {
+      "the_list_is_empty": "De lijst is leeg",
+      "no_results_found": "Geen resultaten gevonden"
+    },
+    "copy_to_clipboard": "Kopieer naar Klembord"
   },
   "dashboard": {
     "select_year": "Selecteer jaar",
@@ -172,6 +191,7 @@
   "customers": {
     "title": "Klanten",
     "prefix": "Voorvoegsel",
+    "tax_id": "Tax ID",
     "add_customer": "Klant toevoegen",
     "contacts_list": "Klantenlijst",
     "name": "Naam",
@@ -304,6 +324,9 @@
     "record_payment": "Betaling registreren",
     "add_estimate": "Offerte toevoegen",
     "save_estimate": "Bewaar offerte",
+    "cloned_successfully": "Estimate cloned successfully",
+    "clone_estimate": "Clone Estimate",
+    "confirm_clone": "This Estimate will be cloned into a new Estimate",
     "confirm_conversion": "Deze offerte wordt gebruikt om een nieuwe factuur te maken.",
     "conversion_message": "Factuur gemaakt",
     "confirm_send_estimate": "Deze offerte wordt via e-mail naar de klant gestuurd",
@@ -542,13 +565,24 @@
       "type_item_description": "Type item beschrijving (optioneel)"
     },
     "frequency": {
-      "title": "Frequentie",
+      "title": "Frequency (using cron format)",
       "select_frequency": "Frequentie selecteren",
       "minute": "Minuut",
       "hour": "Uur",
       "day_month": "Dag van de maand",
       "month": "Maand",
-      "day_week": "Dag van de week"
+      "day_week": "Dag van de week",
+      "every_minute": "Every Minute",
+      "every_30_minute": "Every 30 Minute",
+      "every_hour": "Every Hour",
+      "every_2_hour": "Every 2 Hour",
+      "every_day_at_midnight": "Every day at midnight",
+      "every_week": "Every Week",
+      "every_15_days_at_midnight": "Every 15 days at midnight",
+      "on_the_first_day_of_every_month_at_midnight": "On the first day of every month at 00:00",
+      "every_6_month": "Every 6 Month",
+      "every_year_on_the_first_day_of_january_at_midnight": "Every year on the first day of january at 00:00",
+      "custom": "Custom"
     },
     "confirm_delete": "Deze factuur wordt permanent verwijderd | Deze facturen worden permanent verwijderd",
     "created_message": "Terugkerende factuur succesvol gecreëerd",
@@ -557,7 +591,12 @@
     "marked_as_sent_message": "Periodieke factuur gemarkeerd als succesvol verzonden",
     "user_email_does_not_exist": "E-mailadres van gebruiker bestaat niet",
     "something_went_wrong": "er is iets fout gegaan",
-    "invalid_due_amount_message": "Het totale factuurbedrag mag niet lager zijn dan het totale betaalde bedrag voor deze factuur. Werk de factuur bij of verwijder de bijbehorende betalingen om door te gaan."
+    "invalid_due_amount_message": "Het totale factuurbedrag mag niet lager zijn dan het totale betaalde bedrag voor deze factuur. Werk de factuur bij of verwijder de bijbehorende betalingen om door te gaan.",
+    "limit": {
+      "none": "None",
+      "date": "Date",
+      "count": "Count"
+    }
   },
   "payments": {
     "title": "Betalingen",
@@ -595,7 +634,8 @@
     "created_message": "De betaling is succesvol aangemaakt",
     "updated_message": "Betaling succesvol bijgewerkt",
     "deleted_message": "Betaling succesvol verwijderd | Betalingen zijn verwijderd",
-    "invalid_amount_message": "Het bedrag van de betaling is ongeldig"
+    "invalid_amount_message": "Het bedrag van de betaling is ongeldig",
+    "amount_due": "Due Amount"
   },
   "expenses": {
     "title": "Uitgaven",
@@ -700,7 +740,8 @@
     "installed": "Geïnstalleerd",
     "no_modules_installed": "Nog geen modules geïnstalleerd!",
     "disable_warning": "Alle instellingen voor dit specifiek zullen worden teruggedraaid.",
-    "what_you_get": "Wat je krijgt"
+    "what_you_get": "Wat je krijgt",
+    "sign_up_and_get_token": "Sign up & Get Token"
   },
   "users": {
     "title": "Gebruikers",
@@ -752,7 +793,11 @@
       "date_range": "Selecteer datumbereik",
       "to_date": "Tot datum",
       "from_date": "Van datum",
-      "report_type": "Rapporttype"
+      "report_type": "Rapporttype",
+      "sort": {
+        "by_customer": "By Customer",
+        "by_item": "By Item"
+      }
     },
     "taxes": {
       "taxes": "Belastingen",
@@ -920,7 +965,14 @@
       "added_message": "Aangepast veld is succesvol toegevoegd",
       "press_enter_to_add": "Druk op Enter om een nieuwe optie toe te voegen",
       "model_in_use": "Kan model niet bijwerken voor velden die al in gebruik zijn.",
-      "type_in_use": "Kan type niet bijwerken voor velden die al in gebruik zijn."
+      "type_in_use": "Kan type niet bijwerken voor velden die al in gebruik zijn.",
+      "model_type": {
+        "customer": "Customer",
+        "invoice": "Invoice",
+        "estimate": "Estimate",
+        "expense": "Expense",
+        "payment": "Payment"
+      }
     },
     "customization": {
       "customization": "aanpassen",
@@ -1041,7 +1093,12 @@
         "note_updated": "Notitie bijgewerkt",
         "note_confirm_delete": "U kunt deze notitie niet terughalen",
         "already_in_use": "Notitie is reeds in gebruik",
-        "deleted_message": "Notitie verwijderd"
+        "deleted_message": "Notitie verwijderd",
+        "types": {
+          "estimate": "Estimate",
+          "invoice": "Invoice",
+          "payment": "Payment"
+        }
       }
     },
     "account_settings": {
@@ -1196,12 +1253,27 @@
       "on_hold": "In wacht",
       "update_status": "Updatestatus",
       "completed": "Voltooid",
-      "company_currency_unchangeable": "Bedrijfsvaluta kan niet worden gewijzigd"
+      "company_currency_unchangeable": "Bedrijfsvaluta kan niet worden gewijzigd",
+      "fiscal_years": {
+        "january_december": "January - December",
+        "february_january": "February - January",
+        "march_february": "March - February",
+        "april_march": "April - March",
+        "may_april": "May - April",
+        "june_may": "June - May",
+        "july_june": "July - June",
+        "august_july": "August - July",
+        "september_august": "September - August",
+        "october_september": "October - September",
+        "november_october": "November - October",
+        "december_november": "December - November"
+      }
     },
     "update_app": {
       "title": "App bijwerken",
       "description": "U kunt InvoiceShelf eenvoudig bijwerken door te controleren op een nieuwe update door op de onderstaande knop te klikken",
       "check_update": "Controleer op updates",
+      "insider_consent": "Opt-in for Insider releases. Recommended for testing purposes only.",
       "avail_update": "Nieuwe update beschikbaar",
       "next_version": "Volgende versie",
       "requirements": "Vereisten",
@@ -1355,6 +1427,10 @@
     "next": "De volgende",
     "continue": "Doorgaan met",
     "skip": "Overslaan",
+    "install_language": {
+      "title": "Choose your language",
+      "description": "Select language wizard to install InvoiceShelf"
+    },
     "database": {
       "database": "Site-URL en database",
       "connection": "Database verbinding",
@@ -1366,6 +1442,7 @@
       "username": "Database gebruikersnaam",
       "db_name": "Database naam",
       "db_path": "Databankpad",
+      "overwrite": "Overwrite existing database and proceed",
       "desc": "Maak een database op uw server en stel de referenties in via het onderstaande formulier."
     },
     "permissions": {
@@ -1381,7 +1458,14 @@
       "verify_now": "Nu verifiëren",
       "success": "E-mailadres succesvol geverifieerd.",
       "failed": "Domeinverificatie is mislukt. Voer een geldige domeinnaam in.",
-      "verify_and_continue": "Verifiëren en doorgaan"
+      "verify_and_continue": "Verifiëren en doorgaan",
+      "notes": {
+        "notes": "Notes:",
+        "not_contain": "App domain should not contain",
+        "or": "or",
+        "in_front": "in front of the domain.",
+        "if_you": "If you're accessing the website on a different port, please mention the port. For example:"
+      }
     },
     "mail": {
       "host": "E-mail server",
@@ -1533,13 +1617,13 @@
   "pdf_tax_label": "Btw",
   "pdf_tax_id": "FIN",
   "pdf_vat_id": "BTW",
-  "mail_thanks": "Thanks",
-  "mail_view_estimate": "View Estimate",
-  "mail_viewed_estimate": ":name viewed this Estimate.",
-  "mail_view_invoice": "View Invoice",
-  "mail_viewed_invoice": ":name viewed this Invoice.",
-  "mail_view_payment": "View Payment",
-  "notification_view_estimate": "[Notification] Estimate viewed",
-  "notification_view_invoice": "[Notification] Invoice viewed",
-  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:"
+  "mail_thanks": "Bedankt",
+  "mail_view_estimate": "Bekijk offerte",
+  "mail_viewed_estimate": ":name heeft deze offerte bekeken.",
+  "mail_view_invoice": "Bekijk factuur",
+  "mail_viewed_invoice": ":name heeft deze factuur bekeken.",
+  "mail_view_payment": "Bekijk betaling",
+  "notification_view_estimate": "[Notification] Offerte bekeken",
+  "notification_view_invoice": "[Notification] Factuur bekeken",
+  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "Je hebt een factuur ontvangen van <b>{COMPANY_NAME}</b>.</br> Download via de onderstaande knop:"
 }

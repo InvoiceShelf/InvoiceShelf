@@ -7,13 +7,15 @@ on:
             - '**/*.md'
             - 'public/build/*.js'
             - 'public/build/**/*.js'
+        branches-ignore:    
+            - 'translations'
     pull_request:
         paths-ignore:
             - '**/*.md'
             - 'public/build/*.js'
             - 'public/build/**/*.js'
         branches-ignore:    
-            - 'l10n_master2'
+            - 'translations'
     # Allow manually triggering the workflow.
     workflow_dispatch:
 

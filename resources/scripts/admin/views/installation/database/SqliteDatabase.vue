@@ -49,6 +49,10 @@
       </BaseInputGroup>
     </div>
 
+    <div class="w-full">
+      <BaseCheckbox v-model="databaseData.database_overwrite" :label="$t('wizard.database.overwrite')"/>
+    </div>
+
     <BaseButton
       v-show="!isFetchingInitialData"
       :content-loading="isFetchingInitialData"
@@ -71,6 +75,7 @@ import { useInstallationStore } from '@/scripts/admin/stores/installation'
 import { helpers, required } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { useI18n } from 'vue-i18n'
+import BaseCheckbox from '@/scripts/components/base/BaseCheckbox.vue'
 
 const props = defineProps({
   configData: {
