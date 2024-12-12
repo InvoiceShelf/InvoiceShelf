@@ -20,7 +20,25 @@
       :data="fetchData"
       :columns="taxTypeColumns"
     >
-      <template #cell-percent="{ row }"> {{ row.data.percent }} % </template>
+    <template #cell-calculation_type="{ row }">
+      {{ $t(`settings.tax_types.${row.data.calculation_type}`) }}
+    </template>
+    <template #cell-percent="{ row }">
+      <template v-if="row.data.calculation_type === 'percentage'">
+        {{ row.data.percent }} %
+      </template>
+      <template v-else>
+        -
+      </template>
+    </template>
+    <template #cell-fixed_amount="{ row }">
+      <template v-if="row.data.calculation_type === 'fixed'">
+        <BaseFormatMoney :amount="row.data.fixed_amount" :currency="defaultCurrency" />
+      </template>
+      <template v-else>
+        -
+      </template>
+    </template>
 
       <template v-if="hasAtleastOneAbility()" #cell-actions="{ row }">
         <TaxTypeDropdown
@@ -64,9 +82,9 @@ const taxTypeStore = useTaxTypeStore()
 const modalStore = useModalStore()
 const userStore = useUserStore()
 const moduleStore = useModuleStore()
-
 const table = ref(null)
 const taxPerItemSetting = ref(companyStore.selectedCompanySettings.tax_per_item)
+const defaultCurrency = computed(() => companyStore.selectedCompanyCurrency)
 
 const taxTypeColumns = computed(() => {
   return [
@@ -77,8 +95,20 @@ const taxTypeColumns = computed(() => {
       tdClass: 'font-medium text-gray-900',
     },
     {
+      key: 'calculation_type',
+      label: t('settings.tax_types.calculation_type'),
+      thClass: 'extra',
+      tdClass: 'font-medium text-gray-900',
+    },
+    {
       key: 'percent',
       label: t('settings.tax_types.percent'),
+      thClass: 'extra',
+      tdClass: 'font-medium text-gray-900',
+    },
+    {
+      key: 'fixed_amount',
+      label: t('settings.tax_types.fixed_amount'),
       thClass: 'extra',
       tdClass: 'font-medium text-gray-900',
     },
