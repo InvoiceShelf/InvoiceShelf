@@ -184,7 +184,7 @@ const taxes = computed({
         return {
           ...tax,
           tax_type_id: tax.id,
-          tax_name: tax.name + ' (' + tax.percent + '%)',
+          tax_name: tax.name + ' (' + (tax.calculation_type === 'fixed' ? tax.fixed_amount : tax.percent) + (tax.calculation_type === 'fixed' ? companyStore.selectedCompanyCurrency.symbol : '%') + ')',
         }
       }
     }),
@@ -204,7 +204,7 @@ const getTaxTypes = computed(() => {
     return {
       ...tax,
       tax_type_id: tax.id,
-      tax_name: tax.name + ' (' + tax.percent + '%)',
+      tax_name: tax.name + ' (' + (tax.calculation_type === 'fixed' ? tax.fixed_amount : tax.percent) + (tax.calculation_type === 'fixed' ? companyStore.selectedCompanyCurrency.symbol : '%') + ')',
     }
   })
 })
@@ -280,7 +280,9 @@ async function submitItem() {
       data.taxes = itemStore.currentItem.taxes.map((tax) => {
         return {
           tax_type_id: tax.tax_type_id,
-          amount: price.value * tax.percent,
+          calculation_type: tax.calculation_type,
+          fixed_amount: tax.fixed_amount,
+          amount: tax.calculation_type === 'fixed' ? tax.fixed_amount : price.value * tax.percent,
           percent: tax.percent,
           name: tax.name,
           collective_tax: 0,

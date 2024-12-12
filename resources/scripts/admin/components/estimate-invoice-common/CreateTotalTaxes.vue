@@ -1,7 +1,10 @@
 <template>
   <div class="flex items-center justify-between w-full mt-2 text-sm">
-    <label class="font-semibold leading-5 text-gray-500 uppercase">
+    <label v-if="tax.calculation_type === 'percentage'" class="font-semibold leading-5 text-gray-500 uppercase">
       {{ tax.name }} ({{ tax.percent }} %)
+    </label>
+    <label v-else class="font-semibold leading-5 text-gray-500 uppercase">
+      {{ tax.name }} (<BaseFormatMoney :amount="tax.fixed_amount" :currency="currency" />)
     </label>
     <label class="flex items-center justify-center text-lg text-black">
       <BaseFormatMoney :amount="tax.amount" :currency="currency" />
@@ -50,17 +53,19 @@ const emit = defineEmits(['update', 'remove'])
 const utils = inject('$utils')
 
 const taxAmount = computed(() => {
-  if (props.tax.compound_tax && props.store.getSubtotalWithDiscount) {
-    return Math.round(
-      ((props.store.getSubtotalWithDiscount + props.store.getTotalSimpleTax) *
-        props.tax.percent) /
-        100
-    )
+  if (props.tax.calculation_type === 'fixed') {
+    return props.tax.fixed_amount * 100;
   }
-  if (props.store.getSubtotalWithDiscount && props.tax.percent) {
-    return Math.round(
-      (props.store.getSubtotalWithDiscount * props.tax.percent) / 100
-    )
+  
+  if (props.discountedTotal && props.tax.percent) {
+    if (props.tax.compound_tax && props.store.getSubtotalWithDiscount) {
+      return Math.round(
+        ((props.store.getSubtotalWithDiscount + props.store.getTotalSimpleTax) *
+          props.tax.percent) /
+          100
+      )
+    }
+    return Math.round((props.discountedTotal * props.tax.percent) / 100)
   }
   return 0
 })

@@ -188,7 +188,9 @@ if (props.taxData.tax_type_id > 0) {
 updateRowTax()
 
 function onSelectTax(val) {
-  localTax.percent = val.percent
+  localTax.calculation_type = val.calculation_type
+  localTax.percent = val.calculation_type === 'percentage' ? val.percent : null
+  localTax.fixed_amount = val.calculation_type === 'fixed' ? val.fixed_amount : null
   localTax.tax_type_id = val.id
   localTax.name = val.name
 
@@ -245,8 +247,9 @@ function getTaxAmount() {
     discount = type === 'fixed' ? modelDiscount * 100 : (total * modelDiscount) / 100
     const itemDiscount = Math.round(discount * proportion)
     const discounted = itemTotal - itemDiscount
-    return Math.round((discounted * localTax.percent) / 100)
+    return localTax.calculation_type === 'fixed' ? localTax.fixed_amount : Math.round((discounted * localTax.percent) / 100)
   }
-  return Math.round((props.discountedTotal * localTax.percent) / 100)
+  return localTax.calculation_type === 'fixed' ? localTax.fixed_amount : Math.round((props.discountedTotal * localTax.percent) / 100)
 }
 </script>
+

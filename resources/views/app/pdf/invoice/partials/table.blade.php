@@ -125,7 +125,11 @@
             @foreach ($taxes as $tax)
                 <tr>
                     <td class="border-0 total-table-attribute-label">
-                        {{$tax->name.' ('.$tax->percent.'%)'}}
+                        @if($tax->calculation_type === 'fixed')
+                            {{$tax->name }} ({!! format_money_pdf($tax->fixed_amount, $invoice->customer->currency) !!})
+                        @else
+                            {{$tax->name.' ('.$tax->percent.'%)'}}
+                        @endif
                     </td>
                     <td class="py-2 border-0 item-cell total-table-attribute-value">
                         {!! format_money_pdf($tax->amount, $invoice->customer->currency) !!}
@@ -136,7 +140,11 @@
             @foreach ($invoice->taxes as $tax)
                 <tr>
                     <td class="border-0 total-table-attribute-label">
-                        {{$tax->name.' ('.$tax->percent.'%)'}}
+                        @if($tax->calculation_type === 'fixed')
+                            {{$tax->name }} ({!! format_money_pdf($tax->fixed_amount, $invoice->customer->currency) !!})
+                        @else
+                            {{$tax->name.' ('.$tax->percent.'%)'}}
+                        @endif
                     </td>
                     <td class="py-2 border-0 item-cell total-table-attribute-value">
                         {!! format_money_pdf($tax->amount, $invoice->customer->currency) !!}

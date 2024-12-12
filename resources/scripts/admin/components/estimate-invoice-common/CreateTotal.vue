@@ -50,7 +50,12 @@
         v-else-if="store[storeProp].tax_per_item === 'YES'"
         class="m-0 text-sm font-semibold leading-5 text-gray-500 uppercase"
       >
-        {{ tax.name }} - {{ tax.percent }}%
+        <template v-if="tax.calculation_type === 'percentage'">
+          {{ tax.name }} - {{ tax.percent }}%
+        </template>
+        <template v-else>
+          {{ tax.name }} - <BaseFormatMoney :amount="tax.fixed_amount" :currency="defaultCurrency" />
+        </template>
       </label>
 
       <BaseContentPlaceholders v-if="isLoading">
