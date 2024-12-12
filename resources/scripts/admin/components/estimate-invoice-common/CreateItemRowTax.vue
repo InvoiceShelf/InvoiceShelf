@@ -158,10 +158,11 @@ const filteredTypes = computed(() => {
 })
 
 const taxAmount = computed(() => {
+
   if(localTax.calculation_type === 'fixed') {
     return localTax.fixed_amount
   }
-
+  
   if (props.discountedTotal) {
     const taxPerItemEnabled = props.store[props.storeProp].tax_per_item === 'YES'
     const discountPerItemEnabled = props.store[props.storeProp].discount_per_item === 'YES'

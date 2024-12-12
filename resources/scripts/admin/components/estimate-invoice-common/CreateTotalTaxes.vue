@@ -53,19 +53,22 @@ const emit = defineEmits(['update', 'remove'])
 const utils = inject('$utils')
 
 const taxAmount = computed(() => {
+  console.log(props)
   if (props.tax.calculation_type === 'fixed') {
-    return props.tax.fixed_amount * 100;
+    return props.tax.fixed_amount;
   }
   
-  if (props.discountedTotal && props.tax.percent) {
-    if (props.tax.compound_tax && props.store.getSubtotalWithDiscount) {
-      return Math.round(
-        ((props.store.getSubtotalWithDiscount + props.store.getTotalSimpleTax) *
-          props.tax.percent) /
-          100
-      )
-    }
-    return Math.round((props.discountedTotal * props.tax.percent) / 100)
+  if (props.tax.compound_tax && props.store.getSubtotalWithDiscount) {
+    return Math.round(
+      ((props.store.getSubtotalWithDiscount + props.store.getTotalSimpleTax) *
+        props.tax.percent) /
+        100
+    )
+  }
+  if (props.store.getSubtotalWithDiscount && props.tax.percent) {
+    return Math.round(
+      (props.store.getSubtotalWithDiscount * props.tax.percent) / 100
+    )
   }
   return 0
 })

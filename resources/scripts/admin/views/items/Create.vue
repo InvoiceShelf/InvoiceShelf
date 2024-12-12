@@ -184,7 +184,12 @@ const taxes = computed({
         return {
           ...tax,
           tax_type_id: tax.id,
-          tax_name: tax.name + ' (' + (tax.calculation_type === 'fixed' ? tax.fixed_amount : tax.percent) + (tax.calculation_type === 'fixed' ? companyStore.selectedCompanyCurrency.symbol : '%') + ')',
+          tax_name: `${tax.name} (${tax.calculation_type === 'fixed' 
+            ? new Intl.NumberFormat(undefined, {
+                style: 'currency',
+                currency: companyStore.selectedCompanyCurrency.code
+              }).format(tax.fixed_amount / 100)
+            : `${tax.percent}%`})`,
         }
       }
     }),
@@ -204,7 +209,12 @@ const getTaxTypes = computed(() => {
     return {
       ...tax,
       tax_type_id: tax.id,
-      tax_name: tax.name + ' (' + (tax.calculation_type === 'fixed' ? tax.fixed_amount : tax.percent) + (tax.calculation_type === 'fixed' ? companyStore.selectedCompanyCurrency.symbol : '%') + ')',
+      tax_name: `${tax.name} (${tax.calculation_type === 'fixed' 
+        ? new Intl.NumberFormat(undefined, {
+            style: 'currency',
+            currency: companyStore.selectedCompanyCurrency.code
+          }).format(tax.fixed_amount / 100)
+        : `${tax.percent}%`})`,
     }
   })
 })
