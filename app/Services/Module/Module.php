@@ -36,7 +36,7 @@ class Module
     {
         static::$scripts[$name] = $path;
 
-        return new static();
+        return new static;
     }
 
     /**
@@ -50,7 +50,7 @@ class Module
     {
         static::$styles[$name] = $path;
 
-        return new static();
+        return new static;
     }
 
     /**

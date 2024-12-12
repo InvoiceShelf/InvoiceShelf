@@ -274,6 +274,8 @@ const itemWiseTaxes = computed(() => {
             amount: Math.round(tax.amount),
             percent: tax.percent,
             name: tax.name,
+            calculation_type: tax.calculation_type,
+            fixed_amount: tax.fixed_amount
           })
         }
       })
@@ -328,10 +330,12 @@ function selectPercentage() {
 
 function onSelectTax(selectedTax) {
   let amount = 0
-  if (props.store.getSubtotalWithDiscount && selectedTax.percent) {
+  if (selectedTax.calculation_type === 'percentage' && props.store.getSubtotalWithDiscount && selectedTax.percent) {
     amount = Math.round(
       (props.store.getSubtotalWithDiscount * selectedTax.percent) / 100
     )
+  } else if (selectedTax.calculation_type === 'fixed') {
+    amount = selectedTax.fixed_amount
   }
 
   let data = {
@@ -341,6 +345,8 @@ function onSelectTax(selectedTax) {
     percent: selectedTax.percent,
     tax_type_id: selectedTax.id,
     amount,
+    calculation_type: selectedTax.calculation_type,
+    fixed_amount: selectedTax.fixed_amount
   }
   props.store.$patch((state) => {
     state[props.storeProp].taxes.push({ ...data })

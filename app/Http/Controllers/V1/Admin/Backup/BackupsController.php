@@ -80,7 +80,7 @@ class BackupsController extends ApiController
         $this->authorize('manage backups');
 
         $validated = $request->validate([
-            'path' => ['required', new PathToZip()],
+            'path' => ['required', new PathToZip],
         ]);
 
         $backupDestination = BackupDestination::create(config('filesystems.default'), config('backup.backup.name'));

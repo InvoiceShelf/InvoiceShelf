@@ -46,6 +46,7 @@
               ]"
               :allow-empty="false"
               value-prop="id"
+              label-prop="label"
               track-by="label"
               :searchable="false"
             />

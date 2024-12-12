@@ -163,7 +163,7 @@ class Payment extends Model implements HasMedia
         $payment = Payment::create($data);
         $payment->unique_hash = Hashids::connection(Payment::class)->encode($payment->id);
 
-        $serial = (new SerialNumberFormatter())
+        $serial = (new SerialNumberFormatter)
             ->setModel($payment)
             ->setCompany($payment->company_id)
             ->setCustomer($payment->customer_id)
@@ -215,7 +215,7 @@ class Payment extends Model implements HasMedia
             $invoice->subtractInvoicePayment($request->amount);
         }
 
-        $serial = (new SerialNumberFormatter())
+        $serial = (new SerialNumberFormatter)
             ->setModel($this)
             ->setCompany($this->company_id)
             ->setCustomer($request->customer_id)
@@ -452,8 +452,8 @@ class Payment extends Model implements HasMedia
     {
         $invoice = Invoice::find($transaction->invoice_id);
 
-        $serial = (new SerialNumberFormatter())
-            ->setModel(new Payment())
+        $serial = (new SerialNumberFormatter)
+            ->setModel(new Payment)
             ->setCompany($invoice->company_id)
             ->setCustomer($invoice->customer_id)
             ->setNextNumbers();

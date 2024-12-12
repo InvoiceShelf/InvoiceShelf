@@ -19,7 +19,7 @@ class TaxType extends Model
     {
         return [
             'percent' => 'float',
-            'fixed_amount' => 'float',
+            'fixed_amount' => 'integer',
             'compound_tax' => 'boolean',
         ];
     }

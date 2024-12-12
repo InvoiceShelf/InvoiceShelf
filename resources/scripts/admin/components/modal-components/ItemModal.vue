@@ -208,7 +208,17 @@ const v$ = useVuelidate(
 
 const getTaxTypes = computed(() => {
   return taxTypeStore.taxTypes.map((tax) => {
-    return { ...tax, tax_name: tax.name + ' (' + (tax.calculation_type === 'fixed' ? tax.fixed_amount : tax.percent) + (tax.calculation_type === 'fixed' ? companyStore.selectedCompanyCurrency.symbol : '%') + ')' }
+    const amount = tax.calculation_type === 'fixed' 
+      ? new Intl.NumberFormat(undefined, {
+          style: 'currency',
+          currency: companyStore.selectedCompanyCurrency.code
+        }).format(tax.fixed_amount / 100)
+      : `${tax.percent}%`
+    
+    return { 
+      ...tax, 
+      tax_name: `${tax.name} (${amount})`
+    }
   })
 })
 
