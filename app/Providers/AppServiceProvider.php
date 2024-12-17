@@ -60,6 +60,12 @@ class AppServiceProvider extends ServiceProvider
 
         $this->bootAuth();
         $this->bootBroadcast();
+
+        // In demo mode, prevent all outgoing emails and notifications
+        if (config('app.env') === 'demo') {
+            \Illuminate\Support\Facades\Mail::fake();
+            \Illuminate\Support\Facades\Notification::fake();
+        }
     }
 
     /**
