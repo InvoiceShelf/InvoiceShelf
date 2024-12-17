@@ -3,13 +3,15 @@
 use App\Models\CompanySetting;
 use App\Models\RecurringInvoice;
 use App\Space\InstallUtils;
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote')->hourly();
+// Only run in demo environment
+if (config('app.env') === 'demo') {
+    Schedule::command('reset:app --force')
+        ->daily()
+        ->runInBackground()
+        ->withoutOverlapping();
+}
 
 if (InstallUtils::isDbCreated()) {
     Schedule::command('check:invoices:status')

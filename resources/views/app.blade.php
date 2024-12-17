@@ -64,6 +64,10 @@
 
         @endif
 
+        @if(config('app.env') === 'demo')
+            window.demo_mode = true
+        @endif
+
         window.InvoiceShelf.start()
     </script>
 </body>

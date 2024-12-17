@@ -63,7 +63,7 @@
 
 <script setup>
 import axios from 'axios'
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import { useRouter } from 'vue-router'
 import { required, email, helpers } from '@vuelidate/validators'
@@ -126,4 +126,12 @@ async function onSubmit() {
     isLoading.value = false
   }
 }
+
+// Pre-fill demo credentials if in demo environment
+onMounted(() => {
+  if (window.demo_mode) {
+    authStore.loginData.email = 'demo@invoiceshelf.com'
+    authStore.loginData.password = 'demo'
+  }
+})
 </script>
