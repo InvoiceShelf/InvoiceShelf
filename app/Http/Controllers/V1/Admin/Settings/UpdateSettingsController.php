@@ -20,15 +20,13 @@ class UpdateSettingsController extends Controller
         $this->authorize('manage settings');
 
         if (isset($request->settings['manage_stock'])) {
+            $manageStock = (bool) $request->settings['manage_stock']; // changes to boolean
+    
+            // Log for debugging
+            \Log::info('Stock management setting updated:', ['manage_stock' => $manageStock]);
+    
             
-            $managedStock = $request->settings['manage_stock'];
-            
-            if (!in_array($managedStock, ['YES', 'NO'])) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Invalid stock management setting'
-                ], 400);
-            }
+            $request->settings['manage_stock'] = $manageStock;
         }
     
         
