@@ -487,8 +487,8 @@ class CurrenciesTableSeeder extends Seeder
             [
                 'name' => 'Tunisian Dinar',
                 'code' => 'TND',
-                'symbol' => '‎د.ت',
-                'precision' => '2',
+                'symbol' => 'DT',
+                'precision' => '3',
                 'thousand_separator' => ',',
                 'decimal_separator' => '.',
             ],
