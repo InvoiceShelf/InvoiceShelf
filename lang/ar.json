@@ -4,7 +4,7 @@
     "customers": "العملاء",
     "items": "بضائع/خدمات",
     "invoices": "الفواتير",
-    "recurring-invoices": "Recurring Invoices",
+    "recurring-invoices": "الفواتير المتكررة",
     "expenses": "النفقات",
     "estimates": "التقديرات",
     "payments": "الدفوعات",
@@ -12,7 +12,7 @@
     "settings": "الإعدادات",
     "logout": "تسجيل الخروج",
     "users": "المستخدمون",
-    "modules": "Modules"
+    "modules": "الوَحَدات"
   },
   "general": {
     "add_company": "أضف شركة",
@@ -29,9 +29,9 @@
     "to_date": "إلى تاريخ",
     "from": "من",
     "to": "إلى",
-    "ok": "Ok",
-    "yes": "Yes",
-    "no": "No",
+    "ok": "تم",
+    "yes": "نعم",
+    "no": "لا",
     "sort_by": "ترتيب حسب",
     "ascending": "تصاعدي",
     "descending": "تنازلي",
@@ -97,26 +97,26 @@
     "docs": "Docs",
     "do_you_wish_to_continue": "Do you wish to continue?",
     "note": "Note",
-    "pay_invoice": "Pay Invoice",
-    "login_successfully": "Logged in successfully!",
-    "logged_out_successfully": "Logged out successfully",
+    "pay_invoice": "دفع الفاتورة",
+    "login_successfully": "تم تسجيل الدخول بنجاح!",
+    "logged_out_successfully": "تم تسجيل الخروج بنجاح",
     "mark_as_default": "Mark as default",
     "no_data_found": "No data found",
     "pagination": {
       "previous": "Previous",
       "next": "Next",
       "showing": "Showing",
-      "to": "to",
-      "of": "of",
-      "results": "results"
+      "to": "إلى",
+      "of": "من",
+      "results": "النتائج"
     },
     "file_upload": {
-      "drag_a_file": "Drag a file here or",
-      "browse": "browse",
-      "to_choose": "to choose a file"
+      "drag_a_file": "اسحب ملف هنا أو",
+      "browse": "تصفح",
+      "to_choose": "لاختيار ملف"
     },
     "multiselect": {
-      "the_list_is_empty": "The list is empty",
+      "the_list_is_empty": "القائمة فارغة",
       "no_results_found": "No results found"
     },
     "copy_to_clipboard": "Copy to Clipboard"
@@ -172,16 +172,16 @@
   "company_switcher": {
     "label": "SWITCH COMPANY",
     "no_results_found": "No Results Found",
-    "add_new_company": "Add new company",
-    "new_company": "New company",
+    "add_new_company": "أضف شركة جديدة",
+    "new_company": "شركة جديدة",
     "created_message": "Company created successfully"
   },
   "dateRange": {
-    "today": "Today",
-    "this_week": "This Week",
-    "this_month": "This Month",
+    "today": "اليوم",
+    "this_week": "هذا الأسبوع",
+    "this_month": "هذا الشهر",
     "this_quarter": "This Quarter",
-    "this_year": "This Year",
+    "this_year": "هذا العام",
     "previous_week": "Previous Week",
     "previous_month": "Previous Month",
     "previous_quarter": "Previous Quarter",
