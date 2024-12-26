@@ -128,7 +128,7 @@
       "customers": "Customer | Customers",
       "invoices": "Invoice | Invoices",
       "estimates": "Estimate | Estimates",
-      "payments": "Payment | Payments"
+      "payments": "Pagamento | Pagamentos"
     },
     "chart_info": {
       "total_sales": "Vendas",
