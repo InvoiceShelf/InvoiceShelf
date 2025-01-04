@@ -1611,7 +1611,7 @@
   "pdf_total_tax_label": "TOTALE BELASTINGEN",
   "pdf_tax_types_label": "Belastingtypen",
   "pdf_expenses_label": "Uitgaven",
-  "pdf_bill_to": "Rekening naar,",
+  "pdf_bill_to": "Aan,",
   "pdf_ship_to": "Verzend naar,",
   "pdf_received_from": "Ontvangen van:",
   "pdf_tax_label": "Btw",
