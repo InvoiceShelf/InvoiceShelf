@@ -113,7 +113,7 @@
     "file_upload": {
       "drag_a_file": "Sem přetáhněte soubor nebo",
       "browse": "procházet",
-      "to_choose": "to choose a file"
+      "to_choose": "pro výběr souboru"
     },
     "multiselect": {
       "the_list_is_empty": "Seznam je prázdný",
@@ -970,7 +970,7 @@
         "customer": "Zákazník",
         "invoice": "Faktura",
         "estimate": "Odhad",
-        "expense": "Expense",
+        "expense": "Výdaj",
         "payment": "Platba"
       }
     },
@@ -1261,19 +1261,19 @@
         "april_march": "Duben - Březen",
         "may_april": "Květen - Duben",
         "june_may": "Červen - Květen",
-        "july_june": "July - June",
-        "august_july": "August - July",
-        "september_august": "September - August",
-        "october_september": "October - September",
-        "november_october": "November - October",
-        "december_november": "December - November"
+        "july_june": "Červenec - Červen",
+        "august_july": "Srpen - Červenec",
+        "september_august": "Září - Srpen",
+        "october_september": "Říjen - Září",
+        "november_october": "Listopad - Říjen",
+        "december_november": "Prosinec - Listopad"
       }
     },
     "update_app": {
       "title": "Aktualizace aplikace",
       "description": "Kliknutím na tlačítko níže můžete jednoduše aktualizovat InvoiceShelf",
       "check_update": "Zkontrolovat aktualizace",
-      "insider_consent": "Opt-in for Insider releases. Recommended for testing purposes only.",
+      "insider_consent": "Přihlaste se k odběru novinek Insider. Doporučujeme pouze pro testovací účely.",
       "avail_update": "K dispozici je nová aktualizace",
       "next_version": "Další verze",
       "requirements": "Požadavky",
