@@ -15,6 +15,7 @@ import { useTaxTypeStore } from './tax-type'
 import { useCompanyStore } from './company'
 import { useItemStore } from './item'
 import { useUserStore } from './user'
+import { useNotesStore } from './note'
 
 export const useInvoiceStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
@@ -479,6 +480,7 @@ export const useInvoiceStore = (useWindow = false) => {
         const taxTypeStore = useTaxTypeStore()
         const route = useRoute()
         const userStore = useUserStore()
+        const notesStore = useNotesStore()
 
         this.isFetchingInitialSettings = true
 
@@ -491,8 +493,10 @@ export const useInvoiceStore = (useWindow = false) => {
         }
 
         let editActions = []
-
+        
         if (!isEdit) {
+          await notesStore.fetchNotes()
+          this.newInvoice.notes = notesStore.getDefaultNoteForType('Invoice')?.notes
           this.newInvoice.tax_per_item =
             companyStore.selectedCompanySettings.tax_per_item
           this.newInvoice.sales_tax_type = companyStore.selectedCompanySettings.sales_tax_type

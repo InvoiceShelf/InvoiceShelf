@@ -33,6 +33,9 @@ class NotesRequest extends FormRequest
             'notes' => [
                 'required',
             ],
+            'selected_by_default' => [
+                'required',
+            ],
         ];
 
         if ($this->isMethod('PUT')) {

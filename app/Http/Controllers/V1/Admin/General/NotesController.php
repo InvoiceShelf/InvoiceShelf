@@ -41,6 +41,15 @@ class NotesController extends Controller
 
         $note = Note::create($request->getNotesPayload());
 
+        if ($note->selected_by_default) {
+            Note::where('id', '!=', $note->id)
+                ->where('type', $note->type)
+                ->where('selected_by_default', true)
+                ->update([
+                    'selected_by_default' => false,
+                ]);
+        }
+
         return new NoteResource($note);
     }
 
@@ -67,6 +76,15 @@ class NotesController extends Controller
         $this->authorize('manage notes');
 
         $note->update($request->getNotesPayload());
+
+        if ($note->selected_by_default) {
+            Note::where('id', '!=', $note->id)
+                ->where('type', $note->type)
+                ->where('selected_by_default', true)
+                ->update([
+                    'selected_by_default' => false,
+                ]);
+        }
 
         return new NoteResource($note);
     }

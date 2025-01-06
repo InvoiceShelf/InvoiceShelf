@@ -1085,6 +1085,7 @@
         "description": "Save time by creating notes and reusing them on your invoices, estimates & payments.",
         "notes": "Notes",
         "type": "Type",
+        "selected_by_default": "Select by default",
         "add_note": "Add Note",
         "add_new_note": "Add New Note",
         "name": "Name",
