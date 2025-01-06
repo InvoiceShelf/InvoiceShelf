@@ -104,7 +104,7 @@
     "no_data_found": "No data found",
     "pagination": {
       "previous": "Previous",
-      "next": "Next",
+      "next": "İleri",
       "showing": "Showing",
       "to": "to",
       "of": "of",
@@ -538,7 +538,7 @@
     "save_invoice": "Save Recurring Invoice",
     "update_invoice": "Update Recurring Invoice",
     "add_new_tax": "Add New Tax",
-    "no_invoices": "No Recurring Invoices yet!",
+    "no_invoices": "Tekrarlayan Fatura yok ",
     "mark_as_rejected": "Mark as rejected",
     "mark_as_accepted": "Mark as accepted",
     "list_of_invoices": "This section will contain the list of recurring invoices.",
