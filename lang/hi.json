@@ -101,14 +101,14 @@
     "login_successfully": "सफलतापूर्वक लॉगिन किया गया",
     "logged_out_successfully": "सफलतापूर्वक लॉग आउट किया गया",
     "mark_as_default": "डिफ़ॉल्ट के रूप में चिह्नित करें",
-    "no_data_found": "No data found",
+    "no_data_found": "डाटा प्राप्त नहीं हुआ",
     "pagination": {
-      "previous": "Previous",
-      "next": "Next",
+      "previous": "पहले का",
+      "next": "अगला",
       "showing": "Showing",
       "to": "to",
       "of": "of",
-      "results": "results"
+      "results": "परिणाम"
     },
     "file_upload": {
       "drag_a_file": "Drag a file here or",
