@@ -12,7 +12,7 @@
     "settings": "設定",
     "logout": "登出",
     "users": "使用者",
-    "modules": "Modules"
+    "modules": "模組"
   },
   "general": {
     "add_company": "新增公司",
@@ -93,42 +93,42 @@
     "no_note_found": "沒有找到備註",
     "insert_note": "插入備註",
     "copied_pdf_url_clipboard": "複製PDF位址到剪貼簿!",
-    "copied_url_clipboard": "Copied url to clipboard!",
+    "copied_url_clipboard": "將網址複製到剪貼簿！",
     "docs": "文檔",
     "do_you_wish_to_continue": "你確定要繼續？",
     "note": "備註",
-    "pay_invoice": "Pay Invoice",
-    "login_successfully": "Logged in successfully!",
-    "logged_out_successfully": "Logged out successfully",
-    "mark_as_default": "Mark as default",
-    "no_data_found": "No data found",
+    "pay_invoice": "支付發票",
+    "login_successfully": "登入成功.",
+    "logged_out_successfully": "登出成功",
+    "mark_as_default": "標記為預設值",
+    "no_data_found": "未有數據",
     "pagination": {
-      "previous": "Previous",
-      "next": "Next",
-      "showing": "Showing",
-      "to": "to",
-      "of": "of",
-      "results": "results"
+      "previous": "上一頁",
+      "next": "下一頁",
+      "showing": "顯示",
+      "to": "至",
+      "of": "中的",
+      "results": "結果"
     },
     "file_upload": {
-      "drag_a_file": "Drag a file here or",
-      "browse": "browse",
-      "to_choose": "to choose a file"
+      "drag_a_file": "將文件拖到此處 或",
+      "browse": "瀏覽",
+      "to_choose": "選擇文件"
     },
     "multiselect": {
-      "the_list_is_empty": "The list is empty",
-      "no_results_found": "No results found"
+      "the_list_is_empty": "此清單是空的",
+      "no_results_found": "未找到結果"
     },
-    "copy_to_clipboard": "Copy to Clipboard"
+    "copy_to_clipboard": "複製到剪貼簿"
   },
   "dashboard": {
     "select_year": "選擇年份",
     "cards": {
       "due_amount": "應付金額",
-      "customers": "Customer | Customers",
-      "invoices": "Invoice | Invoices",
+      "customers": "客戶|客戶",
+      "invoices": "發票 | 發票",
       "estimates": "Estimate | Estimates",
-      "payments": "Payment | Payments"
+      "payments": "付款 | 付款"
     },
     "chart_info": {
       "total_sales": "銷售",
@@ -191,7 +191,7 @@
   "customers": {
     "title": "客户",
     "prefix": "前置字串",
-    "tax_id": "Tax ID",
+    "tax_id": "稅務識別碼",
     "add_customer": "新增客户",
     "contacts_list": "客户列表",
     "name": "名稱",
