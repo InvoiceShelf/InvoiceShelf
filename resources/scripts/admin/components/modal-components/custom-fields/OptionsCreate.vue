@@ -19,6 +19,8 @@
 
 <script setup>
 import { ref } from 'vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseInput from '@/scripts/components/base/BaseInput.vue'
 
 const emit = defineEmits(['onAdd'])
 

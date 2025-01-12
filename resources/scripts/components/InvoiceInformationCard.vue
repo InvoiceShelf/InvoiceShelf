@@ -67,6 +67,11 @@
 </template>
 
 <script setup>
+import BaseSpinner from '@/scripts/components/base/BaseSpinner.vue'
+import BaseFormatMoney from '@/scripts/components/base/BaseFormatMoney.vue'
+import BaseInvoiceStatusLabel from '@/scripts/components/base/BaseInvoiceStatusLabel.vue'
+import BaseInvoiceStatusBadge from '@/scripts/components/base/BaseInvoiceStatusBadge.vue'
+
 const props = defineProps({
   invoice: {
     type: [Object, null],

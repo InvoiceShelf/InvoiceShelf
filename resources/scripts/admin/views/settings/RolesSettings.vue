@@ -49,6 +49,10 @@ import { useUserStore } from '@/scripts/admin/stores/user'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 import RolesModal from '@/scripts/admin/components/modal-components/RolesModal.vue'
 import abilities from '@/scripts/admin/stub/abilities'
+import BaseTable from '@/scripts/components/base/base-table/BaseTable.vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseSettingCard from '@/scripts/components/base/BaseSettingCard.vue'
 
 const modalStore = useModalStore()
 const roleStore = useRoleStore()

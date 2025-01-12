@@ -90,6 +90,15 @@ import { useModalStore } from '@/scripts/stores/modal'
 import { ref, computed, reactive, onMounted, inject } from 'vue'
 import { useI18n } from 'vue-i18n'
 import FileDiskModal from '@/scripts/admin/components/modal-components/FileDiskModal.vue'
+import BaseSwitchSection from '@/scripts/components/base/BaseSwitchSection.vue'
+import BaseDivider from '@/scripts/components/base/BaseDivider.vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseDropdownItem from '@/scripts/components/base/BaseDropdownItem.vue'
+import BaseDropdown from '@/scripts/components/base/BaseDropdown.vue'
+import BaseBadge from '@/scripts/components/base/BaseBadge.vue'
+import BaseTable from '@/scripts/components/base/base-table/BaseTable.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseSettingCard from '@/scripts/components/base/BaseSettingCard.vue'
 
 const utils = inject('utils')
 

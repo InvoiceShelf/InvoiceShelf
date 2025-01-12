@@ -66,6 +66,9 @@ import { useTaxTypeStore } from '@/scripts/admin/stores/tax-type'
 import { useModalStore } from '@/scripts/stores/modal'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/scripts/admin/stores/user'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseFormatMoney from '@/scripts/components/base/BaseFormatMoney.vue'
+import BaseMultiselect from '@/scripts/components/base-select/BaseMultiselect.vue'
 
 const props = defineProps({
   ability: {

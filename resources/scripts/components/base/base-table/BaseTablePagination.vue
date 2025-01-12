@@ -282,7 +282,10 @@
 <script>
 // Todo: Need to convert this to Composition API
 
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+
 export default {
+  components: { BaseIcon },
   props: {
     pagination: {
       type: Object,

@@ -8,6 +8,7 @@
 import { computed, ref, watch } from 'vue'
 import ExchangeRateBulkUpdate from '@/scripts/admin/components/currency-exchange-rate/ExchangeRateBulkUpdate.vue'
 import { useModalStore } from '@/scripts/stores/modal'
+import BaseModal from '@/scripts/components/base/BaseModal.vue'
 
 const modalStore = useModalStore()
 

@@ -10,6 +10,7 @@
 <script setup>
 import BaseCheckon from '@/scripts/customer/BaseCheckon.vue'
 import { useCustomerStore } from '@/scripts/customer/stores/customer'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
 
 const customerStore = useCustomerStore()
 </script>

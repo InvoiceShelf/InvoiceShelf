@@ -25,6 +25,8 @@ import { computed, reactive, inject } from 'vue'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 import PaymentsTabPaymentNumber from './PaymentsTabPaymentNumber.vue'
 import PaymentsTabDefaultFormats from './PaymentsTabDefaultFormats.vue'
+import BaseSwitchSection from '@/scripts/components/base/BaseSwitchSection.vue'
+import BaseDivider from '@/scripts/components/base/BaseDivider.vue'
 
 const utils = inject('utils')
 const companyStore = useCompanyStore()

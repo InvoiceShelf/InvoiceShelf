@@ -29,6 +29,8 @@
 </template>
 
 <script setup>
+import BaseCard from '@/scripts/components/base/BaseCard.vue'
+
 defineProps({
   title: {
     type: String,

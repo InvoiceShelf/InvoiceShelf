@@ -43,6 +43,10 @@ import { inject } from 'vue'
 import { useUserStore } from '@/scripts/admin/stores/user'
 import { useModalStore } from '@/scripts/stores/modal'
 import abilities from '@/scripts/admin/stub/abilities'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseDropdownItem from '@/scripts/components/base/BaseDropdownItem.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseDropdown from '@/scripts/components/base/BaseDropdown.vue'
 
 const props = defineProps({
   row: {

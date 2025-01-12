@@ -39,6 +39,8 @@ import { useMailDriverStore } from '@/scripts/admin/stores/mail-driver'
 import { useModalStore } from '@/scripts/stores/modal'
 import MailTestModal from '@/scripts/admin/components/modal-components/MailTestModal.vue'
 import { useI18n } from 'vue-i18n'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseSettingCard from '@/scripts/components/base/BaseSettingCard.vue'
 
 let isSaving = ref(false)
 let isFetchingInitialData = ref(false)

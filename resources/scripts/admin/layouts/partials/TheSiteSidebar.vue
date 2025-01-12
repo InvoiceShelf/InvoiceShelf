@@ -169,6 +169,7 @@ import {
 
 import { useRoute } from 'vue-router'
 import { useGlobalStore } from '@/scripts/admin/stores/global'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
 
 const route = useRoute()
 const globalStore = useGlobalStore()

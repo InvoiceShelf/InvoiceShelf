@@ -41,6 +41,9 @@ import { useI18n } from 'vue-i18n'
 import CustomerModal from '@/scripts/admin/components/modal-components/CustomerModal.vue'
 import { useUserStore } from '@/scripts/admin/stores/user'
 import abilities from '@/scripts/admin/stub/abilities'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseSelectAction from '@/scripts/components/base/BaseSelectAction.vue'
+import BaseMultiselect from '@/scripts/components/base-select/BaseMultiselect.vue'
 
 const props = defineProps({
   modelValue: {

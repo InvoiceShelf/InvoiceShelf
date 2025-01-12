@@ -62,6 +62,7 @@ import { inject } from 'vue'
 import { useDashboardStore } from '@/scripts/admin/stores/dashboard'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 import { useUserStore } from '@/scripts/admin/stores/user'
+import BaseFormatMoney from '@/scripts/components/base/BaseFormatMoney.vue'
 
 const utils = inject('utils')
 

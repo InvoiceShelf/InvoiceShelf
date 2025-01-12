@@ -211,6 +211,11 @@ import { useCompanyStore } from '@/scripts/admin/stores/company'
 import { useExchangeRateStore } from '@/scripts/admin/stores/exchange-rate'
 import { useDialogStore } from '@/scripts/stores/dialog'
 import BaseCheckbox from "@/scripts/components/base/BaseCheckbox.vue";
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseHeading from '@/scripts/components/base/BaseHeading.vue'
+import BaseDivider from '@/scripts/components/base/BaseDivider.vue'
+import BaseSettingCard from '@/scripts/components/base/BaseSettingCard.vue'
 
 const notificationStore = useNotificationStore()
 const dialogStore = useDialogStore()

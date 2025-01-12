@@ -304,6 +304,21 @@ import ExpenseCustomFields from '@/scripts/admin/components/custom-fields/Create
 import CategoryModal from '@/scripts/admin/components/modal-components/CategoryModal.vue'
 import ExchangeRateConverter from '@/scripts/admin/components/estimate-invoice-common/ExchangeRateConverter.vue'
 import { useGlobalStore } from '@/scripts/admin/stores/global'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseFileUploader from '@/scripts/components/base/BaseFileUploader.vue'
+import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
+import BaseTextarea from '@/scripts/components/base/BaseTextarea.vue'
+import BaseMultiselect from '@/scripts/components/base-select/BaseMultiselect.vue'
+import BaseMoney from '@/scripts/components/base/BaseMoney.vue'
+import BaseDatePicker from '@/scripts/components/base/BaseDatePicker.vue'
+import BaseSelectAction from '@/scripts/components/base/BaseSelectAction.vue'
+import BaseInputGrid from '@/scripts/components/base/BaseInputGrid.vue'
+import BaseCard from '@/scripts/components/base/BaseCard.vue'
+import BaseBreadcrumbItem from '@/scripts/components/base/BaseBreadcrumbItem.vue'
+import BaseBreadcrumb from '@/scripts/components/base/BaseBreadcrumb.vue'
+import BasePageHeader from '@/scripts/components/base/BasePageHeader.vue'
+import BasePage from '@/scripts/components/base/BasePage.vue'
 
 const customerStore = useCustomerStore()
 const companyStore = useCompanyStore()

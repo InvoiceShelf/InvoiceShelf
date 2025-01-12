@@ -237,9 +237,12 @@ import useDropdown from './composables/useDropdown'
 import useMultiselect from './composables/useMultiselect'
 import useKeyboard from './composables/useKeyboard'
 import useClasses from './composables/useClasses'
+import BaseContentPlaceholdersBox from '@/scripts/components/base/BaseContentPlaceholdersBox.vue'
+import BaseContentPlaceholders from '@/scripts/components/base/BaseContentPlaceholders.vue'
 
 export default {
   name: 'BaseMultiselect',
+  components: { BaseContentPlaceholders, BaseContentPlaceholdersBox },
   props: {
     preserveSearch: {
       type: Boolean,

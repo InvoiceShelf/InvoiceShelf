@@ -65,6 +65,10 @@
 <script setup>
 import { ref, reactive, inject } from 'vue'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseCustomInput from '@/scripts/components/base/BaseCustomInput.vue'
+import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
 
 const companyStore = useCompanyStore()
 const utils = inject('utils')

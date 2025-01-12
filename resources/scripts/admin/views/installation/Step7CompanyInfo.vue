@@ -168,6 +168,14 @@ import { required, maxLength, helpers } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { useGlobalStore } from '@/scripts/admin/stores/global'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseInput from '@/scripts/components/base/BaseInput.vue'
+import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
+import BaseTextarea from '@/scripts/components/base/BaseTextarea.vue'
+import BaseMultiselect from '@/scripts/components/base-select/BaseMultiselect.vue'
+import BaseFileUploader from '@/scripts/components/base/BaseFileUploader.vue'
+import BaseWizardStep from '@/scripts/components/base/BaseWizardStep.vue'
 
 const emit = defineEmits(['next'])
 

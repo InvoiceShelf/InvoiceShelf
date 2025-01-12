@@ -36,6 +36,8 @@ import EstimatesTabEstimateNumber from './EstimatesTabEstimateNumber.vue'
 import EstimatesTabExpiryDate from './EstimatesTabExpiryDate.vue'
 import EstimatesTabDefaultFormats from './EstimatesTabDefaultFormats.vue'
 import EstimatesTabConvertEstimate from './EstimatesTabConvertEstimate.vue'
+import BaseSwitchSection from '@/scripts/components/base/BaseSwitchSection.vue'
+import BaseDivider from '@/scripts/components/base/BaseDivider.vue'
 
 const utils = inject('utils')
 

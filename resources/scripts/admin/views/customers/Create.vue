@@ -602,6 +602,20 @@ import CustomerCustomFields from '@/scripts/admin/components/custom-fields/Creat
 import { useGlobalStore } from '@/scripts/admin/stores/global'
 import CopyInputField from '@/scripts/admin/components/CopyInputField.vue'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
+import BaseDivider from '@/scripts/components/base/BaseDivider.vue'
+import BaseInput from '@/scripts/components/base/BaseInput.vue'
+import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
+import BaseTextarea from '@/scripts/components/base/BaseTextarea.vue'
+import BaseMultiselect from '@/scripts/components/base-select/BaseMultiselect.vue'
+import BaseInputGrid from '@/scripts/components/base/BaseInputGrid.vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseSwitch from '@/scripts/components/base/BaseSwitch.vue'
+import BaseCard from '@/scripts/components/base/BaseCard.vue'
+import BaseBreadcrumbItem from '@/scripts/components/base/BaseBreadcrumbItem.vue'
+import BaseBreadcrumb from '@/scripts/components/base/BaseBreadcrumb.vue'
+import BasePageHeader from '@/scripts/components/base/BasePageHeader.vue'
+import BasePage from '@/scripts/components/base/BasePage.vue'
 
 const customerStore = useCustomerStore()
 const customFieldStore = useCustomFieldStore()

@@ -43,6 +43,9 @@
 
 <script setup>
 import { computed, useSlots } from 'vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseContentPlaceholdersText from '@/scripts/components/base/BaseContentPlaceholdersText.vue'
+import BaseContentPlaceholders from '@/scripts/components/base/BaseContentPlaceholders.vue'
 
 const props = defineProps({
   contentLoading: {

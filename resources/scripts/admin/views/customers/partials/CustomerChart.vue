@@ -129,6 +129,10 @@ import { useRoute } from 'vue-router'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 import ChartPlaceholder from './CustomerChartPlaceholder.vue'
 import { useI18n } from 'vue-i18n'
+import BaseFormatMoney from '@/scripts/components/base/BaseFormatMoney.vue'
+import BaseMultiselect from '@/scripts/components/base-select/BaseMultiselect.vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseCard from '@/scripts/components/base/BaseCard.vue'
 
 const companyStore = useCompanyStore()
 const customerStore = useCustomerStore()

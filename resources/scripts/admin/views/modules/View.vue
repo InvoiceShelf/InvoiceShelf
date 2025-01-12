@@ -678,6 +678,12 @@ import ModulePlaceholder from './partials/ModulePlaceholder.vue'
 import RecentModuleCard from './partials/RecentModuleCard.vue'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import { useGlobalStore } from '@/scripts/admin/stores/global'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseBreadcrumbItem from '@/scripts/components/base/BaseBreadcrumbItem.vue'
+import BaseBreadcrumb from '@/scripts/components/base/BaseBreadcrumb.vue'
+import BasePageHeader from '@/scripts/components/base/BasePageHeader.vue'
+import BasePage from '@/scripts/components/base/BasePage.vue'
 const globalStore = useGlobalStore()
 
 const moduleStore = useModuleStore()

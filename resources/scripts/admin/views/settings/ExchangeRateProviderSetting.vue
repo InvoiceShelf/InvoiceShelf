@@ -82,6 +82,11 @@ import {
   TrashIcon,
 } from '@heroicons/vue/outline'
 import BaseTable from '@/scripts/components/base/base-table/BaseTable.vue'
+import BaseDropdownItem from '@/scripts/components/base/BaseDropdownItem.vue'
+import BaseDropdown from '@/scripts/components/base/BaseDropdown.vue'
+import BaseBadge from '@/scripts/components/base/BaseBadge.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseCard from '@/scripts/components/base/BaseCard.vue'
 
 // store
 

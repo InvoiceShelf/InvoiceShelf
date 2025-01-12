@@ -4,6 +4,7 @@
 
 <script setup>
 import { computed } from 'vue'
+import BaseInput from '@/scripts/components/base/BaseInput.vue'
 
 const props = defineProps({
   modelValue: {

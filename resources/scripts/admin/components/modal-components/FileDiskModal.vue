@@ -62,8 +62,14 @@ import Local from '@/scripts/admin/components/modal-components/disks/LocalDisk.v
 import S3 from '@/scripts/admin/components/modal-components/disks/S3Disk.vue'
 import S3compat from '@/scripts/admin/components/modal-components/disks/S3CompatDisk.vue'
 import DoSpaces from '@/scripts/admin/components/modal-components/disks/DoSpacesDisk.vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseModal from '@/scripts/components/base/BaseModal.vue'
 export default {
   components: {
+    BaseModal,
+    BaseButton,
+    BaseIcon,
     Dropbox,
     Local,
     S3,

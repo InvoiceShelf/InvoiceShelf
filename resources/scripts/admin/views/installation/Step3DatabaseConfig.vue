@@ -22,9 +22,11 @@ import Sqlite from './database/SqliteDatabase.vue'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import { useInstallationStore } from '@/scripts/admin/stores/installation'
 import { useI18n } from 'vue-i18n'
+import BaseWizardStep from '@/scripts/components/base/BaseWizardStep.vue'
 
 export default {
   components: {
+    BaseWizardStep,
     Mysql,
     Pgsql,
     Sqlite,

@@ -1,6 +1,9 @@
 <script setup>
 import { computed, ref } from 'vue'
 import SpinnerIcon from '@/scripts/components/icons/SpinnerIcon.vue'
+import BaseCustomTag from '@/scripts/components/base/BaseCustomTag.vue'
+import BaseContentPlaceholdersBox from '@/scripts/components/base/BaseContentPlaceholdersBox.vue'
+import BaseContentPlaceholders from '@/scripts/components/base/BaseContentPlaceholders.vue'
 const props = defineProps({
   contentLoading: {
     type: Boolean,

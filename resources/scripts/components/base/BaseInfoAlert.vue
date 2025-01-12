@@ -84,6 +84,7 @@
 
 <script setup>
 import { XCircleIcon } from '@heroicons/vue/solid'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
 
 const emits = defineEmits(['hide'])
 const props = defineProps({

@@ -82,6 +82,8 @@ import { Mandarin } from 'flatpickr/dist/l10n/zh.js'
 import { computed, reactive, watch, ref, useSlots } from 'vue'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 import { useUserStore } from '@/scripts/admin/stores/user'
+import BaseContentPlaceholdersBox from '@/scripts/components/base/BaseContentPlaceholdersBox.vue'
+import BaseContentPlaceholders from '@/scripts/components/base/BaseContentPlaceholders.vue'
 
 const dp = ref(null)
 

@@ -101,6 +101,12 @@ import { useDialogStore } from '@/scripts/stores/dialog'
 import { useUserStore } from '@/scripts/admin/stores/user'
 import CustomerDropdown from '@/scripts/admin/components/dropdowns/CustomerIndexDropdown.vue'
 import abilities from '@/scripts/admin/stub/abilities'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseDropdownItem from '@/scripts/components/base/BaseDropdownItem.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseDropdown from '@/scripts/components/base/BaseDropdown.vue'
+import BasePageHeader from '@/scripts/components/base/BasePageHeader.vue'
+import BasePage from '@/scripts/components/base/BasePage.vue'
 
 const utils = inject('utils')
 const dialogStore = useDialogStore()

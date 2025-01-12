@@ -23,9 +23,11 @@ import Ses from './mail-driver/SesMailDriver.vue'
 import Basic from './mail-driver/BasicMailDriver.vue'
 import { useMailDriverStore } from '@/scripts/admin/stores/mail-driver'
 import { ref } from 'vue'
+import BaseWizardStep from '@/scripts/components/base/BaseWizardStep.vue'
 
 export default {
   components: {
+    BaseWizardStep,
     Smtp,
     Mailgun,
     Ses,

@@ -35,6 +35,8 @@ import InvoicesTabInvoiceNumber from './InvoicesTabInvoiceNumber.vue'
 import InvoicesTabRetrospective from './InvoicesTabRetrospective.vue'
 import InvoicesTabDueDate from './InvoicesTabDueDate.vue'
 import InvoicesTabDefaultFormats from './InvoicesTabDefaultFormats.vue'
+import BaseSwitchSection from '@/scripts/components/base/BaseSwitchSection.vue'
+import BaseDivider from '@/scripts/components/base/BaseDivider.vue'
 
 const utils = inject('utils')
 const companyStore = useCompanyStore()

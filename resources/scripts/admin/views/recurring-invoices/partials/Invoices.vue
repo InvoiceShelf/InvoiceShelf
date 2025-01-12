@@ -56,6 +56,10 @@ import { useRecurringInvoiceStore } from '@/scripts/admin/stores/recurring-invoi
 import abilities from '@/scripts/admin/stub/abilities'
 import InvoiceDropdown from '@/scripts/admin/components/dropdowns/InvoiceIndexDropdown.vue'
 import SendInvoiceModal from '@/scripts/admin/components/modal-components/SendInvoiceModal.vue'
+import BaseInvoiceStatusLabel from '@/scripts/components/base/BaseInvoiceStatusLabel.vue'
+import BaseInvoiceStatusBadge from '@/scripts/components/base/BaseInvoiceStatusBadge.vue'
+import BaseFormatMoney from '@/scripts/components/base/BaseFormatMoney.vue'
+import BaseTable from '@/scripts/components/base/base-table/BaseTable.vue'
 
 const recurringInvoiceStore = useRecurringInvoiceStore()
 

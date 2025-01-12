@@ -68,6 +68,10 @@ import BaseListItem from '@/scripts/components/list/BaseListItem.vue'
 import { OfficeBuildingIcon, UserIcon } from '@heroicons/vue/outline'
 import { useGlobalStore } from '@/scripts/customer/stores/global'
 import { useI18n } from 'vue-i18n'
+import BaseBreadcrumbItem from '@/scripts/components/base/BaseBreadcrumbItem.vue'
+import BaseBreadcrumb from '@/scripts/components/base/BaseBreadcrumb.vue'
+import BasePageHeader from '@/scripts/components/base/BasePageHeader.vue'
+import BasePage from '@/scripts/components/base/BasePage.vue'
 const { t } = useI18n()
 
 //route

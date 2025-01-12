@@ -52,6 +52,8 @@
 import FlatPickr from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
 import { computed, reactive, useSlots, ref } from 'vue'
+import BaseContentPlaceholdersBox from '@/scripts/components/base/BaseContentPlaceholdersBox.vue'
+import BaseContentPlaceholders from '@/scripts/components/base/BaseContentPlaceholders.vue'
 const dpt = ref(null)
 
 const props = defineProps({

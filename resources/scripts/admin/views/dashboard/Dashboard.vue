@@ -5,6 +5,7 @@ import DashboardTable from '../dashboard/DashboardTable.vue'
 import { useUserStore } from '@/scripts/admin/stores/user'
 import { onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import BasePage from '@/scripts/components/base/BasePage.vue'
 
 const route = useRoute()
 const userStore = useUserStore()
