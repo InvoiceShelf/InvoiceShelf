@@ -1617,6 +1617,8 @@
   "pdf_tax_label": "Taxe",
   "pdf_tax_id": "N° fiscal",
   "pdf_vat_id": "N° de TVA",
+  "pdf_amount_paid": "Amount Paid",
+  "pdf_amount_due": "Amount Due",
   "mail_thanks": "Merci",
   "mail_view_estimate": "Voir le devis",
   "mail_viewed_estimate": ":name a consulté ce devis.",
