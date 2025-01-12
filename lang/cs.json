@@ -1617,6 +1617,8 @@
   "pdf_tax_label": "Daň",
   "pdf_tax_id": "DIČ",
   "pdf_vat_id": "VAT-ID",
+  "pdf_amount_paid": "Amount Paid",
+  "pdf_amount_due": "Amount Due",
   "mail_thanks": "Díky",
   "mail_view_estimate": "Zobrazit odhad",
   "mail_viewed_estimate": ":name si prohlédl tento odhad.",
