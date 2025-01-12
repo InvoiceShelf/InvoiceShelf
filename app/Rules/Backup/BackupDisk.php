@@ -2,6 +2,7 @@
 
 namespace App\Rules\Backup;
 
+use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
 class BackupDisk implements ValidationRule
@@ -18,8 +19,6 @@ class BackupDisk implements ValidationRule
 
     /**
      * Run the validation rule.
-     *
-     * @param  \Closure  $fail
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
