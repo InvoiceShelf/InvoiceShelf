@@ -1617,6 +1617,8 @@
   "pdf_tax_label": "Impuesto",
   "pdf_tax_id": "ID de impuesto",
   "pdf_vat_id": "ID  de IVA",
+  "pdf_amount_paid": "Amount Paid",
+  "pdf_amount_due": "Amount Due",
   "mail_thanks": "Gracias",
   "mail_view_estimate": "Ver presupuesto",
   "mail_viewed_estimate": ":name ha visto este Presupuesto.",
