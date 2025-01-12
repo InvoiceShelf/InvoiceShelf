@@ -5,6 +5,7 @@ namespace App\Models;
 use App;
 use App\Mail\SendInvoiceMail;
 use App\Services\SerialNumberFormatter;
+use App\Space\ImageUtils;
 use App\Traits\GeneratesPdfTrait;
 use App\Traits\HasCustomFieldsTrait;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
@@ -665,7 +666,7 @@ class Invoice extends Model implements HasMedia
         foreach ($templates as $key => $template) {
             $templateName = Str::before(basename($template), '.blade.php');
             $invoiceTemplates[$key]['name'] = $templateName;
-            $invoiceTemplates[$key]['path'] = Vite::asset('resources/static/img/PDF/'.$templateName.'.png');
+            $invoiceTemplates[$key]['path'] = ImageUtils::toBase64Src(resource_path('static/img/PDF/'.$templateName.'.png'));
         }
 
         return $invoiceTemplates;

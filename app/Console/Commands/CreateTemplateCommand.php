@@ -52,8 +52,6 @@ class CreateTemplateCommand extends Command
         Storage::disk('views')->copy("/app/pdf/{$type}/{$type}1.blade.php", "/app/pdf/{$type}/{$templateName}.blade.php");
         copy(resource_path("static/img/PDF/{$type}1.png"), resource_path("static/img/PDF/{$templateName}.png"));
 
-        shell_exec('npm run build');
-
         $path = resource_path("views/app/pdf/{$type}/{$templateName}.blade.php");
         $type = ucfirst($type);
         $this->info("{$type} Template created successfully at ".$path);
