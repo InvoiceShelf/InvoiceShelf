@@ -1617,6 +1617,8 @@
   "pdf_tax_label": "Porez",
   "pdf_tax_id": "OIB",
   "pdf_vat_id": "PDV-ID",
+  "pdf_amount_paid": "Amount Paid",
+  "pdf_amount_due": "Amount Due",
   "mail_thanks": "Hvala",
   "mail_view_estimate": "Prikaz ponude",
   "mail_viewed_estimate": ":name je pregledao ponudu.",
