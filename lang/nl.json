@@ -1617,6 +1617,8 @@
   "pdf_tax_label": "Btw",
   "pdf_tax_id": "FIN",
   "pdf_vat_id": "BTW",
+  "pdf_amount_paid": "Amount Paid",
+  "pdf_amount_due": "Amount Due",
   "mail_thanks": "Bedankt",
   "mail_view_estimate": "Bekijk offerte",
   "mail_viewed_estimate": ":name heeft deze offerte bekeken.",
