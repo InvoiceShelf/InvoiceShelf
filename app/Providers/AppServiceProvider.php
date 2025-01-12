@@ -78,14 +78,14 @@ class AppServiceProvider extends ServiceProvider
 
     public function addMenus()
     {
-        //main menu
+        // main menu
         \Menu::make('main_menu', function ($menu) {
             foreach (config('invoiceshelf.main_menu') as $data) {
                 $this->generateMenu($menu, $data);
             }
         });
 
-        //setting menu
+        // setting menu
         \Menu::make('setting_menu', function ($menu) {
             foreach (config('invoiceshelf.setting_menu') as $data) {
                 $this->generateMenu($menu, $data);

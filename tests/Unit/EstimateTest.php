@@ -47,7 +47,7 @@ test('create estimate', function () {
     $estimate['taxes'] = [];
     array_push($estimate['taxes'], Tax::factory()->raw());
 
-    $request = new EstimatesRequest();
+    $request = new EstimatesRequest;
 
     $request->replace($estimate);
 
@@ -91,7 +91,7 @@ test('update estimate', function () {
     array_push($newEstimate['items'], $item);
     array_push($newEstimate['taxes'], Tax::factory()->raw());
 
-    $request = new EstimatesRequest();
+    $request = new EstimatesRequest;
 
     $request->replace($newEstimate);
 
@@ -135,7 +135,7 @@ test('create items', function () {
 
     array_push($items, $item);
 
-    $request = new Request();
+    $request = new Request;
 
     $request->replace(['items' => $items]);
 
@@ -168,7 +168,7 @@ test('create taxes', function () {
     array_push($taxes, $tax1);
     array_push($taxes, $tax2);
 
-    $request = new Request();
+    $request = new Request;
 
     $request->replace(['taxes' => $taxes]);
 

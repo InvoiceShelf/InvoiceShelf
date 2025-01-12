@@ -13,7 +13,7 @@ class AppDomainController extends Controller
     {
         Artisan::call('optimize:clear');
 
-        $environmentManager = new EnvironmentManager();
+        $environmentManager = new EnvironmentManager;
 
         $results = $environmentManager->saveDomainVariables($request);
 
