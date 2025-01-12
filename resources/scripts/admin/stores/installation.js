@@ -185,7 +185,7 @@ export const useInstallationStore = (useWindow = false) => {
         })
       },
 
-      checkAutheticated() {
+      checkAuthenticated() {
         return new Promise((resolve, reject) => {
           axios
             .get(`/api/v1/auth/check`)
