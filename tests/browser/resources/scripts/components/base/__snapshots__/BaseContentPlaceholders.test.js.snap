@@ -1,0 +1,77 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`BaseContentPlaceholders animated with BaseContentPlaceholdersText 1`] = `
+PlaywrightLocator {
+  "_container": <body>
+    
+    
+    
+  
+
+
+    <div>
+      <div
+        class="base-content-placeholders base-content-placeholders-is-animated flex flex-col gap-y-4"
+        data-testid="base-placeholder"
+      >
+        
+        <div
+          class="base-content-placeholders-text"
+          data-testid="text-placeholder"
+        >
+          
+          <div
+            class="w-full h-full base-content-placeholders-text__line flex flex-col"
+          />
+          <div
+            class="w-full h-full base-content-placeholders-text__line flex flex-col"
+          />
+          <div
+            class="w-full h-full base-content-placeholders-text__line flex flex-col"
+          />
+          <div
+            class="w-full h-full base-content-placeholders-text__line flex flex-col"
+          />
+          
+        </div>
+        <div
+          class="base-content-placeholders-box base-content-placeholders-is-rounded w-full h-24"
+        />
+        <div
+          class="base-content-placeholders-box base-content-circle w-5 h-5"
+        />
+        
+      </div>
+    </div>
+  </body>,
+  "_parsedSelector": {
+    "capture": undefined,
+    "parts": [
+      {
+        "body": [
+          {
+            "simples": [
+              {
+                "combinator": "",
+                "selector": {
+                  "css": "body",
+                  "functions": [],
+                },
+              },
+            ],
+          },
+        ],
+        "name": "css",
+        "source": "body",
+      },
+      {
+        "body": "[data-testid="base-placeholder"s]",
+        "name": "internal:testid",
+        "source": "[data-testid="base-placeholder"s]",
+      },
+    ],
+  },
+  "_pwSelector": undefined,
+  "selector": "body >> internal:testid=[data-testid="base-placeholder"s]",
+}
+`;

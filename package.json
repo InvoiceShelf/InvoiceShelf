@@ -5,7 +5,8 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "test": "eslint ./resources/scripts --ext .js,.vue"
+    "test": "eslint ./resources/scripts --ext .js,.vue",
+    "test:browser": "vitest --config=vitest.config.js"
   },
   "devDependencies": {
     "@rvxlab/tailwind-plugin-ios-full-height": "^1.1.0",
@@ -13,17 +14,21 @@
     "@tailwindcss/forms": "^0.5.7",
     "@tailwindcss/typography": "^0.5.10",
     "@vitejs/plugin-vue": "^5.0.3",
+    "@vitest/browser": "^2.1.4",
     "@vue/compiler-sfc": "^3.4.15",
     "autoprefixer": "^10.4.17",
     "cross-env": "^7.0.3",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-vue": "^9.20.1",
+    "playwright": "^1.48.2",
     "postcss": "^8.4.33",
+    "postcss-import": "^16.1.0",
     "prettier": "^3.2.4",
-    "sass": "^1.70.0",
     "tailwind-scrollbar": "^3.0.5",
-    "tailwindcss": "^3.4.1"
+    "tailwindcss": "^3.4.1",
+    "vitest": "^2.1.4",
+    "vitest-browser-vue": "^0.0.1"
   },
   "dependencies": {
     "@headlessui/vue": "^1.7.17",

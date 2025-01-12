@@ -167,6 +167,3 @@ const loginPageLogo = computed(() => {
   return false
 })
 </script>
-
-<style lang="scss" scoped>
-</style>

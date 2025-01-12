@@ -1,5 +1,5 @@
 <template>
-  <div class="base-content-placeholders-box" :class="circleClass" />
+  <div class="base-content-placeholders-box" :class="objectClass" />
 </template>
 
 <script setup>
@@ -14,12 +14,17 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  animated: {
+    type: Boolean,
+    default: false,
+  },
 })
 
-const circleClass = computed(() => {
+const objectClass = computed(() => {
   return {
     'base-content-circle': props.circle,
     'base-content-placeholders-is-rounded': props.rounded,
+    'base-content-placeholders-is-animated': props.animated,
   }
 })
 </script>

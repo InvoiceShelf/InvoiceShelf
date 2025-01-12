@@ -1,0 +1,21 @@
+@import 'fonts';
+@import 'themes';
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+@import 'components/animation';
+@import 'components/base-content-placeholders';
+@import 'v-tooltip/dist/v-tooltip.css';
+
+body {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+}
+
+html {
+  height: -webkit-fill-available;
+}
+
+.h-screen-ios {
+  height: -webkit-fill-available;
+}
