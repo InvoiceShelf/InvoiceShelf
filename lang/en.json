@@ -1259,7 +1259,7 @@
       "completed": "Completed",
       "company_currency_unchangeable": "Company currency cannot be changed",
       "invoice_use_time": "Use time in invoices",
-      "invoice_use_time_description": "Enable this if you want to select exact invoice time."
+      "invoice_use_time_description": "Enable this if you want to select exact invoice time.",
       "fiscal_years": {
         "january_december": "January - December",
         "february_january": "February - January",
