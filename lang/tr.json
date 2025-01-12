@@ -1617,6 +1617,8 @@
   "pdf_tax_label": "Vergi",
   "pdf_tax_id": "Vergi Kimlik Numarası",
   "pdf_vat_id": "KDV Numarası",
+  "pdf_amount_paid": "Amount Paid",
+  "pdf_amount_due": "Amount Due",
   "mail_thanks": "Teşekkürler",
   "mail_view_estimate": "Teklifi Görüntüle",
   "mail_viewed_estimate": ":name bu Teklifi görüntüledi.",
