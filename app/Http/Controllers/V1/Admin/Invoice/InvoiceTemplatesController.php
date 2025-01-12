@@ -4,6 +4,9 @@ namespace App\Http\Controllers\V1\Admin\Invoice;
 
 use App\Http\Controllers\Controller;
 use App\Models\Invoice;
+use App\Space\PdfTemplateUtils;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class InvoiceTemplatesController extends Controller
@@ -11,13 +14,16 @@ class InvoiceTemplatesController extends Controller
     /**
      * Handle the incoming request.
      *
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     *
+     * @return JsonResponse
+     * @throws AuthorizationException
      */
     public function __invoke(Request $request)
     {
         $this->authorize('viewAny', Invoice::class);
 
-        $invoiceTemplates = Invoice::invoiceTemplates();
+        $invoiceTemplates = PdfTemplateUtils::getFormattedTemplates('invoice');
 
         return response()->json([
             'invoiceTemplates' => $invoiceTemplates,
