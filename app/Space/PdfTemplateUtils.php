@@ -11,10 +11,7 @@ class PdfTemplateUtils
     /**
      * Find the formatted template
      *
-     * @param $templateType
-     * @param $templateName
      * @param  string  $imageFormat
-     *
      * @return array|null
      */
     public static function findFormattedTemplate($templateType, $templateName, $imageFormat = 'base64')
@@ -31,9 +28,7 @@ class PdfTemplateUtils
     /**
      * Return the available formatted template paths
      *
-     * @param $templateType
      * @param  string  $imageFormat
-     *
      * @return array|array[]
      */
     public static function getFormattedTemplates($templateType, $imageFormat = 'base64')
@@ -41,14 +36,14 @@ class PdfTemplateUtils
 
         $files_native = array_map(function ($file) {
             return [
-                'path'   => $file,
+                'path' => $file,
                 'custom' => false,
             ];
         }, Storage::disk('views')->files(sprintf('/app/pdf/%s', $templateType)));
 
         $files_custom = array_map(function ($file) {
             return [
-                'path'   => $file,
+                'path' => $file,
                 'custom' => true,
             ];
         }, Storage::disk('pdf_templates')->files(sprintf('/%s', $templateType)));
@@ -62,10 +57,10 @@ class PdfTemplateUtils
             $templateName = Str::before(basename($file['path']), '.blade.php');
 
             if ($file['custom']) {
-                $imagePath        = self::getCustomTemplateFilePath($templateType, sprintf('%s.png', $templateName));
+                $imagePath = self::getCustomTemplateFilePath($templateType, sprintf('%s.png', $templateName));
                 $isCustomTemplate = true;
             } else {
-                $imagePath        = resource_path('static/img/PDF/'.$templateName.'.png');
+                $imagePath = resource_path('static/img/PDF/'.$templateName.'.png');
                 $isCustomTemplate = false;
             }
 
@@ -78,8 +73,8 @@ class PdfTemplateUtils
             }
 
             return [
-                'name'   => $templateName,
-                'path'   => $imageValue,
+                'name' => $templateName,
+                'path' => $imageValue,
                 'custom' => $isCustomTemplate,
             ];
         }, $files);
@@ -88,10 +83,7 @@ class PdfTemplateUtils
     /**
      * Returns custom template path
      *
-     * @param $templateType
      * @param  string  $fileName
-     *
-     * @return string
      */
     public static function getCustomTemplateFilePath($templateType, $fileName = ''): string
     {
@@ -103,9 +95,7 @@ class PdfTemplateUtils
     /**
      * Check if custom template exists.
      *
-     * @param $templateType
-     * @param $templateName
-     *
+     * @param  $templateName
      * @return string
      */
     public static function customTemplateFileExists($templateType, $fileName)
@@ -115,9 +105,6 @@ class PdfTemplateUtils
 
     /**
      * Save template markup file
-     * @param $contents
-     * @param $templateType
-     * @param $templateName
      *
      * @return bool|string
      */
@@ -129,10 +116,6 @@ class PdfTemplateUtils
     /**
      * Save template image file
      *
-     * @param $contents
-     * @param $templateType
-     * @param $templateName
-     * @param $imageType
      *
      * @return bool|string
      */
@@ -144,9 +127,6 @@ class PdfTemplateUtils
     /**
      * Save file contents into a template file of specific template type.
      *
-     * @param $contents
-     * @param $templateType
-     * @param $fileName
      *
      * @return bool|string
      */

@@ -15,8 +15,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -425,7 +423,7 @@ class Estimate extends Model implements HasMedia
             'taxes' => $taxes,
         ]);
 
-        $template     = PdfTemplateUtils::findFormattedTemplate('estimate', $estimateTemplate, '');
+        $template = PdfTemplateUtils::findFormattedTemplate('estimate', $estimateTemplate, '');
         $templatePath = $template['custom'] ? sprintf('pdf_templates::estimate.%s', $estimateTemplate) : sprintf('app.pdf.estimate.%s', $estimateTemplate);
 
         if (request()->has('preview')) {

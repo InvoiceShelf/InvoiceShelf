@@ -5,7 +5,6 @@ namespace App\Models;
 use App;
 use App\Mail\SendInvoiceMail;
 use App\Services\SerialNumberFormatter;
-use App\Space\ImageUtils;
 use App\Space\PdfTemplateUtils;
 use App\Traits\GeneratesPdfTrait;
 use App\Traits\HasCustomFieldsTrait;
@@ -16,8 +15,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Nwidart\Modules\Facades\Module;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -583,7 +580,7 @@ class Invoice extends Model implements HasMedia
             'taxes' => $taxes,
         ]);
 
-        $template     = PdfTemplateUtils::findFormattedTemplate('invoice', $invoiceTemplate, '');
+        $template = PdfTemplateUtils::findFormattedTemplate('invoice', $invoiceTemplate, '');
         $templatePath = $template['custom'] ? sprintf('pdf_templates::invoice.%s', $invoiceTemplate) : sprintf('app.pdf.invoice.%s', $invoiceTemplate);
 
         if (request()->has('preview')) {

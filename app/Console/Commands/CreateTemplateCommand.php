@@ -42,17 +42,17 @@ class CreateTemplateCommand extends Command
         $templateName = $this->argument('name');
         $templateType = $this->option('type');
 
-        if ( ! $templateType) {
+        if (! $templateType) {
             $templateType = $this->choice('Create a template for?', ['invoice', 'estimate']);
         }
 
-        if ( PdfTemplateUtils::customTemplateFileExists($templateType, sprintf('%s.blade.php', $templateName))) {
+        if (PdfTemplateUtils::customTemplateFileExists($templateType, sprintf('%s.blade.php', $templateName))) {
             $this->info('Template with given name already exists.');
 
             return self::INVALID;
         }
 
-        if ( ! PdfTemplateUtils::toCustomTemplateMarkupFile(
+        if (! PdfTemplateUtils::toCustomTemplateMarkupFile(
             Str::replace(
                 sprintf('app.pdf.%s', $templateType),
                 sprintf('pdf_templates::%s', $templateType),
@@ -72,7 +72,7 @@ class CreateTemplateCommand extends Command
             $templateName,
         );
 
-        if ( ! PdfTemplateUtils::customTemplateFileExists($templateType, 'partials/table.blade.php')) {
+        if (! PdfTemplateUtils::customTemplateFileExists($templateType, 'partials/table.blade.php')) {
             PdfTemplateUtils::toCustomTemplateFile(
                 Storage::disk('views')->get("/app/pdf/{$templateType}/partials/table.blade.php"),
                 $templateType,
