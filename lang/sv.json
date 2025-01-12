@@ -1617,6 +1617,8 @@
   "pdf_tax_label": "Moms",
   "pdf_tax_id": "Org.Nr",
   "pdf_vat_id": "Momsreg. nr",
+  "pdf_amount_paid": "Amount Paid",
+  "pdf_amount_due": "Amount Due",
   "mail_thanks": "Tack",
   "mail_view_estimate": "View Estimate",
   "mail_viewed_estimate": ":name viewed this Estimate.",
