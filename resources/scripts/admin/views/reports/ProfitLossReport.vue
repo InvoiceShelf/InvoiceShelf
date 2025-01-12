@@ -87,7 +87,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch, reactive } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 import moment from 'moment'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 import { useI18n } from 'vue-i18n'
@@ -97,6 +97,7 @@ import BaseButton from '@/scripts/components/base/BaseButton.vue'
 import BaseDatePicker from '@/scripts/components/base/BaseDatePicker.vue'
 import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
 import BaseMultiselect from '@/scripts/components/base-select/BaseMultiselect.vue'
+
 const globalStore = useGlobalStore()
 const companyStore = useCompanyStore()
 const { t } = useI18n()

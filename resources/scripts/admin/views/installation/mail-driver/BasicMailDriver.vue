@@ -75,7 +75,7 @@
 </template>
 
 <script setup>
-import { required, email, helpers } from '@vuelidate/validators'
+import { email, helpers, required } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { useI18n } from 'vue-i18n'
 import { useMailDriverStore } from '@/scripts/admin/stores/mail-driver'

@@ -145,11 +145,11 @@
 </template>
 
 <script setup>
-import { required, email, helpers } from '@vuelidate/validators'
+import { email, helpers, required } from '@vuelidate/validators'
 import { useI18n } from 'vue-i18n'
 import useVuelidate from '@vuelidate/core'
 import { useMailDriverStore } from '@/scripts/admin/stores/mail-driver'
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
 import BaseButton from '@/scripts/components/base/BaseButton.vue'
 import BaseInput from '@/scripts/components/base/BaseInput.vue'

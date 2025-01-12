@@ -114,14 +114,8 @@
 <script setup>
 import { useModuleStore } from '@/scripts/admin/stores/module'
 import { useGlobalStore } from '@/scripts/admin/stores/global'
-import { computed, onMounted, reactive, ref, watchEffect } from 'vue'
-import {
-  required,
-  minLength,
-  maxLength,
-  helpers,
-  requiredUnless,
-} from '@vuelidate/validators'
+import { computed, ref } from 'vue'
+import { helpers, minLength, required } from '@vuelidate/validators'
 import ModuleCard from './partials/ModuleCard.vue'
 import ModuleCardPlaceholder from './partials/ModuleCardPlaceholder.vue'
 import { useVuelidate } from '@vuelidate/core'

@@ -106,9 +106,9 @@
 </template>
 
 <script setup>
-import { computed, onMounted, reactive, inject } from 'vue'
+import { computed, inject, onMounted, reactive } from 'vue'
 import { useInstallationStore } from '@/scripts/admin/stores/installation'
-import { helpers, required, numeric } from '@vuelidate/validators'
+import { helpers, numeric, required } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { useI18n } from 'vue-i18n'
 import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'

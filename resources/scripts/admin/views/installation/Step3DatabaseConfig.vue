@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
 import Mysql from './database/MysqlDatabase.vue'
 import Pgsql from './database/PgsqlDatabase.vue'
 import Sqlite from './database/SqliteDatabase.vue'

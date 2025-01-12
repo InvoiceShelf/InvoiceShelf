@@ -54,10 +54,10 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, reactive, inject } from 'vue'
+import { computed, inject, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
-import { numeric, helpers, requiredIf } from '@vuelidate/validators'
+import { helpers, numeric, requiredIf } from '@vuelidate/validators'
 
 import useVuelidate from '@vuelidate/core'
 import BaseIcon from '@/scripts/components/base/BaseIcon.vue'

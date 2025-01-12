@@ -93,8 +93,8 @@
 <script setup>
 import CustomerViewSidebar from './partials/CustomerViewSidebar.vue'
 import CustomerChart from './partials/CustomerChart.vue'
-import { ref, computed, inject } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { computed, inject, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useCustomerStore } from '@/scripts/admin/stores/customer'
 import { useDialogStore } from '@/scripts/stores/dialog'

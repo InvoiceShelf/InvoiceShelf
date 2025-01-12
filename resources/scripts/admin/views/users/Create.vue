@@ -162,16 +162,10 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { computed, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
-import {
-  required,
-  minLength,
-  email,
-  requiredIf,
-  helpers,
-} from '@vuelidate/validators'
+import { email, helpers, minLength, required, requiredIf } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { ValidateEach } from '@vuelidate/components'
 import { useI18n } from 'vue-i18n'

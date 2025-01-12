@@ -97,17 +97,11 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useGlobalStore } from '@/scripts/admin/stores/global'
 import { useUserStore } from '@/scripts/admin/stores/user'
 import { useI18n } from 'vue-i18n'
-import {
-  helpers,
-  sameAs,
-  email,
-  required,
-  minLength,
-} from '@vuelidate/validators'
+import { email, helpers, minLength, required, sameAs } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 import BaseIcon from '@/scripts/components/base/BaseIcon.vue'

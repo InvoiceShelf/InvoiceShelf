@@ -134,16 +134,9 @@
 
 <script setup>
 import { computed, ref } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import {
-  required,
-  minLength,
-  numeric,
-  minValue,
-  maxLength,
-  helpers,
-} from '@vuelidate/validators'
+import { helpers, maxLength, minLength, required } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { useItemStore } from '@/scripts/admin/stores/item'
 import { useCompanyStore } from '@/scripts/admin/stores/company'

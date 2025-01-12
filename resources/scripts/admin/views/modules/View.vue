@@ -658,17 +658,19 @@
 </template>
 
 <script setup>
-import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/vue'
 import {
   RadioGroup,
   RadioGroupDescription,
   RadioGroupLabel,
   RadioGroupOption,
+  Tab,
+  TabGroup,
+  TabList,
+  TabPanel,
+  TabPanels
 } from '@headlessui/vue'
 import { useModuleStore } from '@/scripts/admin/stores/module'
-import { computed, onMounted, ref, watch, reactive } from 'vue'
-import { required, minLength, maxLength, helpers } from '@vuelidate/validators'
-import { useVuelidate } from '@vuelidate/core'
+import { computed, reactive, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useDialogStore } from '@/scripts/stores/dialog'
 import { useI18n } from 'vue-i18n'
@@ -684,6 +686,7 @@ import BaseBreadcrumbItem from '@/scripts/components/base/BaseBreadcrumbItem.vue
 import BaseBreadcrumb from '@/scripts/components/base/BaseBreadcrumb.vue'
 import BasePageHeader from '@/scripts/components/base/BasePageHeader.vue'
 import BasePage from '@/scripts/components/base/BasePage.vue'
+
 const globalStore = useGlobalStore()
 
 const moduleStore = useModuleStore()

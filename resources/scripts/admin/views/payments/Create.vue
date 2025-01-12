@@ -253,24 +253,10 @@
 <script setup>
 import ExchangeRateConverter from '@/scripts/admin/components/estimate-invoice-common/ExchangeRateConverter.vue'
 
-import {
-  ref,
-  reactive,
-  computed,
-  inject,
-  watchEffect,
-  onBeforeUnmount,
-} from 'vue'
+import { computed, inject, onBeforeUnmount, reactive, ref, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import {
-  required,
-  numeric,
-  helpers,
-  between,
-  requiredIf,
-  decimal,
-} from '@vuelidate/validators'
+import { between, decimal, helpers, required, requiredIf } from '@vuelidate/validators'
 
 import useVuelidate from '@vuelidate/core'
 import { useCustomerStore } from '@/scripts/admin/stores/customer'

@@ -72,7 +72,7 @@
 </template>
 
 <script setup>
-import { computed, ref, inject } from 'vue'
+import { computed, inject, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useModalStore } from '@/scripts/stores/modal'
 import { useCustomFieldStore } from '@/scripts/admin/stores/custom-field'

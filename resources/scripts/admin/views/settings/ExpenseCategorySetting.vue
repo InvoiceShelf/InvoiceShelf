@@ -46,7 +46,7 @@
 import { useDialogStore } from '@/scripts/stores/dialog'
 import { useCategoryStore } from '@/scripts/admin/stores/category'
 import { useModalStore } from '@/scripts/stores/modal'
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import ExpenseCategoryDropdown from '@/scripts/admin/components/dropdowns/ExpenseCategoryIndexDropdown.vue'
 import CategoryModal from '@/scripts/admin/components/modal-components/CategoryModal.vue'

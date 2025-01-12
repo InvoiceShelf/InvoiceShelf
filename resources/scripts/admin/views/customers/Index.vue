@@ -195,7 +195,7 @@
 <script setup>
 import { debouncedWatch } from '@vueuse/core'
 import moment from 'moment'
-import { reactive, ref, inject, computed, onUnmounted } from 'vue'
+import { computed, onUnmounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCustomerStore } from '@/scripts/admin/stores/customer'
 import { useDialogStore } from '@/scripts/stores/dialog'

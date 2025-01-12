@@ -29,7 +29,7 @@
 </template>
 
 <script setup>
-import { computed, reactive, inject } from 'vue'
+import { computed, inject, reactive } from 'vue'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 
 import EstimatesTabEstimateNumber from './EstimatesTabEstimateNumber.vue'

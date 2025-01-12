@@ -71,16 +71,10 @@ import { useExchangeRateStore } from '@/scripts/admin/stores/exchange-rate'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 import { useModalStore } from '@/scripts/stores/modal'
 import { useDialogStore } from '@/scripts/stores/dialog'
-import { SaveIcon } from '@heroicons/vue/outline'
-import { ref, computed, inject, reactive } from 'vue'
+import { DotsHorizontalIcon, PencilIcon, PlusIcon, TrashIcon } from '@heroicons/vue/outline'
+import { computed, inject, reactive, ref } from 'vue'
 import ExchangeRateProviderModal from '@/scripts/admin/components/modal-components/ExchangeRateProviderModal.vue'
 import { useI18n } from 'vue-i18n'
-import {
-  PlusIcon,
-  DotsHorizontalIcon,
-  PencilIcon,
-  TrashIcon,
-} from '@heroicons/vue/outline'
 import BaseTable from '@/scripts/components/base/base-table/BaseTable.vue'
 import BaseDropdownItem from '@/scripts/components/base/BaseDropdownItem.vue'
 import BaseDropdown from '@/scripts/components/base/BaseDropdown.vue'

@@ -69,7 +69,7 @@
 
 <script setup>
 import { useBackupStore } from '@/scripts/admin/stores/backup'
-import { computed, ref, reactive, onMounted } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDiskStore } from '@/scripts/admin/stores/disk'
 import { useDialogStore } from '@/scripts/stores/dialog'

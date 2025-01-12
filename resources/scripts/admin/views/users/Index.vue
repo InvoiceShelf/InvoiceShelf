@@ -185,7 +185,7 @@
 </template>
 
 <script setup>
-import { computed, onUnmounted, ref, reactive, onMounted, watch } from 'vue'
+import { computed, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { useUsersStore } from '@/scripts/admin/stores/users'
@@ -194,7 +194,6 @@ import { useDialogStore } from '@/scripts/stores/dialog'
 import { useUserStore } from '@/scripts/admin/stores/user'
 import AstronautIcon from '@/scripts/components/icons/empty/AstronautIcon.vue'
 import UserDropdown from '@/scripts/admin/components/dropdowns/UserIndexDropdown.vue'
-import abilities from '@/scripts/admin/stub/abilities'
 import BaseCheckbox from '@/scripts/components/base/BaseCheckbox.vue'
 import BaseTable from '@/scripts/components/base/base-table/BaseTable.vue'
 import BaseIcon from '@/scripts/components/base/BaseIcon.vue'

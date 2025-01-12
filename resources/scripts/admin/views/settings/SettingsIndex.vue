@@ -51,7 +51,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, watchEffect, computed } from 'vue'
+import { computed, ref, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useGlobalStore } from '@/scripts/admin/stores/global'
 import BaseList from '@/scripts/components/list/BaseList.vue'
@@ -63,6 +63,7 @@ import BaseBreadcrumbItem from '@/scripts/components/base/BaseBreadcrumbItem.vue
 import BaseBreadcrumb from '@/scripts/components/base/BaseBreadcrumb.vue'
 import BasePageHeader from '@/scripts/components/base/BasePageHeader.vue'
 import BasePage from '@/scripts/components/base/BasePage.vue'
+
 const { t } = useI18n()
 
 let currentSetting = ref({})

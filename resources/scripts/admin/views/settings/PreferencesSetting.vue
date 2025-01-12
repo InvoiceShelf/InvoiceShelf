@@ -202,11 +202,11 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, reactive } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { useGlobalStore } from '@/scripts/admin/stores/global'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 import { useI18n } from 'vue-i18n'
-import { required, helpers } from '@vuelidate/validators'
+import { helpers, required } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import BaseSwitchSection from '@/scripts/components/base/BaseSwitchSection.vue'
 import BaseDivider from '@/scripts/components/base/BaseDivider.vue'

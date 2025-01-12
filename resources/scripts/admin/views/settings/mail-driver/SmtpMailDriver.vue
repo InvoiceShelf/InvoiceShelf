@@ -169,8 +169,8 @@
 </template>
 
 <script setup>
-import { reactive, onMounted, ref, computed } from 'vue'
-import { required, email, numeric, helpers } from '@vuelidate/validators'
+import { computed, onMounted, reactive, ref } from 'vue'
+import { email, helpers, numeric, required } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { useI18n } from 'vue-i18n'
 import { useMailDriverStore } from '@/scripts/admin/stores/mail-driver'

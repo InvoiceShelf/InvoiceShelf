@@ -202,7 +202,7 @@
 <script setup>
 import { debouncedWatch } from '@vueuse/core'
 
-import { ref, reactive, computed, onUnmounted } from 'vue'
+import { computed, onUnmounted, reactive, ref } from 'vue'
 
 import { useI18n } from 'vue-i18n'
 import { useDialogStore } from '@/scripts/stores/dialog'

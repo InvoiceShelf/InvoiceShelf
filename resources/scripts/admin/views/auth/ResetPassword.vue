@@ -53,9 +53,9 @@
 </template>
 
 <script type="text/babel" setup>
-import { ref, computed, reactive } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import useVuelidate from '@vuelidate/core'
-import { required, email, minLength, sameAs } from '@vuelidate/validators'
+import { email, minLength, required, sameAs } from '@vuelidate/validators'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'

@@ -265,7 +265,7 @@
 </template>
 
 <script setup>
-import { computed, onUnmounted, reactive, ref, watch, inject } from 'vue'
+import { computed, inject, onUnmounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useInvoiceStore } from '@/scripts/admin/stores/invoice'
@@ -278,7 +278,7 @@ import { debouncedWatch } from '@vueuse/core'
 import MoonwalkerIcon from '@/scripts/components/icons/empty/MoonwalkerIcon.vue'
 import InvoiceDropdown from '@/scripts/admin/components/dropdowns/InvoiceIndexDropdown.vue'
 import SendInvoiceModal from '@/scripts/admin/components/modal-components/SendInvoiceModal.vue'
-import BaseInvoiceStatusLabel from "@/scripts/components/base/BaseInvoiceStatusLabel.vue";
+import BaseInvoiceStatusLabel from '@/scripts/components/base/BaseInvoiceStatusLabel.vue'
 import BasePaidStatusBadge from '@/scripts/components/base/BasePaidStatusBadge.vue'
 import BaseFormatMoney from '@/scripts/components/base/BaseFormatMoney.vue'
 import BaseInvoiceStatusBadge from '@/scripts/components/base/BaseInvoiceStatusBadge.vue'

@@ -123,7 +123,7 @@
 <script setup>
 import CustomerInfo from './CustomerInfo.vue'
 import LineChart from '@/scripts/admin/components/charts/LineChart.vue'
-import { ref, computed, watch, reactive, inject } from 'vue'
+import { computed, inject, reactive, ref, watch } from 'vue'
 import { useCustomerStore } from '@/scripts/admin/stores/customer'
 import { useRoute } from 'vue-router'
 import { useCompanyStore } from '@/scripts/admin/stores/company'

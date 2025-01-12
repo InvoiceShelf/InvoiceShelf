@@ -50,7 +50,6 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
 import SalesReport from '../SalesReports.vue'
 import ExpenseReport from '../ExpensesReport.vue'
 import ProfitLossReport from '../ProfitLossReport.vue'

@@ -136,16 +136,10 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import {
-  required,
-  maxLength,
-  helpers,
-  requiredIf,
-  decimal,
-} from '@vuelidate/validators'
+import { decimal, helpers, maxLength, required, requiredIf } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { cloneDeep } from 'lodash'
 

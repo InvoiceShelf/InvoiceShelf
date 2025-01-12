@@ -70,7 +70,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, reactive, inject } from 'vue'
+import { computed, inject, onMounted, reactive } from 'vue'
 import { useInstallationStore } from '@/scripts/admin/stores/installation'
 import { helpers, required } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'

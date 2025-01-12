@@ -114,14 +114,7 @@
 </template>
 
 <script setup>
-import {
-  helpers,
-  required,
-  requiredIf,
-  sameAs,
-  minLength,
-  email,
-} from '@vuelidate/validators'
+import { email, helpers, minLength, required, requiredIf, sameAs } from '@vuelidate/validators'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useVuelidate } from '@vuelidate/core'

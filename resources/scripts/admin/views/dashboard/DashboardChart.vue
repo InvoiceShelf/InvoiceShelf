@@ -149,7 +149,7 @@
 </template>
 
 <script setup>
-import { ref, watch, inject } from 'vue'
+import { inject, ref, watch } from 'vue'
 import { useDashboardStore } from '@/scripts/admin/stores/dashboard'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 import LineChart from '@/scripts/admin/components/charts/LineChart.vue'

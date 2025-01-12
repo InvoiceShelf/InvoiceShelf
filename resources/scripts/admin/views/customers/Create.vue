@@ -582,19 +582,10 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import {
-  required,
-  minLength,
-  url,
-  maxLength,
-  helpers,
-  email,
-  sameAs,
-  requiredIf,
-} from '@vuelidate/validators'
+import { email, helpers, maxLength, minLength, required, requiredIf, sameAs, url } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { useCustomerStore } from '@/scripts/admin/stores/customer'
 import { useCustomFieldStore } from '@/scripts/admin/stores/custom-field'

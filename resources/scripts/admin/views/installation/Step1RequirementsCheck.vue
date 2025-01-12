@@ -71,7 +71,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useInstallationStore } from '@/scripts/admin/stores/installation.js'
 import BaseButton from '@/scripts/components/base/BaseButton.vue'
 import BaseIcon from '@/scripts/components/base/BaseIcon.vue'

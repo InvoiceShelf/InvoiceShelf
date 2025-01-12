@@ -137,17 +137,11 @@
 </template>
 
 <script setup>
-import { computed, ref, watch, onMounted } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { cloneDeep } from 'lodash'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import {
-  required,
-  maxLength,
-  helpers,
-  requiredIf,
-  decimal,
-} from '@vuelidate/validators'
+import { decimal, helpers, maxLength, required, requiredIf } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { useModuleStore } from '@/scripts/admin/stores/module'
 import { useEstimateStore } from '@/scripts/admin/stores/estimate'

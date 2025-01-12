@@ -40,9 +40,8 @@
 </template>
 
 <script setup>
-import { reactive, computed, ref, inject } from 'vue'
+import { computed, inject, reactive } from 'vue'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
-import { required, helpers } from '@vuelidate/validators'
 import { useI18n } from 'vue-i18n'
 import { useGlobalStore } from '@/scripts/admin/stores/global'
 import BaseRadio from '@/scripts/components/base/BaseRadio.vue'

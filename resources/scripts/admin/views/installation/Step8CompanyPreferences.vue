@@ -145,8 +145,8 @@
 
 <script setup>
 import { useI18n } from 'vue-i18n'
-import { ref, computed, onMounted, reactive } from 'vue'
-import { required, helpers } from '@vuelidate/validators'
+import { computed, reactive, ref } from 'vue'
+import { helpers, required } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import Ls from '@/scripts/services/ls.js'
 import { useGlobalStore } from '@/scripts/admin/stores/global'

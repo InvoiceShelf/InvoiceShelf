@@ -42,8 +42,8 @@
 
 <script type="text/babel" setup>
 import axios from 'axios'
-import { reactive, ref, computed } from 'vue'
-import { required, email, helpers } from '@vuelidate/validators'
+import { reactive, ref } from 'vue'
+import { email, helpers, required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import { useI18n } from 'vue-i18n'

@@ -238,7 +238,7 @@
 </template>
 
 <script setup>
-import { computed, onUnmounted, reactive, ref, watch, inject } from 'vue'
+import { computed, onUnmounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useEstimateStore } from '@/scripts/admin/stores/estimate'
@@ -250,7 +250,7 @@ import abilities from '@/scripts/admin/stub/abilities'
 import ObservatoryIcon from '@/scripts/components/icons/empty/ObservatoryIcon.vue'
 import EstimateDropDown from '@/scripts/admin/components/dropdowns/EstimateIndexDropdown.vue'
 import SendEstimateModal from '@/scripts/admin/components/modal-components/SendEstimateModal.vue'
-import BaseEstimateStatusLabel from "@/scripts/components/base/BaseEstimateStatusLabel.vue";
+import BaseEstimateStatusLabel from '@/scripts/components/base/BaseEstimateStatusLabel.vue'
 import BaseFormatMoney from '@/scripts/components/base/BaseFormatMoney.vue'
 import BaseEstimateStatusBadge from '@/scripts/components/base/BaseEstimateStatusBadge.vue'
 import BaseText from '@/scripts/components/base/BaseText.vue'

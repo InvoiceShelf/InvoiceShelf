@@ -134,11 +134,11 @@
 </template>
 
 <script setup>
-import { reactive, ref, inject, computed } from 'vue'
+import { computed, inject, reactive, ref } from 'vue'
 import { useGlobalStore } from '@/scripts/admin/stores/global'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 import { useI18n } from 'vue-i18n'
-import { required, minLength, helpers } from '@vuelidate/validators'
+import { helpers, minLength, required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { useModalStore } from '@/scripts/stores/modal'
 import DeleteCompanyModal from '@/scripts/admin/components/modal-components/DeleteCompanyModal.vue'
