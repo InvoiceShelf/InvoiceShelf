@@ -1617,6 +1617,8 @@
   "pdf_tax_label": "Thuế",
   "pdf_tax_id": "ID Thuế",
   "pdf_vat_id": "ID VAT",
+  "pdf_amount_paid": "Amount Paid",
+  "pdf_amount_due": "Amount Due",
   "mail_thanks": "Thanks",
   "mail_view_estimate": "View Estimate",
   "mail_viewed_estimate": ":name viewed this Estimate.",
