@@ -2,8 +2,11 @@
 
 namespace App\Console\Commands;
 
+use App\Space\PdfTemplateUtils;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class CreateTemplateCommand extends Command
 {
@@ -37,25 +40,53 @@ class CreateTemplateCommand extends Command
     public function handle(): int
     {
         $templateName = $this->argument('name');
-        $type = $this->option('type');
+        $templateType = $this->option('type');
 
-        if (! $type) {
-            $type = $this->choice('Create a template for?', ['invoice', 'estimate']);
+        if (! $templateType) {
+            $templateType = $this->choice('Create a template for?', ['invoice', 'estimate']);
         }
 
-        if (Storage::disk('views')->exists("/app/pdf/{$type}/{$templateName}.blade.php")) {
+        if (PdfTemplateUtils::customTemplateFileExists($templateType, sprintf('%s.blade.php', $templateName))) {
             $this->info('Template with given name already exists.');
 
-            return 0;
+            return self::INVALID;
         }
 
-        Storage::disk('views')->copy("/app/pdf/{$type}/{$type}1.blade.php", "/app/pdf/{$type}/{$templateName}.blade.php");
-        copy(resource_path("static/img/PDF/{$type}1.png"), resource_path("static/img/PDF/{$templateName}.png"));
+        if (! PdfTemplateUtils::toCustomTemplateMarkupFile(
+            Str::replace(
+                sprintf('app.pdf.%s', $templateType),
+                sprintf('pdf_templates::%s', $templateType),
+                Storage::disk('views')->get("/app/pdf/{$templateType}/{$templateType}1.blade.php"),
+            ),
+            $templateType,
+            $templateName
+        )) {
+            $this->error(sprintf('Unable to create %s template.', ucfirst($templateType)));
 
-        $path = resource_path("views/app/pdf/{$type}/{$templateName}.blade.php");
-        $type = ucfirst($type);
-        $this->info("{$type} Template created successfully at ".$path);
+            return self::FAILURE;
+        }
 
-        return 0;
+        PdfTemplateUtils::toCustomTemplateImageFile(
+            File::get(resource_path("static/img/PDF/{$templateType}1.png")),
+            $templateType,
+            $templateName,
+        );
+
+        if (! PdfTemplateUtils::customTemplateFileExists($templateType, 'partials/table.blade.php')) {
+            PdfTemplateUtils::toCustomTemplateFile(
+                Storage::disk('views')->get("/app/pdf/{$templateType}/partials/table.blade.php"),
+                $templateType,
+                'partials/table.blade.php'
+            );
+        }
+
+        $this->info(
+            sprintf('%s Template created successfully at %s',
+                ucfirst($templateType),
+                PdfTemplateUtils::getCustomTemplateFilePath($templateType, sprintf('%s.blade.php', $templateName))
+            )
+        );
+
+        return self::SUCCESS;
     }
 }

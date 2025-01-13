@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\ServiceProvider;
 use Silber\Bouncer\Database\Models as BouncerModels;
 use Silber\Bouncer\Database\Role;
+use View;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -57,6 +58,8 @@ class AppServiceProvider extends ServiceProvider
         }
 
         Gate::policy(Role::class, RolePolicy::class);
+
+        View::addNamespace('pdf_templates', storage_path('app/templates/pdf'));
 
         $this->bootAuth();
         $this->bootBroadcast();
