@@ -23,16 +23,11 @@
     <template #cell-calculation_type="{ row }">
       {{ $t(`settings.tax_types.${row.data.calculation_type}`) }}
     </template>
-    <template #cell-percent="{ row }">
+    <template #cell-amount="{ row }">
       <template v-if="row.data.calculation_type === 'percentage'">
         {{ row.data.percent }} %
       </template>
-      <template v-else>
-        -
-      </template>
-    </template>
-    <template #cell-fixed_amount="{ row }">
-      <template v-if="row.data.calculation_type === 'fixed'">
+      <template v-else-if="row.data.calculation_type === 'fixed'">
         <BaseFormatMoney :amount="row.data.fixed_amount" :currency="defaultCurrency" />
       </template>
       <template v-else>
@@ -101,14 +96,8 @@ const taxTypeColumns = computed(() => {
       tdClass: 'font-medium text-gray-900',
     },
     {
-      key: 'percent',
-      label: t('settings.tax_types.percent'),
-      thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
-    },
-    {
-      key: 'fixed_amount',
-      label: t('settings.tax_types.fixed_amount'),
+      key: 'amount',
+      label: t('settings.tax_types.amount'),
       thClass: 'extra',
       tdClass: 'font-medium text-gray-900',
     },

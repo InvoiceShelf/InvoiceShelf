@@ -1194,6 +1194,7 @@
       "tax_per_item": "Tax Per Item",
       "tax_name": "Tax Name",
       "compound_tax": "Compound Tax",
+      "amount": "Amount",
       "percent": "Percent",
       "fixed_amount": "Fixed Amount",
       "calculation_type": "Calculation Type",
