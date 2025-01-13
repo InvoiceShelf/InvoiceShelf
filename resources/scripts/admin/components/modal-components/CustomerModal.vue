@@ -476,6 +476,17 @@ import { useInvoiceStore } from '@/scripts/admin/stores/invoice'
 import CopyInputField from '@/scripts/admin/components/CopyInputField.vue'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import { useRecurringInvoiceStore } from '@/scripts/admin/stores/recurring-invoice'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseInput from '@/scripts/components/base/BaseInput.vue'
+import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
+import BaseTextarea from '@/scripts/components/base/BaseTextarea.vue'
+import BaseInputGrid from '@/scripts/components/base/BaseInputGrid.vue'
+import BaseMultiselect from '@/scripts/components/base-select/BaseMultiselect.vue'
+import BaseTab from '@/scripts/components/base/BaseTab.vue'
+import BaseSwitch from '@/scripts/components/base/BaseSwitch.vue'
+import BaseTabGroup from '@/scripts/components/base/BaseTabGroup.vue'
+import BaseModal from '@/scripts/components/base/BaseModal.vue'
 
 const recurringInvoiceStore = useRecurringInvoiceStore()
 const modalStore = useModalStore()

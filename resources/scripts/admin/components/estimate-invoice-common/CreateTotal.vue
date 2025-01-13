@@ -197,6 +197,14 @@ import Tax from './CreateTotalTaxes.vue'
 import TaxStub from '@/scripts/admin/stub/abilities'
 import SelectTaxPopup from './SelectTaxPopup.vue'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
+import BaseFormatMoney from '@/scripts/components/base/BaseFormatMoney.vue'
+import BaseContentPlaceholdersText from '@/scripts/components/base/BaseContentPlaceholdersText.vue'
+import BaseContentPlaceholders from '@/scripts/components/base/BaseContentPlaceholders.vue'
+import BaseDropdownItem from '@/scripts/components/base/BaseDropdownItem.vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseDropdown from '@/scripts/components/base/BaseDropdown.vue'
+import BaseInput from '@/scripts/components/base/BaseInput.vue'
 
 const taxModal = ref(null)
 

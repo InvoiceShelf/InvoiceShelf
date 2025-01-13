@@ -114,18 +114,23 @@
 <script setup>
 import { useModuleStore } from '@/scripts/admin/stores/module'
 import { useGlobalStore } from '@/scripts/admin/stores/global'
-import { computed, onMounted, reactive, ref, watchEffect } from 'vue'
-import {
-  required,
-  minLength,
-  maxLength,
-  helpers,
-  requiredUnless,
-} from '@vuelidate/validators'
+import { computed, ref } from 'vue'
+import { helpers, minLength, required } from '@vuelidate/validators'
 import ModuleCard from './partials/ModuleCard.vue'
 import ModuleCardPlaceholder from './partials/ModuleCardPlaceholder.vue'
 import { useVuelidate } from '@vuelidate/core'
 import { useI18n } from 'vue-i18n'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseInput from '@/scripts/components/base/BaseInput.vue'
+import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
+import BaseCard from '@/scripts/components/base/BaseCard.vue'
+import BaseTab from '@/scripts/components/base/BaseTab.vue'
+import BaseTabGroup from '@/scripts/components/base/BaseTabGroup.vue'
+import BaseBreadcrumbItem from '@/scripts/components/base/BaseBreadcrumbItem.vue'
+import BaseBreadcrumb from '@/scripts/components/base/BaseBreadcrumb.vue'
+import BasePageHeader from '@/scripts/components/base/BasePageHeader.vue'
+import BasePage from '@/scripts/components/base/BasePage.vue'
 
 const moduleStore = useModuleStore()
 const globalStore = useGlobalStore()
