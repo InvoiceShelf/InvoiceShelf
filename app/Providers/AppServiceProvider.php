@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\ServiceProvider;
 use Silber\Bouncer\Database\Models as BouncerModels;
 use Silber\Bouncer\Database\Role;
+use View;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -58,8 +59,16 @@ class AppServiceProvider extends ServiceProvider
 
         Gate::policy(Role::class, RolePolicy::class);
 
+        View::addNamespace('pdf_templates', storage_path('app/templates/pdf'));
+
         $this->bootAuth();
         $this->bootBroadcast();
+
+        // In demo mode, prevent all outgoing emails and notifications
+        if (config('app.env') === 'demo') {
+            \Illuminate\Support\Facades\Mail::fake();
+            \Illuminate\Support\Facades\Notification::fake();
+        }
     }
 
     /**
@@ -72,14 +81,14 @@ class AppServiceProvider extends ServiceProvider
 
     public function addMenus()
     {
-        //main menu
+        // main menu
         \Menu::make('main_menu', function ($menu) {
             foreach (config('invoiceshelf.main_menu') as $data) {
                 $this->generateMenu($menu, $data);
             }
         });
 
-        //setting menu
+        // setting menu
         \Menu::make('setting_menu', function ($menu) {
             foreach (config('invoiceshelf.setting_menu') as $data) {
                 $this->generateMenu($menu, $data);

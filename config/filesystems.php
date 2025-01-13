@@ -55,6 +55,11 @@ return [
             'driver' => 'local',
             'root' => resource_path('views'),
         ],
+
+        'pdf_templates' => [
+            'driver' => 'local',
+            'root' => storage_path('app/templates/pdf'),
+        ],
     ],
 
 ];

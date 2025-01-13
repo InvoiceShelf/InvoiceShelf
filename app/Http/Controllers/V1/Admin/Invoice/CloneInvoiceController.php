@@ -46,6 +46,16 @@ class CloneInvoiceController extends Controller
 
         $exchange_rate = $invoice->exchange_rate;
 
+        $dateFormat = 'Y-m-d';
+        $invoiceTimeEnabled = CompanySetting::getSetting(
+            'invoice_use_time',
+            $request->header('company')
+        );
+
+        if ($invoiceTimeEnabled === 'YES') {
+            $dateFormat .= ' H:i';
+        }
+
         $newInvoice = Invoice::create([
             'invoice_date' => $date->format('Y-m-d'),
             'due_date' => $due_date,

@@ -101,25 +101,25 @@
     "login_successfully": "Erfolgreich angemeldet!",
     "logged_out_successfully": "Erfolgreich abgemeldet",
     "mark_as_default": "Als Standard festlegen",
-    "no_data_found": "No data found",
+    "no_data_found": "Keine Daten gefunden",
     "pagination": {
-      "previous": "Previous",
-      "next": "Next",
-      "showing": "Showing",
-      "to": "to",
-      "of": "of",
-      "results": "results"
+      "previous": "Zurück",
+      "next": "Weiter",
+      "showing": "Zeigt an",
+      "to": "bis",
+      "of": "von",
+      "results": "Ergebnisse"
     },
     "file_upload": {
-      "drag_a_file": "Drag a file here or",
-      "browse": "browse",
-      "to_choose": "to choose a file"
+      "drag_a_file": "Ziehe eine Datei hierher oder",
+      "browse": "durchsuchen",
+      "to_choose": "um eine Datei auszuwählen"
     },
     "multiselect": {
-      "the_list_is_empty": "The list is empty",
-      "no_results_found": "No results found"
+      "the_list_is_empty": "Die Liste ist leer",
+      "no_results_found": "Keine Ergebnisse gefunden"
     },
-    "copy_to_clipboard": "Copy to Clipboard"
+    "copy_to_clipboard": "In die Zwischenablage kopieren"
   },
   "dashboard": {
     "select_year": "Jahr wählen",
@@ -191,7 +191,7 @@
   "customers": {
     "title": "Kunden",
     "prefix": "Präfix",
-    "tax_id": "Tax ID",
+    "tax_id": "USt-ID",
     "add_customer": "Kunde hinzufügen",
     "contacts_list": "Kunden-Liste",
     "name": "Name",
@@ -324,9 +324,9 @@
     "record_payment": "Zahlung erfassen",
     "add_estimate": "Angebote hinzufügen",
     "save_estimate": "Angebot speichern",
-    "cloned_successfully": "Estimate cloned successfully",
-    "clone_estimate": "Clone Estimate",
-    "confirm_clone": "This Estimate will be cloned into a new Estimate",
+    "cloned_successfully": "Angebot erfolgreich kopiert",
+    "clone_estimate": "Angebot kopieren",
+    "confirm_clone": "Dieses Angebot wird als neues Angebot kopiert",
     "confirm_conversion": "Dieses Angebot wird verwendet, um eine neue Rechnung zu erstellen.",
     "conversion_message": "Rechnung erfolgreich erstellt",
     "confirm_send_estimate": "Das Angebot wird per E-Mail an den Kunden gesendet",
@@ -565,24 +565,24 @@
       "type_item_description": "Artikel-Beschreibung (optional)"
     },
     "frequency": {
-      "title": "Frequency (using cron format)",
+      "title": "Frequenz (mit cron-Format)",
       "select_frequency": "Intervall auswählen",
       "minute": "Minute",
       "hour": "Stunde",
       "day_month": "Tag des Monats",
       "month": "Monat",
       "day_week": "Tag der Woche",
-      "every_minute": "Every Minute",
-      "every_30_minute": "Every 30 Minute",
-      "every_hour": "Every Hour",
-      "every_2_hour": "Every 2 Hour",
-      "every_day_at_midnight": "Every day at midnight",
-      "every_week": "Every Week",
-      "every_15_days_at_midnight": "Every 15 days at midnight",
-      "on_the_first_day_of_every_month_at_midnight": "On the first day of every month at 00:00",
-      "every_6_month": "Every 6 Month",
-      "every_year_on_the_first_day_of_january_at_midnight": "Every year on the first day of january at 00:00",
-      "custom": "Custom"
+      "every_minute": "Minütlich",
+      "every_30_minute": "Alle 30 Minuten",
+      "every_hour": "Stündlich",
+      "every_2_hour": "Alle 2 Stunden",
+      "every_day_at_midnight": "Jeden Tag um Mitternacht",
+      "every_week": "Wöchentlich",
+      "every_15_days_at_midnight": "Alle 15 Tage um Mitternacht",
+      "on_the_first_day_of_every_month_at_midnight": "Am ersten Tag jeden Monats um 00:00 Uhr",
+      "every_6_month": "Alle 6 Monate",
+      "every_year_on_the_first_day_of_january_at_midnight": "Jedes Jahr am ersten Tag des Januar um 00:00 Uhr",
+      "custom": "Benutzerdefiniert"
     },
     "confirm_delete": "Sie werden diese Rechnung nicht wiederherstellen können | Sie werden nicht in der Lage sein, diese Rechnungen wiederherzustellen",
     "created_message": "Serienrechnung erfolgreich erstellt",
@@ -593,9 +593,9 @@
     "something_went_wrong": "etwas ist schief gelaufen",
     "invalid_due_amount_message": "Der Gesamtbetrag der Serienrechnung darf nicht kleiner als der bezahlte Gesamtbetrag für diese Serienrechnung sein. Bitte aktualisieren Sie die Rechnung oder löschen Sie die zugehörigen Zahlungen, um fortzufahren.",
     "limit": {
-      "none": "None",
-      "date": "Date",
-      "count": "Count"
+      "none": "Keine",
+      "date": "Datum",
+      "count": "Anzahl"
     }
   },
   "payments": {
@@ -635,7 +635,7 @@
     "updated_message": "Zahlung erfolgreich aktualisiert",
     "deleted_message": "Zahlung erfolgreich gelöscht | Zahlungen erfolgreich gelöscht",
     "invalid_amount_message": "Zahlungsbetrag ist ungültig",
-    "amount_due": "Due Amount"
+    "amount_due": "Fälliger Betrag"
   },
   "expenses": {
     "title": "Ausgaben",
@@ -741,7 +741,7 @@
     "no_modules_installed": "Noch keine Module installiert!",
     "disable_warning": "Alle Einstellungen für diesen speziellen Wert werden zurückgesetzt.",
     "what_you_get": "Was Sie erhalten",
-    "sign_up_and_get_token": "Sign up & Get Token"
+    "sign_up_and_get_token": "Registrieren & Token erhalten"
   },
   "users": {
     "title": "Benutzer",
@@ -795,8 +795,8 @@
       "from_date": "Ab Datum",
       "report_type": "Berichtstyp",
       "sort": {
-        "by_customer": "By Customer",
-        "by_item": "By Item"
+        "by_customer": "Vom Kunden",
+        "by_item": "Nach Artikel"
       }
     },
     "taxes": {
@@ -864,6 +864,7 @@
     "primary_currency": "Primäre Währung",
     "timezone": "Zeitzone",
     "date_format": "Datum-Format",
+    "time_format": "Time Format",
     "currencies": {
       "title": "Währungen",
       "currency": "Währung | Währungen",
@@ -967,11 +968,11 @@
       "model_in_use": "Das Modell kann für bereits verwendete Felder nicht aktualisiert werden.",
       "type_in_use": "Der Typ von bereits verwendeten Feldern kann nicht aktualisiert werden.",
       "model_type": {
-        "customer": "Customer",
-        "invoice": "Invoice",
-        "estimate": "Estimate",
-        "expense": "Expense",
-        "payment": "Payment"
+        "customer": "Kunde",
+        "invoice": "Rechnung",
+        "estimate": "Angebot",
+        "expense": "Ausgabe",
+        "payment": "Zahlung"
       }
     },
     "customization": {
@@ -990,6 +991,7 @@
       "delimiter_description": "Einzelnes Zeichen für die Verwendung zwischen zwei separaten Komponenten. Standardmäßig ist dies -",
       "delimiter_param_label": "Trennzeichen",
       "date_format": "Datumsformat",
+      "time_format": "Time Format",
       "date_format_description": "Ein lokales Datums- und Zeitfeld, das einen Format-Parameter akzeptiert. Das Standardformat: 'Y' stellt das aktuelle Jahr dar.",
       "date_format_param_label": "Format",
       "sequence": "Fortlaufende Nummer",
@@ -1095,9 +1097,9 @@
         "already_in_use": "Hinweis bereits in verwendet",
         "deleted_message": "Notiz erfolgreich gelöscht",
         "types": {
-          "estimate": "Estimate",
-          "invoice": "Invoice",
-          "payment": "Payment"
+          "estimate": "Angebot",
+          "invoice": "Rechnung",
+          "payment": "Zahlung"
         }
       }
     },
@@ -1173,7 +1175,7 @@
       "exchange_help_text": "Wechselkurs eingeben um von {currency} nach {baseCurrency} zu konvertieren",
       "currency_freak": "CurrencyFreaks",
       "currency_layer": "Währungsebene",
-      "open_exchange_rate": "Open Exchange Rate",
+      "open_exchange_rate": "Öffne Wechselkurs",
       "currency_converter": "Währungsumrechner",
       "server": "Server",
       "url": "URL",
@@ -1210,7 +1212,7 @@
       "payment_mode_updated": "Zahlungsart aktualisiert",
       "payment_mode_confirm_delete": "Sie werden diese Zahlungsart nicht wiederherstellen können",
       "payments_attached": "Diese Zahlungsmethode ist bereits mit anderen Beträgen verknüpft. Bitte löschen Sie die damit verbundenen Beträge, um mit der Löschung fortzufahren.",
-      "expenses_attached": "This payment method is already attached to expenses. Please delete the attached expenses to proceed with deletion.",
+      "expenses_attached": "Diese Zahlungsmethode ist bereits mit Ausgaben verknüpft. Bitte löschen Sie die angehängten Ausgaben, um mit der Löschung fortzufahren.",
       "deleted_message": "Zahlungsart erfolgreich gelöscht"
     },
     "expense_category": {
@@ -1234,6 +1236,7 @@
       "time_zone": "Zeitzone",
       "fiscal_year": "Geschäftsjahr",
       "date_format": "Datum-Format",
+      "time_format": "Time Fromat",
       "discount_setting": "Einstellung Rabatt",
       "discount_per_item": "Rabatt pro Artikel ",
       "discount_setting_description": "Aktivieren Sie diese Option, wenn Sie einzelnen Rechnungspositionen einen Rabatt hinzufügen möchten. Standardmäßig wird der Rabatt direkt zur Rechnung hinzugefügt.",
@@ -1246,6 +1249,7 @@
       "select_language": "Sprache auswählen",
       "select_time_zone": "Zeitzone auswählen",
       "select_date_format": "Wähle das Datumsformat",
+      "select_time_format": "Select Time Format",
       "select_financial_year": "Geschäftsjahr auswählen",
       "recurring_invoice_status": "Status der Serienrechnung",
       "create_status": "Status erstellen",
@@ -1254,26 +1258,28 @@
       "update_status": "Status aktualisieren",
       "completed": "Abgeschlossen",
       "company_currency_unchangeable": "Die Währung des Unternehmens kann nicht geändert werden",
+      "invoice_use_time": "Use time in invoices",
+      "invoice_use_time_description": "Enable this if you want to select exact invoice time.",
       "fiscal_years": {
-        "january_december": "January - December",
-        "february_january": "February - January",
-        "march_february": "March - February",
-        "april_march": "April - March",
-        "may_april": "May - April",
-        "june_may": "June - May",
-        "july_june": "July - June",
-        "august_july": "August - July",
+        "january_december": "Januar - Dezember",
+        "february_january": "Februar - Januar",
+        "march_february": "März - Februar",
+        "april_march": "April - März",
+        "may_april": "Mai - April",
+        "june_may": "Juni - Mai",
+        "july_june": "Juli - Juni",
+        "august_july": "August - Juli",
         "september_august": "September - August",
-        "october_september": "October - September",
-        "november_october": "November - October",
-        "december_november": "December - November"
+        "october_september": "Oktober - September",
+        "november_october": "November - Oktober",
+        "december_november": "Dezember - November"
       }
     },
     "update_app": {
       "title": "Applikation aktualisieren",
       "description": "Sie können InvoiceShelf ganz einfach aktualisieren, indem Sie auf die Schaltfläche unten klicken, um nach einem neuen Update zu suchen.",
       "check_update": "Nach Updates suchen",
-      "insider_consent": "Opt-in for Insider releases. Recommended for testing purposes only.",
+      "insider_consent": "Opt-in für Insider-Releases. Nur für Testzwecke empfohlen.",
       "avail_update": "Neues Update verfügbar",
       "next_version": "Nächste Version",
       "requirements": "Voraussetzungen",
@@ -1422,14 +1428,15 @@
     "time_zone": "Zeitzone",
     "fiscal_year": "Geschäftsjahr",
     "date_format": "Datumsformat",
+    "time_format": "Time Format",
     "from_address": "Absender",
     "username": "Benutzername",
     "next": "Weiter",
     "continue": "Weiter",
     "skip": "Überspringen",
     "install_language": {
-      "title": "Choose your language",
-      "description": "Select language wizard to install InvoiceShelf"
+      "title": "Wähle deine Sprache",
+      "description": "Wähle eine Sprache aus in der InvoiceShelf installiert wird"
     },
     "database": {
       "database": "URL der Seite & Datenbank",
@@ -1442,7 +1449,7 @@
       "username": "Datenbank Benutzername",
       "db_name": "Datenbank Name",
       "db_path": "Datenbankpfad",
-      "overwrite": "Overwrite existing database and proceed",
+      "overwrite": "Bestehende Datenbank überschreiben und fortfahren",
       "desc": "Erstellen Sie eine Datenbank auf Ihrem Server und legen Sie die Anmeldeinformationen mithilfe des folgenden Formulars fest."
     },
     "permissions": {
@@ -1460,11 +1467,11 @@
       "failed": "Domainüberprüfung fehlgeschlagen. Bitte geben Sie einen gültigen Domainnamen ein.",
       "verify_and_continue": "Verifizieren und fortfahren",
       "notes": {
-        "notes": "Notes:",
-        "not_contain": "App domain should not contain",
-        "or": "or",
-        "in_front": "in front of the domain.",
-        "if_you": "If you're accessing the website on a different port, please mention the port. For example:"
+        "notes": "Notizen:",
+        "not_contain": "App-Domain sollte nicht enthalten",
+        "or": "oder",
+        "in_front": "vor der Domain.",
+        "if_you": "Wenn Sie auf die Website über einen anderen Port zugreifen, geben Sie bitte den Port an. Zum Beispiel:"
       }
     },
     "mail": {
@@ -1617,13 +1624,15 @@
   "pdf_tax_label": "Steuer",
   "pdf_tax_id": "Steuer-Nr.",
   "pdf_vat_id": "USt.-ID",
-  "mail_thanks": "Thanks",
-  "mail_view_estimate": "View Estimate",
-  "mail_viewed_estimate": ":name viewed this Estimate.",
-  "mail_view_invoice": "View Invoice",
-  "mail_viewed_invoice": ":name viewed this Invoice.",
-  "mail_view_payment": "View Payment",
-  "notification_view_estimate": "[Notification] Estimate viewed",
-  "notification_view_invoice": "[Notification] Invoice viewed",
-  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:"
+  "pdf_amount_paid": "Amount Paid",
+  "pdf_amount_due": "Amount Due",
+  "mail_thanks": "Danke",
+  "mail_view_estimate": "Angebot ansehen",
+  "mail_viewed_estimate": ":name hat dieses Angebot angesehen.",
+  "mail_view_invoice": "Rechnung anzeigen",
+  "mail_viewed_invoice": ":name hat diese Rechnung angesehen.",
+  "mail_view_payment": "Zahlung anzeigen",
+  "notification_view_estimate": "[Benachrichtigung] Angebot angesehen",
+  "notification_view_invoice": "[Benachrichtigung] Rechnung angesehen",
+  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "Sie haben eine neue Rechnung von <b>{COMPANY_NAME}</b>erhalten.</br> Bitte laden Sie sich über den folgenden Button herunter:"
 }
