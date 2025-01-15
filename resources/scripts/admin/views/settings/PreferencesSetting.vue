@@ -267,18 +267,20 @@ const expirePdfField = computed({
 })
 
 // NEW: Stock Management Computed Property
+
+  
 const stockManagementField = computed({
   get: () => {
-    return !!settingsForm.manage_stock; // Ensure boolean return
+    return settingsForm.manage_stock === 'Yes'; 
   },
   set: async (newValue) => {
     let data = {
       settings: {
-        manage_stock: newValue, // Directly pass boolean
+        manage_stock: newValue ? 'Yes' : 'No', 
       },
     };
 
-    settingsForm.manage_stock = newValue;
+    settingsForm.manage_stock = newValue ? 'Yes' : 'No';
 
     try {
       await companyStore.updateCompanySettings({
@@ -287,11 +289,15 @@ const stockManagementField = computed({
       });
     } catch (error) {
       console.error('Failed to update stock management setting', error);
-      // Optionally revert the toggle if update fails
-      settingsForm.manage_stock = !newValue;
+    
+      settingsForm.manage_stock = newValue ? 'No' : 'Yes';
     }
   },
 });
+
+
+
+
 // Validation rules
 const rules = computed(() => {
   return {
