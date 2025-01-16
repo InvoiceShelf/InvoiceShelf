@@ -90,7 +90,7 @@
           <div class="flex space-x-2">
             <BaseButton class="mt-6" :loading="isSaving" type="submit">
               <template #left="slotProps">
-                <BaseIcon name="SaveIcon" :class="slotProps.class" />
+                <BaseIcon name="ArrowDownOnSquareIcon" :class="slotProps.class" />
               </template>
               {{ $t('general.save') }}
             </BaseButton>
