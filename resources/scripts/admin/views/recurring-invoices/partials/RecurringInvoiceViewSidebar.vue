@@ -175,7 +175,7 @@ onSearched = debounce(onSearched, 500)
           @input="onSearched()"
         >
           <template #right>
-            <BaseIcon name="SearchIcon" class="h-5 text-gray-400" />
+            <BaseIcon name="MagnifyingGlassIcon" class="h-5 text-gray-400" />
           </template>
         </BaseInput>
       </div>
@@ -184,7 +184,7 @@ onSearched = debounce(onSearched, 500)
         <BaseDropdown class="ml-3" position="bottom-start">
           <template #activator>
             <BaseButton size="md" variant="gray">
-              <BaseIcon name="FilterIcon" class="h-5" />
+              <BaseIcon name="FunnelIcon" class="h-5" />
             </BaseButton>
           </template>
           <div

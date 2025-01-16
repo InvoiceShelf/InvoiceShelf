@@ -12,7 +12,7 @@
       <template #actions>
         <BaseButton variant="primary" class="ml-4" @click="onDownload">
           <template #left="slotProps">
-            <BaseIcon name="DownloadIcon" :class="slotProps.class" />
+            <BaseIcon name="ArrowDownTrayIcon" :class="slotProps.class" />
           </template>
           {{ $t('reports.download_pdf') }}
         </BaseButton>

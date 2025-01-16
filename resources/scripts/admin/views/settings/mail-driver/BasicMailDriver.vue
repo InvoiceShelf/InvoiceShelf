@@ -67,7 +67,7 @@
         type="submit"
       >
         <template #left="slotProps">
-          <BaseIcon v-if="!isSaving" :class="slotProps.class" name="SaveIcon" />
+          <BaseIcon v-if="!isSaving" :class="slotProps.class" name="ArrowDownOnSquareIcon" />
         </template>
         {{ $t('general.save') }}
       </BaseButton>

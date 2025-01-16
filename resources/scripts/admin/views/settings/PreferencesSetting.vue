@@ -143,7 +143,7 @@
         class="mt-6"
       >
         <template #left="slotProps">
-          <BaseIcon name="SaveIcon" :class="slotProps.class" />
+          <BaseIcon name="ArrowDownOnSquareIcon" :class="slotProps.class" />
         </template>
         {{ $t('settings.company_info.save') }}
       </BaseButton>
@@ -183,7 +183,7 @@
             class="mt-6"
           >
             <template #left="slotProps">
-              <BaseIcon name="SaveIcon" :class="slotProps.class" />
+              <BaseIcon name="ArrowDownOnSquareIcon" :class="slotProps.class" />
             </template>
             {{ $t('general.save') }}
           </BaseButton>

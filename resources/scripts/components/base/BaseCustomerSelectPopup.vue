@@ -357,7 +357,7 @@
               "
               @click="openCustomerModal"
             >
-              <BaseIcon name="UserAddIcon" class="text-primary-400" />
+              <BaseIcon name="UserPlusIcon" class="text-primary-400" />
 
               <label
                 class="

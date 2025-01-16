@@ -35,7 +35,7 @@
         variant="gray"
         @input="onSearch()"
       >
-        <BaseIcon name="SearchIcon" class="text-gray-500" />
+        <BaseIcon name="MagnifyingGlassIcon" class="text-gray-500" />
       </BaseInput>
 
       <div class="flex mb-6 ml-3" role="group" aria-label="First group">
@@ -47,7 +47,7 @@
         >
           <template #activator>
             <BaseButton variant="gray">
-              <BaseIcon name="FilterIcon" />
+              <BaseIcon name="FunnelIcon" />
             </BaseButton>
           </template>
 

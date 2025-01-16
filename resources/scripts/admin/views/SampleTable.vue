@@ -41,7 +41,7 @@
         <base-dropdown width-class="w-48" margin-class="mt-1">
           <template #activator>
             <div class="flex items-center justify-center">
-              <DotsHorizontalIcon class="w-6 h-6 text-gray-600" />
+              <EllipsisHorizontalIcon class="w-6 h-6 text-gray-600" />
             </div>
           </template>
 
@@ -85,13 +85,13 @@ import {
   UserIcon,
   DocumentIcon,
   DocumentTextIcon,
-  DotsHorizontalIcon,
-} from '@heroicons/vue/solid'
+  EllipsisHorizontalIcon,
+} from '@heroicons/vue/24/solid'
 
 export default {
   components: {
     BaseTable,
-    DotsHorizontalIcon,
+    EllipsisHorizontalIcon,
     UserIcon,
     DocumentIcon,
     DocumentTextIcon,
