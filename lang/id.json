@@ -572,10 +572,10 @@
       "day_month": "Hari dalam bulan",
       "month": "Bulan",
       "day_week": "Hari dalam minggu",
-      "every_minute": "Every Minute",
-      "every_30_minute": "Every 30 Minute",
-      "every_hour": "Every Hour",
-      "every_2_hour": "Every 2 Hour",
+      "every_minute": "Setiap Menit",
+      "every_30_minute": "Setiap 30 Menit",
+      "every_hour": "Setiap Jam",
+      "every_2_hour": "Setiap 2 Jam",
       "every_day_at_midnight": "Every day at midnight",
       "every_week": "Every Week",
       "every_15_days_at_midnight": "Every 15 days at midnight",
@@ -801,19 +801,19 @@
     },
     "taxes": {
       "taxes": "Pajak",
-      "to_date": "To Date",
-      "from_date": "From Date",
-      "date_range": "Select Date Range"
+      "to_date": "Sampai Tanggal",
+      "from_date": "Dari Tanggal",
+      "date_range": "Pilih Rentang Tanggal"
     },
     "errors": {
       "required": "Field is required"
     },
     "invoices": {
-      "invoice": "Invoice",
-      "invoice_date": "Invoice Date",
+      "invoice": "Faktur",
+      "invoice_date": "Tanggal Faktur",
       "due_date": "Due Date",
       "amount": "Amount",
-      "contact_name": "Contact Name",
+      "contact_name": "Nama Kontak",
       "status": "Status"
     },
     "estimates": {
