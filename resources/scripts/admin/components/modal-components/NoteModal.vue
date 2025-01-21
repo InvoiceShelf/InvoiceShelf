@@ -45,6 +45,11 @@
               class="mt-2"
             />
           </BaseInputGroup>
+          <BaseSwitchSection
+            v-model="noteStore.currentNote.is_default"
+            :title="$t('settings.customization.notes.is_default')"
+            :description="$t('settings.customization.notes.is_default_description')"
+_          />
 
           <BaseInputGroup
             :label="$t('settings.customization.notes.notes')"
