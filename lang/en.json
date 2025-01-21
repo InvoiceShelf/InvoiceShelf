@@ -1086,7 +1086,7 @@
         "notes": "Notes",
         "type": "Type",
         "is_default": "Select by default",
-        "is_default_description": "This note will be set as default in new invoices.",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Add Note",
         "add_new_note": "Add New Note",
         "name": "Name",
