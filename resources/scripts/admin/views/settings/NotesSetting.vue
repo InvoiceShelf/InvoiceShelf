@@ -51,7 +51,6 @@ import NoteDropdown from '@/scripts/admin/components/dropdowns/NoteIndexDropdown
 import NoteModal from '@/scripts/admin/components/modal-components/NoteModal.vue'
 import { useUserStore } from '@/scripts/admin/stores/user'
 import abilities from '@/scripts/admin/stub/abilities'
-import BaseBadge from '@/scripts/components/base/BaseBadge.vue'
 
 const { t } = useI18n()
 

@@ -1086,6 +1086,7 @@
         "notes": "Hinweise",
         "type": "Art",
         "is_default": "Standardmäßig auswählen",
+        "is_default_description": "Diese Notiz wird standardmäßig in neuen Rechnungen ausgewählt.",
         "add_note": "Notiz hinzufügen",
         "add_new_note": "Neue Notiz hinzufügen",
         "name": "Name",
