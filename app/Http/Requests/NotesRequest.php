@@ -33,7 +33,7 @@ class NotesRequest extends FormRequest
             'notes' => [
                 'required',
             ],
-            'selected_by_default' => [
+            'is_default' => [
                 'required',
             ],
         ];

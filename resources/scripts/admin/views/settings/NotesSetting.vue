@@ -33,7 +33,7 @@
       </template>
       <template #cell-name="{ row }">
         {{ row.data.name }}
-        <BaseIcon v-if="row.data.selected_by_default" name="StarIcon" class="w-3 h-3 text-primary-400" />
+        <BaseIcon v-if="row.data.is_default" name="StarIcon" class="w-3 h-3 text-primary-400" />
       </template>
       <template #cell-type="{ row }">
         {{ getLabelNote(row.data.type) }}

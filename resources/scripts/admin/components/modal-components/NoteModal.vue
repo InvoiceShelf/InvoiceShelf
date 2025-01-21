@@ -47,10 +47,10 @@
           </BaseInputGroup>
 
           <BaseInputGroup
-            :label="$t('settings.customization.notes.selected_by_default')"
+            :label="$t('settings.customization.notes.is_default')"
           >
             <BaseSwitch
-              v-model="noteStore.currentNote.selected_by_default"
+              v-model="noteStore.currentNote.is_default"
               class="mt-2"
             />
           </BaseInputGroup>

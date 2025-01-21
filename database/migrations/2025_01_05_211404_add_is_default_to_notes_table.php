@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('notes', function (Blueprint $table) {
-            $table->boolean('selected_by_default')->default(false);
+            $table->boolean('is_default')->default(false);
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('notes', function (Blueprint $table) {
-            $table->dropColumn('selected_by_default');
+            $table->dropColumn('is_default');
         });
     }
 };
