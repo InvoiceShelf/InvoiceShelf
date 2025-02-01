@@ -166,6 +166,13 @@ import { useCustomerStore } from '@/scripts/admin/stores/customer'
 import SelectTemplateModal from '@/scripts/admin/components/modal-components/SelectTemplateModal.vue'
 import TaxTypeModal from '@/scripts/admin/components/modal-components/TaxTypeModal.vue'
 import ItemModal from '@/scripts/admin/components/modal-components/ItemModal.vue'
+import BaseScrollPane from '@/scripts/components/base/BaseScrollPane.vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseBreadcrumbItem from '@/scripts/components/base/BaseBreadcrumbItem.vue'
+import BaseBreadcrumb from '@/scripts/components/base/BaseBreadcrumb.vue'
+import BasePageHeader from '@/scripts/components/base/BasePageHeader.vue'
+import BasePage from '@/scripts/components/base/BasePage.vue'
 
 const recurringInvoiceStore = useRecurringInvoiceStore()
 const companyStore = useCompanyStore()

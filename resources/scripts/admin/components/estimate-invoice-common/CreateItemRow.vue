@@ -194,6 +194,16 @@ import useVuelidate from '@vuelidate/core'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 import { useItemStore } from '@/scripts/admin/stores/item'
 import DragIcon from '@/scripts/components/icons/DragIcon.vue'
+import BaseContentPlaceholdersText from '@/scripts/components/base/BaseContentPlaceholdersText.vue'
+import BaseContentPlaceholders from '@/scripts/components/base/BaseContentPlaceholders.vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseFormatMoney from '@/scripts/components/base/BaseFormatMoney.vue'
+import BaseDropdownItem from '@/scripts/components/base/BaseDropdownItem.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseDropdown from '@/scripts/components/base/BaseDropdown.vue'
+import BaseInput from '@/scripts/components/base/BaseInput.vue'
+import BaseMoney from '@/scripts/components/base/BaseMoney.vue'
+import BaseItemSelect from '@/scripts/components/base/BaseItemSelect.vue'
 
 const props = defineProps({
   store: {

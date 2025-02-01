@@ -7,6 +7,17 @@ import { debounce } from 'lodash'
 import { useRecurringInvoiceStore } from '@/scripts/admin/stores/recurring-invoice'
 
 import LoadingIcon from '@/scripts/components/icons/LoadingIcon.vue'
+import BaseFormatMoney from '@/scripts/components/base/BaseFormatMoney.vue'
+import BaseRecurringInvoiceStatusLabel from '@/scripts/components/base/BaseRecurringInvoiceStatusLabel.vue'
+import BaseRecurringInvoiceStatusBadge from '@/scripts/components/base/BaseRecurringInvoiceStatusBadge.vue'
+import BaseText from '@/scripts/components/base/BaseText.vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseRadio from '@/scripts/components/base/BaseRadio.vue'
+import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
+import BaseDropdownItem from '@/scripts/components/base/BaseDropdownItem.vue'
+import BaseDropdown from '@/scripts/components/base/BaseDropdown.vue'
+import BaseInput from '@/scripts/components/base/BaseInput.vue'
 
 const recurringInvoiceStore = useRecurringInvoiceStore()
 
