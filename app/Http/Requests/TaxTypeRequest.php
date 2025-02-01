@@ -28,8 +28,17 @@ class TaxTypeRequest extends FormRequest
                     ->where('type', TaxType::TYPE_GENERAL)
                     ->where('company_id', $this->header('company')),
             ],
-            'percent' => [
+            'calculation_type' => [
                 'required',
+                Rule::in(['percentage', 'fixed']),
+            ],
+            'percent' => [
+                'nullable',
+                'numeric',
+            ],
+            'fixed_amount' => [
+                'nullable',
+                'numeric',
             ],
             'description' => [
                 'nullable',

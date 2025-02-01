@@ -521,6 +521,7 @@ class Invoice extends Model implements HasMedia
 
     public static function createTaxes($invoice, $taxes)
     {
+
         $exchange_rate = $invoice->exchange_rate;
 
         foreach ($taxes as $tax) {
