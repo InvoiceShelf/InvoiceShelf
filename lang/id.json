@@ -101,34 +101,34 @@
     "login_successfully": "Login berhasil!",
     "logged_out_successfully": "Berhasil keluar",
     "mark_as_default": "Tandai sebagai default",
-    "no_data_found": "No data found",
+    "no_data_found": "Tidak ada data yang ditemukan",
     "pagination": {
-      "previous": "Previous",
-      "next": "Next",
-      "showing": "Showing",
-      "to": "to",
-      "of": "of",
+      "previous": "Sebelumnya",
+      "next": "Berikutnya",
+      "showing": "Menampilkan",
+      "to": "untuk",
+      "of": "dari",
       "results": "hasil"
     },
     "file_upload": {
-      "drag_a_file": "Drag a file here or",
-      "browse": "browse",
-      "to_choose": "to choose a file"
+      "drag_a_file": "Seret berkas ke sini atau",
+      "browse": "telusuri",
+      "to_choose": "untuk memilih berkas"
     },
     "multiselect": {
-      "the_list_is_empty": "The list is empty",
-      "no_results_found": "No results found"
+      "the_list_is_empty": "Daftar ini kosong",
+      "no_results_found": "Tidak ada hasil yang ditemukan"
     },
-    "copy_to_clipboard": "Copy to Clipboard"
+    "copy_to_clipboard": "Salin ke Clipboard"
   },
   "dashboard": {
     "select_year": "Pilih tahun",
     "cards": {
       "due_amount": "Jumlah yang harus dibayar",
-      "customers": "Customer | Customers",
+      "customers": "Pelanggan | Pelanggan",
       "invoices": "Faktur | Faktur",
       "estimates": "Penawaran | Penawaran",
-      "payments": "Payment | Payments"
+      "payments": "Pembayaran | Pembayaran"
     },
     "chart_info": {
       "total_sales": "Penjualan",
@@ -191,7 +191,7 @@
   "customers": {
     "title": "Pelanggan",
     "prefix": "Awalan",
-    "tax_id": "Tax ID",
+    "tax_id": "ID Pajak",
     "add_customer": "Tambah Pelanggan",
     "contacts_list": "Daftar Pelanggan",
     "name": "Nama",
@@ -521,7 +521,7 @@
     "resend_invoice": "Kirim Ulang Faktur Berulang",
     "invoice_template": "Nomor Faktur Berulang",
     "conversion_message": "Faktur Berulang berhasil dikloning",
-    "template": "Template",
+    "template": "Templat",
     "mark_as_sent": "Tandai sebagai terkirim",
     "confirm_send_invoice": "Faktur berulang ini akan dikirim melalui email ke pelanggan",
     "invoice_mark_as_sent": "Faktur berulang ini akan ditandai sebagai terkirim",
@@ -565,7 +565,7 @@
       "type_item_description": "Deskripsi permintaan (opsional)"
     },
     "frequency": {
-      "title": "Frequency (using cron format)",
+      "title": "Frekuensi (menggunakan format cron)",
       "select_frequency": "Pilih Frekuensi",
       "minute": "Menit",
       "hour": "Jam",
@@ -595,7 +595,7 @@
     "limit": {
       "none": "Tidak ada",
       "date": "Tanggal",
-      "count": "Count"
+      "count": "Jumlah"
     }
   },
   "payments": {
@@ -811,18 +811,18 @@
     "invoices": {
       "invoice": "Faktur",
       "invoice_date": "Tanggal Faktur",
-      "due_date": "Due Date",
-      "amount": "Amount",
+      "due_date": "Tanggal Jatuh Tempo",
+      "amount": "Jumlah",
       "contact_name": "Nama Kontak",
       "status": "Status"
     },
     "estimates": {
       "estimate": "Penawaran",
       "estimate_date": "Tanggal Penawaran",
-      "due_date": "Due Date",
+      "due_date": "Tanggal Jatuh Tempo",
       "estimate_number": "Nomor Penawaran",
       "ref_number": "Nomor Referensi",
-      "amount": "Amount",
+      "amount": "Jumlah",
       "contact_name": "Nama Kontak",
       "status": "Status"
     },
@@ -830,8 +830,8 @@
       "expenses": "Pengeluaran",
       "category": "Kategori",
       "date": "Tanggal",
-      "amount": "Amount",
-      "to_date": "To Date",
+      "amount": "Jumlah",
+      "to_date": "Sampai Tanggal",
       "from_date": "Dari Tanggal",
       "date_range": "Pilih Rentang Tanggal"
     }
@@ -857,8 +857,8 @@
     "address_information": {
       "section_description": "  Anda dapat memperbarui informasi Alamat Anda dengan menggunakan formulir di bawah ini."
     },
-    "title": "Settings",
-    "setting": "Settings | Settings",
+    "title": "Pengaturan",
+    "setting": "Pengaturan | Pengaturan",
     "general": "Umum",
     "language": "Bahasa",
     "primary_currency": "Mata Uang Utama",
@@ -867,7 +867,7 @@
     "time_format": "Format Waktu",
     "currencies": {
       "title": "Mata Uang",
-      "currency": "Currency | Currencies",
+      "currency": "Mata uang | Mata uang",
       "currencies_list": "Daftar Mata Uang",
       "select_currency": "Pilih Mata Uang",
       "name": "Nama",
@@ -902,17 +902,17 @@
       "mail_config_desc": "Below is the form for Configuring Email driver for sending emails from the app. You can also configure third party providers like Sendgrid, SES etc."
     },
     "pdf": {
-      "title": "PDF Setting",
+      "title": "Pengaturan PDF",
       "footer_text": "Teks footer",
-      "pdf_layout": "PDF Layout"
+      "pdf_layout": "Tata letak PDF"
     },
     "company_info": {
       "company_info": "Info perusahaan",
       "company_name": "Nama Perusahaan",
-      "tax_id": "Tax Identification Number",
-      "vat_id": "VAT Identification Number",
+      "tax_id": "Nomor Identifikasi Pajak",
+      "vat_id": "Nomor identifikasi PPN",
       "company_logo": "Logo Perusahaan",
-      "section_description": "Information about your company that will be displayed on invoices, estimates and other documents created by InvoiceShelf.",
+      "section_description": "Informasi tentang perusahaan Anda yang akan ditampilkan pada faktur, penawaran, dan dokumen lain yang dibuat oleh InvoiceShelf.",
       "phone": "Telepon",
       "country": "Negara",
       "state": "Provinsi",
@@ -925,7 +925,7 @@
       "delete_company": "Hapus Perusahaan",
       "delete_company_description": "Setelah Anda menghapus perusahaan Anda, semua data dan file yang terkait dengannya akan hilang secara permanen.",
       "are_you_absolutely_sure": "Apakah Anda benar-benar yakin?",
-      "delete_company_modal_desc": "This action cannot be undone. This will permanently delete {company} and all of its associated data.",
+      "delete_company_modal_desc": "Tindakan ini tidak bisa dibatalkan. Tindakan ini akan menghapus {company} dan semua data terkaitnya secara permanen.",
       "delete_company_modal_label": "Mohon ketik ulang {company} untuk konfirmasi"
     },
     "custom_fields": {
@@ -935,7 +935,7 @@
       "edit_custom_field": "Edit Custom Field",
       "field_name": "Field Name",
       "label": "Label",
-      "type": "Type",
+      "type": "Jenis",
       "name": "Nama",
       "slug": "Slug",
       "required": "Required",
@@ -986,30 +986,30 @@
       "Parameter": "Parameter",
       "series": "Series",
       "series_description": "To set a static prefix/postfix like 'INV' across your company. It supports character length of up to 6 chars.",
-      "series_param_label": "Series Value",
-      "delimiter": "Delimiter",
-      "delimiter_description": "Single character for specifying the boundary between 2 separate components. By default its set to -",
-      "delimiter_param_label": "Delimiter Value",
+      "series_param_label": "Nilai Seri",
+      "delimiter": "Pemisah",
+      "delimiter_description": "Karakter tunggal untuk menentukan batas antara 2 komponen terpisah. Secara bawaan ditetapkan ke -",
+      "delimiter_param_label": "Nilai Pemisah",
       "date_format": "Format Tanggal",
       "time_format": "Format Waktu",
       "date_format_description": "A local date and time field which accepts a format parameter. The default format: 'Y' renders the current year.",
       "date_format_param_label": "Format",
-      "sequence": "Sequence",
-      "sequence_description": "Consecutive sequence of numbers across your company. You can specify the length on the given parameter.",
-      "sequence_param_label": "Sequence Length",
-      "customer_series": "Customer Series",
-      "customer_series_description": "To set a different prefix/postfix for each customer.",
-      "customer_sequence": "Customer Sequence",
-      "customer_sequence_description": "Consecutive sequence of numbers for each of your customer.",
-      "customer_sequence_param_label": "Sequence Length",
-      "random_sequence": "Random Sequence",
-      "random_sequence_description": "Random alphanumeric string. You can specify the length on the given parameter.",
-      "random_sequence_param_label": "Sequence Length",
+      "sequence": "Urutan",
+      "sequence_description": "Rangkaian angka berurutan di perusahaan Anda. Anda dapat menentukan panjang pada parameter yang diberikan.",
+      "sequence_param_label": "Panjang Urutan",
+      "customer_series": "Seri Pelanggan",
+      "customer_series_description": "Untuk mengatur awalan/akhiran yang berbeda untuk setiap pelanggan.",
+      "customer_sequence": "Urutan Pelanggan",
+      "customer_sequence_description": "Urutan angka berurutan untuk setiap pelanggan Anda.",
+      "customer_sequence_param_label": "Panjang Urutan",
+      "random_sequence": "Urutan Acak",
+      "random_sequence_description": "Teks alfanumerik acak. Anda dapat menentukan panjang pada parameter yang diberikan.",
+      "random_sequence_param_label": "Panjang Urutan",
       "invoices": {
         "title": "Faktur",
-        "invoice_number_format": "Invoice Number Format",
+        "invoice_number_format": "Format Nomor Tagihan",
         "invoice_number_format_description": "Customize how your invoice number gets generated automatically when you create a new invoice.",
-        "preview_invoice_number": "Preview Invoice Number",
+        "preview_invoice_number": "Pratinjau Nomor Faktur",
         "due_date": "Due Date",
         "due_date_description": "Specify how due date is automatically set when you create an invoice.",
         "due_date_days": "Invoice Due after days",
@@ -1624,8 +1624,8 @@
   "pdf_tax_label": "Tax",
   "pdf_tax_id": "Tax-ID",
   "pdf_vat_id": "VAT-ID",
-  "pdf_amount_paid": "Amount Paid",
-  "pdf_amount_due": "Amount Due",
+  "pdf_amount_paid": "Jumlah yang Dibayar",
+  "pdf_amount_due": "Jumlah yang Harus Dibayar",
   "mail_thanks": "Terima kasih",
   "mail_view_estimate": "Lihat Penawaran",
   "mail_viewed_estimate": ":name melihat Penawaran ini.",
