@@ -19,10 +19,10 @@
           <template #right="slotProps">
             <BaseIcon
               v-if="!showFilters"
-              name="FilterIcon"
+              name="FunnelIcon"
               :class="slotProps.class"
             />
-            <BaseIcon v-else name="XIcon" :class="slotProps.class" />
+            <BaseIcon v-else name="XMarkIcon" :class="slotProps.class" />
           </template>
         </BaseButton>
       </template>
@@ -45,7 +45,7 @@
         class="px-3 mt-2"
       >
         <BaseInput v-model="filters.invoice_number">
-          <BaseIcon name="DotsHorizontalIcon" class="h-5 text-gray-500" />
+          <BaseIcon name="EllipsisHorizontalIcon" class="h-5 text-gray-500" />
           <BaseIcon name="HashtagIcon" class="h-5 ml-3 text-gray-600" />
         </BaseInput>
       </BaseInputGroup>
@@ -126,7 +126,7 @@
         <template #cell-actions="{ row }">
           <BaseDropdown>
             <template #activator>
-              <BaseIcon name="DotsHorizontalIcon" class="h-5 text-gray-500" />
+              <BaseIcon name="EllipsisHorizontalIcon" class="h-5 text-gray-500" />
             </template>
             <router-link :to="`invoices/${row.data.id}/view`">
               <BaseDropdownItem>

@@ -4,7 +4,7 @@
       <div class="flex justify-between w-full">
         {{ modalStore.title }}
         <BaseIcon
-          name="XIcon"
+          name="XMarkIcon"
           class="h-6 w-6 text-gray-500 cursor-pointer"
           @click="closeItemModal"
         />
@@ -107,7 +107,7 @@
             type="submit"
           >
             <template #left="slotProps">
-              <BaseIcon name="SaveIcon" :class="slotProps.class" />
+              <BaseIcon name="ArrowDownOnSquareIcon" :class="slotProps.class" />
             </template>
             {{ itemStore.isEdit ? $t('general.update') : $t('general.save') }}
           </BaseButton>

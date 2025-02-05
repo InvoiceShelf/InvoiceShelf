@@ -8,7 +8,7 @@
       <div class="flex justify-between w-full">
         {{ modalStore.title }}
         <BaseIcon
-          name="XIcon"
+          name="XMarkIcon"
           class="h-6 w-6 text-gray-500 cursor-pointer"
           @click="closeSendEstimateModal"
         />
@@ -82,7 +82,7 @@
           class="mr-3"
           @click="submitForm"
         >
-          <BaseIcon v-if="!isLoading" name="PhotographIcon" class="h-5 mr-2" />
+          <BaseIcon v-if="!isLoading" name="PhotoIcon" class="h-5 mr-2" />
           {{ $t('general.preview') }}
         </BaseButton>
       </div>

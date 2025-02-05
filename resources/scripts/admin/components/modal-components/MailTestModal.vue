@@ -4,7 +4,7 @@
       <div class="flex justify-between w-full">
         {{ modalStore.title }}
         <BaseIcon
-          name="XIcon"
+          name="XMarkIcon"
           class="w-6 h-6 text-gray-500 cursor-pointer"
           @click="closeTestModal"
         />

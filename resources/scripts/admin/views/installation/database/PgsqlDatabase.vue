@@ -118,7 +118,7 @@
       :disabled="isSaving"
     >
       <template #left="slotProps">
-        <BaseIcon v-if="!isSaving" name="SaveIcon" :class="slotProps.class" />
+        <BaseIcon v-if="!isSaving" name="ArrowDownOnSquareIcon" :class="slotProps.class" />
       </template>
       {{ $t('wizard.save_cont') }}
     </BaseButton>

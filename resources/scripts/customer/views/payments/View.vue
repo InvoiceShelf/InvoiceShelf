@@ -40,7 +40,7 @@
           @input="onSearch"
         >
           <template #right>
-            <BaseIcon name="SearchIcon" class="h-5 text-gray-400" />
+            <BaseIcon name="MagnifyingGlassIcon" class="h-5 text-gray-400" />
           </template>
         </BaseInput>
 
@@ -52,7 +52,7 @@
           >
             <template #activator>
               <BaseButton variant="gray">
-                <BaseIcon name="FilterIcon" class="h-5" />
+                <BaseIcon name="FunnelIcon" class="h-5" />
               </BaseButton>
             </template>
 

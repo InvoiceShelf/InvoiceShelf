@@ -5,9 +5,9 @@
         v-if="route.name === 'expenseCategorys.view'"
         variant="primary"
       >
-        <BaseIcon name="DotsHorizontalIcon" class="h-5 text-white" />
+        <BaseIcon name="EllipsisHorizontalIcon" class="h-5 text-white" />
       </BaseButton>
-      <BaseIcon v-else name="DotsHorizontalIcon" class="h-5 text-gray-500" />
+      <BaseIcon v-else name="EllipsisHorizontalIcon" class="h-5 text-gray-500" />
     </template>
 
     <!-- edit expenseCategory  -->

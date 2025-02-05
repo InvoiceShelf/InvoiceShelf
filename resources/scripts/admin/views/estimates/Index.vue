@@ -24,9 +24,9 @@
             <BaseIcon
               v-if="!showFilters"
               :class="slotProps.class"
-              name="FilterIcon"
+              name="FunnelIcon"
             />
-            <BaseIcon v-else name="XIcon" :class="slotProps.class" />
+            <BaseIcon v-else name="XMarkIcon" :class="slotProps.class" />
           </template>
         </BaseButton>
 

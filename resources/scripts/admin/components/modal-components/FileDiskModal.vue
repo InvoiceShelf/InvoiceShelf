@@ -4,7 +4,7 @@
       <div class="flex justify-between w-full">
         {{ modalStore.title }}
         <BaseIcon
-          name="XIcon"
+          name="XMarkIcon"
           class="h-6 w-6 text-gray-500 cursor-pointer"
           @click="closeDiskModal"
         />
@@ -40,7 +40,7 @@
             >
               <BaseIcon
                 v-if="!isRequestFire(slotProps)"
-                name="SaveIcon"
+                name="ArrowDownOnSquareIcon"
                 class="w-6 mr-2"
               />
 

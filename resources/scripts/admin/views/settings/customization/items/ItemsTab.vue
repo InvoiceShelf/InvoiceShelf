@@ -15,7 +15,7 @@
       <BaseDropdown>
         <template #activator>
           <div class="inline-block">
-            <BaseIcon name="DotsHorizontalIcon" class="text-gray-500" />
+            <BaseIcon name="EllipsisHorizontalIcon" class="text-gray-500" />
           </div>
         </template>
 

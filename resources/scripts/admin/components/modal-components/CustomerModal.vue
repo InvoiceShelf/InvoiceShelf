@@ -9,7 +9,7 @@
         {{ modalStore.title }}
 
         <BaseIcon
-          name="XIcon"
+          name="XMarkIcon"
           class="h-6 w-6 text-gray-500 cursor-pointer"
           @click="closeCustomerModal"
         />
@@ -167,7 +167,7 @@
                 >
                   <template #right>
                     <BaseIcon
-                      :name="isShowPassword ? 'EyeIcon' : 'EyeOffIcon'"
+                      :name="isShowPassword ? 'EyeIcon' : 'EyeSlashIcon'"
                       class="mr-1 text-gray-500 cursor-pointer"
                       @click="isShowPassword = !isShowPassword"
                     />
@@ -193,7 +193,7 @@
                 >
                   <template #right>
                     <BaseIcon
-                      :name="isShowConfirmPassword ? 'EyeIcon' : 'EyeOffIcon'"
+                      :name="isShowConfirmPassword ? 'EyeIcon' : 'EyeSlashIcon'"
                       class="mr-1 text-gray-500 cursor-pointer"
                       @click="isShowConfirmPassword = !isShowConfirmPassword"
                     />
@@ -438,7 +438,7 @@
           <template #left="slotProps">
             <BaseIcon
               v-if="!isLoading"
-              name="SaveIcon"
+              name="ArrowDownOnSquareIcon"
               :class="slotProps.class"
             />
           </template>

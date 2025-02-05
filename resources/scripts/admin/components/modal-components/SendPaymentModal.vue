@@ -8,7 +8,7 @@
       <div class="flex justify-between w-full">
         {{ modalTitle }}
         <BaseIcon
-          name="XIcon"
+          name="XMarkIcon"
           class="w-6 h-6 text-gray-500 cursor-pointer"
           @click="closeSendPaymentModal"
         />
@@ -88,7 +88,7 @@
             <BaseIcon
               v-if="!isLoading"
               :class="slotProps.class"
-              name="PhotographIcon"
+              name="PhotoIcon"
             />
           </template>
           {{ $t('general.preview') }}
