@@ -395,6 +395,11 @@ import { useUserStore } from '@/scripts/admin/stores/user'
 import abilities from '@/scripts/admin/stub/abilities'
 import { useRoute } from 'vue-router'
 import CustomerModal from '@/scripts/admin/components/modal-components/CustomerModal.vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseText from '@/scripts/components/base/BaseText.vue'
+import BaseInput from '@/scripts/components/base/BaseInput.vue'
+import BaseContentPlaceholdersBox from '@/scripts/components/base/BaseContentPlaceholdersBox.vue'
+import BaseContentPlaceholders from '@/scripts/components/base/BaseContentPlaceholders.vue'
 
 const props = defineProps({
   valid: {

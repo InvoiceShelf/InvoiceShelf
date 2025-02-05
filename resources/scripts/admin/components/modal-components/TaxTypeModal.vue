@@ -135,6 +135,14 @@ import {
   helpers,
 } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseTextarea from '@/scripts/components/base/BaseTextarea.vue'
+import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
+import BaseMoney from '@/scripts/components/base/BaseMoney.vue'
+import BaseInput from '@/scripts/components/base/BaseInput.vue'
+import BaseInputGrid from '@/scripts/components/base/BaseInputGrid.vue'
+import BaseModal from '@/scripts/components/base/BaseModal.vue'
 
 const taxTypeStore = useTaxTypeStore()
 const modalStore = useModalStore()

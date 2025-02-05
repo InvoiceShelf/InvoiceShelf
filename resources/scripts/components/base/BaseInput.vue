@@ -148,6 +148,8 @@
 
 <script setup>
 import { computed, ref, useSlots } from 'vue'
+import BaseContentPlaceholdersBox from '@/scripts/components/base/BaseContentPlaceholdersBox.vue'
+import BaseContentPlaceholders from '@/scripts/components/base/BaseContentPlaceholders.vue'
 
 let inheritAttrs = ref(false)
 

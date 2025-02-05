@@ -3,7 +3,6 @@ import App from '@/scripts/App.vue'
 import { createI18n } from 'vue-i18n'
 import messages from '/lang/locales'
 import router from '@/scripts/router/index'
-import { defineGlobalComponents } from './global-components'
 import utils from '@/scripts/helpers/utilities.js'
 import _ from 'lodash'
 import { VTooltip } from 'v-tooltip'
@@ -32,8 +31,6 @@ export default class InvoiceShelf {
 
   start() {
     this.executeCallbacks()
-
-    defineGlobalComponents(app)
 
     app.provide('$utils', utils)
 
