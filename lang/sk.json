@@ -864,7 +864,7 @@
     "primary_currency": "Hlavná Mena",
     "timezone": "Časové Pásmo",
     "date_format": "Formát Dátumu",
-    "time_format": "Time Format",
+    "time_format": "Formát času",
     "currencies": {
       "title": "Meny",
       "currency": "Mena | Meny",
@@ -1007,8 +1007,8 @@
       "random_sequence_param_label": "Sequence Length",
       "invoices": {
         "title": "Faktúry",
-        "invoice_number_format": "Invoice Number Format",
-        "invoice_number_format_description": "Customize how your invoice number gets generated automatically when you create a new invoice.",
+        "invoice_number_format": "Číslovanie faktúr",
+        "invoice_number_format_description": "Prispôsobte, ako sa bude generovať číslo faktúry pri jej vytváraní.",
         "preview_invoice_number": "Preview Invoice Number",
         "due_date": "Due Date",
         "due_date_description": "Specify how due date is automatically set when you create an invoice.",
