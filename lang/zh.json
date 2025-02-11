@@ -1203,7 +1203,7 @@
       "already_in_use": "此稅項已在使用"
     },
     "payment_modes": {
-      "title": "Payment Modes",
+      "title": "付款方式",
       "description": "Modes of transaction for payments",
       "add_payment_mode": "Add Payment Mode",
       "edit_payment_mode": "Edit Payment Mode",

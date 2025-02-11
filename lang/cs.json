@@ -864,7 +864,7 @@
     "primary_currency": "Primární měna",
     "timezone": "Časová zóna",
     "date_format": "Formát data",
-    "time_format": "Time Format",
+    "time_format": "Formát času",
     "currencies": {
       "title": "Měny",
       "currency": "Měna | Měny",
