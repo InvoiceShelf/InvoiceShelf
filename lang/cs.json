@@ -1236,7 +1236,7 @@
       "time_zone": "Časové pásmo",
       "fiscal_year": "Fiskální rok",
       "date_format": "Formát data",
-      "time_format": "Formát času",
+      "time_format": "Time Format",
       "discount_setting": "Nastavení slev",
       "discount_per_item": "Sleva za položku ",
       "discount_setting_description": "Povolte tuto možnost, pokud chcete přidat slevu do jednotlivých položek faktury. Ve výchozím nastavení je sleva přidána přímo na fakturu.",
