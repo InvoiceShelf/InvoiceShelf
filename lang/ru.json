@@ -1236,7 +1236,7 @@
       "time_zone": "Часовой пояс",
       "fiscal_year": "Financial Year",
       "date_format": "Date Format",
-      "time_format": "Time Fromat",
+      "time_format": "Time Format",
       "discount_setting": "Discount Setting",
       "discount_per_item": "Discount Per Item ",
       "discount_setting_description": "Enable this if you want to add Discount to individual invoice items. By default, Discount is added directly to the invoice.",
