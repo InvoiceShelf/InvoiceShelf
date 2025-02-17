@@ -1236,7 +1236,7 @@
       "time_zone": "Zona horaria",
       "fiscal_year": "Año financiero",
       "date_format": "Formato de fecha",
-      "time_format": "Time Format",
+      "time_format": "Formato de hora",
       "discount_setting": "Ajuste de descuento",
       "discount_per_item": "Descuento por artículo",
       "discount_setting_description": "Habilítelo si desea agregar Descuento a artículos de factura individuales. Por defecto, los descuentos se agregan directamente a la factura.",
