@@ -1236,7 +1236,7 @@
       "time_zone": "Časové Pásmo",
       "fiscal_year": "Fiškálny Rok",
       "date_format": "Formát Dátumu",
-      "time_format": "Time Fromat",
+      "time_format": "Time Format",
       "discount_setting": "Nastavenia Zľavy",
       "discount_per_item": "Zľava pre každú Položku zvlášť ",
       "discount_setting_description": "Túto možnosť povoľte, ak chcete pridať zľavu k jednotlivým položkám faktúry. Štandardne sa zľava pripočítava priamo k faktúre.",
