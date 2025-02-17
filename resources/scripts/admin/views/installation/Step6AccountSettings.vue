@@ -69,7 +69,7 @@
           >
             <template #right>
               <BaseIcon
-                :name="isShowPassword ? 'EyeIcon' : 'EyeOffIcon'"
+                :name="isShowPassword ? 'EyeIcon' : 'EyeSlashIcon'"
                 class="mr-1 text-gray-500 cursor-pointer"
                 @click="isShowPassword = !isShowPassword"
               />
@@ -94,7 +94,7 @@
           >
             <template #right>
               <BaseIcon
-                :name="isShowConfirmPassword ? 'EyeIcon' : 'EyeOffIcon'"
+                :name="isShowConfirmPassword ? 'EyeIcon' : 'EyeSlashIcon'"
                 class="mr-1 text-gray-500 cursor-pointer"
                 @click="isShowConfirmPassword = !isShowConfirmPassword"
               />
@@ -105,7 +105,7 @@
 
       <BaseButton :loading="isSaving" :disabled="isSaving" class="mt-4">
         <template #left="slotProps">
-          <BaseIcon v-if="!isSaving" name="SaveIcon" :class="slotProps.class" />
+          <BaseIcon v-if="!isSaving" name="ArrowDownOnSquareIcon" :class="slotProps.class" />
         </template>
         {{ $t('wizard.save_cont') }}
       </BaseButton>

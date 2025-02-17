@@ -57,7 +57,7 @@
       class="mt-4"
     >
       <template #left="slotProps">
-        <BaseIcon v-if="!isSaving" :class="slotProps.class" name="SaveIcon" />
+        <BaseIcon v-if="!isSaving" :class="slotProps.class" name="ArrowDownOnSquareIcon" />
       </template>
       {{ $t('settings.customization.save') }}
     </BaseButton>

@@ -56,7 +56,7 @@
               >
                 <span class="sr-only">Close sidebar</span>
                 <BaseIcon
-                  name="XIcon"
+                  name="XMarkIcon"
                   class="w-6 h-6 text-white"
                   aria-hidden="true"
                 />

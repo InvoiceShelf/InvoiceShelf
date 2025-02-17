@@ -21,9 +21,9 @@
             <BaseIcon
               v-if="!showFilters"
               :class="slotProps.class"
-              name="FilterIcon"
+              name="FunnelIcon"
             />
-            <BaseIcon v-else :class="slotProps.class" name="XIcon" />
+            <BaseIcon v-else :class="slotProps.class" name="XMarkIcon" />
           </template>
         </BaseButton>
       </template>
@@ -111,7 +111,7 @@
         <template #cell-actions="{ row }">
           <BaseDropdown>
             <template #activator>
-              <BaseIcon name="DotsHorizontalIcon" class="w-5 text-gray-500" />
+              <BaseIcon name="EllipsisHorizontalIcon" class="w-5 text-gray-500" />
             </template>
             <router-link :to="`payments/${row.data.id}/view`">
               <BaseDropdownItem>
