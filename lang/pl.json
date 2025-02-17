@@ -1236,7 +1236,7 @@
       "time_zone": "Strefa czasowa",
       "fiscal_year": "Rok finansowy",
       "date_format": "Format daty",
-      "time_format": "Time Fromat",
+      "time_format": "Time Format",
       "discount_setting": "Ustawienia rabatu",
       "discount_per_item": "Rabat na produkt ",
       "discount_setting_description": "Włącz to, jeśli chcesz dodać rabat do poszczególnych elementów faktury. Domyślnie rabat jest dodawany bezpośrednio do całej faktury.",
