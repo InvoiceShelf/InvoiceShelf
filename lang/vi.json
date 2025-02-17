@@ -1236,7 +1236,7 @@
       "time_zone": "Múi giờ",
       "fiscal_year": "Năm tài chính",
       "date_format": "Định dạng ngày tháng",
-      "time_format": "Time Fromat",
+      "time_format": "Time Format",
       "discount_setting": "Cài đặt chiết khấu",
       "discount_per_item": "Giảm giá cho mỗi mặt hàng ",
       "discount_setting_description": "Bật tính năng này nếu bạn muốn thêm Giảm giá vào các mặt hàng hóa đơn riêng lẻ. Theo mặc định, Giảm giá được thêm trực tiếp vào hóa đơn.",
