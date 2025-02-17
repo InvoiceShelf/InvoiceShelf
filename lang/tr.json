@@ -1236,7 +1236,7 @@
       "time_zone": "Zaman Dilimi",
       "fiscal_year": "Mali Yıl",
       "date_format": "Tarih Biçimi",
-      "time_format": "Time Fromat",
+      "time_format": "Time Format",
       "discount_setting": "İndirim Ayarı",
       "discount_per_item": "Öğe Başı İndirim",
       "discount_setting_description": "Bireysel fatura kalemlerine indirim eklemek istiyorsanız bunu etkinleştirin. Varsayılan olarak, indirim doğrudan faturaya eklenir.",
