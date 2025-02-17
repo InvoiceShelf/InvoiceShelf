@@ -1236,7 +1236,7 @@
       "time_zone": "المنطة الزمنية",
       "fiscal_year": "السنة المالية",
       "date_format": "صيغة التاريخ",
-      "time_format": "Time Fromat",
+      "time_format": "Time Format",
       "discount_setting": "إعدادات الخصم",
       "discount_per_item": "خصم على الصنف ",
       "discount_setting_description": "قم بتمكين هذا إذا كنت تريد إضافة خصم إلى عناصر الفاتورة الفردية. بشكل افتراضي ، يتم إضافة الخصم مباشرة إلى الفاتورة.",
