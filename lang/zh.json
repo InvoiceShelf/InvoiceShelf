@@ -1236,7 +1236,7 @@
       "time_zone": "時區",
       "fiscal_year": "財政年度",
       "date_format": "日期格式",
-      "time_format": "Time Fromat",
+      "time_format": "Time Format",
       "discount_setting": "折扣設定",
       "discount_per_item": "商品折扣",
       "discount_setting_description": "啟用此項, 如果你要將折扣以每個獨立商品計算. 預設折扣以整單發票計算.",
