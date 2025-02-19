@@ -141,3 +141,31 @@ test('search items', function () {
 
     $response->assertOk();
 });
+
+test('create item with fixed amount tax', function () {
+    $item = Item::factory()->raw([
+        'taxes' => [
+            Tax::factory()->raw([
+                'calculation_type' => 'fixed',
+                'fixed_amount' => 5000,
+            ]),
+        ],
+    ]);
+
+    $response = postJson('api/v1/items', $item);
+
+    $response->assertOk();
+
+    $this->assertDatabaseHas('items', [
+        'name' => $item['name'],
+        'description' => $item['description'],
+        'price' => $item['price'],
+        'company_id' => $item['company_id'],
+    ]);
+
+    $this->assertDatabaseHas('taxes', [
+        'item_id' => $response->getData()->data->id,
+        'calculation_type' => 'fixed',
+        'fixed_amount' => 5000,
+    ]);
+});

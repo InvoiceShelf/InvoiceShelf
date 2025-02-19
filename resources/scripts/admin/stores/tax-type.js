@@ -15,7 +15,9 @@ export const useTaxTypeStore = (useWindow = false) => {
       currentTaxType: {
         id: null,
         name: '',
+        calculation_type: 'percentage',
         percent: 0,
+        fixed_amount: 0,
         description: '',
         compound_tax: false,
         collective_tax: 0,
@@ -31,7 +33,9 @@ export const useTaxTypeStore = (useWindow = false) => {
         this.currentTaxType = {
           id: null,
           name: '',
+          calculation_type: 'percentage',
           percent: 0,
+          fixed_amount: 0,
           description: '',
           compound_tax: false,
           collective_tax: 0,
