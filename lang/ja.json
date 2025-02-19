@@ -1236,7 +1236,7 @@
       "time_zone": "タイムゾーン",
       "fiscal_year": "会計年度",
       "date_format": "日付形式",
-      "time_format": "Time Format",
+      "time_format": "時刻形式",
       "discount_setting": "割引設定",
       "discount_per_item": "アイテムごとの割引 ",
       "discount_setting_description": "個々の請求書項目に割引を追加する場合はこれを有効にします。デフォルトでは割引は請求書に直接追加されます。",
