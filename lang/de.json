@@ -1236,7 +1236,7 @@
       "time_zone": "Zeitzone",
       "fiscal_year": "Geschäftsjahr",
       "date_format": "Datum-Format",
-      "time_format": "Time Fromat",
+      "time_format": "Time Format",
       "discount_setting": "Einstellung Rabatt",
       "discount_per_item": "Rabatt pro Artikel ",
       "discount_setting_description": "Aktivieren Sie diese Option, wenn Sie einzelnen Rechnungspositionen einen Rabatt hinzufügen möchten. Standardmäßig wird der Rabatt direkt zur Rechnung hinzugefügt.",

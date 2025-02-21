@@ -1236,7 +1236,7 @@
       "time_zone": "Zona Waktu",
       "fiscal_year": "Financial Year",
       "date_format": "Format Tanggal",
-      "time_format": "Format Waktu",
+      "time_format": "Time Format",
       "discount_setting": "Pengaturan Diskon",
       "discount_per_item": "Diskon Per Item ",
       "discount_setting_description": "Enable this if you want to add Discount to individual invoice items. By default, Discount is added directly to the invoice.",
