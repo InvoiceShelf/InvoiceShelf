@@ -114,19 +114,18 @@
 </template>
 
 <script setup>
-import {
-  helpers,
-  required,
-  requiredIf,
-  sameAs,
-  minLength,
-  email,
-} from '@vuelidate/validators'
+import { email, helpers, minLength, required, requiredIf, sameAs } from '@vuelidate/validators'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useVuelidate } from '@vuelidate/core'
 import { useUserStore } from '@/scripts/admin/stores/user'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseInput from '@/scripts/components/base/BaseInput.vue'
+import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
+import BaseFileUploader from '@/scripts/components/base/BaseFileUploader.vue'
+import BaseWizardStep from '@/scripts/components/base/BaseWizardStep.vue'
 
 const emit = defineEmits(['next'])
 

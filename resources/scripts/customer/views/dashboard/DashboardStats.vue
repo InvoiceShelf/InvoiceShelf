@@ -57,6 +57,7 @@ import EstimateIcon from '@/scripts/components/icons/dashboard/EstimateIcon.vue'
 import { useGlobalStore } from '@/scripts/customer/stores/global'
 import { useDashboardStore } from '@/scripts/customer/stores/dashboard'
 import DashboardStatsItem from '@/scripts/customer/views/dashboard/DashboardStatsItem.vue'
+import BaseFormatMoney from '@/scripts/components/base/BaseFormatMoney.vue'
 //store
 
 const utils = inject('utils')

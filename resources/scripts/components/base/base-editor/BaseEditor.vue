@@ -90,9 +90,15 @@ import {
   MenuCenterIcon,
 } from './icons/index.js'
 import { MenuAlt2Icon, MenuAlt3Icon, MenuIcon, LinkIcon } from '@heroicons/vue/solid'
+import BaseDropdown from '@/scripts/components/base/BaseDropdown.vue'
+import BaseContentPlaceholdersBox from '@/scripts/components/base/BaseContentPlaceholdersBox.vue'
+import BaseContentPlaceholders from '@/scripts/components/base/BaseContentPlaceholders.vue'
 
 export default {
   components: {
+    BaseContentPlaceholders,
+    BaseContentPlaceholdersBox,
+    BaseDropdown,
     EditorContent,
     DotsVerticalIcon,
   },

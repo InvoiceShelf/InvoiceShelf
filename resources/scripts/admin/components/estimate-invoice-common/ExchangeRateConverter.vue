@@ -49,6 +49,9 @@ import { watch, computed, ref, onBeforeUnmount } from 'vue'
 import { useGlobalStore } from '@/scripts/admin/stores/global'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 import { useExchangeRateStore } from '@/scripts/admin/stores/exchange-rate'
+import BaseInput from '@/scripts/components/base/BaseInput.vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
 
 const props = defineProps({
   v: {

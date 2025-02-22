@@ -17,6 +17,8 @@
 
 <script setup>
 import { computed, watch, inject, watchEffect } from 'vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseFormatMoney from '@/scripts/components/base/BaseFormatMoney.vue'
 
 const props = defineProps({
   index: {
