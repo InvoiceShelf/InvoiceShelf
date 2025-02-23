@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\V1\Admin\Update;
 
 use App\Http\Controllers\Controller;
-use App\Models\Setting;
 use App\Space\Updater;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class CheckVersionController extends Controller
 {
@@ -26,7 +26,8 @@ class CheckVersionController extends Controller
         set_time_limit(600); // 10 minutes
 
         $channel = $request->get('channel', 'stable');
-        $response = Updater::checkForUpdate(Setting::getSetting('version'), $channel);
+        $version = preg_replace('~[\r\n]+~', '', File::get(base_path('version.md')));
+        $response = Updater::checkForUpdate($version, $channel);
 
         return response()->json($response);
     }
