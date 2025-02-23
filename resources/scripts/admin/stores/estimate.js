@@ -14,6 +14,7 @@ import estimateStub from '../stub/estimate'
 import estimateItemStub from '../stub/estimate-item'
 import taxStub from '../stub/tax'
 import { useUserStore } from './user'
+import { useNotesStore } from './note'
 
 export const useEstimateStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
@@ -554,6 +555,7 @@ export const useEstimateStore = (useWindow = false) => {
         const taxTypeStore = useTaxTypeStore()
         const route = useRoute()
         const userStore = useUserStore()
+        const notesStore = useNotesStore()
 
         this.isFetchingInitialSettings = true
         this.newEstimate.selectedCurrency = companyStore.selectedCompanyCurrency
@@ -567,6 +569,8 @@ export const useEstimateStore = (useWindow = false) => {
         let editActions = []
 
         if (!isEdit) {
+          await notesStore.fetchNotes()
+          this.newEstimate.notes = notesStore.getDefaultNoteForType('Estimate')?.notes
           this.newEstimate.tax_per_item =
             companyStore.selectedCompanySettings.tax_per_item
           this.newEstimate.sales_tax_type = companyStore.selectedCompanySettings.sales_tax_type

@@ -14,6 +14,7 @@ import moment from 'moment'
 import _ from 'lodash'
 import { useInvoiceStore } from './invoice'
 import { useNotificationStore } from '@/scripts/stores/notification'
+import { useNotesStore } from './note'
 
 export const useRecurringInvoiceStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
@@ -334,6 +335,7 @@ export const useRecurringInvoiceStore = (useWindow = false) => {
         const invoiceStore = useInvoiceStore()
         const taxTypeStore = useTaxTypeStore()
         const route = useRoute()
+        const notesStore = useNotesStore()
 
         this.isFetchingInitialSettings = true
         this.newRecurringInvoice.currency = companyStore.selectedCompanyCurrency
@@ -348,6 +350,8 @@ export const useRecurringInvoiceStore = (useWindow = false) => {
 
         // on create
         if (!isEdit) {
+          await notesStore.fetchNotes()
+          this.newRecurringInvoice.notes = notesStore.getDefaultNoteForType('Invoice')?.notes
           this.newRecurringInvoice.tax_per_item =
             companyStore.selectedCompanySettings.tax_per_item
           this.newRecurringInvoice.discount_per_item =
