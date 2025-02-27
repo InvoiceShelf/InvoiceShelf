@@ -553,7 +553,7 @@
     "item": {
       "title": "Item Title",
       "description": "Description",
-      "quantity": "Quantity",
+      "quantity": "這部份包含發票列表",
       "price": "Price",
       "discount": "Discount",
       "total": "Total",
@@ -565,7 +565,7 @@
       "type_item_description": "Type Item Description (optional)"
     },
     "frequency": {
-      "title": "Frequency (using cron format)",
+      "title": "",
       "select_frequency": "Select Frequency",
       "minute": "Minute",
       "hour": "Hour",
@@ -578,8 +578,8 @@
       "every_2_hour": "Every 2 Hour",
       "every_day_at_midnight": "Every day at midnight",
       "every_week": "Every Week",
-      "every_15_days_at_midnight": "Every 15 days at midnight",
-      "on_the_first_day_of_every_month_at_midnight": "On the first day of every month at 00:00",
+      "every_15_days_at_midnight": "每15天半夜",
+      "on_the_first_day_of_every_month_at_midnight": "每月第一天半夜00:00",
       "every_6_month": "Every 6 Month",
       "every_year_on_the_first_day_of_january_at_midnight": "Every year on the first day of january at 00:00",
       "custom": "Custom"
@@ -635,7 +635,7 @@
     "updated_message": "成功更新付款",
     "deleted_message": "成功刪除付款 | 成功刪除付款",
     "invalid_amount_message": "付款金額有誤",
-    "amount_due": "Due Amount"
+    "amount_due": "應付金額"
   },
   "expenses": {
     "title": "支出",
@@ -643,7 +643,7 @@
     "select_a_customer": "選擇客戶",
     "expense_title": "標題",
     "customer": "客戶",
-    "currency": "Currency",
+    "currency": "主要貨幣",
     "contact": "聯絡",
     "category": "分類",
     "from_date": "啟始日",
