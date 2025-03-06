@@ -1236,7 +1236,7 @@
       "time_zone": "Fuso Orario",
       "fiscal_year": "Anno finanziario",
       "date_format": "Formato Data",
-      "time_format": "Time Fromat",
+      "time_format": "Time Format",
       "discount_setting": "Impostazione Sconto",
       "discount_per_item": "Sconto Per Item ",
       "discount_setting_description": "Abilita se vuoi aggiungere uno sconto ad uno specifica fattura. Di default, lo sconto è aggiunto direttamente in fattura.",
