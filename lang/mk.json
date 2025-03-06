@@ -57,7 +57,7 @@
     "fixed": "Fixed",
     "percentage": "Percentage",
     "tax": "TAX",
-    "total_amount": "TOTAL AMOUNT",
+    "total_amount": "Вкупен износ",
     "bill_to": "Bill to",
     "ship_to": "Ship to",
     "due": "Due",
@@ -111,7 +111,7 @@
       "results": "results"
     },
     "file_upload": {
-      "drag_a_file": "Drag a file here or",
+      "drag_a_file": "Повлечете го фаилот овде или",
       "browse": "browse",
       "to_choose": "to choose a file"
     },
