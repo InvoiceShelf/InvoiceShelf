@@ -103,7 +103,7 @@
     "mark_as_default": "Geral → Marcar como padrão",
     "no_data_found": "Nenhum dado encontrado",
     "pagination": {
-      "previous": "Previous",
+      "previous": "Voltar",
       "next": "Próximo",
       "showing": "Mostrando",
       "to": "para",
@@ -112,22 +112,22 @@
     },
     "file_upload": {
       "drag_a_file": "Arraste um arquivo aqui ou",
-      "browse": "browse",
-      "to_choose": "to choose a file"
+      "browse": "procure",
+      "to_choose": "Escolher um arquivo"
     },
     "multiselect": {
-      "the_list_is_empty": "The list is empty",
-      "no_results_found": "No results found"
+      "the_list_is_empty": "A lista está vazia",
+      "no_results_found": "Nenhum resultado encontrado"
     },
-    "copy_to_clipboard": "Copy to Clipboard"
+    "copy_to_clipboard": "Copiar para Área de Transferência"
   },
   "dashboard": {
     "select_year": "Selecione Ano",
     "cards": {
       "due_amount": "Total Vencido",
-      "customers": "Customer | Customers",
-      "invoices": "Invoice | Invoices",
-      "estimates": "Estimate | Estimates",
+      "customers": "Cliente | Clientes",
+      "invoices": "Fatura | Faturas",
+      "estimates": "Orçamento | Orçamentos",
       "payments": "Pagamento | Pagamentos"
     },
     "chart_info": {
@@ -191,7 +191,7 @@
   "customers": {
     "title": "Clientes",
     "prefix": "Prefixo",
-    "tax_id": "Tax ID",
+    "tax_id": "CPF/CNPJ",
     "add_customer": "Adicionar cliente",
     "contacts_list": "Lista de clientes",
     "name": "Nome",
@@ -324,9 +324,9 @@
     "record_payment": "Registro de pago",
     "add_estimate": "Adicionar orçamento",
     "save_estimate": "Salvar Orçamento",
-    "cloned_successfully": "Estimate cloned successfully",
-    "clone_estimate": "Clone Estimate",
-    "confirm_clone": "This Estimate will be cloned into a new Estimate",
+    "cloned_successfully": "Orçamento clonado com sucesso",
+    "clone_estimate": "Clonar Orçamento",
+    "confirm_clone": "Esta fatura será clonada em uma nova fatura",
     "confirm_conversion": "Esse orçamento será usado para criar uma nova Fatura.",
     "conversion_message": "Fatura criada com sucesso",
     "confirm_send_estimate": "Este orçamento será enviado por email ao cliente",
@@ -546,42 +546,42 @@
     "no_matching_invoices": "Não há faturas recorrentes correspondentes!",
     "mark_as_sent_successfully": "Fatura recorrente marcada como enviada com sucesso",
     "invoice_sent_successfully": "Fatura enviada com sucesso",
-    "cloned_successfully": "Recurring Invoice cloned successfully",
-    "clone_invoice": "Clone Recurring Invoice",
-    "confirm_clone": "This recurring invoice will be cloned into a new Recurring Invoice",
-    "add_customer_email": "Please add an email address for this customer to send invoices automatically.",
+    "cloned_successfully": "Fatura recorrente copiada com sucesso",
+    "clone_invoice": "Copiar Fatura Recorrente",
+    "confirm_clone": "Esta fatura recorrente será copiada em uma nova fatura recorrente",
+    "add_customer_email": "Por favor, adicione um endereço eletrônico para este cliente para enviar faturas automaticamente.",
     "item": {
-      "title": "Item Title",
-      "description": "Description",
-      "quantity": "Quantity",
-      "price": "Price",
-      "discount": "Discount",
+      "title": "Titulo do Item",
+      "description": "Descrição",
+      "quantity": "Quantidade",
+      "price": "Preço",
+      "discount": "Desconto",
       "total": "Total",
-      "total_discount": "Total Discount",
-      "sub_total": "Sub Total",
-      "tax": "Tax",
-      "amount": "Amount",
-      "select_an_item": "Type or click to select an item",
-      "type_item_description": "Type Item Description (optional)"
+      "total_discount": "Desconto Total",
+      "sub_total": "Subtotal",
+      "tax": "Imposto",
+      "amount": "Valor",
+      "select_an_item": "Digite ou clique para selecionar um \"item\"",
+      "type_item_description": "Descrição do “item” (opcional)"
     },
     "frequency": {
-      "title": "Frequency (using cron format)",
-      "select_frequency": "Select Frequency",
-      "minute": "Minute",
-      "hour": "Hour",
-      "day_month": "Day of month",
-      "month": "Month",
-      "day_week": "Day of week",
-      "every_minute": "Every Minute",
-      "every_30_minute": "Every 30 Minute",
-      "every_hour": "Every Hour",
-      "every_2_hour": "Every 2 Hour",
-      "every_day_at_midnight": "Every day at midnight",
-      "every_week": "Every Week",
-      "every_15_days_at_midnight": "Every 15 days at midnight",
-      "on_the_first_day_of_every_month_at_midnight": "On the first day of every month at 00:00",
-      "every_6_month": "Every 6 Month",
-      "every_year_on_the_first_day_of_january_at_midnight": "Every year on the first day of january at 00:00",
+      "title": "Frequência (usando o formato Cron)",
+      "select_frequency": "Selecionar frequência",
+      "minute": "Minuto",
+      "hour": "Hora",
+      "day_month": "Dia do mês",
+      "month": "Mês",
+      "day_week": "Dia da semana",
+      "every_minute": "A Cada Minuto",
+      "every_30_minute": "A cada 30 minutos",
+      "every_hour": "A cada hora",
+      "every_2_hour": "A cada 2 horas",
+      "every_day_at_midnight": "Diariamente à meia-noite",
+      "every_week": "Semanalmente",
+      "every_15_days_at_midnight": "A cada 15 dias à meia-noite",
+      "on_the_first_day_of_every_month_at_midnight": "No primeiro dia de cada mês às 00:00",
+      "every_6_month": "A cada 6 meses",
+      "every_year_on_the_first_day_of_january_at_midnight": "Todos os anos no primeiro dia do january às 00:00",
       "custom": "Custom"
     },
     "confirm_delete": "You will not be able to recover this Invoice | You will not be able to recover these Invoices",
@@ -737,11 +737,11 @@
     "view_module": "View Module",
     "update_available": "Update Available",
     "purchased": "Purchased",
-    "installed": "Installed",
-    "no_modules_installed": "No Modules Installed Yet!",
-    "disable_warning": "All the settings for this particular will be reverted.",
-    "what_you_get": "What you get",
-    "sign_up_and_get_token": "Sign up & Get Token"
+    "installed": "Instalado",
+    "no_modules_installed": "Nenhum módulo instalado ainda!",
+    "disable_warning": "Todas as configurações serão revertidas.",
+    "what_you_get": "O que você recebe",
+    "sign_up_and_get_token": "Registrar-se e Obter simbolo "
   },
   "users": {
     "title": "Usuários",
@@ -760,7 +760,7 @@
     "edit_user": "Editar Usuário",
     "no_users": "Nenhum usuário ainda!",
     "list_of_users": "Esta seção conterá a lista de usuários.",
-    "email": "Email",
+    "email": "Clientes → Mensagem eletrônica",
     "phone": "Telefone",
     "password": "Senha",
     "user_attached_message": "Não é possível excluir um item que já está em uso",
@@ -768,14 +768,14 @@
     "created_message": "Usuário criado com sucesso",
     "updated_message": "Usuário atualizado com sucesso",
     "deleted_message": "Usuário excluído com sucesso | Usuários excluídos com sucesso",
-    "select_company_role": "Select Role for {company}",
-    "companies": "Companies"
+    "select_company_role": "Selecione o cargo da {company}",
+    "companies": "Empresas"
   },
   "reports": {
     "title": "Relatório",
     "from_date": "A partir da Data",
     "to_date": "Até a Data",
-    "status": "Status",
+    "status": "Estado",
     "paid": "Pago",
     "unpaid": "Não Pago",
     "download_pdf": "Baixar PDF",
@@ -795,8 +795,8 @@
       "from_date": "A partir da Data",
       "report_type": "Tipo de Relatório",
       "sort": {
-        "by_customer": "By Customer",
-        "by_item": "By Item"
+        "by_customer": "Por Clientes",
+        "by_item": "Por Item"
       }
     },
     "taxes": {
@@ -814,7 +814,7 @@
       "due_date": "Data de Vencimento",
       "amount": "Valor",
       "contact_name": "Nome de Contato",
-      "status": "Status"
+      "status": "Estado"
     },
     "estimates": {
       "estimate": "Orçamento",
@@ -824,7 +824,7 @@
       "ref_number": "Referência",
       "amount": "Valor",
       "contact_name": "Nome de Contato",
-      "status": "Status"
+      "status": "Estado"
     },
     "expenses": {
       "expenses": "Despesas",
@@ -846,16 +846,16 @@
       "tax_types": "Tipos de Impostos",
       "expense_category": "Categorias de Despesas",
       "update_app": "Atualizar Aplicativo",
-      "backup": "Backup",
+      "backup": "Cópia de segurança",
       "file_disk": "Disco de Arquivos",
       "custom_fields": "Os campos personalizados",
       "payment_modes": "Meios de Pagamento",
       "notes": "Observações",
-      "exchange_rate": "Exchange Rate",
-      "address_information": "Address Information"
+      "exchange_rate": "Taxa de câmbio",
+      "address_information": "Informações de Endereço"
     },
     "address_information": {
-      "section_description": "  You can update Your Address information using form below."
+      "section_description": "  Você pode atualizar suas informações de endereço usando o formulário abaixo."
     },
     "title": "Configurações",
     "setting": "Configuração | Configurações",
@@ -864,7 +864,7 @@
     "primary_currency": "Moeda Principal",
     "timezone": "Fuso horário",
     "date_format": "Formato de data",
-    "time_format": "Time Format",
+    "time_format": "Formato da Hora",
     "currencies": {
       "title": "Moedas",
       "currency": "Moeda | Moedas",
@@ -909,8 +909,8 @@
     "company_info": {
       "company_info": "Informação da Empresa",
       "company_name": "Nome da Empresa",
-      "tax_id": "Tax Identification Number",
-      "vat_id": "VAT Identification Number",
+      "tax_id": "Número de identificação fiscal",
+      "vat_id": "Número de Identificação VAT",
       "company_logo": "Logotipo da Empresa",
       "section_description": "Informações sobre sua empresa que serão exibidas em Faturas, Orçamentos e outros documentos criados pela InvoiceShelf.",
       "phone": "Telefone",
@@ -920,13 +920,13 @@
       "address": "Endereço",
       "zip": "CEP",
       "save": "Salvar",
-      "delete": "Delete",
+      "delete": "Excluir",
       "updated_message": "Informações da Empresa atualizadas com sucesso",
-      "delete_company": "Delete Company",
-      "delete_company_description": "Once you delete your company, you will lose all the data and files associated with it permanently.",
-      "are_you_absolutely_sure": "Are you absolutely sure?",
-      "delete_company_modal_desc": "This action cannot be undone. This will permanently delete {company} and all of its associated data.",
-      "delete_company_modal_label": "Please type {company} to confirm"
+      "delete_company": "Excluir Empresa",
+      "delete_company_description": "Após excluir sua empresa, você perderá todos os dados e arquivos associados a ela permanentemente.",
+      "are_you_absolutely_sure": "Você tem certeza?",
+      "delete_company_modal_desc": "Esta ação não pode ser desfeita. Isto irá apagar permanentemente a {company} e todos os dados associados.",
+      "delete_company_modal_label": "Digite {company} para confirmar"
     },
     "custom_fields": {
       "title": "Os campos personalizados",
@@ -937,7 +937,7 @@
       "label": "Rótulo",
       "type": "Tipo",
       "name": "Nome",
-      "slug": "Slug",
+      "slug": "Link Permanente",
       "required": "Requeridas",
       "placeholder": "Dica de Preenchimento",
       "help_text": "Texto de ajuda",
@@ -964,37 +964,37 @@
       "ticked_by_default": "Marcado por padrão",
       "updated_message": "Campo personalizado atualizado com sucesso",
       "added_message": "Campo personalizado adicionado com sucesso",
-      "press_enter_to_add": "Press enter to add new option",
-      "model_in_use": "Cannot update model for fields which are already in use.",
-      "type_in_use": "Cannot update type for fields which are already in use.",
+      "press_enter_to_add": "Aperte enter para adicionar uma nova opção",
+      "model_in_use": "Não é possível atualizar o modelo para campos que já estão em uso.",
+      "type_in_use": "Não é possível atualizar o tipo para os campos que já estão em uso.",
       "model_type": {
-        "customer": "Customer",
-        "invoice": "Invoice",
-        "estimate": "Estimate",
-        "expense": "Expense",
-        "payment": "Payment"
+        "customer": "Cliente",
+        "invoice": "Fatura",
+        "estimate": "Orçamento",
+        "expense": "Despesa",
+        "payment": "Pagamento"
       }
     },
     "customization": {
       "customization": "personalização",
       "updated_message": "Informações da Empresa atualizadas com sucesso",
       "save": "Salvar",
-      "insert_fields": "Insert Fields",
-      "learn_custom_format": "Learn how to use custom format",
-      "add_new_component": "Add New Component",
-      "component": "Component",
+      "insert_fields": "Inserir Campos",
+      "learn_custom_format": "Aprenda a usar o formato personalizado",
+      "add_new_component": "Novo Componente",
+      "component": "Componente",
       "Parameter": "Parâmetro",
-      "series": "Series",
-      "series_description": "To set a static prefix/postfix like 'INV' across your company. It supports character length of up to 6 chars.",
-      "series_param_label": "Series Value",
-      "delimiter": "Delimiter",
-      "delimiter_description": "Single character for specifying the boundary between 2 separate components. By default its set to -",
-      "delimiter_param_label": "Delimiter Value",
-      "date_format": "Date Format",
-      "time_format": "Time Format",
-      "date_format_description": "A local date and time field which accepts a format parameter. The default format: 'Y' renders the current year.",
-      "date_format_param_label": "Format",
-      "sequence": "Sequence",
+      "series": "Série",
+      "series_description": "Para definir um prefixo/sufixo estático como 'INV' em sua empresa. Ele suporta o comprimento do caractere de até 6 caracteres.",
+      "series_param_label": "Valor da Série",
+      "delimiter": "Delimitador",
+      "delimiter_description": "Caractere único para especificar o limite entre 2 componentes separados. Por padrão é -",
+      "delimiter_param_label": "Valor Delimitador",
+      "date_format": "Formato de Data",
+      "time_format": "Formato da Hora",
+      "date_format_description": "Um campo de data e hora local que aceita um parâmetro de formato. O formato padrão: 'Y' apresenta o ano atual.",
+      "date_format_param_label": "Formatar",
+      "sequence": "Sequência",
       "sequence_description": "Consecutive sequence of numbers across your company. You can specify the length on the given parameter.",
       "sequence_param_label": "Sequence Length",
       "customer_series": "Customer Series",
