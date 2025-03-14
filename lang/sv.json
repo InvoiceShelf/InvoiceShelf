@@ -191,7 +191,7 @@
   "customers": {
     "title": "Kunder",
     "prefix": "Prefix",
-    "tax_id": "Tax ID",
+    "tax_id": "Momsreg.nr",
     "add_customer": "Lägg till kund",
     "contacts_list": "Kundlista",
     "name": "Namn",
