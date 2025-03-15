@@ -259,7 +259,6 @@ const price = computed({
 
   set: (newValue) => {
     let price = Math.round(newValue * 100)
-    console.log('price', price)
     updateItemAttribute('price', price)
     setDiscount()
   },
