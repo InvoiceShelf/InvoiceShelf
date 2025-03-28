@@ -5,7 +5,7 @@ description: Create a code quality issue to help InvoiceShelf keep a clean codeb
 labels:
   - code quality
   - triage
-projects: ["InvoiceShelf/2"]
+projects: ['InvoiceShelf/2']
 assignees:
   - rihards-simanovics
 
@@ -19,6 +19,23 @@ body:
         > Have you checked for similar code quality issues? There's a
         possibility your suggestion is already being tracked. Please do a
         thorough search before creating a new issue.
+
+  # Ask user to confirm they've tried to fix or research the issue before
+  # posting a bug report.
+  - type: checkboxes
+    id: confirm-read-documentation
+    attributes:
+      label: Issue filing pre-requisites
+      description: 'Prior to filing an issue please confirm that:'
+      options:
+        - label: I've checked the documentation.
+          required: true
+        - label: I've looked for similar issues both Open and Closed.
+          required: true
+        - label: >-
+            Ive tried clearing both cache and cookies in my browser or tried
+            opening the app in the Incognito/InPrivate window.
+          required: true
 
   # Issue body
   - type: textarea
