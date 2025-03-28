@@ -27,15 +27,15 @@ body:
   - type: checkboxes
     id: confirm-read-documentation
     attributes:
-      label: Issue filing pre-requisites
+      label: Issue filing prerequisites
       description: 'Prior to filing an issue please confirm that:'
       options:
         - label: I've checked the [documentation](https://docs.invoiceshelf.com/).
           required: true
-        - label: I've looked for similar issues with feature request both Open and Closed.
+        - label: I've looked for similar issues with feature requests both Open and Closed.
           required: true
         - label: >-
-            Ive tried clearing both cache and cookies in my browser or tried
+            I've tried clearing both cache and cookies in my browser or tried
             opening the app in the Incognito/InPrivate window.
           required: true
 
@@ -46,7 +46,7 @@ body:
       label: What feature or improvement do you think would benefit InvoiceShelf?
       description: Please include your use case
       placeholder: >-
-        I propose that feature J be implement as i believe it will greatly benefit the application.
+        I propose that feature J be implemented as I believe it will greatly benefit the application.
     validations:
       required: true
 
@@ -57,7 +57,7 @@ body:
         ---
 
 
-        Please include a list changes required to make this improvement. A good
+        Please include a list of changes required to make this improvement. A good
         rule of thumb is to start your proposal with no more than 7 high-level
         requirements.
 

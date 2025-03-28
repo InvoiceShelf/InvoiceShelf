@@ -25,7 +25,7 @@ body:
   - type: checkboxes
     id: confirm-read-documentation
     attributes:
-      label: Issue filing pre-requisites
+      label: Issue filing prerequisites
       description: 'Prior to filing an issue please confirm that:'
       options:
         - label: I've checked the [documentation](https://docs.invoiceshelf.com/).
@@ -33,7 +33,7 @@ body:
         - label: I've looked for similar issues both Open and Closed.
           required: true
         - label: >-
-            Ive tried clearing both cache and cookies in my browser or tried
+            I've tried clearing both cache and cookies in my browser or tried
             opening the app in the Incognito/InPrivate window.
           required: true
 
@@ -63,11 +63,11 @@ body:
       label: Gains
       description: What would fixing this code quality issue bring to the source code?
       placeholder: >-
-        - eg. A better readability.
+        - e.g. Better readability.
 
-        - eg. Uncoupling concepts X and Y.
+        - e.g. Uncoupling concepts X and Y.
 
-        - eg. Clarifying the responsibility of class C.
+        - e.g. Clarifying the responsibility of class C.
     validations:
       required: true
 
@@ -78,11 +78,11 @@ body:
       label: Requirements
       description: Describe all the requirements to solve the code quality issue.
       placeholder: >-
-        - eg. Using a specific design pattern.
+        - e.g. Using a specific design pattern.
 
-        - eg. Separating Interface I into three new interfaces I1, I2 and I3.
+        - e.g. Separating Interface I into three new interfaces I1, I2 and I3.
 
-        - eg. Regrouping the duplicated process into a new helper.
+        - e.g. Regrouping the duplicated process into a new helper.
 
   # Remarks
   - type: textarea

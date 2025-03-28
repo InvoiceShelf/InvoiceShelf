@@ -12,7 +12,7 @@ body:
   - type: checkboxes
     id: confirm-read-documentation
     attributes:
-      label: Issue filing pre-requisites
+      label: Issue filing prerequisites
       description: 'Prior to filing an issue please confirm that:'
       options:
         - label: I've checked the [documentation](https://docs.invoiceshelf.com/).
@@ -20,7 +20,7 @@ body:
         - label: I've looked for similar issues both Open and Closed.
           required: true
         - label: >-
-            Ive tried clearing both cache and cookies in my browser or tried
+            I've tried clearing both cache and cookies in my browser or tried
             opening the app in the Incognito/InPrivate window.
           required: true
 
@@ -28,19 +28,19 @@ body:
   - type: markdown
     attributes:
       value: >-
-        If you did all of the above, we first would like to thank you for taking
-        the time to fill out this bug report, it will help us tremendously to
+        If you did all of the above, we would first like to thank you for taking
+        the time to fill out this bug report. It will help us tremendously to
         find and fix the issue sooner!
 
-  # Description fo the bug
+  # Description of the bug
   - type: textarea
     id: bug-description
     attributes:
       label: Describe the bug
       description: A clear and concise description of what the bug is.
       placeholder: >-
-        When doing `x`, `y`, and `z` in that order, an error occurs, but when x,
-        z and then y is done, the error does not occur.
+        When doing `x`, `y`, and `z` in that order, an error occurs, but when `x`,
+        `z` and then `y` is done, the error does not occur.
     validations:
       required: true
 
@@ -72,21 +72,21 @@ body:
 
   # Expected Behaviour
   - type: textarea
-    id: expected-behavior
+    id: expected-behaviour
     attributes:
-      label: Expected behavior
+      label: Expected behaviour
       description: A clear and concise description of what you expected to happen.
-      placeholder: doing  `x`, `y`, and `z` in that order should not generate an error.
+      placeholder: Doing `x`, `y`, and `z` in that order should not generate an error.
     validations:
       required: true
 
   # Actual Behaviour
   - type: textarea
-    id: actual-behavior
+    id: actual-behaviour
     attributes:
-      label: Actual behavior
-      description: A clear and concise description of what actually happen.
-      placeholder: doing  `x`, `y`, and `z` in that order generate an error.
+      label: Actual behaviour
+      description: A clear and concise description of what actually happens.
+      placeholder: Doing `x`, `y`, and `z` in that order generates an error.
     validations:
       required: true
 
@@ -94,16 +94,16 @@ body:
   - type: markdown
     attributes:
       value: |-
-        ## Envirment
+        ## Environment
 
-        Now lets collect some information about your environment.
+        Now let's collect some information about your environment.
 
-  # Use Docker?.
+  # Use Docker?
   - type: checkboxes
     id: confirm-docker-install
     attributes:
       label: Docker
-      description: 'Please note that unless the issue is with the app itself, you should file a bug report under [docker](https://github.com/InvoiceShelf/docker) repository.'
+      description: 'Please note that unless the issue is with the app itself, you should file a bug report under the [docker](https://github.com/InvoiceShelf/docker) repository.'
       options:
         - label: App running in Docker Container.
         - label: Docker container running behind Reverse proxy.
@@ -131,7 +131,7 @@ body:
     id: database-type
     attributes:
       label: Database type
-      placeholder: MariaDB / MySQL / PostreSQL / SQLite
+      placeholder: MariaDB / MySQL / PostgreSQL / SQLite
     validations:
       required: true
 
@@ -149,14 +149,14 @@ body:
     id: web-browser
     attributes:
       label: Web Browser
-      placeholder: 'Firefox / Safari / or any other (chromium based browser)'
+      placeholder: 'Firefox / Safari / or any other (Chromium-based browser)'
 
   # OS Version
   - type: input
     id: server-os
     attributes:
       label: Server OS
-      description: If Linux please make sure to provide both distro name and it's version
+      description: If Linux, please make sure to provide both the distro name and its version
       placeholder: Windows / Linux (e.g. Ubuntu 24.04)
 
   # Associated Logs
@@ -166,7 +166,7 @@ body:
         ## Logs
 
 
-        last but not least, could you please take some time to get us the logs
+        Last but not least, could you please take some time to get us the logs
         for:
 
   # Log Reverse proxy
@@ -212,7 +212,7 @@ body:
 
         [2018-01-10 09:10:00] production.WARNING: Deprecated function used in UserController.php. Time to refactor, again.
 
-        [2018-01-10 09:15:00] production.ERROR: Uncaught Exception: Division by zero. Oops, math is hard.
+        [2018-01-10 09:15:00] production.ERROR: Uncaught Exception: Division by zero. Oops, maths is hard.
 
         [2018-01-10 09:20:00] production.INFO: User logout successful. See you later, alligator.
 
