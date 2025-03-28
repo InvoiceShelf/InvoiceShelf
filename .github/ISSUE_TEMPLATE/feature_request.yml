@@ -30,7 +30,7 @@ body:
       label: Issue filing pre-requisites
       description: 'Prior to filing an issue please confirm that:'
       options:
-        - label: I've checked the documentation.
+        - label: I've checked the [documentation](https://docs.invoiceshelf.com/).
           required: true
         - label: I've looked for similar issues with feature request both Open and Closed.
           required: true
@@ -45,6 +45,8 @@ body:
     attributes:
       label: What feature or improvement do you think would benefit InvoiceShelf?
       description: Please include your use case
+      placeholder: >-
+        I propose that feature J be implement as i believe it will greatly benefit the application.
     validations:
       required: true
 
@@ -65,9 +67,11 @@ body:
     attributes:
       label: Requirements
       description: Describe all the requirements to make your idea happen.
-      value: |
+      placeholder: >-
         - This proposal will accomplish X
+
         - This proposal will accomplish Y
+
         - This proposal will accomplish Z
     validations:
       required: true
@@ -77,7 +81,7 @@ body:
     id: invoiceshelf_version
     attributes:
       label: App Version
-      description: Which version of InvoiceShelf are you using?
+      description: Which version of InvoiceShelf are you currently using?
       placeholder: v0.0.0
     validations:
       required: true
