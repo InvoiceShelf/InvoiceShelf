@@ -91,6 +91,16 @@ body:
 
         Now lets collect some information about your environment.
 
+  # Use Docker?.
+  - type: checkboxes
+    id: confirm-docker-install
+    attributes:
+      label: Docker
+      description: 'Please note that unless the issue is with the app itself, you should file a bug report under [docker](https://github.com/InvoiceShelf/docker) repository.'
+      options:
+        - label: App running in Docker Container.
+        - label: Docker container running behind Reverse proxy.
+
   # App Version
   - type: input
     id: invoiceshelf-version
