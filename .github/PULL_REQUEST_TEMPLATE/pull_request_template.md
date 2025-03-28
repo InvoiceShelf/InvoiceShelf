@@ -4,7 +4,6 @@
 - [ ] (opt) I have listed all issues this PR addresses in the `Issues` section [with the issue/discussion ID's](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue).
 - [ ] (\*) I have tested my changes.
 - [ ] (\*) I have considered backwards compatibility.
-- [ ] (\*) I have removed this checklist and any unused sections.
 
 ## Changes
 
