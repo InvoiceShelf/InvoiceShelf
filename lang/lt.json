@@ -101,11 +101,11 @@
     "login_successfully": "Prisijungta sėkmingai!",
     "logged_out_successfully": "Atsijungta sėkmingai",
     "mark_as_default": "Pažymėti kaip numatytąjį",
-    "no_data_found": "No data found",
+    "no_data_found": "Duomenų nerasta",
     "pagination": {
-      "previous": "Previous",
-      "next": "Next",
-      "showing": "Showing",
+      "previous": "Ankstesnis",
+      "next": "Kitas",
+      "showing": "Rodoma",
       "to": "to",
       "of": "of",
       "results": "results"
