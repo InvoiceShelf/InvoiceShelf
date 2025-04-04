@@ -1588,7 +1588,7 @@
   "pdf_invoice_label": "Račun",
   "pdf_invoice_number": "Broj Fakture",
   "pdf_invoice_date": "Datum Fakture",
-  "pdf_invoice_due_date": "Datum dospijeća Fakture",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "Napomena",
   "pdf_items_label": "Stavke",
   "pdf_quantity_label": "Količina",
