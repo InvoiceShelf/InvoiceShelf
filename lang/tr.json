@@ -1588,7 +1588,7 @@
   "pdf_invoice_label": "Fatura",
   "pdf_invoice_number": "Fatura Numarası",
   "pdf_invoice_date": "Fatura Tarihi",
-  "pdf_invoice_due_date": "Son Ödeme Tarihi",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "Notlar",
   "pdf_items_label": "Ürünler",
   "pdf_quantity_label": "Miktar",
