@@ -1588,7 +1588,7 @@
   "pdf_invoice_label": "Lasku",
   "pdf_invoice_number": "Laskunumero",
   "pdf_invoice_date": "Laskun päiväys",
-  "pdf_invoice_due_date": "Eräpäivä",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "Viesti",
   "pdf_items_label": "Tuotenimi",
   "pdf_quantity_label": "Määrä",
