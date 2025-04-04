@@ -1588,7 +1588,7 @@
   "pdf_invoice_label": "Hóa đơn",
   "pdf_invoice_number": "Số hóa đơn",
   "pdf_invoice_date": "Ngày lập hóa đơn",
-  "pdf_invoice_due_date": "Ngày đến hạn",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "Ghi chú",
   "pdf_items_label": "Mặt hàng",
   "pdf_quantity_label": "Định lượng",
