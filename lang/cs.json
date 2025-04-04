@@ -1588,7 +1588,7 @@
   "pdf_invoice_label": "Faktura",
   "pdf_invoice_number": "Číslo faktury",
   "pdf_invoice_date": "Datum fakturace",
-  "pdf_invoice_due_date": "Datum splatnosti",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "Poznámky",
   "pdf_items_label": "Položky",
   "pdf_quantity_label": "Množství",
