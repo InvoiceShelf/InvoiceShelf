@@ -1588,7 +1588,7 @@
   "pdf_invoice_label": "Faktur",
   "pdf_invoice_number": "Nomor Faktur",
   "pdf_invoice_date": "Tanggal Faktur",
-  "pdf_invoice_due_date": "Due date",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "Catatan",
   "pdf_items_label": "Items",
   "pdf_quantity_label": "Quantity",
