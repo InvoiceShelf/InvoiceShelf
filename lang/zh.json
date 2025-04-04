@@ -1588,7 +1588,7 @@
   "pdf_invoice_label": "發票",
   "pdf_invoice_number": "發票號碼",
   "pdf_invoice_date": "發票日期",
-  "pdf_invoice_due_date": "截止日期",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "備註",
   "pdf_items_label": "商品",
   "pdf_quantity_label": "數量",
