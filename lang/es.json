@@ -1588,7 +1588,7 @@
   "pdf_invoice_label": "Factura",
   "pdf_invoice_number": "Numero de factura",
   "pdf_invoice_date": "Fecha de la factura",
-  "pdf_invoice_due_date": "Fecha final",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "Notas",
   "pdf_items_label": "Artículos",
   "pdf_quantity_label": "Cantidad",
