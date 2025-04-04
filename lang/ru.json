@@ -1588,7 +1588,7 @@
   "pdf_invoice_label": "Счет-фактура",
   "pdf_invoice_number": "Номер счета-фактуры",
   "pdf_invoice_date": "Дата счета-фактуры",
-  "pdf_invoice_due_date": "Дата к оплате",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "Заметки",
   "pdf_items_label": "Записи",
   "pdf_quantity_label": "Кол-во",
