@@ -152,6 +152,8 @@ import {
   TransitionChild,
   TransitionRoot,
 } from '@headlessui/vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
 
 const dialogStore = useDialogStore()
 

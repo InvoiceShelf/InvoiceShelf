@@ -87,9 +87,15 @@ import {
   DocumentTextIcon,
   DotsHorizontalIcon,
 } from '@heroicons/vue/solid'
+import BaseDropdownItem from '@/scripts/components/base/BaseDropdownItem.vue'
+import BaseDropdown from '@/scripts/components/base/BaseDropdown.vue'
+import BasePage from '@/scripts/components/base/BasePage.vue'
 
 export default {
   components: {
+    BasePage,
+    BaseDropdown,
+    BaseDropdownItem,
     BaseTable,
     DotsHorizontalIcon,
     UserIcon,

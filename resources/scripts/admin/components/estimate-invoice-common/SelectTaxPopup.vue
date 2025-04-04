@@ -174,6 +174,8 @@ import { useModalStore } from '@/scripts/stores/modal'
 import { useTaxTypeStore } from '@/scripts/admin/stores/tax-type'
 import { useUserStore } from '@/scripts/admin/stores/user'
 import abilities from '@/scripts/admin/stub/abilities'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseInput from '@/scripts/components/base/BaseInput.vue'
 
 const props = defineProps({
   type: {

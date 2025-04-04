@@ -8,7 +8,7 @@
 
       <!-- Product -->
       <div class="lg:grid lg:grid-rows-1 lg:grid-cols-7 lg:gap-x-8 lg:gap-y-10 xl:gap-x-16 mt-6">
-      
+
         <!-- Product image -->
         <div class="lg:row-end-1 lg:col-span-4">
           <BaseContentPlaceholdersBox class="h-96 sm:w-full" rounded />
@@ -102,3 +102,9 @@
     </BasePage>
   </BaseContentPlaceholders>
 </template>
+<script setup lang="ts">
+import BaseContentPlaceholdersBox from '@/scripts/components/base/BaseContentPlaceholdersBox.vue'
+import BaseContentPlaceholdersText from '@/scripts/components/base/BaseContentPlaceholdersText.vue'
+import BasePage from '@/scripts/components/base/BasePage.vue'
+import BaseContentPlaceholders from '@/scripts/components/base/BaseContentPlaceholders.vue'
+</script>
