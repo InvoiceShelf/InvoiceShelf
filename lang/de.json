@@ -1588,7 +1588,7 @@
   "pdf_invoice_label": "Rechnung",
   "pdf_invoice_number": "Rechnungsnummer",
   "pdf_invoice_date": "Rechnungsdatum",
-  "pdf_invoice_due_date": "Fälligkeitsdatum",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "Hinweise",
   "pdf_items_label": "Artikel",
   "pdf_quantity_label": "Menge",
