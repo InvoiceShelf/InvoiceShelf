@@ -1588,7 +1588,7 @@
   "pdf_invoice_label": "ใบวางบิล",
   "pdf_invoice_number": "เลขที่ใบวางบิล",
   "pdf_invoice_date": "วันที่ใบวางบิล",
-  "pdf_invoice_due_date": "วันครบกำหนด",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "หมายเหตุ",
   "pdf_items_label": "บริการ",
   "pdf_quantity_label": "หน่วย",
