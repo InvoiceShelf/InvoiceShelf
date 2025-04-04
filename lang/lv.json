@@ -1588,7 +1588,7 @@
   "pdf_invoice_label": "Rēķins",
   "pdf_invoice_number": "Rēķina numurs",
   "pdf_invoice_date": "Rēķina datums",
-  "pdf_invoice_due_date": "Apmaksas termiņš",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "Notes",
   "pdf_items_label": "Nosaukums",
   "pdf_quantity_label": "Daudzums",
