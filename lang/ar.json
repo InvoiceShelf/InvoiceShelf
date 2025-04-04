@@ -1588,7 +1588,7 @@
   "pdf_invoice_label": "الفاتورة",
   "pdf_invoice_number": "رقم الفاتورة",
   "pdf_invoice_date": "تاريخ الفاتورة",
-  "pdf_invoice_due_date": "تاريخ الاستحقاق",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "ملاحظات",
   "pdf_items_label": "الأصناف",
   "pdf_quantity_label": "الكمية",
