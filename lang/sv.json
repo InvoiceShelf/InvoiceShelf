@@ -1588,7 +1588,7 @@
   "pdf_invoice_label": "Faktura",
   "pdf_invoice_number": "Fakturanummer",
   "pdf_invoice_date": "Fakturadatum",
-  "pdf_invoice_due_date": "Inbetalningsdatum",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "Anteckningar",
   "pdf_items_label": "Artiklar",
   "pdf_quantity_label": "Antal",
