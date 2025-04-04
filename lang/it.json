@@ -1588,7 +1588,7 @@
   "pdf_invoice_label": "Fattura",
   "pdf_invoice_number": "Numero Fattura",
   "pdf_invoice_date": "Data fattura",
-  "pdf_invoice_due_date": "Data di pagamento",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "Note",
   "pdf_items_label": "Commesse",
   "pdf_quantity_label": "Quantità",
