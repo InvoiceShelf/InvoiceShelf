@@ -1588,7 +1588,7 @@
   "pdf_invoice_label": "Τιμολόγιο",
   "pdf_invoice_number": "Αριθμός τιμολογίου",
   "pdf_invoice_date": "Ημ/νία Τιμολόγησης",
-  "pdf_invoice_due_date": "Echéance",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "Σημειώσεις",
   "pdf_items_label": "Προϊόντα",
   "pdf_quantity_label": "Ποσότητα",
