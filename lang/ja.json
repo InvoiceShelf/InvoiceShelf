@@ -1588,7 +1588,7 @@
   "pdf_invoice_label": "請求書",
   "pdf_invoice_number": "請求番号",
   "pdf_invoice_date": "請求日",
-  "pdf_invoice_due_date": "支払期日",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "ノート",
   "pdf_items_label": "アイテム",
   "pdf_quantity_label": "数量",
