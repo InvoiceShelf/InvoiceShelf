@@ -1087,6 +1087,8 @@
         "description": "ประหยัดเวลาด้วยการสร้างหมายเหตุและนำกลับมาใช้ใหม่ในใบวางบิล ใบเสนอราคาและการชำระเงิน",
         "notes": "หมายเหตุ",
         "type": "ประเภท",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "เพิ่มโน้ต",
         "add_new_note": "เพิ่มหมายเหตุใหม่",
         "name": "ชื่อ",
