@@ -6,6 +6,7 @@ import { useCompanyStore } from './company'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import paymentStub from '../stub/payment'
 import { handleError } from '@/scripts/helpers/error-handling'
+import { useNotesStore } from './note'
 
 export const usePaymentStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
@@ -56,6 +57,7 @@ export const usePaymentStore = (useWindow = false) => {
     actions: {
       fetchPaymentInitialData(isEdit) {
         const companyStore = useCompanyStore()
+        const notesStore = useNotesStore()
         const route = useRoute()
 
         this.isFetchingInitialData = true
@@ -80,6 +82,8 @@ export const usePaymentStore = (useWindow = false) => {
 
             // On Create
             else if (!isEdit && res2.data) {
+              await notesStore.fetchNotes()
+              this.currentPayment.notes = notesStore.getDefaultNoteForType('Payment')?.notes
               this.currentPayment.payment_date = moment().format('YYYY-MM-DD')
               this.currentPayment.payment_number = res2.data.nextNumber
               this.currentPayment.currency =

@@ -25,6 +25,7 @@ class NoteFactory extends Factory
             'name' => $this->faker->word(),
             'notes' => $this->faker->text(),
             'company_id' => User::find(1)->companies()->first()->id,
+            'is_default' => $this->faker->boolean(),
         ];
     }
 }
