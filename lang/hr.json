@@ -1087,6 +1087,8 @@
         "description": "Uštedite vrijeme kreirajući napomene i koristeći ih na računima, ponudama i uplatama.",
         "notes": "Napomene",
         "type": "Vrsta",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Dodaj Napomenu",
         "add_new_note": "Dodaj novu Napomenu",
         "name": "Naziv",
