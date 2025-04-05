@@ -1087,6 +1087,8 @@
         "description": "保存備註可在發票, 報價和付款上重覆使用.",
         "notes": "備註",
         "type": "類型",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "加入備註",
         "add_new_note": "新增備註",
         "name": "名稱",
