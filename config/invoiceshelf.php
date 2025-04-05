@@ -276,6 +276,16 @@ return [
             'ability' => '',
             'model' => '',
         ],
+        [
+            'title' => 'settings.menu_title.pdf_generation',
+            'group' => '',
+            'name' => 'PDF Generation',
+            'link' => '/admin/settings/pdf-generation',
+            'icon' => 'RefreshIcon',
+            'owner_only' => true,
+            'ability' => '',
+            'model' => '',
+        ],
     ],
 
     /*
