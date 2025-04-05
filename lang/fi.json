@@ -1087,6 +1087,8 @@
         "description": "Säästä aikaa luomalla viestejä, joita voit käyttää laskuilla, tarjouksilla ja maksuissa.",
         "notes": "Viestit",
         "type": "Tyyppi",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Lisää viesti",
         "add_new_note": "Lisää uusi viesti",
         "name": "Nimi",

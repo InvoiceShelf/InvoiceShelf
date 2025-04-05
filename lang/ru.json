@@ -1087,6 +1087,8 @@
         "description": "Экономьте время, создавая заметки и переиспользуя их в счетах, оценках и платежах.",
         "notes": "Заметки",
         "type": "Тип",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Добавить Заметку",
         "add_new_note": "Добавить новое примечание",
         "name": "Название",

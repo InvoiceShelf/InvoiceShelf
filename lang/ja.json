@@ -1087,6 +1087,8 @@
         "description": "ノートを作成し、請求書、見積り、支払いで再利用することで時間を節約します。",
         "notes": "ノート",
         "type": "タイプ",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "ノートの追加",
         "add_new_note": "新規ノートを追加",
         "name": "名前",

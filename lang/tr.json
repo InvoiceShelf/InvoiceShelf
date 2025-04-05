@@ -1087,6 +1087,8 @@
         "description": "Notlar oluşturarak ve faturalar, proformalar & ödemeler üzerinde tekrar kullanarak zamandan kazanın.",
         "notes": "Notlar",
         "type": "Tür",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Not ekle",
         "add_new_note": "Yeni not ekle",
         "name": "İsim",

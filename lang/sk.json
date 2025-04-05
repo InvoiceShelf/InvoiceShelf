@@ -1087,6 +1087,8 @@
         "description": "Ušetrite čas vytváraním poznámok a ich opätovným použitím vo svojich faktúrach, odhadoch a platbách.",
         "notes": "Poznámky",
         "type": "Typ",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Pridať poznámku",
         "add_new_note": "Pridať Novú Poznámku",
         "name": "Názov",
