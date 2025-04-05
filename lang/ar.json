@@ -1087,6 +1087,8 @@
         "description": "توفير الوقت عن طريق إنشاء الملاحظات وإعادة استخدامها على الفواتير والتقديرات والمدفوعات.",
         "notes": "ملاحظات",
         "type": "نوع",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "اضف ملاحظة",
         "add_new_note": "أضف ملاحظة جديدة",
         "name": "اسم",
