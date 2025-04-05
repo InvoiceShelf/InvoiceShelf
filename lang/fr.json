@@ -1087,6 +1087,8 @@
         "description": "Créez des notes de bas de page réutilisable sur vos factures, devis et paiements.",
         "notes": "Note de bas de page",
         "type": "Type ",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Nouvelle note de bas de page",
         "add_new_note": "Ajouter une note de bas de page",
         "name": "Nom",
