@@ -15,10 +15,12 @@ export const usePDFDriverStore = (useWindow = false) => {
       pdf_driver: 'dompdf',
       pdf_drivers: [],
 
-      dompdf: {},
+      dompdf: {
+        pdf_driver: '',
+      },
       gotenberg: {
+        pdf_driver: '',
         gotenberg_host: '',
-        gotenberg_margins: [],
         gotenberg_papersize: ''
       }
     }),
@@ -50,12 +52,12 @@ export const usePDFDriverStore = (useWindow = false) => {
           if (response.data.success) {
             notificationStore.showNotification({
               type: 'success',
-              message: global.t('wizard.success.' + response.data.success),
+              message: global.t('settings.pdf.' + response.data.success),
             })
           } else {
             notificationStore.showNotification({
               type: 'error',
-              message: global.t('wizard.errors.' + response.data.error),
+              message: global.t('settings.pdf.' + response.data.error),
             })
           }
         } catch (err) {
