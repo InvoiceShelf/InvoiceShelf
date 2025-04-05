@@ -1,7 +1,7 @@
 <template>
   <div class="rounded-md bg-yellow-50 p-4 relative">
     <BaseIcon
-      name="XIcon"
+      name="XMarkIcon"
       class="h-5 w-5 text-yellow-500 absolute right-4 cursor-pointer"
       @click="$emit('hide')"
     />
@@ -83,7 +83,7 @@
 </template>
 
 <script setup>
-import { XCircleIcon } from '@heroicons/vue/solid'
+import { XCircleIcon } from '@heroicons/vue/24/solid'
 
 const emits = defineEmits(['hide'])
 const props = defineProps({
