@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 namespace App\Services;
 
@@ -15,6 +15,7 @@ use Illuminate\Http\Response;
 interface ResponseStream
 {
     public function stream(string $filename): Response;
+
     public function output(): string;
 }
 
@@ -29,8 +30,8 @@ class PDFDriverFactory
     {
         return match ($driver) {
             'dompdf' => App::make('dompdf.wrapper'),
-            'gotenberg' => new GotenbergPDFDriver(),
-            default => throw new \InvalidArgumentException("Invalid PDFDriver requested")
+            'gotenberg' => new GotenbergPDFDriver,
+            default => throw new \InvalidArgumentException('Invalid PDFDriver requested')
         };
     }
 }
@@ -40,6 +41,7 @@ class PDFService
     public static function loadView(string $template)
     {
         $driver = config('pdf.driver');
+
         return PDFDriverFactory::create($driver)->loadView($template);
     }
 }

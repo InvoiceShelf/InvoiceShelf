@@ -19,9 +19,10 @@ class GotenbergPDFResponse
     public function stream(string $filename = 'document.pdf'): Response
     {
         $output = $this->response->getBody();
+
         return new Response($output, 200, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' =>  'inline; filename="' . $filename . '"',
+            'Content-Disposition' => 'inline; filename="'.$filename.'"',
         ]);
     }
 
@@ -36,6 +37,10 @@ class GotenbergPDFDriver
     public function loadView(string $viewname): GotenbergPDFResponse
     {
         $papersize = explode(' ', config('pdf.gotenberg.papersize'));
+        if (count($papersize) != 2) {
+            throw new \InvalidArgumentException('Invalid Gotenberg Papersize specified');
+        }
+
         $host = config('pdf.gotenberg.host');
         $request = Gotenberg::chromium($host)
             ->pdf()
