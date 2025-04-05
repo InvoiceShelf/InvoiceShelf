@@ -1087,6 +1087,8 @@
         "description": "Tiết kiệm thời gian bằng cách tạo ghi chú và sử dụng lại chúng trên hóa đơn, ước tính của bạn.",
         "notes": "Ghi chú",
         "type": "Kiểu",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Thêm ghi chú",
         "add_new_note": "Thêm ghi chú mới",
         "name": "Tên",
