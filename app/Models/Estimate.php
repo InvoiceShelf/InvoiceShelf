@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App;
-use App\Facades\PDF;
 use App\Mail\SendEstimateMail;
 use App\Services\SerialNumberFormatter;
 use App\Space\PdfTemplateUtils;

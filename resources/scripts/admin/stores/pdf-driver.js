@@ -1,7 +1,7 @@
-import axios from 'axios'
-import { defineStore } from 'pinia'
+const { defineStore } = window.pinia
 import { handleError } from '@/scripts/helpers/error-handling'
 import { useNotificationStore } from '@/scripts/stores/notification'
+import axios from 'axios'
 
 export const usePDFDriverStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
