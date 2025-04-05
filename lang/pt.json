@@ -591,7 +591,7 @@
     "marked_as_sent_message": "Fatura recorrente marcada como enviada com sucesso",
     "user_email_does_not_exist": "E-mail de usuário não existe",
     "something_went_wrong": "algo deu errado",
-    "invalid_due_amount_message": "Total Recurring Invoice amount cannot be less than total paid amount for this Recurring Invoice. Please update the invoice or delete the associated payments to continue.",
+    "invalid_due_amount_message": "O valor total da fatura recorrente não pode ser menor que o valor total a ser pago para esta fatura. Atualize a fatura ou exclua os pagamentos associados para continuar.",
     "limit": {
       "none": "Nenhum",
       "date": "Data",
@@ -1010,11 +1010,11 @@
         "invoice_number_format": "Invoice Number Format",
         "invoice_number_format_description": "Customize how your invoice number gets generated automatically when you create a new invoice.",
         "preview_invoice_number": "Preview Invoice Number",
-        "due_date": "Due Date",
+        "due_date": "Vencimento",
         "due_date_description": "Specify how due date is automatically set when you create an invoice.",
-        "due_date_days": "Invoice Due after days",
-        "set_due_date_automatically": "Set Due Date Automatically",
-        "set_due_date_automatically_description": "Enable this if you wish to set due date automatically when you create a new invoice.",
+        "due_date_days": "Dias antes do vencimento da fatura",
+        "set_due_date_automatically": "Definir Data de Vencimento Automaticamente",
+        "set_due_date_automatically_description": "Habilite isso se você deseja definir a data de vencimento automaticamente ao criar uma fatura.",
         "default_formats": "Default Formats",
         "default_formats_description": "Below given formats are used to fill up the fields automatically on invoice creation.",
         "default_invoice_email_body": "Corpo Padrão de Email de Fatura",
@@ -1023,7 +1023,7 @@
         "billing_address_format": "Formato de Endereço de Faturamento",
         "invoice_email_attachment": "Enviar faturas como anexos",
         "invoice_email_attachment_setting_description": "Ative esta opção se quiser anexar faturas no e-mail. Lembrando que quando habilitado, o botão 'Ver fatura' nos e-mails não será mais exibido.",
-        "invoice_settings_updated": "Invoice Settings updated successfully",
+        "invoice_settings_updated": "Configuração da Fatura atualizada com sucesso",
         "retrospective_edits": "Retrospective Edits",
         "allow": "Allow",
         "disable_on_invoice_partial_paid": "Disable after partial payment is recorded",
@@ -1099,7 +1099,7 @@
         "types": {
           "estimate": "Estimate",
           "invoice": "Invoice",
-          "payment": "Payment"
+          "payment": "Pagamento"
         }
       }
     },
@@ -1161,8 +1161,8 @@
       "select_driver": "Select Driver",
       "update": "select exchange rate ",
       "providers_description": "Configure your exchange rate providers here to automatically fetch the latest exchange rate on transactions.",
-      "key": "API Key",
-      "name": "Name",
+      "key": "Chave API",
+      "name": "Nome",
       "driver": "Driver",
       "is_default": "IS DEFAULT",
       "currency": "Moeda",
