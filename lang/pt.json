@@ -1087,6 +1087,8 @@
         "description": "Economize tempo criando notas e reutilizando-as nas suas faturas, orçamentos e pagamentos.",
         "notes": "Notas",
         "type": "Tipo",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Adicionar Nota",
         "add_new_note": "Adicionar Nova Nota",
         "name": "Nome",
