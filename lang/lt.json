@@ -1087,6 +1087,8 @@
         "description": "Save time by creating notes and reusing them on your invoices, estimates & payments.",
         "notes": "Pastabos",
         "type": "Tipas",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Pridėti pastabą",
         "add_new_note": "Pridėti Naują Pastabą",
         "name": "Pavadinimas",
