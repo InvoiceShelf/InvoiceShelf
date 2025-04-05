@@ -1087,6 +1087,8 @@
         "description": "Εξοικονομήστε χρόνο δημιουργώντας σημειώσεις και επαναχρησιμοποίησή τους στα τιμολόγια σας, εκτιμήσεις και πληρωμές.",
         "notes": "Σημειώσεις",
         "type": "Type",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Προσθήκη σημείωσης",
         "add_new_note": "Προσθήκη Νέας Σημείωσης",
         "name": "Όνομα",
