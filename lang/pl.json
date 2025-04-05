@@ -1087,6 +1087,8 @@
         "description": "Oszczędzaj czas, tworząc notatki i ponownie używając ich na fakturach, ofertach i płatnościach.",
         "notes": "Notatki",
         "type": "Typ",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Dodaj notatkę",
         "add_new_note": "Dodaj nową notatkę",
         "name": "Nazwa",
