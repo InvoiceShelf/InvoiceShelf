@@ -1087,6 +1087,8 @@
         "description": "Spara tid genom att skapa noteringar som kan återanvändas på fakturor, betalningsförslag, och betalningar.",
         "notes": "Anteckningar",
         "type": "Typ",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Lägg till anteckning",
         "add_new_note": "Lägg till ny anteckning",
         "name": "Namn",
