@@ -60,7 +60,7 @@
               <BaseIcon
                 v-if="!isSaving"
                 :class="slotProps.class"
-                name="SaveIcon"
+                name="ArrowDownOnSquareIcon"
               />
             </template>
             {{ $t('estimates.save_estimate') }}

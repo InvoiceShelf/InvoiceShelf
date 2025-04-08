@@ -73,7 +73,7 @@
             @input="onSearched()"
           >
             <template #right>
-              <BaseIcon name="SearchIcon" class="text-gray-400" />
+              <BaseIcon name="MagnifyingGlassIcon" class="text-gray-400" />
             </template>
           </BaseInput>
         </div>
@@ -87,7 +87,7 @@
           >
             <template #activator>
               <BaseButton size="md" variant="gray">
-                <BaseIcon name="FilterIcon" />
+                <BaseIcon name="FunnelIcon" />
               </BaseButton>
             </template>
 

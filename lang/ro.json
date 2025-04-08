@@ -12,7 +12,7 @@
     "settings": "Setări",
     "logout": "Deconectare",
     "users": "Utilizatori",
-    "modules": "Modules"
+    "modules": "Module"
   },
   "general": {
     "add_company": "Adaugă firmă",
@@ -1236,7 +1236,7 @@
       "time_zone": "Time Zone",
       "fiscal_year": "Financial Year",
       "date_format": "Date Format",
-      "time_format": "Time Fromat",
+      "time_format": "Time Format",
       "discount_setting": "Discount Setting",
       "discount_per_item": "Discount Per Item ",
       "discount_setting_description": "Enable this if you want to add Discount to individual invoice items. By default, Discount is added directly to the invoice.",
@@ -1588,7 +1588,7 @@
   "pdf_invoice_label": "Invoice",
   "pdf_invoice_number": "Invoice Number",
   "pdf_invoice_date": "Invoice Date",
-  "pdf_invoice_due_date": "Due date",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "Notes",
   "pdf_items_label": "Items",
   "pdf_quantity_label": "Quantity",

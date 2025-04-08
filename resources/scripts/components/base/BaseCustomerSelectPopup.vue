@@ -357,7 +357,7 @@
               "
               @click="openCustomerModal"
             >
-              <BaseIcon name="UserAddIcon" class="text-primary-400" />
+              <BaseIcon name="UserPlusIcon" class="text-primary-400" />
 
               <label
                 class="
@@ -487,6 +487,7 @@ async function searchCustomer() {
     page: 1,
   }
 
+  customerStore.$reset()
   await customerStore.fetchCustomers(data)
   isSearchingCustomer.value = false
 }
