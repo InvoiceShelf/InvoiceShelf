@@ -53,7 +53,6 @@ const emit = defineEmits(['update', 'remove'])
 const utils = inject('$utils')
 
 const taxAmount = computed(() => {
-  console.log(props)
   if (props.tax.calculation_type === 'fixed') {
     return props.tax.fixed_amount;
   }
