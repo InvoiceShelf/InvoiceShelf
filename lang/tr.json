@@ -101,19 +101,19 @@
     "login_successfully": "Başarıyla giriş yapıldı!",
     "logged_out_successfully": "Başarıyla çıkış yapıldı",
     "mark_as_default": "Varsayılan olarak işaretleyin",
-    "no_data_found": "No data found",
+    "no_data_found": "Veri bulunamadı.",
     "pagination": {
-      "previous": "Previous",
+      "previous": "Önceki",
       "next": "İleri",
-      "showing": "Showing",
-      "to": "to",
-      "of": "of",
-      "results": "results"
+      "showing": "Gösterilen",
+      "to": "için",
+      "of": "'un",
+      "results": "sonuçlar"
     },
     "file_upload": {
-      "drag_a_file": "Drag a file here or",
-      "browse": "browse",
-      "to_choose": "to choose a file"
+      "drag_a_file": "Bu dosyayı sürükleyin veya",
+      "browse": "göz at\n",
+      "to_choose": "bir dosya seçmek için"
     },
     "multiselect": {
       "the_list_is_empty": "The list is empty",
