@@ -961,7 +961,7 @@
       "use_predefined_options": "Gunakan Opsi yang Telah Ditentukan",
       "select_custom_date": "Pilih Tanggal Khusus",
       "select_relative_date": "Pilih Tanggal Relatif",
-      "ticked_by_default": "Ticked by default",
+      "ticked_by_default": "",
       "updated_message": "Kolom Khusus berhasil diperbarui",
       "added_message": "Kolom Khusus berhasil ditambahkan",
       "press_enter_to_add": "Tekan 'enter' untuk menambahkan opsi baru",
