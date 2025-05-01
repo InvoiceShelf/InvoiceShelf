@@ -58,6 +58,7 @@ class MailConfigurationController extends Controller
             'mail_mailgun_secret' => config('services.mailgun.secret'),
             'mail_ses_key' => config('services.ses.key'),
             'mail_ses_secret' => config('services.ses.secret'),
+            'mail_ses_region' => config('services.ses.region'),
         ];
 
         return response()->json($MailData);

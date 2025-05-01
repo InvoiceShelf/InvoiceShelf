@@ -161,6 +161,26 @@
           </template>
         </BaseInput>
       </BaseInputGroup>
+
+      <BaseInputGroup
+        :label="$t('settings.mail.ses_region')"
+        :content-loading="isFetchingInitialData"
+        :error="
+          v$.sesConfig.mail_ses_region.$error &&
+          v$.sesConfig.mail_ses_region.$errors[0].$message
+        "
+        required
+      >
+        <BaseInput
+          v-model.trim="mailDriverStore.sesConfig.mail_ses_region"
+          :content-loading="isFetchingInitialData"
+          type="text"
+          name="mail_ses_region"
+          :invalid="v$.sesConfig.mail_ses_region.$error"
+          @input="v$.sesConfig.mail_ses_region.$touch()"
+        />
+      </BaseInputGroup>
+
     </BaseInputGrid>
 
     <div class="flex my-10">
@@ -236,6 +256,9 @@ const rules = computed(() => {
         required: helpers.withMessage(t('validation.required'), required),
       },
       mail_ses_secret: {
+        required: helpers.withMessage(t('validation.required'), required),
+      },
+      mail_ses_region: {
         required: helpers.withMessage(t('validation.required'), required),
       },
       mail_encryption: {
