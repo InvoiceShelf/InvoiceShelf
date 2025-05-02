@@ -893,6 +893,7 @@
       "mailgun_endpoint": "Mailgun Uçnoktası",
       "ses_secret": "SES Sırrı",
       "ses_key": "Ses Anahtarı",
+      "ses_region": "AWS Region",
       "password": "Posta Parolası",
       "username": "Posta Kullanıcı Adı",
       "mail_config": "Posta Konfigürasyonu",
