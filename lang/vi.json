@@ -893,6 +893,7 @@
       "mailgun_endpoint": "Điểm cuối của Mailgun",
       "ses_secret": "Bí mật SES",
       "ses_key": "Khóa SES",
+      "ses_region": "AWS Region",
       "password": "Mật khẩu thư",
       "username": "Tên người dùng thư",
       "mail_config": "Cấu hình thư",
