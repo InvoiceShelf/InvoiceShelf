@@ -893,6 +893,7 @@
       "mailgun_endpoint": "Endpoint Mailgun",
       "ses_secret": "Kunci Rahasia SES",
       "ses_key": "Kunci SES",
+      "ses_region": "AWS Region",
       "password": "Kata Sandi Surel",
       "username": "Nama Pengguna Surel",
       "mail_config": "Konfigurasi Surel",
