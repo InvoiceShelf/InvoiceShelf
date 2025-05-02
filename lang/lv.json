@@ -893,6 +893,7 @@
       "mailgun_endpoint": "Mailgun Endpoint",
       "ses_secret": "SES Secret",
       "ses_key": "SES Key",
+      "ses_region": "AWS Region",
       "password": "E-pasta parole",
       "username": "E-pasta lietotājvārds",
       "mail_config": "E-pasta konfigurācija",
