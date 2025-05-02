@@ -893,6 +893,7 @@
       "mailgun_endpoint": "Mailgun Endpoint",
       "ses_secret": "SES tajný klíč (secret)",
       "ses_key": "Klíč SES",
+      "ses_region": "AWS Region",
       "password": "E-mailové heslo",
       "username": "Uživatelské jméno pro e-mail",
       "mail_config": "Konfigurace e-mailu",
