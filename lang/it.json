@@ -893,6 +893,7 @@
       "mailgun_endpoint": "Endpoint Mailgun",
       "ses_secret": "Segreto SES",
       "ses_key": "Chiave SES",
+      "ses_region": "AWS Region",
       "password": "Password Email",
       "username": "Nome Utente Email",
       "mail_config": "Configurazione Mail",
