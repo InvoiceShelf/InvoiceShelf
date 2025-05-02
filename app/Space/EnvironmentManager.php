@@ -296,6 +296,7 @@ class EnvironmentManager
                     'MAIL_FROM_NAME' => $request->get('from_name'),
                     'SES_KEY' => $request->get('mail_ses_key'),
                     'SES_SECRET' => $request->get('mail_ses_secret'),
+                    'SES_REGION' => $request->get('mail_ses_region'),
                 ];
 
                 break;
