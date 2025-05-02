@@ -893,6 +893,7 @@
       "mailgun_endpoint": "Mailgun Endpoint",
       "ses_secret": "SES Μυστικό",
       "ses_key": "Κλειδί SES",
+      "ses_region": "AWS Region",
       "password": "Κωδικός Πρόσβασης Ταχυδρομείου",
       "username": "Όνομα Ταχυδρομείου",
       "mail_config": "Διαμόρφωση Mail",
