@@ -893,6 +893,7 @@
       "mailgun_endpoint": "Mailgun Endpoint",
       "ses_secret": "SES Lozinka",
       "ses_key": "SES Ključ",
+      "ses_region": "AWS Region",
       "password": "Mail Lozinka",
       "username": "Mail Korisničko Ime",
       "mail_config": "Mail Postavke",
