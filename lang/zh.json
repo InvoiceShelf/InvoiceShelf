@@ -893,6 +893,7 @@
       "mailgun_endpoint": "Mailgun \bendpoint",
       "ses_secret": "SES 金鑰",
       "ses_key": "SES 匙",
+      "ses_region": "AWS Region",
       "password": "郵件密碼",
       "username": "郵件登入名稱",
       "mail_config": "郵件設定",
