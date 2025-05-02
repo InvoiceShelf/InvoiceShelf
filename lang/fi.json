@@ -893,6 +893,7 @@
       "mailgun_endpoint": "Mailgun päätepiste",
       "ses_secret": "SES salaus",
       "ses_key": "SES avain",
+      "ses_region": "AWS Region",
       "password": "Sähköpostin salasana",
       "username": "Sähköpostin käyttäjänimi",
       "mail_config": "Sähköposti asetukset",
