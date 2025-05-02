@@ -893,6 +893,7 @@
       "mailgun_endpoint": "Домен api",
       "ses_secret": "SES секретний API-ключ",
       "ses_key": "SES API-ключ",
+      "ses_region": "AWS Region",
       "password": "Пароль пошти",
       "username": "Ім'я користувача пошти",
       "mail_config": "Налаштування пошти",
