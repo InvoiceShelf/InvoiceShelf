@@ -852,7 +852,8 @@
       "payment_modes": "Phương thức thanh toán",
       "notes": "Ghi chú",
       "exchange_rate": "Tỷ giá ngoại tệ",
-      "address_information": "Thông tin địa chỉ"
+      "address_information": "Thông tin địa chỉ",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  Bạn có thể cập nhật thông tin địa chỉ bằng cách sử dụng biếu mẫu duới đây."
@@ -905,7 +906,15 @@
     "pdf": {
       "title": "Cài đặt PDF",
       "footer_text": "Văn bản chân trang",
-      "pdf_layout": "Bố cục PDF"
+      "pdf_layout": "Bố cục PDF",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "Thông tin công ty",
