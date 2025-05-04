@@ -38,8 +38,8 @@ class ItemsController extends Controller
                 'tax_types' => TaxType::whereCompany()->latest()->get(),
                 'item_total_count' => Item::whereCompany()->count(),
                 'opening_stock_enabled' => $openingStockEnabled === 'true',
-           
-                ]]);
+
+            ]]);
     }
 
     /**

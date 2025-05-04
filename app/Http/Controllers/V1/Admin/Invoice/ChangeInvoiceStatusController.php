@@ -4,9 +4,8 @@ namespace App\Http\Controllers\V1\Admin\Invoice;
 
 use App\Http\Controllers\Controller;
 use App\Models\Invoice;
-use Illuminate\Http\Request;
 use App\Models\Setting;
-
+use Illuminate\Http\Request;
 
 class ChangeInvoiceStatusController extends Controller
 {
@@ -19,7 +18,6 @@ class ChangeInvoiceStatusController extends Controller
     {
         $this->authorize('send invoice', $invoice);
 
-       
         if ($request->status == Invoice::STATUS_SENT) {
             $invoice->status = Invoice::STATUS_SENT;
             $invoice->sent = true;
@@ -30,8 +28,7 @@ class ChangeInvoiceStatusController extends Controller
             $invoice->due_amount = 0;
             $invoice->save();
 
-            
-            $manageStock = Setting::get('manage_stock', false); //Set to false
+            $manageStock = Setting::get('manage_stock', false); // Set to false
 
             if ($manageStock) {
                 foreach ($invoice->items as $invoiceItem) {
@@ -42,12 +39,11 @@ class ChangeInvoiceStatusController extends Controller
                         $item->save();
                     }
                 }
+            }
+
+            return response()->json([
+                'success' => true,
+            ]);
         }
-
-        return response()->json([
-            'success' => true,
-        ]);
     }
-}
-
 }
