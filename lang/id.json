@@ -161,7 +161,10 @@
     "name": "Nama",
     "description": "Deskripsi",
     "percent": "Persen",
-    "compound_tax": "Pajak majemuk"
+    "compound_tax": "Pajak majemuk",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Cari...",
@@ -1205,7 +1208,12 @@
       "tax_per_item": "Tax Per Item",
       "tax_name": "Nama Pajak",
       "compound_tax": "Compound Tax",
+      "amount": "Amount",
       "percent": "Persen",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Aksi",
       "tax_setting_description": "Aktifkan ini jika Anda ingin menambahkan pajak ke masing-masing item faktur. Secara bawaan, pajak ditambahkan langsung ke faktur.",
       "created_message": "Tax type created successfully",
