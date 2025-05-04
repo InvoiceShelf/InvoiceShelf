@@ -161,7 +161,10 @@
     "name": "名稱",
     "description": "詳情",
     "percent": "百分比",
-    "compound_tax": "複合稅"
+    "compound_tax": "複合稅",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "搜尋...",
@@ -1205,7 +1208,12 @@
       "tax_per_item": "商品稅項",
       "tax_name": "稅項名稱",
       "compound_tax": "複合稅",
+      "amount": "Amount",
       "percent": "百分比",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "操作",
       "tax_setting_description": "啟用此項, 如果你要將稅項以每個獨立商品計算. 預設稅項以整單發票計算.",
       "created_message": "成功新增稅項類型",
