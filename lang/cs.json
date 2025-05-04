@@ -161,7 +161,10 @@
     "name": "Jméno",
     "description": "Popis",
     "percent": "Procento",
-    "compound_tax": "Kombinovaná daň"
+    "compound_tax": "Kombinovaná daň",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Hledat...",
@@ -1205,7 +1208,12 @@
       "tax_per_item": "Daň za položku",
       "tax_name": "Název daně",
       "compound_tax": "Složená daň",
+      "amount": "Amount",
       "percent": "Procento",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Akce",
       "tax_setting_description": "Povolte, pokud chcete přidat daně k jednotlivým položkám faktury. Ve výchozím nastavení jsou daně přidány přímo na fakturu.",
       "created_message": "Typ daně úspěšně vytvořen",
