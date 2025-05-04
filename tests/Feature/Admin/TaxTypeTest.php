@@ -97,3 +97,16 @@ test('create negative tax type', function () {
 
     $this->assertDatabaseHas('tax_types', $taxType);
 });
+
+test('create fixed amount tax type', function () {
+    $taxType = TaxType::factory()->raw([
+        'calculation_type' => 'fixed',
+        'percent' => null,
+        'fixed_amount' => 5000,
+    ]);
+
+    postJson('api/v1/tax-types', $taxType)
+        ->assertStatus(201);
+
+    $this->assertDatabaseHas('tax_types', $taxType);
+});

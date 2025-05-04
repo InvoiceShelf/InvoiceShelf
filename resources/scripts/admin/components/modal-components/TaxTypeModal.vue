@@ -7,7 +7,7 @@
       <div class="flex justify-between w-full">
         {{ modalStore.title }}
         <BaseIcon
-          name="XIcon"
+          name="XMarkIcon"
           class="h-6 w-6 text-gray-500 cursor-pointer"
           @click="closeTaxTypeModal"
         />
@@ -34,12 +34,28 @@
           </BaseInputGroup>
 
           <BaseInputGroup
+            :label="$t('tax_types.tax_type')"
+            variant="horizontal"
+            required
+          >
+            <BaseSelectInput
+              v-model="taxTypeStore.currentTaxType.calculation_type"
+              :options="[
+                { id: 'percentage', label: $t('tax_types.percentage') }, 
+                { id: 'fixed', label: $t('tax_types.fixed_amount') }
+              ]"
+              :allow-empty="false"
+              value-prop="id"
+              label-prop="label"
+              track-by="label"
+              :searchable="false"
+            />
+          </BaseInputGroup>
+
+          <BaseInputGroup
+            v-if="taxTypeStore.currentTaxType.calculation_type === 'percentage'"
             :label="$t('tax_types.percent')"
             variant="horizontal"
-            :error="
-              v$.currentTaxType.percent.$error &&
-              v$.currentTaxType.percent.$errors[0].$message
-            "
             required
           >
             <BaseMoney
@@ -51,13 +67,18 @@
                 precision: 2,
                 masked: false,
               }"
-              :invalid="v$.currentTaxType.percent.$error"
-              class="
-                relative
-                w-full
-                focus:border focus:border-solid focus:border-primary
-              "
-              @input="v$.currentTaxType.percent.$touch()"
+            />
+          </BaseInputGroup>
+
+          <BaseInputGroup
+            v-else
+            :label="$t('tax_types.fixed_amount')"
+            variant="horizontal"
+            required
+          >
+            <BaseMoney
+              v-model="fixedAmount"
+              :currency="defaultCurrency"
             />
           </BaseInputGroup>
 
@@ -105,7 +126,7 @@
           <template #left="slotProps">
             <BaseIcon
               v-if="!isSaving"
-              name="SaveIcon"
+              name="ArrowDownOnSquareIcon"
               :class="slotProps.class"
             />
           </template>
@@ -127,6 +148,8 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Guid from 'guid'
 import TaxStub from '@/scripts/admin/stub/abilities'
+import { useCompanyStore } from '@/scripts/admin/stores/company'
+
 import {
   required,
   minLength,
@@ -140,6 +163,8 @@ const taxTypeStore = useTaxTypeStore()
 const modalStore = useModalStore()
 const notificationStore = useNotificationStore()
 const estimateStore = useEstimateStore()
+const companyStore = useCompanyStore()
+const defaultCurrency = computed(() => companyStore.selectedCompanyCurrency)
 
 const { t, tm } = useI18n()
 let isSaving = ref(false)
@@ -154,12 +179,18 @@ const rules = computed(() => {
           minLength(3)
         ),
       },
+      calculation_type: {
+        required: helpers.withMessage(t('validation.required'), required),
+      },
       percent: {
         required: helpers.withMessage(t('validation.required'), required),
         between: helpers.withMessage(
           t('validation.enter_valid_tax_rate'),
           between(-100, 100)
         ),
+      },
+      fixed_amount: {
+        required: helpers.withMessage(t('validation.required'), required),
       },
       description: {
         maxLength: helpers.withMessage(
@@ -198,16 +229,22 @@ async function submitTaxTypeData() {
 
 function SelectTax(taxData) {
   let amount = 0
- if (estimateStore.getSubtotalWithDiscount && taxData.percent) {
-    amount = Math.round(
-      (estimateStore.getSubtotalWithDiscount * taxData.percent) / 100
-    )
+  if (estimateStore.getSubtotalWithDiscount) {
+    if (taxData.calculation_type === 'percentage') {
+      amount = Math.round(
+        (estimateStore.getSubtotalWithDiscount * taxData.percent) / 100
+      )
+    } else {
+      amount = taxData.fixed_amount
+    }
   }
   let data = {
     ...TaxStub,
     id: Guid.raw(),
     name: taxData.name,
+    calculation_type: taxData.calculation_type,
     percent: taxData.percent,
+    fixed_amount: taxData.fixed_amount,
     tax_type_id: taxData.id,
     amount,
   }
@@ -222,7 +259,9 @@ function selectItemTax(taxData) {
       ...TaxStub,
       id: Guid.raw(),
       name: taxData.name,
+      calculation_type: taxData.calculation_type,
       percent: taxData.percent,
+      fixed_amount: taxData.fixed_amount,
       tax_type_id: taxData.id,
     }
     modalStore.refreshData(data)
@@ -236,4 +275,11 @@ function closeTaxTypeModal() {
     v$.value.$reset()
   }, 300)
 }
+
+const fixedAmount = computed({
+  get: () => taxTypeStore.currentTaxType.fixed_amount / 100,
+  set: (value) => {
+    taxTypeStore.currentTaxType.fixed_amount = Math.round(value * 100)
+  },
+})
 </script>

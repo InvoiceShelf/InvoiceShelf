@@ -160,12 +160,31 @@
         >
           <template #right>
             <BaseIcon
-              :name="isShowPassword ? 'EyeIcon' : 'EyeOffIcon'"
+              :name="isShowPassword ? 'EyeIcon' : 'EyeSlashIcon'"
               class="mr-1 text-gray-500 cursor-pointer"
               @click="isShowPassword = !isShowPassword"
             />
           </template>
         </BaseInput>
+      </BaseInputGroup>
+
+      <BaseInputGroup
+        :label="$t('settings.mail.ses_region')"
+        :content-loading="isFetchingInitialData"
+        :error="
+          v$.sesConfig.mail_ses_region.$error &&
+          v$.sesConfig.mail_ses_region.$errors[0].$message
+        "
+        required
+      >
+        <BaseInput
+          v-model.trim="mailDriverStore.sesConfig.mail_ses_region"
+          :content-loading="isFetchingInitialData"
+          type="text"
+          name="mail_ses_region"
+          :invalid="v$.sesConfig.mail_ses_region.$error"
+          @input="v$.sesConfig.mail_ses_region.$touch()"
+        />
       </BaseInputGroup>
     </div>
 
@@ -176,7 +195,7 @@
       class="mt-4"
     >
       <template #left="slotProps">
-        <BaseIcon v-if="!isSaving" name="SaveIcon" :class="slotProps.class" />
+        <BaseIcon v-if="!isSaving" name="ArrowDownOnSquareIcon" :class="slotProps.class" />
       </template>
 
       {{ $t('general.save') }}
@@ -235,6 +254,9 @@ const rules = computed(() => {
         required: helpers.withMessage(t('validation.required'), required),
       },
       mail_ses_secret: {
+        required: helpers.withMessage(t('validation.required'), required),
+      },
+      mail_ses_region: {
         required: helpers.withMessage(t('validation.required'), required),
       },
       mail_encryption: {

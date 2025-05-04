@@ -56,7 +56,7 @@
       "
       @click.prevent="onToggle"
     >
-      <BaseIcon name="MenuIcon" class="!w-6 !h-6 text-gray-500" />
+      <BaseIcon name="Bars3Icon" class="!w-6 !h-6 text-gray-500" />
     </div>
 
     <ul class="flex float-right h-8 m-0 list-none md:h-9">
@@ -160,7 +160,7 @@
 
           <BaseDropdownItem @click="logout">
             <BaseIcon
-              name="LogoutIcon"
+              name="ArrowRightOnRectangleIcon"
               class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
               aria-hidden="true"
             />

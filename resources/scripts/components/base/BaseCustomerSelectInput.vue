@@ -21,7 +21,7 @@
         @click="addCustomer"
       >
         <BaseIcon
-          name="UserAddIcon"
+          name="UserPlusIcon"
           class="h-4 mr-2 -ml-2 text-center text-primary-400"
         />
 

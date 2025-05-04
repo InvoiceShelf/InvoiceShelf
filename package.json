@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@headlessui/vue": "^1.7.23",
-    "@heroicons/vue": "^1.0.6",
+    "@heroicons/vue": "^2.2.0",
     "@popperjs/core": "^2.11.8",
     "@stripe/stripe-js": "^2.4.0",
     "@tiptap/core": "^2.11.2",
@@ -41,7 +41,7 @@
     "@vuelidate/core": "^2.0.3",
     "@vuelidate/validators": "^2.0.4",
     "@vueuse/core": "^12.4.0",
-    "axios": "0.29.0",
+    "axios": "0.30.0",
     "chart.js": "^2.9.4",
     "guid": "^0.0.12",
     "laravel-vite-plugin": "^1.1.1",

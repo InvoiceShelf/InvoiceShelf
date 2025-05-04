@@ -14,6 +14,7 @@ export const useNotesStore = (useWindow = false) => {
       currentNote: {
         id: null,
         type: '',
+        is_default: false,
         name: '',
         notes: '',
       },
@@ -24,9 +25,14 @@ export const useNotesStore = (useWindow = false) => {
     },
 
     actions: {
+      getDefaultNoteForType(type) {
+        return this.notes.find((note) => note.type === type && note.is_default)
+      },
+
       resetCurrentNote() {
         this.currentNote = {
           type: '',
+          is_default: false,
           name: '',
           notes: '',
         }

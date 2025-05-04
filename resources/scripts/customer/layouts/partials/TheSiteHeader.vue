@@ -93,7 +93,7 @@
               </router-link>
 
               <BaseDropdownItem @click="logout">
-                <LogoutIcon
+                <ArrowRightOnRectangleIcon
                   class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
                   aria-hidden="true"
                 />
@@ -121,8 +121,8 @@
             "
           >
             <span class="sr-only">Open main menu</span>
-            <MenuIcon v-if="!open" class="block h-6 w-6" aria-hidden="true" />
-            <XIcon v-else class="block h-6 w-6" aria-hidden="true" />
+            <Bars3Icon v-if="!open" class="block h-6 w-6" aria-hidden="true" />
+            <XMarkIcon v-else class="block h-6 w-6" aria-hidden="true" />
           </DisclosureButton>
         </div>
       </div>
@@ -206,7 +206,7 @@ import {
   Menu,
   MenuButton,
 } from '@headlessui/vue'
-import { MenuIcon, XIcon, LogoutIcon, CogIcon } from '@heroicons/vue/outline'
+import { Bars3Icon, XMarkIcon, ArrowRightOnRectangleIcon, CogIcon } from '@heroicons/vue/24/outline'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()

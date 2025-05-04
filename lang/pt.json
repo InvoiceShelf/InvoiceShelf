@@ -1496,6 +1496,7 @@
       "mailgun_endpoint": "Endpoint do Mailgun",
       "ses_secret": "Senha do SES",
       "ses_key": "Chave SES",
+      "ses_region": "Região AWS",
       "password": "Senha do email",
       "username": "Nome do Usuário do email",
       "mail_config": "Configuração de email",
