@@ -852,7 +852,8 @@
       "payment_modes": "Meios de Pagamento",
       "notes": "Observações",
       "exchange_rate": "Taxa de câmbio",
-      "address_information": "Informações de Endereço"
+      "address_information": "Informações de Endereço",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  Você pode atualizar suas informações de endereço usando o formulário abaixo."
@@ -905,7 +906,15 @@
     "pdf": {
       "title": "Configurações de PDF",
       "footer_text": "Texto do Rodapé",
-      "pdf_layout": "Layout de PDF"
+      "pdf_layout": "Layout de PDF",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "Informação da Empresa",
