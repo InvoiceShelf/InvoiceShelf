@@ -852,7 +852,8 @@
       "payment_modes": "Mode Pembayaran",
       "notes": "Catatan",
       "exchange_rate": "Nilai Tukar",
-      "address_information": "Informasi Alamat"
+      "address_information": "Informasi Alamat",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  Anda dapat memperbarui informasi Alamat Anda dengan menggunakan formulir di bawah ini."
@@ -905,7 +906,15 @@
     "pdf": {
       "title": "Pengaturan PDF",
       "footer_text": "Teks footer",
-      "pdf_layout": "Tata letak PDF"
+      "pdf_layout": "Tata letak PDF",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "Info perusahaan",
