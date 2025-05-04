@@ -399,7 +399,7 @@ Route::prefix('/v1')->group(function () {
             Route::get('/company/mail/config', GetCompanyMailConfigurationController::class);
 
             // PDF Generation
-            //----------------------------------
+            // ----------------------------------
 
             Route::get('/pdf/drivers', [PDFConfigurationController::class, 'getDrivers']);
 

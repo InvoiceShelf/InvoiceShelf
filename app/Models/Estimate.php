@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use App;
+use App\Facades\PDF;
 use App\Mail\SendEstimateMail;
 use App\Services\SerialNumberFormatter;
 use App\Space\PdfTemplateUtils;
-use App\Facades\PDF;
 use App\Traits\GeneratesPdfTrait;
 use App\Traits\HasCustomFieldsTrait;
 use Carbon\Carbon;
