@@ -6,6 +6,7 @@ use App\Http\Requests\DatabaseEnvironmentRequest;
 use App\Http\Requests\DiskEnvironmentRequest;
 use App\Http\Requests\DomainEnvironmentRequest;
 use App\Http\Requests\MailEnvironmentRequest;
+use App\Http\Requests\PDFConfigurationRequest;
 use Exception;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
@@ -94,7 +95,6 @@ class EnvironmentManager
         }
 
         return $str;
-
     }
 
     /**
@@ -225,7 +225,6 @@ class EnvironmentManager
         try {
 
             $this->updateEnv($mailEnv);
-
         } catch (Exception $e) {
             return [
                 'error' => 'mail_variables_save_error',
@@ -235,6 +234,60 @@ class EnvironmentManager
         return [
             'success' => 'mail_variables_save_successfully',
         ];
+    }
+
+    /**
+     * Save the pdf generation content to the .env file.
+     *
+     * @return array
+     */
+    public function savePDFVariables(PDFConfigurationRequest $request)
+    {
+        $pdfEnv = $this->getPDFConfiguration($request);
+
+        try {
+
+            $this->updateEnv($pdfEnv);
+        } catch (Exception $e) {
+            return [
+                'error' => 'pdf_variables_save_error',
+            ];
+        }
+
+        return [
+            'success' => 'pdf_variables_save_successfully',
+        ];
+    }
+
+    /**
+     * Returns the pdf configuration
+     *
+     * @param  PDFConfigurationRequest  $request
+     * @return array
+     */
+    private function getPDFConfiguration($request)
+    {
+        $pdfEnv = [];
+
+        $driver = $request->get('pdf_driver');
+
+        switch ($driver) {
+            case 'dompdf':
+                $pdfEnv = [
+                    'PDF_DRIVER' => $request->get('pdf_driver'),
+                ];
+                break;
+            case 'gotenberg':
+                $pdfEnv = [
+                    'PDF_DRIVER' => $request->get('pdf_driver'),
+                    'GOTENBERG_HOST' => $request->get('gotenberg_host'),
+                    'GOTENBERG_MARGINS' => $request->get('gotenberg_margins'),
+                    'GOTENBERG_PAPERSIZE' => $request->get('gotenberg_papersize'),
+                ];
+                break;
+        }
+
+        return $pdfEnv;
     }
 
     /**
@@ -296,6 +349,7 @@ class EnvironmentManager
                     'MAIL_FROM_NAME' => $request->get('from_name'),
                     'SES_KEY' => $request->get('mail_ses_key'),
                     'SES_SECRET' => $request->get('mail_ses_secret'),
+                    'SES_REGION' => $request->get('mail_ses_region'),
                 ];
 
                 break;
@@ -315,7 +369,6 @@ class EnvironmentManager
                 ];
 
                 break;
-
         }
 
         return $mailEnv;
@@ -333,7 +386,6 @@ class EnvironmentManager
         try {
 
             $this->updateEnv($diskEnv);
-
         } catch (Exception $e) {
             return [
                 'error' => 'disk_variables_save_error',
@@ -449,7 +501,6 @@ class EnvironmentManager
             }
             $formatted .= $current.$this->delimiter;
             $previous = $current;
-
         }
 
         file_put_contents($this->envPath, trim($formatted));

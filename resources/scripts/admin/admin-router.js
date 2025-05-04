@@ -56,6 +56,8 @@ const UpdateApp = () =>
   import('@/scripts/admin/views/settings/UpdateAppSetting.vue')
 const RolesSettings = () =>
   import('@/scripts/admin/views/settings/RolesSettings.vue')
+const PDFGenerationSettings = () =>
+  import('@/scripts/admin/views/settings/PDFGenerationSetting.vue')
 
 // Items
 const ItemsIndex = () => import('@/scripts/admin/views/items/Index.vue')
@@ -326,6 +328,12 @@ export default [
             name: 'updateapp',
             meta: { isOwner: true },
             component: UpdateApp,
+          },
+          {
+            path: 'pdf-generation',
+            name: 'pdf.generation',
+            meta: { isOwner: true },
+            component: PDFGenerationSettings,
           },
         ],
       },

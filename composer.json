@@ -14,6 +14,7 @@
         "doctrine/dbal": "^4.2",
         "dragonmantank/cron-expression": "^v3.4",
         "guzzlehttp/guzzle": "^7.9",
+        "gotenberg/gotenberg-php": "^2.8",
         "invoiceshelf/modules": "^1.0.0",
         "jasonmccreary/laravel-test-assertions": "^v2.4",
         "laravel/framework": "^12.0",
@@ -91,7 +92,8 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "allow-plugins": {
-            "pestphp/pest-plugin": true
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
         }
     },
     "minimum-stability": "stable",
