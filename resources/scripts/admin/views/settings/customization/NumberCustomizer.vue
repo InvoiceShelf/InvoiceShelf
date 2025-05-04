@@ -129,7 +129,7 @@
                 {{ $t('general.remove') }}
                 <template #left="slotProps">
                   <BaseIcon
-                    name="XIcon"
+                    name="XMarkIcon"
                     class="!sm:m-0"
                     :class="slotProps.class"
                   />
@@ -189,7 +189,7 @@
     @click="submitForm"
   >
     <template #left="slotProps">
-      <BaseIcon v-if="!isSaving" :class="slotProps.class" name="SaveIcon" />
+      <BaseIcon v-if="!isSaving" :class="slotProps.class" name="ArrowDownOnSquareIcon" />
     </template>
     {{ $t('settings.customization.save') }}
   </BaseButton>

@@ -1,5 +1,5 @@
-const colors = require('tailwindcss/colors')
-const svgToDataUri = require('mini-svg-data-uri')
+import { red, teal, slate } from 'tailwindcss/colors';
+import svgToDataUri from 'mini-svg-data-uri';
 
 function withOpacityValue(cssVariable) {
   return ({ opacityVariable, opacityValue }) => {
@@ -13,11 +13,13 @@ function withOpacityValue(cssVariable) {
   };
 }
 
-module.exports = {
-  content: [
-    './resources/views/**/*.php',
-    './resources/scripts/**/*.js',
-    './resources/scripts/**/*.vue',
+export default {
+  plugins: [
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/typography'),
+    require('@tailwindcss/aspect-ratio'),
+    require('tailwind-scrollbar'),
+    require('@rvxlab/tailwind-plugin-ios-full-height')
   ],
   theme: {
     extend: {
@@ -35,9 +37,9 @@ module.exports = {
           900: withOpacityValue('--color-primary-900'),
         },
         black: '#040405',
-        red: colors.red,
-        teal: colors.teal,
-        gray: colors.slate,
+        red: red,
+        teal: teal,
+        gray: slate,
       },
       spacing: {
         88: '22rem',
@@ -45,8 +47,8 @@ module.exports = {
       backgroundImage: (theme) => ({
         'multiselect-caret': `url("${svgToDataUri(
           `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-  <path fill-rule="evenodd" d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
-</svg>`
+    <path fill-rule="evenodd" d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+  </svg>`
         )}")`,
         'multiselect-spinner': `url("${svgToDataUri(
           `<svg viewBox="0 0 512 512" fill="${theme(
@@ -60,17 +62,14 @@ module.exports = {
         )}")`,
       }),
     },
-
+  
     fontFamily: {
       base: ['Poppins', 'sans-serif'],
     },
   },
-  plugins: [
-    require('@tailwindcss/forms'),
-    require('@tailwindcss/typography'),
-    require('@tailwindcss/aspect-ratio'),
-    require('tailwind-scrollbar'),
-    require('@rvxlab/tailwind-plugin-ios-full-height')
+  content: [
+    './resources/views/**/*.php',
+    './resources/scripts/**/*.js',
+    './resources/scripts/**/*.vue',
   ],
 }
-

@@ -47,12 +47,12 @@
         <BaseDropdown>
           <template #activator>
             <div class="inline-block">
-              <BaseIcon name="DotsHorizontalIcon" class="text-gray-500" />
+              <BaseIcon name="EllipsisHorizontalIcon" class="text-gray-500" />
             </div>
           </template>
 
           <BaseDropdownItem @click="onDownloadBckup(row.data)">
-            <BaseIcon name="CloudDownloadIcon" class="mr-3 text-gray-600" />
+            <BaseIcon name="CloudArrowDownIcon" class="mr-3 text-gray-600" />
 
             {{ $t('general.download') }}
           </BaseDropdownItem>

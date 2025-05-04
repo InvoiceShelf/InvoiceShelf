@@ -72,18 +72,12 @@
           >
             <template #right>
               <BaseIcon
-                v-if="isShowPassword"
-                name="EyeOffIcon"
-                class="w-5 h-5 mr-1 text-gray-500 cursor-pointer"
+                :name="isShowPassword ? 'EyeIcon' : 'EyeSlashIcon'"
+                class="mr-1 text-gray-500 cursor-pointer"
                 @click="isShowPassword = !isShowPassword"
               />
-              <BaseIcon
-                v-else
-                name="EyeIcon"
-                class="w-5 h-5 mr-1 text-gray-500 cursor-pointer"
-                @click="isShowPassword = !isShowPassword"
-              /> </template
-          ></BaseInput>
+            </template>
+          </BaseInput>
         </BaseInputGroup>
 
         <BaseInputGroup
@@ -101,24 +95,18 @@
           >
             <template #right>
               <BaseIcon
-                v-if="isShowConfirmPassword"
-                name="EyeOffIcon"
-                class="w-5 h-5 mr-1 text-gray-500 cursor-pointer"
+                :name="isShowConfirmPassword ? 'EyeIcon' : 'EyeSlashIcon'"
+                class="mr-1 text-gray-500 cursor-pointer"
                 @click="isShowConfirmPassword = !isShowConfirmPassword"
               />
-              <BaseIcon
-                v-else
-                name="EyeIcon"
-                class="w-5 h-5 mr-1 text-gray-500 cursor-pointer"
-                @click="isShowConfirmPassword = !isShowConfirmPassword"
-              /> </template
-          ></BaseInput>
+            </template>
+          </BaseInput>
         </BaseInputGroup>
       </div>
 
       <BaseButton :loading="isSaving" :disabled="isSaving" class="mt-6">
         <template #left="slotProps">
-          <BaseIcon v-if="!isSaving" name="SaveIcon" :class="slotProps.class" />
+          <BaseIcon v-if="!isSaving" name="ArrowDownOnSquareIcon" :class="slotProps.class" />
         </template>
         {{ $t('general.save') }}
       </BaseButton>
@@ -127,7 +115,7 @@
 </template>
 
 <script setup>
-import { SaveIcon } from '@heroicons/vue/solid'
+import { ArrowDownOnSquareIcon } from '@heroicons/vue/24/solid'
 import { ref, computed } from 'vue'
 import { useGlobalStore } from '@/scripts/customer/stores/global'
 import { useUserStore } from '@/scripts/customer/stores/user'

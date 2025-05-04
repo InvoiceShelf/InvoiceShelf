@@ -9,7 +9,7 @@
         {{ modalStore.title }}
 
         <BaseIcon
-          name="XIcon"
+          name="XMarkIcon"
           class="h-6 w-6 text-gray-500 cursor-pointer"
           @click="closeCustomerModal"
         />
@@ -167,18 +167,12 @@
                 >
                   <template #right>
                     <BaseIcon
-                      v-if="isShowPassword"
-                      name="EyeOffIcon"
-                      class="w-5 h-5 mr-1 text-gray-500 cursor-pointer"
+                      :name="isShowPassword ? 'EyeIcon' : 'EyeSlashIcon'"
+                      class="mr-1 text-gray-500 cursor-pointer"
                       @click="isShowPassword = !isShowPassword"
                     />
-                    <BaseIcon
-                      v-else
-                      name="EyeIcon"
-                      class="w-5 h-5 mr-1 text-gray-500 cursor-pointer"
-                      @click="isShowPassword = !isShowPassword"
-                    /> </template
-                ></BaseInput>
+                  </template>
+                </BaseInput>
               </BaseInputGroup>
               <BaseInputGroup
                 v-if="customerStore.currentCustomer.enable_portal"
@@ -199,18 +193,12 @@
                 >
                   <template #right>
                     <BaseIcon
-                      v-if="isShowConfirmPassword"
-                      name="EyeOffIcon"
-                      class="w-5 h-5 mr-1 text-gray-500 cursor-pointer"
+                      :name="isShowConfirmPassword ? 'EyeIcon' : 'EyeSlashIcon'"
+                      class="mr-1 text-gray-500 cursor-pointer"
                       @click="isShowConfirmPassword = !isShowConfirmPassword"
                     />
-                    <BaseIcon
-                      v-else
-                      name="EyeIcon"
-                      class="w-5 h-5 mr-1 text-gray-500 cursor-pointer"
-                      @click="isShowConfirmPassword = !isShowConfirmPassword"
-                    /> </template
-                ></BaseInput>
+                  </template>
+                </BaseInput>
               </BaseInputGroup>
             </BaseInputGrid>
           </BaseTab>
@@ -450,7 +438,7 @@
           <template #left="slotProps">
             <BaseIcon
               v-if="!isLoading"
-              name="SaveIcon"
+              name="ArrowDownOnSquareIcon"
               :class="slotProps.class"
             />
           </template>
