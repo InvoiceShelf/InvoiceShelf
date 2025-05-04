@@ -852,7 +852,8 @@
       "payment_modes": "Způsoby plateb",
       "notes": "Poznámky",
       "exchange_rate": "Směnný kurz",
-      "address_information": "Adresa"
+      "address_information": "Adresa",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  Adresu můžete aktualizovat pomocí formuláře níže."
@@ -905,7 +906,15 @@
     "pdf": {
       "title": "Nastavení PDF",
       "footer_text": "Text zápatí",
-      "pdf_layout": "Rozvržení PDF"
+      "pdf_layout": "Rozvržení PDF",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "Údaje o společnosti",
