@@ -161,7 +161,10 @@
     "name": "Nome",
     "description": "Descrição",
     "percent": "Porcentagem",
-    "compound_tax": "Imposto Composto"
+    "compound_tax": "Imposto Composto",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Buscar...",
@@ -1205,7 +1208,12 @@
       "tax_per_item": "Imposto por Item",
       "tax_name": "Nome do Imposto",
       "compound_tax": "Imposto Composto",
+      "amount": "Amount",
       "percent": "Porcentagem",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Ação",
       "tax_setting_description": "Habilite isso se desejar adicionar Impostos a itens da Fatura Individualmente. Por padrão, os impostos são adicionados diretamente à Fatura.",
       "created_message": "Tipo de Imposto criado com sucesso",
@@ -1496,7 +1504,6 @@
       "mailgun_endpoint": "Endpoint do Mailgun",
       "ses_secret": "Senha do SES",
       "ses_key": "Chave SES",
-      "ses_region": "Região AWS",
       "password": "Senha do email",
       "username": "Nome do Usuário do email",
       "mail_config": "Configuração de email",
