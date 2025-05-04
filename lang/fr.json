@@ -161,7 +161,10 @@
     "name": "Nom",
     "description": "Description",
     "percent": "Pourcentage",
-    "compound_tax": "Taxe composée"
+    "compound_tax": "Taxe composée",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Rechercher",
@@ -1205,7 +1208,12 @@
       "tax_per_item": "Taxe par article",
       "tax_name": "Nom",
       "compound_tax": "Taxe empilée",
+      "amount": "Amount",
       "percent": "Pourcentage",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "action",
       "tax_setting_description": "Activez cette option si vous souhaitez ajouter des taxes à des postes de facture individuels. Par défaut, les taxes sont ajoutées directement à la facture.",
       "created_message": "Taxe créée",
