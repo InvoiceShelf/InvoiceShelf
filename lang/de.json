@@ -161,7 +161,10 @@
     "name": "Name",
     "description": "Beschreibung",
     "percent": "Prozent",
-    "compound_tax": "zusammengesetzte Steuer"
+    "compound_tax": "zusammengesetzte Steuer",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Suchen...",
@@ -1205,7 +1208,12 @@
       "tax_per_item": "Steuersatz pro Artikel",
       "tax_name": "Name des Steuersatzes",
       "compound_tax": "zusammengesetzte Steuer",
+      "amount": "Amount",
       "percent": "Prozent",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Aktion",
       "tax_setting_description": "Aktivieren Sie diese Option, wenn Sie den Steuersatz zu einzelnen Rechnungspositionen hinzufügen möchten. Standardmäßig wird der Steuersatz direkt zur Rechnung hinzugefügt.",
       "created_message": "Steuersatz erfolgreich erstellt",
