@@ -852,7 +852,8 @@
       "payment_modes": "支払い方法",
       "notes": "ノート",
       "exchange_rate": "為替レート",
-      "address_information": "住所情報"
+      "address_information": "住所情報",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  以下のフォームを使用して、住所情報を更新できます。"
@@ -905,7 +906,15 @@
     "pdf": {
       "title": "PDFの設定",
       "footer_text": "フッターの文章",
-      "pdf_layout": "PDFのレイアウト"
+      "pdf_layout": "PDFのレイアウト",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "会社情報",
