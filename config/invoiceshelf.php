@@ -157,6 +157,16 @@ return [
             'model' => '',
         ],
         [
+            'title' => 'settings.menu_title.pdf_generation',
+            'group' => '',
+            'name' => 'PDF Generation',
+            'link' => '/admin/settings/pdf-generation',
+            'icon' => 'DocumentIcon',
+            'owner_only' => true,
+            'ability' => '',
+            'model' => '',
+        ],
+        [
             'title' => 'settings.roles.title',
             'group' => '',
             'name' => 'Roles',
