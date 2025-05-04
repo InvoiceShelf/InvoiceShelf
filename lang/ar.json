@@ -852,7 +852,8 @@
       "payment_modes": "طرق الدفع",
       "notes": "ملاحظات",
       "exchange_rate": "Exchange Rate",
-      "address_information": "Address Information"
+      "address_information": "Address Information",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  You can update Your Address information using form below."
@@ -905,7 +906,15 @@
     "pdf": {
       "title": "PDF إعدادات",
       "footer_text": "نص التذييل",
-      "pdf_layout": "اتجاه صفحة PDF"
+      "pdf_layout": "اتجاه صفحة PDF",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "معلومات الشركة",
