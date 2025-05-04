@@ -317,7 +317,7 @@
     "notes": "Notes",
     "tax": "Tax",
     "estimate_template": "Template",
-    "convert_to_invoice": "Convert to Invoice",
+    "convert_to_invoice": "Convertește în Invoice",
     "mark_as_sent": "Mark as Sent",
     "send_estimate": "Send Estimate",
     "resend_estimate": "Resend Estimate",
@@ -852,7 +852,8 @@
       "payment_modes": "Payment Modes",
       "notes": "Notes",
       "exchange_rate": "Exchange Rate",
-      "address_information": "Address Information"
+      "address_information": "Address Information",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  You can update Your Address information using form below."
@@ -893,6 +894,7 @@
       "mailgun_endpoint": "Mailgun Endpoint",
       "ses_secret": "SES Secret",
       "ses_key": "SES Key",
+      "ses_region": "AWS Region",
       "password": "Mail Password",
       "username": "Mail Username",
       "mail_config": "Mail Configuration",
@@ -904,7 +906,15 @@
     "pdf": {
       "title": "PDF Setting",
       "footer_text": "Footer Text",
-      "pdf_layout": "PDF Layout"
+      "pdf_layout": "PDF Layout",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "Company info",
@@ -1087,6 +1097,8 @@
         "description": "Save time by creating notes and reusing them on your invoices, estimates & payments.",
         "notes": "Notes",
         "type": "Type",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Add Note",
         "add_new_note": "Add New Note",
         "name": "Name",

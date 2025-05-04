@@ -852,7 +852,8 @@
       "payment_modes": "Rodzaje płatności",
       "notes": "Notatki",
       "exchange_rate": "Kurs wymiany",
-      "address_information": "Informacje Adresowe"
+      "address_information": "Informacje Adresowe",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  Możesz zaktualizować informacje o adresie za pomocą poniższego formularza."
@@ -893,6 +894,7 @@
       "mailgun_endpoint": "Punkt dostępowy Mailgun",
       "ses_secret": "Tajny klucz SES",
       "ses_key": "Klucz SES",
+      "ses_region": "AWS Region",
       "password": "Hasło poczty",
       "username": "Nazwa użytkownika poczty",
       "mail_config": "Konfiguracja poczty",
@@ -904,7 +906,15 @@
     "pdf": {
       "title": "Ustawienia PDF",
       "footer_text": "Teks stopki",
-      "pdf_layout": "Szablon PDF"
+      "pdf_layout": "Szablon PDF",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "Dane firmy",
@@ -1087,6 +1097,8 @@
         "description": "Oszczędzaj czas, tworząc notatki i ponownie używając ich na fakturach, ofertach i płatnościach.",
         "notes": "Notatki",
         "type": "Typ",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Dodaj notatkę",
         "add_new_note": "Dodaj nową notatkę",
         "name": "Nazwa",

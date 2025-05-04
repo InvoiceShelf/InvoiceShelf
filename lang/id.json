@@ -852,7 +852,8 @@
       "payment_modes": "Mode Pembayaran",
       "notes": "Catatan",
       "exchange_rate": "Nilai Tukar",
-      "address_information": "Informasi Alamat"
+      "address_information": "Informasi Alamat",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  Anda dapat memperbarui informasi Alamat Anda dengan menggunakan formulir di bawah ini."
@@ -893,6 +894,7 @@
       "mailgun_endpoint": "Endpoint Mailgun",
       "ses_secret": "Kunci Rahasia SES",
       "ses_key": "Kunci SES",
+      "ses_region": "AWS Region",
       "password": "Kata Sandi Surel",
       "username": "Nama Pengguna Surel",
       "mail_config": "Konfigurasi Surel",
@@ -904,7 +906,15 @@
     "pdf": {
       "title": "Pengaturan PDF",
       "footer_text": "Teks footer",
-      "pdf_layout": "Tata letak PDF"
+      "pdf_layout": "Tata letak PDF",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "Info perusahaan",
@@ -961,7 +971,7 @@
       "use_predefined_options": "Gunakan Opsi yang Telah Ditentukan",
       "select_custom_date": "Pilih Tanggal Khusus",
       "select_relative_date": "Pilih Tanggal Relatif",
-      "ticked_by_default": "Ticked by default",
+      "ticked_by_default": "",
       "updated_message": "Kolom Khusus berhasil diperbarui",
       "added_message": "Kolom Khusus berhasil ditambahkan",
       "press_enter_to_add": "Tekan 'enter' untuk menambahkan opsi baru",
@@ -1087,6 +1097,8 @@
         "description": "Save time by creating notes and reusing them on your invoices, estimates & payments.",
         "notes": "Notes",
         "type": "Type",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Tambahkan Catatan",
         "add_new_note": "Tambahkan Catatan Baru",
         "name": "Nama",

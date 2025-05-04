@@ -852,7 +852,8 @@
       "payment_modes": "Spôsoby Platby",
       "notes": "Poznámky",
       "exchange_rate": "Výmenný kurz",
-      "address_information": "Informácie o adrese"
+      "address_information": "Informácie o adrese",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "Adresu môžete aktualizovať pomocou formulára nižšie."
@@ -893,6 +894,7 @@
       "mailgun_endpoint": "Endpoint Mailgun",
       "ses_secret": "SES Tajný Kľúč (secret)",
       "ses_key": "SES kľúč (key)",
+      "ses_region": "AWS Region",
       "password": "E-mailové heslo",
       "username": "E-mailové meno (username)",
       "mail_config": "Konfigurácia E-mailov",
@@ -904,7 +906,15 @@
     "pdf": {
       "title": "Nastavenia PDF",
       "footer_text": "Text v pätičke",
-      "pdf_layout": "Rozloženie PDF"
+      "pdf_layout": "Rozloženie PDF",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "Informácie o spoločnosti",
@@ -1087,6 +1097,8 @@
         "description": "Ušetrite čas vytváraním poznámok a ich opätovným použitím vo svojich faktúrach, odhadoch a platbách.",
         "notes": "Poznámky",
         "type": "Typ",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Pridať poznámku",
         "add_new_note": "Pridať Novú Poznámku",
         "name": "Názov",

@@ -852,7 +852,8 @@
       "payment_modes": "Modes de paiement",
       "notes": "Notes de bas de page",
       "exchange_rate": "Taux de change",
-      "address_information": "Information d'adresse"
+      "address_information": "Information d'adresse",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  Vous pouvez mettre à jour vos informations d'adresse via le formulaire ci dessous."
@@ -893,6 +894,7 @@
       "mailgun_endpoint": "Mailgun Endpoint",
       "ses_secret": "SES Secret",
       "ses_key": "SES Key",
+      "ses_region": "AWS Region",
       "password": "Mot de passe",
       "username": "Nom d'utilisateur",
       "mail_config": "Envoi d'emails",
@@ -904,7 +906,15 @@
     "pdf": {
       "title": "Paramètre PDF",
       "footer_text": "Pied de page",
-      "pdf_layout": "Mise en page PDF"
+      "pdf_layout": "Mise en page PDF",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "Coordonnées de la société",
@@ -1087,6 +1097,8 @@
         "description": "Créez des notes de bas de page réutilisable sur vos factures, devis et paiements.",
         "notes": "Note de bas de page",
         "type": "Type ",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Nouvelle note de bas de page",
         "add_new_note": "Ajouter une note de bas de page",
         "name": "Nom",

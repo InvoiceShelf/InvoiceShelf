@@ -852,7 +852,8 @@
       "payment_modes": "Τρόπος πληρωμής",
       "notes": "Σημειώσεις",
       "exchange_rate": "Συναλλαγματική ισοτιμία",
-      "address_information": "Address Information"
+      "address_information": "Address Information",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  You can update Your Address information using form below."
@@ -893,6 +894,7 @@
       "mailgun_endpoint": "Mailgun Endpoint",
       "ses_secret": "SES Μυστικό",
       "ses_key": "Κλειδί SES",
+      "ses_region": "AWS Region",
       "password": "Κωδικός Πρόσβασης Ταχυδρομείου",
       "username": "Όνομα Ταχυδρομείου",
       "mail_config": "Διαμόρφωση Mail",
@@ -904,7 +906,15 @@
     "pdf": {
       "title": "Ρυθμίσεις PDF",
       "footer_text": "Κείμενο Υποσέλιδου",
-      "pdf_layout": "Διάταξη PDF"
+      "pdf_layout": "Διάταξη PDF",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "Πληροφορίες Εταιρίας",
@@ -1087,6 +1097,8 @@
         "description": "Εξοικονομήστε χρόνο δημιουργώντας σημειώσεις και επαναχρησιμοποίησή τους στα τιμολόγια σας, εκτιμήσεις και πληρωμές.",
         "notes": "Σημειώσεις",
         "type": "Type",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Προσθήκη σημείωσης",
         "add_new_note": "Προσθήκη Νέας Σημείωσης",
         "name": "Όνομα",

@@ -852,7 +852,8 @@
       "payment_modes": "วิธีการชำระเงิน",
       "notes": "หมายเหตุ",
       "exchange_rate": "อัตราแลกเปลี่ยน",
-      "address_information": "ข้อมูลที่อยู่"
+      "address_information": "ข้อมูลที่อยู่",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  คุณสามารถอัปเดตข้อมูลที่อยู่ของคุณโดยใช้แบบฟอร์มด้านล่าง"
@@ -893,6 +894,7 @@
       "mailgun_endpoint": "ปลายทาง Mailgun",
       "ses_secret": "SES ซีเคร็ต",
       "ses_key": "SES คีย์",
+      "ses_region": "AWS Region",
       "password": "รหัสผ่านจดหมาย",
       "username": "ชื่อผู้ใช้จดหมาย",
       "mail_config": "การกำหนดค่าจดหมาย",
@@ -904,7 +906,15 @@
     "pdf": {
       "title": "การตั้งค่า PDF",
       "footer_text": "ข้อความท้ายกระดาษ",
-      "pdf_layout": "รูปแบบไฟล์ PDF"
+      "pdf_layout": "รูปแบบไฟล์ PDF",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "ข้อมูลบริษัท",
@@ -1087,6 +1097,8 @@
         "description": "ประหยัดเวลาด้วยการสร้างหมายเหตุและนำกลับมาใช้ใหม่ในใบวางบิล ใบเสนอราคาและการชำระเงิน",
         "notes": "หมายเหตุ",
         "type": "ประเภท",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "เพิ่มโน้ต",
         "add_new_note": "เพิ่มหมายเหตุใหม่",
         "name": "ชื่อ",

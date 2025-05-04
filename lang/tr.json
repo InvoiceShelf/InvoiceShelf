@@ -101,19 +101,19 @@
     "login_successfully": "Başarıyla giriş yapıldı!",
     "logged_out_successfully": "Başarıyla çıkış yapıldı",
     "mark_as_default": "Varsayılan olarak işaretleyin",
-    "no_data_found": "No data found",
+    "no_data_found": "Veri bulunamadı.",
     "pagination": {
-      "previous": "Previous",
+      "previous": "Önceki",
       "next": "İleri",
-      "showing": "Showing",
-      "to": "to",
-      "of": "of",
-      "results": "results"
+      "showing": "Gösterilen",
+      "to": "için",
+      "of": "'un",
+      "results": "sonuçlar"
     },
     "file_upload": {
-      "drag_a_file": "Drag a file here or",
-      "browse": "browse",
-      "to_choose": "to choose a file"
+      "drag_a_file": "Bu dosyayı sürükleyin veya",
+      "browse": "göz at\n",
+      "to_choose": "bir dosya seçmek için"
     },
     "multiselect": {
       "the_list_is_empty": "The list is empty",
@@ -852,7 +852,8 @@
       "payment_modes": "Ödeme yöntemleri",
       "notes": "Notlar",
       "exchange_rate": "Exchange Rate",
-      "address_information": "Address Information"
+      "address_information": "Address Information",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  You can update Your Address information using form below."
@@ -893,6 +894,7 @@
       "mailgun_endpoint": "Mailgun Uçnoktası",
       "ses_secret": "SES Sırrı",
       "ses_key": "Ses Anahtarı",
+      "ses_region": "AWS Region",
       "password": "Posta Parolası",
       "username": "Posta Kullanıcı Adı",
       "mail_config": "Posta Konfigürasyonu",
@@ -904,7 +906,15 @@
     "pdf": {
       "title": "PDF Ayarları",
       "footer_text": "Altbilgi Metni",
-      "pdf_layout": "PDF Biçimi"
+      "pdf_layout": "PDF Biçimi",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "Şirket Bilgileri",
@@ -1087,6 +1097,8 @@
         "description": "Notlar oluşturarak ve faturalar, proformalar & ödemeler üzerinde tekrar kullanarak zamandan kazanın.",
         "notes": "Notlar",
         "type": "Tür",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Not ekle",
         "add_new_note": "Yeni not ekle",
         "name": "İsim",

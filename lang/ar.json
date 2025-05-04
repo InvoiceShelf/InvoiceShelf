@@ -852,7 +852,8 @@
       "payment_modes": "طرق الدفع",
       "notes": "ملاحظات",
       "exchange_rate": "Exchange Rate",
-      "address_information": "Address Information"
+      "address_information": "Address Information",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  You can update Your Address information using form below."
@@ -893,6 +894,7 @@
       "mailgun_endpoint": "النهاية الطرفية لـ Mailgun",
       "ses_secret": "SES الرمز السري",
       "ses_key": "SES مفتاح",
+      "ses_region": "AWS Region",
       "password": "كلمة مرور البريد الالكتروني",
       "username": "اسم المستخدم للبريد الإلكتروني",
       "mail_config": "إعدادات البريد الالكتروني",
@@ -904,7 +906,15 @@
     "pdf": {
       "title": "PDF إعدادات",
       "footer_text": "نص التذييل",
-      "pdf_layout": "اتجاه صفحة PDF"
+      "pdf_layout": "اتجاه صفحة PDF",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "معلومات الشركة",
@@ -1087,6 +1097,8 @@
         "description": "توفير الوقت عن طريق إنشاء الملاحظات وإعادة استخدامها على الفواتير والتقديرات والمدفوعات.",
         "notes": "ملاحظات",
         "type": "نوع",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "اضف ملاحظة",
         "add_new_note": "أضف ملاحظة جديدة",
         "name": "اسم",

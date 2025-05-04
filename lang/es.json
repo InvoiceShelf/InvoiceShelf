@@ -852,7 +852,8 @@
       "payment_modes": "Formas de pago",
       "notes": "Notas",
       "exchange_rate": "Tasa de cambio",
-      "address_information": "Información de dirección"
+      "address_information": "Información de dirección",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "Puede actualizar la información de su dirección utilizando el siguiente formulario."
@@ -905,7 +906,15 @@
     "pdf": {
       "title": "Configuración de PDF",
       "footer_text": "Texto de pie de página",
-      "pdf_layout": "Diseño PDF"
+      "pdf_layout": "Diseño PDF",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "Información de la compañía",
@@ -1088,6 +1097,8 @@
         "description": "Ahorre tiempo creando notas y reutilizándolas en sus facturas, cálculos y pagos.",
         "notes": "Notas",
         "type": "Tipo",
+        "is_default": "Seleccionar por defecto",
+        "is_default_description": "Esta nota será seleccionada por defecto en las nuevas facturas.",
         "add_note": "Agregar nota",
         "add_new_note": "Agregar nueva nota",
         "name": "Nombre",

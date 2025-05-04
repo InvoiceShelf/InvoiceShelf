@@ -852,7 +852,8 @@
       "payment_modes": "Modalità di Pagamento",
       "notes": "Note",
       "exchange_rate": "Tasso di cambio",
-      "address_information": "Indirizzo"
+      "address_information": "Indirizzo",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  Puoi aggiornare le informazioni sul tuo indirizzo utilizzando il modulo sottostante."
@@ -893,6 +894,7 @@
       "mailgun_endpoint": "Endpoint Mailgun",
       "ses_secret": "Segreto SES",
       "ses_key": "Chiave SES",
+      "ses_region": "AWS Region",
       "password": "Password Email",
       "username": "Nome Utente Email",
       "mail_config": "Configurazione Mail",
@@ -904,7 +906,15 @@
     "pdf": {
       "title": "Configurazione PDF",
       "footer_text": "Testo Footer",
-      "pdf_layout": "Layout PDF"
+      "pdf_layout": "Layout PDF",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "Info azienda",
@@ -1087,6 +1097,8 @@
         "description": "Risparmia tempo creando note e riutilizzandole sulle tue fatture, preventivi e pagamenti.",
         "notes": "Note",
         "type": "genere",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Aggiungi Nota",
         "add_new_note": "Aggiungi nuova nota",
         "name": "Nome",
