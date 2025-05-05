@@ -57,14 +57,17 @@
 
 <script setup>
 import axios from 'axios'
-import { ref, computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import { useRouter } from 'vue-router'
-import { required, email, helpers } from '@vuelidate/validators'
+import { email, helpers, required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/scripts/admin/stores/auth'
-import { handleError } from '@/scripts/helpers/error-handling'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseInput from '@/scripts/components/base/BaseInput.vue'
+import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
 
 const notificationStore = useNotificationStore()
 const authStore = useAuthStore()

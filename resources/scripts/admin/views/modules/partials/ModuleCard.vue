@@ -122,7 +122,8 @@
 
 <script setup>
 import { useI18n } from 'vue-i18n'
-import { computed, onMounted, ref, watch, reactive } from 'vue'
+import { computed } from 'vue'
+import BaseText from '@/scripts/components/base/BaseText.vue'
 
 const { t } = useI18n()
 const props = defineProps({

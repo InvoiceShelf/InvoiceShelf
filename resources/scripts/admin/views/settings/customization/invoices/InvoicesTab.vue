@@ -29,12 +29,14 @@
 </template>
 
 <script setup>
-import { computed, reactive, inject } from 'vue'
+import { computed, inject, reactive } from 'vue'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 import InvoicesTabInvoiceNumber from './InvoicesTabInvoiceNumber.vue'
 import InvoicesTabRetrospective from './InvoicesTabRetrospective.vue'
 import InvoicesTabDueDate from './InvoicesTabDueDate.vue'
 import InvoicesTabDefaultFormats from './InvoicesTabDefaultFormats.vue'
+import BaseSwitchSection from '@/scripts/components/base/BaseSwitchSection.vue'
+import BaseDivider from '@/scripts/components/base/BaseDivider.vue'
 
 const utils = inject('utils')
 const companyStore = useCompanyStore()
