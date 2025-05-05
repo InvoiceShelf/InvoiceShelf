@@ -20,7 +20,7 @@ class NextNumberController extends Controller
     {
         $key = $request->key;
         $nextNumber = null;
-        $serial = (new SerialNumberFormatter())
+        $serial = (new SerialNumberFormatter)
             ->setCompany($request->header('company'))
             ->setCustomer($request->userId);
 

@@ -1,10 +1,11 @@
 <template>
   <div class="whitespace-normal">
-    <BaseCustomTag :tag="tag" :title="text" class="line-clamp-1">
+    <BaseCustomTag :tag="tag" :title="props.text" class="line-clamp-1">
       {{ displayText }}
     </BaseCustomTag>
   </div>
 </template>
+
 <script setup>
 import { computed } from "vue"
 import BaseCustomTag from '@/scripts/components/base/BaseCustomTag.vue'
@@ -26,13 +27,12 @@ const props = defineProps({
   }
 })
 
-const { text, length } = props;
-
 const displayText = computed(() => {
-  if (length) {
-    return text.length <= length ? text : `${text.substring(0, length)}...`;
+  if (props.length) {
+    return props.text.length <= props.length 
+      ? props.text 
+      : `${props.text.substring(0, props.length)}...`
   }
-  return text;
-});
-
+  return props.text
+})
 </script>

@@ -4,7 +4,7 @@
       <div class="flex justify-between w-full">
         {{ modalTitle }}
         <BaseIcon
-          name="XIcon"
+          name="XMarkIcon"
           class="h-6 w-6 text-gray-500 cursor-pointer"
           @click="closeModal"
         />
@@ -76,7 +76,7 @@
       </BaseButton>
       <BaseButton variant="primary" @click="chooseTemplate()">
         <template #left="slotProps">
-          <BaseIcon name="SaveIcon" :class="slotProps.class" />
+          <BaseIcon name="ArrowDownOnSquareIcon" :class="slotProps.class" />
         </template>
         {{ $t('general.choose') }}
       </BaseButton>

@@ -2,9 +2,9 @@
   <BaseDropdown>
     <template #activator>
       <BaseButton v-if="route.name === 'estimates.view'" variant="primary">
-        <BaseIcon name="DotsHorizontalIcon" class="text-white" />
+        <BaseIcon name="EllipsisHorizontalIcon" class="text-white" />
       </BaseButton>
-      <BaseIcon v-else class="text-gray-500" name="DotsHorizontalIcon" />
+      <BaseIcon v-else class="text-gray-500" name="EllipsisHorizontalIcon" />
     </template>
 
     <!-- Copy PDF url  -->

@@ -27,7 +27,7 @@
             <template #left="slotProps">
               <BaseIcon
                 v-if="!isSaving"
-                name="SaveIcon"
+                name="ArrowDownOnSquareIcon"
                 :class="slotProps.class"
               />
             </template>
@@ -237,7 +237,7 @@
           <template #left="slotProps">
             <BaseIcon
               v-if="!isSaving"
-              name="SaveIcon"
+              name="ArrowDownOnSquareIcon"
               :class="slotProps.class"
             />
           </template>

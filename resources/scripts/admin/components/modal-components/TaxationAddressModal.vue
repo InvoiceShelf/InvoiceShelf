@@ -10,7 +10,7 @@
           </p>
         </div>
         <BaseIcon
-          name="XIcon"
+          name="XMarkIcon"
           class="h-6 w-6 text-gray-500 cursor-pointer"
           @click="closeModal"
         />
@@ -103,7 +103,7 @@
           <template #left="slotProps">
             <BaseIcon
               v-if="!isLoading"
-              name="SaveIcon"
+              name="ArrowDownOnSquareIcon"
               :class="slotProps.class"
             />
           </template>

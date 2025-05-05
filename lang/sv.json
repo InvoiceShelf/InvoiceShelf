@@ -191,7 +191,7 @@
   "customers": {
     "title": "Kunder",
     "prefix": "Prefix",
-    "tax_id": "Tax ID",
+    "tax_id": "Momsreg.nr",
     "add_customer": "Lägg till kund",
     "contacts_list": "Kundlista",
     "name": "Namn",
@@ -852,7 +852,8 @@
       "payment_modes": "Betalmetoder",
       "notes": "Anteckningar",
       "exchange_rate": "Växelkurser",
-      "address_information": "Adressinformation"
+      "address_information": "Adressinformation",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  Du kan uppdatera din adressinformation genom att använda formuläret nedan."
@@ -893,6 +894,7 @@
       "mailgun_endpoint": "Mailgun Endpoint",
       "ses_secret": "SES Säkerhet",
       "ses_key": "SES nyckel",
+      "ses_region": "AWS Region",
       "password": "Lösenord",
       "username": "Användarnamn",
       "mail_config": "Epostinställningar",
@@ -904,7 +906,15 @@
     "pdf": {
       "title": "PDF-inställningar",
       "footer_text": "Sidfotstext",
-      "pdf_layout": "PDF-layout"
+      "pdf_layout": "PDF-layout",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "Företagsinfo",
@@ -1087,6 +1097,8 @@
         "description": "Spara tid genom att skapa noteringar som kan återanvändas på fakturor, betalningsförslag, och betalningar.",
         "notes": "Anteckningar",
         "type": "Typ",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Lägg till anteckning",
         "add_new_note": "Lägg till ny anteckning",
         "name": "Namn",
@@ -1236,7 +1248,7 @@
       "time_zone": "Tidszon",
       "fiscal_year": "Räkenskapsår",
       "date_format": "Datumformattering",
-      "time_format": "Time Fromat",
+      "time_format": "Time Format",
       "discount_setting": "Rabattinställningar",
       "discount_per_item": "Rabatt per artikel ",
       "discount_setting_description": "Aktivera detta om du vill kunna lägga rabatt på enskilda fakturaartiklar. Rabatt ges som standard på hela fakturan.",
@@ -1588,7 +1600,7 @@
   "pdf_invoice_label": "Faktura",
   "pdf_invoice_number": "Fakturanummer",
   "pdf_invoice_date": "Fakturadatum",
-  "pdf_invoice_due_date": "Inbetalningsdatum",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "Anteckningar",
   "pdf_items_label": "Artiklar",
   "pdf_quantity_label": "Antal",

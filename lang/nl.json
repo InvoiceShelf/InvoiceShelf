@@ -852,7 +852,8 @@
       "payment_modes": "Betaalmethodes",
       "notes": "Opmerkingen",
       "exchange_rate": "Wisselkoers",
-      "address_information": "Adresgegevens"
+      "address_information": "Adresgegevens",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  U kunt uw adresgegevens bijwerken via het onderstaande formulier."
@@ -893,6 +894,7 @@
       "mailgun_endpoint": "Mailgun-eindpunt",
       "ses_secret": "SES geheim",
       "ses_key": "SES-sleutel",
+      "ses_region": "AWS Region",
       "password": "E-mail wachtwoord",
       "username": "E-mail gebruikersnaam",
       "mail_config": "E-mailconfiguratie",
@@ -904,7 +906,15 @@
     "pdf": {
       "title": "PDF-instelling",
       "footer_text": "Voettekst",
-      "pdf_layout": "PDF indeling"
+      "pdf_layout": "PDF indeling",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "Bedrijfsinfo",
@@ -1087,6 +1097,8 @@
         "description": "Bespaar tijd door notities te maken en ze opnieuw te gebruiken op uw facturen, ramingen en betalingen.",
         "notes": "Opmerkingen",
         "type": "Type",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Notitie toevoegen",
         "add_new_note": "Voeg een nieuwe notitie toe",
         "name": "Naam",
@@ -1236,7 +1248,7 @@
       "time_zone": "Tijdzone",
       "fiscal_year": "Financieel jaar",
       "date_format": "Datumnotatie",
-      "time_format": "Time Fromat",
+      "time_format": "Time Format",
       "discount_setting": "Kortingsinstelling",
       "discount_per_item": "Korting per item",
       "discount_setting_description": "Schakel dit in als u korting wilt toevoegen aan afzonderlijke factuuritems. Standaard wordt korting rechtstreeks aan de factuur toegevoegd.",
@@ -1588,7 +1600,7 @@
   "pdf_invoice_label": "Factuur",
   "pdf_invoice_number": "Factuurnummer",
   "pdf_invoice_date": "Factuur datum",
-  "pdf_invoice_due_date": "Vervaldatum",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "Opmerkingen",
   "pdf_items_label": "Artikelen",
   "pdf_quantity_label": "Aantal stuks",

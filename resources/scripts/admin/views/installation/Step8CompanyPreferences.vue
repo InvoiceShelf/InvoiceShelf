@@ -134,7 +134,7 @@
           class="mt-4"
         >
           <template #left="slotProps">
-            <BaseIcon name="SaveIcon" :class="slotProps.class" />
+            <BaseIcon name="ArrowDownOnSquareIcon" :class="slotProps.class" />
           </template>
           {{ $t('wizard.save_cont') }}
         </BaseButton>

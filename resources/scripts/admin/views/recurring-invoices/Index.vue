@@ -23,10 +23,10 @@
           <template #right="slotProps">
             <BaseIcon
               v-if="!showFilters"
-              name="FilterIcon"
+              name="FunnelIcon"
               :class="slotProps.class"
             />
-            <BaseIcon v-else name="XIcon" :class="slotProps.class" />
+            <BaseIcon v-else name="XMarkIcon" :class="slotProps.class" />
           </template>
         </BaseButton>
 

@@ -118,7 +118,7 @@
               <template #left="slotProps">
                 <BaseIcon
                   v-if="!isSaving"
-                  name="SaveIcon"
+                  name="ArrowDownOnSquareIcon"
                   :class="slotProps.class"
                 />
               </template>
@@ -191,7 +191,12 @@ const taxes = computed({
         return {
           ...tax,
           tax_type_id: tax.id,
-          tax_name: tax.name + ' (' + tax.percent + '%)',
+          tax_name: `${tax.name} (${tax.calculation_type === 'fixed' 
+            ? new Intl.NumberFormat(undefined, {
+                style: 'currency',
+                currency: companyStore.selectedCompanyCurrency.code
+              }).format(tax.fixed_amount / 100)
+            : `${tax.percent}%`})`,
         }
       }
     }),
@@ -211,7 +216,12 @@ const getTaxTypes = computed(() => {
     return {
       ...tax,
       tax_type_id: tax.id,
-      tax_name: tax.name + ' (' + tax.percent + '%)',
+      tax_name: `${tax.name} (${tax.calculation_type === 'fixed' 
+        ? new Intl.NumberFormat(undefined, {
+            style: 'currency',
+            currency: companyStore.selectedCompanyCurrency.code
+          }).format(tax.fixed_amount / 100)
+        : `${tax.percent}%`})`,
     }
   })
 })
@@ -287,7 +297,9 @@ async function submitItem() {
       data.taxes = itemStore.currentItem.taxes.map((tax) => {
         return {
           tax_type_id: tax.tax_type_id,
-          amount: price.value * tax.percent,
+          calculation_type: tax.calculation_type,
+          fixed_amount: tax.fixed_amount,
+          amount: tax.calculation_type === 'fixed' ? tax.fixed_amount : price.value * tax.percent,
           percent: tax.percent,
           name: tax.name,
           collective_tax: 0,

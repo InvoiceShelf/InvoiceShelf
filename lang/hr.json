@@ -852,7 +852,8 @@
       "payment_modes": "Način plaćanja",
       "notes": "Napomene",
       "exchange_rate": "Tečaj",
-      "address_information": "Podaci o adresi"
+      "address_information": "Podaci o adresi",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  Možete ažurirati svoju adresu u slijedećem obrascu."
@@ -893,6 +894,7 @@
       "mailgun_endpoint": "Mailgun Endpoint",
       "ses_secret": "SES Lozinka",
       "ses_key": "SES Ključ",
+      "ses_region": "AWS Region",
       "password": "Mail Lozinka",
       "username": "Mail Korisničko Ime",
       "mail_config": "Mail Postavke",
@@ -904,7 +906,15 @@
     "pdf": {
       "title": "PDF Postavke",
       "footer_text": "Tekstualno zaglavlje na dnu strane",
-      "pdf_layout": "PDF Raspored"
+      "pdf_layout": "PDF Raspored",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "Podaci o firmi",
@@ -1087,6 +1097,8 @@
         "description": "Uštedite vrijeme kreirajući napomene i koristeći ih na računima, ponudama i uplatama.",
         "notes": "Napomene",
         "type": "Vrsta",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Dodaj Napomenu",
         "add_new_note": "Dodaj novu Napomenu",
         "name": "Naziv",
@@ -1236,7 +1248,7 @@
       "time_zone": "Vremenska Zona",
       "fiscal_year": "Financijska Godina",
       "date_format": "Format datuma",
-      "time_format": "Time Fromat",
+      "time_format": "Time Format",
       "discount_setting": "Postavke popusta",
       "discount_per_item": "Popust po stavkama",
       "discount_setting_description": "Izaberite ovo ako želite dodati Popust na individualne stavke. Zadana vrijednost je da je Popust dodan direktno na fakturu.",
@@ -1588,7 +1600,7 @@
   "pdf_invoice_label": "Račun",
   "pdf_invoice_number": "Broj Fakture",
   "pdf_invoice_date": "Datum Fakture",
-  "pdf_invoice_due_date": "Datum dospijeća Fakture",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "Napomena",
   "pdf_items_label": "Stavke",
   "pdf_quantity_label": "Količina",

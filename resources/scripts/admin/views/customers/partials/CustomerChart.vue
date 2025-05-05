@@ -6,7 +6,7 @@
       <div class="col-span-12 xl:col-span-9 xxl:col-span-10">
         <div class="flex justify-between mt-1 mb-6">
           <h6 class="flex items-center">
-            <BaseIcon name="ChartSquareBarIcon" class="h-5 text-primary-400" />
+            <BaseIcon name="ChartBarSquareIcon" class="h-5 text-primary-400" />
             {{ $t('dashboard.monthly_chart.title') }}
           </h6>
 

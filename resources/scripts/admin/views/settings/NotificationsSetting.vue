@@ -33,7 +33,7 @@
             <BaseIcon
               v-if="!isSaving"
               :class="slotProps.class"
-              name="SaveIcon"
+              name="ArrowDownOnSquareIcon"
             />
           </template>
 

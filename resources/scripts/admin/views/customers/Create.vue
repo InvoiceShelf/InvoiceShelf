@@ -17,7 +17,7 @@
           <div class="flex items-center justify-end">
             <BaseButton type="submit" :loading="isSaving" :disabled="isSaving">
               <template #left="slotProps">
-                <BaseIcon name="SaveIcon" :class="slotProps.class" />
+                <BaseIcon name="ArrowDownOnSquareIcon" :class="slotProps.class" />
               </template>
               {{
                 isEdit
@@ -223,7 +223,7 @@
               >
                 <template #right>
                   <BaseIcon
-                    :name="isShowPassword ? 'EyeIcon' : 'EyeOffIcon'"
+                    :name="isShowPassword ? 'EyeIcon' : 'EyeSlashIcon'"
                     class="mr-1 text-gray-500 cursor-pointer"
                     @click="isShowPassword = !isShowPassword"
                   />
@@ -250,7 +250,7 @@
               >
                 <template #right>
                   <BaseIcon
-                    :name="isShowConfirmPassword ? 'EyeIcon' : 'EyeOffIcon'"
+                    :name="isShowConfirmPassword ? 'EyeIcon' : 'EyeSlashIcon'"
                     class="mr-1 text-gray-500 cursor-pointer"
                     @click="isShowConfirmPassword = !isShowConfirmPassword"
                   />

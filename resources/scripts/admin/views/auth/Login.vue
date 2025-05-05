@@ -31,7 +31,7 @@
       >
         <template #right>
           <BaseIcon
-            :name="isShowPassword ? 'EyeIcon' : 'EyeOffIcon'"
+            :name="isShowPassword ? 'EyeIcon' : 'EyeSlashIcon'"
             class="mr-1 text-gray-500 cursor-pointer"
             @click="isShowPassword = !isShowPassword"
           />

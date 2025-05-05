@@ -3,20 +3,18 @@
 namespace App\Models;
 
 use App;
+use App\Facades\PDF;
 use App\Mail\SendInvoiceMail;
 use App\Services\SerialNumberFormatter;
-use App\Space\ImageUtils;
+use App\Space\PdfTemplateUtils;
 use App\Traits\GeneratesPdfTrait;
 use App\Traits\HasCustomFieldsTrait;
-use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Nwidart\Modules\Facades\Module;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -323,7 +321,7 @@ class Invoice extends Model implements HasMedia
 
         $invoice = Invoice::create($data);
 
-        $serial = (new SerialNumberFormatter())
+        $serial = (new SerialNumberFormatter)
             ->setModel($invoice)
             ->setCompany($invoice->company_id)
             ->setCustomer($invoice->customer_id)
@@ -364,7 +362,7 @@ class Invoice extends Model implements HasMedia
 
     public function updateInvoice($request)
     {
-        $serial = (new SerialNumberFormatter())
+        $serial = (new SerialNumberFormatter)
             ->setModel($this)
             ->setCompany($this->company_id)
             ->setCustomer($request->customer_id)
@@ -523,6 +521,7 @@ class Invoice extends Model implements HasMedia
 
     public static function createTaxes($invoice, $taxes)
     {
+
         $exchange_rate = $invoice->exchange_rate;
 
         foreach ($taxes as $tax) {
@@ -582,11 +581,14 @@ class Invoice extends Model implements HasMedia
             'taxes' => $taxes,
         ]);
 
+        $template = PdfTemplateUtils::findFormattedTemplate('invoice', $invoiceTemplate, '');
+        $templatePath = $template['custom'] ? sprintf('pdf_templates::invoice.%s', $invoiceTemplate) : sprintf('app.pdf.invoice.%s', $invoiceTemplate);
+
         if (request()->has('preview')) {
-            return view('app.pdf.invoice.'.$invoiceTemplate);
+            return view($templatePath);
         }
 
-        return PDF::loadView('app.pdf.invoice.'.$invoiceTemplate);
+        return PDF::loadView($templatePath);
     }
 
     public function getEmailAttachmentSetting()
@@ -655,20 +657,6 @@ class Invoice extends Model implements HasMedia
             '{INVOICE_NUMBER}' => $this->invoice_number,
             '{INVOICE_REF_NUMBER}' => $this->reference_number,
         ];
-    }
-
-    public static function invoiceTemplates()
-    {
-        $templates = Storage::disk('views')->files('/app/pdf/invoice');
-        $invoiceTemplates = [];
-
-        foreach ($templates as $key => $template) {
-            $templateName = Str::before(basename($template), '.blade.php');
-            $invoiceTemplates[$key]['name'] = $templateName;
-            $invoiceTemplates[$key]['path'] = ImageUtils::toBase64Src(resource_path('static/img/PDF/'.$templateName.'.png'));
-        }
-
-        return $invoiceTemplates;
     }
 
     public function addInvoicePayment($amount)

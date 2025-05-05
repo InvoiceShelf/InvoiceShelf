@@ -24,7 +24,7 @@ class CloneEstimateController extends Controller
 
         $date = Carbon::now();
 
-        $serial = (new SerialNumberFormatter())
+        $serial = (new SerialNumberFormatter)
             ->setModel($estimate)
             ->setCompany($estimate->company_id)
             ->setCustomer($estimate->customer_id)

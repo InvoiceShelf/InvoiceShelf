@@ -9,7 +9,7 @@
         @input="onSearch"
       >
         <template #left>
-          <BaseIcon name="SearchIcon" class="text-gray-400" />
+          <BaseIcon name="MagnifyingGlassIcon" class="text-gray-400" />
         </template>
         <template #right>
           <SpinnerIcon v-if="isSearching" class="h-5 text-primary-500" />

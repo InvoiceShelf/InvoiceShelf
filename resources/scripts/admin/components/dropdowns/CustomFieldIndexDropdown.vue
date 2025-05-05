@@ -1,7 +1,7 @@
 <template>
   <BaseDropdown>
     <template #activator>
-      <BaseIcon name="DotsHorizontalIcon" class="h-5 text-gray-500" />
+      <BaseIcon name="EllipsisHorizontalIcon" class="h-5 text-gray-500" />
     </template>
 
     <!-- edit customField  -->

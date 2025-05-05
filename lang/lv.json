@@ -852,7 +852,8 @@
       "payment_modes": "Apmaksas veidi",
       "notes": "Piezīmes",
       "exchange_rate": "Exchange Rate",
-      "address_information": "Address Information"
+      "address_information": "Address Information",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  You can update Your Address information using form below."
@@ -893,6 +894,7 @@
       "mailgun_endpoint": "Mailgun Endpoint",
       "ses_secret": "SES Secret",
       "ses_key": "SES Key",
+      "ses_region": "AWS Region",
       "password": "E-pasta parole",
       "username": "E-pasta lietotājvārds",
       "mail_config": "E-pasta konfigurācija",
@@ -904,7 +906,15 @@
     "pdf": {
       "title": "PDF uzstādījumi",
       "footer_text": "Kājenes teksts",
-      "pdf_layout": "PDF izkārtojums"
+      "pdf_layout": "PDF izkārtojums",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "Uzņēmuma informācija",
@@ -1087,6 +1097,8 @@
         "description": "Save time by creating notes and reusing them on your invoices, estimates & payments.",
         "notes": "Notes",
         "type": "Type",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Add Note",
         "add_new_note": "Add New Note",
         "name": "Name",
@@ -1236,7 +1248,7 @@
       "time_zone": "Laika josla",
       "fiscal_year": "Finanšu gads",
       "date_format": "Datuma formāts",
-      "time_format": "Time Fromat",
+      "time_format": "Time Format",
       "discount_setting": "Atlaižu iestatījumi",
       "discount_per_item": "Atlaide par preci/pakalpojumu ",
       "discount_setting_description": "Iespējot šo, lai piešķirtu atlaides individuālām rēķina precēm. Pēc noklusējuma, atlaide tiek piemērota rēķinam.",
@@ -1588,7 +1600,7 @@
   "pdf_invoice_label": "Rēķins",
   "pdf_invoice_number": "Rēķina numurs",
   "pdf_invoice_date": "Rēķina datums",
-  "pdf_invoice_due_date": "Apmaksas termiņš",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "Notes",
   "pdf_items_label": "Nosaukums",
   "pdf_quantity_label": "Daudzums",

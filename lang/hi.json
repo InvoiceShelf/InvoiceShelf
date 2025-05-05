@@ -852,7 +852,8 @@
       "payment_modes": "भुगतान के प्रकार",
       "notes": "नोट्स",
       "exchange_rate": "विनिमय दर",
-      "address_information": "पते के बारे में जानकारी"
+      "address_information": "पते के बारे में जानकारी",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  आप नीचे दिए गए फॉर्म का उपयोग करके अपनी पता जानकारी अपडेट कर सकते हैं"
@@ -893,6 +894,7 @@
       "mailgun_endpoint": "Mailgun Endpoint",
       "ses_secret": "SES Secret",
       "ses_key": "SES Key",
+      "ses_region": "AWS Region",
       "password": "Mail Password",
       "username": "Mail Username",
       "mail_config": "Mail Configuration",
@@ -904,7 +906,15 @@
     "pdf": {
       "title": "PDF Setting",
       "footer_text": "Footer Text",
-      "pdf_layout": "PDF Layout"
+      "pdf_layout": "PDF Layout",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "Company info",
@@ -1087,6 +1097,8 @@
         "description": "Save time by creating notes and reusing them on your invoices, estimates & payments.",
         "notes": "Notes",
         "type": "Type",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Add Note",
         "add_new_note": "Add New Note",
         "name": "Name",
@@ -1236,7 +1248,7 @@
       "time_zone": "Time Zone",
       "fiscal_year": "Financial Year",
       "date_format": "Date Format",
-      "time_format": "Time Fromat",
+      "time_format": "Time Format",
       "discount_setting": "Discount Setting",
       "discount_per_item": "Discount Per Item ",
       "discount_setting_description": "Enable this if you want to add Discount to individual invoice items. By default, Discount is added directly to the invoice.",
@@ -1588,7 +1600,7 @@
   "pdf_invoice_label": "Invoice",
   "pdf_invoice_number": "Invoice Number",
   "pdf_invoice_date": "Invoice Date",
-  "pdf_invoice_due_date": "Due date",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "Notes",
   "pdf_items_label": "Items",
   "pdf_quantity_label": "Quantity",

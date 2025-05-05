@@ -4,7 +4,7 @@
       <div class="flex justify-between w-full">
         {{ modalStore.title }}
         <BaseIcon
-          name="XIcon"
+          name="XMarkIcon"
           class="h-6 w-6 text-gray-500 cursor-pointer"
           @click="closeNoteModal"
         />
@@ -45,6 +45,11 @@
               class="mt-2"
             />
           </BaseInputGroup>
+          <BaseSwitchSection
+            v-model="noteStore.currentNote.is_default"
+            :title="$t('settings.customization.notes.is_default')"
+            :description="$t('settings.customization.notes.is_default_description')"
+_          />
 
           <BaseInputGroup
             :label="$t('settings.customization.notes.notes')"
@@ -89,7 +94,7 @@
           type="submit"
         >
           <template #left="slotProps">
-            <BaseIcon name="SaveIcon" :class="slotProps.class" />
+            <BaseIcon name="ArrowDownOnSquareIcon" :class="slotProps.class" />
           </template>
           {{ noteStore.isEdit ? $t('general.update') : $t('general.save') }}
         </BaseButton>

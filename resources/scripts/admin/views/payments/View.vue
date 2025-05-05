@@ -54,7 +54,7 @@
           type="text"
           @input="onSearch"
         >
-          <BaseIcon name="SearchIcon" class="h-5" />
+          <BaseIcon name="MagnifyingGlassIcon" class="h-5" />
         </BaseInput>
 
         <div class="flex ml-3" role="group" aria-label="First group">
@@ -65,7 +65,7 @@
           >
             <template #activator>
               <BaseButton variant="gray">
-                <BaseIcon name="FilterIcon" />
+                <BaseIcon name="FunnelIcon" />
               </BaseButton>
             </template>
 

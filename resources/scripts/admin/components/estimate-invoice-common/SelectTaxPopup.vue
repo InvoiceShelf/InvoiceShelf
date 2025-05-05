@@ -110,7 +110,12 @@
                           cursor-pointer
                         "
                       >
-                        {{ taxType.percent }} %
+                        <template v-if="taxType.calculation_type === 'fixed'">
+                          <BaseFormatMoney :amount="taxType.fixed_amount" :currency="companyStore.selectedCompanyCurrency" />
+                        </template>
+                        <template v-else>
+                          {{ taxType.percent }} %
+                        </template>
                       </label>
                     </div>
                   </div>
@@ -173,9 +178,11 @@ import { useInvoiceStore } from '@/scripts/admin/stores/invoice'
 import { useModalStore } from '@/scripts/stores/modal'
 import { useTaxTypeStore } from '@/scripts/admin/stores/tax-type'
 import { useUserStore } from '@/scripts/admin/stores/user'
+import { useCompanyStore } from '@/scripts/admin/stores/company'
 import abilities from '@/scripts/admin/stub/abilities'
 import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
 import BaseInput from '@/scripts/components/base/BaseInput.vue'
+import BaseFormatMoney from '@/scripts/components/base/BaseFormatMoney.vue'
 
 const props = defineProps({
   type: {
@@ -197,9 +204,14 @@ const emit = defineEmits(['select:taxType'])
 const modalStore = useModalStore()
 const taxTypeStore = useTaxTypeStore()
 const userStore = useUserStore()
+const companyStore = useCompanyStore()
 
 const { t } = useI18n()
 const textSearch = ref(null)
+
+const formatMoney = (amount) => {
+  return companyStore.formatMoney(amount)
+}
 
 const filteredTaxType = computed(() => {
   if (textSearch.value) {
