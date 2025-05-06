@@ -21,6 +21,7 @@ class EstimateResource extends JsonResource
             'status' => $this->status,
             'reference_number' => $this->reference_number,
             'tax_per_item' => $this->tax_per_item,
+            'tax_included' => $this->tax_included,
             'discount_per_item' => $this->discount_per_item,
             'notes' => $this->getNotes(),
             'discount' => $this->discount,

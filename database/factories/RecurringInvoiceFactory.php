@@ -26,6 +26,7 @@ class RecurringInvoiceFactory extends Factory
             'send_automatically' => false,
             'status' => $this->faker->randomElement(['COMPLETED', 'ON_HOLD', 'ACTIVE']),
             'tax_per_item' => 'NO',
+            'tax_included' => false,
             'discount_per_item' => 'NO',
             'sub_total' => $this->faker->randomDigitNotNull(),
             'total' => $this->faker->randomDigitNotNull(),

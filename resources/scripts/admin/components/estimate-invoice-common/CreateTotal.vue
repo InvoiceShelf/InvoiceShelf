@@ -39,6 +39,17 @@
     </div>
 
     <div
+      v-if="store[storeProp].tax_per_item === 'YES'"
+    >
+      <NetTotal
+        :currency="currency"
+        :store="store"
+        :storeProp="storeProp"
+        :isLoading="isLoading"
+      />
+    </div>
+
+    <div
       v-for="tax in itemWiseTaxes"
       :key="tax.tax_type_id"
       class="flex items-center justify-between w-full"
@@ -140,6 +151,21 @@
         store[storeProp].tax_per_item === 'NO' ||
         store[storeProp].tax_per_item === null
       "
+      class="flex items-center justify-between w-full mt-2"
+    >
+      <NetTotal
+        :currency="currency"
+        :store="store"
+        :storeProp="storeProp"
+        :isLoading="isLoading"
+      />
+    </div>
+
+    <div
+      v-if="
+        store[storeProp].tax_per_item === 'NO' ||
+        store[storeProp].tax_per_item === null
+      "
     >
       <Tax
         v-for="(tax, index) in taxes"
@@ -149,6 +175,7 @@
         :taxes="taxes"
         :currency="currency"
         :store="store"
+        :storeProp="storeProp"
         @remove="removeTax"
         @update="updateTax"
       />
@@ -198,6 +225,7 @@
 <script setup>
 import { computed, inject, ref, watch } from 'vue'
 import Guid from 'guid'
+import NetTotal from './NetTotal.vue'
 import Tax from './CreateTotalTaxes.vue'
 import TaxStub from '@/scripts/admin/stub/abilities'
 import SelectTaxPopup from './SelectTaxPopup.vue'

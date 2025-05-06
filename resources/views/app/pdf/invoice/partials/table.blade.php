@@ -121,6 +121,17 @@
             @endif
         @endif
 
+        @if ($invoice->tax_included)
+        <tr>
+            <td class="border-0 total-table-attribute-label">
+                @lang('pdf_net_total')
+            </td>
+            <td class="py-2 border-0 item-cell total-table-attribute-value">
+                {!! format_money_pdf($invoice->sub_total - $invoice->discount - $invoice->tax, $invoice->customer->currency) !!}
+            </td>
+        </tr>
+        @endif
+
         @if ($invoice->tax_per_item === 'YES')
             @foreach ($taxes as $tax)
                 <tr>

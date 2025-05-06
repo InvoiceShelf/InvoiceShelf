@@ -52,6 +52,14 @@
         :title="$t('settings.tax_types.tax_per_item')"
         :description="$t('settings.tax_types.tax_setting_description')"
       />
+
+      <BaseDivider class="mt-8 mb-2" />
+
+      <BaseSwitchSection
+        v-model="taxIncludedField"
+        :title="$t('settings.tax_types.tax_included')"
+        :description="$t('settings.tax_types.tax_included_description')"
+      />
     </div>
   </BaseSettingCard>
 </template>
@@ -80,6 +88,7 @@ const moduleStore = useModuleStore()
 const table = ref(null)
 const taxPerItemSetting = ref(companyStore.selectedCompanySettings.tax_per_item)
 const defaultCurrency = computed(() => companyStore.selectedCompanyCurrency)
+const taxIncludedSetting = ref(companyStore.selectedCompanySettings.tax_included)
 
 const taxTypeColumns = computed(() => {
   return [
@@ -131,6 +140,28 @@ const taxPerItemField = computed({
     }
 
     taxPerItemSetting.value = value
+
+    await companyStore.updateCompanySettings({
+      data,
+      message: 'general.setting_updated',
+    })
+  },
+})
+
+const taxIncludedField = computed({
+  get: () => {
+    return taxIncludedSetting.value === 'YES'
+  },
+  set: async (newValue) => {
+    const value = newValue ? 'YES' : 'NO'
+
+    let data = {
+      settings: {
+        tax_included: value,
+      },
+    }
+
+    taxIncludedSetting.value = value
 
     await companyStore.updateCompanySettings({
       data,

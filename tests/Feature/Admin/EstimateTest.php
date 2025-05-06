@@ -463,3 +463,23 @@ test('update estimate with EUR currency', function () {
 
     $response->assertStatus(200);
 });
+
+test('create estimate with tax included', function () {
+    $estimate = Estimate::factory()->raw([
+        'estimate_number' => 'EST-000006',
+        'items' => [
+            EstimateItem::factory()->raw(),
+        ],
+        'taxes' => [
+            Tax::factory()->raw(),
+        ],
+        'tax_included' => true,
+    ]);
+
+    postJson('api/v1/estimates', $estimate)
+        ->assertStatus(201);
+
+    $this->assertDatabaseHas('estimates', [
+        'tax_included' => $estimate['tax_included'],
+    ]);
+});
