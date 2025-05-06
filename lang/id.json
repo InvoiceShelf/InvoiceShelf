@@ -1027,7 +1027,7 @@
         "due_date_description": "Specify how due date is automatically set when you create an invoice.",
         "due_date_days": "Faktur jatuh tempo setelah (hari)",
         "set_due_date_automatically": "Tetapkan Tanggal Jatuh Secara Otomatis",
-        "set_due_date_automatically_description": "Enable this if you wish to set due date automatically when you create a new invoice.",
+        "set_due_date_automatically_description": ".",
         "default_formats": "Default Formats",
         "default_formats_description": "Below given formats are used to fill up the fields automatically on invoice creation.",
         "default_invoice_email_body": "Default Invoice Email Body",
