@@ -3,7 +3,7 @@ services:
     container_name: invoiceshelf-dev-php
     build:
       context: ..
-      dockerfile: Dockerfile
+      dockerfile: .dev/Dockerfile
       args:
         - UID=${USRID:-1000}
         - GID=${GRPID:-1000}
@@ -17,7 +17,7 @@ services:
     container_name: invoiceshelf-dev-nginx
     build:
       context: ..
-      dockerfile: nginx.Dockerfile
+      dockerfile: .dev/nginx.Dockerfile
     environment:
       - "PHP_FPM_HOST=php-fpm:9000"
     ports:

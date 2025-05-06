@@ -8,7 +8,7 @@ FROM serversideup/php:8-fpm-alpine AS base
     RUN install-php-extensions exif
     RUN install-php-extensions pgsql
     RUN install-php-extensions sqlite3
-    RUN install-php-extensions imagick/imagick@28f27044e435a2b203e32675e942eb8de620ee58
+    RUN install-php-extensions imagick
     RUN install-php-extensions mbstring
     RUN install-php-extensions gd
     RUN install-php-extensions xml
