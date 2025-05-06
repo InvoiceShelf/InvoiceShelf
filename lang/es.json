@@ -303,6 +303,7 @@
     "total": "Total",
     "discount": "Descuento",
     "sub_total": "Subtotal",
+    "net_total": "Base Imponible",
     "estimate_number": "Número de Presupuesto",
     "ref_number": "Número de referencia",
     "contact": "Contacto",
@@ -1212,7 +1213,9 @@
       "updated_message": "Tipo de impuesto actualizado correctamente",
       "deleted_message": "Tipo de impuesto eliminado correctamente",
       "confirm_delete": "No podrá recuperar este tipo de impuesto",
-      "already_in_use": "El impuesto ya está en uso."
+      "already_in_use": "El impuesto ya está en uso.",
+      "tax_included": "Impuestos inclusivos",
+      "tax_included_description": "Habilítelo si desea informar que los impuestos ya están incluidos en los artículos de la factura o en el total de la factura."
     },
     "payment_modes": {
       "title": "Formas de pago",
@@ -1608,6 +1611,7 @@
   "pdf_discount_label": "Descuento",
   "pdf_amount_label": "Cantidad",
   "pdf_subtotal": "Subtotal",
+  "pdf_net_total": "Base Imponible",
   "pdf_total": "Total",
   "pdf_payment_label": "Pago",
   "pdf_payment_receipt_label": "RECIBO DE PAGO",
