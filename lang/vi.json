@@ -161,7 +161,10 @@
     "name": "Tên",
     "description": "Sự miêu tả",
     "percent": "Phần trăm",
-    "compound_tax": "Thuế tổng hợp"
+    "compound_tax": "Thuế tổng hợp",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Tìm kiếm...",
@@ -1205,7 +1208,12 @@
       "tax_per_item": "Thuế mỗi mặt hàng",
       "tax_name": "Tên thuế",
       "compound_tax": "Thuế tổng hợp",
+      "amount": "Amount",
       "percent": "Phần trăm",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Hoạt động",
       "tax_setting_description": "Bật tính năng này nếu bạn muốn thêm thuế vào các mục hóa đơn riêng lẻ. Theo mặc định, thuế được thêm trực tiếp vào hóa đơn.",
       "created_message": "Loại thuế đã được tạo thành công",

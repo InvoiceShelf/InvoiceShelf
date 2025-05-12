@@ -161,7 +161,10 @@
     "name": "Nimi",
     "description": "Kuvaus",
     "percent": "Prosentti",
-    "compound_tax": "Yhdistetty vero"
+    "compound_tax": "Yhdistetty vero",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Etsi...",
@@ -1205,7 +1208,12 @@
       "tax_per_item": "ALV per tuote",
       "tax_name": "ALV Verokannan nimi",
       "compound_tax": "Yhdistetty vero",
+      "amount": "Amount",
       "percent": "Prosentti",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Toiminta",
       "tax_setting_description": "Aktivoi tämä jos haluat näyttää ALV:n laskurivikohtaisesti. Oletuksena, verot lisätään suoraan loppusummaan.",
       "created_message": "ALV Verokanta luotiin onnistuneesti",

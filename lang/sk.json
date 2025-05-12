@@ -161,7 +161,10 @@
     "name": "Meno",
     "description": "Popis",
     "percent": "Percento",
-    "compound_tax": "Zložená daň"
+    "compound_tax": "Zložená daň",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Hľadať...",
@@ -1205,7 +1208,12 @@
       "tax_per_item": "Daň pre každú Položku zvlášť",
       "tax_name": "Názov Dane",
       "compound_tax": "Zložená daň",
+      "amount": "Amount",
       "percent": "Percento",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Akcia",
       "tax_setting_description": "Túto možnosť povoľte, ak chcete pridať dane k jednotlivým položkám faktúr. Štandardne sa dane pripočítavajú priamo k faktúre.",
       "created_message": "Daň úspešne vytvorená",

@@ -161,7 +161,10 @@
     "name": "Nombre",
     "description": "Descripción",
     "percent": "Por ciento",
-    "compound_tax": "Impuesto compuesto"
+    "compound_tax": "Impuesto compuesto",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Buscar...",
@@ -1205,7 +1208,12 @@
       "tax_per_item": "Impuesto por artículo",
       "tax_name": "Nombre del impuesto",
       "compound_tax": "Impuesto compuesto",
+      "amount": "Amount",
       "percent": "Porcentaje",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Acción",
       "tax_setting_description": "Habilítelo si desea agregar impuestos a artículos de factura de forma individual. Por defecto, los impuestos se agregan directamente a la factura.",
       "created_message": "Tipo de impuesto creado con éxito",

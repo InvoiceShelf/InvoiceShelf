@@ -161,7 +161,10 @@
     "name": "Nama",
     "description": "Deskripsi",
     "percent": "Persen",
-    "compound_tax": "Pajak majemuk"
+    "compound_tax": "Pajak majemuk",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Cari...",
@@ -1024,7 +1027,7 @@
         "due_date_description": "Specify how due date is automatically set when you create an invoice.",
         "due_date_days": "Faktur jatuh tempo setelah (hari)",
         "set_due_date_automatically": "Tetapkan Tanggal Jatuh Secara Otomatis",
-        "set_due_date_automatically_description": "Enable this if you wish to set due date automatically when you create a new invoice.",
+        "set_due_date_automatically_description": ".",
         "default_formats": "Default Formats",
         "default_formats_description": "Below given formats are used to fill up the fields automatically on invoice creation.",
         "default_invoice_email_body": "Default Invoice Email Body",
@@ -1205,7 +1208,12 @@
       "tax_per_item": "Tax Per Item",
       "tax_name": "Nama Pajak",
       "compound_tax": "Compound Tax",
+      "amount": "Amount",
       "percent": "Persen",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Aksi",
       "tax_setting_description": "Aktifkan ini jika Anda ingin menambahkan pajak ke masing-masing item faktur. Secara bawaan, pajak ditambahkan langsung ke faktur.",
       "created_message": "Tax type created successfully",

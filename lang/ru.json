@@ -161,7 +161,10 @@
     "name": "Название",
     "description": "Описание",
     "percent": "Проценты",
-    "compound_tax": "Комплексный налог"
+    "compound_tax": "Комплексный налог",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Поиск...",
@@ -1205,7 +1208,12 @@
       "tax_per_item": "Налог за единицу",
       "tax_name": "Название налога",
       "compound_tax": "Комплексный налог",
+      "amount": "Amount",
       "percent": "Процент",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Действие",
       "tax_setting_description": "Включите эту опцию, если вы хотите добавить налоги к отдельным позициям счета-фактуры. По умолчанию налоги добавляются непосредственно к счету.",
       "created_message": "Тип налога успешно создан",

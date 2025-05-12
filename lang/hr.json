@@ -161,7 +161,10 @@
     "name": "Naziv",
     "description": "Opis",
     "percent": "Postotak",
-    "compound_tax": "Složeni porez"
+    "compound_tax": "Složeni porez",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Pretraga...",
@@ -1205,7 +1208,12 @@
       "tax_per_item": "Porez po Stavkama",
       "tax_name": "Naziv Poreza",
       "compound_tax": "Složeni Porez",
+      "amount": "Amount",
       "percent": "Postotak",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Radnja",
       "tax_setting_description": "Izaberite ovo ako želite dodati porez na individualne stavke. Zadano ponašanje je da je porez dodan direktno na fakturu.",
       "created_message": "Vrsta poreza uspješno kreirana",

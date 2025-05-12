@@ -161,7 +161,10 @@
     "name": "Όνομα",
     "description": "Περιγραφή",
     "percent": "Ποσοστό",
-    "compound_tax": "Σύνθετος Φόρος"
+    "compound_tax": "Σύνθετος Φόρος",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Αναζήτηση...",
@@ -1205,7 +1208,12 @@
       "tax_per_item": "Στοιχείο Φόντου Υπομενού",
       "tax_name": "Όνομα Φόρου",
       "compound_tax": "Σύνθετος Φόρος",
+      "amount": "Amount",
       "percent": "Ποσοστό",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Ενέργεια",
       "tax_setting_description": "Ενεργοποιήστε το αν θέλετε να προσθέσετε έκπτωση σε μεμονωμένα στοιχεία τιμολογίου. Από προεπιλογή, η έκπτωση προστίθεται απευθείας στο τιμολόγιο.",
       "created_message": "Το τιμολόγιο εστάλη επιτυχώς",
