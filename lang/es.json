@@ -1,6 +1,6 @@
 {
   "navigation": {
-    "dashboard": "Dashboard",
+    "dashboard": "Panel",
     "customers": "Clientes",
     "items": "Artículos",
     "invoices": "Facturas",
@@ -162,9 +162,9 @@
     "description": "Descripción",
     "percent": "Por ciento",
     "compound_tax": "Impuesto compuesto",
-    "percentage": "Percentage",
-    "fixed_amount": "Fixed Amount",
-    "tax_type": "Tax Type"
+    "percentage": "Porcentaje",
+    "fixed_amount": "Cantidad fija",
+    "tax_type": "Tipo de impuesto"
   },
   "global_search": {
     "search": "Buscar...",
@@ -856,7 +856,7 @@
       "notes": "Notas",
       "exchange_rate": "Tasa de cambio",
       "address_information": "Información de dirección",
-      "pdf_generation": "PDF Generation"
+      "pdf_generation": "Generación de PDF"
     },
     "address_information": {
       "section_description": "Puede actualizar la información de su dirección utilizando el siguiente formulario."
@@ -910,14 +910,14 @@
       "title": "Configuración de PDF",
       "footer_text": "Texto de pie de página",
       "pdf_layout": "Diseño PDF",
-      "pdf_configuration": "PDF Generation Settings",
-      "section_description": "Change the way PDFs are generated",
-      "driver": "PDF Driver to use",
-      "papersize": "Papersize",
-      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
-      "gotenberg_host": "Gotenberg service host",
-      "pdf_variables_save_successfully": "PDF configuration saved successfully",
-      "pdf_variables_save_error": "PDF configuration could not be saved"
+      "pdf_configuration": "Ajustes de Generación PDF",
+      "section_description": "Cambiar la forma en que se generan PDFs",
+      "driver": "Controlador de PDF a utilizar",
+      "papersize": "Tamaño del papel",
+      "papersize_hint": "Tamaño de papel en anchura y altura (ej. \"210mm 297mm\")",
+      "gotenberg_host": "Servidor de Gotenberg",
+      "pdf_variables_save_successfully": "Configuración de PDF guardada correctamente",
+      "pdf_variables_save_error": "No se pudo guardar la configuración de PDF"
     },
     "company_info": {
       "company_info": "Información de la compañía",
@@ -1208,12 +1208,12 @@
       "tax_per_item": "Impuesto por artículo",
       "tax_name": "Nombre del impuesto",
       "compound_tax": "Impuesto compuesto",
-      "amount": "Amount",
+      "amount": "Cantidad",
       "percent": "Porcentaje",
-      "fixed_amount": "Fixed Amount",
-      "calculation_type": "Calculation Type",
-      "percentage": "Percentage",
-      "fixed": "Fixed",
+      "fixed_amount": "Cantidad Fija",
+      "calculation_type": "Tipo de cálculo",
+      "percentage": "Porcentaje",
+      "fixed": "Fijo",
       "action": "Acción",
       "tax_setting_description": "Habilítelo si desea agregar impuestos a artículos de factura de forma individual. Por defecto, los impuestos se agregan directamente a la factura.",
       "created_message": "Tipo de impuesto creado con éxito",
