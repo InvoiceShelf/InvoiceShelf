@@ -915,8 +915,8 @@
       "driver": "PDF Driver to use",
       "papersize": "Papersize",
       "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
-      "gotenberg_host": "Gotenberg service host",
-      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "gotenberg_host": "",
+      "pdf_variables_save_successfully": "PDF-Konfiguration erfolgreich gespeichert",
       "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
