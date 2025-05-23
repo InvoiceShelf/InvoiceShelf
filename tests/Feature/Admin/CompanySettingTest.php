@@ -106,6 +106,7 @@ test('update settings', function () {
         'notify_estimate_viewed' => 'YES',
         'tax_per_item' => 'YES',
         'tax_included' => 'YES',
+        'tax_included_by_default' => 'YES',
         'discount_per_item' => 'YES',
     ];
 

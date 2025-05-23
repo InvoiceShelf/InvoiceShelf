@@ -60,6 +60,13 @@
         :title="$t('settings.tax_types.tax_included')"
         :description="$t('settings.tax_types.tax_included_description')"
       />
+
+      <BaseSwitchSection
+        v-if="taxIncludedField"
+        v-model="taxIncludedByDefaultField"
+        :title="$t('settings.tax_types.tax_included_by_default')"
+        :description="$t('settings.tax_types.tax_included_by_default_description')"
+      />
     </div>
   </BaseSettingCard>
 </template>
@@ -88,7 +95,6 @@ const moduleStore = useModuleStore()
 const table = ref(null)
 const taxPerItemSetting = ref(companyStore.selectedCompanySettings.tax_per_item)
 const defaultCurrency = computed(() => companyStore.selectedCompanyCurrency)
-const taxIncludedSetting = ref(companyStore.selectedCompanySettings.tax_included)
 
 const taxTypeColumns = computed(() => {
   return [
@@ -148,20 +154,53 @@ const taxPerItemField = computed({
   },
 })
 
+const taxIncludedSettings = reactive({
+  tax_included: 'NO',
+  tax_included_by_default: 'NO',
+})
+
+utils.mergeSettings(taxIncludedSettings, {
+  ...companyStore.selectedCompanySettings,
+})
+
 const taxIncludedField = computed({
   get: () => {
-    return taxIncludedSetting.value === 'YES'
+    return taxIncludedSettings.tax_included === 'YES'
   },
   set: async (newValue) => {
     const value = newValue ? 'YES' : 'NO'
+    taxIncludedSettings.tax_included = value
+
+    if (!newValue) {
+      taxIncludedSettings.tax_included_by_default = 'NO'
+    }
 
     let data = {
       settings: {
-        tax_included: value,
+        ...taxIncludedSettings,
       },
     }
 
-    taxIncludedSetting.value = value
+    await companyStore.updateCompanySettings({
+      data,
+      message: 'general.setting_updated',
+    })
+  },
+})
+
+const taxIncludedByDefaultField = computed({
+  get: () => {
+    return taxIncludedSettings.tax_included_by_default === 'YES'
+  },
+  set: async (newValue) => {
+    const value = newValue ? 'YES' : 'NO'
+    taxIncludedSettings.tax_included_by_default = value
+
+    let data = {
+      settings: {
+        tax_included_by_default: taxIncludedSettings.tax_included_by_default,
+      },
+    }
 
     await companyStore.updateCompanySettings({
       data,

@@ -1215,7 +1215,9 @@
       "confirm_delete": "No podrá recuperar este tipo de impuesto",
       "already_in_use": "El impuesto ya está en uso.",
       "tax_included": "Impuestos inclusivos",
-      "tax_included_description": "Habilítelo si desea informar que los impuestos ya están incluidos en los artículos de la factura o en el total de la factura."
+      "tax_included_description": "Habilítelo si desea informar que los impuestos ya están incluidos en los artículos de la factura o en el total de la factura.",
+      "tax_included_by_default": "Usar impuestos inclusivos por defecto",
+      "tax_included_by_default_description": "Habilítelo si desea establecer los impuestos inclusivos por defecto."
     },
     "payment_modes": {
       "title": "Formas de pago",
