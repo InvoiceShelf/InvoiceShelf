@@ -101,6 +101,15 @@
                 {{ $t(item.title) }}
               </router-link>
             </nav>
+
+            <!-- Dark Mode Toggle -->
+            <div class="mt-8 px-4">
+              <DarkModeToggle
+                :show-label="true"
+                :show-description="false"
+                class="w-full"
+              />
+            </div>
           </div>
         </div>
       </TransitionChild>
@@ -154,11 +163,21 @@
         {{ $t(item.title) }}
       </router-link>
     </div>
+
+    <!-- Dark Mode Toggle -->
+    <div class="mt-8 px-6">
+      <DarkModeToggle
+        :show-label="true"
+        :show-description="false"
+        class="w-full"
+      />
+    </div>
   </div>
 </template>
 
 <script setup>
 import MainLogo from '@/scripts/components/icons/MainLogo.vue'
+import DarkModeToggle from '@/scripts/components/theme/DarkModeToggle.vue'
 
 import {
   Dialog,

@@ -141,7 +141,7 @@
       "title": "Sales & Expenses"
     },
     "recent_invoices_card": {
-      "title": "Due Invoices",
+      "title": "Due Invoices modifed",
       "due_on": "Due On",
       "customer": "Customer",
       "amount_due": "Amount Due",
