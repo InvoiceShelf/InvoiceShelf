@@ -3,8 +3,8 @@
 namespace Tests\Feature\Customer;
 
 use App\Models\Customer;
-use App\Models\Invoice;
 use App\Models\Estimate;
+use App\Models\Invoice;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\Sanctum;
@@ -42,7 +42,7 @@ test('customer dashboard without active filter', function () {
             'invoice_count',
             'estimate_count',
             'payment_count',
-            'active_filter_applied'
+            'active_filter_applied',
         ]);
 
     expect($response->json('active_filter_applied'))->toBeFalse();
@@ -60,7 +60,7 @@ test('customer dashboard with active filter enabled', function () {
             'invoice_count',
             'estimate_count',
             'payment_count',
-            'active_filter_applied'
+            'active_filter_applied',
         ]);
 
     expect($response->json('active_filter_applied'))->toBeTrue();
@@ -157,7 +157,7 @@ test('customer dashboard handles boolean parameter variations correctly', functi
     foreach ($testCases as $param) {
         $response = getJson("api/v1/{$customer->company->slug}/customer/dashboard?{$param}")
             ->assertOk();
-        
+
         expect($response->json('active_filter_applied'))->toBeTrue();
     }
 
@@ -171,12 +171,12 @@ test('customer dashboard handles boolean parameter variations correctly', functi
     ];
 
     foreach ($falseCases as $param) {
-        $url = $param 
-            ? "api/v1/{$customer->company->slug}/customer/dashboard?{$param}" 
+        $url = $param
+            ? "api/v1/{$customer->company->slug}/customer/dashboard?{$param}"
             : "api/v1/{$customer->company->slug}/customer/dashboard";
-        
+
         $response = getJson($url)->assertOk();
-        
+
         expect($response->json('active_filter_applied'))->toBeFalse();
     }
 });

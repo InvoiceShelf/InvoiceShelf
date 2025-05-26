@@ -14,7 +14,6 @@ class DashboardController extends Controller
     /**
      * Handle the incoming request.
      *
-     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function __invoke(Request $request)
@@ -31,10 +30,10 @@ class DashboardController extends Controller
         if ($activeOnly) {
             $amountDueQuery->whereIn('status', [
                 Invoice::STATUS_SENT,
-                Invoice::STATUS_VIEWED
+                Invoice::STATUS_VIEWED,
             ])->whereIn('paid_status', [
                 Invoice::STATUS_UNPAID,
-                Invoice::STATUS_PARTIALLY_PAID
+                Invoice::STATUS_PARTIALLY_PAID,
             ]);
         }
 
@@ -47,10 +46,10 @@ class DashboardController extends Controller
         if ($activeOnly) {
             $invoiceCountQuery->whereIn('status', [
                 Invoice::STATUS_SENT,
-                Invoice::STATUS_VIEWED
+                Invoice::STATUS_VIEWED,
             ])->whereIn('paid_status', [
                 Invoice::STATUS_UNPAID,
-                Invoice::STATUS_PARTIALLY_PAID
+                Invoice::STATUS_PARTIALLY_PAID,
             ]);
         }
 
@@ -63,7 +62,7 @@ class DashboardController extends Controller
         if ($activeOnly) {
             $estimatesCountQuery->whereIn('status', [
                 Estimate::STATUS_SENT,
-                Estimate::STATUS_VIEWED
+                Estimate::STATUS_VIEWED,
             ]);
         }
 
@@ -79,10 +78,10 @@ class DashboardController extends Controller
         if ($activeOnly) {
             $recentInvoicesQuery->whereIn('status', [
                 Invoice::STATUS_SENT,
-                Invoice::STATUS_VIEWED
+                Invoice::STATUS_VIEWED,
             ])->whereIn('paid_status', [
                 Invoice::STATUS_UNPAID,
-                Invoice::STATUS_PARTIALLY_PAID
+                Invoice::STATUS_PARTIALLY_PAID,
             ]);
         }
 
@@ -95,7 +94,7 @@ class DashboardController extends Controller
         if ($activeOnly) {
             $recentEstimatesQuery->whereIn('status', [
                 Estimate::STATUS_SENT,
-                Estimate::STATUS_VIEWED
+                Estimate::STATUS_VIEWED,
             ]);
         }
 

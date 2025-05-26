@@ -22,7 +22,7 @@ beforeEach(function () {
 
 it('can access dashboard with active filter parameter', function () {
     $response = getJson('/api/v1/dashboard?active_only=true');
-    
+
     $response->assertStatus(200);
     $response->assertJsonStructure([
         'total_amount_due',
@@ -37,7 +37,7 @@ it('can access dashboard with active filter parameter', function () {
 
 it('can access dashboard without active filter parameter', function () {
     $response = getJson('/api/v1/dashboard');
-    
+
     $response->assertStatus(200);
     $response->assertJsonStructure([
         'total_amount_due',
@@ -54,15 +54,15 @@ it('handles active filter parameter correctly', function () {
     // Test with active_only=true
     $response = getJson('/api/v1/dashboard?active_only=true');
     $response->assertStatus(200);
-    
+
     // Test with active_only=false
     $response = getJson('/api/v1/dashboard?active_only=false');
     $response->assertStatus(200);
-    
+
     // Test with active_only=1
     $response = getJson('/api/v1/dashboard?active_only=1');
     $response->assertStatus(200);
-    
+
     // Test with active_only=0
     $response = getJson('/api/v1/dashboard?active_only=0');
     $response->assertStatus(200);
@@ -71,13 +71,13 @@ it('handles active filter parameter correctly', function () {
 it('returns consistent data structure with and without filter', function () {
     $responseWithFilter = getJson('/api/v1/dashboard?active_only=true');
     $responseWithoutFilter = getJson('/api/v1/dashboard');
-    
+
     $responseWithFilter->assertStatus(200);
     $responseWithoutFilter->assertStatus(200);
-    
+
     // Both responses should have the same structure
     $withFilterKeys = array_keys($responseWithFilter->json());
     $withoutFilterKeys = array_keys($responseWithoutFilter->json());
-    
+
     expect($withFilterKeys)->toEqual($withoutFilterKeys);
-}); 
+});

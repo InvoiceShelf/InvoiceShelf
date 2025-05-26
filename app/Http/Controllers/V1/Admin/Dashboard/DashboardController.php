@@ -19,7 +19,6 @@ class DashboardController extends Controller
     /**
      * Handle the incoming request.
      *
-     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function __invoke(Request $request)
@@ -72,10 +71,10 @@ class DashboardController extends Controller
             if ($activeOnly) {
                 $invoiceQuery->whereIn('status', [
                     Invoice::STATUS_SENT,
-                    Invoice::STATUS_VIEWED
+                    Invoice::STATUS_VIEWED,
                 ])->whereIn('paid_status', [
                     Invoice::STATUS_UNPAID,
-                    Invoice::STATUS_PARTIALLY_PAID
+                    Invoice::STATUS_PARTIALLY_PAID,
                 ]);
             }
 
@@ -122,10 +121,10 @@ class DashboardController extends Controller
         if ($activeOnly) {
             $totalSalesQuery->whereIn('status', [
                 Invoice::STATUS_SENT,
-                Invoice::STATUS_VIEWED
+                Invoice::STATUS_VIEWED,
             ])->whereIn('paid_status', [
                 Invoice::STATUS_UNPAID,
-                Invoice::STATUS_PARTIALLY_PAID
+                Invoice::STATUS_PARTIALLY_PAID,
             ]);
         }
 
@@ -163,15 +162,15 @@ class DashboardController extends Controller
                     $query->whereHas('invoices', function ($subQuery) {
                         $subQuery->whereIn('status', [
                             Invoice::STATUS_SENT,
-                            Invoice::STATUS_VIEWED
+                            Invoice::STATUS_VIEWED,
                         ])->whereIn('paid_status', [
                             Invoice::STATUS_UNPAID,
-                            Invoice::STATUS_PARTIALLY_PAID
+                            Invoice::STATUS_PARTIALLY_PAID,
                         ]);
                     })->orWhereHas('estimates', function ($subQuery) {
                         $subQuery->whereIn('status', [
                             Estimate::STATUS_SENT,
-                            Estimate::STATUS_VIEWED
+                            Estimate::STATUS_VIEWED,
                         ]);
                     });
                 });
@@ -183,10 +182,10 @@ class DashboardController extends Controller
         if ($activeOnly) {
             $invoiceCountQuery->whereIn('status', [
                 Invoice::STATUS_SENT,
-                Invoice::STATUS_VIEWED
+                Invoice::STATUS_VIEWED,
             ])->whereIn('paid_status', [
                 Invoice::STATUS_UNPAID,
-                Invoice::STATUS_PARTIALLY_PAID
+                Invoice::STATUS_PARTIALLY_PAID,
             ]);
         }
         $total_invoice_count = $invoiceCountQuery->count();
@@ -196,7 +195,7 @@ class DashboardController extends Controller
         if ($activeOnly) {
             $estimateCountQuery->whereIn('status', [
                 Estimate::STATUS_SENT,
-                Estimate::STATUS_VIEWED
+                Estimate::STATUS_VIEWED,
             ]);
         }
         $total_estimate_count = $estimateCountQuery->count();
@@ -206,10 +205,10 @@ class DashboardController extends Controller
         if ($activeOnly) {
             $amountDueQuery->whereIn('status', [
                 Invoice::STATUS_SENT,
-                Invoice::STATUS_VIEWED
+                Invoice::STATUS_VIEWED,
             ])->whereIn('paid_status', [
                 Invoice::STATUS_UNPAID,
-                Invoice::STATUS_PARTIALLY_PAID
+                Invoice::STATUS_PARTIALLY_PAID,
             ]);
         }
         $total_amount_due = $amountDueQuery->sum('base_due_amount');
@@ -222,10 +221,10 @@ class DashboardController extends Controller
         if ($activeOnly) {
             $recentDueInvoicesQuery->whereIn('status', [
                 Invoice::STATUS_SENT,
-                Invoice::STATUS_VIEWED
+                Invoice::STATUS_VIEWED,
             ])->whereIn('paid_status', [
                 Invoice::STATUS_UNPAID,
-                Invoice::STATUS_PARTIALLY_PAID
+                Invoice::STATUS_PARTIALLY_PAID,
             ]);
         }
 
@@ -236,7 +235,7 @@ class DashboardController extends Controller
         if ($activeOnly) {
             $recentEstimatesQuery->whereIn('status', [
                 Estimate::STATUS_SENT,
-                Estimate::STATUS_VIEWED
+                Estimate::STATUS_VIEWED,
             ]);
         }
         $recent_estimates = $recentEstimatesQuery->take(5)->latest()->get();

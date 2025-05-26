@@ -1,9 +1,9 @@
 <?php
 
-use App\Models\User;
-use App\Models\Invoice;
-use App\Models\Estimate;
 use App\Models\Customer;
+use App\Models\Estimate;
+use App\Models\Invoice;
+use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Sanctum\Sanctum;
 
@@ -46,7 +46,7 @@ it('can get dashboard data without active filter', function () {
             'total_receipts',
             'total_expenses',
             'total_net_income',
-            'active_filter_applied'
+            'active_filter_applied',
         ]);
 
     expect($response->json('active_filter_applied'))->toBeFalse();
@@ -67,7 +67,7 @@ it('can get dashboard data with active filter enabled', function () {
             'total_receipts',
             'total_expenses',
             'total_net_income',
-            'active_filter_applied'
+            'active_filter_applied',
         ]);
 
     expect($response->json('active_filter_applied'))->toBeTrue();
@@ -75,7 +75,7 @@ it('can get dashboard data with active filter enabled', function () {
 
 it('filters invoices correctly when active filter is enabled', function () {
     $company = User::find(1)->companies()->first();
-    
+
     // Create test customer
     $customer = Customer::factory()->create([
         'company_id' => $company->id,
@@ -119,7 +119,7 @@ it('filters invoices correctly when active filter is enabled', function () {
 
 it('filters estimates correctly when active filter is enabled', function () {
     $company = User::find(1)->companies()->first();
-    
+
     // Create test customer
     $customer = Customer::factory()->create([
         'company_id' => $company->id,
@@ -160,7 +160,7 @@ it('filters estimates correctly when active filter is enabled', function () {
 
 it('filters customers correctly when active filter is enabled', function () {
     $company = User::find(1)->companies()->first();
-    
+
     // Create customers with different portal access
     $customerWithPortal = Customer::factory()->create([
         'company_id' => $company->id,
@@ -205,7 +205,7 @@ it('handles boolean parameter variations correctly', function () {
     foreach ($testCases as $param) {
         $response = getJson("api/v1/dashboard?{$param}")
             ->assertOk();
-        
+
         expect($response->json('active_filter_applied'))->toBeTrue();
     }
 
@@ -221,7 +221,7 @@ it('handles boolean parameter variations correctly', function () {
     foreach ($falseCases as $param) {
         $url = $param ? "api/v1/dashboard?{$param}" : 'api/v1/dashboard';
         $response = getJson($url)->assertOk();
-        
+
         expect($response->json('active_filter_applied'))->toBeFalse();
     }
 });
