@@ -1,3 +1,111 @@
+
+# Guía de Instalación de Nova Crater
+
+Nova Crater se puede instalar usando **Docker** o **Instalación Manual**. Recomendamos Docker porque incluye todas las dependencias necesarias automáticamente.
+
+---
+
+## Instalación con Docker
+
+### Requisitos Previos
+- Docker instalado en tu sistema: https://docs.docker.com/install/
+
+### Pasos
+
+1. **Clonar el repositorio**
+   ```bash
+   https://github.com/EverthMartinez3002/NovaCrater.git
+   ```
+
+2. **Preparar docker-compose**
+   ```bash
+   cd NovaCrater/docker
+   cp docker-compose.mysql.yml docker-compose.yml   # Para MySQL
+   # O BIEN
+   cp docker-compose.postgres.yml docker-compose.yml # Para PostgreSQL
+   ```
+   > Para usar SQLite, omite copiar plantillas; la configuración predeterminada utiliza SQLite.
+
+3. **Personalizar la configuración**
+   - Edita `docker-compose.yml` para ajustar credenciales, puertos o rutas de volúmenes según tus necesidades.
+
+4. **Iniciar contenedores**
+   ```bash
+   docker compose up -d
+   ```
+
+5. **Ejecutar el asistente de instalación**
+   - Abre tu navegador en tu dominio configurado (por ejemplo, http://localhost).
+   - Sigue las instrucciones en pantalla para completar la configuración.
+
+### Configuración de la base de datos
+
+**MySQL/PostgreSQL**  
+- Host: `nova-crater-db`  
+- Base de datos: `novacrater`  
+- Usuario: `novacrater`  
+- Contraseña: `TU_CONTRASEÑA`  
+
+> Cambia la contraseña predeterminada en `docker-compose.yml` antes de exponerla públicamente.
+
+**SQLite**  
+- Mantén la ruta predeterminada `database.sqlite` en `.env`.  
+- No se requiere ninguna configuración adicional.
+
+---
+
+## Instalación Manual
+
+Nova Crater está basado en Laravel. La instalación manual sigue el procedimiento estándar de Laravel.
+
+### Requisitos
+- PHP >= 8.2.0 y las siguientes extensiones:
+  - BCMath, Ctype, cURL, DOM, Filter, Iconv, JSON, Mbstring, OpenSSL, PDO, Session, Tokenizer, XML, ZIP
+
+### Pasos
+
+1. **Descargar el paquete**
+   - Clona el repositorio o descarga el ZIP desde:  
+     `https://github.com/EverthMartinez3002/NovaCrater`
+
+2. **Subir y extraer**
+   - Coloca la carpeta `NovaCrater` en la raíz web de tu servidor.
+
+3. **Configurar el dominio**
+   - Configura tu servidor web para usar `NovaCrater/public` como raíz de documentos.
+   - Usa un dominio o subdominio principal (subcarpetas no son soportadas).
+
+4. **Establecer permisos**
+   ```bash
+   chmod -R 775 storage bootstrap/cache
+   chown -R www-data:www-data storage bootstrap/cache
+   ```
+
+5. **Archivo de entorno**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+   - Edita el archivo `.env`:
+     - Establece `DB_CONNECTION` en `sqlite`, `mysql` o `pgsql`.
+     - Configura las credenciales de base de datos según sea necesario.
+
+6. **Instalar dependencias**
+   ```bash
+   composer install --no-dev --optimize-autoloader
+   npm install && npm run build
+   ```
+
+7. **Migrar y ejecutar seeders**
+   ```bash
+   php artisan migrate --force
+   php artisan db:seed
+   ```
+
+8. **Completar la configuración**
+   - Visita tu dominio en el navegador y sigue los pasos finales del asistente de instalación.
+
+
 # CI/CD Pipeline Documentation
 
 Este repositorio incluye un pipeline completo de CI/CD configurado con GitHub Actions para las ramas `master` y `develop`.
