@@ -123,6 +123,7 @@
   },
   "dashboard": {
     "select_year": "Select year",
+    "select_period": "Select period",
     "cards": {
       "due_amount": "Amount Due",
       "customers": "Customer | Customers",

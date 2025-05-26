@@ -11,11 +11,16 @@
         h-8
         md:h-9
         ml-2
-        text-sm text-white
-        bg-white
+        text-sm 
+        bg-white bg-opacity-20
+        border border-white border-opacity-30
+        dark:bg-gray-800 dark:bg-opacity-20
+        dark:text-white
+        dark:border-gray-700
         rounded
         cursor-pointer
-        bg-opacity-20
+        hover:bg-opacity-30
+        dark:hover:bg-opacity-30
       "
       @click="isShow = !isShow"
     >
@@ -25,7 +30,7 @@
       >
         {{ companyStore.selectedCompany.name }}
       </span>
-      <BaseIcon name="ChevronDownIcon" class="h-5 ml-1 text-white" />
+      <BaseIcon name="ChevronDownIcon" class="h-5 ml-1" />
     </div>
 
     <transition
@@ -38,7 +43,7 @@
     >
       <div
         v-if="isShow"
-        class="absolute right-0 mt-2 bg-white rounded-md shadow-lg"
+        class="absolute right-0 mt-2 bg-white dark:bg-gray-800 rounded-md shadow-lg dark:shadow-gray-900/20"
       >
         <div
           class="
@@ -46,7 +51,8 @@
             scrollbar-thin scrollbar-thumb-rounded-full
             w-[250px]
             max-h-[350px]
-            scrollbar-thumb-gray-300 scrollbar-track-gray-10
+            scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 
+            scrollbar-track-gray-10 dark:scrollbar-track-gray-800
             pb-4
           "
         >
@@ -57,6 +63,7 @@
               text-xs
               font-semibold
               text-gray-400
+              dark:text-gray-500
               mb-0.5
               block
               uppercase
@@ -75,9 +82,10 @@
               px-3
               mt-4
               text-base text-gray-400
+              dark:text-gray-500
             "
           >
-            <BaseIcon name="ExclamationCircleIcon" class="h-5 text-gray-400" />
+            <BaseIcon name="ExclamationCircleIcon" class="h-5 text-gray-400 dark:text-gray-500" />
             {{ $t('company_switcher.no_results_found') }}
           </div>
           <div v-else>
@@ -91,9 +99,11 @@
                   rounded-md
                   cursor-pointer
                   hover:bg-gray-100 hover:text-primary-500
+                  dark:hover:bg-gray-700 dark:hover:text-primary-400
+                  dark:text-gray-200
                 "
                 :class="{
-                  'bg-gray-100 text-primary-500':
+                  'bg-gray-100 text-primary-500 dark:bg-gray-700 dark:text-primary-400':
                     companyStore.selectedCompany.id === company.id,
                 }"
                 @click="changeCompany(company)"
@@ -109,10 +119,12 @@
                       text-base
                       font-semibold
                       bg-gray-200
+                      dark:bg-gray-600
                       rounded-md
                       w-9
                       h-9
                       text-primary-500
+                      dark:text-primary-400
                     "
                   >
                     <span v-if="!company.logo">
@@ -142,9 +154,12 @@
             p-4
             pl-3
             border-t-2 border-gray-100
+            dark:border-gray-700
             cursor-pointer
             text-primary-400
             hover:text-primary-500
+            dark:text-primary-400
+            dark:hover:text-primary-300
           "
           @click="addNewCompany"
         >

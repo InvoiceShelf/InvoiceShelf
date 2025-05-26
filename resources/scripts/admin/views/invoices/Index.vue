@@ -73,7 +73,7 @@
       </BaseInputGroup>
 
       <div
-        class="hidden w-8 h-0 mx-4 border border-gray-400 border-solid xl:block"
+        class="hidden w-8 h-0 mx-4 border border-gray-400 dark:border-gray-600 border-solid xl:block"
         style="margin-top: 1.5rem"
       />
 
@@ -126,7 +126,7 @@
           h-10
           mt-5
           list-none
-          border-b-2 border-gray-200 border-solid
+          border-b-2 border-gray-200 dark:border-gray-700 border-solid
         "
       >
         <!-- Tabs -->
@@ -152,7 +152,7 @@
                 font-medium
                 cursor-pointer
                 select-none
-                text-primary-400
+                text-primary-400 dark:text-primary-300
               "
             >
               {{ $t('general.actions') }}
@@ -161,7 +161,7 @@
           </template>
 
           <BaseDropdownItem @click="removeMultipleInvoices">
-            <BaseIcon name="TrashIcon" class="mr-3 text-gray-600" />
+            <BaseIcon name="TrashIcon" class="mr-3 text-gray-600 dark:text-gray-400" />
             {{ $t('general.delete') }}
           </BaseDropdownItem>
         </BaseDropdown>
@@ -204,7 +204,7 @@
         <template #cell-invoice_number="{ row }">
           <router-link
             :to="{ path: `invoices/${row.data.id}/view` }"
-            class="font-medium text-primary-500"
+            class="font-medium text-primary-500 dark:text-primary-400 hover:text-primary-600 dark:hover:text-primary-300"
           >
             {{ row.data.invoice_number }}
           </router-link>
@@ -341,7 +341,7 @@ const invoiceColumns = computed(() => {
     {
       key: 'checkbox',
       thClass: 'extra w-10',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-gray-900 dark:text-gray-100',
       placeholderClass: 'w-10',
       sortable: false,
     },
@@ -361,7 +361,7 @@ const invoiceColumns = computed(() => {
     {
       key: 'total',
       label: t('invoices.total'),
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-gray-900 dark:text-gray-100',
     },
 
     {

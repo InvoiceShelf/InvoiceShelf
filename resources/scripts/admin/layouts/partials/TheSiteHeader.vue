@@ -12,9 +12,9 @@
       px-4
       py-3
       md:h-16 md:px-8
-      bg-gradient-to-r
-      from-primary-500
-      to-primary-400
+      bg-white
+      border-b border-gray-200 dark:border-gray-700
+      dark:bg-gray-800
     "
   >
     <router-link
@@ -33,8 +33,7 @@
         md:block
       "
     >
-      <img v-if="adminLogo" :src="adminLogo" class="h-6" />
-      <MainLogo v-else class="h-6" light-color="white" dark-color="white" />
+      <img v-if="adminLogo" :src="adminLogo" class="h-16" />
     </router-link>
 
     <!-- toggle button-->
@@ -75,12 +74,14 @@
                 h-8
                 ml-2
                 text-sm text-black
+                dark:text-white
                 bg-white
+                dark:bg-gray-800
                 rounded
                 md:h-9 md:w-9
               "
             >
-              <BaseIcon name="PlusIcon" class="w-5 h-5 text-gray-600" />
+              <BaseIcon name="PlusIcon" class="w-5 h-5 text-gray-600 dark:text-gray-300" />
             </div>
           </template>
 
@@ -197,12 +198,9 @@ const previewAvatar = computed(() => {
 })
 
 const adminLogo = computed(() => {
-  if (globalStore.globalSettings.admin_portal_logo) {
-    return '/storage/' + globalStore.globalSettings.admin_portal_logo
-  }
-
-  return false
-})
+     const imgUrl = new URL('$images/logo.png', import.meta.url)
+     return imgUrl
+   })
 
 function getDefaultAvatar() {
   const imgUrl = new URL('$images/default-avatar.jpg', import.meta.url)
