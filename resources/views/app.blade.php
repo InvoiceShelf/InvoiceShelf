@@ -25,7 +25,7 @@
 </head>
 
 <body
-    class="h-full overflow-hidden bg-gray-100 font-base
+    class="h-full overflow-hidden bg-gray-100 dark:bg-gray-900 font-base
     @if(isset($current_theme)) theme-{{ $current_theme }} @else theme-{{get_app_setting('admin_portal_theme') ?? 'invoiceshelf'}} @endif ">
 
     <!-- Module Scripts -->

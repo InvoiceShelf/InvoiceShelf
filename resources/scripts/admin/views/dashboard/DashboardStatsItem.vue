@@ -4,28 +4,30 @@
     class="
       relative
       flex
-      justify-between
+      flex-col
       p-3
-      bg-white
+      mt-3
       rounded
-      shadow
-      hover:bg-gray-50
       xl:p-4
       lg:col-span-2
+      transition-colors
+      duration-200
     "
-    :class="{ 'lg:!col-span-3': large }"
+    :class="{ 'lg:!col-span-4': large }"
     :to="route"
   >
-    <div>
-      <span class="text-xl font-semibold leading-tight text-black xl:text-3xl">
-        <slot />
-      </span>
-      <span class="block mt-1 text-sm leading-tight text-gray-500 xl:text-lg">
+    <div class="flex items-center mb-4">
+      <div class="flex items-center mr-3">
+        <component :is="iconComponent" class="w-8 h-8 xl:w-10 xl:h-10 text-gray-400" />
+      </div>
+      <span class="text-sm leading-tight text-gray-500 dark:text-gray-400 xl:text-base">
         {{ label }}
       </span>
     </div>
-    <div class="flex items-center">
-      <component :is="iconComponent" class="w-10 h-10 xl:w-12 xl:h-12" />
+    <div>
+      <span class="text-xl font-semibold leading-tight text-gray-900 dark:text-white xl:text-3xl">
+        <slot />
+      </span>
     </div>
   </router-link>
 

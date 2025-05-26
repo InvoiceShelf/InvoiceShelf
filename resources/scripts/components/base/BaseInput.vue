@@ -60,10 +60,10 @@
         inline-flex
         items-center
         px-3
-        text-gray-500
-        border border-r-0 border-gray-200
+        text-gray-500 dark:text-gray-400
+        border border-r-0 border-gray-200 dark:border-gray-600
         rounded-l-md
-        bg-gray-50
+        bg-gray-50 dark:bg-gray-700
         sm:text-sm
       "
     >
@@ -82,7 +82,7 @@
         pointer-events-none
       "
     >
-      <span class="text-gray-500 sm:text-sm">
+      <span class="text-gray-500 dark:text-gray-400 sm:text-sm">
         {{ inlineAddon }}
       </span>
     </div>
@@ -199,15 +199,15 @@ const props = defineProps({
   defaultInputClass: {
     type: String,
     default:
-      'font-base block w-full sm:text-sm border-gray-200 rounded-md text-black',
+      'font-base block w-full sm:text-sm border-gray-200 dark:border-gray-600 rounded-md text-black dark:text-white bg-white dark:bg-gray-800',
   },
   iconLeftClass: {
     type: String,
-    default: 'h-5 w-5 text-gray-400',
+    default: 'h-5 w-5 text-gray-400 dark:text-gray-500',
   },
   iconRightClass: {
     type: String,
-    default: 'h-5 w-5 text-gray-400',
+    default: 'h-5 w-5 text-gray-400 dark:text-gray-500',
   },
   modelModifiers: {
     default: () => ({}),
@@ -258,7 +258,7 @@ const inputInvalidClass = computed(() => {
 
 const inputDisabledClass = computed(() => {
   if (props.disabled) {
-    return `border-gray-100 bg-gray-100 !text-gray-400 ring-gray-200 focus:ring-gray-200 focus:border-gray-100`
+    return `border-gray-100 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 !text-gray-400 dark:!text-gray-500 ring-gray-200 dark:ring-gray-600 focus:ring-gray-200 dark:focus:ring-gray-600 focus:border-gray-100 dark:focus:border-gray-600`
   }
 
   return ''

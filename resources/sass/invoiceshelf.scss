@@ -7,6 +7,112 @@
 
 @tailwind utilities;
 
+/* Flatpickr Dark Mode Styles */
+.dark .flatpickr-calendar {
+  background: #374151;
+  border: 1px solid #4b5563;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15);
+}
+
+.dark .flatpickr-calendar .flatpickr-months {
+  background: #374151;
+  border-bottom: 1px solid #4b5563;
+}
+
+.dark .flatpickr-calendar .flatpickr-month {
+  color: #f9fafb;
+}
+
+.dark .flatpickr-calendar .flatpickr-current-month .flatpickr-monthDropdown-months {
+  background: #374151;
+  color: #f9fafb;
+  border: 1px solid #4b5563;
+}
+
+.dark .flatpickr-calendar .flatpickr-current-month .numInputWrapper span {
+  color: #f9fafb;
+  border-color: #4b5563;
+}
+
+.dark .flatpickr-calendar .flatpickr-current-month input.cur-year {
+  background: #374151;
+  color: #f9fafb;
+  border: 1px solid #4b5563;
+}
+
+.dark .flatpickr-calendar .flatpickr-weekdays {
+  background: #374151;
+}
+
+.dark .flatpickr-calendar .flatpickr-weekday {
+  color: #9ca3af;
+}
+
+.dark .flatpickr-calendar .flatpickr-days {
+  background: #374151;
+}
+
+.dark .flatpickr-calendar .flatpickr-day {
+  color: #f9fafb;
+  border: 1px solid transparent;
+}
+
+.dark .flatpickr-calendar .flatpickr-day:hover {
+  background: #4b5563;
+  border-color: #6b7280;
+}
+
+.dark .flatpickr-calendar .flatpickr-day.selected {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: #ffffff;
+}
+
+.dark .flatpickr-calendar .flatpickr-day.today {
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
+.dark .flatpickr-calendar .flatpickr-day.today:hover {
+  background: #3b82f6;
+  color: #ffffff;
+}
+
+.dark .flatpickr-calendar .flatpickr-day.inRange {
+  background: #1e40af;
+  border-color: #1e40af;
+  color: #ffffff;
+}
+
+.dark .flatpickr-calendar .flatpickr-day.disabled {
+  color: #6b7280;
+}
+
+.dark .flatpickr-calendar .flatpickr-time {
+  background: #374151;
+  border-top: 1px solid #4b5563;
+}
+
+.dark .flatpickr-calendar .flatpickr-time input {
+  background: #374151;
+  color: #f9fafb;
+  border: 1px solid #4b5563;
+}
+
+.dark .flatpickr-calendar .flatpickr-time .flatpickr-time-separator {
+  color: #f9fafb;
+}
+
+.dark .flatpickr-calendar .flatpickr-prev-month,
+.dark .flatpickr-calendar .flatpickr-next-month {
+  color: #9ca3af;
+}
+
+.dark .flatpickr-calendar .flatpickr-prev-month:hover,
+.dark .flatpickr-calendar .flatpickr-next-month:hover {
+  color: #f9fafb;
+}
+
 @font-face {
     font-family: "Poppins";
     font-style: normal;
