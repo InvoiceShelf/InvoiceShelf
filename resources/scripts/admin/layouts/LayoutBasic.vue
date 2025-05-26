@@ -29,6 +29,7 @@ import { useUserStore } from '@/scripts/admin/stores/user'
 import { useModalStore } from '@/scripts/stores/modal'
 import { useExchangeRateStore } from '@/scripts/admin/stores/exchange-rate'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
+import { useThemeStore } from '@/scripts/stores/theme'
 
 import SiteHeader from '@/scripts/admin/layouts/partials/TheSiteHeader.vue'
 import SiteSidebar from '@/scripts/admin/layouts/partials/TheSiteSidebar.vue'
@@ -43,12 +44,16 @@ const modalStore = useModalStore()
 const { t } = useI18n()
 const exchangeRateStore = useExchangeRateStore()
 const companyStore = useCompanyStore()
+const themeStore = useThemeStore()
 
 const isAppLoaded = computed(() => {
   return globalStore.isAppLoaded
 })
 
 onMounted(() => {
+  // Initialize theme store
+  themeStore.initialize()
+  
   globalStore.bootstrap().then((res) => {
     if (route.meta.ability && !userStore.hasAbilities(route.meta.ability)) {
       router.push({ name: 'account.settings' })

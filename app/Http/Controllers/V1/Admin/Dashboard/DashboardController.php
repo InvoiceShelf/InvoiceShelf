@@ -58,16 +58,28 @@ class DashboardController extends Controller
             $end->subYear()->endOfMonth();
         }
 
+        // Determine if active filter is enabled
+        $activeOnly = $request->boolean('active_only', false);
+
         while ($monthCounter < 12) {
-            array_push(
-                $invoice_totals,
-                Invoice::whereBetween(
-                    'invoice_date',
-                    [$start->format('Y-m-d'), $end->format('Y-m-d')]
-                )
-                    ->whereCompany()
-                    ->sum('base_total')
-            );
+            // Build invoice query with optional active filter
+            $invoiceQuery = Invoice::whereBetween(
+                'invoice_date',
+                [$start->format('Y-m-d'), $end->format('Y-m-d')]
+            )->whereCompany();
+
+            if ($activeOnly) {
+                $invoiceQuery->whereIn('status', [
+                    Invoice::STATUS_SENT,
+                    Invoice::STATUS_VIEWED,
+                ])->whereIn('paid_status', [
+                    Invoice::STATUS_UNPAID,
+                    Invoice::STATUS_PARTIALLY_PAID,
+                ]);
+            }
+
+            array_push($invoice_totals, $invoiceQuery->sum('base_total'));
+
             array_push(
                 $expense_totals,
                 Expense::whereBetween(
@@ -100,12 +112,23 @@ class DashboardController extends Controller
 
         $start->subMonth()->endOfMonth();
 
-        $total_sales = Invoice::whereBetween(
+        // Build total sales query with optional active filter
+        $totalSalesQuery = Invoice::whereBetween(
             'invoice_date',
             [$startDate->format('Y-m-d'), $start->format('Y-m-d')]
-        )
-            ->whereCompany()
-            ->sum('base_total');
+        )->whereCompany();
+
+        if ($activeOnly) {
+            $totalSalesQuery->whereIn('status', [
+                Invoice::STATUS_SENT,
+                Invoice::STATUS_VIEWED,
+            ])->whereIn('paid_status', [
+                Invoice::STATUS_UNPAID,
+                Invoice::STATUS_PARTIALLY_PAID,
+            ]);
+        }
+
+        $total_sales = $totalSalesQuery->sum('base_total');
 
         $total_receipts = Payment::whereBetween(
             'payment_date',
@@ -131,20 +154,91 @@ class DashboardController extends Controller
             'net_income_totals' => $net_income_totals,
         ];
 
-        $total_customer_count = Customer::whereCompany()->count();
-        $total_invoice_count = Invoice::whereCompany()
-            ->count();
-        $total_estimate_count = Estimate::whereCompany()->count();
-        $total_amount_due = Invoice::whereCompany()
-            ->sum('base_due_amount');
+        // Build customer count query with optional active filter
+        $customerQuery = Customer::whereCompany();
+        if ($activeOnly) {
+            $customerQuery->where('enable_portal', true)
+                ->where(function ($query) {
+                    $query->whereHas('invoices', function ($subQuery) {
+                        $subQuery->whereIn('status', [
+                            Invoice::STATUS_SENT,
+                            Invoice::STATUS_VIEWED,
+                        ])->whereIn('paid_status', [
+                            Invoice::STATUS_UNPAID,
+                            Invoice::STATUS_PARTIALLY_PAID,
+                        ]);
+                    })->orWhereHas('estimates', function ($subQuery) {
+                        $subQuery->whereIn('status', [
+                            Estimate::STATUS_SENT,
+                            Estimate::STATUS_VIEWED,
+                        ]);
+                    });
+                });
+        }
+        $total_customer_count = $customerQuery->count();
 
-        $recent_due_invoices = Invoice::with('customer')
+        // Build invoice count query with optional active filter
+        $invoiceCountQuery = Invoice::whereCompany();
+        if ($activeOnly) {
+            $invoiceCountQuery->whereIn('status', [
+                Invoice::STATUS_SENT,
+                Invoice::STATUS_VIEWED,
+            ])->whereIn('paid_status', [
+                Invoice::STATUS_UNPAID,
+                Invoice::STATUS_PARTIALLY_PAID,
+            ]);
+        }
+        $total_invoice_count = $invoiceCountQuery->count();
+
+        // Build estimate count query with optional active filter
+        $estimateCountQuery = Estimate::whereCompany();
+        if ($activeOnly) {
+            $estimateCountQuery->whereIn('status', [
+                Estimate::STATUS_SENT,
+                Estimate::STATUS_VIEWED,
+            ]);
+        }
+        $total_estimate_count = $estimateCountQuery->count();
+
+        // Build amount due query with optional active filter
+        $amountDueQuery = Invoice::whereCompany();
+        if ($activeOnly) {
+            $amountDueQuery->whereIn('status', [
+                Invoice::STATUS_SENT,
+                Invoice::STATUS_VIEWED,
+            ])->whereIn('paid_status', [
+                Invoice::STATUS_UNPAID,
+                Invoice::STATUS_PARTIALLY_PAID,
+            ]);
+        }
+        $total_amount_due = $amountDueQuery->sum('base_due_amount');
+
+        // Build recent due invoices query with optional active filter
+        $recentDueInvoicesQuery = Invoice::with('customer')
             ->whereCompany()
-            ->where('base_due_amount', '>', 0)
-            ->take(5)
-            ->latest()
-            ->get();
-        $recent_estimates = Estimate::with('customer')->whereCompany()->take(5)->latest()->get();
+            ->where('base_due_amount', '>', 0);
+
+        if ($activeOnly) {
+            $recentDueInvoicesQuery->whereIn('status', [
+                Invoice::STATUS_SENT,
+                Invoice::STATUS_VIEWED,
+            ])->whereIn('paid_status', [
+                Invoice::STATUS_UNPAID,
+                Invoice::STATUS_PARTIALLY_PAID,
+            ]);
+        }
+
+        $recent_due_invoices = $recentDueInvoicesQuery->take(5)->latest()->get();
+
+        // Build recent estimates query with optional active filter
+        $recentEstimatesQuery = Estimate::with('customer')->whereCompany();
+        if ($activeOnly) {
+            $recentEstimatesQuery->whereIn('status', [
+                Estimate::STATUS_SENT,
+                Estimate::STATUS_VIEWED,
+            ]);
+        }
+        $recent_estimates = $recentEstimatesQuery->take(5)->latest()->get();
 
         return response()->json([
             'total_amount_due' => $total_amount_due,
@@ -161,6 +255,9 @@ class DashboardController extends Controller
             'total_receipts' => $total_receipts,
             'total_expenses' => $total_expenses,
             'total_net_income' => $total_net_income,
+
+            // Include filter state in response for debugging
+            'active_filter_applied' => $activeOnly,
         ]);
     }
 }

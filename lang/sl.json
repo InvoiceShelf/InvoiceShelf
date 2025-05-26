@@ -141,7 +141,7 @@
       "title": "Sales & Expenses"
     },
     "recent_invoices_card": {
-      "title": "Due Invoices",
+      "title": "Due Invoices modified",
       "due_on": "Due On",
       "customer": "Stranka",
       "amount_due": "Amount Due",

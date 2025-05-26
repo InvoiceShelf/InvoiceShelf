@@ -19,9 +19,11 @@ import { ref, onMounted, computed } from 'vue'
 import SiteHeader from '@/scripts/customer/layouts/partials/TheSiteHeader.vue'
 import NotificationRoot from '@/scripts/components/notifications/NotificationRoot.vue'
 import { useGlobalStore } from '@/scripts/customer/stores/global'
+import { useThemeStore } from '@/scripts/stores/theme'
 import { useRoute } from 'vue-router'
 
 const globalStore = useGlobalStore()
+const themeStore = useThemeStore()
 const route = useRoute()
 
 const isAppLoaded = computed(() => {
@@ -31,6 +33,9 @@ const isAppLoaded = computed(() => {
 loadData()
 
 async function loadData() {
+  // Initialize theme store
+  themeStore.initialize()
+  
   await globalStore.bootstrap(route.params.company)
 }
 </script>

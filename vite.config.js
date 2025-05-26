@@ -9,7 +9,8 @@ export default defineConfig({
             "vue-i18n": "vue-i18n/dist/vue-i18n.cjs.js",
             '@': resolve(__dirname, './resources/'),
             $fonts: resolve(__dirname, './resources/static/fonts'),
-            $images: resolve(__dirname, './resources/static/img')
+            $images: resolve(__dirname, './resources/static/img'),
+            'axios': resolve(__dirname, 'node_modules/axios/dist/axios.js'),
         },
         extensions: ['.js', '.ts', '.jsx', '.tsx', '.json', '.vue', '.mjs']
     },
@@ -35,5 +36,16 @@ export default defineConfig({
         laravel([
             'resources/scripts/main.js'
         ])
-    ]
+    ],
+    server: {
+        host: '0.0.0.0',
+        port: 5173,
+        strictPort: true,
+        hmr: {
+          protocol: 'ws',
+          host: 'invoiceshelf.test',
+          port: 5173,
+          clientPort: 5173
+        }
+    }
 });

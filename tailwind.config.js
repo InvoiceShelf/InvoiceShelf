@@ -14,6 +14,7 @@ function withOpacityValue(cssVariable) {
 }
 
 export default {
+  darkMode: 'class',
   plugins: [
     require('@tailwindcss/forms'),
     require('@tailwindcss/typography'),
