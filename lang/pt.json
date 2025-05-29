@@ -162,7 +162,7 @@
     "description": "Descrição",
     "percent": "Porcentagem",
     "compound_tax": "Imposto Composto",
-    "percentage": "Percentage",
+    "percentage": "",
     "fixed_amount": "Fixed Amount",
     "tax_type": "Tax Type"
   },
