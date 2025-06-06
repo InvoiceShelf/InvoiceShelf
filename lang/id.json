@@ -6,7 +6,7 @@
     "invoices": "Faktur",
     "recurring-invoices": "Faktur Langganan",
     "expenses": "Pengeluaran",
-    "estimates": "Perkiraan",
+    "estimates": "Estimasi",
     "payments": "Pembayaran",
     "reports": "Laporan",
     "settings": "Pengaturan",
@@ -856,7 +856,7 @@
       "notes": "Catatan",
       "exchange_rate": "Nilai Tukar",
       "address_information": "Informasi Alamat",
-      "pdf_generation": "PDF Generation"
+      "pdf_generation": "Pembuatan PDF"
     },
     "address_information": {
       "section_description": "  Anda dapat memperbarui informasi Alamat Anda dengan menggunakan formulir di bawah ini."
@@ -910,11 +910,11 @@
       "title": "Pengaturan PDF",
       "footer_text": "Teks footer",
       "pdf_layout": "Tata letak PDF",
-      "pdf_configuration": "PDF Generation Settings",
-      "section_description": "Change the way PDFs are generated",
+      "pdf_configuration": "Pengaturan Pembuatan PDF",
+      "section_description": "Ubah cara pembuatan PDF",
       "driver": "PDF Driver to use",
-      "papersize": "Papersize",
-      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "papersize": "Ukuran Kertas",
+      "papersize_hint": "Lebar dan panjang ukuran kertas (cth: \"210mm 297mm\")",
       "gotenberg_host": "Gotenberg service host",
       "pdf_variables_save_successfully": "PDF configuration saved successfully",
       "pdf_variables_save_error": "PDF configuration could not be saved"
@@ -1079,7 +1079,7 @@
         "default_payment_email_body": "Default Payment Email Body",
         "company_address_format": "Company Address Format",
         "from_customer_address_format": "From Customer Address Format",
-        "payment_email_attachment": "Send payments as attachments",
+        "payment_email_attachment": "Kirim pembayaran sebagai lampiran",
         "payment_email_attachment_setting_description": "Enable this if you want to send the payment receipts as an email attachment. Please note that 'View Payment' button in emails will not be displayed anymore when enabled.",
         "payment_settings_updated": "Payment Settings updated successfully"
       },
