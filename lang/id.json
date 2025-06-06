@@ -1028,7 +1028,7 @@
         "due_date_days": "Faktur jatuh tempo setelah (hari)",
         "set_due_date_automatically": "Tetapkan Tanggal Jatuh Secara Otomatis",
         "set_due_date_automatically_description": ".",
-        "default_formats": "Default Formats",
+        "default_formats": "Format Bawaan",
         "default_formats_description": "Below given formats are used to fill up the fields automatically on invoice creation.",
         "default_invoice_email_body": "Default Invoice Email Body",
         "company_address_format": "Format Alamat Perusahaan",
@@ -1054,7 +1054,7 @@
         "expiry_date_days": "Estimate Expires after days",
         "set_expiry_date_automatically": "Set Expiry Date Automatically",
         "set_expiry_date_automatically_description": "Enable this if you wish to set expiry date automatically when you create a new estimate.",
-        "default_formats": "Default Formats",
+        "default_formats": "Format Bawaan",
         "default_formats_description": "Below given formats are used to fill up the fields automatically on estimate creation.",
         "default_estimate_email_body": "Default Estimate Email Body",
         "company_address_format": "Format Alamat Perusahaan",
@@ -1098,7 +1098,7 @@
       "notes": {
         "title": "Catatan",
         "description": "Save time by creating notes and reusing them on your invoices, estimates & payments.",
-        "notes": "Notes",
+        "notes": "Catatan",
         "type": "Tipe",
         "is_default": "Select by default",
         "is_default_description": "This note will be selected by default in new invoices.",
@@ -1109,8 +1109,8 @@
         "note_added": "Catatan berhasil ditambahkan",
         "note_updated": "Catatan berhasil diperbaharui",
         "note_confirm_delete": "You will not be able to recover this Note",
-        "already_in_use": "Note is already in use",
-        "deleted_message": "Note deleted successfully",
+        "already_in_use": "Catatan sudah digunakan",
+        "deleted_message": "Catatan berhasil dihapus",
         "types": {
           "estimate": "Penawaran",
           "invoice": "Faktur",
@@ -1127,7 +1127,7 @@
       "account_settings": "Pengaturan Akun",
       "save": "Simpan",
       "section_description": "You can update your name, email & password using the form below.",
-      "updated_message": "Account Settings updated successfully"
+      "updated_message": "Pengaturan Akun berhasil diperbarui"
     },
     "user_profile": {
       "name": "Nama",
@@ -1451,8 +1451,8 @@
     "time_format": "Format Waktu",
     "from_address": "From Address",
     "username": "Nama Pengguna",
-    "next": "Next",
-    "continue": "Continue",
+    "next": "Selanjutnya",
+    "continue": "Lanjut",
     "skip": "Lewati",
     "install_language": {
       "title": "Pilih bahasa",
@@ -1489,7 +1489,7 @@
       "notes": {
         "notes": "Catatan:",
         "not_contain": "App domain should not contain",
-        "or": "or",
+        "or": "atau",
         "in_front": "in front of the domain.",
         "if_you": "If you're accessing the website on a different port, please mention the port. For example:"
       }
@@ -1515,7 +1515,7 @@
     "req": {
       "system_req": "System Requirements",
       "php_req_version": "Php (diperlukan versi {version})",
-      "check_req": "Check Requirements",
+      "check_req": "Periksa persyaratan",
       "system_req_desc": "InvoiceShelf memiliki beberapa persyaratan server. Pastikan serverAnda memiliki versi php yang diperlukan dan semua ekstensi yang disebutkan di bawah ini."
     },
     "errors": {
@@ -1546,9 +1546,9 @@
     "name_min_length": "Name must have at least {count} letters.",
     "prefix_min_length": "Prefix must have at least {count} letters.",
     "enter_valid_tax_rate": "Enter valid tax rate",
-    "numbers_only": "Numbers Only.",
+    "numbers_only": "Hanya Angka.",
     "characters_only": "Characters Only.",
-    "password_incorrect": "Passwords must be identical",
+    "password_incorrect": "Kata sandi harus sama",
     "password_length": "Password must be {count} character long.",
     "qty_must_greater_than_zero": "Quantity must be greater than zero.",
     "price_greater_than_zero": "Price must be greater than zero.",
@@ -1582,15 +1582,15 @@
     "invoice_number_used": "Nomor faktur ini sudah dipakai.",
     "payment_attached": "This invoice already has a payment attached to it. Make sure to delete the attached payments first in order to go ahead with the removal.",
     "payment_number_used": "The payment number has already been taken.",
-    "name_already_taken": "The name has already been taken.",
+    "name_already_taken": "Nama sudah dipakai.",
     "receipt_does_not_exist": "Receipt does not exist.",
-    "customer_cannot_be_changed_after_payment_is_added": "Customer cannot be change after payment is added",
-    "invalid_credentials": "Invalid  Credentials.",
+    "customer_cannot_be_changed_after_payment_is_added": "Pelanggan tidak dapat diubah setelah pembayaran ditambahkan",
+    "invalid_credentials": "Kredensial salah.",
     "not_allowed": "Tidak diizinkan",
-    "login_invalid_credentials": "These credentials do not match our records.",
-    "enter_valid_cron_format": "Please enter a valid cron format",
-    "email_could_not_be_sent": "Email could not be sent to this email address.",
-    "invalid_address": "Please enter a valid address.",
+    "login_invalid_credentials": "Kredensial login tidak cocok.",
+    "enter_valid_cron_format": "Harap masukkan format cron yang benar",
+    "email_could_not_be_sent": "Email tidak dapat dikirim ke alamat email ini.",
+    "invalid_address": "Harap masukkan alamat yang benar.",
     "invalid_key": "Harap masukkan kunci yang benar.",
     "invalid_state": "Harap masukkan provinsi yang benar.",
     "invalid_city": "Harap masukkan kota yang benar.",
