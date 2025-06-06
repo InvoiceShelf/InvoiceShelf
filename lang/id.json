@@ -162,9 +162,9 @@
     "description": "Deskripsi",
     "percent": "Persen",
     "compound_tax": "Pajak majemuk",
-    "percentage": "Percentage",
-    "fixed_amount": "Fixed Amount",
-    "tax_type": "Tax Type"
+    "percentage": "Persentase",
+    "fixed_amount": "Jumlah Tetap",
+    "tax_type": "Jenis Pajak"
   },
   "global_search": {
     "search": "Cari...",
