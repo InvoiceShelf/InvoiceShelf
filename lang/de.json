@@ -164,7 +164,7 @@
     "compound_tax": "zusammengesetzte Steuer",
     "percentage": "Percentage",
     "fixed_amount": "Fixed Amount",
-    "tax_type": "Tax Type"
+    "tax_type": "Steuerart"
   },
   "global_search": {
     "search": "Suchen...",
@@ -856,7 +856,7 @@
       "notes": "Notizen",
       "exchange_rate": "Wechselkurs",
       "address_information": "Adressinformationen",
-      "pdf_generation": "PDF Generation"
+      "pdf_generation": "PDF-Erzeugung"
     },
     "address_information": {
       "section_description": "  Sie können Ihre Adressinformationen über das untenstehende Formular aktualisieren."
@@ -1208,7 +1208,7 @@
       "tax_per_item": "Steuersatz pro Artikel",
       "tax_name": "Name des Steuersatzes",
       "compound_tax": "zusammengesetzte Steuer",
-      "amount": "Amount",
+      "amount": "Summe",
       "percent": "Prozent",
       "fixed_amount": "Fixed Amount",
       "calculation_type": "Calculation Type",
