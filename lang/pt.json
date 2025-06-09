@@ -163,8 +163,8 @@
     "percent": "Porcentagem",
     "compound_tax": "Imposto Composto",
     "percentage": "",
-    "fixed_amount": "Fixed Amount",
-    "tax_type": "Tax Type"
+    "fixed_amount": "Valor Fixo",
+    "tax_type": "Tipo de Imposto"
   },
   "global_search": {
     "search": "Buscar...",
@@ -856,7 +856,7 @@
       "notes": "Observações",
       "exchange_rate": "Taxa de câmbio",
       "address_information": "Informações de Endereço",
-      "pdf_generation": "PDF Generation"
+      "pdf_generation": "Geração do PDF"
     },
     "address_information": {
       "section_description": "  Você pode atualizar suas informações de endereço usando o formulário abaixo."
@@ -897,7 +897,7 @@
       "mailgun_endpoint": "Endpoint do Mailgun",
       "ses_secret": "Senha SES",
       "ses_key": "Chave SES",
-      "ses_region": "AWS Region",
+      "ses_region": "Região AWS",
       "password": "Senha do Email",
       "username": "Nome de Usuário do Email",
       "mail_config": "Configuração de Email",
@@ -910,14 +910,14 @@
       "title": "Configurações de PDF",
       "footer_text": "Texto do Rodapé",
       "pdf_layout": "Layout de PDF",
-      "pdf_configuration": "PDF Generation Settings",
-      "section_description": "Change the way PDFs are generated",
-      "driver": "PDF Driver to use",
-      "papersize": "Papersize",
-      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
-      "gotenberg_host": "Gotenberg service host",
+      "pdf_configuration": "Configurações de geração PDF",
+      "section_description": "Altere a forma como os PDFs são gerados",
+      "driver": "Driver PDF a ser utilizado",
+      "papersize": "Tamanho do papel",
+      "papersize_hint": "Tamanho do papel na largura e altura (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Host de serviço Gotenberg",
       "pdf_variables_save_successfully": "PDF configuration saved successfully",
-      "pdf_variables_save_error": "PDF configuration could not be saved"
+      "pdf_variables_save_error": "A configuração não pôde ser salva"
     },
     "company_info": {
       "company_info": "Informação da Empresa",
@@ -1208,12 +1208,12 @@
       "tax_per_item": "Imposto por Item",
       "tax_name": "Nome do Imposto",
       "compound_tax": "Imposto Composto",
-      "amount": "Amount",
+      "amount": "Valor",
       "percent": "Porcentagem",
-      "fixed_amount": "Fixed Amount",
-      "calculation_type": "Calculation Type",
-      "percentage": "Percentage",
-      "fixed": "Fixed",
+      "fixed_amount": "Valor fixo",
+      "calculation_type": "Tipo de cálculo",
+      "percentage": "Porcentagem",
+      "fixed": "Fixo",
       "action": "Ação",
       "tax_setting_description": "Habilite isso se desejar adicionar Impostos a itens da Fatura Individualmente. Por padrão, os impostos são adicionados diretamente à Fatura.",
       "created_message": "Tipo de Imposto criado com sucesso",
