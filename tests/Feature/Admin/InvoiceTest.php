@@ -520,3 +520,20 @@ test('update invoice with EUR currency', function () {
         'base_amount' => $invoice2['taxes'][0]['base_amount'],
     ]);
 });
+
+test('create invoice with tax included', function () {
+    $invoice = Invoice::factory()
+        ->raw([
+            'taxes' => [Tax::factory()->raw()],
+            'items' => [InvoiceItem::factory()->raw()],
+            'tax_included' => true,
+        ]);
+
+    $response = postJson('api/v1/invoices', $invoice);
+
+    $response->assertOk();
+
+    $this->assertDatabaseHas('invoices', [
+        'tax_included' => true,
+    ]);
+});

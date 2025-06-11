@@ -93,6 +93,7 @@ class EstimateFactory extends Factory
                 return $estimate['discount_type'] == 'percentage' ? (($estimate['discount_val'] * $estimate['total']) / 100) : $estimate['discount_val'];
             },
             'tax_per_item' => 'YES',
+            'tax_included' => false,
             'discount_per_item' => 'No',
             'tax' => $this->faker->randomDigitNotNull(),
             'notes' => $this->faker->text(80),

@@ -217,6 +217,7 @@
     "total": "Total",
     "discount": "Desconto",
     "sub_total": "Subtotal",
+    "net_total": "Total Líquido",
     "estimate_number": "Numero do Orçamento",
     "ref_number": "Referência",
     "contact": "Contato",
@@ -759,7 +760,11 @@
       "updated_message": "Tipo de Imposto Atualizado com sucesso",
       "deleted_message": "Tipo de Imposto Deletado com sucesso",
       "confirm_delete": "Você não poderá recuperar este tipo de Imposto",
-      "already_in_use": "O Imposto já está em uso"
+      "already_in_use": "O Imposto já está em uso",
+      "tax_included": "Imposto incluído",
+      "tax_included_description": "Habilite isso se desejar informar que os Impostos já estão incluídos nos itens da Fatura ou no total da Fatura.",
+      "tax_included_by_default": "Usar imposto incluído por padrão",
+      "tax_included_by_default_description": "Habilite isso se desejar definir os impostos incluídos por padrão."
     },
     "expense_category": {
       "title": "Categoria de Despesa",
@@ -932,5 +937,6 @@
     "address_maxlength": "O endereço não deve ter mais que 255 caracteres.",
     "ref_number_maxlength": "O número de referência não deve ter mais que 255 caracteres.",
     "prefix_maxlength": "O prefixo não deve ter mais que 5 caracteres."
-  }
+  },
+  "pdf_net_total": "Total Líquido"
 }
