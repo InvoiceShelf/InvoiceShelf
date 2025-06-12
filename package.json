@@ -3,6 +3,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "watch": "vite build --watch",
     "build": "vite build",
     "serve": "vite preview",
     "test": "eslint ./resources/scripts --ext .js,.vue"
