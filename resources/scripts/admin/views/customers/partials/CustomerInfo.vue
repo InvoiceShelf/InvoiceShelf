@@ -108,6 +108,10 @@
 <script setup>
 import { computed } from 'vue'
 import { useCustomerStore } from '@/scripts/admin/stores/customer'
+import BaseDescriptionListItem from '@/scripts/components/base/BaseDescriptionListItem.vue'
+import BaseDescriptionList from '@/scripts/components/base/BaseDescriptionList.vue'
+import BaseHeading from '@/scripts/components/base/BaseHeading.vue'
+import BaseCustomerAddressDisplay from '@/scripts/components/base/BaseCustomerAddressDisplay.vue'
 
 const customerStore = useCustomerStore()
 
