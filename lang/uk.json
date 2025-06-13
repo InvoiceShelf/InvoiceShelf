@@ -161,7 +161,10 @@
     "name": "Назва",
     "description": "Опис",
     "percent": "Відсоток",
-    "compound_tax": "Складний податок"
+    "compound_tax": "Складний податок",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Шукати...",
@@ -1205,7 +1208,12 @@
       "tax_per_item": "Податок на одиницю",
       "tax_name": "Назва податку",
       "compound_tax": "Складний податок",
+      "amount": "Amount",
       "percent": "Відсоток",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Дія",
       "tax_setting_description": "Увімкніть цю опцію, якщо ви хочете додати податки до окремих позицій інвойсу. За замовчуванням податки додаються безпосередньо до інвойсу.",
       "created_message": "Тип податку створено успішно",

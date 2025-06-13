@@ -161,7 +161,10 @@
     "name": "İsim",
     "description": "Açıklama",
     "percent": "Yüzde",
-    "compound_tax": "Vergi dahil"
+    "compound_tax": "Vergi dahil",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Ara...",
@@ -1205,7 +1208,12 @@
       "tax_per_item": "Öğe Başı Vergi",
       "tax_name": "Vergi Adı",
       "compound_tax": "Bileşik Vergi",
+      "amount": "Amount",
       "percent": "Yüzde",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Eylem",
       "tax_setting_description": "Bireysel fatura kalemlerine vergi eklemek istiyorsanız bunu etkinleştirin. Varsayılan olarak vergiler doğrudan faturaya eklenir.",
       "created_message": "Vergi tipi başarıyla oluşturuldu",

@@ -161,7 +161,10 @@
     "name": "Nume",
     "description": "Descriere",
     "percent": "Procent",
-    "compound_tax": "Impozite combinate"
+    "compound_tax": "Impozite combinate",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Caută...",
@@ -1205,7 +1208,12 @@
       "tax_per_item": "Tax Per Item",
       "tax_name": "Tax Name",
       "compound_tax": "Compound Tax",
+      "amount": "Amount",
       "percent": "Percent",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Action",
       "tax_setting_description": "Enable this if you want to add taxes to individual invoice items. By default, taxes are added directly to the invoice.",
       "created_message": "Tax type created successfully",

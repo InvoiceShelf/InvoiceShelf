@@ -161,7 +161,10 @@
     "name": "Nome",
     "description": "Descrizione",
     "percent": "Percento",
-    "compound_tax": "Imposta composta"
+    "compound_tax": "Imposta composta",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Cerca...",
@@ -1205,7 +1208,12 @@
       "tax_per_item": "Tassa per prodotto/servizio",
       "tax_name": "Nome imposta",
       "compound_tax": "Imposta composta",
+      "amount": "Amount",
       "percent": "Percento",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Azione",
       "tax_setting_description": "Abilita se vuoi aggiungere imposte specifiche per prodotti o servizi. Di default le imposte sono aggiunte direttamente alla fattura.",
       "created_message": "Tipo di imposta creato con successo",

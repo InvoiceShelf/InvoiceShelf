@@ -161,7 +161,10 @@
     "name": "Pavadinimas",
     "description": "Aprašymas",
     "percent": "Procentai",
-    "compound_tax": "Sudėtinis mokestis"
+    "compound_tax": "Sudėtinis mokestis",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Paieška...",
@@ -1205,7 +1208,12 @@
       "tax_per_item": "Tax Per Item",
       "tax_name": "Mokesčio pavadinimas",
       "compound_tax": "Sudėtinis mokestis",
+      "amount": "Amount",
       "percent": "Procentai",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Veiksmas",
       "tax_setting_description": "Enable this if you want to add taxes to individual invoice items. By default, taxes are added directly to the invoice.",
       "created_message": "Tax type created successfully",
