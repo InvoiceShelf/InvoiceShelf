@@ -13,6 +13,10 @@
 
   <InvoicesTabDefaultFormats />
 
+  <BaseDivider class="my-8" />
+
+  <InvoicesTabBcc />
+
   <BaseDivider class="mt-6 mb-2" />
 
   <ul class="divide-y divide-gray-200">
@@ -35,6 +39,7 @@ import InvoicesTabInvoiceNumber from './InvoicesTabInvoiceNumber.vue'
 import InvoicesTabRetrospective from './InvoicesTabRetrospective.vue'
 import InvoicesTabDueDate from './InvoicesTabDueDate.vue'
 import InvoicesTabDefaultFormats from './InvoicesTabDefaultFormats.vue'
+import InvoicesTabBcc from './InvoicesTabBcc.vue'
 
 const utils = inject('utils')
 const companyStore = useCompanyStore()

@@ -1042,7 +1042,11 @@
         "disable_on_invoice_partial_paid": "Disable after partial payment is recorded",
         "disable_on_invoice_paid": "Disable after full payment is recorded",
         "disable_on_invoice_sent": "Disable after invoice is sent",
-        "retrospective_edits_description": " Based on your country's laws or your preference, you can restrict users from editing finalised invoices."
+        "retrospective_edits_description": " Based on your country's laws or your preference, you can restrict users from editing finalised invoices.",
+        "invoice_email_bcc": "BCC Email Address",
+        "invoice_email_bcc_placeholder": "Enter BCC email address",
+        "bcc_settings": "BCC Settings",
+        "bcc_settings_description": "Configure BCC recipients for invoice emails"
       },
       "estimates": {
         "title": "Estimates",
