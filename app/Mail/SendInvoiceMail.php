@@ -2,9 +2,9 @@
 
 namespace App\Mail;
 
+use App\Models\CompanySetting;
 use App\Models\EmailLog;
 use App\Models\Invoice;
-use App\Models\CompanySetting;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -52,9 +52,8 @@ class SendInvoiceMail extends Mailable
             ->subject($this->data['subject'])
             ->markdown('emails.send.invoice', ['data', $this->data]);
 
-        // Add BCC if configured
         $bccEmail = CompanySetting::getSetting('invoice_email_bcc', $this->data['invoice']['company_id']);
-        if (!empty($bccEmail)) {
+        if (! empty($bccEmail)) {
             $mailContent->bcc($bccEmail);
         }
 
