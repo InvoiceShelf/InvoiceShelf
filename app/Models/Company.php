@@ -254,6 +254,7 @@ class Company extends Model implements HasMedia
             'estimate_convert_action' => 'no_action',
             'automatically_expire_public_links' => 'YES',
             'link_expiry_days' => 7,
+            'invoice_email_bcc' => '',
         ];
 
         CompanySetting::setSettings($settings, $this->id);

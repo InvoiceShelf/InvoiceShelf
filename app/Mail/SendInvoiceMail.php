@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\CompanySetting;
 use App\Models\EmailLog;
 use App\Models\Invoice;
 use Illuminate\Bus\Queueable;
@@ -50,6 +51,11 @@ class SendInvoiceMail extends Mailable
         $mailContent = $this->from($this->data['from'], config('mail.from.name'))
             ->subject($this->data['subject'])
             ->markdown('emails.send.invoice', ['data', $this->data]);
+
+        $bccEmail = CompanySetting::getSetting('invoice_email_bcc', $this->data['invoice']['company_id']);
+        if (! empty($bccEmail)) {
+            $mailContent->bcc($bccEmail);
+        }
 
         if ($this->data['attach']['data']) {
             $mailContent->attachData(

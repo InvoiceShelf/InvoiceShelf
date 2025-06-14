@@ -1039,7 +1039,11 @@
         "disable_on_invoice_partial_paid": "Deaktivieren, nachdem Teilzahlung erfasst wurde",
         "disable_on_invoice_paid": "Deaktivieren, nachdem vollständige Zahlung erfasst wurde",
         "disable_on_invoice_sent": "Deaktivieren, nachdem Rechnung gesendet wurde",
-        "retrospective_edits_description": " Basierend auf den Gesetzen Ihres Landes oder Ihrer Präferenz, können Sie Benutzer daran hindern, fertige Rechnungen zu bearbeiten."
+        "retrospective_edits_description": " Basierend auf den Gesetzen Ihres Landes oder Ihrer Präferenz, können Sie Benutzer daran hindern, fertige Rechnungen zu bearbeiten.",
+        "invoice_email_bcc": "BCC E-Mail-Adresse",
+        "invoice_email_bcc_placeholder": "BCC E-Mail-Adresse eingeben",
+        "bcc_settings": "BCC Einstellungen",
+        "bcc_settings_description": "Konfigurieren Sie BCC-Empfänger für Rechnungs-E-Mails"
       },
       "estimates": {
         "title": "Angebote",
