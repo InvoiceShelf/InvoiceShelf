@@ -30,6 +30,16 @@ class CompaniesRequest extends FormRequest
             'currency' => [
                 'required',
             ],
+            'iban' => [
+                'nullable',
+                'string',
+                'max:34',
+            ],
+            'bic' => [
+                'nullable',
+                'string',
+                'max:11',
+            ],
             'address.name' => [
                 'nullable',
             ],
@@ -67,6 +77,8 @@ class CompaniesRequest extends FormRequest
                 'name',
                 'vat_id',
                 'tax_id',
+                'iban',
+                'bic',
             ])
             ->merge([
                 'owner_id' => $this->user()->id,

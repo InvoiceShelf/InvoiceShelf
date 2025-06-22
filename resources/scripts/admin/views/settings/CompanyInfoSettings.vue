@@ -93,6 +93,14 @@
           <BaseInputGroup :label="$t('settings.company_info.vat_id')">
             <BaseInput v-model="companyForm.vat_id" type="text" />
           </BaseInputGroup>
+
+          <BaseInputGroup :label="$t('settings.company_info.iban')">
+            <BaseInput v-model="companyForm.iban" type="text" />
+          </BaseInputGroup>
+
+          <BaseInputGroup :label="$t('settings.company_info.bic')">
+            <BaseInput v-model="companyForm.bic" type="text" />
+          </BaseInputGroup>
         </div>
       </BaseInputGrid>
 
@@ -156,6 +164,8 @@ const companyForm = reactive({
   logo: null,
   tax_id: null,
   vat_id: null,
+  iban: null,
+  bic: null,
   address: {
     address_street_1: '',
     address_street_2: '',

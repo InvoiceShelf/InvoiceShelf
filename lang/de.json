@@ -921,6 +921,8 @@
       "company_name": "Name des Unternehmens",
       "tax_id": "Steuernummer",
       "vat_id": "Umsatzsteuer-Identifikationsnummer",
+      "iban": "IBAN",
+      "bic": "BIC",
       "company_logo": "Firmenlogo",
       "section_description": "Informationen zu Ihrem Unternehmen, die auf Rechnungen, Angeboten und anderen von InvoiceShelf erstellten Dokumenten angezeigt werden.",
       "phone": "Telefon",

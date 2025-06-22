@@ -31,6 +31,16 @@ class CompanyRequest extends FormRequest
             'tax_id' => [
                 'nullable',
             ],
+            'iban' => [
+                'nullable',
+                'string',
+                'max:34',
+            ],
+            'bic' => [
+                'nullable',
+                'string',
+                'max:11',
+            ],
             'slug' => [
                 'nullable',
             ],
@@ -48,6 +58,8 @@ class CompanyRequest extends FormRequest
                 'slug',
                 'vat_id',
                 'tax_id',
+                'iban',
+                'bic',
             ])
             ->toArray();
     }
