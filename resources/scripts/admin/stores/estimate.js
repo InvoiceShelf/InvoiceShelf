@@ -296,7 +296,7 @@ export const useEstimateStore = (useWindow = false) => {
 
               notificationStore.showNotification({
                 type: 'success',
-                message: global.tc('estimates.deleted_message', 2),
+                message: global.t('estimates.deleted_message', 2),
               })
               resolve(response)
             })

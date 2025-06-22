@@ -185,7 +185,7 @@ export const useExpenseStore = (useWindow = false) => {
 
               notificationStore.showNotification({
                 type: 'success',
-                message: global.tc('expenses.deleted_message', 1),
+                message: global.t('expenses.deleted_message', 1),
               })
               resolve(response)
             })
@@ -211,7 +211,7 @@ export const useExpenseStore = (useWindow = false) => {
               })
               notificationStore.showNotification({
                 type: 'success',
-                message: global.tc('expenses.deleted_message', 2),
+                message: global.t('expenses.deleted_message', 2),
               })
               resolve(response)
             })
