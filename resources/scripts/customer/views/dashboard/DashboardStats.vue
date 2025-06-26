@@ -35,7 +35,6 @@
     </DashboardStatsItem>
 
     <!-- Payments -->
-
     <DashboardStatsItem
       :icon-component="PaymentIcon"
       :loading="!globalStore.getDashboardDataLoaded"
@@ -57,10 +56,8 @@ import EstimateIcon from '@/scripts/components/icons/dashboard/EstimateIcon.vue'
 import { useGlobalStore } from '@/scripts/customer/stores/global'
 import { useDashboardStore } from '@/scripts/customer/stores/dashboard'
 import DashboardStatsItem from '@/scripts/customer/views/dashboard/DashboardStatsItem.vue'
-//store
 
 const utils = inject('utils')
 const globalStore = useGlobalStore()
 const dashboardStore = useDashboardStore()
-dashboardStore.loadData()
 </script>

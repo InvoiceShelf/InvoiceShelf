@@ -42,9 +42,7 @@ services:
 
   adminer:
     container_name: invoiceshelf-dev-adminer
-    build:
-      context: ./adminer
-      dockerfile: Dockerfile
+    image: adminer:latest
     environment:
       ADMINER_PLUGINS: tables-filter
       ADMINER_DESIGN: konya

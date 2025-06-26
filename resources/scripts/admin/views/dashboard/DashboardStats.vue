@@ -1,12 +1,11 @@
 <template>
-  <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-9 xl:gap-8">
+  <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-11 xl:gap-8 bg-white dark:bg-gray-800 ">
     <!-- Amount Due -->
     <DashboardStatsItem
       v-if="userStore.hasAbilities(abilities.VIEW_INVOICE)"
       :icon-component="DollarIcon"
       :loading="!dashboardStore.isDashboardDataLoaded"
       route="/admin/invoices"
-      :large="true"
       :label="$t('dashboard.cards.due_amount')"
     >
       <BaseFormatMoney
@@ -14,6 +13,8 @@
         :currency="companyStore.selectedCompanyCurrency"
       />
     </DashboardStatsItem>
+
+    
 
     <!-- Customers -->
     <DashboardStatsItem
@@ -47,6 +48,14 @@
     >
       {{ dashboardStore.stats.totalEstimateCount }}
     </DashboardStatsItem>
+
+    <!-- Total Receivables -->
+    <TotalReceivablesCard
+      v-if="userStore.hasAbilities(abilities.VIEW_INVOICE)"
+      :loading="!dashboardStore.isDashboardDataLoaded"
+      :total-amount="dashboardStore.stats.totalAmountDue"
+      :currency="companyStore.selectedCompanyCurrency"
+    />
   </div>
 </template>
 
@@ -57,6 +66,7 @@ import InvoiceIcon from '@/scripts/components/icons/dashboard/InvoiceIcon.vue'
 import EstimateIcon from '@/scripts/components/icons/dashboard/EstimateIcon.vue'
 import abilities from '@/scripts/admin/stub/abilities'
 import DashboardStatsItem from './DashboardStatsItem.vue'
+import TotalReceivablesCard from './TotalReceivablesCard.vue'
 
 import { inject } from 'vue'
 import { useDashboardStore } from '@/scripts/admin/stores/dashboard'

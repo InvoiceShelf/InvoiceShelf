@@ -178,22 +178,22 @@ class Invoice extends Model implements HasMedia
 
     public function getFormattedCreatedAtAttribute($value)
     {
-        $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id);
+        $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id) ?? 'Y-m-d';
 
         return Carbon::parse($this->created_at)->format($dateFormat);
     }
 
     public function getFormattedDueDateAttribute($value)
     {
-        $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id);
+        $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id) ?? 'Y-m-d';
 
         return Carbon::parse($this->due_date)->translatedFormat($dateFormat);
     }
 
     public function getFormattedInvoiceDateAttribute($value)
     {
-        $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id);
-        $timeFormat = CompanySetting::getSetting('carbon_time_format', $this->company_id);
+        $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id) ?? 'Y-m-d';
+        $timeFormat = CompanySetting::getSetting('carbon_time_format', $this->company_id) ?? 'H:i';
         $invoiceTimeEnabled = CompanySetting::getSetting('invoice_use_time', $this->company_id);
 
         if ($invoiceTimeEnabled === 'YES') {

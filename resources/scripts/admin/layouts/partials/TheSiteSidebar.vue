@@ -15,7 +15,7 @@
         leave-from="opacity-100"
         leave-to="opacity-0"
       >
-        <DialogOverlay class="fixed inset-0 bg-gray-600 bg-opacity-75" />
+        <DialogOverlay class="fixed inset-0 bg-gray-600 bg-opacity-75 dark:bg-gray-900 dark:bg-opacity-80" />
       </TransitionChild>
 
       <TransitionChild
@@ -27,7 +27,7 @@
         leave-from="translate-x-0"
         leave-to="-translate-x-full"
       >
-        <div class="relative flex flex-col flex-1 w-full max-w-xs bg-white">
+        <div class="relative flex flex-col flex-1 w-full max-w-xs bg-white dark:bg-gray-800">
           <TransitionChild
             as="template"
             enter="ease-in-out duration-300"
@@ -82,9 +82,9 @@
                 :to="item.link"
                 :class="[
                   hasActiveUrl(item.link)
-                    ? 'text-primary-500 border-primary-500 bg-gray-100 '
-                    : 'text-black',
-                  'cursor-pointer px-0 pl-4 py-3 border-transparent flex items-center border-l-4 border-solid text-sm not-italic font-medium',
+                    ? 'text-primary-500 border-primary-500 bg-gray-100 dark:bg-gray-700 dark:text-primary-400'
+                    : 'text-black dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white',
+                  'cursor-pointer px-0 pl-4 py-3 border-transparent flex items-center border-l-4 border-solid text-sm not-italic font-medium transition-colors duration-200',
                 ]"
                 @click="globalStore.setSidebarVisibility(false)"
               >
@@ -92,15 +92,24 @@
                   :name="item.icon"
                   :class="[
                     hasActiveUrl(item.link)
-                      ? 'text-primary-500 '
-                      : 'text-gray-400',
-                    'mr-4 shrink-0 h-5 w-5',
+                      ? 'text-primary-500 dark:text-primary-400'
+                      : 'text-gray-400 dark:text-gray-500',
+                    'mr-4 shrink-0 h-5 w-5 transition-colors duration-200',
                   ]"
                   @click="globalStore.setSidebarVisibility(false)"
                 />
                 {{ $t(item.title) }}
               </router-link>
             </nav>
+
+            <!-- Dark Mode Toggle -->
+            <div class="mt-8 px-4">
+              <DarkModeToggle
+                :show-label="true"
+                :show-description="false"
+                class="w-full"
+              />
+            </div>
           </div>
         </div>
       </TransitionChild>
@@ -118,11 +127,12 @@
       h-screen
       pb-32
       overflow-y-auto
-      bg-white
-      border-r border-gray-200 border-solid
+      bg-white dark:bg-gray-800
+      border-r border-gray-200 dark:border-gray-700 border-solid
       xl:w-64
       md:fixed md:flex md:flex-col md:inset-y-0
       pt-16
+      transition-colors duration-200
     "
   >
     <div
@@ -136,29 +146,39 @@
         :to="item.link"
         :class="[
           hasActiveUrl(item.link)
-            ? 'text-primary-500 border-primary-500 bg-gray-100 '
-            : 'text-black',
-          'cursor-pointer px-0 pl-6 hover:bg-gray-50 py-3 group flex items-center border-l-4 border-solid text-sm not-italic font-medium',
+            ? 'text-primary-500 border-primary-500 bg-gray-100 dark:bg-gray-700 dark:text-primary-400'
+            : 'text-black dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white',
+          'cursor-pointer px-0 pl-6 py-3 group flex items-center border-l-4 border-solid text-sm not-italic font-medium transition-colors duration-200',
         ]"
       >
         <BaseIcon
           :name="item.icon"
           :class="[
             hasActiveUrl(item.link)
-              ? 'text-primary-500 group-hover:text-primary-500 '
-              : 'text-gray-400 group-hover:text-black',
-            'mr-4 shrink-0 h-5 w-5 ',
+              ? 'text-primary-500 group-hover:text-primary-500 dark:text-primary-400 dark:group-hover:text-primary-400'
+              : 'text-gray-400 group-hover:text-black dark:text-gray-500 dark:group-hover:text-white',
+            'mr-4 shrink-0 h-5 w-5 transition-colors duration-200',
           ]"
         />
 
         {{ $t(item.title) }}
       </router-link>
     </div>
+
+    <!-- Dark Mode Toggle -->
+    <div class="mt-8 px-6">
+      <DarkModeToggle
+        :show-label="true"
+        :show-description="false"
+        class="w-full"
+      />
+    </div>
   </div>
 </template>
 
 <script setup>
 import MainLogo from '@/scripts/components/icons/MainLogo.vue'
+import DarkModeToggle from '@/scripts/components/theme/DarkModeToggle.vue'
 
 import {
   Dialog,

@@ -12,7 +12,7 @@
         not-italic
         items-center
         font-medium
-        text-gray-800
+        text-gray-800 dark:text-gray-200
         whitespace-nowrap
         justify-between
       "
@@ -26,12 +26,12 @@
         v-if="tooltip"
         v-tooltip="{ content: tooltip }"
         name="InformationCircleIcon"
-        class="h-4 text-gray-400 cursor-pointer hover:text-gray-600"
+        class="h-4 text-gray-400 dark:text-gray-500 cursor-pointer hover:text-gray-600 dark:hover:text-gray-400"
       />
     </label>
     <div :class="inputContainerClasses">
       <slot></slot>
-      <span v-if="helpText" class="text-gray-500 text-xs mt-1 font-light">
+      <span v-if="helpText" class="text-gray-500 dark:text-gray-400 text-xs mt-1 font-light">
         {{ helpText }}
       </span>
       <span v-if="error" class="block mt-0.5 text-sm text-red-500">

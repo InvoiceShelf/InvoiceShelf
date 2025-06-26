@@ -127,6 +127,11 @@ class Company extends Model implements HasMedia
         return $this->hasMany(TaxType::class);
     }
 
+    public function taxes(): HasMany
+    {
+        return $this->hasMany(Tax::class);
+    }
+
     public function items(): HasMany
     {
         return $this->hasMany(Item::class);

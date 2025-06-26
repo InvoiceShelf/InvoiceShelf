@@ -21,7 +21,7 @@
         text-sm
         not-italic
         font-black
-        text-gray-400
+        text-gray-400 dark:text-gray-500
         cursor-pointer
       "
       viewBox="0 0 20 20"
@@ -86,7 +86,7 @@ const props = defineProps({
   defaultInputClass: {
     type: String,
     default:
-      'font-base pl-8 py-2 outline-none focus:ring-primary-400 focus:outline-none focus:border-primary-400 block w-full sm:text-sm border-gray-300 rounded-md text-black',
+      'font-base pl-8 py-2 outline-none focus:ring-primary-400 focus:outline-none focus:border-primary-400 block w-full sm:text-sm border-gray-300 dark:border-gray-600 rounded-md text-black dark:text-white bg-white dark:bg-gray-800',
   },
 })
 
@@ -130,7 +130,7 @@ const inputInvalidClass = computed(() => {
 
 const inputDisabledClass = computed(() => {
   if (props.disabled) {
-    return 'border border-solid rounded-md outline-none input-field box-border-2 base-date-picker-input placeholder-gray-400 bg-gray-300 text-gray-600 border-gray-300'
+    return 'border border-solid rounded-md outline-none input-field box-border-2 base-date-picker-input placeholder-gray-400 dark:placeholder-gray-500 bg-gray-300 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-300 dark:border-gray-600'
   }
 
   return ''

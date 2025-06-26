@@ -123,6 +123,7 @@
   },
   "dashboard": {
     "select_year": "Select year",
+    "select_period": "Select period",
     "cards": {
       "due_amount": "Amount Due",
       "customers": "Customer | Customers",
@@ -141,7 +142,7 @@
       "title": "Sales & Expenses"
     },
     "recent_invoices_card": {
-      "title": "Due Invoices",
+      "title": "Due Invoices modified",
       "due_on": "Due On",
       "customer": "Customer",
       "amount_due": "Amount Due",
@@ -155,6 +156,19 @@
       "amount_due": "Amount Due",
       "actions": "Actions",
       "view_all": "View All"
+    },
+    "active_filter": {
+      "label": "Show Active Only",
+      "description": "Display only active invoices, estimates, and customers",
+      "active": "Active"
+    }
+  },
+  "theme": {
+    "dark_mode": {
+      "label": "Dark Mode",
+      "description": "Toggle between light and dark themes",
+      "dark": "Dark",
+      "light": "Light"
     }
   },
   "tax_types": {

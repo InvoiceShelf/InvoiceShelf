@@ -42,21 +42,14 @@
             </router-link>
           </div>
         </div>
-        <div class="hidden sm:ml-6 sm:flex sm:items-center">
-          <button
-            type="button"
-            class="
-              bg-white
-              p-1
-              rounded-full
-              text-gray-400
-              hover:text-gray-500
-              focus:outline-none
-              focus:ring-2
-              focus:ring-offset-2
-              focus:ring-primary-500
-            "
-          ></button>
+        <div class="hidden sm:ml-6 sm:flex sm:items-center space-x-3">
+          <!-- Dark Mode Toggle -->
+          <div class="flex items-center">
+            <DarkModeToggle
+              :show-label="false"
+              :show-description="false"
+            />
+          </div>
 
           <!-- Profile dropdown -->
 
@@ -175,6 +168,14 @@
           ></button>
         </div>
         <div class="mt-3 space-y-1">
+          <!-- Dark Mode Toggle for Mobile -->
+          <div class="pl-3 pr-4 py-2">
+            <DarkModeToggle
+              :show-label="true"
+              :show-description="false"
+            />
+          </div>
+          
           <router-link
             v-for="item in userNavigation"
             :key="item.title"
@@ -199,6 +200,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { ref, watch, computed } from 'vue'
 import { useGlobalStore } from '@/scripts/customer/stores/global'
 import MainLogo from '@/scripts/components/icons/MainLogo.vue'
+import DarkModeToggle from '@/scripts/components/theme/DarkModeToggle.vue'
 import {
   Disclosure,
   DisclosureButton,

@@ -207,7 +207,9 @@ Route::prefix('/v1')->group(function () {
             // Dashboard
             // ----------------------------------
 
-            Route::get('/dashboard', DashboardController::class);
+            Route::get('/dashboard', [DashboardController::class, 'summary']);
+            Route::get('/dashboard/top-outstanding', [DashboardController::class, 'topOutstanding']);
+            Route::get('/dashboard/cash-flow', [DashboardController::class, 'cashFlow']);
 
             // Auth check
             // ----------------------------------
