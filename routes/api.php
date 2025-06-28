@@ -110,6 +110,12 @@ use App\Http\Controllers\V1\Installation\OnboardingWizardController;
 use App\Http\Controllers\V1\Installation\RequirementsController;
 use App\Http\Controllers\V1\Webhook\CronJobController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\V1\Admin\TaxTypeController;
+use App\Http\Controllers\V1\Admin\TemplateController;
+use App\Http\Controllers\V1\Admin\UserController;
+use App\Http\Controllers\V1\Admin\DashboardExportController;
+use App\Http\Controllers\V1\Customer\AuthController as CustomerAuthController;
+use App\Http\Controllers\V1\Customer\CompanyController as CustomerCompanyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -210,6 +216,8 @@ Route::prefix('/v1')->group(function () {
             Route::get('/dashboard', [DashboardController::class, 'summary']);
             Route::get('/dashboard/top-outstanding', [DashboardController::class, 'topOutstanding']);
             Route::get('/dashboard/cash-flow', [DashboardController::class, 'cashFlow']);
+            Route::post('/dashboard/export', [DashboardExportController::class, 'export']);
+            Route::post('/dashboard/export-snapshot', [DashboardExportController::class, 'exportSnapshot']);
 
             // Auth check
             // ----------------------------------
@@ -537,3 +545,13 @@ Route::prefix('/v1')->group(function () {
 });
 
 Route::get('/cron', CronJobController::class)->middleware('cron-job');
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware('admin')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index']);
+        Route::get('/dashboard/top-outstanding', [DashboardController::class, 'topOutstanding']);
+
+        Route::get('/users/abilities', [UserController::class, 'abilities']);
+        Route::get('/users/me', [UserController::class, 'me']);
+    });
+});

@@ -1,6 +1,10 @@
 <template>
   <div
-    :class="success || info ? 'bg-white' : 'bg-red-50'"
+    :class="
+      success || info || loading
+        ? 'bg-white'
+        : 'bg-red-50'
+    "
     class="
       max-w-sm
       mb-3
@@ -47,6 +51,19 @@
               ></path>
             </svg>
             <svg
+              v-if="loading"
+              class="w-6 h-6 text-gray-400 animate-spin"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+            <svg
               v-if="error"
               class="w-6 h-6 text-red-400"
               fill="currentColor"
@@ -62,7 +79,9 @@
           <div class="flex-1 w-0 ml-3 text-left">
             <p
               :class="`text-sm leading-5 font-medium ${
-                success || info ? 'text-gray-900' : 'text-red-800'
+                success || info || loading
+                  ? 'text-gray-900'
+                  : 'text-red-800'
               }`"
             >
               {{
@@ -70,12 +89,16 @@
                   ? notification.title
                   : success
                   ? 'Success!'
+                  : loading
+                  ? 'Processing...'
                   : 'Error'
               }}
             </p>
             <p
               :class="`mt-1 text-sm leading-5 ${
-                success || info ? 'text-gray-500' : 'text-red-700'
+                success || info || loading
+                  ? 'text-gray-500'
+                  : 'text-red-700'
               }`"
             >
               {{
@@ -83,6 +106,8 @@
                   ? notification.message
                   : success
                   ? 'Successful'
+                  : loading
+                  ? 'Processing...'
                   : 'Something went wrong'
               }}
             </p>
@@ -90,7 +115,7 @@
           <div class="flex shrink-0">
             <button
               :class="
-                success || info
+                success || info || loading
                   ? ' text-gray-400 focus:text-gray-500'
                   : 'text-red-400 focus:text-red-500'
               "
@@ -152,6 +177,10 @@ const info = computed(() => {
   return props.notification.type == 'info'
 })
 
+const loading = computed(() => {
+  return props.notification.type == 'loading'
+})
+
 function hideNotificationAction() {
   notificationStore.hideNotification(props.notification)
 }
@@ -161,6 +190,9 @@ function clearNotificationTimeOut() {
 }
 
 function setNotificationTimeOut() {
+  if (props.notification.persistent || loading.value) {
+    return
+  }
   notiTimeOut = setTimeout(() => {
     notificationStore.hideNotification(props.notification)
   }, props.notification.time || 5000)

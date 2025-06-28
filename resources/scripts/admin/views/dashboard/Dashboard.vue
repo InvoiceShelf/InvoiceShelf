@@ -5,6 +5,7 @@ import DashboardSummaryCard from '../dashboard/DashboardSummaryCard.vue'
 import OutstandingInvoicesChart from '../dashboard/OutstandingInvoicesChart.vue'
 import StatusDistributionChart from '../dashboard/StatusDistributionChart.vue'
 import PredictiveCashFlowChart from '../dashboard/PredictiveCashFlowChart.vue'
+import ExportDialog from './ExportDialog.vue'
 import { useUserStore } from '@/scripts/admin/stores/user'
 import { useDashboardStore } from '@/scripts/admin/stores/dashboard'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
@@ -19,15 +20,23 @@ const dashboardStore = useDashboardStore()
 const companyStore = useCompanyStore()
 const router = useRouter()
 const { t } = useI18n()
+const isExportDialogOpen = ref(false)
+const selectedExportFormat = ref('')
+
+// Chart component refs for PDF export
+const outstandingInvoicesChartRef = ref(null)
+const statusDistributionChartRef = ref(null)
+const predictiveCashFlowChartRef = ref(null)
+const dashboardTableRef = ref(null)
 
 // Navigation tabs state
-const activeTab = ref('all')
-const tabs = ref([
-  { id: 'all', label: 'All', active: true },
-  { id: 'overdue', label: 'Overdue', active: false },
-  { id: 'paid', label: 'Paid', active: false },
-  { id: 'unpaid', label: 'Unpaid', active: false }
-])
+// const activeTab = ref('all')
+// const tabs = ref([
+//   { id: 'all', label: 'All', active: true },
+//   { id: 'overdue', label: 'Overdue', active: false },
+//   { id: 'paid', label: 'Paid', active: false },
+//   { id: 'unpaid', label: 'Unpaid', active: false }
+// ])
 
 onMounted(async () => {
   if (route.meta.ability && !userStore.hasAbilities(route.meta.ability)) {
@@ -41,17 +50,17 @@ onMounted(async () => {
   }
 })
 
-watch(
-  activeTab,
-  (newTab) => {
-    // Update tab states
-    tabs.value.forEach(tab => {
-      tab.active = tab.id === newTab
-    })
-    // Load data based on selected tab
-    loadDataByTab(newTab)
-  }
-)
+// watch(
+//   activeTab,
+//   (newTab) => {
+//     // Update tab states
+//     tabs.value.forEach(tab => {
+//       tab.active = tab.id === newTab
+//     })
+//     // Load data based on selected tab
+//     loadDataByTab(newTab)
+//   }
+// )
 
 async function loadData(params) {
   if (userStore.hasAbilities(abilities.DASHBOARD)) {
@@ -59,25 +68,25 @@ async function loadData(params) {
   }
 }
 
-async function loadDataByTab(tab) {
-  let params = {}
+// async function loadDataByTab(tab) {
+//   let params = {}
   
-  switch (tab) {
-    case 'overdue':
-      params.filter_by = 'overdue'
-      break
-    case 'paid':
-      params.filter_by = 'paid'
-      break
-    case 'unpaid':
-      params.filter_by = 'unpaid'
-      break
-    default:
-      params = {}
-  }
+//   switch (tab) {
+//     case 'overdue':
+//       params.filter_by = 'overdue'
+//       break
+//     case 'paid':
+//       params.filter_by = 'paid'
+//       break
+//     case 'unpaid':
+//       params.filter_by = 'unpaid'
+//       break
+//     default:
+//       params = {}
+//   }
   
-  await loadData(params)
-}
+//   await loadData(params)
+// }
 
 /**
  * Handle active filter change
@@ -87,13 +96,49 @@ const handleActiveFilterChange = async (enabled) => {
   await dashboardStore.setActiveFilter(enabled)
 }
 
-function handleExport() {
-  // TODO: Implement export functionality
-  console.log('Export clicked')
+function openExportDialog(format) {
+  selectedExportFormat.value = format
+  isExportDialogOpen.value = true
 }
 
-function setActiveTab(tabId) {
-  activeTab.value = tabId
+function closeExportDialog() {
+  isExportDialogOpen.value = false
+}
+
+// function setActiveTab(tabId) {
+//   activeTab.value = tabId
+// }
+
+async function handleSnapshotExport(selectedSections) {
+  try {
+    // Validate that we have selected sections
+    if (!selectedSections || !Array.isArray(selectedSections) || selectedSections.length === 0) {
+      console.error('No sections selected for snapshot export')
+      return
+    }
+
+    // Capture chart images based on selected sections
+    const chartImages = {}
+    
+    if (selectedSections.includes('dashboard')) {
+      chartImages.statusDistribution = statusDistributionChartRef.value?.getChartAsBase64Image()
+      chartImages.outstandingInvoices = outstandingInvoicesChartRef.value?.getChartAsBase64Image()
+    }
+    
+    if (selectedSections.includes('cashflow')) {
+      chartImages.predictiveCashFlow = predictiveCashFlowChartRef.value?.getChartAsBase64Image()
+    }
+
+    // Capture table data only if invoices section is selected
+    const tableData = selectedSections.includes('invoices') 
+      ? dashboardTableRef.value?.getTableDataForSnapshot()
+      : null
+
+    // Call the new dashboard snapshot export method
+    await dashboardStore.exportDashboardSnapshot(chartImages, tableData, selectedSections)
+  } catch (error) {
+    console.error('Error exporting dashboard snapshot:', error)
+  }
 }
 </script>
 
@@ -101,9 +146,9 @@ function setActiveTab(tabId) {
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
     <!-- Navigation Tabs and Export Button -->
     <div class="px-6 pt-6 pb-4">
-      <div class="flex items-center justify-between">
+      <div class="flex items-center justify-end">
         <!-- Navigation Tabs -->
-        <div class="flex space-x-0 rounded-lg p-1">
+        <!-- <div class="flex space-x-0 rounded-lg p-1">
           <button
             v-for="tab in tabs"
             :key="tab.id"
@@ -117,19 +162,43 @@ function setActiveTab(tabId) {
           >
             {{ tab.label }}
           </button>
-        </div>
+        </div> -->
 
         <!-- Export Button -->
+        <BaseDropdown>
+          <template #activator>
         <BaseButton
           variant="primary-outline"
           size="sm"
-          @click="handleExport"
         >
           <template #left="slotProps">
             <BaseIcon name="ArrowDownTrayIcon" :class="slotProps.class" />
           </template>
           Export
         </BaseButton>
+          </template>
+          
+          <BaseDropdownItem @click="openExportDialog('pdf')">
+            <template #left>
+              <BaseIcon name="DocumentTextIcon" class="w-4 h-4" />
+            </template>
+            Export as PDF
+          </BaseDropdownItem>
+
+          <BaseDropdownItem @click="openExportDialog('xlsx')">
+            <template #left>
+              <BaseIcon name="DocumentChartBarIcon" class="w-4 h-4" />
+            </template>
+            Export as XLSX
+          </BaseDropdownItem>
+
+          <BaseDropdownItem @click="openExportDialog('csv')">
+            <template #left>
+              <BaseIcon name="TableCellsIcon" class="w-4 h-4" />
+            </template>
+            Export as CSV
+          </BaseDropdownItem>
+        </BaseDropdown>
       </div>
     </div>
 
@@ -152,21 +221,27 @@ function setActiveTab(tabId) {
 
           <!-- Outstanding Invoices Chart -->
           <div class="lg:col-span-5">
-            <OutstandingInvoicesChart />
+            <OutstandingInvoicesChart ref="outstandingInvoicesChartRef" />
           </div>
 
           <!-- Status Distribution Chart -->
           <div class="lg:col-span-4">
-            <StatusDistributionChart />
+            <StatusDistributionChart ref="statusDistributionChartRef" />
           </div>
         </div>
 
         <!-- Paid Invoices Chart - Full Width -->
-        <PredictiveCashFlowChart />
+        <PredictiveCashFlowChart ref="predictiveCashFlowChartRef" />
 
         <!-- Recent Invoices Table - Full Width -->
-        <DashboardTable />
+        <DashboardTable ref="dashboardTableRef" />
       </div>
     </div>
   </div>
+  <ExportDialog
+    v-if="isExportDialogOpen"
+    :format="selectedExportFormat"
+    @close="closeExportDialog"
+    @export-snapshot="handleSnapshotExport"
+  />
 </template>

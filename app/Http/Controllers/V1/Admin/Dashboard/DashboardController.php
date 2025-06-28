@@ -249,6 +249,10 @@ class DashboardController extends Controller
         $pending_count = Invoice::whereCompany()->whereIn('paid_status', [Invoice::STATUS_UNPAID, Invoice::STATUS_PARTIALLY_PAID])
             ->where('due_date', '>=', Carbon::now())
             ->count();
+        
+        // Note: The 'filter_by' parameter from the frontend tabs has been deprecated.
+        // No backend filtering logic is applied here for 'overdue', 'paid', or 'unpaid' statuses
+        // as the UI has been updated to remove these tabs.
 
         return response()->json([
             'total_amount_due' => $total_amount_due,

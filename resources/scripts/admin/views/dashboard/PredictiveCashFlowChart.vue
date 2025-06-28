@@ -308,6 +308,19 @@ function refreshChart() {
   chartInstance.update('active')
 }
 
+// Export method for PDF snapshot
+function getChartAsBase64Image() {
+  if (!chartInstance || !chartInstance.canvas) {
+    return null
+  }
+  return chartInstance.toBase64Image('image/png', 1)
+}
+
+// Expose method to parent component
+defineExpose({
+  getChartAsBase64Image
+})
+
 onMounted(async () => {
   createChart()
   await Promise.all([

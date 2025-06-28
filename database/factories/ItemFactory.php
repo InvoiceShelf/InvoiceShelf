@@ -33,4 +33,13 @@ class ItemFactory extends Factory
             'tax_per_item' => $this->faker->randomElement([true, false]),
         ];
     }
+
+    public function forCompany($company)
+    {
+        return $this->state(function (array $attributes) use ($company) {
+            return [
+                'company_id' => $company->id,
+            ];
+        });
+    }
 }

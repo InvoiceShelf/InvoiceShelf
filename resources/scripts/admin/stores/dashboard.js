@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { defineStore } from 'pinia'
 import { useGlobalStore } from '@/scripts/admin/stores/global'
+import { useNotificationStore } from '@/scripts/stores/notification'
 import { handleError } from '@/scripts/helpers/error-handling'
 
 export const useDashboardStore = (useWindow = false) => {
@@ -189,6 +190,176 @@ export const useDashboardStore = (useWindow = false) => {
         this.loadActiveFilter()
         return this.loadData()
       },
+
+      /**
+       * Export dashboard snapshot as PDF
+       * @param {Object} chartImages - Chart images in Base64 format
+       * @param {Object} tableData - Table data for recent invoices
+       * @param {Array} selectedSections - Array of selected sections to include
+       * @returns {Promise}
+       */
+      exportDashboardSnapshot(chartImages, tableData, selectedSections) {
+        const notificationStore = useNotificationStore()
+        const notification = notificationStore.showNotification({
+          type: 'loading',
+          message: 'Generating dashboard snapshot... Please wait.',
+          persistent: true,
+        })
+
+                 return new Promise((resolve, reject) => {
+           const payload = {
+             chartImages,
+             tableData,
+             selectedSections,
+             dashboardData: {
+               stats: this.stats,
+               statusDistribution: this.statusDistribution,
+               totalSales: this.totalSales,
+               totalReceipts: this.totalReceipts,
+               totalExpenses: this.totalExpenses,
+               totalNetIncome: this.totalNetIncome,
+               recentDueInvoices: this.recentDueInvoices,
+               recentEstimates: this.recentEstimates
+             }
+           }
+
+          axios
+            .post('/api/v1/dashboard/export-snapshot', payload, {
+              responseType: 'blob',
+            })
+            .then((response) => {
+              const url = window.URL.createObjectURL(new Blob([response.data]))
+              const link = document.createElement('a')
+              link.href = url
+
+              const contentDisposition = response.headers['content-disposition']
+              let fileName = 'dashboard-snapshot.pdf'
+              if (contentDisposition) {
+                  const fileNameMatch = contentDisposition.match(/filename="([^"]+)"/)
+                  if (fileNameMatch && fileNameMatch.length === 2)
+                      fileName = fileNameMatch[1]
+              }
+
+              link.setAttribute('download', fileName)
+              document.body.appendChild(link)
+              link.click()
+              link.remove()
+              window.URL.revokeObjectURL(url)
+
+              notificationStore.hideNotification(notification)
+              notificationStore.showNotification({
+                type: 'success',
+                message: 'Dashboard snapshot generated successfully.',
+                timeout: 3000,
+              })
+              resolve(response)
+            })
+            .catch((err) => {
+              notificationStore.hideNotification(notification)
+              // Try to read the error message from the blob
+              const reader = new FileReader()
+              reader.onload = () => {
+                try {
+                  const errorData = JSON.parse(reader.result)
+                  notificationStore.showNotification({
+                    type: 'error',
+                    message: errorData.message || 'An error occurred during snapshot export.',
+                  })
+                } catch (e) {
+                  notificationStore.showNotification({
+                    type: 'error',
+                    message: 'An unknown error occurred during snapshot export.',
+                  })
+                }
+              }
+              reader.onerror = () => {
+                 notificationStore.showNotification({
+                    type: 'error',
+                    message: 'Could not read error response.',
+                  })
+              }
+              reader.readAsText(err.response.data)
+              
+              reject(err)
+            })
+        })
+      },
+
+      /**
+       * Export dashboard data
+       * @param {Object} params - Export parameters (format, sections, filters)
+       * @returns {Promise}
+       */
+      exportDashboard(params) {
+        const notificationStore = useNotificationStore()
+        const notification = notificationStore.showNotification({
+          type: 'loading',
+          message: 'Generating your export... Please wait.',
+          persistent: true,
+        })
+
+        return new Promise((resolve, reject) => {
+          axios
+            .post('/api/v1/dashboard/export', params, {
+              responseType: 'blob',
+            })
+            .then((response) => {
+              const url = window.URL.createObjectURL(new Blob([response.data]))
+              const link = document.createElement('a')
+              link.href = url
+
+              const contentDisposition = response.headers['content-disposition']
+              let fileName = 'export.dat'
+              if (contentDisposition) {
+                  const fileNameMatch = contentDisposition.match(/filename="([^"]+)"/)
+                  if (fileNameMatch && fileNameMatch.length === 2)
+                      fileName = fileNameMatch[1]
+              }
+
+              link.setAttribute('download', fileName)
+              document.body.appendChild(link)
+              link.click()
+              link.remove()
+              window.URL.revokeObjectURL(url)
+
+              notificationStore.hideNotification(notification)
+              notificationStore.showNotification({
+                type: 'success',
+                message: 'Export generated successfully.',
+                timeout: 3000,
+              })
+              resolve(response)
+            })
+            .catch((err) => {
+              notificationStore.hideNotification(notification)
+              // Try to read the error message from the blob
+              const reader = new FileReader()
+              reader.onload = () => {
+                try {
+                  const errorData = JSON.parse(reader.result)
+                  notificationStore.showNotification({
+                    type: 'error',
+                    message: errorData.message || 'An error occurred during export.',
+                  })
+                } catch (e) {
+                  notificationStore.showNotification({
+                    type: 'error',
+                    message: 'An unknown error occurred during export.',
+                  })
+                }
+              }
+              reader.onerror = () => {
+                 notificationStore.showNotification({
+                    type: 'error',
+                    message: 'Could not read error response.',
+                  })
+              }
+              reader.readAsText(err.response.data)
+              
+              reject(err)
+            })
+        })
+      }
     },
   })()
 }

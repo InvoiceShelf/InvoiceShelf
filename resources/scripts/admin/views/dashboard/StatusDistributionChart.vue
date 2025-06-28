@@ -198,6 +198,19 @@ onMounted(() => {
   )
 })
 
+// Export method for PDF snapshot
+function getChartAsBase64Image() {
+  if (!chartInstance || !chartInstance.canvas) {
+    return null
+  }
+  return chartInstance.toBase64Image('image/png', 1)
+}
+
+// Expose method to parent component
+defineExpose({
+  getChartAsBase64Image
+})
+
 onUnmounted(() => {
   if(chartInstance) {
     chartInstance.destroy()

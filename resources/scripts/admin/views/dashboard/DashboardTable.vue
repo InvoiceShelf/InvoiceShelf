@@ -712,6 +712,29 @@ function getDateRangeLabel() {
 }
 
 
+// Export method for PDF snapshot
+function getTableDataForSnapshot() {
+  return {
+    invoices: invoices.value,
+    totalCount: totalCount.value,
+    filteredCount: filteredCount.value,
+    filters: {
+      customer_id: filters.customer_id,
+      status: filters.status,
+      from_date: filters.from_date,
+      to_date: filters.to_date,
+      search: filters.search
+    },
+    hasActiveFilters: hasActiveFilters.value,
+    activeFilterCount: activeFilterCount.value
+  }
+}
+
+// Expose method to parent component
+defineExpose({
+  getTableDataForSnapshot
+})
+
 // Lifecycle
 onMounted(() => {
   loadInvoices()

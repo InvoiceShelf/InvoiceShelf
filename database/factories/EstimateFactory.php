@@ -106,4 +106,13 @@ class EstimateFactory extends Factory
             'currency_id' => Currency::find(1)->id,
         ];
     }
+
+    public function forCompany($company)
+    {
+        return $this->state(function (array $attributes) use ($company) {
+            return [
+                'company_id' => $company->id,
+            ];
+        });
+    }
 }
