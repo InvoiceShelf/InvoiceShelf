@@ -1,0 +1,7 @@
+# MkDocs Requirements
+mkdocs>=1.5.0
+mkdocs-material>=9.4.0
+pymdown-extensions>=10.3.0
+
+# Plugin adicionales para funcionalidad completa
+mkdocs-mermaid2-plugin>=1.1.0

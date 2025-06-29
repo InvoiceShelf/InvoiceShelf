@@ -1,0 +1,1801 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentación técnica completa del sistema Crater">
+      
+      
+        <meta name="author" content="Crater Team">
+      
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="requirements/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
+    
+    
+      
+        <title>Guía de Instalación - Crater - Documentación Técnica</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.342714a4.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#guia-de-instalacion" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Crater - Documentación Técnica" class="md-header__button md-logo" aria-label="Crater - Documentación Técnica" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Crater - Documentación Técnica
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Guía de Instalación
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Inicio
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+  Instalación
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../architecture/overview/" class="md-tabs__link">
+          
+  
+  
+  Arquitectura
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../api/introduction/" class="md-tabs__link">
+          
+  
+  
+  API
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Crater - Documentación Técnica" class="md-nav__button md-logo" aria-label="Crater - Documentación Técnica" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Crater - Documentación Técnica
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Inicio
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Instalación
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Instalación
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Guía de Instalación
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Guía de Instalación
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#metodos-de-instalacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      📋 Métodos de Instalación
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instalacion-con-docker" class="md-nav__link">
+    <span class="md-ellipsis">
+      🐳 Instalación con Docker
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🐳 Instalación con Docker">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#requisitos-previos" class="md-nav__link">
+    <span class="md-ellipsis">
+      Requisitos Previos
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pasos-de-instalacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pasos de Instalación
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instalacion-manual" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚡ Instalación Manual
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="⚡ Instalación Manual">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-requisitos-del-sistema" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Requisitos del Sistema
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-descarga-del-codigo" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Descarga del Código
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-configuracion-del-backend" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Configuración del Backend
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-configuracion-de-la-base-de-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Configuración de la Base de Datos
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-configuracion-del-frontend" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Configuración del Frontend
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-configuracion-del-servidor-web" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Configuración del Servidor Web
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-configuracion-final" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Configuración Final
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#despliegue-cloud" class="md-nav__link">
+    <span class="md-ellipsis">
+      ☁️ Despliegue Cloud
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="☁️ Despliegue Cloud">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#digitalocean-app-platform" class="md-nav__link">
+    <span class="md-ellipsis">
+      DigitalOcean App Platform
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aws-ec2" class="md-nav__link">
+    <span class="md-ellipsis">
+      AWS EC2
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vercelnetlify" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vercel/Netlify
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-post-instalacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔧 Configuración Post-Instalación
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔧 Configuración Post-Instalación">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-asistente-de-configuracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Asistente de Configuración
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-configuracion-de-correo" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Configuración de Correo
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-configuracion-de-almacenamiento" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Configuración de Almacenamiento
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-tareas-programadas-cron" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Tareas Programadas (Cron)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verificacion-de-la-instalacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ Verificación de la Instalación
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="✅ Verificación de la Instalación">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#lista-de-verificacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lista de Verificación
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comandos-de-diagnostico" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comandos de Diagnóstico
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solucion-de-problemas" class="md-nav__link">
+    <span class="md-ellipsis">
+      🆘 Solución de Problemas
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🆘 Solución de Problemas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#errores-comunes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Errores Comunes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logs-de-depuracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Logs de Depuración
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#actualizaciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔄 Actualizaciones
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instalacion-completada" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎉 ¡Instalación Completada!
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="requirements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Requisitos del Sistema
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configuración
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Arquitectura
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Arquitectura
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Visión General
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/backend.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Backend (Laravel)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/frontend.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Frontend (Vue.js)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/database.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Base de Datos
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    API
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            API
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introducción
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/authentication.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Autenticación
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/endpoints.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Endpoints
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#metodos-de-instalacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      📋 Métodos de Instalación
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instalacion-con-docker" class="md-nav__link">
+    <span class="md-ellipsis">
+      🐳 Instalación con Docker
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🐳 Instalación con Docker">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#requisitos-previos" class="md-nav__link">
+    <span class="md-ellipsis">
+      Requisitos Previos
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pasos-de-instalacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pasos de Instalación
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instalacion-manual" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚡ Instalación Manual
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="⚡ Instalación Manual">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-requisitos-del-sistema" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Requisitos del Sistema
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-descarga-del-codigo" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Descarga del Código
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-configuracion-del-backend" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Configuración del Backend
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-configuracion-de-la-base-de-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Configuración de la Base de Datos
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-configuracion-del-frontend" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Configuración del Frontend
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-configuracion-del-servidor-web" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Configuración del Servidor Web
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-configuracion-final" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Configuración Final
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#despliegue-cloud" class="md-nav__link">
+    <span class="md-ellipsis">
+      ☁️ Despliegue Cloud
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="☁️ Despliegue Cloud">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#digitalocean-app-platform" class="md-nav__link">
+    <span class="md-ellipsis">
+      DigitalOcean App Platform
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aws-ec2" class="md-nav__link">
+    <span class="md-ellipsis">
+      AWS EC2
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vercelnetlify" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vercel/Netlify
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-post-instalacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔧 Configuración Post-Instalación
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔧 Configuración Post-Instalación">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-asistente-de-configuracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Asistente de Configuración
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-configuracion-de-correo" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Configuración de Correo
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-configuracion-de-almacenamiento" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Configuración de Almacenamiento
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-tareas-programadas-cron" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Tareas Programadas (Cron)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verificacion-de-la-instalacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ Verificación de la Instalación
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="✅ Verificación de la Instalación">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#lista-de-verificacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lista de Verificación
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comandos-de-diagnostico" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comandos de Diagnóstico
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solucion-de-problemas" class="md-nav__link">
+    <span class="md-ellipsis">
+      🆘 Solución de Problemas
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🆘 Solución de Problemas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#errores-comunes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Errores Comunes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logs-de-depuracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Logs de Depuración
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#actualizaciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔄 Actualizaciones
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instalacion-completada" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎉 ¡Instalación Completada!
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="guia-de-instalacion">🚀 Guía de Instalación<a class="headerlink" href="#guia-de-instalacion" title="Permanent link">&para;</a></h1>
+<p>Esta guía te llevará a través del proceso de instalación de Crater paso a paso.</p>
+<h2 id="metodos-de-instalacion">📋 Métodos de Instalación<a class="headerlink" href="#metodos-de-instalacion" title="Permanent link">&para;</a></h2>
+<p>Elige el método que mejor se adapte a tu entorno:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">🐳 Docker (Recomendado)</label><label for="__tabbed_1_2">⚡ Instalación Manual</label><label for="__tabbed_1_3">☁️ Servicios Cloud</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>La forma más rápida y sencilla de ejecutar Crater.</p>
+</div>
+<div class="tabbed-block">
+<p>Para mayor control y personalización.</p>
+</div>
+<div class="tabbed-block">
+<p>Despliegue en plataformas como DigitalOcean, AWS, etc.</p>
+</div>
+</div>
+</div>
+<h2 id="instalacion-con-docker">🐳 Instalación con Docker<a class="headerlink" href="#instalacion-con-docker" title="Permanent link">&para;</a></h2>
+<div class="admonition tip">
+<p class="admonition-title">Recomendado para Principiantes</p>
+<p>Docker es la forma más sencilla de ejecutar Crater sin configuraciones complejas.</p>
+</div>
+<h3 id="requisitos-previos">Requisitos Previos<a class="headerlink" href="#requisitos-previos" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Docker Desktop o Docker Engine</li>
+<li>Docker Compose v2+</li>
+<li>2GB de RAM libre</li>
+<li>5GB de espacio en disco</li>
+</ul>
+<h3 id="pasos-de-instalacion">Pasos de Instalación<a class="headerlink" href="#pasos-de-instalacion" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p><strong>Clona el repositorio</strong>
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/crater-invoice/crater.git<span class="w"> </span>crater
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>crater
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Configura las variables de entorno</strong>
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>cp<span class="w"> </span>.env.example<span class="w"> </span>.env
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>nano<span class="w"> </span>.env
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Inicia los servicios</strong>
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>docker-compose<span class="w"> </span>up<span class="w"> </span>-d
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Accede a la aplicación</strong></p>
+</li>
+<li>URL: <code>http://localhost:8080</code></li>
+<li>Sigue el asistente de instalación</li>
+</ol>
+<h2 id="instalacion-manual">⚡ Instalación Manual<a class="headerlink" href="#instalacion-manual" title="Permanent link">&para;</a></h2>
+<h3 id="1-requisitos-del-sistema">1. Requisitos del Sistema<a class="headerlink" href="#1-requisitos-del-sistema" title="Permanent link">&para;</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Verificar Requisitos</p>
+<p>Asegúrate de cumplir con todos los requisitos antes de proceder.</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Versión Mínima</th>
+<th>Comando de Verificación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PHP</td>
+<td>8.2</td>
+<td><code>php -v</code></td>
+</tr>
+<tr>
+<td>Composer</td>
+<td>2.0</td>
+<td><code>composer --version</code></td>
+</tr>
+<tr>
+<td>Node.js</td>
+<td>18.x</td>
+<td><code>node -v</code></td>
+</tr>
+<tr>
+<td>NPM</td>
+<td>8.x</td>
+<td><code>npm -v</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Extensiones PHP Requeridas:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Verifica las extensiones instaladas</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>php<span class="w"> </span>-m<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s2">&quot;(pdo|mysql|gd|zip|xml|curl|json|mbstring|tokenizer|openssl)&quot;</span>
+</code></pre></div></p>
+<h3 id="2-descarga-del-codigo">2. Descarga del Código<a class="headerlink" href="#2-descarga-del-codigo" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Opción 1: Descarga desde GitHub</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/crater-invoice/crater.git
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="nb">cd</span><span class="w"> </span>crater
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="c1"># Opción 2: Descarga del release</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>wget<span class="w"> </span>https://github.com/crater-invoice/crater/releases/latest/download/crater.tar.gz
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>tar<span class="w"> </span>-xzf<span class="w"> </span>crater.tar.gz
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="nb">cd</span><span class="w"> </span>crater
+</code></pre></div>
+<h3 id="3-configuracion-del-backend">3. Configuración del Backend<a class="headerlink" href="#3-configuracion-del-backend" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Instala dependencias PHP</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>composer<span class="w"> </span>install<span class="w"> </span>--no-dev<span class="w"> </span>--optimize-autoloader
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># Copia y configura el archivo de entorno</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>cp<span class="w"> </span>.env.example<span class="w"> </span>.env
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="c1"># Genera la clave de aplicación</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>php<span class="w"> </span>artisan<span class="w"> </span>key:generate
+</code></pre></div>
+<h3 id="4-configuracion-de-la-base-de-datos">4. Configuración de la Base de Datos<a class="headerlink" href="#4-configuracion-de-la-base-de-datos" title="Permanent link">&para;</a></h3>
+<p>Edita el archivo <code>.env</code> con tu configuración de base de datos:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>DB_CONNECTION=mysql
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>DB_HOST=127.0.0.1
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>DB_PORT=3306
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>DB_DATABASE=crater
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>DB_USERNAME=tu_usuario
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>DB_PASSWORD=tu_contraseña
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Ejecuta las migraciones</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>php<span class="w"> </span>artisan<span class="w"> </span>migrate<span class="w"> </span>--force
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># Genera datos iniciales (opcional)</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>php<span class="w"> </span>artisan<span class="w"> </span>db:seed
+</code></pre></div>
+<h3 id="5-configuracion-del-frontend">5. Configuración del Frontend<a class="headerlink" href="#5-configuracion-del-frontend" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Instala dependencias Node.js</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>npm<span class="w"> </span>install
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># Compila los assets para producción</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>npm<span class="w"> </span>run<span class="w"> </span>build
+</code></pre></div>
+<h3 id="6-configuracion-del-servidor-web">6. Configuración del Servidor Web<a class="headerlink" href="#6-configuracion-del-servidor-web" title="Permanent link">&para;</a></h3>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Apache</label><label for="__tabbed_2_2">Nginx</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nt">&lt;VirtualHost</span><span class="w"> </span><span class="s">*:80</span><span class="nt">&gt;</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">    </span><span class="nb">ServerName</span><span class="w"> </span>tu-dominio.com
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span><span class="nb">DocumentRoot</span><span class="w"> </span><span class="sx">/path/to/crater/public</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">    </span><span class="nt">&lt;Directory</span><span class="w"> </span><span class="s">/path/to/crater/public</span><span class="nt">&gt;</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">        </span><span class="nb">AllowOverride</span><span class="w"> </span><span class="k">All</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">        </span><span class="nb">Require</span><span class="w"> </span><span class="k">all</span><span class="w"> </span>granted
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">    </span><span class="nt">&lt;/Directory&gt;</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="w">    </span><span class="nb">ErrorLog</span><span class="w"> </span>${APACHE_LOG_DIR}/crater_error.log
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="w">    </span><span class="nb">CustomLog</span><span class="w"> </span>${APACHE_LOG_DIR}/crater_access.log<span class="w"> </span>combined
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="nt">&lt;/VirtualHost&gt;</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">server</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">    </span><span class="kn">listen</span><span class="w"> </span><span class="mi">80</span><span class="p">;</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">    </span><span class="kn">server_name</span><span class="w"> </span><span class="s">tu-dominio.com</span><span class="p">;</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">    </span><span class="kn">root</span><span class="w"> </span><span class="s">/path/to/crater/public</span><span class="p">;</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">    </span><span class="kn">index</span><span class="w"> </span><span class="s">index.php</span><span class="p">;</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">    </span><span class="kn">location</span><span class="w"> </span><span class="s">/</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="w">        </span><span class="kn">try_files</span><span class="w"> </span><span class="nv">$uri</span><span class="w"> </span><span class="nv">$uri/</span><span class="w"> </span><span class="s">/index.php?</span><span class="nv">$query_string</span><span class="p">;</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="w">    </span><span class="kn">location</span><span class="w"> </span><span class="p">~</span><span class="w"> </span><span class="sr">\.php$</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="w">        </span><span class="kn">fastcgi_pass</span><span class="w"> </span><span class="s">unix:/var/run/php/php8.2-fpm.sock</span><span class="p">;</span>
+<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="w">        </span><span class="kn">fastcgi_index</span><span class="w"> </span><span class="s">index.php</span><span class="p">;</span>
+<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a><span class="w">        </span><span class="kn">fastcgi_param</span><span class="w"> </span><span class="s">SCRIPT_FILENAME</span><span class="w"> </span><span class="nv">$realpath_root$fastcgi_script_name</span><span class="p">;</span>
+<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="w">        </span><span class="kn">include</span><span class="w"> </span><span class="s">fastcgi_params</span><span class="p">;</span>
+<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="7-configuracion-final">7. Configuración Final<a class="headerlink" href="#7-configuracion-final" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># Optimiza la aplicación para producción</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>php<span class="w"> </span>artisan<span class="w"> </span>config:cache
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>php<span class="w"> </span>artisan<span class="w"> </span>route:cache
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>php<span class="w"> </span>artisan<span class="w"> </span>view:cache
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="c1"># Configura permisos</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>chmod<span class="w"> </span>-R<span class="w"> </span><span class="m">755</span><span class="w"> </span>storage<span class="w"> </span>bootstrap/cache
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>chown<span class="w"> </span>-R<span class="w"> </span>www-data:www-data<span class="w"> </span>storage<span class="w"> </span>bootstrap/cache
+</code></pre></div>
+<h2 id="despliegue-cloud">☁️ Despliegue Cloud<a class="headerlink" href="#despliegue-cloud" title="Permanent link">&para;</a></h2>
+<h3 id="digitalocean-app-platform">DigitalOcean App Platform<a class="headerlink" href="#digitalocean-app-platform" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Conecta tu repositorio</strong> en DigitalOcean App Platform</li>
+<li><strong>Configura las variables de entorno</strong> necesarias</li>
+<li><strong>Despliega automáticamente</strong> desde GitHub</li>
+</ol>
+<h3 id="aws-ec2">AWS EC2<a class="headerlink" href="#aws-ec2" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># Instala dependencias en Ubuntu/Debian</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>sudo<span class="w"> </span>apt<span class="w"> </span>update
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>php8.2<span class="w"> </span>php8.2-fpm<span class="w"> </span>nginx<span class="w"> </span>mysql-server<span class="w"> </span>composer<span class="w"> </span>nodejs<span class="w"> </span>npm
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="c1"># Sigue los pasos de instalación manual</span>
+</code></pre></div>
+<h3 id="vercelnetlify">Vercel/Netlify<a class="headerlink" href="#vercelnetlify" title="Permanent link">&para;</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Solo Frontend</p>
+<p>Estos servicios solo pueden alojar el frontend. Necesitarás un servidor separado para el backend.</p>
+</div>
+<h2 id="configuracion-post-instalacion">🔧 Configuración Post-Instalación<a class="headerlink" href="#configuracion-post-instalacion" title="Permanent link">&para;</a></h2>
+<h3 id="1-asistente-de-configuracion">1. Asistente de Configuración<a class="headerlink" href="#1-asistente-de-configuracion" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Visita tu instalación en el navegador</li>
+<li>Completa el asistente de configuración inicial:</li>
+<li>Información de la empresa</li>
+<li>Usuario administrador</li>
+<li>Configuración de correo</li>
+<li>Configuración de moneda</li>
+</ol>
+<h3 id="2-configuracion-de-correo">2. Configuración de Correo<a class="headerlink" href="#2-configuracion-de-correo" title="Permanent link">&para;</a></h3>
+<p>Edita <code>.env</code> para configurar el envío de correos:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>MAIL_MAILER=smtp
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>MAIL_HOST=smtp.gmail.com
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>MAIL_PORT=587
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>MAIL_USERNAME=tu-email@gmail.com
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>MAIL_PASSWORD=tu-app-password
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>MAIL_ENCRYPTION=tls
+</code></pre></div>
+<h3 id="3-configuracion-de-almacenamiento">3. Configuración de Almacenamiento<a class="headerlink" href="#3-configuracion-de-almacenamiento" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a># Almacenamiento local (por defecto)
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>FILESYSTEM_DISK=local
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a># Amazon S3
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>FILESYSTEM_DISK=s3
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>AWS_ACCESS_KEY_ID=tu-key
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>AWS_SECRET_ACCESS_KEY=tu-secret
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>AWS_DEFAULT_REGION=us-east-1
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>AWS_BUCKET=tu-bucket
+</code></pre></div>
+<h3 id="4-tareas-programadas-cron">4. Tareas Programadas (Cron)<a class="headerlink" href="#4-tareas-programadas-cron" title="Permanent link">&para;</a></h3>
+<p>Agrega esta línea a tu crontab:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>/path/to/invoiceshelf<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>php<span class="w"> </span>artisan<span class="w"> </span>schedule:run<span class="w"> </span>&gt;&gt;<span class="w"> </span>/dev/null<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span>
+</code></pre></div>
+<h2 id="verificacion-de-la-instalacion">✅ Verificación de la Instalación<a class="headerlink" href="#verificacion-de-la-instalacion" title="Permanent link">&para;</a></h2>
+<h3 id="lista-de-verificacion">Lista de Verificación<a class="headerlink" href="#lista-de-verificacion" title="Permanent link">&para;</a></h3>
+<ul>
+<li>[ ] La aplicación carga correctamente en el navegador</li>
+<li>[ ] Puedes iniciar sesión como administrador</li>
+<li>[ ] Puedes crear una factura de prueba</li>
+<li>[ ] Los correos se envían correctamente</li>
+<li>[ ] Las tareas programadas funcionan</li>
+</ul>
+<h3 id="comandos-de-diagnostico">Comandos de Diagnóstico<a class="headerlink" href="#comandos-de-diagnostico" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1"># Verifica el estado de la aplicación</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>php<span class="w"> </span>artisan<span class="w"> </span>about
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="c1"># Verifica la configuración</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>php<span class="w"> </span>artisan<span class="w"> </span>config:show
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="c1"># Ejecuta las verificaciones de salud</span>
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>php<span class="w"> </span>artisan<span class="w"> </span>health:check
+</code></pre></div>
+<h2 id="solucion-de-problemas">🆘 Solución de Problemas<a class="headerlink" href="#solucion-de-problemas" title="Permanent link">&para;</a></h2>
+<h3 id="errores-comunes">Errores Comunes<a class="headerlink" href="#errores-comunes" title="Permanent link">&para;</a></h3>
+<div class="admonition failure">
+<p class="admonition-title">Error 500 - Internal Server Error</p>
+<p><strong>Causa</strong>: Permisos incorrectos o configuración de base de datos.</p>
+<p><strong>Solución</strong>:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>chmod<span class="w"> </span>-R<span class="w"> </span><span class="m">755</span><span class="w"> </span>storage<span class="w"> </span>bootstrap/cache
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>php<span class="w"> </span>artisan<span class="w"> </span>config:clear
+</code></pre></div></p>
+</div>
+<div class="admonition failure">
+<p class="admonition-title">Página en Blanco</p>
+<p><strong>Causa</strong>: Error de PHP o configuración de servidor web.</p>
+<p><strong>Solución</strong>: Revisa los logs de error de PHP y del servidor web.</p>
+</div>
+<div class="admonition failure">
+<p class="admonition-title">Assets No Cargan</p>
+<p><strong>Causa</strong>: Configuración incorrecta de Vite o permisos.</p>
+<p><strong>Solución</strong>:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>npm<span class="w"> </span>run<span class="w"> </span>build
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>php<span class="w"> </span>artisan<span class="w"> </span>storage:link
+</code></pre></div></p>
+</div>
+<h3 id="logs-de-depuracion">Logs de Depuración<a class="headerlink" href="#logs-de-depuracion" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="c1"># Ver logs de Laravel</span>
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>tail<span class="w"> </span>-f<span class="w"> </span>storage/logs/laravel.log
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="c1"># Ver logs del servidor web</span>
+<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>tail<span class="w"> </span>-f<span class="w"> </span>/var/log/nginx/error.log<span class="w">   </span><span class="c1"># Nginx</span>
+<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>tail<span class="w"> </span>-f<span class="w"> </span>/var/log/apache2/error.log<span class="w"> </span><span class="c1"># Apache</span>
+</code></pre></div>
+<h2 id="actualizaciones">🔄 Actualizaciones<a class="headerlink" href="#actualizaciones" title="Permanent link">&para;</a></h2>
+<p>Para actualizar InvoiceShelf a una nueva versión:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="c1"># Respalda tu instalación actual</span>
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>php<span class="w"> </span>artisan<span class="w"> </span>backup:run
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="c1"># Descarga la nueva versión</span>
+<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>git<span class="w"> </span>pull<span class="w"> </span>origin<span class="w"> </span>master
+<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a>
+<a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="c1"># Actualiza dependencias</span>
+<a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a>composer<span class="w"> </span>install<span class="w"> </span>--no-dev<span class="w"> </span>--optimize-autoloader
+<a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a>npm<span class="w"> </span>install<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>npm<span class="w"> </span>run<span class="w"> </span>build
+<a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a>
+<a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a><span class="c1"># Ejecuta migraciones</span>
+<a id="__codelineno-20-12" name="__codelineno-20-12" href="#__codelineno-20-12"></a>php<span class="w"> </span>artisan<span class="w"> </span>migrate<span class="w"> </span>--force
+<a id="__codelineno-20-13" name="__codelineno-20-13" href="#__codelineno-20-13"></a>
+<a id="__codelineno-20-14" name="__codelineno-20-14" href="#__codelineno-20-14"></a><span class="c1"># Limpia cache</span>
+<a id="__codelineno-20-15" name="__codelineno-20-15" href="#__codelineno-20-15"></a>php<span class="w"> </span>artisan<span class="w"> </span>cache:clear
+<a id="__codelineno-20-16" name="__codelineno-20-16" href="#__codelineno-20-16"></a>php<span class="w"> </span>artisan<span class="w"> </span>config:cache
+</code></pre></div>
+<hr />
+<h2 id="instalacion-completada">🎉 ¡Instalación Completada!<a class="headerlink" href="#instalacion-completada" title="Permanent link">&para;</a></h2>
+<p>¡Felicitaciones! InvoiceShelf está ahora instalado y listo para usar.</p>
+<p><strong>Próximos Pasos:</strong>
+- <a href="configuration/">Configuración Básica</a>
+- <a href="../user-guide/getting-started.md">Guía de Usuario</a>
+- <a href="../api/introduction/">API Documentation</a></p>
+<p><strong>¿Necesitas Ayuda?</strong>
+- <a href="https://discord.gg/eHXf4zWhsR">Discord Community</a>
+- <a href="https://github.com/InvoiceShelf/invoiceshelf/issues">GitHub Issues</a>
+- <a href="../">Documentación Completa</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024 Crater Team
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      
+    
+  </body>
+</html>

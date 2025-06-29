@@ -1,0 +1,2259 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentación técnica completa del sistema Crater">
+      
+      
+        <meta name="author" content="Crater Team">
+      
+      
+      
+        <link rel="prev" href="../requirements/">
+      
+      
+        <link rel="next" href="../../architecture/overview/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
+    
+    
+      
+        <title>Configuración - Crater - Documentación Técnica</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#configuracion" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Crater - Documentación Técnica" class="md-header__button md-logo" aria-label="Crater - Documentación Técnica" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Crater - Documentación Técnica
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Configuración
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Inicio
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+  Instalación
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../architecture/overview/" class="md-tabs__link">
+          
+  
+  
+  Arquitectura
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../api/introduction/" class="md-tabs__link">
+          
+  
+  
+  API
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Crater - Documentación Técnica" class="md-nav__button md-logo" aria-label="Crater - Documentación Técnica" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Crater - Documentación Técnica
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Inicio
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Instalación
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Instalación
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Guía de Instalación
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../requirements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Requisitos del Sistema
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Configuración
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configuración
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-inicial" class="md-nav__link">
+    <span class="md-ellipsis">
+      🚀 Configuración Inicial
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🚀 Configuración Inicial">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#asistente-de-configuracion-web" class="md-nav__link">
+    <span class="md-ellipsis">
+      Asistente de Configuración Web
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-de-correo" class="md-nav__link">
+    <span class="md-ellipsis">
+      📧 Configuración de Correo
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📧 Configuración de Correo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#variables-de-entorno" class="md-nav__link">
+    <span class="md-ellipsis">
+      Variables de Entorno
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#probar-configuracion-de-correo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Probar Configuración de Correo
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-de-monedas" class="md-nav__link">
+    <span class="md-ellipsis">
+      💰 Configuración de Monedas
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="💰 Configuración de Monedas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configurar-moneda-principal" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configurar Moneda Principal
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#agregar-monedas-adicionales" class="md-nav__link">
+    <span class="md-ellipsis">
+      Agregar Monedas Adicionales
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tasas-de-cambio" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tasas de Cambio
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-multi-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      🏢 Configuración Multi-empresa
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🏢 Configuración Multi-empresa">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#habilitar-multi-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      Habilitar Multi-empresa
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configurar-dominios-por-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configurar Dominios por Empresa
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-de-almacenamiento" class="md-nav__link">
+    <span class="md-ellipsis">
+      📁 Configuración de Almacenamiento
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📁 Configuración de Almacenamiento">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#almacenamiento-local-por-defecto" class="md-nav__link">
+    <span class="md-ellipsis">
+      Almacenamiento Local (Por Defecto)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#amazon-s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Amazon S3
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#digitalocean-spaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      DigitalOcean Spaces
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configurar-enlace-simbolico" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configurar Enlace Simbólico
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-de-base-de-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      🗄️ Configuración de Base de Datos
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🗄️ Configuración de Base de Datos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#optimizaciones-mysql" class="md-nav__link">
+    <span class="md-ellipsis">
+      Optimizaciones MySQL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuracion-de-backup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuración de Backup
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-de-cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      🚀 Configuración de Cache
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🚀 Configuración de Cache">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#redis-recomendado-para-produccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Redis (Recomendado para Producción)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configurar-cache-de-aplicacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configurar Cache de Aplicación
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-de-colas" class="md-nav__link">
+    <span class="md-ellipsis">
+      📋 Configuración de Colas
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📋 Configuración de Colas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configurar-supervisor-produccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configurar Supervisor (Producción)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configurar-cron-jobs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configurar Cron Jobs
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-de-seguridad" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔒 Configuración de Seguridad
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔒 Configuración de Seguridad">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configurar-https" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configurar HTTPS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variables-de-seguridad" class="md-nav__link">
+    <span class="md-ellipsis">
+      Variables de Seguridad
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configurar-rate-limiting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configurar Rate Limiting
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-de-pdf" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎨 Configuración de PDF
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎨 Configuración de PDF">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configurar-generador-pdf" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configurar Generador PDF
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#personalizar-plantillas-pdf" class="md-nav__link">
+    <span class="md-ellipsis">
+      Personalizar Plantillas PDF
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-de-idiomas" class="md-nav__link">
+    <span class="md-ellipsis">
+      🌍 Configuración de Idiomas
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🌍 Configuración de Idiomas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#idioma-por-defecto" class="md-nav__link">
+    <span class="md-ellipsis">
+      Idioma por Defecto
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#agregar-nuevos-idiomas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Agregar Nuevos Idiomas
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-de-logging" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 Configuración de Logging
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📊 Configuración de Logging">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configurar-logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configurar Logs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rotacion-de-logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Rotación de Logs
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuraciones-avanzadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔧 Configuraciones Avanzadas
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔧 Configuraciones Avanzadas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configurar-queue-workers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configurar Queue Workers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configurar-websockets-opcional" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configurar Websockets (Opcional)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variables-de-entorno-completas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Variables de Entorno Completas
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verificar-configuracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ Verificar Configuración
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="✅ Verificar Configuración">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#comandos-de-verificacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comandos de Verificación
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#panel-de-administracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Panel de Administración
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-completada" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 Configuración Completada
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Arquitectura
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Arquitectura
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Visión General
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/backend.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Backend (Laravel)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/frontend.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Frontend (Vue.js)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/database.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Base de Datos
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    API
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            API
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introducción
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/authentication.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Autenticación
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/endpoints.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Endpoints
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-inicial" class="md-nav__link">
+    <span class="md-ellipsis">
+      🚀 Configuración Inicial
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🚀 Configuración Inicial">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#asistente-de-configuracion-web" class="md-nav__link">
+    <span class="md-ellipsis">
+      Asistente de Configuración Web
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-de-correo" class="md-nav__link">
+    <span class="md-ellipsis">
+      📧 Configuración de Correo
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📧 Configuración de Correo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#variables-de-entorno" class="md-nav__link">
+    <span class="md-ellipsis">
+      Variables de Entorno
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#probar-configuracion-de-correo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Probar Configuración de Correo
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-de-monedas" class="md-nav__link">
+    <span class="md-ellipsis">
+      💰 Configuración de Monedas
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="💰 Configuración de Monedas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configurar-moneda-principal" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configurar Moneda Principal
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#agregar-monedas-adicionales" class="md-nav__link">
+    <span class="md-ellipsis">
+      Agregar Monedas Adicionales
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tasas-de-cambio" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tasas de Cambio
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-multi-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      🏢 Configuración Multi-empresa
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🏢 Configuración Multi-empresa">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#habilitar-multi-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      Habilitar Multi-empresa
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configurar-dominios-por-empresa" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configurar Dominios por Empresa
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-de-almacenamiento" class="md-nav__link">
+    <span class="md-ellipsis">
+      📁 Configuración de Almacenamiento
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📁 Configuración de Almacenamiento">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#almacenamiento-local-por-defecto" class="md-nav__link">
+    <span class="md-ellipsis">
+      Almacenamiento Local (Por Defecto)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#amazon-s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Amazon S3
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#digitalocean-spaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      DigitalOcean Spaces
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configurar-enlace-simbolico" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configurar Enlace Simbólico
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-de-base-de-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      🗄️ Configuración de Base de Datos
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🗄️ Configuración de Base de Datos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#optimizaciones-mysql" class="md-nav__link">
+    <span class="md-ellipsis">
+      Optimizaciones MySQL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuracion-de-backup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuración de Backup
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-de-cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      🚀 Configuración de Cache
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🚀 Configuración de Cache">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#redis-recomendado-para-produccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Redis (Recomendado para Producción)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configurar-cache-de-aplicacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configurar Cache de Aplicación
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-de-colas" class="md-nav__link">
+    <span class="md-ellipsis">
+      📋 Configuración de Colas
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📋 Configuración de Colas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configurar-supervisor-produccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configurar Supervisor (Producción)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configurar-cron-jobs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configurar Cron Jobs
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-de-seguridad" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔒 Configuración de Seguridad
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔒 Configuración de Seguridad">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configurar-https" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configurar HTTPS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variables-de-seguridad" class="md-nav__link">
+    <span class="md-ellipsis">
+      Variables de Seguridad
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configurar-rate-limiting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configurar Rate Limiting
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-de-pdf" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎨 Configuración de PDF
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🎨 Configuración de PDF">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configurar-generador-pdf" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configurar Generador PDF
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#personalizar-plantillas-pdf" class="md-nav__link">
+    <span class="md-ellipsis">
+      Personalizar Plantillas PDF
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-de-idiomas" class="md-nav__link">
+    <span class="md-ellipsis">
+      🌍 Configuración de Idiomas
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🌍 Configuración de Idiomas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#idioma-por-defecto" class="md-nav__link">
+    <span class="md-ellipsis">
+      Idioma por Defecto
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#agregar-nuevos-idiomas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Agregar Nuevos Idiomas
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-de-logging" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 Configuración de Logging
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📊 Configuración de Logging">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configurar-logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configurar Logs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rotacion-de-logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Rotación de Logs
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuraciones-avanzadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔧 Configuraciones Avanzadas
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔧 Configuraciones Avanzadas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configurar-queue-workers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configurar Queue Workers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configurar-websockets-opcional" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configurar Websockets (Opcional)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variables-de-entorno-completas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Variables de Entorno Completas
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verificar-configuracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ Verificar Configuración
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="✅ Verificar Configuración">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#comandos-de-verificacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comandos de Verificación
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#panel-de-administracion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Panel de Administración
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-completada" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 Configuración Completada
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="configuracion">⚙️ Configuración<a class="headerlink" href="#configuracion" title="Permanent link">&para;</a></h1>
+<p>Guía completa para configurar InvoiceShelf después de la instalación.</p>
+<h2 id="configuracion-inicial">🚀 Configuración Inicial<a class="headerlink" href="#configuracion-inicial" title="Permanent link">&para;</a></h2>
+<h3 id="asistente-de-configuracion-web">Asistente de Configuración Web<a class="headerlink" href="#asistente-de-configuracion-web" title="Permanent link">&para;</a></h3>
+<p>Después de la instalación, visita tu dominio para acceder al asistente de configuración:</p>
+<ol>
+<li><strong>Verificación del Sistema</strong> - Verificación automática de requisitos</li>
+<li><strong>Configuración de Base de Datos</strong> - Si no se configuró previamente</li>
+<li><strong>Información de la Empresa</strong> - Datos de tu empresa</li>
+<li><strong>Usuario Administrador</strong> - Crear cuenta de administrador</li>
+<li><strong>Configuración Final</strong> - Optimizaciones y cache</li>
+</ol>
+<h2 id="configuracion-de-correo">📧 Configuración de Correo<a class="headerlink" href="#configuracion-de-correo" title="Permanent link">&para;</a></h2>
+<h3 id="variables-de-entorno">Variables de Entorno<a class="headerlink" href="#variables-de-entorno" title="Permanent link">&para;</a></h3>
+<p>Edita el archivo <code>.env</code> para configurar el envío de correos:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">SMTP</label><label for="__tabbed_1_2">Mailgun</label><label for="__tabbed_1_3">SendGrid</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>MAIL_MAILER=smtp
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>MAIL_HOST=smtp.gmail.com
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>MAIL_PORT=587
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>MAIL_USERNAME=tu-email@gmail.com
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>MAIL_PASSWORD=tu-app-password
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>MAIL_ENCRYPTION=tls
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>MAIL_FROM_ADDRESS=noreply@tu-dominio.com
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>MAIL_FROM_NAME=&quot;Tu Empresa&quot;
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>MAIL_MAILER=mailgun
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>MAILGUN_DOMAIN=tu-dominio.mailgun.org
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>MAILGUN_SECRET=tu-api-key
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>MAIL_FROM_ADDRESS=noreply@tu-dominio.com
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>MAIL_FROM_NAME=&quot;Tu Empresa&quot;
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>MAIL_MAILER=smtp
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>MAIL_HOST=smtp.sendgrid.net
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>MAIL_PORT=587
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>MAIL_USERNAME=apikey
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>MAIL_PASSWORD=tu-sendgrid-api-key
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>MAIL_ENCRYPTION=tls
+</code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="probar-configuracion-de-correo">Probar Configuración de Correo<a class="headerlink" href="#probar-configuracion-de-correo" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Enviar correo de prueba</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>php<span class="w"> </span>artisan<span class="w"> </span>tinker
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>&gt;&gt;&gt;<span class="w"> </span>Mail::raw<span class="o">(</span><span class="s1">&#39;Test email&#39;</span>,<span class="w"> </span><span class="k">function</span><span class="o">(</span><span class="nv">$msg</span><span class="o">)</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="nv">$msg</span>-&gt;to<span class="o">(</span><span class="s1">&#39;test@example.com&#39;</span><span class="o">)</span>-&gt;subject<span class="o">(</span><span class="s1">&#39;Test&#39;</span><span class="o">)</span><span class="p">;</span><span class="w"> </span><span class="o">})</span><span class="p">;</span>
+</code></pre></div>
+<h2 id="configuracion-de-monedas">💰 Configuración de Monedas<a class="headerlink" href="#configuracion-de-monedas" title="Permanent link">&para;</a></h2>
+<h3 id="configurar-moneda-principal">Configurar Moneda Principal<a class="headerlink" href="#configurar-moneda-principal" title="Permanent link">&para;</a></h3>
+<p>En el panel de administración:</p>
+<ol>
+<li>Ve a <strong>Configuración → Empresa</strong></li>
+<li>Selecciona tu <strong>moneda principal</strong></li>
+<li>Configura el <strong>formato de números</strong></li>
+</ol>
+<h3 id="agregar-monedas-adicionales">Agregar Monedas Adicionales<a class="headerlink" href="#agregar-monedas-adicionales" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Ejecutar seeder de monedas</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>php<span class="w"> </span>artisan<span class="w"> </span>db:seed<span class="w"> </span>--class<span class="o">=</span>CurrencySeeder
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># O agregar manualmente en: Configuración → Monedas</span>
+</code></pre></div>
+<h3 id="tasas-de-cambio">Tasas de Cambio<a class="headerlink" href="#tasas-de-cambio" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a># Configurar API de tasas de cambio
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>EXCHANGE_RATE_API_KEY=tu-api-key
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>EXCHANGE_RATE_PROVIDER=fixer  # opciones: fixer, openexchangerates
+</code></pre></div>
+<h2 id="configuracion-multi-empresa">🏢 Configuración Multi-empresa<a class="headerlink" href="#configuracion-multi-empresa" title="Permanent link">&para;</a></h2>
+<h3 id="habilitar-multi-empresa">Habilitar Multi-empresa<a class="headerlink" href="#habilitar-multi-empresa" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a># En .env
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>MULTI_COMPANY_ENABLED=true
+</code></pre></div>
+<h3 id="configurar-dominios-por-empresa">Configurar Dominios por Empresa<a class="headerlink" href="#configurar-dominios-por-empresa" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a># Configuración de subdominios
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>MULTI_COMPANY_SUBDOMAIN=true
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a># O usar rutas
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>MULTI_COMPANY_SUBDOMAIN=false
+</code></pre></div>
+<h2 id="configuracion-de-almacenamiento">📁 Configuración de Almacenamiento<a class="headerlink" href="#configuracion-de-almacenamiento" title="Permanent link">&para;</a></h2>
+<h3 id="almacenamiento-local-por-defecto">Almacenamiento Local (Por Defecto)<a class="headerlink" href="#almacenamiento-local-por-defecto" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>FILESYSTEM_DISK=local
+</code></pre></div>
+<h3 id="amazon-s3">Amazon S3<a class="headerlink" href="#amazon-s3" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>FILESYSTEM_DISK=s3
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>AWS_ACCESS_KEY_ID=tu-access-key
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>AWS_SECRET_ACCESS_KEY=tu-secret-key
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>AWS_DEFAULT_REGION=us-east-1
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>AWS_BUCKET=tu-bucket-name
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>AWS_USE_PATH_STYLE_ENDPOINT=false
+</code></pre></div>
+<h3 id="digitalocean-spaces">DigitalOcean Spaces<a class="headerlink" href="#digitalocean-spaces" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>FILESYSTEM_DISK=spaces
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>DO_ACCESS_KEY_ID=tu-access-key
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>DO_SECRET_ACCESS_KEY=tu-secret-key
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>DO_DEFAULT_REGION=nyc3
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>DO_BUCKET=tu-space-name
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>DO_ENDPOINT=https://nyc3.digitaloceanspaces.com
+</code></pre></div>
+<h3 id="configurar-enlace-simbolico">Configurar Enlace Simbólico<a class="headerlink" href="#configurar-enlace-simbolico" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># Crear enlace para archivos públicos</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>php<span class="w"> </span>artisan<span class="w"> </span>storage:link
+</code></pre></div>
+<h2 id="configuracion-de-base-de-datos">🗄️ Configuración de Base de Datos<a class="headerlink" href="#configuracion-de-base-de-datos" title="Permanent link">&para;</a></h2>
+<h3 id="optimizaciones-mysql">Optimizaciones MySQL<a class="headerlink" href="#optimizaciones-mysql" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1">-- Configuraciones recomendadas para MySQL</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="k">SET</span><span class="w"> </span><span class="k">GLOBAL</span><span class="w"> </span><span class="n">innodb_buffer_pool_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="k">G</span><span class="p">;</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="k">SET</span><span class="w"> </span><span class="k">GLOBAL</span><span class="w"> </span><span class="n">innodb_log_file_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">256</span><span class="n">M</span><span class="p">;</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="k">SET</span><span class="w"> </span><span class="k">GLOBAL</span><span class="w"> </span><span class="n">max_connections</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">200</span><span class="p">;</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="k">SET</span><span class="w"> </span><span class="k">GLOBAL</span><span class="w"> </span><span class="n">query_cache_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">64</span><span class="n">M</span><span class="p">;</span>
+</code></pre></div>
+<h3 id="configuracion-de-backup">Configuración de Backup<a class="headerlink" href="#configuracion-de-backup" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a># Configurar backups automáticos
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>BACKUP_DISK=s3  # o local
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>BACKUP_SCHEDULE=daily
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>BACKUP_RETENTION_DAYS=30
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1"># Ejecutar backup manual</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>php<span class="w"> </span>artisan<span class="w"> </span>backup:run
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="c1"># Configurar cron para backups automáticos</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="m">0</span><span class="w"> </span><span class="m">2</span><span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>/path/to/invoiceshelf<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>php<span class="w"> </span>artisan<span class="w"> </span>backup:run
+</code></pre></div>
+<h2 id="configuracion-de-cache">🚀 Configuración de Cache<a class="headerlink" href="#configuracion-de-cache" title="Permanent link">&para;</a></h2>
+<h3 id="redis-recomendado-para-produccion">Redis (Recomendado para Producción)<a class="headerlink" href="#redis-recomendado-para-produccion" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>CACHE_DRIVER=redis
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>SESSION_DRIVER=redis
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>QUEUE_CONNECTION=redis
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>REDIS_HOST=127.0.0.1
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>REDIS_PASSWORD=null
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>REDIS_PORT=6379
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>REDIS_DB=0
+</code></pre></div>
+<h3 id="configurar-cache-de-aplicacion">Configurar Cache de Aplicación<a class="headerlink" href="#configurar-cache-de-aplicacion" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1"># Limpiar cache</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>php<span class="w"> </span>artisan<span class="w"> </span>cache:clear
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="c1"># Generar cache de configuración</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>php<span class="w"> </span>artisan<span class="w"> </span>config:cache
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="c1"># Generar cache de rutas</span>
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>php<span class="w"> </span>artisan<span class="w"> </span>route:cache
+<a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>
+<a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="c1"># Generar cache de vistas</span>
+<a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>php<span class="w"> </span>artisan<span class="w"> </span>view:cache
+</code></pre></div>
+<h2 id="configuracion-de-colas">📋 Configuración de Colas<a class="headerlink" href="#configuracion-de-colas" title="Permanent link">&para;</a></h2>
+<h3 id="configurar-supervisor-produccion">Configurar Supervisor (Producción)<a class="headerlink" href="#configurar-supervisor-produccion" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="c1"># Instalar supervisor</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>supervisor
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="c1"># Crear configuración</span>
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>sudo<span class="w"> </span>nano<span class="w"> </span>/etc/supervisor/conf.d/invoiceshelf-worker.conf
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="k">[program:invoiceshelf-worker]</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="na">process_name</span><span class="o">=</span><span class="s">%(program_name)s_%(process_num)02d</span>
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="na">command</span><span class="o">=</span><span class="s">php /var/www/invoiceshelf/artisan queue:work redis --sleep=3 --tries=3</span>
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="na">autostart</span><span class="o">=</span><span class="s">true</span>
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="na">autorestart</span><span class="o">=</span><span class="s">true</span>
+<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="na">user</span><span class="o">=</span><span class="s">www-data</span>
+<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="na">numprocs</span><span class="o">=</span><span class="s">2</span>
+<a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="na">redirect_stderr</span><span class="o">=</span><span class="s">true</span>
+<a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a><span class="na">stdout_logfile</span><span class="o">=</span><span class="s">/var/www/invoiceshelf/storage/logs/worker.log</span>
+<a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="na">stopwaitsecs</span><span class="o">=</span><span class="s">3600</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="c1"># Recargar supervisor</span>
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>sudo<span class="w"> </span>supervisorctl<span class="w"> </span>reread
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>sudo<span class="w"> </span>supervisorctl<span class="w"> </span>update
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>sudo<span class="w"> </span>supervisorctl<span class="w"> </span>start<span class="w"> </span>invoiceshelf-worker:*
+</code></pre></div>
+<h3 id="configurar-cron-jobs">Configurar Cron Jobs<a class="headerlink" href="#configurar-cron-jobs" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="c1"># Editar crontab</span>
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>crontab<span class="w"> </span>-e
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="c1"># Agregar tarea programada</span>
+<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>/var/www/invoiceshelf<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>php<span class="w"> </span>artisan<span class="w"> </span>schedule:run<span class="w"> </span>&gt;&gt;<span class="w"> </span>/dev/null<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span>
+</code></pre></div>
+<h2 id="configuracion-de-seguridad">🔒 Configuración de Seguridad<a class="headerlink" href="#configuracion-de-seguridad" title="Permanent link">&para;</a></h2>
+<h3 id="configurar-https">Configurar HTTPS<a class="headerlink" href="#configurar-https" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="c1"># Configuración Nginx con SSL</span>
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="k">server</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="w">    </span><span class="kn">listen</span><span class="w"> </span><span class="mi">443</span><span class="w"> </span><span class="s">ssl</span><span class="w"> </span><span class="s">http2</span><span class="p">;</span>
+<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="w">    </span><span class="kn">server_name</span><span class="w"> </span><span class="s">tu-dominio.com</span><span class="p">;</span>
+<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>
+<a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="w">    </span><span class="kn">ssl_certificate</span><span class="w"> </span><span class="s">/path/to/certificate.crt</span><span class="p">;</span>
+<a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a><span class="w">    </span><span class="kn">ssl_certificate_key</span><span class="w"> </span><span class="s">/path/to/private.key</span><span class="p">;</span>
+<a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a>
+<a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a><span class="w">    </span><span class="c1"># Configuraciones SSL modernas</span>
+<a id="__codelineno-21-10" name="__codelineno-21-10" href="#__codelineno-21-10"></a><span class="w">    </span><span class="kn">ssl_protocols</span><span class="w"> </span><span class="s">TLSv1.2</span><span class="w"> </span><span class="s">TLSv1.3</span><span class="p">;</span>
+<a id="__codelineno-21-11" name="__codelineno-21-11" href="#__codelineno-21-11"></a><span class="w">    </span><span class="kn">ssl_ciphers</span><span class="w"> </span><span class="s">ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256</span><span class="p">;</span>
+<a id="__codelineno-21-12" name="__codelineno-21-12" href="#__codelineno-21-12"></a><span class="w">    </span><span class="kn">ssl_prefer_server_ciphers</span><span class="w"> </span><span class="no">off</span><span class="p">;</span>
+<a id="__codelineno-21-13" name="__codelineno-21-13" href="#__codelineno-21-13"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="variables-de-seguridad">Variables de Seguridad<a class="headerlink" href="#variables-de-seguridad" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a># Configuraciones de seguridad
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>APP_ENV=production
+<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>APP_DEBUG=false
+<a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>SESSION_SECURE_COOKIE=true
+<a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>SESSION_HTTP_ONLY=true
+<a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a>SESSION_SAME_SITE=strict
+</code></pre></div>
+<h3 id="configurar-rate-limiting">Configurar Rate Limiting<a class="headerlink" href="#configurar-rate-limiting" title="Permanent link">&para;</a></h3>
+<p>En <code>config/invoiceshelf.php</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="x">&#39;rate_limiting&#39; =&gt; [</span>
+<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="x">    &#39;login&#39; =&gt; &#39;5,1&#39;,      // 5 intentos por minuto</span>
+<a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="x">    &#39;api&#39; =&gt; &#39;60,1&#39;,       // 60 requests por minuto</span>
+<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="x">    &#39;global&#39; =&gt; &#39;1000,1&#39;,  // 1000 requests por minuto global</span>
+<a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="x">],</span>
+</code></pre></div>
+<h2 id="configuracion-de-pdf">🎨 Configuración de PDF<a class="headerlink" href="#configuracion-de-pdf" title="Permanent link">&para;</a></h2>
+<h3 id="configurar-generador-pdf">Configurar Generador PDF<a class="headerlink" href="#configurar-generador-pdf" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a># Opciones: dompdf, gotenberg
+<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>PDF_DRIVER=gotenberg
+<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>
+<a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a># Configuración Gotenberg
+<a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a>GOTENBERG_ENDPOINT=http://localhost:3000
+<a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a>
+<a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a># Configuración DomPDF
+<a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a>DOMPDF_OPTIONS=&#39;{&quot;isHtml5ParserEnabled&quot;: true, &quot;isPhpEnabled&quot;: false}&#39;
+</code></pre></div>
+<h3 id="personalizar-plantillas-pdf">Personalizar Plantillas PDF<a class="headerlink" href="#personalizar-plantillas-pdf" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="c1"># Publicar plantillas</span>
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>php<span class="w"> </span>artisan<span class="w"> </span>vendor:publish<span class="w"> </span>--tag<span class="o">=</span>invoiceshelf-pdf-templates
+<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>
+<a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="c1"># Plantillas ubicadas en: resources/views/pdf/</span>
+</code></pre></div>
+<h2 id="configuracion-de-idiomas">🌍 Configuración de Idiomas<a class="headerlink" href="#configuracion-de-idiomas" title="Permanent link">&para;</a></h2>
+<h3 id="idioma-por-defecto">Idioma por Defecto<a class="headerlink" href="#idioma-por-defecto" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>APP_LOCALE=es
+<a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>APP_FALLBACK_LOCALE=en
+</code></pre></div>
+<h3 id="agregar-nuevos-idiomas">Agregar Nuevos Idiomas<a class="headerlink" href="#agregar-nuevos-idiomas" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="c1"># Publicar archivos de idioma</span>
+<a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>php<span class="w"> </span>artisan<span class="w"> </span>vendor:publish<span class="w"> </span>--tag<span class="o">=</span>invoiceshelf-lang
+<a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>
+<a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a><span class="c1"># Archivos ubicados en: lang/</span>
+</code></pre></div>
+<h2 id="configuracion-de-logging">📊 Configuración de Logging<a class="headerlink" href="#configuracion-de-logging" title="Permanent link">&para;</a></h2>
+<h3 id="configurar-logs">Configurar Logs<a class="headerlink" href="#configurar-logs" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>LOG_CHANNEL=stack
+<a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>LOG_STACK=single,slack
+<a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>LOG_LEVEL=info
+<a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a>
+<a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a># Configurar Slack (opcional)
+<a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a>LOG_SLACK_WEBHOOK_URL=https://hooks.slack.com/services/...
+</code></pre></div>
+<h3 id="rotacion-de-logs">Rotación de Logs<a class="headerlink" href="#rotacion-de-logs" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="c1"># Configurar logrotate</span>
+<a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>sudo<span class="w"> </span>nano<span class="w"> </span>/etc/logrotate.d/invoiceshelf
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>/var/www/invoiceshelf/storage/logs/*.log {
+<a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>    daily
+<a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>    missingok
+<a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a>    rotate 14
+<a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a>    compress
+<a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a>    notifempty
+<a id="__codelineno-30-7" name="__codelineno-30-7" href="#__codelineno-30-7"></a>    create 0644 www-data www-data
+<a id="__codelineno-30-8" name="__codelineno-30-8" href="#__codelineno-30-8"></a>    postrotate
+<a id="__codelineno-30-9" name="__codelineno-30-9" href="#__codelineno-30-9"></a>        /bin/kill -USR1 $(cat /var/run/nginx.pid) &gt; /dev/null 2&gt;&amp;1 || true
+<a id="__codelineno-30-10" name="__codelineno-30-10" href="#__codelineno-30-10"></a>    endscript
+<a id="__codelineno-30-11" name="__codelineno-30-11" href="#__codelineno-30-11"></a>}
+</code></pre></div>
+<h2 id="configuraciones-avanzadas">🔧 Configuraciones Avanzadas<a class="headerlink" href="#configuraciones-avanzadas" title="Permanent link">&para;</a></h2>
+<h3 id="configurar-queue-workers">Configurar Queue Workers<a class="headerlink" href="#configurar-queue-workers" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a># Configuración de colas
+<a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>QUEUE_CONNECTION=redis
+<a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>REDIS_QUEUE_CONNECTION=default
+<a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a>
+<a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a># Para alta concurrencia
+<a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a>QUEUE_FAILED_DRIVER=database
+</code></pre></div>
+<h3 id="configurar-websockets-opcional">Configurar Websockets (Opcional)<a class="headerlink" href="#configurar-websockets-opcional" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a># Para notificaciones en tiempo real
+<a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>BROADCAST_DRIVER=pusher
+<a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>PUSHER_APP_ID=tu-app-id
+<a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a>PUSHER_APP_KEY=tu-app-key
+<a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a>PUSHER_APP_SECRET=tu-app-secret
+<a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a>PUSHER_APP_CLUSTER=us2
+</code></pre></div>
+<h3 id="variables-de-entorno-completas">Variables de Entorno Completas<a class="headerlink" href="#variables-de-entorno-completas" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a># Aplicación
+<a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>APP_NAME=&quot;Tu Empresa&quot;
+<a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a>APP_ENV=production
+<a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a>APP_KEY=base64:tu-app-key
+<a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a>APP_DEBUG=false
+<a id="__codelineno-33-6" name="__codelineno-33-6" href="#__codelineno-33-6"></a>APP_URL=https://tu-dominio.com
+<a id="__codelineno-33-7" name="__codelineno-33-7" href="#__codelineno-33-7"></a>
+<a id="__codelineno-33-8" name="__codelineno-33-8" href="#__codelineno-33-8"></a># Base de Datos
+<a id="__codelineno-33-9" name="__codelineno-33-9" href="#__codelineno-33-9"></a>DB_CONNECTION=mysql
+<a id="__codelineno-33-10" name="__codelineno-33-10" href="#__codelineno-33-10"></a>DB_HOST=127.0.0.1
+<a id="__codelineno-33-11" name="__codelineno-33-11" href="#__codelineno-33-11"></a>DB_PORT=3306
+<a id="__codelineno-33-12" name="__codelineno-33-12" href="#__codelineno-33-12"></a>DB_DATABASE=invoiceshelf
+<a id="__codelineno-33-13" name="__codelineno-33-13" href="#__codelineno-33-13"></a>DB_USERNAME=invoiceshelf
+<a id="__codelineno-33-14" name="__codelineno-33-14" href="#__codelineno-33-14"></a>DB_PASSWORD=password-seguro
+<a id="__codelineno-33-15" name="__codelineno-33-15" href="#__codelineno-33-15"></a>
+<a id="__codelineno-33-16" name="__codelineno-33-16" href="#__codelineno-33-16"></a># Cache y Sesiones
+<a id="__codelineno-33-17" name="__codelineno-33-17" href="#__codelineno-33-17"></a>CACHE_DRIVER=redis
+<a id="__codelineno-33-18" name="__codelineno-33-18" href="#__codelineno-33-18"></a>SESSION_DRIVER=redis
+<a id="__codelineno-33-19" name="__codelineno-33-19" href="#__codelineno-33-19"></a>QUEUE_CONNECTION=redis
+<a id="__codelineno-33-20" name="__codelineno-33-20" href="#__codelineno-33-20"></a>
+<a id="__codelineno-33-21" name="__codelineno-33-21" href="#__codelineno-33-21"></a># Correo
+<a id="__codelineno-33-22" name="__codelineno-33-22" href="#__codelineno-33-22"></a>MAIL_MAILER=smtp
+<a id="__codelineno-33-23" name="__codelineno-33-23" href="#__codelineno-33-23"></a>MAIL_HOST=smtp.gmail.com
+<a id="__codelineno-33-24" name="__codelineno-33-24" href="#__codelineno-33-24"></a>MAIL_PORT=587
+<a id="__codelineno-33-25" name="__codelineno-33-25" href="#__codelineno-33-25"></a>MAIL_USERNAME=tu-email@gmail.com
+<a id="__codelineno-33-26" name="__codelineno-33-26" href="#__codelineno-33-26"></a>MAIL_PASSWORD=tu-app-password
+<a id="__codelineno-33-27" name="__codelineno-33-27" href="#__codelineno-33-27"></a>MAIL_ENCRYPTION=tls
+<a id="__codelineno-33-28" name="__codelineno-33-28" href="#__codelineno-33-28"></a>
+<a id="__codelineno-33-29" name="__codelineno-33-29" href="#__codelineno-33-29"></a># Almacenamiento
+<a id="__codelineno-33-30" name="__codelineno-33-30" href="#__codelineno-33-30"></a>FILESYSTEM_DISK=s3
+<a id="__codelineno-33-31" name="__codelineno-33-31" href="#__codelineno-33-31"></a>AWS_ACCESS_KEY_ID=tu-access-key
+<a id="__codelineno-33-32" name="__codelineno-33-32" href="#__codelineno-33-32"></a>AWS_SECRET_ACCESS_KEY=tu-secret-key
+<a id="__codelineno-33-33" name="__codelineno-33-33" href="#__codelineno-33-33"></a>AWS_DEFAULT_REGION=us-east-1
+<a id="__codelineno-33-34" name="__codelineno-33-34" href="#__codelineno-33-34"></a>AWS_BUCKET=tu-bucket
+<a id="__codelineno-33-35" name="__codelineno-33-35" href="#__codelineno-33-35"></a>
+<a id="__codelineno-33-36" name="__codelineno-33-36" href="#__codelineno-33-36"></a># Seguridad
+<a id="__codelineno-33-37" name="__codelineno-33-37" href="#__codelineno-33-37"></a>SESSION_SECURE_COOKIE=true
+<a id="__codelineno-33-38" name="__codelineno-33-38" href="#__codelineno-33-38"></a>SESSION_HTTP_ONLY=true
+<a id="__codelineno-33-39" name="__codelineno-33-39" href="#__codelineno-33-39"></a>SESSION_SAME_SITE=strict
+</code></pre></div>
+<h2 id="verificar-configuracion">✅ Verificar Configuración<a class="headerlink" href="#verificar-configuracion" title="Permanent link">&para;</a></h2>
+<h3 id="comandos-de-verificacion">Comandos de Verificación<a class="headerlink" href="#comandos-de-verificacion" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="c1"># Verificar configuración general</span>
+<a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a>php<span class="w"> </span>artisan<span class="w"> </span>about
+<a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a>
+<a id="__codelineno-34-4" name="__codelineno-34-4" href="#__codelineno-34-4"></a><span class="c1"># Verificar configuración de correo</span>
+<a id="__codelineno-34-5" name="__codelineno-34-5" href="#__codelineno-34-5"></a>php<span class="w"> </span>artisan<span class="w"> </span>config:show<span class="w"> </span>mail
+<a id="__codelineno-34-6" name="__codelineno-34-6" href="#__codelineno-34-6"></a>
+<a id="__codelineno-34-7" name="__codelineno-34-7" href="#__codelineno-34-7"></a><span class="c1"># Verificar configuración de base de datos</span>
+<a id="__codelineno-34-8" name="__codelineno-34-8" href="#__codelineno-34-8"></a>php<span class="w"> </span>artisan<span class="w"> </span>config:show<span class="w"> </span>database
+<a id="__codelineno-34-9" name="__codelineno-34-9" href="#__codelineno-34-9"></a>
+<a id="__codelineno-34-10" name="__codelineno-34-10" href="#__codelineno-34-10"></a><span class="c1"># Ejecutar verificaciones de salud</span>
+<a id="__codelineno-34-11" name="__codelineno-34-11" href="#__codelineno-34-11"></a>php<span class="w"> </span>artisan<span class="w"> </span>health:check
+</code></pre></div>
+<h3 id="panel-de-administracion">Panel de Administración<a class="headerlink" href="#panel-de-administracion" title="Permanent link">&para;</a></h3>
+<p>Accede al panel de administración para configurar:</p>
+<ul>
+<li><strong>Empresa</strong>: Información, logo, configuración fiscal</li>
+<li><strong>Usuarios</strong>: Roles y permisos</li>
+<li><strong>Plantillas</strong>: Personalizar facturas y correos</li>
+<li><strong>Impuestos</strong>: Configurar tipos de impuestos</li>
+<li><strong>Métodos de Pago</strong>: Configurar formas de pago</li>
+</ul>
+<hr />
+<h2 id="configuracion-completada">🎯 Configuración Completada<a class="headerlink" href="#configuracion-completada" title="Permanent link">&para;</a></h2>
+<p>¡Tu instalación de InvoiceShelf está ahora completamente configurada!</p>
+<p><strong>Próximos Pasos:</strong>
+- <a href="../user-guide/invoices.md">Crear tu primera factura</a>
+- <a href="../../api/introduction/">Configurar la API</a>
+- <a href="../customization/templates.md">Personalizar plantillas</a></p>
+<p><strong>¿Necesitas Ayuda?</strong>
+- <a href="https://discord.gg/eHXf4zWhsR">Discord Community</a>
+- <a href="https://github.com/InvoiceShelf/invoiceshelf/issues">GitHub Issues</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024 Crater Team
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      
+    
+  </body>
+</html>
