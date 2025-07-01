@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import Chart from 'chart.js'
+import { Chart } from 'chart.js/auto'
 import { ref, reactive, computed, onMounted, watchEffect, inject } from 'vue'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 
