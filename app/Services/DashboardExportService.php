@@ -2,22 +2,17 @@
 
 namespace App\Services;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\V1\Admin\DashboardController;
-use App\Http\Controllers\V1\Admin\InvoiceController;
-use App\Models\Invoice;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use App\Services\PDFService;
 use App\Models\Company;
 use App\Models\CompanySetting;
-use App\Models\Customer;
-use App\Models\Estimate;
 use App\Models\Expense;
+use App\Models\Invoice;
 use App\Models\Payment;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class DashboardExportService
 {
@@ -53,10 +48,10 @@ class DashboardExportService
         $tableData = $request->input('tableData');
         $selectedSections = $request->input('selectedSections');
         $dashboardData = $request->input('dashboardData');
-        
+
         // Add company information
         $company = Company::find($request->header('company'));
-        
+
         $data = [
             'company' => $company,
             'chartImages' => $chartImages,
@@ -102,7 +97,8 @@ class DashboardExportService
         return $data;
     }
 
-    private function getInvoicesData(Request $request) {
+    private function getInvoicesData(Request $request)
+    {
         $invoices = Invoice::with('customer', 'items')
             ->whereCompany()
             ->when($request->has('customer_id'), function ($query) use ($request) {
@@ -119,10 +115,10 @@ class DashboardExportService
             })
             ->when($request->has('search'), function ($query) use ($request) {
                 $query->where(function ($q) use ($request) {
-                    $q->where('invoice_number', 'like', '%' . $request->search . '%')
-                        ->orWhere('notes', 'like', '%' . $request->search . '%')
+                    $q->where('invoice_number', 'like', '%'.$request->search.'%')
+                        ->orWhere('notes', 'like', '%'.$request->search.'%')
                         ->orWhereHas('customer', function ($subQuery) use ($request) {
-                            $subQuery->where('name', 'like', '%' . $request->search . '%');
+                            $subQuery->where('name', 'like', '%'.$request->search.'%');
                         });
                 });
             });
@@ -202,7 +198,7 @@ class DashboardExportService
         $terms = explode('-', $fiscalYear);
         $companyStartMonth = intval($terms[0]);
         $start = Carbon::now()->month($companyStartMonth)->startOfMonth();
-        
+
         if (Carbon::now()->month < $companyStartMonth) {
             $start->subYear();
         }
@@ -210,17 +206,17 @@ class DashboardExportService
         if ($request->has('previous_year')) {
             $start->subYear();
         }
-        
+
         $startDateForTotals = $start->clone();
 
         for ($i = 0; $i < 12; $i++) {
             $end = $start->clone()->endOfMonth();
-            
+
             $invoice_totals[] = Invoice::whereBetween('invoice_date', [$start, $end])->whereCompany()->sum('base_total');
             $expense_totals[] = Expense::whereBetween('expense_date', [$start, $end])->whereCompany()->sum('base_amount');
             $receipt_totals[] = Payment::whereBetween('payment_date', [$start, $end])->whereCompany()->sum('base_amount');
             $net_income_totals[] = end($receipt_totals) - end($expense_totals);
-            
+
             $months[] = $start->translatedFormat('M');
             $start->addMonth();
         }
@@ -256,7 +252,7 @@ class DashboardExportService
 
     protected function createXlsxResponse(array $data, Request $request)
     {
-        $spreadsheet = new Spreadsheet();
+        $spreadsheet = new Spreadsheet;
         $spreadsheet->removeSheetByIndex(0); // Remove the default sheet
 
         if (isset($data['dashboard'])) {
@@ -368,7 +364,7 @@ class DashboardExportService
 
     protected function createCsvResponse(array $data)
     {
-        if (!isset($data['invoices'])) {
+        if (! isset($data['invoices'])) {
             return response()->json([
                 'message' => 'The CSV export format is only available for the Recent Invoices section. Please select it to proceed.',
             ], 400);
@@ -406,7 +402,7 @@ class DashboardExportService
 
         return response($pdfContent, 200, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="dashboard-snapshot-' . now()->format('Y-m-d-H-i-s') . '.pdf"',
+            'Content-Disposition' => 'attachment; filename="dashboard-snapshot-'.now()->format('Y-m-d-H-i-s').'.pdf"',
         ]);
     }
-} 
+}

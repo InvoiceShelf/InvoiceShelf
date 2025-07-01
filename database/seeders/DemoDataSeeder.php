@@ -125,11 +125,11 @@ class DemoDataSeeder extends Seeder
                     }
                 }
             }
-            
+
             // Seed expenses over the last year
-            for ($i=0; $i < 150; $i++) { 
+            for ($i = 0; $i < 150; $i++) {
                 Expense::factory()->forCompany($company)->create([
-                    'expense_date' => Carbon::now()->subDays(rand(0, 365))
+                    'expense_date' => Carbon::now()->subDays(rand(0, 365)),
                 ]);
             }
 
@@ -139,4 +139,4 @@ class DemoDataSeeder extends Seeder
             $this->command->info('Demo data created successfully!');
         });
     }
-} 
+}

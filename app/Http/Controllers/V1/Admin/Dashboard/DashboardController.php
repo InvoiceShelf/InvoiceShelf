@@ -249,7 +249,7 @@ class DashboardController extends Controller
         $pending_count = Invoice::whereCompany()->whereIn('paid_status', [Invoice::STATUS_UNPAID, Invoice::STATUS_PARTIALLY_PAID])
             ->where('due_date', '>=', Carbon::now())
             ->count();
-        
+
         // Note: The 'filter_by' parameter from the frontend tabs has been deprecated.
         // No backend filtering logic is applied here for 'overdue', 'paid', or 'unpaid' statuses
         // as the UI has been updated to remove these tabs.
@@ -377,7 +377,7 @@ class DashboardController extends Controller
         $monthlyProjectedIncome = $projectedIncomeQuery->select(DB::raw("strftime('%Y-%m', due_date) as month"), DB::raw('SUM(base_due_amount) as total'))->groupBy('month')->get()->keyBy('month');
 
         $monthlyExpenses = collect();
-        if (!$customerId) {
+        if (! $customerId) {
             $monthlyExpenses = Expense::whereCompany()
                 ->whereBetween('expense_date', [$startDate, $endDate])
                 ->select(DB::raw("strftime('%Y-%m', expense_date) as month"), DB::raw('SUM(base_amount) as total'))
@@ -390,7 +390,7 @@ class DashboardController extends Controller
         $currentDate = $startDate->copy();
         while ($currentDate->lessThanOrEqualTo($endDate)) {
             $monthKey = $currentDate->format('Y-m');
-            $isPast = $currentDate->isPast() && !$currentDate->isSameMonth($today);
+            $isPast = $currentDate->isPast() && ! $currentDate->isSameMonth($today);
             $isCurrent = $currentDate->isSameMonth($today);
 
             $realIncome = $monthlyRealIncome->get($monthKey)->total ?? 0;
@@ -400,7 +400,7 @@ class DashboardController extends Controller
             $dataPoint = [
                 'date' => $currentDate->toDateString(),
                 'realIncome' => ($isPast || $isCurrent) ? $realIncome : null,
-                'projectedIncome' => (!$isPast) ? $projectedIncome : null,
+                'projectedIncome' => (! $isPast) ? $projectedIncome : null,
                 'expenses' => $customerId ? null : $expenses,
             ];
 

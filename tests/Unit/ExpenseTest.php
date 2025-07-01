@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Company;
 use App\Models\Expense;
 use Illuminate\Support\Facades\Artisan;
 
@@ -21,7 +22,8 @@ test('expense belongs to customer', function () {
 });
 
 test('expense belongs to company', function () {
-    $expense = Expense::factory()->forCompany()->create();
+    $company = Company::factory()->create();
+    $expense = Expense::factory()->forCompany($company)->create();
 
     $this->assertTrue($expense->company()->exists());
 });

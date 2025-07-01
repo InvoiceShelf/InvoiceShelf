@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Requests\InvoicesRequest;
+use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use App\Models\Tax;
@@ -37,7 +38,8 @@ test('invoice has many payments', function () {
 });
 
 test('invoice belongs to customer', function () {
-    $invoice = Invoice::factory()->forCustomer()->create();
+    $customer = Customer::factory()->create();
+    $invoice = Invoice::factory()->forCustomer($customer)->create();
 
     $this->assertTrue($invoice->customer()->exists());
 });
