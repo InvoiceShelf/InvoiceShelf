@@ -13,38 +13,15 @@
           :options="typeOptions"
           :allow-empty="false"
           :show-labels="false"
-          placeholder="Top 5 por"
+          placeholder="Top 5 by"
           :can-deselect="false"
           class="text-sm"
         />
       </div>
 
-      <!-- Selector de Fecha -->
-      <div class="flex items-center space-x-4">
-        <div class="w-40">
-          <BaseMultiselect
-            v-model="selectedDatePreset"
-            :options="dateOptions"
-            :allow-empty="false"
-            :show-labels="false"
-            placeholder="Período"
-            :can-deselect="false"
-            class="text-sm"
-            @update:model-value="onDatePresetChange"
-          />
-        </div>
-        <div v-if="selectedDatePreset === 'custom'" class="flex space-x-2">
-          <input
-            type="date"
-            v-model="customRange.start"
-            class="border rounded px-2 py-1 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-          />
-          <input
-            type="date"
-            v-model="customRange.end"
-            class="border rounded px-2 py-1 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-          />
-        </div>
+      <!-- Date Range Indicator -->
+      <div class="text-sm text-gray-500 dark:text-gray-400">
+        Filtered by: {{ currentDateRangeLabel }}
       </div>
     </div>
 
@@ -64,21 +41,20 @@ import { ref, watch, onMounted, onUnmounted, computed } from 'vue'
 import Chart from 'chart.js/auto'
 import axios from 'axios'
 import { handleError } from '@/scripts/helpers/error-handling'
+import { useDateFilterStore } from '@/scripts/admin/stores/dateFilter'
+import { useThemeStore } from '@/scripts/stores/theme'
+
+const dateFilterStore = useDateFilterStore()
+const themeStore = useThemeStore()
 
 const typeOptions = [
-  { label: 'Clientes', value: 'clients' },
-  { label: 'Productos', value: 'products' }
-]
-const dateOptions = [
-  { label: 'Este mes', value: 'this_month' },
-  { label: 'Último trimestre', value: 'last_quarter' },
-  { label: 'Año en curso', value: 'this_year' },
-  { label: 'Personalizado', value: 'custom' }
+  { label: 'Clients', value: 'clients' },
+  { label: 'Products', value: 'products' }
 ]
 
 const selectedType = ref('clients')
-const selectedDatePreset = ref('this_month')
-const customRange = ref({ start: '', end: '' })
+const currentDateRange = ref({ start: '', end: '' })
+const currentDateRangeLabel = ref('Last 30 days')
 
 const canvasRef = ref(null)
 let chartInstance = null
@@ -97,50 +73,35 @@ function formatDate(date) {
   return `${year}-${month}-${day}`
 }
 
-const dateRange = computed(() => {
-  const now = new Date()
-  let start, end = now
-  switch (selectedDatePreset.value) {
-    case 'this_month':
-      start = new Date(now.getFullYear(), now.getMonth(), 1)
-      break
-    case 'last_quarter':
-      start = new Date(now.getFullYear(), now.getMonth() - 3, 1)
-      break
-    case 'this_year':
-      start = new Date(now.getFullYear(), 0, 1)
-      break
-    case 'custom':
-      return {
-        start: customRange.value.start,
-        end: customRange.value.end,
-      }
-  }
-  return { start: formatDate(start), end: formatDate(end) }
-})
+// Initialize current date range from unified filter
+function initializeDateRange() {
+  const range = dateFilterStore.dateRange
+  currentDateRange.value = range
+  currentDateRangeLabel.value = dateFilterStore.displayLabel
+}
 
 const chartData = computed(() => {
   const labels = chartApiData.value.map(d => d.label)
-  const values = chartApiData.value.map(d => d.value)
+  const values = chartApiData.value.map(d => parseFloat(d.value) || 0)
   const total = values.reduce((sum, v) => sum + v, 0)
   return { labels, values, total }
 })
 
 async function fetchData() {
-  if (selectedDatePreset.value === 'custom' && (!dateRange.value.start || !dateRange.value.end)) {
-    chartApiData.value = []
-    return
-  }
-
   loading.value = true
+  
   try {
-    const response = await axios.get('/api/v1/dashboard/top-outstanding', {
-      params: {
-        type: selectedType.value,
-        start_date: dateRange.value.start,
-        end_date: dateRange.value.end,
-      }
-    })
+    const params = {
+      type: selectedType.value,
+    }
+    
+    // Only add date parameters if we have a date range (not "All time")
+    if (currentDateRange.value.start && currentDateRange.value.end) {
+      params.start_date = currentDateRange.value.start
+      params.end_date = currentDateRange.value.end
+    }
+    
+    const response = await axios.get('/api/v1/dashboard/top-outstanding', { params })
     chartApiData.value = response.data
   } catch (error) {
     handleError(error)
@@ -154,6 +115,8 @@ function createChart() {
   if (!canvasRef.value) return
   const ctx = canvasRef.value.getContext('2d')
   const { labels, values, total } = chartData.value
+
+  const tickColor = themeStore.isDarkMode ? '#9CA3AF' : '#374151'
 
   chartInstance = new Chart(ctx, {
     type: 'bar',
@@ -175,12 +138,16 @@ function createChart() {
       animation: { duration: 800, easing: 'easeOutQuart' },
       scales: {
         x: {
-          ticks: { callback: v => `$${v.toLocaleString()}`, color: '#374151', font: { size: 12 } },
+          ticks: { 
+            callback: v => `$${parseFloat(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 
+            color: tickColor, 
+            font: { size: 12 } 
+          },
           grid: { display: false }
         },
         y: {
           ticks: {
-            color: '#374151',
+            color: tickColor,
             font: { size: 12 },
             callback: function(value) {
                 const label = this.getLabelForValue(value);
@@ -200,9 +167,10 @@ function createChart() {
             label(ctx) {
               const val = ctx.parsed.x || 0;
               const { total } = chartData.value;
-              if (total === 0) return `$${val.toLocaleString()}`;
+              const formattedVal = parseFloat(val).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+              if (total === 0) return `$${formattedVal}`;
               const pct = ((val / total) * 100).toFixed(1);
-              return `$${val.toLocaleString()} (${pct}%)`;
+              return `$${formattedVal} (${pct}%)`;
             }
           }
         }
@@ -224,10 +192,11 @@ function updateChart() {
   chartInstance.update()
 }
 
-function onDatePresetChange(preset) {
-  if (preset !== 'custom') {
-    customRange.value = { start: '', end: '' }
-  }
+// Method to refresh chart with new date range from unified filter
+function refreshWithDateRange(newDateRange) {
+  currentDateRange.value = newDateRange
+  currentDateRangeLabel.value = dateFilterStore.displayLabel
+  fetchData()
 }
 
 // Export method for PDF snapshot
@@ -238,18 +207,31 @@ function getChartAsBase64Image() {
   return chartInstance.toBase64Image('image/png', 1)
 }
 
-// Expose method to parent component
+// Expose methods to parent component
 defineExpose({
-  getChartAsBase64Image
+  getChartAsBase64Image,
+  refreshWithDateRange
 })
 
-onMounted(fetchData)
+onMounted(() => {
+  initializeDateRange()
+  fetchData()
+})
 
 onUnmounted(() => {
     if (chartInstance) chartInstance.destroy()
 })
 
-watch([selectedType, dateRange], fetchData, { deep: true })
+watch(selectedType, fetchData)
 watch(chartData, updateChart)
+
+watch(() => themeStore.isDarkMode, (isDark) => {
+  if (chartInstance) {
+    const newTickColor = isDark ? '#9CA3AF' : '#374151'
+    chartInstance.options.scales.x.ticks.color = newTickColor
+    chartInstance.options.scales.y.ticks.color = newTickColor
+    chartInstance.update()
+  }
+})
 
 </script>

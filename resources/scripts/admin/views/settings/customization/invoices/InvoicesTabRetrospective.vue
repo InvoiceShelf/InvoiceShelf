@@ -1,8 +1,8 @@
 <template>
-  <h6 class="text-gray-900 text-lg font-medium">
+  <h6 class="text-gray-900 dark:text-gray-200 text-lg font-medium">
     {{ $t('settings.customization.invoices.retrospective_edits') }}
   </h6>
-  <p class="mt-1 text-sm text-gray-500">
+  <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
     {{ $t('settings.customization.invoices.retrospective_edits_description') }}
   </p>
 

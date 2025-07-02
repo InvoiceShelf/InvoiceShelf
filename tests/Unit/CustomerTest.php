@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Address;
+use App\Models\Company;
 use App\Models\Customer;
 use Illuminate\Support\Facades\Artisan;
 
@@ -56,7 +57,8 @@ test('customer belongs to currency', function () {
 });
 
 test('customer belongs to company', function () {
-    $customer = Customer::factory()->forCompany()->create();
+    $company = Company::factory()->create();
+    $customer = Customer::factory()->forCompany($company)->create();
 
     $this->assertTrue($customer->company()->exists());
 });

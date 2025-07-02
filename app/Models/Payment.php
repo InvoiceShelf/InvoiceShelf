@@ -65,21 +65,27 @@ class Payment extends Model implements HasMedia
 
     public function setSettingsAttribute($value)
     {
-        if ($value) {
-            $this->attributes['settings'] = json_encode($value);
-        }
+        $this->attributes['settings'] = $value;
     }
 
     public function getFormattedCreatedAtAttribute($value)
     {
-        $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id);
+        if (! $this->created_at) {
+            return null;
+        }
+
+        $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id) ?? 'Y-m-d';
 
         return Carbon::parse($this->created_at)->translatedFormat($dateFormat);
     }
 
     public function getFormattedPaymentDateAttribute($value)
     {
-        $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id);
+        if (! $this->payment_date) {
+            return null;
+        }
+
+        $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id) ?? 'Y-m-d';
 
         return Carbon::parse($this->payment_date)->translatedFormat($dateFormat);
     }

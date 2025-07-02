@@ -1,14 +1,15 @@
 <script setup>
 import DashboardTable from '../dashboard/DashboardTable.vue'
-import ActiveFilter from '@/scripts/components/dashboard/ActiveFilter.vue'
 import DashboardSummaryCard from '../dashboard/DashboardSummaryCard.vue'
 import OutstandingInvoicesChart from '../dashboard/OutstandingInvoicesChart.vue'
 import StatusDistributionChart from '../dashboard/StatusDistributionChart.vue'
 import PredictiveCashFlowChart from '../dashboard/PredictiveCashFlowChart.vue'
 import ExportDialog from './ExportDialog.vue'
+import UnifiedDatePicker from '@/scripts/admin/components/UnifiedDatePicker.vue'
 import { useUserStore } from '@/scripts/admin/stores/user'
 import { useDashboardStore } from '@/scripts/admin/stores/dashboard'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
+import { useDateFilterStore } from '@/scripts/admin/stores/dateFilter'
 import { onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -18,6 +19,7 @@ const route = useRoute()
 const userStore = useUserStore()
 const dashboardStore = useDashboardStore()
 const companyStore = useCompanyStore()
+const dateFilterStore = useDateFilterStore()
 const router = useRouter()
 const { t } = useI18n()
 const isExportDialogOpen = ref(false)
@@ -70,7 +72,7 @@ async function loadData(params) {
 
 // async function loadDataByTab(tab) {
 //   let params = {}
-  
+
 //   switch (tab) {
 //     case 'overdue':
 //       params.filter_by = 'overdue'
@@ -84,16 +86,23 @@ async function loadData(params) {
 //     default:
 //       params = {}
 //   }
-  
+
 //   await loadData(params)
 // }
 
 /**
- * Handle active filter change
- * @param {boolean} enabled - New filter state
+ * Handle unified date filter change
+ * @param {Object} data - Date filter data
  */
-const handleActiveFilterChange = async (enabled) => {
-  await dashboardStore.setActiveFilter(enabled)
+const handleDateRangeChange = async (data) => {
+  // Refresh dashboard data with new date filter
+  await dashboardStore.refreshWithDateFilter(data.apiParams)
+
+  // Notify all chart components about the date range change
+  outstandingInvoicesChartRef.value?.refreshWithDateRange?.(data.dateRange)
+  statusDistributionChartRef.value?.refreshWithDateRange?.(data.dateRange)
+  predictiveCashFlowChartRef.value?.refreshWithDateRange?.(data.dateRange)
+  dashboardTableRef.value?.refreshWithDateRange?.(data.dateRange)
 }
 
 function openExportDialog(format) {
@@ -119,18 +128,18 @@ async function handleSnapshotExport(selectedSections) {
 
     // Capture chart images based on selected sections
     const chartImages = {}
-    
+
     if (selectedSections.includes('dashboard')) {
       chartImages.statusDistribution = statusDistributionChartRef.value?.getChartAsBase64Image()
       chartImages.outstandingInvoices = outstandingInvoicesChartRef.value?.getChartAsBase64Image()
     }
-    
+
     if (selectedSections.includes('cashflow')) {
       chartImages.predictiveCashFlow = predictiveCashFlowChartRef.value?.getChartAsBase64Image()
     }
 
     // Capture table data only if invoices section is selected
-    const tableData = selectedSections.includes('invoices') 
+    const tableData = selectedSections.includes('invoices')
       ? dashboardTableRef.value?.getTableDataForSnapshot()
       : null
 
@@ -164,54 +173,65 @@ async function handleSnapshotExport(selectedSections) {
           </button>
         </div> -->
 
-        <!-- Export Button -->
-        <BaseDropdown>
-          <template #activator>
-        <BaseButton
-          variant="primary-outline"
-          size="sm"
-        >
-          <template #left="slotProps">
-            <BaseIcon name="ArrowDownTrayIcon" :class="slotProps.class" />
-          </template>
-          Export
-        </BaseButton>
-          </template>
-          
-          <BaseDropdownItem @click="openExportDialog('pdf')">
-            <template #left>
-              <BaseIcon name="DocumentTextIcon" class="w-4 h-4" />
-            </template>
-            Export as PDF
-          </BaseDropdownItem>
+        <!-- Action Buttons -->
+        <div class="flex items-center space-x-3">
+          <!-- Unified Date Filter -->
+          <UnifiedDatePicker @date-range-changed="handleDateRangeChange" />
 
-          <BaseDropdownItem @click="openExportDialog('xlsx')">
-            <template #left>
-              <BaseIcon name="DocumentChartBarIcon" class="w-4 h-4" />
+          <!-- Add New Invoice Button -->
+          <BaseButton
+            variant="primary"
+            size="sm"
+            @click="router.push({ name: 'invoices.create' })"
+          >
+            <template #left="slotProps">
+              <BaseIcon name="PlusIcon" :class="slotProps.class" />
             </template>
-            Export as XLSX
-          </BaseDropdownItem>
+            {{ t('invoices.new_invoice') }}
+          </BaseButton>
 
-          <BaseDropdownItem @click="openExportDialog('csv')">
-            <template #left>
-              <BaseIcon name="TableCellsIcon" class="w-4 h-4" />
+          <!-- Export Button -->
+          <BaseDropdown>
+            <template #activator>
+          <BaseButton
+            variant="primary-outline"
+            size="sm"
+          >
+            <template #left="slotProps">
+              <BaseIcon name="ArrowDownTrayIcon" :class="slotProps.class" />
             </template>
-            Export as CSV
-          </BaseDropdownItem>
-        </BaseDropdown>
+            Export
+          </BaseButton>
+            </template>
+
+            <BaseDropdownItem @click="openExportDialog('pdf')">
+              <template #left>
+                <BaseIcon name="DocumentTextIcon" class="w-4 h-4" />
+              </template>
+              Export as PDF
+            </BaseDropdownItem>
+
+            <BaseDropdownItem @click="openExportDialog('xlsx')">
+              <template #left>
+                <BaseIcon name="DocumentChartBarIcon" class="w-4 h-4" />
+              </template>
+              Export as XLSX
+            </BaseDropdownItem>
+
+            <BaseDropdownItem @click="openExportDialog('csv')">
+              <template #left>
+                <BaseIcon name="TableCellsIcon" class="w-4 h-4" />
+              </template>
+              Export as CSV
+            </BaseDropdownItem>
+          </BaseDropdown>
+        </div>
       </div>
     </div>
 
     <!-- Main Content -->
     <div class="p-6">
       <div class="space-y-6">
-        <!-- Active Filter -->
-      <!--   <ActiveFilter
-          :model-value="dashboardStore.isActiveFilterEnabled"
-          :loading="dashboardStore.isLoading"
-          @update:model-value="handleActiveFilterChange"
-        /> -->
-
         <!-- Summary, Outstanding Invoices, and Status Distribution Row -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           <!-- Summary Card -->

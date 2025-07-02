@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Customer;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Artisan;
 
@@ -15,7 +16,8 @@ test('payment belongs to invoice', function () {
 });
 
 test('payment belongs to customer', function () {
-    $payment = Payment::factory()->forCustomer()->create();
+    $customer = Customer::factory()->create();
+    $payment = Payment::factory()->forCustomer($customer)->create();
 
     $this->assertTrue($payment->customer()->exists());
 });

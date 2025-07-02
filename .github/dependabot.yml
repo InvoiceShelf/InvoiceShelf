@@ -1,0 +1,58 @@
+version: 2
+updates:
+  # Enable version updates for Composer (PHP)
+  - package-ecosystem: "composer"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "invoiceshelf/core-team"
+    assignees:
+      - "invoiceshelf/core-team"
+    labels:
+      - "dependencies"
+      - "php"
+    commit-message:
+      prefix: "composer"
+      include: "scope"
+
+  # Enable version updates for npm (Node.js)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "invoiceshelf/core-team"
+    assignees:
+      - "invoiceshelf/core-team"
+    labels:
+      - "dependencies"
+      - "javascript"
+    commit-message:
+      prefix: "npm"
+      include: "scope"
+
+  # Enable version updates for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "invoiceshelf/core-team"
+    assignees:
+      - "invoiceshelf/core-team"
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "actions"
+      include: "scope"

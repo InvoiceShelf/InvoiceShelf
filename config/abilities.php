@@ -203,6 +203,16 @@ return [
             'ability' => 'send-invoice',
             'model' => Invoice::class,
         ],
+        [
+            'name' => 'change invoice status',
+            'ability' => 'change-invoice-status',
+            'model' => Invoice::class,
+        ],
+        [
+            'name' => 'clone invoice',
+            'ability' => 'clone-invoice',
+            'model' => Invoice::class,
+        ],
 
         // Recurring Invoice
         [

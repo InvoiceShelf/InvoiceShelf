@@ -1,6 +1,6 @@
 <template>
   <ModulePlaceholder v-if="isFetchingInitialData" />
-  <BasePage v-else class="bg-white">
+  <BasePage v-else class="bg-white dark:bg-gray-800">
     <BasePageHeader :title="moduleData.name">
       <BaseBreadcrumb>
         <BaseBreadcrumbItem :title="$t('general.home')" to="dashboard" />
@@ -30,7 +30,7 @@
               <button
                 v-if="thumbnail && videoUrl"
                 :class="[
-                  'relative  md:h-24 lg:h-36 rounded hover:bg-gray-50',
+                  'relative  md:h-24 lg:h-36 rounded hover:bg-gray-50 dark:hover:bg-gray-700',
                   {
                     'outline-none ring ring-offset-1 ring-primary-500':
                       displayVideo,
@@ -64,7 +64,7 @@
                 id="tabs-1-tab-1"
                 :key="ssIndx"
                 :class="[
-                  'relative  md:h-24 lg:h-36 rounded hover:bg-gray-50',
+                  'relative  md:h-24 lg:h-36 rounded hover:bg-gray-50 dark:hover:bg-gray-700',
                   {
                     'outline-none ring ring-offset-1 ring-primary-500':
                       displayImage === screenshot.url,
@@ -108,7 +108,7 @@
 
           <div
             v-else
-            class="aspect-w-4 aspect-h-3 rounded-lg bg-gray-100 overflow-hidden"
+            class="aspect-w-4 aspect-h-3 rounded-lg bg-gray-100 dark:bg-gray-700 overflow-hidden"
           >
             <img
               :src="displayImage"
@@ -147,6 +147,7 @@
                 font-extrabold
                 tracking-tight
                 text-gray-900
+                dark:text-gray-200
                 sm:text-3xl
               "
             >
@@ -159,7 +160,7 @@
 
             <p
               v-if="moduleData.latest_module_version"
-              class="text-sm text-gray-500 mt-2"
+              class="text-sm text-gray-500 dark:text-gray-400 mt-2"
             >
               {{ $t('modules.version') }}
               {{ moduleVersion }} ({{ $t('modules.last_updated') }}
@@ -170,7 +171,7 @@
 
         <!-- Module Description  -->
         <div
-          class="prose prose-sm max-w-none text-gray-500 text-sm my-10"
+          class="prose prose-sm max-w-none text-gray-500 dark:text-gray-300 text-sm my-10"
           v-html="moduleData.long_description"
         />
 
@@ -178,7 +179,7 @@
         <div v-if="!moduleData.purchased">
           <RadioGroup v-model="selectedPlan">
             <RadioGroupLabel class="sr-only"> Pricing plans </RadioGroupLabel>
-            <div class="relative bg-white rounded-md -space-y-px">
+            <div class="relative bg-white dark:bg-gray-800 rounded-md -space-y-px">
               <RadioGroupOption
                 v-for="(size, sizeIdx) in modulePrice"
                 :key="size.name"
@@ -193,8 +194,8 @@
                       ? 'rounded-bl-md rounded-br-md'
                       : '',
                     checked
-                      ? 'bg-primary-50 border-primary-200 z-10'
-                      : 'border-gray-200',
+                      ? 'bg-primary-50 dark:bg-primary-900/20 border-primary-200 dark:border-primary-500 z-10'
+                      : 'border-gray-200 dark:border-gray-700',
                     'relative border p-4 flex flex-col cursor-pointer md:pl-4 md:pr-6 md:grid md:grid-cols-2 focus:outline-none',
                   ]"
                 >
@@ -203,18 +204,18 @@
                       :class="[
                         checked
                           ? 'bg-primary-600 border-transparent'
-                          : 'bg-white border-gray-300',
+                          : 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600',
                         active ? 'ring-2 ring-offset-2 ring-primary-500' : '',
                         'h-4 w-4 rounded-full border flex items-center justify-center',
                       ]"
                       aria-hidden="true"
                     >
-                      <span class="rounded-full bg-white w-1.5 h-1.5" />
+                      <span class="rounded-full bg-white dark:bg-gray-700 w-1.5 h-1.5" />
                     </span>
                     <RadioGroupLabel
                       as="span"
                       :class="[
-                        checked ? 'text-primary-900' : 'text-gray-900',
+                        checked ? 'text-primary-900 dark:text-primary-200' : 'text-gray-900 dark:text-gray-300',
                         'ml-3 font-medium',
                       ]"
                     >
@@ -226,7 +227,7 @@
                   >
                     <span
                       :class="[
-                        checked ? 'text-primary-900' : 'text-gray-900',
+                        checked ? 'text-primary-900 dark:text-primary-200' : 'text-gray-900 dark:text-gray-200',
                         'font-medium',
                       ]"
                     >
@@ -325,34 +326,48 @@
           </div>
         </div>
 
+        <div class="mt-10">
+          <h2 class="text-sm font-medium text-gray-900 dark:text-gray-200">
+            {{ $t('modules.features') }}
+          </h2>
+
+          <div class="mt-4 prose prose-sm text-gray-500 dark:text-gray-300">
+            <ul role="list">
+              <li v-for="feature in moduleData.features" :key="feature">
+                {{ feature }}
+              </li>
+            </ul>
+          </div>
+        </div>
+
         <div class="mt-10"></div>
 
         <!-- HighLights  -->
-        <div class="border-t border-gray-200 mt-10 pt-10">
-          <h3 class="text-sm font-medium text-gray-900">
+        <div class="border-t border-gray-200 dark:border-gray-700 mt-10 pt-10">
+          <h3 class="text-sm font-medium text-gray-900 dark:text-gray-200">
             {{ $t('modules.what_you_get') }}
           </h3>
-          <div class="mt-4 prose prose-sm max-w-none text-gray-500">
+          <div class="mt-4 prose prose-sm max-w-none text-gray-500 dark:text-gray-300">
             <div
-              class="prose prose-sm max-w-none text-gray-500 text-sm"
+              class="prose prose-sm max-w-none text-gray-500 dark:text-gray-300 text-sm"
               v-html="moduleData.highlights"
             />
           </div>
         </div>
-        <div class="border-t border-gray-200 mt-10 pt-10">
+        <div class="border-t border-gray-200 dark:border-gray-700 mt-10 pt-10">
           <div
             v-for="(link, key) in moduleData.links"
             :key="key"
             class="mb-4 last:mb-0 flex"
           >
             <BaseIcon :name="link.icon" class="mr-4" />
-            <a :href="link.link" class="text-primary-500" target="_blank">
+            <a :href="link.link" class="text-primary-500 dark:text-primary-400" target="_blank">
               {{ link.label }}
             </a>
           </div>
         </div>
         <!-- Installation Steps  -->
-        <div v-if="isInstalling" class="border-t border-gray-200 mt-10 pt-10">
+        <div v-if="isInstalling" class="border-t border-gray-200 dark:border-gray-700 mt-10 pt-10">
           <ul class="w-full p-0 list-none">
             <li
               v-for="step in installationSteps"
@@ -362,15 +377,15 @@
                 justify-between
                 w-full
                 py-3
-                border-b border-gray-200 border-solid
+                border-b border-gray-200 dark:border-gray-700 border-solid
                 last:border-b-0
               "
             >
-              <p class="m-0 text-sm leading-8">
+              <p class="m-0 text-sm leading-8 dark:text-gray-300">
                 {{ $t(step.translationKey) }}
               </p>
               <div class="flex flex-row items-center">
-                <span v-if="step.time" class="mr-3 text-xs text-gray-500">
+                <span v-if="step.time" class="mr-3 text-xs text-gray-500 dark:text-gray-400">
                   {{ step.time }}
                 </span>
                 <span

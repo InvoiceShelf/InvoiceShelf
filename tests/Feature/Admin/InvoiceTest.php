@@ -1,5 +1,6 @@
 <?php
 
+use App\Facades\PDF;
 use App\Http\Controllers\V1\Admin\Invoice\InvoicesController;
 use App\Http\Requests\InvoicesRequest;
 use App\Mail\SendInvoiceMail;
@@ -8,7 +9,9 @@ use App\Models\InvoiceItem;
 use App\Models\Tax;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Mail;
 use Laravel\Sanctum\Sanctum;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\postJson;
@@ -26,6 +29,14 @@ beforeEach(function () {
         $user,
         ['*']
     );
+
+    Bouncer::scope()->to($user->companies()->first()->id);
+    Bouncer::allow('super admin')->everything();
+    PDF::shouldReceive('loadView')->andReturnSelf()
+        ->shouldReceive('save')->andReturnSelf()
+        ->shouldReceive('stream')->andReturnSelf()
+        ->shouldReceive('download')->andReturnSelf()
+        ->shouldReceive('output')->andReturn('');
 });
 
 test('testGetInvoices', function () {

@@ -21,7 +21,7 @@ class ExpensesController extends Controller
         $limit = $request->has('limit') ? $request->limit : 10;
 
         $expenses = Expense::with('category', 'creator', 'fields')
-            ->whereUser(Auth::guard('customer')->id())
+            ->whereCustomer(Auth::guard('customer')->id())
             ->applyFilters($request->only([
                 'expense_category_id',
                 'from_date',
@@ -40,17 +40,11 @@ class ExpensesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Expense  $expense
      * @return \Illuminate\Http\Response
      */
-    public function show(Company $company, $id)
+    public function show(Company $company, Expense $expense)
     {
-        $expense = $company->expenses()
-            ->whereUser(Auth::guard('customer')->id())
-            ->where('id', $id)
-            ->first();
-
-        if (! $expense) {
+        if ($expense->customer_id !== Auth::guard('customer')->id()) {
             return response()->json(['error' => 'expense_not_found'], 404);
         }
 

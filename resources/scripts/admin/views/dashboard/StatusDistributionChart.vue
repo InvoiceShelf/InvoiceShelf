@@ -6,17 +6,8 @@
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
         Status Distribution
       </h3>
-      <div class="w-32">
-        <BaseMultiselect
-          v-model="selectedYear"
-          :options="yearOptions"
-          @update:model-value="onYearChange"
-          :allow-empty="false"
-          :show-labels="false"
-          :placeholder="$t('dashboard.select_year')"
-          :can-deselect="false"
-          class="text-sm"
-        />
+      <div class="text-sm text-gray-500 dark:text-gray-400">
+        {{ currentDateRangeLabel }}
       </div>
     </div>
 
@@ -79,27 +70,27 @@ import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import Chart from 'chart.js/auto'
 import { useI18n } from 'vue-i18n'
 import { useDashboardStore } from '@/scripts/admin/stores/dashboard'
+import { useDateFilterStore } from '@/scripts/admin/stores/dateFilter'
+import { useThemeStore } from '@/scripts/stores/theme'
 
 const { t } = useI18n()
 const dashboardStore = useDashboardStore()
+const dateFilterStore = useDateFilterStore()
+const themeStore = useThemeStore()
+
+// --- Current date range tracking ---
+const currentDateRangeLabel = ref('Last 30 days')
 
 // --- Legend data ---
 const statusData = computed(() => [
   { label: 'Paid', count: dashboardStore.statusDistribution.paid, color: 'bg-purple-500' },
   { label: 'Pending', count: dashboardStore.statusDistribution.pending, color: 'bg-purple-300' },
-  { label: 'Overdue', count: dashboardStore.statusDistribution.overdue, color: 'bg-gray-200' }
+  { label: 'Overdue', count: dashboardStore.statusDistribution.overdue, color: themeStore.isDarkMode ? 'bg-gray-600' : 'bg-gray-200' }
 ])
 
-// --- Year selector ---
-const selectedYear = ref({ label: 'This Year', value: 'this_year' })
-const yearOptions = ref([
-  { label: 'This Year', value: 'this_year' },
-  { label: 'Previous Year', value: 'previous_year' }
-])
-
-function onYearChange(option) {
-  const params = option.value === 'previous_year' ? { previous_year: true } : {}
-  dashboardStore.loadData(params)
+// Initialize current date range label
+function initializeDateRange() {
+  currentDateRangeLabel.value = dateFilterStore.displayLabel
 }
 
 // --- Chart.js setup ---
@@ -115,7 +106,11 @@ const chartData = computed(() => ({
         dashboardStore.statusDistribution.pending,
         dashboardStore.statusDistribution.overdue
       ],
-      backgroundColor: ['#7675FF', '#A7AAFF', '#E5E7EB'],
+      backgroundColor: [
+        '#7675FF',
+        '#A7AAFF',
+        themeStore.isDarkMode ? '#4B5563' : '#E5E7EB'
+      ],
       borderWidth: 0,
       borderRadius: 8,
       hoverOffset: 12,
@@ -188,6 +183,7 @@ watch(chartData, (newChartData) => {
 })
 
 onMounted(() => {
+  initializeDateRange()
   chartInstance = new Chart(
     canvasRef.value.getContext('2d'),
     {
@@ -198,6 +194,12 @@ onMounted(() => {
   )
 })
 
+// Method to refresh chart with new date range from unified filter
+function refreshWithDateRange(newDateRange) {
+  currentDateRangeLabel.value = dateFilterStore.displayLabel
+  // Chart data will be updated automatically through dashboard store
+}
+
 // Export method for PDF snapshot
 function getChartAsBase64Image() {
   if (!chartInstance || !chartInstance.canvas) {
@@ -206,9 +208,10 @@ function getChartAsBase64Image() {
   return chartInstance.toBase64Image('image/png', 1)
 }
 
-// Expose method to parent component
+// Expose methods to parent component
 defineExpose({
-  getChartAsBase64Image
+  getChartAsBase64Image,
+  refreshWithDateRange
 })
 
 onUnmounted(() => {

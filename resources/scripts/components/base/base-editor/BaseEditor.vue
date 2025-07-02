@@ -8,16 +8,20 @@
   </BaseContentPlaceholders>
   <div
     v-else
-    class="box-border w-full text-sm leading-8 text-left bg-white border border-gray-200 rounded-md min-h-[200px] overflow-hidden"
+    class="box-border w-full text-sm leading-8 text-left bg-white border border-gray-200 rounded-md dark:bg-gray-900/50 dark:border-gray-600 min-h-[200px] overflow-hidden"
   >
     <div v-if="editor" class="editor-content">
-      <div class="flex justify-end p-2 border-b border-gray-200 md:hidden">
+      <div
+        class="flex justify-end p-2 border-b border-gray-200 dark:border-gray-600 md:hidden"
+      >
         <BaseDropdown width-class="w-48">
           <template #activator>
             <div
-              class="flex items-center justify-center w-6 h-6 ml-2 text-sm text-black bg-white rounded-sm md:h-9 md:w-9"
+              class="flex items-center justify-center w-6 h-6 ml-2 text-sm text-black bg-white rounded-sm dark:text-gray-200 dark:bg-transparent md:h-9 md:w-9"
             >
-              <EllipsisVerticalIcon class="w-6 h-6 text-gray-600" />
+              <EllipsisVerticalIcon
+                class="w-6 h-6 text-gray-600 dark:text-gray-300"
+              />
             </div>
           </template>
           <div class="flex flex-wrap space-x-1">
@@ -25,39 +29,47 @@
               v-for="button in editorButtons"
               type="button"
               :key="button.name"
-              class="p-1 rounded hover:bg-gray-100"
+              class="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700"
               @click="button.action"
             >
               <component
                 :is="button.icon"
                 v-if="button.icon"
-                class="w-4 h-4 text-gray-700 fill-gray-700"
+                class="w-4 h-4 text-gray-700 fill-gray-700 dark:text-gray-300 dark:fill-gray-300"
               />
-              <span v-else-if="button.text" class="px-1 text-sm font-medium text-gray-600">
+              <span
+                v-else-if="button.text"
+                class="px-1 text-sm font-medium text-gray-600 dark:text-gray-300"
+              >
                 {{ button.text }}
               </span>
             </button>
           </div>
         </BaseDropdown>
       </div>
-      <div class="hidden p-2 border-b border-gray-200 md:flex">
+      <div
+        class="hidden p-2 border-b border-gray-200 dark:border-gray-600 md:flex"
+      >
         <div class="flex flex-wrap space-x-1">
           <button
-              v-for="button in editorButtons"
-              type="button"
-              :key="button.name"
-              class="p-1 rounded hover:bg-gray-100"
-              @click="button.action"
+            v-for="button in editorButtons"
+            type="button"
+            :key="button.name"
+            class="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700"
+            @click="button.action"
+          >
+            <component
+              :is="button.icon"
+              v-if="button.icon"
+              class="w-4 h-4 text-gray-700 fill-gray-700 dark:text-gray-300 dark:fill-gray-300"
+            />
+            <span
+              v-else-if="button.text"
+              class="px-1 text-sm font-medium text-gray-600 dark:text-gray-300"
             >
-              <component
-                :is="button.icon"
-                v-if="button.icon"
-                class="w-4 h-4 text-gray-700 fill-gray-700"
-              />
-              <span v-else-if="button.text" class="px-1 text-sm font-medium text-gray-600">
-                {{ button.text }}
-              </span>
-            </button>
+              {{ button.text }}
+            </span>
+          </button>
         </div>
       </div>
       <editor-content
@@ -238,6 +250,34 @@ export default {
   a {
     color: rgb(var(--color-primary-500));
     text-decoration: underline;
+  }
+}
+
+.dark .ProseMirror {
+  color: #d1d5db; // gray-300
+
+  h1,
+  h2,
+  h3 {
+    color: #f9fafb; // gray-50
+  }
+
+  blockquote {
+    border-left: 2px solid rgba(249, 250, 251, 0.1);
+  }
+
+  code {
+    background-color: rgba(209, 213, 219, 0.1);
+    color: #9ca3af; // gray-400
+  }
+
+  pre {
+    background: #1f2937; // gray-800
+    color: #d1d5db; // gray-300
+  }
+
+  a {
+    color: rgb(var(--color-primary-400));
   }
 }
 

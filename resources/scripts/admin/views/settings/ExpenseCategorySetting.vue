@@ -65,13 +65,13 @@ const ExpenseCategoryColumns = computed(() => {
       key: 'name',
       label: t('settings.expense_category.category_name'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-gray-900 dark:text-gray-200',
     },
     {
       key: 'description',
       label: t('settings.expense_category.category_description'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-gray-900 dark:text-gray-200',
     },
 
     {

@@ -11,6 +11,7 @@ use App\Http\Controllers\V1\Admin\Customer\CustomersController;
 use App\Http\Controllers\V1\Admin\Customer\CustomerStatsController;
 use App\Http\Controllers\V1\Admin\CustomField\CustomFieldsController;
 use App\Http\Controllers\V1\Admin\Dashboard\DashboardController;
+use App\Http\Controllers\V1\Admin\DashboardExportController;
 use App\Http\Controllers\V1\Admin\Estimate\ChangeEstimateStatusController;
 use App\Http\Controllers\V1\Admin\Estimate\CloneEstimateController;
 use App\Http\Controllers\V1\Admin\Estimate\ConvertEstimateController;
@@ -88,6 +89,7 @@ use App\Http\Controllers\V1\Admin\Update\DownloadUpdateController;
 use App\Http\Controllers\V1\Admin\Update\FinishUpdateController;
 use App\Http\Controllers\V1\Admin\Update\MigrateUpdateController;
 use App\Http\Controllers\V1\Admin\Update\UnzipUpdateController;
+use App\Http\Controllers\V1\Admin\UserController;
 use App\Http\Controllers\V1\Admin\Users\UsersController;
 use App\Http\Controllers\V1\Customer\Auth\ForgotPasswordController as AuthForgotPasswordController;
 use App\Http\Controllers\V1\Customer\Auth\ResetPasswordController as AuthResetPasswordController;
@@ -110,12 +112,6 @@ use App\Http\Controllers\V1\Installation\OnboardingWizardController;
 use App\Http\Controllers\V1\Installation\RequirementsController;
 use App\Http\Controllers\V1\Webhook\CronJobController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\V1\Admin\TaxTypeController;
-use App\Http\Controllers\V1\Admin\TemplateController;
-use App\Http\Controllers\V1\Admin\UserController;
-use App\Http\Controllers\V1\Admin\DashboardExportController;
-use App\Http\Controllers\V1\Customer\AuthController as CustomerAuthController;
-use App\Http\Controllers\V1\Customer\CompanyController as CustomerCompanyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -515,25 +511,20 @@ Route::prefix('/v1')->group(function () {
 
             Route::get('/dashboard', CustomerDashboardController::class);
 
-            Route::get('invoices', [CustomerInvoicesController::class, 'index']);
+            Route::get('/estimates', [CustomerEstimatesController::class, 'index']);
+            Route::get('/estimates/{estimate}', [CustomerEstimatesController::class, 'show']);
+            Route::post('/estimates/{estimate}/status', CustomerAcceptEstimateController::class);
 
-            Route::get('invoices/{id}', [CustomerInvoicesController::class, 'show']);
+            Route::get('/invoices', [CustomerInvoicesController::class, 'index']);
+            Route::get('/invoices/{invoice}', [CustomerInvoicesController::class, 'show']);
 
-            Route::post('/estimate/{estimate}/status', CustomerAcceptEstimateController::class);
+            Route::get('/payments', [CustomerPaymentsController::class, 'index']);
+            Route::get('/payments/{payment}', [CustomerPaymentsController::class, 'show']);
 
-            Route::get('estimates', [CustomerEstimatesController::class, 'index']);
+            Route::get('/payment/methods', PaymentMethodController::class);
 
-            Route::get('estimates/{id}', [CustomerEstimatesController::class, 'show']);
-
-            Route::get('payments', [CustomerPaymentsController::class, 'index']);
-
-            Route::get('payments/{id}', [CustomerPaymentsController::class, 'show']);
-
-            Route::get('/payment-method', PaymentMethodController::class);
-
-            Route::get('expenses', [CustomerExpensesController::class, 'index']);
-
-            Route::get('expenses/{id}', [CustomerExpensesController::class, 'show']);
+            Route::get('/expenses', [CustomerExpensesController::class, 'index']);
+            Route::get('/expenses/{expense}', [CustomerExpensesController::class, 'show']);
 
             Route::post('/profile', [CustomerProfileController::class, 'updateProfile']);
 

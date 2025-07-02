@@ -8,32 +8,11 @@
           Predictive Cash Flow Analysis
         </h3>
         <p class="text-sm text-gray-500 dark:text-gray-400">
-          Real vs projected income with net cash flow forecast
+          Real vs projected income with net cash flow forecast for {{ currentDateRangeLabel }}
         </p>
       </div>
-      <div class="flex space-x-3">
-        <div class="w-32">
-          <BaseMultiselect
-            v-model="selectedPeriod"
-            :options="periodOptions"
-            :allow-empty="false"
-            :show-labels="false"
-            placeholder="Select Period"
-            :can-deselect="false"
-            class="text-sm"
-          />
-        </div>
-        <div class="w-36">
-          <BaseMultiselect
-            v-model="selectedCustomer"
-            :options="customerOptions"
-            :allow-empty="false"
-            :show-labels="false"
-            placeholder="All Customers"
-            :can-deselect="true"
-            class="text-sm"
-          />
-        </div>
+      <div class="text-sm text-gray-500 dark:text-gray-400">
+        Filtered by: {{ currentDateRangeLabel }}
       </div>
     </div>
 
@@ -50,7 +29,7 @@
     </div>
 
     <!-- Interactive Legend -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
       <button 
         @click="toggleDataset('Real Income')"
         class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
@@ -70,8 +49,7 @@
       <button 
         @click="toggleDataset('Expenses')"
         class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
-        :class="{ 'opacity-50': hiddenDatasets.includes('Expenses'), 'cursor-not-allowed': selectedCustomer }"
-        :disabled="selectedCustomer"
+        :class="{ 'opacity-50': hiddenDatasets.includes('Expenses') }"
       >
         <div class="w-4 h-3 bg-red-200 dark:bg-red-900/50"></div>
         <span class="text-sm text-gray-600 dark:text-gray-400">Expenses</span>
@@ -79,8 +57,7 @@
       <button 
         @click="toggleDataset('Net Cash Flow')"
         class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
-        :class="{ 'opacity-50': hiddenDatasets.includes('Net Cash Flow'), 'cursor-not-allowed': selectedCustomer }"
-        :disabled="selectedCustomer"
+        :class="{ 'opacity-50': hiddenDatasets.includes('Net Cash Flow') }"
       >
         <div class="w-4 h-0.5 bg-purple-500"></div>
         <span class="text-sm text-gray-600 dark:text-gray-400">Net Cash Flow</span>
@@ -104,22 +81,26 @@ import 'chartjs-adapter-date-fns'
 import annotationPlugin from 'chartjs-plugin-annotation'
 import axios from 'axios'
 import { handleError } from '@/scripts/helpers/error-handling'
+import { useDateFilterStore } from '@/scripts/admin/stores/dateFilter'
+import { useThemeStore } from '@/scripts/stores/theme'
 
 Chart.register(annotationPlugin)
 
+const dateFilterStore = useDateFilterStore()
+const themeStore = useThemeStore()
+
 const loading = ref(true)
-const selectedPeriod = ref('6 Months')
-const selectedCustomer = ref(null)
 const hiddenDatasets = ref([])
 const chartApiData = ref([])
+const currentDateRange = ref({ start: '', end: '' })
+const currentDateRangeLabel = ref('Last 30 days')
 
-const periodOptions = ref([
-  { label: '3 Months', value: '3 Months' },
-  { label: '6 Months', value: '6 Months' },
-  { label: '12 Months', value: '12 Months' }
-])
-
-const customerOptions = ref([])
+// Initialize current date range from unified filter
+function initializeDateRange() {
+  const range = dateFilterStore.dateRange
+  currentDateRange.value = range
+  currentDateRangeLabel.value = dateFilterStore.displayLabel
+}
 
 const today = computed(() => {
   return new Date().toLocaleDateString('en-US', { 
@@ -139,29 +120,29 @@ function formatMoney(amount) {
   }).format(amountInDollars)
 }
 
-const periodMonths = computed(() => {
-  const periods = { '3 Months': 6, '6 Months': 9, '12 Months': 15 }
-  return periods[selectedPeriod.value] || 9
-})
-
-async function fetchCustomers() {
-  try {
-    const response = await axios.get('/api/v1/customers')
-    customerOptions.value = response.data.data.map(c => ({ label: c.name, value: c.id }))
-  } catch (error) {
-    handleError(error)
-  }
-}
-
 async function fetchData() {
   loading.value = true
+  
   try {
-    const response = await axios.get('/api/v1/dashboard/cash-flow', {
-      params: {
-        period_months: periodMonths.value,
-        customer_id: selectedCustomer.value,
-      }
-    })
+    const params = {
+      period_months: 12, // Default to 12 months for "All time"
+    }
+    
+    // Only add date parameters if we have a date range (not "All time")
+    if (currentDateRange.value.start && currentDateRange.value.end) {
+      // Calculate period months based on date range
+      const startDate = new Date(currentDateRange.value.start)
+      const endDate = new Date(currentDateRange.value.end)
+      const diffTime = Math.abs(endDate - startDate)
+      const diffMonths = Math.ceil(diffTime / (1000 * 60 * 60 * 24 * 30))
+      const periodMonths = Math.max(6, Math.min(15, diffMonths + 3)) // Add buffer for predictions
+      
+      params.period_months = periodMonths
+      params.start_date = currentDateRange.value.start
+      params.end_date = currentDateRange.value.end
+    }
+    
+    const response = await axios.get('/api/v1/dashboard/cash-flow', { params })
     chartApiData.value = response.data
   } catch (error) {
     handleError(error)
@@ -227,6 +208,11 @@ function createChart() {
   const ctx = canvasRef.value.getContext('2d')
   const today = new Date()
   
+  const isDark = themeStore.isDarkMode
+  const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : '#F3F4F6'
+  const tickColor = isDark ? '#9CA3AF' : '#6B7280'
+  const titleColor = isDark ? '#D1D5DB' : '#374151'
+  
   chartInstance = new Chart(ctx, {
     type: 'line',
     data: { datasets: [] },
@@ -239,11 +225,13 @@ function createChart() {
         x: {
           type: 'time',
           time: { unit: 'month', tooltipFormat: 'MMM yyyy', displayFormats: { month: 'MMM' }},
-          grid: { display: true, color: '#F3F4F6', borderDash: [2, 2] }
+          grid: { display: true, color: gridColor, borderDash: [2, 2] },
+          ticks: { color: tickColor }
         },
         y: {
           beginAtZero: true,
           ticks: { 
+            color: tickColor,
             callback: (v) => {
               const amountInDollars = v / 100;
               if (Math.abs(amountInDollars) >= 1000) {
@@ -252,7 +240,7 @@ function createChart() {
               return `$${amountInDollars.toFixed(0)}`;
             }
           },
-          title: { display: true, text: 'Amount ($)' }
+          title: { display: true, text: 'Amount ($)', color: titleColor }
         },
       },
       plugins: {
@@ -308,6 +296,13 @@ function refreshChart() {
   chartInstance.update('active')
 }
 
+// Method to refresh chart with new date range from unified filter
+function refreshWithDateRange(newDateRange) {
+  currentDateRange.value = newDateRange
+  currentDateRangeLabel.value = dateFilterStore.displayLabel
+  fetchData().then(() => refreshChart())
+}
+
 // Export method for PDF snapshot
 function getChartAsBase64Image() {
   if (!chartInstance || !chartInstance.canvas) {
@@ -316,17 +311,31 @@ function getChartAsBase64Image() {
   return chartInstance.toBase64Image('image/png', 1)
 }
 
-// Expose method to parent component
+// Watch for theme changes to update chart colors
+watch(() => themeStore.isDarkMode, (isDark) => {
+  if (chartInstance) {
+    const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : '#F3F4F6'
+    const tickColor = isDark ? '#9CA3AF' : '#6B7280'
+    const titleColor = isDark ? '#D1D5DB' : '#374151'
+
+    chartInstance.options.scales.x.grid.color = gridColor
+    chartInstance.options.scales.x.ticks.color = tickColor
+    chartInstance.options.scales.y.ticks.color = tickColor
+    chartInstance.options.scales.y.title.color = titleColor
+    chartInstance.update()
+  }
+})
+
+// Expose methods to parent component
 defineExpose({
-  getChartAsBase64Image
+  getChartAsBase64Image,
+  refreshWithDateRange
 })
 
 onMounted(async () => {
+  initializeDateRange()
   createChart()
-  await Promise.all([
-    fetchCustomers(),
-    fetchData()
-  ])
+  await fetchData()
   refreshChart()
 })
 
@@ -334,11 +343,6 @@ onUnmounted(() => {
   if (chartInstance) {
     chartInstance.destroy()
   }
-})
-
-watch([selectedPeriod, selectedCustomer], async () => {
-  await fetchData()
-  refreshChart()
 })
 
 </script>

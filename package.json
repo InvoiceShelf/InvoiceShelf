@@ -46,7 +46,7 @@
     "chartjs-adapter-date-fns": "^3.0.0",
     "chartjs-plugin-annotation": "^3.1.0",
     "chartjs-plugin-zoom": "^2.2.0",
-    "date-fns": "^4.1.0",
+    "date-fns": "^3.6.0",
     "guid": "^0.0.12",
     "laravel-vite-plugin": "^1.1.1",
     "lodash": "^4.17.21",

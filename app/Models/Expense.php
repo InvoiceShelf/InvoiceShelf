@@ -70,14 +70,22 @@ class Expense extends Model implements HasMedia
 
     public function getFormattedExpenseDateAttribute($value)
     {
-        $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id);
+        if (! $this->expense_date) {
+            return null;
+        }
+
+        $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id) ?? 'Y-m-d';
 
         return Carbon::parse($this->expense_date)->translatedFormat($dateFormat);
     }
 
     public function getFormattedCreatedAtAttribute($value)
     {
-        $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id);
+        if (! $this->created_at) {
+            return null;
+        }
+
+        $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id) ?? 'Y-m-d';
 
         return Carbon::parse($this->created_at)->translatedFormat($dateFormat);
     }
@@ -145,7 +153,7 @@ class Expense extends Model implements HasMedia
         return $query->where('expenses.expense_category_id', $categoryId);
     }
 
-    public function scopeWhereUser($query, $customer_id)
+    public function scopeWhereCustomer($query, $customer_id)
     {
         return $query->where('expenses.customer_id', $customer_id);
     }
@@ -159,7 +167,7 @@ class Expense extends Model implements HasMedia
         }
 
         if ($filters->get('customer_id')) {
-            $query->whereUser($filters->get('customer_id'));
+            $query->whereCustomer($filters->get('customer_id'));
         }
 
         if ($filters->get('expense_id')) {

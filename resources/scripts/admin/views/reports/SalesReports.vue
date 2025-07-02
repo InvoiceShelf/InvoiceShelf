@@ -27,7 +27,7 @@
             w-5
             h-0
             mx-4
-            border border-gray-400 border-solid
+            border border-gray-400 dark:border-gray-700 border-solid
             xl:block
           "
           style="margin-top: 2.5rem"
@@ -68,7 +68,7 @@
           hidden
           w-full
           h-screen
-          border-gray-100 border-solid
+          border-gray-100 dark:border-gray-700 border-solid
           rounded
           md:flex
         "

@@ -19,7 +19,6 @@ class DashboardExportController extends Controller
     /**
      * Handle the incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function export(Request $request)
@@ -44,7 +43,6 @@ class DashboardExportController extends Controller
     /**
      * Export dashboard snapshot as PDF
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function exportSnapshot(Request $request)
@@ -67,4 +65,4 @@ class DashboardExportController extends Controller
 
         return $this->exportService->generateSnapshot($request);
     }
-} 
+}

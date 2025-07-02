@@ -2,16 +2,7 @@
   <div class="flex flex-col">
     <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 pb-4 lg:pb-0">
       <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-        <div
-          class="
-            relative
-            overflow-hidden
-            bg-white
-            border-b border-gray-200
-            shadow
-            sm:rounded-lg
-          "
-        >
+        <div class="relative overflow-hidden">
           <slot name="header" />
           <table :class="tableClass">
             <thead :class="theadClass">
@@ -22,7 +13,8 @@
                   :class="[
                     getThClass(column),
                     {
-                      'text-bold text-black': sort.fieldName === column.key,
+                      'text-bold text-black dark:text-white':
+                        sort.fieldName === column.key,
                     },
                   ]"
                   @click="changeSorting(column)"
@@ -47,11 +39,12 @@
             </thead>
             <tbody
               v-if="loadingType === 'placeholder' && (loading || isLoading)"
+              class="bg-white divide-y divide-gray-200 dark:bg-gray-700 dark:divide-gray-600"
             >
               <tr
                 v-for="placeRow in placeholderCount"
                 :key="placeRow"
-                :class="placeRow % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
+                class="bg-white dark:bg-gray-700"
               >
                 <td
                   v-for="column in columns"
@@ -71,16 +64,19 @@
                 </td>
               </tr>
             </tbody>
-            <tbody v-else>
+            <tbody
+              v-else
+              class="bg-white divide-y divide-gray-200 dark:bg-gray-700 dark:divide-gray-600"
+            >
               <tr
                 v-for="(row, index) in sortedRows"
                 :key="index"
-                :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
+                class="bg-white dark:bg-gray-700"
               >
                 <td
                   v-for="column in columns"
                   :key="column.key"
-                  class=""
+                  class="dark:text-gray-200"
                   :class="getTdClass(column)"
                 >
                   <slot :name="'cell-' + column.key" :row="row">
@@ -104,6 +100,7 @@
               w-full
               h-full
               bg-white bg-opacity-60
+              dark:bg-gray-700 dark:bg-opacity-60
             "
           >
             <SpinnerIcon class="w-10 h-10 text-primary-500" />
@@ -115,6 +112,7 @@
             "
             class="
               text-center text-gray-500
+              dark:text-gray-300
               pb-2
               flex
               h-[160px]
@@ -163,9 +161,13 @@ const props = defineProps({
   sortOrder: { type: String, default: '' },
   tableClass: {
     type: String,
-    default: 'min-w-full divide-y divide-gray-200',
+    default: 'min-w-full',
   },
-  theadClass: { type: String, default: 'bg-gray-50' },
+  theadClass: {
+    type: String,
+    default:
+      'bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600',
+  },
   tbodyClass: { type: String, default: '' },
   noResultsMessage: {
     type: String,
@@ -236,7 +238,7 @@ function getColumn(columnName) {
 
 function getThClass(column) {
   let classes =
-    'whitespace-nowrap px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
+    'whitespace-nowrap px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider'
 
   if (column.defaultThClass) {
     classes = column.defaultThClass

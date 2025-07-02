@@ -10,6 +10,7 @@
           font-medium
           text-primary-400
           focus:outline-none focus:border-none
+          dark:text-primary-400
         "
       >
         <BaseIcon
@@ -44,7 +45,7 @@
             >
               <!-- Tax Search Input  -->
 
-              <div class="relative bg-white">
+              <div class="relative bg-white dark:bg-gray-800">
                 <div class="relative p-4">
                   <BaseInput
                     v-model="textSearch"
@@ -64,14 +65,14 @@
                     overflow-auto
                     list
                     max-h-36
-                    border-t border-gray-200
+                    border-t border-gray-200 dark:border-gray-700
                   "
                 >
                   <div
                     v-for="(taxType, index) in filteredTaxType"
                     :key="index"
                     :class="{
-                      'bg-gray-100 cursor-not-allowed opacity-50 pointer-events-none':
+                      'bg-gray-100 cursor-not-allowed opacity-50 pointer-events-none dark:bg-gray-700':
                         taxes.find((val) => {
                           return val.tax_type_id === taxType.id
                         }),
@@ -84,6 +85,7 @@
                       cursor-pointer
                       hover:bg-gray-100 hover:cursor-pointer
                       last:border-b-0
+                      dark:border-gray-700 dark:hover:bg-gray-700
                     "
                     @click="selectTaxType(taxType, close)"
                   >
@@ -96,6 +98,7 @@
                           leading-tight
                           text-gray-700
                           cursor-pointer
+                          dark:text-gray-300
                         "
                       >
                         {{ taxType.name }}
@@ -108,6 +111,7 @@
                           font-semibold
                           text-gray-700
                           cursor-pointer
+                          dark:text-gray-300
                         "
                       >
                         <template v-if="taxType.calculation_type === 'fixed'">
@@ -143,6 +147,7 @@
                   bg-gray-200
                   border-none
                   outline-none
+                  dark:bg-gray-700
                 "
                 @click="openTaxTypeModal"
               >

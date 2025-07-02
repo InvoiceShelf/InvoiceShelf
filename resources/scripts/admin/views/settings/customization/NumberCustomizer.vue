@@ -1,8 +1,8 @@
 <template>
-  <h6 class="text-gray-900 text-lg font-medium">
+  <h6 class="text-gray-900 dark:text-gray-200 text-lg font-medium">
     {{ $t(`settings.customization.${type}s.${type}_number_format`) }}
   </h6>
-  <p class="mt-1 text-sm text-gray-500">
+  <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
     {{
       $t(`settings.customization.${type}s.${type}_number_format_description`)
     }}
@@ -28,7 +28,10 @@
               font-medium
               leading-5
               text-left text-gray-700
-              border-t border-b border-gray-200 border-solid
+              dark:text-gray-300
+              border-t border-b border-gray-200
+              dark:border-gray-700
+              border-solid
             "
           ></th>
           <th
@@ -40,7 +43,10 @@
               font-medium
               leading-5
               text-left text-gray-700
-              border-t border-b border-gray-200 border-solid
+              dark:text-gray-300
+              border-t border-b border-gray-200
+              dark:border-gray-700
+              border-solid
             "
           >
             {{ $t('settings.customization.component') }}
@@ -54,7 +60,10 @@
               font-medium
               leading-5
               text-left text-gray-700
-              border-t border-b border-gray-200 border-solid
+              dark:text-gray-300
+              border-t border-b border-gray-200
+              dark:border-gray-700
+              border-solid
             "
           >
             {{ $t('settings.customization.Parameter') }}
@@ -68,14 +77,17 @@
               font-medium
               leading-5
               text-left text-gray-700
-              border-t border-b border-gray-200 border-solid
+              dark:text-gray-300
+              border-t border-b border-gray-200
+              dark:border-gray-700
+              border-solid
             "
           ></th>
         </tr>
       </thead>
       <draggable
         v-model="selectedFields"
-        class="divide-y divide-gray-200"
+        class="divide-y divide-gray-200 dark:divide-gray-700"
         item-key="id"
         tag="tbody"
         handle=".handle"
@@ -102,7 +114,7 @@
                 {{ element.label }}
               </label>
 
-              <p class="text-xs text-gray-500 mt-1">
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 {{ element.description }}
               </p>
             </td>

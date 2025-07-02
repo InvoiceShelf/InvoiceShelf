@@ -14,17 +14,11 @@ class AcceptEstimateController extends Controller
     /**
      * Handle the incoming request.
      *
-     * @param  Estimate  $estimate
      * @return \Illuminate\Http\Response
      */
-    public function __invoke(Request $request, Company $company, $id)
+    public function __invoke(Request $request, Company $company, Estimate $estimate)
     {
-        $estimate = $company->estimates()
-            ->whereCustomer(Auth::guard('customer')->id())
-            ->where('id', $id)
-            ->first();
-
-        if (! $estimate) {
+        if ($estimate->customer_id !== Auth::guard('customer')->id()) {
             return response()->json(['error' => 'estimate_not_found'], 404);
         }
 

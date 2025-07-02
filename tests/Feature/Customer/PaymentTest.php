@@ -34,6 +34,7 @@ test('get customer payment', function () {
 
     $payment = Payment::factory()->create([
         'customer_id' => $customer->id,
+        'company_id' => $customer->company_id,
     ]);
 
     getJson("/api/v1/{$customer->company->slug}/customer/payments/{$payment->id}")->assertOk();

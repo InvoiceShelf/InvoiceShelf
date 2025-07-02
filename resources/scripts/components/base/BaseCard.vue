@@ -1,8 +1,8 @@
 <template>
-  <div class="bg-white rounded-lg shadow">
+  <div v-bind="$attrs" class="rounded-lg shadow">
     <div
       v-if="hasHeaderSlot"
-      class="px-5 py-4 text-black border-b border-gray-100 border-solid"
+      class="px-5 py-4 text-black border-b border-gray-100 border-solid dark:text-gray-200 dark:border-gray-700"
     >
       <slot name="header" />
     </div>
@@ -11,12 +11,18 @@
     </div>
     <div
       v-if="hasFooterSlot"
-      class="px-5 py-4 border-t border-gray-100 border-solid sm:px-6"
+      class="px-5 py-4 border-t border-gray-100 border-solid sm:px-6 dark:border-gray-700"
     >
       <slot name="footer" />
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  inheritAttrs: false,
+}
+</script>
 
 <script setup>
 import { computed, useSlots } from 'vue'

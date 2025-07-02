@@ -43,21 +43,9 @@ export const useDashboardStore = (useWindow = false) => {
 
       isDashboardDataLoaded: false,
       isLoading: false,
-
-      // Active Filter State
-      activeFilter: {
-        enabled: false,
-        persistKey: 'dashboard_active_filter',
-      },
     }),
 
-    getters: {
-      /**
-       * Get the current active filter state
-       * @returns {boolean}
-       */
-      isActiveFilterEnabled: (state) => state.activeFilter.enabled,
-    },
+    getters: {},
 
     actions: {
       /**
@@ -66,11 +54,6 @@ export const useDashboardStore = (useWindow = false) => {
        * @returns {Promise}
        */
       loadData(params = {}) {
-        // Add active filter to params if enabled
-        if (this.activeFilter.enabled) {
-          params.active_only = true
-        }
-
         this.isLoading = true
 
         return new Promise((resolve, reject) => {
@@ -124,71 +107,31 @@ export const useDashboardStore = (useWindow = false) => {
       },
 
       /**
-       * Toggle the active filter state
-       * @returns {Promise}
-       */
-      toggleActiveFilter() {
-        this.activeFilter.enabled = !this.activeFilter.enabled
-        this.persistActiveFilter()
-        
-        // Reload data with new filter state
-        this.isDashboardDataLoaded = false
-        return this.loadData()
-      },
-
-      /**
-       * Set the active filter state
-       * @param {boolean} enabled - Whether the filter should be enabled
-       * @returns {Promise}
-       */
-      setActiveFilter(enabled) {
-        if (this.activeFilter.enabled !== enabled) {
-          this.activeFilter.enabled = enabled
-          this.persistActiveFilter()
-          
-          // Reload data with new filter state
-          this.isDashboardDataLoaded = false
-          return this.loadData()
-        }
-        return Promise.resolve()
-      },
-
-      /**
-       * Persist the active filter state to localStorage
-       */
-      persistActiveFilter() {
-        try {
-          localStorage.setItem(
-            this.activeFilter.persistKey,
-            JSON.stringify(this.activeFilter.enabled)
-          )
-        } catch (error) {
-          console.warn('Failed to persist active filter state:', error)
-        }
-      },
-
-      /**
-       * Load the active filter state from localStorage
-       */
-      loadActiveFilter() {
-        try {
-          const stored = localStorage.getItem(this.activeFilter.persistKey)
-          if (stored !== null) {
-            this.activeFilter.enabled = JSON.parse(stored)
-          }
-        } catch (error) {
-          console.warn('Failed to load active filter state:', error)
-          this.activeFilter.enabled = false
-        }
-      },
-
-      /**
        * Initialize the dashboard store
        * @returns {Promise}
        */
       initialize() {
-        this.loadActiveFilter()
         return this.loadData()
+      },
+
+      /**
+       * Load dashboard data with unified date filtering
+       * @param {Object} dateFilterParams - Date filter parameters from unified date filter
+       * @returns {Promise}
+       */
+      loadDataWithDateFilter(dateFilterParams = {}) {
+        const params = { ...dateFilterParams }
+        return this.loadData(params)
+      },
+
+      /**
+       * Refresh all dashboard components with current date filter
+       * @param {Object} dateFilterParams - Date filter parameters
+       * @returns {Promise}
+       */
+      refreshWithDateFilter(dateFilterParams = {}) {
+        this.isDashboardDataLoaded = false
+        return this.loadDataWithDateFilter(dateFilterParams)
       },
 
       /**

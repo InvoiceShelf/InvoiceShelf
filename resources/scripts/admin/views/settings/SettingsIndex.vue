@@ -43,8 +43,13 @@
         </BaseList>
       </div>
 
-      <div class="w-full overflow-hidden">
-        <RouterView />
+      <div class="w-full overflow-hidden xl:ml-6">
+        <BaseCard
+          :content-loading="false"
+          class="dark:bg-gray-700 dark:border dark:border-gray-700"
+        >
+          <RouterView />
+        </BaseCard>
       </div>
     </div>
   </BasePage>

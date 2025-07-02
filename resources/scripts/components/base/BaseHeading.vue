@@ -18,8 +18,10 @@ const props = defineProps({
 
 const typeClass = computed(() => {
   return {
-    'text-gray-900 text-lg font-medium': props.type === 'heading-title',
-    'text-gray-500 uppercase text-base': props.type === 'section-title',
+    'text-gray-900 dark:text-white text-lg font-medium':
+      props.type === 'heading-title',
+    'text-gray-500 dark:text-gray-400 uppercase text-base':
+      props.type === 'section-title',
   }
 })
 </script>

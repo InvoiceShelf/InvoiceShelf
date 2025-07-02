@@ -12,6 +12,7 @@
           font-medium
           text-primary-400
           focus:outline-none focus:border-none
+          dark:text-primary-400
         "
         @click="fetchInitialData"
       >
@@ -53,7 +54,7 @@
               ring-1 ring-black ring-opacity-5
             "
           >
-            <div class="relative grid bg-white">
+            <div class="relative grid bg-white dark:bg-gray-800">
               <div class="relative p-4">
                 <BaseInput
                   v-model="textSearch"
@@ -79,6 +80,8 @@
                     cursor-pointer
                     hover:bg-gray-100 hover:cursor-pointer
                     last:border-b-0
+                    dark:border-gray-700
+                    dark:hover:bg-gray-700
                   "
                   @click="selectNote(index, close)"
                 >
@@ -91,6 +94,7 @@
                         leading-tight
                         text-gray-700
                         cursor-pointer
+                        dark:text-gray-300
                       "
                     >
                       {{ note.name }}
@@ -118,6 +122,7 @@
                 bg-gray-200
                 border-none
                 outline-none
+                dark:bg-gray-700
               "
               @click="openNoteModal"
             >

@@ -34,6 +34,7 @@ test('get customer invoice', function () {
 
     $invoice = Invoice::factory()->create([
         'customer_id' => $customer->id,
+        'company_id' => $customer->company_id,
     ]);
 
     getJson("/api/v1/{$customer->company->slug}/customer/invoices/{$invoice->id}")->assertOk();

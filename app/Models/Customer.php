@@ -54,6 +54,10 @@ class Customer extends Authenticatable implements HasMedia
     {
         $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id);
 
+        if (! $dateFormat) {
+            $dateFormat = 'Y-m-d';
+        }
+
         return Carbon::parse($this->created_at)->translatedFormat($dateFormat);
     }
 

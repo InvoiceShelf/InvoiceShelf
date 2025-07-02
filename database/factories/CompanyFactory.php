@@ -23,7 +23,7 @@ class CompanyFactory extends Factory
         return [
             'unique_hash' => str_random(20),
             'name' => $this->faker->name(),
-            'owner_id' => User::where('role', 'super admin')->first()->id,
+            'owner_id' => User::factory(),
             'slug' => $this->faker->word(),
         ];
     }

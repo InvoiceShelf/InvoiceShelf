@@ -15,14 +15,14 @@
       <BaseDropdown>
         <template #activator>
           <div class="inline-block">
-            <BaseIcon name="EllipsisHorizontalIcon" class="text-gray-500" />
+            <BaseIcon name="EllipsisHorizontalIcon" class="text-gray-500 dark:text-gray-400" />
           </div>
         </template>
 
         <BaseDropdownItem @click="editItemUnit(row)">
           <BaseIcon
             name="PencilIcon"
-            class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+            class="w-5 h-5 mr-3 text-gray-400 dark:text-gray-300 group-hover:text-gray-500"
           />
 
           {{ $t('general.edit') }}
@@ -30,7 +30,7 @@
         <BaseDropdownItem @click="removeItemUnit(row)">
           <BaseIcon
             name="TrashIcon"
-            class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+            class="w-5 h-5 mr-3 text-gray-400 dark:text-gray-300 group-hover:text-gray-500"
           />
           {{ $t('general.delete') }}
         </BaseDropdownItem>
@@ -60,7 +60,7 @@ const columns = computed(() => {
       key: 'name',
       label: t('settings.customization.items.unit_name'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-gray-900 dark:text-gray-200',
     },
     {
       key: 'actions',
