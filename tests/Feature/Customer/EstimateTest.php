@@ -35,6 +35,7 @@ test('get customer estimate', function () {
 
     $estimate = Estimate::factory()->create([
         'customer_id' => $customer->id,
+        'company_id' => $customer->company_id,
     ]);
 
     getJson("/api/v1/{$customer->company->slug}/customer/estimates/{$estimate->id}")
@@ -48,13 +49,14 @@ test('customer estimate mark as accepted', function () {
         'estimate_date' => '1988-07-18',
         'expiry_date' => '1988-08-18',
         'customer_id' => $customer->id,
+        'company_id' => $customer->company_id,
     ]);
 
     $status = [
         'status' => Estimate::STATUS_ACCEPTED,
     ];
 
-    $response = postJson("api/v1/{$customer->company->slug}/customer/estimate/{$estimate->id}/status", $status)
+    $response = postJson("api/v1/{$customer->company->slug}/customer/estimates/{$estimate->id}/status", $status)
         ->assertOk();
 
     $this->assertEquals($response->json()['data']['status'], Estimate::STATUS_ACCEPTED);
@@ -67,13 +69,14 @@ test('customer estimate mark as rejected', function () {
         'estimate_date' => '1988-07-18',
         'expiry_date' => '1988-08-18',
         'customer_id' => $customer->id,
+        'company_id' => $customer->company_id,
     ]);
 
     $status = [
         'status' => Estimate::STATUS_REJECTED,
     ];
 
-    $response = postJson("api/v1/{$customer->company->slug}/customer/estimate/{$estimate->id}/status", $status)
+    $response = postJson("api/v1/{$customer->company->slug}/customer/estimates/{$estimate->id}/status", $status)
         ->assertOk();
 
     $this->assertEquals($response->json()['data']['status'], Estimate::STATUS_REJECTED);

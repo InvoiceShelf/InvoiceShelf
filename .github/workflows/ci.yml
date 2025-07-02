@@ -43,7 +43,9 @@ jobs:
         key: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
 
     - name: Install Composer dependencies
-      run: composer install --no-progress --prefer-dist --optimize-autoloader    - name: Copy .env file
+      run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+    - name: Copy .env file
       run: cp .env.ci .env
 
     - name: Generate application key
@@ -59,9 +61,6 @@ jobs:
 
     - name: Run PHPUnit tests
       run: php artisan test --coverage
-
-    - name: Run Pest tests
-      run: ./vendor/bin/pest --coverage
 
   frontend-tests:
     runs-on: ubuntu-latest

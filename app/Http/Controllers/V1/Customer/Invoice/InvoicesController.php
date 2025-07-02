@@ -33,14 +33,9 @@ class InvoicesController extends Controller
             ]]);
     }
 
-    public function show(Company $company, $id)
+    public function show(Company $company, Invoice $invoice)
     {
-        $invoice = $company->invoices()
-            ->whereCustomer(Auth::guard('customer')->id())
-            ->where('id', $id)
-            ->first();
-
-        if (! $invoice) {
+        if ($invoice->customer_id !== Auth::guard('customer')->id()) {
             return response()->json(['error' => 'invoice_not_found'], 404);
         }
 

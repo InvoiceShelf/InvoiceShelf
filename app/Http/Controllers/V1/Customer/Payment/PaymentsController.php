@@ -42,17 +42,11 @@ class PaymentsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Payment  $payment
      * @return \Illuminate\Http\Response
      */
-    public function show(Company $company, $id)
+    public function show(Company $company, Payment $payment)
     {
-        $payment = $company->payments()
-            ->whereCustomer(Auth::guard('customer')->id())
-            ->where('id', $id)
-            ->first();
-
-        if (! $payment) {
+        if ($payment->customer_id !== Auth::guard('customer')->id()) {
             return response()->json(['error' => 'payment_not_found'], 404);
         }
 

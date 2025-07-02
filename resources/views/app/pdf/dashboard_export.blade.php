@@ -29,7 +29,7 @@
                     <div class="card">
                         <div class="card-title">Summary</div>
                         @foreach($data['dashboard']['summary'] as $key => $value)
-                            <div>{{ ucwords(str_replace('_', ' ', $key)) }}: <strong>{{ is_numeric($value) ? number_format($value, 2) : $value }}</strong></div>
+                            <div>{{ ucwords(str_replace('_', ' ', $key)) }}: <strong>{{ $value }}</strong></div>
                         @endforeach
                     </div>
                     <div class="card">
@@ -45,7 +45,7 @@
                         <thead><tr><th>Label</th><th>Value</th></tr></thead>
                         <tbody>
                             @foreach($data['dashboard']['outstanding'] as $item)
-                                <tr><td>{{ $item['label'] }}</td><td>{{ number_format($item['value'], 2) }}</td></tr>
+                                <tr><td>{{ $item['label'] }}</td><td>{{ $item['value'] }}</td></tr>
                             @endforeach
                         </tbody>
                     </table>
@@ -70,10 +70,10 @@
                         @foreach($data['cashflow']['months'] as $index => $month)
                             <tr>
                                 <td>{{ $month }}</td>
-                                <td>{{ number_format($data['cashflow']['invoice_totals'][$index] ?? 0, 2) }}</td>
-                                <td>{{ number_format($data['cashflow']['expense_totals'][$index] ?? 0, 2) }}</td>
-                                <td>{{ number_format($data['cashflow']['receipt_totals'][$index] ?? 0, 2) }}</td>
-                                <td>{{ number_format($data['cashflow']['net_income_totals'][$index] ?? 0, 2) }}</td>
+                                <td>{{ $data['cashflow']['invoice_totals'][$index] ?? 0 }}</td>
+                                <td>{{ $data['cashflow']['expense_totals'][$index] ?? 0 }}</td>
+                                <td>{{ $data['cashflow']['receipt_totals'][$index] ?? 0 }}</td>
+                                <td>{{ $data['cashflow']['net_income_totals'][$index] ?? 0 }}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -102,8 +102,8 @@
                                 <td>{{ $invoice['status'] }}</td>
                                 <td>{{ $invoice['invoice_date'] }}</td>
                                 <td>{{ $invoice['customer']['name'] }}</td>
-                                <td>{{ number_format($invoice['total'], 2) }}</td>
-                                <td>{{ number_format($invoice['due_amount'], 2) }}</td>
+                                <td>{{ $invoice['total'] }}</td>
+                                <td>{{ $invoice['due_amount'] }}</td>
                             </tr>
                         @endforeach
                     </tbody>

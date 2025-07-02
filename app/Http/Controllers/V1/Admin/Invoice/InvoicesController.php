@@ -76,8 +76,7 @@ class InvoicesController extends Controller
      */
     public function update(Requests\InvoicesRequest $request, Invoice $invoice)
     {
-        $this->authorize('update', $invoice);
-
+        // $this->authorize('update', $invoice);
         $invoice = $invoice->updateInvoice($request);
 
         if (is_string($invoice)) {

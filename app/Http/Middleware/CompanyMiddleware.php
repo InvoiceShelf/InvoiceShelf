@@ -19,8 +19,11 @@ class CompanyMiddleware
         if (Schema::hasTable('user_company')) {
             $user = $request->user();
 
-            if ((! $request->header('company')) || (! $user->hasCompany($request->header('company')))) {
-                $request->headers->set('company', $user->companies()->first()->id);
+            if ($user && (! $request->header('company')) || (! $user->hasCompany($request->header('company')))) {
+                $firstCompany = $user->companies()->first();
+                if ($firstCompany) {
+                    $request->headers->set('company', $firstCompany->id);
+                }
             }
         }
 

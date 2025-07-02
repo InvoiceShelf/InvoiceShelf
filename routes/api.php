@@ -511,25 +511,20 @@ Route::prefix('/v1')->group(function () {
 
             Route::get('/dashboard', CustomerDashboardController::class);
 
-            Route::get('invoices', [CustomerInvoicesController::class, 'index']);
+            Route::get('/estimates', [CustomerEstimatesController::class, 'index']);
+            Route::get('/estimates/{estimate}', [CustomerEstimatesController::class, 'show']);
+            Route::post('/estimates/{estimate}/status', CustomerAcceptEstimateController::class);
 
-            Route::get('invoices/{id}', [CustomerInvoicesController::class, 'show']);
+            Route::get('/invoices', [CustomerInvoicesController::class, 'index']);
+            Route::get('/invoices/{invoice}', [CustomerInvoicesController::class, 'show']);
 
-            Route::post('/estimate/{estimate}/status', CustomerAcceptEstimateController::class);
+            Route::get('/payments', [CustomerPaymentsController::class, 'index']);
+            Route::get('/payments/{payment}', [CustomerPaymentsController::class, 'show']);
 
-            Route::get('estimates', [CustomerEstimatesController::class, 'index']);
+            Route::get('/payment/methods', PaymentMethodController::class);
 
-            Route::get('estimates/{id}', [CustomerEstimatesController::class, 'show']);
-
-            Route::get('payments', [CustomerPaymentsController::class, 'index']);
-
-            Route::get('payments/{id}', [CustomerPaymentsController::class, 'show']);
-
-            Route::get('/payment-method', PaymentMethodController::class);
-
-            Route::get('expenses', [CustomerExpensesController::class, 'index']);
-
-            Route::get('expenses/{id}', [CustomerExpensesController::class, 'show']);
+            Route::get('/expenses', [CustomerExpensesController::class, 'index']);
+            Route::get('/expenses/{expense}', [CustomerExpensesController::class, 'show']);
 
             Route::post('/profile', [CustomerProfileController::class, 'updateProfile']);
 

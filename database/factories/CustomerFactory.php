@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\Company;
 use App\Models\Currency;
 use App\Models\Customer;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 
@@ -31,9 +31,9 @@ class CustomerFactory extends Factory
             'enable_portal' => true,
             'email' => $this->faker->unique()->safeEmail(),
             'phone' => $this->faker->phoneNumber(),
-            'company_id' => User::find(1)->companies()->first()->id,
+            'company_id' => Company::factory(),
             'password' => Hash::make('secret'),
-            'currency_id' => Currency::find(1)->id,
+            'currency_id' => Currency::first()->id,
         ];
     }
 

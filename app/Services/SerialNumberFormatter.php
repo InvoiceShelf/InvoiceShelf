@@ -92,6 +92,11 @@ class SerialNumberFormatter
                 $companyId
             );
         }
+
+        if (! $format) {
+            $format = 'INV-{{SEQUENCE}}';
+        }
+
         $this->setNextNumbers();
 
         $serialNumber = $this->generateSerialNumber(
