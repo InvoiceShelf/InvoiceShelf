@@ -87,19 +87,19 @@ const taxTypeColumns = computed(() => {
       key: 'name',
       label: t('settings.tax_types.tax_name'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-gray-900 dark:text-gray-200',
     },
     {
       key: 'calculation_type',
       label: t('settings.tax_types.calculation_type'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-gray-900 dark:text-gray-200',
     },
     {
       key: 'amount',
       label: t('settings.tax_types.amount'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-gray-900 dark:text-gray-200',
     },
     {
       key: 'actions',

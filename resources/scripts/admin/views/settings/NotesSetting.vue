@@ -66,13 +66,13 @@ const notesColumns = computed(() => {
       key: 'name',
       label: t('settings.customization.notes.name'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900 flex gap-1 items-center',
+      tdClass: 'font-medium text-gray-900 dark:text-gray-200 flex gap-1 items-center',
     },
     {
       key: 'type',
       label: t('settings.customization.notes.type'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-gray-900 dark:text-gray-200',
     },
 
     {

@@ -119,18 +119,12 @@
       </template>
     </BaseEmptyPlaceholder>
 
-    <div v-show="!showEmptyScreen" class="relative table-container">
+    <div
+      v-show="!showEmptyScreen"
+      class="relative bg-white rounded-lg dark:bg-gray-700 table-container"
+    >
       <div
-        class="
-          relative
-          flex
-          items-center
-          justify-between
-          h-10
-          mt-5
-          list-none
-          border-b-2 border-gray-200 border-solid dark:border-gray-700
-        "
+        class="relative flex items-center justify-between h-10 mt-5 list-none border-b-2 border-gray-200 border-solid dark:border-gray-700"
       >
         <!-- Tabs -->
         <BaseTabGroup class="-mb-5" @change="setStatusFilter">
@@ -148,14 +142,7 @@
         >
           <template #activator>
             <span
-              class="
-                flex
-                text-sm
-                font-medium
-                cursor-pointer
-                select-none
-                text-primary-400
-              "
+              class="flex text-sm font-medium cursor-pointer select-none text-primary-400"
             >
               {{ $t('general.actions') }}
               <BaseIcon name="ChevronDownIcon" />
@@ -163,7 +150,10 @@
           </template>
 
           <BaseDropdownItem @click="removeMultipleEstimates">
-            <BaseIcon name="TrashIcon" class="mr-3 text-gray-600 dark:text-gray-300" />
+            <BaseIcon
+              name="TrashIcon"
+              class="mr-3 text-gray-600 dark:text-gray-300"
+            />
             {{ $t('general.delete') }}
           </BaseDropdownItem>
         </BaseDropdown>
@@ -199,20 +189,22 @@
 
         <!-- Estimate date  -->
         <template #cell-estimate_date="{ row }">
-          {{ row.data.formatted_estimate_date }}
+          <span class="dark:text-gray-300">{{
+            row.data.formatted_estimate_date
+          }}</span>
         </template>
 
         <template #cell-estimate_number="{ row }">
           <router-link
             :to="{ path: `estimates/${row.data.id}/view` }"
-            class="font-medium text-primary-500"
+            class="font-medium text-primary-500 dark:text-primary-400"
           >
             {{ row.data.estimate_number }}
           </router-link>
         </template>
 
         <template #cell-name="{ row }">
-          <BaseText :text="row.data.customer.name" />
+          <BaseText :text="row.data.customer.name" class="dark:text-gray-300" />
         </template>
 
         <template #cell-status="{ row }">
@@ -225,6 +217,7 @@
           <BaseFormatMoney
             :amount="row.data.total"
             :currency="row.data.customer.currency"
+            class="dark:text-gray-300"
           />
         </template>
 

@@ -1,8 +1,8 @@
 <template>
-  <BaseCard>
+  <BaseCard class="p-0 bg-transparent shadow-none">
     <div class="flex flex-wrap justify-between lg:flex-nowrap mb-5">
       <div>
-        <h6 class="font-medium text-lg text-left">
+        <h6 class="font-medium text-lg text-left dark:text-gray-200">
           {{ title }}
         </h6>
 
@@ -12,6 +12,7 @@
             text-sm
             leading-snug
             text-left text-gray-500
+            dark:text-gray-400
             max-w-[680px]
           "
         >

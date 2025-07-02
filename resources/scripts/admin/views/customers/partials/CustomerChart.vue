@@ -1,11 +1,11 @@
 <template>
-  <BaseCard class="flex flex-col mt-6">
+  <BaseCard class="flex flex-col mt-6 dark:bg-gray-700">
     <ChartPlaceholder v-if="customerStore.isFetchingViewData" />
 
     <div v-else class="grid grid-cols-12">
       <div class="col-span-12 xl:col-span-9 xxl:col-span-10">
         <div class="flex justify-between mt-1 mb-6">
-          <h6 class="flex items-center">
+          <h6 class="flex items-center dark:text-gray-200">
             <BaseIcon name="ChartBarSquareIcon" class="h-5 text-primary-400" />
             {{ $t('dashboard.monthly_chart.title') }}
           </h6>
@@ -47,13 +47,13 @@
         "
       >
         <div class="px-6 py-2">
-          <span class="text-xs leading-5 lg:text-sm">
+          <span class="text-xs leading-5 lg:text-sm dark:text-gray-300">
             {{ $t('dashboard.chart_info.total_sales') }}
           </span>
           <br />
           <span
             v-if="isLoading"
-            class="block mt-1 text-xl font-semibold leading-8"
+            class="block mt-1 text-xl font-semibold leading-8 dark:text-gray-200"
           >
             <BaseFormatMoney
               :amount="chartData.salesTotal"
@@ -63,15 +63,14 @@
         </div>
 
         <div class="px-6 py-2">
-          <span class="text-xs leading-5 lg:text-sm">
+          <span class="text-xs leading-5 lg:text-sm dark:text-gray-300">
             {{ $t('dashboard.chart_info.total_receipts') }}
           </span>
           <br />
 
           <span
             v-if="isLoading"
-            class="block mt-1 text-xl font-semibold leading-8"
-            style="color: #00c99c"
+            class="block mt-1 text-xl font-semibold leading-8 text-green-500"
           >
             <BaseFormatMoney
               :amount="chartData.totalExpenses"
@@ -81,14 +80,13 @@
         </div>
 
         <div class="px-6 py-2">
-          <span class="text-xs leading-5 lg:text-sm">
+          <span class="text-xs leading-5 lg:text-sm dark:text-gray-300">
             {{ $t('dashboard.chart_info.total_expense') }}
           </span>
           <br />
           <span
             v-if="isLoading"
-            class="block mt-1 text-xl font-semibold leading-8"
-            style="color: #fb7178"
+            class="block mt-1 text-xl font-semibold leading-8 text-red-500"
           >
             <BaseFormatMoney
               :amount="chartData.totalExpenses"
@@ -98,14 +96,13 @@
         </div>
 
         <div class="px-6 py-2">
-          <span class="text-xs leading-5 lg:text-sm">
+          <span class="text-xs leading-5 lg:text-sm dark:text-gray-300">
             {{ $t('dashboard.chart_info.net_income') }}
           </span>
           <br />
           <span
             v-if="isLoading"
-            class="block mt-1 text-xl font-semibold leading-8"
-            style="color: #5851d8"
+            class="block mt-1 text-xl font-semibold leading-8 text-primary-500 dark:text-primary-400"
           >
             <BaseFormatMoney
               :amount="chartData.netProfit"

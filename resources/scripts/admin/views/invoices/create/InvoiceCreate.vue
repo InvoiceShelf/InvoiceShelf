@@ -86,49 +86,48 @@
 
         <!-- Invoice Footer Section -->
         <div
-          class="
-            block
-            mt-10
-            invoice-foot
-            lg:flex lg:justify-between lg:items-start
-          "
+          class="block mt-10 invoice-foot lg:flex lg:justify-between lg:items-start"
         >
           <div class="relative w-full lg:w-1/2 lg:mr-4">
-            <!-- Invoice Custom Notes -->
-            <NoteFields
-              :store="invoiceStore"
-              store-prop="newInvoice"
-              :fields="invoiceNoteFieldList"
-              type="Invoice"
-            />
+            <BaseCard class="dark:bg-gray-700">
+              <!-- Invoice Custom Notes -->
+              <NoteFields
+                :store="invoiceStore"
+                store-prop="newInvoice"
+                :fields="invoiceNoteFieldList"
+                type="Invoice"
+              />
 
-            <!-- Invoice Custom Fields -->
-            <InvoiceCustomFields
-              type="Invoice"
-              :is-edit="isEdit"
+              <!-- Invoice Custom Fields -->
+              <InvoiceCustomFields
+                type="Invoice"
+                :is-edit="isEdit"
+                :is-loading="isLoadingContent"
+                :store="invoiceStore"
+                store-prop="newInvoice"
+                :custom-field-scope="invoiceValidationScope"
+                class="mb-6"
+              />
+
+              <!-- Invoice Template Button-->
+              <SelectTemplate
+                :store="invoiceStore"
+                store-prop="newInvoice"
+                component-name="InvoiceTemplate"
+                :is-mark-as-default="isMarkAsDefault"
+              />
+            </BaseCard>
+          </div>
+
+          <BaseCard class="w-full mt-4 lg:mt-0 lg:w-1/2 dark:bg-gray-700">
+            <InvoiceTotal
+              :currency="invoiceStore.newInvoice.selectedCurrency"
               :is-loading="isLoadingContent"
               :store="invoiceStore"
               store-prop="newInvoice"
-              :custom-field-scope="invoiceValidationScope"
-              class="mb-6"
+              tax-popup-type="invoice"
             />
-
-            <!-- Invoice Template Button-->
-            <SelectTemplate
-              :store="invoiceStore"
-              store-prop="newInvoice"
-              component-name="InvoiceTemplate"
-              :is-mark-as-default="isMarkAsDefault"
-            />
-          </div>
-
-          <InvoiceTotal
-            :currency="invoiceStore.newInvoice.selectedCurrency"
-            :is-loading="isLoadingContent"
-            :store="invoiceStore"
-            store-prop="newInvoice"
-            tax-popup-type="invoice"
-          />
+          </BaseCard>
         </div>
       </BaseScrollPane>
     </form>

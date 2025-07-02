@@ -212,7 +212,7 @@ function createChart() {
   const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : '#F3F4F6'
   const tickColor = isDark ? '#9CA3AF' : '#6B7280'
   const titleColor = isDark ? '#D1D5DB' : '#374151'
-
+  
   chartInstance = new Chart(ctx, {
     type: 'line',
     data: { datasets: [] },

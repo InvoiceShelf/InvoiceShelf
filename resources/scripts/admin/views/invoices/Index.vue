@@ -73,7 +73,7 @@
       </BaseInputGroup>
 
       <div
-        class="hidden w-8 h-0 mx-4 border border-gray-400 dark:border-gray-600 border-solid xl:block"
+        class="hidden w-8 h-0 mx-4 border border-gray-400 dark:border-gray-700 border-solid xl:block"
         style="margin-top: 1.5rem"
       />
 
@@ -116,18 +116,12 @@
       </template>
     </BaseEmptyPlaceholder>
 
-    <div v-show="!showEmptyScreen" class="relative table-container">
+    <div
+      v-show="!showEmptyScreen"
+      class="relative bg-white rounded-lg dark:bg-gray-700 table-container"
+    >
       <div
-        class="
-          relative
-          flex
-          items-center
-          justify-between
-          h-10
-          mt-5
-          list-none
-          border-b-2 border-gray-200 dark:border-gray-700 border-solid
-        "
+        class="relative flex items-center justify-between h-10 mt-5 list-none border-b-2 border-gray-200 border-solid dark:border-gray-700"
       >
         <!-- Tabs -->
         <BaseTabGroup class="-mb-5" @change="setStatusFilter">
@@ -146,14 +140,7 @@
         >
           <template #activator>
             <span
-              class="
-                flex
-                text-sm
-                font-medium
-                cursor-pointer
-                select-none
-                text-primary-400 dark:text-primary-300
-              "
+              class="flex text-sm font-medium cursor-pointer select-none text-primary-400 dark:text-primary-300"
             >
               {{ $t('general.actions') }}
               <BaseIcon name="ChevronDownIcon" />
@@ -161,7 +148,10 @@
           </template>
 
           <BaseDropdownItem @click="removeMultipleInvoices">
-            <BaseIcon name="TrashIcon" class="mr-3 text-gray-600 dark:text-gray-400" />
+            <BaseIcon
+              name="TrashIcon"
+              class="mr-3 text-gray-600 dark:text-gray-400"
+            />
             {{ $t('general.delete') }}
           </BaseDropdownItem>
         </BaseDropdown>
@@ -197,7 +187,7 @@
         </template>
 
         <template #cell-name="{ row }">
-          <BaseText :text="row.data.customer.name" />
+          <BaseText :text="row.data.customer.name" class="dark:text-gray-300" />
         </template>
 
         <!-- Invoice Number  -->
@@ -212,7 +202,9 @@
 
         <!-- Invoice date  -->
         <template #cell-invoice_date="{ row }">
-          {{ row.data.formatted_invoice_date }}
+          <span class="dark:text-gray-300">{{
+            row.data.formatted_invoice_date
+          }}</span>
         </template>
 
         <!-- Invoice Total  -->
@@ -232,7 +224,7 @@
 
         <!-- Due Amount + Paid Status  -->
         <template #cell-due_amount="{ row }">
-          <div class="flex justify-between">
+          <div class="flex justify-between dark:text-gray-300">
             <BaseFormatMoney
               :amount="row.data.due_amount"
               :currency="row.data.currency"

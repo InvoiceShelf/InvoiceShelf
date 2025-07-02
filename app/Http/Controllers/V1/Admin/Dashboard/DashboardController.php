@@ -524,6 +524,7 @@ class DashboardController extends Controller
         // Convert cents to dollars
         $results = $results->map(function ($item) {
             $item->value = $item->value / 100;
+
             return $item;
         });
 

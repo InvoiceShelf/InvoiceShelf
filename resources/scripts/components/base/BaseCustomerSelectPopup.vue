@@ -16,17 +16,17 @@
       class="
         flex flex-col
         p-4
-        bg-white
         border border-gray-200 border-solid
-        min-h-[170px]
         rounded-md
+        dark:border-gray-600
+        min-h-[170px]
       "
       @click.stop
     >
       <div class="flex relative justify-between mb-2">
         <BaseText
           :text="selectedCustomer.name"
-          class="flex-1 text-base font-medium text-left text-gray-900"
+          class="flex-1 text-base font-medium text-left text-gray-900 dark:text-gray-200"
         />
         <div class="flex">
           <a
@@ -43,7 +43,7 @@
             "
             @click.stop="editCustomer"
           >
-            <BaseIcon name="PencilIcon" class="text-gray-500 h-4 w-4 mr-1" />
+            <BaseIcon name="PencilIcon" class="w-4 h-4 mr-1 text-gray-500" />
 
             {{ $t('general.edit') }}
           </a>
@@ -61,7 +61,7 @@
             "
             @click="resetSelectedCustomer"
           >
-            <BaseIcon name="XCircleIcon" class="text-gray-500 h-4 w-4 mr-1" />
+            <BaseIcon name="XCircleIcon" class="w-4 h-4 mr-1 text-gray-500" />
             {{ $t('general.deselect') }}
           </a>
         </div>
@@ -87,12 +87,12 @@
           >
             <label
               v-if="selectedCustomer.billing.name"
-              class="relative w-11/12 text-sm truncate"
+              class="relative w-11/12 text-sm truncate dark:text-gray-300"
             >
               {{ selectedCustomer.billing.name }}
             </label>
 
-            <label class="relative w-11/12 text-sm truncate">
+            <label class="relative w-11/12 text-sm truncate dark:text-gray-300">
               <span v-if="selectedCustomer.billing.city">
                 {{ selectedCustomer.billing.city }}
               </span>
@@ -110,7 +110,7 @@
             </label>
             <label
               v-if="selectedCustomer.billing.zip"
-              class="relative w-11/12 text-sm truncate"
+              class="relative w-11/12 text-sm truncate dark:text-gray-300"
             >
               {{ selectedCustomer.billing.zip }}
             </label>
@@ -137,12 +137,12 @@
           >
             <label
               v-if="selectedCustomer.shipping.name"
-              class="relative w-11/12 text-sm truncate"
+              class="relative w-11/12 text-sm truncate dark:text-gray-300"
             >
               {{ selectedCustomer.shipping.name }}
             </label>
 
-            <label class="relative w-11/12 text-sm truncate">
+            <label class="relative w-11/12 text-sm truncate dark:text-gray-300">
               <span v-if="selectedCustomer.shipping.city">
                 {{ selectedCustomer.shipping.city }}
               </span>
@@ -160,7 +160,7 @@
             </label>
             <label
               v-if="selectedCustomer.shipping.zip"
-              class="relative w-11/12 text-sm truncate"
+              class="relative w-11/12 text-sm truncate dark:text-gray-300"
             >
               {{ selectedCustomer.shipping.zip }}
             </label>
@@ -187,9 +187,9 @@
             px-0
             p-0
             py-16
-            bg-white
             border border-gray-200 border-solid
             rounded-md
+            dark:border-gray-600
             min-h-[170px]
           "
         >
@@ -204,13 +204,16 @@
               mr-5
               text-sm text-white
               bg-gray-200
+              dark:bg-gray-600
               rounded-full
               font-base
             "
           />
 
           <div class="mt-1">
-            <label class="text-lg font-medium text-gray-900">
+            <label
+              class="text-lg font-medium text-gray-900 dark:text-gray-200"
+            >
               {{ $t('customers.new_customer') }}
               <span class="text-red-500"> * </span>
             </label>

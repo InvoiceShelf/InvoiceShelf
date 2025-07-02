@@ -7,7 +7,7 @@
 
   <BaseDivider class="mt-6 mb-2" />
 
-  <ul class="divide-y divide-gray-200">
+  <ul class="divide-y divide-gray-200 dark:divide-gray-700">
     <BaseSwitchSection
       v-model="sendAsAttachmentField"
       :title="$t('settings.customization.payments.payment_email_attachment')"

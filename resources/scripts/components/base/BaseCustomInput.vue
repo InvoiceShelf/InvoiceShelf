@@ -27,26 +27,19 @@
 
         <div class="flex p-2">
           <ul v-for="(type, index) in fieldList" :key="index" class="list-none">
-            <li class="mb-1 ml-2 text-xs font-semibold text-gray-500 uppercase">
+            <li
+              class="mb-1 ml-2 text-xs font-semibold text-gray-500 uppercase dark:text-gray-400"
+            >
               {{ type.label }}
             </li>
 
             <li
               v-for="(field, fieldIndex) in type.fields"
               :key="fieldIndex"
-              class="
-                w-48
-                text-sm
-                font-normal
-                cursor-pointer
-                hover:bg-gray-100
-                rounded
-                ml-1
-                py-0.5
-              "
+              class="w-48 text-sm font-normal cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded ml-1 py-0.5"
               @click="value += `{${field.value}}`"
             >
-              <div class="flex pl-1">
+              <div class="flex pl-1 dark:text-gray-300">
                 <BaseIcon
                   name="ChevronDoubleRightIcon"
                   class="h-3 mt-1 mr-2 text-gray-400"

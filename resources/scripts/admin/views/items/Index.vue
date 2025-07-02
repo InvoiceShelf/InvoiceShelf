@@ -89,7 +89,10 @@
       </template>
     </BaseEmptyPlaceholder>
 
-    <div v-show="!showEmptyScreen" class="relative table-container">
+    <div
+      v-show="!showEmptyScreen"
+      class="relative bg-white rounded-lg dark:bg-gray-700 table-container"
+    >
       <div
         class="
           relative
@@ -97,7 +100,7 @@
           items-center
           justify-end
           h-5
-          border-gray-200 border-solid
+          border-gray-200 dark:border-gray-700 border-solid
         "
       >
         <BaseDropdown v-if="itemStore.selectedItems.length">
@@ -117,7 +120,7 @@
             </span>
           </template>
           <BaseDropdownItem @click="removeMultipleItems">
-            <BaseIcon name="TrashIcon" class="mr-3 text-gray-600" />
+            <BaseIcon name="TrashIcon" class="mr-3 text-gray-600 dark:text-gray-300" />
             {{ $t('general.delete') }}
           </BaseDropdownItem>
         </BaseDropdown>
@@ -237,7 +240,7 @@ const itemColumns = computed(() => {
     {
       key: 'status',
       thClass: 'extra w-10',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-gray-900 dark:text-gray-200',
       placeholderClass: 'w-10',
       sortable: false,
     },
@@ -245,12 +248,24 @@ const itemColumns = computed(() => {
       key: 'name',
       label: t('items.name'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-gray-900 dark:text-gray-200',
     },
-    { key: 'unit_name', label: t('items.unit') },
-    { key: 'price', label: t('items.price') },
-    { key: 'created_at', label: t('items.added_on') },
-
+    {
+      key: 'unit_name',
+      label: t('items.unit'),
+      tdClass: 'text-gray-900 dark:text-gray-200',
+    },
+    {
+      key: 'price',
+      label: t('items.price'),
+      thClass: 'text-right',
+      tdClass: 'text-right text-gray-900 dark:text-gray-200',
+    },
+    {
+      key: 'created_at',
+      label: t('items.added_on'),
+      tdClass: 'text-gray-900 dark:text-gray-200',
+    },
     {
       key: 'actions',
       thClass: 'text-right',

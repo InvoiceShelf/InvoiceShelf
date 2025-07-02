@@ -87,7 +87,7 @@ const variantClass = computed(() => {
       props.variant === 'secondary',
     'border-solid border-primary-500 font-normal transition ease-in-out duration-150 text-primary-500 hover:bg-primary-200 shadow-inner focus:ring-primary-500':
       props.variant == 'primary-outline',
-    'border-gray-200 text-gray-700 bg-white hover:bg-gray-50 focus:ring-primary-500 focus:ring-offset-0':
+    'border-gray-200 text-gray-700 bg-white hover:bg-gray-50 focus:ring-primary-500 focus:ring-offset-0 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600':
       props.variant == 'white',
     'border-transparent shadow-sm text-white bg-red-600 hover:bg-red-700 focus:ring-red-500':
       props.variant === 'danger',

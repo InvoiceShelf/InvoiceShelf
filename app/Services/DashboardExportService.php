@@ -253,7 +253,7 @@ class DashboardExportService
 
         // Build base query for invoice status counts
         $invoiceQuery = Invoice::whereCompany();
-        
+
         // Apply date filter if provided
         if ($startDate && $endDate) {
             $invoiceQuery->whereBetween('invoice_date', [$startDate, $endDate]);
@@ -326,6 +326,7 @@ class DashboardExportService
         // Convert cents to dollars
         $results = $results->map(function ($item) {
             $item->value = $item->value / 100;
+
             return $item;
         });
 
@@ -359,7 +360,7 @@ class DashboardExportService
 
             while ($current <= $endMonth) {
                 $monthEnd = $current->clone()->endOfMonth();
-                
+
                 // Ensure we don't go beyond the end date
                 if ($monthEnd > $endDateForTotals) {
                     $monthEnd = $endDateForTotals->clone();

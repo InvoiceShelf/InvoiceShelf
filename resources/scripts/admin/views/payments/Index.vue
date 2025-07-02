@@ -96,7 +96,10 @@
       </template>
     </BaseEmptyPlaceholder>
 
-    <div v-show="!showEmptyScreen" class="relative table-container">
+    <div
+      v-show="!showEmptyScreen"
+      class="relative bg-white rounded-lg dark:bg-gray-700 table-container"
+    >
       <!-- Multiple Select Actions -->
       <div class="relative flex items-center justify-end h-5">
         <BaseDropdown v-if="paymentStore.selectedPayments.length">
@@ -116,7 +119,7 @@
             </span>
           </template>
           <BaseDropdownItem @click="removeMultiplePayments">
-            <BaseIcon name="TrashIcon" class="mr-3 text-gray-600" />
+            <BaseIcon name="TrashIcon" class="mr-3 text-gray-600 dark:text-gray-400" />
             {{ $t('general.delete') }}
           </BaseDropdownItem>
         </BaseDropdown>
@@ -246,13 +249,34 @@ const paymentColumns = computed(() => {
       key: 'payment_date',
       label: t('payments.date'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-gray-900 dark:text-gray-200',
     },
-    { key: 'payment_number', label: t('payments.payment_number') },
-    { key: 'name', label: t('payments.customer') },
-    { key: 'payment_mode', label: t('payments.payment_mode') },
-    { key: 'invoice_number', label: t('payments.invoice') },
-    { key: 'amount', label: t('payments.amount') },
+    {
+      key: 'payment_number',
+      label: t('payments.payment_number'),
+      tdClass: 'font-medium text-gray-900 dark:text-gray-200',
+    },
+    {
+      key: 'name',
+      label: t('payments.customer'),
+      tdClass: 'font-medium text-gray-900 dark:text-gray-200',
+    },
+    {
+      key: 'payment_mode',
+      label: t('payments.payment_mode'),
+      tdClass: 'font-medium text-gray-900 dark:text-gray-200',
+    },
+    {
+      key: 'invoice_number',
+      label: t('invoices.invoice_number'),
+      tdClass: 'font-medium text-gray-900 dark:text-gray-200',
+    },
+    {
+      key: 'amount',
+      label: t('payments.amount'),
+      tdClass: 'font-medium text-right text-gray-900 dark:text-gray-200',
+      thClass: 'text-right',
+    },
     {
       key: 'actions',
       label: '',

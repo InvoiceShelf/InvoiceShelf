@@ -61,7 +61,9 @@
           px-4
           pt-8
           pb-2
-          border-t border-r border-gray-200 dark:border-gray-700 border-solid
+          border-t border-r border-gray-200
+          dark:border-gray-700
+          border-solid
           height-full
         "
       >
@@ -97,9 +99,12 @@
                 px-4
                 py-1
                 pb-2
-                mb-1 mb-2
+                mb-2
                 text-sm
-                border-b border-gray-200 dark:border-gray-700 border-solid
+                border-b border-gray-200
+                dark:border-gray-700
+                border-solid
+                dark:text-gray-300
               "
             >
               {{ $t('general.sort_by') }}
@@ -160,7 +165,9 @@
         class="
           h-full
           overflow-y-scroll
-          border-l border-r border-gray-200 dark:border-gray-700 border-solid
+          border-l border-r border-gray-200
+          dark:border-gray-700
+          border-solid
           base-scroll
         "
       >
@@ -262,18 +269,159 @@
     </div>
 
     <div
+      class="p-12 mt-12 bg-white rounded-lg shadow-sm dark:bg-gray-700"
+    >
+      <div class="flex justify-between pb-6 border-b-2 border-gray-200">
+        <div class="flex flex-col">
+          <div class="flex mb-12">
+            <MainLogo class="w-20" />
+            <BaseEstimateStatusBadge
+              class="mt-4 ml-6"
+              :status="estimateData.status"
+            >
+              <BaseEstimateStatusLabel :status="estimateData.status" />
+            </BaseEstimateStatusBadge>
+          </div>
+
+          <div class="flex-1">
+            <h5 class="mb-4 font-semibold">
+              {{ $t('estimates.bill_to') }}
+            </h5>
+            <div class="text-sm text-gray-600">
+              <span class="font-semibold text-gray-900">
+                {{ estimateData.customer.name }}
+              </span>
+              <div v-if="estimateData.customer.address">
+                <p>
+                  {{ estimateData.customer.address.address_street_1 }}
+                </p>
+                <p v-if="estimateData.customer.address.address_street_2">
+                  {{ estimateData.customer.address.address_street_2 }}
+                </p>
+                <p>
+                  {{ estimateData.customer.address.city }},
+                  {{ estimateData.customer.address.state }}
+                  {{ estimateData.customer.address.zip }}
+                </p>
+                <p>{{ estimateData.customer.address.country.name }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex-col justify-end">
+          <div class="text-right">
+            <h1 class="text-4xl font-bold">
+              {{ $t('estimates.estimate', 1) }}
+            </h1>
+            <p class="text-sm text-gray-600">
+              #{{ estimateData.estimate_number }}
+            </p>
+          </div>
+          <table class="w-full mt-10 text-sm text-right">
+            <tbody>
+              <tr class="mb-4">
+                <th class="pr-6 text-left text-gray-600">
+                  {{ $t('estimates.estimate_date') }}:
+                </th>
+                <td>{{ estimateData.formatted_estimate_date }}</td>
+              </tr>
+              <tr>
+                <th class="pr-6 text-left text-gray-600">
+                  {{ $t('estimates.due_date') }}:
+                </th>
+                <td>{{ estimateData.formatted_expiry_date }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <EstimateViewTable
+        :estimate="estimateData"
+        class="my-10 text-sm text-gray-600"
+      />
+
+      <div class="flex justify-end">
+        <div class="w-1/2">
+          <table class="w-full text-sm">
+            <tbody>
+              <tr>
+                <th class="text-right">{{ $t('invoices.sub_total') }}:</th>
+                <td class="px-10 py-1 text-right">
+                  <BaseFormatMoney
+                    :amount="estimateData.sub_total"
+                    :currency="estimateData.currency"
+                  />
+                </td>
+              </tr>
+              <tr v-if="estimateData.discount_per_item === 'NO'">
+                <th class="py-1 text-right text-gray-600">
+                  {{ $t('invoices.discount') }}:
+                </th>
+                <td class="py-1 text-right text-gray-600">
+                  <BaseFormatMoney
+                    :amount="estimateData.discount"
+                    :currency="estimateData.currency"
+                  />
+                </td>
+              </tr>
+              <tr v-for="tax in estimateData.taxes" :key="tax.tax_type_id">
+                <th class="py-1 text-right text-gray-600">
+                  {{ tax.name }}({{ tax.percent }}%):
+                </th>
+                <td class="py-1 text-right text-gray-600">
+                  <BaseFormatMoney
+                    :amount="tax.amount"
+                    :currency="estimateData.currency"
+                  />
+                </td>
+              </tr>
+
+              <tr
+                class="text-xl font-semibold text-black border-t-2 border-gray-200"
+              >
+                <th class="py-2 pt-4 text-right">
+                  {{ $t('invoices.total') }}:
+                </th>
+                <td class="px-10 py-2 pt-4 text-right">
+                  <BaseFormatMoney
+                    :amount="estimateData.total"
+                    :currency="estimateData.currency"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="pt-8">
+        <h6 class="mb-4 text-sm font-semibold">
+          {{ $t('estimates.notes') }}
+        </h6>
+        <p class="text-sm text-gray-600">
+          {{ estimateData.notes }}
+        </p>
+      </div>
+
+      <div class="pt-8">
+        <h6 class="mb-4 text-sm font-semibold">
+          {{ $t('estimates.terms_and_conditions') }}
+        </h6>
+        <p class="text-sm text-gray-600">
+          {{ estimateData.terms }}
+        </p>
+      </div>
+    </div>
+
+    <!-- pdf section -->
+    <div
       class="flex flex-col min-h-0 mt-8 overflow-hidden"
       style="height: 75vh"
     >
       <iframe
         :src="`${shareableLink}`"
-        class="
-          flex-1
-          border border-gray-400 border-solid
-          rounded-md
-          bg-white
-          frame-style
-        "
+        class="flex-1 border border-gray-400 border-solid rounded-md bg-white dark:bg-gray-700 dark:border-gray-600 frame-style"
       />
     </div>
   </BasePage>
