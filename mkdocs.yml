@@ -1,0 +1,86 @@
+site_name: Crater - Documentación Técnica
+site_description: Documentación técnica completa del sistema Crater
+site_author: Crater Team
+
+# Copyright
+copyright: Copyright &copy; 2024 Crater Team
+
+# Configuration
+theme:
+  name: material
+  palette:
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
+    - navigation.top
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+  font:
+    text: Roboto
+    code: Roboto Mono
+  icon:
+    repo: fontawesome/brands/github
+
+# Plugins
+plugins:
+  - search:
+      lang: es
+      fallback_to_build_date: true
+
+# Extensions
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - attr_list
+  - md_in_html
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - tables
+  - toc:
+      permalink: true
+
+# Page tree
+nav:
+  - Inicio: index.md
+  - Instalación:
+    - Guía de Instalación: installation/index.md
+    - Requisitos del Sistema: installation/requirements.md
+    - Configuración: installation/configuration.md
+  - Arquitectura:
+    - Visión General: architecture/overview.md
+    - Backend (Laravel): architecture/backend.md
+    - Frontend (Vue.js): architecture/frontend.md
+    - Base de Datos: architecture/database.md
+  - API:
+    - Introducción: api/introduction.md
+    - Autenticación: api/authentication.md
+    - Endpoints: api/endpoints.md

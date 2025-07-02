@@ -1,0 +1,1484 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentación técnica completa del sistema Crater">
+      
+      
+        <meta name="author" content="Crater Team">
+      
+      
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
+    
+    
+      
+        <title>Análisis del Filtro "Activo" - Dashboard InvoiceShelf - Crater - Documentación Técnica</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.342714a4.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#analisis-del-filtro-activo-dashboard-invoiceshelf" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Crater - Documentación Técnica" class="md-header__button md-logo" aria-label="Crater - Documentación Técnica" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Crater - Documentación Técnica
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Análisis del Filtro "Activo" - Dashboard InvoiceShelf
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Inicio
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../installation/" class="md-tabs__link">
+          
+  
+  
+  Instalación
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../architecture/overview/" class="md-tabs__link">
+          
+  
+  
+  Arquitectura
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../api/introduction/" class="md-tabs__link">
+          
+  
+  
+  API
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Crater - Documentación Técnica" class="md-nav__button md-logo" aria-label="Crater - Documentación Técnica" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Crater - Documentación Técnica
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Inicio
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Instalación
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Instalación
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Guía de Instalación
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/requirements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Requisitos del Sistema
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configuración
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Arquitectura
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Arquitectura
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Visión General
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/backend.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Backend (Laravel)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/frontend.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Frontend (Vue.js)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/database.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Base de Datos
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    API
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            API
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introducción
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/authentication.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Autenticación
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/endpoints.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Endpoints
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#resumen-del-analisis" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resumen del Análisis
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#estructura-actual-del-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      Estructura Actual del Dashboard
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Estructura Actual del Dashboard">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#frontend-vuejs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Frontend (Vue.js)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backend-laravel" class="md-nav__link">
+    <span class="md-ellipsis">
+      Backend (Laravel)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stores-pinia" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stores (Pinia)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#entidades-y-estados-identificados" class="md-nav__link">
+    <span class="md-ellipsis">
+      Entidades y Estados Identificados
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Entidades y Estados Identificados">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-invoices-facturas" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Invoices (Facturas)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-estimates-presupuestos" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Estimates (Presupuestos)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-customers-clientes" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Customers (Clientes)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-payments-pagos" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Payments (Pagos)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementacion-realizada" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementación Realizada
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementación Realizada">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-dashboard-stores-actualizados" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Dashboard Stores Actualizados ✅
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Dashboard Stores Actualizados ✅">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#admin-store-resourcesscriptsadminstoresdashboardjs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Admin Store (resources/scripts/admin/stores/dashboard.js)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#customer-store-resourcesscriptscustomerstoresdashboardjs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Customer Store (resources/scripts/customer/stores/dashboard.js)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-backend-controllers-actualizados" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Backend Controllers Actualizados ✅
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Backend Controllers Actualizados ✅">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#admin-dashboard-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      Admin Dashboard Controller
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#customer-dashboard-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      Customer Dashboard Controller
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-tests-automatizados-implementados" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Tests Automatizados Implementados ✅
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Tests Automatizados Implementados ✅">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#admin-dashboard-tests-testsfeatureadmindashboardtestphp" class="md-nav__link">
+    <span class="md-ellipsis">
+      Admin Dashboard Tests (tests/Feature/Admin/DashboardTest.php)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#customer-dashboard-tests-testsfeaturecustomerdashboardtestphp" class="md-nav__link">
+    <span class="md-ellipsis">
+      Customer Dashboard Tests (tests/Feature/Customer/DashboardTest.php)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-funcionalidades-implementadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Funcionalidades Implementadas
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Funcionalidades Implementadas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#persistencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      Persistencia
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#api-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      API Integration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gestion-de-estado" class="md-nav__link">
+    <span class="md-ellipsis">
+      Gestión de Estado
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proximos-pasos" class="md-nav__link">
+    <span class="md-ellipsis">
+      Próximos Pasos
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Próximos Pasos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#paso-2-backend-implementation-completado" class="md-nav__link">
+    <span class="md-ellipsis">
+      ~~Paso 2: Backend Implementation~~ ✅ COMPLETADO
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-3-frontend-ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 3: Frontend UI
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-4-setup-base-del-modo-oscuro" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 4: Setup Base del Modo Oscuro
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#consideraciones-tecnicas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Consideraciones Técnicas
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Consideraciones Técnicas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ux" class="md-nav__link">
+    <span class="md-ellipsis">
+      UX
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compatibilidad" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compatibilidad
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#seguridad" class="md-nav__link">
+    <span class="md-ellipsis">
+      Seguridad
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#criterios-de-aceptacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Criterios de Aceptación
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detalles-de-implementacion-backend" class="md-nav__link">
+    <span class="md-ellipsis">
+      Detalles de Implementación Backend
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Detalles de Implementación Backend">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#logica-de-filtrado-implementada" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lógica de Filtrado Implementada
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Lógica de Filtrado Implementada">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#para-invoices-facturas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Para Invoices (Facturas)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#para-estimates-presupuestos" class="md-nav__link">
+    <span class="md-ellipsis">
+      Para Estimates (Presupuestos)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#para-customers-clientes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Para Customers (Clientes)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="analisis-del-filtro-activo-dashboard-invoiceshelf">Análisis del Filtro "Activo" - Dashboard InvoiceShelf<a class="headerlink" href="#analisis-del-filtro-activo-dashboard-invoiceshelf" title="Permanent link">&para;</a></h1>
+<h2 id="resumen-del-analisis">Resumen del Análisis<a class="headerlink" href="#resumen-del-analisis" title="Permanent link">&para;</a></h2>
+<p>Este documento detalla el análisis realizado para implementar el filtro "Activo" en el dashboard de InvoiceShelf, que permitirá mostrar solo elementos activos/vigentes.</p>
+<h2 id="estructura-actual-del-dashboard">Estructura Actual del Dashboard<a class="headerlink" href="#estructura-actual-del-dashboard" title="Permanent link">&para;</a></h2>
+<h3 id="frontend-vuejs">Frontend (Vue.js)<a class="headerlink" href="#frontend-vuejs" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Admin Dashboard</strong>: <code>resources/scripts/admin/views/dashboard/Dashboard.vue</code></li>
+<li><strong>Customer Dashboard</strong>: <code>resources/scripts/customer/views/dashboard/Dashboard.vue</code></li>
+<li><strong>Componentes principales</strong>:</li>
+<li><code>DashboardStats.vue</code> - Tarjetas de estadísticas</li>
+<li><code>DashboardTable.vue</code> - Tablas de elementos recientes</li>
+<li><code>DashboardChart.vue</code> - Gráficos financieros (solo admin)</li>
+</ul>
+<h3 id="backend-laravel">Backend (Laravel)<a class="headerlink" href="#backend-laravel" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Admin Controller</strong>: <code>app/Http/Controllers/V1/Admin/Dashboard/DashboardController.php</code></li>
+<li><strong>Customer Controller</strong>: <code>app/Http/Controllers/V1/Customer/General/DashboardController.php</code></li>
+</ul>
+<h3 id="stores-pinia">Stores (Pinia)<a class="headerlink" href="#stores-pinia" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Admin Store</strong>: <code>resources/scripts/admin/stores/dashboard.js</code></li>
+<li><strong>Customer Store</strong>: <code>resources/scripts/customer/stores/dashboard.js</code></li>
+</ul>
+<h2 id="entidades-y-estados-identificados">Entidades y Estados Identificados<a class="headerlink" href="#entidades-y-estados-identificados" title="Permanent link">&para;</a></h2>
+<h3 id="1-invoices-facturas">1. Invoices (Facturas)<a class="headerlink" href="#1-invoices-facturas" title="Permanent link">&para;</a></h3>
+<p><strong>Estados disponibles</strong>:
+- <code>DRAFT</code> - Borrador
+- <code>SENT</code> - Enviada
+- <code>VIEWED</code> - Vista
+- <code>COMPLETED</code> - Completada
+- <code>UNPAID</code> - No pagada
+- <code>PARTIALLY_PAID</code> - Parcialmente pagada
+- <code>PAID</code> - Pagada</p>
+<p><strong>Criterio "Activo"</strong>: Facturas con estado <code>SENT</code>, <code>VIEWED</code> y paid_status <code>UNPAID</code>, <code>PARTIALLY_PAID</code> (excluir <code>DRAFT</code>, <code>COMPLETED</code>, <code>PAID</code>)</p>
+<h3 id="2-estimates-presupuestos">2. Estimates (Presupuestos)<a class="headerlink" href="#2-estimates-presupuestos" title="Permanent link">&para;</a></h3>
+<p><strong>Estados disponibles</strong>:
+- <code>DRAFT</code> - Borrador
+- <code>SENT</code> - Enviado
+- <code>VIEWED</code> - Visto
+- <code>EXPIRED</code> - Expirado
+- <code>ACCEPTED</code> - Aceptado
+- <code>REJECTED</code> - Rechazado</p>
+<p><strong>Criterio "Activo"</strong>: Presupuestos con estado <code>SENT</code>, <code>VIEWED</code> (excluir <code>DRAFT</code>, <code>EXPIRED</code>, <code>ACCEPTED</code>, <code>REJECTED</code>)</p>
+<h3 id="3-customers-clientes">3. Customers (Clientes)<a class="headerlink" href="#3-customers-clientes" title="Permanent link">&para;</a></h3>
+<p><strong>Campos relevantes</strong>:
+- <code>enable_portal</code> - Boolean para acceso al portal
+- No hay campo de estado específico</p>
+<p><strong>Criterio "Activo"</strong>: Clientes con <code>enable_portal = true</code> y que tengan facturas o presupuestos activos</p>
+<h3 id="4-payments-pagos">4. Payments (Pagos)<a class="headerlink" href="#4-payments-pagos" title="Permanent link">&para;</a></h3>
+<p><strong>Consideración</strong>: Los pagos no tienen estados de "activo/inactivo" por naturaleza, se consideran siempre válidos una vez creados.</p>
+<h2 id="implementacion-realizada">Implementación Realizada<a class="headerlink" href="#implementacion-realizada" title="Permanent link">&para;</a></h2>
+<h3 id="1-dashboard-stores-actualizados">1. Dashboard Stores Actualizados ✅<a class="headerlink" href="#1-dashboard-stores-actualizados" title="Permanent link">&para;</a></h3>
+<h4 id="admin-store-resourcesscriptsadminstoresdashboardjs">Admin Store (<code>resources/scripts/admin/stores/dashboard.js</code>)<a class="headerlink" href="#admin-store-resourcesscriptsadminstoresdashboardjs" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// Nuevo estado agregado</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nx">activeFilter</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nx">enabled</span><span class="o">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="nx">persistKey</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;dashboard_active_filter&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">}</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1">// Nuevos getters</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="nx">isActiveFilterEnabled</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">state</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">state</span><span class="p">.</span><span class="nx">activeFilter</span><span class="p">.</span><span class="nx">enabled</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="c1">// Nuevas acciones</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="o">-</span><span class="w"> </span><span class="nx">toggleActiveFilter</span><span class="p">()</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="o">-</span><span class="w"> </span><span class="nx">setActiveFilter</span><span class="p">(</span><span class="nx">enabled</span><span class="p">)</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="o">-</span><span class="w"> </span><span class="nx">persistActiveFilter</span><span class="p">()</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="o">-</span><span class="w"> </span><span class="nx">loadActiveFilter</span><span class="p">()</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="o">-</span><span class="w"> </span><span class="nx">initialize</span><span class="p">()</span>
+</code></pre></div>
+<h4 id="customer-store-resourcesscriptscustomerstoresdashboardjs">Customer Store (<code>resources/scripts/customer/stores/dashboard.js</code>)<a class="headerlink" href="#customer-store-resourcesscriptscustomerstoresdashboardjs" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// Mismo patrón implementado con clave diferente</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nx">persistKey</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;customer_dashboard_active_filter&#39;</span>
+</code></pre></div>
+<h3 id="2-backend-controllers-actualizados">2. Backend Controllers Actualizados ✅<a class="headerlink" href="#2-backend-controllers-actualizados" title="Permanent link">&para;</a></h3>
+<h4 id="admin-dashboard-controller">Admin Dashboard Controller<a class="headerlink" href="#admin-dashboard-controller" title="Permanent link">&para;</a></h4>
+<ul>
+<li>✅ Acepta parámetro <code>active_only</code> (boolean)</li>
+<li>✅ Filtrado implementado en todas las consultas:</li>
+<li><strong>Invoices</strong>: <code>whereIn('status', ['SENT', 'VIEWED'])-&gt;whereIn('paid_status', ['UNPAID', 'PARTIALLY_PAID'])</code></li>
+<li><strong>Estimates</strong>: <code>whereIn('status', ['SENT', 'VIEWED'])</code></li>
+<li><strong>Customers</strong>: <code>where('enable_portal', true)</code> + relaciones activas</li>
+<li><strong>Chart data</strong>: Filtrado aplicado a totales mensuales</li>
+<li>✅ Respuesta incluye <code>active_filter_applied</code> para debugging</li>
+<li>✅ Documentación PHPDoc actualizada</li>
+</ul>
+<h4 id="customer-dashboard-controller">Customer Dashboard Controller<a class="headerlink" href="#customer-dashboard-controller" title="Permanent link">&para;</a></h4>
+<ul>
+<li>✅ Acepta parámetro <code>active_only</code> (boolean)</li>
+<li>✅ Filtrado implementado en todas las consultas:</li>
+<li><strong>Invoices</strong>: <code>whereIn('status', ['SENT', 'VIEWED'])-&gt;whereIn('paid_status', ['UNPAID', 'PARTIALLY_PAID'])</code></li>
+<li><strong>Estimates</strong>: <code>whereIn('status', ['SENT', 'VIEWED'])</code></li>
+<li><strong>Payments</strong>: Sin filtro (siempre activos)</li>
+<li>✅ Respuesta incluye <code>active_filter_applied</code> para debugging</li>
+<li>✅ Documentación PHPDoc actualizada</li>
+</ul>
+<h3 id="3-tests-automatizados-implementados">3. Tests Automatizados Implementados ✅<a class="headerlink" href="#3-tests-automatizados-implementados" title="Permanent link">&para;</a></h3>
+<h4 id="admin-dashboard-tests-testsfeatureadmindashboardtestphp">Admin Dashboard Tests (<code>tests/Feature/Admin/DashboardTest.php</code>)<a class="headerlink" href="#admin-dashboard-tests-testsfeatureadmindashboardtestphp" title="Permanent link">&para;</a></h4>
+<ul>
+<li>✅ Test básico de dashboard sin filtro</li>
+<li>✅ Test de dashboard con filtro activo</li>
+<li>✅ Test de filtrado correcto de invoices</li>
+<li>✅ Test de filtrado correcto de estimates</li>
+<li>✅ Test de filtrado correcto de customers</li>
+<li>✅ Test de variaciones de parámetros boolean</li>
+</ul>
+<h4 id="customer-dashboard-tests-testsfeaturecustomerdashboardtestphp">Customer Dashboard Tests (<code>tests/Feature/Customer/DashboardTest.php</code>)<a class="headerlink" href="#customer-dashboard-tests-testsfeaturecustomerdashboardtestphp" title="Permanent link">&para;</a></h4>
+<ul>
+<li>✅ Test básico de dashboard sin filtro</li>
+<li>✅ Test de dashboard con filtro activo</li>
+<li>✅ Test de filtrado correcto de invoices</li>
+<li>✅ Test de filtrado correcto de estimates</li>
+<li>✅ Test de variaciones de parámetros boolean</li>
+</ul>
+<h3 id="4-funcionalidades-implementadas">4. Funcionalidades Implementadas<a class="headerlink" href="#4-funcionalidades-implementadas" title="Permanent link">&para;</a></h3>
+<h4 id="persistencia">Persistencia<a class="headerlink" href="#persistencia" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Estado del filtro guardado en <code>localStorage</code></li>
+<li>Claves separadas para admin y customer</li>
+<li>Recuperación automática al inicializar</li>
+</ul>
+<h4 id="api-integration">API Integration<a class="headerlink" href="#api-integration" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Parámetro <code>active_only=true</code> enviado cuando el filtro está activo</li>
+<li>Recarga automática de datos al cambiar el filtro</li>
+<li>✅ Backend procesa correctamente el parámetro</li>
+<li>✅ Filtrado aplicado a todas las consultas relevantes</li>
+</ul>
+<h4 id="gestion-de-estado">Gestión de Estado<a class="headerlink" href="#gestion-de-estado" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Getters para acceso reactivo al estado</li>
+<li>Acciones para toggle y set del filtro</li>
+<li>Manejo de errores en persistencia</li>
+</ul>
+<h2 id="proximos-pasos">Próximos Pasos<a class="headerlink" href="#proximos-pasos" title="Permanent link">&para;</a></h2>
+<h3 id="paso-2-backend-implementation-completado">~~Paso 2: Backend Implementation~~ ✅ COMPLETADO<a class="headerlink" href="#paso-2-backend-implementation-completado" title="Permanent link">&para;</a></h3>
+<ol>
+<li>✅ Modificar <code>DashboardController.php</code> para aceptar <code>active_only</code> parameter</li>
+<li>✅ Implementar lógica de filtrado en consultas</li>
+<li>✅ Agregar tests PHPUnit</li>
+<li>✅ Documentar con PHPDoc</li>
+</ol>
+<h3 id="paso-3-frontend-ui">Paso 3: Frontend UI<a class="headerlink" href="#paso-3-frontend-ui" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Crear componente toggle para el filtro</li>
+<li>Integrar en <code>DashboardStats.vue</code></li>
+<li>Agregar indicadores visuales del estado del filtro</li>
+<li>Implementar transiciones suaves</li>
+</ol>
+<h3 id="paso-4-setup-base-del-modo-oscuro">Paso 4: Setup Base del Modo Oscuro<a class="headerlink" href="#paso-4-setup-base-del-modo-oscuro" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Configurar <code>darkMode: 'class'</code> en <code>tailwind.config.js</code></li>
+<li>Crear store para el tema (<code>useThemeStore</code>)</li>
+<li>Implementar persistencia en localStorage</li>
+<li>Crear composable <code>useTheme</code> para manejo del tema</li>
+</ol>
+<h2 id="consideraciones-tecnicas">Consideraciones Técnicas<a class="headerlink" href="#consideraciones-tecnicas" title="Permanent link">&para;</a></h2>
+<h3 id="performance">Performance<a class="headerlink" href="#performance" title="Permanent link">&para;</a></h3>
+<ul>
+<li>El filtro puede reducir significativamente el volumen de datos</li>
+<li>Considerar índices en campos de estado para optimización</li>
+</ul>
+<h3 id="ux">UX<a class="headerlink" href="#ux" title="Permanent link">&para;</a></h3>
+<ul>
+<li>El filtro debe ser claramente visible pero no intrusivo</li>
+<li>Estado persistente mejora la experiencia del usuario</li>
+<li>Indicadores visuales cuando el filtro está activo</li>
+</ul>
+<h3 id="compatibilidad">Compatibilidad<a class="headerlink" href="#compatibilidad" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Implementación backward-compatible</li>
+<li>Parámetro opcional en API</li>
+<li>Fallback graceful si localStorage no está disponible</li>
+</ul>
+<h3 id="seguridad">Seguridad<a class="headerlink" href="#seguridad" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Validación de parámetros en backend</li>
+<li>Autorización mantenida en todas las consultas</li>
+<li>Tests cubren casos edge</li>
+</ul>
+<h2 id="criterios-de-aceptacion">Criterios de Aceptación<a class="headerlink" href="#criterios-de-aceptacion" title="Permanent link">&para;</a></h2>
+<ul>
+<li>✅ Filtro funcional en admin dashboard (backend)</li>
+<li>✅ Filtro funcional en customer dashboard (backend)</li>
+<li>✅ Estado persistente entre sesiones (frontend)</li>
+<li>✅ API backend soporta parámetro <code>active_only</code></li>
+<li>✅ Tests automatizados implementados</li>
+<li>✅ Documentación completa</li>
+<li>[ ] UX intuitiva y responsive (Paso 3)</li>
+</ul>
+<h2 id="detalles-de-implementacion-backend">Detalles de Implementación Backend<a class="headerlink" href="#detalles-de-implementacion-backend" title="Permanent link">&para;</a></h2>
+<h3 id="logica-de-filtrado-implementada">Lógica de Filtrado Implementada<a class="headerlink" href="#logica-de-filtrado-implementada" title="Permanent link">&para;</a></h3>
+<h4 id="para-invoices-facturas">Para Invoices (Facturas)<a class="headerlink" href="#para-invoices-facturas" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="x">if ($activeOnly) {</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="x">    $query-&gt;whereIn(&#39;status&#39;, [</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="x">        Invoice::STATUS_SENT,</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="x">        Invoice::STATUS_VIEWED</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="x">    ])-&gt;whereIn(&#39;paid_status&#39;, [</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="x">        Invoice::STATUS_UNPAID,</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="x">        Invoice::STATUS_PARTIALLY_PAID</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="x">    ]);</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="x">}</span>
+</code></pre></div>
+<h4 id="para-estimates-presupuestos">Para Estimates (Presupuestos)<a class="headerlink" href="#para-estimates-presupuestos" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="x">if ($activeOnly) {</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="x">    $query-&gt;whereIn(&#39;status&#39;, [</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="x">        Estimate::STATUS_SENT,</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="x">        Estimate::STATUS_VIEWED</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="x">    ]);</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="x">}</span>
+</code></pre></div>
+<h4 id="para-customers-clientes">Para Customers (Clientes)<a class="headerlink" href="#para-customers-clientes" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="x">if ($activeOnly) {</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="x">    $query-&gt;where(&#39;enable_portal&#39;, true)</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="x">        -&gt;where(function ($query) {</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="x">            $query-&gt;whereHas(&#39;invoices&#39;, function ($subQuery) {</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="x">                $subQuery-&gt;whereIn(&#39;status&#39;, [</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="x">                    Invoice::STATUS_SENT,</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="x">                    Invoice::STATUS_VIEWED</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="x">                ])-&gt;whereIn(&#39;paid_status&#39;, [</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="x">                    Invoice::STATUS_UNPAID,</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="x">                    Invoice::STATUS_PARTIALLY_PAID</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="x">                ]);</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="x">            })-&gt;orWhereHas(&#39;estimates&#39;, function ($subQuery) {</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="x">                $subQuery-&gt;whereIn(&#39;status&#39;, [</span>
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="x">                    Estimate::STATUS_SENT,</span>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="x">                    Estimate::STATUS_VIEWED</span>
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="x">                ]);</span>
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="x">            });</span>
+<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="x">        });</span>
+<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="x">}</span>
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024 Crater Team
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      
+    
+  </body>
+</html>
