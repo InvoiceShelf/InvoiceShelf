@@ -42,8 +42,10 @@ import Chart from 'chart.js/auto'
 import axios from 'axios'
 import { handleError } from '@/scripts/helpers/error-handling'
 import { useDateFilterStore } from '@/scripts/admin/stores/dateFilter'
+import { useThemeStore } from '@/scripts/stores/theme'
 
 const dateFilterStore = useDateFilterStore()
+const themeStore = useThemeStore()
 
 const typeOptions = [
   { label: 'Clients', value: 'clients' },
@@ -80,7 +82,7 @@ function initializeDateRange() {
 
 const chartData = computed(() => {
   const labels = chartApiData.value.map(d => d.label)
-  const values = chartApiData.value.map(d => d.value)
+  const values = chartApiData.value.map(d => parseFloat(d.value) || 0)
   const total = values.reduce((sum, v) => sum + v, 0)
   return { labels, values, total }
 })
@@ -114,6 +116,8 @@ function createChart() {
   const ctx = canvasRef.value.getContext('2d')
   const { labels, values, total } = chartData.value
 
+  const tickColor = themeStore.isDarkMode ? '#9CA3AF' : '#374151'
+
   chartInstance = new Chart(ctx, {
     type: 'bar',
     data: {
@@ -134,12 +138,16 @@ function createChart() {
       animation: { duration: 800, easing: 'easeOutQuart' },
       scales: {
         x: {
-          ticks: { callback: v => `$${v.toLocaleString()}`, color: '#374151', font: { size: 12 } },
+          ticks: { 
+            callback: v => `$${parseFloat(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 
+            color: tickColor, 
+            font: { size: 12 } 
+          },
           grid: { display: false }
         },
         y: {
           ticks: {
-            color: '#374151',
+            color: tickColor,
             font: { size: 12 },
             callback: function(value) {
                 const label = this.getLabelForValue(value);
@@ -159,9 +167,10 @@ function createChart() {
             label(ctx) {
               const val = ctx.parsed.x || 0;
               const { total } = chartData.value;
-              if (total === 0) return `$${val.toLocaleString()}`;
+              const formattedVal = parseFloat(val).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+              if (total === 0) return `$${formattedVal}`;
               const pct = ((val / total) * 100).toFixed(1);
-              return `$${val.toLocaleString()} (${pct}%)`;
+              return `$${formattedVal} (${pct}%)`;
             }
           }
         }
@@ -215,5 +224,14 @@ onUnmounted(() => {
 
 watch(selectedType, fetchData)
 watch(chartData, updateChart)
+
+watch(() => themeStore.isDarkMode, (isDark) => {
+  if (chartInstance) {
+    const newTickColor = isDark ? '#9CA3AF' : '#374151'
+    chartInstance.options.scales.x.ticks.color = newTickColor
+    chartInstance.options.scales.y.ticks.color = newTickColor
+    chartInstance.update()
+  }
+})
 
 </script>

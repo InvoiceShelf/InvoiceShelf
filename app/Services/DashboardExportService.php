@@ -181,7 +181,7 @@ class DashboardExportService
                     'total_net_income' => $this->formatNumericValue($dashboardData['total_net_income'] ?? 0, 2, true),
                 ],
                 'distribution' => $dashboardData['status_distribution'] ?? [],
-                'outstanding' => $this->formatArrayNumericValues($this->getTopOutstandingData($request)->toArray(), 2, true),
+                'outstanding' => $this->formatArrayNumericValues($this->getTopOutstandingData($request)->toArray(), 2, false),
             ];
         }
 
@@ -221,11 +221,11 @@ class DashboardExportService
             ->when($request->has('status'), function ($query) use ($request) {
                 return $query->where('status', $request->status);
             })
-            ->when($request->has('from_date'), function ($query) use ($request) {
-                return $query->where('invoice_date', '>=', $request->from_date);
+            ->when($request->has('start_date'), function ($query) use ($request) {
+                return $query->where('invoice_date', '>=', $request->start_date);
             })
-            ->when($request->has('to_date'), function ($query) use ($request) {
-                return $query->where('invoice_date', '<=', $request->to_date);
+            ->when($request->has('end_date'), function ($query) use ($request) {
+                return $query->where('invoice_date', '<=', $request->end_date);
             })
             ->when($request->has('search'), function ($query) use ($request) {
                 $query->where(function ($q) use ($request) {
@@ -248,11 +248,22 @@ class DashboardExportService
 
     private function getSummaryData(Request $request)
     {
-        $paid_count = Invoice::whereCompany()->where('paid_status', Invoice::STATUS_PAID)->count();
-        $overdue_count = Invoice::whereCompany()->where('paid_status', Invoice::STATUS_UNPAID)
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        // Build base query for invoice status counts
+        $invoiceQuery = Invoice::whereCompany();
+        
+        // Apply date filter if provided
+        if ($startDate && $endDate) {
+            $invoiceQuery->whereBetween('invoice_date', [$startDate, $endDate]);
+        }
+
+        $paid_count = $invoiceQuery->clone()->where('paid_status', Invoice::STATUS_PAID)->count();
+        $overdue_count = $invoiceQuery->clone()->where('paid_status', Invoice::STATUS_UNPAID)
             ->where('due_date', '<', Carbon::now())
             ->count();
-        $pending_count = Invoice::whereCompany()->whereIn('paid_status', [Invoice::STATUS_UNPAID, Invoice::STATUS_PARTIALLY_PAID])
+        $pending_count = $invoiceQuery->clone()->whereIn('paid_status', [Invoice::STATUS_UNPAID, Invoice::STATUS_PARTIALLY_PAID])
             ->where('due_date', '>=', Carbon::now())
             ->count();
 
@@ -275,19 +286,17 @@ class DashboardExportService
     private function getTopOutstandingData(Request $request)
     {
         $type = $request->input('type', 'clients');
-
-        // Use broader date range for exports if no specific dates provided
-        // Default to current year instead of just current month to ensure we have data
-        $defaultStartDate = Carbon::now()->startOfYear();
-        $defaultEndDate = Carbon::now()->endOfYear();
-
-        $startDate = $request->input('start_date', $defaultStartDate);
-        $endDate = $request->input('end_date', $defaultEndDate);
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
 
         // Use the same logic as the working DashboardController::topOutstanding method
         $baseQuery = Invoice::whereCompany()
-            ->whereIn('paid_status', [Invoice::STATUS_UNPAID, Invoice::STATUS_PARTIALLY_PAID])
-            ->whereBetween('invoice_date', [$startDate, $endDate]);
+            ->whereIn('paid_status', [Invoice::STATUS_UNPAID, Invoice::STATUS_PARTIALLY_PAID]);
+
+        // Apply date filter only if dates are provided (same as the chart behavior)
+        if ($startDate && $endDate) {
+            $baseQuery->whereBetween('invoice_date', [$startDate, $endDate]);
+        }
 
         if ($type === 'clients') {
             $results = $baseQuery
@@ -312,49 +321,100 @@ class DashboardExportService
                 ->limit(5);
         }
 
-        return $results->get();
+        $results = $results->get();
+
+        // Convert cents to dollars
+        $results = $results->map(function ($item) {
+            $item->value = $item->value / 100;
+            return $item;
+        });
+
+        return $results;
     }
 
     private function getCashFlowData(Request $request)
     {
-        $invoice_totals = [];
-        $expense_totals = [];
-        $receipt_totals = [];
-        $net_income_totals = [];
-        $months = [];
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
 
-        $fiscalYear = CompanySetting::getSetting('fiscal_year', $request->header('company'));
-        $terms = explode('-', $fiscalYear);
-        $companyStartMonth = intval($terms[0]);
-        $start = Carbon::now()->month($companyStartMonth)->startOfMonth();
+        // If specific dates are provided, use them for both chart data and totals
+        if ($startDate && $endDate) {
+            $startDateForTotals = Carbon::parse($startDate);
+            $endDateForTotals = Carbon::parse($endDate);
 
-        if (Carbon::now()->month < $companyStartMonth) {
-            $start->subYear();
+            // Calculate totals for the specified date range
+            $total_sales = Invoice::whereBetween('invoice_date', [$startDateForTotals, $endDateForTotals])->whereCompany()->sum('base_total');
+            $total_receipts = Payment::whereBetween('payment_date', [$startDateForTotals, $endDateForTotals])->whereCompany()->sum('base_amount');
+            $total_expenses = Expense::whereBetween('expense_date', [$startDateForTotals, $endDateForTotals])->whereCompany()->sum('base_amount');
+
+            // For chart data with specific date range, generate monthly breakdown within that range
+            $invoice_totals = [];
+            $expense_totals = [];
+            $receipt_totals = [];
+            $net_income_totals = [];
+            $months = [];
+
+            $current = $startDateForTotals->clone()->startOfMonth();
+            $endMonth = $endDateForTotals->clone()->endOfMonth();
+
+            while ($current <= $endMonth) {
+                $monthEnd = $current->clone()->endOfMonth();
+                
+                // Ensure we don't go beyond the end date
+                if ($monthEnd > $endDateForTotals) {
+                    $monthEnd = $endDateForTotals->clone();
+                }
+
+                $invoice_totals[] = Invoice::whereBetween('invoice_date', [$current, $monthEnd])->whereCompany()->sum('base_total');
+                $expense_totals[] = Expense::whereBetween('expense_date', [$current, $monthEnd])->whereCompany()->sum('base_amount');
+                $receipt_totals[] = Payment::whereBetween('payment_date', [$current, $monthEnd])->whereCompany()->sum('base_amount');
+                $net_income_totals[] = end($receipt_totals) - end($expense_totals);
+
+                $months[] = $current->translatedFormat('M');
+                $current->addMonth()->startOfMonth();
+            }
+
+        } else {
+            // Use fiscal year logic (original behavior) when no specific dates are provided
+            $invoice_totals = [];
+            $expense_totals = [];
+            $receipt_totals = [];
+            $net_income_totals = [];
+            $months = [];
+
+            $fiscalYear = CompanySetting::getSetting('fiscal_year', $request->header('company'));
+            $terms = explode('-', $fiscalYear);
+            $companyStartMonth = intval($terms[0]);
+            $start = Carbon::now()->month($companyStartMonth)->startOfMonth();
+
+            if (Carbon::now()->month < $companyStartMonth) {
+                $start->subYear();
+            }
+
+            if ($request->has('previous_year')) {
+                $start->subYear();
+            }
+
+            $startDateForTotals = $start->clone();
+
+            for ($i = 0; $i < 12; $i++) {
+                $end = $start->clone()->endOfMonth();
+
+                $invoice_totals[] = Invoice::whereBetween('invoice_date', [$start, $end])->whereCompany()->sum('base_total');
+                $expense_totals[] = Expense::whereBetween('expense_date', [$start, $end])->whereCompany()->sum('base_amount');
+                $receipt_totals[] = Payment::whereBetween('payment_date', [$start, $end])->whereCompany()->sum('base_amount');
+                $net_income_totals[] = end($receipt_totals) - end($expense_totals);
+
+                $months[] = $start->translatedFormat('M');
+                $start->addMonth();
+            }
+
+            $endDateForTotals = $start->subMonth()->endOfMonth();
+
+            $total_sales = Invoice::whereBetween('invoice_date', [$startDateForTotals, $endDateForTotals])->whereCompany()->sum('base_total');
+            $total_receipts = Payment::whereBetween('payment_date', [$startDateForTotals, $endDateForTotals])->whereCompany()->sum('base_amount');
+            $total_expenses = Expense::whereBetween('expense_date', [$startDateForTotals, $endDateForTotals])->whereCompany()->sum('base_amount');
         }
-
-        if ($request->has('previous_year')) {
-            $start->subYear();
-        }
-
-        $startDateForTotals = $start->clone();
-
-        for ($i = 0; $i < 12; $i++) {
-            $end = $start->clone()->endOfMonth();
-
-            $invoice_totals[] = Invoice::whereBetween('invoice_date', [$start, $end])->whereCompany()->sum('base_total');
-            $expense_totals[] = Expense::whereBetween('expense_date', [$start, $end])->whereCompany()->sum('base_amount');
-            $receipt_totals[] = Payment::whereBetween('payment_date', [$start, $end])->whereCompany()->sum('base_amount');
-            $net_income_totals[] = end($receipt_totals) - end($expense_totals);
-
-            $months[] = $start->translatedFormat('M');
-            $start->addMonth();
-        }
-
-        $endDateForTotals = $start->subMonth()->endOfMonth();
-
-        $total_sales = Invoice::whereBetween('invoice_date', [$startDateForTotals, $endDateForTotals])->whereCompany()->sum('base_total');
-        $total_receipts = Payment::whereBetween('payment_date', [$startDateForTotals, $endDateForTotals])->whereCompany()->sum('base_amount');
-        $total_expenses = Expense::whereBetween('expense_date', [$startDateForTotals, $endDateForTotals])->whereCompany()->sum('base_amount');
 
         return [
             'months' => $months,

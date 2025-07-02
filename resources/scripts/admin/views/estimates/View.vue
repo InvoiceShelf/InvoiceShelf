@@ -47,6 +47,7 @@
         pb-[6.4rem]
         ml-56
         bg-white
+        dark:bg-gray-800
         xl:ml-64
         w-88
         xl:block
@@ -60,7 +61,7 @@
           px-4
           pt-8
           pb-2
-          border border-gray-200 border-solid
+          border-t border-r border-gray-200 dark:border-gray-700 border-solid
           height-full
         "
       >
@@ -73,7 +74,7 @@
             @input="onSearched()"
           >
             <template #right>
-              <BaseIcon name="MagnifyingGlassIcon" class="text-gray-400" />
+              <BaseIcon name="MagnifyingGlassIcon" class="text-gray-400 dark:text-gray-300" />
             </template>
           </BaseInput>
         </div>
@@ -98,7 +99,7 @@
                 pb-2
                 mb-1 mb-2
                 text-sm
-                border-b border-gray-200 border-solid
+                border-b border-gray-200 dark:border-gray-700 border-solid
               "
             >
               {{ $t('general.sort_by') }}
@@ -159,7 +160,7 @@
         class="
           h-full
           overflow-y-scroll
-          border-l border-gray-200 border-solid
+          border-l border-r border-gray-200 dark:border-gray-700 border-solid
           base-scroll
         "
       >
@@ -169,13 +170,12 @@
             :id="'estimate-' + estimate.id"
             :to="`/admin/estimates/${estimate.id}/view`"
             :class="[
-              'flex justify-between side-estimate p-4 cursor-pointer hover:bg-gray-100 items-center border-l-4 border-transparent',
+              'flex justify-between side-estimate p-4 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 items-center border-l-4 border-transparent border-b border-gray-200/40 dark:border-gray-700/40',
               {
-                'bg-gray-100 border-l-4 border-primary-500 border-solid':
+                'bg-gray-100 dark:bg-gray-700 border-l-4 border-primary-500 border-solid':
                   hasActiveUrl(estimate.id),
               },
             ]"
-            style="border-bottom: 1px solid rgba(185, 193, 209, 0.41)"
           >
             <div class="flex-2">
               <BaseText
@@ -188,6 +188,7 @@
                   font-normal
                   leading-5
                   text-black
+                  dark:text-gray-200
                   capitalize
                   truncate
                 "
@@ -202,6 +203,7 @@
                   font-medium
                   leading-5
                   text-gray-600
+                  dark:text-gray-400
                 "
               >
                 {{ estimate.estimate_number }}
@@ -227,6 +229,7 @@
                   font-semibold
                   leading-8
                   text-right text-gray-900
+                  dark:text-gray-200
                 "
               />
 
@@ -237,6 +240,7 @@
                   font-normal
                   leading-5
                   text-right text-gray-600
+                  dark:text-gray-400
                   est-date
                 "
               >

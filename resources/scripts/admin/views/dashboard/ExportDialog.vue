@@ -388,6 +388,7 @@
 <script setup>
 import { ref, defineProps, defineEmits } from 'vue'
 import { useDashboardStore } from '@/scripts/admin/stores/dashboard'
+import { useDateFilterStore } from '@/scripts/admin/stores/dateFilter'
 import DashboardSkeleton from './DashboardSkeleton.vue'
 import CashFlowSkeleton from './CashFlowSkeleton.vue'
 import InvoiceTableSkeleton from './InvoiceTableSkeleton.vue'
@@ -395,6 +396,7 @@ import InvoiceTableSkeleton from './InvoiceTableSkeleton.vue'
 
 const selectedSections = ref([])
 const dashboardStore = useDashboardStore()
+const dateFilterStore = useDateFilterStore()
 const isSnapshotMode = ref(false)
 const showNotification = ref(false)
 
@@ -459,9 +461,16 @@ const exportSelected = () => {
     const params = {
       format: props.format,
       sections: selectedSections.value,
-      // TODO: Pass active filters from DashboardTable if the 'invoices' section is selected.
-      // This currently uses the main dashboard filters.
+      type: 'clients', // Default type for top outstanding invoices
     };
+
+    // Include unified date filter parameters if they are set
+    const dateRange = dateFilterStore.dateRange
+    if (dateRange && dateRange.start && dateRange.end) {
+      params.start_date = dateRange.start
+      params.end_date = dateRange.end
+    }
+
     dashboardStore.exportDashboard(params)
     emit('close')
   }

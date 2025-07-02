@@ -77,7 +77,7 @@
       </BaseInputGroup>
 
       <div
-        class="hidden w-8 h-0 mx-4 border border-gray-400 border-solid xl:block"
+        class="hidden w-8 h-0 mx-4 border border-gray-400 border-solid xl:block dark:border-gray-500"
         style="margin-top: 1.5rem"
       />
 
@@ -129,7 +129,7 @@
           h-10
           mt-5
           list-none
-          border-b-2 border-gray-200 border-solid
+          border-b-2 border-gray-200 border-solid dark:border-gray-700
         "
       >
         <!-- Tabs -->
@@ -163,7 +163,7 @@
           </template>
 
           <BaseDropdownItem @click="removeMultipleEstimates">
-            <BaseIcon name="TrashIcon" class="mr-3 text-gray-600" />
+            <BaseIcon name="TrashIcon" class="mr-3 text-gray-600 dark:text-gray-300" />
             {{ $t('general.delete') }}
           </BaseDropdownItem>
         </BaseDropdown>

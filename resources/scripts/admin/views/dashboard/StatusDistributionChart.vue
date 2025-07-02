@@ -71,10 +71,12 @@ import Chart from 'chart.js/auto'
 import { useI18n } from 'vue-i18n'
 import { useDashboardStore } from '@/scripts/admin/stores/dashboard'
 import { useDateFilterStore } from '@/scripts/admin/stores/dateFilter'
+import { useThemeStore } from '@/scripts/stores/theme'
 
 const { t } = useI18n()
 const dashboardStore = useDashboardStore()
 const dateFilterStore = useDateFilterStore()
+const themeStore = useThemeStore()
 
 // --- Current date range tracking ---
 const currentDateRangeLabel = ref('Last 30 days')
@@ -83,7 +85,7 @@ const currentDateRangeLabel = ref('Last 30 days')
 const statusData = computed(() => [
   { label: 'Paid', count: dashboardStore.statusDistribution.paid, color: 'bg-purple-500' },
   { label: 'Pending', count: dashboardStore.statusDistribution.pending, color: 'bg-purple-300' },
-  { label: 'Overdue', count: dashboardStore.statusDistribution.overdue, color: 'bg-gray-200' }
+  { label: 'Overdue', count: dashboardStore.statusDistribution.overdue, color: themeStore.isDarkMode ? 'bg-gray-600' : 'bg-gray-200' }
 ])
 
 // Initialize current date range label
@@ -104,7 +106,11 @@ const chartData = computed(() => ({
         dashboardStore.statusDistribution.pending,
         dashboardStore.statusDistribution.overdue
       ],
-      backgroundColor: ['#7675FF', '#A7AAFF', '#E5E7EB'],
+      backgroundColor: [
+        '#7675FF',
+        '#A7AAFF',
+        themeStore.isDarkMode ? '#4B5563' : '#E5E7EB'
+      ],
       borderWidth: 0,
       borderRadius: 8,
       hoverOffset: 12,

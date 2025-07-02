@@ -82,10 +82,12 @@ import annotationPlugin from 'chartjs-plugin-annotation'
 import axios from 'axios'
 import { handleError } from '@/scripts/helpers/error-handling'
 import { useDateFilterStore } from '@/scripts/admin/stores/dateFilter'
+import { useThemeStore } from '@/scripts/stores/theme'
 
 Chart.register(annotationPlugin)
 
 const dateFilterStore = useDateFilterStore()
+const themeStore = useThemeStore()
 
 const loading = ref(true)
 const hiddenDatasets = ref([])
@@ -206,6 +208,11 @@ function createChart() {
   const ctx = canvasRef.value.getContext('2d')
   const today = new Date()
   
+  const isDark = themeStore.isDarkMode
+  const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : '#F3F4F6'
+  const tickColor = isDark ? '#9CA3AF' : '#6B7280'
+  const titleColor = isDark ? '#D1D5DB' : '#374151'
+
   chartInstance = new Chart(ctx, {
     type: 'line',
     data: { datasets: [] },
@@ -218,11 +225,13 @@ function createChart() {
         x: {
           type: 'time',
           time: { unit: 'month', tooltipFormat: 'MMM yyyy', displayFormats: { month: 'MMM' }},
-          grid: { display: true, color: '#F3F4F6', borderDash: [2, 2] }
+          grid: { display: true, color: gridColor, borderDash: [2, 2] },
+          ticks: { color: tickColor }
         },
         y: {
           beginAtZero: true,
           ticks: { 
+            color: tickColor,
             callback: (v) => {
               const amountInDollars = v / 100;
               if (Math.abs(amountInDollars) >= 1000) {
@@ -231,7 +240,7 @@ function createChart() {
               return `$${amountInDollars.toFixed(0)}`;
             }
           },
-          title: { display: true, text: 'Amount ($)' }
+          title: { display: true, text: 'Amount ($)', color: titleColor }
         },
       },
       plugins: {
@@ -301,6 +310,21 @@ function getChartAsBase64Image() {
   }
   return chartInstance.toBase64Image('image/png', 1)
 }
+
+// Watch for theme changes to update chart colors
+watch(() => themeStore.isDarkMode, (isDark) => {
+  if (chartInstance) {
+    const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : '#F3F4F6'
+    const tickColor = isDark ? '#9CA3AF' : '#6B7280'
+    const titleColor = isDark ? '#D1D5DB' : '#374151'
+
+    chartInstance.options.scales.x.grid.color = gridColor
+    chartInstance.options.scales.x.ticks.color = tickColor
+    chartInstance.options.scales.y.ticks.color = tickColor
+    chartInstance.options.scales.y.title.color = titleColor
+    chartInstance.update()
+  }
+})
 
 // Expose methods to parent component
 defineExpose({
