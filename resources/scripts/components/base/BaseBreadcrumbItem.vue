@@ -9,6 +9,7 @@
         leading-5
         text-gray-900
         outline-none
+        dark:text-gray-200
         focus:ring-2 focus:ring-offset-2 focus:ring-primary-400
       "
       :to="to"
@@ -16,7 +17,7 @@
       {{ title }}
     </router-link>
 
-    <span v-if="!active" class="px-1">/</span>
+    <span v-if="!active" class="px-1 dark:text-gray-400">/</span>
   </li>
 </template>
 

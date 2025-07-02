@@ -21,7 +21,7 @@ interface ResponseStream
 
 interface PDFDriver
 {
-    public function loadView(string $template): ResponseStream;
+    public function loadView(string $template, array $data = []): ResponseStream;
 }
 
 class PDFDriverFactory
@@ -38,10 +38,10 @@ class PDFDriverFactory
 
 class PDFService
 {
-    public static function loadView(string $template)
+    public static function loadView(string $template, array $data = [])
     {
         $driver = config('pdf.driver');
 
-        return PDFDriverFactory::create($driver)->loadView($template);
+        return PDFDriverFactory::create($driver)->loadView($template, $data);
     }
 }

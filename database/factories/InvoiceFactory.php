@@ -2,11 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\Company;
 use App\Models\Currency;
 use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\RecurringInvoice;
-use App\Models\User;
 use App\Services\SerialNumberFormatter;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -78,9 +78,20 @@ class InvoiceFactory extends Factory
      */
     public function definition(): array
     {
+        // For testing purposes, create a temporary company to get sequence numbers
+        $tempCompany = Company::first() ?: Company::factory()->create();
+
+        // Create basic company settings for testing if they don't exist
+        if (! $tempCompany->settings()->where('option', 'invoice_number_format')->exists()) {
+            $tempCompany->settings()->create([
+                'option' => 'invoice_number_format',
+                'value' => 'INV-{{SEQUENCE:6}}',
+            ]);
+        }
+
         $sequenceNumber = (new SerialNumberFormatter)
             ->setModel(new Invoice)
-            ->setCompany(User::find(1)->companies()->first()->id)
+            ->setCompany($tempCompany->id)
             ->setNextNumbers();
 
         return [
@@ -95,7 +106,7 @@ class InvoiceFactory extends Factory
             'tax_per_item' => 'NO',
             'discount_per_item' => 'NO',
             'paid_status' => Invoice::STATUS_UNPAID,
-            'company_id' => User::find(1)->companies()->first()->id,
+            'company_id' => Company::factory(),
             'sub_total' => $this->faker->randomDigitNotNull(),
             'total' => $this->faker->randomDigitNotNull(),
             'discount_type' => $this->faker->randomElement(['percentage', 'fixed']),
@@ -119,7 +130,25 @@ class InvoiceFactory extends Factory
             'base_total' => $this->faker->randomDigitNotNull(),
             'base_tax' => $this->faker->randomDigitNotNull(),
             'base_due_amount' => $this->faker->randomDigitNotNull(),
-            'currency_id' => Currency::find(1)->id,
+            'currency_id' => Currency::first()->id,
         ];
+    }
+
+    public function forCompany($company)
+    {
+        return $this->state(function (array $attributes) use ($company) {
+            return [
+                'company_id' => $company->id,
+            ];
+        });
+    }
+
+    public function forCustomer($customer)
+    {
+        return $this->state(function (array $attributes) use ($customer) {
+            return [
+                'customer_id' => $customer->id,
+            ];
+        });
     }
 }

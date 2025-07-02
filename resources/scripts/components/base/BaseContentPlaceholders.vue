@@ -33,7 +33,6 @@ const classObject = computed(() => {
 </script>
 
 <style lang="scss">
-
 @use 'sass:color';
 
 $base-content-placeholders-primary-color: #ccc !default;
@@ -41,6 +40,63 @@ $base-content-placeholders-secondary-color: #eee !default;
 $base-content-placeholders-border-radius: 6px !default;
 $base-content-placeholders-line-height: 15px !default;
 $base-content-placeholders-spacing: 10px !default;
+
+@at-root .dark {
+  $base-content-placeholders-primary-color: #4a4a4a !default;
+  $base-content-placeholders-secondary-color: #383838 !default;
+
+  // Animations
+  @keyframes vueContentPlaceholdersAnimation {
+    0% {
+      transform: translate3d(-30%, 0, 0);
+    }
+
+    100% {
+      transform: translate3d(100%, 0, 0);
+    }
+  }
+  // Mixins
+  @mixin base-content-placeholders {
+    position: relative;
+    overflow: hidden;
+    min-height: $base-content-placeholders-line-height;
+    background: $base-content-placeholders-secondary-color;
+
+    .base-content-placeholders-is-rounded & {
+      border-radius: $base-content-placeholders-border-radius;
+    }
+
+    .base-content-placeholders-is-centered & {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .base-content-placeholders-is-animated &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      max-width: 1000px;
+      height: 100%;
+      background: linear-gradient(
+        to right,
+        transparent 0%,
+        color.adjust(
+          $base-content-placeholders-secondary-color,
+          $lightness: -5%
+        )
+          15%,
+        transparent 30%
+      );
+      animation-duration: 1.5s;
+      animation-fill-mode: forwards;
+      animation-iteration-count: infinite;
+      animation-name: vueContentPlaceholdersAnimation;
+      animation-timing-function: linear;
+    }
+  }
+}
 
 // Animations
 @keyframes vueContentPlaceholdersAnimation {

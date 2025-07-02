@@ -12,12 +12,13 @@
         bg-gray-200
         border border-gray-200 border-solid
         rounded
+        dark:bg-gray-800 dark:border-gray-700
       "
     >
-      {{ item.name }}
+      <span class="dark:text-gray-300">{{ item.name }}</span>
 
       <span
-        class="absolute text-gray-400 cursor-pointer top-[8px] right-[10px]"
+        class="absolute text-gray-400 cursor-pointer top-[8px] right-[10px] dark:text-gray-500"
         @click="deselectItem(index)"
       >
         <BaseIcon name="XCircleIcon" />

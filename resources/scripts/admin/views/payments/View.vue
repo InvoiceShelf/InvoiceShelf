@@ -32,6 +32,7 @@
         pb-[6rem]
         ml-56
         bg-white
+        dark:bg-gray-800
         xl:ml-64
         w-88
         xl:block
@@ -45,7 +46,10 @@
           px-4
           pt-8
           pb-6
-          border border-gray-200 border-solid
+          border
+          border-gray-200
+          dark:border-gray-700
+          border-solid
         "
       >
         <BaseInput
@@ -54,7 +58,7 @@
           type="text"
           @input="onSearch"
         >
-          <BaseIcon name="MagnifyingGlassIcon" class="h-5" />
+          <BaseIcon name="MagnifyingGlassIcon" class="h-5 dark:text-gray-300" />
         </BaseInput>
 
         <div class="flex ml-3" role="group" aria-label="First group">
@@ -76,7 +80,7 @@
                 pb-2
                 mb-2
                 text-sm
-                border-b border-gray-200 border-solid
+                border-b border-gray-200 dark:border-gray-700 border-solid
               "
             >
               {{ $t('general.sort_by') }}
@@ -139,7 +143,7 @@
 
       <div
         ref="paymentListSection"
-        class="h-full overflow-y-scroll border-l border-gray-200 border-solid"
+        class="h-full overflow-y-scroll border-l border-gray-200 dark:border-gray-700 border-solid"
       >
         <div v-for="(payment, index) in paymentList" :key="index">
           <router-link
@@ -147,13 +151,12 @@
             :id="'payment-' + payment.id"
             :to="`/admin/payments/${payment.id}/view`"
             :class="[
-              'flex justify-between p-4 items-center cursor-pointer hover:bg-gray-100 border-l-4 border-transparent',
+              'flex justify-between p-4 items-center cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 border-l-4 border-transparent border-b border-gray-200/40 dark:border-gray-700/40',
               {
-                'bg-gray-100 border-l-4 border-primary-500 border-solid':
+                'bg-gray-100 dark:bg-gray-700 border-l-4 border-primary-500 border-solid':
                   hasActiveUrl(payment.id),
               },
             ]"
-            style="border-bottom: 1px solid rgba(185, 193, 209, 0.41)"
           >
             <div class="flex-2">
               <BaseText
@@ -166,6 +169,7 @@
                   font-normal
                   leading-5
                   text-black
+                  dark:text-gray-200
                   capitalize
                   truncate
                 "
@@ -179,6 +183,7 @@
                   font-medium
                   leading-5
                   text-gray-500
+                  dark:text-gray-400
                   capitalize
                 "
               >
@@ -193,6 +198,7 @@
                   font-medium
                   leading-5
                   text-gray-500
+                  dark:text-gray-400
                   capitalize
                 "
               >
@@ -210,12 +216,15 @@
                   font-semibold
                   leading-8
                   text-right text-gray-900
+                  dark:text-gray-200
                 "
                 :amount="payment?.amount"
                 :currency="payment.customer?.currency"
               />
 
-              <div class="text-sm text-right text-gray-500 non-italic">
+              <div
+                class="text-sm text-right text-gray-500 dark:text-gray-400 non-italic"
+              >
                 {{ payment.formatted_payment_date }}
               </div>
             </div>
@@ -226,7 +235,7 @@
         </div>
         <p
           v-if="!paymentList?.length && !isLoading"
-          class="flex justify-center px-4 mt-5 text-sm text-gray-600"
+          class="flex justify-center px-4 mt-5 text-sm text-gray-600 dark:text-gray-400"
         >
           {{ $t('payments.no_matching_payments') }}
         </p>
@@ -241,7 +250,7 @@
       <iframe
         v-if="shareableLink"
         :src="shareableLink"
-        class="flex-1 border border-gray-400 border-solid rounded-md"
+        class="flex-1 border border-gray-400 dark:border-gray-700 border-solid rounded-md"
       />
     </div>
   </BasePage>

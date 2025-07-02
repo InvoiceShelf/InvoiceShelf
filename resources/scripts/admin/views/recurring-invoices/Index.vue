@@ -74,7 +74,7 @@
       </BaseInputGroup>
 
       <div
-        class="hidden w-8 h-0 mx-4 border border-gray-400 border-solid xl:block"
+        class="hidden w-8 h-0 mx-4 border border-gray-400 border-solid dark:border-gray-600 xl:block"
         style="margin-top: 1.5rem"
       />
 
@@ -110,7 +110,10 @@
       </template>
     </BaseEmptyPlaceholder>
 
-    <div v-show="!showEmptyScreen" class="relative table-container">
+    <div
+      v-show="!showEmptyScreen"
+      class="relative bg-white rounded-lg dark:bg-gray-700 table-container"
+    >
       <div
         class="
           relative
@@ -121,6 +124,7 @@
           mt-5
           list-none
           border-b-2 border-gray-200 border-solid
+          dark:border-gray-700
         "
       >
         <!-- Tabs -->
@@ -155,7 +159,10 @@
           </template>
 
           <BaseDropdownItem @click="removeMultipleRecurringInvoices()">
-            <BaseIcon name="TrashIcon" class="mr-3 text-gray-600" />
+            <BaseIcon
+              name="TrashIcon"
+              class="mr-3 text-gray-600 dark:text-gray-400"
+            />
             {{ $t('general.delete') }}
           </BaseDropdownItem>
         </BaseDropdown>
@@ -212,7 +219,7 @@
                   : ''
               "
               tag="span"
-              class="text-xs text-gray-400"
+              class="text-xs text-gray-400 dark:text-gray-500"
             />
           </router-link>
         </template>

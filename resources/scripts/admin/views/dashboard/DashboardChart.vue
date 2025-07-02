@@ -2,7 +2,7 @@
   <div>
     <div
       v-if="dashboardStore.isDashboardDataLoaded"
-      class="grid grid-cols-10 mt-8 bg-white rounded shadow"
+      class="grid grid-cols-10 mt-8 bg-white dark:bg-gray-800 rounded shadow"
     >
       <!-- Chart -->
       <div
@@ -50,7 +50,7 @@
           grid grid-cols-3
           col-span-10
           text-center
-          border-t border-l border-gray-200 border-solid
+          border-t border-l border-gray-200 dark:border-gray-700 border-solid
           lg:border-t-0 lg:text-right lg:col-span-3
           xl:col-span-2
           lg:grid-cols-1
@@ -116,7 +116,7 @@
           class="
             col-span-3
             p-6
-            border-t border-gray-200 border-solid
+            border-t border-gray-200 dark:border-gray-700 border-solid
             lg:col-span-1
           "
         >

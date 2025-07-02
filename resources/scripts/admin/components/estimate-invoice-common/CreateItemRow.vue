@@ -1,5 +1,7 @@
 <template>
-  <tr class="box-border bg-white border border-gray-200 border-solid rounded-b">
+  <tr
+    class="box-border bg-white border-b border-gray-200 border-solid dark:bg-transparent dark:border-gray-600"
+  >
     <td colspan="5" class="p-0 text-left align-top">
       <table class="w-full">
         <colgroup>
@@ -17,7 +19,7 @@
             <td class="px-5 py-4 text-left align-top">
               <div class="flex justify-start">
                 <div
-                  class="flex items-center justify-center w-5 h-5 mt-2 mr-2 text-gray-300 cursor-move  handle"
+                  class="flex items-center justify-center w-5 h-5 mt-2 mr-2 text-gray-300 cursor-move handle"
                 >
                   <DragIcon />
                 </div>
@@ -87,7 +89,7 @@
                         type="button"
                         variant="white"
                       >
-                        <span class="flex items-center">
+                        <span class="flex items-center dark:text-gray-300">
                           {{
                             itemData.discount_type == 'fixed'
                               ? currency.symbol
@@ -114,7 +116,7 @@
               </div>
             </td>
             <td class="px-5 py-4 text-right align-top">
-              <div class="flex items-center justify-end text-sm">
+              <div class="flex items-center justify-end text-sm dark:text-gray-200">
                 <span>
                   <BaseContentPlaceholders v-if="loading">
                     <BaseContentPlaceholdersText :lines="1" class="w-16 h-5" />
@@ -129,7 +131,7 @@
                 <div class="flex items-center justify-center w-6 h-10 mx-2">
                   <BaseIcon
                     v-if="showRemoveButton"
-                    class="h-5 text-gray-700 cursor-pointer"
+                    class="h-5 text-gray-700 cursor-pointer dark:text-gray-400"
                     name="TrashIcon"
                     @click="store.removeItem(index)"
                   />
@@ -137,7 +139,10 @@
               </div>
             </td>
           </tr>
-          <tr v-if="store[storeProp].tax_per_item === 'YES'">
+          <tr
+            v-if="store[storeProp].tax_per_item === 'YES'"
+            class="dark:bg-gray-700"
+          >
             <td class="px-5 py-4 text-left align-top" />
             <td colspan="4" class="px-5 py-4 text-left align-top">
               <BaseContentPlaceholders v-if="loading">

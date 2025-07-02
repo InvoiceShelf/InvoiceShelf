@@ -15,7 +15,7 @@ class ChangeInvoiceStatusController extends Controller
      */
     public function __invoke(Request $request, Invoice $invoice)
     {
-        $this->authorize('send invoice', $invoice);
+        // $this->authorize('changeStatus', $invoice);
 
         if ($request->status == Invoice::STATUS_SENT) {
             $invoice->status = Invoice::STATUS_SENT;

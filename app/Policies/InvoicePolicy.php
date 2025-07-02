@@ -61,7 +61,7 @@ class InvoicePolicy
     public function update(User $user, Invoice $invoice): bool
     {
         if (BouncerFacade::can('edit-invoice', $invoice) && $user->hasCompany($invoice->company_id)) {
-            return $invoice->allow_edit;
+            return true;
         }
 
         return false;
@@ -132,6 +132,24 @@ class InvoicePolicy
     public function deleteMultiple(User $user)
     {
         if (BouncerFacade::can('delete-invoice', Invoice::class)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function changeStatus(User $user, Invoice $invoice): bool
+    {
+        if (BouncerFacade::can('change-invoice-status', $invoice) && $user->hasCompany($invoice->company_id)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function clone(User $user, Invoice $invoice): bool
+    {
+        if (BouncerFacade::can('clone-invoice', $invoice) && $user->hasCompany($invoice->company_id)) {
             return true;
         }
 

@@ -58,7 +58,7 @@ const paymentColumns = computed(() => {
       key: 'name',
       label: t('settings.payment_modes.mode_name'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-gray-900 dark:text-gray-200',
     },
     {
       key: 'actions',

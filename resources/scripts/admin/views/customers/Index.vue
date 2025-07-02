@@ -93,19 +93,18 @@
     </BaseEmptyPlaceholder>
 
     <!-- Total no of Customers in Table -->
-    <div v-show="!showEmptyScreen" class="relative table-container">
-      <div class="relative flex items-center justify-end h-5">
-        <BaseDropdown v-if="customerStore.selectedCustomers.length">
+    <div
+      v-show="!showEmptyScreen"
+      class="relative bg-white rounded-lg dark:bg-gray-700 table-container"
+    >
+      <div
+        v-if="customerStore.selectedCustomers.length"
+        class="relative flex items-center justify-end h-5"
+      >
+        <BaseDropdown>
           <template #activator>
             <span
-              class="
-                flex
-                text-sm
-                font-medium
-                cursor-pointer
-                select-none
-                text-primary-400
-              "
+              class="flex text-sm font-medium cursor-pointer select-none text-primary-400"
             >
               {{ $t('general.actions') }}
 
@@ -113,7 +112,10 @@
             </span>
           </template>
           <BaseDropdownItem @click="removeMultipleCustomers">
-            <BaseIcon name="TrashIcon" class="mr-3 text-gray-600" />
+            <BaseIcon
+              name="TrashIcon"
+              class="mr-3 text-gray-600 dark:text-gray-300"
+            />
             {{ $t('general.delete') }}
           </BaseDropdownItem>
         </BaseDropdown>
@@ -153,18 +155,18 @@
             <BaseText
               :text="row.data.name"
               tag="span"
-              class="font-medium text-primary-500 flex flex-col"
+              class="flex flex-col font-medium text-primary-500 dark:text-primary-400"
             />
             <BaseText
               :text="row.data.contact_name ? row.data.contact_name : ''"
               tag="span"
-              class="text-xs text-gray-400"
+              class="text-xs text-gray-400 dark:text-gray-300"
             />
           </router-link>
         </template>
 
         <template #cell-phone="{ row }">
-          <span>
+          <span class="dark:text-gray-300">
             {{ row.data.phone ? row.data.phone : '-' }}
           </span>
         </template>
@@ -177,7 +179,9 @@
         </template>
 
         <template #cell-created_at="{ row }">
-          <span>{{ row.data.formatted_created_at }}</span>
+          <span class="dark:text-gray-300">{{
+            row.data.formatted_created_at
+          }}</span>
         </template>
 
         <template v-if="hasAtleastOneAbility()" #cell-actions="{ row }">
@@ -247,19 +251,32 @@ const customerColumns = computed(() => {
       key: 'status',
       thClass: 'extra w-10 pr-0',
       sortable: false,
-      tdClass: 'font-medium text-gray-900 pr-0',
+      tdClass: 'font-medium text-gray-900 dark:text-gray-200 pr-0',
     },
     {
       key: 'name',
-      label: t('customers.name'),
+      label: t('customers.display_name'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium',
     },
-    { key: 'phone', label: t('customers.phone') },
-    { key: 'due_amount', label: t('customers.amount_due') },
+    {
+      key: 'phone',
+      label: t('customers.phone'),
+      sortable: true,
+      tdClass: 'text-gray-900 dark:text-gray-200',
+    },
+    {
+      key: 'due_amount',
+      label: t('dashboard.top_bar.due_amount'),
+      sortable: true,
+      tdClass: 'text-gray-900 dark:text-gray-200',
+      thClass: 'text-right',
+    },
     {
       key: 'created_at',
-      label: t('items.added_on'),
+      label: t('general.created_at'),
+      sortable: true,
+      tdClass: 'text-gray-900 dark:text-gray-200',
     },
     {
       key: 'actions',

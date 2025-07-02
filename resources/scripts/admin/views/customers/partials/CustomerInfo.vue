@@ -1,5 +1,7 @@
 <template>
-  <div class="pt-6 mt-5 border-t border-solid lg:pt-8 md:pt-4 border-gray-200">
+  <div
+    class="pt-6 mt-5 border-t border-solid lg:pt-8 md:pt-4 border-gray-200 dark:border-gray-700"
+  >
     <!-- Basic Info -->
     <BaseHeading>
       {{ $t('customers.basic_info') }}
@@ -92,12 +94,15 @@
       >
         <p
           v-if="field.type === 'Switch'"
-          class="text-sm font-bold leading-5 text-black non-italic"
+          class="text-sm font-bold leading-5 text-black non-italic dark:text-gray-200"
         >
           <span v-if="field.default_answer === 1"> {{ $t('general.yes') }} </span>
           <span v-else> {{ $t('general.no') }} </span>
         </p>
-        <p v-else class="text-sm font-bold leading-5 text-black non-italic">
+        <p
+          v-else
+          class="text-sm font-bold leading-5 text-black non-italic dark:text-gray-200"
+        >
           {{ field.default_answer }}
         </p>
       </BaseDescriptionListItem>

@@ -110,10 +110,10 @@
 
       <div v-if="companyStore.companies.length !== 1" class="py-5">
         <BaseDivider class="my-4" />
-        <h3 class="text-lg leading-6 font-medium text-gray-900">
+        <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">
           {{ $t('settings.company_info.delete_company') }}
         </h3>
-        <div class="mt-2 max-w-xl text-sm text-gray-500">
+        <div class="mt-2 max-w-xl text-sm text-gray-500 dark:text-gray-400">
           <p>
             {{ $t('settings.company_info.delete_company_description') }}
           </p>
@@ -121,7 +121,7 @@
         <div class="mt-5">
           <button
             type="button"
-            class="inline-flex items-center justify-center px-4 py-2 border border-transparent font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm"
+            class="inline-flex items-center justify-center px-4 py-2 border border-transparent font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 dark:bg-red-900/50 dark:text-red-300 dark:hover:bg-red-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm"
             @click="removeCompany"
           >
             {{ $t('general.delete') }}

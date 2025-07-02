@@ -34,7 +34,7 @@ class GotenbergPDFResponse
 
 class GotenbergPDFDriver
 {
-    public function loadView(string $viewname): GotenbergPDFResponse
+    public function loadView(string $viewname, array $data = []): GotenbergPDFResponse
     {
         $papersize = explode(' ', config('pdf.gotenberg.papersize'));
         if (count($papersize) != 2) {
@@ -49,7 +49,7 @@ class GotenbergPDFDriver
             ->html(
                 Stream::string(
                     'document.html',
-                    view($viewname)->render(),
+                    view($viewname, $data)->render(),
                 )
             );
         $result = Gotenberg::send($request);

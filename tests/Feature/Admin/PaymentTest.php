@@ -3,21 +3,35 @@
 use App\Http\Controllers\V1\Admin\Payment\PaymentsController;
 use App\Http\Requests\PaymentRequest;
 use App\Mail\SendPaymentMail;
+use App\Models\Company;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Sanctum\Sanctum;
+use Silber\Bouncer\BouncerFacade;
+use Vinkla\Hashids\Facades\Hashids;
 
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\postJson;
 use function Pest\Laravel\putJson;
 
 beforeEach(function () {
-    Artisan::call('db:seed', ['--class' => 'DatabaseSeeder', '--force' => true]);
-    Artisan::call('db:seed', ['--class' => 'DemoSeeder', '--force' => true]);
+    Artisan::call('db:seed', ['--class' => 'CurrenciesTableSeeder', '--force' => true]);
+    Artisan::call('db:seed', ['--class' => 'CountriesTableSeeder', '--force' => true]);
 
-    $user = User::find(1);
+    $user = User::factory()->create();
+    $company = Company::factory()->create([
+        'owner_id' => $user->id,
+    ]);
+    $company->unique_hash = Hashids::connection(Company::class)->encode($company->id);
+    $company->save();
+
+    $company->setupDefaultData();
+    $user->companies()->attach($company->id);
+    BouncerFacade::scope()->to($company->id);
+    BouncerFacade::sync($user)->roles(['super admin']);
+
     $this->withHeaders([
         'company' => $user->companies()->first()->id,
     ]);

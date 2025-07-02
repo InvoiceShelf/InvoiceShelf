@@ -11,6 +11,7 @@ use App\Http\Controllers\V1\Admin\Customer\CustomersController;
 use App\Http\Controllers\V1\Admin\Customer\CustomerStatsController;
 use App\Http\Controllers\V1\Admin\CustomField\CustomFieldsController;
 use App\Http\Controllers\V1\Admin\Dashboard\DashboardController;
+use App\Http\Controllers\V1\Admin\DashboardExportController;
 use App\Http\Controllers\V1\Admin\Estimate\ChangeEstimateStatusController;
 use App\Http\Controllers\V1\Admin\Estimate\CloneEstimateController;
 use App\Http\Controllers\V1\Admin\Estimate\ConvertEstimateController;
@@ -88,6 +89,7 @@ use App\Http\Controllers\V1\Admin\Update\DownloadUpdateController;
 use App\Http\Controllers\V1\Admin\Update\FinishUpdateController;
 use App\Http\Controllers\V1\Admin\Update\MigrateUpdateController;
 use App\Http\Controllers\V1\Admin\Update\UnzipUpdateController;
+use App\Http\Controllers\V1\Admin\UserController;
 use App\Http\Controllers\V1\Admin\Users\UsersController;
 use App\Http\Controllers\V1\Customer\Auth\ForgotPasswordController as AuthForgotPasswordController;
 use App\Http\Controllers\V1\Customer\Auth\ResetPasswordController as AuthResetPasswordController;
@@ -207,7 +209,11 @@ Route::prefix('/v1')->group(function () {
             // Dashboard
             // ----------------------------------
 
-            Route::get('/dashboard', DashboardController::class);
+            Route::get('/dashboard', [DashboardController::class, 'summary']);
+            Route::get('/dashboard/top-outstanding', [DashboardController::class, 'topOutstanding']);
+            Route::get('/dashboard/cash-flow', [DashboardController::class, 'cashFlow']);
+            Route::post('/dashboard/export', [DashboardExportController::class, 'export']);
+            Route::post('/dashboard/export-snapshot', [DashboardExportController::class, 'exportSnapshot']);
 
             // Auth check
             // ----------------------------------
@@ -505,25 +511,20 @@ Route::prefix('/v1')->group(function () {
 
             Route::get('/dashboard', CustomerDashboardController::class);
 
-            Route::get('invoices', [CustomerInvoicesController::class, 'index']);
+            Route::get('/estimates', [CustomerEstimatesController::class, 'index']);
+            Route::get('/estimates/{estimate}', [CustomerEstimatesController::class, 'show']);
+            Route::post('/estimates/{estimate}/status', CustomerAcceptEstimateController::class);
 
-            Route::get('invoices/{id}', [CustomerInvoicesController::class, 'show']);
+            Route::get('/invoices', [CustomerInvoicesController::class, 'index']);
+            Route::get('/invoices/{invoice}', [CustomerInvoicesController::class, 'show']);
 
-            Route::post('/estimate/{estimate}/status', CustomerAcceptEstimateController::class);
+            Route::get('/payments', [CustomerPaymentsController::class, 'index']);
+            Route::get('/payments/{payment}', [CustomerPaymentsController::class, 'show']);
 
-            Route::get('estimates', [CustomerEstimatesController::class, 'index']);
+            Route::get('/payment/methods', PaymentMethodController::class);
 
-            Route::get('estimates/{id}', [CustomerEstimatesController::class, 'show']);
-
-            Route::get('payments', [CustomerPaymentsController::class, 'index']);
-
-            Route::get('payments/{id}', [CustomerPaymentsController::class, 'show']);
-
-            Route::get('/payment-method', PaymentMethodController::class);
-
-            Route::get('expenses', [CustomerExpensesController::class, 'index']);
-
-            Route::get('expenses/{id}', [CustomerExpensesController::class, 'show']);
+            Route::get('/expenses', [CustomerExpensesController::class, 'index']);
+            Route::get('/expenses/{expense}', [CustomerExpensesController::class, 'show']);
 
             Route::post('/profile', [CustomerProfileController::class, 'updateProfile']);
 
@@ -535,3 +536,13 @@ Route::prefix('/v1')->group(function () {
 });
 
 Route::get('/cron', CronJobController::class)->middleware('cron-job');
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware('admin')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index']);
+        Route::get('/dashboard/top-outstanding', [DashboardController::class, 'topOutstanding']);
+
+        Route::get('/users/abilities', [UserController::class, 'abilities']);
+        Route::get('/users/me', [UserController::class, 'me']);
+    });
+});

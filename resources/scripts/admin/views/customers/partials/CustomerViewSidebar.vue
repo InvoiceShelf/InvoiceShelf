@@ -10,6 +10,7 @@
       pb-[6.6rem]
       ml-56
       bg-white
+      dark:bg-gray-800
       xl:ml-64
       w-88
       xl:block
@@ -23,7 +24,7 @@
         px-4
         pt-8
         pb-2
-        border border-gray-200 border-solid
+        border-t border-r border-gray-200 border-solid dark:border-gray-700
         height-full
       "
     >
@@ -35,7 +36,7 @@
         variant="gray"
         @input="onSearch()"
       >
-        <BaseIcon name="MagnifyingGlassIcon" class="text-gray-500" />
+        <BaseIcon name="MagnifyingGlassIcon" class="text-gray-500 dark:text-gray-400" />
       </BaseInput>
 
       <div class="flex mb-6 ml-3" role="group" aria-label="First group">
@@ -58,7 +59,7 @@
               pb-2
               mb-2
               text-sm
-              border-b border-gray-200 border-solid
+              border-b border-gray-200 border-solid dark:border-gray-700 dark:text-gray-300
             "
           >
             {{ $t('general.sort_by') }}
@@ -111,9 +112,7 @@
       class="
         h-full
         overflow-y-scroll
-        border-l border-gray-200 border-solid
-        sidebar
-        base-scroll
+        border-l border-r border-gray-200 border-solid dark:border-gray-700 sidebar base-scroll
       "
     >
       <div v-for="(customer, index) in customerList" :key="index">
@@ -122,13 +121,12 @@
           :id="'customer-' + customer.id"
           :to="`/admin/customers/${customer.id}/view`"
           :class="[
-            'flex justify-between p-4 items-center cursor-pointer hover:bg-gray-100 border-l-4 border-transparent',
+            'flex justify-between p-4 items-center cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 border-l-4 border-transparent border-t border-gray-200/40 dark:border-gray-700/40',
             {
-              'bg-gray-100 border-l-4 border-primary-500 border-solid':
+              'bg-gray-100 dark:bg-gray-700 border-l-4 border-primary-500 border-solid':
                 hasActiveUrl(customer.id),
             },
           ]"
-          style="border-top: 1px solid rgba(185, 193, 209, 0.41)"
         >
           <div>
             <BaseText
@@ -140,6 +138,7 @@
                 font-normal
                 leading-5
                 text-black
+                dark:text-gray-200
                 capitalize
                 truncate
               "
@@ -155,25 +154,26 @@
                 font-medium
                 leading-5
                 text-gray-600
+                dark:text-gray-400
               "
             />
           </div>
-          <div class="flex-1 font-bold text-right whitespace-nowrap">
+          <div
+            class="flex-1 font-bold text-right whitespace-nowrap dark:text-gray-200"
+          >
             <BaseFormatMoney
-              :amount="customer.due_amount!==null ? customer.due_amount : 0"
+              :amount="customer.due_amount !== null ? customer.due_amount : 0"
               :currency="customer.currency"
             />
           </div>
         </router-link>
       </div>
-      <div v-if="isFetching" class="flex justify-center p-4 items-center">
-        <LoadingIcon
-          class="h-6 m-1 animate-spin text-primary-400"
-        />
+      <div v-if="isFetching" class="flex items-center justify-center p-4">
+        <LoadingIcon class="w-6 h-6 m-1 animate-spin text-primary-400" />
       </div>
       <p
         v-if="!customerList?.length && !isFetching"
-        class="flex justify-center px-4 mt-5 text-sm text-gray-600"
+        class="flex justify-center px-4 mt-5 text-sm text-gray-600 dark:text-gray-400"
       >
         {{ $t('customers.no_matching_customers') }}
       </p>

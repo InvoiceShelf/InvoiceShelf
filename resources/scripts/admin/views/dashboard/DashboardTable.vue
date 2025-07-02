@@ -87,14 +87,14 @@
           </span>
         </div>
 
-        <!-- Date Range Filter Chip -->
-        <div v-if="filters.from_date || filters.to_date" class="flex items-center space-x-1">
+        <!-- Date Range Filter Chip (from unified filter) -->
+        <div v-if="currentDateRangeLabel && currentDateRangeLabel !== 'Last 30 days'" class="flex items-center space-x-1">
           <span class="text-sm text-gray-500 dark:text-gray-400">Date:</span>
           <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
-            {{ getDateRangeLabel() }}
-            <button @click="clearDateFilter" class="ml-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-              <BaseIcon name="XMarkIcon" class="w-3 h-3" />
-            </button>
+            {{ currentDateRangeLabel }}
+            <div class="ml-1 text-gray-400">
+              <BaseIcon name="LockClosedIcon" class="w-3 h-3" title="Controlled by global date filter" />
+            </div>
           </span>
         </div>
 
@@ -135,7 +135,7 @@
         </div>
 
         <!-- Advanced Filters Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- Customer Filter -->
           <BaseInputGroup :label="$t('customers.customer', 1)">
             <BaseCustomerSelectInput
@@ -146,22 +146,11 @@
             />
           </BaseInputGroup>
 
-          <!-- Date From -->
-          <BaseInputGroup :label="$t('general.from')">
-            <BaseDatePicker
-              v-model="filters.from_date"
-              :calendar-button="true"
-              calendar-button-icon="calendar"
-            />
-          </BaseInputGroup>
-
-        <!-- Date To -->
-        <BaseInputGroup :label="$t('general.to')">
-            <BaseDatePicker
-              v-model="filters.to_date"
-              :calendar-button="true"
-              calendar-button-icon="calendar"
-            />
+          <!-- Date Range Info -->
+          <BaseInputGroup label="Date Range">
+            <div class="px-3 py-2 text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md">
+              Controlled by global filter: {{ currentDateRangeLabel }}
+            </div>
           </BaseInputGroup>
         </div>
    <!-- Filter Actions -->
@@ -442,6 +431,7 @@ import { useUserStore } from '@/scripts/admin/stores/user'
 import { useInvoiceStore } from '@/scripts/admin/stores/invoice'
 import { useDialogStore } from '@/scripts/stores/dialog'
 import { useNotificationStore } from '@/scripts/stores/notification'
+import { useDateFilterStore } from '@/scripts/admin/stores/dateFilter'
 import { debouncedWatch } from '@vueuse/core'
 import abilities from '@/scripts/admin/stub/abilities'
 
@@ -458,6 +448,7 @@ const userStore = useUserStore()
 const invoiceStore = useInvoiceStore()
 const dialogStore = useDialogStore()
 const notificationStore = useNotificationStore()
+const dateFilterStore = useDateFilterStore()
 
 // State
 const invoices = ref([])
@@ -470,13 +461,13 @@ const filteredCount = ref(0)
 const pageSize = ref(10)
 const sortField = ref('created_at')
 const sortOrder = ref('desc')
+const currentDateRange = ref({ start: '', end: '' })
+const currentDateRangeLabel = ref('Last 30 days')
 
-// Filters
+// Filters (removed date filters as they're now controlled by unified filter)
 const filters = reactive({
   customer_id: '',
   status: '',
-  from_date: '',
-  to_date: '',
   search: ''
 })
 
@@ -521,17 +512,25 @@ const visiblePages = computed(() => {
 })
 
 const hasActiveFilters = computed(() => {
-  return filters.customer_id || filters.status || filters.from_date || filters.to_date || filters.search
+  return filters.customer_id || filters.status || filters.search || 
+         (currentDateRangeLabel.value !== 'Last 30 days')
 })
 
 const activeFilterCount = computed(() => {
   let count = 0
   if (filters.customer_id) count++
   if (filters.status) count++
-  if (filters.from_date || filters.to_date) count++
   if (filters.search) count++
+  if (currentDateRangeLabel.value !== 'Last 30 days') count++
   return count
 })
+
+// Initialize current date range from unified filter
+function initializeDateRange() {
+  const range = dateFilterStore.dateRange
+  currentDateRange.value = range
+  currentDateRangeLabel.value = dateFilterStore.displayLabel
+}
 
 // Watch filters with debounce
 debouncedWatch(
@@ -555,8 +554,8 @@ async function loadInvoices() {
       orderBy: sortOrder.value,
       customer_id: filters.customer_id,
       status: filters.status,
-      from_date: filters.from_date,
-      to_date: filters.to_date,
+      from_date: currentDateRange.value.start,
+      to_date: currentDateRange.value.end,
       search: filters.search
     }
 
@@ -584,10 +583,9 @@ function toggleFilters() {
 function clearAllFilters() {
   filters.customer_id = ''
   filters.status = ''
-  filters.from_date = ''
-  filters.to_date = ''
   filters.search = ''
   showFilters.value = false
+  // Note: Date filter cannot be cleared from table as it's controlled by global filter
 }
 
 function clearCustomerFilter() {
@@ -596,11 +594,6 @@ function clearCustomerFilter() {
 
 function clearStatusFilter() {
   filters.status = ''
-}
-
-function clearDateFilter() {
-  filters.from_date = ''
-  filters.to_date = ''
 }
 
 function toggleStatusFilter(value) {
@@ -700,20 +693,41 @@ function getCustomerName(customerId) {
   return invoice ? invoice.customer.name : 'Customer'
 }
 
-function getDateRangeLabel() {
-  if (filters.from_date && filters.to_date) {
-    return `${formatDate(filters.from_date)} - ${formatDate(filters.to_date)}`
-  } else if (filters.from_date) {
-    return `From ${formatDate(filters.from_date)}`
-  } else if (filters.to_date) {
-    return `Until ${formatDate(filters.to_date)}`
-  }
-  return 'Date Range'
+// Method to refresh table with new date range from unified filter
+function refreshWithDateRange(newDateRange) {
+  currentDateRange.value = newDateRange
+  currentDateRangeLabel.value = dateFilterStore.displayLabel
+  currentPage.value = 1
+  loadInvoices()
 }
 
+// Export method for PDF snapshot
+function getTableDataForSnapshot() {
+  return {
+    invoices: invoices.value,
+    totalCount: totalCount.value,
+    filteredCount: filteredCount.value,
+    filters: {
+      customer_id: filters.customer_id,
+      status: filters.status,
+      from_date: currentDateRange.value.start,
+      to_date: currentDateRange.value.end,
+      search: filters.search
+    },
+    hasActiveFilters: hasActiveFilters.value,
+    activeFilterCount: activeFilterCount.value
+  }
+}
+
+// Expose methods to parent component
+defineExpose({
+  getTableDataForSnapshot,
+  refreshWithDateRange
+})
 
 // Lifecycle
 onMounted(() => {
+  initializeDateRange()
   loadInvoices()
 })
 </script>

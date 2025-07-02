@@ -14,10 +14,12 @@ export const useNotificationStore = (useWindow = false) => {
 
     actions: {
       showNotification(notification) {
-        this.notifications.push({
+        const newNotification = {
           ...notification,
           id: (Math.random().toString(36) + Date.now().toString(36)).substr(2),
-        })
+        }
+        this.notifications.push(newNotification)
+        return newNotification
       },
 
       hideNotification(data) {

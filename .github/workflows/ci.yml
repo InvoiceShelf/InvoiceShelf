@@ -43,6 +43,216 @@ jobs:
         key: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
 
     - name: Install Composer dependencies
+      run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+    - name: Copy .env file
+      run: cp .env.ci .env
+
+    - name: Generate application key
+      run: php artisan key:generate
+
+    - name: Set up database
+      run: |
+        php artisan config:cache
+        php artisan migrate --force
+
+    - name: Run PHP Code Style Fixer (Pint)
+      run: ./vendor/bin/pint --test
+
+    - name: Run PHPUnit tests
+      run: php artisan test --coverage
+
+  frontend-tests:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: Verify lock file
+      run: |
+        if [ ! -f package-lock.json ] && [ ! -f yarn.lock ]; then
+          echo "❌ Lock file is missing. Please commit package-lock.json or yarn.lock"
+          exit 1
+        fi
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run ESLint
+      run: npm run test
+
+    - name: Build assets
+      run: npm run build
+
+    - name: Check build artifacts
+      run: |
+        if [ ! -d "public/build" ]; then
+          echo "Build directory not found!"
+          exit 1
+        fi
+
+  security-audit:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 8.2
+
+    - name: Install Composer dependencies
+      run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+    - name: Run security audit
+      run: composer audit
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20.x
+        cache: 'npm'
+
+    - name: Install Node dependencies
+      run: npm ci
+
+    - name: Run npm audit
+      run: npm audit --audit-level moderate
+
+  deployment-check:
+    runs-on: ubuntu-latest
+    needs: [php-tests, frontend-tests, security-audit]
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 8.2
+
+    - name: Install Composer dependencies
+      run: composer install --no-dev --optimize-autoloader
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20.x
+        cache: 'npm'
+
+    - name: Install and build frontend
+      run: |
+        npm ci
+        npm run build
+
+    - name: Create deployment artifact
+      run: |
+        tar -czf deployment.tar.gz \
+          --exclude=node_modules \
+          --exclude=.git \
+          --exclude=tests \
+          --exclude=.github \
+          --exclude=.env.example \
+          .
+
+    - name: Upload deployment artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: deployment-${{ github.ref_name }}-${{ github.sha }}
+        path: deployment.tar.gz
+        retention-days: 30
+
+  notify:
+    runs-on: ubuntu-latest
+    needs: [php-tests, frontend-tests, security-audit]
+    if: always()
+
+    steps:
+    - name: Notify on success
+      if: needs.php-tests.result == 'success' && needs.frontend-tests.result == 'success' && needs.security-audit.result == 'success'
+      run: |
+        echo "✅ All checks passed for branch ${{ github.ref_name }}"
+        echo "Commit: ${{ github.sha }}"
+        echo "Author: ${{ github.actor }}"
+
+    - name: Notify on failure
+      if: needs.php-tests.result == 'failure' || needs.frontend-tests.result == 'failure' || needs.security-audit.result == 'failure'
+      continue-on-error: true
+      run: |
+        echo "❌ Some checks failed for branch ${{ github.ref_name }}"
+        echo "Commit: ${{ github.sha }}"
+        echo "Author: ${{ github.actor }}"
+        echo "Failed jobs:"
+        if [ "${{ needs.php-tests.result }}" == "failure" ]; then
+          echo "- PHP Tests"
+        fi
+        if [ "${{ needs.frontend-tests.result }}" == "failure" ]; then
+          echo "- Frontend Tests"
+        fi
+        if [ "${{ needs.security-audit.result }}" == "failure" ]; then
+          echo "- Security Audit"
+        fi
+
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ master, develop ]
+  pull_request:
+    branches: [ master, develop ]
+
+jobs:
+  php-tests:
+    runs-on: ubuntu-latest
+    
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: invoiceshelf_test
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    strategy:
+      matrix:
+        php-version: [8.2, 8.3]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-version }}
+        extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, mysql, pdo_mysql
+        coverage: xdebug
+
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
+
+    - name: Install Composer dependencies
       run: composer install --no-progress --prefer-dist --optimize-autoloader    - name: Copy .env file
       run: cp .env.ci .env
 
