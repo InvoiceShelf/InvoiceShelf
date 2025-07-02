@@ -1,0 +1,1324 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentación técnica completa del sistema Crater">
+      
+      
+        <meta name="author" content="Crater Team">
+      
+      
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
+    
+    
+      
+        <title>Paso 4 - Implementación de Dark Mode - Crater - Documentación Técnica</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.342714a4.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#paso-4-implementacion-de-dark-mode" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Crater - Documentación Técnica" class="md-header__button md-logo" aria-label="Crater - Documentación Técnica" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Crater - Documentación Técnica
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Paso 4 - Implementación de Dark Mode
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Inicio
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../installation/" class="md-tabs__link">
+          
+  
+  
+  Instalación
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../architecture/overview/" class="md-tabs__link">
+          
+  
+  
+  Arquitectura
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../api/introduction/" class="md-tabs__link">
+          
+  
+  
+  API
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Crater - Documentación Técnica" class="md-nav__button md-logo" aria-label="Crater - Documentación Técnica" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Crater - Documentación Técnica
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Inicio
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Instalación
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Instalación
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Guía de Instalación
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/requirements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Requisitos del Sistema
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configuración
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Arquitectura
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Arquitectura
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Visión General
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/backend.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Backend (Laravel)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/frontend.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Frontend (Vue.js)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/database.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Base de Datos
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    API
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            API
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introducción
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/authentication.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Autenticación
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/endpoints.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Endpoints
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#resumen" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resumen
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracion-de-tailwind-css" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuración de Tailwind CSS
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuración de Tailwind CSS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-habilitacion-de-dark-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Habilitación de Dark Mode
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#store-de-tema" class="md-nav__link">
+    <span class="md-ellipsis">
+      Store de Tema
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Store de Tema">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-theme-store" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Theme Store
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#componente-dark-mode-toggle" class="md-nav__link">
+    <span class="md-ellipsis">
+      Componente Dark Mode Toggle
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Componente Dark Mode Toggle">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-darkmodetogglevue" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. DarkModeToggle.vue
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integracion-en-layouts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integración en Layouts
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Integración en Layouts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-layout-admin" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Layout Admin
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-layout-customer" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Layout Customer
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-header-admin" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Header Admin
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-header-customer" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Header Customer
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#soporte-de-dark-mode-en-componentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Soporte de Dark Mode en Componentes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Soporte de Dark Mode en Componentes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-activefiltervue" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. ActiveFilter.vue
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#traducciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      Traducciones
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Traducciones">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-archivo-de-idioma" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Archivo de Idioma
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#caracteristicas-tecnicas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Características Técnicas
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Características Técnicas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-persistencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Persistencia
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-deteccion-del-sistema" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Detección del Sistema
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-aplicacion-de-tema" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Aplicación de Tema
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-accesibilidad" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Accesibilidad
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-tests-existentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Tests Existentes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-verificacion-manual" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Verificación Manual
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notas-de-implementacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Notas de Implementación
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proximos-pasos" class="md-nav__link">
+    <span class="md-ellipsis">
+      Próximos Pasos
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#archivos-modificados" class="md-nav__link">
+    <span class="md-ellipsis">
+      Archivos Modificados
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Archivos Modificados">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nuevos-archivos" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nuevos Archivos:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#archivos-modificados_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Archivos Modificados:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="paso-4-implementacion-de-dark-mode">Paso 4 - Implementación de Dark Mode<a class="headerlink" href="#paso-4-implementacion-de-dark-mode" title="Permanent link">&para;</a></h1>
+<h2 id="resumen">Resumen<a class="headerlink" href="#resumen" title="Permanent link">&para;</a></h2>
+<p>Implementación completa del modo oscuro con toggle y persistencia para InvoiceShelf, incluyendo configuración de Tailwind CSS, store de tema, componente toggle y integración en layouts.</p>
+<h2 id="configuracion-de-tailwind-css">Configuración de Tailwind CSS<a class="headerlink" href="#configuracion-de-tailwind-css" title="Permanent link">&para;</a></h2>
+<h3 id="1-habilitacion-de-dark-mode">1. Habilitación de Dark Mode<a class="headerlink" href="#1-habilitacion-de-dark-mode" title="Permanent link">&para;</a></h3>
+<p><strong>Archivo:</strong> <code>tailwind.config.js</code></p>
+<p><strong>Cambios:</strong>
+- Agregado <code>darkMode: 'class'</code> para habilitar el modo oscuro basado en clases CSS
+- Permite el control programático del tema mediante la clase <code>dark</code> en el elemento HTML</p>
+<h2 id="store-de-tema">Store de Tema<a class="headerlink" href="#store-de-tema" title="Permanent link">&para;</a></h2>
+<h3 id="1-theme-store">1. Theme Store<a class="headerlink" href="#1-theme-store" title="Permanent link">&para;</a></h3>
+<p><strong>Ubicación:</strong> <code>resources/scripts/stores/theme.js</code></p>
+<p><strong>Características:</strong>
+- Store Pinia para manejo centralizado del estado del tema
+- Persistencia en localStorage con clave <code>invoiceshelf_dark_mode</code>
+- Detección automática de preferencias del sistema
+- Aplicación automática de clases CSS al documento</p>
+<p><strong>Estado:</strong>
+- <code>isDarkMode</code>: Boolean que indica si el modo oscuro está activo
+- <code>persistKey</code>: Clave para localStorage</p>
+<p><strong>Getters:</strong>
+- <code>currentTheme</code>: Retorna 'dark' o 'light'
+- <code>oppositeTheme</code>: Retorna el tema opuesto</p>
+<p><strong>Acciones:</strong>
+- <code>toggleDarkMode()</code>: Alterna entre modos
+- <code>setDarkMode(enabled)</code>: Establece modo específico
+- <code>applyTheme()</code>: Aplica clases CSS al documento
+- <code>persistTheme()</code>: Guarda preferencia en localStorage
+- <code>loadTheme()</code>: Carga preferencia desde localStorage
+- <code>getSystemPreference()</code>: Detecta preferencia del sistema
+- <code>initialize()</code>: Inicializa el store y escucha cambios del sistema
+- <code>resetToSystemPreference()</code>: Resetea a preferencia del sistema</p>
+<h2 id="componente-dark-mode-toggle">Componente Dark Mode Toggle<a class="headerlink" href="#componente-dark-mode-toggle" title="Permanent link">&para;</a></h2>
+<h3 id="1-darkmodetogglevue">1. DarkModeToggle.vue<a class="headerlink" href="#1-darkmodetogglevue" title="Permanent link">&para;</a></h3>
+<p><strong>Ubicación:</strong> <code>resources/scripts/components/theme/DarkModeToggle.vue</code></p>
+<p><strong>Características:</strong>
+- Componente Vue 3 reutilizable con Composition API
+- Switch toggle con iconos animados (Sol/Luna)
+- Indicador de tema actual con badge
+- Estados de loading opcionales
+- Configuración flexible de etiquetas y descripciones</p>
+<p><strong>Props:</strong>
+- <code>showLabel</code> (Boolean): Mostrar etiqueta y descripción
+- <code>showDescription</code> (Boolean): Mostrar texto descriptivo
+- <code>loading</code> (Boolean): Estado de carga
+- <code>id</code> (String): ID único para el switch</p>
+<p><strong>Eventos:</strong>
+- <code>change</code>: Emitido cuando cambia el estado del tema</p>
+<p><strong>Iconos:</strong>
+- <code>SunIcon</code>: Modo claro (amarillo)
+- <code>MoonIcon</code>: Modo oscuro (azul)
+- Transiciones suaves entre iconos</p>
+<h2 id="integracion-en-layouts">Integración en Layouts<a class="headerlink" href="#integracion-en-layouts" title="Permanent link">&para;</a></h2>
+<h3 id="1-layout-admin">1. Layout Admin<a class="headerlink" href="#1-layout-admin" title="Permanent link">&para;</a></h3>
+<p><strong>Archivo:</strong> <code>resources/scripts/admin/layouts/LayoutBasic.vue</code></p>
+<p><strong>Cambios:</strong>
+- Importación del <code>useThemeStore</code>
+- Inicialización del theme store en <code>onMounted</code>
+- Configuración automática al cargar la aplicación</p>
+<h3 id="2-layout-customer">2. Layout Customer<a class="headerlink" href="#2-layout-customer" title="Permanent link">&para;</a></h3>
+<p><strong>Archivo:</strong> <code>resources/scripts/customer/layouts/LayoutBasic.vue</code></p>
+<p><strong>Cambios:</strong>
+- Importación del <code>useThemeStore</code>
+- Inicialización del theme store en función <code>loadData</code>
+- Configuración automática al cargar la aplicación</p>
+<h3 id="3-header-admin">3. Header Admin<a class="headerlink" href="#3-header-admin" title="Permanent link">&para;</a></h3>
+<p><strong>Archivo:</strong> <code>resources/scripts/admin/layouts/partials/TheSiteHeader.vue</code></p>
+<p><strong>Cambios:</strong>
+- Agregado toggle de dark mode en la barra de navegación
+- Posicionado entre CompanySwitcher y dropdown de usuario
+- Estilo consistente con otros elementos del header
+- Fondo semi-transparente con hover effects</p>
+<h3 id="4-header-customer">4. Header Customer<a class="headerlink" href="#4-header-customer" title="Permanent link">&para;</a></h3>
+<p><strong>Archivo:</strong> <code>resources/scripts/customer/layouts/partials/TheSiteHeader.vue</code></p>
+<p><strong>Cambios:</strong>
+- Agregado toggle de dark mode antes del dropdown de perfil
+- Integración limpia con el diseño existente
+- Responsive design mantenido</p>
+<h2 id="soporte-de-dark-mode-en-componentes">Soporte de Dark Mode en Componentes<a class="headerlink" href="#soporte-de-dark-mode-en-componentes" title="Permanent link">&para;</a></h2>
+<h3 id="1-activefiltervue">1. ActiveFilter.vue<a class="headerlink" href="#1-activefiltervue" title="Permanent link">&para;</a></h3>
+<p><strong>Actualizaciones aplicadas:</strong>
+- <code>bg-white dark:bg-gray-800</code>: Fondo del contenedor
+- <code>border-gray-200 dark:border-gray-700</code>: Bordes
+- <code>text-gray-900 dark:text-gray-100</code>: Texto principal
+- <code>text-gray-500 dark:text-gray-400</code>: Texto secundario
+- <code>bg-primary-100 dark:bg-primary-900</code>: Badge de estado activo
+- <code>text-primary-800 dark:text-primary-200</code>: Texto del badge</p>
+<h2 id="traducciones">Traducciones<a class="headerlink" href="#traducciones" title="Permanent link">&para;</a></h2>
+<h3 id="1-archivo-de-idioma">1. Archivo de Idioma<a class="headerlink" href="#1-archivo-de-idioma" title="Permanent link">&para;</a></h3>
+<p><strong>Ubicación:</strong> <code>lang/en.json</code></p>
+<p><strong>Nuevas traducciones:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">&quot;theme&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">&quot;dark_mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="nt">&quot;label&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Dark Mode&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Toggle between light and dark themes&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="nt">&quot;dark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Dark&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="nt">&quot;light&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Light&quot;</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">  </span><span class="p">}</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="p">}</span>
+</code></pre></div></p>
+<h2 id="caracteristicas-tecnicas">Características Técnicas<a class="headerlink" href="#caracteristicas-tecnicas" title="Permanent link">&para;</a></h2>
+<h3 id="1-persistencia">1. Persistencia<a class="headerlink" href="#1-persistencia" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Preferencias guardadas en localStorage</li>
+<li>Claves separadas para admin y customer (si fuera necesario)</li>
+<li>Carga automática al inicializar la aplicación</li>
+<li>Fallback a preferencias del sistema</li>
+</ul>
+<h3 id="2-deteccion-del-sistema">2. Detección del Sistema<a class="headerlink" href="#2-deteccion-del-sistema" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Escucha cambios en <code>prefers-color-scheme</code></li>
+<li>Actualización automática si no hay preferencia guardada</li>
+<li>Respeta preferencias explícitas del usuario</li>
+</ul>
+<h3 id="3-aplicacion-de-tema">3. Aplicación de Tema<a class="headerlink" href="#3-aplicacion-de-tema" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Manipulación de clases CSS en <code>document.documentElement</code></li>
+<li>Clase <code>dark</code> agregada/removida dinámicamente</li>
+<li>Transiciones suaves entre temas</li>
+</ul>
+<h3 id="4-accesibilidad">4. Accesibilidad<a class="headerlink" href="#4-accesibilidad" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Labels apropiados para screen readers</li>
+<li>Focus states bien definidos</li>
+<li>Contraste adecuado en ambos temas</li>
+<li>Indicadores visuales claros</li>
+</ul>
+<h2 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">&para;</a></h2>
+<h3 id="1-tests-existentes">1. Tests Existentes<a class="headerlink" href="#1-tests-existentes" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Todos los tests del filtro activo siguen pasando</li>
+<li>No hay regresiones en funcionalidad existente</li>
+<li>Compatibilidad mantenida con componentes base</li>
+</ul>
+<h3 id="2-verificacion-manual">2. Verificación Manual<a class="headerlink" href="#2-verificacion-manual" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Toggle funciona correctamente en ambos portales</li>
+<li>Persistencia funciona entre sesiones</li>
+<li>Iconos cambian apropiadamente</li>
+<li>Transiciones son suaves</li>
+</ul>
+<h2 id="notas-de-implementacion">Notas de Implementación<a class="headerlink" href="#notas-de-implementacion" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Compatibilidad</strong>: Totalmente compatible con el sistema existente</li>
+<li><strong>Performance</strong>: Mínimo impacto en rendimiento</li>
+<li><strong>Mantenibilidad</strong>: Código bien estructurado y documentado</li>
+<li><strong>Escalabilidad</strong>: Fácil agregar soporte a más componentes</li>
+<li><strong>UX</strong>: Experiencia de usuario intuitiva y consistente</li>
+</ol>
+<h2 id="proximos-pasos">Próximos Pasos<a class="headerlink" href="#proximos-pasos" title="Permanent link">&para;</a></h2>
+<p>Para completar el soporte de dark mode:
+1. Agregar clases dark mode a más componentes base
+2. Actualizar componentes de formularios
+3. Revisar gráficos y charts
+4. Testear en diferentes navegadores
+5. Optimizar transiciones y animaciones</p>
+<h2 id="archivos-modificados">Archivos Modificados<a class="headerlink" href="#archivos-modificados" title="Permanent link">&para;</a></h2>
+<h3 id="nuevos-archivos">Nuevos Archivos:<a class="headerlink" href="#nuevos-archivos" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>resources/scripts/stores/theme.js</code></li>
+<li><code>resources/scripts/components/theme/DarkModeToggle.vue</code></li>
+<li><code>docs/STEP_4_DARK_MODE_IMPLEMENTATION.md</code></li>
+</ul>
+<h3 id="archivos-modificados_1">Archivos Modificados:<a class="headerlink" href="#archivos-modificados_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>tailwind.config.js</code></li>
+<li><code>lang/en.json</code></li>
+<li><code>resources/scripts/admin/layouts/LayoutBasic.vue</code></li>
+<li><code>resources/scripts/customer/layouts/LayoutBasic.vue</code></li>
+<li><code>resources/scripts/admin/layouts/partials/TheSiteHeader.vue</code></li>
+<li><code>resources/scripts/customer/layouts/partials/TheSiteHeader.vue</code></li>
+<li><code>resources/scripts/components/dashboard/ActiveFilter.vue</code> </li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2024 Crater Team
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      
+    
+  </body>
+</html>
