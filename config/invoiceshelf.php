@@ -257,6 +257,16 @@ return [
             'model' => '',
         ],
         [
+            'title' => 'settings.reminders.config_menu_title',
+            'group' => '',
+            'name' => 'Reminders Configuration',
+            'link' => '/admin/settings/reminders',
+            'icon' => 'MegaphoneIcon',
+            'owner_only' => true,
+            'ability' => '',
+            'model' => '',
+        ],
+        [
             'title' => 'settings.menu_title.file_disk',
             'group' => '',
             'name' => 'File Disk',
@@ -503,6 +513,7 @@ return [
         ['key' => 'settings.exchange_rate.currency_freak', 'value' => 'currency_freak'],
         ['key' => 'settings.exchange_rate.currency_layer', 'value' => 'currency_layer'],
         ['key' => 'settings.exchange_rate.open_exchange_rate', 'value' => 'open_exchange_rate'],
+        ['key' => 'settings.exchange_rate.ecb', 'value' => 'ecb'],
     ],
 
     /*

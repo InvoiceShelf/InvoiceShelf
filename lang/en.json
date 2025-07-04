@@ -919,6 +919,36 @@
       "pdf_variables_save_successfully": "PDF configuration saved successfully",
       "pdf_variables_save_error": "PDF configuration could not be saved"
     },
+    "reminders": {
+      "config_menu_title": "Reminders",
+      "section_title": "Reminders",
+      "section_description": "Configure how reminders are sent to customers",
+      "bcc": "Bcc",
+      "send_reminders_invoice_due": "Send invoice due reminders",
+      "send_reminders_invoice_due_desc": "Enable or disable reminders for invoices that are due",
+      "frequency": {
+        "title": "Frequency (using cron format)",
+        "cron_example": "Enter a cron format definition below Eg. '0 0 * * *' meaning every day at midnight",
+        "input_frequency": "Cron",
+        "select_frequency": "Select Frequency",
+        "minute": "Minute",
+        "hour": "Hour",
+        "day_month": "Day of month",
+        "month": "Month",
+        "day_week": "Day of week",
+        "every_minute": "Every Minute",
+        "every_30_minute": "Every 30 Minute",
+        "every_hour": "Every Hour",
+        "every_2_hour": "Every 2 Hour",
+        "every_day_at_midnight": "Every day at midnight",
+        "every_week": "Every Week",
+        "every_15_days_at_midnight": "Every 15 days at midnight",
+        "on_the_first_day_of_every_month_at_midnight": "On the first day of every month at 00:00",
+        "every_6_month": "Every 6 Month",
+        "every_year_on_the_first_day_of_january_at_midnight": "Every year on the first day of january at 00:00",
+        "custom": "Custom"
+      }
+    },
     "company_info": {
       "company_info": "Company info",
       "company_name": "Company Name",

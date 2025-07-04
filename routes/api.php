@@ -81,6 +81,7 @@ use App\Http\Controllers\V1\Admin\Settings\TaxTypesController;
 use App\Http\Controllers\V1\Admin\Settings\UpdateCompanySettingsController;
 use App\Http\Controllers\V1\Admin\Settings\UpdateSettingsController;
 use App\Http\Controllers\V1\Admin\Settings\UpdateUserSettingsController;
+use App\Http\Controllers\V1\Admin\Settings\RemindersConfigurationController;
 use App\Http\Controllers\V1\Admin\Update\CheckVersionController;
 use App\Http\Controllers\V1\Admin\Update\CopyFilesController;
 use App\Http\Controllers\V1\Admin\Update\DeleteFilesController;
@@ -406,6 +407,10 @@ Route::prefix('/v1')->group(function () {
             Route::get('/pdf/config', [PDFConfigurationController::class, 'getEnvironment']);
 
             Route::post('/pdf/config', [PDFConfigurationController::class, 'saveEnvironment']);
+
+            // Reminders
+            // ----------------------------------
+            Route::apiResource('/reminders', RemindersConfigurationController::class);
 
             Route::apiResource('notes', NotesController::class);
 
