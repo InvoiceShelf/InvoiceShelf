@@ -649,6 +649,8 @@
     "from_date": "Od dátumu",
     "to_date": "Do dátumu",
     "expense_date": "Dátum",
+    "expense_number": "Številka odhodka",
+    "expense_number_placeholder": "EXP-001",
     "description": "Popis",
     "receipt": "Doklad o zaplatení",
     "amount": "Suma",

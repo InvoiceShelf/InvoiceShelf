@@ -649,6 +649,8 @@
     "from_date": "От даты",
     "to_date": "До даты",
     "expense_date": "Дата",
+    "expense_number": "Номер расхода",
+    "expense_number_placeholder": "EXP-001",
     "description": "Описание",
     "receipt": "Квитанция",
     "amount": "Сумма",

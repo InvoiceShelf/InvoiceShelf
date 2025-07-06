@@ -26,6 +26,11 @@ class ExpenseRequest extends FormRequest
             'expense_date' => [
                 'required',
             ],
+            'expense_number' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
             'expense_category_id' => [
                 'required',
             ],

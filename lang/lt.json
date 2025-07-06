@@ -649,6 +649,8 @@
     "from_date": "From Date",
     "to_date": "To Date",
     "expense_date": "Data",
+    "expense_number": "Išlaidų numeris",
+    "expense_number_placeholder": "EXP-001",
     "description": "Aprašymas",
     "receipt": "Čekis",
     "amount": "Amount",

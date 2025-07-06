@@ -117,6 +117,19 @@
           </BaseInputGroup>
 
           <BaseInputGroup
+            :label="$t('expenses.expense_number')"
+            :content-loading="isFetchingInitialData"
+          >
+            <BaseInput
+              v-model="expenseStore.currentExpense.expense_number"
+              :content-loading="isFetchingInitialData"
+              type="text"
+              name="expense_number"
+              :placeholder="$t('expenses.expense_number_placeholder')"
+            />
+          </BaseInputGroup>
+
+          <BaseInputGroup
             :label="$t('expenses.amount')"
             :error="
               v$.currentExpense.amount.$error &&
@@ -482,7 +495,10 @@ async function submitForm() {
 
   isSaving.value = true
 
-  let formData = expenseStore.currentExpense
+  let formData = {
+    ...expenseStore.currentExpense,
+    expense_number: expenseStore.currentExpense.expense_number || ''
+  }
 
   try {
     if (isEdit.value) {

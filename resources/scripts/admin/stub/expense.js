@@ -3,6 +3,7 @@ import moment from 'moment'
 export default {
   expense_category_id: null,
   expense_date: moment().format('YYYY-MM-DD'),
+  expense_number: '',
   amount: 100,
   notes: '',
   attachment_receipt: null,
