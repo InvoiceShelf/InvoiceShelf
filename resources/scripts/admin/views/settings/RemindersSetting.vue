@@ -49,8 +49,27 @@
             :invalid="v$.reminders_invoice_due_frequency.$error"
             @input="v$.reminders_invoice_due_frequency.$touch()"
           />
-        </BaseInputGroup>        
+        </BaseInputGroup>       
+        
+        <!-- Invoice Due Email Body -->
+        <BaseInputGroup
+          :label="$t('settings.reminders.invoice_due_email_body')"
+          class="mt-6 mb-4"
+        >
+          <BaseCustomInput
+            v-model="settingsForm.reminders_invoice_due_email_body"
+            :fields="invoiceMailFields"
+          />
+        </BaseInputGroup>
 
+        <!-- Attach PDF -->
+        <BaseSwitchSection
+          v-model="settingsForm.reminders_attach_pdf"
+          :title="$t('settings.reminders.attach_pdf')"
+          :description="$t('settings.reminders.attach_pdf')"
+        />
+
+        <!-- SAVE -->
         <BaseButton
           :disabled="isSaving"
           :loading="isSaving"
@@ -77,7 +96,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, reactive } from 'vue'
+import { ref, computed, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { required, email, helpers } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
@@ -91,7 +110,9 @@ const { t } = useI18n()
 const settingsForm = reactive({
   reminders_bcc: companyStore.selectedCompanySettings.reminders_bcc,
   reminders_invoice_due: companyStore.selectedCompanySettings.reminders_invoice_due,  
-  reminders_invoice_due_frequency: companyStore.selectedCompanySettings.reminders_invoice_due_frequency
+  reminders_invoice_due_frequency: companyStore.selectedCompanySettings.reminders_invoice_due_frequency,
+  reminders_invoice_due_email_body: companyStore.selectedCompanySettings.reminders_invoice_due_email_body,
+  reminders_attach_pdf: companyStore.selectedCompanySettings.reminders_attach_pdf
 });
 
 const cron_validation = (val) => {
@@ -155,6 +176,8 @@ async function submitForm() {
       reminders_invoice_due: settingsForm.reminders_invoice_due,  
       reminders_bcc: settingsForm.reminders_bcc,
       reminders_invoice_due_frequency: settingsForm.reminders_invoice_due_frequency,  
+      reminders_invoice_due_email_body: settingsForm.reminders_invoice_due_email_body,  
+      reminders_attach_pdf: settingsForm.reminders_attach_pdf,
     },
   }
 
@@ -165,4 +188,14 @@ async function submitForm() {
 
   isSaving.value = false
 }
+
+/* Invoice Due Email Body Input */
+const invoiceMailFields = ref([
+  'customer',
+  'customerCustom',
+  'invoice',
+  'invoiceCustom',
+  'company',
+]);
+
 </script>
