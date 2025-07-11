@@ -28,7 +28,7 @@
     {{-- Footer --}}
     @slot('footer')
         @component('mail::footer')
-            &copy; {{ now()->year }} <a class="footer-link" href="{{$data['company']['website']}}" target="_blank">{{$data['company']['name']}}</a>
+            Powered by <a class="footer-link" href="https://invoiceshelf.com" target="_blank">InvoiceShelf</a>
         @endcomponent
     @endslot
 @endcomponent

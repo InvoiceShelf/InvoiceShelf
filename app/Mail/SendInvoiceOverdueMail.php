@@ -2,25 +2,31 @@
 
 namespace App\Mail;
 
-use App\Models\EmailLog;
 use App\Models\Customer;
 use App\Models\Company;
 use App\Models\CompanySetting;
 use App\Models\Invoice;
+use App\Models\EmailLog;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\Events\JobProcessed;
 use Vinkla\Hashids\Facades\Hashids;
+
+use Throwable;
+use Queue;
 
 class SendInvoiceOverdueMail extends Mailable
 {
-    use Queueable;
-    use SerializesModels;
+    use InteractsWithQueue, Queueable, SerializesModels;
 
     public Customer $customer;
     public Invoice $invoice;
 
     public $data = [];
+    public $email_log;
 
     /**
      * Create a new message instance.
@@ -42,26 +48,30 @@ class SendInvoiceOverdueMail extends Mailable
      */
     public function build()
     {
-               
-        // $log = EmailLog::create([
-        //     'from' => $this->data['from'],
-        //     'to' => $this->data['to'],
-        //     'subject' => $this->data['subject'],
-        //     'body' => $this->data['body'],
-        //     'mailable_type' => Invoice::class,
-        //     'mailable_id' => $this->data['invoice']['id'],
-        // ]);
 
-        // $log->token = Hashids::connection(EmailLog::class)->encode($log->id);
-        // $log->save();
+        // @todo this uses the general mail config
+        // There should be a company setting for this
+        //
+        $from_address = config('mail.from.address');
+        $from_name = config('mail.from.name');
 
         $this->data = $this->sendInvoiceData();
 
-        // $this->data['url'] = route('invoice', ['email_log' => $log->token]);        
-        $this->data['url'] = 'FAKE_URL';        
+        $this->email_log = EmailLog::create([
+            'from' =>  "$from_address",
+            'to' => $this->to[0]['address'],
+            'subject' => $this->data['subject'],
+            'body' => $this->data['body'],
+            'mailable_type' => Invoice::class,
+            'mailable_id' => $this->data['invoice']['id'],
+        ]);
 
+        $this->email_log->token = Hashids::connection(EmailLog::class)->encode($this->email_log->id);
+        $this->email_log->save();
+
+        $this->data['url'] = route('invoice', ['email_log' => $this->email_log->token]);   
        
-        $mailContent = $this->from('test@turtlehaus.com', config('mail.from.name'))
+        $mailContent = $this->from($from_address, $from_name)
             ->subject($this->data['subject'])
             ->markdown('emails.send.invoice_overdue', ['data', $this->data]);
 
@@ -70,10 +80,7 @@ class SendInvoiceOverdueMail extends Mailable
                 $this->data['attach']['data']->output(),
                 $this->data['invoice']['invoice_number'].'.pdf'
             );
-        }
-
-        // var_dump($this->getEmailAttachmentSetting());
-        // die;
+        };
 
         return $mailContent;
     }
@@ -81,26 +88,21 @@ class SendInvoiceOverdueMail extends Mailable
     public function getEmailAttachmentSetting() {
         return CompanySetting::getSetting('reminders_attach_pdf', $this->invoice->company_id) === '1';
     }
-
+  
     public function sendInvoiceData()
     {
-        // $data['invoice'] = $this->toArray();
-        // $data['customer'] = $this->customer->toArray();
-        // $data['company'] = Company::find($this->company_id);
-        // $data['subject'] = $this->getEmailString($data['subject']);
-        // $data['body'] = $this->getEmailString($data['body']);
-        // $data['attach']['data'] = ($this->getEmailAttachmentSetting()) ? $this->getPDFData() : null;
-
+        $email_subject = CompanySetting::getSetting('reminders_invoice_due_email_subject', $this->invoice->company_id);
         $email_body = CompanySetting::getSetting('reminders_invoice_due_email_body', $this->invoice->company_id);
 
         $data['invoice'] = $this->invoice->toArray();
         $data['customer'] = $this->customer->toArray();
         $data['company'] = Company::find($this->invoice->company_id);
-        $data['subject'] = 'Overdue Invoice'; // $this->getEmailString($data['subject']);
+        $data['subject'] = $this->invoice->getEmailString($email_subject);
         $data['body'] = $this->invoice->getEmailString($email_body);
         $data['attach']['data'] = ($this->getEmailAttachmentSetting()) ? $this->invoice->getPDFData() : null;
        
-
         return $data;
     }
+
 }
+

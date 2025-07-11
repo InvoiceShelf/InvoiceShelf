@@ -49,7 +49,25 @@
             :invalid="v$.reminders_invoice_due_frequency.$error"
             @input="v$.reminders_invoice_due_frequency.$touch()"
           />
-        </BaseInputGroup>       
+        </BaseInputGroup>    
+        
+        <!-- Invoice Due Email Subject -->
+        <BaseInputGroup
+          :error="
+            v$.reminders_invoice_due_email_subject.$error &&
+            v$.reminders_invoice_due_email_subject.$errors[0].$message
+          "
+          :label="$t('settings.reminders.invoice_due_email_subject')"
+          class="my-2"
+          required
+        >
+          <BaseInput
+            v-model.trim="settingsForm.reminders_invoice_due_email_subject"
+            :invalid="v$.reminders_invoice_due_email_subject.$error"
+            type="text"
+            @input="v$.reminders_invoice_due_email_subject.$touch()"
+          />
+        </BaseInputGroup>
         
         <!-- Invoice Due Email Body -->
         <BaseInputGroup
@@ -111,6 +129,7 @@ const settingsForm = reactive({
   reminders_bcc: companyStore.selectedCompanySettings.reminders_bcc,
   reminders_invoice_due: companyStore.selectedCompanySettings.reminders_invoice_due,  
   reminders_invoice_due_frequency: companyStore.selectedCompanySettings.reminders_invoice_due_frequency,
+  reminders_invoice_due_email_subject: companyStore.selectedCompanySettings.reminders_invoice_due_email_subject,
   reminders_invoice_due_email_body: companyStore.selectedCompanySettings.reminders_invoice_due_email_body,
   reminders_attach_pdf: companyStore.selectedCompanySettings.reminders_attach_pdf
 });
@@ -132,6 +151,9 @@ const rules = computed(() => {
     reminders_invoice_due_frequency: {
       required: helpers.withMessage(t('validation.required'), required),
       cron: helpers.withMessage(t('settings.reminders.invalid_cron'), cron_validation)
+    },
+    reminders_invoice_due_email_subject: {
+      required: helpers.withMessage(t('validation.required'), required)
     }
   }
 })
@@ -176,6 +198,7 @@ async function submitForm() {
       reminders_invoice_due: settingsForm.reminders_invoice_due,  
       reminders_bcc: settingsForm.reminders_bcc,
       reminders_invoice_due_frequency: settingsForm.reminders_invoice_due_frequency,  
+      reminders_invoice_due_email_subject: settingsForm.reminders_invoice_due_email_subject,  
       reminders_invoice_due_email_body: settingsForm.reminders_invoice_due_email_body,  
       reminders_attach_pdf: settingsForm.reminders_attach_pdf,
     },
@@ -183,7 +206,7 @@ async function submitForm() {
 
   await companyStore.updateCompanySettings({
     data,
-    message: 'settings.reminders.settings_save_message',
+    message: 'settings.reminders.save_message',
   })
 
   isSaving.value = false

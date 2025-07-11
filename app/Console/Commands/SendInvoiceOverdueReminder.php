@@ -3,9 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Invoice;
-use App\Models\Customer;
-use App\Models\CompanySetting;
-use App\Mail\SendInvoiceOverdueMail;
+use App\Jobs\SendReminderEmailJob;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
@@ -26,6 +24,13 @@ class SendInvoiceOverdueReminder extends Command
     protected $description = 'Send overdue invoice reminder.';
 
     /**
+     * The reminders queue name.
+     *
+     * @var string
+     */
+    private $queue_name = 'reminders_queue';
+
+    /**
      * Create a new command instance.
      *
      * @return void
@@ -42,24 +47,19 @@ class SendInvoiceOverdueReminder extends Command
      */
     public function handle(): void
     {
+       
         $date = Carbon::now();
-        $invoices = Invoice::whereNotIn('status', [Invoice::STATUS_COMPLETED, Invoice::STATUS_DRAFT])
+        $query = Invoice::whereNotIn('status', [Invoice::STATUS_COMPLETED, Invoice::STATUS_DRAFT])
             ->where('overdue', true)
-            ->whereDate('due_date', '<', $date)
-            ->get();
+            ->whereDate('due_date', '<', $date);
+        
+        if ($this->argument('company_id')) {
+           $query = $query->where('company_id', (int) $this->argument('company_id'));
+        }
 
+        $invoices = $query->get();        
         foreach ($invoices as $invoice) {
-            $customer = Customer::whereId($invoice['customer_id'])->get()[0];            
-            $mail = \Mail::to($customer['email']);
-
-            if ($this->argument('company_id')) {
-                $company_bcc = CompanySetting::getSetting('reminders_bcc', (int) $this->argument('company_id'));
-                if($company_bcc){
-                    $mail->bcc($company_bcc);
-                }
-            }
-
-            $mail->send(new SendInvoiceOverdueMail($customer, $invoice));
+            dispatch(new SendReminderEmailJob($invoice)); 
         }
     }
 }
