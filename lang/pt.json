@@ -916,7 +916,7 @@
       "papersize": "Tamanho do papel",
       "papersize_hint": "Tamanho do papel na largura e altura (ex. \"210mm 297mm\")",
       "gotenberg_host": "Host de serviço Gotenberg",
-      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_successfully": "Configuração do PDF salva com sucesso",
       "pdf_variables_save_error": "A configuração não pôde ser salva"
     },
     "company_info": {
