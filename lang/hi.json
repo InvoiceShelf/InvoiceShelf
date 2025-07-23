@@ -542,7 +542,7 @@
     "update_invoice": "आवर्ती चालान में परिवर्तन करें",
     "add_new_tax": "नया टैक्स जोड़ें",
     "no_invoices": "No Recurring Invoices yet!",
-    "mark_as_rejected": "Mark as rejected",
+    "mark_as_rejected": "अस्वीकृत के रूप में चिह्नित करें",
     "mark_as_accepted": "Mark as accepted",
     "list_of_invoices": "This section will contain the list of recurring invoices.",
     "select_invoice": "Select Invoice",
