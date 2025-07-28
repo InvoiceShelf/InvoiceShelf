@@ -17,7 +17,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Module Styles -->
-    @foreach(\App\Services\Module\ModuleFacade::allStyles() as $name => $path)
+    @foreach (\App\Services\Module\ModuleFacade::allStyles() as $name => $path)
         <link rel="stylesheet" href="/modules/styles/{{ $name }}">
     @endforeach
 
@@ -26,7 +26,7 @@
 
 <body
     class="h-full overflow-hidden bg-gray-100 font-base
-    @if(isset($current_theme)) theme-{{ $current_theme }} @else theme-{{get_app_setting('admin_portal_theme') ?? 'invoiceshelf'}} @endif ">
+    @if (isset($current_theme)) theme-{{ $current_theme }} @else theme-{{ get_app_setting('admin_portal_theme') ?? 'invoiceshelf' }} @endif ">
 
     <!-- Module Scripts -->
     @foreach (\App\Services\Module\ModuleFacade::allScripts() as $name => $path)
@@ -38,33 +38,27 @@
     @endforeach
 
     <script type="module">
-        @if(isset($customer_logo))
-
-        window.customer_logo = "/storage/{{$customer_logo}}"
-
-        @endif
-        @if(isset($login_page_logo))
-
-        window.login_page_logo = "/storage/{{$login_page_logo}}"
-
-        @endif
-        @if(isset($login_page_heading))
-
-        window.login_page_heading = "{{$login_page_heading}}"
-
-        @endif
-        @if(isset($login_page_description))
-
-        window.login_page_description = "{{$login_page_description}}"
-
-        @endif
-        @if(isset($copyright_text))
-
-        window.copyright_text = "{{$copyright_text}}"
-
+        @if (isset($customer_logo))
+            window.customer_logo = "/storage/{{ $customer_logo }}"
         @endif
 
-        @if(config('app.env') === 'demo')
+        @if (isset($login_page_logo))
+            window.login_page_logo = "/storage/{{ $login_page_logo }}"
+        @endif
+
+        @if (isset($login_page_heading))
+            window.login_page_heading = "{{ $login_page_heading }}"
+        @endif
+
+        @if (isset($login_page_description))
+            window.login_page_description = "{{ $login_page_description }}"
+        @endif
+
+        @if (isset($copyright_text))
+            window.copyright_text = "{{ $copyright_text }}"
+        @endif
+
+        @if (config('app.env') === 'demo')
             window.demo_mode = true
         @endif
 
