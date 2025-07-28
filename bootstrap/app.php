@@ -49,8 +49,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'bouncer' => \App\Http\Middleware\ScopeBouncer::class,
             'company' => \App\Http\Middleware\CompanyMiddleware::class,
             'cron-job' => \App\Http\Middleware\CronJobMiddleware::class,
-            'customer' => \App\Http\Middleware\CustomerRedirectIfAuthenticated::class,
-            'customer-guest' => \App\Http\Middleware\CustomerGuest::class,
             'customer-portal' => \App\Http\Middleware\CustomerPortalMiddleware::class,
             'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
             'install' => \App\Http\Middleware\InstallationMiddleware::class,
