@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Space\Updater;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\File;
 
 // Implementation taken from Akaunting - https://github.com/akaunting/akaunting
 class UpdateCommand extends Command
