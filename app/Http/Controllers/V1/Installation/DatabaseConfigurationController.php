@@ -11,10 +11,7 @@ use Illuminate\Support\Facades\Artisan;
 
 class DatabaseConfigurationController extends Controller
 {
-    /**
-     * @var EnvironmentManager
-     */
-    protected $EnvironmentManager;
+    protected EnvironmentManager $environmentManager;
 
     public function __construct(EnvironmentManager $environmentManager)
     {
@@ -35,7 +32,6 @@ class DatabaseConfigurationController extends Controller
             Artisan::call('cache:clear');
             Artisan::call('storage:link');
             Artisan::call('migrate --seed --force');
-            // Set version.
             InstallUtils::setCurrentVersion();
         }
 
@@ -72,7 +68,6 @@ class DatabaseConfigurationController extends Controller
                 ];
 
                 break;
-
         }
 
         return response()->json([
