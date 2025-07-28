@@ -22,7 +22,7 @@ class CreateTemplateCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Create estimate or invoice pdf template.                               ';
+    protected $description = 'Create estimate or invoice pdf template.';
 
     /**
      * Create a new command instance.
@@ -81,7 +81,8 @@ class CreateTemplateCommand extends Command
         }
 
         $this->info(
-            sprintf('%s Template created successfully at %s',
+            sprintf(
+                '%s Template created successfully at %s',
                 ucfirst($templateType),
                 PdfTemplateUtils::getCustomTemplateFilePath($templateType, sprintf('%s.blade.php', $templateName))
             )
