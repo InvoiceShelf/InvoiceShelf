@@ -8,46 +8,11 @@ For production grade docker image, please refer to [InvoiceShelf/docker](https:/
 
 ## How to set up
 
-### 1. Hosts configuration
+## Pre-requisites
+- [Docker](https://docs.docker.com/engine/install/)
+- [IDE supporting devcontainer](https://containers.dev/supporting)
 
-We use `invoiceshelf.test` domain for local development within this environment and you need to adhere to it.
-
-For that purpose you need to edit your OS hosts file or DNS server and add the following line to make the local domain name available on your system.
-
-```
-127.0.0.1 invoiceshelf.test
-```
-
-#### 1.1. Windows
-
-The hosts file on Windows is located at `C:\Windows\system32\drivers\etc\hosts`.
-
-You need to launch Notepad as administrator, open the file through **File > Open**, add the line from above and save the file.
-
-#### 1.2. Linux/MacOS
-
-The hosts file on Linux and Mac is located at `/etc/hosts`.
-
-You need to open the file using your favorite editor as sudo/root, add the line from above and save the file.
-
-### 2. FileSystem configuration (Linux)
-
-If you are using **Linux**, you need to make sure that **USRID** and **GRPID** environment variables are set and matching your current session user ids. Those two variables are required to set up the filesystem permissions correctly on Linux.
-
-You can run it one time, every time before starting as follows:
-
-```
-export USRID=$(id -u) && export GRPID=$(id -g)
-```
-
-or you can append this to your .zshrc/.bashrc by running this command in your terminal:
-
-```
-grep -qxF 'export USRID=$(id -u) GRPID=$(id -g)' ~/.${SHELL##*/}rc || echo 'export USRID=$(id -u) GRPID=$(id -g)' >> ~/.${SHELL##*/}rc
-```
-this will append the `export` line to your rc file and run it on each terminal session.
-
-### 3. Clone the project
+### Clone the project
 
 Clone the InvoiceShelf project directly from InvoiceShelf git or your forked repository:
 
@@ -55,25 +20,40 @@ Clone the InvoiceShelf project directly from InvoiceShelf git or your forked rep
 git clone git@github.com:InvoiceShelf/InvoiceShelf.git
 ```
 
-## Development Workflow
+phew, ok, the difficoult part is over 😅.
 
-We bundled separate docker-compose.yml file for each database: MySQL, PostgresSQL and SQLite, you can use any of those to spin up your development environment.
+## Development Container Workflow
 
-| Database | Compose File              |
-|---------|---------------------------|
-| SQLite3 | docker-compose.sqlite.yml |
-| MariaDB | docker-compose.mysql.yml  |
-| PostgresSQL | dpcler-compose.pgsql.yml  |
+As part of the new workflow, you only need to have Docker installed on your host system. This greatly simplifies your environment setup and allows you to quickly spin up the project environment at will.
 
-### 1. Spinning Up
+The way it works is as follows: we use your IDE's integrated or extended feature called "Dev Container." The Dev Container is a predefined environment that encapsulates all the dependencies, tools, and configurations required for your project. This means that you can work in a consistent environment, regardless of the underlying system on which your code is running.
 
-To **spin up** the environment, run docker compose as follows:
+When you open your project in the IDE, it _should_ automatically detects the Dev Container configuration and sets up the environment accordingly. This includes installing necessary packages, configuring settings, and ensuring that the correct versions of tools are available.
 
-**Important**: If you are on **Linux** and didn't add the `export` line to your .zshrc/.bashrc file, you need to repeat `step 2` before spinning up, otherwise you will face permissions issues.
+To start simply run this command in the project root dir, then re-open the project with the IDE so the `devcontainer.json` config file get's detected:
 
+```sh
+cp .devcontainer/devcontainer.recomended.json .devcontainer/devcontainer.json
 ```
-docker compose -f .dev/docker-compose.mysql.yml up --build
+
+### (optional) `.devcontainer.json` adjustment
+
+By default the SQLite container will be used for development, as it is by far the simplest to quickly spin up and tear down, if for one reason or another you wish to work with another DB you have predefined templates below, simply replace the
+
+```json
+      "dockerComposeFile": "docker-compose.sqlite.yml",
 ```
+
+with the database flavour of your choice:
+
+| Database          | Compose File                |
+|-------------------|-----------------------------|
+| SQLite3 (default) | `docker-compose.sqlite.yml` |
+| MariaDB           | `docker-compose.mysql.yml`  |
+| PostgresSQL       | `docker-compose.pgsql.yml`  |
+
+## Spinning Up
+
 
 ### 2. Spinning Down
 
@@ -109,13 +89,13 @@ This dockerized environment comes with support for all three databases that Invo
 
 The setup parameters/credentials for each of the supported databases are as follows.
 
-|   | MySQL | PostgreSQL | SQLite |
-|---|---|---|---|
-| **DB_USER** | invoiceshelf  | invoiceshelf | Not applicable  |
-| **DB_PASS** | invoiceshelf  | invoiceshelf | Not applicable  |
+|             | MySQL         | PostgreSQL   | SQLite |
+|-------------|:-------------:|:------------:|:------:|
+| **DB_USER** | invoiceshelf  | invoiceshelf |        |
+| **DB_PASS** | invoiceshelf  | invoiceshelf |        |
 | **DB_NAME** | invoiceshelf  | invoiceshelf | /home/invoiceshelf/database/database.sqlite  |
-| **DB_HOST** | db-mysql  |  db-pgsql | Not applicable  |
-| **DB_PORT** | 3036  | 5432  | Not applicable  |
+| **DB_HOST** | mysql         | pgsql        |        |
+| **DB_PORT** | 3036          | 5432         |        |
 
 **Note:** The only required field for SQLite is **DB_NAME**.
 
@@ -163,13 +143,3 @@ To utilize Mailpit, use the following credentials:
 ---
 
 If you have any questions, feel free to open issue.
-
-
-
-
-
-
-
-
-
-
