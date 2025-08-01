@@ -1,23 +1,13 @@
 FROM php:8.3-fpm-bookworm
 
-ARG UID
-ARG GID
-
-ENV UID=${UID}
-ENV GID=${GID}
-
-USER root
-
-# Create user/group
-RUN addgroup --gid ${GID} --system invoiceshelf && \
-    adduser --gid ${GID} --system --disabled-password --shell /bin/sh -u ${UID} --home /home/invoiceshelf invoiceshelf && \
-    sed -i "s/user = www-data/user = invoiceshelf/g" /usr/local/etc/php-fpm.d/www.conf && \
-    sed -i "s/group = www-data/group = invoiceshelf/g" /usr/local/etc/php-fpm.d/www.conf
-
 # Install composer & npm
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
-    curl -sL https://deb.nodesource.com/setup_20.x | bash - && \
-    apt install -y nodejs
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Install nvm, Node.js 22, and enable yarn
+run curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash && \
+    \. "$HOME/.nvm/nvm.sh" && \
+    nvm install 22 && \
+    corepack enable yarn && \
 
 # install dependencies
 RUN apt update && apt install -y \
