@@ -1,52 +1,19 @@
 services:
-  php-fpm:
-    container_name: invoiceshelf-dev-php
+  devcontainer:
     build:
-      context: ./php
+      context: .
       dockerfile: Dockerfile
-      args:
-        - UID=${USRID:-1000}
-        - GID=${GRPID:-1000}
     volumes:
-      - ../:/home/invoiceshelf/app
-    ports:
-      - 5173:5173
+      - ../..:/workspaces:cached
     networks:
       - invoiceshelf-dev
-
-  nginx:
-    container_name: invoiceshelf-dev-nginx
-    image: nginx:stable
-    ports:
-      - '80:80'
-    volumes:
-      - ./nginx/conf.d/dev.conf:/etc/nginx/conf.d/dev.conf
-      - ../:/home/invoiceshelf/app
-    networks:
-      - invoiceshelf-dev
-
-  adminer:
-    container_name: invoiceshelf-dev-adminer
-    build:
-      context: ./adminer
-      dockerfile: Dockerfile
-    environment:
-      ADMINER_PLUGINS: tables-filter
-      ADMINER_DESIGN: konya
-    volumes:
-      - ../database:/database
-    ports:
-      - '8080:8080'
-    networks:
-      - invoiceshelf-dev
+    command: sleep infinity
 
   mail:
-    container_name: invoiceshelf-dev-mailpit
     image: axllent/mailpit:latest
     restart: always
     ports:
-      - 1025:1025
-      - 8025:8025
+      - "8025:8025"
     networks:
       - invoiceshelf-dev
 
