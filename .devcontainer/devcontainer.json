@@ -3,11 +3,9 @@
 {
   "name": "PHP",
   // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-  //"image": "mcr.microsoft.com/devcontainers/php:1-8.2-bullseye",
-  "build": {
-    // Path is relative to the devcontainer.json file.
-    "dockerfile": "Dockerfile"
-  },
+  "dockerComposeFile": "docker-compose.sqlite.yml",
+  "service": "devcontainer",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   // Features to add to the dev container. More info: https://containers.dev/features.
   "features": {
     "ghcr.io/devcontainers/features/node:1": {
