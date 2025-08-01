@@ -12,9 +12,10 @@ service apache2 restart
 
 # Set up the database, run migrations, and seed it
 cp "$(pwd)/.env.testing" "$(pwd)/.env"
-touch database/database.sqlite
-php artisan migrate
-php artisan db:seed
+cp "$(pwd)/database/stubs/sqlite.empty.db" "$(pwd)/database/database.sqlite"
+rm -f "$(pwd)/storage/app/database_created"
+# php artisan migrate
+# php artisan db:seed
 
 # Install Composer and Yarn dependencies
 composer install
