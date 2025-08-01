@@ -1,3 +1,5 @@
+.devcontainer/devcontainer.json
+
 /Modules
 /node_modules
 /public/storage
