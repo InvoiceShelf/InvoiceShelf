@@ -799,7 +799,7 @@
       "report_type": "Tipo di report",
       "sort": {
         "by_customer": "By Customer",
-        "by_item": "By Item"
+        "by_item": "Per Articolo"
       }
     },
     "taxes": {
@@ -856,7 +856,7 @@
       "notes": "Note",
       "exchange_rate": "Tasso di cambio",
       "address_information": "Indirizzo",
-      "pdf_generation": "PDF Generation"
+      "pdf_generation": "Generazione PDF"
     },
     "address_information": {
       "section_description": "  Puoi aggiornare le informazioni sul tuo indirizzo utilizzando il modulo sottostante."
@@ -868,7 +868,7 @@
     "primary_currency": "Valuta Principale",
     "timezone": "Fuso Orario",
     "date_format": "Formato data",
-    "time_format": "Time Format",
+    "time_format": "Formato Ora",
     "currencies": {
       "title": "Valute",
       "currency": "Valùta | Valute",
@@ -897,7 +897,7 @@
       "mailgun_endpoint": "Endpoint Mailgun",
       "ses_secret": "Segreto SES",
       "ses_key": "Chiave SES",
-      "ses_region": "AWS Region",
+      "ses_region": "Regione AWS",
       "password": "Password Email",
       "username": "Nome Utente Email",
       "mail_config": "Configurazione Mail",
@@ -910,11 +910,11 @@
       "title": "Configurazione PDF",
       "footer_text": "Testo Footer",
       "pdf_layout": "Layout PDF",
-      "pdf_configuration": "PDF Generation Settings",
-      "section_description": "Change the way PDFs are generated",
-      "driver": "PDF Driver to use",
-      "papersize": "Papersize",
-      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "pdf_configuration": "Impostazioni Generazione PDF",
+      "section_description": "Cambia il modo in cui vengono generati i PDF",
+      "driver": "Driver PDF da usare",
+      "papersize": "Dimensioni del foglio",
+      "papersize_hint": "Dimensioni del foglio in larghezza e altezza (Es. \"210mm 297mm\")",
       "gotenberg_host": "Gotenberg service host",
       "pdf_variables_save_successfully": "PDF configuration saved successfully",
       "pdf_variables_save_error": "PDF configuration could not be saved"
@@ -981,11 +981,11 @@
       "model_in_use": "Impossibile aggiornare il modello per i campi già in uso.",
       "type_in_use": "Impossibile aggiornare il tipo per i campi già in uso.",
       "model_type": {
-        "customer": "Customer",
-        "invoice": "Invoice",
-        "estimate": "Estimate",
-        "expense": "Expense",
-        "payment": "Payment"
+        "customer": "Cliente",
+        "invoice": "Fattura",
+        "estimate": "Preventivo",
+        "expense": "Costo",
+        "payment": "Pagamento"
       }
     },
     "customization": {
@@ -1004,7 +1004,7 @@
       "delimiter_description": "Singolo carattere per specificare il confine tra 2 componenti separati. Per impostazione predefinita è impostato a -",
       "delimiter_param_label": "Valore Delimitatore",
       "date_format": "Formato data",
-      "time_format": "Time Format",
+      "time_format": "Formato Ora",
       "date_format_description": "Un campo di data e ora locale che accetta un parametro di formato. Il formato predefinito: 'Y' rende l'anno corrente.",
       "date_format_param_label": "Formato",
       "sequence": "Sequenza",
@@ -1100,8 +1100,8 @@
         "description": "Risparmia tempo creando note e riutilizzandole sulle tue fatture, preventivi e pagamenti.",
         "notes": "Note",
         "type": "genere",
-        "is_default": "Select by default",
-        "is_default_description": "This note will be selected by default in new invoices.",
+        "is_default": "Seleziona per impostazione predefinita",
+        "is_default_description": "Questa nota sarà selezionata per impostazione predefinita nelle nuove fatture.",
         "add_note": "Aggiungi Nota",
         "add_new_note": "Aggiungi nuova nota",
         "name": "Nome",
@@ -1112,8 +1112,8 @@
         "already_in_use": "Nota già in uso",
         "deleted_message": "Nota eliminata con successo",
         "types": {
-          "estimate": "Estimate",
-          "invoice": "Invoice",
+          "estimate": "Preventivo",
+          "invoice": "Fattura",
           "payment": "Payment"
         }
       }
