@@ -5,13 +5,12 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     sqlite3 \
     xz-utils \
-    && rm -rf /var/lib/apt/lists/*
-
-# install PHP extensions using docker-php-ext-install
-RUN docker-php-ext-install \
+    # clean up apt cache
+    && apt-get clean && rm -rf /var/lib/apt/lists/* \
+    # install PHP extensions using docker-php-ext-install
+    && docker-php-ext-install \
     exif \
     zip \
-    bcmath
-
-# Disable Xdebug by default
-RUN echo 'export XDEBUG_MODE=off' >> /home/vscode/.bashrc
+    bcmath \
+    # Disable Xdebug by default
+    && echo 'export XDEBUG_MODE=off' >> /home/vscode/.bashrc
