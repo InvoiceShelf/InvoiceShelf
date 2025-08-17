@@ -2,7 +2,7 @@ services:
   devcontainer:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.pgsql
     volumes:
       - ../..:/workspaces:cached
     networks:
