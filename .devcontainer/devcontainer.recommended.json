@@ -28,7 +28,8 @@
         "laravel.vscode-laravel",
         "onecentlin.laravel-extension-pack",
         "ms-vscode.makefile-tools",
-        "Gruntfuggly.todo-tree"
+        "Gruntfuggly.todo-tree",
+        "eamodio.gitlens"
       ]
     }
   }
