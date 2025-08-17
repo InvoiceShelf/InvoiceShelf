@@ -1,64 +1,41 @@
 services:
-  php-fpm:
-    container_name: invoiceshelf-dev-php
+  devcontainer:
     build:
-      context: ./php
+      context: .
       dockerfile: Dockerfile
-      args:
-        - UID=${USRID:-1000}
-        - GID=${GRPID:-1000}
-    ports:
-      - 5173:5173
     volumes:
-      - ../:/home/invoiceshelf/app
+      - ../..:/workspaces:cached
     networks:
       - invoiceshelf-dev
+    command: sleep infinity
 
-  nginx:
-    container_name: invoiceshelf-dev-nginx
-    image: nginx:stable
-    ports:
-      - '80:80'
-    volumes:
-      - ./nginx/conf.d/dev.conf:/etc/nginx/conf.d/dev.conf
-      - ../:/home/invoiceshelf/app
-    networks:
-      - invoiceshelf-dev
-
-  db:
+  postgres:
     image: postgres:15
-    container_name: invoiceshelf-dev-pgsql
     environment:
       - POSTGRES_PASSWORD=invoiceshelf
       - POSTGRES_USER=invoiceshelf
       - POSTGRES_DB=invoiceshelf
-    ports:
-      - 5432:5432
     volumes:
       - invoiceshelf-dev-pgsql:/var/lib/postgresql/data
     networks:
       - invoiceshelf-dev
 
   adminer:
-    container_name: invoiceshelf-dev-adminer
     build:
-      context: ./adminer
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.adminer
     environment:
       ADMINER_PLUGINS: tables-filter
       ADMINER_DESIGN: konya
     ports:
-      - '8080:8080'
+      - '8081:8081'
     networks:
       - invoiceshelf-dev
 
   mail:
-    container_name: invoiceshelf-dev-mailpit
     image: axllent/mailpit:latest
     restart: always
     ports:
-      - 1025:1025
-      - 8025:8025
+      - "8025:8025"
     networks:
       - invoiceshelf-dev
 
