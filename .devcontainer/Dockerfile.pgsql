@@ -5,6 +5,8 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     sqlite3 \
     xz-utils \
+    libpq-dev \
+    postgresql-client \
     #
     # clean up apt cache
     && apt-get clean && rm -rf /var/lib/apt/lists/* \
@@ -14,6 +16,8 @@ RUN apt-get update && apt-get install -y \
     exif \
     zip \
     bcmath \
+    pgsql \
+    pdo_pgsql \
     #
     # clear PHP source files to reduce image size
     && docker-php-source delete \
