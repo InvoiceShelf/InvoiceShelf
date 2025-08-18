@@ -12,6 +12,7 @@ service apache2 restart
 
 # Set up the database, run migrations, and seed it
 cp "$(pwd)/.env.testing" "$(pwd)/.env"
+php artisan key:generate --force
 cp "$(pwd)/database/stubs/sqlite.empty.db" "$(pwd)/database/database.sqlite"
 rm -f "$(pwd)/storage/app/database_created"
 # php artisan migrate
@@ -20,3 +21,13 @@ rm -f "$(pwd)/storage/app/database_created"
 # Install Composer and Yarn dependencies
 composer install
 yarn install
+
+# Storage symlink
+php artisan storage:link
+
+# Permissions
+# TODO: Find a better way to handle permissions
+chmod 775 storage/framework
+chmod 775 storage/logs
+chmod 775 bootstrap/cache
+chmod +x artisan
