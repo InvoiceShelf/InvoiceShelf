@@ -15,10 +15,10 @@ RUN apt-get update && apt-get install -y \
     #
     # install PHP extensions using docker-php-ext-install
     && docker-php-ext-install -j$(nproc) \
+    bcmath \
     exif \
     gd \
     zip \
-    bcmath \
     #
     # clear PHP source files to reduce image size
     && docker-php-source delete \

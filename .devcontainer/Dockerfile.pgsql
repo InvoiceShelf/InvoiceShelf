@@ -3,11 +3,11 @@ FROM mcr.microsoft.com/devcontainers/php:dev-8.3-apache-bookworm
 # update package list and install dependencies
 RUN apt-get update && apt-get install -y \
     libpng-dev \
+    libpq-dev \
     libzip-dev \
+    postgresql-client \
     sqlite3 \
     xz-utils \
-    libpq-dev \
-    postgresql-client \
     #
     # clean up apt cache
     && apt-get clean && rm -rf /var/lib/apt/lists/* \
@@ -18,8 +18,11 @@ RUN apt-get update && apt-get install -y \
     # install PHP extensions using docker-php-ext-install
     && docker-php-ext-install -j$(nproc) \
     bcmath \
+    exif \
     gd \
     pdo_pgsql \
+    pgsql \
+    zip \
     #
     # clear PHP source files to reduce image size
     && docker-php-source delete \
