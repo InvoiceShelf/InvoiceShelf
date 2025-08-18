@@ -8,8 +8,5 @@ RUN apt update && apt install -y \
     webp \
     && docker-php-ext-configure gd \
     && docker-php-ext-install -j$(nproc) gd \
-    && docker-php-ext-install mbstring \
     && docker-php-ext-install mysqli \
-    && docker-php-ext-install pdo_mysql \
-    && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
-    && docker-php-ext-install xml
+    && docker-php-ext-install pdo_mysql
