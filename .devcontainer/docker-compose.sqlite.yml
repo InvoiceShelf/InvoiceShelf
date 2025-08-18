@@ -1,0 +1,26 @@
+services:
+  devcontainer:
+    build:
+      context: .
+      dockerfile: Dockerfile.lite
+    volumes:
+      - ../..:/workspaces:cached
+    networks:
+      - invoiceshelf-dev
+    command: sleep infinity
+
+  mail:
+    image: axllent/mailpit:latest
+    restart: always
+    ports:
+      - "8025:8025"
+    networks:
+      - invoiceshelf-dev
+
+  pdf:
+    image: gotenberg/gotenberg:8
+    networks:
+      - invoiceshelf-dev
+
+networks:
+  invoiceshelf-dev:

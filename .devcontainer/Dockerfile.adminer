@@ -1,0 +1,6 @@
+FROM adminer:5.3.0
+
+USER adminer
+CMD	[ "php", "-S", "[::]:8081", "-t", "/var/www/html" ]
+
+EXPOSE 8081

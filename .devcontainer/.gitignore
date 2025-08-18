@@ -1,0 +1,24 @@
+# Ignore ALL custom/user files in the devcontainer
+*
+
+# EXCEPT: selected core files in the devcontainer
+!.gitignore
+!devcontainer.recommended.json
+!docker-compose.mysql.yml
+!docker-compose.pgsql.yml
+!docker-compose.sqlite.yml
+!Dockerfile.lite
+!Dockerfile.mysql
+!Dockerfile.pgsql
+!Dockerfile.adminer
+!Dockerfile.old
+!postCreateCommand.sh
+!README.md
+
+# EXCEPT: README static files
+!static/
+!static/**
+
+# EXCEPT: IDE specific files
+!.vscode/
+!.vscode/**

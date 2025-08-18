@@ -1,0 +1,51 @@
+services:
+  devcontainer:
+    build:
+      context: .
+      dockerfile: Dockerfile.pgsql
+    volumes:
+      - ../..:/workspaces:cached
+    networks:
+      - invoiceshelf-dev
+    command: sleep infinity
+
+  postgres:
+    image: postgres:15
+    environment:
+      - POSTGRES_PASSWORD=invoiceshelf
+      - POSTGRES_USER=invoiceshelf
+      - POSTGRES_DB=invoiceshelf
+    volumes:
+      - invoiceshelf-dev-pgsql:/var/lib/postgresql/data
+    networks:
+      - invoiceshelf-dev
+
+  adminer:
+    build:
+      dockerfile: Dockerfile.adminer
+    environment:
+      ADMINER_PLUGINS: tables-filter
+      ADMINER_DESIGN: konya
+    ports:
+      - '8081:8081'
+    networks:
+      - invoiceshelf-dev
+
+  mail:
+    image: axllent/mailpit:latest
+    restart: always
+    ports:
+      - "8025:8025"
+    networks:
+      - invoiceshelf-dev
+
+  pdf:
+    image: gotenberg/gotenberg:8
+    networks:
+      - invoiceshelf-dev
+
+networks:
+  invoiceshelf-dev:
+
+volumes:
+  invoiceshelf-dev-pgsql:
