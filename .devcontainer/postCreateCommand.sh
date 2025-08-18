@@ -31,3 +31,4 @@ chmod 775 storage/framework
 chmod 775 storage/logs
 chmod 775 bootstrap/cache
 
+echo "Devcontainer 'post create command' script completed successfully."
