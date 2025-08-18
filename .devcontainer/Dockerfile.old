@@ -1,6 +1,3 @@
 # install dependencies
 RUN apt update && apt install -y \
-    libpng-dev \
     webp \
-    && docker-php-ext-configure gd \
-    && docker-php-ext-install -j$(nproc) gd \

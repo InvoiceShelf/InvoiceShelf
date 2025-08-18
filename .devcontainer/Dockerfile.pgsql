@@ -2,6 +2,7 @@ FROM mcr.microsoft.com/devcontainers/php:dev-8.3-apache-bookworm
 
 # update package list and install dependencies
 RUN apt-get update && apt-get install -y \
+    libpng-dev \
     libzip-dev \
     sqlite3 \
     xz-utils \
@@ -11,12 +12,13 @@ RUN apt-get update && apt-get install -y \
     # clean up apt cache
     && apt-get clean && rm -rf /var/lib/apt/lists/* \
     #
+    # Configure PHP extensions
+    && docker-php-ext-configure gd \
+    #
     # install PHP extensions using docker-php-ext-install
-    && docker-php-ext-install \
-    exif \
-    zip \
+    && docker-php-ext-install -j$(nproc) \
     bcmath \
-    pgsql \
+    gd \
     pdo_pgsql \
     #
     # clear PHP source files to reduce image size
