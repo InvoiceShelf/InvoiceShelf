@@ -131,29 +131,26 @@ If you are using anything but SQLite please check the below parameters/credentia
 
 ### 3. Adminer
 
-Adminer is UI tool for viewing the database contents and executing queries.
+Adminer is UI tool for viewing the database contents and executing queries and can be accessed on port `:8081` once devcontainer have started, simply visit http://localhost:8081/.
 
-It supports MySQL, PostgreSQL, SQLite.
+It supports all InvoiceShelf compatible databases i.e. MySQL, PostgreSQL, SQLite.
 
-**URL**: http://localhost:8081
+- **MySQL/PostgresSQL:**
+  To log into the MySQL or PostgresSQL, use the database information specified in the above [section (2. Databases)](#2-databases)
+- **SQLite**
+  To log into the SQLite, use the following credentials:
 
-#### MySQL/PostgresSQL
+  | KEY          | VALUE                     |
+  | ------------ | ------------------------- |
+  | **USERNAME** | admin                     |
+  | **PASSWORD** | admin                     |
+  | **DATABASE** | /database/database.sqlite |
 
-To log into the MySQL or PostgresSQL, use the database information specified in the above section (2. Databases)
+### 4. Mailpit
 
-#### SQLite
+Mailpit is a void SMTP server, it can be used to "send" email however the recipient will never get said emails, instead they will be intercepted by the application and stored in the database for later viewing. Mailpit can be accessed by using the port `:8025` once devcontainer have started, simply visit http://localhost:8025/.
 
-To log into the SQLite, use the following credentials:
-
-| KEY          | VALUE                     |
-| ------------ | ------------------------- |
-| **USERNAME** | admin                     |
-| **PASSWORD** | admin                     |
-| **DATABASE** | /database/database.sqlite |
-
-### 4. Mailpit (fake mail)
-
-To utilize Mailpit, use the following credentials:
+To utilise Mailpit, use the following credentials:
 
 | KEY                 | VALUE       |
 | ------------------- | ----------- |
@@ -166,8 +163,6 @@ To utilize Mailpit, use the following credentials:
 | **FROM MAIL ADDR**  | your choice |
 | **FROM MAIL NAME**  | your choice |
 
-**URL**: http://invoiceshelf.test:8025
-
 ---
 
-If you have any questions, feel free to open issue.
+That's it! If you have any issues or questions, feel free to open issue.
