@@ -15,5 +15,8 @@ RUN apt-get update && apt-get install -y \
     zip \
     bcmath \
     #
+    # clear PHP source files to reduce image size
+    && docker-php-source delete \
+    #
     # Disable Xdebug by default
     && echo 'export XDEBUG_MODE=off' >> /home/vscode/.bashrc
