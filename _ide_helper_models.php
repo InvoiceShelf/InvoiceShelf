@@ -1084,6 +1084,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $company_id
+ * @property int $is_default
  * @property-read \App\Models\Company|null $company
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Note applyFilters(array $filters)
  * @method static \Database\Factories\NoteFactory factory($count = null, $state = [])
@@ -1094,6 +1095,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Note whereCompanyId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Note whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Note whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Note whereIsDefault($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Note whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Note whereNotes($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Note whereSearch($search)
@@ -1352,7 +1354,7 @@ namespace App\Models{
  * @property int|null $company_id
  * @property string $name
  * @property int $amount
- * @property float $percent
+ * @property float|null $percent
  * @property int $compound_tax
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -1360,6 +1362,8 @@ namespace App\Models{
  * @property int|null $base_amount
  * @property int|null $currency_id
  * @property int|null $recurring_invoice_id
+ * @property string $calculation_type
+ * @property int|null $fixed_amount
  * @property-read \App\Models\Currency|null $currency
  * @property-read \App\Models\Estimate|null $estimate
  * @property-read \App\Models\EstimateItem|null $estimateItem
@@ -1376,6 +1380,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax taxAttributes()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax whereAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax whereBaseAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax whereCalculationType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax whereCompany($company_id)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax whereCompanyId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax whereCompoundTax($value)
@@ -1384,6 +1389,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax whereEstimateId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax whereEstimateItemId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax whereExchangeRate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax whereFixedAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax whereInvoiceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tax whereInvoiceItemId($value)
@@ -1404,7 +1410,7 @@ namespace App\Models{
  *
  * @property int $id
  * @property string $name
- * @property float $percent
+ * @property float|null $percent
  * @property bool $compound_tax
  * @property int $collective_tax
  * @property string|null $description
@@ -1412,6 +1418,8 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string $type
+ * @property string $calculation_type
+ * @property int|null $fixed_amount
  * @property-read \App\Models\Company|null $company
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Tax> $taxes
  * @property-read int|null $taxes_count
@@ -1421,12 +1429,14 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxType newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxType paginateData($limit)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxType query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxType whereCalculationType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxType whereCollectiveTax($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxType whereCompany()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxType whereCompanyId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxType whereCompoundTax($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxType whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxType whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxType whereFixedAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxType whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxType whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaxType whereOrder($orderByField, $orderBy)
