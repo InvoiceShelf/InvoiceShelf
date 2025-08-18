@@ -1,0 +1,22 @@
+FROM mcr.microsoft.com/devcontainers/php:dev-8.3-apache-bookworm
+
+# update package list and install dependencies
+RUN apt-get update && apt-get install -y \
+    libzip-dev \
+    sqlite3 \
+    xz-utils \
+    #
+    # clean up apt cache
+    && apt-get clean && rm -rf /var/lib/apt/lists/* \
+    #
+    # install PHP extensions using docker-php-ext-install
+    && docker-php-ext-install \
+    exif \
+    zip \
+    bcmath \
+    #
+    # clear PHP source files to reduce image size
+    && docker-php-source delete \
+    #
+    # Disable Xdebug by default
+    && echo 'export XDEBUG_MODE=off' >> /home/vscode/.bashrc

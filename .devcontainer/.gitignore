@@ -8,6 +8,7 @@
 !docker-compose.pgsql.yml
 !docker-compose.sqlite.yml
 !Dockerfile.lite
+!Dockerfile.mysql
 !Dockerfile.pgsql
 !Dockerfile.adminer
 !Dockerfile.old
