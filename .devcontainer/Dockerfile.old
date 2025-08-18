@@ -1,9 +1,6 @@
 # install dependencies
 RUN apt update && apt install -y \
     libpng-dev \
-    zlib1g-dev \
-    libxml2-dev \
-    libonig-dev \
     mariadb-client \
     webp \
     && docker-php-ext-configure gd \
