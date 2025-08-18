@@ -23,13 +23,17 @@
   "postCreateCommand": "./.devcontainer/postCreateCommand.sh",
   "customizations": {
     "vscode": {
+      "settings": {
+        "cSpell.minWordLength": 2
+      },
       "extensions": [
         "qwtel.sqlite-viewer",
         "laravel.vscode-laravel",
         "onecentlin.laravel-extension-pack",
         "ms-vscode.makefile-tools",
         "Gruntfuggly.todo-tree",
-        "eamodio.gitlens"
+        "eamodio.gitlens",
+        "streetsidesoftware.code-spell-checker"
       ]
     }
   }
