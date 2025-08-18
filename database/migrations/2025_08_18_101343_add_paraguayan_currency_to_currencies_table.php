@@ -7,18 +7,16 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Currency::create([
-            'name' => 'Paraguayan Guaraní',
-            'code' => 'PYG',
-            'symbol' => '₲',
-            'precision' => '0',
-            'thousand_separator' => '.',
-            'decimal_separator' => ',',
-        ]);
+        Currency::firstOrCreate(
+            ['code' => 'PYG'],
+            [
+                'name' => 'Paraguayan Guaraní',
+                'symbol' => '₲',
+                'precision' => '0',
+                'thousand_separator' => '.',
+                'decimal_separator' => ',',
+            ]
+        );
     }
 
-    public function down(): void
-    {
-        Currency::where('code', 'PYG')->delete();
-    }
 };
