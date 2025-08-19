@@ -35,9 +35,9 @@ class CheckInvoiceStatus extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return void
      */
-    public function handle(): void
+    public function handle()
     {
         $date = Carbon::now();
         $invoices = Invoice::whereNotIn('status', [Invoice::STATUS_COMPLETED, Invoice::STATUS_DRAFT])
