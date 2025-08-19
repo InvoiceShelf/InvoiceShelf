@@ -24,7 +24,8 @@ class ResetApp extends Command
      *
      * @var string
      */
-    protected $description = 'Clean database, database_created and public/storage folder';
+    protected $description = 'Clean database, database_created and '
+        . 'public/storage folder';
 
     /**
      * Create a new command instance.

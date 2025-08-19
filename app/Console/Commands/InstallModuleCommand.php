@@ -36,7 +36,10 @@ class InstallModuleCommand extends Command
      */
     public function handle(): int
     {
-        ModuleInstaller::complete($this->argument('module'), $this->argument('version'));
+        ModuleInstaller::complete(
+            $this->argument('module'),
+            $this->argument('version')
+        );
 
         return Command::SUCCESS;
     }
