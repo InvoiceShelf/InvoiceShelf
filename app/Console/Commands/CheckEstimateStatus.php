@@ -40,8 +40,14 @@ class CheckEstimateStatus extends Command
     public function handle()
     {
         $date = Carbon::now();
-        $status = [Estimate::STATUS_ACCEPTED, Estimate::STATUS_REJECTED, Estimate::STATUS_EXPIRED];
-        $staleEstimates = Estimate::whereNotIn('status', $status)->whereDate('expiry_date', '<', $date)->get();
+        $status = [
+            Estimate::STATUS_ACCEPTED,
+            Estimate::STATUS_REJECTED,
+            Estimate::STATUS_EXPIRED
+        ];
+        $staleEstimates = Estimate::whereNotIn('status', $status)
+            ->whereDate('expiry_date', '<', $date)
+            ->get();
 
         foreach ($staleEstimates as $estimate) {
             $estimate->status = Estimate::STATUS_EXPIRED;
