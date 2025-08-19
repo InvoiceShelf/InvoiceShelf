@@ -43,7 +43,7 @@ class CheckEstimateStatus extends Command
         $status = [
             Estimate::STATUS_ACCEPTED,
             Estimate::STATUS_REJECTED,
-            Estimate::STATUS_EXPIRED
+            Estimate::STATUS_EXPIRED,
         ];
         $staleEstimates = Estimate::whereNotIn('status', $status)
             ->whereDate('expiry_date', '<', $date)

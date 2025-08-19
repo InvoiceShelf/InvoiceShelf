@@ -113,16 +113,15 @@ class CreateTemplateCommand extends Command
     /**
      * Check if option is valid type
      *
-     * @param array|string|bool|null $option command option
-     *
+     * @param  array|string|bool|null  $option  command option
      * @return bool
      */
     protected function validOption($option)
     {
-        return !is_bool($option)
-            && !is_array($option)
-            && !is_null($option)
-            && !empty($option);
+        return ! is_bool($option)
+            && ! is_array($option)
+            && ! is_null($option)
+            && ! empty($option);
     }
 
     /**
@@ -137,7 +136,6 @@ class CreateTemplateCommand extends Command
         if ($this->validOption($name)) {
             return $name;
         }
-
 
         $this->error('Template name missing or invalid.');
 
@@ -157,7 +155,7 @@ class CreateTemplateCommand extends Command
         $type = strtolower($this->option('type'));
         $choice = [
             strtolower(PdfTemplateUtils::INVOICE),
-            strtolower(PdfTemplateUtils::ESTIMATE)
+            strtolower(PdfTemplateUtils::ESTIMATE),
         ];
 
         if ($this->validOption($type) && in_array($type, $choice)) {
@@ -174,9 +172,8 @@ class CreateTemplateCommand extends Command
     /**
      * Check if Template is new
      *
-     * @param string $type Template Type
-     * @param string $name Template Name
-     *
+     * @param  string  $type  Template Type
+     * @param  string  $name  Template Name
      * @return bool
      */
     protected function isTemplateNew($type, $name)
@@ -194,9 +191,8 @@ class CreateTemplateCommand extends Command
     /**
      * Clone Template Type
      *
-     * @param string $type Template Type
-     * @param string $name Template Name
-     *
+     * @param  string  $type  Template Type
+     * @param  string  $name  Template Name
      * @return bool Operation Success Status
      */
     protected function cloneTemplate($type, $name)
@@ -208,7 +204,7 @@ class CreateTemplateCommand extends Command
          *
          * @var string
          */
-        $oldPath  = sprintf('app.pdf.%s', $type);
+        $oldPath = sprintf('app.pdf.%s', $type);
         /**
          * New template path
          *
@@ -241,9 +237,8 @@ class CreateTemplateCommand extends Command
     /**
      * Clone Template Thumbnail
      *
-     * @param string $type Template Type
-     * @param string $name Template Name
-     *
+     * @param  string  $type  Template Type
+     * @param  string  $name  Template Name
      * @return bool Operation Success Status
      */
     protected function cloneTemplateThumbnail($type, $name)
@@ -271,9 +266,8 @@ class CreateTemplateCommand extends Command
     /**
      * Check if template type has partials
      *
-     * @param string $type Template Type
-     * @param string $partialPath Template partial path
-     *
+     * @param  string  $type  Template Type
+     * @param  string  $partialPath  Template partial path
      * @return bool has partials
      */
     protected function templateHasPartials($type, $partialPath)
@@ -289,9 +283,8 @@ class CreateTemplateCommand extends Command
     /**
      * Check if template type has partials
      *
-     * @param string $type Template Type
-     * @param string $partialPath Template partial path
-     *
+     * @param  string  $type  Template Type
+     * @param  string  $partialPath  Template partial path
      * @return bool Operation Success Status
      */
     protected function cloneTemplatePartials($type, $partialPath)

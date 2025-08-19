@@ -8,8 +8,9 @@ use Illuminate\Support\Str;
 
 class PdfTemplateUtils
 {
-    public const INVOICE = "INVOICE";
-    public const ESTIMATE = "ESTIMATE";
+    public const INVOICE = 'INVOICE';
+
+    public const ESTIMATE = 'ESTIMATE';
 
     /**
      * Find the formatted template
