@@ -35,9 +35,9 @@ class CheckEstimateStatus extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return void
      */
-    public function handle(): void
+    public function handle()
     {
         $date = Carbon::now();
         $status = [Estimate::STATUS_ACCEPTED, Estimate::STATUS_REJECTED, Estimate::STATUS_EXPIRED];
