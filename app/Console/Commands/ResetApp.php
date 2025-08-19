@@ -38,21 +38,9 @@ class ResetApp extends Command
     }
 
     /**
-     * Execute the console command.
-     *
-     * @return void
-     */
-    /**
      * Execute the console command to reset the application.
      *
-     * This will:
-     * 1. Enable maintenance mode to prevent access during reset
-     * 2. Fresh migrate the database with initial seeds
-     * 3. Seed demo data using DemoSeeder
-     * 4. Clear all application caches
-     * 5. Disable maintenance mode
-     *
-     * The --force flag can be used to skip confirmation prompt.
+     * @return void
      */
     public function handle()
     {
