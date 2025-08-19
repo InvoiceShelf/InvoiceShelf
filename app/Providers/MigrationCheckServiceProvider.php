@@ -2,13 +2,12 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\ServiceProvider;
 
 class MigrationCheckServiceProvider extends ServiceProvider
 {
-
     /**
      * Bootstrap services.
      */
@@ -18,7 +17,7 @@ class MigrationCheckServiceProvider extends ServiceProvider
             return;
         }
 
-        if (!$this->areMigrationsUpToDate()) {
+        if (! $this->areMigrationsUpToDate()) {
             $this->showMigrationWarningPage();
         }
     }
