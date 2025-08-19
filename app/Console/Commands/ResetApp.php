@@ -40,7 +40,7 @@ class ResetApp extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return void
      */
     /**
      * Execute the console command to reset the application.
@@ -54,7 +54,7 @@ class ResetApp extends Command
      *
      * The --force flag can be used to skip confirmation prompt.
      */
-    public function handle(): void
+    public function handle()
     {
 
         if (! $this->option('force')) {
