@@ -244,6 +244,7 @@
             color: #595959;
             font-size: 9px;
             line-height: 12px;
+            display: block;
         }
 
         /* -- Total Display Table -- */
