@@ -198,7 +198,7 @@
     "add_customer": "Aggiungi cliente",
     "contacts_list": "Lista clienti",
     "name": "Nome",
-    "mail": "Mail | Mails",
+    "mail": "Mail",
     "statement": "Dichiarazione",
     "display_name": "Nome Visibile",
     "primary_contact_name": "Riferimento",
@@ -744,7 +744,7 @@
     "no_modules_installed": "Nessun modulo installato ancora!",
     "disable_warning": "Tutte le impostazioni per questo particolare verranno ripristinate.",
     "what_you_get": "Cosa puoi ottenere",
-    "sign_up_and_get_token": "Sign up & Get Token"
+    "sign_up_and_get_token": "Registrati & Ottieni Gettone"
   },
   "users": {
     "title": "Utenti",
