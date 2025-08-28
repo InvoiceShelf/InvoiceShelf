@@ -306,6 +306,7 @@
     "total": "Spolu",
     "discount": "Zľava",
     "sub_total": "Medzisúčet",
+    "net_total": "Net",
     "estimate_number": "Číslo Cenového odhadu",
     "ref_number": "Ref. Číslo",
     "contact": "Kontakt",
@@ -1220,7 +1221,11 @@
       "updated_message": "Daň úspešne aktualizovaná",
       "deleted_message": "Daň úspešne odstránená",
       "confirm_delete": "Nebudete môcť obnoviť daň",
-      "already_in_use": "Daň už sa už požíva"
+      "already_in_use": "Daň už sa už požíva",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "Payment Modes",
@@ -1616,6 +1621,7 @@
   "pdf_discount_label": "Zľava",
   "pdf_amount_label": "Celkom",
   "pdf_subtotal": "Medzisúčet",
+  "pdf_net_total": "Net",
   "pdf_total": "Súčet",
   "pdf_payment_label": "Payment",
   "pdf_payment_receipt_label": "Doklad o zaplatení",
