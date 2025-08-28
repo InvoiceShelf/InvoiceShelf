@@ -44,6 +44,9 @@ export const useEstimateStore = (useWindow = false) => {
           return a + b['total']
         }, 0)
       },
+      getNetTotal() {
+        return this.getSubtotalWithDiscount - this.getTotalTax
+      },
       getTotalSimpleTax() {
         return _.sumBy(this.newEstimate.taxes, function (tax) {
           if (!tax.compound_tax) {
@@ -79,6 +82,9 @@ export const useEstimateStore = (useWindow = false) => {
       },
 
       getTotal() {
+        if (this.newEstimate.tax_included) {
+          return this.getSubtotalWithDiscount
+        }
         return this.getSubtotalWithDiscount + this.getTotalTax
       },
 
@@ -149,7 +155,7 @@ export const useEstimateStore = (useWindow = false) => {
               resolve(response)
             })
             .catch((err) => {
-              console.log(err);
+              console.log(err)
               handleError(err)
               reject(err)
             })
@@ -160,20 +166,19 @@ export const useEstimateStore = (useWindow = false) => {
         Object.assign(this.newEstimate, estimate)
         if (this.newEstimate.tax_per_item === 'YES') {
           this.newEstimate.items.forEach((_i) => {
-            if (_i.taxes && !_i.taxes.length){
+            if (_i.taxes && !_i.taxes.length) {
               _i.taxes.push({ ...taxStub, id: Guid.raw() })
             }
           })
         }
         if (this.newEstimate.discount_per_item === 'YES') {
           this.newEstimate.items.forEach((_i, index) => {
-            if (_i.discount_type === 'fixed'){
+            if (_i.discount_type === 'fixed') {
               this.newEstimate.items[index].discount = _i.discount / 100
             }
           })
-        }
-        else {
-          if (this.newEstimate.discount_type === 'fixed'){
+        } else {
+          if (this.newEstimate.discount_type === 'fixed') {
             this.newEstimate.discount = this.newEstimate.discount / 100
           }
         }
@@ -182,19 +187,23 @@ export const useEstimateStore = (useWindow = false) => {
       setCustomerAddresses(customer) {
         const customer_business = customer.customer_business
 
-        if (customer_business?.billing_address){
-          this.newEstimate.customer.billing_address = customer_business.billing_address
+        if (customer_business?.billing_address) {
+          this.newEstimate.customer.billing_address =
+            customer_business.billing_address
         }
 
-        if (customer_business?.shipping_address){
-          this.newEstimate.customer.shipping_address = customer_business.shipping_address
+        if (customer_business?.shipping_address) {
+          this.newEstimate.customer.shipping_address =
+            customer_business.shipping_address
         }
       },
 
       addSalesTaxUs() {
         const taxTypeStore = useTaxTypeStore()
         let salesTax = { ...taxStub }
-        let found = this.newEstimate.taxes.find((_t) => _t.name === 'Sales Tax' && _t.type === 'MODULE')
+        let found = this.newEstimate.taxes.find(
+          (_t) => _t.name === 'Sales Tax' && _t.type === 'MODULE',
+        )
         if (found) {
           for (const key in found) {
             if (Object.prototype.hasOwnProperty.call(salesTax, key)) {
@@ -202,10 +211,10 @@ export const useEstimateStore = (useWindow = false) => {
             }
           }
           salesTax.id = found.tax_type_id
-          console.log(salesTax, 'salesTax');
+          console.log(salesTax, 'salesTax')
 
           taxTypeStore.taxTypes.push(salesTax)
-          console.log(taxTypeStore.taxTypes);
+          console.log(taxTypeStore.taxTypes)
         }
       },
 
@@ -261,7 +270,7 @@ export const useEstimateStore = (useWindow = false) => {
             .post(`/api/v1/estimates/delete`, id)
             .then((response) => {
               let index = this.estimates.findIndex(
-                (estimate) => estimate.id === id
+                (estimate) => estimate.id === id,
               )
 
               this.estimates.splice(index, 1)
@@ -288,7 +297,7 @@ export const useEstimateStore = (useWindow = false) => {
             .then((response) => {
               this.selectedEstimates.forEach((estimate) => {
                 let index = this.estimates.findIndex(
-                  (_est) => _est.id === estimate.id
+                  (_est) => _est.id === estimate.id,
                 )
                 this.estimates.splice(index, 1)
               })
@@ -313,7 +322,7 @@ export const useEstimateStore = (useWindow = false) => {
             .put(`/api/v1/estimates/${data.id}`, data)
             .then((response) => {
               let pos = this.estimates.findIndex(
-                (estimate) => estimate.id === response.data.data.id
+                (estimate) => estimate.id === response.data.data.id,
               )
               this.estimates[pos] = response.data.data
               const notificationStore = useNotificationStore()
@@ -355,7 +364,7 @@ export const useEstimateStore = (useWindow = false) => {
             .post(`/api/v1/estimates/${data.id}/status`, data)
             .then((response) => {
               let pos = this.estimates.findIndex(
-                (estimate) => estimate.id === data.id
+                (estimate) => estimate.id === data.id,
               )
               if (this.estimates[pos]) {
                 this.estimates[pos].status = 'ACCEPTED'
@@ -402,7 +411,7 @@ export const useEstimateStore = (useWindow = false) => {
             .post(`/api/v1/estimates/${data.id}/status`, data)
             .then((response) => {
               let pos = this.estimates.findIndex(
-                (estimate) => estimate.id === data.id
+                (estimate) => estimate.id === data.id,
               )
               if (this.estimates[pos]) {
                 this.estimates[pos].status = 'SENT'
@@ -570,17 +579,26 @@ export const useEstimateStore = (useWindow = false) => {
 
         if (!isEdit) {
           await notesStore.fetchNotes()
-          this.newEstimate.notes = notesStore.getDefaultNoteForType('Estimate')?.notes
+          this.newEstimate.notes =
+            notesStore.getDefaultNoteForType('Estimate')?.notes
           this.newEstimate.tax_per_item =
             companyStore.selectedCompanySettings.tax_per_item
-          this.newEstimate.sales_tax_type = companyStore.selectedCompanySettings.sales_tax_type
-          this.newEstimate.sales_tax_address_type = companyStore.selectedCompanySettings.sales_tax_address_type
+          this.newEstimate.sales_tax_type =
+            companyStore.selectedCompanySettings.sales_tax_type
+          this.newEstimate.sales_tax_address_type =
+            companyStore.selectedCompanySettings.sales_tax_address_type
           this.newEstimate.discount_per_item =
             companyStore.selectedCompanySettings.discount_per_item
           this.newEstimate.estimate_date = moment().format('YYYY-MM-DD')
-          if (companyStore.selectedCompanySettings.estimate_set_expiry_date_automatically === 'YES') {
+          if (
+            companyStore.selectedCompanySettings
+              .estimate_set_expiry_date_automatically === 'YES'
+          ) {
             this.newEstimate.expiry_date = moment()
-              .add(companyStore.selectedCompanySettings.estimate_expiry_date_days, 'days')
+              .add(
+                companyStore.selectedCompanySettings.estimate_expiry_date_days,
+                'days',
+              )
               .format('YYYY-MM-DD')
           }
         } else {
@@ -607,9 +625,10 @@ export const useEstimateStore = (useWindow = false) => {
               }
 
               this.setTemplate(this.templates[0].name)
-              this.newEstimate.template_name =
-                userStore.currentUserSettings.default_estimate_template ?
-                userStore.currentUserSettings.default_estimate_template : this.newEstimate.template_name
+              this.newEstimate.template_name = userStore.currentUserSettings
+                .default_estimate_template
+                ? userStore.currentUserSettings.default_estimate_template
+                : this.newEstimate.template_name
             }
 
             if (isEdit) {

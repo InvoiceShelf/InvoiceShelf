@@ -184,7 +184,7 @@ const taxes = computed({
         return {
           ...tax,
           tax_type_id: tax.id,
-          tax_name: `${tax.name} (${tax.calculation_type === 'fixed' 
+          tax_name: `${tax.name} (${tax.calculation_type === 'fixed'
             ? new Intl.NumberFormat(undefined, {
                 style: 'currency',
                 currency: companyStore.selectedCompanyCurrency.code
@@ -209,7 +209,7 @@ const getTaxTypes = computed(() => {
     return {
       ...tax,
       tax_type_id: tax.id,
-      tax_name: `${tax.name} (${tax.calculation_type === 'fixed' 
+      tax_name: `${tax.name} (${tax.calculation_type === 'fixed'
         ? new Intl.NumberFormat(undefined, {
             style: 'currency',
             currency: companyStore.selectedCompanyCurrency.code
@@ -292,7 +292,7 @@ async function submitItem() {
           tax_type_id: tax.tax_type_id,
           calculation_type: tax.calculation_type,
           fixed_amount: tax.fixed_amount,
-          amount: tax.calculation_type === 'fixed' ? tax.fixed_amount : price.value * tax.percent,
+          amount: tax.calculation_type === 'fixed' ? tax.fixed_amount : Math.round(price.value * tax.percent),
           percent: tax.percent,
           name: tax.name,
           collective_tax: 0,
