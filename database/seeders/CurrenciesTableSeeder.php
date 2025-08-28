@@ -628,7 +628,15 @@ class CurrenciesTableSeeder extends Seeder
                 'symbol' => 'DA',
                 'precision' => '2',
                 'thousand_separator' => ',',
-                'decimal_separator' => '.',
+                'decimal_separator' => '.',         
+            ],
+            [
+                'name' => 'Paraguayan Guaraní',
+                'code' => 'PYG',
+                'symbol' => '₲',
+                'precision' => '0',
+                'thousand_separator' => '.',
+                'decimal_separator' => ',',
             ],
         ];
 
