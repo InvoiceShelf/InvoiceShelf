@@ -52,7 +52,8 @@ return [
     */
     'languages' => [
         ['code' => 'ar', 'name' => 'Arabic'],
-        ['code' => 'zh', 'name' => 'Chinese (Simplified)'],
+        ['code' => 'bg', 'name' => 'Bulgarian'],
+        ['code' => 'zh', 'name' => 'Chinese (Traditional)'],
         ['code' => 'hr', 'name' => 'Croatian'],
         ['code' => 'cs', 'name' => 'Czech'],
         ['code' => 'nl', 'name' => 'Dutch'],
@@ -69,6 +70,7 @@ return [
         ['code' => 'lv', 'name' => 'Latvian'],
         ['code' => 'lt', 'name' => 'Lithuanian'],
         ['code' => 'mk', 'name' => 'Macedonian'],
+        ['code' => 'no', 'name' => 'Norwegian'],
         ['code' => 'fa', 'name' => 'Persian'],
         ['code' => 'pl', 'name' => 'Polish'],
         ['code' => 'pt', 'name' => 'Portuguese'],
