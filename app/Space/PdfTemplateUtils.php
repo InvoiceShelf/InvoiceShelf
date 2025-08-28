@@ -8,6 +8,10 @@ use Illuminate\Support\Str;
 
 class PdfTemplateUtils
 {
+    public const INVOICE = 'INVOICE';
+
+    public const ESTIMATE = 'ESTIMATE';
+
     /**
      * Find the formatted template
      *
@@ -60,7 +64,7 @@ class PdfTemplateUtils
                 $imagePath = self::getCustomTemplateFilePath($templateType, sprintf('%s.png', $templateName));
                 $isCustomTemplate = true;
             } else {
-                $imagePath = resource_path('static/img/PDF/'.$templateName.'.png');
+                $imagePath = resource_path('static/img/PDF/' . $templateName . '.png');
                 $isCustomTemplate = false;
             }
 
@@ -96,11 +100,12 @@ class PdfTemplateUtils
      * Check if custom template exists.
      *
      * @param  $templateName
-     * @return string
+     * @return bool
      */
     public static function customTemplateFileExists($templateType, $fileName)
     {
-        return Storage::disk('pdf_templates')->exists(sprintf('/%s/%s', $templateType, $fileName));
+        return Storage::disk('pdf_templates')
+            ->exists(sprintf('/%s/%s', $templateType, $fileName));
     }
 
     /**
@@ -110,7 +115,7 @@ class PdfTemplateUtils
      */
     public static function toCustomTemplateMarkupFile($contents, $templateType, $templateName)
     {
-        return self::toCustomTemplateFile($contents, $templateType, $templateName.'.blade.php');
+        return self::toCustomTemplateFile($contents, $templateType, $templateName . '.blade.php');
     }
 
     /**
@@ -121,7 +126,7 @@ class PdfTemplateUtils
      */
     public static function toCustomTemplateImageFile($contents, $templateType, $templateName, $imageType = 'png')
     {
-        return self::toCustomTemplateFile($contents, $templateType, $templateName.'.'.$imageType);
+        return self::toCustomTemplateFile($contents, $templateType, $templateName . '.' . $imageType);
     }
 
     /**

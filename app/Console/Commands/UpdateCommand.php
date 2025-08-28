@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Space\Updater;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\File;
 
 // Implementation taken from Akaunting - https://github.com/akaunting/akaunting
 class UpdateCommand extends Command
@@ -92,7 +93,7 @@ class UpdateCommand extends Command
             return;
         }
 
-        $this->info('Successfully updated to '.$this->version);
+        $this->info('Successfully updated to ' . $this->version);
     }
 
     public function getInstalledVersion()
@@ -102,7 +103,7 @@ class UpdateCommand extends Command
 
     public function getLatestVersionResponse()
     {
-        $this->info('Your currently installed version is '.$this->installed);
+        $this->info('Your currently installed version is ' . $this->installed);
         $this->line('');
         $this->info('Checking for update...');
 
@@ -117,10 +118,10 @@ class UpdateCommand extends Command
                 foreach ($extensions as $key => $extension) {
                     if (! $extension) {
                         $is_required = true;
-                        $this->info('❌ '.$key);
+                        $this->info('❌ ' . $key);
                     }
 
-                    $this->info('✅ '.$key);
+                    $this->info('✅ ' . $key);
                 }
 
                 if ($is_required) {

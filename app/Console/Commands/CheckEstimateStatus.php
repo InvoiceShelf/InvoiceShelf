@@ -35,15 +35,21 @@ class CheckEstimateStatus extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return void
      */
-    public function handle(): void
+    public function handle()
     {
         $date = Carbon::now();
-        $status = [Estimate::STATUS_ACCEPTED, Estimate::STATUS_REJECTED, Estimate::STATUS_EXPIRED];
-        $estimates = Estimate::whereNotIn('status', $status)->whereDate('expiry_date', '<', $date)->get();
+        $status = [
+            Estimate::STATUS_ACCEPTED,
+            Estimate::STATUS_REJECTED,
+            Estimate::STATUS_EXPIRED,
+        ];
+        $staleEstimates = Estimate::whereNotIn('status', $status)
+            ->whereDate('expiry_date', '<', $date)
+            ->get();
 
-        foreach ($estimates as $estimate) {
+        foreach ($staleEstimates as $estimate) {
             $estimate->status = Estimate::STATUS_EXPIRED;
             printf("Estimate %s is EXPIRED \n", $estimate->estimate_number);
             $estimate->save();

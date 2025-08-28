@@ -33,10 +33,15 @@ class InstallModuleCommand extends Command
 
     /**
      * Execute the console command.
+     *
+     * @return int
      */
-    public function handle(): int
+    public function handle()
     {
-        ModuleInstaller::complete($this->argument('module'), $this->argument('version'));
+        ModuleInstaller::complete(
+            $this->argument('module'),
+            $this->argument('version')
+        );
 
         return Command::SUCCESS;
     }

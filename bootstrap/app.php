@@ -10,14 +10,14 @@ return Application::configure(basePath: dirname(__DIR__))
         \Lavary\Menu\ServiceProvider::class,
     ])
     ->withRouting(
-        web: __DIR__.'/../routes/web.php',
-        api: __DIR__.'/../routes/api.php',
-        commands: __DIR__.'/../routes/console.php',
-        channels: __DIR__.'/../routes/channels.php',
+        web: __DIR__ . '/../routes/web.php',
+        api: __DIR__ . '/../routes/api.php',
+        commands: __DIR__ . '/../routes/console.php',
+        channels: __DIR__ . '/../routes/channels.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->redirectGuestsTo(fn () => route('login'));
+        $middleware->redirectGuestsTo(fn() => route('login'));
         $middleware->redirectUsersTo(AppServiceProvider::HOME);
 
         $middleware->validateCsrfTokens(except: [
@@ -49,8 +49,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'bouncer' => \App\Http\Middleware\ScopeBouncer::class,
             'company' => \App\Http\Middleware\CompanyMiddleware::class,
             'cron-job' => \App\Http\Middleware\CronJobMiddleware::class,
-            'customer' => \App\Http\Middleware\CustomerRedirectIfAuthenticated::class,
-            'customer-guest' => \App\Http\Middleware\CustomerGuest::class,
             'customer-portal' => \App\Http\Middleware\CustomerPortalMiddleware::class,
             'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
             'install' => \App\Http\Middleware\InstallationMiddleware::class,
@@ -67,7 +65,6 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \Illuminate\Auth\Middleware\Authorize::class,
         ]);
-
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
