@@ -93,6 +93,7 @@ class InvoiceFactory extends Factory
             'template_name' => 'invoice1',
             'status' => Invoice::STATUS_DRAFT,
             'tax_per_item' => 'NO',
+            'tax_included' => false,
             'discount_per_item' => 'NO',
             'paid_status' => Invoice::STATUS_UNPAID,
             'company_id' => User::find(1)->companies()->first()->id,
