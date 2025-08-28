@@ -19,6 +19,8 @@
 import { computed, ref } from 'vue'
 import { Money3Component } from 'v-money3'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
+import BaseContentPlaceholdersBox from '@/scripts/components/base/BaseContentPlaceholdersBox.vue'
+import BaseContentPlaceholders from '@/scripts/components/base/BaseContentPlaceholders.vue'
 
 let money3 = Money3Component
 

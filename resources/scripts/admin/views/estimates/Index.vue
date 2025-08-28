@@ -238,7 +238,7 @@
 </template>
 
 <script setup>
-import { computed, onUnmounted, reactive, ref, watch, inject } from 'vue'
+import { computed, onUnmounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useEstimateStore } from '@/scripts/admin/stores/estimate'
@@ -250,7 +250,29 @@ import abilities from '@/scripts/admin/stub/abilities'
 import ObservatoryIcon from '@/scripts/components/icons/empty/ObservatoryIcon.vue'
 import EstimateDropDown from '@/scripts/admin/components/dropdowns/EstimateIndexDropdown.vue'
 import SendEstimateModal from '@/scripts/admin/components/modal-components/SendEstimateModal.vue'
-import BaseEstimateStatusLabel from "@/scripts/components/base/BaseEstimateStatusLabel.vue";
+import BaseEstimateStatusLabel from '@/scripts/components/base/BaseEstimateStatusLabel.vue'
+import BaseFormatMoney from '@/scripts/components/base/BaseFormatMoney.vue'
+import BaseEstimateStatusBadge from '@/scripts/components/base/BaseEstimateStatusBadge.vue'
+import BaseText from '@/scripts/components/base/BaseText.vue'
+import BaseCheckbox from '@/scripts/components/base/BaseCheckbox.vue'
+import BaseTable from '@/scripts/components/base/base-table/BaseTable.vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseDropdownItem from '@/scripts/components/base/BaseDropdownItem.vue'
+import BaseDropdown from '@/scripts/components/base/BaseDropdown.vue'
+import BaseTab from '@/scripts/components/base/BaseTab.vue'
+import BaseTabGroup from '@/scripts/components/base/BaseTabGroup.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseEmptyPlaceholder from '@/scripts/components/base/BaseEmptyPlaceholder.vue'
+import BaseInput from '@/scripts/components/base/BaseInput.vue'
+import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
+import BaseDatePicker from '@/scripts/components/base/BaseDatePicker.vue'
+import BaseMultiselect from '@/scripts/components/base/base-select/BaseMultiselect.vue'
+import BaseCustomerSelectInput from '@/scripts/components/base/BaseCustomerSelectInput.vue'
+import BaseFilterWrapper from '@/scripts/components/base/BaseFilterWrapper.vue'
+import BaseBreadcrumbItem from '@/scripts/components/base/BaseBreadcrumbItem.vue'
+import BaseBreadcrumb from '@/scripts/components/base/BaseBreadcrumb.vue'
+import BasePageHeader from '@/scripts/components/base/BasePageHeader.vue'
+import BasePage from '@/scripts/components/base/BasePage.vue'
 
 const estimateStore = useEstimateStore()
 const dialogStore = useDialogStore()

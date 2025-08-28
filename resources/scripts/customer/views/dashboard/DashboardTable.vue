@@ -101,6 +101,12 @@ import { useRoute } from 'vue-router'
 import { useGlobalStore } from '@/scripts/customer/stores/global'
 import { useDashboardStore } from '@/scripts/customer/stores/dashboard'
 import BaseTable from '@/scripts/components/base/base-table/BaseTable.vue'
+import BaseFormatMoney from '@/scripts/components/base/BaseFormatMoney.vue'
+import BaseEstimateStatusLabel from '@/scripts/components/base/BaseEstimateStatusLabel.vue'
+import BaseEstimateStatusBadge from '@/scripts/components/base/BaseEstimateStatusBadge.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseInvoiceStatusLabel from '@/scripts/components/base/BaseInvoiceStatusLabel.vue'
+import BasePaidStatusBadge from '@/scripts/components/base/BasePaidStatusBadge.vue'
 
 // store
 

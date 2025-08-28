@@ -253,24 +253,10 @@
 <script setup>
 import ExchangeRateConverter from '@/scripts/admin/components/estimate-invoice-common/ExchangeRateConverter.vue'
 
-import {
-  ref,
-  reactive,
-  computed,
-  inject,
-  watchEffect,
-  onBeforeUnmount,
-} from 'vue'
+import { computed, inject, onBeforeUnmount, reactive, ref, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import {
-  required,
-  numeric,
-  helpers,
-  between,
-  requiredIf,
-  decimal,
-} from '@vuelidate/validators'
+import { between, decimal, helpers, required, requiredIf } from '@vuelidate/validators'
 
 import useVuelidate from '@vuelidate/core'
 import { useCustomerStore } from '@/scripts/admin/stores/customer'
@@ -285,6 +271,22 @@ import { useGlobalStore } from '@/scripts/admin/stores/global'
 import SelectNotePopup from '@/scripts/admin/components/SelectNotePopup.vue'
 import PaymentCustomFields from '@/scripts/admin/components/custom-fields/CreateCustomFields.vue'
 import PaymentModeModal from '@/scripts/admin/components/modal-components/PaymentModeModal.vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseCustomInput from '@/scripts/components/base/BaseCustomInput.vue'
+import BaseSelectAction from '@/scripts/components/base/BaseSelectAction.vue'
+import BaseMultiselect from '@/scripts/components/base/base-select/BaseMultiselect.vue'
+import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
+import BaseMoney from '@/scripts/components/base/BaseMoney.vue'
+import BaseCustomerSelectInput from '@/scripts/components/base/BaseCustomerSelectInput.vue'
+import BaseInput from '@/scripts/components/base/BaseInput.vue'
+import BaseDatePicker from '@/scripts/components/base/BaseDatePicker.vue'
+import BaseInputGrid from '@/scripts/components/base/BaseInputGrid.vue'
+import BaseCard from '@/scripts/components/base/BaseCard.vue'
+import BaseBreadcrumbItem from '@/scripts/components/base/BaseBreadcrumbItem.vue'
+import BaseBreadcrumb from '@/scripts/components/base/BaseBreadcrumb.vue'
+import BasePageHeader from '@/scripts/components/base/BasePageHeader.vue'
+import BasePage from '@/scripts/components/base/BasePage.vue'
 
 const route = useRoute()
 const router = useRouter()

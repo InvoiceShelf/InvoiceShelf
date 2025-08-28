@@ -137,6 +137,15 @@ import { useTaxTypeStore } from '@/scripts/admin/stores/tax-type'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import { useEstimateStore } from '@/scripts/admin/stores/estimate'
 import { useInvoiceStore } from '@/scripts/admin/stores/invoice'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseTextarea from '@/scripts/components/base/BaseTextarea.vue'
+import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
+import BaseMultiselect from '@/scripts/components/base/base-select/BaseMultiselect.vue'
+import BaseMoney from '@/scripts/components/base/BaseMoney.vue'
+import BaseInput from '@/scripts/components/base/BaseInput.vue'
+import BaseInputGrid from '@/scripts/components/base/BaseInputGrid.vue'
+import BaseModal from '@/scripts/components/base/BaseModal.vue'
 
 const emit = defineEmits(['newItem'])
 
@@ -208,15 +217,15 @@ const v$ = useVuelidate(
 
 const getTaxTypes = computed(() => {
   return taxTypeStore.taxTypes.map((tax) => {
-    const amount = tax.calculation_type === 'fixed' 
+    const amount = tax.calculation_type === 'fixed'
       ? new Intl.NumberFormat(undefined, {
           style: 'currency',
           currency: companyStore.selectedCompanyCurrency.code
         }).format(tax.fixed_amount / 100)
       : `${tax.percent}%`
-    
-    return { 
-      ...tax, 
+
+    return {
+      ...tax,
       tax_name: `${tax.name} (${amount})`
     }
   })

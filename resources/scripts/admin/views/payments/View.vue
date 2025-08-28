@@ -250,7 +250,7 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
 import { debounce } from 'lodash'
-import { ref, reactive, computed, watch } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import moment from 'moment'
 
@@ -264,6 +264,17 @@ import SendPaymentModal from '@/scripts/admin/components/modal-components/SendPa
 import LoadingIcon from '@/scripts/components/icons/LoadingIcon.vue'
 
 import abilities from '@/scripts/admin/stub/abilities'
+import BaseFormatMoney from '@/scripts/components/base/BaseFormatMoney.vue'
+import BaseText from '@/scripts/components/base/BaseText.vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseRadio from '@/scripts/components/base/BaseRadio.vue'
+import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
+import BaseDropdownItem from '@/scripts/components/base/BaseDropdownItem.vue'
+import BaseDropdown from '@/scripts/components/base/BaseDropdown.vue'
+import BaseInput from '@/scripts/components/base/BaseInput.vue'
+import BasePageHeader from '@/scripts/components/base/BasePageHeader.vue'
+import BasePage from '@/scripts/components/base/BasePage.vue'
 
 const route = useRoute()
 

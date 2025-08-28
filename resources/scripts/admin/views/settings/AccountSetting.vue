@@ -97,19 +97,21 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useGlobalStore } from '@/scripts/admin/stores/global'
 import { useUserStore } from '@/scripts/admin/stores/user'
 import { useI18n } from 'vue-i18n'
-import {
-  helpers,
-  sameAs,
-  email,
-  required,
-  minLength,
-} from '@vuelidate/validators'
+import { email, helpers, minLength, required, sameAs } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseMultiselect from '@/scripts/components/base/base-select/BaseMultiselect.vue'
+import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
+import BaseInput from '@/scripts/components/base/BaseInput.vue'
+import BaseFileUploader from '@/scripts/components/base/BaseFileUploader.vue'
+import BaseInputGrid from '@/scripts/components/base/BaseInputGrid.vue'
+import BaseSettingCard from '@/scripts/components/base/BaseSettingCard.vue'
 
 const userStore = useUserStore()
 const globalStore = useGlobalStore()
