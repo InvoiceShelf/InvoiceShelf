@@ -306,6 +306,7 @@
     "total": "Celkem",
     "discount": "Sleva",
     "sub_total": "Mezisoučet",
+    "net_total": "Net",
     "estimate_number": "Číslo nabídky",
     "ref_number": "Referenční číslo",
     "contact": "Kontakt",
@@ -1220,7 +1221,11 @@
       "updated_message": "Typ daně úspěšně upraven",
       "deleted_message": "Typ daně úspěšně odstraněn",
       "confirm_delete": "Tento typ daně nebudete moci obnovit",
-      "already_in_use": "Daň se již používá"
+      "already_in_use": "Daň se již používá",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "Platební metody",
@@ -1616,6 +1621,7 @@
   "pdf_discount_label": "Sleva",
   "pdf_amount_label": "Množství",
   "pdf_subtotal": "Mezisoučet",
+  "pdf_net_total": "Net",
   "pdf_total": "Celkem",
   "pdf_payment_label": "Platba",
   "pdf_payment_receipt_label": "DOKLAD O PLATBĚ",
