@@ -306,6 +306,7 @@
     "total": "Totaal",
     "discount": "Korting",
     "sub_total": "Subtotaal",
+    "net_total": "Net",
     "estimate_number": "Offerte nummer",
     "ref_number": "Referentie nummer",
     "contact": "Contact",
@@ -1220,7 +1221,11 @@
       "updated_message": "Belastingtype succesvol bijgewerkt",
       "deleted_message": "Belastingtype succesvol verwijderd",
       "confirm_delete": "Dit belastingtype wordt permanent verwijderd",
-      "already_in_use": "Belasting al in gebruik"
+      "already_in_use": "Belasting al in gebruik",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "Betaalmethodes",
@@ -1616,6 +1621,7 @@
   "pdf_discount_label": "Korting",
   "pdf_amount_label": "Bedrag",
   "pdf_subtotal": "Subtotaal",
+  "pdf_net_total": "Net",
   "pdf_total": "Totaal",
   "pdf_payment_label": "Betaling",
   "pdf_payment_receipt_label": "Betalingsafschrift",
