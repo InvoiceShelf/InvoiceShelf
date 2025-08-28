@@ -306,6 +306,7 @@
     "total": "Skupaj",
     "discount": "Popust",
     "sub_total": "Vse skupaj",
+    "net_total": "Net",
     "estimate_number": "Ocenjena vrednost",
     "ref_number": "Referenčna številka",
     "contact": "Kontakt",
@@ -1220,7 +1221,11 @@
       "updated_message": "Vrsta davka je bila uspešno posodobljena",
       "deleted_message": "Vrsta davka uspešno izbrisana",
       "confirm_delete": "Te vrste davka ne boste mogli povrniti.",
-      "already_in_use": "Davek se že uporablja"
+      "already_in_use": "Davek se že uporablja",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "Načini plačila",
@@ -1616,6 +1621,7 @@
   "pdf_discount_label": "Popust",
   "pdf_amount_label": "Znesek",
   "pdf_subtotal": "Vmesni seštevek",
+  "pdf_net_total": "Net",
   "pdf_total": "Skupaj",
   "pdf_payment_label": "Plačilo",
   "pdf_payment_receipt_label": "POTRDILO O PLAČILU",
