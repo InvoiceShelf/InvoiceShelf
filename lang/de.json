@@ -306,6 +306,7 @@
     "total": "Gesamt",
     "discount": "Rabatt",
     "sub_total": "Zwischensumme",
+    "net_total": "Net",
     "estimate_number": "Angebotsnummer",
     "ref_number": "Ref-Nummer",
     "contact": "Kontakt",
@@ -1220,7 +1221,11 @@
       "updated_message": "Steuersatz erfolgreich aktualisiert",
       "deleted_message": "Steuersatz erfolgreich gelöscht",
       "confirm_delete": "Sie können diesen Steuersatz nicht wiederherstellen",
-      "already_in_use": "Steuersatz wird bereits verwendet"
+      "already_in_use": "Steuersatz wird bereits verwendet",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "Zahlungsarten",
@@ -1616,6 +1621,7 @@
   "pdf_discount_label": "Rabatt",
   "pdf_amount_label": "Summe",
   "pdf_subtotal": "Zwischensumme",
+  "pdf_net_total": "Net",
   "pdf_total": "Gesamt",
   "pdf_payment_label": "Zahlung",
   "pdf_payment_receipt_label": "Zahlungsbeleg",
