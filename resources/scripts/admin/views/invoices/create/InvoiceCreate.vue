@@ -254,6 +254,14 @@ watch(
   }
 )
 
+watch(
+  () => companyStore.selectedCompanySettings?.tax_included_by_default,
+  (newVal) => {
+    invoiceStore.newInvoice.tax_included = newVal === 'YES'
+  },
+  {immediate: true}
+)
+
 async function submitForm() {
   v$.value.$touch()
 

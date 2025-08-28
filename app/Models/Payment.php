@@ -459,7 +459,7 @@ class Payment extends Model implements HasMedia
             ->setNextNumbers();
 
         $data['payment_number'] = $serial->getNextNumber();
-        $data['payment_date'] = Carbon::now()->format('y-m-d');
+        $data['payment_date'] = Carbon::now();
         $data['amount'] = $invoice->total;
         $data['invoice_id'] = $invoice->id;
         $data['payment_method_id'] = request()->payment_method_id;

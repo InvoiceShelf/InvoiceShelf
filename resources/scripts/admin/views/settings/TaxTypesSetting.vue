@@ -52,6 +52,21 @@
         :title="$t('settings.tax_types.tax_per_item')"
         :description="$t('settings.tax_types.tax_setting_description')"
       />
+
+      <BaseDivider class="mt-8 mb-2" />
+
+      <BaseSwitchSection
+        v-model="taxIncludedField"
+        :title="$t('settings.tax_types.tax_included')"
+        :description="$t('settings.tax_types.tax_included_description')"
+      />
+
+      <BaseSwitchSection
+        v-if="taxIncludedField"
+        v-model="taxIncludedByDefaultField"
+        :title="$t('settings.tax_types.tax_included_by_default')"
+        :description="$t('settings.tax_types.tax_included_by_default_description')"
+      />
     </div>
   </BaseSettingCard>
 </template>
@@ -137,6 +152,61 @@ const taxPerItemField = computed({
     }
 
     taxPerItemSetting.value = value
+
+    await companyStore.updateCompanySettings({
+      data,
+      message: 'general.setting_updated',
+    })
+  },
+})
+
+const taxIncludedSettings = reactive({
+  tax_included: 'NO',
+  tax_included_by_default: 'NO',
+})
+
+utils.mergeSettings(taxIncludedSettings, {
+  ...companyStore.selectedCompanySettings,
+})
+
+const taxIncludedField = computed({
+  get: () => {
+    return taxIncludedSettings.tax_included === 'YES'
+  },
+  set: async (newValue) => {
+    const value = newValue ? 'YES' : 'NO'
+    taxIncludedSettings.tax_included = value
+
+    if (!newValue) {
+      taxIncludedSettings.tax_included_by_default = 'NO'
+    }
+
+    let data = {
+      settings: {
+        ...taxIncludedSettings,
+      },
+    }
+
+    await companyStore.updateCompanySettings({
+      data,
+      message: 'general.setting_updated',
+    })
+  },
+})
+
+const taxIncludedByDefaultField = computed({
+  get: () => {
+    return taxIncludedSettings.tax_included_by_default === 'YES'
+  },
+  set: async (newValue) => {
+    const value = newValue ? 'YES' : 'NO'
+    taxIncludedSettings.tax_included_by_default = value
+
+    let data = {
+      settings: {
+        tax_included_by_default: taxIncludedSettings.tax_included_by_default,
+      },
+    }
 
     await companyStore.updateCompanySettings({
       data,

@@ -44,6 +44,10 @@ const props = defineProps({
     type: Object,
     default: null,
   },
+  storeProp: {
+    type: String,
+    default: '',
+  },
   data: {
     type: String,
     default: '',
@@ -66,6 +70,13 @@ const taxAmount = computed(() => {
         100
     )
   }
+  if (props.store.getSubtotalWithDiscount && props.tax.percent && props.store[props.storeProp].tax_included) {
+    return Math.round(
+      props.store.getSubtotalWithDiscount - (
+        props.store.getSubtotalWithDiscount / (1 + (props.tax.percent / 100))
+      )
+    )
+  }
   if (props.store.getSubtotalWithDiscount && props.tax.percent) {
     return Math.round(
       (props.store.getSubtotalWithDiscount * props.tax.percent) / 100
@@ -82,6 +93,13 @@ watchEffect(() => {
     updateTax()
   }
 })
+
+watch(
+  () => props.store[props.storeProp].tax_included,
+  (val) => {
+    updateTax()
+  }, { deep: true },
+)
 
 function updateTax() {
   emit('update', {

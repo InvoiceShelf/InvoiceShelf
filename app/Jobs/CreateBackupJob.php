@@ -8,6 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Spatie\Backup\Config\Config;
 use Spatie\Backup\Tasks\Backup\BackupJobFactory;
 
 class CreateBackupJob implements ShouldQueue
@@ -41,7 +42,8 @@ class CreateBackupJob implements ShouldQueue
 
         config(['backup.backup.destination.disks' => [$prefix.$fileDisk->driver]]);
 
-        $backupJob = BackupJobFactory::createFromArray(config('backup'));
+        $config = Config::fromArray(config('backup'));
+        $backupJob = BackupJobFactory::createFromConfig($config);
         if (! defined('SIGINT')) {
             $backupJob->disableSignals();
         }

@@ -20,11 +20,11 @@ axios.interceptors.request.use(function (config) {
   const authToken = Ls.get('auth.token')
 
   if (authToken) {
-    config.headers.common.Authorization = authToken
+    config.headers.Authorization = authToken
   }
 
   if (companyId) {
-    config.headers.common['company'] = companyId
+    config.headers.company = companyId
   }
 
   return config

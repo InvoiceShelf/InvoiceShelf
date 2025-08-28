@@ -101,7 +101,18 @@
                 </tr>
             @endif
         @endif
-        
+
+        @if ($estimate->tax_included)
+        <tr>
+            <td class="border-0 total-table-attribute-label">
+                @lang('pdf_net_total')
+            </td>
+            <td class="py-2 border-0 item-cell total-table-attribute-value">
+                {!! format_money_pdf($estimate->sub_total - $estimate->discount - $estimate->tax, $estimate->customer->currency) !!}
+            </td>
+        </tr>
+        @endif
+
         @if ($estimate->tax_per_item === 'YES')
             @foreach ($taxes as $tax)
                 <tr>
@@ -133,7 +144,7 @@
                 </tr>
             @endforeach
         @endif
-        
+
         <tr>
             <td class="py-3"></td>
             <td class="py-3"></td>
