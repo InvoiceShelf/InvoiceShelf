@@ -19,6 +19,12 @@ class UpdateSettingsController extends Controller
     {
         $this->authorize('manage settings');
 
+        if (isset($request->settings['manage_stock'])) {
+            $manageStock = (bool) $request->settings['manage_stock']; // changes to boolean
+
+            $request->settings['manage_stock'] = $manageStock;
+        }
+
         Setting::setSettings($request->settings);
 
         return response()->json([

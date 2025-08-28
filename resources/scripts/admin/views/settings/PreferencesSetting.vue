@@ -158,6 +158,12 @@
             :description="$t('settings.preferences.expire_setting_description')"
           />
 
+          <BaseSwitchSection
+            v-model="stockManagementField"
+           :title="$t('settings.preferences.manage_stock')"
+           :description="$t('settings.preferences.manage_stock_description')"
+            />
+
           <!--pdf_link_expiry_days -->
           <BaseInputGroup
             v-if="expirePdfField"
@@ -219,6 +225,7 @@ let isFetchingInitialData = ref(false)
 
 const settingsForm = reactive({ ...companyStore.selectedCompanySettings })
 
+// Existing computed properties...
 const retrospectiveEditOptions = computed(() => {
   return globalStore.config.retrospective_edits.map((option) => {
     option.title = t(option.key)
@@ -234,6 +241,7 @@ const fiscalYearsList = computed(() => {
   })
 })
 
+// Existing watches...
 watch(
   () => settingsForm.carbon_date_format,
   (val) => {
@@ -313,6 +321,39 @@ const expirePdfField = computed({
   },
 })
 
+// NEW: Stock Management Computed Property
+
+  
+const stockManagementField = computed({
+  get: () => {
+    return settingsForm.manage_stock === 'Yes'; 
+  },
+  set: async (newValue) => {
+    let data = {
+      settings: {
+        manage_stock: newValue ? 'Yes' : 'No', 
+      },
+    };
+
+    settingsForm.manage_stock = newValue ? 'Yes' : 'No';
+
+    try {
+      await companyStore.updateCompanySettings({
+        data,
+        message: 'settings.preferences.stock_management_updated',
+      });
+    } catch (error) {
+      console.error('Failed to update stock management setting', error);
+    
+      settingsForm.manage_stock = newValue ? 'No' : 'Yes';
+    }
+  },
+});
+
+
+
+
+// Validation rules
 const rules = computed(() => {
   return {
     currency: {
@@ -339,6 +380,7 @@ const rules = computed(() => {
     fiscal_year: {
       required: helpers.withMessage(t('validation.required'), required),
     },
+    manage_stock: {},
     invoice_use_time: {
       required: helpers.withMessage(t('validation.required'), required),
     },
@@ -350,6 +392,7 @@ const v$ = useVuelidate(
   computed(() => settingsForm)
 )
 
+// Initialization function
 setInitialData()
 
 async function setInitialData() {
@@ -364,6 +407,7 @@ async function setInitialData() {
   })
 }
 
+// Existing update functions...
 async function updatePreferencesData() {
   v$.value.$touch()
   if (v$.value.$invalid) {
