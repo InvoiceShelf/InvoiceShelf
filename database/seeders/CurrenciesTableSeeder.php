@@ -623,6 +623,14 @@ class CurrenciesTableSeeder extends Seeder
                 'decimal_separator' => '.',
             ],
             [
+                'name' => 'Algerian Dinar',
+                'code' => 'DZD',
+                'symbol' => 'DA',
+                'precision' => '2',
+                'thousand_separator' => ',',
+                'decimal_separator' => '.',         
+            ],
+            [
                 'name' => 'Paraguayan Guaraní',
                 'code' => 'PYG',
                 'symbol' => '₲',
