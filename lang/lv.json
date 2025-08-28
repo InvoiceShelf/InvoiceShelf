@@ -306,6 +306,7 @@
     "total": "Kopā",
     "discount": "Atlaide",
     "sub_total": "Starpsumma",
+    "net_total": "Net",
     "estimate_number": "Aprēķina numurs",
     "ref_number": "Ref numurs",
     "contact": "Kontakti",
@@ -1220,7 +1221,11 @@
       "updated_message": "Tax type updated successfully",
       "deleted_message": "Tax type deleted successfully",
       "confirm_delete": "Jums nebūs iespējas atgūt šo Nodokļa veidu",
-      "already_in_use": "Nodoklis jau tiek izmantots"
+      "already_in_use": "Nodoklis jau tiek izmantots",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "Payment Modes",
@@ -1616,6 +1621,7 @@
   "pdf_discount_label": "Atlaide",
   "pdf_amount_label": "Summa",
   "pdf_subtotal": "Starpsumma",
+  "pdf_net_total": "Net",
   "pdf_total": "Kopā",
   "pdf_payment_label": "Payment",
   "pdf_payment_receipt_label": "MAKSĀJUMA IZDRUKA",
