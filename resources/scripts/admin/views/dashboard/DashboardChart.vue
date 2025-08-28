@@ -158,7 +158,7 @@ import abilities from '@/scripts/admin/stub/abilities'
 import { useUserStore } from '@/scripts/admin/stores/user'
 import { useI18n } from 'vue-i18n'
 import BaseFormatMoney from '@/scripts/components/base/BaseFormatMoney.vue'
-import BaseMultiselect from '@/scripts/components/base-select/BaseMultiselect.vue'
+import BaseMultiselect from '@/scripts/components/base/base-select/BaseMultiselect.vue'
 import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
 
 const dashboardStore = useDashboardStore()

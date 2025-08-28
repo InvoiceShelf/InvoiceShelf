@@ -295,7 +295,7 @@ import BaseEmptyPlaceholder from '@/scripts/components/base/BaseEmptyPlaceholder
 import BaseInput from '@/scripts/components/base/BaseInput.vue'
 import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
 import BaseDatePicker from '@/scripts/components/base/BaseDatePicker.vue'
-import BaseMultiselect from '@/scripts/components/base-select/BaseMultiselect.vue'
+import BaseMultiselect from '@/scripts/components/base/base-select/BaseMultiselect.vue'
 import BaseCustomerSelectInput from '@/scripts/components/base/BaseCustomerSelectInput.vue'
 import BaseFilterWrapper from '@/scripts/components/base/BaseFilterWrapper.vue'
 import BaseBreadcrumbItem from '@/scripts/components/base/BaseBreadcrumbItem.vue'

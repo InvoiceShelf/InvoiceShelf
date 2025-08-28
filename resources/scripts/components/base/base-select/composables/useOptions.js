@@ -1,8 +1,8 @@
 import { ref, toRefs, computed, watch, nextTick } from 'vue'
-import normalize from './../utils/normalize'
-import isObject from './../utils/isObject'
-import isNullish from './../utils/isNullish'
-import arraysEqual from './../utils/arraysEqual'
+import normalize from '../utils/normalize.js'
+import isObject from '../utils/isObject.js'
+import isNullish from '../utils/isNullish.js'
+import arraysEqual from '../utils/arraysEqual.js'
 
 export default function useOptions(props, context, dep) {
   const {

@@ -43,7 +43,7 @@ import { useUserStore } from '@/scripts/admin/stores/user'
 import abilities from '@/scripts/admin/stub/abilities'
 import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
 import BaseSelectAction from '@/scripts/components/base/BaseSelectAction.vue'
-import BaseMultiselect from '@/scripts/components/base-select/BaseMultiselect.vue'
+import BaseMultiselect from '@/scripts/components/base/base-select/BaseMultiselect.vue'
 
 const props = defineProps({
   modelValue: {

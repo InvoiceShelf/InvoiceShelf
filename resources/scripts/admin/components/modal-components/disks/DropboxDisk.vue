@@ -152,7 +152,7 @@ import { required, helpers } from '@vuelidate/validators'
 import BaseSwitch from '@/scripts/components/base/BaseSwitch.vue'
 import BaseInput from '@/scripts/components/base/BaseInput.vue'
 import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
-import BaseMultiselect from '@/scripts/components/base-select/BaseMultiselect.vue'
+import BaseMultiselect from '@/scripts/components/base/base-select/BaseMultiselect.vue'
 import BaseInputGrid from '@/scripts/components/base/BaseInputGrid.vue'
 export default {
   components: { BaseInputGrid, BaseMultiselect, BaseInputGroup, BaseInput, BaseSwitch },

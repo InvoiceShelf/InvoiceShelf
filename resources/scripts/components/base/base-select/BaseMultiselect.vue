@@ -227,16 +227,16 @@
 </template>
 
 <script>
-import useData from './composables/useData'
-import useValue from './composables/useValue'
-import useSearch from './composables/useSearch'
-import usePointer from './composables/usePointer'
-import useOptions from './composables/useOptions'
-import usePointerAction from './composables/usePointerAction'
-import useDropdown from './composables/useDropdown'
-import useMultiselect from './composables/useMultiselect'
-import useKeyboard from './composables/useKeyboard'
-import useClasses from './composables/useClasses'
+import useData from './composables/useData.js'
+import useValue from './composables/useValue.js'
+import useSearch from './composables/useSearch.js'
+import usePointer from './composables/usePointer.js'
+import useOptions from './composables/useOptions.js'
+import usePointerAction from './composables/usePointerAction.js'
+import useDropdown from './composables/useDropdown.js'
+import useMultiselect from './composables/useMultiselect.js'
+import useKeyboard from './composables/useKeyboard.js'
+import useClasses from './composables/useClasses.js'
 import BaseContentPlaceholdersBox from '@/scripts/components/base/BaseContentPlaceholdersBox.vue'
 import BaseContentPlaceholders from '@/scripts/components/base/BaseContentPlaceholders.vue'
 

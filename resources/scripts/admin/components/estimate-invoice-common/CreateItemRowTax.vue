@@ -19,7 +19,7 @@
       >
         <template #singlelabel="{ value }">
           <div class="absolute left-3.5">
-            {{ value.name }} - 
+            {{ value.name }} -
             <template v-if="value.calculation_type === 'fixed'">
               <BaseFormatMoney :amount="value.fixed_amount" :currency="currency" />
             </template>
@@ -30,7 +30,7 @@
         </template>
 
         <template #option="{ option }">
-          {{ option.name }} - 
+          {{ option.name }} -
           <template v-if="option.calculation_type === 'fixed'">
             <BaseFormatMoney :amount="option.fixed_amount" :currency="currency" />
           </template>
@@ -80,7 +80,7 @@ import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/scripts/admin/stores/user'
 import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
 import BaseFormatMoney from '@/scripts/components/base/BaseFormatMoney.vue'
-import BaseMultiselect from '@/scripts/components/base-select/BaseMultiselect.vue'
+import BaseMultiselect from '@/scripts/components/base/base-select/BaseMultiselect.vue'
 
 const props = defineProps({
   ability: {
@@ -165,7 +165,7 @@ const taxAmount = computed(() => {
   if(localTax.calculation_type === 'fixed') {
     return localTax.fixed_amount
   }
-  
+
   if (props.discountedTotal) {
     const taxPerItemEnabled = props.store[props.storeProp].tax_per_item === 'YES'
     const discountPerItemEnabled = props.store[props.storeProp].discount_per_item === 'YES'

@@ -96,7 +96,7 @@ import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
 import BaseButton from '@/scripts/components/base/BaseButton.vue'
 import BaseDatePicker from '@/scripts/components/base/BaseDatePicker.vue'
 import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
-import BaseMultiselect from '@/scripts/components/base-select/BaseMultiselect.vue'
+import BaseMultiselect from '@/scripts/components/base/base-select/BaseMultiselect.vue'
 
 const globalStore = useGlobalStore()
 const companyStore = useCompanyStore()
