@@ -65,7 +65,8 @@ export default {
       }
 
       if(typeof res.data.profile_language === 'string') {
-        global.locale.value = res.data.profile_language
+        // Use dynamic language loading instead of direct assignment
+        await window.loadLanguage(res.data.profile_language)
       }
 
       let dbstep = parseInt(res.data.profile_complete)

@@ -105,7 +105,7 @@
             class="w-full"
           />
         </BaseInputGroup>
-        
+
         <BaseInputGroup
           :label="$t('settings.preferences.time_format')"
           :content-loading="isFetchingInitialData"
@@ -378,6 +378,12 @@ async function updatePreferencesData() {
 
   isSaving.value = true
   delete data.settings.link_expiry_days
+
+  // If language is being changed, load it dynamically first
+  if (companyStore.selectedCompanySettings.language !== settingsForm.language) {
+    await window.loadLanguage(settingsForm.language)
+  }
+
   let res = await companyStore.updateCompanySettings({
     data: data,
     message: 'settings.preferences.updated_message',
