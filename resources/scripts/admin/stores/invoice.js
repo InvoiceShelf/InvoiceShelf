@@ -279,7 +279,7 @@ export const useInvoiceStore = (useWindow = false) => {
 
               notificationStore.showNotification({
                 type: 'success',
-                message: global.tc('invoices.deleted_message', 2),
+                message: global.t('invoices.deleted_message', 2),
               })
               resolve(response)
             })

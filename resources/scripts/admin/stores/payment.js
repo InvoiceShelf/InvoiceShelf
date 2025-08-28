@@ -214,7 +214,7 @@ export const usePaymentStore = (useWindow = false) => {
               })
               notificationStore.showNotification({
                 type: 'success',
-                message: global.tc('payments.deleted_message', 2),
+                message: global.t('payments.deleted_message', 2),
               })
               resolve(response)
             })
