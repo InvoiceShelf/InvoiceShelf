@@ -306,6 +306,7 @@
     "total": "Итого",
     "discount": "Скидка",
     "sub_total": "Промежуточный итог",
+    "net_total": "Net",
     "estimate_number": "Номер заказа",
     "ref_number": "Серийный номер",
     "contact": "Контакт",
@@ -1220,7 +1221,11 @@
       "updated_message": "Тип налога успешно обновлен",
       "deleted_message": "Тип налога успешно удален",
       "confirm_delete": "Восстановление типа налога будет невозможна",
-      "already_in_use": "Налог используется"
+      "already_in_use": "Налог используется",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "Формы оплаты",
@@ -1616,6 +1621,7 @@
   "pdf_discount_label": "Скидка",
   "pdf_amount_label": "Сумма",
   "pdf_subtotal": "Промежуточный итог",
+  "pdf_net_total": "Net",
   "pdf_total": "Итого",
   "pdf_payment_label": "Платёж",
   "pdf_payment_receipt_label": "КВИТАНЦИЯ ПЛАТЕЖА",
