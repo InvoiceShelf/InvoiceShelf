@@ -649,6 +649,8 @@
     "from_date": "Από Ημερομηνία",
     "to_date": "Έως ημερομηνία",
     "expense_date": "Ημερομηνία",
+    "expense_number": "Αριθμός παραστατικού",
+    "expense_number_placeholder": "EXP-001",
     "description": "Περιγραφή",
     "receipt": "Απόδειξη",
     "amount": "Ποσό",

@@ -442,6 +442,8 @@
     "from_date": "시작 날짜",
     "to_date": "현재까지",
     "expense_date": "데이트",
+    "expense_number": "비용 번호",
+    "expense_number_placeholder": "EXP-001",
     "description": "기술",
     "receipt": "영수증",
     "amount": "양",

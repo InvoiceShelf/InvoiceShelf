@@ -649,6 +649,8 @@
     "from_date": "Von Datum",
     "to_date": "bis Datum",
     "expense_date": "Datum",
+    "expense_number": "Kostennummer",
+    "expense_number_placeholder": "EXP-001",
     "description": "Beschreibung",
     "receipt": "Rechnung",
     "amount": "Summe",
