@@ -306,6 +306,7 @@
     "total": "कुल",
     "discount": "छूट",
     "sub_total": "उप योग",
+    "net_total": "Net",
     "estimate_number": "अनुमान संख्या",
     "ref_number": "प्रसंग संख्या",
     "contact": "संपर्क",
@@ -1220,7 +1221,11 @@
       "updated_message": "Tax type updated successfully",
       "deleted_message": "Tax type deleted successfully",
       "confirm_delete": "You will not be able to recover this Tax Type",
-      "already_in_use": "Tax is already in use"
+      "already_in_use": "Tax is already in use",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "Payment Modes",
@@ -1616,6 +1621,7 @@
   "pdf_discount_label": "Discount",
   "pdf_amount_label": "Amount",
   "pdf_subtotal": "Subtotal",
+  "pdf_net_total": "Net",
   "pdf_total": "Total",
   "pdf_payment_label": "Payment",
   "pdf_payment_receipt_label": "PAYMENT RECEIPT",
