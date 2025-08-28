@@ -306,6 +306,7 @@
     "total": "Ukupno za plaćanje",
     "discount": "Popust",
     "sub_total": "Osnovica za obračun PDV-a",
+    "net_total": "Net",
     "estimate_number": "Broj profakture",
     "ref_number": "Poziv na broj",
     "contact": "Kontakt",
@@ -1220,7 +1221,11 @@
       "updated_message": "Tip poreza uspešno ažuriran",
       "deleted_message": "Tip poreza uspešno obrisan",
       "confirm_delete": "Nećete moći da povratite ovaj Tip Poreza",
-      "already_in_use": "Porez se već koristi"
+      "already_in_use": "Porez se već koristi",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "Payment Modes",
@@ -1616,6 +1621,7 @@
   "pdf_discount_label": "Popust",
   "pdf_amount_label": "Iznos",
   "pdf_subtotal": "Osnovica za obračun PDV-a",
+  "pdf_net_total": "Net",
   "pdf_total": "Ukupan iznos",
   "pdf_payment_label": "Payment",
   "pdf_payment_receipt_label": "POTVRDA O UPLATI",
