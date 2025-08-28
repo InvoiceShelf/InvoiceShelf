@@ -341,7 +341,7 @@
     "mark_as_sent_successfully": "Ponuda uspješno označena kao Poslana",
     "send_estimate_successfully": "Ponuda uspješno poslana",
     "errors": {
-      "required": "Obvezno polje!"
+      "required": "Obvezno polje"
     },
     "accepted": "Prihvaćeno",
     "rejected": "Odbijeno",
