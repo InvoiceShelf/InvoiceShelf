@@ -306,6 +306,7 @@
     "total": "Σύνολο ",
     "discount": "Έκπτωση",
     "sub_total": "Μερικό Σύνολο",
+    "net_total": "Net",
     "estimate_number": "Εκτίμηση Αριθμού",
     "ref_number": "Αριθμός Αναφοράς",
     "contact": "Επικοινωνία",
@@ -1220,7 +1221,11 @@
       "updated_message": "Το τιμολόγιο εστάλη επιτυχώς",
       "deleted_message": "Το τιμολόγιο εστάλη επιτυχώς",
       "confirm_delete": "Δεν θα μπορείτε να ανακτήσετε αυτό το Προσαρμοσμένο Πεδίο",
-      "already_in_use": "Το όνομα είναι ήδη σε χρήση"
+      "already_in_use": "Το όνομα είναι ήδη σε χρήση",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "Τρόπος πληρωμής",
@@ -1616,6 +1621,7 @@
   "pdf_discount_label": "Έκπτωση",
   "pdf_amount_label": "Ποσό",
   "pdf_subtotal": "Υποσύνολο",
+  "pdf_net_total": "Net",
   "pdf_total": "Σύνολο ",
   "pdf_payment_label": "Πληρωμή",
   "pdf_payment_receipt_label": "ΠΡΟΣΑΡΜΟΓΗ ΠΛΗΡΩΜΗΣ",
