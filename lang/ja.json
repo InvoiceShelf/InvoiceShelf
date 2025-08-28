@@ -306,6 +306,7 @@
     "total": "合計",
     "discount": "割引",
     "sub_total": "小計",
+    "net_total": "Net",
     "estimate_number": "見積番号",
     "ref_number": "参照番号",
     "contact": "連絡先",
@@ -1220,7 +1221,11 @@
       "updated_message": "税の種類が正常に更新されました",
       "deleted_message": "税の種類が正常に削除されました",
       "confirm_delete": "この税の種類は復元できません",
-      "already_in_use": "税は既に使用されています"
+      "already_in_use": "税は既に使用されています",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "支払い方法",
@@ -1616,6 +1621,7 @@
   "pdf_discount_label": "割引",
   "pdf_amount_label": "量",
   "pdf_subtotal": "小計",
+  "pdf_net_total": "Net",
   "pdf_total": "合計",
   "pdf_payment_label": "支払い",
   "pdf_payment_receipt_label": "支払い領収書",
