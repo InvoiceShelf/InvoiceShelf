@@ -19,12 +19,24 @@
       >
         <template #singlelabel="{ value }">
           <div class="absolute left-3.5">
-            {{ value.name }} - {{ value.percent }} %
+            {{ value.name }} - 
+            <template v-if="value.calculation_type === 'fixed'">
+              <BaseFormatMoney :amount="value.fixed_amount" :currency="currency" />
+            </template>
+            <template v-else>
+              {{ value.percent }} %
+            </template>
           </div>
         </template>
 
         <template #option="{ option }">
-          {{ option.name }} - {{ option.percent }} %
+          {{ option.name }} - 
+          <template v-if="option.calculation_type === 'fixed'">
+            <BaseFormatMoney :amount="option.fixed_amount" :currency="currency" />
+          </template>
+          <template v-else>
+            {{ option.percent }} %
+          </template>
         </template>
 
         <template v-if="userStore.hasAbilities(ability)" #action>
@@ -146,7 +158,12 @@ const filteredTypes = computed(() => {
 })
 
 const taxAmount = computed(() => {
-  if (props.discountedTotal && localTax.percent) {
+
+  if(localTax.calculation_type === 'fixed') {
+    return localTax.fixed_amount
+  }
+  
+  if (props.discountedTotal) {
     const taxPerItemEnabled = props.store[props.storeProp].tax_per_item === 'YES'
     const discountPerItemEnabled = props.store[props.storeProp].discount_per_item === 'YES'
     if (taxPerItemEnabled && !discountPerItemEnabled){
@@ -188,7 +205,9 @@ if (props.taxData.tax_type_id > 0) {
 updateRowTax()
 
 function onSelectTax(val) {
-  localTax.percent = val.percent
+  localTax.calculation_type = val.calculation_type
+  localTax.percent = val.calculation_type === 'percentage' ? val.percent : null
+  localTax.fixed_amount = val.calculation_type === 'fixed' ? val.fixed_amount : null
   localTax.tax_type_id = val.id
   localTax.name = val.name
 
@@ -232,6 +251,11 @@ function removeTax(index) {
 }
 
 function getTaxAmount() {
+
+  if (localTax.calculation_type === 'fixed') {
+    return localTax.fixed_amount
+  }
+
   let total = 0
   let discount = 0
   const itemTotal = props.discountedTotal
@@ -250,3 +274,4 @@ function getTaxAmount() {
   return Math.round((props.discountedTotal * localTax.percent) / 100)
 }
 </script>
+

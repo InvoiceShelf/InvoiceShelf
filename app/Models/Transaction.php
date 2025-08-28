@@ -65,10 +65,10 @@ class Transaction extends Model
 
     public function isExpired()
     {
-        $linkexpiryDays = CompanySetting::getSetting('link_expiry_days', $this->company_id);
+        $linkExpiryDays = (int) CompanySetting::getSetting('link_expiry_days', $this->company_id);
         $checkExpiryLinks = CompanySetting::getSetting('automatically_expire_public_links', $this->company_id);
 
-        $expiryDate = $this->updated_at->addDays($linkexpiryDays);
+        $expiryDate = $this->updated_at->addDays($linkExpiryDays);
 
         if ($checkExpiryLinks == 'YES' && $this->status == self::SUCCESS && Carbon::now()->format('Y-m-d') > $expiryDate->format('Y-m-d')) {
             return true;

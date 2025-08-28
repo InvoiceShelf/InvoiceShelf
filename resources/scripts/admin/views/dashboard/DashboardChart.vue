@@ -18,7 +18,7 @@
       >
         <div class="flex justify-between mt-1 mb-4 flex-col md:flex-row">
           <h6 class="flex items-center sw-section-title h-10">
-            <BaseIcon name="ChartSquareBarIcon" class="text-primary-400 mr-1" />
+            <BaseIcon name="ChartBarSquareIcon" class="text-primary-400 mr-1" />
             {{ $t('dashboard.monthly_chart.title') }}
           </h6>
 

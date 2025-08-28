@@ -58,7 +58,7 @@
             <template #left="slotProps">
               <BaseIcon
                 v-if="!isSaving"
-                name="SaveIcon"
+                name="ArrowDownOnSquareIcon"
                 :class="slotProps.class"
               />
             </template>
@@ -151,6 +151,7 @@ import { cloneDeep } from 'lodash'
 
 import { useInvoiceStore } from '@/scripts/admin/stores/invoice'
 import { useModuleStore } from '@/scripts/admin/stores/module'
+import { useNotesStore } from '@/scripts/admin/stores/note'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 import { useCustomFieldStore } from '@/scripts/admin/stores/custom-field'
 
@@ -169,6 +170,8 @@ const invoiceStore = useInvoiceStore()
 const companyStore = useCompanyStore()
 const customFieldStore = useCustomFieldStore()
 const moduleStore = useModuleStore()
+const notesStore = useNotesStore()
+
 const { t } = useI18n()
 let route = useRoute()
 let router = useRouter()

@@ -119,7 +119,7 @@ return [
          * If pdflib present in web server and auto or selected explicitly above,
          * a real license code must exist!
          */
-        //"DOMPDF_PDFLIB_LICENSE" => "your license key here",
+        // "DOMPDF_PDFLIB_LICENSE" => "your license key here",
 
         /**
          * html target media view which should be rendered into pdf.

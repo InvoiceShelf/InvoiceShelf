@@ -37,6 +37,7 @@ export const useMailDriverStore = (useWindow = false) => {
         mail_port: null,
         mail_ses_key: '',
         mail_ses_secret: '',
+        mail_ses_region: '',
         mail_encryption: 'tls',
         from_mail: '',
         from_name: '',

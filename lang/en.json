@@ -161,7 +161,10 @@
     "name": "Name",
     "description": "Description",
     "percent": "Percent",
-    "compound_tax": "Compound Tax"
+    "compound_tax": "Compound Tax",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Search...",
@@ -565,7 +568,7 @@
       "type_item_description": "Type Item Description (optional)"
     },
     "frequency": {
-      "title": "Frequency",
+      "title": "Frequency (using cron format)",
       "select_frequency": "Select Frequency",
       "minute": "Minute",
       "hour": "Hour",
@@ -852,7 +855,8 @@
       "payment_modes": "Payment Modes",
       "notes": "Notes",
       "exchange_rate": "Exchange Rate",
-      "address_information": "Address Information"
+      "address_information": "Address Information",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  You can update Your Address information using form below."
@@ -864,6 +868,7 @@
     "primary_currency": "Primary Currency",
     "timezone": "Time Zone",
     "date_format": "Date Format",
+    "time_format": "Time Format",
     "currencies": {
       "title": "Currencies",
       "currency": "Currency | Currencies",
@@ -892,6 +897,7 @@
       "mailgun_endpoint": "Mailgun Endpoint",
       "ses_secret": "SES Secret",
       "ses_key": "SES Key",
+      "ses_region": "AWS Region",
       "password": "Mail Password",
       "username": "Mail Username",
       "mail_config": "Mail Configuration",
@@ -903,7 +909,15 @@
     "pdf": {
       "title": "PDF Setting",
       "footer_text": "Footer Text",
-      "pdf_layout": "PDF Layout"
+      "pdf_layout": "PDF Layout",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "Company info",
@@ -990,6 +1004,7 @@
       "delimiter_description": "Single character for specifying the boundary between 2 separate components. By default its set to -",
       "delimiter_param_label": "Delimiter Value",
       "date_format": "Date Format",
+      "time_format": "Time Format",
       "date_format_description": "A local date and time field which accepts a format parameter. The default format: 'Y' renders the current year.",
       "date_format_param_label": "Format",
       "sequence": "Sequence",
@@ -1085,6 +1100,8 @@
         "description": "Save time by creating notes and reusing them on your invoices, estimates & payments.",
         "notes": "Notes",
         "type": "Type",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Add Note",
         "add_new_note": "Add New Note",
         "name": "Name",
@@ -1191,7 +1208,12 @@
       "tax_per_item": "Tax Per Item",
       "tax_name": "Tax Name",
       "compound_tax": "Compound Tax",
+      "amount": "Amount",
       "percent": "Percent",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Action",
       "tax_setting_description": "Enable this if you want to add taxes to individual invoice items. By default, taxes are added directly to the invoice.",
       "created_message": "Tax type created successfully",
@@ -1234,6 +1256,7 @@
       "time_zone": "Time Zone",
       "fiscal_year": "Financial Year",
       "date_format": "Date Format",
+      "time_format": "Time Format",
       "discount_setting": "Discount Setting",
       "discount_per_item": "Discount Per Item ",
       "discount_setting_description": "Enable this if you want to add Discount to individual invoice items. By default, Discount is added directly to the invoice.",
@@ -1246,6 +1269,7 @@
       "select_language": "Select Language",
       "select_time_zone": "Select Time Zone",
       "select_date_format": "Select Date Format",
+      "select_time_format": "Select Time Format",
       "select_financial_year": "Select Financial Year",
       "recurring_invoice_status": "Recurring Invoice Status",
       "create_status": "Create Status",
@@ -1254,6 +1278,8 @@
       "update_status": "Update Status",
       "completed": "Completed",
       "company_currency_unchangeable": "Company currency cannot be changed",
+      "invoice_use_time": "Use time in invoices",
+      "invoice_use_time_description": "Enable this if you want to select exact invoice time.",
       "fiscal_years": {
         "january_december": "January - December",
         "february_january": "February - January",
@@ -1273,7 +1299,7 @@
       "title": "Update App",
       "description": "You can easily update InvoiceShelf by checking for a new update by clicking the button below",
       "check_update": "Check for updates",
-      "insider_consent" : "Opt-in for Insider releases. Recommended for testing purposes only.",
+      "insider_consent": "Opt-in for Insider releases. Recommended for testing purposes only.",
       "avail_update": "New Update available",
       "next_version": "Next version",
       "requirements": "Requirements",
@@ -1422,6 +1448,7 @@
     "time_zone": "Time Zone",
     "fiscal_year": "Financial Year",
     "date_format": "Date Format",
+    "time_format": "Time Format",
     "from_address": "From Address",
     "username": "Username",
     "next": "Next",
@@ -1460,9 +1487,9 @@
       "failed": "Domain verification failed. Please enter valid domain name.",
       "verify_and_continue": "Verify And Continue",
       "notes": {
-        "notes" : "Notes:",
-        "not_contain" : "App domain should not contain",
-        "or" : "or",
+        "notes": "Notes:",
+        "not_contain": "App domain should not contain",
+        "or": "or",
         "in_front": "in front of the domain.",
         "if_you": "If you're accessing the website on a different port, please mention the port. For example:"
       }
@@ -1581,7 +1608,7 @@
   "pdf_invoice_label": "Invoice",
   "pdf_invoice_number": "Invoice Number",
   "pdf_invoice_date": "Invoice Date",
-  "pdf_invoice_due_date": "Due date",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "Notes",
   "pdf_items_label": "Items",
   "pdf_quantity_label": "Quantity",
@@ -1617,6 +1644,8 @@
   "pdf_tax_label": "Tax",
   "pdf_tax_id": "Tax-ID",
   "pdf_vat_id": "VAT-ID",
+  "pdf_amount_paid": "Amount Paid",
+  "pdf_amount_due": "Amount Due",
   "mail_thanks": "Thanks",
   "mail_view_estimate": "View Estimate",
   "mail_viewed_estimate": ":name viewed this Estimate.",

@@ -48,4 +48,10 @@ return [
         'auth_token' => env('CRON_JOB_AUTH_TOKEN', 0),
     ],
 
+    'ses' => [
+        'key' => env('SES_KEY'),
+        'secret' => env('SES_SECRET'),
+        'region' => env('SES_REGION', 'us-east-1'),
+    ],
+
 ];

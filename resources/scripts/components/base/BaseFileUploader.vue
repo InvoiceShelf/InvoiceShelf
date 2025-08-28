@@ -67,7 +67,7 @@
     <!-- Not Selected -->
     <div v-else-if="!localFiles.length" class="flex flex-col items-center">
       <BaseIcon
-        name="CloudUploadIcon"
+        name="CloudArrowUpIcon"
         class="h-6 mb-2 text-xl leading-6 text-gray-400"
       />
       <p class="text-xs leading-4 text-center text-gray-400">
@@ -171,7 +171,7 @@
         "
         @click.prevent.stop="onAvatarRemove(localFiles[0])"
       >
-        <BaseIcon name="XIcon" class="h-4 text-xl leading-6 text-black" />
+        <BaseIcon name="XMarkIcon" class="h-4 text-xl leading-6 text-black" />
       </a>
     </div>
 
@@ -250,9 +250,9 @@
           </p>
         </div>
 
-        <a
-          href="#"
+        <span
           class="
+            cursor-pointer
             box-border
             absolute
             z-30
@@ -272,8 +272,8 @@
           "
           @click.prevent.stop="onFileRemove(index)"
         >
-          <BaseIcon name="XIcon" class="h-4 text-xl leading-6 text-black" />
-        </a>
+          <BaseIcon name="XMarkIcon" class="h-4 text-xl leading-6 text-black" />
+        </span>
       </a>
     </div>
 
@@ -348,9 +348,9 @@
           </p>
         </div>
 
-        <a
-          href="#"
+        <span
           class="
+            cursor-pointer
             box-border
             absolute
             z-30
@@ -370,8 +370,8 @@
           "
           @click.prevent.stop="onFileRemove(index)"
         >
-          <BaseIcon name="XIcon" class="h-4 text-xl leading-6 text-black" />
-        </a>
+          <BaseIcon name="XMarkIcon" class="h-4 text-xl leading-6 text-black" />
+        </span>
       </a>
     </div>
   </form>

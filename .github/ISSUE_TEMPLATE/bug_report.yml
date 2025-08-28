@@ -1,9 +1,8 @@
 name: Bug report
 description: Template for bug reports
-labels:
-  - bug
-  - triage
-projects: ["InvoiceShelf/2"]
+labels: ['bug', 'triage']
+type: Bug
+projects: ['InvoiceShelf/2']
 assignees:
   - rihards-simanovics
 
@@ -13,15 +12,15 @@ body:
   - type: checkboxes
     id: confirm-read-documentation
     attributes:
-      label: Issue filing pre-requisites
-      description: "Prior to filing an issue please confirm that:"
+      label: Issue filing prerequisites
+      description: 'Prior to filing an issue please confirm that:'
       options:
-        - label: I've checked the documentation.
+        - label: I've checked the [documentation](https://docs.invoiceshelf.com/).
           required: true
         - label: I've looked for similar issues both Open and Closed.
           required: true
         - label: >-
-            Ive tried clearing both cache and cookies in my browser or tried
+            I've tried clearing both cache and cookies in my browser or tried
             opening the app in the Incognito/InPrivate window.
           required: true
 
@@ -29,19 +28,19 @@ body:
   - type: markdown
     attributes:
       value: >-
-        If you did all of the above, we first would like to thank you for taking
-        the time to fill out this bug report, it will help us tremendously to
+        If you did all of the above, we would first like to thank you for taking
+        the time to fill out this bug report. It will help us tremendously to
         find and fix the issue sooner!
 
-  # Description fo the bug
+  # Description of the bug
   - type: textarea
     id: bug-description
     attributes:
       label: Describe the bug
       description: A clear and concise description of what the bug is.
       placeholder: >-
-        When doing `x`, `y`, and `z` in that order, an error occurs, but when x,
-        z and then y is done, the error does not occur.
+        When doing `x`, `y`, and `z` in that order, an error occurs, but when `x`,
+        `z` and then `y` is done, the error does not occur.
     validations:
       required: true
 
@@ -53,34 +52,41 @@ body:
       description: A clear step-by-step explanation of how to reproduce your issue
       placeholder: >-
         ## Produces an error:
+
         1. Do X;
+
         2. Do Y;
+
         3. Do Z;
 
+
         ## Works fine:
+
         4. Do X;
+
         5. Do Z;
+
         6. Do Y.
     validations:
       required: true
 
   # Expected Behaviour
   - type: textarea
-    id: expected-behavior
+    id: expected-behaviour
     attributes:
-      label: Expected behavior
+      label: Expected behaviour
       description: A clear and concise description of what you expected to happen.
-      placeholder: doing  `x`, `y`, and `z` in that order should not generate an error.
+      placeholder: Doing `x`, `y`, and `z` in that order should not generate an error.
     validations:
       required: true
 
   # Actual Behaviour
   - type: textarea
-    id: actual-behavior
+    id: actual-behaviour
     attributes:
-      label: Actual behavior
-      description: A clear and concise description of what actually happen.
-      placeholder: doing  `x`, `y`, and `z` in that order generate an error.
+      label: Actual behaviour
+      description: A clear and concise description of what actually happens.
+      placeholder: Doing `x`, `y`, and `z` in that order generates an error.
     validations:
       required: true
 
@@ -88,9 +94,19 @@ body:
   - type: markdown
     attributes:
       value: |-
-        ## Envirment
+        ## Environment
 
-        Now lets collect some information about your environment.
+        Now let's collect some information about your environment.
+
+  # Use Docker?
+  - type: checkboxes
+    id: confirm-docker-install
+    attributes:
+      label: Docker
+      description: 'Please note that unless the issue is with the app itself, you should file a bug report under the [docker](https://github.com/InvoiceShelf/docker) repository.'
+      options:
+        - label: App running in Docker Container.
+        - label: Docker container running behind Reverse proxy.
 
   # App Version
   - type: input
@@ -115,7 +131,7 @@ body:
     id: database-type
     attributes:
       label: Database type
-      placeholder: MariaDB / MySQL / PostreSQL / SQLite
+      placeholder: MariaDB / MySQL / PostgreSQL / SQLite
     validations:
       required: true
 
@@ -133,14 +149,14 @@ body:
     id: web-browser
     attributes:
       label: Web Browser
-      placeholder: "Firefox / Safari / or any other (chromium based browser)"
+      placeholder: 'Firefox / Safari / or any other (Chromium-based browser)'
 
   # OS Version
   - type: input
     id: server-os
     attributes:
       label: Server OS
-      description: If Linux please make sure to provide both distro name and it's version
+      description: If Linux, please make sure to provide both the distro name and its version
       placeholder: Windows / Linux (e.g. Ubuntu 24.04)
 
   # Associated Logs
@@ -150,7 +166,7 @@ body:
         ## Logs
 
 
-        last but not least, could you please take some time to get us the logs
+        Last but not least, could you please take some time to get us the logs
         for:
 
   # Log Reverse proxy
@@ -162,21 +178,17 @@ body:
         Please provide logs from your Apache, Nginx, Traefik, or any other
         reverse proxy application.
       placeholder: >-
-        [2015-02-04 10:00:00] production.INFO: Laravel 5.0 released. The world rejoices.
-        [2015-12-03 12:00:00] production.INFO: PHP 7.0 introduced scalar type declarations. Minds blown.
-        [2016-05-15 14:00:00] production.INFO: Composer installed new dependencies. Dependency hell avoided.
-        [2017-08-20 16:00:00] production.INFO: Artisan command executed: migrate. Smooth sailing.
-        [2018-01-10 09:00:00] production.INFO: User login successful.
-        [2018-01-10 09:05:00] production.ERROR: Database connection failed. Did you try turning it off and on again?
-        [2018-01-10 09:10:00] production.WARNING: Deprecated function used in UserController.php. Time to refactor, again.
-        [2018-01-10 09:15:00] production.ERROR: Uncaught Exception: Division by zero. Oops, math is hard.
-        [2018-01-10 09:20:00] production.INFO: User logout successful. See you later, alligator.
-        [2019-03-25 11:00:00] production.INFO: Cache cleared. Fresh start!
-        [2019-06-30 13:00:00] production.ERROR: Syntax error. Missing semicolon strikes again.
-        [2020-09-10 15:00:00] production.INFO: User registered. Welcome aboard!
-        [2021-11-05 17:00:00] production.WARNING: Low disk space. Time to clean up.
-        [2022-12-20 19:00:00] production.INFO: Server rebooted. All systems go.
-        [2024-11-14 18:56:20] production.INFO: Unexpected item in the bagging area. Please wait for assistance.
+        2023-04-12 10:15:32 [NGINX] 172.16.0.5 - - [12/Apr/2023:10:15:32 +0000] "GET /index.html HTTP/1.1" 200 1024 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
+
+        2023-04-12 10:15:33 [NGINX] 172.16.0.7 - - [12/Apr/2023:10:15:33 +0000] "POST /login HTTP/1.1" 302 - "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/603.3.8 (KHTML, like Gecko) Version/10.1.2 Safari/603.3.8"
+
+        2023-04-12 10:15:34 [NGINX] 172.16.0.9 - - [12/Apr/2023:10:15:34 +0000] "GET /about HTTP/1.1" 200 2048 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
+
+        2023-04-12 10:15:35 [NGINX] 172.16.0.11 - - [12/Apr/2023:10:15:35 +0000] "PUT /api/v1/users/123 HTTP/1.1" 200 - "https://example.com/profile" "Mozilla/5.0 (iPhone; CPU iPhone OS 14_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1"
+
+        2023-04-12 10:15:36 [NGINX] 172.16.0.13 - - [12/Apr/2023:10:15:36 +0000] "DELETE /api/v1/products/456 HTTP/1.1" 204 - "-" "Dalvik/2.1.0 (Linux; U; Android 10; Pixel 4 Build/QD1A.190821.014.C2)"
+
+        2023-04-12 10:15:37 [NGINX] 172.16.0.15 - - [12/Apr/2023:10:15:37 +0000] "GET /easter-egg HTTP/1.1" 200 42 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.3"
       render: irc logs
 
   # PHP/Laravel Logs
@@ -186,12 +198,35 @@ body:
       label: Laravel/PHP logs
       description: Please provide logs from either PHP or Laravel or both.
       placeholder: >-
-        2023-04-12 10:15:32 [NGINX] 172.16.0.5 - - [12/Apr/2023:10:15:32 +0000] "GET /index.html HTTP/1.1" 200 1024 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
-        2023-04-12 10:15:33 [NGINX] 172.16.0.7 - - [12/Apr/2023:10:15:33 +0000] "POST /login HTTP/1.1" 302 - "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/603.3.8 (KHTML, like Gecko) Version/10.1.2 Safari/603.3.8"
-        2023-04-12 10:15:34 [NGINX] 172.16.0.9 - - [12/Apr/2023:10:15:34 +0000] "GET /about HTTP/1.1" 200 2048 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
-        2023-04-12 10:15:35 [NGINX] 172.16.0.11 - - [12/Apr/2023:10:15:35 +0000] "PUT /api/v1/users/123 HTTP/1.1" 200 - "https://example.com/profile" "Mozilla/5.0 (iPhone; CPU iPhone OS 14_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1"
-        2023-04-12 10:15:36 [NGINX] 172.16.0.13 - - [12/Apr/2023:10:15:36 +0000] "DELETE /api/v1/products/456 HTTP/1.1" 204 - "-" "Dalvik/2.1.0 (Linux; U; Android 10; Pixel 4 Build/QD1A.190821.014.C2)"
-        2023-04-12 10:15:37 [NGINX] 172.16.0.15 - - [12/Apr/2023:10:15:37 +0000] "GET /easter-egg HTTP/1.1" 200 42 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.3"
+        [2015-02-04 10:00:00] production.INFO: Laravel 5.0 released. The world rejoices.
+
+        [2015-12-03 12:00:00] production.INFO: PHP 7.0 introduced scalar type declarations. Minds blown.
+
+        [2016-05-15 14:00:00] production.INFO: Composer installed new dependencies. Dependency hell avoided.
+
+        [2017-08-20 16:00:00] production.INFO: Artisan command executed: migrate. Smooth sailing.
+
+        [2018-01-10 09:00:00] production.INFO: User login successful.
+
+        [2018-01-10 09:05:00] production.ERROR: Database connection failed. Did you try turning it off and on again?
+
+        [2018-01-10 09:10:00] production.WARNING: Deprecated function used in UserController.php. Time to refactor, again.
+
+        [2018-01-10 09:15:00] production.ERROR: Uncaught Exception: Division by zero. Oops, maths is hard.
+
+        [2018-01-10 09:20:00] production.INFO: User logout successful. See you later, alligator.
+
+        [2019-03-25 11:00:00] production.INFO: Cache cleared. Fresh start!
+
+        [2019-06-30 13:00:00] production.ERROR: Syntax error. Missing semicolon strikes again.
+
+        [2020-09-10 15:00:00] production.INFO: User registered. Welcome aboard!
+
+        [2021-11-05 17:00:00] production.WARNING: Low disk space. Time to clean up.
+
+        [2022-12-20 19:00:00] production.INFO: Server rebooted. All systems go.
+
+        [2024-11-14 18:56:20] production.INFO: Unexpected item in the bagging area. Please wait for assistance.
       render: irc logs
 
   # Special thanks

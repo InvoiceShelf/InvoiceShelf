@@ -101,32 +101,32 @@
     "login_successfully": "सफलतापूर्वक लॉगिन किया गया",
     "logged_out_successfully": "सफलतापूर्वक लॉग आउट किया गया",
     "mark_as_default": "डिफ़ॉल्ट के रूप में चिह्नित करें",
-    "no_data_found": "No data found",
+    "no_data_found": "डाटा प्राप्त नहीं हुआ",
     "pagination": {
-      "previous": "Previous",
-      "next": "Next",
-      "showing": "Showing",
-      "to": "to",
-      "of": "of",
-      "results": "results"
+      "previous": "पहले का",
+      "next": "अगला",
+      "showing": "दिखा रहा है",
+      "to": "को",
+      "of": "का",
+      "results": "परिणाम"
     },
     "file_upload": {
-      "drag_a_file": "Drag a file here or",
+      "drag_a_file": "फ़ाइल को यहाँ खींचें.",
       "browse": "browse",
       "to_choose": "to choose a file"
     },
     "multiselect": {
-      "the_list_is_empty": "The list is empty",
-      "no_results_found": "No results found"
+      "the_list_is_empty": "सूची खाली है",
+      "no_results_found": "कोई परिणाम नहीं मिला"
     },
-    "copy_to_clipboard": "Copy to Clipboard"
+    "copy_to_clipboard": "क्लिपबोर्ड पर नक़ल करें"
   },
   "dashboard": {
     "select_year": "वर्ष चुनें",
     "cards": {
       "due_amount": "देय राशि",
-      "customers": "Customer | Customers",
-      "invoices": "Invoice | Invoices",
+      "customers": "ग्राहक | ग्राहकों",
+      "invoices": "",
       "estimates": "Estimate | Estimates",
       "payments": "Payment | Payments"
     },
@@ -191,7 +191,7 @@
   "customers": {
     "title": "ग्राहक",
     "prefix": "प्रीफ़िक्स",
-    "tax_id": "Tax ID",
+    "tax_id": "टैक्स आईडी",
     "add_customer": "ग्राहक जोड़ें",
     "contacts_list": "ग्राहक सूची",
     "name": "नाम",
@@ -324,7 +324,7 @@
     "record_payment": "रिकॉर्ड भुगतान",
     "add_estimate": "अनुमान जोड़ें",
     "save_estimate": "अनुमान बचाएं",
-    "cloned_successfully": "Estimate cloned successfully",
+    "cloned_successfully": "अनुमान सफलतापूर्वक क्लोन किया गया",
     "clone_estimate": "Clone Estimate",
     "confirm_clone": "This Estimate will be cloned into a new Estimate",
     "confirm_conversion": "इस अनुमान का उपयोग एक नया चालान बनाने के लिए किया जाएगा।",
@@ -565,7 +565,7 @@
       "type_item_description": "Type Item Description (optional)"
     },
     "frequency": {
-      "title": "Frequency",
+      "title": "Frequency (using cron format)",
       "select_frequency": "Select Frequency",
       "minute": "Minute",
       "hour": "Hour",
@@ -582,20 +582,20 @@
       "on_the_first_day_of_every_month_at_midnight": "On the first day of every month at 00:00",
       "every_6_month": "Every 6 Month",
       "every_year_on_the_first_day_of_january_at_midnight": "Every year on the first day of january at 00:00",
-      "custom": "Custom"
+      "custom": "स्वनिर्मित"
     },
-    "confirm_delete": "You will not be able to recover this Invoice | You will not be able to recover these Invoices",
-    "created_message": "Recurring Invoice created successfully",
+    "confirm_delete": "आप इस चालान को पुनर्प्राप्त नहीं कर पाएंगे | आप इन चालानों को पुनर्प्राप्त नहीं कर पाएंगे",
+    "created_message": "आवर्ती चालान सफलतापूर्वक बनाया गया",
     "updated_message": "Recurring Invoice updated successfully",
-    "deleted_message": "Recurring Invoice deleted successfully | Recurring Invoices deleted successfully",
-    "marked_as_sent_message": "Recurring Invoice marked as sent successfully",
+    "deleted_message": "आवर्ती चालान सफलतापूर्वक हटा दिया गया",
+    "marked_as_sent_message": "आवर्ती चालान को सफलतापूर्वक भेजा गया के रूप में चिह्नित किया गया",
     "user_email_does_not_exist": "User email does not exist",
     "something_went_wrong": "something went wrong",
-    "invalid_due_amount_message": "Total Recurring Invoice amount cannot be less than total paid amount for this Recurring Invoice. Please update the invoice or delete the associated payments to continue.",
+    "invalid_due_amount_message": "कुल चालान राशि इस चालान के लिए कुल भुगतान की गई राशि से कम नहीं हो सकती है। जारी रखने के लिए कृपया इनवॉइस अपडेट करें या संबद्ध भुगतानों को हटा दें।",
     "limit": {
-      "none": "None",
-      "date": "Date",
-      "count": "Count"
+      "none": "कोई नहीं",
+      "date": "दिनांक",
+      "count": "गिनती"
     }
   },
   "payments": {
@@ -626,7 +626,7 @@
     "no_matching_payments": "कोई मिलान भुगतान नहीं हैं!",
     "list_of_payments": "इस खंड में भुगतान की सूची होगी।",
     "select_payment_mode": "भुगतान मोड चुनें",
-    "confirm_mark_as_sent": "This estimate will be marked as sent",
+    "confirm_mark_as_sent": "इस अनुमान को भेजा गया के रूप में चिह्नित किया जाएगा",
     "confirm_send_payment": "यह भुगतान ग्राहक को ईमेल के माध्यम से भेजा जाएगा",
     "send_payment_successfully": "भुगतान सफलतापूर्वक भेजा गया",
     "something_went_wrong": "कुछ गलत हो गया",
@@ -635,7 +635,7 @@
     "updated_message": "भुगतान सफलतापूर्वक अपडेट किया गया",
     "deleted_message": "भुगतान सफलतापूर्वक हटाया गया | भुगतान सफलतापूर्वक हटा दिए गए",
     "invalid_amount_message": "भुगतान राशि अमान्य है",
-    "amount_due": "Due Amount"
+    "amount_due": "बकाया राशि"
   },
   "expenses": {
     "title": "व्यय",
@@ -643,7 +643,7 @@
     "select_a_customer": "एक ग्राहक चुनें",
     "expense_title": "शीर्षक",
     "customer": "ग्राहक",
-    "currency": "Currency",
+    "currency": "मुद्रा",
     "contact": "संपर्क",
     "category": "वर्ग",
     "from_date": "इस तारीख से",
@@ -698,7 +698,7 @@
     "retype_password": "पासवर्ड पुन: लिखें"
   },
   "modules": {
-    "buy_now": "Buy Now",
+    "buy_now": "अभी खरीदें",
     "install": "इंस्टॉल",
     "price": "मूल्य",
     "download_zip_file": "ज़िप डाउनलोड करे",
@@ -739,7 +739,7 @@
     "purchased": "खरीदी",
     "installed": "इंस्टॉल हुआ।",
     "no_modules_installed": "अभी तक कोई मॉड्यूल स्थापित नहीं है!",
-    "disable_warning": "All the settings for this particular will be reverted.",
+    "disable_warning": "इस विशेष के लिए सभी सेटिंग्स पूर्ववत कर दी जाएंगी.",
     "what_you_get": "What you get",
     "sign_up_and_get_token": "Sign up & Get Token"
   },
@@ -769,7 +769,7 @@
     "updated_message": "उपयोगकर्ता सफलतापूर्वक अपडेट किया गया",
     "deleted_message": "उपयोगकर्ता सफलतापूर्वक हटाया गया | उपयोगकर्ता सफलतापूर्वक हटा दिया गया",
     "select_company_role": "Select Role for {company}",
-    "companies": "Companies"
+    "companies": "कंपनियों"
   },
   "reports": {
     "title": "रिपोर्ट",
@@ -795,8 +795,8 @@
       "from_date": "इस तारीख से",
       "report_type": "रिपोर्ट का प्रकार",
       "sort": {
-        "by_customer": "By Customer",
-        "by_item": "By Item"
+        "by_customer": "ग्राहक द्वारा",
+        "by_item": "आइटम द्वारा"
       }
     },
     "taxes": {
@@ -851,11 +851,12 @@
       "custom_fields": "कस्टम फील्ड्स",
       "payment_modes": "भुगतान के प्रकार",
       "notes": "नोट्स",
-      "exchange_rate": "Exchange Rate",
-      "address_information": "Address Information"
+      "exchange_rate": "विनिमय दर",
+      "address_information": "पते के बारे में जानकारी",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
-      "section_description": "  You can update Your Address information using form below."
+      "section_description": "  आप नीचे दिए गए फॉर्म का उपयोग करके अपनी पता जानकारी अपडेट कर सकते हैं"
     },
     "title": "समायोजन",
     "setting": "सेटिंग्स | समायोजन",
@@ -864,6 +865,7 @@
     "primary_currency": "Primary Currency",
     "timezone": "Time Zone",
     "date_format": "Date Format",
+    "time_format": "Time Format",
     "currencies": {
       "title": "Currencies",
       "currency": "Currency | Currencies",
@@ -892,6 +894,7 @@
       "mailgun_endpoint": "Mailgun Endpoint",
       "ses_secret": "SES Secret",
       "ses_key": "SES Key",
+      "ses_region": "AWS Region",
       "password": "Mail Password",
       "username": "Mail Username",
       "mail_config": "Mail Configuration",
@@ -903,7 +906,15 @@
     "pdf": {
       "title": "PDF Setting",
       "footer_text": "Footer Text",
-      "pdf_layout": "PDF Layout"
+      "pdf_layout": "PDF Layout",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "Company info",
@@ -990,6 +1001,7 @@
       "delimiter_description": "Single character for specifying the boundary between 2 separate components. By default its set to -",
       "delimiter_param_label": "Delimiter Value",
       "date_format": "Date Format",
+      "time_format": "Time Format",
       "date_format_description": "A local date and time field which accepts a format parameter. The default format: 'Y' renders the current year.",
       "date_format_param_label": "Format",
       "sequence": "Sequence",
@@ -1085,6 +1097,8 @@
         "description": "Save time by creating notes and reusing them on your invoices, estimates & payments.",
         "notes": "Notes",
         "type": "Type",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Add Note",
         "add_new_note": "Add New Note",
         "name": "Name",
@@ -1234,6 +1248,7 @@
       "time_zone": "Time Zone",
       "fiscal_year": "Financial Year",
       "date_format": "Date Format",
+      "time_format": "Time Format",
       "discount_setting": "Discount Setting",
       "discount_per_item": "Discount Per Item ",
       "discount_setting_description": "Enable this if you want to add Discount to individual invoice items. By default, Discount is added directly to the invoice.",
@@ -1246,6 +1261,7 @@
       "select_language": "Select Language",
       "select_time_zone": "Select Time Zone",
       "select_date_format": "Select Date Format",
+      "select_time_format": "Select Time Format",
       "select_financial_year": "Select Financial Year",
       "recurring_invoice_status": "Recurring Invoice Status",
       "create_status": "Create Status",
@@ -1254,6 +1270,8 @@
       "update_status": "Update Status",
       "completed": "Completed",
       "company_currency_unchangeable": "Company currency cannot be changed",
+      "invoice_use_time": "Use time in invoices",
+      "invoice_use_time_description": "Enable this if you want to select exact invoice time.",
       "fiscal_years": {
         "january_december": "January - December",
         "february_january": "February - January",
@@ -1422,6 +1440,7 @@
     "time_zone": "Time Zone",
     "fiscal_year": "Financial Year",
     "date_format": "Date Format",
+    "time_format": "Time Format",
     "from_address": "From Address",
     "username": "Username",
     "next": "Next",
@@ -1581,7 +1600,7 @@
   "pdf_invoice_label": "Invoice",
   "pdf_invoice_number": "Invoice Number",
   "pdf_invoice_date": "Invoice Date",
-  "pdf_invoice_due_date": "Due date",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "Notes",
   "pdf_items_label": "Items",
   "pdf_quantity_label": "Quantity",
@@ -1617,6 +1636,8 @@
   "pdf_tax_label": "Tax",
   "pdf_tax_id": "Tax-ID",
   "pdf_vat_id": "VAT-ID",
+  "pdf_amount_paid": "Amount Paid",
+  "pdf_amount_due": "Amount Due",
   "mail_thanks": "Thanks",
   "mail_view_estimate": "View Estimate",
   "mail_viewed_estimate": ":name viewed this Estimate.",

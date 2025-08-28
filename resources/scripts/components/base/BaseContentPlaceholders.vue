@@ -33,6 +33,9 @@ const classObject = computed(() => {
 </script>
 
 <style lang="scss">
+
+@use 'sass:color';
+
 $base-content-placeholders-primary-color: #ccc !default;
 $base-content-placeholders-secondary-color: #eee !default;
 $base-content-placeholders-border-radius: 6px !default;
@@ -77,7 +80,7 @@ $base-content-placeholders-spacing: 10px !default;
     background: linear-gradient(
       to right,
       transparent 0%,
-      darken($base-content-placeholders-secondary-color, 5%) 15%,
+      color.adjust($base-content-placeholders-secondary-color, $lightness: -5%) 15%,
       transparent 30%
     );
     animation-duration: 1.5s;
@@ -168,7 +171,7 @@ $base-content-placeholders-spacing: 10px !default;
     background: linear-gradient(
       to right,
       transparent 0%,
-      darken($base-content-placeholders-secondary-color, 5%) 15%,
+      color.adjust($base-content-placeholders-secondary-color, $lightness: -5%) 15%,
       transparent 30%
     );
     animation-duration: 1.5s;

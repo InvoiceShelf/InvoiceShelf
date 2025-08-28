@@ -50,5 +50,10 @@ services:
     networks:
       - invoiceshelf-dev
 
+  pdf:
+    image: gotenberg/gotenberg:8
+    networks:
+      - invoiceshelf-dev
+
 networks:
   invoiceshelf-dev:

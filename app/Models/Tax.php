@@ -21,6 +21,7 @@ class Tax extends Model
         return [
             'amount' => 'integer',
             'percent' => 'float',
+            'fixed_amount' => 'integer',
         ];
     }
 

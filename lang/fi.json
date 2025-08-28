@@ -565,7 +565,7 @@
       "type_item_description": "Type Item Description (optional)"
     },
     "frequency": {
-      "title": "Frequency",
+      "title": "Frequency (using cron format)",
       "select_frequency": "Select Frequency",
       "minute": "Minute",
       "hour": "Hour",
@@ -852,7 +852,8 @@
       "payment_modes": "Maksutavat",
       "notes": "Viestit",
       "exchange_rate": "Exchange Rate",
-      "address_information": "Address Information"
+      "address_information": "Address Information",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  You can update Your Address information using form below."
@@ -864,6 +865,7 @@
     "primary_currency": "Ensisijainen valuutta",
     "timezone": "Aikavyöhyke",
     "date_format": "Päivämäärä muoto",
+    "time_format": "Time Format",
     "currencies": {
       "title": "Valuutat",
       "currency": "Valuutta | Valuutat",
@@ -892,6 +894,7 @@
       "mailgun_endpoint": "Mailgun päätepiste",
       "ses_secret": "SES salaus",
       "ses_key": "SES avain",
+      "ses_region": "AWS Region",
       "password": "Sähköpostin salasana",
       "username": "Sähköpostin käyttäjänimi",
       "mail_config": "Sähköposti asetukset",
@@ -903,7 +906,15 @@
     "pdf": {
       "title": "PDF Asetukset",
       "footer_text": "Alaotsikko teksti",
-      "pdf_layout": "PDF asettelu"
+      "pdf_layout": "PDF asettelu",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "Yritystiedot",
@@ -990,6 +1001,7 @@
       "delimiter_description": "Single character for specifying the boundary between 2 separate components. By default its set to -",
       "delimiter_param_label": "Delimiter Value",
       "date_format": "Date Format",
+      "time_format": "Time Format",
       "date_format_description": "A local date and time field which accepts a format parameter. The default format: 'Y' renders the current year.",
       "date_format_param_label": "Format",
       "sequence": "Sequence",
@@ -1085,6 +1097,8 @@
         "description": "Säästä aikaa luomalla viestejä, joita voit käyttää laskuilla, tarjouksilla ja maksuissa.",
         "notes": "Viestit",
         "type": "Tyyppi",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Lisää viesti",
         "add_new_note": "Lisää uusi viesti",
         "name": "Nimi",
@@ -1234,6 +1248,7 @@
       "time_zone": "Aikavyöhyke",
       "fiscal_year": "Tilikausi",
       "date_format": "Päivämäärä formaatti",
+      "time_format": "Time Format",
       "discount_setting": "Alennusten määritys",
       "discount_per_item": "Alennus per tuote ",
       "discount_setting_description": "Aktivoi tämä jos haluat lisätä alennuksen rivikohtaisesti. Oletuksena, Alennus lisätään suoraan laskun kokonaissummaan.",
@@ -1246,6 +1261,7 @@
       "select_language": "Valitse kieli",
       "select_time_zone": "Valitse aikavyöhyke",
       "select_date_format": "Valitse päivämäärä formaatti",
+      "select_time_format": "Select Time Format",
       "select_financial_year": "Valitse tilikausi",
       "recurring_invoice_status": "Recurring Invoice Status",
       "create_status": "Create Status",
@@ -1254,6 +1270,8 @@
       "update_status": "Update Status",
       "completed": "Completed",
       "company_currency_unchangeable": "Company currency cannot be changed",
+      "invoice_use_time": "Use time in invoices",
+      "invoice_use_time_description": "Enable this if you want to select exact invoice time.",
       "fiscal_years": {
         "january_december": "January - December",
         "february_january": "February - January",
@@ -1422,6 +1440,7 @@
     "time_zone": "Aikavyöhyke",
     "fiscal_year": "Tilikausi",
     "date_format": "päivämäärä formaatti",
+    "time_format": "Time Format",
     "from_address": "Lähettäjän osoite",
     "username": "Käyttäjänimi",
     "next": "Seuraava",
@@ -1581,7 +1600,7 @@
   "pdf_invoice_label": "Lasku",
   "pdf_invoice_number": "Laskunumero",
   "pdf_invoice_date": "Laskun päiväys",
-  "pdf_invoice_due_date": "Eräpäivä",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "Viesti",
   "pdf_items_label": "Tuotenimi",
   "pdf_quantity_label": "Määrä",
@@ -1617,6 +1636,8 @@
   "pdf_tax_label": "Tax",
   "pdf_tax_id": "Tax-ID",
   "pdf_vat_id": "VAT-ID",
+  "pdf_amount_paid": "Amount Paid",
+  "pdf_amount_due": "Amount Due",
   "mail_thanks": "Thanks",
   "mail_view_estimate": "View Estimate",
   "mail_viewed_estimate": ":name viewed this Estimate.",

@@ -565,7 +565,7 @@
       "type_item_description": "คำอธิบาย (ไม่จำเป็น)"
     },
     "frequency": {
-      "title": "ระยะเวลา",
+      "title": "Frequency (using cron format)",
       "select_frequency": "กำหนดระยะเวลารอบบิล",
       "minute": "นาที",
       "hour": "ชั่วโมง",
@@ -852,7 +852,8 @@
       "payment_modes": "วิธีการชำระเงิน",
       "notes": "หมายเหตุ",
       "exchange_rate": "อัตราแลกเปลี่ยน",
-      "address_information": "ข้อมูลที่อยู่"
+      "address_information": "ข้อมูลที่อยู่",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  คุณสามารถอัปเดตข้อมูลที่อยู่ของคุณโดยใช้แบบฟอร์มด้านล่าง"
@@ -864,6 +865,7 @@
     "primary_currency": "สกุลเงินหลัก",
     "timezone": "เขตเวลา",
     "date_format": "รูปแบบวันที่",
+    "time_format": "Time Format",
     "currencies": {
       "title": "สกุลเงิน",
       "currency": "สกุลเงิน | สกุลเงิน",
@@ -892,6 +894,7 @@
       "mailgun_endpoint": "ปลายทาง Mailgun",
       "ses_secret": "SES ซีเคร็ต",
       "ses_key": "SES คีย์",
+      "ses_region": "AWS Region",
       "password": "รหัสผ่านจดหมาย",
       "username": "ชื่อผู้ใช้จดหมาย",
       "mail_config": "การกำหนดค่าจดหมาย",
@@ -903,7 +906,15 @@
     "pdf": {
       "title": "การตั้งค่า PDF",
       "footer_text": "ข้อความท้ายกระดาษ",
-      "pdf_layout": "รูปแบบไฟล์ PDF"
+      "pdf_layout": "รูปแบบไฟล์ PDF",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "ข้อมูลบริษัท",
@@ -990,6 +1001,7 @@
       "delimiter_description": "ตัวอักษรตัวเดียวสำหรับการระบุเขตแดนระหว่าง 2 องค์ประกอบที่แยกต่างหากโดยค่าเริ่มต้นตั้งค่าเป็น -",
       "delimiter_param_label": "ตัวคั่น",
       "date_format": "รูปแบบวันที่",
+      "time_format": "Time Format",
       "date_format_description": "วันที่และเวลาท้องถิ่นฟิลด์ซึ่งยอมรับพารามิเตอร์รูปแบบรูปแบบเริ่มต้น: 'Y' วาทกรรมในปีปัจจุบัน",
       "date_format_param_label": "รูปแบบ",
       "sequence": "ลำดับ",
@@ -1085,6 +1097,8 @@
         "description": "ประหยัดเวลาด้วยการสร้างหมายเหตุและนำกลับมาใช้ใหม่ในใบวางบิล ใบเสนอราคาและการชำระเงิน",
         "notes": "หมายเหตุ",
         "type": "ประเภท",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "เพิ่มโน้ต",
         "add_new_note": "เพิ่มหมายเหตุใหม่",
         "name": "ชื่อ",
@@ -1234,6 +1248,7 @@
       "time_zone": "เขตเวลา",
       "fiscal_year": "ปีงบการเงิน",
       "date_format": "รูปแบบวันที่",
+      "time_format": "Time Format",
       "discount_setting": "การตั้งค่าส่วนลด",
       "discount_per_item": "ส่วนลดต่อรายการ ",
       "discount_setting_description": "เปิดใช้งานตัวเลือกนี้หากคุณต้องการเพิ่มส่วนลดให้กับรายการใบวางบิลแต่ละรายการโดยค่าเริ่มต้นส่วนลดจะถูกเพิ่มโดยตรงไปยังใบวางบิล",
@@ -1246,6 +1261,7 @@
       "select_language": "เลือกภาษา",
       "select_time_zone": "เลือกโซนเวลา",
       "select_date_format": "เลือกรูปแบบวันที่",
+      "select_time_format": "Select Time Format",
       "select_financial_year": "เลือกปีการเงิน",
       "recurring_invoice_status": "สถานะใบวางบิลประจำ",
       "create_status": "สร้างสถานะ",
@@ -1254,6 +1270,8 @@
       "update_status": "สถานะการอัพเดต",
       "completed": "เสร็จสมบูรณ์",
       "company_currency_unchangeable": "สกุลเงินของบริษัทไม่สามารถเปลี่ยนแปลงได้",
+      "invoice_use_time": "Use time in invoices",
+      "invoice_use_time_description": "Enable this if you want to select exact invoice time.",
       "fiscal_years": {
         "january_december": "January - December",
         "february_january": "February - January",
@@ -1422,6 +1440,7 @@
     "time_zone": "เขตเวลา",
     "fiscal_year": "ปีงบการเงิน",
     "date_format": "รูปแบบวันที่",
+    "time_format": "Time Format",
     "from_address": "จากที่อยู่",
     "username": "ชื่อผู้ใช้",
     "next": "ถัดไป",
@@ -1581,7 +1600,7 @@
   "pdf_invoice_label": "ใบวางบิล",
   "pdf_invoice_number": "เลขที่ใบวางบิล",
   "pdf_invoice_date": "วันที่ใบวางบิล",
-  "pdf_invoice_due_date": "วันครบกำหนด",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "หมายเหตุ",
   "pdf_items_label": "บริการ",
   "pdf_quantity_label": "หน่วย",
@@ -1617,6 +1636,8 @@
   "pdf_tax_label": "ภาษี",
   "pdf_tax_id": "Tax-ID",
   "pdf_vat_id": "VAT-ID",
+  "pdf_amount_paid": "Amount Paid",
+  "pdf_amount_due": "Amount Due",
   "mail_thanks": "Thanks",
   "mail_view_estimate": "View Estimate",
   "mail_viewed_estimate": ":name viewed this Estimate.",

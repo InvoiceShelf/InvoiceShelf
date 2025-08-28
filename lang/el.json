@@ -286,7 +286,7 @@
   "estimates": {
     "title": "Προσφορές",
     "accept_estimate": "Accept Estimate",
-    "reject_estimate": "Reject Estimate",
+    "reject_estimate": "Απόρριψη προσφοράς",
     "estimate": "Προσφορά | Προσφορές",
     "estimates_list": "Λίστα προσφορών",
     "days": "{days} Ημέρες",
@@ -382,7 +382,7 @@
   },
   "invoices": {
     "title": "Τιμολόγια",
-    "download": "Download",
+    "download": "Λήψη",
     "pay_invoice": "Pay Invoice",
     "invoices_list": "Λίστα Τιμολογίων",
     "invoice_information": "Invoice Information",
@@ -565,7 +565,7 @@
       "type_item_description": "Πληκτρολογήστε Περιγραφή Στοιχείου (προαιρετικό)"
     },
     "frequency": {
-      "title": "Συχνότητα",
+      "title": "Frequency (using cron format)",
       "select_frequency": "Επιλογή συχνοτήτων",
       "minute": "Λεπτό",
       "hour": "Ώρα",
@@ -635,7 +635,7 @@
     "updated_message": "Η πληρωμή εστάλη επιτυχώς",
     "deleted_message": "Ο υπολογισμός διαγράφηκε επιτυχώς",
     "invalid_amount_message": "Το ποσό δεν είναι έγκυρο",
-    "amount_due": "Due Amount"
+    "amount_due": "Ποσό Οφειλής"
   },
   "expenses": {
     "title": "Έξοδα",
@@ -852,7 +852,8 @@
       "payment_modes": "Τρόπος πληρωμής",
       "notes": "Σημειώσεις",
       "exchange_rate": "Συναλλαγματική ισοτιμία",
-      "address_information": "Address Information"
+      "address_information": "Address Information",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  You can update Your Address information using form below."
@@ -864,6 +865,7 @@
     "primary_currency": "Κύριο Νόμισμα",
     "timezone": "Ζώνη Ώρας",
     "date_format": "Μορφή Ημερομηνίας",
+    "time_format": "Time Format",
     "currencies": {
       "title": "Συνάλλαγμα",
       "currency": "Νόμισμα",
@@ -892,6 +894,7 @@
       "mailgun_endpoint": "Mailgun Endpoint",
       "ses_secret": "SES Μυστικό",
       "ses_key": "Κλειδί SES",
+      "ses_region": "AWS Region",
       "password": "Κωδικός Πρόσβασης Ταχυδρομείου",
       "username": "Όνομα Ταχυδρομείου",
       "mail_config": "Διαμόρφωση Mail",
@@ -903,7 +906,15 @@
     "pdf": {
       "title": "Ρυθμίσεις PDF",
       "footer_text": "Κείμενο Υποσέλιδου",
-      "pdf_layout": "Διάταξη PDF"
+      "pdf_layout": "Διάταξη PDF",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "Πληροφορίες Εταιρίας",
@@ -990,6 +1001,7 @@
       "delimiter_description": "Ενιαίος χαρακτήρας για τον καθορισμό του ορίου μεταξύ 2 ξεχωριστών στοιχείων. Από προεπιλογή το σετ του -",
       "delimiter_param_label": "Τιμή Οριοθέτη",
       "date_format": "Μορφή Ημερομηνίας",
+      "time_format": "Time Format",
       "date_format_description": "Ένα τοπικό πεδίο ημερομηνίας και ώρας που δέχεται μια παράμετρο μορφής. Η προεπιλεγμένη μορφή: 'Y' εμφανίζει το τρέχον έτος.",
       "date_format_param_label": "Μορφή",
       "sequence": "Αλληλουχία",
@@ -1085,6 +1097,8 @@
         "description": "Εξοικονομήστε χρόνο δημιουργώντας σημειώσεις και επαναχρησιμοποίησή τους στα τιμολόγια σας, εκτιμήσεις και πληρωμές.",
         "notes": "Σημειώσεις",
         "type": "Type",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Προσθήκη σημείωσης",
         "add_new_note": "Προσθήκη Νέας Σημείωσης",
         "name": "Όνομα",
@@ -1095,7 +1109,7 @@
         "already_in_use": "Το όνομα είναι ήδη σε χρήση",
         "deleted_message": "Ο ρόλος διαγράφηκε με επιτυχία",
         "types": {
-          "estimate": "Estimate",
+          "estimate": "Προσφορά",
           "invoice": "Invoice",
           "payment": "Payment"
         }
@@ -1234,6 +1248,7 @@
       "time_zone": "Ζώνη Ώρας",
       "fiscal_year": "Οικονομικό έτος",
       "date_format": "Μορφή Ημερομηνίας",
+      "time_format": "Time Format",
       "discount_setting": "Ρυθμίσεις Λογαριασμού",
       "discount_per_item": "Έκπτωση Ανά Στοιχείο ",
       "discount_setting_description": "Ενεργοποιήστε το αν θέλετε να προσθέσετε έκπτωση σε μεμονωμένα στοιχεία τιμολογίου. Από προεπιλογή, η έκπτωση προστίθεται απευθείας στο τιμολόγιο.",
@@ -1246,6 +1261,7 @@
       "select_language": "Επιλογή Γλώσσας",
       "select_time_zone": "Επιλέξτε ζώνη ώρας",
       "select_date_format": "Μορφή σύντομης ημερομηνίας",
+      "select_time_format": "Select Time Format",
       "select_financial_year": "Επιλογή Οικονομικού Έτους",
       "recurring_invoice_status": "Επαναλαμβανόμενα τιμολόγια",
       "create_status": "Δημιουργία κατάστασης",
@@ -1254,6 +1270,8 @@
       "update_status": "Ενημέρωση Κατάστασης",
       "completed": "Ολοκληρώθηκε",
       "company_currency_unchangeable": "Το νόμισμα της εταιρείας δεν μπορεί να αλλάξει",
+      "invoice_use_time": "Use time in invoices",
+      "invoice_use_time_description": "Enable this if you want to select exact invoice time.",
       "fiscal_years": {
         "january_december": "January - December",
         "february_january": "February - January",
@@ -1422,6 +1440,7 @@
     "time_zone": "Ζώνη Ώρας",
     "fiscal_year": "Οικονομικό έτος",
     "date_format": "Μορφή Ημερομηνίας",
+    "time_format": "Time Format",
     "from_address": "Διεύθυνση Αποστολής",
     "username": "Όνομα Χρήστη",
     "next": "Επόμενο",
@@ -1566,7 +1585,7 @@
     "invalid_address": "Please enter a valid address.",
     "invalid_key": "Please enter valid key.",
     "invalid_state": "Please enter a valid state.",
-    "invalid_city": "Please enter a valid city.",
+    "invalid_city": "Παρακαλούμε εισάγετε μια έγκυρη πόλη.",
     "invalid_postal_code": "Please enter a valid zip.",
     "invalid_format": "Please enter valid query string format.",
     "api_error": "Server not responding.",
@@ -1581,7 +1600,7 @@
   "pdf_invoice_label": "Τιμολόγιο",
   "pdf_invoice_number": "Αριθμός τιμολογίου",
   "pdf_invoice_date": "Ημ/νία Τιμολόγησης",
-  "pdf_invoice_due_date": "Echéance",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "Σημειώσεις",
   "pdf_items_label": "Προϊόντα",
   "pdf_quantity_label": "Ποσότητα",
@@ -1617,6 +1636,8 @@
   "pdf_tax_label": "Φόρος",
   "pdf_tax_id": "Tax-ID",
   "pdf_vat_id": "VAT-ID",
+  "pdf_amount_paid": "Amount Paid",
+  "pdf_amount_due": "Amount Due",
   "mail_thanks": "Thanks",
   "mail_view_estimate": "View Estimate",
   "mail_viewed_estimate": ":name viewed this Estimate.",
@@ -1625,5 +1646,5 @@
   "mail_view_payment": "View Payment",
   "notification_view_estimate": "[Notification] Estimate viewed",
   "notification_view_invoice": "[Notification] Invoice viewed",
-  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:"
+  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "Λάβατε ένα νέο τιμολόγιο από <b>{COMPANY_NAME}</b>.</br> Κάντε λήψη χρησιμοποιώντας το παρακάτω κουμπί:"
 }

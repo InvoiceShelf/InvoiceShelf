@@ -101,19 +101,19 @@
     "login_successfully": "Başarıyla giriş yapıldı!",
     "logged_out_successfully": "Başarıyla çıkış yapıldı",
     "mark_as_default": "Varsayılan olarak işaretleyin",
-    "no_data_found": "No data found",
+    "no_data_found": "Veri bulunamadı.",
     "pagination": {
-      "previous": "Previous",
-      "next": "Next",
-      "showing": "Showing",
-      "to": "to",
-      "of": "of",
-      "results": "results"
+      "previous": "Önceki",
+      "next": "İleri",
+      "showing": "Gösterilen",
+      "to": "için",
+      "of": "'un",
+      "results": "sonuçlar"
     },
     "file_upload": {
-      "drag_a_file": "Drag a file here or",
-      "browse": "browse",
-      "to_choose": "to choose a file"
+      "drag_a_file": "Bu dosyayı sürükleyin veya",
+      "browse": "göz at\n",
+      "to_choose": "bir dosya seçmek için"
     },
     "multiselect": {
       "the_list_is_empty": "The list is empty",
@@ -538,7 +538,7 @@
     "save_invoice": "Save Recurring Invoice",
     "update_invoice": "Update Recurring Invoice",
     "add_new_tax": "Add New Tax",
-    "no_invoices": "No Recurring Invoices yet!",
+    "no_invoices": "Tekrarlayan Fatura yok ",
     "mark_as_rejected": "Mark as rejected",
     "mark_as_accepted": "Mark as accepted",
     "list_of_invoices": "This section will contain the list of recurring invoices.",
@@ -565,7 +565,7 @@
       "type_item_description": "Type Item Description (optional)"
     },
     "frequency": {
-      "title": "Frequency",
+      "title": "Frequency (using cron format)",
       "select_frequency": "Select Frequency",
       "minute": "Minute",
       "hour": "Hour",
@@ -852,7 +852,8 @@
       "payment_modes": "Ödeme yöntemleri",
       "notes": "Notlar",
       "exchange_rate": "Exchange Rate",
-      "address_information": "Address Information"
+      "address_information": "Address Information",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  You can update Your Address information using form below."
@@ -864,6 +865,7 @@
     "primary_currency": "Ana para birimi",
     "timezone": "Zaman dilimi",
     "date_format": "Tarih Biçimi",
+    "time_format": "Time Format",
     "currencies": {
       "title": "Para Birimleri",
       "currency": "Para birimi | Para birimleri",
@@ -892,6 +894,7 @@
       "mailgun_endpoint": "Mailgun Uçnoktası",
       "ses_secret": "SES Sırrı",
       "ses_key": "Ses Anahtarı",
+      "ses_region": "AWS Region",
       "password": "Posta Parolası",
       "username": "Posta Kullanıcı Adı",
       "mail_config": "Posta Konfigürasyonu",
@@ -903,7 +906,15 @@
     "pdf": {
       "title": "PDF Ayarları",
       "footer_text": "Altbilgi Metni",
-      "pdf_layout": "PDF Biçimi"
+      "pdf_layout": "PDF Biçimi",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "Şirket Bilgileri",
@@ -990,6 +1001,7 @@
       "delimiter_description": "İki ayrı bileşen arasındaki sınırı belirtmek için tek karakter kullanılır. Varsayılan olarak '-' olarak ayarlanmıştır.",
       "delimiter_param_label": "Ayraç Değeri",
       "date_format": "Tarih Formatı",
+      "time_format": "Time Format",
       "date_format_description": "Yerel tarih ve saat alanı olup format parametresi kabul eder. Varsayılan format: 'Y', geçerli yılı gösterir.",
       "date_format_param_label": "Format",
       "sequence": "Sıra",
@@ -1085,6 +1097,8 @@
         "description": "Notlar oluşturarak ve faturalar, proformalar & ödemeler üzerinde tekrar kullanarak zamandan kazanın.",
         "notes": "Notlar",
         "type": "Tür",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Not ekle",
         "add_new_note": "Yeni not ekle",
         "name": "İsim",
@@ -1234,6 +1248,7 @@
       "time_zone": "Zaman Dilimi",
       "fiscal_year": "Mali Yıl",
       "date_format": "Tarih Biçimi",
+      "time_format": "Time Format",
       "discount_setting": "İndirim Ayarı",
       "discount_per_item": "Öğe Başı İndirim",
       "discount_setting_description": "Bireysel fatura kalemlerine indirim eklemek istiyorsanız bunu etkinleştirin. Varsayılan olarak, indirim doğrudan faturaya eklenir.",
@@ -1246,6 +1261,7 @@
       "select_language": "Dil Seçin",
       "select_time_zone": "Saat Dilimini Seçin",
       "select_date_format": "Tarih Biçimini Seçin",
+      "select_time_format": "Select Time Format",
       "select_financial_year": "Mali Yılı Seçin",
       "recurring_invoice_status": "Tekrarlayan Fatura Durumu",
       "create_status": "Durum Oluştur",
@@ -1254,6 +1270,8 @@
       "update_status": "Durumu Güncelle",
       "completed": "Tamamlandı",
       "company_currency_unchangeable": "Şirket para birimi değiştirilemez",
+      "invoice_use_time": "Use time in invoices",
+      "invoice_use_time_description": "Enable this if you want to select exact invoice time.",
       "fiscal_years": {
         "january_december": "January - December",
         "february_january": "February - January",
@@ -1422,6 +1440,7 @@
     "time_zone": "Zaman Dilimi",
     "fiscal_year": "Mali Yıl",
     "date_format": "Tarih Biçimi",
+    "time_format": "Time Format",
     "from_address": "Gönderen Adresi",
     "username": "Kullanıcı Adı",
     "next": "İleri",
@@ -1581,7 +1600,7 @@
   "pdf_invoice_label": "Fatura",
   "pdf_invoice_number": "Fatura Numarası",
   "pdf_invoice_date": "Fatura Tarihi",
-  "pdf_invoice_due_date": "Son Ödeme Tarihi",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "Notlar",
   "pdf_items_label": "Ürünler",
   "pdf_quantity_label": "Miktar",
@@ -1617,6 +1636,8 @@
   "pdf_tax_label": "Vergi",
   "pdf_tax_id": "Vergi Kimlik Numarası",
   "pdf_vat_id": "KDV Numarası",
+  "pdf_amount_paid": "Amount Paid",
+  "pdf_amount_due": "Amount Due",
   "mail_thanks": "Teşekkürler",
   "mail_view_estimate": "Teklifi Görüntüle",
   "mail_viewed_estimate": ":name bu Teklifi görüntüledi.",

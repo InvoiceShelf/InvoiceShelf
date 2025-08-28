@@ -31,18 +31,12 @@
       >
         <template #right>
           <BaseIcon
-            v-if="isShowPassword"
-            name="EyeOffIcon"
-            class="w-5 h-5 mr-1 text-gray-500 cursor-pointer"
+            :name="isShowPassword ? 'EyeIcon' : 'EyeSlashIcon'"
+            class="mr-1 text-gray-500 cursor-pointer"
             @click="isShowPassword = !isShowPassword"
           />
-          <BaseIcon
-            v-else
-            name="EyeIcon"
-            class="w-5 h-5 mr-1 text-gray-500 cursor-pointer"
-            @click="isShowPassword = !isShowPassword"
-          /> </template
-      ></BaseInput>
+        </template>
+      </BaseInput>
     </BaseInputGroup>
 
     <div class="mt-5 mb-8">
@@ -63,7 +57,7 @@
 
 <script setup>
 import axios from 'axios'
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import { useRouter } from 'vue-router'
 import { required, email, helpers } from '@vuelidate/validators'
@@ -126,4 +120,12 @@ async function onSubmit() {
     isLoading.value = false
   }
 }
+
+// Pre-fill demo credentials if in demo environment
+onMounted(() => {
+  if (window.demo_mode) {
+    authStore.loginData.email = 'demo@invoiceshelf.com'
+    authStore.loginData.password = 'demo'
+  }
+})
 </script>
