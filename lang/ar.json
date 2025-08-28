@@ -306,6 +306,7 @@
     "total": "الإجمالي",
     "discount": "الخصم",
     "sub_total": "حاصل الجمع",
+    "net_total": "Net",
     "estimate_number": "رقم تقدير",
     "ref_number": "رقم المرجع",
     "contact": "تواصل",
@@ -1220,7 +1221,11 @@
       "updated_message": "تم تحديث نوع الضريبة بنجاح",
       "deleted_message": "تم حذف نوع الضريبة بنجاح",
       "confirm_delete": "لن تتمكن من استرجاع نوع الضرية هذا",
-      "already_in_use": "ضريبة قيد الاستخدام"
+      "already_in_use": "ضريبة قيد الاستخدام",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "Payment Modes",
@@ -1616,6 +1621,7 @@
   "pdf_discount_label": "الخصم",
   "pdf_amount_label": "المبلغ المطلوب",
   "pdf_subtotal": "المجموع الفرعي",
+  "pdf_net_total": "Net",
   "pdf_total": "الإجمالي",
   "pdf_payment_label": "الدفع",
   "pdf_payment_receipt_label": "ايصال الدفع",
