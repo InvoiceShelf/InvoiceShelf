@@ -161,7 +161,10 @@
     "name": "Nome",
     "description": "Descrição",
     "percent": "Porcentagem",
-    "compound_tax": "Imposto Composto"
+    "compound_tax": "Imposto Composto",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Buscar...",
@@ -303,6 +306,7 @@
     "total": "Total",
     "discount": "Desconto",
     "sub_total": "Subtotal",
+    "net_total": "Net",
     "estimate_number": "Numero do Orçamento",
     "ref_number": "Referência",
     "contact": "Contato",
@@ -1205,7 +1209,12 @@
       "tax_per_item": "Imposto por Item",
       "tax_name": "Nome do Imposto",
       "compound_tax": "Imposto Composto",
+      "amount": "Amount",
       "percent": "Porcentagem",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Ação",
       "tax_setting_description": "Habilite isso se desejar adicionar Impostos a itens da Fatura Individualmente. Por padrão, os impostos são adicionados diretamente à Fatura.",
       "created_message": "Tipo de Imposto criado com sucesso",
@@ -1214,7 +1223,9 @@
       "confirm_delete": "Você não poderá recuperar este tipo de Imposto",
       "already_in_use": "O Imposto já está em uso",
       "tax_included": "Imposto incluído",
-      "tax_included_description": "Habilite isso se desejar informar que os Impostos já estão incluídos nos itens da Fatura ou no total da Fatura."
+      "tax_included_description": "Habilite isso se desejar informar que os Impostos já estão incluídos nos itens da Fatura ou no total da Fatura.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "Modos de Pagamento",
@@ -1498,7 +1509,6 @@
       "mailgun_endpoint": "Endpoint do Mailgun",
       "ses_secret": "Senha do SES",
       "ses_key": "Chave SES",
-      "ses_region": "Região AWS",
       "password": "Senha do email",
       "username": "Nome do Usuário do email",
       "mail_config": "Configuração de email",
@@ -1611,6 +1621,7 @@
   "pdf_discount_label": "Desconto",
   "pdf_amount_label": "Valor",
   "pdf_subtotal": "Sub-total",
+  "pdf_net_total": "Net",
   "pdf_total": "Total",
   "pdf_payment_label": "Pagamento",
   "pdf_payment_receipt_label": "RECIBO DE PAGAMENTO",
