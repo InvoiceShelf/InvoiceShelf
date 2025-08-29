@@ -19,7 +19,12 @@ export async function loadLanguage(locale) {
 
   try {
     // Dynamic import of language file
-    const languageModule = await import(`../../../lang/${locale === 'pt_BR' ? 'pt-br' : locale}.json`)
+    const fileMap = {
+      'zh_CN': 'zh-cn',
+      'pt_BR': 'pt-br',
+    }
+    const fileName = fileMap[locale] || locale;
+    const languageModule = await import(`../../../lang/${fileName}.json`)
     const messages = languageModule.default || languageModule
 
     // Cache the loaded language
