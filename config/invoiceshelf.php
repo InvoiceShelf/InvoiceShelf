@@ -53,6 +53,7 @@ return [
     'languages' => [
         ['code' => 'ar', 'name' => 'Arabic'],
         ['code' => 'bg', 'name' => 'Bulgarian'],
+        ['code' => 'zh_CN', 'name' => 'Chinese (Simplified)'],
         ['code' => 'zh', 'name' => 'Chinese (Traditional)'],
         ['code' => 'hr', 'name' => 'Croatian'],
         ['code' => 'cs', 'name' => 'Czech'],
