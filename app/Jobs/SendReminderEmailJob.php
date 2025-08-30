@@ -3,27 +3,26 @@
 namespace App\Jobs;
 
 use App\Mail\SendInvoiceOverdueMail;
-use App\Models\Customer;
 use App\Models\CompanySetting;
+use App\Models\Customer;
 use App\Models\EmailLog;
-
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Support\Facades\Mail;
 use Throwable;
 
-class SendReminderEmailJob implements ShouldQueue, ShouldBeUnique
+class SendReminderEmailJob implements ShouldBeUnique, ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
 
     public $invoice;
+
     /**
      * Create a new job instance.
      *
@@ -45,8 +44,8 @@ class SendReminderEmailJob implements ShouldQueue, ShouldBeUnique
             $mail = Mail::to($customer['email']);
 
             $company_bcc = CompanySetting::getSetting('reminders_bcc', $this->invoice->company->id);
-                
-            if($company_bcc){
+
+            if ($company_bcc) {
                 $mail->bcc($company_bcc);
             }
 
@@ -58,7 +57,7 @@ class SendReminderEmailJob implements ShouldQueue, ShouldBeUnique
                 $th->getMessage(),
                 $mail_ctx->email_log->id
             );
-        } 
+        }
     }
 
     /**
@@ -73,31 +72,31 @@ class SendReminderEmailJob implements ShouldQueue, ShouldBeUnique
     }
 
     /**
-    * The number of seconds after which the job's unique lock will be released.
-    *
-    * @var int
-    */
+     * The number of seconds after which the job's unique lock will be released.
+     *
+     * @var int
+     */
     public $uniqueFor = 60;
- 
+
     /**
      * Get the unique ID for the job.
-    */
+     */
     public function uniqueId(): string
     {
         return $this->invoice->id;
     }
-
 }
 
-class EmailNotSendException extends \ErrorException{
+class EmailNotSendException extends \ErrorException
+{
     public ?int $log_id = null;
+
     public ?string $email_driver_msg = null;
 
-    public function __construct(string $email_driver_msg = null, int $log_id, int $severity = E_RECOVERABLE_ERROR)
+    public function __construct(?string $email_driver_msg, int $log_id, int $severity = E_RECOVERABLE_ERROR)
     {
         $this->message = $email_driver_msg;
         $this->log_id = $log_id;
         $this->severity = $severity;
     }
-
 }

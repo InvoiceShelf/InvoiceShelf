@@ -28,19 +28,19 @@ if (InstallUtils::isDbCreated()) {
         Schedule::call(function () use ($recurringInvoice) {
             $recurringInvoice->generateInvoice();
         })->cron($recurringInvoice->frequency)->timezone($timeZone);
-    };
+    }
 
     // -----------------------------------
     //            Reminders
     // -----------------------------------
     $companies = Company::all();
     foreach ($companies as $company) {
-        if(CompanySetting::getSetting('reminders_invoice_due', $company->id) === 'YES'){
+        if (CompanySetting::getSetting('reminders_invoice_due', $company->id) === 'YES') {
             $timeZone = CompanySetting::getSetting('time_zone', $company->id);
             $frequency = CompanySetting::getSetting('reminders_invoice_due_frequency', $company->id);
 
-            Schedule::command('send:invoices:overdue ' . $company->id)
+            Schedule::command('send:invoices:overdue '.$company->id)
                 ->cron($frequency)->timezone($timeZone);
-        };
-    };
+        }
+    }
 }

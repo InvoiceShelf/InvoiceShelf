@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Invoice;
 use App\Jobs\SendReminderEmailJob;
+use App\Models\Invoice;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
@@ -47,19 +47,19 @@ class SendInvoiceOverdueReminder extends Command
      */
     public function handle(): void
     {
-       
+
         $date = Carbon::now();
         $query = Invoice::whereNotIn('status', [Invoice::STATUS_COMPLETED, Invoice::STATUS_DRAFT])
             ->where('overdue', true)
             ->whereDate('due_date', '<', $date);
-        
+
         if ($this->argument('company_id')) {
-           $query = $query->where('company_id', (int) $this->argument('company_id'));
+            $query = $query->where('company_id', (int) $this->argument('company_id'));
         }
 
-        $invoices = $query->get();        
+        $invoices = $query->get();
         foreach ($invoices as $invoice) {
-            dispatch(new SendReminderEmailJob($invoice)); 
+            dispatch(new SendReminderEmailJob($invoice));
         }
     }
 }
