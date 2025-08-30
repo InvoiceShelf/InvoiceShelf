@@ -8,6 +8,7 @@ export default function () {
     customer: null,
     template_name: '',
     tax_per_item: null,
+    tax_included: false,
     sales_tax_type: null,
     sales_tax_address_type: null,
     discount_per_item: null,

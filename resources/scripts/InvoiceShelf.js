@@ -7,6 +7,7 @@ import { defineGlobalComponents } from './global-components'
 import utils from '@/scripts/helpers/utilities.js'
 import _ from 'lodash'
 import { VTooltip } from 'v-tooltip'
+import { setI18nLanguage } from '@/scripts/helpers/language-loader.js'
 
 const app = createApp(App)
 
@@ -14,6 +15,7 @@ export default class InvoiceShelf {
   constructor() {
     this.bootingCallbacks = []
     this.messages = messages
+    this.i18n = null
   }
 
   booting(callback) {
@@ -30,6 +32,17 @@ export default class InvoiceShelf {
     _.merge(this.messages, moduleMessages)
   }
 
+  /**
+   * Dynamically load and set a language
+   * @param {string} locale - Language code to load
+   * @returns {Promise<void>}
+   */
+  async loadLanguage(locale) {
+    if (this.i18n) {
+      await setI18nLanguage(this.i18n, locale)
+    }
+  }
+
   start() {
     this.executeCallbacks()
 
@@ -37,7 +50,7 @@ export default class InvoiceShelf {
 
     app.provide('$utils', utils)
 
-    const i18n = createI18n({
+    this.i18n = createI18n({
       legacy: false,
       locale: 'en',
       fallbackLocale: 'en',
@@ -45,12 +58,15 @@ export default class InvoiceShelf {
       messages: this.messages,
     })
 
-    window.i18n = i18n
+    window.i18n = this.i18n
+
+    // Expose language loader globally
+    window.loadLanguage = this.loadLanguage.bind(this)
 
     const { createPinia } = window.pinia
 
     app.use(router)
-    app.use(i18n)
+    app.use(this.i18n)
     app.use(createPinia())
     app.provide('utils', utils)
     app.directive('tooltip', VTooltip)

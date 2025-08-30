@@ -161,7 +161,10 @@
     "name": "Naziv",
     "description": "Opis",
     "percent": "Postotak",
-    "compound_tax": "Složeni porez"
+    "compound_tax": "Složeni porez",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Pretraga...",
@@ -303,6 +306,7 @@
     "total": "Ukupno za plaćanje",
     "discount": "Popust",
     "sub_total": "Osnovica za obračun PDV-a",
+    "net_total": "Net",
     "estimate_number": "Broj ponude",
     "ref_number": "Poziv na broj",
     "contact": "Kontakt",
@@ -337,7 +341,7 @@
     "mark_as_sent_successfully": "Ponuda uspješno označena kao Poslana",
     "send_estimate_successfully": "Ponuda uspješno poslana",
     "errors": {
-      "required": "Obvezno polje!"
+      "required": "Obvezno polje"
     },
     "accepted": "Prihvaćeno",
     "rejected": "Odbijeno",
@@ -1205,14 +1209,23 @@
       "tax_per_item": "Porez po Stavkama",
       "tax_name": "Naziv Poreza",
       "compound_tax": "Složeni Porez",
+      "amount": "Amount",
       "percent": "Postotak",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Radnja",
       "tax_setting_description": "Izaberite ovo ako želite dodati porez na individualne stavke. Zadano ponašanje je da je porez dodan direktno na fakturu.",
       "created_message": "Vrsta poreza uspješno kreirana",
       "updated_message": "Vrsta poreza uspješno ažurirana",
       "deleted_message": "Vrsta poreza uspješno obrisana",
       "confirm_delete": "Nećete moći vratiti Vrstu Poreza",
-      "already_in_use": "Porez se već koristi"
+      "already_in_use": "Porez se već koristi",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "Način plaćanja",
@@ -1608,6 +1621,7 @@
   "pdf_discount_label": "Popust",
   "pdf_amount_label": "Iznos",
   "pdf_subtotal": "Osnovica za obračun PDV-a",
+  "pdf_net_total": "Net",
   "pdf_total": "Ukupan iznos",
   "pdf_payment_label": "Plaćanje",
   "pdf_payment_receipt_label": "POTVRDA O UPLATI",
