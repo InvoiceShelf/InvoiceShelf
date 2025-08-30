@@ -74,7 +74,7 @@
             style="color: #00c99c"
           >
             <BaseFormatMoney
-              :amount="chartData.totalExpenses"
+              :amount="chartData.totalReceipts"
               :currency="companyStore.selectedCompanyCurrency"
             />
           </span>
