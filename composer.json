@@ -13,8 +13,8 @@
         "barryvdh/laravel-dompdf": "^v3.0",
         "doctrine/dbal": "^4.2",
         "dragonmantank/cron-expression": "^v3.4",
-        "guzzlehttp/guzzle": "^7.9",
         "gotenberg/gotenberg-php": "^2.8",
+        "guzzlehttp/guzzle": "^7.9",
         "invoiceshelf/modules": "^1.0.0",
         "jasonmccreary/laravel-test-assertions": "^v2.4",
         "laravel/framework": "^12.0",
@@ -29,6 +29,7 @@
         "spatie/flysystem-dropbox": "^3.0",
         "spatie/laravel-backup": "^9.2.9",
         "spatie/laravel-medialibrary": "^11.11",
+        "symfony/mailgun-mailer": "^7.3",
         "vinkla/hashids": "^13.0.0"
     },
     "require-dev": {
