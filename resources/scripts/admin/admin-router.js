@@ -58,6 +58,8 @@ const RolesSettings = () =>
   import('@/scripts/admin/views/settings/RolesSettings.vue')
 const PDFGenerationSettings = () =>
   import('@/scripts/admin/views/settings/PDFGenerationSetting.vue')
+const RemindersSettings = () =>
+  import('@/scripts/admin/views/settings/RemindersSetting.vue')
 
 // Items
 const ItemsIndex = () => import('@/scripts/admin/views/items/Index.vue')
@@ -334,6 +336,12 @@ export default [
             name: 'pdf.generation',
             meta: { isOwner: true },
             component: PDFGenerationSettings,
+          },
+          {
+            path: 'reminders',
+            name: 'reminders',
+            meta: { isOwner: true },
+            component: RemindersSettings,
           },
         ],
       },
