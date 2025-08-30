@@ -2,28 +2,32 @@ services:
   php-fpm:
     container_name: invoiceshelf-dev-php
     build:
-      context: ./php
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: .dev/Dockerfile
       args:
         - UID=${USRID:-1000}
         - GID=${GRPID:-1000}
-    ports:
-      - 5173:5173
+      target: development
     volumes:
-      - ../:/home/invoiceshelf/app
+      - ../:/var/www/html
     networks:
       - invoiceshelf-dev
 
   nginx:
     container_name: invoiceshelf-dev-nginx
-    image: nginx:stable
+    build:
+      context: ..
+      dockerfile: .dev/nginx.Dockerfile
+    environment:
+      - "PHP_FPM_HOST=php-fpm:9000"
     ports:
       - '80:80'
     volumes:
-      - ./nginx/conf.d/dev.conf:/etc/nginx/conf.d/dev.conf
-      - ../:/home/invoiceshelf/app
+      - ../:/var/www/html
     networks:
-      - invoiceshelf-dev
+      invoiceshelf-dev:
+        aliases:
+          - invoiceshelf.test
 
   db:
     image: mariadb:10.9

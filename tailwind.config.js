@@ -62,7 +62,7 @@ export default {
         )}")`,
       }),
     },
-  
+
     fontFamily: {
       base: ['Poppins', 'sans-serif'],
     },
