@@ -271,16 +271,6 @@ return [
             'model' => '',
         ],
         [
-            'title' => 'settings.reminders.config_menu_title',
-            'group' => '',
-            'name' => 'Reminders Configuration',
-            'link' => '/admin/settings/reminders',
-            'icon' => 'MegaphoneIcon',
-            'owner_only' => true,
-            'ability' => '',
-            'model' => '',
-        ],
-        [
             'title' => 'settings.menu_title.file_disk',
             'group' => '',
             'name' => 'File Disk',

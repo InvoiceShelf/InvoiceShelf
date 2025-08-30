@@ -920,24 +920,6 @@
       "pdf_variables_save_successfully": "PDF configuration saved successfully",
       "pdf_variables_save_error": "PDF configuration could not be saved"
     },
-    "reminders": {
-      "config_menu_title": "Reminders",
-      "section_title": "Reminders",
-      "section_description": "Configure how reminders are sent to customers",
-      "bcc": "Bcc",
-      "send_reminders_invoice_due": "Send invoice due reminders",
-      "send_reminders_invoice_due_desc": "Enable or disable reminders for invoices that are due",
-      "invoice_due_email_subject": "Reminder email subject",
-      "invoice_due_email_body": "Reminder email body",
-      "attach_pdf": "Attach PDF to reminder",
-      "save_message": "Reminder settings have been saved",
-      "frequency": {
-        "title": "Frequency (using cron format)",
-        "cron_example": "Enter a cron format definition below Eg. '0 0 * * *' meaning every day at midnight",
-        "input_frequency": "Cron",
-        "select_frequency": "Select Frequency"
-      }
-    },
     "company_info": {
       "company_info": "Company info",
       "company_name": "Company Name",
@@ -1164,7 +1146,19 @@
       "estimate_viewed_desc": "When your customer views the estimate sent via invoiceshelf dashboard.",
       "save": "Save",
       "email_save_message": "Email saved successfully",
-      "please_enter_email": "Please Enter Email"
+      "please_enter_email": "Please Enter Email",
+      "invoice_due": "Invoice due reminder",
+      "invoice_due_desc": "If invoice is due within the specified number of days in Invoice configuration.",
+      "invoice_due_email_subject": "Reminder email subject",
+      "invoice_due_email_body": "Reminder email body",
+      "invoice_due_bcc": "BCC Email",
+      "invoice_due_attach_pdf": "Attach PDF to reminder",
+      "invoice_due_save_message": "Invoice due notification settings have been saved",
+      "frequency": {
+        "title": "Reminder frequency (days)",
+        "help_text": "Send reminders every N day(s). Enter a positive integer.",
+        "select_frequency": "Select Frequency"
+      }
     },
     "roles": {
       "title": "Roles",

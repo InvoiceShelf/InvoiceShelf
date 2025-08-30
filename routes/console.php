@@ -21,6 +21,10 @@ if (InstallUtils::isDbCreated()) {
     Schedule::command('check:estimates:status')
         ->everyMinute();
 
+    // Send due invoice reminders daily; per-company frequency is enforced inside the command.
+    Schedule::command('notify:invoices:due')
+        ->everyFifteenMinutes();
+
     $recurringInvoices = RecurringInvoice::where('status', 'ACTIVE')->get();
     foreach ($recurringInvoices as $recurringInvoice) {
         $timeZone = CompanySetting::getSetting('time_zone', $recurringInvoice->company_id);
@@ -28,19 +32,5 @@ if (InstallUtils::isDbCreated()) {
         Schedule::call(function () use ($recurringInvoice) {
             $recurringInvoice->generateInvoice();
         })->cron($recurringInvoice->frequency)->timezone($timeZone);
-    }
-
-    // -----------------------------------
-    //            Reminders
-    // -----------------------------------
-    $companies = Company::all();
-    foreach ($companies as $company) {
-        if (CompanySetting::getSetting('reminders_invoice_due', $company->id) === 'YES') {
-            $timeZone = CompanySetting::getSetting('time_zone', $company->id);
-            $frequency = CompanySetting::getSetting('reminders_invoice_due_frequency', $company->id);
-
-            Schedule::command('send:invoices:overdue '.$company->id)
-                ->cron($frequency)->timezone($timeZone);
-        }
     }
 }
