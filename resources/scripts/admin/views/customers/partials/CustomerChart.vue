@@ -57,7 +57,7 @@
           >
             <BaseFormatMoney
               :amount="chartData.salesTotal"
-              :currency="data.currency"
+              :currency="companyStore.selectedCompanyCurrency"
             />
           </span>
         </div>
@@ -75,7 +75,7 @@
           >
             <BaseFormatMoney
               :amount="chartData.totalExpenses"
-              :currency="data.currency"
+              :currency="companyStore.selectedCompanyCurrency"
             />
           </span>
         </div>
@@ -92,7 +92,7 @@
           >
             <BaseFormatMoney
               :amount="chartData.totalExpenses"
-              :currency="data.currency"
+              :currency="companyStore.selectedCompanyCurrency"
             />
           </span>
         </div>
@@ -109,7 +109,7 @@
           >
             <BaseFormatMoney
               :amount="chartData.netProfit"
-              :currency="data.currency"
+              :currency="companyStore.selectedCompanyCurrency"
             />
           </span>
         </div>
