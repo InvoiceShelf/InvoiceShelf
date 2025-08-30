@@ -45,7 +45,7 @@ class MailConfigurationController extends Controller
         $this->authorize('manage email config');
 
         $MailData = [
-            'mail_driver' => config('mail.driver'),
+            'mail_driver' => config('mail.default'),
             'mail_host' => config('mail.host'),
             'mail_port' => config('mail.port'),
             'mail_username' => config('mail.username'),

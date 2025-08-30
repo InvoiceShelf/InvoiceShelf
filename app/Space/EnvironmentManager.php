@@ -314,7 +314,7 @@ class EnvironmentManager
             case 'smtp':
 
                 $mailEnv = [
-                    'MAIL_DRIVER' => $request->get('mail_driver'),
+                    'MAIL_MAILER' => $request->get('mail_driver'),
                     'MAIL_HOST' => $request->get('mail_host'),
                     'MAIL_PORT' => $request->get('mail_port'),
                     'MAIL_USERNAME' => $request->get('mail_username'),
@@ -329,7 +329,7 @@ class EnvironmentManager
             case 'mailgun':
 
                 $mailEnv = [
-                    'MAIL_DRIVER' => $request->get('mail_driver'),
+                    'MAIL_MAILER' => $request->get('mail_driver'),
                     'MAIL_HOST' => $request->get('mail_host'),
                     'MAIL_PORT' => $request->get('mail_port'),
                     'MAIL_USERNAME' => config('mail.username'),
@@ -347,7 +347,7 @@ class EnvironmentManager
             case 'ses':
 
                 $mailEnv = [
-                    'MAIL_DRIVER' => $request->get('mail_driver'),
+                    'MAIL_MAILER' => $request->get('mail_driver'),
                     'MAIL_HOST' => $request->get('mail_host'),
                     'MAIL_PORT' => $request->get('mail_port'),
                     'MAIL_USERNAME' => config('mail.username'),
@@ -366,7 +366,7 @@ class EnvironmentManager
             case 'mail':
 
                 $mailEnv = [
-                    'MAIL_DRIVER' => $request->get('mail_driver'),
+                    'MAIL_MAILER' => $request->get('mail_driver'),
                     'MAIL_HOST' => config('mail.host'),
                     'MAIL_PORT' => config('mail.port'),
                     'MAIL_USERNAME' => config('mail.username'),
