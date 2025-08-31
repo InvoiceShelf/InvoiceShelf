@@ -102,13 +102,13 @@ class EnvironmentManager
         $specialChars = '\^\'£$%&*()}{@#~?><,|=\-_+¬!';
         $needsQuoting = (
             strpos($str, ' ') !== false ||
-            preg_match('/[' . preg_quote($specialChars, '/') . ']/', $str)
+            preg_match('/['.preg_quote($specialChars, '/').']/', $str)
         );
 
         if ($needsQuoting) {
             // Escape any existing double quotes in the string
             $str = str_replace('"', '\\"', $str);
-            $str = '"' . $str . '"';
+            $str = '"'.$str.'"';
         }
 
         return $str;

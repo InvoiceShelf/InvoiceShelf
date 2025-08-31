@@ -16,13 +16,13 @@ class MailConfigurationController extends Controller
 {
     /**
      * The environment manager
+     *
      * @var EnvironmentManager
      */
     protected $environmentManager;
 
     /**
      * The constructor
-     * @param  EnvironmentManager  $environmentManager
      */
     public function __construct(EnvironmentManager $environmentManager)
     {
@@ -31,9 +31,9 @@ class MailConfigurationController extends Controller
 
     /**
      * Save the mail environment variables
-     * @param  MailEnvironmentRequest  $request
      *
      * @return JsonResponse
+     *
      * @throws AuthorizationException
      */
     public function saveMailEnvironment(MailEnvironmentRequest $request)
@@ -52,7 +52,9 @@ class MailConfigurationController extends Controller
 
     /**
      * Return the mail environment variables
+     *
      * @return JsonResponse
+     *
      * @throws AuthorizationException
      */
     public function getMailEnvironment()
@@ -117,7 +119,9 @@ class MailConfigurationController extends Controller
 
     /**
      * Return the available mail drivers
+     *
      * @return JsonResponse
+     *
      * @throws AuthorizationException
      */
     public function getMailDrivers()
@@ -137,9 +141,9 @@ class MailConfigurationController extends Controller
 
     /**
      * Test the email configuration
-     * @param  Request  $request
      *
      * @return JsonResponse
+     *
      * @throws AuthorizationException
      * @throws \Illuminate\Validation\ValidationException
      */
