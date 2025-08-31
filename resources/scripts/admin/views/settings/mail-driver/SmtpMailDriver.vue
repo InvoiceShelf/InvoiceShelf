@@ -102,7 +102,7 @@
         <BaseMultiselect
           v-model.trim="mailDriverStore.smtpConfig.mail_encryption"
           :content-loading="isFetchingInitialData"
-          :options="encryptions"
+          :options="schemes"
           :searchable="true"
           :show-labels="false"
           placeholder="Select option"
@@ -204,7 +204,7 @@ const mailDriverStore = useMailDriverStore()
 const { t } = useI18n()
 
 let isShowPassword = ref(false)
-const encryptions = reactive(['none','tls', 'ssl', 'starttls'])
+const schemes = reactive(['smtp', 'smtps'])
 
 const getInputType = computed(() => {
   if (isShowPassword.value) {
