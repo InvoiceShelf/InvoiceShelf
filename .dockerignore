@@ -1,21 +1,28 @@
-.dev/
+.idea/
 .git/
+
 .github/
-database/*.sqlite
+docker/
+!docker/production/entrypoint.d
+!docker/production/inject.sh
+
 node_modules/
+
+database/*.sqlite
 storage/app/*
+!storage/app/templates*
 storage/fonts/*
 storage/framework/cache/data/*
 storage/framework/sessions/*
 storage/framework/views/*
 storage/logs/*
+
 tests/
 vendor/
 
 .dockerignore
 .editorconfig
 .env
-.env.example
 .env.testing
 .eslintrc.mjs
 .gitattributes
@@ -33,4 +40,3 @@ invoiceshelf.code-workspace
 package-lock.json
 phpunit.xml
 readme.md
-version.md

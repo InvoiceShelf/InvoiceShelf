@@ -22,5 +22,6 @@ Homestead.yaml
 .php-cs-fixer.cache
 /storage/fonts*
 package-lock.json
-/.dev/docker-compose.yml
-/.dev/docker-compose.yaml
+/docker/development/docker-compose.yml
+/docker/production/docker-compose.yml
+/docker-compose.yaml

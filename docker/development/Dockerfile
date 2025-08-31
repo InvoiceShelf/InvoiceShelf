@@ -26,10 +26,3 @@ FROM base AS development
     RUN docker-php-serversideup-set-id www-data $UID:$GID
     USER www-data
 
-FROM base AS production
-    ENV AUTORUN_ENABLED=true
-    COPY --from=static_builder --chown=www-data:www-data /var/www/html/public /var/www/html/public
-    COPY --chown=www-data:www-data . /var/www/html
-    RUN composer install --prefer-dist
-    USER www-data
-

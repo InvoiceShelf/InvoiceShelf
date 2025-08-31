@@ -9,7 +9,7 @@ services:
         - GID=${GRPID:-1000}
       target: development
     volumes:
-      - ../:/var/www/html
+      - ../../:/var/www/html
     networks:
       - invoiceshelf-dev
 
@@ -23,26 +23,11 @@ services:
     ports:
       - '80:80'
     volumes:
-      - ../:/var/www/html
+      - ../../:/var/www/html
     networks:
       invoiceshelf-dev:
         aliases:
           - invoiceshelf.test
-
-  db:
-    image: mariadb:10.9
-    container_name: invoiceshelf-dev-mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: invoiceshelf
-      MYSQL_DATABASE: invoiceshelf
-      MYSQL_USER: invoiceshelf
-      MYSQL_PASSWORD: invoiceshelf
-    ports:
-      - "3306:3306"
-    volumes:
-      - invoiceshelf-dev-mysql:/var/lib/mysql
-    networks:
-      - invoiceshelf-dev
 
   adminer:
     container_name: invoiceshelf-dev-adminer
@@ -52,6 +37,8 @@ services:
     environment:
       ADMINER_PLUGINS: tables-filter
       ADMINER_DESIGN: konya
+    volumes:
+      - ../database:/database
     ports:
       - '8080:8080'
     networks:
@@ -60,10 +47,9 @@ services:
   mail:
     container_name: invoiceshelf-dev-mailpit
     image: axllent/mailpit:latest
-    restart: always
     ports:
-      - 1025:1025
-      - 8025:8025
+      - '1025:1025'
+      - '8025:8025'
     networks:
       - invoiceshelf-dev
 
@@ -74,6 +60,3 @@ services:
 
 networks:
   invoiceshelf-dev:
-
-volumes:
-  invoiceshelf-dev-mysql:

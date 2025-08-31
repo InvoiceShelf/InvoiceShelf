@@ -54,4 +54,3 @@ server {
     }
 }
 EOF
-

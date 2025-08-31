@@ -7,14 +7,18 @@ on:
             - '**/*.md'
             - 'public/build/*.js'
             - 'public/build/**/*.js'
-        branches-ignore:    
+            - 'docker/**/*'
+            - 'resources/scripts/**/*'
+        tags-ignore:
+            - "*"
+        branches-ignore:
             - 'translations'
     pull_request:
         paths-ignore:
             - '**/*.md'
             - 'public/build/*.js'
             - 'public/build/**/*.js'
-        branches-ignore:    
+        branches-ignore:
             - 'translations'
     # Allow manually triggering the workflow.
     workflow_dispatch:
@@ -93,52 +97,3 @@ jobs:
 
             - name: Apply tests ${{ matrix.php-version }}
               run: php artisan test
-
-    createReleaseFile:
-        name: 3️⃣ Build / Upload - Release File
-        if: github.ref_type == 'tag'
-        needs:
-            - tests
-        runs-on: ubuntu-latest
-        env:
-            extensions: bcmath, curl, dom, gd, imagick, json, libxml, mbstring, pcntl, pdo, pdo_mysql, zip
-
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
-
-            - name: Setup PHP
-              uses: shivammathur/setup-php@v2
-              with:
-                  php-version: 8.2
-                  extensions: ${{ env.extensions }}
-                  coverage: none
-
-            - name: Install Composer dependencies
-              uses: ramsey/composer-install@v2
-              with:
-                  composer-options: --no-dev
-
-            - name: Use Node.js 20
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 20
-
-            - name: Install
-              run: npm install
-
-            - name: Compile Front-end
-              run: npm run build
-
-            - name: Build Dist
-              run: |
-                  make clean dist
-
-            - name: Upload package
-              uses: svenstaro/upload-release-action@v2
-              with:
-                  repo_token: ${{ github.token }}
-                  file: InvoiceShelf.zip
-                  asset_name: InvoiceShelf.zip
-                  tag: ${{ github.ref }}
-                  overwrite: true

@@ -1,0 +1,75 @@
+#-------------------------------------------
+# InvoiceShelf MySQL docker-compose variant
+# Repo : https://github.com/InvoiceShelf/docker
+#-------------------------------------------
+
+services:
+  database:
+    container_name: invoiceshelf-mdb
+    image: mariadb:10
+    environment:
+      - MYSQL_DATABASE=invoiceshelf
+      - MYSQL_USER=invoiceshelf
+      - MYSQL_PASSWORD=somepass
+      - MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true
+    expose:
+      - 3306
+    volumes:
+      - mysql:/var/lib/mysql
+    networks:
+      - invoiceshelf
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mariadb-admin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  webapp:
+    container_name: invoiceshelf-app
+    build:
+        context: ../../
+        dockerfile: docker/production/Dockerfile
+    ports:
+      - 90:8080
+    volumes:
+      - appdata:/var/www/html/storage/
+    networks:
+      - invoiceshelf
+    environment:
+      - CONTAINERIZED=true
+      - APP_NAME=Laravel
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - APP_URL=http://localhost:90
+      - DB_CONNECTION=mysql
+      - DB_HOST=database
+      - DB_PORT=3306
+      - DB_DATABASE=invoiceshelf
+      - DB_USERNAME=invoiceshelf
+      - DB_PASSWORD=somepass
+      - DB_PASSWORD_FILE=
+      - CACHE_STORE=file
+      - SESSION_DRIVER=file
+      - SESSION_LIFETIME=120
+      - SESSION_ENCRYPT=false
+      - SESSION_PATH=/
+      - SESSION_DOMAIN=localhost
+      - SANCTUM_STATEFUL_DOMAINS=localhost:90
+      - STARTUP_DELAY=
+      #- MAIL_MAILER=smtp
+      #- MAIL_HOST=smtp.mailtrap.io
+      #- MAIL_PORT=2525
+      #- MAIL_USERNAME=null
+      #- MAIL_PASSWORD=null
+      #- MAIL_PASSWORD_FILE=<filename>
+      #- MAIL_ENCRYPTION=null
+    restart: unless-stopped
+    depends_on:
+      - database
+
+networks:
+  invoiceshelf:
+
+volumes:
+  mysql:
+  appdata:
