@@ -9,7 +9,7 @@ services:
         - GID=${GRPID:-1000}
       target: development
     volumes:
-      - ../:/var/www/html
+      - ../../:/var/www/html
     networks:
       - invoiceshelf-dev
 
@@ -23,7 +23,7 @@ services:
     ports:
       - '80:80'
     volumes:
-      - ../:/var/www/html
+      - ../../:/var/www/html
     networks:
       invoiceshelf-dev:
         aliases:
