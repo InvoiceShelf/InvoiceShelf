@@ -22,8 +22,8 @@ cp .env.example .env
 if [ "$DB_CONNECTION" = "sqlite" ] || [ -z "$DB_CONNECTION" ]; then
     echo "**** Configure SQLite3 database ****"
     if [ ! -n "$DB_DATABASE" ]; then
-        echo "**** DB_DATABASE not defined. Fall back to default /database/database.sqlite location ****"
-        DB_DATABASE='/var/www/html/database/database.sqlite'
+        echo "**** DB_DATABASE not defined. Fall back to default /storage/database.sqlite location ****"
+        DB_DATABASE='/var/www/html/storage/database.sqlite'
     fi
 
     if [ ! -e "$DB_DATABASE" ]; then
