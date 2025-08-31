@@ -374,7 +374,7 @@ return [
         ],
         // TODO: remove env check once the module management os implemented.
         ...(
-            env("APP_ENV", "production") == "development" ? [
+            env('APP_ENV', 'production') == 'development' ? [
                 [
                     'title' => 'navigation.modules',
                     'group' => 3,
@@ -384,7 +384,7 @@ return [
                     'owner_only' => true,
                     'ability' => '',
                     'model' => '',
-                ]
+                ],
             ] : []
         ),
         [
