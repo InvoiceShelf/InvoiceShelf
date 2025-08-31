@@ -76,7 +76,7 @@ class MailConfigurationController extends Controller
                     'mail_port' => config('mail.mailers.smtp.port'),
                     'mail_username' => config('mail.mailers.smtp.username'),
                     'mail_password' => config('mail.mailers.smtp.password'),
-                    'mail_encryption' => config('mail.mailers.smtp.scheme') ?? null,
+                    'mail_encryption' => config('mail.mailers.smtp.scheme') ?? 'none',
                     'mail_scheme' => config('mail.mailers.smtp.scheme'),
                     'mail_url' => config('mail.mailers.smtp.url'),
                     'mail_timeout' => config('mail.mailers.smtp.timeout'),

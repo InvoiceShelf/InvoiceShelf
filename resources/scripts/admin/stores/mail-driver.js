@@ -48,7 +48,7 @@ export const useMailDriverStore = (useWindow = false) => {
         mail_port: null,
         mail_username: '',
         mail_password: '',
-        mail_encryption: 'smtp',
+        mail_encryption: '',
         from_mail: '',
         from_name: '',
       },

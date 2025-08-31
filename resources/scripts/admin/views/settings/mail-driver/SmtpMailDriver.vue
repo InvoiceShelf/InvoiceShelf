@@ -93,11 +93,6 @@
       <BaseInputGroup
         :label="$t('settings.mail.encryption')"
         :content-loading="isFetchingInitialData"
-        :error="
-          v$.smtpConfig.mail_encryption.$error &&
-          v$.smtpConfig.mail_encryption.$errors[0].$message
-        "
-        required
       >
         <BaseMultiselect
           v-model.trim="mailDriverStore.smtpConfig.mail_encryption"
@@ -106,8 +101,6 @@
           :searchable="true"
           :show-labels="false"
           placeholder="Select option"
-          :invalid="v$.smtpConfig.mail_encryption.$error"
-          @input="v$.smtpConfig.mail_encryption.$touch()"
         />
       </BaseInputGroup>
 
@@ -204,7 +197,7 @@ const mailDriverStore = useMailDriverStore()
 const { t } = useI18n()
 
 let isShowPassword = ref(false)
-const schemes = reactive(['smtp', 'smtps'])
+const schemes = reactive(['smtp', 'smtps', 'none'])
 
 const getInputType = computed(() => {
   if (isShowPassword.value) {
@@ -225,9 +218,6 @@ const rules = computed(() => {
       mail_port: {
         required: helpers.withMessage(t('validation.required'), required),
         numeric: helpers.withMessage(t('validation.numbers_only'), numeric),
-      },
-      mail_encryption: {
-        required: helpers.withMessage(t('validation.required'), required),
       },
       from_mail: {
         required: helpers.withMessage(t('validation.required'), required),
