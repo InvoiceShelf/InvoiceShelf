@@ -5,6 +5,7 @@ FROM --platform=$BUILDPLATFORM node AS static_builder
 
 FROM serversideup/php:8-fpm-alpine AS base
     USER root
+    RUN apk add --no-cache sqlite
     RUN install-php-extensions exif
     RUN install-php-extensions pgsql
     RUN install-php-extensions sqlite3
