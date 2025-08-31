@@ -34,7 +34,7 @@ jobs:
         run: ./vendor/bin/pint --test
 
   tests:
-    name: 2️⃣ PHP ${{ matrix.php-version }} Tests
+    name: 2️⃣ PHP Tests
     if: github.event_name == 'release'
     needs:
       - php_syntax_errors
@@ -169,7 +169,7 @@ jobs:
           cache-to: type=gha,mode=max
 
   manual_docker_build:
-    name: 🐳 MANUAL Docker Build
+    name: 🛠️ Manual Docker Build
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
