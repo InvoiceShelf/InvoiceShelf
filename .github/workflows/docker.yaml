@@ -149,7 +149,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ secrets.DOCKER_HUB_USERNAME }}/invoiceshelf
+          images: invoiceshelf/invoiceshelf
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
@@ -192,7 +192,7 @@ jobs:
           file: docker/production/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/invoiceshelf:${{ github.event.inputs.tag }}
+          tags: invoiceshelf/invoiceshelf:${{ github.event.inputs.tag }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
