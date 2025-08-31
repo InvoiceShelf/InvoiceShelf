@@ -2,7 +2,7 @@
   "navigation": {
     "dashboard": "Dashboard",
     "customers": "Customers",
-    "items": "Items",
+    "items": "Produkter",
     "invoices": "Invoices",
     "recurring-invoices": "Recurring Invoices",
     "expenses": "Expenses",
@@ -103,7 +103,7 @@
     "mark_as_default": "Mark as default",
     "no_data_found": "No data found",
     "pagination": {
-      "previous": "Previous",
+      "previous": "Tidligere",
       "next": "Next",
       "showing": "Showing",
       "to": "to",
@@ -177,7 +177,7 @@
     "no_results_found": "No Results Found",
     "add_new_company": "Add new company",
     "new_company": "New company",
-    "created_message": "Company created successfully"
+    "created_message": "Bedriften ble opprettet"
   },
   "dateRange": {
     "today": "Today",
@@ -232,7 +232,7 @@
     "edit_customer": "Edit Customer",
     "basic_info": "Basic Info",
     "portal_access": "Portal Access",
-    "portal_access_text": "Would you like to allow this customer to login to the Customer Portal?",
+    "portal_access_text": "Ønsker du og å tillate at denne kunden kan logge inn på kundeportalen?",
     "portal_access_url": "Customer Portal Login URL",
     "portal_access_url_help": "Please copy & forward the above given URL to your customer for providing access.",
     "billing_address": "Billing Address",
@@ -287,7 +287,7 @@
     "deleted_message": "Item deleted successfully | Items deleted successfully"
   },
   "estimates": {
-    "title": "Estimates",
+    "title": "Estimater",
     "accept_estimate": "Accept Estimate",
     "reject_estimate": "Reject Estimate",
     "estimate": "Estimate | Estimates",
