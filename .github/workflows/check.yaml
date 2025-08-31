@@ -7,6 +7,8 @@ on:
             - '**/*.md'
             - 'public/build/*.js'
             - 'public/build/**/*.js'
+            - 'docker/**/*'
+            - 'resources/scripts/**/*'
         tags-ignore:
             - "*"
         branches-ignore:
