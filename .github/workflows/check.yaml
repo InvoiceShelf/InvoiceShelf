@@ -4,6 +4,7 @@ name: Check
 on:
     push:
         paths-ignore:
+            - '.github/**/*'
             - '**/*.md'
             - 'public/build/*.js'
             - 'public/build/**/*.js'
