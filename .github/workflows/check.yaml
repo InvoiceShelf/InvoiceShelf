@@ -4,6 +4,7 @@ name: Check
 on:
     push:
         paths-ignore:
+            - '.github/**/*'
             - '**/*.md'
             - 'public/build/*.js'
             - 'public/build/**/*.js'
@@ -63,7 +64,6 @@ jobs:
         strategy:
             matrix:
                 php-version:
-                    - 8.2
                     - 8.3
                     - 8.4
         env:
