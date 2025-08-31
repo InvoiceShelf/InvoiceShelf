@@ -29,6 +29,7 @@
         "spatie/flysystem-dropbox": "^3.0",
         "spatie/laravel-backup": "^9.2.9",
         "spatie/laravel-medialibrary": "^11.11",
+        "symfony/mailer": "^7.3",
         "symfony/mailgun-mailer": "^7.3",
         "vinkla/hashids": "^13.0.0"
     },
