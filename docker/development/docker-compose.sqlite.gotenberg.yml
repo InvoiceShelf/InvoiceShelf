@@ -29,20 +29,6 @@ services:
         aliases:
           - invoiceshelf.test
 
-  db:
-    image: postgres:15
-    container_name: invoiceshelf-dev-pgsql
-    environment:
-      - POSTGRES_PASSWORD=invoiceshelf
-      - POSTGRES_USER=invoiceshelf
-      - POSTGRES_DB=invoiceshelf
-    ports:
-      - 5432:5432
-    volumes:
-      - invoiceshelf-dev-pgsql:/var/lib/postgresql/data
-    networks:
-      - invoiceshelf-dev
-
   adminer:
     container_name: invoiceshelf-dev-adminer
     build:
@@ -51,6 +37,8 @@ services:
     environment:
       ADMINER_PLUGINS: tables-filter
       ADMINER_DESIGN: konya
+    volumes:
+      - ../database:/database
     ports:
       - '8080:8080'
     networks:
@@ -59,15 +47,16 @@ services:
   mail:
     container_name: invoiceshelf-dev-mailpit
     image: axllent/mailpit:latest
-    restart: always
     ports:
-      - 1025:1025
-      - 8025:8025
+      - '1025:1025'
+      - '8025:8025'
+    networks:
+      - invoiceshelf-dev
+
+  pdf:
+    image: gotenberg/gotenberg:8
     networks:
       - invoiceshelf-dev
 
 networks:
   invoiceshelf-dev:
-
-volumes:
-  invoiceshelf-dev-pgsql:

@@ -5,7 +5,7 @@
 
 services:
   database:
-    container_name: invoiceshelf-mdb
+    container_name: invoiceshelf-mysql
     image: mariadb:10
     environment:
       - MYSQL_DATABASE=invoiceshelf
@@ -15,7 +15,7 @@ services:
     expose:
       - 3306
     volumes:
-      - mysql:/var/lib/mysql
+      - invoiceshelf_mysql:/var/lib/mysql
     networks:
       - invoiceshelf
     restart: unless-stopped
@@ -32,7 +32,7 @@ services:
     ports:
       - 90:8080
     volumes:
-      - appdata:/var/www/html/storage/
+      - invoiceshelf_storage:/var/www/html/storage/
     networks:
       - invoiceshelf
     environment:
@@ -71,5 +71,5 @@ networks:
   invoiceshelf:
 
 volumes:
-  mysql:
-  appdata:
+  invoiceshelf_mysql:
+  invoiceshelf_storage:

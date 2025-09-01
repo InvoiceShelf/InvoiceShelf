@@ -5,11 +5,10 @@
 
 services:
   webapp:
-    #image: invoiceshelf/invoiceshelf:nightly
+    container_name: invoiceshelf-sqlite
     build:
       context: ../../
       dockerfile: docker/production/Dockerfile
-    container_name: invoiceshelf-sqlite
     ports:
       - "8090:8080" # 8090 is the public port.
     volumes:
@@ -36,11 +35,7 @@ services:
       #- MAIL_PASSWORD_FILE=<filename>
       #- MAIL_ENCRYPTION=null
     restart: unless-stopped
-
 networks:
   invoiceshelf:
-
-
 volumes:
   invoiceshelf_storage:
-  invoiceshelf_sqlite:
