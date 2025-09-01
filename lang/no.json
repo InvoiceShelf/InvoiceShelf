@@ -1138,7 +1138,7 @@
     },
     "notification": {
       "title": "Notifications",
-      "email": "Send Notifications to",
+      "email": "Send notifikasjoner til",
       "description": "Which email notifications would you like to receive when something changes?",
       "invoice_viewed": "Invoice viewed",
       "invoice_viewed_desc": "When your customer views the invoice sent via invoiceshelf dashboard.",
