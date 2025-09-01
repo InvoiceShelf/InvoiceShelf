@@ -14,6 +14,7 @@ Homestead.yaml
 .rnd
 /.expo
 /.vscode
+/.devcontainer
 .gitkeep
 /public/docs
 /.scribe
