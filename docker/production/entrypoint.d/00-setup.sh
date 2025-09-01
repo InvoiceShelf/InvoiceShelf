@@ -10,20 +10,19 @@ echo "
 InvoiceShelf Version:  $version
 -------------------------------------"
 
-if [ -n "$STARTUP_DELAY" ]
-then echo "**** Delaying startup ($STARTUP_DELAY seconds)... ****"
-	sleep $STARTUP_DELAY
-fi
-
 cd /var/www/html
 
-cp .env.example .env
+if [ ! -e /var/www/html/.env ]; then
+    cp .env.example .env
+    echo "**** Setup initial .env values ****" && \
+    	/inject.sh
+fi
 
 if [ "$DB_CONNECTION" = "sqlite" ] || [ -z "$DB_CONNECTION" ]; then
     echo "**** Configure SQLite3 database ****"
     if [ ! -n "$DB_DATABASE" ]; then
-        echo "**** DB_DATABASE not defined. Fall back to default /storage/database.sqlite location ****"
-        DB_DATABASE='/var/www/html/storage/database.sqlite'
+        echo "**** DB_DATABASE not defined. Fall back to default /storage/app/database.sqlite location ****"
+        DB_DATABASE='/var/www/html/storage/app/database.sqlite'
     fi
 
     if [ ! -e "$DB_DATABASE" ]; then
@@ -33,9 +32,6 @@ if [ "$DB_CONNECTION" = "sqlite" ] || [ -z "$DB_CONNECTION" ]; then
     fi
     chown www-data:www-data "$DB_DATABASE"
 fi
-
-echo "**** Inject .env values ****" && \
-	/inject.sh
 
 echo "**** Setting up artisan permissions ****"
 chmod +x artisan

@@ -53,7 +53,7 @@ class DatabaseConfigurationController extends Controller
             case 'sqlite':
                 $databaseData = [
                     'database_connection' => 'sqlite',
-                    'database_name' => database_path('database.sqlite'),
+                    'database_name' => config('database.connections.sqlite.database', storage_path('database.sqlite')),
                 ];
 
                 break;

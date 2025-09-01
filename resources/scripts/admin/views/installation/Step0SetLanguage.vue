@@ -3,7 +3,7 @@
     :title="$t('wizard.install_language.title')"
     :description="$t('wizard.install_language.description')"
   >
-    <div class="w-full md:w-2/3">
+    <div class="w-full">
       <div class="mb-6">
         <BaseInputGroup
           :label="$t('wizard.language')"
