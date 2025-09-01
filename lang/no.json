@@ -1206,7 +1206,7 @@
       "description": "You can add or Remove Taxes as you please. InvoiceShelf supports Taxes on Individual Items as well as on the invoice.",
       "add_new_tax": "Add New Tax",
       "tax_settings": "Tax Settings",
-      "tax_per_item": "Tax Per Item",
+      "tax_per_item": "Skatt pr. vare",
       "tax_name": "Tax Name",
       "compound_tax": "Compound Tax",
       "amount": "Amount",
