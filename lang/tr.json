@@ -161,7 +161,10 @@
     "name": "İsim",
     "description": "Açıklama",
     "percent": "Yüzde",
-    "compound_tax": "Vergi dahil"
+    "compound_tax": "Vergi dahil",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Ara...",
@@ -303,6 +306,7 @@
     "total": "Toplam",
     "discount": "İskonto",
     "sub_total": "Ara toplam",
+    "net_total": "Net",
     "estimate_number": "Proforma numarası",
     "ref_number": "Referans numarası",
     "contact": "İletişim",
@@ -1205,14 +1209,23 @@
       "tax_per_item": "Öğe Başı Vergi",
       "tax_name": "Vergi Adı",
       "compound_tax": "Bileşik Vergi",
+      "amount": "Amount",
       "percent": "Yüzde",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Eylem",
       "tax_setting_description": "Bireysel fatura kalemlerine vergi eklemek istiyorsanız bunu etkinleştirin. Varsayılan olarak vergiler doğrudan faturaya eklenir.",
       "created_message": "Vergi tipi başarıyla oluşturuldu",
       "updated_message": "Vergi tipi başarıyla güncellendi",
       "deleted_message": "Vergi tipi başarıyla silindi",
       "confirm_delete": "Bu Vergi Tipini geri alamayacaksın",
-      "already_in_use": "Vergi zaten kullanımda"
+      "already_in_use": "Vergi zaten kullanımda",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "Ödeme Yöntemleri",
@@ -1608,6 +1621,7 @@
   "pdf_discount_label": "İndirim",
   "pdf_amount_label": "Tutar",
   "pdf_subtotal": "Ara Toplam",
+  "pdf_net_total": "Net",
   "pdf_total": "Toplam",
   "pdf_payment_label": "Ödeme",
   "pdf_payment_receipt_label": "ÖDEME MAKBUZU",

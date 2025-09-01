@@ -161,7 +161,10 @@
     "name": "Pavadinimas",
     "description": "Aprašymas",
     "percent": "Procentai",
-    "compound_tax": "Sudėtinis mokestis"
+    "compound_tax": "Sudėtinis mokestis",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Paieška...",
@@ -303,6 +306,7 @@
     "total": "Iš viso",
     "discount": "Nuolaida",
     "sub_total": "Tarpinė suma",
+    "net_total": "Net",
     "estimate_number": "Pasiūlymo numeris",
     "ref_number": "Ref Number",
     "contact": "Contact",
@@ -1205,14 +1209,23 @@
       "tax_per_item": "Tax Per Item",
       "tax_name": "Mokesčio pavadinimas",
       "compound_tax": "Sudėtinis mokestis",
+      "amount": "Amount",
       "percent": "Procentai",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Veiksmas",
       "tax_setting_description": "Enable this if you want to add taxes to individual invoice items. By default, taxes are added directly to the invoice.",
       "created_message": "Tax type created successfully",
       "updated_message": "Tax type updated successfully",
       "deleted_message": "Tax type deleted successfully",
       "confirm_delete": "You will not be able to recover this Tax Type",
-      "already_in_use": "Tax is already in use"
+      "already_in_use": "Tax is already in use",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "Mokėjimo būdai",
@@ -1608,6 +1621,7 @@
   "pdf_discount_label": "Nuolaida",
   "pdf_amount_label": "Amount",
   "pdf_subtotal": "Subtotal",
+  "pdf_net_total": "Net",
   "pdf_total": "Iš viso",
   "pdf_payment_label": "Mokėjimas",
   "pdf_payment_receipt_label": "PAYMENT RECEIPT",

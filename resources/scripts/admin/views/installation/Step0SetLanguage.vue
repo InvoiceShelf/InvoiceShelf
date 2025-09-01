@@ -3,7 +3,7 @@
     :title="$t('wizard.install_language.title')"
     :description="$t('wizard.install_language.description')"
   >
-    <div class="w-full md:w-2/3">
+    <div class="w-full">
       <div class="mb-6">
         <BaseInputGroup
           :label="$t('wizard.language')"
@@ -27,6 +27,8 @@
 
       <BaseButton
         v-show="!isFetchingInitialData"
+        :loading="isChangingLanguage"
+        :disabled="isChangingLanguage"
         @click="next"
       >
         {{ $t('wizard.continue') }}
@@ -43,12 +45,11 @@
 import { ref, onMounted } from 'vue'
 import { useInstallationStore } from '@/scripts/admin/stores/installation.js'
 
-const { global } = window.i18n
-
 const emit = defineEmits(['next'])
 
 let isFetchingInitialData = ref(false)
 let isSaving = ref(false)
+let isChangingLanguage = ref(false)
 let languages = ref([])
 let currentLanguage = 'en'
 
@@ -75,11 +76,19 @@ function next() {
   isSaving.value = false
 }
 
-function changeLanguage(event){
-  if(typeof global.locale !== 'string') {
-    global.locale.value = event
+async function changeLanguage(event) {
+  if (!event) return
+
+  isChangingLanguage.value = true
+
+  try {
+    // Dynamically load the selected language
+    await window.loadLanguage(event)
+    currentLanguage.value = event
+  } catch (error) {
+    console.error('Failed to change language:', error)
+  } finally {
+    isChangingLanguage.value = false
   }
 }
 </script>
-
-

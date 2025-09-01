@@ -200,6 +200,9 @@ async function updateUserData() {
     // Update Language if changed
 
     if (userStore.currentUserSettings.language !== userForm.language) {
+      // Load the new language dynamically before updating settings
+      await window.loadLanguage(userForm.language)
+
       await userStore.updateUserSettings({
         settings: {
           language: userForm.language,

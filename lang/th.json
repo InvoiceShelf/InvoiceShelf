@@ -161,7 +161,10 @@
     "name": "ชื่อ",
     "description": "คำอธิบาย",
     "percent": "เปอร์เซ็นต์",
-    "compound_tax": "ภาษีมูลค่าเพิ่ม"
+    "compound_tax": "ภาษีมูลค่าเพิ่ม",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "ค้นหา...",
@@ -303,6 +306,7 @@
     "total": "จำนวนเงินสุทธิ",
     "discount": "ส่วนลด",
     "sub_total": "รวมเงิน",
+    "net_total": "Net",
     "estimate_number": "เลขที่ใบเสนอราคา",
     "ref_number": "หมายเลขอ้างอิง",
     "contact": "ติดต่อเรา",
@@ -1205,14 +1209,23 @@
       "tax_per_item": "ภาษีต่อรายการ",
       "tax_name": "ชื่อภาษี",
       "compound_tax": "ภาษีมูลค่าเพิ่ม",
+      "amount": "Amount",
       "percent": "เปอร์เซ็นต์",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "จัดการ",
       "tax_setting_description": "เปิดใช้งานนี้ถ้าคุณต้องการเพิ่มภาษีให้กับรายการใบวางบิลแต่ละรายการโดยค่าเริ่มต้นภาษีจะถูกเพิ่มลงในใบวางบิลโดยตรง",
       "created_message": "สร้างประเภทภาษีเรียบร้อยแล้ว",
       "updated_message": "อัพเดตประเภทภาษีเรียบร้อยแล้ว",
       "deleted_message": "ประเภทภาษีที่ถูกลบเรียบร้อยแล้ว",
       "confirm_delete": "คุณจะไม่สามารถกู้คืนภาษีประเภทนี้ได้",
-      "already_in_use": "ภาษีมีอยู่แล้วในการใช้งาน"
+      "already_in_use": "ภาษีมีอยู่แล้วในการใช้งาน",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "วิธีการชำระเงิน",
@@ -1608,6 +1621,7 @@
   "pdf_discount_label": "ส่วนลด",
   "pdf_amount_label": "จำนวนเงิน (บาท)",
   "pdf_subtotal": "ยอดรวม",
+  "pdf_net_total": "Net",
   "pdf_total": "จำนวนเงินทั้งสิ้น",
   "pdf_payment_label": "การชำระเงิน",
   "pdf_payment_receipt_label": "ใบเสร็จรับเงิน",

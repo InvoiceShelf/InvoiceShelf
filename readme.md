@@ -4,11 +4,9 @@
 
 InvoiceShelf is an open-source web & mobile app that helps you track expenses, payments & create professional invoices & estimates.
 
-InvoiceShelf is a fork of [Crater](https://crater.finance) that focuses in stability, updates and new features.
-
 The Web Application is made using Laravel & VueJS while the Mobile Apps are built using React Native.
 
-**NOTE:** The docker image files are moved into a separate repository [InvoiceShelf/docker](https://github.com/InvoiceShelf/docker).
+To get started with InvoiceShelf using Docker Compose, check out the [Installation docs](https://docs.invoiceshelf.com/installation.html).
 
 # Table of Contents
 
@@ -63,34 +61,16 @@ Join the InvoiceShelf discord server to discuss:
 - [ ] Improved template system (invoices and estimate)
 - [ ] Modules and templates marketplace
 
+## Credits
 
-## Copyright
+InvoiceShelf is made possible thanks to the contributions and support from many people and projects:
 
-- © 2024 IDEOLOGIX MEDIA DOOEL.
-- © 2022 Crater Invoice, Inc
-
-**Special thanks to:**
-
-- [Crater](https://crater.finance/)
-- [Birkhoff Lee](https://github.com/BirkhoffLee)
-- [Akaunting](https://github.com/akaunting/akaunting)
-- [MakerLab](https://github.com/MakerLab-Dev)
-- [Sebastian Cretu](https://github.com/sebastiancretu)
-- [Florian Gareis](https://github.com/TheZoker)
+- [Crater](https://github.com/crater-invoice-inc/crater) (project inspiration and code base)
+- All contributors who have provided code, translations, reported issues, or supported the project in any way.
 
 ## Translate
 
 Help us translate on https://crowdin.com/project/invoiceshelf
-
-**Thanks to Translation Contributors:**
-
-- [Hassan A. Ba Abdullah (Arabic)](https://github.com/hsnapps)
-- [Clément de Louvencourt (French)](https://github.com/PHClement)
-- [Robin Delattre (French)](https://github.com/RobinDev)
-- [René Loos (Dutch)](https://github.com/Loosie94)
-- [Stefan Azarić (Serbian)](https://github.com/azaricstefan)
-- [Emmanuel Lampe (German)](https://github.com/rexlManu)
-- [edevrob (Latvian)](https://github.com/edevrob)
 
 ## License
 

@@ -26,7 +26,7 @@ class EnvironmentManager
     /**
      * Set the .env and .env.example paths.
      */
-    public function __construct()
+    public function __construct($path = null)
     {
         $this->envPath = base_path('.env');
     }
@@ -64,7 +64,7 @@ class EnvironmentManager
 
                 // Check if new or old key
                 if ($entry[0] == $data_key) {
-                    $env[$env_key] = $data_key.'='.$this->encode($data_value);
+                    $env[$env_key] = sprintf('%s=%s', $data_key, $this->encode($data_value));
                     $updated = true;
                 }
             }
@@ -89,8 +89,25 @@ class EnvironmentManager
      */
     private function encode($str)
     {
+        // Convert to string if not already
+        $str = (string) $str;
 
-        if ((strpos($str, ' ') !== false || preg_match('/'.preg_quote('^\'£$%^&*()}{@#~?><,@|-=-_+-¬', '/').'/', $str)) && ($str[0] != '"' || $str[strlen($str) - 1] != '"')) {
+        // If the value is already properly quoted, return as is
+        if (strlen($str) >= 2 && $str[0] === '"' && $str[strlen($str) - 1] === '"') {
+            return $str;
+        }
+
+        // Check if the value contains characters that need quoting
+        // Using a character class regex to properly match special characters
+        $specialChars = '\^\'£$%&*()}{@#~?><,|=\-_+¬!';
+        $needsQuoting = (
+            strpos($str, ' ') !== false ||
+            preg_match('/['.preg_quote($specialChars, '/').']/', $str)
+        );
+
+        if ($needsQuoting) {
+            // Escape any existing double quotes in the string
+            $str = str_replace('"', '\\"', $str);
             $str = '"'.$str.'"';
         }
 
@@ -104,14 +121,22 @@ class EnvironmentManager
      */
     public function saveDatabaseVariables(DatabaseEnvironmentRequest $request)
     {
+        $appUrl = $request->get('app_url');
+        if ($appUrl !== config('app.url')) {
+            config(['app.url' => $appUrl]);
+        }
+        [$sanctumDomain, $sessionDomain] = $this->getDomains(
+            $request->getHttpHost()
+        );
         $dbEnv = [
-            'APP_URL' => $request->get('app_url'),
+            'APP_URL' => $appUrl,
             'APP_LOCALE' => $request->get('app_locale'),
             'DB_CONNECTION' => $request->get('database_connection'),
-            'SANCTUM_STATEFUL_DOMAINS' => $request->get('app_domain'),
-            'SESSION_DOMAIN' => explode(':', $request->get('app_domain'))[0],
+            'SESSION_DOMAIN' => $sessionDomain,
         ];
-
+        if ($sanctumDomain !== null) {
+            $dbEnv['SANCTUM_STATEFUL_DOMAINS'] = $sanctumDomain;
+        }
         if ($dbEnv['DB_CONNECTION'] != 'sqlite') {
             if ($request->has('database_username') && $request->has('database_password')) {
                 $dbEnv['DB_HOST'] = $request->get('database_hostname');
@@ -306,12 +331,12 @@ class EnvironmentManager
             case 'smtp':
 
                 $mailEnv = [
-                    'MAIL_DRIVER' => $request->get('mail_driver'),
+                    'MAIL_MAILER' => $request->get('mail_driver'),
                     'MAIL_HOST' => $request->get('mail_host'),
                     'MAIL_PORT' => $request->get('mail_port'),
                     'MAIL_USERNAME' => $request->get('mail_username'),
                     'MAIL_PASSWORD' => $request->get('mail_password'),
-                    'MAIL_ENCRYPTION' => $request->get('mail_encryption') !== 'none' ? $request->get('mail_encryption') : 'null',
+                    'MAIL_SCHEME' => $request->get('mail_encryption') !== 'none' ? $request->get('mail_encryption') : 'null',
                     'MAIL_FROM_ADDRESS' => $request->get('from_mail'),
                     'MAIL_FROM_NAME' => $request->get('from_name'),
                 ];
@@ -321,12 +346,11 @@ class EnvironmentManager
             case 'mailgun':
 
                 $mailEnv = [
-                    'MAIL_DRIVER' => $request->get('mail_driver'),
+                    'MAIL_MAILER' => $request->get('mail_driver'),
                     'MAIL_HOST' => $request->get('mail_host'),
                     'MAIL_PORT' => $request->get('mail_port'),
                     'MAIL_USERNAME' => config('mail.username'),
                     'MAIL_PASSWORD' => config('mail.password'),
-                    'MAIL_ENCRYPTION' => $request->get('mail_encryption'),
                     'MAIL_FROM_ADDRESS' => $request->get('from_mail'),
                     'MAIL_FROM_NAME' => $request->get('from_name'),
                     'MAILGUN_DOMAIN' => $request->get('mail_mailgun_domain'),
@@ -339,7 +363,7 @@ class EnvironmentManager
             case 'ses':
 
                 $mailEnv = [
-                    'MAIL_DRIVER' => $request->get('mail_driver'),
+                    'MAIL_MAILER' => $request->get('mail_driver'),
                     'MAIL_HOST' => $request->get('mail_host'),
                     'MAIL_PORT' => $request->get('mail_port'),
                     'MAIL_USERNAME' => config('mail.username'),
@@ -358,7 +382,7 @@ class EnvironmentManager
             case 'mail':
 
                 $mailEnv = [
-                    'MAIL_DRIVER' => $request->get('mail_driver'),
+                    'MAIL_MAILER' => $request->get('mail_driver'),
                     'MAIL_HOST' => config('mail.host'),
                     'MAIL_PORT' => config('mail.port'),
                     'MAIL_USERNAME' => config('mail.username'),
@@ -462,10 +486,16 @@ class EnvironmentManager
     public function saveDomainVariables(DomainEnvironmentRequest $request)
     {
         try {
-            $this->updateEnv([
-                'SANCTUM_STATEFUL_DOMAINS' => $request->get('app_domain'),
-                'SESSION_DOMAIN' => explode(':', $request->get('app_domain'))[0],
-            ]);
+            [$sanctumDomain, $sessionDomain] = $this->getDomains(
+                $request->get('app_domain')
+            );
+            $domainEnv = [
+                'SESSION_DOMAIN' => $sessionDomain,
+            ];
+            if ($sanctumDomain !== null) {
+                $domainEnv['SANCTUM_STATEFUL_DOMAINS'] = $sanctumDomain;
+            }
+            $this->updateEnv($domainEnv);
         } catch (Exception $e) {
             return [
                 'error' => 'domain_verification_failed',
@@ -504,5 +534,26 @@ class EnvironmentManager
         }
 
         file_put_contents($this->envPath, trim($formatted));
+    }
+
+    private function getDomains(string $requestDomain): array
+    {
+        $appUrl = config('app.url');
+
+        $port = parse_url($appUrl, PHP_URL_PORT);
+        $currentDomain = parse_url($appUrl, PHP_URL_HOST).(
+            $port ? ':'.$port : ''
+        );
+
+        $requestHost = parse_url($requestDomain, PHP_URL_HOST) ?: $requestDomain;
+
+        $isSame = $currentDomain === $requestDomain;
+
+        return [
+            $isSame && env('SANCTUM_STATEFUL_DOMAINS', false) === false ?
+            null : $requestDomain,
+            $isSame && env('SESSION_DOMAIN', false) === null ?
+                null : $requestHost,
+        ];
     }
 }

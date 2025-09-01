@@ -13,7 +13,6 @@ use App\Models\RecurringInvoice;
 use App\Models\TaxType;
 
 return [
-
     /*
     * Minimum php version.
     */
@@ -53,26 +52,41 @@ return [
     */
     'languages' => [
         ['code' => 'ar', 'name' => 'Arabic'],
+        ['code' => 'bg', 'name' => 'Bulgarian'],
+        ['code' => 'zh_CN', 'name' => 'Chinese (Simplified)'],
+        ['code' => 'zh', 'name' => 'Chinese (Traditional)'],
+        ['code' => 'hr', 'name' => 'Croatian'],
+        ['code' => 'cs', 'name' => 'Czech'],
         ['code' => 'nl', 'name' => 'Dutch'],
         ['code' => 'en', 'name' => 'English'],
+        ['code' => 'fi', 'name' => 'Finnish'],
         ['code' => 'fr', 'name' => 'French'],
         ['code' => 'de', 'name' => 'German'],
-        ['code' => 'ja', 'name' => 'Japanese'],
+        ['code' => 'el', 'name' => 'Greek'],
+        ['code' => 'hi', 'name' => 'Hindi'],
+        ['code' => 'id', 'name' => 'Indonesian'],
         ['code' => 'it', 'name' => 'Italian'],
-        ['code' => 'lv', 'name' => 'Latvian'],
-        ['code' => 'pl', 'name' => 'Polish'],
-        ['code' => 'pt_BR', 'name' => 'Portuguese (Brazilian)'],
-        ['code' => 'sr', 'name' => 'Serbian Latin'],
+        ['code' => 'ja', 'name' => 'Japanese'],
         ['code' => 'ko', 'name' => 'Korean'],
+        ['code' => 'lv', 'name' => 'Latvian'],
+        ['code' => 'lt', 'name' => 'Lithuanian'],
+        ['code' => 'mk', 'name' => 'Macedonian'],
+        ['code' => 'no', 'name' => 'Norwegian'],
+        ['code' => 'fa', 'name' => 'Persian'],
+        ['code' => 'pl', 'name' => 'Polish'],
+        ['code' => 'pt', 'name' => 'Portuguese'],
+        ['code' => 'pt_BR', 'name' => 'Portuguese (Brazilian)'],
+        ['code' => 'ro', 'name' => 'Romanian'],
+        ['code' => 'ru', 'name' => 'Russian'],
+        ['code' => 'sr', 'name' => 'Serbian Latin'],
+        ['code' => 'sk', 'name' => 'Slovak'],
+        ['code' => 'sl', 'name' => 'Slovenian'],
         ['code' => 'es', 'name' => 'Spanish'],
         ['code' => 'sv', 'name' => 'Svenska'],
-        ['code' => 'sk', 'name' => 'Slovak'],
-        ['code' => 'vi', 'name' => 'Tiếng Việt'],
-        ['code' => 'cs', 'name' => 'Czech'],
-        ['code' => 'el', 'name' => 'Greek'],
-        ['code' => 'hr', 'name' => 'Crotian'],
-        ['code' => 'mk', 'name' => 'Macedonian'],
         ['code' => 'th', 'name' => 'ไทย'],
+        ['code' => 'vi', 'name' => 'Tiếng Việt'],
+        ['code' => 'tr', 'name' => 'Turkish'],
+        ['code' => 'uk', 'name' => 'Ukrainian'],
     ],
 
     /*

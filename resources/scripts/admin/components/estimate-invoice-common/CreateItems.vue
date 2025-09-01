@@ -1,4 +1,27 @@
 <template>
+  <!-- Tax Included -->
+  <div
+    v-if="companyStore.selectedCompanySettings.tax_included === 'YES'"
+    class="
+      flex
+      items-center
+      justify-end
+      w-full
+      px-6
+      text-base
+      border border-b-0 border-gray-200 border-solid
+      cursor-pointer
+      text-primary-400
+      bg-white
+    "
+  >
+    <BaseSwitchSection
+      v-model="taxIncludedField"
+      :title="$t('settings.tax_types.tax_included')"
+      :store="store"
+      :store-prop="storeProp"
+    />
+  </div>
   <table class="text-center item-table min-w-full">
     <colgroup>
       <col style="width: 40%; min-width: 280px" />
@@ -191,4 +214,14 @@ const defaultCurrency = computed(() => {
     return companyStore.selectedCompanyCurrency
   }
 })
+
+const taxIncludedField = computed({
+  get: () => {
+    return props.store[props.storeProp].tax_included
+  },
+  set: async (value) => {
+    props.store[props.storeProp].tax_included = value
+  },
+})
+
 </script>

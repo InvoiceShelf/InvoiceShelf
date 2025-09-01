@@ -169,6 +169,9 @@ const taxAmount = computed(() => {
     if (taxPerItemEnabled && !discountPerItemEnabled){
       return getTaxAmount()
     }
+    if (props.store[props.storeProp].tax_included) {
+      return Math.round(props.discountedTotal - (props.discountedTotal / (1 + (localTax.percent / 100))))
+    }
     return (props.discountedTotal * localTax.percent) / 100
   }
   return 0
@@ -261,6 +264,7 @@ function getTaxAmount() {
   const itemTotal = props.discountedTotal
   const modelDiscount = props.store[props.storeProp].discount ? props.store[props.storeProp].discount : 0
   const type = props.store[props.storeProp].discount_type
+  let discountedTotal = props.discountedTotal
   if (modelDiscount > 0) {
     props.store[props.storeProp].items.forEach((_i) => {
       total += _i.total
@@ -268,10 +272,14 @@ function getTaxAmount() {
     const proportion = (itemTotal / total).toFixed(2)
     discount = type === 'fixed' ? modelDiscount * 100 : (total * modelDiscount) / 100
     const itemDiscount = Math.round(discount * proportion)
-    const discounted = itemTotal - itemDiscount
-    return Math.round((discounted * localTax.percent) / 100)
+    discountedTotal = itemTotal - itemDiscount
   }
-  return Math.round((props.discountedTotal * localTax.percent) / 100)
+
+  if (props.store[props.storeProp].tax_included) {
+    return Math.round(discountedTotal - (discountedTotal / (1 + (localTax.percent / 100))))
+  }
+
+  return Math.round((discountedTotal * localTax.percent) / 100)
 }
 </script>
 

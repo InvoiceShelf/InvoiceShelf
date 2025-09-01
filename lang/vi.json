@@ -161,7 +161,10 @@
     "name": "Tên",
     "description": "Sự miêu tả",
     "percent": "Phần trăm",
-    "compound_tax": "Thuế tổng hợp"
+    "compound_tax": "Thuế tổng hợp",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Tìm kiếm...",
@@ -303,6 +306,7 @@
     "total": "Toàn bộ",
     "discount": "Giảm giá",
     "sub_total": "Tổng phụ",
+    "net_total": "Net",
     "estimate_number": "Số ước tính",
     "ref_number": "Số tham chiếu",
     "contact": "Tiếp xúc",
@@ -1205,14 +1209,23 @@
       "tax_per_item": "Thuế mỗi mặt hàng",
       "tax_name": "Tên thuế",
       "compound_tax": "Thuế tổng hợp",
+      "amount": "Amount",
       "percent": "Phần trăm",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Hoạt động",
       "tax_setting_description": "Bật tính năng này nếu bạn muốn thêm thuế vào các mục hóa đơn riêng lẻ. Theo mặc định, thuế được thêm trực tiếp vào hóa đơn.",
       "created_message": "Loại thuế đã được tạo thành công",
       "updated_message": "Đã cập nhật thành công loại thuế",
       "deleted_message": "Đã xóa thành công loại thuế",
       "confirm_delete": "Bạn sẽ không thể khôi phục Loại thuế này",
-      "already_in_use": "Thuế đã được sử dụng"
+      "already_in_use": "Thuế đã được sử dụng",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "Phương thức thanh toán",
@@ -1608,6 +1621,7 @@
   "pdf_discount_label": "Giảm giá",
   "pdf_amount_label": "Số tiền",
   "pdf_subtotal": "Tổng phụ",
+  "pdf_net_total": "Net",
   "pdf_total": "Toàn bộ",
   "pdf_payment_label": "Thanh toán",
   "pdf_payment_receipt_label": "HÓA ĐƠN THANH TOÁN",
