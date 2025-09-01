@@ -35,9 +35,7 @@ services:
       #- MAIL_PASSWORD_FILE=<filename>
       #- MAIL_ENCRYPTION=null
     restart: unless-stopped
-
 networks:
   invoiceshelf:
-
 volumes:
   invoiceshelf_storage:
