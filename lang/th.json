@@ -653,6 +653,8 @@
     "from_date": "จากวันที่",
     "to_date": "ถึงวันที่",
     "expense_date": "วันที่",
+    "expense_number": "เลขที่ค่าใช้จ่าย",
+    "expense_number_placeholder": "EXP-001",
     "description": "คำอธิบาย",
     "receipt": "ใบเสร็จ",
     "amount": "จำนวนเงิน (บาท)",
