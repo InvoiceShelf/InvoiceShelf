@@ -106,13 +106,17 @@
 </template>
 
 <script setup>
-import { computed, onMounted, reactive, inject } from 'vue'
+import { computed, inject, onMounted, reactive } from 'vue'
 import { useInstallationStore } from '@/scripts/admin/stores/installation'
-import { helpers, required, numeric } from '@vuelidate/validators'
+import { helpers, numeric, required } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { useI18n } from 'vue-i18n'
 import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
 import BaseCheckbox from '@/scripts/components/base/BaseCheckbox.vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseInput from '@/scripts/components/base/BaseInput.vue'
+import BaseMultiselect from '@/scripts/components/base/base-select/BaseMultiselect.vue'
 
 const props = defineProps({
   configData: {

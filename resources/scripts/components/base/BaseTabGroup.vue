@@ -48,6 +48,7 @@
 <script setup>
 import { computed, useSlots } from 'vue'
 import { TabGroup, TabList, Tab, TabPanels } from '@headlessui/vue'
+import BaseBadge from '@/scripts/components/base/BaseBadge.vue'
 
 const props = defineProps({
   defaultIndex: {

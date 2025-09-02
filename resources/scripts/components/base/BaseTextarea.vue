@@ -20,6 +20,8 @@
 
 <script setup>
 import { computed, onMounted, ref } from 'vue'
+import BaseContentPlaceholdersBox from '@/scripts/components/base/BaseContentPlaceholdersBox.vue'
+import BaseContentPlaceholders from '@/scripts/components/base/BaseContentPlaceholders.vue'
 
 const props = defineProps({
   contentLoading: {

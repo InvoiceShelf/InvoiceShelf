@@ -123,12 +123,16 @@
 <script setup>
 import CustomerInfo from './CustomerInfo.vue'
 import LineChart from '@/scripts/admin/components/charts/LineChart.vue'
-import { ref, computed, watch, reactive, inject } from 'vue'
+import { computed, inject, reactive, ref, watch } from 'vue'
 import { useCustomerStore } from '@/scripts/admin/stores/customer'
 import { useRoute } from 'vue-router'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 import ChartPlaceholder from './CustomerChartPlaceholder.vue'
 import { useI18n } from 'vue-i18n'
+import BaseFormatMoney from '@/scripts/components/base/BaseFormatMoney.vue'
+import BaseMultiselect from '@/scripts/components/base/base-select/BaseMultiselect.vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseCard from '@/scripts/components/base/BaseCard.vue'
 
 const companyStore = useCompanyStore()
 const customerStore = useCustomerStore()

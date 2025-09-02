@@ -4,6 +4,7 @@
 
 <script setup>
 import { computed } from 'vue'
+import BaseSwitch from '@/scripts/components/base/BaseSwitch.vue'
 
 const props = defineProps({
   modelValue: {
