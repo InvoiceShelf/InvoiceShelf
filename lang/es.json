@@ -653,6 +653,8 @@
     "from_date": "Desde la fecha",
     "to_date": "Hasta la fecha",
     "expense_date": "Fecha",
+    "expense_number": "Número de gasto",
+    "expense_number_placeholder": "EXP-001",
     "description": "Descripción",
     "receipt": "Recibo",
     "amount": "Cantidad",
