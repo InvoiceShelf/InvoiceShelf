@@ -653,6 +653,8 @@
     "from_date": "Datums no",
     "to_date": "Datums līdz",
     "expense_date": "Datums",
+    "expense_number": "Izdevumu numurs",
+    "expense_number_placeholder": "EXP-001",
     "description": "Apraksts",
     "receipt": "Čeks",
     "amount": "Summa",
