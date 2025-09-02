@@ -653,6 +653,8 @@
     "from_date": "Başlangıç tarihi",
     "to_date": "Bitiş tarihi",
     "expense_date": "Tarih",
+    "expense_number": "Gider Numarası",
+    "expense_number_placeholder": "EXP-001",
     "description": "Açıklama",
     "receipt": "Makbuz",
     "amount": "Tutar",
