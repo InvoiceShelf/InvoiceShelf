@@ -21,6 +21,7 @@ tests/
 vendor/
 
 .dockerignore
+.devenvconfig
 .editorconfig
 .env
 .env.testing
@@ -28,7 +29,6 @@ vendor/
 .gitattributes
 .gitignore
 .prettierrc.json
-.dev-env-config
 devenv
 
 CODE_OF_CONDUCT.md
