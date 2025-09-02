@@ -147,6 +147,7 @@
               @input="v$.currentExpense.amount.$touch()"
             />
           </BaseInputGroup>
+
           <BaseInputGroup
             :label="$t('expenses.currency')"
             :content-loading="isFetchingInitialData"
@@ -229,6 +230,9 @@
             </BaseMultiselect>
           </BaseInputGroup>
 
+        </BaseInputGrid>
+
+        <BaseInputGrid class="mt-4">
           <BaseInputGroup
             :content-loading="isFetchingInitialData"
             :label="$t('expenses.note')"
@@ -289,6 +293,7 @@
             </BaseButton>
           </div>
         </BaseInputGrid>
+
       </BaseCard>
     </form>
   </BasePage>
