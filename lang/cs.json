@@ -653,6 +653,8 @@
     "from_date": "Od data",
     "to_date": "Do data",
     "expense_date": "Datum",
+    "expense_number": "Číslo výdaje",
+    "expense_number_placeholder": "EXP-001",
     "description": "Popis",
     "receipt": "Doklad",
     "amount": "Částka",
