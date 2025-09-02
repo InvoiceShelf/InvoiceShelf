@@ -653,6 +653,8 @@
     "from_date": "Dalla Data",
     "to_date": "Alla Data",
     "expense_date": "Data",
+    "expense_number": "Numero di spesa",
+    "expense_number_placeholder": "EXP-001",
     "description": "Descrizione",
     "receipt": "Ricevuta",
     "amount": "Ammontare",
