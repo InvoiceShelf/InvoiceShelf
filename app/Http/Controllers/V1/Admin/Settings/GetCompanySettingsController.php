@@ -16,7 +16,7 @@ class GetCompanySettingsController extends Controller
      */
     public function __invoke(GetSettingsRequest $request)
     {
-        $settings = CompanySetting::getSettings($request->settings, $request->header('company'));
+        $settings = CompanySetting::getSettings((array) $request->settings, $request->header('company'));
 
         return response()->json($settings);
     }

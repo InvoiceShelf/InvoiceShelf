@@ -2,48 +2,53 @@ services:
   php-fpm:
     container_name: invoiceshelf-dev-php
     build:
-      context: ./php
-      dockerfile: Dockerfile
+      context: ../../
+      dockerfile: docker/development/Dockerfile
       args:
         - UID=${USRID:-1000}
         - GID=${GRPID:-1000}
-    ports:
-      - 5173:5173
+      target: development
     volumes:
-      - ../:/home/invoiceshelf/app
+      - ../../:/var/www/html
     networks:
       - invoiceshelf-dev
 
   nginx:
     container_name: invoiceshelf-dev-nginx
-    image: nginx:stable
+    build:
+      context: ../../
+      dockerfile: docker/development/nginx.Dockerfile
+    environment:
+      - "PHP_FPM_HOST=php-fpm:9000"
     ports:
       - '80:80'
     volumes:
-      - ./nginx/conf.d/dev.conf:/etc/nginx/conf.d/dev.conf
-      - ../:/home/invoiceshelf/app
+      - ../../:/var/www/html
     networks:
-      - invoiceshelf-dev
+      invoiceshelf-dev:
+        aliases:
+          - invoiceshelf.test
 
   db:
-    image: postgres:15
-    container_name: invoiceshelf-dev-pgsql
+    image: mariadb:10.9
+    container_name: invoiceshelf-dev-mysql
     environment:
-      - POSTGRES_PASSWORD=invoiceshelf
-      - POSTGRES_USER=invoiceshelf
-      - POSTGRES_DB=invoiceshelf
+      MYSQL_ROOT_PASSWORD: invoiceshelf
+      MYSQL_DATABASE: invoiceshelf
+      MYSQL_USER: invoiceshelf
+      MYSQL_PASSWORD: invoiceshelf
     ports:
-      - 5432:5432
+      - "3306:3306"
     volumes:
-      - invoiceshelf-dev-pgsql:/var/lib/postgresql/data
+      - invoiceshelf-dev-mysql:/var/lib/mysql
     networks:
       - invoiceshelf-dev
 
   adminer:
     container_name: invoiceshelf-dev-adminer
     build:
-      context: ./adminer
-      dockerfile: Dockerfile
+      context: ../../
+      dockerfile: docker/development/adminer/Dockerfile
     environment:
       ADMINER_PLUGINS: tables-filter
       ADMINER_DESIGN: konya
@@ -62,13 +67,8 @@ services:
     networks:
       - invoiceshelf-dev
 
-  pdf:
-    image: gotenberg/gotenberg:8
-    networks:
-      - invoiceshelf-dev
-
 networks:
   invoiceshelf-dev:
 
 volumes:
-  invoiceshelf-dev-pgsql:
+  invoiceshelf-dev-mysql:

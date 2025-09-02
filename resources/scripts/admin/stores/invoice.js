@@ -51,6 +51,10 @@ export const useInvoiceStore = (useWindow = false) => {
         }, 0)
       },
 
+      getNetTotal() {
+        return this.getSubtotalWithDiscount - this.getTotalTax
+      },
+
       getTotalSimpleTax() {
         return _.sumBy(this.newInvoice.taxes, function (tax) {
           if (!tax.compound_tax) {
@@ -86,6 +90,9 @@ export const useInvoiceStore = (useWindow = false) => {
       },
 
       getTotal() {
+        if (this.newInvoice.tax_included) {
+          return this.getSubtotalWithDiscount
+        }
         return this.getSubtotalWithDiscount + this.getTotalTax
       },
 
@@ -160,8 +167,7 @@ export const useInvoiceStore = (useWindow = false) => {
             if (_i.discount_type === 'fixed')
               this.newInvoice.items[index].discount = _i.discount / 100
           })
-        }
-        else {
+        } else {
           if (this.newInvoice.discount_type === 'fixed')
             this.newInvoice.discount = this.newInvoice.discount / 100
         }
@@ -171,16 +177,20 @@ export const useInvoiceStore = (useWindow = false) => {
         const customer_business = customer.customer_business
 
         if (customer_business?.billing_address)
-          this.newInvoice.customer.billing_address = customer_business.billing_address
+          this.newInvoice.customer.billing_address =
+            customer_business.billing_address
 
         if (customer_business?.shipping_address)
-          this.newInvoice.customer.shipping_address = customer_business.shipping_address
+          this.newInvoice.customer.shipping_address =
+            customer_business.shipping_address
       },
 
       addSalesTaxUs() {
         const taxTypeStore = useTaxTypeStore()
         let salesTax = { ...taxStub }
-        let found = this.newInvoice.taxes.find((_t) => _t.name === 'Sales Tax' && _t.type === 'MODULE')
+        let found = this.newInvoice.taxes.find(
+          (_t) => _t.name === 'Sales Tax' && _t.type === 'MODULE',
+        )
         if (found) {
           for (const key in found) {
             if (Object.prototype.hasOwnProperty.call(salesTax, key)) {
@@ -237,7 +247,7 @@ export const useInvoiceStore = (useWindow = false) => {
             .post(`/api/v1/invoices/delete`, id)
             .then((response) => {
               let index = this.invoices.findIndex(
-                (invoice) => invoice.id === id
+                (invoice) => invoice.id === id,
               )
               this.invoices.splice(index, 1)
 
@@ -261,7 +271,7 @@ export const useInvoiceStore = (useWindow = false) => {
             .then((response) => {
               this.selectedInvoices.forEach((invoice) => {
                 let index = this.invoices.findIndex(
-                  (_inv) => _inv.id === invoice.id
+                  (_inv) => _inv.id === invoice.id,
                 )
                 this.invoices.splice(index, 1)
               })
@@ -269,7 +279,7 @@ export const useInvoiceStore = (useWindow = false) => {
 
               notificationStore.showNotification({
                 type: 'success',
-                message: global.tc('invoices.deleted_message', 2),
+                message: global.t('invoices.deleted_message', 2),
               })
               resolve(response)
             })
@@ -286,7 +296,7 @@ export const useInvoiceStore = (useWindow = false) => {
             .put(`/api/v1/invoices/${data.id}`, data)
             .then((response) => {
               let pos = this.invoices.findIndex(
-                (invoice) => invoice.id === response.data.data.id
+                (invoice) => invoice.id === response.data.data.id,
               )
               this.invoices[pos] = response.data.data
 
@@ -328,7 +338,7 @@ export const useInvoiceStore = (useWindow = false) => {
             .post(`/api/v1/invoices/${data.id}/status`, data)
             .then((response) => {
               let pos = this.invoices.findIndex(
-                (invoices) => invoices.id === data.id
+                (invoices) => invoices.id === data.id,
               )
 
               if (this.invoices[pos]) {
@@ -493,26 +503,35 @@ export const useInvoiceStore = (useWindow = false) => {
         }
 
         let editActions = []
-        
+
         if (!isEdit) {
           await notesStore.fetchNotes()
-          this.newInvoice.notes = notesStore.getDefaultNoteForType('Invoice')?.notes
+          this.newInvoice.notes =
+            notesStore.getDefaultNoteForType('Invoice')?.notes
           this.newInvoice.tax_per_item =
             companyStore.selectedCompanySettings.tax_per_item
-          this.newInvoice.sales_tax_type = companyStore.selectedCompanySettings.sales_tax_type
-          this.newInvoice.sales_tax_address_type = companyStore.selectedCompanySettings.sales_tax_address_type
+          this.newInvoice.sales_tax_type =
+            companyStore.selectedCompanySettings.sales_tax_type
+          this.newInvoice.sales_tax_address_type =
+            companyStore.selectedCompanySettings.sales_tax_address_type
           this.newInvoice.discount_per_item =
             companyStore.selectedCompanySettings.discount_per_item
 
-          let dateFormat = 'YYYY-MM-DD';
+          let dateFormat = 'YYYY-MM-DD'
           if (companyStore.selectedCompanySettings.invoice_use_time === 'YES') {
             dateFormat += ' HH:mm'
           }
 
           this.newInvoice.invoice_date = moment().format(dateFormat)
-          if (companyStore.selectedCompanySettings.invoice_set_due_date_automatically === 'YES') {
+          if (
+            companyStore.selectedCompanySettings
+              .invoice_set_due_date_automatically === 'YES'
+          ) {
             this.newInvoice.due_date = moment()
-              .add(companyStore.selectedCompanySettings.invoice_due_date_days, 'days')
+              .add(
+                companyStore.selectedCompanySettings.invoice_due_date_days,
+                'days',
+              )
               .format('YYYY-MM-DD')
           }
         } else {
@@ -539,9 +558,10 @@ export const useInvoiceStore = (useWindow = false) => {
 
               if (res3.data) {
                 this.setTemplate(this.templates[0].name)
-                this.newInvoice.template_name =
-                userStore.currentUserSettings.default_invoice_template ?
-                userStore.currentUserSettings.default_invoice_template : this.newInvoice.template_name
+                this.newInvoice.template_name = userStore.currentUserSettings
+                  .default_invoice_template
+                  ? userStore.currentUserSettings.default_invoice_template
+                  : this.newInvoice.template_name
               }
             }
             if (isEdit) {

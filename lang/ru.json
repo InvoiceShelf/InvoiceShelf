@@ -161,7 +161,10 @@
     "name": "Название",
     "description": "Описание",
     "percent": "Проценты",
-    "compound_tax": "Комплексный налог"
+    "compound_tax": "Комплексный налог",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Поиск...",
@@ -303,6 +306,7 @@
     "total": "Итого",
     "discount": "Скидка",
     "sub_total": "Промежуточный итог",
+    "net_total": "Net",
     "estimate_number": "Номер заказа",
     "ref_number": "Серийный номер",
     "contact": "Контакт",
@@ -1207,14 +1211,23 @@
       "tax_per_item": "Налог за единицу",
       "tax_name": "Название налога",
       "compound_tax": "Комплексный налог",
+      "amount": "Amount",
       "percent": "Процент",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Действие",
       "tax_setting_description": "Включите эту опцию, если вы хотите добавить налоги к отдельным позициям счета-фактуры. По умолчанию налоги добавляются непосредственно к счету.",
       "created_message": "Тип налога успешно создан",
       "updated_message": "Тип налога успешно обновлен",
       "deleted_message": "Тип налога успешно удален",
       "confirm_delete": "Восстановление типа налога будет невозможна",
-      "already_in_use": "Налог используется"
+      "already_in_use": "Налог используется",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "Формы оплаты",
@@ -1610,6 +1623,7 @@
   "pdf_discount_label": "Скидка",
   "pdf_amount_label": "Сумма",
   "pdf_subtotal": "Промежуточный итог",
+  "pdf_net_total": "Net",
   "pdf_total": "Итого",
   "pdf_payment_label": "Платёж",
   "pdf_payment_receipt_label": "КВИТАНЦИЯ ПЛАТЕЖА",

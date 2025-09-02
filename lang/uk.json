@@ -161,7 +161,10 @@
     "name": "Назва",
     "description": "Опис",
     "percent": "Відсоток",
-    "compound_tax": "Складний податок"
+    "compound_tax": "Складний податок",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Шукати...",
@@ -303,6 +306,7 @@
     "total": "До сплати",
     "discount": "Знижка",
     "sub_total": "ПІДСУМОК",
+    "net_total": "Net",
     "estimate_number": "Номер кошторису",
     "ref_number": "Номер відстеження",
     "contact": "Контакт",
@@ -1207,14 +1211,23 @@
       "tax_per_item": "Податок на одиницю",
       "tax_name": "Назва податку",
       "compound_tax": "Складний податок",
+      "amount": "Amount",
       "percent": "Відсоток",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Дія",
       "tax_setting_description": "Увімкніть цю опцію, якщо ви хочете додати податки до окремих позицій інвойсу. За замовчуванням податки додаються безпосередньо до інвойсу.",
       "created_message": "Тип податку створено успішно",
       "updated_message": "Тип податку успішно оновлено",
       "deleted_message": "Тип податку успішно видалено",
       "confirm_delete": "Ви не зможете відновити цей тип податків",
-      "already_in_use": "Податок вже використовується"
+      "already_in_use": "Податок вже використовується",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "Способи оплати",
@@ -1610,6 +1623,7 @@
   "pdf_discount_label": "Знижка",
   "pdf_amount_label": "Сума",
   "pdf_subtotal": "Проміжна сума",
+  "pdf_net_total": "Net",
   "pdf_total": "Всього",
   "pdf_payment_label": "Оплата",
   "pdf_payment_receipt_label": "КВИТАНЦІЯ ПРО ОПЛАТУ",

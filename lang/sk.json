@@ -101,25 +101,25 @@
     "login_successfully": "Prihlásenie bolo úspešné!",
     "logged_out_successfully": "Odhlásenie bolo úspešné",
     "mark_as_default": "Nastaviť ako predvolené",
-    "no_data_found": "No data found",
+    "no_data_found": "Žiadne dáta nenájdené",
     "pagination": {
-      "previous": "Previous",
-      "next": "Next",
-      "showing": "Showing",
-      "to": "to",
-      "of": "of",
-      "results": "results"
+      "previous": "Predchádzajúca",
+      "next": "Ďalšia",
+      "showing": "Zobrazenie",
+      "to": "do",
+      "of": "z",
+      "results": "výsledky"
     },
     "file_upload": {
-      "drag_a_file": "Drag a file here or",
-      "browse": "browse",
-      "to_choose": "to choose a file"
+      "drag_a_file": "Pretiahnite sem súbor alebo",
+      "browse": "prehliadaním",
+      "to_choose": "vyberter súbor"
     },
     "multiselect": {
-      "the_list_is_empty": "The list is empty",
-      "no_results_found": "No results found"
+      "the_list_is_empty": "Zoznam je prázdny",
+      "no_results_found": "Žiadne výsledky nenájdené"
     },
-    "copy_to_clipboard": "Copy to Clipboard"
+    "copy_to_clipboard": "Kopírovať do schránky"
   },
   "dashboard": {
     "select_year": "Vyberte rok",
@@ -161,7 +161,10 @@
     "name": "Meno",
     "description": "Popis",
     "percent": "Percento",
-    "compound_tax": "Zložená daň"
+    "compound_tax": "Zložená daň",
+    "percentage": "Percentá",
+    "fixed_amount": "Fixná suma",
+    "tax_type": "Typ dane"
   },
   "global_search": {
     "search": "Hľadať...",
@@ -191,7 +194,7 @@
   "customers": {
     "title": "Zákazníci",
     "prefix": "Predpona",
-    "tax_id": "Tax ID",
+    "tax_id": "DIČ",
     "add_customer": "Pridať Zákazníka",
     "contacts_list": "Zoznam zákazníkov",
     "name": "Meno",
@@ -303,6 +306,7 @@
     "total": "Spolu",
     "discount": "Zľava",
     "sub_total": "Medzisúčet",
+    "net_total": "Net",
     "estimate_number": "Číslo Cenového odhadu",
     "ref_number": "Ref. Číslo",
     "contact": "Kontakt",
@@ -559,7 +563,7 @@
       "total": "Total",
       "total_discount": "Total Discount",
       "sub_total": "Sub Total",
-      "tax": "Tax",
+      "tax": "Daň",
       "amount": "Amount",
       "select_an_item": "Type or click to select an item",
       "type_item_description": "Type Item Description (optional)"
@@ -921,7 +925,7 @@
     "company_info": {
       "company_info": "Informácie o spoločnosti",
       "company_name": "Názov spoločnosti",
-      "tax_id": "Tax Identification Number",
+      "tax_id": "Daňové identifikačné číslo",
       "vat_id": "VAT Identification Number",
       "company_logo": "Logo spoločnosti",
       "section_description": "Informácie o Vašej firme, ktoré budú zobrazené na faktúrach, cenových odhadoch a iných dokumentoch vytvorených vďaka Creater.",
@@ -1207,14 +1211,23 @@
       "tax_per_item": "Daň pre každú Položku zvlášť",
       "tax_name": "Názov Dane",
       "compound_tax": "Zložená daň",
+      "amount": "Suma",
       "percent": "Percento",
+      "fixed_amount": "Fixná suma",
+      "calculation_type": "Typ výpočtu",
+      "percentage": "Percento",
+      "fixed": "Fixné",
       "action": "Akcia",
       "tax_setting_description": "Túto možnosť povoľte, ak chcete pridať dane k jednotlivým položkám faktúr. Štandardne sa dane pripočítavajú priamo k faktúre.",
       "created_message": "Daň úspešne vytvorená",
       "updated_message": "Daň úspešne aktualizovaná",
       "deleted_message": "Daň úspešne odstránená",
       "confirm_delete": "Nebudete môcť obnoviť daň",
-      "already_in_use": "Daň už sa už požíva"
+      "already_in_use": "Daň už sa už požíva",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "Payment Modes",
@@ -1401,16 +1414,16 @@
       "invalid_disk_credentials": "Neplatné prihlasovacie údaje pre Disk"
     },
     "taxations": {
-      "add_billing_address": "Enter Billing Address",
-      "add_shipping_address": "Enter Shipping Address",
-      "add_company_address": "Enter Company Address",
-      "modal_description": "The information below is required in order to fetch sales tax.",
-      "add_address": "Add Address for fetching sales tax.",
-      "address_placeholder": "Example: 123, My Street",
-      "city_placeholder": "Example: Los Angeles",
-      "state_placeholder": "Example: CA",
-      "zip_placeholder": "Example: 90024",
-      "invalid_address": "Please provide valid address details."
+      "add_billing_address": "Zadajte fakturačnú adresu",
+      "add_shipping_address": "Zadajte dodaciu adresu",
+      "add_company_address": "Zadajte adresu firmy",
+      "modal_description": "Na získanie dane z predaja sú potrebné nižšie uvedené informácie.",
+      "add_address": "Pridajte adresu pre vyzdvihnutie dane z predaja.",
+      "address_placeholder": "Príklad: Šoltésovej ulica 123",
+      "city_placeholder": "Príklad: Bratislava",
+      "state_placeholder": "Príklad: SK",
+      "zip_placeholder": "Príklad: 90024",
+      "invalid_address": "Uveďte prosím platné údaje o adrese."
     }
   },
   "wizard": {
@@ -1610,6 +1623,7 @@
   "pdf_discount_label": "Zľava",
   "pdf_amount_label": "Celkom",
   "pdf_subtotal": "Medzisúčet",
+  "pdf_net_total": "Net",
   "pdf_total": "Súčet",
   "pdf_payment_label": "Payment",
   "pdf_payment_receipt_label": "Doklad o zaplatení",
@@ -1622,7 +1636,7 @@
   "pdf_profit_loss_label": "Zisky a straty",
   "pdf_sales_customers_label": "Sales Customer Report",
   "pdf_sales_items_label": "Sales Item Report",
-  "pdf_tax_summery_label": "Tax Summary Report",
+  "pdf_tax_summery_label": "Súhrnná správa o daniach",
   "pdf_income_label": "Príjem",
   "pdf_net_profit_label": "Čistý príjem",
   "pdf_customer_sales_report": "Report predajov: Podľa zákazníkov",
@@ -1635,8 +1649,8 @@
   "pdf_bill_to": "Odberateľ:",
   "pdf_ship_to": "Doručiť,",
   "pdf_received_from": "Prijaté od:",
-  "pdf_tax_label": "Tax",
-  "pdf_tax_id": "Tax-ID",
+  "pdf_tax_label": "Daň",
+  "pdf_tax_id": "DIČ",
   "pdf_vat_id": "VAT-ID",
   "pdf_amount_paid": "Amount Paid",
   "pdf_amount_due": "Amount Due",

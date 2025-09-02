@@ -3,7 +3,7 @@
     :title="$t('wizard.req.system_req')"
     :description="$t('wizard.req.system_req_desc')"
   >
-    <div class="w-full md:w-2/3">
+    <div class="w-full">
       <div class="mb-6">
         <div
           v-if="phpSupportInfo"

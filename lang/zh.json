@@ -161,7 +161,10 @@
     "name": "名稱",
     "description": "詳情",
     "percent": "百分比",
-    "compound_tax": "複合稅"
+    "compound_tax": "複合稅",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "搜尋...",
@@ -303,6 +306,7 @@
     "total": "總共",
     "discount": "折扣",
     "sub_total": "小計",
+    "net_total": "Net",
     "estimate_number": "報價單",
     "ref_number": "相關號碼",
     "contact": "聯絡",
@@ -1207,14 +1211,23 @@
       "tax_per_item": "商品稅項",
       "tax_name": "稅項名稱",
       "compound_tax": "複合稅",
+      "amount": "Amount",
       "percent": "百分比",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "操作",
       "tax_setting_description": "啟用此項, 如果你要將稅項以每個獨立商品計算. 預設稅項以整單發票計算.",
       "created_message": "成功新增稅項類型",
       "updated_message": "成功更新稅項類型",
       "deleted_message": "成功刪除稅項類型",
       "confirm_delete": "你將無法恢復此稅項類型",
-      "already_in_use": "此稅項已在使用"
+      "already_in_use": "此稅項已在使用",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "付款方式",
@@ -1610,6 +1623,7 @@
   "pdf_discount_label": "折扣",
   "pdf_amount_label": "總額",
   "pdf_subtotal": "小計",
+  "pdf_net_total": "Net",
   "pdf_total": "總共",
   "pdf_payment_label": "付款",
   "pdf_payment_receipt_label": "付款收據",

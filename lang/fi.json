@@ -161,7 +161,10 @@
     "name": "Nimi",
     "description": "Kuvaus",
     "percent": "Prosentti",
-    "compound_tax": "Yhdistetty vero"
+    "compound_tax": "Yhdistetty vero",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Etsi...",
@@ -303,6 +306,7 @@
     "total": "Yhteensä",
     "discount": "Alennus",
     "sub_total": "Välisumma",
+    "net_total": "Net",
     "estimate_number": "Tarjous numero",
     "ref_number": "Asiakkaan viite",
     "contact": "Yhteyshenkilö",
@@ -1207,14 +1211,23 @@
       "tax_per_item": "ALV per tuote",
       "tax_name": "ALV Verokannan nimi",
       "compound_tax": "Yhdistetty vero",
+      "amount": "Amount",
       "percent": "Prosentti",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Toiminta",
       "tax_setting_description": "Aktivoi tämä jos haluat näyttää ALV:n laskurivikohtaisesti. Oletuksena, verot lisätään suoraan loppusummaan.",
       "created_message": "ALV Verokanta luotiin onnistuneesti",
       "updated_message": "ALV Verokanta päivitettiin onnistuneesti",
       "deleted_message": "ALV Verokanta poistettiin onnistuneesti",
       "confirm_delete": "Et voi palauttaa tätä ALV verokantaa",
-      "already_in_use": "ALV Verokanta on jo käytössä"
+      "already_in_use": "ALV Verokanta on jo käytössä",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "Payment Modes",
@@ -1610,6 +1623,7 @@
   "pdf_discount_label": "Alennus",
   "pdf_amount_label": "Yhteensä veroton",
   "pdf_subtotal": "Välisumma",
+  "pdf_net_total": "Net",
   "pdf_total": "Yhteensä",
   "pdf_payment_label": "Payment",
   "pdf_payment_receipt_label": "SUORITUKSEN KUITTI",

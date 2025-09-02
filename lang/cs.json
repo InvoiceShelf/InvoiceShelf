@@ -131,8 +131,8 @@
       "payments": "Platby"
     },
     "chart_info": {
-      "total_sales": "Slevy",
-      "total_receipts": "Doklady",
+      "total_sales": "Vydané faktury",
+      "total_receipts": "Zaplacené faktury",
       "total_expense": "Výdaje",
       "net_income": "Čistý příjem",
       "year": "Vybrat rok"
@@ -161,7 +161,10 @@
     "name": "Jméno",
     "description": "Popis",
     "percent": "Procento",
-    "compound_tax": "Kombinovaná daň"
+    "compound_tax": "Kombinovaná daň",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Hledat...",
@@ -303,6 +306,7 @@
     "total": "Celkem",
     "discount": "Sleva",
     "sub_total": "Mezisoučet",
+    "net_total": "Net",
     "estimate_number": "Číslo nabídky",
     "ref_number": "Referenční číslo",
     "contact": "Kontakt",
@@ -732,7 +736,7 @@
     "no_reviews_found": "Pro tento modul zatím neexistují žádné recenze!",
     "module_not_purchased": "Modul není zakoupený",
     "module_not_found": "Modul nebyl nalezen",
-    "version_not_supported": "This module version doesn't support the current version of InvoiceShelf",
+    "version_not_supported": "Tento modul nepodporuje současnou verzi InvoiceShelf.",
     "last_updated": "Naposledy aktualizováno",
     "connect_installation": "Připojte vaši instalaci",
     "api_token_description": "Přihlaste se k {url} a připojte tuto instalaci zadáním API tokenu. Vaše zakoupené moduly se zde zobrazí po navázání připojení.",
@@ -855,7 +859,7 @@
       "notes": "Poznámky",
       "exchange_rate": "Směnný kurz",
       "address_information": "Adresa",
-      "pdf_generation": "PDF Generation"
+      "pdf_generation": "Generování PDF"
     },
     "address_information": {
       "section_description": "  Adresu můžete aktualizovat pomocí formuláře níže."
@@ -909,14 +913,14 @@
       "title": "Nastavení PDF",
       "footer_text": "Text zápatí",
       "pdf_layout": "Rozvržení PDF",
-      "pdf_configuration": "PDF Generation Settings",
-      "section_description": "Change the way PDFs are generated",
-      "driver": "PDF Driver to use",
-      "papersize": "Papersize",
-      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
-      "gotenberg_host": "Gotenberg service host",
-      "pdf_variables_save_successfully": "PDF configuration saved successfully",
-      "pdf_variables_save_error": "PDF configuration could not be saved"
+      "pdf_configuration": "Generování PDF",
+      "section_description": "Úprava možností jak jsou generovány PDF soubory.",
+      "driver": "Používaný PDF driver",
+      "papersize": "Velikost dokumentu",
+      "papersize_hint": "Velikost dokumentu v milimetrech (např. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg server",
+      "pdf_variables_save_successfully": "Nastavení generování PDF proběhlo úspěšně.",
+      "pdf_variables_save_error": "Nastavení generování PDF nemůže být uloženo."
     },
     "company_info": {
       "company_info": "Údaje o společnosti",
@@ -1207,14 +1211,23 @@
       "tax_per_item": "Daň za položku",
       "tax_name": "Název daně",
       "compound_tax": "Složená daň",
+      "amount": "Amount",
       "percent": "Procento",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Akce",
       "tax_setting_description": "Povolte, pokud chcete přidat daně k jednotlivým položkám faktury. Ve výchozím nastavení jsou daně přidány přímo na fakturu.",
       "created_message": "Typ daně úspěšně vytvořen",
       "updated_message": "Typ daně úspěšně upraven",
       "deleted_message": "Typ daně úspěšně odstraněn",
       "confirm_delete": "Tento typ daně nebudete moci obnovit",
-      "already_in_use": "Daň se již používá"
+      "already_in_use": "Daň se již používá",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "Platební metody",
@@ -1322,7 +1335,7 @@
       "backup_confirm_delete": "Tuto zálohu nebudete moci obnovit",
       "path": "cesta",
       "new_disk": "Nový disk",
-      "created_at": "vytvořeno v",
+      "created_at": "vytvořeno",
       "size": "velikost",
       "dropbox": "dropbox",
       "local": "místní",
@@ -1436,7 +1449,7 @@
     "street": "Ulice1 | Ulice2",
     "phone": "Telefon",
     "zip_code": "PSČ",
-    "go_back": "Jít zpět",
+    "go_back": "Zpět",
     "currency": "Měna",
     "language": "Jazyk",
     "time_zone": "Časové pásmo",
@@ -1508,7 +1521,7 @@
     },
     "req": {
       "system_req": "Systémové požadavky",
-      "php_req_version": "Php (požadovaná verze {version})",
+      "php_req_version": "PHP (požadovaná verze {version})",
       "check_req": "Zkontrolujte požadavky",
       "system_req_desc": "InvoiceShelf má několik požadavků na server. Ujistěte se, že váš server má požadovanou php verzi a všechna níže uvedená rozšíření."
     },
@@ -1602,14 +1615,15 @@
   "pdf_invoice_label": "Faktura",
   "pdf_invoice_number": "Číslo faktury",
   "pdf_invoice_date": "Datum fakturace",
-  "pdf_invoice_due_date": "Due Date",
+  "pdf_invoice_due_date": "Datum splatnosti",
   "pdf_notes": "Poznámky",
   "pdf_items_label": "Položky",
   "pdf_quantity_label": "Množství",
   "pdf_price_label": "Cena",
   "pdf_discount_label": "Sleva",
-  "pdf_amount_label": "Množství",
+  "pdf_amount_label": "Celkem",
   "pdf_subtotal": "Mezisoučet",
+  "pdf_net_total": "Net",
   "pdf_total": "Celkem",
   "pdf_payment_label": "Platba",
   "pdf_payment_receipt_label": "DOKLAD O PLATBĚ",

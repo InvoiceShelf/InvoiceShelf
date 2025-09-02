@@ -161,7 +161,10 @@
     "name": "Namn",
     "description": "Beskrivning",
     "percent": "Procent",
-    "compound_tax": "Sammansatt moms"
+    "compound_tax": "Sammansatt moms",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Sök...",
@@ -303,6 +306,7 @@
     "total": "Summa",
     "discount": "Rabatt",
     "sub_total": "Delsumma",
+    "net_total": "Net",
     "estimate_number": "Kostnadsförslagsnummer",
     "ref_number": "Ref Nummer",
     "contact": "Kontakt",
@@ -1207,14 +1211,23 @@
       "tax_per_item": "Moms per artikel",
       "tax_name": "Namn",
       "compound_tax": "Sammansatt moms",
+      "amount": "Amount",
       "percent": "Procent",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Handling",
       "tax_setting_description": "Aktivera detta om du vill lägga till momssats på individuella fakturaartiklar. Som standard sätts moms direkt på fakturan.",
       "created_message": "Momssats skapades",
       "updated_message": "Momssats uppdaterades",
       "deleted_message": "Momssats raderades",
       "confirm_delete": "Du kommer inte kunna återställa denna Momssats",
-      "already_in_use": "Momssats används"
+      "already_in_use": "Momssats används",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "Betalmetoder",
@@ -1610,6 +1623,7 @@
   "pdf_discount_label": "Rabatt",
   "pdf_amount_label": "Belopp",
   "pdf_subtotal": "Delsumma",
+  "pdf_net_total": "Net",
   "pdf_total": "Summa",
   "pdf_payment_label": "Betalning",
   "pdf_payment_receipt_label": "Betalningskvitto",

@@ -20,6 +20,7 @@ export default function () {
     sub_total: 0,
     total: 0,
     tax_per_item: null,
+    tax_included: false,
     sales_tax_type: null,
     sales_tax_address_type: null,
     discount_per_item: null,
