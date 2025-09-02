@@ -25,23 +25,16 @@ services:
       retries: 10
 
   webapp:
-    container_name: invoiceshelf-app
+    container_name: invoiceshelf-variant-mariadb
     build:
         context: ../../
         dockerfile: docker/production/Dockerfile
-    ports:
-      - 90:8080
-    volumes:
-      - invoiceshelf_storage:/var/www/html/storage/
-    networks:
-      - invoiceshelf
     environment:
-      - CONTAINERIZED=true
       - APP_NAME=Laravel
       - APP_ENV=local
       - APP_DEBUG=true
-      - APP_URL=http://localhost:90
-      - DB_CONNECTION=mysql
+      - APP_URL=http://localhost:8090
+      - DB_CONNECTION=mariadb
       - DB_HOST=database
       - DB_PORT=3306
       - DB_DATABASE=invoiceshelf
@@ -50,12 +43,9 @@ services:
       - DB_PASSWORD_FILE=
       - CACHE_STORE=file
       - SESSION_DRIVER=file
-      - SESSION_LIFETIME=120
-      - SESSION_ENCRYPT=false
-      - SESSION_PATH=/
+      - SESSION_LIFETIME=240
       - SESSION_DOMAIN=localhost
-      - SANCTUM_STATEFUL_DOMAINS=localhost:90
-      - STARTUP_DELAY=
+      - SANCTUM_STATEFUL_DOMAINS=localhost:8090
       #- MAIL_MAILER=smtp
       #- MAIL_HOST=smtp.mailtrap.io
       #- MAIL_PORT=2525
@@ -63,6 +53,12 @@ services:
       #- MAIL_PASSWORD=null
       #- MAIL_PASSWORD_FILE=<filename>
       #- MAIL_ENCRYPTION=null
+    volumes:
+      - invoiceshelf_storage:/var/www/html/storage/
+    ports:
+      - "8090:8080" # 8090 is the public port.
+    networks:
+      - invoiceshelf
     restart: unless-stopped
     depends_on:
       - database
