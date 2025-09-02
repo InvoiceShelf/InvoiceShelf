@@ -32,6 +32,12 @@ class SendInvoiceRequest extends FormRequest
             'to' => [
                 'required',
             ],
+            'cc' => [
+                'nullable',
+            ],
+            'bcc' => [
+                'nullable',
+            ],
         ];
     }
 }

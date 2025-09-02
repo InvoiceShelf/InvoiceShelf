@@ -32,6 +32,12 @@ class SendPaymentRequest extends FormRequest
             'to' => [
                 'required',
             ],
+            'cc' => [
+                'nullable',
+            ],
+            'bcc' => [
+                'nullable',
+            ],
         ];
     }
 }

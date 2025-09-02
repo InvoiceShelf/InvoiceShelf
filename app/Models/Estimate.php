@@ -374,7 +374,14 @@ class Estimate extends Model implements HasMedia
             $this->save();
         }
 
-        \Mail::to($data['to'])->send(new SendEstimateMail($data));
+        $mail = \Mail::to($data['to']);
+        if (!empty($data['cc'])) {
+            $mail->cc($data['cc']);
+        }
+        if (!empty($data['bcc'])) {
+            $mail->bcc($data['bcc']);
+        }
+        $mail->send(new SendEstimateMail($data));
 
         return [
             'success' => true,
