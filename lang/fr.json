@@ -653,6 +653,8 @@
     "from_date": "Du",
     "to_date": "Au",
     "expense_date": "Date",
+    "expense_number": "Numéro de dépense",
+    "expense_number_placeholder": "EXP-001",
     "description": "Description",
     "receipt": "Reçu",
     "amount": "Montant",
