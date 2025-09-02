@@ -28,7 +28,7 @@ if [ "$DB_CONNECTION" = "sqlite" ] || [ -z "$DB_CONNECTION" ]; then
     if [ ! -e "$DB_DATABASE" ]; then
         echo "**** Specified sqlite database doesn't exist. Creating it ****"
         echo "**** Please make sure your database is on a persistent volume ****"
-        sqlite3 "$DB_DATABASE" "VACUUM;"
+        cp /var/wwwp/html/database/stubs/sqlite.empty.db "$DB_DATABASE"
     fi
     chown www-data:www-data "$DB_DATABASE"
 fi
