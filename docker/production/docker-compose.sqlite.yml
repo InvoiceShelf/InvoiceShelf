@@ -5,7 +5,7 @@
 
 services:
   webapp:
-    container_name: invoiceshelf-sqlite
+    container_name: invoiceshelf-variant-sqlite
     build:
       context: ../../
       dockerfile: docker/production/Dockerfile
