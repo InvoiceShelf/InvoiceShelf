@@ -74,7 +74,7 @@ get_docker_compose_cmd() {
 
 # Function to find the most recent compose file used
 find_compose_file() {
-    local config_file=".dev-env-config"
+    local config_file=".devenvconfig"
 
     if [ -f "$config_file" ]; then
         cat "$config_file"
@@ -86,7 +86,7 @@ find_compose_file() {
 # Function to save compose file configuration
 save_config() {
     local compose_file=$1
-    echo "$compose_file" > .dev-env-config
+    echo "$compose_file" > .devenvconfig
 }
 
 # Function to check if host entry exists
@@ -335,7 +335,7 @@ cmd_destroy() {
             if $docker_compose -f "$compose_file" down --rmi all --volumes --remove-orphans; then
                 print_success "Development environment destroyed successfully!"
                 # Remove the config file since everything is destroyed
-                rm -f .dev-env-config
+                rm -f .devenvconfig
             else
                 print_error "Failed to destroy development environment"
                 exit 1
