@@ -42,6 +42,8 @@ show_usage() {
     echo "  rebuild       Rebuild and restart the development environment"
     echo "  shell         Enter the PHP container's shell"
     echo "  run [CMD]     Run a command inside the PHP container (e.g., ./artisan)"
+    echo "  test          Run the test suite (Pest)"
+    echo "  format        Format the code (Pint)"
     echo ""
     echo "Examples:"
     echo "  $0            # Interactive setup and start"
@@ -427,6 +429,36 @@ cmd_run() {
     docker exec -it -w /var/www/html invoiceshelf-dev-php "$@"
 }
 
+# Function to run tests
+cmd_test() {
+    print_info "Running tests (Pest)..."
+
+    # Check if the container is running first
+    if ! docker ps --format "{{.Names}}" | grep -q "invoiceshelf-dev-php"; then
+        print_error "PHP container 'invoiceshelf-dev-php' is not running."
+        print_info "Start the development environment first with: $0 start"
+        exit 1
+    fi
+
+    shift # Remove 'test' from arguments
+    docker exec -it -w /var/www/html invoiceshelf-dev-php /var/www/html/vendor/bin/pest "$@"
+}
+
+# Function to format code
+cmd_format() {
+    print_info "Formatting code (Pint)..."
+
+    # Check if the container is running first
+    if ! docker ps --format "{{.Names}}" | grep -q "invoiceshelf-dev-php"; then
+        print_error "PHP container 'invoiceshelf-dev-php' is not running."
+        print_info "Start the development environment first with: $0 start"
+        exit 1
+    fi
+
+    shift # Remove 'format' from arguments
+    docker exec -it -w /var/www/html invoiceshelf-dev-php /var/www/html/vendor/bin/pint "$@"
+}
+
 # Function to show service information
 show_service_info() {
     echo ""
@@ -536,6 +568,14 @@ main() {
         "run")
             validate_environment > /dev/null
             cmd_run "$@"
+            ;;
+        "test")
+            validate_environment > /dev/null
+            cmd_test "$@"
+            ;;
+        "format")
+            validate_environment > /dev/null
+            cmd_format "$@"
             ;;
         "help"|"-h"|"--help")
             show_usage
