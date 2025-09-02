@@ -26,6 +26,7 @@ class ExpenseFactory extends Factory
         return [
             'expense_date' => $this->faker->date('Y-m-d', 'now'),
             'expense_category_id' => ExpenseCategory::factory(),
+            'expense_number' => $this->faker->unique()->numerify('EXP-#####'),
             'company_id' => User::find(1)->companies()->first()->id,
             'amount' => $this->faker->randomDigitNotNull(),
             'notes' => $this->faker->text(),
