@@ -464,12 +464,11 @@ class Invoice extends Model implements HasMedia
     {
         $data = $this->sendInvoiceData($data);
 
-
         $mail = \Mail::to($data['to']);
-        if (!empty($data['cc'])) {
+        if (! empty($data['cc'])) {
             $mail->cc($data['cc']);
         }
-        if (!empty($data['bcc'])) {
+        if (! empty($data['bcc'])) {
             $mail->bcc($data['bcc']);
         }
         $mail->send(new SendInvoiceMail($data));
