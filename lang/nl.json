@@ -653,6 +653,8 @@
     "from_date": "Van datum",
     "to_date": "Tot datum",
     "expense_date": "Datum",
+    "expense_number": "Izdevumu numurs",
+    "expense_number_placeholder": "EXP-001",
     "description": "Omschrijving",
     "receipt": "Bon",
     "amount": "Bedrag",

@@ -653,6 +653,8 @@
     "from_date": "Від дати",
     "to_date": "До дати",
     "expense_date": "Дата",
+    "expense_number": "Номер витрат",
+    "expense_number_placeholder": "EXP-001",
     "description": "Опис",
     "receipt": "Квитанція",
     "amount": "Сума",

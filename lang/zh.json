@@ -653,6 +653,8 @@
     "from_date": "啟始日",
     "to_date": "終止日",
     "expense_date": "日期",
+    "expense_number": "費用編號",
+    "expense_number_placeholder": "EXP-001",
     "description": "詳情",
     "receipt": "收據",
     "amount": "總額",

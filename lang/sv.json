@@ -653,6 +653,8 @@
     "from_date": "Från datum",
     "to_date": "Till datum",
     "expense_date": "Datum",
+    "expense_number": "Utgiftsnummer",
+    "expense_number_placeholder": "EXP-001",
     "description": "Beskrivning",
     "receipt": "Kvitto",
     "amount": "Summa",

@@ -653,6 +653,8 @@
     "from_date": "Từ ngày",
     "to_date": "Đến nay",
     "expense_date": "Ngày",
+    "expense_number": "Số chi phí",
+    "expense_number_placeholder": "EXP-001",
     "description": "Sự miêu tả",
     "receipt": "Biên lai",
     "amount": "Số tiền",

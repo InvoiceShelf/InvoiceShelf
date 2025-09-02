@@ -57,6 +57,7 @@ test('store validates using a form request', function () {
 
 test('get expense data', function () {
     $expense = Expense::factory()->create([
+        'expense_number' => 'EXP-000001',
         'expense_date' => '2019-02-05',
     ]);
 
@@ -64,6 +65,7 @@ test('get expense data', function () {
 
     $this->assertDatabaseHas('expenses', [
         'id' => $expense->id,
+        'expense_number' => $expense['expense_number'],
         'notes' => $expense['notes'],
         'expense_category_id' => $expense['expense_category_id'],
         'amount' => $expense['amount'],

@@ -653,6 +653,8 @@
     "from_date": "من تاريخ",
     "to_date": "حتى تاريخ",
     "expense_date": "التاريخ",
+    "expense_number": "رقم المصروفات",
+    "expense_number_placeholder": "EXP-001",
     "description": "الوصف",
     "receipt": "سند القبض",
     "amount": "المبلغ المطلوب",
