@@ -3,7 +3,7 @@
     :title="$t('wizard.verify_domain.title')"
     :description="$t('wizard.verify_domain.desc')"
   >
-    <div class="w-full md:w-2/3">
+    <div class="w-full">
       <BaseInputGroup
         :label="$t('wizard.verify_domain.app_domain')"
         :error="v$.app_domain.$error && v$.app_domain.$errors[0].$message"

@@ -2,26 +2,44 @@ services:
   php-fpm:
     container_name: invoiceshelf-dev-php
     build:
-      context: ./php
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: .dev/Dockerfile
       args:
         - UID=${USRID:-1000}
         - GID=${GRPID:-1000}
+      target: development
     volumes:
-      - ../:/home/invoiceshelf/app
-    ports:
-      - 5173:5173
+      - ../../:/var/www/html
     networks:
       - invoiceshelf-dev
 
   nginx:
     container_name: invoiceshelf-dev-nginx
-    image: nginx:stable
+    build:
+      context: ..
+      dockerfile: .dev/nginx.Dockerfile
+    environment:
+      - "PHP_FPM_HOST=php-fpm:9000"
     ports:
       - '80:80'
     volumes:
-      - ./nginx/conf.d/dev.conf:/etc/nginx/conf.d/dev.conf
-      - ../:/home/invoiceshelf/app
+      - ../../:/var/www/html
+    networks:
+      invoiceshelf-dev:
+        aliases:
+          - invoiceshelf.test
+
+  db:
+    image: postgres:15
+    container_name: invoiceshelf-dev-pgsql
+    environment:
+      - POSTGRES_PASSWORD=invoiceshelf
+      - POSTGRES_USER=invoiceshelf
+      - POSTGRES_DB=invoiceshelf
+    ports:
+      - 5432:5432
+    volumes:
+      - invoiceshelf-dev-pgsql:/var/lib/postgresql/data
     networks:
       - invoiceshelf-dev
 
@@ -33,8 +51,6 @@ services:
     environment:
       ADMINER_PLUGINS: tables-filter
       ADMINER_DESIGN: konya
-    volumes:
-      - ../database:/database
     ports:
       - '8080:8080'
     networks:
@@ -50,10 +66,8 @@ services:
     networks:
       - invoiceshelf-dev
 
-  pdf:
-    image: gotenberg/gotenberg:8
-    networks:
-      - invoiceshelf-dev
-
 networks:
   invoiceshelf-dev:
+
+volumes:
+  invoiceshelf-dev-pgsql:

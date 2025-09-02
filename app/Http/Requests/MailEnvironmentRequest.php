@@ -34,7 +34,7 @@ class MailEnvironmentRequest extends FormRequest
                         'required',
                     ],
                     'mail_encryption' => [
-                        'required',
+                        'nullable',
                         'string',
                     ],
                     'from_name' => [
