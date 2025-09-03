@@ -302,6 +302,7 @@ export default {
     return {
       eInvoices,
       isLoading,
+      loadEInvoices,
       downloadFile,
       deleteEInvoice,
       formatDate

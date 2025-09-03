@@ -2,6 +2,7 @@
 
 namespace App\Services\EInvoice;
 
+use App\Models\EInvoice;
 use App\Models\Invoice;
 use App\Services\EInvoice\Generators\CIIGenerator;
 use App\Services\EInvoice\Generators\FacturXGenerator;
@@ -117,9 +118,30 @@ class EInvoiceService
     public function deleteFromStorage(Invoice $invoice, string $format): bool
     {
         $format = $this->normalizeFormat($format);
-        $path = "e-invoices/{$invoice->company_id}/{$invoice->id}";
+        $basePath = "e-invoices/{$invoice->company_id}/{$invoice->id}";
 
-        return Storage::deleteDirectory($path);
+        $deleted = false;
+
+        // Delete XML file
+        $xmlPath = "{$basePath}/{$invoice->invoice_number}_{$format}.xml";
+        if (Storage::exists($xmlPath)) {
+            $deleted = Storage::delete($xmlPath) || $deleted;
+        }
+
+        // Delete PDF file (for Factur-X and ZUGFeRD)
+        if (in_array($format, ['Factur-X', 'ZUGFeRD'])) {
+            $pdfPath = "{$basePath}/{$invoice->invoice_number}_{$format}.pdf";
+            if (Storage::exists($pdfPath)) {
+                $deleted = Storage::delete($pdfPath) || $deleted;
+            }
+        }
+
+        // Also delete from database
+        EInvoice::where('invoice_id', $invoice->id)
+            ->where('format', $format)
+            ->delete();
+
+        return $deleted;
     }
 
     /**

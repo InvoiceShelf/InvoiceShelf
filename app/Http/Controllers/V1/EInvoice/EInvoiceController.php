@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\V1\EInvoice;
 
 use App\Http\Controllers\Controller;
-use App\Jobs\GenerateEInvoiceJob;
 use App\Models\Invoice;
 use App\Services\EInvoice\EInvoiceService;
 use Illuminate\Http\JsonResponse;
@@ -32,25 +31,14 @@ class EInvoiceController extends Controller
         $async = $request->input('async', true);
 
         try {
-            if ($async) {
-                // Generate asynchronously
-                GenerateEInvoiceJob::dispatch($invoice, $format);
+            // Generate using the service (both async and sync now work the same way)
+            $result = $this->eInvoiceService->generate($invoice, $format);
 
-                return response()->json([
-                    'message' => 'E-invoice generation started',
-                    'format' => $format,
-                    'status' => 'processing',
-                ]);
-            } else {
-                // Generate synchronously
-                $result = $this->eInvoiceService->generate($invoice, $format);
-
-                return response()->json([
-                    'message' => 'E-invoice generated successfully',
-                    'format' => $format,
-                    'files' => $result['saved_files'] ?? [],
-                ]);
-            }
+            return response()->json([
+                'message' => 'E-invoice generated successfully',
+                'format' => $format,
+                'files' => $result['saved_files'] ?? [],
+            ]);
         } catch (\InvalidArgumentException $e) {
             return response()->json([
                 'error' => $e->getMessage(),

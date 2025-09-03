@@ -26,8 +26,6 @@
     "validate": "Validate",
     "generate": "Generate",
     "download": "Download",
-    "async_generation": "Generate asynchronously",
-    "async_description": "Recommended for large invoices",
     "valid": "Valid",
     "invalid": "Invalid",
     "generated_invoices": "Generated E-Invoices",

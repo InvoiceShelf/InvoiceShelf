@@ -10,6 +10,7 @@
 
       <!-- Generated E-Invoices List -->
       <EInvoiceList
+        ref="eInvoiceList"
         :invoice="invoice"
         @deleted="handleEInvoiceDeleted"
       />
@@ -59,6 +60,7 @@ import EInvoiceList from './EInvoiceList.vue'
 
 export default {
   name: 'EInvoiceManager',
+  emits: ['refresh-list'],
   components: {
     EInvoiceGenerator,
     EInvoiceList
@@ -69,18 +71,25 @@ export default {
       required: true
     }
   },
-  setup(props) {
+  setup(props, { emit }) {
+    const eInvoiceList = ref(null)
+
     const handleEInvoiceGenerated = () => {
       // Refresh the list when a new e-invoice is generated
-      // This will be handled by the child components
+      if (eInvoiceList.value && eInvoiceList.value.loadEInvoices) {
+        eInvoiceList.value.loadEInvoices()
+      }
     }
 
     const handleEInvoiceDeleted = () => {
       // Refresh the list when an e-invoice is deleted
-      // This will be handled by the child components
+      if (eInvoiceList.value && eInvoiceList.value.loadEInvoices) {
+        eInvoiceList.value.loadEInvoices()
+      }
     }
 
     return {
+      eInvoiceList,
       handleEInvoiceGenerated,
       handleEInvoiceDeleted
     }

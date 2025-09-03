@@ -125,25 +125,7 @@
         </div>
       </div>
 
-      <!-- Generation Options -->
-      <div class="mb-6">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center">
-            <input
-              id="async-generation"
-              v-model="asyncGeneration"
-              type="checkbox"
-              class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
-            <label for="async-generation" class="ml-2 block text-sm text-gray-900">
-              {{ $t('e_invoice.async_generation') }}
-            </label>
-          </div>
-          <div class="text-sm text-gray-500">
-            {{ $t('e_invoice.async_description') }}
-          </div>
-        </div>
-      </div>
+
 
       <!-- Action Buttons -->
       <div class="flex items-center justify-between">
@@ -338,17 +320,17 @@ import axios from 'axios'
 
 export default {
   name: 'EInvoiceGenerator',
+  emits: ['generated'],
   props: {
     invoice: {
       type: Object,
       required: true
     }
   },
-  setup(props) {
+  setup(props, { emit }) {
     const { t } = useI18n()
     
     const selectedFormat = ref('UBL')
-    const asyncGeneration = ref(true)
     const isValidating = ref(false)
     const isGenerating = ref(false)
     const validationResult = ref(null)
@@ -418,29 +400,28 @@ export default {
       try {
         const response = await axios.post(`/api/v1/invoices/${props.invoice.id}/e-invoice/generate`, {
           format: selectedFormat.value,
-          async: asyncGeneration.value
+          async: true
         })
 
-        if (asyncGeneration.value) {
-          statusMessage.value = {
-            type: 'info',
-            message: 'E-invoice generation started. You will be notified when it\'s ready.'
-          }
-        } else {
-          statusMessage.value = {
-            type: 'success',
-            message: 'E-invoice generated successfully'
-          }
-          
-          // Update generated files
-          if (response.data.files) {
-            generatedFiles.value = Object.entries(response.data.files).map(([type, path]) => ({
-              type,
-              url: `/api/v1/invoices/${props.invoice.id}/e-invoice/download/${selectedFormat.value}/${type}`,
-              filename: `${props.invoice.invoice_number}_${selectedFormat.value}.${type}`
-            }))
-          }
+        statusMessage.value = {
+          type: 'success',
+          message: 'E-invoice generated successfully'
         }
+        
+        // Update generated files
+        if (response.data.files) {
+          generatedFiles.value = Object.entries(response.data.files).map(([type, path]) => ({
+            type,
+            url: `/api/v1/invoices/${props.invoice.id}/e-invoice/download/${selectedFormat.value}/${type}`,
+            filename: `${props.invoice.invoice_number}_${selectedFormat.value}.${type}`
+          }))
+        }
+        
+        // Emit event to refresh the list
+        emit('generated', {
+          format: selectedFormat.value,
+          files: response.data.files || []
+        })
       } catch (error) {
         statusMessage.value = {
           type: 'error',
@@ -476,7 +457,6 @@ export default {
     return {
       t,
       selectedFormat,
-      asyncGeneration,
       isValidating,
       isGenerating,
       validationResult,
