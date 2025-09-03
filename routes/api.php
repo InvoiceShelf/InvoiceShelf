@@ -47,7 +47,6 @@ use App\Http\Controllers\V1\Admin\Invoice\InvoicesController;
 use App\Http\Controllers\V1\Admin\Invoice\InvoiceTemplatesController;
 use App\Http\Controllers\V1\Admin\Invoice\SendInvoiceController;
 use App\Http\Controllers\V1\Admin\Invoice\SendInvoicePreviewController;
-use App\Http\Controllers\V1\EInvoice\EInvoiceController;
 use App\Http\Controllers\V1\Admin\Item\ItemsController;
 use App\Http\Controllers\V1\Admin\Item\UnitsController;
 use App\Http\Controllers\V1\Admin\Mobile\AuthController;
@@ -101,6 +100,7 @@ use App\Http\Controllers\V1\Customer\General\ProfileController as CustomerProfil
 use App\Http\Controllers\V1\Customer\Invoice\InvoicesController as CustomerInvoicesController;
 use App\Http\Controllers\V1\Customer\Payment\PaymentMethodController;
 use App\Http\Controllers\V1\Customer\Payment\PaymentsController as CustomerPaymentsController;
+use App\Http\Controllers\V1\EInvoice\EInvoiceController;
 use App\Http\Controllers\V1\Installation\AppDomainController;
 use App\Http\Controllers\V1\Installation\DatabaseConfigurationController;
 use App\Http\Controllers\V1\Installation\FilePermissionsController;

@@ -16,7 +16,9 @@ class GenerateEInvoiceJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public Invoice $invoice;
+
     public string $format;
+
     public bool $saveToStorage;
 
     /**
@@ -36,21 +38,21 @@ class GenerateEInvoiceJob implements ShouldQueue
     {
         try {
             Log::info("Generating e-invoice for invoice {$this->invoice->id} in format {$this->format}");
-            
+
             $result = $eInvoiceService->generate($this->invoice, $this->format, $this->saveToStorage);
-            
+
             Log::info("E-invoice generated successfully for invoice {$this->invoice->id}", [
                 'format' => $this->format,
-                'files' => $result['saved_files'] ?? []
+                'files' => $result['saved_files'] ?? [],
             ]);
-            
+
         } catch (\Exception $e) {
             Log::error("Failed to generate e-invoice for invoice {$this->invoice->id}", [
                 'format' => $this->format,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
-            
+
             throw $e;
         }
     }
@@ -62,7 +64,7 @@ class GenerateEInvoiceJob implements ShouldQueue
     {
         Log::error("E-invoice generation job failed for invoice {$this->invoice->id}", [
             'format' => $this->format,
-            'error' => $exception->getMessage()
+            'error' => $exception->getMessage(),
         ]);
     }
 }

@@ -3,14 +3,12 @@
 namespace App\Http\Controllers\V1\EInvoice;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\EInvoiceResource;
 use App\Jobs\GenerateEInvoiceJob;
 use App\Models\Invoice;
 use App\Services\EInvoice\EInvoiceService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Storage;
 
 class EInvoiceController extends Controller
 {
@@ -27,7 +25,7 @@ class EInvoiceController extends Controller
 
         $request->validate([
             'format' => 'required|string|in:UBL,CII,Factur-X,ZUGFeRD',
-            'async' => 'boolean'
+            'async' => 'boolean',
         ]);
 
         $format = $request->input('format', 'UBL');
@@ -37,29 +35,29 @@ class EInvoiceController extends Controller
             if ($async) {
                 // Generate asynchronously
                 GenerateEInvoiceJob::dispatch($invoice, $format);
-                
+
                 return response()->json([
                     'message' => 'E-invoice generation started',
                     'format' => $format,
-                    'status' => 'processing'
+                    'status' => 'processing',
                 ]);
             } else {
                 // Generate synchronously
                 $result = $this->eInvoiceService->generate($invoice, $format);
-                
+
                 return response()->json([
                     'message' => 'E-invoice generated successfully',
                     'format' => $format,
-                    'files' => $result['saved_files'] ?? []
+                    'files' => $result['saved_files'] ?? [],
                 ]);
             }
         } catch (\InvalidArgumentException $e) {
             return response()->json([
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 400);
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Failed to generate e-invoice'
+                'error' => 'Failed to generate e-invoice',
             ], 500);
         }
     }
@@ -72,17 +70,17 @@ class EInvoiceController extends Controller
         $this->authorize('view', $invoice);
 
         $request->validate([
-            'type' => 'string|in:xml,pdf'
+            'type' => 'string|in:xml,pdf',
         ]);
 
         $type = $request->input('type', $type);
 
         try {
             $content = $this->eInvoiceService->getFromStorage($invoice, $format, $type);
-            
-            if (!$content) {
+
+            if (! $content) {
                 return response()->json([
-                    'error' => 'E-invoice file not found'
+                    'error' => 'E-invoice file not found',
                 ], 404);
             }
 
@@ -91,11 +89,11 @@ class EInvoiceController extends Controller
 
             return response($content, 200, [
                 'Content-Type' => $mimeType,
-                'Content-Disposition' => "attachment; filename=\"{$filename}\""
+                'Content-Disposition' => "attachment; filename=\"{$filename}\"",
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Failed to retrieve e-invoice file'
+                'error' => 'Failed to retrieve e-invoice file',
             ], 500);
         }
     }
@@ -108,7 +106,7 @@ class EInvoiceController extends Controller
         $this->authorize('view', $invoice);
 
         $request->validate([
-            'type' => 'string|in:xml,pdf'
+            'type' => 'string|in:xml,pdf',
         ]);
 
         $type = $request->input('type', 'xml');
@@ -118,7 +116,7 @@ class EInvoiceController extends Controller
         return response()->json([
             'exists' => $exists,
             'format' => $format,
-            'type' => $type
+            'type' => $type,
         ]);
     }
 
@@ -130,7 +128,7 @@ class EInvoiceController extends Controller
         $formats = $this->eInvoiceService->getSupportedFormats();
 
         return response()->json([
-            'formats' => $formats
+            'formats' => $formats,
         ]);
     }
 
@@ -142,7 +140,7 @@ class EInvoiceController extends Controller
         $this->authorize('view', $invoice);
 
         $request->validate([
-            'format' => 'required|string|in:UBL,CII,Factur-X,ZUGFeRD'
+            'format' => 'required|string|in:UBL,CII,Factur-X,ZUGFeRD',
         ]);
 
         $format = $request->input('format');
@@ -151,7 +149,7 @@ class EInvoiceController extends Controller
         return response()->json([
             'valid' => empty($errors),
             'errors' => $errors,
-            'format' => $format
+            'format' => $format,
         ]);
     }
 
@@ -167,11 +165,11 @@ class EInvoiceController extends Controller
 
             return response()->json([
                 'message' => 'E-invoice files deleted successfully',
-                'deleted' => $deleted
+                'deleted' => $deleted,
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Failed to delete e-invoice files'
+                'error' => 'Failed to delete e-invoice files',
             ], 500);
         }
     }
@@ -183,7 +181,7 @@ class EInvoiceController extends Controller
     {
         $safeFormat = strtolower(str_replace(['-', ' '], '_', $format));
         $safeNumber = str_replace(['/', '\\', ':', '*', '?', '"', '<', '>', '|'], '_', $invoice->invoice_number);
-        
+
         return "{$safeNumber}_{$safeFormat}.{$type}";
     }
 }

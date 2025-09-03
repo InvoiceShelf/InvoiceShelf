@@ -28,7 +28,7 @@ class InvoiceData
     {
         $company = $invoice->company;
         $customer = $invoice->customer;
-        
+
         // Calculate totals
         $netAmount = $invoice->sub_total;
         $taxAmount = $invoice->tax;

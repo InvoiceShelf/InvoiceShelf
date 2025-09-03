@@ -6,7 +6,6 @@ use App\Models\Invoice;
 use App\Services\EInvoice\Contracts\EInvoiceGeneratorInterface;
 use App\Services\EInvoice\DataTransferObjects\InvoiceData;
 use Sabre\Xml\Service;
-use Sabre\Xml\Writer;
 
 class UBLGenerator implements EInvoiceGeneratorInterface
 {
@@ -14,7 +13,7 @@ class UBLGenerator implements EInvoiceGeneratorInterface
 
     public function __construct()
     {
-        $this->xmlService = new Service();
+        $this->xmlService = new Service;
         $this->xmlService->namespaceMap = [
             'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2' => '',
             'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2' => 'cac',
@@ -26,7 +25,7 @@ class UBLGenerator implements EInvoiceGeneratorInterface
     public function generate(Invoice $invoice, string $format = 'UBL'): array
     {
         $invoiceData = InvoiceData::fromInvoice($invoice);
-        
+
         $xml = $this->xmlService->write('Invoice', [
             'cbc:ID' => $invoiceData->number,
             'cbc:IssueDate' => $invoiceData->issueDate,
@@ -34,48 +33,48 @@ class UBLGenerator implements EInvoiceGeneratorInterface
             'cbc:InvoiceTypeCode' => '380', // Commercial Invoice
             'cbc:DocumentCurrencyCode' => $invoiceData->currency,
             'cbc:LineCountNumeric' => count($invoiceData->lineItems),
-            
+
             // Supplier
             'cac:AccountingSupplierParty' => [
-                'cac:Party' => $this->buildParty($invoiceData->supplier)
+                'cac:Party' => $this->buildParty($invoiceData->supplier),
             ],
-            
+
             // Customer
             'cac:AccountingCustomerParty' => [
-                'cac:Party' => $this->buildParty($invoiceData->customer)
+                'cac:Party' => $this->buildParty($invoiceData->customer),
             ],
-            
+
             // Tax Total
             'cac:TaxTotal' => [
                 'cbc:TaxAmount' => [
                     '_' => number_format($invoiceData->taxAmount, 2, '.', ''),
-                    'currencyID' => $invoiceData->currency
+                    'currencyID' => $invoiceData->currency,
                 ],
-                'cac:TaxSubtotal' => $this->buildTaxSubtotals($invoiceData->taxes, $invoiceData->currency)
+                'cac:TaxSubtotal' => $this->buildTaxSubtotals($invoiceData->taxes, $invoiceData->currency),
             ],
-            
+
             // Legal Monetary Total
             'cac:LegalMonetaryTotal' => [
                 'cbc:LineExtensionAmount' => [
                     '_' => number_format($invoiceData->netAmount, 2, '.', ''),
-                    'currencyID' => $invoiceData->currency
+                    'currencyID' => $invoiceData->currency,
                 ],
                 'cbc:TaxExclusiveAmount' => [
                     '_' => number_format($invoiceData->netAmount, 2, '.', ''),
-                    'currencyID' => $invoiceData->currency
+                    'currencyID' => $invoiceData->currency,
                 ],
                 'cbc:TaxInclusiveAmount' => [
                     '_' => number_format($invoiceData->totalAmount, 2, '.', ''),
-                    'currencyID' => $invoiceData->currency
+                    'currencyID' => $invoiceData->currency,
                 ],
                 'cbc:PayableAmount' => [
                     '_' => number_format($invoiceData->totalAmount, 2, '.', ''),
-                    'currencyID' => $invoiceData->currency
-                ]
+                    'currencyID' => $invoiceData->currency,
+                ],
             ],
-            
+
             // Invoice Lines
-            'cac:InvoiceLine' => $this->buildInvoiceLines($invoiceData->lineItems, $invoiceData->currency)
+            'cac:InvoiceLine' => $this->buildInvoiceLines($invoiceData->lineItems, $invoiceData->currency),
         ]);
 
         return [
@@ -92,24 +91,24 @@ class UBLGenerator implements EInvoiceGeneratorInterface
     public function validate(Invoice $invoice): array
     {
         $errors = [];
-        
+
         // Basic validation
         if (empty($invoice->invoice_number)) {
             $errors[] = 'Invoice number is required';
         }
-        
+
         if (empty($invoice->company->name)) {
             $errors[] = 'Supplier name is required';
         }
-        
+
         if (empty($invoice->customer->name)) {
             $errors[] = 'Customer name is required';
         }
-        
+
         if ($invoice->items->isEmpty()) {
             $errors[] = 'At least one line item is required';
         }
-        
+
         return $errors;
     }
 
@@ -117,11 +116,11 @@ class UBLGenerator implements EInvoiceGeneratorInterface
     {
         $partyData = [
             'cac:PartyIdentification' => [
-                'cbc:ID' => $party->vatId ?? $party->taxId ?? $party->name
+                'cbc:ID' => $party->vatId ?? $party->taxId ?? $party->name,
             ],
             'cac:PartyName' => [
-                'cbc:Name' => $party->name
-            ]
+                'cbc:Name' => $party->name,
+            ],
         ];
 
         $address = $party->address ?? $party->billingAddress;
@@ -131,8 +130,8 @@ class UBLGenerator implements EInvoiceGeneratorInterface
                 'cbc:CityName' => $address->city,
                 'cbc:PostalZone' => $address->postalCode,
                 'cac:Country' => [
-                    'cbc:IdentificationCode' => $address->countryCode
-                ]
+                    'cbc:IdentificationCode' => $address->countryCode,
+                ],
             ];
         }
 
@@ -140,8 +139,8 @@ class UBLGenerator implements EInvoiceGeneratorInterface
             $partyData['cac:PartyTaxScheme'] = [
                 'cbc:CompanyID' => $party->vatId,
                 'cac:TaxScheme' => [
-                    'cbc:ID' => 'VAT'
-                ]
+                    'cbc:ID' => 'VAT',
+                ],
             ];
         }
 
@@ -151,58 +150,58 @@ class UBLGenerator implements EInvoiceGeneratorInterface
     private function buildTaxSubtotals(array $taxes, string $currency): array
     {
         $subtotals = [];
-        
+
         foreach ($taxes as $tax) {
             $subtotals[] = [
                 'cbc:TaxableAmount' => [
                     '_' => number_format($tax->baseAmount, 2, '.', ''),
-                    'currencyID' => $currency
+                    'currencyID' => $currency,
                 ],
                 'cbc:TaxAmount' => [
                     '_' => number_format($tax->amount, 2, '.', ''),
-                    'currencyID' => $currency
+                    'currencyID' => $currency,
                 ],
                 'cac:TaxCategory' => [
                     'cbc:ID' => 'S', // Standard rate
                     'cbc:Percent' => number_format($tax->rate, 2, '.', ''),
                     'cac:TaxScheme' => [
-                        'cbc:ID' => 'VAT'
-                    ]
-                ]
+                        'cbc:ID' => 'VAT',
+                    ],
+                ],
             ];
         }
-        
+
         return $subtotals;
     }
 
     private function buildInvoiceLines(array $lineItems, string $currency): array
     {
         $lines = [];
-        
+
         foreach ($lineItems as $index => $item) {
             $lines[] = [
                 'cbc:ID' => (string) ($index + 1),
                 'cbc:InvoicedQuantity' => [
                     '_' => number_format($item->quantity, 2, '.', ''),
-                    'unitCode' => $item->unit
+                    'unitCode' => $item->unit,
                 ],
                 'cbc:LineExtensionAmount' => [
                     '_' => number_format($item->netAmount, 2, '.', ''),
-                    'currencyID' => $currency
+                    'currencyID' => $currency,
                 ],
                 'cac:Item' => [
                     'cbc:Description' => $item->description ?? $item->name,
-                    'cbc:Name' => $item->name
+                    'cbc:Name' => $item->name,
                 ],
                 'cac:Price' => [
                     'cbc:PriceAmount' => [
                         '_' => number_format($item->unitPrice, 2, '.', ''),
-                        'currencyID' => $currency
-                    ]
-                ]
+                        'currencyID' => $currency,
+                    ],
+                ],
             ];
         }
-        
+
         return $lines;
     }
 }

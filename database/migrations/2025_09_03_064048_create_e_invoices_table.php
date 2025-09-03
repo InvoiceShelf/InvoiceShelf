@@ -21,7 +21,7 @@ return new class extends Migration
             $table->json('metadata')->nullable(); // Additional metadata
             $table->timestamp('generated_at')->nullable();
             $table->timestamps();
-            
+
             $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');
             $table->index(['invoice_id', 'format']);
         });
