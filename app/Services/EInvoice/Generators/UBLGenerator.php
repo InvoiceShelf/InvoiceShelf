@@ -123,7 +123,7 @@ class UBLGenerator implements EInvoiceGeneratorInterface
             ],
         ];
 
-        $address = $party->address ?? $party->billingAddress;
+        $address = $party->address ?? ($party->billingAddress ?? null);
         if ($address) {
             $partyData['cac:PostalAddress'] = [
                 'cbc:StreetName' => $address->street,

@@ -138,7 +138,7 @@ class CIIGenerator implements EInvoiceGeneratorInterface
             'Name' => $party->name,
         ];
 
-        $address = $party->address ?? $party->billingAddress;
+        $address = $party->address ?? ($party->billingAddress ?? null);
         if ($address) {
             $partyData['PostalTradeAddress'] = [
                 'PostcodeCode' => $address->postalCode,
