@@ -47,6 +47,7 @@ use App\Http\Controllers\V1\Admin\Invoice\InvoicesController;
 use App\Http\Controllers\V1\Admin\Invoice\InvoiceTemplatesController;
 use App\Http\Controllers\V1\Admin\Invoice\SendInvoiceController;
 use App\Http\Controllers\V1\Admin\Invoice\SendInvoicePreviewController;
+use App\Http\Controllers\V1\EInvoice\EInvoiceController;
 use App\Http\Controllers\V1\Admin\Item\ItemsController;
 use App\Http\Controllers\V1\Admin\Item\UnitsController;
 use App\Http\Controllers\V1\Admin\Mobile\AuthController;
@@ -274,6 +275,18 @@ Route::prefix('/v1')->group(function () {
             Route::get('/invoices/templates', InvoiceTemplatesController::class);
 
             Route::apiResource('invoices', InvoicesController::class);
+
+            // E-Invoice
+            // -------------------------------------------------
+
+            Route::prefix('invoices/{invoice}/e-invoice')->group(function () {
+                Route::post('generate', [EInvoiceController::class, 'generate']);
+                Route::get('formats', [EInvoiceController::class, 'formats']);
+                Route::get('validate', [EInvoiceController::class, 'validateInvoice']);
+                Route::get('exists/{format}', [EInvoiceController::class, 'exists']);
+                Route::get('download/{format}/{type?}', [EInvoiceController::class, 'download']);
+                Route::delete('{format}', [EInvoiceController::class, 'delete']);
+            });
 
             // Recurring Invoice
             // -------------------------------------------------
