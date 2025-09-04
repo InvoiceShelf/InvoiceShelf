@@ -18,21 +18,6 @@ return [
             'description' => 'XML format compliant with EN16931',
             'xml_only' => true,
         ],
-        'CII' => [
-            'name' => 'Cross Industry Invoice',
-            'description' => 'XML format compliant with EN16931',
-            'xml_only' => true,
-        ],
-        'Factur-X' => [
-            'name' => 'Factur-X',
-            'description' => 'PDF with embedded XML (French standard)',
-            'xml_only' => false,
-        ],
-        'ZUGFeRD' => [
-            'name' => 'ZUGFeRD',
-            'description' => 'PDF with embedded XML (German standard)',
-            'xml_only' => false,
-        ],
     ],
 
     'storage' => [
@@ -46,10 +31,6 @@ return [
             'company_name',
             'customer_name',
             'items',
-        ],
-        'facturx_required_fields' => [
-            'company_vat_id',
-            'company_tax_id',
         ],
     ],
 

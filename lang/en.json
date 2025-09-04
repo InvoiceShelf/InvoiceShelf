@@ -22,7 +22,7 @@
     "generate_e_invoice": "Generate E-Invoice",
     "compliance": "EU Compliant",
     "eu_compliant": "EN16931 Compliant",
-    "select_format": "Select E-Invoice Format",
+    "format": "E-Invoice Format",
     "validate": "Validate",
     "generate": "Generate",
     "download": "Download",
@@ -36,29 +36,17 @@
     "generation_failed": "Generation Failed",
     "confirm_delete": "Are you sure you want to delete this e-invoice?",
     "compliance_info_title": "European E-Invoice Compliance",
-    "compliance_info_description": "These formats are compliant with the European Directive 2014/55/EU and EN16931 standard:",
+    "compliance_info_description": "This format is compliant with the European Directive 2014/55/EU and EN16931 standard:",
     "compliance_info_ubl": "UBL (Universal Business Language) - XML format",
-    "compliance_info_cii": "CII (Cross Industry Invoice) - XML format",
-    "compliance_info_facturx": "Factur-X - PDF with embedded XML (French standard)",
-    "compliance_info_zugferd": "ZUGFeRD - PDF with embedded XML (German standard)",
+    "compliance_info_peppol": "PEPPOL BIS 3.0 compliant",
+    "compliance_info_en16931": "EN 16931 European standard",
     "formats": {
       "ubl": {
         "name": "UBL",
-        "description": "Universal Business Language"
-      },
-      "cii": {
-        "name": "CII", 
-        "description": "Cross Industry Invoice"
-      },
-      "facturx": {
-        "name": "Factur-X",
-        "description": "PDF with embedded XML"
-      },
-      "zugferd": {
-        "name": "ZUGFeRD",
-        "description": "PDF with embedded XML"
+        "description": "Universal Business Language - European Standard"
       }
     },
+    "eu_standard": "EU Standard",
     "messages": {
       "validation_success": "Invoice is valid for e-invoice generation",
       "validation_failed": "Invoice validation failed",

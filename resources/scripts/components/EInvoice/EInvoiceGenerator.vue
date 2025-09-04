@@ -21,35 +21,23 @@
       <!-- Format Selection -->
       <div class="mb-6">
         <label class="block text-sm font-medium text-gray-700 mb-3">
-          {{ $t('e_invoice.select_format') }}
+          {{ $t('e_invoice.format') }}
         </label>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div
-            v-for="format in supportedFormats"
-            :key="format.value"
-            class="relative"
-          >
-            <input
-              :id="format.value"
-              v-model="selectedFormat"
-              :value="format.value"
-              type="radio"
-              class="sr-only"
-            />
-            <label
-              :for="format.value"
-              class="flex flex-col items-center p-4 border-2 rounded-lg cursor-pointer transition-colors"
-              :class="{
-                'border-blue-500 bg-blue-50': selectedFormat === format.value,
-                'border-gray-200 hover:border-gray-300': selectedFormat !== format.value
-              }"
-            >
-              <div class="text-2xl mb-2">{{ format.icon }}</div>
-              <div class="text-sm font-medium text-gray-900">{{ format.name }}</div>
-              <div class="text-xs text-gray-500 text-center mt-1">
-                {{ format.description }}
-              </div>
-            </label>
+        <div class="flex items-center p-4 border-2 border-blue-500 bg-blue-50 rounded-lg">
+          <div class="text-2xl mr-3">📄</div>
+          <div>
+            <div class="text-sm font-medium text-gray-900">{{ $t('e_invoice.formats.ubl.name') }}</div>
+            <div class="text-xs text-gray-500">
+              {{ $t('e_invoice.formats.ubl.description') }}
+            </div>
+          </div>
+          <div class="ml-auto">
+            <div class="flex items-center">
+              <div class="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
+              <span class="text-xs text-green-600 font-medium">
+                {{ $t('e_invoice.eu_standard') }}
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -174,7 +162,7 @@
 
           <button
             @click="generateEInvoice"
-            :disabled="!selectedFormat || isGenerating || (validationResult && !validationResult.valid)"
+            :disabled="isGenerating || (validationResult && !validationResult.valid)"
             class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
           >
             <svg
@@ -336,42 +324,14 @@ export default {
     const validationResult = ref(null)
     const statusMessage = ref(null)
     const generatedFiles = ref([])
-    const supportedFormats = ref([
-      {
-        value: 'UBL',
-        name: t('e_invoice.formats.ubl.name'),
-        description: t('e_invoice.formats.ubl.description'),
-        icon: '📄'
-      },
-      {
-        value: 'CII',
-        name: t('e_invoice.formats.cii.name'),
-        description: t('e_invoice.formats.cii.description'),
-        icon: '📋'
-      },
-      {
-        value: 'Factur-X',
-        name: t('e_invoice.formats.facturx.name'),
-        description: t('e_invoice.formats.facturx.description'),
-        icon: '📊'
-      },
-      {
-        value: 'ZUGFeRD',
-        name: t('e_invoice.formats.zugferd.name'),
-        description: t('e_invoice.formats.zugferd.description'),
-        icon: '📈'
-      }
-    ])
 
     const validateInvoice = async () => {
-      if (!selectedFormat.value) return
-
       isValidating.value = true
       statusMessage.value = null
 
       try {
-        const response = await axios.get(`/api/v1/invoices/${props.invoice.id}/e-invoice/validate`, {
-          params: { format: selectedFormat.value }
+        const response = await axios.post(`/api/v1/invoices/${props.invoice.id}/e-invoice/validate`, {
+          format: selectedFormat.value
         })
 
         validationResult.value = response.data
@@ -392,8 +352,6 @@ export default {
     }
 
     const generateEInvoice = async () => {
-      if (!selectedFormat.value) return
-
       isGenerating.value = true
       statusMessage.value = null
 
@@ -462,7 +420,6 @@ export default {
       validationResult,
       statusMessage,
       generatedFiles,
-      supportedFormats,
       validateInvoice,
       generateEInvoice
     }

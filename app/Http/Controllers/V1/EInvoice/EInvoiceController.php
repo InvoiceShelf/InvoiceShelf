@@ -23,7 +23,7 @@ class EInvoiceController extends Controller
         $this->authorize('view', $invoice);
 
         $request->validate([
-            'format' => 'required|string|in:UBL,CII,Factur-X,ZUGFeRD',
+            'format' => 'required|string|in:UBL',
             'async' => 'boolean',
         ]);
 
@@ -128,7 +128,7 @@ class EInvoiceController extends Controller
         $this->authorize('view', $invoice);
 
         $request->validate([
-            'format' => 'required|string|in:UBL,CII,Factur-X,ZUGFeRD',
+            'format' => 'required|string|in:UBL',
         ]);
 
         $format = $request->input('format');

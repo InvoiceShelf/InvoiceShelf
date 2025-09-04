@@ -41,9 +41,8 @@
               </p>
               <ul class="list-disc list-inside space-y-1">
                 <li>{{ $t('e_invoice.compliance_info_ubl') }}</li>
-                <li>{{ $t('e_invoice.compliance_info_cii') }}</li>
-                <li>{{ $t('e_invoice.compliance_info_facturx') }}</li>
-                <li>{{ $t('e_invoice.compliance_info_zugferd') }}</li>
+                <li>{{ $t('e_invoice.compliance_info_peppol') }}</li>
+                <li>{{ $t('e_invoice.compliance_info_en16931') }}</li>
               </ul>
             </div>
           </div>

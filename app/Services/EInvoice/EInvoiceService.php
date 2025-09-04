@@ -4,24 +4,16 @@ namespace App\Services\EInvoice;
 
 use App\Models\EInvoice;
 use App\Models\Invoice;
-use App\Services\EInvoice\Generators\CIIGenerator;
-use App\Services\EInvoice\Generators\FacturXGenerator;
-use App\Services\EInvoice\Generators\UBLGenerator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class EInvoiceService
 {
-    private array $generators;
+    private UBLService $ublService;
 
-    public function __construct()
+    public function __construct(UBLService $ublService)
     {
-        $this->generators = [
-            'UBL' => new UBLGenerator,
-            'CII' => new CIIGenerator,
-            'Factur-X' => new FacturXGenerator,
-            'ZUGFeRD' => new FacturXGenerator, // ZUGFeRD is essentially Factur-X
-        ];
+        $this->ublService = $ublService;
     }
 
     /**
@@ -33,20 +25,16 @@ class EInvoiceService
     {
         $format = $this->normalizeFormat($format);
 
-        if (! isset($this->generators[$format])) {
-            throw new \InvalidArgumentException("Unsupported format: {$format}");
+        if ($format !== 'UBL') {
+            throw new \InvalidArgumentException("Only UBL format is supported. Requested: {$format}");
         }
 
-        $generator = $this->generators[$format];
+        // Generate the e-invoice using UBL service
+        $result = $this->ublService->generate($invoice);
 
-        // Validate invoice data
-        $validationErrors = $generator->validate($invoice);
-        if (! empty($validationErrors)) {
-            throw new \InvalidArgumentException('Invoice validation failed: '.implode(', ', $validationErrors));
+        if (! $result['success']) {
+            throw new \InvalidArgumentException($result['error']);
         }
-
-        // Generate the e-invoice
-        $result = $generator->generate($invoice, $format);
 
         if ($saveToStorage) {
             $result = $this->saveToStorage($invoice, $format, $result);
@@ -60,12 +48,7 @@ class EInvoiceService
      */
     public function getSupportedFormats(): array
     {
-        $formats = [];
-        foreach ($this->generators as $name => $generator) {
-            $formats = array_merge($formats, $generator->getSupportedFormats());
-        }
-
-        return array_unique($formats);
+        return ['UBL'];
     }
 
     /**
@@ -75,11 +58,66 @@ class EInvoiceService
     {
         $format = $this->normalizeFormat($format);
 
-        if (! isset($this->generators[$format])) {
+        if ($format !== 'UBL') {
             return ["Unsupported format: {$format}"];
         }
 
-        return $this->generators[$format]->validate($invoice);
+        // Generate and validate the invoice
+        $result = $this->ublService->generate($invoice);
+
+        if (! $result['success']) {
+            return [$result['error']];
+        }
+
+        return [];
+    }
+
+    /**
+     * Validate e-invoice XML against EN16931 standard
+     */
+    public function validateXml(string $xml, string $format = 'UBL'): array
+    {
+        $format = $this->normalizeFormat($format);
+
+        if ($format !== 'UBL') {
+            return [
+                'valid' => false,
+                'errors' => ["Unsupported format: {$format}"],
+                'warnings' => [],
+            ];
+        }
+
+        return $this->ublService->validate($xml);
+    }
+
+    /**
+     * Validate invoice and generated XML
+     */
+    public function validateInvoice(Invoice $invoice, string $format = 'UBL'): array
+    {
+        $format = $this->normalizeFormat($format);
+
+        if ($format !== 'UBL') {
+            return [
+                'valid' => false,
+                'errors' => ["Unsupported format: {$format}"],
+                'warnings' => [],
+            ];
+        }
+
+        // Generate the e-invoice
+        $result = $this->ublService->generate($invoice);
+
+        if (! $result['success']) {
+            return [
+                'valid' => false,
+                'errors' => [$result['error']],
+                'warnings' => [],
+            ];
+        }
+
+        // Validate the generated XML
+        return $this->ublService->validate($result['xml']);
     }
 
     /**
@@ -128,14 +166,6 @@ class EInvoiceService
             $deleted = Storage::delete($xmlPath) || $deleted;
         }
 
-        // Delete PDF file (for Factur-X and ZUGFeRD)
-        if (in_array($format, ['Factur-X', 'ZUGFeRD'])) {
-            $pdfPath = "{$basePath}/{$invoice->invoice_number}_{$format}.pdf";
-            if (Storage::exists($pdfPath)) {
-                $deleted = Storage::delete($pdfPath) || $deleted;
-            }
-        }
-
         // Also delete from database
         EInvoice::where('invoice_id', $invoice->id)
             ->where('format', $format)
@@ -149,16 +179,7 @@ class EInvoiceService
      */
     private function normalizeFormat(string $format): string
     {
-        $format = strtoupper(trim($format));
-
-        // Handle common variations
-        $mapping = [
-            'FACTURX' => 'Factur-X',
-            'FACTUR-X' => 'Factur-X',
-            'ZUGFERD' => 'ZUGFeRD',
-        ];
-
-        return $mapping[$format] ?? $format;
+        return strtoupper(trim($format));
     }
 
     /**
@@ -176,14 +197,6 @@ class EInvoiceService
             $xmlPath = "{$basePath}/{$xmlFilename}";
             Storage::put($xmlPath, $result['xml']);
             $savedFiles['xml'] = $xmlPath;
-        }
-
-        // Save PDF (if exists)
-        if (! empty($result['pdf'])) {
-            $pdfFilename = $this->generateFilename($invoice, $format, 'pdf');
-            $pdfPath = "{$basePath}/{$pdfFilename}";
-            Storage::put($pdfPath, $result['pdf']);
-            $savedFiles['pdf'] = $pdfPath;
         }
 
         return array_merge($result, ['saved_files' => $savedFiles]);

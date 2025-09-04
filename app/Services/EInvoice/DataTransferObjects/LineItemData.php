@@ -16,5 +16,6 @@ class LineItemData
         public string $unit = 'EA',
         public ?string $itemClassification = null,
         public ?string $itemClassificationCode = null,
+        public ?string $taxCategory = null,
     ) {}
 }

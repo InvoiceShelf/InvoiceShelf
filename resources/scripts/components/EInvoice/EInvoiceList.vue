@@ -238,25 +238,23 @@ export default {
       try {
         // This would be an endpoint to get all e-invoices for an invoice
         // For now, we'll simulate with the existing files check
-        const formats = ['UBL', 'CII', 'Factur-X', 'ZUGFeRD']
+        const format = 'UBL'
         const existingInvoices = []
 
-        for (const format of formats) {
-          try {
-            const response = await axios.get(`/api/v1/invoices/${props.invoice.id}/e-invoice/exists/${format}`)
-            if (response.data.exists) {
-              existingInvoices.push({
-                id: `${props.invoice.id}_${format}`,
-                format,
-                status: 'generated',
-                generated_at: new Date().toISOString(),
-                xml_path: `e-invoices/${props.invoice.company_id}/${props.invoice.id}/${props.invoice.invoice_number}_${format.toLowerCase()}.xml`,
-                pdf_path: format === 'Factur-X' || format === 'ZUGFeRD' ? `e-invoices/${props.invoice.company_id}/${props.invoice.id}/${props.invoice.invoice_number}_${format.toLowerCase()}.pdf` : null
-              })
-            }
-          } catch (error) {
-            // Format doesn't exist, skip
+        try {
+          const response = await axios.get(`/api/v1/invoices/${props.invoice.id}/e-invoice/exists/${format}`)
+          if (response.data.exists) {
+            existingInvoices.push({
+              id: `${props.invoice.id}_${format}`,
+              format,
+              status: 'generated',
+              generated_at: new Date().toISOString(),
+              xml_path: `e-invoices/${props.invoice.company_id}/${props.invoice.id}/${props.invoice.invoice_number}_${format.toLowerCase()}.xml`,
+              pdf_path: null // UBL only generates XML
+            })
           }
+        } catch (error) {
+          // UBL doesn't exist, skip
         }
 
         eInvoices.value = existingInvoices

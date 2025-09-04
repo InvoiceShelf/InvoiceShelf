@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('e_invoices', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('invoice_id');
-            $table->string('format'); // UBL, CII, Factur-X, ZUGFeRD
+            $table->string('format'); // UBL
             $table->string('status')->default('pending'); // pending, generated, failed
             $table->string('xml_path')->nullable();
             $table->string('pdf_path')->nullable();
