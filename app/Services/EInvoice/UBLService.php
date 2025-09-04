@@ -149,12 +149,16 @@ class UBLService
             $party->setTradingName($partyData->registrationName);
         }
 
-        // Set electronic address
+        // Set electronic address (required for PEPPOL EN16931)
         if ($partyData->electronicAddress) {
             $party->setElectronicAddress(new Identifier(
                 $partyData->electronicAddress->value,
                 $partyData->electronicAddress->schemeId
             ));
+        } else {
+            // Fallback: create a default electronic address if none provided (for PEPPOL compliance)
+            $defaultEmail = $partyData->email ?? 'noreply@company.local';
+            $party->setElectronicAddress(new Identifier($defaultEmail, 'EM'));
         }
 
         // Set company ID

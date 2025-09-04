@@ -17,7 +17,7 @@ class SupplierData
         public ?CompanyIdData $companyId = null,
     ) {}
 
-    public static function fromCompany(\App\Models\Company $company): self
+    public static function fromCompany(\App\Models\Company $company, ?\App\Models\User $user = null): self
     {
         // Ensure country relation is loaded
         if (! $company->relationLoaded('address.country')) {
@@ -36,11 +36,18 @@ class SupplierData
             );
         }
 
-        // Create electronic address if email is available
+        // Create electronic address - use company email or fallback to user email
         $electronicAddress = null;
-        if ($company->email) {
+        $email = $company->email;
+
+        // If company has no email, try to get user email
+        if (! $email && $user) {
+            $email = $user->email;
+        }
+
+        if ($email) {
             $electronicAddress = new ElectronicAddressData(
-                value: $company->email,
+                value: $email,
                 schemeId: 'EM', // Email scheme
                 schemeName: 'Electronic Mail'
             );

@@ -29,6 +29,9 @@ class InvoiceData
         $company = $invoice->company;
         $customer = $invoice->customer;
 
+        // Get the user who owns the company
+        $user = $company->owner ?? null;
+
         // Calculate totals (convert from cents to decimal format for EN16931)
         $netAmount = $invoice->sub_total / 100;
         $taxAmount = $invoice->tax / 100;
@@ -95,7 +98,7 @@ class InvoiceData
             totalAmount: $totalAmount,
             taxAmount: $taxAmount,
             netAmount: $netAmount,
-            supplier: SupplierData::fromCompany($company),
+            supplier: SupplierData::fromCompany($company, $user),
             customer: CustomerData::fromCustomer($customer),
             lineItems: $lineItems,
             taxes: $taxes,
