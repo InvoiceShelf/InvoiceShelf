@@ -72,7 +72,7 @@ To **spin up** the environment, run docker compose as follows:
 **Important**: If you are on **Linux** and didn't add the `export` line to your .zshrc/.bashrc file, you need to repeat `step 2` before spinning up, otherwise you will face permissions issues.
 
 ```
-docker compose -f .dev/docker-compose.mysql.yml up --build
+docker compose -f .docker/development/docker-compose.mysql.yml up --build
 ```
 
 ### 2. Spinning Down
@@ -80,7 +80,7 @@ docker compose -f .dev/docker-compose.mysql.yml up --build
 To **spin down** the environment, run docker compose as follows:
 
 ```
-docker compose -f .dev/docker-compose.mysql.yml down
+docker compose -f .docker/development/docker-compose.mysql.yml down
 ```
 
 ### 3. Working with binaries
