@@ -23,6 +23,9 @@ fi
 if [ "$APP_URL" != '' ]; then
    replace_or_insert "APP_URL" "$APP_URL"
 fi
+if [ "$ASSET_URL" != '' ]; then
+   replace_or_insert "ASSET_URL" "$ASSET_URL"
+fi
 if [ "$APP_DIR" != '' ]; then
    replace_or_insert "APP_DIR" "$APP_DIR"
 fi
