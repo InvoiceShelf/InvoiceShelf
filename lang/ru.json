@@ -968,11 +968,11 @@
       "model_in_use": "Невозможно обновить модель для полей, которые уже используются.",
       "type_in_use": "Невозможно обновить тип для полей, которые уже используются.",
       "model_type": {
-        "customer": "Customer",
-        "invoice": "Invoice",
-        "estimate": "Estimate",
-        "expense": "Expense",
-        "payment": "Payment",
+        "customer": "Клиент",
+        "invoice": "Счет",
+        "estimate": "Смета",
+        "expense": "Расход",
+        "payment": "Платёж",
         "item": "Item"
       }
     },

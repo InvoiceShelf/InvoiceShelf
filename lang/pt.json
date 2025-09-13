@@ -968,11 +968,11 @@
       "model_in_use": "Cannot update model for fields which are already in use.",
       "type_in_use": "Cannot update type for fields which are already in use.",
       "model_type": {
-        "customer": "Customer",
-        "invoice": "Invoice",
-        "estimate": "Estimate",
-        "expense": "Expense",
-        "payment": "Payment",
+        "customer": "Cliente",
+        "invoice": "Fatura",
+        "estimate": "Orçamento",
+        "expense": "Despesa",
+        "payment": "Pagamento",
         "item": "Item"
       }
     },

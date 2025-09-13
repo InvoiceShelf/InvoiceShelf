@@ -968,11 +968,11 @@
       "model_in_use": "Impossibile aggiornare il modello per i campi già in uso.",
       "type_in_use": "Impossibile aggiornare il tipo per i campi già in uso.",
       "model_type": {
-        "customer": "Customer",
-        "invoice": "Invoice",
-        "estimate": "Estimate",
-        "expense": "Expense",
-        "payment": "Payment",
+        "customer": "Cliente",
+        "invoice": "Fattura",
+        "estimate": "Preventivo",
+        "expense": "Costo",
+        "payment": "Pagamento",
         "item": "Item"
       }
     },
