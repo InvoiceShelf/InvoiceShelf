@@ -972,7 +972,8 @@
         "invoice": "Rechnung",
         "estimate": "Angebot",
         "expense": "Ausgabe",
-        "payment": "Zahlung"
+        "payment": "Zahlung",
+        "item": "Artikel"
       }
     },
     "customization": {

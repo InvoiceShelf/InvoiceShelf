@@ -122,74 +122,82 @@
           </BaseDropdownItem>
         </BaseDropdown>
       </div>
+      <div v-if="customFieldsReady">
+        <BaseTable
+          ref="table"
+          :data="fetchData"
+          :columns="itemColumns"
+          :placeholder-count="itemStore.totalItems >= 20 ? 10 : 5"
+          class="mt-3"
+        >
+          <template #header>
+            <div class="absolute items-center left-6 top-2.5 select-none">
+              <BaseCheckbox
+                v-model="itemStore.selectAllField"
+                variant="primary"
+                @change="itemStore.selectAllItems"
+              />
+            </div>
+          </template>
 
-      <BaseTable
-        ref="table"
-        :data="fetchData"
-        :columns="itemColumns"
-        :placeholder-count="itemStore.totalItems >= 20 ? 10 : 5"
-        class="mt-3"
-      >
-        <template #header>
-          <div class="absolute items-center left-6 top-2.5 select-none">
-            <BaseCheckbox
-              v-model="itemStore.selectAllField"
-              variant="primary"
-              @change="itemStore.selectAllItems"
+          <template #cell-status="{ row }">
+            <div class="relative block">
+              <BaseCheckbox
+                :id="row.id"
+                v-model="selectField"
+                :value="row.data.id"
+              />
+            </div>
+          </template>
+
+          <template #cell-name="{ row }">
+            <router-link
+              :to="{ path: `items/${row.data.id}/edit` }"
+              class="font-medium text-primary-500"
+            >
+              <BaseText :text="row.data.name" />
+            </router-link>
+          </template>
+
+          <template #cell-unit_name="{ row }">
+            <span>
+              {{ row.data.unit ? row.data.unit.name : '-' }}
+            </span>
+          </template>
+
+          <template #cell-price="{ row }">
+            <BaseFormatMoney
+              :amount="row.data.price"
+              :currency="companyStore.selectedCompanyCurrency"
             />
-          </div>
-        </template>
+          </template>
+          <template #cell-created_at="{ row }">
+            <span>{{ row.data.formatted_created_at }}</span>
+          </template>
 
-        <template #cell-status="{ row }">
-          <div class="relative block">
-            <BaseCheckbox
-              :id="row.id"
-              v-model="selectField"
-              :value="row.data.id"
-            />
-          </div>
-        </template>
 
-        <template #cell-name="{ row }">
-          <router-link
-            :to="{ path: `items/${row.data.id}/edit` }"
-            class="font-medium text-primary-500"
-          >
-            <BaseText :text="row.data.name" />
-          </router-link>
-        </template>
-
-        <template #cell-unit_name="{ row }">
+        <template v-for="field in customItemFields" :key="field.id" v-slot:[`cell-custom_field_${field.id}`]="{ row }">
           <span>
-            {{ row.data.unit ? row.data.unit.name : '-' }}
+            {{ getCustomFieldValueById(row.data.fields, field.id) }}
           </span>
         </template>
 
-        <template #cell-price="{ row }">
-          <BaseFormatMoney
-            :amount="row.data.price"
-            :currency="companyStore.selectedCompanyCurrency"
-          />
-        </template>
 
-        <template #cell-created_at="{ row }">
-          <span>{{ row.data.formatted_created_at }}</span>
-        </template>
-
-        <template v-if="hasAbilities()" #cell-actions="{ row }">
-          <ItemDropdown
-            :row="row.data"
-            :table="table"
-            :load-data="refreshTable"
-          />
-        </template>
-      </BaseTable>
+          <template v-if="hasAbilities()" #cell-actions="{ row }">
+            <ItemDropdown
+              :row="row.data"
+              :table="table"
+              :load-data="refreshTable"
+            />
+          </template>
+        </BaseTable>
+      </div>
     </div>
   </BasePage>
 </template>
 
 <script setup>
-import { ref, computed, inject, onMounted, reactive, onUnmounted } from 'vue'
+import { ref, computed, inject, onMounted, reactive, onUnmounted, watch } from 'vue'
 import { debouncedWatch } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 import { useItemStore } from '@/scripts/admin/stores/item'
@@ -200,6 +208,7 @@ import { useUserStore } from '@/scripts/admin/stores/user'
 import ItemDropdown from '@/scripts/admin/components/dropdowns/ItemIndexDropdown.vue'
 import SatelliteIcon from '@/scripts/components/icons/empty/SatelliteIcon.vue'
 import abilities from '@/scripts/admin/stub/abilities'
+import { useCustomFieldStore } from '@/scripts/admin/stores/custom-field'
 
 const utils = inject('utils')
 
@@ -232,32 +241,66 @@ const selectField = computed({
   },
 })
 
+const customFieldStore = useCustomFieldStore()
+const customItemFields = computed(() =>
+  customFieldStore.customFields.filter(f => f.model_type === 'Item')
+)
+
+function getCustomFieldValueById(fields, fieldId) {
+  const field = fields?.find(f => f.custom_field.id === fieldId)
+  if (!field) return '-'
+  Debug: console.log(field)
+  return (
+    field.string_answer ||
+    field.number_answer ||
+    field.date_answer ||
+    field.time_answer ||
+    field.date_time_answer ||
+    field.default_formatted_answer ||
+    field.boolean_answer ||
+    field.default_answer ||
+    '-'
+  )
+}
+
+const sortedCustomItemFields = computed(() => {
+  return [...customItemFields.value].sort((a, b) => a.id - b.id)
+})
+
 const itemColumns = computed(() => {
-  return [
-    {
-      key: 'status',
-      thClass: 'extra w-10',
-      tdClass: 'font-medium text-gray-900',
-      placeholderClass: 'w-10',
-      sortable: false,
-    },
-    {
-      key: 'name',
-      label: t('items.name'),
-      thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
-    },
+  const baseColumns = [
+    { key: 'status', thClass: 'extra w-10', tdClass: 'font-medium text-gray-900', placeholderClass: 'w-10', sortable: false },
+    { key: 'name', label: t('items.name'), thClass: 'extra', tdClass: 'font-medium text-gray-900' },
     { key: 'unit_name', label: t('items.unit') },
     { key: 'price', label: t('items.price') },
     { key: 'created_at', label: t('items.added_on') },
-
-    {
-      key: 'actions',
-      thClass: 'text-right',
-      tdClass: 'text-right text-sm font-medium',
-      sortable: false,
-    },
   ]
+
+  const customColumns = sortedCustomItemFields.value.map(field => ({
+    key: `custom_field_${field.id}`,
+    label: field.label,
+  }))
+
+  const actionColumn = {
+    key: 'actions',
+    thClass: 'text-right',
+    tdClass: 'text-right text-sm font-medium',
+    sortable: false,
+  }
+
+  return [...baseColumns, ...customColumns, actionColumn]
+})
+
+const customFieldsReady = ref(false)
+onMounted(async () => {
+  await customFieldStore.fetchCustomFields({ model_type: 'Item' })
+  customFieldsReady.value = true
+})
+
+watch(customItemFields, (newVal, oldVal) => {
+  if (oldVal.length === 0 && newVal.length > 0) {
+    refreshTable()
+  }
 })
 
 debouncedWatch(

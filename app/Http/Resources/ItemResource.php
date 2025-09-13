@@ -38,6 +38,9 @@ class ItemResource extends JsonResource
             'currency' => $this->when($this->currency()->exists(), function () {
                 return new CurrencyResource($this->currency);
             }),
+            'fields' => $this->when($this->fields()->exists(), function () {
+                return CustomFieldValueResource::collection($this->fields);
+            }),
         ];
     }
 }

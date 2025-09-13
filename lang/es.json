@@ -972,7 +972,8 @@
         "invoice": "Factura",
         "estimate": "Presupuesto",
         "expense": "Gasto",
-        "payment": "Pago"
+        "payment": "Pago",
+        "item": "Artículo"
       }
     },
     "customization": {
