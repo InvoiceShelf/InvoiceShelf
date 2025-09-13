@@ -12,8 +12,8 @@ use Illuminate\Support\Facades\Auth;
 
 class Item extends Model
 {
-    use HasFactory;
     use HasCustomFieldsTrait;
+    use HasFactory;
 
     protected $guarded = ['id'];
 
@@ -182,11 +182,12 @@ class Item extends Model
             }
         }
 
-        // Handle custom fields - CDTZABRA
+        // Handle custom fields
         $customFields = $request->customFields;
         if ($customFields) {
             $this->updateCustomFields($customFields);
         }
+
         return Item::with('taxes')->find($this->id);
     }
 
@@ -201,13 +202,13 @@ class Item extends Model
         ];
 
         // Dynamically add custom fields
-        if (!empty($this->custom_fields) && is_array($this->custom_fields)) {
+        if (! empty($this->custom_fields) && is_array($this->custom_fields)) {
             foreach ($this->custom_fields as $key => $value) {
                 // Use a consistent placeholder format, e.g. {ITEM_CUSTOM_FIELD_fieldname}
-                $fields['{ITEM_CUSTOM_FIELD_' . strtoupper($key) . '}'] = $value;
+                $fields['{ITEM_CUSTOM_FIELD_'.strtoupper($key).'}'] = $value;
             }
         }
 
         return $fields;
-    } 
+    }
 }
