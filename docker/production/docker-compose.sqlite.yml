@@ -1,0 +1,41 @@
+#-------------------------------------------
+# InvoiceShelf SQLite docker-compose variant
+# Repo : https://github.com/InvoiceShelf/docker
+#-------------------------------------------
+
+services:
+  webapp:
+    container_name: invoiceshelf-variant-sqlite
+    build:
+      context: ../../
+      dockerfile: docker/production/Dockerfile
+    ports:
+      - "8090:8080" # 8090 is the public port.
+    volumes:
+      - invoiceshelf_storage:/var/www/html/storage
+    networks:
+      - invoiceshelf
+    environment:
+      - APP_NAME=InvoiceShelf
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - APP_URL=http://localhost:8090
+      - DB_CONNECTION=sqlite
+      - DB_DATABASE=/var/www/html/storage/app/database.sqlite # please don't touch this!
+      - CACHE_STORE=file
+      - SESSION_DRIVER=file
+      - SESSION_LIFETIME=240
+      - SESSION_DOMAIN=localhost
+      - SANCTUM_STATEFUL_DOMAINS=localhost:8090
+      #- MAIL_DRIVER=smtp
+      #- MAIL_HOST=smtp.mailtrap.io
+      #- MAIL_PORT=2525
+      #- MAIL_USERNAME=null
+      #- MAIL_PASSWORD=null
+      #- MAIL_PASSWORD_FILE=<filename>
+      #- MAIL_ENCRYPTION=null
+    restart: unless-stopped
+networks:
+  invoiceshelf:
+volumes:
+  invoiceshelf_storage:

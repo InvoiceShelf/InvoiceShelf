@@ -20,7 +20,20 @@
       :data="fetchData"
       :columns="taxTypeColumns"
     >
-      <template #cell-percent="{ row }"> {{ row.data.percent }} % </template>
+    <template #cell-calculation_type="{ row }">
+      {{ $t(`settings.tax_types.${row.data.calculation_type}`) }}
+    </template>
+    <template #cell-amount="{ row }">
+      <template v-if="row.data.calculation_type === 'percentage'">
+        {{ row.data.percent }} %
+      </template>
+      <template v-else-if="row.data.calculation_type === 'fixed'">
+        <BaseFormatMoney :amount="row.data.fixed_amount" :currency="defaultCurrency" />
+      </template>
+      <template v-else>
+        -
+      </template>
+    </template>
 
       <template v-if="hasAtleastOneAbility()" #cell-actions="{ row }">
         <TaxTypeDropdown
@@ -38,6 +51,21 @@
         :disabled="salesTaxEnabled"
         :title="$t('settings.tax_types.tax_per_item')"
         :description="$t('settings.tax_types.tax_setting_description')"
+      />
+
+      <BaseDivider class="mt-8 mb-2" />
+
+      <BaseSwitchSection
+        v-model="taxIncludedField"
+        :title="$t('settings.tax_types.tax_included')"
+        :description="$t('settings.tax_types.tax_included_description')"
+      />
+
+      <BaseSwitchSection
+        v-if="taxIncludedField"
+        v-model="taxIncludedByDefaultField"
+        :title="$t('settings.tax_types.tax_included_by_default')"
+        :description="$t('settings.tax_types.tax_included_by_default_description')"
       />
     </div>
   </BaseSettingCard>
@@ -64,9 +92,9 @@ const taxTypeStore = useTaxTypeStore()
 const modalStore = useModalStore()
 const userStore = useUserStore()
 const moduleStore = useModuleStore()
-
 const table = ref(null)
 const taxPerItemSetting = ref(companyStore.selectedCompanySettings.tax_per_item)
+const defaultCurrency = computed(() => companyStore.selectedCompanyCurrency)
 
 const taxTypeColumns = computed(() => {
   return [
@@ -77,8 +105,14 @@ const taxTypeColumns = computed(() => {
       tdClass: 'font-medium text-gray-900',
     },
     {
-      key: 'percent',
-      label: t('settings.tax_types.percent'),
+      key: 'calculation_type',
+      label: t('settings.tax_types.calculation_type'),
+      thClass: 'extra',
+      tdClass: 'font-medium text-gray-900',
+    },
+    {
+      key: 'amount',
+      label: t('settings.tax_types.amount'),
       thClass: 'extra',
       tdClass: 'font-medium text-gray-900',
     },
@@ -112,6 +146,61 @@ const taxPerItemField = computed({
     }
 
     taxPerItemSetting.value = value
+
+    await companyStore.updateCompanySettings({
+      data,
+      message: 'general.setting_updated',
+    })
+  },
+})
+
+const taxIncludedSettings = reactive({
+  tax_included: 'NO',
+  tax_included_by_default: 'NO',
+})
+
+utils.mergeSettings(taxIncludedSettings, {
+  ...companyStore.selectedCompanySettings,
+})
+
+const taxIncludedField = computed({
+  get: () => {
+    return taxIncludedSettings.tax_included === 'YES'
+  },
+  set: async (newValue) => {
+    const value = newValue ? 'YES' : 'NO'
+    taxIncludedSettings.tax_included = value
+
+    if (!newValue) {
+      taxIncludedSettings.tax_included_by_default = 'NO'
+    }
+
+    let data = {
+      settings: {
+        ...taxIncludedSettings,
+      },
+    }
+
+    await companyStore.updateCompanySettings({
+      data,
+      message: 'general.setting_updated',
+    })
+  },
+})
+
+const taxIncludedByDefaultField = computed({
+  get: () => {
+    return taxIncludedSettings.tax_included_by_default === 'YES'
+  },
+  set: async (newValue) => {
+    const value = newValue ? 'YES' : 'NO'
+    taxIncludedSettings.tax_included_by_default = value
+
+    let data = {
+      settings: {
+        tax_included_by_default: taxIncludedSettings.tax_included_by_default,
+      },
+    }
 
     await companyStore.updateCompanySettings({
       data,

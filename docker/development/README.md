@@ -72,7 +72,7 @@ To **spin up** the environment, run docker compose as follows:
 **Important**: If you are on **Linux** and didn't add the `export` line to your .zshrc/.bashrc file, you need to repeat `step 2` before spinning up, otherwise you will face permissions issues.
 
 ```
-docker compose -f .dev/docker-compose.mysql.yml up --build
+docker compose -f docker/development/docker-compose.mysql.yml up --build
 ```
 
 ### 2. Spinning Down
@@ -80,7 +80,7 @@ docker compose -f .dev/docker-compose.mysql.yml up --build
 To **spin down** the environment, run docker compose as follows:
 
 ```
-docker compose -f .dev/docker-compose.mysql.yml down
+docker compose -f docker/development/docker-compose.mysql.yml down
 ```
 
 ### 3. Working with binaries
@@ -88,10 +88,10 @@ docker compose -f .dev/docker-compose.mysql.yml down
 To correctly run `composer`, `npm`, `artisan`, `pint`, `pest` or other binaries within this project, you must ssh into the container as follows:
 
 ```
-docker exec -it --user invoiceshelf invoiceshelf-dev-php /bin/bash
+docker exec -it invoiceshelf-dev-php /bin/sh
 ```
 
-In the `/home/invoiceshelf/app` directory you can find the application root and run the commands from there.
+In the `/var/www/html` directory you can find the application root and run the commands from there.
 
 ## What is included
 
@@ -109,13 +109,13 @@ This dockerized environment comes with support for all three databases that Invo
 
 The setup parameters/credentials for each of the supported databases are as follows.
 
-|   | MySQL | PostgreSQL | SQLite |
-|---|---|---|---|
-| **DB_USER** | invoiceshelf  | invoiceshelf | Not applicable  |
-| **DB_PASS** | invoiceshelf  | invoiceshelf | Not applicable  |
-| **DB_NAME** | invoiceshelf  | invoiceshelf | /home/invoiceshelf/database/database.sqlite  |
-| **DB_HOST** | db-mysql  |  db-pgsql | Not applicable  |
-| **DB_PORT** | 3036  | 5432  | Not applicable  |
+|   | MySQL | PostgreSQL | SQLite                                    |
+|---|---|---|-------------------------------------------|
+| **DB_USER** | invoiceshelf  | invoiceshelf | Not applicable                            |
+| **DB_PASS** | invoiceshelf  | invoiceshelf | Not applicable                            |
+| **DB_NAME** | invoiceshelf  | invoiceshelf | /var/www/html/storage/app/database.sqlite |
+| **DB_HOST** | 172.18.0.1  |  172.18.0.1 | Not applicable                            |
+| **DB_PORT** | 3306  | 5432  | Not applicable                            |
 
 **Note:** The only required field for SQLite is **DB_NAME**.
 
@@ -135,11 +135,11 @@ To log into the MySQL or PostgresSQL, use the database information specified in 
 
 To log into the SQLite, use the following credentials:
 
-| KEY          | VALUE                     |
-|--------------|---------------------------|
-| **USERNAME** | admin                     |
-| **PASSWORD** | admin                     |
-| **DATABASE** | /database/database.sqlite |
+| KEY          | VALUE                        |
+|--------------|------------------------------|
+| **USERNAME** | admin                        |
+| **PASSWORD** | admin                        |
+| **DATABASE** | /storage/app/database.sqlite |
 
 
 ### 4. Mailpit (fake mail)
@@ -163,13 +163,4 @@ To utilize Mailpit, use the following credentials:
 ---
 
 If you have any questions, feel free to open issue.
-
-
-
-
-
-
-
-
-
 

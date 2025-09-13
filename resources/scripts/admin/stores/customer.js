@@ -186,7 +186,7 @@ export const useCustomerStore = (useWindow = false) => {
               this.customers.splice(index, 1)
               notificationStore.showNotification({
                 type: 'success',
-                message: global.tc('customers.deleted_message', 1),
+                message: global.t('customers.deleted_message', 1),
               })
               resolve(response)
             })
@@ -213,7 +213,7 @@ export const useCustomerStore = (useWindow = false) => {
 
               notificationStore.showNotification({
                 type: 'success',
-                message: global.tc('customers.deleted_message', 2),
+                message: global.t('customers.deleted_message', 2),
               })
               resolve(response)
             })

@@ -17,6 +17,6 @@ class GetUserSettingsController extends Controller
     {
         $user = $request->user();
 
-        return response()->json($user->getSettings($request->settings));
+        return response()->json($user->getSettings((array) $request->settings));
     }
 }

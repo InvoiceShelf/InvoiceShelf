@@ -101,11 +101,11 @@
     "login_successfully": "Prisijungta sėkmingai!",
     "logged_out_successfully": "Atsijungta sėkmingai",
     "mark_as_default": "Pažymėti kaip numatytąjį",
-    "no_data_found": "No data found",
+    "no_data_found": "Duomenų nerasta",
     "pagination": {
-      "previous": "Previous",
-      "next": "Next",
-      "showing": "Showing",
+      "previous": "Ankstesnis",
+      "next": "Kitas",
+      "showing": "Rodoma",
       "to": "to",
       "of": "of",
       "results": "results"
@@ -161,7 +161,10 @@
     "name": "Pavadinimas",
     "description": "Aprašymas",
     "percent": "Procentai",
-    "compound_tax": "Sudėtinis mokestis"
+    "compound_tax": "Sudėtinis mokestis",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Paieška...",
@@ -303,6 +306,7 @@
     "total": "Iš viso",
     "discount": "Nuolaida",
     "sub_total": "Tarpinė suma",
+    "net_total": "Net",
     "estimate_number": "Pasiūlymo numeris",
     "ref_number": "Ref Number",
     "contact": "Contact",
@@ -649,6 +653,8 @@
     "from_date": "From Date",
     "to_date": "To Date",
     "expense_date": "Data",
+    "expense_number": "Išlaidų numeris",
+    "expense_number_placeholder": "EXP-001",
     "description": "Aprašymas",
     "receipt": "Čekis",
     "amount": "Amount",
@@ -852,7 +858,8 @@
       "payment_modes": "Mokėjimo būdai",
       "notes": "Pastabos",
       "exchange_rate": "Valiutų kursas",
-      "address_information": "Address Information"
+      "address_information": "Address Information",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  You can update Your Address information using form below."
@@ -893,6 +900,7 @@
       "mailgun_endpoint": "Mailgun Endpoint",
       "ses_secret": "SES Secret",
       "ses_key": "SES Key",
+      "ses_region": "AWS Region",
       "password": "Mail Password",
       "username": "Mail Username",
       "mail_config": "Mail Configuration",
@@ -904,7 +912,15 @@
     "pdf": {
       "title": "PDF nustatymai",
       "footer_text": "Poraštės tekstas",
-      "pdf_layout": "PDF Išdėstymas"
+      "pdf_layout": "PDF Išdėstymas",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "Company info",
@@ -1088,6 +1104,8 @@
         "description": "Save time by creating notes and reusing them on your invoices, estimates & payments.",
         "notes": "Pastabos",
         "type": "Tipas",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Pridėti pastabą",
         "add_new_note": "Pridėti Naują Pastabą",
         "name": "Pavadinimas",
@@ -1194,14 +1212,23 @@
       "tax_per_item": "Tax Per Item",
       "tax_name": "Mokesčio pavadinimas",
       "compound_tax": "Sudėtinis mokestis",
+      "amount": "Amount",
       "percent": "Procentai",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Veiksmas",
       "tax_setting_description": "Enable this if you want to add taxes to individual invoice items. By default, taxes are added directly to the invoice.",
       "created_message": "Tax type created successfully",
       "updated_message": "Tax type updated successfully",
       "deleted_message": "Tax type deleted successfully",
       "confirm_delete": "You will not be able to recover this Tax Type",
-      "already_in_use": "Tax is already in use"
+      "already_in_use": "Tax is already in use",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "Mokėjimo būdai",
@@ -1237,7 +1264,7 @@
       "time_zone": "Laiko zona",
       "fiscal_year": "Finansiniai metai",
       "date_format": "Datos formatas",
-      "time_format": "Time Fromat",
+      "time_format": "Time Format",
       "discount_setting": "Discount Setting",
       "discount_per_item": "Discount Per Item ",
       "discount_setting_description": "Enable this if you want to add Discount to individual invoice items. By default, Discount is added directly to the invoice.",
@@ -1589,7 +1616,7 @@
   "pdf_invoice_label": "Sąskaita",
   "pdf_invoice_number": "Invoice Number",
   "pdf_invoice_date": "Invoice Date",
-  "pdf_invoice_due_date": "Due date",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "Pastabos",
   "pdf_items_label": "Items",
   "pdf_quantity_label": "Kiekis",
@@ -1597,6 +1624,7 @@
   "pdf_discount_label": "Nuolaida",
   "pdf_amount_label": "Amount",
   "pdf_subtotal": "Subtotal",
+  "pdf_net_total": "Net",
   "pdf_total": "Iš viso",
   "pdf_payment_label": "Mokėjimas",
   "pdf_payment_receipt_label": "PAYMENT RECEIPT",

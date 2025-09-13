@@ -2,7 +2,7 @@
 
 Thank you for investing your time in contributing to our project! :sparkles:.
 
-Read our [Code of Conduct](./CODE_OF_CONDUCT.md) to keep our community approachable and respectable.
+Read our [Code of Conduct](../CODE_OF_CONDUCT.md) to keep our community approachable and respectable.
 
 In this guide you will get an overview of the contribution workflow from opening an issue, creating a PR, reviewing, and merging the PR.
 
@@ -39,7 +39,7 @@ Scan through our [existing issues](https://github.com/InvoiceShelf/InvoiceShelf/
 - Using the command line:
   - [Fork the repo](https://docs.github.com/en/get-started/quickstart/fork-a-repo) so that you can make your changes without affecting the original project until you're ready to merge them.
 
-2. Install or update to **Node.js**, at the version specified in `.node-version`. For more information, see [the development guide](../contributing/development.md).
+2. Install or update to **Node.js**, at the version specified in `.node-version`. For more information, see [the development guide](../docker/development/README.md).
 
 3. Create a working branch and start with your changes!
 

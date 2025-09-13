@@ -56,7 +56,7 @@
             <template #left="slotProps">
               <BaseIcon
                 v-if="!isSaving"
-                name="SaveIcon"
+                name="ArrowDownOnSquareIcon"
                 :class="slotProps.class"
               />
             </template>
@@ -275,6 +275,14 @@ watch(
         companyStore.selectedCompanyCurrency
     }
   }
+)
+
+watch(
+  () => companyStore.selectedCompanySettings?.tax_included_by_default,
+  (newVal) => {
+    recurringInvoiceStore.newRecurringInvoice.tax_included = newVal === 'YES'
+  },
+  {immediate: true}
 )
 
 async function submitForm() {

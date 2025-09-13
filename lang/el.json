@@ -161,7 +161,10 @@
     "name": "Όνομα",
     "description": "Περιγραφή",
     "percent": "Ποσοστό",
-    "compound_tax": "Σύνθετος Φόρος"
+    "compound_tax": "Σύνθετος Φόρος",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Αναζήτηση...",
@@ -303,6 +306,7 @@
     "total": "Σύνολο ",
     "discount": "Έκπτωση",
     "sub_total": "Μερικό Σύνολο",
+    "net_total": "Net",
     "estimate_number": "Εκτίμηση Αριθμού",
     "ref_number": "Αριθμός Αναφοράς",
     "contact": "Επικοινωνία",
@@ -649,6 +653,8 @@
     "from_date": "Από Ημερομηνία",
     "to_date": "Έως ημερομηνία",
     "expense_date": "Ημερομηνία",
+    "expense_number": "Αριθμός παραστατικού",
+    "expense_number_placeholder": "EXP-001",
     "description": "Περιγραφή",
     "receipt": "Απόδειξη",
     "amount": "Ποσό",
@@ -852,7 +858,8 @@
       "payment_modes": "Τρόπος πληρωμής",
       "notes": "Σημειώσεις",
       "exchange_rate": "Συναλλαγματική ισοτιμία",
-      "address_information": "Address Information"
+      "address_information": "Address Information",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  You can update Your Address information using form below."
@@ -893,6 +900,7 @@
       "mailgun_endpoint": "Mailgun Endpoint",
       "ses_secret": "SES Μυστικό",
       "ses_key": "Κλειδί SES",
+      "ses_region": "AWS Region",
       "password": "Κωδικός Πρόσβασης Ταχυδρομείου",
       "username": "Όνομα Ταχυδρομείου",
       "mail_config": "Διαμόρφωση Mail",
@@ -904,7 +912,15 @@
     "pdf": {
       "title": "Ρυθμίσεις PDF",
       "footer_text": "Κείμενο Υποσέλιδου",
-      "pdf_layout": "Διάταξη PDF"
+      "pdf_layout": "Διάταξη PDF",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "Πληροφορίες Εταιρίας",
@@ -1088,6 +1104,8 @@
         "description": "Εξοικονομήστε χρόνο δημιουργώντας σημειώσεις και επαναχρησιμοποίησή τους στα τιμολόγια σας, εκτιμήσεις και πληρωμές.",
         "notes": "Σημειώσεις",
         "type": "Type",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Προσθήκη σημείωσης",
         "add_new_note": "Προσθήκη Νέας Σημείωσης",
         "name": "Όνομα",
@@ -1194,14 +1212,23 @@
       "tax_per_item": "Στοιχείο Φόντου Υπομενού",
       "tax_name": "Όνομα Φόρου",
       "compound_tax": "Σύνθετος Φόρος",
+      "amount": "Amount",
       "percent": "Ποσοστό",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Ενέργεια",
       "tax_setting_description": "Ενεργοποιήστε το αν θέλετε να προσθέσετε έκπτωση σε μεμονωμένα στοιχεία τιμολογίου. Από προεπιλογή, η έκπτωση προστίθεται απευθείας στο τιμολόγιο.",
       "created_message": "Το τιμολόγιο εστάλη επιτυχώς",
       "updated_message": "Το τιμολόγιο εστάλη επιτυχώς",
       "deleted_message": "Το τιμολόγιο εστάλη επιτυχώς",
       "confirm_delete": "Δεν θα μπορείτε να ανακτήσετε αυτό το Προσαρμοσμένο Πεδίο",
-      "already_in_use": "Το όνομα είναι ήδη σε χρήση"
+      "already_in_use": "Το όνομα είναι ήδη σε χρήση",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "Τρόπος πληρωμής",
@@ -1237,7 +1264,7 @@
       "time_zone": "Ζώνη Ώρας",
       "fiscal_year": "Οικονομικό έτος",
       "date_format": "Μορφή Ημερομηνίας",
-      "time_format": "Time Fromat",
+      "time_format": "Time Format",
       "discount_setting": "Ρυθμίσεις Λογαριασμού",
       "discount_per_item": "Έκπτωση Ανά Στοιχείο ",
       "discount_setting_description": "Ενεργοποιήστε το αν θέλετε να προσθέσετε έκπτωση σε μεμονωμένα στοιχεία τιμολογίου. Από προεπιλογή, η έκπτωση προστίθεται απευθείας στο τιμολόγιο.",
@@ -1589,7 +1616,7 @@
   "pdf_invoice_label": "Τιμολόγιο",
   "pdf_invoice_number": "Αριθμός τιμολογίου",
   "pdf_invoice_date": "Ημ/νία Τιμολόγησης",
-  "pdf_invoice_due_date": "Echéance",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "Σημειώσεις",
   "pdf_items_label": "Προϊόντα",
   "pdf_quantity_label": "Ποσότητα",
@@ -1597,6 +1624,7 @@
   "pdf_discount_label": "Έκπτωση",
   "pdf_amount_label": "Ποσό",
   "pdf_subtotal": "Υποσύνολο",
+  "pdf_net_total": "Net",
   "pdf_total": "Σύνολο ",
   "pdf_payment_label": "Πληρωμή",
   "pdf_payment_receipt_label": "ΠΡΟΣΑΡΜΟΓΗ ΠΛΗΡΩΜΗΣ",

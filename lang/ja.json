@@ -161,7 +161,10 @@
     "name": "名前",
     "description": "説明",
     "percent": "パーセント",
-    "compound_tax": "複合税"
+    "compound_tax": "複合税",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "検索...",
@@ -303,6 +306,7 @@
     "total": "合計",
     "discount": "割引",
     "sub_total": "小計",
+    "net_total": "Net",
     "estimate_number": "見積番号",
     "ref_number": "参照番号",
     "contact": "連絡先",
@@ -649,6 +653,8 @@
     "from_date": "開始日",
     "to_date": "終了日",
     "expense_date": "日時",
+    "expense_number": "経費番号",
+    "expense_number_placeholder": "EXP-001",
     "description": "説明",
     "receipt": "領収書",
     "amount": "数量",
@@ -852,7 +858,8 @@
       "payment_modes": "支払い方法",
       "notes": "ノート",
       "exchange_rate": "為替レート",
-      "address_information": "住所情報"
+      "address_information": "住所情報",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  以下のフォームを使用して、住所情報を更新できます。"
@@ -893,6 +900,7 @@
       "mailgun_endpoint": "Mailgun エンドポイント",
       "ses_secret": "SESシークレット",
       "ses_key": "SESキー",
+      "ses_region": "AWS Region",
       "password": "メールのパスワード",
       "username": "メールのユーザー名",
       "mail_config": "メール設定",
@@ -904,7 +912,15 @@
     "pdf": {
       "title": "PDFの設定",
       "footer_text": "フッターの文章",
-      "pdf_layout": "PDFのレイアウト"
+      "pdf_layout": "PDFのレイアウト",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "会社情報",
@@ -1088,6 +1104,8 @@
         "description": "ノートを作成し、請求書、見積り、支払いで再利用することで時間を節約します。",
         "notes": "ノート",
         "type": "タイプ",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "ノートの追加",
         "add_new_note": "新規ノートを追加",
         "name": "名前",
@@ -1194,14 +1212,23 @@
       "tax_per_item": "商品ごとの税",
       "tax_name": "税の名称",
       "compound_tax": "複合税",
+      "amount": "Amount",
       "percent": "パーセント",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "アクション",
       "tax_setting_description": "個々の請求書項目に税金を追加する場合はこれを有効にします。デフォルトでは税金は請求書に直接追加されます。",
       "created_message": "税の種類が正常に作成されました",
       "updated_message": "税の種類が正常に更新されました",
       "deleted_message": "税の種類が正常に削除されました",
       "confirm_delete": "この税の種類は復元できません",
-      "already_in_use": "税は既に使用されています"
+      "already_in_use": "税は既に使用されています",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "支払い方法",
@@ -1589,7 +1616,7 @@
   "pdf_invoice_label": "請求書",
   "pdf_invoice_number": "請求番号",
   "pdf_invoice_date": "請求日",
-  "pdf_invoice_due_date": "支払期日",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "ノート",
   "pdf_items_label": "アイテム",
   "pdf_quantity_label": "数量",
@@ -1597,6 +1624,7 @@
   "pdf_discount_label": "割引",
   "pdf_amount_label": "量",
   "pdf_subtotal": "小計",
+  "pdf_net_total": "Net",
   "pdf_total": "合計",
   "pdf_payment_label": "支払い",
   "pdf_payment_receipt_label": "支払い領収書",

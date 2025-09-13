@@ -161,7 +161,10 @@
     "name": "ชื่อ",
     "description": "คำอธิบาย",
     "percent": "เปอร์เซ็นต์",
-    "compound_tax": "ภาษีมูลค่าเพิ่ม"
+    "compound_tax": "ภาษีมูลค่าเพิ่ม",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "ค้นหา...",
@@ -303,6 +306,7 @@
     "total": "จำนวนเงินสุทธิ",
     "discount": "ส่วนลด",
     "sub_total": "รวมเงิน",
+    "net_total": "Net",
     "estimate_number": "เลขที่ใบเสนอราคา",
     "ref_number": "หมายเลขอ้างอิง",
     "contact": "ติดต่อเรา",
@@ -649,6 +653,8 @@
     "from_date": "จากวันที่",
     "to_date": "ถึงวันที่",
     "expense_date": "วันที่",
+    "expense_number": "เลขที่ค่าใช้จ่าย",
+    "expense_number_placeholder": "EXP-001",
     "description": "คำอธิบาย",
     "receipt": "ใบเสร็จ",
     "amount": "จำนวนเงิน (บาท)",
@@ -852,7 +858,8 @@
       "payment_modes": "วิธีการชำระเงิน",
       "notes": "หมายเหตุ",
       "exchange_rate": "อัตราแลกเปลี่ยน",
-      "address_information": "ข้อมูลที่อยู่"
+      "address_information": "ข้อมูลที่อยู่",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  คุณสามารถอัปเดตข้อมูลที่อยู่ของคุณโดยใช้แบบฟอร์มด้านล่าง"
@@ -893,6 +900,7 @@
       "mailgun_endpoint": "ปลายทาง Mailgun",
       "ses_secret": "SES ซีเคร็ต",
       "ses_key": "SES คีย์",
+      "ses_region": "AWS Region",
       "password": "รหัสผ่านจดหมาย",
       "username": "ชื่อผู้ใช้จดหมาย",
       "mail_config": "การกำหนดค่าจดหมาย",
@@ -904,7 +912,15 @@
     "pdf": {
       "title": "การตั้งค่า PDF",
       "footer_text": "ข้อความท้ายกระดาษ",
-      "pdf_layout": "รูปแบบไฟล์ PDF"
+      "pdf_layout": "รูปแบบไฟล์ PDF",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "ข้อมูลบริษัท",
@@ -1088,6 +1104,8 @@
         "description": "ประหยัดเวลาด้วยการสร้างหมายเหตุและนำกลับมาใช้ใหม่ในใบวางบิล ใบเสนอราคาและการชำระเงิน",
         "notes": "หมายเหตุ",
         "type": "ประเภท",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "เพิ่มโน้ต",
         "add_new_note": "เพิ่มหมายเหตุใหม่",
         "name": "ชื่อ",
@@ -1194,14 +1212,23 @@
       "tax_per_item": "ภาษีต่อรายการ",
       "tax_name": "ชื่อภาษี",
       "compound_tax": "ภาษีมูลค่าเพิ่ม",
+      "amount": "Amount",
       "percent": "เปอร์เซ็นต์",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "จัดการ",
       "tax_setting_description": "เปิดใช้งานนี้ถ้าคุณต้องการเพิ่มภาษีให้กับรายการใบวางบิลแต่ละรายการโดยค่าเริ่มต้นภาษีจะถูกเพิ่มลงในใบวางบิลโดยตรง",
       "created_message": "สร้างประเภทภาษีเรียบร้อยแล้ว",
       "updated_message": "อัพเดตประเภทภาษีเรียบร้อยแล้ว",
       "deleted_message": "ประเภทภาษีที่ถูกลบเรียบร้อยแล้ว",
       "confirm_delete": "คุณจะไม่สามารถกู้คืนภาษีประเภทนี้ได้",
-      "already_in_use": "ภาษีมีอยู่แล้วในการใช้งาน"
+      "already_in_use": "ภาษีมีอยู่แล้วในการใช้งาน",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "วิธีการชำระเงิน",
@@ -1237,7 +1264,7 @@
       "time_zone": "เขตเวลา",
       "fiscal_year": "ปีงบการเงิน",
       "date_format": "รูปแบบวันที่",
-      "time_format": "Time Fromat",
+      "time_format": "Time Format",
       "discount_setting": "การตั้งค่าส่วนลด",
       "discount_per_item": "ส่วนลดต่อรายการ ",
       "discount_setting_description": "เปิดใช้งานตัวเลือกนี้หากคุณต้องการเพิ่มส่วนลดให้กับรายการใบวางบิลแต่ละรายการโดยค่าเริ่มต้นส่วนลดจะถูกเพิ่มโดยตรงไปยังใบวางบิล",
@@ -1589,7 +1616,7 @@
   "pdf_invoice_label": "ใบวางบิล",
   "pdf_invoice_number": "เลขที่ใบวางบิล",
   "pdf_invoice_date": "วันที่ใบวางบิล",
-  "pdf_invoice_due_date": "วันครบกำหนด",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "หมายเหตุ",
   "pdf_items_label": "บริการ",
   "pdf_quantity_label": "หน่วย",
@@ -1597,6 +1624,7 @@
   "pdf_discount_label": "ส่วนลด",
   "pdf_amount_label": "จำนวนเงิน (บาท)",
   "pdf_subtotal": "ยอดรวม",
+  "pdf_net_total": "Net",
   "pdf_total": "จำนวนเงินทั้งสิ้น",
   "pdf_payment_label": "การชำระเงิน",
   "pdf_payment_receipt_label": "ใบเสร็จรับเงิน",

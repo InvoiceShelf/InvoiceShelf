@@ -161,7 +161,10 @@
     "name": "Nom",
     "description": "Description",
     "percent": "Pourcentage",
-    "compound_tax": "Taxe composée"
+    "compound_tax": "Taxe composée",
+    "percentage": "Pourcentage",
+    "fixed_amount": "Montant fixe",
+    "tax_type": "Type de taxe"
   },
   "global_search": {
     "search": "Rechercher",
@@ -303,6 +306,7 @@
     "total": "Total",
     "discount": "Remise",
     "sub_total": "Sous-total",
+    "net_total": "Net",
     "estimate_number": "N°",
     "ref_number": "Référence",
     "contact": "Contact",
@@ -649,6 +653,8 @@
     "from_date": "Du",
     "to_date": "Au",
     "expense_date": "Date",
+    "expense_number": "Numéro de dépense",
+    "expense_number_placeholder": "EXP-001",
     "description": "Description",
     "receipt": "Reçu",
     "amount": "Montant",
@@ -852,7 +858,8 @@
       "payment_modes": "Modes de paiement",
       "notes": "Notes de bas de page",
       "exchange_rate": "Taux de change",
-      "address_information": "Information d'adresse"
+      "address_information": "Information d'adresse",
+      "pdf_generation": "Génération de PDF"
     },
     "address_information": {
       "section_description": "  Vous pouvez mettre à jour vos informations d'adresse via le formulaire ci dessous."
@@ -893,6 +900,7 @@
       "mailgun_endpoint": "Mailgun Endpoint",
       "ses_secret": "SES Secret",
       "ses_key": "SES Key",
+      "ses_region": "Région AWS",
       "password": "Mot de passe",
       "username": "Nom d'utilisateur",
       "mail_config": "Envoi d'emails",
@@ -904,7 +912,15 @@
     "pdf": {
       "title": "Paramètre PDF",
       "footer_text": "Pied de page",
-      "pdf_layout": "Mise en page PDF"
+      "pdf_layout": "Mise en page PDF",
+      "pdf_configuration": "Réglages pour la génération des PDF",
+      "section_description": "Changer la méthode de génération des PDF",
+      "driver": "Pilote PDF à utiliser",
+      "papersize": "Format de papier",
+      "papersize_hint": "Format de papier en largeur et hauteur (ex. \"210 mm 297 mm\")",
+      "gotenberg_host": "Service du serveur Gotenberg",
+      "pdf_variables_save_successfully": "La configuration PDF a été sauvegardée",
+      "pdf_variables_save_error": "La configuration PDF n’a pas pu être enregistrée"
     },
     "company_info": {
       "company_info": "Coordonnées de la société",
@@ -1088,6 +1104,8 @@
         "description": "Créez des notes de bas de page réutilisable sur vos factures, devis et paiements.",
         "notes": "Note de bas de page",
         "type": "Type ",
+        "is_default": "Sélectionner par défaut",
+        "is_default_description": "Cette note sera sélectionnée par défaut dans les nouvelles factures.",
         "add_note": "Nouvelle note de bas de page",
         "add_new_note": "Ajouter une note de bas de page",
         "name": "Nom",
@@ -1194,14 +1212,23 @@
       "tax_per_item": "Taxe par article",
       "tax_name": "Nom",
       "compound_tax": "Taxe empilée",
+      "amount": "Montant",
       "percent": "Pourcentage",
+      "fixed_amount": "Montant fixe",
+      "calculation_type": "Type de calcul",
+      "percentage": "Pourcentage",
+      "fixed": "Fixe",
       "action": "action",
       "tax_setting_description": "Activez cette option si vous souhaitez ajouter des taxes à des postes de facture individuels. Par défaut, les taxes sont ajoutées directement à la facture.",
       "created_message": "Taxe créée",
       "updated_message": "Taxe mise à jour",
       "deleted_message": "Taxe supprimée",
       "confirm_delete": "Vous ne pourrez pas récupérer ce type de taxe",
-      "already_in_use": "La taxe est déjà utilisée"
+      "already_in_use": "La taxe est déjà utilisée",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "Moyens de paiement",
@@ -1237,7 +1264,7 @@
       "time_zone": "Fuseau horaire",
       "fiscal_year": "Exercice fiscal",
       "date_format": "Format de date",
-      "time_format": "Format d'heure",
+      "time_format": "Format de l'heure",
       "discount_setting": "Réglage de remise",
       "discount_per_item": "Remise par article",
       "discount_setting_description": "Activez cette option si vous souhaitez détailler les remises par article. Par défaut, les remises sont ajoutées au sous-total.",
@@ -1589,7 +1616,7 @@
   "pdf_invoice_label": "Facture",
   "pdf_invoice_number": "Numéro",
   "pdf_invoice_date": "Date",
-  "pdf_invoice_due_date": "Date d’échéance",
+  "pdf_invoice_due_date": "Date d'échéance",
   "pdf_notes": "Notes de bas de page",
   "pdf_items_label": "Articles",
   "pdf_quantity_label": "Quantité",
@@ -1597,6 +1624,7 @@
   "pdf_discount_label": "Remise",
   "pdf_amount_label": "Montant",
   "pdf_subtotal": "Sous-total",
+  "pdf_net_total": "Net",
   "pdf_total": "Total TTC",
   "pdf_payment_label": "Paiement",
   "pdf_payment_receipt_label": "Reçu de paiement",

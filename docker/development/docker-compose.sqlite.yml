@@ -2,39 +2,43 @@ services:
   php-fpm:
     container_name: invoiceshelf-dev-php
     build:
-      context: ./php
-      dockerfile: Dockerfile
+      context: ../../
+      dockerfile: docker/development/Dockerfile
       args:
         - UID=${USRID:-1000}
         - GID=${GRPID:-1000}
+      target: development
     volumes:
-      - ../:/home/invoiceshelf/app
-    ports:
-      - 5173:5173
+      - ../../:/var/www/html
     networks:
       - invoiceshelf-dev
 
   nginx:
     container_name: invoiceshelf-dev-nginx
-    image: nginx:stable
+    build:
+      context: ../../
+      dockerfile: docker/development/nginx.Dockerfile
+    environment:
+      - "PHP_FPM_HOST=php-fpm:9000"
     ports:
       - '80:80'
     volumes:
-      - ./nginx/conf.d/dev.conf:/etc/nginx/conf.d/dev.conf
-      - ../:/home/invoiceshelf/app
+      - ../../:/var/www/html
     networks:
-      - invoiceshelf-dev
+      invoiceshelf-dev:
+        aliases:
+          - invoiceshelf.test
 
   adminer:
     container_name: invoiceshelf-dev-adminer
     build:
-      context: ./adminer
-      dockerfile: Dockerfile
+      context: ../../
+      dockerfile: docker/development/adminer/Dockerfile
     environment:
       ADMINER_PLUGINS: tables-filter
       ADMINER_DESIGN: konya
     volumes:
-      - ../database:/database
+      - ../../database:/database
     ports:
       - '8080:8080'
     networks:
@@ -43,10 +47,9 @@ services:
   mail:
     container_name: invoiceshelf-dev-mailpit
     image: axllent/mailpit:latest
-    restart: always
     ports:
-      - 1025:1025
-      - 8025:8025
+      - '1025:1025'
+      - '8025:8025'
     networks:
       - invoiceshelf-dev
 

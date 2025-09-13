@@ -161,7 +161,10 @@
     "name": "Nimi",
     "description": "Kuvaus",
     "percent": "Prosentti",
-    "compound_tax": "Yhdistetty vero"
+    "compound_tax": "Yhdistetty vero",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Etsi...",
@@ -303,6 +306,7 @@
     "total": "Yhteensä",
     "discount": "Alennus",
     "sub_total": "Välisumma",
+    "net_total": "Net",
     "estimate_number": "Tarjous numero",
     "ref_number": "Asiakkaan viite",
     "contact": "Yhteyshenkilö",
@@ -649,6 +653,8 @@
     "from_date": "Päivästä",
     "to_date": "Päivään",
     "expense_date": "Päivämäärä",
+    "expense_number": "Kulunumero",
+    "expense_number_placeholder": "EXP-001",
     "description": "Kuvaus",
     "receipt": "Kuitti",
     "amount": "Summa",
@@ -852,7 +858,8 @@
       "payment_modes": "Maksutavat",
       "notes": "Viestit",
       "exchange_rate": "Exchange Rate",
-      "address_information": "Address Information"
+      "address_information": "Address Information",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  You can update Your Address information using form below."
@@ -893,6 +900,7 @@
       "mailgun_endpoint": "Mailgun päätepiste",
       "ses_secret": "SES salaus",
       "ses_key": "SES avain",
+      "ses_region": "AWS Region",
       "password": "Sähköpostin salasana",
       "username": "Sähköpostin käyttäjänimi",
       "mail_config": "Sähköposti asetukset",
@@ -904,7 +912,15 @@
     "pdf": {
       "title": "PDF Asetukset",
       "footer_text": "Alaotsikko teksti",
-      "pdf_layout": "PDF asettelu"
+      "pdf_layout": "PDF asettelu",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "Yritystiedot",
@@ -1088,6 +1104,8 @@
         "description": "Säästä aikaa luomalla viestejä, joita voit käyttää laskuilla, tarjouksilla ja maksuissa.",
         "notes": "Viestit",
         "type": "Tyyppi",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Lisää viesti",
         "add_new_note": "Lisää uusi viesti",
         "name": "Nimi",
@@ -1194,14 +1212,23 @@
       "tax_per_item": "ALV per tuote",
       "tax_name": "ALV Verokannan nimi",
       "compound_tax": "Yhdistetty vero",
+      "amount": "Amount",
       "percent": "Prosentti",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Toiminta",
       "tax_setting_description": "Aktivoi tämä jos haluat näyttää ALV:n laskurivikohtaisesti. Oletuksena, verot lisätään suoraan loppusummaan.",
       "created_message": "ALV Verokanta luotiin onnistuneesti",
       "updated_message": "ALV Verokanta päivitettiin onnistuneesti",
       "deleted_message": "ALV Verokanta poistettiin onnistuneesti",
       "confirm_delete": "Et voi palauttaa tätä ALV verokantaa",
-      "already_in_use": "ALV Verokanta on jo käytössä"
+      "already_in_use": "ALV Verokanta on jo käytössä",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "Payment Modes",
@@ -1237,7 +1264,7 @@
       "time_zone": "Aikavyöhyke",
       "fiscal_year": "Tilikausi",
       "date_format": "Päivämäärä formaatti",
-      "time_format": "Time Fromat",
+      "time_format": "Time Format",
       "discount_setting": "Alennusten määritys",
       "discount_per_item": "Alennus per tuote ",
       "discount_setting_description": "Aktivoi tämä jos haluat lisätä alennuksen rivikohtaisesti. Oletuksena, Alennus lisätään suoraan laskun kokonaissummaan.",
@@ -1589,7 +1616,7 @@
   "pdf_invoice_label": "Lasku",
   "pdf_invoice_number": "Laskunumero",
   "pdf_invoice_date": "Laskun päiväys",
-  "pdf_invoice_due_date": "Eräpäivä",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "Viesti",
   "pdf_items_label": "Tuotenimi",
   "pdf_quantity_label": "Määrä",
@@ -1597,6 +1624,7 @@
   "pdf_discount_label": "Alennus",
   "pdf_amount_label": "Yhteensä veroton",
   "pdf_subtotal": "Välisumma",
+  "pdf_net_total": "Net",
   "pdf_total": "Yhteensä",
   "pdf_payment_label": "Payment",
   "pdf_payment_receipt_label": "SUORITUKSEN KUITTI",

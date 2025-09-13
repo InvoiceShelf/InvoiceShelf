@@ -161,7 +161,10 @@
     "name": "Naziv",
     "description": "Opis",
     "percent": "Postotak",
-    "compound_tax": "Složeni porez"
+    "compound_tax": "Složeni porez",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Pretraga...",
@@ -303,6 +306,7 @@
     "total": "Ukupno za plaćanje",
     "discount": "Popust",
     "sub_total": "Osnovica za obračun PDV-a",
+    "net_total": "Net",
     "estimate_number": "Broj ponude",
     "ref_number": "Poziv na broj",
     "contact": "Kontakt",
@@ -337,7 +341,7 @@
     "mark_as_sent_successfully": "Ponuda uspješno označena kao Poslana",
     "send_estimate_successfully": "Ponuda uspješno poslana",
     "errors": {
-      "required": "Obvezno polje!"
+      "required": "Obvezno polje"
     },
     "accepted": "Prihvaćeno",
     "rejected": "Odbijeno",
@@ -649,6 +653,8 @@
     "from_date": "Datum od",
     "to_date": "Datum do",
     "expense_date": "Datum",
+    "expense_number": "Broj troška",
+    "expense_number_placeholder": "EXP-001",
     "description": "Opis",
     "receipt": "Račun",
     "amount": "Iznos",
@@ -852,7 +858,8 @@
       "payment_modes": "Način plaćanja",
       "notes": "Napomene",
       "exchange_rate": "Tečaj",
-      "address_information": "Podaci o adresi"
+      "address_information": "Podaci o adresi",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  Možete ažurirati svoju adresu u slijedećem obrascu."
@@ -893,6 +900,7 @@
       "mailgun_endpoint": "Mailgun Endpoint",
       "ses_secret": "SES Lozinka",
       "ses_key": "SES Ključ",
+      "ses_region": "AWS Region",
       "password": "Mail Lozinka",
       "username": "Mail Korisničko Ime",
       "mail_config": "Mail Postavke",
@@ -904,7 +912,15 @@
     "pdf": {
       "title": "PDF Postavke",
       "footer_text": "Tekstualno zaglavlje na dnu strane",
-      "pdf_layout": "PDF Raspored"
+      "pdf_layout": "PDF Raspored",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "Podaci o firmi",
@@ -1088,6 +1104,8 @@
         "description": "Uštedite vrijeme kreirajući napomene i koristeći ih na računima, ponudama i uplatama.",
         "notes": "Napomene",
         "type": "Vrsta",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Dodaj Napomenu",
         "add_new_note": "Dodaj novu Napomenu",
         "name": "Naziv",
@@ -1194,14 +1212,23 @@
       "tax_per_item": "Porez po Stavkama",
       "tax_name": "Naziv Poreza",
       "compound_tax": "Složeni Porez",
+      "amount": "Amount",
       "percent": "Postotak",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Radnja",
       "tax_setting_description": "Izaberite ovo ako želite dodati porez na individualne stavke. Zadano ponašanje je da je porez dodan direktno na fakturu.",
       "created_message": "Vrsta poreza uspješno kreirana",
       "updated_message": "Vrsta poreza uspješno ažurirana",
       "deleted_message": "Vrsta poreza uspješno obrisana",
       "confirm_delete": "Nećete moći vratiti Vrstu Poreza",
-      "already_in_use": "Porez se već koristi"
+      "already_in_use": "Porez se već koristi",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "Način plaćanja",
@@ -1237,7 +1264,7 @@
       "time_zone": "Vremenska Zona",
       "fiscal_year": "Financijska Godina",
       "date_format": "Format datuma",
-      "time_format": "Time Fromat",
+      "time_format": "Time Format",
       "discount_setting": "Postavke popusta",
       "discount_per_item": "Popust po stavkama",
       "discount_setting_description": "Izaberite ovo ako želite dodati Popust na individualne stavke. Zadana vrijednost je da je Popust dodan direktno na fakturu.",
@@ -1589,7 +1616,7 @@
   "pdf_invoice_label": "Račun",
   "pdf_invoice_number": "Broj Fakture",
   "pdf_invoice_date": "Datum Fakture",
-  "pdf_invoice_due_date": "Datum dospijeća Fakture",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "Napomena",
   "pdf_items_label": "Stavke",
   "pdf_quantity_label": "Količina",
@@ -1597,6 +1624,7 @@
   "pdf_discount_label": "Popust",
   "pdf_amount_label": "Iznos",
   "pdf_subtotal": "Osnovica za obračun PDV-a",
+  "pdf_net_total": "Net",
   "pdf_total": "Ukupan iznos",
   "pdf_payment_label": "Plaćanje",
   "pdf_payment_receipt_label": "POTVRDA O UPLATI",

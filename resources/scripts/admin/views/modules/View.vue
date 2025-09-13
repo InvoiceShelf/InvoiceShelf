@@ -274,7 +274,7 @@
               class="mr-4 flex items-center justify-center text-base"
               @click="installModule()"
             >
-              <BaseIcon v-if="!isInstalling" name="DownloadIcon" class="mr-2" />
+              <BaseIcon v-if="!isInstalling" name="ArrowDownTrayIcon" class="mr-2" />
               {{ $t('modules.install') }}
             </BaseButton>
           </div>
@@ -306,7 +306,7 @@
                 class="mr-4 flex items-center justify-center text-base"
                 @click="disableModule"
               >
-                <BaseIcon v-if="!isDisabling" name="BanIcon" class="mr-2" />
+                <BaseIcon v-if="!isDisabling" name="NoSymbolIcon" class="mr-2" />
                 {{ $t('modules.disable') }}
               </BaseButton>
               <BaseButton

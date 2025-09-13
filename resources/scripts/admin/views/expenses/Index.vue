@@ -17,10 +17,10 @@
           <template #right="slotProps">
             <BaseIcon
               v-if="!showFilters"
-              name="FilterIcon"
+              name="FunnelIcon"
               :class="slotProps.class"
             />
-            <BaseIcon v-else name="XIcon" :class="slotProps.class" />
+            <BaseIcon v-else name="XMarkIcon" :class="slotProps.class" />
           </template>
         </BaseButton>
 
@@ -188,6 +188,10 @@
           {{ row.data.formatted_expense_date }}
         </template>
 
+        <template #cell-expense_number="{ row }">
+          {{ row.data.expense_number || '-' }}
+        </template>
+
         <template #cell-user_name="{ row }">
           <BaseText
             :text="row.data.customer ? row.data.customer.name : '-'"
@@ -278,6 +282,12 @@ const expenseColumns = computed(() => {
     {
       key: 'expense_date',
       label: t('expenses.date'),
+      thClass: 'extra',
+      tdClass: 'font-medium text-gray-900',
+    },
+    {
+      key: 'expense_number',
+      label: t('expenses.expense_number'),
       thClass: 'extra',
       tdClass: 'font-medium text-gray-900',
     },

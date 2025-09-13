@@ -161,7 +161,10 @@
     "name": "Namn",
     "description": "Beskrivning",
     "percent": "Procent",
-    "compound_tax": "Sammansatt moms"
+    "compound_tax": "Sammansatt moms",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Sök...",
@@ -191,7 +194,7 @@
   "customers": {
     "title": "Kunder",
     "prefix": "Prefix",
-    "tax_id": "Tax ID",
+    "tax_id": "Momsreg.nr",
     "add_customer": "Lägg till kund",
     "contacts_list": "Kundlista",
     "name": "Namn",
@@ -303,6 +306,7 @@
     "total": "Summa",
     "discount": "Rabatt",
     "sub_total": "Delsumma",
+    "net_total": "Net",
     "estimate_number": "Kostnadsförslagsnummer",
     "ref_number": "Ref Nummer",
     "contact": "Kontakt",
@@ -649,6 +653,8 @@
     "from_date": "Från datum",
     "to_date": "Till datum",
     "expense_date": "Datum",
+    "expense_number": "Utgiftsnummer",
+    "expense_number_placeholder": "EXP-001",
     "description": "Beskrivning",
     "receipt": "Kvitto",
     "amount": "Summa",
@@ -852,7 +858,8 @@
       "payment_modes": "Betalmetoder",
       "notes": "Anteckningar",
       "exchange_rate": "Växelkurser",
-      "address_information": "Adressinformation"
+      "address_information": "Adressinformation",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  Du kan uppdatera din adressinformation genom att använda formuläret nedan."
@@ -893,6 +900,7 @@
       "mailgun_endpoint": "Mailgun Endpoint",
       "ses_secret": "SES Säkerhet",
       "ses_key": "SES nyckel",
+      "ses_region": "AWS Region",
       "password": "Lösenord",
       "username": "Användarnamn",
       "mail_config": "Epostinställningar",
@@ -904,7 +912,15 @@
     "pdf": {
       "title": "PDF-inställningar",
       "footer_text": "Sidfotstext",
-      "pdf_layout": "PDF-layout"
+      "pdf_layout": "PDF-layout",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "Företagsinfo",
@@ -1088,6 +1104,8 @@
         "description": "Spara tid genom att skapa noteringar som kan återanvändas på fakturor, betalningsförslag, och betalningar.",
         "notes": "Anteckningar",
         "type": "Typ",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Lägg till anteckning",
         "add_new_note": "Lägg till ny anteckning",
         "name": "Namn",
@@ -1194,14 +1212,23 @@
       "tax_per_item": "Moms per artikel",
       "tax_name": "Namn",
       "compound_tax": "Sammansatt moms",
+      "amount": "Amount",
       "percent": "Procent",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Handling",
       "tax_setting_description": "Aktivera detta om du vill lägga till momssats på individuella fakturaartiklar. Som standard sätts moms direkt på fakturan.",
       "created_message": "Momssats skapades",
       "updated_message": "Momssats uppdaterades",
       "deleted_message": "Momssats raderades",
       "confirm_delete": "Du kommer inte kunna återställa denna Momssats",
-      "already_in_use": "Momssats används"
+      "already_in_use": "Momssats används",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "Betalmetoder",
@@ -1237,7 +1264,7 @@
       "time_zone": "Tidszon",
       "fiscal_year": "Räkenskapsår",
       "date_format": "Datumformattering",
-      "time_format": "Time Fromat",
+      "time_format": "Time Format",
       "discount_setting": "Rabattinställningar",
       "discount_per_item": "Rabatt per artikel ",
       "discount_setting_description": "Aktivera detta om du vill kunna lägga rabatt på enskilda fakturaartiklar. Rabatt ges som standard på hela fakturan.",
@@ -1589,7 +1616,7 @@
   "pdf_invoice_label": "Faktura",
   "pdf_invoice_number": "Fakturanummer",
   "pdf_invoice_date": "Fakturadatum",
-  "pdf_invoice_due_date": "Inbetalningsdatum",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "Anteckningar",
   "pdf_items_label": "Artiklar",
   "pdf_quantity_label": "Antal",
@@ -1597,6 +1624,7 @@
   "pdf_discount_label": "Rabatt",
   "pdf_amount_label": "Belopp",
   "pdf_subtotal": "Delsumma",
+  "pdf_net_total": "Net",
   "pdf_total": "Summa",
   "pdf_payment_label": "Betalning",
   "pdf_payment_receipt_label": "Betalningskvitto",

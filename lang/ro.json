@@ -12,7 +12,7 @@
     "settings": "Setări",
     "logout": "Deconectare",
     "users": "Utilizatori",
-    "modules": "Modules"
+    "modules": "Module"
   },
   "general": {
     "add_company": "Adaugă firmă",
@@ -161,7 +161,10 @@
     "name": "Nume",
     "description": "Descriere",
     "percent": "Procent",
-    "compound_tax": "Impozite combinate"
+    "compound_tax": "Impozite combinate",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Caută...",
@@ -303,6 +306,7 @@
     "total": "Total",
     "discount": "Reducere",
     "sub_total": "Subtotal",
+    "net_total": "Net",
     "estimate_number": "Estimate Number",
     "ref_number": "Ref Number",
     "contact": "Contact",
@@ -317,7 +321,7 @@
     "notes": "Notes",
     "tax": "Tax",
     "estimate_template": "Template",
-    "convert_to_invoice": "Convert to Invoice",
+    "convert_to_invoice": "Convertește în Invoice",
     "mark_as_sent": "Mark as Sent",
     "send_estimate": "Send Estimate",
     "resend_estimate": "Resend Estimate",
@@ -649,6 +653,8 @@
     "from_date": "From Date",
     "to_date": "To Date",
     "expense_date": "Date",
+    "expense_number": "Număr de cheltuială",
+    "expense_number_placeholder": "EXP-001",
     "description": "Description",
     "receipt": "Receipt",
     "amount": "Amount",
@@ -852,7 +858,8 @@
       "payment_modes": "Payment Modes",
       "notes": "Notes",
       "exchange_rate": "Exchange Rate",
-      "address_information": "Address Information"
+      "address_information": "Address Information",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  You can update Your Address information using form below."
@@ -893,6 +900,7 @@
       "mailgun_endpoint": "Mailgun Endpoint",
       "ses_secret": "SES Secret",
       "ses_key": "SES Key",
+      "ses_region": "AWS Region",
       "password": "Mail Password",
       "username": "Mail Username",
       "mail_config": "Mail Configuration",
@@ -904,7 +912,15 @@
     "pdf": {
       "title": "PDF Setting",
       "footer_text": "Footer Text",
-      "pdf_layout": "PDF Layout"
+      "pdf_layout": "PDF Layout",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "Company info",
@@ -1088,6 +1104,8 @@
         "description": "Save time by creating notes and reusing them on your invoices, estimates & payments.",
         "notes": "Notes",
         "type": "Type",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Add Note",
         "add_new_note": "Add New Note",
         "name": "Name",
@@ -1194,14 +1212,23 @@
       "tax_per_item": "Tax Per Item",
       "tax_name": "Tax Name",
       "compound_tax": "Compound Tax",
+      "amount": "Amount",
       "percent": "Percent",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Action",
       "tax_setting_description": "Enable this if you want to add taxes to individual invoice items. By default, taxes are added directly to the invoice.",
       "created_message": "Tax type created successfully",
       "updated_message": "Tax type updated successfully",
       "deleted_message": "Tax type deleted successfully",
       "confirm_delete": "You will not be able to recover this Tax Type",
-      "already_in_use": "Tax is already in use"
+      "already_in_use": "Tax is already in use",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "Payment Modes",
@@ -1237,7 +1264,7 @@
       "time_zone": "Time Zone",
       "fiscal_year": "Financial Year",
       "date_format": "Date Format",
-      "time_format": "Time Fromat",
+      "time_format": "Time Format",
       "discount_setting": "Discount Setting",
       "discount_per_item": "Discount Per Item ",
       "discount_setting_description": "Enable this if you want to add Discount to individual invoice items. By default, Discount is added directly to the invoice.",
@@ -1589,7 +1616,7 @@
   "pdf_invoice_label": "Invoice",
   "pdf_invoice_number": "Invoice Number",
   "pdf_invoice_date": "Invoice Date",
-  "pdf_invoice_due_date": "Due date",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "Notes",
   "pdf_items_label": "Items",
   "pdf_quantity_label": "Quantity",
@@ -1597,6 +1624,7 @@
   "pdf_discount_label": "Discount",
   "pdf_amount_label": "Amount",
   "pdf_subtotal": "Subtotal",
+  "pdf_net_total": "Net",
   "pdf_total": "Total",
   "pdf_payment_label": "Payment",
   "pdf_payment_receipt_label": "PAYMENT RECEIPT",

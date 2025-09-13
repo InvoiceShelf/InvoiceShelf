@@ -3,12 +3,12 @@
 namespace App\Models;
 
 use App;
+use App\Facades\PDF;
 use App\Mail\SendEstimateMail;
 use App\Services\SerialNumberFormatter;
 use App\Space\PdfTemplateUtils;
 use App\Traits\GeneratesPdfTrait;
 use App\Traits\HasCustomFieldsTrait;
-use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

@@ -4,7 +4,7 @@
       <div class="flex justify-between w-full">
         {{ modalStore.title }}
         <BaseIcon
-          name="XIcon"
+          name="XMarkIcon"
           class="h-6 w-6 text-gray-500 cursor-pointer"
           @click="closeItemModal"
         />
@@ -107,7 +107,7 @@
             type="submit"
           >
             <template #left="slotProps">
-              <BaseIcon name="SaveIcon" :class="slotProps.class" />
+              <BaseIcon name="ArrowDownOnSquareIcon" :class="slotProps.class" />
             </template>
             {{ itemStore.isEdit ? $t('general.update') : $t('general.save') }}
           </BaseButton>
@@ -169,7 +169,7 @@ const taxes = computed({
         return {
           ...tax,
           tax_type_id: tax.id,
-          tax_name: tax.name + ' (' + tax.percent + '%)',
+          tax_name: tax.name + ' (' + (tax.calculation_type === 'fixed' ? tax.fixed_amount : tax.percent) + (tax.calculation_type === 'fixed' ? companyStore.selectedCompanyCurrency.symbol : '%') + ')',
         }
       }
     }),
@@ -208,7 +208,17 @@ const v$ = useVuelidate(
 
 const getTaxTypes = computed(() => {
   return taxTypeStore.taxTypes.map((tax) => {
-    return { ...tax, tax_name: tax.name + ' (' + tax.percent + '%)' }
+    const amount = tax.calculation_type === 'fixed'
+      ? new Intl.NumberFormat(undefined, {
+          style: 'currency',
+          currency: companyStore.selectedCompanyCurrency.code
+        }).format(tax.fixed_amount / 100)
+      : `${tax.percent}%`
+
+    return {
+      ...tax,
+      tax_name: `${tax.name} (${amount})`
+    }
   })
 })
 
@@ -229,8 +239,10 @@ async function submitItemData() {
     taxes: itemStore.currentItem.taxes.map((tax) => {
       return {
         tax_type_id: tax.id,
-        amount: (price.value * tax.percent) / 100,
+        amount: tax.calculation_type === 'fixed' ? tax.fixed_amount : Math.round(price.value * tax.percent),
         percent: tax.percent,
+        fixed_amount: tax.fixed_amount,
+        calculation_type: tax.calculation_type,
         name: tax.name,
         collective_tax: 0,
       }

@@ -60,7 +60,7 @@
               <BaseIcon
                 v-if="!isSaving"
                 :class="slotProps.class"
-                name="SaveIcon"
+                name="ArrowDownOnSquareIcon"
               />
             </template>
             {{ $t('estimates.save_estimate') }}
@@ -248,6 +248,14 @@ estimateStore.resetCurrentEstimate()
 customFieldStore.resetCustomFields()
 v$.value.$reset
 estimateStore.fetchEstimateInitialSettings(isEdit.value)
+
+watch(
+  () => companyStore.selectedCompanySettings?.tax_included_by_default,
+  (newVal) => {
+    estimateStore.newEstimate.tax_included = newVal === 'YES'
+  },
+  {immediate: true}
+)
 
 async function submitForm() {
   v$.value.$touch()

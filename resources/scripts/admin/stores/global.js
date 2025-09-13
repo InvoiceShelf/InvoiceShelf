@@ -50,7 +50,7 @@ export const useGlobalStore = (useWindow = false) => {
         return new Promise((resolve, reject) => {
           axios
             .get('/api/v1/bootstrap')
-            .then((response) => {
+            .then(async (response) => {
               const companyStore = useCompanyStore()
               const userStore = useUserStore()
               const moduleStore = useModuleStore()
@@ -71,8 +71,8 @@ export const useGlobalStore = (useWindow = false) => {
               moduleStore.apiToken = response.data.global_settings.api_token
               moduleStore.enableModules = response.data.modules
 
-                // company store
-                companyStore.companies = response.data.companies
+              // company store
+              companyStore.companies = response.data.companies
               companyStore.selectedCompany = response.data.current_company
               companyStore.setSelectedCompany(response.data.current_company)
               companyStore.selectedCompanySettings =
@@ -80,9 +80,31 @@ export const useGlobalStore = (useWindow = false) => {
               companyStore.selectedCompanyCurrency =
                 response.data.current_company_currency
 
-              if(typeof global.locale !== 'string') {
-                global.locale.value =
-                  response.data.current_user_settings.language || 'en'
+              // Determine and load the appropriate language
+              const userLanguage = response.data.current_user_settings?.language
+              const companyLanguage = response.data.current_company_settings?.language
+              const targetLanguage = userLanguage || companyLanguage || 'en'
+
+              // Load the language dynamically if it's not English
+              if (targetLanguage !== 'en' && window.loadLanguage) {
+                try {
+                  await window.loadLanguage(targetLanguage)
+                } catch (error) {
+                  console.warn('Failed to load language during bootstrap:', error)
+                  // Fall back to English if loading fails
+                  if (typeof global.locale !== 'string') {
+                    global.locale.value = 'en'
+                  } else {
+                    global.locale = 'en'
+                  }
+                }
+              } else {
+                // Set locale for English or when loadLanguage is not available
+                if (typeof global.locale !== 'string') {
+                  global.locale.value = targetLanguage
+                } else {
+                  global.locale = targetLanguage
+                }
               }
 
               this.isAppLoaded = true

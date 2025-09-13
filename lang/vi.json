@@ -161,7 +161,10 @@
     "name": "Tên",
     "description": "Sự miêu tả",
     "percent": "Phần trăm",
-    "compound_tax": "Thuế tổng hợp"
+    "compound_tax": "Thuế tổng hợp",
+    "percentage": "Percentage",
+    "fixed_amount": "Fixed Amount",
+    "tax_type": "Tax Type"
   },
   "global_search": {
     "search": "Tìm kiếm...",
@@ -303,6 +306,7 @@
     "total": "Toàn bộ",
     "discount": "Giảm giá",
     "sub_total": "Tổng phụ",
+    "net_total": "Net",
     "estimate_number": "Số ước tính",
     "ref_number": "Số tham chiếu",
     "contact": "Tiếp xúc",
@@ -649,6 +653,8 @@
     "from_date": "Từ ngày",
     "to_date": "Đến nay",
     "expense_date": "Ngày",
+    "expense_number": "Số chi phí",
+    "expense_number_placeholder": "EXP-001",
     "description": "Sự miêu tả",
     "receipt": "Biên lai",
     "amount": "Số tiền",
@@ -852,7 +858,8 @@
       "payment_modes": "Phương thức thanh toán",
       "notes": "Ghi chú",
       "exchange_rate": "Tỷ giá ngoại tệ",
-      "address_information": "Thông tin địa chỉ"
+      "address_information": "Thông tin địa chỉ",
+      "pdf_generation": "PDF Generation"
     },
     "address_information": {
       "section_description": "  Bạn có thể cập nhật thông tin địa chỉ bằng cách sử dụng biếu mẫu duới đây."
@@ -893,6 +900,7 @@
       "mailgun_endpoint": "Điểm cuối của Mailgun",
       "ses_secret": "Bí mật SES",
       "ses_key": "Khóa SES",
+      "ses_region": "AWS Region",
       "password": "Mật khẩu thư",
       "username": "Tên người dùng thư",
       "mail_config": "Cấu hình thư",
@@ -904,7 +912,15 @@
     "pdf": {
       "title": "Cài đặt PDF",
       "footer_text": "Văn bản chân trang",
-      "pdf_layout": "Bố cục PDF"
+      "pdf_layout": "Bố cục PDF",
+      "pdf_configuration": "PDF Generation Settings",
+      "section_description": "Change the way PDFs are generated",
+      "driver": "PDF Driver to use",
+      "papersize": "Papersize",
+      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
+      "gotenberg_host": "Gotenberg service host",
+      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_error": "PDF configuration could not be saved"
     },
     "company_info": {
       "company_info": "Thông tin công ty",
@@ -1088,6 +1104,8 @@
         "description": "Tiết kiệm thời gian bằng cách tạo ghi chú và sử dụng lại chúng trên hóa đơn, ước tính của bạn.",
         "notes": "Ghi chú",
         "type": "Kiểu",
+        "is_default": "Select by default",
+        "is_default_description": "This note will be selected by default in new invoices.",
         "add_note": "Thêm ghi chú",
         "add_new_note": "Thêm ghi chú mới",
         "name": "Tên",
@@ -1194,14 +1212,23 @@
       "tax_per_item": "Thuế mỗi mặt hàng",
       "tax_name": "Tên thuế",
       "compound_tax": "Thuế tổng hợp",
+      "amount": "Amount",
       "percent": "Phần trăm",
+      "fixed_amount": "Fixed Amount",
+      "calculation_type": "Calculation Type",
+      "percentage": "Percentage",
+      "fixed": "Fixed",
       "action": "Hoạt động",
       "tax_setting_description": "Bật tính năng này nếu bạn muốn thêm thuế vào các mục hóa đơn riêng lẻ. Theo mặc định, thuế được thêm trực tiếp vào hóa đơn.",
       "created_message": "Loại thuế đã được tạo thành công",
       "updated_message": "Đã cập nhật thành công loại thuế",
       "deleted_message": "Đã xóa thành công loại thuế",
       "confirm_delete": "Bạn sẽ không thể khôi phục Loại thuế này",
-      "already_in_use": "Thuế đã được sử dụng"
+      "already_in_use": "Thuế đã được sử dụng",
+      "tax_included": "Inclusive taxes",
+      "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
+      "tax_included_by_default": "Enable inclusive taxes by default",
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
     },
     "payment_modes": {
       "title": "Phương thức thanh toán",
@@ -1237,7 +1264,7 @@
       "time_zone": "Múi giờ",
       "fiscal_year": "Năm tài chính",
       "date_format": "Định dạng ngày tháng",
-      "time_format": "Time Fromat",
+      "time_format": "Time Format",
       "discount_setting": "Cài đặt chiết khấu",
       "discount_per_item": "Giảm giá cho mỗi mặt hàng ",
       "discount_setting_description": "Bật tính năng này nếu bạn muốn thêm Giảm giá vào các mặt hàng hóa đơn riêng lẻ. Theo mặc định, Giảm giá được thêm trực tiếp vào hóa đơn.",
@@ -1589,7 +1616,7 @@
   "pdf_invoice_label": "Hóa đơn",
   "pdf_invoice_number": "Số hóa đơn",
   "pdf_invoice_date": "Ngày lập hóa đơn",
-  "pdf_invoice_due_date": "Ngày đến hạn",
+  "pdf_invoice_due_date": "Due Date",
   "pdf_notes": "Ghi chú",
   "pdf_items_label": "Mặt hàng",
   "pdf_quantity_label": "Định lượng",
@@ -1597,6 +1624,7 @@
   "pdf_discount_label": "Giảm giá",
   "pdf_amount_label": "Số tiền",
   "pdf_subtotal": "Tổng phụ",
+  "pdf_net_total": "Net",
   "pdf_total": "Toàn bộ",
   "pdf_payment_label": "Thanh toán",
   "pdf_payment_receipt_label": "HÓA ĐƠN THANH TOÁN",

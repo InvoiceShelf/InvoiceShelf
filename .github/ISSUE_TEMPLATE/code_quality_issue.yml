@@ -5,7 +5,7 @@ description: Create a code quality issue to help InvoiceShelf keep a clean codeb
 labels:
   - code quality
   - triage
-projects: ["InvoiceShelf/2"]
+projects: ['InvoiceShelf/2']
 assignees:
   - rihards-simanovics
 
@@ -19,6 +19,23 @@ body:
         > Have you checked for similar code quality issues? There's a
         possibility your suggestion is already being tracked. Please do a
         thorough search before creating a new issue.
+
+  # Ask user to confirm they've tried to fix or research the issue before
+  # posting a bug report.
+  - type: checkboxes
+    id: confirm-read-documentation
+    attributes:
+      label: Issue filing prerequisites
+      description: 'Prior to filing an issue please confirm that:'
+      options:
+        - label: I've checked the [documentation](https://docs.invoiceshelf.com/).
+          required: true
+        - label: I've looked for similar issues both Open and Closed.
+          required: true
+        - label: >-
+            I've tried clearing both cache and cookies in my browser or tried
+            opening the app in the Incognito/InPrivate window.
+          required: true
 
   # Issue body
   - type: textarea
@@ -45,10 +62,12 @@ body:
     attributes:
       label: Gains
       description: What would fixing this code quality issue bring to the source code?
-      value: |
-        - eg. A better readability.
-        - eg. Uncoupling concepts X and Y.
-        - eg. Clarifying the responsibility of class C.
+      placeholder: >-
+        - e.g. Better readability.
+
+        - e.g. Uncoupling concepts X and Y.
+
+        - e.g. Clarifying the responsibility of class C.
     validations:
       required: true
 
@@ -58,10 +77,12 @@ body:
     attributes:
       label: Requirements
       description: Describe all the requirements to solve the code quality issue.
-      value: |
-        - eg. Using a specific design pattern.
-        - eg. Separating Interface I into three new interfaces I1, I2 and I3.
-        - eg. Regrouping the duplicated process into a new helper.
+      placeholder: >-
+        - e.g. Using a specific design pattern.
+
+        - e.g. Separating Interface I into three new interfaces I1, I2 and I3.
+
+        - e.g. Regrouping the duplicated process into a new helper.
 
   # Remarks
   - type: textarea

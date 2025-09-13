@@ -6,7 +6,7 @@
       <div class="col-span-12 xl:col-span-9 xxl:col-span-10">
         <div class="flex justify-between mt-1 mb-6">
           <h6 class="flex items-center">
-            <BaseIcon name="ChartSquareBarIcon" class="h-5 text-primary-400" />
+            <BaseIcon name="ChartBarSquareIcon" class="h-5 text-primary-400" />
             {{ $t('dashboard.monthly_chart.title') }}
           </h6>
 
@@ -57,7 +57,7 @@
           >
             <BaseFormatMoney
               :amount="chartData.salesTotal"
-              :currency="data.currency"
+              :currency="companyStore.selectedCompanyCurrency"
             />
           </span>
         </div>
@@ -74,8 +74,8 @@
             style="color: #00c99c"
           >
             <BaseFormatMoney
-              :amount="chartData.totalExpenses"
-              :currency="data.currency"
+              :amount="chartData.totalReceipts"
+              :currency="companyStore.selectedCompanyCurrency"
             />
           </span>
         </div>
@@ -92,7 +92,7 @@
           >
             <BaseFormatMoney
               :amount="chartData.totalExpenses"
-              :currency="data.currency"
+              :currency="companyStore.selectedCompanyCurrency"
             />
           </span>
         </div>
@@ -109,7 +109,7 @@
           >
             <BaseFormatMoney
               :amount="chartData.netProfit"
-              :currency="data.currency"
+              :currency="companyStore.selectedCompanyCurrency"
             />
           </span>
         </div>

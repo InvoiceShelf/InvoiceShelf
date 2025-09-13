@@ -1,0 +1,596 @@
+#!/bin/bash
+
+# InvoiceShelf Development Environment Startup Script
+# Supports Linux and macOS
+
+set -e
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Function to print colored output
+print_info() {
+    echo -e "${BLUE}[INFO]${NC} $1"
+}
+
+print_success() {
+    echo -e "${GREEN}[SUCCESS]${NC} $1"
+}
+
+print_warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
+}
+
+print_error() {
+    echo -e "${RED}[ERROR]${NC} $1"
+}
+
+# Function to show usage
+show_usage() {
+    echo "Usage: $0 [COMMAND]"
+    echo ""
+    echo "Commands:"
+    echo "  (no command)  Start the development environment (interactive setup)"
+    echo "  start         Start the development environment with existing configuration"
+    echo "  stop          Stop the development environment"
+    echo "  destroy       Stop and remove containers, networks, and images"
+    echo "  logs          Show logs from all services"
+    echo "  rebuild       Rebuild and restart the development environment"
+    echo "  shell         Enter the PHP container's shell"
+    echo "  run [CMD]     Run a command inside the PHP container (e.g., ./artisan)"
+    echo "  test          Run the test suite (Pest)"
+    echo "  format        Format the code (Pint)"
+    echo ""
+    echo "Examples:"
+    echo "  $0            # Interactive setup and start"
+    echo "  $0 start      # Start with last used configuration"
+    echo "  $0 stop       # Stop all services"
+    echo "  $0 logs       # View logs"
+    echo "  $0 shell      # Get a shell inside the PHP container"
+    echo "  $0 run ./artisan --help"
+}
+
+# Function to detect OS
+detect_os() {
+    case "$(uname -s)" in
+        Linux*)     echo "linux";;
+        Darwin*)    echo "mac";;
+        *)          echo "unsupported";;
+    esac
+}
+
+# Function to get docker compose command
+get_docker_compose_cmd() {
+    if command -v docker-compose &> /dev/null; then
+        echo "docker-compose"
+    else
+        echo "docker compose"
+    fi
+}
+
+# Function to find the most recent compose file used
+find_compose_file() {
+    local config_file=".devenvconfig"
+
+    if [ -f "$config_file" ]; then
+        cat "$config_file"
+    else
+        echo ""
+    fi
+}
+
+# Function to save compose file configuration
+save_config() {
+    local compose_file=$1
+    echo "$compose_file" > .devenvconfig
+}
+
+# Function to check if host entry exists
+check_host_entry() {
+    if grep -q "invoiceshelf.test" /etc/hosts; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+# Function to add host entry
+add_host_entry() {
+    local os_type=$1
+
+    print_info "Adding invoiceshelf.test to /etc/hosts..."
+
+    if [ "$os_type" = "linux" ] || [ "$os_type" = "mac" ]; then
+        # Check if we can write to /etc/hosts
+        if [ ! -w /etc/hosts ]; then
+            print_warning "Root permissions required to modify /etc/hosts"
+            if sudo sh -c 'echo "127.0.0.1    invoiceshelf.test" >> /etc/hosts'; then
+                print_success "Host entry added successfully"
+            else
+                print_error "Failed to add host entry"
+                exit 1
+            fi
+        else
+            echo "127.0.0.1    invoiceshelf.test" >> /etc/hosts
+            print_success "Host entry added successfully"
+        fi
+    fi
+}
+
+# Function to select database type
+select_database() {
+    echo "" >&2
+    print_info "Select database type:" >&2
+    echo "1) MySQL/MariaDB" >&2
+    echo "2) PostgreSQL" >&2
+    echo "3) SQLite" >&2
+
+    while true; do
+        read -p "Enter your choice (1-3): " db_choice
+        case $db_choice in
+            1) echo "mysql"; break;;
+            2) echo "pgsql"; break;;
+            3) echo "sqlite"; break;;
+            *) print_error "Invalid choice. Please enter 1, 2, or 3." >&2;;
+        esac
+    done
+}
+
+# Function to ask about gotenberg
+ask_gotenberg() {
+    echo "" >&2
+    print_info "Do you want to use Gotenberg for PDF generation?" >&2
+    print_info "Gotenberg provides better PDF generation capabilities but requires more resources." >&2
+
+    while true; do
+        read -p "Use Gotenberg? (y/n): " gotenberg_choice
+        case $gotenberg_choice in
+            [Yy]* ) echo "yes"; break;;
+            [Nn]* ) echo "no"; break;;
+            * ) print_error "Please answer yes (y) or no (n)." >&2;;
+        esac
+    done
+}
+
+# Function to validate environment
+validate_environment() {
+    # Detect OS
+    local os_type=$(detect_os)
+
+    if [ "$os_type" = "unsupported" ]; then
+        print_error "Unsupported operating system. This script only supports Linux and macOS."
+        exit 1
+    fi
+
+    # Check if Docker is installed
+    if ! command -v docker &> /dev/null; then
+        print_error "Docker is not installed. Please install Docker first."
+        echo ""
+        print_info "Installation instructions:"
+        if [ "$os_type" = "linux" ]; then
+            echo "  • Ubuntu/Debian: https://docs.docker.com/engine/install/ubuntu/"
+            echo "  • CentOS/RHEL: https://docs.docker.com/engine/install/centos/"
+            echo "  • Fedora: https://docs.docker.com/engine/install/fedora/"
+        else
+            echo "  • macOS: https://docs.docker.com/desktop/mac/install/"
+        fi
+        exit 1
+    fi
+
+    # Check if Docker daemon is running
+    print_info "Checking Docker daemon status..."
+    if ! docker info &> /dev/null; then
+        print_error "Docker daemon is not running."
+        echo ""
+        print_info "To start Docker:"
+        if [ "$os_type" = "linux" ]; then
+            echo "  • systemctl start docker"
+            echo "  • sudo systemctl start docker (if not in docker group)"
+            echo "  • Or start Docker Desktop if using it"
+        else
+            echo "  • Start Docker Desktop application"
+            echo "  • Or run: open -a Docker"
+        fi
+        exit 1
+    fi
+
+    # Check Docker daemon connectivity and permissions
+    if ! docker ps &> /dev/null; then
+        print_error "Cannot connect to Docker daemon. Permission denied."
+        echo ""
+        print_info "This might be a permissions issue. Try:"
+        if [ "$os_type" = "linux" ]; then
+            echo "  • sudo usermod -aG docker \$USER"
+            echo "  • Log out and log back in"
+            echo "  • Or run the script with sudo (not recommended)"
+        else
+            echo "  • Restart Docker Desktop"
+            echo "  • Check Docker Desktop settings"
+        fi
+        exit 1
+    fi
+
+    # Check if Docker Compose is available
+    local compose_available=false
+    local compose_cmd=""
+
+    if command -v docker-compose &> /dev/null; then
+        if docker-compose version &> /dev/null; then
+            compose_available=true
+            compose_cmd="docker-compose"
+        fi
+    fi
+
+    if ! $compose_available && docker compose version &> /dev/null 2>&1; then
+        compose_available=true
+        compose_cmd="docker compose"
+    fi
+
+    if ! $compose_available; then
+        print_error "Docker Compose is not available or not working properly."
+        echo ""
+        print_info "Installation instructions:"
+        if [ "$os_type" = "linux" ]; then
+            echo "  • Install docker-compose: sudo apt-get install docker-compose"
+            echo "  • Or use Docker Compose V2: https://docs.docker.com/compose/install/"
+        else
+            echo "  • Docker Compose should be included with Docker Desktop"
+            echo "  • Try restarting Docker Desktop"
+        fi
+        exit 1
+    fi
+
+    # Check available system resources
+    print_info "Checking system resources..."
+
+    # Check available disk space (require at least 2GB free)
+    local available_space
+    if [ "$os_type" = "linux" ]; then
+        available_space=$(df / | awk 'NR==2 {print $4}')
+    else
+        available_space=$(df / | awk 'NR==2 {print $4}')
+    fi
+
+    # Convert KB to GB (approximate)
+    local available_gb=$((available_space / 1024 / 1024))
+
+    if [ $available_gb -lt 2 ]; then
+        print_warning "Low disk space detected: ${available_gb}GB available"
+        print_warning "Docker images and containers require significant disk space"
+        read -p "Continue anyway? (y/N): " continue_choice
+        case $continue_choice in
+            [Yy]* ) ;;
+            * ) print_info "Operation cancelled."; exit 1;;
+        esac
+    fi
+
+    # Check if Docker has enough resources allocated (for Docker Desktop)
+    if [ "$os_type" = "mac" ] || ([ "$os_type" = "linux" ] && command -v docker-desktop &> /dev/null); then
+        print_info "Detected Docker Desktop - ensure adequate resources are allocated"
+        print_info "Recommended: 4GB RAM, 2 CPU cores, 20GB disk space"
+    fi
+
+    print_success "Docker environment validation completed"
+}
+
+# Function to get compose file for subcommands
+get_compose_file_for_cmd() {
+    local compose_file=$(find_compose_file)
+
+    if [ -z "$compose_file" ] || [ ! -f "$compose_file" ]; then
+        print_error "No previous configuration found. Please run the script without arguments first to set up the environment."
+        exit 1
+    fi
+
+    echo "$compose_file"
+}
+
+# Subcommand functions
+cmd_start() {
+    print_info "Starting development environment..."
+
+    local compose_file=$(get_compose_file_for_cmd)
+    local docker_compose=$(get_docker_compose_cmd)
+
+    print_info "Using compose file: $compose_file"
+
+    if $docker_compose -f "$compose_file" up -d; then
+        print_success "Development environment started successfully!"
+        show_service_info
+    else
+        print_error "Failed to start development environment"
+        exit 1
+    fi
+}
+
+cmd_stop() {
+    print_info "Stopping development environment..."
+
+    local compose_file=$(get_compose_file_for_cmd)
+    local docker_compose=$(get_docker_compose_cmd)
+
+    if $docker_compose -f "$compose_file" down --remove-orphans; then
+        print_success "Development environment stopped successfully!"
+    else
+        print_error "Failed to stop development environment"
+        exit 1
+    fi
+}
+
+cmd_destroy() {
+    print_info "Destroying development environment (removing containers, networks, and images)..."
+
+    local compose_file=$(get_compose_file_for_cmd)
+    local docker_compose=$(get_docker_compose_cmd)
+
+    print_warning "This will remove all containers, networks, and images for this project."
+    read -p "Are you sure? (y/N): " confirm
+
+    case $confirm in
+        [Yy]* )
+            if $docker_compose -f "$compose_file" down --rmi all --volumes --remove-orphans; then
+                print_success "Development environment destroyed successfully!"
+                # Remove the config file since everything is destroyed
+                rm -f .devenvconfig
+            else
+                print_error "Failed to destroy development environment"
+                exit 1
+            fi
+            ;;
+        * )
+            print_info "Operation cancelled."
+            ;;
+    esac
+}
+
+cmd_logs() {
+    print_info "Showing logs from development environment..."
+
+    local compose_file=$(get_compose_file_for_cmd)
+    local docker_compose=$(get_docker_compose_cmd)
+
+    # Check if any additional arguments were passed for specific services
+    shift # Remove 'logs' from arguments
+
+    if [ $# -gt 0 ]; then
+        print_info "Showing logs for services: $*"
+        $docker_compose -f "$compose_file" logs -f "$@"
+    else
+        print_info "Showing logs for all services (Press Ctrl+C to exit)"
+        $docker_compose -f "$compose_file" logs -f
+    fi
+}
+
+cmd_rebuild() {
+    print_info "Rebuilding development environment..."
+
+    local compose_file=$(get_compose_file_for_cmd)
+    local docker_compose=$(get_docker_compose_cmd)
+
+    print_info "Stopping services..."
+    $docker_compose -f "$compose_file" down
+
+    print_info "Rebuilding images..."
+    if $docker_compose -f "$compose_file" build --no-cache; then
+        print_info "Starting services..."
+        if $docker_compose -f "$compose_file" up -d; then
+            print_success "Development environment rebuilt and started successfully!"
+            show_service_info
+        else
+            print_error "Failed to start development environment after rebuild"
+            exit 1
+        fi
+    else
+        print_error "Failed to rebuild development environment"
+        exit 1
+    fi
+}
+
+cmd_shell() {
+    print_info "Entering PHP container shell..."
+
+    # Check if the container is running first
+    if ! docker ps --format "{{.Names}}" | grep -q "invoiceshelf-dev-php"; then
+        print_error "PHP container 'invoiceshelf-dev-php' is not running."
+        print_info "Start the development environment first with: $0 start"
+        exit 1
+    fi
+
+    print_info "Connecting to invoiceshelf-dev-php container... Type 'exit' to leave."
+
+    # Try /bin/bash first, fall back to /bin/sh if bash is not available
+    if ! docker exec -it invoiceshelf-dev-php /bin/bash; then
+        docker exec -it invoiceshelf-dev-php /bin/sh
+    fi
+    print_success "Exited from container shell."
+}
+
+cmd_run() {
+    shift # Remove 'run' from arguments
+    if [ $# -eq 0 ]; then
+        print_error "No command provided to 'run'."
+        show_usage
+        exit 1
+    fi
+
+    print_info "Running command inside PHP container: $@"
+
+    # Check if the container is running first
+    if ! docker ps --format "{{.Names}}" | grep -q "invoiceshelf-dev-php"; then
+        print_error "PHP container 'invoiceshelf-dev-php' is not running."
+        print_info "Start the development environment first with: $0 start"
+        exit 1
+    fi
+
+    docker exec -it -w /var/www/html invoiceshelf-dev-php "$@"
+}
+
+# Function to run tests
+cmd_test() {
+    print_info "Running tests (Pest)..."
+
+    # Check if the container is running first
+    if ! docker ps --format "{{.Names}}" | grep -q "invoiceshelf-dev-php"; then
+        print_error "PHP container 'invoiceshelf-dev-php' is not running."
+        print_info "Start the development environment first with: $0 start"
+        exit 1
+    fi
+
+    shift # Remove 'test' from arguments
+    docker exec -it -w /var/www/html invoiceshelf-dev-php /var/www/html/vendor/bin/pest "$@"
+}
+
+# Function to format code
+cmd_format() {
+    print_info "Formatting code (Pint)..."
+
+    # Check if the container is running first
+    if ! docker ps --format "{{.Names}}" | grep -q "invoiceshelf-dev-php"; then
+        print_error "PHP container 'invoiceshelf-dev-php' is not running."
+        print_info "Start the development environment first with: $0 start"
+        exit 1
+    fi
+
+    shift # Remove 'format' from arguments
+    docker exec -it -w /var/www/html invoiceshelf-dev-php /var/www/html/vendor/bin/pint "$@"
+}
+
+# Function to show service information
+show_service_info() {
+    echo ""
+    print_info "Available services:"
+    echo "  • Application: http://invoiceshelf.test"
+    echo "  • Adminer (DB): http://localhost:8080"
+    echo "  • Mailpit: http://localhost:8025"
+    echo ""
+    print_info "Useful commands:"
+    echo "  • Stop: $0 stop"
+    echo "  • View logs: $0 logs"
+    echo "  • Rebuild: $0 rebuild"
+    echo "  • Shell: $0 shell"
+    echo "  • Run command: $0 run php artisan help"
+}
+
+# Main setup function (original functionality)
+setup_environment() {
+    print_info "InvoiceShelf Development Environment Setup"
+    echo "=========================================="
+
+    local os_type=$(detect_os)
+    print_success "Detected OS: $os_type"
+
+    validate_environment
+
+    local docker_compose=$(get_docker_compose_cmd)
+    print_success "Docker and Docker Compose are available"
+
+    # Check host entry
+    if check_host_entry; then
+        print_success "invoiceshelf.test host entry already exists"
+    else
+        print_warning "invoiceshelf.test host entry not found"
+        add_host_entry "$os_type"
+    fi
+
+    # Select database type
+    local db_type=$(select_database)
+    print_success "Selected database: $db_type"
+
+    # Ask about Gotenberg
+    local use_gotenberg=$(ask_gotenberg)
+
+    # Build compose file name
+    local compose_file
+    if [ "$use_gotenberg" = "yes" ]; then
+        compose_file="docker/development/docker-compose.${db_type}.gotenberg.yml"
+        print_success "Using Gotenberg-enabled compose file"
+    else
+        compose_file="docker/development/docker-compose.${db_type}.yml"
+        print_success "Using standard compose file"
+    fi
+
+    # Check if compose file exists
+    if [ ! -f "$compose_file" ]; then
+        print_error "Compose file not found: $compose_file"
+        exit 1
+    fi
+
+    # Save configuration for future use
+    save_config "$compose_file"
+
+    print_info "Starting development environment..."
+    print_info "Compose file: $compose_file"
+
+    # Start the development environment
+    if $docker_compose -f "$compose_file" up -d; then
+        echo ""
+        print_success "Development environment started successfully!"
+        show_service_info
+    else
+        print_error "Failed to start development environment"
+        exit 1
+    fi
+}
+
+# Main script execution
+main() {
+    local command=${1:-""}
+
+    case "$command" in
+        "start")
+            validate_environment > /dev/null
+            cmd_start
+            ;;
+        "stop")
+            validate_environment > /dev/null
+            cmd_stop
+            ;;
+        "destroy")
+            validate_environment > /dev/null
+            cmd_destroy
+            ;;
+        "logs")
+            validate_environment > /dev/null
+            cmd_logs "$@"
+            ;;
+        "rebuild")
+            validate_environment > /dev/null
+            cmd_rebuild
+            ;;
+        "shell")
+            validate_environment > /dev/null
+            cmd_shell
+            ;;
+        "run")
+            validate_environment > /dev/null
+            cmd_run "$@"
+            ;;
+        "test")
+            validate_environment > /dev/null
+            cmd_test "$@"
+            ;;
+        "format")
+            validate_environment > /dev/null
+            cmd_format "$@"
+            ;;
+        "help"|"-h"|"--help")
+            show_usage
+            ;;
+        "")
+            setup_environment
+            ;;
+        *)
+            print_error "Unknown command: $command"
+            echo ""
+            show_usage
+            exit 1
+            ;;
+    esac
+}
+
+# Run main function
+main "$@"

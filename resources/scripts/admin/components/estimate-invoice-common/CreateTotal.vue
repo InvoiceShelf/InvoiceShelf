@@ -39,6 +39,17 @@
     </div>
 
     <div
+      v-if="store[storeProp].tax_per_item === 'YES'"
+    >
+      <NetTotal
+        :currency="currency"
+        :store="store"
+        :storeProp="storeProp"
+        :isLoading="isLoading"
+      />
+    </div>
+
+    <div
       v-for="tax in itemWiseTaxes"
       :key="tax.tax_type_id"
       class="flex items-center justify-between w-full"
@@ -50,7 +61,12 @@
         v-else-if="store[storeProp].tax_per_item === 'YES'"
         class="m-0 text-sm font-semibold leading-5 text-gray-500 uppercase"
       >
-        {{ tax.name }} - {{ tax.percent }}%
+        <template v-if="tax.calculation_type === 'percentage'">
+          {{ tax.name }} - {{ tax.percent }}%
+        </template>
+        <template v-else>
+          {{ tax.name }} - <BaseFormatMoney :amount="tax.fixed_amount" :currency="defaultCurrency" />
+        </template>
       </label>
 
       <BaseContentPlaceholders v-if="isLoading">
@@ -135,6 +151,21 @@
         store[storeProp].tax_per_item === 'NO' ||
         store[storeProp].tax_per_item === null
       "
+      class="flex items-center justify-between w-full mt-2"
+    >
+      <NetTotal
+        :currency="currency"
+        :store="store"
+        :storeProp="storeProp"
+        :isLoading="isLoading"
+      />
+    </div>
+
+    <div
+      v-if="
+        store[storeProp].tax_per_item === 'NO' ||
+        store[storeProp].tax_per_item === null
+      "
     >
       <Tax
         v-for="(tax, index) in taxes"
@@ -144,6 +175,7 @@
         :taxes="taxes"
         :currency="currency"
         :store="store"
+        :storeProp="storeProp"
         @remove="removeTax"
         @update="updateTax"
       />
@@ -193,6 +225,7 @@
 <script setup>
 import { computed, inject, ref, watch } from 'vue'
 import Guid from 'guid'
+import NetTotal from './NetTotal.vue'
 import Tax from './CreateTotalTaxes.vue'
 import TaxStub from '@/scripts/admin/stub/abilities'
 import SelectTaxPopup from './SelectTaxPopup.vue'
@@ -269,6 +302,8 @@ const itemWiseTaxes = computed(() => {
             amount: Math.round(tax.amount),
             percent: tax.percent,
             name: tax.name,
+            calculation_type: tax.calculation_type,
+            fixed_amount: tax.fixed_amount
           })
         }
       })
@@ -323,10 +358,12 @@ function selectPercentage() {
 
 function onSelectTax(selectedTax) {
   let amount = 0
-  if (props.store.getSubtotalWithDiscount && selectedTax.percent) {
+  if (selectedTax.calculation_type === 'percentage' && props.store.getSubtotalWithDiscount && selectedTax.percent) {
     amount = Math.round(
       (props.store.getSubtotalWithDiscount * selectedTax.percent) / 100
     )
+  } else if (selectedTax.calculation_type === 'fixed') {
+    amount = selectedTax.fixed_amount
   }
 
   let data = {
@@ -336,6 +373,8 @@ function onSelectTax(selectedTax) {
     percent: selectedTax.percent,
     tax_type_id: selectedTax.id,
     amount,
+    calculation_type: selectedTax.calculation_type,
+    fixed_amount: selectedTax.fixed_amount
   }
   props.store.$patch((state) => {
     state[props.storeProp].taxes.push({ ...data })
