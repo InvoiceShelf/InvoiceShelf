@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasCustomFieldsTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 
 class Item extends Model
 {
+    use HasCustomFieldsTrait;
     use HasFactory;
 
     protected $guarded = ['id'];
@@ -23,6 +25,7 @@ class Item extends Model
     {
         return [
             'price' => 'integer',
+            'custom_fields' => 'array',
         ];
     }
 
@@ -145,6 +148,11 @@ class Item extends Model
         $data['currency_id'] = $company_currency;
         $item = self::create($data);
 
+        $customFields = $request->customFields;
+        if ($customFields) {
+            $item->addCustomFields($customFields);
+        }
+
         if ($request->has('taxes')) {
             foreach ($request->taxes as $tax) {
                 $item->tax_per_item = true;
@@ -174,6 +182,33 @@ class Item extends Model
             }
         }
 
+        // Handle custom fields
+        $customFields = $request->customFields;
+        if ($customFields) {
+            $this->updateCustomFields($customFields);
+        }
+
         return Item::with('taxes')->find($this->id);
+    }
+
+    public function getExtraFields()
+    {
+        $fields = [
+            '{ITEM_NAME}' => $this->name,
+            '{ITEM_PRICE}' => $this->price,
+            '{ITEM_UNIT}' => $this->unit ? $this->unit->name : null,
+            '{ITEM_DESCRIPTION}' => $this->description,
+            '{ITEM_SKU}' => $this->sku,
+        ];
+
+        // Dynamically add custom fields
+        if (! empty($this->custom_fields) && is_array($this->custom_fields)) {
+            foreach ($this->custom_fields as $key => $value) {
+                // Use a consistent placeholder format, e.g. {ITEM_CUSTOM_FIELD_fieldname}
+                $fields['{ITEM_CUSTOM_FIELD_'.strtoupper($key).'}'] = $value;
+            }
+        }
+
+        return $fields;
     }
 }

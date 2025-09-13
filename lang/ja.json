@@ -988,7 +988,8 @@
         "invoice": "請求書",
         "estimate": "見積り",
         "expense": "支出",
-        "payment": "支払い"
+        "payment": "支払い",
+        "item": "アイテム"
       }
     },
     "customization": {

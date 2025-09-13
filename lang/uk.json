@@ -988,7 +988,8 @@
         "invoice": "Рахунок",
         "estimate": "Кошторис",
         "expense": "Витрата",
-        "payment": "Платіж"
+        "payment": "Платіж",
+        "item": "Item"
       }
     },
     "customization": {

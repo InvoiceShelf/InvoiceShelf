@@ -91,6 +91,7 @@ let invoiceFields = ref([])
 let estimateFields = ref([])
 let paymentFields = ref([])
 let customerFields = ref([])
+let itemFields = ref([])
 const position = null
 
 watch(
@@ -113,6 +114,9 @@ watch(
       : []
     paymentFields.value = newValue
       ? newValue.filter((field) => field.model_type === 'Payment')
+      : []
+    itemFields.value = newValue
+      ? newValue.filter((field) => field.model_type === 'Item')
       : []
     estimateFields.value = newValue.filter(
       (field) => field.model_type === 'Estimate'
@@ -230,6 +234,24 @@ async function getFields() {
           { label: 'Mode', value: 'PAYMENT_MODE' },
           { label: 'Amount', value: 'PAYMENT_AMOUNT' },
           ...paymentFields.value.map((i) => ({
+            label: i.label,
+            value: i.slug,
+          })),
+        ],
+      })
+    }
+
+
+    if (props.fields.find((field) => field == 'item')) {
+      fieldList.value.push({
+        label: 'Item',
+        fields: [
+          { label: 'Name', value: 'ITEM_NAME' },
+          { label: 'Price', value: 'ITEM_PRICE' },
+          { label: 'Unit', value: 'ITEM_UNIT' },
+          { label: 'Description', value: 'ITEM_DESCRIPTION' },
+          { label: 'SKU', value: 'ITEM_SKU' },
+          ...itemFields.value.map((i) => ({
             label: i.label,
             value: i.slug,
           })),
