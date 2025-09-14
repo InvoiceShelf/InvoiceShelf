@@ -39,6 +39,8 @@
 import { Menu, MenuButton, MenuItems } from '@headlessui/vue'
 import { computed, onMounted, ref, onUpdated } from 'vue'
 import { usePopper } from '@/scripts/helpers/use-popper'
+import BaseContentPlaceholdersBox from '@/scripts/components/base/BaseContentPlaceholdersBox.vue'
+import BaseContentPlaceholders from '@/scripts/components/base/BaseContentPlaceholders.vue'
 
 const props = defineProps({
   containerClass: {

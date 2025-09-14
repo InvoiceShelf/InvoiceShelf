@@ -10,6 +10,7 @@
 
 <script setup>
 import { computed } from 'vue'
+import BaseMultiselect from '@/scripts/components/base/base-select/BaseMultiselect.vue'
 
 const props = defineProps({
   modelValue: {

@@ -79,6 +79,10 @@
 </template>
 
 <script>
+import BaseDropdownItem from '@/scripts/components/base/BaseDropdownItem.vue'
+import BaseDropdown from '@/scripts/components/base/BaseDropdown.vue'
+import BasePage from '@/scripts/components/base/BasePage.vue'
+
 import { computed, reactive } from 'vue'
 import { useItemStore } from '@/scripts/admin/stores/item'
 import {
@@ -90,6 +94,9 @@ import {
 
 export default {
   components: {
+    BasePage,
+    BaseDropdown,
+    BaseDropdownItem,
     BaseTable,
     EllipsisHorizontalIcon,
     UserIcon,
