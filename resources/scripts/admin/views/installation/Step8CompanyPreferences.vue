@@ -162,7 +162,7 @@ const isSaving = ref(false)
 let isFetchingInitialData = ref(false)
 
 let currentPreferences = reactive({
-  currency: 1,
+  currency: 3,
   language: 'en',
   carbon_date_format: 'd M Y',
   time_zone: 'UTC',
