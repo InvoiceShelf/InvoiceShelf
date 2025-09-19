@@ -32,6 +32,12 @@ class SendEstimatesRequest extends FormRequest
             'to' => [
                 'required',
             ],
+            'cc' => [
+                'nullable',
+            ],
+            'bcc' => [
+                'nullable',
+            ],
         ];
     }
 }
