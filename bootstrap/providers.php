@@ -6,4 +6,5 @@ return [
     App\Providers\DropboxServiceProvider::class,
     App\Providers\ViewServiceProvider::class,
     App\Providers\PDFServiceProvider::class,
+    App\Providers\AppConfigProvider::class,
 ];

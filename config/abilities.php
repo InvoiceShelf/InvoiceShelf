@@ -13,6 +13,19 @@ use App\Models\RecurringInvoice;
 use App\Models\TaxType;
 
 return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Abilities Configuration
+    |--------------------------------------------------------------------------
+    |
+    | This file is for defining the abilities used in the application. Each
+    | ability includes a name, a unique identifier (ability), the associated
+    | model, and any dependencies on other abilities. This configuration helps
+    | manage user permissions and access control throughout the application.
+    |
+    */
+
     'abilities' => [
 
         // Customer

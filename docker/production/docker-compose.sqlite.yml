@@ -27,13 +27,6 @@ services:
       - SESSION_LIFETIME=240
       - SESSION_DOMAIN=localhost
       - SANCTUM_STATEFUL_DOMAINS=localhost:8090
-      #- MAIL_DRIVER=smtp
-      #- MAIL_HOST=smtp.mailtrap.io
-      #- MAIL_PORT=2525
-      #- MAIL_USERNAME=null
-      #- MAIL_PASSWORD=null
-      #- MAIL_PASSWORD_FILE=<filename>
-      #- MAIL_ENCRYPTION=null
     restart: unless-stopped
 networks:
   invoiceshelf:
