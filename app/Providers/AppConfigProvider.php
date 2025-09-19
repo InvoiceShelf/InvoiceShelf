@@ -4,12 +4,11 @@ namespace App\Providers;
 
 use App\Models\Setting;
 use App\Space\InstallUtils;
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\ServiceProvider;
 
 class AppConfigProvider extends ServiceProvider
 {
-
     /**
      * Bootstrap services.
      */
@@ -55,7 +54,7 @@ class AppConfigProvider extends ServiceProvider
                 'mail_sendmail_path',
             ]);
 
-            if (!empty($mailSettings['mail_driver'])) {
+            if (! empty($mailSettings['mail_driver'])) {
                 $driver = $mailSettings['mail_driver'];
 
                 // Set default mailer
@@ -99,10 +98,10 @@ class AppConfigProvider extends ServiceProvider
                 }
 
                 // Set global from address and name
-                if (!empty($mailSettings['from_mail'])) {
+                if (! empty($mailSettings['from_mail'])) {
                     Config::set('mail.from.address', $mailSettings['from_mail']);
                 }
-                if (!empty($mailSettings['from_name'])) {
+                if (! empty($mailSettings['from_name'])) {
                     Config::set('mail.from.name', $mailSettings['from_name']);
                 }
             }
@@ -126,7 +125,7 @@ class AppConfigProvider extends ServiceProvider
                 'gotenberg_margins',
             ]);
 
-            if (!empty($pdfSettings['pdf_driver'])) {
+            if (! empty($pdfSettings['pdf_driver'])) {
                 $driver = $pdfSettings['pdf_driver'];
 
                 // Set PDF driver
@@ -135,13 +134,13 @@ class AppConfigProvider extends ServiceProvider
                 // Configure based on driver
                 switch ($driver) {
                     case 'gotenberg':
-                        if (!empty($pdfSettings['gotenberg_host'])) {
+                        if (! empty($pdfSettings['gotenberg_host'])) {
                             Config::set('pdf.connections.gotenberg.host', $pdfSettings['gotenberg_host']);
                         }
-                        if (!empty($pdfSettings['gotenberg_papersize'])) {
+                        if (! empty($pdfSettings['gotenberg_papersize'])) {
                             Config::set('pdf.connections.gotenberg.papersize', $pdfSettings['gotenberg_papersize']);
                         }
-                        if (!empty($pdfSettings['gotenberg_margins'])) {
+                        if (! empty($pdfSettings['gotenberg_margins'])) {
                             Config::set('pdf.connections.gotenberg.margins', $pdfSettings['gotenberg_margins']);
                         }
                         break;

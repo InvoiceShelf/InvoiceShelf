@@ -53,14 +53,13 @@ class MailConfigurationController extends Controller
         }
 
         return response()->json([
-            'success' => 'mail_variables_save_successfully'
+            'success' => 'mail_variables_save_successfully',
         ]);
     }
 
     /**
      * Prepare mail settings for database storage
      *
-     * @param MailEnvironmentRequest $request
      * @return array
      */
     private function prepareMailSettingsForDatabase(MailEnvironmentRequest $request)

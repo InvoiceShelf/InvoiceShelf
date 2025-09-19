@@ -64,14 +64,13 @@ class PDFConfigurationController extends Controller
         Setting::setSettings($pdfSettings);
 
         return response()->json([
-            'success' => 'pdf_variables_save_successfully'
+            'success' => 'pdf_variables_save_successfully',
         ]);
     }
 
     /**
      * Prepare PDF settings for database storage
      *
-     * @param PDFConfigurationRequest $request
      * @return array
      */
     private function preparePDFSettingsForDatabase(PDFConfigurationRequest $request)
