@@ -193,3 +193,27 @@ test('create taxes', function () {
         'amount' => $tax['amount'],
     ]);
 });
+
+test('invoice status transitions correctly based on payments', function () {
+    $invoice = Invoice::factory()->create([
+        'total' => 1000,
+        'due_amount' => 1000,
+        'paid_status' => Invoice::STATUS_UNPAID
+    ]);
+    
+    Payment::factory()->create([
+        'invoice_id' => $invoice->id,
+        'amount' => 300
+    ]);
+    
+    $invoice->refresh();
+    $this->assertEquals(Invoice::STATUS_PARTIALLY_PAID, $invoice->paid_status);
+    
+    Payment::factory()->create([
+        'invoice_id' => $invoice->id,
+        'amount' => 700
+    ]);
+    
+    $invoice->refresh();
+    $this->assertEquals(Invoice::STATUS_PAID, $invoice->paid_status);
+});
