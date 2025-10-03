@@ -26,13 +26,8 @@ class CustomersController extends Controller
         $customers = Customer::with('creator')
             ->whereCompany()
             ->applyFilters($request->all())
-            ->select(
-                'customers.*',
-                DB::raw('sum(invoices.base_due_amount) as base_due_amount'),
-                DB::raw('sum(invoices.due_amount) as due_amount'),
-            )
-            ->groupBy('customers.id')
-            ->leftJoin('invoices', 'customers.id', '=', 'invoices.customer_id')
+            ->withSum('invoices as base_due_amount', 'base_due_amount')
+            ->withSum('invoices as due_amount', 'due_amount')
             ->paginateData($limit);
 
         return CustomerResource::collection($customers)
