@@ -8,7 +8,6 @@ use App\Http\Requests\DeleteCustomersRequest;
 use App\Http\Resources\CustomerResource;
 use App\Models\Customer;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class CustomersController extends Controller
 {
