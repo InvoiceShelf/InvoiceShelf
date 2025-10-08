@@ -162,7 +162,7 @@
     "description": "Opis",
     "percent": "Postotak",
     "compound_tax": "Složeni porez",
-    "percentage": "Percentage",
+    "percentage": "Postotak",
     "fixed_amount": "Fixed Amount",
     "tax_type": "Tax Type"
   },
