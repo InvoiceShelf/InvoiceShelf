@@ -925,8 +925,8 @@
     "company_info": {
       "company_info": "Údaje o společnosti",
       "company_name": "Název společnosti",
-      "tax_id": "Daňové identifikační číslo",
-      "vat_id": "Daňové identifikační číslo",
+      "tax_id": "Identifikační číslo osoby (IČO)",
+      "vat_id": "Daňové identifikační číslo (DIČ)",
       "company_logo": "Logo společnosti",
       "section_description": "Informace o vaší společnosti, která bude zobrazena na fakturách, odhadech a dalších dokladech vytvořených v InvoiceShelfu.",
       "phone": "Telefon",
