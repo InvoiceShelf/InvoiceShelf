@@ -163,7 +163,7 @@
     "percent": "Procent",
     "compound_tax": "Verbinding Ta",
     "percentage": "Percentage",
-    "fixed_amount": "Fixed Amount",
+    "fixed_amount": "Vast bedrag",
     "tax_type": "Tax Type"
   },
   "global_search": {
@@ -194,7 +194,7 @@
   "customers": {
     "title": "Klanten",
     "prefix": "Voorvoegsel",
-    "tax_id": "Tax ID",
+    "tax_id": "Btw-nummer",
     "add_customer": "Klant toevoegen",
     "contacts_list": "Klantenlijst",
     "name": "Naam",
@@ -308,7 +308,7 @@
     "sub_total": "Subtotaal",
     "net_total": "Net",
     "estimate_number": "Offerte nummer",
-    "ref_number": "Referentie nummer",
+    "ref_number": "Verwijzing nummer",
     "contact": "Contact",
     "add_item": "Voeg een item toe",
     "date": "Datum",
@@ -639,7 +639,7 @@
     "updated_message": "Betaling succesvol bijgewerkt",
     "deleted_message": "Betaling succesvol verwijderd | Betalingen zijn verwijderd",
     "invalid_amount_message": "Het bedrag van de betaling is ongeldig",
-    "amount_due": "Due Amount"
+    "amount_due": "Verschuldigd bedrag"
   },
   "expenses": {
     "title": "Uitgaven",
@@ -1652,7 +1652,7 @@
   "pdf_tax_label": "Btw",
   "pdf_tax_id": "FIN",
   "pdf_vat_id": "BTW",
-  "pdf_amount_paid": "Amount Paid",
+  "pdf_amount_paid": "Betaald",
   "pdf_amount_due": "Te betalen bedrag",
   "mail_thanks": "Bedankt",
   "mail_view_estimate": "Bekijk offerte",
