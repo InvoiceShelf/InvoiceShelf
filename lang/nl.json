@@ -1069,7 +1069,7 @@
         "convert_estimate_options": "Offerte omzetten actie",
         "convert_estimate_description": "Specificeer wat er gebeurt met de offerte nadat deze omgezet is naar een factuur.",
         "no_action": "Geen handeling",
-        "delete_estimate": "Schatting verwijderen",
+        "delete_estimate": "Offerte verwijderen",
         "mark_estimate_as_accepted": "Markeren offerte als geaccepteerd"
       },
       "payments": {
