@@ -19,6 +19,7 @@
           v-model="invoiceStore.newInvoice.invoice_date"
           :content-loading="isLoading"
           :calendar-button="true"
+           @update:modelValue="computeDueDate"     
           calendar-button-icon="calendar"
           :enableTime="enableTime"
           :time24hr="time24h"
@@ -67,6 +68,7 @@ import { computed } from 'vue'
 import ExchangeRateConverter from '@/scripts/admin/components/estimate-invoice-common/ExchangeRateConverter.vue'
 import { useInvoiceStore } from '@/scripts/admin/stores/invoice'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
+import dayjs from 'dayjs';
 
 const props = defineProps({
   v: {
@@ -83,6 +85,13 @@ const props = defineProps({
   },
 })
 
+
+
+function computeDueDate(baseDate) {
+  if (!baseDate) return '';
+  const dt = dayjs(baseDate).add(companyStore.selectedCompanySettings.invoice_due_date_days, 'day');
+   invoiceStore.newInvoice.due_date = dt.toDate();
+}
 const invoiceStore = useInvoiceStore()
 const companyStore = useCompanyStore()
 
