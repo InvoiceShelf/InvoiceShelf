@@ -18,5 +18,15 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         'Menu' => Lavary\Menu\Facade::class,
     ])->toArray(),
-
+    
+    /*
+    |--------------------------------------------------------------------------
+    | Force HTTPS
+    |--------------------------------------------------------------------------
+    |
+    | When set to true, all URLs will be forced to use HTTPS.
+    | Defaults to false for local or non-HTTPS environments.
+    |
+    */
+    'force_https' => env('FORCE_HTTPS', false),
 ];
