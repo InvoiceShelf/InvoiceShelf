@@ -68,7 +68,7 @@ class ExchangeRateProvider extends Model
                 }
             })
             ->get();
-        
+
         return $query;
     }
 
@@ -82,7 +82,7 @@ class ExchangeRateProvider extends Model
                 }
             })
             ->get();
-        
+
         return $query;
     }
 
