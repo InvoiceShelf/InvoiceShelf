@@ -52,7 +52,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-
+        
+        if (config('app.force_https')) {
+            \Illuminate\Support\Facades\URL::forceScheme("https");
+        }
+        
         if (InstallUtils::isDbCreated()) {
             $this->addMenus();
         }
