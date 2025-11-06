@@ -65,7 +65,10 @@ class BackupsController extends ApiController
     {
         $this->authorize('manage backups');
 
-        dispatch(new CreateBackupJob($request->all()))->onQueue(config('backup.queue.name'));
+        $data = $request->all();
+        $data['company'] = $request->header('company');
+
+        dispatch(new CreateBackupJob($data))->onQueue(config('backup.queue.name'));
 
         return $this->respondSuccess();
     }

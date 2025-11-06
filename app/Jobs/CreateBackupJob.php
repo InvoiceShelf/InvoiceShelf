@@ -2,13 +2,12 @@
 
 namespace App\Jobs;
 
-use App\Models\FileDisk;
+use App\Space\BackupConfigurationFactory;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Spatie\Backup\Config\Config;
 use Spatie\Backup\Tasks\Backup\BackupJobFactory;
 
 class CreateBackupJob implements ShouldQueue
@@ -35,14 +34,7 @@ class CreateBackupJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $fileDisk = FileDisk::find($this->data['file_disk_id']);
-        $fileDisk->setConfig();
-
-        $prefix = env('DYNAMIC_DISK_PREFIX', 'temp_');
-
-        config(['backup.backup.destination.disks' => [$prefix.$fileDisk->driver]]);
-
-        $config = Config::fromArray(config('backup'));
+        $config = BackupConfigurationFactory::make($this->data);
         $backupJob = BackupJobFactory::createFromConfig($config);
         if (! defined('SIGINT')) {
             $backupJob->disableSignals();
