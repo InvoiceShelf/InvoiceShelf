@@ -18,7 +18,7 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         'Menu' => Lavary\Menu\Facade::class,
     ])->toArray(),
-    
+
     /*
     |--------------------------------------------------------------------------
     | Force HTTPS
