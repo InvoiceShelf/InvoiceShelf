@@ -1104,7 +1104,7 @@
         "notes": "Opmerkingen",
         "type": "Type",
         "is_default": "Select by default",
-        "is_default_description": "This note will be selected by default in new invoices.",
+        "is_default_description": "Deze notitie wordt standaard geselecteerd in nieuwe facturen.",
         "add_note": "Notitie toevoegen",
         "add_new_note": "Voeg een nieuwe notitie toe",
         "name": "Naam",
