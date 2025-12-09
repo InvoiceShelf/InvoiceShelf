@@ -280,7 +280,7 @@
     "list_of_items": "This section will contain the list of items.",
     "select_a_unit": "select unit",
     "taxes": "Taxes",
-    "item_attached_message": "Cannot delete an item which is already in use",
+    "item_attached_message": "Nu se poate șterge un element care este deja utilizat",
     "confirm_delete": "You will not be able to recover this Item | You will not be able to recover these Items",
     "created_message": "Item created successfully",
     "updated_message": "Item updated successfully",
