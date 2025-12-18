@@ -33,7 +33,7 @@ class CompanySetting extends Model
                 [
                     'option' => $key,
                     'company_id' => $company_id,
-                    'value' => $value,
+                    'value' => $value ?? '',
                 ]
             );
         }

@@ -231,6 +231,16 @@ return [
             'model' => Payment::class,
         ],
         [
+            'title' => 'settings.menu_title.interac_e_transfer',
+            'group' => '',
+            'name' => 'Interac e-Transfer',
+            'link' => '/admin/settings/interac-e-transfer',
+            'icon' => 'InboxArrowDownIcon',
+            'owner_only' => true,
+            'ability' => 'create-payment',
+            'model' => Payment::class,
+        ],
+        [
             'title' => 'settings.menu_title.custom_fields',
             'group' => '',
             'name' => 'Custom fields',

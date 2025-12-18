@@ -18,6 +18,7 @@ FROM serversideup/php:8-fpm-alpine AS base
     RUN install-php-extensions bcmath
     RUN install-php-extensions intl
     RUN install-php-extensions curl
+    RUN install-php-extensions imap
 
 FROM base AS development
     ARG UID
@@ -26,4 +27,3 @@ FROM base AS development
     USER root
     RUN docker-php-serversideup-set-id www-data $UID:$GID
     USER www-data
-
