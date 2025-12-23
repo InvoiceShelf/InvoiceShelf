@@ -4,8 +4,8 @@ namespace App\Services;
 
 use App\Models\Company;
 use App\Models\CompanySetting;
-use App\Models\Customer;
 use App\Models\Currency;
+use App\Models\Customer;
 use App\Models\InteracETransferLog;
 use App\Models\Payment;
 use App\Models\PaymentMethod;
@@ -333,8 +333,8 @@ class InteracETransferService
      */
     protected function createPayment(Company $company, Customer $customer, int $paymentMethodId, array $paymentInfo): Payment
     {
-        $serial = (new SerialNumberFormatter())
-            ->setModel(new Payment())
+        $serial = (new SerialNumberFormatter)
+            ->setModel(new Payment)
             ->setCompany($company->id)
             ->setCustomer($customer->id)
             ->setNextNumbers();
