@@ -401,7 +401,7 @@
     "completed": "Zaključeno",
     "customer": "NAROČNIK",
     "paid_status": "PLAČANO STANJE",
-    "ref_no": "REF NO.",
+    "ref_no": "REF. ŠT.",
     "number": "ŠTEVILKA",
     "amount_due": "DOLGOVANI ZNESEK",
     "partially_paid": "Delno plačano",
@@ -491,7 +491,7 @@
     "completed": "Zaključeno",
     "customer": "NAROČNIK",
     "paid_status": "PLAČANO STANJE",
-    "ref_no": "REF NO.",
+    "ref_no": "REF. ŠT.",
     "number": "ŠTEVILKA",
     "amount_due": "DOLGOVANI ZNESEK",
     "partially_paid": "Delno plačano",
@@ -653,7 +653,7 @@
     "from_date": "Od datuma",
     "to_date": "Do danes",
     "expense_date": "Datum",
-    "expense_number": "Expense Number",
+    "expense_number": "Številka stroška",
     "expense_number_placeholder": "EXP-001",
     "description": "Opis",
     "receipt": "Potrdilo o prejemu",
@@ -696,7 +696,7 @@
     "forgot_password": "Ste pozabili geslo?",
     "or_signIn_with": "ali se prijavite z",
     "login": "Prijava",
-    "register": "Register",
+    "register": "Registracija",
     "reset_password": "Ponastavitev gesla",
     "password_reset_successfully": "Ponastavitev gesla je bila uspešna",
     "enter_email": "Vnesite e-pošto",
@@ -859,7 +859,7 @@
       "notes": "Opombe",
       "exchange_rate": "Menjalni tečaj",
       "address_information": "Podatki o naslovu",
-      "pdf_generation": "PDF Generation"
+      "pdf_generation": "Ustvarjanje PDF datoteke"
     },
     "address_information": {
       "section_description": "  Informacije o naslovu lahko posodobite s spodnjim obrazcem."
