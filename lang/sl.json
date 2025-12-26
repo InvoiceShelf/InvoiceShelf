@@ -162,9 +162,9 @@
     "description": "Opis",
     "percent": "Odstotek",
     "compound_tax": "Sestavljeni davek",
-    "percentage": "Percentage",
-    "fixed_amount": "Fixed Amount",
-    "tax_type": "Tax Type"
+    "percentage": "Odstotek",
+    "fixed_amount": "Fiksni znesek",
+    "tax_type": "Vrsta obdavčitve"
   },
   "global_search": {
     "search": "Iskanje...",
@@ -173,7 +173,7 @@
     "no_results_found": "Ni bilo najdenih rezultatov"
   },
   "company_switcher": {
-    "label": "SWITCH COMPANY",
+    "label": "Zamenjaj podjetje",
     "no_results_found": "Ni bilo najdenih rezultatov",
     "add_new_company": "Dodajanje novega podjetja",
     "new_company": "Novo podjetje",
@@ -299,14 +299,14 @@
     "paid": "Plačano",
     "unpaid": "Neplačano",
     "customer": "NAROČNIK",
-    "ref_no": "REF NO.",
+    "ref_no": "REF. ŠT.",
     "number": "ŠTEVILKA",
     "amount_due": "DOLGOVANI ZNESEK",
     "partially_paid": "Delno plačano",
     "total": "Skupaj",
     "discount": "Popust",
     "sub_total": "Vse skupaj",
-    "net_total": "Net",
+    "net_total": "Neto",
     "estimate_number": "Ocenjena vrednost",
     "ref_number": "Referenčna številka",
     "contact": "Kontakt",
