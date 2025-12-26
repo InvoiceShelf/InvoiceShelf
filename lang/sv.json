@@ -111,12 +111,12 @@
       "results": "resultat"
     },
     "file_upload": {
-      "drag_a_file": "Drag a file here or",
-      "browse": "browse",
+      "drag_a_file": "Dra hit en fil",
+      "browse": "Bläddra",
       "to_choose": "to choose a file"
     },
     "multiselect": {
-      "the_list_is_empty": "The list is empty",
+      "the_list_is_empty": "Listan är tom",
       "no_results_found": "Inga resultat hittades"
     },
     "copy_to_clipboard": "Kopiera till urklipp"
@@ -639,7 +639,7 @@
     "updated_message": "Betalning uppdaterades",
     "deleted_message": "Betalning raderades | Betalningar raderades",
     "invalid_amount_message": "Betalsumman är ogiltig",
-    "amount_due": "Due Amount"
+    "amount_due": "Förfallet belopp"
   },
   "expenses": {
     "title": "Utgifter",
@@ -871,7 +871,7 @@
     "primary_currency": "Primär valuta",
     "timezone": "Tidszon",
     "date_format": "Datumformat",
-    "time_format": "Time Format",
+    "time_format": "T",
     "currencies": {
       "title": "Valutor",
       "currency": "Valuta | Valutor",
@@ -955,7 +955,7 @@
       "name": "Namn",
       "slug": "Permalänk",
       "required": "Tvingad",
-      "placeholder": "Placeholder",
+      "placeholder": "Platshållare",
       "help_text": "Hjälptext",
       "default_value": "Standardvärde",
       "prefix": "Prefix",
@@ -986,7 +986,7 @@
       "model_type": {
         "customer": "Kund",
         "invoice": "Faktura",
-        "estimate": "Estimate",
+        "estimate": "Estimat",
         "expense": "Expense",
         "payment": "Betalning"
       }
@@ -1007,7 +1007,7 @@
       "delimiter_description": "Tecken för att ange gränsen mellan 2 separata komponenter. Som standard är den inställd till -",
       "delimiter_param_label": "Avgränsarens värde",
       "date_format": "Datumformat",
-      "time_format": "Time Format",
+      "time_format": "Tidsformat",
       "date_format_description": "Ett lokalt datum- och tidsfält som accepterar en formatsparameter. Standardformatet: 'Y' renderar innevarande år.",
       "date_format_param_label": "Format",
       "sequence": "Sekvens",
@@ -1615,7 +1615,7 @@
   "pdf_invoice_label": "Faktura",
   "pdf_invoice_number": "Fakturanummer",
   "pdf_invoice_date": "Fakturadatum",
-  "pdf_invoice_due_date": "Due Date",
+  "pdf_invoice_due_date": "Förfallodatum",
   "pdf_notes": "Anteckningar",
   "pdf_items_label": "Artiklar",
   "pdf_quantity_label": "Antal",
@@ -1653,7 +1653,7 @@
   "pdf_tax_id": "Org.Nr",
   "pdf_vat_id": "Momsreg. nr",
   "pdf_amount_paid": "Amount Paid",
-  "pdf_amount_due": "Amount Due",
+  "pdf_amount_due": "Förfallet belopp",
   "mail_thanks": "Tack",
   "mail_view_estimate": "View Estimate",
   "mail_viewed_estimate": ":name viewed this Estimate.",
