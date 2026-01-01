@@ -65,7 +65,7 @@
     </div>
 
     <!-- Not Selected -->
-    <div v-else-if="!localFiles.length" class="flex flex-col items-center">
+    <div v-else-if="!localFiles.length || hidePreview" class="flex flex-col items-center">
       <BaseIcon
         name="CloudArrowUpIcon"
         class="h-6 mb-2 text-xl leading-6 text-gray-400"
@@ -423,9 +423,13 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  hidePreview: {
+    type: Boolean,
+    default: false,
+  },
 })
 
-const emit = defineEmits(['change', 'remove', 'update:modelValue'])
+const emit = defineEmits(['change', 'remove', 'update:modelValue', 'duplicates'])
 
 // status
 const STATUS_INITIAL = 0
@@ -508,20 +512,20 @@ function onChange(fieldName, fileList, fileCount) {
     localFiles.value = []
   }
 
-  Array.from(Array(fileList.length).keys()).forEach((x) => {
+  const promises = Array.from(Array(fileList.length).keys()).map((x) => {
     const file = fileList[x]
 
     if (utils.isImageFile(file.type)) {
-      getBase64(file).then((image) => {
-        localFiles.value.push({
+      return getBase64(file).then((image) => {
+        return {
           fileObject: file,
           type: file.type,
           name: file.name,
           image,
-        })
+        }
       })
     } else {
-      localFiles.value.push({
+      return Promise.resolve({
         fileObject: file,
         type: file.type,
         name: file.name,
@@ -529,19 +533,51 @@ function onChange(fieldName, fileList, fileCount) {
     }
   })
 
-  emit('update:modelValue', localFiles.value)
+  Promise.all(promises).then((files) => {
+    let filesToAdd = files
 
-  if (!props.autoProcess) return
+    if (props.preserveLocalFiles) {
+      const duplicateFiles = []
+      filesToAdd = files.filter((newFile) => {
+        const exists = localFiles.value.some(
+          (existing) => existing.name === newFile.name
+        )
+        if (exists) {
+          duplicateFiles.push(newFile)
+        }
+        return !exists
+      })
 
-  // append the files to FormData
-  const formData = new FormData()
+      if (duplicateFiles.length > 0) {
+        emit('duplicates', duplicateFiles)
+      }
+    }
 
-  Array.from(Array(fileList.length).keys()).forEach((x) => {
-    formData.append(fieldName, fileList[x], fileList[x].name)
+    if (filesToAdd.length > 0) {
+      localFiles.value.push(...filesToAdd)
+      localFiles.value = [...localFiles.value]
+      emit('update:modelValue', localFiles.value)
+    }
+
+    if (!props.autoProcess) return
+
+    // append the files to FormData
+    const formData = new FormData()
+
+    if (props.preserveLocalFiles) {
+      filesToAdd.forEach((f) => {
+        formData.append(fieldName, f.fileObject, f.name)
+      })
+      if (filesToAdd.length > 0) {
+        save(formData)
+      }
+    } else {
+      Array.from(Array(fileList.length).keys()).forEach((x) => {
+        formData.append(fieldName, fileList[x], fileList[x].name)
+      })
+      save(formData)
+    }
   })
-
-  // save it
-  save(formData)
 }
 
 function onBrowse() {

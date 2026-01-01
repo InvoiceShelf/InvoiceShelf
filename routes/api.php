@@ -23,6 +23,8 @@ use App\Http\Controllers\V1\Admin\ExchangeRate\GetActiveProviderController;
 use App\Http\Controllers\V1\Admin\ExchangeRate\GetExchangeRateController;
 use App\Http\Controllers\V1\Admin\ExchangeRate\GetSupportedCurrenciesController;
 use App\Http\Controllers\V1\Admin\ExchangeRate\GetUsedCurrenciesController;
+use App\Http\Controllers\V1\Admin\Expense\BulkImportExpensesController;
+use App\Http\Controllers\V1\Admin\Expense\CheckDuplicateReceiptsController;
 use App\Http\Controllers\V1\Admin\Expense\ExpenseCategoriesController;
 use App\Http\Controllers\V1\Admin\Expense\ExpensesController;
 use App\Http\Controllers\V1\Admin\Expense\ShowReceiptController;
@@ -309,6 +311,10 @@ Route::prefix('/v1')->group(function () {
             Route::get('/expenses/{expense}/show/receipt', ShowReceiptController::class);
 
             Route::post('/expenses/{expense}/upload/receipts', UploadReceiptController::class);
+
+            Route::post('/expenses/check-duplicates', CheckDuplicateReceiptsController::class);
+
+            Route::post('/expenses/bulk-import', BulkImportExpensesController::class);
 
             Route::post('/expenses/delete', [ExpensesController::class, 'delete']);
 
