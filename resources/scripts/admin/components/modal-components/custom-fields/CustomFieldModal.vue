@@ -234,8 +234,10 @@ const modelTypes = reactive([
   {label: t('settings.custom_fields.model_type.invoice'), value: 'Invoice'},
   {label: t('settings.custom_fields.model_type.estimate'), value: 'Estimate'},
   {label: t('settings.custom_fields.model_type.expense'), value: 'Expense'},
-  {label: t('settings.custom_fields.model_type.payment'), value: 'Payment'}
+  {label: t('settings.custom_fields.model_type.payment'), value: 'Payment'},
+  {label: t('settings.custom_fields.model_type.item'), value: 'Item'}
 ])
+
 
 const dataTypes = reactive([
   { label: 'Text', value: 'Input' },

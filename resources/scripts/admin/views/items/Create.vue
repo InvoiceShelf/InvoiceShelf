@@ -109,6 +109,17 @@
             />
           </BaseInputGroup>
 
+          <!-- Item Custom Fields -->
+          <ItemCustomFields
+            :is-edit="isEdit"
+            class="col-span-2"
+            :is-loading="isFetchingInitialData"
+            type="Item"
+            :store="itemStore"
+            store-prop="currentItem"
+            :custom-field-scope="itemValidationScope"
+          />
+
           <div>
             <BaseButton
               :content-loading="isFetchingInitialData"
@@ -149,6 +160,8 @@ import { useItemStore } from '@/scripts/admin/stores/item'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 import { useTaxTypeStore } from '@/scripts/admin/stores/tax-type'
 import { useModalStore } from '@/scripts/stores/modal'
+import { useCustomFieldStore } from '@/scripts/admin/stores/custom-field'
+import ItemCustomFields from '@/scripts/admin/components/custom-fields/CreateCustomFields.vue'
 import ItemUnitModal from '@/scripts/admin/components/modal-components/ItemUnitModal.vue'
 import { useUserStore } from '@/scripts/admin/stores/user'
 import abilities from '@/scripts/admin/stub/abilities'
@@ -161,6 +174,8 @@ const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
+const customFieldStore = useCustomFieldStore()
+const itemValidationScope = 'newItem'
 
 const isSaving = ref(false)
 const taxPerItem = ref(companyStore.selectedCompanySettings.tax_per_item)
@@ -168,6 +183,7 @@ const taxPerItem = ref(companyStore.selectedCompanySettings.tax_per_item)
 let isFetchingInitialData = ref(false)
 
 itemStore.$reset()
+customFieldStore.resetCustomFields()
 loadData()
 
 const price = computed({
@@ -242,7 +258,10 @@ const rules = computed(() => {
   }
 })
 
-const v$ = useVuelidate(rules, itemStore)
+
+const v$ = useVuelidate(rules, itemStore, {
+  $scope: itemValidationScope,
+})
 
 async function addItemUnit() {
   modalStore.openModal({

@@ -988,7 +988,8 @@
         "invoice": "Faktur",
         "estimate": "Penawaran",
         "expense": "Pengeluaran",
-        "payment": "Pembayaran"
+        "payment": "Pembayaran",
+        "item": "Barang"
       }
     },
     "customization": {

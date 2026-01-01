@@ -164,6 +164,8 @@ function getModelType(type) {
       return t('settings.custom_fields.model_type.expense')
     case 'Payment':
       return t('settings.custom_fields.model_type.payment')
+    case 'Item':
+      return t('settings.custom_fields.model_type.item')
     default:
       return type
   }

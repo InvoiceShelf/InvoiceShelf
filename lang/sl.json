@@ -988,7 +988,8 @@
         "invoice": "Račun",
         "estimate": "Ocena",
         "expense": "Stroški",
-        "payment": "Plačilo"
+        "payment": "Plačilo",
+        "item": "Item"
       }
     },
     "customization": {

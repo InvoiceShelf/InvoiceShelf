@@ -988,7 +988,8 @@
         "invoice": "Facture",
         "estimate": "Devis",
         "expense": "Dépense",
-        "payment": "Paiement"
+        "payment": "Paiement",
+        "item": "Article"
       }
     },
     "customization": {

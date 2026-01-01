@@ -74,6 +74,7 @@ return [
             'depends_on' => [
                 'view-item',
                 'view-tax-type',
+                'view-custom-field',
             ],
         ],
         [
@@ -82,6 +83,7 @@ return [
             'model' => Item::class,
             'depends_on' => [
                 'view-item',
+                'view-custom-field',
             ],
         ],
         [
