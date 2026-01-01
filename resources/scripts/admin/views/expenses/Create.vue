@@ -294,6 +294,43 @@
           </div>
         </BaseInputGrid>
 
+        <div class="mt-4">
+          <div
+            v-if="isEdit && expenseStore.currentExpense.attachment_receipt_url && !isAttachmentReceiptRemoved"
+            class="mt-4"
+          >
+            <label class="block text-sm font-medium text-gray-800 mb-2">
+              {{ $t('expenses.receipt') }}
+            </label>
+
+            <div class="p-4 border border-gray-200 border-solid rounded bg-gray-50">
+              <img
+                v-if="attachmentType === 'image'"
+                :src="expenseStore.currentExpense.attachment_receipt_url.url || expenseStore.currentExpense.attachment_receipt_url"
+                class="max-w-full h-auto mx-auto"
+                alt="Receipt"
+              />
+              <iframe
+                v-else-if="attachmentType === 'pdf'"
+                :src="expenseStore.currentExpense.attachment_receipt_url.url || expenseStore.currentExpense.attachment_receipt_url"
+                class="w-full h-[600px]"
+                frameborder="0"
+              >
+              </iframe>
+              <div v-else class="text-center text-gray-500 py-8">
+                <BaseIcon name="DocumentIcon" class="h-12 w-12 mx-auto mb-2 text-gray-400" />
+                <p>{{ $t('expenses.preview_not_available') }}</p>
+                <a
+                  :href="receiptDownloadUrl"
+                  class="text-primary-500 hover:underline mt-2 inline-block"
+                >
+                  {{ $t('expenses.download_receipt') }}
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </BaseCard>
     </form>
   </BasePage>
@@ -400,6 +437,40 @@ const isEdit = computed(() => route.name === 'expenses.edit')
 const pageTitle = computed(() =>
   isEdit.value ? t('expenses.edit_expense') : t('expenses.new_expense')
 )
+
+const attachmentType = computed(() => {
+  const meta = expenseStore.currentExpense.attachment_receipt_meta
+  if (meta && meta.mime_type) {
+    if (meta.mime_type === 'application/pdf') {
+      return 'pdf'
+    }
+    if (meta.mime_type.startsWith('image/')) {
+      return 'image'
+    }
+  }
+
+  const url = expenseStore.currentExpense.attachment_receipt_url
+
+  if (url && typeof url === 'object' && url.url) {
+    return url.type === 'pdf' ? 'pdf' : 'image'
+  }
+
+  if (!url || typeof url !== 'string') return null
+
+  // Extract extension from URL (ignoring query params)
+  const cleanUrl = url.split('?')[0]
+  if (!cleanUrl) return null
+
+  const extension = cleanUrl.split('.').pop().toLowerCase()
+
+  if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'].includes(extension)) {
+    return 'image'
+  }
+  if (extension === 'pdf') {
+    return 'pdf'
+  }
+  return 'other'
+})
 
 const receiptDownloadUrl = computed(() =>
   isEdit.value ? `/reports/expenses/${route.params.id}/download-receipt` : ''

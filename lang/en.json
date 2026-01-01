@@ -668,6 +668,7 @@
     "save_expense": "Save Expense",
     "update_expense": "Update Expense",
     "download_receipt": "Download Receipt",
+    "preview_not_available": "Preview not available for this file type.",
     "edit_expense": "Edit Expense",
     "new_expense": "New Expense",
     "expense": "Expense | Expenses",
