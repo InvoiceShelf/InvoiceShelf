@@ -19,6 +19,7 @@ import { defineAsyncComponent, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { helpers, requiredIf } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
+import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
 
 const props = defineProps({
   field: {

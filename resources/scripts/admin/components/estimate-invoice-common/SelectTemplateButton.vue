@@ -21,6 +21,8 @@
 <script setup>
 import { useModalStore } from '@/scripts/stores/modal'
 import { useI18n } from 'vue-i18n'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
 
 const props = defineProps({
   store: {

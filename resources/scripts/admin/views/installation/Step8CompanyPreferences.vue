@@ -145,8 +145,8 @@
 
 <script setup>
 import { useI18n } from 'vue-i18n'
-import { ref, computed, onMounted, reactive } from 'vue'
-import { required, helpers } from '@vuelidate/validators'
+import { computed, reactive, ref } from 'vue'
+import { helpers, required } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import Ls from '@/scripts/services/ls.js'
 import { useGlobalStore } from '@/scripts/admin/stores/global'
@@ -155,6 +155,11 @@ import { useUserStore } from '@/scripts/admin/stores/user'
 import { useDialogStore } from '@/scripts/stores/dialog'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import { useRouter } from 'vue-router'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseMultiselect from '@/scripts/components/base/base-select/BaseMultiselect.vue'
+import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
+import BaseWizardStep from '@/scripts/components/base/BaseWizardStep.vue'
 
 const emit = defineEmits(['next'])
 

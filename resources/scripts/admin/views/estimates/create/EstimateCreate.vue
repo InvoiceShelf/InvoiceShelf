@@ -137,17 +137,11 @@
 </template>
 
 <script setup>
-import { computed, ref, watch, onMounted } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { cloneDeep } from 'lodash'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import {
-  required,
-  maxLength,
-  helpers,
-  requiredIf,
-  decimal,
-} from '@vuelidate/validators'
+import { decimal, helpers, maxLength, required, requiredIf } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { useModuleStore } from '@/scripts/admin/stores/module'
 import { useEstimateStore } from '@/scripts/admin/stores/estimate'
@@ -164,6 +158,13 @@ import SelectTemplateModal from '@/scripts/admin/components/modal-components/Sel
 import TaxTypeModal from '@/scripts/admin/components/modal-components/TaxTypeModal.vue'
 import ItemModal from '@/scripts/admin/components/modal-components/ItemModal.vue'
 import SalesTax from '@/scripts/admin/components/estimate-invoice-common/SalesTax.vue'
+import BaseScrollPane from '@/scripts/components/base/BaseScrollPane.vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseBreadcrumbItem from '@/scripts/components/base/BaseBreadcrumbItem.vue'
+import BaseBreadcrumb from '@/scripts/components/base/BaseBreadcrumb.vue'
+import BasePageHeader from '@/scripts/components/base/BasePageHeader.vue'
+import BasePage from '@/scripts/components/base/BasePage.vue'
 
 const estimateStore = useEstimateStore()
 const moduleStore = useModuleStore()
