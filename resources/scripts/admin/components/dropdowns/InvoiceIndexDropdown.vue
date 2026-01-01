@@ -30,6 +30,15 @@
       {{ $t('general.copy_pdf_url') }}
     </BaseDropdownItem>
 
+    <!-- Generate E-Invoice  -->
+    <BaseDropdownItem v-if="route.name === 'invoices.view'" @click="openEInvoiceModal">
+      <BaseIcon
+        name="DocumentTextIcon"
+        class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+      />
+      {{ $t('e_invoice.generate_e_invoice') }}
+    </BaseDropdownItem>
+
     <!-- View Invoice  -->
     <router-link
       v-if="
@@ -256,6 +265,16 @@ function copyPdfUrl() {
   notificationStore.showNotification({
     type: 'success',
     message: t('general.copied_pdf_url_clipboard'),
+  })
+}
+
+function openEInvoiceModal() {
+  modalStore.openModal({
+    title: t('e_invoice.generate_e_invoice'),
+    componentName: 'EInvoiceModal',
+    id: props.row.id,
+    data: props.row,
+    variant: 'lg',
   })
 }
 </script>
