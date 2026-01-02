@@ -22,19 +22,19 @@ class BulkImportExpensesController extends Controller
 
         $companyId = $request->header('company');
         $currencyId = CompanySetting::getSetting('currency', $companyId);
-        
+
         // Get the 'Unverified' category or create it
         $defaultCategory = ExpenseCategory::where('company_id', $companyId)
             ->where('name', 'Unverified')
             ->first();
-        
-        if (!$defaultCategory) {
-             $defaultCategory = ExpenseCategory::create([
-                 'name' => 'Unverified',
-                 'company_id' => $companyId,
-             ]);
+
+        if (! $defaultCategory) {
+            $defaultCategory = ExpenseCategory::create([
+                'name' => 'Unverified',
+                'company_id' => $companyId,
+            ]);
         }
-        
+
         $defaultCategoryId = $defaultCategory->id;
         $categories = $request->input('categories', []);
 
@@ -57,7 +57,7 @@ class BulkImportExpensesController extends Controller
                 ]);
 
                 $expense->addMedia($file)->toMediaCollection('receipts');
-                
+
                 $expenses[] = $expense;
             }
         });
@@ -65,7 +65,7 @@ class BulkImportExpensesController extends Controller
         return response()->json([
             'success' => true,
             'count' => count($expenses),
-            'message' => count($expenses) . ' receipts imported successfully.'
+            'message' => count($expenses).' receipts imported successfully.',
         ]);
     }
 }
