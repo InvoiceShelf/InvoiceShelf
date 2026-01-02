@@ -27,6 +27,18 @@
         <BaseButton
           v-if="userStore.hasAbilities(abilities.CREATE_EXPENSE)"
           class="ml-4"
+          variant="primary-outline"
+          @click="$router.push('/admin/expenses/bulk-import')"
+        >
+          <template #left="slotProps">
+            <BaseIcon name="ArrowUpOnSquareStackIcon" :class="slotProps.class" />
+          </template>
+          {{ $t('expenses.bulk_import') }}
+        </BaseButton>
+
+        <BaseButton
+          v-if="userStore.hasAbilities(abilities.CREATE_EXPENSE)"
+          class="ml-4"
           variant="primary"
           @click="$router.push('expenses/create')"
         >
@@ -227,6 +239,7 @@ import { useDialogStore } from '@/scripts/stores/dialog'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 import { debouncedWatch } from '@vueuse/core'
 import { useUserStore } from '@/scripts/admin/stores/user'
+import { useModalStore } from '@/scripts/stores/modal'
 
 import abilities from '@/scripts/admin/stub/abilities'
 
@@ -238,6 +251,7 @@ const expenseStore = useExpenseStore()
 const dialogStore = useDialogStore()
 const categoryStore = useCategoryStore()
 const userStore = useUserStore()
+const modalStore = useModalStore()
 
 let isFetchingInitialData = ref(true)
 let showFilters = ref(null)

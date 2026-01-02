@@ -66,6 +66,7 @@ const ItemCreate = () => import('@/scripts/admin/views/items/Create.vue')
 // Expenses
 const ExpensesIndex = () => import('@/scripts/admin/views/expenses/Index.vue')
 const ExpenseCreate = () => import('@/scripts/admin/views/expenses/Create.vue')
+const ExpenseBulkImport = () => import('@/scripts/admin/views/expenses/BulkImport.vue')
 
 // Users
 const UserIndex = () => import('@/scripts/admin/views/users/Index.vue')
@@ -368,6 +369,12 @@ export default [
         name: 'expenses.create',
         meta: { ability: abilities.CREATE_EXPENSE },
         component: ExpenseCreate,
+      },
+      {
+        path: 'expenses/bulk-import',
+        name: 'expenses.bulk-import',
+        meta: { ability: abilities.CREATE_EXPENSE },
+        component: ExpenseBulkImport,
       },
       {
         path: 'expenses/:id/edit',
