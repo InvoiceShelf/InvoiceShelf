@@ -178,6 +178,7 @@ class Company extends Model implements HasMedia
         PaymentMethod::create(['name' => 'Check', 'company_id' => $this->id]);
         PaymentMethod::create(['name' => 'Credit Card', 'company_id' => $this->id]);
         PaymentMethod::create(['name' => 'Bank Transfer', 'company_id' => $this->id]);
+        PaymentMethod::create(['name' => 'Interac e-Transfer', 'company_id' => $this->id]);
     }
 
     public function setupDefaultUnits()

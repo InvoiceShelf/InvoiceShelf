@@ -859,7 +859,8 @@
       "notes": "Notes",
       "exchange_rate": "Exchange Rate",
       "address_information": "Address Information",
-      "pdf_generation": "PDF Generation"
+      "pdf_generation": "PDF Generation",
+      "interac_e_transfer": "Interac e-Transfer"
     },
     "address_information": {
       "section_description": "  You can update Your Address information using form below."
@@ -908,6 +909,40 @@
       "from_mail": "From Mail Address",
       "encryption": "Mail Encryption",
       "mail_config_desc": "Below is the form for Configuring Email driver for sending emails from the app. You can also configure third party providers like Sendgrid, SES etc."
+    },
+    "interac": {
+      "title": "Interac e-Transfer",
+      "description": "Connect an IMAP mailbox to automatically create payments from Interac e-Transfer emails.",
+      "enable_sync": "Enable automatic payments",
+      "sender_filter": "Sender filter",
+      "sender_filter_help": "Only process emails from this address (e.g. notify(at)payments.interac.ca). Leave blank to process all unseen emails.",
+      "imap_host": "IMAP Host",
+      "imap_port": "IMAP Port",
+      "imap_encryption": "Encryption",
+      "imap_username": "IMAP Username",
+      "imap_password": "IMAP Password",
+      "imap_folder": "Folder to watch",
+      "mark_as_read": "Mark as read after processing",
+      "mark_as_read_desc": "Leave off if you want to keep messages unread in your mailbox.",
+      "move_to_folder": "Move processed emails to",
+      "move_to_folder_help": "Use {customer} to include the payer's name when creating the folder.",
+      "validate_cert": "Validate certificate",
+      "validate_cert_desc": "Disable only if your mail server uses a self-signed certificate.",
+      "sync_now": "Sync now",
+      "save_success": "Interac settings saved successfully",
+      "sync_success": "Mailbox checked. {messages} messages seen, {created} payments created.",
+      "last_sync": "Last sync: status {status}, {messages} messages checked, {created} payments created.",
+      "connection_status": "Connection status: {status}",
+      "connection_status_toast": "Mailbox connection test: {status}",
+      "connection_status_states": {
+        "ok": "Connected",
+        "disabled": "Disabled",
+        "connection_failed": "Connection failed",
+        "missing_extension": "PHP IMAP extension missing"
+      },
+      "encryption_none": "None",
+      "encryption_ssl": "SSL",
+      "encryption_tls": "STARTTLS/TLS"
     },
     "pdf": {
       "title": "PDF Setting",
