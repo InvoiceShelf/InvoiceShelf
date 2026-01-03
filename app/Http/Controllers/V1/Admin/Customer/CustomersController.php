@@ -8,6 +8,7 @@ use App\Http\Requests\DeleteCustomersRequest;
 use App\Http\Resources\CustomerResource;
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CustomersController extends Controller
 {
@@ -25,8 +26,13 @@ class CustomersController extends Controller
         $customers = Customer::with('creator')
             ->whereCompany()
             ->applyFilters($request->all())
-            ->withSum('invoices as base_due_amount', 'base_due_amount')
-            ->withSum('invoices as due_amount', 'due_amount')
+            ->select('customers.*')
+            ->addSelect([
+                'base_due_amount' => \App\Models\Invoice::selectRaw('sum(base_due_amount)')
+                    ->whereColumn('customer_id', 'customers.id'),
+                'due_amount' => \App\Models\Invoice::selectRaw('sum(due_amount)')
+                    ->whereColumn('customer_id', 'customers.id'),
+            ])
             ->paginateData($limit);
 
         return CustomerResource::collection($customers)
