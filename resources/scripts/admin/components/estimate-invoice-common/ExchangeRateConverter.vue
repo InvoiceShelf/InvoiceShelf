@@ -7,17 +7,37 @@
     required
   >
     <template #labelRight>
-      <div v-if="hasActiveProvider && isEdit">
+      <div v-if="hasActiveProvider && isEdit" class="flex items-center gap-2">
         <BaseIcon
-          v-tooltip="{ content: 'Fetch Latest Exchange rate' }"
+          v-if="date"
+          v-tooltip="{ content: $t('settings.exchange_rate.fetch_historical_rate', { date }) }"
+          name="CalendarIcon"
+          :class="`h-4 w-4 text-primary-500 cursor-pointer outline-none ${
+            isFetching
+              ? ' cursor-not-allowed pointer-events-none opacity-50'
+              : ''
+          }`"
+          @click="getCurrenctExchangeRate(customerCurrency, date)"
+        />
+        <BaseIcon
+          v-tooltip="{ content: $t('settings.exchange_rate.fetch_latest_rate') }"
           name="ArrowPathIcon"
           :class="`h-4 w-4 text-primary-500 cursor-pointer outline-none ${
             isFetching
               ? ' animate-spin rotate-180 cursor-not-allowed pointer-events-none '
               : ''
           }`"
-          @click="getCurrenctExchangeRate(customerCurrency)"
+          @click="getCurrenctExchangeRate(customerCurrency, null)"
         />
+      </div>
+      <div v-else-if="!hasActiveProvider && isCurrencyDiffrent" class="flex items-center gap-2">
+        <router-link to="/admin/settings/exchange-rate-provider" target="_blank">
+          <BaseIcon
+            v-tooltip="{ content: $t('settings.exchange_rate.configure_provider_tooltip') }"
+            name="ExclamationTriangleIcon"
+            class="h-4 w-4 text-yellow-500 cursor-pointer outline-none"
+          />
+        </router-link>
       </div>
     </template>
     <BaseInput
@@ -49,6 +69,7 @@ import { watch, computed, ref, onBeforeUnmount } from 'vue'
 import { useGlobalStore } from '@/scripts/admin/stores/global'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 import { useExchangeRateStore } from '@/scripts/admin/stores/exchange-rate'
+import { ExclamationTriangleIcon } from '@heroicons/vue/24/outline'
 
 const props = defineProps({
   v: {
@@ -73,6 +94,10 @@ const props = defineProps({
   },
   customerCurrency: {
     type: [String, Number],
+    default: null,
+  },
+  date: {
+    type: String,
     default: null,
   },
 })
@@ -146,7 +171,7 @@ function setCustomerCurrency(v) {
 async function onChangeCurrency(v) {
   if (v !== companyCurrency.value.id) {
     if (!props.isEdit && v) {
-      await getCurrenctExchangeRate(v)
+      await getCurrenctExchangeRate(v, props.date)
     }
 
     props.store.showExchangeRate = true
@@ -155,10 +180,10 @@ async function onChangeCurrency(v) {
   }
 }
 
-function getCurrenctExchangeRate(v) {
+function getCurrenctExchangeRate(v, date = null) {
   isFetching.value = true
   exchangeRateStore
-    .getCurrentExchangeRate(v)
+    .getCurrentExchangeRate(v, date)
     .then((res) => {
       if (res.data && !res.data.error) {
         props.store[props.storeProp].exchange_rate = res.data.exchangeRate[0]

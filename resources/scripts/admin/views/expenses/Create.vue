@@ -182,6 +182,7 @@
             :is-loading="isFetchingInitialData"
             :is-edit="isEdit"
             :customer-currency="expenseStore.currentExpense.currency_id"
+            :date="expenseStore.currentExpense.expense_date"
           />
 
           <BaseInputGroup
