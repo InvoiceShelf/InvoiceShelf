@@ -4,11 +4,19 @@ use Illuminate\Support\Facades\Facade;
 
 return [
 
+    /*
+    |--------------------------------------------------------------------------
+    | Class Aliases
+    |--------------------------------------------------------------------------
+    |
+    | This array of class aliases will be registered when this application
+    | is started. You may add any additional class aliases which should
+    | be loaded to the array. For speed, all aliases are lazy loaded.
+    |
+    */
+
     'aliases' => Facade::defaultAliases()->merge([
-        'Flash' => Laracasts\Flash\Flash::class,
         'Menu' => Lavary\Menu\Facade::class,
-        'Pusher' => Pusher\Pusher::class,
-        'Redis' => Illuminate\Support\Facades\Redis::class,
     ])->toArray(),
 
 ];

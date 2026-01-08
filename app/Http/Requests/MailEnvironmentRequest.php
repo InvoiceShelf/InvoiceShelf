@@ -33,7 +33,31 @@ class MailEnvironmentRequest extends FormRequest
                     'mail_port' => [
                         'required',
                     ],
+                    'mail_username' => [
+                        'nullable',
+                        'string',
+                    ],
+                    'mail_password' => [
+                        'nullable',
+                        'string',
+                    ],
                     'mail_encryption' => [
+                        'nullable',
+                        'string',
+                    ],
+                    'mail_scheme' => [
+                        'nullable',
+                        'string',
+                    ],
+                    'mail_url' => [
+                        'nullable',
+                        'string',
+                    ],
+                    'mail_timeout' => [
+                        'nullable',
+                        'integer',
+                    ],
+                    'mail_local_domain' => [
                         'nullable',
                         'string',
                     ],
@@ -44,10 +68,9 @@ class MailEnvironmentRequest extends FormRequest
                     'from_mail' => [
                         'required',
                         'string',
+                        'email',
                     ],
                 ];
-
-                break;
 
             case 'mailgun':
                 return [
@@ -64,43 +87,10 @@ class MailEnvironmentRequest extends FormRequest
                         'string',
                     ],
                     'mail_mailgun_endpoint' => [
-                        'required',
+                        'nullable',
                         'string',
                     ],
-                    'from_name' => [
-                        'required',
-                        'string',
-                    ],
-                    'from_mail' => [
-                        'required',
-                        'string',
-                    ],
-                ];
-
-                break;
-
-            case 'ses':
-                return [
-                    'mail_driver' => [
-                        'required',
-                        'string',
-                    ],
-                    'mail_host' => [
-                        'required',
-                        'string',
-                    ],
-                    'mail_port' => [
-                        'required',
-                    ],
-                    'mail_ses_key' => [
-                        'required',
-                        'string',
-                    ],
-                    'mail_ses_secret' => [
-                        'required',
-                        'string',
-                    ],
-                    'mail_encryption' => [
+                    'mail_mailgun_scheme' => [
                         'nullable',
                         'string',
                     ],
@@ -111,13 +101,28 @@ class MailEnvironmentRequest extends FormRequest
                     'from_mail' => [
                         'required',
                         'string',
+                        'email',
                     ],
                 ];
 
-                break;
-
-            case 'mail':
+            case 'ses':
                 return [
+                    'mail_driver' => [
+                        'required',
+                        'string',
+                    ],
+                    'mail_ses_key' => [
+                        'required',
+                        'string',
+                    ],
+                    'mail_ses_secret' => [
+                        'required',
+                        'string',
+                    ],
+                    'mail_ses_region' => [
+                        'nullable',
+                        'string',
+                    ],
                     'from_name' => [
                         'required',
                         'string',
@@ -125,13 +130,20 @@ class MailEnvironmentRequest extends FormRequest
                     'from_mail' => [
                         'required',
                         'string',
+                        'email',
                     ],
                 ];
-
-                break;
 
             case 'sendmail':
                 return [
+                    'mail_driver' => [
+                        'required',
+                        'string',
+                    ],
+                    'mail_sendmail_path' => [
+                        'nullable',
+                        'string',
+                    ],
                     'from_name' => [
                         'required',
                         'string',
@@ -139,10 +151,26 @@ class MailEnvironmentRequest extends FormRequest
                     'from_mail' => [
                         'required',
                         'string',
+                        'email',
                     ],
                 ];
 
-                break;
+            default:
+                return [
+                    'mail_driver' => [
+                        'required',
+                        'string',
+                    ],
+                    'from_name' => [
+                        'required',
+                        'string',
+                    ],
+                    'from_mail' => [
+                        'required',
+                        'string',
+                        'email',
+                    ],
+                ];
         }
     }
 }

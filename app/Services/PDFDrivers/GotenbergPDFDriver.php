@@ -36,12 +36,12 @@ class GotenbergPDFDriver
 {
     public function loadView(string $viewname): GotenbergPDFResponse
     {
-        $papersize = explode(' ', config('pdf.gotenberg.papersize'));
+        $papersize = explode(' ', config('pdf.connections.gotenberg.papersize'));
         if (count($papersize) != 2) {
             throw new \InvalidArgumentException('Invalid Gotenberg Papersize specified');
         }
 
-        $host = config('pdf.gotenberg.host');
+        $host = config('pdf.connections.gotenberg.host');
         $request = Gotenberg::chromium($host)
             ->pdf()
             ->margins(0, 0, 0, 0) // Margins can be set using CSS

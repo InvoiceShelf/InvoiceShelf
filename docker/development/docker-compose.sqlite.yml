@@ -2,8 +2,8 @@ services:
   php-fpm:
     container_name: invoiceshelf-dev-php
     build:
-      context: ..
-      dockerfile: .dev/Dockerfile
+      context: ../../
+      dockerfile: docker/development/Dockerfile
       args:
         - UID=${USRID:-1000}
         - GID=${GRPID:-1000}
@@ -16,8 +16,8 @@ services:
   nginx:
     container_name: invoiceshelf-dev-nginx
     build:
-      context: ..
-      dockerfile: .dev/nginx.Dockerfile
+      context: ../../
+      dockerfile: docker/development/nginx.Dockerfile
     environment:
       - "PHP_FPM_HOST=php-fpm:9000"
     ports:
@@ -32,13 +32,13 @@ services:
   adminer:
     container_name: invoiceshelf-dev-adminer
     build:
-      context: ./adminer
-      dockerfile: Dockerfile
+      context: ../../
+      dockerfile: docker/development/adminer/Dockerfile
     environment:
       ADMINER_PLUGINS: tables-filter
       ADMINER_DESIGN: konya
     volumes:
-      - ../database:/database
+      - ../../database:/database
     ports:
       - '8080:8080'
     networks:

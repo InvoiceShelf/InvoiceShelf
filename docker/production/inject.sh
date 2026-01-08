@@ -1,5 +1,3 @@
-
-
 #!/bin/bash
 function replace_or_insert() {
     # Voodoo magic: https://superuser.com/a/976712
@@ -22,6 +20,9 @@ if [ "$APP_DEBUG" != '' ]; then
 fi
 if [ "$APP_URL" != '' ]; then
    replace_or_insert "APP_URL" "$APP_URL"
+fi
+if [ "$ASSET_URL" != '' ]; then
+   replace_or_insert "ASSET_URL" "$ASSET_URL"
 fi
 if [ "$APP_DIR" != '' ]; then
    replace_or_insert "APP_DIR" "$APP_DIR"
@@ -67,36 +68,6 @@ if [ "$QUEUE_CONNECTION" != '' ]; then
 fi
 if [ "$BROADCAST_CONNECTION" != '' ]; then
    replace_or_insert "BROADCAST_CONNECTION" "$BROADCAST_CONNECTION"
-fi
-if [ "$MAIL_DRIVER" != '' ]; then
-   replace_or_insert "MAIL_MAILER" "$MAIL_DRIVER"
-fi
-if [ "$MAIL_MAILER" != '' ]; then
-   replace_or_insert "MAIL_MAILER" "$MAIL_MAILER"
-fi
-if [ "$MAIL_HOST" != '' ]; then
-   replace_or_insert "MAIL_HOST" "$MAIL_HOST"
-fi
-if [ "$MAIL_PORT" != '' ]; then
-   replace_or_insert "MAIL_PORT" "$MAIL_PORT"
-fi
-if [ "$MAIL_USERNAME" != '' ]; then
-   replace_or_insert "MAIL_USERNAME" "$MAIL_USERNAME"
-fi
-if [ "$MAIL_PASSWORD" != '' ]; then
-   replace_or_insert "MAIL_PASSWORD" "$MAIL_PASSWORD"
-elif [ "$MAIL_PASSWORD_FILE" != '' ]; then
-  value=$(<$MAIL_PASSWORD_FILE)
-   replace_or_insert "MAIL_PASSWORD" "$value"
-fi
-if [ "$MAIL_SCHEME" != '' ]; then
-   replace_or_insert "MAIL_SCHEME" "$MAIL_SCHEME"
-fi
-if [ "$MAIL_FROM_NAME" != '' ]; then
-   replace_or_insert "MAIL_FROM_NAME" "$MAIL_FROM_NAME"
-fi
-if [ "$MAIL_FROM_ADDRESS" != '' ]; then
-   replace_or_insert "MAIL_FROM_ADDRESS" "$MAIL_FROM_ADDRESS"
 fi
 if [ "$TRUSTED_PROXIES" != '' ]; then
    replace_or_insert "TRUSTED_PROXIES" "$TRUSTED_PROXIES"

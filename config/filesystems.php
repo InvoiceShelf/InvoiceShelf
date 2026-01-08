@@ -2,9 +2,41 @@
 
 return [
 
-    'cloud' => env('FILESYSTEM_CLOUD', 's3'),
+    /*
+    |--------------------------------------------------------------------------
+    | Default Filesystem Disk
+    |--------------------------------------------------------------------------
+    |
+    | Here you may specify the default filesystem disk that should be used
+    | by the framework. The "local" disk, as well as a variety of cloud
+    | based disks are available to your application for file storage.
+    |
+    */
+
+    'default' => env('FILESYSTEM_DISK', 'local'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Filesystem Disks
+    |--------------------------------------------------------------------------
+    |
+    | Below you may configure as many filesystem disks as necessary, and you
+    | may even configure multiple disks for the same driver. Examples for
+    | most supported storage drivers are configured here for reference.
+    |
+    | Supported drivers: "local", "ftp", "sftp", "s3"
+    |
+    */
 
     'disks' => [
+
+        'local' => [
+            'driver' => 'local',
+            'root' => storage_path('app'),
+            'throw' => false,
+            'report' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_KEY'),
@@ -22,11 +54,6 @@ return [
             'secret' => env('S3_COMPAT_SECRET'),
             'region' => env('S3_COMPAT_REGION'),
             'bucket' => env('S3_COMPAT_BUCKET'),
-        ],
-
-        'media' => [
-            'driver' => 'local',
-            'root' => public_path('media'),
         ],
 
         'doSpaces' => [
@@ -51,6 +78,11 @@ return [
             'root' => env('DROPBOX_ROOT'),
         ],
 
+        'media' => [
+            'driver' => 'local',
+            'root' => public_path('media'),
+        ],
+
         'views' => [
             'driver' => 'local',
             'root' => resource_path('views'),
@@ -59,13 +91,6 @@ return [
         'pdf_templates' => [
             'driver' => 'local',
             'root' => storage_path('app/templates/pdf'),
-        ],
-
-        'local' => [
-            'driver' => 'local',
-            'root' => storage_path('app'),
-            'throw' => false,
-            'report' => false,
         ],
     ],
 
