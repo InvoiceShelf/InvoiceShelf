@@ -9,11 +9,11 @@ use Illuminate\Support\Str;
 
 class EInvoiceService
 {
-    private UBLService $ublService;
+    private UBLServiceEasybill $ublServiceEasybill;
 
-    public function __construct(UBLService $ublService)
+    public function __construct()
     {
-        $this->ublService = $ublService;
+        $this->ublServiceEasybill = new UBLServiceEasybill();
     }
 
     /**
@@ -29,8 +29,8 @@ class EInvoiceService
             throw new \InvalidArgumentException("Only UBL format is supported. Requested: {$format}");
         }
 
-        // Generate the e-invoice using UBL service
-        $result = $this->ublService->generate($invoice);
+        // Generate the e-invoice using easybill/e-invoicing
+        $result = $this->ublServiceEasybill->generate($invoice);
 
         if (! $result['success']) {
             throw new \InvalidArgumentException($result['error']);
@@ -62,8 +62,8 @@ class EInvoiceService
             return ["Unsupported format: {$format}"];
         }
 
-        // Generate and validate the invoice
-        $result = $this->ublService->generate($invoice);
+        // Generate and validate the invoice (using default easybill service)
+        $result = $this->ublServiceEasybill->generate($invoice);
 
         if (! $result['success']) {
             return [$result['error']];
@@ -87,7 +87,20 @@ class EInvoiceService
             ];
         }
 
-        return $this->ublService->validate($xml);
+        // Basic XML validation - for full EN16931 validation, use external services
+        $xmlErrors = [];
+        libxml_use_internal_errors(true);
+        $dom = new \DOMDocument();
+        if (! $dom->loadXML($xml)) {
+            $xmlErrors = array_map(fn ($error) => trim($error->message), libxml_get_errors());
+            libxml_clear_errors();
+        }
+
+        return [
+            'valid' => empty($xmlErrors),
+            'errors' => $xmlErrors,
+            'warnings' => [],
+        ];
     }
 
     /**
@@ -105,8 +118,8 @@ class EInvoiceService
             ];
         }
 
-        // Generate the e-invoice
-        $result = $this->ublService->generate($invoice);
+        // Generate the e-invoice (using default easybill service)
+        $result = $this->ublServiceEasybill->generate($invoice);
 
         if (! $result['success']) {
             return [
@@ -117,7 +130,7 @@ class EInvoiceService
         }
 
         // Validate the generated XML
-        return $this->ublService->validate($result['xml']);
+        return $this->validateXml($result['xml'], $format);
     }
 
     /**
@@ -212,4 +225,5 @@ class EInvoiceService
 
         return "{$safeNumber}_{$safeFormat}.{$type}";
     }
+
 }

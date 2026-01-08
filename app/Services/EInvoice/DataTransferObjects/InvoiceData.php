@@ -22,6 +22,9 @@ class InvoiceData
         public ?string $deliveryDate = null,
         public ?string $orderReference = null,
         public ?string $contractReference = null,
+        public float $invoiceDiscount = 0.0,
+        public float $invoiceLevelFixedTaxAmount = 0.0,
+        public float $invoiceLevelTaxAmount = 0.0,
     ) {}
 
     public static function fromInvoice(\App\Models\Invoice $invoice): self
@@ -38,21 +41,59 @@ class InvoiceData
         $calculatedNetAmount = 0.0;
         $calculatedTaxAmount = 0.0;
 
+        // Track items with negative amounts to convert them to AllowanceCharge
+        $negativeItems = [];
+        
         foreach ($invoice->items as $item) {
             $quantity = (float) ($item->quantity ?? 0);
             // Round to 2 decimal places as required by EN 16931
             $unitPrice = round((float) ($item->price ?? 0) / 100, 2); // Convert from cents to decimal
-            $taxRate = round((float) ($item->taxes->sum('percent') ?? 0), 2);
+            
+            // Use the item's total (which includes discounts) rather than recalculating
+            // This ensures we respect discounts and adjustments applied to items
+            $itemNetAmount = round((float) ($item->total ?? 0) / 100, 2);
+            
+            // EN 16931 does not allow negative net amounts in invoice lines (BT-146)
+            // Items with negative amounts must be converted to AllowanceCharge
+            if ($itemNetAmount < 0) {
+                // Store for conversion to AllowanceCharge
+                $negativeItems[] = [
+                    'name' => $item->name ?? 'Discount',
+                    'description' => $item->description ?? $item->name ?? 'Discount',
+                    'amount' => abs($itemNetAmount), // Store as positive for allowance
+                ];
+                // Subtract from net amount (negative item reduces total)
+                $calculatedNetAmount += $itemNetAmount; // Adding negative = subtracting
+                continue; // Don't create a line item for negative amounts
+            }
+            
+            // Calculate tax amount and rate
+            // If tax_per_item is YES, use the tax amount from the item directly
+            // If tax_per_item is NO, items don't have individual taxes (taxes are at invoice level)
+            $itemTaxAmount = 0.0;
+            $taxRate = 0.0;
+            
+            if ($invoice->tax_per_item === 'YES') {
+                // Use the tax amount from the item (already includes discounts)
+                $itemTaxAmount = round((float) ($item->tax ?? 0) / 100, 2);
+                
+                // Calculate tax rate from item taxes if available, otherwise from tax amount
+                if ($item->taxes && $item->taxes->count() > 0) {
+                    // Use the sum of tax rates from item taxes
+                    $taxRate = round((float) ($item->taxes->sum('percent') ?? 0), 2);
+                } else {
+                    // Calculate rate from tax amount and net amount
+                    // In InvoiceShelf, when tax_per_item is YES, item->total is usually net amount
+                    // and item->tax is the tax amount
+                    if ($itemNetAmount > 0 && $itemTaxAmount > 0) {
+                        $taxRate = round(($itemTaxAmount / $itemNetAmount) * 100, 2);
+                    }
+                }
+            }
+            // When tax_per_item is NO, itemTaxAmount stays 0 (taxes are calculated at invoice level)
 
-            // Calculate line amounts from unitPrice * quantity to match library calculation
-            // This ensures BR-CO-15 compliance as the library calculates totals from these
-            $itemNetAmount = round($unitPrice * $quantity, 2);
-
-            // Calculate tax amount from net amount and tax rate
-            $itemTaxAmount = round($itemNetAmount * ($taxRate / 100), 2);
-
-            // Skip items with zero quantity or amount
-            if ($quantity <= 0 || $itemNetAmount <= 0) {
+            // Skip items with zero quantity
+            if ($quantity <= 0) {
                 continue;
             }
 
@@ -78,8 +119,44 @@ class InvoiceData
             );
         }
 
-        // Calculate totals from line items to ensure BR-CO-15 compliance
-        // Round to 2 decimal places as required by EN 16931
+        // Calculate invoice-level discount first
+        $invoiceDiscount = 0.0;
+        if ($invoice->discount_per_item === 'NO' && $invoice->discount_val) {
+            $invoiceDiscount = round((float) ($invoice->discount_val ?? 0) / 100, 2);
+        }
+
+        // Add negative items as additional discounts (AllowanceCharge)
+        foreach ($negativeItems as $negativeItem) {
+            $invoiceDiscount += $negativeItem['amount'];
+        }
+
+        // Subtract total discount from net amount
+        if ($invoiceDiscount > 0) {
+            $calculatedNetAmount -= $invoiceDiscount;
+        }
+        
+        // Track invoice-level tax amount separately (for tax_per_item === 'NO')
+        // These taxes are stored separately and will be added directly to create TaxSubtotal
+        // WITHOUT creating invoice lines (the library will create TaxSubtotal from these tax data)
+        $invoiceLevelTaxAmount = 0.0;
+        if ($invoice->tax_per_item === 'NO' && !empty($invoice->taxes)) {
+            foreach ($invoice->taxes as $tax) {
+                // Use values already calculated and stored in database
+                $taxAmount = round((float) ($tax->amount ?? 0) / 100, 2);
+                
+                // Skip taxes with zero amounts
+                if ($taxAmount <= 0) {
+                    continue;
+                }
+                
+                // Add the tax amount to total
+                $calculatedTaxAmount += $taxAmount;
+                $invoiceLevelTaxAmount += $taxAmount;
+            }
+        }
+
+        // Use totals from database - they're already calculated correctly
+        // But we still need to verify they match our calculations for BR-CO-15 compliance
         $netAmount = round($calculatedNetAmount, 2);
         $taxAmount = round($calculatedTaxAmount, 2);
         $totalAmount = round($netAmount + $taxAmount, 2);
@@ -124,6 +201,9 @@ class InvoiceData
             taxes: $taxes,
             notes: $invoice->notes,
             paymentTerms: $invoice->payment_terms,
+            invoiceDiscount: $invoiceDiscount, // Store discount for AllowanceCharge
+            invoiceLevelFixedTaxAmount: 0.0, // No longer needed, taxes are added as lines with empty name
+            invoiceLevelTaxAmount: $invoiceLevelTaxAmount, // Store invoice-level tax amount
         );
     }
 

@@ -31,8 +31,8 @@ class EInvoiceController extends Controller
         $async = $request->input('async', true);
 
         try {
-            // Generate using the service (both async and sync now work the same way)
-            $result = $this->eInvoiceService->generate($invoice, $format);
+            // Generate using easybill/e-invoicing
+            $result = $this->eInvoiceService->generate($invoice, $format, true);
 
             return response()->json([
                 'message' => 'E-invoice generated successfully',
