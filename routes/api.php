@@ -64,6 +64,9 @@ use App\Http\Controllers\V1\Admin\Payment\PaymentMethodsController;
 use App\Http\Controllers\V1\Admin\Payment\PaymentsController;
 use App\Http\Controllers\V1\Admin\Payment\SendPaymentController;
 use App\Http\Controllers\V1\Admin\Payment\SendPaymentPreviewController;
+use App\Http\Controllers\V1\Admin\CreditNote\CreditNotesController;
+use App\Http\Controllers\V1\Admin\CreditNote\SendCreditNoteController;
+use App\Http\Controllers\V1\Admin\CreditNote\SendCreditNotePreviewController;
 use App\Http\Controllers\V1\Admin\RecurringInvoice\RecurringInvoiceController;
 use App\Http\Controllers\V1\Admin\RecurringInvoice\RecurringInvoiceFrequencyController;
 use App\Http\Controllers\V1\Admin\Role\AbilitiesController;
@@ -328,6 +331,17 @@ Route::prefix('/v1')->group(function () {
             Route::apiResource('payments', PaymentsController::class);
 
             Route::apiResource('payment-methods', PaymentMethodsController::class);
+
+            // Credit Notes
+            // ----------------------------------
+
+            Route::get('/credit-notes/{creditNote}/send/preview', SendCreditNotePreviewController::class);
+
+            Route::post('/credit-notes/{creditNote}/send', SendCreditNoteController::class);
+
+            Route::post('/credit-notes/delete', [CreditNotesController::class, 'delete']);
+
+            Route::apiResource('credit-notes', CreditNotesController::class);
 
             // Custom fields
             // ----------------------------------

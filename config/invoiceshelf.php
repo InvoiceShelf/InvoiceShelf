@@ -6,6 +6,7 @@ use App\Models\Estimate;
 use App\Models\ExchangeRateProvider;
 use App\Models\Expense;
 use App\Models\Invoice;
+use App\Models\CreditNote;
 use App\Models\Item;
 use App\Models\Note;
 use App\Models\Payment;
@@ -377,6 +378,16 @@ return [
             'model' => Payment::class,
         ],
         [
+            'title' => 'navigation.credit-notes',
+            'group' => 2,
+            'link' => '/admin/credit-notes',
+            'icon' => 'CreditCardIcon',
+            'name' => 'Credit Notes',
+            'owner_only' => false,
+            'ability' => 'view-credit-note',
+            'model' => CreditNote::class,
+        ],
+        [
             'title' => 'navigation.expenses',
             'group' => 2,
             'link' => '/admin/expenses',
@@ -532,6 +543,7 @@ return [
         'Estimate',
         'Invoice',
         'Payment',
+        'CreditNote',
         'Expense',
     ],
 ];

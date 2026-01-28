@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Estimate;
 use App\Models\Invoice;
 use App\Models\Payment;
+use App\Models\CreditNote;
 use App\Services\SerialNumberFormatter;
 use Illuminate\Http\Request;
 
@@ -16,7 +17,7 @@ class NextNumberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function __invoke(Request $request, Invoice $invoice, Estimate $estimate, Payment $payment)
+    public function __invoke(Request $request, Invoice $invoice, Estimate $estimate, Payment $payment, CreditNote $creditNote)
     {
         $key = $request->key;
         $nextNumber = null;
@@ -42,6 +43,13 @@ class NextNumberController extends Controller
 
                 case 'payment':
                     $nextNumber = $serial->setModel($payment)
+                        ->setModelObject($request->model_id)
+                        ->getNextNumber();
+
+                    break;
+
+                case 'creditnote':
+                    $nextNumber = $serial->setModel($creditNote)
                         ->setModelObject($request->model_id)
                         ->getNextNumber();
 

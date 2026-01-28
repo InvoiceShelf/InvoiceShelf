@@ -52,6 +52,13 @@ export default {
   EDIT_EXPENSE: 'edit-expense',
   VIEW_EXPENSE: 'view-expense',
 
+  // Credit Note
+  CREATE_CREDIT_NOTE: 'create-credit-note',
+  DELETE_CREDIT_NOTE: 'delete-credit-note',
+  EDIT_CREDIT_NOTE: 'edit-credit-note',
+  VIEW_CREDIT_NOTE: 'view-credit-note',
+  SEND_CREDIT_NOTE: 'send-credit-note',
+  
   // Custom fields
   CREATE_CUSTOM_FIELDS: 'create-custom-field',
   DELETE_CUSTOM_FIELDS: 'delete-custom-field',
