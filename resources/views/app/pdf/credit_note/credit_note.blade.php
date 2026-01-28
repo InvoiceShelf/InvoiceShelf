@@ -305,6 +305,10 @@
 
     <hr style="border: 0.620315px solid #E8E8E8;">
 
+    <p class="content-heading">
+        <span>@lang('pdf_credit_note_label')</span>
+    </p>
+
     <div class="content-wrapper">
         <div class="main-content">
             <div class="customer-address-container">
