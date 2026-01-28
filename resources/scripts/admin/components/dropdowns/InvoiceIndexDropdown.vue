@@ -81,7 +81,7 @@
     <!-- Create Credit Note  -->
     <router-link :to="`/admin/credit-notes/${row.id}/create`">
       <BaseDropdownItem
-        v-if="row.status == 'SENT' && route.name !== 'invoices.view'"
+        v-if="row.status == 'SENT'"
       >
         <BaseIcon
           name="CreditCardIcon"
