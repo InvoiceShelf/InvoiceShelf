@@ -11,12 +11,14 @@ use App\Http\Controllers\V1\Customer\Auth\LoginController as CustomerLoginContro
 use App\Http\Controllers\V1\Customer\EstimatePdfController as CustomerEstimatePdfController;
 use App\Http\Controllers\V1\Customer\InvoicePdfController as CustomerInvoicePdfController;
 use App\Http\Controllers\V1\Customer\PaymentPdfController as CustomerPaymentPdfController;
+use App\Http\Controllers\V1\Customer\CreditNotePdfController as CustomerCreditNotePdfController;
 use App\Http\Controllers\V1\Modules\ScriptController;
 use App\Http\Controllers\V1\Modules\StyleController;
 use App\Http\Controllers\V1\PDF\DownloadReceiptController;
 use App\Http\Controllers\V1\PDF\EstimatePdfController;
 use App\Http\Controllers\V1\PDF\InvoicePdfController;
 use App\Http\Controllers\V1\PDF\PaymentPdfController;
+use App\Http\Controllers\V1\PDF\CreditNotePdfController;
 use App\Models\Company;
 use Illuminate\Support\Facades\Route;
 
@@ -92,9 +94,13 @@ Route::middleware('pdf-auth')->group(function () {
     // payment pdf
     // -------------------------------------------------
     Route::get('/payments/pdf/{payment:unique_hash}', PaymentPdfController::class);
+
+    // payment pdf
+    // -------------------------------------------------
+    Route::get('/credit-notes/pdf/{creditNote:unique_hash}', CreditNotePdfController::class);
 });
 
-// customer pdf endpoints for invoice, estimate and Payment
+// customer pdf endpoints for invoice, estimate, Payment and credit note
 // -------------------------------------------------
 
 Route::prefix('/customer')->group(function () {
@@ -106,6 +112,9 @@ Route::prefix('/customer')->group(function () {
 
     Route::get('/payments/{email_log:token}', [CustomerPaymentPdfController::class, 'getPayment']);
     Route::get('/payments/view/{email_log:token}', [CustomerPaymentPdfController::class, 'getPdf'])->name('payment');
+
+    Route::get('/credit-notes/{email_log:token}', [CustomerCreditNotePdfController::class, 'getCreditNote']);
+    Route::get('/credit-notes/view/{email_log:token}', [CustomerCreditNotePdfController::class, 'getPdf'])->name('credit_note');
 });
 
 // Setup for installation of app

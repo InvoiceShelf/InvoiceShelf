@@ -9,6 +9,7 @@ use App\Models\Invoice;
 use App\Models\Item;
 use App\Models\Note;
 use App\Models\Payment;
+use App\Models\CreditNote;
 use App\Models\RecurringInvoice;
 use App\Models\TaxType;
 
@@ -300,6 +301,50 @@ return [
             'name' => 'send payment',
             'ability' => 'send-payment',
             'model' => Payment::class,
+        ],
+
+        // Credit Note
+        [
+            'name' => 'view credit note',
+            'ability' => 'view-credit-note',
+            'model' => CreditNote::class,
+        ],
+        [
+            'name' => 'create credit note',
+            'ability' => 'create-credit-note',
+            'model' => CreditNote::class,
+            'depends_on' => [
+                'view-customer',
+                'view-credit-note',
+                'view-invoice',
+                'view-custom-field',
+                'view-all-notes',
+            ],
+        ],
+        [
+            'name' => 'edit credit note',
+            'ability' => 'edit-credit-note',
+            'model' => CreditNote::class,
+            'depends_on' => [
+                'view-customer',
+                'view-credit-note',
+                'view-invoice',
+                'view-custom-field',
+                'view-all-notes',
+            ],
+        ],
+        [
+            'name' => 'delete credit note',
+            'ability' => 'delete-credit-note',
+            'model' => CreditNote::class,
+            'depends_on' => [
+                'view-credit-note',
+            ],
+        ],
+        [
+            'name' => 'send credit note',
+            'ability' => 'send-credit-note',
+            'model' => CreditNote::class,
         ],
 
         // Expense

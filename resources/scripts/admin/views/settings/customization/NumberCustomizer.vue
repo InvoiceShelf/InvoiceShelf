@@ -1,10 +1,10 @@
 <template>
   <h6 class="text-gray-900 text-lg font-medium">
-    {{ $t(`settings.customization.${type}s.${type}_number_format`) }}
+    {{ $t(`settings.customization.${t_string}s.${t_string}_number_format`) }}
   </h6>
   <p class="mt-1 text-sm text-gray-500">
     {{
-      $t(`settings.customization.${type}s.${type}_number_format_description`)
+      $t(`settings.customization.${t_string}s.${t_string}_number_format_description`)
     }}
   </p>
 
@@ -143,7 +143,7 @@
             <td colspan="2" class="px-5 py-4">
               <BaseInputGroup
                 :label="
-                  $t(`settings.customization.${type}s.preview_${type}_number`)
+                  $t(`settings.customization.${t_string}s.preview_${t_string}_number`)
                 "
               >
                 <BaseInput
@@ -211,6 +211,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  name: {
+    type: String,
+    required: false,
+  },
   typeStore: {
     type: Object,
     required: true,
@@ -224,6 +228,9 @@ const props = defineProps({
 const { t } = useI18n()
 const companyStore = useCompanyStore()
 const globalStore = useGlobalStore()
+
+debugger;
+ const t_string = props.type === 'creditnote' ? 'credit_note' : props.type;
 
 const selectedFields = ref([])
 const isSaving = ref(false)
@@ -420,7 +427,7 @@ async function getNextNumber() {
   }
 
   isFetchingNextNumber.value = true
-
+  debugger;
   let res = await props.typeStore.getNextNumber(data)
 
   isFetchingNextNumber.value = false

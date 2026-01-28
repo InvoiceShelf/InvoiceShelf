@@ -84,6 +84,11 @@ class Customer extends Authenticatable implements HasMedia
         return $this->hasMany(Payment::class);
     }
 
+    public function creditNotes(): HasMany
+    {
+        return $this->hasMany(CreditNote::class);
+    }
+
     public function addresses(): HasMany
     {
         return $this->hasMany(Address::class);
@@ -157,6 +162,10 @@ class Customer extends Authenticatable implements HasMedia
                 $customer->payments()->delete();
             }
 
+            if ($customer->creditNotes()->exists()) {
+                $customer->creditNotes()->delete();
+            }
+
             if ($customer->addresses()->exists()) {
                 $customer->addresses()->delete();
             }
@@ -210,7 +219,7 @@ class Customer extends Authenticatable implements HasMedia
 
     public static function updateCustomer($request, $customer)
     {
-        $condition = $customer->estimates()->exists() || $customer->invoices()->exists() || $customer->payments()->exists() || $customer->recurringInvoices()->exists();
+        $condition = $customer->estimates()->exists() || $customer->invoices()->exists() || $customer->payments()->exists() || $customer->creditNotes()->exists() || $customer->recurringInvoices()->exists();
 
         if (($customer->currency_id !== $request->currency_id) && $condition) {
             return 'you_cannot_edit_currency';

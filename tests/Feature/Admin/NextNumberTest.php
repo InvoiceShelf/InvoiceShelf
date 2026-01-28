@@ -45,4 +45,12 @@ test('next number', function () {
     $response->assertStatus(200)->assertJson([
         'nextNumber' => 'PAY-000001',
     ]);
+
+    $key = 'credit_note';
+
+    $response = getJson('api/v1/next-number?key='.$key);
+
+    $response->assertStatus(200)->assertJson([
+        'nextNumber' => 'CN-000001',
+    ]);
 });

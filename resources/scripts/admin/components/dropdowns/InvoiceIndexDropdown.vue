@@ -78,6 +78,19 @@
       </BaseDropdownItem>
     </router-link>
 
+    <!-- Create Credit Note  -->
+    <router-link :to="`/admin/credit-notes/${row.id}/create`">
+      <BaseDropdownItem
+        v-if="row.status == 'SENT' && route.name !== 'invoices.view'"
+      >
+        <BaseIcon
+          name="CreditCardIcon"
+          class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+        />
+        {{ $t('invoices.create_credit_note') }}
+      </BaseDropdownItem>
+    </router-link>
+
     <!-- Mark as sent Invoice -->
     <BaseDropdownItem v-if="canSendInvoice(row)" @click="onMarkAsSent(row.id)">
       <BaseIcon

@@ -25,6 +25,13 @@
 
         <BaseTab
           tab-panel-container="py-4 mt-px"
+          :title="$t('settings.customization.credit_notes.title')"
+        >
+          <CreditNotesTab />
+        </BaseTab>
+
+        <BaseTab
+          tab-panel-container="py-4 mt-px"
           :title="$t('settings.customization.items.title')"
         >
           <ItemsTab />
@@ -38,5 +45,6 @@
 import InvoicesTab from '@/scripts/admin/views/settings/customization/invoices/InvoicesTab.vue'
 import EstimatesTab from '@/scripts/admin/views/settings/customization/estimates/EstimatesTab.vue'
 import PaymentsTab from '@/scripts/admin/views/settings/customization/payments/PaymentsTab.vue'
+import CreditNotesTab from '@/scripts/admin/views/settings/customization/credit-notes/CreditNotesTab.vue'
 import ItemsTab from '@/scripts/admin/views/settings/customization/items/ItemsTab.vue'
 </script>
