@@ -27,6 +27,7 @@ use App\Http\Controllers\V1\Admin\Expense\ExpenseCategoriesController;
 use App\Http\Controllers\V1\Admin\Expense\ExpensesController;
 use App\Http\Controllers\V1\Admin\Expense\ShowReceiptController;
 use App\Http\Controllers\V1\Admin\Expense\UploadReceiptController;
+use App\Http\Controllers\V1\Admin\General\AvailableYearsController;
 use App\Http\Controllers\V1\Admin\General\BootstrapController;
 use App\Http\Controllers\V1\Admin\General\BulkExchangeRateController;
 use App\Http\Controllers\V1\Admin\General\ConfigController;
@@ -225,6 +226,8 @@ Route::prefix('/v1')->group(function () {
             // ----------------------------------
 
             Route::get('/config', ConfigController::class);
+
+            Route::get('/available-years', AvailableYearsController::class);
 
             Route::get('/currencies', CurrenciesController::class);
 
