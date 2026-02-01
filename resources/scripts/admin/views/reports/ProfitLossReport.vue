@@ -252,6 +252,24 @@ watch(range, (newRange) => {
   formData.to_date = moment(newRange).endOf('year').toString()
 })
 
+watch(
+  () => [formData.from_date, formData.to_date],
+  ([newFrom, newTo]) => {
+    if (selectedRange.value.key === 'Quarter') {
+      let quarterValue = selectedQuarter.value.value
+      let yearValue = selectedYear.value
+
+      let startMonth = (quarterValue - 1) * 3
+      let expectedFrom = moment().year(yearValue).month(startMonth).startOf('month').format('YYYY-MM-DD')
+      let expectedTo = moment().year(yearValue).month(startMonth + 2).endOf('month').format('YYYY-MM-DD')
+
+      if (newFrom !== expectedFrom || newTo !== expectedTo) {
+        selectedRange.value = dateRange.find((r) => r.key === 'Custom')
+      }
+    }
+  }
+)
+
 onMounted(() => {
   siteURL.value = `/reports/profit-loss/${getSelectedCompany.value.unique_hash}`
   url.value = dateRangeUrl.value
