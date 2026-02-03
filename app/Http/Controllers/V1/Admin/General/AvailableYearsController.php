@@ -19,7 +19,7 @@ class AvailableYearsController extends Controller
     public function __invoke(Request $request)
     {
         $driver = DB::connection()->getDriverName();
-        
+
         $invoiceDateCol = 'invoice_date';
         $paymentDateCol = 'payment_date';
         $expenseDateCol = 'expense_date';
@@ -58,10 +58,10 @@ class AvailableYearsController extends Controller
             ->toArray();
 
         $years = array_unique(array_merge($invoiceYears, $paymentYears, $expenseYears));
-        
+
         // Always include current year
         $years[] = date('Y');
-        
+
         $years = array_unique($years);
         rsort($years);
 
