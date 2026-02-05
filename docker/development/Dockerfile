@@ -3,7 +3,7 @@ FROM --platform=$BUILDPLATFORM node AS static_builder
     COPY . /var/www/html
     RUN yarn && yarn build
 
-FROM serversideup/php:8-fpm-alpine AS base
+FROM serversideup/php:8.4-fpm-alpine AS base
     USER root
     RUN apk add --no-cache sqlite
     RUN install-php-extensions exif
