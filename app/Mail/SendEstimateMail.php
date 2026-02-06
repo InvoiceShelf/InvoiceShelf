@@ -36,6 +36,8 @@ class SendEstimateMail extends Mailable
         $log = EmailLog::create([
             'from' => $this->data['from'],
             'to' => $this->data['to'],
+            'cc' => $this->data['cc'] ?? null,
+            'bcc' => $this->data['bcc'] ?? null,
             'subject' => $this->data['subject'],
             'body' => $this->data['body'],
             'mailable_type' => Estimate::class,
