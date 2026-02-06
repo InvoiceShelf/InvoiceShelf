@@ -18,6 +18,7 @@ FROM serversideup/php:8.3-fpm-nginx-alpine AS base
     RUN install-php-extensions bcmath
     RUN install-php-extensions intl
     RUN install-php-extensions curl
+    RUN install-php-extensions imap
 
 FROM base AS production
     ENV AUTORUN_ENABLED=true

@@ -20,6 +20,11 @@ if (InstallUtils::isDbCreated()) {
     Schedule::command('check:estimates:status')
         ->daily();
 
+    Schedule::command('interac:sync')
+        ->everyFiveMinutes()
+        ->runInBackground()
+        ->withoutOverlapping();
+
     $recurringInvoices = RecurringInvoice::where('status', 'ACTIVE')->get();
     foreach ($recurringInvoices as $recurringInvoice) {
         $timeZone = CompanySetting::getSetting('time_zone', $recurringInvoice->company_id);

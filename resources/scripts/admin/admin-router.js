@@ -58,6 +58,8 @@ const RolesSettings = () =>
   import('@/scripts/admin/views/settings/RolesSettings.vue')
 const PDFGenerationSettings = () =>
   import('@/scripts/admin/views/settings/PDFGenerationSetting.vue')
+const InteracETransferSettings = () =>
+  import('@/scripts/admin/views/settings/InteracETransferSetting.vue')
 
 // Items
 const ItemsIndex = () => import('@/scripts/admin/views/items/Index.vue')
@@ -291,6 +293,12 @@ export default [
             path: 'payment-mode',
             name: 'payment.mode',
             component: PaymentMode,
+          },
+          {
+            path: 'interac-e-transfer',
+            name: 'settings.interac',
+            meta: { isOwner: true, ability: abilities.CREATE_PAYMENT },
+            component: InteracETransferSettings,
           },
           {
             path: 'custom-fields',
