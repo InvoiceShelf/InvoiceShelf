@@ -26,6 +26,7 @@ export const useGlobalStore = (useWindow = false) => {
       countries: [],
       languages: [],
       fiscalYears: [],
+      availableYears: [],
 
       // Menus
       mainMenu: [],
@@ -226,6 +227,25 @@ export const useGlobalStore = (useWindow = false) => {
               .get('/api/v1/countries')
               .then((response) => {
                 this.countries = response.data.data
+                resolve(response)
+              })
+              .catch((err) => {
+                handleError(err)
+                reject(err)
+              })
+          }
+        })
+      },
+
+      fetchAvailableYears() {
+        return new Promise((resolve, reject) => {
+          if (this.availableYears.length) {
+            resolve(this.availableYears)
+          } else {
+            axios
+              .get('/api/v1/available-years')
+              .then((response) => {
+                this.availableYears = response.data.years
                 resolve(response)
               })
               .catch((err) => {
