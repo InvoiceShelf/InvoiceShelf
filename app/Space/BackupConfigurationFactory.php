@@ -4,12 +4,21 @@ namespace App\Space;
 
 use App\Models\CompanySetting;
 use App\Models\FileDisk;
+use Exception;
 use Spatie\Backup\Config\Config;
 
 class BackupConfigurationFactory
 {
-    public static function make($data = ''): Config
+    public static function make($data = []): Config
     {
+        if (blank($data['company'] ?? null)) {
+            throw new Exception('The Company ID is missig');
+        }
+
+        if (blank($data['file_disk_id'] ?? null)) {
+            throw new Exception('No file disk selected');
+        }
+
         $fileDisk = FileDisk::find($data['file_disk_id']);
 
         $fileDisk->setConfig();
