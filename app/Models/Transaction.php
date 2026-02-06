@@ -32,6 +32,11 @@ class Transaction extends Model
         return $this->hasMany(Payment::class);
     }
 
+    public function creditNotes(): HasMany
+    {
+        return $this->hasMany(CreditNote::class);
+    }
+
     public function invoice(): BelongsTo
     {
         return $this->belongsTo(Invoice::class);
