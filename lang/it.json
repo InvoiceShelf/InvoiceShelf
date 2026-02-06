@@ -306,7 +306,7 @@
     "total": "Totale",
     "discount": "Sconto",
     "sub_total": "Sub Totale",
-    "net_total": "Net",
+    "net_total": "Imponibile",
     "estimate_number": "Preventivo Numero",
     "ref_number": "Numero di Riferimento",
     "contact": "Contatto",
@@ -919,7 +919,7 @@
       "papersize": "Dimensioni del foglio",
       "papersize_hint": "Dimensioni del foglio in larghezza e altezza (Es. \"210mm 297mm\")",
       "gotenberg_host": "Gotenberg service host",
-      "pdf_variables_save_successfully": "PDF configuration saved successfully",
+      "pdf_variables_save_successfully": "Configurazione PDF salvata correttamente",
       "pdf_variables_save_error": "La configurazione PDF non può essere salvata"
     },
     "company_info": {
