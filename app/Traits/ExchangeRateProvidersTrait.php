@@ -6,13 +6,16 @@ use Illuminate\Support\Facades\Http;
 
 trait ExchangeRateProvidersTrait
 {
-    public function getExchangeRate($filter, $baseCurrencyCode, $currencyCode)
+    public function getExchangeRate($filter, $baseCurrencyCode, $currencyCode, $date = null)
     {
         switch ($filter['driver']) {
             case 'currency_freak':
-                $url = 'https://api.currencyfreaks.com/latest?apikey='.$filter['key'];
+                if ($date) {
+                    $url = 'https://api.currencyfreaks.com/v2.0/rates/historical?apikey='.$filter['key']."&date={$date}&symbols={$currencyCode}&base={$baseCurrencyCode}";
+                } else {
+                    $url = 'https://api.currencyfreaks.com/latest?apikey='.$filter['key']."&symbols={$currencyCode}&base={$baseCurrencyCode}";
+                }
 
-                $url = $url."&symbols={$currencyCode}"."&base={$baseCurrencyCode}";
                 $response = Http::get($url)->json();
 
                 if (array_key_exists('success', $response)) {
@@ -28,7 +31,12 @@ trait ExchangeRateProvidersTrait
                 break;
 
             case 'currency_layer':
-                $url = 'http://api.currencylayer.com/live?access_key='.$filter['key']."&source={$baseCurrencyCode}&currencies={$currencyCode}";
+                if ($date) {
+                    $url = 'http://api.currencylayer.com/historical?access_key='.$filter['key']."&date={$date}&source={$baseCurrencyCode}&currencies={$currencyCode}";
+                } else {
+                    $url = 'http://api.currencylayer.com/live?access_key='.$filter['key']."&source={$baseCurrencyCode}&currencies={$currencyCode}";
+                }
+
                 $response = Http::get($url)->json();
 
                 if (array_key_exists('success', $response)) {
@@ -44,7 +52,12 @@ trait ExchangeRateProvidersTrait
                 break;
 
             case 'open_exchange_rate':
-                $url = 'https://openexchangerates.org/api/latest.json?app_id='.$filter['key']."&base={$baseCurrencyCode}&symbols={$currencyCode}";
+                if ($date) {
+                    $url = "https://openexchangerates.org/api/historical/{$date}.json?app_id=".$filter['key']."&base={$baseCurrencyCode}&symbols={$currencyCode}";
+                } else {
+                    $url = 'https://openexchangerates.org/api/latest.json?app_id='.$filter['key']."&base={$baseCurrencyCode}&symbols={$currencyCode}";
+                }
+
                 $response = Http::get($url)->json();
 
                 if (array_key_exists('error', $response)) {
@@ -63,10 +76,40 @@ trait ExchangeRateProvidersTrait
 
                 $query = "{$baseCurrencyCode}_{$currencyCode}";
                 $url = $url."&q={$query}".'&compact=y';
+
+                if ($date) {
+                    $url .= "&date={$date}";
+                }
+
                 $response = Http::get($url)->json();
+
+                if ($date && isset($response[$query][$date])) {
+                    return response()->json([
+                        'exchangeRate' => array_values([$response[$query][$date]]),
+                    ], 200);
+                }
 
                 return response()->json([
                     'exchangeRate' => array_values($response[$query]),
+                ], 200);
+
+                break;
+
+            case 'frankfurter':
+                if ($date) {
+                    $url = "https://api.frankfurter.dev/v1/{$date}?from={$baseCurrencyCode}&to={$currencyCode}";
+                } else {
+                    $url = "https://api.frankfurter.dev/v1/latest?from={$baseCurrencyCode}&to={$currencyCode}";
+                }
+
+                $response = Http::get($url)->json();
+
+                if (array_key_exists('message', $response) && $response['message'] === 'not found') {
+                    return respondJson('Error', 'Service unavailable');
+                }
+
+                return response()->json([
+                    'exchangeRate' => array_values($response['rates']),
                 ], 200);
 
                 break;
@@ -175,6 +218,18 @@ trait ExchangeRateProvidersTrait
                 return respondJson($error, $message);
 
                 break;
+
+            case 'frankfurter':
+                $url = 'https://api.frankfurter.dev/v1/currencies';
+                $response = Http::get($url)->json();
+
+                if ($response == null) {
+                    return respondJson($error_message, $server_message);
+                }
+
+                return response()->json(['supportedCurrencies' => array_keys($response)]);
+
+                break;
         }
     }
 
@@ -204,6 +259,13 @@ trait ExchangeRateProvidersTrait
 
             case 'currency_converter':
                 $url = $this->getCurrencyConverterUrl($request).'/api/v7/currencies?apiKey='.$request->key;
+
+                return Http::get($url)->json();
+
+                break;
+
+            case 'frankfurter':
+                $url = 'https://api.frankfurter.dev/v1/latest?from=INR&to=USD';
 
                 return Http::get($url)->json();
 

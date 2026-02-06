@@ -140,6 +140,20 @@ class ExchangeRateProvider extends Model
                 ], 200);
 
                 break;
+
+            case 'frankfurter':
+                $url = 'https://api.frankfurter.dev/v1/latest?from=INR&to=USD';
+                $response = Http::get($url)->json();
+
+                if (array_key_exists('message', $response) && $response['message'] === 'not found') {
+                    return respondJson('Error', 'Service unavailable');
+                }
+
+                return response()->json([
+                    'exchangeRate' => array_values($response['rates']),
+                ], 200);
+
+                break;
         }
     }
 
