@@ -988,7 +988,8 @@
         "invoice": "Fatura",
         "estimate": "Orçamento",
         "expense": "Despesa",
-        "payment": "Pagamento"
+        "payment": "Pagamento",
+        "item": "Item"
       }
     },
     "customization": {

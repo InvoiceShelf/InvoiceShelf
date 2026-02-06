@@ -988,7 +988,8 @@
         "invoice": "Счет",
         "estimate": "Смета",
         "expense": "Расход",
-        "payment": "Платёж"
+        "payment": "Платёж",
+        "item": "Item"
       }
     },
     "customization": {

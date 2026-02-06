@@ -988,7 +988,8 @@
         "invoice": "Invoice",
         "estimate": "Estimate",
         "expense": "Expense",
-        "payment": "Payment"
+        "payment": "Payment",
+        "Item": "Item"
       }
     },
     "customization": {

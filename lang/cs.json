@@ -988,7 +988,8 @@
         "invoice": "Faktura",
         "estimate": "Odhad",
         "expense": "Výdaj",
-        "payment": "Platba"
+        "payment": "Platba",
+        "item": "Položka"
       }
     },
     "customization": {
