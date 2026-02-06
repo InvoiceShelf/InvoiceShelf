@@ -29,6 +29,8 @@
     "to_date": "Till datum",
     "from": "Från",
     "to": "Till",
+    "cc": "CC",
+    "bcc": "BCC",
     "ok": "Ok",
     "yes": "Ja",
     "no": "Nej",

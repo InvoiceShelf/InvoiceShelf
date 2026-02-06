@@ -29,6 +29,8 @@
     "to_date": "Au",
     "from": "De",
     "to": "À",
+    "cc": "CC",
+    "bcc": "BCC",
     "ok": "OK",
     "yes": "Oui",
     "no": "Non",

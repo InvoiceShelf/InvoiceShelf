@@ -29,6 +29,8 @@
     "to_date": "Alla Data",
     "from": "Da",
     "to": "A",
+    "cc": "CC",
+    "bcc": "BCC",
     "ok": "Ok",
     "yes": "Sì",
     "no": "No",

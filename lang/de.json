@@ -29,6 +29,8 @@
     "to_date": "Bis Datum",
     "from": "Von",
     "to": "An",
+    "cc": "CC",
+    "bcc": "BCC",
     "ok": "Okay",
     "yes": "Ja",
     "no": "Nein",

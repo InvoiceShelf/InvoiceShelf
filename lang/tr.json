@@ -29,6 +29,8 @@
     "to_date": "Bitiş tarihi",
     "from": "Gönderen",
     "to": "Alıcı",
+    "cc": "CC",
+    "bcc": "BCC",
     "ok": "Tamam",
     "yes": "Evet",
     "no": "Hayır",

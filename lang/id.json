@@ -29,6 +29,8 @@
     "to_date": "Sampai tanggal",
     "from": "Dari",
     "to": "Untuk",
+    "cc": "CC",
+    "bcc": "BCC",
     "ok": "Oke",
     "yes": "Ya",
     "no": "Tidak",

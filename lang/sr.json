@@ -29,6 +29,8 @@
     "to_date": "Do Datuma",
     "from": "Pošiljalac",
     "to": "Primalac",
+    "cc": "CC",
+    "bcc": "BCC",
     "ok": "Ok",
     "yes": "Yes",
     "no": "No",

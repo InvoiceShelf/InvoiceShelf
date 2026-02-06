@@ -29,6 +29,8 @@
     "to_date": "Do daty",
     "from": "Od",
     "to": "Do",
+    "cc": "CC",
+    "bcc": "BCC",
     "ok": "Ok",
     "yes": "Tak",
     "no": "Nie",

@@ -29,6 +29,8 @@
     "to_date": "Até a Data",
     "from": "De",
     "to": "Para",
+    "cc": "CC",
+    "bcc": "BCC",
     "ok": "Geral → Ok",
     "yes": "Sim",
     "no": "Não",

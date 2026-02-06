@@ -29,6 +29,8 @@
     "to_date": "Data iki",
     "from": "Nuo",
     "to": "Kam",
+    "cc": "CC",
+    "bcc": "BCC",
     "ok": "Gerai",
     "yes": "Taip",
     "no": "Ne",
