@@ -29,6 +29,8 @@
     "to_date": "Päivään",
     "from": "Lähettäjä",
     "to": "Vastaanottaja",
+    "cc": "CC",
+    "bcc": "BCC",
     "ok": "OK",
     "yes": "Kyllä",
     "no": "Ei",
