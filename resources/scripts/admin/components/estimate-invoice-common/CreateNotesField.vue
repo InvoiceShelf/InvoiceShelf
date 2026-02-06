@@ -20,6 +20,7 @@
 <script setup>
 import { ref } from 'vue'
 import SelectNotePopup from '../SelectNotePopup.vue'
+import BaseCustomInput from '@/scripts/components/base/BaseCustomInput.vue'
 
 const props = defineProps({
   store: {
