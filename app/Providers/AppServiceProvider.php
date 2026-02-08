@@ -19,6 +19,7 @@ use App\Policies\ReportPolicy;
 use App\Policies\RolePolicy;
 use App\Policies\SettingsPolicy;
 use App\Policies\UserPolicy;
+use App\Policies\CreditNotePolicy;
 use App\Space\InstallUtils;
 use Gate;
 use Illuminate\Support\Facades\Broadcast;
@@ -143,6 +144,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('delete multiple expenses', [ExpensePolicy::class, 'deleteMultiple']);
         Gate::define('delete multiple payments', [PaymentPolicy::class, 'deleteMultiple']);
         Gate::define('delete multiple recurring invoices', [RecurringInvoicePolicy::class, 'deleteMultiple']);
+        Gate::define('delete multiple credit notes', [CreditNotePolicy::class, 'deleteMultiple']);
 
         Gate::define('view dashboard', [DashboardPolicy::class, 'view']);
 

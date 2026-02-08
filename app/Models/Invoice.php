@@ -97,6 +97,11 @@ class Invoice extends Model implements HasMedia
         return $this->hasMany(Payment::class);
     }
 
+    public function creditNotes(): HasMany
+    {
+        return $this->hasMany(CreditNote::class);
+    }
+
     public function currency(): BelongsTo
     {
         return $this->belongsTo(Currency::class);
@@ -674,12 +679,23 @@ class Invoice extends Model implements HasMedia
         $this->changeInvoiceStatus($this->due_amount);
     }
 
+    public function addInvoiceCreditNote($amount)
+    {
+        $this->addInvoicePayment($amount);
+    }
+
     public function subtractInvoicePayment($amount)
     {
         $this->due_amount -= $amount;
         $this->base_due_amount = $this->due_amount * $this->exchange_rate;
 
         $this->changeInvoiceStatus($this->due_amount);
+    }
+
+    public function subtractInvoiceCreditNote($amount)
+    {
+        $this->subtractInvoicePayment($amount);
+
     }
 
     /**
