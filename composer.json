@@ -13,6 +13,7 @@
         "barryvdh/laravel-dompdf": "^v3.0",
         "doctrine/dbal": "^4.2",
         "dragonmantank/cron-expression": "^v3.4",
+        "easybill/e-invoicing": "^0.3.2",
         "gotenberg/gotenberg-php": "^2.8",
         "guzzlehttp/guzzle": "^7.9",
         "invoiceshelf/modules": "^1.0.0",

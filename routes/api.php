@@ -100,6 +100,7 @@ use App\Http\Controllers\V1\Customer\General\ProfileController as CustomerProfil
 use App\Http\Controllers\V1\Customer\Invoice\InvoicesController as CustomerInvoicesController;
 use App\Http\Controllers\V1\Customer\Payment\PaymentMethodController;
 use App\Http\Controllers\V1\Customer\Payment\PaymentsController as CustomerPaymentsController;
+use App\Http\Controllers\V1\EInvoice\EInvoiceController;
 use App\Http\Controllers\V1\Installation\AppDomainController;
 use App\Http\Controllers\V1\Installation\DatabaseConfigurationController;
 use App\Http\Controllers\V1\Installation\FilePermissionsController;
@@ -274,6 +275,18 @@ Route::prefix('/v1')->group(function () {
             Route::get('/invoices/templates', InvoiceTemplatesController::class);
 
             Route::apiResource('invoices', InvoicesController::class);
+
+            // E-Invoice
+            // -------------------------------------------------
+
+            Route::prefix('invoices/{invoice}/e-invoice')->group(function () {
+                Route::post('generate', [EInvoiceController::class, 'generate']);
+                Route::get('formats', [EInvoiceController::class, 'formats']);
+                Route::get('validate', [EInvoiceController::class, 'validateInvoice']);
+                Route::get('exists/{format}', [EInvoiceController::class, 'exists']);
+                Route::get('download/{format}/{type?}', [EInvoiceController::class, 'download']);
+                Route::delete('{format}', [EInvoiceController::class, 'delete']);
+            });
 
             // Recurring Invoice
             // -------------------------------------------------
