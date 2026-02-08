@@ -29,6 +29,8 @@
     "to_date": "Până la Data",
     "from": "De la",
     "to": "Până la",
+    "cc": "CC",
+    "bcc": "BCC",
     "ok": "OK",
     "yes": "Da",
     "no": "Nu",

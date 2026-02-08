@@ -29,6 +29,8 @@
     "to_date": "Datums līdz",
     "from": "No",
     "to": "Kam",
+    "cc": "CC",
+    "bcc": "BCC",
     "ok": "Labi",
     "yes": "Jā",
     "no": "Nē",

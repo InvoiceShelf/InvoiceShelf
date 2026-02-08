@@ -29,6 +29,8 @@
     "to_date": "Do dátumu",
     "from": "Od",
     "to": "Pre",
+    "cc": "CC",
+    "bcc": "BCC",
     "ok": "OK",
     "yes": "Áno",
     "no": "Nie",

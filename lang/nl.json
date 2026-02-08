@@ -29,6 +29,8 @@
     "to_date": "T/m datum",
     "from": "Vanaf",
     "to": "Naar.",
+    "cc": "CC",
+    "bcc": "BCC",
     "ok": "Oké.",
     "yes": "Ja.",
     "no": "Nee.",
