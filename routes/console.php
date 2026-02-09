@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Company;
 use App\Models\CompanySetting;
 use App\Models\RecurringInvoice;
 use App\Space\InstallUtils;
@@ -15,10 +16,14 @@ if (config('app.env') === 'demo') {
 
 if (InstallUtils::isDbCreated()) {
     Schedule::command('check:invoices:status')
-        ->daily();
+        ->everyMinute();
 
     Schedule::command('check:estimates:status')
-        ->daily();
+        ->everyMinute();
+
+    // Send due invoice reminders daily; per-company frequency is enforced inside the command.
+    Schedule::command('notify:invoices:due')
+        ->everyFifteenMinutes();
 
     $recurringInvoices = RecurringInvoice::where('status', 'ACTIVE')->get();
     foreach ($recurringInvoices as $recurringInvoice) {

@@ -522,6 +522,7 @@ return [
         ['key' => 'settings.exchange_rate.currency_freak', 'value' => 'currency_freak'],
         ['key' => 'settings.exchange_rate.currency_layer', 'value' => 'currency_layer'],
         ['key' => 'settings.exchange_rate.open_exchange_rate', 'value' => 'open_exchange_rate'],
+        ['key' => 'settings.exchange_rate.ecb', 'value' => 'ecb'],
     ],
 
     /*

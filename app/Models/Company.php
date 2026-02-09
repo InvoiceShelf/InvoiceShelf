@@ -206,10 +206,6 @@ class Company extends Model implements HasMedia
         $paymentFromCustomerAddress = '<h3>{BILLING_ADDRESS_NAME}</h3><p>{BILLING_ADDRESS_STREET_1}</p><p>{BILLING_ADDRESS_STREET_2}</p><p>{BILLING_CITY} {BILLING_STATE} {BILLING_ZIP_CODE}</p><p>{BILLING_COUNTRY}</p><p>{BILLING_PHONE}</p>';
 
         $settings = [
-            'invoice_auto_generate' => 'YES',
-            'payment_auto_generate' => 'YES',
-            'estimate_auto_generate' => 'YES',
-            'save_pdf_to_disk' => 'NO',
             'invoice_mail_body' => $defaultInvoiceEmailBody,
             'estimate_mail_body' => $defaultEstimateEmailBody,
             'payment_mail_body' => $defaultPaymentEmailBody,
@@ -233,6 +229,12 @@ class Company extends Model implements HasMedia
             'notification_email' => 'noreply@invoiceshelf.com',
             'notify_invoice_viewed' => 'NO',
             'notify_estimate_viewed' => 'NO',
+            'notify_invoice_due' => 'NO',
+            'invoice_due_frequency' => '1',
+            'invoice_due_email_subject' => 'Invoice due reminder: {INVOICE_NUMBER}',
+            'invoice_due_email_body' => 'This is a friendly reminder that invoice {INVOICE_NUMBER} is due on {INVOICE_DUE_DATE}. Please make the payment at your earliest convenience.',
+            'invoice_due_bcc' => '',
+            'invoice_due_attach_pdf' => 'NO',
             'tax_per_item' => 'NO',
             'discount_per_item' => 'NO',
             'invoice_auto_generate' => 'YES',
