@@ -1,3 +1,7 @@
+@php
+    $discountLabel = $invoice->discount_label ?: __('pdf_discount_label');
+@endphp
+
 <table width="100%" class="items-table" cellspacing="0" border="0">
     <tr class="item-table-heading-row">
         <th width="2%" class="pr-20 text-right item-table-heading">#</th>
@@ -8,7 +12,7 @@
         <th class="pr-20 text-right item-table-heading">@lang('pdf_quantity_label')</th>
         <th class="pr-20 text-right item-table-heading">@lang('pdf_price_label')</th>
         @if($invoice->discount_per_item === 'YES')
-        <th class="pl-10 text-right item-table-heading">@lang('pdf_discount_label')</th>
+        <th class="pl-10 text-right item-table-heading">{{ $discountLabel }}</th>
         @endif
         @if($invoice->tax_per_item === 'YES')
         <th class="pl-10 text-right item-table-heading">@lang('pdf_tax_label')</th>
@@ -103,10 +107,10 @@
                 <tr>
                     <td class="border-0 total-table-attribute-label">
                         @if($invoice->discount_type === 'fixed')
-                            @lang('pdf_discount_label')
+                            {{ $discountLabel }}
                         @endif
                         @if($invoice->discount_type === 'percentage')
-                            @lang('pdf_discount_label') ({{$invoice->discount}}%)
+                            {{ $discountLabel }} ({{$invoice->discount}}%)
                         @endif
                     </td>
                     <td class="py-2 border-0 item-cell total-table-attribute-value" >

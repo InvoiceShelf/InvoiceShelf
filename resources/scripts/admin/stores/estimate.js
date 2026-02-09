@@ -164,6 +164,18 @@ export const useEstimateStore = (useWindow = false) => {
 
       setEstimateData(estimate) {
         Object.assign(this.newEstimate, estimate)
+        
+        const companyStore = useCompanyStore()
+        
+        // Ensure unit_per_item and discount_per_item are set from company settings when editing
+        if (this.newEstimate.unit_per_item !== 'YES' && this.newEstimate.unit_per_item !== 'NO') {
+          this.newEstimate.unit_per_item = companyStore.selectedCompanySettings.unit_per_item
+        }
+        
+        if (this.newEstimate.discount_per_item !== 'YES' && this.newEstimate.discount_per_item !== 'NO') {
+          this.newEstimate.discount_per_item = companyStore.selectedCompanySettings.discount_per_item
+        }
+        
         if (this.newEstimate.tax_per_item === 'YES') {
           this.newEstimate.items.forEach((_i) => {
             if (_i.taxes && !_i.taxes.length) {

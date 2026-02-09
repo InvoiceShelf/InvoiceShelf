@@ -154,6 +154,17 @@ export const useInvoiceStore = (useWindow = false) => {
 
       setInvoiceData(invoice) {
         Object.assign(this.newInvoice, invoice)
+        
+        const companyStore = useCompanyStore()
+        
+        // Ensure unit_per_item and discount_per_item are set from company settings when editing
+        if (this.newInvoice.unit_per_item !== 'YES' && this.newInvoice.unit_per_item !== 'NO') {
+          this.newInvoice.unit_per_item = companyStore.selectedCompanySettings.unit_per_item
+        }
+        
+        if (this.newInvoice.discount_per_item !== 'YES' && this.newInvoice.discount_per_item !== 'NO') {
+          this.newInvoice.discount_per_item = companyStore.selectedCompanySettings.discount_per_item
+        }
 
         if (this.newInvoice.tax_per_item === 'YES') {
           this.newInvoice.items.forEach((_i) => {

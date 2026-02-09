@@ -187,10 +187,21 @@ export const useRecurringInvoiceStore = (useWindow = false) => {
       fetchRecurringInvoice(id) {
         return new Promise((resolve, reject) => {
           this.isFetchingViewData = true
+          const companyStore = useCompanyStore()
           axios
             .get(`/api/v1/recurring-invoices/${id}`)
             .then((response) => {
               Object.assign(this.newRecurringInvoice, response.data.data)
+              
+              // Ensure unit_per_item and discount_per_item are set from company settings when editing
+              if (this.newRecurringInvoice.unit_per_item !== 'YES' && this.newRecurringInvoice.unit_per_item !== 'NO') {
+                this.newRecurringInvoice.unit_per_item = companyStore.selectedCompanySettings.unit_per_item
+              }
+              
+              if (this.newRecurringInvoice.discount_per_item !== 'YES' && this.newRecurringInvoice.discount_per_item !== 'NO') {
+                this.newRecurringInvoice.discount_per_item = companyStore.selectedCompanySettings.discount_per_item
+              }
+              
               this.newRecurringInvoice.invoices =
                 response.data.data.invoices || []
               this.setSelectedFrequency()

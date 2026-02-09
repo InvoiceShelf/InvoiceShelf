@@ -162,7 +162,7 @@
 </template>
 
 <script setup>
-import { reactive, onMounted, ref, computed } from 'vue'
+import { reactive, onMounted, ref, computed, watch } from 'vue'
 import { required, email, numeric, helpers } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { useI18n } from 'vue-i18n'
@@ -197,7 +197,7 @@ const mailDriverStore = useMailDriverStore()
 const { t } = useI18n()
 
 let isShowPassword = ref(false)
-const schemes = reactive(['smtp', 'smtps', 'none'])
+const schemes = reactive(['none', 'tls', 'ssl', 'starttls'])
 
 const getInputType = computed(() => {
   if (isShowPassword.value) {
@@ -242,6 +242,22 @@ onMounted(() => {
     }
   }
 })
+
+watch(
+  () => props.configData,
+  (newConfig) => {
+    if (!newConfig) {
+      return
+    }
+
+    for (const key in mailDriverStore.smtpConfig) {
+      if (Object.prototype.hasOwnProperty.call(newConfig, key)) {
+        mailDriverStore.smtpConfig[key] = newConfig[key]
+      }
+    }
+  },
+  { deep: true }
+)
 
 async function saveEmailConfig() {
   v$.value.smtpConfig.$touch()
