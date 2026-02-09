@@ -113,6 +113,7 @@ class RecurringInvoiceRequest extends FormRequest
                 'next_invoice_at' => $nextInvoiceAt,
                 'tax_per_item' => CompanySetting::getSetting('tax_per_item', $this->header('company')) ?? 'NO ',
                 'discount_per_item' => CompanySetting::getSetting('discount_per_item', $this->header('company')) ?? 'NO',
+                'unit_per_item' => CompanySetting::getSetting('unit_per_item', $this->header('company')) ?? 'NO',
                 'due_amount' => $this->total,
                 'exchange_rate' => $exchange_rate,
                 'currency_id' => $currency,

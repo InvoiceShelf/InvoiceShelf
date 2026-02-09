@@ -95,6 +95,7 @@ class InvoiceFactory extends Factory
             'tax_per_item' => 'NO',
             'tax_included' => false,
             'discount_per_item' => 'NO',
+            'unit_per_item' => 'NO',
             'paid_status' => Invoice::STATUS_UNPAID,
             'company_id' => User::find(1)->companies()->first()->id,
             'sub_total' => $this->faker->randomDigitNotNull(),

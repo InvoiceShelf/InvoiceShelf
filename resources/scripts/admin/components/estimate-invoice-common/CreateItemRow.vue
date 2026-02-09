@@ -1,4 +1,6 @@
 <template>
+<ItemUnitModal />
+
   <tr class="box-border bg-white border border-gray-200 border-solid rounded-b">
     <td colspan="5" class="p-0 text-left align-top">
       <table class="w-full">
@@ -46,6 +48,31 @@
                 @change="syncItemToStore()"
                 @input="v$.quantity.$touch()"
               />
+              <BaseInputGroup
+                :content-loading="isFetchingInitialData"
+                v-if="store[storeProp].unit_per_item === 'YES'"
+              >
+                <BaseMultiselect
+                  v-model="unit_name"
+                  :content-loading="isFetchingInitialData"
+                  label="name"
+                  :options="itemStore.itemUnits"
+                  value-prop="name"
+                  :placeholder="$t('items.select_a_unit')"
+                  searchable
+                  track-by="name"
+                >
+                  <template #action>
+                    <BaseSelectAction @click="addItemUnit">
+                      <BaseIcon
+                        name="PlusIcon"
+                        class="h-4 mr-2 -ml-2 text-center text-primary-100"
+                      />
+                      {{ $t('settings.customization.items.add_item_unit') }}
+                    </BaseSelectAction>
+                  </template>
+                </BaseMultiselect>
+              </BaseInputGroup>
             </td>
             <td class="px-5 py-4 text-left align-top">
               <div class="flex flex-col">
@@ -193,8 +220,11 @@ import {
 import useVuelidate from '@vuelidate/core'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 import { useItemStore } from '@/scripts/admin/stores/item'
+import { useModalStore } from '@/scripts/stores/modal'
+import ItemUnitModal from '@/scripts/admin/components/modal-components/ItemUnitModal.vue'
 import DragIcon from '@/scripts/components/icons/DragIcon.vue'
 
+const modalStore = useModalStore()
 const props = defineProps({
   store: {
     type: Object,
@@ -248,6 +278,15 @@ const quantity = computed({
   },
   set: (newValue) => {
     updateItemAttribute('quantity', parseFloat(newValue))
+  },
+})
+
+const unit_name = computed({
+  get: () => {
+    return props.itemData.unit_name
+  },
+  set: (newValue) => {
+    updateItemAttribute('unit_name', newValue)
   },
 })
 
@@ -395,6 +434,14 @@ function setDiscount() {
 
 function searchVal(val) {
   updateItemAttribute('name', val)
+}
+
+async function addItemUnit() {
+  modalStore.openModal({
+    title: t('settings.customization.items.add_item_unit'),
+    componentName: 'ItemUnitModal',
+    size: 'sm',
+  })
 }
 
 function onSelectItem(itm) {

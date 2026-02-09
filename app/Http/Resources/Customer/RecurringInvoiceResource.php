@@ -32,6 +32,7 @@ class RecurringInvoiceResource extends JsonResource
             'exchange_rate' => $this->exchange_rate,
             'tax_per_item' => $this->tax_per_item,
             'discount_per_item' => $this->discount_per_item,
+            'unit_per_item' => $this->unit_per_item,
             'notes' => $this->notes,
             'discount_type' => $this->discount_type,
             'discount' => $this->discount,

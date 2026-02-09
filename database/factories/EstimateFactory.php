@@ -95,6 +95,7 @@ class EstimateFactory extends Factory
             'tax_per_item' => 'YES',
             'tax_included' => false,
             'discount_per_item' => 'No',
+            'unit_per_item' => 'No',
             'tax' => $this->faker->randomDigitNotNull(),
             'notes' => $this->faker->text(80),
             'unique_hash' => str_random(60),
