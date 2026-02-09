@@ -403,6 +403,8 @@ export const useRecurringInvoiceStore = (useWindow = false) => {
             companyStore.selectedCompanySettings.tax_per_item
           this.newRecurringInvoice.discount_per_item =
             companyStore.selectedCompanySettings.discount_per_item
+          this.newRecurringInvoice.unit_per_item =
+            companyStore.selectedCompanySettings.unit_per_item
           this.newRecurringInvoice.sales_tax_type =
             companyStore.selectedCompanySettings.sales_tax_type
           this.newRecurringInvoice.sales_tax_address_type =

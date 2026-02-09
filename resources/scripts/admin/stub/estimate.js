@@ -12,6 +12,7 @@ export default function () {
     sales_tax_type: null,
     sales_tax_address_type: null,
     discount_per_item: null,
+    unit_per_item: null,
     estimate_date: '',
     expiry_date: '',
     estimate_number: '',

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('reference_number')->nullable();
             $table->string('tax_per_item');
             $table->string('discount_per_item');
+            $table->string('unit_per_item');
             $table->string('notes')->nullable();
             $table->decimal('discount', 15, 2)->nullable();
             $table->string('discount_type')->nullable();

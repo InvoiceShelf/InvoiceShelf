@@ -126,6 +126,7 @@ class EstimatesRequest extends FormRequest
                 'company_id' => $this->header('company'),
                 'tax_per_item' => CompanySetting::getSetting('tax_per_item', $this->header('company')) ?? 'NO ',
                 'discount_per_item' => CompanySetting::getSetting('discount_per_item', $this->header('company')) ?? 'NO',
+                'unit_per_item' => CompanySetting::getSetting('unit_per_item', $this->header('company')) ?? 'NO',
                 'exchange_rate' => $exchange_rate,
                 'base_discount_val' => $this->discount_val * $exchange_rate,
                 'base_sub_total' => $this->sub_total * $exchange_rate,
