@@ -4,6 +4,7 @@ namespace App\Http\Controllers\V1\Admin\Invoice;
 
 use App\Http\Controllers\Controller;
 use App\Models\Invoice;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 
 class ChangeInvoiceStatusController extends Controller
@@ -26,10 +27,23 @@ class ChangeInvoiceStatusController extends Controller
             $invoice->paid_status = Invoice::STATUS_PAID;
             $invoice->due_amount = 0;
             $invoice->save();
-        }
 
-        return response()->json([
-            'success' => true,
-        ]);
+            $manageStock = Setting::get('manage_stock', false); // Set to false
+
+            if ($manageStock) {
+                foreach ($invoice->items as $invoiceItem) {
+                    $item = $invoiceItem->item;
+
+                    if ($item) {
+                        $item->opening_stock -= $invoiceItem->quantity;
+                        $item->save();
+                    }
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+            ]);
+        }
     }
 }

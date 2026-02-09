@@ -1,3 +1,4 @@
+
 <template>
   <BasePage>
     <BasePageHeader :title="$t('items.title')">
@@ -172,6 +173,11 @@
           />
         </template>
 
+        
+        <template #cell-opening_stock="{ row }">
+          <span>{{ row.data.opening_stock ?? '-' }}</span>
+        </template>
+
         <template #cell-created_at="{ row }">
           <span>{{ row.data.formatted_created_at }}</span>
         </template>
@@ -188,6 +194,8 @@
   </BasePage>
 </template>
 
+
+
 <script setup>
 import { ref, computed, inject, onMounted, reactive, onUnmounted } from 'vue'
 import { debouncedWatch } from '@vueuse/core'
@@ -203,13 +211,19 @@ import abilities from '@/scripts/admin/stub/abilities'
 
 const utils = inject('utils')
 
+
 const itemStore = useItemStore()
 const companyStore = useCompanyStore()
 const notificationStore = useNotificationStore()
 const dialogStore = useDialogStore()
 const userStore = useUserStore()
 
+
 const { t } = useI18n()
+
+// Inject the opening stock setting passed from the controller
+const openingStockEnabled = inject('opening_stock_enabled', false)
+
 let showFilters = ref(false)
 let isFetchingInitialData = ref(true)
 
@@ -233,7 +247,7 @@ const selectField = computed({
 })
 
 const itemColumns = computed(() => {
-  return [
+  const columns = [
     {
       key: 'status',
       thClass: 'extra w-10',
@@ -250,14 +264,13 @@ const itemColumns = computed(() => {
     { key: 'unit_name', label: t('items.unit') },
     { key: 'price', label: t('items.price') },
     { key: 'created_at', label: t('items.added_on') },
-
-    {
-      key: 'actions',
-      thClass: 'text-right',
-      tdClass: 'text-right text-sm font-medium',
-      sortable: false,
-    },
   ]
+
+  if (openingStockEnabled) {
+    columns.splice(4, 0, { key: 'opening_stock', label: t('items.opening_stock') })
+  }
+
+  return columns
 })
 
 debouncedWatch(
@@ -276,6 +289,10 @@ onUnmounted(() => {
   }
 })
 
+
+
+
+
 function clearFilter() {
   filters.name = ''
   filters.unit_id = ''
@@ -285,6 +302,7 @@ function clearFilter() {
 function hasAbilities() {
   return userStore.hasAbilities([abilities.DELETE_ITEM, abilities.EDIT_ITEM])
 }
+
 
 function toggleFilter() {
   if (showFilters.value) {
@@ -301,6 +319,9 @@ function refreshTable() {
 function setFilters() {
   refreshTable()
 }
+
+
+
 
 async function searchUnits(search) {
   let res = await itemStore.fetchItemUnits({ search })
@@ -334,6 +355,8 @@ async function fetchData({ page, filter, sort }) {
     },
   }
 }
+
+
 
 function removeMultipleItems() {
   dialogStore

@@ -7,6 +7,7 @@ use App\Http\Requests;
 use App\Http\Requests\DeleteItemsRequest;
 use App\Http\Resources\ItemResource;
 use App\Models\Item;
+use App\Models\Setting;
 use App\Models\TaxType;
 use Illuminate\Http\Request;
 
@@ -30,10 +31,14 @@ class ItemsController extends Controller
             ->latest()
             ->paginateData($limit);
 
+        $openingStockEnabled = Setting::getSetting('opening_stock_enabled');
+
         return ItemResource::collection($items)
             ->additional(['meta' => [
                 'tax_types' => TaxType::whereCompany()->latest()->get(),
                 'item_total_count' => Item::whereCompany()->count(),
+                'opening_stock_enabled' => $openingStockEnabled === 'true',
+
             ]]);
     }
 
