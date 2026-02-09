@@ -5,7 +5,9 @@ namespace App\Http\Controllers\V1\Admin\Settings;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MailEnvironmentRequest;
 use App\Mail\TestMail;
+use App\Services\CompanyMailConfigurationService;
 use App\Models\Setting;
+use App\Models\CompanySetting;
 use App\Space\EnvironmentManager;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
@@ -65,34 +67,37 @@ class MailConfigurationController extends Controller
     private function prepareMailSettingsForDatabase(MailEnvironmentRequest $request)
     {
         $driver = $request->get('mail_driver');
+        if (empty($driver)) {
+            $driver = config('mail.default') ?: 'smtp';
+        }
 
         // Base settings that are always saved
         $settings = [
             'mail_driver' => $driver,
-            'from_name' => $request->get('from_name'),
-            'from_mail' => $request->get('from_mail'),
+            'from_name' => $request->get('from_name', ''),
+            'from_mail' => $request->get('from_mail', ''),
         ];
 
         // Driver-specific settings
         switch ($driver) {
             case 'smtp':
                 $settings = array_merge($settings, [
-                    'mail_host' => $request->get('mail_host'),
-                    'mail_port' => $request->get('mail_port'),
-                    'mail_username' => $request->get('mail_username'),
-                    'mail_password' => $request->get('mail_password'),
+                    'mail_host' => $request->get('mail_host', ''),
+                    'mail_port' => $request->get('mail_port', ''),
+                    'mail_username' => $request->get('mail_username', ''),
+                    'mail_password' => $request->get('mail_password', ''),
                     'mail_encryption' => $request->get('mail_encryption', 'none'),
-                    'mail_scheme' => $request->get('mail_scheme'),
-                    'mail_url' => $request->get('mail_url'),
-                    'mail_timeout' => $request->get('mail_timeout'),
-                    'mail_local_domain' => $request->get('mail_local_domain'),
+                    'mail_scheme' => $request->get('mail_scheme', ''),
+                    'mail_url' => $request->get('mail_url', ''),
+                    'mail_timeout' => $request->get('mail_timeout', ''),
+                    'mail_local_domain' => $request->get('mail_local_domain', ''),
                 ]);
                 break;
 
             case 'mailgun':
                 $settings = array_merge($settings, [
-                    'mail_mailgun_domain' => $request->get('mail_mailgun_domain'),
-                    'mail_mailgun_secret' => $request->get('mail_mailgun_secret'),
+                    'mail_mailgun_domain' => $request->get('mail_mailgun_domain', ''),
+                    'mail_mailgun_secret' => $request->get('mail_mailgun_secret', ''),
                     'mail_mailgun_endpoint' => $request->get('mail_mailgun_endpoint', 'api.mailgun.net'),
                     'mail_mailgun_scheme' => $request->get('mail_mailgun_scheme', 'https'),
                 ]);
@@ -100,8 +105,8 @@ class MailConfigurationController extends Controller
 
             case 'ses':
                 $settings = array_merge($settings, [
-                    'mail_ses_key' => $request->get('mail_ses_key'),
-                    'mail_ses_secret' => $request->get('mail_ses_secret'),
+                    'mail_ses_key' => $request->get('mail_ses_key', ''),
+                    'mail_ses_secret' => $request->get('mail_ses_secret', ''),
                     'mail_ses_region' => $request->get('mail_ses_region', 'us-east-1'),
                 ]);
                 break;
@@ -113,7 +118,8 @@ class MailConfigurationController extends Controller
                 break;
         }
 
-        return $settings;
+        // Ensure no null values are passed to the database
+        return array_map(fn($value) => $value ?? '', $settings);
     }
 
     /**
@@ -151,7 +157,10 @@ class MailConfigurationController extends Controller
             'mail_sendmail_path',
         ]);
 
-        $driver = $mailSettings['mail_driver'] ?? config('mail.default');
+        $driver = $mailSettings['mail_driver'] ?? null;
+        if (empty($driver)) {
+            $driver = config('mail.default') ?: 'smtp';
+        }
 
         // Base data that's always available
         $MailData = [
@@ -247,10 +256,132 @@ class MailConfigurationController extends Controller
             'message' => 'required',
         ]);
 
+        $companyId = $request->header('company');
+        if (! empty($companyId)) {
+            CompanyMailConfigurationService::configureMailForCompany((int) $companyId);
+        }
+
         Mail::to($request->to)->send(new TestMail($request->subject, $request->message));
 
         return response()->json([
             'success' => true,
         ]);
+    }
+
+    /**
+     * Save mail configuration for a specific company
+     *
+     * @return JsonResponse
+     *
+     * @throws AuthorizationException
+     */
+    public function saveCompanyMailConfiguration(MailEnvironmentRequest $request)
+    {
+        $this->authorize('manage email config');
+
+        $companyId = $request->header('company');
+        
+        // Prepare mail settings for database storage
+        $mailSettings = $this->prepareMailSettingsForDatabase($request);
+
+        // Save mail settings to company_settings table
+        CompanySetting::setSettings($mailSettings, $companyId);
+
+        return response()->json([
+            'success' => 'mail_variables_save_successfully',
+        ]);
+    }
+
+    /**
+     * Get mail configuration for a specific company
+     *
+     * @return JsonResponse
+     *
+     * @throws AuthorizationException
+     */
+    public function getCompanyMailConfiguration(Request $request)
+    {
+        $this->authorize('manage email config');
+
+        $companyId = $request->header('company');
+
+        // Get mail settings from company_settings
+        $mailSettings = CompanySetting::getSettings([
+            'mail_driver',
+            'mail_host',
+            'mail_port',
+            'mail_username',
+            'mail_password',
+            'mail_encryption',
+            'mail_scheme',
+            'mail_url',
+            'mail_timeout',
+            'mail_local_domain',
+            'from_name',
+            'from_mail',
+            'mail_mailgun_domain',
+            'mail_mailgun_secret',
+            'mail_mailgun_endpoint',
+            'mail_mailgun_scheme',
+            'mail_ses_key',
+            'mail_ses_secret',
+            'mail_ses_region',
+            'mail_sendmail_path',
+        ], $companyId)->toArray();
+
+        $driver = $mailSettings['mail_driver'] ?? config('mail.default');
+
+        // Base data that's always available
+        $MailData = [
+            'mail_driver' => $driver,
+            'from_name' => $mailSettings['from_name'] ?? config('mail.from.name'),
+            'from_mail' => $mailSettings['from_mail'] ?? config('mail.from.address'),
+        ];
+
+        // Driver-specific configuration
+        switch ($driver) {
+            case 'smtp':
+                $MailData = array_merge($MailData, [
+                    'mail_host' => $mailSettings['mail_host'] ?? '',
+                    'mail_port' => $mailSettings['mail_port'] ?? '',
+                    'mail_username' => $mailSettings['mail_username'] ?? '',
+                    'mail_password' => $mailSettings['mail_password'] ?? '',
+                    'mail_encryption' => $mailSettings['mail_encryption'] ?? 'none',
+                    'mail_scheme' => $mailSettings['mail_scheme'] ?? '',
+                    'mail_url' => $mailSettings['mail_url'] ?? '',
+                    'mail_timeout' => $mailSettings['mail_timeout'] ?? '',
+                    'mail_local_domain' => $mailSettings['mail_local_domain'] ?? '',
+                ]);
+                break;
+
+            case 'mailgun':
+                $MailData = array_merge($MailData, [
+                    'mail_mailgun_domain' => $mailSettings['mail_mailgun_domain'] ?? '',
+                    'mail_mailgun_secret' => $mailSettings['mail_mailgun_secret'] ?? '',
+                    'mail_mailgun_endpoint' => $mailSettings['mail_mailgun_endpoint'] ?? 'api.mailgun.net',
+                    'mail_mailgun_scheme' => $mailSettings['mail_mailgun_scheme'] ?? 'https',
+                ]);
+                break;
+
+            case 'ses':
+                $MailData = array_merge($MailData, [
+                    'mail_ses_key' => $mailSettings['mail_ses_key'] ?? '',
+                    'mail_ses_secret' => $mailSettings['mail_ses_secret'] ?? '',
+                    'mail_ses_region' => $mailSettings['mail_ses_region'] ?? 'us-east-1',
+                ]);
+                break;
+
+            case 'sendmail':
+                $MailData = array_merge($MailData, [
+                    'mail_sendmail_path' => $mailSettings['mail_sendmail_path'] ?? '/usr/sbin/sendmail -bs -i',
+                ]);
+                break;
+
+            default:
+                // For unknown drivers, return minimal configuration
+                break;
+        }
+
+        return response()->json($MailData);
     }
 }

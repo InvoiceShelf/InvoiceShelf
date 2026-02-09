@@ -175,7 +175,7 @@
 </template>
 
 <script setup>
-import { computed, ref, inject } from 'vue'
+import { computed, ref, inject, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import Guid from 'guid'
@@ -347,6 +347,24 @@ const v$ = useVuelidate(
   rules,
   computed(() => props.store[props.storeProp].items[props.index]),
   { $scope: props.itemValidationScope }
+)
+
+onMounted(async () => {
+  if (
+    props.store[props.storeProp].unit_per_item === 'YES' &&
+    (!itemStore.itemUnits || itemStore.itemUnits.length === 0)
+  ) {
+    await itemStore.fetchItemUnits({ limit: 'all' })
+  }
+})
+
+watch(
+  () => props.store[props.storeProp].unit_per_item,
+  (newValue) => {
+    if (newValue !== 'YES' && props.itemData.unit_name) {
+      updateItemAttribute('unit_name', null)
+    }
+  }
 )
 
 //

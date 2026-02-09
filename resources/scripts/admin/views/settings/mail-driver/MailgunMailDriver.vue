@@ -143,7 +143,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, watch } from 'vue'
 import { required, email, helpers } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { useI18n } from 'vue-i18n'
@@ -224,6 +224,22 @@ onMounted(() => {
     }
   }
 })
+
+watch(
+  () => props.configData,
+  (newConfig) => {
+    if (!newConfig) {
+      return
+    }
+
+    for (const key in mailDriverStore.mailgunConfig) {
+      if (Object.prototype.hasOwnProperty.call(newConfig, key)) {
+        mailDriverStore.mailgunConfig[key] = newConfig[key]
+      }
+    }
+  },
+  { deep: true }
+)
 
 async function saveEmailConfig() {
   v$.value.mailgunConfig.$touch()

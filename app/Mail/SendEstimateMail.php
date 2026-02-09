@@ -4,6 +4,7 @@ namespace App\Mail;
 
 use App\Models\EmailLog;
 use App\Models\Estimate;
+use App\Services\CompanyMailConfigurationService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -33,6 +34,11 @@ class SendEstimateMail extends Mailable
      */
     public function build()
     {
+        // Ensure mail configuration for the estimate's company (works for queued mailables)
+        if (! empty($this->data['estimate']['company_id'])) {
+            CompanyMailConfigurationService::configureMailForCompany($this->data['estimate']['company_id']);
+        }
+
         $log = EmailLog::create([
             'from' => $this->data['from'],
             'to' => $this->data['to'],

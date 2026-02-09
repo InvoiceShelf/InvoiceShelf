@@ -9,6 +9,7 @@ use App\Models\CompanySetting;
 use App\Models\Customer;
 use App\Models\EmailLog;
 use App\Models\Estimate;
+use App\Services\CompanyMailConfigurationService;
 use Illuminate\Http\Request;
 
 class EstimatePdfController extends Controller
@@ -33,6 +34,9 @@ class EstimatePdfController extends Controller
                         'notification_email',
                         $estimate->company_id
                     );
+
+                    // Configure mail for this company
+                    CompanyMailConfigurationService::configureMailForCompany($estimate->company_id);
 
                     \Mail::to($notificationEmail)->send(new EstimateViewedMail($data));
                 }

@@ -144,6 +144,9 @@ class Payment extends Model implements HasMedia
     {
         $data = $this->sendPaymentData($data);
 
+        // Configure mail for this company
+        \App\Services\CompanyMailConfigurationService::configureMailForCompany($this->company_id);
+
         $mail = \Mail::to($data['to']);
         if (! empty($data['cc'])) {
             $mail->cc($data['cc']);
