@@ -384,22 +384,22 @@ export const useInvoiceStore = (useWindow = false) => {
       },
 
       markAsSent(data) {
+        return this.updateInvoiceStatus(data, {
+          message: global.t('invoices.mark_as_sent_successfully'),
+        })
+      },
+
+      updateInvoiceStatus(data, options = {}) {
         return new Promise((resolve, reject) => {
           axios
             .post(`/api/v1/invoices/${data.id}/status`, data)
             .then((response) => {
-              let pos = this.invoices.findIndex(
-                (invoices) => invoices.id === data.id,
-              )
-
-              if (this.invoices[pos]) {
-                this.invoices[pos].status = 'SENT'
+              if (options.message) {
+                notificationStore.showNotification({
+                  type: 'success',
+                  message: options.message,
+                })
               }
-
-              notificationStore.showNotification({
-                type: 'success',
-                message: global.t('invoices.mark_as_sent_successfully'),
-              })
               resolve(response)
             })
             .catch((err) => {
