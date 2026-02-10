@@ -108,8 +108,13 @@ export const useInvoiceStore = (useWindow = false) => {
 
       previewInvoice(params) {
         return new Promise((resolve, reject) => {
+          const requestParams = { ...params }
+          delete requestParams.attachments
+
           axios
-            .get(`/api/v1/invoices/${params.id}/send/preview`, { params })
+            .get(`/api/v1/invoices/${params.id}/send/preview`, {
+              params: requestParams,
+            })
             .then((response) => {
               resolve(response)
             })
@@ -204,8 +209,43 @@ export const useInvoiceStore = (useWindow = false) => {
 
       sendInvoice(data) {
         return new Promise((resolve, reject) => {
+          const hasAttachments =
+            Array.isArray(data.attachments) && data.attachments.length
+
+          let payload = data
+          let config = undefined
+
+          if (hasAttachments) {
+            const formData = new FormData()
+
+            Object.keys(data).forEach((key) => {
+              if (key === 'attachments') {
+                return
+              }
+
+              let value = data[key]
+
+              if (value === null) {
+                value = ''
+              }
+
+              formData.append(key, value)
+            })
+
+            data.attachments.forEach((file) => {
+              formData.append('attachments[]', file, file.name)
+            })
+
+            payload = formData
+            config = {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+              },
+            }
+          }
+
           axios
-            .post(`/api/v1/invoices/${data.id}/send`, data)
+            .post(`/api/v1/invoices/${data.id}/send`, payload, config)
             .then((response) => {
               notificationStore.showNotification({
                 type: 'success',
