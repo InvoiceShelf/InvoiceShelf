@@ -447,6 +447,14 @@ class Invoice extends Model implements HasMedia
         $data['subject'] = $this->getEmailString($data['subject']);
         $data['body'] = $this->getEmailString($data['body']);
         $data['attach']['data'] = ($this->getEmailAttachmentSetting()) ? $this->getPDFData() : null;
+        $footer = CompanySetting::getSetting('invoice_mail_footer', $this->company_id);
+        if ($footer) {
+            $footer = $this->getEmailString($footer);
+            $footerPlain = trim(strip_tags($footer));
+            $data['footer'] = $footerPlain === '' ? null : $footer;
+        } else {
+            $data['footer'] = null;
+        }
         $data['attachments'] = $data['attachments'] ?? [];
 
         return $data;
