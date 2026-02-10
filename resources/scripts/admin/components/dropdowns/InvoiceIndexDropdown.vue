@@ -87,6 +87,84 @@
       {{ $t('invoices.mark_as_sent') }}
     </BaseDropdownItem>
 
+    <!-- Mark as paid -->
+    <BaseDropdownItem
+      v-if="userStore.hasAbilities(abilities.EDIT_INVOICE)"
+      :disabled="isPaid"
+      @click="onMarkAsPaid(row)"
+    >
+      <BaseIcon
+        name="CheckCircleIcon"
+        class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+      />
+      {{ $t('invoices.mark_as_paid') }}
+    </BaseDropdownItem>
+
+    <!-- Mark as partially paid -->
+    <BaseDropdownItem
+      v-if="userStore.hasAbilities(abilities.EDIT_INVOICE)"
+      :disabled="isPartialDisabled"
+      @click="onMarkAsPartiallyPaid(row)"
+    >
+      <BaseIcon
+        name="MinusCircleIcon"
+        class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+      />
+      {{ $t('invoices.mark_as_partially_paid') }}
+    </BaseDropdownItem>
+
+    <!-- Mark as unpaid -->
+    <BaseDropdownItem
+      v-if="userStore.hasAbilities(abilities.EDIT_INVOICE)"
+      :disabled="isUnpaid"
+      @click="onMarkAsUnpaid(row)"
+    >
+      <BaseIcon
+        name="XCircleIcon"
+        class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+      />
+      {{ $t('invoices.mark_as_unpaid') }}
+    </BaseDropdownItem>
+
+    <!-- Mark as draft -->
+    <BaseDropdownItem
+      v-if="userStore.hasAbilities(abilities.EDIT_INVOICE)"
+      :disabled="isDraft"
+      @click="onMarkAsStatus(row, 'DRAFT')"
+    >
+      <BaseIcon
+        name="PencilIcon"
+        class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+      />
+      {{ $t('invoices.mark_as_draft') }}
+    </BaseDropdownItem>
+
+    <!-- Mark as viewed -->
+    <BaseDropdownItem
+      v-if="userStore.hasAbilities(abilities.EDIT_INVOICE)"
+      :disabled="isViewed"
+      @click="onMarkAsStatus(row, 'VIEWED')"
+    >
+      <BaseIcon
+        name="EyeIcon"
+        class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+      />
+      {{ $t('invoices.mark_as_viewed') }}
+    </BaseDropdownItem>
+
+    <!-- Mark as completed -->
+    <BaseDropdownItem
+      v-if="userStore.hasAbilities(abilities.EDIT_INVOICE)"
+      :disabled="isCompleted"
+      @click="onMarkAsStatus(row, 'COMPLETED')"
+    >
+      <BaseIcon
+        name="CheckCircleIcon"
+        class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+      />
+      {{ $t('invoices.mark_as_completed') }}
+    </BaseDropdownItem>
+
     <!-- Clone Invoice into new invoice  -->
     <BaseDropdownItem
       v-if="userStore.hasAbilities(abilities.CREATE_INVOICE)"
@@ -121,7 +199,7 @@ import { useModalStore } from '@/scripts/stores/modal'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/scripts/admin/stores/user'
-import { inject } from 'vue'
+import { computed, inject } from 'vue'
 import abilities from '@/scripts/admin/stub/abilities'
 
 const props = defineProps({
@@ -137,6 +215,10 @@ const props = defineProps({
     type: Function,
     default: () => {},
   },
+  refreshInvoice: {
+    type: Function,
+    default: () => {},
+  },
 })
 
 const invoiceStore = useInvoiceStore()
@@ -149,6 +231,16 @@ const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const utils = inject('utils')
+
+const isPaid = computed(() => props.row?.paid_status === 'PAID')
+const isUnpaid = computed(() => props.row?.paid_status === 'UNPAID')
+const isPartiallyPaid = computed(
+  () => props.row?.paid_status === 'PARTIALLY_PAID'
+)
+const isPartialDisabled = computed(() => isPaid.value)
+const isDraft = computed(() => props.row?.status === 'DRAFT')
+const isViewed = computed(() => props.row?.status === 'VIEWED')
+const isCompleted = computed(() => props.row?.status === 'COMPLETED')
 
 function canReSendInvoice(row) {
   return (
@@ -233,8 +325,153 @@ async function onMarkAsSent(id) {
       if (response) {
         invoiceStore.markAsSent(data).then((response) => {
           props.table && props.table.refresh()
+          props.refreshInvoice && props.refreshInvoice()
+          if (props.row) {
+            props.row.status = 'SENT'
+            props.row.sent = true
+            props.row.viewed = false
+          }
         })
       }
+    })
+}
+
+function onMarkAsPaid(row) {
+  dialogStore
+    .openDialog({
+      title: t('general.are_you_sure'),
+      message: t('invoices.confirm_mark_as_paid'),
+      yesLabel: t('general.ok'),
+      noLabel: t('general.cancel'),
+      variant: 'primary',
+      hideNoButton: false,
+      size: 'lg',
+    })
+    .then((response) => {
+      if (!response) {
+        return
+      }
+
+      invoiceStore
+        .updateInvoiceStatus(
+          {
+            id: row.id,
+            paid_status: 'PAID',
+            reset_payments: true,
+          },
+          {
+            message: t('invoices.mark_as_paid_successfully'),
+          }
+        )
+        .then(() => {
+          props.table && props.table.refresh()
+          props.refreshInvoice && props.refreshInvoice()
+          row.status = 'COMPLETED'
+          row.paid_status = 'PAID'
+          row.due_amount = 0
+        })
+    })
+}
+
+function onMarkAsUnpaid(row) {
+  dialogStore
+    .openDialog({
+      title: t('general.are_you_sure'),
+      message: t('invoices.confirm_mark_as_unpaid'),
+      yesLabel: t('general.ok'),
+      noLabel: t('general.cancel'),
+      variant: 'primary',
+      hideNoButton: false,
+      size: 'lg',
+    })
+    .then((response) => {
+      if (!response) {
+        return
+      }
+
+      invoiceStore
+        .updateInvoiceStatus(
+          {
+            id: row.id,
+            paid_status: 'UNPAID',
+            reset_payments: true,
+          },
+          {
+            message: t('invoices.mark_as_unpaid_successfully'),
+          }
+        )
+        .then(() => {
+          props.table && props.table.refresh()
+          props.refreshInvoice && props.refreshInvoice()
+          row.paid_status = 'UNPAID'
+          row.due_amount = row.total
+          row.status = row.viewed ? 'VIEWED' : row.sent ? 'SENT' : 'DRAFT'
+        })
+    })
+}
+
+function onMarkAsPartiallyPaid(row) {
+  modalStore.openModal({
+    title: t('invoices.mark_as_partially_paid'),
+    componentName: 'InvoicePartialPaidModal',
+    data: {
+      invoice: row,
+    },
+    refreshData: () => {
+      props.table && props.table.refresh()
+      props.refreshInvoice && props.refreshInvoice()
+    },
+    size: 'sm',
+  })
+}
+
+function onMarkAsStatus(row, status) {
+  dialogStore
+    .openDialog({
+      title: t('general.are_you_sure'),
+      message: t(`invoices.confirm_mark_as_${status.toLowerCase()}`),
+      yesLabel: t('general.ok'),
+      noLabel: t('general.cancel'),
+      variant: 'primary',
+      hideNoButton: false,
+      size: 'lg',
+    })
+    .then((response) => {
+      if (!response) {
+        return
+      }
+
+      invoiceStore
+        .updateInvoiceStatus(
+          {
+            id: row.id,
+            status,
+          },
+          {
+            message: t(`invoices.mark_as_${status.toLowerCase()}_successfully`),
+          }
+        )
+        .then(() => {
+          props.table && props.table.refresh()
+          props.refreshInvoice && props.refreshInvoice()
+          row.status = status
+          if (status === 'DRAFT') {
+            row.sent = false
+            row.viewed = false
+          }
+          if (status === 'SENT') {
+            row.sent = true
+            row.viewed = false
+          }
+          if (status === 'VIEWED') {
+            row.sent = true
+            row.viewed = true
+          }
+          if (status === 'COMPLETED') {
+            row.paid_status = 'PAID'
+            row.due_amount = 0
+          }
+        })
     })
 }
 
