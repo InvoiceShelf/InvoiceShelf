@@ -87,6 +87,17 @@
               :fields="invoiceMailFields"
             />
           </BaseInputGroup>
+          <BaseInputGroup :label="$t('general.attachments')">
+            <BaseFileUploader
+              v-model="attachmentFiles"
+              multiple
+              preserve-local-files
+              input-field-name="attachments"
+              accept="image/*,.doc,.docx,.pdf,.csv,.xlsx,.xls,.ppt,.pptx"
+              @change="onAttachmentChange"
+              @remove="onAttachmentRemove"
+            />
+          </BaseInputGroup>
         </BaseInputGrid>
       </div>
       <div
@@ -209,7 +220,10 @@ const invoiceMailForm = reactive({
   bcc: null,
   subject: t('invoices.new_invoice'),
   body: null,
+  attachments: [],
 })
+
+const attachmentFiles = ref([])
 
 const modalActive = computed(() => {
   return modalStore.active && modalStore.componentName === 'SendInvoiceModal'
@@ -269,6 +283,8 @@ async function setInitialData() {
   }
 
   invoiceMailForm.body = companyStore.selectedCompanySettings.invoice_mail_body
+  invoiceMailForm.attachments = []
+  attachmentFiles.value = []
 }
 
 async function submitForm() {
@@ -282,7 +298,10 @@ async function submitForm() {
     isLoading.value = true
 
     if (!isPreview.value) {
-      const previewResponse = await invoiceStore.previewInvoice(invoiceMailForm)
+      const previewData = { ...invoiceMailForm }
+      delete previewData.attachments
+
+      const previewResponse = await invoiceStore.previewInvoice(previewData)
       isLoading.value = false
 
       isPreview.value = true
@@ -317,6 +336,35 @@ function closeSendInvoiceModal() {
     v$.value.$reset()
     isPreview.value = false
     templateUrl.value = null
+    invoiceMailForm.attachments = []
+    attachmentFiles.value = []
   }, 300)
+}
+
+function onAttachmentChange(_fieldName, fileList) {
+  const newFiles = Array.from(fileList || [])
+
+  if (!newFiles.length) {
+    return
+  }
+
+  if (invoiceMailForm.attachments.length) {
+    invoiceMailForm.attachments = [
+      ...invoiceMailForm.attachments,
+      ...newFiles,
+    ]
+  } else {
+    invoiceMailForm.attachments = newFiles
+  }
+}
+
+function onAttachmentRemove(index) {
+  if (Array.isArray(invoiceMailForm.attachments)) {
+    invoiceMailForm.attachments.splice(index, 1)
+  }
+
+  if (Array.isArray(attachmentFiles.value)) {
+    attachmentFiles.value.splice(index, 1)
+  }
 }
 </script>

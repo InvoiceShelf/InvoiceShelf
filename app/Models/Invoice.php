@@ -447,6 +447,7 @@ class Invoice extends Model implements HasMedia
         $data['subject'] = $this->getEmailString($data['subject']);
         $data['body'] = $this->getEmailString($data['body']);
         $data['attach']['data'] = ($this->getEmailAttachmentSetting()) ? $this->getPDFData() : null;
+        $data['attachments'] = $data['attachments'] ?? [];
 
         return $data;
     }
