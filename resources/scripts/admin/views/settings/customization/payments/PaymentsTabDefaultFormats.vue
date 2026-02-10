@@ -18,6 +18,16 @@
     </BaseInputGroup>
 
     <BaseInputGroup
+      :label="$t('settings.customization.payments.default_payment_email_footer')"
+      class="mt-6 mb-4"
+    >
+      <BaseCustomInput
+        v-model="formatSettings.payment_mail_footer"
+        :fields="mailFields"
+      />
+    </BaseInputGroup>
+
+    <BaseInputGroup
       :label="$t('settings.customization.payments.company_address_format')"
       class="mt-6 mb-4"
     >
@@ -82,6 +92,7 @@ let isSaving = ref(false)
 
 const formatSettings = reactive({
   payment_mail_body: null,
+  payment_mail_footer: null,
   payment_company_address_format: null,
   payment_from_customer_address_format: null,
 })
