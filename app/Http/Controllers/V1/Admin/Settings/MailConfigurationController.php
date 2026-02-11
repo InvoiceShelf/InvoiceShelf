@@ -5,9 +5,9 @@ namespace App\Http\Controllers\V1\Admin\Settings;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MailEnvironmentRequest;
 use App\Mail\TestMail;
-use App\Services\CompanyMailConfigurationService;
-use App\Models\Setting;
 use App\Models\CompanySetting;
+use App\Models\Setting;
+use App\Services\CompanyMailConfigurationService;
 use App\Space\EnvironmentManager;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
@@ -119,7 +119,7 @@ class MailConfigurationController extends Controller
         }
 
         // Ensure no null values are passed to the database
-        return array_map(fn($value) => $value ?? '', $settings);
+        return array_map(fn ($value) => $value ?? '', $settings);
     }
 
     /**
@@ -280,7 +280,7 @@ class MailConfigurationController extends Controller
         $this->authorize('manage email config');
 
         $companyId = $request->header('company');
-        
+
         // Prepare mail settings for database storage
         $mailSettings = $this->prepareMailSettingsForDatabase($request);
 

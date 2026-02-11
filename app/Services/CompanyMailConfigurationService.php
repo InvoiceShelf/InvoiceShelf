@@ -9,9 +9,6 @@ class CompanyMailConfigurationService
 {
     /**
      * Configure mail settings for a specific company
-     *
-     * @param int $companyId
-     * @return void
      */
     public static function configureMailForCompany(int $companyId): void
     {
@@ -44,7 +41,7 @@ class CompanyMailConfigurationService
             $driver = Config::get('mail.default') ?: 'smtp';
         }
 
-        if (!empty($driver)) {
+        if (! empty($driver)) {
 
             // Set default mailer
             Config::set('mail.default', $driver);
@@ -106,10 +103,10 @@ class CompanyMailConfigurationService
             }
 
             // Set global from address and name
-            if (!empty($mailSettings['from_mail'])) {
+            if (! empty($mailSettings['from_mail'])) {
                 Config::set('mail.from.address', $mailSettings['from_mail']);
             }
-            if (!empty($mailSettings['from_name'])) {
+            if (! empty($mailSettings['from_name'])) {
                 Config::set('mail.from.name', $mailSettings['from_name']);
             }
         }
