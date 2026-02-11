@@ -7,7 +7,6 @@ use App\Http\Requests\MailEnvironmentRequest;
 use App\Mail\TestMail;
 use App\Models\CompanySetting;
 use App\Models\Setting;
-use App\Services\CompanyMailConfigurationService;
 use App\Space\EnvironmentManager;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
