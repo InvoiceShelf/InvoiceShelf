@@ -51,7 +51,7 @@
 
           <BaseButton
             :loading="isSaving"
-            :disabled="isSaving"
+            :disabled="isSaving || !!invoiceNumberError"
             variant="primary"
             type="submit"
           >
@@ -72,6 +72,7 @@
         :v="v$"
         :is-loading="isLoadingContent"
         :is-edit="isEdit"
+        :invoice-number-error="invoiceNumberError"
       />
 
       <BaseScrollPane>
@@ -147,7 +148,7 @@ import {
   decimal,
 } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, debounce } from 'lodash'
 
 import { useInvoiceStore } from '@/scripts/admin/stores/invoice'
 import { useModuleStore } from '@/scripts/admin/stores/module'
@@ -179,6 +180,8 @@ let router = useRouter()
 const invoiceValidationScope = 'newInvoice'
 let isSaving = ref(false)
 const isMarkAsDefault = ref(false)
+const invoiceNumberError = ref('')
+const originalInvoiceNumber = ref(null)
 
 const invoiceNoteFieldList = ref([
   'customer',
@@ -204,6 +207,32 @@ const salesTaxEnabled = computed(() => {
 })
 
 let isEdit = computed(() => route.name === 'invoices.edit')
+
+const debouncedCheckInvoiceNumber = debounce(async (value) => {
+  if (!value) {
+    invoiceNumberError.value = ''
+    return
+  }
+
+  const response = await invoiceStore.fetchInvoices({
+    invoice_number: value,
+    orderByField: 'created_at',
+    orderBy: 'desc',
+    page: 1,
+    limit: 10,
+  })
+
+  let matches = response?.data?.data || []
+  if (isEdit.value) {
+    matches = matches.filter(
+      (invoice) => invoice.id !== invoiceStore.newInvoice.id
+    )
+  }
+
+  invoiceNumberError.value = matches.length
+    ? t('errors.invoice_number_used')
+    : ''
+}, 500)
 
 const rules = {
   invoice_date: {
@@ -250,6 +279,26 @@ watch(
       invoiceStore.newInvoice.selectedCurrency =
         companyStore.selectedCompanyCurrency
     }
+  }
+)
+
+watch(
+  () => invoiceStore.newInvoice.invoice_number,
+  (value) => {
+    if (invoiceStore.isFetchingInitialSettings) {
+      return
+    }
+
+    if (!originalInvoiceNumber.value && value) {
+      originalInvoiceNumber.value = value
+    }
+
+    if (isEdit.value && value === originalInvoiceNumber.value) {
+      invoiceNumberError.value = ''
+      return
+    }
+
+    debouncedCheckInvoiceNumber(value)
   }
 )
 

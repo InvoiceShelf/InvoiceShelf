@@ -202,12 +202,13 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, reactive } from 'vue'
+import { ref, computed, watch, reactive, onMounted } from 'vue'
 import { useGlobalStore } from '@/scripts/admin/stores/global'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 import { useI18n } from 'vue-i18n'
 import { required, helpers } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
+import axios from 'axios'
 
 const companyStore = useCompanyStore()
 const globalStore = useGlobalStore()
@@ -217,7 +218,53 @@ let isSaving = ref(false)
 let isDataSaving = ref(false)
 let isFetchingInitialData = ref(false)
 
-const settingsForm = reactive({ ...companyStore.selectedCompanySettings })
+// Initialize with empty object
+const settingsForm = reactive({})
+
+// Load settings on mount 
+onMounted(async () => {
+  // Fetch fresh settings from API instead of relying on store
+  try {
+    const response = await companyStore.fetchCompanySettings([
+      'currency',
+      'language',
+      'time_zone',
+      'carbon_date_format',
+      'moment_date_format',
+      'carbon_time_format',
+      'moment_time_format',
+      'fiscal_year',
+      'invoice_use_time',
+      'discount_per_item',
+      'unit_per_item',
+      'automatically_expire_public_links',
+      'link_expiry_days',
+    ])
+
+    if (response && response.data) {
+      Object.assign(settingsForm, response.data)
+    }
+  } catch (error) {
+    // Fallback to store
+    loadSettingsFromStore()
+  }
+})
+
+function loadSettingsFromStore() {
+  const settings = companyStore.selectedCompanySettings
+  if (settings && Object.keys(settings).length > 0) {
+    Object.assign(settingsForm, settings)
+  }
+}
+
+// Also watch for changes
+watch(
+  () => companyStore.selectedCompanySettings,
+  () => {
+    loadSettingsFromStore()
+  },
+  { deep: true }
+)
 
 const retrospectiveEditOptions = computed(() => {
   return globalStore.config.retrospective_edits.map((option) => {
@@ -370,42 +417,92 @@ async function updatePreferencesData() {
     return
   }
 
+  // Only include settings that have valid values (not undefined or null)
+  let validSettings = {}
+  const expectedSettings = [
+    'currency',
+    'language',
+    'time_zone',
+    'carbon_date_format',
+    'moment_date_format',
+    'carbon_time_format',
+    'moment_time_format',
+    'invoice_use_time',
+    'fiscal_year',
+    'discount_per_item',
+    'unit_per_item',
+    'automatically_expire_public_links',
+  ]
+
+  expectedSettings.forEach((key) => {
+    const value = settingsForm[key]
+    if (value !== null && value !== undefined && value !== '') {
+      validSettings[key] = value
+    }
+  })
+
+  // If no valid settings found, show error
+  if (Object.keys(validSettings).length === 0) {
+    console.error('No valid settings to save. settingsForm:', settingsForm)
+    isSaving.value = false
+    return
+  }
+
   let data = {
-    settings: {
-      ...settingsForm,
-    },
+    settings: validSettings,
   }
 
   isSaving.value = true
-  delete data.settings.link_expiry_days
 
-  // If language is being changed, load it dynamically first
-  if (companyStore.selectedCompanySettings.language !== settingsForm.language) {
-    await window.loadLanguage(settingsForm.language)
+  try {
+    // If language is being changed, load it dynamically first
+    if (companyStore.selectedCompanySettings.language !== settingsForm.language) {
+      await window.loadLanguage(settingsForm.language)
+      
+      // Also update user's language setting so it takes effect
+      await axios.put('/api/v1/me/settings', {
+        settings: {
+          language: settingsForm.language
+        }
+      })
+    }
+
+    await companyStore.updateCompanySettings({
+      data: data,
+      message: 'settings.preferences.updated_message',
+    })
+  } catch (error) {
+    console.error('Error updating preferences:', error)
+  } finally {
+    isSaving.value = false
   }
-
-  let res = await companyStore.updateCompanySettings({
-    data: data,
-    message: 'settings.preferences.updated_message',
-  })
-
-  isSaving.value = false
 }
 
 async function submitData() {
   isDataSaving.value = true
 
-  let res = await companyStore.updateCompanySettings({
-    data: {
-      settings: {
-        link_expiry_days: settingsForm.link_expiry_days,
-        automatically_expire_public_links:
-          settingsForm.automatically_expire_public_links,
-      },
-    },
-    message: 'settings.preferences.updated_message',
-  })
+  try {
+    // Only include settings that have valid values
+    let validSettings = {
+      automatically_expire_public_links:
+        settingsForm.automatically_expire_public_links,
+    }
 
-  isDataSaving.value = false
+    // Only add link_expiry_days if it has a valid value
+    if (settingsForm.link_expiry_days !== null && settingsForm.link_expiry_days !== undefined) {
+      validSettings.link_expiry_days = settingsForm.link_expiry_days
+    }
+
+    await companyStore.updateCompanySettings({
+      data: {
+        settings: validSettings,
+      },
+      message: 'settings.preferences.updated_message',
+    })
+  } catch (error) {
+    console.error('Error in submitData:', error)
+  } finally {
+    isDataSaving.value = false
+  }
 }
 </script>

@@ -40,7 +40,7 @@
         :content-loading="isLoading"
         required
         :error="
-          v.estimate_number.$error && v.estimate_number.$errors[0].$message
+          (v.estimate_number.$error && v.estimate_number.$errors[0].$message) || estimateNumberError
         "
       >
         <BaseInput
@@ -95,6 +95,10 @@ const props = defineProps({
   isEdit: {
     type: Boolean,
     default: false,
+  },
+  estimateNumberError: {
+    type: String,
+    default: '',
   },
 })
 

@@ -71,7 +71,6 @@ use App\Http\Controllers\V1\Admin\Role\RolesController;
 use App\Http\Controllers\V1\Admin\Settings\CompanyController;
 use App\Http\Controllers\V1\Admin\Settings\CompanyCurrencyCheckTransactionsController;
 use App\Http\Controllers\V1\Admin\Settings\DiskController;
-use App\Http\Controllers\V1\Admin\Settings\GetCompanyMailConfigurationController;
 use App\Http\Controllers\V1\Admin\Settings\GetCompanySettingsController;
 use App\Http\Controllers\V1\Admin\Settings\GetSettingsController;
 use App\Http\Controllers\V1\Admin\Settings\GetUserSettingsController;
@@ -396,7 +395,10 @@ Route::prefix('/v1')->group(function () {
 
             Route::post('/mail/test', [MailConfigurationController::class, 'testEmailConfig']);
 
-            Route::get('/company/mail/config', GetCompanyMailConfigurationController::class);
+            // Company-specific mail configurations
+            Route::get('/company/mail/config', [MailConfigurationController::class, 'getCompanyMailConfiguration']);
+
+            Route::post('/company/mail/config', [MailConfigurationController::class, 'saveCompanyMailConfiguration']);
 
             // PDF Generation
             // ----------------------------------

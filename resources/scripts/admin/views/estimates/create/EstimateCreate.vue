@@ -51,7 +51,7 @@
 
           <BaseButton
             :loading="isSaving"
-            :disabled="isSaving"
+            :disabled="isSaving || !!estimateNumberError"
             :content-loading="isLoadingContent"
             variant="primary"
             type="submit"
@@ -73,6 +73,7 @@
         :v="v$"
         :is-loading="isLoadingContent"
         :is-edit="isEdit"
+        :estimate-number-error="estimateNumberError"
       />
 
       <BaseScrollPane>
@@ -138,7 +139,7 @@
 
 <script setup>
 import { computed, ref, watch, onMounted } from 'vue'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, debounce } from 'lodash'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import {
@@ -174,6 +175,8 @@ const { t } = useI18n()
 const estimateValidationScope = 'newEstimate'
 let isSaving = ref(false)
 const isMarkAsDefault = ref(false)
+const estimateNumberError = ref('')
+const originalEstimateNumber = ref(null)
 
 const estimateNoteFieldList = ref([
   'customer',
@@ -187,6 +190,32 @@ let route = useRoute()
 let router = useRouter()
 
 let isLoadingContent = computed(() => estimateStore.isFetchingInitialSettings)
+
+const debouncedCheckEstimateNumber = debounce(async (value) => {
+  if (!value) {
+    estimateNumberError.value = ''
+    return
+  }
+
+  const response = await estimateStore.fetchEstimates({
+    estimate_number: value,
+    orderByField: 'created_at',
+    orderBy: 'desc',
+    page: 1,
+    limit: 10,
+  })
+
+  let matches = response?.data?.data || []
+  if (isEdit.value) {
+    matches = matches.filter(
+      (estimate) => estimate.id !== estimateStore.newEstimate.id
+    )
+  }
+
+  estimateNumberError.value = matches.length
+    ? t('errors.estimate_number_used')
+    : ''
+}, 500)
 
 let pageTitle = computed(() =>
   isEdit.value ? t('estimates.edit_estimate') : t('estimates.new_estimate')
@@ -255,6 +284,26 @@ watch(
     estimateStore.newEstimate.tax_included = newVal === 'YES'
   },
   {immediate: true}
+)
+
+watch(
+  () => estimateStore.newEstimate.estimate_number,
+  (value) => {
+    if (estimateStore.isFetchingInitialSettings) {
+      return
+    }
+
+    if (!originalEstimateNumber.value && value) {
+      originalEstimateNumber.value = value
+    }
+
+    if (isEdit.value && value === originalEstimateNumber.value) {
+      estimateNumberError.value = ''
+      return
+    }
+
+    debouncedCheckEstimateNumber(value)
+  }
 )
 
 async function submitForm() {

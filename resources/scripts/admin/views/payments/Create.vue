@@ -19,7 +19,7 @@
         <template #actions>
           <BaseButton
             :loading="isSaving"
-            :disabled="isSaving"
+            :disabled="isSaving || !!paymentNumberError"
             variant="primary"
             type="submit"
             class="hidden sm:flex"
@@ -65,6 +65,7 @@
             :label="$t('payments.payment_number')"
             :content-loading="isLoadingContent"
             required
+            :error="paymentNumberError"
           >
             <BaseInput
               v-model="paymentStore.currentPayment.payment_number"
@@ -229,6 +230,7 @@
 
         <BaseButton
           :loading="isSaving"
+          :disabled="isSaving || !!paymentNumberError"
           :content-loading="isLoadingContent"
           variant="primary"
           type="submit"
@@ -259,10 +261,12 @@ import {
   computed,
   inject,
   watchEffect,
+  watch,
   onBeforeUnmount,
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { debounce } from 'lodash'
 import {
   required,
   numeric,
@@ -305,6 +309,8 @@ let isSaving = ref(false)
 let isLoadingInvoices = ref(false)
 let invoiceList = ref([])
 const selectedInvoice = ref(null)
+const paymentNumberError = ref('')
+const originalPaymentNumber = ref(null)
 
 const paymentValidationScope = 'newEstimate'
 
@@ -326,6 +332,32 @@ const amount = computed({
 const isLoadingContent = computed(() => paymentStore.isFetchingInitialData)
 
 const isEdit = computed(() => route.name === 'payments.edit')
+
+const debouncedCheckPaymentNumber = debounce(async (value) => {
+  if (!value) {
+    paymentNumberError.value = ''
+    return
+  }
+
+  const response = await paymentStore.fetchPayments({
+    payment_number: value,
+    orderByField: 'created_at',
+    orderBy: 'desc',
+    page: 1,
+    limit: 10,
+  })
+
+  let matches = response?.data?.data || []
+  if (isEdit.value) {
+    matches = matches.filter(
+      (payment) => payment.id !== paymentStore.currentPayment.id
+    )
+  }
+
+  paymentNumberError.value = matches.length
+    ? t('errors.payment_number_used')
+    : ''
+}, 500)
 
 const pageTitle = computed(() => {
   if (isEdit.value) {
@@ -390,6 +422,26 @@ paymentStore.fetchPaymentInitialData(isEdit.value)
 if (route.params.id && !isEdit.value) {
   setInvoiceFromUrl()
 }
+
+watch(
+  () => paymentStore.currentPayment.payment_number,
+  (value) => {
+    if (paymentStore.isFetchingInitialData) {
+      return
+    }
+
+    if (!originalPaymentNumber.value && value) {
+      originalPaymentNumber.value = value
+    }
+
+    if (isEdit.value && value === originalPaymentNumber.value) {
+      paymentNumberError.value = ''
+      return
+    }
+
+    debouncedCheckPaymentNumber(value)
+  }
+)
 
 async function addPaymentMode() {
   modalStore.openModal({

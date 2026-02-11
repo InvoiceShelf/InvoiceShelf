@@ -25,6 +25,11 @@ class CompanySetting extends Model
     public static function setSettings($settings, $company_id)
     {
         foreach ($settings as $key => $value) {
+            // Skip null, empty string, or undefined values
+            if ($value === null || $value === '' || $value === 'undefined') {
+                continue;
+            }
+
             self::updateOrCreate(
                 [
                     'option' => $key,
