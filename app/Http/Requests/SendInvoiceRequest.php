@@ -38,6 +38,15 @@ class SendInvoiceRequest extends FormRequest
             'bcc' => [
                 'nullable',
             ],
+            'attachments' => [
+                'nullable',
+                'array',
+            ],
+            'attachments.*' => [
+                'file',
+                'mimes:jpg,png,pdf,doc,docx,xls,xlsx,ppt,pptx,csv',
+                'max:20000',
+            ],
         ];
     }
 }

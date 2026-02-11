@@ -5,6 +5,7 @@ namespace App\Mail;
 use App\Models\EmailLog;
 use App\Models\Invoice;
 use Illuminate\Bus\Queueable;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Vinkla\Hashids\Facades\Hashids;
@@ -58,6 +59,22 @@ class SendInvoiceMail extends Mailable
                 $this->data['attach']['data']->output(),
                 $this->data['invoice']['invoice_number'].'.pdf'
             );
+        }
+
+        if (! empty($this->data['attachments']) && is_array($this->data['attachments'])) {
+            foreach ($this->data['attachments'] as $attachment) {
+                if (! $attachment instanceof UploadedFile) {
+                    continue;
+                }
+
+                $mailContent->attach(
+                    $attachment->getRealPath(),
+                    [
+                        'as' => $attachment->getClientOriginalName(),
+                        'mime' => $attachment->getMimeType(),
+                    ]
+                );
+            }
         }
 
         return $mailContent;

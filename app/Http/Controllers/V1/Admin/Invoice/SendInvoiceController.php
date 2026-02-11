@@ -18,7 +18,10 @@ class SendInvoiceController extends Controller
     {
         $this->authorize('send invoice', $invoice);
 
-        $invoice->send($request->all());
+        $data = $request->all();
+        $data['attachments'] = $request->file('attachments', []);
+
+        $invoice->send($data);
 
         return response()->json([
             'success' => true,
