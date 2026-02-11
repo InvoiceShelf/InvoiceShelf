@@ -516,6 +516,8 @@ export const useInvoiceStore = (useWindow = false) => {
             companyStore.selectedCompanySettings.sales_tax_address_type
           this.newInvoice.discount_per_item =
             companyStore.selectedCompanySettings.discount_per_item
+          this.newInvoice.unit_per_item =
+            companyStore.selectedCompanySettings.unit_per_item
 
           let dateFormat = 'YYYY-MM-DD'
           if (companyStore.selectedCompanySettings.invoice_use_time === 'YES') {

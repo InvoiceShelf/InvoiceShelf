@@ -31,6 +31,7 @@ export default function () {
     exchange_rate: null,
     tax_per_item: null,
     discount_per_item: null,
+    unit_per_item: null,
     template_name: null,
     items: [
       {

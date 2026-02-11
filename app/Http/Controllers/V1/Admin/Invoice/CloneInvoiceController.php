@@ -76,6 +76,7 @@ class CloneInvoiceController extends Controller
             'due_amount' => $invoice->total,
             'tax_per_item' => $invoice->tax_per_item,
             'discount_per_item' => $invoice->discount_per_item,
+            'unit_per_item' => $invoice->unit_per_item,
             'tax' => $invoice->tax,
             'notes' => $invoice->notes,
             'exchange_rate' => $exchange_rate,

@@ -196,6 +196,11 @@
           :title="$t('settings.preferences.discount_per_item')"
           :description="$t('settings.preferences.discount_setting_description')"
         />
+        <BaseSwitchSection
+          v-model="unitPerItemField"
+          :title="$t('settings.preferences.unit_per_item')"
+          :description="$t('settings.preferences.unit_per_item_description')"
+        />
       </ul>
     </BaseSettingCard>
   </form>
@@ -288,6 +293,28 @@ const discountPerItemField = computed({
     }
 
     settingsForm.discount_per_item = value
+
+    await companyStore.updateCompanySettings({
+      data,
+      message: 'general.setting_updated',
+    })
+  },
+})
+
+const unitPerItemField = computed({
+  get: () => {
+    return settingsForm.unit_per_item === 'YES'
+  },
+  set: async (newValue) => {
+    const value = newValue ? 'YES' : 'NO'
+
+    let data = {
+      settings: {
+        unit_per_item: value,
+      },
+    }
+
+    settingsForm.unit_per_item = value
 
     await companyStore.updateCompanySettings({
       data,

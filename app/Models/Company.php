@@ -235,6 +235,7 @@ class Company extends Model implements HasMedia
             'notify_estimate_viewed' => 'NO',
             'tax_per_item' => 'NO',
             'discount_per_item' => 'NO',
+            'unit_per_item' => 'NO',
             'invoice_auto_generate' => 'YES',
             'invoice_email_attachment' => 'NO',
             'estimate_auto_generate' => 'YES',

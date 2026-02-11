@@ -28,6 +28,7 @@ class RecurringInvoiceFactory extends Factory
             'tax_per_item' => 'NO',
             'tax_included' => false,
             'discount_per_item' => 'NO',
+            'unit_per_item' => 'NO',
             'sub_total' => $this->faker->randomDigitNotNull(),
             'total' => $this->faker->randomDigitNotNull(),
             'tax' => $this->faker->randomDigitNotNull(),

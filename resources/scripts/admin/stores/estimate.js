@@ -589,6 +589,8 @@ export const useEstimateStore = (useWindow = false) => {
             companyStore.selectedCompanySettings.sales_tax_address_type
           this.newEstimate.discount_per_item =
             companyStore.selectedCompanySettings.discount_per_item
+          this.newEstimate.unit_per_item =
+            companyStore.selectedCompanySettings.unit_per_item
           this.newEstimate.estimate_date = moment().format('YYYY-MM-DD')
           if (
             companyStore.selectedCompanySettings

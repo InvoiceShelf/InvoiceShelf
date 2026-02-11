@@ -194,6 +194,7 @@ test('get notification email settings', function () {
         'notify_estimate_viewed',
         'tax_per_item',
         'discount_per_item',
+        'unit_per_item',
     ];
 
     $response = getJson('/api/v1/company/settings?'.http_build_query($data));

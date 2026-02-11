@@ -329,6 +329,7 @@ class RecurringInvoice extends Model
         $newInvoice['sub_total'] = $this->sub_total;
         $newInvoice['tax_per_item'] = $this->tax_per_item;
         $newInvoice['discount_per_item'] = $this->discount_per_item;
+        $newInvoice['unit_per_item'] = $this->unit_per_item;
         $newInvoice['tax'] = $this->tax;
         $newInvoice['total'] = $this->total;
         $newInvoice['customer_id'] = $this->customer_id;

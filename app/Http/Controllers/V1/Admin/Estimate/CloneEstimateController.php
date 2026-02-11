@@ -65,6 +65,7 @@ class CloneEstimateController extends Controller
             'due_amount' => $estimate->total,
             'tax_per_item' => $estimate->tax_per_item,
             'discount_per_item' => $estimate->discount_per_item,
+            'unit_per_item' => $estimate->unit_per_item,
             'tax' => $estimate->tax,
             'notes' => $estimate->notes,
             'exchange_rate' => $exchange_rate,

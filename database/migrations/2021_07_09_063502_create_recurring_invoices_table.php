@@ -32,6 +32,7 @@ return new class extends Migration
             $table->decimal('exchange_rate', 19, 6)->nullable();
             $table->string('tax_per_item');
             $table->string('discount_per_item');
+            $table->string('unit_per_item');
             $table->text('notes')->nullable();
             $table->string('discount_type')->nullable();
             $table->decimal('discount', 15, 2)->nullable();
