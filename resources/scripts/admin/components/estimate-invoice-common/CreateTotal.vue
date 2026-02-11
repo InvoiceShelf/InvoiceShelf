@@ -305,7 +305,12 @@ const totalDiscount = computed({
 })
 
 const isInvoice = computed(() => {
-  return ['newInvoice', 'selectedInvoice'].includes(props.storeProp)
+  return [
+    'newInvoice',
+    'selectedInvoice',
+    'newRecurringInvoice',
+    'selectedRecurringInvoice',
+  ].includes(props.storeProp)
 })
 
 const discountLabel = computed({
