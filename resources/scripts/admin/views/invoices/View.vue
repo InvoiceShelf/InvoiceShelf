@@ -26,6 +26,7 @@ const route = useRoute()
 
 const isMarkAsSent = ref(false)
 const isLoading = ref(false)
+const iframeKey = ref(0)
 
 const invoiceList = ref(null)
 const currentPageNumber = ref(1)
@@ -91,6 +92,7 @@ async function onMarkAsSent() {
         })
         invoiceData.value.status = 'SENT'
         isMarkAsSent.value = true
+        await refreshInvoice()
       }
       isMarkAsSent.value = false
     })
@@ -196,6 +198,12 @@ async function loadInvoice() {
   }
 }
 
+async function refreshInvoice() {
+  await loadInvoice()
+  updateInvoiceInList()
+  iframeKey.value += 1
+}
+
 async function onSearched() {
   invoiceList.value = []
   loadInvoices()
@@ -212,15 +220,31 @@ function sortData() {
   return true
 }
 
-function updateSentInvoice() {
+function updateInvoiceInList() {
   let pos = invoiceList.value.findIndex(
     (invoice) => invoice.id === invoiceData.value.id
   )
 
   if (invoiceList.value[pos]) {
-    invoiceList.value[pos].status = 'SENT'
-    invoiceData.value.status = 'SENT'
+    invoiceList.value[pos] = {
+      ...invoiceList.value[pos],
+      status: invoiceData.value.status,
+      paid_status: invoiceData.value.paid_status,
+      due_amount: invoiceData.value.due_amount,
+      sent: invoiceData.value.sent,
+      viewed: invoiceData.value.viewed,
+    }
   }
+}
+
+function updateSentInvoice() {
+  if (invoiceData.value) {
+    invoiceData.value.status = 'SENT'
+    invoiceData.value.sent = true
+    invoiceData.value.viewed = false
+  }
+
+  updateInvoiceInList()
 }
 
 loadInvoices()
@@ -280,6 +304,7 @@ onSearched = debounce(onSearched, 500)
           class="ml-3"
           :row="invoiceData"
           :load-data="loadInvoices"
+          :refresh-invoice="refreshInvoice"
         />
       </template>
     </BasePageHeader>
@@ -503,6 +528,7 @@ onSearched = debounce(onSearched, 500)
       style="height: 75vh"
     >
       <iframe
+        :key="iframeKey"
         :src="`${shareableLink}`"
         class="
           flex-1
