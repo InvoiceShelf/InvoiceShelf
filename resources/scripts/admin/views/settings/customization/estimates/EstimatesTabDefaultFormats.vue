@@ -20,6 +20,18 @@
     </BaseInputGroup>
 
     <BaseInputGroup
+      :label="
+        $t('settings.customization.estimates.default_estimate_email_footer')
+      "
+      class="mt-6 mb-4"
+    >
+      <BaseCustomInput
+        v-model="formatSettings.estimate_mail_footer"
+        :fields="estimateMailFields"
+      />
+    </BaseInputGroup>
+
+    <BaseInputGroup
       :label="$t('settings.customization.estimates.company_address_format')"
       class="mt-6 mb-4"
     >
@@ -99,6 +111,7 @@ let isSaving = ref(false)
 
 const formatSettings = reactive({
   estimate_mail_body: null,
+  estimate_mail_footer: null,
   estimate_company_address_format: null,
   estimate_shipping_address_format: null,
   estimate_billing_address_format: null,

@@ -361,6 +361,14 @@ class Estimate extends Model implements HasMedia
         $data['company'] = $this->company->toArray();
         $data['body'] = $this->getEmailBody($data['body']);
         $data['attach']['data'] = ($this->getEmailAttachmentSetting()) ? $this->getPDFData() : null;
+        $footer = CompanySetting::getSetting('estimate_mail_footer', $this->company_id);
+        if ($footer) {
+            $footer = $this->getEmailBody($footer);
+            $footerPlain = trim(strip_tags($footer));
+            $data['footer'] = $footerPlain === '' ? null : $footer;
+        } else {
+            $data['footer'] = null;
+        }
 
         return $data;
     }

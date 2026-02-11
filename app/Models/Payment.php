@@ -136,6 +136,14 @@ class Payment extends Model implements HasMedia
         $data['company'] = Company::find($this->company_id);
         $data['body'] = $this->getEmailBody($data['body']);
         $data['attach']['data'] = ($this->getEmailAttachmentSetting()) ? $this->getPDFData() : null;
+        $footer = CompanySetting::getSetting('payment_mail_footer', $this->company_id);
+        if ($footer) {
+            $footer = $this->getEmailBody($footer);
+            $footerPlain = trim(strip_tags($footer));
+            $data['footer'] = $footerPlain === '' ? null : $footer;
+        } else {
+            $data['footer'] = null;
+        }
 
         return $data;
     }

@@ -18,6 +18,16 @@
     </BaseInputGroup>
 
     <BaseInputGroup
+      :label="$t('settings.customization.invoices.default_invoice_email_footer')"
+      class="mt-6 mb-4"
+    >
+      <BaseCustomInput
+        v-model="formatSettings.invoice_mail_footer"
+        :fields="invoiceMailFields"
+      />
+    </BaseInputGroup>
+
+    <BaseInputGroup
       :label="$t('settings.customization.invoices.company_address_format')"
       class="mt-6 mb-4"
     >
@@ -97,6 +107,7 @@ let isSaving = ref(false)
 
 const formatSettings = reactive({
   invoice_mail_body: null,
+  invoice_mail_footer: null,
   invoice_company_address_format: null,
   invoice_shipping_address_format: null,
   invoice_billing_address_format: null,

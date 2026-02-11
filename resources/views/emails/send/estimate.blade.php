@@ -28,7 +28,11 @@
     {{-- Footer --}}
     @slot('footer')
         @component('mail::footer')
-            Powered by <a class="footer-link" href="https://invoiceshelf.com" target="_blank">InvoiceShelf</a>
+            @if(!empty($data['footer']))
+                {!! $data['footer'] !!}
+            @else
+                Powered by <a class="footer-link" href="https://invoiceshelf.com" target="_blank">InvoiceShelf</a>
+            @endif
         @endcomponent
     @endslot
 @endcomponent
