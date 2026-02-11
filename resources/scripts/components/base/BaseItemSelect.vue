@@ -44,6 +44,28 @@
       @update:modelValue="(val) => $emit('select', val)"
       @searchChange="(val) => $emit('search', val)"
     >
+      <template #option="{ option }">
+        <div class="flex flex-col text-left">
+          <span class="font-medium text-gray-900">
+            {{ option.name }}
+          </span>
+          <div class="flex flex-wrap gap-x-3 text-xs text-gray-500">
+            <span v-if="getUnitLabel(option)">
+              {{ $t('items.unit') }}: {{ getUnitLabel(option) }}
+            </span>
+            <span v-if="option.quantity !== undefined && option.quantity !== null">
+              {{ $t('invoices.item.quantity') }}: {{ option.quantity }}
+            </span>
+            <span v-if="option.price !== undefined && option.price !== null">
+              {{ $t('invoices.item.price') }}:
+              <BaseFormatMoney :amount="option.price" :currency="selectedCurrency" />
+            </span>
+          </div>
+          <span v-if="option.description" class="text-xs text-gray-400">
+            {{ option.description }}
+          </span>
+        </div>
+      </template>
       <!-- Add Item Action  -->
       <template #action>
         <BaseSelectAction
@@ -154,6 +176,14 @@ Object.assign(itemData, props.item)
 const taxAmount = computed(() => {
   return 0
 })
+
+const selectedCurrency = computed(() => {
+  return props.store?.[props.storeProp]?.selectedCurrency || null
+})
+
+function getUnitLabel(option) {
+  return option?.unit?.name || option?.unit || option?.unit_name || ''
+}
 
 const description = computed({
   get: () => props.item.description,
