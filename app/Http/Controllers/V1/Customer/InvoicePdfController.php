@@ -9,6 +9,7 @@ use App\Models\CompanySetting;
 use App\Models\Customer;
 use App\Models\EmailLog;
 use App\Models\Invoice;
+use App\Services\CompanyMailConfigurationService;
 use Illuminate\Http\Request;
 
 class InvoicePdfController extends Controller
@@ -34,6 +35,9 @@ class InvoicePdfController extends Controller
                         'notification_email',
                         $invoice->company_id
                     );
+
+                    // Configure mail for this company
+                    CompanyMailConfigurationService::configureMailForCompany($invoice->company_id);
 
                     \Mail::to($notificationEmail)->send(new InvoiceViewedMail($data));
                 }

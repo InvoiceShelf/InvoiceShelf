@@ -374,6 +374,9 @@ class Estimate extends Model implements HasMedia
             $this->save();
         }
 
+        // Configure mail for this company
+        \App\Services\CompanyMailConfigurationService::configureMailForCompany($this->company_id);
+
         $mail = \Mail::to($data['to']);
         if (! empty($data['cc'])) {
             $mail->cc($data['cc']);

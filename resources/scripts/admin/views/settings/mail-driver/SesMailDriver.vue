@@ -202,7 +202,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { required, email, numeric, helpers } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { useI18n } from 'vue-i18n'
@@ -294,6 +294,22 @@ onMounted(() => {
     }
   }
 })
+
+watch(
+  () => props.configData,
+  (newConfig) => {
+    if (!newConfig) {
+      return
+    }
+
+    for (const key in mailDriverStore.sesConfig) {
+      if (Object.prototype.hasOwnProperty.call(newConfig, key)) {
+        mailDriverStore.sesConfig[key] = newConfig[key]
+      }
+    }
+  },
+  { deep: true }
+)
 
 async function saveEmailConfig() {
   v$.value.sesConfig.$touch()

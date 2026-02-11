@@ -7,6 +7,7 @@ export default {
   sales_tax_address_type: null,
   description: null,
   quantity: 1,
+  unit_name: null,
   price: 0,
   discount_type: 'fixed',
   discount_val: 0,

@@ -82,6 +82,33 @@
     </div>
 
     <div
+      v-if="isInvoice"
+      class="flex items-center justify-between w-full mt-2"
+    >
+      <BaseContentPlaceholders v-if="isLoading">
+        <BaseContentPlaceholdersText :lines="1" class="w-16 h-5" />
+      </BaseContentPlaceholders>
+      <label
+        v-else
+        class="text-sm font-semibold leading-5 text-gray-400 uppercase"
+      >
+        {{ $t('invoices.discount_label') }}
+      </label>
+      <BaseContentPlaceholders v-if="isLoading">
+        <BaseContentPlaceholdersText
+          :lines="1"
+          class="w-24 h-8 border rounded-md"
+        />
+      </BaseContentPlaceholders>
+      <BaseInput
+        v-else
+        v-model="discountLabel"
+        class="h-[38px] w-[140px]"
+        :placeholder="$t('invoices.discount')"
+      />
+    </div>
+
+    <div
       v-if="
         store[storeProp].discount_per_item === 'NO' ||
         store[storeProp].discount_per_item === null
@@ -95,7 +122,7 @@
         v-else
         class="text-sm font-semibold leading-5 text-gray-400 uppercase"
       >
-        {{ $t('estimates.discount') }}
+        {{ isInvoice ? (discountLabel || $t('invoices.discount')) : $t('estimates.discount') }}
       </label>
       <BaseContentPlaceholders v-if="isLoading">
         <BaseContentPlaceholdersText
@@ -274,6 +301,19 @@ const totalDiscount = computed({
   set: (newValue) => {
     props.store[props.storeProp].discount = newValue
     setDiscount()
+  },
+})
+
+const isInvoice = computed(() => {
+  return ['newInvoice', 'selectedInvoice'].includes(props.storeProp)
+})
+
+const discountLabel = computed({
+  get: () => {
+    return props.store[props.storeProp].discount_label || ''
+  },
+  set: (newValue) => {
+    props.store[props.storeProp].discount_label = newValue || null
   },
 })
 

@@ -2,6 +2,7 @@ import axios from 'axios'
 import { defineStore } from 'pinia'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import { handleError } from '@/scripts/helpers/error-handling'
+import { useCompanyStore } from '@/scripts/admin/stores/company'
 
 export const useMailDriverStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
@@ -14,6 +15,7 @@ export const useMailDriverStore = (useWindow = false) => {
       mailConfigData: null,
       mail_driver: 'smtp',
       mail_drivers: [],
+      use_company_settings: false,
 
       basicMailConfig: {
         mail_driver: '',
@@ -90,6 +92,24 @@ export const useMailDriverStore = (useWindow = false) => {
         })
       },
 
+      fetchCompanyMailConfig() {
+        return new Promise((resolve, reject) => {
+          axios
+            .get('/api/v1/company/mail/config')
+            .then((response) => {
+              if (response.data) {
+                this.mailConfigData = response.data
+                this.mail_driver = response.data.mail_driver
+              }
+              resolve(response)
+            })
+            .catch((err) => {
+              handleError(err)
+              reject(err)
+            })
+        })
+      },
+
       updateMailConfig(data) {
         return new Promise((resolve, reject) => {
           axios
@@ -116,7 +136,59 @@ export const useMailDriverStore = (useWindow = false) => {
         })
       },
 
+      updateCompanyMailConfig(data) {
+        return new Promise((resolve, reject) => {
+          axios
+            .post('/api/v1/company/mail/config', data)
+            .then((response) => {
+              const notificationStore = useNotificationStore()
+              if (response.data.success) {
+                notificationStore.showNotification({
+                  type: 'success',
+                  message: global.t('wizard.success.' + response.data.success),
+                })
+              } else {
+                notificationStore.showNotification({
+                  type: 'error',
+                  message: global.t('wizard.errors.' + response.data.error),
+                })
+              }
+              resolve(response)
+            })
+            .catch((err) => {
+              handleError(err)
+              reject(err)
+            })
+        })
+      },
+
       sendTestMail(data) {
+        return new Promise((resolve, reject) => {
+          axios
+            .post('/api/v1/mail/test', data)
+            .then((response) => {
+              const notificationStore = useNotificationStore()
+              if (response.data.success) {
+                notificationStore.showNotification({
+                  type: 'success',
+                  message: global.t('general.send_mail_successfully'),
+                })
+              } else {
+                notificationStore.showNotification({
+                  type: 'error',
+                  message: global.t('validation.something_went_wrong'),
+                })
+              }
+              resolve(response)
+            })
+            .catch((err) => {
+              handleError(err)
+              reject(err)
+            })
+        })
+      },
+
+      sendCompanyTestMail(data) {
         return new Promise((resolve, reject) => {
           axios
             .post('/api/v1/mail/test', data)

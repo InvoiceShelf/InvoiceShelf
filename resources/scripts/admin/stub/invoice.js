@@ -13,6 +13,7 @@ export default function () {
     due_date: '',
     notes: '',
     discount: 0,
+    discount_label: null,
     discount_type: 'fixed',
     discount_val: 0,
     reference_number: null,

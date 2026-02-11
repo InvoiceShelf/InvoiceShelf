@@ -153,7 +153,12 @@ async function onTestMailSend() {
   }
 
   isSaving.value = true
-  let response = await mailDriverStore.sendTestMail(formData)
+  let response
+  if (mailDriverStore.use_company_settings) {
+    response = await mailDriverStore.sendCompanyTestMail(formData)
+  } else {
+    response = await mailDriverStore.sendTestMail(formData)
+  }
   if (response.data) {
     closeTestModal()
     isSaving.value = false
