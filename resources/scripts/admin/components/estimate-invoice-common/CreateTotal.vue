@@ -277,6 +277,24 @@ const totalDiscount = computed({
   },
 })
 
+const isInvoice = computed(() => {
+  return [
+    'newInvoice',
+    'selectedInvoice',
+    'newRecurringInvoice',
+    'selectedRecurringInvoice',
+  ].includes(props.storeProp)
+})
+
+const discountLabel = computed({
+  get: () => {
+    return props.store[props.storeProp].discount_label || ''
+  },
+  set: (newValue) => {
+    props.store[props.storeProp].discount_label = newValue || null
+  },
+})
+
 const taxes = computed({
   get: () => props.store[props.storeProp].taxes,
   set: (value) => {

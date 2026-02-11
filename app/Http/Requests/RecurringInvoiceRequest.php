@@ -42,6 +42,11 @@ class RecurringInvoiceRequest extends FormRequest
                 'numeric',
                 'required',
             ],
+            'discount_label' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
             'discount_val' => [
                 'integer',
                 'required',

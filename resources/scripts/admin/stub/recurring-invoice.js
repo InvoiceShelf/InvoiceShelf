@@ -16,6 +16,7 @@ export default function () {
     tax: 0,
     notes: '',
     discount_type: 'fixed',
+    discount_label: null,
     discount_val: 0,
     discount: 0,
     starts_at: null,
