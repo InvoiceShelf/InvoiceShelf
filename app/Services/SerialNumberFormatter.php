@@ -136,15 +136,63 @@ class SerialNumberFormatter
     public function setNextCustomerSequenceNumber()
     {
         $customer_id = ($this->customer) ? $this->customer->id : 1;
+        $modelName = strtolower(class_basename($this->model));
 
-        $last = $this->model::orderBy('customer_sequence_number', 'desc')
+        $last = $this->model::orderBy('created_at', 'desc')
             ->where('company_id', $this->company)
             ->where('customer_id', $customer_id)
             ->where('customer_sequence_number', '<>', null)
             ->take(1)
             ->first();
 
-        $this->nextCustomerSequenceNumber = ($last) ? $last->customer_sequence_number + 1 : 1;
+        // If there's no previous record, start at 1
+        if (! $last) {
+            $this->nextCustomerSequenceNumber = 1;
+
+            return $this;
+        }
+
+        // Check if customer sequence reset is enabled
+        $resetEnabledSetting = $modelName.'_customer_sequence_reset_enabled';
+        $resetEnabled = CompanySetting::getSetting($resetEnabledSetting, $this->company);
+
+        // If reset is disabled, just increment normally
+        if ($resetEnabled !== 'true' && $resetEnabled !== true) {
+            $this->nextCustomerSequenceNumber = $last->customer_sequence_number + 1;
+
+            return $this;
+        }
+
+        // Get the date format setting for resetting customer sequence
+        $dateFormatSetting = $modelName.'_customer_sequence_date_format';
+        $dateFormat = CompanySetting::getSetting($dateFormatSetting, $this->company);
+
+        // If no date format is set or it's 'none', just increment normally
+        if (! $dateFormat || $dateFormat === 'none') {
+            $this->nextCustomerSequenceNumber = $last->customer_sequence_number + 1;
+
+            return $this;
+        }
+
+        // Check if we need to reset based on date format
+        $today = now();
+        $lastDate = $last->created_at;
+        $shouldReset = false;
+
+        // Determine what date parts to check
+        // Expected format: 'd' (day), 'm' (month), 'y' (year), or combinations like 'dm', 'dmy', 'my', etc.
+        if (stripos($dateFormat, 'd') !== false && $today->day !== $lastDate->day) {
+            // Different day
+            $shouldReset = true;
+        } elseif (stripos($dateFormat, 'm') !== false && $today->month !== $lastDate->month) {
+            // Different month (also implies different period when day/year checks don't apply)
+            $shouldReset = true;
+        } elseif (stripos($dateFormat, 'y') !== false && $today->year !== $lastDate->year) {
+            // Different year
+            $shouldReset = true;
+        }
+
+        $this->nextCustomerSequenceNumber = $shouldReset ? 1 : $last->customer_sequence_number + 1;
 
         return $this;
     }

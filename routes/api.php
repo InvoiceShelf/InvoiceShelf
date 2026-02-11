@@ -71,7 +71,6 @@ use App\Http\Controllers\V1\Admin\Role\RolesController;
 use App\Http\Controllers\V1\Admin\Settings\CompanyController;
 use App\Http\Controllers\V1\Admin\Settings\CompanyCurrencyCheckTransactionsController;
 use App\Http\Controllers\V1\Admin\Settings\DiskController;
-use App\Http\Controllers\V1\Admin\Settings\GetCompanyMailConfigurationController;
 use App\Http\Controllers\V1\Admin\Settings\GetCompanySettingsController;
 use App\Http\Controllers\V1\Admin\Settings\GetSettingsController;
 use App\Http\Controllers\V1\Admin\Settings\GetUserSettingsController;

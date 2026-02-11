@@ -40,7 +40,10 @@
       <BaseInputGroup
         :label="$t('invoices.invoice_number')"
         :content-loading="isLoading"
-        :error="v.invoice_number.$error && v.invoice_number.$errors[0].$message"
+        :error="
+          (v.invoice_number.$error && v.invoice_number.$errors[0].$message) ||
+          invoiceNumberError
+        "
         required
       >
         <BaseInput
@@ -80,6 +83,10 @@ const props = defineProps({
   isEdit: {
     type: Boolean,
     default: false,
+  },
+  invoiceNumberError: {
+    type: String,
+    default: '',
   },
 })
 

@@ -197,7 +197,14 @@
         </template>
 
         <template #cell-name="{ row }">
-          <BaseText :text="row.data.customer.name" />
+          <router-link
+            v-if="row.data.customer_id"
+            :to="`/admin/customers/${row.data.customer_id}/view`"
+            class="font-medium text-primary-500"
+          >
+            {{ row.data.customer?.name || row.data.name }}
+          </router-link>
+          <BaseText v-else :text="row.data.customer?.name || row.data.name" />
         </template>
 
         <!-- Invoice Number  -->

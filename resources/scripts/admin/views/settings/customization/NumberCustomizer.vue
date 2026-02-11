@@ -180,6 +180,63 @@
     </table>
   </div>
 
+  <!-- Customer Sequence Reset Toggle -->
+  <div class="mt-6">
+    <div class="flex items-center space-x-4">
+      <label class="flex items-center cursor-pointer">
+        <input
+          v-model="enableCustomerSequenceReset"
+          type="checkbox"
+          class="w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
+        />
+        <span class="ml-2 text-sm font-medium text-gray-900">
+          {{ $t('settings.customization.enable_customer_sequence_reset') }}
+        </span>
+      </label>
+    </div>
+    <p class="text-xs text-gray-500 mt-1">
+      {{ $t('settings.customization.enable_customer_sequence_reset_description') }}
+    </p>
+  </div>
+
+  <!-- Customer Sequence Date Format (only visible if reset is enabled) -->
+  <div v-if="enableCustomerSequenceReset" class="mt-6">
+    <BaseInputGroup
+      :label="$t('settings.customization.customer_sequence_date_format')"
+      class="col-span-12 lg:col-span-6"
+    >
+      <select
+        v-model="customerSequenceDateFormat"
+        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+      >
+        <option value="none">
+          {{ $t('settings.customization.no_reset') }}
+        </option>
+        <option value="d">
+          {{ $t('settings.customization.daily_reset') }} ({{ $t('settings.customization.day') }})
+        </option>
+        <option value="m">
+          {{ $t('settings.customization.monthly_reset') }} ({{ $t('settings.customization.month') }})
+        </option>
+        <option value="y">
+          {{ $t('settings.customization.yearly_reset') }} ({{ $t('settings.customization.year') }})
+        </option>
+        <option value="dm">
+          {{ $t('settings.customization.daily_monthly_reset') }} ({{ $t('settings.customization.day') }}/{{ $t('settings.customization.month') }})
+        </option>
+        <option value="my">
+          {{ $t('settings.customization.monthly_yearly_reset') }} ({{ $t('settings.customization.month') }}/{{ $t('settings.customization.year') }})
+        </option>
+        <option value="dmy">
+          {{ $t('settings.customization.daily_monthly_yearly_reset') }} ({{ $t('settings.customization.day') }}/{{ $t('settings.customization.month') }}/{{ $t('settings.customization.year') }})
+        </option>
+      </select>
+      <p class="text-xs text-gray-500 mt-1">
+        {{ $t('settings.customization.customer_sequence_date_format_description') }}
+      </p>
+    </BaseInputGroup>
+  </div>
+
   <BaseButton
     :loading="isSaving"
     :disabled="isSaving"
@@ -227,6 +284,8 @@ const globalStore = useGlobalStore()
 
 const selectedFields = ref([])
 const isSaving = ref(false)
+const enableCustomerSequenceReset = ref(true)
+const customerSequenceDateFormat = ref('none')
 
 const allFields = ref([
   {
@@ -358,6 +417,15 @@ async function setInitialFields() {
     selectedFields.value.push({ ...found, value, id: Guid.raw() })
   })
 
+  // Load the customer sequence date format setting
+  const dateFormatKey = `${props.type}_customer_sequence_date_format`
+  customerSequenceDateFormat.value = companyStore.selectedCompanySettings[dateFormatKey] || 'none'
+
+  // Load the customer sequence reset enablement setting
+  const resetEnabledKey = `${props.type}_customer_sequence_reset_enabled`
+  const resetEnabledValue = companyStore.selectedCompanySettings[resetEnabledKey]
+  enableCustomerSequenceReset.value = resetEnabledValue === 'true' || resetEnabledValue === true || resetEnabledValue === '1'
+
   isLoadingPlaceholders.value = false
 
   fetchNextNumber()
@@ -439,12 +507,31 @@ async function submitForm() {
 
   let data = { settings: {} }
 
-  data.settings[props.type + '_number_format'] = getNumberFormat.value
+  // Only include settings that have actual values
+  const numberFormat = getNumberFormat.value
+  if (numberFormat) {
+    data.settings[props.type + '_number_format'] = numberFormat
+  }
+  
+  // Save the customer sequence reset enabled setting (ensure valid string values)
+  data.settings[props.type + '_customer_sequence_reset_enabled'] = enableCustomerSequenceReset.value ? 'true' : 'false'
+  
+  // Save the customer sequence date format setting (ensure valid string value)
+  const dateFormat = customerSequenceDateFormat.value || 'none'
+  if (dateFormat) {
+    data.settings[props.type + '_customer_sequence_date_format'] = dateFormat
+  }
 
-  await companyStore.updateCompanySettings({
-    data,
-    message: `settings.customization.${props.type}s.${props.type}_settings_updated`,
-  })
+  try {
+    await companyStore.updateCompanySettings({
+      data,
+      message: `settings.customization.${props.type}s.${props.type}_settings_updated`,
+    })
+  } catch (error) {
+    console.error('Error saving settings:', error)
+    isSaving.value = false
+    return false
+  }
 
   isSaving.value = false
 
