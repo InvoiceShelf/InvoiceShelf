@@ -87,12 +87,16 @@
 
     <!-- Chart -->
     <CustomerChart />
+
+    <!-- Customer Invoices -->
+    <CustomerInvoices />
   </BasePage>
 </template>
 
 <script setup>
 import CustomerViewSidebar from './partials/CustomerViewSidebar.vue'
 import CustomerChart from './partials/CustomerChart.vue'
+import CustomerInvoices from './partials/CustomerInvoices.vue'
 import { ref, computed, inject } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
