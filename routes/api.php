@@ -395,7 +395,7 @@ Route::prefix('/v1')->group(function () {
 
             Route::post('/mail/test', [MailConfigurationController::class, 'testEmailConfig']);
 
-            Route::get('/company/mail/config', GetCompanyMailConfigurationController::class);
+            Route::get('/company/mail/config', [MailConfigurationController::class, 'getCompanyMailConfiguration']);
 
             // PDF Generation
             // ----------------------------------
