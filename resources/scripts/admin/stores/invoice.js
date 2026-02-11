@@ -496,10 +496,12 @@ export const useInvoiceStore = (useWindow = false) => {
 
         this.newInvoice.selectedCurrency = companyStore.selectedCompanyCurrency
 
+        let nextNumberParams = null
         if (route.query.customer) {
           let response = await customerStore.fetchCustomer(route.query.customer)
           this.newInvoice.customer = response.data.data
           this.newInvoice.customer_id = response.data.data.id
+          nextNumberParams = { userId: route.query.customer }
         }
 
         let editActions = []
@@ -546,7 +548,7 @@ export const useInvoiceStore = (useWindow = false) => {
           }),
           this.resetSelectedNote(),
           this.fetchInvoiceTemplates(),
-          this.getNextNumber(),
+          this.getNextNumber(nextNumberParams),
           taxTypeStore.fetchTaxTypes({ limit: 'all' }),
           ...editActions,
         ])

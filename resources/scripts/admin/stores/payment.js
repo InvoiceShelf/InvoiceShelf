@@ -63,12 +63,16 @@ export const usePaymentStore = (useWindow = false) => {
         this.isFetchingInitialData = true
 
         let actions = []
+        let nextNumberParams = null
+        if (route.query.customer) {
+          nextNumberParams = { userId: route.query.customer }
+        }
         if (isEdit) {
           actions = [this.fetchPayment(route.params.id)]
         }
         Promise.all([
           this.fetchPaymentModes({ limit: 'all' }),
-          this.getNextNumber(),
+          this.getNextNumber(nextNumberParams),
           ...actions,
         ])
           .then(async ([res1, res2, res3]) => {

@@ -569,10 +569,12 @@ export const useEstimateStore = (useWindow = false) => {
         this.isFetchingInitialSettings = true
         this.newEstimate.selectedCurrency = companyStore.selectedCompanyCurrency
 
+        let nextNumberParams = null
         if (route.query.customer) {
           let response = await customerStore.fetchCustomer(route.query.customer)
           this.newEstimate.customer = response.data.data
           this.newEstimate.customer_id = response.data.data.id
+          nextNumberParams = { userId: route.query.customer }
         }
 
         let editActions = []
@@ -613,7 +615,7 @@ export const useEstimateStore = (useWindow = false) => {
           }),
           this.resetSelectedNote(),
           this.fetchEstimateTemplates(),
-          this.getNextNumber(),
+          this.getNextNumber(nextNumberParams),
           taxTypeStore.fetchTaxTypes({ limit: 'all' }),
           ...editActions,
         ])
