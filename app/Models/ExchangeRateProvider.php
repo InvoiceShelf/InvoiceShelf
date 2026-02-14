@@ -61,8 +61,12 @@ class ExchangeRateProvider extends Model
 
     public static function checkActiveCurrencies($request)
     {
-        $query = ExchangeRateProvider::whereJsonContains('currencies', $request->currencies)
-            ->where('active', true)
+        $query = ExchangeRateProvider::where('active', true)
+            ->where(function ($q) use ($request) {
+                foreach ($request->currencies as $currency) {
+                    $q->orWhereJsonContains('currencies', $currency);
+                }
+            })
             ->get();
 
         return $query;
@@ -72,7 +76,11 @@ class ExchangeRateProvider extends Model
     {
         $query = ExchangeRateProvider::where('active', $request->active)
             ->where('id', '<>', $this->id)
-            ->whereJsonContains('currencies', $request->currencies)
+            ->where(function ($q) use ($request) {
+                foreach ($request->currencies as $currency) {
+                    $q->orWhereJsonContains('currencies', $currency);
+                }
+            })
             ->get();
 
         return $query;
