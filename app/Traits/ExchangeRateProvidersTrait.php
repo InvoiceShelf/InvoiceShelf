@@ -16,7 +16,17 @@ trait ExchangeRateProvidersTrait
                     $url = 'https://api.currencyfreaks.com/latest?apikey='.$filter['key']."&symbols={$currencyCode}&base={$baseCurrencyCode}";
                 }
 
-                $response = Http::get($url)->json();
+                $httpResponse = Http::get($url);
+
+                if ($httpResponse->failed()) {
+                    return respondJson('http_error', 'Failed to connect to exchange rate provider');
+                }
+
+                $response = $httpResponse->json();
+
+                if (!is_array($response)) {
+                    return respondJson('invalid_response', 'Invalid response from exchange rate provider');
+                }
 
                 if (array_key_exists('success', $response)) {
                     if ($response['success'] == false) {
@@ -37,7 +47,17 @@ trait ExchangeRateProvidersTrait
                     $url = 'http://api.currencylayer.com/live?access_key='.$filter['key']."&source={$baseCurrencyCode}&currencies={$currencyCode}";
                 }
 
-                $response = Http::get($url)->json();
+                $httpResponse = Http::get($url);
+
+                if ($httpResponse->failed()) {
+                    return respondJson('http_error', 'Failed to connect to exchange rate provider');
+                }
+
+                $response = $httpResponse->json();
+
+                if (!is_array($response)) {
+                    return respondJson('invalid_response', 'Invalid response from exchange rate provider');
+                }
 
                 if (array_key_exists('success', $response)) {
                     if ($response['success'] == false) {
@@ -58,7 +78,17 @@ trait ExchangeRateProvidersTrait
                     $url = 'https://openexchangerates.org/api/latest.json?app_id='.$filter['key']."&base={$baseCurrencyCode}&symbols={$currencyCode}";
                 }
 
-                $response = Http::get($url)->json();
+                $httpResponse = Http::get($url);
+
+                if ($httpResponse->failed()) {
+                    return respondJson('http_error', 'Failed to connect to exchange rate provider');
+                }
+
+                $response = $httpResponse->json();
+
+                if (!is_array($response)) {
+                    return respondJson('invalid_response', 'Invalid response from exchange rate provider');
+                }
 
                 if (array_key_exists('error', $response)) {
                     return respondJson($response['message'], $response['description']);
@@ -81,7 +111,17 @@ trait ExchangeRateProvidersTrait
                     $url .= "&date={$date}";
                 }
 
-                $response = Http::get($url)->json();
+                $httpResponse = Http::get($url);
+
+                if ($httpResponse->failed()) {
+                    return respondJson('http_error', 'Failed to connect to exchange rate provider');
+                }
+
+                $response = $httpResponse->json();
+
+                if (!is_array($response)) {
+                    return respondJson('invalid_response', 'Invalid response from exchange rate provider');
+                }
 
                 if ($date && isset($response[$query][$date])) {
                     return response()->json([
@@ -102,10 +142,24 @@ trait ExchangeRateProvidersTrait
                     $url = "https://api.frankfurter.dev/v1/latest?from={$baseCurrencyCode}&to={$currencyCode}";
                 }
 
-                $response = Http::get($url)->json();
+                $httpResponse = Http::get($url);
+
+                if ($httpResponse->failed()) {
+                    return respondJson('http_error', 'Failed to connect to exchange rate provider');
+                }
+
+                $response = $httpResponse->json();
+
+                if (!is_array($response)) {
+                    return respondJson('invalid_response', 'Invalid response from exchange rate provider');
+                }
 
                 if (array_key_exists('message', $response) && $response['message'] === 'not found') {
                     return respondJson('Error', 'Service unavailable');
+                }
+
+                if (!isset($response['rates']) || !is_array($response['rates'])) {
+                    return respondJson('invalid_response', 'Invalid exchange rate data received');
                 }
 
                 return response()->json([
@@ -221,11 +275,13 @@ trait ExchangeRateProvidersTrait
 
             case 'frankfurter':
                 $url = 'https://api.frankfurter.dev/v1/currencies';
-                $response = Http::get($url)->json();
+                $httpResponse = Http::get($url);
 
-                if ($response == null) {
+                if ($httpResponse->failed() || !is_array($httpResponse->json())) {
                     return respondJson($error_message, $server_message);
                 }
+
+                $response = $httpResponse->json();
 
                 return response()->json(['supportedCurrencies' => array_keys($response)]);
 
@@ -267,7 +323,15 @@ trait ExchangeRateProvidersTrait
             case 'frankfurter':
                 $url = 'https://api.frankfurter.dev/v1/latest?from=INR&to=USD';
 
-                return Http::get($url)->json();
+                try {
+                    $httpResponse = Http::get($url);
+                    if ($httpResponse->failed()) {
+                        return null;
+                    }
+                    return $httpResponse->json();
+                } catch (\Exception $e) {
+                    return null;
+                }
 
                 break;
         }
