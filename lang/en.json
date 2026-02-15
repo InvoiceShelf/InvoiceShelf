@@ -1185,6 +1185,7 @@
       "is_default": "IS DEFAULT",
       "currency": "Currencies",
       "exchange_rate_confirm_delete": "You will not be able to recover this driver",
+      "exchange_rate_confirm_delete_active": "WARNING: This is an ACTIVE exchange rate provider! Deleting it will immediately break exchange rate fetching across the app. Consider deactivating it first or activating another provider before deletion.",
       "created_message": "Provider Created successfully",
       "updated_message": "Provider Updated Successfully",
       "deleted_message": "Provider Deleted Successfully",
