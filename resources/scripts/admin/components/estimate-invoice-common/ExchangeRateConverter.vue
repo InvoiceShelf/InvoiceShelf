@@ -17,7 +17,7 @@
               ? ' cursor-not-allowed pointer-events-none opacity-50'
               : ''
           }`"
-          @click="getCurrenctExchangeRate(customerCurrency, date)"
+          @click="getCurrentExchangeRate(customerCurrency, date)"
         />
         <BaseIcon
           v-tooltip="{ content: $t('settings.exchange_rate.fetch_latest_rate') }"
@@ -27,7 +27,7 @@
               ? ' animate-spin rotate-180 cursor-not-allowed pointer-events-none '
               : ''
           }`"
-          @click="getCurrenctExchangeRate(customerCurrency, null)"
+          @click="getCurrentExchangeRate(customerCurrency, null)"
         />
       </div>
       <div v-else-if="!hasActiveProvider && isCurrencyDiffrent" class="flex items-center gap-2">
@@ -170,7 +170,7 @@ function setCustomerCurrency(v) {
 async function onChangeCurrency(v) {
   if (v !== companyCurrency.value.id) {
     if (!props.isEdit && v) {
-      await getCurrenctExchangeRate(v, props.date)
+      await getCurrentExchangeRate(v, props.date)
     }
 
     props.store.showExchangeRate = true
@@ -179,7 +179,7 @@ async function onChangeCurrency(v) {
   }
 }
 
-function getCurrenctExchangeRate(v, date = null) {
+function getCurrentExchangeRate(v, date = null) {
   isFetching.value = true
   exchangeRateStore
     .getCurrentExchangeRate(v, date)
