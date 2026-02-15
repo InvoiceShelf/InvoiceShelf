@@ -19,12 +19,17 @@ class ExchangeRateProviderRequest extends FormRequest
      */
     public function rules(): array
     {
+        $driversWithoutKey = collect(config('invoiceshelf.exchange_rate_drivers'))
+            ->where('required_key', false)
+            ->pluck('value')
+            ->implode(',');
+
         $rules = [
             'driver' => [
                 'required',
             ],
             'key' => [
-                'required',
+                'required_unless:driver,'.$driversWithoutKey,
             ],
             'currencies' => [
                 'nullable',
@@ -46,7 +51,13 @@ class ExchangeRateProviderRequest extends FormRequest
 
     public function getExchangeRateProviderPayload()
     {
-        return collect($this->validated())
+        $data = $this->validated();
+
+        if (! array_key_exists('key', $data) || $data['key'] === null) {
+            $data['key'] = '';
+        }
+
+        return collect($data)
             ->merge([
                 'company_id' => $this->header('company'),
             ])

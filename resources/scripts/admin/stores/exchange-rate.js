@@ -207,10 +207,12 @@ export const useExchangeRateStore = (useWindow = false) => {
             })
         })
       },
-      getCurrentExchangeRate(currencyId) {
+      getCurrentExchangeRate(currencyId, date = null) {
         return new Promise((resolve, reject) => {
           axios
-            .get(`/api/v1/currencies/${currencyId}/exchange-rate`)
+            .get(`/api/v1/currencies/${currencyId}/exchange-rate`, {
+                params: { date }
+            })
             .then((response) => {
               resolve(response)
             })

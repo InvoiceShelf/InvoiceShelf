@@ -7,17 +7,37 @@
     required
   >
     <template #labelRight>
-      <div v-if="hasActiveProvider && isEdit">
+      <div v-if="hasActiveProvider" class="flex items-center gap-2">
         <BaseIcon
-          v-tooltip="{ content: 'Fetch Latest Exchange rate' }"
+          v-if="date"
+          v-tooltip="{ content: $t('settings.exchange_rate.fetch_historical_rate', { date }) }"
+          name="CalendarIcon"
+          :class="`h-4 w-4 text-primary-500 cursor-pointer outline-none ${
+            isFetching
+              ? ' cursor-not-allowed pointer-events-none opacity-50'
+              : ''
+          }`"
+          @click="getCurrentExchangeRate(customerCurrency, date)"
+        />
+        <BaseIcon
+          v-tooltip="{ content: $t('settings.exchange_rate.fetch_latest_rate') }"
           name="ArrowPathIcon"
           :class="`h-4 w-4 text-primary-500 cursor-pointer outline-none ${
             isFetching
               ? ' animate-spin rotate-180 cursor-not-allowed pointer-events-none '
               : ''
           }`"
-          @click="getCurrenctExchangeRate(customerCurrency)"
+          @click="getCurrentExchangeRate(customerCurrency, null)"
         />
+      </div>
+      <div v-else-if="!hasActiveProvider && isCurrencyDiffrent" class="flex items-center gap-2">
+        <router-link to="/admin/settings/exchange-rate-provider" target="_blank">
+          <BaseIcon
+            v-tooltip="{ content: $t('settings.exchange_rate.configure_provider_tooltip') }"
+            name="ExclamationTriangleIcon"
+            class="h-4 w-4 text-yellow-500 cursor-pointer outline-none"
+          />
+        </router-link>
       </div>
     </template>
     <BaseInput
@@ -75,6 +95,10 @@ const props = defineProps({
     type: [String, Number],
     default: null,
   },
+  date: {
+    type: String,
+    default: null,
+  },
 })
 const globalStore = useGlobalStore()
 const companyStore = useCompanyStore()
@@ -116,11 +140,28 @@ watch(
 watch(
   () => props.customerCurrency,
   (v) => {
-    if (v && props.isEdit) {
+    if (v) {
       checkForActiveProvider(v)
     }
   },
   { immediate: true }
+)
+
+// Watch for date changes in create mode to auto-fetch exchange rate
+watch(
+  () => props.date,
+  (newDate, oldDate) => {
+    // Only auto-fetch if:
+    // 1. Not in edit mode (create mode)
+    // 2. Currency is already selected and different from company currency
+    // 3. Date actually changed and is not null
+    if (!props.isEdit && props.customerCurrency && newDate && newDate !== oldDate) {
+      const currencyId = props.store[props.storeProp].currency_id
+      if (currencyId && currencyId !== companyCurrency.value.id) {
+        getCurrentExchangeRate(currencyId, newDate)
+      }
+    }
+  }
 )
 
 function checkForActiveProvider() {
@@ -146,7 +187,7 @@ function setCustomerCurrency(v) {
 async function onChangeCurrency(v) {
   if (v !== companyCurrency.value.id) {
     if (!props.isEdit && v) {
-      await getCurrenctExchangeRate(v)
+      await getCurrentExchangeRate(v, props.date)
     }
 
     props.store.showExchangeRate = true
@@ -155,10 +196,10 @@ async function onChangeCurrency(v) {
   }
 }
 
-function getCurrenctExchangeRate(v) {
+function getCurrentExchangeRate(v, date = null) {
   isFetching.value = true
   exchangeRateStore
-    .getCurrentExchangeRate(v)
+    .getCurrentExchangeRate(v, date)
     .then((res) => {
       if (res.data && !res.data.error) {
         props.store[props.storeProp].exchange_rate = res.data.exchangeRate[0]
