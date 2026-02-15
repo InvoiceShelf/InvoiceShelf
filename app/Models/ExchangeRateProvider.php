@@ -182,7 +182,7 @@ class ExchangeRateProvider extends Model
                 break;
 
             case 'frankfurter':
-                $url = 'https://api.frankfurter.dev/v1/latest?from=INR&to=USD';
+                $url = 'https://api.frankfurter.dev/v1/latest?base=INR&symbols=USD';
                 $httpResponse = Http::get($url);
 
                 if ($httpResponse->failed()) {
@@ -195,8 +195,8 @@ class ExchangeRateProvider extends Model
                     return respondJson('invalid_response', 'Invalid response from exchange rate provider');
                 }
 
-                if (array_key_exists('message', $response) && $response['message'] === 'not found') {
-                    return respondJson('Error', 'Service unavailable');
+                if (array_key_exists('message', $response)) {
+                    return respondJson('api_error', $response['message'] ?? 'API returned an error');
                 }
 
                 if (! isset($response['rates']) || ! is_array($response['rates'])) {

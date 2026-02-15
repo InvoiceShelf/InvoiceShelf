@@ -137,9 +137,9 @@ trait ExchangeRateProvidersTrait
 
             case 'frankfurter':
                 if ($date) {
-                    $url = "https://api.frankfurter.dev/v1/{$date}?from={$baseCurrencyCode}&to={$currencyCode}";
+                    $url = "https://api.frankfurter.dev/v1/{$date}?base={$baseCurrencyCode}&symbols={$currencyCode}";
                 } else {
-                    $url = "https://api.frankfurter.dev/v1/latest?from={$baseCurrencyCode}&to={$currencyCode}";
+                    $url = "https://api.frankfurter.dev/v1/latest?base={$baseCurrencyCode}&symbols={$currencyCode}";
                 }
 
                 $httpResponse = Http::get($url);
@@ -154,8 +154,8 @@ trait ExchangeRateProvidersTrait
                     return respondJson('invalid_response', 'Invalid response from exchange rate provider');
                 }
 
-                if (array_key_exists('message', $response) && $response['message'] === 'not found') {
-                    return respondJson('Error', 'Service unavailable');
+                if (array_key_exists('message', $response)) {
+                    return respondJson('api_error', $response['message'] ?? 'API returned an error');
                 }
 
                 if (! isset($response['rates']) || ! is_array($response['rates'])) {
@@ -321,7 +321,7 @@ trait ExchangeRateProvidersTrait
                 break;
 
             case 'frankfurter':
-                $url = 'https://api.frankfurter.dev/v1/latest?from=INR&to=USD';
+                $url = 'https://api.frankfurter.dev/v1/latest?base=INR&symbols=USD';
 
                 try {
                     $httpResponse = Http::get($url);
@@ -329,7 +329,14 @@ trait ExchangeRateProvidersTrait
                         return null;
                     }
 
-                    return $httpResponse->json();
+                    $response = $httpResponse->json();
+
+                    // Validate response structure
+                    if (! is_array($response) || ! isset($response['rates'])) {
+                        return null;
+                    }
+
+                    return $response;
                 } catch (\Exception $e) {
                     return null;
                 }

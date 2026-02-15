@@ -140,7 +140,7 @@ watch(
 watch(
   () => props.customerCurrency,
   (v) => {
-    if (v && props.isEdit) {
+    if (v) {
       checkForActiveProvider(v)
     }
   },
