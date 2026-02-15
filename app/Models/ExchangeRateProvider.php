@@ -91,7 +91,7 @@ class ExchangeRateProvider extends Model
 
                 $response = $httpResponse->json();
 
-                if (!is_array($response)) {
+                if (! is_array($response)) {
                     return respondJson('invalid_response', 'Invalid response from exchange rate provider');
                 }
 
@@ -117,7 +117,7 @@ class ExchangeRateProvider extends Model
 
                 $response = $httpResponse->json();
 
-                if (!is_array($response)) {
+                if (! is_array($response)) {
                     return respondJson('invalid_response', 'Invalid response from exchange rate provider');
                 }
 
@@ -143,7 +143,7 @@ class ExchangeRateProvider extends Model
 
                 $response = $httpResponse->json();
 
-                if (!is_array($response)) {
+                if (! is_array($response)) {
                     return respondJson('invalid_response', 'Invalid response from exchange rate provider');
                 }
 
@@ -171,7 +171,7 @@ class ExchangeRateProvider extends Model
 
                 $response = $httpResponse->json();
 
-                if (!is_array($response)) {
+                if (! is_array($response)) {
                     return respondJson('invalid_response', 'Invalid response from exchange rate provider');
                 }
 
@@ -191,7 +191,7 @@ class ExchangeRateProvider extends Model
 
                 $response = $httpResponse->json();
 
-                if (!is_array($response)) {
+                if (! is_array($response)) {
                     return respondJson('invalid_response', 'Invalid response from exchange rate provider');
                 }
 
@@ -199,7 +199,7 @@ class ExchangeRateProvider extends Model
                     return respondJson('Error', 'Service unavailable');
                 }
 
-                if (!isset($response['rates']) || !is_array($response['rates'])) {
+                if (! isset($response['rates']) || ! is_array($response['rates'])) {
                     return respondJson('invalid_response', 'Invalid exchange rate data received');
                 }
 

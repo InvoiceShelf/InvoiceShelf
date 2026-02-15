@@ -24,7 +24,7 @@ trait ExchangeRateProvidersTrait
 
                 $response = $httpResponse->json();
 
-                if (!is_array($response)) {
+                if (! is_array($response)) {
                     return respondJson('invalid_response', 'Invalid response from exchange rate provider');
                 }
 
@@ -55,7 +55,7 @@ trait ExchangeRateProvidersTrait
 
                 $response = $httpResponse->json();
 
-                if (!is_array($response)) {
+                if (! is_array($response)) {
                     return respondJson('invalid_response', 'Invalid response from exchange rate provider');
                 }
 
@@ -86,7 +86,7 @@ trait ExchangeRateProvidersTrait
 
                 $response = $httpResponse->json();
 
-                if (!is_array($response)) {
+                if (! is_array($response)) {
                     return respondJson('invalid_response', 'Invalid response from exchange rate provider');
                 }
 
@@ -119,7 +119,7 @@ trait ExchangeRateProvidersTrait
 
                 $response = $httpResponse->json();
 
-                if (!is_array($response)) {
+                if (! is_array($response)) {
                     return respondJson('invalid_response', 'Invalid response from exchange rate provider');
                 }
 
@@ -150,7 +150,7 @@ trait ExchangeRateProvidersTrait
 
                 $response = $httpResponse->json();
 
-                if (!is_array($response)) {
+                if (! is_array($response)) {
                     return respondJson('invalid_response', 'Invalid response from exchange rate provider');
                 }
 
@@ -158,7 +158,7 @@ trait ExchangeRateProvidersTrait
                     return respondJson('Error', 'Service unavailable');
                 }
 
-                if (!isset($response['rates']) || !is_array($response['rates'])) {
+                if (! isset($response['rates']) || ! is_array($response['rates'])) {
                     return respondJson('invalid_response', 'Invalid exchange rate data received');
                 }
 
@@ -277,7 +277,7 @@ trait ExchangeRateProvidersTrait
                 $url = 'https://api.frankfurter.dev/v1/currencies';
                 $httpResponse = Http::get($url);
 
-                if ($httpResponse->failed() || !is_array($httpResponse->json())) {
+                if ($httpResponse->failed() || ! is_array($httpResponse->json())) {
                     return respondJson($error_message, $server_message);
                 }
 
@@ -328,6 +328,7 @@ trait ExchangeRateProvidersTrait
                     if ($httpResponse->failed()) {
                         return null;
                     }
+
                     return $httpResponse->json();
                 } catch (\Exception $e) {
                     return null;

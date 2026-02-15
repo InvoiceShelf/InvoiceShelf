@@ -7,7 +7,7 @@
     required
   >
     <template #labelRight>
-      <div v-if="hasActiveProvider && isEdit" class="flex items-center gap-2">
+      <div v-if="hasActiveProvider" class="flex items-center gap-2">
         <BaseIcon
           v-if="date"
           v-tooltip="{ content: $t('settings.exchange_rate.fetch_historical_rate', { date }) }"
@@ -145,6 +145,23 @@ watch(
     }
   },
   { immediate: true }
+)
+
+// Watch for date changes in create mode to auto-fetch exchange rate
+watch(
+  () => props.date,
+  (newDate, oldDate) => {
+    // Only auto-fetch if:
+    // 1. Not in edit mode (create mode)
+    // 2. Currency is already selected and different from company currency
+    // 3. Date actually changed and is not null
+    if (!props.isEdit && props.customerCurrency && newDate && newDate !== oldDate) {
+      const currencyId = props.store[props.storeProp].currency_id
+      if (currencyId && currencyId !== companyCurrency.value.id) {
+        getCurrentExchangeRate(currencyId, newDate)
+      }
+    }
+  }
 )
 
 function checkForActiveProvider() {
