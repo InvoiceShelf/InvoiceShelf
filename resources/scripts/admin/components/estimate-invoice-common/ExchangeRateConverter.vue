@@ -69,7 +69,6 @@ import { watch, computed, ref, onBeforeUnmount } from 'vue'
 import { useGlobalStore } from '@/scripts/admin/stores/global'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 import { useExchangeRateStore } from '@/scripts/admin/stores/exchange-rate'
-import { ExclamationTriangleIcon } from '@heroicons/vue/24/outline'
 
 const props = defineProps({
   v: {
