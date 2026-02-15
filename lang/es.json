@@ -29,6 +29,8 @@
     "to_date": "Hasta la fecha",
     "from": "De",
     "to": "A",
+    "cc": "CC",
+    "bcc": "BCC",
     "ok": "De acuerdo",
     "yes": "Sí",
     "no": "No",

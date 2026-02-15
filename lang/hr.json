@@ -29,6 +29,8 @@
     "to_date": "Do Datuma",
     "from": "Pošiljatelj",
     "to": "Primatelj",
+    "cc": "CC",
+    "bcc": "BCC",
     "ok": "U redu",
     "yes": "Da",
     "no": "Ne",
@@ -162,7 +164,7 @@
     "description": "Opis",
     "percent": "Postotak",
     "compound_tax": "Složeni porez",
-    "percentage": "Percentage",
+    "percentage": "Postotak",
     "fixed_amount": "Fixed Amount",
     "tax_type": "Tax Type"
   },

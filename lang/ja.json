@@ -29,6 +29,8 @@
     "to_date": "終了日",
     "from": "From",
     "to": "To",
+    "cc": "CC",
+    "bcc": "BCC",
     "ok": "はい",
     "yes": "はい",
     "no": "いいえ",

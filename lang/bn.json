@@ -1,9 +1,9 @@
 {
   "navigation": {
-    "dashboard": "Dashboard",
-    "customers": "Customers",
-    "items": "Items",
-    "invoices": "Invoices",
+    "dashboard": "ড্যাশবোর্ড",
+    "customers": "গ্রাহকগন",
+    "items": "বস্তু / জিনিসপত্র",
+    "invoices": "চালান",
     "recurring-invoices": "Recurring Invoices",
     "expenses": "Expenses",
     "estimates": "Estimates",
@@ -29,6 +29,8 @@
     "to_date": "To Date",
     "from": "From",
     "to": "To",
+    "cc": "CC",
+    "bcc": "BCC",
     "ok": "Ok",
     "yes": "Yes",
     "no": "No",
