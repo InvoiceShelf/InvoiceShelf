@@ -24,6 +24,7 @@ import lodash from 'lodash'
 import { useCustomFieldStore } from '@/scripts/admin/stores/custom-field'
 import { watch } from 'vue'
 import SingleField from './CreateCustomFieldsSingle.vue'
+import BaseInputGrid from '@/scripts/components/base/BaseInputGrid.vue'
 
 const customFieldStore = useCustomFieldStore()
 

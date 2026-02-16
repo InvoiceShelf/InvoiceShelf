@@ -29,13 +29,15 @@
 </template>
 
 <script setup>
-import { computed, reactive, inject } from 'vue'
+import { computed, inject, reactive } from 'vue'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 
 import EstimatesTabEstimateNumber from './EstimatesTabEstimateNumber.vue'
 import EstimatesTabExpiryDate from './EstimatesTabExpiryDate.vue'
 import EstimatesTabDefaultFormats from './EstimatesTabDefaultFormats.vue'
 import EstimatesTabConvertEstimate from './EstimatesTabConvertEstimate.vue'
+import BaseSwitchSection from '@/scripts/components/base/BaseSwitchSection.vue'
+import BaseDivider from '@/scripts/components/base/BaseDivider.vue'
 
 const utils = inject('utils')
 

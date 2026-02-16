@@ -229,6 +229,16 @@ import moment from 'moment'
 import { useEstimateStore } from '@/scripts/customer/stores/estimate'
 import { useGlobalStore } from '@/scripts/customer/stores/global'
 import { useDialogStore } from '@/scripts/stores/dialog'
+import BaseFormatMoney from '@/scripts/components/base/BaseFormatMoney.vue'
+import BaseEstimateStatusLabel from '@/scripts/components/base/BaseEstimateStatusLabel.vue'
+import BaseEstimateStatusBadge from '@/scripts/components/base/BaseEstimateStatusBadge.vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseRadio from '@/scripts/components/base/BaseRadio.vue'
+import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
+import BaseInput from '@/scripts/components/base/BaseInput.vue'
+import BasePageHeader from '@/scripts/components/base/BasePageHeader.vue'
+import BasePage from '@/scripts/components/base/BasePage.vue'
 
 // Router
 const route = useRoute()

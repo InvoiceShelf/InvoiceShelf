@@ -66,6 +66,12 @@
 <script setup>
 import { computed, ref, watch, onMounted } from 'vue'
 import { useCustomFieldStore } from '@/scripts/admin/stores/custom-field'
+import BaseEditor from '@/scripts/components/base/base-editor/BaseEditor.vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseDropdown from '@/scripts/components/base/BaseDropdown.vue'
+import BaseContentPlaceholdersBox from '@/scripts/components/base/BaseContentPlaceholdersBox.vue'
+import BaseContentPlaceholders from '@/scripts/components/base/BaseContentPlaceholders.vue'
 
 const props = defineProps({
   contentLoading: {

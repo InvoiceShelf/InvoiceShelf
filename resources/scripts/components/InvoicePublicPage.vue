@@ -77,6 +77,8 @@ import axios from 'axios'
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import InvoiceInformationCard from '@/scripts/components/InvoiceInformationCard.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BasePageHeader from '@/scripts/components/base/BasePageHeader.vue'
 
 let invoiceData = ref(null)
 const route = useRoute()

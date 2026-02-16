@@ -78,6 +78,11 @@ import { computed, ref, watch } from 'vue'
 import { required, minLength, maxLength, helpers } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { useI18n } from 'vue-i18n'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseInput from '@/scripts/components/base/BaseInput.vue'
+import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
+import BaseModal from '@/scripts/components/base/BaseModal.vue'
 
 const itemStore = useItemStore()
 const modalStore = useModalStore()

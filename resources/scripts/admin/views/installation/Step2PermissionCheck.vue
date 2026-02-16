@@ -66,10 +66,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useInstallationStore } from '@/scripts/admin/stores/installation'
 import { useDialogStore } from '@/scripts/stores/dialog'
 import { useI18n } from 'vue-i18n'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseContentPlaceholdersBox from '@/scripts/components/base/BaseContentPlaceholdersBox.vue'
+import BaseContentPlaceholdersText from '@/scripts/components/base/BaseContentPlaceholdersText.vue'
+import BaseContentPlaceholders from '@/scripts/components/base/BaseContentPlaceholders.vue'
+import BaseWizardStep from '@/scripts/components/base/BaseWizardStep.vue'
 
 const emit = defineEmits(['next'])
 

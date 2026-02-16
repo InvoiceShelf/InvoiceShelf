@@ -34,6 +34,7 @@ import SiteHeader from '@/scripts/admin/layouts/partials/TheSiteHeader.vue'
 import SiteSidebar from '@/scripts/admin/layouts/partials/TheSiteSidebar.vue'
 import NotificationRoot from '@/scripts/components/notifications/NotificationRoot.vue'
 import ExchangeRateBulkUpdateModal from '@/scripts/admin/components/modal-components/ExchangeRateBulkUpdateModal.vue'
+import BaseGlobalLoader from '@/scripts/components/base/BaseGlobalLoader.vue'
 
 const globalStore = useGlobalStore()
 const route = useRoute()

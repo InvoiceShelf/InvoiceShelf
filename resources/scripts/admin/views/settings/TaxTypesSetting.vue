@@ -74,7 +74,7 @@
 <script setup>
 import { useTaxTypeStore } from '@/scripts/admin/stores/tax-type'
 import { useModalStore } from '@/scripts/stores/modal'
-import { computed, reactive, ref, inject } from 'vue'
+import { computed, inject, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 import { useUserStore } from '@/scripts/admin/stores/user'
@@ -83,6 +83,12 @@ import { useModuleStore } from '@/scripts/admin/stores/module'
 import TaxTypeDropdown from '@/scripts/admin/components/dropdowns/TaxTypeIndexDropdown.vue'
 import TaxTypeModal from '@/scripts/admin/components/modal-components/TaxTypeModal.vue'
 import abilities from '@/scripts/admin/stub/abilities'
+import BaseSwitchSection from '@/scripts/components/base/BaseSwitchSection.vue'
+import BaseDivider from '@/scripts/components/base/BaseDivider.vue'
+import BaseTable from '@/scripts/components/base/base-table/BaseTable.vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseSettingCard from '@/scripts/components/base/BaseSettingCard.vue'
 
 const { t } = useI18n()
 const utils = inject('utils')

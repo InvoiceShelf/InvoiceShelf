@@ -20,6 +20,10 @@
 </template>
 
 <script setup>
+import BaseLabel from '@/scripts/components/base/BaseLabel.vue'
+import BaseContentPlaceholdersBox from '@/scripts/components/base/BaseContentPlaceholdersBox.vue'
+import BaseContentPlaceholders from '@/scripts/components/base/BaseContentPlaceholders.vue'
+
 const props = defineProps({
   label: {
     type: String,

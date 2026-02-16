@@ -82,6 +82,11 @@
 <script setup>
 import { useEstimateStore } from '@/scripts/admin/stores/estimate'
 import ExchangeRateConverter from '@/scripts/admin/components/estimate-invoice-common/ExchangeRateConverter.vue'
+import BaseInput from '@/scripts/components/base/BaseInput.vue'
+import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
+import BaseDatePicker from '@/scripts/components/base/BaseDatePicker.vue'
+import BaseInputGrid from '@/scripts/components/base/BaseInputGrid.vue'
+import BaseCustomerSelectPopup from '@/scripts/components/base/BaseCustomerSelectPopup.vue'
 
 const props = defineProps({
   v: {

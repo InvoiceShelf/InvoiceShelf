@@ -39,4 +39,7 @@ import InvoicesTab from '@/scripts/admin/views/settings/customization/invoices/I
 import EstimatesTab from '@/scripts/admin/views/settings/customization/estimates/EstimatesTab.vue'
 import PaymentsTab from '@/scripts/admin/views/settings/customization/payments/PaymentsTab.vue'
 import ItemsTab from '@/scripts/admin/views/settings/customization/items/ItemsTab.vue'
+import BaseTab from '@/scripts/components/base/BaseTab.vue'
+import BaseTabGroup from '@/scripts/components/base/BaseTabGroup.vue'
+import BaseCard from '@/scripts/components/base/BaseCard.vue'
 </script>

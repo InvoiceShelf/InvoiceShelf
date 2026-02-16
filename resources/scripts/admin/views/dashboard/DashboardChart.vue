@@ -149,7 +149,7 @@
 </template>
 
 <script setup>
-import { ref, watch, inject } from 'vue'
+import { inject, ref, watch } from 'vue'
 import { useDashboardStore } from '@/scripts/admin/stores/dashboard'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 import LineChart from '@/scripts/admin/components/charts/LineChart.vue'
@@ -157,6 +157,9 @@ import ChartPlaceholder from './DashboardChartPlaceholder.vue'
 import abilities from '@/scripts/admin/stub/abilities'
 import { useUserStore } from '@/scripts/admin/stores/user'
 import { useI18n } from 'vue-i18n'
+import BaseFormatMoney from '@/scripts/components/base/BaseFormatMoney.vue'
+import BaseMultiselect from '@/scripts/components/base/base-select/BaseMultiselect.vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
 
 const dashboardStore = useDashboardStore()
 const companyStore = useCompanyStore()

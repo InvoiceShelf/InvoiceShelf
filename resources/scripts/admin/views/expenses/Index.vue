@@ -219,7 +219,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, reactive, onUnmounted } from 'vue'
+import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useExpenseStore } from '@/scripts/admin/stores/expense'
 import { useCategoryStore } from '@/scripts/admin/stores/category'
@@ -232,6 +232,24 @@ import abilities from '@/scripts/admin/stub/abilities'
 
 import UFOIcon from '@/scripts/components/icons/empty/UFOIcon.vue'
 import ExpenseDropdown from '@/scripts/admin/components/dropdowns/ExpenseIndexDropdown.vue'
+import BaseText from '@/scripts/components/base/BaseText.vue'
+import BaseFormatMoney from '@/scripts/components/base/BaseFormatMoney.vue'
+import BaseCheckbox from '@/scripts/components/base/BaseCheckbox.vue'
+import BaseTable from '@/scripts/components/base/base-table/BaseTable.vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseDropdownItem from '@/scripts/components/base/BaseDropdownItem.vue'
+import BaseDropdown from '@/scripts/components/base/BaseDropdown.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseEmptyPlaceholder from '@/scripts/components/base/BaseEmptyPlaceholder.vue'
+import BaseDatePicker from '@/scripts/components/base/BaseDatePicker.vue'
+import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
+import BaseMultiselect from '@/scripts/components/base/base-select/BaseMultiselect.vue'
+import BaseCustomerSelectInput from '@/scripts/components/base/BaseCustomerSelectInput.vue'
+import BaseFilterWrapper from '@/scripts/components/base/BaseFilterWrapper.vue'
+import BaseBreadcrumbItem from '@/scripts/components/base/BaseBreadcrumbItem.vue'
+import BaseBreadcrumb from '@/scripts/components/base/BaseBreadcrumb.vue'
+import BasePageHeader from '@/scripts/components/base/BasePageHeader.vue'
+import BasePage from '@/scripts/components/base/BasePage.vue'
 
 const companyStore = useCompanyStore()
 const expenseStore = useExpenseStore()

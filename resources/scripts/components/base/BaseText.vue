@@ -8,6 +8,7 @@
 
 <script setup>
 import { computed } from "vue"
+import BaseCustomTag from '@/scripts/components/base/BaseCustomTag.vue'
 
 const props = defineProps({
   tag: {

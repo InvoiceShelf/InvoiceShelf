@@ -111,6 +111,9 @@ import { useUserStore } from '@/scripts/admin/stores/user'
 import abilities from '@/scripts/admin/stub/abilities'
 import InvoiceDropdown from '@/scripts/admin/components/dropdowns/InvoiceIndexDropdown.vue'
 import EstimateDropdown from '@/scripts/admin/components/dropdowns/EstimateIndexDropdown.vue'
+import BaseFormatMoney from '@/scripts/components/base/BaseFormatMoney.vue'
+import BaseTable from '@/scripts/components/base/base-table/BaseTable.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
 
 const dashboardStore = useDashboardStore()
 

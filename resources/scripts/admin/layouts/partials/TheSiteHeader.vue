@@ -184,6 +184,9 @@ import GlobalSearchBar from '@/scripts/components/GlobalSearchBar.vue'
 import MainLogo from '@/scripts/components/icons/MainLogo.vue'
 
 import abilities from '@/scripts/admin/stub/abilities'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseDropdownItem from '@/scripts/components/base/BaseDropdownItem.vue'
+import BaseDropdown from '@/scripts/components/base/BaseDropdown.vue'
 
 const authStore = useAuthStore()
 const userStore = useUserStore()

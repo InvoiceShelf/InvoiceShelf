@@ -40,6 +40,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
 
 const route = useRoute()
 const router = useRouter()

@@ -31,10 +31,12 @@ import Step7CompanyInfo from './Step7CompanyInfo.vue'
 import Step8CompanyPreferences from './Step8CompanyPreferences.vue'
 import { useInstallationStore } from '@/scripts/admin/stores/installation'
 import { useRouter } from 'vue-router'
+import BaseWizard from '@/scripts/components/base/BaseWizard.vue'
 
 
 export default {
   components: {
+    BaseWizard,
     step_0: Step0SetLanguage,
     step_1: Step1RequirementsCheck,
     step_2: Step2PermissionCheck,

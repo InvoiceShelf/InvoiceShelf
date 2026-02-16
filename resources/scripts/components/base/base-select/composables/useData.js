@@ -1,5 +1,5 @@
 import { toRefs } from 'vue'
-import isNullish from './../utils/isNullish'
+import isNullish from '../utils/isNullish.js'
 
 export default function useData(props, context, dep) {
   const { object, valueProp, mode } = toRefs(props)

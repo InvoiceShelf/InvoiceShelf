@@ -47,3 +47,8 @@
     </div>
   </BaseContentPlaceholders>
 </template>
+<script setup lang="ts">
+import BaseContentPlaceholdersText from '@/scripts/components/base/BaseContentPlaceholdersText.vue'
+import BaseContentPlaceholdersBox from '@/scripts/components/base/BaseContentPlaceholdersBox.vue'
+import BaseContentPlaceholders from '@/scripts/components/base/BaseContentPlaceholders.vue'
+</script>

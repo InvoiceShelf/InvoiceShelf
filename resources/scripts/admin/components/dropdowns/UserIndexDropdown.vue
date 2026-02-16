@@ -37,6 +37,10 @@ import { useUserStore } from '@/scripts/admin/stores/user'
 import { useRoute, useRouter } from 'vue-router'
 import { inject } from 'vue'
 import { useUsersStore } from '@/scripts/admin/stores/users'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseDropdownItem from '@/scripts/components/base/BaseDropdownItem.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseDropdown from '@/scripts/components/base/BaseDropdown.vue'
 
 const props = defineProps({
   row: {

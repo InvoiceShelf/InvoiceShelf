@@ -69,6 +69,10 @@ import { ref, computed, watch, reactive, inject } from 'vue'
 import { useRoute } from 'vue-router'
 import { useRecurringInvoiceStore } from '@/scripts/admin/stores/recurring-invoice'
 import Invoices from './Invoices.vue'
+import BaseHeading from '@/scripts/components/base/BaseHeading.vue'
+import BaseDescriptionListItem from '@/scripts/components/base/BaseDescriptionListItem.vue'
+import BaseDescriptionList from '@/scripts/components/base/BaseDescriptionList.vue'
+import BaseCard from '@/scripts/components/base/BaseCard.vue'
 
 const recurringInvoiceStore = useRecurringInvoiceStore()
 

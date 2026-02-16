@@ -4,6 +4,7 @@
 
 <script setup>
 import { computed } from 'vue'
+import BaseTextarea from '@/scripts/components/base/BaseTextarea.vue'
 
 const props = defineProps({
   modelValue: {

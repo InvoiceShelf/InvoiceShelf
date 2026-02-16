@@ -88,6 +88,10 @@
 import { ref, computed } from 'vue'
 import { useModalStore } from '@/scripts/stores/modal'
 import { useUserStore } from '@/scripts/admin/stores/user'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseCheckbox from '@/scripts/components/base/BaseCheckbox.vue'
+import BaseModal from '@/scripts/components/base/BaseModal.vue'
 
 const modalStore = useModalStore()
 const userStore = useUserStore()

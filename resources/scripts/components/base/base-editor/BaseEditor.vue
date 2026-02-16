@@ -89,10 +89,17 @@ import {
   CodeBlockIcon,
   MenuCenterIcon,
 } from './icons/index.js'
+
+import BaseDropdown from '@/scripts/components/base/BaseDropdown.vue'
+import BaseContentPlaceholdersBox from '@/scripts/components/base/BaseContentPlaceholdersBox.vue'
+import BaseContentPlaceholders from '@/scripts/components/base/BaseContentPlaceholders.vue'
 import { Bars3BottomLeftIcon, Bars3BottomRightIcon, Bars3Icon, LinkIcon } from '@heroicons/vue/24/solid'
 
 export default {
   components: {
+    BaseContentPlaceholders,
+    BaseContentPlaceholdersBox,
+    BaseDropdown,
     EditorContent,
     EllipsisVerticalIcon,
   },

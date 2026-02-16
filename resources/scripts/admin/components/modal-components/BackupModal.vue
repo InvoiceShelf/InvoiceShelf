@@ -97,6 +97,12 @@ import { useModalStore } from '@/scripts/stores/modal'
 import { useDiskStore } from '@/scripts/admin/stores/disk'
 import { required, helpers } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseMultiselect from '@/scripts/components/base/base-select/BaseMultiselect.vue'
+import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
+import BaseInputGrid from '@/scripts/components/base/BaseInputGrid.vue'
+import BaseModal from '@/scripts/components/base/BaseModal.vue'
 
 let table = ref(null)
 let isSaving = ref(false)

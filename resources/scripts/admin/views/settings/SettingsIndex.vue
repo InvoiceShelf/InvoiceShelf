@@ -51,12 +51,19 @@
 </template>
 
 <script setup>
-import { ref, reactive, watchEffect, computed } from 'vue'
+import { computed, ref, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useGlobalStore } from '@/scripts/admin/stores/global'
 import BaseList from '@/scripts/components/list/BaseList.vue'
 import BaseListItem from '@/scripts/components/list/BaseListItem.vue'
 import { useI18n } from 'vue-i18n'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseMultiselect from '@/scripts/components/base/base-select/BaseMultiselect.vue'
+import BaseBreadcrumbItem from '@/scripts/components/base/BaseBreadcrumbItem.vue'
+import BaseBreadcrumb from '@/scripts/components/base/BaseBreadcrumb.vue'
+import BasePageHeader from '@/scripts/components/base/BasePageHeader.vue'
+import BasePage from '@/scripts/components/base/BasePage.vue'
+
 const { t } = useI18n()
 
 let currentSetting = ref({})

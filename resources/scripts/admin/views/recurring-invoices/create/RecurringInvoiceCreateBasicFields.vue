@@ -189,6 +189,12 @@ import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
 import ExchangeRateConverter from '@/scripts/admin/components/estimate-invoice-common/ExchangeRateConverter.vue'
+import BaseInput from '@/scripts/components/base/BaseInput.vue'
+import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
+import BaseMultiselect from '@/scripts/components/base/base-select/BaseMultiselect.vue'
+import BaseDatePicker from '@/scripts/components/base/BaseDatePicker.vue'
+import BaseSwitch from '@/scripts/components/base/BaseSwitch.vue'
+import BaseCustomerSelectPopup from '@/scripts/components/base/BaseCustomerSelectPopup.vue'
 
 const props = defineProps({
   v: {

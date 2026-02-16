@@ -140,6 +140,9 @@ import {
   ListboxOption,
   ListboxOptions,
 } from '@headlessui/vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseContentPlaceholdersBox from '@/scripts/components/base/BaseContentPlaceholdersBox.vue'
+import BaseContentPlaceholders from '@/scripts/components/base/BaseContentPlaceholders.vue'
 
 const props = defineProps({
   contentLoading: {

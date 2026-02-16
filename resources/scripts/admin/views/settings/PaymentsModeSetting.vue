@@ -44,6 +44,10 @@ import { useDialogStore } from '@/scripts/stores/dialog'
 import { useModalStore } from '@/scripts/stores/modal'
 import PaymentModeModal from '@/scripts/admin/components/modal-components/PaymentModeModal.vue'
 import PaymentModeDropdown from '@/scripts/admin/components/dropdowns/PaymentModeIndexDropdown.vue'
+import BaseTable from '@/scripts/components/base/base-table/BaseTable.vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseSettingCard from '@/scripts/components/base/BaseSettingCard.vue'
 
 const modalStore = useModalStore()
 const dialogStore = useDialogStore()

@@ -50,12 +50,19 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
 import SalesReport from '../SalesReports.vue'
 import ExpenseReport from '../ExpensesReport.vue'
 import ProfitLossReport from '../ProfitLossReport.vue'
 import TaxReport from '../TaxReport.vue'
 import { useGlobalStore } from '@/scripts/admin/stores/global'
+import BaseTab from '@/scripts/components/base/BaseTab.vue'
+import BaseTabGroup from '@/scripts/components/base/BaseTabGroup.vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseBreadcrumbItem from '@/scripts/components/base/BaseBreadcrumbItem.vue'
+import BaseBreadcrumb from '@/scripts/components/base/BaseBreadcrumb.vue'
+import BasePageHeader from '@/scripts/components/base/BasePageHeader.vue'
+import BasePage from '@/scripts/components/base/BasePage.vue'
 
 const globalStore = useGlobalStore()
 
