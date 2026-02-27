@@ -27,3 +27,4 @@ package-lock.json
 /docker/development/docker-compose.yml
 /docker/production/docker-compose.yml
 /docker-compose.yaml
+memory-bank/
