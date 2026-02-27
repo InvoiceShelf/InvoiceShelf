@@ -551,8 +551,8 @@
     "select_invoice": "Select Invoice",
     "no_matching_invoices": "There are no matching recurring invoices!",
     "mark_as_sent_successfully": "Recurring Invoice marked as sent successfully",
-    "invoice_sent_successfully": "Recurring Invoice sent successfully",
-    "cloned_successfully": "Recurring Invoice cloned successfully",
+    "invoice_sent_successfully": "आवर्ती चालान क्लोन सफल",
+    "cloned_successfully": "चालान सफलतापूर्वक क्लोन किया गया",
     "clone_invoice": "Clone Recurring Invoice",
     "confirm_clone": "This recurring invoice will be cloned into a new Recurring Invoice",
     "add_customer_email": "Please add an email address for this customer to send invoices automatically.",
@@ -560,7 +560,7 @@
       "title": "Item Title",
       "description": "Description",
       "quantity": "Quantity",
-      "price": "Price",
+      "price": "मूल्य",
       "discount": "Discount",
       "total": "Total",
       "total_discount": "Total Discount",
@@ -571,7 +571,7 @@
       "type_item_description": "Type Item Description (optional)"
     },
     "frequency": {
-      "title": "Frequency (using cron format)",
+      "title": "",
       "select_frequency": "Select Frequency",
       "minute": "Minute",
       "hour": "Hour",
