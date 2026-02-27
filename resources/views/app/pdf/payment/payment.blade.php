@@ -343,6 +343,10 @@
                             <td class="attribute-label">@lang('pdf_invoice_label')</td>
                             <td class="attribute-value"> &nbsp;{{ $payment->invoice->invoice_number }}</td>
                         </tr>
+                        <tr>
+                            <td class="attribute-label">Original Invoice Amount</td>
+                            <td class="attribute-value"> &nbsp;{!! format_money_pdf($payment->invoice->total, $payment->invoice->currency) !!}</td>
+                        </tr>
                     @endif
                 </table>
             </div>
