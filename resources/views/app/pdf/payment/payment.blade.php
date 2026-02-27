@@ -351,7 +351,13 @@
     </div>
     <div class="total-display-box">
         <p class="total-display-label">@lang('pdf_payment_amount_received_label')</p>
-        <span class="amount">{!! format_money_pdf($payment->amount, $payment->customer->currency) !!}</span>
+        <span class="amount">{!! format_money_pdf($payment->amount, $payment->customer->currency) !!}</span><br>
+        @if ($payment->invoice)
+            <p class="total-display-label">Balance Due</p>
+            <span class="amount">{!! $payment->invoice->formattedDueAmount !!}</span><br>
+            <p class="total-display-label">Invoice Status</p>
+            <span class="amount">{{ $payment->invoice->paid_status ?? $payment->invoice->status }}</span>
+        @endif
     </div>
     <div class="notes">
         @if ($notes)
