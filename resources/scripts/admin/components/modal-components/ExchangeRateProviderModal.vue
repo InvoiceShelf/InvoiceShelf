@@ -67,6 +67,7 @@
           </BaseInputGroup>
 
           <BaseInputGroup
+            v-if="isKeyRequired"
             :label="$t('settings.exchange_rate.key')"
             required
             :content-loading="isFetchingInitialData"
@@ -212,11 +213,20 @@ const exchangeRateStore = useExchangeRateStore()
 
 let serverOptions = ref([])
 
+const isKeyRequired = computed(() => {
+  const driver = exchangeRateStore.drivers.find(
+    (d) => d.value === exchangeRateStore.currentExchangeRate.driver
+  )
+  return driver ? driver.required_key : true
+})
+
 const rules = computed(() => {
   return {
     currentExchangeRate: {
       key: {
-        required: helpers.withMessage(t('validation.required'), required),
+        required: requiredIf(function () {
+          return isKeyRequired.value
+        }),
       },
       driver: {
         required: helpers.withMessage(t('validation.required'), required),
@@ -286,6 +296,9 @@ const driverSite = computed(() => {
     case 'open_exchange_rate':
       return 'https://openexchangerates.org'
 
+    case 'frankfurter':
+      return 'https://api.frankfurter.dev'
+
     default:
       return ''
   }
@@ -314,6 +327,10 @@ function resetCurrency() {
   exchangeRateStore.currentExchangeRate.key = null
   exchangeRateStore.currentExchangeRate.currencies = []
   exchangeRateStore.supportedCurrencies = []
+
+  if (!isKeyRequired.value) {
+    fetchCurrencies()
+  }
 }
 
 function resetModalData() {
@@ -336,7 +353,9 @@ function resetModalData() {
 }
 
 async function fetchInitialData() {
-  exchangeRateStore.currentExchangeRate.driver = 'currency_converter'
+  if (!exchangeRateStore.isEdit) {
+    exchangeRateStore.currentExchangeRate.driver = 'currency_converter'
+  }
   let params = {}
   if (exchangeRateStore.isEdit) {
     params.provider_id = exchangeRateStore.currentExchangeRate.id
@@ -433,7 +452,7 @@ async function fetchServers() {
 
 function fetchCurrencies() {
   const { driver, key } = exchangeRateStore.currentExchangeRate
-  if (driver && key) {
+  if (driver && (key || !isKeyRequired.value)) {
     isFetchingCurrencies.value = true
     let data = {
       driver: driver,

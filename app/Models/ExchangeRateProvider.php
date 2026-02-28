@@ -83,7 +83,17 @@ class ExchangeRateProvider extends Model
         switch ($request['driver']) {
             case 'currency_freak':
                 $url = 'https://api.currencyfreaks.com/latest?apikey='.$request['key'].'&symbols=INR&base=USD';
-                $response = Http::get($url)->json();
+                $httpResponse = Http::get($url);
+
+                if ($httpResponse->failed()) {
+                    return respondJson('http_error', 'Failed to connect to exchange rate provider');
+                }
+
+                $response = $httpResponse->json();
+
+                if (! is_array($response)) {
+                    return respondJson('invalid_response', 'Invalid response from exchange rate provider');
+                }
 
                 if (array_key_exists('success', $response)) {
                     if ($response['success'] == false) {
@@ -99,7 +109,17 @@ class ExchangeRateProvider extends Model
 
             case 'currency_layer':
                 $url = 'http://api.currencylayer.com/live?access_key='.$request['key'].'&source=INR&currencies=USD';
-                $response = Http::get($url)->json();
+                $httpResponse = Http::get($url);
+
+                if ($httpResponse->failed()) {
+                    return respondJson('http_error', 'Failed to connect to exchange rate provider');
+                }
+
+                $response = $httpResponse->json();
+
+                if (! is_array($response)) {
+                    return respondJson('invalid_response', 'Invalid response from exchange rate provider');
+                }
 
                 if (array_key_exists('success', $response)) {
                     if ($response['success'] == false) {
@@ -115,7 +135,17 @@ class ExchangeRateProvider extends Model
 
             case 'open_exchange_rate':
                 $url = 'https://openexchangerates.org/api/latest.json?app_id='.$request['key'].'&base=INR&symbols=USD';
-                $response = Http::get($url)->json();
+                $httpResponse = Http::get($url);
+
+                if ($httpResponse->failed()) {
+                    return respondJson('http_error', 'Failed to connect to exchange rate provider');
+                }
+
+                $response = $httpResponse->json();
+
+                if (! is_array($response)) {
+                    return respondJson('invalid_response', 'Invalid response from exchange rate provider');
+                }
 
                 if (array_key_exists('error', $response)) {
                     return respondJson($response['message'], $response['description']);
@@ -133,10 +163,48 @@ class ExchangeRateProvider extends Model
 
                 $query = 'INR_USD';
                 $url = $url."&q={$query}".'&compact=y';
-                $response = Http::get($url)->json();
+                $httpResponse = Http::get($url);
+
+                if ($httpResponse->failed()) {
+                    return respondJson('http_error', 'Failed to connect to exchange rate provider');
+                }
+
+                $response = $httpResponse->json();
+
+                if (! is_array($response)) {
+                    return respondJson('invalid_response', 'Invalid response from exchange rate provider');
+                }
 
                 return response()->json([
                     'exchangeRate' => array_values($response[$query]),
+                ], 200);
+
+                break;
+
+            case 'frankfurter':
+                $url = 'https://api.frankfurter.dev/v1/latest?base=INR&symbols=USD';
+                $httpResponse = Http::get($url);
+
+                if ($httpResponse->failed()) {
+                    return respondJson('http_error', 'Failed to connect to exchange rate provider');
+                }
+
+                $response = $httpResponse->json();
+
+                if (! is_array($response)) {
+                    return respondJson('invalid_response', 'Invalid response from exchange rate provider');
+                }
+
+                if (array_key_exists('message', $response)) {
+                    return respondJson('api_error', $response['message'] ?? 'API returned an error');
+                }
+
+                if (! isset($response['rates']) || ! is_array($response['rates'])) {
+                    return respondJson('invalid_response', 'Invalid exchange rate data received');
+                }
+
+                return response()->json([
+                    'exchangeRate' => array_values($response['rates']),
                 ], 200);
 
                 break;
