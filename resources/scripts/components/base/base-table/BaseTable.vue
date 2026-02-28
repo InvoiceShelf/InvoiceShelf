@@ -74,7 +74,7 @@
             <tbody v-else>
               <tr
                 v-for="(row, index) in sortedRows"
-                :key="index"
+                :key="row.data?.id ?? index"
                 :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
               >
                 <td
@@ -296,6 +296,12 @@ async function fetchServerData() {
 
   isLoading.value = false
 
+  // Ignore stale responses: only apply if this is still the requested page
+  const currentPage = (pagination.value && pagination.value.currentPage) || 1
+  if (page !== currentPage) {
+    return null
+  }
+
   pagination.value = response.pagination
   return response.data
 }
@@ -316,9 +322,16 @@ function changeSorting(column) {
 }
 
 async function mapDataToRows() {
-  const data = usesLocalData.value
-    ? prepareLocalData()
-    : await fetchServerData()
+  let data
+
+  if (usesLocalData.value) {
+    data = prepareLocalData()
+  } else {
+    data = await fetchServerData()
+    if (data === null) {
+      return
+    }
+  }
 
   rows.value = data.map((rowData) => new Row(rowData, tableColumns))
 }
