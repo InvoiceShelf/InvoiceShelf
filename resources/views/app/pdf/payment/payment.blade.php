@@ -358,7 +358,7 @@
         <span class="amount">{!! format_money_pdf($payment->amount, $payment->customer->currency) !!}</span>
         @if ($payment->invoice && $payment->invoice->invoice_number)
             <br><p class="total-display-label">Balance Due</p>
-            <span class="amount">{!! $payment->invoice->formattedDueAmount !!}</span><br>
+            <span class="amount">{!! $payment->invoice->formattedDueAmount !!}</span>
             <br><p class="total-display-label">Invoice Status</p>
             <span class="amount">{{ str_replace('_', ' ', optional($payment->invoice)->paid_status ?? optional($payment->invoice)->status) }}</span>
         @endif
