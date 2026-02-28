@@ -16,6 +16,64 @@
         />
       </BaseInputGroup>
 
+      <div
+        v-if="selectedRange.key === 'Quarter'"
+        class="flex flex-row space-x-2 text-sm ml-1 mt-4"
+      >
+        <span
+          class="text-primary-500 cursor-pointer hover:underline"
+          :class="{ 'font-bold': isThisQuarterSelected }"
+          @click="selectThisQuarter"
+        >
+          {{ $t('dateRange.this_quarter') }}
+        </span>
+        <span class="text-gray-300">|</span>
+        <span
+          class="text-primary-500 cursor-pointer hover:underline"
+          :class="{ 'font-bold': isPreviousQuarterSelected }"
+          @click="selectPreviousQuarter"
+        >
+          {{ $t('dateRange.previous_quarter') }}
+        </span>
+      </div>
+
+      <div v-if="selectedRange.key === 'Quarter'" class="flex flex-col my-4 lg:space-x-3 lg:flex-row">
+        <BaseInputGroup :label="$t('reports.year')">
+          <BaseMultiselect
+            v-model="selectedYear"
+            :options="years"
+            :searchable="true"
+            :placeholder="$t('reports.year')"
+            @update:modelValue="onChangeQuarterYear"
+          />
+        </BaseInputGroup>
+
+        <div
+          class="
+            hidden
+            w-5
+            h-0
+            mx-4
+            border border-gray-400 border-solid
+            xl:block
+          "
+          style="margin-top: 2.5rem"
+        />
+
+        <BaseInputGroup :label="$t('reports.quarter')">
+          <BaseMultiselect
+            v-model="selectedQuarter"
+            :options="quarters"
+            value-prop="value"
+            track-by="value"
+            label="label"
+            object
+            :placeholder="$t('reports.quarter')"
+            @update:modelValue="onChangeQuarterYear"
+          />
+        </BaseInputGroup>
+      </div>
+
       <div class="flex flex-col my-6 lg:space-x-3 lg:flex-row">
         <BaseInputGroup :label="$t('reports.sales.from_date')">
           <BaseDatePicker v-model="formData.from_date" />
@@ -126,10 +184,6 @@ const dateRange = reactive([
     key: 'This Month',
   },
   {
-    label: t('dateRange.this_quarter'),
-    key: 'This Quarter',
-  },
-  {
     label: t('dateRange.this_year'),
     key: 'This Year',
   },
@@ -142,12 +196,12 @@ const dateRange = reactive([
     key: 'Previous Month',
   },
   {
-    label: t('dateRange.previous_quarter'),
-    key: 'Previous Quarter',
-  },
-  {
     label: t('dateRange.previous_year'),
     key: 'Previous Year',
+  },
+  {
+    label: t('dateRange.quarter'),
+    key: 'Quarter',
   },
   {
     label: t('dateRange.custom'),
@@ -179,6 +233,34 @@ let formData = reactive({
 
 const companyStore = useCompanyStore()
 
+const currentYear = new Date().getFullYear()
+const years = computed(() => globalStore.availableYears)
+const selectedYear = ref(currentYear)
+
+const quarters = ref([
+  { label: 'Q1', value: 1 },
+  { label: 'Q2', value: 2 },
+  { label: 'Q3', value: 3 },
+  { label: 'Q4', value: 4 },
+])
+const selectedQuarter = ref(quarters.value[moment().quarter() - 1])
+
+const isThisQuarterSelected = computed(() => {
+  const current = moment()
+  return (
+    parseInt(selectedYear.value) === parseInt(current.year()) &&
+    parseInt(selectedQuarter.value.value) === parseInt(current.quarter())
+  )
+})
+
+const isPreviousQuarterSelected = computed(() => {
+  const prev = moment().subtract(1, 'quarter')
+  return (
+    parseInt(selectedYear.value) === parseInt(prev.year()) &&
+    parseInt(selectedQuarter.value.value) === parseInt(prev.quarter())
+  )
+})
+
 const getReportUrl = computed(() => {
   return url.value
 })
@@ -206,10 +288,29 @@ watch(range, (newRange) => {
   formData.to_date = moment(newRange).endOf('year').toString()
 })
 
+watch(
+  () => [formData.from_date, formData.to_date],
+  ([newFrom, newTo]) => {
+    if (selectedRange.value.key === 'Quarter') {
+      let quarterValue = selectedQuarter.value.value
+      let yearValue = selectedYear.value
+
+      let startMonth = (quarterValue - 1) * 3
+      let expectedFrom = moment().year(yearValue).month(startMonth).startOf('month').format('YYYY-MM-DD')
+      let expectedTo = moment().year(yearValue).month(startMonth + 2).endOf('month').format('YYYY-MM-DD')
+
+      if (newFrom !== expectedFrom || newTo !== expectedTo) {
+        selectedRange.value = dateRange.find((r) => r.key === 'Custom')
+      }
+    }
+  }
+)
+
 onMounted(() => {
   customerSiteURL.value = `/reports/sales/customers/${getSelectedCompany.value.unique_hash}`
   itemsSiteURL.value = `/reports/sales/items/${getSelectedCompany.value.unique_hash}`
   getInitialReport()
+  globalStore.fetchAvailableYears()
 })
 
 function getThisDate(type, time) {
@@ -220,10 +321,39 @@ function getPreDate(type, time) {
   return moment().subtract(1, time)[type](time).format('YYYY-MM-DD')
 }
 
+function selectPreviousQuarter() {
+  let current = moment()
+  let prev = current.subtract(1, 'quarter')
+  selectedYear.value = prev.year()
+  selectedQuarter.value = quarters.value[prev.quarter() - 1]
+  onChangeQuarterYear()
+}
+
+function selectThisQuarter() {
+  let current = moment()
+  selectedYear.value = current.year()
+  selectedQuarter.value = quarters.value[current.quarter() - 1]
+  onChangeQuarterYear()
+}
+
+function onChangeQuarterYear() {
+  if (selectedRange.value.key === 'Quarter') {
+    let quarterValue = selectedQuarter.value.value
+    let yearValue = selectedYear.value
+
+    let startMonth = (quarterValue - 1) * 3
+    formData.from_date = moment().year(yearValue).month(startMonth).startOf('month').format('YYYY-MM-DD')
+    formData.to_date = moment().year(yearValue).month(startMonth + 2).endOf('month').format('YYYY-MM-DD')
+  }
+}
+
 function onChangeDateRange() {
   let key = selectedRange.value.key
 
   switch (key) {
+    case 'Quarter':
+      onChangeQuarterYear()
+      break
     case 'Today':
       formData.from_date = moment().format('YYYY-MM-DD')
       formData.to_date = moment().format('YYYY-MM-DD')
@@ -236,10 +366,6 @@ function onChangeDateRange() {
       formData.from_date = getThisDate('startOf', 'month')
       formData.to_date = getThisDate('endOf', 'month')
       break
-    case 'This Quarter':
-      formData.from_date = getThisDate('startOf', 'quarter')
-      formData.to_date = getThisDate('endOf', 'quarter')
-      break
     case 'This Year':
       formData.from_date = getThisDate('startOf', 'year')
       formData.to_date = getThisDate('endOf', 'year')
@@ -251,10 +377,6 @@ function onChangeDateRange() {
     case 'Previous Month':
       formData.from_date = getPreDate('startOf', 'month')
       formData.to_date = getPreDate('endOf', 'month')
-      break
-    case 'Previous Quarter':
-      formData.from_date = getPreDate('startOf', 'quarter')
-      formData.to_date = getPreDate('endOf', 'quarter')
       break
     case 'Previous Year':
       formData.from_date = getPreDate('startOf', 'year')

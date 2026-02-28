@@ -191,6 +191,7 @@
     "previous_month": "Previous Month",
     "previous_quarter": "Previous Quarter",
     "previous_year": "Previous Year",
+    "quarter": "Quarter",
     "custom": "Custom"
   },
   "customers": {
@@ -781,6 +782,8 @@
   },
   "reports": {
     "title": "Report",
+    "year": "Year",
+    "quarter": "Quarter",
     "from_date": "From Date",
     "to_date": "To Date",
     "status": "Status",
