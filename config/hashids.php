@@ -14,6 +14,7 @@ use App\Models\EmailLog;
 use App\Models\Estimate;
 use App\Models\Invoice;
 use App\Models\Payment;
+use App\Models\CreditNote;
 use App\Models\Transaction;
 
 return [
@@ -55,6 +56,11 @@ return [
         ],
         Payment::class => [
             'salt' => Payment::class.config('app.key'),
+            'length' => 20,
+            'alphabet' => 'aqW3eR2Icf0jp65Gl7UVS1dhyb8Mn9XKTZ4O',
+        ],
+        CreditNote::class => [
+            'salt' => CreditNote::class.config('app.key'),
             'length' => 20,
             'alphabet' => 'aqW3eR2Icf0jp65Gl7UVS1dhyb8Mn9XKTZ4O',
         ],

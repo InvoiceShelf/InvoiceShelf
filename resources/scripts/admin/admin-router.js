@@ -82,6 +82,11 @@ const PaymentsIndex = () => import('@/scripts/admin/views/payments/Index.vue')
 const PaymentCreate = () => import('@/scripts/admin/views/payments/Create.vue')
 const PaymentView = () => import('@/scripts/admin/views/payments/View.vue')
 
+// Credit Notes
+const CreditNotesIndex = () => import('@/scripts/admin/views/credit-notes/Index.vue')
+const CreditNoteCreate = () => import('@/scripts/admin/views/credit-notes/Create.vue')
+const CreditNoteView = () => import('@/scripts/admin/views/credit-notes/View.vue')
+
 const NotFoundPage = () => import('@/scripts/admin/views/errors/404.vue')
 
 // Invoice
@@ -472,6 +477,37 @@ export default [
         name: 'recurring-invoices.edit',
         meta: { ability: abilities.EDIT_RECURRING_INVOICE },
         component: RecurringInvoiceCreate,
+      },
+      // Credit Notes
+      {
+        path: 'credit-notes',
+        name: 'credit-notes.index',
+        meta: { ability: abilities.VIEW_CREDIT_NOTE },
+        component: CreditNotesIndex,
+      },
+      {
+        path: 'credit-notes/create',
+        name: 'credit-notes.create',
+        meta: { ability: abilities.CREATE_CREDIT_NOTE },
+        component: CreditNoteCreate,
+      },
+      {
+        path: 'credit-notes/:id/create',
+        name: 'invoice.credit-notes.create',
+        meta: { ability: abilities.CREATE_CREDIT_NOTE },
+        component: CreditNoteCreate,
+      },
+      {
+        path: 'credit-notes/:id/edit',
+        name: 'credit-notes.edit',
+        meta: { ability: abilities.EDIT_CREDIT_NOTE },
+        component: CreditNoteCreate,
+      },
+      {
+        path: 'credit-notes/:id/view',
+        name: 'credit-notes.view',
+        meta: { ability: abilities.VIEW_CREDIT_NOTE },
+        component: CreditNoteView,
       },
 
       // Modules

@@ -139,6 +139,11 @@ class User extends Authenticatable implements HasMedia
         return $this->hasMany(Payment::class, 'creator_id');
     }
 
+    public function creditNotes(): HasMany
+    {
+        return $this->hasMany(CreditNote::class, 'creator_id');
+    }
+
     public function invoices(): HasMany
     {
         return $this->hasMany(Invoice::class, 'creator_id');
@@ -421,6 +426,10 @@ class User extends Authenticatable implements HasMedia
 
             if ($user->payments()->exists()) {
                 $user->payments()->update(['creator_id' => null]);
+            }
+
+            if ($user->creditNotes()->exists()) {
+                $user->creditNotes()->update(['creator_id' => null]);
             }
 
             if ($user->items()->exists()) {
