@@ -70,8 +70,11 @@ class DatabaseConfigurationController extends Controller
             case 'mysql':
                 $databaseData = [
                     'database_connection' => 'mysql',
-                    'database_host' => '127.0.0.1',
-                    'database_port' => 3306,
+                    'database_host' => config('database.connections.mysql.host', '127.0.0.1'),
+                    'database_port' => config('database.connections.mysql.port', 3306),
+                    'database_name' => config('database.connections.mysql.database', 'invoiceshelf'),
+                    'database_username' => config('database.connections.mysql.username', 'root'),
+                    'database_password' => config('database.connections.mysql.password', ''),
                 ];
 
                 break;
