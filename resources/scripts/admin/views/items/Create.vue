@@ -134,16 +134,9 @@
 
 <script setup>
 import { computed, ref } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import {
-  required,
-  minLength,
-  numeric,
-  minValue,
-  maxLength,
-  helpers,
-} from '@vuelidate/validators'
+import { helpers, maxLength, minLength, required } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { useItemStore } from '@/scripts/admin/stores/item'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
@@ -152,6 +145,20 @@ import { useModalStore } from '@/scripts/stores/modal'
 import ItemUnitModal from '@/scripts/admin/components/modal-components/ItemUnitModal.vue'
 import { useUserStore } from '@/scripts/admin/stores/user'
 import abilities from '@/scripts/admin/stub/abilities'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseTextarea from '@/scripts/components/base/BaseTextarea.vue'
+import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
+import BaseMultiselect from '@/scripts/components/base/base-select/BaseMultiselect.vue'
+import BaseSelectAction from '@/scripts/components/base/BaseSelectAction.vue'
+import BaseMoney from '@/scripts/components/base/BaseMoney.vue'
+import BaseInput from '@/scripts/components/base/BaseInput.vue'
+import BaseInputGrid from '@/scripts/components/base/BaseInputGrid.vue'
+import BaseCard from '@/scripts/components/base/BaseCard.vue'
+import BaseBreadcrumbItem from '@/scripts/components/base/BaseBreadcrumbItem.vue'
+import BaseBreadcrumb from '@/scripts/components/base/BaseBreadcrumb.vue'
+import BasePageHeader from '@/scripts/components/base/BasePageHeader.vue'
+import BasePage from '@/scripts/components/base/BasePage.vue'
 
 const itemStore = useItemStore()
 const taxTypeStore = useTaxTypeStore()

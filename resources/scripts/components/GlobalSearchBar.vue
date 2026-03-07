@@ -159,6 +159,8 @@ import { onClickOutside } from '@vueuse/core'
 import { useRoute } from 'vue-router'
 import SpinnerIcon from '@/scripts/components/icons/SpinnerIcon.vue'
 import { debounce } from 'lodash'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseInput from '@/scripts/components/base/BaseInput.vue'
 
 const usersStore = useUsersStore()
 

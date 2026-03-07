@@ -381,6 +381,7 @@
 import { ref, onMounted, watch } from 'vue'
 import axios from 'axios'
 import utils from '@/scripts/helpers/utilities'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
 
 const props = defineProps({
   multiple: {

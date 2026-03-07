@@ -208,6 +208,8 @@ import {
 } from '@headlessui/vue'
 import { Bars3Icon, XMarkIcon, ArrowRightOnRectangleIcon, CogIcon } from '@heroicons/vue/24/outline'
 import { useI18n } from 'vue-i18n'
+import BaseDropdownItem from '@/scripts/components/base/BaseDropdownItem.vue'
+import BaseDropdown from '@/scripts/components/base/BaseDropdown.vue'
 
 const { t } = useI18n()
 
