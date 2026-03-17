@@ -27,6 +27,16 @@ class BackupsController extends ApiController
         $configuredBackupDisks = config('backup.backup.destination.disks');
 
         try {
+            if ($request->file_disk_id) {
+                $fileDisk = \App\Models\FileDisk::find($request->file_disk_id);
+                if ($fileDisk) {
+                    $fileDisk->setConfig();
+                    $prefix = env('DYNAMIC_DISK_PREFIX', 'temp_');
+                    config(['backup.backup.destination.disks' => [$prefix.$fileDisk->driver]]);
+                    $configuredBackupDisks = config('backup.backup.destination.disks');
+                }
+            }
+
             $backupDestination = BackupDestination::create(config('filesystems.default'), config('backup.backup.name'));
 
             $backups = Cache::remember("backups-{$request->file_disk_id}", now()->addSeconds(4), function () use ($backupDestination) {
