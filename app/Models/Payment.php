@@ -6,6 +6,7 @@ use App\Facades\Hashids;
 use App\Jobs\GeneratePaymentPdfJob;
 use App\Mail\SendPaymentMail;
 use App\Services\SerialNumberFormatter;
+use App\Support\PdfHtmlSanitizer;
 use App\Traits\GeneratesPdfTrait;
 use App\Traits\HasCustomFieldsTrait;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
@@ -433,7 +434,7 @@ class Payment extends Model implements HasMedia
 
     public function getNotes()
     {
-        return $this->getFormattedString($this->notes);
+        return PdfHtmlSanitizer::sanitize($this->getFormattedString($this->notes));
     }
 
     public function getEmailBody($body)

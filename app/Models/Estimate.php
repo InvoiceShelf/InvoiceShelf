@@ -8,6 +8,7 @@ use App\Facades\PDF;
 use App\Mail\SendEstimateMail;
 use App\Services\SerialNumberFormatter;
 use App\Space\PdfTemplateUtils;
+use App\Support\PdfHtmlSanitizer;
 use App\Traits\GeneratesPdfTrait;
 use App\Traits\HasCustomFieldsTrait;
 use Carbon\Carbon;
@@ -475,7 +476,7 @@ class Estimate extends Model implements HasMedia
 
     public function getNotes()
     {
-        return $this->getFormattedString($this->notes);
+        return PdfHtmlSanitizer::sanitize($this->getFormattedString($this->notes));
     }
 
     public function getEmailAttachmentSetting()
