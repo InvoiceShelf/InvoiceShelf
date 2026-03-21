@@ -22,7 +22,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.3
+          php-version: 8.4
 
       - name: Checkout code
         uses: actions/checkout@v4
@@ -42,8 +42,6 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - 8.2
-          - 8.3
           - 8.4
     env:
       extensions: bcmath, curl, dom, gd, imagick, json, libxml, mbstring, pcntl, pdo, pdo_mysql, zip
@@ -93,7 +91,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.2
+          php-version: 8.4
           extensions: ${{ env.extensions }}
           coverage: none
 
