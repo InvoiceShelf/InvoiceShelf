@@ -2,13 +2,13 @@
 
 namespace Database\Seeders;
 
+use App\Facades\Hashids;
 use App\Models\Company;
 use App\Models\Setting;
 use App\Models\User;
 use App\Space\InstallUtils;
 use Illuminate\Database\Seeder;
 use Silber\Bouncer\BouncerFacade;
-use Vinkla\Hashids\Facades\Hashids;
 
 class UsersTableSeeder extends Seeder
 {

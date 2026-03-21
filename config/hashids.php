@@ -1,12 +1,9 @@
 <?php
 
 /**
- * Copyright (c) Vincent Klaiber.
+ * Hashids connection config (per model class).
  *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- * @see https://github.com/vinkla/laravel-hashids
+ * Wired by App\Hashids\HashidsServiceProvider using the hashids/hashids package.
  */
 
 use App\Models\Company;

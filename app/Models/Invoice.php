@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App;
+use App\Facades\Hashids;
 use App\Facades\PDF;
 use App\Mail\SendInvoiceMail;
 use App\Services\SerialNumberFormatter;
@@ -18,7 +19,6 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Nwidart\Modules\Facades\Module;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Vinkla\Hashids\Facades\Hashids;
 
 class Invoice extends Model implements HasMedia
 {
@@ -84,7 +84,7 @@ class Invoice extends Model implements HasMedia
 
     public function items(): HasMany
     {
-        return $this->hasMany(\App\Models\InvoiceItem::class);
+        return $this->hasMany(InvoiceItem::class);
     }
 
     public function taxes(): HasMany

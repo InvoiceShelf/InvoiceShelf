@@ -2,21 +2,22 @@
 
 namespace App\Http\Controllers\V1\Admin\Invoice;
 
+use App\Facades\Hashids;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\InvoiceResource;
 use App\Models\CompanySetting;
 use App\Models\Invoice;
 use App\Services\SerialNumberFormatter;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Vinkla\Hashids\Facades\Hashids;
 
 class CloneInvoiceController extends Controller
 {
     /**
      * Mail a specific invoice to the corresponding customer's email address.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function __invoke(Request $request, Invoice $invoice)
     {
