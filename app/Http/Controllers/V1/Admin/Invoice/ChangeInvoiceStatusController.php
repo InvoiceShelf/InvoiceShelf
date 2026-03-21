@@ -4,6 +4,7 @@ namespace App\Http\Controllers\V1\Admin\Invoice;
 
 use App\Http\Controllers\Controller;
 use App\Models\Invoice;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ChangeInvoiceStatusController extends Controller
@@ -11,7 +12,7 @@ class ChangeInvoiceStatusController extends Controller
     /**
      * Handle the incoming request.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function __invoke(Request $request, Invoice $invoice)
     {

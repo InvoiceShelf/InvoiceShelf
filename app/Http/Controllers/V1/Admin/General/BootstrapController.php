@@ -11,6 +11,7 @@ use App\Models\Currency;
 use App\Models\Module;
 use App\Models\Setting;
 use App\Traits\GeneratesMenuTrait;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Silber\Bouncer\BouncerFacade;
 
@@ -21,7 +22,7 @@ class BootstrapController extends Controller
     /**
      * Handle the incoming request.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function __invoke(Request $request)
     {

@@ -8,6 +8,7 @@ use App\Http\Requests\DeleteInvoiceRequest;
 use App\Http\Resources\InvoiceResource;
 use App\Jobs\GenerateInvoicePdfJob;
 use App\Models\Invoice;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class InvoicesController extends Controller
@@ -15,7 +16,7 @@ class InvoicesController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function index(Request $request)
     {
@@ -38,8 +39,8 @@ class InvoicesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param  Request  $request
+     * @return JsonResponse
      */
     public function store(Requests\InvoicesRequest $request)
     {
@@ -59,7 +60,7 @@ class InvoicesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function show(Request $request, Invoice $invoice)
     {
@@ -71,8 +72,8 @@ class InvoicesController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param  Request  $request
+     * @return JsonResponse
      */
     public function update(Requests\InvoicesRequest $request, Invoice $invoice)
     {
@@ -92,8 +93,8 @@ class InvoicesController extends Controller
     /**
      * delete the specified resources in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param  Request  $request
+     * @return JsonResponse
      */
     public function delete(DeleteInvoiceRequest $request)
     {

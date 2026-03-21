@@ -7,6 +7,7 @@ use App\Http\Requests\Customer\CustomerLoginRequest;
 use App\Models\Company;
 use App\Models\Customer;
 use Hash;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
@@ -15,7 +16,7 @@ class LoginController extends Controller
     /**
      * Handle the incoming request.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function __invoke(CustomerLoginRequest $request, Company $company)
     {

@@ -9,6 +9,7 @@ use App\Models\ExchangeRateLog;
 use App\Models\ExchangeRateProvider;
 use App\Traits\ExchangeRateProvidersTrait;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 
 class GetExchangeRateController extends Controller
@@ -18,7 +19,7 @@ class GetExchangeRateController extends Controller
     /**
      * Handle the incoming request.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function __invoke(Request $request, Currency $currency)
     {

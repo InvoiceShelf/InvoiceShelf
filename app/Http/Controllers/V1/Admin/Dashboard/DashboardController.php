@@ -11,6 +11,7 @@ use App\Models\Expense;
 use App\Models\Invoice;
 use App\Models\Payment;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Silber\Bouncer\BouncerFacade;
 
@@ -19,7 +20,7 @@ class DashboardController extends Controller
     /**
      * Handle the incoming request.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function __invoke(Request $request)
     {

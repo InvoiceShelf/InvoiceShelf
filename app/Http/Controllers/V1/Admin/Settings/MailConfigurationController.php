@@ -10,6 +10,7 @@ use App\Space\EnvironmentManager;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Mail;
 
 class MailConfigurationController extends Controller
@@ -235,7 +236,7 @@ class MailConfigurationController extends Controller
      * @return JsonResponse
      *
      * @throws AuthorizationException
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
      */
     public function testEmailConfig(Request $request)
     {

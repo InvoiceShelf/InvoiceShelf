@@ -9,13 +9,14 @@ use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\Tax;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class GetAllUsedCurrenciesController extends Controller
 {
     /**
      * Handle the incoming request.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function __invoke(Request $request)
     {

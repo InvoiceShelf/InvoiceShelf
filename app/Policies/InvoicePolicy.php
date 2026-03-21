@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Invoice;
+use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Silber\Bouncer\BouncerFacade;
@@ -112,7 +113,7 @@ class InvoicePolicy
     /**
      * Determine whether the user can send email of the model.
      *
-     * @param  \App\Models\Payment  $payment
+     * @param  Payment  $payment
      * @return mixed
      */
     public function send(User $user, Invoice $invoice)

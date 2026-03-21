@@ -8,6 +8,7 @@ use App\Models\CompanySetting;
 use App\Models\Currency;
 use App\Models\Module;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class BootstrapController extends Controller
@@ -15,7 +16,7 @@ class BootstrapController extends Controller
     /**
      * Handle the incoming request.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function __invoke(Request $request)
     {

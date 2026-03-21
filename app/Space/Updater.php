@@ -124,7 +124,7 @@ class Updater
         $files = json_decode($json);
 
         foreach ($files as $file) {
-            \File::delete(base_path($file));
+            File::delete(base_path($file));
         }
 
         return true;

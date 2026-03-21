@@ -7,6 +7,7 @@ use App\Http\Resources\Customer\PaymentResource;
 use App\Models\Company;
 use App\Models\Payment;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class PaymentsController extends Controller
@@ -14,7 +15,7 @@ class PaymentsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index(Request $request)
     {
@@ -42,8 +43,8 @@ class PaymentsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Payment  $payment
-     * @return \Illuminate\Http\Response
+     * @param  Payment  $payment
+     * @return Response
      */
     public function show(Company $company, $id)
     {

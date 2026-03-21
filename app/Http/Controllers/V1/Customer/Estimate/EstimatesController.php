@@ -7,6 +7,7 @@ use App\Http\Resources\Customer\EstimateResource;
 use App\Models\Company;
 use App\Models\Estimate;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class EstimatesController extends Controller
@@ -14,7 +15,7 @@ class EstimatesController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index(Request $request)
     {
@@ -49,7 +50,7 @@ class EstimatesController extends Controller
      * Display the specified resource.
      *
      * @param  Estimate  $estimate
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(Company $company, $id)
     {

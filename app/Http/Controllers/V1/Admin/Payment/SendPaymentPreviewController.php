@@ -5,6 +5,7 @@ namespace App\Http\Controllers\V1\Admin\Payment;
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Mail\Markdown;
 
 class SendPaymentPreviewController extends Controller
@@ -12,7 +13,7 @@ class SendPaymentPreviewController extends Controller
     /**
      * Handle the incoming request.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function __invoke(Request $request, Payment $payment)
     {

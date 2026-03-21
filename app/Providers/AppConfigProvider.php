@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\FileDisk;
 use App\Models\Setting;
 use App\Space\InstallUtils;
 use Illuminate\Support\Facades\Config;
@@ -163,7 +164,7 @@ class AppConfigProvider extends ServiceProvider
     {
         try {
             // Get the default file disk from database
-            $fileDisk = \App\Models\FileDisk::whereSetAsDefault(true)->first();
+            $fileDisk = FileDisk::whereSetAsDefault(true)->first();
 
             if ($fileDisk) {
                 $fileDisk->setConfig();

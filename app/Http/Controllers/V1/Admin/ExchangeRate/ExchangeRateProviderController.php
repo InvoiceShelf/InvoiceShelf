@@ -7,13 +7,14 @@ use App\Http\Requests\ExchangeRateProviderRequest;
 use App\Http\Resources\ExchangeRateProviderResource;
 use App\Models\ExchangeRateProvider;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ExchangeRateProviderController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index(Request $request)
     {
@@ -29,8 +30,8 @@ class ExchangeRateProviderController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return Response
      */
     public function store(ExchangeRateProviderRequest $request)
     {
@@ -56,7 +57,7 @@ class ExchangeRateProviderController extends Controller
     /**
      * Display the specified resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(ExchangeRateProvider $exchangeRateProvider)
     {
@@ -68,8 +69,8 @@ class ExchangeRateProviderController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return Response
      */
     public function update(ExchangeRateProviderRequest $request, ExchangeRateProvider $exchangeRateProvider)
     {
@@ -95,7 +96,7 @@ class ExchangeRateProviderController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy(ExchangeRateProvider $exchangeRateProvider)
     {

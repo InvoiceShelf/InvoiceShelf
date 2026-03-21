@@ -7,6 +7,7 @@ use App\Http\Requests\DeleteExpensesRequest;
 use App\Http\Requests\ExpenseRequest;
 use App\Http\Resources\ExpenseResource;
 use App\Models\Expense;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ExpensesController extends Controller
@@ -14,7 +15,7 @@ class ExpensesController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function index(Request $request)
     {
@@ -39,7 +40,7 @@ class ExpensesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function store(ExpenseRequest $request)
     {
@@ -53,7 +54,7 @@ class ExpensesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function show(Expense $expense)
     {
@@ -65,7 +66,7 @@ class ExpensesController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function update(ExpenseRequest $request, Expense $expense)
     {

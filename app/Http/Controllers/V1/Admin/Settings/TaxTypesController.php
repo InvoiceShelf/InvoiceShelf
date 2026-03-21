@@ -7,13 +7,14 @@ use App\Http\Requests\TaxTypeRequest;
 use App\Http\Resources\TaxTypeResource;
 use App\Models\TaxType;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class TaxTypesController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index(Request $request)
     {
@@ -33,8 +34,8 @@ class TaxTypesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return Response
      */
     public function store(TaxTypeRequest $request)
     {
@@ -48,7 +49,7 @@ class TaxTypesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(TaxType $taxType)
     {
@@ -60,8 +61,8 @@ class TaxTypesController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return Response
      */
     public function update(TaxTypeRequest $request, TaxType $taxType)
     {
@@ -75,7 +76,7 @@ class TaxTypesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy(TaxType $taxType)
     {

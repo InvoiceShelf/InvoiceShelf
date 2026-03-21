@@ -5,14 +5,16 @@ namespace App\Http\Controllers\V1\Admin\Payment;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SendPaymentRequest;
 use App\Models\Payment;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class SendPaymentController extends Controller
 {
     /**
      * Handle the incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param  Request  $request
+     * @return JsonResponse
      */
     public function __invoke(SendPaymentRequest $request, Payment $payment)
     {

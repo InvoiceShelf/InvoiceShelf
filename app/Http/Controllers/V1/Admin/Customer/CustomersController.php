@@ -7,6 +7,7 @@ use App\Http\Requests;
 use App\Http\Requests\DeleteCustomersRequest;
 use App\Http\Resources\CustomerResource;
 use App\Models\Customer;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class CustomersController extends Controller
@@ -14,7 +15,7 @@ class CustomersController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function index(Request $request)
     {
@@ -38,8 +39,8 @@ class CustomersController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param  Request  $request
+     * @return JsonResponse
      */
     public function store(Requests\CustomerRequest $request)
     {
@@ -53,7 +54,7 @@ class CustomersController extends Controller
     /**
      * Display the specified resource.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function show(Customer $customer)
     {
@@ -65,8 +66,8 @@ class CustomersController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param  Request  $request
+     * @return JsonResponse
      */
     public function update(Requests\CustomerRequest $request, Customer $customer)
     {
@@ -84,8 +85,8 @@ class CustomersController extends Controller
     /**
      * Remove a list of Customers along side all their resources (ie. Estimates, Invoices, Payments and Addresses)
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param  Request  $request
+     * @return JsonResponse
      */
     public function delete(DeleteCustomersRequest $request)
     {

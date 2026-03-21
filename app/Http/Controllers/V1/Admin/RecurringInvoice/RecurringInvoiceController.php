@@ -7,13 +7,14 @@ use App\Http\Requests\RecurringInvoiceRequest;
 use App\Http\Resources\RecurringInvoiceResource;
 use App\Models\RecurringInvoice;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class RecurringInvoiceController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index(Request $request)
     {
@@ -34,8 +35,8 @@ class RecurringInvoiceController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return Response
      */
     public function store(RecurringInvoiceRequest $request)
     {
@@ -49,7 +50,7 @@ class RecurringInvoiceController extends Controller
     /**
      * Display the specified resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(RecurringInvoice $recurringInvoice)
     {
@@ -61,8 +62,8 @@ class RecurringInvoiceController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return Response
      */
     public function update(RecurringInvoiceRequest $request, RecurringInvoice $recurringInvoice)
     {
@@ -76,8 +77,8 @@ class RecurringInvoiceController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\RecurringInvoice  $recurringInvoice
-     * @return \Illuminate\Http\Response
+     * @param  RecurringInvoice  $recurringInvoice
+     * @return Response
      */
     public function delete(Request $request)
     {

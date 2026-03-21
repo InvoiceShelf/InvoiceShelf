@@ -12,7 +12,7 @@ class ScopeBouncer
     /**
      * The Bouncer instance.
      *
-     * @var \Silber\Bouncer\Bouncer
+     * @var Bouncer
      */
     protected $bouncer;
 

@@ -4,13 +4,14 @@ namespace App\Http\Controllers\V1\PDF;
 
 use App\Http\Controllers\Controller;
 use App\Models\Expense;
+use Illuminate\Http\Request;
 
 class DownloadReceiptController extends Controller
 {
     /**
      * Handle the incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @param  string  $hash
      * @return \Illuminate\Http\Response
      */

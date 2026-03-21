@@ -7,6 +7,7 @@ use App\Http\Resources\Customer\EstimateResource;
 use App\Models\Company;
 use App\Models\Estimate;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class AcceptEstimateController extends Controller
@@ -15,7 +16,7 @@ class AcceptEstimateController extends Controller
      * Handle the incoming request.
      *
      * @param  Estimate  $estimate
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function __invoke(Request $request, Company $company, $id)
     {

@@ -5,17 +5,19 @@ namespace App\Http\Controllers\V1\Modules;
 use App\Http\Controllers\Controller;
 use App\Services\Module\ModuleFacade;
 use DateTime;
+use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 use Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ScriptController extends Controller
 {
     /**
      * Serve the requested script.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      *
-     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @throws NotFoundHttpException
      */
     public function __invoke(Request $request, string $script)
     {

@@ -8,6 +8,7 @@ use App\Models\CompanySetting;
 use App\Models\Currency;
 use App\Models\Customer;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use PDF;
@@ -18,7 +19,7 @@ class CustomerSalesReportController extends Controller
      * Handle the incoming request.
      *
      * @param  string  $hash
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function __invoke(Request $request, $hash)
     {

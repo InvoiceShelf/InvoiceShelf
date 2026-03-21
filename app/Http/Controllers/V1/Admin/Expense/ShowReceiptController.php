@@ -4,13 +4,14 @@ namespace App\Http\Controllers\V1\Admin\Expense;
 
 use App\Http\Controllers\Controller;
 use App\Models\Expense;
+use Illuminate\Http\JsonResponse;
 
 class ShowReceiptController extends Controller
 {
     /**
      * Retrieve details of an expense receipt from storage.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function __invoke(Expense $expense)
     {

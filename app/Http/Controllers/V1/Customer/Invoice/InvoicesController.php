@@ -7,6 +7,7 @@ use App\Http\Resources\Customer\InvoiceResource;
 use App\Models\Company;
 use App\Models\Invoice;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class InvoicesController extends Controller
@@ -14,7 +15,7 @@ class InvoicesController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index(Request $request)
     {

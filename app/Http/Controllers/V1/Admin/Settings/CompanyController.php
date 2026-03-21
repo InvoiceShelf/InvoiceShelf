@@ -10,6 +10,7 @@ use App\Http\Requests\ProfileRequest;
 use App\Http\Resources\CompanyResource;
 use App\Http\Resources\UserResource;
 use App\Models\Company;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class CompanyController extends Controller
@@ -17,7 +18,7 @@ class CompanyController extends Controller
     /**
      * Retrive the Admin account.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function getUser(Request $request)
     {
@@ -28,7 +29,7 @@ class CompanyController extends Controller
      * Update the Admin profile.
      * Includes name, email and (or) password
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function updateProfile(ProfileRequest $request)
     {
@@ -42,7 +43,7 @@ class CompanyController extends Controller
     /**
      * Update Admin Company Details
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function updateCompany(CompanyRequest $request)
     {
@@ -60,7 +61,7 @@ class CompanyController extends Controller
     /**
      * Upload the company logo to storage.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function uploadCompanyLogo(CompanyLogoRequest $request)
     {
@@ -93,7 +94,7 @@ class CompanyController extends Controller
     /**
      * Upload the Admin Avatar to public storage.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function uploadAvatar(AvatarRequest $request)
     {
