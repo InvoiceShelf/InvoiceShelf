@@ -26,6 +26,12 @@ To get started with InvoiceShelf using Docker Compose, check out the [Installati
 - [Developer Guide](https://docs.invoiceshelf.com/developer-guide.html)
 - [API Documentation](https://api-docs.invoiceshelf.com)
 
+## System Requirements
+
+- Starting from **v2.2.0** (Laravel 13 upgrade), InvoiceShelf requires **PHP 8.4+**.
+- Before updating from the app settings, verify your server PHP version and required extensions.
+- The in-app updater checks requirements and blocks the update if they are not met.
+
 ## Download
 
 - [Download Link](https://invoiceshelf.com)

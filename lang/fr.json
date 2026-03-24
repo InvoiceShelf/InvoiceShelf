@@ -1326,7 +1326,8 @@
       "finishing_update": "Finalisation de la mise à jour",
       "update_failed": "Échec de la mise à jour",
       "update_failed_text": "Désolé ! Votre mise à jour a échoué à: {step} étape",
-      "update_warning": "Cet utilitaire va écraser tous les fichiers et templates de l'application. Veuillez faire une sauvegarde de vos templates et de la base de donnée avant de faire la mise à jour."
+      "update_warning": "Cet utilitaire va écraser tous les fichiers et templates de l'application. Veuillez faire une sauvegarde de vos templates et de la base de donnée avant de faire la mise à jour.",
+      "requirements_not_met": "La mise à jour ne peut pas continuer car certaines exigences système ne sont pas respectées (y compris la version PHP minimale). Veuillez corriger les exigences en échec puis réessayer."
     },
     "backup": {
       "title": "Sauvegarde | Sauvegardes",
