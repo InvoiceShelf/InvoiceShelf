@@ -1326,7 +1326,8 @@
       "finishing_update": "アップデート完了",
       "update_failed": "アップデートに失敗しました",
       "update_failed_text": "申し訳ありません。更新に失敗しました: {step} ステップ",
-      "update_warning": "このユーティリティを使用してアプリケーションを更新するとすべてのアプリケーションファイルと既定のテンプレートファイルが上書きされます。更新する前にテンプレートとデータベースのバックアップを作成してください。"
+      "update_warning": "このユーティリティを使用してアプリケーションを更新するとすべてのアプリケーションファイルと既定のテンプレートファイルが上書きされます。更新する前にテンプレートとデータベースのバックアップを作成してください。",
+      "requirements_not_met": "Update cannot continue because some system requirements are not met (including minimum PHP version). Please fix the failed requirements and try again."
     },
     "backup": {
       "title": "バックアップ | バックアップ",
