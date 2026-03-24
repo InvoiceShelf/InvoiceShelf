@@ -1326,7 +1326,8 @@
       "finishing_update": "Actualización final",
       "update_failed": "Actualización fallida",
       "update_failed_text": "¡Lo siento! Su actualización falló el: {step} paso",
-      "update_warning": "Todos los archivos y temas predeterminados se sobreescribirán cuando actualice la aplicación a través de esta utilidad. Por favor, cree una copia de seguridad de sus temas y base de datos antes de actualizar."
+      "update_warning": "Todos los archivos y temas predeterminados se sobreescribirán cuando actualice la aplicación a través de esta utilidad. Por favor, cree una copia de seguridad de sus temas y base de datos antes de actualizar.",
+      "requirements_not_met": "Update cannot continue because some system requirements are not met (including minimum PHP version). Please fix the failed requirements and try again."
     },
     "backup": {
       "title": "Copia de seguridad | Copias de seguridad",
