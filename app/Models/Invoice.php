@@ -57,6 +57,7 @@ class Invoice extends Model implements HasMedia
         'formattedCreatedAt',
         'formattedInvoiceDate',
         'formattedDueDate',
+        'formattedDueAmount',
         'invoicePdfUrl',
     ];
 
@@ -188,6 +189,17 @@ class Invoice extends Model implements HasMedia
         $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id);
 
         return Carbon::parse($this->due_date)->translatedFormat($dateFormat);
+    }
+
+    public function getFormattedDueAmountAttribute($value)
+    {
+        $currency = $this->currency;
+
+        if (! $currency) {
+            $currency = Currency::findOrFail(CompanySetting::getSetting('currency', $this->company_id));
+        }
+
+        return format_money_pdf($this->due_amount, $currency);
     }
 
     public function getFormattedInvoiceDateAttribute($value)

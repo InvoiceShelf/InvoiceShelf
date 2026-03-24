@@ -343,6 +343,10 @@
                             <td class="attribute-label">@lang('pdf_invoice_label')</td>
                             <td class="attribute-value"> &nbsp;{{ $payment->invoice->invoice_number }}</td>
                         </tr>
+                        <tr>
+                            <td class="attribute-label">Invoice Amount</td>
+                            <td class="attribute-value"> &nbsp;{!! format_money_pdf($payment->invoice->total, $payment->invoice->currency) !!}</td>
+                        </tr>
                     @endif
                 </table>
             </div>
@@ -352,6 +356,12 @@
     <div class="total-display-box">
         <p class="total-display-label">@lang('pdf_payment_amount_received_label')</p>
         <span class="amount">{!! format_money_pdf($payment->amount, $payment->customer->currency) !!}</span>
+        @if ($payment->invoice && $payment->invoice->invoice_number)
+            <br><p class="total-display-label">Balance Due</p>
+            <span class="amount">{!! $payment->invoice->formattedDueAmount !!}</span>
+            <br><p class="total-display-label">Invoice Status</p>
+            <span class="amount">{{ str_replace('_', ' ', optional($payment->invoice)->paid_status ?? optional($payment->invoice)->status) }}</span>
+        @endif
     </div>
     <div class="notes">
         @if ($notes)
