@@ -1326,7 +1326,8 @@
       "finishing_update": "Pabeidz atjauninājumu",
       "update_failed": "Atjaunināšana neizdevās",
       "update_failed_text": "Atvainojiet! Jūsu atjauninājuma laikā notika kļūda: {step}. solī",
-      "update_warning": "All of the application files and default template files will be overwritten when you update the application using this utility. Please take a backup of your templates & database before updating."
+      "update_warning": "All of the application files and default template files will be overwritten when you update the application using this utility. Please take a backup of your templates & database before updating.",
+      "requirements_not_met": "Update cannot continue because some system requirements are not met (including minimum PHP version). Please fix the failed requirements and try again."
     },
     "backup": {
       "title": "Backup | Backups",
