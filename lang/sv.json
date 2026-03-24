@@ -1326,7 +1326,8 @@
       "finishing_update": "Avslutar uppdateringen",
       "update_failed": "Uppdatering misslyckades",
       "update_failed_text": "Uppdateringen misslyckades på steg : {step} step",
-      "update_warning": "Alla programfiler och standard mallfiler kommer att skrivas över när du uppdaterar programmet med det här verktyget. Ta en säkerhetskopia av dina mallar & databas innan du uppdaterar."
+      "update_warning": "Alla programfiler och standard mallfiler kommer att skrivas över när du uppdaterar programmet med det här verktyget. Ta en säkerhetskopia av dina mallar & databas innan du uppdaterar.",
+      "requirements_not_met": "Update cannot continue because some system requirements are not met (including minimum PHP version). Please fix the failed requirements and try again."
     },
     "backup": {
       "title": "Säkerhetskopiering | Säkerhetskopieringar",
