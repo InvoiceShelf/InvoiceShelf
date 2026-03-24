@@ -7,6 +7,7 @@ use App\Http\Resources\Customer\ExpenseResource;
 use App\Models\Company;
 use App\Models\Expense;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class ExpensesController extends Controller
@@ -14,7 +15,7 @@ class ExpensesController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index(Request $request)
     {
@@ -40,8 +41,8 @@ class ExpensesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Expense  $expense
-     * @return \Illuminate\Http\Response
+     * @param  Expense  $expense
+     * @return Response
      */
     public function show(Company $company, $id)
     {

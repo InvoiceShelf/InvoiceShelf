@@ -56,9 +56,9 @@ return new class extends Migration
                 ]);
 
                 CustomFieldValue::where('custom_field_valuable_id', $user->id)
-                    ->where('custom_field_valuable_type', \App\Models\User::class)
+                    ->where('custom_field_valuable_type', User::class)
                     ->update([
-                        'custom_field_valuable_type' => \App\Models\Customer::class,
+                        'custom_field_valuable_type' => Customer::class,
                         'custom_field_valuable_id' => $newCustomer->id,
                     ]);
             }

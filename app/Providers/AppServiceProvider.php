@@ -22,6 +22,8 @@ use App\Policies\UserPolicy;
 use App\Space\InstallUtils;
 use Gate;
 use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\ServiceProvider;
 use Silber\Bouncer\Database\Models as BouncerModels;
 use Silber\Bouncer\Database\Role;
@@ -66,8 +68,8 @@ class AppServiceProvider extends ServiceProvider
 
         // In demo mode, prevent all outgoing emails and notifications
         if (config('app.env') === 'demo') {
-            \Illuminate\Support\Facades\Mail::fake();
-            \Illuminate\Support\Facades\Notification::fake();
+            Mail::fake();
+            Notification::fake();
         }
     }
 

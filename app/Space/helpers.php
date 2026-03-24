@@ -176,7 +176,7 @@ function clean_slug($model, $title, $id = 0)
         }
     }
 
-    throw new \Exception('Can not create a unique slug');
+    throw new Exception('Can not create a unique slug');
 }
 
 function getRelatedSlugs($type, $slug, $id = 0)

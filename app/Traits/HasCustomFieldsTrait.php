@@ -3,13 +3,14 @@
 namespace App\Traits;
 
 use App\Models\CustomField;
+use App\Models\CustomFieldValue;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 trait HasCustomFieldsTrait
 {
     public function fields(): MorphMany
     {
-        return $this->morphMany(\App\Models\CustomFieldValue::class, 'custom_field_valuable');
+        return $this->morphMany(CustomFieldValue::class, 'custom_field_valuable');
     }
 
     protected static function booted()

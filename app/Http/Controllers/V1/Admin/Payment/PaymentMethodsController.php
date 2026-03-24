@@ -7,13 +7,14 @@ use App\Http\Requests\PaymentMethodRequest;
 use App\Http\Resources\PaymentMethodResource;
 use App\Models\PaymentMethod;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class PaymentMethodsController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index(Request $request)
     {
@@ -33,8 +34,8 @@ class PaymentMethodsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return Response
      */
     public function store(PaymentMethodRequest $request)
     {
@@ -48,7 +49,7 @@ class PaymentMethodsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(PaymentMethod $paymentMethod)
     {
@@ -60,8 +61,8 @@ class PaymentMethodsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return Response
      */
     public function update(PaymentMethodRequest $request, PaymentMethod $paymentMethod)
     {
@@ -75,7 +76,7 @@ class PaymentMethodsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy(PaymentMethod $paymentMethod)
     {

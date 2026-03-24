@@ -121,7 +121,7 @@ class User extends Authenticatable implements HasMedia
 
     public function creator(): BelongsTo
     {
-        return $this->belongsTo(\App\Models\User::class, 'creator_id');
+        return $this->belongsTo(User::class, 'creator_id');
     }
 
     public function companies(): BelongsToMany

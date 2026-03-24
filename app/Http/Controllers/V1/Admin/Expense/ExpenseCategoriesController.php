@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers\V1\Admin\Expense;
 
+use App\ExpensesCategory;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ExpenseCategoryRequest;
 use App\Http\Resources\ExpenseCategoryResource;
 use App\Models\ExpenseCategory;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ExpenseCategoriesController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index(Request $request)
     {
@@ -32,8 +34,8 @@ class ExpenseCategoriesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return Response
      */
     public function store(ExpenseCategoryRequest $request)
     {
@@ -47,7 +49,7 @@ class ExpenseCategoriesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(ExpenseCategory $category)
     {
@@ -59,9 +61,9 @@ class ExpenseCategoriesController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\ExpenseCategory  $ExpenseCategory
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @param  ExpenseCategory  $ExpenseCategory
+     * @return Response
      */
     public function update(ExpenseCategoryRequest $request, ExpenseCategory $category)
     {
@@ -75,8 +77,8 @@ class ExpenseCategoriesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\ExpensesCategory  $category
-     * @return \Illuminate\Http\Response
+     * @param  ExpensesCategory  $category
+     * @return Response
      */
     public function destroy(ExpenseCategory $category)
     {

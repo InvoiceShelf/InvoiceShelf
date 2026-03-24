@@ -112,7 +112,7 @@ class EstimatePolicy
     /**
      * Determine whether the user can send email of the model.
      *
-     * @param  \App\Models\Estimate  $payment
+     * @param  Estimate  $payment
      * @return mixed
      */
     public function send(User $user, Estimate $estimate)

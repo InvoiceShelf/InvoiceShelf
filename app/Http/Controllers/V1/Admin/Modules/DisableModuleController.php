@@ -6,6 +6,7 @@ use App\Events\ModuleDisabledEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Module as ModelsModule;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Nwidart\Modules\Facades\Module;
 
 class DisableModuleController extends Controller
@@ -13,7 +14,7 @@ class DisableModuleController extends Controller
     /**
      * Handle the incoming request.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function __invoke(Request $request, string $module)
     {

@@ -5,10 +5,11 @@ namespace App\Services\PDFDrivers;
 use Gotenberg\Gotenberg;
 use Gotenberg\Stream;
 use Illuminate\Http\Response;
+use Psr\Http\Message\ResponseInterface;
 
 class GotenbergPDFResponse
 {
-    /** @var \Psr\Http\Message\ResponseInterface */
+    /** @var ResponseInterface */
     protected $response;
 
     public function __construct($stream)

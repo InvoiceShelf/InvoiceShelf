@@ -2,12 +2,12 @@
 
 namespace App\Mail;
 
+use App\Facades\Hashids;
 use App\Models\EmailLog;
 use App\Models\Estimate;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Vinkla\Hashids\Facades\Hashids;
 
 class SendEstimateMail extends Mailable
 {

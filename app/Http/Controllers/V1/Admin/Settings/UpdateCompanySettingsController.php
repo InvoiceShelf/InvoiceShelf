@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateSettingsRequest;
 use App\Models\Company;
 use App\Models\CompanySetting;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Arr;
 
 class UpdateCompanySettingsController extends Controller
@@ -14,7 +15,7 @@ class UpdateCompanySettingsController extends Controller
      * Handle the incoming request.
      *
      * @param  \Illuminate\Http\UpdateSettingsRequest  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function __invoke(UpdateSettingsRequest $request)
     {

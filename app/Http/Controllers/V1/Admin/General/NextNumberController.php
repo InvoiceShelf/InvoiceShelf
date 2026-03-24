@@ -8,13 +8,14 @@ use App\Models\Invoice;
 use App\Models\Payment;
 use App\Services\SerialNumberFormatter;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class NextNumberController extends Controller
 {
     /**
      * Handle the incoming request.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function __invoke(Request $request, Invoice $invoice, Estimate $estimate, Payment $payment)
     {

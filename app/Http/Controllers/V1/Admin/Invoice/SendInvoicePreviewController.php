@@ -5,6 +5,8 @@ namespace App\Http\Controllers\V1\Admin\Invoice;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SendInvoiceRequest;
 use App\Models\Invoice;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Mail\Markdown;
 
 class SendInvoicePreviewController extends Controller
@@ -12,8 +14,8 @@ class SendInvoicePreviewController extends Controller
     /**
      * Mail a specific invoice to the corresponding customer's email address.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param  Request  $request
+     * @return JsonResponse
      */
     public function __invoke(SendInvoiceRequest $request, Invoice $invoice)
     {

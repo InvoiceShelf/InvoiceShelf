@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use App;
+use App\Facades\Hashids;
 use App\Facades\PDF;
 use App\Mail\SendEstimateMail;
 use App\Services\SerialNumberFormatter;
 use App\Space\PdfTemplateUtils;
+use App\Support\PdfHtmlSanitizer;
 use App\Traits\GeneratesPdfTrait;
 use App\Traits\HasCustomFieldsTrait;
 use Carbon\Carbon;
@@ -18,7 +20,6 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Vinkla\Hashids\Facades\Hashids;
 
 class Estimate extends Model implements HasMedia
 {
@@ -79,7 +80,7 @@ class Estimate extends Model implements HasMedia
 
     public function items(): HasMany
     {
-        return $this->hasMany(\App\Models\EstimateItem::class);
+        return $this->hasMany(EstimateItem::class);
     }
 
     public function customer(): BelongsTo
@@ -89,12 +90,12 @@ class Estimate extends Model implements HasMedia
 
     public function creator(): BelongsTo
     {
-        return $this->belongsTo(\App\Models\User::class, 'creator_id');
+        return $this->belongsTo(User::class, 'creator_id');
     }
 
     public function company(): BelongsTo
     {
-        return $this->belongsTo(\App\Models\Company::class);
+        return $this->belongsTo(Company::class);
     }
 
     public function currency(): BelongsTo
@@ -475,7 +476,7 @@ class Estimate extends Model implements HasMedia
 
     public function getNotes()
     {
-        return $this->getFormattedString($this->notes);
+        return PdfHtmlSanitizer::sanitize($this->getFormattedString($this->notes));
     }
 
     public function getEmailAttachmentSetting()

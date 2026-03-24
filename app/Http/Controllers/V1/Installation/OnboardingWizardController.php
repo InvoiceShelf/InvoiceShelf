@@ -5,6 +5,7 @@ namespace App\Http\Controllers\V1\Installation;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use App\Space\InstallUtils;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class OnboardingWizardController extends Controller
@@ -12,7 +13,7 @@ class OnboardingWizardController extends Controller
     /**
      * Handle the incoming request.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function getStep(Request $request)
     {

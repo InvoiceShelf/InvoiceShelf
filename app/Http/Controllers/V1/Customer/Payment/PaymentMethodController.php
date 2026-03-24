@@ -7,13 +7,14 @@ use App\Http\Resources\Customer\PaymentMethodResource;
 use App\Models\Company;
 use App\Models\PaymentMethod;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class PaymentMethodController extends Controller
 {
     /**
      * Handle the incoming request.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function __invoke(Request $request, Company $company)
     {

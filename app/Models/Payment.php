@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Facades\Hashids;
 use App\Jobs\GeneratePaymentPdfJob;
 use App\Mail\SendPaymentMail;
 use App\Services\SerialNumberFormatter;
+use App\Support\PdfHtmlSanitizer;
 use App\Traits\GeneratesPdfTrait;
 use App\Traits\HasCustomFieldsTrait;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
@@ -15,7 +17,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Vinkla\Hashids\Facades\Hashids;
 
 class Payment extends Model implements HasMedia
 {
@@ -116,7 +117,7 @@ class Payment extends Model implements HasMedia
 
     public function creator(): BelongsTo
     {
-        return $this->belongsTo(\App\Models\User::class, 'creator_id');
+        return $this->belongsTo(User::class, 'creator_id');
     }
 
     public function currency(): BelongsTo
@@ -433,7 +434,7 @@ class Payment extends Model implements HasMedia
 
     public function getNotes()
     {
-        return $this->getFormattedString($this->notes);
+        return PdfHtmlSanitizer::sanitize($this->getFormattedString($this->notes));
     }
 
     public function getEmailBody($body)

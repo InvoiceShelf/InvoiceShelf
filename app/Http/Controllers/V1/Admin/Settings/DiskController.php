@@ -8,6 +8,7 @@ use App\Http\Resources\FileDiskResource;
 use App\Models\FileDisk;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class DiskController extends Controller
 {
@@ -43,7 +44,7 @@ class DiskController extends Controller
     }
 
     /**
-     * @param  \App\Models\FileDisk  $file_disk
+     * @param  FileDisk  $file_disk
      * @return JsonResponse
      */
     public function update(FileDisk $disk, Request $request)
@@ -136,8 +137,8 @@ class DiskController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\FileDisk  $taxType
-     * @return \Illuminate\Http\Response
+     * @param  FileDisk  $taxType
+     * @return Response
      */
     public function destroy(FileDisk $disk)
     {

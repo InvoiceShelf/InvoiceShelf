@@ -3,16 +3,18 @@
 namespace App\Http\Controllers\V1\Admin\Expense;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ExpenseRequest;
 use App\Http\Requests\UploadExpenseReceiptRequest;
 use App\Models\Expense;
+use Illuminate\Http\JsonResponse;
 
 class UploadReceiptController extends Controller
 {
     /**
      * Upload the expense receipts to storage.
      *
-     * @param  \App\Http\Requests\ExpenseRequest  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param  ExpenseRequest  $request
+     * @return JsonResponse
      */
     public function __invoke(UploadExpenseReceiptRequest $request, Expense $expense)
     {

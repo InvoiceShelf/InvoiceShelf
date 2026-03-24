@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Models\CompanySetting;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CustomFieldValueResource extends JsonResource
@@ -11,7 +12,7 @@ class CustomFieldValueResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      */
     public function toArray($request): array
     {
