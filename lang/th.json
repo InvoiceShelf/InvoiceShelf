@@ -1326,7 +1326,8 @@
       "finishing_update": "การอัพเดตเสร็จแล้ว",
       "update_failed": "การอัพเดทล้มเหลว",
       "update_failed_text": "โทษที!การอัปเดตของคุณล้มเหลวใน: ขั้นตอน {step}",
-      "update_warning": "ไฟล์แอปพลิเคชันและไฟล์แม่แบบเริ่มต้นทั้งหมดจะถูกเขียนทับเมื่อคุณอัปเดตแอปพลิเคชันโดยใช้ยูทิลิตีนี้โปรดใช้การสำรองข้อมูลของแม่แบบและฐานข้อมูลของคุณก่อนที่จะอัพเดต"
+      "update_warning": "ไฟล์แอปพลิเคชันและไฟล์แม่แบบเริ่มต้นทั้งหมดจะถูกเขียนทับเมื่อคุณอัปเดตแอปพลิเคชันโดยใช้ยูทิลิตีนี้โปรดใช้การสำรองข้อมูลของแม่แบบและฐานข้อมูลของคุณก่อนที่จะอัพเดต",
+      "requirements_not_met": "Update cannot continue because some system requirements are not met (including minimum PHP version). Please fix the failed requirements and try again."
     },
     "backup": {
       "title": "การสำรองข้อมูล | ข้อมูลสำรอง",
