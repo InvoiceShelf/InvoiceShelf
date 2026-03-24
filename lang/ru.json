@@ -1326,7 +1326,8 @@
       "finishing_update": "Заканчиваем обновление",
       "update_failed": "Не удалось обновить",
       "update_failed_text": "Извиняюсь! Ваше обновление не выполнено на шаге {step}",
-      "update_warning": "Все файлы приложения и файлы шаблонов по умолчанию будут перезаписаны при обновлении приложения с помощью этой утилиты. Перед обновлением сделайте резервную копию ваших шаблонов и базы данных."
+      "update_warning": "Все файлы приложения и файлы шаблонов по умолчанию будут перезаписаны при обновлении приложения с помощью этой утилиты. Перед обновлением сделайте резервную копию ваших шаблонов и базы данных.",
+      "requirements_not_met": "Update cannot continue because some system requirements are not met (including minimum PHP version). Please fix the failed requirements and try again."
     },
     "backup": {
       "title": "Резервное копирование | Резервные копии",
