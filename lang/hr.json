@@ -1326,7 +1326,8 @@
       "finishing_update": "Završavanje ažuriranja",
       "update_failed": "Neuspešno ažuriranje",
       "update_failed_text": "Žao mi je! Tvoje ažuriranje nije uspelo na koraku broj: {step} korak",
-      "update_warning": "Svi dokumenti i predlošci programa će biti obrisani korištenjem ove funkcije. Molimo napravite sigurnosnu kopiju svojih predložaka i baze podataka prije ažuriranja."
+      "update_warning": "Svi dokumenti i predlošci programa će biti obrisani korištenjem ove funkcije. Molimo napravite sigurnosnu kopiju svojih predložaka i baze podataka prije ažuriranja.",
+      "requirements_not_met": "Update cannot continue because some system requirements are not met (including minimum PHP version). Please fix the failed requirements and try again."
     },
     "backup": {
       "title": "Sigurnosna kopija | Sigurnosne kopije",
