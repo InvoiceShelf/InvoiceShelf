@@ -1326,7 +1326,8 @@
       "finishing_update": "Update beenden",
       "update_failed": "Update fehlgeschlagen",
       "update_failed_text": "Es tut uns leid! Ihr Update ist am folgenden Schritt fehlgeschlagen: {step}",
-      "update_warning": "Alle Anwendungsdateien und Standardvorlagen werden überschrieben, wenn Sie die Anwendung mit diesem Hilfsprogramm aktualisieren. Bitte machen Sie vor dem Update ein Backup Ihrer Vorlagen & Datenbank."
+      "update_warning": "Alle Anwendungsdateien und Standardvorlagen werden überschrieben, wenn Sie die Anwendung mit diesem Hilfsprogramm aktualisieren. Bitte machen Sie vor dem Update ein Backup Ihrer Vorlagen & Datenbank.",
+      "requirements_not_met": "Update cannot continue because some system requirements are not met (including minimum PHP version). Please fix the failed requirements and try again."
     },
     "backup": {
       "title": "Sicherung | Sicherungen",
