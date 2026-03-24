@@ -1326,7 +1326,8 @@
       "finishing_update": "Aggiornamento di finitura",
       "update_failed": "Aggiornamento non riuscito",
       "update_failed_text": "Scusate! L'aggiornamento non è riuscito il: passaggio {step}",
-      "update_warning": "Tutti i file dell'applicazione e i file dei modelli predefiniti verranno sovrascritti quando si aggiorna l'applicazione tramite questa utility. Si prega di eseguire un backup dei modelli e del database prima di effettuare l'aggiornamento."
+      "update_warning": "Tutti i file dell'applicazione e i file dei modelli predefiniti verranno sovrascritti quando si aggiorna l'applicazione tramite questa utility. Si prega di eseguire un backup dei modelli e del database prima di effettuare l'aggiornamento.",
+      "requirements_not_met": "Update cannot continue because some system requirements are not met (including minimum PHP version). Please fix the failed requirements and try again."
     },
     "backup": {
       "title": "Backup | Backups",

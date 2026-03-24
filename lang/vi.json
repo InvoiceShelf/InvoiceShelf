@@ -1326,7 +1326,8 @@
       "finishing_update": "Cập nhật kết thúc",
       "update_failed": "Cập nhật không thành công",
       "update_failed_text": "Lấy làm tiếc! Cập nhật của bạn không thành công vào: bước {step}",
-      "update_warning": "Tất cả các tệp ứng dụng và tệp mẫu mặc định sẽ bị ghi đè khi bạn cập nhật ứng dụng bằng công cụ này. Vui lòng sao lưu các mẫu và cơ sở dữ liệu của bạn trước khi thực hiện cập nhật."
+      "update_warning": "Tất cả các tệp ứng dụng và tệp mẫu mặc định sẽ bị ghi đè khi bạn cập nhật ứng dụng bằng công cụ này. Vui lòng sao lưu các mẫu và cơ sở dữ liệu của bạn trước khi thực hiện cập nhật.",
+      "requirements_not_met": "Update cannot continue because some system requirements are not met (including minimum PHP version). Please fix the failed requirements and try again."
     },
     "backup": {
       "title": "Sao lưu | Sao lưu",

@@ -1326,7 +1326,8 @@
       "finishing_update": "Güncelleme tamamlanıyor",
       "update_failed": "Güncelleştirme Başarısız",
       "update_failed_text": "Üzgünüz! Güncelleştirmeniz :{step} adımında başarısız oldu",
-      "update_warning": "Uygulamayı bu araçla güncellediğinizde tüm uygulama dosyaları ve varsayılan şablon dosyaları üzerine yazılacaktır. Güncellemeden önce şablonlarınızın ve veritabanınızın yedeğini almayı unutmayın."
+      "update_warning": "Uygulamayı bu araçla güncellediğinizde tüm uygulama dosyaları ve varsayılan şablon dosyaları üzerine yazılacaktır. Güncellemeden önce şablonlarınızın ve veritabanınızın yedeğini almayı unutmayın.",
+      "requirements_not_met": "Update cannot continue because some system requirements are not met (including minimum PHP version). Please fix the failed requirements and try again."
     },
     "backup": {
       "title": "Yedek | Yedekler",

@@ -1326,7 +1326,8 @@
       "finishing_update": "Acabando a Atualização",
       "update_failed": "Atualização falhou",
       "update_failed_text": "Desculpa! Sua atualização falhou no passo: {step}",
-      "update_warning": "Todos os arquivos do aplicativo e modelos padrão serão sobrescritos ao atualizar o aplicativo usando esta ferramenta. Faça backup de seus modelos e banco de dados antes de atualizar."
+      "update_warning": "Todos os arquivos do aplicativo e modelos padrão serão sobrescritos ao atualizar o aplicativo usando esta ferramenta. Faça backup de seus modelos e banco de dados antes de atualizar.",
+      "requirements_not_met": "Update cannot continue because some system requirements are not met (including minimum PHP version). Please fix the failed requirements and try again."
     },
     "backup": {
       "title": "Backup | Backups",

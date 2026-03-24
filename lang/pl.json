@@ -1326,7 +1326,8 @@
       "finishing_update": "Kończenie aktualizacji",
       "update_failed": "Aktualizacja nie powiodła się",
       "update_failed_text": "Przepraszamy! Twoja aktualizacja nie powiodła się w kroku: {step}",
-      "update_warning": "Wszystkie pliki aplikacji i domyślne pliki szablonu zostaną nadpisane podczas aktualizacji aplikacji przy użyciu tego narzędzia. Przed aktualizacją wykonaj kopię zapasową szablonów i bazy danych."
+      "update_warning": "Wszystkie pliki aplikacji i domyślne pliki szablonu zostaną nadpisane podczas aktualizacji aplikacji przy użyciu tego narzędzia. Przed aktualizacją wykonaj kopię zapasową szablonów i bazy danych.",
+      "requirements_not_met": "Update cannot continue because some system requirements are not met (including minimum PHP version). Please fix the failed requirements and try again."
     },
     "backup": {
       "title": "Kopia zapasowa | Kopie zapasowe",

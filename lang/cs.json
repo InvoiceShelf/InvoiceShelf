@@ -1326,7 +1326,8 @@
       "finishing_update": "Dokončování aktualizace",
       "update_failed": "Aktualizace se nezdařila",
       "update_failed_text": "Omlouváme se! Aktualizace se nezdařila v {step}. kroku",
-      "update_warning": "Všechny soubory aplikace a výchozí soubory šablon budou přepsány při aktualizaci aplikace pomocí tohoto nástroje. Před aktualizací si prosím zálohujte šablony a databázi."
+      "update_warning": "Všechny soubory aplikace a výchozí soubory šablon budou přepsány při aktualizaci aplikace pomocí tohoto nástroje. Před aktualizací si prosím zálohujte šablony a databázi.",
+      "requirements_not_met": "Update cannot continue because some system requirements are not met (including minimum PHP version). Please fix the failed requirements and try again."
     },
     "backup": {
       "title": "Záloha | Zálohy",
