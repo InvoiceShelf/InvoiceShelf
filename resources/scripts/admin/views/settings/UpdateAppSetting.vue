@@ -147,7 +147,19 @@
           </tr>
         </table>
 
-        <BaseButton class="mt-10" variant="primary" @click="onUpdateApp">
+        <div
+          v-if="!allowToUpdate"
+          class="mt-6 rounded-md bg-red-50 p-4 text-sm text-red-700"
+        >
+          {{ $t('settings.update_app.requirements_not_met') }}
+        </div>
+
+        <BaseButton
+          class="mt-10"
+          variant="primary"
+          :disabled="!allowToUpdate"
+          @click="onUpdateApp"
+        >
           {{ $t('settings.update_app.update') }}
         </BaseButton>
       </div>
