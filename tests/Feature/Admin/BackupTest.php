@@ -50,9 +50,11 @@ test('create backup', function () {
 
     $response = getJson("/api/v1/backups?disk={$disk->driver}&&file_disk_id={$disk->id}");
 
+    $prefix = env('DYNAMIC_DISK_PREFIX', 'temp_');
+
     $response->assertStatus(200)->assertJson([
         'disks' => [
-            'local',
+            $prefix.$disk->driver,
         ],
     ]);
 });
