@@ -5,6 +5,7 @@
 namespace App\Http\Controllers\V1\Admin\Backup;
 
 use App\Jobs\CreateBackupJob;
+use App\Models\FileDisk;
 use App\Rules\Backup\PathToZip;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -28,7 +29,7 @@ class BackupsController extends ApiController
 
         try {
             if ($request->file_disk_id) {
-                $fileDisk = \App\Models\FileDisk::find($request->file_disk_id);
+                $fileDisk = FileDisk::find($request->file_disk_id);
                 if ($fileDisk) {
                     $fileDisk->setConfig();
                     $prefix = env('DYNAMIC_DISK_PREFIX', 'temp_');
