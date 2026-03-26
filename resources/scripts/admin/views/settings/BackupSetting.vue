@@ -167,14 +167,14 @@ async function loadDisksData() {
   let res = await diskStore.fetchDisks({ limit: 'all' })
   if (res.data.error) {
   }
-  filters.selected_disk = res.data.data.find((disk) => disk.set_as_default == 0)
+  filters.selected_disk = res.data.data.find((disk) => disk.set_as_default == 1) ?? res.data.data[0]
   isFetchingInitialData.value = false
 }
 
 async function fetchBackupsData({ page, filter, sort }) {
   let data = {
     disk: filters.selected_disk.driver,
-    filed_disk_id: filters.selected_disk.id,
+    file_disk_id: filters.selected_disk.id,
   }
 
   isFetchingInitialData.value = true
