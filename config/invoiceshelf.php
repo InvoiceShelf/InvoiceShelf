@@ -518,10 +518,11 @@ return [
     * List of exchange rate drivers
     */
     'exchange_rate_drivers' => [
-        ['key' => 'settings.exchange_rate.currency_converter', 'value' => 'currency_converter'],
-        ['key' => 'settings.exchange_rate.currency_freak', 'value' => 'currency_freak'],
-        ['key' => 'settings.exchange_rate.currency_layer', 'value' => 'currency_layer'],
-        ['key' => 'settings.exchange_rate.open_exchange_rate', 'value' => 'open_exchange_rate'],
+        ['key' => 'settings.exchange_rate.currency_converter', 'value' => 'currency_converter', 'required_key' => true],
+        ['key' => 'settings.exchange_rate.currency_freak', 'value' => 'currency_freak', 'required_key' => true],
+        ['key' => 'settings.exchange_rate.currency_layer', 'value' => 'currency_layer', 'required_key' => true],
+        ['key' => 'settings.exchange_rate.open_exchange_rate', 'value' => 'open_exchange_rate', 'required_key' => true],
+        ['key' => 'settings.exchange_rate.frankfurter', 'value' => 'frankfurter', 'required_key' => false],
     ],
 
     /*

@@ -176,6 +176,7 @@
       :is-loading="isLoading"
       :is-edit="isEdit"
       :customer-currency="recurringInvoiceStore.newRecurringInvoice.currency_id"
+      :date="recurringInvoiceStore.newRecurringInvoice.starts_at"
     />
   </div>
 </template>

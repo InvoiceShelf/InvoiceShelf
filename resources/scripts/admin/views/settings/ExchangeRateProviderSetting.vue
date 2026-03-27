@@ -171,10 +171,18 @@ function editExchangeRate(data) {
 }
 
 function removeExchangeRate(id) {
+  // Fetch the provider details to check if it's active
+  const provider = exchangeRateStore.providers.find(p => p.id === id)
+  const isActive = provider && provider.active
+  
+  const dialogMessage = isActive
+    ? t('settings.exchange_rate.exchange_rate_confirm_delete_active')
+    : t('settings.exchange_rate.exchange_rate_confirm_delete')
+  
   dialogStore
     .openDialog({
       title: t('general.are_you_sure'),
-      message: t('settings.exchange_rate.exchange_rate_confirm_delete'),
+      message: dialogMessage,
       yesLabel: t('general.ok'),
       noLabel: t('general.cancel'),
       variant: 'danger',

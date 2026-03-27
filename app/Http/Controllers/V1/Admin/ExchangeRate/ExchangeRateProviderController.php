@@ -102,10 +102,6 @@ class ExchangeRateProviderController extends Controller
     {
         $this->authorize('delete', $exchangeRateProvider);
 
-        if ($exchangeRateProvider->active == true) {
-            return respondJson('provider_active', 'Provider Active.');
-        }
-
         $exchangeRateProvider->delete();
 
         return response()->json([

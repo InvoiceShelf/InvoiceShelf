@@ -57,6 +57,7 @@
         :is-loading="isLoading"
         :is-edit="isEdit"
         :customer-currency="invoiceStore.newInvoice.currency_id"
+        :date="invoiceStore.newInvoice.invoice_date"
       />
     </BaseInputGrid>
   </div>

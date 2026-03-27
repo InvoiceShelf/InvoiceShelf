@@ -74,6 +74,7 @@
         :is-loading="isLoading"
         :is-edit="isEdit"
         :customer-currency="estimateStore.newEstimate.currency_id"
+        :date="estimateStore.newEstimate.estimate_date"
       />
     </BaseInputGrid>
   </div>

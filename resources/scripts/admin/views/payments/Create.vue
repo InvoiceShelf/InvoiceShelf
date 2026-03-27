@@ -186,6 +186,7 @@
             :is-loading="isLoadingContent"
             :is-edit="isEdit"
             :customer-currency="paymentStore.currentPayment.currency_id"
+            :date="paymentStore.currentPayment.payment_date"
           />
         </BaseInputGrid>
 
