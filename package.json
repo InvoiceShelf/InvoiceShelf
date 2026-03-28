@@ -44,6 +44,7 @@
     "@vueuse/core": "^12.4.0",
     "axios": "0.30.0",
     "chart.js": "^2.9.4",
+    "dayjs": "^1.11.18",
     "guid": "^0.0.12",
     "laravel-vite-plugin": "^1.1.1",
     "lodash": "^4.17.21",
