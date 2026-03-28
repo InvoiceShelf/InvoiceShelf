@@ -46,6 +46,8 @@ export default {
       return installationStore.currentDataBaseData
     })
 
+    getDatabaseConfig(database_connection.value)
+
     async function getDatabaseConfig(connection) {
       let params = {
         connection,
@@ -56,12 +58,30 @@ export default {
       if (res.data.success) {
         databaseData.value.database_connection =
           res.data.config.database_connection
-      }
 
-      if (connection === 'sqlite') {
-        databaseData.value.database_name = res.data.config.database_name
-      } else {
-        databaseData.value.database_name = null
+        if (res.data.config.database_host) {
+          databaseData.value.database_hostname = res.data.config.database_host
+        }
+
+        if (res.data.config.database_port) {
+          databaseData.value.database_port = res.data.config.database_port
+        }
+
+        if (res.data.config.database_name) {
+          databaseData.value.database_name = res.data.config.database_name
+        } else {
+          databaseData.value.database_name = null
+        }
+
+        if (res.data.config.database_username) {
+          databaseData.value.database_username =
+            res.data.config.database_username
+        }
+
+        if (res.data.config.database_password) {
+          databaseData.value.database_password =
+            res.data.config.database_password
+        }
       }
     }
 
