@@ -1,0 +1,68 @@
+#!/bin/sh
+
+echo "🎨 Running Laravel Pint on modified PHP files..."
+
+# Get list of modified PHP files that are committed but not pushed
+MODIFIED_PHP_FILES=$(git diff --name-only --diff-filter=ACM origin/$(git rev-parse --abbrev-ref HEAD)...HEAD 2>/dev/null | grep '\.php$' || true)
+
+# If no PHP files modified, skip
+if [ -z "$MODIFIED_PHP_FILES" ]; then
+    echo "✅ No PHP files to check"
+else
+    echo "Checking $(echo "$MODIFIED_PHP_FILES" | wc -l) PHP file(s)..."
+
+    # Run pint only on modified files
+    echo "$MODIFIED_PHP_FILES" | xargs ./vendor/bin/pint
+
+    if [ $? -ne 0 ]; then
+        echo "❌ Pint found issues that couldn't be fixed automatically."
+        echo "Please review the changes and commit them before pushing."
+        exit 1
+    fi
+
+    # Check if pint made any changes
+    if ! git diff --quiet; then
+        echo "❌ Pint made formatting changes to:"
+        git diff --name-only
+        echo ""
+        echo "Please review and commit these changes before pushing."
+        exit 1
+    fi
+
+    echo "✅ Pint check passed!"
+fi
+
+echo ""
+echo "🔍 Running ESLint on modified JS/Vue files..."
+
+# Get list of modified JS/Vue files that are committed but not pushed
+MODIFIED_JS_FILES=$(git diff --name-only --diff-filter=ACM origin/$(git rev-parse --abbrev-ref HEAD)...HEAD 2>/dev/null | grep -E '\.(js|vue)$' || true)
+
+if [ -z "$MODIFIED_JS_FILES" ]; then
+    echo "✅ No JS/Vue files to check"
+else
+    echo "Checking $(echo "$MODIFIED_JS_FILES" | wc -l) JS/Vue file(s)..."
+
+    # Run ESLint on modified files
+    echo "$MODIFIED_JS_FILES" | xargs npx eslint --fix
+
+    if [ $? -ne 0 ]; then
+        echo "❌ ESLint found issues that couldn't be fixed automatically."
+        echo "Please fix the errors and commit them before pushing."
+        exit 1
+    fi
+
+    # Check if eslint made any changes
+    if ! git diff --quiet; then
+        echo "❌ ESLint made formatting changes to:"
+        git diff --name-only
+        echo ""
+        echo "Please review and commit these changes before pushing."
+        exit 1
+    fi
+
+    echo "✅ ESLint check passed!"
+fi
+
+echo ""
+echo "🧪 Running tests..."

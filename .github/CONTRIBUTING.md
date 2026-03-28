@@ -43,6 +43,31 @@ Scan through our [existing issues](https://github.com/InvoiceShelf/InvoiceShelf/
 
 3. Create a working branch and start with your changes!
 
+### Code Quality Checks
+
+This project uses automated Git hooks to maintain code quality. After running `yarn install`, hooks are automatically configured.
+
+**Pre-commit Hook:**
+- Runs ESLint on staged JavaScript and Vue files
+- Runs Laravel Pint on staged PHP files
+- Auto-fixes formatting issues when possible
+- Blocks commit if unfixable issues remain
+
+**Pre-push Hook:**
+- Runs Laravel Pint on all modified PHP files
+- Runs ESLint on all modified JavaScript and Vue files
+- Runs the full test suite
+- Blocks push if code style issues or test failures are found
+
+**Bypassing Hooks:**
+If you need to bypass hooks in an emergency:
+```bash
+git commit --no-verify
+git push --no-verify
+```
+
+Use this sparingly and ensure code quality is addressed before final merge.
+
 ### Commit your update
 
 Commit the changes once you are happy with them. Don't forget to use the "[Self review checklist](https://docs.github.com/en/contributing/collaborating-on-github-docs/self-review-checklist)" to speed up the review process :zap:.

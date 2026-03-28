@@ -6,7 +6,12 @@
     "watch": "vite build --watch",
     "build": "vite build",
     "serve": "vite preview",
-    "test": "eslint ./resources/scripts --ext .js,.vue"
+    "test": "eslint ./resources/scripts --ext .js,.vue",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,vue}": "eslint --fix",
+    "*.php": "./vendor/bin/pint"
   },
   "devDependencies": {
     "@rvxlab/tailwind-plugin-ios-full-height": "^1.1.0",
@@ -20,6 +25,8 @@
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-vue": "^9.32.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
     "postcss": "^8.4.49",
     "prettier": "^3.4.2",
     "sass": "^1.83.1",
