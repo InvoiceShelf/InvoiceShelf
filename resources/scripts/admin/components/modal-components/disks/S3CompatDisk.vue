@@ -42,8 +42,8 @@
         <BaseInputGroup
           :label="$t('settings.disk.s3_endpoint')"
           :error="
-            v$.s3CompatDiskConfigData.root.$error &&
-            v$.s3CompatDiskConfigData.root.$errors[0].$message
+            v$.s3CompatDiskConfigData.endpoint.$error &&
+            v$.s3CompatDiskConfigData.endpoint.$errors[0].$message
           "
           required
         >
@@ -253,6 +253,7 @@ export default {
         region: null,
         bucket: null,
         root: null,
+        endpoint: null,
       }
     })
 
@@ -265,7 +266,15 @@ export default {
       })
 
       if (props.isEdit) {
-        Object.assign(diskStore.s3CompatDiskConfigData, modalStore.data)
+        const credentials =
+          typeof modalStore.data.credentials === 'string'
+            ? JSON.parse(modalStore.data.credentials)
+            : modalStore.data.credentials
+
+        Object.assign(
+          diskStore.s3CompatDiskConfigData,
+          credentials
+        )
         set_as_default.value = modalStore.data.set_as_default
 
         if (set_as_default.value) {

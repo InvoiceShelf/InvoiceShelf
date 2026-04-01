@@ -21,28 +21,13 @@ services:
     environment:
       - "PHP_FPM_HOST=php-fpm:9000"
     ports:
-      - '80:80'
+      - "80:80"
     volumes:
       - ../../:/var/www/html
     networks:
       invoiceshelf-dev:
         aliases:
           - invoiceshelf.test
-
-  db:
-    image: mariadb:10.9
-    container_name: invoiceshelf-dev-mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: invoiceshelf
-      MYSQL_DATABASE: invoiceshelf
-      MYSQL_USER: invoiceshelf
-      MYSQL_PASSWORD: invoiceshelf
-    ports:
-      - "3306:3306"
-    volumes:
-      - invoiceshelf-dev-mysql:/var/lib/mysql
-    networks:
-      - invoiceshelf-dev
 
   adminer:
     container_name: invoiceshelf-dev-adminer
@@ -52,27 +37,49 @@ services:
     environment:
       ADMINER_PLUGINS: tables-filter
       ADMINER_DESIGN: konya
+    volumes:
+      - ../../database:/database
     ports:
-      - '8080:8080'
+      - "8080:8080"
     networks:
       - invoiceshelf-dev
 
   mail:
     container_name: invoiceshelf-dev-mailpit
     image: axllent/mailpit:latest
-    restart: always
     ports:
-      - 1025:1025
-      - 8025:8025
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - invoiceshelf-dev
+  minio:
+    container_name: invoiceshelf-dev-minio
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-invoiceshelf}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-invoiceshelf123}
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - invoiceshelf-dev-minio:/data
+    networks:
+      - invoiceshelf-dev
+  minio-init:
+    image: minio/mc:latest
+    depends_on:
+      - minio
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        until /usr/bin/mc alias set local http://minio:9000 "${MINIO_ROOT_USER:-invoiceshelf}" "${MINIO_ROOT_PASSWORD:-invoiceshelf123}"; do
+          sleep 2
+        done
+        /usr/bin/mc mb --ignore-existing local/${MINIO_BUCKET:-invoiceshelf-local}
     networks:
       - invoiceshelf-dev
 
-  pdf:
-    image: gotenberg/gotenberg:8
-    networks:
-      - invoiceshelf-dev
 networks:
   invoiceshelf-dev:
-
-volumes:
-  invoiceshelf-dev-mysql:

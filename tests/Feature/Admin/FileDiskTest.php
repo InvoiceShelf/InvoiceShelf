@@ -38,6 +38,21 @@ test('create file disk', function () {
     $this->assertDatabaseHas('file_disks', $disk);
 });
 
+test('validate s3 compatible file disk credentials', function () {
+    postJson('/api/v1/disks', [
+        'name' => 'minio',
+        'driver' => 's3compat',
+        'credentials' => [],
+    ])->assertUnprocessable()->assertJsonValidationErrors([
+        'credentials.endpoint',
+        'credentials.key',
+        'credentials.secret',
+        'credentials.region',
+        'credentials.bucket',
+        'credentials.root',
+    ]);
+});
+
 test('update file disk', function () {
     $disk = FileDisk::factory()->create();
 
@@ -56,6 +71,28 @@ test('get disk', function () {
     $response = getJson("/api/v1/disks/{$disk->driver}");
 
     $response->assertStatus(200);
+});
+
+test('get s3 compatible disk config', function () {
+    config([
+        'filesystems.disks.s3compat.endpoint' => 'http://minio:9000',
+        'filesystems.disks.s3compat.key' => 'invoiceshelf',
+        'filesystems.disks.s3compat.secret' => 'invoiceshelf123',
+        'filesystems.disks.s3compat.region' => 'us-east-1',
+        'filesystems.disks.s3compat.bucket' => 'invoiceshelf-local',
+        'filesystems.disks.s3compat.root' => 'generated-pdfs',
+    ]);
+
+    getJson('/api/v1/disks/s3compat')
+        ->assertOk()
+        ->assertJson([
+            'endpoint' => 'http://minio:9000',
+            'key' => 'invoiceshelf',
+            'secret' => 'invoiceshelf123',
+            'region' => 'us-east-1',
+            'bucket' => 'invoiceshelf-local',
+            'root' => 'generated-pdfs',
+        ]);
 });
 
 test('get drivers', function () {

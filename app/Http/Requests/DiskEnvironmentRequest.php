@@ -47,6 +47,36 @@ class DiskEnvironmentRequest extends FormRequest
 
                 break;
 
+            case 's3compat':
+                $rules = [
+                    'credentials.endpoint' => [
+                        'required',
+                        'url',
+                    ],
+                    'credentials.key' => [
+                        'required',
+                        'string',
+                    ],
+                    'credentials.secret' => [
+                        'required',
+                        'string',
+                    ],
+                    'credentials.region' => [
+                        'required',
+                        'string',
+                    ],
+                    'credentials.bucket' => [
+                        'required',
+                        'string',
+                    ],
+                    'credentials.root' => [
+                        'required',
+                        'string',
+                    ],
+                ];
+
+                break;
+
             case 'doSpaces':
                 $rules = [
                     'credentials.key' => [

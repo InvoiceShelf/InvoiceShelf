@@ -54,6 +54,7 @@ return [
             'secret' => env('S3_COMPAT_SECRET'),
             'region' => env('S3_COMPAT_REGION'),
             'bucket' => env('S3_COMPAT_BUCKET'),
+            'root' => env('S3_COMPAT_ROOT'),
         ],
 
         'doSpaces' => [

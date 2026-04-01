@@ -97,13 +97,15 @@ class DiskController extends Controller
 
             case 's3compat':
                 $diskData = [
-                    'endpoint' => '',
-                    'key' => '',
-                    'secret' => '',
-                    'region' => '',
-                    'bucket' => '',
-                    'root' => '',
+                    'endpoint' => config('filesystems.disks.s3compat.endpoint', ''),
+                    'key' => config('filesystems.disks.s3compat.key', ''),
+                    'secret' => config('filesystems.disks.s3compat.secret', ''),
+                    'region' => config('filesystems.disks.s3compat.region', ''),
+                    'bucket' => config('filesystems.disks.s3compat.bucket', ''),
+                    'root' => config('filesystems.disks.s3compat.root', ''),
                 ];
+
+                break;
 
             case 'doSpaces':
                 $diskData = [

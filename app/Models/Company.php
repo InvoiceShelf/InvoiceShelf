@@ -38,12 +38,16 @@ class Company extends Model implements HasMedia
     {
         $logo = $this->getMedia('logo')->first();
 
-        $isSystem = FileDisk::whereSetAsDefault(true)->first()->isSystem();
-
         if ($logo) {
-            if ($isSystem) {
+            $driver = config('filesystems.disks.'.$logo->disk.'.driver');
+
+            if ($driver === 'local') {
                 return $logo->getPath();
-            } else {
+            }
+
+            try {
+                return $logo->getTemporaryUrl(now()->addMinutes(5));
+            } catch (\Throwable $e) {
                 return $logo->getFullUrl();
             }
         }

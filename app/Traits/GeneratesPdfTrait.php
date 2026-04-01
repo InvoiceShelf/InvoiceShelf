@@ -5,7 +5,6 @@ namespace App\Traits;
 use App\Models\Address;
 use App\Models\CompanySetting;
 use App\Models\FileDisk;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 
 trait GeneratesPdfTrait
@@ -13,6 +12,19 @@ trait GeneratesPdfTrait
     public function getGeneratedPDFOrStream($collection_name)
     {
         $pdf = $this->getGeneratedPDF($collection_name);
+        if ($pdf && isset($pdf['stream'])) {
+            return response()->stream(function () use ($pdf) {
+                fpassthru($pdf['stream']);
+
+                if (is_resource($pdf['stream'])) {
+                    fclose($pdf['stream']);
+                }
+            }, 200, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="'.$pdf['file_name'].'"',
+            ]);
+        }
+
         if ($pdf && file_exists($pdf['path'])) {
             return response()->make(file_get_contents($pdf['path']), 200, [
                 'Content-Type' => 'application/pdf',
@@ -50,12 +62,21 @@ trait GeneratesPdfTrait
 
                 if ($file_disk->driver == 'local') {
                     $path = $media->getPath();
-                } else {
-                    $path = $media->getTemporaryUrl(Carbon::now()->addMinutes(5));
+
+                    return collect([
+                        'path' => $path,
+                        'file_name' => $media->file_name,
+                    ]);
+                }
+
+                $stream = \Storage::disk($media->disk)->readStream($media->getPathRelativeToRoot());
+
+                if ($stream === false) {
+                    return false;
                 }
 
                 return collect([
-                    'path' => $path,
+                    'stream' => $stream,
                     'file_name' => $media->file_name,
                 ]);
             }
