@@ -5,6 +5,7 @@
 <script setup>
 import { computed } from 'vue'
 import moment from 'moment'
+import BaseTimePicker from '@/scripts/components/base/BaseTimePicker.vue'
 
 const props = defineProps({
   modelValue: {

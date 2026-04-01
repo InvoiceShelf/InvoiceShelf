@@ -137,6 +137,16 @@ import { useVuelidate } from '@vuelidate/core'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 import { useGlobalStore } from '@/scripts/admin/stores/global'
 import { useRouter } from 'vue-router'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseMultiselect from '@/scripts/components/base/base-select/BaseMultiselect.vue'
+import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
+import BaseInput from '@/scripts/components/base/BaseInput.vue'
+import BaseFileUploader from '@/scripts/components/base/BaseFileUploader.vue'
+import BaseContentPlaceholdersBox from '@/scripts/components/base/BaseContentPlaceholdersBox.vue'
+import BaseContentPlaceholders from '@/scripts/components/base/BaseContentPlaceholders.vue'
+import BaseInputGrid from '@/scripts/components/base/BaseInputGrid.vue'
+import BaseModal from '@/scripts/components/base/BaseModal.vue'
 
 const router = useRouter()
 const companyStore = useCompanyStore()

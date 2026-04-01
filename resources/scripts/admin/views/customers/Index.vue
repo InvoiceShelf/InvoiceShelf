@@ -195,7 +195,7 @@
 <script setup>
 import { debouncedWatch } from '@vueuse/core'
 import moment from 'moment'
-import { reactive, ref, inject, computed, onUnmounted } from 'vue'
+import { computed, onUnmounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCustomerStore } from '@/scripts/admin/stores/customer'
 import { useDialogStore } from '@/scripts/stores/dialog'
@@ -206,6 +206,22 @@ import abilities from '@/scripts/admin/stub/abilities'
 
 import CustomerDropdown from '@/scripts/admin/components/dropdowns/CustomerIndexDropdown.vue'
 import AstronautIcon from '@/scripts/components/icons/empty/AstronautIcon.vue'
+import BaseFormatMoney from '@/scripts/components/base/BaseFormatMoney.vue'
+import BaseText from '@/scripts/components/base/BaseText.vue'
+import BaseCheckbox from '@/scripts/components/base/BaseCheckbox.vue'
+import BaseTable from '@/scripts/components/base/base-table/BaseTable.vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseDropdownItem from '@/scripts/components/base/BaseDropdownItem.vue'
+import BaseDropdown from '@/scripts/components/base/BaseDropdown.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseEmptyPlaceholder from '@/scripts/components/base/BaseEmptyPlaceholder.vue'
+import BaseInput from '@/scripts/components/base/BaseInput.vue'
+import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
+import BaseFilterWrapper from '@/scripts/components/base/BaseFilterWrapper.vue'
+import BaseBreadcrumbItem from '@/scripts/components/base/BaseBreadcrumbItem.vue'
+import BaseBreadcrumb from '@/scripts/components/base/BaseBreadcrumb.vue'
+import BasePageHeader from '@/scripts/components/base/BasePageHeader.vue'
+import BasePage from '@/scripts/components/base/BasePage.vue'
 
 const companyStore = useCompanyStore()
 const dialogStore = useDialogStore()

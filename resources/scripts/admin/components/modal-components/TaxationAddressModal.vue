@@ -123,6 +123,13 @@ import { useGlobalStore } from '@/scripts/admin/stores/global'
 import { useI18n } from 'vue-i18n'
 import { helpers, required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseInput from '@/scripts/components/base/BaseInput.vue'
+import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
+import BaseTextarea from '@/scripts/components/base/BaseTextarea.vue'
+import BaseInputGrid from '@/scripts/components/base/BaseInputGrid.vue'
+import BaseModal from '@/scripts/components/base/BaseModal.vue'
 
 const modalStore = useModalStore()
 const globalStore = useGlobalStore()

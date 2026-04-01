@@ -27,6 +27,8 @@ import abilities from '@/scripts/admin/stub/abilities'
 import RecurringInvoiceViewSidebar from '@/scripts/admin/views/recurring-invoices/partials/RecurringInvoiceViewSidebar.vue'
 import RecurringInvoiceInfo from '@/scripts/admin/views/recurring-invoices/partials/RecurringInvoiceInfo.vue'
 import RecurringInvoiceIndexDropdown from '@/scripts/admin/components/dropdowns/RecurringInvoiceIndexDropdown.vue'
+import BasePageHeader from '@/scripts/components/base/BasePageHeader.vue'
+import BasePage from '@/scripts/components/base/BasePage.vue'
 
 const dialogStore = useDialogStore()
 const recurringInvoiceStore = useRecurringInvoiceStore()

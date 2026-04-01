@@ -182,12 +182,21 @@
 </template>
 
 <script setup>
-import { computed, ref, reactive } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { useCustomerStore } from '@/scripts/admin/stores/customer'
 import LoadingIcon from '@/scripts/components/icons/LoadingIcon.vue'
 import { debounce } from 'lodash'
+import BaseFormatMoney from '@/scripts/components/base/BaseFormatMoney.vue'
+import BaseText from '@/scripts/components/base/BaseText.vue'
+import BaseIcon from '@/scripts/components/base/BaseIcon.vue'
+import BaseButton from '@/scripts/components/base/BaseButton.vue'
+import BaseRadio from '@/scripts/components/base/BaseRadio.vue'
+import BaseInputGroup from '@/scripts/components/base/BaseInputGroup.vue'
+import BaseDropdownItem from '@/scripts/components/base/BaseDropdownItem.vue'
+import BaseDropdown from '@/scripts/components/base/BaseDropdown.vue'
+import BaseInput from '@/scripts/components/base/BaseInput.vue'
 
 const customerStore = useCustomerStore()
 const route = useRoute()
