@@ -343,7 +343,7 @@
                     @endif
                 </div>
 
-                <div @if ($billing_address !== '</br>') class="shipping-address-container shipping-address" @else class="shipping-address-container--left shipping-address" @endif>
+                <div @if ($billing_address !== '<br />') class="shipping-address-container shipping-address" @else class="shipping-address-container--left shipping-address" @endif>
                     @if ($shipping_address)
                         <b>@lang('pdf_ship_to')</b> <br>
                         {!! $shipping_address !!}

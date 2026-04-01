@@ -384,7 +384,7 @@
             @endif
         </div>
 
-        <div class="shipping-address-container shipping-address" @if ($billing_address !== '</br>') style="float:left;" @else style="display:block; float:left: padding-left: 0px;" @endif>
+        <div class="shipping-address-container shipping-address" @if ($billing_address !== '<br />') style="float:left;" @else style="display:block; float:left: padding-left: 0px;" @endif>
             @if ($shipping_address)
                 <b>@lang('pdf_ship_to')</b> <br>
 
