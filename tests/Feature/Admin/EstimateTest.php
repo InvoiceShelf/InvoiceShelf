@@ -6,6 +6,7 @@ use App\Http\Requests\DeleteEstimatesRequest;
 use App\Http\Requests\EstimatesRequest;
 use App\Http\Requests\SendEstimatesRequest;
 use App\Mail\SendEstimateMail;
+use App\Models\CompanySetting;
 use App\Models\Estimate;
 use App\Models\EstimateItem;
 use App\Models\Tax;
@@ -283,7 +284,32 @@ test('delete multiple estimates', function () {
 });
 
 test('get estimate templates', function () {
-    getJson('api/v1/estimates/templates')->assertStatus(200);
+    getJson('api/v1/estimates/templates')
+        ->assertOk()
+        ->assertJsonFragment([
+            'name' => 'estimate4',
+        ]);
+});
+
+test('estimate 4 preview renders translated estimate heading', function () {
+    $user = User::find(1);
+    $this->actingAs($user);
+
+    $estimate = Estimate::factory()
+        ->hasItems(1)
+        ->create([
+            'template_name' => 'estimate4',
+            'estimate_date' => '1988-07-18',
+            'expiry_date' => '1988-08-18',
+        ]);
+
+    $locale = CompanySetting::getSetting('language', $estimate->company_id);
+
+    $this->get('/estimates/pdf/'.$estimate->unique_hash.'?preview=true')
+        ->assertOk()
+        ->assertSee('class="header-title"', false)
+        ->assertSee(trans('pdf_estimate_label', [], $locale), false)
+        ->assertSee($estimate->estimate_number, false);
 });
 
 test('create estimate with tax per item', function () {
