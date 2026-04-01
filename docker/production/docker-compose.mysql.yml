@@ -49,7 +49,7 @@ services:
     volumes:
       - invoiceshelf_storage:/var/www/html/storage/
     ports:
-      - "8090:8080" # 8090 is the public port.
+      - "8099:8080" # 8099 is the public port.
     networks:
       - invoiceshelf
     restart: unless-stopped

@@ -7,6 +7,7 @@ docker/
 !docker/production/inject.sh
 
 node_modules/
+public/storage
 
 database/*.sqlite
 storage/app/*

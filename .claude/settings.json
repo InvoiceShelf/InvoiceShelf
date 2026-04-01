@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker exec:*)",
+      "Bash(echo \"Tailing started, PID: $!\")",
+      "Bash(grep -E \"\\\\.\\(vue|js\\)$\")"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\Sam\\Desktop\\InvoiceShelf"
+    ]
+  }
+}
