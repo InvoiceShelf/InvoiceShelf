@@ -8,9 +8,7 @@ export const useExchangeRateStore = (useWindow = false) => {
   const { global } = window.i18n
   const notificationStore = useNotificationStore()
 
-  return defineStoreFunc({
-    id: 'exchange-rate',
-
+  return defineStoreFunc('exchange-rate', {
     state: () => ({
       supportedCurrencies: [],
       drivers: [],

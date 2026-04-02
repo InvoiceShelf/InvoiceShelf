@@ -3,8 +3,7 @@ import { useNotificationStore } from '@/scripts/stores/notification'
 import http from '@/scripts/http'
 import { handleError } from '@/scripts/customer/helpers/error-handling'
 
-export const useEstimateStore = defineStore({
-  id: 'customerEstimateStore',
+export const useEstimateStore = defineStore('customerEstimateStore', {
   state: () => ({
     estimates: [],
     totalEstimates: 0,

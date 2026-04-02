@@ -7,9 +7,7 @@ export const useBackupStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
 
-  return defineStoreFunc({
-    id: 'backup',
-
+  return defineStoreFunc('backup', {
     state: () => ({
       backups: [],
       currentBackupData: {

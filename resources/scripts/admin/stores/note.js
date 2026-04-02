@@ -6,9 +6,7 @@ export const useNotesStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
 
-  return defineStoreFunc({
-    id: 'notes',
-
+  return defineStoreFunc('notes', {
     state: () => ({
       notes: [],
       currentNote: {

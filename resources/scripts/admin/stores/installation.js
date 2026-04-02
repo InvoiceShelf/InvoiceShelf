@@ -8,9 +8,7 @@ export const useInstallationStore = (useWindow = false) => {
   const { global } = window.i18n
   const companyStore = useCompanyStore()
 
-  return defineStoreFunc({
-    id: 'installation',
-
+  return defineStoreFunc('installation', {
     state: () => ({
       currentDataBaseData: {
         database_connection: 'mysql',

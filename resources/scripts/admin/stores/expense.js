@@ -9,9 +9,7 @@ export const useExpenseStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
 
-  return defineStoreFunc({
-    id: 'expense',
-
+  return defineStoreFunc('expense', {
     state: () => ({
       expenses: [],
       totalExpenses: 0,

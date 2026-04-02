@@ -7,8 +7,7 @@ export const useUsersStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
 
-  return defineStoreFunc({
-    id: 'users',
+  return defineStoreFunc('users', {
     state: () => ({
       roles: [],
       users: [],

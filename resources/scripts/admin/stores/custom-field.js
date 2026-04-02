@@ -10,9 +10,7 @@ export const useCustomFieldStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
 
-  return defineStoreFunc({
-    id: 'custom-field',
-
+  return defineStoreFunc('custom-field', {
     state: () => ({
       customFields: [],
       isRequestOngoing: false,

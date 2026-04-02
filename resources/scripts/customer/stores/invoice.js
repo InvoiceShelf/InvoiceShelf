@@ -1,8 +1,7 @@
 import { handleError } from '@/scripts/customer/helpers/error-handling'
 const { defineStore } = window.pinia
 import http from '@/scripts/http'
-export const useInvoiceStore = defineStore({
-  id: 'customerInvoiceStore',
+export const useInvoiceStore = defineStore('customerInvoiceStore', {
   state: () => ({
     totalInvoices: 0,
     invoices: [],
