@@ -11,7 +11,7 @@
       }}
     </p>
 
-    <form action="" @submit.prevent="submitBulkUpdate">
+    <form id="bulk-update-form" action="" @submit.prevent="submitBulkUpdate">
       <ValidateEach
         v-for="(c, i) in exchangeRateStore.bulkCurrencies"
         :key="i"
@@ -50,22 +50,21 @@
           </BaseInputGroup>
         </template>
       </ValidateEach>
+    </form>
+
+    <template #footer>
       <div
-        slot="footer"
         class="
           z-0
           flex
           justify-end
-          mt-4
-          pt-4
-          border-t border-gray-200 border-solid
         "
       >
-        <BaseButton :loading="isSaving" variant="primary" type="submit">
+        <BaseButton :loading="isSaving" variant="primary" type="submit" form="bulk-update-form">
           {{ $t('general.save') }}
         </BaseButton>
       </div>
-    </form>
+    </template>
   </BaseCard>
 </template>
 

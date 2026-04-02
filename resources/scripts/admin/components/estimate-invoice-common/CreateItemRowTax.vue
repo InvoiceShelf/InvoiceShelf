@@ -106,7 +106,7 @@ const props = defineProps({
   },
   taxes: {
     type: Array,
-    default: [],
+    default: () => [],
   },
   total: {
     type: Number,

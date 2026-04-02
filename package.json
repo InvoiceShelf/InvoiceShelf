@@ -9,7 +9,7 @@
     "watch": "vite build --watch",
     "build": "vite build",
     "serve": "vite preview",
-    "test": "eslint ./resources/scripts --ext .js,.vue"
+    "test": "eslint ./resources/scripts"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.10",
@@ -17,9 +17,9 @@
     "@tailwindcss/vite": "^4.0.0",
     "@vitejs/plugin-vue": "^6.0.0",
     "@vue/compiler-sfc": "^3.5.13",
-    "eslint": "^9.18.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-vue": "^9.32.0",
+    "eslint": "^10.0.0",
+    "eslint-config-prettier": "^10.0.0",
+    "eslint-plugin-vue": "^10.0.0",
     "prettier": "^3.4.2",
     "tailwind-scrollbar": "^4.0.0",
     "tailwindcss": "^4.0.0"
@@ -34,7 +34,7 @@
     "@tiptap/pm": "^3.0.0",
     "@tiptap/starter-kit": "^3.0.0",
     "@tiptap/vue-3": "^3.0.0",
-    "@types/node": "^20.11.9",
+    "@types/node": "^24.0.0",
     "@vuelidate/components": "^1.2.6",
     "@vuelidate/core": "^2.0.3",
     "@vuelidate/validators": "^2.0.4",

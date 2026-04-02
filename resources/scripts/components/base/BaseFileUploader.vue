@@ -441,7 +441,7 @@ let currentStatus = ref(null)
 
 function reset() {
   // reset form to initial state
-  currentStatus = STATUS_INITIAL
+  currentStatus.value = STATUS_INITIAL
 
   uploadedFiles.value = []
 
@@ -451,7 +451,7 @@ function reset() {
     localFiles.value = []
   }
 
-  uploadError = null
+  uploadError.value = null
 }
 
 function upload(formData) {
@@ -467,16 +467,16 @@ function upload(formData) {
 
 // upload data to the server
 function save(formData) {
-  currentStatus = STATUS_SAVING
+  currentStatus.value = STATUS_SAVING
 
   upload(formData)
     .then((x) => {
-      uploadedFiles = [].concat(x)
-      currentStatus = STATUS_SUCCESS
+      uploadedFiles.value = [].concat(x)
+      currentStatus.value = STATUS_SUCCESS
     })
     .catch((err) => {
-      uploadError = err.response
-      currentStatus = STATUS_FAILED
+      uploadError.value = err.response
+      currentStatus.value = STATUS_FAILED
     })
 }
 

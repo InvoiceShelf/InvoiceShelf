@@ -908,19 +908,19 @@ function getErrorMessage(message) {
 
   switch (message) {
     case 'module_not_found':
-      msg = t('modules.module_not_found')
+      msg.value = t('modules.module_not_found')
       break
 
     case 'module_not_purchased':
-      msg = t('modules.module_not_purchased')
+      msg.value = t('modules.module_not_purchased')
       break
 
     case 'version_not_supported':
-      msg = t('modules.version_not_supported')
+      msg.value = t('modules.version_not_supported')
       break
 
     default:
-      msg = message
+      msg.value = message
       break
   }
 

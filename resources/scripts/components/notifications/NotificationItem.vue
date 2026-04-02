@@ -161,7 +161,7 @@ function clearNotificationTimeOut() {
 }
 
 function setNotificationTimeOut() {
-  notiTimeOut = setTimeout(() => {
+  notiTimeOut.value = setTimeout(() => {
     notificationStore.hideNotification(props.notification)
   }, props.notification.time || 5000)
 }
