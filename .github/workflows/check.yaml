@@ -100,10 +100,10 @@ jobs:
             - name: Install Composer dependencies
               uses: ramsey/composer-install@v2
 
-            - name: Use Node.js 20
+            - name: Use Node.js 24
               uses: actions/setup-node@v4
               with:
-                  node-version: 20
+                  node-version: 24
 
             - name: Install
               run: npm install
