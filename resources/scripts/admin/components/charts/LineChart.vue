@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import Chart from 'chart.js'
+import { Chart } from 'chart.js/auto'
 import { ref, reactive, computed, onMounted, watchEffect, inject } from 'vue'
 import { useCompanyStore } from '@/scripts/admin/stores/company'
 
@@ -65,19 +65,21 @@ onMounted(() => {
   let options = reactive({
     responsive: true,
     maintainAspectRatio: false,
-    tooltips: {
-      enabled: true,
-      callbacks: {
-        label: function (tooltipItem, data) {
-          return utils.formatMoney(
-            Math.round(tooltipItem.value * 100),
-            defaultCurrency.value
-          )
+    plugins: {
+      tooltip: {
+        enabled: true,
+        callbacks: {
+          label: function (context) {
+            return utils.formatMoney(
+              Math.round(context.parsed.y * 100),
+              defaultCurrency.value
+            )
+          },
         },
       },
-    },
-    legend: {
-      display: false,
+      legend: {
+        display: false,
+      },
     },
   })
 
@@ -87,7 +89,7 @@ onMounted(() => {
       {
         label: 'Sales',
         fill: false,
-        lineTension: 0.3,
+        tension: 0.3,
         backgroundColor: 'rgba(230, 254, 249)',
         borderColor: '#040405',
         borderCapStyle: 'butt',
@@ -108,7 +110,7 @@ onMounted(() => {
       {
         label: 'Receipts',
         fill: false,
-        lineTension: 0.3,
+        tension: 0.3,
         backgroundColor: 'rgba(230, 254, 249)',
         borderColor: 'rgb(2, 201, 156)',
         borderCapStyle: 'butt',
@@ -129,7 +131,7 @@ onMounted(() => {
       {
         label: 'Expenses',
         fill: false,
-        lineTension: 0.3,
+        tension: 0.3,
         backgroundColor: 'rgba(245, 235, 242)',
         borderColor: 'rgb(255,0,0)',
         borderCapStyle: 'butt',
@@ -150,7 +152,7 @@ onMounted(() => {
       {
         label: 'Net Income',
         fill: false,
-        lineTension: 0.3,
+        tension: 0.3,
         backgroundColor: 'rgba(236, 235, 249)',
         borderColor: 'rgba(88, 81, 216, 1)',
         borderCapStyle: 'butt',
@@ -190,8 +192,6 @@ function update() {
     (expense) => expense / 100
   )
   myLineChart.data.datasets[3].data = props.income.map((_i) => _i / 100)
-  myLineChart.update({
-    lazy: true,
-  })
+  myLineChart.update('none')
 }
 </script>
