@@ -11,7 +11,7 @@
       rounded-md
       cursor-pointer
       avatar-upload
-      border-gray-200
+      border-gray-300
       transition-all
       duration-300
       ease-in-out

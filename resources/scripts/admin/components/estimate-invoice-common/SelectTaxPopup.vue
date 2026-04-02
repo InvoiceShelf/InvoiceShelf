@@ -2,14 +2,14 @@
   <div class="w-full mt-4 tax-select">
     <Popover v-slot="{ isOpen }" class="relative">
       <PopoverButton
-        :class="isOpen ? '' : 'text-opacity-90'"
+        :class="isOpen ? '' : ''"
         class="
           flex
           items-center
           text-sm
           font-medium
           text-primary-400
-          focus:outline-none focus:border-none
+          focus:outline-hidden focus:border-none
         "
       >
         <BaseIcon
@@ -39,7 +39,7 @@
                 overflow-hidden
                 rounded-md
                 shadow-lg
-                ring-1 ring-black ring-opacity-5
+                ring-1 ring-black/5
               "
             >
               <!-- Tax Search Input  -->
@@ -142,7 +142,7 @@
                   py-3
                   bg-gray-200
                   border-none
-                  outline-none
+                  outline-hidden
                 "
                 @click="openTaxTypeModal"
               >

@@ -100,7 +100,7 @@
       <BaseContentPlaceholders v-if="isLoading">
         <BaseContentPlaceholdersText
           :lines="1"
-          class="w-24 h-8 border rounded-md"
+          class="w-24 h-8 border border-gray-200 rounded-md"
         />
       </BaseContentPlaceholders>
       <div v-else class="flex" style="width: 140px" role="group">

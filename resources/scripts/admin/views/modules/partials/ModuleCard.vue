@@ -3,7 +3,7 @@
     class="
       relative
       shadow-md
-      border-2 border-gray-200 border-opacity-60
+      border-2 border-gray-200/60
       rounded-lg
       cursor-pointer
       overflow-hidden
@@ -18,7 +18,7 @@
       <label
         v-if="data.purchased"
         class="
-          bg-white bg-opacity-75
+          bg-white/75
           text-xs
           px-3
           py-1
@@ -33,7 +33,7 @@
         v-if="data.installed"
         class="
           ml-2
-          bg-white bg-opacity-75
+          bg-white/75
           text-xs
           px-3
           py-1

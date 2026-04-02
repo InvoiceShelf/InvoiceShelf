@@ -101,7 +101,7 @@
                 transition
                 duration-150
                 ease-in-out
-                focus:outline-none
+                focus:outline-hidden
               "
               @click="hideNotificationAction"
             >

@@ -16,7 +16,7 @@
           transition-colors
           rounded-full
           w-11
-          focus:outline-none focus:ring-primary-500
+          focus:outline-hidden focus:ring-primary-500
         "
         v-bind="$attrs"
       >

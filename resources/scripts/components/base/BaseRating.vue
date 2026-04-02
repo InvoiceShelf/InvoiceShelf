@@ -182,16 +182,12 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .star-rating {
   display: flex;
   align-items: center;
   .star-container {
     display: flex;
-    .star-svg {
-    }
-  }
-  .indicator {
   }
   .star-container:not(:last-child) {
     margin-right: 5px;

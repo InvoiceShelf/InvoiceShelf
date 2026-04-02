@@ -172,12 +172,12 @@
     <Popover v-else v-slot="{ open }" class="relative flex flex-col rounded-md">
       <PopoverButton
         :class="{
-          'text-opacity-90': open,
+          '': open,
           'border border-solid border-red-500 focus:ring-red-500 rounded':
             valid.$error,
           'focus:ring-2 focus:ring-primary-400': !valid.$error,
         }"
-        class="w-full outline-none rounded-md"
+        class="w-full outline-hidden rounded-md"
       >
         <div
           class="
@@ -243,7 +243,7 @@
               overflow-hidden
               rounded-md
               shadow-lg
-              ring-1 ring-black ring-opacity-5
+              ring-1 ring-black/5
               bg-white
             "
           >
@@ -277,7 +277,7 @@
                     border-b border-gray-200 border-solid
                     cursor-pointer
                     hover:cursor-pointer hover:bg-gray-100
-                    focus:outline-none focus:bg-gray-100
+                    focus:outline-hidden focus:bg-gray-100
                     last:border-b-0
                   "
                   @click="selectNewCustomer(customer.id, close)"
@@ -352,7 +352,7 @@
                 py-3
                 bg-gray-200
                 border-none
-                outline-none
+                outline-hidden
                 focus:bg-gray-300
               "
               @click="openCustomerModal"

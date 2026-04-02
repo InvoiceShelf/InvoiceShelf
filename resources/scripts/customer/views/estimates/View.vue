@@ -146,9 +146,9 @@
           :key="index"
           :to="`/${globalStore.companySlug}/customer/estimates/${estimate.id}/view`"
           :class="[
-            'flex justify-between p-4 items-center cursor-pointer hover:bg-gray-100 border-l-4 border-transparent',
+            'flex justify-between p-4 items-center cursor-pointer hover:bg-gray-100 border-l-4 border-l-transparent',
             {
-              'bg-gray-100 border-l-4 border-primary-500 border-solid':
+              'bg-gray-100 border-l-4 border-l-primary-500 border-solid':
                 hasActiveUrl(estimate.id),
             },
           ]"

@@ -107,7 +107,7 @@
       </div>
       <div>
         <nav
-          class="relative z-0 inline-flex -space-x-px rounded-md shadow-sm"
+          class="relative z-0 inline-flex -space-x-px rounded-md shadow-xs"
           aria-label="Pagination"
         >
           <a

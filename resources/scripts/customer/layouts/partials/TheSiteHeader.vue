@@ -2,7 +2,7 @@
   <Disclosure
     v-slot="{ open }"
     as="nav"
-    class="bg-white shadow-sm fixed top-0 left-0 z-20 w-full"
+    class="bg-white shadow-xs fixed top-0 left-0 z-20 w-full"
   >
     <div class="mx-auto px-8">
       <div class="flex justify-between h-16 w-full">
@@ -51,7 +51,7 @@
               rounded-full
               text-gray-400
               hover:text-gray-500
-              focus:outline-none
+              focus:outline-hidden
               focus:ring-2
               focus:ring-offset-2
               focus:ring-primary-500
@@ -69,7 +69,7 @@
                     flex
                     text-sm
                     rounded-full
-                    focus:outline-none
+                    focus:outline-hidden
                     focus:ring-2
                     focus:ring-offset-2
                     focus:ring-primary-500
@@ -114,7 +114,7 @@
               rounded-md
               text-gray-400
               hover:text-gray-500 hover:bg-gray-100
-              focus:outline-none
+              focus:outline-hidden
               focus:ring-2
               focus:ring-offset-2
               focus:ring-primary-500
@@ -167,7 +167,7 @@
               rounded-full
               text-gray-400
               hover:text-gray-500
-              focus:outline-none
+              focus:outline-hidden
               focus:ring-2
               focus:ring-offset-2
               focus:ring-primary-500

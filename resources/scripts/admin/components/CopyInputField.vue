@@ -6,7 +6,7 @@
       px-4
       py-2
       rounded-lg
-      bg-opacity-40 bg-gray-300
+      bg-gray-300/40
       whitespace-nowrap
       flex-col
       mt-1
@@ -33,7 +33,7 @@
         h-full
         inset-y-0
         cursor-pointer
-        focus:outline-none
+        focus:outline-hidden
         text-primary-500
       "
       width="37"

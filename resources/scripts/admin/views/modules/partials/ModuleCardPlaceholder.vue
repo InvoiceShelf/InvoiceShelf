@@ -3,7 +3,7 @@
     <div
       class="
         shadow-md
-        border-2 border-gray-200 border-opacity-60
+        border-2 border-gray-200/60
         rounded-lg
         cursor-pointer
         overflow-hidden
