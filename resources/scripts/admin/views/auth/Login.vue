@@ -56,7 +56,7 @@
 </template>
 
 <script setup>
-import axios from 'axios'
+import http from '@/scripts/http'
 import { ref, computed, onMounted } from 'vue'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import { useRouter } from 'vue-router'
@@ -96,8 +96,6 @@ const getInputType = computed(() => {
 })
 
 async function onSubmit() {
-  axios.defaults.withCredentials = true
-
   v$.value.$touch()
 
   if (v$.value.$invalid) {

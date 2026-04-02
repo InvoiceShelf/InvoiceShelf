@@ -1,4 +1,4 @@
-import axios from 'axios'
+import http from '@/scripts/http'
 import moment from 'moment'
 import Guid from 'guid'
 import _ from 'lodash'
@@ -20,9 +20,7 @@ export const useEstimateStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
 
-  return defineStoreFunc({
-    id: 'estimate',
-
+  return defineStoreFunc('estimate', {
     state: () => ({
       templates: [],
 
@@ -100,7 +98,7 @@ export const useEstimateStore = (useWindow = false) => {
 
       previewEstimate(params) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/estimates/${params.id}/send/preview`, { params })
             .then((response) => {
               resolve(response)
@@ -114,7 +112,7 @@ export const useEstimateStore = (useWindow = false) => {
 
       fetchEstimates(params) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/estimates`, { params })
             .then((response) => {
               this.estimates = response.data.data
@@ -130,7 +128,7 @@ export const useEstimateStore = (useWindow = false) => {
 
       getNextNumber(params, setState = false) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/next-number?key=estimate`, { params })
             .then((response) => {
               if (setState) {
@@ -147,7 +145,7 @@ export const useEstimateStore = (useWindow = false) => {
 
       fetchEstimate(id) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/estimates/${id}`)
             .then((response) => {
               this.setEstimateData(response.data.data)
@@ -222,7 +220,7 @@ export const useEstimateStore = (useWindow = false) => {
         const notificationStore = useNotificationStore()
 
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post(`/api/v1/estimates/${data.id}/send`, data)
             .then((response) => {
               if (!data.is_preview) {
@@ -242,7 +240,7 @@ export const useEstimateStore = (useWindow = false) => {
 
       addEstimate(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post('/api/v1/estimates', data)
             .then((response) => {
               this.estimates = [...this.estimates, response.data.estimate]
@@ -266,7 +264,7 @@ export const useEstimateStore = (useWindow = false) => {
         const notificationStore = useNotificationStore()
 
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post(`/api/v1/estimates/delete`, id)
             .then((response) => {
               let index = this.estimates.findIndex(
@@ -292,7 +290,7 @@ export const useEstimateStore = (useWindow = false) => {
         const notificationStore = useNotificationStore()
 
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post(`/api/v1/estimates/delete`, { ids: this.selectedEstimates })
             .then((response) => {
               this.selectedEstimates.forEach((estimate) => {
@@ -318,7 +316,7 @@ export const useEstimateStore = (useWindow = false) => {
 
       updateEstimate(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .put(`/api/v1/estimates/${data.id}`, data)
             .then((response) => {
               let pos = this.estimates.findIndex(
@@ -341,7 +339,7 @@ export const useEstimateStore = (useWindow = false) => {
 
       cloneEstimate(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post(`/api/v1/estimates/${data.id}/clone`, data)
             .then((response) => {
               const notificationStore = useNotificationStore()
@@ -360,7 +358,7 @@ export const useEstimateStore = (useWindow = false) => {
 
       markAsAccepted(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post(`/api/v1/estimates/${data.id}/status`, data)
             .then((response) => {
               let pos = this.estimates.findIndex(
@@ -387,7 +385,7 @@ export const useEstimateStore = (useWindow = false) => {
 
       markAsRejected(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post(`/api/v1/estimates/${data.id}/status`, data)
             .then((response) => {
               const notificationStore = useNotificationStore()
@@ -407,7 +405,7 @@ export const useEstimateStore = (useWindow = false) => {
 
       markAsSent(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post(`/api/v1/estimates/${data.id}/status`, data)
             .then((response) => {
               let pos = this.estimates.findIndex(
@@ -435,7 +433,7 @@ export const useEstimateStore = (useWindow = false) => {
       convertToInvoice(id) {
         const notificationStore = useNotificationStore()
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post(`/api/v1/estimates/${id}/convert-to-invoice`)
             .then((response) => {
               notificationStore.showNotification({
@@ -453,7 +451,7 @@ export const useEstimateStore = (useWindow = false) => {
 
       searchEstimate(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/estimates?${data}`)
             .then((response) => {
               resolve(response)
@@ -487,7 +485,7 @@ export const useEstimateStore = (useWindow = false) => {
 
       selectCustomer(id) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/customers/${id}`)
             .then((response) => {
               this.newEstimate.customer = response.data.data
@@ -502,7 +500,7 @@ export const useEstimateStore = (useWindow = false) => {
       },
       fetchEstimateTemplates(params) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/estimates/templates`, { params })
             .then((response) => {
               this.templates = response.data.estimateTemplates

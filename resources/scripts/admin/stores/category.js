@@ -1,4 +1,4 @@
-import axios from 'axios'
+import http from '@/scripts/http'
 import { defineStore } from 'pinia'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import { handleError } from '@/scripts/helpers/error-handling'
@@ -7,9 +7,7 @@ export const useCategoryStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
 
-  return defineStoreFunc({
-    id: 'category',
-
+  return defineStoreFunc('category', {
     state: () => ({
       categories: [],
       currentCategory: {
@@ -27,7 +25,7 @@ export const useCategoryStore = (useWindow = false) => {
     actions: {
       fetchCategories(params) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/categories`, { params })
             .then((response) => {
               this.categories = response.data.data
@@ -42,7 +40,7 @@ export const useCategoryStore = (useWindow = false) => {
 
       fetchCategory(id) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/categories/${id}`)
             .then((response) => {
               this.currentCategory = response.data.data
@@ -57,7 +55,7 @@ export const useCategoryStore = (useWindow = false) => {
 
       addCategory(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post('/api/v1/categories', data)
             .then((response) => {
               this.categories.push(response.data.data)
@@ -77,7 +75,7 @@ export const useCategoryStore = (useWindow = false) => {
 
       updateCategory(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .put(`/api/v1/categories/${data.id}`, data)
             .then((response) => {
               if (response.data) {
@@ -104,7 +102,7 @@ export const useCategoryStore = (useWindow = false) => {
 
       deleteCategory(id) {
         return new Promise((resolve) => {
-          axios
+          http
             .delete(`/api/v1/categories/${id}`)
             .then((response) => {
               let index = this.categories.findIndex(

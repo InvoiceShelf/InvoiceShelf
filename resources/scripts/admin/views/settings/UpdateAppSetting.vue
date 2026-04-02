@@ -214,7 +214,7 @@
 
 <script setup>
 import { useNotificationStore } from '@/scripts/stores/notification'
-import axios from 'axios'
+import http from '@/scripts/http'
 import LoadingIcon from '@/scripts/components/icons/LoadingIcon.vue'
 import { reactive, ref, onMounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -301,7 +301,7 @@ window.addEventListener('beforeunload', (event) => {
 
 // Created
 
-axios.get('/api/v1/app/version').then((res) => {
+http.get('/api/v1/app/version').then((res) => {
   currentVersion.value = res.data.version
   insiderChannel.value = res.data.channel === 'insider'
 })
@@ -344,7 +344,7 @@ function statusClass(step) {
 async function checkUpdate() {
   try {
     isCheckingforUpdate.value = true
-    let response = await axios.get('/api/v1/check/update', {
+    let response = await http.get('/api/v1/check/update', {
       params: {
         channel: insiderChannel ? 'insider' : ''
       }
@@ -409,7 +409,7 @@ function onUpdateApp() {
               path: path || null,
             }
 
-            let requestResponse = await axios.post(
+            let requestResponse = await http.post(
               currentStep.stepUrl,
               updateParams
             )

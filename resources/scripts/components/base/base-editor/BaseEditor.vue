@@ -15,7 +15,7 @@
         <BaseDropdown width-class="w-48">
           <template #activator>
             <div
-              class="flex items-center justify-center w-6 h-6 ml-2 text-sm text-black bg-white rounded-sm md:h-9 md:w-9"
+              class="flex items-center justify-center w-6 h-6 ml-2 text-sm text-black bg-white rounded-xs md:h-9 md:w-9"
             >
               <EllipsisVerticalIcon class="w-6 h-6 text-gray-600" />
             </div>
@@ -73,7 +73,6 @@ import { ref, onUnmounted, watch, markRaw } from 'vue'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import TextAlign from '@tiptap/extension-text-align'
-import Link from '@tiptap/extension-link'
 import { EllipsisVerticalIcon } from '@heroicons/vue/24/outline'
 import {
   BoldIcon,
@@ -114,13 +113,12 @@ export default {
     const editor = useEditor({
       content: props.modelValue,
       extensions: [
-        StarterKit,
+        StarterKit.configure({
+          link: { openOnClick: false },
+        }),
         TextAlign.configure({
           types: ['heading', 'paragraph'],
           alignments: ['left', 'right', 'center', 'justify'],
-        }),
-        Link.configure({
-          openOnClick: false,
         }),
       ],
       onUpdate: ({ editor }) => {
@@ -175,7 +173,9 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style>
+@reference "../../../../css/invoiceshelf.css";
+
 .ProseMirror {
   min-height: 200px;
   padding: 8px 12px;
@@ -209,7 +209,7 @@ export default {
 
   blockquote {
     padding-left: 1rem;
-    border-left: 2px solid rgba(#0d0d0d, 0.1);
+    border-left: 2px solid rgba(13, 13, 13, 0.1);
   }
 
   code {
@@ -236,7 +236,7 @@ export default {
   }
 
   a {
-    color: rgb(var(--color-primary-500));
+    color: var(--color-primary-500);
     text-decoration: underline;
   }
 }

@@ -168,5 +168,5 @@ const loginPageLogo = computed(() => {
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 </style>

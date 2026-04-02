@@ -116,7 +116,6 @@
 
 <script setup>
 import { computed, onMounted, reactive, ref } from 'vue'
-import axios from 'axios'
 import { useModalStore } from '@/scripts/stores/modal'
 import { useTaxTypeStore } from '@/scripts/admin/stores/tax-type'
 import { useGlobalStore } from '@/scripts/admin/stores/global'

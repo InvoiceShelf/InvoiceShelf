@@ -2,12 +2,10 @@ import { handleError } from '@/scripts/customer/helpers/error-handling'
 const { defineStore } = window.pinia
 import { useNotificationStore } from '@/scripts/stores/notification'
 import stubs from '@/scripts/customer/stubs/address'
-import axios from 'axios'
+import http from '@/scripts/http'
 import { useGlobalStore } from '@/scripts/customer/stores/global'
 
-export const useUserStore = defineStore({
-  id: 'customerUserStore',
-
+export const useUserStore = defineStore('customerUserStore', {
   state: () => ({
     customers: [],
     userForm: {
@@ -37,7 +35,7 @@ export const useUserStore = defineStore({
     fetchCurrentUser() {
       const globalStore = useGlobalStore()
       return new Promise((resolve, reject) => {
-        axios
+        http
           .get(`/api/v1/${globalStore.companySlug}/customer/me`)
           .then((response) => {
             Object.assign(this.userForm, response.data.data)
@@ -53,7 +51,7 @@ export const useUserStore = defineStore({
     updateCurrentUser({ data, message }) {
       const globalStore = useGlobalStore()
       return new Promise((resolve, reject) => {
-        axios
+        http
           .post(`/api/v1/${globalStore.companySlug}/customer/profile`, data)
           .then((response) => {
             this.userForm = response.data.data

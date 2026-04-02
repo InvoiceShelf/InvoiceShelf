@@ -143,7 +143,7 @@
               <BaseContentPlaceholders v-if="loading">
                 <BaseContentPlaceholdersText
                   :lines="1"
-                  class="w-24 h-8 border rounded-md"
+                  class="w-24 h-8 border border-gray-200 rounded-md"
                 />
               </BaseContentPlaceholders>
 

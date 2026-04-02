@@ -42,7 +42,7 @@
         <template v-if="userStore.hasAbilities(ability)" #action>
           <button
             type="button"
-            class="flex items-center justify-center w-full px-2 py-2 bg-gray-200 border-none outline-none cursor-pointer "
+            class="flex items-center justify-center w-full px-2 py-2 bg-gray-200 border-none outline-hidden cursor-pointer "
             @click="openTaxModal"
           >
             <BaseIcon name="CheckCircleIcon" class="h-5 text-primary-400" />

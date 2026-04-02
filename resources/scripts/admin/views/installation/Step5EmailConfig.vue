@@ -41,8 +41,6 @@ export default {
 
     const mailDriverStore = useMailDriverStore()
 
-    mailDriverStore.mail_driver = 'mail'
-
     loadData()
 
     function changeDriver(value) {
@@ -52,6 +50,7 @@ export default {
     async function loadData() {
       isFetchingInitialData.value = true
       await mailDriverStore.fetchMailDrivers()
+      await mailDriverStore.fetchMailConfig()
       isFetchingInitialData.value = false
     }
 

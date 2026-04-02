@@ -1,4 +1,4 @@
-import axios from 'axios'
+import http from '@/scripts/http'
 import { defineStore } from 'pinia'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import _ from 'lodash'
@@ -8,8 +8,7 @@ export const useRoleStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
 
-  return defineStoreFunc({
-    id: 'role',
+  return defineStoreFunc('role', {
     state: () => ({
       roles: [],
       allAbilities: [],
@@ -38,7 +37,7 @@ export const useRoleStore = (useWindow = false) => {
     actions: {
       fetchRoles(params) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/roles`, { params })
             .then((response) => {
               this.roles = response.data.data
@@ -53,7 +52,7 @@ export const useRoleStore = (useWindow = false) => {
 
       fetchRole(id) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/roles/${id}`)
             .then((response) => {
               this.currentRole.name = response.data.data.name
@@ -81,7 +80,7 @@ export const useRoleStore = (useWindow = false) => {
       addRole(data) {
         const notificationStore = useNotificationStore()
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post('/api/v1/roles', data)
             .then((response) => {
               this.roles.push(response.data.role)
@@ -101,7 +100,7 @@ export const useRoleStore = (useWindow = false) => {
       updateRole(data) {
         const notificationStore = useNotificationStore()
         return new Promise((resolve, reject) => {
-          axios
+          http
             .put(`/api/v1/roles/${data.id}`, data)
             .then((response) => {
               if (response.data) {
@@ -128,7 +127,7 @@ export const useRoleStore = (useWindow = false) => {
           if (this.allAbilities.length) {
             resolve(this.allAbilities)
           } else {
-            axios
+            http
               .get(`/api/v1/abilities`, { params })
               .then((response) => {
                 this.allAbilities = response.data.abilities
@@ -146,7 +145,7 @@ export const useRoleStore = (useWindow = false) => {
       deleteRole(id) {
         const notificationStore = useNotificationStore()
         return new Promise((resolve, reject) => {
-          axios
+          http
             .delete(`/api/v1/roles/${id}`)
             .then((response) => {
               let index = this.roles.findIndex((role) => role.id === id)

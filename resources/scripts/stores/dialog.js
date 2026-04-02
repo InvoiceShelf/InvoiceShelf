@@ -4,8 +4,7 @@ export const useDialogStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
 
-  return defineStoreFunc({
-    id: 'dialog',
+  return defineStoreFunc('dialog', {
     state: () => ({
       active: false,
       title: '',

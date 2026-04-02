@@ -86,7 +86,7 @@ const props = defineProps({
   defaultInputClass: {
     type: String,
     default:
-      'font-base pl-8 py-2 outline-none focus:ring-primary-400 focus:outline-none focus:border-primary-400 block w-full sm:text-sm border-gray-300 rounded-md text-black',
+      'font-base pl-8 py-2 outline-hidden focus:ring-primary-400 focus:outline-hidden focus:border-primary-400 block w-full sm:text-sm border-gray-300 rounded-md text-black',
   },
 })
 
@@ -130,7 +130,7 @@ const inputInvalidClass = computed(() => {
 
 const inputDisabledClass = computed(() => {
   if (props.disabled) {
-    return 'border border-solid rounded-md outline-none input-field box-border-2 base-date-picker-input placeholder-gray-400 bg-gray-300 text-gray-600 border-gray-300'
+    return 'border border-solid rounded-md outline-hidden input-field box-border-2 base-date-picker-input placeholder-gray-400 bg-gray-300 text-gray-600 border-gray-300'
   }
 
   return ''

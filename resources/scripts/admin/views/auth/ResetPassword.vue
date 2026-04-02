@@ -58,7 +58,7 @@ import useVuelidate from '@vuelidate/core'
 import { required, email, minLength, sameAs } from '@vuelidate/validators'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import { useRoute, useRouter } from 'vue-router'
-import axios from 'axios'
+import http from '@/scripts/http'
 import { useI18n } from 'vue-i18n'
 import { handleError } from '@/scripts/helpers/error-handling'
 
@@ -141,7 +141,7 @@ async function onSubmit(e) {
         token: route.params.token,
       }
       isLoading.value = true
-      let res = await axios.post('/api/v1/auth/reset/password', data)
+      let res = await http.post('/api/v1/auth/reset/password', data)
       isLoading.value = false
       if (res.data) {
         notificationStore.showNotification({

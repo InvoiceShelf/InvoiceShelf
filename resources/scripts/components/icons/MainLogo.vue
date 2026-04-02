@@ -12,11 +12,11 @@ import {ref} from 'vue'
 const props = defineProps({
   darkColor: {
     type: String,
-    default: 'rgba(var(--color-primary-500), var(--tw-text-opacity))',
+    default: 'var(--color-primary-500)',
   },
   lightColor: {
     type: String,
-    default: 'rgba(var(--color-primary-400), var(--tw-text-opacity))',
+    default: 'var(--color-primary-400)',
   },
 })
 

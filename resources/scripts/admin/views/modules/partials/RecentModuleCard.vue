@@ -10,7 +10,7 @@
           <div
             class="
               w-full
-              bg-white bg-opacity-75
+              bg-white/75
               backdrop-filter backdrop-blur
               py-2
               px-4

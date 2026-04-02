@@ -11,7 +11,7 @@
       />
     </BaseContentPlaceholders>
     <Menu v-else>
-      <MenuButton ref="trigger" class="focus:outline-none" @click="onClick">
+      <MenuButton ref="trigger" class="focus:outline-hidden" @click="onClick">
         <slot name="activator" />
       </MenuButton>
 
@@ -69,7 +69,7 @@ const props = defineProps({
 })
 
 const containerClasses = computed(() => {
-  const baseClass = `origin-top-right rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none`
+  const baseClass = `origin-top-right rounded-md shadow-lg bg-white ring-1 ring-black/5 divide-y divide-gray-100 focus:outline-hidden`
   return `${baseClass} ${props.containerClass}`
 })
 

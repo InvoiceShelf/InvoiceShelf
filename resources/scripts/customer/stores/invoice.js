@@ -1,8 +1,7 @@
 import { handleError } from '@/scripts/customer/helpers/error-handling'
 const { defineStore } = window.pinia
-import axios from 'axios'
-export const useInvoiceStore = defineStore({
-  id: 'customerInvoiceStore',
+import http from '@/scripts/http'
+export const useInvoiceStore = defineStore('customerInvoiceStore', {
   state: () => ({
     totalInvoices: 0,
     invoices: [],
@@ -12,7 +11,7 @@ export const useInvoiceStore = defineStore({
   actions: {
     fetchInvoices(params, slug) {
       return new Promise((resolve, reject) => {
-        axios
+        http
           .get(`/api/v1/${slug}/customer/invoices`, { params })
           .then((response) => {
             this.invoices = response.data.data
@@ -28,7 +27,7 @@ export const useInvoiceStore = defineStore({
 
     fetchViewInvoice(params, slug) {
       return new Promise((resolve, reject) => {
-        axios
+        http
           .get(`/api/v1/${slug}/customer/invoices/${params.id}`, {
             params,
           })
@@ -46,7 +45,7 @@ export const useInvoiceStore = defineStore({
 
     searchInvoice(params, slug) {
       return new Promise((resolve, reject) => {
-        axios
+        http
           .get(`/api/v1/${slug}/customer/invoices`, { params })
           .then((response) => {
             this.invoices = response.data

@@ -1,10 +1,9 @@
 const { defineStore } = window.pinia
 import { useGlobalStore } from '@/scripts/customer/stores/global'
-import axios from 'axios'
+import http from '@/scripts/http'
 import { handleError } from '@/scripts/customer/helpers/error-handling'
 
-export const useDashboardStore = defineStore({
-  id: 'dashboard',
+export const useDashboardStore = defineStore('dashboard', {
   state: () => ({
     recentInvoices: [],
     recentEstimates: [],
@@ -19,7 +18,7 @@ export const useDashboardStore = defineStore({
     loadData(data) {
       const globalStore = useGlobalStore()
       return new Promise((resolve, reject) => {
-        axios
+        http
           .get(`/api/v1/${globalStore.companySlug}/customer/dashboard`, {
             data,
           })

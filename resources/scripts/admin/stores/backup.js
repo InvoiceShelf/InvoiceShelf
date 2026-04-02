@@ -1,4 +1,4 @@
-import axios from 'axios'
+import http from '@/scripts/http'
 import { defineStore } from 'pinia'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import { handleError } from '@/scripts/helpers/error-handling'
@@ -7,9 +7,7 @@ export const useBackupStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
 
-  return defineStoreFunc({
-    id: 'backup',
-
+  return defineStoreFunc('backup', {
     state: () => ({
       backups: [],
       currentBackupData: {
@@ -21,7 +19,7 @@ export const useBackupStore = (useWindow = false) => {
     actions: {
       fetchBackups(params) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/backups`, { params })
             .then((response) => {
               this.backups = response.data.data
@@ -36,7 +34,7 @@ export const useBackupStore = (useWindow = false) => {
 
       createBackup(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post(`/api/v1/backups`, data)
             .then((response) => {
               const notificationStore = useNotificationStore()
@@ -55,7 +53,7 @@ export const useBackupStore = (useWindow = false) => {
 
       removeBackup(params) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .delete(`/api/v1/backups/${params.disk}`, { params })
             .then((response) => {
               const notificationStore = useNotificationStore()

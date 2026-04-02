@@ -10,7 +10,7 @@
   <div
     v-else
     :class="[containerClass, computedContainerClass]"
-    class="relative rounded-md shadow-sm font-base"
+    class="relative rounded-md shadow-xs font-base"
   >
     <div
       v-if="loading && loadingPosition === 'left'"

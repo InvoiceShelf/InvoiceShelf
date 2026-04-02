@@ -1,10 +1,9 @@
 const { defineStore } = window.pinia
 import { useNotificationStore } from '@/scripts/stores/notification'
-import axios from 'axios'
+import http from '@/scripts/http'
 import { handleError } from '@/scripts/customer/helpers/error-handling'
 
-export const useEstimateStore = defineStore({
-  id: 'customerEstimateStore',
+export const useEstimateStore = defineStore('customerEstimateStore', {
   state: () => ({
     estimates: [],
     totalEstimates: 0,
@@ -13,7 +12,7 @@ export const useEstimateStore = defineStore({
   actions: {
     fetchEstimate(params, slug) {
       return new Promise((resolve, reject) => {
-        axios
+        http
           .get(`/api/v1/${slug}/customer/estimates`, { params })
           .then((response) => {
             this.estimates = response.data.data
@@ -29,7 +28,7 @@ export const useEstimateStore = defineStore({
 
     fetchViewEstimate(params, slug) {
       return new Promise((resolve, reject) => {
-        axios
+        http
           .get(`/api/v1/${slug}/customer/estimates/${params.id}`, {
             params,
           })
@@ -47,7 +46,7 @@ export const useEstimateStore = defineStore({
 
     searchEstimate(params, slug) {
       return new Promise((resolve, reject) => {
-        axios
+        http
           .get(`/api/v1/${slug}/customer/estimates`, { params })
           .then((response) => {
             this.estimates = response.data
@@ -62,7 +61,7 @@ export const useEstimateStore = defineStore({
     acceptEstimate({ slug, id, status }) {
 
       return new Promise((resolve, reject) => {
-        axios
+        http
           .post(`/api/v1/${slug}/customer/estimate/${id}/status`, { status })
           .then((response) => {
             let pos = this.estimates.findIndex(
@@ -89,7 +88,7 @@ export const useEstimateStore = defineStore({
     rejectEstimate({ slug, id, status }) {
 
       return new Promise((resolve, reject) => {
-        axios
+        http
           .post(`/api/v1/${slug}/customer/estimate/${id}/status`, { status })
           .then((response) => {
             let pos = this.estimates.findIndex(

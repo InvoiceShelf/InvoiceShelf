@@ -103,7 +103,7 @@
               justify-center
               w-full
               h-full
-              bg-white bg-opacity-60
+              bg-white/60
             "
           >
             <SpinnerIcon class="w-10 h-10 text-primary-500" />

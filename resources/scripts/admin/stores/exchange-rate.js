@@ -1,4 +1,4 @@
-import axios from 'axios'
+import http from '@/scripts/http'
 import { defineStore } from 'pinia'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import { handleError } from '@/scripts/helpers/error-handling'
@@ -8,9 +8,7 @@ export const useExchangeRateStore = (useWindow = false) => {
   const { global } = window.i18n
   const notificationStore = useNotificationStore()
 
-  return defineStoreFunc({
-    id: 'exchange-rate',
-
+  return defineStoreFunc('exchange-rate', {
     state: () => ({
       supportedCurrencies: [],
       drivers: [],
@@ -37,7 +35,7 @@ export const useExchangeRateStore = (useWindow = false) => {
     actions: {
       fetchProviders(params) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get('/api/v1/exchange-rate-providers', { params })
             .then((response) => {
               this.providers = response.data.data
@@ -52,7 +50,7 @@ export const useExchangeRateStore = (useWindow = false) => {
 
       fetchDefaultProviders() {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/config?key=exchange_rate_drivers`)
             .then((response) => {
               this.drivers = response.data.exchange_rate_drivers
@@ -68,7 +66,7 @@ export const useExchangeRateStore = (useWindow = false) => {
 
       fetchProvider(id) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/exchange-rate-providers/${id}`)
             .then((response) => {
               this.currentExchangeRate = response.data.data
@@ -84,7 +82,7 @@ export const useExchangeRateStore = (useWindow = false) => {
 
       addProvider(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post('/api/v1/exchange-rate-providers', data)
             .then((response) => {
               notificationStore.showNotification({
@@ -104,7 +102,7 @@ export const useExchangeRateStore = (useWindow = false) => {
 
       updateProvider(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .put(`/api/v1/exchange-rate-providers/${data.id}`, data)
             .then((response) => {
               notificationStore.showNotification({
@@ -122,7 +120,7 @@ export const useExchangeRateStore = (useWindow = false) => {
 
       deleteExchangeRate(id) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .delete(`/api/v1/exchange-rate-providers/${id}`)
             .then((response) => {
               let index = this.drivers.findIndex((driver) => driver.id === id)
@@ -148,7 +146,7 @@ export const useExchangeRateStore = (useWindow = false) => {
       },
       fetchCurrencies(params) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/supported-currencies`, { params })
             .then((response) => {
               this.supportedCurrencies = response.data.supportedCurrencies
@@ -163,7 +161,7 @@ export const useExchangeRateStore = (useWindow = false) => {
       },
       fetchActiveCurrency(params) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get('/api/v1/used-currencies', { params })
             .then((response) => {
               this.activeUsedCurrencies = response.data.activeUsedCurrencies
@@ -178,7 +176,7 @@ export const useExchangeRateStore = (useWindow = false) => {
       },
       fetchBulkCurrencies() {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get('/api/v1/currencies/used')
             .then((response) => {
               this.bulkCurrencies = response.data.currencies.map((_m) => {
@@ -196,7 +194,7 @@ export const useExchangeRateStore = (useWindow = false) => {
       },
       updateBulkExchangeRate(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post('/api/v1/currencies/bulk-update-exchange-rate', data)
             .then((response) => {
               resolve(response)
@@ -209,7 +207,7 @@ export const useExchangeRateStore = (useWindow = false) => {
       },
       getCurrentExchangeRate(currencyId) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/currencies/${currencyId}/exchange-rate`)
             .then((response) => {
               resolve(response)
@@ -221,7 +219,7 @@ export const useExchangeRateStore = (useWindow = false) => {
       },
       getCurrencyConverterServers() {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get('/api/v1/config?key=currency_converter_servers')
             .then((response) => {
               resolve(response)
@@ -234,7 +232,7 @@ export const useExchangeRateStore = (useWindow = false) => {
       },
       checkForActiveProvider(currency_id) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/currencies/${currency_id}/active-provider`)
             .then((response) => {
               resolve(response)
