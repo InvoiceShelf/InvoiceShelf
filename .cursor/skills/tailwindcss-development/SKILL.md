@@ -10,7 +10,7 @@ metadata:
 
 ## Documentation
 
-Use `search-docs` for detailed Tailwind CSS v3 patterns and documentation.
+Use `search-docs` for detailed Tailwind CSS v4 patterns and documentation.
 
 ## Basic Usage
 
@@ -18,22 +18,55 @@ Use `search-docs` for detailed Tailwind CSS v3 patterns and documentation.
 - Offer to extract repeated patterns into components that match the project's conventions (e.g., Blade, JSX, Vue).
 - Consider class placement, order, priority, and defaults. Remove redundant classes, add classes to parent or child elements carefully to reduce repetition, and group elements logically.
 
-## Tailwind CSS v3 Specifics
+## Tailwind CSS v4 Specifics
 
-- Always use Tailwind CSS v3 and verify you're using only classes it supports.
-- Configuration is done in the `tailwind.config.js` file.
-- Import using `@tailwind` directives:
+- Always use Tailwind CSS v4 and avoid deprecated utilities.
+- `corePlugins` is not supported in Tailwind v4.
 
-<!-- v3 Import Syntax -->
+### CSS-First Configuration
+
+In Tailwind v4, configuration is CSS-first using the `@theme` directive — no separate `tailwind.config.js` file is needed:
+
+<!-- CSS-First Config -->
 ```css
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@theme {
+  --color-brand: oklch(0.72 0.11 178);
+}
 ```
+
+### Import Syntax
+
+In Tailwind v4, import Tailwind with a regular CSS `@import` statement instead of the `@tailwind` directives used in v3:
+
+<!-- v4 Import Syntax -->
+```diff
+- @tailwind base;
+- @tailwind components;
+- @tailwind utilities;
++ @import "tailwindcss";
+```
+
+### Replaced Utilities
+
+Tailwind v4 removed deprecated utilities. Use the replacements shown below. Opacity values remain numeric.
+
+| Deprecated | Replacement |
+|------------|-------------|
+| bg-opacity-* | bg-black/* |
+| text-opacity-* | text-black/* |
+| border-opacity-* | border-black/* |
+| divide-opacity-* | divide-black/* |
+| ring-opacity-* | ring-black/* |
+| placeholder-opacity-* | placeholder-black/* |
+| flex-shrink-* | shrink-* |
+| flex-grow-* | grow-* |
+| overflow-ellipsis | text-ellipsis |
+| decoration-slice | box-decoration-slice |
+| decoration-clone | box-decoration-clone |
 
 ## Spacing
 
-When listing items, use gap utilities for spacing; don't use margins.
+Use `gap` utilities instead of margins for spacing between siblings:
 
 <!-- Gap Utilities -->
 ```html
@@ -77,15 +110,10 @@ If existing pages and components support dark mode, new pages and components mus
 </div>
 ```
 
-## Verification
-
-1. Check browser for visual rendering
-2. Test responsive breakpoints
-3. Verify dark mode if project uses it
-
 ## Common Pitfalls
 
+- Using deprecated v3 utilities (bg-opacity-*, flex-shrink-*, etc.)
+- Using `@tailwind` directives instead of `@import "tailwindcss"`
+- Trying to use `tailwind.config.js` instead of CSS `@theme` directive
 - Using margins for spacing between siblings instead of gap utilities
 - Forgetting to add dark mode variants when the project uses dark mode
-- Not checking existing project conventions before adding new utilities
-- Overusing inline styles when Tailwind classes would suffice

@@ -9,15 +9,12 @@
     "type": "project",
     "require": {
         "php": "^8.4",
-        "aws/aws-sdk-php": "^3.336",
         "barryvdh/laravel-dompdf": "^v3.0",
-        "doctrine/dbal": "^4.2",
         "dragonmantank/cron-expression": "^v3.4",
         "gotenberg/gotenberg-php": "^2.8",
         "guzzlehttp/guzzle": "^7.9",
         "hashids/hashids": "^5.0",
         "invoiceshelf/modules": "^1.0.0",
-        "jasonmccreary/laravel-test-assertions": "^v2.4",
         "laravel/framework": "^13.0",
         "laravel/helpers": "^1.7",
         "laravel/sanctum": "^4.0",
@@ -36,6 +33,7 @@
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.5",
         "fakerphp/faker": "^1.23",
+        "jasonmccreary/laravel-test-assertions": "^2.9",
         "laravel/boost": "^2.3",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.41",
@@ -83,7 +81,11 @@
         "dev": [
             "Composer\\Config::disableProcessTimeout",
             "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
-        ]
+        ],
+	"ide-helper": [
+            "@php artisan ide-helper:generate",
+            "@php artisan ide-helper:meta"
+	]
     },
     "extra": {
         "laravel": {
