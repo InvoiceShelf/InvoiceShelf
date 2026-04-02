@@ -48,8 +48,9 @@ class DatabaseConfigurationController extends Controller
     public function getDatabaseEnvironment(Request $request)
     {
         $databaseData = [];
+        $connection = $request->connection ?? config('database.default');
 
-        switch ($request->connection) {
+        switch ($connection) {
             case 'sqlite':
                 $databaseData = [
                     'database_connection' => 'sqlite',
