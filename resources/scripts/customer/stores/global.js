@@ -1,7 +1,7 @@
 import { handleError } from '@/scripts/customer/helpers/error-handling'
 import { useUserStore } from './user'
 const { defineStore } = window.pinia
-import axios from 'axios'
+import http from '@/scripts/http'
 const { global } = window.i18n
 export const useGlobalStore = defineStore({
   id: 'CustomerPortalGlobalStore',
@@ -22,7 +22,7 @@ export const useGlobalStore = defineStore({
       this.companySlug = data
       const userStore = useUserStore()
       return new Promise((resolve, reject) => {
-        axios
+        http
           .get(`/api/v1/${data}/customer/bootstrap`)
           .then((response) => {
             this.currentUser = response.data.data
@@ -51,7 +51,7 @@ export const useGlobalStore = defineStore({
         if (this.countries.length) {
           resolve(this.countries)
         } else {
-          axios
+          http
             .get(`/api/v1/${this.companySlug}/customer/countries`)
             .then((response) => {
               this.countries = response.data.data

@@ -1,4 +1,4 @@
-import axios from 'axios'
+import http from '@/scripts/http'
 import { defineStore } from 'pinia'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import { handleError } from '@/scripts/helpers/error-handling'
@@ -42,7 +42,7 @@ export const useUsersStore = (useWindow = false) => {
 
       fetchUsers(params) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/users`, { params })
             .then((response) => {
               this.users = response.data.data
@@ -58,7 +58,7 @@ export const useUsersStore = (useWindow = false) => {
 
       fetchUser(id) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/users/${id}`)
             .then((response) => {
               this.userData = response.data.data
@@ -82,7 +82,7 @@ export const useUsersStore = (useWindow = false) => {
 
       fetchRoles(state) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/roles`)
             .then((response) => {
               this.roles = response.data.data
@@ -97,7 +97,7 @@ export const useUsersStore = (useWindow = false) => {
 
       addUser(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post('/api/v1/users', data)
             .then((response) => {
               this.users.push(response.data)
@@ -118,7 +118,7 @@ export const useUsersStore = (useWindow = false) => {
 
       updateUser(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .put(`/api/v1/users/${data.id}`, data)
             .then((response) => {
               if (response) {
@@ -145,7 +145,7 @@ export const useUsersStore = (useWindow = false) => {
         const notificationStore = useNotificationStore()
 
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post(`/api/v1/users/delete`, { users: id.ids })
             .then((response) => {
               let index = this.users.findIndex((user) => user.id === id)
@@ -165,7 +165,7 @@ export const useUsersStore = (useWindow = false) => {
 
       deleteMultipleUsers() {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post(`/api/v1/users/delete`, { users: this.selectedUsers })
             .then((response) => {
               this.selectedUsers.forEach((user) => {
@@ -190,7 +190,7 @@ export const useUsersStore = (useWindow = false) => {
 
       searchUsers(params) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/search`, { params })
             .then((response) => {
               this.userList = response.data.users.data

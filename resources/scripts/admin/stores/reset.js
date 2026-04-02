@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { defineStore } from 'pinia'
 import { useBackupStore } from './backup'
 import { useCategoryStore } from './category'

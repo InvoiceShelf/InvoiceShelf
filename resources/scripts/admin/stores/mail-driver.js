@@ -1,4 +1,4 @@
-import axios from 'axios'
+import http from '@/scripts/http'
 import { defineStore } from 'pinia'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import { handleError } from '@/scripts/helpers/error-handling'
@@ -57,7 +57,7 @@ export const useMailDriverStore = (useWindow = false) => {
     actions: {
       fetchMailDrivers() {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get('/api/v1/mail/drivers')
             .then((response) => {
               if (response.data) {
@@ -74,7 +74,7 @@ export const useMailDriverStore = (useWindow = false) => {
 
       fetchMailConfig() {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get('/api/v1/mail/config')
             .then((response) => {
               if (response.data) {
@@ -92,7 +92,7 @@ export const useMailDriverStore = (useWindow = false) => {
 
       updateMailConfig(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post('/api/v1/mail/config', data)
             .then((response) => {
               const notificationStore = useNotificationStore()
@@ -118,7 +118,7 @@ export const useMailDriverStore = (useWindow = false) => {
 
       sendTestMail(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post('/api/v1/mail/test', data)
             .then((response) => {
               const notificationStore = useNotificationStore()

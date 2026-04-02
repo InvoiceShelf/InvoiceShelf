@@ -1,4 +1,4 @@
-import axios from 'axios'
+import http from '@/scripts/http'
 import { defineStore } from 'pinia'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import { handleError } from '@/scripts/helpers/error-handling'
@@ -31,7 +31,7 @@ export const useUserStore = (useWindow = false) => {
     actions: {
       updateCurrentUser(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .put('/api/v1/me', data)
             .then((response) => {
               this.currentUser = response.data.data
@@ -52,7 +52,7 @@ export const useUserStore = (useWindow = false) => {
 
       fetchCurrentUser(params) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/me`, params)
             .then((response) => {
               this.currentUser = response.data.data
@@ -68,7 +68,7 @@ export const useUserStore = (useWindow = false) => {
 
       uploadAvatar(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post('/api/v1/me/upload-avatar', data)
             .then((response) => {
               this.currentUser.avatar = response.data.data.avatar
@@ -83,7 +83,7 @@ export const useUserStore = (useWindow = false) => {
 
       fetchUserSettings(settings) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get('/api/v1/me/settings', {
               params: {
                 settings,
@@ -101,7 +101,7 @@ export const useUserStore = (useWindow = false) => {
 
       updateUserSettings(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .put('/api/v1/me/settings', data)
             .then((response) => {
               if (data.settings.language) {

@@ -1,7 +1,7 @@
 const { defineStore } = window.pinia
 import { handleError } from '@/scripts/helpers/error-handling'
 import { useNotificationStore } from '@/scripts/stores/notification'
-import axios from 'axios'
+import http from '@/scripts/http'
 
 export const usePDFDriverStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
@@ -28,7 +28,7 @@ export const usePDFDriverStore = (useWindow = false) => {
     actions: {
       async fetchDrivers() {
         try {
-          const response = await axios.get('/api/v1/pdf/drivers')
+          const response = await http.get('/api/v1/pdf/drivers')
           this.pdf_drivers = response.data
         } catch (err) {
           handleError(err)
@@ -37,7 +37,7 @@ export const usePDFDriverStore = (useWindow = false) => {
       },
       async fetchConfig() {
         try {
-          const response = await axios.get('/api/v1/pdf/config')
+          const response = await http.get('/api/v1/pdf/config')
           this.pdfDriverConfig = response.data
           this.pdf_driver = response.data.pdf_driver
         } catch (err) {
@@ -47,7 +47,7 @@ export const usePDFDriverStore = (useWindow = false) => {
       },
       async updateConfig(data) {
         try {
-          const response = await axios.post('/api/v1/pdf/config', data)
+          const response = await http.post('/api/v1/pdf/config', data)
           const notificationStore = useNotificationStore()
           if (response.data.success) {
             notificationStore.showNotification({
