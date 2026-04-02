@@ -17,7 +17,7 @@ class OnboardingWizardController extends Controller
      */
     public function getStep(Request $request)
     {
-        if (! InstallUtils::dbMarkerExists()) {
+        if (! InstallUtils::isDbCreated()) {
             return response()->json([
                 'profile_complete' => 0,
                 'profile_language' => 'en',
