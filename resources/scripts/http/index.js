@@ -1,6 +1,8 @@
 import axios from 'axios'
 import Ls from '@/scripts/services/ls.js'
 
+window.Ls = Ls
+
 const instance = axios.create({
   withCredentials: true,
   headers: {
