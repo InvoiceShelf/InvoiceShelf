@@ -70,8 +70,6 @@
 
   const emit = defineEmits(['submit-data', 'on-change-driver'])
 
-  let isFetchingInitialData = ref(false)
-
   const pdfDriverStore = usePDFDriverStore();
   const { t } = useI18n();
 

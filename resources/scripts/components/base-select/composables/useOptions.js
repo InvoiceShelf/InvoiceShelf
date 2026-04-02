@@ -108,11 +108,13 @@ export default function useOptions(props, context, dep) {
       case 'multiple':
       case 'tags':
         return !isNullish(iv.value) && iv.value.length > 0
+
+      default: return null
     }
   })
 
   const multipleLabelText = computed(() => {
-    return multipleLabel !== undefined && multipleLabel.value !== undefined
+    return multipleLabel.value !== undefined && multipleLabel.value !== undefined
       ? multipleLabel.value(iv.value)
       : (iv.value && iv.value.length > 1 ? `${iv.value.length} options selected` : `1 option selected`)
   })
@@ -148,6 +150,8 @@ export default function useOptions(props, context, dep) {
       case 'multiple':
       case 'tags':
         return []
+
+      default: return null
     }
   })
 
@@ -243,7 +247,7 @@ export default function useOptions(props, context, dep) {
   }
 
   const isMax = () => {
-    if (max === undefined || max.value === -1 || (!hasSelected.value && max.value > 0)) {
+    if (max.value === undefined || max.value === -1 || (!hasSelected.value && max.value > 0)) {
       return false
     }
 
@@ -519,7 +523,7 @@ export default function useOptions(props, context, dep) {
     throw new Error(`v-model must be an array when using "${mode.value}" mode`)
   }
 
-  if (options && typeof options.value == 'function') {
+  if (options.value && typeof options.value == 'function') {
     if (resolveOnLoad.value) {
       resolveOptions(initInternalValue)
     } else if (object.value == true) {

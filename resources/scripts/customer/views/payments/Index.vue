@@ -1,14 +1,16 @@
 <template>
   <BasePage>
     <BasePageHeader :title="$t('payments.title')">
-      <BaseBreadcrumb slot="breadcrumbs">
-        <BaseBreadcrumbItem
-          :title="$t('general.home')"
-          :to="`/${globalStore.companySlug}/customer/dashboard`"
-        />
+      <template #breadcrumbs>
+        <BaseBreadcrumb>
+          <BaseBreadcrumbItem
+            :title="$t('general.home')"
+            :to="`/${globalStore.companySlug}/customer/dashboard`"
+          />
 
-        <BaseBreadcrumbItem :title="$t('payments.payment', 2)" to="#" active />
-      </BaseBreadcrumb>
+          <BaseBreadcrumbItem :title="$t('payments.payment', 2)" to="#" active />
+        </BaseBreadcrumb>
+      </template>
 
       <template #actions>
         <BaseButton

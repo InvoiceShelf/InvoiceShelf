@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import Mysql from './database/MysqlDatabase.vue'
 import Pgsql from './database/PgsqlDatabase.vue'
 import Sqlite from './database/SqliteDatabase.vue'
@@ -41,10 +41,11 @@ export default {
     const notificationStore = useNotificationStore()
     const installationStore = useInstallationStore()
 
-    const databaseData = computed(() => {
-      installationStore.currentDataBaseData.app_locale = global.locale.value
-      return installationStore.currentDataBaseData
-    })
+    const databaseData = computed(() => installationStore.currentDataBaseData)
+
+    watch(() => global.locale.value, (newLocale) => {
+      installationStore.currentDataBaseData.app_locale = newLocale
+    }, { immediate: true })
 
     async function getDatabaseConfig(connection) {
       let params = {}

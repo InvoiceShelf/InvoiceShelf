@@ -37,7 +37,7 @@
         </span>
       </template>
 
-      <template #cell-actions="{ row }">
+      <template #cell-actions>
         <base-dropdown width-class="w-48" margin-class="mt-1">
           <template #activator>
             <div class="flex items-center justify-center">

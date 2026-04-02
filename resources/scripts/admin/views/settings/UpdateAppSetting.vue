@@ -346,7 +346,7 @@ async function checkUpdate() {
     isCheckingforUpdate.value = true
     let response = await http.get('/api/v1/check/update', {
       params: {
-        channel: insiderChannel ? 'insider' : ''
+        channel: insiderChannel.value ? 'insider' : ''
       }
     });
     isCheckingforUpdate.value = false

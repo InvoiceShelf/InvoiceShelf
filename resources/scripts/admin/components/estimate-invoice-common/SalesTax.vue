@@ -79,6 +79,7 @@ const addressData = computed(() => {
       address: pick(address, ['address_street_1', 'city', 'state', 'zip']),
     }
   }
+  return null
 })
 
 const isAddressAvailable = computed(() => {
