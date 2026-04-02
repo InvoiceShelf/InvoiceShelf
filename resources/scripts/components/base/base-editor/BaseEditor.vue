@@ -73,7 +73,6 @@ import { ref, onUnmounted, watch, markRaw } from 'vue'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import TextAlign from '@tiptap/extension-text-align'
-import Link from '@tiptap/extension-link'
 import { EllipsisVerticalIcon } from '@heroicons/vue/24/outline'
 import {
   BoldIcon,
@@ -114,13 +113,12 @@ export default {
     const editor = useEditor({
       content: props.modelValue,
       extensions: [
-        StarterKit,
+        StarterKit.configure({
+          link: { openOnClick: false },
+        }),
         TextAlign.configure({
           types: ['heading', 'paragraph'],
           alignments: ['left', 'right', 'center', 'justify'],
-        }),
-        Link.configure({
-          openOnClick: false,
         }),
       ],
       onUpdate: ({ editor }) => {
