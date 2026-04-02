@@ -17,9 +17,13 @@ class RedirectIfInstalled
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (InstallUtils::dbMarkerExists()) {
-            if (Setting::getSetting('profile_complete') === 'COMPLETED') {
-                return redirect('login');
+        if (InstallUtils::isDbCreated()) {
+            try {
+                if (Setting::getSetting('profile_complete') === 'COMPLETED') {
+                    return redirect('login');
+                }
+            } catch (\Exception $e) {
+                // Settings table may not exist yet during installation
             }
         }
 

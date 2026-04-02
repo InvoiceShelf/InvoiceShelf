@@ -17,7 +17,11 @@ class InstallationMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (! InstallUtils::isDbCreated() || Setting::getSetting('profile_complete') !== 'COMPLETED') {
+        try {
+            if (! InstallUtils::isDbCreated() || Setting::getSetting('profile_complete') !== 'COMPLETED') {
+                return redirect('/installation');
+            }
+        } catch (\Exception $e) {
             return redirect('/installation');
         }
 
