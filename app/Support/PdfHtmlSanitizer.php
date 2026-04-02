@@ -19,6 +19,9 @@ final class PdfHtmlSanitizer
             return '';
         }
 
+        // Legacy/invalid `</br>` is dropped by libxml and collapses lines in PDF output; normalize to `<br />`.
+        $html = str_replace('</br>', '<br />', $html);
+
         $allowedTags = '<br><br/><p><b><strong><i><em><u><ol><ul><li><table><tr><td><th><thead><tbody><tfoot><h1><h2><h3><h4><blockquote>';
         $html = strip_tags($html, $allowedTags);
 

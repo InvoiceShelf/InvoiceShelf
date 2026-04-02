@@ -25,3 +25,12 @@ it('strips style and link attributes that may carry URLs', function () {
 it('returns empty string for empty input', function () {
     expect(PdfHtmlSanitizer::sanitize(''))->toBe('');
 });
+
+it('normalizes legacy closing-br markup so lines are not collapsed in PDF output', function () {
+    $html = 'line1</br>line2';
+
+    $out = PdfHtmlSanitizer::sanitize($html);
+
+    expect($out)->toContain('<br')->toContain('line1')->toContain('line2');
+    expect($out)->not->toBe('line1line2');
+});

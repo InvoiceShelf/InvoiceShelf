@@ -436,7 +436,7 @@
         </div>
 
         <div class="customer-address-container">
-            @if ($billing_address !== '</br>')
+            @if ($billing_address !== '<br />')
                 <div class="billing-address-container billing-address">
                     @if ($billing_address)
                         <b>@lang('pdf_bill_to')</b> <br>
@@ -446,7 +446,7 @@
             @endif
 
 
-            <div @if ($billing_address !== '</br>') class="shipping-address-container shipping-address" @else class="shipping-address-container--left shipping-address" style="padding-left:30px;" @endif>
+            <div @if ($billing_address !== '<br />') class="shipping-address-container shipping-address" @else class="shipping-address-container--left shipping-address" style="padding-left:30px;" @endif>
 
                 @if ($shipping_address)
                     <b>@lang('pdf_ship_to') </b> <br>

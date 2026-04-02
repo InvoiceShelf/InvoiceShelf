@@ -414,7 +414,7 @@
                 {!! $company_address !!}
             </div>
 
-            @if ($shipping_address !== '</br>')
+            @if ($shipping_address !== '<br />')
                 <div class="shipping-address-container shipping-address">
                     @if ($shipping_address)
                         <b>@lang('pdf_ship_to')</b> <br>
@@ -422,10 +422,7 @@
                     @endif
                 </div>
             @endif
-
-
-            <div class="billing-address-container billing-address" @if ($shipping_address === '</br>')
-            style="float:right; margin-right:30px;" @endif>
+            <div class="billing-address-container billing-address" @if ($shipping_address === '<br />') style="float:right; margin-right:30px;" @endif>
                 @if ($billing_address)
                     <b>@lang('pdf_bill_to')</b> <br>
                     {!! $billing_address !!}
