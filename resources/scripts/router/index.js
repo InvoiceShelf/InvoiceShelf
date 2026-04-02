@@ -17,22 +17,20 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to) => {
   const userStore = useUserStore()
   const globalStore = useGlobalStore()
   let ability = to.meta.ability
   const { isAppLoaded } = globalStore
 
   if (ability && isAppLoaded && to.meta.requiresAuth) {
-    if (userStore.hasAbilities(ability)) {
-      next()
-    } else next({ name: 'account.settings' })
+    if (!userStore.hasAbilities(ability)) {
+      return { name: 'account.settings' }
+    }
   } else if (to.meta.isOwner && isAppLoaded) {
-    if (userStore.currentUser.is_owner) {
-      next()
-    } else next({ name: 'dashboard' })
-  } else {
-    next()
+    if (!userStore.currentUser.is_owner) {
+      return { name: 'dashboard' }
+    }
   }
 })
 
