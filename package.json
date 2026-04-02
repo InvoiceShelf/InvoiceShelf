@@ -53,7 +53,7 @@
     "v-tooltip": "^4.0.0-beta.17",
     "vite": "^8.0.0",
     "vue": "^3.5",
-    "vue-flatpickr-component": "^11.0.5",
+    "vue-flatpickr-component": "^12.0.0",
     "vue-i18n": "^11.0.1",
     "vue-router": "^5.0.0",
     "vuedraggable": "^4.1.0"
