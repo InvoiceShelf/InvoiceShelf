@@ -73,7 +73,7 @@ I
 </template>
 
 <script setup>
-import axios from 'axios'
+import http from '@/scripts/http'
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import InvoiceInformationCard from '@/scripts/components/InvoiceInformationCard.vue'
@@ -85,7 +85,7 @@ const router = useRouter()
 loadInvoice()
 
 async function loadInvoice() {
-  let res = await axios.get(`/customer/invoices/${route.params.hash}`)
+  let res = await http.get(`/customer/invoices/${route.params.hash}`)
   invoiceData.value = res.data.data
 }
 

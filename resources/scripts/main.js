@@ -1,6 +1,6 @@
 import '../css/invoiceshelf.css'
 import 'v-tooltip/dist/v-tooltip.css'
-import '@/scripts/plugins/axios.js'
+import '@/scripts/http'
 import * as VueRouter from 'vue-router'
 import router from '@/scripts/router/index'
 import * as pinia from 'pinia'

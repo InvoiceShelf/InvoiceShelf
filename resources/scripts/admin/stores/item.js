@@ -1,4 +1,4 @@
-import axios from 'axios'
+import http from '@/scripts/http'
 import { defineStore } from 'pinia'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import { handleError } from '@/scripts/helpers/error-handling'
@@ -45,7 +45,7 @@ export const useItemStore = (useWindow = false) => {
       },
       fetchItems(params) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/items`, { params })
             .then((response) => {
               this.items = response.data.data
@@ -62,7 +62,7 @@ export const useItemStore = (useWindow = false) => {
 
       fetchItem(id) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/items/${id}`)
             .then((response) => {
               if (response.data) {
@@ -79,7 +79,7 @@ export const useItemStore = (useWindow = false) => {
 
       addItem(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post('/api/v1/items', data)
             .then((response) => {
               const notificationStore = useNotificationStore()
@@ -102,7 +102,7 @@ export const useItemStore = (useWindow = false) => {
 
       updateItem(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .put(`/api/v1/items/${data.id}`, data)
             .then((response) => {
               if (response.data) {
@@ -133,7 +133,7 @@ export const useItemStore = (useWindow = false) => {
         const notificationStore = useNotificationStore()
 
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post(`/api/v1/items/delete`, id)
             .then((response) => {
               let index = this.items.findIndex((item) => item.id === id)
@@ -157,7 +157,7 @@ export const useItemStore = (useWindow = false) => {
         const notificationStore = useNotificationStore()
 
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post(`/api/v1/items/delete`, { ids: this.selectedItems })
             .then((response) => {
               this.selectedItems.forEach((item) => {
@@ -205,7 +205,7 @@ export const useItemStore = (useWindow = false) => {
         const notificationStore = useNotificationStore()
 
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post(`/api/v1/units`, data)
             .then((response) => {
               this.itemUnits.push(response.data.data)
@@ -239,7 +239,7 @@ export const useItemStore = (useWindow = false) => {
         const notificationStore = useNotificationStore()
 
         return new Promise((resolve, reject) => {
-          axios
+          http
             .put(`/api/v1/units/${data.id}`, data)
             .then((response) => {
               let pos = this.itemUnits.findIndex(
@@ -274,7 +274,7 @@ export const useItemStore = (useWindow = false) => {
 
       fetchItemUnits(params) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/units`, { params })
             .then((response) => {
               this.itemUnits = response.data.data
@@ -289,7 +289,7 @@ export const useItemStore = (useWindow = false) => {
 
       fetchItemUnit(id) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/units/${id}`)
             .then((response) => {
               this.currentItemUnit = response.data.data
@@ -306,7 +306,7 @@ export const useItemStore = (useWindow = false) => {
         const notificationStore = useNotificationStore()
 
         return new Promise((resolve, reject) => {
-          axios
+          http
             .delete(`/api/v1/units/${id}`)
             .then((response) => {
               if (!response.data.error) {

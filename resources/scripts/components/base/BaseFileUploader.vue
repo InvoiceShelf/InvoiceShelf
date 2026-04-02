@@ -379,7 +379,7 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue'
-import axios from 'axios'
+import http from '@/scripts/http'
 import utils from '@/scripts/helpers/utilities'
 
 const props = defineProps({
@@ -456,7 +456,7 @@ function reset() {
 
 function upload(formData) {
   return (
-    axios
+    http
       .post(props.uploadUrl, formData)
       // get data
       .then((x) => x.data)

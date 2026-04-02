@@ -673,7 +673,7 @@ import { useRoute } from 'vue-router'
 import { useDialogStore } from '@/scripts/stores/dialog'
 import { useI18n } from 'vue-i18n'
 import moment from 'moment'
-import axios from 'axios'
+import http from '@/scripts/http'
 import ModulePlaceholder from './partials/ModulePlaceholder.vue'
 import RecentModuleCard from './partials/RecentModuleCard.vue'
 import { useNotificationStore } from '@/scripts/stores/notification'
@@ -853,7 +853,7 @@ async function installModule() {
         module: moduleData.value.module_name,
       }
 
-      let requestResponse = await axios.post(currentStep.stepUrl, updateParams)
+      let requestResponse = await http.post(currentStep.stepUrl, updateParams)
 
       currentStep.completed = true
       if (requestResponse.data) {

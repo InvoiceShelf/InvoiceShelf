@@ -1,4 +1,4 @@
-import axios from 'axios'
+import http from '@/scripts/http'
 import { defineStore } from 'pinia'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import { handleError } from '@/scripts/helpers/error-handling'
@@ -26,7 +26,7 @@ export const useCompanyStore = (useWindow = false) => {
 
       fetchBasicMailConfig() {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get('/api/v1/company/mail/config')
             .then((response) => {
               resolve(response)
@@ -40,7 +40,7 @@ export const useCompanyStore = (useWindow = false) => {
 
       updateCompany(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .put('/api/v1/company', data)
             .then((response) => {
               const notificationStore = useNotificationStore()
@@ -66,7 +66,7 @@ export const useCompanyStore = (useWindow = false) => {
 
       updateCompanyLogo(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post('/api/v1/company/upload-logo', data)
             .then((response) => {
               resolve(response)
@@ -80,7 +80,7 @@ export const useCompanyStore = (useWindow = false) => {
 
       addNewCompany(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post('/api/v1/companies', data)
             .then((response) => {
               const notificationStore = useNotificationStore()
@@ -99,7 +99,7 @@ export const useCompanyStore = (useWindow = false) => {
 
       fetchCompany(params) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get('/api/v1/current-company', params)
             .then((response) => {
               Object.assign(this.companyForm, response.data.data.address)
@@ -115,7 +115,7 @@ export const useCompanyStore = (useWindow = false) => {
 
       fetchUserCompanies() {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get('/api/v1/companies')
             .then((response) => {
               resolve(response)
@@ -129,7 +129,7 @@ export const useCompanyStore = (useWindow = false) => {
 
       fetchCompanySettings(settings) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get('/api/v1/company/settings', {
               params: {
                 settings,
@@ -147,7 +147,7 @@ export const useCompanyStore = (useWindow = false) => {
 
       updateCompanySettings({ data, message }) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post('/api/v1/company/settings', data)
             .then((response) => {
               Object.assign(this.selectedCompanySettings, data.settings)
@@ -172,7 +172,7 @@ export const useCompanyStore = (useWindow = false) => {
 
       deleteCompany(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post(`/api/v1/companies/delete`, data)
             .then((response) => {
               resolve(response)

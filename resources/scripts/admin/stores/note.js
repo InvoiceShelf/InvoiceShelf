@@ -1,4 +1,4 @@
-import axios from 'axios'
+import http from '@/scripts/http'
 import { defineStore } from 'pinia'
 import { handleError } from '@/scripts/helpers/error-handling'
 
@@ -40,7 +40,7 @@ export const useNotesStore = (useWindow = false) => {
 
       fetchNotes(params) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/notes`, { params })
             .then((response) => {
               this.notes = response.data.data
@@ -55,7 +55,7 @@ export const useNotesStore = (useWindow = false) => {
 
       fetchNote(id) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/notes/${id}`)
             .then((response) => {
               this.currentNote = response.data.data
@@ -70,7 +70,7 @@ export const useNotesStore = (useWindow = false) => {
 
       addNote(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post('/api/v1/notes', data)
             .then((response) => {
               this.notes.push(response.data)
@@ -85,7 +85,7 @@ export const useNotesStore = (useWindow = false) => {
 
       updateNote(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .put(`/api/v1/notes/${data.id}`, data)
             .then((response) => {
               if (response.data) {
@@ -105,7 +105,7 @@ export const useNotesStore = (useWindow = false) => {
 
       deleteNote(id) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .delete(`/api/v1/notes/${id}`)
             .then((response) => {
               let index = this.notes.findIndex((note) => note.id === id)

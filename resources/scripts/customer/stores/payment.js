@@ -1,6 +1,6 @@
 import { handleError } from '@/scripts/customer/helpers/error-handling'
 const { defineStore } = window.pinia
-import axios from 'axios'
+import http from '@/scripts/http'
 
 export const usePaymentStore = defineStore({
   id: 'customerPaymentStore',
@@ -13,7 +13,7 @@ export const usePaymentStore = defineStore({
   actions: {
     fetchPayments(params, slug) {
       return new Promise((resolve, reject) => {
-        axios
+        http
           .get(`/api/v1/${slug}/customer/payments`, { params })
           .then((response) => {
             this.payments = response.data.data
@@ -29,7 +29,7 @@ export const usePaymentStore = defineStore({
 
     fetchViewPayment(params, slug) {
       return new Promise((resolve, reject) => {
-        axios
+        http
           .get(`/api/v1/${slug}/customer/payments/${params.id}`)
 
           .then((response) => {
@@ -45,7 +45,7 @@ export const usePaymentStore = defineStore({
 
     searchPayment(params, slug) {
       return new Promise((resolve, reject) => {
-        axios
+        http
           .get(`/api/v1/${slug}/customer/payments`, { params })
           .then((response) => {
             this.payments = response.data
@@ -60,7 +60,7 @@ export const usePaymentStore = defineStore({
 
     fetchPaymentModes(params, slug) {
       return new Promise((resolve, reject) => {
-        axios
+        http
           .get(`/api/v1/${slug}/customer/payment-method`, { params })
           .then((response) => {
             resolve(response)
