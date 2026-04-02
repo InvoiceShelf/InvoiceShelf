@@ -1,4 +1,4 @@
-import axios from 'axios'
+import http from '@/scripts/http'
 import { defineStore } from 'pinia'
 import { handleError } from '@/scripts/helpers/error-handling'
 import { useNotificationStore } from '@/scripts/stores/notification'
@@ -9,9 +9,7 @@ export const useExpenseStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
 
-  return defineStoreFunc({
-    id: 'expense',
-
+  return defineStoreFunc('expense', {
     state: () => ({
       expenses: [],
       totalExpenses: 0,
@@ -38,7 +36,7 @@ export const useExpenseStore = (useWindow = false) => {
 
       fetchExpenses(params) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/expenses`, { params })
             .then((response) => {
               this.expenses = response.data.data
@@ -54,7 +52,7 @@ export const useExpenseStore = (useWindow = false) => {
 
       fetchExpense(id) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/expenses/${id}`)
             .then((response) => {
               if (response.data) {
@@ -97,7 +95,7 @@ export const useExpenseStore = (useWindow = false) => {
         const formData = utils.toFormData(data)
 
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post('/api/v1/expenses', formData)
             .then((response) => {
               this.expenses.push(response.data)
@@ -127,7 +125,7 @@ export const useExpenseStore = (useWindow = false) => {
         formData.append('is_attachment_receipt_removed', isAttachmentReceiptRemoved)
 
         return new Promise((resolve) => {
-          axios.post(`/api/v1/expenses/${id}`, formData).then((response) => {
+          http.post(`/api/v1/expenses/${id}`, formData).then((response) => {
             let pos = this.expenses.findIndex(
               (expense) => expense.id === response.data.id
             )
@@ -175,7 +173,7 @@ export const useExpenseStore = (useWindow = false) => {
         const notificationStore = useNotificationStore()
 
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post(`/api/v1/expenses/delete`, id)
             .then((response) => {
               let index = this.expenses.findIndex(
@@ -200,7 +198,7 @@ export const useExpenseStore = (useWindow = false) => {
         const notificationStore = useNotificationStore()
 
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post(`/api/v1/expenses/delete`, { ids: this.selectedExpenses })
             .then((response) => {
               this.selectedExpenses.forEach((expense) => {
@@ -223,7 +221,7 @@ export const useExpenseStore = (useWindow = false) => {
       },
       fetchPaymentModes(params) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/payment-methods`, { params })
             .then((response) => {
               this.paymentModes = response.data.data

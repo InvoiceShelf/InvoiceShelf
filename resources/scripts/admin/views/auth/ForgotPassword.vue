@@ -41,7 +41,7 @@
 </template>
 
 <script type="text/babel" setup>
-import axios from 'axios'
+import http from '@/scripts/http'
 import { reactive, ref, computed } from 'vue'
 import { required, email, helpers } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
@@ -74,7 +74,7 @@ async function onSubmit(e) {
   if (!v$.value.$invalid) {
     try {
       isLoading.value = true
-      let res = await axios.post('/api/v1/auth/password/email', formData)
+      let res = await http.post('/api/v1/auth/password/email', formData)
       if (res.data) {
         notificationStore.showNotification({
           type: 'success',

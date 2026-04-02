@@ -22,11 +22,11 @@
         gradientUnits="userSpaceOnUse"
       >
         <stop
-          stop-color="rgba(var(--color-primary-500), var(--tw-text-opacity))"
+          stop-color="var(--color-primary-500)"
         />
         <stop
           offset="1"
-          stop-color="rgba(var(--color-primary-400), var(--tw-text-opacity))"
+          stop-color="var(--color-primary-400)"
         />
       </linearGradient>
     </defs>

@@ -3,9 +3,7 @@ import { defineStore } from 'pinia'
 export const useNotificationStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
 
-  return defineStoreFunc({
-    id: 'notification',
-
+  return defineStoreFunc('notification', {
     state: () => ({
       active: false,
       autoHide: true,

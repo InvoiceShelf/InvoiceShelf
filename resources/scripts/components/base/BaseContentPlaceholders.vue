@@ -32,43 +32,38 @@ const classObject = computed(() => {
 })
 </script>
 
-<style lang="scss">
-
-@use 'sass:color';
-
-$base-content-placeholders-primary-color: #ccc !default;
-$base-content-placeholders-secondary-color: #eee !default;
-$base-content-placeholders-border-radius: 6px !default;
-$base-content-placeholders-line-height: 15px !default;
-$base-content-placeholders-spacing: 10px !default;
-
-// Animations
+<style>
 @keyframes vueContentPlaceholdersAnimation {
   0% {
     transform: translate3d(-30%, 0, 0);
   }
-
   100% {
     transform: translate3d(100%, 0, 0);
   }
 }
 
-// Mixins
-@mixin base-content-placeholders {
+.base-content-placeholders-heading {
+  display: flex;
+
+  [class^='base-content-placeholders-'] + & {
+    margin-top: 20px;
+  }
+}
+
+.base-content-placeholders-heading__img {
+  margin-right: 15px;
   position: relative;
   overflow: hidden;
-  min-height: $base-content-placeholders-line-height;
-  background: $base-content-placeholders-secondary-color;
+  min-height: 15px;
+  background: #eee;
 
   .base-content-placeholders-is-rounded & {
-    border-radius: $base-content-placeholders-border-radius;
+    border-radius: 6px;
   }
-
   .base-content-placeholders-is-centered & {
     margin-left: auto;
     margin-right: auto;
   }
-
   .base-content-placeholders-is-animated &::before {
     content: '';
     position: absolute;
@@ -77,88 +72,125 @@ $base-content-placeholders-spacing: 10px !default;
     width: 100vw;
     max-width: 1000px;
     height: 100%;
-    background: linear-gradient(
-      to right,
-      transparent 0%,
-      color.adjust($base-content-placeholders-secondary-color, $lightness: -5%) 15%,
-      transparent 30%
-    );
-    animation-duration: 1.5s;
-    animation-fill-mode: forwards;
-    animation-iteration-count: infinite;
-    animation-name: vueContentPlaceholdersAnimation;
-    animation-timing-function: linear;
+    background: linear-gradient(to right, transparent 0%, #e1e1e1 15%, transparent 30%);
+    animation: vueContentPlaceholdersAnimation 1.5s linear infinite forwards;
   }
 }
 
-@mixin base-content-placeholders-spacing {
-  [class^='base-content-placeholders-'] + & {
-    margin-top: 2 * $base-content-placeholders-spacing;
-  }
-}
-
-// Styles
-.base-content-placeholders-heading {
+.base-content-placeholders-heading__content {
   display: flex;
-  @include base-content-placeholders-spacing;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+}
 
-  &__img {
-    margin-right: 1.5 * $base-content-placeholders-spacing;
-    @include base-content-placeholders;
+.base-content-placeholders-heading__title {
+  width: 85%;
+  margin-bottom: 10px;
+  background: #ccc;
+  position: relative;
+  overflow: hidden;
+  min-height: 15px;
+
+  .base-content-placeholders-is-rounded & {
+    border-radius: 6px;
   }
-
-  &__content {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    justify-content: center;
+  .base-content-placeholders-is-centered & {
+    margin-left: auto;
+    margin-right: auto;
   }
-
-  &__title {
-    width: 85%;
-    margin-bottom: $base-content-placeholders-spacing;
-    background: $base-content-placeholders-primary-color;
-    @include base-content-placeholders;
+  .base-content-placeholders-is-animated &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    max-width: 1000px;
+    height: 100%;
+    background: linear-gradient(to right, transparent 0%, #e1e1e1 15%, transparent 30%);
+    animation: vueContentPlaceholdersAnimation 1.5s linear infinite forwards;
   }
+}
 
-  &__subtitle {
-    width: 90%;
-    @include base-content-placeholders;
+.base-content-placeholders-heading__subtitle {
+  width: 90%;
+  position: relative;
+  overflow: hidden;
+  min-height: 15px;
+  background: #eee;
+
+  .base-content-placeholders-is-rounded & {
+    border-radius: 6px;
+  }
+  .base-content-placeholders-is-centered & {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .base-content-placeholders-is-animated &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    max-width: 1000px;
+    height: 100%;
+    background: linear-gradient(to right, transparent 0%, #e1e1e1 15%, transparent 30%);
+    animation: vueContentPlaceholdersAnimation 1.5s linear infinite forwards;
   }
 }
 
 .base-content-placeholders-text {
-  @include base-content-placeholders-spacing;
+  [class^='base-content-placeholders-'] + & {
+    margin-top: 20px;
+  }
+}
 
-  &__line {
+.base-content-placeholders-text__line {
+  width: 100%;
+  margin-bottom: 10px;
+  position: relative;
+  overflow: hidden;
+  min-height: 15px;
+  background: #eee;
+
+  .base-content-placeholders-is-rounded & {
+    border-radius: 6px;
+  }
+  .base-content-placeholders-is-centered & {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .base-content-placeholders-is-animated &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    max-width: 1000px;
+    height: 100%;
+    background: linear-gradient(to right, transparent 0%, #e1e1e1 15%, transparent 30%);
+    animation: vueContentPlaceholdersAnimation 1.5s linear infinite forwards;
+  }
+
+  &:first-child {
     width: 100%;
-    margin-bottom: $base-content-placeholders-spacing;
-
-    @include base-content-placeholders;
-
-    &:first-child {
-      width: 100%;
-    }
-
-    &:nth-child(2) {
-      width: 90%;
-    }
-
-    &:nth-child(3) {
-      width: 80%;
-    }
-
-    &:nth-child(4) {
-      width: 70%;
-    }
+  }
+  &:nth-child(2) {
+    width: 90%;
+  }
+  &:nth-child(3) {
+    width: 80%;
+  }
+  &:nth-child(4) {
+    width: 70%;
   }
 }
 
 .base-content-placeholders-box {
   position: relative;
   overflow: hidden;
-  min-height: $base-content-placeholders-line-height;
-  background: $base-content-placeholders-secondary-color;
+  min-height: 15px;
+  background: #eee;
 
   .base-content-placeholders-is-animated &::before {
     content: '';
@@ -168,20 +200,9 @@ $base-content-placeholders-spacing: 10px !default;
     width: 100vw;
     max-width: 1000px;
     height: 100%;
-    background: linear-gradient(
-      to right,
-      transparent 0%,
-      color.adjust($base-content-placeholders-secondary-color, $lightness: -5%) 15%,
-      transparent 30%
-    );
-    animation-duration: 1.5s;
-    animation-fill-mode: forwards;
-    animation-iteration-count: infinite;
-    animation-name: vueContentPlaceholdersAnimation;
-    animation-timing-function: linear;
+    background: linear-gradient(to right, transparent 0%, #e1e1e1 15%, transparent 30%);
+    animation: vueContentPlaceholdersAnimation 1.5s linear infinite forwards;
   }
-
-  // @include base-content-placeholders-spacing;
 }
 
 .base-content-circle {
@@ -189,6 +210,6 @@ $base-content-placeholders-spacing: 10px !default;
 }
 
 .base-content-placeholders-is-rounded {
-  border-radius: $base-content-placeholders-border-radius;
+  border-radius: 6px;
 }
 </style>

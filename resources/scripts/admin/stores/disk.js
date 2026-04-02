@@ -1,4 +1,4 @@
-import axios from 'axios'
+import http from '@/scripts/http'
 import { defineStore } from 'pinia'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import { handleError } from '@/scripts/helpers/error-handling'
@@ -7,9 +7,7 @@ export const useDiskStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
 
-  return defineStoreFunc({
-    id: 'disk',
-
+  return defineStoreFunc('disk', {
     state: () => ({
       disks: [],
       diskDrivers: [],
@@ -71,7 +69,7 @@ export const useDiskStore = (useWindow = false) => {
     actions: {
       fetchDiskEnv(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/disks/${data.disk}`)
             .then((response) => {
               resolve(response)
@@ -85,7 +83,7 @@ export const useDiskStore = (useWindow = false) => {
 
       fetchDisks(params) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/disks`, { params })
             .then((response) => {
               this.disks = response.data.data
@@ -100,7 +98,7 @@ export const useDiskStore = (useWindow = false) => {
 
       fetchDiskDrivers() {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/disk/drivers`)
             .then((response) => {
               this.diskConfigData = response.data
@@ -116,7 +114,7 @@ export const useDiskStore = (useWindow = false) => {
 
       deleteFileDisk(id) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .delete(`/api/v1/disks/${id}`)
             .then((response) => {
               if (response.data.success) {
@@ -141,7 +139,7 @@ export const useDiskStore = (useWindow = false) => {
 
       updateDisk(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .put(`/api/v1/disks/${data.id}`, data)
             .then((response) => {
               if (response.data) {
@@ -166,7 +164,7 @@ export const useDiskStore = (useWindow = false) => {
 
       createDisk(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post(`/api/v1/disks`, data)
             .then((response) => {
               if (response.data) {

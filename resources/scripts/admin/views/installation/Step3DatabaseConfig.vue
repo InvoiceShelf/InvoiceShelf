@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import Mysql from './database/MysqlDatabase.vue'
 import Pgsql from './database/PgsqlDatabase.vue'
 import Sqlite from './database/SqliteDatabase.vue'
@@ -47,8 +47,9 @@ export default {
     })
 
     async function getDatabaseConfig(connection) {
-      let params = {
-        connection,
+      let params = {}
+      if (connection) {
+        params.connection = connection
       }
 
       const res = await installationStore.fetchInstallationDatabase(params)
@@ -58,10 +59,16 @@ export default {
           res.data.config.database_connection
       }
 
-      if (connection === 'sqlite') {
+      if (res.data.config.database_connection === 'sqlite') {
         databaseData.value.database_name = res.data.config.database_name
       } else {
         databaseData.value.database_name = null
+        if (res.data.config.database_host) {
+          databaseData.value.database_hostname = res.data.config.database_host
+        }
+        if (res.data.config.database_port) {
+          databaseData.value.database_port = res.data.config.database_port
+        }
       }
     }
 
@@ -126,6 +133,10 @@ export default {
         isSaving.value = false
       }
     }
+
+    onMounted(() => {
+      getDatabaseConfig()
+    })
 
     return {
       databaseData,

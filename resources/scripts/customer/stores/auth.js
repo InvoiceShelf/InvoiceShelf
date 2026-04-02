@@ -1,12 +1,11 @@
 const { defineStore } = window.pinia
-import axios from 'axios'
+import http from '@/scripts/http'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import router from '@/scripts/customer/customer-router'
 import { handleError } from '@/scripts/customer/helpers/error-handling'
 const { global } = window.i18n
 
-export const useAuthStore = defineStore({
-  id: 'customerAuth',
+export const useAuthStore = defineStore('customerAuth', {
   state: () => ({
     loginData: {
       email: '',
@@ -20,9 +19,9 @@ export const useAuthStore = defineStore({
     login(data) {
       const notificationStore = useNotificationStore(true)
       return new Promise((resolve, reject) => {
-        axios.get('/sanctum/csrf-cookie').then((response) => {
+        http.get('/sanctum/csrf-cookie').then((response) => {
           if (response) {
-            axios
+            http
               .post(`/${data.company}/customer/login`, data)
               .then((response) => {
                 notificationStore.showNotification({
@@ -47,7 +46,7 @@ export const useAuthStore = defineStore({
     forgotPassword(data) {
       const notificationStore = useNotificationStore(true)
       return new Promise((resolve, reject) => {
-        axios
+        http
           .post(`/api/v1/${data.company}/customer/auth/password/email`, data)
 
           .then((response) => {
@@ -75,7 +74,7 @@ export const useAuthStore = defineStore({
 
     resetPassword(data, company) {
       return new Promise((resolve, reject) => {
-        axios
+        http
           .post(`/api/v1/${company}/customer/auth/reset/password`, data)
 
           .then((response) => {
@@ -102,7 +101,7 @@ export const useAuthStore = defineStore({
 
     logout(data) {
       return new Promise((resolve, reject) => {
-        axios
+        http
           .post(`/${data}/customer/logout`)
           .then((response) => {
             const notificationStore = useNotificationStore()

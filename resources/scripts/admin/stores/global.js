@@ -1,4 +1,4 @@
-import axios from 'axios'
+import http from '@/scripts/http'
 import { defineStore } from 'pinia'
 import { useCompanyStore } from './company'
 import { useUserStore } from './user'
@@ -11,8 +11,7 @@ export const useGlobalStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
 
-  return defineStoreFunc({
-    id: 'global',
+  return defineStoreFunc('global', {
     state: () => ({
       // Global Configuration
       config: null,
@@ -48,7 +47,7 @@ export const useGlobalStore = (useWindow = false) => {
     actions: {
       bootstrap() {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get('/api/v1/bootstrap')
             .then(async (response) => {
               const companyStore = useCompanyStore()
@@ -123,7 +122,7 @@ export const useGlobalStore = (useWindow = false) => {
             resolve(this.currencies)
           } else {
             this.areCurrenciesLoading = true
-            axios
+            http
               .get('/api/v1/currencies')
               .then((response) => {
                 this.currencies = response.data.data.filter((currency) => {
@@ -143,7 +142,7 @@ export const useGlobalStore = (useWindow = false) => {
 
       fetchConfig(params) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/config`, { params })
             .then((response) => {
               if (response.data.languages) {
@@ -165,7 +164,7 @@ export const useGlobalStore = (useWindow = false) => {
           if (this.dateFormats.length) {
             resolve(this.dateFormats)
           } else {
-            axios
+            http
               .get('/api/v1/date/formats')
               .then((response) => {
                 this.dateFormats = response.data.date_formats
@@ -184,7 +183,7 @@ export const useGlobalStore = (useWindow = false) => {
           if (this.timeFormats.length) {
             resolve(this.timeFormats)
           } else {
-            axios
+            http
               .get('/api/v1/time/formats')
               .then((response) => {
                 this.timeFormats = response.data.time_formats
@@ -203,7 +202,7 @@ export const useGlobalStore = (useWindow = false) => {
           if (this.timeZones.length) {
             resolve(this.timeZones)
           } else {
-            axios
+            http
               .get('/api/v1/timezones')
               .then((response) => {
                 this.timeZones = response.data.time_zones
@@ -222,7 +221,7 @@ export const useGlobalStore = (useWindow = false) => {
           if (this.countries.length) {
             resolve(this.countries)
           } else {
-            axios
+            http
               .get('/api/v1/countries')
               .then((response) => {
                 this.countries = response.data.data
@@ -238,7 +237,7 @@ export const useGlobalStore = (useWindow = false) => {
 
       fetchPlaceholders(params) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/number-placeholders`, { params })
             .then((response) => {
               resolve(response)
@@ -260,7 +259,7 @@ export const useGlobalStore = (useWindow = false) => {
 
       updateGlobalSettings({ data, message }) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post('/api/v1/settings', data)
             .then((response) => {
               Object.assign(this.globalSettings, data.settings)

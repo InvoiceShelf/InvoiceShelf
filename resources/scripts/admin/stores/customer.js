@@ -1,4 +1,4 @@
-import axios from 'axios'
+import http from '@/scripts/http'
 import { defineStore } from 'pinia'
 import { useRoute } from 'vue-router'
 import { handleError } from '@/scripts/helpers/error-handling'
@@ -12,8 +12,7 @@ export const useCustomerStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
 
-  return defineStoreFunc({
-    id: 'customer',
+  return defineStoreFunc('customer', {
     state: () => ({
       customers: [],
       totalCustomers: 0,
@@ -75,7 +74,7 @@ export const useCustomerStore = (useWindow = false) => {
 
       fetchCustomers(params) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/customers`, { params })
             .then((response) => {
               this.customers = response.data.data
@@ -92,7 +91,7 @@ export const useCustomerStore = (useWindow = false) => {
       fetchViewCustomer(params) {
         return new Promise((resolve, reject) => {
           this.isFetchingViewData = true
-          axios
+          http
             .get(`/api/v1/customers/${params.id}/stats`, { params })
 
             .then((response) => {
@@ -112,7 +111,7 @@ export const useCustomerStore = (useWindow = false) => {
 
       fetchCustomer(id) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/customers/${id}`)
             .then((response) => {
               Object.assign(this.currentCustomer, response.data.data)
@@ -129,7 +128,7 @@ export const useCustomerStore = (useWindow = false) => {
 
       addCustomer(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post('/api/v1/customers', data)
             .then((response) => {
               this.customers.push(response.data.data)
@@ -151,7 +150,7 @@ export const useCustomerStore = (useWindow = false) => {
 
       updateCustomer(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .put(`/api/v1/customers/${data.id}`, data)
             .then((response) => {
               if (response.data) {
@@ -177,7 +176,7 @@ export const useCustomerStore = (useWindow = false) => {
       deleteCustomer(id) {
         const notificationStore = useNotificationStore()
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post(`/api/v1/customers/delete`, id)
             .then((response) => {
               let index = this.customers.findIndex(
@@ -201,7 +200,7 @@ export const useCustomerStore = (useWindow = false) => {
         const notificationStore = useNotificationStore()
 
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post(`/api/v1/customers/delete`, { ids: this.selectedCustomers })
             .then((response) => {
               this.selectedCustomers.forEach((customer) => {

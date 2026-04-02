@@ -58,7 +58,7 @@
           justify-end
           mt-4
           pt-4
-          border-t border-gray-200 border-solid border-modal-bg
+          border-t border-gray-200 border-solid
         "
       >
         <BaseButton :loading="isSaving" variant="primary" type="submit">

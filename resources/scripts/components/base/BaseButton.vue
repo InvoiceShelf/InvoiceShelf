@@ -9,7 +9,7 @@ const props = defineProps({
   defaultClass: {
     type: String,
     default:
-      'inline-flex whitespace-nowrap items-center border font-medium focus:outline-none focus:ring-2 focus:ring-offset-2',
+      'inline-flex whitespace-nowrap items-center border font-medium focus:outline-hidden focus:ring-2 focus:ring-offset-2',
   },
   tag: {
     type: String,
@@ -81,7 +81,7 @@ const placeHolderSize = computed(() => {
 
 const variantClass = computed(() => {
   return {
-    'border-transparent shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:ring-primary-500':
+    'border-transparent shadow-xs text-white bg-primary-600 hover:bg-primary-700 focus:ring-primary-500':
       props.variant === 'primary',
     'border-transparent text-primary-700 bg-primary-100 hover:bg-primary-200 focus:ring-primary-500':
       props.variant === 'secondary',
@@ -89,9 +89,9 @@ const variantClass = computed(() => {
       props.variant == 'primary-outline',
     'border-gray-200 text-gray-700 bg-white hover:bg-gray-50 focus:ring-primary-500 focus:ring-offset-0':
       props.variant == 'white',
-    'border-transparent shadow-sm text-white bg-red-600 hover:bg-red-700 focus:ring-red-500':
+    'border-transparent shadow-xs text-white bg-red-600 hover:bg-red-700 focus:ring-red-500':
       props.variant === 'danger',
-    'border-transparent bg-gray-200 border hover:bg-opacity-60 focus:ring-gray-500 focus:ring-offset-0':
+    'border-transparent bg-gray-200 border hover:bg-gray-200/60 focus:ring-gray-500 focus:ring-offset-0':
       props.variant === 'gray',
   }
 })
