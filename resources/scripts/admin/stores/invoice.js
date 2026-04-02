@@ -1,4 +1,4 @@
-import axios from 'axios'
+import http from '@/scripts/http'
 import moment from 'moment'
 import Guid from 'guid'
 import _ from 'lodash'
@@ -108,7 +108,7 @@ export const useInvoiceStore = (useWindow = false) => {
 
       previewInvoice(params) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/invoices/${params.id}/send/preview`, { params })
             .then((response) => {
               resolve(response)
@@ -122,7 +122,7 @@ export const useInvoiceStore = (useWindow = false) => {
 
       fetchInvoices(params) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/invoices`, { params })
             .then((response) => {
               this.invoices = response.data.data
@@ -138,7 +138,7 @@ export const useInvoiceStore = (useWindow = false) => {
 
       fetchInvoice(id) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/invoices/${id}`)
             .then((response) => {
               this.setInvoiceData(response.data.data)
@@ -204,7 +204,7 @@ export const useInvoiceStore = (useWindow = false) => {
 
       sendInvoice(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post(`/api/v1/invoices/${data.id}/send`, data)
             .then((response) => {
               notificationStore.showNotification({
@@ -222,7 +222,7 @@ export const useInvoiceStore = (useWindow = false) => {
 
       addInvoice(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post('/api/v1/invoices', data)
             .then((response) => {
               this.invoices = [...this.invoices, response.data.invoice]
@@ -243,7 +243,7 @@ export const useInvoiceStore = (useWindow = false) => {
 
       deleteInvoice(id) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post(`/api/v1/invoices/delete`, id)
             .then((response) => {
               let index = this.invoices.findIndex(
@@ -266,7 +266,7 @@ export const useInvoiceStore = (useWindow = false) => {
 
       deleteMultipleInvoices(id) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post(`/api/v1/invoices/delete`, { ids: this.selectedInvoices })
             .then((response) => {
               this.selectedInvoices.forEach((invoice) => {
@@ -292,7 +292,7 @@ export const useInvoiceStore = (useWindow = false) => {
 
       updateInvoice(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .put(`/api/v1/invoices/${data.id}`, data)
             .then((response) => {
               let pos = this.invoices.findIndex(
@@ -316,7 +316,7 @@ export const useInvoiceStore = (useWindow = false) => {
 
       cloneInvoice(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post(`/api/v1/invoices/${data.id}/clone`, data)
             .then((response) => {
               notificationStore.showNotification({
@@ -334,7 +334,7 @@ export const useInvoiceStore = (useWindow = false) => {
 
       markAsSent(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .post(`/api/v1/invoices/${data.id}/status`, data)
             .then((response) => {
               let pos = this.invoices.findIndex(
@@ -360,7 +360,7 @@ export const useInvoiceStore = (useWindow = false) => {
 
       getNextNumber(params, setState = false) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/next-number?key=invoice`, { params })
             .then((response) => {
               if (setState) {
@@ -377,7 +377,7 @@ export const useInvoiceStore = (useWindow = false) => {
 
       searchInvoice(data) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/invoices?${data}`)
             .then((response) => {
               resolve(response)
@@ -411,7 +411,7 @@ export const useInvoiceStore = (useWindow = false) => {
 
       selectCustomer(id) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/customers/${id}`)
             .then((response) => {
               this.newInvoice.customer = response.data.data
@@ -427,7 +427,7 @@ export const useInvoiceStore = (useWindow = false) => {
 
       fetchInvoiceTemplates(params) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/invoices/templates`, { params })
             .then((response) => {
               this.templates = response.data.invoiceTemplates

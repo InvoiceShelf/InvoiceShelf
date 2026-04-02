@@ -1,4 +1,4 @@
-import axios from 'axios'
+import http from '@/scripts/http'
 import { defineStore } from 'pinia'
 import { useGlobalStore } from '@/scripts/admin/stores/global'
 import { handleError } from '@/scripts/helpers/error-handling'
@@ -40,7 +40,7 @@ export const useDashboardStore = (useWindow = false) => {
     actions: {
       loadData(params) {
         return new Promise((resolve, reject) => {
-          axios
+          http
             .get(`/api/v1/dashboard`, { params })
             .then((response) => {
               // Stats
