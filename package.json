@@ -38,7 +38,7 @@
     "@vuelidate/components": "^1.2.6",
     "@vuelidate/core": "^2.0.3",
     "@vuelidate/validators": "^2.0.4",
-    "@vueuse/core": "^12.4.0",
+    "@vueuse/core": "^14.0.0",
     "axios": "1.14.0",
     "chart.js": "^2.9.4",
     "guid": "^0.0.12",
