@@ -7,9 +7,7 @@ export const useMailDriverStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
 
-  return defineStoreFunc({
-    id: 'mail-driver',
-
+  return defineStoreFunc('mail-driver', {
     state: () => ({
       mailConfigData: null,
       mail_driver: 'smtp',

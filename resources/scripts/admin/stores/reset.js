@@ -29,8 +29,7 @@ export const useResetStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
 
-  return defineStoreFunc({
-    id: 'reset',
+  return defineStoreFunc('reset', {
     actions: {
       clearPinia() {
         const backupStore = useBackupStore()

@@ -7,9 +7,7 @@ export const useDashboardStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
 
-  return defineStoreFunc({
-    id: 'dashboard',
-
+  return defineStoreFunc('dashboard', {
     state: () => ({
       stats: {
         totalAmountDue: 0,

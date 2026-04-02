@@ -8,9 +8,7 @@ export const useCompanyStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
 
-  return defineStoreFunc({
-    id: 'company',
-
+  return defineStoreFunc('company', {
     state: () => ({
       companies: [],
       selectedCompany: null,

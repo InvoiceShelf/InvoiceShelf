@@ -7,9 +7,7 @@ export const useCategoryStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
 
-  return defineStoreFunc({
-    id: 'category',
-
+  return defineStoreFunc('category', {
     state: () => ({
       categories: [],
       currentCategory: {

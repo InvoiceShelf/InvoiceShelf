@@ -7,9 +7,7 @@ export const useTaxTypeStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
 
-  return defineStoreFunc({
-    id: 'taxType',
-
+  return defineStoreFunc('taxType', {
     state: () => ({
       taxTypes: [],
       currentTaxType: {

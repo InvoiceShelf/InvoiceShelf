@@ -7,9 +7,7 @@ export const useDiskStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
 
-  return defineStoreFunc({
-    id: 'disk',
-
+  return defineStoreFunc('disk', {
     state: () => ({
       disks: [],
       diskDrivers: [],

@@ -5,8 +5,7 @@ import router from '@/scripts/customer/customer-router'
 import { handleError } from '@/scripts/customer/helpers/error-handling'
 const { global } = window.i18n
 
-export const useAuthStore = defineStore({
-  id: 'customerAuth',
+export const useAuthStore = defineStore('customerAuth', {
   state: () => ({
     loginData: {
       email: '',

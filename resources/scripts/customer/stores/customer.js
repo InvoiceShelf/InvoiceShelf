@@ -1,7 +1,6 @@
 const { defineStore } = window.pinia
 
-export const useCustomerStore = defineStore({
-  id: 'customers',
+export const useCustomerStore = defineStore('customers', {
   state: () => ({
     customers: 'okay',
   }),

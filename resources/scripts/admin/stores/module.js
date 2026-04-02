@@ -7,9 +7,7 @@ export const useModuleStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
 
-  return defineStoreFunc({
-    id: 'modules',
-
+  return defineStoreFunc('modules', {
     state: () => ({
       currentModule: {},
       modules: [],

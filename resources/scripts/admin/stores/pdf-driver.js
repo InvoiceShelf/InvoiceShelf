@@ -7,9 +7,7 @@ export const usePDFDriverStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
 
-  return defineStoreFunc({
-    id: 'pdf-driver',
-
+  return defineStoreFunc('pdf-driver', {
     state: () => ({
       pdfDriverConfig: null,
       pdf_driver: 'dompdf',

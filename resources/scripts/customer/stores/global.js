@@ -3,8 +3,7 @@ import { useUserStore } from './user'
 const { defineStore } = window.pinia
 import http from '@/scripts/http'
 const { global } = window.i18n
-export const useGlobalStore = defineStore({
-  id: 'CustomerPortalGlobalStore',
+export const useGlobalStore = defineStore('CustomerPortalGlobalStore', {
   state: () => ({
     languages: [],
     currency: null,

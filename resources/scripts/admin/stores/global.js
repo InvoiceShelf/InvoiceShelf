@@ -11,8 +11,7 @@ export const useGlobalStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
 
-  return defineStoreFunc({
-    id: 'global',
+  return defineStoreFunc('global', {
     state: () => ({
       // Global Configuration
       config: null,

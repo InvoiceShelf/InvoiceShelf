@@ -3,8 +3,7 @@ import { useGlobalStore } from '@/scripts/customer/stores/global'
 import http from '@/scripts/http'
 import { handleError } from '@/scripts/customer/helpers/error-handling'
 
-export const useDashboardStore = defineStore({
-  id: 'dashboard',
+export const useDashboardStore = defineStore('dashboard', {
   state: () => ({
     recentInvoices: [],
     recentEstimates: [],

@@ -7,8 +7,7 @@ export const useAuthStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
 
-  return defineStoreFunc({
-    id: 'auth',
+  return defineStoreFunc('auth', {
     state: () => ({
       status: '',
 
