@@ -75,7 +75,7 @@ _          />
           justify-end
           px-4
           py-4
-          border-t border-solid border-gray-light
+          border-t border-solid border-gray-200
         "
       >
         <BaseButton
@@ -280,7 +280,7 @@ function closeNoteModal() {
 }
 </script>
 
-<style lang="scss">
+<style>
 .note-modal {
   .header-editior .editor-menu-bar {
     margin-left: 0.5px;

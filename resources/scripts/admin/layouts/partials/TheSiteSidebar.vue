@@ -15,7 +15,7 @@
         leave-from="opacity-100"
         leave-to="opacity-0"
       >
-        <DialogOverlay class="fixed inset-0 bg-gray-600 bg-opacity-75" />
+        <DialogOverlay class="fixed inset-0 bg-gray-600/75" />
       </TransitionChild>
 
       <TransitionChild
@@ -47,7 +47,7 @@
                   h-10
                   ml-1
                   rounded-full
-                  focus:outline-none
+                  focus:outline-hidden
                   focus:ring-2
                   focus:ring-inset
                   focus:ring-white
@@ -82,9 +82,9 @@
                 :to="item.link"
                 :class="[
                   hasActiveUrl(item.link)
-                    ? 'text-primary-500 border-primary-500 bg-gray-100 '
-                    : 'text-black',
-                  'cursor-pointer px-0 pl-4 py-3 border-transparent flex items-center border-l-4 border-solid text-sm not-italic font-medium',
+                    ? 'text-primary-500 border-l-primary-500 bg-gray-100 '
+                    : 'text-black border-l-transparent',
+                  'cursor-pointer px-0 pl-4 py-3 flex items-center border-l-4 border-solid text-sm not-italic font-medium',
                 ]"
                 @click="globalStore.setSidebarVisibility(false)"
               >
@@ -136,8 +136,8 @@
         :to="item.link"
         :class="[
           hasActiveUrl(item.link)
-            ? 'text-primary-500 border-primary-500 bg-gray-100 '
-            : 'text-black',
+            ? 'text-primary-500 border-l-primary-500 bg-gray-100 '
+            : 'text-black border-l-transparent',
           'cursor-pointer px-0 pl-6 hover:bg-gray-50 py-3 group flex items-center border-l-4 border-solid text-sm not-italic font-medium',
         ]"
       >

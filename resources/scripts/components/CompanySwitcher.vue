@@ -12,10 +12,9 @@
         md:h-9
         ml-2
         text-sm text-white
-        bg-white
+        bg-white/20
         rounded
         cursor-pointer
-        bg-opacity-20
       "
       @click="isShow = !isShow"
     >

@@ -251,9 +251,9 @@ onSearched = debounce(onSearched, 500)
           :id="'recurring-invoice-' + invoice.id"
           :to="`/admin/recurring-invoices/${invoice.id}/view`"
           :class="[
-            'flex justify-between side-invoice p-4 cursor-pointer hover:bg-gray-100 items-center border-l-4 border-transparent',
+            'flex justify-between side-invoice p-4 cursor-pointer hover:bg-gray-100 items-center border-l-4 border-l-transparent',
             {
-              'bg-gray-100 border-l-4 border-primary-500 border-solid':
+              'bg-gray-100 border-l-4 border-l-primary-500 border-solid':
                 hasActiveUrl(invoice.id),
             },
           ]"

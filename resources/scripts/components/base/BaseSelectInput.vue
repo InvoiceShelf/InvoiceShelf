@@ -30,9 +30,9 @@
           bg-white
           border border-gray-200
           rounded-md
-          shadow-sm
+          shadow-xs
           cursor-default
-          focus:outline-none
+          focus:outline-hidden
           focus:ring-1
           focus:ring-primary-500
           focus:border-primary-500
@@ -86,8 +86,8 @@
             rounded-md
             shadow-lg
             max-h-60
-            ring-1 ring-black ring-opacity-5
-            focus:outline-none
+            ring-1 ring-black/5
+            focus:outline-hidden
             sm:text-sm
           "
         >

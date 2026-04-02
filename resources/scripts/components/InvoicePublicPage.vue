@@ -1,7 +1,7 @@
 I
 <template>
   <div class="h-screen overflow-y-auto min-h-0">
-    <div class="bg-gradient-to-r from-primary-500 to-primary-400 h-5"></div>
+    <div class="bg-linear-to-r from-primary-500 to-primary-400 h-5"></div>
 
     <div
       class="

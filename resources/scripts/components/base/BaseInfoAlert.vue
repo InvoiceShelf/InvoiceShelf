@@ -42,7 +42,7 @@
               font-medium
               text-yellow-800
               hover:bg-yellow-100
-              focus:outline-none
+              focus:outline-hidden
               focus:ring-2
               focus:ring-offset-2
               focus:ring-offset-yellow-50
@@ -66,7 +66,7 @@
               font-medium
               text-yellow-800
               hover:bg-yellow-100
-              focus:outline-none
+              focus:outline-hidden
               focus:ring-2
               focus:ring-offset-2
               focus:ring-offset-yellow-50

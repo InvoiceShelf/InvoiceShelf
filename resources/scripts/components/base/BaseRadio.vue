@@ -10,7 +10,7 @@
         :name="name"
         v-bind="$attrs"
       >
-        <div class="relative flex cursor-pointer focus:outline-none">
+        <div class="relative flex cursor-pointer focus:outline-hidden">
           <span
             :class="[
               checked ? checkedStateClass : unCheckedStateClass,
