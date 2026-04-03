@@ -6,10 +6,9 @@ use App\Http\Controllers\Admin\CurrenciesController;
 use App\Http\Controllers\Admin\Modules\ModuleInstallationController;
 use App\Http\Controllers\Admin\Modules\ModulesController;
 use App\Http\Controllers\Admin\Settings\DiskController;
-use App\Http\Controllers\Admin\Settings\GetSettingsController;
 use App\Http\Controllers\Admin\Settings\MailConfigurationController;
 use App\Http\Controllers\Admin\Settings\PDFConfigurationController;
-use App\Http\Controllers\Admin\Settings\UpdateSettingsController;
+use App\Http\Controllers\Admin\Settings\SettingsController;
 use App\Http\Controllers\Admin\Update\CheckVersionController;
 use App\Http\Controllers\Admin\Update\CopyFilesController;
 use App\Http\Controllers\Admin\Update\DeleteFilesController;
@@ -364,9 +363,9 @@ Route::prefix('/v1')->group(function () {
 
             Route::post('/company/settings', [CompanySettingsController::class, 'update']);
 
-            Route::get('/settings', GetSettingsController::class);
+            Route::get('/settings', [SettingsController::class, 'show']);
 
-            Route::post('/settings', UpdateSettingsController::class);
+            Route::post('/settings', [SettingsController::class, 'update']);
 
             Route::get('/company/has-transactions', CompanyCurrencyCheckTransactionsController::class);
 
