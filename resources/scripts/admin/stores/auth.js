@@ -46,20 +46,24 @@ export const useAuthStore = (useWindow = false) => {
         return new Promise((resolve, reject) => {
           http
             .post('/auth/logout')
-            .then((response) => {
+            .then(async (response) => {
               const notificationStore = useNotificationStore()
               notificationStore.showNotification({
                 type: 'success',
                 message: 'Logged out successfully.',
               })
 
+              // Refresh CSRF token so next login works cleanly
+              await http.get('/sanctum/csrf-cookie').catch(() => {})
+
               window.router.push('/login')
-                // resetStore.clearPinia()
               resolve(response)
             })
             .catch((err) => {
               handleError(err)
-              window.router.push('/')
+              // Still refresh CSRF and redirect on error
+              http.get('/sanctum/csrf-cookie').catch(() => {})
+              window.router.push('/login')
               reject(err)
             })
         })
