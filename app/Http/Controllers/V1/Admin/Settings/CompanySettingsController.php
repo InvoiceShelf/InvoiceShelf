@@ -3,21 +3,23 @@
 namespace App\Http\Controllers\V1\Admin\Settings;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\GetSettingsRequest;
 use App\Http\Requests\UpdateSettingsRequest;
 use App\Models\Company;
 use App\Models\CompanySetting;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Arr;
 
-class UpdateCompanySettingsController extends Controller
+class CompanySettingsController extends Controller
 {
-    /**
-     * Handle the incoming request.
-     *
-     * @param  \Illuminate\Http\UpdateSettingsRequest  $request
-     * @return JsonResponse
-     */
-    public function __invoke(UpdateSettingsRequest $request)
+    public function show(GetSettingsRequest $request): JsonResponse
+    {
+        $settings = CompanySetting::getSettings((array) $request->settings, $request->header('company'));
+
+        return response()->json($settings);
+    }
+
+    public function update(UpdateSettingsRequest $request): JsonResponse
     {
         $company = Company::find($request->header('company'));
         $this->authorize('manage company', $company);

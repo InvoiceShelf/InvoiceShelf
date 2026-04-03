@@ -12,6 +12,16 @@ use Mail;
 
 class CompanyMailConfigurationController extends Controller
 {
+    public function getDefaultConfig(Request $request): JsonResponse
+    {
+        $mailConfig = [
+            'from_name' => config('mail.from.name'),
+            'from_mail' => config('mail.from.address'),
+        ];
+
+        return response()->json($mailConfig);
+    }
+
     public function getMailConfig(Request $request): JsonResponse
     {
         $companyId = $request->header('company');

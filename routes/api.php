@@ -59,12 +59,9 @@ use App\Http\Controllers\V1\Admin\Role\RolesController;
 use App\Http\Controllers\V1\Admin\Settings\CompanyController;
 use App\Http\Controllers\V1\Admin\Settings\CompanyCurrencyCheckTransactionsController;
 use App\Http\Controllers\V1\Admin\Settings\CompanyMailConfigurationController;
-use App\Http\Controllers\V1\Admin\Settings\GetCompanyMailConfigurationController;
-use App\Http\Controllers\V1\Admin\Settings\GetCompanySettingsController;
-use App\Http\Controllers\V1\Admin\Settings\GetUserSettingsController;
+use App\Http\Controllers\V1\Admin\Settings\CompanySettingsController;
 use App\Http\Controllers\V1\Admin\Settings\TaxTypesController;
-use App\Http\Controllers\V1\Admin\Settings\UpdateCompanySettingsController;
-use App\Http\Controllers\V1\Admin\Settings\UpdateUserSettingsController;
+use App\Http\Controllers\V1\Admin\Settings\UserSettingsController;
 use App\Http\Controllers\V1\Admin\Users\UsersController;
 use App\Http\Controllers\V1\Customer\Auth\ForgotPasswordController as AuthForgotPasswordController;
 use App\Http\Controllers\V1\Customer\Auth\ResetPasswordController as AuthResetPasswordController;
@@ -385,9 +382,9 @@ Route::prefix('/v1')->group(function () {
 
             Route::put('/me', [CompanyController::class, 'updateProfile']);
 
-            Route::get('/me/settings', GetUserSettingsController::class);
+            Route::get('/me/settings', [UserSettingsController::class, 'show']);
 
-            Route::put('/me/settings', UpdateUserSettingsController::class);
+            Route::put('/me/settings', [UserSettingsController::class, 'update']);
 
             Route::post('/me/upload-avatar', [CompanyController::class, 'uploadAvatar']);
 
@@ -395,9 +392,9 @@ Route::prefix('/v1')->group(function () {
 
             Route::post('/company/upload-logo', [CompanyController::class, 'uploadCompanyLogo']);
 
-            Route::get('/company/settings', GetCompanySettingsController::class);
+            Route::get('/company/settings', [CompanySettingsController::class, 'show']);
 
-            Route::post('/company/settings', UpdateCompanySettingsController::class);
+            Route::post('/company/settings', [CompanySettingsController::class, 'update']);
 
             Route::get('/settings', GetSettingsController::class);
 
@@ -416,7 +413,7 @@ Route::prefix('/v1')->group(function () {
 
             Route::post('/mail/test', [MailConfigurationController::class, 'testEmailConfig']);
 
-            Route::get('/company/mail/config', GetCompanyMailConfigurationController::class);
+            Route::get('/company/mail/config', [CompanyMailConfigurationController::class, 'getDefaultConfig']);
 
             Route::get('/company/mail/company-config', [CompanyMailConfigurationController::class, 'getMailConfig']);
             Route::post('/company/mail/company-config', [CompanyMailConfigurationController::class, 'saveMailConfig']);
