@@ -3,7 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\FileDisk;
-use App\Services\Installation\InstallUtils;
+use App\Services\Setup\InstallUtils;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;

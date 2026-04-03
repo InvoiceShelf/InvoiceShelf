@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Installation;
+namespace App\Services\Setup;
 
 use Illuminate\Support\Str;
 use PDO;

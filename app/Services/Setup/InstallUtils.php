@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Installation;
+namespace App\Services\Setup;
 
 use App\Models\Setting;
 use Illuminate\Database\QueryException;

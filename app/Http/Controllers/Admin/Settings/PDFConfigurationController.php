@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin\Settings;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PDFConfigurationRequest;
 use App\Models\Setting;
-use App\Services\Installation\EnvironmentManager;
+use App\Services\Setup\EnvironmentManager;
 
 class PDFConfigurationController extends Controller
 {

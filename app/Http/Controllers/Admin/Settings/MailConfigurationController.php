@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MailEnvironmentRequest;
 use App\Mail\TestMail;
 use App\Models\Setting;
-use App\Services\Installation\EnvironmentManager;
+use App\Services\Setup\EnvironmentManager;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

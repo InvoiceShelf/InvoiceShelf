@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Installation;
+namespace App\Services\Setup;
 
 use App\Http\Requests\DatabaseEnvironmentRequest;
 use App\Http\Requests\DomainEnvironmentRequest;

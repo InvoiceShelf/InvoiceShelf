@@ -2,8 +2,8 @@
 
 use App\Models\CompanySetting;
 use App\Models\RecurringInvoice;
-use App\Services\Installation\InstallUtils;
 use App\Services\RecurringInvoiceService;
+use App\Services\Setup\InstallUtils;
 use Illuminate\Support\Facades\Schedule;
 
 // Only run in demo environment
