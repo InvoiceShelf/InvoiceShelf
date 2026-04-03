@@ -9,13 +9,7 @@ use App\Http\Controllers\Admin\Settings\DiskController;
 use App\Http\Controllers\Admin\Settings\MailConfigurationController;
 use App\Http\Controllers\Admin\Settings\PDFConfigurationController;
 use App\Http\Controllers\Admin\Settings\SettingsController;
-use App\Http\Controllers\Admin\Update\CheckVersionController;
-use App\Http\Controllers\Admin\Update\CopyFilesController;
-use App\Http\Controllers\Admin\Update\DeleteFilesController;
-use App\Http\Controllers\Admin\Update\DownloadUpdateController;
-use App\Http\Controllers\Admin\Update\FinishUpdateController;
-use App\Http\Controllers\Admin\Update\MigrateUpdateController;
-use App\Http\Controllers\Admin\Update\UnzipUpdateController;
+use App\Http\Controllers\Admin\Update\UpdateController;
 use App\Http\Controllers\AppVersionController;
 use App\Http\Controllers\Company\Auth\AuthController;
 use App\Http\Controllers\Company\Auth\ForgotPasswordController;
@@ -413,19 +407,13 @@ Route::prefix('/v1')->group(function () {
         // Self Update
         // ----------------------------------
 
-        Route::get('/check/update', CheckVersionController::class);
-
-        Route::post('/update/download', DownloadUpdateController::class);
-
-        Route::post('/update/unzip', UnzipUpdateController::class);
-
-        Route::post('/update/copy', CopyFilesController::class);
-
-        Route::post('/update/delete', DeleteFilesController::class);
-
-        Route::post('/update/migrate', MigrateUpdateController::class);
-
-        Route::post('/update/finish', FinishUpdateController::class);
+        Route::get('/check/update', [UpdateController::class, 'checkVersion']);
+        Route::post('/update/download', [UpdateController::class, 'download']);
+        Route::post('/update/unzip', [UpdateController::class, 'unzip']);
+        Route::post('/update/copy', [UpdateController::class, 'copy']);
+        Route::post('/update/delete', [UpdateController::class, 'delete']);
+        Route::post('/update/migrate', [UpdateController::class, 'migrate']);
+        Route::post('/update/finish', [UpdateController::class, 'finish']);
 
         // Companies
         // -------------------------------------------------
