@@ -21,6 +21,7 @@ class CloneEstimateController extends Controller
      */
     public function __invoke(Request $request, Estimate $estimate)
     {
+        $this->authorize('view', $estimate);
         $this->authorize('create', Estimate::class);
 
         $date = Carbon::now();

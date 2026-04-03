@@ -21,6 +21,7 @@ class CloneInvoiceController extends Controller
      */
     public function __invoke(Request $request, Invoice $invoice)
     {
+        $this->authorize('view', $invoice);
         $this->authorize('create', Invoice::class);
 
         $date = Carbon::now();
