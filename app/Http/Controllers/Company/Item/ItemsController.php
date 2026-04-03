@@ -8,11 +8,16 @@ use App\Http\Requests\DeleteItemsRequest;
 use App\Http\Resources\ItemResource;
 use App\Models\Item;
 use App\Models\TaxType;
+use App\Services\ItemService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ItemsController extends Controller
 {
+    public function __construct(
+        private readonly ItemService $itemService,
+    ) {}
+
     /**
      * Retrieve a list of existing Items.
      *
@@ -48,7 +53,7 @@ class ItemsController extends Controller
     {
         $this->authorize('create', Item::class);
 
-        $item = Item::createItem($request);
+        $item = $this->itemService->create($request);
 
         return new ItemResource($item);
     }
@@ -75,7 +80,7 @@ class ItemsController extends Controller
     {
         $this->authorize('update', $item);
 
-        $item = $item->updateItem($request);
+        $item = $this->itemService->update($item, $request);
 
         return new ItemResource($item);
     }

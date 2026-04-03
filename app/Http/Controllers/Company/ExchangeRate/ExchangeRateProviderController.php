@@ -14,6 +14,7 @@ use App\Models\ExchangeRateProvider;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\Tax;
+use App\Services\ExchangeRateProviderService;
 use App\Traits\ExchangeRateProvidersTrait;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -22,6 +23,10 @@ use Illuminate\Support\Arr;
 class ExchangeRateProviderController extends Controller
 {
     use ExchangeRateProvidersTrait;
+
+    public function __construct(
+        private readonly ExchangeRateProviderService $exchangeRateProviderService,
+    ) {}
 
     /**
      * Display a listing of the resource.
@@ -49,16 +54,16 @@ class ExchangeRateProviderController extends Controller
     {
         $this->authorize('create', ExchangeRateProvider::class);
 
-        $query = ExchangeRateProvider::checkActiveCurrencies($request);
+        $query = $this->exchangeRateProviderService->checkActiveCurrencies($request);
 
         if (count($query) !== 0) {
             return respondJson('currency_used', 'Currency used.');
         }
 
-        $checkConverterApi = ExchangeRateProvider::checkExchangeRateProviderStatus($request);
+        $checkConverterApi = $this->exchangeRateProviderService->checkProviderStatus($request);
 
         if ($checkConverterApi->status() == 200) {
-            $exchangeRateProvider = ExchangeRateProvider::createFromRequest($request);
+            $exchangeRateProvider = $this->exchangeRateProviderService->create($request);
 
             return new ExchangeRateProviderResource($exchangeRateProvider);
         }
@@ -88,16 +93,16 @@ class ExchangeRateProviderController extends Controller
     {
         $this->authorize('update', $exchangeRateProvider);
 
-        $query = $exchangeRateProvider->checkUpdateActiveCurrencies($request);
+        $query = $this->exchangeRateProviderService->checkUpdateActiveCurrencies($exchangeRateProvider, $request);
 
         if (count($query) !== 0) {
             return respondJson('currency_used', 'Currency used.');
         }
 
-        $checkConverterApi = ExchangeRateProvider::checkExchangeRateProviderStatus($request);
+        $checkConverterApi = $this->exchangeRateProviderService->checkProviderStatus($request);
 
         if ($checkConverterApi->status() == 200) {
-            $exchangeRateProvider->updateFromRequest($request);
+            $this->exchangeRateProviderService->update($exchangeRateProvider, $request);
 
             return new ExchangeRateProviderResource($exchangeRateProvider);
         }

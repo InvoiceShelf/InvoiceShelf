@@ -6,12 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DiskEnvironmentRequest;
 use App\Http\Resources\FileDiskResource;
 use App\Models\FileDisk;
+use App\Services\FileDiskService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class DiskController extends Controller
 {
+    public function __construct(
+        private readonly FileDiskService $fileDiskService,
+    ) {}
+
     /**
      * @return JsonResponse
      */
@@ -34,11 +39,11 @@ class DiskController extends Controller
     {
         $this->authorize('manage file disk');
 
-        if (! FileDisk::validateCredentials($request->credentials, $request->driver)) {
+        if (! $this->fileDiskService->validateCredentials($request->credentials, $request->driver)) {
             return respondJson('invalid_credentials', 'Invalid Credentials.');
         }
 
-        $disk = FileDisk::createDisk($request);
+        $disk = $this->fileDiskService->create($request);
 
         return new FileDiskResource($disk);
     }
@@ -55,13 +60,13 @@ class DiskController extends Controller
         $driver = $request->driver;
 
         if ($credentials && $driver && $disk->type !== 'SYSTEM') {
-            if (! FileDisk::validateCredentials($credentials, $driver)) {
+            if (! $this->fileDiskService->validateCredentials($credentials, $driver)) {
                 return respondJson('invalid_credentials', 'Invalid Credentials.');
             }
 
-            $disk->updateDisk($request);
+            $this->fileDiskService->update($disk, $request);
         } elseif ($request->set_as_default) {
-            $disk->setAsDefaultDisk();
+            $this->fileDiskService->setAsDefault($disk);
         }
 
         return new FileDiskResource($disk);

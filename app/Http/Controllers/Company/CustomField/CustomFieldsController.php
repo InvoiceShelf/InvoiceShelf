@@ -6,11 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CustomFieldRequest;
 use App\Http\Resources\CustomFieldResource;
 use App\Models\CustomField;
+use App\Services\CustomFieldService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class CustomFieldsController extends Controller
 {
+    public function __construct(
+        private readonly CustomFieldService $customFieldService,
+    ) {}
+
     /**
      * Display a listing of the resource.
      *
@@ -40,7 +45,7 @@ class CustomFieldsController extends Controller
     {
         $this->authorize('create', CustomField::class);
 
-        $customField = CustomField::createCustomField($request);
+        $customField = $this->customFieldService->create($request);
 
         return new CustomFieldResource($customField);
     }
@@ -69,7 +74,7 @@ class CustomFieldsController extends Controller
     {
         $this->authorize('update', $customField);
 
-        $customField->updateCustomField($request);
+        $this->customFieldService->update($customField, $request);
 
         return new CustomFieldResource($customField);
     }
