@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Estimate;
 use App\Models\Invoice;
 use App\Models\Payment;
-use App\Services\SerialNumberFormatter;
+use App\Services\SerialNumberService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -21,7 +21,7 @@ class NextNumberController extends Controller
     {
         $key = $request->key;
         $nextNumber = null;
-        $serial = (new SerialNumberFormatter)
+        $serial = (new SerialNumberService)
             ->setCompany($request->header('company'))
             ->setCustomer($request->userId);
 

@@ -32,7 +32,7 @@ class InvoiceService
 
         $invoice = Invoice::create($data);
 
-        $serial = (new SerialNumberFormatter)
+        $serial = (new SerialNumberService)
             ->setModel($invoice)
             ->setCompany($invoice->company_id)
             ->setCustomer($invoice->customer_id)
@@ -73,7 +73,7 @@ class InvoiceService
      */
     public function update(Invoice $invoice, Request $request): Invoice
     {
-        $serial = (new SerialNumberFormatter)
+        $serial = (new SerialNumberService)
             ->setModel($invoice)
             ->setCompany($invoice->company_id)
             ->setCustomer($request->customer_id)

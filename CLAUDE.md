@@ -60,7 +60,7 @@ Three guards: `web` (session), `api` (Sanctum tokens for `/api/v1/`), `customer`
 - **PDF generation**: DomPDF (`GeneratesPdfTrait`) or Gotenberg
 - **Email**: Mailable classes with `EmailLog` tracking
 - **File storage**: Spatie MediaLibrary, supports local/S3/Dropbox
-- **Serial numbers**: `SerialNumberFormatter` service
+- **Serial numbers**: `SerialNumberService` service
 - **Company settings**: `CompanySetting` model (key-value per company)
 
 ### Database

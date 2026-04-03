@@ -8,7 +8,7 @@ use App\Http\Resources\InvoiceResource;
 use App\Models\CompanySetting;
 use App\Models\Estimate;
 use App\Models\Invoice;
-use App\Services\SerialNumberFormatter;
+use App\Services\SerialNumberService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -43,7 +43,7 @@ class ConvertEstimateController extends Controller
             $due_date = Carbon::now()->addDays($dueDateDays)->format('Y-m-d');
         }
 
-        $serial = (new SerialNumberFormatter)
+        $serial = (new SerialNumberService)
             ->setModel($invoice)
             ->setCompany($estimate->company_id)
             ->setCustomer($estimate->customer_id)

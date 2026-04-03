@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\InvoiceResource;
 use App\Models\CompanySetting;
 use App\Models\Invoice;
-use App\Services\SerialNumberFormatter;
+use App\Services\SerialNumberService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -26,7 +26,7 @@ class CloneInvoiceController extends Controller
 
         $date = Carbon::now();
 
-        $serial = (new SerialNumberFormatter)
+        $serial = (new SerialNumberService)
             ->setModel($invoice)
             ->setCompany($invoice->company_id)
             ->setCustomer($invoice->customer_id)

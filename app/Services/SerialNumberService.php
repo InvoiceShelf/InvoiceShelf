@@ -5,10 +5,7 @@ namespace App\Services;
 use App\Models\CompanySetting;
 use App\Models\Customer;
 
-/**
- * SerialNumberFormatter
- */
-class SerialNumberFormatter
+class SerialNumberService
 {
     public const VALID_PLACEHOLDERS = ['CUSTOMER_SERIES', 'SEQUENCE', 'DATE_FORMAT', 'SERIES', 'RANDOM_SEQUENCE', 'DELIMITER', 'CUSTOMER_SEQUENCE'];
 

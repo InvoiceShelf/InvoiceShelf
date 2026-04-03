@@ -30,7 +30,7 @@ class EstimateService
 
         $estimate = Estimate::create($data);
         $estimate->unique_hash = Hashids::connection(Estimate::class)->encode($estimate->id);
-        $serial = (new SerialNumberFormatter)
+        $serial = (new SerialNumberService)
             ->setModel($estimate)
             ->setCompany($estimate->company_id)
             ->setCustomer($estimate->customer_id)
@@ -65,7 +65,7 @@ class EstimateService
     {
         $data = $request->getEstimatePayload();
 
-        $serial = (new SerialNumberFormatter)
+        $serial = (new SerialNumberService)
             ->setModel($estimate)
             ->setCompany($estimate->company_id)
             ->setCustomer($request->customer_id)

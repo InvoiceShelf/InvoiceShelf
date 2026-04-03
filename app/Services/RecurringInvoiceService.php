@@ -126,7 +126,7 @@ class RecurringInvoiceService
 
     private function createInvoiceFromRecurring(RecurringInvoice $recurringInvoice): void
     {
-        $serial = (new SerialNumberFormatter)
+        $serial = (new SerialNumberService)
             ->setModel(new Invoice)
             ->setCompany($recurringInvoice->company_id)
             ->setCustomer($recurringInvoice->customer_id)

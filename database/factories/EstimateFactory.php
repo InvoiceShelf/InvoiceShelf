@@ -6,7 +6,7 @@ use App\Models\Currency;
 use App\Models\Customer;
 use App\Models\Estimate;
 use App\Models\User;
-use App\Services\SerialNumberFormatter;
+use App\Services\SerialNumberService;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class EstimateFactory extends Factory
@@ -68,7 +68,7 @@ class EstimateFactory extends Factory
      */
     public function definition(): array
     {
-        $sequenceNumber = (new SerialNumberFormatter)
+        $sequenceNumber = (new SerialNumberService)
             ->setModel(new Estimate)
             ->setCompany(User::find(1)->companies()->first()->id)
             ->setNextNumbers();

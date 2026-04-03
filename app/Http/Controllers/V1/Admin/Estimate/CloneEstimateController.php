@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\EstimateResource;
 use App\Models\CompanySetting;
 use App\Models\Estimate;
-use App\Services\SerialNumberFormatter;
+use App\Services\SerialNumberService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -26,7 +26,7 @@ class CloneEstimateController extends Controller
 
         $date = Carbon::now();
 
-        $serial = (new SerialNumberFormatter)
+        $serial = (new SerialNumberService)
             ->setModel($estimate)
             ->setCompany($estimate->company_id)
             ->setCustomer($estimate->customer_id)

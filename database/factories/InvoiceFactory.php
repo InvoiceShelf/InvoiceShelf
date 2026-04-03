@@ -7,7 +7,7 @@ use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\RecurringInvoice;
 use App\Models\User;
-use App\Services\SerialNumberFormatter;
+use App\Services\SerialNumberService;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class InvoiceFactory extends Factory
@@ -78,7 +78,7 @@ class InvoiceFactory extends Factory
      */
     public function definition(): array
     {
-        $sequenceNumber = (new SerialNumberFormatter)
+        $sequenceNumber = (new SerialNumberService)
             ->setModel(new Invoice)
             ->setCompany(User::find(1)->companies()->first()->id)
             ->setNextNumbers();
