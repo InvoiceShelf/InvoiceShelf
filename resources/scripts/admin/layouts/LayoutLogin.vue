@@ -45,9 +45,17 @@
             md:pt-40
           "
         >
-          <p class="mb-3">
+          <p v-if="copyrightText" class="mb-3">
             {{ copyrightText }}
-            {{ new Date().getFullYear() }}
+          </p>
+          <p v-else class="mb-3">
+            Powered by
+            <a
+              href="https://invoiceshelf.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-primary-500 hover:underline"
+            >InvoiceShelf</a>
           </p>
         </div>
       </div>
@@ -153,10 +161,7 @@ const pageDescription = computed(() => {
 })
 
 const copyrightText = computed(() => {
-  if (window.copyright_text) {
-    return window.copyright_text
-  }
-  return 'Copyright @ IDEOLOGIX MEDIA DOOEL.'
+  return window.copyright_text || null
 })
 
 const loginPageLogo = computed(() => {
