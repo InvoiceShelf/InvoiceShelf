@@ -1140,7 +1140,10 @@
       "confirm_password": "Confirm Password",
       "account_settings": "User Settings",
       "general": "General",
+      "general_description": "Update your name, email and language preference.",
       "security": "Security",
+      "security_description": "Change your password.",
+      "profile_picture_description": "Upload or remove your profile photo.",
       "save": "Save",
       "section_description": "You can update your name, email & password using the form below.",
       "updated_message": "Account Settings updated successfully"

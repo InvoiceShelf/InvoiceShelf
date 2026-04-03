@@ -1,5 +1,9 @@
 <template>
   <form @submit.prevent="updateGeneral">
+    <BaseSettingCard
+      :title="$t('settings.account_settings.general')"
+      :description="$t('settings.account_settings.general_description')"
+    >
     <BaseInputGrid>
       <BaseInputGroup
         :label="$t('settings.account_settings.name')"
@@ -48,6 +52,7 @@
       </template>
       {{ $t('settings.company_info.save') }}
     </BaseButton>
+    </BaseSettingCard>
   </form>
 </template>
 

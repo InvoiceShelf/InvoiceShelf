@@ -1,5 +1,9 @@
 <template>
   <form @submit.prevent="updatePassword">
+    <BaseSettingCard
+      :title="$t('settings.account_settings.security')"
+      :description="$t('settings.account_settings.security_description')"
+    >
     <BaseInputGrid>
       <BaseInputGroup
         :label="$t('settings.account_settings.password')"
@@ -37,6 +41,7 @@
       </template>
       {{ $t('settings.company_info.save') }}
     </BaseButton>
+    </BaseSettingCard>
   </form>
 </template>
 

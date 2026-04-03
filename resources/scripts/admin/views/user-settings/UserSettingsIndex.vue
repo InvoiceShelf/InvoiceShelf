@@ -1,47 +1,109 @@
 <template>
   <BasePage>
-    <BasePageHeader :title="$t('settings.account_settings.account_settings')">
-      <template #actions>
-        <router-link to="/admin/settings">
-          <BaseButton variant="primary-outline">
-            <template #left="slotProps">
-              <BaseIcon name="CogIcon" :class="slotProps.class" />
-            </template>
-            {{ $t('navigation.settings') }}
-          </BaseButton>
-        </router-link>
-      </template>
+    <BasePageHeader
+      :title="$t('settings.account_settings.account_settings')"
+      class="mb-6"
+    >
+      <BaseBreadcrumb>
+        <BaseBreadcrumbItem
+          :title="$t('general.home')"
+          to="/admin/dashboard"
+        />
+        <BaseBreadcrumbItem
+          :title="$t('settings.account_settings.account_settings')"
+          to="/admin/user-settings/general"
+          active
+        />
+      </BaseBreadcrumb>
     </BasePageHeader>
 
-    <BaseCard container-class="px-4 py-5 sm:px-8 sm:py-2">
-      <BaseTabGroup>
-        <BaseTab
-          tab-panel-container="py-4 mt-px"
-          :title="$t('settings.account_settings.general')"
-        >
-          <GeneralTab />
-        </BaseTab>
+    <div class="w-full mb-6 select-wrapper xl:hidden">
+      <BaseMultiselect
+        v-model="currentSetting"
+        :options="menuItems"
+        :can-deselect="false"
+        value-prop="title"
+        track-by="title"
+        label="title"
+        object
+        @update:modelValue="navigateToSetting"
+      />
+    </div>
 
-        <BaseTab
-          tab-panel-container="py-4 mt-px"
-          :title="$t('settings.account_settings.profile_picture')"
-        >
-          <ProfilePhotoTab />
-        </BaseTab>
+    <div class="flex">
+      <div class="hidden mt-1 xl:block min-w-[240px]">
+        <BaseList>
+          <BaseListItem
+            v-for="(menuItem, index) in menuItems"
+            :key="index"
+            :title="menuItem.title"
+            :to="menuItem.link"
+            :active="hasActiveUrl(menuItem.link)"
+            :index="index"
+            class="py-3"
+          >
+            <template #icon>
+              <BaseIcon :name="menuItem.icon" />
+            </template>
+          </BaseListItem>
+        </BaseList>
+      </div>
 
-        <BaseTab
-          tab-panel-container="py-4 mt-px"
-          :title="$t('settings.account_settings.security')"
-        >
-          <SecurityTab />
-        </BaseTab>
-      </BaseTabGroup>
-    </BaseCard>
+      <div class="w-full overflow-hidden">
+        <RouterView />
+      </div>
+    </div>
   </BasePage>
 </template>
 
 <script setup>
-import GeneralTab from './GeneralTab.vue'
-import ProfilePhotoTab from './ProfilePhotoTab.vue'
-import SecurityTab from './SecurityTab.vue'
+import { ref, watchEffect, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+import BaseList from '@/scripts/components/list/BaseList.vue'
+import BaseListItem from '@/scripts/components/list/BaseListItem.vue'
+
+const { t } = useI18n()
+const route = useRoute()
+const router = useRouter()
+
+let currentSetting = ref({})
+
+const menuItems = computed(() => [
+  {
+    title: t('settings.account_settings.general'),
+    link: '/admin/user-settings/general',
+    icon: 'UserIcon',
+  },
+  {
+    title: t('settings.account_settings.profile_picture'),
+    link: '/admin/user-settings/profile-photo',
+    icon: 'PhotoIcon',
+  },
+  {
+    title: t('settings.account_settings.security'),
+    link: '/admin/user-settings/security',
+    icon: 'LockClosedIcon',
+  },
+])
+
+watchEffect(() => {
+  if (route.path === '/admin/user-settings') {
+    router.push('/admin/user-settings/general')
+  }
+
+  const item = menuItems.value.find((item) => {
+    return item.link === route.path
+  })
+
+  currentSetting.value = item
+})
+
+function hasActiveUrl(url) {
+  return route.path.indexOf(url) > -1
+}
+
+function navigateToSetting(setting) {
+  return router.push(setting.link)
+}
 </script>

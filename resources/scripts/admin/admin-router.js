@@ -25,6 +25,12 @@ const SettingsIndex = () =>
   import('@/scripts/admin/views/settings/SettingsIndex.vue')
 const UserSettingsIndex = () =>
   import('@/scripts/admin/views/user-settings/UserSettingsIndex.vue')
+const UserSettingsGeneral = () =>
+  import('@/scripts/admin/views/user-settings/GeneralTab.vue')
+const UserSettingsProfilePhoto = () =>
+  import('@/scripts/admin/views/user-settings/ProfilePhotoTab.vue')
+const UserSettingsSecurity = () =>
+  import('@/scripts/admin/views/user-settings/SecurityTab.vue')
 const CompanyInfo = () =>
   import('@/scripts/admin/views/settings/CompanyInfoSettings.vue')
 const Preferences = () =>
@@ -248,6 +254,23 @@ export default [
         path: 'user-settings',
         name: 'user.settings',
         component: UserSettingsIndex,
+        children: [
+          {
+            path: 'general',
+            name: 'user.settings.general',
+            component: UserSettingsGeneral,
+          },
+          {
+            path: 'profile-photo',
+            name: 'user.settings.profile-photo',
+            component: UserSettingsProfilePhoto,
+          },
+          {
+            path: 'security',
+            name: 'user.settings.security',
+            component: UserSettingsSecurity,
+          },
+        ],
       },
 
       //settings

@@ -1,5 +1,9 @@
 <template>
   <form @submit.prevent="updateAvatar">
+    <BaseSettingCard
+      :title="$t('settings.account_settings.profile_picture')"
+      :description="$t('settings.account_settings.profile_picture_description')"
+    >
     <BaseInputGrid>
       <BaseInputGroup
         :label="$t('settings.account_settings.profile_picture')"
@@ -24,6 +28,7 @@
       </template>
       {{ $t('settings.company_info.save') }}
     </BaseButton>
+    </BaseSettingCard>
   </form>
 </template>
 
