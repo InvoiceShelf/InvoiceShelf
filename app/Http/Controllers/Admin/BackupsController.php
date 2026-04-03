@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Backup;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\CreateBackupJob;

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Admin\Backup\BackupsController;
+use App\Http\Controllers\Admin\BackupsController;
 use App\Http\Controllers\Admin\CountriesController;
 use App\Http\Controllers\Admin\CurrenciesController;
 use App\Http\Controllers\Admin\Modules\ModuleInstallationController;
@@ -9,7 +9,7 @@ use App\Http\Controllers\Admin\Settings\DiskController;
 use App\Http\Controllers\Admin\Settings\MailConfigurationController;
 use App\Http\Controllers\Admin\Settings\PDFConfigurationController;
 use App\Http\Controllers\Admin\Settings\SettingsController;
-use App\Http\Controllers\Admin\Update\UpdateController;
+use App\Http\Controllers\Admin\UpdateController;
 use App\Http\Controllers\AppVersionController;
 use App\Http\Controllers\Company\Auth\AuthController;
 use App\Http\Controllers\Company\Auth\ForgotPasswordController;
