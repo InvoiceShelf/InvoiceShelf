@@ -27,6 +27,7 @@ use App\Http\Controllers\Company\Expense\ExpensesController;
 use App\Http\Controllers\Company\General\BootstrapController;
 use App\Http\Controllers\Company\General\ConfigController;
 use App\Http\Controllers\Company\General\FormatsController;
+use App\Http\Controllers\Company\General\InvitationResponseController;
 use App\Http\Controllers\Company\General\NotesController;
 use App\Http\Controllers\Company\General\SearchController;
 use App\Http\Controllers\Company\General\SerialNumberController;
@@ -43,6 +44,7 @@ use App\Http\Controllers\Company\Role\RolesController;
 use App\Http\Controllers\Company\Settings\CompanyController;
 use App\Http\Controllers\Company\Settings\CompanyMailConfigurationController;
 use App\Http\Controllers\Company\Settings\CompanySettingsController;
+use App\Http\Controllers\Company\Settings\InvitationController;
 use App\Http\Controllers\Company\Settings\TaxTypesController;
 use App\Http\Controllers\Company\Settings\UserProfileController;
 use App\Http\Controllers\Company\Users\UsersController;
@@ -171,6 +173,13 @@ Route::prefix('/v1')->group(function () {
 
             Route::get('/bootstrap', BootstrapController::class);
 
+            // Invitations (user-scoped — respond to invitations)
+            // ----------------------------------
+
+            Route::get('/invitations/pending', [InvitationResponseController::class, 'pending']);
+            Route::post('/invitations/{invitation:token}/accept', [InvitationResponseController::class, 'accept']);
+            Route::post('/invitations/{invitation:token}/decline', [InvitationResponseController::class, 'decline']);
+
             // Currencies
             // ----------------------------------
 
@@ -215,6 +224,11 @@ Route::prefix('/v1')->group(function () {
             Route::get('/number-placeholders', [SerialNumberController::class, 'placeholders']);
 
             Route::get('/current-company', [BootstrapController::class, 'currentCompany']);
+
+            // Company Invitations (company-scoped — send invitations)
+            // ----------------------------------
+
+            Route::apiResource('company-invitations', InvitationController::class)->only(['index', 'store', 'destroy']);
 
             // Customers
             // ----------------------------------

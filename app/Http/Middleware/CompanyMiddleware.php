@@ -9,18 +9,25 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CompanyMiddleware
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @return mixed
-     */
     public function handle(Request $request, Closure $next): Response
     {
         if (Schema::hasTable('user_company')) {
             $user = $request->user();
 
-            if ((! $request->header('company')) || (! $user->hasCompany($request->header('company')))) {
-                $request->headers->set('company', $user->companies()->first()->id);
+            if (! $user) {
+                return $next($request);
+            }
+
+            $firstCompany = $user->companies()->first();
+
+            // User has no companies — allow request through without company header
+            // (BootstrapController handles this gracefully)
+            if (! $firstCompany) {
+                return $next($request);
+            }
+
+            if (! $request->header('company') || ! $user->hasCompany($request->header('company'))) {
+                $request->headers->set('company', $firstCompany->id);
             }
         }
 
