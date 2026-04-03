@@ -32,11 +32,17 @@ class ScopeBouncer
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
-        $tenantId = $request->header('company')
-            ? $request->header('company')
-            : $user->companies()->first()->id;
+        $company = $request->header('company');
 
-        $this->bouncer->scope()->to($tenantId);
+        if (! $company) {
+            $firstCompany = $user->companies()->first();
+            if (! $firstCompany) {
+                return $next($request);
+            }
+            $company = $firstCompany->id;
+        }
+
+        $this->bouncer->scope()->to($company);
 
         return $next($request);
     }
