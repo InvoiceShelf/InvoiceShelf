@@ -1,6 +1,6 @@
 <?php
 
-use App\Generators\CustomPathGenerator;
+use App\Support\CustomPathGenerator;
 use Spatie\ImageOptimizer\Optimizers\Avifenc;
 use Spatie\ImageOptimizer\Optimizers\Cwebp;
 use Spatie\ImageOptimizer\Optimizers\Gifsicle;

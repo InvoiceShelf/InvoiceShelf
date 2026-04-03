@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Generators;
+namespace App\Support;
 
 use App\Models\Estimate;
 use App\Models\Invoice;
