@@ -22,16 +22,6 @@ class Payment extends Model implements HasMedia
     use HasFactory;
     use InteractsWithMedia;
 
-    public const PAYMENT_MODE_CHECK = 'CHECK';
-
-    public const PAYMENT_MODE_OTHER = 'OTHER';
-
-    public const PAYMENT_MODE_CASH = 'CASH';
-
-    public const PAYMENT_MODE_CREDIT_CARD = 'CREDIT_CARD';
-
-    public const PAYMENT_MODE_BANK_TRANSFER = 'BANK_TRANSFER';
-
     protected $dates = ['created_at', 'updated_at', 'payment_date'];
 
     protected $guarded = ['id'];

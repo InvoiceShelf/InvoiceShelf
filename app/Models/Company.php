@@ -21,10 +21,6 @@ class Company extends Model implements HasMedia
         'id',
     ];
 
-    public const COMPANY_LEVEL = 'company_level';
-
-    public const CUSTOMER_LEVEL = 'customer_level';
-
     protected $appends = ['logo', 'logo_path'];
 
     public function getRolesAttribute()

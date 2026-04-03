@@ -20,8 +20,6 @@ class Transaction extends Model
         'transaction_date',
     ];
 
-    public const PENDING = 'PENDING';
-
     public const FAILED = 'FAILED';
 
     public const SUCCESS = 'SUCCESS';
