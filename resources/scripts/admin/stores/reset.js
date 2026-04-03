@@ -23,7 +23,7 @@ import { useRecurringInvoiceStore } from './recurring-invoice'
 import { useRoleStore } from './role'
 import { useTaxTypeStore } from './tax-type'
 import { useUserStore } from './user'
-import { useUsersStore } from './users'
+import { useMembersStore } from './users'
 
 export const useResetStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
@@ -56,7 +56,7 @@ export const useResetStore = (useWindow = false) => {
         const roleStore = useRoleStore()
         const taxTypeStore = useTaxTypeStore()
         const userStore = useUserStore()
-        const usersStore = useUsersStore()
+        const usersStore = useMembersStore()
 
         backupStore.$reset()
         categoryStore.$reset()

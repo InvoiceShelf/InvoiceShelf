@@ -66,9 +66,9 @@ const ItemCreate = () => import('@/scripts/admin/views/items/Create.vue')
 const ExpensesIndex = () => import('@/scripts/admin/views/expenses/Index.vue')
 const ExpenseCreate = () => import('@/scripts/admin/views/expenses/Create.vue')
 
-// Users
-const UserIndex = () => import('@/scripts/admin/views/users/Index.vue')
-const UserCreate = () => import('@/scripts/admin/views/users/Create.vue')
+// Members
+const MemberIndex = () => import('@/scripts/admin/views/members/Index.vue')
+const MemberCreate = () => import('@/scripts/admin/views/members/Create.vue')
 
 // Estimates
 const EstimateIndex = () => import('@/scripts/admin/views/estimates/Index.vue')
@@ -391,24 +391,24 @@ export default [
         component: ExpenseCreate,
       },
 
-      // Users
+      // Members
       {
-        path: 'users',
-        name: 'users.index',
+        path: 'members',
+        name: 'members.index',
         meta: { isOwner: true },
-        component: UserIndex,
+        component: MemberIndex,
       },
       {
-        path: 'users/create',
+        path: 'members/create',
         meta: { isOwner: true },
-        name: 'users.create',
-        component: UserCreate,
+        name: 'members.create',
+        component: MemberCreate,
       },
       {
-        path: 'users/:id/edit',
-        name: 'users.edit',
+        path: 'members/:id/edit',
+        name: 'members.edit',
         meta: { isOwner: true },
-        component: UserCreate,
+        component: MemberCreate,
       },
 
       // Estimates

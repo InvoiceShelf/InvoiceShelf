@@ -3,7 +3,7 @@
     <BasePageHeader :title="pageTitle">
       <BaseBreadcrumb>
         <BaseBreadcrumbItem :title="$t('general.home')" to="dashboard" />
-        <BaseBreadcrumbItem :title="$t('users.user', 2)" to="/admin/users" />
+        <BaseBreadcrumbItem :title="$t('members.user', 2)" to="/admin/members" />
         <BaseBreadcrumbItem :title="pageTitle" to="#" active />
       </BaseBreadcrumb>
     </BasePageHeader>
@@ -14,7 +14,7 @@
           <BaseInputGrid layout="one-column">
             <BaseInputGroup
               :content-loading="isFetchingInitialData"
-              :label="$t('users.name')"
+              :label="$t('members.name')"
               :error="
                 v$.userData.name.$error && v$.userData.name.$errors[0].$message
               "
@@ -31,7 +31,7 @@
 
             <BaseInputGroup
               :content-loading="isFetchingInitialData"
-              :label="$t('users.email')"
+              :label="$t('members.email')"
               :error="
                 v$.userData.email.$error &&
                 v$.userData.email.$errors[0].$message
@@ -50,7 +50,7 @@
 
             <BaseInputGroup
               :content-loading="isFetchingInitialData"
-              :label="$t('users.companies')"
+              :label="$t('members.companies')"
               :error="
                 v$.userData.companies.$error &&
                 v$.userData.companies.$errors[0].$message
@@ -85,7 +85,7 @@
                   <BaseInputGroup
                     :content-loading="isFetchingInitialData"
                     :label="
-                      $t('users.select_company_role', { company: company.name })
+                      $t('members.select_company_role', { company: company.name })
                     "
                     :error="v.role.$error && v.role.$errors[0].$message"
                     required
@@ -109,7 +109,7 @@
 
             <BaseInputGroup
               :content-loading="isFetchingInitialData"
-              :label="$t('users.password')"
+              :label="$t('members.password')"
               :error="
                 v$.userData.password.$error &&
                 v$.userData.password.$errors[0].$message
@@ -130,7 +130,7 @@
 
             <BaseInputGroup
               :content-loading="isFetchingInitialData"
-              :label="$t('users.phone')"
+              :label="$t('members.phone')"
             >
               <BaseInput
                 v-model.trim="userStore.userData.phone"
@@ -153,7 +153,7 @@
                 :class="slotProps.class"
               />
             </template>
-            {{ isEdit ? $t('users.update_user') : $t('users.save_user') }}
+            {{ isEdit ? $t('members.update_user') : $t('members.save_user') }}
           </BaseButton>
         </BaseCard>
       </div>
@@ -175,9 +175,9 @@ import {
 import useVuelidate from '@vuelidate/core'
 import { ValidateEach } from '@vuelidate/components'
 import { useI18n } from 'vue-i18n'
-import { useUsersStore } from '@/scripts/admin/stores/users'
+import { useMembersStore } from '@/scripts/admin/stores/members'
 
-const userStore = useUsersStore()
+const userStore = useMembersStore()
 
 const { t } = useI18n()
 const route = useRoute()
@@ -189,10 +189,10 @@ let isFetchingInitialData = ref(false)
 let selectedCompanies = ref([])
 let companies = ref([])
 
-const isEdit = computed(() => route.name === 'users.edit')
+const isEdit = computed(() => route.name === 'members.edit')
 
 const pageTitle = computed(() =>
-  isEdit.value ? t('users.edit_user') : t('users.new_user')
+  isEdit.value ? t('members.edit_user') : t('members.new_user')
 )
 
 const rules = computed(() => {
@@ -285,7 +285,7 @@ async function submitUser() {
     const action = isEdit.value ? userStore.updateUser : userStore.addUser
     await action(data)
 
-    router.push('/admin/users')
+    router.push('/admin/members')
     isSaving.value = false
   } catch (error) {
     isSaving.value = false

@@ -1,10 +1,10 @@
 <template>
   <BasePage>
     <!-- Page Header Section -->
-    <BasePageHeader :title="$t('users.title')">
+    <BasePageHeader :title="$t('members.title')">
       <BaseBreadcrumb>
         <BaseBreadcrumbItem :title="$t('general.home')" to="dashboard" />
-        <BaseBreadcrumbItem :title="$t('users.title', 2)" to="#" active />
+        <BaseBreadcrumbItem :title="$t('members.title', 2)" to="#" active />
       </BaseBreadcrumb>
 
       <template #actions>
@@ -36,14 +36,14 @@
                 aria-hidden="true"
               />
             </template>
-            {{ $t('users.add_user') }}
+            {{ $t('members.add_user') }}
           </BaseButton>
         </div>
       </template>
     </BasePageHeader>
 
     <BaseFilterWrapper :show="showFilters" class="mt-3" @clear="clearFilter">
-      <BaseInputGroup :label="$t('users.name')" class="flex-1 mt-2 mr-4">
+      <BaseInputGroup :label="$t('members.name')" class="flex-1 mt-2 mr-4">
         <BaseInput
           v-model="filters.name"
           type="text"
@@ -52,7 +52,7 @@
         />
       </BaseInputGroup>
 
-      <BaseInputGroup :label="$t('users.email')" class="flex-1 mt-2 mr-4">
+      <BaseInputGroup :label="$t('members.email')" class="flex-1 mt-2 mr-4">
         <BaseInput
           v-model="filters.email"
           type="text"
@@ -61,7 +61,7 @@
         />
       </BaseInputGroup>
 
-      <BaseInputGroup class="flex-1 mt-2" :label="$t('users.phone')">
+      <BaseInputGroup class="flex-1 mt-2" :label="$t('members.phone')">
         <BaseInput
           v-model="filters.phone"
           type="text"
@@ -75,8 +75,8 @@
 
     <BaseEmptyPlaceholder
       v-show="showEmptyScreen"
-      :title="$t('users.no_users')"
-      :description="$t('users.list_of_users')"
+      :title="$t('members.no_users')"
+      :description="$t('members.list_of_users')"
     >
       <AstronautIcon class="mt-5 mb-4" />
 
@@ -84,12 +84,12 @@
         <BaseButton
           v-if="userStore.currentUser.is_owner"
           variant="primary-outline"
-          @click="$router.push('/admin/users/create')"
+          @click="$router.push('/admin/members/create')"
         >
           <template #left="slotProps">
             <BaseIcon name="PlusIcon" :class="slotProps.class" />
           </template>
-          {{ $t('users.add_user') }}
+          {{ $t('members.add_user') }}
         </BaseButton>
       </template>
     </BaseEmptyPlaceholder>
@@ -188,17 +188,17 @@
 import { computed, onUnmounted, ref, reactive, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-import { useUsersStore } from '@/scripts/admin/stores/users'
+import { useMembersStore } from '@/scripts/admin/stores/members'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import { useDialogStore } from '@/scripts/stores/dialog'
 import { useUserStore } from '@/scripts/admin/stores/user'
 import AstronautIcon from '@/scripts/components/icons/empty/AstronautIcon.vue'
-import UserDropdown from '@/scripts/admin/components/dropdowns/UserIndexDropdown.vue'
+import UserDropdown from '@/scripts/admin/components/dropdowns/MemberIndexDropdown.vue'
 import abilities from '@/scripts/admin/stub/abilities'
 
 const notificationStore = useNotificationStore()
 const dialogStore = useDialogStore()
-const usersStore = useUsersStore()
+const usersStore = useMembersStore()
 const userStore = useUserStore()
 
 const router = useRouter()
@@ -227,18 +227,18 @@ const userTableColumns = computed(() => {
     },
     {
       key: 'name',
-      label: t('users.name'),
+      label: t('members.name'),
       thClass: 'extra',
       tdClass: 'font-medium text-gray-900',
     },
     { key: 'email', label: 'Email' },
     {
       key: 'phone',
-      label: t('users.phone'),
+      label: t('members.phone'),
     },
     {
       key: 'created_at',
-      label: t('users.added_on'),
+      label: t('members.added_on'),
     },
     {
       key: 'actions',
@@ -342,7 +342,7 @@ function removeUser(id) {
   dialogStore
     .openDialog({
       title: t('general.are_you_sure'),
-      message: t('users.confirm_delete', 1),
+      message: t('members.confirm_delete', 1),
       yesLabel: t('general.ok'),
       noLabel: t('general.cancel'),
       variant: 'danger',
@@ -361,7 +361,7 @@ function removeUser(id) {
           if (response.data.error === 'user_attached') {
             notificationStore.showNotification({
               type: 'error',
-              message: t('users.user_attached_message'),
+              message: t('members.user_attached_message'),
             })
             return true
           }
@@ -374,7 +374,7 @@ function removeMultipleUsers() {
   dialogStore
     .openDialog({
       title: t('general.are_you_sure'),
-      message: t('users.confirm_delete', 2),
+      message: t('members.confirm_delete', 2),
       yesLabel: t('general.ok'),
       noLabel: t('general.cancel'),
       variant: 'danger',

@@ -63,8 +63,8 @@ class SerialNumberController extends Controller
 
     public function placeholders(Request $request): JsonResponse
     {
-        if ($request->format) {
-            $placeholders = SerialNumberService::getPlaceholders($request->format);
+        if ($request->input('format')) {
+            $placeholders = SerialNumberService::getPlaceholders($request->input('format'));
         } else {
             $placeholders = [];
         }

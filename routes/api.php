@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\Settings\MailConfigurationController;
 use App\Http\Controllers\Admin\Settings\PDFConfigurationController;
 use App\Http\Controllers\Admin\Settings\SettingsController;
 use App\Http\Controllers\Admin\UpdateController;
+use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\AppVersionController;
 use App\Http\Controllers\Company\Auth\AuthController;
 use App\Http\Controllers\Company\Auth\ForgotPasswordController;
@@ -35,6 +36,7 @@ use App\Http\Controllers\Company\Invoice\InvoicesController;
 use App\Http\Controllers\Company\Invoice\InvoiceTemplatesController;
 use App\Http\Controllers\Company\Item\ItemsController;
 use App\Http\Controllers\Company\Item\UnitsController;
+use App\Http\Controllers\Company\Members\MembersController;
 use App\Http\Controllers\Company\Payment\PaymentMethodsController;
 use App\Http\Controllers\Company\Payment\PaymentsController;
 use App\Http\Controllers\Company\RecurringInvoice\RecurringInvoiceController;
@@ -47,7 +49,6 @@ use App\Http\Controllers\Company\Settings\CompanySettingsController;
 use App\Http\Controllers\Company\Settings\InvitationController;
 use App\Http\Controllers\Company\Settings\TaxTypesController;
 use App\Http\Controllers\Company\Settings\UserProfileController;
-use App\Http\Controllers\Company\Users\UsersController;
 use App\Http\Controllers\CustomerPortal\Auth\ForgotPasswordController as AuthForgotPasswordController;
 use App\Http\Controllers\CustomerPortal\Auth\ResetPasswordController as AuthResetPasswordController;
 use App\Http\Controllers\CustomerPortal\Estimate\AcceptEstimateController as CustomerAcceptEstimateController;
@@ -154,15 +155,15 @@ Route::prefix('/v1')->group(function () {
         Route::get('companies/{company}', [CompaniesController::class, 'show']);
         Route::put('companies/{company}', [CompaniesController::class, 'update']);
 
-        Route::get('users', [App\Http\Controllers\Admin\UsersController::class, 'index']);
-        Route::get('users/{user}', [App\Http\Controllers\Admin\UsersController::class, 'show']);
-        Route::put('users/{user}', [App\Http\Controllers\Admin\UsersController::class, 'update']);
-        Route::post('users/{user}/impersonate', [App\Http\Controllers\Admin\UsersController::class, 'impersonate']);
+        Route::get('users', [UsersController::class, 'index']);
+        Route::get('users/{user}', [UsersController::class, 'show']);
+        Route::put('users/{user}', [UsersController::class, 'update']);
+        Route::post('users/{user}/impersonate', [UsersController::class, 'impersonate']);
     });
 
     // Stop impersonation - uses auth:sanctum only (the impersonated user's token, not super-admin)
     Route::middleware(['auth:sanctum'])->prefix('super-admin')->group(function () {
-        Route::post('stop-impersonating', [App\Http\Controllers\Admin\UsersController::class, 'stopImpersonating']);
+        Route::post('stop-impersonating', [UsersController::class, 'stopImpersonating']);
     });
 
     Route::middleware(['auth:sanctum', 'company'])->group(function () {
@@ -441,9 +442,9 @@ Route::prefix('/v1')->group(function () {
         // Users
         // ----------------------------------
 
-        Route::post('/users/delete', [UsersController::class, 'delete']);
+        Route::post('/members/delete', [MembersController::class, 'delete']);
 
-        Route::apiResource('/users', UsersController::class);
+        Route::apiResource('/members', MembersController::class);
 
         // Modules
         // ----------------------------------

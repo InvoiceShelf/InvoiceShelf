@@ -33,7 +33,7 @@ test('create super admin role', function () {
         ],
     ];
 
-    postJson('api/v1/users', $data)
+    postJson('api/v1/members', $data)
         ->assertStatus(201);
 
     $data = collect($data)

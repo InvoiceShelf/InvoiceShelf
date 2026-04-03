@@ -1,14 +1,14 @@
 <template>
   <BaseDropdown>
     <template #activator>
-      <BaseButton v-if="route.name === 'users.view'" variant="primary">
+      <BaseButton v-if="route.name === 'members.view'" variant="primary">
         <BaseIcon name="EllipsisHorizontalIcon" class="h-5 text-white" />
       </BaseButton>
       <BaseIcon v-else name="EllipsisHorizontalIcon" class="h-5 text-gray-500" />
     </template>
 
     <!-- edit user  -->
-    <router-link :to="`/admin/users/${row.id}/edit`">
+    <router-link :to="`/admin/members/${row.id}/edit`">
       <BaseDropdownItem>
         <BaseIcon
           name="PencilIcon"
@@ -36,7 +36,7 @@ import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/scripts/admin/stores/user'
 import { useRoute, useRouter } from 'vue-router'
 import { inject } from 'vue'
-import { useUsersStore } from '@/scripts/admin/stores/users'
+import { useMembersStore } from '@/scripts/admin/stores/members'
 
 const props = defineProps({
   row: {
@@ -59,7 +59,7 @@ const { t } = useI18n()
 const userStore = useUserStore()
 const route = useRoute()
 const router = useRouter()
-const usersStore = useUsersStore()
+const usersStore = useMembersStore()
 
 const $utils = inject('utils')
 
@@ -67,7 +67,7 @@ function removeUser(id) {
   dialogStore
     .openDialog({
       title: t('general.are_you_sure'),
-      message: t('users.confirm_delete', 1),
+      message: t('members.confirm_delete', 1),
       yesLabel: t('general.ok'),
       noLabel: t('general.cancel'),
       variant: 'danger',

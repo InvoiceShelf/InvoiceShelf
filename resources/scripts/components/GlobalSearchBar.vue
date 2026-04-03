@@ -119,7 +119,7 @@
               class="p-2 hover:bg-gray-100 cursor-pointer rounded-md"
             >
               <router-link
-                :to="{ path: `/admin/users/${user.id}/edit` }"
+                :to="{ path: `/admin/members/${user.id}/edit` }"
                 class="flex items-center"
               >
                 <span
@@ -154,13 +154,13 @@
 
 <script setup>
 import { ref, watch } from 'vue'
-import { useUsersStore } from '@/scripts/admin/stores/users'
+import { useMembersStore } from '@/scripts/admin/stores/members'
 import { onClickOutside } from '@vueuse/core'
 import { useRoute } from 'vue-router'
 import SpinnerIcon from '@/scripts/components/icons/SpinnerIcon.vue'
 import { debounce } from 'lodash'
 
-const usersStore = useUsersStore()
+const usersStore = useMembersStore()
 
 const isShow = ref(false)
 const name = ref('')

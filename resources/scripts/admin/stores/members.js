@@ -3,11 +3,11 @@ import { defineStore } from 'pinia'
 import { useNotificationStore } from '@/scripts/stores/notification'
 import { handleError } from '@/scripts/helpers/error-handling'
 
-export const useUsersStore = (useWindow = false) => {
+export const useMembersStore = (useWindow = false) => {
   const defineStoreFunc = useWindow ? window.pinia.defineStore : defineStore
   const { global } = window.i18n
 
-  return defineStoreFunc('users', {
+  return defineStoreFunc('members', {
     state: () => ({
       roles: [],
       users: [],
@@ -42,7 +42,7 @@ export const useUsersStore = (useWindow = false) => {
       fetchUsers(params) {
         return new Promise((resolve, reject) => {
           http
-            .get(`/api/v1/users`, { params })
+            .get(`/api/v1/members`, { params })
             .then((response) => {
               this.users = response.data.data
               this.totalUsers = response.data.meta.total
@@ -58,7 +58,7 @@ export const useUsersStore = (useWindow = false) => {
       fetchUser(id) {
         return new Promise((resolve, reject) => {
           http
-            .get(`/api/v1/users/${id}`)
+            .get(`/api/v1/members/${id}`)
             .then((response) => {
               this.userData = response.data.data
               if (this.userData?.companies?.length) {
@@ -97,14 +97,14 @@ export const useUsersStore = (useWindow = false) => {
       addUser(data) {
         return new Promise((resolve, reject) => {
           http
-            .post('/api/v1/users', data)
+            .post('/api/v1/members', data)
             .then((response) => {
               this.users.push(response.data)
               const notificationStore = useNotificationStore()
 
               notificationStore.showNotification({
                 type: 'success',
-                message: global.t('users.created_message'),
+                message: global.t('members.created_message'),
               })
               resolve(response)
             })
@@ -118,7 +118,7 @@ export const useUsersStore = (useWindow = false) => {
       updateUser(data) {
         return new Promise((resolve, reject) => {
           http
-            .put(`/api/v1/users/${data.id}`, data)
+            .put(`/api/v1/members/${data.id}`, data)
             .then((response) => {
               if (response) {
                 let pos = this.users.findIndex(
@@ -129,7 +129,7 @@ export const useUsersStore = (useWindow = false) => {
               const notificationStore = useNotificationStore()
               notificationStore.showNotification({
                 type: 'success',
-                message: global.t('users.updated_message'),
+                message: global.t('members.updated_message'),
               })
               resolve(response)
             })
@@ -145,13 +145,13 @@ export const useUsersStore = (useWindow = false) => {
 
         return new Promise((resolve, reject) => {
           http
-            .post(`/api/v1/users/delete`, { users: id.ids })
+            .post(`/api/v1/members/delete`, { users: id.ids })
             .then((response) => {
               let index = this.users.findIndex((user) => user.id === id)
               this.users.splice(index, 1)
               notificationStore.showNotification({
                 type: 'success',
-                message: global.t('users.deleted_message', 1),
+                message: global.t('members.deleted_message', 1),
               })
               resolve(response)
             })
@@ -165,7 +165,7 @@ export const useUsersStore = (useWindow = false) => {
       deleteMultipleUsers() {
         return new Promise((resolve, reject) => {
           http
-            .post(`/api/v1/users/delete`, { users: this.selectedUsers })
+            .post(`/api/v1/members/delete`, { users: this.selectedUsers })
             .then((response) => {
               this.selectedUsers.forEach((user) => {
                 let index = this.users.findIndex(
@@ -176,7 +176,7 @@ export const useUsersStore = (useWindow = false) => {
               const notificationStore = useNotificationStore()
               notificationStore.showNotification({
                 type: 'success',
-                message: global.t('users.deleted_message', 2),
+                message: global.t('members.deleted_message', 2),
               })
               resolve(response)
             })

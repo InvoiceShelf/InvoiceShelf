@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Http\Controllers\Company\Users;
+namespace App\Http\Controllers\Company\Members;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\DeleteUserRequest;
-use App\Http\Requests\UserRequest;
+use App\Http\Requests\DeleteMemberRequest;
+use App\Http\Requests\MemberRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use App\Services\UserService;
+use App\Services\MemberService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class UsersController extends Controller
+class MembersController extends Controller
 {
     public function __construct(
-        private readonly UserService $userService,
+        private readonly MemberService $memberService,
     ) {}
 
     /**
@@ -47,11 +47,11 @@ class UsersController extends Controller
      *
      * @return JsonResponse
      */
-    public function store(UserRequest $request)
+    public function store(MemberRequest $request)
     {
         $this->authorize('create', User::class);
 
-        $user = $this->userService->create($request);
+        $user = $this->memberService->create($request);
 
         return new UserResource($user);
     }
@@ -73,11 +73,11 @@ class UsersController extends Controller
      *
      * @return JsonResponse
      */
-    public function update(UserRequest $request, User $user)
+    public function update(MemberRequest $request, User $user)
     {
         $this->authorize('update', $user);
 
-        $this->userService->update($user, $request);
+        $this->memberService->update($user, $request);
 
         return new UserResource($user);
     }
@@ -88,12 +88,12 @@ class UsersController extends Controller
      * @param  Request  $request
      * @return JsonResponse
      */
-    public function delete(DeleteUserRequest $request)
+    public function delete(DeleteMemberRequest $request)
     {
         $this->authorize('delete multiple users', User::class);
 
         if ($request->users) {
-            $this->userService->delete($request->users);
+            $this->memberService->delete($request->users);
         }
 
         return response()->json([

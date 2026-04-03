@@ -2,14 +2,14 @@
 
 namespace App\Services;
 
-use App\Http\Requests\UserRequest;
+use App\Http\Requests\MemberRequest;
 use App\Models\CompanySetting;
 use App\Models\User;
 use Silber\Bouncer\BouncerFacade;
 
-class UserService
+class MemberService
 {
-    public function create(UserRequest $request): User
+    public function create(MemberRequest $request): User
     {
         $user = User::create($request->getUserPayload());
 
@@ -29,7 +29,7 @@ class UserService
         return $user;
     }
 
-    public function update(User $user, UserRequest $request): User
+    public function update(User $user, MemberRequest $request): User
     {
         $user->update($request->getUserPayload());
 

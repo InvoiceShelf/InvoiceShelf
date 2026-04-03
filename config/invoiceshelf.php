@@ -352,11 +352,11 @@ return [
             ] : []
         ),
         [
-            'title' => 'navigation.users',
+            'title' => 'navigation.members',
             'group' => 3,
-            'link' => '/admin/users',
+            'link' => '/admin/members',
             'icon' => 'UsersIcon',
-            'name' => 'Users',
+            'name' => 'Members',
             'owner_only' => true,
             'ability' => '',
             'model' => '',
