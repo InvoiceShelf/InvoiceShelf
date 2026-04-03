@@ -1,12 +1,12 @@
 <?php
 
-use App\Hashids\HashidsServiceProvider;
 use App\Providers\AppConfigProvider;
 use App\Providers\AppServiceProvider;
 use App\Providers\DropboxServiceProvider;
 use App\Providers\PDFServiceProvider;
 use App\Providers\RouteServiceProvider;
 use App\Providers\ViewServiceProvider;
+use App\Services\Hashids\HashidsServiceProvider;
 
 return [
     HashidsServiceProvider::class,

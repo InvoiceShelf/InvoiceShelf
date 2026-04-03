@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Hashids;
+namespace App\Services\Hashids;
 
 use Hashids\Hashids;
 use Illuminate\Contracts\Config\Repository;

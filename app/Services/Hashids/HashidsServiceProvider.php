@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Hashids;
+namespace App\Services\Hashids;
 
 use Hashids\Hashids as HashidsClient;
 use Illuminate\Contracts\Container\Container;

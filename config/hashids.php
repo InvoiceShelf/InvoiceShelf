@@ -3,7 +3,7 @@
 /**
  * Hashids connection config (per model class).
  *
- * Wired by App\Hashids\HashidsServiceProvider using the hashids/hashids package.
+ * Wired by App\Services\Hashids\HashidsServiceProvider using the hashids/hashids package.
  */
 
 use App\Models\Company;
