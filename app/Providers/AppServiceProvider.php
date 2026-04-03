@@ -90,6 +90,13 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
+        // admin menu (super admin mode)
+        \Menu::make('admin_menu', function ($menu) {
+            foreach (config('invoiceshelf.admin_menu') as $data) {
+                $this->generateMenu($menu, $data);
+            }
+        });
+
         // setting menu
         \Menu::make('setting_menu', function ($menu) {
             foreach (config('invoiceshelf.setting_menu') as $data) {

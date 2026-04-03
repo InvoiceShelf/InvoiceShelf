@@ -19,7 +19,13 @@
       @click="isShow = !isShow"
     >
       <span
-        v-if="companyStore.selectedCompany"
+        v-if="companyStore.isAdminMode"
+        class="w-16 text-sm font-medium truncate sm:w-auto"
+      >
+        {{ $t('navigation.administration') }}
+      </span>
+      <span
+        v-else-if="companyStore.selectedCompany"
         class="w-16 text-sm font-medium truncate sm:w-auto"
       >
         {{ companyStore.selectedCompany.name }}
@@ -49,6 +55,29 @@
             pb-4
           "
         >
+          <!-- Administration Mode -->
+          <div v-if="userStore.currentUser?.is_super_admin">
+            <div
+              class="p-2 px-3 rounded-md cursor-pointer hover:bg-gray-100 hover:text-primary-500"
+              :class="{
+                'bg-gray-100 text-primary-500': companyStore.isAdminMode,
+              }"
+              @click="enterAdminMode"
+            >
+              <div class="flex items-center">
+                <span
+                  class="flex items-center justify-center mr-3 overflow-hidden text-base font-semibold bg-primary-100 rounded-md w-9 h-9 shrink-0 text-primary-500"
+                >
+                  <BaseIcon name="ShieldCheckIcon" class="w-5 h-5" />
+                </span>
+                <div class="flex flex-col">
+                  <span class="text-sm font-medium">{{ $t('navigation.administration') }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="border-t border-gray-100 my-1"></div>
+          </div>
+
           <label
             class="
               px-3
@@ -259,7 +288,16 @@ function addNewCompany() {
   })
 }
 
+async function enterAdminMode() {
+  companyStore.setAdminMode(true)
+  isShow.value = false
+  router.push('/admin/administration/dashboard')
+  await globalStore.setIsAppLoaded(false)
+  await globalStore.bootstrap()
+}
+
 async function changeCompany(company) {
+  companyStore.setAdminMode(false)
   await companyStore.setSelectedCompany(company)
   router.push('/admin/dashboard')
   await globalStore.setIsAppLoaded(false)

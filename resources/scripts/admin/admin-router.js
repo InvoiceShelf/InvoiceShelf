@@ -114,6 +114,8 @@ const InvoicePublicPage = () =>
   import('@/scripts/components/InvoicePublicPage.vue')
 
 // Administration (Super Admin)
+const AdminDashboard = () =>
+  import('@/scripts/admin/views/administration/AdminDashboard.vue')
 const AdminCompaniesIndex = () =>
   import('@/scripts/admin/views/administration/companies/Index.vue')
 const AdminCompaniesEdit = () =>
@@ -515,6 +517,12 @@ export default [
       },
 
       // Administration (Super Admin)
+      {
+        path: 'administration/dashboard',
+        name: 'admin.dashboard',
+        meta: { isSuperAdmin: true },
+        component: AdminDashboard,
+      },
       {
         path: 'administration/companies',
         name: 'admin.companies.index',

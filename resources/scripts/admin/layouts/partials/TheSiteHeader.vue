@@ -18,7 +18,7 @@
     "
   >
     <router-link
-      to="/admin/dashboard"
+      :to="companyStore.isAdminMode ? '/admin/administration/dashboard' : '/admin/dashboard'"
       class="
         float-none
         text-lg
@@ -61,7 +61,7 @@
 
     <ul class="flex float-right h-8 m-0 list-none md:h-9">
       <li
-        v-if="hasCreateAbilities()"
+        v-if="hasCreateAbilities() && !companyStore.isAdminMode"
         class="relative hidden float-left m-0 md:block"
       >
         <BaseDropdown width-class="w-48">
@@ -124,7 +124,7 @@
         </BaseDropdown>
       </li>
 
-      <li class="ml-2">
+      <li v-if="!companyStore.isAdminMode" class="ml-2">
         <GlobalSearchBar
           v-if="
             userStore.currentUser.is_owner ||
@@ -179,6 +179,7 @@ import { computed } from 'vue'
 import { useUserStore } from '@/scripts/admin/stores/user'
 import { useGlobalStore } from '@/scripts/admin/stores/global'
 
+import { useCompanyStore } from '@/scripts/admin/stores/company'
 import CompanySwitcher from '@/scripts/components/CompanySwitcher.vue'
 import GlobalSearchBar from '@/scripts/components/GlobalSearchBar.vue'
 import MainLogo from '@/scripts/components/icons/MainLogo.vue'
@@ -188,6 +189,7 @@ import abilities from '@/scripts/admin/stub/abilities'
 const authStore = useAuthStore()
 const userStore = useUserStore()
 const globalStore = useGlobalStore()
+const companyStore = useCompanyStore()
 const router = useRouter()
 
 const previewAvatar = computed(() => {

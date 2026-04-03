@@ -30,6 +30,8 @@
     "decline": "Decline",
     "welcome": "Welcome",
     "no_company_description": "You are not a member of any company yet. Accept an invitation below or contact your administrator.",
+    "app_version": "Application Version",
+    "database": "Database",
     "update": "Update",
     "deselect": "Deselect",
     "download": "Download",

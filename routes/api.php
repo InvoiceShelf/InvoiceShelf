@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\BackupsController;
 use App\Http\Controllers\Admin\CompaniesController;
 use App\Http\Controllers\Admin\CountriesController;
@@ -158,6 +159,7 @@ Route::prefix('/v1')->group(function () {
     // ----------------------------------
 
     Route::middleware(['auth:sanctum', 'super-admin'])->prefix('super-admin')->group(function () {
+        Route::get('dashboard', [AdminDashboardController::class, 'index']);
         Route::get('companies', [CompaniesController::class, 'index']);
         Route::get('companies/{company}', [CompaniesController::class, 'show']);
         Route::put('companies/{company}', [CompaniesController::class, 'update']);

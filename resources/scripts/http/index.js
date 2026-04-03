@@ -20,7 +20,7 @@ instance.interceptors.request.use(function (config) {
     config.headers.Authorization = authToken
   }
 
-  if (companyId) {
+  if (companyId && Ls.get('isAdminMode') !== 'true') {
     config.headers.company = companyId
   }
 

@@ -26,7 +26,7 @@ router.beforeEach((to) => {
   const { isAppLoaded } = globalStore
 
   if (isAppLoaded && to.meta.requiresAuth && to.name !== 'no.company') {
-    if (!companyStore.selectedCompany && !(to.meta.isSuperAdmin && userStore.currentUser?.is_super_admin)) {
+    if (!companyStore.selectedCompany && !companyStore.isAdminMode && !(to.meta.isSuperAdmin && userStore.currentUser?.is_super_admin)) {
       return { name: 'no.company' }
     }
   }

@@ -21,8 +21,12 @@ class CompanyMiddleware
             $firstCompany = $user->companies()->first();
 
             // User has no companies — allow request through without company header
-            // (BootstrapController handles this gracefully)
             if (! $firstCompany) {
+                return $next($request);
+            }
+
+            // Super admin without company header — allow pass-through (admin mode)
+            if ($user->isSuperAdmin() && ! $request->header('company')) {
                 return $next($request);
             }
 

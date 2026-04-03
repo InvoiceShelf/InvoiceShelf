@@ -21,7 +21,7 @@ class SettingsPolicy
 
     public function manageBackups(User $user)
     {
-        if ($user->isOwner()) {
+        if ($user->isSuperAdmin()) {
             return true;
         }
 
@@ -30,7 +30,7 @@ class SettingsPolicy
 
     public function manageFileDisk(User $user)
     {
-        if ($user->isOwner()) {
+        if ($user->isSuperAdmin()) {
             return true;
         }
 
@@ -39,7 +39,7 @@ class SettingsPolicy
 
     public function manageEmailConfig(User $user)
     {
-        if ($user->isOwner()) {
+        if ($user->isSuperAdmin()) {
             return true;
         }
 
@@ -48,7 +48,7 @@ class SettingsPolicy
 
     public function managePDFConfig(User $user)
     {
-        if ($user->isOwner()) {
+        if ($user->isSuperAdmin()) {
             return true;
         }
 
@@ -57,7 +57,7 @@ class SettingsPolicy
 
     public function manageSettings(User $user)
     {
-        if ($user->isOwner()) {
+        if ($user->isSuperAdmin()) {
             return true;
         }
 

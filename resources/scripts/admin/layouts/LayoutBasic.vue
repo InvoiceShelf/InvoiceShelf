@@ -55,12 +55,16 @@ const isAppLoaded = computed(() => {
 })
 
 const hasCompany = computed(() => {
-  return !!companyStore.selectedCompany || !!userStore.currentUser?.is_super_admin
+  return !!companyStore.selectedCompany || companyStore.isAdminMode
 })
 
 onMounted(() => {
   globalStore.bootstrap().then((res) => {
-    if (!res.data.current_company && !res.data.current_user.is_super_admin) {
+    if (companyStore.isAdminMode) {
+      return
+    }
+
+    if (!res.data.current_company) {
       if (route.name !== 'no.company') {
         router.push({ name: 'no.company' })
       }

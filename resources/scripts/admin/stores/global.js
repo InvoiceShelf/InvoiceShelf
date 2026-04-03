@@ -47,10 +47,14 @@ export const useGlobalStore = (useWindow = false) => {
     actions: {
       bootstrap() {
         return new Promise((resolve, reject) => {
+          const companyStore = useCompanyStore()
+          const url = companyStore.isAdminMode
+            ? '/api/v1/bootstrap?admin_mode=1'
+            : '/api/v1/bootstrap'
+
           http
-            .get('/api/v1/bootstrap')
+            .get(url)
             .then(async (response) => {
-              const companyStore = useCompanyStore()
               const userStore = useUserStore()
               const moduleStore = useModuleStore()
 

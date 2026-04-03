@@ -381,10 +381,26 @@ return [
             'ability' => '',
             'model' => '',
         ],
+    ],
+
+    /*
+    * List of admin mode menu (super admin only)
+    */
+    'admin_menu' => [
+        [
+            'title' => 'navigation.dashboard',
+            'group' => 1,
+            'link' => '/admin/administration/dashboard',
+            'icon' => 'ServerIcon',
+            'name' => 'AdminDashboard',
+            'owner_only' => false,
+            'super_admin_only' => true,
+            'ability' => '',
+            'model' => '',
+        ],
         [
             'title' => 'navigation.companies',
-            'group' => 4,
-            'group_label' => 'navigation.administration',
+            'group' => 1,
             'link' => '/admin/administration/companies',
             'icon' => 'BuildingOfficeIcon',
             'name' => 'AdminCompanies',
@@ -395,7 +411,7 @@ return [
         ],
         [
             'title' => 'navigation.all_users',
-            'group' => 4,
+            'group' => 1,
             'link' => '/admin/administration/users',
             'icon' => 'UsersIcon',
             'name' => 'AdminUsers',
@@ -406,7 +422,7 @@ return [
         ],
         [
             'title' => 'navigation.settings',
-            'group' => 4,
+            'group' => 1,
             'link' => '/admin/administration/settings/mail-configuration',
             'icon' => 'CogIcon',
             'name' => 'AdminSettings',

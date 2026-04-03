@@ -14,16 +14,30 @@ export const useCompanyStore = (useWindow = false) => {
       selectedCompany: null,
       selectedCompanySettings: {},
       selectedCompanyCurrency: null,
+      isAdminMode: window.Ls?.get('isAdminMode') === 'true',
     }),
 
     actions: {
       setSelectedCompany(data) {
         if (data) {
           window.Ls.set('selectedCompany', data.id)
+          window.Ls.remove('isAdminMode')
+          this.isAdminMode = false
         } else {
           window.Ls.remove('selectedCompany')
         }
         this.selectedCompany = data
+      },
+
+      setAdminMode(enabled) {
+        this.isAdminMode = enabled
+        if (enabled) {
+          window.Ls.set('isAdminMode', 'true')
+          window.Ls.remove('selectedCompany')
+          this.selectedCompany = null
+        } else {
+          window.Ls.remove('isAdminMode')
+        }
       },
 
       fetchBasicMailConfig() {
