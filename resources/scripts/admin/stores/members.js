@@ -12,6 +12,7 @@ export const useMembersStore = (useWindow = false) => {
       roles: [],
       users: [],
       totalUsers: 0,
+      pendingInvitations: [],
       currentUser: null,
       selectAllField: false,
       selectedUsers: [],
@@ -225,6 +226,63 @@ export const useMembersStore = (useWindow = false) => {
           this.selectedUsers = allUserIds
           this.selectAllField = true
         }
+      },
+
+      fetchPendingInvitations() {
+        return new Promise((resolve, reject) => {
+          http
+            .get('/api/v1/company-invitations')
+            .then((response) => {
+              this.pendingInvitations = response.data.invitations
+              resolve(response)
+            })
+            .catch((err) => {
+              handleError(err)
+              reject(err)
+            })
+        })
+      },
+
+      inviteMember(data) {
+        return new Promise((resolve, reject) => {
+          http
+            .post('/api/v1/company-invitations', data)
+            .then((response) => {
+              const notificationStore = useNotificationStore()
+              notificationStore.showNotification({
+                type: 'success',
+                message: global.t('members.invited_message'),
+              })
+              this.fetchPendingInvitations()
+              resolve(response)
+            })
+            .catch((err) => {
+              handleError(err)
+              reject(err)
+            })
+        })
+      },
+
+      cancelInvitation(id) {
+        return new Promise((resolve, reject) => {
+          http
+            .delete(`/api/v1/company-invitations/${id}`)
+            .then((response) => {
+              const notificationStore = useNotificationStore()
+              notificationStore.showNotification({
+                type: 'success',
+                message: global.t('members.invitation_cancelled'),
+              })
+              this.pendingInvitations = this.pendingInvitations.filter(
+                (inv) => inv.id !== id
+              )
+              resolve(response)
+            })
+            .catch((err) => {
+              handleError(err)
+              reject(err)
+            })
+        })
       },
     },
   })()

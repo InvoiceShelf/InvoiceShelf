@@ -132,6 +132,58 @@
             </div>
           </div>
         </div>
+        <!-- Pending Invitations -->
+        <div
+          v-if="invitationStore.pendingInvitations.length > 0"
+          class="border-t border-gray-100 p-2"
+        >
+          <label
+            class="
+              block px-1 pt-1 pb-2 text-xs font-semibold
+              leading-tight text-gray-400 uppercase
+            "
+          >
+            {{ $t('members.pending_invitations') }}
+          </label>
+          <div
+            v-for="invitation in invitationStore.pendingInvitations"
+            :key="invitation.id"
+            class="p-2 px-3 rounded-md opacity-60"
+          >
+            <div class="flex items-center justify-between">
+              <div class="flex items-center">
+                <span
+                  class="
+                    flex items-center justify-center mr-3
+                    overflow-hidden text-xs font-semibold
+                    bg-gray-200 rounded-md w-9 h-9 text-gray-400
+                  "
+                >
+                  {{ initGenerator(invitation.company?.name || '?') }}
+                </span>
+                <div class="flex flex-col">
+                  <span class="text-sm text-gray-500">{{ invitation.company?.name }}</span>
+                  <span class="text-xs text-gray-400">{{ invitation.role?.title }}</span>
+                </div>
+              </div>
+              <div class="flex space-x-1">
+                <button
+                  class="text-xs px-2 py-1 rounded bg-primary-500 text-white hover:bg-primary-600"
+                  @click.stop="acceptInvitation(invitation.token)"
+                >
+                  {{ $t('general.accept') }}
+                </button>
+                <button
+                  class="text-xs px-2 py-1 rounded bg-gray-200 text-gray-600 hover:bg-gray-300"
+                  @click.stop="declineInvitation(invitation.token)"
+                >
+                  {{ $t('general.decline') }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div
           v-if="userStore.currentUser.is_owner"
           class="
@@ -167,6 +219,7 @@ import { useModalStore } from '../stores/modal'
 import { useI18n } from 'vue-i18n'
 import { useGlobalStore } from '@/scripts/admin//stores/global'
 import { useUserStore } from '@/scripts/admin/stores/user'
+import { useInvitationStore } from '@/scripts/admin/stores/invitation'
 
 import CompanyModal from '@/scripts/admin/components/modal-components/CompanyModal.vue'
 import abilities from '@/scripts/admin/stub/abilities'
@@ -178,6 +231,7 @@ const router = useRouter()
 const globalStore = useGlobalStore()
 const { t } = useI18n()
 const userStore = useUserStore()
+const invitationStore = useInvitationStore()
 const isShow = ref(false)
 const name = ref('')
 const companySwitchBar = ref(null)
@@ -212,5 +266,13 @@ async function changeCompany(company) {
   router.push('/admin/dashboard')
   await globalStore.setIsAppLoaded(false)
   await globalStore.bootstrap()
+}
+
+async function acceptInvitation(token) {
+  await invitationStore.accept(token)
+}
+
+async function declineInvitation(token) {
+  await invitationStore.decline(token)
 }
 </script>

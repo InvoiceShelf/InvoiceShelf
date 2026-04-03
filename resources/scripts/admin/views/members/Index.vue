@@ -27,7 +27,22 @@
 
           <BaseButton
             v-if="userStore.currentUser.is_owner"
-            @click="$router.push('users/create')"
+            variant="primary-outline"
+            @click="showInviteModal = true"
+          >
+            <template #left="slotProps">
+              <BaseIcon
+                name="EnvelopeIcon"
+                :class="slotProps.class"
+                aria-hidden="true"
+              />
+            </template>
+            {{ $t('members.invite_member') }}
+          </BaseButton>
+
+          <BaseButton
+            v-if="userStore.currentUser.is_owner"
+            @click="$router.push('members/create')"
           >
             <template #left="slotProps">
               <BaseIcon
@@ -36,7 +51,7 @@
                 aria-hidden="true"
               />
             </template>
-            {{ $t('members.add_user') }}
+            {{ $t('members.add_member') }}
           </BaseButton>
         </div>
       </template>
@@ -181,6 +196,47 @@
         </template>
       </BaseTable>
     </div>
+
+    <!-- Pending Invitations Section -->
+    <div
+      v-if="userStore.currentUser.is_owner && usersStore.pendingInvitations.length > 0"
+      class="mt-8"
+    >
+      <h3 class="text-lg font-medium text-gray-900 mb-4">
+        {{ $t('members.pending_invitations') }}
+      </h3>
+      <BaseCard>
+        <div class="divide-y divide-gray-200">
+          <div
+            v-for="invitation in usersStore.pendingInvitations"
+            :key="invitation.id"
+            class="flex items-center justify-between px-6 py-4"
+          >
+            <div>
+              <p class="text-sm font-medium text-gray-900">
+                {{ invitation.email }}
+              </p>
+              <p class="text-sm text-gray-500">
+                {{ invitation.role?.title }} &middot;
+                {{ $t('members.invited_by') }}: {{ invitation.invited_by?.name }}
+              </p>
+            </div>
+            <BaseButton
+              variant="danger"
+              size="sm"
+              @click="cancelInvitation(invitation.id)"
+            >
+              {{ $t('members.cancel_invitation') }}
+            </BaseButton>
+          </div>
+        </div>
+      </BaseCard>
+    </div>
+
+    <InviteMemberModal
+      :show="showInviteModal"
+      @close="showInviteModal = false"
+    />
   </BasePage>
 </template>
 
@@ -194,6 +250,7 @@ import { useDialogStore } from '@/scripts/stores/dialog'
 import { useUserStore } from '@/scripts/admin/stores/user'
 import AstronautIcon from '@/scripts/components/icons/empty/AstronautIcon.vue'
 import UserDropdown from '@/scripts/admin/components/dropdowns/MemberIndexDropdown.vue'
+import InviteMemberModal from '@/scripts/admin/components/modal-components/InviteMemberModal.vue'
 import abilities from '@/scripts/admin/stub/abilities'
 
 const notificationStore = useNotificationStore()
@@ -204,6 +261,7 @@ const userStore = useUserStore()
 const router = useRouter()
 
 let showFilters = ref(false)
+let showInviteModal = ref(false)
 let isFetchingInitialData = ref(true)
 let id = ref(null)
 let sortedBy = ref('created_at')
@@ -277,7 +335,12 @@ watch(
 onMounted(() => {
   usersStore.fetchUsers()
   usersStore.fetchRoles()
+  usersStore.fetchPendingInvitations()
 })
+
+function cancelInvitation(id) {
+  usersStore.cancelInvitation(id)
+}
 
 onUnmounted(() => {
   if (usersStore.selectAllField) {

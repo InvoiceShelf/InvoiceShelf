@@ -70,6 +70,13 @@ export const useGlobalStore = (useWindow = false) => {
               moduleStore.apiToken = response.data.global_settings.api_token
               moduleStore.enableModules = response.data.modules
 
+              // invitation store
+              if (response.data.pending_invitations) {
+                const { useInvitationStore } = await import('@/scripts/admin/stores/invitation')
+                const invitationStore = useInvitationStore()
+                invitationStore.setPendingInvitations(response.data.pending_invitations)
+              }
+
               // company store
               companyStore.companies = response.data.companies
               companyStore.selectedCompany = response.data.current_company

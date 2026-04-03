@@ -136,7 +136,16 @@ const AdminUpdateApp = () =>
 const AdminFileDisk = () =>
   import('@/scripts/admin/views/settings/FileDiskSetting.vue')
 
+const NoCompanyView = () =>
+  import('@/scripts/admin/views/NoCompanyView.vue')
+
 export default [
+  {
+    path: '/admin/no-company',
+    name: 'no.company',
+    component: NoCompanyView,
+    meta: { requiresAuth: true },
+  },
   {
     path: '/installation',
     component: LayoutInstallation,
