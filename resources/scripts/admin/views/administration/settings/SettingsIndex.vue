@@ -80,14 +80,14 @@ const menuItems = computed(() => [
     icon: 'CircleStackIcon',
   },
   {
-    title: t('settings.menu_title.update_app'),
-    link: '/admin/administration/settings/update-app',
-    icon: 'ArrowPathIcon',
-  },
-  {
     title: t('settings.menu_title.file_disk'),
     link: '/admin/administration/settings/file-disk',
     icon: 'FolderIcon',
+  },
+  {
+    title: t('settings.menu_title.update_app'),
+    link: '/admin/administration/settings/update-app',
+    icon: 'ArrowPathIcon',
   },
 ])
 

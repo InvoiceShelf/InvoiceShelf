@@ -164,6 +164,10 @@
           </router-link>
         </template>
 
+        <template #cell-role="{ row }">
+          <span>{{ row.data.roles?.length ? row.data.roles[0].title : '-' }}</span>
+        </template>
+
         <template #cell-phone="{ row }">
           <span>{{ row.data.phone ? row.data.phone : '-' }} </span>
         </template>
@@ -275,6 +279,11 @@ const userTableColumns = computed(() => {
       tdClass: 'font-medium text-gray-900',
     },
     { key: 'email', label: 'Email' },
+    {
+      key: 'role',
+      label: t('members.role'),
+      sortable: false,
+    },
     {
       key: 'phone',
       label: t('members.phone'),
