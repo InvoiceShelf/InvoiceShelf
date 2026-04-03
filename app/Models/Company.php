@@ -206,10 +206,6 @@ class Company extends Model implements HasMedia
         $paymentFromCustomerAddress = '<h3>{BILLING_ADDRESS_NAME}</h3><p>{BILLING_ADDRESS_STREET_1}</p><p>{BILLING_ADDRESS_STREET_2}</p><p>{BILLING_CITY} {BILLING_STATE} {BILLING_ZIP_CODE}</p><p>{BILLING_COUNTRY}</p><p>{BILLING_PHONE}</p>';
 
         $settings = [
-            'invoice_auto_generate' => 'YES',
-            'payment_auto_generate' => 'YES',
-            'estimate_auto_generate' => 'YES',
-            'save_pdf_to_disk' => 'NO',
             'invoice_mail_body' => $defaultInvoiceEmailBody,
             'estimate_mail_body' => $defaultEstimateEmailBody,
             'payment_mail_body' => $defaultPaymentEmailBody,
@@ -235,13 +231,9 @@ class Company extends Model implements HasMedia
             'notify_estimate_viewed' => 'NO',
             'tax_per_item' => 'NO',
             'discount_per_item' => 'NO',
-            'invoice_auto_generate' => 'YES',
             'invoice_email_attachment' => 'NO',
-            'estimate_auto_generate' => 'YES',
             'estimate_email_attachment' => 'NO',
-            'payment_auto_generate' => 'YES',
             'payment_email_attachment' => 'NO',
-            'save_pdf_to_disk' => 'NO',
             'retrospective_edits' => 'allow',
             'invoice_number_format' => '{{SERIES:INV}}{{DELIMITER:-}}{{SEQUENCE:6}}',
             'estimate_number_format' => '{{SERIES:EST}}{{DELIMITER:-}}{{SEQUENCE:6}}',
