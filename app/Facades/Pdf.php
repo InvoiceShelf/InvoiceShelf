@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Facade;
 /**
  * @method static \Psr\Http\Message\ResponseInterface loadView(string $template)
  */
-class PDF extends Facade
+class Pdf extends Facade
 {
     protected static function getFacadeAccessor()
     {

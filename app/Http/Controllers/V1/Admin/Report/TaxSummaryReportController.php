@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\V1\Admin\Report;
 
+use App\Facades\Pdf;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\CompanySetting;
@@ -11,7 +12,6 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
-use PDF;
 
 class TaxSummaryReportController extends Controller
 {
@@ -73,7 +73,7 @@ class TaxSummaryReportController extends Controller
             'currency' => $currency,
         ]);
 
-        $pdf = PDF::loadView('app.pdf.reports.tax-summary');
+        $pdf = Pdf::loadView('app.pdf.reports.tax-summary');
 
         if ($request->has('preview')) {
             return view('app.pdf.reports.tax-summary');

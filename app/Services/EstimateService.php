@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App;
 use App\Facades\Hashids;
-use App\Facades\PDF;
+use App\Facades\Pdf;
 use App\Mail\SendEstimateMail;
 use App\Models\Company;
 use App\Models\CompanySetting;
@@ -197,6 +197,6 @@ class EstimateService
             return view($templatePath);
         }
 
-        return PDF::loadView($templatePath);
+        return Pdf::loadView($templatePath);
     }
 }

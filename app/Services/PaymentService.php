@@ -3,13 +3,13 @@
 namespace App\Services;
 
 use App\Facades\Hashids;
+use App\Facades\Pdf;
 use App\Mail\SendPaymentMail;
 use App\Models\Company;
 use App\Models\CompanySetting;
 use App\Models\ExchangeRateLog;
 use App\Models\Invoice;
 use App\Models\Payment;
-use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -184,7 +184,7 @@ class PaymentService
             return view('app.pdf.payment.payment');
         }
 
-        return PDF::loadView('app.pdf.payment.payment');
+        return Pdf::loadView('app.pdf.payment.payment');
     }
 
     public function generateFromTransaction($transaction): Payment

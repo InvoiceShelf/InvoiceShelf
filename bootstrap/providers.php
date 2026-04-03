@@ -3,7 +3,7 @@
 use App\Providers\AppConfigProvider;
 use App\Providers\AppServiceProvider;
 use App\Providers\DropboxServiceProvider;
-use App\Providers\PDFServiceProvider;
+use App\Providers\PdfServiceProvider;
 use App\Providers\RouteServiceProvider;
 use App\Providers\ViewServiceProvider;
 use App\Services\Hashids\HashidsServiceProvider;
@@ -14,6 +14,6 @@ return [
     RouteServiceProvider::class,
     DropboxServiceProvider::class,
     ViewServiceProvider::class,
-    PDFServiceProvider::class,
+    PdfServiceProvider::class,
     AppConfigProvider::class,
 ];
