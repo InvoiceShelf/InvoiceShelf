@@ -28,6 +28,13 @@ class CompanyInvitationMail extends Mailable
 
     public function content(): Content
     {
+        $token = $this->invitation->token;
+        $hasAccount = $this->invitation->user_id !== null;
+
+        $acceptUrl = $hasAccount
+            ? url("/login?invitation={$token}")
+            : url("/register?invitation={$token}");
+
         return new Content(
             markdown: 'emails.company-invitation',
             with: [
@@ -35,8 +42,9 @@ class CompanyInvitationMail extends Mailable
                 'companyName' => $this->invitation->company->name,
                 'roleName' => $this->invitation->role->title,
                 'inviterName' => $this->invitation->invitedBy->name,
-                'acceptUrl' => url("/invitations/{$this->invitation->token}/accept"),
-                'declineUrl' => url("/invitations/{$this->invitation->token}/decline"),
+                'acceptUrl' => $acceptUrl,
+                'declineUrl' => url("/invitations/{$token}/decline"),
+                'hasAccount' => $hasAccount,
             ],
         );
     }

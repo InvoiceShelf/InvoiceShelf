@@ -15,6 +15,7 @@ use App\Http\Controllers\Modules\ScriptController;
 use App\Http\Controllers\Modules\StyleController;
 use App\Http\Controllers\Pdf\DocumentPdfController;
 use App\Models\Company;
+use App\Models\CompanyInvitation;
 use Illuminate\Support\Facades\Route;
 
 // Module Asset Includes
@@ -75,6 +76,21 @@ Route::middleware('auth:sanctum')->prefix('reports')->group(function () {
 
 // PDF Endpoints
 // ----------------------------------------------
+
+// Invitation email link handlers
+// -------------------------------------------------
+
+Route::get('/invitations/{token}/decline', function (string $token) {
+    $invitation = CompanyInvitation::where('token', $token)->pending()->first();
+
+    if (! $invitation) {
+        return view('app')->with(['message' => 'Invitation not found or already expired.']);
+    }
+
+    $invitation->update(['status' => CompanyInvitation::STATUS_DECLINED]);
+
+    return view('app')->with(['message' => 'Invitation declined.']);
+});
 
 Route::middleware('pdf-auth')->group(function () {
 

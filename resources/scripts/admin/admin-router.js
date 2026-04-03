@@ -138,8 +138,16 @@ const AdminFileDisk = () =>
 
 const NoCompanyView = () =>
   import('@/scripts/admin/views/NoCompanyView.vue')
+const RegisterWithInvitation = () =>
+  import('@/scripts/admin/views/auth/RegisterWithInvitation.vue')
 
 export default [
+  {
+    path: '/register',
+    name: 'register',
+    component: RegisterWithInvitation,
+    meta: { requiresAuth: false },
+  },
   {
     path: '/admin/no-company',
     name: 'no.company',

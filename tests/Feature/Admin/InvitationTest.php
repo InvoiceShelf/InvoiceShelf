@@ -225,3 +225,89 @@ test('bootstrap includes pending invitations', function () {
     $response->assertOk();
     $response->assertJsonStructure(['pending_invitations']);
 });
+
+test('get invitation details by token', function () {
+    Mail::fake();
+
+    $company = Company::first();
+    $role = Role::where('name', 'owner')->first();
+
+    // Create invitation for non-existent user
+    $invitation = CompanyInvitation::create([
+        'company_id' => $company->id,
+        'user_id' => null,
+        'email' => 'newperson@example.com',
+        'role_id' => $role->id,
+        'token' => 'test-details-token',
+        'status' => 'pending',
+        'invited_by' => User::first()->id,
+        'expires_at' => now()->addDays(7),
+    ]);
+
+    $response = getJson("api/v1/invitations/{$invitation->token}/details");
+
+    $response->assertOk();
+    $response->assertJsonPath('email', 'newperson@example.com');
+    $response->assertJsonPath('company_name', $company->name);
+});
+
+test('register with invitation creates account and accepts', function () {
+    $company = Company::first();
+    $role = Role::where('name', 'owner')->first();
+
+    $invitation = CompanyInvitation::create([
+        'company_id' => $company->id,
+        'user_id' => null,
+        'email' => 'register@example.com',
+        'role_id' => $role->id,
+        'token' => 'test-register-token',
+        'status' => 'pending',
+        'invited_by' => User::first()->id,
+        'expires_at' => now()->addDays(7),
+    ]);
+
+    $response = postJson('api/v1/auth/register-with-invitation', [
+        'name' => 'New User',
+        'email' => 'register@example.com',
+        'password' => 'password123',
+        'password_confirmation' => 'password123',
+        'invitation_token' => 'test-register-token',
+    ]);
+
+    $response->assertOk();
+    $response->assertJsonStructure(['type', 'token']);
+
+    $newUser = User::where('email', 'register@example.com')->first();
+    $this->assertNotNull($newUser);
+    $this->assertTrue($newUser->hasCompany($company->id));
+    $this->assertDatabaseHas('company_invitations', [
+        'token' => 'test-register-token',
+        'status' => 'accepted',
+    ]);
+});
+
+test('cannot register with mismatched email', function () {
+    $company = Company::first();
+    $role = Role::where('name', 'owner')->first();
+
+    CompanyInvitation::create([
+        'company_id' => $company->id,
+        'user_id' => null,
+        'email' => 'correct@example.com',
+        'role_id' => $role->id,
+        'token' => 'test-mismatch-token',
+        'status' => 'pending',
+        'invited_by' => User::first()->id,
+        'expires_at' => now()->addDays(7),
+    ]);
+
+    $response = postJson('api/v1/auth/register-with-invitation', [
+        'name' => 'Wrong User',
+        'email' => 'wrong@example.com',
+        'password' => 'password123',
+        'password_confirmation' => 'password123',
+        'invitation_token' => 'test-mismatch-token',
+    ]);
+
+    $response->assertStatus(422);
+});

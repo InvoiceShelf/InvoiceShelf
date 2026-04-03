@@ -3,8 +3,14 @@
 
 **{{ $inviterName }}** has invited you to join **{{ $companyName }}** as **{{ $roleName }}**.
 
+@if($hasAccount)
+Log in to accept the invitation:
+@else
+Create your account to get started:
+@endif
+
 <x-mail::button :url="$acceptUrl">
-Accept Invitation
+{{ $hasAccount ? 'Log In & Accept' : 'Create Account & Accept' }}
 </x-mail::button>
 
 If you don't want to join, you can <a href="{{ $declineUrl }}">decline this invitation</a>.

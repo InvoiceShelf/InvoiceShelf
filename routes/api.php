@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\AppVersionController;
 use App\Http\Controllers\Company\Auth\AuthController;
 use App\Http\Controllers\Company\Auth\ForgotPasswordController;
+use App\Http\Controllers\Company\Auth\InvitationRegistrationController;
 use App\Http\Controllers\Company\Auth\ResetPasswordController;
 use App\Http\Controllers\Company\Customer\CustomersController;
 use App\Http\Controllers\Company\Customer\CustomerStatsController;
@@ -114,6 +115,12 @@ Route::prefix('/v1')->group(function () {
         // handle reset password form process
         Route::post('reset/password', [ResetPasswordController::class, 'reset']);
     });
+
+    // Invitation Registration (public)
+    // ----------------------------------
+
+    Route::get('/invitations/{token}/details', [InvitationRegistrationController::class, 'details']);
+    Route::post('/auth/register-with-invitation', [InvitationRegistrationController::class, 'register']);
 
     // Countries
     // ----------------------------------
