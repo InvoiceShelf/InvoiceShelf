@@ -100,7 +100,11 @@ class InvoicesController extends Controller
     {
         $this->authorize('delete multiple invoices');
 
-        Invoice::deleteInvoices($request->ids);
+        $ids = Invoice::whereCompany()
+            ->whereIn('id', $request->ids)
+            ->pluck('id');
+
+        Invoice::deleteInvoices($ids);
 
         return response()->json([
             'success' => true,

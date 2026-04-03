@@ -73,7 +73,11 @@ class PaymentsController extends Controller
     {
         $this->authorize('delete multiple payments');
 
-        Payment::deletePayments($request->ids);
+        $ids = Payment::whereCompany()
+            ->whereIn('id', $request->ids)
+            ->pluck('id');
+
+        Payment::deletePayments($ids);
 
         return response()->json([
             'success' => true,

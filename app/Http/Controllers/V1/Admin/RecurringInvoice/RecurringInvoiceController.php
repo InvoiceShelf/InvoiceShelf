@@ -84,7 +84,11 @@ class RecurringInvoiceController extends Controller
     {
         $this->authorize('delete multiple recurring invoices');
 
-        RecurringInvoice::deleteRecurringInvoice($request->ids);
+        $ids = RecurringInvoice::whereCompany()
+            ->whereIn('id', $request->ids)
+            ->pluck('id');
+
+        RecurringInvoice::deleteRecurringInvoice($ids);
 
         return response()->json([
             'success' => true,
