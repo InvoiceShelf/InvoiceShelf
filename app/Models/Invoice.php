@@ -157,7 +157,7 @@ class Invoice extends Model implements HasMedia
         return $allowed;
     }
 
-    public function getPreviousStatus()
+    public function getPreviousStatus(): string
     {
         if ($this->viewed) {
             return self::STATUS_VIEWED;
@@ -319,12 +319,12 @@ class Invoice extends Model implements HasMedia
         return $query->paginate($limit);
     }
 
-    public function getPDFData()
+    public function getPDFData(): mixed
     {
         return app(InvoiceService::class)->getPdfData($this);
     }
 
-    public function getEmailAttachmentSetting()
+    public function getEmailAttachmentSetting(): bool
     {
         $invoiceAsAttachment = CompanySetting::getSetting('invoice_email_attachment', $this->company_id);
 
@@ -335,7 +335,7 @@ class Invoice extends Model implements HasMedia
         return true;
     }
 
-    public function getCompanyAddress()
+    public function getCompanyAddress(): string|false
     {
         if ($this->company && (! $this->company->address()->exists())) {
             return false;
@@ -346,7 +346,7 @@ class Invoice extends Model implements HasMedia
         return $this->getFormattedString($format);
     }
 
-    public function getCustomerShippingAddress()
+    public function getCustomerShippingAddress(): string|false
     {
         if ($this->customer && (! $this->customer->shippingAddress()->exists())) {
             return false;
@@ -357,7 +357,7 @@ class Invoice extends Model implements HasMedia
         return $this->getFormattedString($format);
     }
 
-    public function getCustomerBillingAddress()
+    public function getCustomerBillingAddress(): string|false
     {
         if ($this->customer && (! $this->customer->billingAddress()->exists())) {
             return false;
@@ -368,12 +368,12 @@ class Invoice extends Model implements HasMedia
         return $this->getFormattedString($format);
     }
 
-    public function getNotes()
+    public function getNotes(): string
     {
         return PdfHtmlSanitizer::sanitize($this->getFormattedString($this->notes));
     }
 
-    public function getEmailString($body)
+    public function getEmailString(string $body): string
     {
         $values = array_merge($this->getFieldsArray(), $this->getExtraFields());
 
@@ -382,7 +382,7 @@ class Invoice extends Model implements HasMedia
         return preg_replace('/{(.*?)}/', '', $body);
     }
 
-    public function getExtraFields()
+    public function getExtraFields(): array
     {
         return [
             '{INVOICE_DATE}' => $this->formattedInvoiceDate,
@@ -392,7 +392,10 @@ class Invoice extends Model implements HasMedia
         ];
     }
 
-    public function addInvoicePayment($amount)
+    /**
+     * Add an amount to the invoice's due balance and recalculate the paid status.
+     */
+    public function addInvoicePayment(int $amount): void
     {
         $this->due_amount += $amount;
         $this->base_due_amount = $this->due_amount * $this->exchange_rate;
@@ -400,7 +403,10 @@ class Invoice extends Model implements HasMedia
         $this->changeInvoiceStatus($this->due_amount);
     }
 
-    public function subtractInvoicePayment($amount)
+    /**
+     * Subtract an amount from the invoice's due balance and recalculate the paid status.
+     */
+    public function subtractInvoicePayment(int $amount): void
     {
         $this->due_amount -= $amount;
         $this->base_due_amount = $this->due_amount * $this->exchange_rate;
@@ -409,11 +415,12 @@ class Invoice extends Model implements HasMedia
     }
 
     /**
-     * Set the invoice status from amount.
+     * Determine the invoice status and paid_status based on the remaining due amount.
      *
-     * @return array
+     * Returns an empty array for negative amounts, marks as paid when zero,
+     * unpaid when equal to total, or partially paid otherwise.
      */
-    public function getInvoiceStatusByAmount($amount)
+    public function getInvoiceStatusByAmount(int $amount): array
     {
         if ($amount < 0) {
             return [];
@@ -441,11 +448,9 @@ class Invoice extends Model implements HasMedia
     }
 
     /**
-     * Changes the invoice status right away
-     *
-     * @return string[]|void
+     * Persist the invoice status change immediately based on the given due amount.
      */
-    public function changeInvoiceStatus($amount)
+    public function changeInvoiceStatus(int $amount): void
     {
         $status = $this->getInvoiceStatusByAmount($amount);
         if (! empty($status)) {

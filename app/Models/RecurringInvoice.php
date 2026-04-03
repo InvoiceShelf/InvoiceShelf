@@ -190,7 +190,7 @@ class RecurringInvoice extends Model
         }
     }
 
-    public function markStatusAsCompleted()
+    public function markStatusAsCompleted(): void
     {
         if ($this->status == $this->status) {
             $this->status = self::COMPLETED;
@@ -198,14 +198,14 @@ class RecurringInvoice extends Model
         }
     }
 
-    public static function getNextInvoiceDate($frequency, $starts_at)
+    public static function getNextInvoiceDate(string $frequency, string $starts_at): string
     {
         $cron = new Cron\CronExpression($frequency);
 
         return $cron->getNextRunDate($starts_at)->format('Y-m-d H:i:s');
     }
 
-    public function updateNextInvoiceDate()
+    public function updateNextInvoiceDate(): void
     {
         $nextInvoiceAt = self::getNextInvoiceDate($this->frequency, $this->starts_at);
 

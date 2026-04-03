@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
 use Laravel\Sanctum\HasApiTokens;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
@@ -57,16 +58,13 @@ class User extends Authenticatable implements HasMedia
 
     /**
      * Find the user instance for the given username.
-     *
-     * @param  string  $username
-     * @return \App\User
      */
-    public function findForPassport($username)
+    public function findForPassport(string $username): ?self
     {
         return $this->where('email', $username)->first();
     }
 
-    public function setPasswordAttribute($value)
+    public function setPasswordAttribute(string $value): void
     {
         if ($value != null) {
             $this->attributes['password'] = bcrypt($value);
@@ -78,12 +76,12 @@ class User extends Authenticatable implements HasMedia
         return $this->role === 'super admin';
     }
 
-    public function isSuperAdminOrAdmin()
+    public function isSuperAdminOrAdmin(): bool
     {
         return ($this->role == 'super admin') || ($this->role == 'admin');
     }
 
-    public static function login($request)
+    public static function login(object $request): bool
     {
         $remember = $request->remember;
         $email = $request->email;
@@ -296,7 +294,10 @@ class User extends Authenticatable implements HasMedia
         return 0;
     }
 
-    public function setSettings($settings)
+    /**
+     * Bulk upsert user settings, creating or updating each key-value pair.
+     */
+    public function setSettings(array $settings): void
     {
         foreach ($settings as $key => $value) {
             $this->settings()->updateOrCreate(
@@ -311,28 +312,31 @@ class User extends Authenticatable implements HasMedia
         }
     }
 
-    public function hasCompany($company_id)
+    public function hasCompany(int $company_id): bool
     {
         $companies = $this->companies()->pluck('company_id')->toArray();
 
         return in_array($company_id, $companies);
     }
 
-    public function getAllSettings()
+    public function getAllSettings(): Collection
     {
         return $this->settings()->get()->mapWithKeys(function ($item) {
             return [$item['key'] => $item['value']];
         });
     }
 
-    public function getSettings($settings)
+    public function getSettings(array $settings): Collection
     {
         return $this->settings()->whereIn('key', $settings)->get()->mapWithKeys(function ($item) {
             return [$item['key'] => $item['value']];
         });
     }
 
-    public function isOwner()
+    /**
+     * Determine whether the user is the owner of the current company.
+     */
+    public function isOwner(): bool
     {
         if (Schema::hasColumn('companies', 'owner_id')) {
             $company = Company::find(request()->header('company'));
@@ -347,7 +351,11 @@ class User extends Authenticatable implements HasMedia
         return false;
     }
 
-    public function checkAccess($data)
+    /**
+     * Check whether the user has the required permissions based on ability data,
+     * considering super-admin status, company ownership, and Bouncer abilities.
+     */
+    public function checkAccess(object $data): bool
     {
         if (! empty($data->data['super_admin_only']) && $data->data['super_admin_only']) {
             return $this->isSuperAdmin();

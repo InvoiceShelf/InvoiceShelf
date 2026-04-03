@@ -119,7 +119,7 @@ class Customer extends Authenticatable implements HasMedia
         return $this->hasOne(Address::class)->where('type', Address::SHIPPING_TYPE);
     }
 
-    public function sendPasswordResetNotification($token)
+    public function sendPasswordResetNotification(mixed $token): void
     {
         $this->notify(new CustomerMailResetPasswordNotification($token));
     }

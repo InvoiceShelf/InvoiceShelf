@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class FileDisk extends Model
 {
@@ -25,7 +26,7 @@ class FileDisk extends Model
         ];
     }
 
-    public function setCredentialsAttribute($value)
+    public function setCredentialsAttribute(mixed $value): void
     {
         $this->attributes['credentials'] = json_encode($value);
     }
@@ -80,7 +81,10 @@ class FileDisk extends Model
         }
     }
 
-    public function setConfig()
+    /**
+     * Apply this disk's credentials to the filesystem configuration at runtime.
+     */
+    public function setConfig(): void
     {
         $driver = $this->driver;
 
@@ -89,12 +93,18 @@ class FileDisk extends Model
         self::setFilesystem($credentials, $driver);
     }
 
-    public function setAsDefault()
+    /**
+     * Determine whether this disk is configured as the default storage disk.
+     */
+    public function setAsDefault(): bool
     {
         return $this->set_as_default;
     }
 
-    public static function setFilesystem($credentials, $driver)
+    /**
+     * Register a dynamic filesystem disk in the runtime configuration using the given credentials.
+     */
+    public static function setFilesystem(Collection $credentials, string $driver): void
     {
         $prefix = env('DYNAMIC_DISK_PREFIX', 'temp_');
 
@@ -111,12 +121,12 @@ class FileDisk extends Model
         config(['filesystems.disks.'.$prefix.$driver => $disks]);
     }
 
-    public function isSystem()
+    public function isSystem(): bool
     {
         return $this->type === self::DISK_TYPE_SYSTEM;
     }
 
-    public function isRemote()
+    public function isRemote(): bool
     {
         return $this->type === self::DISK_TYPE_REMOTE;
     }

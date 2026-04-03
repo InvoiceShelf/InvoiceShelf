@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Collection;
 
 class CompanySetting extends Model
 {
@@ -22,7 +23,10 @@ class CompanySetting extends Model
         $query->where('company_id', $company_id);
     }
 
-    public static function setSettings($settings, $company_id)
+    /**
+     * Bulk create or update settings for a specific company.
+     */
+    public static function setSettings(array $settings, mixed $company_id): void
     {
         foreach ($settings as $key => $value) {
             self::updateOrCreate(
@@ -39,14 +43,20 @@ class CompanySetting extends Model
         }
     }
 
-    public static function getAllSettings($company_id)
+    /**
+     * Retrieve all settings for a company as a key-value collection.
+     */
+    public static function getAllSettings(mixed $company_id): Collection
     {
         return static::whereCompany($company_id)->get()->mapWithKeys(function ($item) {
             return [$item['option'] => $item['value']];
         });
     }
 
-    public static function getSettings($settings, $company_id)
+    /**
+     * Retrieve specific settings for a company as a key-value collection.
+     */
+    public static function getSettings(array $settings, mixed $company_id): Collection
     {
         return static::whereIn('option', $settings)->whereCompany($company_id)
             ->get()->mapWithKeys(function ($item) {
@@ -54,7 +64,10 @@ class CompanySetting extends Model
             });
     }
 
-    public static function getSetting($key, $company_id)
+    /**
+     * Retrieve a single company setting value by key, or null if not found.
+     */
+    public static function getSetting(string $key, mixed $company_id): mixed
     {
         $setting = static::whereOption($key)->whereCompany($company_id)->first();
 

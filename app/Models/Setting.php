@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class Setting extends Model
 {
@@ -11,7 +12,10 @@ class Setting extends Model
 
     protected $fillable = ['option', 'value'];
 
-    public static function setSetting($key, $setting)
+    /**
+     * Create or update a single application setting by key.
+     */
+    public static function setSetting(string $key, mixed $setting): void
     {
         $old = self::whereOption($key)->first();
 
@@ -28,7 +32,10 @@ class Setting extends Model
         $set->save();
     }
 
-    public static function setSettings($settings)
+    /**
+     * Bulk create or update application settings from a key-value array.
+     */
+    public static function setSettings(array $settings): void
     {
         foreach ($settings as $key => $value) {
             self::updateOrCreate(
@@ -43,7 +50,10 @@ class Setting extends Model
         }
     }
 
-    public static function getSetting($key)
+    /**
+     * Retrieve a single setting value by key, or null if not found.
+     */
+    public static function getSetting(string $key): mixed
     {
         $setting = static::whereOption($key)->first();
 
@@ -54,7 +64,10 @@ class Setting extends Model
         }
     }
 
-    public static function getSettings($settings)
+    /**
+     * Retrieve multiple settings as a key-value collection.
+     */
+    public static function getSettings(array $settings): Collection
     {
         return static::whereIn('option', $settings)
             ->get()->mapWithKeys(function ($item) {

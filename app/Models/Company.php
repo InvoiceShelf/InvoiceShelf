@@ -152,7 +152,11 @@ class Company extends Model implements HasMedia
         return $this->belongsToMany(User::class, 'user_company', 'company_id', 'user_id');
     }
 
-    public function hasTransactions()
+    /**
+     * Check whether the company has any business data such as customers,
+     * items, invoices, estimates, expenses, payments, or recurring invoices.
+     */
+    public function hasTransactions(): bool
     {
         if (
             $this->customers()->exists() ||

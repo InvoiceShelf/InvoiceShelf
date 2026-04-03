@@ -213,12 +213,12 @@ class Estimate extends Model implements HasMedia
         return $query->paginate($limit);
     }
 
-    public function getPDFData()
+    public function getPDFData(): mixed
     {
         return app(EstimateService::class)->getPdfData($this);
     }
 
-    public function getCompanyAddress()
+    public function getCompanyAddress(): string|false
     {
         if ($this->company && (! $this->company->address()->exists())) {
             return false;
@@ -229,7 +229,7 @@ class Estimate extends Model implements HasMedia
         return $this->getFormattedString($format);
     }
 
-    public function getCustomerShippingAddress()
+    public function getCustomerShippingAddress(): string|false
     {
         if ($this->customer && (! $this->customer->shippingAddress()->exists())) {
             return false;
@@ -240,7 +240,7 @@ class Estimate extends Model implements HasMedia
         return $this->getFormattedString($format);
     }
 
-    public function getCustomerBillingAddress()
+    public function getCustomerBillingAddress(): string|false
     {
         if ($this->customer && (! $this->customer->billingAddress()->exists())) {
             return false;
@@ -251,12 +251,12 @@ class Estimate extends Model implements HasMedia
         return $this->getFormattedString($format);
     }
 
-    public function getNotes()
+    public function getNotes(): string
     {
         return PdfHtmlSanitizer::sanitize($this->getFormattedString($this->notes));
     }
 
-    public function getEmailAttachmentSetting()
+    public function getEmailAttachmentSetting(): bool
     {
         $estimateAsAttachment = CompanySetting::getSetting('estimate_email_attachment', $this->company_id);
 
@@ -267,7 +267,7 @@ class Estimate extends Model implements HasMedia
         return true;
     }
 
-    public function getEmailBody($body)
+    public function getEmailBody(string $body): string
     {
         $values = array_merge($this->getFieldsArray(), $this->getExtraFields());
 
@@ -276,7 +276,7 @@ class Estimate extends Model implements HasMedia
         return preg_replace('/{(.*?)}/', '', $body);
     }
 
-    public function getExtraFields()
+    public function getExtraFields(): array
     {
         return [
             '{ESTIMATE_DATE}' => $this->formattedEstimateDate,
@@ -286,7 +286,12 @@ class Estimate extends Model implements HasMedia
         ];
     }
 
-    public function getInvoiceTemplateName()
+    /**
+     * Map the estimate's template name to the corresponding invoice template name.
+     *
+     * Falls back to 'invoice1' if the mapped name does not exist in available templates.
+     */
+    public function getInvoiceTemplateName(): string
     {
         $templateName = Str::replace('estimate', 'invoice', $this->template_name);
 
@@ -303,7 +308,13 @@ class Estimate extends Model implements HasMedia
         return $templateName;
     }
 
-    public function checkForEstimateConvertAction()
+    /**
+     * Handle the post-conversion action for this estimate based on company settings.
+     *
+     * Either deletes the estimate or marks it as accepted, depending on the
+     * 'estimate_convert_action' company setting.
+     */
+    public function checkForEstimateConvertAction(): bool
     {
         $convertEstimateAction = CompanySetting::getSetting(
             'estimate_convert_action',

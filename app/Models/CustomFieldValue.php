@@ -24,7 +24,7 @@ class CustomFieldValue extends Model
         'defaultAnswer',
     ];
 
-    public function setTimeAnswerAttribute($value)
+    public function setTimeAnswerAttribute(mixed $value): void
     {
         if ($value && $value != null) {
             $this->attributes['time_answer'] = date('H:i:s', strtotime($value));

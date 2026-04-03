@@ -18,7 +18,11 @@ class EmailLog extends Model
         return $this->morphTo();
     }
 
-    public function isExpired()
+    /**
+     * Check if the email log's public link has expired based on the owning
+     * company's link expiry settings (link_expiry_days and automatically_expire_public_links).
+     */
+    public function isExpired(): bool
     {
         $linkExpiryDays = (int) CompanySetting::getSetting('link_expiry_days', $this->mailable()->get()->toArray()[0]['company_id']);
         $checkExpiryLinks = CompanySetting::getSetting('automatically_expire_public_links', $this->mailable()->get()->toArray()[0]['company_id']);

@@ -31,7 +31,11 @@ class ExchangeRateLog extends Model
         return $this->belongsTo(Company::class);
     }
 
-    public static function addExchangeRateLog($model)
+    /**
+     * Create an exchange rate log entry from a document model (invoice, estimate, etc.)
+     * using its exchange rate, currency, and the company's default currency setting.
+     */
+    public static function addExchangeRateLog(mixed $model): self
     {
         $data = [
             'exchange_rate' => $model->exchange_rate,

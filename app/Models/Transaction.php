@@ -39,7 +39,11 @@ class Transaction extends Model
         return $this->belongsTo(Company::class);
     }
 
-    public function isExpired()
+    /**
+     * Check if a completed transaction's public link has expired based on the
+     * company's link expiry settings (link_expiry_days and automatically_expire_public_links).
+     */
+    public function isExpired(): bool
     {
         $linkExpiryDays = (int) CompanySetting::getSetting('link_expiry_days', $this->company_id);
         $checkExpiryLinks = CompanySetting::getSetting('automatically_expire_public_links', $this->company_id);

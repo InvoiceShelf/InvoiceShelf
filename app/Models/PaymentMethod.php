@@ -93,7 +93,10 @@ class PaymentMethod extends Model
         return $query->paginate($limit);
     }
 
-    public static function createPaymentMethod($request)
+    /**
+     * Create a new payment method from a validated form request.
+     */
+    public static function createPaymentMethod(mixed $request): self
     {
         $data = $request->getPaymentMethodPayload();
 
@@ -102,7 +105,10 @@ class PaymentMethod extends Model
         return $paymentMethod;
     }
 
-    public static function getSettings($id)
+    /**
+     * Retrieve the settings array for a payment method by its ID.
+     */
+    public static function getSettings(int $id): mixed
     {
         $settings = PaymentMethod::find($id)
             ->settings;

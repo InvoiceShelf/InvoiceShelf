@@ -212,12 +212,12 @@ class Payment extends Model implements HasMedia
         $query->where('payments.customer_id', $customer_id);
     }
 
-    public function getPDFData()
+    public function getPDFData(): mixed
     {
         return app(PaymentService::class)->getPdfData($this);
     }
 
-    public function getCompanyAddress()
+    public function getCompanyAddress(): string|false
     {
         if ($this->company && (! $this->company->address()->exists())) {
             return false;
@@ -228,7 +228,7 @@ class Payment extends Model implements HasMedia
         return $this->getFormattedString($format);
     }
 
-    public function getCustomerBillingAddress()
+    public function getCustomerBillingAddress(): string|false
     {
         if ($this->customer && (! $this->customer->billingAddress()->exists())) {
             return false;
@@ -239,7 +239,7 @@ class Payment extends Model implements HasMedia
         return $this->getFormattedString($format);
     }
 
-    public function getEmailAttachmentSetting()
+    public function getEmailAttachmentSetting(): bool
     {
         $paymentAsAttachment = CompanySetting::getSetting('payment_email_attachment', $this->company_id);
 
@@ -250,12 +250,12 @@ class Payment extends Model implements HasMedia
         return true;
     }
 
-    public function getNotes()
+    public function getNotes(): string
     {
         return PdfHtmlSanitizer::sanitize($this->getFormattedString($this->notes));
     }
 
-    public function getEmailBody($body)
+    public function getEmailBody(string $body): string
     {
         $values = array_merge($this->getFieldsArray(), $this->getExtraFields());
 
@@ -264,7 +264,7 @@ class Payment extends Model implements HasMedia
         return preg_replace('/{(.*?)}/', '', $body);
     }
 
-    public function getExtraFields()
+    public function getExtraFields(): array
     {
         return [
             '{PAYMENT_DATE}' => $this->formattedPaymentDate,
