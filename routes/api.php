@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Admin\Backup\BackupsController;
-use App\Http\Controllers\Admin\Backup\DownloadBackupController;
 use App\Http\Controllers\Admin\CountriesController;
 use App\Http\Controllers\Admin\CurrenciesController;
 use App\Http\Controllers\Admin\Modules\ModuleInstallationController;
@@ -327,7 +326,7 @@ Route::prefix('/v1')->group(function () {
 
             Route::apiResource('/disks', DiskController::class);
 
-            Route::get('download-backup', DownloadBackupController::class);
+            Route::get('download-backup', [BackupsController::class, 'download']);
 
             Route::get('/disk/drivers', [DiskController::class, 'getDiskDrivers']);
 

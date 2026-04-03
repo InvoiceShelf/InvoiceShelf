@@ -1,28 +1,22 @@
 <?php
 
-// Implementation taken from nova-backup-tool - https://github.com/spatie/nova-backup-tool/
-
 namespace App\Http\Controllers\Admin\Backup;
 
+use App\Http\Controllers\Controller;
 use App\Jobs\CreateBackupJob;
 use App\Models\FileDisk;
 use App\Rules\Backup\PathToZip;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
 use Spatie\Backup\BackupDestination\Backup;
 use Spatie\Backup\BackupDestination\BackupDestination;
 use Spatie\Backup\Helpers\Format;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class BackupsController extends ApiController
+class BackupsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     *
-     * @throws AuthorizationException
-     */
     public function index(Request $request): JsonResponse
     {
         $this->authorize('manage backups');
@@ -69,12 +63,6 @@ class BackupsController extends ApiController
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     *
-     * @throws AuthorizationException
-     */
     public function store(Request $request): JsonResponse
     {
         $this->authorize('manage backups');
@@ -84,15 +72,9 @@ class BackupsController extends ApiController
 
         dispatch(new CreateBackupJob($data))->onQueue(config('backup.queue.name'));
 
-        return $this->respondSuccess();
+        return response()->json(['success' => true]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     *
-     * @throws AuthorizationException
-     */
     public function destroy($disk, Request $request): JsonResponse
     {
         $this->authorize('manage backups');
@@ -110,6 +92,41 @@ class BackupsController extends ApiController
             })
             ->delete();
 
-        return $this->respondSuccess();
+        return response()->json(['success' => true]);
+    }
+
+    public function download(Request $request): Response|StreamedResponse
+    {
+        $this->authorize('manage backups');
+
+        $validated = $request->validate([
+            'path' => ['required', new PathToZip],
+        ]);
+
+        $backupDestination = BackupDestination::create(config('filesystems.default'), config('backup.backup.name'));
+
+        $backup = $backupDestination->backups()->first(function (Backup $backup) use ($validated) {
+            return $backup->path() === $validated['path'];
+        });
+
+        if (! $backup) {
+            return response('Backup not found', 422);
+        }
+
+        $fileName = pathinfo($backup->path(), PATHINFO_BASENAME);
+
+        return response()->stream(function () use ($backup) {
+            $stream = $backup->stream();
+            fpassthru($stream);
+            if (is_resource($stream)) {
+                fclose($stream);
+            }
+        }, 200, [
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Content-Type' => 'application/zip',
+            'Content-Length' => $backup->sizeInBytes(),
+            'Content-Disposition' => 'attachment; filename="'.$fileName.'"',
+            'Pragma' => 'public',
+        ]);
     }
 }
