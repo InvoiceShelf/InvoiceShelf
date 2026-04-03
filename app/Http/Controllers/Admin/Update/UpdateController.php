@@ -12,7 +12,7 @@ class UpdateController extends Controller
 {
     public function checkVersion(Request $request): JsonResponse
     {
-        $this->ensureOwner($request);
+        $this->ensureSuperAdmin();
 
         set_time_limit(600);
 
@@ -24,7 +24,7 @@ class UpdateController extends Controller
 
     public function download(Request $request): JsonResponse
     {
-        $this->ensureOwner($request);
+        $this->ensureSuperAdmin();
 
         $request->validate(['version' => 'required']);
 
@@ -36,7 +36,7 @@ class UpdateController extends Controller
 
     public function unzip(Request $request): JsonResponse
     {
-        $this->ensureOwner($request);
+        $this->ensureSuperAdmin();
 
         $request->validate(['path' => 'required']);
 
@@ -55,7 +55,7 @@ class UpdateController extends Controller
 
     public function copy(Request $request): JsonResponse
     {
-        $this->ensureOwner($request);
+        $this->ensureSuperAdmin();
 
         $request->validate(['path' => 'required']);
 
@@ -67,7 +67,7 @@ class UpdateController extends Controller
 
     public function delete(Request $request): JsonResponse
     {
-        $this->ensureOwner($request);
+        $this->ensureSuperAdmin();
 
         if (isset($request->deleted_files) && ! empty($request->deleted_files)) {
             Updater::deleteFiles($request->deleted_files);
@@ -78,7 +78,7 @@ class UpdateController extends Controller
 
     public function migrate(Request $request): JsonResponse
     {
-        $this->ensureOwner($request);
+        $this->ensureSuperAdmin();
 
         Updater::migrateUpdate();
 
@@ -87,7 +87,7 @@ class UpdateController extends Controller
 
     public function finish(Request $request): JsonResponse
     {
-        $this->ensureOwner($request);
+        $this->ensureSuperAdmin();
 
         $request->validate([
             'installed' => 'required',
@@ -97,10 +97,8 @@ class UpdateController extends Controller
         return response()->json(Updater::finishUpdate($request->installed, $request->version));
     }
 
-    private function ensureOwner(Request $request): void
+    private function ensureSuperAdmin(): void
     {
-        if (! $request->user() || ! $request->user()->isOwner()) {
-            abort(401, 'You are not allowed to update this app.');
-        }
+        $this->authorize('manage update app');
     }
 }
