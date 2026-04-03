@@ -61,10 +61,10 @@ class CompaniesController extends Controller
         $company = Company::find($request->header('company'));
         $this->authorize('transfer company ownership', $company);
 
-        if ($user->hasCompany($company->id)) {
+        if (! $user->hasCompany($company->id)) {
             return response()->json([
                 'success' => false,
-                'message' => 'User does not belongs to this company.',
+                'message' => 'User does not belong to this company.',
             ]);
         }
 
