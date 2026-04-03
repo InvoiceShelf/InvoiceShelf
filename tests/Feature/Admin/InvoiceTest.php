@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\V1\Admin\Invoice\InvoicesController;
+use App\Http\Controllers\Company\Invoice\InvoicesController;
 use App\Http\Requests\InvoicesRequest;
 use App\Mail\SendInvoiceMail;
 use App\Models\Invoice;

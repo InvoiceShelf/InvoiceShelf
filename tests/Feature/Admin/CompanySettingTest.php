@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\V1\Admin\Settings\CompanyController;
-use App\Http\Controllers\V1\Admin\Settings\UserProfileController;
+use App\Http\Controllers\Company\Settings\CompanyController;
+use App\Http\Controllers\Company\Settings\UserProfileController;
 use App\Http\Requests\CompanyRequest;
 use App\Http\Requests\ProfileRequest;
 use App\Models\Invoice;

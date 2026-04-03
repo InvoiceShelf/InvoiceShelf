@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\V1\Admin\Estimate\EstimatesController;
+use App\Http\Controllers\Company\Estimate\EstimatesController;
 use App\Http\Requests\DeleteEstimatesRequest;
 use App\Http\Requests\EstimatesRequest;
 use App\Http\Requests\SendEstimatesRequest;

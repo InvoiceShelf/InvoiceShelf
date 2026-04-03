@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\V1\Admin\Item\ItemsController;
+use App\Http\Controllers\Company\Item\ItemsController;
 use App\Http\Requests\ItemsRequest;
 use App\Models\Item;
 use App\Models\Tax;

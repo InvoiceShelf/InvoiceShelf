@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\V1\Admin\Expense\ExpensesController;
+use App\Http\Controllers\Company\Expense\ExpensesController;
 use App\Http\Requests\ExpenseRequest;
 use App\Models\Expense;
 use App\Models\User;

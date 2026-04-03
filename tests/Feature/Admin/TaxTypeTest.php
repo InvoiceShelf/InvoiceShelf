@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\V1\Admin\Settings\TaxTypesController;
+use App\Http\Controllers\Company\Settings\TaxTypesController;
 use App\Http\Requests\TaxTypeRequest;
 use App\Models\TaxType;
 use App\Models\User;

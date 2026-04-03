@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Http\Controllers\Company\General;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+
+class ConfigController extends Controller
+{
+    /**
+     * Handle the incoming request.
+     *
+     * @return Response
+     */
+    public function __invoke(Request $request)
+    {
+        return response()->json([
+            $request->key => config('invoiceshelf.'.$request->key),
+        ]);
+    }
+}

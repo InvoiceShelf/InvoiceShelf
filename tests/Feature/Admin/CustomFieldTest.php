@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\V1\Admin\CustomField\CustomFieldsController;
+use App\Http\Controllers\Company\CustomField\CustomFieldsController;
 use App\Http\Requests\CustomFieldRequest;
 use App\Models\CustomField;
 use App\Models\User;

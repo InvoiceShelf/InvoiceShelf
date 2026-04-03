@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\V1\Admin\Payment\PaymentsController;
+use App\Http\Controllers\Company\Payment\PaymentsController;
 use App\Http\Requests\PaymentRequest;
 use App\Mail\SendPaymentMail;
 use App\Models\Invoice;

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\V1\Admin\RecurringInvoice\RecurringInvoiceController;
+use App\Http\Controllers\Company\RecurringInvoice\RecurringInvoiceController;
 use App\Http\Requests\RecurringInvoiceRequest;
 use App\Models\InvoiceItem;
 use App\Models\RecurringInvoice;

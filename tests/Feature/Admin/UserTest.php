@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\V1\Admin\Users\UsersController;
+use App\Http\Controllers\Company\Users\UsersController;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Laravel\Sanctum\Sanctum;

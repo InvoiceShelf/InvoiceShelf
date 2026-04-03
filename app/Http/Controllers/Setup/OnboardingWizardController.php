@@ -1,0 +1,58 @@
+<?php
+
+namespace App\Http\Controllers\Setup;
+
+use App\Http\Controllers\Controller;
+use App\Models\Setting;
+use App\Services\Installation\InstallUtils;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+
+class OnboardingWizardController extends Controller
+{
+    /**
+     * Handle the incoming request.
+     *
+     * @return JsonResponse
+     */
+    public function getStep(Request $request)
+    {
+        if (! InstallUtils::isDbCreated()) {
+            return response()->json([
+                'profile_complete' => 0,
+                'profile_language' => 'en',
+            ]);
+        }
+
+        return response()->json([
+            'profile_complete' => Setting::getSetting('profile_complete'),
+            'profile_language' => Setting::getSetting('profile_language'),
+        ]);
+    }
+
+    public function updateStep(Request $request)
+    {
+        $setting = Setting::getSetting('profile_complete');
+
+        if ($setting === 'COMPLETED') {
+            return response()->json([
+                'profile_complete' => $setting,
+            ]);
+        }
+
+        Setting::setSetting('profile_complete', $request->profile_complete);
+
+        return response()->json([
+            'profile_complete' => Setting::getSetting('profile_complete'),
+        ]);
+    }
+
+    public function saveLanguage(Request $request)
+    {
+        Setting::setSetting('profile_language', $request->profile_language);
+
+        return response()->json([
+            'profile_language' => Setting::getSetting('profile_language'),
+        ]);
+    }
+}

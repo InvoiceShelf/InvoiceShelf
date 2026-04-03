@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\V1\Admin\Company\CompaniesController;
+use App\Http\Controllers\Company\Company\CompaniesController;
 use App\Http\Requests\CompaniesRequest;
 use App\Models\Company;
 use App\Models\User;

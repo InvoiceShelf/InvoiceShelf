@@ -1,0 +1,97 @@
+<?php
+
+namespace App\Http\Controllers\Company\Company;
+
+use App\Facades\Hashids;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\CompaniesRequest;
+use App\Http\Resources\CompanyResource;
+use App\Models\Company;
+use App\Models\User;
+use App\Services\CompanyService;
+use Illuminate\Http\Request;
+use Silber\Bouncer\BouncerFacade;
+
+class CompaniesController extends Controller
+{
+    public function __construct(
+        private readonly CompanyService $companyService,
+    ) {}
+
+    public function show(Request $request)
+    {
+        $company = Company::find($request->header('company'));
+
+        return new CompanyResource($company);
+    }
+
+    public function store(CompaniesRequest $request)
+    {
+        $this->authorize('create company');
+
+        $user = $request->user();
+
+        $company = Company::create($request->getCompanyPayload());
+        $company->unique_hash = Hashids::connection(Company::class)->encode($company->id);
+        $company->save();
+        $this->companyService->setupDefaults($company);
+        $user->companies()->attach($company->id);
+        $user->assign('super admin');
+
+        if ($request->address) {
+            $company->address()->create($request->address);
+        }
+
+        return new CompanyResource($company);
+    }
+
+    public function destroy(Request $request)
+    {
+        $company = Company::find($request->header('company'));
+
+        $this->authorize('delete company', $company);
+
+        $user = $request->user();
+
+        if ($request->name !== $company->name) {
+            return respondJson('company_name_must_match_with_given_name', 'Company name must match with given name');
+        }
+
+        if ($user->loadCount('companies')->companies_count <= 1) {
+            return respondJson('You_cannot_delete_all_companies', 'You cannot delete all companies');
+        }
+
+        $this->companyService->delete($company, $user);
+
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+
+    public function transferOwnership(Request $request, User $user)
+    {
+        $company = Company::find($request->header('company'));
+        $this->authorize('transfer company ownership', $company);
+
+        if (! $user->hasCompany($company->id)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User does not belong to this company.',
+            ]);
+        }
+
+        $company->update(['owner_id' => $user->id]);
+        BouncerFacade::sync($user)->roles(['super admin']);
+
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+
+    public function getUserCompanies(Request $request)
+    {
+        $companies = $request->user()->companies;
+
+        return CompanyResource::collection($companies);
+    }
+}

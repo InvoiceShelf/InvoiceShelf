@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\V1\Admin\Item\UnitsController;
+use App\Http\Controllers\Company\Item\UnitsController;
 use App\Http\Requests\UnitRequest;
 use App\Models\Unit;
 use App\Models\User;

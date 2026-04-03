@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\V1\Admin\Payment\PaymentMethodsController;
+use App\Http\Controllers\Company\Payment\PaymentMethodsController;
 use App\Http\Requests\PaymentMethodRequest;
 use App\Models\PaymentMethod;
 use App\Models\User;

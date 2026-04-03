@@ -1,22 +1,22 @@
 <?php
 
-use App\Http\Controllers\V1\Admin\Auth\LoginController;
-use App\Http\Controllers\V1\Admin\Expense\ExpensesController;
-use App\Http\Controllers\V1\Admin\Report\CustomerSalesReportController;
-use App\Http\Controllers\V1\Admin\Report\ExpensesReportController;
-use App\Http\Controllers\V1\Admin\Report\ItemSalesReportController;
-use App\Http\Controllers\V1\Admin\Report\ProfitLossReportController;
-use App\Http\Controllers\V1\Admin\Report\TaxSummaryReportController;
-use App\Http\Controllers\V1\Customer\Auth\LoginController as CustomerLoginController;
-use App\Http\Controllers\V1\Customer\EstimatePdfController as CustomerEstimatePdfController;
-use App\Http\Controllers\V1\Customer\InvoicePdfController as CustomerInvoicePdfController;
-use App\Http\Controllers\V1\Customer\PaymentPdfController as CustomerPaymentPdfController;
-use App\Http\Controllers\V1\Modules\ScriptController;
-use App\Http\Controllers\V1\Modules\StyleController;
-use App\Http\Controllers\V1\PDF\DownloadReceiptController;
-use App\Http\Controllers\V1\PDF\EstimatePdfController;
-use App\Http\Controllers\V1\PDF\InvoicePdfController;
-use App\Http\Controllers\V1\PDF\PaymentPdfController;
+use App\Http\Controllers\Company\Auth\LoginController;
+use App\Http\Controllers\Company\Expense\ExpensesController;
+use App\Http\Controllers\Company\Report\CustomerSalesReportController;
+use App\Http\Controllers\Company\Report\ExpensesReportController;
+use App\Http\Controllers\Company\Report\ItemSalesReportController;
+use App\Http\Controllers\Company\Report\ProfitLossReportController;
+use App\Http\Controllers\Company\Report\TaxSummaryReportController;
+use App\Http\Controllers\CustomerPortal\Auth\LoginController as CustomerLoginController;
+use App\Http\Controllers\CustomerPortal\EstimatePdfController as CustomerEstimatePdfController;
+use App\Http\Controllers\CustomerPortal\InvoicePdfController as CustomerInvoicePdfController;
+use App\Http\Controllers\CustomerPortal\PaymentPdfController as CustomerPaymentPdfController;
+use App\Http\Controllers\Modules\ScriptController;
+use App\Http\Controllers\Modules\StyleController;
+use App\Http\Controllers\Pdf\DownloadReceiptController;
+use App\Http\Controllers\Pdf\EstimatePdfController;
+use App\Http\Controllers\Pdf\InvoicePdfController;
+use App\Http\Controllers\Pdf\PaymentPdfController;
 use App\Models\Company;
 use Illuminate\Support\Facades\Route;
 
