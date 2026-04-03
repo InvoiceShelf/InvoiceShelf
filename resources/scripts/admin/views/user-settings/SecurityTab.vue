@@ -97,6 +97,8 @@ async function updatePassword() {
 
   try {
     await userStore.updateCurrentUser({
+      name: userStore.currentUser.name,
+      email: userStore.currentUser.email,
       password: form.password,
     })
 
