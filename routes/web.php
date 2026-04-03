@@ -13,10 +13,7 @@ use App\Http\Controllers\CustomerPortal\InvoicePdfController as CustomerInvoiceP
 use App\Http\Controllers\CustomerPortal\PaymentPdfController as CustomerPaymentPdfController;
 use App\Http\Controllers\Modules\ScriptController;
 use App\Http\Controllers\Modules\StyleController;
-use App\Http\Controllers\Pdf\DownloadReceiptController;
-use App\Http\Controllers\Pdf\EstimatePdfController;
-use App\Http\Controllers\Pdf\InvoicePdfController;
-use App\Http\Controllers\Pdf\PaymentPdfController;
+use App\Http\Controllers\Pdf\DocumentPdfController;
 use App\Models\Company;
 use Illuminate\Support\Facades\Route;
 
@@ -72,7 +69,7 @@ Route::middleware('auth:sanctum')->prefix('reports')->group(function () {
 
     // download expense receipt
     // -------------------------------------------------
-    Route::get('/expenses/{expense}/download-receipt', DownloadReceiptController::class);
+    Route::get('/expenses/{expense}/download-receipt', [ExpensesController::class, 'downloadReceipt']);
     Route::get('/expenses/{expense}/receipt', [ExpensesController::class, 'showReceipt']);
 });
 
@@ -83,15 +80,9 @@ Route::middleware('pdf-auth')->group(function () {
 
     //  invoice pdf
     // -------------------------------------------------
-    Route::get('/invoices/pdf/{invoice:unique_hash}', InvoicePdfController::class);
-
-    // estimate pdf
-    // -------------------------------------------------
-    Route::get('/estimates/pdf/{estimate:unique_hash}', EstimatePdfController::class);
-
-    // payment pdf
-    // -------------------------------------------------
-    Route::get('/payments/pdf/{payment:unique_hash}', PaymentPdfController::class);
+    Route::get('/invoices/pdf/{invoice:unique_hash}', [DocumentPdfController::class, 'invoice']);
+    Route::get('/estimates/pdf/{estimate:unique_hash}', [DocumentPdfController::class, 'estimate']);
+    Route::get('/payments/pdf/{payment:unique_hash}', [DocumentPdfController::class, 'payment']);
 });
 
 // customer pdf endpoints for invoice, estimate and Payment

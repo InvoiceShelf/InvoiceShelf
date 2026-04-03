@@ -133,4 +133,26 @@ class ExpensesController extends Controller
             'success' => 'Expense receipts uploaded successfully',
         ], 200);
     }
+
+    public function downloadReceipt(Expense $expense)
+    {
+        $this->authorize('view', $expense);
+
+        if ($expense) {
+            $media = $expense->getFirstMedia('receipts');
+            if ($media) {
+                $imagePath = $media->getPath();
+                $response = \Response::download($imagePath, $media->file_name);
+                if (ob_get_contents()) {
+                    ob_end_clean();
+                }
+
+                return $response;
+            }
+        }
+
+        return response()->json([
+            'error' => 'receipt_not_found',
+        ]);
+    }
 }
