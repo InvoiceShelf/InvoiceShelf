@@ -11,10 +11,6 @@ use App\Http\Controllers\V1\Admin\Dashboard\DashboardController;
 use App\Http\Controllers\V1\Admin\Estimate\EstimatesController;
 use App\Http\Controllers\V1\Admin\Estimate\EstimateTemplatesController;
 use App\Http\Controllers\V1\Admin\ExchangeRate\ExchangeRateProviderController;
-use App\Http\Controllers\V1\Admin\ExchangeRate\GetActiveProviderController;
-use App\Http\Controllers\V1\Admin\ExchangeRate\GetExchangeRateController;
-use App\Http\Controllers\V1\Admin\ExchangeRate\GetSupportedCurrenciesController;
-use App\Http\Controllers\V1\Admin\ExchangeRate\GetUsedCurrenciesController;
 use App\Http\Controllers\V1\Admin\Expense\ExpenseCategoriesController;
 use App\Http\Controllers\V1\Admin\Expense\ExpensesController;
 use App\Http\Controllers\V1\Admin\Expense\ShowReceiptController;
@@ -354,13 +350,13 @@ Route::prefix('/v1')->group(function () {
             // Exchange Rate
             // ----------------------------------
 
-            Route::get('/currencies/{currency}/exchange-rate', GetExchangeRateController::class);
+            Route::get('/currencies/{currency}/exchange-rate', [ExchangeRateProviderController::class, 'getRate']);
 
-            Route::get('/currencies/{currency}/active-provider', GetActiveProviderController::class);
+            Route::get('/currencies/{currency}/active-provider', [ExchangeRateProviderController::class, 'activeProvider']);
 
-            Route::get('/used-currencies', GetUsedCurrenciesController::class);
+            Route::get('/used-currencies', [ExchangeRateProviderController::class, 'usedCurrencies']);
 
-            Route::get('/supported-currencies', GetSupportedCurrenciesController::class);
+            Route::get('/supported-currencies', [ExchangeRateProviderController::class, 'supportedCurrencies']);
 
             Route::apiResource('exchange-rate-providers', ExchangeRateProviderController::class);
 
