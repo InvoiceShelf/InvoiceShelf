@@ -1,6 +1,19 @@
 <template>
   <div class="flex items-center justify-center min-h-screen bg-gray-50">
     <div class="w-full max-w-md p-8">
+      <!-- Logo -->
+      <div class="mb-8 text-center">
+        <MainLogo
+          v-if="!loginPageLogo"
+          class="inline-block w-48 h-auto text-primary-500"
+        />
+        <img
+          v-else
+          :src="loginPageLogo"
+          class="inline-block w-48 h-auto"
+        />
+      </div>
+
       <!-- Loading -->
       <div v-if="isLoading" class="text-center">
         <p class="text-gray-500">Loading invitation details...</p>
@@ -114,9 +127,14 @@ import { useRoute, useRouter } from 'vue-router'
 import { helpers, required, minLength, sameAs } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import http from '@/scripts/http'
+import MainLogo from '@/scripts/components/icons/MainLogo.vue'
 
 const route = useRoute()
 const router = useRouter()
+
+const loginPageLogo = computed(() => {
+  return window.login_page_logo || false
+})
 
 const isLoading = ref(true)
 const isSubmitting = ref(false)
