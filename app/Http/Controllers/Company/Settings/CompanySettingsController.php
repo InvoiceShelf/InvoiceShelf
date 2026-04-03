@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateSettingsRequest;
 use App\Models\Company;
 use App\Models\CompanySetting;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 
 class CompanySettingsController extends Controller
@@ -41,6 +42,17 @@ class CompanySettingsController extends Controller
 
         return response()->json([
             'success' => true,
+        ]);
+    }
+
+    public function checkTransactions(Request $request): JsonResponse
+    {
+        $company = Company::find($request->header('company'));
+
+        $this->authorize('manage company', $company);
+
+        return response()->json([
+            'has_transactions' => $company->hasTransactions(),
         ]);
     }
 }

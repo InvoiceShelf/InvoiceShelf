@@ -41,12 +41,10 @@ use App\Http\Controllers\Company\RecurringInvoice\RecurringInvoiceFrequencyContr
 use App\Http\Controllers\Company\Role\AbilitiesController;
 use App\Http\Controllers\Company\Role\RolesController;
 use App\Http\Controllers\Company\Settings\CompanyController;
-use App\Http\Controllers\Company\Settings\CompanyCurrencyCheckTransactionsController;
 use App\Http\Controllers\Company\Settings\CompanyMailConfigurationController;
 use App\Http\Controllers\Company\Settings\CompanySettingsController;
 use App\Http\Controllers\Company\Settings\TaxTypesController;
 use App\Http\Controllers\Company\Settings\UserProfileController;
-use App\Http\Controllers\Company\Settings\UserSettingsController;
 use App\Http\Controllers\Company\Users\UsersController;
 use App\Http\Controllers\CustomerPortal\Auth\ForgotPasswordController as AuthForgotPasswordController;
 use App\Http\Controllers\CustomerPortal\Auth\ResetPasswordController as AuthResetPasswordController;
@@ -343,9 +341,9 @@ Route::prefix('/v1')->group(function () {
 
             Route::put('/me', [UserProfileController::class, 'update']);
 
-            Route::get('/me/settings', [UserSettingsController::class, 'show']);
+            Route::get('/me/settings', [UserProfileController::class, 'showSettings']);
 
-            Route::put('/me/settings', [UserSettingsController::class, 'update']);
+            Route::put('/me/settings', [UserProfileController::class, 'updateSettings']);
 
             Route::post('/me/upload-avatar', [UserProfileController::class, 'uploadAvatar']);
 
@@ -361,7 +359,7 @@ Route::prefix('/v1')->group(function () {
 
             Route::post('/settings', [SettingsController::class, 'update']);
 
-            Route::get('/company/has-transactions', CompanyCurrencyCheckTransactionsController::class);
+            Route::get('/company/has-transactions', [CompanySettingsController::class, 'checkTransactions']);
 
             // Mails
             // ----------------------------------

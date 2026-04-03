@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Company\Settings;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AvatarRequest;
+use App\Http\Requests\GetSettingsRequest;
 use App\Http\Requests\ProfileRequest;
+use App\Http\Requests\UpdateSettingsRequest;
 use App\Http\Resources\UserResource;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class UserProfileController extends Controller
@@ -48,5 +51,23 @@ class UserProfileController extends Controller
         }
 
         return new UserResource($user);
+    }
+
+    public function showSettings(GetSettingsRequest $request): JsonResponse
+    {
+        $user = $request->user();
+
+        return response()->json($user->getSettings((array) $request->settings));
+    }
+
+    public function updateSettings(UpdateSettingsRequest $request): JsonResponse
+    {
+        $user = $request->user();
+
+        $user->setSettings($request->settings);
+
+        return response()->json([
+            'success' => true,
+        ]);
     }
 }
