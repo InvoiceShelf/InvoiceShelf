@@ -13,8 +13,10 @@
         ml-2
         text-sm text-white
         bg-white/20
-        rounded
+        rounded-lg
         cursor-pointer
+        hover:bg-white/30
+        transition-colors
       "
       @click="isShow = !isShow"
     >

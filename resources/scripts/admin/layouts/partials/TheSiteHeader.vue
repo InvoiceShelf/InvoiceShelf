@@ -74,9 +74,10 @@
                 w-8
                 h-8
                 ml-2
-                text-sm text-black
-                bg-white
-                rounded
+                text-sm text-white
+                bg-white/20
+                rounded-lg
+                hover:bg-white/30
                 md:h-9 md:w-9
               "
             >
@@ -143,7 +144,7 @@
           <template #activator>
             <img
               :src="previewAvatar"
-              class="block w-8 h-8 rounded md:h-9 md:w-9 object-cover"
+              class="block w-8 h-8 rounded-full ring-2 ring-white/30 md:h-9 md:w-9 object-cover"
             />
           </template>
 

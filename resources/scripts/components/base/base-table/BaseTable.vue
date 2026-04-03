@@ -7,9 +7,9 @@
             relative
             overflow-hidden
             bg-white
-            border-b border-gray-200
-            shadow
-            sm:rounded-lg
+            border border-gray-100
+            shadow-sm
+            rounded-xl
           "
         >
           <slot name="header" />

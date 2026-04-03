@@ -2,7 +2,7 @@
   <div>
     <div
       v-if="dashboardStore.isDashboardDataLoaded"
-      class="grid grid-cols-10 mt-8 bg-white rounded shadow"
+      class="grid grid-cols-10 mt-8 bg-white rounded-xl shadow-sm border border-gray-100"
     >
       <!-- Chart -->
       <div

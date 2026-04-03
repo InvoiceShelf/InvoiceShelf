@@ -29,7 +29,7 @@
           font-medium
           text-gray-700
           bg-white
-          border border-gray-300
+          border border-gray-200
           rounded-md
           hover:bg-gray-50
         "
@@ -54,7 +54,7 @@
           font-medium
           text-gray-700
           bg-white
-          border border-gray-300
+          border border-gray-200
           rounded-md
           hover:bg-gray-50
         "
@@ -107,7 +107,7 @@
       </div>
       <div>
         <nav
-          class="relative z-0 inline-flex -space-x-px rounded-md shadow-xs"
+          class="relative z-0 inline-flex -space-x-px rounded-lg shadow-sm"
           aria-label="Pagination"
         >
           <a
@@ -126,8 +126,8 @@
               font-medium
               text-gray-500
               bg-white
-              border border-gray-300
-              rounded-l-md
+              border border-gray-200
+              rounded-l-lg
               hover:bg-gray-50
             "
             @click="pageClicked(pagination.currentPage - 1)"
@@ -140,9 +140,9 @@
             href="#"
             aria-current="page"
             :class="{
-              'z-10 bg-primary-50 border-primary-500 text-primary-600':
+              'z-10 bg-primary-500 border-primary-500 text-white':
                 isActive(1),
-              'bg-white border-gray-300 text-gray-500 hover:bg-gray-50':
+              'bg-white border-gray-200 text-gray-500 hover:bg-gray-50':
                 !isActive(1),
             }"
             class="
@@ -172,7 +172,7 @@
               font-medium
               text-gray-700
               bg-white
-              border border-gray-300
+              border border-gray-200
             "
           >
             ...
@@ -182,9 +182,9 @@
             :key="page"
             href="#"
             :class="{
-              'z-10 bg-primary-50 border-primary-500 text-primary-600':
+              'z-10 bg-primary-500 border-primary-500 text-white':
                 isActive(page),
-              'bg-white border-gray-300 text-gray-500 hover:bg-gray-50':
+              'bg-white border-gray-200 text-gray-500 hover:bg-gray-50':
                 !isActive(page),
               disabled: page === '...',
             }"
@@ -196,10 +196,7 @@
               py-2
               text-sm
               font-medium
-              text-gray-500
-              bg-white
-              border border-gray-300
-              hover:bg-gray-50
+              border
               md:inline-flex
             "
             @click="pageClicked(page)"
@@ -219,7 +216,7 @@
               font-medium
               text-gray-700
               bg-white
-              border border-gray-300
+              border border-gray-200
             "
           >
             ...
@@ -229,9 +226,9 @@
             href="#"
             aria-current="page"
             :class="{
-              'z-10 bg-primary-50 border-primary-500 text-primary-600':
+              'z-10 bg-primary-500 border-primary-500 text-white':
                 isActive(pagination.totalPages),
-              'bg-white border-gray-300 text-gray-500 hover:bg-gray-50':
+              'bg-white border-gray-200 text-gray-500 hover:bg-gray-50':
                 !isActive(pagination.totalPages),
             }"
             class="
@@ -260,8 +257,8 @@
               font-medium
               text-gray-500
               bg-white
-              border border-gray-300
-              rounded-r-md
+              border border-gray-200
+              rounded-r-lg
               hover:bg-gray-50
             "
             :class="{

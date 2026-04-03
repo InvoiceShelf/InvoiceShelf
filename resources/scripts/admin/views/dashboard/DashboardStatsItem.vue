@@ -5,22 +5,24 @@
       relative
       flex
       justify-between
-      p-3
+      p-5
       bg-white
-      rounded
-      shadow
-      hover:bg-gray-50
-      xl:p-4
+      rounded-xl
+      shadow-sm
+      border border-gray-100
+      hover:shadow-md
+      transition-shadow
+      xl:p-6
       lg:col-span-2
     "
     :class="{ 'lg:!col-span-3': large }"
     :to="route"
   >
     <div>
-      <span class="text-xl font-semibold leading-tight text-black xl:text-3xl">
+      <span class="text-2xl font-bold leading-tight text-gray-900 xl:text-3xl">
         <slot />
       </span>
-      <span class="block mt-1 text-sm leading-tight text-gray-500 xl:text-lg">
+      <span class="block mt-1 text-sm font-medium leading-tight text-gray-500 xl:text-base">
         {{ label }}
       </span>
     </div>
