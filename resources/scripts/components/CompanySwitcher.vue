@@ -43,7 +43,7 @@
           class="
             overflow-y-auto
             scrollbar-thin scrollbar-thumb-rounded-full
-            w-[250px]
+            w-[300px]
             max-h-[350px]
             scrollbar-thumb-gray-300 scrollbar-track-gray-10
             pb-4
@@ -93,7 +93,7 @@
                 "
                 :class="{
                   'bg-gray-100 text-primary-500':
-                    companyStore.selectedCompany.id === company.id,
+                    companyStore.selectedCompany && companyStore.selectedCompany.id === company.id,
                 }"
                 @click="changeCompany(company)"
               >
@@ -148,38 +148,36 @@
           <div
             v-for="invitation in invitationStore.pendingInvitations"
             :key="invitation.id"
-            class="p-2 px-3 rounded-md opacity-60"
+            class="p-2 px-3 rounded-md"
           >
-            <div class="flex items-center justify-between">
-              <div class="flex items-center">
-                <span
-                  class="
-                    flex items-center justify-center mr-3
-                    overflow-hidden text-xs font-semibold
-                    bg-gray-200 rounded-md w-9 h-9 text-gray-400
-                  "
-                >
-                  {{ initGenerator(invitation.company?.name || '?') }}
-                </span>
-                <div class="flex flex-col">
-                  <span class="text-sm text-gray-500">{{ invitation.company?.name }}</span>
-                  <span class="text-xs text-gray-400">{{ invitation.role?.title }}</span>
-                </div>
+            <div class="flex items-center mb-2">
+              <span
+                class="
+                  flex items-center justify-center mr-3
+                  overflow-hidden text-xs font-semibold
+                  bg-gray-200 rounded-md w-9 h-9 shrink-0 text-gray-400
+                "
+              >
+                {{ initGenerator(invitation.company?.name || '?') }}
+              </span>
+              <div class="flex flex-col min-w-0">
+                <span class="text-sm text-gray-700 truncate">{{ invitation.company?.name }}</span>
+                <span class="text-xs text-gray-400">{{ invitation.role?.title }}</span>
               </div>
-              <div class="flex space-x-1">
-                <button
-                  class="text-xs px-2 py-1 rounded bg-primary-500 text-white hover:bg-primary-600"
-                  @click.stop="acceptInvitation(invitation.token)"
-                >
-                  {{ $t('general.accept') }}
-                </button>
-                <button
-                  class="text-xs px-2 py-1 rounded bg-gray-200 text-gray-600 hover:bg-gray-300"
-                  @click.stop="declineInvitation(invitation.token)"
-                >
-                  {{ $t('general.decline') }}
-                </button>
-              </div>
+            </div>
+            <div class="flex space-x-1 pl-12">
+              <button
+                class="text-xs px-2 py-1 rounded bg-primary-500 text-white hover:bg-primary-600"
+                @click.stop="acceptInvitation(invitation.token)"
+              >
+                {{ $t('general.accept') }}
+              </button>
+              <button
+                class="text-xs px-2 py-1 rounded bg-gray-200 text-gray-600 hover:bg-gray-300"
+                @click.stop="declineInvitation(invitation.token)"
+              >
+                {{ $t('general.decline') }}
+              </button>
             </div>
           </div>
         </div>

@@ -61,7 +61,7 @@
 
     <ul class="flex float-right h-8 m-0 list-none md:h-9">
       <li
-        v-if="hasCreateAbilities"
+        v-if="hasCreateAbilities()"
         class="relative hidden float-left m-0 md:block"
       >
         <BaseDropdown width-class="w-48">
