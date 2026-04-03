@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\BackupsController;
+use App\Http\Controllers\Admin\CompaniesController;
 use App\Http\Controllers\Admin\CountriesController;
 use App\Http\Controllers\Admin\CurrenciesController;
 use App\Http\Controllers\Admin\Modules\ModuleInstallationController;
@@ -14,7 +15,6 @@ use App\Http\Controllers\AppVersionController;
 use App\Http\Controllers\Company\Auth\AuthController;
 use App\Http\Controllers\Company\Auth\ForgotPasswordController;
 use App\Http\Controllers\Company\Auth\ResetPasswordController;
-use App\Http\Controllers\Company\CompaniesController;
 use App\Http\Controllers\Company\Customer\CustomersController;
 use App\Http\Controllers\Company\Customer\CustomerStatsController;
 use App\Http\Controllers\Company\CustomField\CustomFieldsController;
@@ -148,9 +148,9 @@ Route::prefix('/v1')->group(function () {
     // ----------------------------------
 
     Route::middleware(['auth:sanctum', 'super-admin'])->prefix('super-admin')->group(function () {
-        Route::get('companies', [App\Http\Controllers\Admin\CompaniesController::class, 'index']);
-        Route::get('companies/{company}', [App\Http\Controllers\Admin\CompaniesController::class, 'show']);
-        Route::put('companies/{company}', [App\Http\Controllers\Admin\CompaniesController::class, 'update']);
+        Route::get('companies', [CompaniesController::class, 'index']);
+        Route::get('companies/{company}', [CompaniesController::class, 'show']);
+        Route::put('companies/{company}', [CompaniesController::class, 'update']);
 
         Route::get('users', [App\Http\Controllers\Admin\UsersController::class, 'index']);
         Route::get('users/{user}', [App\Http\Controllers\Admin\UsersController::class, 'show']);
@@ -214,7 +214,7 @@ Route::prefix('/v1')->group(function () {
 
             Route::get('/number-placeholders', [SerialNumberController::class, 'placeholders']);
 
-            Route::get('/current-company', [CompaniesController::class, 'show']);
+            Route::get('/current-company', [BootstrapController::class, 'currentCompany']);
 
             // Customers
             // ----------------------------------
@@ -418,11 +418,11 @@ Route::prefix('/v1')->group(function () {
 
         Route::post('companies', [CompaniesController::class, 'store']);
 
-        Route::post('/transfer/ownership/{user}', [CompaniesController::class, 'transferOwnership']);
+        Route::post('/transfer/ownership/{user}', [CompanySettingsController::class, 'transferOwnership']);
 
         Route::post('companies/delete', [CompaniesController::class, 'destroy']);
 
-        Route::get('companies', [CompaniesController::class, 'getUserCompanies']);
+        Route::get('companies', [CompaniesController::class, 'userCompanies']);
 
         // Users
         // ----------------------------------

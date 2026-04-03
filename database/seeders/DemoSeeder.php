@@ -40,7 +40,7 @@ class DemoSeeder extends Seeder
         $user->companies()->attach($company->id);
         BouncerFacade::scope()->to($company->id);
 
-        $user->assign('super admin');
+        $user->assign('owner');
 
         // Set default user settings
         $user->setSettings([

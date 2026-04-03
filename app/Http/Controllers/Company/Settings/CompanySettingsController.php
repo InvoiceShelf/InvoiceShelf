@@ -7,9 +7,11 @@ use App\Http\Requests\GetSettingsRequest;
 use App\Http\Requests\UpdateSettingsRequest;
 use App\Models\Company;
 use App\Models\CompanySetting;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Silber\Bouncer\BouncerFacade;
 
 class CompanySettingsController extends Controller
 {
@@ -53,6 +55,27 @@ class CompanySettingsController extends Controller
 
         return response()->json([
             'has_transactions' => $company->hasTransactions(),
+        ]);
+    }
+
+    public function transferOwnership(Request $request, User $user): JsonResponse
+    {
+        $company = Company::find($request->header('company'));
+        $this->authorize('transfer company ownership', $company);
+
+        if (! $user->hasCompany($company->id)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User does not belong to this company.',
+            ]);
+        }
+
+        $company->update(['owner_id' => $user->id]);
+        BouncerFacade::scope()->to($company->id);
+        BouncerFacade::sync($user)->roles(['owner']);
+
+        return response()->json([
+            'success' => true,
         ]);
     }
 }

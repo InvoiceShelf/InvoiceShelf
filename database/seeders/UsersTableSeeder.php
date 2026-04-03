@@ -37,7 +37,7 @@ class UsersTableSeeder extends Seeder
         $user->companies()->attach($company->id);
         BouncerFacade::scope()->to($company->id);
 
-        $user->assign('super admin');
+        $user->assign('owner');
 
         Setting::setSetting('profile_complete', 0);
         // Set version.

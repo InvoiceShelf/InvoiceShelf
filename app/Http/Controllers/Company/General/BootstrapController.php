@@ -76,4 +76,11 @@ class BootstrapController extends Controller
             'modules' => Module::where('enabled', true)->pluck('name'),
         ]);
     }
+
+    public function currentCompany(Request $request)
+    {
+        $company = Company::find($request->header('company'));
+
+        return new CompanyResource($company);
+    }
 }

@@ -26,14 +26,14 @@ class CompanyService
     {
         BouncerFacade::scope()->to($company->id);
 
-        $superAdmin = BouncerFacade::role()->firstOrCreate([
-            'name' => 'super admin',
-            'title' => 'Super Admin',
+        $owner = BouncerFacade::role()->firstOrCreate([
+            'name' => 'owner',
+            'title' => 'Owner',
             'scope' => $company->id,
         ]);
 
         foreach (config('abilities.abilities') as $ability) {
-            BouncerFacade::allow($superAdmin)->to($ability['ability'], $ability['model']);
+            BouncerFacade::allow($owner)->to($ability['ability'], $ability['model']);
         }
     }
 
