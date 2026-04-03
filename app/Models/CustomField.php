@@ -104,23 +104,4 @@ class CustomField extends Model
     {
         $query->where('custom_fields.model_type', $type);
     }
-
-    public static function createCustomField($request)
-    {
-        $data = $request->validated();
-        $data[getCustomFieldValueKey($request->type)] = $request->default_answer;
-        $data['company_id'] = $request->header('company');
-        $data['slug'] = clean_slug($request->model_type, $request->name);
-
-        return CustomField::create($data);
-    }
-
-    public function updateCustomField($request)
-    {
-        $data = $request->validated();
-        $data[getCustomFieldValueKey($request->type)] = $request->default_answer;
-        $this->update($data);
-
-        return $this;
-    }
 }

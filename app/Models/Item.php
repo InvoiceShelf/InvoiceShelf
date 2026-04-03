@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\Auth;
 
 class Item extends Model
 {
@@ -134,46 +133,5 @@ class Item extends Model
     public function estimateItems(): HasMany
     {
         return $this->hasMany(EstimateItem::class);
-    }
-
-    public static function createItem($request)
-    {
-        $data = $request->validated();
-        $data['company_id'] = $request->header('company');
-        $data['creator_id'] = Auth::id();
-        $company_currency = CompanySetting::getSetting('currency', $request->header('company'));
-        $data['currency_id'] = $company_currency;
-        $item = self::create($data);
-
-        if ($request->has('taxes')) {
-            foreach ($request->taxes as $tax) {
-                $item->tax_per_item = true;
-                $item->save();
-                $tax['company_id'] = $request->header('company');
-                $item->taxes()->create($tax);
-            }
-        }
-
-        $item = self::with('taxes')->find($item->id);
-
-        return $item;
-    }
-
-    public function updateItem($request)
-    {
-        $this->update($request->validated());
-
-        $this->taxes()->delete();
-
-        if ($request->has('taxes')) {
-            foreach ($request->taxes as $tax) {
-                $this->tax_per_item = true;
-                $this->save();
-                $tax['company_id'] = $request->header('company');
-                $this->taxes()->create($tax);
-            }
-        }
-
-        return Item::with('taxes')->find($this->id);
     }
 }

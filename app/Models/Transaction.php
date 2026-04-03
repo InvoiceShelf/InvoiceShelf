@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Facades\Hashids;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -40,27 +39,6 @@ class Transaction extends Model
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
-    }
-
-    public function completeTransaction()
-    {
-        $this->status = self::SUCCESS;
-        $this->save();
-    }
-
-    public function failedTransaction()
-    {
-        $this->status = self::FAILED;
-        $this->save();
-    }
-
-    public static function createTransaction($data)
-    {
-        $transaction = self::create($data);
-        $transaction->unique_hash = Hashids::connection(Transaction::class)->encode($transaction->id);
-        $transaction->save();
-
-        return $transaction;
     }
 
     public function isExpired()
