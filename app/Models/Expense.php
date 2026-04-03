@@ -4,12 +4,16 @@ namespace App\Models;
 
 use App\Traits\HasCustomFieldsTrait;
 use Carbon\Carbon;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Expense extends Model implements HasMedia
 {
@@ -68,21 +72,21 @@ class Expense extends Model implements HasMedia
         return $this->belongsTo(User::class, 'creator_id');
     }
 
-    public function getFormattedExpenseDateAttribute($value)
+    public function getFormattedExpenseDateAttribute(mixed $value): string
     {
         $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id);
 
         return Carbon::parse($this->expense_date)->translatedFormat($dateFormat);
     }
 
-    public function getFormattedCreatedAtAttribute($value)
+    public function getFormattedCreatedAtAttribute(mixed $value): string
     {
         $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id);
 
         return Carbon::parse($this->created_at)->translatedFormat($dateFormat);
     }
 
-    public function getReceiptUrlAttribute($value)
+    public function getReceiptUrlAttribute(mixed $value): ?array
     {
         $media = $this->getFirstMedia('receipts');
 
@@ -96,7 +100,7 @@ class Expense extends Model implements HasMedia
         return null;
     }
 
-    public function getReceiptAttribute($value)
+    public function getReceiptAttribute(mixed $value): ?string
     {
         $media = $this->getFirstMedia('receipts');
 
@@ -107,7 +111,7 @@ class Expense extends Model implements HasMedia
         return null;
     }
 
-    public function getReceiptMetaAttribute($value)
+    public function getReceiptMetaAttribute(mixed $value): ?Media
     {
         $media = $this->getFirstMedia('receipts');
 
@@ -118,7 +122,7 @@ class Expense extends Model implements HasMedia
         return null;
     }
 
-    public function scopeExpensesBetween($query, $start, $end)
+    public function scopeExpensesBetween(Builder $query, Carbon $start, Carbon $end): Builder
     {
         return $query->whereBetween(
             'expenses.expense_date',
@@ -126,7 +130,7 @@ class Expense extends Model implements HasMedia
         );
     }
 
-    public function scopeWhereCategoryName($query, $search)
+    public function scopeWhereCategoryName(Builder $query, string $search): void
     {
         foreach (explode(' ', $search) as $term) {
             $query->whereHas('category', function ($query) use ($term) {
@@ -135,22 +139,25 @@ class Expense extends Model implements HasMedia
         }
     }
 
-    public function scopeWhereNotes($query, $search)
+    public function scopeWhereNotes(Builder $query, string $search): void
     {
         $query->where('notes', 'LIKE', '%'.$search.'%');
     }
 
-    public function scopeWhereCategory($query, $categoryId)
+    public function scopeWhereCategory(Builder $query, int $categoryId): Builder
     {
         return $query->where('expenses.expense_category_id', $categoryId);
     }
 
-    public function scopeWhereUser($query, $customer_id)
+    public function scopeWhereUser(Builder $query, int $customer_id): Builder
     {
         return $query->where('expenses.customer_id', $customer_id);
     }
 
-    public function scopeApplyFilters($query, array $filters)
+    /**
+     * Apply multiple filter conditions including category, customer, expense, date range, ordering, and search.
+     */
+    public function scopeApplyFilters(Builder $query, array $filters): void
     {
         $filters = collect($filters);
 
@@ -183,12 +190,12 @@ class Expense extends Model implements HasMedia
         }
     }
 
-    public function scopeWhereExpense($query, $expense_id)
+    public function scopeWhereExpense(Builder $query, int $expense_id): void
     {
         $query->orWhere('id', $expense_id);
     }
 
-    public function scopeWhereSearch($query, $search)
+    public function scopeWhereSearch(Builder $query, string $search): void
     {
         foreach (explode(' ', $search) as $term) {
             $query->whereHas('category', function ($query) use ($term) {
@@ -198,22 +205,25 @@ class Expense extends Model implements HasMedia
         }
     }
 
-    public function scopeWhereOrder($query, $orderByField, $orderBy)
+    public function scopeWhereOrder(Builder $query, string $orderByField, string $orderBy): void
     {
         $query->orderBy($orderByField, $orderBy);
     }
 
-    public function scopeWhereCompany($query)
+    public function scopeWhereCompany(Builder $query): void
     {
         $query->where('expenses.company_id', request()->header('company'));
     }
 
-    public function scopeWhereCompanyId($query, $company)
+    public function scopeWhereCompanyId(Builder $query, int $company): void
     {
         $query->where('expenses.company_id', $company);
     }
 
-    public function scopePaginateData($query, $limit)
+    /**
+     * @return LengthAwarePaginator|Collection
+     */
+    public function scopePaginateData(Builder $query, string $limit)
     {
         if ($limit == 'all') {
             return $query->get();
@@ -222,7 +232,7 @@ class Expense extends Model implements HasMedia
         return $query->paginate($limit);
     }
 
-    public function scopeExpensesAttributes($query)
+    public function scopeExpensesAttributes(Builder $query): void
     {
         $query->select(
             DB::raw('

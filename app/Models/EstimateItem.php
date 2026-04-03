@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\HasCustomFieldsTrait;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -44,7 +45,7 @@ class EstimateItem extends Model
         return $this->hasMany(Tax::class);
     }
 
-    public function scopeWhereCompany($query, $company_id)
+    public function scopeWhereCompany(Builder $query, int $company_id): void
     {
         $query->where('company_id', $company_id);
     }

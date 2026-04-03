@@ -16,7 +16,7 @@ class Address extends Model
 
     protected $guarded = ['id'];
 
-    public function getCountryNameAttribute()
+    public function getCountryNameAttribute(): ?string
     {
         $name = $this->country ? $this->country->name : null;
 

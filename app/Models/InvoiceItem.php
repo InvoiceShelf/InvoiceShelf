@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\HasCustomFieldsTrait;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -51,12 +52,12 @@ class InvoiceItem extends Model
         return $this->belongsTo(RecurringInvoice::class);
     }
 
-    public function scopeWhereCompany($query, $company_id)
+    public function scopeWhereCompany(Builder $query, int $company_id): void
     {
         $query->where('company_id', $company_id);
     }
 
-    public function scopeInvoicesBetween($query, $start, $end)
+    public function scopeInvoicesBetween(Builder $query, Carbon $start, Carbon $end): void
     {
         $query->whereHas('invoice', function ($query) use ($start, $end) {
             $query->whereBetween(
@@ -66,7 +67,7 @@ class InvoiceItem extends Model
         });
     }
 
-    public function scopeApplyInvoiceFilters($query, array $filters)
+    public function scopeApplyInvoiceFilters(Builder $query, array $filters): void
     {
         $filters = collect($filters);
 
@@ -77,7 +78,7 @@ class InvoiceItem extends Model
         }
     }
 
-    public function scopeItemAttributes($query)
+    public function scopeItemAttributes(Builder $query): void
     {
         $query->select(
             DB::raw('sum(quantity) as total_quantity, sum(base_total) as total_amount, invoice_items.name')

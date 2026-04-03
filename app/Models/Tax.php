@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -65,19 +66,19 @@ class Tax extends Model
         return $this->belongsTo(Item::class);
     }
 
-    public function scopeWhereCompany($query, $company_id)
+    public function scopeWhereCompany(Builder $query, int $company_id): void
     {
         $query->where('company_id', $company_id);
     }
 
-    public function scopeTaxAttributes($query)
+    public function scopeTaxAttributes(Builder $query): void
     {
         $query->select(
             DB::raw('sum(base_amount) as total_tax_amount, tax_type_id')
         )->groupBy('tax_type_id');
     }
 
-    public function scopeInvoicesBetween($query, $start, $end)
+    public function scopeInvoicesBetween(Builder $query, Carbon $start, Carbon $end): void
     {
         $query->whereHas('invoice', function ($query) use ($start, $end) {
             $query->where('paid_status', Invoice::STATUS_PAID)
@@ -95,7 +96,7 @@ class Tax extends Model
             });
     }
 
-    public function scopeWhereInvoicesFilters($query, array $filters)
+    public function scopeWhereInvoicesFilters(Builder $query, array $filters): void
     {
         $filters = collect($filters);
 

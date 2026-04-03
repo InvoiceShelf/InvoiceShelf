@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -23,22 +26,22 @@ class Unit extends Model
         return $this->belongsTo(Company::class);
     }
 
-    public function scopeWhereCompany($query)
+    public function scopeWhereCompany(Builder $query): void
     {
         $query->where('company_id', request()->header('company'));
     }
 
-    public function scopeWhereUnit($query, $unit_id)
+    public function scopeWhereUnit(Builder $query, int $unit_id): void
     {
         $query->orWhere('id', $unit_id);
     }
 
-    public function scopeWhereSearch($query, $search)
+    public function scopeWhereSearch(Builder $query, string $search): Builder
     {
         return $query->where('name', 'LIKE', '%'.$search.'%');
     }
 
-    public function scopeApplyFilters($query, array $filters)
+    public function scopeApplyFilters(Builder $query, array $filters): Builder
     {
         $filters = collect($filters);
 
@@ -57,7 +60,10 @@ class Unit extends Model
         return $query;
     }
 
-    public function scopePaginateData($query, $limit)
+    /**
+     * @return Collection|LengthAwarePaginator
+     */
+    public function scopePaginateData(Builder $query, string $limit)
     {
         if ($limit == 'all') {
             return $query->get();

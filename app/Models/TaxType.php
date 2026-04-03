@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -38,17 +41,17 @@ class TaxType extends Model
         return $this->belongsTo(Company::class);
     }
 
-    public function scopeWhereCompany($query)
+    public function scopeWhereCompany(Builder $query): void
     {
         $query->where('company_id', request()->header('company'));
     }
 
-    public function scopeWhereTaxType($query, $tax_type_id)
+    public function scopeWhereTaxType(Builder $query, int $tax_type_id): void
     {
         $query->orWhere('id', $tax_type_id);
     }
 
-    public function scopeApplyFilters($query, array $filters)
+    public function scopeApplyFilters(Builder $query, array $filters): void
     {
         $filters = collect($filters);
 
@@ -71,17 +74,20 @@ class TaxType extends Model
         }
     }
 
-    public function scopeWhereOrder($query, $orderByField, $orderBy)
+    public function scopeWhereOrder(Builder $query, string $orderByField, string $orderBy): void
     {
         $query->orderBy($orderByField, $orderBy);
     }
 
-    public function scopeWhereSearch($query, $search)
+    public function scopeWhereSearch(Builder $query, string $search): void
     {
         $query->where('name', 'LIKE', '%'.$search.'%');
     }
 
-    public function scopePaginateData($query, $limit)
+    /**
+     * @return Collection|LengthAwarePaginator
+     */
+    public function scopePaginateData(Builder $query, string $limit)
     {
         if ($limit == 'all') {
             return $query->get();

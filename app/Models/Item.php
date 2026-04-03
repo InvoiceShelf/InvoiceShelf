@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -45,32 +48,35 @@ class Item extends Model
         return $this->belongsTo(Currency::class);
     }
 
-    public function scopeWhereSearch($query, $search)
+    public function scopeWhereSearch(Builder $query, string $search): Builder
     {
         return $query->where('items.name', 'LIKE', '%'.$search.'%');
     }
 
-    public function scopeWherePrice($query, $price)
+    public function scopeWherePrice(Builder $query, int $price): Builder
     {
         return $query->where('items.price', $price);
     }
 
-    public function scopeWhereUnit($query, $unit_id)
+    public function scopeWhereUnit(Builder $query, int $unit_id): Builder
     {
         return $query->where('items.unit_id', $unit_id);
     }
 
-    public function scopeWhereOrder($query, $orderByField, $orderBy)
+    public function scopeWhereOrder(Builder $query, string $orderByField, string $orderBy): void
     {
         $query->orderBy($orderByField, $orderBy);
     }
 
-    public function scopeWhereItem($query, $item_id)
+    public function scopeWhereItem(Builder $query, int $item_id): void
     {
         $query->orWhere('id', $item_id);
     }
 
-    public function scopeApplyFilters($query, array $filters)
+    /**
+     * Apply multiple filter conditions including search, price, unit, item, and ordering.
+     */
+    public function scopeApplyFilters(Builder $query, array $filters): void
     {
         $filters = collect($filters);
 
@@ -97,7 +103,10 @@ class Item extends Model
         }
     }
 
-    public function scopePaginateData($query, $limit)
+    /**
+     * @return LengthAwarePaginator|Collection
+     */
+    public function scopePaginateData(Builder $query, string $limit)
     {
         if ($limit == 'all') {
             return $query->get();
@@ -106,7 +115,7 @@ class Item extends Model
         return $query->paginate($limit);
     }
 
-    public function getFormattedCreatedAtAttribute($value)
+    public function getFormattedCreatedAtAttribute(mixed $value): string
     {
         $dateFormat = CompanySetting::getSetting('carbon_date_format', request()->header('company'));
 
@@ -120,7 +129,7 @@ class Item extends Model
             ->where('estimate_item_id', null);
     }
 
-    public function scopeWhereCompany($query)
+    public function scopeWhereCompany(Builder $query): void
     {
         $query->where('items.company_id', request()->header('company'));
     }

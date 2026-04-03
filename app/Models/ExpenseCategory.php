@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -31,34 +34,37 @@ class ExpenseCategory extends Model
         return $this->belongsTo(Company::class);
     }
 
-    public function getFormattedCreatedAtAttribute($value)
+    public function getFormattedCreatedAtAttribute(mixed $value): string
     {
         $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id);
 
         return Carbon::parse($this->created_at)->format($dateFormat);
     }
 
-    public function getAmountAttribute()
+    public function getAmountAttribute(): float
     {
         return $this->expenses()->sum('amount');
     }
 
-    public function scopeWhereCompany($query)
+    public function scopeWhereCompany(Builder $query): void
     {
         $query->where('company_id', request()->header('company'));
     }
 
-    public function scopeWhereCategory($query, $category_id)
+    public function scopeWhereCategory(Builder $query, int $category_id): void
     {
         $query->orWhere('id', $category_id);
     }
 
-    public function scopeWhereSearch($query, $search)
+    public function scopeWhereSearch(Builder $query, string $search): void
     {
         $query->where('name', 'LIKE', '%'.$search.'%');
     }
 
-    public function scopeApplyFilters($query, array $filters)
+    /**
+     * Apply multiple filter conditions including category, company, and search.
+     */
+    public function scopeApplyFilters(Builder $query, array $filters): void
     {
         $filters = collect($filters);
 
@@ -75,7 +81,10 @@ class ExpenseCategory extends Model
         }
     }
 
-    public function scopePaginateData($query, $limit)
+    /**
+     * @return LengthAwarePaginator|Collection
+     */
+    public function scopePaginateData(Builder $query, string $limit)
     {
         if ($limit == 'all') {
             return $query->get();
