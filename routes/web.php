@@ -34,6 +34,9 @@ Route::post('login', [LoginController::class, 'login']);
 
 Route::post('auth/logout', function () {
     Auth::guard('web')->logout();
+
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
 });
 
 // Customer auth
