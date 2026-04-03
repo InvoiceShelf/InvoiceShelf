@@ -52,7 +52,13 @@ class InvitationService
             'expires_at' => Carbon::now()->addDays(7),
         ]);
 
-        Mail::to($email)->send(new CompanyInvitationMail($invitation));
+        $invitation->load(['company', 'role', 'invitedBy']);
+
+        try {
+            Mail::to($email)->send(new CompanyInvitationMail($invitation));
+        } catch (\Exception $e) {
+            \Log::warning('Failed to send invitation email to '.$email.': '.$e->getMessage());
+        }
 
         return $invitation;
     }
