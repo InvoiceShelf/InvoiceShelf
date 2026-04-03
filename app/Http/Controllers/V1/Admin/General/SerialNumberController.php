@@ -7,17 +7,12 @@ use App\Models\Estimate;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Services\SerialNumberService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
-class NextNumberController extends Controller
+class SerialNumberController extends Controller
 {
-    /**
-     * Handle the incoming request.
-     *
-     * @return Response
-     */
-    public function __invoke(Request $request, Invoice $invoice, Estimate $estimate, Payment $payment)
+    public function nextNumber(Request $request, Invoice $invoice, Estimate $estimate, Payment $payment): JsonResponse
     {
         $key = $request->key;
         $nextNumber = null;
@@ -49,7 +44,9 @@ class NextNumberController extends Controller
                     break;
 
                 default:
-                    return;
+                    return response()->json([
+                        'success' => false,
+                    ]);
             }
         } catch (\Exception $exception) {
             return response()->json([
@@ -61,6 +58,20 @@ class NextNumberController extends Controller
         return response()->json([
             'success' => true,
             'nextNumber' => $nextNumber,
+        ]);
+    }
+
+    public function placeholders(Request $request): JsonResponse
+    {
+        if ($request->format) {
+            $placeholders = SerialNumberService::getPlaceholders($request->format);
+        } else {
+            $placeholders = [];
+        }
+
+        return response()->json([
+            'success' => true,
+            'placeholders' => $placeholders,
         ]);
     }
 }

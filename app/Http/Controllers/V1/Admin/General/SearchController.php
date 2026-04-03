@@ -36,4 +36,15 @@ class SearchController extends Controller
             'users' => $users ?? [],
         ]);
     }
+
+    public function users(Request $request)
+    {
+        $this->authorize('create', User::class);
+
+        $users = User::whereEmail($request->email)
+            ->latest()
+            ->paginate(10);
+
+        return response()->json(['users' => $users]);
+    }
 }

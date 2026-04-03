@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\V1\Admin\General;
+namespace App\Http\Controllers\V1\SuperAdmin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CountryResource;

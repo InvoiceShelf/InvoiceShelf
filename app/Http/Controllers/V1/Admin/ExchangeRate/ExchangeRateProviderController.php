@@ -3,12 +3,17 @@
 namespace App\Http\Controllers\V1\Admin\ExchangeRate;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BulkExchangeRateRequest;
 use App\Http\Requests\ExchangeRateProviderRequest;
 use App\Http\Resources\ExchangeRateProviderResource;
 use App\Models\CompanySetting;
 use App\Models\Currency;
+use App\Models\Estimate;
 use App\Models\ExchangeRateLog;
 use App\Models\ExchangeRateProvider;
+use App\Models\Invoice;
+use App\Models\Payment;
+use App\Models\Tax;
 use App\Traits\ExchangeRateProvidersTrait;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -216,5 +221,127 @@ class ExchangeRateProviderController extends Controller
             'allUsedCurrencies' => $allExchangeRateProvider ? $allExchangeRateProvider : [],
             'activeUsedCurrencies' => $activeExchangeRateProvider ? $activeExchangeRateProvider : [],
         ]);
+    }
+
+    public function usedCurrenciesWithoutRate(Request $request)
+    {
+        $invoices = Invoice::where('exchange_rate', null)->pluck('currency_id')->toArray();
+        $taxes = Tax::where('exchange_rate', null)->pluck('currency_id')->toArray();
+        $estimates = Estimate::where('exchange_rate', null)->pluck('currency_id')->toArray();
+        $payments = Payment::where('exchange_rate', null)->pluck('currency_id')->toArray();
+
+        $currencies = array_merge($invoices, $taxes, $estimates, $payments);
+
+        return response()->json([
+            'currencies' => Currency::whereIn('id', $currencies)->get(),
+        ]);
+    }
+
+    public function bulkUpdate(BulkExchangeRateRequest $request)
+    {
+        $bulkExchangeRate = CompanySetting::getSetting('bulk_exchange_rate_configured', $request->header('company'));
+
+        if ($bulkExchangeRate == 'NO') {
+            if ($request->currencies) {
+                foreach ($request->currencies as $currency) {
+                    $currency['exchange_rate'] = $currency['exchange_rate'] ?? 1;
+
+                    $invoices = Invoice::where('currency_id', $currency['id'])->get();
+
+                    if ($invoices) {
+                        foreach ($invoices as $invoice) {
+                            $invoice->update([
+                                'exchange_rate' => $currency['exchange_rate'],
+                                'base_discount_val' => $invoice->sub_total * $currency['exchange_rate'],
+                                'base_sub_total' => $invoice->sub_total * $currency['exchange_rate'],
+                                'base_total' => $invoice->total * $currency['exchange_rate'],
+                                'base_tax' => $invoice->tax * $currency['exchange_rate'],
+                                'base_due_amount' => $invoice->due_amount * $currency['exchange_rate'],
+                            ]);
+
+                            $this->updateItemsExchangeRate($invoice);
+                        }
+                    }
+
+                    $estimates = Estimate::where('currency_id', $currency['id'])->get();
+
+                    if ($estimates) {
+                        foreach ($estimates as $estimate) {
+                            $estimate->update([
+                                'exchange_rate' => $currency['exchange_rate'],
+                                'base_discount_val' => $estimate->sub_total * $currency['exchange_rate'],
+                                'base_sub_total' => $estimate->sub_total * $currency['exchange_rate'],
+                                'base_total' => $estimate->total * $currency['exchange_rate'],
+                                'base_tax' => $estimate->tax * $currency['exchange_rate'],
+                            ]);
+
+                            $this->updateItemsExchangeRate($estimate);
+                        }
+                    }
+
+                    $taxes = Tax::where('currency_id', $currency['id'])->get();
+
+                    if ($taxes) {
+                        foreach ($taxes as $tax) {
+                            $tax->base_amount = $tax->base_amount * $currency['exchange_rate'];
+                            $tax->save();
+                        }
+                    }
+
+                    $payments = Payment::where('currency_id', $currency['id'])->get();
+
+                    if ($payments) {
+                        foreach ($payments as $payment) {
+                            $payment->exchange_rate = $currency['exchange_rate'];
+                            $payment->base_amount = $payment->amount * $currency['exchange_rate'];
+                            $payment->save();
+                        }
+                    }
+                }
+            }
+
+            $settings = [
+                'bulk_exchange_rate_configured' => 'YES',
+            ];
+
+            CompanySetting::setSettings($settings, $request->header('company'));
+
+            return response()->json([
+                'success' => true,
+            ]);
+        }
+
+        return response()->json([
+            'error' => false,
+        ]);
+    }
+
+    private function updateItemsExchangeRate($model): void
+    {
+        foreach ($model->items as $item) {
+            $item->update([
+                'exchange_rate' => $model->exchange_rate,
+                'base_discount_val' => $item->discount_val * $model->exchange_rate,
+                'base_price' => $item->price * $model->exchange_rate,
+                'base_tax' => $item->tax * $model->exchange_rate,
+                'base_total' => $item->total * $model->exchange_rate,
+            ]);
+
+            $this->updateTaxesExchangeRate($item);
+        }
+
+        $this->updateTaxesExchangeRate($model);
+    }
+
+    private function updateTaxesExchangeRate($model): void
+    {
+        if ($model->taxes()->exists()) {
+            $model->taxes->map(function ($tax) use ($model) {
+                $tax->update([
+                    'exchange_rate' => $model->exchange_rate,
+                    'base_amount' => $tax->amount * $model->exchange_rate,
+                ]);
+            });
+        }
     }
 }

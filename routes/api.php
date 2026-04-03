@@ -14,19 +14,11 @@ use App\Http\Controllers\V1\Admin\ExchangeRate\ExchangeRateProviderController;
 use App\Http\Controllers\V1\Admin\Expense\ExpenseCategoriesController;
 use App\Http\Controllers\V1\Admin\Expense\ExpensesController;
 use App\Http\Controllers\V1\Admin\General\BootstrapController;
-use App\Http\Controllers\V1\Admin\General\BulkExchangeRateController;
 use App\Http\Controllers\V1\Admin\General\ConfigController;
-use App\Http\Controllers\V1\Admin\General\CountriesController;
-use App\Http\Controllers\V1\Admin\General\CurrenciesController;
-use App\Http\Controllers\V1\Admin\General\DateFormatsController;
-use App\Http\Controllers\V1\Admin\General\GetAllUsedCurrenciesController;
-use App\Http\Controllers\V1\Admin\General\NextNumberController;
+use App\Http\Controllers\V1\Admin\General\FormatsController;
 use App\Http\Controllers\V1\Admin\General\NotesController;
-use App\Http\Controllers\V1\Admin\General\NumberPlaceholdersController;
 use App\Http\Controllers\V1\Admin\General\SearchController;
-use App\Http\Controllers\V1\Admin\General\SearchUsersController;
-use App\Http\Controllers\V1\Admin\General\TimeFormatsController;
-use App\Http\Controllers\V1\Admin\General\TimezonesController;
+use App\Http\Controllers\V1\Admin\General\SerialNumberController;
 use App\Http\Controllers\V1\Admin\Invoice\InvoicesController;
 use App\Http\Controllers\V1\Admin\Invoice\InvoiceTemplatesController;
 use App\Http\Controllers\V1\Admin\Item\ItemsController;
@@ -67,6 +59,8 @@ use App\Http\Controllers\V1\Installation\OnboardingWizardController;
 use App\Http\Controllers\V1\Installation\RequirementsController;
 use App\Http\Controllers\V1\SuperAdmin\Backup\BackupsController;
 use App\Http\Controllers\V1\SuperAdmin\Backup\DownloadBackupController;
+use App\Http\Controllers\V1\SuperAdmin\CountriesController;
+use App\Http\Controllers\V1\SuperAdmin\CurrenciesController;
 use App\Http\Controllers\V1\SuperAdmin\Modules\ApiTokenController;
 use App\Http\Controllers\V1\SuperAdmin\Modules\CompleteModuleInstallationController;
 use App\Http\Controllers\V1\SuperAdmin\Modules\CopyModuleController;
@@ -199,9 +193,9 @@ Route::prefix('/v1')->group(function () {
             // ----------------------------------
 
             Route::prefix('/currencies')->group(function () {
-                Route::get('/used', GetAllUsedCurrenciesController::class);
+                Route::get('/used', [ExchangeRateProviderController::class, 'usedCurrenciesWithoutRate']);
 
-                Route::post('/bulk-update-exchange-rate', BulkExchangeRateController::class);
+                Route::post('/bulk-update-exchange-rate', [ExchangeRateProviderController::class, 'bulkUpdate']);
             });
 
             // Dashboard
@@ -219,7 +213,7 @@ Route::prefix('/v1')->group(function () {
 
             Route::get('/search', SearchController::class);
 
-            Route::get('/search/user', SearchUsersController::class);
+            Route::get('/search/user', [SearchController::class, 'users']);
 
             // MISC
             // ----------------------------------
@@ -228,15 +222,15 @@ Route::prefix('/v1')->group(function () {
 
             Route::get('/currencies', CurrenciesController::class);
 
-            Route::get('/timezones', TimezonesController::class);
+            Route::get('/timezones', [FormatsController::class, 'timezones']);
 
-            Route::get('/date/formats', DateFormatsController::class);
+            Route::get('/date/formats', [FormatsController::class, 'dateFormats']);
 
-            Route::get('/time/formats', TimeFormatsController::class);
+            Route::get('/time/formats', [FormatsController::class, 'timeFormats']);
 
-            Route::get('/next-number', NextNumberController::class);
+            Route::get('/next-number', [SerialNumberController::class, 'nextNumber']);
 
-            Route::get('/number-placeholders', NumberPlaceholdersController::class);
+            Route::get('/number-placeholders', [SerialNumberController::class, 'placeholders']);
 
             Route::get('/current-company', [CompaniesController::class, 'show']);
 
