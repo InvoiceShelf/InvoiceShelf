@@ -181,3 +181,17 @@ test('cannot update customer from another company', function () {
     ])->assertForbidden();
 });
 
+test('cannot bulk delete customer from another company', function () {
+    $otherCompany = Company::factory()->create();
+    $otherCustomer = Customer::factory()->create([
+        'company_id' => $otherCompany->id,
+    ]);
+
+    postJson('api/v1/customers/delete', [
+        'ids' => [$otherCustomer->id],
+    ])->assertOk();
+
+    $this->assertDatabaseHas('customers', [
+        'id' => $otherCustomer->id,
+    ]);
+});

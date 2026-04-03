@@ -92,7 +92,11 @@ class CustomersController extends Controller
     {
         $this->authorize('delete multiple customers');
 
-        Customer::deleteCustomers($request->ids);
+        $ids = Customer::whereCompany()
+            ->whereIn('id', $request->ids)
+            ->pluck('id');
+
+        Customer::deleteCustomers($ids);
 
         return response()->json([
             'success' => true,
