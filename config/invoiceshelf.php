@@ -131,16 +131,6 @@ return [
     */
     'setting_menu' => [
         [
-            'title' => 'settings.menu_title.account_settings',
-            'group' => '',
-            'name' => 'Account Settings',
-            'link' => '/admin/settings/account-settings',
-            'icon' => 'UserIcon',
-            'owner_only' => false,
-            'ability' => '',
-            'model' => '',
-        ],
-        [
             'title' => 'settings.menu_title.company_information',
             'group' => '',
             'name' => 'Company information',

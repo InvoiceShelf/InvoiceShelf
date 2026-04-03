@@ -23,8 +23,8 @@ const CustomerView = () => import('@/scripts/admin/views/customers/View.vue')
 //Settings
 const SettingsIndex = () =>
   import('@/scripts/admin/views/settings/SettingsIndex.vue')
-const AccountSetting = () =>
-  import('@/scripts/admin/views/settings/AccountSetting.vue')
+const UserSettingsIndex = () =>
+  import('@/scripts/admin/views/user-settings/UserSettingsIndex.vue')
 const CompanyInfo = () =>
   import('@/scripts/admin/views/settings/CompanyInfoSettings.vue')
 const Preferences = () =>
@@ -243,17 +243,19 @@ export default [
         component: PaymentView,
       },
 
+      // user settings
+      {
+        path: 'user-settings',
+        name: 'user.settings',
+        component: UserSettingsIndex,
+      },
+
       //settings
       {
         path: 'settings',
         name: 'settings',
         component: SettingsIndex,
         children: [
-          {
-            path: 'account-settings',
-            name: 'account.settings',
-            component: AccountSetting,
-          },
           {
             path: 'company-info',
             name: 'company.info',

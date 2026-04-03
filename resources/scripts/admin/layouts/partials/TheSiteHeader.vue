@@ -147,7 +147,7 @@
             />
           </template>
 
-          <router-link to="/admin/settings/account-settings">
+          <router-link to="/admin/user-settings">
             <BaseDropdownItem>
               <BaseIcon
                 name="CogIcon"

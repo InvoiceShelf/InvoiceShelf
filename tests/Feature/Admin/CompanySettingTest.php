@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\V1\Admin\Settings\CompanyController;
+use App\Http\Controllers\V1\Admin\Settings\UserProfileController;
 use App\Http\Requests\CompanyRequest;
 use App\Http\Requests\ProfileRequest;
 use App\Models\Invoice;
@@ -35,8 +36,8 @@ test('get profile', function () {
 
 test('update profile using a form request', function () {
     $this->assertActionUsesFormRequest(
-        CompanyController::class,
-        'updateProfile',
+        UserProfileController::class,
+        'update',
         ProfileRequest::class
     );
 });

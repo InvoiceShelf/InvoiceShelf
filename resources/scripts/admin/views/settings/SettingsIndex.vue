@@ -5,7 +5,7 @@
         <BaseBreadcrumbItem :title="$t('general.home')" to="/admin/dashboard" />
         <BaseBreadcrumbItem
           :title="$t('settings.setting', 2)"
-          to="/admin/settings/account-settings"
+          to="/admin/settings/company-info"
           active
         />
       </BaseBreadcrumb>
@@ -75,7 +75,7 @@ const dropdownMenuItems = computed(() => {
 
 watchEffect(() => {
   if (route.path === '/admin/settings') {
-    router.push('/admin/settings/account-settings')
+    router.push('/admin/settings/company-info')
   }
 
   const item = dropdownMenuItems.value.find((item) => {

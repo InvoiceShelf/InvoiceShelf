@@ -3,48 +3,13 @@
 namespace App\Http\Controllers\V1\Admin\Settings;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AvatarRequest;
 use App\Http\Requests\CompanyLogoRequest;
 use App\Http\Requests\CompanyRequest;
-use App\Http\Requests\ProfileRequest;
 use App\Http\Resources\CompanyResource;
-use App\Http\Resources\UserResource;
 use App\Models\Company;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class CompanyController extends Controller
 {
-    /**
-     * Retrive the Admin account.
-     *
-     * @return JsonResponse
-     */
-    public function getUser(Request $request)
-    {
-        return new UserResource($request->user());
-    }
-
-    /**
-     * Update the Admin profile.
-     * Includes name, email and (or) password
-     *
-     * @return JsonResponse
-     */
-    public function updateProfile(ProfileRequest $request)
-    {
-        $user = $request->user();
-
-        $user->update($request->validated());
-
-        return new UserResource($user);
-    }
-
-    /**
-     * Update Admin Company Details
-     *
-     * @return JsonResponse
-     */
     public function updateCompany(CompanyRequest $request)
     {
         $company = Company::find($request->header('company'));
@@ -58,11 +23,6 @@ class CompanyController extends Controller
         return new CompanyResource($company);
     }
 
-    /**
-     * Upload the company logo to storage.
-     *
-     * @return JsonResponse
-     */
     public function uploadCompanyLogo(CompanyLogoRequest $request)
     {
         $company = Company::find($request->header('company'));
@@ -89,36 +49,5 @@ class CompanyController extends Controller
         return response()->json([
             'success' => true,
         ]);
-    }
-
-    /**
-     * Upload the Admin Avatar to public storage.
-     *
-     * @return JsonResponse
-     */
-    public function uploadAvatar(AvatarRequest $request)
-    {
-        $user = auth()->user();
-
-        if (isset($request->is_admin_avatar_removed) && (bool) $request->is_admin_avatar_removed) {
-            $user->clearMediaCollection('admin_avatar');
-        }
-        if ($user && $request->hasFile('admin_avatar')) {
-            $user->clearMediaCollection('admin_avatar');
-
-            $user->addMediaFromRequest('admin_avatar')
-                ->toMediaCollection('admin_avatar');
-        }
-
-        if ($user && $request->has('avatar')) {
-            $data = json_decode($request->avatar);
-            $user->clearMediaCollection('admin_avatar');
-
-            $user->addMediaFromBase64($data->data)
-                ->usingFileName($data->name)
-                ->toMediaCollection('admin_avatar');
-        }
-
-        return new UserResource($user);
     }
 }

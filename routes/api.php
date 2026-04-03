@@ -61,6 +61,7 @@ use App\Http\Controllers\V1\Admin\Settings\CompanyCurrencyCheckTransactionsContr
 use App\Http\Controllers\V1\Admin\Settings\CompanyMailConfigurationController;
 use App\Http\Controllers\V1\Admin\Settings\CompanySettingsController;
 use App\Http\Controllers\V1\Admin\Settings\TaxTypesController;
+use App\Http\Controllers\V1\Admin\Settings\UserProfileController;
 use App\Http\Controllers\V1\Admin\Settings\UserSettingsController;
 use App\Http\Controllers\V1\Admin\Users\UsersController;
 use App\Http\Controllers\V1\Customer\Auth\ForgotPasswordController as AuthForgotPasswordController;
@@ -378,15 +379,15 @@ Route::prefix('/v1')->group(function () {
             // Settings
             // ----------------------------------
 
-            Route::get('/me', [CompanyController::class, 'getUser']);
+            Route::get('/me', [UserProfileController::class, 'show']);
 
-            Route::put('/me', [CompanyController::class, 'updateProfile']);
+            Route::put('/me', [UserProfileController::class, 'update']);
 
             Route::get('/me/settings', [UserSettingsController::class, 'show']);
 
             Route::put('/me/settings', [UserSettingsController::class, 'update']);
 
-            Route::post('/me/upload-avatar', [CompanyController::class, 'uploadAvatar']);
+            Route::post('/me/upload-avatar', [UserProfileController::class, 'uploadAvatar']);
 
             Route::put('/company', [CompanyController::class, 'updateCompany']);
 
