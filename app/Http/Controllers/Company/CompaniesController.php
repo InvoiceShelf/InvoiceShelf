@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Company\Company;
+namespace App\Http\Controllers\Company;
 
 use App\Facades\Hashids;
 use App\Http\Controllers\Controller;

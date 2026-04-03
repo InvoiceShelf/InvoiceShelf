@@ -14,7 +14,7 @@ use App\Http\Controllers\AppVersionController;
 use App\Http\Controllers\Company\Auth\AuthController;
 use App\Http\Controllers\Company\Auth\ForgotPasswordController;
 use App\Http\Controllers\Company\Auth\ResetPasswordController;
-use App\Http\Controllers\Company\Company\CompaniesController;
+use App\Http\Controllers\Company\CompaniesController;
 use App\Http\Controllers\Company\Customer\CustomersController;
 use App\Http\Controllers\Company\Customer\CustomerStatsController;
 use App\Http\Controllers\Company\CustomField\CustomFieldsController;
