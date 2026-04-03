@@ -5,11 +5,13 @@ namespace App\Http\Controllers\V1\Admin\Payment;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DeletePaymentsRequest;
 use App\Http\Requests\PaymentRequest;
+use App\Http\Requests\SendPaymentRequest;
 use App\Http\Resources\PaymentResource;
 use App\Models\Payment;
 use App\Services\PaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Mail\Markdown;
 
 class PaymentsController extends Controller
 {
@@ -87,5 +89,26 @@ class PaymentsController extends Controller
         return response()->json([
             'success' => true,
         ]);
+    }
+
+    public function send(SendPaymentRequest $request, Payment $payment)
+    {
+        $this->authorize('send payment', $payment);
+
+        $response = $this->paymentService->send($payment, $request->all());
+
+        return response()->json($response);
+    }
+
+    public function sendPreview(Request $request, Payment $payment)
+    {
+        $this->authorize('send payment', $payment);
+
+        $markdown = new Markdown(view(), config('mail.markdown'));
+
+        $data = $this->paymentService->sendPaymentData($payment, $request->all());
+        $data['url'] = $payment->paymentPdfUrl;
+
+        return $markdown->render('emails.send.payment', ['data' => $data]);
     }
 }

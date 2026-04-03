@@ -5,11 +5,15 @@ namespace App\Http\Controllers\V1\Admin\Estimate;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DeleteEstimatesRequest;
 use App\Http\Requests\EstimatesRequest;
+use App\Http\Requests\SendEstimatesRequest;
 use App\Http\Resources\EstimateResource;
+use App\Http\Resources\InvoiceResource;
 use App\Jobs\GenerateEstimatePdfJob;
 use App\Models\Estimate;
+use App\Models\Invoice;
 use App\Services\EstimateService;
 use Illuminate\Http\Request;
+use Illuminate\Mail\Markdown;
 
 class EstimatesController extends Controller
 {
@@ -78,6 +82,57 @@ class EstimatesController extends Controller
             ->pluck('id');
 
         Estimate::destroy($ids);
+
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+
+    public function send(SendEstimatesRequest $request, Estimate $estimate)
+    {
+        $this->authorize('send estimate', $estimate);
+
+        $response = $this->estimateService->send($estimate, $request->all());
+
+        return response()->json($response);
+    }
+
+    public function sendPreview(SendEstimatesRequest $request, Estimate $estimate)
+    {
+        $this->authorize('send estimate', $estimate);
+
+        $markdown = new Markdown(view(), config('mail.markdown'));
+
+        $data = $this->estimateService->sendEstimateData($estimate, $request->all());
+        $data['url'] = $estimate->estimatePdfUrl;
+
+        return $markdown->render('emails.send.estimate', ['data' => $data]);
+    }
+
+    public function clone(Request $request, Estimate $estimate)
+    {
+        $this->authorize('view', $estimate);
+        $this->authorize('create', Estimate::class);
+
+        $newEstimate = $this->estimateService->clone($estimate);
+
+        return new EstimateResource($newEstimate);
+    }
+
+    public function convertToInvoice(Request $request, Estimate $estimate)
+    {
+        $this->authorize('create', Invoice::class);
+
+        $invoice = $this->estimateService->convertToInvoice($estimate);
+
+        return new InvoiceResource($invoice);
+    }
+
+    public function changeStatus(Request $request, Estimate $estimate)
+    {
+        $this->authorize('send estimate', $estimate);
+
+        $this->estimateService->changeStatus($estimate, $request->status);
 
         return response()->json([
             'success' => true,

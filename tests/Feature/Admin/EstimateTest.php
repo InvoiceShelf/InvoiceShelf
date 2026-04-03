@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\V1\Admin\Estimate\EstimatesController;
-use App\Http\Controllers\V1\Admin\Estimate\SendEstimateController;
 use App\Http\Requests\DeleteEstimatesRequest;
 use App\Http\Requests\EstimatesRequest;
 use App\Http\Requests\SendEstimatesRequest;
@@ -156,8 +155,8 @@ test('search estimates', function () {
 
 test('send estimate using a form request', function () {
     $this->assertActionUsesFormRequest(
-        SendEstimateController::class,
-        '__invoke',
+        EstimatesController::class,
+        'send',
         SendEstimatesRequest::class
     );
 });

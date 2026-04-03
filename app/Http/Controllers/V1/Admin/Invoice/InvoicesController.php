@@ -5,12 +5,14 @@ namespace App\Http\Controllers\V1\Admin\Invoice;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use App\Http\Requests\DeleteInvoiceRequest;
+use App\Http\Requests\SendInvoiceRequest;
 use App\Http\Resources\InvoiceResource;
 use App\Jobs\GenerateInvoicePdfJob;
 use App\Models\Invoice;
 use App\Services\InvoiceService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Mail\Markdown;
 
 class InvoicesController extends Controller
 {
@@ -106,6 +108,50 @@ class InvoicesController extends Controller
             ->pluck('id');
 
         $this->invoiceService->delete($ids);
+
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+
+    public function send(SendInvoiceRequest $request, Invoice $invoice)
+    {
+        $this->authorize('send invoice', $invoice);
+
+        $this->invoiceService->send($invoice, $request->all());
+
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+
+    public function sendPreview(SendInvoiceRequest $request, Invoice $invoice)
+    {
+        $this->authorize('send invoice', $invoice);
+
+        $markdown = new Markdown(view(), config('mail.markdown'));
+
+        $data = $this->invoiceService->sendInvoiceData($invoice, $request->all());
+        $data['url'] = $invoice->invoicePdfUrl;
+
+        return $markdown->render('emails.send.invoice', ['data' => $data]);
+    }
+
+    public function clone(Request $request, Invoice $invoice)
+    {
+        $this->authorize('view', $invoice);
+        $this->authorize('create', Invoice::class);
+
+        $newInvoice = $this->invoiceService->clone($invoice);
+
+        return new InvoiceResource($newInvoice);
+    }
+
+    public function changeStatus(Request $request, Invoice $invoice)
+    {
+        $this->authorize('send invoice', $invoice);
+
+        $this->invoiceService->changeStatus($invoice, $request->status);
 
         return response()->json([
             'success' => true,

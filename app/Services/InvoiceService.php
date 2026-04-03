@@ -12,6 +12,7 @@ use App\Models\CustomField;
 use App\Models\ExchangeRateLog;
 use App\Models\Invoice;
 use App\Services\Pdf\PdfTemplateUtils;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
@@ -263,5 +264,104 @@ class InvoiceService
         }
 
         return Pdf::loadView($templatePath);
+    }
+
+    public function clone(Invoice $invoice): Invoice
+    {
+        $date = Carbon::now();
+
+        $serial = (new SerialNumberService)
+            ->setModel($invoice)
+            ->setCompany($invoice->company_id)
+            ->setCustomer($invoice->customer_id)
+            ->setNextNumbers();
+
+        $dueDate = null;
+        $dueDateEnabled = CompanySetting::getSetting(
+            'invoice_set_due_date_automatically',
+            $invoice->company_id
+        );
+
+        if ($dueDateEnabled === 'YES') {
+            $dueDateDays = intval(CompanySetting::getSetting(
+                'invoice_due_date_days',
+                $invoice->company_id
+            ));
+            $dueDate = Carbon::now()->addDays($dueDateDays)->format('Y-m-d');
+        }
+
+        $exchangeRate = $invoice->exchange_rate;
+
+        $newInvoice = Invoice::create([
+            'invoice_date' => $date->format('Y-m-d'),
+            'due_date' => $dueDate,
+            'invoice_number' => $serial->getNextNumber(),
+            'sequence_number' => $serial->nextSequenceNumber,
+            'customer_sequence_number' => $serial->nextCustomerSequenceNumber,
+            'reference_number' => $invoice->reference_number,
+            'customer_id' => $invoice->customer_id,
+            'company_id' => $invoice->company_id,
+            'template_name' => $invoice->template_name,
+            'status' => Invoice::STATUS_DRAFT,
+            'paid_status' => Invoice::STATUS_UNPAID,
+            'sub_total' => $invoice->sub_total,
+            'discount' => $invoice->discount,
+            'discount_type' => $invoice->discount_type,
+            'discount_val' => $invoice->discount_val,
+            'total' => $invoice->total,
+            'due_amount' => $invoice->total,
+            'tax_per_item' => $invoice->tax_per_item,
+            'discount_per_item' => $invoice->discount_per_item,
+            'tax' => $invoice->tax,
+            'notes' => $invoice->notes,
+            'exchange_rate' => $exchangeRate,
+            'base_total' => $invoice->total * $exchangeRate,
+            'base_discount_val' => $invoice->discount_val * $exchangeRate,
+            'base_sub_total' => $invoice->sub_total * $exchangeRate,
+            'base_tax' => $invoice->tax * $exchangeRate,
+            'base_due_amount' => $invoice->total * $exchangeRate,
+            'currency_id' => $invoice->currency_id,
+            'sales_tax_type' => $invoice->sales_tax_type,
+            'sales_tax_address_type' => $invoice->sales_tax_address_type,
+        ]);
+
+        $newInvoice->unique_hash = Hashids::connection(Invoice::class)->encode($newInvoice->id);
+        $newInvoice->save();
+
+        $invoice->load('items.taxes');
+        $this->documentItemService->createItems($newInvoice, $invoice->items->toArray());
+
+        if ($invoice->taxes) {
+            $this->documentItemService->createTaxes($newInvoice, $invoice->taxes->toArray());
+        }
+
+        if ($invoice->fields()->exists()) {
+            $customFields = [];
+
+            foreach ($invoice->fields as $data) {
+                $customFields[] = [
+                    'id' => $data->custom_field_id,
+                    'value' => $data->defaultAnswer,
+                ];
+            }
+
+            $newInvoice->addCustomFields($customFields);
+        }
+
+        return $newInvoice;
+    }
+
+    public function changeStatus(Invoice $invoice, string $status): void
+    {
+        if ($status == Invoice::STATUS_SENT) {
+            $invoice->status = Invoice::STATUS_SENT;
+            $invoice->sent = true;
+            $invoice->save();
+        } elseif ($status == Invoice::STATUS_COMPLETED) {
+            $invoice->status = Invoice::STATUS_COMPLETED;
+            $invoice->paid_status = Invoice::STATUS_PAID;
+            $invoice->due_amount = 0;
+            $invoice->save();
+        }
     }
 }

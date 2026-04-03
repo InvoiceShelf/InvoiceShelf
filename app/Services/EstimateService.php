@@ -11,8 +11,11 @@ use App\Models\CompanySetting;
 use App\Models\CustomField;
 use App\Models\Estimate;
 use App\Models\ExchangeRateLog;
+use App\Models\Invoice;
 use App\Services\Pdf\PdfTemplateUtils;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EstimateService
 {
@@ -198,5 +201,170 @@ class EstimateService
         }
 
         return Pdf::loadView($templatePath);
+    }
+
+    public function clone(Estimate $estimate): Estimate
+    {
+        $date = Carbon::now();
+
+        $serial = (new SerialNumberService)
+            ->setModel($estimate)
+            ->setCompany($estimate->company_id)
+            ->setCustomer($estimate->customer_id)
+            ->setNextNumbers();
+
+        $expiryDate = null;
+        $expiryEnabled = CompanySetting::getSetting(
+            'estimate_set_expiry_date_automatically',
+            $estimate->company_id
+        );
+
+        if ($expiryEnabled === 'YES') {
+            $expiryDays = intval(CompanySetting::getSetting(
+                'estimate_expiry_date_days',
+                $estimate->company_id
+            ));
+            $expiryDate = Carbon::now()->addDays($expiryDays)->format('Y-m-d');
+        }
+
+        $exchangeRate = $estimate->exchange_rate;
+
+        $newEstimate = Estimate::create([
+            'estimate_date' => $date->format('Y-m-d'),
+            'expiry_date' => $expiryDate,
+            'estimate_number' => $serial->getNextNumber(),
+            'sequence_number' => $serial->nextSequenceNumber,
+            'customer_sequence_number' => $serial->nextCustomerSequenceNumber,
+            'reference_number' => $estimate->reference_number,
+            'customer_id' => $estimate->customer_id,
+            'company_id' => $estimate->company_id,
+            'template_name' => $estimate->template_name,
+            'status' => Estimate::STATUS_DRAFT,
+            'sub_total' => $estimate->sub_total,
+            'discount' => $estimate->discount,
+            'discount_type' => $estimate->discount_type,
+            'discount_val' => $estimate->discount_val,
+            'total' => $estimate->total,
+            'due_amount' => $estimate->total,
+            'tax_per_item' => $estimate->tax_per_item,
+            'discount_per_item' => $estimate->discount_per_item,
+            'tax' => $estimate->tax,
+            'notes' => $estimate->notes,
+            'exchange_rate' => $exchangeRate,
+            'base_total' => $estimate->total * $exchangeRate,
+            'base_discount_val' => $estimate->discount_val * $exchangeRate,
+            'base_sub_total' => $estimate->sub_total * $exchangeRate,
+            'base_tax' => $estimate->tax * $exchangeRate,
+            'base_due_amount' => $estimate->total * $exchangeRate,
+            'currency_id' => $estimate->currency_id,
+            'sales_tax_type' => $estimate->sales_tax_type,
+            'sales_tax_address_type' => $estimate->sales_tax_address_type,
+        ]);
+
+        $newEstimate->unique_hash = Hashids::connection(Estimate::class)->encode($newEstimate->id);
+        $newEstimate->save();
+
+        $estimate->load('items.taxes');
+        $this->documentItemService->createItems($newEstimate, $estimate->items->toArray());
+
+        if ($estimate->taxes) {
+            $this->documentItemService->createTaxes($newEstimate, $estimate->taxes->toArray());
+        }
+
+        if ($estimate->fields()->exists()) {
+            $customFields = [];
+
+            foreach ($estimate->fields as $data) {
+                $customFields[] = [
+                    'id' => $data->custom_field_id,
+                    'value' => $data->defaultAnswer,
+                ];
+            }
+
+            $newEstimate->addCustomFields($customFields);
+        }
+
+        return $newEstimate;
+    }
+
+    public function convertToInvoice(Estimate $estimate): Invoice
+    {
+        $estimate->load(['items', 'items.taxes', 'customer', 'taxes']);
+
+        $invoiceDate = Carbon::now();
+        $dueDate = null;
+
+        $dueDateEnabled = CompanySetting::getSetting(
+            'invoice_set_due_date_automatically',
+            $estimate->company_id
+        );
+
+        if ($dueDateEnabled === 'YES') {
+            $dueDateDays = intval(CompanySetting::getSetting(
+                'invoice_due_date_days',
+                $estimate->company_id
+            ));
+            $dueDate = Carbon::now()->addDays($dueDateDays)->format('Y-m-d');
+        }
+
+        $serial = (new SerialNumberService)
+            ->setModel(new Invoice)
+            ->setCompany($estimate->company_id)
+            ->setCustomer($estimate->customer_id)
+            ->setNextNumbers();
+
+        $templateName = $estimate->getInvoiceTemplateName();
+        $exchangeRate = $estimate->exchange_rate;
+
+        $invoice = Invoice::create([
+            'creator_id' => Auth::id(),
+            'invoice_date' => $invoiceDate->format('Y-m-d'),
+            'due_date' => $dueDate,
+            'invoice_number' => $serial->getNextNumber(),
+            'sequence_number' => $serial->nextSequenceNumber,
+            'customer_sequence_number' => $serial->nextCustomerSequenceNumber,
+            'reference_number' => $serial->getNextNumber(),
+            'customer_id' => $estimate->customer_id,
+            'company_id' => $estimate->company_id,
+            'template_name' => $templateName,
+            'status' => Invoice::STATUS_DRAFT,
+            'paid_status' => Invoice::STATUS_UNPAID,
+            'sub_total' => $estimate->sub_total,
+            'discount' => $estimate->discount,
+            'discount_type' => $estimate->discount_type,
+            'discount_val' => $estimate->discount_val,
+            'total' => $estimate->total,
+            'due_amount' => $estimate->total,
+            'tax_per_item' => $estimate->tax_per_item,
+            'discount_per_item' => $estimate->discount_per_item,
+            'tax' => $estimate->tax,
+            'notes' => $estimate->notes,
+            'exchange_rate' => $exchangeRate,
+            'base_discount_val' => $estimate->discount_val * $exchangeRate,
+            'base_sub_total' => $estimate->sub_total * $exchangeRate,
+            'base_total' => $estimate->total * $exchangeRate,
+            'base_tax' => $estimate->tax * $exchangeRate,
+            'currency_id' => $estimate->currency_id,
+            'sales_tax_type' => $estimate->sales_tax_type,
+            'sales_tax_address_type' => $estimate->sales_tax_address_type,
+        ]);
+
+        $invoice->unique_hash = Hashids::connection(Invoice::class)->encode($invoice->id);
+        $invoice->save();
+
+        $this->documentItemService->createItems($invoice, $estimate->items->toArray());
+
+        if ($estimate->taxes) {
+            $this->documentItemService->createTaxes($invoice, $estimate->taxes->toArray());
+        }
+
+        $estimate->checkForEstimateConvertAction();
+
+        return Invoice::find($invoice->id);
+    }
+
+    public function changeStatus(Estimate $estimate, string $status): void
+    {
+        $estimate->update(['status' => $status]);
     }
 }

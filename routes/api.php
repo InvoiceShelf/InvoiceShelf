@@ -8,13 +8,8 @@ use App\Http\Controllers\V1\Admin\Customer\CustomersController;
 use App\Http\Controllers\V1\Admin\Customer\CustomerStatsController;
 use App\Http\Controllers\V1\Admin\CustomField\CustomFieldsController;
 use App\Http\Controllers\V1\Admin\Dashboard\DashboardController;
-use App\Http\Controllers\V1\Admin\Estimate\ChangeEstimateStatusController;
-use App\Http\Controllers\V1\Admin\Estimate\CloneEstimateController;
-use App\Http\Controllers\V1\Admin\Estimate\ConvertEstimateController;
 use App\Http\Controllers\V1\Admin\Estimate\EstimatesController;
 use App\Http\Controllers\V1\Admin\Estimate\EstimateTemplatesController;
-use App\Http\Controllers\V1\Admin\Estimate\SendEstimateController;
-use App\Http\Controllers\V1\Admin\Estimate\SendEstimatePreviewController;
 use App\Http\Controllers\V1\Admin\ExchangeRate\ExchangeRateProviderController;
 use App\Http\Controllers\V1\Admin\ExchangeRate\GetActiveProviderController;
 use App\Http\Controllers\V1\Admin\ExchangeRate\GetExchangeRateController;
@@ -38,19 +33,13 @@ use App\Http\Controllers\V1\Admin\General\SearchController;
 use App\Http\Controllers\V1\Admin\General\SearchUsersController;
 use App\Http\Controllers\V1\Admin\General\TimeFormatsController;
 use App\Http\Controllers\V1\Admin\General\TimezonesController;
-use App\Http\Controllers\V1\Admin\Invoice\ChangeInvoiceStatusController;
-use App\Http\Controllers\V1\Admin\Invoice\CloneInvoiceController;
 use App\Http\Controllers\V1\Admin\Invoice\InvoicesController;
 use App\Http\Controllers\V1\Admin\Invoice\InvoiceTemplatesController;
-use App\Http\Controllers\V1\Admin\Invoice\SendInvoiceController;
-use App\Http\Controllers\V1\Admin\Invoice\SendInvoicePreviewController;
 use App\Http\Controllers\V1\Admin\Item\ItemsController;
 use App\Http\Controllers\V1\Admin\Item\UnitsController;
 use App\Http\Controllers\V1\Admin\Mobile\AuthController;
 use App\Http\Controllers\V1\Admin\Payment\PaymentMethodsController;
 use App\Http\Controllers\V1\Admin\Payment\PaymentsController;
-use App\Http\Controllers\V1\Admin\Payment\SendPaymentController;
-use App\Http\Controllers\V1\Admin\Payment\SendPaymentPreviewController;
 use App\Http\Controllers\V1\Admin\RecurringInvoice\RecurringInvoiceController;
 use App\Http\Controllers\V1\Admin\RecurringInvoice\RecurringInvoiceFrequencyController;
 use App\Http\Controllers\V1\Admin\Role\AbilitiesController;
@@ -278,13 +267,13 @@ Route::prefix('/v1')->group(function () {
             // Invoices
             // -------------------------------------------------
 
-            Route::get('/invoices/{invoice}/send/preview', SendInvoicePreviewController::class);
+            Route::get('/invoices/{invoice}/send/preview', [InvoicesController::class, 'sendPreview']);
 
-            Route::post('/invoices/{invoice}/send', SendInvoiceController::class);
+            Route::post('/invoices/{invoice}/send', [InvoicesController::class, 'send']);
 
-            Route::post('/invoices/{invoice}/clone', CloneInvoiceController::class);
+            Route::post('/invoices/{invoice}/clone', [InvoicesController::class, 'clone']);
 
-            Route::post('/invoices/{invoice}/status', ChangeInvoiceStatusController::class);
+            Route::post('/invoices/{invoice}/status', [InvoicesController::class, 'changeStatus']);
 
             Route::post('/invoices/delete', [InvoicesController::class, 'delete']);
 
@@ -304,15 +293,15 @@ Route::prefix('/v1')->group(function () {
             // Estimates
             // -------------------------------------------------
 
-            Route::get('/estimates/{estimate}/send/preview', SendEstimatePreviewController::class);
+            Route::get('/estimates/{estimate}/send/preview', [EstimatesController::class, 'sendPreview']);
 
-            Route::post('/estimates/{estimate}/send', SendEstimateController::class);
+            Route::post('/estimates/{estimate}/send', [EstimatesController::class, 'send']);
 
-            Route::post('/estimates/{estimate}/clone', CloneEstimateController::class);
+            Route::post('/estimates/{estimate}/clone', [EstimatesController::class, 'clone']);
 
-            Route::post('/estimates/{estimate}/status', ChangeEstimateStatusController::class);
+            Route::post('/estimates/{estimate}/status', [EstimatesController::class, 'changeStatus']);
 
-            Route::post('/estimates/{estimate}/convert-to-invoice', ConvertEstimateController::class);
+            Route::post('/estimates/{estimate}/convert-to-invoice', [EstimatesController::class, 'convertToInvoice']);
 
             Route::get('/estimates/templates', EstimateTemplatesController::class);
 
@@ -336,9 +325,9 @@ Route::prefix('/v1')->group(function () {
             // Payments
             // ----------------------------------
 
-            Route::get('/payments/{payment}/send/preview', SendPaymentPreviewController::class);
+            Route::get('/payments/{payment}/send/preview', [PaymentsController::class, 'sendPreview']);
 
-            Route::post('/payments/{payment}/send', SendPaymentController::class);
+            Route::post('/payments/{payment}/send', [PaymentsController::class, 'send']);
 
             Route::post('/payments/delete', [PaymentsController::class, 'delete']);
 
