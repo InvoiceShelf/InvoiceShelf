@@ -148,12 +148,6 @@ export default [
     meta: { requiresAuth: false },
   },
   {
-    path: '/admin/no-company',
-    name: 'no.company',
-    component: NoCompanyView,
-    meta: { requiresAuth: true },
-  },
-  {
     path: '/installation',
     component: LayoutInstallation,
     meta: { requiresAuth: false },
@@ -203,6 +197,11 @@ export default [
     component: LayoutBasic,
     meta: { requiresAuth: true },
     children: [
+      {
+        path: 'no-company',
+        name: 'no.company',
+        component: NoCompanyView,
+      },
       {
         path: 'dashboard',
         name: 'dashboard',

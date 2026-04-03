@@ -6,12 +6,15 @@
 
     <SiteHeader />
 
-    <SiteSidebar />
+    <SiteSidebar v-if="hasCompany" />
 
     <ExchangeRateBulkUpdateModal />
 
     <main
-      class="h-screen h-screen-ios overflow-y-auto md:pl-56 xl:pl-64 min-h-0"
+      :class="[
+        'h-screen h-screen-ios overflow-y-auto min-h-0',
+        hasCompany ? 'md:pl-56 xl:pl-64' : '',
+      ]"
     >
       <div class="pt-16 pb-16">
         <router-view />
@@ -51,8 +54,19 @@ const isAppLoaded = computed(() => {
   return globalStore.isAppLoaded
 })
 
+const hasCompany = computed(() => {
+  return !!companyStore.selectedCompany || !!userStore.currentUser?.is_super_admin
+})
+
 onMounted(() => {
   globalStore.bootstrap().then((res) => {
+    if (!res.data.current_company && !res.data.current_user.is_super_admin) {
+      if (route.name !== 'no.company') {
+        router.push({ name: 'no.company' })
+      }
+      return
+    }
+
     if (route.meta.ability && !userStore.hasAbilities(route.meta.ability)) {
       router.push({ name: 'account.settings' })
     } else if (route.meta.isSuperAdmin && !userStore.currentUser.is_super_admin) {

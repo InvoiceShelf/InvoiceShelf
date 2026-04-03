@@ -79,12 +79,18 @@ export const useGlobalStore = (useWindow = false) => {
 
               // company store
               companyStore.companies = response.data.companies
-              companyStore.selectedCompany = response.data.current_company
-              companyStore.setSelectedCompany(response.data.current_company)
-              companyStore.selectedCompanySettings =
-                response.data.current_company_settings
-              companyStore.selectedCompanyCurrency =
-                response.data.current_company_currency
+
+              if (response.data.current_company) {
+                companyStore.setSelectedCompany(response.data.current_company)
+                companyStore.selectedCompanySettings =
+                  response.data.current_company_settings
+                companyStore.selectedCompanyCurrency =
+                  response.data.current_company_currency
+              } else {
+                companyStore.setSelectedCompany(null)
+                companyStore.selectedCompanySettings = {}
+                companyStore.selectedCompanyCurrency = null
+              }
 
               // Determine and load the appropriate language
               const userLanguage = response.data.current_user_settings?.language

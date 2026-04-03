@@ -18,7 +18,11 @@ export const useCompanyStore = (useWindow = false) => {
 
     actions: {
       setSelectedCompany(data) {
-        window.Ls.set('selectedCompany', data.id)
+        if (data) {
+          window.Ls.set('selectedCompany', data.id)
+        } else {
+          window.Ls.remove('selectedCompany')
+        }
         this.selectedCompany = data
       },
 
