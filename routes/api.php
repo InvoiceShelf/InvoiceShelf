@@ -70,6 +70,7 @@ use App\Http\Controllers\V1\Admin\Role\AbilitiesController;
 use App\Http\Controllers\V1\Admin\Role\RolesController;
 use App\Http\Controllers\V1\Admin\Settings\CompanyController;
 use App\Http\Controllers\V1\Admin\Settings\CompanyCurrencyCheckTransactionsController;
+use App\Http\Controllers\V1\Admin\Settings\CompanyMailConfigurationController;
 use App\Http\Controllers\V1\Admin\Settings\DiskController;
 use App\Http\Controllers\V1\Admin\Settings\GetCompanyMailConfigurationController;
 use App\Http\Controllers\V1\Admin\Settings\GetCompanySettingsController;
@@ -185,6 +186,25 @@ Route::prefix('/v1')->group(function () {
         Route::post('/login', LoginController::class);
 
         Route::post('/finish', FinishController::class);
+    });
+
+    // Super Admin
+    // ----------------------------------
+
+    Route::middleware(['auth:sanctum', 'super-admin'])->prefix('super-admin')->group(function () {
+        Route::get('companies', [App\Http\Controllers\V1\SuperAdmin\CompaniesController::class, 'index']);
+        Route::get('companies/{company}', [App\Http\Controllers\V1\SuperAdmin\CompaniesController::class, 'show']);
+        Route::put('companies/{company}', [App\Http\Controllers\V1\SuperAdmin\CompaniesController::class, 'update']);
+
+        Route::get('users', [App\Http\Controllers\V1\SuperAdmin\UsersController::class, 'index']);
+        Route::get('users/{user}', [App\Http\Controllers\V1\SuperAdmin\UsersController::class, 'show']);
+        Route::put('users/{user}', [App\Http\Controllers\V1\SuperAdmin\UsersController::class, 'update']);
+        Route::post('users/{user}/impersonate', [App\Http\Controllers\V1\SuperAdmin\UsersController::class, 'impersonate']);
+    });
+
+    // Stop impersonation - uses auth:sanctum only (the impersonated user's token, not super-admin)
+    Route::middleware(['auth:sanctum'])->prefix('super-admin')->group(function () {
+        Route::post('stop-impersonating', [App\Http\Controllers\V1\SuperAdmin\UsersController::class, 'stopImpersonating']);
     });
 
     Route::middleware(['auth:sanctum', 'company'])->group(function () {
@@ -397,6 +417,10 @@ Route::prefix('/v1')->group(function () {
             Route::post('/mail/test', [MailConfigurationController::class, 'testEmailConfig']);
 
             Route::get('/company/mail/config', GetCompanyMailConfigurationController::class);
+
+            Route::get('/company/mail/company-config', [CompanyMailConfigurationController::class, 'getMailConfig']);
+            Route::post('/company/mail/company-config', [CompanyMailConfigurationController::class, 'saveMailConfig']);
+            Route::post('/company/mail/company-test', [CompanyMailConfigurationController::class, 'testMailConfig']);
 
             // PDF Generation
             // ----------------------------------

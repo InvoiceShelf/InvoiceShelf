@@ -24,8 +24,13 @@ class CompanyResource extends JsonResource
             'unique_hash' => $this->unique_hash,
             'owner_id' => $this->owner_id,
             'slug' => $this->slug,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
             'address' => $this->when($this->address()->exists(), function () {
                 return new AddressResource($this->address);
+            }),
+            'owner' => $this->when($this->relationLoaded('owner'), function () {
+                return new UserResource($this->owner);
             }),
             'roles' => RoleResource::collection($this->roles),
         ];

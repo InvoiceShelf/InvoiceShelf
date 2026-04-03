@@ -27,6 +27,10 @@ router.beforeEach((to) => {
     if (!userStore.hasAbilities(ability)) {
       return { name: 'account.settings' }
     }
+  } else if (to.meta.isSuperAdmin && isAppLoaded) {
+    if (!userStore.currentUser.is_super_admin) {
+      return { name: 'dashboard' }
+    }
   } else if (to.meta.isOwner && isAppLoaded) {
     if (!userStore.currentUser.is_owner) {
       return { name: 'dashboard' }

@@ -15,6 +15,7 @@ use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\RedirectIfInstalled;
 use App\Http\Middleware\RedirectIfUnauthorized;
 use App\Http\Middleware\ScopeBouncer;
+use App\Http\Middleware\SuperAdminMiddleware;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustProxies;
 use App\Providers\AppServiceProvider;
@@ -81,6 +82,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'pdf-auth' => PdfMiddleware::class,
             'redirect-if-installed' => RedirectIfInstalled::class,
             'redirect-if-unauthenticated' => RedirectIfUnauthorized::class,
+            'super-admin' => SuperAdminMiddleware::class,
         ]);
 
         $middleware->priority([

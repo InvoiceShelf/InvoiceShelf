@@ -110,9 +110,11 @@ class AppServiceProvider extends ServiceProvider
             ->data('icon', $data['icon'])
             ->data('name', $data['name'])
             ->data('owner_only', $data['owner_only'])
+            ->data('super_admin_only', $data['super_admin_only'] ?? false)
             ->data('ability', $data['ability'])
             ->data('model', $data['model'])
-            ->data('group', $data['group']);
+            ->data('group', $data['group'])
+            ->data('group_label', $data['group_label'] ?? '');
     }
 
     public function bootAuth()

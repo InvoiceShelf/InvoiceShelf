@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Facades\Hashids;
 use App\Jobs\GeneratePaymentPdfJob;
 use App\Mail\SendPaymentMail;
+use App\Services\CompanyMailConfigService;
 use App\Services\SerialNumberFormatter;
 use App\Support\PdfHtmlSanitizer;
 use App\Traits\GeneratesPdfTrait;
@@ -144,6 +145,8 @@ class Payment extends Model implements HasMedia
     public function send($data)
     {
         $data = $this->sendPaymentData($data);
+
+        CompanyMailConfigService::apply($this->company_id);
 
         $mail = \Mail::to($data['to']);
         if (! empty($data['cc'])) {

@@ -72,10 +72,16 @@
             </div>
 
             <nav
-              v-for="menu in globalStore.menuGroups"
-              :key="menu"
+              v-for="(menu, index) in globalStore.menuGroups"
+              :key="index"
               class="mt-5 space-y-1"
             >
+              <div
+                v-if="menu[0] && menu[0].group_label"
+                class="px-4 pt-4 pb-1 text-xs font-semibold text-gray-400 uppercase tracking-wider border-t border-gray-200"
+              >
+                {{ $t(menu[0].group_label) }}
+              </div>
               <router-link
                 v-for="item in menu"
                 :key="item.name"
@@ -126,10 +132,16 @@
     "
   >
     <div
-      v-for="menu in globalStore.menuGroups"
-      :key="menu"
+      v-for="(menu, index) in globalStore.menuGroups"
+      :key="index"
       class="p-0 m-0 mt-6 list-none"
     >
+      <div
+        v-if="menu[0] && menu[0].group_label"
+        class="px-6 pt-4 pb-1 text-xs font-semibold text-gray-400 uppercase tracking-wider border-t border-gray-200"
+      >
+        {{ $t(menu[0].group_label) }}
+      </div>
       <router-link
         v-for="item in menu"
         :key="item"

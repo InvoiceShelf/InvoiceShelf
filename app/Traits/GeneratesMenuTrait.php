@@ -19,6 +19,7 @@ trait GeneratesMenuTrait
                     'icon' => $data->data['icon'],
                     'name' => $data->data['name'],
                     'group' => $data->data['group'],
+                    'group_label' => $data->data['group_label'] ?? '',
                 ];
             }
         }

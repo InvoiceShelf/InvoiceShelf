@@ -47,17 +47,10 @@ const ExpenseCategory = () =>
   import('@/scripts/admin/views/settings/ExpenseCategorySetting.vue')
 const ExchangeRateSetting = () =>
   import('@/scripts/admin/views/settings/ExchangeRateProviderSetting.vue')
-const MailConfig = () =>
-  import('@/scripts/admin/views/settings/MailConfigSetting.vue')
-const FileDisk = () =>
-  import('@/scripts/admin/views/settings/FileDiskSetting.vue')
-const Backup = () => import('@/scripts/admin/views/settings/BackupSetting.vue')
-const UpdateApp = () =>
-  import('@/scripts/admin/views/settings/UpdateAppSetting.vue')
 const RolesSettings = () =>
   import('@/scripts/admin/views/settings/RolesSettings.vue')
-const PDFGenerationSettings = () =>
-  import('@/scripts/admin/views/settings/PDFGenerationSetting.vue')
+const CompanyMailConfig = () =>
+  import('@/scripts/admin/views/settings/CompanyMailConfigSetting.vue')
 
 // Items
 const ItemsIndex = () => import('@/scripts/admin/views/items/Index.vue')
@@ -114,6 +107,28 @@ const ModuleIndex = () => import('@/scripts/admin/views/modules/Index.vue')
 const ModuleView = () => import('@/scripts/admin/views/modules/View.vue')
 const InvoicePublicPage = () =>
   import('@/scripts/components/InvoicePublicPage.vue')
+
+// Administration (Super Admin)
+const AdminCompaniesIndex = () =>
+  import('@/scripts/admin/views/administration/companies/Index.vue')
+const AdminCompaniesEdit = () =>
+  import('@/scripts/admin/views/administration/companies/Edit.vue')
+const AdminUsersIndex = () =>
+  import('@/scripts/admin/views/administration/users/Index.vue')
+const AdminUsersEdit = () =>
+  import('@/scripts/admin/views/administration/users/Edit.vue')
+const AdminSettingsIndex = () =>
+  import('@/scripts/admin/views/administration/settings/SettingsIndex.vue')
+const AdminMailConfig = () =>
+  import('@/scripts/admin/views/settings/MailConfigSetting.vue')
+const AdminPDFGeneration = () =>
+  import('@/scripts/admin/views/settings/PDFGenerationSetting.vue')
+const AdminBackup = () =>
+  import('@/scripts/admin/views/settings/BackupSetting.vue')
+const AdminUpdateApp = () =>
+  import('@/scripts/admin/views/settings/UpdateAppSetting.vue')
+const AdminFileDisk = () =>
+  import('@/scripts/admin/views/settings/FileDiskSetting.vue')
 
 export default [
   {
@@ -304,36 +319,11 @@ export default [
             meta: { ability: abilities.VIEW_EXPENSE },
             component: ExpenseCategory,
           },
-
           {
             path: 'mail-configuration',
-            name: 'mailconfig',
+            name: 'company.mailconfig',
             meta: { isOwner: true },
-            component: MailConfig,
-          },
-          {
-            path: 'file-disk',
-            name: 'file-disk',
-            meta: { isOwner: true },
-            component: FileDisk,
-          },
-          {
-            path: 'backup',
-            name: 'backup',
-            meta: { isOwner: true },
-            component: Backup,
-          },
-          {
-            path: 'update-app',
-            name: 'updateapp',
-            meta: { isOwner: true },
-            component: UpdateApp,
-          },
-          {
-            path: 'pdf-generation',
-            name: 'pdf.generation',
-            meta: { isOwner: true },
-            component: PDFGenerationSettings,
+            component: CompanyMailConfig,
           },
         ],
       },
@@ -494,6 +484,65 @@ export default [
         path: 'reports',
         meta: { ability: abilities.VIEW_FINANCIAL_REPORT },
         component: ReportsIndex,
+      },
+
+      // Administration (Super Admin)
+      {
+        path: 'administration/companies',
+        name: 'admin.companies.index',
+        meta: { isSuperAdmin: true },
+        component: AdminCompaniesIndex,
+      },
+      {
+        path: 'administration/companies/:id/edit',
+        name: 'admin.companies.edit',
+        meta: { isSuperAdmin: true },
+        component: AdminCompaniesEdit,
+      },
+      {
+        path: 'administration/users',
+        name: 'admin.users.index',
+        meta: { isSuperAdmin: true },
+        component: AdminUsersIndex,
+      },
+      {
+        path: 'administration/users/:id/edit',
+        name: 'admin.users.edit',
+        meta: { isSuperAdmin: true },
+        component: AdminUsersEdit,
+      },
+      {
+        path: 'administration/settings',
+        name: 'admin.settings',
+        meta: { isSuperAdmin: true },
+        component: AdminSettingsIndex,
+        children: [
+          {
+            path: 'mail-configuration',
+            name: 'admin.settings.mail',
+            component: AdminMailConfig,
+          },
+          {
+            path: 'pdf-generation',
+            name: 'admin.settings.pdf',
+            component: AdminPDFGeneration,
+          },
+          {
+            path: 'backup',
+            name: 'admin.settings.backup',
+            component: AdminBackup,
+          },
+          {
+            path: 'update-app',
+            name: 'admin.settings.update',
+            component: AdminUpdateApp,
+          },
+          {
+            path: 'file-disk',
+            name: 'admin.settings.filedisk',
+            component: AdminFileDisk,
+          },
+        ],
       },
     ],
   },

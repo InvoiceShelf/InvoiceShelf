@@ -2,6 +2,8 @@
   <div v-if="isAppLoaded" class="h-full">
     <NotificationRoot />
 
+    <ImpersonationBanner />
+
     <SiteHeader />
 
     <SiteSidebar />
@@ -34,6 +36,7 @@ import SiteHeader from '@/scripts/admin/layouts/partials/TheSiteHeader.vue'
 import SiteSidebar from '@/scripts/admin/layouts/partials/TheSiteSidebar.vue'
 import NotificationRoot from '@/scripts/components/notifications/NotificationRoot.vue'
 import ExchangeRateBulkUpdateModal from '@/scripts/admin/components/modal-components/ExchangeRateBulkUpdateModal.vue'
+import ImpersonationBanner from '@/scripts/admin/components/ImpersonationBanner.vue'
 
 const globalStore = useGlobalStore()
 const route = useRoute()
@@ -52,6 +55,8 @@ onMounted(() => {
   globalStore.bootstrap().then((res) => {
     if (route.meta.ability && !userStore.hasAbilities(route.meta.ability)) {
       router.push({ name: 'account.settings' })
+    } else if (route.meta.isSuperAdmin && !userStore.currentUser.is_super_admin) {
+      router.push({ name: 'dashboard' })
     } else if (route.meta.isOwner && !userStore.currentUser.is_owner) {
       router.push({ name: 'account.settings' })
     }

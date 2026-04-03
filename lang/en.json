@@ -12,7 +12,10 @@
     "settings": "Settings",
     "logout": "Logout",
     "users": "Users",
-    "modules": "Modules"
+    "modules": "Modules",
+    "administration": "Administration",
+    "companies": "Companies",
+    "all_users": "Users"
   },
   "general": {
     "add_company": "Add Company",
@@ -909,7 +912,13 @@
       "from_name": "From Mail Name",
       "from_mail": "From Mail Address",
       "encryption": "Mail Encryption",
-      "mail_config_desc": "Below is the form for Configuring Email driver for sending emails from the app. You can also configure third party providers like Sendgrid, SES etc."
+      "mail_config_desc": "Below is the form for Configuring Email driver for sending emails from the app. You can also configure third party providers like Sendgrid, SES etc.",
+      "company_mail_config": "Mail Configuration",
+      "company_mail_config_desc": "Configure a custom mail driver for this company. When enabled, this overrides the global mail configuration.",
+      "company_mail_config_updated": "Company mail configuration updated successfully",
+      "use_custom_mail_config": "Use Custom Mail Configuration",
+      "use_custom_mail_config_desc": "Enable this to use a company-specific mail configuration instead of the global settings.",
+      "using_global_mail_config": "This company is using the global mail configuration. Enable the toggle above to configure a custom mail driver."
     },
     "pdf": {
       "title": "PDF Setting",
@@ -1665,5 +1674,32 @@
   "mail_view_payment": "View Payment",
   "notification_view_estimate": "[Notification] Estimate viewed",
   "notification_view_invoice": "[Notification] Invoice viewed",
-  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:"
+  "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:": "You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:",
+  "administration": {
+    "companies": {
+      "title": "All Companies",
+      "edit_company": "Edit Company",
+      "company_name": "Company Name",
+      "owner": "Owner",
+      "address": "Address",
+      "updated_message": "Company updated successfully",
+      "no_companies": "No companies found",
+      "list_description": "Manage all companies across the system"
+    },
+    "settings": {
+      "title": "Global Settings"
+    },
+    "users": {
+      "title": "All Users",
+      "edit_user": "Edit User",
+      "role": "Role",
+      "no_users": "No users found",
+      "list_description": "View all users across the system",
+      "updated_message": "User updated successfully",
+      "impersonate": "Impersonate",
+      "impersonate_confirm": "You are about to impersonate {name}. You will be logged in as this user with a temporary session that expires in 2 hours. This action is logged.",
+      "impersonating_banner": "You are currently impersonating a user. All actions are logged.",
+      "stop_impersonating": "Stop Impersonating"
+    }
+  }
 }

@@ -6,6 +6,7 @@ use App;
 use App\Facades\Hashids;
 use App\Facades\PDF;
 use App\Mail\SendInvoiceMail;
+use App\Services\CompanyMailConfigService;
 use App\Services\SerialNumberFormatter;
 use App\Space\PdfTemplateUtils;
 use App\Support\PdfHtmlSanitizer;
@@ -476,6 +477,8 @@ class Invoice extends Model implements HasMedia
     public function send($data)
     {
         $data = $this->sendInvoiceData($data);
+
+        CompanyMailConfigService::apply($this->company_id);
 
         $mail = \Mail::to($data['to']);
         if (! empty($data['cc'])) {

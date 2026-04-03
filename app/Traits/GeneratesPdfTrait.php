@@ -5,6 +5,7 @@ namespace App\Traits;
 use App\Models\Address;
 use App\Models\CompanySetting;
 use App\Models\FileDisk;
+use App\Models\Setting;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 
@@ -68,7 +69,7 @@ trait GeneratesPdfTrait
 
     public function generatePDF($collection_name, $file_name, $deleteExistingFile = false)
     {
-        $save_pdf_to_disk = CompanySetting::getSetting('save_pdf_to_disk', $this->company_id);
+        $save_pdf_to_disk = Setting::getSetting('save_pdf_to_disk') ?? 'NO';
 
         if ($save_pdf_to_disk == 'NO') {
             return 0;

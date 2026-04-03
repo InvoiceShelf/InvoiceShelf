@@ -96,6 +96,14 @@ import { required, email, maxLength, helpers } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { useModalStore } from '@/scripts/stores/modal'
 import { useMailDriverStore } from '@/scripts/admin/stores/mail-driver'
+import { useCompanyMailStore } from '@/scripts/admin/stores/company-mail'
+
+const props = defineProps({
+  storeType: {
+    type: String,
+    default: 'global',
+  },
+})
 
 let isSaving = ref(false)
 let formData = reactive({
@@ -106,6 +114,11 @@ let formData = reactive({
 
 const modalStore = useModalStore()
 const mailDriverStore = useMailDriverStore()
+const companyMailStore = useCompanyMailStore()
+
+const activeStore = computed(() => {
+  return props.storeType === 'company' ? companyMailStore : mailDriverStore
+})
 const { t } = useI18n()
 
 const modalActive = computed(() => {
@@ -153,7 +166,7 @@ async function onTestMailSend() {
   }
 
   isSaving.value = true
-  let response = await mailDriverStore.sendTestMail(formData)
+  let response = await activeStore.value.sendTestMail(formData)
   if (response.data) {
     closeTestModal()
     isSaving.value = false

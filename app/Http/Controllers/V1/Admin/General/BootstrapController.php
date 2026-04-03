@@ -58,6 +58,7 @@ class BootstrapController extends Controller
             'login_page_description',
             'admin_page_title',
             'copyright_text',
+            'save_pdf_to_disk',
         ]);
 
         return response()->json([

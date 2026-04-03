@@ -6,6 +6,7 @@ use App;
 use App\Facades\Hashids;
 use App\Facades\PDF;
 use App\Mail\SendEstimateMail;
+use App\Services\CompanyMailConfigService;
 use App\Services\SerialNumberFormatter;
 use App\Space\PdfTemplateUtils;
 use App\Support\PdfHtmlSanitizer;
@@ -369,6 +370,8 @@ class Estimate extends Model implements HasMedia
     public function send($data)
     {
         $data = $this->sendEstimateData($data);
+
+        CompanyMailConfigService::apply($this->company_id);
 
         if ($this->status == Estimate::STATUS_DRAFT) {
             $this->status = Estimate::STATUS_SENT;

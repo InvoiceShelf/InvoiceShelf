@@ -84,7 +84,7 @@
 
 <script setup>
 import { useDiskStore } from '@/scripts/admin/stores/disk'
-import { useCompanyStore } from '@/scripts/admin/stores/company'
+import { useGlobalStore } from '@/scripts/admin/stores/global'
 import { useDialogStore } from '@/scripts/stores/dialog'
 import { useModalStore } from '@/scripts/stores/modal'
 import { ref, computed, reactive, onMounted, inject } from 'vue'
@@ -95,7 +95,7 @@ const utils = inject('utils')
 
 const modalStore = useModalStore()
 const diskStore = useDiskStore()
-const companyStore = useCompanyStore()
+const globalStore = useGlobalStore()
 const dialogStore = useDialogStore()
 const { t } = useI18n()
 
@@ -139,7 +139,7 @@ const fileDiskColumns = computed(() => {
   ]
 })
 
-const savePdfToDisk = ref(companyStore.selectedCompanySettings.save_pdf_to_disk)
+const savePdfToDisk = ref(globalStore.globalSettings?.save_pdf_to_disk || 'NO')
 
 const savePdfToDiskField = computed({
   get: () => {
@@ -156,7 +156,7 @@ const savePdfToDiskField = computed({
 
     savePdfToDisk.value = value
 
-    await companyStore.updateCompanySettings({
+    await globalStore.updateGlobalSettings({
       data,
       message: 'general.setting_updated',
     })

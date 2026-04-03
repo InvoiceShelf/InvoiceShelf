@@ -75,6 +75,11 @@ class User extends Authenticatable implements HasMedia
         }
     }
 
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === 'super admin';
+    }
+
     public function isSuperAdminOrAdmin()
     {
         return ($this->role == 'super admin') || ($this->role == 'admin');
@@ -375,6 +380,10 @@ class User extends Authenticatable implements HasMedia
 
     public function checkAccess($data)
     {
+        if (! empty($data->data['super_admin_only']) && $data->data['super_admin_only']) {
+            return $this->isSuperAdmin();
+        }
+
         if ($this->isOwner()) {
             return true;
         }

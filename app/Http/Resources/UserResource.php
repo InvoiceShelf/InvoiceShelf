@@ -32,6 +32,7 @@ class UserResource extends JsonResource
             'updated_at' => $this->updated_at,
             'avatar' => $this->avatar,
             'is_owner' => $this->isOwner(),
+            'is_super_admin' => $this->isSuperAdmin(),
             'roles' => $this->roles,
             'formatted_created_at' => $this->formattedCreatedAt,
             'currency' => $this->when($this->currency()->exists(), function () {
