@@ -25,7 +25,8 @@ class SearchController extends Controller
             ->paginate(10);
 
         if ($user->isOwner()) {
-            $users = User::applyFilters($request->only(['search']))
+            $users = User::whereCompany()
+                ->applyFilters($request->only(['search']))
                 ->latest()
                 ->paginate(10);
         }
