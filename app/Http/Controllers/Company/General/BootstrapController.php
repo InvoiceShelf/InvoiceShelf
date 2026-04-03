@@ -51,6 +51,14 @@ class BootstrapController extends Controller
 
         // User has no companies — return minimal bootstrap
         if ($companies->isEmpty()) {
+            $main_menu = $current_user->isSuperAdmin()
+                ? $this->generateMenu('main_menu', $current_user)
+                : [];
+
+            $setting_menu = $current_user->isSuperAdmin()
+                ? $this->generateMenu('setting_menu', $current_user)
+                : [];
+
             return response()->json([
                 'current_user' => new UserResource($current_user),
                 'current_user_settings' => $current_user_settings,
@@ -61,8 +69,8 @@ class BootstrapController extends Controller
                 'current_company_currency' => Currency::first(),
                 'config' => config('invoiceshelf'),
                 'global_settings' => $global_settings,
-                'main_menu' => [],
-                'setting_menu' => [],
+                'main_menu' => $main_menu,
+                'setting_menu' => $setting_menu,
                 'modules' => [],
                 'pending_invitations' => CompanyInvitationResource::collection($pendingInvitations),
             ]);
