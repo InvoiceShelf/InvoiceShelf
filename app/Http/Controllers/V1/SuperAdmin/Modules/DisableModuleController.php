@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\V1\Admin\Modules;
+namespace App\Http\Controllers\V1\SuperAdmin\Modules;
 
 use App\Events\ModuleDisabledEvent;
 use App\Http\Controllers\Controller;

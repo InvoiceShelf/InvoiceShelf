@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\V1\Admin\Modules;
+namespace App\Http\Controllers\V1\SuperAdmin\Modules;
 
 use App\Http\Controllers\Controller;
 use App\Services\Module\ModuleInstaller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class CompleteModuleInstallationController extends Controller
+class CopyModuleController extends Controller
 {
     /**
      * Handle the incoming request.
@@ -18,7 +18,7 @@ class CompleteModuleInstallationController extends Controller
     {
         $this->authorize('manage modules');
 
-        $response = ModuleInstaller::complete($request->module, $request->version);
+        $response = ModuleInstaller::copyFiles($request->module, $request->path);
 
         return response()->json([
             'success' => $response,

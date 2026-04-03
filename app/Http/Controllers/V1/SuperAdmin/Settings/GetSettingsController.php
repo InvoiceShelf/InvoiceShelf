@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\V1\Admin\Settings;
+namespace App\Http\Controllers\V1\SuperAdmin\Settings;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\SettingRequest;
+use App\Http\Requests\GetSettingRequest;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class UpdateSettingsController extends Controller
+class GetSettingsController extends Controller
 {
     /**
      * Handle the incoming request.
@@ -16,15 +16,14 @@ class UpdateSettingsController extends Controller
      * @param  Request  $request
      * @return Response
      */
-    public function __invoke(SettingRequest $request)
+    public function __invoke(GetSettingRequest $request)
     {
         $this->authorize('manage settings');
 
-        Setting::setSettings($request->settings);
+        $setting = Setting::getSetting($request->key);
 
         return response()->json([
-            'success' => true,
-            $request->settings,
+            $request->key => $setting,
         ]);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\V1\Admin\Settings;
+namespace App\Http\Controllers\V1\SuperAdmin\Settings;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DiskEnvironmentRequest;

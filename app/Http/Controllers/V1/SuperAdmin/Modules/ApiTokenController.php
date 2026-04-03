@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\V1\Admin\Modules;
+namespace App\Http\Controllers\V1\SuperAdmin\Modules;
 
 use App\Http\Controllers\Controller;
 use App\Services\Module\ModuleInstaller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class ModulesController extends Controller
+class ApiTokenController extends Controller
 {
     /**
      * Handle the incoming request.
@@ -18,7 +18,7 @@ class ModulesController extends Controller
     {
         $this->authorize('manage modules');
 
-        $response = ModuleInstaller::getModules();
+        $response = ModuleInstaller::checkToken($request->api_token);
 
         return $response;
     }

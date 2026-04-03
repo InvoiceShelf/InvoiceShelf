@@ -2,7 +2,7 @@
 
 // Implementation taken from nova-backup-tool - https://github.com/spatie/nova-backup-tool/
 
-namespace App\Http\Controllers\V1\Admin\Backup;
+namespace App\Http\Controllers\V1\SuperAdmin\Backup;
 
 use App\Rules\Backup\PathToZip;
 use Illuminate\Http\Request;

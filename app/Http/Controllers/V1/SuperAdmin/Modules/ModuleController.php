@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\V1\Admin\Modules;
+namespace App\Http\Controllers\V1\SuperAdmin\Modules;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ModuleResource;

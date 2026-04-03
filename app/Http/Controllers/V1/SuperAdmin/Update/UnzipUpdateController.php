@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\V1\Admin\Update;
+namespace App\Http\Controllers\V1\SuperAdmin\Update;
 
 use App\Http\Controllers\Controller;
 use App\Services\Update\Updater;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class FinishUpdateController extends Controller
+class UnzipUpdateController extends Controller
 {
     /**
      * Handle the incoming request.
@@ -24,12 +24,21 @@ class FinishUpdateController extends Controller
         }
 
         $request->validate([
-            'installed' => 'required',
-            'version' => 'required',
+            'path' => 'required',
         ]);
 
-        $json = Updater::finishUpdate($request->installed, $request->version);
+        try {
+            $path = Updater::unzip($request->path);
 
-        return response()->json($json);
+            return response()->json([
+                'success' => true,
+                'path' => $path,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }

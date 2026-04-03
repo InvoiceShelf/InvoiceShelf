@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\V1\Admin\Update;
+namespace App\Http\Controllers\V1\SuperAdmin\Update;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;

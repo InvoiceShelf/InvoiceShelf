@@ -1,24 +1,24 @@
 <?php
 
-namespace App\Http\Controllers\V1\Admin\Modules;
+namespace App\Http\Controllers\V1\SuperAdmin\Modules;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UploadModuleRequest;
 use App\Services\Module\ModuleInstaller;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class DownloadModuleController extends Controller
+class UploadModuleController extends Controller
 {
     /**
      * Handle the incoming request.
      *
      * @return Response
      */
-    public function __invoke(Request $request)
+    public function __invoke(UploadModuleRequest $request)
     {
         $this->authorize('manage modules');
 
-        $response = ModuleInstaller::download($request->module, $request->version);
+        $response = ModuleInstaller::upload($request);
 
         return response()->json($response);
     }

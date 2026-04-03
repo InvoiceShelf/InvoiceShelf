@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\V1\Admin\Update;
+namespace App\Http\Controllers\V1\SuperAdmin\Update;
 
 use App\Http\Controllers\Controller;
 use App\Services\Update\Updater;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class UnzipUpdateController extends Controller
+class DownloadUpdateController extends Controller
 {
     /**
      * Handle the incoming request.
@@ -24,21 +24,14 @@ class UnzipUpdateController extends Controller
         }
 
         $request->validate([
-            'path' => 'required',
+            'version' => 'required',
         ]);
 
-        try {
-            $path = Updater::unzip($request->path);
+        $path = Updater::download($request->version);
 
-            return response()->json([
-                'success' => true,
-                'path' => $path,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+        return response()->json([
+            'success' => true,
+            'path' => $path,
+        ]);
     }
 }

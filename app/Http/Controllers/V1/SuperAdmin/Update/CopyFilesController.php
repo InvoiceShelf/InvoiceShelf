@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\V1\Admin\Update;
+namespace App\Http\Controllers\V1\SuperAdmin\Update;
 
 use App\Http\Controllers\Controller;
 use App\Services\Update\Updater;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class DownloadUpdateController extends Controller
+class CopyFilesController extends Controller
 {
     /**
      * Handle the incoming request.
@@ -24,10 +24,10 @@ class DownloadUpdateController extends Controller
         }
 
         $request->validate([
-            'version' => 'required',
+            'path' => 'required',
         ]);
 
-        $path = Updater::download($request->version);
+        $path = Updater::copyFiles($request->path);
 
         return response()->json([
             'success' => true,
