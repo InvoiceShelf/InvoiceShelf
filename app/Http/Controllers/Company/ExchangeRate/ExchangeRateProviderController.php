@@ -15,15 +15,12 @@ use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\Tax;
 use App\Services\ExchangeRateProviderService;
-use App\Traits\ExchangeRateProvidersTrait;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 
 class ExchangeRateProviderController extends Controller
 {
-    use ExchangeRateProvidersTrait;
-
     public function __construct(
         private readonly ExchangeRateProviderService $exchangeRateProviderService,
     ) {}
@@ -158,22 +155,28 @@ class ExchangeRateProviderController extends Controller
             ->get()
             ->toArray();
 
-        $exchange_rate = ExchangeRateLog::where('base_currency_id', $currency->id)
+        $exchangeRate = ExchangeRateLog::where('base_currency_id', $currency->id)
             ->where('currency_id', $baseCurrency->id)
             ->orderBy('created_at', 'desc')
             ->value('exchange_rate');
 
         if ($query) {
             $filter = Arr::only($query[0], ['key', 'driver', 'driver_config']);
-            $exchange_rate_value = $this->getExchangeRate($filter, $currency->code, $baseCurrency->code);
+            $result = $this->exchangeRateProviderService->getExchangeRate(
+                $filter['driver'],
+                $filter['key'],
+                $filter['driver_config'] ?? [],
+                $currency->code,
+                $baseCurrency->code
+            );
 
-            if ($exchange_rate_value->status() == 200) {
-                return $exchange_rate_value;
+            if ($result->status() == 200) {
+                return $result;
             }
         }
-        if ($exchange_rate) {
+        if ($exchangeRate) {
             return response()->json([
-                'exchangeRate' => [$exchange_rate],
+                'exchangeRate' => [$exchangeRate],
             ], 200);
         }
 
@@ -186,7 +189,11 @@ class ExchangeRateProviderController extends Controller
     {
         $this->authorize('viewAny', ExchangeRateProvider::class);
 
-        return $this->getSupportedCurrencies($request);
+        return $this->exchangeRateProviderService->getSupportedCurrencies(
+            $request->driver,
+            $request->key,
+            $request->driver_config ?? []
+        );
     }
 
     public function usedCurrencies(Request $request)

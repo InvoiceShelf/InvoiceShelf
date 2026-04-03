@@ -6,7 +6,8 @@ use App\Http\Requests\ExchangeRateProviderRequest;
 use App\Models\CompanySetting;
 use App\Models\ExchangeRateLog;
 use App\Models\ExchangeRateProvider;
-use Illuminate\Support\Facades\Http;
+use App\Services\ExchangeRate\ExchangeRateDriverFactory;
+use App\Services\ExchangeRate\ExchangeRateException;
 
 class ExchangeRateProviderService
 {
@@ -39,58 +40,46 @@ class ExchangeRateProviderService
 
     public function checkProviderStatus($request)
     {
-        switch ($request['driver']) {
-            case 'currency_freak':
-                $url = 'https://api.currencyfreaks.com/latest?apikey='.$request['key'].'&symbols=INR&base=USD';
-                $response = Http::get($url)->json();
+        try {
+            $driver = ExchangeRateDriverFactory::make(
+                $request['driver'],
+                $request['key'],
+                $request['driver_config'] ?? []
+            );
 
-                if (array_key_exists('success', $response)) {
-                    if ($response['success'] == false) {
-                        return respondJson($response['error']['message'], $response['error']['message']);
-                    }
-                }
+            $rates = $driver->validateConnection();
 
-                return response()->json([
-                    'exchangeRate' => array_values($response['rates']),
-                ], 200);
+            return response()->json([
+                'exchangeRate' => $rates,
+            ], 200);
+        } catch (ExchangeRateException $e) {
+            return respondJson($e->errorKey, $e->getMessage());
+        }
+    }
 
-            case 'currency_layer':
-                $url = 'http://api.currencylayer.com/live?access_key='.$request['key'].'&source=INR&currencies=USD';
-                $response = Http::get($url)->json();
+    public function getExchangeRate(string $driver, string $apiKey, array $driverConfig, string $baseCurrency, string $targetCurrency)
+    {
+        try {
+            $driverInstance = ExchangeRateDriverFactory::make($driver, $apiKey, $driverConfig);
 
-                if (array_key_exists('success', $response)) {
-                    if ($response['success'] == false) {
-                        return respondJson($response['error']['info'], $response['error']['info']);
-                    }
-                }
+            return response()->json([
+                'exchangeRate' => $driverInstance->getExchangeRate($baseCurrency, $targetCurrency),
+            ], 200);
+        } catch (ExchangeRateException $e) {
+            return respondJson($e->errorKey, $e->getMessage());
+        }
+    }
 
-                return response()->json([
-                    'exchangeRate' => array_values($response['quotes']),
-                ], 200);
+    public function getSupportedCurrencies(string $driver, string $apiKey, array $driverConfig = [])
+    {
+        try {
+            $driverInstance = ExchangeRateDriverFactory::make($driver, $apiKey, $driverConfig);
 
-            case 'open_exchange_rate':
-                $url = 'https://openexchangerates.org/api/latest.json?app_id='.$request['key'].'&base=INR&symbols=USD';
-                $response = Http::get($url)->json();
-
-                if (array_key_exists('error', $response)) {
-                    return respondJson($response['message'], $response['description']);
-                }
-
-                return response()->json([
-                    'exchangeRate' => array_values($response['rates']),
-                ], 200);
-
-            case 'currency_converter':
-                $url = $this->getCurrencyConverterUrl($request['driver_config']);
-                $url = $url.'/api/v7/convert?apiKey='.$request['key'];
-
-                $query = 'INR_USD';
-                $url = $url."&q={$query}".'&compact=y';
-                $response = Http::get($url)->json();
-
-                return response()->json([
-                    'exchangeRate' => array_values($response[$query]),
-                ], 200);
+            return response()->json([
+                'supportedCurrencies' => $driverInstance->getSupportedCurrencies(),
+            ]);
+        } catch (ExchangeRateException $e) {
+            return respondJson($e->errorKey, $e->getMessage());
         }
     }
 
@@ -102,15 +91,5 @@ class ExchangeRateProviderService
             'base_currency_id' => $model->currency_id,
             'currency_id' => CompanySetting::getSetting('currency', $model->company_id),
         ]);
-    }
-
-    private function getCurrencyConverterUrl($data): string
-    {
-        return match ($data['type']) {
-            'PREMIUM' => 'https://api.currconv.com',
-            'PREPAID' => 'https://prepaid.currconv.com',
-            'FREE' => 'https://free.currconv.com',
-            'DEDICATED' => $data['url'],
-        };
     }
 }
