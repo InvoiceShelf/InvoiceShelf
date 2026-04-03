@@ -25,14 +25,15 @@ class UsersController extends Controller
 
         $user = $request->user();
 
-        $users = User::applyFilters($request->all())
+        $users = User::whereCompany()
+            ->applyFilters($request->all())
             ->where('id', '<>', $user->id)
             ->latest()
             ->paginate($limit);
 
         return UserResource::collection($users)
             ->additional(['meta' => [
-                'user_total_count' => User::count(),
+                'user_total_count' => User::whereCompany()->count(),
             ]]);
     }
 
