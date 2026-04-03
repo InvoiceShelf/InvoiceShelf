@@ -123,6 +123,13 @@ Route::get('/installation', function () {
 })->name('install')
     ->middleware(['redirect-if-installed']);
 
+// Registration via invitation (serves SPA)
+// -------------------------------------------------
+
+Route::get('/register', function () {
+    return view('app');
+})->middleware(['install']);
+
 // Move other http requests to the Vue App
 // -------------------------------------------------
 
