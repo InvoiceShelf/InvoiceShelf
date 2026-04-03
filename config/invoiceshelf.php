@@ -163,7 +163,7 @@ return [
         [
             'title' => 'settings.roles.title',
             'group' => '',
-            'name' => 'Roles',
+            'name' => 'Company Roles',
             'link' => '/admin/settings/roles-settings',
             'icon' => 'UserGroupIcon',
             'owner_only' => true,

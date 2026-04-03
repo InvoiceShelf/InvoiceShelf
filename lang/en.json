@@ -1167,7 +1167,7 @@
       "please_enter_email": "Please Enter Email"
     },
     "roles": {
-      "title": "Roles",
+      "title": "Company Roles",
       "description": "Manage the roles & permissions of this company",
       "save": "Save",
       "add_new_role": "Add New Role",
