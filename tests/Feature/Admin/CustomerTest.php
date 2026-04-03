@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\V1\Admin\Customer\CustomersController;
 use App\Http\Requests\CustomerRequest;
+use App\Models\Company;
 use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\User;
@@ -157,3 +158,26 @@ test('delete multiple customer', function () {
             'success' => true,
         ]);
 });
+
+test('cannot view customer from another company', function () {
+    $otherCompany = Company::factory()->create();
+    $otherCustomer = Customer::factory()->create([
+        'company_id' => $otherCompany->id,
+    ]);
+
+    getJson("api/v1/customers/{$otherCustomer->id}")
+        ->assertForbidden();
+});
+
+test('cannot update customer from another company', function () {
+    $otherCompany = Company::factory()->create();
+    $otherCustomer = Customer::factory()->create([
+        'company_id' => $otherCompany->id,
+    ]);
+
+    putJson("api/v1/customers/{$otherCustomer->id}", [
+        'name' => 'Hacked Name',
+        'email' => 'hacked@example.com',
+    ])->assertForbidden();
+});
+
