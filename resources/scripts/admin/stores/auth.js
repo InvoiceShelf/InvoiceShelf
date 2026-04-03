@@ -53,6 +53,10 @@ export const useAuthStore = (useWindow = false) => {
                 message: 'Logged out successfully.',
               })
 
+              // Clear stored auth data so next login doesn't send stale tokens
+              window.Ls.remove('auth.token')
+              window.Ls.remove('selectedCompany')
+
               // Refresh CSRF token so next login works cleanly
               await http.get('/sanctum/csrf-cookie').catch(() => {})
 
@@ -61,7 +65,8 @@ export const useAuthStore = (useWindow = false) => {
             })
             .catch((err) => {
               handleError(err)
-              // Still refresh CSRF and redirect on error
+              window.Ls.remove('auth.token')
+              window.Ls.remove('selectedCompany')
               http.get('/sanctum/csrf-cookie').catch(() => {})
               window.router.push('/login')
               reject(err)
