@@ -66,13 +66,22 @@ Three guards: `web` (session), `api` (Sanctum tokens for `/api/v1/`), `customer`
 ### Database
 Supports MySQL, PostgreSQL, and SQLite. Prefer Eloquent over raw queries. Use `Model::query()` instead of `DB::`. Use eager loading to prevent N+1 queries.
 
+### Service Pattern
+All business logic must live in Service classes (`app/Services/`), not in Models or Controllers. Controllers are thin — they authorize, call the service, and return a response. Models only contain relationships, scopes, accessors, mutators, and constants. Services are injected via constructor injection.
+
+### Testing (TDD)
+InvoiceShelf follows TDD development style:
+- **Feature tests** (`tests/Feature/`) — test API routes end-to-end (HTTP requests, responses, database assertions)
+- **Unit tests** (`tests/Unit/`) — test service classes and business logic in isolation
+- Write tests before or alongside implementation. Every new feature or bug fix must have tests.
+
 ## Code Conventions
 
 - PHP: snake_case, constructor property promotion, explicit return types, PHPDoc blocks over inline comments
 - JS: camelCase
 - Always check sibling files for patterns before creating new ones
 - Use `config()` helper, never `env()` outside config files
-- Every change must have tests (feature tests preferred over unit tests)
+- Every change must have tests
 - Run `vendor/bin/pint --dirty --format agent` after modifying PHP files
 
 ## CI Pipeline

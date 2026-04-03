@@ -59,6 +59,27 @@ This project has domain-specific skills available. You MUST activate the relevan
 
 - Be concise in your explanations - focus on what's important rather than explaining obvious details.
 
+=== invoiceshelf rules ===
+
+# InvoiceShelf Architecture
+
+## Service Pattern (Required)
+All business logic must live in Service classes (`app/Services/`). This is mandatory — do not put business logic in Models or Controllers.
+- **Controllers** are thin: authorize, call the service, return a response.
+- **Models** only contain relationships, scopes, accessors, mutators, and constants.
+- **Services** are injected into controllers via constructor injection.
+- Check existing services in `app/Services/` for patterns before creating new ones.
+
+## Testing (TDD)
+InvoiceShelf follows TDD development style. Every new feature or bug fix must have tests.
+- **Feature tests** (`tests/Feature/`) — test API routes end-to-end (HTTP requests, responses, database assertions). These are the primary test type.
+- **Unit tests** (`tests/Unit/`) — test service classes and business logic in isolation.
+- Write tests before or alongside implementation, not after.
+
+## Roles
+- **`super admin`** — global platform admin role (unscoped, manages all companies)
+- **`owner`** — company-level admin role (scoped to a specific company via Bouncer, full access to that company)
+
 === boost rules ===
 
 # Laravel Boost
