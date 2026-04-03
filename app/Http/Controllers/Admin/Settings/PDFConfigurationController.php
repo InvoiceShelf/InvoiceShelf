@@ -6,20 +6,27 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PDFConfigurationRequest;
 use App\Models\Setting;
 use App\Services\Setup\EnvironmentManager;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\JsonResponse;
 
 class PDFConfigurationController extends Controller
 {
-    /**
-     * @var EnvironmentManager
-     */
-    protected $environmentManager;
+    protected EnvironmentManager $environmentManager;
 
+    /**
+     * Constructor
+     */
     public function __construct(EnvironmentManager $environmentManager)
     {
         $this->environmentManager = $environmentManager;
     }
 
-    public function getDrivers()
+    /**
+     * Returns the available drivers
+     *
+     * @throws AuthorizationException
+     */
+    public function getDrivers(): JsonResponse
     {
         $this->authorize('manage pdf config');
 
@@ -31,7 +38,12 @@ class PDFConfigurationController extends Controller
         return response()->json($drivers);
     }
 
-    public function getEnvironment()
+    /**
+     * Return the PDF settings
+     *
+     * @throws AuthorizationException
+     */
+    public function getEnvironment(): JsonResponse
     {
         $this->authorize('manage pdf config');
 
@@ -53,7 +65,12 @@ class PDFConfigurationController extends Controller
         return response()->json($config);
     }
 
-    public function saveEnvironment(PDFConfigurationRequest $request)
+    /**
+     * Saves the settings
+     *
+     * @throws AuthorizationException
+     */
+    public function saveEnvironment(PDFConfigurationRequest $request): JsonResponse
     {
         $this->authorize('manage pdf config');
 
@@ -70,10 +87,8 @@ class PDFConfigurationController extends Controller
 
     /**
      * Prepare PDF settings for database storage
-     *
-     * @return array
      */
-    private function preparePDFSettingsForDatabase(PDFConfigurationRequest $request)
+    private function preparePDFSettingsForDatabase(PDFConfigurationRequest $request): array
     {
         $driver = $request->get('pdf_driver');
 

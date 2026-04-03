@@ -4,16 +4,8 @@ use App\Http\Controllers\Admin\Backup\BackupsController;
 use App\Http\Controllers\Admin\Backup\DownloadBackupController;
 use App\Http\Controllers\Admin\CountriesController;
 use App\Http\Controllers\Admin\CurrenciesController;
-use App\Http\Controllers\Admin\Modules\ApiTokenController;
-use App\Http\Controllers\Admin\Modules\CompleteModuleInstallationController;
-use App\Http\Controllers\Admin\Modules\CopyModuleController;
-use App\Http\Controllers\Admin\Modules\DisableModuleController;
-use App\Http\Controllers\Admin\Modules\DownloadModuleController;
-use App\Http\Controllers\Admin\Modules\EnableModuleController;
-use App\Http\Controllers\Admin\Modules\ModuleController;
+use App\Http\Controllers\Admin\Modules\ModuleInstallationController;
 use App\Http\Controllers\Admin\Modules\ModulesController;
-use App\Http\Controllers\Admin\Modules\UnzipModuleController;
-use App\Http\Controllers\Admin\Modules\UploadModuleController;
 use App\Http\Controllers\Admin\Settings\DiskController;
 use App\Http\Controllers\Admin\Settings\GetSettingsController;
 use App\Http\Controllers\Admin\Settings\MailConfigurationController;
@@ -459,25 +451,17 @@ Route::prefix('/v1')->group(function () {
         // ----------------------------------
 
         Route::prefix('/modules')->group(function () {
-            Route::get('/', ModulesController::class);
+            Route::get('/', [ModulesController::class, 'index']);
+            Route::get('/check', [ModulesController::class, 'checkToken']);
+            Route::get('/{module}', [ModulesController::class, 'show']);
+            Route::post('/{module}/enable', [ModulesController::class, 'enable']);
+            Route::post('/{module}/disable', [ModulesController::class, 'disable']);
 
-            Route::get('/check', ApiTokenController::class);
-
-            Route::get('/{module}', ModuleController::class);
-
-            Route::post('/{module}/enable', EnableModuleController::class);
-
-            Route::post('/{module}/disable', DisableModuleController::class);
-
-            Route::post('/download', DownloadModuleController::class);
-
-            Route::post('/upload', UploadModuleController::class);
-
-            Route::post('/unzip', UnzipModuleController::class);
-
-            Route::post('/copy', CopyModuleController::class);
-
-            Route::post('/complete', CompleteModuleInstallationController::class);
+            Route::post('/download', [ModuleInstallationController::class, 'download']);
+            Route::post('/upload', [ModuleInstallationController::class, 'upload']);
+            Route::post('/unzip', [ModuleInstallationController::class, 'unzip']);
+            Route::post('/copy', [ModuleInstallationController::class, 'copy']);
+            Route::post('/complete', [ModuleInstallationController::class, 'complete']);
         });
     });
 

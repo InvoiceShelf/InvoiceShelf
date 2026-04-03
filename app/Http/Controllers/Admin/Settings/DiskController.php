@@ -7,9 +7,10 @@ use App\Http\Requests\DiskEnvironmentRequest;
 use App\Http\Resources\FileDiskResource;
 use App\Models\FileDisk;
 use App\Services\FileDiskService;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class DiskController extends Controller
 {
@@ -18,9 +19,10 @@ class DiskController extends Controller
     ) {}
 
     /**
-     * @return JsonResponse
+     * @throws AuthorizationException
+     * @throws AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Request $request): AnonymousResourceCollection
     {
         $this->authorize('manage file disk');
 
@@ -34,8 +36,11 @@ class DiskController extends Controller
 
     /**
      * @return JsonResponse
+     *
+     * @throws AuthorizationException
+     * @throws AuthorizationException
      */
-    public function store(DiskEnvironmentRequest $request)
+    public function store(DiskEnvironmentRequest $request): JsonResponse|FileDiskResource
     {
         $this->authorize('manage file disk');
 
@@ -49,10 +54,9 @@ class DiskController extends Controller
     }
 
     /**
-     * @param  FileDisk  $file_disk
-     * @return JsonResponse
+     * @throws AuthorizationException
      */
-    public function update(FileDisk $disk, Request $request)
+    public function update(FileDisk $disk, Request $request): JsonResponse|FileDiskResource
     {
         $this->authorize('manage file disk');
 
@@ -74,10 +78,13 @@ class DiskController extends Controller
 
     /**
      * @param  Request  $request
-     * @return JsonResponse
+     *
+     * @throws AuthorizationException
+     * @throws AuthorizationException
      */
-    public function show($disk)
+    public function show($disk): JsonResponse
     {
+
         $this->authorize('manage file disk');
 
         $diskData = [];
@@ -143,9 +150,11 @@ class DiskController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  FileDisk  $taxType
-     * @return Response
+     *
+     * @throws AuthorizationException
+     * @throws AuthorizationException
      */
-    public function destroy(FileDisk $disk)
+    public function destroy(FileDisk $disk): JsonResponse
     {
         $this->authorize('manage file disk');
 
@@ -161,9 +170,10 @@ class DiskController extends Controller
     }
 
     /**
-     * @return JsonResponse
+     * @throws AuthorizationException
+     * @throws AuthorizationException
      */
-    public function getDiskDrivers()
+    public function getDiskDrivers(): JsonResponse
     {
         $this->authorize('manage file disk');
 

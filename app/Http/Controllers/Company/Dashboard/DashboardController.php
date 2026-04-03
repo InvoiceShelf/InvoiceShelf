@@ -60,39 +60,27 @@ class DashboardController extends Controller
         }
 
         while ($monthCounter < 12) {
-            array_push(
-                $invoice_totals,
-                Invoice::whereBetween(
-                    'invoice_date',
-                    [$start->format('Y-m-d'), $end->format('Y-m-d')]
-                )
-                    ->whereCompany()
-                    ->sum('base_total')
-            );
-            array_push(
-                $expense_totals,
-                Expense::whereBetween(
-                    'expense_date',
-                    [$start->format('Y-m-d'), $end->format('Y-m-d')]
-                )
-                    ->whereCompany()
-                    ->sum('base_amount')
-            );
-            array_push(
-                $receipt_totals,
-                Payment::whereBetween(
-                    'payment_date',
-                    [$start->format('Y-m-d'), $end->format('Y-m-d')]
-                )
-                    ->whereCompany()
-                    ->sum('base_amount')
-            );
-            array_push(
-                $net_income_totals,
-                ($receipt_totals[$i] - $expense_totals[$i])
-            );
+            $invoice_totals[] = Invoice::whereBetween(
+                'invoice_date',
+                [$start->format('Y-m-d'), $end->format('Y-m-d')]
+            )
+                ->whereCompany()
+                ->sum('base_total');
+            $expense_totals[] = Expense::whereBetween(
+                'expense_date',
+                [$start->format('Y-m-d'), $end->format('Y-m-d')]
+            )
+                ->whereCompany()
+                ->sum('base_amount');
+            $receipt_totals[] = Payment::whereBetween(
+                'payment_date',
+                [$start->format('Y-m-d'), $end->format('Y-m-d')]
+            )
+                ->whereCompany()
+                ->sum('base_amount');
+            $net_income_totals[] = ($receipt_totals[$i] - $expense_totals[$i]);
             $i++;
-            array_push($months, $start->translatedFormat('M'));
+            $months[] = $start->translatedFormat('M');
             $monthCounter++;
             $end->startOfMonth();
             $start->addMonth()->startOfMonth();

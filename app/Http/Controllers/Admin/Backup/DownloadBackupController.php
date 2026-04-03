@@ -5,6 +5,8 @@
 namespace App\Http\Controllers\Admin\Backup;
 
 use App\Rules\Backup\PathToZip;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
 use Spatie\Backup\BackupDestination\Backup;
 use Spatie\Backup\BackupDestination\BackupDestination;
@@ -13,7 +15,13 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DownloadBackupController extends ApiController
 {
-    public function __invoke(Request $request)
+    /**
+     * Handle backups
+     *
+     *
+     * @throws AuthorizationException
+     */
+    public function __invoke(Request $request): \Illuminate\Http\Response|StreamedResponse|ResponseFactory
     {
         $this->authorize('manage backups');
 
@@ -34,6 +42,9 @@ class DownloadBackupController extends ApiController
         return $this->respondWithBackupStream($backup);
     }
 
+    /**
+     * Respond with backup stream
+     */
     public function respondWithBackupStream(Backup $backup): StreamedResponse
     {
         $fileName = pathinfo($backup->path(), PATHINFO_BASENAME);

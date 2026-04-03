@@ -33,11 +33,11 @@ class MailConfigurationController extends Controller
     /**
      * Save the mail environment variables
      *
-     * @return JsonResponse
+     *
      *
      * @throws AuthorizationException
      */
-    public function saveMailEnvironment(MailEnvironmentRequest $request)
+    public function saveMailEnvironment(MailEnvironmentRequest $request): JsonResponse
     {
         $this->authorize('manage email config');
 
@@ -60,10 +60,8 @@ class MailConfigurationController extends Controller
 
     /**
      * Prepare mail settings for database storage
-     *
-     * @return array
      */
-    private function prepareMailSettingsForDatabase(MailEnvironmentRequest $request)
+    private function prepareMailSettingsForDatabase(MailEnvironmentRequest $request): array
     {
         $driver = $request->get('mail_driver');
 
@@ -120,11 +118,10 @@ class MailConfigurationController extends Controller
     /**
      * Return the mail environment variables
      *
-     * @return JsonResponse
      *
      * @throws AuthorizationException
      */
-    public function getMailEnvironment()
+    public function getMailEnvironment(): JsonResponse
     {
         $this->authorize('manage email config');
 
@@ -211,11 +208,10 @@ class MailConfigurationController extends Controller
     /**
      * Return the available mail drivers
      *
-     * @return JsonResponse
      *
      * @throws AuthorizationException
      */
-    public function getMailDrivers()
+    public function getMailDrivers(): JsonResponse
     {
         $this->authorize('manage email config');
 
@@ -233,12 +229,12 @@ class MailConfigurationController extends Controller
     /**
      * Test the email configuration
      *
-     * @return JsonResponse
+     *
      *
      * @throws AuthorizationException
      * @throws ValidationException
      */
-    public function testEmailConfig(Request $request)
+    public function testEmailConfig(Request $request): JsonResponse
     {
         $this->authorize('manage email config');
 

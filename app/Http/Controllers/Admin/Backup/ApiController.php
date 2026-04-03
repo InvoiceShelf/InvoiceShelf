@@ -9,6 +9,9 @@ use Illuminate\Http\JsonResponse;
 
 class ApiController extends Controller
 {
+    /**
+     * Resoibd wutg syccess
+     */
     public function respondSuccess(): JsonResponse
     {
         return response()->json([

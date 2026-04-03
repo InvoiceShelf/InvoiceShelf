@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Admin\Backup;
 use App\Jobs\CreateBackupJob;
 use App\Models\FileDisk;
 use App\Rules\Backup\PathToZip;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -19,9 +20,10 @@ class BackupsController extends ApiController
     /**
      * Display a listing of the resource.
      *
-     * @return JsonResponse
+     *
+     * @throws AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
         $this->authorize('manage backups');
 
@@ -70,9 +72,10 @@ class BackupsController extends ApiController
     /**
      * Store a newly created resource in storage.
      *
-     * @return JsonResponse
+     *
+     * @throws AuthorizationException
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $this->authorize('manage backups');
 
@@ -87,9 +90,10 @@ class BackupsController extends ApiController
     /**
      * Remove the specified resource from storage.
      *
-     * @return JsonResponse
+     *
+     * @throws AuthorizationException
      */
-    public function destroy($disk, Request $request)
+    public function destroy($disk, Request $request): JsonResponse
     {
         $this->authorize('manage backups');
 

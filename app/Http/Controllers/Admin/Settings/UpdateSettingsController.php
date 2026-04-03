@@ -5,18 +5,18 @@ namespace App\Http\Controllers\Admin\Settings;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SettingRequest;
 use App\Models\Setting;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\JsonResponse;
 
 class UpdateSettingsController extends Controller
 {
     /**
      * Handle the incoming request.
      *
-     * @param  Request  $request
-     * @return Response
+     *
+     * @throws AuthorizationException
      */
-    public function __invoke(SettingRequest $request)
+    public function __invoke(SettingRequest $request): JsonResponse
     {
         $this->authorize('manage settings');
 
