@@ -4,7 +4,6 @@ use App\Http\Controllers\AppVersionController;
 use App\Http\Controllers\V1\Admin\Auth\ForgotPasswordController;
 use App\Http\Controllers\V1\Admin\Auth\ResetPasswordController;
 use App\Http\Controllers\V1\Admin\Company\CompaniesController;
-use App\Http\Controllers\V1\Admin\Company\CompanyController as AdminCompanyController;
 use App\Http\Controllers\V1\Admin\Customer\CustomersController;
 use App\Http\Controllers\V1\Admin\Customer\CustomerStatsController;
 use App\Http\Controllers\V1\Admin\CustomField\CustomFieldsController;
@@ -256,7 +255,7 @@ Route::prefix('/v1')->group(function () {
 
             Route::get('/number-placeholders', NumberPlaceholdersController::class);
 
-            Route::get('/current-company', AdminCompanyController::class);
+            Route::get('/current-company', [CompaniesController::class, 'show']);
 
             // Customers
             // ----------------------------------

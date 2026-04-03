@@ -18,6 +18,13 @@ class CompaniesController extends Controller
         private readonly CompanyService $companyService,
     ) {}
 
+    public function show(Request $request)
+    {
+        $company = Company::find($request->header('company'));
+
+        return new CompanyResource($company);
+    }
+
     public function store(CompaniesRequest $request)
     {
         $this->authorize('create company');
