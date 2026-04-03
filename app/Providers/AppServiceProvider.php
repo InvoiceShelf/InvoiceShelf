@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Bouncer\Scopes\DefaultScope;
 use App\Policies\CompanyPolicy;
 use App\Policies\CustomerPolicy;
 use App\Policies\DashboardPolicy;
@@ -20,6 +19,7 @@ use App\Policies\RolePolicy;
 use App\Policies\SettingsPolicy;
 use App\Policies\UserPolicy;
 use App\Services\Installation\InstallUtils;
+use App\Support\BouncerDefaultScope;
 use Gate;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Mail;
@@ -78,7 +78,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        BouncerModels::scope(new DefaultScope);
+        BouncerModels::scope(new BouncerDefaultScope);
     }
 
     public function addMenus()

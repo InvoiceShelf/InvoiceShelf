@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Bouncer\Scopes;
+namespace App\Support;
 
 use Silber\Bouncer\Database\Scope\Scope;
 
-class DefaultScope extends Scope
+class BouncerDefaultScope extends Scope
 {
     public function applyToModelQuery($query, $table = null)
     {
