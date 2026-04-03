@@ -13,8 +13,6 @@ use App\Http\Controllers\V1\Admin\Estimate\EstimateTemplatesController;
 use App\Http\Controllers\V1\Admin\ExchangeRate\ExchangeRateProviderController;
 use App\Http\Controllers\V1\Admin\Expense\ExpenseCategoriesController;
 use App\Http\Controllers\V1\Admin\Expense\ExpensesController;
-use App\Http\Controllers\V1\Admin\Expense\ShowReceiptController;
-use App\Http\Controllers\V1\Admin\Expense\UploadReceiptController;
 use App\Http\Controllers\V1\Admin\General\BootstrapController;
 use App\Http\Controllers\V1\Admin\General\BulkExchangeRateController;
 use App\Http\Controllers\V1\Admin\General\ConfigController;
@@ -308,9 +306,9 @@ Route::prefix('/v1')->group(function () {
             // Expenses
             // ----------------------------------
 
-            Route::get('/expenses/{expense}/show/receipt', ShowReceiptController::class);
+            Route::get('/expenses/{expense}/show/receipt', [ExpensesController::class, 'showReceipt']);
 
-            Route::post('/expenses/{expense}/upload/receipts', UploadReceiptController::class);
+            Route::post('/expenses/{expense}/upload/receipts', [ExpensesController::class, 'uploadReceipt']);
 
             Route::post('/expenses/delete', [ExpensesController::class, 'delete']);
 

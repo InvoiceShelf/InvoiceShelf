@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\V1\Admin\Auth\LoginController;
-use App\Http\Controllers\V1\Admin\Expense\ShowReceiptController;
+use App\Http\Controllers\V1\Admin\Expense\ExpensesController;
 use App\Http\Controllers\V1\Admin\Report\CustomerSalesReportController;
 use App\Http\Controllers\V1\Admin\Report\ExpensesReportController;
 use App\Http\Controllers\V1\Admin\Report\ItemSalesReportController;
@@ -73,7 +73,7 @@ Route::middleware('auth:sanctum')->prefix('reports')->group(function () {
     // download expense receipt
     // -------------------------------------------------
     Route::get('/expenses/{expense}/download-receipt', DownloadReceiptController::class);
-    Route::get('/expenses/{expense}/receipt', ShowReceiptController::class);
+    Route::get('/expenses/{expense}/receipt', [ExpensesController::class, 'showReceipt']);
 });
 
 // PDF Endpoints

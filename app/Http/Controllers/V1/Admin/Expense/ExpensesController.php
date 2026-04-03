@@ -5,6 +5,7 @@ namespace App\Http\Controllers\V1\Admin\Expense;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DeleteExpensesRequest;
 use App\Http\Requests\ExpenseRequest;
+use App\Http\Requests\UploadExpenseReceiptRequest;
 use App\Http\Resources\ExpenseResource;
 use App\Models\Expense;
 use App\Services\ExpenseService;
@@ -95,5 +96,41 @@ class ExpensesController extends Controller
         return response()->json([
             'success' => true,
         ]);
+    }
+
+    public function showReceipt(Expense $expense)
+    {
+        $this->authorize('view', $expense);
+
+        if ($expense) {
+            $media = $expense->getFirstMedia('receipts');
+
+            if ($media) {
+                return response()->file($media->getPath());
+            }
+
+            return respondJson('receipt_does_not_exist', 'Receipt does not exist.');
+        }
+    }
+
+    public function uploadReceipt(UploadExpenseReceiptRequest $request, Expense $expense)
+    {
+        $this->authorize('update', $expense);
+
+        $data = json_decode($request->attachment_receipt);
+
+        if ($data) {
+            if ($request->type === 'edit') {
+                $expense->clearMediaCollection('receipts');
+            }
+
+            $expense->addMediaFromBase64($data->data)
+                ->usingFileName($data->name)
+                ->toMediaCollection('receipts');
+        }
+
+        return response()->json([
+            'success' => 'Expense receipts uploaded successfully',
+        ], 200);
     }
 }
