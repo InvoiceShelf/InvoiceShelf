@@ -4,7 +4,7 @@ namespace App\Http\Controllers\V1\Admin\Update;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
-use App\Space\Updater;
+use App\Services\Update\Updater;
 use Illuminate\Http\Request;
 
 class UpdateController extends Controller

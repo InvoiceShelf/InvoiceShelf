@@ -8,11 +8,16 @@ use App\Http\Requests\DeleteInvoiceRequest;
 use App\Http\Resources\InvoiceResource;
 use App\Jobs\GenerateInvoicePdfJob;
 use App\Models\Invoice;
+use App\Services\InvoiceService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class InvoicesController extends Controller
 {
+    public function __construct(
+        private readonly InvoiceService $invoiceService,
+    ) {}
+
     /**
      * Display a listing of the resource.
      *
@@ -46,10 +51,10 @@ class InvoicesController extends Controller
     {
         $this->authorize('create', Invoice::class);
 
-        $invoice = Invoice::createInvoice($request);
+        $invoice = $this->invoiceService->create($request);
 
         if ($request->has('invoiceSend')) {
-            $invoice->send($request->subject, $request->body);
+            $this->invoiceService->send($invoice, $request->only(['subject', 'body']));
         }
 
         GenerateInvoicePdfJob::dispatch($invoice);
@@ -79,11 +84,7 @@ class InvoicesController extends Controller
     {
         $this->authorize('update', $invoice);
 
-        $invoice = $invoice->updateInvoice($request);
-
-        if (is_string($invoice)) {
-            return respondJson($invoice, $invoice);
-        }
+        $invoice = $this->invoiceService->update($invoice, $request);
 
         GenerateInvoicePdfJob::dispatch($invoice, true);
 
@@ -104,7 +105,7 @@ class InvoicesController extends Controller
             ->whereIn('id', $request->ids)
             ->pluck('id');
 
-        Invoice::deleteInvoices($ids);
+        $this->invoiceService->delete($ids);
 
         return response()->json([
             'success' => true,

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\V1\Admin\General;
 
 use App\Http\Controllers\Controller;
-use App\Space\TimeFormatter;
+use App\Support\Formatters\TimeFormatter;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 

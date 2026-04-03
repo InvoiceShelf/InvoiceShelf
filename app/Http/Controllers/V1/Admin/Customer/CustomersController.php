@@ -7,11 +7,16 @@ use App\Http\Requests;
 use App\Http\Requests\DeleteCustomersRequest;
 use App\Http\Resources\CustomerResource;
 use App\Models\Customer;
+use App\Services\CustomerService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class CustomersController extends Controller
 {
+    public function __construct(
+        private readonly CustomerService $customerService,
+    ) {}
+
     /**
      * Display a listing of the resource.
      *
@@ -46,7 +51,7 @@ class CustomersController extends Controller
     {
         $this->authorize('create', Customer::class);
 
-        $customer = Customer::createCustomer($request);
+        $customer = $this->customerService->create($request);
 
         return new CustomerResource($customer);
     }
@@ -73,11 +78,7 @@ class CustomersController extends Controller
     {
         $this->authorize('update', $customer);
 
-        $customer = Customer::updateCustomer($request, $customer);
-
-        if (is_string($customer)) {
-            return respondJson('you_cannot_edit_currency', 'Cannot change currency once transactions created');
-        }
+        $customer = $this->customerService->update($request, $customer);
 
         return new CustomerResource($customer);
     }
@@ -96,7 +97,7 @@ class CustomersController extends Controller
             ->whereIn('id', $request->ids)
             ->pluck('id');
 
-        Customer::deleteCustomers($ids);
+        $this->customerService->delete($ids);
 
         return response()->json([
             'success' => true,

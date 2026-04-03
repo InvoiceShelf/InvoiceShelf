@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use App\Models\FileDisk;
 use App\Models\Setting;
-use App\Space\InstallUtils;
+use App\Services\Installation\InstallUtils;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 

@@ -6,7 +6,8 @@ use App\Facades\Hashids;
 use App\Models\Company;
 use App\Models\Setting;
 use App\Models\User;
-use App\Space\InstallUtils;
+use App\Services\CompanyService;
+use App\Services\Installation\InstallUtils;
 use Illuminate\Database\Seeder;
 use Silber\Bouncer\BouncerFacade;
 
@@ -32,7 +33,7 @@ class UsersTableSeeder extends Seeder
 
         $company->unique_hash = Hashids::connection(Company::class)->encode($company->id);
         $company->save();
-        $company->setupDefaultData();
+        app(CompanyService::class)->setupDefaults($company);
         $user->companies()->attach($company->id);
         BouncerFacade::scope()->to($company->id);
 

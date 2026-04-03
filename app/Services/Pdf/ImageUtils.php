@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Space;
+namespace App\Services\Pdf;
 
 use Illuminate\Support\Facades\File;
 

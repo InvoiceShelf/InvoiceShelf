@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Space\BackupConfigurationFactory;
+use App\Services\Backup\BackupConfigurationFactory;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;

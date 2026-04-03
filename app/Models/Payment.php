@@ -2,15 +2,11 @@
 
 namespace App\Models;
 
-use App\Facades\Hashids;
 use App\Jobs\GeneratePaymentPdfJob;
-use App\Mail\SendPaymentMail;
-use App\Services\CompanyMailConfigService;
-use App\Services\SerialNumberFormatter;
+use App\Services\PaymentService;
 use App\Support\PdfHtmlSanitizer;
 use App\Traits\GeneratesPdfTrait;
 use App\Traits\HasCustomFieldsTrait;
-use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -131,158 +127,6 @@ class Payment extends Model implements HasMedia
         return $this->belongsTo(PaymentMethod::class);
     }
 
-    public function sendPaymentData($data)
-    {
-        $data['payment'] = $this->toArray();
-        $data['user'] = $this->customer->toArray();
-        $data['company'] = Company::find($this->company_id);
-        $data['body'] = $this->getEmailBody($data['body']);
-        $data['attach']['data'] = ($this->getEmailAttachmentSetting()) ? $this->getPDFData() : null;
-
-        return $data;
-    }
-
-    public function send($data)
-    {
-        $data = $this->sendPaymentData($data);
-
-        CompanyMailConfigService::apply($this->company_id);
-
-        $mail = \Mail::to($data['to']);
-        if (! empty($data['cc'])) {
-            $mail->cc($data['cc']);
-        }
-        if (! empty($data['bcc'])) {
-            $mail->bcc($data['bcc']);
-        }
-        $mail->send(new SendPaymentMail($data));
-
-        return [
-            'success' => true,
-        ];
-    }
-
-    public static function createPayment($request)
-    {
-        $data = $request->getPaymentPayload();
-
-        if ($request->invoice_id) {
-            $invoice = Invoice::find($request->invoice_id);
-            $invoice->subtractInvoicePayment($request->amount);
-        }
-
-        $payment = Payment::create($data);
-        $payment->unique_hash = Hashids::connection(Payment::class)->encode($payment->id);
-
-        $serial = (new SerialNumberFormatter)
-            ->setModel($payment)
-            ->setCompany($payment->company_id)
-            ->setCustomer($payment->customer_id)
-            ->setNextNumbers();
-
-        $payment->sequence_number = $serial->nextSequenceNumber;
-        $payment->customer_sequence_number = $serial->nextCustomerSequenceNumber;
-        $payment->save();
-
-        $company_currency = CompanySetting::getSetting('currency', $request->header('company'));
-
-        if ((string) $payment['currency_id'] !== $company_currency) {
-            ExchangeRateLog::addExchangeRateLog($payment);
-        }
-
-        $customFields = $request->customFields;
-
-        if ($customFields) {
-            $payment->addCustomFields($customFields);
-        }
-
-        $payment = Payment::with([
-            'customer',
-            'invoice',
-            'paymentMethod',
-            'fields',
-        ])->find($payment->id);
-
-        return $payment;
-    }
-
-    public function updatePayment($request)
-    {
-        $data = $request->getPaymentPayload();
-
-        if ($request->invoice_id && (! $this->invoice_id || $this->invoice_id !== $request->invoice_id)) {
-            $invoice = Invoice::find($request->invoice_id);
-            $invoice->subtractInvoicePayment($request->amount);
-        }
-
-        if ($this->invoice_id && (! $request->invoice_id || $this->invoice_id !== $request->invoice_id)) {
-            $invoice = Invoice::find($this->invoice_id);
-            $invoice->addInvoicePayment($this->amount);
-        }
-
-        if ($this->invoice_id && $this->invoice_id === $request->invoice_id && $request->amount !== $this->amount) {
-            $invoice = Invoice::find($this->invoice_id);
-            $invoice->addInvoicePayment($this->amount);
-            $invoice->subtractInvoicePayment($request->amount);
-        }
-
-        $serial = (new SerialNumberFormatter)
-            ->setModel($this)
-            ->setCompany($this->company_id)
-            ->setCustomer($request->customer_id)
-            ->setModelObject($this->id)
-            ->setNextNumbers();
-
-        $data['customer_sequence_number'] = $serial->nextCustomerSequenceNumber;
-        $this->update($data);
-
-        $company_currency = CompanySetting::getSetting('currency', $request->header('company'));
-
-        if ((string) $data['currency_id'] !== $company_currency) {
-            ExchangeRateLog::addExchangeRateLog($this);
-        }
-
-        $customFields = $request->customFields;
-
-        if ($customFields) {
-            $this->updateCustomFields($customFields);
-        }
-
-        $payment = Payment::with([
-            'customer',
-            'invoice',
-            'paymentMethod',
-        ])
-            ->find($this->id);
-
-        return $payment;
-    }
-
-    public static function deletePayments($ids)
-    {
-        foreach ($ids as $id) {
-            $payment = Payment::find($id);
-
-            if ($payment->invoice_id != null) {
-                $invoice = Invoice::find($payment->invoice_id);
-                $invoice->due_amount = ((int) $invoice->due_amount + (int) $payment->amount);
-
-                if ($invoice->due_amount == $invoice->total) {
-                    $invoice->paid_status = Invoice::STATUS_UNPAID;
-                } else {
-                    $invoice->paid_status = Invoice::STATUS_PARTIALLY_PAID;
-                }
-
-                $invoice->status = $invoice->getPreviousStatus();
-                $invoice->save();
-            }
-
-            $payment->delete();
-        }
-
-        return true;
-    }
-
     public function scopeWhereSearch($query, $search)
     {
         foreach (explode(' ', $search) as $term) {
@@ -380,26 +224,7 @@ class Payment extends Model implements HasMedia
 
     public function getPDFData()
     {
-        $company = Company::find($this->company_id);
-        $locale = CompanySetting::getSetting('language', $company->id);
-
-        \App::setLocale($locale);
-
-        $logo = $company->logo_path;
-
-        view()->share([
-            'payment' => $this,
-            'company_address' => $this->getCompanyAddress(),
-            'billing_address' => $this->getCustomerBillingAddress(),
-            'notes' => $this->getNotes(),
-            'logo' => $logo ?? null,
-        ]);
-
-        if (request()->has('preview')) {
-            return view('app.pdf.payment.payment');
-        }
-
-        return PDF::loadView('app.pdf.payment.payment');
+        return app(PaymentService::class)->getPdfData($this);
     }
 
     public function getCompanyAddress()
@@ -457,38 +282,5 @@ class Payment extends Model implements HasMedia
             '{PAYMENT_NUMBER}' => $this->payment_number,
             '{PAYMENT_AMOUNT}' => format_money_pdf($this->amount, $this->customer->currency),
         ];
-    }
-
-    public static function generatePayment($transaction)
-    {
-        $invoice = Invoice::find($transaction->invoice_id);
-
-        $serial = (new SerialNumberFormatter)
-            ->setModel(new Payment)
-            ->setCompany($invoice->company_id)
-            ->setCustomer($invoice->customer_id)
-            ->setNextNumbers();
-
-        $data['payment_number'] = $serial->getNextNumber();
-        $data['payment_date'] = Carbon::now();
-        $data['amount'] = $invoice->total;
-        $data['invoice_id'] = $invoice->id;
-        $data['payment_method_id'] = request()->payment_method_id;
-        $data['customer_id'] = $invoice->customer_id;
-        $data['exchange_rate'] = $invoice->exchange_rate;
-        $data['base_amount'] = $data['amount'] * $data['exchange_rate'];
-        $data['currency_id'] = $invoice->currency_id;
-        $data['company_id'] = $invoice->company_id;
-        $data['transaction_id'] = $transaction->id;
-
-        $payment = Payment::create($data);
-        $payment->unique_hash = Hashids::connection(Payment::class)->encode($payment->id);
-        $payment->sequence_number = $serial->nextSequenceNumber;
-        $payment->customer_sequence_number = $serial->nextCustomerSequenceNumber;
-        $payment->save();
-
-        $invoice->subtractInvoicePayment($invoice->total);
-
-        return $payment;
     }
 }

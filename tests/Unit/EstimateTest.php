@@ -4,7 +4,8 @@ use App\Http\Requests\EstimatesRequest;
 use App\Models\Estimate;
 use App\Models\EstimateItem;
 use App\Models\Tax;
-use Illuminate\Http\Request;
+use App\Services\DocumentItemService;
+use App\Services\EstimateService;
 use Illuminate\Support\Facades\Artisan;
 
 beforeEach(function () {
@@ -51,7 +52,7 @@ test('create estimate', function () {
 
     $request->replace($estimate);
 
-    $response = Estimate::createEstimate($request);
+    $response = app(EstimateService::class)->create($request);
 
     $this->assertDatabaseHas('estimate_items', [
         'estimate_id' => $response->id,
@@ -99,7 +100,7 @@ test('update estimate', function () {
 
     $number_attributes['estimate_number'] = $estimate_number[0].'-'.sprintf('%06d', intval($estimate_number[1]));
 
-    $estimate->updateEstimate($request);
+    app(EstimateService::class)->update($estimate, $request);
 
     $this->assertDatabaseHas('estimate_items', [
         'estimate_id' => $estimate->id,
@@ -135,11 +136,7 @@ test('create items', function () {
 
     array_push($items, $item);
 
-    $request = new Request;
-
-    $request->replace(['items' => $items]);
-
-    Estimate::createItems($estimate, $request, $estimate->exchange_rate);
+    app(DocumentItemService::class)->createItems($estimate, $items);
 
     $this->assertDatabaseHas('estimate_items', [
         'estimate_id' => $estimate->id,
@@ -168,11 +165,7 @@ test('create taxes', function () {
     array_push($taxes, $tax1);
     array_push($taxes, $tax2);
 
-    $request = new Request;
-
-    $request->replace(['taxes' => $taxes]);
-
-    Estimate::createTaxes($estimate, $request, $estimate->exchange_rate);
+    app(DocumentItemService::class)->createTaxes($estimate, $taxes);
 
     $this->assertCount(2, $estimate->taxes);
 

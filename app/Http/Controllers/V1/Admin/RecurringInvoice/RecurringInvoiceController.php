@@ -6,11 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\RecurringInvoiceRequest;
 use App\Http\Resources\RecurringInvoiceResource;
 use App\Models\RecurringInvoice;
+use App\Services\RecurringInvoiceService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class RecurringInvoiceController extends Controller
 {
+    public function __construct(
+        private readonly RecurringInvoiceService $recurringInvoiceService,
+    ) {}
+
     /**
      * Display a listing of the resource.
      *
@@ -42,7 +47,7 @@ class RecurringInvoiceController extends Controller
     {
         $this->authorize('create', RecurringInvoice::class);
 
-        $recurringInvoice = RecurringInvoice::createFromRequest($request);
+        $recurringInvoice = $this->recurringInvoiceService->create($request);
 
         return new RecurringInvoiceResource($recurringInvoice);
     }
@@ -69,7 +74,7 @@ class RecurringInvoiceController extends Controller
     {
         $this->authorize('update', $recurringInvoice);
 
-        $recurringInvoice->updateFromRequest($request);
+        $this->recurringInvoiceService->update($recurringInvoice, $request);
 
         return new RecurringInvoiceResource($recurringInvoice);
     }
@@ -88,7 +93,7 @@ class RecurringInvoiceController extends Controller
             ->whereIn('id', $request->ids)
             ->pluck('id');
 
-        RecurringInvoice::deleteRecurringInvoice($ids);
+        $this->recurringInvoiceService->delete($ids);
 
         return response()->json([
             'success' => true,

@@ -4,7 +4,8 @@ use App\Http\Requests\InvoicesRequest;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use App\Models\Tax;
-use Illuminate\Http\Request;
+use App\Services\DocumentItemService;
+use App\Services\InvoiceService;
 use Illuminate\Support\Facades\Artisan;
 
 beforeEach(function () {
@@ -68,7 +69,7 @@ test('create invoice', function () {
     $invoice_number = explode('-', $invoice['invoice_number']);
     $number_attributes['invoice_number'] = $invoice_number[0].'-'.sprintf('%06d', intval($invoice_number[1]));
 
-    $response = Invoice::createInvoice($request);
+    $response = app(InvoiceService::class)->create($request);
 
     $this->assertDatabaseHas('invoice_items', [
         'invoice_id' => $response->id,
@@ -119,7 +120,7 @@ test('update invoice', function () {
 
     $number_attributes['invoice_number'] = $invoice_number[0].'-'.sprintf('%06d', intval($invoice_number[1]));
 
-    $response = $invoice->updateInvoice($request);
+    $response = app(InvoiceService::class)->update($invoice, $request);
 
     $this->assertDatabaseHas('invoice_items', [
         'invoice_id' => $response->id,
@@ -154,11 +155,7 @@ test('create items', function () {
 
     array_push($items, $item);
 
-    $request = new InvoicesRequest;
-
-    $request->replace(['items' => $items]);
-
-    Invoice::createItems($invoice, $request->items);
+    app(DocumentItemService::class)->createItems($invoice, $items);
 
     $this->assertDatabaseHas('invoice_items', [
         'invoice_id' => $invoice->id,
@@ -181,11 +178,7 @@ test('create taxes', function () {
 
     array_push($taxes, $tax);
 
-    $request = new Request;
-
-    $request->replace(['taxes' => $taxes]);
-
-    Invoice::createTaxes($invoice, $request->taxes);
+    app(DocumentItemService::class)->createTaxes($invoice, $taxes);
 
     $this->assertDatabaseHas('taxes', [
         'invoice_id' => $invoice->id,

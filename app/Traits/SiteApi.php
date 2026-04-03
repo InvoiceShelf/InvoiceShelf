@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Space;
+namespace App\Traits;
 
 use App\Models\Setting;
 use GuzzleHttp\Client;

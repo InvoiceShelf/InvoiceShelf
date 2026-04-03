@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\V1\Installation;
 
 use App\Http\Controllers\Controller;
-use App\Space\RequirementsChecker;
+use App\Services\Installation\RequirementsChecker;
 use Illuminate\Http\JsonResponse;
 
 class RequirementsController extends Controller

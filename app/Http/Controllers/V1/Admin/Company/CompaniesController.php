@@ -8,11 +8,16 @@ use App\Http\Requests\CompaniesRequest;
 use App\Http\Resources\CompanyResource;
 use App\Models\Company;
 use App\Models\User;
+use App\Services\CompanyService;
 use Illuminate\Http\Request;
 use Silber\Bouncer\BouncerFacade;
 
 class CompaniesController extends Controller
 {
+    public function __construct(
+        private readonly CompanyService $companyService,
+    ) {}
+
     public function store(CompaniesRequest $request)
     {
         $this->authorize('create company');
@@ -22,7 +27,7 @@ class CompaniesController extends Controller
         $company = Company::create($request->getCompanyPayload());
         $company->unique_hash = Hashids::connection(Company::class)->encode($company->id);
         $company->save();
-        $company->setupDefaultData();
+        $this->companyService->setupDefaults($company);
         $user->companies()->attach($company->id);
         $user->assign('super admin');
 
@@ -49,7 +54,7 @@ class CompaniesController extends Controller
             return respondJson('You_cannot_delete_all_companies', 'You cannot delete all companies');
         }
 
-        $company->deleteCompany($user);
+        $this->companyService->delete($company, $user);
 
         return response()->json([
             'success' => true,

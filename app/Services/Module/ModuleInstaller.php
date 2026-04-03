@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Space;
+namespace App\Services\Module;
 
 use App\Events\ModuleEnabledEvent;
 use App\Events\ModuleInstalledEvent;
 use App\Http\Resources\ModuleResource;
 use App\Models\Module as ModelsModule;
 use App\Models\Setting;
+use App\Traits\SiteApi;
 use Artisan;
 use File;
 use GuzzleHttp\Exception\RequestException;

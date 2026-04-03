@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\V1\Admin\General;
 
 use App\Http\Controllers\Controller;
-use App\Space\TimeZones;
+use App\Support\Formatters\TimeZones;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 

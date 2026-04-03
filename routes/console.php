@@ -2,7 +2,8 @@
 
 use App\Models\CompanySetting;
 use App\Models\RecurringInvoice;
-use App\Space\InstallUtils;
+use App\Services\Installation\InstallUtils;
+use App\Services\RecurringInvoiceService;
 use Illuminate\Support\Facades\Schedule;
 
 // Only run in demo environment
@@ -25,7 +26,7 @@ if (InstallUtils::isDbCreated()) {
         $timeZone = CompanySetting::getSetting('time_zone', $recurringInvoice->company_id);
 
         Schedule::call(function () use ($recurringInvoice) {
-            $recurringInvoice->generateInvoice();
+            app(RecurringInvoiceService::class)->generateInvoice($recurringInvoice);
         })->cron($recurringInvoice->frequency)->timezone($timeZone);
     }
 }

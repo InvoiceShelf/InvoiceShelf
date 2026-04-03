@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\V1\Admin\Modules;
 
 use App\Http\Controllers\Controller;
-use App\Space\ModuleInstaller;
+use App\Services\Module\ModuleInstaller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 

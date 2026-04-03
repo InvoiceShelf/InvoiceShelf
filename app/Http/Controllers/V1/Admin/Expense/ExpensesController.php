@@ -7,11 +7,16 @@ use App\Http\Requests\DeleteExpensesRequest;
 use App\Http\Requests\ExpenseRequest;
 use App\Http\Resources\ExpenseResource;
 use App\Models\Expense;
+use App\Services\ExpenseService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ExpensesController extends Controller
 {
+    public function __construct(
+        private readonly ExpenseService $expenseService,
+    ) {}
+
     /**
      * Display a listing of the resource.
      *
@@ -46,7 +51,7 @@ class ExpensesController extends Controller
     {
         $this->authorize('create', Expense::class);
 
-        $expense = Expense::createExpense($request);
+        $expense = $this->expenseService->create($request);
 
         return new ExpenseResource($expense);
     }
@@ -72,7 +77,7 @@ class ExpensesController extends Controller
     {
         $this->authorize('update', $expense);
 
-        $expense->updateExpense($request);
+        $this->expenseService->update($expense, $request);
 
         return new ExpenseResource($expense);
     }

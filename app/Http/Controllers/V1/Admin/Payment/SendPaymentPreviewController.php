@@ -4,12 +4,17 @@ namespace App\Http\Controllers\V1\Admin\Payment;
 
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
+use App\Services\PaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Mail\Markdown;
 
 class SendPaymentPreviewController extends Controller
 {
+    public function __construct(
+        private readonly PaymentService $paymentService,
+    ) {}
+
     /**
      * Handle the incoming request.
      *
@@ -21,7 +26,7 @@ class SendPaymentPreviewController extends Controller
 
         $markdown = new Markdown(view(), config('mail.markdown'));
 
-        $data = $payment->sendPaymentData($request->all());
+        $data = $this->paymentService->sendPaymentData($payment, $request->all());
         $data['url'] = $payment->paymentPdfUrl;
 
         return $markdown->render('emails.send.payment', ['data' => $data]);

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\V1\Admin\Modules;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UploadModuleRequest;
-use App\Space\ModuleInstaller;
+use App\Services\Module\ModuleInstaller;
 use Illuminate\Http\Response;
 
 class UploadModuleController extends Controller

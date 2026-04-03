@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\V1\Admin\Update;
 
 use App\Http\Controllers\Controller;
-use App\Space\Updater;
+use App\Services\Update\Updater;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;

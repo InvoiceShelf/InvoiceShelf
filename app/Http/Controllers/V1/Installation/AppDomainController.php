@@ -4,7 +4,7 @@ namespace App\Http\Controllers\V1\Installation;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DomainEnvironmentRequest;
-use App\Space\EnvironmentManager;
+use App\Services\Installation\EnvironmentManager;
 use Illuminate\Support\Facades\Artisan;
 
 class AppDomainController extends Controller

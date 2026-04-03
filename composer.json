@@ -53,7 +53,7 @@
             "Modules\\": "Modules/"
         },
         "files": [
-            "app/Space/helpers.php"
+            "app/Support/helpers.php"
         ]
     },
     "autoload-dev": {

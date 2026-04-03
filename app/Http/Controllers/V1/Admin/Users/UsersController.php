@@ -7,11 +7,16 @@ use App\Http\Requests\DeleteUserRequest;
 use App\Http\Requests\UserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class UsersController extends Controller
 {
+    public function __construct(
+        private readonly UserService $userService,
+    ) {}
+
     /**
      * Display a listing of the resource.
      *
@@ -40,14 +45,13 @@ class UsersController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\UserRequest  $request
      * @return JsonResponse
      */
     public function store(UserRequest $request)
     {
         $this->authorize('create', User::class);
 
-        $user = User::createFromRequest($request);
+        $user = $this->userService->create($request);
 
         return new UserResource($user);
     }
@@ -67,14 +71,13 @@ class UsersController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\UserRequest  $request
      * @return JsonResponse
      */
     public function update(UserRequest $request, User $user)
     {
         $this->authorize('update', $user);
 
-        $user->updateFromRequest($request);
+        $this->userService->update($user, $request);
 
         return new UserResource($user);
     }
@@ -90,7 +93,7 @@ class UsersController extends Controller
         $this->authorize('delete multiple users', User::class);
 
         if ($request->users) {
-            User::deleteUsers($request->users);
+            $this->userService->delete($request->users);
         }
 
         return response()->json([

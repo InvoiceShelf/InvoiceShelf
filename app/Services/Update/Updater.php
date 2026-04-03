@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Space;
+namespace App\Services\Update;
 
 use App\Events\UpdateFinished;
 use App\Models\Setting;
+use App\Traits\SiteApi;
 use Artisan;
 use File;
 use GuzzleHttp\Exception\RequestException;

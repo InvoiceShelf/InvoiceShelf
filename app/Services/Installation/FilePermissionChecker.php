@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Space;
+namespace App\Services\Installation;
 
 class FilePermissionChecker
 {

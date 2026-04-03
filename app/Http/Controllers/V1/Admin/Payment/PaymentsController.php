@@ -7,11 +7,16 @@ use App\Http\Requests\DeletePaymentsRequest;
 use App\Http\Requests\PaymentRequest;
 use App\Http\Resources\PaymentResource;
 use App\Models\Payment;
+use App\Services\PaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class PaymentsController extends Controller
 {
+    public function __construct(
+        private readonly PaymentService $paymentService,
+    ) {}
+
     /**
      * Display a listing of the resource.
      *
@@ -48,7 +53,7 @@ class PaymentsController extends Controller
     {
         $this->authorize('create', Payment::class);
 
-        $payment = Payment::createPayment($request);
+        $payment = $this->paymentService->create($request);
 
         return new PaymentResource($payment);
     }
@@ -64,7 +69,7 @@ class PaymentsController extends Controller
     {
         $this->authorize('update', $payment);
 
-        $payment = $payment->updatePayment($request);
+        $payment = $this->paymentService->update($payment, $request);
 
         return new PaymentResource($payment);
     }
@@ -77,7 +82,7 @@ class PaymentsController extends Controller
             ->whereIn('id', $request->ids)
             ->pluck('id');
 
-        Payment::deletePayments($ids);
+        $this->paymentService->delete($ids);
 
         return response()->json([
             'success' => true,

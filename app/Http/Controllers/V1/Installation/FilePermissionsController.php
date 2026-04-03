@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\V1\Installation;
 
 use App\Http\Controllers\Controller;
-use App\Space\FilePermissionChecker;
+use App\Services\Installation\FilePermissionChecker;
 use Illuminate\Http\JsonResponse;
 
 class FilePermissionsController extends Controller

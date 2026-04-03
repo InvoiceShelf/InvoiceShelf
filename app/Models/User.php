@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Http\Requests\UserRequest;
 use App\Notifications\MailResetPasswordNotification;
 use App\Traits\HasCustomFieldsTrait;
 use Carbon\Carbon;
@@ -15,7 +14,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Schema;
 use Laravel\Sanctum\HasApiTokens;
-use Silber\Bouncer\BouncerFacade;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -349,42 +347,6 @@ class User extends Authenticatable implements HasMedia
         return false;
     }
 
-    public static function createFromRequest(UserRequest $request)
-    {
-        $user = self::create($request->getUserPayload());
-
-        $user->setSettings([
-            'language' => CompanySetting::getSetting('language', $request->header('company')),
-        ]);
-
-        $companies = collect($request->companies);
-        $user->companies()->sync($companies->pluck('id'));
-
-        foreach ($companies as $company) {
-            BouncerFacade::scope()->to($company['id']);
-
-            BouncerFacade::sync($user)->roles([$company['role']]);
-        }
-
-        return $user;
-    }
-
-    public function updateFromRequest(UserRequest $request)
-    {
-        $this->update($request->getUserPayload());
-
-        $companies = collect($request->companies);
-        $this->companies()->sync($companies->pluck('id'));
-
-        foreach ($companies as $company) {
-            BouncerFacade::scope()->to($company['id']);
-
-            BouncerFacade::sync($this)->roles([$company['role']]);
-        }
-
-        return $this;
-    }
-
     public function checkAccess($data)
     {
         if (! empty($data->data['super_admin_only']) && $data->data['super_admin_only']) {
@@ -408,48 +370,5 @@ class User extends Authenticatable implements HasMedia
         }
 
         return false;
-    }
-
-    public static function deleteUsers($ids)
-    {
-        foreach ($ids as $id) {
-            $user = self::find($id);
-
-            if ($user->invoices()->exists()) {
-                $user->invoices()->update(['creator_id' => null]);
-            }
-
-            if ($user->estimates()->exists()) {
-                $user->estimates()->update(['creator_id' => null]);
-            }
-
-            if ($user->customers()->exists()) {
-                $user->customers()->update(['creator_id' => null]);
-            }
-
-            if ($user->recurringInvoices()->exists()) {
-                $user->recurringInvoices()->update(['creator_id' => null]);
-            }
-
-            if ($user->expenses()->exists()) {
-                $user->expenses()->update(['creator_id' => null]);
-            }
-
-            if ($user->payments()->exists()) {
-                $user->payments()->update(['creator_id' => null]);
-            }
-
-            if ($user->items()->exists()) {
-                $user->items()->update(['creator_id' => null]);
-            }
-
-            if ($user->settings()->exists()) {
-                $user->settings()->delete();
-            }
-
-            $user->delete();
-        }
-
-        return true;
     }
 }

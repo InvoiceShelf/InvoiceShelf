@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\V1\Admin\General;
 
 use App\Http\Controllers\Controller;
-use App\Space\DateFormatter;
+use App\Support\Formatters\DateFormatter;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 

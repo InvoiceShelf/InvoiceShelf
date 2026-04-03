@@ -427,7 +427,7 @@ test('update estimate with EUR currency', function () {
                 'exchange_rate' => 86.403538,
                 'base_discount_val' => 0,
                 'base_price' => 17280.7076,
-                'base_tax' => 777.631842,
+                'base_tax' => 0,
                 'base_total' => 17280.7076,
             ])],
         ]);

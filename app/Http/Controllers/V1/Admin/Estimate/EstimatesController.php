@@ -8,10 +8,15 @@ use App\Http\Requests\EstimatesRequest;
 use App\Http\Resources\EstimateResource;
 use App\Jobs\GenerateEstimatePdfJob;
 use App\Models\Estimate;
+use App\Services\EstimateService;
 use Illuminate\Http\Request;
 
 class EstimatesController extends Controller
 {
+    public function __construct(
+        private readonly EstimateService $estimateService,
+    ) {}
+
     public function index(Request $request)
     {
         $this->authorize('viewAny', Estimate::class);
@@ -35,10 +40,10 @@ class EstimatesController extends Controller
     {
         $this->authorize('create', Estimate::class);
 
-        $estimate = Estimate::createEstimate($request);
+        $estimate = $this->estimateService->create($request);
 
         if ($request->has('estimateSend')) {
-            $estimate->send($request->title, $request->body);
+            $this->estimateService->send($estimate, $request->only(['title', 'body']));
         }
 
         GenerateEstimatePdfJob::dispatch($estimate);
@@ -57,7 +62,7 @@ class EstimatesController extends Controller
     {
         $this->authorize('update', $estimate);
 
-        $estimate = $estimate->updateEstimate($request);
+        $estimate = $this->estimateService->update($estimate, $request);
 
         GenerateEstimatePdfJob::dispatch($estimate, true);
 

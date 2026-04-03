@@ -4,7 +4,7 @@ use App\Models\CompanySetting;
 use App\Models\Currency;
 use App\Models\CustomField;
 use App\Models\Setting;
-use App\Space\InstallUtils;
+use App\Services\Installation\InstallUtils;
 use Illuminate\Support\Str;
 
 /**

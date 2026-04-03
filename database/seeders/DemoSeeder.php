@@ -8,6 +8,7 @@ use App\Models\CompanySetting;
 use App\Models\Customer;
 use App\Models\Setting;
 use App\Models\User;
+use App\Services\CompanyService;
 use Illuminate\Database\Seeder;
 use Silber\Bouncer\BouncerFacade;
 
@@ -35,7 +36,7 @@ class DemoSeeder extends Seeder
 
         $company->unique_hash = Hashids::connection(Company::class)->encode($company->id);
         $company->save();
-        $company->setupDefaultData();
+        app(CompanyService::class)->setupDefaults($company);
         $user->companies()->attach($company->id);
         BouncerFacade::scope()->to($company->id);
 

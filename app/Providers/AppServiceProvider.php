@@ -19,7 +19,7 @@ use App\Policies\ReportPolicy;
 use App\Policies\RolePolicy;
 use App\Policies\SettingsPolicy;
 use App\Policies\UserPolicy;
-use App\Space\InstallUtils;
+use App\Services\Installation\InstallUtils;
 use Gate;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Mail;
