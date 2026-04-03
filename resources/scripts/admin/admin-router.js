@@ -68,7 +68,6 @@ const ExpenseCreate = () => import('@/scripts/admin/views/expenses/Create.vue')
 
 // Members
 const MemberIndex = () => import('@/scripts/admin/views/members/Index.vue')
-const MemberCreate = () => import('@/scripts/admin/views/members/Create.vue')
 
 // Estimates
 const EstimateIndex = () => import('@/scripts/admin/views/estimates/Index.vue')
@@ -414,18 +413,6 @@ export default [
         name: 'members.index',
         meta: { isOwner: true },
         component: MemberIndex,
-      },
-      {
-        path: 'members/create',
-        meta: { isOwner: true },
-        name: 'members.create',
-        component: MemberCreate,
-      },
-      {
-        path: 'members/:id/edit',
-        name: 'members.edit',
-        meta: { isOwner: true },
-        component: MemberCreate,
       },
 
       // Estimates

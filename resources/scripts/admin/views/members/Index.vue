@@ -27,7 +27,6 @@
 
           <BaseButton
             v-if="userStore.currentUser.is_owner"
-            variant="primary-outline"
             @click="showInviteModal = true"
           >
             <template #left="slotProps">
@@ -38,20 +37,6 @@
               />
             </template>
             {{ $t('members.invite_member') }}
-          </BaseButton>
-
-          <BaseButton
-            v-if="userStore.currentUser.is_owner"
-            @click="$router.push('members/create')"
-          >
-            <template #left="slotProps">
-              <BaseIcon
-                name="PlusIcon"
-                :class="slotProps.class"
-                aria-hidden="true"
-              />
-            </template>
-            {{ $t('members.add_member') }}
           </BaseButton>
         </div>
       </template>
