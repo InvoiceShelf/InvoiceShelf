@@ -81,7 +81,7 @@
                 md:h-9 md:w-9
               "
             >
-              <BaseIcon name="PlusIcon" class="w-5 h-5 text-body" />
+              <BaseIcon name="PlusIcon" class="w-5 h-5 text-white" />
             </div>
           </template>
 
