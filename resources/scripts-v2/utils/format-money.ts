@@ -76,6 +76,13 @@ export function formatMoney(
  * @param currency - Currency configuration used for parsing
  * @returns Amount in cents
  */
+/**
+ * Check if a MIME type represents an image file.
+ */
+export function isImageFile(mimeType: string): boolean {
+  return mimeType.startsWith('image/')
+}
+
 export function parseMoneyCents(
   formattedAmount: string,
   currency: CurrencyConfig = DEFAULT_CURRENCY

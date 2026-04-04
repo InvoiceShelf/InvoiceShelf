@@ -27,6 +27,13 @@ async function loadLanguageMessages(
     return languageCache.get(locale)!
   }
 
+  // English is already statically imported — no dynamic import needed
+  if (locale === 'en') {
+    const messages = en as unknown as Record<string, unknown>
+    languageCache.set('en', messages)
+    return messages
+  }
+
   const fileName = LOCALE_FILE_MAP[locale] ?? locale
 
   try {
