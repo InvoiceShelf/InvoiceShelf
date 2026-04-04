@@ -25,7 +25,7 @@
     </div>
 
     <div class="flex gap-8">
-      <div class="hidden mt-1 xl:block min-w-[240px]">
+      <div class="hidden mt-1 xl:block min-w-[240px] sticky top-20 self-start">
         <BaseList>
           <BaseListItem
             v-for="(menuItem, index) in globalStore.settingMenu"
