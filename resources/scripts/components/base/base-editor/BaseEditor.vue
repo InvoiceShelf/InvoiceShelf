@@ -8,10 +8,10 @@
   </BaseContentPlaceholders>
   <div
     v-else
-    class="box-border w-full text-sm leading-8 text-left bg-surface border border-line-default rounded-md min-h-[200px] overflow-hidden"
+    class="box-border w-full text-sm leading-8 text-left bg-surface border border-line-light rounded-xl shadow min-h-[200px] overflow-hidden"
   >
     <div v-if="editor" class="editor-content">
-      <div class="flex justify-end p-2 border-b border-line-default md:hidden">
+      <div class="flex justify-end p-2 border-b border-line-light md:hidden">
         <BaseDropdown width-class="w-48">
           <template #activator>
             <div
@@ -40,7 +40,7 @@
           </div>
         </BaseDropdown>
       </div>
-      <div class="hidden p-2 border-b border-line-default md:flex">
+      <div class="hidden p-2 border-b border-line-light md:flex">
         <div class="flex flex-wrap space-x-1">
           <button
               v-for="button in editorButtons"
@@ -180,7 +180,7 @@ export default {
   min-height: 200px;
   padding: 8px 12px;
   outline: none;
-  @apply rounded-md rounded-tl-none rounded-tr-none border border-transparent;
+  @apply rounded-xl rounded-tl-none rounded-tr-none border border-transparent;
 
   h1 {
     font-size: 2em;

@@ -36,6 +36,7 @@
       gap-4
       mt-8
       lg:gap-6 lg:mt-0 lg:grid-cols-2
+      rounded-xl shadow border border-line-light bg-surface p-5
     "
   >
     <BaseInputGroup

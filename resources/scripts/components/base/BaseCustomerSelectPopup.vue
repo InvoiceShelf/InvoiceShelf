@@ -17,9 +17,10 @@
         flex flex-col
         p-4
         bg-surface
-        border border-line-default border-solid
+        border border-line-light border-solid
         min-h-[170px]
-        rounded-md
+        rounded-xl
+        shadow
       "
       @click.stop
     >
@@ -169,7 +170,7 @@
       </div>
     </div>
 
-    <Popover v-else v-slot="{ open }" class="relative flex flex-col rounded-md">
+    <Popover v-else v-slot="{ open }" class="relative flex flex-col rounded-xl">
       <PopoverButton
         :class="{
           '': open,
@@ -177,7 +178,7 @@
             valid.$error,
           'focus:ring-2 focus:ring-primary-400': !valid.$error,
         }"
-        class="w-full outline-hidden rounded-md"
+        class="w-full outline-hidden rounded-xl"
       >
         <div
           class="
@@ -188,8 +189,9 @@
             p-0
             py-16
             bg-surface
-            border border-line-default border-solid
-            rounded-md
+            border border-line-light border-solid
+            rounded-xl
+            shadow
             min-h-[170px]
           "
         >
@@ -241,8 +243,8 @@
             static
             class="
               overflow-hidden
-              rounded-md
-              shadow-lg
+              rounded-xl
+              shadow
               ring-1 ring-black/5
               bg-surface
             "
@@ -263,7 +265,7 @@
                   flex flex-col
                   overflow-auto
                   list
-                  border-t border-line-default
+                  border-t border-line-light
                 "
               >
                 <li
@@ -274,7 +276,7 @@
                     flex
                     px-6
                     py-2
-                    border-b border-line-default border-solid
+                    border-b border-line-light border-solid
                     cursor-pointer
                     hover:cursor-pointer hover:bg-hover-strong
                     focus:outline-hidden focus:bg-surface-tertiary

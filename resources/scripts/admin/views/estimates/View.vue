@@ -266,7 +266,7 @@
         class="
           flex-1
           border border-gray-400 border-solid
-          rounded-md
+          rounded-xl
           bg-surface
           frame-style
         "

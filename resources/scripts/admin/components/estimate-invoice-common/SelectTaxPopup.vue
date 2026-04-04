@@ -37,8 +37,8 @@
             <div
               class="
                 overflow-hidden
-                rounded-md
-                shadow-lg
+                rounded-xl
+                shadow
                 ring-1 ring-black/5
               "
             >
@@ -64,7 +64,7 @@
                     overflow-auto
                     list
                     max-h-36
-                    border-t border-line-default
+                    border-t border-line-light
                   "
                 >
                   <div
@@ -80,7 +80,7 @@
                     class="
                       px-6
                       py-4
-                      border-b border-line-default border-solid
+                      border-b border-line-light border-solid
                       cursor-pointer
                       hover:bg-surface-tertiary hover:cursor-pointer
                       last:border-b-0

@@ -508,7 +508,7 @@ onSearched = debounce(onSearched, 500)
           flex-1
           border border-gray-400 border-solid
           bg-surface
-          rounded-md
+          rounded-xl
           frame-style
         "
       />

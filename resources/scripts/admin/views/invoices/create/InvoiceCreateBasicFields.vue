@@ -8,7 +8,7 @@
       class="col-span-12 lg:col-span-5 pr-0"
     />
 
-    <BaseInputGrid class="col-span-12 lg:col-span-7">
+    <BaseInputGrid class="col-span-12 lg:col-span-7 rounded-xl shadow border border-line-light bg-surface p-5">
       <BaseInputGroup
         :label="$t('invoices.invoice_date')"
         :content-loading="isLoading"
