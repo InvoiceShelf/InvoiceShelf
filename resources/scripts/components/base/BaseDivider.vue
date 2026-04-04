@@ -1,3 +1,3 @@
 <template>
-  <hr class="w-full text-subtle" />
+  <hr class="w-full border-line-light" />
 </template>
