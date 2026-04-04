@@ -6,66 +6,65 @@ use App\Events\ModuleEnabledEvent;
 use App\Events\ModuleInstalledEvent;
 use App\Http\Resources\ModuleResource;
 use App\Models\Module as ModelsModule;
-use App\Models\Setting;
+use App\Services\ExtensionCatalog;
 use Artisan;
 use File;
-use GuzzleHttp\Exception\RequestException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Nwidart\Modules\Facades\Module;
 use ZipArchive;
 
 // Implementation taken from Akaunting - https://github.com/akaunting/akaunting
 class ModuleInstaller
 {
-    use SiteApi;
-
+    /**
+     * @return JsonResponse|AnonymousResourceCollection
+     */
     public static function getModules()
     {
-        $data = null;
-        if (env('APP_ENV') === 'development') {
-            $url = 'api/marketplace/modules?is_dev=1';
-        } else {
-            $url = 'api/marketplace/modules';
+        try {
+            $extensions = ExtensionCatalog::make()->fetchExtensions();
+        } catch (\Throwable $e) {
+            report($e);
+
+            return response()->json(['message' => 'extensions_catalog_unavailable'], 503);
         }
 
-        $token = Setting::getSetting('api_token');
-        $response = static::getRemote($url, ['timeout' => 100, 'track_redirects' => true], $token);
-
-        if ($response && ($response->getStatusCode() == 401)) {
-            return response()->json(['error' => 'invalid_token']);
-        }
-
-        if ($response && ($response->getStatusCode() == 200)) {
-            $data = $response->getBody()->getContents();
-        }
-
-        $data = json_decode($data);
-
-        return ModuleResource::collection(collect($data->modules));
+        return ModuleResource::collection(collect($extensions));
     }
 
-    public static function getModule($module)
+    /**
+     * @return \stdClass
+     */
+    public static function getModule(string $slug)
     {
-        $data = null;
-        if (env('APP_ENV') === 'development') {
-            $url = 'api/marketplace/modules/'.$module.'?is_dev=1';
-        } else {
-            $url = 'api/marketplace/modules/'.$module;
+        try {
+            $extensions = ExtensionCatalog::make()->fetchExtensions();
+        } catch (\Throwable $e) {
+            report($e);
+
+            return (object) ['success' => false, 'error' => 'catalog_unavailable'];
         }
 
-        $token = Setting::getSetting('api_token');
-        $response = static::getRemote($url, ['timeout' => 100, 'track_redirects' => true], $token);
+        $found = collect($extensions)->firstWhere('slug', $slug);
 
-        if ($response && ($response->getStatusCode() == 401)) {
-            return (object) ['success' => false, 'error' => 'invalid_token'];
+        if (! $found) {
+            return (object) ['success' => false, 'error' => 'not_found'];
         }
 
-        if ($response && ($response->getStatusCode() == 200)) {
-            $data = $response->getBody()->getContents();
-        }
+        $others = collect($extensions)
+            ->filter(fn (array $e) => $e['slug'] !== $slug)
+            ->take(8)
+            ->values()
+            ->all();
 
-        $data = json_decode($data);
-
-        return $data;
+        return (object) [
+            'success' => true,
+            'module' => $found,
+            'modules' => $others,
+        ];
     }
 
     public static function upload($request)
@@ -86,24 +85,60 @@ class ModuleInstaller
         return $path;
     }
 
-    public static function download($module, $version)
+    /**
+     * @return array<string, mixed>|false
+     */
+    public static function download(string $module, string $version)
     {
+        try {
+            $extensions = ExtensionCatalog::make()->fetchExtensions();
+        } catch (\Throwable $e) {
+            report($e);
+
+            return [
+                'success' => false,
+                'message' => 'extensions_catalog_unavailable',
+            ];
+        }
+
+        $extension = collect($extensions)->firstWhere('module_name', $module);
+
+        if (! $extension) {
+            return [
+                'success' => false,
+                'message' => 'module_not_found',
+            ];
+        }
+
+        if (($extension['version'] ?? '') !== $version) {
+            return [
+                'success' => false,
+                'message' => 'version_mismatch',
+            ];
+        }
+
+        $downloadUrl = $extension['download_url'] ?? '';
+
+        if ($downloadUrl === '') {
+            return [
+                'success' => false,
+                'message' => 'download_url_missing',
+            ];
+        }
+
         $data = null;
         $path = null;
 
-        if (env('APP_ENV') === 'development') {
-            $url = "api/marketplace/modules/file/{$module}?version={$version}&is_dev=1";
-        } else {
-            $url = "api/marketplace/modules/file/{$module}?version={$version}";
-        }
+        try {
+            $response = Http::timeout(120)
+                ->withOptions(['allow_redirects' => true])
+                ->get($downloadUrl);
+        } catch (\Throwable $e) {
+            report($e);
 
-        $token = Setting::getSetting('api_token');
-        $response = static::getRemote($url, ['timeout' => 100, 'track_redirects' => true], $token);
-
-        // Exception
-        if ($response instanceof RequestException) {
             return [
                 'success' => false,
+                'message' => $e->getMessage(),
                 'error' => 'Download Exception',
                 'data' => [
                     'path' => $path,
@@ -111,13 +146,15 @@ class ModuleInstaller
             ];
         }
 
-        if ($response && ($response->getStatusCode() == 401 || $response->getStatusCode() == 404 || $response->getStatusCode() == 500)) {
-            return json_decode($response->getBody()->getContents());
+        if (! $response->successful()) {
+            return [
+                'success' => false,
+                'message' => 'download_failed',
+                'status' => $response->status(),
+            ];
         }
 
-        if ($response && ($response->getStatusCode() == 200)) {
-            $data = $response->getBody()->getContents();
-        }
+        $data = $response->body();
 
         // Create temp directory
         $temp_dir = storage_path('app/temp-'.md5(mt_rand()));
@@ -132,7 +169,10 @@ class ModuleInstaller
         $uploaded = is_int(file_put_contents($zip_file_path, $data)) ? true : false;
 
         if (! $uploaded) {
-            return false;
+            return [
+                'success' => false,
+                'message' => 'download_write_failed',
+            ];
         }
 
         return [
@@ -155,10 +195,13 @@ class ModuleInstaller
         // Unzip the file
         $zip = new ZipArchive;
 
-        if ($zip->open($zip_file_path)) {
-            $zip->extractTo($temp_extract_dir);
+        $opened = $zip->open($zip_file_path);
+
+        if ($opened !== true) {
+            throw new \RuntimeException('Could not open ZIP (code '.$opened.'). The file may be corrupted or not a ZIP archive.');
         }
 
+        $zip->extractTo($temp_extract_dir);
         $zip->close();
 
         // Delete zip file
@@ -173,13 +216,14 @@ class ModuleInstaller
             File::makeDirectory(base_path('Modules'));
         }
 
-        // Delete Existing Module directory
-        if (! File::isDirectory(base_path('Modules').'/'.$module)) {
-            File::deleteDirectory(base_path('Modules').'/'.$module);
+        $modulePath = base_path('Modules/'.$module);
+
+        if (File::isDirectory($modulePath)) {
+            File::deleteDirectory($modulePath);
         }
 
         if (! File::copyDirectory($temp_extract_dir, base_path('Modules').'/')) {
-            return false;
+            throw new \RuntimeException('Could not copy module files into Modules/. Check permissions and disk space.');
         }
 
         // Delete temp directory
@@ -201,11 +245,39 @@ class ModuleInstaller
 
     public static function complete($module, $version)
     {
-        Module::register();
+        self::normalizeModuleInstallLocation($module);
 
-        Artisan::call("module:migrate $module --force");
-        Artisan::call("module:seed $module --force");
-        Artisan::call("module:enable $module");
+        Cache::forget(config('modules.cache.key'));
+
+        try {
+            $exitCode = Artisan::call("module:migrate {$module} --force");
+        } catch (\Throwable $e) {
+            throw new \RuntimeException('module:migrate: '.$e->getMessage(), 0, $e);
+        }
+
+        if ($exitCode !== 0) {
+            throw new \RuntimeException(trim(Artisan::output()) ?: 'module:migrate failed (exit '.$exitCode.').');
+        }
+
+        try {
+            $exitCode = Artisan::call("module:seed {$module} --force");
+        } catch (\Throwable $e) {
+            throw new \RuntimeException('module:seed: '.$e->getMessage(), 0, $e);
+        }
+
+        if ($exitCode !== 0) {
+            throw new \RuntimeException(trim(Artisan::output()) ?: 'module:seed failed (exit '.$exitCode.').');
+        }
+
+        try {
+            $exitCode = Artisan::call("module:enable {$module}");
+        } catch (\Throwable $e) {
+            throw new \RuntimeException('module:enable: '.$e->getMessage(), 0, $e);
+        }
+
+        if ($exitCode !== 0) {
+            throw new \RuntimeException(trim(Artisan::output()) ?: 'module:enable failed (exit '.$exitCode.').');
+        }
 
         $module = ModelsModule::updateOrCreate(['name' => $module], ['version' => $version, 'installed' => true, 'enabled' => true]);
 
@@ -215,17 +287,177 @@ class ModuleInstaller
         return true;
     }
 
-    public static function checkToken(string $token)
+    /**
+     * @return array{success: bool, message?: string}
+     */
+    public static function uninstall(string $moduleName): array
     {
-        $url = 'api/marketplace/ping';
-        $response = static::getRemote($url, ['timeout' => 100, 'track_redirects' => true], $token);
+        $moduleRecord = ModelsModule::where('name', $moduleName)->first();
 
-        if ($response && ($response->getStatusCode() == 200)) {
-            $data = $response->getBody()->getContents();
-
-            return response()->json(json_decode($data));
+        if (! $moduleRecord || ! $moduleRecord->installed) {
+            return ['success' => false, 'message' => 'module_not_installed'];
         }
 
-        return response()->json(['error' => 'invalid_token']);
+        try {
+            if (Module::has($moduleName)) {
+                $installedModule = Module::find($moduleName);
+                $installedModule->disable();
+            }
+        } catch (\Throwable $e) {
+            report($e);
+        }
+
+        try {
+            Artisan::call("module:migrate-rollback {$moduleName} --force");
+        } catch (\Throwable $e) {
+            report($e);
+        }
+
+        $modulePath = base_path('Modules/'.$moduleName);
+
+        if (File::isDirectory($modulePath)) {
+            File::deleteDirectory($modulePath);
+        }
+
+        $moduleRecord->delete();
+
+        Module::register();
+
+        return ['success' => true];
+    }
+
+    /**
+     * nwidart/laravel-modules only discovers manifests one level under Modules (each folder must contain module.json).
+     * Zip releases sometimes ship a flat tree (module.json at the Modules root) or a mismatched folder name; fix layout before migrate.
+     *
+     * @param  string  $moduleName  StudlyCase name from module.json (e.g. WhiteLabel)
+     */
+    public static function normalizeModuleInstallLocation(string $moduleName, ?string $basePath = null): void
+    {
+        $base = $basePath ?? base_path();
+        $modulesRoot = $base.'/Modules';
+
+        if (! File::isDirectory($modulesRoot)) {
+            throw new \RuntimeException('Modules directory does not exist.');
+        }
+
+        $canonicalManifest = $modulesRoot.'/'.$moduleName.'/module.json';
+
+        if (File::exists($canonicalManifest)) {
+            return;
+        }
+
+        // Modules/WhiteLabel/WhiteLabel/module.json
+        $nested = $modulesRoot.'/'.$moduleName.'/'.$moduleName.'/module.json';
+        if (File::exists($nested)) {
+            $inner = $modulesRoot.'/'.$moduleName.'/'.$moduleName;
+            $outer = $modulesRoot.'/'.$moduleName;
+            self::promoteDirectoryContents($inner, $outer);
+            File::deleteDirectory($inner);
+
+            return;
+        }
+
+        // Modules/module.json (flat zip)
+        $rootManifest = $modulesRoot.'/module.json';
+        if (File::exists($rootManifest)) {
+            $json = json_decode(File::get($rootManifest), true);
+            if (($json['name'] ?? '') !== $moduleName) {
+                throw new \RuntimeException(
+                    'Modules/module.json declares ['.($json['name'] ?? 'unknown')."] but expected [{$moduleName}]."
+                );
+            }
+            self::moveFlatModuleIntoFolder($modulesRoot, $moduleName);
+
+            return;
+        }
+
+        foreach (glob($modulesRoot.'/*/module.json') ?: [] as $manifest) {
+            $json = json_decode(File::get($manifest), true);
+            if (($json['name'] ?? '') !== $moduleName) {
+                continue;
+            }
+            $dir = dirname($manifest);
+            if ($dir === $modulesRoot.'/'.$moduleName) {
+                return;
+            }
+            if (File::exists($modulesRoot.'/'.$moduleName)) {
+                File::deleteDirectory($modulesRoot.'/'.$moduleName);
+            }
+            File::moveDirectory($dir, $modulesRoot.'/'.$moduleName);
+
+            return;
+        }
+
+        foreach (glob($modulesRoot.'/*/*/module.json') ?: [] as $manifest) {
+            $json = json_decode(File::get($manifest), true);
+            if (($json['name'] ?? '') !== $moduleName) {
+                continue;
+            }
+            $dir = dirname($manifest);
+            if ($dir === $modulesRoot.'/'.$moduleName) {
+                return;
+            }
+            if (File::exists($modulesRoot.'/'.$moduleName)) {
+                File::deleteDirectory($modulesRoot.'/'.$moduleName);
+            }
+            File::moveDirectory($dir, $modulesRoot.'/'.$moduleName);
+
+            return;
+        }
+
+        throw new \RuntimeException(
+            "Could not locate module.json for [{$moduleName}] under Modules/. Expected Modules/{$moduleName}/module.json or a compatible layout."
+        );
+    }
+
+    private static function promoteDirectoryContents(string $source, string $destination): void
+    {
+        foreach (File::files($source) as $file) {
+            $target = $destination.'/'.$file->getFilename();
+            if (File::exists($target)) {
+                File::delete($target);
+            }
+            File::move($file->getRealPath(), $target);
+        }
+        foreach (File::directories($source) as $dir) {
+            $base = basename($dir);
+            $target = $destination.'/'.$base;
+            if (File::isDirectory($target)) {
+                File::deleteDirectory($target);
+            }
+            File::moveDirectory($dir, $target);
+        }
+    }
+
+    private static function moveFlatModuleIntoFolder(string $modulesRoot, string $moduleName): void
+    {
+        $target = $modulesRoot.'/'.$moduleName;
+        if (File::isDirectory($target)) {
+            File::deleteDirectory($target);
+        }
+        File::makeDirectory($target);
+
+        foreach (File::files($modulesRoot) as $file) {
+            $name = $file->getFilename();
+            if (in_array($name, ['.gitignore', '.DS_Store'], true)) {
+                continue;
+            }
+            File::move($file->getRealPath(), $target.'/'.$name);
+        }
+
+        foreach (File::directories($modulesRoot) as $dir) {
+            $base = basename($dir);
+            if ($base === $moduleName) {
+                continue;
+            }
+            if (File::exists($dir.'/module.json')) {
+                $json = json_decode(File::get($dir.'/module.json'), true);
+                if (($json['name'] ?? '') !== $moduleName) {
+                    continue;
+                }
+            }
+            File::moveDirectory($dir, $target.'/'.$base);
+        }
     }
 }

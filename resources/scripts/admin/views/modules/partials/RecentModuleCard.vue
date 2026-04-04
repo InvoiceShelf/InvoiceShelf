@@ -1,10 +1,21 @@
 <template>
   <router-link class="relative group" :to="`/admin/modules/${data.slug}`">
     <div class="relative group">
-      <div class="aspect-w-4 aspect-h-3 rounded-lg overflow-hidden bg-gray-100">
-        <img :src="data.cover" class="object-center object-cover" />
+      <div
+        class="aspect-w-4 aspect-h-3 rounded-lg overflow-hidden bg-gradient-to-br from-primary-100 to-gray-100 flex items-center justify-center"
+      >
+        <img
+          v-if="data.cover"
+          :src="data.cover"
+          class="object-center object-cover w-full h-full"
+        />
+        <BaseIcon
+          v-else
+          name="PuzzlePieceIcon"
+          class="h-16 w-16 text-primary-400 opacity-80"
+        />
         <div
-          class="flex items-end opacity-0 p-4 group-hover:opacity-100"
+          class="flex items-end opacity-0 p-4 group-hover:opacity-100 absolute inset-0"
           aria-hidden="true"
         >
           <div
@@ -41,8 +52,8 @@
           <span aria-hidden="true" class="absolute inset-0"></span>
           {{ data.name }}
         </h3>
-        <p class="text-primary-500 font-bold">
-          $ {{ data.monthly_price / 100 }}
+        <p class="text-sm text-gray-500">
+          v{{ data.latest_module_version }}
         </p>
       </div>
     </div>
@@ -50,10 +61,7 @@
 </template>
 
 <script setup>
-import { useI18n } from 'vue-i18n'
-
-const { t } = useI18n()
-const props = defineProps({
+defineProps({
   data: {
     type: Object,
     default: null,
