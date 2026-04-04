@@ -36,6 +36,11 @@ fi
 echo "**** Setting up artisan permissions ****"
 chmod +x artisan
 
+if [ ! -L /var/www/html/public/storage ]; then
+    echo "**** Creating storage symlink (public/storage) ****"
+    ./artisan storage:link --force -n || true
+fi
+
 if ! grep -q "APP_KEY" /var/www/html/.env
 then
     echo "**** Creating empty APP_KEY variable ****"
