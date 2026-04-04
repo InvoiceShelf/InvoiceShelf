@@ -19,7 +19,7 @@ class ExpensesReportController extends Controller
      * Handle the incoming request.
      *
      * @param  string  $hash
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function __invoke(Request $request, $hash)
     {
@@ -31,14 +31,26 @@ class ExpensesReportController extends Controller
 
         App::setLocale($locale);
 
-        $expenseCategories = Expense::with('category')
+        // Fetch individual expenses (filtered and ordered by date), then group by category
+        $expenses = Expense::with('category')
             ->whereCompanyId($company->id)
-            ->applyFilters($request->only(['from_date', 'to_date']))
-            ->expensesAttributes()
+            ->applyFilters($request->only(['from_date', 'to_date', 'expense_category_id']))
+            ->orderBy('expense_date', 'asc')
             ->get();
-        $totalAmount = 0;
-        foreach ($expenseCategories as $category) {
-            $totalAmount += $category->total_amount;
+
+        $totalAmount = $expenses->sum('base_amount');
+
+        $grouped = $expenses->groupBy(function ($item) {
+            return $item->category ? $item->category->name : trans('expenses.uncategorized');
+        });
+
+        $expenseGroups = collect();
+        foreach ($grouped as $categoryName => $group) {
+            $expenseGroups->push([
+                'name' => $categoryName,
+                'expenses' => $group,
+                'total' => $group->sum('base_amount'),
+            ]);
         }
 
         $dateFormat = CompanySetting::getSetting('carbon_date_format', $company->id);
@@ -62,7 +74,7 @@ class ExpensesReportController extends Controller
             ->get();
 
         view()->share([
-            'expenseCategories' => $expenseCategories,
+            'expenseGroups' => $expenseGroups,
             'colorSettings' => $colorSettings,
             'totalExpense' => $totalAmount,
             'company' => $company,
