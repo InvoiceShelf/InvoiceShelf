@@ -12,8 +12,8 @@
 
     <main
       :class="[
-        'h-screen h-screen-ios overflow-y-auto min-h-0',
-        hasCompany ? 'md:pl-56 xl:pl-64' : '',
+        'h-screen h-screen-ios overflow-y-auto min-h-0 transition-all duration-300',
+        hasCompany ? (globalStore.isSidebarCollapsed ? 'md:pl-16' : 'md:pl-56 xl:pl-64') : '',
       ]"
     >
       <div class="pt-16 pb-16">

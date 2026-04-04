@@ -33,6 +33,7 @@ export const useGlobalStore = (useWindow = false) => {
       // Boolean Flags
       isAppLoaded: false,
       isSidebarOpen: false,
+      isSidebarCollapsed: window.Ls?.get('sidebarCollapsed') === 'true',
       areCurrenciesLoading: false,
 
       downloadReport: null,
@@ -268,6 +269,11 @@ export const useGlobalStore = (useWindow = false) => {
 
       setSidebarVisibility(val) {
         this.isSidebarOpen = val
+      },
+
+      toggleSidebarCollapse() {
+        this.isSidebarCollapsed = !this.isSidebarCollapsed
+        window.Ls.set('sidebarCollapsed', this.isSidebarCollapsed ? 'true' : 'false')
       },
 
       setIsAppLoaded(isAppLoaded) {

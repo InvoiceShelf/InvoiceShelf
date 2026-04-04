@@ -118,39 +118,48 @@
 
   <!-- DESKTOP MENU -->
   <div
+    :class="[
+      globalStore.isSidebarCollapsed ? 'w-16' : 'w-56 xl:w-64',
+    ]"
     class="
       hidden
-      w-56
       h-screen
-      pb-32
-      overflow-y-auto
+      pb-16
+      overflow-y-auto overflow-x-hidden
       bg-surface/80 backdrop-blur-xl
       border-r border-white/10
-      xl:w-64
       md:fixed md:flex md:flex-col md:inset-y-0
       pt-16
+      transition-all duration-300
     "
   >
     <div
       v-for="(menu, index) in globalStore.menuGroups"
       :key="index"
-      class="p-0 m-0 mt-6 list-none"
+      class="p-0 m-0 mt-4 list-none"
     >
       <div
-        v-if="menu[0] && menu[0].group_label"
-        class="px-6 mt-6 mb-2 text-xs font-semibold text-subtle uppercase tracking-wider"
+        v-if="menu[0] && menu[0].group_label && !globalStore.isSidebarCollapsed"
+        class="px-6 mt-6 mb-2 text-xs font-semibold text-subtle uppercase tracking-wider whitespace-nowrap"
       >
         {{ $t(menu[0].group_label) }}
       </div>
+      <div
+        v-else-if="menu[0] && menu[0].group_label && globalStore.isSidebarCollapsed"
+        class="mx-3 my-2 border-t border-line-light"
+      />
       <router-link
         v-for="item in menu"
         :key="item"
         :to="item.link"
+        v-tooltip="globalStore.isSidebarCollapsed ? { content: $t(item.title), placement: 'right' } : null"
         :class="[
           hasActiveUrl(item.link)
             ? 'text-primary-600 bg-primary-50 font-semibold'
             : 'text-body hover:bg-hover',
-          'cursor-pointer mx-3 px-3 py-2.5 group flex items-center rounded-lg text-sm not-italic font-medium transition-colors',
+          globalStore.isSidebarCollapsed
+            ? 'cursor-pointer mx-2 px-0 py-2.5 group flex items-center justify-center rounded-lg text-sm font-medium transition-colors'
+            : 'cursor-pointer mx-3 px-3 py-2.5 group flex items-center rounded-lg text-sm not-italic font-medium transition-colors',
         ]"
       >
         <BaseIcon
@@ -159,12 +168,33 @@
             hasActiveUrl(item.link)
               ? 'text-primary-500'
               : 'text-subtle group-hover:text-body',
-            'mr-3 shrink-0 h-5 w-5',
+            globalStore.isSidebarCollapsed
+              ? 'shrink-0 h-6 w-6'
+              : 'mr-3 shrink-0 h-5 w-5',
           ]"
         />
 
-        {{ $t(item.title) }}
+        <span v-if="!globalStore.isSidebarCollapsed" class="whitespace-nowrap">
+          {{ $t(item.title) }}
+        </span>
       </router-link>
+    </div>
+
+    <!-- Collapse Toggle -->
+    <div class="sticky bottom-0 mt-auto pt-2 pb-2 bg-surface/80 backdrop-blur-xl">
+      <button
+        class="mx-3 px-3 py-2 w-[calc(100%-1.5rem)] flex items-center rounded-lg text-subtle hover:text-body hover:bg-hover transition-colors"
+        :class="globalStore.isSidebarCollapsed ? '!justify-center !mx-2 !px-0' : ''"
+        @click="globalStore.toggleSidebarCollapse()"
+      >
+        <BaseIcon
+          :name="globalStore.isSidebarCollapsed ? 'ChevronRightIcon' : 'ChevronLeftIcon'"
+          class="shrink-0 h-5 w-5"
+        />
+        <span v-if="!globalStore.isSidebarCollapsed" class="ml-3 text-sm font-medium whitespace-nowrap">
+          {{ $t('general.collapse') }}
+        </span>
+      </button>
     </div>
   </div>
 </template>
