@@ -1,7 +1,7 @@
 export const API = {
   // Authentication & Password Reset
-  LOGIN: '/api/v1/auth/login',
-  LOGOUT: '/api/v1/auth/logout',
+  LOGIN: '/login',
+  LOGOUT: '/auth/logout',
   FORGOT_PASSWORD: '/api/v1/auth/password/email',
   RESET_PASSWORD: '/api/v1/auth/reset/password',
   AUTH_CHECK: '/api/v1/auth/check',
