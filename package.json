@@ -15,6 +15,7 @@
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/typography": "^0.5.16",
     "@tailwindcss/vite": "^4.0.0",
+    "@types/lodash": "^4.17.24",
     "@vitejs/plugin-vue": "^6.0.0",
     "@vue/compiler-sfc": "^3.5.13",
     "eslint": "^10.0.0",
@@ -22,7 +23,9 @@
     "eslint-plugin-vue": "^10.0.0",
     "prettier": "^3.4.2",
     "tailwind-scrollbar": "^4.0.0",
-    "tailwindcss": "^4.0.0"
+    "tailwindcss": "^4.0.0",
+    "typescript": "^6.0.2",
+    "vue-tsc": "^3.2.6"
   },
   "dependencies": {
     "@headlessui/vue": "^1.7.23",
@@ -41,6 +44,7 @@
     "@vueuse/core": "^14.0.0",
     "axios": "1.14.0",
     "chart.js": "^4.5.1",
+    "date-fns": "^4.1.0",
     "guid": "^0.0.12",
     "laravel-vite-plugin": "^3.0.0",
     "lodash": "^4.17.21",
