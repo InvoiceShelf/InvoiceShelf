@@ -14,7 +14,7 @@
         "gotenberg/gotenberg-php": "^2.8",
         "guzzlehttp/guzzle": "^7.9",
         "hashids/hashids": "^5.0",
-        "invoiceshelf/modules": "^1.0.0",
+        "nwidart/laravel-modules": "^13.0",
         "laravel/framework": "^13.0",
         "laravel/helpers": "^1.7",
         "laravel/sanctum": "^4.0",
@@ -90,6 +90,11 @@
     "extra": {
         "laravel": {
             "dont-discover": []
+        },
+        "merge-plugin": {
+            "include": [
+                "Modules/*/composer.json"
+            ]
         }
     },
     "config": {
@@ -98,7 +103,8 @@
         "sort-packages": true,
         "allow-plugins": {
             "pestphp/pest-plugin": true,
-            "php-http/discovery": true
+            "php-http/discovery": true,
+            "wikimedia/composer-merge-plugin": true
         }
     },
     "minimum-stability": "stable",

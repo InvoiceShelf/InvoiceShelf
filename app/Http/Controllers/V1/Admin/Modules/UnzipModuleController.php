@@ -18,7 +18,16 @@ class UnzipModuleController extends Controller
     {
         $this->authorize('manage modules');
 
-        $path = ModuleInstaller::unzip($request->module, $request->path);
+        try {
+            $path = ModuleInstaller::unzip($request->module, $request->path);
+        } catch (\Throwable $e) {
+            report($e);
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 422);
+        }
 
         return response()->json([
             'success' => true,

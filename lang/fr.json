@@ -730,6 +730,8 @@
     "update_to": "Mise à jour vers",
     "module_updated": "Le module a bien été mis à jour !",
     "title": "Modules",
+    "third_party_security_notice_title": "Important : extensions tierces et sécurité",
+    "third_party_security_notice_body": "Les extensions développées par des tiers ne sont pas créées, examinées ni approuvées par InvoiceShelf. Elles peuvent contenir du code malveillant, des défauts ou des failles de sécurité. Seules les extensions officiellement maintenues et examinées sur le plan de la sécurité par l'équipe InvoiceShelf font l'objet de nos vérifications. Vous êtes seul responsable de l'installation et de l'utilisation de toute extension. Le projet InvoiceShelf et ses mainteneurs déclinent toute responsabilité concernant les extensions tierces, y compris en cas de dommage, de compromission ou de perte de données.",
     "module": "Module",
     "api_token": "Jeton API",
     "invalid_api_token": "Jeton API invalide.",

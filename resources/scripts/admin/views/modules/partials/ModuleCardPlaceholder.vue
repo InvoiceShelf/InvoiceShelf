@@ -2,46 +2,29 @@
   <BaseContentPlaceholders>
     <div
       class="
-        shadow-md
-        border-2 border-gray-200/60
-        rounded-lg
-        cursor-pointer
         overflow-hidden
-        h-100
+        rounded-sm
+        border border-gray-300
+        bg-white
+        shadow-sm
       "
     >
-      <BaseContentPlaceholdersBox class="h-48 lg:h-64 md:h-48 w-full" rounded />
-      <div class="px-6 py-5 flex flex-col bg-gray-50 flex-1 justify-between">
-        <BaseContentPlaceholdersText class="w-32 h-8" :lines="1" rounded />
-        <div class="flex items-center mt-2">
-          <BaseContentPlaceholdersBox
-            class="h-10 w-10 rounded-full sm:inline-block mr-2"
-          />
-          <div>
-            <BaseContentPlaceholdersText
-              class="w-32 h-8 ml-2"
-              :lines="1"
-              rounded
-            />
-          </div>
-        </div>
-        <BaseContentPlaceholdersText
-          class="pt-4 w-full h-16"
-          :lines="1"
-          rounded
-        />
+      <BaseContentPlaceholdersBox class="h-40 w-full" rounded />
+      <div class="flex flex-col gap-3 p-4">
+        <BaseContentPlaceholdersText class="h-5 w-4/5" :lines="1" rounded />
+        <BaseContentPlaceholdersText class="h-4 w-1/2" :lines="1" rounded />
+        <BaseContentPlaceholdersText class="mt-1 h-16 w-full" :lines="3" rounded />
         <div
           class="
-            flex
-            justify-between
-            mt-4
-            flex-col
-            space-y-2
-            sm:space-y-0 sm:flex-row
+            mt-2
+            flex flex-col gap-3
+            border-t border-gray-100
+            pt-4
+            sm:flex-row sm:items-center sm:justify-between
           "
         >
-          <BaseContentPlaceholdersText class="w-32 h-8" :lines="1" rounded />
-          <BaseContentPlaceholdersText class="w-32 h-8" :lines="1" rounded />
+          <BaseContentPlaceholdersText class="h-4 w-24" :lines="1" rounded />
+          <BaseContentPlaceholdersBox class="h-9 w-28 rounded-md" rounded />
         </div>
       </div>
     </div>

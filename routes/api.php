@@ -50,7 +50,6 @@ use App\Http\Controllers\V1\Admin\Invoice\SendInvoicePreviewController;
 use App\Http\Controllers\V1\Admin\Item\ItemsController;
 use App\Http\Controllers\V1\Admin\Item\UnitsController;
 use App\Http\Controllers\V1\Admin\Mobile\AuthController;
-use App\Http\Controllers\V1\Admin\Modules\ApiTokenController;
 use App\Http\Controllers\V1\Admin\Modules\CompleteModuleInstallationController;
 use App\Http\Controllers\V1\Admin\Modules\CopyModuleController;
 use App\Http\Controllers\V1\Admin\Modules\DisableModuleController;
@@ -58,6 +57,7 @@ use App\Http\Controllers\V1\Admin\Modules\DownloadModuleController;
 use App\Http\Controllers\V1\Admin\Modules\EnableModuleController;
 use App\Http\Controllers\V1\Admin\Modules\ModuleController;
 use App\Http\Controllers\V1\Admin\Modules\ModulesController;
+use App\Http\Controllers\V1\Admin\Modules\UninstallModuleController;
 use App\Http\Controllers\V1\Admin\Modules\UnzipModuleController;
 use App\Http\Controllers\V1\Admin\Modules\UploadModuleController;
 use App\Http\Controllers\V1\Admin\Payment\PaymentMethodsController;
@@ -463,13 +463,13 @@ Route::prefix('/v1')->group(function () {
         Route::prefix('/modules')->group(function () {
             Route::get('/', ModulesController::class);
 
-            Route::get('/check', ApiTokenController::class);
-
             Route::get('/{module}', ModuleController::class);
 
             Route::post('/{module}/enable', EnableModuleController::class);
 
             Route::post('/{module}/disable', DisableModuleController::class);
+
+            Route::post('/{module}/uninstall', UninstallModuleController::class);
 
             Route::post('/download', DownloadModuleController::class);
 

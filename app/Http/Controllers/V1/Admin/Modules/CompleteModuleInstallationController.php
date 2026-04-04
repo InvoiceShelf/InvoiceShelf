@@ -18,7 +18,16 @@ class CompleteModuleInstallationController extends Controller
     {
         $this->authorize('manage modules');
 
-        $response = ModuleInstaller::complete($request->module, $request->version);
+        try {
+            $response = ModuleInstaller::complete($request->module, $request->version);
+        } catch (\Throwable $e) {
+            report($e);
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 422);
+        }
 
         return response()->json([
             'success' => $response,
