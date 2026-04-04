@@ -39,6 +39,8 @@
   --color-line-strong: var(--color-line-strong);
   --color-hover: var(--color-hover);
   --color-hover-strong: var(--color-hover-strong);
+  --color-header-from: var(--color-header-from);
+  --color-header-to: var(--color-header-to);
 
   /* Status badge text */
   --color-status-yellow: var(--color-status-yellow);

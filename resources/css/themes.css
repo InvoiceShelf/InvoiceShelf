@@ -32,6 +32,10 @@
     --color-hover: rgb(249, 250, 251);
     --color-hover-strong: rgb(243, 244, 246);
 
+    /* Header gradient (fixed, not affected by dark mode) */
+    --color-header-from: rgb(74, 61, 255);
+    --color-header-to: rgb(118, 117, 255);
+
     /* Status badge text */
     --color-status-yellow: rgb(113, 63, 18);
     --color-status-green: rgb(20, 83, 45);
@@ -84,6 +88,10 @@
     --color-alert-error-text: rgb(252, 165, 165);
     --color-alert-success-bg: rgba(20, 83, 45, 0.2);
     --color-alert-success-text: rgb(134, 239, 172);
+
+    /* Header gradient (darker in dark mode) */
+    --color-header-from: rgb(51, 22, 255);
+    --color-header-to: rgb(74, 61, 255);
 
     /* Primary adjustments for dark mode */
     --color-primary-50: rgba(167, 170, 255, 0.15);
