@@ -53,7 +53,7 @@
             scrollbar-thin scrollbar-thumb-rounded-full
             w-[300px]
             max-h-[350px]
-            scrollbar-thumb-gray-300 scrollbar-track-gray-10
+            scrollbar-thumb-surface-muted scrollbar-track-surface-secondary
             pb-4
           "
         >

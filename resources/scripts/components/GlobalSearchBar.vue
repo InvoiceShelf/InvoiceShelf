@@ -29,8 +29,8 @@
         class="
           scrollbar-thin
           scrollbar-thumb-rounded-full
-          scrollbar-thumb-gray-300
-          scrollbar-track-gray-100
+          scrollbar-thumb-surface-muted
+          scrollbar-track-surface-secondary
           overflow-y-auto
           bg-surface
           rounded-md

@@ -210,6 +210,26 @@ body {
     min-height: 100vh;
     min-height: -webkit-fill-available;
     color: var(--color-heading);
+    scrollbar-color: var(--color-surface-muted) var(--color-surface-secondary);
+}
+
+/* Webkit scrollbars */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-surface-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-surface-muted);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-line-strong);
 }
 
 html {
