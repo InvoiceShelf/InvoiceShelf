@@ -4,12 +4,12 @@
       <BaseInput
         v-model="name"
         :placeholder="$t('global_search.search')"
-        container-class="!rounded"
-        class="h-8 md:h-9 !rounded"
+        container-class="!rounded-lg !shadow-none"
+        class="h-8 md:h-9 !rounded-lg !bg-white/20 !border-white/10 !text-white !placeholder-white/60"
         @input="onSearch"
       >
         <template #left>
-          <BaseIcon name="MagnifyingGlassIcon" class="text-subtle" />
+          <BaseIcon name="MagnifyingGlassIcon" class="!text-white/70" />
         </template>
         <template #right>
           <SpinnerIcon v-if="isSearching" class="h-5 text-primary-500" />
