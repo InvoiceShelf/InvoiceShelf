@@ -1,0 +1,33 @@
+<script setup lang="ts">
+interface Props {
+  label: string
+  value?: string | number
+  contentLoading?: boolean
+}
+
+withDefaults(defineProps<Props>(), {
+  value: '',
+  contentLoading: false,
+})
+</script>
+
+<template>
+  <div>
+    <BaseContentPlaceholders v-if="contentLoading">
+      <BaseContentPlaceholdersBox class="w-20 h-5 mb-1" />
+      <BaseContentPlaceholdersBox class="w-40 h-5" />
+    </BaseContentPlaceholders>
+
+    <div v-else>
+      <BaseLabel class="font-normal mb-1">
+        {{ label }}
+      </BaseLabel>
+
+      <p class="text-sm font-bold leading-5 text-heading non-italic">
+        {{ value }}
+
+        <slot />
+      </p>
+    </div>
+  </div>
+</template>
