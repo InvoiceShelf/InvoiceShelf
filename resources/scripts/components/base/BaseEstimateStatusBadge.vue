@@ -20,7 +20,7 @@ const badgeColorClasses = computed(() => {
     case 'DRAFT':
       return 'bg-yellow-300/25 px-2  py-1 text-sm  text-status-yellow uppercase font-normal text-center '
     case 'SENT':
-      return ' bg-yellow-500/25 px-2 py-1 text-sm  text-status-yellow uppercase font-normal text-center '
+      return 'bg-green-500/25 px-2 py-1 text-sm text-status-green uppercase font-normal text-center'
     case 'VIEWED':
       return 'bg-blue-400/25 px-2  py-1 text-sm  text-status-blue uppercase font-normal text-center'
     case 'EXPIRED':
