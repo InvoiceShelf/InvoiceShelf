@@ -1,7 +1,7 @@
 import { ref, readonly } from 'vue'
 import type { DeepReadonly, Ref } from 'vue'
-import { DIALOG_VARIANT } from '../config/constants'
-import type { DialogVariant } from '../config/constants'
+import { DIALOG_VARIANT } from '@v2/config/constants'
+import type { DialogVariant } from '@v2/config/constants'
 
 export interface DialogState {
   active: boolean

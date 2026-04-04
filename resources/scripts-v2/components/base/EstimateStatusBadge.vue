@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { EstimateStatus } from '../../types/domain'
+import { EstimateStatus } from '@v2/types/domain'
 
 interface Props {
   status?: EstimateStatus | string

@@ -1,6 +1,6 @@
 import { client } from '../client'
 import { API } from '../endpoints'
-import type { DateRangeParams } from '../../types/api'
+import type { DateRangeParams } from '@v2/types/api'
 
 export interface ReportParams extends DateRangeParams {
   report_type?: string

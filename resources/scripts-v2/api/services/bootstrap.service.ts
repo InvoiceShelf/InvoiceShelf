@@ -1,9 +1,9 @@
 import { client } from '../client'
 import { API } from '../endpoints'
-import type { User, UserSetting } from '../../types/domain/user'
-import type { Company } from '../../types/domain/company'
-import type { Currency } from '../../types/domain/currency'
-import type { Ability } from '../../types/domain/role'
+import type { User, UserSetting } from '@v2/types/domain/user'
+import type { Company } from '@v2/types/domain/company'
+import type { Currency } from '@v2/types/domain/currency'
+import type { Ability } from '@v2/types/domain/role'
 
 export interface MenuItem {
   title: string

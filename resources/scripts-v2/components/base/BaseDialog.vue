@@ -144,7 +144,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useDialogStore } from '@/scripts/stores/dialog'
+import { useDialogStore } from '@v2/stores/dialog.store'
 import {
   Dialog,
   DialogOverlay,

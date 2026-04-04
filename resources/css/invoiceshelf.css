@@ -9,6 +9,8 @@
 
 @source "../scripts/**/*.vue";
 @source "../scripts/**/*.js";
+@source "../scripts-v2/**/*.vue";
+@source "../scripts-v2/**/*.ts";
 @source "../../resources/views/**/*.php";
 
 @theme inline {

@@ -7,7 +7,7 @@ import { useDialogStore } from '../../../../stores/dialog.store'
 import { useCompanyStore } from '../../../../stores/company.store'
 import { useUserStore } from '../../../../stores/user.store'
 import ItemDropdown from '../components/ItemDropdown.vue'
-import SatelliteIcon from '@/scripts/components/icons/empty/SatelliteIcon.vue'
+import SatelliteIcon from '@v2/components/icons/SatelliteIcon.vue'
 
 interface TableColumn {
   key: string

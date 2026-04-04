@@ -92,7 +92,7 @@
 </template>
 
 <script setup lang="ts">
-import { useModalStore } from '@/scripts/stores/modal'
+import { useModalStore } from '@v2/stores/modal.store'
 import { computed, watchEffect, useSlots } from 'vue'
 import {
   Dialog,

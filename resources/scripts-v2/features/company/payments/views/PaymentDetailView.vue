@@ -170,7 +170,7 @@ import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { usePaymentStore } from '../store'
 import PaymentDropdown from '../components/PaymentDropdown.vue'
-import LoadingIcon from '@/scripts/components/icons/LoadingIcon.vue'
+import LoadingIcon from '@v2/components/icons/LoadingIcon.vue'
 import type { Payment } from '../../../../types/domain/payment'
 
 interface Props {

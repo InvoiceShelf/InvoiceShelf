@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import DollarIcon from '@/scripts/components/icons/dashboard/DollarIcon.vue'
-import CustomerIcon from '@/scripts/components/icons/dashboard/CustomerIcon.vue'
-import InvoiceIcon from '@/scripts/components/icons/dashboard/InvoiceIcon.vue'
-import EstimateIcon from '@/scripts/components/icons/dashboard/EstimateIcon.vue'
+import DollarIcon from '@v2/components/icons/dashboard/DollarIcon.vue'
+import CustomerIcon from '@v2/components/icons/dashboard/CustomerIcon.vue'
+import InvoiceIcon from '@v2/components/icons/dashboard/InvoiceIcon.vue'
+import EstimateIcon from '@v2/components/icons/dashboard/EstimateIcon.vue'
 import DashboardStatsItem from './DashboardStatsItem.vue'
 
 import { useDashboardStore } from '../store'

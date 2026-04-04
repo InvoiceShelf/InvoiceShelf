@@ -1,7 +1,7 @@
 import { client } from '../client'
 import { API } from '../endpoints'
-import type { Country } from '../../types/domain/customer'
-import type { Currency } from '../../types/domain/currency'
+import type { Country } from '@v2/types/domain/customer'
+import type { Currency } from '@v2/types/domain/currency'
 
 export interface DateFormat {
   display_date: string

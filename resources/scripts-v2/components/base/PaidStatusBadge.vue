@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { InvoicePaidStatus } from '../../types/domain'
+import { InvoicePaidStatus } from '@v2/types/domain'
 
 type PaidBadgeStatus = InvoicePaidStatus | 'OVERDUE' | string
 

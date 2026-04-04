@@ -3,8 +3,8 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useModalStore } from '../../../../stores/modal.store'
 import { paymentService } from '../../../../api/services/payment.service'
-import PaymentModeModal from '@/scripts/admin/components/modal-components/PaymentModeModal.vue'
-import PaymentModeDropdown from '@/scripts/admin/components/dropdowns/PaymentModeIndexDropdown.vue'
+import PaymentModeModal from '@v2/features/company/settings/components/PaymentModeModal.vue'
+import PaymentModeDropdown from '@v2/features/company/settings/components/PaymentModeDropdown.vue'
 
 interface TableColumn {
   key: string

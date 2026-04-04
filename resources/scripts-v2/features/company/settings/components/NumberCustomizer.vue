@@ -6,7 +6,7 @@ import draggable from 'vuedraggable'
 import Guid from 'guid'
 import { useCompanyStore } from '../../../../stores/company.store'
 import { useGlobalStore } from '../../../../stores/global.store'
-import DragIcon from '@/scripts/components/icons/DragIcon.vue'
+import DragIcon from '@v2/components/icons/DragIcon.vue'
 
 interface NumberField {
   id: string

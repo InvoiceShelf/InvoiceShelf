@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { useDashboardStore } from '../store'
 import { useCompanyStore } from '../../../../stores/company.store'
 import { useUserStore } from '../../../../stores/user.store'
-import LineChart from '@/scripts/admin/components/charts/LineChart.vue'
+import LineChart from '@v2/components/charts/LineChart.vue'
 import type { DashboardParams } from '../../../../api/services/dashboard.service'
 
 interface YearOption {

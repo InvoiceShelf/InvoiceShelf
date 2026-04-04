@@ -1,7 +1,7 @@
 import { client } from '../client'
 import { API } from '../endpoints'
-import type { CustomField } from '../../types/domain/custom-field'
-import type { ApiResponse, ListParams } from '../../types/api'
+import type { CustomField } from '@v2/types/domain/custom-field'
+import type { ApiResponse, ListParams } from '@v2/types/api'
 
 export interface CustomFieldListParams extends ListParams {
   model_type?: string

@@ -5,8 +5,8 @@ import { useCompanyStore } from '../../../../stores/company.store'
 import { useUserStore } from '../../../../stores/user.store'
 import { useModalStore } from '../../../../stores/modal.store'
 import { taxTypeService } from '../../../../api/services/tax-type.service'
-import TaxTypeDropdown from '@/scripts/admin/components/dropdowns/TaxTypeIndexDropdown.vue'
-import TaxTypeModal from '@/scripts/admin/components/modal-components/TaxTypeModal.vue'
+import TaxTypeDropdown from '@v2/features/company/settings/components/TaxTypeDropdown.vue'
+import TaxTypeModal from '@v2/features/company/settings/components/TaxTypeModal.vue'
 
 interface TableColumn {
   key: string

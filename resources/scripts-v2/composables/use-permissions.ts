@@ -1,7 +1,7 @@
 import { ref, computed } from 'vue'
 import type { Ref, ComputedRef } from 'vue'
-import { ABILITIES } from '../config/abilities'
-import type { Ability } from '../config/abilities'
+import { ABILITIES } from '@v2/config/abilities'
+import type { Ability } from '@v2/config/abilities'
 
 export interface UserAbility {
   name: string

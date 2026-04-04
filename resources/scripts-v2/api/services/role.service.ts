@@ -1,7 +1,7 @@
 import { client } from '../client'
 import { API } from '../endpoints'
-import type { Role, Ability } from '../../types/domain/role'
-import type { ApiResponse, ListParams } from '../../types/api'
+import type { Role, Ability } from '@v2/types/domain/role'
+import type { ApiResponse, ListParams } from '@v2/types/api'
 
 export interface CreateRolePayload {
   name: string

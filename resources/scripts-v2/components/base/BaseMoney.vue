@@ -19,7 +19,7 @@
 import { computed } from 'vue'
 import { Money3Component } from 'v-money3'
 
-import { useCompanyStore } from '@/scripts/admin/stores/company'
+import { useCompanyStore } from '@v2/stores/company.store'
 
 const money3 = Money3Component
 

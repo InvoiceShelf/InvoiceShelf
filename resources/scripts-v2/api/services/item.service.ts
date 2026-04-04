@@ -1,11 +1,11 @@
 import { client } from '../client'
 import { API } from '../endpoints'
-import type { Item, Unit } from '../../types/domain/item'
+import type { Item, Unit } from '@v2/types/domain/item'
 import type {
   ApiResponse,
   ListParams,
   DeletePayload,
-} from '../../types/api'
+} from '@v2/types/api'
 
 export interface ItemListParams extends ListParams {
   filter?: Record<string, unknown>

@@ -1,7 +1,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import type { Ref } from 'vue'
-import { THEME, LS_KEYS } from '../config/constants'
-import type { Theme } from '../config/constants'
+import { THEME, LS_KEYS } from '@v2/config/constants'
+import type { Theme } from '@v2/config/constants'
 import * as ls from '../utils/local-storage'
 
 export interface UseThemeReturn {

@@ -81,8 +81,8 @@ import { Vietnamese } from 'flatpickr/dist/l10n/vn.js'
 import { Mandarin } from 'flatpickr/dist/l10n/zh.js'
 import type { CustomLocale, Locale } from 'flatpickr/dist/types/locale'
 import { computed, reactive, watch, ref, useSlots } from 'vue'
-import { useCompanyStore } from '@/scripts/admin/stores/company'
-import { useUserStore } from '@/scripts/admin/stores/user'
+import { useCompanyStore } from '@v2/stores/company.store'
+import { useUserStore } from '@v2/stores/user.store'
 
 interface FlatPickrInstance {
   fp: { open: () => void }

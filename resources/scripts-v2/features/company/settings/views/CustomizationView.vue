@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import InvoicesTab from '@/scripts/admin/views/settings/customization/invoices/InvoicesTab.vue'
-import EstimatesTab from '@/scripts/admin/views/settings/customization/estimates/EstimatesTab.vue'
-import PaymentsTab from '@/scripts/admin/views/settings/customization/payments/PaymentsTab.vue'
-import ItemsTab from '@/scripts/admin/views/settings/customization/items/ItemsTab.vue'
+import InvoicesTab from '@v2/features/company/settings/components/InvoicesTab.vue'
+import EstimatesTab from '@v2/features/company/settings/components/EstimatesTab.vue'
+import PaymentsTab from '@v2/features/company/settings/components/PaymentsTab.vue'
+import ItemsTab from '@v2/features/company/settings/components/ItemsTab.vue'
 </script>
 
 <template>

@@ -161,17 +161,17 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '../../../stores/auth.store'
-import { useUserStore } from '../../../stores/user.store'
-import { useGlobalStore } from '../../../stores/global.store'
-import { useCompanyStore } from '../../../stores/company.store'
-import { useTheme } from '../../../composables/use-theme'
-import { ABILITIES } from '../../../config/abilities'
-import { THEME } from '../../../config/constants'
-import type { Theme } from '../../../config/constants'
+import { useAuthStore } from '@v2/stores/auth.store'
+import { useUserStore } from '@v2/stores/user.store'
+import { useGlobalStore } from '@v2/stores/global.store'
+import { useCompanyStore } from '@v2/stores/company.store'
+import { useTheme } from '@v2/composables/use-theme'
+import { ABILITIES } from '@v2/config/abilities'
+import { THEME } from '@v2/config/constants'
+import type { Theme } from '@v2/config/constants'
 import CompanySwitcher from './CompanySwitcher.vue'
 import GlobalSearchBar from './GlobalSearchBar.vue'
-import MainLogo from '../../../components/icons/MainLogo.vue'
+import MainLogo from '@v2/components/icons/MainLogo.vue'
 
 interface ThemeOption {
   value: Theme

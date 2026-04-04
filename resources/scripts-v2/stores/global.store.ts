@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import groupBy from 'lodash/groupBy'
-import { bootstrapService } from '../api/services/bootstrap.service'
-import type { MenuItem, BootstrapResponse } from '../api/services/bootstrap.service'
-import { settingService } from '../api/services/setting.service'
+import { bootstrapService } from '@v2/api/services/bootstrap.service'
+import type { MenuItem, BootstrapResponse } from '@v2/api/services/bootstrap.service'
+import { settingService } from '@v2/api/services/setting.service'
 import type {
   DateFormat,
   TimeFormat,
@@ -11,14 +11,14 @@ import type {
   GlobalSettingsPayload,
   NumberPlaceholdersParams,
   NumberPlaceholder,
-} from '../api/services/setting.service'
+} from '@v2/api/services/setting.service'
 import { useCompanyStore } from './company.store'
 import { useUserStore } from './user.store'
 import { useNotificationStore } from './notification.store'
 import { handleApiError } from '../utils/error-handling'
 import * as localStore from '../utils/local-storage'
-import type { Currency } from '../types/domain/currency'
-import type { Country } from '../types/domain/customer'
+import type { Currency } from '@v2/types/domain/currency'
+import type { Country } from '@v2/types/domain/customer'
 
 export const useGlobalStore = defineStore('global', () => {
   // State

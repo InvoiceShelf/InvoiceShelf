@@ -1,7 +1,7 @@
 import { ref, readonly } from 'vue'
 import type { DeepReadonly, Ref } from 'vue'
-import { NOTIFICATION_TYPE } from '../config/constants'
-import type { NotificationType } from '../config/constants'
+import { NOTIFICATION_TYPE } from '@v2/config/constants'
+import type { NotificationType } from '@v2/config/constants'
 
 export interface Notification {
   id: string

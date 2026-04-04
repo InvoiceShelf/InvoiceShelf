@@ -13,7 +13,7 @@ import { useCompanyStore } from '../../../../stores/company.store'
 import { useItemStore } from '../store'
 
 // Tax type store - imported from original location
-import { useTaxTypeStore } from '@/scripts/admin/stores/tax-type'
+import { taxTypeService } from '@v2/api/services/tax-type.service'
 
 interface TaxOption {
   id: number
@@ -33,7 +33,7 @@ const emit = defineEmits<Emits>()
 const modalStore = useModalStore()
 const itemStore = useItemStore()
 const companyStore = useCompanyStore()
-const taxTypeStore = useTaxTypeStore()
+// Tax types fetched via service
 
 const { t } = useI18n()
 const isLoading = ref<boolean>(false)

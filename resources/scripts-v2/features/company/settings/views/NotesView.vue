@@ -4,8 +4,8 @@ import { useI18n } from 'vue-i18n'
 import { useModalStore } from '../../../../stores/modal.store'
 import { useUserStore } from '../../../../stores/user.store'
 import { noteService } from '../../../../api/services/note.service'
-import NoteDropdown from '@/scripts/admin/components/dropdowns/NoteIndexDropdown.vue'
-import NoteModal from '@/scripts/admin/components/modal-components/NoteModal.vue'
+import NoteDropdown from '@v2/features/company/settings/components/NoteDropdown.vue'
+import NoteModal from '@v2/features/company/settings/components/NoteModal.vue'
 
 interface TableColumn {
   key: string

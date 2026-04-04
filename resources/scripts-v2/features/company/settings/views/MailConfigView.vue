@@ -5,11 +5,11 @@ import { useModalStore } from '../../../../stores/modal.store'
 import { companyService } from '../../../../api/services/company.service'
 import { mailService } from '../../../../api/services/mail.service'
 import type { MailDriver } from '../../../../api/services/mail.service'
-import Smtp from '@/scripts/admin/views/settings/mail-driver/SmtpMailDriver.vue'
-import Mailgun from '@/scripts/admin/views/settings/mail-driver/MailgunMailDriver.vue'
-import Ses from '@/scripts/admin/views/settings/mail-driver/SesMailDriver.vue'
-import Basic from '@/scripts/admin/views/settings/mail-driver/BasicMailDriver.vue'
-import MailTestModal from '@/scripts/admin/components/modal-components/MailTestModal.vue'
+import Smtp from '@v2/features/company/settings/components/SmtpMailDriver.vue'
+import Mailgun from '@v2/features/company/settings/components/MailgunMailDriver.vue'
+import Ses from '@v2/features/company/settings/components/SesMailDriver.vue'
+import Basic from '@v2/features/company/settings/components/BasicMailDriver.vue'
+import MailTestModal from '@v2/features/company/settings/components/MailTestModal.vue'
 
 const { t } = useI18n()
 const modalStore = useModalStore()

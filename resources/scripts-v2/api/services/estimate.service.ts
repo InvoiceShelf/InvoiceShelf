@@ -1,14 +1,14 @@
 import { client } from '../client'
 import { API } from '../endpoints'
-import type { Estimate, CreateEstimatePayload } from '../../types/domain/estimate'
-import type { Invoice } from '../../types/domain/invoice'
+import type { Estimate, CreateEstimatePayload } from '@v2/types/domain/estimate'
+import type { Invoice } from '@v2/types/domain/invoice'
 import type {
   ApiResponse,
   ListParams,
   DateRangeParams,
   NextNumberResponse,
   DeletePayload,
-} from '../../types/api'
+} from '@v2/types/api'
 
 export interface EstimateListParams extends ListParams, DateRangeParams {
   status?: string

@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import MainLogo from '@/scripts/components/icons/MainLogo.vue'
+import MainLogo from '@v2/components/icons/MainLogo.vue'
 
 interface Props {
   showBgOverlay?: boolean

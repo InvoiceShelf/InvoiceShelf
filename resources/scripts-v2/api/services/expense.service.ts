@@ -1,12 +1,12 @@
 import { client } from '../client'
 import { API } from '../endpoints'
-import type { Expense, ExpenseCategory, CreateExpensePayload } from '../../types/domain/expense'
+import type { Expense, ExpenseCategory, CreateExpensePayload } from '@v2/types/domain/expense'
 import type {
   ApiResponse,
   ListParams,
   DateRangeParams,
   DeletePayload,
-} from '../../types/api'
+} from '@v2/types/api'
 
 export interface ExpenseListParams extends ListParams, DateRangeParams {
   expense_category_id?: number

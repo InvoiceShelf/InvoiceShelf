@@ -212,7 +212,7 @@ import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useInvoiceStore } from '../store'
 import InvoiceDropdown from '../components/InvoiceDropdown.vue'
-import LoadingIcon from '@/scripts/components/icons/LoadingIcon.vue'
+import LoadingIcon from '@v2/components/icons/LoadingIcon.vue'
 import type { Invoice } from '../../../../types/domain/invoice'
 
 interface Props {

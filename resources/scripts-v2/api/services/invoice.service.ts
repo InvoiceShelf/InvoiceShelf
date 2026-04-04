@@ -1,6 +1,6 @@
 import { client } from '../client'
 import { API } from '../endpoints'
-import type { Invoice, CreateInvoicePayload } from '../../types/domain/invoice'
+import type { Invoice, CreateInvoicePayload } from '@v2/types/domain/invoice'
 import type {
   ApiResponse,
   PaginatedResponse,
@@ -8,7 +8,7 @@ import type {
   DateRangeParams,
   NextNumberResponse,
   DeletePayload,
-} from '../../types/api'
+} from '@v2/types/api'
 
 export interface InvoiceListParams extends ListParams, DateRangeParams {
   status?: string

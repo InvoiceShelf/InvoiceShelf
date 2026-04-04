@@ -127,7 +127,7 @@
 
 <script setup lang="ts">
 import { onMounted, computed, ref } from 'vue'
-import { useNotificationStore } from '@/scripts/stores/notification'
+import { useNotificationStore } from '@v2/stores/notification.store'
 
 export type NotificationType = 'success' | 'error' | 'info'
 

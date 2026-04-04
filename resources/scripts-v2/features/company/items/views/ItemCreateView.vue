@@ -13,10 +13,10 @@ import { useItemStore } from '../store'
 import { useCompanyStore } from '../../../../stores/company.store'
 import { useModalStore } from '../../../../stores/modal.store'
 import { useUserStore } from '../../../../stores/user.store'
-import ItemUnitModal from '@/scripts/admin/components/modal-components/ItemUnitModal.vue'
+import ItemUnitModal from '@v2/features/company/settings/components/ItemUnitModal.vue'
 
 // Tax type store - imported from original location
-import { useTaxTypeStore } from '@/scripts/admin/stores/tax-type'
+import { taxTypeService } from '@v2/api/services/tax-type.service'
 
 interface TaxOption {
   id: number
@@ -33,7 +33,7 @@ const ABILITIES = {
 } as const
 
 const itemStore = useItemStore()
-const taxTypeStore = useTaxTypeStore()
+// Tax types fetched via service
 const modalStore = useModalStore()
 const companyStore = useCompanyStore()
 const userStore = useUserStore()

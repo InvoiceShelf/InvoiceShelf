@@ -1,17 +1,17 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { companyService } from '../api/services/company.service'
+import { companyService } from '@v2/api/services/company.service'
 import type {
   UpdateCompanyPayload,
   CompanySettingsPayload,
   CreateCompanyPayload,
-} from '../api/services/company.service'
+} from '@v2/api/services/company.service'
 import { useNotificationStore } from './notification.store'
 import { handleApiError } from '../utils/error-handling'
 import * as localStore from '../utils/local-storage'
-import type { Company } from '../types/domain/company'
-import type { Currency } from '../types/domain/currency'
-import type { ApiResponse } from '../types/api'
+import type { Company } from '@v2/types/domain/company'
+import type { Currency } from '@v2/types/domain/currency'
+import type { ApiResponse } from '@v2/types/api'
 
 export const useCompanyStore = defineStore('company', () => {
   // State

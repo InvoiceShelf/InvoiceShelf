@@ -1,12 +1,12 @@
 import { client } from '../client'
 import { API } from '../endpoints'
-import type { Payment, PaymentMethod, CreatePaymentPayload } from '../../types/domain/payment'
+import type { Payment, PaymentMethod, CreatePaymentPayload } from '@v2/types/domain/payment'
 import type {
   ApiResponse,
   ListParams,
   NextNumberResponse,
   DeletePayload,
-} from '../../types/api'
+} from '@v2/types/api'
 
 export interface PaymentListParams extends ListParams {
   customer_id?: number

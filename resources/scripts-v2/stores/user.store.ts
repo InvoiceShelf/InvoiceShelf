@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { userService } from '../api/services/user.service'
-import type { UpdateProfilePayload, UserSettingsPayload } from '../api/services/user.service'
+import { userService } from '@v2/api/services/user.service'
+import type { UpdateProfilePayload, UserSettingsPayload } from '@v2/api/services/user.service'
 import { useNotificationStore } from './notification.store'
 import { handleApiError } from '../utils/error-handling'
-import type { User } from '../types/domain/user'
-import type { Ability } from '../types/domain/role'
-import type { ApiResponse } from '../types/api'
+import type { User } from '@v2/types/domain/user'
+import type { Ability } from '@v2/types/domain/role'
+import type { ApiResponse } from '@v2/types/api'
 
 export interface UserForm {
   name: string

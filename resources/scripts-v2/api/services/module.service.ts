@@ -1,6 +1,6 @@
 import { client } from '../client'
 import { API } from '../endpoints'
-import type { ApiResponse } from '../../types/api'
+import type { ApiResponse } from '@v2/types/api'
 
 export interface Module {
   name: string

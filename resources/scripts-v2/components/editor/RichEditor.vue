@@ -88,7 +88,7 @@ import {
   RedoIcon,
   CodeBlockIcon,
   MenuCenterIcon,
-} from '@/scripts/components/base/base-editor/icons/index.js'
+} from '@v2/components/editor/icons/index'
 import {
   Bars3BottomLeftIcon,
   Bars3BottomRightIcon,
@@ -184,7 +184,7 @@ onUnmounted(() => {
 </script>
 
 <style>
-@reference "../../../../css/invoiceshelf.css";
+@reference "../../../css/invoiceshelf.css";
 
 .ProseMirror {
   min-height: 200px;

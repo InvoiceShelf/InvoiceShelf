@@ -145,7 +145,7 @@ import { computed, onMounted, watch, ref, reactive } from 'vue'
 import { get } from 'lodash'
 import TablePagination from './TablePagination.vue'
 import { ContentPlaceholder, ContentPlaceholderText } from '../layout'
-import SpinnerIcon from '@/scripts/components/icons/SpinnerIcon.vue'
+import SpinnerIcon from '@v2/components/icons/SpinnerIcon.vue'
 
 export interface ColumnDef {
   key: string

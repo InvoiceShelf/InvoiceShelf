@@ -8,7 +8,7 @@
 import { Chart } from 'chart.js/auto'
 import type { ChartConfiguration, ChartDataset } from 'chart.js/auto'
 import { ref, computed, onMounted, watchEffect, inject } from 'vue'
-import { useCompanyStore } from '@/scripts/admin/stores/company'
+import { useCompanyStore } from '@v2/stores/company.store'
 
 interface FormatUtils {
   formatMoney: (amount: number, currency: CurrencyInfo) => string

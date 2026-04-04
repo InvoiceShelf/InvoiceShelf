@@ -1,7 +1,7 @@
 import { client } from '../client'
 import { API } from '../endpoints'
-import type { Note } from '../../types/domain/note'
-import type { ApiResponse, ListParams } from '../../types/api'
+import type { Note } from '@v2/types/domain/note'
+import type { ApiResponse, ListParams } from '@v2/types/api'
 
 export interface CreateNotePayload {
   type: string

@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { useModalStore } from '../../../../stores/modal.store'
 import { useDialogStore } from '../../../../stores/dialog.store'
 import { exchangeRateService } from '../../../../api/services/exchange-rate.service'
-import ExchangeRateProviderModal from '@/scripts/admin/components/modal-components/ExchangeRateProviderModal.vue'
+import ExchangeRateProviderModal from '@v2/features/company/settings/components/ExchangeRateProviderModal.vue'
 
 interface TableColumn {
   key: string

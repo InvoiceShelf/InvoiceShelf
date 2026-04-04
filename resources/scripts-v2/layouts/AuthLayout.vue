@@ -91,12 +91,12 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import NotificationRoot from '../../components/notifications/NotificationRoot.vue'
-import MainLogo from '../../components/icons/MainLogo.vue'
-import LoginBackground from '../../components/icons/LoginBackground.vue'
-import LoginPlanetCrater from '../../components/icons/LoginPlanetCrater.vue'
-import LoginBottomVector from '../../components/icons/LoginBottomVector.vue'
-import LoginBackgroundOverlay from '../../components/icons/LoginBackgroundOverlay.vue'
+import NotificationRoot from '@v2/components/notifications/NotificationRoot.vue'
+import MainLogo from '@v2/components/icons/MainLogo.vue'
+import LoginBackground from '@v2/components/icons/svg/LoginBackground.vue'
+import LoginPlanetCrater from '@v2/components/icons/svg/LoginPlanetCrater.vue'
+import LoginBottomVector from '@v2/components/icons/svg/LoginBottomVector.vue'
+import LoginBackgroundOverlay from '@v2/components/icons/svg/LoginBackgroundOverlay.vue'
 
 declare global {
   interface Window {

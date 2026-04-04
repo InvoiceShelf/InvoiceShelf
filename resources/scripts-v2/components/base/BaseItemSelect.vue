@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { usePermissions } from '../../composables/use-permissions'
-import { useModal } from '../../composables/use-modal'
-import { ABILITIES } from '../../config/abilities'
-import type { Item } from '../../types/domain'
-import type { Tax } from '../../types/domain'
+import { usePermissions } from '@v2/composables/use-permissions'
+import { useModal } from '@v2/composables/use-modal'
+import { ABILITIES } from '@v2/config/abilities'
+import type { Item } from '@v2/types/domain'
+import type { Tax } from '@v2/types/domain'
 
 interface LineItem {
   item_id: number | null

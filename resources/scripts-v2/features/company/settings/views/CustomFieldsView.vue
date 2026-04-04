@@ -4,8 +4,8 @@ import { useI18n } from 'vue-i18n'
 import { useModalStore } from '../../../../stores/modal.store'
 import { useUserStore } from '../../../../stores/user.store'
 import { customFieldService } from '../../../../api/services/custom-field.service'
-import CustomFieldDropdown from '@/scripts/admin/components/dropdowns/CustomFieldIndexDropdown.vue'
-import CustomFieldModal from '@/scripts/admin/components/modal-components/custom-fields/CustomFieldModal.vue'
+import CustomFieldDropdown from '@v2/features/company/settings/components/CustomFieldDropdown.vue'
+import CustomFieldModal from '@v2/features/company/settings/components/CustomFieldModal.vue'
 
 interface TableColumn {
   key: string

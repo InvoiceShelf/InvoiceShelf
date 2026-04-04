@@ -5,8 +5,8 @@ import { useModalStore } from '../../../../stores/modal.store'
 import { useUserStore } from '../../../../stores/user.store'
 import { useCompanyStore } from '../../../../stores/company.store'
 import { roleService } from '../../../../api/services/role.service'
-import RoleDropdown from '@/scripts/admin/components/dropdowns/RoleIndexDropdown.vue'
-import RolesModal from '@/scripts/admin/components/modal-components/RolesModal.vue'
+import RoleDropdown from '@v2/features/company/settings/components/RoleDropdown.vue'
+import RolesModal from '@v2/features/company/settings/components/RolesModal.vue'
 
 interface TableColumn {
   key: string

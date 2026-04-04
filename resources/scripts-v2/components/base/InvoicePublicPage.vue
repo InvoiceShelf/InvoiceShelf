@@ -2,9 +2,9 @@
 import { ref, computed } from 'vue'
 import type { Ref, ComputedRef } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import type { Currency } from '../../types/domain'
-import type { Company } from '../../types/domain'
-import type { Customer } from '../../types/domain'
+import type { Currency } from '@v2/types/domain'
+import type { Company } from '@v2/types/domain'
+import type { Customer } from '@v2/types/domain'
 
 declare global {
   interface Window {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { RecurringInvoiceStatus } from '../../types/domain'
+import { RecurringInvoiceStatus } from '@v2/types/domain'
 
 interface Props {
   status?: RecurringInvoiceStatus | string

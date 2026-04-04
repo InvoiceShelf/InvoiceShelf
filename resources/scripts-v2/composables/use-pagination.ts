@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import type { Ref, ComputedRef } from 'vue'
-import { PAGINATION_DEFAULTS } from '../config/constants'
+import { PAGINATION_DEFAULTS } from '@v2/config/constants'
 
 export interface UsePaginationOptions {
   initialPage?: number

@@ -1,11 +1,11 @@
 import { client } from '../client'
 import { API } from '../endpoints'
-import type { Customer, CreateCustomerPayload } from '../../types/domain/customer'
+import type { Customer, CreateCustomerPayload } from '@v2/types/domain/customer'
 import type {
   ApiResponse,
   ListParams,
   DeletePayload,
-} from '../../types/api'
+} from '@v2/types/api'
 
 export interface CustomerListParams extends ListParams {
   display_name?: string

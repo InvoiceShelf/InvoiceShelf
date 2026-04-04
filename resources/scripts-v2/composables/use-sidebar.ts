@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import type { Ref } from 'vue'
 import * as ls from '../utils/local-storage'
-import { LS_KEYS } from '../config/constants'
+import { LS_KEYS } from '@v2/config/constants'
 
 export interface UseSidebarReturn {
   isCollapsed: Ref<boolean>

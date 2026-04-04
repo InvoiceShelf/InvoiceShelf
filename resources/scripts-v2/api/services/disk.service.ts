@@ -1,6 +1,6 @@
 import { client } from '../client'
 import { API } from '../endpoints'
-import type { ApiResponse, ListParams } from '../../types/api'
+import type { ApiResponse, ListParams } from '@v2/types/api'
 
 export interface Disk {
   id: number

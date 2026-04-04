@@ -33,7 +33,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useNotificationStore } from '@/scripts/stores/notification'
+import { useNotificationStore } from '@v2/stores/notification.store'
 import NotificationItem from './NotificationItem.vue'
 import type { Notification } from './NotificationItem.vue'
 

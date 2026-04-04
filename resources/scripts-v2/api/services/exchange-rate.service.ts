@@ -1,7 +1,7 @@
 import { client } from '../client'
 import { API } from '../endpoints'
-import type { ExchangeRateProvider, Currency } from '../../types/domain/currency'
-import type { ApiResponse, ListParams } from '../../types/api'
+import type { ExchangeRateProvider, Currency } from '@v2/types/domain/currency'
+import type { ApiResponse, ListParams } from '@v2/types/api'
 
 export interface CreateExchangeRateProviderPayload {
   driver: string

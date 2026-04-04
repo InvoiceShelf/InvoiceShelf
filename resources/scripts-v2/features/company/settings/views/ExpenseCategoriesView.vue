@@ -3,8 +3,8 @@ import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useModalStore } from '../../../../stores/modal.store'
 import { expenseService } from '../../../../api/services/expense.service'
-import ExpenseCategoryDropdown from '@/scripts/admin/components/dropdowns/ExpenseCategoryIndexDropdown.vue'
-import CategoryModal from '@/scripts/admin/components/modal-components/CategoryModal.vue'
+import ExpenseCategoryDropdown from '@v2/features/company/settings/components/ExpenseCategoryDropdown.vue'
+import CategoryModal from '@v2/features/company/settings/components/CategoryModal.vue'
 
 interface TableColumn {
   key: string

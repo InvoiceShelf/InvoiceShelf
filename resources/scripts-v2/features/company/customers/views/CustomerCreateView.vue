@@ -16,14 +16,14 @@ import useVuelidate from '@vuelidate/core'
 import { useCustomerStore } from '../store'
 import { useGlobalStore } from '../../../../stores/global.store'
 import { useCompanyStore } from '../../../../stores/company.store'
-import CustomerCustomFields from '@/scripts/admin/components/custom-fields/CreateCustomFields.vue'
-import CopyInputField from '@/scripts/admin/components/CopyInputField.vue'
+import CustomerCustomFields from '@v2/features/company/customers/components/CreateCustomFields.vue'
+import CopyInputField from '@v2/features/company/customers/components/CopyInputField.vue'
 
 // Custom field store - imported from original location
-import { useCustomFieldStore } from '@/scripts/admin/stores/custom-field'
+import { customFieldService } from '@v2/api/services/custom-field.service'
 
 const customerStore = useCustomerStore()
-const customFieldStore = useCustomFieldStore()
+// Custom fields fetched via service
 const globalStore = useGlobalStore()
 const companyStore = useCompanyStore()
 

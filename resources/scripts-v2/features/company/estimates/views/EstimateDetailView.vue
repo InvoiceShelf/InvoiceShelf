@@ -206,7 +206,7 @@ import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useEstimateStore } from '../store'
 import EstimateDropdown from '../components/EstimateDropdown.vue'
-import LoadingIcon from '@/scripts/components/icons/LoadingIcon.vue'
+import LoadingIcon from '@v2/components/icons/LoadingIcon.vue'
 import type { Estimate } from '../../../../types/domain/estimate'
 
 interface Props {

@@ -9,5 +9,5 @@
 </template>
 
 <script setup lang="ts">
-import NotificationRoot from '../../components/notifications/NotificationRoot.vue'
+import NotificationRoot from '@v2/components/notifications/NotificationRoot.vue'
 </script>

@@ -17,9 +17,9 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import * as ls from '../../../utils/local-storage'
-import { client } from '../../../api/client'
-import { API } from '../../../api/endpoints'
+import * as ls from '@v2/utils/local-storage'
+import { client } from '@v2/api/client'
+import { API } from '@v2/api/endpoints'
 
 const isStopping = ref<boolean>(false)
 

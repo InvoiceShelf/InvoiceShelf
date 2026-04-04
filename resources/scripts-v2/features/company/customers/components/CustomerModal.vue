@@ -18,12 +18,12 @@ import { useCustomerStore } from '../store'
 import { useCompanyStore } from '../../../../stores/company.store'
 import { useGlobalStore } from '../../../../stores/global.store'
 import { useNotificationStore } from '../../../../stores/notification.store'
-import CopyInputField from '@/scripts/admin/components/CopyInputField.vue'
+import CopyInputField from '@v2/features/company/customers/components/CopyInputField.vue'
 
 // These stores are needed for auto-selecting customer after creation
-import { useEstimateStore } from '@/scripts/admin/stores/estimate'
-import { useInvoiceStore } from '@/scripts/admin/stores/invoice'
-import { useRecurringInvoiceStore } from '@/scripts/admin/stores/recurring-invoice'
+import { useEstimateStore } from '@v2/features/company/estimates/store'
+import { useInvoiceStore } from '@v2/features/company/invoices/store'
+import { useRecurringInvoiceStore } from '@v2/features/company/recurring-invoices/store'
 
 const recurringInvoiceStore = useRecurringInvoiceStore()
 const modalStore = useModalStore()

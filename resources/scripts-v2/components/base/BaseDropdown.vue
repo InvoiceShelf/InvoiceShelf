@@ -38,7 +38,7 @@
 <script setup lang="ts">
 import { Menu, MenuButton, MenuItems } from '@headlessui/vue'
 import { computed, ref } from 'vue'
-import { usePopper } from '@/scripts/helpers/use-popper'
+import { usePopper } from '@v2/composables/use-popper'
 
 interface Props {
   containerClass?: string

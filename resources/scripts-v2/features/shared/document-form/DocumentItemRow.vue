@@ -185,7 +185,7 @@ import { useI18n } from 'vue-i18n'
 import { required, between, maxLength, helpers, minValue } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import DocumentItemRowTax from './DocumentItemRowTax.vue'
-import DragIcon from '@/scripts/components/icons/DragIcon.vue'
+import DragIcon from '@v2/components/icons/DragIcon.vue'
 import type { Currency } from '../../../types/domain/currency'
 import type { DocumentItem, DocumentFormData, DocumentTax } from './use-document-calculations'
 

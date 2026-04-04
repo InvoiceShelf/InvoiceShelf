@@ -8,7 +8,7 @@ import { useUserStore } from '../../../../stores/user.store'
 import { useNotificationStore } from '../../../../stores/notification.store'
 import MemberDropdown from '../components/MemberDropdown.vue'
 import InviteMemberModal from '../components/InviteMemberModal.vue'
-import AstronautIcon from '@/scripts/components/icons/empty/AstronautIcon.vue'
+import AstronautIcon from '@v2/components/icons/AstronautIcon.vue'
 
 interface TableColumn {
   key: string

@@ -186,12 +186,12 @@ import { ref, watch } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { useCompanyStore } from '../../../stores/company.store'
-import { useGlobalStore } from '../../../stores/global.store'
-import { useUserStore } from '../../../stores/user.store'
-import { useModalStore } from '../../../stores/modal.store'
-import type { Company, CompanyInvitation } from '../../../types/domain/company'
-import type { Role } from '../../../types/domain/role'
+import { useCompanyStore } from '@v2/stores/company.store'
+import { useGlobalStore } from '@v2/stores/global.store'
+import { useUserStore } from '@v2/stores/user.store'
+import { useModalStore } from '@v2/stores/modal.store'
+import type { Company, CompanyInvitation } from '@v2/types/domain/company'
+import type { Role } from '@v2/types/domain/role'
 
 interface PendingInvitation {
   id: number

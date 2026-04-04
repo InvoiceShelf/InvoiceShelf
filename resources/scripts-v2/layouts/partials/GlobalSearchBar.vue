@@ -112,8 +112,8 @@
 import { ref, watch } from 'vue'
 import { onClickOutside, useDebounceFn } from '@vueuse/core'
 import { useRoute } from 'vue-router'
-import { client } from '../../../api/client'
-import { API } from '../../../api/endpoints'
+import { client } from '@v2/api/client'
+import { API } from '@v2/api/endpoints'
 
 interface SearchResult {
   id: number

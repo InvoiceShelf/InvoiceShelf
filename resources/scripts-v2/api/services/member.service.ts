@@ -1,8 +1,8 @@
 import { client } from '../client'
 import { API } from '../endpoints'
-import type { User } from '../../types/domain/user'
-import type { CompanyInvitation } from '../../types/domain/company'
-import type { ApiResponse, PaginatedResponse, ListParams } from '../../types/api'
+import type { User } from '@v2/types/domain/user'
+import type { CompanyInvitation } from '@v2/types/domain/company'
+import type { ApiResponse, PaginatedResponse, ListParams } from '@v2/types/api'
 
 export interface MemberListParams extends ListParams {
   display_name?: string

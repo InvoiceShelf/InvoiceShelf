@@ -1,7 +1,7 @@
 import type { NavigationGuardWithThis, RouteLocationNormalized } from 'vue-router'
-import { useUserStore } from '../stores/user.store'
-import { useGlobalStore } from '../stores/global.store'
-import { useCompanyStore } from '../stores/company.store'
+import { useUserStore } from '@v2/stores/user.store'
+import { useGlobalStore } from '@v2/stores/global.store'
+import { useCompanyStore } from '@v2/stores/company.store'
 
 /**
  * Main authentication and authorization guard.

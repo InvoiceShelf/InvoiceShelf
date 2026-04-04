@@ -1,7 +1,7 @@
 import { client } from '../client'
 import { API } from '../endpoints'
-import type { User } from '../../types/domain/user'
-import type { ApiResponse } from '../../types/api'
+import type { User } from '@v2/types/domain/user'
+import type { ApiResponse } from '@v2/types/api'
 
 export interface UpdateProfilePayload {
   name: string

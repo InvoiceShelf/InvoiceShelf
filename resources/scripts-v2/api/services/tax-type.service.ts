@@ -1,7 +1,7 @@
 import { client } from '../client'
 import { API } from '../endpoints'
-import type { TaxType } from '../../types/domain/tax'
-import type { ApiResponse, ListParams } from '../../types/api'
+import type { TaxType } from '@v2/types/domain/tax'
+import type { ApiResponse, ListParams } from '@v2/types/api'
 
 export interface CreateTaxTypePayload {
   name: string

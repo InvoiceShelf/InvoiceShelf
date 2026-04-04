@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Address, Country } from '../../types/domain'
+import type { Address, Country } from '@v2/types/domain'
 
 interface DisplayAddress {
   address_street_1?: string | null

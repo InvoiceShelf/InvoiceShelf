@@ -197,8 +197,8 @@ import {
   TransitionRoot,
 } from '@headlessui/vue'
 import { useRoute } from 'vue-router'
-import { useGlobalStore } from '../../../stores/global.store'
-import MainLogo from '../../../components/icons/MainLogo.vue'
+import { useGlobalStore } from '@v2/stores/global.store'
+import MainLogo from '@v2/components/icons/MainLogo.vue'
 
 interface MenuItemData {
   name: string

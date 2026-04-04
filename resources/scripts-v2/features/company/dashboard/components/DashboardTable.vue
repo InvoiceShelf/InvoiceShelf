@@ -3,8 +3,8 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDashboardStore } from '../store'
 import { useUserStore } from '../../../../stores/user.store'
-import InvoiceDropdown from '@/scripts/admin/components/dropdowns/InvoiceIndexDropdown.vue'
-import EstimateDropdown from '@/scripts/admin/components/dropdowns/EstimateIndexDropdown.vue'
+import InvoiceDropdown from '@v2/features/company/invoices/components/InvoiceDropdown.vue'
+import EstimateDropdown from '@v2/features/company/estimates/components/EstimateDropdown.vue'
 
 interface TableColumn {
   key: string

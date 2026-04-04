@@ -1,7 +1,7 @@
 import { ref, computed } from 'vue'
 import type { Ref, ComputedRef } from 'vue'
 import * as ls from '../utils/local-storage'
-import { LS_KEYS } from '../config/constants'
+import { LS_KEYS } from '@v2/config/constants'
 
 export interface Company {
   id: number

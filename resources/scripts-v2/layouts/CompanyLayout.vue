@@ -31,13 +31,13 @@
 import { useI18n } from 'vue-i18n'
 import { onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useGlobalStore } from '../../stores/global.store'
-import { useUserStore } from '../../stores/user.store'
-import { useModalStore } from '../../stores/modal.store'
-import { useCompanyStore } from '../../stores/company.store'
+import { useGlobalStore } from '@v2/stores/global.store'
+import { useUserStore } from '@v2/stores/user.store'
+import { useModalStore } from '@v2/stores/modal.store'
+import { useCompanyStore } from '@v2/stores/company.store'
 import SiteHeader from './partials/SiteHeader.vue'
 import SiteSidebar from './partials/SiteSidebar.vue'
-import NotificationRoot from '../../components/notifications/NotificationRoot.vue'
+import NotificationRoot from '@v2/components/notifications/NotificationRoot.vue'
 import ImpersonationBanner from './partials/ImpersonationBanner.vue'
 
 interface RouteMeta {

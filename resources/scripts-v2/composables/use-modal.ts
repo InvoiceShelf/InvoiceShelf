@@ -1,6 +1,6 @@
 import { ref, computed, readonly } from 'vue'
 import type { DeepReadonly, Ref, ComputedRef } from 'vue'
-import type { ModalSize } from '../config/constants'
+import type { ModalSize } from '@v2/config/constants'
 
 export interface ModalState {
   active: boolean

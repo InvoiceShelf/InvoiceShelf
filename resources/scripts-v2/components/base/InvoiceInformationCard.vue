@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { Invoice } from '../../types/domain'
-import type { Currency } from '../../types/domain'
-import type { Company } from '../../types/domain'
-import type { Customer } from '../../types/domain'
+import type { Invoice } from '@v2/types/domain'
+import type { Currency } from '@v2/types/domain'
+import type { Company } from '@v2/types/domain'
+import type { Customer } from '@v2/types/domain'
 
 interface InvoiceInfo {
   paid_status: string

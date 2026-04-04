@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
-import { client } from '../../api/client'
-import type { Invoice } from '../../types/domain/invoice'
-import type { Estimate, EstimateStatus } from '../../types/domain/estimate'
-import type { Payment, PaymentMethod } from '../../types/domain/payment'
-import type { Currency } from '../../types/domain/currency'
-import type { Customer, Country } from '../../types/domain/customer'
+import { client } from '@v2/api/client'
+import type { Invoice } from '@v2/types/domain/invoice'
+import type { Estimate, EstimateStatus } from '@v2/types/domain/estimate'
+import type { Payment, PaymentMethod } from '@v2/types/domain/payment'
+import type { Currency } from '@v2/types/domain/currency'
+import type { Customer, Country } from '@v2/types/domain/customer'
 
 // ----------------------------------------------------------------
 // Types

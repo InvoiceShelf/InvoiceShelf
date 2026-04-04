@@ -5,8 +5,8 @@ import { useI18n } from 'vue-i18n'
 import { useCustomerStore } from '../store'
 import { useUserStore } from '../../../../stores/user.store'
 import CustomerDropdown from '../components/CustomerDropdown.vue'
-import CustomerViewSidebar from '@/scripts/admin/views/customers/partials/CustomerViewSidebar.vue'
-import CustomerChart from '@/scripts/admin/views/customers/partials/CustomerChart.vue'
+import CustomerViewSidebar from '@v2/features/company/customers/components/CustomerViewSidebar.vue'
+import CustomerChart from '@v2/features/company/customers/components/CustomerChart.vue'
 
 const ABILITIES = {
   EDIT_CUSTOMER: 'edit-customer',

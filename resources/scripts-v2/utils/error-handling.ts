@@ -1,4 +1,4 @@
-import type { ApiError } from '../types/api'
+import type { ApiError } from '@v2/types/api'
 
 /**
  * Shape of an Axios-like error response.

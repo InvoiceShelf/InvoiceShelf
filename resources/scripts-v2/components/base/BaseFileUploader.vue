@@ -379,8 +379,8 @@
 
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
-import http from '@/scripts/http'
-import utils from '@/scripts/helpers/utilities'
+import { client as http } from '@v2/api/client'
+import * as utils from '@v2/utils/format-money'
 
 interface LocalFile {
   fileObject?: File

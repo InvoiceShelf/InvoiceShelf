@@ -1,11 +1,11 @@
 import { client } from '../client'
 import { API } from '../endpoints'
-import type { RecurringInvoice, CreateRecurringInvoicePayload } from '../../types/domain/recurring-invoice'
+import type { RecurringInvoice, CreateRecurringInvoicePayload } from '@v2/types/domain/recurring-invoice'
 import type {
   ApiResponse,
   ListParams,
   DeletePayload,
-} from '../../types/api'
+} from '@v2/types/api'
 
 export interface RecurringInvoiceListParams extends ListParams {
   status?: string
