@@ -124,8 +124,8 @@
       h-screen
       pb-32
       overflow-y-auto
-      bg-surface
-      border-r border-line-default border-solid
+      bg-surface/80 backdrop-blur-xl
+      border-r border-white/10
       xl:w-64
       md:fixed md:flex md:flex-col md:inset-y-0
       pt-16

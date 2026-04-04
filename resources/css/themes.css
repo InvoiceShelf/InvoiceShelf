@@ -36,6 +36,10 @@
     --color-header-from: rgb(74, 61, 255);
     --color-header-to: rgb(118, 117, 255);
 
+    /* Button colors (fixed, always bold) */
+    --color-btn-primary: rgb(74, 61, 255);
+    --color-btn-primary-hover: rgb(51, 22, 255);
+
     /* Status badge text */
     --color-status-yellow: rgb(113, 63, 18);
     --color-status-green: rgb(20, 83, 45);
@@ -92,6 +96,10 @@
     /* Header gradient (darker in dark mode) */
     --color-header-from: rgb(51, 22, 255);
     --color-header-to: rgb(74, 61, 255);
+
+    /* Button colors (slightly brighter in dark for contrast) */
+    --color-btn-primary: rgb(88, 75, 255);
+    --color-btn-primary-hover: rgb(74, 61, 255);
 
     /* Primary adjustments for dark mode */
     --color-primary-50: rgba(167, 170, 255, 0.15);

@@ -34,7 +34,7 @@
 </head>
 
 <body
-    class="h-full overflow-hidden bg-surface-tertiary font-base
+    class="h-full overflow-hidden bg-surface-tertiary bg-glass-gradient font-base
     @if(isset($current_theme)) theme-{{ $current_theme }} @else theme-{{get_app_setting('admin_portal_theme') ?? 'invoiceshelf'}} @endif ">
 
     <!-- Module Scripts -->

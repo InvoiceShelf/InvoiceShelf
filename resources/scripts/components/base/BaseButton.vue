@@ -81,7 +81,7 @@ const placeHolderSize = computed(() => {
 
 const variantClass = computed(() => {
   return {
-    'border-transparent shadow-xs text-white bg-primary-600 hover:bg-primary-700 focus:ring-primary-500':
+    'border-transparent shadow-xs text-white bg-btn-primary hover:bg-btn-primary-hover focus:ring-primary-500':
       props.variant === 'primary',
     'border-transparent text-primary-700 bg-primary-100 hover:bg-primary-200 focus:ring-primary-500':
       props.variant === 'secondary',

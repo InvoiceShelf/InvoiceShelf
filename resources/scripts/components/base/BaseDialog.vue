@@ -59,8 +59,8 @@
               text-left
               align-bottom
               transition-all
-              bg-surface
-              rounded-lg
+              bg-surface/80 backdrop-blur-2xl
+              rounded-xl border border-white/15
               shadow-xl
               sm:my-8 sm:align-middle sm:w-full sm:p-6
               relative

@@ -6,9 +6,9 @@
           class="
             relative
             overflow-hidden
-            bg-surface
-            border border-line-light
-            shadow
+            bg-surface/70 backdrop-blur-lg
+            border border-white/15
+            shadow-sm
             rounded-xl
           "
         >

@@ -51,8 +51,8 @@
             <div
               :class="`inline-block
               align-middle
-              bg-surface
-              rounded-lg
+              bg-surface/80 backdrop-blur-2xl
+              rounded-xl border border-white/15
               text-left
               overflow-hidden
               relative
