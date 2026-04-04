@@ -6,9 +6,9 @@
           class="
             relative
             overflow-hidden
-            bg-white
-            border border-gray-100
-            shadow-sm
+            bg-surface
+            border border-line-light
+            shadow
             rounded-xl
           "
         >
@@ -22,7 +22,7 @@
                   :class="[
                     getThClass(column),
                     {
-                      'text-bold text-black': sort.fieldName === column.key,
+                      'text-bold text-heading': sort.fieldName === column.key,
                     },
                   ]"
                   @click="changeSorting(column)"
@@ -51,7 +51,7 @@
               <tr
                 v-for="placeRow in placeholderCount"
                 :key="placeRow"
-                :class="placeRow % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
+                :class="placeRow % 2 === 0 ? 'bg-surface' : 'bg-surface-secondary'"
               >
                 <td
                   v-for="column in columns"
@@ -75,7 +75,7 @@
               <tr
                 v-for="(row, index) in sortedRows"
                 :key="row.data?.id ?? index"
-                :class="index % 2 === 0 ? 'bg-white' : 'bg-gray-50'"
+                :class="index % 2 === 0 ? 'bg-surface' : 'bg-surface-secondary'"
               >
                 <td
                   v-for="column in columns"
@@ -114,7 +114,7 @@
               !loading && !isLoading && sortedRows && sortedRows.length === 0
             "
             class="
-              text-center text-gray-500
+              text-center text-muted
               pb-2
               flex
               h-[160px]
@@ -125,7 +125,7 @@
           >
             <BaseIcon
               name="ExclamationCircleIcon"
-              class="w-6 h-6 text-gray-400"
+              class="w-6 h-6 text-subtle"
             />
 
             <span class="block mt-1">{{ $t('general.no_data_found') }}</span>
@@ -163,9 +163,9 @@ const props = defineProps({
   sortOrder: { type: String, default: '' },
   tableClass: {
     type: String,
-    default: 'min-w-full divide-y divide-gray-200',
+    default: 'min-w-full divide-y divide-line-default',
   },
-  theadClass: { type: String, default: 'bg-gray-50' },
+  theadClass: { type: String, default: 'bg-surface-secondary' },
   tbodyClass: { type: String, default: '' },
   noResultsMessage: {
     type: String,
@@ -236,7 +236,7 @@ function getColumn(columnName) {
 
 function getThClass(column) {
   let classes =
-    'whitespace-nowrap px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
+    'whitespace-nowrap px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider'
 
   if (column.defaultThClass) {
     classes = column.defaultThClass
@@ -256,7 +256,7 @@ function getThClass(column) {
 }
 
 function getTdClass(column) {
-  let classes = 'px-6 py-4 text-sm text-gray-500 whitespace-nowrap'
+  let classes = 'px-6 py-4 text-sm text-muted whitespace-nowrap'
 
   if (column.defaultTdClass) {
     classes = column.defaultTdClass

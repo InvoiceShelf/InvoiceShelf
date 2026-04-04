@@ -102,7 +102,7 @@
           items-center
           justify-end
           h-5
-          border-gray-200 border-solid
+          border-line-default border-solid
         "
       >
         <BaseDropdown v-if="usersStore.selectedUsers.length">
@@ -122,7 +122,7 @@
             </span>
           </template>
           <BaseDropdownItem @click="removeMultipleUsers">
-            <BaseIcon name="TrashIcon" class="h-5 mr-3 text-gray-600" />
+            <BaseIcon name="TrashIcon" class="h-5 mr-3 text-body" />
             {{ $t('general.delete') }}
           </BaseDropdownItem>
         </BaseDropdown>
@@ -191,21 +191,21 @@
       v-if="userStore.currentUser.is_owner && usersStore.pendingInvitations.length > 0"
       class="mt-8"
     >
-      <h3 class="text-lg font-medium text-gray-900 mb-4">
+      <h3 class="text-lg font-medium text-heading mb-4">
         {{ $t('members.pending_invitations') }}
       </h3>
       <BaseCard>
-        <div class="divide-y divide-gray-200">
+        <div class="divide-y divide-line-default">
           <div
             v-for="invitation in usersStore.pendingInvitations"
             :key="invitation.id"
             class="flex items-center justify-between px-6 py-4"
           >
             <div>
-              <p class="text-sm font-medium text-gray-900">
+              <p class="text-sm font-medium text-heading">
                 {{ invitation.email }}
               </p>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 {{ invitation.role?.title }} &middot;
                 {{ $t('members.invited_by') }}: {{ invitation.invited_by?.name }}
               </p>
@@ -269,14 +269,14 @@ const userTableColumns = computed(() => {
     {
       key: 'status',
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-heading',
       sortable: false,
     },
     {
       key: 'name',
       label: t('members.name'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-heading',
     },
     { key: 'email', label: 'Email' },
     {

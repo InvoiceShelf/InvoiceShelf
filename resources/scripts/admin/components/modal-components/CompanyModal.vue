@@ -6,7 +6,7 @@
 
         <BaseIcon
           name="XMarkIcon"
-          class="w-6 h-6 text-gray-500 cursor-pointer"
+          class="w-6 h-6 text-muted cursor-pointer"
           @click="closeCompanyModal"
         />
       </div>
@@ -98,7 +98,7 @@
         </BaseInputGrid>
       </div>
 
-      <div class="z-0 flex justify-end p-4 bg-gray-50 border-t border-gray-200">
+      <div class="z-0 flex justify-end p-4 bg-surface-secondary border-t border-line-default">
         <BaseButton
           class="mr-3 text-sm"
           variant="primary-outline"

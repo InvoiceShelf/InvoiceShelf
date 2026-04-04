@@ -9,15 +9,15 @@
         items-center
         h-10
         pl-2
-        bg-gray-200
-        border border-gray-200 border-solid
+        bg-surface-muted
+        border border-line-default border-solid
         rounded
       "
     >
       {{ item.name }}
 
       <span
-        class="absolute text-gray-400 cursor-pointer top-[8px] right-[10px]"
+        class="absolute text-subtle cursor-pointer top-[8px] right-[10px]"
         @click="deselectItem(index)"
       >
         <BaseIcon name="XCircleIcon" />

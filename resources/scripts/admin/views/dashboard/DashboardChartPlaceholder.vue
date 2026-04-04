@@ -1,6 +1,6 @@
 <template>
   <BaseContentPlaceholders
-    class="grid grid-cols-10 mt-8 bg-white rounded shadow"
+    class="grid grid-cols-10 mt-8 bg-surface rounded shadow"
   >
     <!-- Chart -->
     <div
@@ -27,7 +27,7 @@
         grid grid-cols-3
         col-span-10
         text-center
-        border-t border-l border-gray-200 border-solid
+        border-t border-l border-line-default border-solid
         lg:border-t-0 lg:text-right lg:col-span-3
         xl:col-span-2
         lg:grid-cols-1
@@ -76,7 +76,7 @@
           justify-center
           col-span-3
           p-6
-          border-t border-gray-200 border-solid
+          border-t border-line-default border-solid
           lg:justify-end lg:items-end lg:col-span-1
         "
       >

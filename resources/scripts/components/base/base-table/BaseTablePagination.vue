@@ -7,8 +7,8 @@
       justify-between
       px-4
       py-3
-      bg-white
-      border-t border-gray-200
+      bg-surface
+      border-t border-line-default
       sm:px-6
     "
   >
@@ -16,7 +16,7 @@
       <a
         href="#"
         :class="{
-          'disabled cursor-normal pointer-events-none !bg-gray-100 !text-gray-400':
+          'disabled cursor-normal pointer-events-none !bg-surface-tertiary !text-subtle':
             pagination.currentPage === 1,
         }"
         class="
@@ -27,11 +27,11 @@
           py-2
           text-sm
           font-medium
-          text-gray-700
-          bg-white
-          border border-gray-200
+          text-body
+          bg-surface
+          border border-line-default
           rounded-md
-          hover:bg-gray-50
+          hover:bg-hover
         "
         @click="pageClicked(pagination.currentPage - 1)"
       >
@@ -40,7 +40,7 @@
       <a
         href="#"
         :class="{
-          'disabled cursor-default pointer-events-none !bg-gray-100 !text-gray-400':
+          'disabled cursor-default pointer-events-none !bg-surface-tertiary !text-subtle':
             pagination.currentPage === pagination.totalPages,
         }"
         class="
@@ -52,11 +52,11 @@
           ml-3
           text-sm
           font-medium
-          text-gray-700
-          bg-white
-          border border-gray-200
+          text-body
+          bg-surface
+          border border-line-default
           rounded-md
-          hover:bg-gray-50
+          hover:bg-hover
         "
         @click="pageClicked(pagination.currentPage + 1)"
       >
@@ -65,7 +65,7 @@
     </div>
     <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
       <div>
-        <p class="text-sm text-gray-700">
+        <p class="text-sm text-body">
           {{ $t('general.pagination.showing') }}
           {{ ' ' }}
           <span
@@ -113,7 +113,7 @@
           <a
             href="#"
             :class="{
-              'disabled cursor-normal pointer-events-none !bg-gray-100 !text-gray-400':
+              'disabled cursor-normal pointer-events-none !bg-surface-tertiary !text-subtle':
                 pagination.currentPage === 1,
             }"
             class="
@@ -124,11 +124,11 @@
               py-2
               text-sm
               font-medium
-              text-gray-500
-              bg-white
-              border border-gray-200
+              text-muted
+              bg-surface
+              border border-line-default
               rounded-l-lg
-              hover:bg-gray-50
+              hover:bg-hover
             "
             @click="pageClicked(pagination.currentPage - 1)"
           >
@@ -142,7 +142,7 @@
             :class="{
               'z-10 bg-primary-500 border-primary-500 text-white':
                 isActive(1),
-              'bg-white border-gray-200 text-gray-500 hover:bg-gray-50':
+              'bg-surface border-line-default text-muted hover:bg-hover':
                 !isActive(1),
             }"
             class="
@@ -170,9 +170,9 @@
               py-2
               text-sm
               font-medium
-              text-gray-700
-              bg-white
-              border border-gray-200
+              text-body
+              bg-surface
+              border border-line-default
             "
           >
             ...
@@ -184,7 +184,7 @@
             :class="{
               'z-10 bg-primary-500 border-primary-500 text-white':
                 isActive(page),
-              'bg-white border-gray-200 text-gray-500 hover:bg-gray-50':
+              'bg-surface border-line-default text-muted hover:bg-hover':
                 !isActive(page),
               disabled: page === '...',
             }"
@@ -214,9 +214,9 @@
               py-2
               text-sm
               font-medium
-              text-gray-700
-              bg-white
-              border border-gray-200
+              text-body
+              bg-surface
+              border border-line-default
             "
           >
             ...
@@ -228,7 +228,7 @@
             :class="{
               'z-10 bg-primary-500 border-primary-500 text-white':
                 isActive(pagination.totalPages),
-              'bg-white border-gray-200 text-gray-500 hover:bg-gray-50':
+              'bg-surface border-line-default text-muted hover:bg-hover':
                 !isActive(pagination.totalPages),
             }"
             class="
@@ -255,14 +255,14 @@
               py-2
               text-sm
               font-medium
-              text-gray-500
-              bg-white
-              border border-gray-200
+              text-muted
+              bg-surface
+              border border-line-default
               rounded-r-lg
-              hover:bg-gray-50
+              hover:bg-hover
             "
             :class="{
-              'disabled cursor-default pointer-events-none !bg-gray-100 !text-gray-400':
+              'disabled cursor-default pointer-events-none !bg-surface-tertiary !text-subtle':
                 pagination.currentPage === pagination.totalPages,
             }"
             @click="pageClicked(pagination.currentPage + 1)"

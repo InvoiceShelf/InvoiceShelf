@@ -3,7 +3,7 @@
     class="
       relative
       shadow-md
-      border-2 border-gray-200/60
+      border-2 border-line-default/60
       rounded-lg
       cursor-pointer
       overflow-hidden
@@ -55,7 +55,7 @@
       :src="data.cover"
       alt="cover"
     />
-    <div class="px-6 py-5 flex flex-col bg-gray-50 flex-1 justify-between">
+    <div class="px-6 py-5 flex flex-col bg-surface-secondary flex-1 justify-between">
       <span
         class="
           text-lg
@@ -85,7 +85,7 @@
       </div>
       <base-text
         :text="data.short_description"
-        class="pt-4 text-gray-500 h-16 line-clamp-2"
+        class="pt-4 text-muted h-16 line-clamp-2"
       >
       </base-text>
       <div

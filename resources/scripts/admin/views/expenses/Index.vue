@@ -135,7 +135,7 @@
             v-if="userStore.hasAbilities(abilities.DELETE_EXPENSE)"
             @click="removeMultipleExpenses"
           >
-            <BaseIcon name="TrashIcon" class="h-5 mr-3 text-gray-600" />
+            <BaseIcon name="TrashIcon" class="h-5 mr-3 text-body" />
             {{ $t('general.delete') }}
           </BaseDropdownItem>
         </BaseDropdown>
@@ -275,7 +275,7 @@ const expenseColumns = computed(() => {
     {
       key: 'status',
       thClass: 'extra w-10',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-heading',
       placeholderClass: 'w-10',
       sortable: false,
     },
@@ -283,13 +283,13 @@ const expenseColumns = computed(() => {
       key: 'expense_date',
       label: t('expenses.date'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-heading',
     },
     {
       key: 'expense_number',
       label: t('expenses.expense_number'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-heading',
     },
     {
       key: 'name',

@@ -46,7 +46,7 @@
       :title="$t('administration.companies.no_companies')"
       :description="$t('administration.companies.list_description')"
     >
-      <BaseIcon name="BuildingOfficeIcon" class="mt-5 mb-4 h-16 w-16 text-gray-300" />
+      <BaseIcon name="BuildingOfficeIcon" class="mt-5 mb-4 h-16 w-16 text-subtle" />
     </BaseEmptyPlaceholder>
 
     <div v-show="!showEmptyScreen" class="relative table-container">
@@ -70,12 +70,12 @@
 
         <template #cell-owner="{ row }">
           <span v-if="row.data.owner">{{ row.data.owner.name }}</span>
-          <span v-else class="text-gray-400">-</span>
+          <span v-else class="text-subtle">-</span>
         </template>
 
         <template #cell-owner_email="{ row }">
           <span v-if="row.data.owner">{{ row.data.owner.email }}</span>
-          <span v-else class="text-gray-400">-</span>
+          <span v-else class="text-subtle">-</span>
         </template>
 
         <template #cell-actions="{ row }">
@@ -113,7 +113,7 @@ const companyTableColumns = computed(() => {
       key: 'name',
       label: t('administration.companies.company_name'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-heading',
     },
     {
       key: 'owner',

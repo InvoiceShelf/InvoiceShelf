@@ -3,7 +3,7 @@
     <div
       class="
         shadow-md
-        border-2 border-gray-200/60
+        border-2 border-line-default/60
         rounded-lg
         cursor-pointer
         overflow-hidden
@@ -11,7 +11,7 @@
       "
     >
       <BaseContentPlaceholdersBox class="h-48 lg:h-64 md:h-48 w-full" rounded />
-      <div class="px-6 py-5 flex flex-col bg-gray-50 flex-1 justify-between">
+      <div class="px-6 py-5 flex flex-col bg-surface-secondary flex-1 justify-between">
         <BaseContentPlaceholdersText class="w-32 h-8" :lines="1" rounded />
         <div class="flex items-center mt-2">
           <BaseContentPlaceholdersBox

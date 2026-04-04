@@ -5,7 +5,7 @@
         {{ $t('members.invite_member') }}
         <BaseIcon
           name="XMarkIcon"
-          class="w-6 h-6 text-gray-500 cursor-pointer"
+          class="w-6 h-6 text-muted cursor-pointer"
           @click="$emit('close')"
         />
       </div>
@@ -42,7 +42,7 @@
         </BaseInputGroup>
       </div>
 
-      <div class="flex justify-end p-4 border-t border-gray-200">
+      <div class="flex justify-end p-4 border-t border-line-default">
         <BaseButton
           variant="primary-outline"
           class="mr-3"

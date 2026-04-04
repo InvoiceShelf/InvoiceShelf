@@ -6,7 +6,7 @@
 
         <BaseIcon
           name="XMarkIcon"
-          class="w-6 h-6 text-gray-500 cursor-pointer"
+          class="w-6 h-6 text-muted cursor-pointer"
           @click="closeCustomFieldModal"
         />
       </div>
@@ -123,7 +123,7 @@
                   class="ml-1 cursor-pointer"
                   :class="
                     customFieldStore.currentCustomField.in_use
-                      ? 'text-gray-300'
+                      ? 'text-subtle'
                       : 'text-red-300'
                   "
                   @click="removeOption(index)"
@@ -179,7 +179,7 @@
           flex
           justify-end
           p-4
-          border-t border-solid border-gray-200
+          border-t border-solid border-line-default
         "
       >
         <BaseButton

@@ -8,7 +8,7 @@
       px-6
       py-2
       text-sm
-      bg-gray-200
+      bg-surface-muted
       cursor-pointer
       text-primary-400
     "

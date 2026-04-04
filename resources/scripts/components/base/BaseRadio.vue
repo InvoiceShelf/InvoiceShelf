@@ -66,11 +66,11 @@ const props = defineProps({
   },
   checkedStateClass: {
     type: String,
-    default: 'bg-primary-600',
+    default: 'bg-primary-500',
   },
   unCheckedStateClass: {
     type: String,
-    default: 'bg-white ',
+    default: 'bg-surface ',
   },
   optionGroupActiveStateClass: {
     type: String,
@@ -78,11 +78,11 @@ const props = defineProps({
   },
   checkedStateLabelClass: {
     type: String,
-    default: 'text-primary-900 ',
+    default: 'text-primary-500 ',
   },
   unCheckedStateLabelClass: {
     type: String,
-    default: 'text-gray-900',
+    default: 'text-heading',
   },
   optionGroupClass: {
     type: String,

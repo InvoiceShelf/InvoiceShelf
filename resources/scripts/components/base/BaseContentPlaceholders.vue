@@ -55,7 +55,7 @@ const classObject = computed(() => {
   position: relative;
   overflow: hidden;
   min-height: 15px;
-  background: #eee;
+  background: var(--color-surface-muted);
 
   .base-content-placeholders-is-rounded & {
     border-radius: 6px;
@@ -72,7 +72,7 @@ const classObject = computed(() => {
     width: 100vw;
     max-width: 1000px;
     height: 100%;
-    background: linear-gradient(to right, transparent 0%, #e1e1e1 15%, transparent 30%);
+    background: linear-gradient(to right, transparent 0%, var(--color-hover-strong) 15%, transparent 30%);
     animation: vueContentPlaceholdersAnimation 1.5s linear infinite forwards;
   }
 }
@@ -87,7 +87,7 @@ const classObject = computed(() => {
 .base-content-placeholders-heading__title {
   width: 85%;
   margin-bottom: 10px;
-  background: #ccc;
+  background: var(--color-surface-muted);
   position: relative;
   overflow: hidden;
   min-height: 15px;
@@ -107,7 +107,7 @@ const classObject = computed(() => {
     width: 100vw;
     max-width: 1000px;
     height: 100%;
-    background: linear-gradient(to right, transparent 0%, #e1e1e1 15%, transparent 30%);
+    background: linear-gradient(to right, transparent 0%, var(--color-hover-strong) 15%, transparent 30%);
     animation: vueContentPlaceholdersAnimation 1.5s linear infinite forwards;
   }
 }
@@ -117,7 +117,7 @@ const classObject = computed(() => {
   position: relative;
   overflow: hidden;
   min-height: 15px;
-  background: #eee;
+  background: var(--color-surface-muted);
 
   .base-content-placeholders-is-rounded & {
     border-radius: 6px;
@@ -134,7 +134,7 @@ const classObject = computed(() => {
     width: 100vw;
     max-width: 1000px;
     height: 100%;
-    background: linear-gradient(to right, transparent 0%, #e1e1e1 15%, transparent 30%);
+    background: linear-gradient(to right, transparent 0%, var(--color-hover-strong) 15%, transparent 30%);
     animation: vueContentPlaceholdersAnimation 1.5s linear infinite forwards;
   }
 }
@@ -151,7 +151,7 @@ const classObject = computed(() => {
   position: relative;
   overflow: hidden;
   min-height: 15px;
-  background: #eee;
+  background: var(--color-surface-muted);
 
   .base-content-placeholders-is-rounded & {
     border-radius: 6px;
@@ -168,7 +168,7 @@ const classObject = computed(() => {
     width: 100vw;
     max-width: 1000px;
     height: 100%;
-    background: linear-gradient(to right, transparent 0%, #e1e1e1 15%, transparent 30%);
+    background: linear-gradient(to right, transparent 0%, var(--color-hover-strong) 15%, transparent 30%);
     animation: vueContentPlaceholdersAnimation 1.5s linear infinite forwards;
   }
 
@@ -190,7 +190,7 @@ const classObject = computed(() => {
   position: relative;
   overflow: hidden;
   min-height: 15px;
-  background: #eee;
+  background: var(--color-surface-muted);
 
   .base-content-placeholders-is-animated &::before {
     content: '';
@@ -200,7 +200,7 @@ const classObject = computed(() => {
     width: 100vw;
     max-width: 1000px;
     height: 100%;
-    background: linear-gradient(to right, transparent 0%, #e1e1e1 15%, transparent 30%);
+    background: linear-gradient(to right, transparent 0%, var(--color-hover-strong) 15%, transparent 30%);
     animation: vueContentPlaceholdersAnimation 1.5s linear infinite forwards;
   }
 }

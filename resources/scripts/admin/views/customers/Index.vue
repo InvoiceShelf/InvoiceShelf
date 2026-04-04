@@ -113,7 +113,7 @@
             </span>
           </template>
           <BaseDropdownItem @click="removeMultipleCustomers">
-            <BaseIcon name="TrashIcon" class="mr-3 text-gray-600" />
+            <BaseIcon name="TrashIcon" class="mr-3 text-body" />
             {{ $t('general.delete') }}
           </BaseDropdownItem>
         </BaseDropdown>
@@ -158,7 +158,7 @@
             <BaseText
               :text="row.data.contact_name ? row.data.contact_name : ''"
               tag="span"
-              class="text-xs text-gray-400"
+              class="text-xs text-subtle"
             />
           </router-link>
         </template>
@@ -247,13 +247,13 @@ const customerColumns = computed(() => {
       key: 'status',
       thClass: 'extra w-10 pr-0',
       sortable: false,
-      tdClass: 'font-medium text-gray-900 pr-0',
+      tdClass: 'font-medium text-heading pr-0',
     },
     {
       key: 'name',
       label: t('customers.name'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-heading',
     },
     { key: 'phone', label: t('customers.phone') },
     { key: 'due_amount', label: t('customers.amount_due') },

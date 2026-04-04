@@ -1,4 +1,5 @@
 <template>
+  <div class="rounded-xl border border-line-light shadow overflow-hidden bg-surface">
   <!-- Tax Included -->
   <div
     v-if="companyStore.selectedCompanySettings.tax_included === 'YES'"
@@ -9,10 +10,10 @@
       w-full
       px-6
       text-base
-      border border-b-0 border-gray-200 border-solid
+      border-b border-line-light
       cursor-pointer
       text-primary-400
-      bg-white
+      bg-surface
     "
   >
     <BaseSwitchSection
@@ -33,7 +34,7 @@
       />
       <col style="width: 15%; min-width: 120px" />
     </colgroup>
-    <thead class="bg-white border border-gray-200 border-solid">
+    <thead class="bg-surface-secondary border-b border-line-light">
       <tr>
         <th
           class="
@@ -43,8 +44,8 @@
             not-italic
             font-medium
             leading-5
-            text-left text-gray-700
-            border-t border-b border-gray-200 border-solid
+            text-left text-body
+            
           "
         >
           <BaseContentPlaceholders v-if="isLoading">
@@ -62,8 +63,8 @@
             not-italic
             font-medium
             leading-5
-            text-right text-gray-700
-            border-t border-b border-gray-200 border-solid
+            text-right text-body
+            
           "
         >
           <BaseContentPlaceholders v-if="isLoading">
@@ -81,8 +82,8 @@
             not-italic
             font-medium
             leading-5
-            text-left text-gray-700
-            border-t border-b border-gray-200 border-solid
+            text-left text-body
+            
           "
         >
           <BaseContentPlaceholders v-if="isLoading">
@@ -101,8 +102,8 @@
             not-italic
             font-medium
             leading-5
-            text-left text-gray-700
-            border-t border-b border-gray-200 border-solid
+            text-left text-body
+            
           "
         >
           <BaseContentPlaceholders v-if="isLoading">
@@ -120,8 +121,8 @@
             not-italic
             font-medium
             leading-5
-            text-right text-gray-700
-            border-t border-b border-gray-200 border-solid
+            text-right text-body
+            
           "
         >
           <BaseContentPlaceholders v-if="isLoading">
@@ -164,7 +165,7 @@
       px-6
       py-3
       text-base
-      border border-t-0 border-gray-200 border-solid
+      border-t border-line-light
       cursor-pointer
       text-primary-400
       hover:bg-primary-100
@@ -174,6 +175,7 @@
     <BaseIcon name="PlusCircleIcon" class="mr-2" />
     {{ $t('general.add_new_item') }}
   </div>
+  </div><!-- end rounded wrapper -->
 </template>
 
 <script setup>

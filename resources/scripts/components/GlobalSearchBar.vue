@@ -9,7 +9,7 @@
         @input="onSearch"
       >
         <template #left>
-          <BaseIcon name="MagnifyingGlassIcon" class="text-gray-400" />
+          <BaseIcon name="MagnifyingGlassIcon" class="text-subtle" />
         </template>
         <template #right>
           <SpinnerIcon v-if="isSearching" class="h-5 text-primary-500" />
@@ -32,7 +32,7 @@
           scrollbar-thumb-gray-300
           scrollbar-track-gray-100
           overflow-y-auto
-          bg-white
+          bg-surface
           rounded-md
           mt-2
           shadow-lg
@@ -51,24 +51,24 @@
             flex
             items-center
             justify-center
-            text-gray-400 text-base
+            text-subtle text-base
             flex-col
             mt-4
           "
         >
-          <BaseIcon name="ExclamationCircleIcon" class="text-gray-400" />
+          <BaseIcon name="ExclamationCircleIcon" class="text-subtle" />
 
           {{ $t('global_search.no_results_found') }}
         </div>
         <div v-else>
           <div v-if="usersStore.customerList.length > 0">
-            <label class="text-sm text-gray-400 mb-0.5 block px-2 uppercase">
+            <label class="text-sm text-subtle mb-0.5 block px-2 uppercase">
               {{ $t('global_search.customers') }}
             </label>
             <div
               v-for="(customer, index) in usersStore.customerList"
               :key="index"
-              class="p-2 hover:bg-gray-100 cursor-pointer rounded-md"
+              class="p-2 hover:bg-hover-strong cursor-pointer rounded-md"
             >
               <router-link
                 :to="{ path: `/admin/customers/${customer.id}/view` }"
@@ -84,7 +84,7 @@
                     mr-3
                     text-base
                     font-semibold
-                    bg-gray-200
+                    bg-surface-muted
                     rounded-full
                     text-primary-500
                   "
@@ -95,11 +95,11 @@
                   <span class="text-sm">{{ customer.name }}</span>
                   <span
                     v-if="customer.contact_name"
-                    class="text-xs text-gray-400"
+                    class="text-xs text-subtle"
                   >
                     {{ customer.contact_name }}
                   </span>
-                  <span v-else class="text-xs text-gray-400">{{
+                  <span v-else class="text-xs text-subtle">{{
                     customer.email
                   }}</span>
                 </div>
@@ -109,14 +109,14 @@
 
           <div v-if="usersStore.userList.length > 0" class="mt-2">
             <label
-              class="text-sm text-gray-400 mb-2 block px-2 mb-0.5 uppercase"
+              class="text-sm text-subtle mb-2 block px-2 mb-0.5 uppercase"
             >
               {{ $t('global_search.users') }}
             </label>
             <div
               v-for="(user, index) in usersStore.userList"
               :key="index"
-              class="p-2 hover:bg-gray-100 cursor-pointer rounded-md"
+              class="p-2 hover:bg-hover-strong cursor-pointer rounded-md"
             >
               <router-link
                 :to="{ path: `/admin/members/${user.id}/edit` }"
@@ -132,7 +132,7 @@
                     mr-3
                     text-base
                     font-semibold
-                    bg-gray-200
+                    bg-surface-muted
                     rounded-full
                     text-primary-500
                   "
@@ -141,7 +141,7 @@
                 </span>
                 <div class="flex flex-col">
                   <span class="text-sm">{{ user.name }}</span>
-                  <span class="text-xs text-gray-400">{{ user.email }}</span>
+                  <span class="text-xs text-subtle">{{ user.email }}</span>
                 </div>
               </router-link>
             </div>

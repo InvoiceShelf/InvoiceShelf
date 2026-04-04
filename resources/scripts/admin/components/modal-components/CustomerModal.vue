@@ -10,7 +10,7 @@
 
         <BaseIcon
           name="XMarkIcon"
-          class="h-6 w-6 text-gray-500 cursor-pointer"
+          class="h-6 w-6 text-muted cursor-pointer"
           @click="closeCustomerModal"
         />
       </div>
@@ -131,7 +131,7 @@
           <BaseTab :title="$t('customers.portal_access')">
             <BaseInputGrid class="col-span-5 lg:col-span-4">
               <div class="md:col-span-2">
-                <p class="text-sm text-gray-500">
+                <p class="text-sm text-muted">
                   {{ $t('customers.portal_access_text') }}
                 </p>
 
@@ -168,7 +168,7 @@
                   <template #right>
                     <BaseIcon
                       :name="isShowPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-                      class="mr-1 text-gray-500 cursor-pointer"
+                      class="mr-1 text-muted cursor-pointer"
                       @click="isShowPassword = !isShowPassword"
                     />
                   </template>
@@ -194,7 +194,7 @@
                   <template #right>
                     <BaseIcon
                       :name="isShowConfirmPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-                      class="mr-1 text-gray-500 cursor-pointer"
+                      class="mr-1 text-muted cursor-pointer"
                       @click="isShowConfirmPassword = !isShowConfirmPassword"
                     />
                   </template>
@@ -423,7 +423,7 @@
       </div>
 
       <div
-        class="z-0 flex justify-end p-4 border-t border-gray-200 border-solid"
+        class="z-0 flex justify-end p-4 border-t border-line-default border-solid"
       >
         <BaseButton
           class="mr-3 text-sm"

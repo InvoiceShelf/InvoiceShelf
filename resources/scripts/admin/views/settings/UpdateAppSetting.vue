@@ -8,7 +8,7 @@
         {{ $t('settings.update_app.current_version') }}
       </label>
 
-      <div class="w-full border-b-2 border-gray-100 border-solid pb-4">
+      <div class="w-full border-b-2 border-line-light border-solid pb-4">
         <div
           class="
           box-border
@@ -16,9 +16,9 @@
           w-auto
           p-3
           my-2
-          text-sm text-gray-600
-          bg-gray-200
-          border border-gray-200 border-solid
+          text-sm text-body
+          bg-surface-muted
+          border border-line-default border-solid
           rounded-md
           version
         "
@@ -81,9 +81,9 @@
             w-auto
             p-3
             my-2
-            text-sm text-gray-600
-            bg-gray-200
-            border border-gray-200 border-solid
+            text-sm text-body
+            bg-surface-muted
+            border border-line-default border-solid
             rounded-md
             version
           "
@@ -98,7 +98,7 @@
             mb-2
             text-sm
             leading-snug
-            text-gray-500
+            text-muted
             update-description
           "
           style="white-space: pre-wrap; max-width: 480px"
@@ -113,7 +113,7 @@
             mb-8
             text-sm
             leading-snug
-            text-gray-500
+            text-muted
             update-changelog
           "
           style="white-space: pre-wrap; max-width: 480px"
@@ -125,11 +125,11 @@
           {{ $t('settings.update_app.requirements') }}
         </label>
 
-        <table class="w-1/2 mt-2 border-2 border-gray-200 BaseTable-fixed">
+        <table class="w-1/2 mt-2 border-2 border-line-default BaseTable-fixed">
           <tr
             v-for="(ext, i) in requiredExtentions"
             :key="i"
-            class="p-2 border-2 border-gray-200"
+            class="p-2 border-2 border-line-default"
           >
             <td width="70%" class="p-2 text-sm truncate">
               {{ i }}
@@ -170,7 +170,7 @@
             {{ $t('settings.update_app.update_progress') }}
           </h6>
           <p
-            class="mb-8 text-sm leading-snug text-gray-500"
+            class="mb-8 text-sm leading-snug text-muted"
             style="max-width: 480px"
           >
             {{ $t('settings.update_app.progress_text') }}
@@ -189,13 +189,13 @@
             justify-between
             w-full
             py-3
-            border-b border-gray-200 border-solid
+            border-b border-line-default border-solid
             last:border-b-0
           "
         >
           <p class="m-0 text-sm leading-8">{{ $t(step.translationKey) }}</p>
           <div class="flex flex-row items-center">
-            <span v-if="step.time" class="mr-3 text-xs text-gray-500">
+            <span v-if="step.time" class="mr-3 text-xs text-muted">
               {{ step.time }}
             </span>
             <span
@@ -329,7 +329,7 @@ function statusClass(step) {
 
   switch (status) {
     case 'pending':
-      return 'text-primary-800 bg-gray-200'
+      return 'text-primary-800 bg-surface-muted'
     case 'finished':
       return 'text-teal-500 bg-teal-100'
     case 'running':

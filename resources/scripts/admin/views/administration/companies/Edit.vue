@@ -65,7 +65,7 @@
 
         <BaseDivider class="my-6" />
 
-        <h3 class="text-lg font-medium text-gray-900 mb-4">
+        <h3 class="text-lg font-medium text-heading mb-4">
           {{ $t('administration.companies.address') }}
         </h3>
 

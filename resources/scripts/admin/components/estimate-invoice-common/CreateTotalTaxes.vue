@@ -1,12 +1,12 @@
 <template>
   <div class="flex items-center justify-between w-full mt-2 text-sm">
-    <label v-if="tax.calculation_type === 'percentage'" class="font-semibold leading-5 text-gray-500 uppercase">
+    <label v-if="tax.calculation_type === 'percentage'" class="font-semibold leading-5 text-muted uppercase">
       {{ tax.name }} ({{ tax.percent }} %)
     </label>
-    <label v-else class="font-semibold leading-5 text-gray-500 uppercase">
+    <label v-else class="font-semibold leading-5 text-muted uppercase">
       {{ tax.name }} (<BaseFormatMoney :amount="tax.fixed_amount" :currency="currency" />)
     </label>
-    <label class="flex items-center justify-center text-lg text-black">
+    <label class="flex items-center justify-center text-lg text-heading">
       <BaseFormatMoney :amount="tax.amount" :currency="currency" />
 
       <BaseIcon

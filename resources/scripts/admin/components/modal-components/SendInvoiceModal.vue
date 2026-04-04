@@ -9,7 +9,7 @@
         {{ modalTitle }}
         <BaseIcon
           name="XMarkIcon"
-          class="w-6 h-6 text-gray-500 cursor-pointer"
+          class="w-6 h-6 text-muted cursor-pointer"
           @click="closeSendInvoiceModal"
         />
       </div>
@@ -90,7 +90,7 @@
         </BaseInputGrid>
       </div>
       <div
-        class="z-0 flex justify-end p-4 border-t border-gray-200 border-solid"
+        class="z-0 flex justify-end p-4 border-t border-line-default border-solid"
       >
         <BaseButton
           class="mr-3"
@@ -120,7 +120,7 @@
       </div>
     </form>
     <div v-else>
-      <div class="my-6 mx-4 border border-gray-200 relative">
+      <div class="my-6 mx-4 border border-line-default relative">
         <BaseButton
           class="absolute top-4 right-4"
           :disabled="isLoading"
@@ -139,7 +139,7 @@
         ></iframe>
       </div>
       <div
-        class="z-0 flex justify-end p-4 border-t border-gray-200 border-solid"
+        class="z-0 flex justify-end p-4 border-t border-line-default border-solid"
       >
         <BaseButton
           class="mr-3"

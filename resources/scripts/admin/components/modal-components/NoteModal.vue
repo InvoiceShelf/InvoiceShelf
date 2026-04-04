@@ -5,7 +5,7 @@
         {{ modalStore.title }}
         <BaseIcon
           name="XMarkIcon"
-          class="h-6 w-6 text-gray-500 cursor-pointer"
+          class="h-6 w-6 text-muted cursor-pointer"
           @click="closeNoteModal"
         />
       </div>
@@ -75,7 +75,7 @@ _          />
           justify-end
           px-4
           py-4
-          border-t border-solid border-gray-200
+          border-t border-solid border-line-default
         "
       >
         <BaseButton

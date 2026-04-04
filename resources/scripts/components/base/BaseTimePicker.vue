@@ -21,7 +21,7 @@
         text-sm
         not-italic
         font-black
-        text-gray-400
+        text-subtle
         cursor-pointer
       "
       viewBox="0 0 20 20"
@@ -86,7 +86,7 @@ const props = defineProps({
   defaultInputClass: {
     type: String,
     default:
-      'font-base pl-8 py-2 outline-hidden focus:ring-primary-400 focus:outline-hidden focus:border-primary-400 block w-full sm:text-sm border-gray-300 rounded-md text-black',
+      'font-base pl-8 py-2 outline-hidden focus:ring-primary-400 focus:outline-hidden focus:border-primary-400 block w-full sm:text-sm border-line-strong rounded-md text-heading',
   },
 })
 
@@ -130,7 +130,7 @@ const inputInvalidClass = computed(() => {
 
 const inputDisabledClass = computed(() => {
   if (props.disabled) {
-    return 'border border-solid rounded-md outline-hidden input-field box-border-2 base-date-picker-input placeholder-gray-400 bg-gray-300 text-gray-600 border-gray-300'
+    return 'border border-solid rounded-md outline-hidden input-field box-border-2 base-date-picker-input placeholder-subtle bg-surface-muted text-body border-line-strong'
   }
 
   return ''

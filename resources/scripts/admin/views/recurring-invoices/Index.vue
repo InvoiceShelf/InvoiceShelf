@@ -120,7 +120,7 @@
           h-10
           mt-5
           list-none
-          border-b-2 border-gray-200 border-solid
+          border-b-2 border-line-default border-solid
         "
       >
         <!-- Tabs -->
@@ -155,7 +155,7 @@
           </template>
 
           <BaseDropdownItem @click="removeMultipleRecurringInvoices()">
-            <BaseIcon name="TrashIcon" class="mr-3 text-gray-600" />
+            <BaseIcon name="TrashIcon" class="mr-3 text-body" />
             {{ $t('general.delete') }}
           </BaseDropdownItem>
         </BaseDropdown>
@@ -212,7 +212,7 @@
                   : ''
               "
               tag="span"
-              class="text-xs text-gray-400"
+              class="text-xs text-subtle"
             />
           </router-link>
         </template>
@@ -306,7 +306,7 @@ const invoiceColumns = computed(() => {
     {
       key: 'checkbox',
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-heading',
     },
     {
       key: 'starts_at',

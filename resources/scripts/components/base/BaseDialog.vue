@@ -30,7 +30,7 @@
           leave-to="opacity-0"
         >
           <DialogOverlay
-            class="fixed inset-0 transition-opacity bg-gray-500/75"
+            class="fixed inset-0 transition-opacity bg-surface-secondary0/75"
           />
         </TransitionChild>
 
@@ -59,7 +59,7 @@
               text-left
               align-bottom
               transition-all
-              bg-white
+              bg-surface
               rounded-lg
               shadow-xl
               sm:my-8 sm:align-middle sm:w-full sm:p-6
@@ -76,35 +76,35 @@
                   w-12
                   h-12
                   mx-auto
-                  bg-green-100
+                  bg-alert-success-bg
                   rounded-full
                 "
                 :class="{
-                  'bg-green-100': dialogStore.variant === 'primary',
-                  'bg-red-100': dialogStore.variant === 'danger',
+                  'bg-alert-success-bg': dialogStore.variant === 'primary',
+                  'bg-alert-error-bg': dialogStore.variant === 'danger',
                 }"
               >
                 <BaseIcon
                   v-if="dialogStore.variant === 'primary'"
                   name="CheckIcon"
-                  class="w-6 h-6 text-green-600"
+                  class="w-6 h-6 text-alert-success-text"
                 />
                 <BaseIcon
                   v-else
                   name="ExclamationIcon"
-                  class="w-6 h-6 text-red-600"
+                  class="w-6 h-6 text-alert-error-text"
                   aria-hidden="true"
                 />
               </div>
               <div class="mt-3 text-center sm:mt-5">
                 <DialogTitle
                   as="h3"
-                  class="text-lg font-medium leading-6 text-gray-900"
+                  class="text-lg font-medium leading-6 text-heading"
                 >
                   {{ dialogStore.title }}
                 </DialogTitle>
                 <div class="mt-2">
-                  <p class="text-sm text-gray-500">
+                  <p class="text-sm text-muted">
                     {{ dialogStore.message }}
                   </p>
                 </div>

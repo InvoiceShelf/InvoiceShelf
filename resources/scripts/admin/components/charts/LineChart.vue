@@ -62,9 +62,23 @@ watchEffect(() => {
 
 onMounted(() => {
   let context = graph.value.getContext('2d')
+  const style = getComputedStyle(document.documentElement)
+  const gridColor = style.getPropertyValue('--color-line-light').trim() || 'rgba(0,0,0,0.1)'
+  const tickColor = style.getPropertyValue('--color-muted').trim() || '#6b7280'
+
   let options = reactive({
     responsive: true,
     maintainAspectRatio: false,
+    scales: {
+      x: {
+        grid: { color: gridColor },
+        ticks: { color: tickColor },
+      },
+      y: {
+        grid: { color: gridColor },
+        ticks: { color: tickColor },
+      },
+    },
     plugins: {
       tooltip: {
         enabled: true,
@@ -91,16 +105,16 @@ onMounted(() => {
         fill: false,
         tension: 0.3,
         backgroundColor: 'rgba(230, 254, 249)',
-        borderColor: '#040405',
+        borderColor: tickColor,
         borderCapStyle: 'butt',
         borderDash: [],
         borderDashOffset: 0.0,
         borderJoinStyle: 'miter',
-        pointBorderColor: '#040405',
-        pointBackgroundColor: '#fff',
+        pointBorderColor: tickColor,
+        pointBackgroundColor: style.getPropertyValue('--color-surface').trim() || '#fff',
         pointBorderWidth: 1,
         pointHoverRadius: 5,
-        pointHoverBackgroundColor: '#040405',
+        pointHoverBackgroundColor: tickColor,
         pointHoverBorderColor: 'rgba(220,220,220,1)',
         pointHoverBorderWidth: 2,
         pointRadius: 4,
@@ -118,7 +132,7 @@ onMounted(() => {
         borderDashOffset: 0.0,
         borderJoinStyle: 'miter',
         pointBorderColor: 'rgb(2, 201, 156)',
-        pointBackgroundColor: '#fff',
+        pointBackgroundColor: style.getPropertyValue('--color-surface').trim() || '#fff',
         pointBorderWidth: 1,
         pointHoverRadius: 5,
         pointHoverBackgroundColor: 'rgb(2, 201, 156)',
@@ -139,7 +153,7 @@ onMounted(() => {
         borderDashOffset: 0.0,
         borderJoinStyle: 'miter',
         pointBorderColor: 'rgb(255,0,0)',
-        pointBackgroundColor: '#fff',
+        pointBackgroundColor: style.getPropertyValue('--color-surface').trim() || '#fff',
         pointBorderWidth: 1,
         pointHoverRadius: 5,
         pointHoverBackgroundColor: 'rgb(255,0,0)',
@@ -160,7 +174,7 @@ onMounted(() => {
         borderDashOffset: 0.0,
         borderJoinStyle: 'miter',
         pointBorderColor: 'rgba(88, 81, 216, 1)',
-        pointBackgroundColor: '#fff',
+        pointBackgroundColor: style.getPropertyValue('--color-surface').trim() || '#fff',
         pointBorderWidth: 1,
         pointHoverRadius: 5,
         pointHoverBackgroundColor: 'rgba(88, 81, 216, 1)',

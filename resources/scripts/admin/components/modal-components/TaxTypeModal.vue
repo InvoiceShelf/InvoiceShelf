@@ -8,7 +8,7 @@
         {{ modalStore.title }}
         <BaseIcon
           name="XMarkIcon"
-          class="h-6 w-6 text-gray-500 cursor-pointer"
+          class="h-6 w-6 text-muted cursor-pointer"
           @click="closeTaxTypeModal"
         />
       </div>
@@ -106,7 +106,7 @@
           flex
           justify-end
           p-4
-          border-t border-solid border-gray-200
+          border-t border-solid border-line-default
         "
       >
         <BaseButton

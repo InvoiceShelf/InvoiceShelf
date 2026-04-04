@@ -10,4 +10,86 @@
     --color-primary-800: rgb(27, 3, 211);
     --color-primary-900: rgb(25, 5, 173);
     --color-primary-950: rgb(9, 0, 118);
+
+    /* Surfaces */
+    --color-surface: rgb(255, 255, 255);
+    --color-surface-secondary: rgb(249, 250, 251);
+    --color-surface-tertiary: rgb(243, 244, 246);
+    --color-surface-muted: rgb(229, 231, 235);
+
+    /* Text */
+    --color-heading: rgb(17, 24, 39);
+    --color-body: rgb(55, 65, 81);
+    --color-muted: rgb(107, 114, 128);
+    --color-subtle: rgb(156, 163, 175);
+
+    /* Borders */
+    --color-line-light: rgb(229, 231, 235);
+    --color-line-default: rgb(209, 213, 219);
+    --color-line-strong: rgb(185, 193, 204);
+
+    /* Hover */
+    --color-hover: rgb(249, 250, 251);
+    --color-hover-strong: rgb(243, 244, 246);
+
+    /* Status badge text */
+    --color-status-yellow: rgb(113, 63, 18);
+    --color-status-green: rgb(20, 83, 45);
+    --color-status-blue: rgb(30, 58, 138);
+    --color-status-red: rgb(127, 29, 29);
+    --color-status-purple: rgb(107, 33, 168);
+
+    /* Alert backgrounds & text */
+    --color-alert-warning-bg: rgb(254, 252, 232);
+    --color-alert-warning-text: rgb(133, 77, 14);
+    --color-alert-error-bg: rgb(254, 242, 242);
+    --color-alert-error-text: rgb(153, 27, 27);
+    --color-alert-success-bg: rgb(240, 253, 244);
+    --color-alert-success-text: rgb(22, 101, 52);
+}
+
+[data-theme="dark"] {
+    /* Surfaces — layered depth: tertiary (body) < secondary < surface (cards) */
+    --color-surface: rgb(30, 41, 59);
+    --color-surface-secondary: rgb(23, 33, 50);
+    --color-surface-tertiary: rgb(10, 18, 32);
+    --color-surface-muted: rgb(51, 65, 85);
+
+    /* Text */
+    --color-heading: rgb(241, 245, 249);
+    --color-body: rgb(203, 213, 225);
+    --color-muted: rgb(148, 163, 184);
+    --color-subtle: rgb(100, 116, 139);
+
+    /* Borders — brighter for visibility */
+    --color-line-light: rgb(51, 65, 85);
+    --color-line-default: rgb(80, 95, 115);
+    --color-line-strong: rgb(130, 145, 165);
+
+    /* Hover */
+    --color-hover: rgb(40, 52, 72);
+    --color-hover-strong: rgb(51, 65, 85);
+
+    /* Status badge text */
+    --color-status-yellow: rgb(253, 224, 71);
+    --color-status-green: rgb(134, 239, 172);
+    --color-status-blue: rgb(147, 197, 253);
+    --color-status-red: rgb(252, 165, 165);
+    --color-status-purple: rgb(216, 180, 254);
+
+    /* Alert backgrounds & text */
+    --color-alert-warning-bg: rgba(113, 63, 18, 0.2);
+    --color-alert-warning-text: rgb(253, 224, 71);
+    --color-alert-error-bg: rgba(127, 29, 29, 0.2);
+    --color-alert-error-text: rgb(252, 165, 165);
+    --color-alert-success-bg: rgba(20, 83, 45, 0.2);
+    --color-alert-success-text: rgb(134, 239, 172);
+
+    /* Primary adjustments for dark mode */
+    --color-primary-50: rgba(167, 170, 255, 0.15);
+    --color-primary-100: rgba(167, 170, 255, 0.25);
+    --color-primary-400: rgb(167, 170, 255);
+    --color-primary-500: rgb(140, 140, 255);
+    --color-primary-600: rgb(167, 170, 255);
+    --color-primary-700: rgb(190, 192, 255);
 }

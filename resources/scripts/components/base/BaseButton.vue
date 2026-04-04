@@ -54,11 +54,11 @@ const props = defineProps({
 
 const sizeClass = computed(() => {
   return {
-    'px-2.5 py-1.5 text-xs leading-4 rounded': props.size === 'xs',
-    'px-3 py-2 text-sm leading-4 rounded-md': props.size == 'sm',
-    'px-4 py-2 text-sm leading-5 rounded-md': props.size === 'md',
-    'px-4 py-2 text-base leading-6 rounded-md': props.size === 'lg',
-    'px-6 py-3 text-base leading-6 rounded-md': props.size === 'xl',
+    'px-2.5 py-1.5 text-xs leading-4 rounded-lg': props.size === 'xs',
+    'px-3 py-2 text-sm leading-4 rounded-lg': props.size == 'sm',
+    'px-4 py-2 text-sm leading-5 rounded-lg': props.size === 'md',
+    'px-4 py-2 text-base leading-6 rounded-lg': props.size === 'lg',
+    'px-6 py-3 text-base leading-6 rounded-lg': props.size === 'xl',
   }
 })
 
@@ -87,11 +87,11 @@ const variantClass = computed(() => {
       props.variant === 'secondary',
     'border-solid border-primary-500 font-normal transition ease-in-out duration-150 text-primary-500 hover:bg-primary-200 shadow-inner focus:ring-primary-500':
       props.variant == 'primary-outline',
-    'border-gray-200 text-gray-700 bg-white hover:bg-gray-50 focus:ring-primary-500 focus:ring-offset-0':
+    'border-line-default text-body bg-surface hover:bg-hover focus:ring-primary-500 focus:ring-offset-0':
       props.variant == 'white',
     'border-transparent shadow-xs text-white bg-red-600 hover:bg-red-700 focus:ring-red-500':
       props.variant === 'danger',
-    'border-transparent bg-gray-200 border hover:bg-gray-200/60 focus:ring-gray-500 focus:ring-offset-0':
+    'border-transparent bg-surface-muted border hover:bg-surface-muted/60 focus:ring-gray-500 focus:ring-offset-0':
       props.variant === 'gray',
   }
 })
@@ -112,8 +112,8 @@ const iconVariantClass = computed(() => {
   return {
     'text-white': props.variant === 'primary',
     'text-primary-700': props.variant === 'secondary',
-    'text-gray-700': props.variant === 'white',
-    'text-gray-400': props.variant === 'gray',
+    'text-body': props.variant === 'white',
+    'text-subtle': props.variant === 'gray',
   }
 })
 

@@ -1,6 +1,6 @@
 <template>
   <BaseContentPlaceholders rounded>
-    <BasePage class="bg-white">
+    <BasePage class="bg-surface">
 
       <!-- Breadcrumb-->
       <BaseContentPlaceholdersText class="mt-4 h-8 w-40" :lines="1"/>
@@ -70,7 +70,7 @@
           <div class="mt-10"></div>
 
           <!-- HightLight  -->
-          <div class="border-t border-gray-200 mt-10 pt-10">
+          <div class="border-t border-line-default mt-10 pt-10">
             <div>
               <BaseContentPlaceholdersText class="w-24 h-6" :lines="1" />
               <BaseContentPlaceholdersText
@@ -81,7 +81,7 @@
           </div>
 
           <!-- Social Share  -->
-          <div class="border-t border-gray-200 mt-10 pt-10">
+          <div class="border-t border-line-default mt-10 pt-10">
             <BaseContentPlaceholdersText class="h-6 w-24" :lines="1" />
             <BaseContentPlaceholdersText class="h-10 w-32 mt-4" :lines="1" />
           </div>

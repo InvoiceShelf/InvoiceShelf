@@ -47,16 +47,16 @@
         overflow-visible
         text-sm
         ease-linear
-        bg-white
+        bg-surface
         border-0
         rounded
         cursor-pointer
         md:hidden md:ml-0
-        hover:bg-gray-100
+        hover:bg-hover-strong
       "
       @click.prevent="onToggle"
     >
-      <BaseIcon name="Bars3Icon" class="!w-6 !h-6 text-gray-500" />
+      <BaseIcon name="Bars3Icon" class="!w-6 !h-6 text-muted" />
     </div>
 
     <ul class="flex float-right h-8 m-0 list-none md:h-9">
@@ -81,7 +81,7 @@
                 md:h-9 md:w-9
               "
             >
-              <BaseIcon name="PlusIcon" class="w-5 h-5 text-gray-600" />
+              <BaseIcon name="PlusIcon" class="w-5 h-5 text-body" />
             </div>
           </template>
 
@@ -91,7 +91,7 @@
             >
               <BaseIcon
                 name="DocumentTextIcon"
-                class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+                class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
                 aria-hidden="true"
               />
               {{ $t('invoices.new_invoice') }}
@@ -103,7 +103,7 @@
             >
               <BaseIcon
                 name="DocumentIcon"
-                class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+                class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
                 aria-hidden="true"
               />
               {{ $t('estimates.new_estimate') }}
@@ -116,7 +116,7 @@
             >
               <BaseIcon
                 name="UserIcon"
-                class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+                class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
                 aria-hidden="true"
               />
               {{ $t('customers.new_customer') }}
@@ -148,11 +148,30 @@
             />
           </template>
 
+          <!-- Theme Toggle -->
+          <div class="px-3 py-2">
+            <div class="flex items-center justify-between rounded-lg bg-surface-secondary p-1">
+              <button
+                v-for="opt in themeOptions"
+                :key="opt.value"
+                :class="[
+                  'flex items-center justify-center rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors',
+                  currentTheme === opt.value
+                    ? 'bg-surface text-heading shadow-sm'
+                    : 'text-muted hover:text-body',
+                ]"
+                @click.stop="setTheme(opt.value)"
+              >
+                <BaseIcon :name="opt.icon" class="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+
           <router-link to="/admin/user-settings">
             <BaseDropdownItem>
               <BaseIcon
                 name="CogIcon"
-                class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+                class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
                 aria-hidden="true"
               />
               {{ $t('navigation.settings') }}
@@ -162,7 +181,7 @@
           <BaseDropdownItem @click="logout">
             <BaseIcon
               name="ArrowRightOnRectangleIcon"
-              class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+              class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
               aria-hidden="true"
             />
             {{ $t('navigation.logout') }}
@@ -176,7 +195,7 @@
 <script setup>
 import { useAuthStore } from '@/scripts/admin/stores/auth'
 import { useRouter } from 'vue-router'
-import { computed } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useUserStore } from '@/scripts/admin/stores/user'
 import { useGlobalStore } from '@/scripts/admin/stores/global'
 
@@ -228,4 +247,35 @@ async function logout() {
 function onToggle() {
   globalStore.setSidebarVisibility(true)
 }
+
+const themeOptions = [
+  { value: 'light', icon: 'SunIcon' },
+  { value: 'dark', icon: 'MoonIcon' },
+  { value: 'system', icon: 'ComputerDesktopIcon' },
+]
+
+const currentTheme = ref(localStorage.getItem('theme') || 'system')
+
+function applyTheme(theme) {
+  if (theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.setAttribute('data-theme', 'dark')
+  } else {
+    document.documentElement.removeAttribute('data-theme')
+  }
+}
+
+function setTheme(theme) {
+  currentTheme.value = theme
+  localStorage.setItem('theme', theme)
+  applyTheme(theme)
+}
+
+onMounted(() => {
+  applyTheme(currentTheme.value)
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    if (currentTheme.value === 'system') {
+      applyTheme('system')
+    }
+  })
+})
 </script>

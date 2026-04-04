@@ -6,7 +6,7 @@
           {{ $t('settings.menu_title.address_information') }}
         </h6>
         <p
-          class="mt-2 text-sm leading-snug text-left text-gray-500"
+          class="mt-2 text-sm leading-snug text-left text-muted"
           style="max-width: 680px"
         >
           {{ $t('settings.address_information.section_description') }}

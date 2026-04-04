@@ -39,7 +39,7 @@
         <template #right>
           <BaseIcon
             :name="isShowPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-            class="mr-1 text-gray-500 cursor-pointer"
+            class="mr-1 text-muted cursor-pointer"
             @click="isShowPassword = !isShowPassword"
           />
         </template>
@@ -48,7 +48,7 @@
     <div class="flex items-center justify-between">
       <router-link
         :to="{ name: 'customer.forgot-password' }"
-        class="text-sm text-primary-600 hover:text-gray-500"
+        class="text-sm text-primary-600 hover:text-muted"
       >
         {{ $t('login.forgot_password') }}
       </router-link>

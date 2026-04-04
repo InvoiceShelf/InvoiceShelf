@@ -45,7 +45,7 @@
     >
       <div
         v-if="isShow"
-        class="absolute right-0 mt-2 bg-white rounded-md shadow-lg"
+        class="absolute right-0 mt-2 bg-surface rounded-md shadow-lg"
       >
         <div
           class="
@@ -60,9 +60,9 @@
           <!-- Administration Mode -->
           <div v-if="userStore.currentUser?.is_super_admin">
             <div
-              class="p-2 px-3 rounded-md cursor-pointer hover:bg-gray-100 hover:text-primary-500"
+              class="p-2 px-3 rounded-md cursor-pointer hover:bg-hover-strong hover:text-primary-500"
               :class="{
-                'bg-gray-100 text-primary-500': companyStore.isAdminMode,
+                'bg-surface-tertiary text-primary-500': companyStore.isAdminMode,
               }"
               @click="enterAdminMode"
             >
@@ -77,7 +77,7 @@
                 </div>
               </div>
             </div>
-            <div class="border-t border-gray-100 my-1"></div>
+            <div class="border-t border-line-light my-1"></div>
           </div>
 
           <label
@@ -86,7 +86,7 @@
               py-2
               text-xs
               font-semibold
-              text-gray-400
+              text-subtle
               mb-0.5
               block
               uppercase
@@ -104,10 +104,10 @@
               p-2
               px-3
               mt-4
-              text-base text-gray-400
+              text-base text-subtle
             "
           >
-            <BaseIcon name="ExclamationCircleIcon" class="h-5 text-gray-400" />
+            <BaseIcon name="ExclamationCircleIcon" class="h-5 text-subtle" />
             {{ $t('company_switcher.no_results_found') }}
           </div>
           <div v-else>
@@ -120,10 +120,10 @@
                   px-3
                   rounded-md
                   cursor-pointer
-                  hover:bg-gray-100 hover:text-primary-500
+                  hover:bg-hover-strong hover:text-primary-500
                 "
                 :class="{
-                  'bg-gray-100 text-primary-500':
+                  'bg-surface-tertiary text-primary-500':
                     companyStore.selectedCompany && companyStore.selectedCompany.id === company.id,
                 }"
                 @click="changeCompany(company)"
@@ -138,7 +138,7 @@
                       overflow-hidden
                       text-base
                       font-semibold
-                      bg-gray-200
+                      bg-surface-muted
                       rounded-md
                       w-9
                       h-9
@@ -166,12 +166,12 @@
         <!-- Pending Invitations -->
         <div
           v-if="invitationStore.pendingInvitations.length > 0"
-          class="border-t border-gray-100 p-2"
+          class="border-t border-line-light p-2"
         >
           <label
             class="
               block px-1 pt-1 pb-2 text-xs font-semibold
-              leading-tight text-gray-400 uppercase
+              leading-tight text-subtle uppercase
             "
           >
             {{ $t('members.pending_invitations') }}
@@ -186,14 +186,14 @@
                 class="
                   flex items-center justify-center mr-3
                   overflow-hidden text-xs font-semibold
-                  bg-gray-200 rounded-md w-9 h-9 shrink-0 text-gray-400
+                  bg-surface-muted rounded-md w-9 h-9 shrink-0 text-subtle
                 "
               >
                 {{ initGenerator(invitation.company?.name || '?') }}
               </span>
               <div class="flex flex-col min-w-0">
-                <span class="text-sm text-gray-700 truncate">{{ invitation.company?.name }}</span>
-                <span class="text-xs text-gray-400">{{ invitation.role?.title }}</span>
+                <span class="text-sm text-body truncate">{{ invitation.company?.name }}</span>
+                <span class="text-xs text-subtle">{{ invitation.role?.title }}</span>
               </div>
             </div>
             <div class="flex space-x-1 pl-12">
@@ -204,7 +204,7 @@
                 {{ $t('general.accept') }}
               </button>
               <button
-                class="text-xs px-2 py-1 rounded bg-gray-200 text-gray-600 hover:bg-gray-300"
+                class="text-xs px-2 py-1 rounded bg-surface-muted text-body hover:bg-hover-strong"
                 @click.stop="declineInvitation(invitation.token)"
               >
                 {{ $t('general.decline') }}
@@ -221,7 +221,7 @@
             justify-center
             p-4
             pl-3
-            border-t-2 border-gray-100
+            border-t-2 border-line-light
             cursor-pointer
             text-primary-400
             hover:text-primary-500

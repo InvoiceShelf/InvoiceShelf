@@ -42,7 +42,7 @@
         <template v-if="userStore.hasAbilities(ability)" #action>
           <button
             type="button"
-            class="flex items-center justify-center w-full px-2 py-2 bg-gray-200 border-none outline-hidden cursor-pointer "
+            class="flex items-center justify-center w-full px-2 py-2 bg-surface-muted border-none outline-hidden cursor-pointer "
             @click="openTaxModal"
           >
             <BaseIcon name="CheckCircleIcon" class="h-5 text-primary-400" />
@@ -65,7 +65,7 @@
       <BaseIcon
         v-if="taxes.length && index !== taxes.length - 1"
         name="TrashIcon"
-        class="h-5 text-gray-700 cursor-pointer"
+        class="h-5 text-body cursor-pointer"
         @click="removeTax(index)"
       />
     </div>

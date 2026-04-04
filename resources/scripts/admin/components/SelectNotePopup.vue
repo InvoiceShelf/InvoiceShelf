@@ -53,13 +53,13 @@
               ring-1 ring-black/5
             "
           >
-            <div class="relative grid bg-white">
+            <div class="relative grid bg-surface">
               <div class="relative p-4">
                 <BaseInput
                   v-model="textSearch"
                   :placeholder="$t('general.search')"
                   type="text"
-                  class="text-black"
+                  class="text-heading"
                 >
                 </BaseInput>
               </div>
@@ -75,9 +75,9 @@
                   class="
                     px-6
                     py-4
-                    border-b border-gray-200 border-solid
+                    border-b border-line-default border-solid
                     cursor-pointer
-                    hover:bg-gray-100 hover:cursor-pointer
+                    hover:bg-surface-tertiary hover:cursor-pointer
                     last:border-b-0
                   "
                   @click="selectNote(index, close)"
@@ -89,7 +89,7 @@
                         text-base
                         font-semibold
                         leading-tight
-                        text-gray-700
+                        text-body
                         cursor-pointer
                       "
                     >
@@ -98,8 +98,8 @@
                   </div>
                 </div>
               </div>
-              <div v-else class="flex justify-center p-5 text-gray-400">
-                <label class="text-base text-gray-500">
+              <div v-else class="flex justify-center p-5 text-subtle">
+                <label class="text-base text-muted">
                   {{ $t('general.no_note_found') }}
                 </label>
               </div>
@@ -115,7 +115,7 @@
                 w-full
                 px-2
                 py-3
-                bg-gray-200
+                bg-surface-muted
                 border-none
                 outline-hidden
               "

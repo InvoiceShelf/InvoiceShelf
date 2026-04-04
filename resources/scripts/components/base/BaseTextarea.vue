@@ -45,7 +45,7 @@ const props = defineProps({
   defaultInputClass: {
     type: String,
     default:
-      'box-border w-full px-3 py-2 text-sm not-italic font-normal leading-snug text-left text-black placeholder-gray-400 bg-white border border-gray-200 border-solid rounded outline-hidden',
+      'box-border w-full px-3 py-2 text-sm not-italic font-normal leading-snug text-left text-heading placeholder-subtle bg-surface border border-line-default border-solid rounded outline-hidden',
   },
   autosize: {
     type: Boolean,

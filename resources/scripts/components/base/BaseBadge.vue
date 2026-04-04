@@ -5,7 +5,7 @@
       py-1
       text-sm
       font-normal
-      text-center text-green-800
+      text-center text-status-green
       uppercase
       bg-success
     "

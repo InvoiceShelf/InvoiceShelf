@@ -51,7 +51,7 @@
             <div
               :class="`inline-block
               align-middle
-              bg-white
+              bg-surface
               rounded-lg
               text-left
               overflow-hidden
@@ -73,8 +73,8 @@
                   py-4
                   text-lg
                   font-medium
-                  text-black
-                  border-b border-gray-200 border-solid
+                  text-heading
+                  border-b border-line-default border-solid
                 "
               >
                 <slot name="header" />

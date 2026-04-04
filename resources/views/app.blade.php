@@ -22,10 +22,19 @@
     @endforeach
 
     @vite('resources/scripts/main.js')
+
+    <script>
+        (function() {
+            var theme = localStorage.getItem('theme') || 'system';
+            if (theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
 </head>
 
 <body
-    class="h-full overflow-hidden bg-gray-100 font-base
+    class="h-full overflow-hidden bg-surface-tertiary font-base
     @if(isset($current_theme)) theme-{{ $current_theme }} @else theme-{{get_app_setting('admin_portal_theme') ?? 'invoiceshelf'}} @endif ">
 
     <!-- Module Scripts -->

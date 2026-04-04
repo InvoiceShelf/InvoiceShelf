@@ -18,16 +18,16 @@
       </BaseInputGroup>
     </div>
 
-    <p class="mt-4 mb-0 text-sm text-gray-600">{{ $t('wizard.verify_domain.notes.notes') }}</p>
-    <ul class="w-full text-gray-600 list-disc list-inside">
+    <p class="mt-4 mb-0 text-sm text-body">{{ $t('wizard.verify_domain.notes.notes') }}</p>
+    <ul class="w-full text-body list-disc list-inside">
       <li class="text-sm leading-8">
         {{ $t('wizard.verify_domain.notes.not_contain') }}
-        <b class="inline-block px-1 bg-gray-100 rounded-xs">https://</b> {{ $t('wizard.verify_domain.notes.or') }}
-        <b class="inline-block px-1 bg-gray-100 rounded-xs">http</b> {{ $t('wizard.verify_domain.notes.in_front') }}
+        <b class="inline-block px-1 bg-surface-tertiary rounded-xs">https://</b> {{ $t('wizard.verify_domain.notes.or') }}
+        <b class="inline-block px-1 bg-surface-tertiary rounded-xs">http</b> {{ $t('wizard.verify_domain.notes.in_front') }}
       </li>
       <li class="text-sm leading-8">
         {{ $t('wizard.verify_domain.notes.if_you') }}
-        <b class="inline-block px-1 bg-gray-100">localhost:8080</b>
+        <b class="inline-block px-1 bg-surface-tertiary">localhost:8080</b>
       </li>
     </ul>
 

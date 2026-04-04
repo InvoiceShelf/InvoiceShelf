@@ -4,9 +4,9 @@
       px-5
       py-4
       mt-6
-      bg-white
-      border border-gray-200 border-solid
-      rounded
+      bg-surface
+      border border-line-light border-solid
+      rounded-xl shadow
       md:min-w-[390px]
       min-w-[300px]
       lg:mt-7
@@ -18,7 +18,7 @@
       </BaseContentPlaceholders>
       <label
         v-else
-        class="text-sm font-semibold leading-5 text-gray-400 uppercase"
+        class="text-sm font-semibold leading-5 text-subtle uppercase"
       >
         {{ $t('estimates.sub_total') }}
       </label>
@@ -29,7 +29,7 @@
 
       <label
         v-else
-        class="flex items-center justify-center m-0 text-lg text-black uppercase "
+        class="flex items-center justify-center m-0 text-lg text-heading uppercase "
       >
         <BaseFormatMoney
           :amount="store.getSubTotal"
@@ -59,7 +59,7 @@
       </BaseContentPlaceholders>
       <label
         v-else-if="store[storeProp].tax_per_item === 'YES'"
-        class="m-0 text-sm font-semibold leading-5 text-gray-500 uppercase"
+        class="m-0 text-sm font-semibold leading-5 text-muted uppercase"
       >
         <template v-if="tax.calculation_type === 'percentage'">
           {{ tax.name }} - {{ tax.percent }}%
@@ -75,7 +75,7 @@
 
       <label
         v-else-if="store[storeProp].tax_per_item === 'YES'"
-        class="flex items-center justify-center m-0 text-lg text-black uppercase "
+        class="flex items-center justify-center m-0 text-lg text-heading uppercase "
       >
         <BaseFormatMoney :amount="tax.amount" :currency="defaultCurrency" />
       </label>
@@ -93,14 +93,14 @@
       </BaseContentPlaceholders>
       <label
         v-else
-        class="text-sm font-semibold leading-5 text-gray-400 uppercase"
+        class="text-sm font-semibold leading-5 text-subtle uppercase"
       >
         {{ $t('estimates.discount') }}
       </label>
       <BaseContentPlaceholders v-if="isLoading">
         <BaseContentPlaceholdersText
           :lines="1"
-          class="w-24 h-8 border border-gray-200 rounded-md"
+          class="w-24 h-8 border border-line-light rounded-md"
         />
       </BaseContentPlaceholders>
       <div v-else class="flex" style="width: 140px" role="group">
@@ -129,7 +129,7 @@
 
                 <BaseIcon
                   name="ChevronDownIcon"
-                  class="w-4 h-4 ml-1 text-gray-500"
+                  class="w-4 h-4 ml-1 text-muted"
                 />
               </span>
             </BaseButton>
@@ -198,14 +198,14 @@
     </div>
 
     <div
-      class="flex items-center justify-between w-full pt-2 mt-5 border-t border-gray-200 border-solid "
+      class="flex items-center justify-between w-full pt-2 mt-5 border-t border-line-light border-solid "
     >
       <BaseContentPlaceholders v-if="isLoading">
         <BaseContentPlaceholdersText :lines="1" class="w-16 h-5" />
       </BaseContentPlaceholders>
       <label
         v-else
-        class="m-0 text-sm font-semibold leading-5 text-gray-400 uppercase"
+        class="m-0 text-sm font-semibold leading-5 text-subtle uppercase"
         >{{ $t('estimates.total') }} {{ $t('estimates.amount') }}:</label
       >
 

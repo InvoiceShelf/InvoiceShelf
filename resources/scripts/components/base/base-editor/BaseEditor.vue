@@ -8,16 +8,16 @@
   </BaseContentPlaceholders>
   <div
     v-else
-    class="box-border w-full text-sm leading-8 text-left bg-white border border-gray-200 rounded-md min-h-[200px] overflow-hidden"
+    class="box-border w-full text-sm leading-8 text-left bg-surface border border-line-default rounded-md min-h-[200px] overflow-hidden"
   >
     <div v-if="editor" class="editor-content">
-      <div class="flex justify-end p-2 border-b border-gray-200 md:hidden">
+      <div class="flex justify-end p-2 border-b border-line-default md:hidden">
         <BaseDropdown width-class="w-48">
           <template #activator>
             <div
-              class="flex items-center justify-center w-6 h-6 ml-2 text-sm text-black bg-white rounded-xs md:h-9 md:w-9"
+              class="flex items-center justify-center w-6 h-6 ml-2 text-sm text-heading bg-surface rounded-xs md:h-9 md:w-9"
             >
-              <EllipsisVerticalIcon class="w-6 h-6 text-gray-600" />
+              <EllipsisVerticalIcon class="w-6 h-6 text-body" />
             </div>
           </template>
           <div class="flex flex-wrap space-x-1">
@@ -25,36 +25,36 @@
               v-for="button in editorButtons"
               type="button"
               :key="button.name"
-              class="p-1 rounded hover:bg-gray-100"
+              class="p-1 rounded hover:bg-surface-tertiary"
               @click="button.action"
             >
               <component
                 :is="button.icon"
                 v-if="button.icon"
-                class="w-4 h-4 text-gray-700 fill-gray-700"
+                class="w-4 h-4 text-body fill-current text-body"
               />
-              <span v-else-if="button.text" class="px-1 text-sm font-medium text-gray-600">
+              <span v-else-if="button.text" class="px-1 text-sm font-medium text-body">
                 {{ button.text }}
               </span>
             </button>
           </div>
         </BaseDropdown>
       </div>
-      <div class="hidden p-2 border-b border-gray-200 md:flex">
+      <div class="hidden p-2 border-b border-line-default md:flex">
         <div class="flex flex-wrap space-x-1">
           <button
               v-for="button in editorButtons"
               type="button"
               :key="button.name"
-              class="p-1 rounded hover:bg-gray-100"
+              class="p-1 rounded hover:bg-surface-tertiary"
               @click="button.action"
             >
               <component
                 :is="button.icon"
                 v-if="button.icon"
-                class="w-4 h-4 text-gray-700 fill-gray-700"
+                class="w-4 h-4 text-body fill-current text-body"
               />
-              <span v-else-if="button.text" class="px-1 text-sm font-medium text-gray-600">
+              <span v-else-if="button.text" class="px-1 text-sm font-medium text-body">
                 {{ button.text }}
               </span>
             </button>
@@ -209,7 +209,7 @@ export default {
 
   blockquote {
     padding-left: 1rem;
-    border-left: 2px solid rgba(13, 13, 13, 0.1);
+    border-left: 2px solid var(--color-line-default);
   }
 
   code {

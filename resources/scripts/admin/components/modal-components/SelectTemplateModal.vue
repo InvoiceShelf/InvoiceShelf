@@ -5,7 +5,7 @@
         {{ modalTitle }}
         <BaseIcon
           name="XMarkIcon"
-          class="h-6 w-6 text-gray-500 cursor-pointer"
+          class="h-6 w-6 text-muted cursor-pointer"
           @click="closeModal"
         />
       </div>
@@ -26,7 +26,7 @@
             relative
             flex flex-col
             m-2
-            border border-gray-200 border-solid
+            border border-line-default border-solid
             cursor-pointer
             hover:border-primary-300
           "
@@ -46,11 +46,11 @@
           />
           <span
             :class="[
-              'w-full p-1 bg-gray-200 text-sm text-center absolute bottom-0 left-0',
+              'w-full p-1 bg-surface-muted text-sm text-center absolute bottom-0 left-0',
               {
                 'text-primary-500 bg-primary-100':
                   selectedTemplate === template.name,
-                'text-gray-600': selectedTemplate != template.name,
+                'text-body': selectedTemplate != template.name,
               },
             ]"
           >
@@ -70,7 +70,7 @@
       </div>
     </div>
 
-    <div class="z-0 flex justify-end p-4 border-t border-gray-200 border-solid">
+    <div class="z-0 flex justify-end p-4 border-t border-line-default border-solid">
       <BaseButton class="mr-3" variant="primary-outline" @click="closeModal">
         {{ $t('general.cancel') }}
       </BaseButton>

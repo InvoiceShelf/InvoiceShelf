@@ -9,7 +9,7 @@
       pt-16
       pb-[6.6rem]
       ml-56
-      bg-white
+      bg-surface
       xl:ml-64
       w-88
       xl:block
@@ -23,7 +23,7 @@
         px-4
         pt-8
         pb-2
-        border border-gray-200 border-solid
+        border border-line-default border-solid
         height-full
       "
     >
@@ -35,7 +35,7 @@
         variant="gray"
         @input="onSearch()"
       >
-        <BaseIcon name="MagnifyingGlassIcon" class="text-gray-500" />
+        <BaseIcon name="MagnifyingGlassIcon" class="text-muted" />
       </BaseInput>
 
       <div class="flex mb-6 ml-3" role="group" aria-label="First group">
@@ -58,7 +58,7 @@
               pb-2
               mb-2
               text-sm
-              border-b border-gray-200 border-solid
+              border-b border-line-default border-solid
             "
           >
             {{ $t('general.sort_by') }}
@@ -111,7 +111,7 @@
       class="
         h-full
         overflow-y-scroll
-        border-l border-gray-200 border-solid
+        border-l border-line-default border-solid
         sidebar
         base-scroll
       "
@@ -122,9 +122,9 @@
           :id="'customer-' + customer.id"
           :to="`/admin/customers/${customer.id}/view`"
           :class="[
-            'flex justify-between p-4 items-center cursor-pointer hover:bg-gray-100 border-l-4 border-l-transparent',
+            'flex justify-between p-4 items-center cursor-pointer hover:bg-hover-strong border-l-4 border-l-transparent',
             {
-              'bg-gray-100 border-l-4 border-l-primary-500 border-solid':
+              'bg-surface-tertiary border-l-4 border-l-primary-500 border-solid':
                 hasActiveUrl(customer.id),
             },
           ]"
@@ -139,7 +139,7 @@
                 not-italic
                 font-normal
                 leading-5
-                text-black
+                text-heading
                 capitalize
                 truncate
               "
@@ -154,7 +154,7 @@
                 not-italic
                 font-medium
                 leading-5
-                text-gray-600
+                text-body
               "
             />
           </div>
@@ -173,7 +173,7 @@
       </div>
       <p
         v-if="!customerList?.length && !isFetching"
-        class="flex justify-center px-4 mt-5 text-sm text-gray-600"
+        class="flex justify-center px-4 mt-5 text-sm text-body"
       >
         {{ $t('customers.no_matching_customers') }}
       </p>

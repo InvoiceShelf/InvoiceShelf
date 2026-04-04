@@ -3,7 +3,7 @@
     <h6 class="font-medium text-lg text-left">
       {{ $t('settings.exchange_rate.title') }}
     </h6>
-    <p class="mt-2 text-sm leading-snug text-gray-500" style="max-width: 680px">
+    <p class="mt-2 text-sm leading-snug text-muted" style="max-width: 680px">
       {{
         $t('settings.exchange_rate.description', {
           currency: companyStore.selectedCompanyCurrency.name,
@@ -34,12 +34,12 @@
               @input="v.exchange_rate.$touch()"
             >
               <template #right>
-                <span class="text-gray-500 sm:text-sm">
+                <span class="text-muted sm:text-sm">
                   {{ companyStore.selectedCompanyCurrency.code }}
                 </span>
               </template>
             </BaseInput>
-            <span class="text-gray-400 text-xs mt-2 font-light">
+            <span class="text-subtle text-xs mt-2 font-light">
               {{
                 $t('settings.exchange_rate.exchange_help_text', {
                   currency: c.code,

@@ -6,10 +6,10 @@
       flex
       justify-between
       p-3
-      bg-white
+      bg-surface
       rounded
       shadow
-      hover:bg-gray-50
+      hover:bg-hover
       xl:p-4
       lg:col-span-2
     "
@@ -17,10 +17,10 @@
     :to="route"
   >
     <div>
-      <span class="text-xl font-semibold leading-tight text-black xl:text-3xl">
+      <span class="text-xl font-semibold leading-tight text-heading xl:text-3xl">
         <slot />
       </span>
-      <span class="block mt-1 text-sm leading-tight text-gray-500 xl:text-lg">
+      <span class="block mt-1 text-sm leading-tight text-muted xl:text-lg">
         {{ label }}
       </span>
     </div>

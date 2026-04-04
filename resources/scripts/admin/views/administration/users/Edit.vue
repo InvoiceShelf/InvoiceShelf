@@ -61,7 +61,7 @@
           </BaseInputGroup>
         </BaseInputGrid>
 
-        <div v-if="userData" class="mt-6 text-sm text-gray-500">
+        <div v-if="userData" class="mt-6 text-sm text-muted">
           <p>
             <strong>{{ $t('administration.users.role') }}:</strong>
             {{ userData.role }}

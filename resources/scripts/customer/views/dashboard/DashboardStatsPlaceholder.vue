@@ -1,7 +1,7 @@
 <template>
   <BaseContentPlaceholders
     :rounded="true"
-    class="relative flex justify-between w-full p-3 bg-white rounded shadow lg:col-span-3 xl:p-4"
+    class="relative flex justify-between w-full p-3 bg-surface rounded shadow lg:col-span-3 xl:p-4"
   >
     <div>
       <BaseContentPlaceholdersText

@@ -11,15 +11,15 @@
       rounded-md
       cursor-pointer
       avatar-upload
-      border-gray-300
+      border-line-strong
       transition-all
       duration-300
       ease-in-out
       isolate
-      hover:border-gray-300
+      hover:border-line-strong
       group
       min-h-[100px]
-      bg-gray-50
+      bg-surface-secondary
     "
     :class="avatar ? 'w-32 h-32' : 'w-full'"
   >
@@ -48,7 +48,7 @@
 
       <a
         href="#"
-        class="absolute z-30 bg-white rounded-full -bottom-3 -right-3 group"
+        class="absolute z-30 bg-surface rounded-full -bottom-3 -right-3 group"
         @click.prevent.stop="onBrowse"
       >
         <BaseIcon
@@ -68,9 +68,9 @@
     <div v-else-if="!localFiles.length" class="flex flex-col items-center">
       <BaseIcon
         name="CloudArrowUpIcon"
-        class="h-6 mb-2 text-xl leading-6 text-gray-400"
+        class="h-6 mb-2 text-xl leading-6 text-subtle"
       />
-      <p class="text-xs leading-4 text-center text-gray-400">
+      <p class="text-xs leading-4 text-center text-subtle">
         {{ $t('general.file_upload.drag_a_file') }}
         <a
           class="
@@ -87,14 +87,14 @@
         </a>
         {{ $t('general.file_upload.to_choose') }}
       </p>
-      <p class="text-xs leading-4 text-center text-gray-400 mt-2">
+      <p class="text-xs leading-4 text-center text-subtle mt-2">
         {{ recommendedText }}
       </p>
     </div>
 
     <div
       v-else-if="localFiles.length && avatar && !multiple"
-      class="flex w-full h-full border border-gray-200 rounded justify-center items-center"
+      class="flex w-full h-full border border-line-default rounded justify-center items-center"
     >
       <img
         v-if="localFiles[0].image"
@@ -110,7 +110,7 @@
           flex
           justify-center
           items-center
-          text-gray-400
+          text-subtle
           flex-col
           space-y-2
           px-2
@@ -137,7 +137,7 @@
         <p
           v-if="localFiles[0].name"
           class="
-            text-gray-600
+            text-body
             font-medium
             text-sm
             truncate
@@ -160,18 +160,18 @@
           justify-center
           w-8
           h-8
-          bg-white
-          border border-gray-200
+          bg-surface
+          border border-line-default
           rounded-full
           shadow-md
           -bottom-3
           -right-3
           group
-          hover:border-gray-300
+          hover:border-line-strong
         "
         @click.prevent.stop="onAvatarRemove(localFiles[0])"
       >
-        <BaseIcon name="XMarkIcon" class="h-4 text-xl leading-6 text-black" />
+        <BaseIcon name="XMarkIcon" class="h-4 text-xl leading-6 text-heading" />
       </a>
     </div>
 
@@ -188,8 +188,8 @@
           block
           p-2
           m-2
-          bg-white
-          border border-gray-200
+          bg-surface
+          border border-line-default
           rounded
           hover:border-gray-500
           relative
@@ -211,7 +211,7 @@
             flex
             justify-center
             items-center
-            text-gray-400
+            text-subtle
             flex-col
             space-y-2
             px-2
@@ -238,7 +238,7 @@
           <p
             v-if="localFile.name"
             class="
-              text-gray-600
+              text-body
               font-medium
               text-sm
               truncate
@@ -261,18 +261,18 @@
             justify-center
             w-8
             h-8
-            bg-white
-            border border-gray-200
+            bg-surface
+            border border-line-default
             rounded-full
             shadow-md
             -bottom-3
             -right-3
             group
-            hover:border-gray-300
+            hover:border-line-strong
           "
           @click.prevent.stop="onFileRemove(index)"
         >
-          <BaseIcon name="XMarkIcon" class="h-4 text-xl leading-6 text-black" />
+          <BaseIcon name="XMarkIcon" class="h-4 text-xl leading-6 text-heading" />
         </span>
       </a>
     </div>
@@ -286,8 +286,8 @@
           block
           p-2
           m-2
-          bg-white
-          border border-gray-200
+          bg-surface
+          border border-line-default
           rounded
           hover:border-gray-500
           relative
@@ -309,7 +309,7 @@
             flex
             justify-center
             items-center
-            text-gray-400
+            text-subtle
             flex-col
             space-y-2
             px-2
@@ -336,7 +336,7 @@
           <p
             v-if="localFile.name"
             class="
-              text-gray-600
+              text-body
               font-medium
               text-sm
               truncate
@@ -359,18 +359,18 @@
             justify-center
             w-8
             h-8
-            bg-white
-            border border-gray-200
+            bg-surface
+            border border-line-default
             rounded-full
             shadow-md
             -bottom-3
             -right-3
             group
-            hover:border-gray-300
+            hover:border-line-strong
           "
           @click.prevent.stop="onFileRemove(index)"
         >
-          <BaseIcon name="XMarkIcon" class="h-4 text-xl leading-6 text-black" />
+          <BaseIcon name="XMarkIcon" class="h-4 text-xl leading-6 text-heading" />
         </span>
       </a>
     </div>

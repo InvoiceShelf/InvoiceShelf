@@ -54,7 +54,7 @@
           hidden
           w-full
           h-screen
-          border-gray-100 border-solid
+          border-line-light border-solid
           rounded
           md:flex
         "

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center justify-center min-h-screen bg-gray-50">
+  <div class="flex items-center justify-center min-h-screen bg-surface-secondary">
     <div class="w-full max-w-md p-8">
       <!-- Logo -->
       <div class="mb-8 text-center">
@@ -16,7 +16,7 @@
 
       <!-- Loading -->
       <div v-if="isLoading" class="text-center">
-        <p class="text-gray-500">Loading invitation details...</p>
+        <p class="text-muted">Loading invitation details...</p>
       </div>
 
       <!-- Invalid/Expired -->
@@ -25,10 +25,10 @@
           name="ExclamationCircleIcon"
           class="w-16 h-16 mx-auto text-red-400 mb-4"
         />
-        <h1 class="text-xl font-semibold text-gray-900 mb-2">
+        <h1 class="text-xl font-semibold text-heading mb-2">
           Invalid Invitation
         </h1>
-        <p class="text-gray-500">{{ error }}</p>
+        <p class="text-muted">{{ error }}</p>
         <router-link to="/login" class="text-primary-500 mt-4 inline-block">
           Go to Login
         </router-link>
@@ -37,10 +37,10 @@
       <!-- Registration Form -->
       <div v-else>
         <div class="text-center mb-6">
-          <h1 class="text-2xl font-semibold text-gray-900">
+          <h1 class="text-2xl font-semibold text-heading">
             Create Your Account
           </h1>
-          <p class="text-gray-500 mt-2">
+          <p class="text-muted mt-2">
             You've been invited to join
             <strong>{{ invitationDetails.company_name }}</strong> as
             <strong>{{ invitationDetails.role_name }}</strong>
@@ -112,7 +112,7 @@
         </BaseCard>
 
         <div class="text-center mt-4">
-          <router-link to="/login" class="text-sm text-gray-500 hover:text-primary-500">
+          <router-link to="/login" class="text-sm text-muted hover:text-primary-500">
             Already have an account? Log in
           </router-link>
         </div>

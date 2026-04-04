@@ -19,11 +19,11 @@
       <BaseCard>
         <template #header>
           <div class="flex items-center">
-            <BaseIcon name="ServerIcon" class="w-5 h-5 mr-2 text-gray-400" />
-            <span class="font-medium text-gray-700">{{ $t('general.app_version') }}</span>
+            <BaseIcon name="ServerIcon" class="w-5 h-5 mr-2 text-subtle" />
+            <span class="font-medium text-body">{{ $t('general.app_version') }}</span>
           </div>
         </template>
-        <p class="text-2xl font-semibold text-gray-900">
+        <p class="text-2xl font-semibold text-heading">
           {{ data.app_version }}
         </p>
       </BaseCard>
@@ -32,11 +32,11 @@
       <BaseCard>
         <template #header>
           <div class="flex items-center">
-            <BaseIcon name="CodeBracketIcon" class="w-5 h-5 mr-2 text-gray-400" />
-            <span class="font-medium text-gray-700">PHP</span>
+            <BaseIcon name="CodeBracketIcon" class="w-5 h-5 mr-2 text-subtle" />
+            <span class="font-medium text-body">PHP</span>
           </div>
         </template>
-        <p class="text-2xl font-semibold text-gray-900">
+        <p class="text-2xl font-semibold text-heading">
           {{ data.php_version }}
         </p>
       </BaseCard>
@@ -45,14 +45,14 @@
       <BaseCard>
         <template #header>
           <div class="flex items-center">
-            <BaseIcon name="CircleStackIcon" class="w-5 h-5 mr-2 text-gray-400" />
-            <span class="font-medium text-gray-700">{{ $t('general.database') }}</span>
+            <BaseIcon name="CircleStackIcon" class="w-5 h-5 mr-2 text-subtle" />
+            <span class="font-medium text-body">{{ $t('general.database') }}</span>
           </div>
         </template>
-        <p class="text-2xl font-semibold text-gray-900">
+        <p class="text-2xl font-semibold text-heading">
           {{ data.database?.driver?.toUpperCase() }}
         </p>
-        <p class="text-sm text-gray-500 mt-1">
+        <p class="text-sm text-muted mt-1">
           {{ data.database?.version }}
         </p>
       </BaseCard>
@@ -61,11 +61,11 @@
       <BaseCard>
         <template #header>
           <div class="flex items-center">
-            <BaseIcon name="BuildingOfficeIcon" class="w-5 h-5 mr-2 text-gray-400" />
-            <span class="font-medium text-gray-700">{{ $t('navigation.companies') }}</span>
+            <BaseIcon name="BuildingOfficeIcon" class="w-5 h-5 mr-2 text-subtle" />
+            <span class="font-medium text-body">{{ $t('navigation.companies') }}</span>
           </div>
         </template>
-        <p class="text-2xl font-semibold text-gray-900">
+        <p class="text-2xl font-semibold text-heading">
           {{ data.counts?.companies }}
         </p>
       </BaseCard>
@@ -74,11 +74,11 @@
       <BaseCard>
         <template #header>
           <div class="flex items-center">
-            <BaseIcon name="UsersIcon" class="w-5 h-5 mr-2 text-gray-400" />
-            <span class="font-medium text-gray-700">{{ $t('navigation.all_users') }}</span>
+            <BaseIcon name="UsersIcon" class="w-5 h-5 mr-2 text-subtle" />
+            <span class="font-medium text-body">{{ $t('navigation.all_users') }}</span>
           </div>
         </template>
-        <p class="text-2xl font-semibold text-gray-900">
+        <p class="text-2xl font-semibold text-heading">
           {{ data.counts?.users }}
         </p>
       </BaseCard>

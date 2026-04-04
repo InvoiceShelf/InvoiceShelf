@@ -148,7 +148,7 @@ onSearched = debounce(onSearched, 500)
       pt-16
       pb-[6.4rem]
       ml-56
-      bg-white
+      bg-surface
       xl:ml-64
       w-88
       xl:block
@@ -162,7 +162,7 @@ onSearched = debounce(onSearched, 500)
         px-4
         pt-8
         pb-2
-        border border-gray-200 border-solid
+        border border-line-default border-solid
         height-full
       "
     >
@@ -175,7 +175,7 @@ onSearched = debounce(onSearched, 500)
           @input="onSearched()"
         >
           <template #right>
-            <BaseIcon name="MagnifyingGlassIcon" class="h-5 text-gray-400" />
+            <BaseIcon name="MagnifyingGlassIcon" class="h-5 text-subtle" />
           </template>
         </BaseInput>
       </div>
@@ -194,7 +194,7 @@ onSearched = debounce(onSearched, 500)
               pb-2
               mb-1 mb-2
               text-sm
-              border-b border-gray-200 border-solid
+              border-b border-line-default border-solid
             "
           >
             {{ $t('general.sort_by') }}
@@ -241,7 +241,7 @@ onSearched = debounce(onSearched, 500)
       class="
         h-full
         overflow-y-scroll
-        border-l border-gray-200 border-solid
+        border-l border-line-default border-solid
         base-scroll
       "
     >
@@ -251,9 +251,9 @@ onSearched = debounce(onSearched, 500)
           :id="'recurring-invoice-' + invoice.id"
           :to="`/admin/recurring-invoices/${invoice.id}/view`"
           :class="[
-            'flex justify-between side-invoice p-4 cursor-pointer hover:bg-gray-100 items-center border-l-4 border-l-transparent',
+            'flex justify-between side-invoice p-4 cursor-pointer hover:bg-hover-strong items-center border-l-4 border-l-transparent',
             {
-              'bg-gray-100 border-l-4 border-l-primary-500 border-solid':
+              'bg-surface-tertiary border-l-4 border-l-primary-500 border-solid':
                 hasActiveUrl(invoice.id),
             },
           ]"
@@ -269,7 +269,7 @@ onSearched = debounce(onSearched, 500)
                 not-italic
                 font-normal
                 leading-5
-                text-black
+                text-heading
                 capitalize
                 truncate
               "
@@ -283,7 +283,7 @@ onSearched = debounce(onSearched, 500)
                 not-italic
                 font-medium
                 leading-5
-                text-gray-600
+                text-body
               "
             >
               {{ invoice.invoice_number }}
@@ -305,7 +305,7 @@ onSearched = debounce(onSearched, 500)
                 not-italic
                 font-semibold
                 leading-8
-                text-right text-gray-900
+                text-right text-heading
               "
               :amount="invoice.total"
               :currency="invoice.customer.currency"
@@ -317,7 +317,7 @@ onSearched = debounce(onSearched, 500)
                 not-italic
                 font-normal
                 leading-5
-                text-right text-gray-600
+                text-right text-body
                 est-date
               "
             >
@@ -331,7 +331,7 @@ onSearched = debounce(onSearched, 500)
       </div>
       <p
         v-if="!invoiceList?.length && !isLoading"
-        class="flex justify-center px-4 mt-5 text-sm text-gray-600"
+        class="flex justify-center px-4 mt-5 text-sm text-body"
       >
         {{ $t('invoices.no_matching_invoices') }}
       </p>

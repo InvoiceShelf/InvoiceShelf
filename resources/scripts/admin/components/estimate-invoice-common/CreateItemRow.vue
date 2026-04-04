@@ -1,5 +1,5 @@
 <template>
-  <tr class="box-border bg-white border border-gray-200 border-solid rounded-b">
+  <tr class="box-border bg-surface border-b border-line-light">
     <td colspan="5" class="p-0 text-left align-top">
       <table class="w-full">
         <colgroup>
@@ -17,7 +17,7 @@
             <td class="px-5 py-4 text-left align-top">
               <div class="flex justify-start">
                 <div
-                  class="flex items-center justify-center w-5 h-5 mt-2 mr-2 text-gray-300 cursor-move  handle"
+                  class="flex items-center justify-center w-5 h-5 mt-2 mr-2 text-subtle cursor-move  handle"
                 >
                   <DragIcon />
                 </div>
@@ -96,7 +96,7 @@
 
                           <BaseIcon
                             name="ChevronDownIcon"
-                            class="w-4 h-4 ml-1 text-gray-500"
+                            class="w-4 h-4 ml-1 text-muted"
                           />
                         </span>
                       </BaseButton>
@@ -129,7 +129,7 @@
                 <div class="flex items-center justify-center w-6 h-10 mx-2">
                   <BaseIcon
                     v-if="showRemoveButton"
-                    class="h-5 text-gray-700 cursor-pointer"
+                    class="h-5 text-body cursor-pointer"
                     name="TrashIcon"
                     @click="store.removeItem(index)"
                   />
@@ -143,7 +143,7 @@
               <BaseContentPlaceholders v-if="loading">
                 <BaseContentPlaceholdersText
                   :lines="1"
-                  class="w-24 h-8 border border-gray-200 rounded-md"
+                  class="w-24 h-8 border border-line-light rounded-md"
                 />
               </BaseContentPlaceholders>
 

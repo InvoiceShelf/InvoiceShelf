@@ -1,8 +1,8 @@
 <template>
-  <h6 class="text-gray-900 text-lg font-medium">
+  <h6 class="text-heading text-lg font-medium">
     {{ $t(`settings.customization.${type}s.${type}_number_format`) }}
   </h6>
-  <p class="mt-1 text-sm text-gray-500">
+  <p class="mt-1 text-sm text-muted">
     {{
       $t(`settings.customization.${type}s.${type}_number_format_description`)
     }}
@@ -27,8 +27,8 @@
               not-italic
               font-medium
               leading-5
-              text-left text-gray-700
-              border-t border-b border-gray-200 border-solid
+              text-left text-body
+              border-t border-b border-line-default border-solid
             "
           ></th>
           <th
@@ -39,8 +39,8 @@
               not-italic
               font-medium
               leading-5
-              text-left text-gray-700
-              border-t border-b border-gray-200 border-solid
+              text-left text-body
+              border-t border-b border-line-default border-solid
             "
           >
             {{ $t('settings.customization.component') }}
@@ -53,8 +53,8 @@
               not-italic
               font-medium
               leading-5
-              text-left text-gray-700
-              border-t border-b border-gray-200 border-solid
+              text-left text-body
+              border-t border-b border-line-default border-solid
             "
           >
             {{ $t('settings.customization.Parameter') }}
@@ -67,15 +67,15 @@
               not-italic
               font-medium
               leading-5
-              text-left text-gray-700
-              border-t border-b border-gray-200 border-solid
+              text-left text-body
+              border-t border-b border-line-default border-solid
             "
           ></th>
         </tr>
       </thead>
       <draggable
         v-model="selectedFields"
-        class="divide-y divide-gray-200"
+        class="divide-y divide-line-default"
         item-key="id"
         tag="tbody"
         handle=".handle"
@@ -83,7 +83,7 @@
       >
         <template #item="{ element }">
           <tr class="relative">
-            <td class="text-gray-300 cursor-move handle align-middle">
+            <td class="text-subtle cursor-move handle align-middle">
               <DragIcon />
             </td>
             <td class="px-5 py-4">
@@ -93,7 +93,7 @@
                   text-sm
                   not-italic
                   font-medium
-                  text-primary-800
+                  text-primary-500
                   whitespace-nowrap
                   mr-2
                   min-w-[200px]
@@ -102,7 +102,7 @@
                 {{ element.label }}
               </label>
 
-              <p class="text-xs text-gray-500 mt-1">
+              <p class="text-xs text-muted mt-1">
                 {{ element.description }}
               </p>
             </td>

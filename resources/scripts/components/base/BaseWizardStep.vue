@@ -25,16 +25,16 @@ const props = defineProps({
   stepContainerClass: {
     type: String,
     default:
-      'w-full p-8 mb-8 bg-white border border-gray-200 border-solid rounded',
+      'w-full p-8 mb-8 bg-surface border border-line-default border-solid rounded',
   },
   stepTitleClass: {
     type: String,
-    default: 'text-2xl not-italic font-semibold leading-7 text-black',
+    default: 'text-2xl not-italic font-semibold leading-7 text-heading',
   },
   stepDescriptionClass: {
     type: String,
     default:
-      'w-full mt-2.5 mb-8 text-sm not-italic leading-snug text-gray-500 lg:w-7/12 md:w-7/12 sm:w-7/12',
+      'w-full mt-2.5 mb-8 text-sm not-italic leading-snug text-muted lg:w-7/12 md:w-7/12 sm:w-7/12',
   },
 })
 </script>

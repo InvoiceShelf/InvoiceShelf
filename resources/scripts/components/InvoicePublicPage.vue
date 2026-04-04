@@ -61,7 +61,7 @@ I
 
       <div
         v-if="!customerLogo"
-        class="flex items-center justify-center mt-4 text-gray-500 font-normal"
+        class="flex items-center justify-center mt-4 text-muted font-normal"
       >
         Powered by
         <a href="https://invoiceshelf.com" target="_blank">

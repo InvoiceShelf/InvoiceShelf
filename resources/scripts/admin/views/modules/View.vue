@@ -1,6 +1,6 @@
 <template>
   <ModulePlaceholder v-if="isFetchingInitialData" />
-  <BasePage v-else class="bg-white">
+  <BasePage v-else class="bg-surface">
     <BasePageHeader :title="moduleData.name">
       <BaseBreadcrumb>
         <BaseBreadcrumbItem :title="$t('general.home')" to="dashboard" />
@@ -30,7 +30,7 @@
               <button
                 v-if="thumbnail && videoUrl"
                 :class="[
-                  'relative  md:h-24 lg:h-36 rounded hover:bg-gray-50',
+                  'relative  md:h-24 lg:h-36 rounded hover:bg-hover',
                   {
                     'outline-hidden ring-3 ring-offset-1 ring-primary-500':
                       displayVideo,
@@ -64,7 +64,7 @@
                 id="tabs-1-tab-1"
                 :key="ssIndx"
                 :class="[
-                  'relative  md:h-24 lg:h-36 rounded hover:bg-gray-50',
+                  'relative  md:h-24 lg:h-36 rounded hover:bg-hover',
                   {
                     'outline-hidden ring-3 ring-offset-1 ring-primary-500':
                       displayImage === screenshot.url,
@@ -108,7 +108,7 @@
 
           <div
             v-else
-            class="aspect-w-4 aspect-h-3 rounded-lg bg-gray-100 overflow-hidden"
+            class="aspect-w-4 aspect-h-3 rounded-lg bg-surface-tertiary overflow-hidden"
           >
             <img
               :src="displayImage"
@@ -146,7 +146,7 @@
                 text-2xl
                 font-extrabold
                 tracking-tight
-                text-gray-900
+                text-heading
                 sm:text-3xl
               "
             >
@@ -159,7 +159,7 @@
 
             <p
               v-if="moduleData.latest_module_version"
-              class="text-sm text-gray-500 mt-2"
+              class="text-sm text-muted mt-2"
             >
               {{ $t('modules.version') }}
               {{ moduleVersion }} ({{ $t('modules.last_updated') }}
@@ -170,7 +170,7 @@
 
         <!-- Module Description  -->
         <div
-          class="prose prose-sm max-w-none text-gray-500 text-sm my-10"
+          class="prose prose-sm max-w-none text-muted text-sm my-10"
           v-html="moduleData.long_description"
         />
 
@@ -178,7 +178,7 @@
         <div v-if="!moduleData.purchased">
           <RadioGroup v-model="selectedPlan">
             <RadioGroupLabel class="sr-only"> Pricing plans </RadioGroupLabel>
-            <div class="relative bg-white rounded-md -space-y-px">
+            <div class="relative bg-surface rounded-md -space-y-px">
               <RadioGroupOption
                 v-for="(size, sizeIdx) in modulePrice"
                 :key="size.name"
@@ -194,7 +194,7 @@
                       : '',
                     checked
                       ? 'bg-primary-50 border-primary-200 z-10'
-                      : 'border-gray-200',
+                      : 'border-line-default',
                     'relative border p-4 flex flex-col cursor-pointer md:pl-4 md:pr-6 md:grid md:grid-cols-2 focus:outline-hidden',
                   ]"
                 >
@@ -203,18 +203,18 @@
                       :class="[
                         checked
                           ? 'bg-primary-600 border-transparent'
-                          : 'bg-white border-gray-300',
+                          : 'bg-surface border-line-strong',
                         active ? 'ring-2 ring-offset-2 ring-primary-500' : '',
                         'h-4 w-4 rounded-full border flex items-center justify-center',
                       ]"
                       aria-hidden="true"
                     >
-                      <span class="rounded-full bg-white w-1.5 h-1.5" />
+                      <span class="rounded-full bg-surface w-1.5 h-1.5" />
                     </span>
                     <RadioGroupLabel
                       as="span"
                       :class="[
-                        checked ? 'text-primary-900' : 'text-gray-900',
+                        checked ? 'text-primary-900' : 'text-heading',
                         'ml-3 font-medium',
                       ]"
                     >
@@ -226,7 +226,7 @@
                   >
                     <span
                       :class="[
-                        checked ? 'text-primary-900' : 'text-gray-900',
+                        checked ? 'text-primary-900' : 'text-heading',
                         'font-medium',
                       ]"
                     >
@@ -328,18 +328,18 @@
         <div class="mt-10"></div>
 
         <!-- HighLights  -->
-        <div class="border-t border-gray-200 mt-10 pt-10">
-          <h3 class="text-sm font-medium text-gray-900">
+        <div class="border-t border-line-default mt-10 pt-10">
+          <h3 class="text-sm font-medium text-heading">
             {{ $t('modules.what_you_get') }}
           </h3>
-          <div class="mt-4 prose prose-sm max-w-none text-gray-500">
+          <div class="mt-4 prose prose-sm max-w-none text-muted">
             <div
-              class="prose prose-sm max-w-none text-gray-500 text-sm"
+              class="prose prose-sm max-w-none text-muted text-sm"
               v-html="moduleData.highlights"
             />
           </div>
         </div>
-        <div class="border-t border-gray-200 mt-10 pt-10">
+        <div class="border-t border-line-default mt-10 pt-10">
           <div
             v-for="(link, key) in moduleData.links"
             :key="key"
@@ -352,7 +352,7 @@
           </div>
         </div>
         <!-- Installation Steps  -->
-        <div v-if="isInstalling" class="border-t border-gray-200 mt-10 pt-10">
+        <div v-if="isInstalling" class="border-t border-line-default mt-10 pt-10">
           <ul class="w-full p-0 list-none">
             <li
               v-for="step in installationSteps"
@@ -362,7 +362,7 @@
                 justify-between
                 w-full
                 py-3
-                border-b border-gray-200 border-solid
+                border-b border-line-default border-solid
                 last:border-b-0
               "
             >
@@ -370,7 +370,7 @@
                 {{ $t(step.translationKey) }}
               </p>
               <div class="flex flex-row items-center">
-                <span v-if="step.time" class="mr-3 text-xs text-gray-500">
+                <span v-if="step.time" class="mr-3 text-xs text-muted">
                   {{ step.time }}
                 </span>
                 <span
@@ -386,8 +386,8 @@
         </div>
 
         <!-- Social Share  -->
-        <!-- <div class="border-t border-gray-200 mt-10 pt-10">
-          <h3 class="text-sm font-medium text-gray-900">Share</h3>
+        <!-- <div class="border-t border-line-default mt-10 pt-10">
+          <h3 class="text-sm font-medium text-heading">Share</h3>
           <ul role="list" class="flex items-center space-x-6 mt-4">
             <li>
               <a
@@ -398,8 +398,8 @@
                   justify-center
                   w-6
                   h-6
-                  text-gray-400
-                  hover:text-gray-500
+                  text-subtle
+                  hover:text-muted
                 "
               >
                 <span class="sr-only">Share on Facebook</span>
@@ -426,8 +426,8 @@
                   justify-center
                   w-6
                   h-6
-                  text-gray-400
-                  hover:text-gray-500
+                  text-subtle
+                  hover:text-muted
                 "
               >
                 <span class="sr-only">Share on Instagram</span>
@@ -454,8 +454,8 @@
                   justify-center
                   w-6
                   h-6
-                  text-gray-400
-                  hover:text-gray-500
+                  text-subtle
+                  hover:text-muted
                 "
               >
                 <span class="sr-only">Share on Twitter</span>
@@ -485,13 +485,13 @@
         "
       >
         <TabGroup as="div">
-          <TabList class="-mb-px flex space-x-8 border-b border-gray-200">
+          <TabList class="-mb-px flex space-x-8 border-b border-line-default">
             <Tab v-slot="{ selected }" as="template">
               <button
                 :class="[
                   selected
                     ? 'border-primary-600 text-primary-600'
-                    : 'border-transparent text-gray-700 hover:text-gray-800 hover:border-gray-300',
+                    : 'border-transparent text-body hover:text-heading hover:border-line-strong',
                   'whitespace-nowrap py-6 border-b-2 font-medium text-sm',
                 ]"
               >
@@ -503,7 +503,7 @@
                 :class="[
                   selected
                     ? 'border-primary-600 text-primary-600'
-                    : 'border-transparent text-gray-700 hover:text-gray-800 hover:border-gray-300',
+                    : 'border-transparent text-body hover:text-heading hover:border-line-strong',
                   'whitespace-nowrap py-6 border-b-2 font-medium text-sm',
                 ]"
               >
@@ -515,7 +515,7 @@
                 :class="[
                   selected
                     ? 'border-primary-600 text-primary-600'
-                    : 'border-transparent text-gray-700 hover:text-gray-800 hover:border-gray-300',
+                    : 'border-transparent text-body hover:text-heading hover:border-line-strong',
                   'whitespace-nowrap py-6 border-b-2 font-medium text-sm',
                 ]"
               >
@@ -531,7 +531,7 @@
                 <div
                   v-for="(review, reviewIdx) in moduleData.reviews"
                   :key="reviewIdx"
-                  class="flex text-sm text-gray-500 space-x-4"
+                  class="flex text-sm text-muted space-x-4"
                 >
                   <div class="flex-none py-10">
                     <span
@@ -542,7 +542,7 @@
                         h-12
                         w-12
                         rounded-full
-                        bg-gray-500
+                        bg-surface-secondary0
                       "
                     >
                       <span
@@ -559,11 +559,11 @@
                   </div>
                   <div
                     :class="[
-                      reviewIdx === 0 ? '' : 'border-t border-gray-200',
+                      reviewIdx === 0 ? '' : 'border-t border-line-default',
                       'py-10',
                     ]"
                   >
-                    <h3 class="font-medium text-gray-900">
+                    <h3 class="font-medium text-heading">
                       {{ review.customer.name }}
                     </h3>
                     <p>
@@ -575,28 +575,28 @@
                     </div>
 
                     <div
-                      class="mt-4 prose prose-sm max-w-none text-gray-500"
+                      class="mt-4 prose prose-sm max-w-none text-muted"
                       v-html="review.feedback"
                     />
                   </div>
                 </div>
               </div>
               <div v-else class="flex w-full items-center justify-center">
-                <p class="text-gray-500 mt-10 text-sm">
+                <p class="text-muted mt-10 text-sm">
                   {{ $t('modules.no_reviews_found') }}
                 </p>
               </div>
             </TabPanel>
 
             <!-- FAQs  -->
-            <TabPanel as="dl" class="text-sm text-gray-500">
+            <TabPanel as="dl" class="text-sm text-muted">
               <h3 class="sr-only">Frequently Asked Questions</h3>
 
               <template v-for="faq in moduleData.faq" :key="faq.question">
-                <dt class="mt-10 font-medium text-gray-900">
+                <dt class="mt-10 font-medium text-heading">
                   {{ faq.question }}
                 </dt>
-                <dd class="mt-2 prose prose-sm max-w-none text-gray-500">
+                <dd class="mt-2 prose prose-sm max-w-none text-muted">
                   <p>{{ faq.answer }}</p>
                 </dd>
               </template>
@@ -607,7 +607,7 @@
               <h3 class="sr-only">License</h3>
 
               <div
-                class="prose prose-sm max-w-none text-gray-500"
+                class="prose prose-sm max-w-none text-muted"
                 v-html="moduleData.license"
               />
             </TabPanel>
@@ -622,7 +622,7 @@
       class="mt-24 sm:mt-32 lg:max-w-none"
     >
       <div class="flex items-center justify-between space-x-4">
-        <h2 class="text-lg font-medium text-gray-900">
+        <h2 class="text-lg font-medium text-heading">
           {{ $t('modules.other_modules') }}
         </h2>
         <a
@@ -955,7 +955,7 @@ function statusClass(step) {
 
   switch (status) {
     case 'pending':
-      return 'text-primary-800 bg-gray-200'
+      return 'text-primary-800 bg-surface-muted'
     case 'finished':
       return 'text-teal-500 bg-teal-100'
     case 'running':

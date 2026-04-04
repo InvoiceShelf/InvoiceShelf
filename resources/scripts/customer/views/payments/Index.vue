@@ -113,11 +113,11 @@
         <template #cell-actions="{ row }">
           <BaseDropdown>
             <template #activator>
-              <BaseIcon name="EllipsisHorizontalIcon" class="w-5 text-gray-500" />
+              <BaseIcon name="EllipsisHorizontalIcon" class="w-5 text-muted" />
             </template>
             <router-link :to="`payments/${row.data.id}/view`">
               <BaseDropdownItem>
-                <BaseIcon name="EyeIcon" class="h-5 mr-3 text-gray-600" />
+                <BaseIcon name="EyeIcon" class="h-5 mr-3 text-body" />
                 {{ $t('general.view') }}
               </BaseDropdownItem>
             </router-link>
@@ -176,7 +176,7 @@ const paymentColumns = computed(() => {
       key: 'payment_date',
       label: t('payments.date'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-heading',
     },
     { key: 'payment_number', label: t('payments.payment_number') },
     { key: 'payment_mode', label: t('payments.payment_mode') },

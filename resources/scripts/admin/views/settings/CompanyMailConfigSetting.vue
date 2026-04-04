@@ -35,7 +35,7 @@
       </component>
     </div>
 
-    <div v-if="!useCustomMailConfig" class="mt-4 p-4 rounded-md bg-gray-50 text-sm text-gray-500">
+    <div v-if="!useCustomMailConfig" class="mt-4 p-4 rounded-md bg-surface-secondary text-sm text-muted">
       {{ $t('settings.mail.using_global_mail_config') }}
     </div>
   </BaseSettingCard>

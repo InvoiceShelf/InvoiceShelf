@@ -1,7 +1,7 @@
 <template>
   <span
     :class="[
-      sucess ? 'bg-green-100 text-green-700 ' : 'bg-red-100 text-red-700',
+      sucess ? 'bg-green-500/25 text-status-green ' : 'bg-red-500/25 text-status-red',
       'px-2 py-1 text-sm font-normal text-center uppercase',
     ]"
   >

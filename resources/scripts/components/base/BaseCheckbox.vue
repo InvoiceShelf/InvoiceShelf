@@ -15,12 +15,12 @@
         v-if="label"
         :for="id"
         :class="`font-medium ${
-          disabled ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600'
+          disabled ? 'text-subtle cursor-not-allowed' : 'text-body'
         } cursor-pointer `"
       >
         {{ label }}
       </label>
-      <p v-if="description" class="text-gray-500">{{ description }}</p>
+      <p v-if="description" class="text-muted">{{ description }}</p>
     </div>
   </div>
 </template>
@@ -51,7 +51,7 @@ const props = defineProps({
   },
   checkboxClass: {
     type: String,
-    default: 'w-4 h-4 border-gray-300 rounded cursor-pointer',
+    default: 'w-4 h-4 border-line-strong rounded cursor-pointer',
   },
   setInitialValue: {
     type: Boolean,
@@ -75,7 +75,7 @@ const checked = computed({
 
 const disabledClass = computed(() => {
   if (props.disabled) {
-    return 'text-gray-300 cursor-not-allowed'
+    return 'text-subtle cursor-not-allowed'
   }
 
   return 'text-primary-600 focus:ring-primary-500'

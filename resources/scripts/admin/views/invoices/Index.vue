@@ -126,7 +126,7 @@
           h-10
           mt-5
           list-none
-          border-b-2 border-gray-200 border-solid
+          border-b-2 border-line-default border-solid
         "
       >
         <!-- Tabs -->
@@ -161,7 +161,7 @@
           </template>
 
           <BaseDropdownItem @click="removeMultipleInvoices">
-            <BaseIcon name="TrashIcon" class="mr-3 text-gray-600" />
+            <BaseIcon name="TrashIcon" class="mr-3 text-body" />
             {{ $t('general.delete') }}
           </BaseDropdownItem>
         </BaseDropdown>
@@ -341,7 +341,7 @@ const invoiceColumns = computed(() => {
     {
       key: 'checkbox',
       thClass: 'extra w-10',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-heading',
       placeholderClass: 'w-10',
       sortable: false,
     },
@@ -361,7 +361,7 @@ const invoiceColumns = computed(() => {
     {
       key: 'total',
       label: t('invoices.total'),
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-heading',
     },
 
     {

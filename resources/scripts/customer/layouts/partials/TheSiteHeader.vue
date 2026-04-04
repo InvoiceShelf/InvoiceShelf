@@ -2,7 +2,7 @@
   <Disclosure
     v-slot="{ open }"
     as="nav"
-    class="bg-white shadow-xs fixed top-0 left-0 z-20 w-full"
+    class="bg-surface shadow-xs fixed top-0 left-0 z-20 w-full"
   >
     <div class="mx-auto px-8">
       <div class="flex justify-between h-16 w-full">
@@ -34,7 +34,7 @@
               :class="[
                 hasActiveUrl(item.link)
                   ? 'border-primary-500 text-primary-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+                  : 'border-transparent text-muted hover:text-body hover:border-line-strong',
                 'inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium',
               ]"
             >
@@ -46,11 +46,11 @@
           <button
             type="button"
             class="
-              bg-white
+              bg-surface
               p-1
               rounded-full
-              text-gray-400
-              hover:text-gray-500
+              text-subtle
+              hover:text-muted
               focus:outline-hidden
               focus:ring-2
               focus:ring-offset-2
@@ -65,7 +65,7 @@
               <template #activator>
                 <MenuButton
                   class="
-                    bg-white
+                    bg-surface
                     flex
                     text-sm
                     rounded-full
@@ -85,7 +85,7 @@
               <router-link :to="{ name: 'customer.profile' }">
                 <BaseDropdownItem>
                   <CogIcon
-                    class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+                    class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
                     aria-hidden="true"
                   />
                   {{ $t('navigation.settings') }}
@@ -94,7 +94,7 @@
 
               <BaseDropdownItem @click="logout">
                 <ArrowRightOnRectangleIcon
-                  class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+                  class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
                   aria-hidden="true"
                 />
                 {{ $t('navigation.logout') }}
@@ -106,14 +106,14 @@
           <!-- Mobile menu button -->
           <DisclosureButton
             class="
-              bg-white
+              bg-surface
               inline-flex
               items-center
               justify-center
               p-2
               rounded-md
-              text-gray-400
-              hover:text-gray-500 hover:bg-gray-100
+              text-subtle
+              hover:text-muted hover:bg-hover-strong
               focus:outline-hidden
               focus:ring-2
               focus:ring-offset-2
@@ -137,23 +137,23 @@
           :class="[
             hasActiveUrl(item.link)
               ? 'bg-primary-50 border-primary-500 text-primary-700'
-              : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800',
+              : 'border-transparent text-body hover:bg-hover hover:border-line-strong hover:text-heading',
             'block pl-3 pr-4 py-2 border-l-4 text-base font-medium',
           ]"
           :aria-current="item.current ? 'page' : undefined"
           >{{ $t(item.title) }}
         </router-link>
       </div>
-      <div class="pt-4 pb-3 border-t border-gray-200">
+      <div class="pt-4 pb-3 border-t border-line-default">
         <div class="flex items-center px-4">
           <div class="shrink-0">
             <img class="h-10 w-10 rounded-full" :src="previewAvatar" alt="" />
           </div>
           <div class="ml-3">
-            <div class="text-base font-medium text-gray-800">
+            <div class="text-base font-medium text-heading">
               {{ globalStore.currentUser.title }}
             </div>
-            <div class="text-sm font-medium text-gray-500">
+            <div class="text-sm font-medium text-muted">
               {{ globalStore.currentUser.email }}
             </div>
           </div>
@@ -161,12 +161,12 @@
             type="button"
             class="
               ml-auto
-              bg-white
+              bg-surface
               shrink-0
               p-1
               rounded-full
-              text-gray-400
-              hover:text-gray-500
+              text-subtle
+              hover:text-muted
               focus:outline-hidden
               focus:ring-2
               focus:ring-offset-2
@@ -182,7 +182,7 @@
             :class="[
               hasActiveUrl(item.link)
                 ? 'bg-primary-50 border-primary-500 text-primary-700'
-                : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800',
+                : 'border-transparent text-body hover:bg-hover hover:border-line-strong hover:text-heading',
               'block pl-3 pr-4 py-2 border-l-4 text-base font-medium',
             ]"
             >{{ $t(item.title) }}</router-link

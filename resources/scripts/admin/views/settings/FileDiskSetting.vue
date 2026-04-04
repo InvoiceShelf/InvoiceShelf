@@ -39,7 +39,7 @@
         <BaseDropdown v-if="isNotSystemDisk(row.data)">
           <template #activator>
             <div class="inline-block">
-              <BaseIcon name="EllipsisHorizontalIcon" class="text-gray-500" />
+              <BaseIcon name="EllipsisHorizontalIcon" class="text-muted" />
             </div>
           </template>
 
@@ -56,7 +56,7 @@
             v-if="row.data.type !== 'SYSTEM'"
             @click="openEditDiskModal(row.data)"
           >
-            <BaseIcon name="PencilIcon" class="mr-3 text-gray-600" />
+            <BaseIcon name="PencilIcon" class="mr-3 text-body" />
 
             {{ $t('general.edit') }}
           </BaseDropdownItem>
@@ -65,7 +65,7 @@
             v-if="row.data.type !== 'SYSTEM' && !row.data.set_as_default"
             @click="removeDisk(row.data.id)"
           >
-            <BaseIcon name="TrashIcon" class="mr-3 text-gray-600" />
+            <BaseIcon name="TrashIcon" class="mr-3 text-body" />
             {{ $t('general.delete') }}
           </BaseDropdownItem>
         </BaseDropdown>
@@ -109,26 +109,26 @@ const fileDiskColumns = computed(() => {
       key: 'name',
       label: t('settings.disk.disk_name'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-heading',
     },
     {
       key: 'driver',
       label: t('settings.disk.filesystem_driver'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-heading',
     },
     {
       key: 'type',
       label: t('settings.disk.disk_type'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-heading',
     },
 
     {
       key: 'set_as_default',
       label: t('settings.disk.is_default'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-heading',
     },
     {
       key: 'actions',

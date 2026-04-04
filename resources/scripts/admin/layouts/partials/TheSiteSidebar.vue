@@ -27,7 +27,7 @@
         leave-from="translate-x-0"
         leave-to="-translate-x-full"
       >
-        <div class="relative flex flex-col flex-1 w-full max-w-xs bg-white">
+        <div class="relative flex flex-col flex-1 w-full max-w-xs bg-surface">
           <TransitionChild
             as="template"
             enter="ease-in-out duration-300"
@@ -78,7 +78,7 @@
             >
               <div
                 v-if="menu[0] && menu[0].group_label"
-                class="px-4 mt-6 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider"
+                class="px-4 mt-6 mb-2 text-xs font-semibold text-subtle uppercase tracking-wider"
               >
                 {{ $t(menu[0].group_label) }}
               </div>
@@ -89,7 +89,7 @@
                 :class="[
                   hasActiveUrl(item.link)
                     ? 'text-primary-600 bg-primary-50 font-semibold'
-                    : 'text-gray-600 hover:bg-gray-50',
+                    : 'text-body hover:bg-hover',
                   'cursor-pointer mx-3 px-3 py-2.5 flex items-center rounded-lg text-sm not-italic font-medium transition-colors',
                 ]"
                 @click="globalStore.setSidebarVisibility(false)"
@@ -99,7 +99,7 @@
                   :class="[
                     hasActiveUrl(item.link)
                       ? 'text-primary-500'
-                      : 'text-gray-400',
+                      : 'text-subtle',
                     'mr-3 shrink-0 h-5 w-5',
                   ]"
                   @click="globalStore.setSidebarVisibility(false)"
@@ -124,8 +124,8 @@
       h-screen
       pb-32
       overflow-y-auto
-      bg-white
-      border-r border-gray-200 border-solid
+      bg-surface
+      border-r border-line-default border-solid
       xl:w-64
       md:fixed md:flex md:flex-col md:inset-y-0
       pt-16
@@ -138,7 +138,7 @@
     >
       <div
         v-if="menu[0] && menu[0].group_label"
-        class="px-6 mt-6 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider"
+        class="px-6 mt-6 mb-2 text-xs font-semibold text-subtle uppercase tracking-wider"
       >
         {{ $t(menu[0].group_label) }}
       </div>
@@ -149,7 +149,7 @@
         :class="[
           hasActiveUrl(item.link)
             ? 'text-primary-600 bg-primary-50 font-semibold'
-            : 'text-gray-600 hover:bg-gray-50',
+            : 'text-body hover:bg-hover',
           'cursor-pointer mx-3 px-3 py-2.5 group flex items-center rounded-lg text-sm not-italic font-medium transition-colors',
         ]"
       >
@@ -158,7 +158,7 @@
           :class="[
             hasActiveUrl(item.link)
               ? 'text-primary-500'
-              : 'text-gray-400 group-hover:text-gray-600',
+              : 'text-subtle group-hover:text-body',
             'mr-3 shrink-0 h-5 w-5',
           ]"
         />

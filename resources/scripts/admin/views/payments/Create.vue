@@ -215,7 +215,7 @@
             <SelectNotePopup type="Payment" @select="onSelectNote" />
           </div>
 
-          <label class="mb-4 text-sm font-medium text-gray-800">
+          <label class="mb-4 text-sm font-medium text-heading">
             {{ $t('estimates.notes') }}
           </label>
 

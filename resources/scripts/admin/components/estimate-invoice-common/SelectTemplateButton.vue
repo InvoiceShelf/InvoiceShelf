@@ -1,12 +1,12 @@
 <template>
   <div>
-    <label class="flex text-gray-800 font-medium text-sm mb-2">
+    <label class="flex text-heading font-medium text-sm mb-2">
       {{ $t('general.select_template') }}
       <span class="text-sm text-red-500"> *</span>
     </label>
     <BaseButton
       type="button"
-      class="flex justify-center w-full text-sm lg:w-auto hover:bg-gray-200"
+      class="flex justify-center w-full text-sm lg:w-auto hover:bg-surface-muted"
       variant="gray"
       @click="openTemplateModal"
     >

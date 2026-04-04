@@ -34,7 +34,7 @@ export default {
     })
     let containerClass = computed(() => {
       if (props.active) return `${defaultClass} text-primary-600 bg-primary-50 font-semibold`
-      else return `${defaultClass} text-gray-600 hover:bg-gray-50 hover:text-gray-900`
+      else return `${defaultClass} text-body hover:bg-hover hover:text-heading`
     })
     return {
       hasIconSlot,

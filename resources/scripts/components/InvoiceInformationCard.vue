@@ -1,33 +1,33 @@
 <template>
-  <div class="bg-white shadow overflow-hidden rounded-lg mt-6">
+  <div class="bg-surface shadow overflow-hidden rounded-lg mt-6">
     <div class="px-4 py-5 sm:px-6">
-      <h3 class="text-lg leading-6 font-medium text-gray-900">
+      <h3 class="text-lg leading-6 font-medium text-heading">
         {{ $t('invoices.invoice_information') }}
       </h3>
     </div>
-    <div v-if="invoice" class="border-t border-gray-200 px-4 py-5 sm:p-0">
-      <dl class="sm:divide-y sm:divide-gray-200">
+    <div v-if="invoice" class="border-t border-line-default px-4 py-5 sm:p-0">
+      <dl class="sm:divide-y sm:divide-line-default">
         <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-          <dt class="text-sm font-medium text-gray-500">
+          <dt class="text-sm font-medium text-muted">
             {{ $t('general.from') }}
           </dt>
-          <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+          <dd class="mt-1 text-sm text-heading sm:mt-0 sm:col-span-2">
             {{ invoice.company.name }}
           </dd>
         </div>
         <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-          <dt class="text-sm font-medium text-gray-500">
+          <dt class="text-sm font-medium text-muted">
             {{ $t('general.to') }}
           </dt>
-          <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+          <dd class="mt-1 text-sm text-heading sm:mt-0 sm:col-span-2">
             {{ invoice.customer.name }}
           </dd>
         </div>
         <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-          <dt class="text-sm font-medium text-gray-500 capitalize">
+          <dt class="text-sm font-medium text-muted capitalize">
             {{ $t('invoices.paid_status').toLowerCase() }}
           </dt>
-          <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+          <dd class="mt-1 text-sm text-heading sm:mt-0 sm:col-span-2">
             <BaseInvoiceStatusBadge
               :status="invoice.paid_status"
               class="px-3 py-1"
@@ -37,10 +37,10 @@
           </dd>
         </div>
         <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-          <dt class="text-sm font-medium text-gray-500">
+          <dt class="text-sm font-medium text-muted">
             {{ $t('invoices.total') }}
           </dt>
-          <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+          <dd class="mt-1 text-sm text-heading sm:mt-0 sm:col-span-2">
             <BaseFormatMoney
               :currency="invoice.currency"
               :amount="invoice.total"
@@ -51,10 +51,10 @@
           v-if="invoice.formatted_notes"
           class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6"
         >
-          <dt class="text-sm font-medium text-gray-500">
+          <dt class="text-sm font-medium text-muted">
             {{ $t('invoices.notes') }}
           </dt>
-          <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+          <dd class="mt-1 text-sm text-heading sm:mt-0 sm:col-span-2">
             <span v-html="invoice.formatted_notes"></span>
           </dd>
         </div>

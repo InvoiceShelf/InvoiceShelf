@@ -129,7 +129,7 @@
           h-10
           mt-5
           list-none
-          border-b-2 border-gray-200 border-solid
+          border-b-2 border-line-default border-solid
         "
       >
         <!-- Tabs -->
@@ -163,7 +163,7 @@
           </template>
 
           <BaseDropdownItem @click="removeMultipleEstimates">
-            <BaseIcon name="TrashIcon" class="mr-3 text-gray-600" />
+            <BaseIcon name="TrashIcon" class="mr-3 text-body" />
             {{ $t('general.delete') }}
           </BaseDropdownItem>
         </BaseDropdown>
@@ -298,13 +298,13 @@ const estimateColumns = computed(() => {
       key: 'checkbox',
       thClass: 'extra w-10 pr-0',
       sortable: false,
-      tdClass: 'font-medium text-gray-900 pr-0',
+      tdClass: 'font-medium text-heading pr-0',
     },
     {
       key: 'estimate_date',
       label: t('estimates.date'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-500',
+      tdClass: 'font-medium text-muted',
     },
     { key: 'estimate_number', label: t('estimates.number', 2) },
     { key: 'name', label: t('estimates.customer') },
@@ -312,7 +312,7 @@ const estimateColumns = computed(() => {
     {
       key: 'total',
       label: t('estimates.total'),
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-heading',
     },
     {
       key: 'actions',

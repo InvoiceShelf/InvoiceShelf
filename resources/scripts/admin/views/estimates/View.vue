@@ -46,7 +46,7 @@
         pt-16
         pb-[6.4rem]
         ml-56
-        bg-white
+        bg-surface
         xl:ml-64
         w-88
         xl:block
@@ -60,7 +60,7 @@
           px-4
           pt-8
           pb-2
-          border border-gray-200 border-solid
+          border border-line-default border-solid
           height-full
         "
       >
@@ -73,7 +73,7 @@
             @input="onSearched()"
           >
             <template #right>
-              <BaseIcon name="MagnifyingGlassIcon" class="text-gray-400" />
+              <BaseIcon name="MagnifyingGlassIcon" class="text-subtle" />
             </template>
           </BaseInput>
         </div>
@@ -98,7 +98,7 @@
                 pb-2
                 mb-1 mb-2
                 text-sm
-                border-b border-gray-200 border-solid
+                border-b border-line-default border-solid
               "
             >
               {{ $t('general.sort_by') }}
@@ -159,7 +159,7 @@
         class="
           h-full
           overflow-y-scroll
-          border-l border-gray-200 border-solid
+          border-l border-line-default border-solid
           base-scroll
         "
       >
@@ -169,9 +169,9 @@
             :id="'estimate-' + estimate.id"
             :to="`/admin/estimates/${estimate.id}/view`"
             :class="[
-              'flex justify-between side-estimate p-4 cursor-pointer hover:bg-gray-100 items-center border-l-4 border-l-transparent',
+              'flex justify-between side-estimate p-4 cursor-pointer hover:bg-hover-strong items-center border-l-4 border-l-transparent',
               {
-                'bg-gray-100 border-l-4 border-l-primary-500 border-solid':
+                'bg-surface-tertiary border-l-4 border-l-primary-500 border-solid':
                   hasActiveUrl(estimate.id),
               },
             ]"
@@ -187,7 +187,7 @@
                   not-italic
                   font-normal
                   leading-5
-                  text-black
+                  text-heading
                   capitalize
                   truncate
                 "
@@ -201,7 +201,7 @@
                   not-italic
                   font-medium
                   leading-5
-                  text-gray-600
+                  text-body
                 "
               >
                 {{ estimate.estimate_number }}
@@ -226,7 +226,7 @@
                   not-italic
                   font-semibold
                   leading-8
-                  text-right text-gray-900
+                  text-right text-heading
                 "
               />
 
@@ -236,7 +236,7 @@
                   not-italic
                   font-normal
                   leading-5
-                  text-right text-gray-600
+                  text-right text-body
                   est-date
                 "
               >
@@ -250,7 +250,7 @@
         </div>
         <p
           v-if="!estimateList?.length && !isLoading"
-          class="flex justify-center px-4 mt-5 text-sm text-gray-600"
+          class="flex justify-center px-4 mt-5 text-sm text-body"
         >
           {{ $t('estimates.no_matching_estimates') }}
         </p>
@@ -267,7 +267,7 @@
           flex-1
           border border-gray-400 border-solid
           rounded-md
-          bg-white
+          bg-surface
           frame-style
         "
       />

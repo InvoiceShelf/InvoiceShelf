@@ -73,7 +73,7 @@ const invoiceColumns = computed(() => {
       key: 'invoice_date',
       label: t('invoices.date'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-heading',
     },
     { key: 'invoice_number', label: t('invoices.invoice') },
     { key: 'customer.name', label: t('invoices.customer') },

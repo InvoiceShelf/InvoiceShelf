@@ -184,7 +184,7 @@
 
           <BaseInputGrid class="col-span-5 lg:col-span-4">
             <div class="md:col-span-2">
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 {{ $t('customers.portal_access_text') }}
               </p>
 
@@ -224,7 +224,7 @@
                 <template #right>
                   <BaseIcon
                     :name="isShowPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-                    class="mr-1 text-gray-500 cursor-pointer"
+                    class="mr-1 text-muted cursor-pointer"
                     @click="isShowPassword = !isShowPassword"
                   />
                 </template>
@@ -251,7 +251,7 @@
                 <template #right>
                   <BaseIcon
                     :name="isShowConfirmPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-                    class="mr-1 text-gray-500 cursor-pointer"
+                    class="mr-1 text-muted cursor-pointer"
                     @click="isShowConfirmPassword = !isShowConfirmPassword"
                   />
                 </template>

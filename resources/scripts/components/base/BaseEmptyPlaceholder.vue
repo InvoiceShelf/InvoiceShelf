@@ -7,7 +7,7 @@
       <label class="font-medium">{{ title }}</label>
     </div>
     <div class="mt-2">
-      <label class="text-gray-500">
+      <label class="text-muted">
         {{ description }}
       </label>
     </div>

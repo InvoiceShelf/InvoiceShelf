@@ -6,7 +6,7 @@
           {{ $t('settings.account_settings.account_settings') }}
         </h6>
         <p
-          class="mt-2 text-sm leading-snug text-left text-gray-500"
+          class="mt-2 text-sm leading-snug text-left text-muted"
           style="max-width: 680px"
         >
           {{ $t('settings.account_settings.section_description') }}
@@ -73,7 +73,7 @@
             <template #right>
               <BaseIcon
                 :name="isShowPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-                class="mr-1 text-gray-500 cursor-pointer"
+                class="mr-1 text-muted cursor-pointer"
                 @click="isShowPassword = !isShowPassword"
               />
             </template>
@@ -96,7 +96,7 @@
             <template #right>
               <BaseIcon
                 :name="isShowConfirmPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-                class="mr-1 text-gray-500 cursor-pointer"
+                class="mr-1 text-muted cursor-pointer"
                 @click="isShowConfirmPassword = !isShowConfirmPassword"
               />
             </template>

@@ -25,7 +25,7 @@
 
     <!-- Sidebar -->
     <div
-      class="fixed top-0 left-0 hidden h-full pt-16 pb-4 bg-white w-88 xl:block"
+      class="fixed top-0 left-0 hidden h-full pt-16 pb-4 bg-surface w-88 xl:block"
     >
       <div
         class="
@@ -35,7 +35,7 @@
           px-4
           pt-8
           pb-6
-          border border-gray-200 border-solid
+          border border-line-default border-solid
         "
       >
         <BaseInput
@@ -46,7 +46,7 @@
           @input="onSearch"
         >
           <template #right>
-            <BaseIcon name="MagnifyingGlassIcon" class="h-5 text-gray-400" />
+            <BaseIcon name="MagnifyingGlassIcon" class="h-5 text-subtle" />
           </template>
         </BaseInput>
 
@@ -69,7 +69,7 @@
                 pb-2
                 mb-2
                 text-sm
-                border-b border-gray-200 border-solid
+                border-b border-line-default border-solid
               "
             >
               {{ $t('general.sort_by') }}
@@ -136,7 +136,7 @@
           h-full
           pb-32
           overflow-y-scroll
-          border-l border-gray-200 border-solid
+          border-l border-line-default border-solid
           sw-scroll
         "
       >
@@ -146,9 +146,9 @@
           :key="index"
           :to="`/${globalStore.companySlug}/customer/estimates/${estimate.id}/view`"
           :class="[
-            'flex justify-between p-4 items-center cursor-pointer hover:bg-gray-100 border-l-4 border-l-transparent',
+            'flex justify-between p-4 items-center cursor-pointer hover:bg-hover-strong border-l-4 border-l-transparent',
             {
-              'bg-gray-100 border-l-4 border-l-primary-500 border-solid':
+              'bg-surface-tertiary border-l-4 border-l-primary-500 border-solid':
                 hasActiveUrl(estimate.id),
             },
           ]"
@@ -162,7 +162,7 @@
                 not-italic
                 font-medium
                 leading-5
-                text-gray-500
+                text-muted
                 capitalize
               "
             >
@@ -182,13 +182,13 @@
                 not-italic
                 font-semibold
                 leading-8
-                text-right text-gray-900
+                text-right text-heading
                 block
               "
               :amount="estimate.total"
               :currency="estimate.currency"
             />
-            <div class="text-sm text-right text-gray-500 non-italic">
+            <div class="text-sm text-right text-muted non-italic">
               {{ estimate.formatted_estimate_date }}
             </div>
           </div>
@@ -196,7 +196,7 @@
 
         <p
           v-if="!estimateStore.estimates.length"
-          class="flex justify-center px-4 mt-5 text-sm text-gray-600"
+          class="flex justify-center px-4 mt-5 text-sm text-body"
         >
           {{ $t('estimates.no_matching_estimates') }}
         </p>

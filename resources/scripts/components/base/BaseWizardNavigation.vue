@@ -3,7 +3,7 @@
     :class="containerClass"
     class="
       relative
-      after:bg-gray-200
+      after:bg-surface-muted
       after:absolute
       after:transform
       after:top-1/2
@@ -62,7 +62,7 @@ export default {
     },
     nextStepClass: {
       type: String,
-      default: 'border-gray-200 bg-white',
+      default: 'border-line-default bg-surface',
     },
     previousStepClass: {
       type: String,

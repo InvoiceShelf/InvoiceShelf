@@ -2,7 +2,7 @@
   <div
     class="
       min-h-screen
-      bg-gray-200
+      bg-surface-muted
       flex flex-col
       justify-center
       py-12
@@ -25,7 +25,7 @@
     </div>
 
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4 sm:px-0">
-      <div class="bg-white py-8 px-4 shadow rounded-lg sm:px-10">
+      <div class="bg-surface py-8 px-4 shadow rounded-lg sm:px-10">
         <router-view />
       </div>
     </div>

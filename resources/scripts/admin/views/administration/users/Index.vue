@@ -66,7 +66,7 @@
     >
       <BaseIcon
         name="UsersIcon"
-        class="mt-5 mb-4 h-16 w-16 text-gray-300"
+        class="mt-5 mb-4 h-16 w-16 text-subtle"
       />
     </BaseEmptyPlaceholder>
 
@@ -107,18 +107,18 @@
             <span
               v-for="company in row.data.companies.slice(0, 3)"
               :key="company.id"
-              class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700"
+              class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-surface-tertiary text-body"
             >
               {{ company.name }}
             </span>
             <span
               v-if="row.data.companies.length > 3"
-              class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-500"
+              class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-surface-tertiary text-muted"
             >
               +{{ row.data.companies.length - 3 }}
             </span>
           </div>
-          <span v-else class="text-gray-400">-</span>
+          <span v-else class="text-subtle">-</span>
         </template>
 
         <template #cell-actions="{ row }">
@@ -158,7 +158,7 @@ const userTableColumns = computed(() => {
       key: 'name',
       label: t('users.name'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-heading',
     },
     {
       key: 'email',
@@ -232,7 +232,7 @@ function getRoleBadgeClass(role) {
     case 'admin':
       return 'bg-blue-100 text-blue-800'
     default:
-      return 'bg-gray-100 text-gray-800'
+      return 'bg-surface-tertiary text-heading'
   }
 }
 

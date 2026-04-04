@@ -64,12 +64,12 @@ const roleColumns = computed(() => {
       key: 'name',
       label: t('settings.roles.role_name'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-heading',
     },
     {
       key: 'created_at',
       label: t('settings.roles.added_on'),
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-heading',
     },
 
     {

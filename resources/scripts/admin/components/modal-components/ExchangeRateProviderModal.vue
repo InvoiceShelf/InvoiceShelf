@@ -10,7 +10,7 @@
 
         <BaseIcon
           name="XMarkIcon"
-          class="w-6 h-6 text-gray-500 cursor-pointer"
+          class="w-6 h-6 text-muted cursor-pointer"
           @click="closeExchangeRateModal"
         />
       </div>
@@ -151,7 +151,7 @@
         />
       </div>
       <div
-        class="z-0 flex justify-end p-4 border-t border-gray-200 border-solid"
+        class="z-0 flex justify-end p-4 border-t border-line-default border-solid"
       >
         <BaseButton
           class="mr-3"

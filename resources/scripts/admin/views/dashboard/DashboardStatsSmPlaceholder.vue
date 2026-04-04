@@ -7,7 +7,7 @@
       justify-between
       w-full
       p-3
-      bg-white
+      bg-surface
       rounded
       shadow
       lg:col-span-2

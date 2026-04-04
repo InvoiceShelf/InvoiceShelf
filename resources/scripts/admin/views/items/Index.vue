@@ -97,7 +97,7 @@
           items-center
           justify-end
           h-5
-          border-gray-200 border-solid
+          border-line-default border-solid
         "
       >
         <BaseDropdown v-if="itemStore.selectedItems.length">
@@ -117,7 +117,7 @@
             </span>
           </template>
           <BaseDropdownItem @click="removeMultipleItems">
-            <BaseIcon name="TrashIcon" class="mr-3 text-gray-600" />
+            <BaseIcon name="TrashIcon" class="mr-3 text-body" />
             {{ $t('general.delete') }}
           </BaseDropdownItem>
         </BaseDropdown>
@@ -237,7 +237,7 @@ const itemColumns = computed(() => {
     {
       key: 'status',
       thClass: 'extra w-10',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-heading',
       placeholderClass: 'w-10',
       sortable: false,
     },
@@ -245,7 +245,7 @@ const itemColumns = computed(() => {
       key: 'name',
       label: t('items.name'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-heading',
     },
     { key: 'unit_name', label: t('items.unit') },
     { key: 'price', label: t('items.price') },

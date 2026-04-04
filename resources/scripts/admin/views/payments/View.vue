@@ -31,7 +31,7 @@
         pt-16
         pb-[6rem]
         ml-56
-        bg-white
+        bg-surface
         xl:ml-64
         w-88
         xl:block
@@ -45,7 +45,7 @@
           px-4
           pt-8
           pb-6
-          border border-gray-200 border-solid
+          border border-line-default border-solid
         "
       >
         <BaseInput
@@ -76,7 +76,7 @@
                 pb-2
                 mb-2
                 text-sm
-                border-b border-gray-200 border-solid
+                border-b border-line-default border-solid
               "
             >
               {{ $t('general.sort_by') }}
@@ -139,7 +139,7 @@
 
       <div
         ref="paymentListSection"
-        class="h-full overflow-y-scroll border-l border-gray-200 border-solid"
+        class="h-full overflow-y-scroll border-l border-line-default border-solid"
       >
         <div v-for="(payment, index) in paymentList" :key="index">
           <router-link
@@ -147,9 +147,9 @@
             :id="'payment-' + payment.id"
             :to="`/admin/payments/${payment.id}/view`"
             :class="[
-              'flex justify-between p-4 items-center cursor-pointer hover:bg-gray-100 border-l-4 border-l-transparent',
+              'flex justify-between p-4 items-center cursor-pointer hover:bg-hover-strong border-l-4 border-l-transparent',
               {
-                'bg-gray-100 border-l-4 border-l-primary-500 border-solid':
+                'bg-surface-tertiary border-l-4 border-l-primary-500 border-solid':
                   hasActiveUrl(payment.id),
               },
             ]"
@@ -165,7 +165,7 @@
                   not-italic
                   font-normal
                   leading-5
-                  text-black
+                  text-heading
                   capitalize
                   truncate
                 "
@@ -178,7 +178,7 @@
                   not-italic
                   font-medium
                   leading-5
-                  text-gray-500
+                  text-muted
                   capitalize
                 "
               >
@@ -192,7 +192,7 @@
                   not-italic
                   font-medium
                   leading-5
-                  text-gray-500
+                  text-muted
                   capitalize
                 "
               >
@@ -209,13 +209,13 @@
                   not-italic
                   font-semibold
                   leading-8
-                  text-right text-gray-900
+                  text-right text-heading
                 "
                 :amount="payment?.amount"
                 :currency="payment.customer?.currency"
               />
 
-              <div class="text-sm text-right text-gray-500 non-italic">
+              <div class="text-sm text-right text-muted non-italic">
                 {{ payment.formatted_payment_date }}
               </div>
             </div>
@@ -226,7 +226,7 @@
         </div>
         <p
           v-if="!paymentList?.length && !isLoading"
-          class="flex justify-center px-4 mt-5 text-sm text-gray-600"
+          class="flex justify-center px-4 mt-5 text-sm text-body"
         >
           {{ $t('payments.no_matching_payments') }}
         </p>

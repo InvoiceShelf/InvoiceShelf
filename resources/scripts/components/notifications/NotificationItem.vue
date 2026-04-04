@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="success || info ? 'bg-white' : 'bg-red-50'"
+    :class="success || info ? 'bg-surface' : 'bg-alert-error-bg'"
     class="
       max-w-sm
       mb-3
@@ -21,7 +21,7 @@
           <div class="shrink-0">
             <svg
               v-if="success"
-              class="w-6 h-6 text-green-400"
+              class="w-6 h-6 text-alert-success-text"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -35,7 +35,7 @@
             </svg>
             <svg
               v-if="info"
-              class="w-6 h-6 text-blue-400"
+              class="w-6 h-6 text-status-blue"
               fill="currentColor"
               viewBox="0 0 20 20"
               xmlns="http://www.w3.org/2000/svg"
@@ -48,7 +48,7 @@
             </svg>
             <svg
               v-if="error"
-              class="w-6 h-6 text-red-400"
+              class="w-6 h-6 text-alert-error-text"
               fill="currentColor"
               viewBox="0 0 24 24"
             >
@@ -62,7 +62,7 @@
           <div class="flex-1 w-0 ml-3 text-left">
             <p
               :class="`text-sm leading-5 font-medium ${
-                success || info ? 'text-gray-900' : 'text-red-800'
+                success || info ? 'text-heading' : 'text-alert-error-text'
               }`"
             >
               {{
@@ -75,7 +75,7 @@
             </p>
             <p
               :class="`mt-1 text-sm leading-5 ${
-                success || info ? 'text-gray-500' : 'text-red-700'
+                success || info ? 'text-muted' : 'text-alert-error-text'
               }`"
             >
               {{
@@ -91,8 +91,8 @@
             <button
               :class="
                 success || info
-                  ? ' text-gray-400 focus:text-gray-500'
-                  : 'text-red-400 focus:text-red-500'
+                  ? ' text-subtle focus:text-muted'
+                  : 'text-alert-error-text focus:text-alert-error-text'
               "
               class="
                 inline-flex

@@ -6,7 +6,7 @@
 
         <BaseIcon
           name="XMarkIcon"
-          class="w-6 h-6 text-gray-500 cursor-pointer"
+          class="w-6 h-6 text-muted cursor-pointer"
           @click="closeRolesModal"
         />
       </div>
@@ -36,7 +36,7 @@
             text-sm
             not-italic
             font-medium
-            text-gray-800
+            text-heading
             px-4
             md:px-8
             py-1.5
@@ -50,7 +50,7 @@
             text-sm
             not-italic
             font-medium
-            text-gray-300
+            text-subtle
             px-4
             md:px-8
             py-1.5
@@ -72,7 +72,7 @@
         </div>
       </div>
 
-      <div class="border-t border-gray-200 py-3">
+      <div class="border-t border-line-default py-3">
         <div
           class="
             grid grid-cols-1
@@ -89,7 +89,7 @@
             :key="gIndex"
             class="flex flex-col space-y-1"
           >
-            <p class="text-sm text-gray-500 border-b border-gray-200 pb-1 mb-2">
+            <p class="text-sm text-muted border-b border-line-default pb-1 mb-2">
               {{ gIndex }}
             </p>
             <div
@@ -122,7 +122,7 @@
           flex
           justify-end
           p-4
-          border-t border-solid border-gray-200
+          border-t border-solid border-line-default
         "
       >
         <BaseButton

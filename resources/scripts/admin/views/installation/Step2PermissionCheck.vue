@@ -12,7 +12,7 @@
           grid grid-flow-row grid-cols-3
           lg:gap-24
           sm:gap-4
-          border border-gray-200
+          border border-line-default
         "
       >
         <BaseContentPlaceholdersText :lines="1" class="col-span-4 p-3" />
@@ -29,7 +29,7 @@
       <div
         v-for="(permission, index) in permissions"
         :key="index"
-        class="border border-gray-200"
+        class="border border-line-default"
       >
         <div class="grid grid-flow-row grid-cols-3 lg:gap-24 sm:gap-4">
           <div class="col-span-2 p-3">

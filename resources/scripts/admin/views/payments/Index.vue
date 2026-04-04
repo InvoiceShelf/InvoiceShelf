@@ -116,7 +116,7 @@
             </span>
           </template>
           <BaseDropdownItem @click="removeMultiplePayments">
-            <BaseIcon name="TrashIcon" class="mr-3 text-gray-600" />
+            <BaseIcon name="TrashIcon" class="mr-3 text-body" />
             {{ $t('general.delete') }}
           </BaseDropdownItem>
         </BaseDropdown>
@@ -246,7 +246,7 @@ const paymentColumns = computed(() => {
       key: 'payment_date',
       label: t('payments.date'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-heading',
     },
     { key: 'payment_number', label: t('payments.payment_number') },
     { key: 'name', label: t('payments.customer') },

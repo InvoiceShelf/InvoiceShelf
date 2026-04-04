@@ -4,7 +4,7 @@
       <BaseButton v-if="route.name === 'payments.view'" variant="primary">
         <BaseIcon name="EllipsisHorizontalIcon" class="h-5 text-white" />
       </BaseButton>
-      <BaseIcon v-else name="EllipsisHorizontalIcon" class="h-5 text-gray-500" />
+      <BaseIcon v-else name="EllipsisHorizontalIcon" class="h-5 text-muted" />
     </template>
 
     <!-- Copy pdf url  -->
@@ -18,7 +18,7 @@
     >
       <BaseIcon
         name="LinkIcon"
-        class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.copy_pdf_url') }}
     </BaseDropdown-item>
@@ -31,7 +31,7 @@
       <BaseDropdownItem>
         <BaseIcon
           name="PencilIcon"
-          class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+          class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
         />
         {{ $t('general.edit') }}
       </BaseDropdownItem>
@@ -48,7 +48,7 @@
       <BaseDropdownItem>
         <BaseIcon
           name="EyeIcon"
-          class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+          class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
         />
         {{ $t('general.view') }}
       </BaseDropdownItem>
@@ -65,7 +65,7 @@
     >
       <BaseIcon
         name="PaperAirplaneIcon"
-        class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
       />
       {{ $t('payments.send_payment') }}
     </BaseDropdownItem>
@@ -77,7 +77,7 @@
     >
       <BaseIcon
         name="TrashIcon"
-        class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.delete') }}
     </BaseDropdownItem>

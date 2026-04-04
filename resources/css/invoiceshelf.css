@@ -4,7 +4,6 @@
 @import "./components/pace-loader.css";
 @import "./components/v-tooltips.css";
 
-@plugin "@tailwindcss/forms";
 @plugin "@tailwindcss/typography";
 @plugin "tailwind-scrollbar";
 
@@ -25,6 +24,36 @@
   --color-primary-900: var(--color-primary-900);
   --color-primary-950: var(--color-primary-950);
   --color-black: #040405;
+
+  /* Semantic theme tokens */
+  --color-surface: var(--color-surface);
+  --color-surface-secondary: var(--color-surface-secondary);
+  --color-surface-tertiary: var(--color-surface-tertiary);
+  --color-surface-muted: var(--color-surface-muted);
+  --color-heading: var(--color-heading);
+  --color-body: var(--color-body);
+  --color-muted: var(--color-muted);
+  --color-subtle: var(--color-subtle);
+  --color-line-light: var(--color-line-light);
+  --color-line-default: var(--color-line-default);
+  --color-line-strong: var(--color-line-strong);
+  --color-hover: var(--color-hover);
+  --color-hover-strong: var(--color-hover-strong);
+
+  /* Status badge text */
+  --color-status-yellow: var(--color-status-yellow);
+  --color-status-green: var(--color-status-green);
+  --color-status-blue: var(--color-status-blue);
+  --color-status-red: var(--color-status-red);
+  --color-status-purple: var(--color-status-purple);
+
+  /* Alert colors */
+  --color-alert-warning-bg: var(--color-alert-warning-bg);
+  --color-alert-warning-text: var(--color-alert-warning-text);
+  --color-alert-error-bg: var(--color-alert-error-bg);
+  --color-alert-error-text: var(--color-alert-error-text);
+  --color-alert-success-bg: var(--color-alert-success-bg);
+  --color-alert-success-text: var(--color-alert-success-text);
 }
 
 @theme {
@@ -84,9 +113,101 @@
     src: url("$fonts/Poppins-SemiBold.ttf") format("truetype");
 }
 
+/* Form base styles (replaces @tailwindcss/forms) */
+@layer base {
+[type='text'],
+[type='email'],
+[type='url'],
+[type='password'],
+[type='number'],
+[type='date'],
+[type='datetime-local'],
+[type='month'],
+[type='search'],
+[type='tel'],
+[type='time'],
+[type='week'],
+[multiple],
+textarea,
+select {
+    @apply appearance-none bg-surface border border-line-default rounded-lg px-3 py-2 text-sm leading-6 text-heading;
+}
+
+[type='text']:focus,
+[type='email']:focus,
+[type='url']:focus,
+[type='password']:focus,
+[type='number']:focus,
+[type='date']:focus,
+[type='datetime-local']:focus,
+[type='month']:focus,
+[type='search']:focus,
+[type='tel']:focus,
+[type='time']:focus,
+[type='week']:focus,
+[multiple]:focus,
+textarea:focus,
+select:focus {
+    @apply outline-2 outline-transparent outline-offset-2 border-primary-500 ring-1 ring-primary-500;
+}
+
+select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    @apply bg-no-repeat pr-10;
+    background-position: right 0.5rem center;
+    background-size: 1.5em 1.5em;
+}
+
+[type='checkbox'],
+[type='radio'] {
+    @apply appearance-none p-0 text-primary-500 bg-surface border border-line-strong inline-block align-middle select-none shrink-0 h-4 w-4;
+    background-origin: border-box;
+    print-color-adjust: exact;
+}
+
+[type='checkbox'] {
+    @apply rounded;
+}
+
+[type='radio'] {
+    @apply rounded-full;
+}
+
+[type='checkbox']:focus,
+[type='radio']:focus {
+    @apply outline-2 outline-transparent outline-offset-2;
+    box-shadow: 0 0 0 2px var(--color-surface), 0 0 0 4px var(--color-primary-500);
+}
+
+[type='checkbox']:checked,
+[type='radio']:checked {
+    @apply border-transparent bg-current bg-center bg-no-repeat;
+    background-size: 100% 100%;
+}
+
+[type='checkbox']:checked {
+    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+}
+
+[type='radio']:checked {
+    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");
+}
+
+[type='checkbox']:indeterminate {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 16 16'%3e%3cpath stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 8h8'/%3e%3c/svg%3e");
+    @apply border-transparent bg-current bg-center bg-no-repeat;
+    background-size: 100% 100%;
+}
+
+::placeholder {
+    @apply text-subtle opacity-100;
+}
+} /* end @layer base */
+
 body {
     min-height: 100vh;
     min-height: -webkit-fill-available;
+    color: var(--color-heading);
 }
 
 html {

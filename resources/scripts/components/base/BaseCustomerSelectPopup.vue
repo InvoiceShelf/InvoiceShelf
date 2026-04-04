@@ -16,8 +16,8 @@
       class="
         flex flex-col
         p-4
-        bg-white
-        border border-gray-200 border-solid
+        bg-surface
+        border border-line-default border-solid
         min-h-[170px]
         rounded-md
       "
@@ -26,7 +26,7 @@
       <div class="flex relative justify-between mb-2">
         <BaseText
           :text="selectedCustomer.name"
-          class="flex-1 text-base font-medium text-left text-gray-900"
+          class="flex-1 text-base font-medium text-left text-heading"
         />
         <div class="flex">
           <a
@@ -43,7 +43,7 @@
             "
             @click.stop="editCustomer"
           >
-            <BaseIcon name="PencilIcon" class="text-gray-500 h-4 w-4 mr-1" />
+            <BaseIcon name="PencilIcon" class="text-muted h-4 w-4 mr-1" />
 
             {{ $t('general.edit') }}
           </a>
@@ -61,7 +61,7 @@
             "
             @click="resetSelectedCustomer"
           >
-            <BaseIcon name="XCircleIcon" class="text-gray-500 h-4 w-4 mr-1" />
+            <BaseIcon name="XCircleIcon" class="text-muted h-4 w-4 mr-1" />
             {{ $t('general.deselect') }}
           </a>
         </div>
@@ -73,7 +73,7 @@
               mb-1
               text-sm
               font-medium
-              text-left text-gray-400
+              text-left text-subtle
               uppercase
               whitespace-nowrap
             "
@@ -123,7 +123,7 @@
               mb-1
               text-sm
               font-medium
-              text-left text-gray-400
+              text-left text-subtle
               uppercase
               whitespace-nowrap
             "
@@ -187,8 +187,8 @@
             px-0
             p-0
             py-16
-            bg-white
-            border border-gray-200 border-solid
+            bg-surface
+            border border-line-default border-solid
             rounded-md
             min-h-[170px]
           "
@@ -203,14 +203,14 @@
               p-2
               mr-5
               text-sm text-white
-              bg-gray-200
+              bg-surface-muted
               rounded-full
               font-base
             "
           />
 
           <div class="mt-1">
-            <label class="text-lg font-medium text-gray-900">
+            <label class="text-lg font-medium text-heading">
               {{ $t('customers.new_customer') }}
               <span class="text-red-500"> * </span>
             </label>
@@ -244,7 +244,7 @@
               rounded-md
               shadow-lg
               ring-1 ring-black/5
-              bg-white
+              bg-surface
             "
           >
             <div class="relative">
@@ -263,7 +263,7 @@
                   flex flex-col
                   overflow-auto
                   list
-                  border-t border-gray-200
+                  border-t border-line-default
                 "
               >
                 <li
@@ -274,10 +274,10 @@
                     flex
                     px-6
                     py-2
-                    border-b border-gray-200 border-solid
+                    border-b border-line-default border-solid
                     cursor-pointer
-                    hover:cursor-pointer hover:bg-gray-100
-                    focus:outline-hidden focus:bg-gray-100
+                    hover:cursor-pointer hover:bg-hover-strong
+                    focus:outline-hidden focus:bg-surface-tertiary
                     last:border-b-0
                   "
                   @click="selectNewCustomer(customer.id, close)"
@@ -295,7 +295,7 @@
                       font-semibold
                       leading-9
                       text-white
-                      bg-gray-300
+                      bg-surface-muted
                       rounded-full
                       avatar
                     "
@@ -322,7 +322,7 @@
                         m-0
                         text-sm
                         font-medium
-                        text-gray-400
+                        text-subtle
                         cursor-pointer
                       "
                     />
@@ -330,9 +330,9 @@
                 </li>
                 <div
                   v-if="customerStore.customers.length === 0"
-                  class="flex justify-center p-5 text-gray-400"
+                  class="flex justify-center p-5 text-subtle"
                 >
-                  <label class="text-base text-gray-500 cursor-pointer">
+                  <label class="text-base text-muted cursor-pointer">
                     {{ $t('customers.no_customers_found') }}
                   </label>
                 </div>
@@ -350,10 +350,10 @@
                 w-full
                 px-2
                 py-3
-                bg-gray-200
+                bg-surface-muted
                 border-none
                 outline-hidden
-                focus:bg-gray-300
+                focus:bg-surface-muted
               "
               @click="openCustomerModal"
             >

@@ -12,7 +12,7 @@
   >
     <ListboxLabel
       v-if="label"
-      class="block text-sm not-italic font-medium text-gray-800 mb-0.5"
+      class="block text-sm not-italic font-medium text-heading mb-0.5"
     >
       {{ label }}
     </ListboxLabel>
@@ -27,8 +27,8 @@
           pl-3
           pr-10
           text-left
-          bg-white
-          border border-gray-200
+          bg-surface
+          border border-line-default
           rounded-md
           shadow-xs
           cursor-default
@@ -42,10 +42,10 @@
         <span v-if="getValue(selectedValue)" class="block truncate">
           {{ getValue(selectedValue) }}
         </span>
-        <span v-else-if="placeholder" class="block text-gray-400 truncate">
+        <span v-else-if="placeholder" class="block text-subtle truncate">
           {{ placeholder }}
         </span>
-        <span v-else class="block text-gray-400 truncate">
+        <span v-else class="block text-subtle truncate">
           Please select an option
         </span>
 
@@ -62,7 +62,7 @@
         >
           <BaseIcon
             name="SelectorIcon"
-            class="text-gray-400"
+            class="text-subtle"
             aria-hidden="true"
           />
         </span>
@@ -82,7 +82,7 @@
             mt-1
             overflow-auto
             text-base
-            bg-white
+            bg-surface
             rounded-md
             shadow-lg
             max-h-60
@@ -100,7 +100,7 @@
           >
             <li
               :class="[
-                active ? 'text-white bg-primary-600' : 'text-gray-900',
+                active ? 'text-white bg-primary-600' : 'text-heading',
                 'cursor-default select-none relative py-2 pl-3 pr-9',
               ]"
             >

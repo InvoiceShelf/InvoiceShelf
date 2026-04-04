@@ -50,8 +50,8 @@
         class="px-3 mt-2"
       >
         <BaseInput v-model="filters.estimate_number">
-          <BaseIcon name="EllipsisHorizontalIcon" class="h-5 text-gray-500" />
-          <BaseIcon name="HashtagIcon" class="h-5 mr-3 text-gray-600" />
+          <BaseIcon name="EllipsisHorizontalIcon" class="h-5 text-muted" />
+          <BaseIcon name="HashtagIcon" class="h-5 mr-3 text-body" />
         </BaseInput>
       </BaseInputGroup>
 
@@ -119,11 +119,11 @@
         <template #cell-actions="{ row }">
           <BaseDropdown>
             <template #activator>
-              <BaseIcon name="EllipsisHorizontalIcon" class="h-5 text-gray-500" />
+              <BaseIcon name="EllipsisHorizontalIcon" class="h-5 text-muted" />
             </template>
             <router-link :to="`estimates/${row.data.id}/view`">
               <BaseDropdownItem>
-                <BaseIcon name="EyeIcon" class="h-5 mr-3 text-gray-600" />
+                <BaseIcon name="EyeIcon" class="h-5 mr-3 text-body" />
                 {{ $t('general.view') }}
               </BaseDropdownItem>
             </router-link>
@@ -182,7 +182,7 @@ const estimateColumns = computed(() => {
       key: 'estimate_date',
       label: t('estimates.date'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-heading',
     },
     { key: 'estimate_number', label: t('estimates.number', 2) },
     { key: 'status', label: t('estimates.status') },

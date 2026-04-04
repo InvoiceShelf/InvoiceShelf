@@ -6,7 +6,7 @@
           {{ modalStore.title }}
         </h6>
         <p
-          class="mt-2 text-sm leading-snug text-gray-500"
+          class="mt-2 text-sm leading-snug text-muted"
           style="max-width: 680px"
         >
           {{
@@ -38,7 +38,7 @@
         </BaseInputGroup>
       </div>
 
-      <div class="z-0 flex justify-end p-4 bg-gray-50 border-t border-gray-200">
+      <div class="z-0 flex justify-end p-4 bg-surface-secondary border-t border-line-default">
         <BaseButton
           class="mr-3 text-sm"
           variant="primary-outline"

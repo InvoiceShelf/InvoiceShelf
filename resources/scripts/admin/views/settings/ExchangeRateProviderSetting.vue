@@ -8,7 +8,7 @@
             {{ $t('settings.menu_title.exchange_rate') }}
           </h6>
           <p
-            class="mt-2 text-sm leading-snug text-left text-gray-500"
+            class="mt-2 text-sm leading-snug text-left text-muted"
             style="max-width: 680px"
           >
             {{ $t('settings.exchange_rate.providers_description') }}
@@ -49,17 +49,17 @@
         <BaseDropdown>
           <template #activator>
             <div class="inline-block">
-              <EllipsisHorizontalIcon class="w-5 text-gray-500" />
+              <EllipsisHorizontalIcon class="w-5 text-muted" />
             </div>
           </template>
 
           <BaseDropdownItem @click="editExchangeRate(row.data.id)">
-            <PencilIcon class="h-5 mr-3 text-gray-600" />
+            <PencilIcon class="h-5 mr-3 text-body" />
             {{ $t('general.edit') }}
           </BaseDropdownItem>
 
           <BaseDropdownItem @click="removeExchangeRate(row.data.id)">
-            <TrashIcon class="h-5 mr-3 text-gray-600" />
+            <TrashIcon class="h-5 mr-3 text-body" />
             {{ $t('general.delete') }}
           </BaseDropdownItem>
         </BaseDropdown>
@@ -104,19 +104,19 @@ const drivers = computed(() => {
       key: 'driver',
       label: t('settings.exchange_rate.driver'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-heading',
     },
     {
       key: 'key',
       label: t('settings.exchange_rate.key'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-heading',
     },
     {
       key: 'active',
       label: t('settings.exchange_rate.active'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-heading',
     },
     {
       key: 'actions',

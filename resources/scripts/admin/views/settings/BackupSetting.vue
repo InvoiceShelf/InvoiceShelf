@@ -47,18 +47,18 @@
         <BaseDropdown>
           <template #activator>
             <div class="inline-block">
-              <BaseIcon name="EllipsisHorizontalIcon" class="text-gray-500" />
+              <BaseIcon name="EllipsisHorizontalIcon" class="text-muted" />
             </div>
           </template>
 
           <BaseDropdownItem @click="onDownloadBckup(row.data)">
-            <BaseIcon name="CloudArrowDownIcon" class="mr-3 text-gray-600" />
+            <BaseIcon name="CloudArrowDownIcon" class="mr-3 text-body" />
 
             {{ $t('general.download') }}
           </BaseDropdownItem>
 
           <BaseDropdownItem @click="onRemoveBackup(row.data)">
-            <BaseIcon name="TrashIcon" class="mr-3 text-gray-600" />
+            <BaseIcon name="TrashIcon" class="mr-3 text-body" />
             {{ $t('general.delete') }}
           </BaseDropdownItem>
         </BaseDropdown>
@@ -95,17 +95,17 @@ const backupColumns = computed(() => {
       key: 'path',
       label: t('settings.backup.path'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-heading',
     },
     {
       key: 'created_at',
       label: t('settings.backup.created_at'),
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-heading',
     },
     {
       key: 'size',
       label: t('settings.backup.size'),
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-heading',
     },
     {
       key: 'actions',

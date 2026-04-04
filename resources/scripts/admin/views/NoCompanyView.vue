@@ -4,12 +4,12 @@
       <div class="text-center mb-8">
         <BaseIcon
           name="BuildingOfficeIcon"
-          class="w-16 h-16 mx-auto text-gray-300 mb-4"
+          class="w-16 h-16 mx-auto text-subtle mb-4"
         />
-        <h1 class="text-2xl font-semibold text-gray-900">
+        <h1 class="text-2xl font-semibold text-heading">
           {{ $t('general.welcome') }}, {{ userStore.currentUser.name }}
         </h1>
-        <p class="mt-2 text-sm text-gray-500">
+        <p class="mt-2 text-sm text-muted">
           {{ $t('general.no_company_description') }}
         </p>
       </div>
@@ -17,7 +17,7 @@
       <!-- Pending Invitations -->
       <div v-if="invitationStore.pendingInvitations.length > 0">
         <h2
-          class="text-sm font-semibold uppercase tracking-wide text-gray-400 mb-3"
+          class="text-sm font-semibold uppercase tracking-wide text-subtle mb-3"
         >
           {{ $t('members.pending_invitations') }}
         </h2>
@@ -25,13 +25,13 @@
           <div
             v-for="invitation in invitationStore.pendingInvitations"
             :key="invitation.id"
-            class="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200"
+            class="flex items-center justify-between p-4 bg-surface rounded-lg border border-line-default"
           >
             <div>
-              <p class="font-medium text-gray-900">
+              <p class="font-medium text-heading">
                 {{ invitation.company?.name }}
               </p>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted">
                 {{ invitation.role?.title }} &middot;
                 {{ $t('members.invited_by') }}:
                 {{ invitation.invited_by?.name }}

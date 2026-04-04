@@ -8,7 +8,7 @@
     </BaseContentPlaceholders>
     <label
       v-else
-      class="text-sm font-semibold leading-5 text-gray-500 uppercase"
+      class="text-sm font-semibold leading-5 text-muted uppercase"
     >
       {{ $t('estimates.net_total') }}
     </label>
@@ -19,7 +19,7 @@
 
     <label
       v-else
-      class="flex items-center justify-center m-0 text-lg text-black uppercase "
+      class="flex items-center justify-center m-0 text-lg text-heading uppercase "
     >
       <BaseFormatMoney
         :amount="store.getNetTotal"

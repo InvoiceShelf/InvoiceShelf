@@ -6,7 +6,7 @@
       px-4
       py-2
       rounded-lg
-      bg-gray-300/40
+      bg-surface-muted/40
       whitespace-nowrap
       flex-col
       mt-1
@@ -18,7 +18,7 @@
         pr-10
         text-sm
         font-medium
-        text-black
+        text-heading
         truncate
         select-all select-color
       "

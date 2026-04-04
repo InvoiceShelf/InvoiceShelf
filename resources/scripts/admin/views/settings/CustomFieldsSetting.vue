@@ -27,7 +27,7 @@
     >
       <template #cell-name="{ row }">
         {{ row.data.name }}
-        <span class="text-xs text-gray-500"> ({{ row.data.slug }})</span>
+        <span class="text-xs text-muted"> ({{ row.data.slug }})</span>
       </template>
 
       <template #cell-model_type="{ row }">
@@ -96,7 +96,7 @@ const customFieldsColumns = computed(() => {
       key: 'name',
       label: t('settings.custom_fields.name'),
       thClass: 'extra',
-      tdClass: 'font-medium text-gray-900',
+      tdClass: 'font-medium text-heading',
     },
     {
       key: 'model_type',

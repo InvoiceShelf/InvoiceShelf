@@ -24,7 +24,7 @@
       />
     </div>
 
-    <div class="flex">
+    <div class="flex gap-8">
       <div class="hidden mt-1 xl:block min-w-[240px]">
         <BaseList>
           <BaseListItem

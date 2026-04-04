@@ -155,7 +155,7 @@
           <template #right>
             <BaseIcon
               :name="isShowPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-              class="mr-1 text-gray-500 cursor-pointer"
+              class="mr-1 text-muted cursor-pointer"
               @click="isShowPassword = !isShowPassword"
             />
           </template>

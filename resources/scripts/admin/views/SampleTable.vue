@@ -41,13 +41,13 @@
         <base-dropdown width-class="w-48" margin-class="mt-1">
           <template #activator>
             <div class="flex items-center justify-center">
-              <EllipsisHorizontalIcon class="w-6 h-6 text-gray-600" />
+              <EllipsisHorizontalIcon class="w-6 h-6 text-body" />
             </div>
           </template>
 
           <base-dropdown-item>
             <document-text-icon
-              class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+              class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
               aria-hidden="true"
             />
             New Invoice
@@ -55,7 +55,7 @@
 
           <base-dropdown-item>
             <document-icon
-              class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+              class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
               aria-hidden="true"
             />
             New Estimate
@@ -63,7 +63,7 @@
 
           <base-dropdown-item>
             <user-icon
-              class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+              class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
               aria-hidden="true"
             />
             New Customer
@@ -111,7 +111,7 @@ export default {
           key: 'name',
           label: 'Name',
           thClass: 'extra',
-          tdClass: 'font-medium text-gray-900',
+          tdClass: 'font-medium text-heading',
         },
         { key: 'age', label: 'Age' },
         { key: 'image', label: 'Image' },
@@ -131,7 +131,7 @@ export default {
           key: 'name',
           label: 'Name',
           thClass: 'extra',
-          tdClass: 'font-medium text-gray-900',
+          tdClass: 'font-medium text-heading',
         },
         { key: 'price', label: 'Price' },
         { key: 'created_at', label: 'Created At' },

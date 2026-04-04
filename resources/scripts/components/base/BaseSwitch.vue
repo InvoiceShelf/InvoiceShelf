@@ -7,7 +7,7 @@
 
       <Switch
         v-model="enabled"
-        :class="enabled ? 'bg-primary-500' : 'bg-gray-300'"
+        :class="enabled ? 'bg-primary-500' : 'bg-surface-muted'"
         class="
           relative
           inline-flex

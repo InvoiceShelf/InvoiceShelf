@@ -1,8 +1,8 @@
 <template>
-  <div class="rounded-md bg-yellow-50 p-4 relative">
+  <div class="rounded-md bg-alert-warning-bg p-4 relative">
     <BaseIcon
       name="XMarkIcon"
-      class="h-5 w-5 text-yellow-500 absolute right-4 cursor-pointer"
+      class="h-5 w-5 text-alert-warning-text absolute right-4 cursor-pointer"
       @click="$emit('hide')"
     />
     <div class="flex flex-col">
@@ -10,15 +10,15 @@
         <div class="shrink-0">
           <BaseIcon
             name="ExclamationIcon"
-            class="h-5 w-5 text-yellow-400"
+            class="h-5 w-5 text-alert-warning-text"
             aria-hidden="true"
           />
         </div>
         <div class="ml-3">
-          <h3 class="text-sm font-medium text-yellow-800">
+          <h3 class="text-sm font-medium text-alert-warning-text">
             {{ title }}
           </h3>
-          <div class="mt-2 text-sm text-yellow-700">
+          <div class="mt-2 text-sm text-alert-warning-text">
             <ul role="list" class="list-disc pl-5 space-y-1">
               <li v-for="(list, key) in lists" :key="key">
                 {{ list }}
@@ -34,14 +34,14 @@
             :key="i"
             type="button"
             class="
-              bg-yellow-50
+              bg-alert-warning-bg
               px-2
               py-1.5
               rounded-md
               text-sm
               font-medium
-              text-yellow-800
-              hover:bg-yellow-100
+              text-alert-warning-text
+              hover:bg-alert-warning-bg
               focus:outline-hidden
               focus:ring-2
               focus:ring-offset-2

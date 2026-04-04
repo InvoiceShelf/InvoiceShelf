@@ -7,7 +7,7 @@
         text-sm
         font-medium
         leading-5
-        text-gray-900
+        text-heading
         outline-hidden
         focus:ring-2 focus:ring-offset-2 focus:ring-primary-400
       "

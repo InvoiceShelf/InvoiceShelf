@@ -1,7 +1,7 @@
 <template>
   <router-link class="relative group" :to="`/admin/modules/${data.slug}`">
     <div class="relative group">
-      <div class="aspect-w-4 aspect-h-3 rounded-lg overflow-hidden bg-gray-100">
+      <div class="aspect-w-4 aspect-h-3 rounded-lg overflow-hidden bg-surface-tertiary">
         <img :src="data.cover" class="object-center object-cover" />
         <div
           class="flex items-end opacity-0 p-4 group-hover:opacity-100"
@@ -32,7 +32,7 @@
           justify-between
           text-base
           font-medium
-          text-gray-900
+          text-heading
           space-x-8
           cursor-pointer
         "

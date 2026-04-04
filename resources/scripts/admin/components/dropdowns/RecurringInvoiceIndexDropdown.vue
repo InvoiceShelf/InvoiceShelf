@@ -7,7 +7,7 @@
       >
         <BaseIcon name="EllipsisHorizontalIcon" class="h-5 text-white" />
       </BaseButton>
-      <BaseIcon v-else name="EllipsisHorizontalIcon" class="h-5 text-gray-500" />
+      <BaseIcon v-else name="EllipsisHorizontalIcon" class="h-5 text-muted" />
     </template>
 
     <!-- Edit Recurring Invoice  -->
@@ -18,7 +18,7 @@
       <BaseDropdownItem>
         <BaseIcon
           name="PencilIcon"
-          class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+          class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
         />
         {{ $t('general.edit') }}
       </BaseDropdownItem>
@@ -35,7 +35,7 @@
       <BaseDropdownItem>
         <BaseIcon
           name="EyeIcon"
-          class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+          class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
         />
         {{ $t('general.view') }}
       </BaseDropdownItem>
@@ -48,7 +48,7 @@
     >
       <BaseIcon
         name="TrashIcon"
-        class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.delete') }}
     </BaseDropdownItem>
