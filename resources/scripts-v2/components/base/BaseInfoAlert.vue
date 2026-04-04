@@ -1,0 +1,82 @@
+<script setup lang="ts">
+
+interface Props {
+  title?: string
+  lists?: string[] | null
+  actions?: string[]
+}
+
+interface Emits {
+  (e: 'hide'): void
+  (e: string): void
+}
+
+withDefaults(defineProps<Props>(), {
+  title: 'There were some errors with your submission',
+  lists: null,
+  actions: () => ['Dismiss'],
+})
+
+defineEmits<Emits>()
+</script>
+
+<template>
+  <div class="rounded-md bg-alert-warning-bg p-4 relative">
+    <BaseIcon
+      name="XMarkIcon"
+      class="h-5 w-5 text-alert-warning-text absolute right-4 cursor-pointer"
+      @click="$emit('hide')"
+    />
+    <div class="flex flex-col">
+      <div class="flex">
+        <div class="shrink-0">
+          <BaseIcon
+            name="ExclamationIcon"
+            class="h-5 w-5 text-alert-warning-text"
+            aria-hidden="true"
+          />
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-alert-warning-text">
+            {{ title }}
+          </h3>
+          <div class="mt-2 text-sm text-alert-warning-text">
+            <ul role="list" class="list-disc pl-5 space-y-1">
+              <li v-for="(list, key) in lists" :key="key">
+                {{ list }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div v-if="actions.length" class="mt-4 ml-3">
+        <div class="-mx-2 -my-1.5 flex flex-row-reverse">
+          <button
+            v-for="(action, i) in actions"
+            :key="i"
+            type="button"
+            class="
+              bg-alert-warning-bg
+              px-2
+              py-1.5
+              rounded-md
+              text-sm
+              font-medium
+              text-alert-warning-text
+              hover:bg-alert-warning-bg
+              focus:outline-hidden
+              focus:ring-2
+              focus:ring-offset-2
+              focus:ring-offset-yellow-50
+              focus:ring-yellow-600
+              mr-3
+            "
+            @click="$emit(`${action}`)"
+          >
+            {{ action }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
