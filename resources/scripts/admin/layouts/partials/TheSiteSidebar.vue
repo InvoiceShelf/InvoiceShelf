@@ -124,7 +124,7 @@
     class="
       hidden
       h-screen
-      pb-16
+      pb-0
       overflow-y-auto overflow-x-hidden
       bg-surface/80 backdrop-blur-xl
       border-r border-white/10
@@ -180,20 +180,22 @@
       </router-link>
     </div>
 
-    <!-- Collapse Toggle -->
-    <div class="sticky bottom-0 mt-auto pt-2 pb-2 bg-surface/80 backdrop-blur-xl">
+    <!-- Bottom toolbar -->
+    <div class="mt-auto sticky bottom-0 border-t border-white/10 bg-surface/80 backdrop-blur-xl p-2 flex flex-col items-center gap-1">
       <button
-        class="mx-3 px-3 py-2 w-[calc(100%-1.5rem)] flex items-center rounded-lg text-subtle hover:text-body hover:bg-hover transition-colors"
-        :class="globalStore.isSidebarCollapsed ? '!justify-center !mx-2 !px-0' : ''"
+        v-tooltip="globalStore.isSidebarCollapsed ? { content: $t('general.collapse'), placement: 'right' } : null"
+        :class="[
+          globalStore.isSidebarCollapsed
+            ? 'w-10 h-10 justify-center'
+            : 'w-full px-3 h-10 justify-end',
+        ]"
+        class="flex items-center rounded-lg text-subtle hover:text-body hover:bg-hover transition-colors"
         @click="globalStore.toggleSidebarCollapse()"
       >
         <BaseIcon
-          :name="globalStore.isSidebarCollapsed ? 'ChevronRightIcon' : 'ChevronLeftIcon'"
-          class="shrink-0 h-5 w-5"
+          :name="globalStore.isSidebarCollapsed ? 'ChevronDoubleRightIcon' : 'ChevronDoubleLeftIcon'"
+          class="w-4 h-4 shrink-0"
         />
-        <span v-if="!globalStore.isSidebarCollapsed" class="ml-3 text-sm font-medium whitespace-nowrap">
-          {{ $t('general.collapse') }}
-        </span>
       </button>
     </div>
   </div>

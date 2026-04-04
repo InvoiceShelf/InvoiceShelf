@@ -17,27 +17,28 @@
       to-header-to
     "
   >
-    <router-link
-      :to="companyStore.isAdminMode ? '/admin/administration/dashboard' : '/admin/dashboard'"
-      class="
-        float-none
-        text-lg
-        not-italic
-        font-black
-        tracking-wider
-        text-white
-        brand-main
-        md:float-left
-        font-base
-        hidden
-        md:block
-      "
-    >
-      <img v-if="adminLogo" :src="adminLogo" class="h-6" />
-      <MainLogo v-else class="h-6" light-color="white" dark-color="white" />
-    </router-link>
+    <div class="flex items-center">
+      <router-link
+        :to="companyStore.isAdminMode ? '/admin/administration/dashboard' : '/admin/dashboard'"
+        class="
+          text-lg
+          not-italic
+          font-black
+          tracking-wider
+          text-white
+          brand-main
+          font-base
+          hidden
+          md:block
+        "
+      >
+        <img v-if="adminLogo" :src="adminLogo" class="h-6" />
+        <MainLogo v-else class="h-6" light-color="white" dark-color="white" />
+      </router-link>
 
-    <!-- toggle button-->
+    </div>
+
+    <!-- Mobile toggle button-->
     <div
       :class="{ 'is-active': globalStore.isSidebarOpen }"
       class="
