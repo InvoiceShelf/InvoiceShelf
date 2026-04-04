@@ -61,6 +61,7 @@ class DemoSeeder extends Seeder
             'invoice_prefix' => 'INV-',
             'estimate_prefix' => 'EST-',
             'payment_prefix' => 'PAY-',
+            'credit_note_prefix' => 'CN-',
         ], $company->id);
 
         // Create demo customers

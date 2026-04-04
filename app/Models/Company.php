@@ -142,6 +142,11 @@ class Company extends Model implements HasMedia
         return $this->hasMany(PaymentMethod::class);
     }
 
+    public function creditNotes(): HasMany
+    {
+        return $this->hasMany(CreditNote::class);
+    }
+
     public function estimates(): HasMany
     {
         return $this->hasMany(Estimate::class);
@@ -200,6 +205,7 @@ class Company extends Model implements HasMedia
         $defaultInvoiceEmailBody = 'You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:';
         $defaultEstimateEmailBody = 'You have received a new estimate from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:';
         $defaultPaymentEmailBody = 'Thank you for the payment.</b></br> Please download your payment receipt using the button below:';
+        $defaultCreditNoteEmailBody = 'We have issued a credit note for your invoice.</b></br> Please download your credit note using the button below:';
         $billingAddressFormat = '<h3>{BILLING_ADDRESS_NAME}</h3><p>{BILLING_ADDRESS_STREET_1}</p><p>{BILLING_ADDRESS_STREET_2}</p><p>{BILLING_CITY}  {BILLING_STATE}</p><p>{BILLING_COUNTRY}  {BILLING_ZIP_CODE}</p><p>{BILLING_PHONE}</p>';
         $shippingAddressFormat = '<h3>{SHIPPING_ADDRESS_NAME}</h3><p>{SHIPPING_ADDRESS_STREET_1}</p><p>{SHIPPING_ADDRESS_STREET_2}</p><p>{SHIPPING_CITY}  {SHIPPING_STATE}</p><p>{SHIPPING_COUNTRY}  {SHIPPING_ZIP_CODE}</p><p>{SHIPPING_PHONE}</p>';
         $companyAddressFormat = '<h3><strong>{COMPANY_NAME}</strong></h3><p>{COMPANY_ADDRESS_STREET_1}</p><p>{COMPANY_ADDRESS_STREET_2}</p><p>{COMPANY_CITY} {COMPANY_STATE}</p><p>{COMPANY_COUNTRY}  {COMPANY_ZIP_CODE}</p><p>{COMPANY_PHONE}</p>';
@@ -209,10 +215,12 @@ class Company extends Model implements HasMedia
             'invoice_auto_generate' => 'YES',
             'payment_auto_generate' => 'YES',
             'estimate_auto_generate' => 'YES',
+            'credit_note_auto_generate' => 'YES',
             'save_pdf_to_disk' => 'NO',
             'invoice_mail_body' => $defaultInvoiceEmailBody,
             'estimate_mail_body' => $defaultEstimateEmailBody,
             'payment_mail_body' => $defaultPaymentEmailBody,
+            'credit_note_mail_body' => $defaultCreditNoteEmailBody,
             'invoice_company_address_format' => $companyAddressFormat,
             'invoice_shipping_address_format' => $shippingAddressFormat,
             'invoice_billing_address_format' => $billingAddressFormat,
@@ -221,6 +229,7 @@ class Company extends Model implements HasMedia
             'estimate_billing_address_format' => $billingAddressFormat,
             'payment_company_address_format' => $companyAddressFormat,
             'payment_from_customer_address_format' => $paymentFromCustomerAddress,
+            'credit_note_company_address_format' => $companyAddressFormat,
             'currency' => request()->currency ?? 13,
             'time_zone' => 'Asia/Kolkata',
             'language' => 'en',
@@ -241,11 +250,13 @@ class Company extends Model implements HasMedia
             'estimate_email_attachment' => 'NO',
             'payment_auto_generate' => 'YES',
             'payment_email_attachment' => 'NO',
+            'credit_note_email_attachment' => 'NO',
             'save_pdf_to_disk' => 'NO',
             'retrospective_edits' => 'allow',
             'invoice_number_format' => '{{SERIES:INV}}{{DELIMITER:-}}{{SEQUENCE:6}}',
             'estimate_number_format' => '{{SERIES:EST}}{{DELIMITER:-}}{{SEQUENCE:6}}',
             'payment_number_format' => '{{SERIES:PAY}}{{DELIMITER:-}}{{SEQUENCE:6}}',
+            'credit_note_number_format' => '{{SERIES:CN}}{{DELIMITER:-}}{{SEQUENCE:6}}',
             'estimate_set_expiry_date_automatically' => 'YES',
             'estimate_expiry_date_days' => 7,
             'invoice_set_due_date_automatically' => 'YES',
@@ -293,6 +304,10 @@ class Company extends Model implements HasMedia
 
         if ($this->paymentMethods()->exists()) {
             $this->paymentMethods()->delete();
+        }
+
+        if ($this->creditNotes()->exists()) {
+            $this->creditNotes()->delete();
         }
 
         if ($this->customFieldValues()->exists()) {
@@ -396,6 +411,7 @@ class Company extends Model implements HasMedia
             $this->estimates()->exists() ||
             $this->expenses()->exists() ||
             $this->payments()->exists() ||
+            $this->creditNotes()->exists() ||
             $this->recurringInvoices()->exists()
         ) {
             return true;
