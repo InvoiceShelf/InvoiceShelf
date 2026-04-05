@@ -31,6 +31,7 @@ export default {
     Ses,
     sendmail: Basic,
     Mail: Basic,
+    log: Basic,
   },
 
   emits: ['next'],

@@ -69,6 +69,7 @@ const mailDriver = computed(() => {
   if (mailDriverStore.mail_driver == 'sendmail') return Basic
   if (mailDriverStore.mail_driver == 'ses') return Ses
   if (mailDriverStore.mail_driver == 'mail') return Basic
+  if (mailDriverStore.mail_driver == 'log') return Basic
   return Smtp
 })
 
