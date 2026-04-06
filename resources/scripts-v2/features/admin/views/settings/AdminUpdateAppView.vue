@@ -14,7 +14,7 @@ type UpdateStepKey =
   | 'download'
   | 'unzip'
   | 'copy'
-  | 'delete'
+  | 'clean'
   | 'migrate'
   | 'finish'
 
@@ -58,8 +58,8 @@ const updateSteps = ref<UpdateStep[]>([
     time: null,
   },
   {
-    key: 'delete',
-    translationKey: 'settings.update_app.deleting_files',
+    key: 'clean',
+    translationKey: 'settings.update_app.cleaning_stale_files',
     status: 'pending',
     time: null,
   },
@@ -202,8 +202,8 @@ async function startUpdate(): Promise<void> {
           break
         }
 
-        case 'delete':
-          await updateService.delete({
+        case 'clean':
+          await updateService.clean({
             deleted_files: updateRelease.value.deleted_files ?? null,
           })
           break

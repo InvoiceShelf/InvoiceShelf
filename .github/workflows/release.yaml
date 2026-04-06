@@ -1,0 +1,96 @@
+name: Release
+
+on:
+    push:
+        tags:
+            - "v*"
+
+permissions:
+    contents: write
+
+jobs:
+    release:
+        name: Build & Release
+        runs-on: ubuntu-latest
+        env:
+            extensions: bcmath, curl, dom, gd, imagick, json, libxml, mbstring, pcntl, pdo, pdo_mysql, zip
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: 8.4
+                  extensions: ${{ env.extensions }}
+                  tools: composer
+
+            - name: Install Composer dependencies
+              run: composer install --no-dev --optimize-autoloader --no-interaction
+
+            - name: Use Node.js 24
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 24
+
+            - name: Install npm dependencies
+              run: npm ci
+
+            - name: Build frontend
+              run: npm run build
+
+            - name: Prepare release directory
+              run: |
+                  mkdir -p /tmp/InvoiceShelf/public
+
+                  cp -r app                    /tmp/InvoiceShelf/
+                  cp -r bootstrap              /tmp/InvoiceShelf/
+                  cp -r config                 /tmp/InvoiceShelf/
+                  cp -r database               /tmp/InvoiceShelf/
+                  cp -r public/build           /tmp/InvoiceShelf/public/
+                  cp -r public/favicons        /tmp/InvoiceShelf/public/
+                  cp    public/.htaccess       /tmp/InvoiceShelf/public/
+                  cp    public/index.php       /tmp/InvoiceShelf/public/
+                  cp    public/robots.txt      /tmp/InvoiceShelf/public/
+                  cp    public/web.config      /tmp/InvoiceShelf/public/
+                  cp -r resources              /tmp/InvoiceShelf/
+                  cp -r lang                   /tmp/InvoiceShelf/
+                  cp -r routes                 /tmp/InvoiceShelf/
+                  cp -r storage                /tmp/InvoiceShelf/
+                  cp -r vendor                 /tmp/InvoiceShelf/ 2>/dev/null || true
+                  cp -r scripts                /tmp/InvoiceShelf/
+                  cp    version.md             /tmp/InvoiceShelf/
+                  cp    .env.example           /tmp/InvoiceShelf/
+                  cp    artisan                /tmp/InvoiceShelf/
+                  cp    composer.json          /tmp/InvoiceShelf/
+                  cp    composer.lock          /tmp/InvoiceShelf/
+                  cp    LICENSE                /tmp/InvoiceShelf/
+                  cp    readme.md              /tmp/InvoiceShelf/
+                  cp    SECURITY.md            /tmp/InvoiceShelf/
+                  cp    server.php             /tmp/InvoiceShelf/
+
+                  # Clean up runtime artifacts
+                  find /tmp/InvoiceShelf -wholename '*/[Tt]ests/*' -delete
+                  find /tmp/InvoiceShelf -wholename '*/[Tt]est/*' -delete
+                  rm -rf /tmp/InvoiceShelf/storage/framework/cache/data/* 2>/dev/null || true
+                  rm -f  /tmp/InvoiceShelf/storage/framework/sessions/* 2>/dev/null || true
+                  rm -f  /tmp/InvoiceShelf/storage/framework/views/* 2>/dev/null || true
+                  rm -f  /tmp/InvoiceShelf/storage/logs/* 2>/dev/null || true
+                  touch  /tmp/InvoiceShelf/storage/logs/laravel.log
+
+            - name: Generate manifest
+              run: php scripts/generate-manifest.php /tmp/InvoiceShelf
+
+            - name: Create zip
+              working-directory: /tmp
+              run: zip -r InvoiceShelf.zip InvoiceShelf/
+
+            - name: Create GitHub Release
+              uses: softprops/action-gh-release@v2
+              with:
+                  files: /tmp/InvoiceShelf.zip
+                  generate_release_notes: true
+                  make_latest: true

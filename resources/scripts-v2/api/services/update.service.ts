@@ -62,6 +62,11 @@ export const updateService = {
     return data
   },
 
+  async clean(payload?: { deleted_files?: string | string[] | null }): Promise<UpdateStepResponse> {
+    const { data } = await client.post(API.UPDATE_CLEAN, payload ?? {})
+    return data
+  },
+
   async migrate(): Promise<UpdateStepResponse> {
     const { data } = await client.post(API.UPDATE_MIGRATE)
     return data

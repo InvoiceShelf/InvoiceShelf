@@ -153,6 +153,7 @@ export const API = {
   UPDATE_UNZIP: '/api/v1/update/unzip',
   UPDATE_COPY: '/api/v1/update/copy',
   UPDATE_DELETE: '/api/v1/update/delete',
+  UPDATE_CLEAN: '/api/v1/update/clean',
   UPDATE_MIGRATE: '/api/v1/update/migrate',
   UPDATE_FINISH: '/api/v1/update/finish',
 

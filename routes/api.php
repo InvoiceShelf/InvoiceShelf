@@ -434,6 +434,7 @@ Route::prefix('/v1')->group(function () {
         Route::post('/update/unzip', [UpdateController::class, 'unzip']);
         Route::post('/update/copy', [UpdateController::class, 'copy']);
         Route::post('/update/delete', [UpdateController::class, 'delete']);
+        Route::post('/update/clean', [UpdateController::class, 'clean']);
         Route::post('/update/migrate', [UpdateController::class, 'migrate']);
         Route::post('/update/finish', [UpdateController::class, 'finish']);
 

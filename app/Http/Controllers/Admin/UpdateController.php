@@ -67,13 +67,25 @@ class UpdateController extends Controller
 
     public function delete(Request $request): JsonResponse
     {
+        return $this->clean($request);
+    }
+
+    public function clean(Request $request): JsonResponse
+    {
         $this->ensureSuperAdmin();
 
-        if (isset($request->deleted_files) && ! empty($request->deleted_files)) {
+        // Backward compatibility: use deleted_files when no manifest exists
+        if (! File::exists(base_path('manifest.json'))
+            && isset($request->deleted_files)
+            && ! empty($request->deleted_files)) {
             Updater::deleteFiles($request->deleted_files);
+
+            return response()->json(['success' => true, 'cleaned' => 0]);
         }
 
-        return response()->json(['success' => true]);
+        $result = Updater::cleanStaleFiles();
+
+        return response()->json($result);
     }
 
     public function migrate(Request $request): JsonResponse
