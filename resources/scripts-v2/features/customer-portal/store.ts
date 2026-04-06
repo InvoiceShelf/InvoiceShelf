@@ -77,6 +77,7 @@ export interface CustomerPortalBootstrapMeta {
   menu: CustomerPortalMenuItem[]
   modules: string[]
   current_customer_currency?: Currency | null
+  current_company_currency?: Currency | null
   current_company_language?: string
 }
 
@@ -280,7 +281,7 @@ export const useCustomerPortalStore = defineStore('customerPortal', {
 
       this.currentUser = data.data
       this.mainMenu = data.meta.menu ?? []
-      this.currency = data.data.currency ?? data.meta.current_customer_currency ?? null
+      this.currency = data.data.currency ?? data.meta.current_customer_currency ?? data.meta.current_company_currency ?? null
       this.enabledModules = data.meta.modules ?? []
       this.currentCompanyLanguage = data.meta.current_company_language ?? 'en'
       this.userForm = hydrateUserForm(data.data)

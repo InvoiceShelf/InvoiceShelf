@@ -31,10 +31,13 @@ class BootstrapController extends Controller
             }
         }
 
+        $companyCurrencyId = CompanySetting::getSetting('currency', $customer->company_id);
+
         return (new CustomerResource($customer))
             ->additional(['meta' => [
                 'menu' => $menu,
                 'current_customer_currency' => Currency::find($customer->currency_id),
+                'current_company_currency' => $companyCurrencyId ? Currency::find($companyCurrencyId) : null,
                 'modules' => Module::where('enabled', true)->pluck('name'),
                 'current_company_language' => CompanySetting::getSetting('language', $customer->company_id),
             ]]);
