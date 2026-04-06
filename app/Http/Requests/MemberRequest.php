@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\IdnEmail;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -26,7 +27,7 @@ class MemberRequest extends FormRequest
             ],
             'email' => [
                 'required',
-                'email',
+                new IdnEmail,
                 Rule::unique('users'),
             ],
             'phone' => [
@@ -50,7 +51,7 @@ class MemberRequest extends FormRequest
         if ($this->getMethod() == 'PUT') {
             $rules['email'] = [
                 'required',
-                'email',
+                new IdnEmail,
                 Rule::unique('users')->ignore($this->user),
             ];
             $rules['password'] = [

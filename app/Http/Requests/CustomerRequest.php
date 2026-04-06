@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Address;
+use App\Rules\IdnEmail;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
@@ -27,7 +28,7 @@ class CustomerRequest extends FormRequest
                 'required',
             ],
             'email' => [
-                'email',
+                new IdnEmail,
                 'nullable',
                 Rule::unique('customers')->where('company_id', $this->header('company')),
             ],
@@ -116,7 +117,7 @@ class CustomerRequest extends FormRequest
 
         if ($this->isMethod('PUT') && $this->email != null) {
             $rules['email'] = [
-                'email',
+                new IdnEmail,
                 'nullable',
                 Rule::unique('customers')->where('company_id', $this->header('company'))->ignore($this->route('customer')->id),
             ];

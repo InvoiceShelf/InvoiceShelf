@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\IdnEmail;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -18,7 +19,7 @@ class AdminUserUpdateRequest extends FormRequest
             'name' => ['required', 'string'],
             'email' => [
                 'required',
-                'email',
+                new IdnEmail,
                 Rule::unique('users')->ignore($this->route('user')),
             ],
             'phone' => ['nullable', 'string'],

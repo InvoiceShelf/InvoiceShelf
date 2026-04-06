@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Customer;
 
 use App\Models\Address;
+use App\Rules\IdnEmail;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -32,7 +33,7 @@ class CustomerProfileRequest extends FormRequest
             ],
             'email' => [
                 'nullable',
-                'email',
+                new IdnEmail,
                 Rule::unique('customers')->where('company_id', $this->header('company'))->ignore(Auth::id(), 'id'),
             ],
             'billing.name' => [

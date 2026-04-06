@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\IdnEmail;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -31,7 +32,7 @@ class ProfileRequest extends FormRequest
             ],
             'email' => [
                 'required',
-                'email',
+                new IdnEmail,
                 Rule::unique('users')->ignore(Auth::id(), 'id'),
             ],
         ];
