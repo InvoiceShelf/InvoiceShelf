@@ -130,6 +130,80 @@ class Updater
         return true;
     }
 
+    public static function cleanStaleFiles(): array
+    {
+        $manifestPath = base_path('manifest.json');
+
+        if (! File::exists($manifestPath)) {
+            return ['success' => true, 'cleaned' => 0];
+        }
+
+        $manifest = json_decode(File::get($manifestPath), true);
+
+        if (! is_array($manifest)) {
+            return ['success' => false, 'error' => 'Invalid manifest'];
+        }
+
+        $manifestLookup = array_flip($manifest);
+        $protectedPaths = config('invoiceshelf.update_protected_paths', []);
+        $cleaned = 0;
+
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator(base_path(), \RecursiveDirectoryIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::CHILD_FIRST
+        );
+
+        foreach ($iterator as $file) {
+            $relativePath = substr($file->getPathname(), strlen(base_path()) + 1);
+
+            if (static::isProtectedPath($relativePath, $protectedPaths)) {
+                continue;
+            }
+
+            if ($file->isFile() && ! isset($manifestLookup[$relativePath])) {
+                File::delete($file->getPathname());
+                $cleaned++;
+            }
+        }
+
+        // Second pass: remove empty directories
+        $dirIterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator(base_path(), \RecursiveDirectoryIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::CHILD_FIRST
+        );
+
+        foreach ($dirIterator as $item) {
+            if (! $item->isDir()) {
+                continue;
+            }
+
+            $relativePath = substr($item->getPathname(), strlen(base_path()) + 1);
+
+            if (static::isProtectedPath($relativePath, $protectedPaths)) {
+                continue;
+            }
+
+            $entries = scandir($item->getPathname());
+
+            if (count($entries) <= 2) {
+                @rmdir($item->getPathname());
+            }
+        }
+
+        return ['success' => true, 'cleaned' => $cleaned];
+    }
+
+    private static function isProtectedPath(string $relativePath, array $protectedPaths): bool
+    {
+        foreach ($protectedPaths as $protected) {
+            if ($relativePath === $protected || str_starts_with($relativePath, $protected.'/')) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static function migrateUpdate()
     {
         Artisan::call('migrate --force');

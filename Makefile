@@ -29,6 +29,7 @@ dist-gen: clean composer npm-build
 	@cp -r routes                           InvoiceShelf
 	@cp -r storage                          InvoiceShelf
 	@cp -r vendor                           InvoiceShelf 2> /dev/null || true
+	@cp -r scripts                          InvoiceShelf
 	@cp -r version.md						InvoiceShelf
 	@cp -r .env.example                     InvoiceShelf
 	@cp -r artisan                          InvoiceShelf
@@ -47,6 +48,7 @@ dist-clean: dist-gen
 	@rm    InvoiceShelf/storage/framework/sessions/* 2> /dev/null || true
 	@rm    InvoiceShelf/storage/framework/views/* 2> /dev/null || true
 	@rm    InvoiceShelf/storage/logs/* 2> /dev/null || true
+	@php scripts/generate-manifest.php InvoiceShelf
 
 dist: dist-clean
 	@zip -r InvoiceShelf.zip InvoiceShelf

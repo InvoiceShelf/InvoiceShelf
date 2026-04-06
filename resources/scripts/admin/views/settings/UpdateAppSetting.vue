@@ -263,8 +263,8 @@ const updateSteps = reactive([
     completed: false,
   },
   {
-    translationKey: 'settings.update_app.deleting_files',
-    stepUrl: '/api/v1/update/delete',
+    translationKey: 'settings.update_app.cleaning_stale_files',
+    stepUrl: '/api/v1/update/clean',
     time: null,
     started: false,
     completed: false,

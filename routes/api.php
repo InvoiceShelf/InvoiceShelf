@@ -82,6 +82,7 @@ use App\Http\Controllers\V1\Admin\Settings\UpdateCompanySettingsController;
 use App\Http\Controllers\V1\Admin\Settings\UpdateSettingsController;
 use App\Http\Controllers\V1\Admin\Settings\UpdateUserSettingsController;
 use App\Http\Controllers\V1\Admin\Update\CheckVersionController;
+use App\Http\Controllers\V1\Admin\Update\CleanFilesController;
 use App\Http\Controllers\V1\Admin\Update\CopyFilesController;
 use App\Http\Controllers\V1\Admin\Update\DeleteFilesController;
 use App\Http\Controllers\V1\Admin\Update\DownloadUpdateController;
@@ -434,6 +435,8 @@ Route::prefix('/v1')->group(function () {
         Route::post('/update/copy', CopyFilesController::class);
 
         Route::post('/update/delete', DeleteFilesController::class);
+
+        Route::post('/update/clean', CleanFilesController::class);
 
         Route::post('/update/migrate', MigrateUpdateController::class);
 
