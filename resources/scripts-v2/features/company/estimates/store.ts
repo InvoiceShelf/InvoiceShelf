@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { useNotificationStore } from '../../../stores/notification.store'
 import { useCompanyStore } from '../../../stores/company.store'
+import { useUserStore } from '../../../stores/user.store'
 import { estimateService } from '../../../api/services/estimate.service'
 import type {
   EstimateListParams,
@@ -545,9 +546,10 @@ export const useEstimateStore = defineStore('estimate', {
 
           if (this.templates.length) {
             this.setTemplate(this.templates[0].name)
-            if (userSettings?.default_estimate_template) {
+            const { currentUserSettings } = useUserStore()
+            if (currentUserSettings.default_estimate_template) {
               this.newEstimate.template_name =
-                userSettings.default_estimate_template
+                currentUserSettings.default_estimate_template
             }
           }
         }

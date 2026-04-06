@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { useNotificationStore } from '../../../stores/notification.store'
 import { useCompanyStore } from '../../../stores/company.store'
+import { useUserStore } from '../../../stores/user.store'
 import { invoiceService } from '../../../api/services/invoice.service'
 import type {
   InvoiceListParams,
@@ -361,6 +362,11 @@ export const useInvoiceStore = defineStore('invoice', {
       return { data: response }
     },
 
+    async convertToEstimate(data: { id: number }): Promise<{ data: { data: Record<string, unknown> } }> {
+      const response = await invoiceService.convertToEstimate(data.id)
+      return { data: response }
+    },
+
     async markAsSent(data: InvoiceStatusPayload): Promise<unknown> {
       const response = await invoiceService.changeStatus(data)
       const pos = this.invoices.findIndex((inv) => inv.id === data.id)
@@ -528,9 +534,10 @@ export const useInvoiceStore = defineStore('invoice', {
 
           if (templatesRes?.data?.invoiceTemplates?.length) {
             this.setTemplate(this.templates[0].name)
-            if (userSettings?.default_invoice_template) {
+            const { currentUserSettings } = useUserStore()
+            if (currentUserSettings.default_invoice_template) {
               this.newInvoice.template_name =
-                userSettings.default_invoice_template
+                currentUserSettings.default_invoice_template
             }
           }
         }
