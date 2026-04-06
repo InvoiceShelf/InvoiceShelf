@@ -20,7 +20,7 @@ class LoginController extends Controller
      */
     public function __invoke(CustomerLoginRequest $request, Company $company)
     {
-        $user = Customer::where('email', $request->email)
+        $user = Customer::whereRaw('LOWER(email) = ?', [strtolower($request->email)])
             ->where('company_id', $company->id)
             ->first();
 
