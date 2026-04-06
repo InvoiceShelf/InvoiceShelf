@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\FileDisk;
+use App\Models\Setting;
 use App\Policies\CompanyPolicy;
 use App\Policies\CustomerPolicy;
 use App\Policies\DashboardPolicy;
@@ -57,6 +59,7 @@ class AppServiceProvider extends ServiceProvider
 
         if (InstallUtils::isDbCreated()) {
             $this->addMenus();
+            $this->configureMediaDisk();
         }
 
         Gate::policy(Role::class, RolePolicy::class);
@@ -165,5 +168,30 @@ class AppServiceProvider extends ServiceProvider
     public function bootBroadcast()
     {
         Broadcast::routes(['middleware' => 'api.auth']);
+    }
+
+    /**
+     * Configure Spatie Media Library to use the FileDisk system.
+     *
+     * Resolves the media disk from the `media_disk_id` setting,
+     * falling back to the default FileDisk. This ensures media
+     * uploads go to a private disk by default.
+     */
+    private function configureMediaDisk(): void
+    {
+        try {
+            $mediaDiskId = Setting::getSetting('media_disk_id');
+            $disk = $mediaDiskId
+                ? FileDisk::find($mediaDiskId)
+                : FileDisk::where('set_as_default', true)->first();
+
+            if ($disk) {
+                $disk->setConfig();
+                $prefix = env('DYNAMIC_DISK_PREFIX', 'temp_');
+                config(['media-library.disk_name' => $prefix.$disk->driver]);
+            }
+        } catch (\Exception $e) {
+            // DB not yet migrated or settings table missing — use config default
+        }
     }
 }

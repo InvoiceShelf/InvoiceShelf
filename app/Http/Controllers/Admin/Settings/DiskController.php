@@ -11,6 +11,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\DB;
 
 class DiskController extends Controller
 {
@@ -158,8 +159,23 @@ class DiskController extends Controller
     {
         $this->authorize('manage file disk');
 
-        if ($disk->setAsDefault() && $disk->type === 'SYSTEM') {
-            return respondJson('not_allowed', 'Not Allowed');
+        if ($disk->type === 'SYSTEM') {
+            return respondJson('not_allowed', 'System disks cannot be deleted.');
+        }
+
+        if ($disk->setAsDefault()) {
+            return respondJson('not_allowed', 'The default disk cannot be deleted.');
+        }
+
+        $prefix = env('DYNAMIC_DISK_PREFIX', 'temp_');
+        $diskName = $prefix.$disk->driver;
+        $mediaCount = DB::table('media')
+            ->where('disk', $diskName)
+            ->orWhere('disk', $disk->driver)
+            ->count();
+
+        if ($mediaCount > 0) {
+            return respondJson('disk_has_files', 'Cannot delete this disk — it contains '.$mediaCount.' file(s). Migrate files first.');
         }
 
         $disk->delete();

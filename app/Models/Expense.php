@@ -42,6 +42,11 @@ class Expense extends Model implements HasMedia
         ];
     }
 
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('receipts');
+    }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(ExpenseCategory::class, 'expense_category_id');
@@ -92,7 +97,7 @@ class Expense extends Model implements HasMedia
 
         if ($media) {
             return [
-                'url' => $media->getFullUrl(),
+                'url' => '/reports/expenses/'.$this->id.'/receipt',
                 'type' => $media->type,
             ];
         }
