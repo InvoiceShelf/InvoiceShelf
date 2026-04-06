@@ -47,7 +47,7 @@ export const useCompanyStore = defineStore('company', () => {
 
   async function fetchBasicMailConfig(): Promise<Record<string, unknown>> {
     try {
-      return await companyService.getMailConfig()
+      return await companyService.getMailDefaultConfig()
     } catch (err: unknown) {
       handleApiError(err)
       throw err

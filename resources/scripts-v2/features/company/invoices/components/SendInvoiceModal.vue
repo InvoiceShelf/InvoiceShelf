@@ -290,8 +290,8 @@ async function setInitialData(): Promise<void> {
 
     form.id = modalStore.id
 
-    if (admin?.data) {
-      form.from = (admin.data as Record<string, unknown>).from_mail as string
+    if (admin?.from_mail) {
+      form.from = admin.from_mail as string
     }
 
     if (modalData.value?.customer) {

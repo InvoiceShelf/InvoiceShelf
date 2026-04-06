@@ -241,8 +241,8 @@ async function setInitialData() {
 
   estimateMailForm.id = modalStore.id as number
 
-  if (admin.data) {
-    estimateMailForm.from = (admin.data as Record<string, string>).from_mail
+  if (admin.from_mail) {
+    estimateMailForm.from = admin.from_mail as string
   }
 
   if (modalData.value) {
@@ -274,9 +274,10 @@ async function submitForm() {
       isLoading.value = false
 
       isPreview.value = true
-      const blob = new Blob([(previewResponse as { data: string }).data], {
-        type: 'text/html',
-      })
+      const blob = new Blob(
+        [(previewResponse as { data: string }).data ?? previewResponse],
+        { type: 'text/html' },
+      )
       templateUrl.value = URL.createObjectURL(blob)
 
       return

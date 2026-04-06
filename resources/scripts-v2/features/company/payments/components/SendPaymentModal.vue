@@ -244,8 +244,8 @@ async function setInitialData() {
   const admin = await companyStore.fetchBasicMailConfig()
   paymentMailForm.id = modalStore.id as number
 
-  if (admin.data) {
-    paymentMailForm.from = (admin.data as Record<string, string>).from_mail
+  if (admin.from_mail) {
+    paymentMailForm.from = admin.from_mail as string
   }
 
   if (modalData.value) {
@@ -275,9 +275,10 @@ async function sendPaymentData() {
       isLoading.value = false
 
       isPreview.value = true
-      const blob = new Blob([(previewResponse as { data: string }).data], {
-        type: 'text/html',
-      })
+      const blob = new Blob(
+        [(previewResponse as { data: string }).data ?? previewResponse],
+        { type: 'text/html' },
+      )
       templateUrl.value = URL.createObjectURL(blob)
 
       return
