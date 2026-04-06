@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Services\InvoiceService;
+use App\Services\Pdf\PdfTemplateUtils;
 use App\Support\PdfHtmlSanitizer;
 use App\Traits\GeneratesPdfTrait;
 use App\Traits\HasCustomFieldsTrait;
@@ -12,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Str;
 use Nwidart\Modules\Facades\Module;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -293,6 +295,22 @@ class Invoice extends Model implements HasMedia
     public function scopeWhereInvoice($query, $invoice_id)
     {
         $query->orWhere('id', $invoice_id);
+    }
+
+    public function getEstimateTemplateName(): string
+    {
+        $templateName = Str::replace('invoice', 'estimate', $this->template_name);
+
+        $names = [];
+        foreach (PdfTemplateUtils::getFormattedTemplates('estimate') as $template) {
+            $names[] = $template['name'];
+        }
+
+        if (! in_array($templateName, $names)) {
+            $templateName = 'estimate1';
+        }
+
+        return $templateName;
     }
 
     public function scopeWhereCompany($query)

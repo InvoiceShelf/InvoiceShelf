@@ -467,6 +467,8 @@
     "cloned_successfully": "Invoice cloned successfully",
     "clone_invoice": "Clone Invoice",
     "confirm_clone": "This invoice will be cloned into a new Invoice",
+    "convert_to_estimate": "Convert to Estimate",
+    "confirm_convert_to_estimate": "This invoice will be converted into a new Estimate",
     "item": {
       "title": "Item Title",
       "description": "Description",

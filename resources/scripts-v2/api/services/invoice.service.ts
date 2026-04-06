@@ -103,6 +103,11 @@ export const invoiceService = {
     return data
   },
 
+  async convertToEstimate(id: number): Promise<ApiResponse<Record<string, unknown>>> {
+    const { data } = await client.post(`${API.INVOICES}/${id}/convert-to-estimate`)
+    return data
+  },
+
   async changeStatus(payload: InvoiceStatusPayload): Promise<ApiResponse<Invoice>> {
     const { data } = await client.post(`${API.INVOICES}/${payload.id}/status`, payload)
     return data

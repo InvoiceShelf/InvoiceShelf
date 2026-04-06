@@ -267,6 +267,8 @@ Route::prefix('/v1')->group(function () {
 
             Route::post('/invoices/{invoice}/clone', [InvoicesController::class, 'clone']);
 
+            Route::post('/invoices/{invoice}/convert-to-estimate', [InvoicesController::class, 'convertToEstimate']);
+
             Route::post('/invoices/{invoice}/status', [InvoicesController::class, 'changeStatus']);
 
             Route::post('/invoices/delete', [InvoicesController::class, 'delete']);

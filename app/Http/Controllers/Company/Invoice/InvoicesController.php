@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use App\Http\Requests\DeleteInvoiceRequest;
 use App\Http\Requests\SendInvoiceRequest;
+use App\Http\Resources\EstimateResource;
 use App\Http\Resources\InvoiceResource;
 use App\Jobs\GenerateInvoicePdfJob;
+use App\Models\Estimate;
 use App\Models\Invoice;
 use App\Services\InvoiceService;
 use Illuminate\Http\JsonResponse;
@@ -145,6 +147,15 @@ class InvoicesController extends Controller
         $newInvoice = $this->invoiceService->clone($invoice);
 
         return new InvoiceResource($newInvoice);
+    }
+
+    public function convertToEstimate(Request $request, Invoice $invoice)
+    {
+        $this->authorize('create', Estimate::class);
+
+        $estimate = $this->invoiceService->convertToEstimate($invoice);
+
+        return new EstimateResource($estimate);
     }
 
     public function changeStatus(Request $request, Invoice $invoice)
