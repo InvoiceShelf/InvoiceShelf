@@ -168,6 +168,7 @@ const canCreateInvoiceFromEstimate = computed(() => userStore.hasAbilities(ABILI
               :can-delete="canDeleteInvoice"
               :can-send="canSendInvoice"
               :can-create-payment="canCreatePayment"
+              :can-create-estimate="canCreateEstimate"
             />
           </template>
         </BaseTable>

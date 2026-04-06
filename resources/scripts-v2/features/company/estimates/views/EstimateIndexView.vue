@@ -220,6 +220,8 @@
       </BaseTable>
     </div>
   </BasePage>
+
+  <SendEstimateModal />
 </template>
 
 <script setup lang="ts">
@@ -228,6 +230,7 @@ import { useI18n } from 'vue-i18n'
 import { debouncedWatch } from '@vueuse/core'
 import { useEstimateStore } from '../store'
 import EstimateDropdown from '../components/EstimateDropdown.vue'
+import SendEstimateModal from '../components/SendEstimateModal.vue'
 import { useUserStore } from '../../../../stores/user.store'
 import { useDialogStore } from '../../../../stores/dialog.store'
 import type { Estimate } from '../../../../types/domain/estimate'

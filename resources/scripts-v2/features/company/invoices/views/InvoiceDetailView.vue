@@ -45,6 +45,8 @@
           :can-create="canCreate"
           :can-delete="canDelete"
           :can-send="canSend"
+          :can-create-payment="canCreatePayment"
+          :can-create-estimate="canCreateEstimate"
         />
       </template>
     </BasePageHeader>
@@ -274,6 +276,10 @@ const canCreatePayment = computed<boolean>(() => {
   return (
     props.canCreatePayment || userStore.hasAbilities(ABILITIES.CREATE_PAYMENT)
   )
+})
+
+const canCreateEstimate = computed<boolean>(() => {
+  return userStore.hasAbilities('create-estimate')
 })
 
 const invoiceData = ref<Invoice | null>(null)

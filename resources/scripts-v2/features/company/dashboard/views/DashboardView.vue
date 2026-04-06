@@ -5,6 +5,8 @@ import { useUserStore } from '../../../../stores/user.store'
 import DashboardStats from '../components/DashboardStats.vue'
 import DashboardChart from '../components/DashboardChart.vue'
 import DashboardTable from '../components/DashboardTable.vue'
+import SendInvoiceModal from '@v2/features/company/invoices/components/SendInvoiceModal.vue'
+import SendEstimateModal from '@v2/features/company/estimates/components/SendEstimateModal.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -27,4 +29,7 @@ onMounted(() => {
     <DashboardChart />
     <DashboardTable />
   </BasePage>
+
+  <SendInvoiceModal />
+  <SendEstimateModal />
 </template>

@@ -329,6 +329,7 @@
               :can-delete="canDelete"
               :can-send="canSend"
               :can-create-payment="canCreatePayment"
+              :can-create-estimate="canCreateEstimate"
             />
           </template>
         </BaseTable>
@@ -469,6 +470,8 @@
       </div>
     </template>
   </BasePage>
+
+  <SendInvoiceModal />
 </template>
 
 <script setup lang="ts">
@@ -479,6 +482,7 @@ import { debouncedWatch } from '@vueuse/core'
 import { useInvoiceStore } from '../store'
 import { useRecurringInvoiceStore } from '../../recurring-invoices/store'
 import InvoiceDropdown from '../components/InvoiceDropdown.vue'
+import SendInvoiceModal from '../components/SendInvoiceModal.vue'
 import RecurringInvoiceDropdown from '../../recurring-invoices/components/RecurringInvoiceDropdown.vue'
 import { useUserStore } from '../../../../stores/user.store'
 import { useDialogStore } from '../../../../stores/dialog.store'
@@ -647,6 +651,10 @@ const canSend = computed<boolean>(() => {
 
 const canCreatePayment = computed<boolean>(() => {
   return userStore.hasAbilities('create-payment')
+})
+
+const canCreateEstimate = computed<boolean>(() => {
+  return userStore.hasAbilities('create-estimate')
 })
 
 const hasAtLeastOneAbility = computed<boolean>(() => {
