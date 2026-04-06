@@ -404,13 +404,15 @@ export const useInvoiceStore = defineStore('invoice', {
     },
 
     async selectCustomer(id: number): Promise<unknown> {
-      // This would use customerService in a full implementation
       const { customerService } = await import(
         '../../../api/services/customer.service'
       )
       const response = await customerService.get(id)
       this.newInvoice.customer = response.data as unknown as Customer
       this.newInvoice.customer_id = response.data.id
+      if (response.data.currency) {
+        this.newInvoice.currency_id = (response.data.currency as { id: number }).id
+      }
       return response
     },
 

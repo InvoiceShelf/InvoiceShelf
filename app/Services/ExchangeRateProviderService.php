@@ -25,17 +25,42 @@ class ExchangeRateProviderService
 
     public function checkActiveCurrencies($request)
     {
-        return ExchangeRateProvider::whereJsonContains('currencies', $request->currencies)
-            ->where('active', true)
-            ->get();
+        $currencies = $request->currencies;
+
+        if (empty($currencies)) {
+            return collect();
+        }
+
+        $query = ExchangeRateProvider::where('active', true);
+
+        foreach ($currencies as $currency) {
+            $query->orWhere(function ($q) use ($currency) {
+                $q->where('active', true)
+                    ->whereJsonContains('currencies', $currency);
+            });
+        }
+
+        return $query->get();
     }
 
     public function checkUpdateActiveCurrencies(ExchangeRateProvider $provider, $request)
     {
-        return ExchangeRateProvider::where('active', $request->active)
-            ->where('id', '<>', $provider->id)
-            ->whereJsonContains('currencies', $request->currencies)
-            ->get();
+        $currencies = $request->currencies;
+
+        if (empty($currencies)) {
+            return collect();
+        }
+
+        $query = ExchangeRateProvider::where('id', '<>', $provider->id)
+            ->where('active', true);
+
+        $query->where(function ($q) use ($currencies) {
+            foreach ($currencies as $currency) {
+                $q->orWhereJsonContains('currencies', $currency);
+            }
+        });
+
+        return $query->get();
     }
 
     public function checkProviderStatus($request)

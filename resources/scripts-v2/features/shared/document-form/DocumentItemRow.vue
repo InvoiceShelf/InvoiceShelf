@@ -128,6 +128,15 @@
                     :amount="total"
                     :currency="selectedCurrency"
                   />
+                  <span
+                    v-if="showBaseCurrencyEquivalent"
+                    class="block text-xs text-muted mt-1"
+                  >
+                    <BaseFormatMoney
+                      :amount="baseCurrencyTotal"
+                      :currency="companyCurrency"
+                    />
+                  </span>
                 </span>
                 <div class="flex items-center justify-center w-6 h-10 mx-2">
                   <BaseIcon
@@ -184,6 +193,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { required, between, maxLength, helpers, minValue } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
+import { useCompanyStore } from '../../../stores/company.store'
 import DocumentItemRowTax from './DocumentItemRowTax.vue'
 import DragIcon from '@v2/components/icons/DragIcon.vue'
 import { generateClientId } from '../../../utils'
@@ -221,6 +231,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>()
 
 const { t } = useI18n()
+const companyStore = useCompanyStore()
 
 const formData = computed<DocumentFormData>(() => {
   return props.store[props.storeProp] as DocumentFormData
@@ -284,6 +295,17 @@ const totalSimpleTax = computed<number>(() => {
 })
 
 const totalTax = computed<number>(() => totalSimpleTax.value)
+
+const companyCurrency = computed(() => companyStore.selectedCompanyCurrency)
+
+const showBaseCurrencyEquivalent = computed<boolean>(() => {
+  return !!(formData.value.exchange_rate && (props.store as Record<string, unknown>).showExchangeRate)
+})
+
+const baseCurrencyTotal = computed<number>(() => {
+  if (!formData.value.exchange_rate) return 0
+  return Math.round(total.value * Number(formData.value.exchange_rate))
+})
 
 const rules = {
   name: {

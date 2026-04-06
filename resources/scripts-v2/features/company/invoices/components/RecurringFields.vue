@@ -125,6 +125,16 @@
           label="key"
         />
       </BaseInputGroup>
+
+      <!-- Exchange Rate -->
+      <ExchangeRateConverter
+        :store="invoiceStore"
+        store-prop="newInvoice"
+        :v="{ exchange_rate: { $error: false, $errors: [], $touch: () => {} } }"
+        :is-loading="isLoading"
+        :is-edit="isEdit"
+        :customer-currency="invoiceStore.newInvoice.currency_id"
+      />
     </BaseInputGrid>
   </div>
 </template>
@@ -134,6 +144,8 @@ import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDebounceFn } from '@vueuse/core'
 import { useRecurringInvoiceStore } from '@v2/features/company/recurring-invoices/store'
+import { useInvoiceStore } from '../store'
+import { ExchangeRateConverter } from '../../../shared/document-form'
 import type { FrequencyOption } from '@v2/features/company/recurring-invoices/store'
 
 interface Props {
@@ -147,6 +159,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const recurringInvoiceStore = useRecurringInvoiceStore()
+const invoiceStore = useInvoiceStore()
 const { t } = useI18n()
 
 const isLoadingNextDate = ref<boolean>(false)

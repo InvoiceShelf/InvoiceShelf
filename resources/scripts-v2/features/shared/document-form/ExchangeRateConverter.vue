@@ -49,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import { watch, computed, ref, onBeforeUnmount } from 'vue'
+import { watch, computed, ref, onMounted, onBeforeUnmount } from 'vue'
 import { exchangeRateService } from '../../../api/services/exchange-rate.service'
 import { useCompanyStore } from '../../../stores/company.store'
 import { useGlobalStore } from '../../../stores/global.store'
@@ -78,6 +78,10 @@ const globalStore = useGlobalStore()
 
 const hasActiveProvider = ref<boolean>(false)
 const isFetching = ref<boolean>(false)
+
+onMounted(() => {
+  globalStore.fetchCurrencies()
+})
 
 const formData = computed<DocumentFormData>(() => {
   return props.store[props.storeProp] as DocumentFormData
@@ -139,12 +143,10 @@ function checkForActiveProvider(): void {
     exchangeRateService
       .getActiveProvider(Number(props.customerCurrency))
       .then((res) => {
-        if (res.has_active_provider) {
-          hasActiveProvider.value = true
-        }
+        hasActiveProvider.value = res.hasActiveProvider
       })
       .catch(() => {
-        // Silently fail
+        hasActiveProvider.value = false
       })
   }
 }
@@ -176,11 +178,7 @@ async function getCurrentExchangeRate(v: number | string | null | undefined): Pr
   isFetching.value = true
   try {
     const res = await exchangeRateService.getRate(Number(v))
-    if (res && res.exchange_rate != null) {
-      formData.value.exchange_rate = res.exchange_rate
-    } else {
-      formData.value.exchange_rate = null
-    }
+    formData.value.exchange_rate = res.exchangeRate
   } catch {
     // Silently fail
   } finally {

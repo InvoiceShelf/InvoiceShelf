@@ -217,12 +217,20 @@
         <BaseFormatMoney :amount="store.getTotal" :currency="defaultCurrency" />
       </label>
     </div>
+
+    <!-- Base currency equivalent -->
+    <div v-if="showBaseCurrencyEquivalent" class="flex items-center justify-end w-full mt-1">
+      <label class="text-xs text-muted">
+        ≈ <BaseFormatMoney :amount="baseCurrencyGrandTotal" :currency="companyCurrency" />
+      </label>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import TaxSelectPopup from './TaxSelectPopup.vue'
+import { useCompanyStore } from '../../../stores/company.store'
 import { generateClientId } from '../../../utils'
 import type { Currency } from '../../../types/domain/currency'
 import type { TaxType } from '../../../types/domain/tax'
@@ -245,6 +253,7 @@ const props = withDefaults(defineProps<Props>(), {
   isLoading: false,
 })
 
+const companyStore = useCompanyStore()
 const taxModal = ref<HTMLElement | null>(null)
 
 const formData = computed<DocumentFormData>(() => {
@@ -261,6 +270,17 @@ const defaultCurrency = computed(() => {
 const defaultCurrencySymbol = computed<string>(() => {
   const curr = defaultCurrency.value as Record<string, unknown> | null
   return (curr?.symbol as string) ?? '$'
+})
+
+const companyCurrency = computed(() => companyStore.selectedCompanyCurrency)
+
+const showBaseCurrencyEquivalent = computed<boolean>(() => {
+  return !!(formData.value.exchange_rate && (props.store as Record<string, unknown>).showExchangeRate)
+})
+
+const baseCurrencyGrandTotal = computed<number>(() => {
+  if (!formData.value.exchange_rate) return 0
+  return Math.round(props.store.getTotal * Number(formData.value.exchange_rate))
 })
 
 watch(

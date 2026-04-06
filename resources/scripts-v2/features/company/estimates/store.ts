@@ -430,6 +430,9 @@ export const useEstimateStore = defineStore('estimate', {
       const response = await customerService.get(id)
       this.newEstimate.customer = response.data as unknown as Customer
       this.newEstimate.customer_id = response.data.id
+      if (response.data.currency) {
+        this.newEstimate.currency_id = (response.data.currency as { id: number }).id
+      }
       return response
     },
 

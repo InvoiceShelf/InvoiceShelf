@@ -212,11 +212,18 @@ async function fetchCurrencies(): Promise<void> {
 
   isFetchingCurrencies.value = true
   try {
-    const params: Record<string, string> = { driver, key }
+    const driverConfig: Record<string, string> = {}
     if (currencyConverter.value.type) {
-      params.type = currencyConverter.value.type
+      driverConfig.type = currencyConverter.value.type
     }
-    const res = await exchangeRateService.getSupportedCurrencies()
+    if (currencyConverter.value.url) {
+      driverConfig.url = currencyConverter.value.url
+    }
+    const res = await exchangeRateService.getSupportedCurrencies({
+      driver,
+      key,
+      driver_config: Object.keys(driverConfig).length ? driverConfig : undefined,
+    })
     supportedCurrencies.value = res.supportedCurrencies ?? []
   } finally {
     isFetchingCurrencies.value = false

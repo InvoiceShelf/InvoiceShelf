@@ -36,7 +36,7 @@ class OpenExchangeRateDriver extends ExchangeRateDriver
 
     public function validateConnection(): array
     {
-        $url = "{$this->baseUrl}/latest.json?app_id={$this->apiKey}&base=INR&symbols=USD";
+        $url = "{$this->baseUrl}/latest.json?app_id={$this->apiKey}&base=USD&symbols=EUR";
         $response = Http::get($url)->json();
 
         if (array_key_exists('error', $response)) {

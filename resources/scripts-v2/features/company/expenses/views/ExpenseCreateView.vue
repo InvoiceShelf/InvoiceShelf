@@ -131,7 +131,7 @@
               label="name"
               track-by="name"
               :content-loading="isFetchingInitialData"
-              :options="currencies"
+              :options="globalStore.currencies"
               searchable
               :can-deselect="false"
               :placeholder="$t('customers.select_currency')"
@@ -139,6 +139,16 @@
               @update:model-value="onCurrencyChange"
             />
           </BaseInputGroup>
+
+          <!-- Exchange Rate -->
+          <ExchangeRateConverter
+            :store="expenseStore"
+            store-prop="currentExpense"
+            :v="{ exchange_rate: { $error: false, $errors: [], $touch: () => {} } }"
+            :is-loading="isFetchingInitialData"
+            :is-edit="isEdit"
+            :customer-currency="expenseStore.currentExpense.currency_id"
+          />
 
           <!-- Customer -->
           <BaseInputGroup
@@ -237,24 +247,19 @@ import { ref, computed, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useExpenseStore } from '../store'
+import { useGlobalStore } from '../../../../stores/global.store'
+import { useCompanyStore } from '../../../../stores/company.store'
+import { ExchangeRateConverter } from '../../../shared/document-form'
 import type { ExpenseCategory } from '../../../../types/domain/expense'
 import type { Customer } from '../../../../types/domain/customer'
 import type { Currency } from '../../../../types/domain/currency'
-
-interface Props {
-  currencies?: Currency[]
-  companyCurrency?: Currency | null
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  currencies: () => [],
-  companyCurrency: null,
-})
 
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
 const expenseStore = useExpenseStore()
+const globalStore = useGlobalStore()
+const companyStore = useCompanyStore()
 
 const isSaving = ref<boolean>(false)
 const isFetchingInitialData = ref<boolean>(false)
@@ -291,7 +296,7 @@ function onFileInputRemove(): void {
 }
 
 function onCurrencyChange(currencyId: number): void {
-  const found = props.currencies.find((c) => c.id === currencyId)
+  const found = globalStore.currencies.find((c: Currency) => c.id === currencyId)
   expenseStore.currentExpense.selectedCurrency = found ?? null
 }
 
@@ -314,9 +319,12 @@ async function searchCustomer(search: string): Promise<Customer[]> {
 }
 
 async function loadData(): Promise<void> {
-  if (!isEdit.value && props.companyCurrency) {
-    expenseStore.currentExpense.currency_id = props.companyCurrency.id
-    expenseStore.currentExpense.selectedCurrency = props.companyCurrency
+  await globalStore.fetchCurrencies()
+
+  const companyCurrency = companyStore.selectedCompanyCurrency
+  if (!isEdit.value && companyCurrency) {
+    expenseStore.currentExpense.currency_id = companyCurrency.id
+    expenseStore.currentExpense.selectedCurrency = companyCurrency
   }
 
   isFetchingInitialData.value = true

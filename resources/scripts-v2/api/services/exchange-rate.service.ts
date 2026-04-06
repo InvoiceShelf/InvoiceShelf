@@ -8,15 +8,16 @@ export interface CreateExchangeRateProviderPayload {
   key: string
   active?: boolean
   currencies?: string[]
+  driver_config?: Record<string, string>
 }
 
+// Normalized response types (what callers receive)
 export interface ExchangeRateResponse {
-  exchange_rate: number
+  exchangeRate: number | null
 }
 
 export interface ActiveProviderResponse {
-  has_active_provider: boolean
-  exchange_rate: number | null
+  hasActiveProvider: boolean
 }
 
 export interface SupportedCurrenciesResponse {
@@ -24,7 +25,8 @@ export interface SupportedCurrenciesResponse {
 }
 
 export interface UsedCurrenciesResponse {
-  activeUsedCurrencies: Currency[]
+  activeUsedCurrencies: string[]
+  allUsedCurrencies: string[]
 }
 
 export interface BulkCurrenciesResponse {
@@ -38,8 +40,23 @@ export interface BulkUpdatePayload {
   }>
 }
 
+export interface ConfigOption {
+  key: string
+  value: string
+}
+
 export interface ConfigDriversResponse {
-  exchange_rate_drivers: string[]
+  exchange_rate_drivers: ConfigOption[]
+}
+
+export interface ConfigServersResponse {
+  currency_converter_servers: ConfigOption[]
+}
+
+export interface SupportedCurrenciesParams {
+  driver: string
+  key: string
+  driver_config?: Record<string, string>
 }
 
 export const exchangeRateService = {
@@ -73,24 +90,35 @@ export const exchangeRateService = {
   },
 
   // Exchange Rates
+  // Backend returns { exchangeRate: [number] } or { error: string }
   async getRate(currencyId: number): Promise<ExchangeRateResponse> {
     const { data } = await client.get(`${API.CURRENCIES}/${currencyId}/exchange-rate`)
-    return data
+    const raw = data as Record<string, unknown>
+
+    if (raw.exchangeRate && Array.isArray(raw.exchangeRate)) {
+      return { exchangeRate: Number(raw.exchangeRate[0]) ?? null }
+    }
+
+    return { exchangeRate: null }
   },
 
+  // Backend returns { success: true, message: "provider_active" } or { error: "no_active_provider" }
   async getActiveProvider(currencyId: number): Promise<ActiveProviderResponse> {
     const { data } = await client.get(`${API.CURRENCIES}/${currencyId}/active-provider`)
-    return data
+    const raw = data as Record<string, unknown>
+
+    return { hasActiveProvider: raw.success === true }
   },
 
   // Currency lists
-  async getSupportedCurrencies(): Promise<SupportedCurrenciesResponse> {
-    const { data } = await client.get(API.SUPPORTED_CURRENCIES)
+  async getSupportedCurrencies(params: SupportedCurrenciesParams): Promise<SupportedCurrenciesResponse> {
+    const { data } = await client.get(API.SUPPORTED_CURRENCIES, { params })
     return data
   },
 
-  async getUsedCurrencies(): Promise<UsedCurrenciesResponse> {
-    const { data } = await client.get(API.USED_CURRENCIES)
+  // Backend returns { activeUsedCurrencies: string[], allUsedCurrencies: string[] }
+  async getUsedCurrencies(params?: { provider_id?: number }): Promise<UsedCurrenciesResponse> {
+    const { data } = await client.get(API.USED_CURRENCIES, { params })
     return data
   },
 
@@ -105,12 +133,14 @@ export const exchangeRateService = {
   },
 
   // Config
+  // Backend returns { exchange_rate_drivers: Array<{ key, value }> }
   async getDrivers(): Promise<ConfigDriversResponse> {
     const { data } = await client.get(API.CONFIG, { params: { key: 'exchange_rate_drivers' } })
     return data
   },
 
-  async getCurrencyConverterServers(): Promise<Record<string, unknown>> {
+  // Backend returns { currency_converter_servers: Array<{ key, value }> }
+  async getCurrencyConverterServers(): Promise<ConfigServersResponse> {
     const { data } = await client.get(API.CONFIG, { params: { key: 'currency_converter_servers' } })
     return data
   },

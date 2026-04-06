@@ -116,6 +116,16 @@
             </div>
           </BaseInputGroup>
 
+          <!-- Exchange Rate -->
+          <ExchangeRateConverter
+            :store="paymentStore"
+            store-prop="currentPayment"
+            :v="{ exchange_rate: { $error: false, $errors: [], $touch: () => {} } }"
+            :is-loading="isLoadingContent"
+            :is-edit="isEdit"
+            :customer-currency="paymentStore.currentPayment.currency_id"
+          />
+
           <!-- Payment Mode -->
           <BaseInputGroup
             :content-loading="isLoadingContent"
@@ -180,13 +190,17 @@ import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import cloneDeep from 'lodash/cloneDeep'
 import { usePaymentStore } from '../store'
+import { useCompanyStore } from '../../../../stores/company.store'
 import { invoiceService } from '../../../../api/services/invoice.service'
+import { customerService } from '../../../../api/services/customer.service'
+import { ExchangeRateConverter } from '../../../shared/document-form'
 import type { Invoice } from '../../../../types/domain/invoice'
 
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
 const paymentStore = usePaymentStore()
+const companyStore = useCompanyStore()
 
 const isSaving = ref<boolean>(false)
 const isLoadingInvoices = ref<boolean>(false)
@@ -225,9 +239,11 @@ if (route.query.customer) {
   paymentStore.currentPayment.customer_id = Number(route.query.customer)
 }
 
-paymentStore.fetchPaymentInitialData(isEdit.value, {
-  id: isEdit.value ? (route.params.id as string) : undefined,
-})
+paymentStore.fetchPaymentInitialData(
+  isEdit.value,
+  { id: isEdit.value ? (route.params.id as string) : undefined },
+  companyStore.selectedCompanyCurrency ?? undefined,
+)
 
 // Create-from-invoice: pre-select the invoice and its customer
 if (route.params.id && !isEdit.value) {
@@ -262,8 +278,23 @@ async function onCustomerChange(customerId: number): Promise<void> {
 
   isLoadingInvoices.value = true
   try {
-    const response = await invoiceService.list(params as never)
-    invoiceList.value = [...(response.data as unknown as Invoice[])]
+    const [invoiceResponse, customerResponse] = await Promise.all([
+      invoiceService.list(params as never),
+      customerService.get(customerId),
+    ])
+
+    invoiceList.value = [...(invoiceResponse.data as unknown as Invoice[])]
+
+    // Set currency from customer
+    if (customerResponse.data) {
+      const customer = customerResponse.data
+      paymentStore.currentPayment.customer = customer
+      paymentStore.currentPayment.selectedCustomer = customer
+      if (customer.currency) {
+        paymentStore.currentPayment.currency = customer.currency
+        paymentStore.currentPayment.currency_id = customer.currency.id
+      }
+    }
 
     if (paymentStore.currentPayment.invoice_id) {
       selectedInvoice.value =
