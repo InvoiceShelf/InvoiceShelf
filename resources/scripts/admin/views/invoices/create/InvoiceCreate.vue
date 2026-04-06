@@ -139,6 +139,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import moment from 'moment'
 import {
   required,
   maxLength,
@@ -179,6 +180,9 @@ let router = useRouter()
 const invoiceValidationScope = 'newInvoice'
 let isSaving = ref(false)
 const isMarkAsDefault = ref(false)
+const dueDateManuallyChanged = ref(false)
+let isAutoUpdatingDueDate = false
+let expectedAutoDueDate = ref(null)
 
 const invoiceNoteFieldList = ref([
   'customer',
@@ -260,6 +264,52 @@ watch(
   },
   {immediate: true}
 )
+
+// Watch for manual changes to due_date
+watch(() => invoiceStore.newInvoice.due_date, (newDueDate, oldDueDate) => {
+  if (!isAutoUpdatingDueDate && newDueDate !== oldDueDate && oldDueDate !== undefined && newDueDate !== expectedAutoDueDate.value) {
+    dueDateManuallyChanged.value = true
+  }
+});
+
+// Watch invoice_date and automatically update due_date when it changes
+watch(() => invoiceStore.newInvoice.invoice_date, (newInvoiceDate, oldInvoiceDate) => {
+  if (
+    companyStore.selectedCompanySettings?.invoice_set_due_date_automatically === 'YES' &&
+    newInvoiceDate &&
+    newInvoiceDate !== oldInvoiceDate &&
+    oldInvoiceDate !== undefined
+  ) {
+
+    const dueDateDays = parseInt(companyStore.selectedCompanySettings.invoice_due_date_days || 0);
+    const invoiceDate = moment(newInvoiceDate)
+    
+    if (invoiceDate.isValid()) {
+      const calculatedDueDate = invoiceDate.clone().add(dueDateDays, 'days').format('YYYY-MM-DD')
+      expectedAutoDueDate.value = calculatedDueDate
+      
+      
+      if (dueDateManuallyChanged.value) {
+        const currentDueDate = invoiceStore.newInvoice.due_date
+        if (currentDueDate) {
+          const dueDateMoment = moment(currentDueDate)
+          if (dueDateMoment.isValid() && dueDateMoment.isSameOrAfter(invoiceDate, 'day')) {
+            return // Manual due date still valid/in the future
+          }
+        }
+
+        // Manual due date is in the past/invalid
+        dueDateManuallyChanged.value = false
+      }
+      
+      // Set the calculated due date
+      isAutoUpdatingDueDate = true
+      invoiceStore.newInvoice.due_date = calculatedDueDate
+      isAutoUpdatingDueDate = false
+    }
+    
+  }
+})
 
 async function submitForm() {
   v$.value.$touch()
