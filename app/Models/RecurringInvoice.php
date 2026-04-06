@@ -201,8 +201,9 @@ class RecurringInvoice extends Model
     public static function getNextInvoiceDate(string $frequency, string $starts_at): string
     {
         $cron = new Cron\CronExpression($frequency);
+        $timezone = config('app.timezone', 'UTC');
 
-        return $cron->getNextRunDate($starts_at)->format('Y-m-d H:i:s');
+        return $cron->getNextRunDate($starts_at, 0, false, $timezone)->format('Y-m-d H:i:s');
     }
 
     public function updateNextInvoiceDate(): void
