@@ -358,6 +358,19 @@ class EstimateService
             $this->documentItemService->createTaxes($invoice, $estimate->taxes->toArray());
         }
 
+        if ($estimate->fields()->exists()) {
+            $customFields = [];
+
+            foreach ($estimate->fields as $data) {
+                $customFields[] = [
+                    'id' => $data->custom_field_id,
+                    'value' => $data->defaultAnswer,
+                ];
+            }
+
+            $invoice->addCustomFields($customFields);
+        }
+
         $estimate->checkForEstimateConvertAction();
 
         return Invoice::find($invoice->id);
