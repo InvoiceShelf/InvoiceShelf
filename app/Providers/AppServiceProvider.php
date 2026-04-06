@@ -186,9 +186,21 @@ class AppServiceProvider extends ServiceProvider
                 : FileDisk::where('set_as_default', true)->first();
 
             if ($disk) {
-                $disk->setConfig();
+                // Register the disk config without changing the global default.
+                // setConfig() mutates filesystems.default which causes side effects.
                 $prefix = env('DYNAMIC_DISK_PREFIX', 'temp_');
-                config(['media-library.disk_name' => $prefix.$disk->driver]);
+                $diskName = $prefix.$disk->driver;
+                $credentials = collect(json_decode($disk->credentials));
+                $baseConfig = config('filesystems.disks.'.$disk->driver, []);
+
+                foreach ($baseConfig as $key => $value) {
+                    if ($credentials->has($key)) {
+                        $baseConfig[$key] = $credentials[$key];
+                    }
+                }
+
+                config(['filesystems.disks.'.$diskName => $baseConfig]);
+                config(['media-library.disk_name' => $diskName]);
             }
         } catch (\Exception $e) {
             // DB not yet migrated or settings table missing — use config default
