@@ -309,9 +309,9 @@ async function submitForm(): Promise<void> {
         customFields: invoiceData.customFields,
 
         // Calculated totals
-        sub_total: invoiceStore.getSubTotal,
-        total: invoiceStore.getTotal,
-        tax: invoiceStore.getTotalTax,
+        sub_total: Math.round(invoiceStore.getSubTotal),
+        total: Math.round(invoiceStore.getTotal),
+        tax: Math.round(invoiceStore.getTotalTax),
       }
 
       let response
@@ -325,9 +325,9 @@ async function submitForm(): Promise<void> {
     } else {
       const data: Record<string, unknown> = {
         ...cloneDeep(invoiceStore.newInvoice),
-        sub_total: invoiceStore.getSubTotal,
-        total: invoiceStore.getTotal,
-        tax: invoiceStore.getTotalTax,
+        sub_total: Math.round(invoiceStore.getSubTotal),
+        total: Math.round(invoiceStore.getTotal),
+        tax: Math.round(invoiceStore.getTotalTax),
       }
 
       const items = data.items as Array<Record<string, unknown>>

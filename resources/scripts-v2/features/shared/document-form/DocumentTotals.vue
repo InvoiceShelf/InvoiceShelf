@@ -192,6 +192,9 @@
         :store-prop="storeProp"
         :store="store"
         :type="taxPopupType"
+        :tax-types="availableTaxTypes"
+        :company-currency="companyCurrency"
+        :can-create-tax-type="canCreateTaxType"
         @select:tax-type="onSelectTax"
       />
     </div>
@@ -228,10 +231,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import TaxSelectPopup from './TaxSelectPopup.vue'
 import { useCompanyStore } from '../../../stores/company.store'
+import { useUserStore } from '../../../stores/user.store'
+import { taxTypeService } from '../../../api/services/tax-type.service'
 import { generateClientId } from '../../../utils'
+import { ABILITIES } from '../../../config/abilities'
 import type { Currency } from '../../../types/domain/currency'
 import type { TaxType } from '../../../types/domain/tax'
 import type { DocumentFormData, DocumentTax, DocumentStore, DocumentItem } from './use-document-calculations'
@@ -254,7 +260,22 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const companyStore = useCompanyStore()
+const userStore = useUserStore()
 const taxModal = ref<HTMLElement | null>(null)
+const availableTaxTypes = ref<TaxType[]>([])
+
+const canCreateTaxType = computed<boolean>(() => {
+  return userStore.hasAbilities(ABILITIES.CREATE_TAX_TYPE)
+})
+
+onMounted(async () => {
+  try {
+    const response = await taxTypeService.list({ limit: 'all' as unknown as number })
+    availableTaxTypes.value = response.data
+  } catch {
+    // Silently fail
+  }
+})
 
 const formData = computed<DocumentFormData>(() => {
   return props.store[props.storeProp] as DocumentFormData
@@ -285,7 +306,10 @@ const baseCurrencyGrandTotal = computed<number>(() => {
 
 watch(
   () => formData.value.items,
-  () => setDiscount(),
+  () => {
+    setDiscount()
+    recalculateGlobalTaxes()
+  },
   { deep: true },
 )
 
@@ -294,6 +318,7 @@ const totalDiscount = computed<number>({
   set: (newValue: number) => {
     formData.value.discount = newValue
     setDiscount()
+    recalculateGlobalTaxes()
   },
 })
 
@@ -348,6 +373,18 @@ function setDiscount(): void {
   }
 
   formData.value.discount_val = Math.round(newValue * 100)
+}
+
+function recalculateGlobalTaxes(): void {
+  if (formData.value.tax_per_item === 'YES') return
+
+  const subtotalWithDiscount = props.store.getSubtotalWithDiscount
+  formData.value.taxes.forEach((tax: DocumentTax) => {
+    if (tax.calculation_type === 'percentage' && tax.percent) {
+      tax.amount = Math.round((subtotalWithDiscount * tax.percent) / 100)
+    }
+    // Fixed taxes keep their amount as-is
+  })
 }
 
 function selectFixed(): void {

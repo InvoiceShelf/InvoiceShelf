@@ -202,9 +202,9 @@ async function submitForm(): Promise<void> {
 
   const data: Record<string, unknown> = {
     ...cloneDeep(estimateStore.newEstimate),
-    sub_total: estimateStore.getSubTotal,
-    total: estimateStore.getTotal,
-    tax: estimateStore.getTotalTax,
+    sub_total: Math.round(estimateStore.getSubTotal),
+    total: Math.round(estimateStore.getTotal),
+    tax: Math.round(estimateStore.getTotalTax),
   }
 
   const items = data.items as Array<Record<string, unknown>>
