@@ -38,12 +38,10 @@ export const useGlobalStore = defineStore('global', () => {
 
   const isAppLoaded = ref<boolean>(false)
   const isSidebarOpen = ref<boolean>(false)
-  const isSidebarCollapsed = ref<boolean>(
-    localStore.get<string>('sidebarCollapsed') === 'true'
-  )
+  const isSidebarCollapsed = ref<boolean>(localStore.getBoolean('sidebarCollapsed'))
   const areCurrenciesLoading = ref<boolean>(false)
 
-  const downloadReport = ref<string | null>(null)
+  const downloadReport = ref<(() => void) | null>(null)
 
   // Getters
   const menuGroups = computed<MenuItem[][]>(() => {
@@ -51,12 +49,13 @@ export const useGlobalStore = defineStore('global', () => {
   })
 
   // Actions
-  async function bootstrap(): Promise<BootstrapResponse> {
+  async function bootstrap(options?: { adminMode?: boolean }): Promise<BootstrapResponse> {
     const companyStore = useCompanyStore()
     const userStore = useUserStore()
 
     try {
-      const response = await bootstrapService.bootstrap(companyStore.isAdminMode)
+      const shouldUseAdminBootstrap = options?.adminMode ?? companyStore.isAdminMode
+      const response = await bootstrapService.bootstrap(shouldUseAdminBootstrap)
 
       mainMenu.value = response.main_menu
       settingMenu.value = response.setting_menu
@@ -72,11 +71,18 @@ export const useGlobalStore = defineStore('global', () => {
       // company store
       companyStore.companies = response.companies
 
-      if (response.current_company) {
+      if (response.admin_mode === true) {
+        companyStore.setAdminMode(true)
+        companyStore.setSelectedCompany(null)
+        companyStore.selectedCompanySettings = {}
+        companyStore.selectedCompanyCurrency = null
+      } else if (response.current_company) {
+        companyStore.setAdminMode(false)
         companyStore.setSelectedCompany(response.current_company)
         companyStore.selectedCompanySettings = response.current_company_settings
         companyStore.selectedCompanyCurrency = response.current_company_currency
       } else {
+        companyStore.setAdminMode(false)
         companyStore.setSelectedCompany(null)
         companyStore.selectedCompanySettings = {}
         companyStore.selectedCompanyCurrency = null
@@ -212,10 +218,7 @@ export const useGlobalStore = defineStore('global', () => {
 
   function toggleSidebarCollapse(): void {
     isSidebarCollapsed.value = !isSidebarCollapsed.value
-    localStore.set(
-      'sidebarCollapsed',
-      isSidebarCollapsed.value ? 'true' : 'false'
-    )
+    localStore.set('sidebarCollapsed', isSidebarCollapsed.value)
   }
 
   function setIsAppLoaded(loaded: boolean): void {

@@ -11,40 +11,49 @@
       />
     </BaseContentPlaceholders>
     <Menu v-else>
-      <MenuButton ref="trigger" class="focus:outline-hidden" @click="onClick">
-        <slot name="activator" />
-      </MenuButton>
+      <span ref="trigger" class="inline-flex">
+        <MenuButton class="focus:outline-hidden" @click="onClick">
+          <slot name="activator" />
+        </MenuButton>
+      </span>
 
-      <div ref="container" class="z-10" :class="widthClass">
-        <transition
-          enter-active-class="transition duration-100 ease-out"
-          enter-from-class="scale-95 opacity-0"
-          enter-to-class="scale-100 opacity-100"
-          leave-active-class="transition duration-75 ease-in"
-          leave-from-class="scale-100 opacity-100"
-          leave-to-class="scale-95 opacity-0"
+      <Teleport to="body">
+        <div
+          ref="container"
+          class="fixed top-0 left-0 z-10"
+          :class="[widthClass, !contentLoading ? 'pointer-events-none' : '']"
         >
-          <MenuItems :class="containerClasses">
-            <div class="py-1">
-              <slot />
-            </div>
-          </MenuItems>
-        </transition>
-      </div>
+          <transition
+            enter-active-class="transition duration-100 ease-out"
+            enter-from-class="scale-95 opacity-0"
+            enter-to-class="scale-100 opacity-100"
+            leave-active-class="transition duration-75 ease-in"
+            leave-from-class="scale-100 opacity-100"
+            leave-to-class="scale-95 opacity-0"
+          >
+            <MenuItems :class="containerClasses">
+              <div class="py-1">
+                <slot />
+              </div>
+            </MenuItems>
+          </transition>
+        </div>
+      </Teleport>
     </Menu>
   </div>
 </template>
 
 <script setup lang="ts">
 import { Menu, MenuButton, MenuItems } from '@headlessui/vue'
-import { computed, ref } from 'vue'
+import { computed, nextTick } from 'vue'
 import { usePopper } from '@v2/composables/use-popper'
+import type { Placement } from '@popperjs/core'
 
 interface Props {
   containerClass?: string
   widthClass?: string
   positionClass?: string
-  position?: string
+  position?: Placement
   wrapperClass?: string
   contentLoading?: boolean
 }
@@ -60,16 +69,19 @@ const props = withDefaults(defineProps<Props>(), {
 
 const containerClasses = computed<string>(() => {
   const baseClass = `origin-top-right rounded-xl shadow-xl bg-surface/80 backdrop-blur-xl border border-white/15 divide-y divide-line-light focus:outline-hidden`
-  return `${baseClass} ${props.containerClass}`
+  return `${baseClass} pointer-events-auto ${props.containerClass}`
 })
 
 const [trigger, container, popper] = usePopper({
-  placement: 'bottom-end',
+  placement: props.position,
   strategy: 'fixed',
   modifiers: [{ name: 'offset', options: { offset: [0, 10] } }],
 })
 
-function onClick(): void {
-  popper.value.update()
+async function onClick(): Promise<void> {
+  await nextTick()
+  requestAnimationFrame(() => {
+    popper.value?.update()
+  })
 }
 </script>

@@ -15,7 +15,7 @@ interface MailTestForm {
 
 const props = withDefaults(
   defineProps<{
-    storeType?: string
+    storeType?: 'company' | 'global'
   }>(),
   {
     storeType: 'global',
@@ -74,7 +74,18 @@ async function onTestMailSend(): Promise<void> {
 
   isSaving.value = true
   try {
-    await mailService.testEmail({ to: formData.to })
+    const payload = {
+      to: formData.to,
+      subject: formData.subject,
+      message: formData.message,
+    }
+
+    if (props.storeType === 'company') {
+      await companyService.testMailConfig(payload)
+    } else {
+      await mailService.testEmail(payload)
+    }
+
     closeTestModal()
   } finally {
     isSaving.value = false

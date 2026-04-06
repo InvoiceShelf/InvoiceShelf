@@ -76,6 +76,8 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { usePaymentStore } from '../store'
+import { useDialogStore } from '../../../../stores/dialog.store'
+import { useModalStore } from '../../../../stores/modal.store'
 import type { Payment } from '../../../../types/domain/payment'
 
 interface TableRef {
@@ -102,20 +104,33 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const paymentStore = usePaymentStore()
+const dialogStore = useDialogStore()
+const modalStore = useModalStore()
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 
 const isDetailView = computed<boolean>(() => route.name === 'payments.view')
 
-async function removePayment(): Promise<void> {
-  const confirmed = window.confirm(t('payments.confirm_delete'))
-  if (!confirmed) return
-
-  const payment = props.row as Payment
-  await paymentStore.deletePayment({ ids: [payment.id] })
-  router.push('/admin/payments')
-  props.table?.refresh()
+function removePayment(): void {
+  dialogStore
+    .openDialog({
+      title: t('general.are_you_sure'),
+      message: t('payments.confirm_delete'),
+      yesLabel: t('general.ok'),
+      noLabel: t('general.cancel'),
+      variant: 'danger',
+      hideNoButton: false,
+      size: 'lg',
+    })
+    .then(async (res: boolean) => {
+      if (res) {
+        const payment = props.row as Payment
+        await paymentStore.deletePayment({ ids: [payment.id] })
+        router.push('/admin/payments')
+        props.table?.refresh()
+      }
+    })
 }
 
 function copyPdfUrl(): void {
@@ -133,10 +148,7 @@ function copyPdfUrl(): void {
 
 function sendPayment(): void {
   const payment = props.row as Payment
-  const modalStore = (window as Record<string, unknown>).__modalStore as
-    | { openModal: (opts: Record<string, unknown>) => void }
-    | undefined
-  modalStore?.openModal({
+  modalStore.openModal({
     title: t('payments.send_payment'),
     componentName: 'SendPaymentModal',
     id: payment.id,

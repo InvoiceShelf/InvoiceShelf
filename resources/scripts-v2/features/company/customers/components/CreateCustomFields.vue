@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { computed, watch } from 'vue'
 import lodash from 'lodash'
 import moment from 'moment'
 import { customFieldService } from '@v2/api/services/custom-field.service'
@@ -51,16 +51,32 @@ const props = withDefaults(
   }
 )
 
-const customFields = ref<CustomFieldItem[]>([])
+const storeData = computed(() => {
+  const data = props.store[props.storeProp]
+
+  if (!data) {
+    return null
+  }
+
+  if (!Array.isArray(data.customFields)) {
+    data.customFields = []
+  }
+
+  if (!Array.isArray(data.fields)) {
+    data.fields = []
+  }
+
+  return data
+})
 
 getInitialCustomFields()
 
 function mergeExistingValues(): void {
-  if (props.isEdit && props.store[props.storeProp]) {
-    props.store[props.storeProp].fields.forEach((field) => {
-      const existingIndex = props.store[
-        props.storeProp
-      ].customFields.findIndex((f) => f.id === field.custom_field_id)
+  if (props.isEdit && storeData.value) {
+    storeData.value.fields.forEach((field) => {
+      const existingIndex = storeData.value?.customFields.findIndex(
+        (f) => f.id === field.custom_field_id
+      ) ?? -1
 
       if (existingIndex > -1) {
         let value: string | boolean | number | null = field.default_answer
@@ -72,7 +88,7 @@ function mergeExistingValues(): void {
           ).format('YYYY-MM-DD HH:mm')
         }
 
-        props.store[props.storeProp].customFields[existingIndex] = {
+        storeData.value.customFields[existingIndex] = {
           ...field,
           id: field.custom_field_id ?? field.id,
           value,
@@ -89,6 +105,10 @@ function mergeExistingValues(): void {
 }
 
 async function getInitialCustomFields(): Promise<void> {
+  if (!storeData.value) {
+    return
+  }
+
   const res = await customFieldService.list({
     type: props.type ?? undefined,
     limit: 'all',
@@ -99,7 +119,7 @@ async function getInitialCustomFields(): Promise<void> {
     d.value = d.default_answer
   })
 
-  props.store[props.storeProp].customFields = lodash.sortBy(
+  storeData.value.customFields = lodash.sortBy(
     data,
     (_cf: CustomFieldItem) => _cf.order
   )
@@ -108,7 +128,7 @@ async function getInitialCustomFields(): Promise<void> {
 }
 
 watch(
-  () => props.store[props.storeProp]?.fields,
+  () => storeData.value?.fields,
   () => {
     mergeExistingValues()
   }
@@ -118,14 +138,14 @@ watch(
 <template>
   <div
     v-if="
-      store[storeProp] &&
-      store[storeProp].customFields.length > 0 &&
+      storeData &&
+      storeData.customFields.length > 0 &&
       !isLoading
     "
   >
     <BaseInputGrid :layout="gridLayout">
       <SingleField
-        v-for="(field, index) in store[storeProp].customFields"
+        v-for="(field, index) in storeData.customFields"
         :key="field.id"
         :custom-field-scope="customFieldScope"
         :store="store"

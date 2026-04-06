@@ -8,9 +8,10 @@ import type { Ability } from '@v2/types/domain/role'
 export interface MenuItem {
   title: string
   name: string
-  route: string
+  link: string
   icon: string
   group: string
+  group_label?: string
   ability?: string
 }
 
@@ -27,6 +28,7 @@ export interface BootstrapResponse {
   config: Record<string, unknown>
   global_settings: Record<string, string>
   modules: string[]
+  admin_mode?: boolean
   pending_invitations?: Array<{
     token: string
     company_name: string

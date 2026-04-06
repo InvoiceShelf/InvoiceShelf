@@ -26,6 +26,8 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+import { useDialogStore } from '../../../../stores/dialog.store'
+import { useModalStore } from '../../../../stores/modal.store'
 import type { ExpenseCategory } from '../../../../types/domain/expense'
 
 interface TableRef {
@@ -48,12 +50,11 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const { t } = useI18n()
+const dialogStore = useDialogStore()
+const modalStore = useModalStore()
 
 function editExpenseCategory(): void {
-  const modalStore = (window as Record<string, unknown>).__modalStore as
-    | { openModal: (opts: Record<string, unknown>) => void }
-    | undefined
-  modalStore?.openModal({
+  modalStore.openModal({
     title: t('settings.expense_category.edit_category'),
     componentName: 'CategoryModal',
     refreshData: props.loadData,
@@ -61,22 +62,31 @@ function editExpenseCategory(): void {
   })
 }
 
-async function removeExpenseCategory(): Promise<void> {
-  const confirmed = window.confirm(
-    t('settings.expense_category.confirm_delete'),
-  )
-  if (!confirmed) return
-
-  try {
-    const { expenseService } = await import(
-      '../../../../api/services/expense.service'
-    )
-    const response = await expenseService.deleteCategory(props.row.id)
-    if (response.success) {
-      props.loadData?.()
-    }
-  } catch {
-    props.loadData?.()
-  }
+function removeExpenseCategory(): void {
+  dialogStore
+    .openDialog({
+      title: t('general.are_you_sure'),
+      message: t('settings.expense_category.confirm_delete'),
+      yesLabel: t('general.ok'),
+      noLabel: t('general.cancel'),
+      variant: 'danger',
+      hideNoButton: false,
+      size: 'lg',
+    })
+    .then(async (res: boolean) => {
+      if (res) {
+        try {
+          const { expenseService } = await import(
+            '../../../../api/services/expense.service'
+          )
+          const response = await expenseService.deleteCategory(props.row.id)
+          if (response.success) {
+            props.loadData?.()
+          }
+        } catch {
+          props.loadData?.()
+        }
+      }
+    })
 }
 </script>

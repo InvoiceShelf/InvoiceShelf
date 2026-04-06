@@ -182,9 +182,14 @@
         </template>
 
         <template #cell-user_name="{ row }">
-          <BaseText
-            :text="row.data.customer ? row.data.customer.name : '-'"
-          />
+          <router-link
+            v-if="row.data.customer?.id"
+            :to="`/admin/customers/${row.data.customer.id}/view`"
+            class="font-medium text-primary-500 hover:text-primary-600"
+          >
+            {{ row.data.customer.name }}
+          </router-link>
+          <span v-else>-</span>
         </template>
 
         <template #cell-notes="{ row }">
@@ -215,6 +220,8 @@ import { useI18n } from 'vue-i18n'
 import { debouncedWatch } from '@vueuse/core'
 import { useExpenseStore } from '../store'
 import ExpenseDropdown from '../components/ExpenseDropdown.vue'
+import { useUserStore } from '../../../../stores/user.store'
+import { useDialogStore } from '../../../../stores/dialog.store'
 import type { Expense, ExpenseCategory } from '../../../../types/domain/expense'
 
 interface Props {
@@ -229,15 +236,35 @@ const props = withDefaults(defineProps<Props>(), {
   canDelete: false,
 })
 
+const ABILITIES = {
+  CREATE: 'create-expense',
+  EDIT: 'edit-expense',
+  DELETE: 'delete-expense',
+} as const
+
 const expenseStore = useExpenseStore()
+const userStore = useUserStore()
+const dialogStore = useDialogStore()
 const { t } = useI18n()
 
 const tableRef = ref<{ refresh: () => void } | null>(null)
 const showFilters = ref<boolean>(false)
 const isFetchingInitialData = ref<boolean>(true)
 
+const canCreate = computed<boolean>(() => {
+  return props.canCreate || userStore.hasAbilities(ABILITIES.CREATE)
+})
+
+const canEdit = computed<boolean>(() => {
+  return props.canEdit || userStore.hasAbilities(ABILITIES.EDIT)
+})
+
+const canDelete = computed<boolean>(() => {
+  return props.canDelete || userStore.hasAbilities(ABILITIES.DELETE)
+})
+
 const hasAtLeastOneAbility = computed<boolean>(() => {
-  return props.canDelete || props.canEdit
+  return canDelete.value || canEdit.value
 })
 
 interface ExpenseFilters {
@@ -402,13 +429,24 @@ function toggleFilter(): void {
   showFilters.value = !showFilters.value
 }
 
-async function removeMultipleExpenses(): Promise<void> {
-  const confirmed = window.confirm(t('expenses.confirm_delete'))
-  if (!confirmed) return
-
-  const res = await expenseStore.deleteMultipleExpenses()
-  if (res.data) {
-    refreshTable()
-  }
+function removeMultipleExpenses(): void {
+  dialogStore
+    .openDialog({
+      title: t('general.are_you_sure'),
+      message: t('expenses.confirm_delete'),
+      yesLabel: t('general.ok'),
+      noLabel: t('general.cancel'),
+      variant: 'danger',
+      hideNoButton: false,
+      size: 'lg',
+    })
+    .then(async (res: boolean) => {
+      if (res) {
+        const response = await expenseStore.deleteMultipleExpenses()
+        if (response.data) {
+          refreshTable()
+        }
+      }
+    })
 }
 </script>

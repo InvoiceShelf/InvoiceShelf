@@ -6,6 +6,7 @@ import { useUserStore } from '../../../../stores/user.store'
 import { noteService } from '../../../../api/services/note.service'
 import NoteDropdown from '@v2/features/company/settings/components/NoteDropdown.vue'
 import NoteModal from '@v2/features/company/settings/components/NoteModal.vue'
+import { ABILITIES } from '@v2/config/abilities'
 
 interface TableColumn {
   key: string
@@ -30,10 +31,6 @@ interface FetchResult {
     limit: number
   }
 }
-
-const ABILITIES = {
-  MANAGE_NOTE: 'manage-note',
-} as const
 
 const { t } = useI18n()
 const modalStore = useModalStore()

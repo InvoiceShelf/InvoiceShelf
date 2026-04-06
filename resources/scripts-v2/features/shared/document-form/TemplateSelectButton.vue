@@ -21,6 +21,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useModalStore } from '@v2/stores/modal.store'
 import type { DocumentFormData } from './use-document-calculations'
 
 interface Props {
@@ -36,6 +37,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const { t } = useI18n()
+const modalStore = useModalStore()
 
 const formData = computed<DocumentFormData>(() => {
   return props.store[props.storeProp] as DocumentFormData
@@ -53,10 +55,7 @@ function openTemplateModal(): void {
     markAsDefaultDescription = t('invoices.mark_as_default_invoice_template_description')
   }
 
-  const modalStore = (window as Record<string, unknown>).__modalStore as
-    | { openModal: (opts: Record<string, unknown>) => void }
-    | undefined
-  modalStore?.openModal({
+  modalStore.openModal({
     title: t('general.choose_template'),
     componentName: 'SelectTemplate',
     data: {

@@ -48,6 +48,7 @@
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import cloneDeep from 'lodash/cloneDeep'
 import { useRecurringInvoiceStore } from '../store'
 import RecurringInvoiceBasicFields from '../components/RecurringInvoiceBasicFields.vue'
 
@@ -99,7 +100,7 @@ async function submitForm(): Promise<void> {
   isSaving.value = true
 
   const data: Record<string, unknown> = {
-    ...recurringInvoiceStore.newRecurringInvoice,
+    ...cloneDeep(recurringInvoiceStore.newRecurringInvoice),
     sub_total: recurringInvoiceStore.getSubTotal,
     total: recurringInvoiceStore.getTotal,
     tax: recurringInvoiceStore.getTotalTax,

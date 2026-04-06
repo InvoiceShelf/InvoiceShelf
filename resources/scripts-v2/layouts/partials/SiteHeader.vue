@@ -133,7 +133,7 @@
             </div>
           </div>
 
-          <router-link to="/admin/user-settings">
+          <router-link to="/admin/settings/account-settings">
             <BaseDropdownItem>
               <BaseIcon
                 name="CogIcon"

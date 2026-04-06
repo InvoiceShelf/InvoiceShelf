@@ -4,14 +4,17 @@ import { useI18n } from 'vue-i18n'
 import { required, minLength, helpers } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { useModalStore } from '@v2/stores/modal.store'
+import { useNotificationStore } from '@v2/stores/notification.store'
 import { roleService } from '@v2/api/services/role.service'
 import type { CreateRolePayload } from '@v2/api/services/role.service'
 import type { Ability } from '@v2/types/domain/role'
 
-interface AbilityItem extends Ability {
+interface AbilityItem {
+  name: string
   ability: string
   disabled: boolean
   depends_on?: string[]
+  model?: string
 }
 
 interface AbilitiesList {
@@ -25,6 +28,7 @@ interface RoleForm {
 }
 
 const modalStore = useModalStore()
+const notificationStore = useNotificationStore()
 const { t } = useI18n()
 
 const isSaving = ref<boolean>(false)
@@ -67,15 +71,20 @@ async function setInitialData(): Promise<void> {
   const abilitiesRes = await roleService.getAbilities()
   if (abilitiesRes.abilities) {
     const grouped: AbilitiesList = {}
-    abilitiesRes.abilities.forEach((a) => {
-      const group = a.title || 'General'
-      if (!grouped[group]) grouped[group] = []
-      grouped[group].push({
-        ...a,
-        ability: a.name,
+    abilitiesRes.abilities.forEach((a: Record<string, unknown>) => {
+      // Extract model name from PHP class path (e.g., "App\Models\Customer" → "Customer")
+      const modelPath = (a.model as string) ?? ''
+      const modelName = modelPath
+        ? modelPath.substring(modelPath.lastIndexOf('\\') + 1)
+        : 'Common'
+
+      if (!grouped[modelName]) grouped[modelName] = []
+      grouped[modelName].push({
+        name: a.name as string,
+        ability: a.ability as string,
         disabled: false,
-        depends_on: [],
-      })
+        depends_on: (a.depends_on as string[]) ?? [],
+      } as AbilityItem)
     })
     abilitiesList.value = grouped
   }
@@ -87,13 +96,33 @@ async function setInitialData(): Promise<void> {
       currentRole.value = {
         id: response.data.id,
         name: response.data.name,
-        abilities: response.data.abilities.map((a) => ({
-          ...a,
-          ability: a.name,
-          disabled: false,
-          depends_on: [],
-        })),
+        abilities: [],
       }
+
+      // Match role's abilities with the full ability objects from abilitiesList
+      const roleAbilities = (response.data.abilities ?? []) as Array<Record<string, unknown>>
+      roleAbilities.forEach((ra) => {
+        Object.keys(abilitiesList.value).forEach((group) => {
+          abilitiesList.value[group].forEach((_p) => {
+            if (_p.ability === ra.name) {
+              currentRole.value.abilities.push(_p)
+            }
+          })
+        })
+      })
+
+      // Set disabled state for dependent abilities
+      currentRole.value.abilities.forEach((ab) => {
+        ab.depends_on?.forEach((_d) => {
+          Object.keys(abilitiesList.value).forEach((group) => {
+            abilitiesList.value[group].forEach((_a) => {
+              if (_d === _a.ability) {
+                _a.disabled = true
+              }
+            })
+          })
+        })
+      })
     }
   } else {
     isEdit.value = false
@@ -121,8 +150,16 @@ async function submitRoleData(): Promise<void> {
 
     if (isEdit.value && currentRole.value.id) {
       await roleService.update(currentRole.value.id, payload)
+      notificationStore.showNotification({
+        type: 'success',
+        message: 'settings.roles.updated_message',
+      })
     } else {
       await roleService.create(payload)
+      notificationStore.showNotification({
+        type: 'success',
+        message: 'settings.roles.created_message',
+      })
     }
 
     isSaving.value = false

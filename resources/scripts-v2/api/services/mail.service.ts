@@ -1,10 +1,7 @@
 import { client } from '../client'
 import { API } from '../endpoints'
 
-export interface MailDriver {
-  name: string
-  value: string
-}
+export type MailDriver = string
 
 export interface SmtpConfig {
   mail_driver: string
@@ -46,6 +43,8 @@ export interface MailConfigResponse {
 
 export interface TestMailPayload {
   to: string
+  subject: string
+  message: string
 }
 
 export const mailService = {

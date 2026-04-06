@@ -4,10 +4,14 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDebounceFn } from '@vueuse/core'
 import { useRoute } from 'vue-router'
-import { usePermissions } from '@v2/composables/use-permissions'
-import { useModal } from '@v2/composables/use-modal'
+import { useUserStore } from '@v2/stores/user.store'
+import { useModalStore } from '@v2/stores/modal.store'
 import { ABILITIES } from '@v2/config/abilities'
-import type { Customer, Address } from '@v2/types/domain'
+import { useCustomerStore } from '@v2/features/company/customers/store'
+import { useInvoiceStore } from '@v2/features/company/invoices/store'
+import { useEstimateStore } from '@v2/features/company/estimates/store'
+import { useRecurringInvoiceStore } from '@v2/features/company/recurring-invoices/store'
+import CustomerModal from '@v2/features/company/customers/components/CustomerModal.vue'
 
 type DocumentType = 'estimate' | 'invoice' | 'recurring-invoice'
 
@@ -20,28 +24,11 @@ interface Validation {
   $errors: ValidationError[]
 }
 
-interface SelectedCustomerData {
-  id: number
-  name: string
-  billing?: Pick<Address, 'name' | 'city' | 'state' | 'zip'> | null
-  shipping?: Pick<Address, 'name' | 'city' | 'state' | 'zip'> | null
-}
-
 interface Props {
   valid?: Validation
   customerId?: number | null
   type?: DocumentType | null
   contentLoading?: boolean
-  selectedCustomer?: SelectedCustomerData | null
-  customers?: Customer[]
-}
-
-interface Emits {
-  (e: 'select', customerId: number): void
-  (e: 'deselect'): void
-  (e: 'edit', customerId: number): void
-  (e: 'search', query: string): void
-  (e: 'create'): void
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -49,44 +36,112 @@ const props = withDefaults(defineProps<Props>(), {
   customerId: null,
   type: null,
   contentLoading: false,
-  selectedCustomer: null,
-  customers: () => [],
 })
 
-const emit = defineEmits<Emits>()
-
-const { hasAbility } = usePermissions()
-const { openModal } = useModal()
+const userStore = useUserStore()
+const modalStore = useModalStore()
 const { t } = useI18n()
 const route = useRoute()
 
+const customerStore = useCustomerStore()
+const invoiceStore = useInvoiceStore()
+const estimateStore = useEstimateStore()
+const recurringInvoiceStore = useRecurringInvoiceStore()
+
 const search = ref<string | null>(null)
 const isSearchingCustomer = ref<boolean>(false)
+
+const selectedCustomer = computed(() => {
+  switch (props.type) {
+    case 'invoice':
+      return invoiceStore.newInvoice.customer
+    case 'estimate':
+      return estimateStore.newEstimate.customer
+    case 'recurring-invoice':
+      return recurringInvoiceStore.newRecurringInvoice.customer
+    default:
+      return null
+  }
+})
+
+// Fetch initial customers on setup
+async function fetchInitialCustomers(): Promise<void> {
+  await customerStore.fetchCustomers({
+    orderByField: '',
+    orderBy: '',
+  })
+}
+
+// Select customer on setup if customerId is provided
+if (props.customerId) {
+  if (props.type === 'invoice') {
+    invoiceStore.selectCustomer(props.customerId)
+  } else if (props.type === 'estimate') {
+    estimateStore.selectCustomer(props.customerId)
+  } else if (props.type === 'recurring-invoice') {
+    recurringInvoiceStore.selectCustomer(props.customerId)
+  }
+}
+
+fetchInitialCustomers()
 
 const debounceSearchCustomer = useDebounceFn(() => {
   isSearchingCustomer.value = true
   searchCustomer()
 }, 500)
 
-function searchCustomer(): void {
-  if (search.value !== null) {
-    emit('search', search.value)
-  }
+async function searchCustomer(): Promise<void> {
+  await customerStore.fetchCustomers({
+    display_name: search.value ?? '',
+    page: 1,
+  })
   isSearchingCustomer.value = false
 }
 
-function editCustomer(): void {
-  if (props.selectedCustomer) {
-    emit('edit', props.selectedCustomer.id)
+function selectNewCustomer(id: number, close: () => void): void {
+  const params: Record<string, unknown> = { userId: id }
+  if (route.params.id) params.model_id = route.params.id
+
+  if (props.type === 'invoice') {
+    invoiceStore.getNextNumber(params, true)
+    invoiceStore.selectCustomer(id)
+  } else if (props.type === 'estimate') {
+    estimateStore.getNextNumber(params, true)
+    estimateStore.selectCustomer(id)
+  } else if (props.type === 'recurring-invoice') {
+    recurringInvoiceStore.selectCustomer(id)
   }
+
+  close()
+  search.value = null
 }
 
 function resetSelectedCustomer(): void {
-  emit('deselect')
+  if (props.type === 'invoice') {
+    invoiceStore.resetSelectedCustomer()
+  } else if (props.type === 'estimate') {
+    estimateStore.resetSelectedCustomer()
+  } else if (props.type === 'recurring-invoice') {
+    recurringInvoiceStore.resetSelectedCustomer()
+  }
+}
+
+async function editCustomer(): Promise<void> {
+  if (!selectedCustomer.value) return
+  await customerStore.fetchCustomer(selectedCustomer.value.id)
+  modalStore.openModal({
+    title: t('customers.edit_customer'),
+    componentName: 'CustomerModal',
+  })
 }
 
 function openCustomerModal(): void {
-  emit('create')
+  customerStore.resetCurrentCustomer()
+  modalStore.openModal({
+    title: t('customers.add_customer'),
+    componentName: 'CustomerModal',
+    variant: 'md',
+  })
 }
 
 function initGenerator(name: string): string {
@@ -96,16 +151,13 @@ function initGenerator(name: string): string {
   }
   return ''
 }
-
-function selectNewCustomer(id: number, close: () => void): void {
-  emit('select', id)
-  close()
-  search.value = null
-}
 </script>
 
 <template>
-  <BaseContentPlaceholders v-if="contentLoading">
+  <div>
+    <CustomerModal />
+
+    <BaseContentPlaceholders v-if="contentLoading">
     <BaseContentPlaceholdersBox
       :rounded="true"
       class="w-full"
@@ -359,7 +411,7 @@ function selectNewCustomer(id: number, close: () => void): void {
                 :placeholder="$t('general.search')"
                 type="text"
                 icon="search"
-                @update:modelValue="(val: string | null) => debounceSearchCustomer()"
+                @update:modelValue="() => debounceSearchCustomer()"
               />
 
               <ul
@@ -372,7 +424,7 @@ function selectNewCustomer(id: number, close: () => void): void {
                 "
               >
                 <li
-                  v-for="(customer, index) in customers"
+                  v-for="(customer, index) in customerStore.customers"
                   :key="index"
                   href="#"
                   class="
@@ -434,7 +486,7 @@ function selectNewCustomer(id: number, close: () => void): void {
                   </div>
                 </li>
                 <div
-                  v-if="customers.length === 0"
+                  v-if="customerStore.customers.length === 0"
                   class="flex justify-center p-5 text-subtle"
                 >
                   <label class="text-base text-muted cursor-pointer">
@@ -445,7 +497,7 @@ function selectNewCustomer(id: number, close: () => void): void {
             </div>
 
             <button
-              v-if="hasAbility(ABILITIES.CREATE_CUSTOMER)"
+              v-if="userStore.hasAbilities(ABILITIES.CREATE_CUSTOMER)"
               type="button"
               class="
                 h-10
@@ -482,5 +534,6 @@ function selectNewCustomer(id: number, close: () => void): void {
         </div>
       </transition>
     </Popover>
+  </div>
   </div>
 </template>

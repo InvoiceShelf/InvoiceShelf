@@ -5,7 +5,8 @@ import { customerService } from '../../../api/services/customer.service'
 import type {
   CustomerListParams,
   CustomerListResponse,
-  CustomerStatsData,
+  CustomerStatsParams,
+  CustomerStatsResponse,
 } from '../../../api/services/customer.service'
 import { useNotificationStore } from '../../../stores/notification.store'
 import { useGlobalStore } from '../../../stores/global.store'
@@ -47,10 +48,7 @@ export interface CustomerForm {
   password_added?: boolean
 }
 
-export interface CustomerViewData {
-  customer?: Customer
-  [key: string]: unknown
-}
+export type CustomerViewData = Partial<Customer>
 
 function createAddressStub(): CustomerFormAddress {
   return {
@@ -153,13 +151,15 @@ export const useCustomerStore = defineStore('customer', () => {
     }
   }
 
-  async function fetchViewCustomer(params: { id: number }): Promise<ApiResponse<CustomerStatsData>> {
+  async function fetchViewCustomer(
+    params: { id: number } & CustomerStatsParams
+  ): Promise<CustomerStatsResponse> {
     isFetchingViewData.value = true
     try {
-      const response = await customerService.getStats(params.id, params as Record<string, unknown>)
+      const { id, ...queryParams } = params
+      const response = await customerService.getStats(id, queryParams)
       selectedViewCustomer.value = {}
       Object.assign(selectedViewCustomer.value, response.data)
-      setAddressStub(response.data as unknown as Record<string, unknown>)
       isFetchingViewData.value = false
       return response
     } catch (err: unknown) {

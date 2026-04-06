@@ -27,3 +27,5 @@ export {
   getErrorTranslationKey,
 } from './error-handling'
 export type { NormalizedApiError } from './error-handling'
+
+export { generateClientId } from './generate-client-id'

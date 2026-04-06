@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { required, minLength, helpers } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { useModalStore } from '@v2/stores/modal.store'
-import { itemService } from '@v2/api/services/item.service'
+import { useItemStore } from '@v2/features/company/items/store'
 
 interface ItemUnitForm {
   id: number | null
@@ -12,6 +12,7 @@ interface ItemUnitForm {
 }
 
 const modalStore = useModalStore()
+const itemStore = useItemStore()
 const { t } = useI18n()
 
 const isSaving = ref<boolean>(false)
@@ -41,12 +42,10 @@ const v$ = useVuelidate(rules, currentItemUnit)
 async function setInitialData(): Promise<void> {
   if (modalStore.data && typeof modalStore.data === 'number') {
     isEdit.value = true
-    const response = await itemService.getUnit(modalStore.data)
-    if (response.data) {
-      currentItemUnit.value = {
-        id: response.data.id,
-        name: response.data.name,
-      }
+    await itemStore.fetchItemUnit(modalStore.data)
+    currentItemUnit.value = {
+      id: itemStore.currentItemUnit.id ?? null,
+      name: itemStore.currentItemUnit.name,
     }
   } else {
     isEdit.value = false
@@ -63,18 +62,20 @@ async function submitItemUnit(): Promise<void> {
 
   isSaving.value = true
   try {
+    let res
     if (isEdit.value && currentItemUnit.value.id) {
-      await itemService.updateUnit(currentItemUnit.value.id, {
+      res = await itemStore.updateItemUnit({
+        id: currentItemUnit.value.id,
         name: currentItemUnit.value.name,
       })
     } else {
-      await itemService.createUnit({
+      res = await itemStore.addItemUnit({
         name: currentItemUnit.value.name,
       })
     }
 
-    if (modalStore.refreshData) {
-      modalStore.refreshData()
+    if (modalStore.refreshData && res?.data) {
+      modalStore.refreshData(res.data)
     }
     closeItemUnitModal()
   } catch {

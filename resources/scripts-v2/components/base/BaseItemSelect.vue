@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive, ref, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { usePermissions } from '@v2/composables/use-permissions'
-import { useModal } from '@v2/composables/use-modal'
+import { useUserStore } from '@v2/stores/user.store'
+import { useModalStore } from '@v2/stores/modal.store'
+import { useItemStore } from '@v2/features/company/items/store'
 import { ABILITIES } from '@v2/config/abilities'
+import ItemModal from '@v2/features/company/items/components/ItemModal.vue'
 import type { Item } from '@v2/types/domain'
 import type { Tax } from '@v2/types/domain'
 
@@ -23,6 +25,8 @@ interface Props {
   invalidDescription?: boolean
   taxPerItem?: string
   taxes?: Tax[] | null
+  store?: { deselectItem: (index: number) => void } | null
+  storeProp?: string
 }
 
 interface Emits {
@@ -40,17 +44,26 @@ const props = withDefaults(defineProps<Props>(), {
   invalidDescription: false,
   taxPerItem: '',
   taxes: null,
+  store: null,
+  storeProp: '',
 })
 
 const emit = defineEmits<Emits>()
 
-const { hasAbility } = usePermissions()
-const { openModal } = useModal()
+const userStore = useUserStore()
+const modalStore = useModalStore()
+const itemStore = useItemStore()
 const { t } = useI18n()
 
 const itemSelect = ref<Item | null>(null)
+const multiselectRef = ref<{ close?: () => void } | null>(null)
 const loading = ref<boolean>(false)
 const itemData = reactive<LineItem>({ ...props.item })
+
+async function searchItems(search: string): Promise<Item[]> {
+  const res = await itemStore.fetchItems({ search })
+  return res.data as unknown as Item[]
+}
 
 const description = computed<string | null>({
   get: () => props.item.description,
@@ -60,25 +73,35 @@ const description = computed<string | null>({
 })
 
 function openItemModal(): void {
-  openModal({
-    title: t('items.add_item'),
-    componentName: 'ItemModal',
-    refreshData: () => {},
-    data: {
-      taxPerItem: props.taxPerItem,
-      taxes: props.taxes,
-      itemIndex: props.index,
-    },
+  // Close the multiselect dropdown before opening the modal
+  ;(document.activeElement as HTMLElement)?.blur()
+
+  nextTick(() => {
+    modalStore.openModal({
+      title: t('items.add_item'),
+      componentName: 'ItemModal',
+      refreshData: (val: Item) => emit('select', val),
+      data: {
+        taxPerItem: props.taxPerItem,
+        taxes: props.taxes,
+        itemIndex: props.index,
+      },
+    })
   })
 }
 
 function deselectItem(index: number): void {
+  if (props.store) {
+    props.store.deselectItem(index)
+  }
   emit('deselect', index)
 }
 </script>
 
 <template>
   <div class="flex-1 text-sm">
+    <ItemModal />
+
     <!-- Selected Item Field  -->
     <div
       v-if="item.item_id"
@@ -106,6 +129,7 @@ function deselectItem(index: number): void {
     <!-- Select Item Field -->
     <BaseMultiselect
       v-else
+      ref="multiselectRef"
       v-model="itemSelect"
       :content-loading="contentLoading"
       value-prop="id"
@@ -118,6 +142,7 @@ function deselectItem(index: number): void {
       resolve-on-load
       :delay="500"
       searchable
+      :options="searchItems"
       object
       @update:modelValue="(val: Item) => $emit('select', val)"
       @searchChange="(val: string) => $emit('search', val)"
@@ -125,7 +150,7 @@ function deselectItem(index: number): void {
       <!-- Add Item Action  -->
       <template #action>
         <BaseSelectAction
-          v-if="hasAbility(ABILITIES.CREATE_ITEM)"
+          v-if="userStore.hasAbilities(ABILITIES.CREATE_ITEM)"
           @click="openItemModal"
         >
           <BaseIcon

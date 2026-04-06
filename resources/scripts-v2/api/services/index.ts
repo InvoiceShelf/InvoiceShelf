@@ -23,6 +23,7 @@ export { backupService } from './backup.service'
 export { mailService } from './mail.service'
 export { pdfService } from './pdf.service'
 export { diskService } from './disk.service'
+export { updateService } from './update.service'
 
 // Re-export service types for convenience
 export type { LoginPayload, LoginResponse, ForgotPasswordPayload, ResetPasswordPayload, RegisterWithInvitationPayload } from './auth.service'
@@ -30,7 +31,13 @@ export type { BootstrapResponse, MenuItem, CurrentCompanyResponse } from './boot
 export type { InvoiceListParams, InvoiceListResponse, SendInvoicePayload, InvoiceStatusPayload, InvoiceTemplatesResponse } from './invoice.service'
 export type { EstimateListParams, EstimateListResponse, SendEstimatePayload, EstimateStatusPayload, EstimateTemplatesResponse } from './estimate.service'
 export type { RecurringInvoiceListParams, RecurringInvoiceListResponse, FrequencyDateParams, FrequencyDateResponse } from './recurring-invoice.service'
-export type { CustomerListParams, CustomerListResponse, CustomerStatsData } from './customer.service'
+export type {
+  CustomerListParams,
+  CustomerListResponse,
+  CustomerStatsChartData,
+  CustomerStatsParams,
+  CustomerStatsResponse,
+} from './customer.service'
 export type { PaymentListParams, PaymentListResponse, SendPaymentPayload, CreatePaymentMethodPayload } from './payment.service'
 export type { ExpenseListParams, ExpenseListResponse, CreateExpenseCategoryPayload } from './expense.service'
 export type { ItemListParams, ItemListResponse, CreateItemPayload, CreateUnitPayload } from './item.service'
@@ -46,7 +53,8 @@ export type { CustomFieldListParams, CreateCustomFieldPayload } from './custom-f
 export type { CreateNotePayload } from './note.service'
 export type { CreateExchangeRateProviderPayload, BulkUpdatePayload, ExchangeRateResponse, ActiveProviderResponse } from './exchange-rate.service'
 export type { Module, ModuleInstallPayload, ModuleCheckResponse } from './module.service'
-export type { Backup, CreateBackupPayload, DeleteBackupParams } from './backup.service'
+export type { Backup, BackupListResponse, CreateBackupPayload, DeleteBackupParams } from './backup.service'
 export type { MailConfig, MailConfigResponse, MailDriver, SmtpConfig, MailgunConfig, SesConfig, TestMailPayload } from './mail.service'
 export type { PdfConfig, PdfConfigResponse, PdfDriver, DomPdfConfig, GotenbergConfig } from './pdf.service'
-export type { Disk, DiskDriversResponse, CreateDiskPayload } from './disk.service'
+export type { Disk, DiskDriversResponse, DiskDriverValue, CreateDiskPayload } from './disk.service'
+export type { CheckUpdateResponse, UpdateRelease, UpdateDownloadResponse, UpdateStepResponse, FinishUpdatePayload } from './update.service'

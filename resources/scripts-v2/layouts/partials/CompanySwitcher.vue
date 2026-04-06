@@ -178,6 +178,8 @@
         </div>
       </div>
     </transition>
+
+    <CompanyModal />
   </div>
 </template>
 
@@ -190,6 +192,7 @@ import { useCompanyStore } from '@v2/stores/company.store'
 import { useGlobalStore } from '@v2/stores/global.store'
 import { useUserStore } from '@v2/stores/user.store'
 import { useModalStore } from '@v2/stores/modal.store'
+import CompanyModal from '@v2/features/company/settings/components/CompanyModal.vue'
 import type { Company, CompanyInvitation } from '@v2/types/domain/company'
 import type { Role } from '@v2/types/domain/role'
 

@@ -30,10 +30,12 @@ export interface InvoiceListResponse {
 
 export interface SendInvoicePayload {
   id: number
-  subject?: string
-  body?: string
-  from?: string
-  to?: string
+  subject?: string | null
+  body?: string | null
+  from?: string | null
+  to?: string | null
+  cc?: string | null
+  bcc?: string | null
 }
 
 export interface InvoiceStatusPayload {
@@ -43,6 +45,12 @@ export interface InvoiceStatusPayload {
 
 export interface SendPreviewParams {
   id: number
+  from?: string | null
+  to?: string | null
+  cc?: string | null
+  bcc?: string | null
+  subject?: string | null
+  body?: string | null
 }
 
 export interface InvoiceTemplate {

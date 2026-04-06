@@ -10,19 +10,21 @@ const props = withDefaults(defineProps<Props>(), {
   status: '',
 })
 
+const baseClasses = 'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium'
+
 const badgeColorClasses = computed<string>(() => {
   switch (props.status) {
-    case RecurringInvoiceStatus.COMPLETED:
-    case 'COMPLETED':
-      return 'bg-green-500/25 px-2 py-1 text-sm text-status-green uppercase font-normal text-center'
-    case RecurringInvoiceStatus.ON_HOLD:
-    case 'ON_HOLD':
-      return 'bg-yellow-500/25 px-2 py-1 text-sm text-status-yellow uppercase font-normal text-center'
     case RecurringInvoiceStatus.ACTIVE:
     case 'ACTIVE':
-      return 'bg-blue-400/25 px-2 py-1 text-sm text-status-blue uppercase font-normal text-center'
+      return `${baseClasses} bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-300/50`
+    case RecurringInvoiceStatus.ON_HOLD:
+    case 'ON_HOLD':
+      return `${baseClasses} bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-300/50`
+    case RecurringInvoiceStatus.COMPLETED:
+    case 'COMPLETED':
+      return `${baseClasses} bg-green-50 text-green-700 ring-1 ring-inset ring-green-300/50`
     default:
-      return 'bg-surface-secondary0/25 px-2 py-1 text-sm text-heading uppercase font-normal text-center'
+      return `${baseClasses} bg-surface-secondary text-muted ring-1 ring-inset ring-line-default`
   }
 })
 </script>

@@ -103,6 +103,7 @@
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useModalStore } from '../../../stores/modal.store'
 import type { TaxType } from '../../../types/domain/tax'
 import type { Currency } from '../../../types/domain/currency'
 import type { DocumentFormData, DocumentTax } from './use-document-calculations'
@@ -130,6 +131,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>()
 
 const { t } = useI18n()
+const modalStore = useModalStore()
 const textSearch = ref<string | null>(null)
 
 const formData = computed<DocumentFormData>(() => {
@@ -159,10 +161,7 @@ function selectTaxType(data: TaxType, close: () => void): void {
 }
 
 function openTaxTypeModal(): void {
-  const modalStore = (window as Record<string, unknown>).__modalStore as
-    | { openModal: (opts: Record<string, unknown>) => void }
-    | undefined
-  modalStore?.openModal({
+  modalStore.openModal({
     title: t('settings.tax_types.add_tax'),
     componentName: 'TaxTypeModal',
     size: 'sm',

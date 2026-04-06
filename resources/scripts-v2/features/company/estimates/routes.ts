@@ -10,6 +10,7 @@ export const estimateRoutes: RouteRecordRaw[] = [
     name: 'estimates.index',
     component: EstimateIndexView,
     meta: {
+      requiresAuth: true,
       ability: 'view-estimate',
       title: 'estimates.title',
     },
@@ -19,6 +20,7 @@ export const estimateRoutes: RouteRecordRaw[] = [
     name: 'estimates.create',
     component: EstimateCreateView,
     meta: {
+      requiresAuth: true,
       ability: 'create-estimate',
       title: 'estimates.new_estimate',
     },
@@ -28,6 +30,7 @@ export const estimateRoutes: RouteRecordRaw[] = [
     name: 'estimates.edit',
     component: EstimateCreateView,
     meta: {
+      requiresAuth: true,
       ability: 'edit-estimate',
       title: 'estimates.edit_estimate',
     },
@@ -37,6 +40,7 @@ export const estimateRoutes: RouteRecordRaw[] = [
     name: 'estimates.view',
     component: EstimateDetailView,
     meta: {
+      requiresAuth: true,
       ability: 'view-estimate',
       title: 'estimates.title',
     },

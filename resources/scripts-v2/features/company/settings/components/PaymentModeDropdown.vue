@@ -55,7 +55,7 @@ function removePaymentMode(id: number): void {
 <template>
   <BaseDropdown>
     <template #activator>
-      <BaseButton v-if="route.name === 'paymentModes.view'" variant="primary">
+      <BaseButton v-if="route.name === 'settings.payment-modes'" variant="primary">
         <BaseIcon name="EllipsisHorizontalIcon" class="h-5 text-white" />
       </BaseButton>
       <BaseIcon v-else name="EllipsisHorizontalIcon" class="h-5 text-muted" />

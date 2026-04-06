@@ -4,22 +4,10 @@ import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useCustomerStore } from '../store'
 import { useCompanyStore } from '@v2/stores/company.store'
-import { customerService } from '@v2/api/services/customer.service'
 import LineChart from '@v2/components/charts/LineChart.vue'
 import ChartPlaceholder from './CustomerChartPlaceholder.vue'
 import CustomerInfo from './CustomerInfo.vue'
-
-interface ChartData {
-  salesTotal: number
-  totalReceipts: number
-  totalExpenses: number
-  netProfit: number
-  expenseTotals: number[]
-  netProfits: number[]
-  months: string[]
-  receiptTotals: number[]
-  invoiceTotals: number[]
-}
+import type { CustomerStatsChartData } from '@v2/api/services/customer.service'
 
 interface YearOption {
   label: string
@@ -32,7 +20,7 @@ const { t } = useI18n()
 const route = useRoute()
 
 const isLoading = ref<boolean>(false)
-const chartData = reactive<Partial<ChartData>>({})
+const chartData = reactive<Partial<CustomerStatsChartData>>({})
 const years = reactive<YearOption[]>([
   { label: t('dateRange.this_year'), value: 'This year' },
   { label: t('dateRange.previous_year'), value: 'Previous year' },
@@ -58,21 +46,24 @@ watch(
 
 async function loadCustomer(): Promise<void> {
   isLoading.value = false
-  const response = await customerService.getStats(Number(route.params.id))
+  const response = await customerStore.fetchViewCustomer({
+    id: Number(route.params.id),
+  })
 
-  if (response.data) {
-    const meta = (response as Record<string, unknown>).meta as Record<string, unknown> | undefined
-    if (meta?.chartData) {
-      Object.assign(chartData, meta.chartData)
-    }
+  if (response.meta.chartData) {
+    Object.assign(chartData, response.meta.chartData)
   }
 
   isLoading.value = true
 }
 
 async function onChangeYear(data: string): Promise<boolean> {
-  const params: Record<string, unknown> = {
-    id: route.params.id,
+  const params: {
+    id: number
+    previous_year?: boolean
+    this_year?: boolean
+  } = {
+    id: Number(route.params.id),
   }
 
   if (data === 'Previous year') {
@@ -81,14 +72,10 @@ async function onChangeYear(data: string): Promise<boolean> {
     params.this_year = true
   }
 
-  const response = await customerService.getStats(
-    Number(route.params.id),
-    params
-  )
+  const response = await customerStore.fetchViewCustomer(params)
 
-  const meta = (response as Record<string, unknown>).meta as Record<string, unknown> | undefined
-  if (meta?.chartData) {
-    Object.assign(chartData, meta.chartData)
+  if (response.meta.chartData) {
+    Object.assign(chartData, response.meta.chartData)
   }
 
   return true

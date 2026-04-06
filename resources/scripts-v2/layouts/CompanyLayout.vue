@@ -44,6 +44,7 @@ interface RouteMeta {
   ability?: string | string[]
   isSuperAdmin?: boolean
   isOwner?: boolean
+  usesAdminBootstrap?: boolean
 }
 
 const globalStore = useGlobalStore()
@@ -62,38 +63,43 @@ const hasCompany = computed<boolean>(() => {
   return !!companyStore.selectedCompany || companyStore.isAdminMode
 })
 
-onMounted(() => {
-  globalStore.bootstrap().then((res) => {
-    if (companyStore.isAdminMode) {
-      return
-    }
-
-    if (!res.current_company) {
-      if (route.name !== 'no.company') {
-        router.push({ name: 'no.company' })
-      }
-      return
-    }
-
-    const meta = route.meta as RouteMeta
-
-    if (meta.ability && !userStore.hasAbilities(meta.ability as string | string[])) {
-      router.push({ name: 'account.settings' })
-    } else if (meta.isSuperAdmin && !userStore.currentUser?.is_super_admin) {
-      router.push({ name: 'dashboard' })
-    } else if (meta.isOwner && !userStore.currentUser?.is_owner) {
-      router.push({ name: 'account.settings' })
-    }
-
-    if (
-      companyStore.selectedCompanySettings.bulk_exchange_rate_configured === 'NO'
-    ) {
-      modalStore.openModal({
-        componentName: 'ExchangeRateBulkUpdateModal',
-        title: t('exchange_rates.bulk_update'),
-        size: 'sm',
-      })
-    }
+async function initializeLayout(): Promise<void> {
+  const meta = route.meta as RouteMeta
+  const res = await globalStore.bootstrap({
+    adminMode: meta.usesAdminBootstrap === true,
   })
+
+  if (res.admin_mode === true) {
+    return
+  }
+
+  if (!res.current_company) {
+    if (route.name !== 'no.company') {
+      router.push({ name: 'no.company' })
+    }
+    return
+  }
+
+  if (meta.ability && !userStore.hasAbilities(meta.ability as string | string[])) {
+    router.push({ name: 'settings.account' })
+  } else if (meta.isSuperAdmin && !userStore.currentUser?.is_super_admin) {
+    router.push({ name: 'dashboard' })
+  } else if (meta.isOwner && !userStore.currentUser?.is_owner) {
+    router.push({ name: 'settings.account' })
+  }
+
+  if (
+    companyStore.selectedCompanySettings.bulk_exchange_rate_configured === 'NO'
+  ) {
+    modalStore.openModal({
+      componentName: 'ExchangeRateBulkUpdateModal',
+      title: t('exchange_rates.bulk_update'),
+      size: 'sm',
+    })
+  }
+}
+
+onMounted(() => {
+  void initializeLayout()
 })
 </script>

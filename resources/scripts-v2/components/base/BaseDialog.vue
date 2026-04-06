@@ -30,7 +30,7 @@
           leave-to="opacity-0"
         >
           <DialogOverlay
-            class="fixed inset-0 transition-opacity bg-surface-secondary0/75"
+            class="fixed inset-0 transition-opacity bg-black/50"
           />
         </TransitionChild>
 
@@ -59,9 +59,9 @@
               text-left
               align-bottom
               transition-all
-              bg-surface/80 backdrop-blur-2xl
-              rounded-xl border border-white/15
-              shadow-xl
+              bg-surface/95 backdrop-blur-xl backdrop-saturate-150
+              rounded-xl border border-line-default
+              shadow-2xl
               sm:my-8 sm:align-middle sm:w-full sm:p-6
               relative
             "
@@ -86,12 +86,12 @@
               >
                 <BaseIcon
                   v-if="dialogStore.variant === 'primary'"
-                  name="CheckIcon"
+                  name="CheckCircleIcon"
                   class="w-6 h-6 text-alert-success-text"
                 />
                 <BaseIcon
                   v-else
-                  name="ExclamationIcon"
+                  name="ExclamationTriangleIcon"
                   class="w-6 h-6 text-alert-error-text"
                   aria-hidden="true"
                 />

@@ -51,7 +51,7 @@ const dateRangeUrl = computed<string>(() => {
   )}&to_date=${moment(formData.to_date).format('YYYY-MM-DD')}`
 })
 
-globalStore.downloadReport = downloadReport as unknown as string | null
+globalStore.downloadReport = downloadReport
 
 onMounted(() => {
   siteURL.value = `/reports/tax-summary/${selectedCompany.value?.unique_hash}`
@@ -163,11 +163,14 @@ function downloadReport(): void {
       </div>
 
       <BaseButton
-        variant="primary-outline"
-        class="content-center hidden mt-0 w-md md:flex md:mt-8"
+        variant="primary"
+        class="hidden w-full mt-6 md:flex justify-center"
         type="submit"
         @click.prevent="getReports"
       >
+        <template #left="slotProps">
+          <BaseIcon name="ArrowPathIcon" :class="slotProps.class" />
+        </template>
         {{ $t('reports.update_report') }}
       </BaseButton>
     </div>

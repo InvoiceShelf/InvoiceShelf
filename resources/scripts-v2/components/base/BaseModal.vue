@@ -29,7 +29,7 @@
             leave-to="opacity-0"
           >
             <DialogOverlay
-              class="fixed inset-0 transition-opacity bg-gray-700/25"
+              class="fixed inset-0 transition-opacity bg-black/50"
             />
           </TransitionChild>
 
@@ -51,17 +51,17 @@
             <div
               :class="`inline-block
               align-middle
-              bg-surface/80 backdrop-blur-2xl
-              rounded-xl border border-white/15
+              bg-surface/95 backdrop-blur-xl backdrop-saturate-150
+              rounded-xl border border-line-default
               text-left
               overflow-hidden
               relative
-              shadow-xl
+              shadow-2xl
               transition-all
               my-4
               ${modalSize}
               sm:w-full
-              border-t-8 border-solid rounded shadow-xl  border-primary-500`"
+              border-t-8 border-solid rounded border-primary-500`"
             >
               <div
                 v-if="hasHeaderSlot"

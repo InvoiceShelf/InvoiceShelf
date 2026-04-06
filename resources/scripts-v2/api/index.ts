@@ -27,6 +27,7 @@ export {
   mailService,
   pdfService,
   diskService,
+  updateService,
 } from './services'
 
 // Re-export all service types
@@ -55,7 +56,9 @@ export type {
   FrequencyDateResponse,
   CustomerListParams,
   CustomerListResponse,
-  CustomerStatsData,
+  CustomerStatsChartData,
+  CustomerStatsParams,
+  CustomerStatsResponse,
   PaymentListParams,
   PaymentListResponse,
   SendPaymentPayload,
@@ -103,6 +106,7 @@ export type {
   ModuleInstallPayload,
   ModuleCheckResponse,
   Backup,
+  BackupListResponse,
   CreateBackupPayload,
   DeleteBackupParams,
   MailConfig,
@@ -119,5 +123,11 @@ export type {
   GotenbergConfig,
   Disk,
   DiskDriversResponse,
+  DiskDriverValue,
   CreateDiskPayload,
+  CheckUpdateResponse,
+  UpdateRelease,
+  UpdateDownloadResponse,
+  UpdateStepResponse,
+  FinishUpdatePayload,
 } from './services'

@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { computed, reactive, inject } from 'vue'
 import { useCompanyStore } from '@v2/stores/company.store'
+import { usePaymentStore } from '@v2/features/company/payments/store'
 import NumberCustomizer from './NumberCustomizer.vue'
+import PaymentsTabDefaultFormats from './PaymentsTabDefaultFormats.vue'
 
 interface Utils {
   mergeSettings: (target: Record<string, unknown>, source: Record<string, unknown>) => void
@@ -9,6 +11,7 @@ interface Utils {
 
 const utils = inject<Utils>('utils')!
 const companyStore = useCompanyStore()
+const paymentStore = usePaymentStore()
 
 const paymentSettings = reactive<{ payment_email_attachment: string | null }>({
   payment_email_attachment: null,
@@ -41,8 +44,10 @@ const sendAsAttachmentField = computed<boolean>({
 </script>
 
 <template>
-  <NumberCustomizer type="payment" :type-store="companyStore" />
+  <NumberCustomizer type="payment" :type-store="paymentStore" />
 
+  <BaseDivider class="mt-6 mb-2" />
+  <PaymentsTabDefaultFormats />
   <BaseDivider class="mt-6 mb-2" />
 
   <ul class="divide-y divide-line-default">

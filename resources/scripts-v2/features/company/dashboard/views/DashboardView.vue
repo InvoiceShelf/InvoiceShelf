@@ -14,9 +14,9 @@ onMounted(() => {
   const meta = route.meta as { ability?: string; isOwner?: boolean }
 
   if (meta.ability && !userStore.hasAbilities(meta.ability)) {
-    router.push({ name: 'account.settings' })
+    router.push({ name: 'settings.account' })
   } else if (meta.isOwner && !userStore.isOwner) {
-    router.push({ name: 'account.settings' })
+    router.push({ name: 'settings.account' })
   }
 })
 </script>

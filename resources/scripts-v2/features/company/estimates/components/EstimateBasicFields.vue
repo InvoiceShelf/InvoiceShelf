@@ -1,15 +1,14 @@
 <template>
   <div class="md:grid-cols-12 grid-cols-1 md:gap-x-6 mt-6 mb-8 grid gap-y-5">
     <BaseCustomerSelectPopup
-      v-model="estimateStore.newEstimate.customer"
       :valid="v.customer_id"
       :content-loading="isLoading"
       type="estimate"
-      class="col-span-5 pr-0"
+      class="col-span-6 pr-0"
     />
 
     <BaseInputGrid
-      class="col-span-7 rounded-xl shadow border border-line-light bg-surface p-5"
+      class="col-span-6 rounded-xl shadow border border-line-light bg-surface p-5"
     >
       <BaseInputGroup
         :label="$t('reports.estimates.estimate_date')"

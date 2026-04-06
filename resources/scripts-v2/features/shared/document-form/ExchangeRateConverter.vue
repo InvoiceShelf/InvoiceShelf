@@ -51,6 +51,8 @@
 <script setup lang="ts">
 import { watch, computed, ref, onBeforeUnmount } from 'vue'
 import { exchangeRateService } from '../../../api/services/exchange-rate.service'
+import { useCompanyStore } from '../../../stores/company.store'
+import { useGlobalStore } from '../../../stores/global.store'
 import type { Currency } from '../../../types/domain/currency'
 import type { DocumentFormData } from './use-document-calculations'
 
@@ -63,17 +65,16 @@ interface Props {
   storeProp: string
   isEdit?: boolean
   customerCurrency?: number | string | null
-  companyCurrency?: Currency | null
-  currencies?: Currency[]
 }
 
 const props = withDefaults(defineProps<Props>(), {
   isLoading: false,
   isEdit: false,
   customerCurrency: null,
-  companyCurrency: null,
-  currencies: () => [],
 })
+
+const companyStore = useCompanyStore()
+const globalStore = useGlobalStore()
 
 const hasActiveProvider = ref<boolean>(false)
 const isFetching = ref<boolean>(false)
@@ -93,14 +94,18 @@ const exchangeRate = computed<number | null | string>({
   },
 })
 
+const companyCurrency = computed<Currency | null>(() => {
+  return companyStore.selectedCompanyCurrency
+})
+
 const selectedCurrency = computed<Currency | null>(() => {
   return (
-    props.currencies.find((c) => c.id === formData.value.currency_id) ?? null
+    globalStore.currencies.find((c: Currency) => c.id === formData.value.currency_id) ?? null
   )
 })
 
 const isCurrencyDifferent = computed<boolean>(() => {
-  return props.companyCurrency?.id !== props.customerCurrency
+  return companyCurrency.value?.id !== props.customerCurrency
 })
 
 watch(
@@ -150,13 +155,13 @@ function setCustomerCurrency(v: Record<string, unknown> | null): void {
     if (currency) {
       formData.value.currency_id = currency.id
     }
-  } else if (props.companyCurrency) {
-    formData.value.currency_id = props.companyCurrency.id
+  } else if (companyCurrency.value) {
+    formData.value.currency_id = companyCurrency.value.id
   }
 }
 
 async function onChangeCurrency(v: number | undefined): Promise<void> {
-  if (v !== props.companyCurrency?.id) {
+  if (v !== companyCurrency.value?.id) {
     if (!props.isEdit && v) {
       await getCurrentExchangeRate(v)
     }

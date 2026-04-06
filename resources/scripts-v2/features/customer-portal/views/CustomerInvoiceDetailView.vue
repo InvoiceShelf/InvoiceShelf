@@ -163,13 +163,7 @@
     </div>
 
     <!-- PDF Preview -->
-    <div class="flex flex-col min-h-0 mt-8 overflow-hidden" style="height: 75vh">
-      <iframe
-        v-if="shareableLink"
-        :src="shareableLink"
-        class="flex-1 border border-gray-400 border-solid rounded-md"
-      />
-    </div>
+    <BasePdfPreview :src="shareableLink" />
   </BasePage>
 </template>
 

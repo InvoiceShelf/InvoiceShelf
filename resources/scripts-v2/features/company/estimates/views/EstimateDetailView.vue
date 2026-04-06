@@ -191,12 +191,9 @@
     </div>
 
     <!-- PDF Preview -->
-    <div class="flex flex-col min-h-0 mt-8 overflow-hidden" style="height: 75vh">
-      <iframe
-        :src="shareableLink"
-        class="flex-1 border border-gray-400 border-solid rounded-xl bg-surface frame-style"
-      />
-    </div>
+    <BasePdfPreview :src="shareableLink" />
+
+    <SendEstimateModal @update="updateSentEstimate" />
   </BasePage>
 </template>
 
@@ -206,7 +203,11 @@ import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useEstimateStore } from '../store'
 import EstimateDropdown from '../components/EstimateDropdown.vue'
+import SendEstimateModal from '../components/SendEstimateModal.vue'
 import LoadingIcon from '@v2/components/icons/LoadingIcon.vue'
+import { useUserStore } from '../../../../stores/user.store'
+import { useDialogStore } from '../../../../stores/dialog.store'
+import { useModalStore } from '../../../../stores/modal.store'
 import type { Estimate } from '../../../../types/domain/estimate'
 
 interface Props {
@@ -227,9 +228,47 @@ const props = withDefaults(defineProps<Props>(), {
   canCreateInvoice: false,
 })
 
+const ABILITIES = {
+  EDIT: 'edit-estimate',
+  VIEW: 'view-estimate',
+  CREATE: 'create-estimate',
+  DELETE: 'delete-estimate',
+  SEND: 'send-estimate',
+  CREATE_INVOICE: 'create-invoice',
+} as const
+
 const estimateStore = useEstimateStore()
+const userStore = useUserStore()
+const dialogStore = useDialogStore()
+const modalStore = useModalStore()
 const { t } = useI18n()
 const route = useRoute()
+
+const canEdit = computed<boolean>(() => {
+  return props.canEdit || userStore.hasAbilities(ABILITIES.EDIT)
+})
+
+const canView = computed<boolean>(() => {
+  return props.canView || userStore.hasAbilities(ABILITIES.VIEW)
+})
+
+const canCreate = computed<boolean>(() => {
+  return props.canCreate || userStore.hasAbilities(ABILITIES.CREATE)
+})
+
+const canDelete = computed<boolean>(() => {
+  return props.canDelete || userStore.hasAbilities(ABILITIES.DELETE)
+})
+
+const canSend = computed<boolean>(() => {
+  return props.canSend || userStore.hasAbilities(ABILITIES.SEND)
+})
+
+const canCreateInvoice = computed<boolean>(() => {
+  return (
+    props.canCreateInvoice || userStore.hasAbilities(ABILITIES.CREATE_INVOICE)
+  )
+})
 
 const estimateData = ref<Estimate | null>(null)
 const isMarkAsSent = ref<boolean>(false)
@@ -373,29 +412,36 @@ function sortData(): void {
   onSearched()
 }
 
-async function onMarkAsSent(): Promise<void> {
-  const confirmed = window.confirm(t('estimates.confirm_mark_as_sent'))
-  if (!confirmed) return
-
-  isMarkAsSent.value = false
-  await estimateStore.markAsSent({
-    id: estimateData.value!.id,
-    status: 'SENT',
+function onMarkAsSent(): void {
+  dialogStore.openDialog({
+    title: t('general.are_you_sure'),
+    message: t('estimates.confirm_mark_as_sent'),
+    yesLabel: t('general.ok'),
+    noLabel: t('general.cancel'),
+    variant: 'primary',
+    hideNoButton: false,
+    size: 'lg',
+  }).then(async (res: boolean) => {
+    if (res) {
+      isMarkAsSent.value = false
+      await estimateStore.markAsSent({
+        id: estimateData.value!.id,
+        status: 'SENT',
+      })
+      estimateData.value!.status = 'SENT' as Estimate['status']
+      isMarkAsSent.value = true
+      isMarkAsSent.value = false
+    }
   })
-  estimateData.value!.status = 'SENT' as Estimate['status']
-  isMarkAsSent.value = true
-  isMarkAsSent.value = false
 }
 
 function onSendEstimate(): void {
-  const modalStore = (window as Record<string, unknown>).__modalStore as
-    | { openModal: (opts: Record<string, unknown>) => void }
-    | undefined
-  modalStore?.openModal({
+  modalStore.openModal({
     title: t('estimates.send_estimate'),
     componentName: 'SendEstimateModal',
     id: estimateData.value!.id,
     data: estimateData.value,
+    refreshData: () => loadEstimate(),
   })
 }
 

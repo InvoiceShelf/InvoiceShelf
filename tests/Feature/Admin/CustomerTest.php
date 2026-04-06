@@ -42,7 +42,31 @@ test('customer stats', function () {
 
     $response = getJson("api/v1/customers/{$customer->id}/stats");
 
-    $response->assertStatus(200);
+    $response
+        ->assertOk()
+        ->assertJsonPath('data.id', $customer->id)
+        ->assertJsonPath('data.name', $customer->name)
+        ->assertJsonPath('data.email', $customer->email)
+        ->assertJsonStructure([
+            'data' => [
+                'id',
+                'name',
+                'email',
+            ],
+            'meta' => [
+                'chartData' => [
+                    'salesTotal',
+                    'totalReceipts',
+                    'totalExpenses',
+                    'netProfit',
+                    'expenseTotals',
+                    'netProfits',
+                    'months',
+                    'receiptTotals',
+                    'invoiceTotals',
+                ],
+            ],
+        ]);
 });
 
 test('create customer', function () {

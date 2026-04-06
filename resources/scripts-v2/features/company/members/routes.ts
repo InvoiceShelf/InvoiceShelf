@@ -6,7 +6,8 @@ const memberRoutes: RouteRecordRaw[] = [
     name: 'members.index',
     component: () => import('./views/MemberIndexView.vue'),
     meta: {
-      ability: 'view-member',
+      requiresAuth: true,
+      isOwner: true,
     },
   },
 ]

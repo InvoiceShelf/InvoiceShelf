@@ -19,7 +19,7 @@ export const useCompanyStore = defineStore('company', () => {
   const selectedCompany = ref<Company | null>(null)
   const selectedCompanySettings = ref<Record<string, string>>({})
   const selectedCompanyCurrency = ref<Currency | null>(null)
-  const isAdminMode = ref<boolean>(localStore.get<string>('isAdminMode') === 'true')
+  const isAdminMode = ref<boolean>(localStore.getBoolean('isAdminMode'))
   const defaultCurrency = ref<Currency | null>(null)
 
   // Actions
@@ -37,7 +37,7 @@ export const useCompanyStore = defineStore('company', () => {
   function setAdminMode(enabled: boolean): void {
     isAdminMode.value = enabled
     if (enabled) {
-      localStore.set('isAdminMode', 'true')
+      localStore.set('isAdminMode', true)
       localStore.remove('selectedCompany')
       selectedCompany.value = null
     } else {

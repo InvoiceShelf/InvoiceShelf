@@ -155,7 +155,14 @@
         </template>
 
         <template #cell-name="{ row }">
-          <BaseText :text="row.data.customer.name" tag="span" />
+          <router-link
+            v-if="row.data.customer?.id"
+            :to="`/admin/customers/${row.data.customer.id}/view`"
+            class="font-medium text-primary-500 hover:text-primary-600"
+          >
+            {{ row.data.customer.name }}
+          </router-link>
+          <span v-else>{{ row.data.customer?.name ?? '-' }}</span>
         </template>
 
         <template #cell-payment_mode="{ row }">
@@ -165,9 +172,14 @@
         </template>
 
         <template #cell-invoice_number="{ row }">
-          <span>
-            {{ row.data.invoice?.invoice_number ?? '-' }}
-          </span>
+          <router-link
+            v-if="row.data.invoice?.id"
+            :to="`/admin/invoices/${row.data.invoice.id}/view`"
+            class="font-medium text-primary-500 hover:text-primary-600"
+          >
+            {{ row.data.invoice.invoice_number }}
+          </router-link>
+          <span v-else>-</span>
         </template>
 
         <template #cell-amount="{ row }">
@@ -198,6 +210,8 @@ import { useI18n } from 'vue-i18n'
 import { debouncedWatch } from '@vueuse/core'
 import { usePaymentStore } from '../store'
 import PaymentDropdown from '../components/PaymentDropdown.vue'
+import { useUserStore } from '../../../../stores/user.store'
+import { useDialogStore } from '../../../../stores/dialog.store'
 import type { Payment, PaymentMethod } from '../../../../types/domain/payment'
 
 interface Props {
@@ -216,7 +230,17 @@ const props = withDefaults(defineProps<Props>(), {
   canSend: false,
 })
 
+const ABILITIES = {
+  CREATE: 'create-payment',
+  EDIT: 'edit-payment',
+  VIEW: 'view-payment',
+  DELETE: 'delete-payment',
+  SEND: 'send-payment',
+} as const
+
 const paymentStore = usePaymentStore()
+const userStore = useUserStore()
+const dialogStore = useDialogStore()
 const { t } = useI18n()
 
 const tableRef = ref<{ refresh: () => void } | null>(null)
@@ -239,8 +263,28 @@ const showEmptyScreen = computed<boolean>(
   () => !paymentStore.paymentTotalCount && !isFetchingInitialData.value,
 )
 
+const canCreate = computed<boolean>(() => {
+  return props.canCreate || userStore.hasAbilities(ABILITIES.CREATE)
+})
+
+const canEdit = computed<boolean>(() => {
+  return props.canEdit || userStore.hasAbilities(ABILITIES.EDIT)
+})
+
+const canView = computed<boolean>(() => {
+  return props.canView || userStore.hasAbilities(ABILITIES.VIEW)
+})
+
+const canDelete = computed<boolean>(() => {
+  return props.canDelete || userStore.hasAbilities(ABILITIES.DELETE)
+})
+
+const canSend = computed<boolean>(() => {
+  return props.canSend || userStore.hasAbilities(ABILITIES.SEND)
+})
+
 const hasAtLeastOneAbility = computed<boolean>(() => {
-  return props.canDelete || props.canEdit || props.canView || props.canSend
+  return canDelete.value || canEdit.value || canView.value || canSend.value
 })
 
 interface TableColumn {
@@ -370,13 +414,24 @@ function toggleFilter(): void {
   showFilters.value = !showFilters.value
 }
 
-async function removeMultiplePayments(): Promise<void> {
-  const confirmed = window.confirm(t('payments.confirm_delete'))
-  if (!confirmed) return
-
-  const res = await paymentStore.deleteMultiplePayments()
-  if (res.data.success) {
-    refreshTable()
-  }
+function removeMultiplePayments(): void {
+  dialogStore
+    .openDialog({
+      title: t('general.are_you_sure'),
+      message: t('payments.confirm_delete'),
+      yesLabel: t('general.ok'),
+      noLabel: t('general.cancel'),
+      variant: 'danger',
+      hideNoButton: false,
+      size: 'lg',
+    })
+    .then(async (res: boolean) => {
+      if (res) {
+        const response = await paymentStore.deleteMultiplePayments()
+        if (response.data.success) {
+          refreshTable()
+        }
+      }
+    })
 }
 </script>

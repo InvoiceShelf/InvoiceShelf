@@ -1,15 +1,21 @@
 <template>
   <div class="grid grid-cols-12 gap-8 mt-6 mb-8">
     <BaseCustomerSelectPopup
-      v-model="invoiceStore.newInvoice.customer"
       :valid="v.customer_id"
       :content-loading="isLoading"
       type="invoice"
-      class="col-span-12 lg:col-span-5 pr-0"
+      class="col-span-12 lg:col-span-6 pr-0"
+    />
+
+    <RecurringFields
+      v-if="isRecurring"
+      :is-loading="isLoading"
+      :is-edit="isEdit"
     />
 
     <BaseInputGrid
-      class="col-span-12 lg:col-span-7 rounded-xl shadow border border-line-light bg-surface p-5"
+      v-else
+      class="col-span-12 lg:col-span-6 rounded-xl shadow border border-line-light bg-surface p-5"
     >
       <BaseInputGroup
         :label="$t('invoices.invoice_date')"
@@ -68,6 +74,7 @@
 import { computed } from 'vue'
 import { ExchangeRateConverter } from '../../../shared/document-form'
 import { useInvoiceStore } from '../store'
+import RecurringFields from './RecurringFields.vue'
 
 interface ValidationField {
   $error: boolean
@@ -79,12 +86,14 @@ interface Props {
   v: Record<string, ValidationField>
   isLoading?: boolean
   isEdit?: boolean
+  isRecurring?: boolean
   companySettings?: Record<string, string>
 }
 
 const props = withDefaults(defineProps<Props>(), {
   isLoading: false,
   isEdit: false,
+  isRecurring: false,
   companySettings: () => ({}),
 })
 

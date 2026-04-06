@@ -151,16 +151,9 @@
     </div>
 
     <!-- PDF Preview -->
-    <div
-      class="flex flex-col min-h-0 mt-8 overflow-hidden"
-      style="height: 75vh"
-    >
-      <iframe
-        v-if="shareableLink"
-        :src="shareableLink"
-        class="flex-1 border border-gray-400 border-solid rounded-md"
-      />
-    </div>
+    <BasePdfPreview :src="shareableLink" />
+
+    <SendPaymentModal />
   </BasePage>
 </template>
 
@@ -170,7 +163,10 @@ import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { usePaymentStore } from '../store'
 import PaymentDropdown from '../components/PaymentDropdown.vue'
+import SendPaymentModal from '../components/SendPaymentModal.vue'
 import LoadingIcon from '@v2/components/icons/LoadingIcon.vue'
+import { useUserStore } from '../../../../stores/user.store'
+import { useModalStore } from '../../../../stores/modal.store'
 import type { Payment } from '../../../../types/domain/payment'
 
 interface Props {
@@ -187,9 +183,34 @@ const props = withDefaults(defineProps<Props>(), {
   canSend: false,
 })
 
+const ABILITIES = {
+  EDIT: 'edit-payment',
+  VIEW: 'view-payment',
+  DELETE: 'delete-payment',
+  SEND: 'send-payment',
+} as const
+
 const paymentStore = usePaymentStore()
+const userStore = useUserStore()
+const modalStore = useModalStore()
 const { t } = useI18n()
 const route = useRoute()
+
+const canEdit = computed<boolean>(() => {
+  return props.canEdit || userStore.hasAbilities(ABILITIES.EDIT)
+})
+
+const canView = computed<boolean>(() => {
+  return props.canView || userStore.hasAbilities(ABILITIES.VIEW)
+})
+
+const canDelete = computed<boolean>(() => {
+  return props.canDelete || userStore.hasAbilities(ABILITIES.DELETE)
+})
+
+const canSend = computed<boolean>(() => {
+  return props.canSend || userStore.hasAbilities(ABILITIES.SEND)
+})
 
 const paymentData = ref<Payment | Record<string, unknown>>({})
 const isFetching = ref<boolean>(false)
@@ -340,15 +361,13 @@ function sortData(): void {
 }
 
 function onPaymentSend(): void {
-  const modalStore = (window as Record<string, unknown>).__modalStore as
-    | { openModal: (opts: Record<string, unknown>) => void }
-    | undefined
-  modalStore?.openModal({
+  modalStore.openModal({
     title: t('payments.send_payment'),
     componentName: 'SendPaymentModal',
     id: (paymentData.value as Payment).id,
     data: paymentData.value,
     variant: 'lg',
+    refreshData: () => loadPayment(),
   })
 }
 </script>

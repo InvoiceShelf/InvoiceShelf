@@ -64,7 +64,7 @@ async function submitInvitation(): Promise<void> {
   try {
     await memberStore.inviteMember({
       email: form.email,
-      role: form.role_id !== null ? String(form.role_id) : undefined,
+      role_id: form.role_id,
     })
     form.email = ''
     form.role_id = null

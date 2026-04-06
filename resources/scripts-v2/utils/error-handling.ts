@@ -33,6 +33,7 @@ export interface NormalizedApiError {
  */
 const ERROR_TRANSLATION_MAP: Record<string, string> = {
   'These credentials do not match our records.': 'errors.login_invalid_credentials',
+  'The provided credentials are incorrect.': 'errors.login_invalid_credentials',
   'invalid_key': 'errors.invalid_provider_key',
   'This feature is available on Starter plan and onwards!': 'errors.starter_plan',
   'taxes_attached': 'settings.tax_types.already_in_use',

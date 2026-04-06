@@ -1,4 +1,6 @@
 import { defineStore } from 'pinia'
+import { useNotificationStore } from '../../../stores/notification.store'
+import { useCompanyStore } from '../../../stores/company.store'
 import { recurringInvoiceService } from '../../../api/services/recurring-invoice.service'
 import type {
   RecurringInvoiceListParams,
@@ -19,6 +21,7 @@ import type {
   DocumentTax,
   DocumentItem,
 } from '../../shared/document-form/use-document-calculations'
+import { generateClientId } from '../../../utils'
 
 // ----------------------------------------------------------------
 // Frequency options
@@ -35,11 +38,11 @@ export interface FrequencyOption {
 
 function createTaxStub(): DocumentTax {
   return {
-    id: crypto.randomUUID(),
+    id: generateClientId(),
     name: '',
     tax_type_id: 0,
     type: 'GENERAL',
-    amount: 0,
+    amount: null,
     percent: null,
     compound_tax: false,
     calculation_type: null,
@@ -49,7 +52,7 @@ function createTaxStub(): DocumentTax {
 
 function createRecurringInvoiceItemStub(): DocumentItem {
   return {
-    id: crypto.randomUUID(),
+    id: generateClientId(),
     item_id: null,
     name: '',
     description: null,
@@ -240,56 +243,21 @@ export const useRecurringInvoiceStore = defineStore('recurring-invoice', {
   actions: {
     initFrequencies(t: (key: string) => string): void {
       this.frequencies = [
-        {
-          label: t('recurring_invoices.frequency.every_minute'),
-          value: '* * * * *',
-        },
-        {
-          label: t('recurring_invoices.frequency.every_30_minute'),
-          value: '*/30 * * * *',
-        },
-        {
-          label: t('recurring_invoices.frequency.every_hour'),
-          value: '0 * * * *',
-        },
-        {
-          label: t('recurring_invoices.frequency.every_2_hour'),
-          value: '0 */2 * * *',
-        },
-        {
-          label: t('recurring_invoices.frequency.every_day_at_midnight'),
-          value: '0 0 * * *',
-        },
-        {
-          label: t('recurring_invoices.frequency.every_week'),
-          value: '0 0 * * 0',
-        },
-        {
-          label: t(
-            'recurring_invoices.frequency.every_15_days_at_midnight',
-          ),
-          value: '0 5 */15 * *',
-        },
-        {
-          label: t(
-            'recurring_invoices.frequency.on_the_first_day_of_every_month_at_midnight',
-          ),
-          value: '0 0 1 * *',
-        },
-        {
-          label: t('recurring_invoices.frequency.every_6_month'),
-          value: '0 0 1 */6 *',
-        },
-        {
-          label: t(
-            'recurring_invoices.frequency.every_year_on_the_first_day_of_january_at_midnight',
-          ),
-          value: '0 0 1 1 *',
-        },
-        {
-          label: t('recurring_invoices.frequency.custom'),
-          value: 'CUSTOM',
-        },
+        // Common business intervals
+        { label: t('recurring_invoices.frequency.every_week'), value: '0 0 * * 0' },
+        { label: t('recurring_invoices.frequency.every_2_weeks'), value: '0 0 */14 * *' },
+        { label: t('recurring_invoices.frequency.every_month'), value: '0 0 1 * *' },
+        { label: t('recurring_invoices.frequency.every_2_months'), value: '0 0 1 */2 *' },
+        { label: t('recurring_invoices.frequency.every_quarter'), value: '0 0 1 */3 *' },
+        { label: t('recurring_invoices.frequency.every_6_month'), value: '0 0 1 */6 *' },
+        { label: t('recurring_invoices.frequency.every_year'), value: '0 0 1 1 *' },
+        // Less common intervals
+        { label: t('recurring_invoices.frequency.every_day'), value: '0 0 * * *' },
+        { label: t('recurring_invoices.frequency.every_15_days_at_midnight'), value: '0 5 */15 * *' },
+        { label: t('recurring_invoices.frequency.every_hour'), value: '0 * * * *' },
+        { label: t('recurring_invoices.frequency.every_minute'), value: '* * * * *' },
+        // Custom cron expression
+        { label: t('recurring_invoices.frequency.custom'), value: 'CUSTOM' },
       ]
     },
 
@@ -400,6 +368,13 @@ export const useRecurringInvoiceStore = defineStore('recurring-invoice', {
         ...this.recurringInvoices,
         response.data,
       ]
+
+      const notificationStore = useNotificationStore()
+      notificationStore.showNotification({
+        type: 'success',
+        message: 'recurring_invoices.created_message',
+      })
+
       return { data: response }
     },
 
@@ -416,6 +391,13 @@ export const useRecurringInvoiceStore = defineStore('recurring-invoice', {
       if (pos !== -1) {
         this.recurringInvoices[pos] = response.data
       }
+
+      const notificationStore = useNotificationStore()
+      notificationStore.showNotification({
+        type: 'success',
+        message: 'recurring_invoices.updated_message',
+      })
+
       return { data: response }
     },
 
@@ -502,13 +484,16 @@ export const useRecurringInvoiceStore = defineStore('recurring-invoice', {
     async fetchRecurringInvoiceInitialSettings(
       isEdit: boolean,
       routeParams?: { id?: string; query?: Record<string, string> },
-      companySettings?: Record<string, string>,
+      companySettingsParam?: Record<string, string>,
       companyCurrency?: Currency,
     ): Promise<void> {
       this.isFetchingInitialSettings = true
 
-      if (companyCurrency) {
-        this.newRecurringInvoice.currency = companyCurrency
+      const companyStore = useCompanyStore()
+      const companySettings = companySettingsParam ?? companyStore.selectedCompanySettings
+
+      if (companyCurrency || companyStore.selectedCompanyCurrency) {
+        this.newRecurringInvoice.currency = companyCurrency ?? companyStore.selectedCompanyCurrency!
       }
 
       if (routeParams?.query?.customer) {

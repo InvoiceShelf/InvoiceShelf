@@ -52,6 +52,11 @@
         window.customer_logo = "/storage/{{$customer_logo}}"
 
         @endif
+        @if(isset($customer_page_title))
+
+        window.customer_page_title = "{{$customer_page_title}}"
+
+        @endif
         @if(isset($login_page_logo))
 
         window.login_page_logo = "/storage/{{$login_page_logo}}"

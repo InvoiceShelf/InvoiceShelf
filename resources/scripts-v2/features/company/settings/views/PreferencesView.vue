@@ -57,8 +57,14 @@ watch(
 
 const invoiceUseTimeField = computed<boolean>({
   get: () => settingsForm.invoice_use_time === 'YES',
-  set: (newValue: boolean) => {
-    settingsForm.invoice_use_time = newValue ? 'YES' : 'NO'
+  set: async (newValue: boolean) => {
+    const value = newValue ? 'YES' : 'NO'
+    settingsForm.invoice_use_time = value
+
+    await companyStore.updateCompanySettings({
+      data: { settings: { invoice_use_time: value } },
+      message: 'general.setting_updated',
+    })
   },
 })
 
@@ -303,12 +309,6 @@ async function submitData(): Promise<void> {
         </BaseInputGroup>
       </BaseInputGrid>
 
-      <BaseSwitchSection
-        v-model="invoiceUseTimeField"
-        :title="$t('settings.preferences.invoice_use_time')"
-        :description="$t('settings.preferences.invoice_use_time_description')"
-      />
-
       <BaseButton
         :content-loading="isFetchingInitialData"
         :disabled="isSaving"
@@ -361,6 +361,12 @@ async function submitData(): Promise<void> {
         </form>
 
         <BaseDivider class="mt-6 mb-2" />
+
+        <BaseSwitchSection
+          v-model="invoiceUseTimeField"
+          :title="$t('settings.preferences.invoice_use_time')"
+          :description="$t('settings.preferences.invoice_use_time_description')"
+        />
 
         <BaseSwitchSection
           v-model="discountPerItemField"

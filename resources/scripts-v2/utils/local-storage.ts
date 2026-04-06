@@ -26,6 +26,26 @@ export function get<T>(key: string): T | null {
 }
 
 /**
+ * Retrieve a boolean from localStorage while tolerating legacy string values.
+ *
+ * @param key - The localStorage key
+ * @returns True only when the stored value represents a truthy boolean
+ */
+export function getBoolean(key: string): boolean {
+  const value = get<boolean | string>(key)
+
+  if (typeof value === 'boolean') {
+    return value
+  }
+
+  if (typeof value === 'string') {
+    return value.toLowerCase() === 'true'
+  }
+
+  return false
+}
+
+/**
  * Store a value in localStorage as JSON.
  *
  * @param key - The localStorage key

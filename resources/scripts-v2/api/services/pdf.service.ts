@@ -1,10 +1,7 @@
 import { client } from '../client'
 import { API } from '../endpoints'
 
-export interface PdfDriver {
-  name: string
-  value: string
-}
+export type PdfDriver = string
 
 export interface DomPdfConfig {
   pdf_driver: string

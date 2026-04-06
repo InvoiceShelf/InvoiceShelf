@@ -115,7 +115,13 @@ async function onSubmit(): Promise<void> {
       type: 'success',
       message: 'Logged in successfully.',
     })
-  } catch {
+  } catch (err: unknown) {
+    const { handleApiError } = await import('../../../utils/error-handling')
+    const normalized = handleApiError(err)
+    notificationStore.showNotification({
+      type: 'error',
+      message: normalized.message,
+    })
     isLoading.value = false
   }
 }

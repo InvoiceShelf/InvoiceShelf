@@ -10,6 +10,7 @@ export const paymentRoutes: RouteRecordRaw[] = [
     name: 'payments.index',
     component: PaymentIndexView,
     meta: {
+      requiresAuth: true,
       ability: 'view-payment',
       title: 'payments.title',
     },
@@ -19,6 +20,7 @@ export const paymentRoutes: RouteRecordRaw[] = [
     name: 'payments.create',
     component: PaymentCreateView,
     meta: {
+      requiresAuth: true,
       ability: 'create-payment',
       title: 'payments.new_payment',
     },
@@ -28,6 +30,7 @@ export const paymentRoutes: RouteRecordRaw[] = [
     name: 'payments.edit',
     component: PaymentCreateView,
     meta: {
+      requiresAuth: true,
       ability: 'edit-payment',
       title: 'payments.edit_payment',
     },
@@ -37,6 +40,7 @@ export const paymentRoutes: RouteRecordRaw[] = [
     name: 'payments.view',
     component: PaymentDetailView,
     meta: {
+      requiresAuth: true,
       ability: 'view-payment',
       title: 'payments.title',
     },
@@ -46,6 +50,7 @@ export const paymentRoutes: RouteRecordRaw[] = [
     name: 'payments.create-from-invoice',
     component: PaymentCreateView,
     meta: {
+      requiresAuth: true,
       ability: 'create-payment',
       title: 'payments.new_payment',
     },

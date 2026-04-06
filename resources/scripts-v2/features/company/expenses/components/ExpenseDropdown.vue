@@ -29,6 +29,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { useExpenseStore } from '../store'
+import { useDialogStore } from '../../../../stores/dialog.store'
 import type { Expense } from '../../../../types/domain/expense'
 
 interface TableRef {
@@ -51,15 +52,27 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const expenseStore = useExpenseStore()
+const dialogStore = useDialogStore()
 const { t } = useI18n()
 
-async function removeExpense(): Promise<void> {
-  const confirmed = window.confirm(t('expenses.confirm_delete'))
-  if (!confirmed) return
-
-  const res = await expenseStore.deleteExpense({ ids: [props.row.id] })
-  if (res) {
-    props.loadData?.()
-  }
+function removeExpense(): void {
+  dialogStore
+    .openDialog({
+      title: t('general.are_you_sure'),
+      message: t('expenses.confirm_delete'),
+      yesLabel: t('general.ok'),
+      noLabel: t('general.cancel'),
+      variant: 'danger',
+      hideNoButton: false,
+      size: 'lg',
+    })
+    .then(async (res: boolean) => {
+      if (res) {
+        const response = await expenseStore.deleteExpense({ ids: [props.row.id] })
+        if (response) {
+          props.loadData?.()
+        }
+      }
+    })
 }
 </script>

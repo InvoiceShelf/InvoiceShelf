@@ -17,6 +17,7 @@ export interface CreateCustomFieldPayload {
   is_required?: boolean
   options?: Array<{ name: string }> | string[] | null
   order?: number | null
+  default_answer?: string | null
 }
 
 export const customFieldService = {

@@ -7,6 +7,11 @@ const AdminCompanyEditView = () => import('./views/AdminCompanyEditView.vue')
 const AdminUsersView = () => import('./views/AdminUsersView.vue')
 const AdminUserEditView = () => import('./views/AdminUserEditView.vue')
 const AdminSettingsView = () => import('./views/AdminSettingsView.vue')
+const AdminMailConfigView = () => import('./views/settings/AdminMailConfigView.vue')
+const AdminPdfGenerationView = () => import('./views/settings/AdminPdfGenerationView.vue')
+const AdminBackupView = () => import('./views/settings/AdminBackupView.vue')
+const AdminFileDiskView = () => import('./views/settings/AdminFileDiskView.vue')
+const AdminUpdateAppView = () => import('./views/settings/AdminUpdateAppView.vue')
 
 export const adminRoutes: RouteRecordRaw[] = [
   {
@@ -15,6 +20,7 @@ export const adminRoutes: RouteRecordRaw[] = [
     meta: {
       requiresAuth: true,
       isSuperAdmin: true,
+      usesAdminBootstrap: true,
     },
     children: [
       {
@@ -66,13 +72,16 @@ export const adminRoutes: RouteRecordRaw[] = [
         },
         children: [
           {
+            path: '',
+            redirect: 'mail-configuration',
+          },
+          {
             path: 'mail-configuration',
             name: 'admin.settings.mail',
             meta: {
               isSuperAdmin: true,
             },
-            // Loaded by settings sub-routes
-            component: { template: '<router-view />' },
+            component: AdminMailConfigView,
           },
           {
             path: 'pdf-generation',
@@ -80,7 +89,7 @@ export const adminRoutes: RouteRecordRaw[] = [
             meta: {
               isSuperAdmin: true,
             },
-            component: { template: '<router-view />' },
+            component: AdminPdfGenerationView,
           },
           {
             path: 'backup',
@@ -88,7 +97,7 @@ export const adminRoutes: RouteRecordRaw[] = [
             meta: {
               isSuperAdmin: true,
             },
-            component: { template: '<router-view />' },
+            component: AdminBackupView,
           },
           {
             path: 'file-disk',
@@ -96,7 +105,7 @@ export const adminRoutes: RouteRecordRaw[] = [
             meta: {
               isSuperAdmin: true,
             },
-            component: { template: '<router-view />' },
+            component: AdminFileDiskView,
           },
           {
             path: 'update-app',
@@ -104,7 +113,7 @@ export const adminRoutes: RouteRecordRaw[] = [
             meta: {
               isSuperAdmin: true,
             },
-            component: { template: '<router-view />' },
+            component: AdminUpdateAppView,
           },
         ],
       },

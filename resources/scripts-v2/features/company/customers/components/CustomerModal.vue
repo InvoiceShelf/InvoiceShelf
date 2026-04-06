@@ -137,6 +137,11 @@ function copyAddress(): void {
 }
 
 async function setInitialData(): Promise<void> {
+  await Promise.all([
+    globalStore.fetchCurrencies(),
+    globalStore.fetchCountries(),
+  ])
+
   if (!customerStore.isEdit) {
     customerStore.currentCustomer.currency_id =
       companyStore.selectedCompanyCurrency?.id ?? null
@@ -217,9 +222,9 @@ function closeCustomerModal(): void {
       </div>
     </template>
     <form action="" @submit.prevent="submitCustomerData">
-      <div class="px-6 pb-3">
+      <div class="px-6 pb-3 max-h-[calc(80vh-8rem)] overflow-y-auto">
         <BaseTabGroup>
-          <BaseTab :title="$t('customers.basic_info')" class="!mt-2">
+          <BaseTab :title="$t('customers.basic_info')">
             <BaseInputGrid layout="one-column">
               <BaseInputGroup
                 :label="$t('customers.display_name')"
@@ -403,7 +408,7 @@ function closeCustomerModal(): void {
             </BaseInputGrid>
           </BaseTab>
 
-          <BaseTab :title="$t('customers.billing_address')" class="!mt-2">
+          <BaseTab :title="$t('customers.billing_address')">
             <BaseInputGrid layout="one-column">
               <BaseInputGroup :label="$t('customers.name')">
                 <BaseInput
@@ -505,7 +510,7 @@ function closeCustomerModal(): void {
             </BaseInputGrid>
           </BaseTab>
 
-          <BaseTab :title="$t('customers.shipping_address')" class="!mt-2">
+          <BaseTab :title="$t('customers.shipping_address')">
             <div class="grid md:grid-cols-12">
               <div class="flex justify-end col-span-12">
                 <BaseButton

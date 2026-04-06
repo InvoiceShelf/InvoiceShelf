@@ -257,6 +257,12 @@ class User extends Authenticatable implements HasMedia
             $query->wherePhone($filters->get('phone'));
         }
 
+        if ($filters->get('role')) {
+            $query->whereHas('roles', function ($q) use ($filters) {
+                $q->where('roles.id', $filters->get('role'));
+            });
+        }
+
         if ($filters->get('orderByField') || $filters->get('orderBy')) {
             $field = $filters->get('orderByField') ? $filters->get('orderByField') : 'name';
             $orderBy = $filters->get('orderBy') ? $filters->get('orderBy') : 'asc';

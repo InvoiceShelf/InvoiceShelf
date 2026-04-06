@@ -2,6 +2,8 @@
 import { ref, computed } from 'vue'
 import type { Ref, ComputedRef } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { client } from '@v2/api/client'
+import InvoiceInformationCard from './InvoiceInformationCard.vue'
 import type { Currency } from '@v2/types/domain'
 import type { Company } from '@v2/types/domain'
 import type { Customer } from '@v2/types/domain'
@@ -23,12 +25,6 @@ interface InvoicePublicData {
   customer?: Pick<Customer, 'name'>
 }
 
-interface Props {
-  fetchInvoice: (hash: string) => Promise<InvoicePublicData>
-}
-
-const props = defineProps<Props>()
-
 const invoiceData = ref<InvoicePublicData | null>(null) as Ref<InvoicePublicData | null>
 const route = useRoute()
 const router = useRouter()
@@ -37,7 +33,8 @@ loadInvoice()
 
 async function loadInvoice(): Promise<void> {
   const hash = route.params.hash as string
-  invoiceData.value = await props.fetchInvoice(hash)
+  const { data } = await client.get(`/customer/invoices/${hash}`)
+  invoiceData.value = data.data
 }
 
 const shareableLink = computed<string>(() => {
@@ -60,13 +57,16 @@ const customerLogo = computed<string | false>(() => {
 const pageTitle: ComputedRef<string> = computed(() => invoiceData.value?.invoice_number ?? '')
 
 function payInvoice(): void {
-  router.push({
-    name: 'invoice.pay',
-    params: {
-      hash: route.params.hash as string,
-      company: invoiceData.value?.company?.slug ?? '',
-    },
-  })
+  const resolved = router.resolve({ name: 'invoice.pay' })
+  if (resolved.matched.length) {
+    router.push({
+      name: 'invoice.pay',
+      params: {
+        hash: route.params.hash as string,
+        company: invoiceData.value?.company?.slug ?? '',
+      },
+    })
+  }
 }
 </script>
 

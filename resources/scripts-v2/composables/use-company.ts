@@ -47,9 +47,7 @@ const selectedCompany = ref<Company | null>(null)
 const companies = ref<Company[]>([])
 const selectedCompanySettings = ref<CompanySettings>({})
 const selectedCompanyCurrency = ref<CompanyCurrency | null>(null)
-const isAdminMode = ref<boolean>(
-  ls.get<string>(LS_KEYS.IS_ADMIN_MODE) === 'true'
-)
+const isAdminMode = ref<boolean>(ls.getBoolean(LS_KEYS.IS_ADMIN_MODE))
 
 /**
  * Composable for managing company selection and admin mode state.
@@ -104,7 +102,7 @@ export function useCompany(): UseCompanyReturn {
    */
   function enterAdminMode(): void {
     isAdminMode.value = true
-    ls.set(LS_KEYS.IS_ADMIN_MODE, 'true')
+    ls.set(LS_KEYS.IS_ADMIN_MODE, true)
     ls.remove(LS_KEYS.SELECTED_COMPANY)
     selectedCompany.value = null
   }

@@ -10,13 +10,12 @@ import {
 } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { useItemStore } from '../store'
+import { useTaxTypes } from '../use-tax-types'
 import { useCompanyStore } from '../../../../stores/company.store'
 import { useModalStore } from '../../../../stores/modal.store'
 import { useUserStore } from '../../../../stores/user.store'
 import ItemUnitModal from '@v2/features/company/settings/components/ItemUnitModal.vue'
-
-// Tax type store - imported from original location
-import { taxTypeService } from '@v2/api/services/tax-type.service'
+import type { TaxType } from '@v2/types/domain/tax'
 
 interface TaxOption {
   id: number
@@ -33,7 +32,7 @@ const ABILITIES = {
 } as const
 
 const itemStore = useItemStore()
-// Tax types fetched via service
+const { taxTypes, fetchTaxTypes } = useTaxTypes()
 const modalStore = useModalStore()
 const companyStore = useCompanyStore()
 const userStore = useUserStore()
@@ -45,6 +44,7 @@ const router = useRouter()
 const isSaving = ref<boolean>(false)
 const taxPerItem = ref<string>(companyStore.selectedCompanySettings.tax_per_item || 'NO')
 const isFetchingInitialData = ref<boolean>(false)
+const isEdit = computed<boolean>(() => route.name === 'items.edit')
 
 itemStore.resetCurrentItem()
 loadData()
@@ -81,14 +81,12 @@ const taxes = computed({
   },
 })
 
-const isEdit = computed<boolean>(() => route.name === 'items.edit')
-
 const pageTitle = computed<string>(() =>
   isEdit.value ? t('items.edit_item') : t('items.new_item')
 )
 
 const getTaxTypes = computed<TaxOption[]>(() => {
-  return taxTypeStore.taxTypes.map((tax) => {
+  return taxTypes.value.map((tax: TaxType) => {
     const currencyCode = companyStore.selectedCompanyCurrency?.code ?? 'USD'
     return {
       ...tax,
@@ -132,6 +130,9 @@ async function addItemUnit(): Promise<void> {
     title: t('settings.customization.items.add_item_unit'),
     componentName: 'ItemUnitModal',
     size: 'sm',
+    refreshData: (unit: { id: number }) => {
+      itemStore.currentItem.unit_id = unit.id
+    },
   })
 }
 
@@ -140,7 +141,7 @@ async function loadData(): Promise<void> {
 
   await itemStore.fetchItemUnits({ limit: 'all' })
   if (userStore.hasAbilities(ABILITIES.VIEW_TAX_TYPE)) {
-    await taxTypeStore.fetchTaxTypes({ limit: 'all' })
+    await fetchTaxTypes()
   }
 
   if (isEdit.value) {

@@ -40,7 +40,7 @@ function onChange(d: number): void {
 </script>
 
 <template>
-  <div>
+  <div class="w-full">
     <TabGroup :default-index="defaultIndex" @change="onChange">
       <TabList
         :class="[
@@ -57,9 +57,9 @@ function onChange(d: number): void {
         >
           <button
             :class="[
-              'px-8 py-2 text-sm leading-5 font-medium flex items-center relative border-b-2 mt-4 focus:outline-hidden whitespace-nowrap',
+              'px-5 py-2.5 text-sm leading-5 font-medium flex items-center relative -mb-px border-b-2 focus:outline-hidden whitespace-nowrap transition-colors',
               selected
-                ? ' border-primary-400 text-heading font-medium'
+                ? 'border-primary-400 text-heading'
                 : 'border-transparent text-muted hover:text-body hover:border-line-strong',
             ]"
           >

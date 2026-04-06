@@ -11,6 +11,7 @@ import {
 import useVuelidate from '@vuelidate/core'
 import { useModalStore } from '@v2/stores/modal.store'
 import { useCompanyStore } from '@v2/stores/company.store'
+import { useNotificationStore } from '@v2/stores/notification.store'
 import { taxTypeService } from '@v2/api/services/tax-type.service'
 import type { CreateTaxTypePayload } from '@v2/api/services/tax-type.service'
 
@@ -25,6 +26,7 @@ interface TaxTypeForm {
 
 const modalStore = useModalStore()
 const companyStore = useCompanyStore()
+const notificationStore = useNotificationStore()
 const { t } = useI18n()
 
 const isSaving = ref<boolean>(false)
@@ -122,8 +124,16 @@ async function submitTaxTypeData(): Promise<void> {
 
     if (isEdit.value && currentTaxType.value.id) {
       await taxTypeService.update(currentTaxType.value.id, payload)
+      notificationStore.showNotification({
+        type: 'success',
+        message: 'settings.tax_types.updated_message',
+      })
     } else {
       await taxTypeService.create(payload)
+      notificationStore.showNotification({
+        type: 'success',
+        message: 'settings.tax_types.created_message',
+      })
     }
 
     isSaving.value = false

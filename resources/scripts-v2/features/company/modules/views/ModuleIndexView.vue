@@ -9,7 +9,7 @@
 
     <!-- Connected: module listing -->
     <div v-if="hasApiToken && moduleStore.modules">
-      <BaseTabGroup class="-mb-5" @change="setStatusFilter">
+      <BaseTabGroup @change="setStatusFilter">
         <BaseTab :title="$t('general.all')" filter="" />
         <BaseTab :title="$t('modules.installed')" filter="INSTALLED" />
       </BaseTabGroup>

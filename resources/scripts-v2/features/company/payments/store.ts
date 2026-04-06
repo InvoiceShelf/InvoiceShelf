@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { useNotificationStore } from '../../../stores/notification.store'
 import { paymentService } from '../../../api/services/payment.service'
 import type {
   PaymentListParams,
@@ -129,6 +130,13 @@ export const usePaymentStore = defineStore('payment', {
     ): Promise<{ data: { data: Payment } }> {
       const response = await paymentService.create(data as never)
       this.payments.push(response.data)
+
+      const notificationStore = useNotificationStore()
+      notificationStore.showNotification({
+        type: 'success',
+        message: 'payments.created_message',
+      })
+
       return { data: response }
     },
 
@@ -143,6 +151,13 @@ export const usePaymentStore = defineStore('payment', {
       if (pos !== -1) {
         this.payments[pos] = response.data
       }
+
+      const notificationStore = useNotificationStore()
+      notificationStore.showNotification({
+        type: 'success',
+        message: 'payments.updated_message',
+      })
+
       return { data: response }
     },
 
@@ -176,8 +191,8 @@ export const usePaymentStore = defineStore('payment', {
       return paymentService.send(data)
     },
 
-    async previewPayment(id: number): Promise<unknown> {
-      return paymentService.sendPreview(id)
+    async previewPayment(params: { id: number } & Record<string, unknown>): Promise<unknown> {
+      return paymentService.sendPreview(params.id, params)
     },
 
     async getNextNumber(

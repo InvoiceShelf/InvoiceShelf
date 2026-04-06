@@ -1,54 +1,59 @@
 import { client } from '../client'
 import { API } from '../endpoints'
-import type { ApiResponse, ListParams } from '@v2/types/api'
+import type { ApiResponse, ListParams, PaginatedResponse } from '@v2/types/api'
+
+export type DiskDriverValue =
+  | 'local'
+  | 's3'
+  | 's3compat'
+  | 'doSpaces'
+  | 'dropbox'
 
 export interface Disk {
   id: number
   name: string
-  driver: string
+  type: string
+  driver: DiskDriverValue
   set_as_default: boolean
-  credentials: Record<string, string>
-  created_at: string
-  updated_at: string
+  credentials: Record<string, string> | string | null
+  company_id?: number | null
 }
 
 export interface DiskDriversResponse {
-  drivers: string[]
-  [key: string]: unknown
+  drivers: Array<{
+    name: string
+    value: DiskDriverValue
+  }>
+  default: DiskDriverValue | string
 }
 
 export interface CreateDiskPayload {
   name: string
-  selected_driver: string
-  // S3/S3-compat/DOSpaces fields
-  key?: string
-  secret?: string
-  region?: string
-  bucket?: string
-  root?: string
-  endpoint?: string
-  // Dropbox fields
-  token?: string
-  app?: string
+  driver: DiskDriverValue
+  credentials?: Record<string, string> | string
+  set_as_default?: boolean
 }
 
 export const diskService = {
-  async list(params?: ListParams): Promise<ApiResponse<Disk[]>> {
+  async list(params?: ListParams): Promise<PaginatedResponse<Disk>> {
     const { data } = await client.get(API.DISKS, { params })
     return data
   },
 
-  async get(disk: string): Promise<Record<string, unknown>> {
+  async get(disk: DiskDriverValue): Promise<Record<string, string>> {
     const { data } = await client.get(`${API.DISKS}/${disk}`)
     return data
   },
 
-  async create(payload: CreateDiskPayload): Promise<Disk> {
+  async create(payload: CreateDiskPayload): Promise<ApiResponse<Disk>> {
     const { data } = await client.post(API.DISKS, payload)
     return data
   },
 
-  async update(id: number, payload: Partial<CreateDiskPayload>): Promise<ApiResponse<Disk>> {
+  async update(
+    id: number,
+    payload: Partial<CreateDiskPayload>
+  ): Promise<ApiResponse<Disk>> {
     const { data } = await client.put(`${API.DISKS}/${id}`, payload)
     return data
   },

@@ -9,6 +9,7 @@ export const expenseRoutes: RouteRecordRaw[] = [
     name: 'expenses.index',
     component: ExpenseIndexView,
     meta: {
+      requiresAuth: true,
       ability: 'view-expense',
       title: 'expenses.title',
     },
@@ -18,6 +19,7 @@ export const expenseRoutes: RouteRecordRaw[] = [
     name: 'expenses.create',
     component: ExpenseCreateView,
     meta: {
+      requiresAuth: true,
       ability: 'create-expense',
       title: 'expenses.new_expense',
     },
@@ -27,6 +29,7 @@ export const expenseRoutes: RouteRecordRaw[] = [
     name: 'expenses.edit',
     component: ExpenseCreateView,
     meta: {
+      requiresAuth: true,
       ability: 'edit-expense',
       title: 'expenses.edit_expense',
     },

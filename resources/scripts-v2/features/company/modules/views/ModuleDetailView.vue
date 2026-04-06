@@ -316,6 +316,7 @@ import { useI18n } from 'vue-i18n'
 import { useModuleStore } from '../store'
 import type { InstallationStep } from '../store'
 import ModuleCard from '../components/ModuleCard.vue'
+import { useDialogStore } from '../../../../stores/dialog.store'
 import type { Module, ModuleLink } from '../../../../types/domain/module'
 
 interface ModuleLinkItem {
@@ -330,6 +331,7 @@ interface TabItem {
 }
 
 const moduleStore = useModuleStore()
+const dialogStore = useDialogStore()
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
@@ -449,18 +451,30 @@ async function handleInstall(): Promise<void> {
   }
 }
 
-async function handleDisable(): Promise<void> {
+function handleDisable(): void {
   if (!moduleData.value) return
-  const confirmed = window.confirm(t('modules.disable_warning'))
-  if (!confirmed) return
 
-  isDisabling.value = true
-  const res = await moduleStore.disableModule(moduleData.value.module_name)
-  isDisabling.value = false
+  dialogStore
+    .openDialog({
+      title: t('general.are_you_sure'),
+      message: t('modules.disable_warning'),
+      yesLabel: t('general.ok'),
+      noLabel: t('general.cancel'),
+      variant: 'danger',
+      hideNoButton: false,
+      size: 'lg',
+    })
+    .then(async (res: boolean) => {
+      if (res) {
+        isDisabling.value = true
+        const response = await moduleStore.disableModule(moduleData.value!.module_name)
+        isDisabling.value = false
 
-  if (res.success) {
-    setTimeout(() => location.reload(), 1500)
-  }
+        if (response.success) {
+          setTimeout(() => location.reload(), 1500)
+        }
+      }
+    })
 }
 
 async function handleEnable(): Promise<void> {

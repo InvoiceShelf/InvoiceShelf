@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import { useDialogStore } from '@v2/stores/dialog.store'
 import { useUserStore } from '@v2/stores/user.store'
 import { useModalStore } from '@v2/stores/modal.store'
+import { useNotificationStore } from '@v2/stores/notification.store'
 import { taxTypeService } from '@v2/api/services/tax-type.service'
 
 const ABILITIES = {
@@ -24,6 +25,7 @@ const props = defineProps<{
 }>()
 
 const dialogStore = useDialogStore()
+const notificationStore = useNotificationStore()
 const { t } = useI18n()
 const route = useRoute()
 const userStore = useUserStore()
@@ -54,6 +56,10 @@ function removeTaxType(id: number): void {
       if (res) {
         const response = await taxTypeService.delete(id)
         if (response.success) {
+          notificationStore.showNotification({
+            type: 'success',
+            message: 'settings.tax_types.deleted_message',
+          })
           props.loadData?.()
         }
       }
@@ -64,7 +70,7 @@ function removeTaxType(id: number): void {
 <template>
   <BaseDropdown>
     <template #activator>
-      <BaseButton v-if="route.name === 'tax-types.view'" variant="primary">
+      <BaseButton v-if="route.name === 'settings.tax-types'" variant="primary">
         <BaseIcon name="EllipsisHorizontalIcon" class="h-5 text-white" />
       </BaseButton>
       <BaseIcon v-else name="EllipsisHorizontalIcon" class="h-5 text-muted" />

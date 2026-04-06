@@ -19,11 +19,7 @@ import { useCompanyStore } from '../../../../stores/company.store'
 import CustomerCustomFields from '@v2/features/company/customers/components/CreateCustomFields.vue'
 import CopyInputField from '@v2/features/company/customers/components/CopyInputField.vue'
 
-// Custom field store - imported from original location
-import { customFieldService } from '@v2/api/services/custom-field.service'
-
 const customerStore = useCustomerStore()
-// Custom fields fetched via service
 const globalStore = useGlobalStore()
 const companyStore = useCompanyStore()
 
@@ -48,6 +44,10 @@ const isLoadingContent = computed<boolean>(
 const pageTitle = computed<string>(() =>
   isEdit.value ? t('customers.edit_customer') : t('customers.new_customer')
 )
+
+const hasCustomFields = computed<boolean>(() => {
+  return customerStore.currentCustomer.customFields.length > 0
+})
 
 const rules = computed(() => ({
   currentCustomer: {
@@ -709,14 +709,14 @@ async function submitCustomerData(): Promise<void> {
         </div>
 
         <BaseDivider
-          v-if="customFieldStore.customFields.length > 0"
+          v-if="hasCustomFields"
           class="mb-5 md:mb-8"
         />
 
         <!-- Customer Custom Fields -->
         <div class="grid grid-cols-5 gap-2 mb-8">
           <h6
-            v-if="customFieldStore.customFields.length > 0"
+            v-if="hasCustomFields"
             class="col-span-5 text-lg font-semibold text-left lg:col-span-1"
           >
             {{ $t('settings.custom_fields.title') }}

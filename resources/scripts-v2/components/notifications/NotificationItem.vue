@@ -80,10 +80,10 @@
             >
               {{
                 notification.message
-                  ? notification.message
+                  ? $t(notification.message)
                   : success
-                  ? 'Successful'
-                  : 'Something went wrong'
+                  ? $t('general.successful')
+                  : $t('general.something_went_wrong')
               }}
             </p>
           </div>

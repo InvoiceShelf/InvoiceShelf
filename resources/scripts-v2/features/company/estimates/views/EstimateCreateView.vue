@@ -85,6 +85,7 @@
               store-prop="newEstimate"
               :is-mark-as-default="isMarkAsDefault"
             />
+            <SelectTemplateModal />
           </div>
 
           <DocumentTotals
@@ -104,6 +105,7 @@
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import cloneDeep from 'lodash/cloneDeep'
 import {
   required,
   maxLength,
@@ -119,6 +121,7 @@ import {
   DocumentTotals,
   DocumentNotes,
   TemplateSelectButton,
+  SelectTemplateModal,
 } from '../../../shared/document-form'
 
 const estimateStore = useEstimateStore()
@@ -130,7 +133,7 @@ const estimateValidationScope = 'newEstimate'
 const isSaving = ref<boolean>(false)
 const isMarkAsDefault = ref<boolean>(false)
 
-const estimateNoteFieldList = ref<Record<string, unknown> | null>(null)
+const estimateNoteFieldList = ref<string[]>(['customer', 'company', 'estimate'])
 
 const isLoadingContent = computed<boolean>(
   () => estimateStore.isFetchingInitialSettings,
@@ -156,11 +159,7 @@ const rules = {
     required: helpers.withMessage(t('validation.required'), required),
   },
   exchange_rate: {
-    required: requiredIf(() => {
-      helpers.withMessage(t('validation.required'), required)
-      return estimateStore.showExchangeRate
-    }),
-    decimal: helpers.withMessage(t('validation.valid_exchange_rate'), decimal),
+    required: requiredIf(() => estimateStore.showExchangeRate),
   },
 }
 
@@ -193,13 +192,16 @@ async function submitForm(): Promise<void> {
   v$.value.$touch()
 
   if (v$.value.$invalid) {
+    console.log('Estimate form invalid. Errors:', JSON.stringify(
+      v$.value.$errors.map((e: { $property: string; $message: string }) => `${e.$property}: ${e.$message}`)
+    ))
     return
   }
 
   isSaving.value = true
 
   const data: Record<string, unknown> = {
-    ...structuredClone(estimateStore.newEstimate),
+    ...cloneDeep(estimateStore.newEstimate),
     sub_total: estimateStore.getSubTotal,
     total: estimateStore.getTotal,
     tax: estimateStore.getTotalTax,

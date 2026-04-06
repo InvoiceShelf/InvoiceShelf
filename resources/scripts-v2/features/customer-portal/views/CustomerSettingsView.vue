@@ -1,106 +1,117 @@
 <template>
-  <form class="relative h-full mt-4" @submit.prevent="updateCustomerData">
-    <BaseCard>
-      <div>
-        <h6 class="font-bold text-left">
-          {{ $t('settings.account_settings.account_settings') }}
-        </h6>
+  <BasePage>
+    <BasePageHeader :title="$t('settings.account_settings.account_settings')">
+      <BaseBreadcrumb>
+        <BaseBreadcrumbItem
+          :title="$t('general.home')"
+          :to="`/${store.companySlug}/customer/dashboard`"
+        />
+        <BaseBreadcrumbItem
+          :title="$t('settings.account_settings.account_settings')"
+          to="#"
+          active
+        />
+      </BaseBreadcrumb>
+    </BasePageHeader>
+
+    <form @submit.prevent="updateCustomerData">
+      <BaseCard>
         <p
-          class="mt-2 text-sm leading-snug text-left text-muted"
+          class="text-sm leading-snug text-muted"
           style="max-width: 680px"
         >
           {{ $t('settings.account_settings.section_description') }}
         </p>
-      </div>
 
-      <div class="grid gap-6 sm:grid-col-1 md:grid-cols-2 mt-6">
-        <BaseInputGroup
-          :label="$t('settings.account_settings.profile_picture')"
-        >
-          <BaseFileUploader
-            v-model="imgFiles"
-            :avatar="true"
-            accept="image/*"
-            @change="onFileInputChange"
-            @remove="onFileInputRemove"
-          />
-        </BaseInputGroup>
-
-        <span />
-
-        <BaseInputGroup
-          :label="$t('settings.account_settings.name')"
-          :error="v$.name.$error ? String(v$.name.$errors[0]?.$message) : undefined"
-          required
-        >
-          <BaseInput
-            v-model="formData.name"
-            :invalid="v$.name.$error"
-            @input="v$.name.$touch()"
-          />
-        </BaseInputGroup>
-
-        <BaseInputGroup
-          :label="$t('settings.account_settings.email')"
-          :error="v$.email.$error ? String(v$.email.$errors[0]?.$message) : undefined"
-          required
-        >
-          <BaseInput
-            v-model="formData.email"
-            :invalid="v$.email.$error"
-            @input="v$.email.$touch()"
-          />
-        </BaseInputGroup>
-
-        <BaseInputGroup
-          :error="v$.password.$error ? String(v$.password.$errors[0]?.$message) : undefined"
-          :label="$t('settings.account_settings.password')"
-        >
-          <BaseInput
-            v-model="formData.password"
-            :type="isShowPassword ? 'text' : 'password'"
-            :invalid="v$.password.$error"
-            @input="v$.password.$touch()"
+        <div class="grid gap-6 sm:grid-col-1 md:grid-cols-2 mt-6">
+          <BaseInputGroup
+            :label="$t('settings.account_settings.profile_picture')"
           >
-            <template #right>
-              <BaseIcon
-                :name="isShowPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-                class="mr-1 text-muted cursor-pointer"
-                @click="isShowPassword = !isShowPassword"
-              />
-            </template>
-          </BaseInput>
-        </BaseInputGroup>
+            <BaseFileUploader
+              v-model="imgFiles"
+              :avatar="true"
+              accept="image/*"
+              @change="onFileInputChange"
+              @remove="onFileInputRemove"
+            />
+          </BaseInputGroup>
 
-        <BaseInputGroup
-          :label="$t('settings.account_settings.confirm_password')"
-          :error="v$.confirm_password.$error ? String(v$.confirm_password.$errors[0]?.$message) : undefined"
-        >
-          <BaseInput
-            v-model="formData.confirm_password"
-            :type="isShowConfirmPassword ? 'text' : 'password'"
-            :invalid="v$.confirm_password.$error"
-            @input="v$.confirm_password.$touch()"
+          <span />
+
+          <BaseInputGroup
+            :label="$t('settings.account_settings.name')"
+            :error="v$.name.$error ? String(v$.name.$errors[0]?.$message) : undefined"
+            required
           >
-            <template #right>
-              <BaseIcon
-                :name="isShowConfirmPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-                class="mr-1 text-muted cursor-pointer"
-                @click="isShowConfirmPassword = !isShowConfirmPassword"
-              />
-            </template>
-          </BaseInput>
-        </BaseInputGroup>
-      </div>
+            <BaseInput
+              v-model="formData.name"
+              :invalid="v$.name.$error"
+              @input="v$.name.$touch()"
+            />
+          </BaseInputGroup>
 
-      <BaseButton :loading="isSaving" :disabled="isSaving" class="mt-6">
-        <template #left="slotProps">
-          <BaseIcon v-if="!isSaving" name="ArrowDownOnSquareIcon" :class="slotProps.class" />
-        </template>
-        {{ $t('general.save') }}
-      </BaseButton>
-    </BaseCard>
-  </form>
+          <BaseInputGroup
+            :label="$t('settings.account_settings.email')"
+            :error="v$.email.$error ? String(v$.email.$errors[0]?.$message) : undefined"
+            required
+          >
+            <BaseInput
+              v-model="formData.email"
+              :invalid="v$.email.$error"
+              @input="v$.email.$touch()"
+            />
+          </BaseInputGroup>
+
+          <BaseInputGroup
+            :error="v$.password.$error ? String(v$.password.$errors[0]?.$message) : undefined"
+            :label="$t('settings.account_settings.password')"
+          >
+            <BaseInput
+              v-model="formData.password"
+              :type="isShowPassword ? 'text' : 'password'"
+              :invalid="v$.password.$error"
+              @input="v$.password.$touch()"
+            >
+              <template #right>
+                <BaseIcon
+                  :name="isShowPassword ? 'EyeIcon' : 'EyeSlashIcon'"
+                  class="mr-1 text-muted cursor-pointer"
+                  @click="isShowPassword = !isShowPassword"
+                />
+              </template>
+            </BaseInput>
+          </BaseInputGroup>
+
+          <BaseInputGroup
+            :label="$t('settings.account_settings.confirm_password')"
+            :error="v$.confirm_password.$error ? String(v$.confirm_password.$errors[0]?.$message) : undefined"
+          >
+            <BaseInput
+              v-model="formData.confirm_password"
+              :type="isShowConfirmPassword ? 'text' : 'password'"
+              :invalid="v$.confirm_password.$error"
+              @input="v$.confirm_password.$touch()"
+            >
+              <template #right>
+                <BaseIcon
+                  :name="isShowConfirmPassword ? 'EyeIcon' : 'EyeSlashIcon'"
+                  class="mr-1 text-muted cursor-pointer"
+                  @click="isShowConfirmPassword = !isShowConfirmPassword"
+                />
+              </template>
+            </BaseInput>
+          </BaseInputGroup>
+        </div>
+
+        <BaseButton :loading="isSaving" :disabled="isSaving" class="mt-6">
+          <template #left="slotProps">
+            <BaseIcon v-if="!isSaving" name="ArrowDownOnSquareIcon" :class="slotProps.class" />
+          </template>
+          {{ $t('general.save') }}
+        </BaseButton>
+      </BaseCard>
+    </form>
+  </BasePage>
 </template>
 
 <script setup lang="ts">
@@ -142,7 +153,7 @@ const formData = reactive<{
   confirm_password: '',
 })
 
-if (store.userForm.avatar) {
+if (typeof store.userForm.avatar === 'string' && store.userForm.avatar) {
   imgFiles.value.push({ image: store.userForm.avatar })
 }
 

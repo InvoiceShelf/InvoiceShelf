@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import useVuelidate from '@vuelidate/core'
 import { required, helpers, requiredIf, url } from '@vuelidate/validators'
 import { useModalStore } from '@v2/stores/modal.store'
+import { useNotificationStore } from '@v2/stores/notification.store'
 import { exchangeRateService } from '@v2/api/services/exchange-rate.service'
 import { useDebounceFn } from '@vueuse/core'
 
@@ -31,6 +32,7 @@ interface CurrencyConverterForm {
 
 const { t } = useI18n()
 const modalStore = useModalStore()
+const notificationStore = useNotificationStore()
 
 const isSaving = ref<boolean>(false)
 const isFetchingInitialData = ref<boolean>(false)
@@ -243,10 +245,18 @@ async function submitExchangeRate(): Promise<void> {
         currentExchangeRate.value.id,
         data as Parameters<typeof exchangeRateService.updateProvider>[1]
       )
+      notificationStore.showNotification({
+        type: 'success',
+        message: 'settings.exchange_rate.updated_message',
+      })
     } else {
       await exchangeRateService.createProvider(
         data as Parameters<typeof exchangeRateService.createProvider>[0]
       )
+      notificationStore.showNotification({
+        type: 'success',
+        message: 'settings.exchange_rate.created_message',
+      })
     }
 
     if (modalStore.refreshData) {

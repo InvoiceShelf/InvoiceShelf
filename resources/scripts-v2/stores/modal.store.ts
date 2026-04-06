@@ -9,7 +9,7 @@ export interface OpenModalPayload {
   id?: string | number
   content?: string
   data?: unknown
-  refreshData?: (() => void) | null
+  refreshData?: ((...args: unknown[]) => void) | null
   variant?: string
   size?: ModalSize
 }
@@ -23,7 +23,7 @@ export const useModalStore = defineStore('modal', () => {
   const id = ref<string | number>('')
   const size = ref<ModalSize>('md')
   const data = ref<unknown>(null)
-  const refreshData = ref<(() => void) | null>(null)
+  const refreshData = ref<((...args: unknown[]) => void) | null>(null)
   const variant = ref<string>('')
 
   // Getters

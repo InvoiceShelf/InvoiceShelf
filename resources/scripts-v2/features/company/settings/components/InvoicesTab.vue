@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { computed, reactive, inject } from 'vue'
 import { useCompanyStore } from '@v2/stores/company.store'
+import { useInvoiceStore } from '@v2/features/company/invoices/store'
 import NumberCustomizer from './NumberCustomizer.vue'
+import InvoicesTabDueDate from './InvoicesTabDueDate.vue'
+import InvoicesTabRetrospective from './InvoicesTabRetrospective.vue'
+import InvoicesTabDefaultFormats from './InvoicesTabDefaultFormats.vue'
 
 interface Utils {
   mergeSettings: (target: Record<string, unknown>, source: Record<string, unknown>) => void
@@ -9,6 +13,7 @@ interface Utils {
 
 const utils = inject<Utils>('utils')!
 const companyStore = useCompanyStore()
+const invoiceStore = useInvoiceStore()
 
 const invoiceSettings = reactive<{ invoice_email_attachment: string | null }>({
   invoice_email_attachment: null,
@@ -41,7 +46,19 @@ const sendAsAttachmentField = computed<boolean>({
 </script>
 
 <template>
-  <NumberCustomizer type="invoice" :type-store="companyStore" />
+  <NumberCustomizer type="invoice" :type-store="invoiceStore" />
+
+  <BaseDivider class="mt-6 mb-2" />
+
+  <InvoicesTabDueDate />
+
+  <BaseDivider class="mt-6 mb-2" />
+
+  <InvoicesTabRetrospective />
+
+  <BaseDivider class="mt-6 mb-2" />
+
+  <InvoicesTabDefaultFormats />
 
   <BaseDivider class="mt-6 mb-2" />
 

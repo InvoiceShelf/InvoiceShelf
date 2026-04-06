@@ -133,6 +133,7 @@ import { required, helpers } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { client } from '../../../api/client'
 import { API } from '../../../api/endpoints'
+import { useDialogStore } from '../../../stores/dialog.store'
 
 interface PreferencesData {
   currency: number
@@ -167,6 +168,7 @@ interface Emits {
 }
 
 const emit = defineEmits<Emits>()
+const dialogStore = useDialogStore()
 const { t } = useI18n()
 const router = useRouter()
 
@@ -234,37 +236,48 @@ onMounted(async () => {
   }
 })
 
-async function next(): Promise<void> {
+function next(): void {
   v$.value.$touch()
   if (v$.value.$invalid) return
 
-  const confirmed = window.confirm(t('wizard.currency_set_alert'))
-  if (!confirmed) return
+  dialogStore
+    .openDialog({
+      title: t('general.are_you_sure'),
+      message: t('wizard.currency_set_alert'),
+      yesLabel: t('general.ok'),
+      noLabel: t('general.cancel'),
+      variant: 'danger',
+      hideNoButton: false,
+      size: 'lg',
+    })
+    .then(async (res: boolean) => {
+      if (res) {
+        isSaving.value = true
 
-  isSaving.value = true
+        try {
+          const settingsPayload = {
+            settings: { ...currentPreferences },
+          }
 
-  try {
-    const settingsPayload = {
-      settings: { ...currentPreferences },
-    }
+          const { data: response } = await client.post(API.COMPANY_SETTINGS, settingsPayload)
 
-    const { data: res } = await client.post(API.COMPANY_SETTINGS, settingsPayload)
+          if (response) {
+            const userSettings = {
+              settings: { language: currentPreferences.language },
+            }
+            await client.put(API.ME_SETTINGS, userSettings)
 
-    if (res) {
-      const userSettings = {
-        settings: { language: currentPreferences.language },
+            if (response.token) {
+              localStorage.setItem('auth.token', response.token)
+            }
+
+            emit('next', 'COMPLETED')
+            router.push('/admin/dashboard')
+          }
+        } finally {
+          isSaving.value = false
+        }
       }
-      await client.put(API.ME_SETTINGS, userSettings)
-
-      if (res.token) {
-        localStorage.setItem('auth.token', res.token)
-      }
-
-      emit('next', 'COMPLETED')
-      router.push('/admin/dashboard')
-    }
-  } finally {
-    isSaving.value = false
-  }
+    })
 }
 </script>

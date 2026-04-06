@@ -53,11 +53,22 @@ async function updateAccount(): Promise<void> {
 </script>
 
 <template>
-  <form @submit.prevent="updateAccount">
-    <BaseSettingCard
-      :title="$t('settings.account_settings.account_settings')"
-      :description="$t('settings.account_settings.section_description')"
-    >
+  <BasePage>
+    <BasePageHeader :title="$t('settings.account_settings.account_settings')">
+      <BaseBreadcrumb>
+        <BaseBreadcrumbItem :title="$t('general.home')" to="/admin/dashboard" />
+        <BaseBreadcrumbItem
+          :title="$t('settings.account_settings.account_settings')"
+          to="#"
+          active
+        />
+      </BaseBreadcrumb>
+    </BasePageHeader>
+
+    <form @submit.prevent="updateAccount">
+      <BaseSettingCard
+        :description="$t('settings.account_settings.section_description')"
+      >
       <BaseInputGrid class="mt-5">
         <BaseInputGroup
           :label="$t('settings.account_settings.name')"
@@ -128,5 +139,6 @@ async function updateAccount(): Promise<void> {
         {{ $t('settings.account_settings.save') }}
       </BaseButton>
     </BaseSettingCard>
-  </form>
+    </form>
+  </BasePage>
 </template>

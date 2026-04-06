@@ -1,8 +1,19 @@
 <script setup lang="ts">
+import { provide } from 'vue'
 import InvoicesTab from '@v2/features/company/settings/components/InvoicesTab.vue'
 import EstimatesTab from '@v2/features/company/settings/components/EstimatesTab.vue'
 import PaymentsTab from '@v2/features/company/settings/components/PaymentsTab.vue'
 import ItemsTab from '@v2/features/company/settings/components/ItemsTab.vue'
+
+provide('utils', {
+  mergeSettings(target: Record<string, unknown>, source: Record<string, unknown>): void {
+    Object.keys(source).forEach((key) => {
+      if (key in target) {
+        target[key] = source[key]
+      }
+    })
+  },
+})
 </script>
 
 <template>

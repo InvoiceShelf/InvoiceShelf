@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-surface/70 backdrop-blur-lg rounded-xl shadow-sm border border-white/15">
+  <div class="bg-surface rounded-xl shadow-sm border border-line-default">
     <div
       v-if="hasHeaderSlot"
       class="px-5 py-4 text-heading border-b border-line-light border-solid"

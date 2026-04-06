@@ -16,12 +16,15 @@ interface TableColumn {
 
 const ABILITIES = {
   VIEW_INVOICE: 'view-invoice',
-  VIEW_ESTIMATE: 'view-estimate',
-  DELETE_INVOICE: 'delete-invoice',
+  CREATE_INVOICE: 'create-invoice',
   EDIT_INVOICE: 'edit-invoice',
+  DELETE_INVOICE: 'delete-invoice',
   SEND_INVOICE: 'send-invoice',
+  CREATE_PAYMENT: 'create-payment',
+  VIEW_ESTIMATE: 'view-estimate',
   CREATE_ESTIMATE: 'create-estimate',
   EDIT_ESTIMATE: 'edit-estimate',
+  DELETE_ESTIMATE: 'delete-estimate',
   SEND_ESTIMATE: 'send-estimate',
 } as const
 
@@ -91,6 +94,22 @@ function hasAtleastOneEstimateAbility(): boolean {
     ABILITIES.SEND_ESTIMATE,
   ])
 }
+
+// Invoice ability props
+const canViewInvoice = computed(() => userStore.hasAbilities(ABILITIES.VIEW_INVOICE))
+const canCreateInvoice = computed(() => userStore.hasAbilities(ABILITIES.CREATE_INVOICE))
+const canEditInvoice = computed(() => userStore.hasAbilities(ABILITIES.EDIT_INVOICE))
+const canDeleteInvoice = computed(() => userStore.hasAbilities(ABILITIES.DELETE_INVOICE))
+const canSendInvoice = computed(() => userStore.hasAbilities(ABILITIES.SEND_INVOICE))
+const canCreatePayment = computed(() => userStore.hasAbilities(ABILITIES.CREATE_PAYMENT))
+
+// Estimate ability props
+const canViewEstimate = computed(() => userStore.hasAbilities(ABILITIES.VIEW_ESTIMATE))
+const canCreateEstimate = computed(() => userStore.hasAbilities(ABILITIES.CREATE_ESTIMATE))
+const canEditEstimate = computed(() => userStore.hasAbilities(ABILITIES.EDIT_ESTIMATE))
+const canDeleteEstimate = computed(() => userStore.hasAbilities(ABILITIES.DELETE_ESTIMATE))
+const canSendEstimate = computed(() => userStore.hasAbilities(ABILITIES.SEND_ESTIMATE))
+const canCreateInvoiceFromEstimate = computed(() => userStore.hasAbilities(ABILITIES.CREATE_INVOICE))
 </script>
 
 <template>
@@ -140,7 +159,16 @@ function hasAtleastOneEstimateAbility(): boolean {
             v-if="hasAtleastOneInvoiceAbility()"
             #cell-actions="{ row }"
           >
-            <InvoiceDropdown :row="row.data" :table="invoiceTableComponent" />
+            <InvoiceDropdown
+              :row="row.data"
+              :table="invoiceTableComponent"
+              :can-edit="canEditInvoice"
+              :can-view="canViewInvoice"
+              :can-create="canCreateInvoice"
+              :can-delete="canDeleteInvoice"
+              :can-send="canSendInvoice"
+              :can-create-payment="canCreatePayment"
+            />
           </template>
         </BaseTable>
       </div>
@@ -189,7 +217,16 @@ function hasAtleastOneEstimateAbility(): boolean {
             v-if="hasAtleastOneEstimateAbility()"
             #cell-actions="{ row }"
           >
-            <EstimateDropdown :row="row.data" :table="estimateTableComponent" />
+            <EstimateDropdown
+              :row="row.data"
+              :table="estimateTableComponent"
+              :can-edit="canEditEstimate"
+              :can-view="canViewEstimate"
+              :can-create="canCreateEstimate"
+              :can-delete="canDeleteEstimate"
+              :can-send="canSendEstimate"
+              :can-create-invoice="canCreateInvoiceFromEstimate"
+            />
           </template>
         </BaseTable>
       </div>

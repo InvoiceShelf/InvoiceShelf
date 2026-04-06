@@ -223,6 +223,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import TaxSelectPopup from './TaxSelectPopup.vue'
+import { generateClientId } from '../../../utils'
 import type { Currency } from '../../../types/domain/currency'
 import type { TaxType } from '../../../types/domain/tax'
 import type { DocumentFormData, DocumentTax, DocumentStore, DocumentItem } from './use-document-calculations'
@@ -357,7 +358,7 @@ function onSelectTax(selectedTax: TaxType): void {
   }
 
   const data: DocumentTax = {
-    id: crypto.randomUUID(),
+    id: generateClientId(),
     name: selectedTax.name,
     percent: selectedTax.percent,
     tax_type_id: selectedTax.id,

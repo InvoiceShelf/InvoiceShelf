@@ -68,7 +68,6 @@ class BackupsController extends Controller
         $this->authorize('manage backups');
 
         $data = $request->all();
-        $data['company'] = $request->header('company');
 
         dispatch(new CreateBackupJob($data))->onQueue(config('backup.queue.name'));
 

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { useI18n } from 'vue-i18n'
 import { useCustomerStore } from '../store'
 import { useUserStore } from '../../../../stores/user.store'
 import CustomerDropdown from '../components/CustomerDropdown.vue'
@@ -19,15 +18,12 @@ const ABILITIES = {
 
 const customerStore = useCustomerStore()
 const userStore = useUserStore()
-const { t } = useI18n()
 
 const router = useRouter()
 const route = useRoute()
 
 const pageTitle = computed<string>(() => {
-  return customerStore.selectedViewCustomer.customer
-    ? (customerStore.selectedViewCustomer.customer as { name: string }).name
-    : ''
+  return customerStore.selectedViewCustomer.name ?? ''
 })
 
 const isLoading = computed<boolean>(() => customerStore.isFetchingViewData)

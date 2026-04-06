@@ -18,7 +18,7 @@ export interface CustomerPortalMenuItem {
 }
 
 export interface CustomerUserForm {
-  avatar: string | null
+  avatar: string | number | null
   name: string
   email: string
   password: string
@@ -73,6 +73,31 @@ export interface PaginatedResponse<T> {
   }
 }
 
+export interface CustomerPortalBootstrapMeta {
+  menu: CustomerPortalMenuItem[]
+  modules: string[]
+  current_customer_currency?: Currency | null
+  current_company_language?: string
+}
+
+export interface CustomerPortalBootstrapResponse {
+  data: Customer
+  meta: CustomerPortalBootstrapMeta
+}
+
+export interface CustomerPortalLoginResponse {
+  success: boolean
+}
+
+export interface CustomerPortalForgotPasswordResponse {
+  message: string
+  data: string
+}
+
+export interface CustomerPortalResetPasswordResponse {
+  message: string
+}
+
 // ----------------------------------------------------------------
 // Address stub
 // ----------------------------------------------------------------
@@ -104,6 +129,49 @@ function createUserFormStub(): CustomerUserForm {
   }
 }
 
+function createLoginDataStub(company: string = ''): CustomerLoginData {
+  return {
+    email: '',
+    password: '',
+    device_name: 'customer-portal-web',
+    company,
+  }
+}
+
+function normalizeAddress(
+  address: Customer['billing'] | Customer['shipping'] | undefined,
+  type: CustomerAddress['type'],
+): CustomerAddress {
+  return {
+    name: address?.name ?? null,
+    address_street_1: address?.address_street_1 ?? null,
+    address_street_2: address?.address_street_2 ?? null,
+    city: address?.city ?? null,
+    state: address?.state ?? null,
+    country_id: address?.country_id ?? null,
+    zip: address?.zip ?? null,
+    phone: address?.phone ?? null,
+    type,
+  }
+}
+
+function hydrateUserForm(customer: Customer): CustomerUserForm {
+  return {
+    avatar: customer.avatar ?? null,
+    name: customer.name,
+    email: customer.email ?? '',
+    password: '',
+    confirm_password: '',
+    company: customer.company_name ?? customer.company?.name ?? '',
+    billing: normalizeAddress(customer.billing, 'billing'),
+    shipping: normalizeAddress(customer.shipping, 'shipping'),
+  }
+}
+
+interface ResourceResponse<T> {
+  data: T
+}
+
 // ----------------------------------------------------------------
 // Helper to build customer API base URL
 // ----------------------------------------------------------------
@@ -120,6 +188,7 @@ export interface CustomerPortalState {
   // Global
   companySlug: string
   isAppLoaded: boolean
+  currentCompanyLanguage: string | null
   currency: Currency | null
   countries: Country[]
   currentUser: Customer | null
@@ -161,6 +230,7 @@ export const useCustomerPortalStore = defineStore('customerPortal', {
   state: (): CustomerPortalState => ({
     companySlug: '',
     isAppLoaded: false,
+    currentCompanyLanguage: null,
     currency: null,
     countries: [],
     currentUser: null,
@@ -189,31 +259,44 @@ export const useCustomerPortalStore = defineStore('customerPortal', {
     totalPayments: 0,
     selectedViewPayment: null,
 
-    loginData: {
-      email: '',
-      password: '',
-      device_name: 'xyz',
-      company: '',
-    },
+    loginData: createLoginDataStub(),
   }),
 
   actions: {
     // ---- Bootstrap ----
 
-    async bootstrap(slug: string): Promise<void> {
-      this.companySlug = slug
-      const { data } = await client.get(customerApi(slug, '/bootstrap'))
+    resetState(companySlug: string = ''): void {
+      this.$reset()
+      this.companySlug = companySlug
+      this.loginData = createLoginDataStub(companySlug)
+    },
+
+    async bootstrap(slug: string): Promise<CustomerPortalBootstrapResponse> {
+      this.resetState(slug)
+
+      const { data } = await client.get<CustomerPortalBootstrapResponse>(
+        customerApi(slug, '/bootstrap'),
+      )
+
       this.currentUser = data.data
       this.mainMenu = data.meta.menu ?? []
-      this.currency = data.data.currency ?? null
+      this.currency = data.data.currency ?? data.meta.current_customer_currency ?? null
       this.enabledModules = data.meta.modules ?? []
-      Object.assign(this.userForm, data.data)
+      this.currentCompanyLanguage = data.meta.current_company_language ?? 'en'
+      this.userForm = hydrateUserForm(data.data)
       this.isAppLoaded = true
+
+      await window.loadLanguage?.(this.currentCompanyLanguage)
+
+      return data
     },
 
     async fetchCountries(): Promise<Country[]> {
-      if (this.countries.length) return this.countries
-      const { data } = await client.get(
+      if (this.countries.length) {
+        return this.countries
+      }
+
+      const { data } = await client.get<ResourceResponse<Country[]>>(
         customerApi(this.companySlug, '/countries'),
       )
       this.countries = data.data
@@ -365,19 +448,20 @@ export const useCustomerPortalStore = defineStore('customerPortal', {
     // ---- User / Settings ----
 
     async fetchCurrentUser(): Promise<void> {
-      const { data } = await client.get(
+      const { data } = await client.get<ResourceResponse<Customer>>(
         customerApi(this.companySlug, '/me'),
       )
-      Object.assign(this.userForm, data.data)
+      this.currentUser = data.data
+      this.userForm = hydrateUserForm(data.data)
     },
 
-    async updateCurrentUser(formData: FormData): Promise<{ data: { data: Customer } }> {
-      const { data } = await client.post(
+    async updateCurrentUser(formData: FormData): Promise<{ data: ResourceResponse<Customer> }> {
+      const { data } = await client.post<ResourceResponse<Customer>>(
         customerApi(this.companySlug, '/profile'),
         formData,
       )
-      this.userForm = data.data
       this.currentUser = data.data
+      this.userForm = hydrateUserForm(data.data)
       return { data }
     },
 
@@ -390,22 +474,23 @@ export const useCustomerPortalStore = defineStore('customerPortal', {
 
     // ---- Auth ----
 
-    async login(loginData: CustomerLoginData): Promise<unknown> {
+    async login(loginData: CustomerLoginData): Promise<CustomerPortalLoginResponse> {
       await client.get('/sanctum/csrf-cookie')
-      const { data } = await client.post(
+      const { data } = await client.post<CustomerPortalLoginResponse>(
         `/${loginData.company}/customer/login`,
         loginData,
       )
       this.loginData.email = ''
       this.loginData.password = ''
+      this.loginData.company = loginData.company
       return data
     },
 
     async forgotPassword(payload: {
       email: string
       company: string
-    }): Promise<unknown> {
-      const { data } = await client.post(
+    }): Promise<CustomerPortalForgotPasswordResponse> {
+      const { data } = await client.post<CustomerPortalForgotPasswordResponse>(
         `/api/v1/${payload.company}/customer/auth/password/email`,
         payload,
       )
@@ -415,8 +500,8 @@ export const useCustomerPortalStore = defineStore('customerPortal', {
     async resetPassword(
       payload: { email: string; password: string; password_confirmation: string; token: string },
       company: string,
-    ): Promise<unknown> {
-      const { data } = await client.post(
+    ): Promise<CustomerPortalResetPasswordResponse> {
+      const { data } = await client.post<CustomerPortalResetPasswordResponse>(
         `/api/v1/${company}/customer/auth/reset/password`,
         payload,
       )
@@ -424,7 +509,13 @@ export const useCustomerPortalStore = defineStore('customerPortal', {
     },
 
     async logout(): Promise<void> {
-      await client.post(`/${this.companySlug}/customer/logout`)
+      const companySlug = this.companySlug
+
+      try {
+        await client.post(`/${companySlug}/customer/logout`)
+      } finally {
+        this.resetState(companySlug)
+      }
     },
   },
 })

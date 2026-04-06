@@ -31,7 +31,7 @@ export interface UpdateMemberPayload {
 
 export interface InviteMemberPayload {
   email: string
-  role?: string
+  role_id: number | null
 }
 
 export interface DeleteMembersPayload {

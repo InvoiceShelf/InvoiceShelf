@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { required, minLength, maxLength, helpers } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { useModalStore } from '@v2/stores/modal.store'
+import { useNotificationStore } from '@v2/stores/notification.store'
 import { expenseService } from '@v2/api/services/expense.service'
 
 interface CategoryForm {
@@ -13,6 +14,7 @@ interface CategoryForm {
 }
 
 const modalStore = useModalStore()
+const notificationStore = useNotificationStore()
 const { t } = useI18n()
 
 const isSaving = ref<boolean>(false)
@@ -77,10 +79,18 @@ async function submitCategoryData(): Promise<void> {
         name: currentCategory.value.name,
         description: currentCategory.value.description || null,
       })
+      notificationStore.showNotification({
+        type: 'success',
+        message: 'settings.expense_category.updated_message',
+      })
     } else {
       await expenseService.createCategory({
         name: currentCategory.value.name,
         description: currentCategory.value.description || null,
+      })
+      notificationStore.showNotification({
+        type: 'success',
+        message: 'settings.expense_category.created_message',
       })
     }
 

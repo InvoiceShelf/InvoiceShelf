@@ -1,4 +1,6 @@
 import { defineStore } from 'pinia'
+import { useNotificationStore } from '../../../stores/notification.store'
+import { useCompanyStore } from '../../../stores/company.store'
 import { estimateService } from '../../../api/services/estimate.service'
 import type {
   EstimateListParams,
@@ -15,6 +17,7 @@ import type { Customer } from '../../../types/domain/customer'
 import type { Note } from '../../../types/domain/note'
 import type { CustomFieldValue } from '../../../types/domain/custom-field'
 import type { DocumentTax, DocumentItem } from '../../shared/document-form/use-document-calculations'
+import { generateClientId } from '../../../utils'
 
 // ----------------------------------------------------------------
 // Stub factories
@@ -22,11 +25,11 @@ import type { DocumentTax, DocumentItem } from '../../shared/document-form/use-d
 
 function createTaxStub(): DocumentTax {
   return {
-    id: crypto.randomUUID(),
+    id: generateClientId(),
     name: '',
     tax_type_id: 0,
     type: 'GENERAL',
-    amount: 0,
+    amount: null,
     percent: null,
     compound_tax: false,
     calculation_type: null,
@@ -36,7 +39,7 @@ function createTaxStub(): DocumentTax {
 
 function createEstimateItemStub(): DocumentItem {
   return {
-    id: crypto.randomUUID(),
+    id: generateClientId(),
     estimate_id: null,
     item_id: null,
     name: '',
@@ -309,6 +312,13 @@ export const useEstimateStore = defineStore('estimate', {
     async addEstimate(data: Record<string, unknown>): Promise<{ data: { data: Estimate } }> {
       const response = await estimateService.create(data as never)
       this.estimates = [...this.estimates, response.data]
+
+      const notificationStore = useNotificationStore()
+      notificationStore.showNotification({
+        type: 'success',
+        message: 'estimates.created_message',
+      })
+
       return { data: response }
     },
 
@@ -342,6 +352,13 @@ export const useEstimateStore = defineStore('estimate', {
       if (pos !== -1) {
         this.estimates[pos] = response.data
       }
+
+      const notificationStore = useNotificationStore()
+      notificationStore.showNotification({
+        type: 'success',
+        message: 'estimates.updated_message',
+      })
+
       return { data: response }
     },
 
@@ -461,14 +478,17 @@ export const useEstimateStore = defineStore('estimate', {
     async fetchEstimateInitialSettings(
       isEdit: boolean,
       routeParams?: { id?: string; query?: Record<string, string> },
-      companySettings?: Record<string, string>,
+      companySettingsParam?: Record<string, string>,
       companyCurrency?: Currency,
       userSettings?: Record<string, string>,
     ): Promise<void> {
       this.isFetchingInitialSettings = true
 
-      if (companyCurrency) {
-        this.newEstimate.selectedCurrency = companyCurrency
+      const companyStore = useCompanyStore()
+      const companySettings = companySettingsParam ?? companyStore.selectedCompanySettings
+
+      if (companyCurrency || companyStore.selectedCompanyCurrency) {
+        this.newEstimate.selectedCurrency = companyCurrency ?? companyStore.selectedCompanyCurrency!
       }
 
       // If customer is specified in route query

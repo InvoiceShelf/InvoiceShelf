@@ -131,14 +131,6 @@ async function updateCompanyData(): Promise<void> {
 
   isSaving.value = false
 }
-
-function removeCompany(): void {
-  modalStore.openModal({
-    title: t('settings.company_info.are_you_absolutely_sure'),
-    componentName: 'DeleteCompanyModal',
-    size: 'sm',
-  })
-}
 </script>
 
 <template>
@@ -245,24 +237,6 @@ function removeCompany(): void {
         {{ $t('settings.company_info.save') }}
       </BaseButton>
 
-      <div v-if="companyStore.companies.length !== 1" class="py-5">
-        <BaseDivider class="my-4" />
-        <h3 class="text-lg leading-6 font-medium text-heading">
-          {{ $t('settings.company_info.delete_company') }}
-        </h3>
-        <div class="mt-2 max-w-xl text-sm text-muted">
-          <p>{{ $t('settings.company_info.delete_company_description') }}</p>
-        </div>
-        <div class="mt-5">
-          <button
-            type="button"
-            class="inline-flex items-center justify-center px-4 py-2 border border-transparent font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm"
-            @click="removeCompany"
-          >
-            {{ $t('general.delete') }}
-          </button>
-        </div>
-      </div>
     </BaseSettingCard>
   </form>
 </template>

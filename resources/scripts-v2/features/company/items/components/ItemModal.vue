@@ -10,10 +10,11 @@ import {
 import useVuelidate from '@vuelidate/core'
 import { useModalStore } from '../../../../stores/modal.store'
 import { useCompanyStore } from '../../../../stores/company.store'
+import { useUserStore } from '../../../../stores/user.store'
 import { useItemStore } from '../store'
-
-// Tax type store - imported from original location
-import { taxTypeService } from '@v2/api/services/tax-type.service'
+import { useTaxTypes } from '../use-tax-types'
+import ItemUnitModal from '@v2/features/company/settings/components/ItemUnitModal.vue'
+import type { TaxType } from '@v2/types/domain/tax'
 
 interface TaxOption {
   id: number
@@ -24,6 +25,10 @@ interface TaxOption {
   tax_name: string
 }
 
+const ABILITIES = {
+  VIEW_TAX_TYPE: 'view-tax-type',
+} as const
+
 interface Emits {
   (e: 'newItem', item: unknown): void
 }
@@ -33,7 +38,8 @@ const emit = defineEmits<Emits>()
 const modalStore = useModalStore()
 const itemStore = useItemStore()
 const companyStore = useCompanyStore()
-// Tax types fetched via service
+const userStore = useUserStore()
+const { taxTypes, fetchTaxTypes } = useTaxTypes()
 
 const { t } = useI18n()
 const isLoading = ref<boolean>(false)
@@ -54,7 +60,7 @@ const price = computed<number>({
 
 const taxes = computed({
   get: () =>
-    itemStore.currentItem.taxes.map((tax) => {
+    itemStore.currentItem.taxes?.map((tax) => {
       if (tax) {
         const currencySymbol = companyStore.selectedCompanyCurrency?.symbol ?? '$'
         return {
@@ -68,7 +74,7 @@ const taxes = computed({
         }
       }
       return tax
-    }),
+    }) ?? [],
   set: (value: TaxOption[]) => {
     itemStore.currentItem.taxes = value as unknown as typeof itemStore.currentItem.taxes
   },
@@ -100,7 +106,7 @@ const v$ = useVuelidate(
 )
 
 const getTaxTypes = computed<TaxOption[]>(() => {
-  return taxTypeStore.taxTypes.map((tax) => {
+  return taxTypes.value.map((tax: TaxType) => {
     const currencyCode = companyStore.selectedCompanyCurrency?.code ?? 'USD'
     const amount =
       tax.calculation_type === 'fixed'
@@ -117,9 +123,13 @@ const getTaxTypes = computed<TaxOption[]>(() => {
   }) as TaxOption[]
 })
 
-onMounted(() => {
+onMounted(async () => {
   v$.value.$reset()
-  itemStore.fetchItemUnits({ limit: 'all' })
+  await itemStore.fetchItemUnits({ limit: 'all' })
+
+  if (userStore.hasAbilities(ABILITIES.VIEW_TAX_TYPE)) {
+    await fetchTaxTypes()
+  }
 })
 
 async function submitItemData(): Promise<void> {
@@ -161,6 +171,17 @@ async function submitItemData(): Promise<void> {
   } catch {
     isLoading.value = false
   }
+}
+
+function addItemUnit(): void {
+  modalStore.openModal({
+    title: t('settings.customization.items.add_item_unit'),
+    componentName: 'ItemUnitModal',
+    size: 'sm',
+    refreshData: (unit: { id: number }) => {
+      itemStore.currentItem.unit_id = unit.id
+    },
+  })
 }
 
 function closeItemModal(): void {
@@ -225,7 +246,18 @@ function closeItemModal(): void {
                 :placeholder="$t('items.select_a_unit')"
                 searchable
                 track-by="name"
-              />
+              >
+                <template #action>
+                  <BaseSelectAction @click="addItemUnit">
+                    <BaseIcon
+                      name="PlusCircleIcon"
+                      class="h-4 mr-2 -ml-2 text-center text-primary-400"
+                    />
+                    {{ $t('settings.customization.items.add_item_unit') }}
+                  </BaseSelectAction>
+                </template>
+              </BaseMultiselect>
+              <ItemUnitModal />
             </BaseInputGroup>
 
             <BaseInputGroup

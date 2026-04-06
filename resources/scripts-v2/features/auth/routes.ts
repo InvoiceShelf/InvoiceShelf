@@ -38,15 +38,15 @@ export const authRoutes: RouteRecordRaw[] = [
           title: 'Reset Password',
         },
       },
+      {
+        path: '/register',
+        name: 'register-with-invitation',
+        component: RegisterWithInvitationView,
+        meta: {
+          requiresAuth: false,
+          title: 'Register',
+        },
+      },
     ],
-  },
-  {
-    path: '/register',
-    name: 'register-with-invitation',
-    component: RegisterWithInvitationView,
-    meta: {
-      requiresAuth: false,
-      title: 'Register',
-    },
   },
 ]

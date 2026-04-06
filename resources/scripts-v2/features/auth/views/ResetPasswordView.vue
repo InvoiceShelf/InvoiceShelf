@@ -157,7 +157,11 @@ async function onSubmit(): Promise<void> {
 
     router.push('/login')
   } catch (err: unknown) {
-    handleApiError(err)
+    const normalized = handleApiError(err)
+    notificationStore.showNotification({
+      type: 'error',
+      message: normalized.message,
+    })
   } finally {
     isLoading.value = false
   }

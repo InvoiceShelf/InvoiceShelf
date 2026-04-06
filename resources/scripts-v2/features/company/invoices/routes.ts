@@ -10,6 +10,7 @@ export const invoiceRoutes: RouteRecordRaw[] = [
     name: 'invoices.index',
     component: InvoiceIndexView,
     meta: {
+      requiresAuth: true,
       ability: 'view-invoice',
       title: 'invoices.title',
     },
@@ -19,6 +20,7 @@ export const invoiceRoutes: RouteRecordRaw[] = [
     name: 'invoices.create',
     component: InvoiceCreateView,
     meta: {
+      requiresAuth: true,
       ability: 'create-invoice',
       title: 'invoices.new_invoice',
     },
@@ -28,6 +30,7 @@ export const invoiceRoutes: RouteRecordRaw[] = [
     name: 'invoices.edit',
     component: InvoiceCreateView,
     meta: {
+      requiresAuth: true,
       ability: 'edit-invoice',
       title: 'invoices.edit_invoice',
     },
@@ -37,6 +40,7 @@ export const invoiceRoutes: RouteRecordRaw[] = [
     name: 'invoices.view',
     component: InvoiceDetailView,
     meta: {
+      requiresAuth: true,
       ability: 'view-invoice',
       title: 'invoices.title',
     },

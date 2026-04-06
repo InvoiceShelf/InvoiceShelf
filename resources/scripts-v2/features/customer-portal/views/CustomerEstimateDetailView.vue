@@ -160,13 +160,7 @@
     </div>
 
     <!-- PDF Preview -->
-    <div class="flex flex-col min-h-0 mt-8 overflow-hidden" style="height: 75vh">
-      <iframe
-        v-if="shareableLink"
-        :src="shareableLink"
-        class="flex-1 border border-gray-400 border-solid rounded-md"
-      />
-    </div>
+    <BasePdfPreview :src="shareableLink" />
   </BasePage>
 </template>
 
@@ -176,10 +170,12 @@ import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useDebounceFn } from '@vueuse/core'
 import { useCustomerPortalStore } from '../store'
+import { useDialogStore } from '../../../stores/dialog.store'
 import { EstimateStatus } from '../../../types/domain/estimate'
 import type { Estimate } from '../../../types/domain/estimate'
 
 const store = useCustomerPortalStore()
+const dialogStore = useDialogStore()
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
@@ -260,23 +256,47 @@ function sortData(): void {
   onSearch()
 }
 
-async function acceptEstimate(): Promise<void> {
-  const confirmed = window.confirm(t('estimates.confirm_mark_as_accepted', 1))
-  if (!confirmed) return
-  await store.updateEstimateStatus(
-    route.params.id as string,
-    EstimateStatus.ACCEPTED,
-  )
-  router.push({ name: 'customer-portal.estimates' })
+function acceptEstimate(): void {
+  dialogStore
+    .openDialog({
+      title: t('general.are_you_sure'),
+      message: t('estimates.confirm_mark_as_accepted', 1),
+      yesLabel: t('general.ok'),
+      noLabel: t('general.cancel'),
+      variant: 'danger',
+      hideNoButton: false,
+      size: 'lg',
+    })
+    .then(async (res: boolean) => {
+      if (res) {
+        await store.updateEstimateStatus(
+          route.params.id as string,
+          EstimateStatus.ACCEPTED,
+        )
+        router.push({ name: 'customer-portal.estimates' })
+      }
+    })
 }
 
-async function rejectEstimate(): Promise<void> {
-  const confirmed = window.confirm(t('estimates.confirm_mark_as_rejected', 1))
-  if (!confirmed) return
-  await store.updateEstimateStatus(
-    route.params.id as string,
-    EstimateStatus.REJECTED,
-  )
-  router.push({ name: 'customer-portal.estimates' })
+function rejectEstimate(): void {
+  dialogStore
+    .openDialog({
+      title: t('general.are_you_sure'),
+      message: t('estimates.confirm_mark_as_rejected', 1),
+      yesLabel: t('general.ok'),
+      noLabel: t('general.cancel'),
+      variant: 'danger',
+      hideNoButton: false,
+      size: 'lg',
+    })
+    .then(async (res: boolean) => {
+      if (res) {
+        await store.updateEstimateStatus(
+          route.params.id as string,
+          EstimateStatus.REJECTED,
+        )
+        router.push({ name: 'customer-portal.estimates' })
+      }
+    })
 }
 </script>

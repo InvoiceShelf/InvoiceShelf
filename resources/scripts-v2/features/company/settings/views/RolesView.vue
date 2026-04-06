@@ -112,12 +112,20 @@ async function openRoleModal(): Promise<void> {
       <template #cell-actions="{ row }">
         <RoleDropdown
           v-if="
-            userStore.currentUser?.is_owner && row.data.name !== 'super admin'
+            userStore.currentUser?.is_owner &&
+            row.data.name !== 'super admin' &&
+            row.data.name !== 'owner'
           "
           :row="row.data"
           :table="table"
           :load-data="refreshTable"
         />
+        <span
+          v-else-if="row.data.name === 'owner' || row.data.name === 'super admin'"
+          class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 ring-1 ring-inset ring-gray-300/50"
+        >
+          {{ $t('settings.roles.system_role') }}
+        </span>
       </template>
     </BaseTable>
   </BaseSettingCard>

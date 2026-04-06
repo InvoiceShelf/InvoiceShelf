@@ -8,6 +8,7 @@ declare global {
     InvoiceShelf: InvoiceShelf
     loadLanguage?: (locale: string) => Promise<void>
     customer_logo?: string
+    customer_page_title?: string
     login_page_logo?: string
     login_page_heading?: string
     login_page_description?: string

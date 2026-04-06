@@ -28,7 +28,7 @@ export interface NumberPlaceholdersParams {
 }
 
 export interface NumberPlaceholder {
-  description: string
+  name: string
   value: string
 }
 
@@ -102,7 +102,7 @@ export const settingService = {
   },
 
   // App Version
-  async getAppVersion(): Promise<{ version: string }> {
+  async getAppVersion(): Promise<{ version: string; channel: string }> {
     const { data } = await client.get(API.APP_VERSION)
     return data
   },

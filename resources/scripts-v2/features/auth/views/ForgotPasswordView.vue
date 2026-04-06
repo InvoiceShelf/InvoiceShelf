@@ -93,7 +93,11 @@ async function onSubmit(): Promise<void> {
 
     isSent.value = true
   } catch (err: unknown) {
-    handleApiError(err)
+    const normalized = handleApiError(err)
+    notificationStore.showNotification({
+      type: 'error',
+      message: normalized.message,
+    })
   } finally {
     isLoading.value = false
   }

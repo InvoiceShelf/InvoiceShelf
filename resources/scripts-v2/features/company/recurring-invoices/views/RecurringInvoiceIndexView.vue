@@ -107,10 +107,9 @@
     <!-- Table -->
     <div v-show="!showEmptyScreen" class="relative table-container">
       <div
-        class="relative flex items-center justify-between h-10 mt-5 list-none border-b-2 border-line-default border-solid"
+        class="relative flex items-center justify-between mt-5 list-none"
       >
         <BaseTabGroup
-          class="-mb-5"
           :default-index="currentStatusIndex"
           @change="setStatusFilter"
         >
@@ -149,7 +148,7 @@
         :placeholder-count="
           recurringInvoiceStore.totalRecurringInvoices >= 20 ? 10 : 5
         "
-        class="mt-10"
+        class="mt-4"
       >
         <template #header>
           <div class="absolute items-center left-6 top-2.5 select-none">
@@ -232,6 +231,8 @@ import { useI18n } from 'vue-i18n'
 import { debouncedWatch } from '@vueuse/core'
 import { useRecurringInvoiceStore } from '../store'
 import RecurringInvoiceDropdown from '../components/RecurringInvoiceDropdown.vue'
+import { useUserStore } from '../../../../stores/user.store'
+import { useDialogStore } from '../../../../stores/dialog.store'
 import type { RecurringInvoice } from '../../../../types/domain/recurring-invoice'
 
 interface Props {
@@ -248,7 +249,16 @@ const props = withDefaults(defineProps<Props>(), {
   canDelete: false,
 })
 
+const ABILITIES = {
+  CREATE: 'create-recurring-invoice',
+  EDIT: 'edit-recurring-invoice',
+  VIEW: 'view-recurring-invoice',
+  DELETE: 'delete-recurring-invoice',
+} as const
+
 const recurringInvoiceStore = useRecurringInvoiceStore()
+const userStore = useUserStore()
+const dialogStore = useDialogStore()
 const { t } = useI18n()
 
 // Initialize frequencies with translations
@@ -289,8 +299,24 @@ const showEmptyScreen = computed<boolean>(
     !recurringInvoiceStore.totalRecurringInvoices && !isRequestOngoing.value,
 )
 
+const canCreate = computed<boolean>(() => {
+  return props.canCreate || userStore.hasAbilities(ABILITIES.CREATE)
+})
+
+const canEdit = computed<boolean>(() => {
+  return props.canEdit || userStore.hasAbilities(ABILITIES.EDIT)
+})
+
+const canView = computed<boolean>(() => {
+  return props.canView || userStore.hasAbilities(ABILITIES.VIEW)
+})
+
+const canDelete = computed<boolean>(() => {
+  return props.canDelete || userStore.hasAbilities(ABILITIES.DELETE)
+})
+
 const hasAtLeastOneAbility = computed<boolean>(() => {
-  return props.canDelete || props.canEdit || props.canView
+  return canDelete.value || canEdit.value || canView.value
 })
 
 const selectField = computed<number[]>({
@@ -461,17 +487,26 @@ function setActiveTab(val: string): void {
   activeTab.value = tabMap[val] ?? t('general.all')
 }
 
-async function removeMultipleRecurringInvoices(): Promise<void> {
-  const confirmed = window.confirm(t('invoices.confirm_delete'))
-  if (!confirmed) return
-
-  const res = await recurringInvoiceStore.deleteMultipleRecurringInvoices()
-  if (res.data.success) {
-    refreshTable()
-    recurringInvoiceStore.$patch((state) => {
-      state.selectedRecurringInvoices = []
-      state.selectAllField = false
-    })
-  }
+function removeMultipleRecurringInvoices(): void {
+  dialogStore.openDialog({
+    title: t('general.are_you_sure'),
+    message: t('invoices.confirm_delete'),
+    yesLabel: t('general.ok'),
+    noLabel: t('general.cancel'),
+    variant: 'danger',
+    hideNoButton: false,
+    size: 'lg',
+  }).then(async (res: boolean) => {
+    if (res) {
+      const response = await recurringInvoiceStore.deleteMultipleRecurringInvoices()
+      if (response.data.success) {
+        refreshTable()
+        recurringInvoiceStore.$patch((state) => {
+          state.selectedRecurringInvoices = []
+          state.selectAllField = false
+        })
+      }
+    }
+  })
 }
 </script>

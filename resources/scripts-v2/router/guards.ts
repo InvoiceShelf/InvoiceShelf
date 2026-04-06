@@ -2,6 +2,9 @@ import type { NavigationGuardWithThis, RouteLocationNormalized } from 'vue-route
 import { useUserStore } from '@v2/stores/user.store'
 import { useGlobalStore } from '@v2/stores/global.store'
 import { useCompanyStore } from '@v2/stores/company.store'
+import { useCustomerPortalStore } from '@v2/features/customer-portal/store'
+import { handleApiError } from '@v2/utils/error-handling'
+import { resolveCompanySlug } from '@v2/features/customer-portal/utils/routes'
 
 /**
  * Main authentication and authorization guard.
@@ -19,6 +22,10 @@ import { useCompanyStore } from '@v2/stores/company.store'
 export const authGuard: NavigationGuardWithThis<undefined> = (
   to: RouteLocationNormalized
 ) => {
+  if (to.meta.isCustomerPortal) {
+    return handleCustomerPortalRoute(to)
+  }
+
   const userStore = useUserStore()
   const globalStore = useGlobalStore()
   const companyStore = useCompanyStore()
@@ -69,6 +76,65 @@ export const authGuard: NavigationGuardWithThis<undefined> = (
 }
 
 // ---- helpers ----
+
+async function handleCustomerPortalRoute(
+  to: RouteLocationNormalized
+): Promise<{ name: string; params: { company: string } } | void> {
+  const customerPortalStore = useCustomerPortalStore()
+  const companySlug = resolveCompanySlug(to.params.company)
+
+  if (!companySlug) {
+    return
+  }
+
+  const isGuestRoute = to.meta.customerPortalGuest === true
+  const shouldBootstrap =
+    customerPortalStore.companySlug !== companySlug ||
+    !customerPortalStore.isAppLoaded ||
+    customerPortalStore.currentUser === null
+
+  if (!shouldBootstrap) {
+    if (isGuestRoute) {
+      return {
+        name: 'customer-portal.dashboard',
+        params: { company: companySlug },
+      }
+    }
+
+    return
+  }
+
+  try {
+    await customerPortalStore.bootstrap(companySlug)
+
+    if (isGuestRoute) {
+      return {
+        name: 'customer-portal.dashboard',
+        params: { company: companySlug },
+      }
+    }
+  } catch (err: unknown) {
+    customerPortalStore.resetState(companySlug)
+
+    if (isGuestRoute) {
+      return
+    }
+
+    const normalizedError = handleApiError(err)
+
+    if (normalizedError.isUnauthorized || normalizedError.statusCode === 401) {
+      return {
+        name: 'customer-portal.login',
+        params: { company: companySlug },
+      }
+    }
+
+    return {
+      name: 'customer-portal.login',
+      params: { company: companySlug },
+    }
+  }
+}
 
 function currentUserIsSuperAdmin(
   userStore: ReturnType<typeof useUserStore>

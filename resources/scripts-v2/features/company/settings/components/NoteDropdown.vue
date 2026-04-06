@@ -6,10 +6,7 @@ import { useNotificationStore } from '@v2/stores/notification.store'
 import { useUserStore } from '@v2/stores/user.store'
 import { useModalStore } from '@v2/stores/modal.store'
 import { noteService } from '@v2/api/services/note.service'
-
-const ABILITIES = {
-  MANAGE_NOTE: 'manage-note',
-} as const
+import { ABILITIES } from '@v2/config/abilities'
 
 interface NoteRow {
   id: number
@@ -51,7 +48,11 @@ function removeNote(id: number): void {
       hideNoButton: false,
       size: 'lg',
     })
-    .then(async () => {
+    .then(async (confirmed: boolean) => {
+      if (!confirmed) {
+        return
+      }
+
       const response = await noteService.delete(id)
       if (response.success) {
         notificationStore.showNotification({
@@ -72,7 +73,7 @@ function removeNote(id: number): void {
 <template>
   <BaseDropdown>
     <template #activator>
-      <BaseButton v-if="route.name === 'notes.view'" variant="primary">
+      <BaseButton v-if="route.name === 'settings.notes'" variant="primary">
         <BaseIcon name="EllipsisHorizontalIcon" class="h-5 text-white" />
       </BaseButton>
       <BaseIcon v-else name="EllipsisHorizontalIcon" class="h-5 text-muted" />

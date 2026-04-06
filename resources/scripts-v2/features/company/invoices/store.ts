@@ -1,4 +1,6 @@
 import { defineStore } from 'pinia'
+import { useNotificationStore } from '../../../stores/notification.store'
+import { useCompanyStore } from '../../../stores/company.store'
 import { invoiceService } from '../../../api/services/invoice.service'
 import type {
   InvoiceListParams,
@@ -14,6 +16,7 @@ import type { Customer } from '../../../types/domain/customer'
 import type { Note } from '../../../types/domain/note'
 import type { CustomFieldValue } from '../../../types/domain/custom-field'
 import type { DocumentTax, DocumentItem } from '../../shared/document-form/use-document-calculations'
+import { generateClientId } from '../../../utils'
 
 // ----------------------------------------------------------------
 // Stub factories
@@ -21,11 +24,11 @@ import type { DocumentTax, DocumentItem } from '../../shared/document-form/use-d
 
 function createTaxStub(): DocumentTax {
   return {
-    id: crypto.randomUUID(),
+    id: generateClientId(),
     name: '',
     tax_type_id: 0,
     type: 'GENERAL',
-    amount: 0,
+    amount: null,
     percent: null,
     compound_tax: false,
     calculation_type: null,
@@ -35,7 +38,7 @@ function createTaxStub(): DocumentTax {
 
 function createInvoiceItemStub(): DocumentItem {
   return {
-    id: crypto.randomUUID(),
+    id: generateClientId(),
     invoice_id: null,
     item_id: null,
     name: '',
@@ -219,7 +222,7 @@ export const useInvoiceStore = defineStore('invoice', {
       this.newInvoice = createInvoiceStub()
     },
 
-    async previewInvoice(params: { id: number }): Promise<unknown> {
+    async previewInvoice(params: SendInvoicePayload): Promise<unknown> {
       return invoiceService.sendPreview(params)
     },
 
@@ -305,6 +308,13 @@ export const useInvoiceStore = defineStore('invoice', {
     async addInvoice(data: Record<string, unknown>): Promise<{ data: { data: Invoice } }> {
       const response = await invoiceService.create(data as never)
       this.invoices = [...this.invoices, response.data]
+
+      const notificationStore = useNotificationStore()
+      notificationStore.showNotification({
+        type: 'success',
+        message: 'invoices.created_message',
+      })
+
       return { data: response }
     },
 
@@ -336,6 +346,13 @@ export const useInvoiceStore = defineStore('invoice', {
       if (pos !== -1) {
         this.invoices[pos] = response.data
       }
+
+      const notificationStore = useNotificationStore()
+      notificationStore.showNotification({
+        type: 'success',
+        message: 'invoices.updated_message',
+      })
+
       return { data: response }
     },
 
@@ -440,14 +457,17 @@ export const useInvoiceStore = defineStore('invoice', {
     async fetchInvoiceInitialSettings(
       isEdit: boolean,
       routeParams?: { id?: string; query?: Record<string, string> },
-      companySettings?: Record<string, string>,
+      companySettingsParam?: Record<string, string>,
       companyCurrency?: Currency,
       userSettings?: Record<string, string>,
     ): Promise<void> {
       this.isFetchingInitialSettings = true
 
-      if (companyCurrency) {
-        this.newInvoice.selectedCurrency = companyCurrency
+      const companyStore = useCompanyStore()
+      const companySettings = companySettingsParam ?? companyStore.selectedCompanySettings
+
+      if (companyCurrency || companyStore.selectedCompanyCurrency) {
+        this.newInvoice.selectedCurrency = companyCurrency ?? companyStore.selectedCompanyCurrency!
       }
 
       // If customer is specified in route query

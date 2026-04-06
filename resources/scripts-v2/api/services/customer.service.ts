@@ -24,16 +24,28 @@ export interface CustomerListResponse {
   meta: CustomerListMeta
 }
 
-export interface CustomerStatsData {
-  id: number
-  name: string
-  email: string | null
-  total_invoices: number
-  total_estimates: number
-  total_payments: number
-  total_expenses: number
-  total_amount_due: number
-  total_paid: number
+export interface CustomerStatsChartData {
+  salesTotal: number
+  totalReceipts: number
+  totalExpenses: number
+  netProfit: number
+  expenseTotals: number[]
+  netProfits: number[]
+  months: string[]
+  receiptTotals: number[]
+  invoiceTotals: number[]
+}
+
+export interface CustomerStatsParams {
+  previous_year?: boolean
+  this_year?: boolean
+}
+
+export interface CustomerStatsResponse {
+  data: Customer
+  meta: {
+    chartData: CustomerStatsChartData
+  }
 }
 
 export const customerService = {
@@ -62,7 +74,10 @@ export const customerService = {
     return data
   },
 
-  async getStats(id: number, params?: Record<string, unknown>): Promise<ApiResponse<CustomerStatsData>> {
+  async getStats(
+    id: number,
+    params?: CustomerStatsParams
+  ): Promise<CustomerStatsResponse> {
     const { data } = await client.get(`${API.CUSTOMER_STATS}/${id}/stats`, { params })
     return data
   },

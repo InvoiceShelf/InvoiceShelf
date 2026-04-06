@@ -186,6 +186,7 @@ import { required, between, maxLength, helpers, minValue } from '@vuelidate/vali
 import useVuelidate from '@vuelidate/core'
 import DocumentItemRowTax from './DocumentItemRowTax.vue'
 import DragIcon from '@v2/components/icons/DragIcon.vue'
+import { generateClientId } from '../../../utils'
 import type { Currency } from '../../../types/domain/currency'
 import type { DocumentItem, DocumentFormData, DocumentTax } from './use-document-calculations'
 
@@ -329,7 +330,7 @@ function updateTax(data: { index: number; item: DocumentTax }): void {
     props.store.$patch((state: Record<string, unknown>) => {
       const form = state[props.storeProp] as DocumentFormData
       form.items[props.index].taxes!.push({
-        id: crypto.randomUUID(),
+        id: generateClientId(),
         tax_type_id: 0,
         name: '',
         amount: 0,

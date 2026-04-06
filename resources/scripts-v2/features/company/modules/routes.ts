@@ -9,6 +9,7 @@ export const moduleRoutes: RouteRecordRaw[] = [
     name: 'modules.index',
     component: ModuleIndexView,
     meta: {
+      requiresAuth: true,
       ability: 'manage-module',
       title: 'modules.title',
     },
@@ -18,6 +19,7 @@ export const moduleRoutes: RouteRecordRaw[] = [
     name: 'modules.view',
     component: ModuleDetailView,
     meta: {
+      requiresAuth: true,
       ability: 'manage-module',
       title: 'modules.title',
     },

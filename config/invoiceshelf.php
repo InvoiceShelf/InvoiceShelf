@@ -9,7 +9,6 @@ use App\Models\Invoice;
 use App\Models\Item;
 use App\Models\Note;
 use App\Models\Payment;
-use App\Models\RecurringInvoice;
 use App\Models\TaxType;
 
 return [
@@ -164,7 +163,7 @@ return [
             'title' => 'settings.roles.title',
             'group' => '',
             'name' => 'Company Roles',
-            'link' => '/admin/settings/roles-settings',
+            'link' => '/admin/settings/roles',
             'icon' => 'UserGroupIcon',
             'owner_only' => true,
             'ability' => '',
@@ -174,7 +173,7 @@ return [
             'title' => 'settings.menu_title.exchange_rate',
             'group' => '',
             'name' => 'Exchange Rate Provider',
-            'link' => '/admin/settings/exchange-rate-provider',
+            'link' => '/admin/settings/exchange-rate',
             'icon' => 'BanknotesIcon',
             'owner_only' => false,
             'ability' => 'view-exchange-rate-provider',
@@ -204,7 +203,7 @@ return [
             'title' => 'settings.menu_title.payment_modes',
             'group' => '',
             'name' => 'Payment modes',
-            'link' => '/admin/settings/payment-mode',
+            'link' => '/admin/settings/payment-modes',
             'icon' => 'CreditCardIcon',
             'owner_only' => false,
             'ability' => 'view-payment',
@@ -234,7 +233,7 @@ return [
             'title' => 'settings.menu_title.expense_category',
             'group' => '',
             'name' => 'Expense Category',
-            'link' => '/admin/settings/expense-category',
+            'link' => '/admin/settings/expense-categories',
             'icon' => 'ClipboardDocumentListIcon',
             'owner_only' => false,
             'ability' => 'view-expense',
@@ -244,7 +243,7 @@ return [
             'title' => 'settings.mail.company_mail_config',
             'group' => '',
             'name' => 'Mail Configuration',
-            'link' => '/admin/settings/mail-configuration',
+            'link' => '/admin/settings/mail-config',
             'icon' => 'EnvelopeIcon',
             'owner_only' => true,
             'ability' => '',
@@ -305,16 +304,6 @@ return [
             'owner_only' => false,
             'ability' => 'view-invoice',
             'model' => Invoice::class,
-        ],
-        [
-            'title' => 'navigation.recurring-invoices',
-            'group' => 2,
-            'link' => '/admin/recurring-invoices',
-            'icon' => 'DocumentTextIcon',
-            'name' => 'Recurring Invoices',
-            'owner_only' => false,
-            'ability' => 'view-recurring-invoice',
-            'model' => RecurringInvoice::class,
         ],
         [
             'title' => 'navigation.payments',

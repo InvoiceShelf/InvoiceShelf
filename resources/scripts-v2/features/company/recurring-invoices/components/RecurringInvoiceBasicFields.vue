@@ -1,7 +1,6 @@
 <template>
-  <div class="col-span-5 pr-0">
+  <div class="col-span-6 pr-0">
     <BaseCustomerSelectPopup
-      v-model="recurringInvoiceStore.newRecurringInvoice.customer"
       :content-loading="isLoading"
       type="recurring-invoice"
     />

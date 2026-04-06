@@ -113,9 +113,9 @@
     <!-- Table -->
     <div v-show="!showEmptyScreen" class="relative table-container">
       <div
-        class="relative flex items-center justify-between h-10 mt-5 list-none border-b-2 border-line-default border-solid"
+        class="relative flex items-center justify-between mt-5 list-none"
       >
-        <BaseTabGroup class="-mb-5" @change="setStatusFilter">
+        <BaseTabGroup @change="setStatusFilter">
           <BaseTab :title="$t('general.all')" filter="" />
           <BaseTab :title="$t('general.draft')" filter="DRAFT" />
           <BaseTab :title="$t('general.sent')" filter="SENT" />
@@ -147,7 +147,7 @@
         :columns="estimateColumns"
         :placeholder-count="estimateStore.totalEstimateCount >= 20 ? 10 : 5"
         :key="tableKey"
-        class="mt-10"
+        class="mt-4"
       >
         <template #header>
           <div class="absolute items-center left-6 top-2.5 select-none">
@@ -183,7 +183,14 @@
         </template>
 
         <template #cell-name="{ row }">
-          <BaseText :text="row.data.customer.name" />
+          <router-link
+            v-if="row.data.customer?.id"
+            :to="`/admin/customers/${row.data.customer.id}/view`"
+            class="font-medium text-primary-500 hover:text-primary-600"
+          >
+            {{ row.data.customer.name }}
+          </router-link>
+          <span v-else>{{ row.data.customer?.name ?? '-' }}</span>
         </template>
 
         <template #cell-status="{ row }">
@@ -221,6 +228,8 @@ import { useI18n } from 'vue-i18n'
 import { debouncedWatch } from '@vueuse/core'
 import { useEstimateStore } from '../store'
 import EstimateDropdown from '../components/EstimateDropdown.vue'
+import { useUserStore } from '../../../../stores/user.store'
+import { useDialogStore } from '../../../../stores/dialog.store'
 import type { Estimate } from '../../../../types/domain/estimate'
 
 interface Props {
@@ -239,7 +248,17 @@ const props = withDefaults(defineProps<Props>(), {
   canSend: false,
 })
 
+const ABILITIES = {
+  CREATE: 'create-estimate',
+  EDIT: 'edit-estimate',
+  VIEW: 'view-estimate',
+  DELETE: 'delete-estimate',
+  SEND: 'send-estimate',
+} as const
+
 const estimateStore = useEstimateStore()
+const userStore = useUserStore()
+const dialogStore = useDialogStore()
 const { t } = useI18n()
 
 const tableRef = ref<{ refresh: () => void } | null>(null)
@@ -289,8 +308,28 @@ const selectField = computed<number[]>({
   },
 })
 
+const canCreate = computed<boolean>(() => {
+  return props.canCreate || userStore.hasAbilities(ABILITIES.CREATE)
+})
+
+const canEdit = computed<boolean>(() => {
+  return props.canEdit || userStore.hasAbilities(ABILITIES.EDIT)
+})
+
+const canView = computed<boolean>(() => {
+  return props.canView || userStore.hasAbilities(ABILITIES.VIEW)
+})
+
+const canDelete = computed<boolean>(() => {
+  return props.canDelete || userStore.hasAbilities(ABILITIES.DELETE)
+})
+
+const canSend = computed<boolean>(() => {
+  return props.canSend || userStore.hasAbilities(ABILITIES.SEND)
+})
+
 const hasAtLeastOneAbility = computed<boolean>(() => {
-  return props.canCreate || props.canEdit || props.canView || props.canSend
+  return canCreate.value || canEdit.value || canView.value || canSend.value
 })
 
 interface TableColumn {
@@ -432,18 +471,27 @@ function toggleFilter(): void {
   showFilters.value = !showFilters.value
 }
 
-async function removeMultipleEstimates(): Promise<void> {
-  const confirmed = window.confirm(t('estimates.confirm_delete'))
-  if (!confirmed) return
-
-  const res = await estimateStore.deleteMultipleEstimates()
-  if (res.data) {
-    refreshTable()
-    estimateStore.$patch((state) => {
-      state.selectedEstimates = []
-      state.selectAllField = false
-    })
-  }
+function removeMultipleEstimates(): void {
+  dialogStore.openDialog({
+    title: t('general.are_you_sure'),
+    message: t('estimates.confirm_delete'),
+    yesLabel: t('general.ok'),
+    noLabel: t('general.cancel'),
+    variant: 'danger',
+    hideNoButton: false,
+    size: 'lg',
+  }).then(async (res: boolean) => {
+    if (res) {
+      const response = await estimateStore.deleteMultipleEstimates()
+      if (response.data) {
+        refreshTable()
+        estimateStore.$patch((state) => {
+          state.selectedEstimates = []
+          state.selectAllField = false
+        })
+      }
+    }
+  })
 }
 
 function setActiveTab(val: string): void {

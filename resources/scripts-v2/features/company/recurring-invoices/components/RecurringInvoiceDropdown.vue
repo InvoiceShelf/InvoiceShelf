@@ -51,6 +51,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { useRecurringInvoiceStore } from '../store'
+import { useDialogStore } from '../../../../stores/dialog.store'
 import type { RecurringInvoice } from '../../../../types/domain/recurring-invoice'
 
 interface TableRef {
@@ -75,6 +76,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const recurringInvoiceStore = useRecurringInvoiceStore()
+const dialogStore = useDialogStore()
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
@@ -83,25 +85,34 @@ const isDetailView = computed<boolean>(
   () => route.name === 'recurring-invoices.view',
 )
 
-async function removeRecurringInvoice(): Promise<void> {
-  const confirmed = window.confirm(t('invoices.confirm_delete'))
-  if (!confirmed) return
+function removeRecurringInvoice(): void {
+  dialogStore.openDialog({
+    title: t('general.are_you_sure'),
+    message: t('invoices.confirm_delete'),
+    yesLabel: t('general.ok'),
+    noLabel: t('general.cancel'),
+    variant: 'danger',
+    hideNoButton: false,
+    size: 'lg',
+  }).then(async (res: boolean) => {
+    if (res) {
+      const invoiceRow = props.row as RecurringInvoice
+      const response = await recurringInvoiceStore.deleteMultipleRecurringInvoices(
+        invoiceRow.id,
+      )
 
-  const invoiceRow = props.row as RecurringInvoice
-  const res = await recurringInvoiceStore.deleteMultipleRecurringInvoices(
-    invoiceRow.id,
-  )
+      if (response.data.success) {
+        props.table?.refresh()
+        recurringInvoiceStore.$patch((state) => {
+          state.selectedRecurringInvoices = []
+          state.selectAllField = false
+        })
 
-  if (res.data.success) {
-    props.table?.refresh()
-    recurringInvoiceStore.$patch((state) => {
-      state.selectedRecurringInvoices = []
-      state.selectAllField = false
-    })
-
-    if (isDetailView.value) {
-      router.push('/admin/recurring-invoices')
+        if (isDetailView.value) {
+          router.push('/admin/recurring-invoices')
+        }
+      }
     }
-  }
+  })
 }
 </script>

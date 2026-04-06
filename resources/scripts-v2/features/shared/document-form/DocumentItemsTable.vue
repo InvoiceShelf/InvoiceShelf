@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-xl border border-line-light shadow overflow-hidden bg-surface">
+  <div class="rounded-xl border border-line-light shadow bg-surface">
     <!-- Tax Included Toggle -->
     <div
       v-if="taxIncludedSetting === 'YES'"

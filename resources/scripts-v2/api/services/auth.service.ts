@@ -36,6 +36,11 @@ export interface RegisterWithInvitationPayload {
   email: string
   password: string
   password_confirmation: string
+  invitation_token: string
+}
+
+export interface RegisterWithInvitationResponse {
+  type: string
   token: string
 }
 
@@ -74,8 +79,8 @@ export const authService = {
     return data
   },
 
-  async registerWithInvitation(payload: RegisterWithInvitationPayload): Promise<ApiResponse<User>> {
-    const { data } = await client.post(API.REGISTER_WITH_INVITATION, payload)
+  async registerWithInvitation(payload: RegisterWithInvitationPayload): Promise<RegisterWithInvitationResponse> {
+    const { data } = await client.post<RegisterWithInvitationResponse>(API.REGISTER_WITH_INVITATION, payload)
     return data
   },
 }

@@ -1,12 +1,13 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { useCustomerStore } from '../store'
 import { useDialogStore } from '../../../../stores/dialog.store'
 import { useUserStore } from '../../../../stores/user.store'
 
 interface RowData {
-  id: number
+  id?: number | string | null
   [key: string]: unknown
 }
 
@@ -40,7 +41,33 @@ const userStore = useUserStore()
 
 const { t } = useI18n()
 const route = useRoute()
-const router = useRouter()
+
+const isDetailView = computed<boolean>(() => route.name === 'customers.view')
+const customerId = computed<number | null>(() => {
+  const rowId = normalizeCustomerId(props.row?.id)
+  if (rowId !== null) {
+    return rowId
+  }
+
+  if (isDetailView.value) {
+    return normalizeCustomerId(route.params.id)
+  }
+
+  return null
+})
+
+function normalizeCustomerId(value: unknown): number | null {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return value
+  }
+
+  if (typeof value === 'string' && value.trim() !== '') {
+    const parsedValue = Number(value)
+    return Number.isFinite(parsedValue) ? parsedValue : null
+  }
+
+  return null
+}
 
 function removeCustomer(id: number): void {
   dialogStore
@@ -63,12 +90,20 @@ function removeCustomer(id: number): void {
       }
     })
 }
+
+function onRemoveCustomer(): void {
+  if (customerId.value === null) {
+    return
+  }
+
+  removeCustomer(customerId.value)
+}
 </script>
 
 <template>
   <BaseDropdown :content-loading="customerStore.isFetchingViewData">
     <template #activator>
-      <BaseButton v-if="route.name === 'customers.view'" variant="primary">
+      <BaseButton v-if="isDetailView" variant="primary">
         <BaseIcon name="EllipsisHorizontalIcon" class="h-5 text-white" />
       </BaseButton>
       <BaseIcon v-else name="EllipsisHorizontalIcon" class="h-5 text-muted" />
@@ -76,8 +111,11 @@ function removeCustomer(id: number): void {
 
     <!-- Edit Customer -->
     <router-link
-      v-if="userStore.hasAbilities(ABILITIES.EDIT_CUSTOMER) && row"
-      :to="`/admin/customers/${row.id}/edit`"
+      v-if="
+        userStore.hasAbilities(ABILITIES.EDIT_CUSTOMER) &&
+        customerId !== null
+      "
+      :to="`/admin/customers/${customerId}/edit`"
     >
       <BaseDropdownItem>
         <BaseIcon
@@ -91,11 +129,11 @@ function removeCustomer(id: number): void {
     <!-- View Customer -->
     <router-link
       v-if="
-        route.name !== 'customers.view' &&
+        !isDetailView &&
         userStore.hasAbilities(ABILITIES.VIEW_CUSTOMER) &&
-        row
+        customerId !== null
       "
-      :to="`customers/${row.id}/view`"
+      :to="`/admin/customers/${customerId}/view`"
     >
       <BaseDropdownItem>
         <BaseIcon
@@ -108,8 +146,11 @@ function removeCustomer(id: number): void {
 
     <!-- Delete Customer -->
     <BaseDropdownItem
-      v-if="userStore.hasAbilities(ABILITIES.DELETE_CUSTOMER) && row"
-      @click="removeCustomer(row.id)"
+      v-if="
+        userStore.hasAbilities(ABILITIES.DELETE_CUSTOMER) &&
+        customerId !== null
+      "
+      @click="onRemoveCustomer"
     >
       <BaseIcon
         name="TrashIcon"

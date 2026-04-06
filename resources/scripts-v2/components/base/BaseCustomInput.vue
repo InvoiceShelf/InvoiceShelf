@@ -227,7 +227,7 @@ getFields()
         :close-on-select="true"
         max-height="220"
         position="top-end"
-        width-class="w-92"
+        width-class="w-auto min-w-[40rem]"
         class="mb-2"
       >
         <template #activator>

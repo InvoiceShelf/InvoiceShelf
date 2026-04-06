@@ -16,7 +16,7 @@
         <BaseButton
           v-if="invoiceData.status === 'DRAFT' && canSend"
           variant="primary"
-          class="text-sm"
+          class="text-sm mr-3"
           @click="onSendInvoice"
         >
           {{ $t('invoices.send_invoice') }}
@@ -197,12 +197,9 @@
     </div>
 
     <!-- PDF Preview -->
-    <div class="flex flex-col min-h-0 mt-8 overflow-hidden" style="height: 75vh">
-      <iframe
-        :src="shareableLink"
-        class="flex-1 border border-gray-400 border-solid bg-surface rounded-xl frame-style"
-      />
-    </div>
+    <BasePdfPreview :src="shareableLink" />
+
+    <SendInvoiceModal />
   </BasePage>
 </template>
 
@@ -212,7 +209,11 @@ import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useInvoiceStore } from '../store'
 import InvoiceDropdown from '../components/InvoiceDropdown.vue'
+import SendInvoiceModal from '../components/SendInvoiceModal.vue'
 import LoadingIcon from '@v2/components/icons/LoadingIcon.vue'
+import { useUserStore } from '../../../../stores/user.store'
+import { useDialogStore } from '../../../../stores/dialog.store'
+import { useModalStore } from '../../../../stores/modal.store'
 import type { Invoice } from '../../../../types/domain/invoice'
 
 interface Props {
@@ -233,9 +234,47 @@ const props = withDefaults(defineProps<Props>(), {
   canCreatePayment: false,
 })
 
+const ABILITIES = {
+  EDIT: 'edit-invoice',
+  VIEW: 'view-invoice',
+  CREATE: 'create-invoice',
+  DELETE: 'delete-invoice',
+  SEND: 'send-invoice',
+  CREATE_PAYMENT: 'create-payment',
+} as const
+
 const invoiceStore = useInvoiceStore()
+const userStore = useUserStore()
+const dialogStore = useDialogStore()
+const modalStore = useModalStore()
 const { t } = useI18n()
 const route = useRoute()
+
+const canEdit = computed<boolean>(() => {
+  return props.canEdit || userStore.hasAbilities(ABILITIES.EDIT)
+})
+
+const canView = computed<boolean>(() => {
+  return props.canView || userStore.hasAbilities(ABILITIES.VIEW)
+})
+
+const canCreate = computed<boolean>(() => {
+  return props.canCreate || userStore.hasAbilities(ABILITIES.CREATE)
+})
+
+const canDelete = computed<boolean>(() => {
+  return props.canDelete || userStore.hasAbilities(ABILITIES.DELETE)
+})
+
+const canSend = computed<boolean>(() => {
+  return props.canSend || userStore.hasAbilities(ABILITIES.SEND)
+})
+
+const canCreatePayment = computed<boolean>(() => {
+  return (
+    props.canCreatePayment || userStore.hasAbilities(ABILITIES.CREATE_PAYMENT)
+  )
+})
 
 const invoiceData = ref<Invoice | null>(null)
 const isMarkAsSent = ref<boolean>(false)
@@ -274,29 +313,36 @@ watch(route, (to) => {
   }
 })
 
-async function onMarkAsSent(): Promise<void> {
-  const confirmed = window.confirm(t('invoices.invoice_mark_as_sent'))
-  if (!confirmed) return
-
-  isMarkAsSent.value = false
-  await invoiceStore.markAsSent({
-    id: invoiceData.value!.id,
-    status: 'SENT',
+function onMarkAsSent(): void {
+  dialogStore.openDialog({
+    title: t('general.are_you_sure'),
+    message: t('invoices.invoice_mark_as_sent'),
+    yesLabel: t('general.ok'),
+    noLabel: t('general.cancel'),
+    variant: 'primary',
+    hideNoButton: false,
+    size: 'lg',
+  }).then(async (res: boolean) => {
+    if (res) {
+      isMarkAsSent.value = false
+      await invoiceStore.markAsSent({
+        id: invoiceData.value!.id,
+        status: 'SENT',
+      })
+      invoiceData.value!.status = 'SENT' as Invoice['status']
+      isMarkAsSent.value = true
+      isMarkAsSent.value = false
+    }
   })
-  invoiceData.value!.status = 'SENT' as Invoice['status']
-  isMarkAsSent.value = true
-  isMarkAsSent.value = false
 }
 
 function onSendInvoice(): void {
-  const modalStore = (window as Record<string, unknown>).__modalStore as
-    | { openModal: (opts: Record<string, unknown>) => void }
-    | undefined
-  modalStore?.openModal({
+  modalStore.openModal({
     title: t('invoices.send_invoice'),
     componentName: 'SendInvoiceModal',
     id: invoiceData.value!.id,
     data: invoiceData.value,
+    refreshData: () => loadInvoice(),
   })
 }
 

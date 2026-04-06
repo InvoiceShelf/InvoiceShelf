@@ -16,35 +16,37 @@ const props = withDefaults(defineProps<Props>(), {
   status: '',
 })
 
+const baseClasses = 'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium'
+
 const badgeColorClasses = computed<string>(() => {
   switch (props.status) {
     case InvoiceStatus.DRAFT:
     case 'DRAFT':
-      return 'bg-yellow-300/25 px-2 py-1 text-sm text-status-yellow uppercase font-normal text-center'
+      return `${baseClasses} bg-gray-100 text-gray-700 ring-1 ring-inset ring-gray-300/50`
     case InvoiceStatus.SENT:
     case 'SENT':
-      return 'bg-green-500/25 px-2 py-1 text-sm text-status-green uppercase font-normal text-center'
+      return `${baseClasses} bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-300/50`
     case InvoiceStatus.VIEWED:
     case 'VIEWED':
-      return 'bg-blue-400/25 px-2 py-1 text-sm text-status-blue uppercase font-normal text-center'
+      return `${baseClasses} bg-indigo-50 text-indigo-700 ring-1 ring-inset ring-indigo-300/50`
     case InvoiceStatus.COMPLETED:
     case 'COMPLETED':
-      return 'bg-green-500/25 px-2 py-1 text-sm text-status-green uppercase font-normal text-center'
+      return `${baseClasses} bg-green-50 text-green-700 ring-1 ring-inset ring-green-300/50`
     case 'DUE':
-      return 'bg-yellow-500/25 px-2 py-1 text-sm text-status-yellow uppercase font-normal text-center'
+      return `${baseClasses} bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-300/50`
     case 'OVERDUE':
-      return 'bg-red-300/50 px-2 py-1 text-sm text-status-red uppercase font-normal text-center'
+      return `${baseClasses} bg-red-50 text-red-700 ring-1 ring-inset ring-red-300/50`
     case InvoicePaidStatus.UNPAID:
     case 'UNPAID':
-      return 'bg-yellow-500/25 px-2 py-1 text-sm text-status-yellow uppercase font-normal text-center'
+      return `${baseClasses} bg-orange-50 text-orange-700 ring-1 ring-inset ring-orange-300/50`
     case InvoicePaidStatus.PARTIALLY_PAID:
     case 'PARTIALLY_PAID':
-      return 'bg-blue-400/25 px-2 py-1 text-sm text-status-blue uppercase font-normal text-center'
+      return `${baseClasses} bg-cyan-50 text-cyan-700 ring-1 ring-inset ring-cyan-300/50`
     case InvoicePaidStatus.PAID:
     case 'PAID':
-      return 'bg-green-500/40 px-2 py-1 text-sm text-status-green uppercase font-semibold text-center'
+      return `${baseClasses} bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-300/50`
     default:
-      return 'bg-surface-secondary0/25 px-2 py-1 text-sm text-heading uppercase font-normal text-center'
+      return `${baseClasses} bg-surface-secondary text-muted ring-1 ring-inset ring-line-default`
   }
 })
 </script>

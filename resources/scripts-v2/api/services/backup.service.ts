@@ -1,28 +1,35 @@
 import { client } from '../client'
 import { API } from '../endpoints'
-import type { ApiResponse, ListParams } from '@v2/types/api'
 
 export interface Backup {
-  id: number
-  disk: string
   path: string
   created_at: string
-  file_size: string
+  size: string
+}
+
+export interface BackupListResponse {
+  backups: Backup[]
+  disks: string[]
+  error?: string
+  error_message?: string
 }
 
 export interface CreateBackupPayload {
-  option: 'full' | 'database' | 'files'
-  selected_disk: string | null
+  option: 'full' | 'only-db' | 'only-files'
+  file_disk_id: number
 }
 
 export interface DeleteBackupParams {
   disk: string
-  path?: string
-  file_name?: string
+  path: string
+  file_disk_id?: number
 }
 
 export const backupService = {
-  async list(params?: ListParams): Promise<ApiResponse<Backup[]>> {
+  async list(params: {
+    disk: string
+    file_disk_id?: number
+  }): Promise<BackupListResponse> {
     const { data } = await client.get(API.BACKUPS, { params })
     return data
   },
@@ -37,7 +44,11 @@ export const backupService = {
     return data
   },
 
-  async download(params: { disk: string; path?: string; file_name?: string }): Promise<Blob> {
+  async download(params: {
+    disk: string
+    path: string
+    file_disk_id?: number
+  }): Promise<Blob> {
     const { data } = await client.get(API.DOWNLOAD_BACKUP, {
       params,
       responseType: 'blob',

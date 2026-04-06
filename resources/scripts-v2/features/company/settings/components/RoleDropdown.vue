@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import { useDialogStore } from '@v2/stores/dialog.store'
 import { useUserStore } from '@v2/stores/user.store'
 import { useModalStore } from '@v2/stores/modal.store'
+import { useNotificationStore } from '@v2/stores/notification.store'
 import { roleService } from '@v2/api/services/role.service'
 
 interface RoleRow {
@@ -19,12 +20,16 @@ const props = defineProps<{
 }>()
 
 const dialogStore = useDialogStore()
+const notificationStore = useNotificationStore()
 const { t } = useI18n()
 const route = useRoute()
 const userStore = useUserStore()
 const modalStore = useModalStore()
 
+const PROTECTED_ROLES = ['owner', 'super admin']
+
 async function editRole(id: number): Promise<void> {
+  if (PROTECTED_ROLES.includes(props.row.name)) return
   modalStore.openModal({
     title: t('settings.roles.edit_role'),
     componentName: 'RolesModal',
@@ -35,6 +40,7 @@ async function editRole(id: number): Promise<void> {
 }
 
 async function removeRole(id: number): Promise<void> {
+  if (PROTECTED_ROLES.includes(props.row.name)) return
   dialogStore
     .openDialog({
       title: t('general.are_you_sure'),
@@ -48,6 +54,10 @@ async function removeRole(id: number): Promise<void> {
     .then(async (res: boolean) => {
       if (res) {
         await roleService.delete(id)
+        notificationStore.showNotification({
+          type: 'success',
+          message: 'settings.roles.deleted_message',
+        })
         props.loadData?.()
       }
     })
@@ -57,7 +67,7 @@ async function removeRole(id: number): Promise<void> {
 <template>
   <BaseDropdown>
     <template #activator>
-      <BaseButton v-if="route.name === 'roles.view'" variant="primary">
+      <BaseButton v-if="route.name === 'settings.roles'" variant="primary">
         <BaseIcon name="EllipsisHorizontalIcon" class="h-5 text-white" />
       </BaseButton>
       <BaseIcon v-else name="EllipsisHorizontalIcon" class="h-5 text-muted" />

@@ -6,6 +6,7 @@ const itemRoutes: RouteRecordRaw[] = [
     name: 'items.index',
     component: () => import('./views/ItemIndexView.vue'),
     meta: {
+      requiresAuth: true,
       ability: 'view-item',
     },
   },
@@ -14,6 +15,7 @@ const itemRoutes: RouteRecordRaw[] = [
     name: 'items.create',
     component: () => import('./views/ItemCreateView.vue'),
     meta: {
+      requiresAuth: true,
       ability: 'create-item',
     },
   },
@@ -22,6 +24,7 @@ const itemRoutes: RouteRecordRaw[] = [
     name: 'items.edit',
     component: () => import('./views/ItemCreateView.vue'),
     meta: {
+      requiresAuth: true,
       ability: 'edit-item',
     },
   },

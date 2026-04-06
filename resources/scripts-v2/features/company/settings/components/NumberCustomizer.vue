@@ -157,12 +157,12 @@ async function setInitialFields(): Promise<void> {
   const res = await globalStore.fetchPlaceholders(data as { key: string })
 
   res.placeholders.forEach((placeholder) => {
-    const found = allFields.value.find((field) => field.name === placeholder.value)
+    const found = allFields.value.find((field) => field.name === placeholder.name)
     if (!found) return
 
     selectedFields.value.push({
       ...found,
-      value: placeholder.value ?? '',
+      value: placeholder.value ?? found.value,
       id: Guid.raw(),
     })
   })

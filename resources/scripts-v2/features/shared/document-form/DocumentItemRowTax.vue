@@ -73,6 +73,7 @@
 <script setup lang="ts">
 import { computed, ref, reactive, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useModalStore } from '../../../stores/modal.store'
 import type { TaxType } from '../../../types/domain/tax'
 import type { Currency } from '../../../types/domain/currency'
 import type { DocumentFormData, DocumentTax } from './use-document-calculations'
@@ -106,6 +107,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>()
 
 const { t } = useI18n()
+const modalStore = useModalStore()
 
 // We assume these stores are available globally or injected
 // In the v2 arch, we'll use a lighter approach
@@ -205,11 +207,7 @@ function updateRowTax(): void {
 }
 
 function openTaxModal(): void {
-  // Modal integration - emit event or use modal store
-  const modalStore = (window as Record<string, unknown>).__modalStore as
-    | { openModal: (opts: Record<string, unknown>) => void }
-    | undefined
-  modalStore?.openModal({
+  modalStore.openModal({
     title: t('settings.tax_types.add_tax'),
     componentName: 'TaxTypeModal',
     data: { itemIndex: props.itemIndex, taxIndex: props.index },

@@ -1,5 +1,7 @@
 <template>
-  <div class="w-full">
+  <div>
+    <NoteModal />
+    <div class="w-full">
     <Popover v-slot="{ open: isOpen }">
       <PopoverButton
         v-if="canViewNotes"
@@ -77,6 +79,7 @@
         </PopoverPanel>
       </transition>
     </Popover>
+    </div>
   </div>
 </template>
 
@@ -84,13 +87,15 @@
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useModalStore } from '../../../stores/modal.store'
+import { useUserStore } from '../../../stores/user.store'
+import { ABILITIES } from '../../../config/abilities'
+import NoteModal from '../../company/settings/components/NoteModal.vue'
 import type { Note } from '../../../types/domain/note'
 import { noteService } from '../../../api/services/note.service'
 
 interface Props {
   type?: string | null
-  canViewNotes?: boolean
-  canManageNotes?: boolean
 }
 
 interface Emits {
@@ -99,15 +104,23 @@ interface Emits {
 
 const props = withDefaults(defineProps<Props>(), {
   type: null,
-  canViewNotes: true,
-  canManageNotes: false,
 })
 
 const emit = defineEmits<Emits>()
 
 const { t } = useI18n()
+const modalStore = useModalStore()
+const userStore = useUserStore()
 const textSearch = ref<string | null>(null)
 const notes = ref<Note[]>([])
+
+const canViewNotes = computed<boolean>(() =>
+  userStore.hasAbilities(ABILITIES.VIEW_NOTE),
+)
+
+const canManageNotes = computed<boolean>(() =>
+  userStore.hasAbilities(ABILITIES.MANAGE_NOTE),
+)
 
 const filteredNotes = computed<Note[]>(() => {
   if (textSearch.value) {
@@ -138,14 +151,12 @@ function selectNote(index: number, close: () => void): void {
 }
 
 function openNoteModal(): void {
-  const modalStore = (window as Record<string, unknown>).__modalStore as
-    | { openModal: (opts: Record<string, unknown>) => void }
-    | undefined
-  modalStore?.openModal({
+  modalStore.openModal({
     title: t('settings.customization.notes.add_note'),
     componentName: 'NoteModal',
     size: 'lg',
     data: props.type,
+    refreshData: () => fetchInitialData(),
   })
 }
 </script>

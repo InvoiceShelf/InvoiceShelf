@@ -6,6 +6,7 @@ const customerRoutes: RouteRecordRaw[] = [
     name: 'customers.index',
     component: () => import('./views/CustomerIndexView.vue'),
     meta: {
+      requiresAuth: true,
       ability: 'view-customer',
     },
   },
@@ -14,6 +15,7 @@ const customerRoutes: RouteRecordRaw[] = [
     name: 'customers.create',
     component: () => import('./views/CustomerCreateView.vue'),
     meta: {
+      requiresAuth: true,
       ability: 'create-customer',
     },
   },
@@ -22,6 +24,7 @@ const customerRoutes: RouteRecordRaw[] = [
     name: 'customers.edit',
     component: () => import('./views/CustomerCreateView.vue'),
     meta: {
+      requiresAuth: true,
       ability: 'edit-customer',
     },
   },
@@ -30,6 +33,7 @@ const customerRoutes: RouteRecordRaw[] = [
     name: 'customers.view',
     component: () => import('./views/CustomerDetailView.vue'),
     meta: {
+      requiresAuth: true,
       ability: 'view-customer',
     },
   },

@@ -135,6 +135,8 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { useEstimateStore } from '../store'
+import { useDialogStore } from '../../../../stores/dialog.store'
+import { useModalStore } from '../../../../stores/modal.store'
 import type { Estimate } from '../../../../types/domain/estimate'
 
 interface TableRef {
@@ -163,6 +165,8 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const estimateStore = useEstimateStore()
+const dialogStore = useDialogStore()
+const modalStore = useModalStore()
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
@@ -177,46 +181,70 @@ const canResendEstimate = computed<boolean>(() => {
   )
 })
 
-async function removeEstimate(): Promise<void> {
-  const confirmed = window.confirm(t('estimates.confirm_delete'))
-  if (!confirmed) return
-
-  const res = await estimateStore.deleteEstimate({ ids: [props.row.id] })
-  if (res.data) {
-    props.table?.refresh()
-    if (res.data.success) {
-      router.push('/admin/estimates')
+function removeEstimate(): void {
+  dialogStore.openDialog({
+    title: t('general.are_you_sure'),
+    message: t('estimates.confirm_delete'),
+    yesLabel: t('general.ok'),
+    noLabel: t('general.cancel'),
+    variant: 'danger',
+    hideNoButton: false,
+    size: 'lg',
+  }).then(async (res: boolean) => {
+    if (res) {
+      const response = await estimateStore.deleteEstimate({ ids: [props.row.id] })
+      if (response.data) {
+        props.table?.refresh()
+        if (response.data.success) {
+          router.push('/admin/estimates')
+        }
+        estimateStore.$patch((state) => {
+          state.selectedEstimates = []
+          state.selectAllField = false
+        })
+      }
     }
-    estimateStore.$patch((state) => {
-      state.selectedEstimates = []
-      state.selectAllField = false
-    })
-  }
+  })
 }
 
-async function convertToInvoice(): Promise<void> {
-  const confirmed = window.confirm(t('estimates.confirm_conversion'))
-  if (!confirmed) return
-
-  const res = await estimateStore.convertToInvoice(props.row.id)
-  if (res.data) {
-    router.push(`/admin/invoices/${res.data.data.id}/edit`)
-  }
+function convertToInvoice(): void {
+  dialogStore.openDialog({
+    title: t('general.are_you_sure'),
+    message: t('estimates.confirm_conversion'),
+    yesLabel: t('general.ok'),
+    noLabel: t('general.cancel'),
+    variant: 'primary',
+    hideNoButton: false,
+    size: 'lg',
+  }).then(async (res: boolean) => {
+    if (res) {
+      const response = await estimateStore.convertToInvoice(props.row.id)
+      if (response.data) {
+        router.push(`/admin/invoices/${response.data.data.id}/edit`)
+      }
+    }
+  })
 }
 
-async function onMarkAsSent(): Promise<void> {
-  const confirmed = window.confirm(t('estimates.confirm_mark_as_sent'))
-  if (!confirmed) return
-
-  await estimateStore.markAsSent({ id: props.row.id, status: 'SENT' })
-  props.table?.refresh()
+function onMarkAsSent(): void {
+  dialogStore.openDialog({
+    title: t('general.are_you_sure'),
+    message: t('estimates.confirm_mark_as_sent'),
+    yesLabel: t('general.ok'),
+    noLabel: t('general.cancel'),
+    variant: 'primary',
+    hideNoButton: false,
+    size: 'lg',
+  }).then(async (res: boolean) => {
+    if (res) {
+      await estimateStore.markAsSent({ id: props.row.id, status: 'SENT' })
+      props.table?.refresh()
+    }
+  })
 }
 
 function sendEstimate(): void {
-  const modalStore = (window as Record<string, unknown>).__modalStore as
-    | { openModal: (opts: Record<string, unknown>) => void }
-    | undefined
-  modalStore?.openModal({
+  modalStore.openModal({
     title: t('estimates.send_estimate'),
     componentName: 'SendEstimateModal',
     id: props.row.id,
@@ -225,20 +253,38 @@ function sendEstimate(): void {
   })
 }
 
-async function onMarkAsAccepted(): Promise<void> {
-  const confirmed = window.confirm(t('estimates.confirm_mark_as_accepted'))
-  if (!confirmed) return
-
-  await estimateStore.markAsAccepted({ id: props.row.id, status: 'ACCEPTED' })
-  props.table?.refresh()
+function onMarkAsAccepted(): void {
+  dialogStore.openDialog({
+    title: t('general.are_you_sure'),
+    message: t('estimates.confirm_mark_as_accepted'),
+    yesLabel: t('general.ok'),
+    noLabel: t('general.cancel'),
+    variant: 'primary',
+    hideNoButton: false,
+    size: 'lg',
+  }).then(async (res: boolean) => {
+    if (res) {
+      await estimateStore.markAsAccepted({ id: props.row.id, status: 'ACCEPTED' })
+      props.table?.refresh()
+    }
+  })
 }
 
-async function onMarkAsRejected(): Promise<void> {
-  const confirmed = window.confirm(t('estimates.confirm_mark_as_rejected'))
-  if (!confirmed) return
-
-  await estimateStore.markAsRejected({ id: props.row.id, status: 'REJECTED' })
-  props.table?.refresh()
+function onMarkAsRejected(): void {
+  dialogStore.openDialog({
+    title: t('general.are_you_sure'),
+    message: t('estimates.confirm_mark_as_rejected'),
+    yesLabel: t('general.ok'),
+    noLabel: t('general.cancel'),
+    variant: 'danger',
+    hideNoButton: false,
+    size: 'lg',
+  }).then(async (res: boolean) => {
+    if (res) {
+      await estimateStore.markAsRejected({ id: props.row.id, status: 'REJECTED' })
+      props.table?.refresh()
+    }
+  })
 }
 
 function copyPdfUrl(): void {
@@ -253,11 +299,20 @@ function copyPdfUrl(): void {
   })
 }
 
-async function cloneEstimateData(): Promise<void> {
-  const confirmed = window.confirm(t('estimates.confirm_clone'))
-  if (!confirmed) return
-
-  const res = await estimateStore.cloneEstimate({ id: props.row.id })
-  router.push(`/admin/estimates/${res.data.data.id}/edit`)
+function cloneEstimateData(): void {
+  dialogStore.openDialog({
+    title: t('general.are_you_sure'),
+    message: t('estimates.confirm_clone'),
+    yesLabel: t('general.ok'),
+    noLabel: t('general.cancel'),
+    variant: 'primary',
+    hideNoButton: false,
+    size: 'lg',
+  }).then(async (res: boolean) => {
+    if (res) {
+      const response = await estimateStore.cloneEstimate({ id: props.row.id })
+      router.push(`/admin/estimates/${response.data.data.id}/edit`)
+    }
+  })
 }
 </script>

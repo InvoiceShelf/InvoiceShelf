@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import useVuelidate from '@vuelidate/core'
 import { required, numeric, helpers } from '@vuelidate/validators'
 import { useModalStore } from '@v2/stores/modal.store'
+import { useNotificationStore } from '@v2/stores/notification.store'
 import { customFieldService } from '@v2/api/services/custom-field.service'
 import type { CreateCustomFieldPayload } from '@v2/api/services/custom-field.service'
 
@@ -32,6 +33,7 @@ interface CustomFieldForm {
 }
 
 const modalStore = useModalStore()
+const notificationStore = useNotificationStore()
 const { t } = useI18n()
 
 const isSaving = ref<boolean>(false)
@@ -178,6 +180,13 @@ async function submitCustomFieldData(): Promise<void> {
 
   isSaving.value = true
 
+  let defaultAnswer = currentCustomField.value.default_answer
+  // Handle Time type — convert object {HH, mm, ss} to 'HH:mm' string
+  if (currentCustomField.value.type === 'Time' && typeof defaultAnswer === 'object' && defaultAnswer !== null) {
+    const timeObj = defaultAnswer as Record<string, string>
+    defaultAnswer = `${timeObj.HH ?? '00'}:${timeObj.mm ?? '00'}`
+  }
+
   const payload: CreateCustomFieldPayload = {
     name: currentCustomField.value.name,
     label: currentCustomField.value.label,
@@ -189,13 +198,22 @@ async function submitCustomFieldData(): Promise<void> {
       ? currentCustomField.value.options.map((o) => o.name)
       : null,
     order: currentCustomField.value.order,
+    default_answer: defaultAnswer as string ?? null,
   }
 
   try {
     if (isEdit.value && currentCustomField.value.id) {
       await customFieldService.update(currentCustomField.value.id, payload)
+      notificationStore.showNotification({
+        type: 'success',
+        message: 'settings.custom_fields.updated_message',
+      })
     } else {
       await customFieldService.create(payload)
+      notificationStore.showNotification({
+        type: 'success',
+        message: 'settings.custom_fields.created_message',
+      })
     }
 
     isSaving.value = false
@@ -206,6 +224,17 @@ async function submitCustomFieldData(): Promise<void> {
   } catch {
     isSaving.value = false
   }
+}
+
+const newOptionValue = ref<string>('')
+
+function onAddOption(): void {
+  if (!newOptionValue.value?.trim()) return
+  currentCustomField.value.options = [
+    { name: newOptionValue.value.trim() },
+    ...currentCustomField.value.options,
+  ]
+  newOptionValue.value = ''
 }
 
 function addNewOption(option: string): void {
@@ -357,6 +386,22 @@ function closeCustomFieldModal(): void {
               v-if="isDropdownSelected"
               :label="$t('settings.custom_fields.options')"
             >
+              <!-- Add Option Input -->
+              <div class="flex items-center mt-1">
+                <BaseInput
+                  v-model="newOptionValue"
+                  type="text"
+                  class="w-full md:w-96"
+                  :placeholder="$t('settings.custom_fields.press_enter_to_add')"
+                  @keydown.enter.prevent.stop="onAddOption"
+                />
+                <BaseIcon
+                  name="PlusCircleIcon"
+                  class="ml-1 text-primary-500 cursor-pointer"
+                  @click="onAddOption"
+                />
+              </div>
+
               <div
                 v-for="(option, index) in currentCustomField.options"
                 :key="index"

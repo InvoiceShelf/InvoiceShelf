@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { required, minLength, helpers } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { useModalStore } from '@v2/stores/modal.store'
+import { useNotificationStore } from '@v2/stores/notification.store'
 import { paymentService } from '@v2/api/services/payment.service'
 
 interface PaymentModeForm {
@@ -12,6 +13,7 @@ interface PaymentModeForm {
 }
 
 const modalStore = useModalStore()
+const notificationStore = useNotificationStore()
 const { t } = useI18n()
 
 const isSaving = ref<boolean>(false)
@@ -63,9 +65,17 @@ async function submitPaymentMode(): Promise<void> {
       await paymentService.updateMethod(currentPaymentMode.value.id, {
         name: currentPaymentMode.value.name,
       })
+      notificationStore.showNotification({
+        type: 'success',
+        message: 'settings.payment_modes.updated_message',
+      })
     } else {
       await paymentService.createMethod({
         name: currentPaymentMode.value.name,
+      })
+      notificationStore.showNotification({
+        type: 'success',
+        message: 'settings.payment_modes.created_message',
       })
     }
 

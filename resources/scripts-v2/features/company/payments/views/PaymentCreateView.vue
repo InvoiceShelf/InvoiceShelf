@@ -78,9 +78,7 @@
               :content-loading="isLoadingContent"
               :placeholder="$t('customers.select_a_customer')"
               show-action
-              @update:model-value="
-                selectNewCustomer(paymentStore.currentPayment.customer_id)
-              "
+              @update:model-value="onManualCustomerSelect"
             />
           </BaseInputGroup>
 
@@ -177,10 +175,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onBeforeUnmount } from 'vue'
+import { ref, computed, watchEffect, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import cloneDeep from 'lodash/cloneDeep'
 import { usePaymentStore } from '../store'
+import { invoiceService } from '../../../../api/services/invoice.service'
 import type { Invoice } from '../../../../types/domain/invoice'
 
 const route = useRoute()
@@ -226,8 +226,89 @@ if (route.query.customer) {
 }
 
 paymentStore.fetchPaymentInitialData(isEdit.value, {
-  id: route.params.id as string | undefined,
+  id: isEdit.value ? (route.params.id as string) : undefined,
 })
+
+// Create-from-invoice: pre-select the invoice and its customer
+if (route.params.id && !isEdit.value) {
+  setInvoiceFromUrl()
+}
+
+async function setInvoiceFromUrl(): Promise<void> {
+  try {
+    const response = await invoiceService.get(Number(route.params.id))
+    const invoice = response.data
+    paymentStore.currentPayment.customer_id = invoice.customer_id ?? (invoice.customer as Record<string, unknown>)?.id as number
+    paymentStore.currentPayment.invoice_id = invoice.id
+  } catch {
+    // Invoice not found
+  }
+}
+
+// Reactively fetch invoices whenever customer_id changes
+// Handles: edit data load, manual selection, create-from-invoice
+watchEffect(() => {
+  if (paymentStore.currentPayment.customer_id) {
+    onCustomerChange(paymentStore.currentPayment.customer_id)
+  }
+})
+
+async function onCustomerChange(customerId: number): Promise<void> {
+  const params: Record<string, unknown> = {
+    customer_id: customerId,
+    status: isEdit.value ? '' : 'DUE',
+    limit: 'all',
+  }
+
+  isLoadingInvoices.value = true
+  try {
+    const response = await invoiceService.list(params as never)
+    invoiceList.value = [...(response.data as unknown as Invoice[])]
+
+    if (paymentStore.currentPayment.invoice_id) {
+      selectedInvoice.value =
+        invoiceList.value.find(
+          (inv) => inv.id === paymentStore.currentPayment.invoice_id,
+        ) ?? null
+
+      if (selectedInvoice.value) {
+        paymentStore.currentPayment.maxPayableAmount =
+          selectedInvoice.value.due_amount +
+          paymentStore.currentPayment.amount
+
+        if (amount.value === 0) {
+          amount.value = selectedInvoice.value.due_amount / 100
+        }
+      }
+    }
+
+    if (isEdit.value) {
+      invoiceList.value = invoiceList.value.filter(
+        (v) =>
+          v.due_amount > 0 ||
+          v.id === paymentStore.currentPayment.invoice_id,
+      )
+    }
+  } catch {
+    invoiceList.value = []
+  } finally {
+    isLoadingInvoices.value = false
+  }
+}
+
+function onManualCustomerSelect(): void {
+  const params: Record<string, unknown> = {
+    userId: paymentStore.currentPayment.customer_id,
+  }
+  if (route.params.id) {
+    params.model_id = route.params.id
+  }
+
+  paymentStore.currentPayment.invoice_id = null
+  selectedInvoice.value = null
+  paymentStore.currentPayment.amount = 0
+  paymentStore.getNextNumber(params, true)
+}
 
 function onSelectInvoice(id: number): void {
   if (id) {
@@ -241,26 +322,11 @@ function onSelectInvoice(id: number): void {
   }
 }
 
-function selectNewCustomer(id: number | null): void {
-  if (!id) return
-
-  const params: Record<string, unknown> = { userId: id }
-  if (route.params.id) {
-    params.model_id = route.params.id
-  }
-
-  paymentStore.currentPayment.invoice_id = null
-  selectedInvoice.value = null
-  paymentStore.currentPayment.amount = 0
-  invoiceList.value = []
-  paymentStore.getNextNumber(params, true)
-}
-
 async function submitPaymentData(): Promise<void> {
   isSaving.value = true
 
   const data = {
-    ...paymentStore.currentPayment,
+    ...cloneDeep(paymentStore.currentPayment),
   }
 
   try {

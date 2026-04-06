@@ -37,7 +37,7 @@ interface FetchResult {
 interface MemberFilters {
   name: string
   email: string
-  phone: string
+  role: string
 }
 
 const notificationStore = useNotificationStore()
@@ -54,7 +54,7 @@ const { t } = useI18n()
 const filters = reactive<MemberFilters>({
   name: '',
   email: '',
-  phone: '',
+  role: '',
 })
 
 const userTableColumns = computed<TableColumn[]>(() => [
@@ -75,10 +75,6 @@ const userTableColumns = computed<TableColumn[]>(() => [
     key: 'role',
     label: t('members.role'),
     sortable: false,
-  },
-  {
-    key: 'phone',
-    label: t('members.phone'),
   },
   {
     key: 'created_at',
@@ -136,8 +132,8 @@ function refreshTable(): void {
 async function fetchData({ page, sort }: FetchParams): Promise<FetchResult> {
   const data = {
     display_name: filters.name,
-    phone: filters.phone,
     email: filters.email,
+    role: filters.role || undefined,
     orderByField: sort.fieldName || 'created_at',
     orderBy: sort.order || 'desc',
     page,
@@ -161,7 +157,7 @@ async function fetchData({ page, sort }: FetchParams): Promise<FetchResult> {
 function clearFilter(): void {
   filters.name = ''
   filters.email = ''
-  filters.phone = ''
+  filters.role = ''
 }
 
 function toggleFilter(): void {
@@ -261,12 +257,16 @@ function removeMultipleUsers(): void {
         />
       </BaseInputGroup>
 
-      <BaseInputGroup class="flex-1 mt-2" :label="$t('members.phone')">
-        <BaseInput
-          v-model="filters.phone"
-          type="text"
-          name="phone"
-          autocomplete="off"
+      <BaseInputGroup class="flex-1 mt-2" :label="$t('members.role')">
+        <BaseMultiselect
+          v-model="filters.role"
+          :options="memberStore.roles"
+          label="title"
+          value-prop="id"
+          :placeholder="$t('members.select_role')"
+          :can-clear="true"
+          :can-deselect="true"
+          searchable
         />
       </BaseInputGroup>
     </BaseFilterWrapper>
@@ -339,10 +339,6 @@ function removeMultipleUsers(): void {
 
         <template #cell-role="{ row }">
           <span>{{ row.data.roles?.length ? row.data.roles[0].title : '-' }}</span>
-        </template>
-
-        <template #cell-phone="{ row }">
-          <span>{{ row.data.phone ? row.data.phone : '-' }}</span>
         </template>
 
         <template #cell-created_at="{ row }">

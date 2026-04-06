@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import { useDialogStore } from '@v2/stores/dialog.store'
 import { useUserStore } from '@v2/stores/user.store'
 import { useModalStore } from '@v2/stores/modal.store'
+import { useNotificationStore } from '@v2/stores/notification.store'
 import { expenseService } from '@v2/api/services/expense.service'
 
 const ABILITIES = {
@@ -24,6 +25,7 @@ const props = defineProps<{
 }>()
 
 const dialogStore = useDialogStore()
+const notificationStore = useNotificationStore()
 const { t } = useI18n()
 const route = useRoute()
 const userStore = useUserStore()
@@ -54,6 +56,10 @@ function removeExpenseCategory(id: number): void {
       if (res) {
         const response = await expenseService.deleteCategory(id)
         if (response.success) {
+          notificationStore.showNotification({
+            type: 'success',
+            message: 'settings.expense_category.deleted_message',
+          })
           props.loadData?.()
         }
       }
@@ -65,7 +71,7 @@ function removeExpenseCategory(id: number): void {
   <BaseDropdown>
     <template #activator>
       <BaseButton
-        v-if="route.name === 'expenseCategorys.view'"
+        v-if="route.name === 'settings.expense-categories'"
         variant="primary"
       >
         <BaseIcon name="EllipsisHorizontalIcon" class="h-5 text-white" />

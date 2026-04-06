@@ -65,7 +65,7 @@
     <!-- Record Payment -->
     <router-link :to="`/admin/payments/${row.id}/create`">
       <BaseDropdownItem
-        v-if="row.status === 'SENT' && !isDetailView"
+        v-if="row.status === 'SENT' && !isDetailView && canCreatePayment"
       >
         <BaseIcon
           name="CreditCardIcon"
@@ -109,6 +109,8 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { useInvoiceStore } from '../store'
+import { useDialogStore } from '../../../../stores/dialog.store'
+import { useModalStore } from '../../../../stores/modal.store'
 import type { Invoice } from '../../../../types/domain/invoice'
 
 interface TableRef {
@@ -124,6 +126,7 @@ interface Props {
   canCreate?: boolean
   canDelete?: boolean
   canSend?: boolean
+  canCreatePayment?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -134,9 +137,12 @@ const props = withDefaults(defineProps<Props>(), {
   canCreate: false,
   canDelete: false,
   canSend: false,
+  canCreatePayment: false,
 })
 
 const invoiceStore = useInvoiceStore()
+const dialogStore = useDialogStore()
+const modalStore = useModalStore()
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
@@ -158,43 +164,66 @@ const canSendInvoice = computed<boolean>(() => {
   )
 })
 
-async function removeInvoice(): Promise<void> {
-  // In v2, use a dialog composable or store
-  const confirmed = window.confirm(t('invoices.confirm_delete'))
-  if (!confirmed) return
-
-  const res = await invoiceStore.deleteInvoice({ ids: [props.row.id] })
-  if (res.data.success) {
-    router.push('/admin/invoices')
-    props.table?.refresh()
-    invoiceStore.$patch((state) => {
-      state.selectedInvoices = []
-      state.selectAllField = false
-    })
-  }
+function removeInvoice(): void {
+  dialogStore.openDialog({
+    title: t('general.are_you_sure'),
+    message: t('invoices.confirm_delete'),
+    yesLabel: t('general.ok'),
+    noLabel: t('general.cancel'),
+    variant: 'danger',
+    hideNoButton: false,
+    size: 'lg',
+  }).then(async (res: boolean) => {
+    if (res) {
+      const response = await invoiceStore.deleteInvoice({ ids: [props.row.id] })
+      if (response.data.success) {
+        router.push('/admin/invoices')
+        props.table?.refresh()
+        invoiceStore.$patch((state) => {
+          state.selectedInvoices = []
+          state.selectAllField = false
+        })
+      }
+    }
+  })
 }
 
-async function cloneInvoiceData(): Promise<void> {
-  const confirmed = window.confirm(t('invoices.confirm_clone'))
-  if (!confirmed) return
-
-  const res = await invoiceStore.cloneInvoice({ id: props.row.id })
-  router.push(`/admin/invoices/${res.data.data.id}/edit`)
+function cloneInvoiceData(): void {
+  dialogStore.openDialog({
+    title: t('general.are_you_sure'),
+    message: t('invoices.confirm_clone'),
+    yesLabel: t('general.ok'),
+    noLabel: t('general.cancel'),
+    variant: 'primary',
+    hideNoButton: false,
+    size: 'lg',
+  }).then(async (res: boolean) => {
+    if (res) {
+      const response = await invoiceStore.cloneInvoice({ id: props.row.id })
+      router.push(`/admin/invoices/${response.data.data.id}/edit`)
+    }
+  })
 }
 
-async function onMarkAsSent(): Promise<void> {
-  const confirmed = window.confirm(t('invoices.invoice_mark_as_sent'))
-  if (!confirmed) return
-
-  await invoiceStore.markAsSent({ id: props.row.id, status: 'SENT' })
-  props.table?.refresh()
+function onMarkAsSent(): void {
+  dialogStore.openDialog({
+    title: t('general.are_you_sure'),
+    message: t('invoices.invoice_mark_as_sent'),
+    yesLabel: t('general.ok'),
+    noLabel: t('general.cancel'),
+    variant: 'primary',
+    hideNoButton: false,
+    size: 'lg',
+  }).then(async (res: boolean) => {
+    if (res) {
+      await invoiceStore.markAsSent({ id: props.row.id, status: 'SENT' })
+      props.table?.refresh()
+    }
+  })
 }
 
 function sendInvoice(): void {
-  const modalStore = (window as Record<string, unknown>).__modalStore as
-    | { openModal: (opts: Record<string, unknown>) => void }
-    | undefined
-  modalStore?.openModal({
+  modalStore.openModal({
     title: t('invoices.send_invoice'),
     componentName: 'SendInvoiceModal',
     id: props.row.id,
