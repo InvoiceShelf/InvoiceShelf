@@ -27,8 +27,18 @@ class MigrateMediaToPrivateDisk extends Command
         $prefix = env('DYNAMIC_DISK_PREFIX', 'temp_');
         $targetDiskName = $prefix.$targetDisk->driver;
 
-        $targetDisk->setConfig();
-        $targetRoot = config('filesystems.disks.'.$targetDiskName.'.root');
+        // Register disk config without mutating filesystems.default
+        $credentials = collect(json_decode($targetDisk->credentials));
+        $baseConfig = config('filesystems.disks.'.$targetDisk->driver, []);
+
+        foreach ($baseConfig as $key => $value) {
+            if ($credentials->has($key)) {
+                $baseConfig[$key] = $credentials[$key];
+            }
+        }
+
+        config(['filesystems.disks.'.$targetDiskName => $baseConfig]);
+        $targetRoot = $baseConfig['root'] ?? null;
 
         if (! $targetRoot) {
             $this->error('Could not resolve target disk root path.');

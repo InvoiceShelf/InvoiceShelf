@@ -2,8 +2,6 @@
 
 namespace App\Providers;
 
-use App\Models\FileDisk;
-use App\Models\Setting;
 use App\Policies\CompanyPolicy;
 use App\Policies\CustomerPolicy;
 use App\Policies\DashboardPolicy;
@@ -59,7 +57,6 @@ class AppServiceProvider extends ServiceProvider
 
         if (InstallUtils::isDbCreated()) {
             $this->addMenus();
-            $this->configureMediaDisk();
         }
 
         Gate::policy(Role::class, RolePolicy::class);
@@ -168,42 +165,5 @@ class AppServiceProvider extends ServiceProvider
     public function bootBroadcast()
     {
         Broadcast::routes(['middleware' => 'api.auth']);
-    }
-
-    /**
-     * Configure Spatie Media Library to use the FileDisk system.
-     *
-     * Resolves the media disk from the `media_disk_id` setting,
-     * falling back to the default FileDisk. This ensures media
-     * uploads go to a private disk by default.
-     */
-    private function configureMediaDisk(): void
-    {
-        try {
-            $mediaDiskId = Setting::getSetting('media_disk_id');
-            $disk = $mediaDiskId
-                ? FileDisk::find($mediaDiskId)
-                : FileDisk::where('set_as_default', true)->first();
-
-            if ($disk) {
-                // Register the disk config without changing the global default.
-                // setConfig() mutates filesystems.default which causes side effects.
-                $prefix = env('DYNAMIC_DISK_PREFIX', 'temp_');
-                $diskName = $prefix.$disk->driver;
-                $credentials = collect(json_decode($disk->credentials));
-                $baseConfig = config('filesystems.disks.'.$disk->driver, []);
-
-                foreach ($baseConfig as $key => $value) {
-                    if ($credentials->has($key)) {
-                        $baseConfig[$key] = $credentials[$key];
-                    }
-                }
-
-                config(['filesystems.disks.'.$diskName => $baseConfig]);
-                config(['media-library.disk_name' => $diskName]);
-            }
-        } catch (\Exception $e) {
-            // DB not yet migrated or settings table missing — use config default
-        }
     }
 }

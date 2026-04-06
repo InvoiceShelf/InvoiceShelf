@@ -163,15 +163,30 @@ class AppConfigProvider extends ServiceProvider
     protected function configureFileSystemFromDatabase(): void
     {
         try {
-            // Get the default file disk from database
+            // Register the default file disk config without changing filesystems.default.
+            // Calling setConfig() mutates the global default which causes side effects
+            // on pages that make multiple API requests (e.g., File Disk admin page).
             $fileDisk = FileDisk::whereSetAsDefault(true)->first();
 
             if ($fileDisk) {
-                $fileDisk->setConfig();
+                $prefix = env('DYNAMIC_DISK_PREFIX', 'temp_');
+                $diskName = $prefix.$fileDisk->driver;
+                $credentials = collect(json_decode($fileDisk->credentials));
+                $baseConfig = config('filesystems.disks.'.$fileDisk->driver, []);
+
+                foreach ($baseConfig as $key => $value) {
+                    if ($credentials->has($key)) {
+                        $baseConfig[$key] = $credentials[$key];
+                    }
+                }
+
+                config(['filesystems.disks.'.$diskName => $baseConfig]);
+
+                // Point Spatie Media Library at the same disk
+                config(['media-library.disk_name' => $diskName]);
             }
         } catch (\Exception $e) {
             // Silently fail if database is not available (during installation, migrations, etc.)
-            // This prevents the application from breaking during setup
         }
     }
 }
