@@ -11,6 +11,7 @@ const AdminMailConfigView = () => import('./views/settings/AdminMailConfigView.v
 const AdminPdfGenerationView = () => import('./views/settings/AdminPdfGenerationView.vue')
 const AdminBackupView = () => import('./views/settings/AdminBackupView.vue')
 const AdminFileDiskView = () => import('./views/settings/AdminFileDiskView.vue')
+const AdminFontView = () => import('./views/settings/AdminFontView.vue')
 const AdminUpdateAppView = () => import('./views/settings/AdminUpdateAppView.vue')
 
 export const adminRoutes: RouteRecordRaw[] = [
@@ -106,6 +107,14 @@ export const adminRoutes: RouteRecordRaw[] = [
               isSuperAdmin: true,
             },
             component: AdminFileDiskView,
+          },
+          {
+            path: 'fonts',
+            name: 'admin.settings.fonts',
+            meta: {
+              isSuperAdmin: true,
+            },
+            component: AdminFontView,
           },
           {
             path: 'update-app',

@@ -89,6 +89,11 @@ const menuItems = computed<SettingsMenuItem[]>(() => [
     icon: 'FolderIcon',
   },
   {
+    title: t('settings.menu_title.fonts'),
+    link: '/admin/administration/settings/fonts',
+    icon: 'LanguageIcon',
+  },
+  {
     title: t('settings.menu_title.update_app'),
     link: '/admin/administration/settings/update-app',
     icon: 'ArrowPathIcon',
