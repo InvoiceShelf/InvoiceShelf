@@ -164,6 +164,7 @@
 <script setup>
 import { ref, computed, onMounted, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { deburr } from 'lodash'
 import { required, maxLength, helpers } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { useGlobalStore } from '@/scripts/admin/stores/global'
@@ -180,6 +181,7 @@ let logoFileName = ref(null)
 
 const companyForm = reactive({
   name: null,
+  slug: null,
   tax_id: null,
   vat_id: null,
   address: {
@@ -251,6 +253,18 @@ async function next() {
   }
 
   isSaving.value = true
+  
+  // Generate slug from company name (imitate Laravel's Str::slug)
+  if (companyForm.name) {
+    companyForm.slug = deburr(companyForm.name)    // Remove accents etc.
+      .toLowerCase()
+      .trim()
+      .replace(/_/g, '-')                           
+      .replace(/[^a-z0-9\s-]/g, '')                  // Remove all non-alphanumeric chars
+      .replace(/[\s-]+/g, '-')
+      .replace(/^-+|-+$/g, '')                       // Trim dashes
+  }
+  
   let res = companyStore.updateCompany(companyForm)
   if (res) {
     if (logoFileBlob.value) {
