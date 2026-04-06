@@ -54,7 +54,7 @@
     </BaseDropdownItem>
 
     <!-- Resend Invoice -->
-    <BaseDropdownItem v-if="canReSendInvoice" @click="sendInvoice">
+    <BaseDropdownItem v-if="canReSendInvoice && !isDetailView" @click="sendInvoice">
       <BaseIcon
         name="PaperAirplaneIcon"
         class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
@@ -76,7 +76,7 @@
     </router-link>
 
     <!-- Mark as Sent -->
-    <BaseDropdownItem v-if="canSendInvoice" @click="onMarkAsSent">
+    <BaseDropdownItem v-if="row.status === 'DRAFT' && !isDetailView && canSend" @click="onMarkAsSent">
       <BaseIcon
         name="CheckCircleIcon"
         class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
@@ -91,6 +91,15 @@
         class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
       />
       {{ $t('invoices.clone_invoice') }}
+    </BaseDropdownItem>
+
+    <!-- Convert to Estimate -->
+    <BaseDropdownItem v-if="canCreateEstimate" @click="convertToEstimate">
+      <BaseIcon
+        name="DocumentIcon"
+        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+      />
+      {{ $t('invoices.convert_to_estimate') }}
     </BaseDropdownItem>
 
     <!-- Delete Invoice -->
@@ -111,6 +120,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useInvoiceStore } from '../store'
 import { useDialogStore } from '../../../../stores/dialog.store'
 import { useModalStore } from '../../../../stores/modal.store'
+import { useNotificationStore } from '../../../../stores/notification.store'
 import type { Invoice } from '../../../../types/domain/invoice'
 
 interface TableRef {
@@ -127,6 +137,7 @@ interface Props {
   canDelete?: boolean
   canSend?: boolean
   canCreatePayment?: boolean
+  canCreateEstimate?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -138,11 +149,13 @@ const props = withDefaults(defineProps<Props>(), {
   canDelete: false,
   canSend: false,
   canCreatePayment: false,
+  canCreateEstimate: false,
 })
 
 const invoiceStore = useInvoiceStore()
 const dialogStore = useDialogStore()
 const modalStore = useModalStore()
+const notificationStore = useNotificationStore()
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
@@ -205,6 +218,23 @@ function cloneInvoiceData(): void {
   })
 }
 
+function convertToEstimate(): void {
+  dialogStore.openDialog({
+    title: t('general.are_you_sure'),
+    message: t('invoices.confirm_convert_to_estimate'),
+    yesLabel: t('general.ok'),
+    noLabel: t('general.cancel'),
+    variant: 'primary',
+    hideNoButton: false,
+    size: 'lg',
+  }).then(async (res: boolean) => {
+    if (res) {
+      const response = await invoiceStore.convertToEstimate({ id: props.row.id })
+      router.push(`/admin/estimates/${response.data.data.id}/edit`)
+    }
+  })
+}
+
 function onMarkAsSent(): void {
   dialogStore.openDialog({
     title: t('general.are_you_sure'),
@@ -234,14 +264,26 @@ function sendInvoice(): void {
 
 function copyPdfUrl(): void {
   const pdfUrl = `${window.location.origin}/invoices/pdf/${props.row.unique_hash}`
-  navigator.clipboard.writeText(pdfUrl).catch(() => {
-    // Fallback
-    const textarea = document.createElement('textarea')
-    textarea.value = pdfUrl
-    document.body.appendChild(textarea)
-    textarea.select()
-    document.execCommand('copy')
-    document.body.removeChild(textarea)
+  copyToClipboard(pdfUrl)
+  notificationStore.showNotification({
+    type: 'success',
+    message: t('general.copied_pdf_url_clipboard'),
   })
+}
+
+function copyToClipboard(text: string): void {
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text)
+    return
+  }
+  const textarea = document.createElement('textarea')
+  textarea.value = text
+  textarea.style.position = 'fixed'
+  textarea.style.opacity = '0'
+  document.body.appendChild(textarea)
+  textarea.focus()
+  textarea.select()
+  document.execCommand('copy')
+  document.body.removeChild(textarea)
 }
 </script>

@@ -63,7 +63,7 @@
     </BaseDropdownItem>
 
     <!-- Convert into Invoice -->
-    <BaseDropdownItem v-if="canCreateInvoice" @click="convertToInvoice">
+    <BaseDropdownItem v-if="canCreateInvoice && row.status !== 'REJECTED'" @click="convertToInvoice">
       <BaseIcon
         name="DocumentTextIcon"
         class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
@@ -106,7 +106,7 @@
 
     <!-- Mark as Accepted -->
     <BaseDropdownItem
-      v-if="row.status !== 'ACCEPTED' && canEdit"
+      v-if="row.status !== 'ACCEPTED' && row.status !== 'REJECTED' && canEdit"
       @click="onMarkAsAccepted"
     >
       <BaseIcon
@@ -118,7 +118,7 @@
 
     <!-- Mark as Rejected -->
     <BaseDropdownItem
-      v-if="row.status !== 'REJECTED' && canEdit"
+      v-if="row.status !== 'REJECTED' && row.status !== 'ACCEPTED' && canEdit"
       @click="onMarkAsRejected"
     >
       <BaseIcon
@@ -137,6 +137,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useEstimateStore } from '../store'
 import { useDialogStore } from '../../../../stores/dialog.store'
 import { useModalStore } from '../../../../stores/modal.store'
+import { useNotificationStore } from '../../../../stores/notification.store'
 import type { Estimate } from '../../../../types/domain/estimate'
 
 interface TableRef {
@@ -167,6 +168,7 @@ const props = withDefaults(defineProps<Props>(), {
 const estimateStore = useEstimateStore()
 const dialogStore = useDialogStore()
 const modalStore = useModalStore()
+const notificationStore = useNotificationStore()
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
@@ -289,14 +291,27 @@ function onMarkAsRejected(): void {
 
 function copyPdfUrl(): void {
   const pdfUrl = `${window.location.origin}/estimates/pdf/${props.row.unique_hash}`
-  navigator.clipboard.writeText(pdfUrl).catch(() => {
-    const textarea = document.createElement('textarea')
-    textarea.value = pdfUrl
-    document.body.appendChild(textarea)
-    textarea.select()
-    document.execCommand('copy')
-    document.body.removeChild(textarea)
+  copyToClipboard(pdfUrl)
+  notificationStore.showNotification({
+    type: 'success',
+    message: t('general.copied_pdf_url_clipboard'),
   })
+}
+
+function copyToClipboard(text: string): void {
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text)
+    return
+  }
+  const textarea = document.createElement('textarea')
+  textarea.value = text
+  textarea.style.position = 'fixed'
+  textarea.style.opacity = '0'
+  document.body.appendChild(textarea)
+  textarea.focus()
+  textarea.select()
+  document.execCommand('copy')
+  document.body.removeChild(textarea)
 }
 
 function cloneEstimateData(): void {
