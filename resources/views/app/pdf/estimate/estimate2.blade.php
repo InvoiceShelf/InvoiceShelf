@@ -4,10 +4,11 @@
 <head>
     <title>@lang('pdf_estimate_label') - {{ $estimate->estimate_number }}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+@include("app.pdf.partials.fonts")
+
     <style type="text/css">
         /* -- Base -- */
         body {
-            font-family: "DejaVu Sans";
         }
 
         html {
@@ -77,7 +78,6 @@
             font-size: 24px;
             line-height: 36px;
             text-align: right;
-            font-family: "DejaVu Sans";
         }
 
         .estimate-details-container h4 {
@@ -409,9 +409,6 @@
 
     </style>
 
-    @if (App::isLocale('th'))
-        @include('app.pdf.locale.th')
-    @endif
 </head>
 
 <body>

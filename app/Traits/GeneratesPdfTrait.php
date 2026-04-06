@@ -6,6 +6,7 @@ use App\Models\Address;
 use App\Models\CompanySetting;
 use App\Models\FileDisk;
 use App\Models\Setting;
+use App\Services\FontService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 
@@ -24,6 +25,7 @@ trait GeneratesPdfTrait
         $locale = CompanySetting::getSetting('language', $this->company_id);
 
         App::setLocale($locale);
+        app(FontService::class)->ensureFontsForLocale($locale);
 
         $pdf = $this->getPDFData();
 
@@ -78,6 +80,7 @@ trait GeneratesPdfTrait
         $locale = CompanySetting::getSetting('language', $this->company_id);
 
         App::setLocale($locale);
+        app(FontService::class)->ensureFontsForLocale($locale);
 
         $pdf = $this->getPDFData();
 

@@ -3,9 +3,10 @@
 
 <head>
     <title>@lang('pdf_expense_report_label')</title>
+@include("app.pdf.partials.fonts")
+
     <style type="text/css">
         body {
-            font-family: "DejaVu Sans";
         }
 
         table {
@@ -135,9 +136,6 @@
         }
     </style>
 
-    @if (App::isLocale('th'))
-    @include('app.pdf.locale.th')
-    @endif
 </head>
 
 <body>

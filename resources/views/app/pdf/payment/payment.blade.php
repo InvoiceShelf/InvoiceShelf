@@ -5,10 +5,11 @@
     <title>@lang('pdf_payment_label') - {{ $payment->payment_number }}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
+@include("app.pdf.partials.fonts")
+
     <style type="text/css">
         /* -- Base -- */
         body {
-            font-family: "DejaVu Sans";
         }
 
         html {
@@ -277,9 +278,6 @@
 
     </style>
 
-    @if (App::isLocale('th'))
-        @include('app.pdf.locale.th')
-    @endif
 </head>
 
 <body>

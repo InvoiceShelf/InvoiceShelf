@@ -122,6 +122,10 @@ export const API = {
   BACKUPS: '/api/v1/backups',
   DOWNLOAD_BACKUP: '/api/v1/download-backup',
 
+  // Fonts
+  FONTS_STATUS: '/api/v1/fonts/status',
+  FONTS_INSTALL: '/api/v1/fonts',
+
   // Exchange Rates & Currencies
   CURRENCIES: '/api/v1/currencies',
   CURRENCIES_USED: '/api/v1/currencies/used',

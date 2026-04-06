@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\BackupsController;
 use App\Http\Controllers\Admin\CompaniesController;
 use App\Http\Controllers\Admin\CountriesController;
 use App\Http\Controllers\Admin\CurrenciesController;
+use App\Http\Controllers\Admin\FontController;
 use App\Http\Controllers\Admin\Modules\ModuleInstallationController;
 use App\Http\Controllers\Admin\Modules\ModulesController;
 use App\Http\Controllers\Admin\Settings\DiskController;
@@ -348,6 +349,12 @@ Route::prefix('/v1')->group(function () {
             Route::get('/disk/drivers', [DiskController::class, 'getDiskDrivers']);
             Route::get('/disk/purposes', [DiskController::class, 'getDiskPurposes']);
             Route::put('/disk/purposes', [DiskController::class, 'updateDiskPurposes']);
+
+            // Fonts
+            // ----------------------------------
+
+            Route::get('/fonts/status', [FontController::class, 'status']);
+            Route::post('/fonts/{package}/install', [FontController::class, 'install']);
 
             // Exchange Rate
             // ----------------------------------

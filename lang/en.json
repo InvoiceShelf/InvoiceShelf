@@ -889,6 +889,7 @@
       "update_app": "Update App",
       "backup": "Backup",
       "file_disk": "File Disk",
+      "fonts": "Fonts",
       "custom_fields": "Custom Fields",
       "payment_modes": "Payment Modes",
       "notes": "Record Notes",
@@ -1349,6 +1350,18 @@
         "november_october": "November - October",
         "december_november": "December - November"
       }
+    },
+    "fonts": {
+      "title": "PDF Fonts",
+      "description": "Manage fonts used for PDF generation. Noto Sans is bundled and covers most languages. Additional font packages can be installed for CJK languages.",
+      "bundled_info": "Noto Sans (bundled) covers Latin, Cyrillic, Greek, Arabic, Thai, Hindi, and most other scripts. Install additional packages below for CJK language support.",
+      "installed": "Installed",
+      "install": "Install",
+      "downloading": "Downloading...",
+      "download_started": "Downloading {name}. This may take a moment.",
+      "download_complete": "{name} installed successfully. PDFs will now use this font.",
+      "download_failed": "Failed to download {name}. Please try again.",
+      "no_packages": "No additional font packages available."
     },
     "update_app": {
       "title": "Update App",
