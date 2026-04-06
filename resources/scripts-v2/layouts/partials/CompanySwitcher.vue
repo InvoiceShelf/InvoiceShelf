@@ -109,6 +109,9 @@
                   </span>
                   <div class="flex flex-col">
                     <span class="text-sm">{{ company.name }}</span>
+                    <span v-if="company.user_role" class="text-xs text-subtle">
+                      {{ company.user_role }}
+                    </span>
                   </div>
                 </div>
               </div>

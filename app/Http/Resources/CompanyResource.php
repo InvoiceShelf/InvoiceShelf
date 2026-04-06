@@ -4,6 +4,8 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CompanyResource extends JsonResource
 {
@@ -33,6 +35,23 @@ class CompanyResource extends JsonResource
                 return new UserResource($this->owner);
             }),
             'roles' => RoleResource::collection($this->roles),
+            'user_role' => $this->getUserRoleTitle(),
         ];
+    }
+
+    private function getUserRoleTitle(): ?string
+    {
+        $user = Auth::user();
+
+        if (! $user) {
+            return null;
+        }
+
+        return DB::table('assigned_roles')
+            ->join('roles', 'roles.id', '=', 'assigned_roles.role_id')
+            ->where('assigned_roles.entity_id', $user->id)
+            ->where('assigned_roles.entity_type', get_class($user))
+            ->where('assigned_roles.scope', $this->id)
+            ->value('roles.title');
     }
 }

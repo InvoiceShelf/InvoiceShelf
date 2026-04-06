@@ -17,6 +17,7 @@ export interface Company {
   address?: Address
   owner?: User
   roles: Role[]
+  user_role?: string | null
 }
 
 export interface CompanySetting {
