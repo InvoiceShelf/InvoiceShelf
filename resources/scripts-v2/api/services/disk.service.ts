@@ -34,6 +34,12 @@ export interface CreateDiskPayload {
   set_as_default?: boolean
 }
 
+export interface DiskPurposes {
+  media_disk_id: number | null
+  pdf_disk_id: number | null
+  backup_disk_id: number | null
+}
+
 export const diskService = {
   async list(params?: ListParams): Promise<PaginatedResponse<Disk>> {
     const { data } = await client.get(API.DISKS, { params })
@@ -65,6 +71,16 @@ export const diskService = {
 
   async getDrivers(): Promise<DiskDriversResponse> {
     const { data } = await client.get(API.DISK_DRIVERS)
+    return data
+  },
+
+  async getDiskPurposes(): Promise<DiskPurposes> {
+    const { data } = await client.get(API.DISK_PURPOSES)
+    return data
+  },
+
+  async updateDiskPurposes(payload: Partial<DiskPurposes>): Promise<{ success: boolean }> {
+    const { data } = await client.put(API.DISK_PURPOSES, payload)
     return data
   },
 }

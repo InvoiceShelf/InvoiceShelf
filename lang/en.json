@@ -1461,7 +1461,18 @@
       "deleted_message": "File Disk deleted successfully",
       "disk_variables_save_successfully": "Disk Configured Successfully",
       "disk_variables_save_error": "Disk configuration failed.",
-      "invalid_disk_credentials": "Invalid credential of selected disk"
+      "invalid_disk_credentials": "Invalid credential of selected disk",
+      "disk_assignments": "Disk Assignments",
+      "disk_assignments_description": "Configure which disk is used for different types of file storage.",
+      "media_storage": "Media Storage",
+      "media_storage_description": "Used for expense receipts, avatars, and company logos.",
+      "pdf_storage": "PDF Storage",
+      "pdf_storage_description": "Used for generated invoice, estimate, and payment PDFs.",
+      "backup_storage": "Backup Storage",
+      "backup_storage_description": "Used for application backups.",
+      "purposes_saved": "Disk assignments saved successfully",
+      "local_root_hint": "Path is relative to storage/app/. For example, entering \"backups\" will store files in storage/app/backups/.",
+      "change_disk_warning": "Changing disk assignments will only affect new uploads. Existing files will remain on their original disk and will continue to be accessible. If you need to move existing files, use the command: php artisan media:secure"
     },
     "taxations": {
       "add_billing_address": "Enter Billing Address",

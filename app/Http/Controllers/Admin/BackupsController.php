@@ -4,61 +4,47 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\CreateBackupJob;
-use App\Models\FileDisk;
 use App\Rules\Backup\PathToZip;
+use App\Services\Backup\BackupService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Cache;
 use Spatie\Backup\BackupDestination\Backup;
-use Spatie\Backup\BackupDestination\BackupDestination;
 use Spatie\Backup\Helpers\Format;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class BackupsController extends Controller
 {
+    public function __construct(
+        private readonly BackupService $backupService,
+    ) {}
+
     public function index(Request $request): JsonResponse
     {
         $this->authorize('manage backups');
 
-        $configuredBackupDisks = config('backup.backup.destination.disks');
-
         try {
-            if ($request->file_disk_id) {
-                $fileDisk = FileDisk::find($request->file_disk_id);
-                if ($fileDisk) {
-                    $fileDisk->setConfig();
-                    $prefix = env('DYNAMIC_DISK_PREFIX', 'temp_');
-                    config(['backup.backup.destination.disks' => [$prefix.$fileDisk->driver]]);
-                    $configuredBackupDisks = config('backup.backup.destination.disks');
-                }
-            }
+            $destination = $this->backupService->getDestination($request->file_disk_id);
 
-            $backupDestination = BackupDestination::create(config('filesystems.default'), config('backup.backup.name'));
-
-            $backups = Cache::remember("backups-{$request->file_disk_id}", now()->addSeconds(4), function () use ($backupDestination) {
-                return $backupDestination
-                    ->backups()
-                    ->map(function (Backup $backup) {
-                        return [
-                            'path' => $backup->path(),
-                            'created_at' => $backup->date()->format('Y-m-d H:i:s'),
-                            'size' => Format::humanReadableSize($backup->sizeInBytes()),
-                        ];
-                    })
-                    ->toArray();
-            });
+            $backups = $destination
+                ->backups()
+                ->map(function (Backup $backup) {
+                    return [
+                        'path' => $backup->path(),
+                        'created_at' => $backup->date()->format('Y-m-d H:i:s'),
+                        'size' => Format::humanReadableSize($backup->sizeInBytes()),
+                    ];
+                })
+                ->toArray();
 
             return response()->json([
                 'backups' => $backups,
-                'disks' => $configuredBackupDisks,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'backups' => [],
                 'error' => 'invalid_disk_credentials',
                 'error_message' => $e->getMessage(),
-                'disks' => $configuredBackupDisks,
             ]);
         }
     }
@@ -82,9 +68,9 @@ class BackupsController extends Controller
             'path' => ['required', new PathToZip],
         ]);
 
-        $backupDestination = BackupDestination::create(config('filesystems.default'), config('backup.backup.name'));
+        $destination = $this->backupService->getDestination($request->file_disk_id);
 
-        $backupDestination
+        $destination
             ->backups()
             ->first(function (Backup $backup) use ($validated) {
                 return $backup->path() === $validated['path'];
@@ -102,9 +88,9 @@ class BackupsController extends Controller
             'path' => ['required', new PathToZip],
         ]);
 
-        $backupDestination = BackupDestination::create(config('filesystems.default'), config('backup.backup.name'));
+        $destination = $this->backupService->getDestination($request->file_disk_id);
 
-        $backup = $backupDestination->backups()->first(function (Backup $backup) use ($validated) {
+        $backup = $destination->backups()->first(function (Backup $backup) use ($validated) {
             return $backup->path() === $validated['path'];
         });
 

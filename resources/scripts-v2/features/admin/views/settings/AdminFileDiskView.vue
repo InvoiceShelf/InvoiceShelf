@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import type { DiskPurposes } from '@v2/api/services/disk.service'
 import { useI18n } from 'vue-i18n'
 import { useModalStore } from '@v2/stores/modal.store'
 import { useDialogStore } from '@v2/stores/dialog.store'
@@ -46,6 +47,79 @@ const table = ref<{ refresh: () => void } | null>(null)
 const savePdfToDisk = ref(
   (globalStore.globalSettings?.save_pdf_to_disk ?? 'NO') === 'YES'
 )
+
+// Disk purpose assignments
+const allDisks = ref<Disk[]>([])
+const purposes = ref<DiskPurposes>({
+  media_disk_id: null,
+  pdf_disk_id: null,
+  backup_disk_id: null,
+})
+const originalPurposes = ref<DiskPurposes>({
+  media_disk_id: null,
+  pdf_disk_id: null,
+  backup_disk_id: null,
+})
+const isSavingPurposes = ref(false)
+
+onMounted(async () => {
+  try {
+    const [disksRes, purposesRes] = await Promise.all([
+      diskService.list({ limit: 'all' as unknown as number }),
+      diskService.getDiskPurposes(),
+    ])
+    allDisks.value = disksRes.data
+    const normalized = {
+      media_disk_id: purposesRes.media_disk_id ? Number(purposesRes.media_disk_id) : null,
+      pdf_disk_id: purposesRes.pdf_disk_id ? Number(purposesRes.pdf_disk_id) : null,
+      backup_disk_id: purposesRes.backup_disk_id ? Number(purposesRes.backup_disk_id) : null,
+    }
+    purposes.value = { ...normalized }
+    originalPurposes.value = { ...normalized }
+  } catch {
+    // Silently fail
+  }
+})
+
+function hasChangedPurposes(): boolean {
+  return (
+    purposes.value.media_disk_id !== originalPurposes.value.media_disk_id ||
+    purposes.value.pdf_disk_id !== originalPurposes.value.pdf_disk_id ||
+    purposes.value.backup_disk_id !== originalPurposes.value.backup_disk_id
+  )
+}
+
+async function savePurposes(): Promise<void> {
+  if (hasChangedPurposes()) {
+    const confirmed = await dialogStore.openDialog({
+      title: t('general.are_you_sure'),
+      message: t('settings.disk.change_disk_warning'),
+      yesLabel: t('general.ok'),
+      noLabel: t('general.cancel'),
+      variant: 'danger',
+      hideNoButton: false,
+      size: 'lg',
+    })
+
+    if (!confirmed) {
+      return
+    }
+  }
+
+  isSavingPurposes.value = true
+  try {
+    await diskService.updateDiskPurposes(purposes.value)
+    originalPurposes.value = { ...purposes.value }
+    notificationStore.showNotification({
+      type: 'success',
+      message: t('settings.disk.purposes_saved'),
+    })
+  } catch (error: unknown) {
+    showApiError(error)
+  } finally {
+    isSavingPurposes.value = false
+  }
+}
 
 const fileDiskColumns = computed<TableColumn[]>(() => [
   {
@@ -291,5 +365,69 @@ function showApiError(error: unknown): void {
       :title="$t('settings.disk.save_pdf_to_disk')"
       :description="$t('settings.disk.disk_setting_description')"
     />
+  </BaseSettingCard>
+
+  <!-- Disk Assignments -->
+  <BaseSettingCard
+    :title="$t('settings.disk.disk_assignments')"
+    :description="$t('settings.disk.disk_assignments_description')"
+    class="mt-6"
+  >
+    <BaseInputGrid class="mt-4">
+      <BaseInputGroup :label="$t('settings.disk.media_storage')">
+        <BaseMultiselect
+          v-model="purposes.media_disk_id"
+          :options="allDisks"
+          value-prop="id"
+          label="name"
+          track-by="name"
+          :can-deselect="false"
+          :placeholder="$t('settings.disk.select_disk')"
+        />
+        <span class="text-xs text-subtle mt-1 block">
+          {{ $t('settings.disk.media_storage_description') }}
+        </span>
+      </BaseInputGroup>
+
+      <BaseInputGroup :label="$t('settings.disk.pdf_storage')">
+        <BaseMultiselect
+          v-model="purposes.pdf_disk_id"
+          :options="allDisks"
+          value-prop="id"
+          label="name"
+          track-by="name"
+          :can-deselect="false"
+          :placeholder="$t('settings.disk.select_disk')"
+        />
+        <span class="text-xs text-subtle mt-1 block">
+          {{ $t('settings.disk.pdf_storage_description') }}
+        </span>
+      </BaseInputGroup>
+
+      <BaseInputGroup :label="$t('settings.disk.backup_storage')">
+        <BaseMultiselect
+          v-model="purposes.backup_disk_id"
+          :options="allDisks"
+          value-prop="id"
+          label="name"
+          track-by="name"
+          :can-deselect="false"
+          :placeholder="$t('settings.disk.select_disk')"
+        />
+        <span class="text-xs text-subtle mt-1 block">
+          {{ $t('settings.disk.backup_storage_description') }}
+        </span>
+      </BaseInputGroup>
+    </BaseInputGrid>
+
+    <BaseButton
+      :loading="isSavingPurposes"
+      :disabled="isSavingPurposes"
+      variant="primary"
+      class="mt-6"
+      @click="savePurposes"
+    >
+      {{ $t('general.save') }}
+    </BaseButton>
   </BaseSettingCard>
 </template>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DiskEnvironmentRequest;
 use App\Http\Resources\FileDiskResource;
 use App\Models\FileDisk;
+use App\Models\Setting;
 use App\Services\FileDiskService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
@@ -91,8 +92,10 @@ class DiskController extends Controller
         $diskData = [];
         switch ($disk) {
             case 'local':
+                // Path is relative to storage/app/.
+                // e.g., "backups" resolves to storage/app/backups/ at runtime.
                 $diskData = [
-                    'root' => config('filesystems.disks.local.root'),
+                    'root' => '',
                 ];
 
                 break;
@@ -216,11 +219,50 @@ class DiskController extends Controller
             ],
         ];
 
-        $default = config('filesystems.default');
+        $defaultDisk = FileDisk::where('set_as_default', true)->first();
 
         return response()->json([
             'drivers' => $drivers,
-            'default' => $default,
+            'default' => $defaultDisk?->driver ?? 'local',
         ]);
+    }
+
+    public function getDiskPurposes(): JsonResponse
+    {
+        $this->authorize('manage file disk');
+
+        $defaultDisk = FileDisk::where('set_as_default', true)->first();
+        $defaultId = $defaultDisk?->id;
+
+        return response()->json([
+            'media_disk_id' => Setting::getSetting('media_disk_id') ?? $defaultId,
+            'pdf_disk_id' => Setting::getSetting('pdf_disk_id') ?? $defaultId,
+            'backup_disk_id' => Setting::getSetting('backup_disk_id') ?? $defaultId,
+        ]);
+    }
+
+    public function updateDiskPurposes(Request $request): JsonResponse
+    {
+        $this->authorize('manage file disk');
+
+        $request->validate([
+            'media_disk_id' => 'nullable|exists:file_disks,id',
+            'pdf_disk_id' => 'nullable|exists:file_disks,id',
+            'backup_disk_id' => 'nullable|exists:file_disks,id',
+        ]);
+
+        if ($request->has('media_disk_id')) {
+            Setting::setSetting('media_disk_id', $request->media_disk_id);
+        }
+
+        if ($request->has('pdf_disk_id')) {
+            Setting::setSetting('pdf_disk_id', $request->pdf_disk_id);
+        }
+
+        if ($request->has('backup_disk_id')) {
+            Setting::setSetting('backup_disk_id', $request->backup_disk_id);
+        }
+
+        return response()->json(['success' => true]);
     }
 }

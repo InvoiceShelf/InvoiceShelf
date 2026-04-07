@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\FileDisk;
 use App\Models\Setting;
+use App\Services\FileDiskService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -24,21 +25,8 @@ class MigrateMediaToPrivateDisk extends Command
             return self::FAILURE;
         }
 
-        $prefix = env('DYNAMIC_DISK_PREFIX', 'temp_');
-        $targetDiskName = $prefix.$targetDisk->driver;
-
-        // Register disk config without mutating filesystems.default
-        $credentials = collect(json_decode($targetDisk->credentials));
-        $baseConfig = config('filesystems.disks.'.$targetDisk->driver, []);
-
-        foreach ($baseConfig as $key => $value) {
-            if ($credentials->has($key)) {
-                $baseConfig[$key] = $credentials[$key];
-            }
-        }
-
-        config(['filesystems.disks.'.$targetDiskName => $baseConfig]);
-        $targetRoot = $baseConfig['root'] ?? null;
+        $targetDiskName = app(FileDiskService::class)->registerDisk($targetDisk);
+        $targetRoot = config('filesystems.disks.'.$targetDiskName.'.root');
 
         if (! $targetRoot) {
             $this->error('Could not resolve target disk root path.');

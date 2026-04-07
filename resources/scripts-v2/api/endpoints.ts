@@ -118,6 +118,7 @@ export const API = {
   // Disks & Backups
   DISKS: '/api/v1/disks',
   DISK_DRIVERS: '/api/v1/disk/drivers',
+  DISK_PURPOSES: '/api/v1/disk/purposes',
   BACKUPS: '/api/v1/backups',
   DOWNLOAD_BACKUP: '/api/v1/download-backup',
 

@@ -20,6 +20,7 @@ interface DiskField {
   key: string
   labelKey: string
   placeholder?: string
+  hint?: string
 }
 
 interface DiskDriverOption {
@@ -39,7 +40,8 @@ const DRIVER_FIELDS: Record<DiskDriverValue, DiskField[]> = {
     {
       key: 'root',
       labelKey: 'settings.disk.local_root',
-      placeholder: 'Ex. /user/root/',
+      placeholder: 'Ex. backups',
+      hint: 'settings.disk.local_root_hint',
     },
   ],
   s3: [
@@ -512,6 +514,9 @@ function isDisk(value: unknown): value is Disk {
               :placeholder="field.placeholder"
               @input="touchCredential(field.key)"
             />
+            <span v-if="field.hint" class="text-xs text-subtle mt-1 block">
+              {{ $t(field.hint) }}
+            </span>
           </BaseInputGroup>
         </BaseInputGrid>
 

@@ -3,6 +3,7 @@
 namespace App\Services\Backup;
 
 use App\Models\FileDisk;
+use App\Services\FileDiskService;
 use Exception;
 use Spatie\Backup\Config\Config;
 
@@ -16,14 +17,10 @@ class BackupConfigurationFactory
 
         $fileDisk = FileDisk::find($data['file_disk_id']);
 
-        $fileDisk->setConfig();
+        $diskName = app(FileDiskService::class)->registerDisk($fileDisk);
 
-        $prefix = env('DYNAMIC_DISK_PREFIX', 'temp_');
+        config(['backup.backup.destination.disks' => [$diskName]]);
 
-        config(['backup.backup.destination.disks' => [$prefix.$fileDisk->driver]]);
-
-        $config = Config::fromArray(config('backup'));
-
-        return $config;
+        return Config::fromArray(config('backup'));
     }
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useModalStore } from '@v2/stores/modal.store'
 import { useDialogStore } from '@v2/stores/dialog.store'
@@ -18,10 +18,6 @@ interface TableColumn {
   thClass?: string
   tdClass?: string
   sortable?: boolean
-}
-
-interface DiskOption extends Disk {
-  display_name: string
 }
 
 interface FetchParams {
@@ -46,8 +42,7 @@ const notificationStore = useNotificationStore()
 const { t } = useI18n()
 
 const table = ref<{ refresh: () => void } | null>(null)
-const disks = ref<DiskOption[]>([])
-const selectedDisk = ref<DiskOption | null>(null)
+const backupDisk = ref<Disk | null>(null)
 const isFetchingInitialData = ref(false)
 const backupError = ref('')
 
@@ -69,6 +64,12 @@ const backupColumns = computed<TableColumn[]>(() => [
     tdClass: 'font-medium text-heading',
   },
   {
+    key: 'disk_name',
+    label: t('settings.disk.title', 1),
+    tdClass: 'font-medium text-muted',
+    sortable: false,
+  },
+  {
     key: 'actions',
     label: '',
     tdClass: 'text-right text-sm font-medium',
@@ -76,30 +77,27 @@ const backupColumns = computed<TableColumn[]>(() => [
   },
 ])
 
-watch(
-  selectedDisk,
-  (newDisk, oldDisk) => {
-    if (newDisk?.id && oldDisk?.id && newDisk.id !== oldDisk.id) {
-      refreshTable()
-    }
-  }
-)
+loadBackupDisk()
 
-loadDisks()
-
-async function loadDisks(): Promise<void> {
+async function loadBackupDisk(): Promise<void> {
   isFetchingInitialData.value = true
 
   try {
-    const response = await diskService.list({ limit: 'all' })
+    const [diskResponse, purposesResponse] = await Promise.all([
+      diskService.list({ limit: 'all' }),
+      diskService.getDiskPurposes(),
+    ])
 
-    disks.value = response.data.map((disk) => ({
-      ...disk,
-      display_name: `${disk.name} - [${disk.driver}]`,
-    }))
+    const disks = diskResponse.data
+    const backupDiskId = purposesResponse.backup_disk_id
 
-    selectedDisk.value =
-      disks.value.find((disk) => disk.set_as_default) ?? disks.value[0] ?? null
+    backupDisk.value =
+      (backupDiskId ? disks.find((disk) => disk.id === Number(backupDiskId)) : null) ??
+      disks.find((disk) => disk.set_as_default) ??
+      disks[0] ??
+      null
+    // Refresh table now that we know which disk to query
+    refreshTable()
   } catch (error: unknown) {
     showApiError(error)
   } finally {
@@ -108,7 +106,7 @@ async function loadDisks(): Promise<void> {
 }
 
 async function fetchData({ page }: FetchParams): Promise<FetchResult> {
-  if (!selectedDisk.value) {
+  if (!backupDisk.value) {
     return emptyResult(page)
   }
 
@@ -116,8 +114,8 @@ async function fetchData({ page }: FetchParams): Promise<FetchResult> {
 
   try {
     const response = await backupService.list({
-      disk: selectedDisk.value.driver,
-      file_disk_id: selectedDisk.value.id,
+      disk: backupDisk.value.driver,
+      file_disk_id: backupDisk.value.id,
     })
 
     if (response.error) {
@@ -142,7 +140,7 @@ async function fetchData({ page }: FetchParams): Promise<FetchResult> {
 }
 
 async function removeBackup(backup: Backup): Promise<void> {
-  if (!selectedDisk.value) {
+  if (!backupDisk.value) {
     return
   }
 
@@ -162,8 +160,8 @@ async function removeBackup(backup: Backup): Promise<void> {
 
   try {
     const response = await backupService.delete({
-      disk: selectedDisk.value.driver,
-      file_disk_id: selectedDisk.value.id,
+      disk: backupDisk.value.driver,
+      file_disk_id: backupDisk.value.id,
       path: backup.path,
     })
 
@@ -180,7 +178,7 @@ async function removeBackup(backup: Backup): Promise<void> {
 }
 
 async function downloadBackup(backup: Backup): Promise<void> {
-  if (!selectedDisk.value) {
+  if (!backupDisk.value) {
     return
   }
 
@@ -189,8 +187,8 @@ async function downloadBackup(backup: Backup): Promise<void> {
 
   try {
     const blob = await backupService.download({
-      disk: selectedDisk.value.driver,
-      file_disk_id: selectedDisk.value.id,
+      disk: backupDisk.value.driver,
+      file_disk_id: backupDisk.value.id,
       path: backup.path,
     })
 
@@ -216,13 +214,16 @@ async function downloadBackup(backup: Backup): Promise<void> {
 }
 
 function openCreateBackupModal(): void {
+  if (!backupDisk.value) {
+    return
+  }
+
   modalStore.openModal({
     title: t('settings.backup.create_backup'),
     componentName: 'AdminBackupModal',
     size: 'sm',
     data: {
-      disks: disks.value,
-      selectedDiskId: selectedDisk.value?.id ?? null,
+      file_disk_id: backupDisk.value.id,
     },
     refreshData: table.value?.refresh,
   })
@@ -271,26 +272,6 @@ function showApiError(error: unknown): void {
       </BaseButton>
     </template>
 
-    <div class="grid my-14 md:grid-cols-3">
-      <BaseInputGroup
-        :label="$t('settings.disk.select_disk')"
-        :content-loading="isFetchingInitialData"
-      >
-        <BaseMultiselect
-          v-model="selectedDisk"
-          :content-loading="isFetchingInitialData"
-          :options="disks"
-          track-by="id"
-          value-prop="id"
-          label="display_name"
-          :placeholder="$t('settings.disk.select_disk')"
-          object
-          searchable
-          class="w-full"
-        />
-      </BaseInputGroup>
-    </div>
-
     <BaseErrorAlert
       v-if="backupError"
       class="mt-6"
@@ -304,6 +285,10 @@ function showApiError(error: unknown): void {
       :data="fetchData"
       :columns="backupColumns"
     >
+      <template #cell-disk_name>
+        {{ backupDisk?.name ?? '-' }}
+      </template>
+
       <template #cell-actions="{ row }">
         <BaseDropdown>
           <template #activator>

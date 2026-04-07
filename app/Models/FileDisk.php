@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\FileDiskService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -29,6 +30,21 @@ class FileDisk extends Model
     public function setCredentialsAttribute(mixed $value): void
     {
         $this->attributes['credentials'] = json_encode($value);
+    }
+
+    /**
+     * Decode credentials, handling double-encoded JSON from legacy data.
+     */
+    public function getDecodedCredentials(): Collection
+    {
+        $decoded = json_decode($this->credentials, true);
+
+        // Handle double-encoded JSON (string inside string)
+        if (is_string($decoded)) {
+            $decoded = json_decode($decoded, true);
+        }
+
+        return collect($decoded ?? []);
     }
 
     public function scopeWhereOrder($query, $orderByField, $orderBy)
@@ -83,14 +99,14 @@ class FileDisk extends Model
 
     /**
      * Apply this disk's credentials to the filesystem configuration at runtime.
+     *
+     * @deprecated Use FileDiskService::registerDisk() instead — setConfig() mutates filesystems.default.
      */
     public function setConfig(): void
     {
-        $driver = $this->driver;
-
-        $credentials = collect(json_decode($this['credentials']));
-
-        self::setFilesystem($credentials, $driver);
+        $service = app(FileDiskService::class);
+        $diskName = $service->registerDisk($this);
+        config(['filesystems.default' => $diskName]);
     }
 
     /**
@@ -103,6 +119,8 @@ class FileDisk extends Model
 
     /**
      * Register a dynamic filesystem disk in the runtime configuration using the given credentials.
+     *
+     * @deprecated Use FileDisk::find($id)->registerDisk() instead.
      */
     public static function setFilesystem(Collection $credentials, string $driver): void
     {
@@ -116,6 +134,10 @@ class FileDisk extends Model
             if ($credentials->has($key)) {
                 $disks[$key] = $credentials[$key];
             }
+        }
+
+        if ($driver === 'local' && isset($disks['root']) && ! str_starts_with($disks['root'], '/')) {
+            $disks['root'] = storage_path('app/'.$disks['root']);
         }
 
         config(['filesystems.disks.'.$prefix.$driver => $disks]);

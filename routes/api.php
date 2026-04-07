@@ -346,6 +346,8 @@ Route::prefix('/v1')->group(function () {
             Route::get('download-backup', [BackupsController::class, 'download']);
 
             Route::get('/disk/drivers', [DiskController::class, 'getDiskDrivers']);
+            Route::get('/disk/purposes', [DiskController::class, 'getDiskPurposes']);
+            Route::put('/disk/purposes', [DiskController::class, 'updateDiskPurposes']);
 
             // Exchange Rate
             // ----------------------------------

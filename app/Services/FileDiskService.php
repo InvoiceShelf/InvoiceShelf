@@ -13,8 +13,10 @@ class FileDiskService
             $this->clearDefaults();
         }
 
+        $credentials = $this->normalizeCredentials($request->credentials, $request->driver);
+
         return FileDisk::create([
-            'credentials' => $request->credentials,
+            'credentials' => $credentials,
             'name' => $request->name,
             'driver' => $request->driver,
             'set_as_default' => $request->set_as_default,
@@ -24,8 +26,10 @@ class FileDiskService
 
     public function update(FileDisk $disk, Request $request): FileDisk
     {
+        $credentials = $this->normalizeCredentials($request->credentials, $request->driver);
+
         $data = [
-            'credentials' => $request->credentials,
+            'credentials' => $credentials,
             'name' => $request->name,
             'driver' => $request->driver,
         ];
@@ -53,21 +57,77 @@ class FileDiskService
         return $disk;
     }
 
+    /**
+     * Get the unique Laravel filesystem disk name for a FileDisk.
+     */
+    public function getDiskName(FileDisk $disk): string
+    {
+        if ($disk->isSystem()) {
+            return $disk->name === 'local_public' ? 'local_public' : 'local';
+        }
+
+        return 'disk_'.$disk->id;
+    }
+
+    /**
+     * Register a FileDisk in the runtime filesystem configuration.
+     * Returns the Laravel disk name. Does NOT change filesystems.default.
+     */
+    public function registerDisk(FileDisk $disk): string
+    {
+        $diskName = $this->getDiskName($disk);
+
+        // System disks are already in config/filesystems.php
+        if ($disk->isSystem()) {
+            return $diskName;
+        }
+
+        $credentials = $disk->getDecodedCredentials();
+        $baseConfig = config('filesystems.disks.'.$disk->driver, []);
+
+        foreach ($baseConfig as $key => $value) {
+            if ($credentials->has($key)) {
+                $baseConfig[$key] = $credentials[$key];
+            }
+        }
+
+        // Resolve relative local roots to storage/app/{path}
+        if ($disk->driver === 'local' && isset($baseConfig['root']) && ! str_starts_with($baseConfig['root'], '/')) {
+            $baseConfig['root'] = storage_path('app/'.$baseConfig['root']);
+        }
+
+        config(['filesystems.disks.'.$diskName => $baseConfig]);
+
+        return $diskName;
+    }
+
     public function validateCredentials(array $credentials, string $driver): bool
     {
-        FileDisk::setFilesystem(collect($credentials), $driver);
+        // Create a temporary disk config for validation
+        $baseConfig = config('filesystems.disks.'.$driver, []);
 
-        $prefix = env('DYNAMIC_DISK_PREFIX', 'temp_');
+        foreach ($baseConfig as $key => $value) {
+            if (isset($credentials[$key])) {
+                $baseConfig[$key] = $credentials[$key];
+            }
+        }
+
+        if ($driver === 'local' && isset($baseConfig['root']) && ! str_starts_with($baseConfig['root'], '/')) {
+            $baseConfig['root'] = storage_path('app/'.$baseConfig['root']);
+        }
+
+        $tempDiskName = 'validation_temp';
+        config(['filesystems.disks.'.$tempDiskName => $baseConfig]);
 
         try {
             $root = '';
             if ($driver == 'dropbox') {
                 $root = $credentials['root'].'/';
             }
-            \Storage::disk($prefix.$driver)->put($root.'invoiceshelf_temp.text', 'Check Credentials');
+            \Storage::disk($tempDiskName)->put($root.'invoiceshelf_temp.text', 'Check Credentials');
 
-            if (\Storage::disk($prefix.$driver)->exists($root.'invoiceshelf_temp.text')) {
-                \Storage::disk($prefix.$driver)->delete($root.'invoiceshelf_temp.text');
+            if (\Storage::disk($tempDiskName)->exists($root.'invoiceshelf_temp.text')) {
+                \Storage::disk($tempDiskName)->delete($root.'invoiceshelf_temp.text');
 
                 return true;
             }
@@ -76,6 +136,29 @@ class FileDiskService
         }
 
         return false;
+    }
+
+    /**
+     * For local disks, strip any absolute prefix and store the root
+     * as a path relative to storage/app. At runtime the path is
+     * resolved to an absolute path via storage_path().
+     */
+    private function normalizeCredentials(array $credentials, string $driver): array
+    {
+        if ($driver === 'local' && isset($credentials['root'])) {
+            $root = $credentials['root'];
+
+            $storageApp = storage_path('app').'/';
+            if (str_starts_with($root, $storageApp)) {
+                $root = substr($root, strlen($storageApp));
+            }
+
+            $root = ltrim($root, '/');
+
+            $credentials['root'] = $root;
+        }
+
+        return $credentials;
     }
 
     private function clearDefaults(): void

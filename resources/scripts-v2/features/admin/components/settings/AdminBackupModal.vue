@@ -9,7 +9,6 @@ import {
   backupService,
   type CreateBackupPayload,
 } from '@v2/api/services/backup.service'
-import { diskService, type Disk } from '@v2/api/services/disk.service'
 import {
   getErrorTranslationKey,
   handleApiError,
@@ -17,23 +16,14 @@ import {
 
 type BackupOption = CreateBackupPayload['option']
 
-interface DiskOption extends Disk {
-  display_name: string
-}
-
 interface BackupTypeOption {
   id: BackupOption
   label: string
 }
 
-interface BackupModalData {
-  disks?: DiskOption[]
-  selectedDiskId?: number | null
-}
-
 interface BackupForm {
   option: BackupOption | ''
-  selectedDiskId: number | null
+  file_disk_id: number | null
 }
 
 const modalStore = useModalStore()
@@ -41,27 +31,16 @@ const notificationStore = useNotificationStore()
 const { t } = useI18n()
 
 const isSaving = ref(false)
-const isFetchingInitialData = ref(false)
-const disks = ref<DiskOption[]>([])
 
 const form = reactive<BackupForm>({
   option: 'full',
-  selectedDiskId: null,
+  file_disk_id: null,
 })
 
 const backupTypeOptions: BackupTypeOption[] = [
-  {
-    id: 'full',
-    label: 'full',
-  },
-  {
-    id: 'only-db',
-    label: 'only-db',
-  },
-  {
-    id: 'only-files',
-    label: 'only-files',
-  },
+  { id: 'full', label: 'full' },
+  { id: 'only-db', label: 'only-db' },
+  { id: 'only-files', label: 'only-files' },
 ]
 
 const modalActive = computed<boolean>(() => {
@@ -72,61 +51,23 @@ const rules = computed(() => ({
   option: {
     required: helpers.withMessage(t('validation.required'), required),
   },
-  selectedDiskId: {
-    required: helpers.withMessage(t('validation.required'), required),
-  },
 }))
 
 const v$ = useVuelidate(rules, form)
 
-async function setInitialData(): Promise<void> {
+function setInitialData(): void {
   resetForm()
-  isFetchingInitialData.value = true
 
-  try {
-    const modalData = isBackupModalData(modalStore.data) ? modalStore.data : null
-
-    if (modalData?.disks?.length) {
-      disks.value = modalData.disks
-      form.selectedDiskId =
-        modalData.selectedDiskId ??
-        modalData.disks.find((disk) => disk.set_as_default)?.id ??
-        modalData.disks[0]?.id ??
-        null
-
-      return
-    }
-
-    const response = await diskService.list({ limit: 'all' })
-
-    disks.value = response.data.map((disk) => ({
-      ...disk,
-      display_name: `${disk.name} - [${disk.driver}]`,
-    }))
-
-    const selectedDiskId =
-      modalStore.data &&
-      typeof modalStore.data === 'object' &&
-      'id' in (modalStore.data as Record<string, unknown>)
-        ? Number((modalStore.data as Record<string, unknown>).id)
-        : null
-
-    form.selectedDiskId =
-      disks.value.find((disk) => disk.id === selectedDiskId)?.id ??
-      disks.value.find((disk) => disk.set_as_default)?.id ??
-      disks.value[0]?.id ??
-      null
-  } catch (error: unknown) {
-    showApiError(error)
-  } finally {
-    isFetchingInitialData.value = false
+  const modalData = modalStore.data as Record<string, unknown> | null
+  if (modalData?.file_disk_id) {
+    form.file_disk_id = Number(modalData.file_disk_id)
   }
 }
 
 async function createBackup(): Promise<void> {
   v$.value.$touch()
 
-  if (v$.value.$invalid || !form.selectedDiskId) {
+  if (v$.value.$invalid || !form.file_disk_id) {
     return
   }
 
@@ -135,7 +76,7 @@ async function createBackup(): Promise<void> {
   try {
     const response = await backupService.create({
       option: form.option as BackupOption,
-      file_disk_id: form.selectedDiskId,
+      file_disk_id: form.file_disk_id,
     })
 
     if (response.success) {
@@ -165,7 +106,7 @@ function showApiError(error: unknown): void {
 
 function resetForm(): void {
   form.option = 'full'
-  form.selectedDiskId = null
+  form.file_disk_id = null
   v$.value.$reset()
 }
 
@@ -174,12 +115,7 @@ function closeModal(): void {
 
   setTimeout(() => {
     resetForm()
-    disks.value = []
   }, 300)
-}
-
-function isBackupModalData(value: unknown): value is BackupModalData {
-  return Boolean(value && typeof value === 'object')
 }
 </script>
 
@@ -210,28 +146,6 @@ function isBackupModalData(value: unknown): value is BackupModalData {
               :placeholder="$t('settings.backup.select_backup_type')"
               value-prop="id"
               @update:model-value="v$.option.$touch()"
-            />
-          </BaseInputGroup>
-
-          <BaseInputGroup
-            :label="$t('settings.disk.select_disk')"
-            :error="
-              v$.selectedDiskId.$error && v$.selectedDiskId.$errors[0]?.$message
-            "
-            required
-          >
-            <BaseMultiselect
-              v-model="form.selectedDiskId"
-              :options="disks"
-              :content-loading="isFetchingInitialData"
-              :can-deselect="false"
-              :invalid="v$.selectedDiskId.$error"
-              label="display_name"
-              track-by="id"
-              value-prop="id"
-              searchable
-              :placeholder="$t('settings.disk.select_disk')"
-              @update:model-value="v$.selectedDiskId.$touch()"
             />
           </BaseInputGroup>
         </BaseInputGrid>

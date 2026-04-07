@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\FileDisk;
 use App\Models\Setting;
+use App\Services\FileDiskService;
 use App\Services\Setup\InstallUtils;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
@@ -163,28 +164,16 @@ class AppConfigProvider extends ServiceProvider
     protected function configureFileSystemFromDatabase(): void
     {
         try {
-            // Register the default file disk config without changing filesystems.default.
-            // Calling setConfig() mutates the global default which causes side effects
-            // on pages that make multiple API requests (e.g., File Disk admin page).
             $fileDisk = FileDisk::whereSetAsDefault(true)->first();
 
-            if ($fileDisk) {
-                $prefix = env('DYNAMIC_DISK_PREFIX', 'temp_');
-                $diskName = $prefix.$fileDisk->driver;
-                $credentials = collect(json_decode($fileDisk->credentials));
-                $baseConfig = config('filesystems.disks.'.$fileDisk->driver, []);
-
-                foreach ($baseConfig as $key => $value) {
-                    if ($credentials->has($key)) {
-                        $baseConfig[$key] = $credentials[$key];
-                    }
-                }
-
-                config(['filesystems.disks.'.$diskName => $baseConfig]);
-
-                // Point Spatie Media Library at the same disk
-                config(['media-library.disk_name' => $diskName]);
+            if (! $fileDisk) {
+                return;
             }
+
+            $diskName = app(FileDiskService::class)->registerDisk($fileDisk);
+
+            // Point Spatie Media Library at the resolved disk
+            config(['media-library.disk_name' => $diskName]);
         } catch (\Exception $e) {
             // Silently fail if database is not available (during installation, migrations, etc.)
         }

@@ -93,7 +93,7 @@
 
 <script setup lang="ts">
 import { useModalStore } from '@v2/stores/modal.store'
-import { computed, watchEffect, useSlots } from 'vue'
+import { computed, watch, useSlots } from 'vue'
 import {
   Dialog,
   DialogOverlay,
@@ -120,9 +120,9 @@ const emit = defineEmits<Emits>()
 
 const modalStore = useModalStore()
 
-watchEffect(() => {
-  if (props.show) {
-    emit('open', props.show)
+watch(() => props.show, (newVal) => {
+  if (newVal) {
+    emit('open', newVal)
   }
 })
 

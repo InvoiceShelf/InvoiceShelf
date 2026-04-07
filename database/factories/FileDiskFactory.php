@@ -25,7 +25,7 @@ class FileDiskFactory extends Factory
             'set_as_default' => false,
             'credentials' => [
                 'driver' => 'local',
-                'root' => storage_path('app'),
+                'root' => 'test-disks',
             ],
 
         ];
