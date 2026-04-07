@@ -14,7 +14,6 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': resolve(__dirname, './resources/'),
-      '@v2': resolve(__dirname, './resources/scripts-v2/'),
       $fonts: resolve(__dirname, './resources/static/fonts'),
       $images: resolve(__dirname, './resources/static/img')
     },
@@ -31,7 +30,7 @@ export default defineConfig({
       },
     }),
     laravel({
-      input: ['resources/scripts-v2/main.ts'],
+      input: ['resources/scripts/main.ts'],
     })
   ]
 });
