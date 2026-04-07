@@ -2,22 +2,21 @@
 
 ## Introduction
 
-InvoiceShelf is an open-source web & mobile app that helps you track expenses, payments & create professional invoices & estimates.
+InvoiceShelf is an open-source web app that helps you track expenses, record payments, and create professional invoices and estimates. It is self-hosted, multi-tenant, and built for individuals and small businesses that want to keep their books on their own infrastructure.
 
-The Web Application is made using Laravel & VueJS while the Mobile Apps are built using React Native.
+The web application is built with Laravel and Vue 3.
 
-To get started with InvoiceShelf using Docker Compose, check out the [Installation docs](https://docs.invoiceshelf.com/installation.html).
+To get started using Docker Compose, follow the [Installation guide](https://docs.invoiceshelf.com/installation.html).
 
 # Table of Contents
 
 1. [Documentation](#documentation)
-2. [Download](#download)
-3. [Mobile Apps](#mobile-apps)
-4. [Discord - **NEW**](#discord) 🔥
+2. [System Requirements](#system-requirements)
+3. [Download](#download)
+4. [Discord](#discord)
 5. [Roadmap](#roadmap)
-6. [Credits](#credits)
-7. [Help us translate](#translate)
-8. [License](#license)
+6. [Translate](#translate)
+7. [License](#license)
 
 ## Documentation
 
@@ -28,55 +27,51 @@ To get started with InvoiceShelf using Docker Compose, check out the [Installati
 
 ## System Requirements
 
-- Starting from **v2.2.0** (Laravel 13 upgrade), InvoiceShelf requires **PHP 8.4+**.
-- Before updating from the app settings, verify your server PHP version and required extensions.
-- The in-app updater checks requirements and blocks the update if they are not met.
+- **PHP 8.4+** is required (since v2.2.0, when InvoiceShelf moved to Laravel 13).
+- Database: MySQL, MariaDB, PostgreSQL, or SQLite.
+- Before updating from inside the app, verify your server meets the target version's PHP and extension requirements.
+- The in-app updater verifies requirements and refuses to proceed if they are not met.
 
 ## Download
 
 - [Download Link](https://invoiceshelf.com)
 
-## Mobile Apps
-
-- Andorid - Coming Soon
-- IOS - Coming Soon
-- [Source](https://github.com/InvoiceShelf/mobile)
-
 ## Discord
 
-Join the InvoiceShelf discord server to discuss:
-[Invite Link](https://discord.gg/eHXf4zWhsR)
+Join the discussion on the InvoiceShelf Discord: [Invite Link](https://discord.gg/eHXf4zWhsR)
 
 ## Roadmap
 
-~~Here's a rough roadmap of things to come (not in any specific order):
+Rough roadmap of things to come, not in any specific order:
 
 - [x] Automatic Update
 - [x] Email Configuration
 - [x] Installation Wizard
-- [x] Address Customisation & Default notes
+- [x] Address Customisation & Default Notes
 - [x] Edit Email before Sending Invoice
-- [x] Available as a docker image
+- [x] Available as a Docker image
 - [x] Performance Improvements
-- [x] Customer View page
-- [x] Add and Use Custom Fields on Invoices & Estimates.
+- [x] Customer View Page
+- [x] Custom Fields on Invoices & Estimates
 - [x] Multiple Companies
 - [x] Recurring Invoices
 - [x] Customer Portal
-- [ ] Accept Payments (Stripe Integration)
-- [ ] Improved template system (invoices and estimate)
-- [ ] Modules and templates marketplace
-
-## Credits
-
-InvoiceShelf is made possible thanks to the contributions and support from many people and projects:
-
-- [Crater](https://github.com/crater-invoice-inc/crater) (project inspiration and code base)
-- All contributors who have provided code, translations, reported issues, or supported the project in any way.
+- [x] Decoupled system settings from company settings _(v3.0)_
+- [x] Proper multi-tenancy system _(v3.0)_
+- [x] Company member invitations with custom roles _(v3.0)_
+- [x] Dark mode _(v3.0)_
+- [x] Full TypeScript refactor of the frontend _(v3.0)_
+- [x] Improved backend architecture _(v3.0)_
+- [x] Security hardening _(v3.0)_
+- [ ] **Reworked installation wizard** _(v3.0)_
+- [ ] **Module Directory** _(v3.0)_
+- [ ] **Rewritten Payments module** _(v3.0)_
+- [ ] Accept Payments (Stripe integration)
+- [ ] Improved template system for invoices and estimates
 
 ## Translate
 
-Help us translate on https://crowdin.com/project/invoiceshelf
+Help us translate InvoiceShelf into your language: https://crowdin.com/project/invoiceshelf
 
 ## Star History
 
@@ -90,5 +85,4 @@ Help us translate on https://crowdin.com/project/invoiceshelf
 
 ## License
 
-InvoiceShelf is released under the GNU AFFERO GENERAL PUBLIC LICENSE Version 3.
-See [LICENSE](LICENSE) for details.
+InvoiceShelf is released under the [GNU Affero General Public License v3.0](LICENSE). See [LICENSE](LICENSE) for the full text.
