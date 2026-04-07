@@ -1354,9 +1354,10 @@
     },
     "fonts": {
       "title": "Font Packages",
-      "description": "These font packages are used exclusively when generating PDF documents. The bundled Noto Sans already covers Latin, Cyrillic, Greek, Arabic, Thai and Hindi — install the packages below to render Chinese, Japanese or Korean characters in your PDFs.",
-      "bundled_info": "Noto Sans (bundled) covers Latin, Cyrillic, Greek, Arabic, Thai, Hindi, and most other scripts. Install additional packages below for CJK language support.",
+      "description": "These font packages are used exclusively when generating PDF documents. The bundled Noto Sans covers Latin, Greek and Cyrillic scripts. Install the packages below to render Hebrew, Arabic, Persian, Urdu, Hindi (Devanagari), Thai or East Asian (CJK) characters in your PDFs.",
+      "bundled_info": "Bundled font: Noto Sans (Latin / Greek / Cyrillic). Install additional packages below for Hebrew, Arabic, Persian, Hindi, Thai or CJK support.",
       "installed": "Installed",
+      "bundled": "Bundled",
       "install": "Install",
       "downloading": "Downloading...",
       "download_started": "Downloading {name}. This may take a moment.",

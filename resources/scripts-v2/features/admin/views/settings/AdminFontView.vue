@@ -12,6 +12,7 @@ interface FontPackage {
   locales: string[]
   size: string
   installed: boolean
+  bundled?: boolean
 }
 
 const { t } = useI18n()
@@ -84,7 +85,14 @@ async function installFont(pkg: FontPackage): Promise<void> {
 
         <div class="flex items-center gap-3">
           <span
-            v-if="pkg.installed"
+            v-if="pkg.bundled"
+            class="inline-flex items-center rounded-full bg-primary-50 px-2.5 py-1 text-xs font-medium text-primary-600"
+          >
+            {{ $t('settings.fonts.bundled') }}
+          </span>
+
+          <span
+            v-else-if="pkg.installed"
             class="inline-flex items-center rounded-full bg-success px-2.5 py-1 text-xs font-medium text-status-green"
           >
             {{ $t('settings.fonts.installed') }}

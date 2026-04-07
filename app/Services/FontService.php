@@ -17,6 +17,35 @@ class FontService
      * Sans / Noto Sans CJK rebuilt as static TTF in Regular + Bold weights.
      */
     public const FONT_PACKAGES = [
+        'noto-sans' => [
+            'name' => 'Noto Sans (Latin, Greek, Cyrillic)',
+            'family' => 'NotoSans',
+            'locales' => [],
+            'size' => '~1.7MB',
+            'bundled' => true,
+            'files' => [
+                [
+                    'file' => 'NotoSans-Regular.ttf',
+                    'weight' => 'normal',
+                    'style' => 'normal',
+                ],
+                [
+                    'file' => 'NotoSans-Bold.ttf',
+                    'weight' => 'bold',
+                    'style' => 'normal',
+                ],
+                [
+                    'file' => 'NotoSans-Italic.ttf',
+                    'weight' => 'normal',
+                    'style' => 'italic',
+                ],
+                [
+                    'file' => 'NotoSans-BoldItalic.ttf',
+                    'weight' => 'bold',
+                    'style' => 'italic',
+                ],
+            ],
+        ],
         'noto-sans-sc' => [
             'name' => 'Noto Sans Simplified Chinese',
             'family' => 'NotoSansCJKsc',
@@ -97,6 +126,86 @@ class FontService
                 ],
             ],
         ],
+        'noto-sans-hebrew' => [
+            'name' => 'Noto Sans Hebrew',
+            'family' => 'NotoSansHebrew',
+            'locales' => ['he', 'yi'],
+            'size' => '~40KB',
+            'files' => [
+                [
+                    'file' => 'NotoSansHebrew-Regular.ttf',
+                    'url' => 'https://github.com/openmaptiles/fonts/raw/master/noto-sans/NotoSansHebrew-Regular.ttf',
+                    'weight' => 'normal',
+                    'style' => 'normal',
+                ],
+                [
+                    'file' => 'NotoSansHebrew-Bold.ttf',
+                    'url' => 'https://github.com/openmaptiles/fonts/raw/master/noto-sans/NotoSansHebrew-Bold.ttf',
+                    'weight' => 'bold',
+                    'style' => 'normal',
+                ],
+            ],
+        ],
+        'noto-naskh-arabic' => [
+            'name' => 'Noto Naskh Arabic (Arabic, Persian, Urdu)',
+            'family' => 'NotoNaskhArabic',
+            'locales' => ['ar', 'fa', 'ur', 'ckb'],
+            'size' => '~285KB',
+            'files' => [
+                [
+                    'file' => 'NotoNaskhArabic-Regular.ttf',
+                    'url' => 'https://github.com/openmaptiles/fonts/raw/master/noto-sans/NotoNaskhArabic-Regular.ttf',
+                    'weight' => 'normal',
+                    'style' => 'normal',
+                ],
+                [
+                    'file' => 'NotoNaskhArabic-Bold.ttf',
+                    'url' => 'https://github.com/openmaptiles/fonts/raw/master/noto-sans/NotoNaskhArabic-Bold.ttf',
+                    'weight' => 'bold',
+                    'style' => 'normal',
+                ],
+            ],
+        ],
+        'noto-sans-devanagari' => [
+            'name' => 'Noto Sans Devanagari (Hindi, Marathi, Sanskrit, Nepali)',
+            'family' => 'NotoSansDevanagari',
+            'locales' => ['hi', 'mr', 'sa', 'ne'],
+            'size' => '~280KB',
+            'files' => [
+                [
+                    'file' => 'NotoSansDevanagari-Regular.ttf',
+                    'url' => 'https://github.com/openmaptiles/fonts/raw/master/noto-sans/NotoSansDevanagari-Regular.ttf',
+                    'weight' => 'normal',
+                    'style' => 'normal',
+                ],
+                [
+                    'file' => 'NotoSansDevanagari-Bold.ttf',
+                    'url' => 'https://github.com/openmaptiles/fonts/raw/master/noto-sans/NotoSansDevanagari-Bold.ttf',
+                    'weight' => 'bold',
+                    'style' => 'normal',
+                ],
+            ],
+        ],
+        'sarabun' => [
+            'name' => 'Sarabun (Thai)',
+            'family' => 'Sarabun',
+            'locales' => ['th'],
+            'size' => '~180KB',
+            'files' => [
+                [
+                    'file' => 'Sarabun-Regular.ttf',
+                    'url' => 'https://github.com/google/fonts/raw/main/ofl/sarabun/Sarabun-Regular.ttf',
+                    'weight' => 'normal',
+                    'style' => 'normal',
+                ],
+                [
+                    'file' => 'Sarabun-Bold.ttf',
+                    'url' => 'https://github.com/google/fonts/raw/main/ofl/sarabun/Sarabun-Bold.ttf',
+                    'weight' => 'bold',
+                    'style' => 'normal',
+                ],
+            ],
+        ],
     ];
 
     /**
@@ -127,12 +236,26 @@ class FontService
     }
 
     /**
+     * Resolve where a package's font files live on disk.
+     * Bundled packages ship with the repo under resources/static/fonts/;
+     * on-demand packages are downloaded into storage/fonts/.
+     */
+    private function packageDir(array $package): string
+    {
+        return ! empty($package['bundled'])
+            ? resource_path('static/fonts')
+            : storage_path('fonts');
+    }
+
+    /**
      * Check if a font package is installed (all files present).
      */
     public function isInstalled(array $package): bool
     {
+        $dir = $this->packageDir($package);
+
         foreach ($package['files'] as $entry) {
-            if (! File::exists(storage_path('fonts/'.$entry['file']))) {
+            if (! File::exists($dir.'/'.$entry['file'])) {
                 return false;
             }
         }
@@ -142,9 +265,14 @@ class FontService
 
     /**
      * Download a font package to storage/fonts/.
+     * No-op for bundled packages — those ship with the repo.
      */
     public function downloadPackage(array $package): void
     {
+        if (! empty($package['bundled'])) {
+            return;
+        }
+
         $fontsDir = storage_path('fonts');
 
         if (! File::isDirectory($fontsDir)) {
@@ -181,6 +309,7 @@ class FontService
                 'locales' => $package['locales'],
                 'size' => $package['size'],
                 'installed' => $this->isInstalled($package),
+                'bundled' => ! empty($package['bundled']),
             ];
         }
 
@@ -195,15 +324,16 @@ class FontService
     public function getInstalledFontFaces(): array
     {
         $faces = [];
-        $fontsDir = storage_path('fonts');
 
         foreach (self::FONT_PACKAGES as $package) {
             if (! $this->isInstalled($package)) {
                 continue;
             }
 
+            $dir = $this->packageDir($package);
+
             foreach ($package['files'] as $entry) {
-                $filePath = $fontsDir.'/'.$entry['file'];
+                $filePath = $dir.'/'.$entry['file'];
 
                 $faces[] = "@font-face {
                 font-family: '{$package['family']}';
