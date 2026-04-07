@@ -99,7 +99,7 @@ function navigateToSetting(setting: MenuItem): void {
         </BaseList>
       </div>
 
-      <div class="w-full overflow-hidden">
+      <div class="w-full overflow-visible">
         <RouterView />
       </div>
     </div>
