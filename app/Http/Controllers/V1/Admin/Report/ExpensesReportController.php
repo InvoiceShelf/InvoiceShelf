@@ -7,11 +7,11 @@ use App\Models\Company;
 use App\Models\CompanySetting;
 use App\Models\Currency;
 use App\Models\Expense;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
-use PDF;
 
 class ExpensesReportController extends Controller
 {
@@ -19,7 +19,7 @@ class ExpensesReportController extends Controller
      * Handle the incoming request.
      *
      * @param  string  $hash
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function __invoke(Request $request, $hash)
     {
@@ -82,7 +82,7 @@ class ExpensesReportController extends Controller
             'to_date' => $to_date,
             'currency' => $currency,
         ]);
-        $pdf = PDF::loadView('app.pdf.reports.expenses');
+        $pdf = Pdf::loadView('app.pdf.reports.expenses');
 
         if ($request->has('preview')) {
             return view('app.pdf.reports.expenses');
