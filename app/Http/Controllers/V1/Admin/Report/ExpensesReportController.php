@@ -9,8 +9,9 @@ use App\Models\Currency;
 use App\Models\Expense;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\App;
 
 class ExpensesReportController extends Controller
@@ -19,7 +20,7 @@ class ExpensesReportController extends Controller
      * Handle the incoming request.
      *
      * @param  string  $hash
-     * @return JsonResponse
+     * @return View|Response
      */
     public function __invoke(Request $request, $hash)
     {

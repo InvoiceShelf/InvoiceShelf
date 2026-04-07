@@ -253,7 +253,7 @@
 
               </table>
                <div class="item-table-group-total">
-                <p>@lang('Group Total:')&nbsp;&nbsp;&nbsp;<span style="color: #5851D8;">{!! format_money_pdf($group['total'], $currency) !!}</span></p>
+                <p>@lang('pdf_expense_group_total_label')&nbsp;&nbsp;&nbsp;<span style="color: #5851D8;">{!! format_money_pdf($group['total'], $currency) !!}</span></p>
                </div>
             @endforeach
     </div>
