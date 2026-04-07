@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class CompanyRequest extends FormRequest
@@ -31,9 +32,6 @@ class CompanyRequest extends FormRequest
             'tax_id' => [
                 'nullable',
             ],
-            'slug' => [
-                'nullable',
-            ],
             'address.country_id' => [
                 'required',
             ],
@@ -45,9 +43,11 @@ class CompanyRequest extends FormRequest
         return collect($this->validated())
             ->only([
                 'name',
-                'slug',
                 'vat_id',
                 'tax_id',
+            ])
+            ->merge([
+                'slug' => Str::slug($this->name),
             ])
             ->toArray();
     }
