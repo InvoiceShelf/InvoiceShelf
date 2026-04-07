@@ -45,3 +45,15 @@ if ! grep -q '^APP_KEY=[^[:space:]]' /var/www/html/.env; then
     echo "**** Generating new APP_KEY variable ****"
     ./artisan key:generate -n
 fi
+
+echo "**** Clearing cached config ****"
+./artisan config:clear 2>/dev/null || true
+./artisan cache:clear 2>/dev/null || true
+
+echo "**** Creating storage link ****"
+./artisan storage:link --force 2>/dev/null || true
+
+echo "**** Running migrations (if app is installed) ****"
+if ./artisan migrate:status > /dev/null 2>&1; then
+    ./artisan migrate --force
+fi
