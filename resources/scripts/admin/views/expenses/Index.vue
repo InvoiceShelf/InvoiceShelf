@@ -1,5 +1,7 @@
 <template>
   <BasePage>
+    <DuplicateExpenseModal />
+
     <!-- Page Header -->
     <BasePageHeader :title="$t('expenses.title')">
       <BaseBreadcrumb>
@@ -231,6 +233,7 @@ import { useUserStore } from '@/scripts/admin/stores/user'
 import abilities from '@/scripts/admin/stub/abilities'
 
 import UFOIcon from '@/scripts/components/icons/empty/UFOIcon.vue'
+import DuplicateExpenseModal from '@/scripts/admin/components/modal-components/DuplicateExpenseModal.vue'
 import ExpenseDropdown from '@/scripts/admin/components/dropdowns/ExpenseIndexDropdown.vue'
 
 const companyStore = useCompanyStore()

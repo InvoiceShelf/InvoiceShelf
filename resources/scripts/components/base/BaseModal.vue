@@ -6,6 +6,7 @@
         static
         class="fixed inset-0 z-20 overflow-y-auto"
         :open="show"
+        :initial-focus="initialFocus"
         @close="$emit('close')"
       >
         <div
@@ -105,6 +106,14 @@ const props = defineProps({
   show: {
     type: Boolean,
     default: false,
+  },
+  /**
+   * Optional ref (template ref) for the element that should receive focus when the dialog opens.
+   * When omitted, Headless UI focuses the first focusable control (often an input).
+   */
+  initialFocus: {
+    type: Object,
+    default: null,
   },
 })
 const slots = useSlots()
