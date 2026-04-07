@@ -81,6 +81,7 @@ return [
         ['code' => 'fr', 'name' => 'French'],
         ['code' => 'de', 'name' => 'German'],
         ['code' => 'el', 'name' => 'Greek'],
+        ['code' => 'he', 'name' => 'עברית'],
         ['code' => 'hi', 'name' => 'Hindi'],
         ['code' => 'id', 'name' => 'Indonesian'],
         ['code' => 'it', 'name' => 'Italian'],
@@ -105,6 +106,7 @@ return [
         ['code' => 'vi', 'name' => 'Tiếng Việt'],
         ['code' => 'tr', 'name' => 'Turkish'],
         ['code' => 'uk', 'name' => 'Ukrainian'],
+        ['code' => 'ur', 'name' => 'اردو'],
     ],
 
     /*
