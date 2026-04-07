@@ -37,21 +37,10 @@ return [
             'views/master' => 'Resources/views/layouts/master.blade.php',
             'scaffold/config' => 'Config/config.php',
             'composer' => 'composer.json',
-            'resources/scripts/module' => 'Resources/scripts/module.js',
-            'resources/sass/module' => 'Resources/sass/module.scss',
-            'resources/scripts/stores/sample-store' => 'Resources/scripts/stores/sample-store.js',
-            'resources/scripts/views/SamplePage' => 'Resources/scripts/views/SamplePage.vue',
-            'resources/locales/en' => 'Resources/locales/en.json',
-            'resources/locales/locales' => 'Resources/locales/locales.js',
-            'package' => 'package.json',
-            'postcss.config' => 'postcss.config.js',
-            'tailwind.config' => 'tailwind.config.js',
-            'vite.config' => 'vite.config.js',
         ],
         'replacements' => [
             'routes/web' => ['LOWER_NAME', 'STUDLY_NAME'],
             'routes/api' => ['LOWER_NAME'],
-            'webpack' => ['LOWER_NAME'],
             'json' => ['LOWER_NAME', 'STUDLY_NAME', 'MODULE_NAMESPACE', 'PROVIDER_NAMESPACE'],
             'views/index' => ['LOWER_NAME'],
             'views/master' => ['LOWER_NAME', 'STUDLY_NAME'],
@@ -65,9 +54,6 @@ return [
                 'MODULE_NAMESPACE',
                 'PROVIDER_NAMESPACE',
             ],
-            'resources/scripts/module' => ['LOWER_NAME'],
-            'resources/scripts/stores/sample-store' => ['LOWER_NAME'],
-            'vite.config' => ['LOWER_NAME'],
         ],
         'gitkeep' => true,
     ],
@@ -83,6 +69,7 @@ return [
         */
 
         'modules' => base_path('Modules'),
+        'app_folder' => 'app',
         /*
         |--------------------------------------------------------------------------
         | Modules assets path

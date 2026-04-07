@@ -73,6 +73,8 @@ class ModuleResource extends JsonResource
         $installed = ModelsModule::where('name', $moduleName)->first();
 
         $installedVersion = $installed && $installed->installed ? $installed->version : null;
+        $isLocal = (bool) ($ext['is_local'] ?? false);
+        $forcedInstalled = (bool) ($ext['installed'] ?? false);
 
         return [
             'id' => $ext['slug'] ?? $moduleName,
@@ -102,9 +104,11 @@ class ModuleResource extends JsonResource
             'yearly_price' => 0,
             'author_name' => $ext['author'] ?? '',
             'author_avatar' => null,
-            'installed' => $installed && $installed->installed,
-            'enabled' => $installed && $installed->installed ? (bool) $installed->enabled : false,
-            'update_available' => $this->updateAvailable($installed, $latestVersion, $ext),
+            'installed' => $isLocal ? $forcedInstalled : ($installed && $installed->installed),
+            'enabled' => $isLocal
+                ? (bool) ($ext['enabled'] ?? false)
+                : ($installed && $installed->installed ? (bool) $installed->enabled : false),
+            'update_available' => $isLocal ? false : $this->updateAvailable($installed, $latestVersion, $ext),
             'video_link' => null,
             'video_thumbnail' => null,
             'links' => $this->buildLinks($ext),

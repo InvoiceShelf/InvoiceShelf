@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Nwidart\Modules\Facades\Module;
+use Symfony\Component\Finder\Finder;
 use ZipArchive;
 
 // Implementation taken from Akaunting - https://github.com/akaunting/akaunting
@@ -34,12 +35,18 @@ class ModuleInstaller
     public static function getModules()
     {
         $items = self::fetchAllCatalogItems();
+        $localModules = self::fetchLocalModules();
 
-        if ($items === []) {
+        if ($items === [] && $localModules === []) {
             return response()->json(['message' => 'extensions_catalog_unavailable'], 503);
         }
 
-        return ModuleResource::collection(collect($items));
+        $merged = self::mergeCatalogAndLocalModules($items, $localModules);
+
+        return ModuleResource::collection(collect($merged))
+            ->additional(['meta' => [
+                'catalog_unavailable' => $items === [],
+            ]]);
     }
 
     /**
@@ -50,12 +57,38 @@ class ModuleInstaller
         $items = self::fetchAllCatalogItems();
 
         if ($items === []) {
+            $local = self::findLocalModuleBySlug($slug);
+
+            if ($local !== null) {
+                return (object) [
+                    'success' => true,
+                    'module' => $local,
+                    'modules' => array_slice(self::fetchLocalModules(), 0, 8),
+                ];
+            }
+
             return (object) ['success' => false, 'error' => 'catalog_unavailable'];
         }
 
         $found = collect($items)->firstWhere('slug', $slug);
 
         if (! $found) {
+            $local = self::findLocalModuleBySlug($slug);
+
+            if ($local !== null) {
+                $others = collect(self::mergeCatalogAndLocalModules($items, self::fetchLocalModules()))
+                    ->filter(fn (array $e) => ($e['slug'] ?? '') !== $slug)
+                    ->take(8)
+                    ->values()
+                    ->all();
+
+                return (object) [
+                    'success' => true,
+                    'module' => $local,
+                    'modules' => $others,
+                ];
+            }
+
             return (object) ['success' => false, 'error' => 'not_found'];
         }
 
@@ -70,6 +103,116 @@ class ModuleInstaller
             'module' => $found,
             'modules' => $others,
         ];
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private static function fetchLocalModules(): array
+    {
+        $modulesPath = (string) config('modules.paths.modules', base_path('Modules'));
+
+        if (! is_dir($modulesPath)) {
+            return [];
+        }
+
+        $items = [];
+
+        /** @var Finder $finder */
+        $finder = Finder::create()
+            ->in($modulesPath)
+            ->depth('== 1')
+            ->followLinks()
+            ->files()
+            ->name('module.json');
+
+        foreach ($finder as $file) {
+            $json = json_decode((string) $file->getContents(), true);
+            if (! is_array($json)) {
+                continue;
+            }
+
+            $name = (string) ($json['name'] ?? '');
+            if ($name === '') {
+                continue;
+            }
+
+            $alias = (string) ($json['alias'] ?? '');
+            $slug = $alias !== '' ? $alias : strtolower($name);
+
+            $enabled = false;
+            if (Module::has($name)) {
+                $enabled = (bool) Module::find($name)?->isEnabled();
+            }
+
+            $items[] = [
+                'slug' => $slug,
+                'module_name' => $name,
+                'name' => $name,
+                'description' => (string) ($json['description'] ?? ''),
+                'version' => '0.0.0',
+                'author' => 'Local',
+                'license' => '',
+                'tags' => [],
+                'compatibility' => [],
+                'repository' => '',
+                'download_url' => '',
+                'cover' => null,
+                'catalog_kind' => 'module',
+                'is_local' => true,
+                'installed' => true,
+                'enabled' => $enabled,
+            ];
+        }
+
+        usort($items, fn (array $a, array $b) => strcmp((string) ($a['name'] ?? ''), (string) ($b['name'] ?? '')));
+
+        return $items;
+    }
+
+    /**
+     * @param  array<int, array<string, mixed>>  $catalog
+     * @param  array<int, array<string, mixed>>  $local
+     * @return array<int, array<string, mixed>>
+     */
+    private static function mergeCatalogAndLocalModules(array $catalog, array $local): array
+    {
+        $catalogModuleNames = array_filter(array_map(fn ($row) => is_array($row) ? ($row['module_name'] ?? null) : null, $catalog));
+        $catalogModuleNames = array_values(array_unique(array_map('strval', $catalogModuleNames)));
+
+        foreach ($local as $row) {
+            if (! is_array($row)) {
+                continue;
+            }
+
+            $moduleName = (string) ($row['module_name'] ?? '');
+            if ($moduleName === '' || in_array($moduleName, $catalogModuleNames, true)) {
+                continue;
+            }
+
+            $catalog[] = $row;
+        }
+
+        return $catalog;
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    private static function findLocalModuleBySlug(string $slug): ?array
+    {
+        $slug = strtolower(trim($slug));
+        if ($slug === '') {
+            return null;
+        }
+
+        foreach (self::fetchLocalModules() as $row) {
+            if (strtolower((string) ($row['slug'] ?? '')) === $slug) {
+                return $row;
+            }
+        }
+
+        return null;
     }
 
     /**
