@@ -887,9 +887,9 @@
       "tax_types": "Tax Types",
       "expense_category": "Expense Categories",
       "update_app": "Update App",
-      "backup": "Backup",
-      "file_disk": "File Disk",
-      "fonts": "Fonts",
+      "backup": "Backups",
+      "file_disk": "File Disks",
+      "fonts": "Font Packages",
       "custom_fields": "Custom Fields",
       "payment_modes": "Payment Modes",
       "notes": "Record Notes",
@@ -1353,8 +1353,8 @@
       }
     },
     "fonts": {
-      "title": "PDF Fonts",
-      "description": "Manage fonts used for PDF generation. Noto Sans is bundled and covers most languages. Additional font packages can be installed for CJK languages.",
+      "title": "Font Packages",
+      "description": "These font packages are used exclusively when generating PDF documents. The bundled Noto Sans already covers Latin, Cyrillic, Greek, Arabic, Thai and Hindi — install the packages below to render Chinese, Japanese or Korean characters in your PDFs.",
       "bundled_info": "Noto Sans (bundled) covers Latin, Cyrillic, Greek, Arabic, Thai, Hindi, and most other scripts. Install additional packages below for CJK language support.",
       "installed": "Installed",
       "install": "Install",
@@ -1391,7 +1391,7 @@
       "requirements_not_met": "Update cannot continue because some system requirements are not met (including minimum PHP version). Please fix the failed requirements and try again."
     },
     "backup": {
-      "title": "Backup | Backups",
+      "title": "Backups | Backups",
       "description": "The backup is a zipfile that contains all files in the directories you specify along with a dump of your database",
       "new_backup": "Add New Backup",
       "create_backup": "Create Backup",
@@ -1414,7 +1414,7 @@
       "invalid_disk_credentials": "Invalid credential of selected disk"
     },
     "disk": {
-      "title": "File Disk | File Disks",
+      "title": "File Disks | File Disks",
       "description": "By default, InvoiceShelf will use your local disk for saving backups, avatar and other image files. You can configure more than one disk drivers like DigitalOcean, S3 and Dropbox according to your preference.",
       "created_at": "created at",
       "dropbox": "dropbox",
