@@ -24,6 +24,10 @@ class ModuleInstaller
 {
     private const int MAX_PACKAGE_BYTES = 50_000_000; // 50 MB
 
+    private const int MAX_EXTRACTED_FILES = 2_000;
+
+    private const int MAX_EXTRACTED_BYTES = 200_000_000; // 200 MB
+
     /**
      * @return JsonResponse|AnonymousResourceCollection
      */
@@ -160,6 +164,14 @@ class ModuleInstaller
             return [
                 'success' => false,
                 'message' => 'download_url_missing',
+            ];
+        }
+
+        $scheme = strtolower((string) parse_url((string) $downloadUrl, PHP_URL_SCHEME));
+        if (! in_array($scheme, ['http', 'https'], true)) {
+            return [
+                'success' => false,
+                'message' => 'download_url_invalid',
             ];
         }
 
@@ -423,6 +435,84 @@ class ModuleInstaller
     }
 
     /**
+     * @return array{
+     *   shell_commands: array<int, string>,
+     *   runnable_commands: array<int, string>,
+     *   notes: array<int, string>
+     * }
+     */
+    public static function postInstallHints(string $moduleName, string $catalogKind = 'module'): array
+    {
+        if ($catalogKind === 'pdf_template') {
+            return ['shell_commands' => [], 'runnable_commands' => [], 'notes' => []];
+        }
+
+        $shellCommands = [
+            'composer dump-autoload',
+        ];
+
+        $runnable = [
+            'module:dump --all',
+            'optimize:clear',
+        ];
+
+        $modulePath = base_path('Modules/'.$moduleName);
+
+        if (File::exists($modulePath.'/package.json') || File::exists($modulePath.'/vite.config.js')) {
+            $shellCommands[] = 'npm run build';
+        }
+
+        $notes = [
+            'Some extensions add PHP dependencies; you may need to run composer install during deployment.',
+            'In Docker/immutable deployments, installing extensions at runtime may require a writable volume or rebuilding the image.',
+        ];
+
+        return [
+            'shell_commands' => $shellCommands,
+            'runnable_commands' => $runnable,
+            'notes' => $notes,
+        ];
+    }
+
+    /**
+     * Run safe post-install Artisan commands (no composer/npm).
+     *
+     * @return array{success: bool, output: array<int, array{command: string, exit_code: int, output: string}>}
+     */
+    public static function runPostInstallCommands(string $moduleName, string $catalogKind = 'module'): array
+    {
+        if ($catalogKind === 'pdf_template') {
+            return ['success' => true, 'output' => []];
+        }
+
+        $hints = self::postInstallHints($moduleName, $catalogKind);
+        $commands = $hints['runnable_commands'] ?? [];
+
+        $out = [];
+        foreach ($commands as $cmd) {
+            try {
+                $exit = Artisan::call($cmd);
+                $out[] = [
+                    'command' => $cmd,
+                    'exit_code' => (int) $exit,
+                    'output' => (string) Artisan::output(),
+                ];
+            } catch (\Throwable $e) {
+                report($e);
+                $out[] = [
+                    'command' => $cmd,
+                    'exit_code' => 1,
+                    'output' => $e->getMessage(),
+                ];
+            }
+        }
+
+        $success = collect($out)->every(fn (array $row) => $row['exit_code'] === 0);
+
+        return ['success' => $success, 'output' => $out];
+    }
+
+    /**
      * @return array{success: bool, message?: string}
      */
     public static function uninstall(string $moduleName): array
@@ -602,6 +692,12 @@ class ModuleInstaller
         $destination = rtrim($destination, DIRECTORY_SEPARATOR);
         $destinationReal = realpath($destination) ?: $destination;
 
+        if ($zip->numFiles > self::MAX_EXTRACTED_FILES) {
+            throw new \RuntimeException('ZIP contains too many files to be safely extracted.');
+        }
+
+        $totalBytes = 0;
+
         for ($i = 0; $i < $zip->numFiles; $i++) {
             $name = (string) $zip->getNameIndex($i);
             $name = str_replace('\\', '/', $name);
@@ -627,6 +723,14 @@ class ModuleInstaller
                 File::ensureDirectoryExists($targetPath);
 
                 continue;
+            }
+
+            $stat = $zip->statIndex($i);
+            if (is_array($stat) && isset($stat['size']) && is_numeric($stat['size'])) {
+                $totalBytes += (int) $stat['size'];
+                if ($totalBytes > self::MAX_EXTRACTED_BYTES) {
+                    throw new \RuntimeException('ZIP is too large to be safely extracted.');
+                }
             }
 
             File::ensureDirectoryExists(dirname($targetPath));
@@ -679,9 +783,9 @@ class ModuleInstaller
         Cache::forget((string) config('modules.cache.key', 'laravel-modules'));
 
         try {
-            Artisan::call('module:clear');
+            Artisan::call('module:dump --all');
         } catch (\Throwable) {
-            // Ignore: command may not exist in some environments.
+            // Ignore: command may not be available in all environments.
         }
     }
 }

@@ -1,9 +1,11 @@
 <?php
 
+use App\Modules\Activators\SafeModeFileActivator;
 use Nwidart\Modules\Activators\FileActivator;
 use Nwidart\Modules\Providers\ConsoleServiceProvider;
 
 return [
+    'safe_mode' => env('MODULES_SAFE_MODE', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -229,7 +231,9 @@ return [
     */
     'activators' => [
         'file' => [
-            'class' => FileActivator::class,
+            'class' => env('MODULES_SAFE_MODE', false)
+                ? SafeModeFileActivator::class
+                : FileActivator::class,
             'statuses-file' => base_path('storage/app/modules_statuses.json'),
             'cache-key' => 'activator.installed',
             'cache-lifetime' => 604800,

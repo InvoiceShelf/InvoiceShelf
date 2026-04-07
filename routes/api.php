@@ -57,6 +57,7 @@ use App\Http\Controllers\V1\Admin\Modules\DownloadModuleController;
 use App\Http\Controllers\V1\Admin\Modules\EnableModuleController;
 use App\Http\Controllers\V1\Admin\Modules\ModuleController;
 use App\Http\Controllers\V1\Admin\Modules\ModulesController;
+use App\Http\Controllers\V1\Admin\Modules\RunPostInstallCommandsController;
 use App\Http\Controllers\V1\Admin\Modules\UninstallModuleController;
 use App\Http\Controllers\V1\Admin\Modules\UnzipModuleController;
 use App\Http\Controllers\V1\Admin\Modules\UploadModuleController;
@@ -470,6 +471,8 @@ Route::prefix('/v1')->group(function () {
             Route::post('/{module}/disable', DisableModuleController::class);
 
             Route::post('/{module}/uninstall', UninstallModuleController::class);
+
+            Route::post('/{module}/post-install', RunPostInstallCommandsController::class);
 
             Route::post('/download', DownloadModuleController::class);
 

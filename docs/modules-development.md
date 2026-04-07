@@ -19,9 +19,10 @@ This guide explains how that fits the **rest of the app** (API, admin SPA, asset
 9. [Adding entries to the sidebar / settings menus](#adding-entries-to-the-sidebar--settings-menus)
 10. [Lifecycle events](#lifecycle-events)
 11. [Install, enable, and database commands](#install-enable-and-database-commands)
-12. [Testing during development](#testing-during-development)
-13. [Packaging and publishing](#packaging-and-publishing)
-14. [Official reference modules](#official-reference-modules)
+12. [Safe mode (disable all modules)](#safe-mode-disable-all-modules)
+13. [Testing during development](#testing-during-development)
+14. [Packaging and publishing](#packaging-and-publishing)
+15. [Official reference modules](#official-reference-modules)
 
 ---
 
@@ -236,6 +237,22 @@ Listen in your module’s `register()` method if you need to clean up caches, un
 The **in-app installer** (Admin → Modules) ultimately runs migration, seed, and enable steps for downloaded modules (see `App\Space\ModuleInstaller::complete()`).
 
 ---
+
+## Safe mode (disable all modules)
+
+InvoiceShelf includes an env-based **module safe mode** kill-switch. When enabled, the app will treat **all** `nwidart/laravel-modules` modules as **inactive**, even if they are marked enabled in `storage/app/modules_statuses.json`.
+
+Enable safe mode:
+
+```bash
+MODULES_SAFE_MODE=true
+```
+
+Notes:
+
+- This is a **boot-time** setting (modules are resolved during app boot), so it is intentionally **not** a query-string toggle.
+- If you cache config in production, you must reload config for changes to take effect (or redeploy with the new env value):
+  - `php artisan config:clear`
 
 ## Testing during development
 

@@ -22,6 +22,8 @@ class UninstallModuleController extends Controller
             return response()->json($result, 422);
         }
 
-        return response()->json($result);
+        return response()->json(array_merge($result, [
+            'post_install' => ModuleInstaller::postInstallHints($module, 'module'),
+        ]));
     }
 }

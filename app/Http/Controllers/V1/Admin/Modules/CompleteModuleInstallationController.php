@@ -39,6 +39,10 @@ class CompleteModuleInstallationController extends Controller
 
         return response()->json([
             'success' => $response,
+            'post_install' => ModuleInstaller::postInstallHints(
+                (string) $request->module,
+                (string) $request->input('catalog_kind', 'module'),
+            ),
         ]);
     }
 }
