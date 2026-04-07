@@ -54,7 +54,7 @@
               bg-surface/95 backdrop-blur-xl backdrop-saturate-150
               rounded-xl border border-line-default
               text-left
-              overflow-hidden
+              overflow-visible
               relative
               shadow-2xl
               transition-all
