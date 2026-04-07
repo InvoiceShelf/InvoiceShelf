@@ -17,7 +17,7 @@ Please refer to the [README](README.md) for instructions on setting up the devel
 ## Code Style
 
 - **PHP**: Follow PSR-12 standards. Run `vendor/bin/pint --dirty` before committing
-- **TypeScript/Vue**: Follow the existing patterns in `resources/scripts-v2/`
+- **TypeScript/Vue**: Follow the existing patterns in `resources/scripts/`
 - **Tests**: Every new feature or bug fix should include tests
 
 ## Contributor License Agreement (CLA)
