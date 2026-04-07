@@ -109,6 +109,7 @@ import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import cloneDeep from 'lodash/cloneDeep'
+import moment from 'moment'
 import {
   required,
   maxLength,
@@ -119,6 +120,7 @@ import {
 import useVuelidate from '@vuelidate/core'
 import { useInvoiceStore } from '../store'
 import { useRecurringInvoiceStore } from '@/scripts/features/company/recurring-invoices/store'
+import { useCompanyStore } from '@/scripts/stores/company.store'
 import InvoiceBasicFields from '../components/InvoiceBasicFields.vue'
 import {
   DocumentItemsTable,
@@ -130,6 +132,7 @@ import {
 
 const invoiceStore = useInvoiceStore()
 const recurringInvoiceStore = useRecurringInvoiceStore()
+const companyStore = useCompanyStore()
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
@@ -138,6 +141,12 @@ const invoiceValidationScope = 'newInvoice'
 const isSaving = ref<boolean>(false)
 const isMarkAsDefault = ref<boolean>(false)
 const isRecurring = ref<boolean>(false)
+
+// Auto-due-date bookkeeping: tracks whether the user has manually edited the
+// due date, so the invoice_date watcher can avoid clobbering a manual value.
+const dueDateManuallyChanged = ref<boolean>(false)
+let isAutoUpdatingDueDate = false
+const expectedAutoDueDate = ref<string | null>(null)
 
 const invoiceNoteFieldList = ref<string[]>(['customer', 'company', 'invoice'])
 
@@ -259,6 +268,71 @@ watch(
         newVal as Record<string, unknown>
       ).currency as Record<string, unknown>
     }
+  },
+)
+
+// Detect manual edits to the due date so we know not to overwrite them
+// when the invoice date changes afterwards.
+watch(
+  () => invoiceStore.newInvoice.due_date,
+  (newDueDate, oldDueDate) => {
+    if (
+      !isAutoUpdatingDueDate
+      && newDueDate !== oldDueDate
+      && oldDueDate !== undefined
+      && newDueDate !== expectedAutoDueDate.value
+    ) {
+      dueDateManuallyChanged.value = true
+    }
+  },
+)
+
+// Auto-compute due_date = invoice_date + invoice_due_date_days whenever the
+// invoice date changes, if the company setting opts into automatic dates
+// and the user hasn't locked a manual due date in the future.
+watch(
+  () => invoiceStore.newInvoice.invoice_date,
+  (newInvoiceDate, oldInvoiceDate) => {
+    if (
+      companyStore.selectedCompanySettings?.invoice_set_due_date_automatically !== 'YES'
+      || !newInvoiceDate
+      || newInvoiceDate === oldInvoiceDate
+      || oldInvoiceDate === undefined
+    ) {
+      return
+    }
+
+    const dueDateDays = parseInt(
+      companyStore.selectedCompanySettings?.invoice_due_date_days ?? '0',
+      10,
+    )
+    const invoiceDate = moment(newInvoiceDate as string)
+    if (!invoiceDate.isValid()) {
+      return
+    }
+
+    const calculatedDueDate = invoiceDate
+      .clone()
+      .add(dueDateDays, 'days')
+      .format('YYYY-MM-DD')
+    expectedAutoDueDate.value = calculatedDueDate
+
+    if (dueDateManuallyChanged.value) {
+      const currentDueDate = invoiceStore.newInvoice.due_date
+      if (currentDueDate) {
+        const currentMoment = moment(currentDueDate as string)
+        if (currentMoment.isValid() && currentMoment.isSameOrAfter(invoiceDate, 'day')) {
+          // Manual due date still valid — leave it alone
+          return
+        }
+      }
+      // Manual due date is in the past / invalid — take back control
+      dueDateManuallyChanged.value = false
+    }
+
+    isAutoUpdatingDueDate = true
+    invoiceStore.newInvoice.due_date = calculatedDueDate
+    isAutoUpdatingDueDate = false
   },
 )
 
