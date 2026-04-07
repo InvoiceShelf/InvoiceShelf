@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Http\Requests\MemberRequest;
-use App\Models\CompanySetting;
 use App\Models\User;
 use Silber\Bouncer\BouncerFacade;
 
@@ -14,7 +13,7 @@ class MemberService
         $user = User::create($request->getUserPayload());
 
         $user->setSettings([
-            'language' => CompanySetting::getSetting('language', $request->header('company')),
+            'language' => 'default',
         ]);
 
         $companies = collect($request->companies);

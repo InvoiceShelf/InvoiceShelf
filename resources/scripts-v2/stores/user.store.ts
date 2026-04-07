@@ -45,7 +45,7 @@ export const useUserStore = defineStore('user', () => {
         email: response.data.email,
         password: '',
         confirm_password: '',
-        language: '',
+        language: currentUserSettings.value.language || '',
       }
       return response
     } catch (err: unknown) {
@@ -63,7 +63,7 @@ export const useUserStore = defineStore('user', () => {
         email: response.data.email,
         password: '',
         confirm_password: '',
-        language: '',
+        language: currentUserSettings.value.language || '',
       }
 
       const notificationStore = useNotificationStore()

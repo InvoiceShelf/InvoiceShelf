@@ -5,13 +5,32 @@ import { required, minLength, email, helpers } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { useUserStore } from '../../../../stores/user.store'
 import { useGlobalStore } from '../../../../stores/global.store'
+import { useCompanyStore } from '../../../../stores/company.store'
+
+const LANGUAGE_DEFAULT = 'default'
 
 const userStore = useUserStore()
 const globalStore = useGlobalStore()
+const companyStore = useCompanyStore()
 const { t } = useI18n()
 
 const isSaving = ref<boolean>(false)
 const userForm = computed(() => userStore.userForm)
+
+const selectedLanguage = computed<string>({
+  get: () => userForm.value.language || LANGUAGE_DEFAULT,
+  set: (v: string) => {
+    userForm.value.language = v === LANGUAGE_DEFAULT ? '' : v
+  },
+})
+
+const languageOptions = computed(() => {
+  const languages = (globalStore.config as Record<string, unknown>)?.languages as Array<{ name: string; code: string }> ?? []
+  return [
+    { name: t('settings.account_settings.default_language'), code: LANGUAGE_DEFAULT },
+    ...languages,
+  ]
+})
 
 const rules = computed(() => ({
   name: {
@@ -32,11 +51,17 @@ async function updateGeneral(): Promise<void> {
 
   isSaving.value = true
   try {
+    const language = userForm.value.language || 'default'
+
+    await userStore.updateUserSettings({ settings: { language } })
+
     await userStore.updateCurrentUser({
       name: userForm.value.name,
       email: userForm.value.email,
-      language: userForm.value.language || undefined,
     })
+
+    const effectiveLanguage = (language === 'default' ? '' : language) || companyStore.selectedCompanySettings?.language || 'en'
+    await (window as Record<string, unknown>).loadLanguage?.(effectiveLanguage)
   } finally {
     isSaving.value = false
   }
@@ -77,12 +102,13 @@ async function updateGeneral(): Promise<void> {
 
         <BaseInputGroup :label="$t('settings.language')">
           <BaseMultiselect
-            v-model="userForm.language"
-            :options="(globalStore.config as Record<string, unknown>)?.languages as Array<{ name: string; code: string }> ?? []"
+            v-model="selectedLanguage"
+            :options="languageOptions"
             label="name"
             value-prop="code"
-            track-by="name"
+            track-by="code"
             :searchable="true"
+            :can-deselect="false"
           />
         </BaseInputGroup>
       </BaseInputGrid>

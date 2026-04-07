@@ -68,6 +68,17 @@ export const useGlobalStore = defineStore('global', () => {
       userStore.currentUserSettings = response.current_user_settings
       userStore.currentAbilities = response.current_user_abilities
 
+      // Sync user form with bootstrap data
+      if (response.current_user) {
+        userStore.userForm = {
+          name: response.current_user.name ?? '',
+          email: response.current_user.email ?? '',
+          password: '',
+          confirm_password: '',
+          language: response.current_user_settings?.language ?? '',
+        }
+      }
+
       // company store
       companyStore.companies = response.companies
 
@@ -89,6 +100,16 @@ export const useGlobalStore = defineStore('global', () => {
       }
 
       isAppLoaded.value = true
+
+      // Load UI language: user preference > company setting > English
+      // 'default' means "use company language"
+      const userLang = userStore.currentUserSettings.language
+      const uiLanguage =
+        (userLang && userLang !== 'default' ? userLang : '') ||
+        (response.current_company_settings as Record<string, string>)?.language ||
+        'en'
+      await (window as Record<string, unknown>).loadLanguage?.(uiLanguage)
+
       return response
     } catch (err: unknown) {
       handleApiError(err)

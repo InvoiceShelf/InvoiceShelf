@@ -73,6 +73,8 @@ class InvitationRegistrationController extends Controller
             'password' => $request->password,
         ]);
 
+        $user->setSettings(['language' => 'default']);
+
         $this->invitationService->accept($invitation, $user);
 
         return response()->json([
