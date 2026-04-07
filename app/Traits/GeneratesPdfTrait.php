@@ -5,6 +5,7 @@ namespace App\Traits;
 use App\Models\Address;
 use App\Models\CompanySetting;
 use App\Models\FileDisk;
+use App\Support\PdfHtmlSanitizer;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 
@@ -182,6 +183,10 @@ trait GeneratesPdfTrait
 
         $str = str_replace('</p>', '<br />', $str);
 
-        return $str;
+        // Sanitize the assembled HTML to strip any SSRF vectors that may have
+        // entered through user-supplied address fields, customer names, or
+        // custom field values. Notes also pass through this method, so they
+        // get the same treatment without needing a separate wrapper.
+        return PdfHtmlSanitizer::sanitize($str);
     }
 }

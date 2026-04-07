@@ -8,7 +8,6 @@ use App\Facades\PDF;
 use App\Mail\SendInvoiceMail;
 use App\Services\SerialNumberFormatter;
 use App\Space\PdfTemplateUtils;
-use App\Support\PdfHtmlSanitizer;
 use App\Traits\GeneratesPdfTrait;
 use App\Traits\HasCustomFieldsTrait;
 use Carbon\Carbon;
@@ -657,7 +656,7 @@ class Invoice extends Model implements HasMedia
 
     public function getNotes()
     {
-        return PdfHtmlSanitizer::sanitize($this->getFormattedString($this->notes));
+        return $this->getFormattedString($this->notes);
     }
 
     public function getEmailString($body)
