@@ -7,6 +7,7 @@ use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 
 class ModuleResource extends JsonResource
 {
@@ -19,9 +20,58 @@ class ModuleResource extends JsonResource
     {
         $ext = is_array($this->resource) ? $this->resource : (array) $this->resource;
         $moduleName = $ext['module_name'] ?? '';
-        $installed = ModelsModule::where('name', $moduleName)->first();
+        $catalogKind = $ext['catalog_kind'] ?? 'module';
 
         $latestVersion = $ext['version'] ?? '0.0.0';
+
+        if ($catalogKind === 'pdf_template') {
+            $installedVersion = $this->pdfTemplateInstalledVersion($ext);
+            $filesOk = $this->pdfTemplateFilesExist($ext);
+            $installedFlag = $installedVersion !== null && $filesOk;
+
+            return [
+                'id' => $ext['slug'] ?? $moduleName,
+                'average_rating' => 0,
+                'cover' => $ext['cover'] ?? null,
+                'slug' => $ext['slug'] ?? '',
+                'module_name' => $moduleName,
+                'catalog_kind' => 'pdf_template',
+                'pdf_template_type' => $ext['pdf_template_type'] ?? null,
+                'template_name' => $ext['template_name'] ?? null,
+                'faq' => [],
+                'highlights' => '',
+                'installed_module_version' => $installedFlag ? $installedVersion : null,
+                'installed_module_version_updated_at' => null,
+                'latest_module_version' => $latestVersion,
+                'latest_module_version_updated_at' => null,
+                'is_dev' => false,
+                'license' => $ext['license'] ?? '',
+                'long_description' => $ext['description'] ?? '',
+                'monthly_price' => 0,
+                'name' => $ext['name'] ?? '',
+                'purchased' => true,
+                'reviews' => [],
+                'screenshots' => [],
+                'short_description' => $ext['description'] ?? '',
+                'type' => 'MONTHLY',
+                'yearly_price' => 0,
+                'author_name' => $ext['author'] ?? '',
+                'author_avatar' => null,
+                'installed' => $installedFlag,
+                'enabled' => $installedFlag,
+                'update_available' => $this->updateAvailablePdfTemplate($installedVersion, $latestVersion, $ext, $filesOk),
+                'video_link' => null,
+                'video_thumbnail' => null,
+                'links' => $this->buildLinks($ext),
+                'repository' => $ext['repository'] ?? '',
+                'download_url' => $ext['download_url'] ?? '',
+                'tags' => $ext['tags'] ?? [],
+                'compatibility' => $ext['compatibility'] ?? [],
+            ];
+        }
+
+        $installed = ModelsModule::where('name', $moduleName)->first();
+
         $installedVersion = $installed && $installed->installed ? $installed->version : null;
 
         return [
@@ -30,6 +80,9 @@ class ModuleResource extends JsonResource
             'cover' => $ext['cover'] ?? null,
             'slug' => $ext['slug'] ?? '',
             'module_name' => $moduleName,
+            'catalog_kind' => 'module',
+            'pdf_template_type' => null,
+            'template_name' => null,
             'faq' => [],
             'highlights' => '',
             'installed_module_version' => $installedVersion,
@@ -60,6 +113,57 @@ class ModuleResource extends JsonResource
             'tags' => $ext['tags'] ?? [],
             'compatibility' => $ext['compatibility'] ?? [],
         ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $ext
+     */
+    private function pdfTemplateInstalledVersion(array $ext): ?string
+    {
+        $slug = $ext['slug'] ?? '';
+        if ($slug === '') {
+            return null;
+        }
+
+        $json = json_decode(Setting::getSetting('pdf_template_catalog_versions') ?: '{}', true);
+        if (! is_array($json)) {
+            return null;
+        }
+
+        $v = $json[$slug] ?? null;
+
+        return $v !== null && $v !== '' ? (string) $v : null;
+    }
+
+    /**
+     * @param  array<string, mixed>  $ext
+     */
+    private function pdfTemplateFilesExist(array $ext): bool
+    {
+        $type = $ext['pdf_template_type'] ?? '';
+        $basename = $ext['template_name'] ?? '';
+
+        if (! in_array($type, ['invoice', 'estimate'], true) || $basename === '') {
+            return false;
+        }
+
+        return Storage::disk('pdf_templates')->exists($type.'/'.$basename.'.blade.php');
+    }
+
+    /**
+     * @param  array<string, mixed>  $ext
+     */
+    private function updateAvailablePdfTemplate(?string $installedVersion, string $latestVersion, array $ext, bool $filesOk): bool
+    {
+        if (! $installedVersion || ! $filesOk) {
+            return false;
+        }
+
+        if (! version_compare((string) $installedVersion, $latestVersion, '<')) {
+            return false;
+        }
+
+        return $this->isCompatibleWithApp($ext);
     }
 
     private function updateAvailable(?ModelsModule $installed, string $latestVersion, array $ext): bool

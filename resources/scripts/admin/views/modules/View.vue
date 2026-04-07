@@ -26,7 +26,7 @@
             v-if="moduleData.cover"
             :src="displayImage"
             alt=""
-            class="w-full h-full object-cover sm:rounded-lg"
+            class="h-full w-full object-contain object-center sm:rounded-lg"
           />
           <BaseIcon
             v-else
@@ -45,21 +45,38 @@
           w-full
         "
       >
-        <h1
-          class="
-            text-2xl
-            font-extrabold
-            tracking-tight
-            text-gray-900
-            sm:text-3xl
-          "
-        >
-          {{ moduleData.name }}
-        </h1>
+        <div class="flex flex-wrap items-center gap-3">
+          <h1
+            class="
+              text-2xl
+              font-extrabold
+              tracking-tight
+              text-gray-900
+              sm:text-3xl
+            "
+          >
+            {{ moduleData.name }}
+          </h1>
+          <span
+            class="
+              inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold
+            "
+            :class="catalogKindBadgeClass"
+          >
+            {{ catalogKindLabel }}
+          </span>
+        </div>
 
         <p v-if="moduleData.latest_module_version" class="text-sm text-gray-500 mt-2">
           {{ $t('modules.version') }}
           {{ moduleVersion }}
+        </p>
+
+        <p
+          v-if="compatibilityRange"
+          class="text-sm text-gray-600 mt-1"
+        >
+          {{ $t('modules.catalog_compatibility', { range: compatibilityRange }) }}
         </p>
 
         <div
@@ -118,41 +135,43 @@
               <span class="ml-2">{{ moduleData.latest_module_version }}</span>
             </BaseButton>
 
-            <BaseButton
-              v-if="moduleData.enabled"
-              variant="danger"
-              size="xl"
-              :loading="isDisabling"
-              :disabled="isDisabling"
-              class="flex items-center justify-center text-base"
-              @click="disableModule"
-            >
-              <BaseIcon v-if="!isDisabling" name="NoSymbolIcon" class="mr-2" />
-              {{ $t('modules.disable') }}
-            </BaseButton>
-            <BaseButton
-              v-else
-              variant="primary-outline"
-              size="xl"
-              :loading="isEnabling"
-              :disabled="isEnabling"
-              class="flex items-center justify-center text-base"
-              @click="enableModule"
-            >
-              <BaseIcon v-if="!isEnabling" name="CheckIcon" class="mr-2" />
-              {{ $t('modules.enable') }}
-            </BaseButton>
+            <template v-if="isModuleKind">
+              <BaseButton
+                v-if="moduleData.enabled"
+                variant="danger"
+                size="xl"
+                :loading="isDisabling"
+                :disabled="isDisabling"
+                class="flex items-center justify-center text-base"
+                @click="disableModule"
+              >
+                <BaseIcon v-if="!isDisabling" name="NoSymbolIcon" class="mr-2" />
+                {{ $t('modules.disable') }}
+              </BaseButton>
+              <BaseButton
+                v-else
+                variant="primary-outline"
+                size="xl"
+                :loading="isEnabling"
+                :disabled="isEnabling"
+                class="flex items-center justify-center text-base"
+                @click="enableModule"
+              >
+                <BaseIcon v-if="!isEnabling" name="CheckIcon" class="mr-2" />
+                {{ $t('modules.enable') }}
+              </BaseButton>
 
-            <BaseButton
-              variant="danger"
-              size="xl"
-              :loading="isUninstalling"
-              :disabled="isUninstalling"
-              class="flex items-center justify-center text-base"
-              @click="uninstallModule"
-            >
-              {{ $t('modules.uninstall') }}
-            </BaseButton>
+              <BaseButton
+                variant="danger"
+                size="xl"
+                :loading="isUninstalling"
+                :disabled="isUninstalling"
+                class="flex items-center justify-center text-base"
+                @click="uninstallModule"
+              >
+                {{ $t('modules.uninstall') }}
+              </BaseButton>
+            </template>
           </div>
         </div>
 
@@ -240,6 +259,32 @@ import ModulesSecurityNotice from './partials/ModulesSecurityNotice.vue'
 import RecentModuleCard from './partials/RecentModuleCard.vue'
 import { useNotificationStore } from '@/scripts/stores/notification'
 
+/**
+ * @param {Record<string, unknown>|null|undefined} compatibility
+ */
+function formatCatalogCompatibilityRange(compatibility) {
+  if (! compatibility || typeof compatibility !== 'object') {
+    return ''
+  }
+
+  const min = compatibility.min_version
+  const max = compatibility.max_version
+  const hasMin = min !== undefined && min !== null && String(min).trim() !== ''
+  const hasMax = max !== undefined && max !== null && String(max).trim() !== ''
+
+  if (hasMin && hasMax) {
+    return `${String(min).trim()} – ${String(max).trim()}`
+  }
+  if (hasMin) {
+    return `${String(min).trim()}+`
+  }
+  if (hasMax) {
+    return `≤ ${String(max).trim()}`
+  }
+
+  return ''
+}
+
 const moduleStore = useModuleStore()
 const notificationStore = useNotificationStore()
 const dialogStore = useDialogStore()
@@ -256,6 +301,34 @@ const isUninstalling = ref(false)
 const moduleData = computed(() => {
   return moduleStore.currentModule.data || {}
 })
+
+const isModuleKind = computed(() => {
+  return (moduleData.value.catalog_kind || 'module') === 'module'
+})
+
+const catalogKindLabel = computed(() => {
+  if (moduleData.value.catalog_kind === 'pdf_template') {
+    return moduleData.value.pdf_template_type === 'invoice'
+      ? t('modules.kind_invoice_template')
+      : t('modules.kind_estimate_template')
+  }
+
+  return t('modules.kind_extension')
+})
+
+const catalogKindBadgeClass = computed(() => {
+  if (moduleData.value.catalog_kind === 'pdf_template') {
+    return moduleData.value.pdf_template_type === 'invoice'
+      ? 'bg-sky-50 text-sky-900 ring-1 ring-inset ring-sky-200'
+      : 'bg-violet-50 text-violet-900 ring-1 ring-inset ring-violet-200'
+  }
+
+  return 'bg-gray-100 text-gray-800 ring-1 ring-inset ring-gray-200'
+})
+
+const compatibilityRange = computed(() =>
+  formatCatalogCompatibilityRange(moduleData.value.compatibility),
+)
 
 const otherModules = computed(() => {
   const raw = moduleStore.currentModule.meta?.modules
@@ -337,6 +410,7 @@ async function installModule() {
         version: moduleData.value.latest_module_version,
         path: path || null,
         module: moduleData.value.module_name,
+        catalog_kind: moduleData.value.catalog_kind || 'module',
       }
 
       const requestResponse = await http.post(currentStep.stepUrl, updateParams)

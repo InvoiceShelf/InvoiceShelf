@@ -254,6 +254,10 @@ For **API** testing, send requests with the same **Sanctum** token and **company
 2. **Version** — Keep `module.json` / your module’s version in sync with the **version** and **download_url** you list in `extensions.json`.
 3. **Catalog** — Follow [docs/CATALOG.md](https://github.com/InvoiceShelf/extensions/blob/main/docs/CATALOG.md) in the **InvoiceShelf/extensions** repository to open a PR adding or updating your extension entry.
 
+### PDF invoice & estimate templates (same Admin → Modules UI)
+
+InvoiceShelf also loads **`templates.json`** from the extensions repo (override with `INVOICESHELF_TEMPLATES_MANIFEST_URL`). Entries with `type: "invoice"` or `"estimate"` appear in the modules store under **Templates** with sub-filters **All** / **Invoices** / **Estimates**. Each catalog row **must** include a **`cover`** URL (screenshot). Installing them runs the same download → unzip → copy → complete pipeline; files are written under `storage/app/templates/pdf/` and versions are tracked in the `pdf_template_catalog_versions` setting. See **[docs/TEMPLATES.md](https://github.com/InvoiceShelf/extensions/blob/main/docs/TEMPLATES.md)** in **InvoiceShelf/extensions** for the manifest and ZIP layout.
+
 ---
 
 ## Official reference modules

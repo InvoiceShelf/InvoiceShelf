@@ -19,7 +19,11 @@ class CompleteModuleInstallationController extends Controller
         $this->authorize('manage modules');
 
         try {
-            $response = ModuleInstaller::complete($request->module, $request->version);
+            $response = ModuleInstaller::complete(
+                $request->module,
+                $request->version,
+                (string) $request->input('catalog_kind', 'module'),
+            );
         } catch (\Throwable $e) {
             report($e);
 

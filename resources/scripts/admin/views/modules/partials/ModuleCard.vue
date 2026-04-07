@@ -31,7 +31,7 @@
         >
           <img
             v-if="data.cover"
-            class="h-full w-full object-cover object-center"
+            class="h-full w-full object-contain object-center"
             :src="data.cover"
             alt=""
           />
@@ -87,6 +87,16 @@
           {{ data.name }}
         </router-link>
       </h3>
+      <div class="mt-2">
+        <span
+          class="
+            inline-flex max-w-full items-center rounded-full px-2.5 py-0.5 text-xs font-semibold
+          "
+          :class="catalogKindBadgeClass"
+        >
+          {{ catalogKindLabel }}
+        </span>
+      </div>
       <p v-if="data.author_name" class="mt-2 text-sm text-gray-600">
         {{ $t('modules.by_author', { author: data.author_name }) }}
       </p>
@@ -139,11 +149,36 @@
 </template>
 
 <script setup>
-defineProps({
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const props = defineProps({
   data: {
     type: Object,
     default: null,
     required: true,
   },
+})
+
+const { t } = useI18n()
+
+const catalogKindLabel = computed(() => {
+  if (props.data.catalog_kind === 'pdf_template') {
+    return props.data.pdf_template_type === 'invoice'
+      ? t('modules.kind_invoice_template')
+      : t('modules.kind_estimate_template')
+  }
+
+  return t('modules.kind_extension')
+})
+
+const catalogKindBadgeClass = computed(() => {
+  if (props.data.catalog_kind === 'pdf_template') {
+    return props.data.pdf_template_type === 'invoice'
+      ? 'bg-sky-50 text-sky-900 ring-1 ring-inset ring-sky-200'
+      : 'bg-violet-50 text-violet-900 ring-1 ring-inset ring-violet-200'
+  }
+
+  return 'bg-gray-100 text-gray-800 ring-1 ring-inset ring-gray-200'
 })
 </script>

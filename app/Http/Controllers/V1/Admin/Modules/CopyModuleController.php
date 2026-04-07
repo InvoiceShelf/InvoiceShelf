@@ -19,7 +19,11 @@ class CopyModuleController extends Controller
         $this->authorize('manage modules');
 
         try {
-            $response = ModuleInstaller::copyFiles($request->module, $request->path);
+            $response = ModuleInstaller::copyFiles(
+                $request->module,
+                $request->path,
+                (string) $request->input('catalog_kind', 'module'),
+            );
         } catch (\Throwable $e) {
             report($e);
 

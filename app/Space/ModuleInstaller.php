@@ -6,13 +6,16 @@ use App\Events\ModuleEnabledEvent;
 use App\Events\ModuleInstalledEvent;
 use App\Http\Resources\ModuleResource;
 use App\Models\Module as ModelsModule;
+use App\Models\Setting;
 use App\Services\ExtensionCatalog;
+use App\Services\PdfTemplateCatalog;
 use Artisan;
 use File;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 use Nwidart\Modules\Facades\Module;
 use ZipArchive;
 
@@ -24,15 +27,13 @@ class ModuleInstaller
      */
     public static function getModules()
     {
-        try {
-            $extensions = ExtensionCatalog::make()->fetchExtensions();
-        } catch (\Throwable $e) {
-            report($e);
+        $items = self::fetchAllCatalogItems();
 
+        if ($items === []) {
             return response()->json(['message' => 'extensions_catalog_unavailable'], 503);
         }
 
-        return ModuleResource::collection(collect($extensions));
+        return ModuleResource::collection(collect($items));
     }
 
     /**
@@ -40,22 +41,20 @@ class ModuleInstaller
      */
     public static function getModule(string $slug)
     {
-        try {
-            $extensions = ExtensionCatalog::make()->fetchExtensions();
-        } catch (\Throwable $e) {
-            report($e);
+        $items = self::fetchAllCatalogItems();
 
+        if ($items === []) {
             return (object) ['success' => false, 'error' => 'catalog_unavailable'];
         }
 
-        $found = collect($extensions)->firstWhere('slug', $slug);
+        $found = collect($items)->firstWhere('slug', $slug);
 
         if (! $found) {
             return (object) ['success' => false, 'error' => 'not_found'];
         }
 
-        $others = collect($extensions)
-            ->filter(fn (array $e) => $e['slug'] !== $slug)
+        $others = collect($items)
+            ->filter(fn (array $e) => ($e['slug'] ?? '') !== $slug)
             ->take(8)
             ->values()
             ->all();
@@ -65,6 +64,44 @@ class ModuleInstaller
             'module' => $found,
             'modules' => $others,
         ];
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private static function fetchAllCatalogItems(): array
+    {
+        $extensions = [];
+
+        try {
+            $extensions = array_map(function (array $row) {
+                $row['catalog_kind'] = 'module';
+
+                return $row;
+            }, ExtensionCatalog::make()->fetchExtensions());
+        } catch (\Throwable $e) {
+            report($e);
+        }
+
+        $templates = [];
+
+        try {
+            $templates = PdfTemplateCatalog::make()->fetchTemplates();
+        } catch (\Throwable $e) {
+            report($e);
+        }
+
+        $extensionSlugs = array_column($extensions, 'slug');
+
+        foreach ($templates as $tpl) {
+            if (in_array($tpl['slug'] ?? '', $extensionSlugs, true)) {
+                continue;
+            }
+
+            $extensions[] = $tpl;
+        }
+
+        return $extensions;
     }
 
     public static function upload($request)
@@ -90,18 +127,16 @@ class ModuleInstaller
      */
     public static function download(string $module, string $version)
     {
-        try {
-            $extensions = ExtensionCatalog::make()->fetchExtensions();
-        } catch (\Throwable $e) {
-            report($e);
+        $items = self::fetchAllCatalogItems();
 
+        if ($items === []) {
             return [
                 'success' => false,
                 'message' => 'extensions_catalog_unavailable',
             ];
         }
 
-        $extension = collect($extensions)->firstWhere('module_name', $module);
+        $extension = collect($items)->firstWhere('module_name', $module);
 
         if (! $extension) {
             return [
@@ -210,8 +245,12 @@ class ModuleInstaller
         return $temp_extract_dir;
     }
 
-    public static function copyFiles($module, $temp_extract_dir)
+    public static function copyFiles($module, $temp_extract_dir, string $catalogKind = 'module')
     {
+        if ($catalogKind === 'pdf_template') {
+            return self::copyPdfTemplateFiles($module, $temp_extract_dir);
+        }
+
         if (! File::isDirectory(base_path('Modules'))) {
             File::makeDirectory(base_path('Modules'));
         }
@@ -232,6 +271,61 @@ class ModuleInstaller
         return true;
     }
 
+    /**
+     * Install PDF template files from an extracted ZIP into storage/app/templates/pdf/{invoice|estimate}/.
+     */
+    private static function copyPdfTemplateFiles(string $module, string $tempExtractDir): bool
+    {
+        $items = self::fetchAllCatalogItems();
+        $entry = collect($items)->firstWhere('module_name', $module);
+
+        if (! $entry || ($entry['catalog_kind'] ?? '') !== 'pdf_template') {
+            throw new \RuntimeException('PDF template catalog entry not found for module name ['.$module.'].');
+        }
+
+        $type = (string) ($entry['pdf_template_type'] ?? '');
+        $templateName = (string) ($entry['template_name'] ?? '');
+
+        if (! in_array($type, ['invoice', 'estimate'], true) || $templateName === '') {
+            throw new \RuntimeException('Invalid PDF template metadata.');
+        }
+
+        $bladePath = null;
+
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($tempExtractDir, \FilesystemIterator::SKIP_DOTS)
+        );
+
+        foreach ($iterator as $file) {
+            if (! $file->isFile()) {
+                continue;
+            }
+            if ($file->getFilename() === $templateName.'.blade.php') {
+                $bladePath = $file->getPathname();
+                break;
+            }
+        }
+
+        if ($bladePath === null || ! is_file($bladePath)) {
+            throw new \RuntimeException(
+                'Could not find '.$templateName.'.blade.php inside the package. Check templates.json template_name matches the archive.'
+            );
+        }
+
+        $disk = Storage::disk('pdf_templates');
+        $bladeContents = File::get($bladePath);
+        $disk->put($type.'/'.$templateName.'.blade.php', $bladeContents);
+
+        $pngPath = dirname($bladePath).'/'.$templateName.'.png';
+        if (is_file($pngPath)) {
+            $disk->put($type.'/'.$templateName.'.png', File::get($pngPath));
+        }
+
+        File::deleteDirectory($tempExtractDir);
+
+        return true;
+    }
+
     public static function deleteFiles($json)
     {
         $files = json_decode($json);
@@ -243,8 +337,31 @@ class ModuleInstaller
         return true;
     }
 
-    public static function complete($module, $version)
+    public static function complete($module, $version, string $catalogKind = 'module')
     {
+        if ($catalogKind === 'pdf_template') {
+            $items = self::fetchAllCatalogItems();
+            $entry = collect($items)->firstWhere('module_name', $module);
+
+            if (! $entry || ($entry['catalog_kind'] ?? '') !== 'pdf_template') {
+                throw new \RuntimeException('PDF template catalog entry not found for module name ['.$module.'].');
+            }
+
+            $slug = (string) ($entry['slug'] ?? '');
+            if ($slug === '') {
+                throw new \RuntimeException('PDF template slug is missing.');
+            }
+
+            $json = json_decode(Setting::getSetting('pdf_template_catalog_versions') ?: '{}', true);
+            if (! is_array($json)) {
+                $json = [];
+            }
+            $json[$slug] = $version;
+            Setting::setSetting('pdf_template_catalog_versions', json_encode($json));
+
+            return true;
+        }
+
         self::normalizeModuleInstallLocation($module);
 
         Cache::forget(config('modules.cache.key'));

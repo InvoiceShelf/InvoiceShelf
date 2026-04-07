@@ -66,6 +66,62 @@
             {{ $t('modules.installed') }}
             <span class="font-normal text-gray-500">({{ installedCount }})</span>
           </button>
+          <span class="px-1 text-gray-300" aria-hidden="true">|</span>
+          <button
+            type="button"
+            :class="filterLinkClassTemplatesParent"
+            @click="setFilter('TEMPLATES')"
+          >
+            {{ $t('modules.filter_templates') }}
+            <span class="font-normal text-gray-500">({{ pdfTemplateTotalCount }})</span>
+          </button>
+          <span class="px-1 text-gray-300" aria-hidden="true">|</span>
+          <button
+            type="button"
+            :class="filterLinkClass('MODULE')"
+            @click="setFilter('MODULE')"
+          >
+            {{ $t('modules.filter_extensions') }}
+            <span class="font-normal text-gray-500">({{ moduleExtensionsCount }})</span>
+          </button>
+        </nav>
+        <nav
+          v-if="isTemplatesSectionActive"
+          class="
+            mt-3 flex min-w-0 flex-nowrap items-center gap-x-1 border-t border-gray-200 pt-3
+            text-sm
+          "
+          :aria-label="$t('modules.filter_templates')"
+        >
+          <span class="shrink-0 pr-2 text-xs font-medium uppercase text-gray-500">
+            {{ $t('modules.filter_templates') }}
+          </span>
+          <button
+            type="button"
+            :class="filterLinkClass('TEMPLATES')"
+            @click="setFilter('TEMPLATES')"
+          >
+            {{ $t('modules.templates_sub_all') }}
+            <span class="font-normal text-gray-500">({{ pdfTemplateTotalCount }})</span>
+          </button>
+          <span class="px-1 text-gray-300" aria-hidden="true">|</span>
+          <button
+            type="button"
+            :class="filterLinkClass('TEMPLATES_INVOICE')"
+            @click="setFilter('TEMPLATES_INVOICE')"
+          >
+            {{ $t('modules.templates_sub_invoices') }}
+            <span class="font-normal text-gray-500">({{ invoiceTemplateCount }})</span>
+          </button>
+          <span class="px-1 text-gray-300" aria-hidden="true">|</span>
+          <button
+            type="button"
+            :class="filterLinkClass('TEMPLATES_ESTIMATE')"
+            @click="setFilter('TEMPLATES_ESTIMATE')"
+          >
+            {{ $t('modules.templates_sub_estimates') }}
+            <span class="font-normal text-gray-500">({{ estimateTemplateCount }})</span>
+          </button>
         </nav>
         <div class="w-52 shrink-0 sm:w-72 lg:w-80">
           <BaseInput
@@ -152,6 +208,8 @@
 import { useModuleStore } from '@/scripts/admin/stores/module'
 import { computed, ref } from 'vue'
 
+const TEMPLATE_TAB_KEYS = ['TEMPLATES', 'TEMPLATES_INVOICE', 'TEMPLATES_ESTIMATE']
+
 import ModuleCard from './partials/ModuleCard.vue'
 import ModuleCardPlaceholder from './partials/ModuleCardPlaceholder.vue'
 import ModulesSecurityNotice from './partials/ModulesSecurityNotice.vue'
@@ -168,6 +226,47 @@ const installedCount = computed(
   () => moduleStore.modules?.filter((m) => m.installed).length ?? 0,
 )
 
+const moduleExtensionsCount = computed(
+  () =>
+    moduleStore.modules?.filter((m) => (m.catalog_kind || 'module') === 'module')
+      .length ?? 0,
+)
+
+const invoiceTemplateCount = computed(
+  () =>
+    moduleStore.modules?.filter(
+      (m) =>
+        m.catalog_kind === 'pdf_template' && m.pdf_template_type === 'invoice',
+    ).length ?? 0,
+)
+
+const estimateTemplateCount = computed(
+  () =>
+    moduleStore.modules?.filter(
+      (m) =>
+        m.catalog_kind === 'pdf_template' && m.pdf_template_type === 'estimate',
+    ).length ?? 0,
+)
+
+const pdfTemplateTotalCount = computed(
+  () => invoiceTemplateCount.value + estimateTemplateCount.value,
+)
+
+const isTemplatesSectionActive = computed(() =>
+  TEMPLATE_TAB_KEYS.includes(activeTab.value),
+)
+
+const filterLinkClassTemplatesParent = computed(() => {
+  const active = TEMPLATE_TAB_KEYS.includes(activeTab.value)
+
+  return [
+    'rounded px-1.5 py-0.5 text-left transition-colors',
+    active
+      ? 'cursor-default font-semibold text-gray-900'
+      : 'font-medium text-primary-600 hover:text-primary-800 hover:underline',
+  ]
+})
+
 const modules = computed(() => {
   if (! moduleStore.modules) {
     return []
@@ -177,6 +276,20 @@ const modules = computed(() => {
 
   if (activeTab.value === 'INSTALLED') {
     list = list.filter((_m) => _m.installed)
+  } else if (activeTab.value === 'MODULE') {
+    list = list.filter((m) => (m.catalog_kind || 'module') === 'module')
+  } else if (activeTab.value === 'TEMPLATES') {
+    list = list.filter((m) => m.catalog_kind === 'pdf_template')
+  } else if (activeTab.value === 'TEMPLATES_INVOICE') {
+    list = list.filter(
+      (m) =>
+        m.catalog_kind === 'pdf_template' && m.pdf_template_type === 'invoice',
+    )
+  } else if (activeTab.value === 'TEMPLATES_ESTIMATE') {
+    list = list.filter(
+      (m) =>
+        m.catalog_kind === 'pdf_template' && m.pdf_template_type === 'estimate',
+    )
   }
 
   const q = searchQuery.value.trim().toLowerCase()

@@ -56,6 +56,12 @@ return [
          */
         'manifest_url' => env('INVOICESHELF_EXTENSIONS_MANIFEST_URL')
             ?: 'https://raw.githubusercontent.com/InvoiceShelf/extensions/main/extensions.json',
+
+        /*
+         * PDF invoice/estimate Blade templates catalog (JSON). Same repo as extensions by default.
+         */
+        'templates_manifest_url' => env('INVOICESHELF_TEMPLATES_MANIFEST_URL')
+            ?: 'https://raw.githubusercontent.com/InvoiceShelf/extensions/main/templates.json',
     ],
 
     /*
