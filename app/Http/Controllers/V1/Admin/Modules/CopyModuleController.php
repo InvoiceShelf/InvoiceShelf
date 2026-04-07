@@ -18,6 +18,10 @@ class CopyModuleController extends Controller
     {
         $this->authorize('manage modules');
 
+        $request->validate([
+            'catalog_kind' => ['nullable', 'in:module,pdf_template'],
+        ]);
+
         try {
             $response = ModuleInstaller::copyFiles(
                 $request->module,

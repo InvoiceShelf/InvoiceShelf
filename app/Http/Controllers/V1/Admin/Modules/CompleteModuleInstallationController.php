@@ -18,6 +18,10 @@ class CompleteModuleInstallationController extends Controller
     {
         $this->authorize('manage modules');
 
+        $request->validate([
+            'catalog_kind' => ['nullable', 'in:module,pdf_template'],
+        ]);
+
         try {
             $response = ModuleInstaller::complete(
                 $request->module,

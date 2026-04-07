@@ -22,6 +22,8 @@ use ZipArchive;
 // Implementation taken from Akaunting - https://github.com/akaunting/akaunting
 class ModuleInstaller
 {
+    private const int MAX_PACKAGE_BYTES = 50_000_000; // 50 MB
+
     /**
      * @return JsonResponse|AnonymousResourceCollection
      */
@@ -161,12 +163,23 @@ class ModuleInstaller
             ];
         }
 
-        $data = null;
         $path = null;
+
+        // Create temp directory
+        $tempDir = storage_path('app/temp-'.md5((string) mt_rand()));
+
+        if (! File::isDirectory($tempDir)) {
+            File::makeDirectory($tempDir);
+        }
+
+        $zipFilePath = $tempDir.'/upload.zip';
 
         try {
             $response = Http::timeout(120)
-                ->withOptions(['allow_redirects' => true])
+                ->withOptions([
+                    'allow_redirects' => true,
+                    'sink' => $zipFilePath,
+                ])
                 ->get($downloadUrl);
         } catch (\Throwable $e) {
             report($e);
@@ -182,6 +195,8 @@ class ModuleInstaller
         }
 
         if (! $response->successful()) {
+            File::delete($zipFilePath);
+
             return [
                 'success' => false,
                 'message' => 'download_failed',
@@ -189,30 +204,30 @@ class ModuleInstaller
             ];
         }
 
-        $data = $response->body();
+        $size = @filesize($zipFilePath);
+        if (! is_int($size) || $size <= 0) {
+            File::delete($zipFilePath);
 
-        // Create temp directory
-        $temp_dir = storage_path('app/temp-'.md5(mt_rand()));
-
-        if (! File::isDirectory($temp_dir)) {
-            File::makeDirectory($temp_dir);
-        }
-
-        $zip_file_path = $temp_dir.'/upload.zip';
-
-        // Add content to the Zip file
-        $uploaded = is_int(file_put_contents($zip_file_path, $data)) ? true : false;
-
-        if (! $uploaded) {
             return [
                 'success' => false,
                 'message' => 'download_write_failed',
             ];
         }
 
+        if ($size > self::MAX_PACKAGE_BYTES) {
+            File::delete($zipFilePath);
+
+            return [
+                'success' => false,
+                'message' => 'download_too_large',
+                'max_bytes' => self::MAX_PACKAGE_BYTES,
+                'size_bytes' => $size,
+            ];
+        }
+
         return [
             'success' => true,
-            'path' => $zip_file_path,
+            'path' => $zipFilePath,
         ];
     }
 
@@ -236,7 +251,7 @@ class ModuleInstaller
             throw new \RuntimeException('Could not open ZIP (code '.$opened.'). The file may be corrupted or not a ZIP archive.');
         }
 
-        $zip->extractTo($temp_extract_dir);
+        self::safeExtractZip($zip, $temp_extract_dir);
         $zip->close();
 
         // Delete zip file
@@ -256,17 +271,20 @@ class ModuleInstaller
         }
 
         $modulePath = base_path('Modules/'.$module);
+        $normalizedModulePath = self::prepareNormalizedModuleDirectory($module, $temp_extract_dir);
+
+        // Delete temp directory
+        File::deleteDirectory($temp_extract_dir);
 
         if (File::isDirectory($modulePath)) {
             File::deleteDirectory($modulePath);
         }
 
-        if (! File::copyDirectory($temp_extract_dir, base_path('Modules').'/')) {
+        if (! File::copyDirectory($normalizedModulePath, $modulePath)) {
             throw new \RuntimeException('Could not copy module files into Modules/. Check permissions and disk space.');
         }
 
-        // Delete temp directory
-        File::deleteDirectory($temp_extract_dir);
+        File::deleteDirectory(dirname($normalizedModulePath));
 
         return true;
     }
@@ -364,7 +382,7 @@ class ModuleInstaller
 
         self::normalizeModuleInstallLocation($module);
 
-        Cache::forget(config('modules.cache.key'));
+        self::clearModuleCache();
 
         try {
             $exitCode = Artisan::call("module:migrate {$module} --force");
@@ -438,6 +456,7 @@ class ModuleInstaller
 
         $moduleRecord->delete();
 
+        self::clearModuleCache();
         Module::register();
 
         return ['success' => true];
@@ -575,6 +594,94 @@ class ModuleInstaller
                 }
             }
             File::moveDirectory($dir, $target.'/'.$base);
+        }
+    }
+
+    private static function safeExtractZip(ZipArchive $zip, string $destination): void
+    {
+        $destination = rtrim($destination, DIRECTORY_SEPARATOR);
+        $destinationReal = realpath($destination) ?: $destination;
+
+        for ($i = 0; $i < $zip->numFiles; $i++) {
+            $name = (string) $zip->getNameIndex($i);
+            $name = str_replace('\\', '/', $name);
+
+            if ($name === '' || str_contains($name, "\0")) {
+                throw new \RuntimeException('Invalid ZIP entry name.');
+            }
+
+            if (str_starts_with($name, '/') || preg_match('/^[a-zA-Z]:\\//', $name) === 1) {
+                throw new \RuntimeException('ZIP contains an unsafe absolute path.');
+            }
+
+            $segments = array_values(array_filter(explode('/', $name), fn (string $s) => $s !== ''));
+            foreach ($segments as $seg) {
+                if ($seg === '.' || $seg === '..') {
+                    throw new \RuntimeException('ZIP contains a path traversal entry.');
+                }
+            }
+
+            $targetPath = $destination.'/'.implode('/', $segments);
+
+            if (str_ends_with($name, '/')) {
+                File::ensureDirectoryExists($targetPath);
+
+                continue;
+            }
+
+            File::ensureDirectoryExists(dirname($targetPath));
+
+            $stream = $zip->getStream($zip->getNameIndex($i));
+            if (! is_resource($stream)) {
+                throw new \RuntimeException('Could not read ZIP entry stream.');
+            }
+
+            $out = fopen($targetPath, 'wb');
+            if ($out === false) {
+                fclose($stream);
+                throw new \RuntimeException('Could not write ZIP entry to disk.');
+            }
+
+            stream_copy_to_stream($stream, $out);
+            fclose($stream);
+            fclose($out);
+
+            $writtenReal = realpath($targetPath) ?: $targetPath;
+            if (! str_starts_with($writtenReal, $destinationReal.DIRECTORY_SEPARATOR) && $writtenReal !== $destinationReal) {
+                throw new \RuntimeException('ZIP extraction attempted to write outside destination.');
+            }
+        }
+    }
+
+    private static function prepareNormalizedModuleDirectory(string $moduleName, string $tempExtractDir): string
+    {
+        $stageBase = storage_path('app/module-stage-'.md5((string) mt_rand()));
+        $stageModules = $stageBase.'/Modules';
+
+        File::makeDirectory($stageModules, 0755, true, true);
+
+        if (! File::copyDirectory($tempExtractDir, $stageModules)) {
+            throw new \RuntimeException('Could not stage extracted files for normalization.');
+        }
+
+        self::normalizeModuleInstallLocation($moduleName, $stageBase);
+
+        $normalized = $stageModules.'/'.$moduleName;
+        if (! File::isDirectory($normalized) || ! File::exists($normalized.'/module.json')) {
+            throw new \RuntimeException('Normalized module directory is missing module.json.');
+        }
+
+        return $normalized;
+    }
+
+    private static function clearModuleCache(): void
+    {
+        Cache::forget((string) config('modules.cache.key', 'laravel-modules'));
+
+        try {
+            Artisan::call('module:clear');
+        } catch (\Throwable) {
+            // Ignore: command may not exist in some environments.
         }
     }
 }

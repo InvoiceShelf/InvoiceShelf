@@ -2,11 +2,14 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class PdfTemplateCatalog
 {
+    private const int CACHE_MINUTES = 10;
+
     public function __construct(
         private readonly string $manifestUrl,
     ) {}
@@ -27,18 +30,25 @@ class PdfTemplateCatalog
             return [];
         }
 
-        $response = Http::timeout(30)
-            ->acceptJson()
-            ->withHeaders([
-                'User-Agent' => 'InvoiceShelf (+'.(parse_url((string) config('app.url'), PHP_URL_HOST) ?: 'localhost').')',
-            ])
-            ->get($url);
+        $cacheKey = 'pdf_templates_manifest:'.sha1($url);
 
-        $response->throw();
+        /** @var array<int, array<string, mixed>> $cached */
+        $cached = Cache::remember($cacheKey, now()->addMinutes(self::CACHE_MINUTES), function () use ($url) {
+            $response = Http::timeout(30)
+                ->acceptJson()
+                ->withHeaders([
+                    'User-Agent' => 'InvoiceShelf (+'.(parse_url((string) config('app.url'), PHP_URL_HOST) ?: 'localhost').')',
+                ])
+                ->get($url);
 
-        $payload = $response->json();
+            $response->throw();
 
-        return $this->normalizePayload($payload);
+            $payload = $response->json();
+
+            return $this->normalizePayload($payload);
+        });
+
+        return $cached;
     }
 
     /**
