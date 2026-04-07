@@ -46,7 +46,7 @@
       />
     </BaseInputGroup>
 
-    <BaseButton :loading="isLoading" type="submit" variant="primary">
+    <BaseButton :loading="isLoading" type="submit" variant="primary" class="w-full justify-center">
       {{ $t('login.reset_password') }}
     </BaseButton>
   </form>

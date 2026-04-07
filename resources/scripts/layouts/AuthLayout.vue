@@ -1,102 +1,73 @@
 <template>
-  <div class="grid h-screen grid-cols-12 overflow-y-hidden bg-surface-tertiary">
+  <div class="bg-glass-gradient relative min-h-screen w-full overflow-hidden">
     <NotificationRoot />
 
-    <div
+    <main
       class="
-        flex items-center justify-center w-full max-w-sm col-span-12
-        p-4 mx-auto text-heading md:p-8 md:col-span-6 lg:col-span-4
-        flex-2 md:pb-48 md:pt-40
+        relative flex min-h-screen flex-col items-center justify-center
+        px-4 py-12 sm:px-6
       "
     >
-      <div class="w-full">
+      <!-- Logo above the card -->
+      <div class="mb-8 flex justify-center">
         <MainLogo
           v-if="!loginPageLogo"
-          class="block w-48 h-auto max-w-full mb-32 text-primary-500"
+          class="h-12 w-auto text-primary-500"
         />
-
         <img
           v-else
           :src="loginPageLogo"
-          class="block w-48 h-auto max-w-full mb-32 text-primary-500"
+          alt="InvoiceShelf"
+          class="h-12 w-auto"
         />
+      </div>
+
+      <!-- Auth card — same visual language as BaseCard -->
+      <article
+        class="
+          w-full max-w-md
+          bg-surface
+          rounded-xl
+          border border-line-default
+          shadow-sm
+          backdrop-blur-sm
+          px-8 py-10 sm:px-10 sm:py-12
+        "
+      >
+        <header class="text-center mb-8">
+          <h1 class="text-2xl font-semibold text-heading">
+            {{ heading }}
+          </h1>
+          <p class="mt-2 text-sm text-muted">
+            {{ subheading }}
+          </p>
+        </header>
 
         <router-view />
+      </article>
 
-        <div
-          class="
-            pt-24 mt-0 text-sm not-italic font-medium leading-relaxed
-            text-left text-subtle md:pt-40
-          "
-        >
-          <p v-if="copyrightText" class="mb-3">
-            {{ copyrightText }}
-          </p>
-          <p v-else class="mb-3">
-            Powered by
-            <a
-              href="https://invoiceshelf.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-primary-500 hover:underline"
-            >InvoiceShelf</a>
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <div
-      class="
-        relative flex-col items-center justify-center hidden w-full h-full
-        pl-10 bg-no-repeat bg-cover md:col-span-6 lg:col-span-8
-        md:flex content-box overflow-hidden
-      "
-    >
-      <LoginBackground class="absolute h-full w-full" />
-
-      <LoginPlanetCrater
-        class="absolute z-10 top-0 right-0 h-[300px] w-[420px]"
-      />
-
-      <LoginBackgroundOverlay class="absolute h-full w-full right-[7.5%]" />
-
-      <div class="md:pl-10 xl:pl-0 relative z-50 w-7/12 xl:w-5/12">
-        <h1
-          class="
-            hidden mb-3 text-3xl leading-normal text-left text-white
-            xl:text-5xl xl:leading-tight md:none lg:block
-          "
-        >
-          {{ pageHeading }}
-        </h1>
-        <p
-          class="
-            hidden text-sm not-italic font-normal leading-normal text-left
-            text-gray-100 xl:text-base xl:leading-6 md:none lg:block
-          "
-        >
-          {{ pageDescription }}
-        </p>
-      </div>
-
-      <LoginBottomVector
-        class="
-          absolute z-50 w-full bg-no-repeat content-bottom
-          h-[15vw] lg:h-[22vw] right-[32%] bottom-0
-        "
-      />
-    </div>
+      <!-- Footer -->
+      <footer class="mt-8 text-center text-xs text-subtle">
+        <span v-if="copyrightText">{{ copyrightText }}</span>
+        <span v-else>
+          Powered by
+          <a
+            href="https://invoiceshelf.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-primary-500 hover:text-primary-600 font-medium transition-colors"
+          >InvoiceShelf</a>
+        </span>
+      </footer>
+    </main>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 import NotificationRoot from '@/scripts/components/notifications/NotificationRoot.vue'
 import MainLogo from '@/scripts/components/icons/MainLogo.vue'
-import LoginBackground from '@/scripts/components/icons/svg/LoginBackground.vue'
-import LoginPlanetCrater from '@/scripts/components/icons/svg/LoginPlanetCrater.vue'
-import LoginBottomVector from '@/scripts/components/icons/svg/LoginBottomVector.vue'
-import LoginBackgroundOverlay from '@/scripts/components/icons/svg/LoginBackgroundOverlay.vue'
 
 declare global {
   interface Window {
@@ -107,28 +78,48 @@ declare global {
   }
 }
 
-const pageHeading = computed<string>(() => {
-  if (window.login_page_heading) {
-    return window.login_page_heading
-  }
-  return 'Simple Invoicing for Individuals Small Businesses'
+const route = useRoute()
+
+interface RouteCopy {
+  heading: string
+  subheading: string
+}
+
+const COPY: Record<string, RouteCopy> = {
+  login: {
+    heading: 'Welcome back',
+    subheading: 'Sign in to continue to your account',
+  },
+  'forgot-password': {
+    heading: 'Forgot your password?',
+    subheading: 'Enter your email and we will send you a reset link',
+  },
+  'reset-password': {
+    heading: 'Set a new password',
+    subheading: 'Choose a strong password to secure your account',
+  },
+  'register-with-invitation': {
+    heading: 'Create your account',
+    subheading: 'Complete your registration to get started',
+  },
+}
+
+const heading = computed<string>(() => {
+  if (window.login_page_heading) return window.login_page_heading
+  const name = route.name?.toString() ?? 'login'
+  return COPY[name]?.heading ?? COPY.login.heading
 })
 
-const pageDescription = computed<string>(() => {
-  if (window.login_page_description) {
-    return window.login_page_description
-  }
-  return 'InvoiceShelf helps you track expenses, record payments & generate beautiful invoices & estimates.'
+const subheading = computed<string>(() => {
+  if (window.login_page_description) return window.login_page_description
+  const name = route.name?.toString() ?? 'login'
+  return COPY[name]?.subheading ?? COPY.login.subheading
 })
 
-const copyrightText = computed<string | null>(() => {
-  return window.copyright_text ?? null
-})
+const copyrightText = computed<string | null>(() => window.copyright_text ?? null)
 
 const loginPageLogo = computed<string | false>(() => {
-  if (window.login_page_logo) {
-    return window.login_page_logo
-  }
+  if (window.login_page_logo) return window.login_page_logo
   return false
 })
 </script>

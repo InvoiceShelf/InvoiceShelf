@@ -50,7 +50,7 @@
       </div>
     </div>
 
-    <BaseButton :loading="isLoading" type="submit">
+    <BaseButton :loading="isLoading" type="submit" class="w-full justify-center">
       {{ $t('login.login') }}
     </BaseButton>
   </form>

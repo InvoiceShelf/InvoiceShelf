@@ -119,6 +119,7 @@
         :loading="isSubmitting"
         :disabled="isSubmitting"
         type="submit"
+        class="w-full justify-center"
       >
         Create Account & Join
       </BaseButton>

@@ -21,6 +21,7 @@
       :disabled="isLoading"
       type="submit"
       variant="primary"
+      class="w-full justify-center"
     >
       <div v-if="!isSent">
         {{ $t('validation.send_reset_link') }}
