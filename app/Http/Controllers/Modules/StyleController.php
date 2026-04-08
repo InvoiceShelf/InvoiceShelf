@@ -3,27 +3,27 @@
 namespace App\Http\Controllers\Modules;
 
 use App\Http\Controllers\Controller;
-use App\Services\Module\ModuleFacade;
 use DateTime;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Arr;
-use Request;
+use InvoiceShelf\Modules\Registry as ModuleRegistry;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class StyleController extends Controller
 {
     /**
-     * Serve the requested stylesheet.
+     * Serve the requested module-registered stylesheet.
      *
-     * @return Response
+     * Modules call \InvoiceShelf\Modules\Registry::registerStyle($name, $path)
+     * from their ServiceProvider::boot() to inject custom CSS into the host app.
      *
      * @throws NotFoundHttpException
      */
-    public function __invoke(Request $request, string $style)
+    public function __invoke(Request $request, string $style): Response
     {
-        $path = Arr::get(ModuleFacade::allStyles(), $style);
+        $path = ModuleRegistry::styleFor($style);
 
-        abort_if(is_null($path), 404);
+        abort_if($path === null, 404);
 
         return response(
             file_get_contents($path),
@@ -31,6 +31,6 @@ class StyleController extends Controller
             [
                 'Content-Type' => 'text/css',
             ]
-        )->setLastModified(DateTime::createFromFormat('U', filemtime($path)));
+        )->setLastModified(DateTime::createFromFormat('U', (string) filemtime($path)));
     }
 }

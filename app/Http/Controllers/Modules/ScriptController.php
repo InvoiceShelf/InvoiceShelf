@@ -3,27 +3,27 @@
 namespace App\Http\Controllers\Modules;
 
 use App\Http\Controllers\Controller;
-use App\Services\Module\ModuleFacade;
 use DateTime;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Arr;
-use Request;
+use InvoiceShelf\Modules\Registry as ModuleRegistry;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ScriptController extends Controller
 {
     /**
-     * Serve the requested script.
+     * Serve the requested module-registered script.
      *
-     * @return Response
+     * Modules call \InvoiceShelf\Modules\Registry::registerScript($name, $path)
+     * from their ServiceProvider::boot() to inject custom JS into the host app.
      *
      * @throws NotFoundHttpException
      */
-    public function __invoke(Request $request, string $script)
+    public function __invoke(Request $request, string $script): Response
     {
-        $path = Arr::get(ModuleFacade::allScripts(), $script);
+        $path = ModuleRegistry::scriptFor($script);
 
-        abort_if(is_null($path), 404);
+        abort_if($path === null, 404);
 
         return response(
             file_get_contents($path),
@@ -31,6 +31,6 @@ class ScriptController extends Controller
             [
                 'Content-Type' => 'application/javascript',
             ]
-        )->setLastModified(DateTime::createFromFormat('U', filemtime($path)));
+        )->setLastModified(DateTime::createFromFormat('U', (string) filemtime($path)));
     }
 }
