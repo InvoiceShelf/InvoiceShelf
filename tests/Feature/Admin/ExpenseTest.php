@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\V1\Admin\Expense\DuplicateExpenseController;
 use App\Http\Controllers\V1\Admin\Expense\ExpensesController;
+use App\Http\Requests\DuplicateExpenseRequest;
 use App\Http\Requests\ExpenseRequest;
 use App\Models\Expense;
 use App\Models\User;
@@ -112,6 +114,79 @@ test('search expenses', function () {
     $response = getJson('api/v1/expenses?'.$queryString);
 
     $response->assertOk();
+});
+
+test('duplicate expense', function () {
+    $expense = Expense::factory()->create([
+        'expense_date' => '2019-02-05',
+        'notes' => 'Monthly rent',
+    ]);
+
+    $response = postJson("api/v1/expenses/{$expense->id}/duplicate", [
+        'expense_date' => '2019-02-05',
+    ]);
+
+    $response->assertStatus(201);
+
+    $newId = $response->json('data.id');
+
+    expect($newId)->not->toBe($expense->id);
+
+    $this->assertDatabaseHas('expenses', [
+        'id' => $newId,
+        'expense_date' => '2019-02-05',
+        'notes' => 'Monthly rent (copy)',
+        'expense_category_id' => $expense->expense_category_id,
+        'amount' => $expense->amount,
+    ]);
+});
+
+test('duplicate expense with empty note uses copy as note', function () {
+    $expense = Expense::factory()->create([
+        'expense_date' => '2019-02-05',
+        'notes' => null,
+    ]);
+
+    postJson("api/v1/expenses/{$expense->id}/duplicate", [
+        'expense_date' => '2019-02-05',
+    ])
+        ->assertStatus(201)
+        ->assertJsonPath('data.notes', '(copy)');
+});
+
+test('duplicate expense uses submitted expense date', function () {
+    $expense = Expense::factory()->create([
+        'expense_date' => '2019-02-05',
+    ]);
+
+    $response = postJson("api/v1/expenses/{$expense->id}/duplicate", [
+        'expense_date' => '2024-03-10',
+    ]);
+
+    $response->assertStatus(201);
+
+    $this->assertDatabaseHas('expenses', [
+        'id' => $response->json('data.id'),
+        'expense_date' => '2024-03-10',
+    ]);
+});
+
+test('duplicate expense requires expense date', function () {
+    $expense = Expense::factory()->create([
+        'expense_date' => '2019-02-05',
+    ]);
+
+    postJson("api/v1/expenses/{$expense->id}/duplicate", [])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['expense_date']);
+});
+
+test('duplicate validates using a form request', function () {
+    $this->assertActionUsesFormRequest(
+        DuplicateExpenseController::class,
+        '__invoke',
+        DuplicateExpenseRequest::class
+    );
 });
 
 test('delete multiple expenses', function () {

@@ -91,6 +91,27 @@ export const useExpenseStore = (useWindow = false) => {
         })
       },
 
+      duplicateExpense({ id, expense_date }) {
+        return new Promise((resolve, reject) => {
+          http
+            .post(`/api/v1/expenses/${id}/duplicate`, { expense_date })
+            .then((response) => {
+              const notificationStore = useNotificationStore()
+
+              notificationStore.showNotification({
+                type: 'success',
+                message: global.t('expenses.duplicated_message'),
+              })
+
+              resolve(response)
+            })
+            .catch((err) => {
+              handleError(err)
+              reject(err)
+            })
+        })
+      },
+
       addExpense(data) {
         const formData = utils.toFormData(data)
 
