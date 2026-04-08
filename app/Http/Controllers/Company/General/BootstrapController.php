@@ -15,6 +15,7 @@ use App\Models\Setting;
 use App\Traits\GeneratesMenuTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use InvoiceShelf\Modules\Registry as ModuleRegistry;
 use Silber\Bouncer\BouncerFacade;
 
 class BootstrapController extends Controller
@@ -118,6 +119,7 @@ class BootstrapController extends Controller
             'main_menu' => $main_menu,
             'setting_menu' => $setting_menu,
             'modules' => Module::where('enabled', true)->pluck('name'),
+            'module_menu' => array_values(ModuleRegistry::allMenu()),
             'pending_invitations' => CompanyInvitationResource::collection($pendingInvitations),
         ]);
     }

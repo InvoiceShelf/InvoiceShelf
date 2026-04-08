@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import groupBy from 'lodash/groupBy'
 import { bootstrapService } from '@/scripts/api/services/bootstrap.service'
-import type { MenuItem, BootstrapResponse } from '@/scripts/api/services/bootstrap.service'
+import type { MenuItem, ModuleMenuItem, BootstrapResponse } from '@/scripts/api/services/bootstrap.service'
 import { settingService } from '@/scripts/api/services/setting.service'
 import type {
   DateFormat,
@@ -35,6 +35,7 @@ export const useGlobalStore = defineStore('global', () => {
 
   const mainMenu = ref<MenuItem[]>([])
   const settingMenu = ref<MenuItem[]>([])
+  const moduleMenu = ref<ModuleMenuItem[]>([])
 
   const isAppLoaded = ref<boolean>(false)
   const isSidebarOpen = ref<boolean>(false)
@@ -48,6 +49,8 @@ export const useGlobalStore = defineStore('global', () => {
     return Object.values(groupBy(mainMenu.value, 'group'))
   })
 
+  const hasActiveModules = computed<boolean>(() => moduleMenu.value.length > 0)
+
   // Actions
   async function bootstrap(options?: { adminMode?: boolean }): Promise<BootstrapResponse> {
     const companyStore = useCompanyStore()
@@ -59,6 +62,7 @@ export const useGlobalStore = defineStore('global', () => {
 
       mainMenu.value = response.main_menu
       settingMenu.value = response.setting_menu
+      moduleMenu.value = response.module_menu ?? []
 
       config.value = response.config
       globalSettings.value = response.global_settings
@@ -286,6 +290,7 @@ export const useGlobalStore = defineStore('global', () => {
     fiscalYears,
     mainMenu,
     settingMenu,
+    moduleMenu,
     isAppLoaded,
     isSidebarOpen,
     isSidebarCollapsed,
@@ -293,6 +298,7 @@ export const useGlobalStore = defineStore('global', () => {
     downloadReport,
     // Getters
     menuGroups,
+    hasActiveModules,
     // Actions
     bootstrap,
     fetchCurrencies,

@@ -99,6 +99,34 @@
                 {{ $t(item.title) }}
               </router-link>
             </nav>
+
+            <!-- Dynamic Modules section (one entry per active module's registered settings link) -->
+            <nav v-if="globalStore.hasActiveModules" class="mt-5 space-y-1">
+              <div class="px-4 mt-6 mb-2 text-xs font-semibold text-subtle uppercase tracking-wider">
+                {{ $t('modules.sidebar.section_title') }}
+              </div>
+              <router-link
+                v-for="(item, idx) in globalStore.moduleMenu"
+                :key="`module-${idx}`"
+                :to="item.link"
+                :class="[
+                  hasActiveUrl(item.link)
+                    ? 'text-primary-600 bg-primary-50 font-semibold'
+                    : 'text-body hover:bg-hover',
+                  'cursor-pointer mx-3 px-3 py-2.5 flex items-center rounded-lg text-sm not-italic font-medium transition-colors',
+                ]"
+                @click="globalStore.setSidebarVisibility(false)"
+              >
+                <BaseIcon
+                  :name="item.icon"
+                  :class="[
+                    hasActiveUrl(item.link) ? 'text-primary-500' : 'text-subtle',
+                    'mr-3 shrink-0 h-5 w-5',
+                  ]"
+                />
+                {{ $t(item.title) }}
+              </router-link>
+            </nav>
           </div>
         </div>
       </TransitionChild>
@@ -162,6 +190,49 @@
           ]"
         />
 
+        <span v-if="!globalStore.isSidebarCollapsed" class="whitespace-nowrap">
+          {{ $t(item.title) }}
+        </span>
+      </router-link>
+    </div>
+
+    <!-- Dynamic Modules section: one shortcut per active module's registered
+         settings link. Hidden when no modules are active. -->
+    <div
+      v-if="globalStore.hasActiveModules"
+      class="p-0 m-0 mt-4 list-none"
+    >
+      <div
+        v-if="!globalStore.isSidebarCollapsed"
+        class="px-6 mt-6 mb-2 text-xs font-semibold text-subtle uppercase tracking-wider whitespace-nowrap"
+      >
+        {{ $t('modules.sidebar.section_title') }}
+      </div>
+      <div
+        v-else
+        class="mx-3 my-2 border-t border-line-light"
+      />
+      <router-link
+        v-for="(item, idx) in globalStore.moduleMenu"
+        :key="`module-desktop-${idx}`"
+        :to="item.link"
+        v-tooltip="globalStore.isSidebarCollapsed ? { content: $t(item.title), placement: 'right' } : null"
+        :class="[
+          hasActiveUrl(item.link)
+            ? 'text-primary-600 bg-primary-50 font-semibold'
+            : 'text-body hover:bg-hover',
+          globalStore.isSidebarCollapsed
+            ? 'cursor-pointer mx-2 px-0 py-2.5 group flex items-center justify-center rounded-lg text-sm font-medium transition-colors'
+            : 'cursor-pointer mx-3 px-3 py-2.5 group flex items-center rounded-lg text-sm not-italic font-medium transition-colors',
+        ]"
+      >
+        <BaseIcon
+          :name="item.icon"
+          :class="[
+            hasActiveUrl(item.link) ? 'text-primary-500' : 'text-subtle group-hover:text-body',
+            globalStore.isSidebarCollapsed ? 'shrink-0 h-6 w-6' : 'mr-3 shrink-0 h-5 w-5',
+          ]"
+        />
         <span v-if="!globalStore.isSidebarCollapsed" class="whitespace-nowrap">
           {{ $t(item.title) }}
         </span>

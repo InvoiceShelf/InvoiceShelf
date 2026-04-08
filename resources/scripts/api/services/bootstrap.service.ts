@@ -15,6 +15,20 @@ export interface MenuItem {
   ability?: string
 }
 
+/**
+ * Sidebar item registered by an active module via
+ * \InvoiceShelf\Modules\Registry::registerMenu() in the module's ServiceProvider::boot().
+ *
+ * Distinct shape from MenuItem because module entries are namespaced (i18n
+ * keys come from the module's lang files) and don't carry group/ability —
+ * they always render under the dynamic "Modules" sidebar section.
+ */
+export interface ModuleMenuItem {
+  title: string
+  link: string
+  icon: string
+}
+
 export interface BootstrapResponse {
   current_user: User
   current_user_settings: Record<string, string>
@@ -28,6 +42,7 @@ export interface BootstrapResponse {
   config: Record<string, unknown>
   global_settings: Record<string, string>
   modules: string[]
+  module_menu?: ModuleMenuItem[]
   admin_mode?: boolean
   pending_invitations?: Array<{
     token: string
