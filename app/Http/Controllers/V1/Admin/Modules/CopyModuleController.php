@@ -18,7 +18,24 @@ class CopyModuleController extends Controller
     {
         $this->authorize('manage modules');
 
-        $response = ModuleInstaller::copyFiles($request->module, $request->path);
+        $request->validate([
+            'catalog_kind' => ['nullable', 'in:module,pdf_template'],
+        ]);
+
+        try {
+            $response = ModuleInstaller::copyFiles(
+                $request->module,
+                $request->path,
+                (string) $request->input('catalog_kind', 'module'),
+            );
+        } catch (\Throwable $e) {
+            report($e);
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 422);
+        }
 
         return response()->json([
             'success' => $response,

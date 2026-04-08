@@ -25,6 +25,7 @@ To get started with InvoiceShelf using Docker Compose, check out the [Installati
 - [User Guide](https://docs.invoiceshelf.com/)
 - [Developer Guide](https://docs.invoiceshelf.com/developer-guide.html)
 - [API Documentation](https://api-docs.invoiceshelf.com)
+- [Module / extension development](docs/modules-development.md) (`nwidart/laravel-modules`, admin integration, publishing)
 
 ## System Requirements
 

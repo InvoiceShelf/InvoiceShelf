@@ -22,7 +22,9 @@ class ModuleController extends Controller
         $response = ModuleInstaller::getModule($module);
 
         if (! $response->success) {
-            return response()->json($response);
+            $status = ($response->error ?? '') === 'catalog_unavailable' ? 503 : 404;
+
+            return response()->json($response, $status);
         }
 
         return (new ModuleResource($response->module))

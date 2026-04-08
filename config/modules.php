@@ -1,9 +1,11 @@
 <?php
 
+use App\Modules\Activators\SafeModeFileActivator;
 use Nwidart\Modules\Activators\FileActivator;
-use Nwidart\Modules\Commands;
+use Nwidart\Modules\Providers\ConsoleServiceProvider;
 
 return [
+    'safe_mode' => env('MODULES_SAFE_MODE', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -35,21 +37,10 @@ return [
             'views/master' => 'Resources/views/layouts/master.blade.php',
             'scaffold/config' => 'Config/config.php',
             'composer' => 'composer.json',
-            'resources/scripts/module' => 'Resources/scripts/module.js',
-            'resources/sass/module' => 'Resources/sass/module.scss',
-            'resources/scripts/stores/sample-store' => 'Resources/scripts/stores/sample-store.js',
-            'resources/scripts/views/SamplePage' => 'Resources/scripts/views/SamplePage.vue',
-            'resources/locales/en' => 'Resources/locales/en.json',
-            'resources/locales/locales' => 'Resources/locales/locales.js',
-            'package' => 'package.json',
-            'postcss.config' => 'postcss.config.js',
-            'tailwind.config' => 'tailwind.config.js',
-            'vite.config' => 'vite.config.js',
         ],
         'replacements' => [
             'routes/web' => ['LOWER_NAME', 'STUDLY_NAME'],
             'routes/api' => ['LOWER_NAME'],
-            'webpack' => ['LOWER_NAME'],
             'json' => ['LOWER_NAME', 'STUDLY_NAME', 'MODULE_NAMESPACE', 'PROVIDER_NAMESPACE'],
             'views/index' => ['LOWER_NAME'],
             'views/master' => ['LOWER_NAME', 'STUDLY_NAME'],
@@ -63,9 +54,6 @@ return [
                 'MODULE_NAMESPACE',
                 'PROVIDER_NAMESPACE',
             ],
-            'resources/scripts/module' => ['LOWER_NAME'],
-            'resources/scripts/stores/sample-store' => ['LOWER_NAME'],
-            'vite.config' => ['LOWER_NAME'],
         ],
         'gitkeep' => true,
     ],
@@ -81,6 +69,7 @@ return [
         */
 
         'modules' => base_path('Modules'),
+        'app_folder' => 'app',
         /*
         |--------------------------------------------------------------------------
         | Modules assets path
@@ -150,53 +139,7 @@ return [
     | you can simply comment them out.
     |
     */
-    'commands' => [
-        Commands\CommandMakeCommand::class,
-        Commands\ComponentClassMakeCommand::class,
-        Commands\ComponentViewMakeCommand::class,
-        Commands\ControllerMakeCommand::class,
-        Commands\DisableCommand::class,
-        Commands\DumpCommand::class,
-        Commands\EnableCommand::class,
-        Commands\EventMakeCommand::class,
-        Commands\JobMakeCommand::class,
-        Commands\ListenerMakeCommand::class,
-        Commands\MailMakeCommand::class,
-        Commands\MiddlewareMakeCommand::class,
-        Commands\NotificationMakeCommand::class,
-        Commands\ProviderMakeCommand::class,
-        Commands\RouteProviderMakeCommand::class,
-        Commands\InstallCommand::class,
-        Commands\ListCommand::class,
-        Commands\ModuleDeleteCommand::class,
-        Commands\ModuleMakeCommand::class,
-        Commands\FactoryMakeCommand::class,
-        Commands\PolicyMakeCommand::class,
-        Commands\RequestMakeCommand::class,
-        Commands\RuleMakeCommand::class,
-        Commands\MigrateCommand::class,
-        Commands\MigrateRefreshCommand::class,
-        Commands\MigrateResetCommand::class,
-        Commands\MigrateRollbackCommand::class,
-        Commands\MigrateStatusCommand::class,
-        Commands\MigrationMakeCommand::class,
-        Commands\ModelMakeCommand::class,
-        Commands\PublishCommand::class,
-        Commands\PublishConfigurationCommand::class,
-        Commands\PublishMigrationCommand::class,
-        Commands\PublishTranslationCommand::class,
-        Commands\SeedCommand::class,
-        Commands\SeedMakeCommand::class,
-        Commands\SetupCommand::class,
-        Commands\UnUseCommand::class,
-        Commands\UpdateCommand::class,
-        Commands\UseCommand::class,
-        Commands\ResourceMakeCommand::class,
-        Commands\TestMakeCommand::class,
-        Commands\LaravelModulesV6Migrator::class,
-        Commands\ComponentClassMakeCommand::class,
-        Commands\ComponentViewMakeCommand::class,
-    ],
+    'commands' => ConsoleServiceProvider::defaultCommands()->toArray(),
 
     /*
     |--------------------------------------------------------------------------
@@ -275,7 +218,9 @@ return [
     */
     'activators' => [
         'file' => [
-            'class' => FileActivator::class,
+            'class' => env('MODULES_SAFE_MODE', false)
+                ? SafeModeFileActivator::class
+                : FileActivator::class,
             'statuses-file' => base_path('storage/app/modules_statuses.json'),
             'cache-key' => 'activator.installed',
             'cache-lifetime' => 604800,

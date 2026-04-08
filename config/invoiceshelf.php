@@ -48,6 +48,23 @@ return [
     'base_url' => 'https://invoiceshelf.com',
 
     /*
+    * Public extensions manifest (JSON). Curated list: https://github.com/InvoiceShelf/extensions
+    */
+    'extensions' => [
+        /*
+         * Use ?: so an empty env value still falls back to the default (env('KEY', default) does not).
+         */
+        'manifest_url' => env('INVOICESHELF_EXTENSIONS_MANIFEST_URL')
+            ?: 'https://raw.githubusercontent.com/InvoiceShelf/extensions/main/extensions.json',
+
+        /*
+         * PDF invoice/estimate Blade templates catalog (JSON). Same repo as extensions by default.
+         */
+        'templates_manifest_url' => env('INVOICESHELF_TEMPLATES_MANIFEST_URL')
+            ?: 'https://raw.githubusercontent.com/InvoiceShelf/extensions/main/templates.json',
+    ],
+
+    /*
     * List of languages supported by InvoiceShelf.
     */
     'languages' => [
@@ -386,21 +403,16 @@ return [
             'ability' => 'view-expense',
             'model' => Expense::class,
         ],
-        // TODO: remove env check once the module management os implemented.
-        ...(
-            env('APP_ENV', 'production') == 'development' ? [
-                [
-                    'title' => 'navigation.modules',
-                    'group' => 3,
-                    'link' => '/admin/modules',
-                    'icon' => 'PuzzlePieceIcon',
-                    'name' => 'Modules',
-                    'owner_only' => true,
-                    'ability' => '',
-                    'model' => '',
-                ],
-            ] : []
-        ),
+        [
+            'title' => 'navigation.modules',
+            'group' => 3,
+            'link' => '/admin/modules',
+            'icon' => 'PuzzlePieceIcon',
+            'name' => 'Modules',
+            'owner_only' => true,
+            'ability' => '',
+            'model' => '',
+        ],
         [
             'title' => 'navigation.users',
             'group' => 3,

@@ -7,25 +7,144 @@
       </BaseBreadcrumb>
     </BasePageHeader>
 
-    <!-- Modules Section  -->
-    <div v-if="hasApiToken && moduleStore.modules">
-      <BaseTabGroup class="-mb-5" @change="setStatusFilter">
-        <BaseTab :title="$t('general.all')" filter="" />
-        <BaseTab :title="$t('modules.installed')" filter="INSTALLED" />
-      </BaseTabGroup>
+    <ModulesSecurityNotice />
 
-      <!-- Modules Card Placeholder  -->
+    <BaseCard v-if="catalogError" class="mt-6 border-amber-200 bg-amber-50">
+      <p class="text-sm text-amber-900">
+        {{ $t('modules.extensions_catalog_unavailable') }}
+      </p>
+      <BaseButton class="mt-4" type="button" @click="retryFetch">
+        {{ $t('general.retry') }}
+      </BaseButton>
+    </BaseCard>
+
+    <div
+      v-else-if="moduleStore.modules === null && isFetchingModule"
+      class="
+        mt-6
+        grid w-full
+        grid-cols-[repeat(auto-fill,minmax(280px,1fr))]
+        gap-4
+      "
+    >
+      <ModuleCardPlaceholder />
+      <ModuleCardPlaceholder />
+      <ModuleCardPlaceholder />
+    </div>
+
+    <div v-else-if="moduleStore.modules !== null">
+      <div
+        class="
+          mt-6
+          flex w-full min-w-0
+          flex-row flex-nowrap items-center justify-between gap-3
+          rounded-sm
+          border border-gray-200
+          bg-gray-50
+          p-4
+          sm:gap-6
+        "
+      >
+        <nav
+          class="flex min-w-0 flex-nowrap items-center gap-x-1 text-sm"
+          :aria-label="$t('modules.title')"
+        >
+          <button
+            type="button"
+            :class="filterLinkClass('')"
+            @click="setFilter('')"
+          >
+            {{ $t('general.all') }}
+            <span class="font-normal text-gray-500">({{ totalCount }})</span>
+          </button>
+          <span class="px-1 text-gray-300" aria-hidden="true">|</span>
+          <button
+            type="button"
+            :class="filterLinkClass('INSTALLED')"
+            @click="setFilter('INSTALLED')"
+          >
+            {{ $t('modules.installed') }}
+            <span class="font-normal text-gray-500">({{ installedCount }})</span>
+          </button>
+          <span class="px-1 text-gray-300" aria-hidden="true">|</span>
+          <button
+            type="button"
+            :class="filterLinkClassTemplatesParent"
+            @click="setFilter('TEMPLATES')"
+          >
+            {{ $t('modules.filter_templates') }}
+            <span class="font-normal text-gray-500">({{ pdfTemplateTotalCount }})</span>
+          </button>
+          <span class="px-1 text-gray-300" aria-hidden="true">|</span>
+          <button
+            type="button"
+            :class="filterLinkClass('MODULE')"
+            @click="setFilter('MODULE')"
+          >
+            {{ $t('modules.filter_extensions') }}
+            <span class="font-normal text-gray-500">({{ moduleExtensionsCount }})</span>
+          </button>
+        </nav>
+        <nav
+          v-if="isTemplatesSectionActive"
+          class="
+            mt-3 flex min-w-0 flex-nowrap items-center gap-x-1 border-t border-gray-200 pt-3
+            text-sm
+          "
+          :aria-label="$t('modules.filter_templates')"
+        >
+          <span class="shrink-0 pr-2 text-xs font-medium uppercase text-gray-500">
+            {{ $t('modules.filter_templates') }}
+          </span>
+          <button
+            type="button"
+            :class="filterLinkClass('TEMPLATES')"
+            @click="setFilter('TEMPLATES')"
+          >
+            {{ $t('modules.templates_sub_all') }}
+            <span class="font-normal text-gray-500">({{ pdfTemplateTotalCount }})</span>
+          </button>
+          <span class="px-1 text-gray-300" aria-hidden="true">|</span>
+          <button
+            type="button"
+            :class="filterLinkClass('TEMPLATES_INVOICE')"
+            @click="setFilter('TEMPLATES_INVOICE')"
+          >
+            {{ $t('modules.templates_sub_invoices') }}
+            <span class="font-normal text-gray-500">({{ invoiceTemplateCount }})</span>
+          </button>
+          <span class="px-1 text-gray-300" aria-hidden="true">|</span>
+          <button
+            type="button"
+            :class="filterLinkClass('TEMPLATES_ESTIMATE')"
+            @click="setFilter('TEMPLATES_ESTIMATE')"
+          >
+            {{ $t('modules.templates_sub_estimates') }}
+            <span class="font-normal text-gray-500">({{ estimateTemplateCount }})</span>
+          </button>
+        </nav>
+        <div class="w-52 shrink-0 sm:w-72 lg:w-80">
+          <BaseInput
+            v-model="searchQuery"
+            type="search"
+            :placeholder="$t('general.search')"
+            variant="gray"
+            autocomplete="off"
+          >
+            <template #right>
+              <BaseIcon name="MagnifyingGlassIcon" class="h-5 text-gray-400" />
+            </template>
+          </BaseInput>
+        </div>
+      </div>
+
       <div
         v-if="isFetchingModule"
         class="
-          grid
           mt-6
-          w-full
-          grid-cols-1
-          items-start
-          gap-6
-          lg:grid-cols-2
-          xl:grid-cols-3
+          grid w-full
+          grid-cols-[repeat(auto-fill,minmax(280px,1fr))]
+          gap-4
         "
       >
         <ModuleCardPlaceholder />
@@ -33,198 +152,199 @@
         <ModuleCardPlaceholder />
       </div>
 
-      <!-- Modules Card  -->
       <div v-else>
+        <p
+          v-if="modules.length && moduleStore.modules?.length"
+          class="mt-4 text-xs text-gray-500"
+        >
+          {{ $t('modules.showing_extensions', { count: modules.length }) }}
+        </p>
         <div
           v-if="modules && modules.length"
           class="
-            grid
-            mt-6
-            w-full
-            grid-cols-1
-            items-start
-            gap-6
-            lg:grid-cols-2
-            xl:grid-cols-3
+            mt-2
+            grid w-full
+            grid-cols-[repeat(auto-fill,minmax(280px,1fr))]
+            gap-4
           "
         >
-          <div v-for="(moduleData, idx) in modules" :key="idx">
+          <div v-for="moduleData in modules" :key="moduleData.slug || moduleData.name">
             <ModuleCard :data="moduleData" />
           </div>
         </div>
-        <div v-else class="mt-24">
-          <label class="flex items-center justify-center text-gray-500">
-            {{ $t('modules.no_modules_installed') }}
-          </label>
+        <div
+          v-else
+          class="
+            mt-16
+            rounded-sm
+            border border-dashed border-gray-300
+            bg-gray-50/80
+            px-6
+            py-16
+            text-center
+          "
+        >
+          <p class="text-sm text-gray-600">
+            <template
+              v-if="
+                searchQuery.trim() &&
+                moduleStore.modules &&
+                moduleStore.modules.length > 0
+              "
+            >
+              {{ $t('modules.no_search_results') }}
+            </template>
+            <template v-else>
+              {{ $t('modules.no_extensions_in_catalog') }}
+            </template>
+          </p>
         </div>
       </div>
     </div>
-
-    <BaseCard v-else class="mt-6">
-      <h6 class="text-gray-900 text-lg font-medium">
-        {{ $t('modules.connect_installation') }}
-      </h6>
-      <p class="mt-1 text-sm text-gray-500">
-        {{
-          $t('modules.api_token_description', {
-            url: globalStore.config.base_url.replace(/^http:\/\//, ''),
-          })
-        }}
-      </p>
-
-      <!-- Api Token Form  -->
-      <div class="grid lg:grid-cols-2 mt-6">
-        <form action="" class="mt-6" @submit.prevent="submitApiToken">
-          <BaseInputGroup
-            :label="$t('modules.api_token')"
-            required
-            :error="v$.api_token.$error && v$.api_token.$errors[0].$message"
-          >
-            <BaseInput
-              v-model="moduleStore.currentUser.api_token"
-              :invalid="v$.api_token.$error"
-              @input="v$.api_token.$touch()"
-            />
-          </BaseInputGroup>
-
-          <div class="flex space-x-2">
-            <BaseButton class="mt-6" :loading="isSaving" type="submit">
-              <template #left="slotProps">
-                <BaseIcon name="ArrowDownOnSquareIcon" :class="slotProps.class" />
-              </template>
-              {{ $t('general.save') }}
-            </BaseButton>
-
-            <a
-              :href="`${globalStore.config.base_url}/auth/customer/register`"
-              class="mt-6 block"
-              target="_blank"
-            >
-              <BaseButton variant="primary-outline" type="button">
-                {{ $t('modules.sign_up_and_get_token') }}
-              </BaseButton>
-            </a>
-          </div>
-        </form>
-      </div>
-    </BaseCard>
   </BasePage>
 </template>
 
 <script setup>
 import { useModuleStore } from '@/scripts/admin/stores/module'
-import { useGlobalStore } from '@/scripts/admin/stores/global'
-import { computed, onMounted, reactive, ref, watchEffect } from 'vue'
-import {
-  required,
-  minLength,
-  maxLength,
-  helpers,
-  requiredUnless,
-} from '@vuelidate/validators'
+import { computed, ref } from 'vue'
+
+const TEMPLATE_TAB_KEYS = ['TEMPLATES', 'TEMPLATES_INVOICE', 'TEMPLATES_ESTIMATE']
+
 import ModuleCard from './partials/ModuleCard.vue'
 import ModuleCardPlaceholder from './partials/ModuleCardPlaceholder.vue'
-import { useVuelidate } from '@vuelidate/core'
-import { useI18n } from 'vue-i18n'
+import ModulesSecurityNotice from './partials/ModulesSecurityNotice.vue'
 
 const moduleStore = useModuleStore()
-const globalStore = useGlobalStore()
 const activeTab = ref('')
+const searchQuery = ref('')
+const isFetchingModule = ref(true)
+const catalogError = ref(false)
 
-const { t } = useI18n()
-let isSaving = ref(false)
-let isFetchingModule = ref(false)
+const totalCount = computed(() => moduleStore.modules?.length ?? 0)
 
-const rules = computed(() => {
-  return {
-    api_token: {
-      required: helpers.withMessage(t('validation.required'), required),
-      minLength: helpers.withMessage(
-        t('validation.name_min_length', { count: 3 }),
-        minLength(3)
-      ),
-    },
-  }
-})
-
-const hasApiToken = computed(() => {
-  if (moduleStore.apiToken) {
-    fetchModulesData()
-    return true
-  }
-
-  return false
-})
-
-const v$ = useVuelidate(
-  rules,
-  computed(() => moduleStore.currentUser)
+const installedCount = computed(
+  () => moduleStore.modules?.filter((m) => m.installed).length ?? 0,
 )
 
+const moduleExtensionsCount = computed(
+  () =>
+    moduleStore.modules?.filter((m) => (m.catalog_kind || 'module') === 'module')
+      .length ?? 0,
+)
+
+const invoiceTemplateCount = computed(
+  () =>
+    moduleStore.modules?.filter(
+      (m) =>
+        m.catalog_kind === 'pdf_template' && m.pdf_template_type === 'invoice',
+    ).length ?? 0,
+)
+
+const estimateTemplateCount = computed(
+  () =>
+    moduleStore.modules?.filter(
+      (m) =>
+        m.catalog_kind === 'pdf_template' && m.pdf_template_type === 'estimate',
+    ).length ?? 0,
+)
+
+const pdfTemplateTotalCount = computed(
+  () => invoiceTemplateCount.value + estimateTemplateCount.value,
+)
+
+const isTemplatesSectionActive = computed(() =>
+  TEMPLATE_TAB_KEYS.includes(activeTab.value),
+)
+
+const filterLinkClassTemplatesParent = computed(() => {
+  const active = TEMPLATE_TAB_KEYS.includes(activeTab.value)
+
+  return [
+    'rounded px-1.5 py-0.5 text-left transition-colors',
+    active
+      ? 'cursor-default font-semibold text-gray-900'
+      : 'font-medium text-primary-600 hover:text-primary-800 hover:underline',
+  ]
+})
+
 const modules = computed(() => {
-  if (activeTab.value === 'INSTALLED') {
-    return moduleStore.modules.filter((_m) => _m.installed)
+  if (! moduleStore.modules) {
+    return []
   }
 
-  return moduleStore.modules
+  let list = moduleStore.modules
+
+  if (activeTab.value === 'INSTALLED') {
+    list = list.filter((_m) => _m.installed)
+  } else if (activeTab.value === 'MODULE') {
+    list = list.filter((m) => (m.catalog_kind || 'module') === 'module')
+  } else if (activeTab.value === 'TEMPLATES') {
+    list = list.filter((m) => m.catalog_kind === 'pdf_template')
+  } else if (activeTab.value === 'TEMPLATES_INVOICE') {
+    list = list.filter(
+      (m) =>
+        m.catalog_kind === 'pdf_template' && m.pdf_template_type === 'invoice',
+    )
+  } else if (activeTab.value === 'TEMPLATES_ESTIMATE') {
+    list = list.filter(
+      (m) =>
+        m.catalog_kind === 'pdf_template' && m.pdf_template_type === 'estimate',
+    )
+  }
+
+  const q = searchQuery.value.trim().toLowerCase()
+  if (! q) {
+    return list
+  }
+
+  return list.filter((m) => {
+    const name = (m.name || '').toLowerCase()
+    const desc = (m.short_description || '').toLowerCase()
+    const author = (m.author_name || '').toLowerCase()
+    const slug = (m.slug || '').toLowerCase()
+
+    return (
+      name.includes(q) ||
+      desc.includes(q) ||
+      author.includes(q) ||
+      slug.includes(q)
+    )
+  })
 })
+
+function filterLinkClass(filter) {
+  const active = activeTab.value === filter
+
+  return [
+    'rounded px-1.5 py-0.5 text-left transition-colors',
+    active
+      ? 'cursor-default font-semibold text-gray-900'
+      : 'font-medium text-primary-600 hover:text-primary-800 hover:underline',
+  ]
+}
 
 async function fetchModulesData() {
   isFetchingModule.value = true
+  catalogError.value = false
 
-  await moduleStore.fetchModules().then(() => {
-    isFetchingModule.value = false
-  })
-}
-
-async function submitApiToken() {
-  v$.value.$touch()
-
-  if (v$.value.$invalid) {
-    return true
-  }
-
-  isSaving.value = true
-
-  moduleStore
-    .checkApiToken(moduleStore.currentUser.api_token)
-    .then((response) => {
-      if (response.data.success) {
-        saveApiTokenToSettings()
-        return
-      }
-      isSaving.value = false
-      return
-    })
-}
-
-async function saveApiTokenToSettings() {
   try {
-    await globalStore
-      .updateGlobalSettings({
-        data: {
-          settings: {
-            api_token: moduleStore.currentUser.api_token,
-          },
-        },
-        message: 'settings.preferences.updated_message',
-      })
-      .then((response) => {
-        if (response.data.success) {
-          moduleStore.apiToken = moduleStore.currentUser.api_token
-          return
-        }
-      })
-
-    isSaving.value = false
+    await moduleStore.fetchModules()
   } catch (err) {
-    isSaving.value = false
-    console.error(err)
-    return
+    if (err.response?.status === 503) {
+      catalogError.value = true
+    }
+  } finally {
+    isFetchingModule.value = false
   }
 }
 
-function setStatusFilter(data) {
-  activeTab.value = data.filter
+fetchModulesData()
+
+function retryFetch() {
+  fetchModulesData()
+}
+
+function setFilter(filter) {
+  activeTab.value = filter
 }
 </script>

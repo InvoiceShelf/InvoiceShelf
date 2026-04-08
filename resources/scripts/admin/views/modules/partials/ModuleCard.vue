@@ -1,130 +1,157 @@
 <template>
-  <div
+  <article
     class="
-      relative
-      shadow-md
-      border-2 border-gray-200/60
-      rounded-lg
-      cursor-pointer
+      flex flex-col
       overflow-hidden
-      h-100
+      rounded-sm
+      border border-gray-300
+      bg-white
+      shadow-sm
+      transition-shadow duration-150
+      hover:shadow-md
     "
-    @click="$router.push(`/admin/modules/${data.slug}`)"
   >
-    <div
-      v-if="data.purchased"
-      class="absolute mt-5 px-6 w-full flex justify-end"
-    >
-      <label
-        v-if="data.purchased"
+    <div class="relative">
+      <router-link
+        :to="{ name: 'modules.view', params: { slug: data.slug } }"
         class="
-          bg-white/75
-          text-xs
-          px-3
-          py-1
-          font-semibold
-          tracking-wide
-          rounded
+          block
+          focus:outline-none
+          focus-visible:ring-2 focus-visible:ring-primary-500
+          focus-visible:ring-offset-2
         "
       >
-        {{ $t('modules.purchased') }}
-      </label>
-      <label
-        v-if="data.installed"
-        class="
-          ml-2
-          bg-white/75
-          text-xs
-          px-3
-          py-1
-          font-semibold
-          tracking-wide
-          rounded
-        "
-      >
-        <span v-if="data.update_available">
-          {{ $t('modules.update_available') }}
-        </span>
-        <span v-else>
-          {{ $t('modules.installed') }}
-        </span>
-      </label>
-    </div>
-    <img
-      class="lg:h-64 md:h-48 w-full object-cover object-center"
-      :src="data.cover"
-      alt="cover"
-    />
-    <div class="px-6 py-5 flex flex-col bg-gray-50 flex-1 justify-between">
-      <span
-        class="
-          text-lg
-          sm:text-2xl
-          font-medium
-          whitespace-nowrap
-          truncate
-          text-primary-500
-        "
-      >
-        {{ data.name }}
-      </span>
-      <div v-if="data.author_avatar" class="flex items-center mt-2">
-        <img
-          class="hidden h-10 w-10 rounded-full sm:inline-block mr-2"
-          :src="
-            data.author_avatar
-              ? data.author_avatar
-              : 'http://localhost:3000$images/default-avatar.jpg'
-          "
-          alt=""
-        />
-        <span>by</span>
-        <span class="ml-2 text-base font-semibold truncate"
-          >{{ data.author_name }}
-        </span>
-      </div>
-      <base-text
-        :text="data.short_description"
-        class="pt-4 text-gray-500 h-16 line-clamp-2"
-      >
-      </base-text>
-      <div
-        class="
-          flex
-          justify-between
-          mt-4
-          flex-col
-          space-y-2
-          sm:space-y-0 sm:flex-row
-        "
-      >
-        <div><BaseRating :rating="averageRating" /></div>
         <div
           class="
-            text-xl
-            md:text-2xl
-            font-semibold
-            whitespace-nowrap
-            text-primary-500
+            flex h-40 w-full
+            items-center justify-center
+            border-b border-gray-200
+            bg-gradient-to-br from-gray-100 to-gray-200
           "
         >
-          $
-          {{
-            data.monthly_price
-              ? data.monthly_price / 100
-              : data.yearly_price / 100
-          }}
+          <img
+            v-if="data.cover"
+            class="h-full w-full object-contain object-center"
+            :src="data.cover"
+            alt=""
+          />
+          <BaseIcon
+            v-else
+            name="PuzzlePieceIcon"
+            class="h-16 w-16 text-gray-400"
+          />
         </div>
+      </router-link>
+      <div
+        v-if="data.installed"
+        class="absolute right-3 top-3 flex flex-wrap justify-end gap-1.5"
+      >
+        <span
+          class="
+            rounded
+            px-2.5
+            py-1
+            text-xs
+            font-semibold
+            shadow-md
+            ring-2 ring-white/60
+          "
+          :class="
+            data.update_available
+              ? 'bg-amber-500 text-white'
+              : 'bg-emerald-600 text-white'
+          "
+        >
+          <span v-if="data.update_available">
+            {{ $t('modules.update_available') }}
+          </span>
+          <span v-else>
+            {{ $t('modules.installed') }}
+          </span>
+        </span>
       </div>
     </div>
-  </div>
+
+    <div class="flex flex-1 flex-col p-4">
+      <h3
+        class="text-base font-semibold leading-snug text-gray-900 line-clamp-2"
+      >
+        <router-link
+          :to="{ name: 'modules.view', params: { slug: data.slug } }"
+          class="
+            text-primary-600
+            hover:text-primary-700 hover:underline
+            focus:outline-none
+          "
+        >
+          {{ data.name }}
+        </router-link>
+      </h3>
+      <div class="mt-2">
+        <span
+          class="
+            inline-flex max-w-full items-center rounded-full px-2.5 py-0.5 text-xs font-semibold
+          "
+          :class="catalogKindBadgeClass"
+        >
+          {{ catalogKindLabel }}
+        </span>
+      </div>
+      <p v-if="data.author_name" class="mt-2 text-sm text-gray-600">
+        {{ $t('modules.by_author', { author: data.author_name }) }}
+      </p>
+      <base-text
+        :text="data.short_description"
+        class="mt-2 flex-1 text-sm leading-relaxed text-gray-700 line-clamp-4"
+      />
+
+      <div
+        class="
+          mt-4
+          flex flex-col gap-3
+          border-t border-gray-100
+          pt-4
+          sm:flex-row sm:items-center sm:justify-between
+        "
+      >
+        <span class="text-xs text-gray-500">
+          {{ $t('modules.version') }} {{ data.latest_module_version }}
+        </span>
+        <router-link
+          :to="{ name: 'modules.view', params: { slug: data.slug } }"
+          class="
+            inline-flex
+            items-center
+            justify-center
+            whitespace-nowrap
+            rounded-md
+            border border-transparent
+            bg-primary-600
+            px-3
+            py-2
+            text-sm
+            font-medium
+            leading-4
+            text-white
+            shadow-xs
+            hover:bg-primary-700
+            focus:outline-hidden
+            focus:ring-2
+            focus:ring-primary-500
+            focus:ring-offset-2
+          "
+        >
+          {{ $t('modules.view_details') }}
+        </router-link>
+      </div>
+    </div>
+  </article>
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { computed, onMounted, ref, watch, reactive } from 'vue'
 
-const { t } = useI18n()
 const props = defineProps({
   data: {
     type: Object,
@@ -133,7 +160,25 @@ const props = defineProps({
   },
 })
 
-let averageRating = computed(() => {
-  return parseInt(props.data.average_rating)
+const { t } = useI18n()
+
+const catalogKindLabel = computed(() => {
+  if (props.data.catalog_kind === 'pdf_template') {
+    return props.data.pdf_template_type === 'invoice'
+      ? t('modules.kind_invoice_template')
+      : t('modules.kind_estimate_template')
+  }
+
+  return t('modules.kind_extension')
+})
+
+const catalogKindBadgeClass = computed(() => {
+  if (props.data.catalog_kind === 'pdf_template') {
+    return props.data.pdf_template_type === 'invoice'
+      ? 'bg-sky-50 text-sky-900 ring-1 ring-inset ring-sky-200'
+      : 'bg-violet-50 text-violet-900 ring-1 ring-inset ring-violet-200'
+  }
+
+  return 'bg-gray-100 text-gray-800 ring-1 ring-inset ring-gray-200'
 })
 </script>

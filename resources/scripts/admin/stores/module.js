@@ -10,29 +10,28 @@ export const useModuleStore = (useWindow = false) => {
   return defineStoreFunc('modules', {
     state: () => ({
       currentModule: {},
-      modules: [],
-      apiToken: null,
-      currentUser: {
-        api_token: null,
-      },
-      enableModules: []
+      modules: null,
+      enableModules: [],
     }),
 
     getters: {
-      salesTaxUSEnabled: (state) => (state.enableModules.includes('SalesTaxUS')),
+      salesTaxUSEnabled: (state) => state.enableModules.includes('SalesTaxUS'),
     },
 
     actions: {
       fetchModules(params) {
         return new Promise((resolve, reject) => {
           http
-            .get(`/api/v1/modules`)
+            .get(`/api/v1/modules`, { params })
             .then((response) => {
               this.modules = response.data.data
 
               resolve(response)
             })
             .catch((err) => {
+              if (err.response?.status !== 503) {
+                this.modules = []
+              }
               handleError(err)
               reject(err)
             })
@@ -44,37 +43,8 @@ export const useModuleStore = (useWindow = false) => {
           http
             .get(`/api/v1/modules/${id}`)
             .then((response) => {
-              if (response.data.error === 'invalid_token') {
-                this.currentModule = {},
-                this.modules = [],
-                this.apiToken = null,
-                this.currentUser.api_token = null,
-                window.router.push('/admin/modules')
-              } else { 
-                this.currentModule = response.data
-              }
+              this.currentModule = response.data
 
-              resolve(response)
-            })
-            .catch((err) => {
-              handleError(err)
-              reject(err)
-            })
-        })
-      },
-
-      checkApiToken(token) {
-        return new Promise((resolve, reject) => {
-          http
-            .get(`/api/v1/modules/check?api_token=${token}`)
-            .then((response) => {
-              const notificationStore = useNotificationStore()
-              if (response.data.error === 'invalid_token') {
-                notificationStore.showNotification({
-                  type: 'error',
-                  message: global.t('modules.invalid_api_token'),
-                })
-              }
               resolve(response)
             })
             .catch((err) => {
@@ -115,6 +85,27 @@ export const useModuleStore = (useWindow = false) => {
                 notificationStore.showNotification({
                   type: 'success',
                   message: global.t('modules.module_enabled'),
+                })
+              }
+              resolve(response)
+            })
+            .catch((err) => {
+              handleError(err)
+              reject(err)
+            })
+        })
+      },
+
+      uninstallModule(module) {
+        return new Promise((resolve, reject) => {
+          http
+            .post(`/api/v1/modules/${module}/uninstall`)
+            .then((response) => {
+              const notificationStore = useNotificationStore()
+              if (response.data.success) {
+                notificationStore.showNotification({
+                  type: 'success',
+                  message: global.t('modules.uninstall_success'),
                 })
               }
               resolve(response)

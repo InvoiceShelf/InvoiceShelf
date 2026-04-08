@@ -11,8 +11,20 @@ class Setting extends Model
 
     protected $fillable = ['option', 'value'];
 
+    /**
+     * Eloquent has no DB resolver before the database service is bound (e.g. very early boot or mis-ordered module code).
+     */
+    private static function databaseUnavailable(): bool
+    {
+        return static::getConnectionResolver() === null;
+    }
+
     public static function setSetting($key, $setting)
     {
+        if (self::databaseUnavailable()) {
+            return;
+        }
+
         $old = self::whereOption($key)->first();
 
         if ($old) {
@@ -30,6 +42,10 @@ class Setting extends Model
 
     public static function setSettings($settings)
     {
+        if (self::databaseUnavailable()) {
+            return;
+        }
+
         foreach ($settings as $key => $value) {
             self::updateOrCreate(
                 [
@@ -45,6 +61,10 @@ class Setting extends Model
 
     public static function getSetting($key)
     {
+        if (self::databaseUnavailable()) {
+            return null;
+        }
+
         $setting = static::whereOption($key)->first();
 
         if ($setting) {
@@ -56,6 +76,10 @@ class Setting extends Model
 
     public static function getSettings($settings)
     {
+        if (self::databaseUnavailable()) {
+            return collect();
+        }
+
         return static::whereIn('option', $settings)
             ->get()->mapWithKeys(function ($item) {
                 return [$item['option'] => $item['value']];

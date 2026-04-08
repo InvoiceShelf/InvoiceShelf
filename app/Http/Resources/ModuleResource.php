@@ -4,131 +4,241 @@ namespace App\Http\Resources;
 
 use App\Models\Module as ModelsModule;
 use App\Models\Setting;
-use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Nwidart\Modules\Facades\Module;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 
 class ModuleResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
      *
-     * @param  Request  $request
-     * @return array|Arrayable|\JsonSerializable
+     * @return array<string, mixed>
      */
-    public function toArray($request): array
+    public function toArray(Request $request): array
     {
-        $this->checkPurchased();
-        $this->installed_module = ModelsModule::where('name', $this->module_name)->first();
+        $ext = is_array($this->resource) ? $this->resource : (array) $this->resource;
+        $moduleName = $ext['module_name'] ?? '';
+        $catalogKind = $ext['catalog_kind'] ?? 'module';
+
+        $latestVersion = $ext['version'] ?? '0.0.0';
+
+        if ($catalogKind === 'pdf_template') {
+            $installedVersion = $this->pdfTemplateInstalledVersion($ext);
+            $filesOk = $this->pdfTemplateFilesExist($ext);
+            $installedFlag = $installedVersion !== null && $filesOk;
+
+            return [
+                'id' => $ext['slug'] ?? $moduleName,
+                'average_rating' => 0,
+                'cover' => $ext['cover'] ?? null,
+                'slug' => $ext['slug'] ?? '',
+                'module_name' => $moduleName,
+                'catalog_kind' => 'pdf_template',
+                'pdf_template_type' => $ext['pdf_template_type'] ?? null,
+                'template_name' => $ext['template_name'] ?? null,
+                'faq' => [],
+                'highlights' => '',
+                'installed_module_version' => $installedFlag ? $installedVersion : null,
+                'installed_module_version_updated_at' => null,
+                'latest_module_version' => $latestVersion,
+                'latest_module_version_updated_at' => null,
+                'is_dev' => false,
+                'license' => $ext['license'] ?? '',
+                'long_description' => $ext['description'] ?? '',
+                'monthly_price' => 0,
+                'name' => $ext['name'] ?? '',
+                'purchased' => true,
+                'reviews' => [],
+                'screenshots' => [],
+                'short_description' => $ext['description'] ?? '',
+                'type' => 'MONTHLY',
+                'yearly_price' => 0,
+                'author_name' => $ext['author'] ?? '',
+                'author_avatar' => null,
+                'installed' => $installedFlag,
+                'enabled' => $installedFlag,
+                'update_available' => $this->updateAvailablePdfTemplate($installedVersion, $latestVersion, $ext, $filesOk),
+                'video_link' => null,
+                'video_thumbnail' => null,
+                'links' => $this->buildLinks($ext),
+                'repository' => $ext['repository'] ?? '',
+                'download_url' => $ext['download_url'] ?? '',
+                'tags' => $ext['tags'] ?? [],
+                'compatibility' => $ext['compatibility'] ?? [],
+            ];
+        }
+
+        $installed = ModelsModule::where('name', $moduleName)->first();
+
+        $installedVersion = $installed && $installed->installed ? $installed->version : null;
+        $isLocal = (bool) ($ext['is_local'] ?? false);
+        $forcedInstalled = (bool) ($ext['installed'] ?? false);
 
         return [
-            'id' => $this->id,
-            'average_rating' => $this->average_rating,
-            'cover' => $this->cover,
-            'slug' => $this->slug,
-            'module_name' => $this->module_name,
-            'faq' => $this->faq,
-            'highlights' => $this->highlights,
-            'installed_module_version' => $this->getInstalledModuleVersion(),
-            'installed_module_version_updated_at' => $this->getInstalledModuleUpdatedAt(),
-            'latest_module_version' => $this->latest_module_version->module_version,
-            'latest_module_version_updated_at' => $this->latest_module_version->created_at,
-            'is_dev' => $this->is_dev,
-            'license' => $this->license,
-            'long_description' => $this->long_description,
-            'monthly_price' => $this->monthly_price,
-            'name' => $this->name,
-            'purchased' => $this->purchased,
-            'reviews' => $this->reviews ?? [],
-            'screenshots' => $this->screenshots,
-            'short_description' => $this->short_description,
-            'type' => $this->type,
-            'yearly_price' => $this->yearly_price,
-            'author_name' => $this->author->name,
-            'author_avatar' => $this->author->avatar,
-            'installed' => $this->moduleInstalled(),
-            'enabled' => $this->moduleEnabled(),
-            'update_available' => $this->updateAvailable(),
-            'video_link' => $this->video_link,
-            'video_thumbnail' => $this->video_thumbnail,
-            'links' => $this->links,
+            'id' => $ext['slug'] ?? $moduleName,
+            'average_rating' => 0,
+            'cover' => $ext['cover'] ?? null,
+            'slug' => $ext['slug'] ?? '',
+            'module_name' => $moduleName,
+            'catalog_kind' => 'module',
+            'pdf_template_type' => null,
+            'template_name' => null,
+            'faq' => [],
+            'highlights' => '',
+            'installed_module_version' => $installedVersion,
+            'installed_module_version_updated_at' => $installed?->updated_at?->toIso8601String(),
+            'latest_module_version' => $latestVersion,
+            'latest_module_version_updated_at' => null,
+            'is_dev' => false,
+            'license' => $ext['license'] ?? '',
+            'long_description' => $ext['description'] ?? '',
+            'monthly_price' => 0,
+            'name' => $ext['name'] ?? '',
+            'purchased' => true,
+            'reviews' => [],
+            'screenshots' => [],
+            'short_description' => $ext['description'] ?? '',
+            'type' => 'MONTHLY',
+            'yearly_price' => 0,
+            'author_name' => $ext['author'] ?? '',
+            'author_avatar' => null,
+            'installed' => $isLocal ? $forcedInstalled : ($installed && $installed->installed),
+            'enabled' => $isLocal
+                ? (bool) ($ext['enabled'] ?? false)
+                : ($installed && $installed->installed ? (bool) $installed->enabled : false),
+            'update_available' => $isLocal ? false : $this->updateAvailable($installed, $latestVersion, $ext),
+            'video_link' => null,
+            'video_thumbnail' => null,
+            'links' => $this->buildLinks($ext),
+            'repository' => $ext['repository'] ?? '',
+            'download_url' => $ext['download_url'] ?? '',
+            'tags' => $ext['tags'] ?? [],
+            'compatibility' => $ext['compatibility'] ?? [],
         ];
     }
 
-    public function getInstalledModuleVersion()
+    /**
+     * @param  array<string, mixed>  $ext
+     */
+    private function pdfTemplateInstalledVersion(array $ext): ?string
     {
-        if (isset($this->installed_module) && $this->installed_module->installed) {
-            return $this->installed_module->version;
+        $slug = $ext['slug'] ?? '';
+        if ($slug === '') {
+            return null;
         }
 
-        return null;
-    }
-
-    public function getInstalledModuleUpdatedAt()
-    {
-        if (isset($this->installed_module) && $this->installed_module->installed) {
-            return $this->installed_module->updated_at;
+        $json = json_decode(Setting::getSetting('pdf_template_catalog_versions') ?: '{}', true);
+        if (! is_array($json)) {
+            return null;
         }
 
-        return null;
+        $v = $json[$slug] ?? null;
+
+        return $v !== null && $v !== '' ? (string) $v : null;
     }
 
-    public function moduleInstalled()
+    /**
+     * @param  array<string, mixed>  $ext
+     */
+    private function pdfTemplateFilesExist(array $ext): bool
     {
-        if (isset($this->installed_module) && $this->installed_module->installed) {
-            return true;
-        }
+        $type = $ext['pdf_template_type'] ?? '';
+        $basename = $ext['template_name'] ?? '';
 
-        return false;
-    }
-
-    public function moduleEnabled()
-    {
-        if (isset($this->installed_module) && $this->installed_module->installed) {
-            return $this->installed_module->enabled;
-        }
-
-        return false;
-    }
-
-    public function updateAvailable()
-    {
-        if (! isset($this->installed_module)) {
+        if (! in_array($type, ['invoice', 'estimate'], true) || $basename === '') {
             return false;
         }
 
-        if (! $this->installed_module->installed) {
+        return Storage::disk('pdf_templates')->exists($type.'/'.$basename.'.blade.php');
+    }
+
+    /**
+     * @param  array<string, mixed>  $ext
+     */
+    private function updateAvailablePdfTemplate(?string $installedVersion, string $latestVersion, array $ext, bool $filesOk): bool
+    {
+        if (! $installedVersion || ! $filesOk) {
             return false;
         }
 
-        if (! isset($this->latest_module_version)) {
+        if (! version_compare((string) $installedVersion, $latestVersion, '<')) {
             return false;
         }
 
-        if (version_compare($this->installed_module->version, $this->latest_module_version->module_version, '>=')) {
+        return $this->isCompatibleWithApp($ext);
+    }
+
+    private function updateAvailable(?ModelsModule $installed, string $latestVersion, array $ext): bool
+    {
+        if (! $installed || ! $installed->installed) {
             return false;
         }
 
-        if (version_compare(Setting::getSetting('version'), $this->latest_module_version->invoiceshelf_version, '<')) {
+        if (! version_compare((string) $installed->version, $latestVersion, '<')) {
+            return false;
+        }
+
+        return $this->isCompatibleWithApp($ext);
+    }
+
+    /**
+     * @param  array<string, mixed>  $ext
+     */
+    private function isCompatibleWithApp(array $ext): bool
+    {
+        $appVersion = $this->resolveApplicationVersionForCompatibility();
+        $min = Arr::get($ext, 'compatibility.min_version');
+        $max = Arr::get($ext, 'compatibility.max_version');
+
+        if ($min && version_compare($appVersion, (string) $min, '<')) {
+            return false;
+        }
+
+        if ($max && version_compare($appVersion, (string) $max, '>')) {
             return false;
         }
 
         return true;
     }
 
-    public function checkPurchased()
+    /**
+     * Prefer `settings` table; fall back to version.md (same source as InstallUtils::setCurrentVersion).
+     */
+    private function resolveApplicationVersionForCompatibility(): string
     {
-        if ($this->purchased) {
-            return true;
+        $fromDb = Setting::getSetting('version');
+        if ($fromDb !== null && $fromDb !== '') {
+            return (string) $fromDb;
         }
 
-        if (Module::has($this->module_name)) {
-            $module = Module::find($this->module_name);
-            $module->disable();
-            ModelsModule::where('name', $this->module_name)->update(['enabled' => false]);
+        $path = base_path('version.md');
+        if (is_file($path)) {
+            $v = trim((string) file_get_contents($path));
+
+            return $v !== '' ? $v : '0.0.0';
         }
 
-        return false;
+        return '0.0.0';
+    }
+
+    /**
+     * @param  array<string, mixed>  $ext
+     * @return array<int, array<string, mixed>>
+     */
+    private function buildLinks(array $ext): array
+    {
+        $links = [];
+
+        if (! empty($ext['repository'])) {
+            $links[] = [
+                'icon' => 'CodeBracketIcon',
+                'label' => 'Source',
+                'link' => $ext['repository'],
+            ];
+        }
+
+        return $links;
     }
 }
