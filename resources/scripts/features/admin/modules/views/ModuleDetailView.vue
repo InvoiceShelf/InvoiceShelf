@@ -10,7 +10,7 @@
     <BasePageHeader :title="moduleData.name">
       <BaseBreadcrumb>
         <BaseBreadcrumbItem :title="$t('general.home')" to="dashboard" />
-        <BaseBreadcrumbItem :title="$t('modules.title')" to="/admin/modules" />
+        <BaseBreadcrumbItem :title="$t('modules.title')" to="/admin/administration/modules" />
         <BaseBreadcrumbItem :title="moduleData.name" to="#" active />
       </BaseBreadcrumb>
     </BasePageHeader>
@@ -291,7 +291,7 @@
       <div class="flex items-center justify-between space-x-4">
         <h2 class="text-lg font-medium text-heading">{{ $t('modules.other_modules') }}</h2>
         <a
-          href="/admin/modules"
+          href="/admin/administration/modules"
           class="whitespace-nowrap text-sm font-medium text-primary-600 hover:text-primary-500"
         >
           {{ $t('modules.view_all') }}

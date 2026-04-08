@@ -1,7 +1,7 @@
 <template>
   <div
     class="relative shadow-md border-2 border-line-default/60 rounded-lg cursor-pointer overflow-hidden h-100"
-    @click="$router.push(`/admin/modules/${data.slug}`)"
+    @click="$router.push(`/admin/administration/modules/${data.slug}`)"
   >
     <div
       v-if="data.purchased"

@@ -1,4 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router'
+import { adminModuleRoutes } from './modules/routes'
 
 const CompanyLayout = () => import('../../layouts/CompanyLayout.vue')
 const AdminDashboardView = () => import('./views/AdminDashboardView.vue')
@@ -64,6 +65,7 @@ export const adminRoutes: RouteRecordRaw[] = [
           isSuperAdmin: true,
         },
       },
+      ...adminModuleRoutes,
       {
         path: 'settings',
         name: 'admin.settings',

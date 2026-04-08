@@ -18,3 +18,19 @@ export { default as AdminSettingsView } from './views/AdminSettingsView.vue'
 
 export { default as AdminCompanyDropdown } from './components/AdminCompanyDropdown.vue'
 export { default as AdminUserDropdown } from './components/AdminUserDropdown.vue'
+
+// Modules (super-admin marketplace browser)
+export {
+  adminModuleRoutes,
+  useModuleStore,
+  ModuleIndexView,
+  ModuleDetailView,
+  ModuleCard,
+} from './modules'
+export type {
+  ModuleState,
+  ModuleStore,
+  ModuleDetailResponse,
+  ModuleDetailMeta,
+  InstallationStep,
+} from './modules'

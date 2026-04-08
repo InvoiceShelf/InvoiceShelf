@@ -346,21 +346,16 @@ return [
             'ability' => 'view-expense',
             'model' => Expense::class,
         ],
-        // TODO: remove env check once the module management os implemented.
-        ...(
-            env('APP_ENV', 'production') == 'development' ? [
-                [
-                    'title' => 'navigation.modules',
-                    'group' => 3,
-                    'link' => '/admin/modules',
-                    'icon' => 'PuzzlePieceIcon',
-                    'name' => 'Modules',
-                    'owner_only' => true,
-                    'ability' => '',
-                    'model' => '',
-                ],
-            ] : []
-        ),
+        [
+            'title' => 'navigation.modules',
+            'group' => 3,
+            'link' => '/admin/modules',
+            'icon' => 'PuzzlePieceIcon',
+            'name' => 'Modules',
+            'owner_only' => false,
+            'ability' => 'manage modules',
+            'model' => '',
+        ],
         [
             'title' => 'navigation.members',
             'group' => 3,
@@ -425,6 +420,17 @@ return [
             'link' => '/admin/administration/users',
             'icon' => 'UsersIcon',
             'name' => 'AdminUsers',
+            'owner_only' => false,
+            'super_admin_only' => true,
+            'ability' => '',
+            'model' => '',
+        ],
+        [
+            'title' => 'navigation.modules',
+            'group' => 1,
+            'link' => '/admin/administration/modules',
+            'icon' => 'PuzzlePieceIcon',
+            'name' => 'AdminModules',
             'owner_only' => false,
             'super_admin_only' => true,
             'ability' => '',
