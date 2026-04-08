@@ -42,9 +42,16 @@ return [
     'min_sqlite_version' => '3.35.0',
 
     /*
-    * Marketplace url.
+    * Marketplace and updater base URL.
+    *
+    * The marketplace client (App\Services\Module\ModuleInstaller) and the
+    * updater (App\Services\Update\Updater) both build their HTTP client base
+    * URI from this value via App\Traits\SiteApi::getRemote(). Override via
+    * INVOICESHELF_BASE_URL in .env to point a self-hosted instance or local
+    * dev environment at a non-production marketplace (e.g. a local checkout
+    * of the invoiceshelf/website repo).
     */
-    'base_url' => 'https://invoiceshelf.com',
+    'base_url' => env('INVOICESHELF_BASE_URL', 'https://invoiceshelf.com'),
 
     /*
     * Paths protected from cleanup during updates.
