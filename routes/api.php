@@ -40,6 +40,8 @@ use App\Http\Controllers\Company\Invoice\InvoiceTemplatesController;
 use App\Http\Controllers\Company\Item\ItemsController;
 use App\Http\Controllers\Company\Item\UnitsController;
 use App\Http\Controllers\Company\Members\MembersController;
+use App\Http\Controllers\Company\Modules\CompanyModulesController;
+use App\Http\Controllers\Company\Modules\ModuleSettingsController;
 use App\Http\Controllers\Company\Payment\PaymentMethodsController;
 use App\Http\Controllers\Company\Payment\PaymentsController;
 use App\Http\Controllers\Company\RecurringInvoice\RecurringInvoiceController;
@@ -482,7 +484,15 @@ Route::prefix('/v1')->group(function () {
             Route::post('/unzip', [ModuleInstallationController::class, 'unzip']);
             Route::post('/copy', [ModuleInstallationController::class, 'copy']);
             Route::post('/complete', [ModuleInstallationController::class, 'complete']);
+
+            // Per-slug settings (schema-driven, per-company storage)
+            Route::get('/{slug}/settings', [ModuleSettingsController::class, 'show']);
+            Route::put('/{slug}/settings', [ModuleSettingsController::class, 'update']);
         });
+
+        // Company-context Active Modules index (read-only, lists every
+        // instance-activated module with a has_settings flag)
+        Route::get('/company-modules', [CompanyModulesController::class, 'index']);
     });
 
     Route::prefix('/{company:slug}/customer')->group(function () {

@@ -773,7 +773,22 @@
     "no_modules_installed": "No Modules Installed Yet!",
     "disable_warning": "All the settings for this particular will be reverted.",
     "what_you_get": "What you get",
-    "sign_up_and_get_token": "Sign up & Get Token"
+    "sign_up_and_get_token": "Sign up & Get Token",
+    "index": {
+      "description": "Modules activated by your administrator on this instance. Each company configures its own settings independently.",
+      "empty_title": "No active modules",
+      "empty_description": "Your administrator hasn't activated any modules on this instance yet. Once they do, modules will appear here with a settings shortcut."
+    },
+    "settings": {
+      "title": "Module Settings",
+      "open": "Settings",
+      "saved": "Module settings saved successfully.",
+      "not_found": "This module has not registered a settings schema.",
+      "none": "No settings"
+    },
+    "sidebar": {
+      "section_title": "Modules"
+    }
   },
   "members": {
     "title": "Members",
