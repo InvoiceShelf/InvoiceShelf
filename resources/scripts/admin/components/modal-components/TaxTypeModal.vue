@@ -58,15 +58,16 @@
             variant="horizontal"
             required
           >
-            <BaseMoney
-              v-model="taxTypeStore.currentTaxType.percent"
-              :currency="{
-                decimal: '.',
-                thousands: ',',
-                symbol: '% ',
-                precision: 2,
-                masked: false,
-              }"
+            <BaseInput
+              :model-value="taxTypeStore.currentTaxType.percent"
+              type="number"
+              step="0.001"
+              min="-100"
+              max="100"
+              inline-addon="%"
+              :invalid="v$.currentTaxType.percent.$error"
+              @update:model-value="onTaxPercentInput"
+              @blur="onTaxPercentBlur"
             />
           </BaseInputGroup>
 
@@ -207,7 +208,38 @@ const v$ = useVuelidate(
   computed(() => taxTypeStore)
 )
 
+function onTaxPercentInput(val) {
+  v$.value.currentTaxType.percent.$touch()
+
+  if (val === '' || val === null) {
+    taxTypeStore.currentTaxType.percent = null
+
+    return
+  }
+
+  const n = typeof val === 'number' ? val : parseFloat(val)
+  taxTypeStore.currentTaxType.percent = Number.isNaN(n) ? null : n
+}
+
+function onTaxPercentBlur() {
+  const p = taxTypeStore.currentTaxType.percent
+  if (p === null || p === undefined || p === '') {
+    return
+  }
+
+  const n = typeof p === 'number' ? p : parseFloat(p)
+  if (Number.isNaN(n)) {
+    return
+  }
+
+  taxTypeStore.currentTaxType.percent = Math.round(n * 1000) / 1000
+}
+
 async function submitTaxTypeData() {
+  if (taxTypeStore.currentTaxType.calculation_type === 'percentage') {
+    onTaxPercentBlur()
+  }
+
   v$.value.currentTaxType.$touch()
   if (v$.value.currentTaxType.$invalid) {
     return true

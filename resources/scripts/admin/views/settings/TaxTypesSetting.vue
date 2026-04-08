@@ -248,4 +248,5 @@ function openTaxModal() {
     refreshData: table.value && table.value.refresh,
   })
 }
+
 </script>
