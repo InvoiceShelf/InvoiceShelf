@@ -7,6 +7,10 @@ export const API = {
   AUTH_CHECK: '/api/v1/auth/check',
   CSRF_COOKIE: '/sanctum/csrf-cookie',
   REGISTER_WITH_INVITATION: '/api/v1/auth/register-with-invitation',
+  INSTALLATION_LOGIN: '/api/v1/installation/login',
+  INSTALLATION_SET_DOMAIN: '/api/v1/installation/set-domain',
+  INSTALLATION_WIZARD_STEP: '/api/v1/installation/wizard-step',
+  INSTALLATION_SESSION_LOGIN: '/installation/session-login',
 
   // Invitation Registration (public)
   INVITATION_DETAILS: '/api/v1/invitations', // append /{token}/details

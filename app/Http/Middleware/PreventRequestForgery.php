@@ -20,5 +20,6 @@ class PreventRequestForgery extends Middleware
      */
     protected $except = [
         'login',
+        'installation/session-login',
     ];
 }

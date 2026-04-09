@@ -2,7 +2,6 @@
   <BaseWizardStep
     :title="$t('wizard.company_info')"
     :description="$t('wizard.company_info_desc')"
-    step-container="bg-surface border border-line-default border-solid mb-8 md:w-full p-8 rounded w-full"
   >
     <form @submit.prevent="next">
       <div class="grid grid-cols-1 mb-4 md:grid-cols-2 md:mb-6">
@@ -121,11 +120,13 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 import { required, maxLength, helpers } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { client } from '../../../api/client'
+import { installClient } from '../../../api/install-client'
 import { API } from '../../../api/endpoints'
 import type { Country } from '../../../types/domain/customer'
+import { useInstallationFeedback } from '../use-installation-feedback'
 
 interface CompanyAddress {
   address_street_1: string
@@ -145,12 +146,9 @@ interface CompanyFormData {
   address: CompanyAddress
 }
 
-interface Emits {
-  (e: 'next', step: number): void
-}
-
-const emit = defineEmits<Emits>()
+const router = useRouter()
 const { t } = useI18n()
+const { showRequestError } = useInstallationFeedback()
 
 const isFetchingInitialData = ref<boolean>(false)
 const isSaving = ref<boolean>(false)
@@ -201,11 +199,13 @@ const v$ = useVuelidate(rules, validationState)
 onMounted(async () => {
   isFetchingInitialData.value = true
   try {
-    const { data } = await client.get(API.COUNTRIES)
+    const { data } = await installClient.get(API.COUNTRIES)
     countries.value = data.data ?? data
     // Default to US
     const us = countries.value.find((c) => c.code === 'US')
     if (us) companyForm.address.country_id = us.id
+  } catch (error: unknown) {
+    showRequestError(error)
   } finally {
     isFetchingInitialData.value = false
   }
@@ -232,7 +232,7 @@ async function next(): Promise<void> {
   isSaving.value = true
 
   try {
-    await client.put(API.COMPANY, companyForm)
+    await installClient.put(API.COMPANY, companyForm)
 
     if (logoFileBlob.value) {
       const logoData = new FormData()
@@ -243,10 +243,12 @@ async function next(): Promise<void> {
           data: logoFileBlob.value,
         }),
       )
-      await client.post(API.COMPANY_UPLOAD_LOGO, logoData)
+      await installClient.post(API.COMPANY_UPLOAD_LOGO, logoData)
     }
 
-    emit('next', 7)
+    await router.push({ name: 'installation.preferences' })
+  } catch (error: unknown) {
+    showRequestError(error)
   } finally {
     isSaving.value = false
   }

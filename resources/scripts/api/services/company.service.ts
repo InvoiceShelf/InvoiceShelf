@@ -2,6 +2,7 @@ import { client } from '../client'
 import { API } from '../endpoints'
 import type { Company } from '@/scripts/types/domain/company'
 import type { ApiResponse } from '@/scripts/types/api'
+import type { CompanyMailConfig, MailConfig, TestMailPayload } from '@/scripts/types/mail-config'
 
 export interface UpdateCompanyPayload {
   name: string
@@ -78,22 +79,22 @@ export const companyService = {
   },
 
   // Company Mail Configuration
-  async getMailDefaultConfig(): Promise<Record<string, unknown>> {
+  async getMailDefaultConfig(): Promise<Pick<MailConfig, 'from_name' | 'from_mail'>> {
     const { data } = await client.get(API.COMPANY_MAIL_DEFAULT_CONFIG)
     return data
   },
 
-  async getMailConfig(): Promise<Record<string, unknown>> {
+  async getMailConfig(): Promise<CompanyMailConfig> {
     const { data } = await client.get(API.COMPANY_MAIL_CONFIG)
     return data
   },
 
-  async saveMailConfig(payload: Record<string, unknown>): Promise<{ success: boolean }> {
+  async saveMailConfig(payload: Partial<CompanyMailConfig>): Promise<{ success: boolean }> {
     const { data } = await client.post(API.COMPANY_MAIL_CONFIG, payload)
     return data
   },
 
-  async testMailConfig(payload: Record<string, unknown>): Promise<{ success: boolean }> {
+  async testMailConfig(payload: TestMailPayload): Promise<{ success: boolean }> {
     const { data } = await client.post(API.COMPANY_MAIL_TEST, payload)
     return data
   },

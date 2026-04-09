@@ -27,8 +27,10 @@
         "spatie/flysystem-dropbox": "^3.0",
         "spatie/laravel-backup": "^10.0",
         "spatie/laravel-medialibrary": "^11.11",
+        "symfony/http-client": "^7.3",
         "symfony/mailer": "^7.3",
-        "symfony/mailgun-mailer": "^7.3"
+        "symfony/mailgun-mailer": "^7.3",
+        "symfony/postmark-mailer": "^7.3"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.5",

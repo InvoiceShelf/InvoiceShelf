@@ -67,8 +67,12 @@ export default class InvoiceShelf {
   /**
    * Execute all registered boot callbacks, install plugins,
    * and mount the app to `document.body`.
+   *
+   * Async so the install wizard's pre-DB language choice can be loaded
+   * before the first render — see the `install_language` localStorage key
+   * set by features/installation/views/LanguageView.vue.
    */
-  start(): void {
+  async start(): Promise<void> {
     // Execute boot callbacks so modules can register routes / components
     this.executeCallbacks()
 
@@ -77,6 +81,18 @@ export default class InvoiceShelf {
 
     // i18n
     this.i18n = createAppI18n(this.messages)
+
+    // If the install wizard's Language step set a locale before the DB
+    // existed, honor it now so the rest of the wizard renders in the right
+    // language. Falls through to 'en' silently on any failure.
+    const installLanguage = this.readInstallLanguage()
+    if (installLanguage && installLanguage !== 'en') {
+      try {
+        await setI18nLanguage(this.i18n, installLanguage)
+      } catch {
+        // Locale file missing or load failed — fall back to en, no-op.
+      }
+    }
 
     // Install plugins
     this.app.use(router)
@@ -95,6 +111,18 @@ export default class InvoiceShelf {
   private executeCallbacks(): void {
     for (const callback of this.bootingCallbacks) {
       callback(this.app, router)
+    }
+  }
+
+  /**
+   * Read the install-wizard language choice from localStorage. Wrapped in
+   * try/catch because localStorage can throw in private-browsing edge cases.
+   */
+  private readInstallLanguage(): string | null {
+    try {
+      return localStorage.getItem('install_language')
+    } catch {
+      return null
     }
   }
 }

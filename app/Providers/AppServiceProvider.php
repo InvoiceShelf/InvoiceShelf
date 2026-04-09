@@ -20,11 +20,14 @@ use App\Policies\SettingsPolicy;
 use App\Policies\UserPolicy;
 use App\Services\Setup\InstallUtils;
 use App\Support\BouncerDefaultScope;
+use App\Support\InstallWizardAuth;
 use Gate;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Sanctum\Sanctum;
 use Silber\Bouncer\Database\Models as BouncerModels;
 use Silber\Bouncer\Database\Role;
 use View;
@@ -54,6 +57,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->configureInstallWizardTokenAuth();
 
         if (InstallUtils::isDbCreated()) {
             $this->addMenus();
@@ -165,5 +169,22 @@ class AppServiceProvider extends ServiceProvider
     public function bootBroadcast()
     {
         Broadcast::routes(['middleware' => 'api.auth']);
+    }
+
+    private function configureInstallWizardTokenAuth(): void
+    {
+        Sanctum::authenticateAccessTokensUsing(function ($accessToken, bool $isValid): bool {
+            if (! $isValid) {
+                return false;
+            }
+
+            $request = request();
+
+            if (! $request instanceof Request || ! $request->attributes->get('install_wizard', false)) {
+                return $isValid;
+            }
+
+            return $accessToken->can(InstallWizardAuth::TOKEN_ABILITY);
+        });
     }
 }

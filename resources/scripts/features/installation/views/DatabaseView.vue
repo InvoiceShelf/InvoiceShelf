@@ -2,7 +2,6 @@
   <BaseWizardStep
     :title="$t('wizard.database.database')"
     :description="$t('wizard.database.desc')"
-    step-container="w-full p-8 mb-8 bg-surface border border-line-default border-solid rounded md:w-full"
   >
     <form @submit.prevent="next">
       <div class="grid grid-cols-1 gap-4 mb-4 md:grid-cols-2 md:mb-6">
@@ -53,12 +52,23 @@
 
       <!-- SQLite fields -->
       <template v-else>
-        <div class="grid grid-cols-1 gap-4 mb-6 md:grid-cols-2">
-          <BaseInputGroup :label="$t('wizard.database.db_name')">
-            <BaseInput v-model="databaseData.database_name" type="text" disabled />
+        <div class="mb-6">
+          <BaseInputGroup
+            :label="$t('wizard.database.db_path')"
+            help-text="Absolute path or path relative to the project root. Defaults to storage/app/database.sqlite."
+            required
+          >
+            <BaseInput v-model="databaseData.database_name" type="text" />
           </BaseInputGroup>
         </div>
       </template>
+
+      <div class="mb-6">
+        <BaseCheckbox
+          v-model="databaseData.database_overwrite"
+          :label="$t('wizard.database.overwrite')"
+        />
+      </div>
 
       <BaseButton :loading="isSaving" :disabled="isSaving" class="mt-4">
         <template #left="slotProps">
@@ -73,7 +83,10 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { client } from '../../../api/client'
+import { useRouter } from 'vue-router'
+import { installClient } from '../../../api/install-client'
+import { useDialogStore } from '../../../stores/dialog.store'
+import { useInstallationFeedback } from '../use-installation-feedback'
 
 interface DatabaseConfig {
   database_connection: string
@@ -87,17 +100,15 @@ interface DatabaseConfig {
   app_locale: string | null
 }
 
-interface Emits {
-  (e: 'next', step: number): void
-}
-
 interface DatabaseDriverOption {
   label: string
   value: string
 }
 
-const emit = defineEmits<Emits>()
+const router = useRouter()
 const { t } = useI18n()
+const dialogStore = useDialogStore()
+const { isSuccessfulResponse, showRequestError, showResponseError } = useInstallationFeedback()
 
 const isSaving = ref<boolean>(false)
 
@@ -127,22 +138,29 @@ async function getDatabaseConfig(connection?: string): Promise<void> {
   const params: Record<string, string> = {}
   if (connection) params.connection = connection
 
-  const { data } = await client.get('/api/v1/installation/database/config', { params })
+  try {
+    const { data } = await installClient.get('/api/v1/installation/database/config', { params })
 
-  if (data.success) {
+    if (!isSuccessfulResponse(data)) {
+      showResponseError(data)
+      return
+    }
+
     databaseData.database_connection = data.config.database_connection
-  }
 
-  if (data.config.database_connection === 'sqlite') {
-    databaseData.database_name = data.config.database_name
-  } else {
-    databaseData.database_name = null
-    if (data.config.database_host) {
-      databaseData.database_hostname = data.config.database_host
+    if (data.config.database_connection === 'sqlite') {
+      databaseData.database_name = data.config.database_name
+    } else {
+      databaseData.database_name = null
+      if (data.config.database_host) {
+        databaseData.database_hostname = data.config.database_host
+      }
+      if (data.config.database_port) {
+        databaseData.database_port = data.config.database_port
+      }
     }
-    if (data.config.database_port) {
-      databaseData.database_port = data.config.database_port
-    }
+  } catch (error: unknown) {
+    showRequestError(error)
   }
 }
 
@@ -151,18 +169,45 @@ function onChangeDriver(connection: string): void {
 }
 
 async function next(): Promise<void> {
+  if (databaseData.database_overwrite) {
+    const confirmed = await dialogStore.openDialog({
+      title: t('general.are_you_sure'),
+      message: t('wizard.database.overwrite_confirm_desc'),
+      yesLabel: t('general.ok'),
+      noLabel: t('general.cancel'),
+      variant: 'danger',
+      hideNoButton: false,
+      size: 'lg',
+    })
+
+    if (!confirmed) {
+      return
+    }
+  }
+
   isSaving.value = true
 
   try {
-    const { data: res } = await client.post(
+    const { data: res } = await installClient.post(
       '/api/v1/installation/database/config',
       databaseData,
     )
 
-    if (res.success) {
-      await client.post('/api/v1/installation/finish')
-      emit('next', 3)
+    if (!isSuccessfulResponse(res)) {
+      showResponseError(res)
+      return
     }
+
+    const { data: finishResponse } = await installClient.post('/api/v1/installation/finish')
+
+    if (!isSuccessfulResponse(finishResponse)) {
+      showResponseError(finishResponse)
+      return
+    }
+
+    await router.push({ name: 'installation.domain' })
+  } catch (error: unknown) {
+    showRequestError(error)
   } finally {
     isSaving.value = false
   }

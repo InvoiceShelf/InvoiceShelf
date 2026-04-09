@@ -1,51 +1,6 @@
 import { client } from '../client'
 import { API } from '../endpoints'
-
-export type MailDriver = string
-
-export interface SmtpConfig {
-  mail_driver: string
-  mail_host: string
-  mail_port: number | null
-  mail_username: string
-  mail_password: string
-  mail_encryption: string
-  from_mail: string
-  from_name: string
-}
-
-export interface MailgunConfig {
-  mail_driver: string
-  mail_mailgun_domain: string
-  mail_mailgun_secret: string
-  mail_mailgun_endpoint: string
-  from_mail: string
-  from_name: string
-}
-
-export interface SesConfig {
-  mail_driver: string
-  mail_host: string
-  mail_port: number | null
-  mail_ses_key: string
-  mail_ses_secret: string
-  mail_ses_region: string
-  from_mail: string
-  from_name: string
-}
-
-export type MailConfig = SmtpConfig | MailgunConfig | SesConfig
-
-export interface MailConfigResponse {
-  mail_driver: string
-  [key: string]: unknown
-}
-
-export interface TestMailPayload {
-  to: string
-  subject: string
-  message: string
-}
+import type { MailConfig, MailDriver, TestMailPayload } from '@/scripts/types/mail-config'
 
 export const mailService = {
   async getDrivers(): Promise<MailDriver[]> {
@@ -53,7 +8,7 @@ export const mailService = {
     return data
   },
 
-  async getConfig(): Promise<MailConfigResponse> {
+  async getConfig(): Promise<MailConfig> {
     const { data } = await client.get(API.MAIL_CONFIG)
     return data
   },

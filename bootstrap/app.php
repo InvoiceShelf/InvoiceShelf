@@ -18,6 +18,7 @@ use App\Http\Middleware\ScopeBouncer;
 use App\Http\Middleware\SuperAdminMiddleware;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustProxies;
+use App\Http\Middleware\UseInstallWizardTokenAuth;
 use App\Providers\AppServiceProvider;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Foundation\Application;
@@ -47,12 +48,14 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->preventRequestForgery(except: [
             'login',
+            'installation/session-login',
         ]);
 
         $middleware->append([
             CheckForMaintenanceMode::class,
             TrimStrings::class,
             TrustProxies::class,
+            UseInstallWizardTokenAuth::class,
             ConfigMiddleware::class,
         ]);
 

@@ -159,15 +159,17 @@ class EnvironmentManager
                 ];
             }
             $dbEnv['DB_DATABASE'] = $request->get('database_name');
-            if (! empty($dbEnv['DB_DATABASE'])) {
-                $sqlite_path = $dbEnv['DB_DATABASE'];
-            } else {
-                $sqlite_path = database_path('database.sqlite');
-            }
-            // Create empty SQLite database if it doesn't exist.
-            if (! file_exists($sqlite_path)) {
-                copy(database_path('stubs/sqlite.empty.db'), $sqlite_path);
-                $dbEnv['DB_DATABASE'] = $sqlite_path;
+            $sqlitePath = $this->resolveSqliteDatabasePath($dbEnv['DB_DATABASE']);
+            // Create empty SQLite database if it doesn't exist. Ensure the
+            // parent directory exists first so user-supplied absolute paths
+            // (e.g. /var/data/foo.sqlite) work even when the directory hasn't
+            // been pre-created.
+            if (! file_exists($sqlitePath)) {
+                $parentDir = dirname($sqlitePath);
+                if (! is_dir($parentDir)) {
+                    mkdir($parentDir, 0755, true);
+                }
+                copy(database_path('stubs/sqlite.empty.db'), $sqlitePath);
             }
         }
 
@@ -213,7 +215,9 @@ class EnvironmentManager
 
         $connectionArray = array_merge($settings, [
             'driver' => $connection,
-            'database' => $request->get('database_name'),
+            'database' => $connection === 'sqlite'
+                ? $this->resolveSqliteDatabasePath($request->get('database_name'))
+                : $request->get('database_name'),
         ]);
 
         if ($connection !== 'sqlite' && $request->has('database_username') && $request->has('database_password')) {
@@ -233,7 +237,30 @@ class EnvironmentManager
             ],
         ]);
 
-        return DB::connection()->getPdo();
+        DB::purge($connection);
+
+        return DB::connection($connection)->getPdo();
+    }
+
+    private function resolveSqliteDatabasePath(?string $databasePath): string
+    {
+        $databasePath = trim((string) $databasePath);
+
+        if ($databasePath === '') {
+            return storage_path('app/database.sqlite');
+        }
+
+        if ($this->isAbsolutePath($databasePath)) {
+            return $databasePath;
+        }
+
+        return base_path($databasePath);
+    }
+
+    private function isAbsolutePath(string $path): bool
+    {
+        return str_starts_with($path, DIRECTORY_SEPARATOR)
+            || preg_match('/^[A-Za-z]:[\\\\\\/]/', $path) === 1;
     }
 
     /**

@@ -53,6 +53,8 @@ export type Theme = typeof THEME[keyof typeof THEME]
 /** Local storage keys used throughout the app */
 export const LS_KEYS = {
   AUTH_TOKEN: 'auth.token',
+  INSTALL_AUTH_TOKEN: 'install.auth.token',
+  INSTALL_SELECTED_COMPANY: 'install.selectedCompany',
   SELECTED_COMPANY: 'selectedCompany',
   IS_ADMIN_MODE: 'isAdminMode',
   SIDEBAR_COLLAPSED: 'sidebarCollapsed',

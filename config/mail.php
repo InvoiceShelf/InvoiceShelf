@@ -50,11 +50,15 @@ return [
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
         ],
 
+        'mail' => [
+            'transport' => 'mail',
+        ],
+
         'mailgun' => [
             'domain' => env('MAILGUN_DOMAIN'),
             'secret' => env('MAILGUN_SECRET'),
             'endpoint' => env('MAILGUN_ENDPOINT', 'api.mailgun.net'),
-            'scheme' => 'https',
+            'scheme' => env('MAILGUN_SCHEME', 'https'),
         ],
 
         'ses' => [
@@ -63,7 +67,7 @@ return [
 
         'postmark' => [
             'transport' => 'postmark',
-            // 'message_stream_id' => env('POSTMARK_MESSAGE_STREAM_ID'),
+            'message_stream_id' => env('POSTMARK_MESSAGE_STREAM_ID'),
             // 'client' => [
             //     'timeout' => 5,
             // ],

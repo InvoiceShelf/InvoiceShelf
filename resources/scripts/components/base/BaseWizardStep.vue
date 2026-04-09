@@ -8,27 +8,32 @@ interface Props {
   stepDescriptionClass?: string
 }
 
+/**
+ * The wizard step lives inside InstallationLayout's card chrome, so the
+ * container itself is just a content wrapper — no extra background, border,
+ * or rounding. Earlier defaults included those, which created a visible
+ * card-inside-a-card when used inside the layout.
+ */
 withDefaults(defineProps<Props>(), {
   title: null,
   description: null,
-  stepContainerClass:
-    'w-full p-8 mb-8 bg-surface border border-line-default border-solid rounded',
+  stepContainerClass: 'w-full',
   stepTitleClass: 'text-2xl not-italic font-semibold leading-7 text-heading',
   stepDescriptionClass:
-    'w-full mt-2.5 mb-8 text-sm not-italic leading-snug text-muted lg:w-7/12 md:w-7/12 sm:w-7/12',
+    'mt-2 mb-6 text-sm not-italic leading-relaxed text-muted',
 })
 </script>
 
 <template>
   <div :class="stepContainerClass">
-    <div v-if="title || description">
-      <p v-if="title" :class="stepTitleClass">
+    <header v-if="title || description" class="mb-6">
+      <h2 v-if="title" :class="stepTitleClass">
         {{ title }}
-      </p>
+      </h2>
       <p v-if="description" :class="stepDescriptionClass">
         {{ description }}
       </p>
-    </div>
+    </header>
     <slot />
   </div>
 </template>

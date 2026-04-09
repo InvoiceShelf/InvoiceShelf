@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { companyService } from '../../../api/services/company.service'
 import type { CompanySettingsPayload } from '../../../api/services/company.service'
 import { mailService } from '../../../api/services/mail.service'
-import type { MailDriver, MailConfigResponse } from '../../../api/services/mail.service'
+import type { CompanyMailConfig, MailDriver } from '../../../types/mail-config'
 import { useNotificationStore } from '../../../stores/notification.store'
 import { handleApiError } from '../../../utils/error-handling'
 
@@ -15,7 +15,7 @@ import { handleApiError } from '../../../utils/error-handling'
 export const useSettingsStore = defineStore('settings', () => {
   // Company Mail state
   const mailDrivers = ref<MailDriver[]>([])
-  const mailConfigData = ref<MailConfigResponse | null>(null)
+  const mailConfigData = ref<CompanyMailConfig | null>(null)
   const currentMailDriver = ref<string>('smtp')
 
   async function fetchMailDrivers(): Promise<MailDriver[]> {
@@ -29,9 +29,9 @@ export const useSettingsStore = defineStore('settings', () => {
     }
   }
 
-  async function fetchMailConfig(): Promise<MailConfigResponse> {
+  async function fetchMailConfig(): Promise<CompanyMailConfig> {
     try {
-      const response = await companyService.getMailConfig() as unknown as MailConfigResponse
+      const response = await companyService.getMailConfig()
       mailConfigData.value = response
       currentMailDriver.value = response.mail_driver ?? 'smtp'
       return response
@@ -48,7 +48,7 @@ export const useSettingsStore = defineStore('settings', () => {
       const notificationStore = useNotificationStore()
       notificationStore.showNotification({
         type: 'success',
-        message: 'settings.mail.config_updated',
+        message: 'settings.mail.company_mail_config_updated',
       })
     } catch (err: unknown) {
       handleApiError(err)

@@ -2,7 +2,6 @@
   <BaseWizardStep
     :title="$t('wizard.preferences')"
     :description="$t('wizard.preferences_desc')"
-    step-container="bg-surface border border-line-default border-solid mb-8 md:w-full p-8 rounded w-full"
   >
     <form @submit.prevent="next">
       <div class="grid grid-cols-1 gap-4 mb-4 md:grid-cols-2 md:mb-6">
@@ -131,9 +130,11 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { required, helpers } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
-import { client } from '../../../api/client'
+import { installClient } from '../../../api/install-client'
 import { API } from '../../../api/endpoints'
 import { useDialogStore } from '../../../stores/dialog.store'
+import { clearInstallWizardAuth } from '../install-auth'
+import { useInstallationFeedback } from '../use-installation-feedback'
 
 interface PreferencesData {
   currency: number
@@ -163,14 +164,10 @@ interface LanguageOption {
   name: string
 }
 
-interface Emits {
-  (e: 'next', step: string): void
-}
-
-const emit = defineEmits<Emits>()
 const dialogStore = useDialogStore()
 const { t } = useI18n()
 const router = useRouter()
+const { isSuccessfulResponse, showRequestError, showResponseError } = useInstallationFeedback()
 
 const isSaving = ref<boolean>(false)
 const isFetchingInitialData = ref<boolean>(false)
@@ -220,17 +217,19 @@ onMounted(async () => {
   isFetchingInitialData.value = true
   try {
     const [currRes, dateRes, tzRes, fyRes, langRes] = await Promise.all([
-      client.get(API.CURRENCIES),
-      client.get(API.DATE_FORMATS),
-      client.get(API.TIMEZONES),
-      client.get(`${API.CONFIG}?key=fiscal_years`),
-      client.get(`${API.CONFIG}?key=languages`),
+      installClient.get(API.CURRENCIES),
+      installClient.get(API.DATE_FORMATS),
+      installClient.get(API.TIMEZONES),
+      installClient.get(`${API.CONFIG}?key=fiscal_years`),
+      installClient.get(`${API.CONFIG}?key=languages`),
     ])
     currencies.value = currRes.data.data ?? currRes.data
     dateFormats.value = dateRes.data.data ?? dateRes.data
     timeZones.value = tzRes.data.data ?? tzRes.data
     fiscalYears.value = fyRes.data.data ?? fyRes.data ?? []
     languages.value = langRes.data.data ?? langRes.data ?? []
+  } catch (error: unknown) {
+    showRequestError(error)
   } finally {
     isFetchingInitialData.value = false
   }
@@ -259,21 +258,35 @@ function next(): void {
             settings: { ...currentPreferences },
           }
 
-          const { data: response } = await client.post(API.COMPANY_SETTINGS, settingsPayload)
+          const { data: response } = await installClient.post(API.COMPANY_SETTINGS, settingsPayload)
 
           if (response) {
             const userSettings = {
               settings: { language: currentPreferences.language },
             }
-            await client.put(API.ME_SETTINGS, userSettings)
+            await installClient.put(API.ME_SETTINGS, userSettings)
+            const { data: sessionLoginResponse } = await installClient.post(
+              API.INSTALLATION_SESSION_LOGIN,
+            )
 
-            if (response.token) {
-              localStorage.setItem('auth.token', response.token)
+            if (!isSuccessfulResponse(sessionLoginResponse)) {
+              showResponseError(sessionLoginResponse)
+              return
             }
 
-            emit('next', 'COMPLETED')
-            router.push('/admin/dashboard')
+            // Mark the install as complete on the backend so the
+            // InstallationMiddleware stops redirecting to /installation. The
+            // OnboardingWizardController persists this to
+            // Setting::profile_complete.
+            await installClient.post(API.INSTALLATION_WIZARD_STEP, {
+              profile_complete: 'COMPLETED',
+            })
+
+            clearInstallWizardAuth()
+            await router.push('/admin/dashboard')
           }
+        } catch (error: unknown) {
+          showRequestError(error)
         } finally {
           isSaving.value = false
         }

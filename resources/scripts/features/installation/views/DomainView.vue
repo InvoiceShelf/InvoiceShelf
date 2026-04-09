@@ -49,16 +49,26 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 import { required, helpers } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
-import { client } from '../../../api/client'
+import { installClient } from '../../../api/install-client'
+import { API } from '../../../api/endpoints'
+import { clearInstallWizardAuth, setInstallWizardAuth } from '../install-auth'
+import { useInstallationFeedback } from '../use-installation-feedback'
 
-interface Emits {
-  (e: 'next', step: number): void
+interface InstallationLoginResponse {
+  success: boolean
+  type: string
+  token: string
+  company: {
+    id: number | string
+  } | null
 }
 
-const emit = defineEmits<Emits>()
+const router = useRouter()
 const { t } = useI18n()
+const { isSuccessfulResponse, showRequestError, showResponseError } = useInstallationFeedback()
 const isSaving = ref<boolean>(false)
 
 const formData = reactive<{ app_domain: string }>({
@@ -87,14 +97,36 @@ async function verifyDomain(): Promise<void> {
   isSaving.value = true
 
   try {
-    await client.put('/api/v1/installation/set-domain', formData)
-    await client.get('/sanctum/csrf-cookie')
-    await client.post('/api/v1/installation/login')
-    const { data } = await client.get('/api/v1/auth/check')
+    clearInstallWizardAuth()
 
-    if (data) {
-      emit('next', 4)
+    const { data: domainResponse } = await installClient.put(
+      API.INSTALLATION_SET_DOMAIN,
+      formData,
+    )
+
+    if (!isSuccessfulResponse(domainResponse)) {
+      showResponseError(domainResponse)
+      return
     }
+
+    const { data } = await installClient.post<InstallationLoginResponse>(
+      API.INSTALLATION_LOGIN,
+    )
+
+    if (!isSuccessfulResponse(data)) {
+      showResponseError(data)
+      return
+    }
+
+    if (!data.token || !data.company?.id) {
+      throw new Error('Installer login response was incomplete.')
+    }
+
+    setInstallWizardAuth(`${data.type} ${data.token}`, data.company.id)
+
+    await router.push({ name: 'installation.mail' })
+  } catch (error: unknown) {
+    showRequestError(error)
   } finally {
     isSaving.value = false
   }

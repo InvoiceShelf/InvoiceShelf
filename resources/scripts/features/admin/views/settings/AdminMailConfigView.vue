@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useModalStore } from '@/scripts/stores/modal.store'
 import { useNotificationStore } from '@/scripts/stores/notification.store'
 import { mailService } from '@/scripts/api/services/mail.service'
-import type { MailConfig, MailDriver } from '@/scripts/api/services/mail.service'
-import SmtpMailDriver from '@/scripts/features/company/settings/components/SmtpMailDriver.vue'
-import MailgunMailDriver from '@/scripts/features/company/settings/components/MailgunMailDriver.vue'
-import SesMailDriver from '@/scripts/features/company/settings/components/SesMailDriver.vue'
-import BasicMailDriver from '@/scripts/features/company/settings/components/BasicMailDriver.vue'
+import type { MailConfig, MailDriver } from '@/scripts/types/mail-config'
+import { getErrorTranslationKey, handleApiError } from '@/scripts/utils/error-handling'
+import MailConfigurationForm from '@/scripts/features/company/settings/components/MailConfigurationForm.vue'
 import MailTestModal from '@/scripts/features/company/settings/components/MailTestModal.vue'
 
 const { t } = useI18n()
@@ -17,9 +15,8 @@ const notificationStore = useNotificationStore()
 
 const isSaving = ref(false)
 const isFetchingInitialData = ref(false)
-const mailConfigData = ref<Record<string, unknown> | null>(null)
+const mailConfigData = ref<MailConfig | null>(null)
 const mailDrivers = ref<MailDriver[]>([])
-const currentMailDriver = ref('smtp')
 
 loadData()
 
@@ -34,31 +31,14 @@ async function loadData(): Promise<void> {
 
     mailDrivers.value = driversResponse
     mailConfigData.value = configResponse
-    currentMailDriver.value = configResponse.mail_driver ?? 'smtp'
+  } catch (error: unknown) {
+    const normalizedError = handleApiError(error)
+    notificationStore.showNotification({
+      type: 'error',
+      message: getErrorTranslationKey(normalizedError.message) ?? normalizedError.message,
+    })
   } finally {
     isFetchingInitialData.value = false
-  }
-}
-
-const mailDriver = computed(() => {
-  switch (currentMailDriver.value) {
-    case 'mailgun':
-      return MailgunMailDriver
-    case 'ses':
-      return SesMailDriver
-    case 'sendmail':
-    case 'mail':
-      return BasicMailDriver
-    default:
-      return SmtpMailDriver
-  }
-})
-
-function changeDriver(value: string): void {
-  currentMailDriver.value = value
-
-  if (mailConfigData.value) {
-    mailConfigData.value.mail_driver = value
   }
 }
 
@@ -71,7 +51,7 @@ async function saveEmailConfig(value: MailConfig): Promise<void> {
     if (response.success) {
       notificationStore.showNotification({
         type: 'success',
-        message: t(`settings.success.${response.success}`),
+        message: 'settings.mail.mail_config_updated',
       })
 
       if (mailConfigData.value) {
@@ -81,6 +61,12 @@ async function saveEmailConfig(value: MailConfig): Promise<void> {
         }
       }
     }
+  } catch (error: unknown) {
+    const normalizedError = handleApiError(error)
+    notificationStore.showNotification({
+      type: 'error',
+      message: getErrorTranslationKey(normalizedError.message) ?? normalizedError.message,
+    })
   } finally {
     isSaving.value = false
   }
@@ -103,13 +89,11 @@ function openMailTestModal(): void {
     :description="$t('settings.mail.mail_config_desc')"
   >
     <div v-if="mailConfigData" class="mt-14">
-      <component
-        :is="mailDriver"
+      <MailConfigurationForm
         :config-data="mailConfigData"
         :is-saving="isSaving"
         :mail-drivers="mailDrivers"
         :is-fetching-initial-data="isFetchingInitialData"
-        @on-change-driver="changeDriver"
         @submit-data="saveEmailConfig"
       >
         <BaseButton
@@ -121,7 +105,7 @@ function openMailTestModal(): void {
         >
           {{ $t('general.test_mail_conf') }}
         </BaseButton>
-      </component>
+      </MailConfigurationForm>
     </div>
   </BaseSettingCard>
 </template>

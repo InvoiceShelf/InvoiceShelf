@@ -4,54 +4,50 @@
     :description="$t('wizard.permissions.permission_desc')"
   >
     <!-- Placeholders -->
-    <BaseContentPlaceholders v-if="isFetchingInitialData">
+    <div
+      v-if="isFetchingInitialData"
+      class="w-full overflow-hidden rounded-lg border border-line-default divide-y divide-line-default"
+    >
       <div
         v-for="n in 3"
         :key="n"
-        class="grid grid-flow-row grid-cols-3 lg:gap-24 sm:gap-4 border border-line-default"
+        class="flex items-center justify-between px-4 py-3"
       >
-        <BaseContentPlaceholdersText :lines="1" class="col-span-4 p-3" />
+        <BaseContentPlaceholders>
+          <BaseContentPlaceholdersText :lines="1" class="w-32" />
+        </BaseContentPlaceholders>
+        <div class="h-6 w-6 rounded-full bg-surface-tertiary animate-pulse" />
       </div>
-      <BaseContentPlaceholdersBox
-        :rounded="true"
-        class="mt-10"
-        style="width: 96px; height: 42px"
-      />
-    </BaseContentPlaceholders>
+    </div>
 
-    <div v-else class="relative">
+    <div
+      v-else-if="permissions.length"
+      class="w-full overflow-hidden rounded-lg border border-line-default divide-y divide-line-default"
+    >
       <div
         v-for="(permission, index) in permissions"
         :key="index"
-        class="border border-line-default"
+        class="flex items-center justify-between px-4 py-3 hover:bg-hover transition-colors"
       >
-        <div class="grid grid-flow-row grid-cols-3 lg:gap-24 sm:gap-4">
-          <div class="col-span-2 p-3">{{ permission.folder }}</div>
-          <div class="p-3 text-right">
-            <span
-              v-if="permission.isSet"
-              class="inline-block w-4 h-4 ml-3 mr-2 rounded-full bg-green-500"
-            />
-            <span
-              v-else
-              class="inline-block w-4 h-4 ml-3 mr-2 rounded-full bg-red-500"
-            />
-            <span>{{ permission.permission }}</span>
-          </div>
-        </div>
+        <span class="text-sm text-body font-mono">{{ permission.folder }}</span>
+        <span class="flex items-center gap-2 text-sm text-muted">
+          <span class="font-medium">{{ permission.permission }}</span>
+          <RequirementBadge :ok="permission.isSet" />
+        </span>
       </div>
+    </div>
 
+    <div class="mt-8 flex justify-end">
       <BaseButton
         v-show="!isFetchingInitialData"
-        class="mt-10"
         :loading="isSaving"
         :disabled="isSaving"
         @click="next"
       >
-        <template #left="slotProps">
+        {{ $t('wizard.continue') }}
+        <template #right="slotProps">
           <BaseIcon name="ArrowRightIcon" :class="slotProps.class" />
         </template>
-        {{ $t('wizard.continue') }}
       </BaseButton>
     </div>
   </BaseWizardStep>
@@ -59,7 +55,10 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { client } from '../../../api/client'
+import { useRouter } from 'vue-router'
+import { installClient } from '../../../api/install-client'
+import RequirementBadge from '../components/RequirementBadge.vue'
+import { useInstallationFeedback } from '../use-installation-feedback'
 
 interface Permission {
   folder: string
@@ -67,11 +66,8 @@ interface Permission {
   isSet: boolean
 }
 
-interface Emits {
-  (e: 'next'): void
-}
-
-const emit = defineEmits<Emits>()
+const router = useRouter()
+const { showRequestError } = useInstallationFeedback()
 
 const isFetchingInitialData = ref<boolean>(false)
 const isSaving = ref<boolean>(false)
@@ -84,16 +80,21 @@ onMounted(() => {
 async function getPermissions(): Promise<void> {
   isFetchingInitialData.value = true
   try {
-    const { data } = await client.get('/api/v1/installation/permissions')
+    const { data } = await installClient.get('/api/v1/installation/permissions')
     permissions.value = data.permissions?.permissions ?? []
+  } catch (error: unknown) {
+    showRequestError(error)
   } finally {
     isFetchingInitialData.value = false
   }
 }
 
-function next(): void {
+async function next(): Promise<void> {
   isSaving.value = true
-  emit('next')
-  isSaving.value = false
+  try {
+    await router.push({ name: 'installation.database' })
+  } finally {
+    isSaving.value = false
+  }
 }
 </script>

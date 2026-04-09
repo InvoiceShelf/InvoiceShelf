@@ -34,6 +34,10 @@ class DatabaseEnvironmentRequest extends FormRequest
                         'required',
                         'string',
                     ],
+                    'database_overwrite' => [
+                        'nullable',
+                        'boolean',
+                    ],
                 ];
 
                 break;
@@ -62,6 +66,10 @@ class DatabaseEnvironmentRequest extends FormRequest
                     'database_username' => [
                         'required',
                         'string',
+                    ],
+                    'database_overwrite' => [
+                        'nullable',
+                        'boolean',
                     ],
                 ];
 

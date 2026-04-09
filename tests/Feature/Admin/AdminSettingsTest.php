@@ -3,6 +3,9 @@
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Sanctum\Sanctum;
+use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\Mailer\Bridge\Mailgun\Transport\MailgunTransportFactory;
+use Symfony\Component\Mailer\Bridge\Postmark\Transport\PostmarkTransportFactory;
 
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\postJson;
@@ -73,6 +76,26 @@ test('get global mail configuration', function () {
         ]);
 });
 
+test('get global mail drivers returns capability-backed drivers', function () {
+    $drivers = getJson('/api/v1/mail/drivers')
+        ->assertOk()
+        ->json();
+
+    expect($drivers)->toContain('smtp', 'mail', 'sendmail', 'ses');
+
+    if (class_exists(HttpClient::class) && class_exists(MailgunTransportFactory::class)) {
+        expect($drivers)->toContain('mailgun');
+    } else {
+        expect($drivers)->not->toContain('mailgun');
+    }
+
+    if (class_exists(HttpClient::class) && class_exists(PostmarkTransportFactory::class)) {
+        expect($drivers)->toContain('postmark');
+    } else {
+        expect($drivers)->not->toContain('postmark');
+    }
+});
+
 test('save global mail configuration', function () {
     postJson('/api/v1/mail/config', [
         'mail_driver' => 'smtp',
@@ -81,6 +104,10 @@ test('save global mail configuration', function () {
         'mail_username' => 'demo-user',
         'mail_password' => 'secret',
         'mail_encryption' => 'tls',
+        'mail_scheme' => 'smtp',
+        'mail_url' => 'smtp://smtp.example.com',
+        'mail_timeout' => 30,
+        'mail_local_domain' => 'invoiceshelf.test',
         'from_name' => 'InvoiceShelf',
         'from_mail' => 'hello@example.com',
     ])
@@ -97,6 +124,35 @@ test('save global mail configuration', function () {
     $this->assertDatabaseHas('settings', [
         'option' => 'from_mail',
         'value' => 'hello@example.com',
+    ]);
+
+    $this->assertDatabaseHas('settings', [
+        'option' => 'mail_timeout',
+        'value' => '30',
+    ]);
+});
+
+test('save global postmark configuration', function () {
+    postJson('/api/v1/mail/config', [
+        'mail_driver' => 'postmark',
+        'mail_postmark_token' => 'postmark-token',
+        'mail_postmark_message_stream_id' => 'outbound',
+        'from_name' => 'InvoiceShelf',
+        'from_mail' => 'billing@example.com',
+    ])
+        ->assertOk()
+        ->assertJson([
+            'success' => 'mail_variables_save_successfully',
+        ]);
+
+    $this->assertDatabaseHas('settings', [
+        'option' => 'mail_driver',
+        'value' => 'postmark',
+    ]);
+
+    $this->assertDatabaseHas('settings', [
+        'option' => 'mail_postmark_token',
+        'value' => 'postmark-token',
     ]);
 });
 

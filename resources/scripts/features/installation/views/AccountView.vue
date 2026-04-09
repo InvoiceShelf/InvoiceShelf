@@ -104,6 +104,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 import {
   helpers,
   required,
@@ -113,7 +114,9 @@ import {
   email,
 } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { client } from '../../../api/client'
+import { installClient } from '../../../api/install-client'
+import { setInstallWizardCompany } from '../install-auth'
+import { useInstallationFeedback } from '../use-installation-feedback'
 
 interface UserForm {
   name: string
@@ -122,12 +125,9 @@ interface UserForm {
   confirm_password: string
 }
 
-interface Emits {
-  (e: 'next', step: number): void
-}
-
-const emit = defineEmits<Emits>()
+const router = useRouter()
 const { t } = useI18n()
+const { showRequestError } = useInstallationFeedback()
 
 const isSaving = ref<boolean>(false)
 const isShowPassword = ref<boolean>(false)
@@ -186,22 +186,24 @@ async function next(): Promise<void> {
   isSaving.value = true
 
   try {
-    const { data: res } = await client.put('/api/v1/me', userForm)
+    const { data: res } = await installClient.put('/api/v1/me', userForm)
 
     if (res.data) {
       if (avatarFileBlob.value) {
         const avatarData = new FormData()
         avatarData.append('admin_avatar', avatarFileBlob.value)
-        await client.post('/api/v1/me/upload-avatar', avatarData)
+        await installClient.post('/api/v1/me/upload-avatar', avatarData)
       }
 
       const company = res.data.companies?.[0]
       if (company) {
-        localStorage.setItem('selectedCompany', String(company.id))
+        setInstallWizardCompany(company.id)
       }
 
-      emit('next', 6)
+      await router.push({ name: 'installation.company' })
     }
+  } catch (error: unknown) {
+    showRequestError(error)
   } finally {
     isSaving.value = false
   }
