@@ -24,7 +24,7 @@ afterEach(function () {
     Registry::flush();
 });
 
-test('bootstrap returns module_menu populated from Registry', function () {
+test('bootstrap merges module menu items into main_menu', function () {
     Registry::registerMenu('sales-tax-us', [
         'title' => 'sales_tax_us::menu.title',
         'link' => '/admin/modules/sales-tax-us/settings',
@@ -33,18 +33,43 @@ test('bootstrap returns module_menu populated from Registry', function () {
 
     $response = getJson('api/v1/bootstrap')->assertOk();
 
-    $response->assertJsonPath('module_menu.0.title', 'sales_tax_us::menu.title');
-    $response->assertJsonPath('module_menu.0.link', '/admin/modules/sales-tax-us/settings');
-    $response->assertJsonPath('module_menu.0.icon', 'CalculatorIcon');
+    $mainMenu = collect($response->json('main_menu'));
+    $moduleItem = $mainMenu->firstWhere('name', 'module-sales-tax-us');
+
+    expect($moduleItem)->not->toBeNull();
+    expect($moduleItem['link'])->toBe('/admin/modules/sales-tax-us/settings');
+    expect($moduleItem['icon'])->toBe('CalculatorIcon');
+    expect($moduleItem['group'])->toBe('modules');
 });
 
-test('bootstrap returns empty module_menu when nothing is registered', function () {
-    getJson('api/v1/bootstrap')
-        ->assertOk()
-        ->assertJsonPath('module_menu', []);
+test('module items support custom group and priority', function () {
+    Registry::registerMenu('sales-tax-us', [
+        'title' => 'sales_tax_us::menu.title',
+        'link' => '/admin/modules/sales-tax-us/settings',
+        'icon' => 'CalculatorIcon',
+        'group' => 'documents',
+        'priority' => 25,
+    ]);
+
+    $response = getJson('api/v1/bootstrap')->assertOk();
+
+    $mainMenu = collect($response->json('main_menu'));
+    $moduleItem = $mainMenu->firstWhere('name', 'module-sales-tax-us');
+
+    expect($moduleItem['group'])->toBe('documents');
+    expect($moduleItem['priority'])->toBe(25);
 });
 
-test('admin-mode bootstrap does not include module_menu', function () {
+test('bootstrap has no module items when nothing is registered', function () {
+    $response = getJson('api/v1/bootstrap')->assertOk();
+
+    $mainMenu = collect($response->json('main_menu'));
+    $moduleItems = $mainMenu->filter(fn ($item) => str_starts_with($item['name'], 'module-'));
+
+    expect($moduleItems)->toBeEmpty();
+});
+
+test('admin-mode bootstrap does not include module items', function () {
     Registry::registerMenu('sales-tax-us', [
         'title' => 'sales_tax_us::menu.title',
         'link' => '/admin/modules/sales-tax-us/settings',
@@ -53,7 +78,8 @@ test('admin-mode bootstrap does not include module_menu', function () {
 
     $response = getJson('api/v1/bootstrap?admin_mode=1');
 
-    // Super-admin branch should not include the dynamic Modules sidebar group —
-    // that surface only exists in the company context.
-    $response->assertJsonMissingPath('module_menu');
+    $mainMenu = collect($response->json('main_menu'));
+    $moduleItems = $mainMenu->filter(fn ($item) => str_starts_with($item['name'] ?? '', 'module-'));
+
+    expect($moduleItems)->toBeEmpty();
 });

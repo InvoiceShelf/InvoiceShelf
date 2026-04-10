@@ -29,7 +29,7 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { onMounted, computed } from 'vue'
+import { onMounted, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useGlobalStore } from '@/scripts/stores/global.store'
 import { useUserStore } from '@/scripts/stores/user.store'
@@ -61,6 +61,10 @@ const isAppLoaded = computed<boolean>(() => {
 
 const hasCompany = computed<boolean>(() => {
   return !!companyStore.selectedCompany || companyStore.isAdminMode
+})
+
+const usesAdminBootstrap = computed<boolean>(() => {
+  return route.meta.usesAdminBootstrap === true
 })
 
 async function initializeLayout(): Promise<void> {
@@ -101,5 +105,11 @@ async function initializeLayout(): Promise<void> {
 
 onMounted(() => {
   void initializeLayout()
+})
+
+watch(usesAdminBootstrap, (isAdminBootstrap, previousValue) => {
+  if (previousValue !== undefined && isAdminBootstrap !== previousValue) {
+    void initializeLayout()
+  }
 })
 </script>

@@ -125,7 +125,8 @@ class AppServiceProvider extends ServiceProvider
             ->data('ability', $data['ability'])
             ->data('model', $data['model'])
             ->data('group', $data['group'])
-            ->data('group_label', $data['group_label'] ?? '');
+            ->data('group_label', $data['group_label'] ?? '')
+            ->data('priority', $data['priority'] ?? 100);
     }
 
     public function bootAuth()

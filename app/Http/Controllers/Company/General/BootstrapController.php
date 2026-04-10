@@ -48,6 +48,7 @@ class BootstrapController extends Controller
             'admin_page_title',
             'copyright_text',
             'save_pdf_to_disk',
+            'show_sidebar_group_labels',
         ]);
 
         // Super admin mode — return admin-only menu with all companies listed
@@ -92,6 +93,20 @@ class BootstrapController extends Controller
         $main_menu = $this->generateMenu('main_menu', $current_user);
         $setting_menu = $this->generateMenu('setting_menu', $current_user);
 
+        // Merge module-registered menu items into the main menu so they
+        // participate in the unified group + priority ordering.
+        foreach (ModuleRegistry::allMenu() as $slug => $item) {
+            $main_menu[] = [
+                'title' => __($item['title']),
+                'link' => $item['link'],
+                'icon' => $item['icon'],
+                'name' => 'module-'.$slug,
+                'group' => $item['group'] ?? 'modules',
+                'group_label' => $item['group_label'] ?? 'navigation.modules',
+                'priority' => $item['priority'] ?? 100,
+            ];
+        }
+
         $current_company = Company::find($request->header('company'));
 
         if ((! $current_company) || ($current_company && ! $current_user->hasCompany($current_company->id))) {
@@ -119,7 +134,15 @@ class BootstrapController extends Controller
             'main_menu' => $main_menu,
             'setting_menu' => $setting_menu,
             'modules' => Module::where('enabled', true)->pluck('name'),
-            'module_menu' => array_values(ModuleRegistry::allMenu()),
+            'user_menu' => collect(ModuleRegistry::allUserMenu())
+                ->map(fn (array $item, string $slug) => [
+                    ...$item,
+                    'title' => __($item['title']),
+                    'name' => 'module-'.$slug,
+                ])
+                ->sortBy('priority')
+                ->values()
+                ->all(),
             'pending_invitations' => CompanyInvitationResource::collection($pendingInvitations),
         ]);
     }

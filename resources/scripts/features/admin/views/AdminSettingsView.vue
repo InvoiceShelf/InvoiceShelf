@@ -98,6 +98,11 @@ const menuItems = computed<SettingsMenuItem[]>(() => [
     link: '/admin/administration/settings/update-app',
     icon: 'ArrowPathIcon',
   },
+  {
+    title: t('settings.menu_title.appearance'),
+    link: '/admin/administration/settings/appearance',
+    icon: 'PaintBrushIcon',
+  },
 ])
 
 watchEffect(() => {

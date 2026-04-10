@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import groupBy from 'lodash/groupBy'
 import { bootstrapService } from '@/scripts/api/services/bootstrap.service'
-import type { MenuItem, ModuleMenuItem, BootstrapResponse } from '@/scripts/api/services/bootstrap.service'
+import type { MenuItem, BootstrapResponse } from '@/scripts/api/services/bootstrap.service'
 import { settingService } from '@/scripts/api/services/setting.service'
 import type {
   DateFormat,
@@ -25,7 +25,7 @@ export const useGlobalStore = defineStore('global', () => {
   const config = ref<Record<string, unknown> | null>(null)
   const globalSettings = ref<Record<string, string> | null>(null)
 
-  const timeZones = ref<string[]>([])
+  const timeZones = ref<Array<{ key: string; value: string }>>([])
   const dateFormats = ref<DateFormat[]>([])
   const timeFormats = ref<TimeFormat[]>([])
   const currencies = ref<Currency[]>([])
@@ -35,8 +35,7 @@ export const useGlobalStore = defineStore('global', () => {
 
   const mainMenu = ref<MenuItem[]>([])
   const settingMenu = ref<MenuItem[]>([])
-  const moduleMenu = ref<ModuleMenuItem[]>([])
-
+  const userMenu = ref<Array<{ title: string; link: string; icon: string; name: string }>>([])
   const isAppLoaded = ref<boolean>(false)
   const isSidebarOpen = ref<boolean>(false)
   const isSidebarCollapsed = ref<boolean>(localStore.getBoolean('sidebarCollapsed'))
@@ -46,10 +45,12 @@ export const useGlobalStore = defineStore('global', () => {
 
   // Getters
   const menuGroups = computed<MenuItem[][]>(() => {
-    return Object.values(groupBy(mainMenu.value, 'group'))
+    const sorted = [...mainMenu.value].sort((a, b) => (a.priority ?? 100) - (b.priority ?? 100))
+    const groups = groupBy(sorted, 'group')
+    return Object.values(groups).sort(
+      (a, b) => (a[0]?.priority ?? 100) - (b[0]?.priority ?? 100)
+    )
   })
-
-  const hasActiveModules = computed<boolean>(() => moduleMenu.value.length > 0)
 
   // Actions
   async function bootstrap(options?: { adminMode?: boolean }): Promise<BootstrapResponse> {
@@ -62,7 +63,7 @@ export const useGlobalStore = defineStore('global', () => {
 
       mainMenu.value = response.main_menu
       settingMenu.value = response.setting_menu
-      moduleMenu.value = response.module_menu ?? []
+      userMenu.value = response.user_menu ?? []
 
       config.value = response.config
       globalSettings.value = response.global_settings
@@ -196,7 +197,7 @@ export const useGlobalStore = defineStore('global', () => {
     }
   }
 
-  async function fetchTimeZones(): Promise<string[]> {
+  async function fetchTimeZones(): Promise<Array<{ key: string; value: string }>> {
     if (timeZones.value.length) {
       return timeZones.value
     }
@@ -290,7 +291,7 @@ export const useGlobalStore = defineStore('global', () => {
     fiscalYears,
     mainMenu,
     settingMenu,
-    moduleMenu,
+    userMenu,
     isAppLoaded,
     isSidebarOpen,
     isSidebarCollapsed,
@@ -298,7 +299,6 @@ export const useGlobalStore = defineStore('global', () => {
     downloadReport,
     // Getters
     menuGroups,
-    hasActiveModules,
     // Actions
     bootstrap,
     fetchCurrencies,

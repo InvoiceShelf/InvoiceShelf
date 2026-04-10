@@ -144,13 +144,30 @@
             </BaseDropdownItem>
           </router-link>
 
+          <router-link
+            v-for="item in globalStore.userMenu"
+            :key="item.name"
+            :to="item.link"
+          >
+            <BaseDropdownItem>
+              <BaseIcon
+                :name="item.icon"
+                class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+                aria-hidden="true"
+              />
+              {{ item.title }}
+            </BaseDropdownItem>
+          </router-link>
+
+          <div class="my-1 border-t border-line-light" />
+
           <BaseDropdownItem @click="logout">
             <BaseIcon
               name="ArrowRightOnRectangleIcon"
-              class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+              class="w-5 h-5 mr-3 text-red-400"
               aria-hidden="true"
             />
-            {{ $t('navigation.logout') }}
+            <span class="text-red-600">{{ $t('navigation.logout') }}</span>
           </BaseDropdownItem>
         </BaseDropdown>
       </li>

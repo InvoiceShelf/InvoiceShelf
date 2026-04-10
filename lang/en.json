@@ -14,6 +14,8 @@
     "users": "Users",
     "members": "Members",
     "modules": "Modules",
+    "documents": "Documents",
+    "admin": "Administration",
     "administration": "Administration",
     "companies": "Companies",
     "all_users": "Users"
@@ -773,6 +775,7 @@
     "no_modules_installed": "No Modules Installed Yet!",
     "disable_warning": "All the settings for this particular will be reverted.",
     "what_you_get": "What you get",
+    "screenshots": "Screenshots",
     "sign_up_and_get_token": "Sign up & Get Token",
     "index": {
       "description": "Modules activated by your administrator on this instance. Each company configures its own settings independently.",
@@ -911,7 +914,14 @@
       "notes": "Record Notes",
       "exchange_rate": "Exchange Rate",
       "address_information": "Address Information",
-      "pdf_generation": "PDF Generation"
+      "pdf_generation": "PDF Generation",
+      "appearance": "Appearance"
+    },
+    "appearance": {
+      "title": "Appearance",
+      "description": "Customize how the application looks and feels.",
+      "sidebar_group_labels": "Show sidebar group labels",
+      "sidebar_group_labels_desc": "Display section headers like Documents, Administration, and Modules in the sidebar navigation."
     },
     "address_information": {
       "section_description": "  You can update Your Address information using form below."

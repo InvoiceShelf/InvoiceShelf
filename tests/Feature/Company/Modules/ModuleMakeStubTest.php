@@ -48,6 +48,7 @@ test('module:make generates a ServiceProvider that uses InvoiceShelf\\Modules\\R
     $contents = File::get($providerPath);
 
     expect($contents)->toContain('use InvoiceShelf\\Modules\\Registry as ModuleRegistry;');
+    expect($contents)->toContain('use InvoiceShelf\\Modules\\Support\\ModuleServiceProvider;');
     expect($contents)->toContain('ModuleRegistry::registerMenu(');
     expect($contents)->toContain('ModuleRegistry::registerSettings(');
     expect($contents)->toContain("protected string \$name = '{$this->scaffoldModule}';");

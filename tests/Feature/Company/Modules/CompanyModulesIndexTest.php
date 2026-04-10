@@ -93,6 +93,7 @@ test('includes registered menu entry for active modules', function () {
 
     $response = getJson('api/v1/company-modules')->assertOk();
 
+    $response->assertJsonPath('data.0.display_name', 'Menu Module');
     $response->assertJsonPath('data.0.menu.title', 'menu_module::menu.title');
     $response->assertJsonPath('data.0.menu.icon', 'CalculatorIcon');
 });

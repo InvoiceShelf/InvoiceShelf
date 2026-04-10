@@ -4,7 +4,6 @@ use App\Models\CompanySetting;
 use App\Models\Module;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
-use InvoiceShelf\Modules\Registry;
 use Laravel\Sanctum\Sanctum;
 
 use function Pest\Laravel\getJson;
@@ -14,7 +13,7 @@ use function Pest\Laravel\putJson;
  * Integration test that exercises the real Modules/HelloWorld module end-to-end
  * — no Registry mocking. Proves that when an active module's ServiceProvider
  * registers menu + settings via InvoiceShelf\Modules\Registry, the host app's
- * bootstrap, company-modules index, and settings controllers all surface it.
+ * company-modules index and settings controllers surface it consistently.
  *
  * The HelloWorld module's provider boots automatically because nwidart sees
  * it in `storage/app/modules_statuses.json` (set to enabled when the module
@@ -39,18 +38,19 @@ beforeEach(function () {
     );
 });
 
-test('HelloWorld registers a menu entry visible in bootstrap', function () {
+test('bootstrap merges HelloWorld into main_menu under modules group', function () {
     $response = getJson('api/v1/bootstrap')->assertOk();
 
-    $menu = collect($response->json('module_menu'));
-    $entry = $menu->firstWhere('link', '/admin/modules/hello-world/settings');
+    $mainMenu = collect($response->json('main_menu'));
+    $helloWorld = $mainMenu->firstWhere('name', 'module-hello-world');
 
-    expect($entry)->not->toBeNull();
-    expect($entry['title'])->toBe('helloworld::menu.title');
-    expect($entry['icon'])->toBe('HandRaisedIcon');
+    expect($helloWorld)->not->toBeNull();
+    expect($helloWorld['link'])->toBe('/admin/modules/hello-world/dashboard');
+    expect($helloWorld['icon'])->toBe('HandRaisedIcon');
+    expect($helloWorld['group'])->toBe('modules');
 });
 
-test('HelloWorld appears in the company Active Modules index with has_settings flag', function () {
+test('HelloWorld appears in the company Active Modules index with translated display name', function () {
     $response = getJson('api/v1/company-modules')->assertOk();
 
     // The DB row stores PascalCase but the controller normalizes to kebab-case
@@ -58,20 +58,23 @@ test('HelloWorld appears in the company Active Modules index with has_settings f
     $row = collect($response->json('data'))->firstWhere('slug', 'hello-world');
     expect($row)->not->toBeNull();
     expect($row['name'])->toBe('HelloWorld');
+    expect($row['display_name'])->toBe('Hello World');
     expect($row['has_settings'])->toBeTrue();
+    expect($row['menu']['title'])->toBe('Hello World');
     expect($row['menu']['icon'])->toBe('HandRaisedIcon');
 });
 
-test('GET module settings returns the HelloWorld schema with defaults', function () {
+test('GET module settings returns the translated HelloWorld schema with defaults', function () {
     $response = getJson('api/v1/modules/hello-world/settings')->assertOk();
 
     $sections = $response->json('schema.sections');
     expect($sections)->toHaveCount(2);
-    expect($sections[0]['title'])->toBe('helloworld::settings.greeting_section');
+    expect($sections[0]['title'])->toBe('Greeting');
 
     $fields = collect($sections[0]['fields'])->keyBy('key');
     expect($fields)->toHaveKeys(['greeting', 'recipient', 'show_emoji']);
     expect($fields['greeting']['type'])->toBe('text');
+    expect($fields['greeting']['label'])->toBe('Greeting message');
     expect($fields['greeting']['rules'])->toContain('required');
 
     // Defaults flow through when nothing has been saved yet
