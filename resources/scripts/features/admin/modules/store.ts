@@ -2,24 +2,16 @@ import { defineStore } from 'pinia'
 import { moduleService } from '../../../api/services/module.service'
 import type {
   Module,
-  ModuleReview,
-  ModuleFaq,
-  ModuleLink,
-  ModuleScreenshot,
 } from '../../../types/domain/module'
+import type {
+  ModuleCheckResponse,
+  ModuleDetailResponse,
+  ModuleInstallPayload,
+} from '../../../api/services/module.service'
 
 // ----------------------------------------------------------------
 // Types
 // ----------------------------------------------------------------
-
-export interface ModuleDetailMeta {
-  modules: Module[]
-}
-
-export interface ModuleDetailResponse {
-  data: Module
-  meta: ModuleDetailMeta
-}
 
 export interface InstallationStep {
   translationKey: string
@@ -40,6 +32,11 @@ export interface ModuleState {
   currentUser: {
     api_token: string | null
   }
+  marketplaceStatus: {
+    authenticated: boolean
+    premium: boolean
+    invalidToken: boolean
+  }
   enableModules: string[]
 }
 
@@ -50,6 +47,11 @@ export const useModuleStore = defineStore('modules', {
     apiToken: null,
     currentUser: {
       api_token: null,
+    },
+    marketplaceStatus: {
+      authenticated: false,
+      premium: false,
+      invalidToken: false,
     },
     enableModules: [],
   }),
@@ -70,25 +72,30 @@ export const useModuleStore = defineStore('modules', {
 
     async fetchModule(slug: string): Promise<ModuleDetailResponse> {
       const response = await moduleService.get(slug)
-      const data = response as unknown as ModuleDetailResponse
-
-      if ((data as Record<string, unknown>).error === 'invalid_token') {
-        this.currentModule = null
-        this.modules = []
-        this.apiToken = null
-        this.currentUser.api_token = null
-        return data
-      }
-
-      this.currentModule = data
-      return data
+      this.currentModule = response
+      return response
     },
 
-    async checkApiToken(token: string): Promise<{ success: boolean; error?: string }> {
+    async checkApiToken(token: string): Promise<ModuleCheckResponse> {
       const response = await moduleService.checkToken(token)
-      return {
-        success: response.success ?? false,
-        error: response.error,
+      this.marketplaceStatus = {
+        authenticated: response.authenticated ?? false,
+        premium: response.premium ?? false,
+        invalidToken: response.error === 'invalid_token',
+      }
+      return response
+    },
+
+    setApiToken(token: string | null): void {
+      this.apiToken = token
+      this.currentUser.api_token = token
+    },
+
+    clearMarketplaceStatus(): void {
+      this.marketplaceStatus = {
+        authenticated: false,
+        premium: false,
+        invalidToken: false,
       }
     },
 
@@ -101,8 +108,7 @@ export const useModuleStore = defineStore('modules', {
     },
 
     async installModule(
-      moduleName: string,
-      version: string,
+      payload: ModuleInstallPayload,
       onStepUpdate?: (step: InstallationStep) => void,
     ): Promise<boolean> {
       const steps: InstallationStep[] = [
@@ -145,13 +151,25 @@ export const useModuleStore = defineStore('modules', {
         try {
           const stepFns: Record<string, () => Promise<Record<string, unknown>>> = {
             '/api/v1/modules/download': () =>
-              moduleService.download({ module: moduleName, version, path: path ?? undefined } as never) as Promise<Record<string, unknown>>,
+              moduleService.download({
+                ...payload,
+                path: path ?? undefined,
+              }) as Promise<Record<string, unknown>>,
             '/api/v1/modules/unzip': () =>
-              moduleService.unzip({ module: moduleName, version, path: path ?? undefined } as never) as Promise<Record<string, unknown>>,
+              moduleService.unzip({
+                ...payload,
+                path: path ?? undefined,
+              }) as Promise<Record<string, unknown>>,
             '/api/v1/modules/copy': () =>
-              moduleService.copy({ module: moduleName, version, path: path ?? undefined } as never) as Promise<Record<string, unknown>>,
+              moduleService.copy({
+                ...payload,
+                path: path ?? undefined,
+              }) as Promise<Record<string, unknown>>,
             '/api/v1/modules/complete': () =>
-              moduleService.complete({ module: moduleName, version, path: path ?? undefined } as never) as Promise<Record<string, unknown>>,
+              moduleService.complete({
+                ...payload,
+                path: path ?? undefined,
+              }) as Promise<Record<string, unknown>>,
           }
 
           const result = await stepFns[step.stepUrl]()
