@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('impersonation_logs', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('admin_id');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedInteger('admin_id');
+            $table->unsignedInteger('user_id');
             $table->string('ip_address', 45)->nullable();
             $table->unsignedBigInteger('token_id')->nullable();
             $table->timestamp('stopped_at')->nullable();
