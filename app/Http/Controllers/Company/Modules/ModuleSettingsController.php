@@ -43,7 +43,7 @@ class ModuleSettingsController extends Controller
             ->all();
 
         return response()->json([
-            'schema' => $schema->toArray(),
+            'schema' => $this->translateSchema($schema->toArray()),
             'values' => $values,
         ]);
     }
@@ -136,6 +136,31 @@ class ModuleSettingsController extends Controller
      * without losing information. Reads happen in show() above and naturally
      * return strings; the frontend handles re-coercion in BaseSchemaForm.vue.
      */
+    /**
+     * Translate section titles and field labels in the schema so the
+     * frontend receives ready-to-display strings instead of Laravel
+     * translation keys it cannot resolve (e.g. `helloworld::settings.greeting`).
+     *
+     * @param  array{sections: list<array<string, mixed>>}  $schema
+     * @return array{sections: list<array<string, mixed>>}
+     */
+    private function translateSchema(array $schema): array
+    {
+        foreach ($schema['sections'] as &$section) {
+            if (isset($section['title'])) {
+                $section['title'] = __($section['title']);
+            }
+
+            foreach ($section['fields'] as &$field) {
+                if (isset($field['label'])) {
+                    $field['label'] = __($field['label']);
+                }
+            }
+        }
+
+        return $schema;
+    }
+
     private function normalizeForStorage(mixed $value): string
     {
         if (is_bool($value)) {

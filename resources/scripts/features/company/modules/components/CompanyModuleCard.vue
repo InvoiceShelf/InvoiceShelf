@@ -14,7 +14,7 @@
           <BaseIcon :name="iconName" class="h-5 w-5" />
         </div>
         <div>
-          <h3 class="text-base font-semibold text-heading">{{ data.name }}</h3>
+          <h3 class="text-base font-semibold text-heading">{{ data.display_name }}</h3>
           <p class="text-xs text-muted">{{ $t('modules.version') }} {{ data.version }}</p>
         </div>
       </div>
@@ -25,7 +25,7 @@
         v-if="data.has_settings"
         size="sm"
         variant="primary-outline"
-        @click="goToSettings"
+        @click="emit('open-settings', data)"
       >
         <template #left="slotProps">
           <BaseIcon name="CogIcon" :class="slotProps.class" />
@@ -41,7 +41,6 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useRouter } from 'vue-router'
 import type { CompanyModuleSummary } from '../store'
 
 interface Props {
@@ -49,13 +48,11 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const router = useRouter()
+const emit = defineEmits<{
+  (e: 'open-settings', module: CompanyModuleSummary): void
+}>()
 
 const iconName = computed<string>(() => {
   return props.data.menu?.icon ?? 'PuzzlePieceIcon'
 })
-
-function goToSettings(): void {
-  router.push({ name: 'modules.settings', params: { slug: props.data.slug } })
-}
 </script>

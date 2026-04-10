@@ -4,6 +4,7 @@ import { companyModulesService } from '@/scripts/api/services/companyModules.ser
 export interface CompanyModuleSummary {
   slug: string
   name: string
+  display_name: string
   version: string
   has_settings: boolean
   menu: { title: string, link: string, icon: string } | null

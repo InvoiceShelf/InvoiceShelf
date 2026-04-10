@@ -36,17 +36,41 @@ class CompanyModulesController extends Controller
             ->get()
             ->map(function (Module $module) {
                 $slug = Str::kebab($module->name);
+                $menu = ModuleRegistry::menuFor($slug);
+                $translatedMenuTitle = $this->translateMenuTitle($menu['title'] ?? null);
+                $displayName = $translatedMenuTitle ?? Str::headline($module->name);
 
                 return [
                     'slug' => $slug,
                     'name' => $module->name,
+                    'display_name' => $displayName,
                     'version' => $module->version,
                     'has_settings' => ModuleRegistry::settingsFor($slug) !== null,
-                    'menu' => ModuleRegistry::menuFor($slug),
+                    'menu' => $menu === null
+                        ? null
+                        : [
+                            ...$menu,
+                            'title' => $translatedMenuTitle ?? $menu['title'],
+                        ],
                 ];
             })
             ->values();
 
         return response()->json(['data' => $modules]);
+    }
+
+    private function translateMenuTitle(?string $title): ?string
+    {
+        if ($title === null) {
+            return null;
+        }
+
+        $translatedTitle = __($title);
+
+        if (! is_string($translatedTitle) || $translatedTitle === $title) {
+            return null;
+        }
+
+        return $translatedTitle;
     }
 }
