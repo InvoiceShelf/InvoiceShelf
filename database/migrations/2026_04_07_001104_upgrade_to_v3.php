@@ -11,6 +11,7 @@ return new class extends Migration
     public function up(): void
     {
         $this->migrateMediaDiskReferences();
+        $this->renameSystemDisk();
     }
 
     /**
@@ -24,6 +25,12 @@ return new class extends Migration
         DB::table('media')
             ->where('disk', 'temp_local')
             ->update(['disk' => 'local']);
+
+        // Any v3 alpha installs that stored media with the 'local_public' name
+        // need updating to 'public' (the standard Laravel disk name).
+        DB::table('media')
+            ->where('disk', 'local_public')
+            ->update(['disk' => 'public']);
 
         // temp_s3, temp_dropbox, etc. for remote disks — map to disk_{id}
         $remotePrefixes = ['temp_s3', 'temp_dropbox', 'temp_doSpaces', 'temp_s3compat'];
@@ -43,8 +50,23 @@ return new class extends Migration
         }
     }
 
+    /**
+     * The v4.0.0 migration created the system disk as 'local_public'.
+     * Rename it to 'public' to match the standard Laravel disk name.
+     */
+    private function renameSystemDisk(): void
+    {
+        DB::table('file_disks')
+            ->where('name', 'local_public')
+            ->update(['name' => 'public']);
+    }
+
     public function down(): void
     {
+        DB::table('file_disks')
+            ->where('name', 'public')
+            ->update(['name' => 'local_public']);
+
         // Reverse: map disk_{id} back to temp_{driver}
         $fileDiskIds = DB::table('file_disks')
             ->whereNotIn('type', ['SYSTEM'])
@@ -55,6 +77,10 @@ return new class extends Migration
                 ->where('disk', 'disk_'.$disk->id)
                 ->update(['disk' => 'temp_'.$disk->driver]);
         }
+
+        DB::table('media')
+            ->where('disk', 'public')
+            ->update(['disk' => 'local_public']);
 
         DB::table('media')
             ->where('disk', 'local')

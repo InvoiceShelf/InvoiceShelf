@@ -28,6 +28,13 @@ class User extends Authenticatable implements HasMedia
     use InteractsWithMedia;
     use Notifiable;
 
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('admin_avatar')
+            ->useDisk('public')
+            ->singleFile();
+    }
+
     /**
      * The attributes that are mass assignable.
      *

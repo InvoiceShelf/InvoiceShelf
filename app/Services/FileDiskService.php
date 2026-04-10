@@ -63,7 +63,7 @@ class FileDiskService
     public function getDiskName(FileDisk $disk): string
     {
         if ($disk->isSystem()) {
-            return $disk->name === 'local_public' ? 'local_public' : 'local';
+            return $disk->name === 'public' ? 'public' : 'local';
         }
 
         return 'disk_'.$disk->id;

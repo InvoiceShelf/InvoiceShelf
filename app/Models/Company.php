@@ -17,6 +17,13 @@ class Company extends Model implements HasMedia
     use HasFactory;
     use InteractsWithMedia;
 
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('logo')
+            ->useDisk('public')
+            ->singleFile();
+    }
+
     protected $guarded = [
         'id',
     ];

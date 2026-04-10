@@ -71,7 +71,7 @@ return new class extends Migration
 
         FileDisk::create([
             'credentials' => json_encode($publicDisk),
-            'name' => 'local_public',
+            'name' => 'public',
             'type' => 'SYSTEM',
             'driver' => 'local',
             'set_as_default' => false,
