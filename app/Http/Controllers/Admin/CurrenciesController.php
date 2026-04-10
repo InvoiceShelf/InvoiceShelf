@@ -4,20 +4,19 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CurrencyResource;
-use App\Models\Currency;
+use App\Services\CurrencyService;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class CurrenciesController extends Controller
 {
-    /**
-     * Handle the incoming request.
-     *
-     * @return Response
-     */
-    public function __invoke(Request $request)
+    public function __construct(
+        private readonly CurrencyService $currencyService,
+    ) {}
+
+    public function __invoke(Request $request): AnonymousResourceCollection
     {
-        $currencies = Currency::latest()->get();
+        $currencies = $this->currencyService->getAllWithCommonFirst();
 
         return CurrencyResource::collection($currencies);
     }

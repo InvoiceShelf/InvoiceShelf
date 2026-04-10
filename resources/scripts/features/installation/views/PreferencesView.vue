@@ -137,7 +137,7 @@ import { clearInstallWizardAuth } from '../install-auth'
 import { useInstallationFeedback } from '../use-installation-feedback'
 
 interface PreferencesData {
-  currency: number
+  currency: number | null
   language: string
   carbon_date_format: string
   time_zone: string
@@ -157,6 +157,7 @@ interface DateFormatOption {
 interface CurrencyOption {
   id: number
   name: string
+  code: string
 }
 
 interface LanguageOption {
@@ -179,7 +180,7 @@ const timeZones = ref<KeyValueOption[]>([])
 const fiscalYears = ref<KeyValueOption[]>([])
 
 const currentPreferences = reactive<PreferencesData>({
-  currency: 3,
+  currency: null,
   language: 'en',
   carbon_date_format: 'd M Y',
   time_zone: 'UTC',
@@ -223,7 +224,19 @@ onMounted(async () => {
       installClient.get(`${API.CONFIG}?key=fiscal_years`),
       installClient.get(`${API.CONFIG}?key=languages`),
     ])
-    currencies.value = currRes.data.data ?? currRes.data
+    const rawCurrencies: CurrencyOption[] = currRes.data.data ?? currRes.data
+    currencies.value = rawCurrencies.map((c) => ({
+      ...c,
+      name: `${c.code} - ${c.name}`,
+    }))
+
+    if (!currentPreferences.currency) {
+      const usd = currencies.value.find((c) => c.code === 'USD')
+      if (usd) {
+        currentPreferences.currency = usd.id
+      }
+    }
+
     dateFormats.value = dateRes.data.data ?? dateRes.data
     timeZones.value = tzRes.data.data ?? tzRes.data
     fiscalYears.value = fyRes.data.data ?? fyRes.data ?? []
