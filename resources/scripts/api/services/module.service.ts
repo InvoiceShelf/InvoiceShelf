@@ -1,26 +1,30 @@
 import { client } from '../client'
 import { API } from '../endpoints'
 import type { ApiResponse } from '@/scripts/types/api'
-
-export interface Module {
-  name: string
-  slug: string
-  description: string
-  version: string
-  enabled: boolean
-  installed: boolean
-  [key: string]: unknown
-}
+import type { Module } from '@/scripts/types/domain/module'
 
 export interface ModuleCheckResponse {
   error?: string
   success?: boolean
+  authenticated?: boolean
+  premium?: boolean
+}
+
+export interface ModuleDetailMeta {
+  modules: Module[]
 }
 
 export interface ModuleInstallPayload {
-  module: string
+  slug: string
+  module_name: string
   version: string
-  api_token?: string
+  checksum_sha256?: string | null
+  path?: string
+}
+
+export interface ModuleDetailResponse {
+  data: Module
+  meta: ModuleDetailMeta
 }
 
 export const moduleService = {
@@ -29,7 +33,7 @@ export const moduleService = {
     return data
   },
 
-  async get(module: string): Promise<Module> {
+  async get(module: string): Promise<ModuleDetailResponse> {
     const { data } = await client.get(`${API.MODULES}/${module}`)
     return data
   },

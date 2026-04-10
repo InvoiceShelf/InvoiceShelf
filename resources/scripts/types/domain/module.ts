@@ -1,17 +1,13 @@
-export interface ModuleAuthor {
-  name: string
-  avatar: string
-}
-
 export interface ModuleVersion {
   module_version: string
-  invoiceshelf_version: string
+  invoiceshelf_version: string | null
   created_at: string
 }
 
 export interface ModuleLink {
-  name: string
-  url: string
+  icon: string
+  label: string
+  link: string
 }
 
 export interface ModuleReview {
@@ -38,12 +34,15 @@ export interface Module {
   cover: string | null
   slug: string
   module_name: string
+  access_tier: 'public' | 'premium'
   faq: ModuleFaq[] | null
   highlights: string[] | null
   installed_module_version: string | null
   installed_module_version_updated_at: string | null
   latest_module_version: string
   latest_module_version_updated_at: string
+  latest_min_invoiceshelf_version: string | null
+  latest_module_checksum_sha256: string | null
   is_dev: boolean
   license: string | null
   long_description: string | null

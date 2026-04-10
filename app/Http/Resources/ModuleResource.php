@@ -3,11 +3,9 @@
 namespace App\Http\Resources;
 
 use App\Models\Module as ModelsModule;
-use App\Models\Setting;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Nwidart\Modules\Facades\Module;
 
 class ModuleResource extends JsonResource
 {
@@ -19,8 +17,7 @@ class ModuleResource extends JsonResource
      */
     public function toArray($request): array
     {
-        $this->checkPurchased();
-        $this->installed_module = ModelsModule::where('name', $this->module_name)->first();
+        $installedModule = ModelsModule::where('name', $this->module_name)->first();
 
         return [
             'id' => $this->id,
@@ -28,107 +25,75 @@ class ModuleResource extends JsonResource
             'cover' => $this->cover,
             'slug' => $this->slug,
             'module_name' => $this->module_name,
+            'access_tier' => $this->access_tier ?? 'public',
             'faq' => $this->faq,
             'highlights' => $this->highlights,
-            'installed_module_version' => $this->getInstalledModuleVersion(),
-            'installed_module_version_updated_at' => $this->getInstalledModuleUpdatedAt(),
-            'latest_module_version' => $this->latest_module_version->module_version,
-            'latest_module_version_updated_at' => $this->latest_module_version->created_at,
+            'installed_module_version' => $this->getInstalledModuleVersion($installedModule),
+            'installed_module_version_updated_at' => $this->getInstalledModuleUpdatedAt($installedModule),
+            'latest_module_version' => $this->latest_module_version,
+            'latest_module_version_updated_at' => $this->latest_module_version_updated_at,
+            'latest_min_invoiceshelf_version' => $this->latest_min_invoiceshelf_version ?? null,
+            'latest_module_checksum_sha256' => $this->latest_module_checksum_sha256 ?? null,
             'is_dev' => $this->is_dev,
             'license' => $this->license,
             'long_description' => $this->long_description,
             'monthly_price' => $this->monthly_price,
             'name' => $this->name,
-            'purchased' => $this->purchased,
+            'purchased' => $this->purchased ?? true,
             'reviews' => $this->reviews ?? [],
             'screenshots' => $this->screenshots,
             'short_description' => $this->short_description,
             'type' => $this->type,
             'yearly_price' => $this->yearly_price,
-            'author_name' => $this->author->name,
-            'author_avatar' => $this->author->avatar,
-            'installed' => $this->moduleInstalled(),
-            'enabled' => $this->moduleEnabled(),
-            'update_available' => $this->updateAvailable(),
+            'author_name' => $this->author_name,
+            'author_avatar' => $this->author_avatar,
+            'installed' => $this->moduleInstalled($installedModule),
+            'enabled' => $this->moduleEnabled($installedModule),
+            'update_available' => $this->updateAvailable($installedModule),
             'video_link' => $this->video_link,
             'video_thumbnail' => $this->video_thumbnail,
             'links' => $this->links,
         ];
     }
 
-    public function getInstalledModuleVersion()
+    public function getInstalledModuleVersion(?ModelsModule $installedModule): ?string
     {
-        if (isset($this->installed_module) && $this->installed_module->installed) {
-            return $this->installed_module->version;
+        if ($installedModule && $installedModule->installed) {
+            return $installedModule->version;
         }
 
         return null;
     }
 
-    public function getInstalledModuleUpdatedAt()
+    public function getInstalledModuleUpdatedAt(?ModelsModule $installedModule): ?string
     {
-        if (isset($this->installed_module) && $this->installed_module->installed) {
-            return $this->installed_module->updated_at;
+        if ($installedModule && $installedModule->installed) {
+            return $installedModule->updated_at?->toIso8601String();
         }
 
         return null;
     }
 
-    public function moduleInstalled()
+    public function moduleInstalled(?ModelsModule $installedModule): bool
     {
-        if (isset($this->installed_module) && $this->installed_module->installed) {
-            return true;
-        }
-
-        return false;
+        return (bool) ($installedModule?->installed);
     }
 
-    public function moduleEnabled()
+    public function moduleEnabled(?ModelsModule $installedModule): bool
     {
-        if (isset($this->installed_module) && $this->installed_module->installed) {
-            return $this->installed_module->enabled;
-        }
-
-        return false;
+        return (bool) ($installedModule?->installed && $installedModule?->enabled);
     }
 
-    public function updateAvailable()
+    public function updateAvailable(?ModelsModule $installedModule): bool
     {
-        if (! isset($this->installed_module)) {
+        if (! $installedModule || ! $installedModule->installed) {
             return false;
         }
 
-        if (! $this->installed_module->installed) {
+        if (! isset($this->latest_module_version) || ! is_string($this->latest_module_version)) {
             return false;
         }
 
-        if (! isset($this->latest_module_version)) {
-            return false;
-        }
-
-        if (version_compare($this->installed_module->version, $this->latest_module_version->module_version, '>=')) {
-            return false;
-        }
-
-        if (version_compare(Setting::getSetting('version'), $this->latest_module_version->invoiceshelf_version, '<')) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public function checkPurchased()
-    {
-        if ($this->purchased) {
-            return true;
-        }
-
-        if (Module::has($this->module_name)) {
-            $module = Module::find($this->module_name);
-            $module->disable();
-            ModelsModule::where('name', $this->module_name)->update(['enabled' => false]);
-        }
-
-        return false;
+        return version_compare($installedModule->version, $this->latest_module_version, '<');
     }
 }

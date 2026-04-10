@@ -15,7 +15,11 @@ class ModuleInstallationController extends Controller
     {
         $this->authorize('manage modules');
 
-        $response = ModuleInstaller::download($request->module, $request->version);
+        $response = ModuleInstaller::download(
+            (string) $request->slug,
+            (string) $request->version,
+            $request->checksum_sha256 ? (string) $request->checksum_sha256 : null,
+        );
 
         return response()->json($response);
     }
@@ -33,7 +37,7 @@ class ModuleInstallationController extends Controller
     {
         $this->authorize('manage modules');
 
-        $path = ModuleInstaller::unzip($request->module, $request->path);
+        $path = ModuleInstaller::unzip($request->module_name ?? $request->module, $request->path);
 
         return response()->json([
             'success' => true,
@@ -45,7 +49,7 @@ class ModuleInstallationController extends Controller
     {
         $this->authorize('manage modules');
 
-        $response = ModuleInstaller::copyFiles($request->module, $request->path);
+        $response = ModuleInstaller::copyFiles($request->module_name ?? $request->module, $request->path);
 
         return response()->json([
             'success' => $response,
@@ -56,7 +60,7 @@ class ModuleInstallationController extends Controller
     {
         $this->authorize('manage modules');
 
-        $response = ModuleInstaller::complete($request->module, $request->version);
+        $response = ModuleInstaller::complete($request->module_name ?? $request->module, $request->version);
 
         return response()->json([
             'success' => $response,

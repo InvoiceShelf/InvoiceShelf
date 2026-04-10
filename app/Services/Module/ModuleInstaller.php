@@ -4,7 +4,6 @@ namespace App\Services\Module;
 
 use App\Events\ModuleEnabledEvent;
 use App\Events\ModuleInstalledEvent;
-use App\Http\Resources\ModuleResource;
 use App\Models\Module as ModelsModule;
 use App\Models\Setting;
 use App\Traits\SiteApi;
@@ -19,89 +18,101 @@ class ModuleInstaller
 {
     use SiteApi;
 
-    public static function getModules()
+    private static function marketplaceToken(): ?string
     {
-        $data = null;
-        if (env('APP_ENV') === 'development') {
-            $url = 'api/marketplace/modules?is_dev=1';
-        } else {
-            $url = 'api/marketplace/modules';
-        }
-
         $token = Setting::getSetting('api_token');
-        $response = static::getRemote($url, ['timeout' => 100, 'track_redirects' => true], $token);
 
-        if ($response && ($response->getStatusCode() == 401)) {
-            return response()->json(['error' => 'invalid_token']);
+        if (! is_string($token) || trim($token) === '') {
+            return null;
         }
 
-        if ($response && ($response->getStatusCode() == 200)) {
-            $data = $response->getBody()->getContents();
-        }
-
-        $data = json_decode($data);
-
-        return ModuleResource::collection(collect($data->modules));
+        return $token;
     }
 
-    public static function getModule($module)
+    private static function decodeMarketplaceJson($response): array
     {
-        $data = null;
-        if (env('APP_ENV') === 'development') {
-            $url = 'api/marketplace/modules/'.$module.'?is_dev=1';
-        } else {
-            $url = 'api/marketplace/modules/'.$module;
+        if ($response instanceof RequestException || ! $response) {
+            return [
+                'status' => 0,
+                'body' => null,
+            ];
         }
 
-        $token = Setting::getSetting('api_token');
-        $response = static::getRemote($url, ['timeout' => 100, 'track_redirects' => true], $token);
+        $body = $response->getBody()->getContents();
 
-        if ($response && ($response->getStatusCode() == 401)) {
-            return (object) ['success' => false, 'error' => 'invalid_token'];
-        }
-
-        if ($response && ($response->getStatusCode() == 200)) {
-            $data = $response->getBody()->getContents();
-        }
-
-        $data = json_decode($data);
-
-        return $data;
+        return [
+            'status' => $response->getStatusCode(),
+            'body' => $body !== '' ? json_decode($body) : null,
+        ];
     }
 
-    public static function upload($request)
+    public static function getModules(): array
     {
-        // Create temp directory
-        $temp_dir = storage_path('app/temp-'.md5(mt_rand()));
+        $url = env('APP_ENV') === 'development'
+            ? 'api/marketplace/modules?is_dev=1'
+            : 'api/marketplace/modules';
 
-        if (! File::isDirectory($temp_dir)) {
-            File::makeDirectory($temp_dir);
+        $token = static::marketplaceToken();
+        $decoded = static::decodeMarketplaceJson(
+            static::getRemote($url, ['timeout' => 100, 'track_redirects' => true], $token)
+        );
+
+        if ($decoded['status'] === 401 && $token !== null) {
+            $decoded = static::decodeMarketplaceJson(
+                static::getRemote($url, ['timeout' => 100, 'track_redirects' => true], null)
+            );
         }
 
-        $path = $request->file('avatar')->storeAs(
+        return $decoded;
+    }
+
+    public static function getModule(string $module): array
+    {
+        $url = env('APP_ENV') === 'development'
+            ? 'api/marketplace/modules/'.$module.'?is_dev=1'
+            : 'api/marketplace/modules/'.$module;
+
+        $token = static::marketplaceToken();
+        $decoded = static::decodeMarketplaceJson(
+            static::getRemote($url, ['timeout' => 100, 'track_redirects' => true], $token)
+        );
+
+        if ($decoded['status'] === 401 && $token !== null) {
+            $decoded = static::decodeMarketplaceJson(
+                static::getRemote($url, ['timeout' => 100, 'track_redirects' => true], null)
+            );
+        }
+
+        return $decoded;
+    }
+
+    public static function upload($request): string
+    {
+        $tempDir = storage_path('app/temp-'.md5(mt_rand()));
+
+        if (! File::isDirectory($tempDir)) {
+            File::makeDirectory($tempDir);
+        }
+
+        return $request->file('avatar')->storeAs(
             'temp-'.md5(mt_rand()),
             $request->module.'.zip',
             'local'
         );
-
-        return $path;
     }
 
-    public static function download($module, $version)
+    public static function download(string $slug, string $version, ?string $checksumSha256 = null): array|bool
     {
         $data = null;
         $path = null;
 
-        if (env('APP_ENV') === 'development') {
-            $url = "api/marketplace/modules/file/{$module}?version={$version}&is_dev=1";
-        } else {
-            $url = "api/marketplace/modules/file/{$module}?version={$version}";
-        }
+        $url = env('APP_ENV') === 'development'
+            ? "api/marketplace/modules/file/{$slug}?version={$version}&is_dev=1"
+            : "api/marketplace/modules/file/{$slug}?version={$version}";
 
-        $token = Setting::getSetting('api_token');
+        $token = static::marketplaceToken();
         $response = static::getRemote($url, ['timeout' => 100, 'track_redirects' => true], $token);
 
-        // Exception
         if ($response instanceof RequestException) {
             return [
                 'success' => false,
@@ -112,84 +123,102 @@ class ModuleInstaller
             ];
         }
 
-        if ($response && ($response->getStatusCode() == 401 || $response->getStatusCode() == 404 || $response->getStatusCode() == 500)) {
-            return json_decode($response->getBody()->getContents());
+        if ($response && $response->getStatusCode() === 401 && $token !== null) {
+            $response = static::getRemote($url, ['timeout' => 100, 'track_redirects' => true], null);
         }
 
-        if ($response && ($response->getStatusCode() == 200)) {
+        if ($response instanceof RequestException || ! $response) {
+            return [
+                'success' => false,
+                'error' => 'Download Exception',
+            ];
+        }
+
+        if ($response && $response->getStatusCode() !== 200) {
+            $decoded = json_decode($response->getBody()->getContents(), true);
+
+            return [
+                'success' => false,
+                'error' => $decoded['error'] ?? 'Module download failed',
+            ];
+        }
+
+        if ($response && $response->getStatusCode() === 200) {
             $data = $response->getBody()->getContents();
         }
 
-        // Create temp directory
-        $temp_dir = storage_path('app/temp-'.md5(mt_rand()));
+        $tempDir = storage_path('app/temp-'.md5(mt_rand()));
 
-        if (! File::isDirectory($temp_dir)) {
-            File::makeDirectory($temp_dir);
+        if (! File::isDirectory($tempDir)) {
+            File::makeDirectory($tempDir);
         }
 
-        $zip_file_path = $temp_dir.'/upload.zip';
-
-        // Add content to the Zip file
-        $uploaded = is_int(file_put_contents($zip_file_path, $data)) ? true : false;
+        $zipFilePath = $tempDir.'/upload.zip';
+        $uploaded = is_int(file_put_contents($zipFilePath, $data));
 
         if (! $uploaded) {
             return false;
         }
 
+        if ($checksumSha256 && hash_file('sha256', $zipFilePath) !== $checksumSha256) {
+            File::delete($zipFilePath);
+
+            return [
+                'success' => false,
+                'error' => 'Checksum verification failed',
+            ];
+        }
+
         return [
             'success' => true,
-            'path' => $zip_file_path,
+            'path' => $zipFilePath,
         ];
     }
 
-    public static function unzip($module, $zip_file_path)
+    public static function unzip($module, $zipFilePath): string
     {
-        if (! file_exists($zip_file_path)) {
+        if (! file_exists($zipFilePath)) {
             throw new \Exception('Zip file not found');
         }
 
-        $temp_extract_dir = storage_path('app/temp2-'.md5(mt_rand()));
+        $tempExtractDir = storage_path('app/temp2-'.md5(mt_rand()));
 
-        if (! File::isDirectory($temp_extract_dir)) {
-            File::makeDirectory($temp_extract_dir);
+        if (! File::isDirectory($tempExtractDir)) {
+            File::makeDirectory($tempExtractDir);
         }
-        // Unzip the file
+
         $zip = new ZipArchive;
 
-        if ($zip->open($zip_file_path)) {
-            $zip->extractTo($temp_extract_dir);
+        if ($zip->open($zipFilePath)) {
+            $zip->extractTo($tempExtractDir);
         }
 
         $zip->close();
+        File::delete($zipFilePath);
 
-        // Delete zip file
-        File::delete($zip_file_path);
-
-        return $temp_extract_dir;
+        return $tempExtractDir;
     }
 
-    public static function copyFiles($module, $temp_extract_dir)
+    public static function copyFiles($module, $tempExtractDir): bool
     {
         if (! File::isDirectory(base_path('Modules'))) {
             File::makeDirectory(base_path('Modules'));
         }
 
-        // Delete Existing Module directory
-        if (! File::isDirectory(base_path('Modules').'/'.$module)) {
+        if (File::isDirectory(base_path('Modules').'/'.$module)) {
             File::deleteDirectory(base_path('Modules').'/'.$module);
         }
 
-        if (! File::copyDirectory($temp_extract_dir, base_path('Modules').'/')) {
+        if (! File::copyDirectory($tempExtractDir, base_path('Modules').'/')) {
             return false;
         }
 
-        // Delete temp directory
-        File::deleteDirectory($temp_extract_dir);
+        File::deleteDirectory($tempExtractDir);
 
         return true;
     }
 
-    public static function deleteFiles($json)
+    public static function deleteFiles($json): bool
     {
         $files = json_decode($json);
 
@@ -200,7 +229,7 @@ class ModuleInstaller
         return true;
     }
 
-    public static function complete($module, $version)
+    public static function complete($module, $version): bool
     {
         Module::register();
 
@@ -208,7 +237,10 @@ class ModuleInstaller
         Artisan::call("module:seed $module --force");
         Artisan::call("module:enable $module");
 
-        $module = ModelsModule::updateOrCreate(['name' => $module], ['version' => $version, 'installed' => true, 'enabled' => true]);
+        $module = ModelsModule::updateOrCreate(
+            ['name' => $module],
+            ['version' => $version, 'installed' => true, 'enabled' => true]
+        );
 
         ModuleInstalledEvent::dispatch($module);
         ModuleEnabledEvent::dispatch($module);
@@ -219,12 +251,11 @@ class ModuleInstaller
     public static function checkToken(string $token)
     {
         $url = 'api/marketplace/ping';
-        $response = static::getRemote($url, ['timeout' => 100, 'track_redirects' => true], $token);
+        $normalizedToken = trim($token) !== '' ? $token : null;
+        $response = static::getRemote($url, ['timeout' => 100, 'track_redirects' => true], $normalizedToken);
 
-        if ($response && ($response->getStatusCode() == 200)) {
-            $data = $response->getBody()->getContents();
-
-            return response()->json(json_decode($data));
+        if ($response && $response->getStatusCode() === 200) {
+            return response()->json(json_decode($response->getBody()->getContents()));
         }
 
         return response()->json(['error' => 'invalid_token']);

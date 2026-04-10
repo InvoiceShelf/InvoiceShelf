@@ -18,7 +18,13 @@ class ModulesController extends Controller
     {
         $this->authorize('manage modules');
 
-        return ModuleInstaller::getModules();
+        $response = ModuleInstaller::getModules();
+
+        if (($response['status'] ?? 0) !== 200 || ! isset($response['body']->modules)) {
+            return response()->json(['error' => 'marketplace_unavailable'], 503);
+        }
+
+        return ModuleResource::collection(collect($response['body']->modules));
     }
 
     public function show(Request $request, string $module)
@@ -27,13 +33,19 @@ class ModulesController extends Controller
 
         $response = ModuleInstaller::getModule($module);
 
-        if (! $response->success) {
-            return response()->json($response);
+        if (($response['status'] ?? 0) === 404) {
+            return response()->json(['error' => 'not_found'], 404);
         }
 
-        return (new ModuleResource($response->module))
+        if (($response['status'] ?? 0) !== 200 || ! isset($response['body']->data)) {
+            return response()->json(['error' => 'marketplace_unavailable'], 503);
+        }
+
+        return (new ModuleResource($response['body']->data))
             ->additional(['meta' => [
-                'modules' => ModuleResource::collection(collect($response->modules)),
+                'modules' => ModuleResource::collection(
+                    collect($response['body']->meta->modules ?? [])
+                ),
             ]]);
     }
 

@@ -25,7 +25,11 @@ class UnzipUpdateRequest extends FormRequest
                 'regex:/^[\.\/\w\-]+$/',
             ],
             'module' => [
-                'required',
+                'nullable',
+                'string',
+            ],
+            'module_name' => [
+                'required_without:module',
                 'string',
             ],
         ];
