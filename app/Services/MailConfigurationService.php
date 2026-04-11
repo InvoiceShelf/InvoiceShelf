@@ -14,16 +14,16 @@ use Symfony\Component\Mailer\Bridge\Postmark\Transport\PostmarkTransportFactory;
 
 class MailConfigurationService
 {
-    public const DEFAULT_DRIVER = 'smtp';
+    public const DEFAULT_DRIVER = 'sendmail';
 
     private const GLOBAL_SCOPE = 'global';
 
     private const COMPANY_SCOPE = 'company';
 
     private const DRIVER_ORDER = [
+        'sendmail',
         'smtp',
         'mail',
-        'sendmail',
         'ses',
         'mailgun',
         'postmark',

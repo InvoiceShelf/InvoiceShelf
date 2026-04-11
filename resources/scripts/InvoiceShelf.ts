@@ -67,10 +67,6 @@ export default class InvoiceShelf {
   /**
    * Execute all registered boot callbacks, install plugins,
    * and mount the app to `document.body`.
-   *
-   * Async so the install wizard's pre-DB language choice can be loaded
-   * before the first render — see the `install_language` localStorage key
-   * set by features/installation/views/LanguageView.vue.
    */
   async start(): Promise<void> {
     // Execute boot callbacks so modules can register routes / components

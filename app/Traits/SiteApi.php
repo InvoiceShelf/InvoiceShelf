@@ -4,7 +4,7 @@ namespace App\Traits;
 
 use App\Models\Setting;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\GuzzleException;
 
 // Implementation taken from Akaunting - https://github.com/akaunting/akaunting
 trait SiteApi
@@ -26,8 +26,8 @@ trait SiteApi
 
         try {
             $result = $client->get($url, $data);
-        } catch (RequestException $e) {
-            $result = $e;
+        } catch (GuzzleException $e) {
+            $result = null;
         }
 
         return $result;

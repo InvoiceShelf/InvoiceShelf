@@ -1652,7 +1652,7 @@
       "from_name": "From Mail Name",
       "from_mail": "From Mail Address",
       "encryption": "Mail Encryption",
-      "mail_config_desc": "Configure the Laravel mail driver used to send emails from the application, including provider-specific credentials when needed.",
+      "mail_config_desc": "Configure the mail driver used to send emails from the application. If you are unsure how to configure this, leave it set to Sendmail.",
       "basic_settings": "Basic Settings",
       "advanced_settings": "Advanced Settings",
       "show_advanced_settings": "Show Advanced Settings",

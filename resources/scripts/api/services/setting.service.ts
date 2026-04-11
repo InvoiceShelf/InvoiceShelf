@@ -61,7 +61,7 @@ export const settingService = {
     return data
   },
 
-  async getTimezones(): Promise<{ time_zones: string[] }> {
+  async getTimezones(): Promise<{ time_zones: Array<{ key: string; value: string }> }> {
     const { data } = await client.get(API.TIMEZONES)
     return data
   },

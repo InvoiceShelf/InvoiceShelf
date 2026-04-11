@@ -1,7 +1,11 @@
 import '../css/invoiceshelf.css'
 import 'v-tooltip/dist/v-tooltip.css'
 
+import * as Vue from 'vue'
 import InvoiceShelf from './InvoiceShelf'
+
+// Expose Vue runtime for module scripts that import from the shim.
+;(window as Record<string, unknown>).__invoiceshelf_vue = Vue
 
 declare global {
   interface Window {

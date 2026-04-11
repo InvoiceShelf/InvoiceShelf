@@ -237,10 +237,10 @@ onMounted(async () => {
       }
     }
 
-    dateFormats.value = dateRes.data.data ?? dateRes.data
-    timeZones.value = tzRes.data.data ?? tzRes.data
-    fiscalYears.value = fyRes.data.data ?? fyRes.data ?? []
-    languages.value = langRes.data.data ?? langRes.data ?? []
+    dateFormats.value = dateRes.data.date_formats ?? dateRes.data.data ?? dateRes.data
+    timeZones.value = tzRes.data.time_zones ?? tzRes.data.data ?? tzRes.data
+    fiscalYears.value = fyRes.data.fiscal_years ?? fyRes.data.data ?? fyRes.data ?? []
+    languages.value = langRes.data.languages ?? langRes.data.data ?? langRes.data ?? []
   } catch (error: unknown) {
     showRequestError(error)
   } finally {

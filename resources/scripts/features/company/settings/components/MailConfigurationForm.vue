@@ -43,7 +43,7 @@ const showAdvancedFields = ref(false)
 
 const mailConfig = reactive<MailConfig>(createDefaultMailConfig())
 
-const fallbackDrivers: MailDriver[] = ['smtp', 'mail', 'sendmail']
+const fallbackDrivers: MailDriver[] = ['sendmail', 'smtp', 'mail']
 const encryptionOptions: SelectOption[] = [
   { label: 'None', value: 'none' },
   { label: 'TLS', value: 'tls' },
@@ -165,7 +165,7 @@ watch(
 
 function createDefaultMailConfig(): MailConfig {
   return {
-    mail_driver: 'smtp',
+    mail_driver: 'sendmail',
     from_mail: '',
     from_name: '',
     mail_host: '',
