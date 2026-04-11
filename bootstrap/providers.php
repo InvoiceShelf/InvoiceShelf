@@ -2,6 +2,7 @@
 
 use App\Providers\AppConfigProvider;
 use App\Providers\AppServiceProvider;
+use App\Providers\DriverRegistryProvider;
 use App\Providers\DropboxServiceProvider;
 use App\Providers\PdfServiceProvider;
 use App\Providers\RouteServiceProvider;
@@ -15,5 +16,6 @@ return [
     DropboxServiceProvider::class,
     ViewServiceProvider::class,
     PdfServiceProvider::class,
+    DriverRegistryProvider::class,
     AppConfigProvider::class,
 ];

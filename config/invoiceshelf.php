@@ -550,24 +550,13 @@ return [
     ],
 
     /*
-    * List of exchange rate provider (currency converter server's)
+    * Exchange rate drivers and Currency Converter server options used to live here as
+    * static arrays. Both have moved into the module Registry — built-in drivers are
+    * registered by App\Providers\DriverRegistryProvider, and custom drivers can be
+    * registered by modules via Registry::registerExchangeRateDriver(). The driver
+    * list is served to the frontend by ConfigController via the same
+    * /api/v1/config?key=exchange_rate_drivers endpoint.
     */
-    'currency_converter_servers' => [
-        ['key' => 'settings.preferences.premium', 'value' => 'PREMIUM'],
-        ['key' => 'settings.preferences.prepaid', 'value' => 'PREPAID'],
-        ['key' => 'settings.preferences.free', 'value' => 'FREE'],
-        ['key' => 'settings.preferences.dedicated', 'value' => 'DEDICATED'],
-    ],
-
-    /*
-    * List of exchange rate drivers
-    */
-    'exchange_rate_drivers' => [
-        ['key' => 'settings.exchange_rate.currency_converter', 'value' => 'currency_converter'],
-        ['key' => 'settings.exchange_rate.currency_freak', 'value' => 'currency_freak'],
-        ['key' => 'settings.exchange_rate.currency_layer', 'value' => 'currency_layer'],
-        ['key' => 'settings.exchange_rate.open_exchange_rate', 'value' => 'open_exchange_rate'],
-    ],
 
     /*
     * List of Custom field supported models

@@ -40,17 +40,29 @@ export interface BulkUpdatePayload {
   }>
 }
 
-export interface ConfigOption {
-  key: string
+export interface DriverConfigFieldOption {
+  label: string
   value: string
 }
 
-export interface ConfigDriversResponse {
-  exchange_rate_drivers: ConfigOption[]
+export interface DriverConfigField {
+  key: string
+  type: 'text' | 'select'
+  label: string
+  options?: DriverConfigFieldOption[]
+  default?: string
+  visible_when?: Record<string, string>
 }
 
-export interface ConfigServersResponse {
-  currency_converter_servers: ConfigOption[]
+export interface ExchangeRateDriverOption {
+  value: string
+  label: string
+  website?: string
+  config_fields?: DriverConfigField[]
+}
+
+export interface ConfigDriversResponse {
+  exchange_rate_drivers: ExchangeRateDriverOption[]
 }
 
 export interface SupportedCurrenciesParams {
@@ -133,15 +145,12 @@ export const exchangeRateService = {
   },
 
   // Config
-  // Backend returns { exchange_rate_drivers: Array<{ key, value }> }
+  // Backend returns { exchange_rate_drivers: ExchangeRateDriverOption[] } where each option
+  // includes the metadata needed to render a driver-specific config form (label, website,
+  // config_fields). The list is built dynamically from the module Registry, so module-
+  // contributed drivers appear here automatically.
   async getDrivers(): Promise<ConfigDriversResponse> {
     const { data } = await client.get(API.CONFIG, { params: { key: 'exchange_rate_drivers' } })
-    return data
-  },
-
-  // Backend returns { currency_converter_servers: Array<{ key, value }> }
-  async getCurrencyConverterServers(): Promise<ConfigServersResponse> {
-    const { data } = await client.get(API.CONFIG, { params: { key: 'currency_converter_servers' } })
     return data
   },
 }

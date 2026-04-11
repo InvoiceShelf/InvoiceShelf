@@ -2,20 +2,15 @@
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import useVuelidate from '@vuelidate/core'
-import { required, helpers, requiredIf, url } from '@vuelidate/validators'
+import { required, helpers } from '@vuelidate/validators'
 import { useModalStore } from '@/scripts/stores/modal.store'
 import { useNotificationStore } from '@/scripts/stores/notification.store'
 import { exchangeRateService } from '@/scripts/api/services/exchange-rate.service'
+import type {
+  DriverConfigField,
+  ExchangeRateDriverOption,
+} from '@/scripts/api/services/exchange-rate.service'
 import { useDebounceFn } from '@vueuse/core'
-
-interface DriverOption {
-  key: string
-  value: string
-}
-
-interface ServerOption {
-  value: string
-}
 
 interface ExchangeRateForm {
   id: number | null
@@ -23,11 +18,6 @@ interface ExchangeRateForm {
   key: string | null
   active: boolean
   currencies: string[]
-}
-
-interface CurrencyConverterForm {
-  type: string
-  url: string
 }
 
 const { t } = useI18n()
@@ -40,21 +30,19 @@ const isFetchingCurrencies = ref<boolean>(false)
 const isEdit = ref<boolean>(false)
 const currenciesAlreadyInUsed = ref<string[]>([])
 const supportedCurrencies = ref<string[]>([])
-const serverOptions = ref<ServerOption[]>([])
-const drivers = ref<DriverOption[]>([])
+const drivers = ref<ExchangeRateDriverOption[]>([])
 
 const currentExchangeRate = ref<ExchangeRateForm>({
   id: null,
-  driver: 'currency_converter',
+  driver: '',
   key: null,
   active: true,
   currencies: [],
 })
 
-const currencyConverter = ref<CurrencyConverterForm>({
-  type: '',
-  url: '',
-})
+// Generic key/value bag for driver-specific config (driver_config JSON column).
+// Populated from each driver's `config_fields` metadata; reset when driver changes.
+const driverConfig = ref<Record<string, string>>({})
 
 const modalActive = computed<boolean>(
   () =>
@@ -62,35 +50,40 @@ const modalActive = computed<boolean>(
     modalStore.componentName === 'ExchangeRateProviderModal'
 )
 
-const isCurrencyConverter = computed<boolean>(
-  () => currentExchangeRate.value.driver === 'currency_converter'
+const selectedDriver = computed<ExchangeRateDriverOption | undefined>(() =>
+  drivers.value.find((d) => d.value === currentExchangeRate.value.driver)
 )
 
-const isDedicatedServer = computed<boolean>(
-  () => currencyConverter.value.type === 'DEDICATED'
+const driverSite = computed<string>(() => selectedDriver.value?.website ?? '')
+
+const driverConfigFields = computed<DriverConfigField[]>(
+  () => selectedDriver.value?.config_fields ?? []
 )
 
-const driverSite = computed<string>(() => {
-  switch (currentExchangeRate.value.driver) {
-    case 'currency_converter':
-      return 'https://www.currencyconverterapi.com'
-    case 'currency_freak':
-      return 'https://currencyfreaks.com'
-    case 'currency_layer':
-      return 'https://currencylayer.com'
-    case 'open_exchange_rate':
-      return 'https://openexchangerates.org'
-    default:
-      return ''
-  }
-})
+const visibleConfigFields = computed<DriverConfigField[]>(() =>
+  driverConfigFields.value.filter((field) => isFieldVisible(field))
+)
 
 const driversLists = computed(() =>
-  drivers.value.map((item) => ({
-    ...item,
-    key: t(item.key),
+  drivers.value.map((driver) => ({
+    value: driver.value,
+    label: t(driver.label),
   }))
 )
+
+function isFieldVisible(field: DriverConfigField): boolean {
+  if (!field.visible_when) return true
+  return Object.entries(field.visible_when).every(
+    ([key, value]) => driverConfig.value[key] === value
+  )
+}
+
+function fieldOptions(field: DriverConfigField) {
+  return (field.options ?? []).map((option) => ({
+    value: option.value,
+    label: t(option.label),
+  }))
+}
 
 const rules = computed(() => ({
   driver: {
@@ -102,28 +95,9 @@ const rules = computed(() => ({
   currencies: {
     required: helpers.withMessage(t('validation.required'), required),
   },
-  converterType: {
-    required: helpers.withMessage(
-      t('validation.required'),
-      requiredIf(isCurrencyConverter)
-    ),
-  },
-  converterUrl: {
-    required: helpers.withMessage(
-      t('validation.required'),
-      requiredIf(isDedicatedServer)
-    ),
-    url: helpers.withMessage(t('validation.invalid_url'), url),
-  },
 }))
 
 const v$ = useVuelidate(rules, currentExchangeRate)
-
-watch(isCurrencyConverter, (newVal) => {
-  if (newVal) {
-    fetchServers()
-  }
-}, { immediate: true })
 
 const fetchCurrenciesDebounced = useDebounceFn(() => {
   fetchCurrencies()
@@ -133,9 +107,11 @@ watch(() => currentExchangeRate.value.key, (newVal) => {
   if (newVal) fetchCurrenciesDebounced()
 })
 
-watch(() => currencyConverter.value.type, (newVal) => {
-  if (newVal) fetchCurrenciesDebounced()
-})
+// Refetch supported currencies whenever any driver_config field changes —
+// some drivers (e.g. Currency Converter) need the config to construct the API URL.
+watch(driverConfig, () => {
+  if (currentExchangeRate.value.key) fetchCurrenciesDebounced()
+}, { deep: true })
 
 function dismiss(): void {
   currenciesAlreadyInUsed.value = []
@@ -154,18 +130,31 @@ function resetCurrency(): void {
   currentExchangeRate.value.key = null
   currentExchangeRate.value.currencies = []
   supportedCurrencies.value = []
+  resetDriverConfig()
+}
+
+// Rebuild driver_config from the selected driver's field defaults whenever the
+// driver changes. Without this, fields from a previous driver would linger.
+function resetDriverConfig(): void {
+  const fresh: Record<string, string> = {}
+  for (const field of driverConfigFields.value) {
+    if (field.default !== undefined) {
+      fresh[field.key] = field.default
+    }
+  }
+  driverConfig.value = fresh
 }
 
 function resetModalData(): void {
   supportedCurrencies.value = []
   currentExchangeRate.value = {
     id: null,
-    driver: 'currency_converter',
+    driver: drivers.value[0]?.value ?? '',
     key: null,
     active: true,
     currencies: [],
   }
-  currencyConverter.value = { type: '', url: '' }
+  resetDriverConfig()
   currenciesAlreadyInUsed.value = []
   isEdit.value = false
 }
@@ -173,61 +162,75 @@ function resetModalData(): void {
 async function fetchInitialData(): Promise<void> {
   isFetchingInitialData.value = true
 
-  const driversRes = await exchangeRateService.getDrivers()
-  if (driversRes.exchange_rate_drivers) {
-    drivers.value = (driversRes.exchange_rate_drivers as unknown as DriverOption[])
-  }
+  try {
+    const driversRes = await exchangeRateService.getDrivers()
+    drivers.value = driversRes.exchange_rate_drivers ?? []
 
-  if (modalStore.data && typeof modalStore.data === 'number') {
-    isEdit.value = true
-    const response = await exchangeRateService.getProvider(modalStore.data)
-    if (response.data) {
-      const provider = response.data
-      currentExchangeRate.value = {
-        id: provider.id,
-        driver: provider.driver,
-        key: provider.key,
-        active: provider.active,
-        currencies: provider.currencies ?? [],
+    if (modalStore.data && typeof modalStore.data === 'number') {
+      isEdit.value = true
+      const response = await exchangeRateService.getProvider(modalStore.data)
+      if (response.data) {
+        const provider = response.data
+        currentExchangeRate.value = {
+          id: provider.id,
+          driver: provider.driver,
+          key: provider.key,
+          active: provider.active,
+          currencies: provider.currencies ?? [],
+        }
+        // Hydrate driverConfig from the persisted JSON column. Field defaults from
+        // the schema fill any missing keys.
+        const persisted = (provider as { driver_config?: Record<string, string> }).driver_config ?? {}
+        const merged: Record<string, string> = {}
+        for (const field of driverConfigFields.value) {
+          merged[field.key] = persisted[field.key] ?? field.default ?? ''
+        }
+        driverConfig.value = merged
       }
+    } else {
+      currentExchangeRate.value.driver = drivers.value[0]?.value ?? ''
+      resetDriverConfig()
     }
-  } else {
-    currentExchangeRate.value.driver = 'currency_converter'
+  } finally {
+    isFetchingInitialData.value = false
   }
-
-  isFetchingInitialData.value = false
-}
-
-async function fetchServers(): Promise<void> {
-  const res = await exchangeRateService.getCurrencyConverterServers()
-  serverOptions.value = (res as Record<string, ServerOption[]>).currency_converter_servers ?? []
-  currencyConverter.value.type = 'FREE'
 }
 
 async function fetchCurrencies(): Promise<void> {
   const { driver, key } = currentExchangeRate.value
   if (!driver || !key) return
 
-  if (isCurrencyConverter.value && !currencyConverter.value.type) return
+  // If any visible config field is empty, hold off — the driver likely needs it
+  // to talk to its API.
+  for (const field of visibleConfigFields.value) {
+    if (!driverConfig.value[field.key]) return
+  }
 
   isFetchingCurrencies.value = true
   try {
-    const driverConfig: Record<string, string> = {}
-    if (currencyConverter.value.type) {
-      driverConfig.type = currencyConverter.value.type
-    }
-    if (currencyConverter.value.url) {
-      driverConfig.url = currencyConverter.value.url
-    }
+    const config = buildDriverConfigPayload()
     const res = await exchangeRateService.getSupportedCurrencies({
       driver,
       key,
-      driver_config: Object.keys(driverConfig).length ? driverConfig : undefined,
+      driver_config: Object.keys(config).length ? config : undefined,
     })
     supportedCurrencies.value = res.supportedCurrencies ?? []
   } finally {
     isFetchingCurrencies.value = false
   }
+}
+
+// Strip values for fields that aren't currently visible (e.g. the URL field
+// when the server type isn't DEDICATED) so we never persist stale config.
+function buildDriverConfigPayload(): Record<string, string> {
+  const payload: Record<string, string> = {}
+  for (const field of visibleConfigFields.value) {
+    const value = driverConfig.value[field.key]
+    if (value !== undefined && value !== '') {
+      payload[field.key] = value
+    }
+  }
+  return payload
 }
 
 async function submitExchangeRate(): Promise<void> {
@@ -238,11 +241,9 @@ async function submitExchangeRate(): Promise<void> {
     ...currentExchangeRate.value,
   }
 
-  if (isCurrencyConverter.value) {
-    data.driver_config = { ...currencyConverter.value }
-    if (!isDedicatedServer.value) {
-      (data.driver_config as CurrencyConverterForm).url = ''
-    }
+  const config = buildDriverConfigPayload()
+  if (Object.keys(config).length) {
+    data.driver_config = config
   }
 
   isSaving.value = true
@@ -317,29 +318,40 @@ function closeExchangeRateModal(): void {
               :content-loading="isFetchingInitialData"
               value-prop="value"
               :can-deselect="true"
-              label="key"
+              label="label"
               :searchable="true"
               :invalid="v$.driver.$error"
-              track-by="key"
+              track-by="label"
               @update:model-value="resetCurrency"
             />
           </BaseInputGroup>
 
+          <!-- Driver-specific config fields rendered from metadata -->
           <BaseInputGroup
-            v-if="isCurrencyConverter"
-            required
-            :label="$t('settings.exchange_rate.server')"
+            v-for="field in visibleConfigFields"
+            :key="field.key"
+            :label="$t(field.label)"
             :content-loading="isFetchingInitialData"
+            required
           >
             <BaseMultiselect
-              v-model="currencyConverter.type"
+              v-if="field.type === 'select'"
+              v-model="driverConfig[field.key]"
+              :options="fieldOptions(field)"
               :content-loading="isFetchingInitialData"
               value-prop="value"
-              searchable
-              :options="serverOptions"
-              label="value"
-              track-by="value"
+              label="label"
+              :can-deselect="false"
+              :searchable="true"
+              track-by="label"
               @update:model-value="resetCurrency"
+            />
+            <BaseInput
+              v-else
+              v-model="driverConfig[field.key]"
+              :content-loading="isFetchingInitialData"
+              type="text"
+              :name="field.key"
             />
           </BaseInputGroup>
 
@@ -380,18 +392,6 @@ function closeExchangeRateModal(): void {
               label="code"
               track-by="code"
               open-direction="top"
-            />
-          </BaseInputGroup>
-
-          <BaseInputGroup
-            v-if="isDedicatedServer"
-            :label="$t('settings.exchange_rate.url')"
-            :content-loading="isFetchingInitialData"
-          >
-            <BaseInput
-              v-model="currencyConverter.url"
-              :content-loading="isFetchingInitialData"
-              type="url"
             />
           </BaseInputGroup>
 
