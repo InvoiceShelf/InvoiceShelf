@@ -277,6 +277,16 @@ return [
             'ability' => '',
             'model' => '',
         ],
+        [
+            'title' => 'settings.menu_title.module_configuration',
+            'group' => '',
+            'name' => 'Module Configuration',
+            'link' => '/admin/settings/modules',
+            'icon' => 'PuzzlePieceIcon',
+            'owner_only' => false,
+            'ability' => 'manage modules',
+            'model' => '',
+        ],
     ],
 
     /*
@@ -366,18 +376,6 @@ return [
             'owner_only' => false,
             'ability' => 'view-expense',
             'model' => Expense::class,
-        ],
-        [
-            'title' => 'navigation.modules',
-            'group' => 'admin',
-            'group_label' => 'navigation.admin',
-            'priority' => 10,
-            'link' => '/admin/modules',
-            'icon' => 'PuzzlePieceIcon',
-            'name' => 'Modules',
-            'owner_only' => false,
-            'ability' => 'manage modules',
-            'model' => '',
         ],
         [
             'title' => 'navigation.members',

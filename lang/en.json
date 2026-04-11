@@ -915,7 +915,8 @@
       "exchange_rate": "Exchange Rate",
       "address_information": "Address Information",
       "pdf_generation": "PDF Generation",
-      "appearance": "Appearance"
+      "appearance": "Appearance",
+      "module_configuration": "Module Configuration"
     },
     "appearance": {
       "title": "Appearance",

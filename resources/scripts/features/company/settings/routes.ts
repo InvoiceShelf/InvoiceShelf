@@ -57,6 +57,10 @@ const settingsRoutes: RouteRecordRaw[] = [
         redirect: { name: 'settings.mail-config' },
       },
       {
+        path: 'modules-configuration',
+        redirect: { name: 'settings.modules' },
+      },
+      {
         path: 'company-info',
         name: 'settings.company-info',
         meta: {
@@ -164,6 +168,15 @@ const settingsRoutes: RouteRecordRaw[] = [
         component: () => import('./views/RolesView.vue'),
       },
       {
+        path: 'modules',
+        name: 'settings.modules',
+        meta: {
+          requiresAuth: true,
+          isOwner: true,
+        },
+        component: () => import('@/scripts/features/company/modules/views/CompanyModulesIndexView.vue'),
+      },
+      {
         path: 'danger-zone',
         name: 'settings.danger-zone',
         meta: {
@@ -229,6 +242,17 @@ const settingsRoutes: RouteRecordRaw[] = [
   {
     path: 'mail-configuration',
     redirect: { name: 'settings.mail-config' },
+  },
+  // Legacy module routes — preserved so existing bookmarks (and the old in-app
+  // sidebar slot at /admin/modules) still resolve to the Module Configuration
+  // page, which now lives under Company Settings.
+  {
+    path: 'modules',
+    redirect: { name: 'settings.modules' },
+  },
+  {
+    path: 'modules/:slug/settings',
+    redirect: { name: 'settings.modules' },
   },
 ]
 

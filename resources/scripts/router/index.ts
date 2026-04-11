@@ -22,7 +22,6 @@ import itemRoutes from '../features/company/items/routes'
 import memberRoutes from '../features/company/members/routes'
 import reportRoutes from '../features/company/reports/routes'
 import settingsRoutes from '../features/company/settings/routes'
-import { moduleRoutes } from '../features/company/modules/routes'
 
 // Guard
 import { authGuard } from './guards'
@@ -57,7 +56,6 @@ const companyChildren: RouteRecordRaw[] = [
   ...memberRoutes,
   ...reportRoutes,
   ...settingsRoutes,
-  ...moduleRoutes,
 ]
 
 /**
@@ -80,6 +78,7 @@ const routes: RouteRecordRaw[] = [
   // Admin area: company-scoped routes
   {
     path: '/admin',
+    name: 'admin',
     component: CompanyLayout,
     meta: { requiresAuth: true },
     children: companyChildren,
