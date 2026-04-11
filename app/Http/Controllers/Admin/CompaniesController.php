@@ -97,10 +97,6 @@ class CompaniesController extends Controller
             return respondJson('company_name_must_match_with_given_name', 'Company name must match with given name');
         }
 
-        if ($user->loadCount('companies')->companies_count <= 1) {
-            return respondJson('You_cannot_delete_all_companies', 'You cannot delete all companies');
-        }
-
         $this->companyService->delete($company, $user);
 
         return response()->json([

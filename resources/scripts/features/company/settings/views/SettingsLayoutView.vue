@@ -3,7 +3,6 @@ import { ref, computed, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useGlobalStore } from '../../../../stores/global.store'
-import { useCompanyStore } from '../../../../stores/company.store'
 import { useUserStore } from '../../../../stores/user.store'
 
 interface SettingMenuItem {
@@ -18,16 +17,12 @@ interface DropdownMenuItem extends SettingMenuItem {
 
 const { t } = useI18n()
 const globalStore = useGlobalStore()
-const companyStore = useCompanyStore()
 const userStore = useUserStore()
 const route = useRoute()
 const router = useRouter()
 
 const showDangerZone = computed<boolean>(() => {
-  return (
-    userStore.currentUser?.is_owner === true &&
-    companyStore.companies.length > 1
-  )
+  return userStore.currentUser?.is_owner === true
 })
 
 const currentSetting = ref<DropdownMenuItem | undefined>(undefined)

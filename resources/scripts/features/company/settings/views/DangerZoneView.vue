@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { useCompanyStore } from '../../../../stores/company.store'
 import { useModalStore } from '../../../../stores/modal.store'
 import DeleteCompanyModal from '../components/DeleteCompanyModal.vue'
 
 const { t } = useI18n()
-const companyStore = useCompanyStore()
 const modalStore = useModalStore()
 
 function removeCompany(): void {
@@ -22,7 +20,7 @@ function removeCompany(): void {
     :title="$t('settings.company_info.danger_zone')"
     :description="$t('settings.company_info.delete_company_description')"
   >
-    <div v-if="companyStore.companies.length > 1" class="mt-6">
+    <div class="mt-6">
       <BaseButton
         variant="danger"
         type="button"
