@@ -18,9 +18,18 @@ class Address extends Model
 
     public function getCountryNameAttribute()
     {
-        $name = $this->country ? $this->country->name : null;
+        if (! $this->country) {
+            return null;
+        }
 
-        return $name;
+        try {
+            return \Symfony\Component\Intl\Countries::getName(
+                $this->country->code,
+                app()->getLocale()
+            );
+        } catch (\Exception $e) {
+            return $this->country->name;
+        }
     }
 
     public function user(): BelongsTo
