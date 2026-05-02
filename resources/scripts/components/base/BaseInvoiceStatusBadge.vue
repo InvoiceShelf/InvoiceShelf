@@ -37,6 +37,8 @@ export default {
           return 'bg-blue-400/25 px-2  py-1 text-sm  text-blue-900 uppercase font-normal text-center'
         case 'PAID':
           return 'bg-green-500/25 px-2 py-1 text-sm  text-green-900 uppercase font-normal text-center'
+        case 'VOID':
+          return 'bg-gray-500/25 px-2 py-1 text-sm text-gray-900 uppercase font-normal text-center'
         default:
           return 'bg-gray-500/25 px-2 py-1 text-sm  text-gray-900 uppercase font-normal text-center'
       }

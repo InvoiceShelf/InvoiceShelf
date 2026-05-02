@@ -41,6 +41,8 @@ class Invoice extends Model implements HasMedia
 
     public const STATUS_PAID = 'PAID';
 
+    public const STATUS_VOID = 'VOID';
+
     protected $dates = [
         'created_at',
         'updated_at',
@@ -747,13 +749,28 @@ class Invoice extends Model implements HasMedia
         foreach ($ids as $id) {
             $invoice = self::find($id);
 
-            if ($invoice->transactions()->exists()) {
-                $invoice->transactions()->delete();
-            }
+            if ($invoice->payments()->exists()) {
+                $invoice->voidInvoice();
+            } else {
+                if ($invoice->transactions()->exists()) {
+                    $invoice->transactions()->delete();
+                }
 
-            $invoice->delete();
+                $invoice->delete();
+            }
         }
 
         return true;
+    }
+
+    public function voidInvoice(): void
+    {
+        $this->status = self::STATUS_VOID;
+        $this->save();
+    }
+
+    public function isVoid(): bool
+    {
+        return $this->status === self::STATUS_VOID;
     }
 }

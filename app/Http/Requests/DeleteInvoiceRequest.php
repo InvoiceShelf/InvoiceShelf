@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use App\Models\Invoice;
-use App\Rules\RelationNotExist;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -29,7 +28,6 @@ class DeleteInvoiceRequest extends FormRequest
             'ids.*' => [
                 'required',
                 Rule::exists('invoices', 'id'),
-                new RelationNotExist(Invoice::class, 'payments'),
             ],
         ];
     }

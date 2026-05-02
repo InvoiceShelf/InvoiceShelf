@@ -64,7 +64,7 @@ export const showError = (error) => {
     case 'payments_attached':
       showToaster('settings.payment_modes.payments_attached')
       break
-    
+
     case 'expenses_attached':
       showToaster('settings.payment_modes.expenses_attached')
       break

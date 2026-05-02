@@ -36,6 +36,8 @@ const labelStatus = computed(() => {
       return t('invoices.partially_paid')
     case 'PAID':
       return t('invoices.paid')
+    case 'VOID':
+      return t('invoices.void')
     default:
       return props.status
   }
