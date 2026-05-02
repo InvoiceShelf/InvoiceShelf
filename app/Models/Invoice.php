@@ -224,7 +224,8 @@ class Invoice extends Model implements HasMedia
 
     public function scopeWherePaidStatus($query, $status)
     {
-        return $query->where('invoices.paid_status', $status);
+        return $query->where('invoices.paid_status', $status)
+            ->where('invoices.status', '!=', self::STATUS_VOID);
     }
 
     public function scopeWhereDueStatus($query, $status)
@@ -232,7 +233,7 @@ class Invoice extends Model implements HasMedia
         return $query->whereIn('invoices.paid_status', [
             self::STATUS_UNPAID,
             self::STATUS_PARTIALLY_PAID,
-        ]);
+        ])->where('invoices.status', '!=', self::STATUS_VOID);
     }
 
     public function scopeWhereInvoiceNumber($query, $invoiceNumber)
@@ -746,21 +747,29 @@ class Invoice extends Model implements HasMedia
 
     public static function deleteInvoices($ids)
     {
+        $voidedCount = 0;
+        $deletedCount = 0;
+
         foreach ($ids as $id) {
             $invoice = self::find($id);
 
             if ($invoice->payments()->exists()) {
                 $invoice->voidInvoice();
+                $voidedCount++;
             } else {
                 if ($invoice->transactions()->exists()) {
                     $invoice->transactions()->delete();
                 }
 
                 $invoice->delete();
+                $deletedCount++;
             }
         }
 
-        return true;
+        return [
+            'voided_count' => $voidedCount,
+            'deleted_count' => $deletedCount,
+        ];
     }
 
     public function voidInvoice(): void

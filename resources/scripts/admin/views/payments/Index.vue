@@ -175,12 +175,19 @@
         </template>
 
         <template #cell-invoice_number="{ row }">
-          <span>
-            {{
-              row?.data?.invoice?.invoice_number
-                ? row?.data?.invoice?.invoice_number
-                : '-'
-            }}
+          <span class="flex items-center gap-2">
+            <template v-if="row?.data?.invoice">
+              <template v-if="row.data.invoice.status === 'VOID'">
+                <span class="text-sm text-gray-500 line-through">{{ row.data.invoice.invoice_number }}</span>
+                <BaseInvoiceStatusBadge status="VOID">
+                  VOID
+                </BaseInvoiceStatusBadge>
+              </template>
+              <template v-else>
+                <span>{{ row.data.invoice.invoice_number }}</span>
+              </template>
+            </template>
+            <span v-else>-</span>
           </span>
         </template>
 
@@ -213,6 +220,7 @@ import abilities from '@/scripts/admin/stub/abilities'
 import CapsuleIcon from '@/scripts/components/icons/empty/CapsuleIcon.vue'
 import PaymentDropdown from '@/scripts/admin/components/dropdowns/PaymentIndexDropdown.vue'
 import SendPaymentModal from '@/scripts/admin/components/modal-components/SendPaymentModal.vue'
+import BaseInvoiceStatusBadge from '@/scripts/components/base/BaseInvoiceStatusBadge.vue'
 
 const { t } = useI18n()
 let showFilters = ref(false)

@@ -245,14 +245,30 @@ export const useInvoiceStore = (useWindow = false) => {
           http
             .post(`/api/v1/invoices/delete`, id)
             .then((response) => {
-              let index = this.invoices.findIndex(
-                (invoice) => invoice.id === id,
-              )
-              this.invoices.splice(index, 1)
+              const voidedCount = response.data.voided_count || 0
+              const deletedCount = response.data.deleted_count || 0
+              let message = ''
+
+              if (voidedCount > 0 && deletedCount > 0) {
+                message = global.t('invoices.voided_and_deleted_message', 1)
+              } else if (voidedCount > 0) {
+                message = global.t('invoices.voided_message', 1)
+              } else {
+                message = global.t('invoices.deleted_message', 1)
+              }
+
+              if (deletedCount > 0) {
+                let index = this.invoices.findIndex(
+                  (invoice) => invoice.id === id.id || invoice.id === id,
+                )
+                if (index !== -1) {
+                  this.invoices.splice(index, 1)
+                }
+              }
 
               notificationStore.showNotification({
                 type: 'success',
-                message: global.t('invoices.deleted_message', 1),
+                message: message,
               })
               resolve(response)
             })
@@ -268,17 +284,24 @@ export const useInvoiceStore = (useWindow = false) => {
           http
             .post(`/api/v1/invoices/delete`, { ids: this.selectedInvoices })
             .then((response) => {
-              this.selectedInvoices.forEach((invoice) => {
-                let index = this.invoices.findIndex(
-                  (_inv) => _inv.id === invoice.id,
-                )
-                this.invoices.splice(index, 1)
-              })
+              const voidedCount = response.data.voided_count || 0
+              const deletedCount = response.data.deleted_count || 0
+              const totalCount = voidedCount + deletedCount
+              let message = ''
+
+              if (voidedCount > 0 && deletedCount > 0) {
+                message = global.t('invoices.voided_and_deleted_message', totalCount > 1 ? 2 : 1)
+              } else if (voidedCount > 0) {
+                message = global.t('invoices.voided_message', totalCount > 1 ? 2 : 1)
+              } else {
+                message = global.t('invoices.deleted_message', totalCount > 1 ? 2 : 1)
+              }
+
               this.selectedInvoices = []
 
               notificationStore.showNotification({
                 type: 'success',
-                message: global.t('invoices.deleted_message', 2),
+                message: message,
               })
               resolve(response)
             })

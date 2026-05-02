@@ -474,6 +474,8 @@
     "created_message": "Invoice created successfully",
     "updated_message": "Invoice updated successfully",
     "deleted_message": "Invoice deleted successfully | Invoices deleted successfully",
+    "voided_message": "发票已作废 | 发票已作废",
+    "voided_and_deleted_message": "部分发票已作废，部分已删除 | 部分发票已作废，部分已删除",
     "marked_as_sent_message": "Invoice marked as sent successfully",
     "something_went_wrong": "something went wrong",
     "invalid_due_amount_message": "Total Invoice amount cannot be less than total paid amount for this Invoice. Please update the invoice or delete the associated payments to continue.",

@@ -83,7 +83,12 @@ class CustomerStatsController extends Controller
                 )
                     ->whereCompany()
                     ->whereCustomer($customer->id)
-                    ->sum('base_amount') ?? 0
+                    ->leftJoin('invoices', 'invoices.id', '=', 'payments.invoice_id')
+                    ->where(function ($query) {
+                        $query->whereNull('invoices.id')
+                            ->orWhere('invoices.status', '!=', Invoice::STATUS_VOID);
+                    })
+                    ->sum('payments.base_amount') ?? 0
             );
             array_push(
                 $netProfits,
@@ -113,7 +118,12 @@ class CustomerStatsController extends Controller
         )
             ->whereCompany()
             ->whereCustomer($customer->id)
-            ->sum('base_amount');
+            ->leftJoin('invoices', 'invoices.id', '=', 'payments.invoice_id')
+            ->where(function ($query) {
+                $query->whereNull('invoices.id')
+                    ->orWhere('invoices.status', '!=', Invoice::STATUS_VOID);
+            })
+            ->sum('payments.base_amount');
         $totalExpenses = Expense::whereBetween(
             'expense_date',
             [$startDate->format('Y-m-d'), $start->format('Y-m-d')]

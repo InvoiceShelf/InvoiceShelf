@@ -29,6 +29,7 @@ class PaymentsController extends Controller
             ->leftJoin('payment_methods', 'payment_methods.id', '=', 'payments.payment_method_id')
             ->applyFilters($request->all())
             ->select('payments.*', 'customers.name', 'invoices.invoice_number', 'payment_methods.name as payment_mode')
+            ->with('invoice')
             ->latest()
             ->paginateData($limit);
 
