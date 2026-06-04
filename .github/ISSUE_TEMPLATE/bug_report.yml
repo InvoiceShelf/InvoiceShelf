@@ -4,7 +4,7 @@ labels: ['bug', 'triage']
 type: Bug
 projects: ['InvoiceShelf/2']
 assignees:
-  - rihards-simanovics
+  - gdarko
 
 body:
   # Ask user to confirm they've tried to fix or research the issue before

@@ -7,7 +7,7 @@ labels:
   - triage
 projects: ['InvoiceShelf/2']
 assignees:
-  - rihards-simanovics
+  - gdarko
 
 body:
   # Tip to warn of checking for existing issues
