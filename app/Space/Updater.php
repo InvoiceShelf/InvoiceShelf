@@ -113,10 +113,117 @@ class Updater
             return false;
         }
 
+        // Clear stale compiled caches from the previous version so the newly copied
+        // release boots cleanly. This runs as the currently-installed code — the last
+        // reliable point before the new release boots — and is critical for major
+        // upgrades (e.g. v2 -> v3) where cached config/routes/package discovery differ.
+        static::clearCompiledCaches();
+
         // Delete temp directory
         File::deleteDirectory($temp_extract_dir);
 
         return true;
+    }
+
+    /**
+     * Remove files left behind by the previous version that are not part of the new
+     * release. The new release ships a manifest.json listing every file it contains;
+     * anything under base_path() not in that manifest (and not protected) is deleted.
+     * No manifest present (same-line update) is a safe no-op.
+     */
+    public static function cleanStaleFiles(?string $basePath = null): array
+    {
+        $basePath = $basePath ?? base_path();
+        $manifestPath = $basePath.'/manifest.json';
+
+        if (! File::exists($manifestPath)) {
+            return ['success' => true, 'cleaned' => 0];
+        }
+
+        $manifest = json_decode(File::get($manifestPath), true);
+
+        if (! is_array($manifest)) {
+            return ['success' => false, 'error' => 'Invalid manifest'];
+        }
+
+        $manifestLookup = array_flip($manifest);
+        $protectedPaths = config('invoiceshelf.update_protected_paths', []);
+        $cleaned = 0;
+
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($basePath, \RecursiveDirectoryIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::CHILD_FIRST
+        );
+
+        foreach ($iterator as $file) {
+            $relativePath = substr($file->getPathname(), strlen($basePath) + 1);
+
+            if (static::isProtectedPath($relativePath, $protectedPaths)) {
+                continue;
+            }
+
+            if ($file->isFile() && ! isset($manifestLookup[$relativePath])) {
+                File::delete($file->getPathname());
+                $cleaned++;
+            }
+        }
+
+        // Second pass: remove now-empty directories.
+        $dirIterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($basePath, \RecursiveDirectoryIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::CHILD_FIRST
+        );
+
+        foreach ($dirIterator as $item) {
+            if (! $item->isDir()) {
+                continue;
+            }
+
+            $relativePath = substr($item->getPathname(), strlen($basePath) + 1);
+
+            if (static::isProtectedPath($relativePath, $protectedPaths)) {
+                continue;
+            }
+
+            $entries = scandir($item->getPathname());
+
+            if (count($entries) <= 2) {
+                @rmdir($item->getPathname());
+            }
+        }
+
+        return ['success' => true, 'cleaned' => $cleaned];
+    }
+
+    /**
+     * Delete compiled config/route/event/package caches and compiled views so the
+     * freshly copied release re-reads config and re-runs package discovery on boot.
+     * bootstrap/cache is a protected path for cleanStaleFiles(), so it is cleared here.
+     */
+    public static function clearCompiledCaches(): void
+    {
+        foreach (File::glob(base_path('bootstrap/cache/*.php')) as $file) {
+            File::delete($file);
+        }
+
+        $compiledViews = storage_path('framework/views');
+
+        if (File::isDirectory($compiledViews)) {
+            foreach (File::glob($compiledViews.'/*.php') as $file) {
+                File::delete($file);
+            }
+        }
+    }
+
+    private static function isProtectedPath(string $relativePath, array $protectedPaths): bool
+    {
+        foreach ($protectedPaths as $protected) {
+            if ($relativePath === $protected || str_starts_with($relativePath, $protected.'/')) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static function deleteFiles($json)
