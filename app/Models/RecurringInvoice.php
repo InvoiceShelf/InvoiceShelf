@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Facades\Hashids;
 use App\Http\Requests\RecurringInvoiceRequest;
 use App\Services\SerialNumberFormatter;
+use App\Support\DocumentTotals;
 use App\Traits\HasCustomFieldsTrait;
 use Carbon\Carbon;
 use Cron;
@@ -247,6 +248,8 @@ class RecurringInvoice extends Model
     {
         foreach ($invoiceItems as $invoiceItem) {
             $invoiceItem['company_id'] = $recurringInvoice->company_id;
+            // Recompute the item total from price/quantity (GHSA-8c69).
+            $invoiceItem['total'] = DocumentTotals::itemTotal($invoiceItem, $recurringInvoice->discount_per_item === 'YES');
             $item = $recurringInvoice->items()->create($invoiceItem);
             if (array_key_exists('taxes', $invoiceItem) && $invoiceItem['taxes']) {
                 foreach ($invoiceItem['taxes'] as $tax) {

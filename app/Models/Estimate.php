@@ -8,6 +8,7 @@ use App\Facades\PDF;
 use App\Mail\SendEstimateMail;
 use App\Services\SerialNumberFormatter;
 use App\Space\PdfTemplateUtils;
+use App\Support\DocumentTotals;
 use App\Traits\GeneratesPdfTrait;
 use App\Traits\HasCustomFieldsTrait;
 use Carbon\Carbon;
@@ -316,6 +317,8 @@ class Estimate extends Model implements HasMedia
         foreach ($estimateItems as $estimateItem) {
             $estimateItem['company_id'] = $request->header('company');
             $estimateItem['exchange_rate'] = $exchange_rate;
+            // Recompute the item total from price/quantity (GHSA-8c69).
+            $estimateItem['total'] = DocumentTotals::itemTotal($estimateItem, $estimate->discount_per_item === 'YES');
             $estimateItem['base_price'] = $estimateItem['price'] * $exchange_rate;
             $estimateItem['base_discount_val'] = $estimateItem['discount_val'] * $exchange_rate;
             $estimateItem['base_tax'] = $estimate['tax'] * $exchange_rate;
