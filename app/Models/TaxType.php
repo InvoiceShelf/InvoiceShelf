@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\SafeOrderBy;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -76,7 +77,7 @@ class TaxType extends Model
 
     public function scopeWhereOrder(Builder $query, string $orderByField, string $orderBy): void
     {
-        $query->orderBy($orderByField, $orderBy);
+        SafeOrderBy::apply($query, $orderByField, $orderBy);
     }
 
     public function scopeWhereSearch(Builder $query, string $search): void

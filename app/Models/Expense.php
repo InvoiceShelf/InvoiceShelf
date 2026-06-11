@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\SafeOrderBy;
 use App\Traits\HasCustomFieldsTrait;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -212,7 +213,7 @@ class Expense extends Model implements HasMedia
 
     public function scopeWhereOrder(Builder $query, string $orderByField, string $orderBy): void
     {
-        $query->orderBy($orderByField, $orderBy);
+        SafeOrderBy::apply($query, $orderByField, $orderBy);
     }
 
     public function scopeWhereCompany(Builder $query): void

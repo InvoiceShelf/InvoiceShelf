@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Services\Document\EstimateService;
 use App\Support\Pdf\PdfHtmlSanitizer;
 use App\Support\Pdf\PdfTemplateUtils;
+use App\Support\SafeOrderBy;
 use App\Traits\GeneratesPdfTrait;
 use App\Traits\HasCustomFieldsTrait;
 use Carbon\Carbon;
@@ -191,7 +192,7 @@ class Estimate extends Model implements HasMedia
 
     public function scopeWhereOrder($query, $orderByField, $orderBy)
     {
-        $query->orderBy($orderByField, $orderBy);
+        SafeOrderBy::apply($query, $orderByField, $orderBy);
     }
 
     public function scopeWhereCompany($query)

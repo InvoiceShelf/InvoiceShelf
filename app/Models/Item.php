@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\SafeOrderBy;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -65,7 +66,7 @@ class Item extends Model
 
     public function scopeWhereOrder(Builder $query, string $orderByField, string $orderBy): void
     {
-        $query->orderBy($orderByField, $orderBy);
+        SafeOrderBy::apply($query, $orderByField, $orderBy);
     }
 
     public function scopeWhereItem(Builder $query, int $item_id): void

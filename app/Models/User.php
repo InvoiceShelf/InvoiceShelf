@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Notifications\MailResetPasswordNotification;
+use App\Support\SafeOrderBy;
 use App\Traits\HasCustomFieldsTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -194,7 +195,7 @@ class User extends Authenticatable implements HasMedia
 
     public function scopeWhereOrder($query, $orderByField, $orderBy)
     {
-        $query->orderBy($orderByField, $orderBy);
+        SafeOrderBy::apply($query, $orderByField, $orderBy);
     }
 
     public function scopeWhereSearch($query, $search)

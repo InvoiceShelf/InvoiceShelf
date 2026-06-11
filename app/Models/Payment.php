@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Jobs\GeneratePaymentPdfJob;
 use App\Services\Document\PaymentService;
 use App\Support\Pdf\PdfHtmlSanitizer;
+use App\Support\SafeOrderBy;
 use App\Traits\GeneratesPdfTrait;
 use App\Traits\HasCustomFieldsTrait;
 use Carbon\Carbon;
@@ -194,7 +195,7 @@ class Payment extends Model implements HasMedia
 
     public function scopeWhereOrder($query, $orderByField, $orderBy)
     {
-        $query->orderBy($orderByField, $orderBy);
+        SafeOrderBy::apply($query, $orderByField, $orderBy);
     }
 
     public function scopeWherePayment($query, $payment_id)
