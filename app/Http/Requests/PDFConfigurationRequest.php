@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\PublicHttpUrl;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PDFConfigurationRequest extends FormRequest
@@ -37,6 +38,7 @@ class PDFConfigurationRequest extends FormRequest
                     'gotenberg_host' => [
                         'required',
                         'url',
+                        new PublicHttpUrl,
                     ],
                     'gotenberg_papersize' => [
                         'required',
