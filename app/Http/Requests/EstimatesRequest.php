@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Models\CompanySetting;
 use App\Models\Customer;
 use App\Models\Estimate;
+use App\Support\DocumentTotals;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -119,18 +120,34 @@ class EstimatesRequest extends FormRequest
         $exchange_rate = $company_currency != $current_currency ? $this->exchange_rate : 1;
         $currency = Customer::find($this->customer_id)->currency_id;
 
+        $tax_per_item = CompanySetting::getSetting('tax_per_item', $this->header('company')) ?? 'NO ';
+        $discount_per_item = CompanySetting::getSetting('discount_per_item', $this->header('company')) ?? 'NO';
+
+        // Recompute totals server-side from the line items (GHSA-8c69).
+        $totals = DocumentTotals::compute(
+            $this->items ?? [],
+            $this->taxes ?? [],
+            $this->discount_val,
+            $tax_per_item,
+            (bool) $this->tax_included,
+            $discount_per_item
+        );
+
         return collect($this->except('items', 'taxes'))
             ->merge([
                 'creator_id' => $this->user()->id ?? null,
                 'status' => $this->has('estimateSend') ? Estimate::STATUS_SENT : Estimate::STATUS_DRAFT,
                 'company_id' => $this->header('company'),
-                'tax_per_item' => CompanySetting::getSetting('tax_per_item', $this->header('company')) ?? 'NO ',
-                'discount_per_item' => CompanySetting::getSetting('discount_per_item', $this->header('company')) ?? 'NO',
+                'tax_per_item' => $tax_per_item,
+                'discount_per_item' => $discount_per_item,
+                'sub_total' => $totals['sub_total'],
+                'total' => $totals['total'],
+                'tax' => $totals['tax'],
                 'exchange_rate' => $exchange_rate,
                 'base_discount_val' => $this->discount_val * $exchange_rate,
-                'base_sub_total' => $this->sub_total * $exchange_rate,
-                'base_total' => $this->total * $exchange_rate,
-                'base_tax' => $this->tax * $exchange_rate,
+                'base_sub_total' => $totals['sub_total'] * $exchange_rate,
+                'base_total' => $totals['total'] * $exchange_rate,
+                'base_tax' => $totals['tax'] * $exchange_rate,
                 'currency_id' => $currency,
             ])
             ->toArray();

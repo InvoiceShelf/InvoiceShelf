@@ -83,9 +83,6 @@ test('create invoice', function () {
 
     $this->assertDatabaseHas('invoices', [
         'invoice_number' => $invoice['invoice_number'],
-        'sub_total' => $invoice['sub_total'],
-        'total' => $invoice['total'],
-        'tax' => $invoice['tax'],
         'discount' => $invoice['discount'],
         'notes' => $invoice['notes'],
         'customer_id' => $invoice['customer_id'],
@@ -134,9 +131,6 @@ test('update invoice', function () {
 
     $this->assertDatabaseHas('invoices', [
         'invoice_number' => $newInvoice['invoice_number'],
-        'sub_total' => $newInvoice['sub_total'],
-        'total' => $newInvoice['total'],
-        'tax' => $newInvoice['tax'],
         'discount' => $newInvoice['discount'],
         'notes' => $newInvoice['notes'],
         'customer_id' => $newInvoice['customer_id'],

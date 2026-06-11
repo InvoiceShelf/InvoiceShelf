@@ -2,6 +2,7 @@
 
 namespace App\Services\Document;
 
+use App\Support\DocumentTotals;
 use Illuminate\Database\Eloquent\Model;
 
 class DocumentItemService
@@ -13,6 +14,9 @@ class DocumentItemService
         foreach ($items as $item) {
             $item['company_id'] = $document->company_id;
             $item['exchange_rate'] = $exchangeRate;
+            // Recompute the item total from price/quantity so a tampered item
+            // total can't desync from the recomputed document totals (GHSA-8c69).
+            $item['total'] = DocumentTotals::itemTotal($item, $document->discount_per_item === 'YES');
             $item['base_price'] = $item['price'] * $exchangeRate;
             $item['base_discount_val'] = $item['discount_val'] * $exchangeRate;
             $item['base_tax'] = $item['tax'] * $exchangeRate;

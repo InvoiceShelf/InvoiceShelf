@@ -48,16 +48,50 @@ test('create invoice', function () {
     $this->assertDatabaseHas('invoices', [
         'template_name' => $invoice['template_name'],
         'invoice_number' => $invoice['invoice_number'],
-        'sub_total' => $invoice['sub_total'],
-        'discount' => $invoice['discount'],
         'customer_id' => $invoice['customer_id'],
-        'total' => $invoice['total'],
-        'tax' => $invoice['tax'],
     ]);
 
     $this->assertDatabaseHas('invoice_items', [
         'item_id' => $invoice['items'][0]['item_id'],
         'name' => $invoice['items'][0]['name'],
+    ]);
+});
+
+test('server recomputes invoice totals and ignores client-supplied amounts', function () {
+    // Well-formed item (10 x 10000 = 100000) but every client-supplied total is
+    // tampered to 1 — the server must recompute from price/quantity (GHSA-8c69).
+    $item = InvoiceItem::factory()->raw([
+        'price' => 10000,
+        'quantity' => 10,
+        'total' => 1,
+        'discount_val' => 0,
+        'tax' => 0,
+        'taxes' => [],
+    ]);
+
+    $invoice = Invoice::factory()->raw([
+        'items' => [$item],
+        'taxes' => [],
+        'discount_val' => 0,
+        'tax_included' => false,
+        'sub_total' => 1,
+        'total' => 1,
+        'tax' => 0,
+        'due_amount' => 1,
+    ]);
+
+    postJson('api/v1/invoices', $invoice)->assertOk();
+
+    $this->assertDatabaseHas('invoices', [
+        'invoice_number' => $invoice['invoice_number'],
+        'sub_total' => 100000,
+        'total' => 100000,
+        'due_amount' => 100000,
+    ]);
+
+    $this->assertDatabaseHas('invoice_items', [
+        'name' => $item['name'],
+        'total' => 100000,
     ]);
 });
 
@@ -77,6 +111,7 @@ test('create invoice with negative and zero item quantities', function () {
                 'price' => 75,
             ]),
         ],
+        'discount_val' => 0,
         'sub_total' => -150,
         'total' => -150,
     ]);
@@ -135,10 +170,6 @@ test('create invoice as sent', function () {
 
     $this->assertDatabaseHas('invoices', [
         'invoice_number' => $invoice['invoice_number'],
-        'sub_total' => $invoice['sub_total'],
-        'total' => $invoice['total'],
-        'tax' => $invoice['tax'],
-        'discount' => $invoice['discount'],
         'customer_id' => $invoice['customer_id'],
         'template_name' => $invoice['template_name'],
     ]);
@@ -173,10 +204,6 @@ test('update invoice', function () {
 
     $this->assertDatabaseHas('invoices', [
         'invoice_number' => $invoice2['invoice_number'],
-        'sub_total' => $invoice2['sub_total'],
-        'total' => $invoice2['total'],
-        'tax' => $invoice2['tax'],
-        'discount' => $invoice2['discount'],
         'customer_id' => $invoice2['customer_id'],
         'template_name' => $invoice2['template_name'],
     ]);
@@ -332,10 +359,6 @@ test('create invoice with negative tax', function () {
 
     $this->assertDatabaseHas('invoices', [
         'invoice_number' => $invoice['invoice_number'],
-        'sub_total' => $invoice['sub_total'],
-        'total' => $invoice['total'],
-        'tax' => $invoice['tax'],
-        'discount' => $invoice['discount'],
         'customer_id' => $invoice['customer_id'],
     ]);
 
@@ -368,10 +391,6 @@ test('create invoice with tax per item', function () {
 
     $this->assertDatabaseHas('invoices', [
         'invoice_number' => $invoice['invoice_number'],
-        'sub_total' => $invoice['sub_total'],
-        'total' => $invoice['total'],
-        'tax' => $invoice['tax'],
-        'discount' => $invoice['discount'],
         'customer_id' => $invoice['customer_id'],
     ]);
 

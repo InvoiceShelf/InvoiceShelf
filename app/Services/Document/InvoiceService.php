@@ -94,14 +94,14 @@ class InvoiceService
             ]);
         }
 
-        if ($request->total >= 0 && $request->total < $totalPaidAmount) {
+        if ($data['total'] >= 0 && $data['total'] < $totalPaidAmount) {
             throw ValidationException::withMessages([
                 'total' => ['total_invoice_amount_must_be_more_than_paid_amount'],
             ]);
         }
 
-        if ($oldTotal != $request->total) {
-            $oldTotal = (int) round($request->total) - (int) $oldTotal;
+        if ($oldTotal != $data['total']) {
+            $oldTotal = (int) round($data['total']) - (int) $oldTotal;
         } else {
             $oldTotal = 0;
         }

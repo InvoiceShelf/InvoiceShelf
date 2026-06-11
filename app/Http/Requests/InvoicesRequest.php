@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Models\CompanySetting;
 use App\Models\Customer;
 use App\Models\Invoice;
+use App\Support\DocumentTotals;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -118,23 +119,41 @@ class InvoicesRequest extends FormRequest
         $exchange_rate = $company_currency != $current_currency ? $this->exchange_rate : 1;
         $currency = Customer::find($this->customer_id)->currency_id;
 
+        $tax_per_item = CompanySetting::getSetting('tax_per_item', $this->header('company')) ?? 'NO ';
+        $discount_per_item = CompanySetting::getSetting('discount_per_item', $this->header('company')) ?? 'NO';
+
+        // Recompute the document totals server-side from the line items so a
+        // tampered total/sub_total/tax/due_amount in the request is ignored
+        // (GHSA-8c69).
+        $totals = DocumentTotals::compute(
+            $this->items ?? [],
+            $this->taxes ?? [],
+            $this->discount_val,
+            $tax_per_item,
+            (bool) $this->tax_included,
+            $discount_per_item
+        );
+
         return collect($this->except('items', 'taxes'))
             ->merge([
                 'creator_id' => $this->user()->id ?? null,
                 'status' => $this->has('invoiceSend') ? Invoice::STATUS_SENT : Invoice::STATUS_DRAFT,
                 'paid_status' => Invoice::STATUS_UNPAID,
                 'company_id' => $this->header('company'),
-                'tax_per_item' => CompanySetting::getSetting('tax_per_item', $this->header('company')) ?? 'NO ',
-                'discount_per_item' => CompanySetting::getSetting('discount_per_item', $this->header('company')) ?? 'NO',
-                'due_amount' => $this->total,
+                'tax_per_item' => $tax_per_item,
+                'discount_per_item' => $discount_per_item,
+                'sub_total' => $totals['sub_total'],
+                'total' => $totals['total'],
+                'tax' => $totals['tax'],
+                'due_amount' => $totals['total'],
                 'sent' => (bool) $this->sent ?? false,
                 'viewed' => (bool) $this->viewed ?? false,
                 'exchange_rate' => $exchange_rate,
-                'base_total' => $this->total * $exchange_rate,
+                'base_total' => $totals['total'] * $exchange_rate,
                 'base_discount_val' => $this->discount_val * $exchange_rate,
-                'base_sub_total' => $this->sub_total * $exchange_rate,
-                'base_tax' => $this->tax * $exchange_rate,
-                'base_due_amount' => $this->total * $exchange_rate,
+                'base_sub_total' => $totals['sub_total'] * $exchange_rate,
+                'base_tax' => $totals['tax'] * $exchange_rate,
+                'base_due_amount' => $totals['total'] * $exchange_rate,
                 'currency_id' => $currency,
             ])
             ->toArray();

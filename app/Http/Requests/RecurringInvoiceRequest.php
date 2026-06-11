@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Models\CompanySetting;
 use App\Models\Customer;
 use App\Models\RecurringInvoice;
+use App\Support\DocumentTotals;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RecurringInvoiceRequest extends FormRequest
@@ -106,15 +107,35 @@ class RecurringInvoiceRequest extends FormRequest
 
         $nextInvoiceAt = RecurringInvoice::getNextInvoiceDate($this->frequency, $this->starts_at);
 
+        $tax_per_item = CompanySetting::getSetting('tax_per_item', $this->header('company')) ?? 'NO ';
+        $discount_per_item = CompanySetting::getSetting('discount_per_item', $this->header('company')) ?? 'NO';
+
+        // Recompute totals server-side from the line items (GHSA-8c69). The
+        // recurring template totals propagate to every generated invoice.
+        $totals = DocumentTotals::compute(
+            $this->items ?? [],
+            $this->taxes ?? [],
+            $this->discount_val,
+            $tax_per_item,
+            (bool) $this->tax_included,
+            $discount_per_item
+        );
+
         return collect($this->except('items', 'taxes'))
             ->merge([
                 'creator_id' => $this->user()->id,
                 'company_id' => $this->header('company'),
                 'next_invoice_at' => $nextInvoiceAt,
-                'tax_per_item' => CompanySetting::getSetting('tax_per_item', $this->header('company')) ?? 'NO ',
-                'discount_per_item' => CompanySetting::getSetting('discount_per_item', $this->header('company')) ?? 'NO',
-                'due_amount' => $this->total,
+                'tax_per_item' => $tax_per_item,
+                'discount_per_item' => $discount_per_item,
+                'sub_total' => $totals['sub_total'],
+                'total' => $totals['total'],
+                'tax' => $totals['tax'],
+                'due_amount' => $totals['total'],
                 'exchange_rate' => $exchange_rate,
+                'base_sub_total' => $totals['sub_total'] * $exchange_rate,
+                'base_total' => $totals['total'] * $exchange_rate,
+                'base_tax' => $totals['tax'] * $exchange_rate,
                 'currency_id' => $currency,
             ])
             ->toArray();
