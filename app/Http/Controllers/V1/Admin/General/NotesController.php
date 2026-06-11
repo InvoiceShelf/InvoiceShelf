@@ -61,7 +61,7 @@ class NotesController extends Controller
      */
     public function show(Note $note)
     {
-        $this->authorize('view notes');
+        $this->authorize('view notes', $note);
 
         return new NoteResource($note);
     }
@@ -74,7 +74,7 @@ class NotesController extends Controller
      */
     public function update(NotesRequest $request, Note $note)
     {
-        $this->authorize('manage notes');
+        $this->authorize('manage notes', $note);
 
         $note->update($request->getNotesPayload());
 
@@ -97,7 +97,7 @@ class NotesController extends Controller
      */
     public function destroy(Note $note)
     {
-        $this->authorize('manage notes');
+        $this->authorize('manage notes', $note);
 
         $note->delete();
 

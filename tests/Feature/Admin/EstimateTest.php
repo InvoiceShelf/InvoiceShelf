@@ -6,6 +6,7 @@ use App\Http\Requests\DeleteEstimatesRequest;
 use App\Http\Requests\EstimatesRequest;
 use App\Http\Requests\SendEstimatesRequest;
 use App\Mail\SendEstimateMail;
+use App\Models\Company;
 use App\Models\Estimate;
 use App\Models\EstimateItem;
 use App\Models\Tax;
@@ -245,6 +246,16 @@ test('create invoice from estimate', function () {
     }
 
     $response->assertStatus(200);
+});
+
+test('cannot convert an estimate belonging to another company', function () {
+    $estimate = Estimate::factory()->create([
+        'company_id' => Company::factory()->create()->id,
+        'estimate_date' => now(),
+        'expiry_date' => now()->addMonth(),
+    ]);
+
+    postJson("api/v1/estimates/{$estimate->id}/convert-to-invoice")->assertStatus(403);
 });
 
 test('delete multiple estimates using a form request', function () {
