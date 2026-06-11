@@ -3,6 +3,7 @@
 use App\Http\Controllers\Company\Invoice\InvoicesController;
 use App\Http\Requests\InvoicesRequest;
 use App\Mail\SendInvoiceMail;
+use App\Models\Company;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use App\Models\Tax;
@@ -32,6 +33,12 @@ test('testGetInvoices', function () {
     $response = getJson('api/v1/invoices?page=1&type=OVERDUE&limit=20');
 
     $response->assertOk();
+});
+
+test('cannot convert an invoice belonging to another company', function () {
+    $invoice = Invoice::factory()->create(['company_id' => Company::factory()->create()->id]);
+
+    postJson("api/v1/invoices/{$invoice->id}/convert-to-estimate")->assertStatus(403);
 });
 
 test('create invoice', function () {

@@ -151,6 +151,9 @@ class InvoicesController extends Controller
 
     public function convertToEstimate(Request $request, Invoice $invoice)
     {
+        // Authorize access to the source invoice (tenant isolation) in addition
+        // to the ability to create an estimate.
+        $this->authorize('view', $invoice);
         $this->authorize('create', Estimate::class);
 
         $estimate = $this->invoiceService->convertToEstimate($invoice);
