@@ -126,4 +126,4 @@ InvoiceShelf follows TDD development style:
 
 ## CI Pipeline
 
-GitHub Actions (`check.yaml`): runs Pint style check, then builds frontend and runs Pest tests on PHP 8.4.
+GitHub Actions (`check.yaml`): runs Pint style check, then runs Pest tests in parallel (`php artisan test --parallel`) on PHP 8.4 with Xdebug disabled (`coverage: none`). The test job does **not** build the frontend — the suite is API/JSON only and never renders the Vite blade, so no Node/Vite step is needed (release/docker workflows still build assets in their own jobs).
