@@ -33,6 +33,7 @@
                   :store="store"
                   @search="searchVal"
                   @select="onSelectItem"
+                  @update:description="updateItemAttribute('description', $event)"
                 />
               </div>
             </td>
