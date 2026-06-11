@@ -29,7 +29,21 @@ Tests use SQLite in-memory DB, configured in `phpunit.xml`. Tests seed via `Data
 ```bash
 vendor/bin/pint --dirty --format agent    # Fix style on modified PHP files
 vendor/bin/pint --test                    # Check style without fixing (CI uses this)
+composer lint        # = pint --test   ;  composer lint:fix = pint
+npm run lint         # eslint (--max-warnings 0)  ;  npm run lint:fix = eslint --fix
 ```
+
+### Code Quality Gate (pre-commit hook)
+A committed Git hook (`.githooks/pre-commit`) runs **Pint** on staged `.php` and **ESLint** on staged
+`resources/scripts/**` `.{js,cjs,mjs,ts,vue}` files, and **blocks the commit on any failure** (ESLint runs
+with `--max-warnings 0`). It lints **staged files only**, and soft-skips if PHP/Pint or `node_modules` is
+unavailable (CI is the backstop). The hook is enabled via `core.hooksPath`, set automatically by the
+`prepare` script on `npm install`/`yarn install`; to enable it manually run:
+```bash
+git config core.hooksPath .githooks
+```
+Bypass intentionally (discouraged): `git commit --no-verify`. Intentional `v-html` is allowed via an
+inline `<!-- eslint-disable-next-line vue/no-v-html -->` with a reason.
 
 ### Artisan Generators
 Always use `php artisan make:*` with `--no-interaction` to create new files (models, controllers, migrations, tests, etc.).

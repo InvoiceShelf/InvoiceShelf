@@ -15,7 +15,7 @@
         searchable
         object
         label="name"
-        @update:modelValue="onSelectTax"
+        @update:model-value="onSelectTax"
       >
         <template #singlelabel="{ value }">
           <div class="absolute left-3.5">

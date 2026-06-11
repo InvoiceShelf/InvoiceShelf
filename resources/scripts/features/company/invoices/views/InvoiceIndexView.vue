@@ -232,10 +232,10 @@
 
         <BaseTable
           ref="tableRef"
+          :key="tableKey"
           :data="fetchData"
           :columns="invoiceColumns"
           :placeholder-count="invoiceStore.invoiceTotalCount >= 20 ? 10 : 5"
-          :key="tableKey"
           class="mt-4"
         >
           <template #header>

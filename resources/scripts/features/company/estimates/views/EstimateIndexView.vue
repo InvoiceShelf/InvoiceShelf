@@ -143,10 +143,10 @@
 
       <BaseTable
         ref="tableRef"
+        :key="tableKey"
         :data="fetchData"
         :columns="estimateColumns"
         :placeholder-count="estimateStore.totalEstimateCount >= 20 ? 10 : 5"
-        :key="tableKey"
         class="mt-4"
       >
         <template #header>

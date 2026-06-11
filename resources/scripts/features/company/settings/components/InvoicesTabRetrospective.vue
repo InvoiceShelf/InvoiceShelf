@@ -52,7 +52,7 @@ async function submitForm(): Promise<void> {
         name="retrospective_edits"
         :value="option.value"
         class="mt-2"
-        @update:modelValue="submitForm"
+        @update:model-value="submitForm"
       />
     </BaseInputGroup>
   </BaseSettingCard>

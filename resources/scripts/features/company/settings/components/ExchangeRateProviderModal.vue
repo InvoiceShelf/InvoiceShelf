@@ -411,7 +411,7 @@ function closeExchangeRateModal(): void {
           :lists="[currenciesAlreadyInUsed.toString()]"
           :actions="['Remove']"
           @hide="dismiss"
-          @Remove="removeUsedSelectedCurrencies"
+          @remove="removeUsedSelectedCurrencies"
         />
       </div>
 

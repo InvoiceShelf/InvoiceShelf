@@ -161,7 +161,7 @@
       v-if="formData.tax_per_item === 'NO' || formData.tax_per_item === null"
     >
       <div
-        v-for="(tax, index) in taxes"
+        v-for="tax in taxes"
         :key="tax.id"
         class="flex items-center justify-between w-full mt-2 text-sm"
       >

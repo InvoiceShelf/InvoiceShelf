@@ -2,7 +2,7 @@
   <div>
     <NoteModal />
     <div class="w-full">
-    <Popover v-slot="{ open: isOpen }">
+    <Popover>
       <PopoverButton
         v-if="canViewNotes"
         class="flex items-center z-10 font-medium text-primary-400 focus:outline-hidden focus:border-none"

@@ -1,0 +1,36 @@
+#!/bin/sh
+# Pre-commit gate: Laravel Pint (PHP) + ESLint (JS/TS/Vue) must be clean on staged files.
+# See CLAUDE.md "Code Quality Gate". Bypass intentionally (discouraged): git commit --no-verify
+
+status=0
+
+# --- Pint on staged PHP ---
+php_files=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.php$' || true)
+if [ -n "$php_files" ]; then
+  echo "▶ Pint (pre-commit)…"
+  # shellcheck disable=SC2086
+  if command -v php >/dev/null 2>&1 && [ -f vendor/bin/pint ]; then
+    php vendor/bin/pint --test -- $php_files || status=1
+  else
+    echo "⚠ Pint unavailable — skipping (run: composer lint before pushing)." >&2
+  fi
+fi
+
+# --- ESLint on staged JS/TS/Vue under resources/scripts (ESLint's configured scope) ---
+js_files=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '^resources/scripts/.*\.(js|cjs|mjs|ts|vue)$' || true)
+if [ -n "$js_files" ]; then
+  echo "▶ eslint (pre-commit)…"
+  # shellcheck disable=SC2086
+  if [ -x node_modules/.bin/eslint ]; then
+    node_modules/.bin/eslint --max-warnings 0 $js_files || status=1
+  else
+    echo "⚠ eslint unavailable — skipping (run: npm run lint before pushing)." >&2
+  fi
+fi
+
+if [ "$status" -ne 0 ]; then
+  echo "✖ Lint failed — fix it (composer lint:fix / npx eslint --fix), then re-commit." >&2
+  echo "  To bypass intentionally: git commit --no-verify" >&2
+  exit 1
+fi
+exit 0

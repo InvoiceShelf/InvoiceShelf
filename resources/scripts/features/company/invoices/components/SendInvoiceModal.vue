@@ -58,8 +58,8 @@
               v-model="form.cc"
               type="text"
               :invalid="v$.cc.$error"
-              @input="v$.cc.$touch()"
               placeholder="Optional: CC recipient"
+              @input="v$.cc.$touch()"
             />
           </BaseInputGroup>
 
@@ -73,8 +73,8 @@
               v-model="form.bcc"
               type="text"
               :invalid="v$.bcc.$error"
-              @input="v$.bcc.$touch()"
               placeholder="Optional: BCC recipient"
+              @input="v$.bcc.$touch()"
             />
           </BaseInputGroup>
 

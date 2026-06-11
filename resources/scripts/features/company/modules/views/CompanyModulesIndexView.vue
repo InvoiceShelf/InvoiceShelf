@@ -18,7 +18,8 @@
       v-else-if="store.modules.length === 0"
       class="mt-16 flex flex-col items-center justify-center text-center"
     >
-      <div class="
+      <div
+class="
         h-16 w-16 rounded-full bg-surface-tertiary
         flex items-center justify-center mb-4
       ">

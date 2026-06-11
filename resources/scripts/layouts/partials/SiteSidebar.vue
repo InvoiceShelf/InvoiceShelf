@@ -141,8 +141,8 @@
       <router-link
         v-for="item in menu"
         :key="item.name"
-        :to="item.link"
         v-tooltip="globalStore.isSidebarCollapsed ? { content: $t(item.title), placement: 'right' } : null"
+        :to="item.link"
         :class="[
           hasActiveUrl(item.link)
             ? 'text-primary-600 bg-primary-50 font-semibold'

@@ -1,6 +1,6 @@
 <template>
   <div class="w-full mt-4 tax-select">
-    <Popover v-slot="{ open: isOpen }" class="relative">
+    <Popover class="relative">
       <PopoverButton
         class="flex items-center text-sm font-medium text-primary-400 focus:outline-hidden focus:border-none"
       >

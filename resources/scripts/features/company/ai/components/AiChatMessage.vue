@@ -36,11 +36,7 @@ const renderedHtml = computed(() =>
       </p>
       <!-- Assistant output is sanitized via DOMPurify in renderMarkdown
            before it reaches v-html — see resources/scripts/utils/markdown.ts. -->
-      <div
-        v-else
-        class="prose prose-sm max-w-none break-words"
-        v-html="renderedHtml"
-      />
+      <BaseSanitizedHtml v-else class="prose prose-sm max-w-none break-words" :html="renderedHtml" />
     </div>
   </div>
 </template>

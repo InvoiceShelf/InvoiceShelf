@@ -7,7 +7,8 @@
   >
     <div class="flex items-start justify-between gap-3">
       <div class="flex items-center gap-3">
-        <div class="
+        <div
+class="
           shrink-0 h-10 w-10 rounded-lg bg-primary-50 text-primary-600
           flex items-center justify-center
         ">

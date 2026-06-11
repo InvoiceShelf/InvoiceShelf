@@ -50,8 +50,8 @@
               v-model="estimateMailForm.cc"
               type="email"
               :invalid="v$.cc && v$.cc.$error"
-              @input="v$.cc && v$.cc.$touch()"
               placeholder="Optional: CC recipient"
+              @input="v$.cc && v$.cc.$touch()"
             />
           </BaseInputGroup>
           <BaseInputGroup
@@ -62,8 +62,8 @@
               v-model="estimateMailForm.bcc"
               type="email"
               :invalid="v$.bcc && v$.bcc.$error"
-              @input="v$.bcc && v$.bcc.$touch()"
               placeholder="Optional: BCC recipient"
+              @input="v$.bcc && v$.bcc.$touch()"
             />
           </BaseInputGroup>
           <BaseInputGroup

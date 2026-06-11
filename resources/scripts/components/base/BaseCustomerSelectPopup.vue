@@ -411,7 +411,7 @@ function initGenerator(name: string): string {
                 :placeholder="$t('general.search')"
                 type="text"
                 icon="search"
-                @update:modelValue="() => debounceSearchCustomer()"
+                @update:model-value="() => debounceSearchCustomer()"
               />
 
               <ul

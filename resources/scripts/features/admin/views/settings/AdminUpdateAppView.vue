@@ -372,17 +372,9 @@ function showApiError(error: unknown): void {
           </span>
         </div>
 
-        <div
-          v-if="updateRelease.description"
-          class="update-rich-text mt-4 max-w-[680px] text-sm leading-snug text-muted"
-          v-html="updateRelease.description"
-        />
+        <BaseSanitizedHtml v-if="updateRelease.description" class="update-rich-text mt-4 max-w-[680px] text-sm leading-snug text-muted" :html="updateRelease.description" />
 
-        <div
-          v-if="updateRelease.changelog"
-          class="update-rich-text mt-4 max-w-[680px] text-sm leading-snug text-muted"
-          v-html="updateRelease.changelog"
-        />
+        <BaseSanitizedHtml v-if="updateRelease.changelog" class="update-rich-text mt-4 max-w-[680px] text-sm leading-snug text-muted" :html="updateRelease.changelog" />
 
         <div v-if="requirementEntries.length" class="mt-6">
           <label class="text-sm font-medium input-label">

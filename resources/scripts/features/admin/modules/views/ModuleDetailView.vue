@@ -285,7 +285,7 @@
               <div class="flex items-center mt-2">
                 <BaseRating :rating="review.rating" />
               </div>
-              <div class="mt-2 prose prose-sm max-w-none text-muted" v-html="review.comment" />
+              <BaseSanitizedHtml class="mt-2 prose prose-sm max-w-none text-muted" :html="review.comment" />
             </div>
           </div>
         </div>
@@ -302,7 +302,7 @@
 
       <!-- License -->
       <div v-if="activeTab === 'license'" class="py-6">
-        <div class="prose prose-sm max-w-none text-muted" v-html="moduleData.license" />
+        <BaseSanitizedHtml class="prose prose-sm max-w-none text-muted" :html="moduleData.license" />
       </div>
     </div>
 

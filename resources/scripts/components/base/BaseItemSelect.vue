@@ -144,8 +144,8 @@ function deselectItem(index: number): void {
       searchable
       :options="searchItems"
       object
-      @update:modelValue="(val: Item) => $emit('select', val)"
-      @searchChange="(val: string) => $emit('search', val)"
+      @update:model-value="(val: Item) => $emit('select', val)"
+      @search-change="(val: string) => $emit('search', val)"
     >
       <!-- Add Item Action  -->
       <template #action>

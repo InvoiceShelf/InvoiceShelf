@@ -23,8 +23,8 @@
           <div class="flex flex-wrap space-x-1">
             <button
               v-for="button in editorButtons"
-              type="button"
               :key="button.name"
+              type="button"
               class="p-1 rounded hover:bg-surface-tertiary"
               @click="button.action"
             >
@@ -44,8 +44,8 @@
         <div class="flex flex-wrap space-x-1">
           <button
               v-for="button in editorButtons"
-              type="button"
               :key="button.name"
+              type="button"
               class="p-1 rounded hover:bg-surface-tertiary"
               @click="button.action"
             >

@@ -77,7 +77,7 @@ defineProps<Props>()
             {{ $t('invoices.notes') }}
           </dt>
           <dd class="mt-1 text-sm text-heading sm:mt-0 sm:col-span-2">
-            <span v-html="invoice.formatted_notes"></span>
+            <BaseSanitizedHtml :html="invoice.formatted_notes" />
           </dd>
         </div>
       </dl>

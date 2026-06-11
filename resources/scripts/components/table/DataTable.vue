@@ -132,7 +132,7 @@
           <TablePagination
             v-if="pagination"
             :pagination="pagination"
-            @pageChange="pageChange"
+            @page-change="pageChange"
           />
         </div>
       </div>

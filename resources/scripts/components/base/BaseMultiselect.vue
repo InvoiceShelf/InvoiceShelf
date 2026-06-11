@@ -27,7 +27,6 @@
           name="tag"
           :option="option.raw"
           :handle-tag-remove="handleTagRemove"
-          :handleTagRemove="handleTagRemove"
           :disabled="disabled"
         >
           <span
@@ -228,11 +227,11 @@
       />
       <template v-else>
         <input
-          v-for="(value, index) in nativeValues"
+          v-for="(nativeValue, index) in nativeValues"
           :key="index"
           type="hidden"
           :name="`${name}[]`"
-          :value="value"
+          :value="nativeValue"
         />
       </template>
     </template>
