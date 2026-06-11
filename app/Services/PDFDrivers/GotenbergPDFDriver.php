@@ -2,6 +2,7 @@
 
 namespace App\Services\PDFDrivers;
 
+use App\Rules\SafeRemoteUrl;
 use Gotenberg\Gotenberg;
 use Gotenberg\Stream;
 use Illuminate\Http\Response;
@@ -43,6 +44,14 @@ class GotenbergPDFDriver
         }
 
         $host = config('pdf.connections.gotenberg.host');
+
+        // Defense in depth against SSRF: a host that bypassed request-time
+        // validation (env/seed/stale config, or DNS rebinding) must still not
+        // be able to target internal/private addresses.
+        if (! SafeRemoteUrl::isSafe((string) $host)) {
+            throw new \RuntimeException('Refusing to render PDF: unsafe Gotenberg host.');
+        }
+
         $request = Gotenberg::chromium($host)
             ->pdf()
             ->margins(0, 0, 0, 0) // Margins can be set using CSS
