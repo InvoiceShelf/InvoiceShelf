@@ -3,7 +3,7 @@ import { ref, computed, watch } from 'vue'
 import { useDebounceFn } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 import draggable from 'vuedraggable'
-import Guid from 'guid'
+import { generateClientId } from '@/scripts/utils/generate-client-id'
 import { useCompanyStore } from '../../../../stores/company.store'
 import { useGlobalStore } from '../../../../stores/global.store'
 import DragIcon from '@/scripts/components/icons/DragIcon.vue'
@@ -163,7 +163,7 @@ async function setInitialFields(): Promise<void> {
     selectedFields.value.push({
       ...found,
       value: placeholder.value ?? found.value,
-      id: Guid.raw(),
+      id: generateClientId(),
     })
   })
 
@@ -178,7 +178,7 @@ function isFieldAdded(field: Omit<NumberField, 'id'>): boolean {
 function onSelectField(field: Omit<NumberField, 'id'>): void {
   if (isFieldAdded(field) && !field.allowMultiple) return
 
-  selectedFields.value.push({ ...field, id: Guid.raw() })
+  selectedFields.value.push({ ...field, id: generateClientId() })
   fetchNextNumber()
 }
 

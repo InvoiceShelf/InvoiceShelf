@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, reactive } from 'vue'
-import moment from 'moment'
 import { useI18n } from 'vue-i18n'
+import { presetRange, defaultMonthRange } from '@/scripts/utils/date-range'
+import { formatDate } from '@/scripts/utils/format-date'
 import { useCompanyStore } from '../../../../stores/company.store'
 import { useGlobalStore } from '../../../../stores/global.store'
 
@@ -36,9 +37,10 @@ const selectedRange = ref<DateRangeOption>(dateRange[2])
 const url = ref<string | null>(null)
 const siteURL = ref<string | null>(null)
 
+const initialRange = defaultMonthRange()
 const formData = reactive<ReportFormData>({
-  from_date: moment().startOf('month').format('YYYY-MM-DD'),
-  to_date: moment().endOf('month').format('YYYY-MM-DD'),
+  from_date: initialRange.from,
+  to_date: initialRange.to,
 })
 
 const getReportUrl = computed<string | null>(() => url.value)
@@ -46,9 +48,7 @@ const getReportUrl = computed<string | null>(() => url.value)
 const selectedCompany = computed(() => companyStore.selectedCompany)
 
 const dateRangeUrl = computed<string>(() => {
-  return `${siteURL.value}?from_date=${moment(formData.from_date).format(
-    'YYYY-MM-DD'
-  )}&to_date=${moment(formData.to_date).format('YYYY-MM-DD')}`
+  return `${siteURL.value}?from_date=${formatDate(formData.from_date)}&to_date=${formatDate(formData.to_date)}`
 })
 
 globalStore.downloadReport = downloadReport
@@ -58,55 +58,12 @@ onMounted(() => {
   url.value = dateRangeUrl.value
 })
 
-function getThisDate(type: string, time: string): string {
-  return (moment() as Record<string, unknown> as Record<string, (t: string) => moment.Moment>)[type](time).format('YYYY-MM-DD')
-}
-
-function getPreDate(type: string, time: string): string {
-  return (moment().subtract(1, time as moment.unitOfTime.DurationConstructor) as Record<string, unknown> as Record<string, (t: string) => moment.Moment>)[type](time).format('YYYY-MM-DD')
-}
-
 function onChangeDateRange(): void {
-  const key = selectedRange.value.key
+  if (selectedRange.value.key === 'Custom') return
 
-  switch (key) {
-    case 'Today':
-      formData.from_date = moment().format('YYYY-MM-DD')
-      formData.to_date = moment().format('YYYY-MM-DD')
-      break
-    case 'This Week':
-      formData.from_date = getThisDate('startOf', 'isoWeek')
-      formData.to_date = getThisDate('endOf', 'isoWeek')
-      break
-    case 'This Month':
-      formData.from_date = getThisDate('startOf', 'month')
-      formData.to_date = getThisDate('endOf', 'month')
-      break
-    case 'This Quarter':
-      formData.from_date = getThisDate('startOf', 'quarter')
-      formData.to_date = getThisDate('endOf', 'quarter')
-      break
-    case 'This Year':
-      formData.from_date = getThisDate('startOf', 'year')
-      formData.to_date = getThisDate('endOf', 'year')
-      break
-    case 'Previous Week':
-      formData.from_date = getPreDate('startOf', 'isoWeek')
-      formData.to_date = getPreDate('endOf', 'isoWeek')
-      break
-    case 'Previous Month':
-      formData.from_date = getPreDate('startOf', 'month')
-      formData.to_date = getPreDate('endOf', 'month')
-      break
-    case 'Previous Quarter':
-      formData.from_date = getPreDate('startOf', 'quarter')
-      formData.to_date = getPreDate('endOf', 'quarter')
-      break
-    case 'Previous Year':
-      formData.from_date = getPreDate('startOf', 'year')
-      formData.to_date = getPreDate('endOf', 'year')
-      break
-  }
+  const { from, to } = presetRange(selectedRange.value.key)
+  formData.from_date = from
+  formData.to_date = to
 }
 
 function getReports(): boolean {

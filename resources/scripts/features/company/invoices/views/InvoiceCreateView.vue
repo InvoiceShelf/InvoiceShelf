@@ -109,7 +109,7 @@ import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import cloneDeep from 'lodash/cloneDeep'
-import moment from 'moment'
+import { parseISO, isValid, addDays, format, differenceInCalendarDays } from 'date-fns'
 import {
   required,
   maxLength,
@@ -306,22 +306,19 @@ watch(
       companyStore.selectedCompanySettings?.invoice_due_date_days ?? '0',
       10,
     )
-    const invoiceDate = moment(newInvoiceDate as string)
-    if (!invoiceDate.isValid()) {
+    const invoiceDate = parseISO(newInvoiceDate as string)
+    if (!isValid(invoiceDate)) {
       return
     }
 
-    const calculatedDueDate = invoiceDate
-      .clone()
-      .add(dueDateDays, 'days')
-      .format('YYYY-MM-DD')
+    const calculatedDueDate = format(addDays(invoiceDate, dueDateDays), 'yyyy-MM-dd')
     expectedAutoDueDate.value = calculatedDueDate
 
     if (dueDateManuallyChanged.value) {
       const currentDueDate = invoiceStore.newInvoice.due_date
       if (currentDueDate) {
-        const currentMoment = moment(currentDueDate as string)
-        if (currentMoment.isValid() && currentMoment.isSameOrAfter(invoiceDate, 'day')) {
+        const currentDue = parseISO(currentDueDate as string)
+        if (isValid(currentDue) && differenceInCalendarDays(currentDue, invoiceDate) >= 0) {
           // Manual due date still valid — leave it alone
           return
         }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue'
 import lodash from 'lodash'
-import moment from 'moment'
+import { parse, format } from 'date-fns'
 import { customFieldService } from '@/scripts/api/services/custom-field.service'
 import SingleField from './CreateCustomFieldsSingle.vue'
 
@@ -82,10 +82,10 @@ function mergeExistingValues(): void {
         let value: string | boolean | number | null = field.default_answer
 
         if (value && field.custom_field?.type === 'DateTime') {
-          value = moment(
-            String(field.default_answer),
-            'YYYY-MM-DD HH:mm:ss'
-          ).format('YYYY-MM-DD HH:mm')
+          value = format(
+            parse(String(field.default_answer), 'yyyy-MM-dd HH:mm:ss', new Date()),
+            'yyyy-MM-dd HH:mm'
+          )
         }
 
         storeData.value.customFields[existingIndex] = {
