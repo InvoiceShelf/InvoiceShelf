@@ -52,7 +52,7 @@
     "pinia": "^3.0.0",
     "v-money3": "^3.24.1",
     "v-tooltip": "^4.0.0-beta.17",
-    "vite": "8.0.3",
+    "vite": "8.0.5",
     "vue": "^3.5",
     "vue-flatpickr-component": "^12.0.0",
     "vue-i18n": "^11.0.1",
