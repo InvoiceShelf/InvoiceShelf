@@ -6,6 +6,7 @@ use App\Facades\Hashids;
 use App\Jobs\GeneratePaymentPdfJob;
 use App\Mail\SendPaymentMail;
 use App\Services\SerialNumberFormatter;
+use App\Support\SafeOrderBy;
 use App\Traits\GeneratesPdfTrait;
 use App\Traits\HasCustomFieldsTrait;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
@@ -356,7 +357,7 @@ class Payment extends Model implements HasMedia
 
     public function scopeWhereOrder($query, $orderByField, $orderBy)
     {
-        $query->orderBy($orderByField, $orderBy);
+        return SafeOrderBy::apply($query, $orderByField, $orderBy);
     }
 
     public function scopeWherePayment($query, $payment_id)

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\V1\Admin\Users\UsersController;
 use App\Http\Requests\UserRequest;
+use App\Models\Company;
 use App\Models\User;
 use Laravel\Sanctum\Sanctum;
 
@@ -86,12 +87,21 @@ test('update user using a form request', function () {
 //     ]);
 // });
 
-// test('delete users', function () {
-//     $user = User::factory()->create();
-//     $data['users'] = [$user->id];
+test('deletes a user belonging to the current company', function () {
+    $companyId = User::where('role', 'super admin')->first()->companies()->first()->id;
+    $user = User::factory()->create();
+    $user->companies()->attach($companyId);
 
-//     postJson("/api/v1/users/delete", $data)
-//         ->assertOk();
+    postJson('/api/v1/users/delete', ['users' => [$user->id]])->assertOk();
 
-//     $this->assertModelMissing($user);
-// });
+    $this->assertDatabaseMissing('users', ['id' => $user->id]);
+});
+
+test('cannot bulk delete a user belonging to another company', function () {
+    $user = User::factory()->create();
+    $user->companies()->attach(Company::factory()->create()->id);
+
+    postJson('/api/v1/users/delete', ['users' => [$user->id]])->assertOk();
+
+    $this->assertDatabaseHas('users', ['id' => $user->id]);
+});

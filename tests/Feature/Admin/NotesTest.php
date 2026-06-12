@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Company;
 use App\Models\Note;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
@@ -64,4 +65,29 @@ test('delete note', function () {
         ]);
 
     $this->assertModelMissing($note);
+});
+
+test('cannot retrieve a note belonging to another company', function () {
+    $note = Note::factory()->create(['company_id' => Company::factory()->create()->id]);
+
+    getJson("/api/v1/notes/{$note->id}")->assertStatus(403);
+});
+
+test('cannot update a note belonging to another company', function () {
+    $note = Note::factory()->create([
+        'company_id' => Company::factory()->create()->id,
+        'name' => 'original-name',
+    ]);
+
+    putJson("/api/v1/notes/{$note->id}", Note::factory()->raw())->assertStatus(403);
+
+    $this->assertDatabaseHas('notes', ['id' => $note->id, 'name' => 'original-name']);
+});
+
+test('cannot delete a note belonging to another company', function () {
+    $note = Note::factory()->create(['company_id' => Company::factory()->create()->id]);
+
+    deleteJson("/api/v1/notes/{$note->id}")->assertStatus(403);
+
+    $this->assertModelExists($note);
 });

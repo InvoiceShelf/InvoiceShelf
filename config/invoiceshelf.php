@@ -48,6 +48,23 @@ return [
     'base_url' => 'https://invoiceshelf.com',
 
     /*
+    * Paths protected from cleanup during updates.
+    * The updater (Updater::cleanStaleFiles) will never delete files under these
+    * prefixes when reconciling the install against a release manifest.json.
+    */
+    'update_protected_paths' => [
+        '.env',
+        'storage',
+        'vendor',
+        'node_modules',
+        'Modules',
+        'public/storage',
+        '.git',
+        'bootstrap/cache',
+        'manifest.json',
+    ],
+
+    /*
     * List of languages supported by InvoiceShelf.
     */
     'languages' => [

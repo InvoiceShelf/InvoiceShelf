@@ -20,8 +20,16 @@ class EmailLog extends Model
 
     public function isExpired()
     {
-        $linkExpiryDays = (int) CompanySetting::getSetting('link_expiry_days', $this->mailable()->get()->toArray()[0]['company_id']);
-        $checkExpiryLinks = CompanySetting::getSetting('automatically_expire_public_links', $this->mailable()->get()->toArray()[0]['company_id']);
+        $mailable = $this->mailable;
+
+        // A token whose target document no longer resolves is treated as
+        // expired/invalid rather than throwing.
+        if (! $mailable) {
+            return true;
+        }
+
+        $linkExpiryDays = (int) CompanySetting::getSetting('link_expiry_days', $mailable->company_id);
+        $checkExpiryLinks = CompanySetting::getSetting('automatically_expire_public_links', $mailable->company_id);
 
         $expiryDate = $this->created_at->addDays($linkExpiryDays);
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\SafeOrderBy;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -32,7 +33,7 @@ class FileDisk extends Model
 
     public function scopeWhereOrder($query, $orderByField, $orderBy)
     {
-        $query->orderBy($orderByField, $orderBy);
+        return SafeOrderBy::apply($query, $orderByField, $orderBy);
     }
 
     public function scopeFileDisksBetween($query, $start, $end)

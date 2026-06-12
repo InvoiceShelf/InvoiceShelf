@@ -90,7 +90,16 @@ class UsersController extends Controller
         $this->authorize('delete multiple users', User::class);
 
         if ($request->users) {
-            User::deleteUsers($request->users);
+            // Scope the candidate ids to members of the acting company so a user
+            // from one company cannot delete accounts belonging to another.
+            $ids = User::whereCompany()
+                ->whereIn('id', $request->users)
+                ->pluck('id')
+                ->toArray();
+
+            if ($ids) {
+                User::deleteUsers($ids);
+            }
         }
 
         return response()->json([

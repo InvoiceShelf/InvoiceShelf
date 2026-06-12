@@ -9,6 +9,7 @@ use App\Mail\SendEstimateMail;
 use App\Services\SerialNumberFormatter;
 use App\Space\PdfTemplateUtils;
 use App\Support\DocumentTotals;
+use App\Support\SafeOrderBy;
 use App\Traits\GeneratesPdfTrait;
 use App\Traits\HasCustomFieldsTrait;
 use Carbon\Carbon;
@@ -195,7 +196,7 @@ class Estimate extends Model implements HasMedia
 
     public function scopeWhereOrder($query, $orderByField, $orderBy)
     {
-        $query->orderBy($orderByField, $orderBy);
+        return SafeOrderBy::apply($query, $orderByField, $orderBy);
     }
 
     public function scopeWhereCompany($query)

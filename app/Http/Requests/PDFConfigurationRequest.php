@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\SafeRemoteUrl;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PDFConfigurationRequest extends FormRequest
@@ -37,6 +38,7 @@ class PDFConfigurationRequest extends FormRequest
                     'gotenberg_host' => [
                         'required',
                         'url',
+                        new SafeRemoteUrl,
                     ],
                     'gotenberg_papersize' => [
                         'required',

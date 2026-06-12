@@ -9,6 +9,7 @@ use App\Mail\SendInvoiceMail;
 use App\Services\SerialNumberFormatter;
 use App\Space\PdfTemplateUtils;
 use App\Support\DocumentTotals;
+use App\Support\SafeOrderBy;
 use App\Traits\GeneratesPdfTrait;
 use App\Traits\HasCustomFieldsTrait;
 use Carbon\Carbon;
@@ -260,7 +261,7 @@ class Invoice extends Model implements HasMedia
 
     public function scopeWhereOrder($query, $orderByField, $orderBy)
     {
-        $query->orderBy($orderByField, $orderBy);
+        return SafeOrderBy::apply($query, $orderByField, $orderBy);
     }
 
     public function scopeApplyFilters($query, array $filters)
@@ -289,7 +290,8 @@ class Invoice extends Model implements HasMedia
             $query->where('customer_id', $customerId);
         })->when($filters['orderByField'] ?? null, function ($query, $orderByField) use ($filters) {
             $orderBy = $filters['orderBy'] ?? 'desc';
-            $query->orderBy($orderByField, $orderBy);
+
+            return SafeOrderBy::apply($query, $orderByField, $orderBy);
         }, function ($query) {
             $query->orderBy('sequence_number', 'desc');
         });

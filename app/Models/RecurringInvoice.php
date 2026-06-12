@@ -6,6 +6,7 @@ use App\Facades\Hashids;
 use App\Http\Requests\RecurringInvoiceRequest;
 use App\Services\SerialNumberFormatter;
 use App\Support\DocumentTotals;
+use App\Support\SafeOrderBy;
 use App\Traits\HasCustomFieldsTrait;
 use Carbon\Carbon;
 use Cron;
@@ -133,7 +134,7 @@ class RecurringInvoice extends Model
 
     public function scopeWhereOrder($query, $orderByField, $orderBy)
     {
-        $query->orderBy($orderByField, $orderBy);
+        return SafeOrderBy::apply($query, $orderByField, $orderBy);
     }
 
     public function scopeWhereStatus($query, $status)

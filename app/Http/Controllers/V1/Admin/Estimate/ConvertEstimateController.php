@@ -23,6 +23,10 @@ class ConvertEstimateController extends Controller
      */
     public function __invoke(Request $request, Estimate $estimate, Invoice $invoice)
     {
+        // Authorize access to the source estimate (tenant isolation) in addition
+        // to the ability to create an invoice — otherwise any estimate id from
+        // another company could be converted and disclosed.
+        $this->authorize('view', $estimate);
         $this->authorize('create', Invoice::class);
 
         $estimate->load(['items', 'items.taxes', 'customer', 'taxes']);
