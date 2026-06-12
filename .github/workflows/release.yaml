@@ -17,7 +17,7 @@ jobs:
 
         steps:
             - name: Checkout code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   fetch-depth: 0
 
@@ -32,7 +32,7 @@ jobs:
               run: composer install --no-dev --optimize-autoloader --no-interaction
 
             - name: Use Node.js 24
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v6
               with:
                   node-version: 24
 
@@ -89,7 +89,7 @@ jobs:
               run: zip -r InvoiceShelf.zip InvoiceShelf/
 
             - name: Create GitHub Release
-              uses: softprops/action-gh-release@v2
+              uses: softprops/action-gh-release@v3
               with:
                   files: /tmp/InvoiceShelf.zip
                   generate_release_notes: true

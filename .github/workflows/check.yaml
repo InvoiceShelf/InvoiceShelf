@@ -21,10 +21,10 @@ jobs:
             php: ${{ steps.filter.outputs.php }}
         steps:
             - name: Checkout code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
 
             - name: Check for file changes
-              uses: dorny/paths-filter@v3
+              uses: dorny/paths-filter@v4
               id: filter
               with:
                   filters: |
@@ -45,7 +45,7 @@ jobs:
         if: (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository)
         steps:
             - name: Cancel Previous Runs
-              uses: styfle/cancel-workflow-action@0.12.1
+              uses: styfle/cancel-workflow-action@0.13.1
               with:
                   access_token: ${{ github.token }}
 
@@ -63,7 +63,7 @@ jobs:
                   php-version: 8.4
 
             - name: Checkout code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
 
             - name: Install dependencies
               uses: ramsey/composer-install@v2
@@ -87,7 +87,7 @@ jobs:
 
         steps:
             - name: Checkout code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
 
             - name: Setup PHP Action
               uses: shivammathur/setup-php@v2
