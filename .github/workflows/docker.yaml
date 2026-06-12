@@ -61,8 +61,11 @@ jobs:
       - name: Install Composer dependencies
         uses: ramsey/composer-install@v2
 
-      - name: Apply tests ${{ matrix.php-version }}
-        run: php artisan test --parallel
+      - name: Apply tests ${{ matrix.php-version }} (parallel)
+        run: php artisan test --parallel --exclude-group=modules
+
+      - name: Apply module tests ${{ matrix.php-version }} (serial)
+        run: php artisan test --group=modules
 
   release_artifact_build:
     name: 🏗️ Build / Upload - Release File
