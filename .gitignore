@@ -24,6 +24,7 @@ Homestead.yaml
 .devenvconfig
 /storage/fonts*
 package-lock.json
+yarn.lock
 /docker/development/docker-compose.yml
 /docker/production/docker-compose.yml
 /docker-compose.yaml

@@ -1,5 +1,6 @@
 {
   "private": true,
+  "packageManager": "pnpm@11.6.0",
   "engines": {
     "node": ">=24"
   },
@@ -31,9 +32,6 @@
     "typescript": "^6.0.2",
     "vue-eslint-parser": "^10.0.0",
     "vue-tsc": "^3.2.6"
-  },
-  "resolutions": {
-    "brace-expansion": "^5.0.6"
   },
   "dependencies": {
     "@headlessui/vue": "^1.7.23",

@@ -11,8 +11,8 @@ InvoiceShelf is an open-source invoicing and expense tracking application built 
 ### Development
 ```bash
 composer run dev          # Starts PHP server, queue listener, log tail, and Vite dev server concurrently
-npm run dev               # Vite dev server only
-npm run build             # Production frontend build
+pnpm dev               # Vite dev server only
+pnpm build             # Production frontend build
 ```
 
 ### Testing
@@ -30,7 +30,7 @@ Tests use SQLite in-memory DB, configured in `phpunit.xml`. Tests seed via `Data
 vendor/bin/pint --dirty --format agent    # Fix style on modified PHP files
 vendor/bin/pint --test                    # Check style without fixing (CI uses this)
 composer lint        # = pint --test   ;  composer lint:fix = pint
-npm run lint         # eslint (--max-warnings 0)  ;  npm run lint:fix = eslint --fix
+pnpm lint         # eslint (--max-warnings 0)  ;  pnpm lint:fix = eslint --fix
 ```
 
 ### Code Quality Gate (pre-commit hook)
@@ -38,7 +38,7 @@ A committed Git hook (`.githooks/pre-commit`) runs **Pint** on staged `.php` and
 `resources/scripts/**` `.{js,cjs,mjs,ts,vue}` files, and **blocks the commit on any failure** (ESLint runs
 with `--max-warnings 0`). It lints **staged files only**, and soft-skips if PHP/Pint or `node_modules` is
 unavailable (CI is the backstop). The hook is enabled via `core.hooksPath`, set automatically by the
-`prepare` script on `npm install`/`yarn install`; to enable it manually run:
+`prepare` script on `pnpm install`; to enable it manually run:
 ```bash
 git config core.hooksPath .githooks
 ```
@@ -136,7 +136,7 @@ InvoiceShelf follows TDD development style:
 - Use `config()` helper, never `env()` outside config files
 - Every change must have tests
 - Run `vendor/bin/pint --dirty --format agent` after modifying PHP files
-- After editing `lang/en.json` or any file under `resources/scripts/`, rebuild via `npm run build` — the bundled chunks (including locale chunks) are content-hashed by Vite, so the browser will pick them up on hard refresh
+- After editing `lang/en.json` or any file under `resources/scripts/`, rebuild via `pnpm build` — the bundled chunks (including locale chunks) are content-hashed by Vite, so the browser will pick them up on hard refresh
 
 ## CI Pipeline
 

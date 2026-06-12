@@ -1,7 +1,7 @@
 FROM --platform=$BUILDPLATFORM node:24 AS static_builder
     WORKDIR /var/www/html
     COPY . /var/www/html
-    RUN yarn && yarn build
+    RUN corepack enable && pnpm install --frozen-lockfile && pnpm build
 
 FROM serversideup/php:8.4-fpm-alpine AS base
     USER root

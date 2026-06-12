@@ -31,16 +31,20 @@ jobs:
             - name: Install Composer dependencies
               run: composer install --no-dev --optimize-autoloader --no-interaction
 
+            - name: Install pnpm
+              uses: pnpm/action-setup@v6
+
             - name: Use Node.js 24
               uses: actions/setup-node@v6
               with:
                   node-version: 24
+                  cache: pnpm
 
             - name: Install npm dependencies
-              run: npm ci
+              run: pnpm install --frozen-lockfile
 
             - name: Build frontend
-              run: npm run build
+              run: pnpm build
 
             - name: Prepare release directory
               run: |
