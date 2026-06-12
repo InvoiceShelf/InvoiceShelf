@@ -11,8 +11,8 @@ InvoiceShelf is an open-source invoicing and expense tracking application built 
 ### Development
 ```bash
 composer run dev          # Starts PHP server, queue listener, log tail, and Vite dev server concurrently
-npm run dev               # Vite dev server only
-npm run build             # Production frontend build
+pnpm dev                  # Vite dev server only
+pnpm build                # Production frontend build
 ```
 
 ### Testing
@@ -122,7 +122,7 @@ InvoiceShelf follows TDD development style:
 - Use `config()` helper, never `env()` outside config files
 - Every change must have tests
 - Run `vendor/bin/pint --dirty --format agent` after modifying PHP files
-- After editing `lang/en.json` or any file under `resources/scripts/`, rebuild via `npm run build` — the bundled chunks (including locale chunks) are content-hashed by Vite, so the browser will pick them up on hard refresh
+- After editing `lang/en.json` or any file under `resources/scripts/`, rebuild via `pnpm build` — the bundled chunks (including locale chunks) are content-hashed by Vite, so the browser will pick them up on hard refresh
 
 ## CI Pipeline
 

@@ -4,6 +4,7 @@
     "node": ">=24"
   },
   "type": "module",
+  "packageManager": "pnpm@11.6.0",
   "scripts": {
     "dev": "vite",
     "watch": "vite build --watch",
@@ -26,9 +27,6 @@
     "tailwindcss": "^4.0.0",
     "typescript": "^6.0.2",
     "vue-tsc": "^3.2.6"
-  },
-  "resolutions": {
-    "brace-expansion": "^5.0.6"
   },
   "dependencies": {
     "@headlessui/vue": "^1.7.23",

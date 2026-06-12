@@ -85,7 +85,7 @@ docker compose -f docker/development/docker-compose.mysql.yml down
 
 ### 3. Working with binaries
 
-To correctly run `composer`, `npm`, `artisan`, `pint`, `pest` or other binaries within this project, you must ssh into the container as follows:
+To correctly run `composer`, `pnpm`, `artisan`, `pint`, `pest` or other binaries within this project, you must ssh into the container as follows:
 
 ```
 docker exec -it invoiceshelf-dev-php /bin/sh
