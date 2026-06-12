@@ -11,8 +11,8 @@ InvoiceShelf is an open-source invoicing and expense tracking application built 
 ### Development
 ```bash
 composer run dev          # Starts PHP server, queue listener, log tail, and Vite dev server concurrently
-npm run dev               # Vite dev server only
-npm run build             # Production frontend build
+pnpm dev                  # Vite dev server only
+pnpm build                # Production frontend build
 ```
 
 ### Testing

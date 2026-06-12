@@ -7,8 +7,9 @@ composer:
 npm-build:
 	rm -r public/build 2> /dev/null || true
 	rm -r node_modules 2> /dev/null || true
-	npm install
-	npm run build
+	corepack enable
+	pnpm install --frozen-lockfile
+	pnpm build
 
 dist-gen: clean composer npm-build
 	@echo "packaging..."

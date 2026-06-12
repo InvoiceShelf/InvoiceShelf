@@ -61,16 +61,20 @@ jobs:
       - name: Install Composer dependencies
         uses: ramsey/composer-install@v2
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Use Node.js 24
         uses: actions/setup-node@v4
         with:
           node-version: 24
+          cache: pnpm
 
       - name: Install
-        run: npm install
+        run: pnpm install --frozen-lockfile
 
       - name: Compile Front-end
-        run: npm run build
+        run: pnpm build
 
       - name: Apply tests ${{ matrix.php-version }}
         run: php artisan test
@@ -100,16 +104,20 @@ jobs:
         with:
           composer-options: --no-dev
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Use Node.js 24
         uses: actions/setup-node@v4
         with:
           node-version: 24
+          cache: pnpm
 
       - name: Install
-        run: npm install
+        run: pnpm install --frozen-lockfile
 
       - name: Compile Front-end
-        run: npm run build
+        run: pnpm build
 
       - name: Build Dist
         run: |

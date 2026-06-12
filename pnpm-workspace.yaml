@@ -1,0 +1,9 @@
+# Flat, hoisted node_modules (npm/yarn-like) so the migration is a drop-in and
+# transitive packages imported directly (e.g. flatpickr via vue-flatpickr-component)
+# keep resolving. pnpm 11 reads this here, not from .npmrc.
+nodeLinker: hoisted
+
+# Build-script allow-listing (replaces package.json "pnpm.onlyBuiltDependencies").
+# vue-demi needs its postinstall to select the Vue 3 entry; it is a trusted Vue-core shim.
+allowBuilds:
+  vue-demi: true

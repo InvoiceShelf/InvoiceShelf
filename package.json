@@ -4,6 +4,7 @@
     "node": ">=24"
   },
   "type": "module",
+  "packageManager": "pnpm@11.6.0",
   "scripts": {
     "dev": "vite",
     "watch": "vite build --watch",
