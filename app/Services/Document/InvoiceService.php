@@ -5,6 +5,7 @@ namespace App\Services\Document;
 use App;
 use App\Facades\Hashids;
 use App\Facades\Pdf;
+use App\Mail\SendCreditNoteMail;
 use App\Mail\SendInvoiceMail;
 use App\Models\Company;
 use App\Models\CompanySetting;
@@ -218,6 +219,39 @@ class InvoiceService
         ];
     }
 
+    /**
+     * Email a credit note (Stornorechnung) to the customer.
+     *
+     * Reuses the invoice send-data assembly (PDF attachment, subject/body
+     * placeholders) but dispatches the dedicated SendCreditNoteMail so the
+     * credit-note email template and EmailLog are used.
+     */
+    public function sendCreditNote(Invoice $creditNote, array $data): array
+    {
+        $data = $this->sendInvoiceData($creditNote, $data);
+
+        CompanyMailConfigService::apply($creditNote->company_id);
+
+        $mail = \Mail::to($data['to']);
+        if (! empty($data['cc'])) {
+            $mail->cc($data['cc']);
+        }
+        if (! empty($data['bcc'])) {
+            $mail->bcc($data['bcc']);
+        }
+        $mail->send(new SendCreditNoteMail($data));
+
+        if (! $creditNote->sent) {
+            $creditNote->sent = true;
+            $creditNote->save();
+        }
+
+        return [
+            'success' => true,
+            'type' => 'send',
+        ];
+    }
+
     public function getPdfData(Invoice $invoice)
     {
         $taxes = collect();
@@ -239,6 +273,10 @@ class InvoiceService
         }
 
         $invoiceTemplate = Invoice::find($invoice->id)->template_name;
+
+        if ($invoice->isCreditNote()) {
+            $invoice->loadMissing('relatedInvoice');
+        }
 
         $company = Company::find($invoice->company_id);
         $locale = CompanySetting::getSetting('language', $company->id);
@@ -355,6 +393,131 @@ class InvoiceService
         }
 
         return $newInvoice;
+    }
+
+    /**
+     * Create a credit note (Stornorechnung) that reverses the given invoice.
+     *
+     * The credit note is stored as an invoice row with type = CREDIT_NOTE and a
+     * reference back to the original invoice. Every monetary field is negated.
+     * All amounts are integer cents; negation is exact integer arithmetic, so no
+     * float ever touches a currency value (issue #10 from PR #536).
+     */
+    public function createCreditNote(Invoice $invoice): Invoice
+    {
+        $invoice->load(['items.taxes', 'taxes', 'fields']);
+
+        $serial = (new SerialNumberService)
+            ->setModel(new Invoice)
+            ->setCompany($invoice->company_id)
+            ->setCustomer($invoice->customer_id)
+            ->setNextNumbers();
+
+        // exchange_rate is a float multiplier, not a currency amount. base_* fields
+        // are derived amounts; we negate the already-integer base_* values directly
+        // rather than recomputing through the float rate to avoid rounding drift.
+        $creditNote = Invoice::create([
+            'creator_id' => auth()->id(),
+            'type' => Invoice::TYPE_CREDIT_NOTE,
+            'related_invoice_id' => $invoice->id,
+            'invoice_date' => Carbon::now()->format('Y-m-d'),
+            'due_date' => Carbon::now()->format('Y-m-d'),
+            'invoice_number' => $serial->getNextNumber(),
+            'sequence_number' => $serial->nextSequenceNumber,
+            'customer_sequence_number' => $serial->nextCustomerSequenceNumber,
+            'reference_number' => $invoice->invoice_number,
+            'customer_id' => $invoice->customer_id,
+            'company_id' => $invoice->company_id,
+            'template_name' => $invoice->template_name,
+            'status' => Invoice::STATUS_SENT,
+            'paid_status' => Invoice::STATUS_UNPAID,
+            'sub_total' => -$invoice->sub_total,
+            'discount' => $invoice->discount,
+            'discount_type' => $invoice->discount_type,
+            'discount_val' => -$invoice->discount_val,
+            'total' => -$invoice->total,
+            'due_amount' => -$invoice->total,
+            'tax_per_item' => $invoice->tax_per_item,
+            'discount_per_item' => $invoice->discount_per_item,
+            'tax' => -$invoice->tax,
+            'tax_included' => $invoice->tax_included,
+            'notes' => $invoice->notes,
+            'exchange_rate' => $invoice->exchange_rate,
+            'base_discount_val' => -$invoice->base_discount_val,
+            'base_sub_total' => -$invoice->base_sub_total,
+            'base_total' => -$invoice->base_total,
+            'base_tax' => -$invoice->base_tax,
+            'base_due_amount' => -$invoice->base_total,
+            'currency_id' => $invoice->currency_id,
+            'sales_tax_type' => $invoice->sales_tax_type,
+            'sales_tax_address_type' => $invoice->sales_tax_address_type,
+        ]);
+
+        $creditNote->unique_hash = Hashids::connection(Invoice::class)->encode($creditNote->id);
+        $creditNote->save();
+
+        $this->documentItemService->createItems($creditNote, $this->negateItems($invoice->items->toArray()));
+
+        if ($invoice->taxes) {
+            $this->documentItemService->createTaxes($creditNote, $this->negateTaxes($invoice->taxes->toArray()));
+        }
+
+        if ($invoice->fields()->exists()) {
+            $customFields = [];
+
+            foreach ($invoice->fields as $field) {
+                $customFields[] = [
+                    'id' => $field->custom_field_id,
+                    'value' => $field->defaultAnswer,
+                ];
+            }
+
+            $creditNote->addCustomFields($customFields);
+        }
+
+        return Invoice::with([
+            'items',
+            'items.fields',
+            'items.fields.customField',
+            'customer',
+            'taxes',
+            'relatedInvoice',
+        ])->find($creditNote->id);
+    }
+
+    /**
+     * Negate the monetary columns on copied line items (integer cents in, integer
+     * cents out). price/discount_val/tax/total are flipped; quantity is untouched.
+     */
+    private function negateItems(array $items): array
+    {
+        return array_map(function (array $item) {
+            foreach (['price', 'discount_val', 'tax', 'total'] as $field) {
+                if (isset($item[$field])) {
+                    $item[$field] = -$item[$field];
+                }
+            }
+
+            if (! empty($item['taxes'])) {
+                $item['taxes'] = $this->negateTaxes($item['taxes']);
+            }
+
+            return $item;
+        }, $items);
+    }
+
+    /**
+     * Negate the amount on copied taxes (integer cents).
+     */
+    private function negateTaxes(array $taxes): array
+    {
+        return array_map(function (array $tax) {
+            if (isset($tax['amount'])) {
+                $tax['amount'] = -$tax['amount'];
+            }
+
+            return $tax;
+        }, $taxes);
     }
 
     public function convertToEstimate(Invoice $invoice): Estimate

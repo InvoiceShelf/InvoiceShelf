@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Company\Invoice;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use App\Http\Requests\DeleteInvoiceRequest;
+use App\Http\Requests\SendCreditNoteRequest;
 use App\Http\Requests\SendInvoiceRequest;
+use App\Http\Resources\CreditNoteResource;
 use App\Http\Resources\EstimateResource;
 use App\Http\Resources\InvoiceResource;
 use App\Jobs\GenerateInvoicePdfJob;
@@ -15,6 +17,7 @@ use App\Services\Document\InvoiceService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Mail\Markdown;
+use Illuminate\Validation\ValidationException;
 
 class InvoicesController extends Controller
 {
@@ -159,6 +162,45 @@ class InvoicesController extends Controller
         $estimate = $this->invoiceService->convertToEstimate($invoice);
 
         return new EstimateResource($estimate);
+    }
+
+    public function createCreditNote(Request $request, Invoice $invoice)
+    {
+        $this->authorize('create credit note', $invoice);
+
+        // A credit note can only reverse a real invoice, never another credit
+        // note. This is a domain rule (422), not an authorization failure (403).
+        if ($invoice->isCreditNote()) {
+            throw ValidationException::withMessages([
+                'invoice' => ['a_credit_note_cannot_be_created_from_a_credit_note'],
+            ]);
+        }
+
+        $creditNote = $this->invoiceService->createCreditNote($invoice);
+
+        GenerateInvoicePdfJob::dispatch($creditNote);
+
+        return (new CreditNoteResource($creditNote))
+            ->response()
+            ->setStatusCode(201);
+    }
+
+    public function sendCreditNote(SendCreditNoteRequest $request, Invoice $invoice)
+    {
+        $this->authorize('send credit note', $invoice);
+
+        // Guard against sending a normal invoice through the credit-note channel.
+        if (! $invoice->isCreditNote()) {
+            throw ValidationException::withMessages([
+                'invoice' => ['the_document_is_not_a_credit_note'],
+            ]);
+        }
+
+        $this->invoiceService->sendCreditNote($invoice, $request->all());
+
+        return response()->json([
+            'success' => true,
+        ]);
     }
 
     public function changeStatus(Request $request, Invoice $invoice)
