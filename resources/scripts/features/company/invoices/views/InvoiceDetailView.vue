@@ -51,6 +51,25 @@
       </template>
     </BasePageHeader>
 
+    <!-- Credit note banner + link to the reversed invoice -->
+    <div
+      v-if="invoiceData.type === 'CREDIT_NOTE'"
+      class="flex items-center gap-2 px-4 py-2 mb-4 text-sm rounded bg-red-50 text-red-700 border border-red-200"
+    >
+      <span class="px-2 py-0.5 text-xs font-semibold rounded bg-red-100">
+        {{ $t('invoices.credit_note') }}
+      </span>
+      <span v-if="invoiceData.related_invoice">
+        {{ $t('invoices.original_invoice') }}:
+        <router-link
+          :to="`/admin/invoices/${invoiceData.related_invoice.id}/view`"
+          class="font-medium underline"
+        >
+          {{ invoiceData.related_invoice.invoice_number }}
+        </router-link>
+      </span>
+    </div>
+
     <!-- Sidebar -->
     <div
       class="fixed top-0 left-0 hidden h-full pt-16 pb-[6.4rem] ml-56 bg-surface xl:ml-64 w-88 xl:block"

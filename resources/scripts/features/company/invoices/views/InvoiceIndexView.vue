@@ -276,6 +276,12 @@
             >
               {{ row.data.invoice_number }}
             </router-link>
+            <span
+              v-if="row.data.type === 'CREDIT_NOTE'"
+              class="inline-block ml-2 px-2 py-0.5 text-xs font-medium rounded bg-red-100 text-red-700"
+            >
+              {{ $t('invoices.credit_note') }}
+            </span>
           </template>
 
           <template #cell-invoice_date="{ row }">

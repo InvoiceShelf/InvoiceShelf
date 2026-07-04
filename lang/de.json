@@ -454,6 +454,11 @@
     "cloned_successfully": "Rechnung erfolgreich kopiert",
     "clone_invoice": "Rechnung kopieren",
     "confirm_clone": "Diese Rechnung wird kopiert",
+    "create_credit_note": "Stornorechnung erstellen",
+    "confirm_create_credit_note": "Es wird eine Stornorechnung erstellt, die diese Rechnung storniert",
+    "credit_note_created": "Stornorechnung erfolgreich erstellt",
+    "credit_note": "Stornorechnung",
+    "original_invoice": "Originalrechnung",
     "item": {
       "title": "Titel des Artikels",
       "description": "Beschreibung",

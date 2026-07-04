@@ -19,8 +19,8 @@ class CreditNoteResource extends InvoiceResource
     public function toArray($request): array
     {
         return array_merge(parent::toArray($request), [
-            'type' => $this->type,
-            'related_invoice_id' => $this->related_invoice_id,
+            // type + related_invoice_id come from InvoiceResource; this adds the
+            // expanded reference to the original invoice being reversed.
             'related_invoice' => $this->when(
                 $this->related_invoice_id !== null && $this->relatedInvoice()->exists(),
                 function () {

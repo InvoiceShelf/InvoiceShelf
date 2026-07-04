@@ -20,6 +20,17 @@ export enum InvoicePaidStatus {
 
 export type DiscountType = 'fixed' | 'percentage'
 
+export type InvoiceType = 'INVOICE' | 'CREDIT_NOTE'
+
+export interface RelatedInvoice {
+  id: number
+  invoice_number: string
+  invoice_date: string
+  formatted_invoice_date: string
+  total: number
+  unique_hash: string
+}
+
 export interface InvoiceItem {
   id: number | string
   name: string
@@ -51,6 +62,9 @@ export interface Invoice {
   due_date: string
   invoice_number: string
   reference_number: string | null
+  type: InvoiceType
+  related_invoice_id: number | null
+  related_invoice?: RelatedInvoice | null
   status: InvoiceStatus
   paid_status: InvoicePaidStatus
   tax_per_item: string | null

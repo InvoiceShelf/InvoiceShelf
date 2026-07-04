@@ -78,6 +78,10 @@ class InvoicesController extends Controller
     {
         $this->authorize('view', $invoice);
 
+        if ($invoice->isCreditNote()) {
+            return new CreditNoteResource($invoice->load('relatedInvoice'));
+        }
+
         return new InvoiceResource($invoice);
     }
 

@@ -472,6 +472,11 @@
     "confirm_clone": "This invoice will be cloned into a new Invoice",
     "convert_to_estimate": "Convert to Estimate",
     "confirm_convert_to_estimate": "This invoice will be converted into a new Estimate",
+    "create_credit_note": "Create Credit Note",
+    "confirm_create_credit_note": "A credit note reversing this invoice will be created",
+    "credit_note_created": "Credit note created successfully",
+    "credit_note": "Credit Note",
+    "original_invoice": "Original invoice",
     "item": {
       "title": "Item Title",
       "description": "Description",

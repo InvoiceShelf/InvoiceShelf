@@ -367,6 +367,11 @@ export const useInvoiceStore = defineStore('invoice', {
       return { data: response }
     },
 
+    async createCreditNote(data: { id: number }): Promise<{ data: { data: Invoice } }> {
+      const response = await invoiceService.createCreditNote(data.id)
+      return { data: response }
+    },
+
     async markAsSent(data: InvoiceStatusPayload): Promise<unknown> {
       const response = await invoiceService.changeStatus(data)
       const pos = this.invoices.findIndex((inv) => inv.id === data.id)

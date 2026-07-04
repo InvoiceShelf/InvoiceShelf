@@ -108,6 +108,11 @@ export const invoiceService = {
     return data
   },
 
+  async createCreditNote(id: number): Promise<ApiResponse<Invoice>> {
+    const { data } = await client.post(`${API.INVOICES}/${id}/credit-note`)
+    return data
+  },
+
   async changeStatus(payload: InvoiceStatusPayload): Promise<ApiResponse<Invoice>> {
     const { data } = await client.post(`${API.INVOICES}/${payload.id}/status`, payload)
     return data

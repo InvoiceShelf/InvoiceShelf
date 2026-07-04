@@ -102,6 +102,15 @@
       {{ $t('invoices.convert_to_estimate') }}
     </BaseDropdownItem>
 
+    <!-- Create Credit Note (Stornorechnung) -->
+    <BaseDropdownItem v-if="canCreateCreditNote" @click="createCreditNote">
+      <BaseIcon
+        name="ReceiptRefundIcon"
+        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+      />
+      {{ $t('invoices.create_credit_note') }}
+    </BaseDropdownItem>
+
     <!-- Delete Invoice -->
     <BaseDropdownItem v-if="canDelete" @click="removeInvoice">
       <BaseIcon
@@ -177,6 +186,12 @@ const canSendInvoice = computed<boolean>(() => {
   )
 })
 
+// A credit note can only be created from a real invoice (never from another
+// credit note), and only by users allowed to create invoices.
+const canCreateCreditNote = computed<boolean>(() => {
+  return props.canCreate && props.row.type !== 'CREDIT_NOTE'
+})
+
 function removeInvoice(): void {
   dialogStore.openDialog({
     title: t('general.are_you_sure'),
@@ -231,6 +246,27 @@ function convertToEstimate(): void {
     if (res) {
       const response = await invoiceStore.convertToEstimate({ id: props.row.id })
       router.push(`/admin/estimates/${response.data.data.id}/edit`)
+    }
+  })
+}
+
+function createCreditNote(): void {
+  dialogStore.openDialog({
+    title: t('general.are_you_sure'),
+    message: t('invoices.confirm_create_credit_note'),
+    yesLabel: t('general.ok'),
+    noLabel: t('general.cancel'),
+    variant: 'primary',
+    hideNoButton: false,
+    size: 'lg',
+  }).then(async (res: boolean) => {
+    if (res) {
+      const response = await invoiceStore.createCreditNote({ id: props.row.id })
+      notificationStore.showNotification({
+        type: 'success',
+        message: t('invoices.credit_note_created'),
+      })
+      router.push(`/admin/invoices/${response.data.data.id}/view`)
     }
   })
 }
