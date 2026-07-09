@@ -454,7 +454,11 @@ class InvoiceService
             'customer_id' => $invoice->customer_id,
             'company_id' => $invoice->company_id,
             'template_name' => $invoice->template_name,
-            'status' => Invoice::STATUS_SENT,
+            // Born fully settled means fully done: COMPLETED matches the
+            // end-state the original invoice reaches after settlement, and
+            // keeps the UI from offering to record a payment on a document
+            // with nothing owed.
+            'status' => Invoice::STATUS_COMPLETED,
             // The credit note is born settled: it exists to pair with the
             // original invoice, nothing is ever owed on it, so it must never
             // surface as an open (negative) balance in any due/aging view.

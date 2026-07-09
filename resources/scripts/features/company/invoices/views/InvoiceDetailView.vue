@@ -28,7 +28,11 @@
           :to="`/admin/payments/${$route.params.id}/create`"
         >
           <BaseButton
-            v-if="invoiceData.status === 'SENT' || invoiceData.status === 'VIEWED'"
+            v-if="
+              (invoiceData.status === 'SENT' ||
+                invoiceData.status === 'VIEWED') &&
+              invoiceData.due_amount > 0
+            "
             variant="primary"
           >
             {{ $t('invoices.record_payment') }}

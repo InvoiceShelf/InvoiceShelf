@@ -65,7 +65,12 @@
     <!-- Record Payment -->
     <router-link :to="`/admin/payments/${row.id}/create`">
       <BaseDropdownItem
-        v-if="row.status === 'SENT' && !isDetailView && canCreatePayment"
+        v-if="
+          row.status === 'SENT' &&
+          row.due_amount > 0 &&
+          !isDetailView &&
+          canCreatePayment
+        "
       >
         <BaseIcon
           name="CreditCardIcon"

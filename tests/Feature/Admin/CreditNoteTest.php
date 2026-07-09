@@ -197,6 +197,10 @@ test('the credit note itself is created settled', function () {
     expect((int) $creditNote->due_amount)->toBe(0);
     expect((int) $creditNote->base_due_amount)->toBe(0);
     expect($creditNote->paid_status)->toBe(Invoice::STATUS_PAID);
+    // Born fully settled means fully done: the credit note reads COMPLETED,
+    // matching the end-state its original invoice reaches, never a stale
+    // "SENT" that would invite recording a payment on it.
+    expect($creditNote->status)->toBe(Invoice::STATUS_COMPLETED);
     // Totals stay fully negated, though.
     expect($creditNote->total)->toBe(-10000);
 });
