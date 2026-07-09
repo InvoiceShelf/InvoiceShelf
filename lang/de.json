@@ -1630,6 +1630,8 @@
   "pdf_credit_note_number": "Stornorechnungsnummer",
   "pdf_credit_note_date": "Stornodatum",
   "pdf_credit_note_reference": "Bezug auf Rechnung :number vom :date",
+  "pdf_cancelled_label": "Storniert",
+  "pdf_cancelled_via_credit_note": "Storniert via Stornorechnung :number",
   "pdf_notes": "Hinweise",
   "pdf_items_label": "Artikel",
   "pdf_quantity_label": "Menge",

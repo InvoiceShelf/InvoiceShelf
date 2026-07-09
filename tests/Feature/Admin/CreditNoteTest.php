@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
 use Laravel\Sanctum\Sanctum;
 
+use function Pest\Laravel\get;
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\postJson;
 
@@ -315,6 +316,107 @@ test('deleting the original invoice and its credit note together succeeds', func
 
     $this->assertDatabaseMissing('invoices', ['id' => $invoice->id]);
     $this->assertDatabaseMissing('invoices', ['id' => $creditNoteId]);
+});
+
+test('renders a credit note pdf through the original invoice template family, not a hardcoded layout', function () {
+    // Regression for: credit notes always rendered through one hardcoded
+    // generic layout regardless of which of the 3 invoice templates the
+    // company actually uses. invoice2 has a distinctive purple header
+    // markup ("header-section-right") that the old standalone
+    // credit-note.blade.php never contained.
+    $invoice = Invoice::factory()
+        ->hasItems(1)
+        ->create([
+            'template_name' => 'invoice2',
+            'sub_total' => 10000,
+            'total' => 10000,
+            'tax' => 0,
+            'discount_val' => 0,
+            'due_amount' => 10000,
+        ]);
+
+    $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
+        ->assertStatus(201)
+        ->json('data.id');
+
+    $creditNote = Invoice::find($creditNoteId);
+
+    $response = get("/invoices/pdf/{$creditNote->unique_hash}?preview=1");
+
+    $response->assertOk();
+    $response->assertSee('header-section-right', false);
+    $response->assertSee('Credit Note');
+    $response->assertSee($invoice->invoice_number);
+});
+
+test('renders a credit note pdf under the invoice3 template family', function () {
+    $invoice = Invoice::factory()
+        ->hasItems(1)
+        ->create([
+            'template_name' => 'invoice3',
+            'sub_total' => 10000,
+            'total' => 10000,
+            'tax' => 0,
+            'discount_val' => 0,
+            'due_amount' => 10000,
+        ]);
+
+    $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
+        ->assertStatus(201)
+        ->json('data.id');
+
+    $creditNote = Invoice::find($creditNoteId);
+
+    $response = get("/invoices/pdf/{$creditNote->unique_hash}?preview=1");
+
+    $response->assertOk();
+    // "main-content" is a structural marker unique to invoice3.blade.php.
+    $response->assertSee('main-content', false);
+    $response->assertSee('Credit Note');
+});
+
+test('shows a cancellation banner on the original invoice pdf under a non-default template', function () {
+    // Regression for: the actual generated/printed/emailed PDF of a
+    // cancelled invoice showed zero indication it had been reversed by a
+    // credit note (only the Vue UI banner existed).
+    $invoice = Invoice::factory()
+        ->hasItems(1)
+        ->create([
+            'template_name' => 'invoice3',
+            'sub_total' => 10000,
+            'total' => 10000,
+            'tax' => 0,
+            'discount_val' => 0,
+            'due_amount' => 10000,
+        ]);
+
+    $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
+        ->assertStatus(201)
+        ->json('data.id');
+
+    $creditNote = Invoice::find($creditNoteId);
+
+    $response = get("/invoices/pdf/{$invoice->unique_hash}?preview=1");
+
+    $response->assertOk();
+    $response->assertSee('Cancelled');
+    $response->assertSee($creditNote->invoice_number);
+});
+
+test('shows a cancellation banner on the original invoice pdf under the default template', function () {
+    $invoice = Invoice::factory()->hasItems(1)->create();
+
+    $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
+        ->assertStatus(201)
+        ->json('data.id');
+
+    $creditNote = Invoice::find($creditNoteId);
+
+    $response = get("/invoices/pdf/{$invoice->unique_hash}?preview=1");
+
+    $response->assertOk();
+    $response->assertSee('Cancelled');
+    $response->assertSee($creditNote->invoice_number);
 });
 
 test('sends a credit note to the customer by email', function () {

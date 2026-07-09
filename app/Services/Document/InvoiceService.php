@@ -298,9 +298,10 @@ class InvoiceService
 
         $invoiceTemplate = Invoice::find($invoice->id)->template_name;
 
-        if ($invoice->isCreditNote()) {
-            $invoice->loadMissing('relatedInvoice');
-        }
+        // Cheap either way: relatedInvoice is null for regular invoices and
+        // creditNotes is empty for credit notes. Eager-loaded here so the
+        // invoice templates can reference the paired document.
+        $invoice->loadMissing(['relatedInvoice', 'creditNotes']);
 
         $company = Company::find($invoice->company_id);
         $locale = CompanySetting::getSetting('language', $company->id);
