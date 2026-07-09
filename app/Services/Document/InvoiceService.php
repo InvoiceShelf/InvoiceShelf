@@ -164,6 +164,30 @@ class InvoiceService
                 $invoice->transactions()->delete();
             }
 
+            // Deleting a credit note reverses the settlement it applied to its
+            // original invoice (mirror of the create-side adjustment; same
+            // symmetry PR #536 implemented). The balance is recomputed from
+            // recorded payments — integer cents throughout — rather than
+            // restored from a snapshot, so it is exact even if the invoice was
+            // partially paid before being reversed. Skipped when the original
+            // is deleted in the same batch.
+            if ($invoice->isCreditNote() && $invoice->related_invoice_id && ! $ids->contains($invoice->related_invoice_id)) {
+                $original = $invoice->relatedInvoice;
+
+                if ($original) {
+                    $dueAmount = (int) $original->total - (int) $original->payments()->sum('amount');
+                    $original->due_amount = $dueAmount;
+                    $original->base_due_amount = $dueAmount * $original->exchange_rate;
+                    $original->changeInvoiceStatus($dueAmount);
+
+                    // changeInvoiceStatus() only persists for amounts >= 0;
+                    // make sure the balance itself is saved in every case.
+                    if ($original->isDirty()) {
+                        $original->save();
+                    }
+                }
+            }
+
             $invoice->delete();
         }
 
@@ -430,13 +454,16 @@ class InvoiceService
             'company_id' => $invoice->company_id,
             'template_name' => $invoice->template_name,
             'status' => Invoice::STATUS_SENT,
-            'paid_status' => Invoice::STATUS_UNPAID,
+            // The credit note is born settled: it exists to pair with the
+            // original invoice, nothing is ever owed on it, so it must never
+            // surface as an open (negative) balance in any due/aging view.
+            'paid_status' => Invoice::STATUS_PAID,
             'sub_total' => -$invoice->sub_total,
             'discount' => $invoice->discount,
             'discount_type' => $invoice->discount_type,
             'discount_val' => -$invoice->discount_val,
             'total' => -$invoice->total,
-            'due_amount' => -$invoice->total,
+            'due_amount' => 0,
             'tax_per_item' => $invoice->tax_per_item,
             'discount_per_item' => $invoice->discount_per_item,
             'tax' => -$invoice->tax,
@@ -447,7 +474,7 @@ class InvoiceService
             'base_sub_total' => -$invoice->base_sub_total,
             'base_total' => -$invoice->base_total,
             'base_tax' => -$invoice->base_tax,
-            'base_due_amount' => -$invoice->base_total,
+            'base_due_amount' => 0,
             'currency_id' => $invoice->currency_id,
             'sales_tax_type' => $invoice->sales_tax_type,
             'sales_tax_address_type' => $invoice->sales_tax_address_type,
@@ -474,6 +501,18 @@ class InvoiceService
 
             $creditNote->addCustomFields($customFields);
         }
+
+        // A full reversal nets the original invoice's balance to exactly zero
+        // by construction, so settle it: it must drop out of every "awaiting
+        // payment" view. changeInvoiceStatus(0) sets status = COMPLETED and
+        // paid_status = PAID and persists; the "cancelled via credit note"
+        // distinction (vs. genuinely paid) is carried by the creditNotes
+        // relation and surfaced in the UI, so cash-flow reporting stays
+        // programmatically simple (same trade-off sevDesk makes; avoids
+        // silently breaking existing paid/unpaid aggregates).
+        $invoice->due_amount = 0;
+        $invoice->base_due_amount = 0;
+        $invoice->changeInvoiceStatus(0);
 
         return Invoice::with([
             'items',

@@ -180,6 +180,14 @@ class InvoicesController extends Controller
             ]);
         }
 
+        // A credit note is a FULL reversal, so one per invoice: a second one
+        // would double-negate the books and break the delete-side restore.
+        if ($invoice->creditNotes()->exists()) {
+            throw ValidationException::withMessages([
+                'invoice' => ['the_invoice_already_has_a_credit_note'],
+            ]);
+        }
+
         $creditNote = $this->invoiceService->createCreditNote($invoice);
 
         GenerateInvoicePdfJob::dispatch($creditNote);

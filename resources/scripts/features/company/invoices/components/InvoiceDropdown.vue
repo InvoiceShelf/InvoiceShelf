@@ -187,9 +187,14 @@ const canSendInvoice = computed<boolean>(() => {
 })
 
 // A credit note can only be created from a real invoice (never from another
-// credit note), and only by users allowed to create invoices.
+// credit note), only once per invoice (a credit note is a full reversal),
+// and only by users allowed to create invoices.
 const canCreateCreditNote = computed<boolean>(() => {
-  return props.canCreate && props.row.type !== 'CREDIT_NOTE'
+  return (
+    props.canCreate &&
+    props.row.type !== 'CREDIT_NOTE' &&
+    !props.row.credit_notes?.length
+  )
 })
 
 function removeInvoice(): void {

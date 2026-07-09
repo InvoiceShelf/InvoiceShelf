@@ -70,6 +70,28 @@
       </span>
     </div>
 
+    <!-- Cancelled banner + link to the reversing credit note (mirror of the
+         credit-note banner above, shown on the ORIGINAL invoice's side) -->
+    <div
+      v-if="invoiceData.type !== 'CREDIT_NOTE' && invoiceData.credit_notes?.length"
+      class="flex items-center gap-2 px-4 py-2 mb-4 text-sm rounded bg-amber-50 text-amber-800 border border-amber-300"
+    >
+      <span class="px-2 py-0.5 text-xs font-semibold rounded bg-amber-100">
+        {{ $t('invoices.cancelled') }}
+      </span>
+      <span>
+        {{ $t('invoices.cancelled_via_credit_note') }}:
+        <router-link
+          v-for="creditNote in invoiceData.credit_notes"
+          :key="creditNote.id"
+          :to="`/admin/invoices/${creditNote.id}/view`"
+          class="font-medium underline"
+        >
+          {{ creditNote.invoice_number }}
+        </router-link>
+      </span>
+    </div>
+
     <!-- Sidebar -->
     <div
       class="fixed top-0 left-0 hidden h-full pt-16 pb-[6.4rem] ml-56 bg-surface xl:ml-64 w-88 xl:block"

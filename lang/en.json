@@ -477,6 +477,8 @@
     "credit_note_created": "Credit note created successfully",
     "credit_note": "Credit Note",
     "original_invoice": "Original invoice",
+    "cancelled": "Cancelled",
+    "cancelled_via_credit_note": "Cancelled via credit note",
     "item": {
       "title": "Item Title",
       "description": "Description",

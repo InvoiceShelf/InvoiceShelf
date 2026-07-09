@@ -3,11 +3,13 @@
 use App\Mail\SendCreditNoteMail;
 use App\Models\Company;
 use App\Models\Invoice;
+use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
 use Laravel\Sanctum\Sanctum;
 
+use function Pest\Laravel\getJson;
 use function Pest\Laravel\postJson;
 
 beforeEach(function () {
@@ -140,6 +142,179 @@ test('generates a pdf for a credit note', function () {
 
     // A real PDF document was produced by the credit-note template.
     expect(substr($output, 0, 4))->toBe('%PDF');
+});
+
+test('settles the original invoice when a credit note is created', function () {
+    $invoice = Invoice::factory()
+        ->hasItems(1)
+        ->create([
+            'status' => Invoice::STATUS_SENT,
+            'sent' => true,
+            'paid_status' => Invoice::STATUS_UNPAID,
+            'sub_total' => 10000,
+            'total' => 10000,
+            'tax' => 0,
+            'discount_val' => 0,
+            'due_amount' => 10000,
+            'base_due_amount' => 10000,
+            'exchange_rate' => 1,
+        ]);
+
+    postJson("api/v1/invoices/{$invoice->id}/credit-note")->assertStatus(201);
+
+    $invoice->refresh();
+
+    // A full reversal nets the original invoice's balance to exactly zero, so
+    // it drops out of every "awaiting payment" view (issue #317 community ask;
+    // same behavior sevDesk applies and @gdarko praised in PR #536).
+    expect((int) $invoice->due_amount)->toBe(0);
+    expect((int) $invoice->base_due_amount)->toBe(0);
+    expect($invoice->paid_status)->toBe(Invoice::STATUS_PAID);
+    expect($invoice->status)->toBe(Invoice::STATUS_COMPLETED);
+});
+
+test('the credit note itself is created settled', function () {
+    $invoice = Invoice::factory()
+        ->hasItems(1)
+        ->create([
+            'sub_total' => 10000,
+            'total' => 10000,
+            'tax' => 0,
+            'discount_val' => 0,
+            'due_amount' => 10000,
+            'exchange_rate' => 1,
+        ]);
+
+    $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
+        ->assertStatus(201)
+        ->json('data.id');
+
+    $creditNote = Invoice::find($creditNoteId);
+
+    // The credit note pairs with the original invoice and nothing is owed on
+    // it, so it must never appear as an open (negative) balance anywhere.
+    expect((int) $creditNote->due_amount)->toBe(0);
+    expect((int) $creditNote->base_due_amount)->toBe(0);
+    expect($creditNote->paid_status)->toBe(Invoice::STATUS_PAID);
+    // Totals stay fully negated, though.
+    expect($creditNote->total)->toBe(-10000);
+});
+
+test('the original invoice exposes its credit notes for the UI banner', function () {
+    $invoice = Invoice::factory()->hasItems(1)->create();
+
+    $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
+        ->assertStatus(201)
+        ->json('data.id');
+
+    $creditNoteNumber = Invoice::find($creditNoteId)->invoice_number;
+
+    // Mirror of the credit note's related_invoice back-link: the original
+    // invoice must reference the storno document ("Storniert via ST-XXXX").
+    getJson("api/v1/invoices/{$invoice->id}")
+        ->assertOk()
+        ->assertJsonPath('data.credit_notes.0.id', $creditNoteId)
+        ->assertJsonPath('data.credit_notes.0.invoice_number', $creditNoteNumber);
+});
+
+test('cannot create a second credit note for the same invoice', function () {
+    $invoice = Invoice::factory()->hasItems(1)->create();
+
+    postJson("api/v1/invoices/{$invoice->id}/credit-note")->assertStatus(201);
+
+    // The invoice is already fully reversed; a second full reversal would
+    // double-negate the books. Domain rule violation => 422.
+    postJson("api/v1/invoices/{$invoice->id}/credit-note")->assertStatus(422);
+
+    expect($invoice->creditNotes()->count())->toBe(1);
+});
+
+test('deleting a credit note restores the original invoice balance', function () {
+    $invoice = Invoice::factory()
+        ->hasItems(1)
+        ->create([
+            'status' => Invoice::STATUS_SENT,
+            'sent' => true,
+            'paid_status' => Invoice::STATUS_UNPAID,
+            'sub_total' => 10000,
+            'total' => 10000,
+            'tax' => 0,
+            'discount_val' => 0,
+            'due_amount' => 10000,
+            'base_due_amount' => 10000,
+            'exchange_rate' => 1,
+        ]);
+
+    $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
+        ->assertStatus(201)
+        ->json('data.id');
+
+    expect((int) $invoice->fresh()->due_amount)->toBe(0);
+
+    postJson('api/v1/invoices/delete', ['ids' => [$creditNoteId]])
+        ->assertOk()
+        ->assertJson(['success' => true]);
+
+    $invoice->refresh();
+
+    // Mirror of the create-side adjustment (PR #536's delete reversal).
+    expect((int) $invoice->due_amount)->toBe(10000);
+    expect((int) $invoice->base_due_amount)->toBe(10000);
+    expect($invoice->paid_status)->toBe(Invoice::STATUS_UNPAID);
+    expect($invoice->status)->toBe(Invoice::STATUS_SENT);
+});
+
+test('deleting a credit note restores a partially paid balance from payments', function () {
+    $invoice = Invoice::factory()
+        ->hasItems(1)
+        ->create([
+            'status' => Invoice::STATUS_SENT,
+            'sent' => true,
+            'paid_status' => Invoice::STATUS_PARTIALLY_PAID,
+            'sub_total' => 10000,
+            'total' => 10000,
+            'tax' => 0,
+            'discount_val' => 0,
+            'due_amount' => 6000,
+            'base_due_amount' => 6000,
+            'exchange_rate' => 1,
+        ]);
+
+    Payment::factory()->create([
+        'invoice_id' => $invoice->id,
+        'customer_id' => $invoice->customer_id,
+        'amount' => 4000,
+    ]);
+
+    $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
+        ->assertStatus(201)
+        ->json('data.id');
+
+    expect((int) $invoice->fresh()->due_amount)->toBe(0);
+
+    postJson('api/v1/invoices/delete', ['ids' => [$creditNoteId]])
+        ->assertOk();
+
+    $invoice->refresh();
+
+    // due = total - recorded payments, never a stale pre-storno snapshot.
+    expect((int) $invoice->due_amount)->toBe(6000);
+    expect($invoice->paid_status)->toBe(Invoice::STATUS_PARTIALLY_PAID);
+});
+
+test('deleting the original invoice and its credit note together succeeds', function () {
+    $invoice = Invoice::factory()->hasItems(1)->create();
+
+    $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
+        ->assertStatus(201)
+        ->json('data.id');
+
+    postJson('api/v1/invoices/delete', ['ids' => [$invoice->id, $creditNoteId]])
+        ->assertOk()
+        ->assertJson(['success' => true]);
+
+    $this->assertDatabaseMissing('invoices', ['id' => $invoice->id]);
+    $this->assertDatabaseMissing('invoices', ['id' => $creditNoteId]);
 });
 
 test('sends a credit note to the customer by email', function () {

@@ -22,6 +22,11 @@ export type DiscountType = 'fixed' | 'percentage'
 
 export type InvoiceType = 'INVOICE' | 'CREDIT_NOTE'
 
+export interface CreditNoteRef {
+  id: number
+  invoice_number: string
+}
+
 export interface RelatedInvoice {
   id: number
   invoice_number: string
@@ -65,6 +70,7 @@ export interface Invoice {
   type: InvoiceType
   related_invoice_id: number | null
   related_invoice?: RelatedInvoice | null
+  credit_notes?: CreditNoteRef[]
   status: InvoiceStatus
   paid_status: InvoicePaidStatus
   tax_per_item: string | null

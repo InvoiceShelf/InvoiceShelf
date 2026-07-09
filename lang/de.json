@@ -459,6 +459,8 @@
     "credit_note_created": "Stornorechnung erfolgreich erstellt",
     "credit_note": "Stornorechnung",
     "original_invoice": "Originalrechnung",
+    "cancelled": "Storniert",
+    "cancelled_via_credit_note": "Storniert via Stornorechnung",
     "item": {
       "title": "Titel des Artikels",
       "description": "Beschreibung",

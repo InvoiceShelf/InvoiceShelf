@@ -316,7 +316,18 @@
                 {{ $t('invoices.overdue') }}
               </BasePaidStatusBadge>
 
+              <!-- An invoice reversed by a credit note is settled but NOT
+                   genuinely paid: show a distinct "Cancelled" badge instead
+                   of the generic paid badge so the two can't be confused. -->
+              <span
+                v-if="row.data.type !== 'CREDIT_NOTE' && row.data.credit_notes?.length"
+                class="inline-block px-1 py-0.5 ml-2 text-xs font-medium rounded bg-amber-100 text-amber-800 whitespace-nowrap"
+              >
+                {{ $t('invoices.cancelled') }}
+              </span>
+
               <BasePaidStatusBadge
+                v-else
                 :status="row.data.paid_status"
                 class="px-1 py-0.5 ml-2"
               >

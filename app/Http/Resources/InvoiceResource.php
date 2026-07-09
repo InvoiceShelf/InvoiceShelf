@@ -59,6 +59,15 @@ class InvoiceResource extends JsonResource
             'sales_tax_type' => $this->sales_tax_type,
             'sales_tax_address_type' => $this->sales_tax_address_type,
             'overdue' => $this->overdue,
+            // Credit notes reversing this invoice (minimal reference so the
+            // UI can flag the invoice as cancelled and link to the storno
+            // document, mirroring the related_invoice back-link).
+            'credit_notes' => $this->when($this->creditNotes()->exists(), function () {
+                return $this->creditNotes->map(fn ($creditNote) => [
+                    'id' => $creditNote->id,
+                    'invoice_number' => $creditNote->invoice_number,
+                ])->values();
+            }),
             'items' => $this->when($this->items()->exists(), function () {
                 return InvoiceItemResource::collection($this->items);
             }),
