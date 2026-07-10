@@ -43,7 +43,7 @@
         <InvoiceDropdown
           class="ml-3"
           :row="invoiceData"
-          :load-data="() => loadInvoices()"
+          :load-data="refreshInvoiceList"
           :can-edit="canEdit"
           :can-view="canView"
           :can-create="canCreate"
@@ -214,6 +214,16 @@
               >
                 <BaseInvoiceStatusLabel :status="invoice.status" />
               </BaseEstimateStatusBadge>
+
+              <!-- An invoice reversed by a credit note is cancelled: show a
+                   distinct badge so it's clear at a glance in the list,
+                   mirroring InvoiceIndexView.vue's cell-due_amount badge. -->
+              <span
+                v-if="invoice.type !== 'CREDIT_NOTE' && invoice.credit_notes?.length"
+                class="inline-block px-1 py-0.5 ml-1 text-xs font-medium rounded bg-amber-100 text-amber-800 whitespace-nowrap"
+              >
+                {{ $t('invoices.cancelled') }}
+              </span>
             </div>
 
             <div class="flex-1 whitespace-nowrap right">
@@ -488,6 +498,15 @@ function onSearched(): void {
     invoiceList.value = []
     loadInvoices()
   }, 500)
+}
+
+// Reset-and-refetch the sidebar list from page 1. Used after actions that
+// change which invoices exist or their status (e.g. creating a credit
+// note), since `loadInvoices()` alone only appends (it's built for
+// infinite-scroll pagination) and would duplicate already-loaded rows.
+function refreshInvoiceList(): void {
+  invoiceList.value = []
+  loadInvoices()
 }
 
 function sortData(): void {

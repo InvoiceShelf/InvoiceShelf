@@ -277,6 +277,8 @@ function createCreditNote(): void {
         message: t('invoices.credit_note_created'),
       })
       router.push(`/admin/invoices/${response.data.data.id}/view`)
+      props.loadData?.()
+      props.table?.refresh()
     }
   })
 }
