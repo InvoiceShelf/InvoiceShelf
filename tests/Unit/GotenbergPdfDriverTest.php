@@ -59,9 +59,9 @@ it('renders companion header and footer views when they exist alongside the temp
     View::shouldReceive('exists')->andReturnUsing(
         fn (string $name) => str_ends_with($name, '_header') || str_ends_with($name, '_footer')
     );
-    View::shouldReceive('make')->with('invoice.template', Mockery::any(), Mockery::any())->andReturn($fakeView)->once();
-    View::shouldReceive('make')->with('invoice.template_header', Mockery::any(), Mockery::any())->andReturn($fakeView)->once();
-    View::shouldReceive('make')->with('invoice.template_footer', Mockery::any(), Mockery::any())->andReturn($fakeView)->once();
+    View::shouldReceive('make')->with('invoice.template')->andReturn($fakeView)->once();
+    View::shouldReceive('make')->with('invoice.template_header')->andReturn($fakeView)->once();
+    View::shouldReceive('make')->with('invoice.template_footer')->andReturn($fakeView)->once();
 
     try {
         (new GotenbergPdfDriver)->loadView('invoice.template');
