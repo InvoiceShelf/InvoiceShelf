@@ -36,24 +36,25 @@ class GotenbergPdfDriver
         $marginTop = $hasHeader ? config('pdf.connections.gotenberg.header_margin', '25mm') : 0;
         $marginBottom = $hasFooter ? config('pdf.connections.gotenberg.footer_margin', '20mm') : 0;
 
-        $request = Gotenberg::chromium($host)
+        $chromiumPdf = Gotenberg::chromium($host)
             ->pdf()
             ->margins($marginTop, $marginBottom, 0, 0)
-            ->paperSize($papersize[0], $papersize[1])
-            ->html(
-                Stream::string(
-                    'index.html',
-                    View::make($viewname)->render(),
-                )
-            );
+            ->paperSize($papersize[0], $papersize[1]);
 
         if ($hasHeader) {
-            $request->header(Stream::string('header.html', View::make($headerView)->render()));
+            $chromiumPdf->header(Stream::string('header.html', View::make($headerView)->render()));
         }
 
         if ($hasFooter) {
-            $request->footer(Stream::string('footer.html', View::make($footerView)->render()));
+            $chromiumPdf->footer(Stream::string('footer.html', View::make($footerView)->render()));
         }
+
+        $request = $chromiumPdf->html(
+            Stream::string(
+                'index.html',
+                View::make($viewname)->render(),
+            )
+        );
 
         $result = Gotenberg::send($request);
 
