@@ -162,8 +162,9 @@ test('get pdf configuration', function () {
         ->assertJsonStructure([
             'pdf_driver',
             'gotenberg_host',
-            'gotenberg_margins',
             'gotenberg_papersize',
+            'gotenberg_header_margin',
+            'gotenberg_footer_margin',
         ]);
 });
 

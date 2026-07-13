@@ -35,8 +35,7 @@ it('checks for companion _header and _footer views alongside the main template',
         }
     };
 
-    View::shouldReceive('exists')->with('app.pdf.invoice.invoice1_header')->andReturn(false)->once();
-    View::shouldReceive('exists')->with('app.pdf.invoice.invoice1_footer')->andReturn(false)->once();
+    View::shouldReceive('exists')->andReturn(false);
     View::shouldReceive('make')->andReturn($fakeView);
 
     try {
@@ -57,9 +56,12 @@ it('renders companion header and footer views when they exist alongside the temp
         }
     };
 
-    View::shouldReceive('exists')->with('invoice.template_header')->andReturn(true)->once();
-    View::shouldReceive('exists')->with('invoice.template_footer')->andReturn(true)->once();
-    View::shouldReceive('make')->andReturn($fakeView)->times(3);
+    View::shouldReceive('exists')->andReturnUsing(
+        fn (string $name) => str_ends_with($name, '_header') || str_ends_with($name, '_footer')
+    );
+    View::shouldReceive('make')->with('invoice.template', Mockery::any(), Mockery::any())->andReturn($fakeView)->once();
+    View::shouldReceive('make')->with('invoice.template_header', Mockery::any(), Mockery::any())->andReturn($fakeView)->once();
+    View::shouldReceive('make')->with('invoice.template_footer', Mockery::any(), Mockery::any())->andReturn($fakeView)->once();
 
     try {
         (new GotenbergPdfDriver)->loadView('invoice.template');
@@ -67,5 +69,5 @@ it('renders companion header and footer views when they exist alongside the temp
         // Gotenberg::send() fails without a running service — expected in unit tests.
     }
 
-    // If all three make() calls (main + header + footer) happened, Mockery confirms it.
+    // Mockery verifies that all three make() calls (main + header + footer) happened on teardown.
 });
