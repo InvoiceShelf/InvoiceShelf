@@ -11,6 +11,7 @@ export interface GotenbergConfig {
   pdf_driver: string
   gotenberg_host: string
   gotenberg_papersize: string
+  gotenberg_allow_private_host: boolean
 }
 
 export type PdfConfig = DomPdfConfig | GotenbergConfig

@@ -30,16 +30,18 @@ class PDFConfigurationRequest extends FormRequest
                 ];
 
             case 'gotenberg':
+                $allowPrivateHost = $this->boolean('gotenberg_allow_private_host');
+
                 return [
                     'pdf_driver' => [
                         'required',
                         'string',
                     ],
-                    'gotenberg_host' => [
+                    'gotenberg_host' => array_values(array_filter([
                         'required',
                         'url',
-                        new PublicHttpUrl,
-                    ],
+                        $allowPrivateHost ? null : new PublicHttpUrl,
+                    ])),
                     'gotenberg_papersize' => [
                         'required',
                         'string',
@@ -50,9 +52,9 @@ class PDFConfigurationRequest extends FormRequest
                             }
                         },
                     ],
-                    'gotenberg_margins' => [
+                    'gotenberg_allow_private_host' => [
                         'nullable',
-                        'string',
+                        'boolean',
                     ],
                 ];
 

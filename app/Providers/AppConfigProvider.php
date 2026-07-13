@@ -52,6 +52,7 @@ class AppConfigProvider extends ServiceProvider
                 'gotenberg_host',
                 'gotenberg_papersize',
                 'gotenberg_margins',
+                'gotenberg_allow_private_host',
             ]);
 
             if (! empty($pdfSettings['pdf_driver'])) {
@@ -71,6 +72,9 @@ class AppConfigProvider extends ServiceProvider
                         }
                         if (! empty($pdfSettings['gotenberg_margins'])) {
                             Config::set('pdf.connections.gotenberg.margins', $pdfSettings['gotenberg_margins']);
+                        }
+                        if (isset($pdfSettings['gotenberg_allow_private_host'])) {
+                            Config::set('pdf.connections.gotenberg.allow_private_host', (bool) $pdfSettings['gotenberg_allow_private_host']);
                         }
                         break;
 

@@ -9,6 +9,7 @@ interface GotenbergForm {
   pdf_driver: string
   gotenberg_host: string
   gotenberg_papersize: string
+  gotenberg_allow_private_host: boolean
 }
 
 const props = withDefaults(
@@ -37,6 +38,7 @@ const form = reactive<GotenbergForm>({
   pdf_driver: 'gotenberg',
   gotenberg_host: '',
   gotenberg_papersize: '210mm 297mm',
+  gotenberg_allow_private_host: false,
 })
 
 function isValidServiceUrl(value: string): boolean {
@@ -70,6 +72,7 @@ const rules = computed(() => ({
   gotenberg_papersize: {
     required: helpers.withMessage(t('validation.required'), required),
   },
+  gotenberg_allow_private_host: {},
 }))
 
 const v$ = useVuelidate(rules, form)
@@ -85,6 +88,10 @@ onMounted(() => {
 
   if (typeof props.configData.gotenberg_papersize === 'string') {
     form.gotenberg_papersize = props.configData.gotenberg_papersize
+  }
+
+  if (typeof props.configData.gotenberg_allow_private_host === 'boolean') {
+    form.gotenberg_allow_private_host = props.configData.gotenberg_allow_private_host
   }
 })
 
@@ -157,6 +164,15 @@ function saveConfig(): void {
         />
       </BaseInputGroup>
     </BaseInputGrid>
+
+    <div class="mt-6 p-4 border border-amber-300 rounded-lg bg-amber-50 dark:bg-amber-950 dark:border-amber-700">
+      <BaseSwitchSection
+        :title="$t('settings.pdf.allow_private_host')"
+        :description="$t('settings.pdf.allow_private_host_warning')"
+      >
+        <BaseSwitch v-model="form.gotenberg_allow_private_host" />
+      </BaseSwitchSection>
+    </div>
 
     <div class="flex my-10">
       <BaseButton

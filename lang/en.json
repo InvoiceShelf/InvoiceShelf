@@ -1056,6 +1056,8 @@
       "papersize": "Papersize",
       "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
       "gotenberg_host": "Gotenberg service host",
+      "allow_private_host": "Allow private/local Gotenberg host",
+      "allow_private_host_warning": "Enable only if Gotenberg runs on a trusted private network (e.g. Docker Compose internal network). Disables SSRF protection for the configured host.",
       "pdf_variables_save_successfully": "PDF configuration saved successfully",
       "pdf_variables_save_error": "PDF configuration could not be saved"
     },

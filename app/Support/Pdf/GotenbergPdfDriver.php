@@ -21,10 +21,14 @@ class GotenbergPdfDriver
         // SSRF guard: gotenberg_host is an admin-supplied URL the server POSTs
         // the rendered HTML to. Block private/reserved/link-local targets even
         // if set via env/seed/stale config or reachable through DNS rebinding.
-        try {
-            PrivateNetworkGuard::assertAllowed((string) $host);
-        } catch (BlockedUrlException $e) {
-            throw new \InvalidArgumentException('Invalid Gotenberg host: '.$e->getMessage());
+        // The guard can be disabled when Gotenberg runs on a trusted private
+        // network (e.g. Docker Compose) via the allow_private_host setting.
+        if (! config('pdf.connections.gotenberg.allow_private_host', false)) {
+            try {
+                PrivateNetworkGuard::assertAllowed((string) $host);
+            } catch (BlockedUrlException $e) {
+                throw new \InvalidArgumentException('Invalid Gotenberg host: '.$e->getMessage());
+            }
         }
 
         $request = Gotenberg::chromium($host)

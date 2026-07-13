@@ -30,6 +30,7 @@ return [
         'gotenberg' => [
             'host' => env('GOTENBERG_HOST', 'http://pdf:3000'),
             'papersize' => env('GOTENBERG_PAPERSIZE', '210mm 297mm'),
+            'allow_private_host' => env('GOTENBERG_ALLOW_PRIVATE_HOST', false),
         ],
     ],
 
