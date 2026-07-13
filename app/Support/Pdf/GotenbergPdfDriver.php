@@ -6,6 +6,7 @@ use App\Support\Net\BlockedUrlException;
 use App\Support\Net\PrivateNetworkGuard;
 use Gotenberg\Gotenberg;
 use Gotenberg\Stream;
+use Illuminate\Support\Facades\View;
 
 class GotenbergPdfDriver
 {
@@ -27,16 +28,33 @@ class GotenbergPdfDriver
             throw new \InvalidArgumentException('Invalid Gotenberg host: '.$e->getMessage());
         }
 
+        $headerView = $viewname.'_header';
+        $footerView = $viewname.'_footer';
+        $hasHeader = View::exists($headerView);
+        $hasFooter = View::exists($footerView);
+
+        $marginTop = $hasHeader ? config('pdf.connections.gotenberg.header_margin', '25mm') : 0;
+        $marginBottom = $hasFooter ? config('pdf.connections.gotenberg.footer_margin', '20mm') : 0;
+
         $request = Gotenberg::chromium($host)
             ->pdf()
-            ->margins(0, 0, 0, 0)
+            ->margins($marginTop, $marginBottom, 0, 0)
             ->paperSize($papersize[0], $papersize[1])
             ->html(
                 Stream::string(
-                    'document.html',
+                    'index.html',
                     view($viewname)->render(),
                 )
             );
+
+        if ($hasHeader) {
+            $request->header(Stream::string('header.html', view($headerView)->render()));
+        }
+
+        if ($hasFooter) {
+            $request->footer(Stream::string('footer.html', view($footerView)->render()));
+        }
+
         $result = Gotenberg::send($request);
 
         return new GotenbergPdfResponse($result);

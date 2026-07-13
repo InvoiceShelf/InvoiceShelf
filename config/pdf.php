@@ -30,6 +30,8 @@ return [
         'gotenberg' => [
             'host' => env('GOTENBERG_HOST', 'http://pdf:3000'),
             'papersize' => env('GOTENBERG_PAPERSIZE', '210mm 297mm'),
+            'header_margin' => env('GOTENBERG_HEADER_MARGIN', '25mm'),
+            'footer_margin' => env('GOTENBERG_FOOTER_MARGIN', '20mm'),
         ],
     ],
 
