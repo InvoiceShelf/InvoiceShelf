@@ -43,16 +43,16 @@ class GotenbergPdfDriver
             ->html(
                 Stream::string(
                     'index.html',
-                    view($viewname)->render(),
+                    View::make($viewname)->render(),
                 )
             );
 
         if ($hasHeader) {
-            $request->header(Stream::string('header.html', view($headerView)->render()));
+            $request->header(Stream::string('header.html', View::make($headerView)->render()));
         }
 
         if ($hasFooter) {
-            $request->footer(Stream::string('footer.html', view($footerView)->render()));
+            $request->footer(Stream::string('footer.html', View::make($footerView)->render()));
         }
 
         $result = Gotenberg::send($request);
