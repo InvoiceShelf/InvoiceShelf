@@ -51,7 +51,8 @@ class AppConfigProvider extends ServiceProvider
                 'pdf_driver',
                 'gotenberg_host',
                 'gotenberg_papersize',
-                'gotenberg_margins',
+                'gotenberg_header_margin',
+                'gotenberg_footer_margin',
             ]);
 
             if (! empty($pdfSettings['pdf_driver'])) {
@@ -69,8 +70,11 @@ class AppConfigProvider extends ServiceProvider
                         if (! empty($pdfSettings['gotenberg_papersize'])) {
                             Config::set('pdf.connections.gotenberg.papersize', $pdfSettings['gotenberg_papersize']);
                         }
-                        if (! empty($pdfSettings['gotenberg_margins'])) {
-                            Config::set('pdf.connections.gotenberg.margins', $pdfSettings['gotenberg_margins']);
+                        if (! empty($pdfSettings['gotenberg_header_margin'])) {
+                            Config::set('pdf.connections.gotenberg.header_margin', $pdfSettings['gotenberg_header_margin']);
+                        }
+                        if (! empty($pdfSettings['gotenberg_footer_margin'])) {
+                            Config::set('pdf.connections.gotenberg.footer_margin', $pdfSettings['gotenberg_footer_margin']);
                         }
                         break;
 

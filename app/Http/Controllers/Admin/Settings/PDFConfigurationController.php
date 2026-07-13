@@ -52,14 +52,16 @@ class PDFConfigurationController extends Controller
             'pdf_driver',
             'gotenberg_host',
             'gotenberg_papersize',
-            'gotenberg_margins',
+            'gotenberg_header_margin',
+            'gotenberg_footer_margin',
         ]);
 
         $config = [
             'pdf_driver' => $pdfSettings['pdf_driver'] ?? config('pdf.driver'),
             'gotenberg_host' => $pdfSettings['gotenberg_host'] ?? config('pdf.connections.gotenberg.host'),
-            'gotenberg_margins' => $pdfSettings['gotenberg_margins'] ?? config('pdf.connections.gotenberg.margins'),
             'gotenberg_papersize' => $pdfSettings['gotenberg_papersize'] ?? config('pdf.connections.gotenberg.papersize'),
+            'gotenberg_header_margin' => $pdfSettings['gotenberg_header_margin'] ?? config('pdf.connections.gotenberg.header_margin'),
+            'gotenberg_footer_margin' => $pdfSettings['gotenberg_footer_margin'] ?? config('pdf.connections.gotenberg.footer_margin'),
         ];
 
         return response()->json($config);
@@ -103,7 +105,8 @@ class PDFConfigurationController extends Controller
                 $settings = array_merge($settings, [
                     'gotenberg_host' => $request->get('gotenberg_host'),
                     'gotenberg_papersize' => $request->get('gotenberg_papersize'),
-                    'gotenberg_margins' => $request->get('gotenberg_margins'),
+                    'gotenberg_header_margin' => $request->get('gotenberg_header_margin'),
+                    'gotenberg_footer_margin' => $request->get('gotenberg_footer_margin'),
                 ]);
                 break;
 

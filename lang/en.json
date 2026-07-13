@@ -1056,6 +1056,10 @@
       "papersize": "Papersize",
       "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
       "gotenberg_host": "Gotenberg service host",
+      "header_margin": "Header Margin",
+      "header_margin_hint": "Space reserved for the page header (e.g. \"25mm\"). Accepts: pt, px, pc, mm, cm, in.",
+      "footer_margin": "Footer Margin",
+      "footer_margin_hint": "Space reserved for the page footer (e.g. \"20mm\"). Accepts: pt, px, pc, mm, cm, in.",
       "pdf_variables_save_successfully": "PDF configuration saved successfully",
       "pdf_variables_save_error": "PDF configuration could not be saved"
     },

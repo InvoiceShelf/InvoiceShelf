@@ -9,6 +9,8 @@ interface GotenbergForm {
   pdf_driver: string
   gotenberg_host: string
   gotenberg_papersize: string
+  gotenberg_header_margin: string
+  gotenberg_footer_margin: string
 }
 
 const props = withDefaults(
@@ -37,6 +39,8 @@ const form = reactive<GotenbergForm>({
   pdf_driver: 'gotenberg',
   gotenberg_host: '',
   gotenberg_papersize: '210mm 297mm',
+  gotenberg_header_margin: '25mm',
+  gotenberg_footer_margin: '20mm',
 })
 
 function isValidServiceUrl(value: string): boolean {
@@ -70,6 +74,8 @@ const rules = computed(() => ({
   gotenberg_papersize: {
     required: helpers.withMessage(t('validation.required'), required),
   },
+  gotenberg_header_margin: {},
+  gotenberg_footer_margin: {},
 }))
 
 const v$ = useVuelidate(rules, form)
@@ -85,6 +91,14 @@ onMounted(() => {
 
   if (typeof props.configData.gotenberg_papersize === 'string') {
     form.gotenberg_papersize = props.configData.gotenberg_papersize
+  }
+
+  if (typeof props.configData.gotenberg_header_margin === 'string') {
+    form.gotenberg_header_margin = props.configData.gotenberg_header_margin
+  }
+
+  if (typeof props.configData.gotenberg_footer_margin === 'string') {
+    form.gotenberg_footer_margin = props.configData.gotenberg_footer_margin
   }
 })
 
@@ -154,6 +168,30 @@ function saveConfig(): void {
           type="text"
           name="gotenberg_papersize"
           @input="v$.gotenberg_papersize.$touch()"
+        />
+      </BaseInputGroup>
+
+      <BaseInputGroup
+        :label="$t('settings.pdf.header_margin')"
+        :help-text="$t('settings.pdf.header_margin_hint')"
+      >
+        <BaseInput
+          v-model.trim="form.gotenberg_header_margin"
+          :content-loading="isFetchingInitialData"
+          type="text"
+          name="gotenberg_header_margin"
+        />
+      </BaseInputGroup>
+
+      <BaseInputGroup
+        :label="$t('settings.pdf.footer_margin')"
+        :help-text="$t('settings.pdf.footer_margin_hint')"
+      >
+        <BaseInput
+          v-model.trim="form.gotenberg_footer_margin"
+          :content-loading="isFetchingInitialData"
+          type="text"
+          name="gotenberg_footer_margin"
         />
       </BaseInputGroup>
     </BaseInputGrid>

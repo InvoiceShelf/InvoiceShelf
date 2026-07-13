@@ -50,9 +50,15 @@ class PDFConfigurationRequest extends FormRequest
                             }
                         },
                     ],
-                    'gotenberg_margins' => [
+                    'gotenberg_header_margin' => [
                         'nullable',
                         'string',
+                        'regex:/^\d+(\.\d+)?(pt|px|pc|mm|cm|in)$/',
+                    ],
+                    'gotenberg_footer_margin' => [
+                        'nullable',
+                        'string',
+                        'regex:/^\d+(\.\d+)?(pt|px|pc|mm|cm|in)$/',
                     ],
                 ];
 

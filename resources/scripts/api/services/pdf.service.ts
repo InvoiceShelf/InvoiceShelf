@@ -11,6 +11,8 @@ export interface GotenbergConfig {
   pdf_driver: string
   gotenberg_host: string
   gotenberg_papersize: string
+  gotenberg_header_margin: string
+  gotenberg_footer_margin: string
 }
 
 export type PdfConfig = DomPdfConfig | GotenbergConfig
