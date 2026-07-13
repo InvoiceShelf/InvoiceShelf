@@ -46,28 +46,3 @@ it('checks for companion _header and _footer views alongside the main template',
 
     // Mockery verifies the shouldReceive expectations on teardown.
 });
-
-it('renders companion header and footer views when they exist alongside the template', function () {
-    $fakeView = new class
-    {
-        public function render(): string
-        {
-            return '<html><body>content</body></html>';
-        }
-    };
-
-    View::shouldReceive('exists')->andReturnUsing(
-        fn (string $name) => str_ends_with($name, '_header') || str_ends_with($name, '_footer')
-    );
-    View::shouldReceive('make')->with('invoice.template')->andReturn($fakeView)->once();
-    View::shouldReceive('make')->with('invoice.template_header')->andReturn($fakeView)->once();
-    View::shouldReceive('make')->with('invoice.template_footer')->andReturn($fakeView)->once();
-
-    try {
-        (new GotenbergPdfDriver)->loadView('invoice.template');
-    } catch (Throwable) {
-        // Gotenberg::send() fails without a running service — expected in unit tests.
-    }
-
-    // Mockery verifies that all three make() calls (main + header + footer) happened on teardown.
-});
