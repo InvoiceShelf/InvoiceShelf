@@ -124,6 +124,42 @@ jobs:
           tag: ${{ github.ref }}
           overwrite: true
 
+      # Auto-register this release on the website updater backend so deployed installs
+      # are offered it. The zip is already built here (./InvoiceShelf.zip) and the checkout
+      # is present for config/installer.php, so this needs no re-download and can't race the
+      # asset upload. Idempotent per version (the endpoint upserts). Release fields are passed
+      # via env (not inline ${{ }}) to avoid shell injection from the release body.
+      - name: Register release on the website updater
+        env:
+          CI_RELEASE_TOKEN: ${{ secrets.WEBSITE_RELEASE_TOKEN }}
+          TAG: ${{ github.event.release.tag_name }}
+          PRERELEASE: ${{ github.event.release.prerelease }}
+          PUBLISHED: ${{ github.event.release.published_at }}
+          BODY: ${{ github.event.release.body }}
+        run: |
+          if [ -z "$CI_RELEASE_TOKEN" ]; then
+            echo "::warning::WEBSITE_RELEASE_TOKEN not set — skipping updater registration for $TAG"
+            exit 0
+          fi
+          MIN_PHP=$(php -r '$c=require "config/installer.php"; echo $c["core"]["minPhpVersion"] ?? "";')
+          EXTS=$(php -r '$c=require "config/installer.php"; echo implode(", ", $c["requirements"]["php"] ?? []);')
+          printf '%s' "$BODY" > /tmp/changelog.txt
+          case "$TAG" in
+            *-*) CHANNEL=insider ;;
+            *)   [ "$PRERELEASE" = "true" ] && CHANNEL=insider || CHANNEL=stable ;;
+          esac
+          echo "Registering $TAG (channel=$CHANNEL, min_php=$MIN_PHP) on the updater"
+          curl -fsS --retry 3 --retry-delay 5 -X POST https://invoiceshelf.com/api/releases \
+            -H "Authorization: Bearer $CI_RELEASE_TOKEN" \
+            -F "version=$TAG" \
+            -F "channel=$CHANNEL" \
+            -F "released_at=$PUBLISHED" \
+            -F "min_php_version=$MIN_PHP" \
+            -F "extensions=$EXTS" \
+            -F "changelog=<changelog.txt" \
+            -F "description=<changelog.txt" \
+            -F "release_file=@InvoiceShelf.zip"
+
   release_docker_build:
     name: 🐳 Release Docker Build
     if: github.event_name == 'release'
