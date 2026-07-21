@@ -317,7 +317,7 @@
             <tr>
                 <td width="50%" class="header-section-left">
                     @if ($logo)
-                        <img class="header-logo" style="height:50px" src="{{ \App\Services\Pdf\ImageUtils::toBase64Src($logo) }}" alt="Company Logo">
+                        <img class="header-logo" style="height:50px" src="{{ \App\Support\Pdf\ImageUtils::toBase64Src($logo) }}" alt="Company Logo">
                     @else
                         <h1 class="header-logo"> {{ $invoice->customer->company->name }} </h1>
                     @endif
