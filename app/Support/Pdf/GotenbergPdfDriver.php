@@ -19,11 +19,12 @@ class GotenbergPdfDriver
         $host = config('pdf.connections.gotenberg.host');
 
         // SSRF guard: gotenberg_host is an admin-supplied URL the server POSTs
-        // the rendered HTML to. Block private/reserved/link-local targets even
-        // if set via env/seed/stale config or reachable through DNS rebinding.
-        // The guard can be disabled when Gotenberg runs on a trusted private
-        // network (e.g. Docker Compose) via the allow_private_host setting.
-        if (! config('pdf.connections.gotenberg.allow_private_host', false)) {
+        // the rendered HTML to, and whose response is streamed back as the PDF.
+        // Block private/reserved/link-local targets even if set via env/seed/stale
+        // config or reachable through DNS rebinding. The single exception is the
+        // host the operator declared in GOTENBERG_ALLOWED_PRIVATE_HOST, which is
+        // how a sidecar deployment is supported — see GotenbergHostPolicy.
+        if (! GotenbergHostPolicy::isExemptFromPrivateNetworkGuard((string) $host)) {
             try {
                 PrivateNetworkGuard::assertAllowed((string) $host);
             } catch (BlockedUrlException $e) {

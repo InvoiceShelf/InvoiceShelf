@@ -30,7 +30,16 @@ return [
         'gotenberg' => [
             'host' => env('GOTENBERG_HOST', 'http://pdf:3000'),
             'papersize' => env('GOTENBERG_PAPERSIZE', '210mm 297mm'),
-            'allow_private_host' => env('GOTENBERG_ALLOW_PRIVATE_HOST', false),
+
+            /*
+             * Gotenberg usually runs as a sidecar on a private network, which the
+             * SSRF guard rejects. Name that one host here to exempt it — e.g.
+             * GOTENBERG_ALLOWED_PRIVATE_HOST=http://pdf:3000. Only this exact value
+             * is exempt; the guard still blocks every other private target, so the
+             * host setting cannot be repointed at an internal service. No default:
+             * the `host` fallback above must never be trusted implicitly.
+             */
+            'allowed_private_host' => env('GOTENBERG_ALLOWED_PRIVATE_HOST'),
         ],
     ],
 

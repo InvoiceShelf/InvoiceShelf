@@ -53,7 +53,6 @@ class PDFConfigurationController extends Controller
             'gotenberg_host',
             'gotenberg_papersize',
             'gotenberg_margins',
-            'gotenberg_allow_private_host',
         ]);
 
         $config = [
@@ -61,7 +60,6 @@ class PDFConfigurationController extends Controller
             'gotenberg_host' => $pdfSettings['gotenberg_host'] ?? config('pdf.connections.gotenberg.host'),
             'gotenberg_margins' => $pdfSettings['gotenberg_margins'] ?? config('pdf.connections.gotenberg.margins'),
             'gotenberg_papersize' => $pdfSettings['gotenberg_papersize'] ?? config('pdf.connections.gotenberg.papersize'),
-            'gotenberg_allow_private_host' => (bool) ($pdfSettings['gotenberg_allow_private_host'] ?? config('pdf.connections.gotenberg.allow_private_host', false)),
         ];
 
         return response()->json($config);
@@ -106,7 +104,6 @@ class PDFConfigurationController extends Controller
                     'gotenberg_host' => $request->get('gotenberg_host'),
                     'gotenberg_papersize' => $request->get('gotenberg_papersize'),
                     'gotenberg_margins' => $request->get('gotenberg_margins'),
-                    'gotenberg_allow_private_host' => $request->boolean('gotenberg_allow_private_host'),
                 ]);
                 break;
 

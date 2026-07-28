@@ -3,7 +3,9 @@
 namespace App\Http\Requests;
 
 use App\Rules\PublicHttpUrl;
+use App\Support\Pdf\GotenbergHostPolicy;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class PDFConfigurationRequest extends FormRequest
 {
@@ -30,18 +32,22 @@ class PDFConfigurationRequest extends FormRequest
                 ];
 
             case 'gotenberg':
-                $allowPrivateHost = $this->boolean('gotenberg_allow_private_host');
+                // The operator-declared Gotenberg host skips the private-network
+                // check; anything else is still held to it. See GotenbergHostPolicy.
+                $isDeclaredHost = GotenbergHostPolicy::isExemptFromPrivateNetworkGuard(
+                    $this->input('gotenberg_host')
+                );
 
                 return [
                     'pdf_driver' => [
                         'required',
                         'string',
                     ],
-                    'gotenberg_host' => array_values(array_filter([
+                    'gotenberg_host' => [
                         'required',
                         'url',
-                        $allowPrivateHost ? null : new PublicHttpUrl,
-                    ])),
+                        Rule::when(! $isDeclaredHost, [new PublicHttpUrl]),
+                    ],
                     'gotenberg_papersize' => [
                         'required',
                         'string',
@@ -52,9 +58,9 @@ class PDFConfigurationRequest extends FormRequest
                             }
                         },
                     ],
-                    'gotenberg_allow_private_host' => [
+                    'gotenberg_margins' => [
                         'nullable',
-                        'boolean',
+                        'string',
                     ],
                 ];
 
