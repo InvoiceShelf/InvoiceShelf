@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Models\CompanySetting;
 use App\Models\Customer;
 use App\Models\Invoice;
+use App\Rules\PdfTemplateExists;
 use App\Support\DocumentTotals;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -63,6 +64,7 @@ class InvoicesRequest extends FormRequest
             ],
             'template_name' => [
                 'required',
+                new PdfTemplateExists('invoice'),
             ],
             'items' => [
                 'required',

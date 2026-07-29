@@ -64,15 +64,23 @@ class PdfTemplateUtils
             );
         });
 
-        return array_map(function ($file) use ($templateType, $imageFormat) {
+        $formatted = [];
+
+        foreach ($files as $file) {
             $templateName = Str::before(basename($file['path']), '.blade.php');
 
             if ($file['custom']) {
                 $imagePath = self::getCustomTemplateFilePath($templateType, sprintf('%s.png', $templateName));
-                $isCustomTemplate = true;
+
+                // A custom template needs a same-named .png. Without one the
+                // picker used to render <img src=""> — a blank tile with no hint
+                // that anything was missing. Fall back to the preview of the
+                // template make:template clones from.
+                if (! File::exists($imagePath)) {
+                    $imagePath = resource_path("static/img/PDF/{$templateType}1.png");
+                }
             } else {
                 $imagePath = resource_path('static/img/PDF/'.$templateName.'.png');
-                $isCustomTemplate = false;
             }
 
             if (empty($imageFormat)) {
@@ -83,12 +91,19 @@ class PdfTemplateUtils
                 $imageValue = File::exists($imagePath) ? ImageUtils::toBase64Src($imagePath) : '';
             }
 
-            return [
+            // Keyed by name so a custom template that shares a built-in's name
+            // appears once rather than twice. Custom entries come last and so
+            // win, which matches what findFormattedTemplate() already resolved
+            // to — the picker just used to show both tiles with no way to tell
+            // which one you were clicking.
+            $formatted[$templateName] = [
                 'name' => $templateName,
                 'path' => $imageValue,
-                'custom' => $isCustomTemplate,
+                'custom' => $file['custom'],
             ];
-        }, $files);
+        }
+
+        return array_values($formatted);
     }
 
     /**

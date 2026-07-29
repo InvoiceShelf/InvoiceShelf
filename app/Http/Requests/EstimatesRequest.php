@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Models\CompanySetting;
 use App\Models\Customer;
 use App\Models\Estimate;
+use App\Rules\PdfTemplateExists;
 use App\Support\DocumentTotals;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -64,6 +65,7 @@ class EstimatesRequest extends FormRequest
             ],
             'template_name' => [
                 'required',
+                new PdfTemplateExists('estimate'),
             ],
             'items' => [
                 'required',

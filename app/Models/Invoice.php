@@ -303,10 +303,9 @@ class Invoice extends Model implements HasMedia
     {
         $templateName = Str::replace('invoice', 'estimate', $this->template_name);
 
-        $names = [];
-        foreach (PdfTemplateUtils::getFormattedTemplates('estimate') as $template) {
-            $names[] = $template['name'];
-        }
+        // Empty image format: only the names are wanted here, and the default
+        // builds a base64 preview for every template to answer that.
+        $names = array_column(PdfTemplateUtils::getFormattedTemplates('estimate', ''), 'name');
 
         if (! in_array($templateName, $names)) {
             $templateName = 'estimate1';
