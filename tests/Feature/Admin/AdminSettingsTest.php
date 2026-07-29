@@ -228,6 +228,60 @@ test('pdf configuration rejects an unknown orientation', function () {
  * with !empty(), and '0mm' is fine there, but a bare '0' would not be -- this
  * pins the behaviour either way.
  */
+test('page numbers can be turned on and read back', function () {
+    postJson('/api/v1/pdf/config', [
+        'pdf_driver' => 'gotenberg',
+        'gotenberg_host' => 'https://pdf.example.com',
+        'pdf_paper_width' => '210mm',
+        'pdf_paper_height' => '297mm',
+        'pdf_orientation' => 'portrait',
+        'pdf_page_numbers' => true,
+    ])->assertOk();
+
+    getJson('/api/v1/pdf/config')->assertOk()->assertJson(['pdf_page_numbers' => true]);
+});
+
+/**
+ * The dompdf form does not render the page-numbers control, since dompdf cannot
+ * repeat a footer. Saving from it must leave the stored choice alone rather than
+ * writing an absent field as false.
+ */
+test('saving from the dompdf form leaves the page-number choice alone', function () {
+    postJson('/api/v1/pdf/config', [
+        'pdf_driver' => 'gotenberg',
+        'gotenberg_host' => 'https://pdf.example.com',
+        'pdf_paper_width' => '210mm',
+        'pdf_paper_height' => '297mm',
+        'pdf_orientation' => 'portrait',
+        'pdf_page_numbers' => true,
+    ])->assertOk();
+
+    postJson('/api/v1/pdf/config', [
+        'pdf_driver' => 'dompdf',
+        'pdf_paper_width' => '210mm',
+        'pdf_paper_height' => '297mm',
+        'pdf_orientation' => 'portrait',
+    ])->assertOk();
+
+    getJson('/api/v1/pdf/config')->assertOk()->assertJson(['pdf_page_numbers' => true]);
+});
+
+test('page numbers can be turned back off', function () {
+    postJson('/api/v1/pdf/config', [
+        'pdf_driver' => 'gotenberg',
+        'gotenberg_host' => 'https://pdf.example.com',
+        'pdf_paper_width' => '210mm',
+        'pdf_paper_height' => '297mm',
+        'pdf_orientation' => 'portrait',
+        'pdf_page_numbers' => false,
+    ])->assertOk();
+
+    // Stored as the string '0', which !empty() would have discarded.
+    $this->assertDatabaseHas('settings', ['option' => 'pdf_page_numbers', 'value' => '0']);
+
+    getJson('/api/v1/pdf/config')->assertOk()->assertJson(['pdf_page_numbers' => false]);
+});
+
 test('a zero margin survives the round trip', function () {
     postJson('/api/v1/pdf/config', [
         'pdf_driver' => 'dompdf',

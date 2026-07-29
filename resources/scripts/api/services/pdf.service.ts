@@ -15,6 +15,12 @@ export interface PdfPageSetup {
   pdf_margin_right: string
   pdf_margin_bottom: string
   pdf_margin_left: string
+  /**
+   * Gotenberg only: Chromium repeats a footer template and substitutes the page
+   * counts. Carried by both driver forms even though only one renders the
+   * control, so saving from dompdf cannot clear the choice.
+   */
+  pdf_page_numbers: boolean
 }
 
 export interface DomPdfConfig extends PdfPageSetup {

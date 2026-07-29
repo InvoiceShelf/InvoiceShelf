@@ -45,6 +45,7 @@ class PDFConfigurationRequest extends FormRequest
             'pdf_margin_right' => $length,
             'pdf_margin_bottom' => $length,
             'pdf_margin_left' => $length,
+            'pdf_page_numbers' => ['sometimes', 'boolean'],
         ];
     }
 

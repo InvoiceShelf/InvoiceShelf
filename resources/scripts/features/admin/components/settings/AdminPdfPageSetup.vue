@@ -17,6 +17,12 @@ const form = defineModel<PdfPageSetup>({ required: true })
 defineProps<{
   isFetchingInitialData?: boolean
   errors?: Record<string, string | false | undefined>
+  /**
+   * Page numbers rely on Chromium repeating a footer template, which dompdf has
+   * no equivalent of, so the control only appears for Gotenberg. The value is
+   * still carried by both forms so saving from dompdf cannot clear it.
+   */
+  supportsPageNumbers?: boolean
 }>()
 
 // Convenience only. Storage is always a pair of CSS lengths, because Gotenberg
@@ -166,6 +172,14 @@ const orientations = computed(() => [
         type="text"
         name="pdf_margin_right"
       />
+    </BaseInputGroup>
+
+    <BaseInputGroup
+      v-if="supportsPageNumbers"
+      :label="$t('settings.pdf.page_numbers')"
+      :help-text="$t('settings.pdf.page_numbers_hint')"
+    >
+      <BaseSwitch v-model="form.pdf_page_numbers" class="flex" />
     </BaseInputGroup>
   </BaseInputGrid>
 </template>

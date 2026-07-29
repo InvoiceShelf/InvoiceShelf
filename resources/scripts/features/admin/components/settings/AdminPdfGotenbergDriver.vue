@@ -148,6 +148,7 @@ function saveConfig(): void {
       class="mt-6"
       :is-fetching-initial-data="isFetchingInitialData"
       :errors="pageErrors"
+      supports-page-numbers
     />
 
     <div class="flex my-10">

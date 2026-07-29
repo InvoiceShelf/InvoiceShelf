@@ -1066,7 +1066,9 @@
       "margin_right": "Right Margin",
       "margin_bottom": "Bottom Margin",
       "margin_left": "Left Margin",
-      "length_hint": "A number and a unit, e.g. \"210mm\". Accepts: pt, px, pc, mm, cm, in."
+      "length_hint": "A number and a unit, e.g. \"210mm\". Accepts: pt, px, pc, mm, cm, in.",
+      "page_numbers": "Page Numbers",
+      "page_numbers_hint": "Repeat the page number at the foot of every page. Needs a bottom margin to sit in."
     },
     "company_info": {
       "company_info": "Company info",

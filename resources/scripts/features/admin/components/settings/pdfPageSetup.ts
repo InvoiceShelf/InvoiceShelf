@@ -37,17 +37,22 @@ export function pageSetupDefaults(): PdfPageSetup {
     pdf_margin_right: '1.2cm',
     pdf_margin_bottom: '1.2cm',
     pdf_margin_left: '1.2cm',
+    pdf_page_numbers: false,
   }
 }
 
 /** Pulls the page-setup keys out of the API payload, skipping anything absent. */
 export function pageSetupFrom(configData: Record<string, unknown>): Partial<PdfPageSetup> {
-  const setup: Record<string, string> = {}
+  const setup: Record<string, string | boolean> = {}
 
   for (const key of PAGE_SETUP_KEYS) {
     if (typeof configData[key] === 'string' && configData[key]) {
       setup[key] = configData[key] as string
     }
+  }
+
+  if (typeof configData.pdf_page_numbers === 'boolean') {
+    setup.pdf_page_numbers = configData.pdf_page_numbers
   }
 
   return setup as Partial<PdfPageSetup>

@@ -57,7 +57,7 @@ class AppConfigProvider extends ServiceProvider
             ];
 
             $pdfSettings = Setting::getSettings(array_merge(
-                ['pdf_driver', 'gotenberg_host'],
+                ['pdf_driver', 'gotenberg_host', 'pdf_page_numbers'],
                 array_keys($pageSettings),
             ));
 
@@ -76,6 +76,15 @@ class AppConfigProvider extends ServiceProvider
                 if (isset($pdfSettings[$setting]) && trim((string) $pdfSettings[$setting]) !== '') {
                     Config::set($configKey, $pdfSettings[$setting]);
                 }
+            }
+
+            // Stored as a string, so cast rather than passing '0' through as a
+            // truthy value.
+            if (isset($pdfSettings['pdf_page_numbers'])) {
+                Config::set(
+                    'pdf.page.page_numbers',
+                    filter_var($pdfSettings['pdf_page_numbers'], FILTER_VALIDATE_BOOLEAN)
+                );
             }
         } catch (\Exception $e) {
             // Silently fail if database is not available (during installation, migrations, etc.)

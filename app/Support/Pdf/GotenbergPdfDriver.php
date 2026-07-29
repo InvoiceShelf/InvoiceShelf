@@ -6,6 +6,7 @@ use App\Support\Net\BlockedUrlException;
 use App\Support\Net\PrivateNetworkGuard;
 use Gotenberg\Gotenberg;
 use Gotenberg\Stream;
+use Illuminate\Support\Facades\View;
 use Psr\Http\Message\RequestInterface;
 
 class GotenbergPdfDriver implements PdfDriver
@@ -65,6 +66,16 @@ class GotenbergPdfDriver implements PdfDriver
             $chromium->landscape();
         }
 
+        // Must be attached before html(), which is terminal: it returns the built
+        // request rather than the builder.
+        if ($header = $this->companion($template, '_header')) {
+            $chromium->header(Stream::string('header.html', $header));
+        }
+
+        if ($footer = $this->companion($template, '_footer') ?? $this->defaultFooter()) {
+            $chromium->footer(Stream::string('footer.html', $footer));
+        }
+
         return $chromium->html(
             // The SDK renames this to index.html regardless of what we pass
             // (ChromiumPdf::html()), so name it that way rather than implying
@@ -74,5 +85,40 @@ class GotenbergPdfDriver implements PdfDriver
                 view($template)->render(),
             )
         );
+    }
+
+    /**
+     * A `{template}_header` or `{template}_footer` view rendered alongside the
+     * document, repeated by Chromium on every page.
+     *
+     * The suffix resolves through the `pdf_templates::` namespace too, so a
+     * custom template gets this without any extra wiring. PdfTemplateUtils hides
+     * the suffixed views from the template picker, which would otherwise list
+     * them as separately selectable templates.
+     */
+    private function companion(string $template, string $suffix): ?string
+    {
+        $view = $template.$suffix;
+
+        return View::exists($view) ? View::make($view)->render() : null;
+    }
+
+    /**
+     * Page numbers, when no template supplies a footer of its own.
+     *
+     * Gotenberg is the only driver that can do this: Chromium repeats a footer
+     * template on every page and substitutes the pageNumber/totalPages spans.
+     * dompdf has no equivalent, so the setting is presented under Gotenberg.
+     *
+     * Note the footer draws inside the bottom margin, so it is invisible when
+     * that margin is zero. The default of 1.2cm leaves room.
+     */
+    private function defaultFooter(): ?string
+    {
+        if (! config('pdf.page.page_numbers')) {
+            return null;
+        }
+
+        return View::make('app.pdf.partials.page-footer')->render();
     }
 }

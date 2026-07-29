@@ -37,6 +37,14 @@ return [
         'margin_right' => env('PDF_MARGIN_RIGHT', '1.2cm'),
         'margin_bottom' => env('PDF_MARGIN_BOTTOM', '1.2cm'),
         'margin_left' => env('PDF_MARGIN_LEFT', '1.2cm'),
+
+        /*
+         * Repeat "page / total" at the foot of every page. Gotenberg only:
+         * Chromium repeats a footer template and substitutes the counts, and
+         * dompdf has no equivalent. Off by default so existing documents are
+         * unchanged. The footer draws inside the bottom margin, so it needs one.
+         */
+        'page_numbers' => env('PDF_PAGE_NUMBERS', false),
     ],
 
     /*

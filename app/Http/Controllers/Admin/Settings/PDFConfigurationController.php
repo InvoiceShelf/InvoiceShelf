@@ -25,6 +25,15 @@ class PDFConfigurationController extends Controller
     ];
 
     /**
+     * Stored in the same string-valued settings table, so kept apart from the
+     * lengths above: it needs an explicit cast in both directions rather than
+     * being passed through.
+     */
+    private const PAGE_BOOLEANS = [
+        'pdf_page_numbers',
+    ];
+
+    /**
      * Returns the available drivers
      *
      * @throws AuthorizationException
@@ -53,6 +62,7 @@ class PDFConfigurationController extends Controller
         $pdfSettings = Setting::getSettings(array_merge(
             ['pdf_driver', 'gotenberg_host'],
             self::PAGE_SETTINGS,
+            self::PAGE_BOOLEANS,
         ));
 
         $config = [
@@ -64,6 +74,13 @@ class PDFConfigurationController extends Controller
         // returned rather than nested under a driver branch.
         foreach (self::PAGE_SETTINGS as $setting) {
             $config[$setting] = $pdfSettings[$setting] ?? config(self::configKeyFor($setting));
+        }
+
+        foreach (self::PAGE_BOOLEANS as $setting) {
+            $config[$setting] = filter_var(
+                $pdfSettings[$setting] ?? config(self::configKeyFor($setting)),
+                FILTER_VALIDATE_BOOLEAN
+            );
         }
 
         return response()->json($config);
@@ -103,6 +120,16 @@ class PDFConfigurationController extends Controller
         // Gotenberg-only setting.
         foreach (self::PAGE_SETTINGS as $setting) {
             $settings[$setting] = $request->get($setting);
+        }
+
+        // Only written when the form actually submitted it. Page numbers are a
+        // Gotenberg capability and the dompdf form does not render the control,
+        // so an unconditional write would clear the operator's choice every time
+        // they saved from the other driver.
+        foreach (self::PAGE_BOOLEANS as $setting) {
+            if ($request->has($setting)) {
+                $settings[$setting] = $request->boolean($setting) ? '1' : '0';
+            }
         }
 
         if ($driver === 'gotenberg') {

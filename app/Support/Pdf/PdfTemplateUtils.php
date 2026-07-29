@@ -50,7 +50,18 @@ class PdfTemplateUtils
 
         $files = array_merge($files_native, $files_custom);
         $files = array_filter($files, function ($file) {
-            return Str::endsWith($file['path'], '.blade.php');
+            if (! Str::endsWith($file['path'], '.blade.php')) {
+                return false;
+            }
+
+            // `{template}_header` / `{template}_footer` are companions rendered
+            // alongside their template by the Gotenberg driver, not templates in
+            // their own right. Without this they show up in the picker as
+            // selectable entries with no preview image.
+            return ! Str::endsWith(
+                Str::before(basename($file['path']), '.blade.php'),
+                ['_header', '_footer']
+            );
         });
 
         return array_map(function ($file) use ($templateType, $imageFormat) {
