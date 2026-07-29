@@ -12,7 +12,15 @@ return [
     |
     */
     'show_warnings' => false,   // Throw an Exception on warnings from dompdf
-    'orientation' => 'portrait',
+
+    /*
+     * Note: this file predates the installed barryvdh/laravel-dompdf (v3.x),
+     * whose service provider builds options exclusively from `defines` below.
+     * A top-level `orientation` key used to sit here and was read by nothing.
+     * Page size, orientation and margins now come from `pdf.page` and are
+     * applied per render by DompdfDriver, so they are the same on both drivers.
+     */
+
     'defines' => [
         /**
          * The location of the DOMPDF font directory
@@ -227,7 +235,13 @@ return [
          *
          * @var bool
          */
-        'enable_remote' => env('DOMPDF_ENABLE_REMOTE', true),
+        /*
+         * Defaults to false to match .env.example, which sets it explicitly and
+         * explains why. Fresh installs copy that file so they were already safe,
+         * but an install predating the line has no such entry and was falling
+         * back to true here -- the opposite of the documented intent.
+         */
+        'enable_remote' => env('DOMPDF_ENABLE_REMOTE', false),
 
         /**
          * A ratio applied to the fonts height to be more like browsers' line height

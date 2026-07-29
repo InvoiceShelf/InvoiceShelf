@@ -162,24 +162,85 @@ test('get pdf configuration', function () {
         ->assertJsonStructure([
             'pdf_driver',
             'gotenberg_host',
-            'gotenberg_margins',
-            'gotenberg_papersize',
+            'pdf_paper_width',
+            'pdf_paper_height',
+            'pdf_orientation',
+            'pdf_margin_top',
+            'pdf_margin_right',
+            'pdf_margin_bottom',
+            'pdf_margin_left',
         ]);
 });
 
-test('save pdf configuration', function () {
+/**
+ * Page geometry is saved for whichever driver is selected. It used to hang off
+ * gotenberg_papersize, so picking dompdf meant having no paper size at all and
+ * switching drivers threw the setting away.
+ */
+test('save pdf configuration stores the page setup for dompdf too', function () {
     postJson('/api/v1/pdf/config', [
         'pdf_driver' => 'dompdf',
+        'pdf_paper_width' => '8.5in',
+        'pdf_paper_height' => '14in',
+        'pdf_orientation' => 'landscape',
+        'pdf_margin_top' => '5mm',
+        'pdf_margin_right' => '6mm',
+        'pdf_margin_bottom' => '7mm',
+        'pdf_margin_left' => '8mm',
     ])
         ->assertOk()
-        ->assertJson([
-            'success' => 'pdf_variables_save_successfully',
-        ]);
+        ->assertJson(['success' => 'pdf_variables_save_successfully']);
 
-    $this->assertDatabaseHas('settings', [
-        'option' => 'pdf_driver',
-        'value' => 'dompdf',
-    ]);
+    foreach ([
+        'pdf_driver' => 'dompdf',
+        'pdf_paper_width' => '8.5in',
+        'pdf_paper_height' => '14in',
+        'pdf_orientation' => 'landscape',
+        'pdf_margin_top' => '5mm',
+        'pdf_margin_right' => '6mm',
+        'pdf_margin_bottom' => '7mm',
+        'pdf_margin_left' => '8mm',
+    ] as $option => $value) {
+        $this->assertDatabaseHas('settings', compact('option', 'value'));
+    }
+});
+
+test('pdf configuration rejects a length with no unit', function () {
+    postJson('/api/v1/pdf/config', [
+        'pdf_driver' => 'dompdf',
+        'pdf_paper_width' => '210',
+        'pdf_paper_height' => '297mm',
+        'pdf_orientation' => 'portrait',
+    ])->assertStatus(422)->assertJsonValidationErrors('pdf_paper_width');
+});
+
+test('pdf configuration rejects an unknown orientation', function () {
+    postJson('/api/v1/pdf/config', [
+        'pdf_driver' => 'dompdf',
+        'pdf_paper_width' => '210mm',
+        'pdf_paper_height' => '297mm',
+        'pdf_orientation' => 'sideways',
+    ])->assertStatus(422)->assertJsonValidationErrors('pdf_orientation');
+});
+
+/**
+ * A zero margin is a deliberate choice. AppConfigProvider guards its settings
+ * with !empty(), and '0mm' is fine there, but a bare '0' would not be -- this
+ * pins the behaviour either way.
+ */
+test('a zero margin survives the round trip', function () {
+    postJson('/api/v1/pdf/config', [
+        'pdf_driver' => 'dompdf',
+        'pdf_paper_width' => '210mm',
+        'pdf_paper_height' => '297mm',
+        'pdf_orientation' => 'portrait',
+        'pdf_margin_top' => '0mm',
+        'pdf_margin_right' => '0mm',
+        'pdf_margin_bottom' => '0mm',
+        'pdf_margin_left' => '0mm',
+    ])->assertOk();
+
+    getJson('/api/v1/pdf/config')->assertOk()->assertJson(['pdf_margin_top' => '0mm']);
 });
 
 test('get app version', function () {

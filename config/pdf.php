@@ -15,6 +15,32 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Page Setup
+    |--------------------------------------------------------------------------
+    | Geometry applied to every document, whichever driver renders it. Sizes and
+    | margins are CSS lengths (pt, px, pc, mm, cm, in) because that is the only
+    | notation both drivers accept without loss — Gotenberg has no named sizes,
+    | and dompdf's points array can express anything a name can.
+    |
+    | The 1.2cm margin default is dompdf's own, from its user-agent stylesheet.
+    | Gotenberg used to be hardcoded to zero, so the same template came out
+    | edge-to-edge on one driver and inset on the other; matching dompdf keeps
+    | existing documents looking as they always have.
+    |
+    */
+
+    'page' => [
+        'paper_width' => env('PDF_PAPER_WIDTH', '210mm'),
+        'paper_height' => env('PDF_PAPER_HEIGHT', '297mm'),
+        'orientation' => env('PDF_ORIENTATION', 'portrait'),
+        'margin_top' => env('PDF_MARGIN_TOP', '1.2cm'),
+        'margin_right' => env('PDF_MARGIN_RIGHT', '1.2cm'),
+        'margin_bottom' => env('PDF_MARGIN_BOTTOM', '1.2cm'),
+        'margin_left' => env('PDF_MARGIN_LEFT', '1.2cm'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | PDF Connections
     |--------------------------------------------------------------------------
     |
@@ -29,7 +55,6 @@ return [
 
         'gotenberg' => [
             'host' => env('GOTENBERG_HOST', 'http://pdf:3000'),
-            'papersize' => env('GOTENBERG_PAPERSIZE', '210mm 297mm'),
 
             /*
              * Gotenberg usually runs as a sidecar on a private network, which the

@@ -9,7 +9,8 @@ use App\Support\Pdf\GotenbergPdfDriver;
 beforeEach(function () {
     config([
         'pdf.connections.gotenberg.host' => 'http://gotenberg.example.com:3000',
-        'pdf.connections.gotenberg.papersize' => '210mm 297mm',
+        'pdf.page.paper_width' => '210mm',
+        'pdf.page.paper_height' => '297mm',
     ]);
 });
 
@@ -39,7 +40,7 @@ test('the chromium request emulates the same media type dompdf uses', function (
 });
 
 test('the configured paper size reaches the request', function () {
-    config(['pdf.connections.gotenberg.papersize' => '8.5in 11in']);
+    config(['pdf.page.paper_width' => '8.5in', 'pdf.page.paper_height' => '11in']);
 
     expect(gotenbergRequestBody())
         ->toContain('paperWidth')
@@ -51,11 +52,11 @@ test('the rendered document is sent as the index file', function () {
     expect(gotenbergRequestBody())->toContain('index.html');
 });
 
-test('it throws when the papersize config has an unexpected format', function () {
-    config(['pdf.connections.gotenberg.papersize' => 'invalid']);
+test('it throws when a page length has an unexpected format', function () {
+    config(['pdf.page.paper_width' => 'invalid']);
 
     expect(fn () => gotenbergRequestBody())
-        ->toThrow(InvalidArgumentException::class, 'Invalid Gotenberg Papersize specified');
+        ->toThrow(InvalidArgumentException::class, 'Invalid PDF page length');
 });
 
 test('it throws when the configured host targets a private network address', function () {

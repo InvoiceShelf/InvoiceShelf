@@ -24,10 +24,9 @@ class GotenbergPdfDriver implements PdfDriver
      */
     public function buildRequest(string $template): RequestInterface
     {
-        $papersize = explode(' ', config('pdf.connections.gotenberg.papersize'));
-        if (count($papersize) != 2) {
-            throw new \InvalidArgumentException('Invalid Gotenberg Papersize specified');
-        }
+        $page = PdfPageSetup::fromConfig();
+        [$width, $height] = $page->gotenbergPaper();
+        [$marginTop, $marginBottom, $marginLeft, $marginRight] = $page->gotenbergMargins();
 
         $host = config('pdf.connections.gotenberg.host');
 
@@ -45,7 +44,7 @@ class GotenbergPdfDriver implements PdfDriver
             }
         }
 
-        return Gotenberg::chromium($host)
+        $chromium = Gotenberg::chromium($host)
             ->pdf()
             // Only affects the root (body/html) background: Chromium paints
             // element backgrounds either way, verified against gotenberg:8, so
@@ -57,16 +56,23 @@ class GotenbergPdfDriver implements PdfDriver
             // Align them so a template with media queries behaves the same either
             // way rather than depending on which driver is selected.
             ->emulateScreenMediaType()
-            ->margins(0, 0, 0, 0)
-            ->paperSize($papersize[0], $papersize[1])
-            ->html(
-                // The SDK renames this to index.html regardless of what we pass
-                // (ChromiumPdf::html()), so name it that way rather than implying
-                // a choice we do not have.
-                Stream::string(
-                    'index.html',
-                    view($template)->render(),
-                )
-            );
+            ->margins($marginTop, $marginBottom, $marginLeft, $marginRight)
+            ->paperSize($width, $height);
+
+        // landscape() swaps the axes itself, so paperSize() above is always given
+        // the portrait pair — the same convention dompdf's setPaper() follows.
+        if ($page->isLandscape()) {
+            $chromium->landscape();
+        }
+
+        return $chromium->html(
+            // The SDK renames this to index.html regardless of what we pass
+            // (ChromiumPdf::html()), so name it that way rather than implying
+            // a choice we do not have.
+            Stream::string(
+                'index.html',
+                view($template)->render(),
+            )
+        );
     }
 }

@@ -46,37 +46,35 @@ class AppConfigProvider extends ServiceProvider
     protected function configurePDFFromDatabase(): void
     {
         try {
-            // Get PDF settings from database
-            $pdfSettings = Setting::getSettings([
-                'pdf_driver',
-                'gotenberg_host',
-                'gotenberg_papersize',
-                'gotenberg_margins',
-            ]);
+            $pageSettings = [
+                'pdf_paper_width' => 'pdf.page.paper_width',
+                'pdf_paper_height' => 'pdf.page.paper_height',
+                'pdf_orientation' => 'pdf.page.orientation',
+                'pdf_margin_top' => 'pdf.page.margin_top',
+                'pdf_margin_right' => 'pdf.page.margin_right',
+                'pdf_margin_bottom' => 'pdf.page.margin_bottom',
+                'pdf_margin_left' => 'pdf.page.margin_left',
+            ];
+
+            $pdfSettings = Setting::getSettings(array_merge(
+                ['pdf_driver', 'gotenberg_host'],
+                array_keys($pageSettings),
+            ));
 
             if (! empty($pdfSettings['pdf_driver'])) {
-                $driver = $pdfSettings['pdf_driver'];
+                Config::set('pdf.driver', $pdfSettings['pdf_driver']);
 
-                // Set PDF driver
-                Config::set('pdf.driver', $driver);
+                if ($pdfSettings['pdf_driver'] === 'gotenberg' && ! empty($pdfSettings['gotenberg_host'])) {
+                    Config::set('pdf.connections.gotenberg.host', $pdfSettings['gotenberg_host']);
+                }
+            }
 
-                // Configure based on driver
-                switch ($driver) {
-                    case 'gotenberg':
-                        if (! empty($pdfSettings['gotenberg_host'])) {
-                            Config::set('pdf.connections.gotenberg.host', $pdfSettings['gotenberg_host']);
-                        }
-                        if (! empty($pdfSettings['gotenberg_papersize'])) {
-                            Config::set('pdf.connections.gotenberg.papersize', $pdfSettings['gotenberg_papersize']);
-                        }
-                        if (! empty($pdfSettings['gotenberg_margins'])) {
-                            Config::set('pdf.connections.gotenberg.margins', $pdfSettings['gotenberg_margins']);
-                        }
-                        break;
-
-                    case 'dompdf':
-                        // dompdf doesn't have additional configuration in the current setup
-                        break;
+            // Page geometry is applied regardless of driver. Note the isset guard
+            // rather than !empty: a saved margin of "0mm" is a deliberate choice,
+            // and !empty() would discard it and silently fall back to the default.
+            foreach ($pageSettings as $setting => $configKey) {
+                if (isset($pdfSettings[$setting]) && trim((string) $pdfSettings[$setting]) !== '') {
+                    Config::set($configKey, $pdfSettings[$setting]);
                 }
             }
         } catch (\Exception $e) {

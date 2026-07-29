@@ -3,14 +3,27 @@ import { API } from '../endpoints'
 
 export type PdfDriver = string
 
-export interface DomPdfConfig {
+/**
+ * Page geometry, applied whichever driver renders. Sizes and margins are CSS
+ * lengths (e.g. "210mm"), the only notation both drivers accept without loss.
+ */
+export interface PdfPageSetup {
+  pdf_paper_width: string
+  pdf_paper_height: string
+  pdf_orientation: 'portrait' | 'landscape'
+  pdf_margin_top: string
+  pdf_margin_right: string
+  pdf_margin_bottom: string
+  pdf_margin_left: string
+}
+
+export interface DomPdfConfig extends PdfPageSetup {
   pdf_driver: string
 }
 
-export interface GotenbergConfig {
+export interface GotenbergConfig extends PdfPageSetup {
   pdf_driver: string
   gotenberg_host: string
-  gotenberg_papersize: string
 }
 
 export type PdfConfig = DomPdfConfig | GotenbergConfig

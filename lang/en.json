@@ -1048,16 +1048,25 @@
     },
     "pdf": {
       "title": "PDF Setting",
-      "footer_text": "Footer Text",
-      "pdf_layout": "PDF Layout",
       "pdf_configuration": "PDF Generation Settings",
       "section_description": "Change the way PDFs are generated",
       "driver": "PDF Driver to use",
-      "papersize": "Papersize",
-      "papersize_hint": "Papersize in width and height (ex. \"210mm 297mm\")",
       "gotenberg_host": "Gotenberg service host",
       "pdf_variables_save_successfully": "PDF configuration saved successfully",
-      "pdf_variables_save_error": "PDF configuration could not be saved"
+      "pdf_variables_save_error": "PDF configuration could not be saved",
+      "page_setup": "Page Setup",
+      "page_setup_hint": "Applies to every document, whichever driver renders it.",
+      "paper_size": "Paper Size",
+      "paper_width": "Paper Width",
+      "paper_height": "Paper Height",
+      "orientation": "Orientation",
+      "portrait": "Portrait",
+      "landscape": "Landscape",
+      "margin_top": "Top Margin",
+      "margin_right": "Right Margin",
+      "margin_bottom": "Bottom Margin",
+      "margin_left": "Left Margin",
+      "length_hint": "A number and a unit, e.g. \"210mm\". Accepts: pt, px, pc, mm, cm, in."
     },
     "company_info": {
       "company_info": "Company info",
@@ -1777,7 +1786,8 @@
     "at_least_one_ability": "Please select atleast one Permission.",
     "valid_driver_key": "Please enter a valid {driver} key.",
     "valid_exchange_rate": "Please enter a valid exchange rate.",
-    "company_name_not_same": "Company name must match with given name."
+    "company_name_not_same": "Company name must match with given name.",
+    "invalid_length": "Enter a number and a unit, e.g. \"210mm\". Accepts: pt, px, pc, mm, cm, in."
   },
   "errors": {
     "starter_plan": "This feature is available on Starter plan and onwards!",

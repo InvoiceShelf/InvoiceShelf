@@ -5,21 +5,24 @@ namespace App\Http\Controllers\Admin\Settings;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PDFConfigurationRequest;
 use App\Models\Setting;
-use App\Support\Setup\EnvironmentManager;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 
 class PDFConfigurationController extends Controller
 {
-    protected EnvironmentManager $environmentManager;
-
     /**
-     * Constructor
+     * Driver-neutral page geometry. Each maps onto `pdf.page.*` in config, and is
+     * read and written for every driver rather than being nested under one.
      */
-    public function __construct(EnvironmentManager $environmentManager)
-    {
-        $this->environmentManager = $environmentManager;
-    }
+    private const PAGE_SETTINGS = [
+        'pdf_paper_width',
+        'pdf_paper_height',
+        'pdf_orientation',
+        'pdf_margin_top',
+        'pdf_margin_right',
+        'pdf_margin_bottom',
+        'pdf_margin_left',
+    ];
 
     /**
      * Returns the available drivers
@@ -47,20 +50,21 @@ class PDFConfigurationController extends Controller
     {
         $this->authorize('manage pdf config');
 
-        // Get PDF settings from database
-        $pdfSettings = Setting::getSettings([
-            'pdf_driver',
-            'gotenberg_host',
-            'gotenberg_papersize',
-            'gotenberg_margins',
-        ]);
+        $pdfSettings = Setting::getSettings(array_merge(
+            ['pdf_driver', 'gotenberg_host'],
+            self::PAGE_SETTINGS,
+        ));
 
         $config = [
             'pdf_driver' => $pdfSettings['pdf_driver'] ?? config('pdf.driver'),
             'gotenberg_host' => $pdfSettings['gotenberg_host'] ?? config('pdf.connections.gotenberg.host'),
-            'gotenberg_margins' => $pdfSettings['gotenberg_margins'] ?? config('pdf.connections.gotenberg.margins'),
-            'gotenberg_papersize' => $pdfSettings['gotenberg_papersize'] ?? config('pdf.connections.gotenberg.papersize'),
         ];
+
+        // Page geometry applies to whichever driver is selected, so it is always
+        // returned rather than nested under a driver branch.
+        foreach (self::PAGE_SETTINGS as $setting) {
+            $config[$setting] = $pdfSettings[$setting] ?? config(self::configKeyFor($setting));
+        }
 
         return response()->json($config);
     }
@@ -92,26 +96,28 @@ class PDFConfigurationController extends Controller
     {
         $driver = $request->get('pdf_driver');
 
-        // Base settings that are always saved
-        $settings = [
-            'pdf_driver' => $driver,
-        ];
+        $settings = ['pdf_driver' => $driver];
 
-        // Driver-specific settings
-        switch ($driver) {
-            case 'gotenberg':
-                $settings = array_merge($settings, [
-                    'gotenberg_host' => $request->get('gotenberg_host'),
-                    'gotenberg_papersize' => $request->get('gotenberg_papersize'),
-                    'gotenberg_margins' => $request->get('gotenberg_margins'),
-                ]);
-                break;
+        // Page geometry is saved for every driver: switching between them should
+        // not lose the paper size, which is what happened while it was a
+        // Gotenberg-only setting.
+        foreach (self::PAGE_SETTINGS as $setting) {
+            $settings[$setting] = $request->get($setting);
+        }
 
-            case 'dompdf':
-                // dompdf doesn't have additional configuration in the current setup
-                break;
+        if ($driver === 'gotenberg') {
+            $settings['gotenberg_host'] = $request->get('gotenberg_host');
         }
 
         return $settings;
+    }
+
+    /**
+     * Maps a settings key onto its config counterpart, e.g.
+     * `pdf_margin_top` -> `pdf.page.margin_top`.
+     */
+    private static function configKeyFor(string $setting): string
+    {
+        return 'pdf.page.'.substr($setting, strlen('pdf_'));
     }
 }

@@ -3,13 +3,14 @@ import { computed, onMounted, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { required, helpers } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
-import type { PdfDriver } from '@/scripts/api/services/pdf.service'
-
-interface GotenbergForm {
-  pdf_driver: string
-  gotenberg_host: string
-  gotenberg_papersize: string
-}
+import type { GotenbergConfig, PdfDriver } from '@/scripts/api/services/pdf.service'
+import AdminPdfPageSetup from '@/scripts/features/admin/components/settings/AdminPdfPageSetup.vue'
+import {
+  cssLength,
+  pageSetupDefaults,
+  pageSetupErrors,
+  pageSetupFrom,
+} from '@/scripts/features/admin/components/settings/pdfPageSetup'
 
 const props = withDefaults(
   defineProps<{
@@ -27,16 +28,16 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  'submit-data': [config: GotenbergForm]
+  'submit-data': [config: GotenbergConfig]
   'on-change-driver': [driver: string]
 }>()
 
 const { t } = useI18n()
 
-const form = reactive<GotenbergForm>({
+const form = reactive<GotenbergConfig>({
   pdf_driver: 'gotenberg',
   gotenberg_host: '',
-  gotenberg_papersize: '210mm 297mm',
+  ...pageSetupDefaults(),
 })
 
 function isValidServiceUrl(value: string): boolean {
@@ -67,12 +68,17 @@ const rules = computed(() => ({
       isValidServiceUrl
     ),
   },
-  gotenberg_papersize: {
-    required: helpers.withMessage(t('validation.required'), required),
-  },
+  pdf_paper_width: cssLength(t),
+  pdf_paper_height: cssLength(t),
+  pdf_margin_top: cssLength(t),
+  pdf_margin_right: cssLength(t),
+  pdf_margin_bottom: cssLength(t),
+  pdf_margin_left: cssLength(t),
 }))
 
 const v$ = useVuelidate(rules, form)
+
+const pageErrors = computed(() => pageSetupErrors(v$.value))
 
 onMounted(() => {
   if (typeof props.configData.pdf_driver === 'string') {
@@ -83,9 +89,7 @@ onMounted(() => {
     form.gotenberg_host = props.configData.gotenberg_host
   }
 
-  if (typeof props.configData.gotenberg_papersize === 'string') {
-    form.gotenberg_papersize = props.configData.gotenberg_papersize
-  }
+  Object.assign(form, pageSetupFrom(props.configData))
 })
 
 function onChangeDriver(): void {
@@ -137,26 +141,14 @@ function saveConfig(): void {
           @input="v$.gotenberg_host.$touch()"
         />
       </BaseInputGroup>
-
-      <BaseInputGroup
-        :label="$t('settings.pdf.papersize')"
-        :help-text="$t('settings.pdf.papersize_hint')"
-        :error="
-          v$.gotenberg_papersize.$error &&
-          v$.gotenberg_papersize.$errors[0]?.$message
-        "
-        required
-      >
-        <BaseInput
-          v-model.trim="form.gotenberg_papersize"
-          :content-loading="isFetchingInitialData"
-          :invalid="v$.gotenberg_papersize.$error"
-          type="text"
-          name="gotenberg_papersize"
-          @input="v$.gotenberg_papersize.$touch()"
-        />
-      </BaseInputGroup>
     </BaseInputGrid>
+
+    <AdminPdfPageSetup
+      v-model="form"
+      class="mt-6"
+      :is-fetching-initial-data="isFetchingInitialData"
+      :errors="pageErrors"
+    />
 
     <div class="flex my-10">
       <BaseButton

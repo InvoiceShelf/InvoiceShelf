@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\CssLength;
 use App\Rules\PublicHttpUrl;
 use App\Support\Pdf\GotenbergHostPolicy;
 use Illuminate\Foundation\Http\FormRequest;
@@ -22,55 +23,49 @@ class PDFConfigurationRequest extends FormRequest
      */
     public function rules(): array
     {
-        switch ($this->get('pdf_driver')) {
-            case 'dompdf':
-                return [
-                    'pdf_driver' => [
-                        'required',
-                        'string',
-                    ],
-                ];
+        return array_merge($this->pageRules(), $this->driverRules());
+    }
 
-            case 'gotenberg':
-                // The operator-declared Gotenberg host skips the private-network
-                // check; anything else is still held to it. See GotenbergHostPolicy.
-                $isDeclaredHost = GotenbergHostPolicy::isExemptFromPrivateNetworkGuard(
-                    $this->input('gotenberg_host')
-                );
+    /**
+     * Page geometry is driver-neutral, so it is validated the same way whichever
+     * driver is selected. Paper size used to live under `gotenberg_papersize` as
+     * a single "210mm 297mm" string, which dompdf had no equivalent of and could
+     * not consume.
+     */
+    private function pageRules(): array
+    {
+        $length = ['nullable', 'string', new CssLength];
 
-                return [
-                    'pdf_driver' => [
-                        'required',
-                        'string',
-                    ],
-                    'gotenberg_host' => [
-                        'required',
-                        'url',
-                        Rule::when(! $isDeclaredHost, [new PublicHttpUrl]),
-                    ],
-                    'gotenberg_papersize' => [
-                        'required',
-                        'string',
-                        function ($attribute, $value, $fail) {
-                            $reg = "/^\d+(pt|px|pc|mm|cm|in) \d+(pt|px|pc|mm|cm|in)$/";
-                            if (! preg_match($reg, $value)) {
-                                $fail('Invalid papersize, must be in format "210mm 297mm". Accepts: pt,px,pc,mm,cm,in');
-                            }
-                        },
-                    ],
-                    'gotenberg_margins' => [
-                        'nullable',
-                        'string',
-                    ],
-                ];
+        return [
+            'pdf_driver' => ['required', 'string'],
+            'pdf_paper_width' => ['required', 'string', new CssLength],
+            'pdf_paper_height' => ['required', 'string', new CssLength],
+            'pdf_orientation' => ['required', Rule::in(['portrait', 'landscape'])],
+            'pdf_margin_top' => $length,
+            'pdf_margin_right' => $length,
+            'pdf_margin_bottom' => $length,
+            'pdf_margin_left' => $length,
+        ];
+    }
 
-            default:
-                return [
-                    'pdf_driver' => [
-                        'required',
-                        'string',
-                    ],
-                ];
+    private function driverRules(): array
+    {
+        if ($this->get('pdf_driver') !== 'gotenberg') {
+            return [];
         }
+
+        // The operator-declared Gotenberg host skips the private-network
+        // check; anything else is still held to it. See GotenbergHostPolicy.
+        $isDeclaredHost = GotenbergHostPolicy::isExemptFromPrivateNetworkGuard(
+            $this->input('gotenberg_host')
+        );
+
+        return [
+            'gotenberg_host' => [
+                'required',
+                'url',
+                Rule::when(! $isDeclaredHost, [new PublicHttpUrl]),
+            ],
+        ];
     }
 }

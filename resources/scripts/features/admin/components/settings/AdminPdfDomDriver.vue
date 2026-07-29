@@ -3,11 +3,14 @@ import { computed, onMounted, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { required, helpers } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
-import type { PdfDriver } from '@/scripts/api/services/pdf.service'
-
-interface DomPdfForm {
-  pdf_driver: string
-}
+import type { DomPdfConfig, PdfDriver } from '@/scripts/api/services/pdf.service'
+import AdminPdfPageSetup from '@/scripts/features/admin/components/settings/AdminPdfPageSetup.vue'
+import {
+  cssLength,
+  pageSetupDefaults,
+  pageSetupErrors,
+  pageSetupFrom,
+} from '@/scripts/features/admin/components/settings/pdfPageSetup'
 
 const props = withDefaults(
   defineProps<{
@@ -25,28 +28,39 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  'submit-data': [config: DomPdfForm]
+  'submit-data': [config: DomPdfConfig]
   'on-change-driver': [driver: string]
 }>()
 
 const { t } = useI18n()
 
-const form = reactive<DomPdfForm>({
+const form = reactive<DomPdfConfig>({
   pdf_driver: 'dompdf',
+  ...pageSetupDefaults(),
 })
 
 const rules = computed(() => ({
   pdf_driver: {
     required: helpers.withMessage(t('validation.required'), required),
   },
+  pdf_paper_width: cssLength(t),
+  pdf_paper_height: cssLength(t),
+  pdf_margin_top: cssLength(t),
+  pdf_margin_right: cssLength(t),
+  pdf_margin_bottom: cssLength(t),
+  pdf_margin_left: cssLength(t),
 }))
 
 const v$ = useVuelidate(rules, form)
+
+const pageErrors = computed(() => pageSetupErrors(v$.value))
 
 onMounted(() => {
   if (typeof props.configData.pdf_driver === 'string') {
     form.pdf_driver = props.configData.pdf_driver
   }
+
+  Object.assign(form, pageSetupFrom(props.configData))
 })
 
 function onChangeDriver(): void {
@@ -82,6 +96,13 @@ function saveConfig(): void {
         />
       </BaseInputGroup>
     </BaseInputGrid>
+
+    <AdminPdfPageSetup
+      v-model="form"
+      class="mt-6"
+      :is-fetching-initial-data="isFetchingInitialData"
+      :errors="pageErrors"
+    />
 
     <div class="flex my-10">
       <BaseButton
