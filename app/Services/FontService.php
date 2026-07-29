@@ -321,6 +321,35 @@ class FontService
      * Used by the PDF fonts partial so dompdf can resolve CJK families
      * via standard CSS — no separate registerFont() dance required.
      */
+    /**
+     * Absolute paths of every installed font file, keyed by filename.
+     *
+     * getInstalledFontFaces() writes those absolute paths straight into
+     * `src: url(...)`, which only works for a renderer sharing this filesystem.
+     * Gotenberg runs Chromium in a separate container, so it needs the files
+     * sent alongside the document — see GotenbergPdfDriver.
+     *
+     * @return array<string, string>
+     */
+    public function getInstalledFontFilePaths(): array
+    {
+        $paths = [];
+
+        foreach (self::FONT_PACKAGES as $package) {
+            if (! $this->isInstalled($package)) {
+                continue;
+            }
+
+            $dir = $this->packageDir($package);
+
+            foreach ($package['files'] as $entry) {
+                $paths[$entry['file']] = $dir.'/'.$entry['file'];
+            }
+        }
+
+        return $paths;
+    }
+
     public function getInstalledFontFaces(): array
     {
         $faces = [];

@@ -2,6 +2,7 @@
 
 namespace App\Support\Pdf;
 
+use App\Services\FontService;
 use App\Support\Net\BlockedUrlException;
 use App\Support\Net\PrivateNetworkGuard;
 use Gotenberg\Gotenberg;
@@ -89,15 +90,55 @@ class GotenbergPdfDriver implements PdfDriver
             $chromium->footer(Stream::string('footer.html', $footer));
         }
 
+        $html = view($template)->render();
+
+        // Fonts must travel with the document; see attachFonts().
+        [$html, $fonts] = $this->attachFonts($html);
+
+        if ($fonts !== []) {
+            $chromium->assets(...$fonts);
+        }
+
         return $chromium->html(
             // The SDK renames this to index.html regardless of what we pass
             // (ChromiumPdf::html()), so name it that way rather than implying
             // a choice we do not have.
-            Stream::string(
-                'index.html',
-                view($template)->render(),
-            )
+            Stream::string('index.html', $html)
         );
+    }
+
+    /**
+     * Send the installed font files alongside the document, and point the
+     * font-face rules at them.
+     *
+     * FontService emits `src: url("/var/www/html/storage/fonts/...")` — an
+     * absolute path on this container's filesystem. dompdf shares that
+     * filesystem so it resolves; Chromium runs inside the Gotenberg container
+     * and cannot see any of it, so every package silently failed to load and
+     * documents fell back to whatever fonts that image happens to ship. The
+     * docs recommend Gotenberg precisely for mixed-script documents, which made
+     * this the wrong way round.
+     *
+     * Gotenberg unpacks assets next to index.html, so a bare filename resolves.
+     * Only fonts actually referenced by the markup are sent, to keep a CJK
+     * package off every request that does not use it.
+     *
+     * @return array{0: string, 1: list<Stream>}
+     */
+    private function attachFonts(string $html): array
+    {
+        $streams = [];
+
+        foreach (app(FontService::class)->getInstalledFontFilePaths() as $filename => $path) {
+            if (! str_contains($html, $path) || ! is_readable($path)) {
+                continue;
+            }
+
+            $html = str_replace($path, $filename, $html);
+            $streams[] = Stream::path($path, $filename);
+        }
+
+        return [$html, $streams];
     }
 
     /**
