@@ -30,7 +30,12 @@ trait GeneratesPdfTrait
 
         $pdf = $this->getPDFData();
 
-        return response()->make($pdf->stream(), 200, [
+        // ->output(), not ->stream(): stream() already returns a Response, and
+        // nesting one inside response()->make() stringifies it, prepending the
+        // whole "HTTP/1.0 200 OK" preamble to the file. Readers scan the first
+        // kilobyte for %PDF so it looked fine, but the bytes were malformed and
+        // anything that validates them (PDF/A, extraction tooling) would balk.
+        return response()->make($pdf->output(), 200, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'inline; filename="'.$this[$collection_name.'_number'].'.pdf"',
         ]);

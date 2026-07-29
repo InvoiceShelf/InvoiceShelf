@@ -5,7 +5,7 @@ namespace App\Facades;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static \Psr\Http\Message\ResponseInterface loadView(string $template)
+ * @method static \App\Support\Pdf\ResponseStream loadView(string $template)
  */
 class Pdf extends Facade
 {

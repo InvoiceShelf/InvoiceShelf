@@ -6,10 +6,23 @@ use App\Support\Net\BlockedUrlException;
 use App\Support\Net\PrivateNetworkGuard;
 use Gotenberg\Gotenberg;
 use Gotenberg\Stream;
+use Psr\Http\Message\RequestInterface;
 
-class GotenbergPdfDriver
+class GotenbergPdfDriver implements PdfDriver
 {
-    public function loadView(string $viewname): GotenbergPdfResponse
+    public function loadView(string $template): ResponseStream
+    {
+        return new GotenbergPdfResponse(Gotenberg::send($this->buildRequest($template)));
+    }
+
+    /**
+     * Assemble the Chromium request without sending it.
+     *
+     * Split out so the option wiring can actually be asserted on. Everything
+     * below this line used to be inlined into loadView(), which meant the only
+     * way to check that an option was set was to run a Gotenberg service.
+     */
+    public function buildRequest(string $template): RequestInterface
     {
         $papersize = explode(' ', config('pdf.connections.gotenberg.papersize'));
         if (count($papersize) != 2) {
@@ -32,18 +45,28 @@ class GotenbergPdfDriver
             }
         }
 
-        $request = Gotenberg::chromium($host)
+        return Gotenberg::chromium($host)
             ->pdf()
+            // Only affects the root (body/html) background: Chromium paints
+            // element backgrounds either way, verified against gotenberg:8, so
+            // no stock template changes. dompdf does paint the body background,
+            // so this is here to stop a custom template that sets one from
+            // rendering differently depending on the selected driver.
+            ->printBackground()
+            // config/dompdf.php renders as `screen`; Chromium defaults to `print`.
+            // Align them so a template with media queries behaves the same either
+            // way rather than depending on which driver is selected.
+            ->emulateScreenMediaType()
             ->margins(0, 0, 0, 0)
             ->paperSize($papersize[0], $papersize[1])
             ->html(
+                // The SDK renames this to index.html regardless of what we pass
+                // (ChromiumPdf::html()), so name it that way rather than implying
+                // a choice we do not have.
                 Stream::string(
-                    'document.html',
-                    view($viewname)->render(),
+                    'index.html',
+                    view($template)->render(),
                 )
             );
-        $result = Gotenberg::send($request);
-
-        return new GotenbergPdfResponse($result);
     }
 }

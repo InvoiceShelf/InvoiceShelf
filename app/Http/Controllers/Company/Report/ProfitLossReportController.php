@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Silber\Bouncer\BouncerFacade;
 
 class ProfitLossReportController extends Controller
 {
@@ -24,7 +25,14 @@ class ProfitLossReportController extends Controller
      */
     public function __invoke(Request $request, $hash)
     {
-        $company = Company::where('unique_hash', $hash)->first();
+        $company = Company::where('unique_hash', $hash)->firstOrFail();
+
+        // These routes carry no company header, so ScopeBouncer is not in their
+        // middleware stack and the ability scope was never set. 'view-financial-reports'
+        // is stored scoped to a company, so the unscoped check always failed and every
+        // report PDF answered 403. Scope to the company named in the URL: the policy
+        // still checks membership, so this grants nothing new.
+        BouncerFacade::scope()->to($company->id);
 
         $this->authorize('view report', $company);
 

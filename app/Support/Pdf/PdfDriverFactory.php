@@ -2,14 +2,12 @@
 
 namespace App\Support\Pdf;
 
-use App;
-
 class PdfDriverFactory
 {
-    public static function create(string $driver)
+    public static function create(string $driver): PdfDriver
     {
         return match ($driver) {
-            'dompdf' => App::make('dompdf.wrapper'),
+            'dompdf' => new DompdfDriver,
             'gotenberg' => new GotenbergPdfDriver,
             default => throw new \InvalidArgumentException('Invalid PdfDriver requested')
         };

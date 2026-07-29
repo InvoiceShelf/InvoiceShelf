@@ -37,22 +37,22 @@ function stockPdfTemplates(string $type): array
 }
 
 /**
- * Asserts the route returned a PDF.
+ * Asserts the route returned a PDF, starting at byte zero.
  *
- * Presence, not position: the body currently carries the status line and
- * headers of an inner Response ahead of the PDF payload, because
- * GeneratesPdfTrait wraps $pdf->stream() — already a Response — in another
- * response()->make(). Readers tolerate leading bytes before %PDF, which is why
- * nobody has noticed. Asserting presence keeps this test honest about what it
- * covers (the render not fatalling) without baking the malformed prefix in as
- * expected output.
+ * This used to only assert %PDF appeared somewhere in the first kilobyte: the
+ * body carried the status line and headers of an inner Response ahead of the
+ * payload, because GeneratesPdfTrait wrapped $pdf->stream() — already a Response
+ * — in another response()->make(). Readers scan for the header so nobody
+ * noticed, but the bytes were malformed. The trait now passes ->output(), so the
+ * position can be asserted, and a regression would be caught rather than
+ * tolerated.
  */
 function assertRenderedPdf(TestResponse $response): void
 {
     $response->assertOk();
 
     expect($response->headers->get('content-type'))->toContain('application/pdf');
-    expect(substr($response->getContent(), 0, 1024))->toContain('%PDF');
+    expect($response->getContent())->toStartWith('%PDF-');
 }
 
 dataset('invoice templates', fn () => stockPdfTemplates('invoice'));
