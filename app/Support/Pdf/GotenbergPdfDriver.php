@@ -11,9 +11,9 @@ use Psr\Http\Message\RequestInterface;
 
 class GotenbergPdfDriver implements PdfDriver
 {
-    public function loadView(string $template): ResponseStream
+    public function loadView(string $template, array $metadata = []): ResponseStream
     {
-        return new GotenbergPdfResponse(Gotenberg::send($this->buildRequest($template)));
+        return new GotenbergPdfResponse(Gotenberg::send($this->buildRequest($template, $metadata)));
     }
 
     /**
@@ -23,7 +23,7 @@ class GotenbergPdfDriver implements PdfDriver
      * below this line used to be inlined into loadView(), which meant the only
      * way to check that an option was set was to run a Gotenberg service.
      */
-    public function buildRequest(string $template): RequestInterface
+    public function buildRequest(string $template, array $metadata = []): RequestInterface
     {
         $page = PdfPageSetup::fromConfig();
         [$width, $height] = $page->gotenbergPaper();
@@ -64,6 +64,19 @@ class GotenbergPdfDriver implements PdfDriver
         // the portrait pair — the same convention dompdf's setPaper() follows.
         if ($page->isLandscape()) {
             $chromium->landscape();
+        }
+
+        // Archival conformance, converted by LibreOffice inside the Gotenberg
+        // image. PDF/A-3 is what the EU e-invoicing formats ask for. The value is
+        // passed through unvalidated by the SDK, so an unsupported one surfaces
+        // as an HTTP error from the service; the setting is a fixed list for
+        // that reason.
+        if ($pdfa = config('pdf.connections.gotenberg.pdfa')) {
+            $chromium->pdfa($pdfa);
+        }
+
+        if ($metadata !== []) {
+            $chromium->metadata($metadata);
         }
 
         // Must be attached before html(), which is terminal: it returns the built

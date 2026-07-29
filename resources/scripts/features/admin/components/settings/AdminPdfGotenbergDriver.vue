@@ -37,8 +37,19 @@ const { t } = useI18n()
 const form = reactive<GotenbergConfig>({
   pdf_driver: 'gotenberg',
   gotenberg_host: '',
+  gotenberg_pdfa: '',
   ...pageSetupDefaults(),
 })
+
+// Only what the Gotenberg image can actually produce, checked against
+// gotenberg:8. The SDK forwards the value unvalidated, so anything else would
+// fail as an HTTP error at render time.
+const pdfaFormats = computed(() => [
+  { label: t('settings.pdf.pdfa_off'), value: '' },
+  { label: 'PDF/A-1b', value: 'PDF/A-1b' },
+  { label: 'PDF/A-2b', value: 'PDF/A-2b' },
+  { label: 'PDF/A-3b', value: 'PDF/A-3b' },
+])
 
 function isValidServiceUrl(value: string): boolean {
   if (!helpers.req(value)) {
@@ -87,6 +98,10 @@ onMounted(() => {
 
   if (typeof props.configData.gotenberg_host === 'string') {
     form.gotenberg_host = props.configData.gotenberg_host
+  }
+
+  if (typeof props.configData.gotenberg_pdfa === 'string') {
+    form.gotenberg_pdfa = props.configData.gotenberg_pdfa
   }
 
   Object.assign(form, pageSetupFrom(props.configData))
@@ -139,6 +154,20 @@ function saveConfig(): void {
           type="text"
           name="gotenberg_host"
           @input="v$.gotenberg_host.$touch()"
+        />
+      </BaseInputGroup>
+
+      <BaseInputGroup
+        :label="$t('settings.pdf.pdfa')"
+        :help-text="$t('settings.pdf.pdfa_hint')"
+      >
+        <BaseMultiselect
+          v-model="form.gotenberg_pdfa"
+          :content-loading="isFetchingInitialData"
+          :options="pdfaFormats"
+          label="label"
+          value-prop="value"
+          :can-deselect="false"
         />
       </BaseInputGroup>
     </BaseInputGrid>

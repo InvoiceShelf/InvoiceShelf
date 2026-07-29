@@ -57,15 +57,23 @@ class AppConfigProvider extends ServiceProvider
             ];
 
             $pdfSettings = Setting::getSettings(array_merge(
-                ['pdf_driver', 'gotenberg_host', 'pdf_page_numbers'],
+                ['pdf_driver', 'gotenberg_host', 'gotenberg_pdfa', 'pdf_page_numbers'],
                 array_keys($pageSettings),
             ));
 
             if (! empty($pdfSettings['pdf_driver'])) {
                 Config::set('pdf.driver', $pdfSettings['pdf_driver']);
 
-                if ($pdfSettings['pdf_driver'] === 'gotenberg' && ! empty($pdfSettings['gotenberg_host'])) {
-                    Config::set('pdf.connections.gotenberg.host', $pdfSettings['gotenberg_host']);
+                if ($pdfSettings['pdf_driver'] === 'gotenberg') {
+                    if (! empty($pdfSettings['gotenberg_host'])) {
+                        Config::set('pdf.connections.gotenberg.host', $pdfSettings['gotenberg_host']);
+                    }
+
+                    // Empty is a real choice here -- it means an ordinary PDF --
+                    // so an explicitly stored blank must override an env default.
+                    if (isset($pdfSettings['gotenberg_pdfa'])) {
+                        Config::set('pdf.connections.gotenberg.pdfa', $pdfSettings['gotenberg_pdfa'] ?: null);
+                    }
                 }
             }
 

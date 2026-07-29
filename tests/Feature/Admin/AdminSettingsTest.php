@@ -305,3 +305,43 @@ test('get app version', function () {
             'channel',
         ]);
 });
+
+/**
+ * The SDK forwards the pdfa value unvalidated, so an unsupported one would only
+ * fail later as an HTTP error from the Gotenberg service. The setting is a fixed
+ * list checked against what gotenberg:8 can actually produce.
+ */
+test('the archival format must be one gotenberg can produce', function () {
+    postJson('/api/v1/pdf/config', [
+        'pdf_driver' => 'gotenberg',
+        'gotenberg_host' => 'https://pdf.example.com',
+        'gotenberg_pdfa' => 'PDF/A-9z',
+        'pdf_paper_width' => '210mm',
+        'pdf_paper_height' => '297mm',
+        'pdf_orientation' => 'portrait',
+    ])->assertStatus(422)->assertJsonValidationErrors('gotenberg_pdfa');
+});
+
+test('the archival format round trips, and off is a real choice', function () {
+    postJson('/api/v1/pdf/config', [
+        'pdf_driver' => 'gotenberg',
+        'gotenberg_host' => 'https://pdf.example.com',
+        'gotenberg_pdfa' => 'PDF/A-3b',
+        'pdf_paper_width' => '210mm',
+        'pdf_paper_height' => '297mm',
+        'pdf_orientation' => 'portrait',
+    ])->assertOk();
+
+    getJson('/api/v1/pdf/config')->assertOk()->assertJson(['gotenberg_pdfa' => 'PDF/A-3b']);
+
+    postJson('/api/v1/pdf/config', [
+        'pdf_driver' => 'gotenberg',
+        'gotenberg_host' => 'https://pdf.example.com',
+        'gotenberg_pdfa' => '',
+        'pdf_paper_width' => '210mm',
+        'pdf_paper_height' => '297mm',
+        'pdf_orientation' => 'portrait',
+    ])->assertOk();
+
+    getJson('/api/v1/pdf/config')->assertOk()->assertJson(['gotenberg_pdfa' => '']);
+});

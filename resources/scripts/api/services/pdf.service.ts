@@ -30,6 +30,8 @@ export interface DomPdfConfig extends PdfPageSetup {
 export interface GotenbergConfig extends PdfPageSetup {
   pdf_driver: string
   gotenberg_host: string
+  /** '' for an ordinary PDF, or one of the PDF/A conformance levels. */
+  gotenberg_pdfa: string
 }
 
 export type PdfConfig = DomPdfConfig | GotenbergConfig

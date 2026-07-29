@@ -4,10 +4,10 @@ namespace App\Support\Pdf;
 
 class PdfService
 {
-    public static function loadView(string $template): ResponseStream
+    public static function loadView(string $template, array $metadata = []): ResponseStream
     {
         $driver = config('pdf.driver');
 
-        return PdfDriverFactory::create($driver)->loadView($template);
+        return PdfDriverFactory::create($driver)->loadView($template, $metadata);
     }
 }

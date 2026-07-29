@@ -1068,7 +1068,10 @@
       "margin_left": "Left Margin",
       "length_hint": "A number and a unit, e.g. \"210mm\". Accepts: pt, px, pc, mm, cm, in.",
       "page_numbers": "Page Numbers",
-      "page_numbers_hint": "Repeat the page number at the foot of every page. Needs a bottom margin to sit in."
+      "page_numbers_hint": "Repeat the page number at the foot of every page. Needs a bottom margin to sit in.",
+      "pdfa": "Archival Format (PDF/A)",
+      "pdfa_hint": "Long-term archival conformance. PDF/A-3 is what EU e-invoicing formats expect. Leave off for an ordinary PDF.",
+      "pdfa_off": "Off"
     },
     "company_info": {
       "company_info": "Company info",

@@ -65,6 +65,14 @@ return [
             'host' => env('GOTENBERG_HOST', 'http://pdf:3000'),
 
             /*
+             * Archival conformance, converted by LibreOffice inside the Gotenberg
+             * image. Empty means an ordinary PDF. PDF/A-3 is what the EU
+             * e-invoicing formats ask for. Gotenberg only: dompdf cannot produce
+             * PDF/A.
+             */
+            'pdfa' => env('GOTENBERG_PDFA'),
+
+            /*
              * Gotenberg usually runs as a sidecar on a private network, which the
              * SSRF guard rejects. Name that one host here to exempt it — e.g.
              * GOTENBERG_ALLOWED_PRIVATE_HOST=http://pdf:3000. Only this exact value

@@ -15,13 +15,20 @@ use Illuminate\Support\Facades\App;
  */
 class DompdfDriver implements PdfDriver
 {
-    public function loadView(string $template): ResponseStream
+    public function loadView(string $template, array $metadata = []): ResponseStream
     {
         $page = PdfPageSetup::fromConfig();
 
+        $html = $this->withPageMargins(view($template)->render(), $page);
+        $html = $this->withDocumentTitle($html, $metadata['Title'] ?? null);
+
         $pdf = $this->wrapper();
         $pdf->setPaper($page->dompdfPaper(), $page->orientation);
-        $pdf->loadHTML($this->withPageMargins(view($template)->render(), $page));
+        $pdf->loadHTML($html);
+
+        if ($metadata !== []) {
+            $pdf->addInfo($metadata);
+        }
 
         return new DompdfResponse($pdf);
     }
@@ -42,6 +49,39 @@ class DompdfDriver implements PdfDriver
         $injected = preg_replace('/(<head\b[^>]*>)/i', '$1'.$style, $html, 1, $count);
 
         return $count ? $injected : $style.$html;
+    }
+
+    /**
+     * dompdf reads the document Title from the <title> element during render(),
+     * which happens after any addInfo() call, so metadata set through the API is
+     * silently overwritten by whatever the template happened to put there. The
+     * only way to make the two drivers agree on the title is to write it into
+     * the markup.
+     */
+    private function withDocumentTitle(string $html, ?string $title): string
+    {
+        if ($title === null || $title === '') {
+            return $html;
+        }
+
+        $escaped = htmlspecialchars($title, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+        $replaced = preg_replace(
+            '#<title\b[^>]*>.*?</title>#is',
+            "<title>{$escaped}</title>",
+            $html,
+            1,
+            $count
+        );
+
+        if ($count) {
+            return $replaced;
+        }
+
+        // No <title> to replace, so add one. dompdf only looks inside <head>.
+        $injected = preg_replace('/(<head\b[^>]*>)/i', "$1<title>{$escaped}</title>", $html, 1, $count);
+
+        return $count ? $injected : $html;
     }
 
     protected function wrapper(): PDF

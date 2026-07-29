@@ -13,6 +13,7 @@ use App\Models\Estimate;
 use App\Models\ExchangeRateLog;
 use App\Models\Invoice;
 use App\Services\Mail\CompanyMailConfigService;
+use App\Support\Pdf\PdfMetadata;
 use App\Support\Pdf\PdfTemplateUtils;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -201,7 +202,11 @@ class EstimateService
             return view($templatePath);
         }
 
-        return Pdf::loadView($templatePath);
+        return Pdf::loadView($templatePath, PdfMetadata::forDocument(
+            __('pdf_estimate_label'),
+            $estimate->estimate_number,
+            $company,
+        ));
     }
 
     public function clone(Estimate $estimate): Estimate

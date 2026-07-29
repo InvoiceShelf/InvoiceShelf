@@ -60,7 +60,7 @@ class PDFConfigurationController extends Controller
         $this->authorize('manage pdf config');
 
         $pdfSettings = Setting::getSettings(array_merge(
-            ['pdf_driver', 'gotenberg_host'],
+            ['pdf_driver', 'gotenberg_host', 'gotenberg_pdfa'],
             self::PAGE_SETTINGS,
             self::PAGE_BOOLEANS,
         ));
@@ -68,6 +68,7 @@ class PDFConfigurationController extends Controller
         $config = [
             'pdf_driver' => $pdfSettings['pdf_driver'] ?? config('pdf.driver'),
             'gotenberg_host' => $pdfSettings['gotenberg_host'] ?? config('pdf.connections.gotenberg.host'),
+            'gotenberg_pdfa' => $pdfSettings['gotenberg_pdfa'] ?? config('pdf.connections.gotenberg.pdfa') ?? '',
         ];
 
         // Page geometry applies to whichever driver is selected, so it is always
@@ -134,6 +135,7 @@ class PDFConfigurationController extends Controller
 
         if ($driver === 'gotenberg') {
             $settings['gotenberg_host'] = $request->get('gotenberg_host');
+            $settings['gotenberg_pdfa'] = $request->get('gotenberg_pdfa') ?? '';
         }
 
         return $settings;

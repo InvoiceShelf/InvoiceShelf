@@ -10,6 +10,9 @@ use Illuminate\Validation\Rule;
 
 class PDFConfigurationRequest extends FormRequest
 {
+    /** Formats the Gotenberg image can actually produce, verified against gotenberg:8. */
+    public const PDFA_FORMATS = ['PDF/A-1b', 'PDF/A-2b', 'PDF/A-3b'];
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -67,6 +70,10 @@ class PDFConfigurationRequest extends FormRequest
                 'url',
                 Rule::when(! $isDeclaredHost, [new PublicHttpUrl]),
             ],
+            // A fixed list rather than a free string: the SDK forwards whatever
+            // it is given, so an unsupported value would only fail later as an
+            // HTTP error from the Gotenberg service.
+            'gotenberg_pdfa' => ['nullable', Rule::in(self::PDFA_FORMATS)],
         ];
     }
 }

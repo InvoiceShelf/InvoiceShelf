@@ -11,6 +11,7 @@ use App\Models\ExchangeRateLog;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Services\Mail\CompanyMailConfigService;
+use App\Support\Pdf\PdfMetadata;
 use App\Support\Pdf\PdfTemplateUtils;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -188,7 +189,11 @@ class PaymentService
             return view($templatePath);
         }
 
-        return Pdf::loadView($templatePath);
+        return Pdf::loadView($templatePath, PdfMetadata::forDocument(
+            __('pdf_payment_label'),
+            $payment->payment_number,
+            $company,
+        ));
     }
 
     public function generateFromTransaction($transaction): Payment

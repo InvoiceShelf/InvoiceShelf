@@ -13,6 +13,7 @@ use App\Models\Estimate;
 use App\Models\ExchangeRateLog;
 use App\Models\Invoice;
 use App\Services\Mail\CompanyMailConfigService;
+use App\Support\Pdf\PdfMetadata;
 use App\Support\Pdf\PdfTemplateUtils;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -265,7 +266,11 @@ class InvoiceService
             return view($templatePath);
         }
 
-        return Pdf::loadView($templatePath);
+        return Pdf::loadView($templatePath, PdfMetadata::forDocument(
+            __('pdf_invoice_label'),
+            $invoice->invoice_number,
+            $company,
+        ));
     }
 
     public function clone(Invoice $invoice): Invoice
