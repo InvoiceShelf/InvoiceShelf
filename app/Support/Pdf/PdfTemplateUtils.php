@@ -3,6 +3,7 @@
 namespace App\Support\Pdf;
 
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
@@ -111,22 +112,44 @@ class PdfTemplateUtils
      * The view to render for a document, preferring a custom override.
      *
      * Invoices and estimates let you pick between several designs, so their
-     * template is chosen per document. Payment receipts and reports have no
+     * template is chosen per document and $fallback is the design to use when
+     * that choice cannot be honoured. Payment receipts and reports have no
      * chooser and no design to pick, so overriding one means dropping a
      * same-named file into storage/app/templates/pdf/{type}/ and having it win.
-     * That keeps the whole feature to "the file exists, so use it" and needs no
-     * setting, column or picker.
+     *
+     * The fallback matters because the stored name is not trustworthy. It is
+     * validated when a document is saved through the UI, but seeders, imports,
+     * recurring-invoice copies and rows predating that validation all bypass it
+     * — and an unresolvable name used to reach `$template['custom']` on null and
+     * take the whole PDF route down with a 500.
      */
-    public static function resolveView(string $templateType, string $templateName): string
+    public static function resolveView(string $templateType, ?string $templateName, ?string $fallback = null): string
     {
-        $custom = sprintf('pdf_templates::%s.%s', $templateType, $templateName);
+        foreach (array_filter([$templateName, $fallback]) as $candidate) {
+            // View::exists rather than a disk check: the namespace is what
+            // actually renders, so asking it directly means the two cannot
+            // disagree about where custom templates live.
+            foreach ([
+                sprintf('pdf_templates::%s.%s', $templateType, $candidate),
+                sprintf('app.pdf.%s.%s', $templateType, $candidate),
+            ] as $view) {
+                if (View::exists($view)) {
+                    if ($candidate !== $templateName) {
+                        Log::warning('PDF template not found, falling back.', [
+                            'type' => $templateType,
+                            'requested' => $templateName,
+                            'used' => $candidate,
+                        ]);
+                    }
 
-        // View::exists rather than a disk check: the namespace is what actually
-        // renders, so asking it directly means the two cannot disagree about
-        // where custom templates live.
-        return View::exists($custom)
-            ? $custom
-            : sprintf('app.pdf.%s.%s', $templateType, $templateName);
+                    return $view;
+                }
+            }
+        }
+
+        // Nothing resolved. Name the built-in path so the failure points at
+        // something real rather than at whatever was stored.
+        return sprintf('app.pdf.%s.%s', $templateType, $fallback ?? $templateName);
     }
 
     /**

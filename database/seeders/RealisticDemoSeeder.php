@@ -569,6 +569,9 @@ class RealisticDemoSeeder extends Seeder
             'estimate_date' => $estimateDate->toDateString(),
             'expiry_date' => $expiryDate->toDateString(),
             'estimate_number' => $estimateNumber,
+            // Without this the estimate has no template and its PDF route 500s.
+            // seedInvoice() has always set it; the estimate side never did.
+            'template_name' => 'estimate1',
             'status' => $status,
             'tax_per_item' => 'NO',
             'tax_included' => false,

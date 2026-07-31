@@ -259,8 +259,7 @@ class InvoiceService
             'taxes' => $taxes,
         ]);
 
-        $template = PdfTemplateUtils::findFormattedTemplate('invoice', $invoiceTemplate, '');
-        $templatePath = $template['custom'] ? sprintf('pdf_templates::invoice.%s', $invoiceTemplate) : sprintf('app.pdf.invoice.%s', $invoiceTemplate);
+        $templatePath = PdfTemplateUtils::resolveView('invoice', $invoiceTemplate, 'invoice1');
 
         if (request()->has('preview')) {
             return view($templatePath);

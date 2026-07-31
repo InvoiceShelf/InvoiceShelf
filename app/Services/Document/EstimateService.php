@@ -195,8 +195,7 @@ class EstimateService
             'taxes' => $taxes,
         ]);
 
-        $template = PdfTemplateUtils::findFormattedTemplate('estimate', $estimateTemplate, '');
-        $templatePath = $template['custom'] ? sprintf('pdf_templates::estimate.%s', $estimateTemplate) : sprintf('app.pdf.estimate.%s', $estimateTemplate);
+        $templatePath = PdfTemplateUtils::resolveView('estimate', $estimateTemplate, 'estimate1');
 
         if (request()->has('preview')) {
             return view($templatePath);

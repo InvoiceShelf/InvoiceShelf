@@ -172,7 +172,10 @@ trait GeneratesPdfTrait
         }
 
         foreach ($fields as $key => $field) {
-            $fields[$key] = htmlspecialchars($field, ENT_QUOTES, 'UTF-8');
+            // Cast: an address line, custom field or tax id that was never filled
+            // in arrives as null, and passing null here is deprecated in PHP 8.4
+            // and an error in 9. Every PDF render was emitting these.
+            $fields[$key] = htmlspecialchars((string) $field, ENT_QUOTES, 'UTF-8');
         }
 
         return $fields;
@@ -182,7 +185,7 @@ trait GeneratesPdfTrait
     {
         $values = array_merge($this->getFieldsArray(), $this->getExtraFields());
 
-        $str = nl2br(strtr($format, $values));
+        $str = nl2br(strtr((string) $format, $values));
 
         $str = preg_replace('/{(.*?)}/', '', $str);
 
