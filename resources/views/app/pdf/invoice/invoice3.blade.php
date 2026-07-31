@@ -11,12 +11,7 @@
         /* -- Base -- */
 
         body {
-        }
-
-        html {
             margin: 0px;
-            padding: 0px;
-            margin-top: 50px;
         }
 
         table {
@@ -31,9 +26,10 @@
         /* -- Header -- */
 
         .header-container {
-            margin-top: -30px;
+            position: relative;
+            margin-top: 0px;
             width: 100%;
-            padding: 0px 30px;
+            padding: 20px 30px 0px;
         }
 
         .header-logo {
@@ -132,9 +128,17 @@
 
         /* -- Items Table -- */
 
+        /* The items table sets border-collapse: collapse, and padding does not
+           apply to a table in that mode. dompdf applies it anyway, Chromium
+           follows the spec and drops it, which put the two renderers 22.5pt
+           apart on each side. All of the table's spacing lives on this wrapper
+           instead -- a plain block, honoured identically by both. Padding rather
+           than margin so nothing collapses through it either. */
+        .items-table-wrapper {
+            padding: 35px 30px 10px 30px;
+        }
+
         .items-table {
-            margin-top: 35px;
-            padding: 0px 30px 10px 30px;
             page-break-before: avoid;
             page-break-after: auto;
         }
@@ -369,7 +373,9 @@
             <div style="clear: both;"></div>
         </div>
 
-        @include('app.pdf.invoice.partials.table')
+        <div class="items-table-wrapper">
+            @include('app.pdf.invoice.partials.table')
+        </div>
 
         <div class="notes">
             @if ($notes)

@@ -9,13 +9,7 @@
     <style type="text/css">
         /* -- Base -- */
         body {
-        }
-
-        html {
             margin: 0px;
-            padding: 0px;
-            margin-top: 50px;
-            margin-bottom: 25px;
         }
 
         table {
@@ -32,11 +26,12 @@
 
         .header-container {
             background: #7675ff;
-            position: absolute;
+            position: relative;
             width: 100%;
             height: 141px;
             left: 0px;
-            top: -60px;
+            top: 0px;
+            margin-bottom: -91px;
         }
 
         .header-section-left {
@@ -47,7 +42,7 @@
         }
 
         .header-logo {
-            padding-top: 45px;
+            padding-top: 35px;
             position: absolute;
             text-transform: capitalize;
             color: #fff;
@@ -58,7 +53,7 @@
             display: inline-block;
             width: 35%;
             float: right;
-            padding: 20px 30px 20px 0px;
+            padding: 10px 30px 20px 0px;
             text-align: right;
             color: white;
         }
@@ -203,9 +198,17 @@
 
         /* -- Items Table -- */
 
+        /* The items table sets border-collapse: collapse, and padding does not
+           apply to a table in that mode. dompdf applies it anyway, Chromium
+           follows the spec and drops it, which put the two renderers 22.5pt
+           apart on each side. All of the table's spacing lives on this wrapper
+           instead -- a plain block, honoured identically by both. Padding rather
+           than margin so nothing collapses through it either. */
+        .items-table-wrapper {
+            padding: 35px 30px 10px 30px;
+        }
+
         .items-table {
-            margin-top: 35px;
-            padding: 0px 30px 10px 30px;
             page-break-before: avoid;
             page-break-after: auto;
         }
@@ -433,7 +436,9 @@
             <div style="clear: both;"></div>
         </div>
 
-        @include('app.pdf.invoice.partials.table')
+        <div class="items-table-wrapper">
+            @include('app.pdf.invoice.partials.table')
+        </div>
 
         <div class="notes">
             @if ($notes)

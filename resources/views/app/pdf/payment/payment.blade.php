@@ -10,13 +10,7 @@
     <style type="text/css">
         /* -- Base -- */
         body {
-        }
-
-        html {
             margin: 0px;
-            padding: 0px;
-            margin-top: 50px;
-            margin-bottom: 50px;
         }
 
         table {
@@ -34,7 +28,7 @@
         .header-container {
             /* position: absolute; */
             width: 100%;
-            padding: 0 30px;
+            padding: 50px 30px 0px;
             margin-bottom: 50px;
             /* height: 150px;
             left: 0px;

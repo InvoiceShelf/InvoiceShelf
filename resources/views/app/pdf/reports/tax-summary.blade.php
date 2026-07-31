@@ -7,6 +7,7 @@
 
     <style type="text/css">
         body {
+            margin: 0px;
         }
 
         table {

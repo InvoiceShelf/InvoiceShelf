@@ -9,12 +9,7 @@
     <style type="text/css">
         /* -- Base -- */
         body {
-        }
-
-        html {
             margin: 0px;
-            padding: 0px;
-            margin-top: 50px;
         }
 
         table {
@@ -30,15 +25,16 @@
 
         .header-container {
             background: #817AE3;
-            position: absolute;
+            position: relative;
             width: 100%;
             height: 141px;
             left: 0px;
-            top: -60px;
+            top: 0px;
+            margin-bottom: -91px;
         }
 
         .header-section-left {
-            padding-top: 45px;
+            padding-top: 35px;
             padding-bottom: 45px;
             padding-left: 30px;
             display: inline-block;
@@ -56,7 +52,7 @@
             display: inline-block;
             width: 35%;
             float: right;
-            padding: 20px 30px 20px 0px;
+            padding: 10px 30px 20px 0px;
             text-align: right;
             color: white;
         }
@@ -223,8 +219,17 @@
 
         /* -- Items Table -- */
 
-        .items-table {
+        /* The items table sets border-collapse: collapse, and padding does not
+           apply to a table in that mode. dompdf applies it anyway, Chromium
+           follows the spec and drops it, which put the two renderers 22.5pt
+           apart on each side. All of the table's spacing lives on this wrapper
+           instead -- a plain block, honoured identically by both. Padding rather
+           than margin so nothing collapses through it either. */
+        .items-table-wrapper {
             padding: 30px 30px 10px 30px;
+        }
+
+        .items-table {
             page-break-before: avoid;
             page-break-after: auto;
         }
@@ -459,7 +464,9 @@
             <div style="clear: both;"></div>
         </div>
 
-        @include('app.pdf.estimate.partials.table')
+        <div class="items-table-wrapper">
+            @include('app.pdf.estimate.partials.table')
+        </div>
 
         <div class="notes">
             @if ($notes)

@@ -10,12 +10,7 @@
     <style type="text/css">
         /* -- Base -- */
         body {
-        }
-
-        html {
             margin: 0px;
-            padding: 0px;
-            margin-top: 50px;
         }
 
         table {
@@ -31,11 +26,12 @@
         /* -- Header -- */
 
         .header-container {
-            position: absolute;
+            position: relative;
             width: 100%;
             height: 90px;
             left: 0px;
-            top: -50px;
+            top: 0px;
+            margin-bottom: -40px;
         }
 
         .header-bottom-divider {
@@ -208,9 +204,17 @@
 
         /* -- Items Table -- */
 
+        /* The items table sets border-collapse: collapse, and padding does not
+           apply to a table in that mode. dompdf applies it anyway, Chromium
+           follows the spec and drops it, which put the two renderers 22.5pt
+           apart on each side. All of the table's spacing lives on this wrapper
+           instead -- a plain block, honoured identically by both. Padding rather
+           than margin so nothing collapses through it either. */
+        .items-table-wrapper {
+            padding: 35px 30px 10px 30px;
+        }
+
         .items-table {
-            margin-top: 35px;
-            padding: 0px 30px 10px 30px;
             page-break-before: avoid;
             page-break-after: auto;
         }
@@ -455,7 +459,7 @@
             <div style="clear: both;"></div>
         </div>
 
-        <div style="position:relative">
+        <div class="items-table-wrapper" style="position:relative">
             @include('app.pdf.estimate.partials.table')
         </div>
 
