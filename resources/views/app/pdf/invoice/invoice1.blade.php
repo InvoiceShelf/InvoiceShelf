@@ -27,12 +27,11 @@
 
         .header-bottom-divider {
             color: rgba(0, 0, 0, 0.2);
+            position: absolute;
             top: 90px;
             left: 0px;
             width: 100%;
             margin-left: 0%;
-            position: absolute;
-            bottom: 0px;
         }
 
         .header-container {
@@ -165,7 +164,13 @@
            instead -- a plain block, honoured identically by both. Padding rather
            than margin so nothing collapses through it either. */
         .items-table-wrapper {
-            padding: 35px 30px 10px 30px;
+            padding-top: 35px;
+            padding-bottom: 10px;
+        }
+
+        .items-table-inset {
+            padding-left: 30px;
+            padding-right: 30px;
         }
 
         .items-table {

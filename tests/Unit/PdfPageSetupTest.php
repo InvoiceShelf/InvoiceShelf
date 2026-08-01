@@ -5,8 +5,12 @@ use App\Support\Pdf\PdfPageSetup;
 /**
  * Page geometry is stored once and translated per driver. Gotenberg takes CSS
  * lengths; dompdf takes points, and margins only through an @page rule.
+ *
+ * Margins default to nothing: the stock templates carry their own insets, and
+ * invoice2/estimate2 are built around a header band that only reaches the paper
+ * edge at zero. A bare 0 is valid CSS and needs no unit.
  */
-test('it falls back to A4 with dompdf\'s own 1.2cm margin', function () {
+test('it falls back to A4 with no page margin', function () {
     config(['pdf.page' => []]);
 
     $page = PdfPageSetup::fromConfig();
@@ -14,7 +18,15 @@ test('it falls back to A4 with dompdf\'s own 1.2cm margin', function () {
     expect($page->width)->toBe('210mm')
         ->and($page->height)->toBe('297mm')
         ->and($page->orientation)->toBe('portrait')
-        ->and($page->marginCss())->toBe('1.2cm 1.2cm 1.2cm 1.2cm');
+        ->and($page->marginCss())->toBe('0 0 0 0');
+});
+
+test('a bare zero is accepted and converts to no offset', function () {
+    expect(PdfPageSetup::toPoints('0'))->toBe(0.0);
+
+    config(['pdf.page.margin_top' => '0']);
+
+    expect(PdfPageSetup::fromConfig()->marginTop)->toBe('0');
 });
 
 test('it converts every accepted unit to points', function (string $length, float $points) {
@@ -78,7 +90,7 @@ test('a blank stored value falls back rather than producing an invalid length', 
     $page = PdfPageSetup::fromConfig();
 
     expect($page->width)->toBe('210mm')
-        ->and($page->marginTop)->toBe('1.2cm');
+        ->and($page->marginTop)->toBe('0');
 });
 
 /**

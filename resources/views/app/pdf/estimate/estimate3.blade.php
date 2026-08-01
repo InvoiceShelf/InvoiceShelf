@@ -169,7 +169,13 @@
            instead -- a plain block, honoured identically by both. Padding rather
            than margin so nothing collapses through it either. */
         .items-table-wrapper {
-            padding: 30px 30px 10px 30px;
+            padding-top: 30px;
+            padding-bottom: 10px;
+        }
+
+        .items-table-inset {
+            padding-left: 30px;
+            padding-right: 30px;
         }
 
         .items-table {

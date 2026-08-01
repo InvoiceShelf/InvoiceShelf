@@ -22,10 +22,18 @@ return [
     | notation both drivers accept without loss — Gotenberg has no named sizes,
     | and dompdf's points array can express anything a name can.
     |
-    | The 1.2cm margin default is dompdf's own, from its user-agent stylesheet.
-    | Gotenberg used to be hardcoded to zero, so the same template came out
-    | edge-to-edge on one driver and inset on the other; matching dompdf keeps
-    | existing documents looking as they always have.
+    | Margins default to zero because the stock templates own their own spacing:
+    | they carry their own 30px insets, and invoice2/estimate2 are built around a
+    | header band that runs to the paper edge, which only bleeds when the page
+    | margin is nothing. A custom template owns its insets the same way.
+    |
+    | Note dompdf's user-agent stylesheet applies 1.2cm of its own unless a @page
+    | rule says otherwise, which DompdfDriver now always injects -- so zero here
+    | really is zero on both drivers.
+    |
+    | Setting a margin still works and is honoured by both, at the cost of the
+    | band no longer reaching the edge. Page numbers need a bottom margin to draw
+    | in, since Chromium renders the footer inside it.
     |
     */
 
@@ -33,10 +41,10 @@ return [
         'paper_width' => env('PDF_PAPER_WIDTH', '210mm'),
         'paper_height' => env('PDF_PAPER_HEIGHT', '297mm'),
         'orientation' => env('PDF_ORIENTATION', 'portrait'),
-        'margin_top' => env('PDF_MARGIN_TOP', '1.2cm'),
-        'margin_right' => env('PDF_MARGIN_RIGHT', '1.2cm'),
-        'margin_bottom' => env('PDF_MARGIN_BOTTOM', '1.2cm'),
-        'margin_left' => env('PDF_MARGIN_LEFT', '1.2cm'),
+        'margin_top' => env('PDF_MARGIN_TOP', '0'),
+        'margin_right' => env('PDF_MARGIN_RIGHT', '0'),
+        'margin_bottom' => env('PDF_MARGIN_BOTTOM', '0'),
+        'margin_left' => env('PDF_MARGIN_LEFT', '0'),
 
         /*
          * Repeat "page / total" at the foot of every page. Gotenberg only:

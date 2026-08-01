@@ -9,7 +9,9 @@ namespace App\Support\Pdf;
  * dompdf was pinned to whatever `config/dompdf.php` said and had no admin control
  * at all. The two also disagreed about margins: dompdf falls back to its own
  * stylesheet default of 1.2cm, Gotenberg was hardcoded to zero, so the same
- * template came out differently depending on the driver.
+ * template came out differently depending on the driver. Both now default to
+ * nothing: the stock templates carry their own insets, and invoice2/estimate2
+ * are built around a header band that only reaches the paper edge at margin 0.
  *
  * Dimensions are stored as CSS lengths because that is the only representation
  * both drivers take without loss. Gotenberg has no notion of named sizes, only
@@ -45,10 +47,10 @@ final class PdfPageSetup
             width: self::length('pdf.page.paper_width', '210mm'),
             height: self::length('pdf.page.paper_height', '297mm'),
             orientation: config('pdf.page.orientation') === 'landscape' ? 'landscape' : 'portrait',
-            marginTop: self::length('pdf.page.margin_top', '1.2cm'),
-            marginRight: self::length('pdf.page.margin_right', '1.2cm'),
-            marginBottom: self::length('pdf.page.margin_bottom', '1.2cm'),
-            marginLeft: self::length('pdf.page.margin_left', '1.2cm'),
+            marginTop: self::length('pdf.page.margin_top', '0'),
+            marginRight: self::length('pdf.page.margin_right', '0'),
+            marginBottom: self::length('pdf.page.margin_bottom', '0'),
+            marginLeft: self::length('pdf.page.margin_left', '0'),
         );
     }
 
@@ -102,7 +104,13 @@ final class PdfPageSetup
 
     public static function toPoints(string $length): float
     {
-        if (! preg_match('/^(\d+(?:\.\d+)?)(pt|px|pc|mm|cm|in)$/', trim($length), $m)) {
+        $length = trim($length);
+
+        if ($length === '0') {
+            return 0.0;
+        }
+
+        if (! preg_match('/^(\d+(?:\.\d+)?)(pt|px|pc|mm|cm|in)$/', $length, $m)) {
             throw new \InvalidArgumentException("Invalid PDF page length: {$length}");
         }
 
@@ -129,9 +137,9 @@ final class PdfPageSetup
 
         $value = trim($value);
 
-        if (! preg_match('/^\d+(\.\d+)?(pt|px|pc|mm|cm|in)$/', $value)) {
+        if (! preg_match('/^(0|\d+(\.\d+)?(pt|px|pc|mm|cm|in))$/', $value)) {
             throw new \InvalidArgumentException(
-                "Invalid PDF page length for {$key}: \"{$value}\". Expected a number and a unit, e.g. \"210mm\"."
+                "Invalid PDF page length for {$key}: \"{$value}\". Expected 0, or a number and a unit, e.g. \"210mm\"."
             );
         }
 

@@ -17,7 +17,7 @@ export const PAGE_SETUP_KEYS = [
 ] as const
 
 /** Mirrors App\Rules\CssLength, so a bad value is caught before the round trip. */
-const CSS_LENGTH = /^\d+(\.\d+)?(pt|px|pc|mm|cm|in)$/
+const CSS_LENGTH = /^(0|\d+(\.\d+)?(pt|px|pc|mm|cm|in))$/
 
 export function cssLength(t: (key: string) => string) {
   return {
@@ -27,16 +27,20 @@ export function cssLength(t: (key: string) => string) {
   }
 }
 
-/** Matches the defaults in config/pdf.php, including dompdf's own 1.2cm margin. */
+/**
+ * Matches the defaults in config/pdf.php. Margins are zero because the stock
+ * templates own their own spacing, and a full-bleed header only reaches the
+ * paper edge when the page margin is nothing.
+ */
 export function pageSetupDefaults(): PdfPageSetup {
   return {
     pdf_paper_width: '210mm',
     pdf_paper_height: '297mm',
     pdf_orientation: 'portrait',
-    pdf_margin_top: '1.2cm',
-    pdf_margin_right: '1.2cm',
-    pdf_margin_bottom: '1.2cm',
-    pdf_margin_left: '1.2cm',
+    pdf_margin_top: '0',
+    pdf_margin_right: '0',
+    pdf_margin_bottom: '0',
+    pdf_margin_left: '0',
     pdf_page_numbers: false,
   }
 }

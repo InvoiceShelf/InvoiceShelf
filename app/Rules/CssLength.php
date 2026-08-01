@@ -14,7 +14,8 @@ use Illuminate\Contracts\Validation\ValidationRule;
  */
 class CssLength implements ValidationRule
 {
-    public const PATTERN = '/^\d+(\.\d+)?(pt|px|pc|mm|cm|in)$/';
+    /** A bare `0` is valid CSS and the only length that needs no unit. */
+    public const PATTERN = '/^(0|\d+(\.\d+)?(pt|px|pc|mm|cm|in))$/';
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
@@ -23,7 +24,7 @@ class CssLength implements ValidationRule
         }
 
         if (! preg_match(self::PATTERN, trim($value))) {
-            $fail('The :attribute must be a number followed by pt, px, pc, mm, cm or in (e.g. "210mm").');
+            $fail('The :attribute must be 0, or a number followed by pt, px, pc, mm, cm or in (e.g. "210mm").');
         }
     }
 }
