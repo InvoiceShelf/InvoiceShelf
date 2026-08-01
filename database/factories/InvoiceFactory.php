@@ -81,6 +81,7 @@ class InvoiceFactory extends Factory
         $sequenceNumber = (new SerialNumberService)
             ->setModel(new Invoice)
             ->setCompany(User::find(1)->companies()->first()->id)
+            ->setSequenceScope(['type' => Invoice::TYPE_INVOICE])
             ->setNextNumbers();
 
         return [

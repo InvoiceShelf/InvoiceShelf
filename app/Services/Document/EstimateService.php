@@ -316,6 +316,7 @@ class EstimateService
             ->setModel(new Invoice)
             ->setCompany($estimate->company_id)
             ->setCustomer($estimate->customer_id)
+            ->setSequenceScope(['type' => Invoice::TYPE_INVOICE])
             ->setNextNumbers();
 
         $templateName = $estimate->getInvoiceTemplateName();

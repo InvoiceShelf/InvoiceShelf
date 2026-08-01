@@ -204,6 +204,7 @@ class CompanyService
             'payment_email_attachment' => 'NO',
             'retrospective_edits' => 'allow',
             'invoice_number_format' => '{{SERIES:INV}}{{DELIMITER:-}}{{SEQUENCE:6}}',
+            'credit_note_number_format' => '{{SERIES:CN}}{{DELIMITER:-}}{{SEQUENCE:6}}',
             'estimate_number_format' => '{{SERIES:EST}}{{DELIMITER:-}}{{SEQUENCE:6}}',
             'payment_number_format' => '{{SERIES:PAY}}{{DELIMITER:-}}{{SEQUENCE:6}}',
             'estimate_set_expiry_date_automatically' => 'YES',

@@ -2,6 +2,7 @@
 
 use App\Mail\SendCreditNoteMail;
 use App\Models\Company;
+use App\Models\CompanySetting;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\User;
@@ -444,4 +445,80 @@ test('sends a credit note to the customer by email', function () {
         ->assertJson(['success' => true]);
 
     Mail::assertSent(SendCreditNoteMail::class);
+});
+
+describe('credit note numbering', function () {
+    test('numbers credit notes in their own sequence, independent of invoices', function () {
+        $first = Invoice::factory()->hasItems(1)->create();
+        $second = Invoice::factory()->hasItems(1)->create();
+
+        expect($first->invoice_number)->toBe('INV-000001');
+        expect($first->sequence_number)->toBe(1);
+        expect($second->invoice_number)->toBe('INV-000002');
+        expect($second->sequence_number)->toBe(2);
+
+        $firstCreditNote = Invoice::find(
+            postJson("api/v1/invoices/{$first->id}/credit-note")
+                ->assertStatus(201)
+                ->json('data.id')
+        );
+
+        $secondCreditNote = Invoice::find(
+            postJson("api/v1/invoices/{$second->id}/credit-note")
+                ->assertStatus(201)
+                ->json('data.id')
+        );
+
+        // Credit notes live in the invoices table but count from 1 on their own
+        // format, so the two document series never interleave.
+        expect($firstCreditNote->invoice_number)->toBe('CN-000001');
+        expect($firstCreditNote->sequence_number)->toBe(1);
+        expect($secondCreditNote->invoice_number)->toBe('CN-000002');
+        expect($secondCreditNote->sequence_number)->toBe(2);
+
+        // And the invoice sequence is untouched by the two credit notes: the
+        // next invoice is 3, not 5.
+        $third = Invoice::factory()->hasItems(1)->create();
+
+        expect($third->invoice_number)->toBe('INV-000003');
+        expect($third->sequence_number)->toBe(3);
+    });
+
+    test('generates the credit note number from the credit_note_number_format setting', function () {
+        $companyId = User::find(1)->companies()->first()->id;
+
+        CompanySetting::setSettings([
+            'credit_note_number_format' => '{{SERIES:STORNO}}{{DELIMITER:/}}{{SEQUENCE:4}}',
+        ], $companyId);
+
+        $invoice = Invoice::factory()->hasItems(1)->create();
+
+        $creditNote = Invoice::find(
+            postJson("api/v1/invoices/{$invoice->id}/credit-note")
+                ->assertStatus(201)
+                ->json('data.id')
+        );
+
+        expect($creditNote->invoice_number)->toBe('STORNO/0001');
+    });
+
+    test('returns the next credit note number from the next-number endpoint', function () {
+        getJson('api/v1/next-number?key=credit_note')
+            ->assertStatus(200)
+            ->assertJson([
+                'success' => true,
+                'nextNumber' => 'CN-000001',
+            ]);
+
+        $invoice = Invoice::factory()->hasItems(1)->create();
+
+        postJson("api/v1/invoices/{$invoice->id}/credit-note")->assertStatus(201);
+
+        // The preview advances with the credit note sequence, not the invoice one.
+        getJson('api/v1/next-number?key=credit_note')
+            ->assertStatus(200)
+            ->assertJson([
+                'nextNumber' => 'CN-000002',
+            ]);
+    });
 });

@@ -1206,6 +1206,13 @@
         "disable_on_invoice_sent": "Disable after invoice is sent",
         "retrospective_edits_description": " Based on your country's laws or your preference, you can restrict users from editing finalised invoices."
       },
+      "credit_notes": {
+        "title": "Credit Notes",
+        "credit_note_number_format": "Credit Note Number Format",
+        "credit_note_number_format_description": "Customize how your credit note number gets generated automatically when you create a new credit note. Credit notes are numbered independently of invoices.",
+        "preview_credit_note_number": "Preview Credit Note Number",
+        "credit_note_settings_updated": "Credit Note Settings updated successfully"
+      },
       "estimates": {
         "title": "Estimates",
         "estimate_number_format": "Estimate Number Format",

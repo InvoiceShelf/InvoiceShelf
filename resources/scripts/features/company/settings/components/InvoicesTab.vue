@@ -50,6 +50,14 @@ const sendAsAttachmentField = computed<boolean>({
 
   <BaseDivider class="mt-6 mb-2" />
 
+  <NumberCustomizer
+    type="credit_note"
+    :type-store="invoiceStore"
+    default-series="CN"
+  />
+
+  <BaseDivider class="mt-6 mb-2" />
+
   <InvoicesTabDueDate />
 
   <BaseDivider class="mt-6 mb-2" />

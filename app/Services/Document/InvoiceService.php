@@ -41,6 +41,7 @@ class InvoiceService
             ->setModel($invoice)
             ->setCompany($invoice->company_id)
             ->setCustomer($invoice->customer_id)
+            ->setSequenceScope(['type' => Invoice::TYPE_INVOICE])
             ->setNextNumbers();
 
         $invoice->sequence_number = $serial->nextSequenceNumber;
@@ -82,6 +83,7 @@ class InvoiceService
             ->setModel($invoice)
             ->setCompany($invoice->company_id)
             ->setCustomer($request->customer_id)
+            ->setSequenceScope(['type' => Invoice::TYPE_INVOICE])
             ->setModelObject($invoice->id)
             ->setNextNumbers();
 
@@ -343,6 +345,7 @@ class InvoiceService
             ->setModel($invoice)
             ->setCompany($invoice->company_id)
             ->setCustomer($invoice->customer_id)
+            ->setSequenceScope(['type' => Invoice::TYPE_INVOICE])
             ->setNextNumbers();
 
         $dueDate = null;
@@ -436,6 +439,8 @@ class InvoiceService
             ->setModel(new Invoice)
             ->setCompany($invoice->company_id)
             ->setCustomer($invoice->customer_id)
+            ->setSettingKey('credit_note_number_format')
+            ->setSequenceScope(['type' => Invoice::TYPE_CREDIT_NOTE])
             ->setNextNumbers();
 
         // exchange_rate is a float multiplier, not a currency amount. base_* fields

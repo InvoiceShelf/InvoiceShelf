@@ -17,6 +17,10 @@ class SerialNumberService
 
     private $company;
 
+    private $settingKey;
+
+    private $sequenceScope = [];
+
     /**
      * @var string
      */
@@ -73,12 +77,44 @@ class SerialNumberService
     }
 
     /**
+     * Override the company setting the number format is read from.
+     *
+     * Without this the key is derived from the model class name, which is not
+     * enough for documents that share a table (credit notes are Invoice rows
+     * but carry their own format).
+     *
+     * @return $this
+     */
+    public function setSettingKey(string $key)
+    {
+        $this->settingKey = $key;
+
+        return $this;
+    }
+
+    /**
+     * Restrict the sequence lookups to a subset of the model's rows.
+     *
+     * Takes column => value constraints that are applied on top of the company
+     * (and customer) filters, so documents sharing a table can each keep an
+     * independent, gapless sequence.
+     *
+     * @return $this
+     */
+    public function setSequenceScope(array $constraints)
+    {
+        $this->sequenceScope = $constraints;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getNextNumber($data = null)
     {
         $modelName = strtolower(class_basename($this->model));
-        $settingKey = $modelName.'_number_format';
+        $settingKey = $this->settingKey ?: $modelName.'_number_format';
         $companyId = $this->company;
 
         if (request()->has('format')) {
@@ -116,11 +152,15 @@ class SerialNumberService
     {
         $companyId = $this->company;
 
-        $last = $this->model::orderBy('sequence_number', 'desc')
+        $query = $this->model::orderBy('sequence_number', 'desc')
             ->where('company_id', $companyId)
-            ->where('sequence_number', '<>', null)
-            ->take(1)
-            ->first();
+            ->where('sequence_number', '<>', null);
+
+        foreach ($this->sequenceScope as $column => $value) {
+            $query->where($column, $value);
+        }
+
+        $last = $query->take(1)->first();
 
         $this->nextSequenceNumber = ($last) ? $last->sequence_number + 1 : 1;
 
@@ -134,12 +174,16 @@ class SerialNumberService
     {
         $customer_id = ($this->customer) ? $this->customer->id : 1;
 
-        $last = $this->model::orderBy('customer_sequence_number', 'desc')
+        $query = $this->model::orderBy('customer_sequence_number', 'desc')
             ->where('company_id', $this->company)
             ->where('customer_id', $customer_id)
-            ->where('customer_sequence_number', '<>', null)
-            ->take(1)
-            ->first();
+            ->where('customer_sequence_number', '<>', null);
+
+        foreach ($this->sequenceScope as $column => $value) {
+            $query->where($column, $value);
+        }
+
+        $last = $query->take(1)->first();
 
         $this->nextCustomerSequenceNumber = ($last) ? $last->customer_sequence_number + 1 : 1;
 

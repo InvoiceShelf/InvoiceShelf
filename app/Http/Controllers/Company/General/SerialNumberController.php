@@ -29,6 +29,15 @@ class SerialNumberController extends Controller
 
                     break;
 
+                case 'credit_note':
+                    $nextNumber = $serial->setModel($invoice)
+                        ->setSettingKey('credit_note_number_format')
+                        ->setSequenceScope(['type' => Invoice::TYPE_CREDIT_NOTE])
+                        ->setModelObject($request->model_id)
+                        ->getNextNumber();
+
+                    break;
+
                 case 'estimate':
                     $nextNumber = $serial->setModel($estimate)
                         ->setModelObject($request->model_id)

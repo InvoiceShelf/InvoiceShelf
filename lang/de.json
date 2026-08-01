@@ -1056,6 +1056,13 @@
         "disable_on_invoice_sent": "Deaktivieren, nachdem Rechnung gesendet wurde",
         "retrospective_edits_description": " Basierend auf den Gesetzen Ihres Landes oder Ihrer Präferenz, können Sie Benutzer daran hindern, fertige Rechnungen zu bearbeiten."
       },
+      "credit_notes": {
+        "title": "Stornorechnungen",
+        "credit_note_number_format": "Stornorechnungsnummernformat",
+        "credit_note_number_format_description": "Passen Sie an, wie Ihre Stornorechnungsnummer automatisch generiert wird, wenn Sie eine neue Stornorechnung erstellen. Stornorechnungen werden unabhängig von Rechnungen nummeriert.",
+        "preview_credit_note_number": "Vorschau Stornorechnungsnummer",
+        "credit_note_settings_updated": "Stornorechnungseinstellungen erfolgreich aktualisiert"
+      },
       "estimates": {
         "title": "Angebote",
         "estimate_number_format": "Angebotsnummernformat",
