@@ -121,7 +121,11 @@ class DashboardController extends Controller
         ];
 
         $total_customer_count = Customer::whereCompany()->count();
+        // "How many invoices did we issue" counts issued documents, so the
+        // reversals are excluded. The sums above deliberately keep them: a
+        // credit note's negated total is exactly what nets sales back out.
         $total_invoice_count = Invoice::whereCompany()
+            ->where('type', Invoice::TYPE_INVOICE)
             ->count();
         $total_estimate_count = Estimate::whereCompany()->count();
         $total_amount_due = Invoice::whereCompany()

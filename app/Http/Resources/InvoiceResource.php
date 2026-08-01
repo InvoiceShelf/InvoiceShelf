@@ -61,13 +61,16 @@ class InvoiceResource extends JsonResource
             'overdue' => $this->overdue,
             // Credit notes reversing this invoice (minimal reference so the
             // UI can flag the invoice as cancelled and link to the storno
-            // document, mirroring the related_invoice back-link).
-            'credit_notes' => $this->when($this->creditNotes()->exists(), function () {
-                return $this->creditNotes->map(fn ($creditNote) => [
+            // document, mirroring the related_invoice back-link). Emitted only
+            // where the relation was eager-loaded: probing it per row costs two
+            // queries each, and this resource is serialized in paginated lists.
+            'credit_notes' => $this->when(
+                $this->relationLoaded('creditNotes') && $this->creditNotes->isNotEmpty(),
+                fn () => $this->creditNotes->map(fn ($creditNote) => [
                     'id' => $creditNote->id,
                     'invoice_number' => $creditNote->invoice_number,
-                ])->values();
-            }),
+                ])->values()
+            ),
             'items' => $this->when($this->items()->exists(), function () {
                 return InvoiceItemResource::collection($this->items);
             }),

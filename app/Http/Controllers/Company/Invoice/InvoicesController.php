@@ -35,9 +35,11 @@ class InvoicesController extends Controller
 
         $limit = $request->input('limit', 10);
 
+        // creditNotes drives the "cancelled" badge on every row, so it is
+        // eager-loaded (two columns) rather than probed per row.
         $invoices = Invoice::whereCompany()
             ->applyFilters($request->all())
-            ->with('customer')
+            ->with(['customer', 'creditNotes:id,related_invoice_id,invoice_number'])
             ->latest()
             ->paginateData($limit);
 
@@ -81,7 +83,8 @@ class InvoicesController extends Controller
             return new CreditNoteResource($invoice->load('relatedInvoice'));
         }
 
-        return new InvoiceResource($invoice);
+        // Feeds the "cancelled via credit note" banner on the detail page.
+        return new InvoiceResource($invoice->load('creditNotes:id,related_invoice_id,invoice_number'));
     }
 
     /**

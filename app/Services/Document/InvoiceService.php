@@ -193,6 +193,11 @@ class InvoiceService
             $invoice->delete();
         }
 
+        // There is no DB-level foreign key on related_invoice_id by convention,
+        // so the cascade lives here: nothing that survives the batch may keep
+        // pointing at a row that just went away.
+        Invoice::whereIn('related_invoice_id', $ids)->update(['related_invoice_id' => null]);
+
         return true;
     }
 

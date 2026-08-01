@@ -1605,6 +1605,7 @@
     "estimate_number_used": "Die Angebotsnummer ist bereits vergeben.",
     "invoice_number_used": "Die Rechnungsnummer ist bereits vergeben.",
     "payment_attached": "Dieser Rechnung ist bereits eine Zahlung zugewiesen. Bitte zuerst die zugewiesenen Zahlungen löschen, um mit der Entfernung fortzufahren.",
+    "credit_note_attached": "Diese Rechnung wurde durch eine Stornorechnung storniert. Bitte die Stornorechnung mit auswählen, um beide Belege gemeinsam zu löschen.",
     "payment_number_used": "Die Zahlungsnummer ist bereits vergeben.",
     "name_already_taken": "Der Name ist bereits vergeben.",
     "receipt_does_not_exist": "Beleg existiert nicht.",

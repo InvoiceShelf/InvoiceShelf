@@ -338,6 +338,35 @@ test('deleting the original invoice and its credit note together succeeds', func
     $this->assertDatabaseMissing('invoices', ['id' => $creditNoteId]);
 });
 
+test('cannot delete an invoice while a credit note still reverses it', function () {
+    $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
+
+    $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
+        ->assertStatus(201)
+        ->json('data.id');
+
+    // Deleting only the original would leave the credit note pointing at a row
+    // that no longer exists.
+    postJson('api/v1/invoices/delete', ['ids' => [$invoice->id]])
+        ->assertStatus(422);
+
+    $this->assertDatabaseHas('invoices', ['id' => $invoice->id]);
+    $this->assertDatabaseHas('invoices', ['id' => $creditNoteId]);
+});
+
+test('no surviving row keeps a dangling related invoice reference', function () {
+    $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
+
+    $creditNote = app(InvoiceService::class)->createCreditNote($invoice);
+
+    // There is no DB foreign key, so the cascade is the service's job. Deleting
+    // the original directly (the request layer blocks this) must still not
+    // leave the credit note pointing at a missing invoice.
+    app(InvoiceService::class)->delete(collect([$invoice->id]));
+
+    expect(Invoice::find($creditNote->id)->related_invoice_id)->toBeNull();
+});
+
 test('renders a credit note pdf through the original invoice template family, not a hardcoded layout', function () {
     // Regression for: credit notes always rendered through one hardcoded
     // generic layout regardless of which of the 3 invoice templates the

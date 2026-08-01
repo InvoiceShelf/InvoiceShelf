@@ -30,7 +30,9 @@ class InvoicesController extends Controller
 
         return InvoiceResource::collection($invoices)
             ->additional(['meta' => [
-                'invoiceTotalCount' => Invoice::where('status', '<>', 'DRAFT')->whereCustomer(Auth::guard('customer')->id())->count(),
+                // Issued invoices only: a credit note is a reversal document,
+                // not another invoice the customer received.
+                'invoiceTotalCount' => Invoice::where('type', Invoice::TYPE_INVOICE)->where('status', '<>', 'DRAFT')->whereCustomer(Auth::guard('customer')->id())->count(),
             ]]);
     }
 

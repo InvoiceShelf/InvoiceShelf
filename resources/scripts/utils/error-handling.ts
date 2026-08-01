@@ -48,6 +48,7 @@ const ERROR_TRANSLATION_MAP: Record<string, string> = {
   'Relation invoiceItems exists.': 'items.item_attached_message',
   'Relation taxes exists.': 'settings.tax_types.already_in_use',
   'Relation payments exists.': 'errors.payment_attached',
+  'Credit note exists.': 'errors.credit_note_attached',
   'The estimate number has already been taken.': 'errors.estimate_number_used',
   'The payment number has already been taken.': 'errors.estimate_number_used',
   'The invoice number has already been taken.': 'errors.invoice_number_used',

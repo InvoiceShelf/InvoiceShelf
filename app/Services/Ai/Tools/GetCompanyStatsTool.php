@@ -75,8 +75,11 @@ class GetCompanyStatsTool extends AiTool
         // so rangeFor() is guaranteed to return a non-null pair here.
         [$start, $end] = $this->rangeFor($period);
 
+        // Counts issued invoices only; the total below keeps the credit notes,
+        // whose negated amounts are what net the sales figure back out.
         $invoiceCount = Invoice::query()
             ->where('company_id', $companyId)
+            ->where('type', Invoice::TYPE_INVOICE)
             ->whereBetween('invoice_date', [$start, $end])
             ->count();
 

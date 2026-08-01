@@ -24,7 +24,10 @@ class DashboardController extends Controller
         $amountDue = Invoice::whereCustomer($user->id)
             ->where('status', '<>', 'DRAFT')
             ->sum('due_amount');
+        // Counts issued invoices only; a credit note is a reversal document,
+        // not another invoice the customer received.
         $invoiceCount = Invoice::whereCustomer($user->id)
+            ->where('type', Invoice::TYPE_INVOICE)
             ->where('status', '<>', 'DRAFT')
             ->count();
         $estimatesCount = Estimate::whereCustomer($user->id)

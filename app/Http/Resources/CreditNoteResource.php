@@ -21,8 +21,11 @@ class CreditNoteResource extends InvoiceResource
         return array_merge(parent::toArray($request), [
             // type + related_invoice_id come from InvoiceResource; this adds the
             // expanded reference to the original invoice being reversed.
+            // Read off the loaded relation rather than probing it: the caller
+            // eager-loads relatedInvoice, so an exists() query here would be
+            // pure overhead.
             'related_invoice' => $this->when(
-                $this->related_invoice_id !== null && $this->relatedInvoice()->exists(),
+                $this->relationLoaded('relatedInvoice') && $this->relatedInvoice !== null,
                 function () {
                     $related = $this->relatedInvoice;
 

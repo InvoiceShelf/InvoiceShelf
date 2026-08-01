@@ -1814,6 +1814,7 @@
     "estimate_number_used": "The estimate number has already been taken.",
     "invoice_number_used": "The invoice number has already been taken.",
     "payment_attached": "This invoice already has a payment attached to it. Make sure to delete the attached payments first in order to go ahead with the removal.",
+    "credit_note_attached": "This invoice has been reversed by a credit note. Select the credit note as well to delete both documents together.",
     "payment_number_used": "The payment number has already been taken.",
     "name_already_taken": "The name has already been taken.",
     "receipt_does_not_exist": "Receipt does not exist.",

@@ -135,6 +135,10 @@ import { useInvoiceStore } from '../store'
 import { useDialogStore } from '../../../../stores/dialog.store'
 import { useModalStore } from '../../../../stores/modal.store'
 import { useNotificationStore } from '../../../../stores/notification.store'
+import {
+  handleApiError,
+  getErrorTranslationKey,
+} from '../../../../utils/error-handling'
 import type { Invoice } from '../../../../types/domain/invoice'
 
 interface TableRef {
@@ -271,14 +275,28 @@ function createCreditNote(): void {
     size: 'lg',
   }).then(async (res: boolean) => {
     if (res) {
-      const response = await invoiceStore.createCreditNote({ id: props.row.id })
-      notificationStore.showNotification({
-        type: 'success',
-        message: t('invoices.credit_note_created'),
-      })
-      router.push(`/admin/invoices/${response.data.data.id}/view`)
-      props.loadData?.()
-      props.table?.refresh()
+      // The server refuses a reversal it cannot make safely (paid invoice,
+      // draft, already credited), so the failure has to reach the user
+      // instead of leaving the dialog looking like it worked.
+      try {
+        const response = await invoiceStore.createCreditNote({
+          id: props.row.id,
+        })
+        notificationStore.showNotification({
+          type: 'success',
+          message: t('invoices.credit_note_created'),
+        })
+        router.push(`/admin/invoices/${response.data.data.id}/view`)
+        props.loadData?.()
+        props.table?.refresh()
+      } catch (err: unknown) {
+        const normalized = handleApiError(err)
+        const translationKey = getErrorTranslationKey(normalized.message)
+        notificationStore.showNotification({
+          type: 'error',
+          message: translationKey ? t(translationKey) : normalized.message,
+        })
+      }
     }
   })
 }

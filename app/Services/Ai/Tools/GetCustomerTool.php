@@ -49,9 +49,11 @@ class GetCustomerTool extends AiTool
         }
 
         // Aggregate totals — done with lightweight queries rather than loading every invoice.
+        // Issued invoices only: a credit note reverses one, it is not another.
         $invoiceCount = Invoice::query()
             ->where('company_id', $companyId)
             ->where('customer_id', $customer->id)
+            ->where('type', Invoice::TYPE_INVOICE)
             ->count();
 
         $outstanding = (float) Invoice::query()
