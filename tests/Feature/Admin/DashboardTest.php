@@ -73,3 +73,50 @@ test('the invoice count excludes credit notes while the sales total nets them ou
     // what takes the reversed sale back out of the figure.
     expect((int) $after->json('total_sales'))->toBe($baselineSales);
 });
+
+test('the dashboard renders while a partially credited invoice is among the recent due', function () {
+    // Regression: the recent-due list serializes raw Invoice models, so every
+    // loaded relation runs the full $appends set. A column-limited creditNotes
+    // eager load left the credit-note children without company_id and the date
+    // accessors exploded on a null format, taking the whole endpoint down with
+    // a 500. A partially credited invoice is the trigger: it still has a due
+    // amount, so it is the one credited document the recent-due list shows.
+    $invoice = Invoice::factory()
+        ->hasItems(1, [
+            'price' => 5000,
+            'quantity' => 2,
+            'total' => 10000,
+            'tax' => 0,
+            'discount_val' => 0,
+            'exchange_rate' => 1,
+            'base_price' => 5000,
+            'base_total' => 10000,
+            'base_tax' => 0,
+            'base_discount_val' => 0,
+        ])
+        ->create([
+            'status' => Invoice::STATUS_SENT,
+            'invoice_date' => now()->format('Y-m-d'),
+            'sub_total' => 10000,
+            'total' => 10000,
+            'base_total' => 10000,
+            'tax' => 0,
+            'discount_val' => 0,
+            'due_amount' => 10000,
+            'base_due_amount' => 10000,
+            'exchange_rate' => 1,
+        ]);
+
+    $item = $invoice->items()->first();
+
+    postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+        'items' => [['id' => $item->id, 'quantity' => 1]],
+    ])->assertStatus(201);
+
+    expect((int) $invoice->fresh()->due_amount)->toBe(5000);
+
+    $response = getJson('api/v1/dashboard')->assertOk();
+
+    expect(collect($response->json('recent_due_invoices'))->pluck('id'))
+        ->toContain($invoice->id);
+});

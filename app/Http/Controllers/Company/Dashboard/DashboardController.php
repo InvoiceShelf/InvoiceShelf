@@ -131,10 +131,13 @@ class DashboardController extends Controller
         $total_amount_due = Invoice::whereCompany()
             ->sum('base_due_amount');
 
-        // The credit notes come along so each row can report its credited_status:
-        // an invoice settled by a credit note is not an invoice that was paid, and
-        // the dashboard list is where that distinction is easiest to miss.
-        $recent_due_invoices = Invoice::with(['customer', 'creditNotes:id,related_invoice_id,invoice_number,total'])
+        // Raw models, not InvoiceResource: every loaded relation is serialized
+        // with the full $appends set, so a column-limited creditNotes load blew
+        // up in the date accessors (no company_id on the children) and a full
+        // load would run the appends per credit note for nothing. The rows do
+        // not need the relation: credited_status is a resource-level field, and
+        // a fully credited invoice has no due amount so it never appears here.
+        $recent_due_invoices = Invoice::with('customer')
             ->whereCompany()
             ->where('base_due_amount', '>', 0)
             ->take(5)
