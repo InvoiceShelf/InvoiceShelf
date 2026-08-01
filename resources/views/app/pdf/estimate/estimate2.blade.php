@@ -91,14 +91,12 @@
 
         .content-wrapper {
             display: block;
-            margin-top: 60px;
             padding-bottom: 20px;
         }
 
         .address-container {
             display: block;
-            padding-top: 20px;
-            margin-top: 10px;
+            padding-top: 32px;
         }
 
         /* -- Company Address -- */
@@ -415,6 +413,20 @@
 
         .pl-0 {
             padding-left: 0;
+        }
+
+        /* The address formats emit <h3>{NAME}</h3> ahead of the <br>-joined
+           lines. Left to the user-agent default its margins differ between
+           dompdf and Chromium -- the construct where the two renderers drift
+           apart vertically -- and the extra top margin also pushes the company
+           column out of line with the Bill to / Ship to columns beside it.
+           Pinning both margins fixes the alignment and removes the divergence. */
+        .company-address h3,
+        .customer-address-container h3,
+        .billing-address h3,
+        .shipping-address h3 {
+            margin-top: 0;
+            margin-bottom: 6px;
         }
 
     </style>
