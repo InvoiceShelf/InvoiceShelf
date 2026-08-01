@@ -10,7 +10,12 @@ import type {
   InvoiceStatusPayload,
   InvoiceTemplate,
 } from '../../../api/services/invoice.service'
-import type { Invoice, InvoiceItem, DiscountType } from '../../../types/domain/invoice'
+import type {
+  Invoice,
+  InvoiceItem,
+  DiscountType,
+  CreateCreditNotePayload,
+} from '../../../types/domain/invoice'
 import type { Tax, TaxType } from '../../../types/domain/tax'
 import type { Currency } from '../../../types/domain/currency'
 import type { Customer } from '../../../types/domain/customer'
@@ -367,8 +372,11 @@ export const useInvoiceStore = defineStore('invoice', {
       return { data: response }
     },
 
-    async createCreditNote(data: { id: number }): Promise<{ data: { data: Invoice } }> {
-      const response = await invoiceService.createCreditNote(data.id)
+    async createCreditNote(
+      data: { id: number } & CreateCreditNotePayload,
+    ): Promise<{ data: { data: Invoice } }> {
+      const { id, ...payload } = data
+      const response = await invoiceService.createCreditNote(id, payload)
       return { data: response }
     },
 

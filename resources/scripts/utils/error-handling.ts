@@ -51,9 +51,13 @@ const ERROR_TRANSLATION_MAP: Record<string, string> = {
   'Credit note exists.': 'errors.credit_note_attached',
   'a_credit_note_cannot_be_created_from_a_credit_note':
     'errors.credit_note_cannot_be_created_from_credit_note',
-  'the_invoice_already_has_a_credit_note': 'errors.invoice_already_has_credit_note',
-  'invoice_with_payments_cannot_be_credited': 'errors.invoice_with_payments_cannot_be_credited',
   'a_draft_invoice_cannot_be_credited': 'errors.draft_invoice_cannot_be_credited',
+  'invoice_already_fully_credited': 'errors.invoice_already_fully_credited',
+  'credit_quantity_exceeds_remaining': 'errors.credit_quantity_exceeds_remaining',
+  'credit_amount_exceeds_invoice_balance': 'errors.credit_amount_exceeds_invoice_balance',
+  'credit_note_must_credit_something': 'errors.credit_note_must_credit_something',
+  'credit_item_not_on_invoice': 'errors.credit_item_not_on_invoice',
+  'credit_quantity_invalid': 'errors.credit_quantity_invalid',
   'a_credit_note_cannot_be_cloned': 'errors.credit_note_cannot_be_cloned',
   'a_credit_note_cannot_be_converted_to_an_estimate':
     'errors.credit_note_cannot_be_converted_to_estimate',

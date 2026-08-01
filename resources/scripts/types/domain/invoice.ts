@@ -27,6 +27,12 @@ export interface CreditNoteRef {
   invoice_number: string
 }
 
+/**
+ * How much of an invoice has been reversed by credit notes: nothing, some of
+ * it, or all of it. Emitted by the API alongside `credited_total`.
+ */
+export type CreditedStatus = 'NONE' | 'PARTIAL' | 'FULL'
+
 export interface RelatedInvoice {
   id: number
   invoice_number: string
@@ -71,6 +77,12 @@ export interface Invoice {
   related_invoice_id: number | null
   related_invoice?: RelatedInvoice | null
   credit_notes?: CreditNoteRef[]
+  credit_reason?: string | null
+  /** Amount already credited off this invoice, as a positive number of cents. */
+  credited_total?: number
+  credited_status?: CreditedStatus
+  /** Credited quantity per original invoice item, keyed by invoice_items.id. */
+  credited_quantities?: Record<string, number>
   status: InvoiceStatus
   paid_status: InvoicePaidStatus
   tax_per_item: string | null
@@ -137,6 +149,21 @@ export interface CreateInvoicePayload {
   taxes?: Partial<Tax>[]
   customFields?: CustomFieldValue[]
   fields?: CustomFieldValue[]
+}
+
+export interface CreditNoteItemPayload {
+  /** id of the ORIGINAL invoice item being credited. */
+  id: number
+  quantity: number
+}
+
+/**
+ * Payload for POST /invoices/{id}/credit-note. An absent or empty `items` list
+ * credits every remaining quantity, which is the full reversal.
+ */
+export interface CreateCreditNotePayload {
+  items?: CreditNoteItemPayload[]
+  reason?: string | null
 }
 
 export interface CreateInvoiceItemPayload {

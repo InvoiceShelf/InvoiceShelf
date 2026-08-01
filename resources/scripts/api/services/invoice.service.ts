@@ -1,6 +1,10 @@
 import { client } from '../client'
 import { API } from '../endpoints'
-import type { Invoice, CreateInvoicePayload } from '@/scripts/types/domain/invoice'
+import type {
+  Invoice,
+  CreateInvoicePayload,
+  CreateCreditNotePayload,
+} from '@/scripts/types/domain/invoice'
 import type {
   ApiResponse,
   PaginatedResponse,
@@ -108,8 +112,15 @@ export const invoiceService = {
     return data
   },
 
-  async createCreditNote(id: number): Promise<ApiResponse<Invoice>> {
-    const { data } = await client.post(`${API.INVOICES}/${id}/credit-note`)
+  /**
+   * Credit an invoice. Omitting `payload.items` reverses every remaining
+   * quantity; supplying them credits only those lines.
+   */
+  async createCreditNote(
+    id: number,
+    payload?: CreateCreditNotePayload,
+  ): Promise<ApiResponse<Invoice>> {
+    const { data } = await client.post(`${API.INVOICES}/${id}/credit-note`, payload ?? {})
     return data
   },
 

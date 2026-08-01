@@ -316,11 +316,12 @@
                 {{ $t('invoices.overdue') }}
               </BasePaidStatusBadge>
 
-              <!-- An invoice reversed by a credit note is settled but NOT
-                   genuinely paid: show a distinct "Cancelled" badge instead
-                   of the generic paid badge so the two can't be confused. -->
+              <!-- An invoice reversed in full by credit notes is settled but
+                   NOT genuinely paid: show a distinct "Cancelled" badge
+                   instead of the generic paid badge so the two can't be
+                   confused. -->
               <span
-                v-if="row.data.type !== 'CREDIT_NOTE' && row.data.credit_notes?.length"
+                v-if="row.data.type !== 'CREDIT_NOTE' && row.data.credited_status === 'FULL'"
                 class="inline-block px-1 py-0.5 ml-2 text-xs font-medium rounded bg-amber-100 text-amber-800 whitespace-nowrap"
               >
                 {{ $t('invoices.cancelled') }}
@@ -333,6 +334,15 @@
               >
                 <BaseInvoiceStatusLabel :status="row.data.paid_status" />
               </BasePaidStatusBadge>
+
+              <!-- A partly credited invoice still has a real paid status, so
+                   this badge sits ALONGSIDE it rather than replacing it. -->
+              <span
+                v-if="row.data.type !== 'CREDIT_NOTE' && row.data.credited_status === 'PARTIAL'"
+                class="inline-block px-1 py-0.5 ml-1 text-[10px] font-medium rounded bg-amber-100 text-amber-800 whitespace-nowrap"
+              >
+                {{ $t('invoices.partially_credited') }}
+              </span>
             </div>
           </template>
 
@@ -489,6 +499,7 @@
   </BasePage>
 
   <SendInvoiceModal />
+  <CreditNoteModal />
 </template>
 
 <script setup lang="ts">
@@ -500,6 +511,7 @@ import { useInvoiceStore } from '../store'
 import { useRecurringInvoiceStore } from '../../recurring-invoices/store'
 import InvoiceDropdown from '../components/InvoiceDropdown.vue'
 import SendInvoiceModal from '../components/SendInvoiceModal.vue'
+import CreditNoteModal from '../components/CreditNoteModal.vue'
 import RecurringInvoiceDropdown from '../../recurring-invoices/components/RecurringInvoiceDropdown.vue'
 import { useUserStore } from '../../../../stores/user.store'
 import { useDialogStore } from '../../../../stores/dialog.store'

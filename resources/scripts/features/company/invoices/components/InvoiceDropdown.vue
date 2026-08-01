@@ -196,13 +196,14 @@ const canSendInvoice = computed<boolean>(() => {
 })
 
 // A credit note can only be created from a real invoice (never from another
-// credit note), only once per invoice (a credit note is a full reversal),
-// and only by users allowed to create invoices.
+// credit note), only while something is left to credit, never from a draft
+// (nothing was issued yet), and only by users allowed to create invoices.
 const canCreateCreditNote = computed<boolean>(() => {
   return (
     props.canCreate &&
     props.row.type !== 'CREDIT_NOTE' &&
-    !props.row.credit_notes?.length
+    props.row.credited_status !== 'FULL' &&
+    props.row.status !== 'DRAFT'
   )
 })
 
@@ -288,35 +289,18 @@ function convertToEstimate(): void {
   })
 }
 
+// Crediting is a form, not a confirmation: which lines and how much of each
+// has to be chosen, so the modal owns the whole flow including its errors.
 function createCreditNote(): void {
-  dialogStore.openDialog({
-    title: t('general.are_you_sure'),
-    message: t('invoices.confirm_create_credit_note'),
-    yesLabel: t('general.ok'),
-    noLabel: t('general.cancel'),
-    variant: 'primary',
-    hideNoButton: false,
+  modalStore.openModal({
+    title: t('invoices.create_credit_note'),
+    componentName: 'CreditNoteModal',
+    id: props.row.id,
     size: 'lg',
-  }).then(async (res: boolean) => {
-    if (res) {
-      // The server refuses a reversal it cannot make safely (paid invoice,
-      // draft, already credited), so the failure has to reach the user
-      // instead of leaving the dialog looking like it worked.
-      try {
-        const response = await invoiceStore.createCreditNote({
-          id: props.row.id,
-        })
-        notificationStore.showNotification({
-          type: 'success',
-          message: t('invoices.credit_note_created'),
-        })
-        router.push(`/admin/invoices/${response.data.data.id}/view`)
-        props.loadData?.()
-        props.table?.refresh()
-      } catch (err: unknown) {
-        showApiErrorNotification(err)
-      }
-    }
+    refreshData: () => {
+      props.loadData?.()
+      props.table?.refresh()
+    },
   })
 }
 

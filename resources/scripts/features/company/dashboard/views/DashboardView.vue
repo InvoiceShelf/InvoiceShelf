@@ -6,6 +6,7 @@ import DashboardStats from '../components/DashboardStats.vue'
 import DashboardChart from '../components/DashboardChart.vue'
 import DashboardTable from '../components/DashboardTable.vue'
 import SendInvoiceModal from '@/scripts/features/company/invoices/components/SendInvoiceModal.vue'
+import CreditNoteModal from '@/scripts/features/company/invoices/components/CreditNoteModal.vue'
 import SendEstimateModal from '@/scripts/features/company/estimates/components/SendEstimateModal.vue'
 
 const route = useRoute()
@@ -31,5 +32,6 @@ onMounted(() => {
   </BasePage>
 
   <SendInvoiceModal />
+  <CreditNoteModal />
   <SendEstimateModal />
 </template>
