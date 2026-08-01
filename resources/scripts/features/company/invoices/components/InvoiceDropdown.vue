@@ -206,6 +206,19 @@ const canCreateCreditNote = computed<boolean>(() => {
   )
 })
 
+/**
+ * Turn an API failure into a toast, translating the server's message key when
+ * it is one we know about so the user never sees a raw snake_case key.
+ */
+function showApiErrorNotification(err: unknown): void {
+  const normalized = handleApiError(err)
+  const translationKey = getErrorTranslationKey(normalized.message)
+  notificationStore.showNotification({
+    type: 'error',
+    message: translationKey ? t(translationKey) : normalized.message,
+  })
+}
+
 function removeInvoice(): void {
   dialogStore.openDialog({
     title: t('general.are_you_sure'),
@@ -241,8 +254,14 @@ function cloneInvoiceData(): void {
     size: 'lg',
   }).then(async (res: boolean) => {
     if (res) {
-      const response = await invoiceStore.cloneInvoice({ id: props.row.id })
-      router.push(`/admin/invoices/${response.data.data.id}/edit`)
+      // Cloning a credit note is refused by the server (422), so the reason
+      // has to reach the user instead of failing silently.
+      try {
+        const response = await invoiceStore.cloneInvoice({ id: props.row.id })
+        router.push(`/admin/invoices/${response.data.data.id}/edit`)
+      } catch (err: unknown) {
+        showApiErrorNotification(err)
+      }
     }
   })
 }
@@ -258,8 +277,13 @@ function convertToEstimate(): void {
     size: 'lg',
   }).then(async (res: boolean) => {
     if (res) {
-      const response = await invoiceStore.convertToEstimate({ id: props.row.id })
-      router.push(`/admin/estimates/${response.data.data.id}/edit`)
+      // Same as clone(): converting a credit note is refused by the server.
+      try {
+        const response = await invoiceStore.convertToEstimate({ id: props.row.id })
+        router.push(`/admin/estimates/${response.data.data.id}/edit`)
+      } catch (err: unknown) {
+        showApiErrorNotification(err)
+      }
     }
   })
 }
@@ -290,12 +314,7 @@ function createCreditNote(): void {
         props.loadData?.()
         props.table?.refresh()
       } catch (err: unknown) {
-        const normalized = handleApiError(err)
-        const translationKey = getErrorTranslationKey(normalized.message)
-        notificationStore.showNotification({
-          type: 'error',
-          message: translationKey ? t(translationKey) : normalized.message,
-        })
+        showApiErrorNotification(err)
       }
     }
   })

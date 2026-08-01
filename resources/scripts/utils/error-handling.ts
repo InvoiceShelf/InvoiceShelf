@@ -49,6 +49,14 @@ const ERROR_TRANSLATION_MAP: Record<string, string> = {
   'Relation taxes exists.': 'settings.tax_types.already_in_use',
   'Relation payments exists.': 'errors.payment_attached',
   'Credit note exists.': 'errors.credit_note_attached',
+  'a_credit_note_cannot_be_created_from_a_credit_note':
+    'errors.credit_note_cannot_be_created_from_credit_note',
+  'the_invoice_already_has_a_credit_note': 'errors.invoice_already_has_credit_note',
+  'invoice_with_payments_cannot_be_credited': 'errors.invoice_with_payments_cannot_be_credited',
+  'a_draft_invoice_cannot_be_credited': 'errors.draft_invoice_cannot_be_credited',
+  'a_credit_note_cannot_be_cloned': 'errors.credit_note_cannot_be_cloned',
+  'a_credit_note_cannot_be_converted_to_an_estimate':
+    'errors.credit_note_cannot_be_converted_to_estimate',
   'The estimate number has already been taken.': 'errors.estimate_number_used',
   'The payment number has already been taken.': 'errors.estimate_number_used',
   'The invoice number has already been taken.': 'errors.invoice_number_used',
