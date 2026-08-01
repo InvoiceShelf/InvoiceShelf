@@ -191,6 +191,11 @@ import { useI18n } from 'vue-i18n'
 import cloneDeep from 'lodash/cloneDeep'
 import { usePaymentStore } from '../store'
 import { useCompanyStore } from '../../../../stores/company.store'
+import { useNotificationStore } from '../../../../stores/notification.store'
+import {
+  handleApiError,
+  getErrorTranslationKey,
+} from '../../../../utils/error-handling'
 import { invoiceService } from '../../../../api/services/invoice.service'
 import { customerService } from '../../../../api/services/customer.service'
 import { ExchangeRateConverter } from '../../../shared/document-form'
@@ -201,6 +206,7 @@ const router = useRouter()
 const { t } = useI18n()
 const paymentStore = usePaymentStore()
 const companyStore = useCompanyStore()
+const notificationStore = useNotificationStore()
 
 const isSaving = ref<boolean>(false)
 const isLoadingInvoices = ref<boolean>(false)
@@ -367,8 +373,19 @@ async function submitPaymentData(): Promise<void> {
 
     const response = await action(data)
     router.push(`/admin/payments/${response.data.data.id}/view`)
-  } catch {
+  } catch (err) {
+    // Surface the failure instead of stalling silently. The server now caps
+    // the amount at the invoice's remaining balance, so a rejected save has
+    // a message worth showing.
     isSaving.value = false
+
+    const normalized = handleApiError(err)
+    const translationKey = getErrorTranslationKey(normalized.message)
+
+    notificationStore.showNotification({
+      type: 'error',
+      message: translationKey ? t(translationKey) : normalized.message,
+    })
   }
 }
 
