@@ -131,7 +131,10 @@ class DashboardController extends Controller
         $total_amount_due = Invoice::whereCompany()
             ->sum('base_due_amount');
 
-        $recent_due_invoices = Invoice::with('customer')
+        // The credit notes come along so each row can report its credited_status:
+        // an invoice settled by a credit note is not an invoice that was paid, and
+        // the dashboard list is where that distinction is easiest to miss.
+        $recent_due_invoices = Invoice::with(['customer', 'creditNotes:id,related_invoice_id,invoice_number,total'])
             ->whereCompany()
             ->where('base_due_amount', '>', 0)
             ->take(5)

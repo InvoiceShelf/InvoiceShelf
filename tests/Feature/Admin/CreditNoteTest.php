@@ -993,6 +993,257 @@ test('shows a cancellation banner on the original invoice pdf under the default 
     $response->assertSee($creditNote->invoice_number);
 });
 
+test('prints the credit reason on the credit note pdf and escapes it', function () {
+    $invoice = creditableInvoice();
+
+    $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+        'reason' => 'Goods returned <b>damaged</b>',
+    ])->assertStatus(201)->json('data.id');
+
+    $creditNote = Invoice::find($creditNoteId);
+
+    $response = get("/invoices/pdf/{$creditNote->unique_hash}?preview=1");
+
+    $response->assertOk();
+    // assertSee escapes by default, so this is the escaped rendering.
+    $response->assertSee('Reason: Goods returned <b>damaged</b>');
+    // The operator's text is data, never markup: the raw tags must not reach
+    // the document, where Chromium would happily render them as bold.
+    $response->assertDontSee('Goods returned <b>damaged</b>', false);
+});
+
+test('omits the reason line from a credit note pdf that has no reason', function () {
+    $invoice = creditableInvoice();
+
+    $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
+        ->assertStatus(201)
+        ->json('data.id');
+
+    $creditNote = Invoice::find($creditNoteId);
+
+    get("/invoices/pdf/{$creditNote->unique_hash}?preview=1")
+        ->assertOk()
+        ->assertDontSee('Reason:');
+});
+
+test('shows a partially credited banner naming the amount and the credit note', function () {
+    $invoice = creditableInvoice([
+        ['price' => 1000, 'quantity' => 1],
+        ['price' => 1000, 'quantity' => 1],
+    ]);
+
+    [$first] = creditableItemIds($invoice);
+
+    $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+        'items' => [['id' => $first, 'quantity' => 1]],
+    ])->assertStatus(201)->json('data.id');
+
+    $creditNote = Invoice::find($creditNoteId);
+
+    $response = get("/invoices/pdf/{$invoice->unique_hash}?preview=1");
+
+    $response->assertOk();
+    $response->assertSee('Partially Credited');
+    $response->assertSee($creditNote->invoice_number);
+    $response->assertSee(format_money_pdf(1000, $invoice->customer->currency), false);
+    // Half an invoice is not a cancelled invoice.
+    $response->assertDontSee('Cancelled via credit note');
+});
+
+test('lists every credit note on the cancelled banner once the invoice is fully credited', function () {
+    $invoice = creditableInvoice([
+        ['price' => 1000, 'quantity' => 1],
+        ['price' => 1000, 'quantity' => 1],
+    ]);
+
+    [$first, $second] = creditableItemIds($invoice);
+
+    $firstNote = Invoice::find(
+        postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+            'items' => [['id' => $first, 'quantity' => 1]],
+        ])->assertStatus(201)->json('data.id')
+    );
+
+    $secondNote = Invoice::find(
+        postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+            'items' => [['id' => $second, 'quantity' => 1]],
+        ])->assertStatus(201)->json('data.id')
+    );
+
+    $response = get("/invoices/pdf/{$invoice->unique_hash}?preview=1");
+
+    $response->assertOk();
+    $response->assertSee('Cancelled');
+    // Naming only the first credit note would leave the reader unable to tie
+    // the reversal to the documents that produced it.
+    $response->assertSee($firstNote->invoice_number);
+    $response->assertSee($secondNote->invoice_number);
+    $response->assertDontSee('Partially Credited');
+});
+
+test('a partially credited invoice pdf reports a credit, not a payment', function () {
+    // The hazard this pins: crediting an invoice moves its balance, so a totals
+    // block driven by paid_status alone announces "Amount Paid" for money that
+    // was never received.
+    $invoice = creditableInvoice([
+        ['price' => 1000, 'quantity' => 1],
+        ['price' => 1000, 'quantity' => 1],
+    ]);
+
+    [$first] = creditableItemIds($invoice);
+
+    postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+        'items' => [['id' => $first, 'quantity' => 1]],
+    ])->assertStatus(201);
+
+    $response = get("/invoices/pdf/{$invoice->unique_hash}?preview=1");
+
+    $response->assertOk();
+    $response->assertSee('Amount Credited');
+    $response->assertSee('Amount Due');
+    $response->assertDontSee('Amount Paid');
+});
+
+test('an invoice both paid and credited pdf reports the two separately', function () {
+    $invoice = creditableInvoice([
+        ['price' => 1000, 'quantity' => 1],
+        ['price' => 1000, 'quantity' => 1],
+    ]);
+
+    creditablePayment($invoice, 500);
+
+    [$first] = creditableItemIds($invoice);
+
+    postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+        'items' => [['id' => $first, 'quantity' => 1]],
+    ])->assertStatus(201);
+
+    $invoice->refresh();
+
+    $response = get("/invoices/pdf/{$invoice->unique_hash}?preview=1");
+
+    $response->assertOk();
+    $response->assertSee('Amount Credited');
+    $response->assertSee('Amount Paid');
+    $response->assertSee(format_money_pdf(1000, $invoice->customer->currency), false);
+    $response->assertSee(format_money_pdf(500, $invoice->customer->currency), false);
+});
+
+test('an ordinary partially paid invoice pdf still shows the amount paid', function () {
+    $invoice = creditableInvoice([['price' => 10000, 'quantity' => 1]]);
+
+    creditablePayment($invoice, 4000);
+
+    $invoice->refresh();
+
+    $response = get("/invoices/pdf/{$invoice->unique_hash}?preview=1");
+
+    $response->assertOk();
+    $response->assertSee('Amount Paid');
+    $response->assertSee('Amount Due');
+    $response->assertDontSee('Amount Credited');
+    $response->assertSee(format_money_pdf(4000, $invoice->customer->currency), false);
+    $response->assertSee(format_money_pdf(6000, $invoice->customer->currency), false);
+});
+
+test('an unpaid invoice pdf shows neither a paid nor a credited row', function () {
+    $invoice = creditableInvoice([['price' => 10000, 'quantity' => 1]]);
+
+    $response = get("/invoices/pdf/{$invoice->unique_hash}?preview=1");
+
+    $response->assertOk();
+    $response->assertDontSee('Amount Paid');
+    $response->assertDontSee('Amount Credited');
+    $response->assertDontSee('Amount Due');
+});
+
+test('a credit note pdf shows no amount paid row', function () {
+    $invoice = creditableInvoice();
+
+    $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
+        ->assertStatus(201)
+        ->json('data.id');
+
+    $creditNote = Invoice::find($creditNoteId);
+
+    $response = get("/invoices/pdf/{$creditNote->unique_hash}?preview=1");
+
+    $response->assertOk();
+    // A credit note settles nothing: its own totals block is the negated
+    // document, and a paid line there would be read as a refund.
+    $response->assertDontSee('Amount Paid');
+    $response->assertDontSee('Amount Credited');
+});
+
+test('every credit note phrase is translated in all five maintained locales', function () {
+    $locales = ['en', 'de', 'fr', 'it', 'mk'];
+
+    $catalogues = [];
+
+    foreach ($locales as $locale) {
+        $catalogues[$locale] = json_decode(file_get_contents(base_path("lang/{$locale}.json")), true);
+    }
+
+    $english = $catalogues['en'];
+
+    $expected = [];
+
+    foreach (array_keys($english['invoices']) as $key) {
+        if (str_contains($key, 'credit')) {
+            $expected[] = ['invoices', $key];
+        }
+    }
+
+    foreach (array_keys($english['errors']) as $key) {
+        if (str_starts_with($key, 'credit_') || $key === 'invoice_already_fully_credited') {
+            $expected[] = ['errors', $key];
+        }
+    }
+
+    foreach (array_keys($english) as $key) {
+        if (str_starts_with($key, 'pdf_') && (str_contains($key, 'credit') || str_contains($key, 'cancelled'))) {
+            $expected[] = [null, $key];
+        }
+    }
+
+    expect($expected)->not->toBeEmpty();
+
+    $missing = [];
+
+    foreach ($expected as [$section, $key]) {
+        foreach ($locales as $locale) {
+            $bag = $section === null ? $catalogues[$locale] : ($catalogues[$locale][$section] ?? []);
+
+            if (! array_key_exists($key, $bag)) {
+                $missing[] = $locale.': '.($section === null ? $key : $section.'.'.$key);
+            }
+        }
+    }
+
+    expect($missing)->toBe([]);
+
+    // Guards that partial crediting removed: one credit note per invoice, and
+    // no crediting an invoice with payments. A stale string in any catalogue
+    // would still be shown by a translated install.
+    $retired = [
+        ['invoices', 'confirm_create_credit_note'],
+        ['errors', 'invoice_already_has_credit_note'],
+        ['errors', 'invoice_with_payments_cannot_be_credited'],
+    ];
+
+    $leftovers = [];
+
+    foreach ($retired as [$section, $key]) {
+        foreach ($locales as $locale) {
+            if (array_key_exists($key, $catalogues[$locale][$section] ?? [])) {
+                $leftovers[] = $locale.': '.$section.'.'.$key;
+            }
+        }
+    }
+
+    expect($leftovers)->toBe([]);
+});
+
 test('sends a credit note to the customer through the normal send endpoint', function () {
     Mail::fake();
 

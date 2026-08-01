@@ -31,15 +31,48 @@
                     ])
                 </div>
             @endif
+            @if ($invoice->credit_reason)
+                {{-- Free text written by an operator, so it is echoed escaped
+                     rather than through @lang, which does not escape. --}}
+                <div style="font-size: 10px; line-height: 1.3; color: #595959; padding-top: 4px;">
+                    {{ __('pdf_credit_note_reason', ['reason' => $invoice->credit_reason]) }}
+                </div>
+            @endif
         </div>
     @elseif ($bannerCreditNote)
-        <div style="clear: both; margin: 16px 30px; padding: 8px 12px; border: 1px solid #F59E0B; background-color: #FFFBEB; line-height: 1.3;">
-            <div style="font-size: 13px; line-height: 1.3; font-weight: bold; text-transform: uppercase; letter-spacing: 0.08em; color: #92400E;">
-                @lang('pdf_cancelled_label')
+        @php
+            // Credit notes store negative totals, so the credited amount is the
+            // negated sum. An invoice may carry several of them, and the banner
+            // names every one: the reader has to be able to match the figure to
+            // the documents it came from.
+            $bannerCredited = -(int) $bannerCreditNotes->sum('total');
+            $bannerCreditNumbers = $bannerCreditNotes->pluck('invoice_number')->implode(', ');
+        @endphp
+
+        @if ($bannerCredited >= (int) $invoice->total)
+            <div style="clear: both; margin: 16px 30px; padding: 8px 12px; border: 1px solid #F59E0B; background-color: #FFFBEB; line-height: 1.3;">
+                <div style="font-size: 13px; line-height: 1.3; font-weight: bold; text-transform: uppercase; letter-spacing: 0.08em; color: #92400E;">
+                    @lang('pdf_cancelled_label')
+                </div>
+                <div style="font-size: 10px; line-height: 1.3; color: #595959; padding-top: 4px;">
+                    @lang('pdf_cancelled_via_credit_note', ['number' => $bannerCreditNumbers])
+                </div>
             </div>
-            <div style="font-size: 10px; line-height: 1.3; color: #595959; padding-top: 4px;">
-                @lang('pdf_cancelled_via_credit_note', ['number' => $bannerCreditNote->invoice_number])
+        @else
+            <div style="clear: both; margin: 16px 30px; padding: 8px 12px; border: 1px solid #F59E0B; background-color: #FFFBEB; line-height: 1.3;">
+                <div style="font-size: 13px; line-height: 1.3; font-weight: bold; text-transform: uppercase; letter-spacing: 0.08em; color: #92400E;">
+                    @lang('pdf_partially_credited_label')
+                </div>
+                {{-- format_money_pdf returns markup (the symbol carries its own
+                     font-family), so this line is echoed unescaped and the
+                     document numbers are escaped individually. --}}
+                <div style="font-size: 10px; line-height: 1.3; color: #595959; padding-top: 4px;">
+                    @lang('pdf_partially_credited_via_credit_notes', [
+                        'amount' => format_money_pdf($bannerCredited, $invoice->customer->currency),
+                        'numbers' => e($bannerCreditNumbers),
+                    ])
+                </div>
             </div>
-        </div>
+        @endif
     @endif
 @endif
