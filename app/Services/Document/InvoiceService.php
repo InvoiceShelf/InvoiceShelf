@@ -331,7 +331,7 @@ class InvoiceService
         }
 
         return Pdf::loadView($templatePath, PdfMetadata::forDocument(
-            __('pdf_invoice_label'),
+            __($invoice->isCreditNote() ? 'pdf_credit_note_label' : 'pdf_invoice_label'),
             $invoice->invoice_number,
             $company,
         ));

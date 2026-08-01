@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>@lang('pdf_invoice_label') - {{ $invoice->invoice_number }}</title>
+    <title>@lang($invoice->isCreditNote() ? 'pdf_credit_note_label' : 'pdf_invoice_label') - {{ $invoice->invoice_number }}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
 @include("app.pdf.partials.fonts")
@@ -356,6 +356,8 @@
     <hr class="header-bottom-divider">
 
     <div class="content-wrapper">
+        @include('app.pdf.partials.credit-note-banner')
+
         <div class="main-content">
             <div class="customer-address-container">
                 <div class="billing-address-container billing-address">
@@ -377,17 +379,19 @@
             <div class="invoice-details-container">
                 <table>
                     <tr>
-                        <td class="attribute-label">@lang('pdf_invoice_number')</td>
+                        <td class="attribute-label">@lang($invoice->isCreditNote() ? 'pdf_credit_note_number' : 'pdf_invoice_number')</td>
                         <td class="attribute-value"> &nbsp;{{ $invoice->invoice_number }}</td>
                     </tr>
                     <tr>
-                        <td class="attribute-label">@lang('pdf_invoice_date')</td>
+                        <td class="attribute-label">@lang($invoice->isCreditNote() ? 'pdf_credit_note_date' : 'pdf_invoice_date')</td>
                         <td class="attribute-value"> &nbsp;{{ $invoice->formattedInvoiceDate }}</td>
                     </tr>
-                    <tr>
-                        <td class="attribute-label">@lang('pdf_invoice_due_date')</td>
-                        <td class="attribute-value"> &nbsp;{{ $invoice->formattedDueDate }}</td>
-                    </tr>
+                    @unless ($invoice->isCreditNote())
+                        <tr>
+                            <td class="attribute-label">@lang('pdf_invoice_due_date')</td>
+                            <td class="attribute-value"> &nbsp;{{ $invoice->formattedDueDate }}</td>
+                        </tr>
+                    @endunless
                 </table>
             </div>
             <div style="clear: both;"></div>

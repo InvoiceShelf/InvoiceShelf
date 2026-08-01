@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>@lang('pdf_invoice_label') - {{ $invoice->invoice_number }}</title>
+    <title>@lang($invoice->isCreditNote() ? 'pdf_credit_note_label' : 'pdf_invoice_label') - {{ $invoice->invoice_number }}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 @include("app.pdf.partials.fonts")
 
@@ -417,7 +417,7 @@
                 </td>
 
                 <td width="40%" class="header-section-right invoice-details-container">
-                    <h1>@lang('pdf_invoice_label')</h1>
+                    <h1>@lang($invoice->isCreditNote() ? 'pdf_credit_note_label' : 'pdf_invoice_label')</h1>
                     <h4>{{ $invoice->invoice_number }}</h4>
                     <h4>{{ $invoice->formattedInvoiceDate }}</h4>
                 </td>
@@ -428,6 +428,8 @@
     <hr>
 
     <div class="content-wrapper">
+        @include('app.pdf.partials.credit-note-banner')
+
         <div class="address-container">
             <div class="company-address-container company-address">
                 {!! $company_address !!}
