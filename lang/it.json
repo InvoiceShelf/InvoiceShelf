@@ -1631,6 +1631,7 @@
     "credit_quantity_invalid": "Inserisci una quantità valida maggiore di zero per ogni riga selezionata.",
     "credit_note_cannot_be_cloned": "Una nota di credito non può essere clonata.",
     "credit_note_cannot_be_converted_to_estimate": "Una nota di credito non può essere convertita in un preventivo.",
+    "payment_amount_exceeds_invoice_due_amount": "Il pagamento supera il saldo residuo della fattura.",
     "payment_number_used": "Questa modalità di pagamento è già stata inserita.",
     "name_already_taken": "Questo Nome esiste giá.",
     "receipt_does_not_exist": "La ricevuta non esiste.",

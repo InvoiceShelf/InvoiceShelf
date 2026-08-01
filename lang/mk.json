@@ -1704,6 +1704,7 @@
     "credit_quantity_invalid": "Внесете важечка количина поголема од нула за секоја избрана ставка.",
     "credit_note_cannot_be_cloned": "Книжно одобрение не може да се клонира.",
     "credit_note_cannot_be_converted_to_estimate": "Книжно одобрение не може да се конвертира во понуда.",
+    "payment_amount_exceeds_invoice_due_amount": "Плаќањето е поголемо од преостанатото салдо на фактурата.",
     "payment_number_used": "Бројот на плаќањето е веќе зафатен.",
     "name_already_taken": "Името е веќе зафатено.",
     "receipt_does_not_exist": "Сметката не постои.",

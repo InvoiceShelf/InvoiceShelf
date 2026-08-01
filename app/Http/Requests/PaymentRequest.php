@@ -4,6 +4,8 @@ namespace App\Http\Requests;
 
 use App\Models\CompanySetting;
 use App\Models\Customer;
+use App\Models\Invoice;
+use App\Models\Payment;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -59,6 +61,16 @@ class PaymentRequest extends FormRequest
             ];
         }
 
+        $maxAmount = $this->maxPayableAmount();
+
+        if ($maxAmount !== null) {
+            $rules['amount'] = [
+                'required',
+                'numeric',
+                'max:'.$maxAmount,
+            ];
+        }
+
         $companyCurrency = CompanySetting::getSetting('currency', $this->header('company'));
 
         $customer = Customer::find($this->customer_id);
@@ -72,6 +84,56 @@ class PaymentRequest extends FormRequest
         }
 
         return $rules;
+    }
+
+    /**
+     * The message string IS the translation key here, as everywhere else in the
+     * app: the front end maps it to a localized string.
+     */
+    public function messages(): array
+    {
+        return [
+            'amount.max' => 'payment_amount_exceeds_invoice_due_amount',
+        ];
+    }
+
+    /**
+     * The most that may be paid against the invoice this request names, or null
+     * when the payment is not attached to an invoice and so is uncapped.
+     *
+     * An overpayment used to be accepted and then silently swallowed:
+     * PaymentService hands the amount to Invoice::subtractInvoicePayment(),
+     * which drives the balance negative, and Invoice::getInvoiceStatusByAmount()
+     * returns an empty array for a negative amount, so the status change is
+     * never applied and the invoice keeps a stale balance. Partial credit notes
+     * shrink the balance and make that easy to hit, so the cap is enforced here,
+     * before any of it runs.
+     *
+     * On an edit of a payment that already belongs to this same invoice its own
+     * amount returns to the pool, because PaymentService::update() adds the old
+     * amount back before subtracting the new one.
+     */
+    protected function maxPayableAmount(): ?int
+    {
+        if (! $this->invoice_id) {
+            return null;
+        }
+
+        $invoice = Invoice::find($this->invoice_id);
+
+        if (! $invoice) {
+            return null;
+        }
+
+        $max = (int) $invoice->due_amount;
+
+        $payment = $this->route('payment');
+
+        if ($payment instanceof Payment && (int) $payment->invoice_id === (int) $this->invoice_id) {
+            $max += (int) $payment->amount;
+        }
+
+        return $max;
     }
 
     public function getPaymentPayload()

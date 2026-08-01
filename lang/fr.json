@@ -1631,6 +1631,7 @@
     "credit_quantity_invalid": "Saisissez une quantité valide supérieure à zéro pour chaque ligne sélectionnée.",
     "credit_note_cannot_be_cloned": "Un avoir ne peut pas être dupliqué.",
     "credit_note_cannot_be_converted_to_estimate": "Un avoir ne peut pas être converti en devis.",
+    "payment_amount_exceeds_invoice_due_amount": "Le paiement dépasse le solde restant dû de la facture.",
     "payment_number_used": "Ce numéro de paiement est déjà utilisé.",
     "name_already_taken": "Ce nom est déjà pris.",
     "receipt_does_not_exist": "Le reçu n'existe pas.",

@@ -1631,6 +1631,7 @@
     "credit_quantity_invalid": "Bitte für jede gewählte Position eine gültige Menge größer als null angeben.",
     "credit_note_cannot_be_cloned": "Eine Stornorechnung kann nicht kopiert werden.",
     "credit_note_cannot_be_converted_to_estimate": "Eine Stornorechnung kann nicht in ein Angebot umgewandelt werden.",
+    "payment_amount_exceeds_invoice_due_amount": "Der Zahlungsbetrag übersteigt den offenen Betrag der Rechnung.",
     "payment_number_used": "Die Zahlungsnummer ist bereits vergeben.",
     "name_already_taken": "Der Name ist bereits vergeben.",
     "receipt_does_not_exist": "Beleg existiert nicht.",

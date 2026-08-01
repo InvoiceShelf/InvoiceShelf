@@ -1840,6 +1840,7 @@
     "credit_quantity_invalid": "Enter a valid quantity greater than zero for every selected line.",
     "credit_note_cannot_be_cloned": "A credit note cannot be cloned.",
     "credit_note_cannot_be_converted_to_estimate": "A credit note cannot be converted to an estimate.",
+    "payment_amount_exceeds_invoice_due_amount": "The payment is more than the invoice's outstanding balance.",
     "payment_number_used": "The payment number has already been taken.",
     "name_already_taken": "The name has already been taken.",
     "receipt_does_not_exist": "Receipt does not exist.",

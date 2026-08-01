@@ -56,6 +56,8 @@ const ERROR_TRANSLATION_MAP: Record<string, string> = {
   'credit_quantity_exceeds_remaining': 'errors.credit_quantity_exceeds_remaining',
   'credit_amount_exceeds_invoice_balance': 'errors.credit_amount_exceeds_invoice_balance',
   'credit_note_must_credit_something': 'errors.credit_note_must_credit_something',
+  'payment_amount_exceeds_invoice_due_amount':
+    'errors.payment_amount_exceeds_invoice_due_amount',
   'credit_item_not_on_invoice': 'errors.credit_item_not_on_invoice',
   'credit_quantity_invalid': 'errors.credit_quantity_invalid',
   'a_credit_note_cannot_be_cloned': 'errors.credit_note_cannot_be_cloned',
