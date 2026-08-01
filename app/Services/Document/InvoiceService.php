@@ -231,45 +231,16 @@ class InvoiceService
         if (! empty($data['bcc'])) {
             $mail->bcc($data['bcc']);
         }
-        $mail->send(new SendInvoiceMail($data));
+        // A credit note travels through the same send channel as the invoice it
+        // reverses; only the template (and its EmailLog entry) differs.
+        $mail->send($invoice->isCreditNote()
+            ? new SendCreditNoteMail($data)
+            : new SendInvoiceMail($data));
 
         if ($invoice->status == Invoice::STATUS_DRAFT) {
             $invoice->status = Invoice::STATUS_SENT;
             $invoice->sent = true;
             $invoice->save();
-        }
-
-        return [
-            'success' => true,
-            'type' => 'send',
-        ];
-    }
-
-    /**
-     * Email a credit note (Stornorechnung) to the customer.
-     *
-     * Reuses the invoice send-data assembly (PDF attachment, subject/body
-     * placeholders) but dispatches the dedicated SendCreditNoteMail so the
-     * credit-note email template and EmailLog are used.
-     */
-    public function sendCreditNote(Invoice $creditNote, array $data): array
-    {
-        $data = $this->sendInvoiceData($creditNote, $data);
-
-        CompanyMailConfigService::apply($creditNote->company_id);
-
-        $mail = \Mail::to($data['to']);
-        if (! empty($data['cc'])) {
-            $mail->cc($data['cc']);
-        }
-        if (! empty($data['bcc'])) {
-            $mail->bcc($data['bcc']);
-        }
-        $mail->send(new SendCreditNoteMail($data));
-
-        if (! $creditNote->sent) {
-            $creditNote->sent = true;
-            $creditNote->save();
         }
 
         return [
@@ -451,7 +422,9 @@ class InvoiceService
             'type' => Invoice::TYPE_CREDIT_NOTE,
             'related_invoice_id' => $invoice->id,
             'invoice_date' => Carbon::now()->format('Y-m-d'),
-            'due_date' => Carbon::now()->format('Y-m-d'),
+            // A reversal is never owed, so it has no due date at all. Leaving it
+            // null also keeps the credit note out of every due/aging query.
+            'due_date' => null,
             'invoice_number' => $serial->getNextNumber(),
             'sequence_number' => $serial->nextSequenceNumber,
             'customer_sequence_number' => $serial->nextCustomerSequenceNumber,
@@ -459,11 +432,11 @@ class InvoiceService
             'customer_id' => $invoice->customer_id,
             'company_id' => $invoice->company_id,
             'template_name' => $invoice->template_name,
-            // Born fully settled means fully done: COMPLETED matches the
-            // end-state the original invoice reaches after settlement, and
-            // keeps the UI from offering to record a payment on a document
-            // with nothing owed.
-            'status' => Invoice::STATUS_COMPLETED,
+            // A credit note gets the ordinary create-review-send lifecycle: born
+            // DRAFT so the Send affordances appear, promoted to SENT by send().
+            // Nothing is ever owed on it, so paid_status/due_amount below keep
+            // it out of the payment flows regardless of status.
+            'status' => Invoice::STATUS_DRAFT,
             // The credit note is born settled: it exists to pair with the
             // original invoice, nothing is ever owed on it, so it must never
             // surface as an open (negative) balance in any due/aging view.

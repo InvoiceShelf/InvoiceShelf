@@ -61,6 +61,13 @@ class InvoicePolicy
      */
     public function update(User $user, Invoice $invoice): bool
     {
+        // A credit note is a reversal document: it is immutable once minted,
+        // because saving it back through the invoice form would recompute its
+        // totals positive.
+        if ($invoice->isCreditNote()) {
+            return false;
+        }
+
         if (BouncerFacade::can('edit-invoice', $invoice) && $user->hasCompany($invoice->company_id)) {
             return $invoice->allow_edit;
         }

@@ -155,8 +155,6 @@ class AppServiceProvider extends ServiceProvider
 
         Gate::define('send invoice', [InvoicePolicy::class, 'send']);
         Gate::define('create credit note', [CreditNotePolicy::class, 'create']);
-        Gate::define('view credit note', [CreditNotePolicy::class, 'view']);
-        Gate::define('send credit note', [CreditNotePolicy::class, 'send']);
         Gate::define('send estimate', [EstimatePolicy::class, 'send']);
         Gate::define('send payment', [PaymentPolicy::class, 'send']);
 

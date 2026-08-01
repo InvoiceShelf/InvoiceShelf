@@ -283,8 +283,6 @@ Route::prefix('/v1')->group(function () {
 
             Route::post('/invoices/{invoice}/credit-note', [InvoicesController::class, 'createCreditNote']);
 
-            Route::post('/invoices/{invoice}/credit-note/send', [InvoicesController::class, 'sendCreditNote']);
-
             Route::post('/invoices/{invoice}/status', [InvoicesController::class, 'changeStatus']);
 
             Route::post('/invoices/delete', [InvoicesController::class, 'delete']);

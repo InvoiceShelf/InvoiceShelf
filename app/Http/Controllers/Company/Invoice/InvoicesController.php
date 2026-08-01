@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Company\Invoice;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use App\Http\Requests\DeleteInvoiceRequest;
-use App\Http\Requests\SendCreditNoteRequest;
 use App\Http\Requests\SendInvoiceRequest;
 use App\Http\Resources\CreditNoteResource;
 use App\Http\Resources\EstimateResource;
@@ -143,13 +142,25 @@ class InvoicesController extends Controller
         $data = $this->invoiceService->sendInvoiceData($invoice, $request->all());
         $data['url'] = $invoice->invoicePdfUrl;
 
-        return $markdown->render('emails.send.invoice', ['data' => $data]);
+        // Preview the template that will actually be sent: a credit note goes
+        // out through SendCreditNoteMail, so it must preview as one.
+        $view = $invoice->isCreditNote() ? 'emails.send.credit-note' : 'emails.send.invoice';
+
+        return $markdown->render($view, ['data' => $data]);
     }
 
     public function clone(Request $request, Invoice $invoice)
     {
         $this->authorize('view', $invoice);
         $this->authorize('create', Invoice::class);
+
+        // Cloning a credit note would mint a positive invoice out of a reversal
+        // document. Domain rule violation (422), not an authorization failure.
+        if ($invoice->isCreditNote()) {
+            throw ValidationException::withMessages([
+                'invoice' => ['a_credit_note_cannot_be_cloned'],
+            ]);
+        }
 
         $newInvoice = $this->invoiceService->clone($invoice);
 
@@ -162,6 +173,14 @@ class InvoicesController extends Controller
         // to the ability to create an estimate.
         $this->authorize('view', $invoice);
         $this->authorize('create', Estimate::class);
+
+        // Same reason as clone(): the conversion copies the amounts unnegated,
+        // so a credit note would become a positive estimate.
+        if ($invoice->isCreditNote()) {
+            throw ValidationException::withMessages([
+                'invoice' => ['a_credit_note_cannot_be_converted_to_an_estimate'],
+            ]);
+        }
 
         $estimate = $this->invoiceService->convertToEstimate($invoice);
 
@@ -188,6 +207,23 @@ class InvoicesController extends Controller
             ]);
         }
 
+        // Reversing an invoice that already received money would leave the
+        // payment stranded against a zeroed document; refund/delete the
+        // payment first.
+        if ($invoice->payments()->exists()) {
+            throw ValidationException::withMessages([
+                'invoice' => ['invoice_with_payments_cannot_be_credited'],
+            ]);
+        }
+
+        // A draft was never issued, so there is nothing to reverse: edit or
+        // delete it instead.
+        if ($invoice->status === Invoice::STATUS_DRAFT) {
+            throw ValidationException::withMessages([
+                'invoice' => ['a_draft_invoice_cannot_be_credited'],
+            ]);
+        }
+
         $creditNote = $this->invoiceService->createCreditNote($invoice);
 
         GenerateInvoicePdfJob::dispatch($creditNote);
@@ -195,24 +231,6 @@ class InvoicesController extends Controller
         return (new CreditNoteResource($creditNote))
             ->response()
             ->setStatusCode(201);
-    }
-
-    public function sendCreditNote(SendCreditNoteRequest $request, Invoice $invoice)
-    {
-        $this->authorize('send credit note', $invoice);
-
-        // Guard against sending a normal invoice through the credit-note channel.
-        if (! $invoice->isCreditNote()) {
-            throw ValidationException::withMessages([
-                'invoice' => ['the_document_is_not_a_credit_note'],
-            ]);
-        }
-
-        $this->invoiceService->sendCreditNote($invoice, $request->all());
-
-        return response()->json([
-            'success' => true,
-        ]);
     }
 
     public function changeStatus(Request $request, Invoice $invoice)

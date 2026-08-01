@@ -40,7 +40,10 @@ class CheckInvoiceStatus extends Command
     public function handle(): void
     {
         $date = Carbon::now();
-        $invoices = Invoice::whereNotIn('status', [Invoice::STATUS_COMPLETED, Invoice::STATUS_DRAFT])
+        // Only real invoices can fall overdue: a credit note is never owed, so
+        // it must never be flagged no matter what date it carries.
+        $invoices = Invoice::where('type', Invoice::TYPE_INVOICE)
+            ->whereNotIn('status', [Invoice::STATUS_COMPLETED, Invoice::STATUS_DRAFT])
             ->where('overdue', false)
             ->whereDate('due_date', '<', $date)
             ->get();

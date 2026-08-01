@@ -139,6 +139,11 @@ class InvoicesRequest extends FormRequest
         return collect($this->except('items', 'taxes'))
             ->merge([
                 'creator_id' => $this->user()->id ?? null,
+                // Credit notes are minted only by InvoiceService::createCreditNote();
+                // this payload feeds Invoice::create/update, so a client must never
+                // be able to declare a document a reversal or re-point its origin.
+                'type' => Invoice::TYPE_INVOICE,
+                'related_invoice_id' => null,
                 'status' => $this->has('invoiceSend') ? Invoice::STATUS_SENT : Invoice::STATUS_DRAFT,
                 'paid_status' => Invoice::STATUS_UNPAID,
                 'company_id' => $this->header('company'),

@@ -1,18 +1,24 @@
 <?php
 
 use App\Mail\SendCreditNoteMail;
+use App\Mail\SendInvoiceMail;
 use App\Models\Company;
 use App\Models\CompanySetting;
 use App\Models\Invoice;
+use App\Models\InvoiceItem;
 use App\Models\Payment;
+use App\Models\Tax;
 use App\Models\User;
+use App\Services\Document\InvoiceService;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\View;
 use Laravel\Sanctum\Sanctum;
 
 use function Pest\Laravel\get;
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\postJson;
+use function Pest\Laravel\putJson;
 
 beforeEach(function () {
     Artisan::call('db:seed', ['--class' => 'DatabaseSeeder', '--force' => true]);
@@ -29,6 +35,7 @@ test('creates a credit note from an invoice with negated totals', function () {
     $invoice = Invoice::factory()
         ->hasItems(1)
         ->create([
+            'status' => Invoice::STATUS_SENT,
             'sub_total' => 10000,
             'total' => 10000,
             'tax' => 0,
@@ -63,6 +70,7 @@ test('negates the line item amounts of the source invoice', function () {
     $invoice = Invoice::factory()
         ->hasItems(1, ['price' => 5000, 'quantity' => 2, 'tax' => 0, 'discount_val' => 0])
         ->create([
+            'status' => Invoice::STATUS_SENT,
             'sub_total' => 10000,
             'total' => 10000,
             'tax' => 0,
@@ -85,7 +93,7 @@ test('negates the line item amounts of the source invoice', function () {
 });
 
 test('sets the related invoice relationship on the credit note', function () {
-    $invoice = Invoice::factory()->hasItems(1)->create();
+    $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
 
     $response = postJson("api/v1/invoices/{$invoice->id}/credit-note")
         ->assertStatus(201);
@@ -102,7 +110,7 @@ test('sets the related invoice relationship on the credit note', function () {
 });
 
 test('cannot create a credit note from another credit note', function () {
-    $invoice = Invoice::factory()->hasItems(1)->create();
+    $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
 
     $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
         ->assertStatus(201)
@@ -126,6 +134,7 @@ test('generates a pdf for a credit note', function () {
     $invoice = Invoice::factory()
         ->hasItems(1)
         ->create([
+            'status' => Invoice::STATUS_SENT,
             'sub_total' => 10000,
             'total' => 10000,
             'tax' => 0,
@@ -175,10 +184,11 @@ test('settles the original invoice when a credit note is created', function () {
     expect($invoice->status)->toBe(Invoice::STATUS_COMPLETED);
 });
 
-test('the credit note itself is created settled', function () {
+test('the credit note itself is created settled but still a draft', function () {
     $invoice = Invoice::factory()
         ->hasItems(1)
         ->create([
+            'status' => Invoice::STATUS_SENT,
             'sub_total' => 10000,
             'total' => 10000,
             'tax' => 0,
@@ -198,16 +208,18 @@ test('the credit note itself is created settled', function () {
     expect((int) $creditNote->due_amount)->toBe(0);
     expect((int) $creditNote->base_due_amount)->toBe(0);
     expect($creditNote->paid_status)->toBe(Invoice::STATUS_PAID);
-    // Born fully settled means fully done: the credit note reads COMPLETED,
-    // matching the end-state its original invoice reaches, never a stale
-    // "SENT" that would invite recording a payment on it.
-    expect($creditNote->status)->toBe(Invoice::STATUS_COMPLETED);
+    // A reversal is never owed, so it carries no due date at all.
+    expect($creditNote->due_date)->toBeNull();
+    // Settled is not the same as finished: the credit note still has to be
+    // reviewed and emailed, so it is born DRAFT and gets the ordinary Send
+    // affordances. send() promotes it to SENT.
+    expect($creditNote->status)->toBe(Invoice::STATUS_DRAFT);
     // Totals stay fully negated, though.
     expect($creditNote->total)->toBe(-10000);
 });
 
 test('the original invoice exposes its credit notes for the UI banner', function () {
-    $invoice = Invoice::factory()->hasItems(1)->create();
+    $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
 
     $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
         ->assertStatus(201)
@@ -224,7 +236,7 @@ test('the original invoice exposes its credit notes for the UI banner', function
 });
 
 test('cannot create a second credit note for the same invoice', function () {
-    $invoice = Invoice::factory()->hasItems(1)->create();
+    $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
 
     postJson("api/v1/invoices/{$invoice->id}/credit-note")->assertStatus(201);
 
@@ -292,9 +304,12 @@ test('deleting a credit note restores a partially paid balance from payments', f
         'amount' => 4000,
     ]);
 
-    $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
-        ->assertStatus(201)
-        ->json('data.id');
+    // The API refuses to credit an invoice that already took money, so the
+    // credit note is minted through the service here. The restore path still
+    // has to be exact for rows that reached this state another way (a payment
+    // recorded against an already-credited invoice, or data from before the
+    // guard existed).
+    $creditNoteId = app(InvoiceService::class)->createCreditNote($invoice)->id;
 
     expect((int) $invoice->fresh()->due_amount)->toBe(0);
 
@@ -309,7 +324,7 @@ test('deleting a credit note restores a partially paid balance from payments', f
 });
 
 test('deleting the original invoice and its credit note together succeeds', function () {
-    $invoice = Invoice::factory()->hasItems(1)->create();
+    $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
 
     $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
         ->assertStatus(201)
@@ -332,6 +347,7 @@ test('renders a credit note pdf through the original invoice template family, no
     $invoice = Invoice::factory()
         ->hasItems(1)
         ->create([
+            'status' => Invoice::STATUS_SENT,
             'template_name' => 'invoice2',
             'sub_total' => 10000,
             'total' => 10000,
@@ -358,6 +374,7 @@ test('renders a credit note pdf under the invoice3 template family', function ()
     $invoice = Invoice::factory()
         ->hasItems(1)
         ->create([
+            'status' => Invoice::STATUS_SENT,
             'template_name' => 'invoice3',
             'sub_total' => 10000,
             'total' => 10000,
@@ -387,6 +404,7 @@ test('shows a cancellation banner on the original invoice pdf under a non-defaul
     $invoice = Invoice::factory()
         ->hasItems(1)
         ->create([
+            'status' => Invoice::STATUS_SENT,
             'template_name' => 'invoice3',
             'sub_total' => 10000,
             'total' => 10000,
@@ -409,7 +427,7 @@ test('shows a cancellation banner on the original invoice pdf under a non-defaul
 });
 
 test('shows a cancellation banner on the original invoice pdf under the default template', function () {
-    $invoice = Invoice::factory()->hasItems(1)->create();
+    $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
 
     $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
         ->assertStatus(201)
@@ -424,10 +442,10 @@ test('shows a cancellation banner on the original invoice pdf under the default 
     $response->assertSee($creditNote->invoice_number);
 });
 
-test('sends a credit note to the customer by email', function () {
+test('sends a credit note to the customer through the normal send endpoint', function () {
     Mail::fake();
 
-    $invoice = Invoice::factory()->hasItems(1)->create();
+    $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
 
     $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
         ->assertStatus(201)
@@ -440,17 +458,181 @@ test('sends a credit note to the customer by email', function () {
         'body' => 'Please find your credit note attached.',
     ];
 
-    postJson("api/v1/invoices/{$creditNoteId}/credit-note/send", $data)
+    // There is no separate credit-note send endpoint: a credit note goes out
+    // through the invoice send channel, which picks the mailable by type.
+    postJson("api/v1/invoices/{$creditNoteId}/send", $data)
         ->assertOk()
         ->assertJson(['success' => true]);
 
     Mail::assertSent(SendCreditNoteMail::class);
+    Mail::assertNotSent(SendInvoiceMail::class);
+
+    // Sending promotes the draft credit note the same way it promotes an
+    // invoice.
+    $creditNote = Invoice::find($creditNoteId);
+    expect($creditNote->status)->toBe(Invoice::STATUS_SENT);
+    expect((bool) $creditNote->sent)->toBeTrue();
+});
+
+test('sending a regular invoice still uses the invoice mailable', function () {
+    Mail::fake();
+
+    $invoice = Invoice::factory()->hasItems(1)->create();
+
+    postJson("api/v1/invoices/{$invoice->id}/send", [
+        'from' => 'john@example.com',
+        'to' => 'doe@example.com',
+        'subject' => 'Your invoice',
+        'body' => 'Please find your invoice attached.',
+    ])->assertOk();
+
+    Mail::assertSent(SendInvoiceMail::class);
+    Mail::assertNotSent(SendCreditNoteMail::class);
+});
+
+test('previews the credit note email template, not the invoice one', function () {
+    $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
+
+    $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
+        ->assertStatus(201)
+        ->json('data.id');
+
+    // The two templates render near-identical markup, so the assertion hooks
+    // the view that actually gets composed rather than its output.
+    $rendered = [];
+    View::composer(['emails.send.credit-note', 'emails.send.invoice'], function ($view) use (&$rendered) {
+        $rendered[] = $view->name();
+    });
+
+    getJson("api/v1/invoices/{$creditNoteId}/send/preview?".http_build_query([
+        'subject' => 'Your credit note',
+        'body' => 'Please find your credit note attached.',
+        'from' => 'john@example.com',
+        'to' => 'doe@example.com',
+    ]))->assertOk();
+
+    expect($rendered)->toContain('emails.send.credit-note');
+    expect($rendered)->not->toContain('emails.send.invoice');
+});
+
+test('a credit note cannot be edited', function () {
+    $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
+
+    $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
+        ->assertStatus(201)
+        ->json('data.id');
+
+    $payload = Invoice::factory()->raw([
+        'taxes' => [Tax::factory()->raw()],
+        'items' => [InvoiceItem::factory()->raw()],
+    ]);
+
+    // A reversal document is immutable: editing it would recompute its totals
+    // positive through the ordinary invoice payload.
+    putJson("api/v1/invoices/{$creditNoteId}", $payload)->assertStatus(403);
+});
+
+test('a client cannot mint a credit note through the invoice create endpoint', function () {
+    $payload = Invoice::factory()->raw([
+        'type' => Invoice::TYPE_CREDIT_NOTE,
+        'related_invoice_id' => 1,
+        'taxes' => [Tax::factory()->raw()],
+        'items' => [InvoiceItem::factory()->raw()],
+    ]);
+
+    $response = postJson('api/v1/invoices', $payload)->assertOk();
+
+    // Credit notes are minted only by createCreditNote(); the request payload
+    // must not be able to declare one.
+    $created = Invoice::find($response->json('data.id'));
+
+    expect($created->type)->toBe(Invoice::TYPE_INVOICE);
+    expect($created->related_invoice_id)->toBeNull();
+});
+
+test('cannot credit an invoice that already has a payment', function () {
+    $invoice = Invoice::factory()
+        ->hasItems(1)
+        ->create([
+            'status' => Invoice::STATUS_SENT,
+            'sub_total' => 10000,
+            'total' => 10000,
+            'tax' => 0,
+            'discount_val' => 0,
+            'due_amount' => 6000,
+            'exchange_rate' => 1,
+        ]);
+
+    Payment::factory()->create([
+        'invoice_id' => $invoice->id,
+        'customer_id' => $invoice->customer_id,
+        'amount' => 4000,
+    ]);
+
+    postJson("api/v1/invoices/{$invoice->id}/credit-note")
+        ->assertStatus(422);
+
+    expect($invoice->creditNotes()->count())->toBe(0);
+});
+
+test('cannot credit a draft invoice', function () {
+    $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_DRAFT]);
+
+    // A draft was never issued, so there is nothing to reverse.
+    postJson("api/v1/invoices/{$invoice->id}/credit-note")
+        ->assertStatus(422);
+
+    expect($invoice->creditNotes()->count())->toBe(0);
+});
+
+test('a credit note cannot be cloned or converted to an estimate', function () {
+    $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
+
+    $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
+        ->assertStatus(201)
+        ->json('data.id');
+
+    // Both copy the amounts unnegated, so either would mint a positive
+    // document out of a reversal.
+    postJson("api/v1/invoices/{$creditNoteId}/clone")->assertStatus(422);
+    postJson("api/v1/invoices/{$creditNoteId}/convert-to-estimate")->assertStatus(422);
+});
+
+test('a credit note is never marked overdue by the status command', function () {
+    $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
+
+    $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
+        ->assertStatus(201)
+        ->json('data.id');
+
+    // Force the credit note into the shape the command looks for: sent, not
+    // completed, with a due date in the past.
+    Invoice::where('id', $creditNoteId)->update([
+        'status' => Invoice::STATUS_SENT,
+        'due_date' => now()->subMonth()->format('Y-m-d'),
+    ]);
+
+    Artisan::call('check:invoices:status');
+
+    expect((bool) Invoice::find($creditNoteId)->overdue)->toBeFalse();
+});
+
+test('a real invoice is still marked overdue by the status command', function () {
+    $invoice = Invoice::factory()->hasItems(1)->create([
+        'status' => Invoice::STATUS_SENT,
+        'due_date' => now()->subMonth()->format('Y-m-d'),
+        'overdue' => false,
+    ]);
+
+    Artisan::call('check:invoices:status');
+
+    expect((bool) $invoice->fresh()->overdue)->toBeTrue();
 });
 
 describe('credit note numbering', function () {
     test('numbers credit notes in their own sequence, independent of invoices', function () {
-        $first = Invoice::factory()->hasItems(1)->create();
-        $second = Invoice::factory()->hasItems(1)->create();
+        $first = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
+        $second = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
 
         expect($first->invoice_number)->toBe('INV-000001');
         expect($first->sequence_number)->toBe(1);
@@ -478,7 +660,7 @@ describe('credit note numbering', function () {
 
         // And the invoice sequence is untouched by the two credit notes: the
         // next invoice is 3, not 5.
-        $third = Invoice::factory()->hasItems(1)->create();
+        $third = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
 
         expect($third->invoice_number)->toBe('INV-000003');
         expect($third->sequence_number)->toBe(3);
@@ -491,7 +673,7 @@ describe('credit note numbering', function () {
             'credit_note_number_format' => '{{SERIES:STORNO}}{{DELIMITER:/}}{{SEQUENCE:4}}',
         ], $companyId);
 
-        $invoice = Invoice::factory()->hasItems(1)->create();
+        $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
 
         $creditNote = Invoice::find(
             postJson("api/v1/invoices/{$invoice->id}/credit-note")
@@ -510,7 +692,7 @@ describe('credit note numbering', function () {
                 'nextNumber' => 'CN-000001',
             ]);
 
-        $invoice = Invoice::factory()->hasItems(1)->create();
+        $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
 
         postJson("api/v1/invoices/{$invoice->id}/credit-note")->assertStatus(201);
 
