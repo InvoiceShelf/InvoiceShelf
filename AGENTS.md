@@ -17,6 +17,14 @@ pnpm dev               # Vite dev server only
 pnpm build             # Production frontend build
 ```
 
+### Demo data
+```bash
+php artisan db:seed --class=DemoSeeder --force            # demo user + Acme Inc, its address and settings
+php artisan db:seed --class=RealisticDemoSeeder --force   # ~100 records: customers, invoices with tax, estimates, payments, expenses, notes, a recurring invoice
+```
+
+`DemoSeeder` is what the test suite and `php artisan reset:app` run — keep it cheap. `RealisticDemoSeeder` is development-only and never runs in tests; it is what to seed when you want the app to look like a real install (a company with a logo and postal address, taxed documents, a populated notes library).
+
 > **Local environment (preferred):** the repo ships a `./devenv` script — a Docker Compose wrapper for the full local stack. Run `./devenv` once for interactive setup (pick MySQL/PostgreSQL/SQLite, optional Gotenberg; it adds the `invoiceshelf.test` host entry), then drive it with `./devenv start | stop | shell | logs | rebuild | test | format`. App at http://invoiceshelf.test, Adminer at `:8080`, Mailpit at `:8025`; the compose files live in `docker/development/` and your choice is remembered in `.devenvconfig`. (`composer run dev` / `pnpm dev` above are the native, non-Docker alternative.)
 
 ### Testing

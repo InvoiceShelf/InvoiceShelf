@@ -5,10 +5,12 @@ namespace Database\Seeders;
 use App\Facades\Hashids;
 use App\Models\Address;
 use App\Models\AiConversation;
+use App\Models\Company;
 use App\Models\CompanySetting;
 use App\Models\Country;
 use App\Models\Currency;
 use App\Models\Customer;
+use App\Models\CustomField;
 use App\Models\Estimate;
 use App\Models\EstimateItem;
 use App\Models\Expense;
@@ -16,8 +18,12 @@ use App\Models\ExpenseCategory;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use App\Models\Item;
+use App\Models\Note;
 use App\Models\Payment;
 use App\Models\PaymentMethod;
+use App\Models\RecurringInvoice;
+use App\Models\Tax;
+use App\Models\TaxType;
 use App\Models\Unit;
 use App\Models\User;
 use Carbon\Carbon;
@@ -30,8 +36,9 @@ use RuntimeException;
  *
  * Populates the demo company with ~100 realistic records (8 customers, 12
  * catalog items, 6 expense categories, 35 invoices, ~20 payments, 8 estimates,
- * 15 expenses) so the AI chat assistant has meaningful data to query during
- * local development.
+ * 15 expenses, 2 tax types, a notes library and a recurring invoice) so the app
+ * looks like a real install during local development, and so the AI chat
+ * assistant has meaningful data to query.
  *
  * This seeder is intentionally NOT wired into DatabaseSeeder and is NOT used
  * by the test suite (the minimal DemoSeeder remains in the test path to keep
@@ -59,8 +66,12 @@ use RuntimeException;
  *     AI tool queries like `get_company_stats(period=this_month)` vs
  *     `get_company_stats(period=last_month)` return different numbers.
  *
- *   - Invoice totals are computed from line items, not random. No per-item
- *     tax or discount in v1 — the math is `total = sum(price * quantity)`.
+ *   - Invoice totals are computed from line items, not random. Tax is applied
+ *     at document level (tax_per_item = 'NO') to most but not all documents,
+ *     computed once off the subtotal and carried through total, due_amount and
+ *     every base_* twin — the service layer trusts the amount it is given
+ *     rather than recomputing it, so the arithmetic is the caller's to get
+ *     right. No per-item tax or discount.
  */
 class RealisticDemoSeeder extends Seeder
 {
@@ -91,21 +102,32 @@ class RealisticDemoSeeder extends Seeder
 
     private int $paymentSequence = 1;
 
+    /** @var array<int, TaxType> */
+    private array $taxTypes = [];
+
+    /** @var array<int, string> */
+    private array $invoiceNotes = [];
+
     public function run(): void
     {
         $this->ensureReferenceData();
         $this->resolveDemoContext();
         $this->cleanupExistingDemoData();
 
+        $this->seedCompanyLogo();
+        $this->seedTaxTypes();
+        $this->seedNotes();
+        $this->seedCustomFields();
         $this->seedCustomers();
         $this->seedCatalogItems();
         $this->seedExpenseCategories();
         $this->seedInvoicesWithPayments();
         $this->seedEstimates();
+        $this->seedRecurringInvoice();
         $this->seedExpenses();
 
         $this->info(sprintf(
-            'RealisticDemoSeeder done: %d customers, %d items, %d invoices (%d overdue, %d paid, %d partially_paid), %d payments, %d estimates, %d expenses.',
+            'RealisticDemoSeeder done: %d customers, %d items, %d invoices (%d overdue, %d paid, %d partially_paid), %d payments, %d estimates, %d expenses, %d tax types, %d notes, %d recurring.',
             Customer::where('company_id', $this->companyId)->count(),
             Item::where('company_id', $this->companyId)->count(),
             Invoice::where('company_id', $this->companyId)->count(),
@@ -115,6 +137,9 @@ class RealisticDemoSeeder extends Seeder
             Payment::where('company_id', $this->companyId)->count(),
             Estimate::where('company_id', $this->companyId)->count(),
             Expense::where('company_id', $this->companyId)->count(),
+            TaxType::where('company_id', $this->companyId)->count(),
+            Note::where('company_id', $this->companyId)->count(),
+            RecurringInvoice::where('company_id', $this->companyId)->count(),
         ));
     }
 
@@ -226,6 +251,14 @@ class RealisticDemoSeeder extends Seeder
         Customer::whereIn('id', $customerIds)->delete();
 
         Item::where('company_id', $this->companyId)->delete();
+
+        // Taxes cascade from their documents, but the reusable definitions and
+        // the standalone rows do not.
+        Tax::where('company_id', $this->companyId)->delete();
+        RecurringInvoice::where('company_id', $this->companyId)->delete();
+        TaxType::where('company_id', $this->companyId)->delete();
+        Note::where('company_id', $this->companyId)->delete();
+        CustomField::where('company_id', $this->companyId)->delete();
     }
 
     private function seedCustomers(): void
@@ -406,7 +439,13 @@ class RealisticDemoSeeder extends Seeder
             ];
         }
 
-        $total = $subTotal;
+        // Tax is computed once off the subtotal, not per line, and then has to be
+        // carried through total, due_amount and every base_* twin. Miss due_amount
+        // and a fully paid invoice renders as part-paid.
+        $taxType = $this->taxTypeForDocument($this->invoiceSequence);
+        $taxAmount = $taxType ? (int) round($subTotal * $taxType->percent / 100) : 0;
+
+        $total = $subTotal + $taxAmount;
         $dueAmount = match ($paidStatus) {
             Invoice::STATUS_PAID => 0,
             Invoice::STATUS_PARTIALLY_PAID => (int) round($total * 0.6),  // 40% paid, 60% still due
@@ -433,13 +472,13 @@ class RealisticDemoSeeder extends Seeder
             'discount_val' => 0,
             'sub_total' => $subTotal,
             'total' => $total,
-            'tax' => 0,
+            'tax' => $taxAmount,
             'due_amount' => $dueAmount,
             'exchange_rate' => 1,
             'base_discount_val' => 0,
             'base_sub_total' => $subTotal,
             'base_total' => $total,
-            'base_tax' => 0,
+            'base_tax' => $taxAmount,
             'base_due_amount' => $dueAmount,
             'currency_id' => $this->currencyId,
             'customer_id' => $customer->id,
@@ -448,7 +487,7 @@ class RealisticDemoSeeder extends Seeder
             'creator_id' => $this->user->id,
             'sent' => $status !== Invoice::STATUS_DRAFT,
             'viewed' => in_array($status, [Invoice::STATUS_VIEWED, Invoice::STATUS_COMPLETED], true),
-            'notes' => null,
+            'notes' => $this->invoiceNotes === [] ? null : $this->invoiceNotes[$this->invoiceSequence % count($this->invoiceNotes)],
         ]);
 
         // Touch timestamps to match the invoice_date so tool queries like
@@ -481,6 +520,10 @@ class RealisticDemoSeeder extends Seeder
                 'base_tax' => 0,
                 'base_total' => $line['line_total'],
             ]);
+        }
+
+        if ($taxType !== null) {
+            $this->applyDocumentTax($invoice, $taxType, $taxAmount, 'invoice_id');
         }
 
         // Back-fill payments for PAID and PARTIALLY_PAID invoices.
@@ -562,6 +605,12 @@ class RealisticDemoSeeder extends Seeder
             $lines[] = ['item' => $item, 'quantity' => $quantity, 'line_total' => $lineTotal];
         }
 
+        // Same arithmetic as createInvoice(): one rounding off the subtotal,
+        // then carried through total and the base_* twins.
+        $taxType = $this->taxTypeForDocument($this->estimateSequence);
+        $taxAmount = $taxType ? (int) round($subTotal * $taxType->percent / 100) : 0;
+        $total = $subTotal + $taxAmount;
+
         $estimateNumber = 'EST-'.str_pad((string) $this->estimateSequence, 6, '0', STR_PAD_LEFT);
         $this->estimateSequence++;
 
@@ -580,13 +629,13 @@ class RealisticDemoSeeder extends Seeder
             'discount' => 0,
             'discount_val' => 0,
             'sub_total' => $subTotal,
-            'total' => $subTotal,
-            'tax' => 0,
+            'total' => $total,
+            'tax' => $taxAmount,
             'exchange_rate' => 1,
             'base_discount_val' => 0,
             'base_sub_total' => $subTotal,
-            'base_total' => $subTotal,
-            'base_tax' => 0,
+            'base_total' => $total,
+            'base_tax' => $taxAmount,
             'currency_id' => $this->currencyId,
             'customer_id' => $customer->id,
             'company_id' => $this->companyId,
@@ -594,6 +643,10 @@ class RealisticDemoSeeder extends Seeder
             'creator_id' => $this->user->id,
             'notes' => null,
         ]);
+
+        if ($taxType !== null) {
+            $this->applyDocumentTax($estimate, $taxType, $taxAmount, 'estimate_id');
+        }
 
         // See seedInvoice(): the PDF routes bind on unique_hash.
         $estimate->unique_hash = Hashids::connection(Estimate::class)->encode($estimate->id);
@@ -622,6 +675,227 @@ class RealisticDemoSeeder extends Seeder
                 'base_total' => $line['line_total'],
             ]);
         }
+    }
+
+    /**
+     * Attach the demo company's logo.
+     *
+     * Without one the templates fall back to plain company-name text, which is
+     * fine but reads as an unfinished install. The asset is a generated Acme Inc
+     * mark rather than one of InvoiceShelf's own logos, which would make the
+     * demo look as though InvoiceShelf were billing the customer.
+     */
+    private function seedCompanyLogo(): void
+    {
+        $company = Company::find($this->companyId);
+        $logo = database_path('seeders/assets/acme-inc-logo.png');
+
+        if (! file_exists($logo)) {
+            return;
+        }
+
+        $company->clearMediaCollection('logo');
+        $company->addMedia($logo)->preservingOriginal()->toMediaCollection('logo');
+    }
+
+    /**
+     * Reusable tax definitions.
+     *
+     * type must be GENERAL: TaxTypesController::index() filters on it, so a
+     * MODULE row would be invisible in the admin UI.
+     */
+    private function seedTaxTypes(): void
+    {
+        $definitions = [
+            ['name' => 'Sales Tax', 'percent' => 8.5, 'description' => 'State and local sales tax'],
+            ['name' => 'Zero Rated', 'percent' => 0, 'description' => 'Exempt supplies'],
+        ];
+
+        foreach ($definitions as $definition) {
+            $this->taxTypes[] = TaxType::create([
+                'name' => $definition['name'],
+                'percent' => $definition['percent'],
+                'calculation_type' => 'percentage',
+                'compound_tax' => false,
+                'collective_tax' => false,
+                'description' => $definition['description'],
+                'type' => TaxType::TYPE_GENERAL,
+                'company_id' => $this->companyId,
+            ]);
+        }
+    }
+
+    /**
+     * The reusable notes library, plus the text those notes put on documents.
+     *
+     * These are two unrelated things in this application: a Note row is a
+     * snippet an operator inserts by hand, and a document's `notes` column is a
+     * plain string copied at that moment. There is no foreign key between them,
+     * and is_default only controls a badge in the settings list -- nothing
+     * pre-fills a new document with it. So the library is seeded for the
+     * settings screen, and the same text is put on documents separately.
+     */
+    private function seedNotes(): void
+    {
+        $notes = [
+            ['type' => 'Invoice', 'name' => 'Payment terms', 'notes' => 'Payment is due within 14 days. Late payments may incur a 1.5% monthly charge.', 'is_default' => true],
+            ['type' => 'Invoice', 'name' => 'Thank you', 'notes' => 'Thank you for your business. We appreciate the opportunity to work with you.', 'is_default' => false],
+            ['type' => 'Estimate', 'name' => 'Estimate validity', 'notes' => 'This estimate is valid for 30 days from the date of issue.', 'is_default' => true],
+            ['type' => 'Payment', 'name' => 'Receipt confirmation', 'notes' => 'Payment received with thanks. This receipt confirms the amount applied to your account.', 'is_default' => true],
+        ];
+
+        foreach ($notes as $note) {
+            Note::create($note + ['company_id' => $this->companyId]);
+        }
+
+        $this->invoiceNotes = array_column(
+            array_filter($notes, fn ($note) => $note['type'] === 'Invoice'),
+            'notes'
+        );
+    }
+
+    /**
+     * Custom fields on customers.
+     *
+     * Customer is the only model_type with a create/edit UI end to end, so a
+     * seeded field is both visible and editable. The PDF renders only
+     * model_type 'Item' fields, which would add a column to the items table and
+     * change a layout that was just squared up across both drivers -- left
+     * alone deliberately.
+     */
+    private function seedCustomFields(): void
+    {
+        $fields = [
+            ['name' => 'Account Manager', 'type' => 'Input', 'string_answer' => 'Dana Whitfield'],
+            ['name' => 'Contract Renewal', 'type' => 'Date', 'date_answer' => Carbon::now()->addMonths(8)->toDateString()],
+        ];
+
+        foreach ($fields as $order => $field) {
+            CustomField::create($field + [
+                'label' => $field['name'],
+                'model_type' => 'Customer',
+                'slug' => clean_slug('Customer', $field['name']),
+                'is_required' => false,
+                'order' => $order + 1,
+                'company_id' => $this->companyId,
+            ]);
+        }
+    }
+
+    /**
+     * One active recurring invoice, so the feature is not an empty screen.
+     *
+     * frequency is a five-field cron expression, not a keyword, and
+     * next_invoice_at has to be derived from it -- nothing computes that at read
+     * time. Line items hang off recurring_invoice_id, leaving invoice_id null
+     * until an invoice is actually generated.
+     */
+    private function seedRecurringInvoice(): void
+    {
+        $customer = $this->customers[0];
+        $items = collect($this->items)->random(2)->all();
+
+        $subTotal = 0;
+        foreach ($items as $item) {
+            $subTotal += $item->price;
+        }
+
+        $taxType = $this->taxTypes[0];
+        $tax = (int) round($subTotal * $taxType->percent / 100);
+        $total = $subTotal + $tax;
+
+        $startsAt = Carbon::now()->startOfMonth()->addMonth();
+        $frequency = '0 0 1 * *'; // monthly, on the first
+
+        $recurring = RecurringInvoice::create([
+            'starts_at' => $startsAt,
+            'send_automatically' => false,
+            'customer_id' => $customer->id,
+            'company_id' => $this->companyId,
+            'creator_id' => $this->user->id,
+            'status' => RecurringInvoice::ACTIVE,
+            'next_invoice_at' => RecurringInvoice::getNextInvoiceDate($frequency, $startsAt),
+            'frequency' => $frequency,
+            'limit_by' => RecurringInvoice::NONE,
+            'currency_id' => $this->currencyId,
+            'exchange_rate' => 1,
+            'tax_per_item' => 'NO',
+            'discount_per_item' => 'NO',
+            'tax_included' => false,
+            'discount_type' => 'fixed',
+            'discount' => 0,
+            'discount_val' => 0,
+            'sub_total' => $subTotal,
+            'tax' => $tax,
+            'total' => $total,
+            'due_amount' => $total,
+            'template_name' => 'invoice1',
+            'notes' => $this->invoiceNotes[0] ?? null,
+        ]);
+
+        foreach ($items as $item) {
+            InvoiceItem::create([
+                'item_id' => $item->id,
+                'name' => $item->name,
+                'description' => $item->description,
+                'price' => $item->price,
+                'quantity' => 1,
+                'total' => $item->price,
+                'discount_type' => 'fixed',
+                'discount' => 0,
+                'discount_val' => 0,
+                'tax' => 0,
+                'recurring_invoice_id' => $recurring->id,
+                'company_id' => $this->companyId,
+                'exchange_rate' => 1,
+                'base_price' => $item->price,
+                'base_discount_val' => 0,
+                'base_tax' => 0,
+                'base_total' => $item->price,
+            ]);
+        }
+
+        $this->applyDocumentTax($recurring, $taxType, $tax, 'recurring_invoice_id');
+    }
+
+    /**
+     * Attach a document-level tax row.
+     *
+     * The service layer trusts whatever `amount` it is given rather than
+     * recomputing it, so the caller owns the arithmetic and has to keep the
+     * document's own tax/total columns in step. Every row must point at a real
+     * TaxType: TaxResource dereferences it without a null check.
+     */
+    private function applyDocumentTax(object $document, TaxType $taxType, int $amount, string $foreignKey): void
+    {
+        Tax::create([
+            'tax_type_id' => $taxType->id,
+            $foreignKey => $document->id,
+            'company_id' => $this->companyId,
+            'name' => $taxType->name,
+            'calculation_type' => 'percentage',
+            'percent' => $taxType->percent,
+            'amount' => $amount,
+            'compound_tax' => false,
+            'exchange_rate' => 1,
+            'base_amount' => $amount,
+            'currency_id' => $this->currencyId,
+        ]);
+    }
+
+    /**
+     * The tax type to apply to a document, or null for an untaxed one.
+     *
+     * Most documents are taxed, but not all: a demo where every row looks the
+     * same shows less than one with a zero-rated example in it.
+     */
+    private function taxTypeForDocument(int $sequence): ?TaxType
+    {
+        if ($this->taxTypes === [] || $sequence % 5 === 0) {
+            return null;
+        }
+
+        return $this->taxTypes[0];
     }
 
     private function seedExpenses(): void
