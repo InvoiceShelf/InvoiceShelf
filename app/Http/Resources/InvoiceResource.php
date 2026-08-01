@@ -71,6 +71,55 @@ class InvoiceResource extends JsonResource
                     'invoice_number' => $creditNote->invoice_number,
                 ])->values()
             ),
+            // Why this invoice was credited, if it was. Set only by the
+            // credit-note flow, never by the invoice form.
+            'credit_reason' => $this->credit_reason,
+            // How much of the invoice has been credited off it, as a positive
+            // number of cents (credit notes store negative totals), and whether
+            // that covers the whole document. Both are read off the same loaded
+            // relation the banner uses, so they cost no extra query.
+            'credited_total' => $this->when(
+                $this->relationLoaded('creditNotes'),
+                fn () => $this->creditedTotal()
+            ),
+            'credited_status' => $this->when(
+                $this->relationLoaded('creditNotes'),
+                function () {
+                    $credited = $this->creditedTotal();
+
+                    if ($credited === 0) {
+                        return 'NONE';
+                    }
+
+                    return $credited === (int) $this->total ? 'FULL' : 'PARTIAL';
+                }
+            ),
+            // Credited quantity per ORIGINAL line, which is what a partial
+            // credit form needs to offer the remaining quantities. Emitted only
+            // when the credit notes' items came along.
+            'credited_quantities' => $this->when(
+                $this->relationLoaded('creditNotes')
+                    && $this->creditNotes->every(fn ($creditNote) => $creditNote->relationLoaded('items')),
+                function () {
+                    $quantities = [];
+
+                    foreach ($this->creditNotes as $creditNote) {
+                        foreach ($creditNote->items as $item) {
+                            if (! $item->source_invoice_item_id) {
+                                continue;
+                            }
+
+                            $quantities[$item->source_invoice_item_id] =
+                                ($quantities[$item->source_invoice_item_id] ?? 0) + (float) $item->quantity;
+                        }
+                    }
+
+                    // Cast to an object because the item ids are the keys: a
+                    // nested array whose keys are all numeric is re-indexed to a
+                    // list by the resource filter, which would throw the ids away.
+                    return (object) $quantities;
+                }
+            ),
             'items' => $this->when($this->items()->exists(), function () {
                 return InvoiceItemResource::collection($this->items);
             }),
@@ -93,5 +142,13 @@ class InvoiceResource extends JsonResource
                 return new CurrencyResource($this->currency);
             }),
         ];
+    }
+
+    /**
+     * Sum of the loaded credit notes as a positive number of cents.
+     */
+    protected function creditedTotal(): int
+    {
+        return -(int) $this->creditNotes->sum('total');
     }
 }

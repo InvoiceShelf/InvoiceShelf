@@ -119,11 +119,19 @@ class PaymentService
                 $invoice = Invoice::find($payment->invoice_id);
                 $invoice->due_amount = ((int) $invoice->due_amount + (int) $payment->amount);
 
-                if ($invoice->due_amount == $invoice->total) {
-                    $invoice->paid_status = Invoice::STATUS_UNPAID;
-                } else {
-                    $invoice->paid_status = Invoice::STATUS_PARTIALLY_PAID;
-                }
+                // The paid status follows the payments that remain, not the
+                // balance. On an uncredited invoice the two rules agree exactly
+                // (the restored due equals the total precisely when no payment
+                // is left), but on a credited one the due amount is already net
+                // of its credit notes, so comparing it with the total would call
+                // an invoice unpaid while money is still recorded against it.
+                $remainingPaid = (int) $invoice->payments()
+                    ->whereKeyNot($payment->getKey())
+                    ->sum('amount');
+
+                $invoice->paid_status = $remainingPaid > 0
+                    ? Invoice::STATUS_PARTIALLY_PAID
+                    : Invoice::STATUS_UNPAID;
 
                 $invoice->status = $invoice->getPreviousStatus();
                 $invoice->save();

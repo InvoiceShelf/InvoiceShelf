@@ -32,8 +32,22 @@ test('the invoice count excludes credit notes while the sales total nets them ou
     $baselineCount = $before->json('total_invoice_count');
     $baselineSales = (int) $before->json('total_sales');
 
+    // The line item carries the whole invoice: a credit note is derived from
+    // the invoice's own figures, so its total only nets the sale out when the
+    // items agree with the document totals, as they do on a real invoice.
     $invoice = Invoice::factory()
-        ->hasItems(1)
+        ->hasItems(1, [
+            'price' => 10000,
+            'quantity' => 1,
+            'total' => 10000,
+            'tax' => 0,
+            'discount_val' => 0,
+            'exchange_rate' => 1,
+            'base_price' => 10000,
+            'base_total' => 10000,
+            'base_tax' => 0,
+            'base_discount_val' => 0,
+        ])
         ->create([
             'status' => Invoice::STATUS_SENT,
             'invoice_date' => now()->format('Y-m-d'),

@@ -164,6 +164,16 @@ class Invoice extends Model implements HasMedia
 
     public function getAllowEditAttribute()
     {
+        // A credited invoice is immutable: its line item ids anchor the lines of
+        // every credit note that reverses it.
+        $hasCreditNotes = $this->relationLoaded('creditNotes')
+            ? $this->creditNotes->isNotEmpty()
+            : $this->creditNotes()->exists();
+
+        if ($hasCreditNotes) {
+            return false;
+        }
+
         $retrospective_edit = CompanySetting::getSetting('retrospective_edits', $this->company_id);
 
         $allowed = true;

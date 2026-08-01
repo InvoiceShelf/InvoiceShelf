@@ -9,6 +9,7 @@ use App\Models\InvoiceItem;
 use App\Models\Payment;
 use App\Models\Tax;
 use App\Models\User;
+use App\Services\Document\CreditNoteService;
 use App\Services\Document\InvoiceService;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
@@ -31,17 +32,137 @@ beforeEach(function () {
     Sanctum::actingAs($user, ['*']);
 });
 
-test('creates a credit note from an invoice with negated totals', function () {
-    $invoice = Invoice::factory()
-        ->hasItems(1)
-        ->create([
-            'status' => Invoice::STATUS_SENT,
-            'sub_total' => 10000,
-            'total' => 10000,
-            'tax' => 0,
+/**
+ * Create an invoice whose stored document totals agree with its line items.
+ *
+ * That agreement is what every invoice the app writes has and what the
+ * credit-note calculator reads: it derives the credit from the ORIGINAL
+ * invoice's stored figures, so a fixture whose total has nothing to do with its
+ * items describes an invoice that could not exist and produces credit notes to
+ * match.
+ *
+ * @param  array  $lines  [['price' => int, 'quantity' => float, 'taxes' => [['amount' => int, 'percent' => float]]], ...]
+ * @param  array  $attributes  invoice overrides (status, exchange_rate, discount_val, tax_per_item, tax_included, ...)
+ * @param  array  $documentTaxes  document-level tax rows: [['amount' => int, 'percent' => float], ...]
+ */
+function creditableInvoice(array $lines = [['price' => 10000, 'quantity' => 1]], array $attributes = [], array $documentTaxes = []): Invoice
+{
+    $rate = $attributes['exchange_rate'] ?? 1;
+    $taxPerItem = $attributes['tax_per_item'] ?? 'NO';
+    $taxIncluded = $attributes['tax_included'] ?? false;
+    $discountVal = $attributes['discount_val'] ?? 0;
+
+    $subTotal = 0;
+    $itemTaxTotal = 0;
+
+    foreach ($lines as $line) {
+        $subTotal += (int) round($line['price'] * $line['quantity']);
+        $itemTaxTotal += array_sum(array_column($line['taxes'] ?? [], 'amount'));
+    }
+
+    $documentTaxTotal = array_sum(array_column($documentTaxes, 'amount'));
+    $tax = $taxPerItem === 'YES' ? $itemTaxTotal : $documentTaxTotal;
+    $total = $taxIncluded ? $subTotal - $discountVal : $subTotal - $discountVal + $tax;
+
+    $invoice = Invoice::factory()->create(array_merge([
+        'status' => Invoice::STATUS_SENT,
+        'sent' => true,
+        'paid_status' => Invoice::STATUS_UNPAID,
+        'tax_per_item' => 'NO',
+        'discount_per_item' => 'NO',
+        'tax_included' => false,
+        'discount' => 0,
+        'discount_type' => 'fixed',
+    ], $attributes, [
+        'sub_total' => $subTotal,
+        'discount_val' => $discountVal,
+        'tax' => $tax,
+        'total' => $total,
+        'due_amount' => $total,
+        'exchange_rate' => $rate,
+        'base_sub_total' => (int) round($subTotal * $rate),
+        'base_discount_val' => (int) round($discountVal * $rate),
+        'base_tax' => (int) round($tax * $rate),
+        'base_total' => (int) round($total * $rate),
+        'base_due_amount' => (int) round($total * $rate),
+    ]));
+
+    foreach ($lines as $index => $line) {
+        $amount = (int) round($line['price'] * $line['quantity']);
+        $lineTax = array_sum(array_column($line['taxes'] ?? [], 'amount'));
+
+        $item = $invoice->items()->create([
+            'name' => $line['name'] ?? 'Line '.($index + 1),
+            'quantity' => $line['quantity'],
+            'price' => $line['price'],
+            'discount_type' => 'fixed',
+            'discount' => 0,
             'discount_val' => 0,
-            'due_amount' => 10000,
+            'tax' => $lineTax,
+            'total' => $amount,
+            'company_id' => $invoice->company_id,
+            'exchange_rate' => $rate,
+            'base_price' => (int) round($line['price'] * $rate),
+            'base_discount_val' => 0,
+            'base_tax' => (int) round($lineTax * $rate),
+            'base_total' => (int) round($amount * $rate),
         ]);
+
+        foreach ($line['taxes'] ?? [] as $taxRow) {
+            creditableTax($invoice, $taxRow, ['invoice_item_id' => $item->id]);
+        }
+    }
+
+    foreach ($documentTaxes as $taxRow) {
+        creditableTax($invoice, $taxRow, ['invoice_id' => $invoice->id]);
+    }
+
+    return $invoice->fresh();
+}
+
+function creditableTax(Invoice $invoice, array $tax, array $owner): Tax
+{
+    return Tax::factory()->create(array_merge($owner, [
+        'company_id' => $invoice->company_id,
+        'amount' => $tax['amount'],
+        'base_amount' => (int) round($tax['amount'] * $invoice->exchange_rate),
+        'percent' => $tax['percent'] ?? 0,
+        'exchange_rate' => $invoice->exchange_rate,
+    ]));
+}
+
+/**
+ * Record a payment against an invoice and settle its balance the way the
+ * payment flow would.
+ */
+function creditablePayment(Invoice $invoice, int $amount): Payment
+{
+    $payment = Payment::factory()->create([
+        'invoice_id' => $invoice->id,
+        'customer_id' => $invoice->customer_id,
+        'amount' => $amount,
+    ]);
+
+    $due = (int) $invoice->due_amount - $amount;
+
+    $invoice->due_amount = $due;
+    $invoice->base_due_amount = (int) round($due * $invoice->exchange_rate);
+    $invoice->paid_status = $due === 0 ? Invoice::STATUS_PAID : Invoice::STATUS_PARTIALLY_PAID;
+    $invoice->save();
+
+    return $payment;
+}
+
+/**
+ * The ids of an invoice's line items, in creation order.
+ */
+function creditableItemIds(Invoice $invoice): array
+{
+    return $invoice->items()->orderBy('id')->pluck('id')->all();
+}
+
+test('creates a credit note from an invoice with negated totals', function () {
+    $invoice = creditableInvoice([['price' => 10000, 'quantity' => 1]]);
 
     $response = postJson("api/v1/invoices/{$invoice->id}/credit-note");
 
@@ -67,18 +188,7 @@ test('creates a credit note from an invoice with negated totals', function () {
 });
 
 test('negates the line item amounts of the source invoice', function () {
-    $invoice = Invoice::factory()
-        ->hasItems(1, ['price' => 5000, 'quantity' => 2, 'tax' => 0, 'discount_val' => 0])
-        ->create([
-            'status' => Invoice::STATUS_SENT,
-            'sub_total' => 10000,
-            'total' => 10000,
-            'tax' => 0,
-            'discount_val' => 0,
-            'due_amount' => 10000,
-            'discount_per_item' => 'NO',
-            'tax_per_item' => 'NO',
-        ]);
+    $invoice = creditableInvoice([['price' => 5000, 'quantity' => 2]]);
 
     $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
         ->assertStatus(201)
@@ -90,10 +200,461 @@ test('negates the line item amounts of the source invoice', function () {
     expect($item->price)->toBe(-5000);
     expect($item->total)->toBe(-10000);
     expect($item->base_price)->toBeLessThan(0);
+    // Every credit-note line names the invoice line it credits.
+    expect((int) $item->source_invoice_item_id)->toBe($invoice->items->first()->id);
+    // The quantity itself stays positive: the negative price is what makes the
+    // line a credit.
+    expect((float) $item->quantity)->toBe(2.0);
+});
+
+test('an empty request body reverses the whole invoice to the cent', function () {
+    $invoice = creditableInvoice(
+        [['price' => 2500, 'quantity' => 4]],
+        ['discount_val' => 1000],
+        [['amount' => 630, 'percent' => 7]]
+    );
+
+    expect($invoice->total)->toBe(9630);
+
+    $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
+        ->assertStatus(201)
+        ->json('data.id');
+
+    $creditNote = Invoice::with('items', 'taxes')->find($creditNoteId);
+
+    // Field for field the negation of the invoice, which is what a full
+    // reversal has always produced and must keep producing.
+    expect($creditNote->sub_total)->toBe(-10000)
+        ->and($creditNote->discount_val)->toBe(-1000)
+        ->and($creditNote->tax)->toBe(-630)
+        ->and($creditNote->total)->toBe(-9630)
+        ->and((int) $creditNote->base_sub_total)->toBe(-10000)
+        ->and((int) $creditNote->base_discount_val)->toBe(-1000)
+        ->and((int) $creditNote->base_tax)->toBe(-630)
+        ->and((int) $creditNote->base_total)->toBe(-9630);
+
+    $item = $creditNote->items->first();
+
+    expect($item->price)->toBe(-2500)
+        ->and($item->total)->toBe(-10000)
+        ->and((int) $item->base_total)->toBe(-10000)
+        ->and((float) $item->quantity)->toBe(4.0)
+        ->and((int) $item->source_invoice_item_id)->toBe($invoice->items->first()->id);
+
+    expect((int) $creditNote->taxes->first()->amount)->toBe(-630);
+});
+
+test('credits a single line of a three line invoice', function () {
+    $invoice = creditableInvoice(
+        [
+            ['price' => 1000, 'quantity' => 1],
+            ['price' => 1000, 'quantity' => 1],
+            ['price' => 1000, 'quantity' => 1],
+        ],
+        ['discount_val' => 300],
+        [['amount' => 189, 'percent' => 7]]
+    );
+
+    expect($invoice->total)->toBe(2889);
+
+    [$first] = creditableItemIds($invoice);
+
+    $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+        'items' => [['id' => $first, 'quantity' => 1]],
+    ])->assertStatus(201)->json('data.id');
+
+    $creditNote = Invoice::with('items')->find($creditNoteId);
+
+    // One third of the lines credited, so one third of the document-level
+    // discount and tax come back with it.
+    expect($creditNote->sub_total)->toBe(-1000)
+        ->and($creditNote->discount_val)->toBe(-100)
+        ->and($creditNote->tax)->toBe(-63)
+        ->and($creditNote->total)->toBe(-963)
+        ->and((int) $creditNote->base_total)->toBe(-963);
+
+    expect($creditNote->items)->toHaveCount(1);
+    expect((int) $creditNote->items->first()->source_invoice_item_id)->toBe($first);
+
+    $invoice->refresh();
+
+    // The balance drops by exactly the credited amount and no more.
+    expect((int) $invoice->due_amount)->toBe(1926)
+        ->and((int) $invoice->base_due_amount)->toBe(1926)
+        // A credit is not a payment: nothing was paid, so the invoice is still
+        // unpaid, just for less.
+        ->and($invoice->paid_status)->toBe(Invoice::STATUS_UNPAID)
+        ->and($invoice->status)->toBe(Invoice::STATUS_SENT);
+});
+
+test('a second credit note credits the remaining quantity', function () {
+    $invoice = creditableInvoice(
+        [
+            ['price' => 1000, 'quantity' => 1],
+            ['price' => 1000, 'quantity' => 1],
+            ['price' => 1000, 'quantity' => 1],
+        ],
+        ['discount_val' => 300],
+        [['amount' => 189, 'percent' => 7]]
+    );
+
+    [$first, $second, $third] = creditableItemIds($invoice);
+
+    postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+        'items' => [['id' => $first, 'quantity' => 1]],
+    ])->assertStatus(201);
+
+    postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+        'items' => [
+            ['id' => $second, 'quantity' => 1],
+            ['id' => $third, 'quantity' => 1],
+        ],
+    ])->assertStatus(201);
+
+    // Telescoping: the chain of credits sums to exactly the invoice, to the
+    // cent, in every field.
+    expect((int) $invoice->creditNotes()->sum('total'))->toBe(-$invoice->total)
+        ->and((int) $invoice->creditNotes()->sum('sub_total'))->toBe(-$invoice->sub_total)
+        ->and((int) $invoice->creditNotes()->sum('tax'))->toBe(-$invoice->tax)
+        ->and((int) $invoice->creditNotes()->sum('discount_val'))->toBe(-$invoice->discount_val);
+
+    $invoice->refresh();
+
+    expect((int) $invoice->due_amount)->toBe(0)
+        ->and($invoice->paid_status)->toBe(Invoice::STATUS_PAID)
+        ->and($invoice->status)->toBe(Invoice::STATUS_COMPLETED);
+
+    getJson("api/v1/invoices/{$invoice->id}")
+        ->assertOk()
+        ->assertJsonPath('data.credited_status', 'FULL')
+        ->assertJsonPath('data.credited_total', 2889);
+});
+
+test('a credit note may not exceed the unpaid balance of the invoice', function () {
+    // 100 units at 1.00 each: crediting n units credits exactly n cents.
+    $invoice = creditableInvoice([['price' => 100, 'quantity' => 100]]);
+
+    creditablePayment($invoice, 4000);
+
+    [$line] = creditableItemIds($invoice);
+
+    postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+        'items' => [['id' => $line, 'quantity' => 50]],
+    ])->assertStatus(201);
+
+    $invoice->refresh();
+
+    expect((int) $invoice->due_amount)->toBe(1000)
+        // Money was received, so the invoice stays partially paid even though
+        // part of it was credited away.
+        ->and($invoice->paid_status)->toBe(Invoice::STATUS_PARTIALLY_PAID);
+
+    // One cent past the unpaid balance: the invoice would end up owing the
+    // customer money it was never paid.
+    postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+        'items' => [['id' => $line, 'quantity' => 10.01]],
+    ])
+        ->assertStatus(422)
+        ->assertJsonPath('errors.invoice.0', 'credit_amount_exceeds_invoice_balance');
+
+    // Exactly the unpaid balance is fine.
+    postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+        'items' => [['id' => $line, 'quantity' => 10]],
+    ])->assertStatus(201);
+
+    $invoice->refresh();
+
+    expect((int) $invoice->due_amount)->toBe(0)
+        ->and($invoice->paid_status)->toBe(Invoice::STATUS_PAID)
+        ->and($invoice->status)->toBe(Invoice::STATUS_COMPLETED);
+});
+
+test('a line cannot be credited beyond the quantity that was invoiced', function () {
+    $invoice = creditableInvoice([['price' => 1000, 'quantity' => 3]]);
+
+    [$line] = creditableItemIds($invoice);
+
+    postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+        'items' => [['id' => $line, 'quantity' => 4]],
+    ])
+        ->assertStatus(422)
+        ->assertJsonPath('errors.invoice.0', 'credit_quantity_exceeds_remaining');
+
+    postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+        'items' => [['id' => $line, 'quantity' => 2]],
+    ])->assertStatus(201);
+
+    // Two of the three units are gone, so only one is still creditable.
+    postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+        'items' => [['id' => $line, 'quantity' => 2]],
+    ])
+        ->assertStatus(422)
+        ->assertJsonPath('errors.invoice.0', 'credit_quantity_exceeds_remaining');
+
+    expect($invoice->creditNotes()->count())->toBe(1);
+});
+
+test('cannot credit a line that belongs to another invoice', function () {
+    $invoice = creditableInvoice([['price' => 1000, 'quantity' => 1]]);
+    $other = creditableInvoice([['price' => 1000, 'quantity' => 1]]);
+
+    [$foreign] = creditableItemIds($other);
+
+    postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+        'items' => [['id' => $foreign, 'quantity' => 1]],
+    ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors(['items.0.id']);
+
+    expect($invoice->creditNotes()->count())->toBe(0);
+});
+
+test('a credit note must credit something', function () {
+    $invoice = creditableInvoice([['price' => 1000, 'quantity' => 1]]);
+
+    [$line] = creditableItemIds($invoice);
+
+    // Quantities are carried in hundredths, so anything below half a hundredth
+    // credits nothing at all and must not mint an empty document.
+    postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+        'items' => [['id' => $line, 'quantity' => 0.001]],
+    ])
+        ->assertStatus(422)
+        ->assertJsonPath('errors.invoice.0', 'credit_note_must_credit_something');
+
+    // A zero or negative quantity does not even reach the service.
+    postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+        'items' => [['id' => $line, 'quantity' => 0]],
+    ])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors(['items.0.quantity']);
+
+    expect($invoice->creditNotes()->count())->toBe(0);
+});
+
+test('a fully credited invoice cannot be credited again', function () {
+    $invoice = creditableInvoice([['price' => 1000, 'quantity' => 2]]);
+
+    [$line] = creditableItemIds($invoice);
+
+    postJson("api/v1/invoices/{$invoice->id}/credit-note")->assertStatus(201);
+
+    postJson("api/v1/invoices/{$invoice->id}/credit-note")
+        ->assertStatus(422)
+        ->assertJsonPath('errors.invoice.0', 'invoice_already_fully_credited');
+
+    postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+        'items' => [['id' => $line, 'quantity' => 1]],
+    ])
+        ->assertStatus(422)
+        ->assertJsonPath('errors.invoice.0', 'invoice_already_fully_credited');
+
+    expect($invoice->creditNotes()->count())->toBe(1);
+});
+
+test('stores the reason a credit note was issued and returns it', function () {
+    $invoice = creditableInvoice([['price' => 1000, 'quantity' => 1]]);
+
+    $response = postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+        'reason' => 'Goods returned damaged',
+    ])->assertStatus(201);
+
+    $response->assertJsonPath('data.credit_reason', 'Goods returned damaged');
+
+    expect(Invoice::find($response->json('data.id'))->credit_reason)
+        ->toBe('Goods returned damaged');
+});
+
+test('the credit reason cannot be set through the invoice endpoints', function () {
+    $payload = Invoice::factory()->raw([
+        'credit_reason' => 'Written by a client',
+        'taxes' => [Tax::factory()->raw()],
+        'items' => [InvoiceItem::factory()->raw()],
+    ]);
+
+    $created = Invoice::find(postJson('api/v1/invoices', $payload)->assertOk()->json('data.id'));
+
+    // The reason belongs to the credit-note flow; the invoice form must not be
+    // able to write it.
+    expect($created->credit_reason)->toBeNull();
+
+    putJson("api/v1/invoices/{$created->id}", array_merge($payload, [
+        'invoice_number' => $payload['invoice_number'].'-B',
+        'credit_reason' => 'Written by a client',
+    ]))->assertOk();
+
+    expect($created->fresh()->credit_reason)->toBeNull();
+});
+
+test('a credited invoice can no longer be edited', function () {
+    $invoice = creditableInvoice([['price' => 1000, 'quantity' => 2]]);
+
+    getJson("api/v1/invoices/{$invoice->id}")
+        ->assertOk()
+        ->assertJsonPath('data.allow_edit', true);
+
+    [$line] = creditableItemIds($invoice);
+
+    postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+        'items' => [['id' => $line, 'quantity' => 1]],
+    ])->assertStatus(201);
+
+    // The credit note's lines are anchored to this invoice's item ids, so the
+    // invoice is frozen from the first credit note on, partial or not.
+    getJson("api/v1/invoices/{$invoice->id}")
+        ->assertOk()
+        ->assertJsonPath('data.allow_edit', false);
+
+    $payload = Invoice::factory()->raw([
+        'taxes' => [Tax::factory()->raw()],
+        'items' => [InvoiceItem::factory()->raw()],
+    ]);
+
+    putJson("api/v1/invoices/{$invoice->id}", $payload)->assertStatus(403);
+});
+
+test('exposes how much of an invoice and of each line has been credited', function () {
+    $invoice = creditableInvoice([
+        ['price' => 1000, 'quantity' => 2],
+        ['price' => 500, 'quantity' => 4],
+    ]);
+
+    [$first] = creditableItemIds($invoice);
+
+    postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+        'items' => [['id' => $first, 'quantity' => 1.5]],
+    ])->assertStatus(201);
+
+    getJson("api/v1/invoices/{$invoice->id}")
+        ->assertOk()
+        ->assertJsonPath('data.credited_total', 1500)
+        ->assertJsonPath('data.credited_status', 'PARTIAL')
+        ->assertJsonPath("data.credited_quantities.{$first}", 1.5);
+
+    // The list carries the totals for the badge, but not the per-line
+    // quantities: those need the credit notes' items and the list does not pay
+    // for them.
+    $row = collect(getJson("api/v1/invoices?invoice_id={$invoice->id}")->assertOk()->json('data'))
+        ->firstWhere('id', $invoice->id);
+
+    expect($row['credited_total'])->toBe(1500)
+        ->and($row['credited_status'])->toBe('PARTIAL')
+        ->and($row)->not->toHaveKey('credited_quantities');
+});
+
+test('reports an uncredited invoice as uncredited', function () {
+    $invoice = creditableInvoice([['price' => 1000, 'quantity' => 1]]);
+
+    getJson("api/v1/invoices/{$invoice->id}")
+        ->assertOk()
+        ->assertJsonPath('data.credited_total', 0)
+        ->assertJsonPath('data.credited_status', 'NONE')
+        ->assertJsonPath('data.credit_reason', null)
+        ->assertJsonPath('data.allow_edit', true);
+});
+
+test('pro-rates per item taxes and writes no document level tax', function () {
+    $invoice = creditableInvoice(
+        [['price' => 1000, 'quantity' => 2, 'taxes' => [['amount' => 140, 'percent' => 7]]]],
+        ['tax_per_item' => 'YES']
+    );
+
+    expect($invoice->total)->toBe(2140);
+
+    [$line] = creditableItemIds($invoice);
+
+    $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+        'items' => [['id' => $line, 'quantity' => 1]],
+    ])->assertStatus(201)->json('data.id');
+
+    $creditNote = Invoice::with('items.taxes', 'taxes')->find($creditNoteId);
+
+    expect($creditNote->sub_total)->toBe(-1000)
+        ->and($creditNote->tax)->toBe(-70)
+        ->and($creditNote->total)->toBe(-1070);
+
+    $item = $creditNote->items->first();
+
+    expect($item->tax)->toBe(-70)
+        ->and($item->taxes)->toHaveCount(1)
+        ->and((int) $item->taxes->first()->amount)->toBe(-70)
+        ->and((int) $item->taxes->first()->base_amount)->toBe(-70)
+        // The descriptive fields travel with the amount so the credit note can
+        // be read on its own.
+        ->and((float) $item->taxes->first()->percent)->toBe(7.0)
+        ->and($item->taxes->first()->tax_type_id)->toBe($invoice->items->first()->taxes->first()->tax_type_id);
+
+    // Per-item tax means no document-level tax row exists to credit.
+    expect($creditNote->taxes)->toHaveCount(0);
+});
+
+test('follows the tax inclusive total when crediting part of an invoice', function () {
+    $invoice = creditableInvoice(
+        [['price' => 1000, 'quantity' => 2]],
+        ['tax_included' => true],
+        [['amount' => 140, 'percent' => 7]]
+    );
+
+    // Tax included: the total is the sub total, the tax is already inside it.
+    expect($invoice->total)->toBe(2000);
+
+    [$line] = creditableItemIds($invoice);
+
+    $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+        'items' => [['id' => $line, 'quantity' => 1]],
+    ])->assertStatus(201)->json('data.id');
+
+    $creditNote = Invoice::find($creditNoteId);
+
+    expect($creditNote->sub_total)->toBe(-1000)
+        ->and($creditNote->tax)->toBe(-70)
+        // Not -1070: the credited tax is inside the credited total.
+        ->and($creditNote->total)->toBe(-1000);
+});
+
+test('pro-rates the base amounts of a foreign currency invoice and telescopes exactly', function () {
+    $invoice = creditableInvoice(
+        [['price' => 1000, 'quantity' => 3]],
+        ['exchange_rate' => 1.37],
+        [['amount' => 210, 'percent' => 7]]
+    );
+
+    expect($invoice->total)->toBe(3210)
+        ->and((int) $invoice->base_total)->toBe(4398)
+        ->and((int) $invoice->base_tax)->toBe(288);
+
+    [$line] = creditableItemIds($invoice);
+
+    $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+        'items' => [['id' => $line, 'quantity' => 1]],
+    ])->assertStatus(201)->json('data.id');
+
+    $creditNote = Invoice::find($creditNoteId);
+
+    // Pro-rated from the STORED base amounts, not recomputed through the rate:
+    // 4398 / 3 is 1466, while round(1070 * 1.37) would be 1466 by luck and
+    // round(70 * 1.37) would be 96 here but not everywhere.
+    expect($creditNote->total)->toBe(-1070)
+        ->and((int) $creditNote->base_sub_total)->toBe(-1370)
+        ->and((int) $creditNote->base_tax)->toBe(-96)
+        ->and((int) $creditNote->base_total)->toBe(-1466);
+
+    postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+        'items' => [['id' => $line, 'quantity' => 2]],
+    ])->assertStatus(201);
+
+    // Two chunks, and the books balance to the cent in the company currency
+    // just as they do in the document currency.
+    expect((int) $invoice->creditNotes()->sum('total'))->toBe(-3210)
+        ->and((int) $invoice->creditNotes()->sum('base_total'))->toBe(-4398)
+        ->and((int) $invoice->creditNotes()->sum('base_tax'))->toBe(-288)
+        ->and((int) $invoice->creditNotes()->sum('base_sub_total'))->toBe(-4110);
+
+    expect((int) $invoice->fresh()->due_amount)->toBe(0);
 });
 
 test('sets the related invoice relationship on the credit note', function () {
-    $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
+    $invoice = creditableInvoice();
 
     $response = postJson("api/v1/invoices/{$invoice->id}/credit-note")
         ->assertStatus(201);
@@ -110,7 +671,7 @@ test('sets the related invoice relationship on the credit note', function () {
 });
 
 test('cannot create a credit note from another credit note', function () {
-    $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
+    $invoice = creditableInvoice();
 
     $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
         ->assertStatus(201)
@@ -131,16 +692,7 @@ test('cannot create a credit note for an invoice of another company', function (
 });
 
 test('generates a pdf for a credit note', function () {
-    $invoice = Invoice::factory()
-        ->hasItems(1)
-        ->create([
-            'status' => Invoice::STATUS_SENT,
-            'sub_total' => 10000,
-            'total' => 10000,
-            'tax' => 0,
-            'discount_val' => 0,
-            'due_amount' => 10000,
-        ]);
+    $invoice = creditableInvoice();
 
     $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
         ->assertStatus(201)
@@ -156,20 +708,7 @@ test('generates a pdf for a credit note', function () {
 });
 
 test('settles the original invoice when a credit note is created', function () {
-    $invoice = Invoice::factory()
-        ->hasItems(1)
-        ->create([
-            'status' => Invoice::STATUS_SENT,
-            'sent' => true,
-            'paid_status' => Invoice::STATUS_UNPAID,
-            'sub_total' => 10000,
-            'total' => 10000,
-            'tax' => 0,
-            'discount_val' => 0,
-            'due_amount' => 10000,
-            'base_due_amount' => 10000,
-            'exchange_rate' => 1,
-        ]);
+    $invoice = creditableInvoice();
 
     postJson("api/v1/invoices/{$invoice->id}/credit-note")->assertStatus(201);
 
@@ -185,17 +724,7 @@ test('settles the original invoice when a credit note is created', function () {
 });
 
 test('the credit note itself is created settled but still a draft', function () {
-    $invoice = Invoice::factory()
-        ->hasItems(1)
-        ->create([
-            'status' => Invoice::STATUS_SENT,
-            'sub_total' => 10000,
-            'total' => 10000,
-            'tax' => 0,
-            'discount_val' => 0,
-            'due_amount' => 10000,
-            'exchange_rate' => 1,
-        ]);
+    $invoice = creditableInvoice();
 
     $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
         ->assertStatus(201)
@@ -219,7 +748,7 @@ test('the credit note itself is created settled but still a draft', function () 
 });
 
 test('the original invoice exposes its credit notes for the UI banner', function () {
-    $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
+    $invoice = creditableInvoice();
 
     $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
         ->assertStatus(201)
@@ -235,33 +764,8 @@ test('the original invoice exposes its credit notes for the UI banner', function
         ->assertJsonPath('data.credit_notes.0.invoice_number', $creditNoteNumber);
 });
 
-test('cannot create a second credit note for the same invoice', function () {
-    $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
-
-    postJson("api/v1/invoices/{$invoice->id}/credit-note")->assertStatus(201);
-
-    // The invoice is already fully reversed; a second full reversal would
-    // double-negate the books. Domain rule violation => 422.
-    postJson("api/v1/invoices/{$invoice->id}/credit-note")->assertStatus(422);
-
-    expect($invoice->creditNotes()->count())->toBe(1);
-});
-
 test('deleting a credit note restores the original invoice balance', function () {
-    $invoice = Invoice::factory()
-        ->hasItems(1)
-        ->create([
-            'status' => Invoice::STATUS_SENT,
-            'sent' => true,
-            'paid_status' => Invoice::STATUS_UNPAID,
-            'sub_total' => 10000,
-            'total' => 10000,
-            'tax' => 0,
-            'discount_val' => 0,
-            'due_amount' => 10000,
-            'base_due_amount' => 10000,
-            'exchange_rate' => 1,
-        ]);
+    $invoice = creditableInvoice();
 
     $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
         ->assertStatus(201)
@@ -283,33 +787,16 @@ test('deleting a credit note restores the original invoice balance', function ()
 });
 
 test('deleting a credit note restores a partially paid balance from payments', function () {
-    $invoice = Invoice::factory()
-        ->hasItems(1)
-        ->create([
-            'status' => Invoice::STATUS_SENT,
-            'sent' => true,
-            'paid_status' => Invoice::STATUS_PARTIALLY_PAID,
-            'sub_total' => 10000,
-            'total' => 10000,
-            'tax' => 0,
-            'discount_val' => 0,
-            'due_amount' => 6000,
-            'base_due_amount' => 6000,
-            'exchange_rate' => 1,
-        ]);
+    $invoice = creditableInvoice([['price' => 100, 'quantity' => 100]]);
 
-    Payment::factory()->create([
-        'invoice_id' => $invoice->id,
-        'customer_id' => $invoice->customer_id,
-        'amount' => 4000,
-    ]);
+    creditablePayment($invoice, 4000);
 
-    // The API refuses to credit an invoice that already took money, so the
-    // credit note is minted through the service here. The restore path still
-    // has to be exact for rows that reached this state another way (a payment
-    // recorded against an already-credited invoice, or data from before the
-    // guard existed).
-    $creditNoteId = app(InvoiceService::class)->createCreditNote($invoice)->id;
+    [$line] = creditableItemIds($invoice);
+
+    // Crediting the whole unpaid balance settles the invoice.
+    $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+        'items' => [['id' => $line, 'quantity' => 60]],
+    ])->assertStatus(201)->json('data.id');
 
     expect((int) $invoice->fresh()->due_amount)->toBe(0);
 
@@ -318,13 +805,64 @@ test('deleting a credit note restores a partially paid balance from payments', f
 
     $invoice->refresh();
 
-    // due = total - recorded payments, never a stale pre-storno snapshot.
+    // due = total - recorded payments - surviving credit notes, never a stale
+    // pre-storno snapshot.
     expect((int) $invoice->due_amount)->toBe(6000);
     expect($invoice->paid_status)->toBe(Invoice::STATUS_PARTIALLY_PAID);
 });
 
+test('deleting one of two credit notes gives back only that credit', function () {
+    $invoice = creditableInvoice([['price' => 100, 'quantity' => 100]]);
+
+    creditablePayment($invoice, 1000);
+
+    [$line] = creditableItemIds($invoice);
+
+    $first = postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+        'items' => [['id' => $line, 'quantity' => 20]],
+    ])->assertStatus(201)->json('data.id');
+
+    $second = postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+        'items' => [['id' => $line, 'quantity' => 30]],
+    ])->assertStatus(201)->json('data.id');
+
+    expect((int) $invoice->fresh()->due_amount)->toBe(4000);
+
+    postJson('api/v1/invoices/delete', ['ids' => [$first]])->assertOk();
+
+    // 10000 - 1000 paid - 3000 still credited.
+    expect((int) $invoice->fresh()->due_amount)->toBe(6000);
+
+    postJson('api/v1/invoices/delete', ['ids' => [$second]])->assertOk();
+
+    expect((int) $invoice->fresh()->due_amount)->toBe(9000);
+    expect($invoice->fresh()->paid_status)->toBe(Invoice::STATUS_PARTIALLY_PAID);
+});
+
+test('deleting two credit notes of one invoice in a single request settles it once', function () {
+    $invoice = creditableInvoice([['price' => 100, 'quantity' => 100]]);
+
+    [$line] = creditableItemIds($invoice);
+
+    $first = postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+        'items' => [['id' => $line, 'quantity' => 20]],
+    ])->assertStatus(201)->json('data.id');
+
+    $second = postJson("api/v1/invoices/{$invoice->id}/credit-note", [
+        'items' => [['id' => $line, 'quantity' => 30]],
+    ])->assertStatus(201)->json('data.id');
+
+    postJson('api/v1/invoices/delete', ['ids' => [$first, $second]])->assertOk();
+
+    $invoice->refresh();
+
+    expect((int) $invoice->due_amount)->toBe(10000)
+        ->and($invoice->paid_status)->toBe(Invoice::STATUS_UNPAID)
+        ->and($invoice->status)->toBe(Invoice::STATUS_SENT);
+});
+
 test('deleting the original invoice and its credit note together succeeds', function () {
-    $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
+    $invoice = creditableInvoice();
 
     $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
         ->assertStatus(201)
@@ -339,7 +877,7 @@ test('deleting the original invoice and its credit note together succeeds', func
 });
 
 test('cannot delete an invoice while a credit note still reverses it', function () {
-    $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
+    $invoice = creditableInvoice();
 
     $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
         ->assertStatus(201)
@@ -355,9 +893,9 @@ test('cannot delete an invoice while a credit note still reverses it', function 
 });
 
 test('no surviving row keeps a dangling related invoice reference', function () {
-    $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
+    $invoice = creditableInvoice();
 
-    $creditNote = app(InvoiceService::class)->createCreditNote($invoice);
+    $creditNote = app(CreditNoteService::class)->create($invoice, [], null);
 
     // There is no DB foreign key, so the cascade is the service's job. Deleting
     // the original directly (the request layer blocks this) must still not
@@ -367,23 +905,27 @@ test('no surviving row keeps a dangling related invoice reference', function () 
     expect(Invoice::find($creditNote->id)->related_invoice_id)->toBeNull();
 });
 
+test('completing an uncredited invoice still zeroes its balance', function () {
+    $invoice = creditableInvoice();
+
+    postJson("api/v1/invoices/{$invoice->id}/status", ['status' => Invoice::STATUS_COMPLETED])
+        ->assertOk();
+
+    $invoice->refresh();
+
+    // The credit-note bookkeeping must not touch the manual status change.
+    expect((int) $invoice->due_amount)->toBe(0)
+        ->and($invoice->status)->toBe(Invoice::STATUS_COMPLETED)
+        ->and($invoice->paid_status)->toBe(Invoice::STATUS_PAID);
+});
+
 test('renders a credit note pdf through the original invoice template family, not a hardcoded layout', function () {
     // Regression for: credit notes always rendered through one hardcoded
     // generic layout regardless of which of the 3 invoice templates the
     // company actually uses. invoice2 has a distinctive purple header
     // markup ("header-section-right") that the old standalone
     // credit-note.blade.php never contained.
-    $invoice = Invoice::factory()
-        ->hasItems(1)
-        ->create([
-            'status' => Invoice::STATUS_SENT,
-            'template_name' => 'invoice2',
-            'sub_total' => 10000,
-            'total' => 10000,
-            'tax' => 0,
-            'discount_val' => 0,
-            'due_amount' => 10000,
-        ]);
+    $invoice = creditableInvoice([['price' => 10000, 'quantity' => 1]], ['template_name' => 'invoice2']);
 
     $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
         ->assertStatus(201)
@@ -400,17 +942,7 @@ test('renders a credit note pdf through the original invoice template family, no
 });
 
 test('renders a credit note pdf under the invoice3 template family', function () {
-    $invoice = Invoice::factory()
-        ->hasItems(1)
-        ->create([
-            'status' => Invoice::STATUS_SENT,
-            'template_name' => 'invoice3',
-            'sub_total' => 10000,
-            'total' => 10000,
-            'tax' => 0,
-            'discount_val' => 0,
-            'due_amount' => 10000,
-        ]);
+    $invoice = creditableInvoice([['price' => 10000, 'quantity' => 1]], ['template_name' => 'invoice3']);
 
     $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
         ->assertStatus(201)
@@ -430,17 +962,7 @@ test('shows a cancellation banner on the original invoice pdf under a non-defaul
     // Regression for: the actual generated/printed/emailed PDF of a
     // cancelled invoice showed zero indication it had been reversed by a
     // credit note (only the Vue UI banner existed).
-    $invoice = Invoice::factory()
-        ->hasItems(1)
-        ->create([
-            'status' => Invoice::STATUS_SENT,
-            'template_name' => 'invoice3',
-            'sub_total' => 10000,
-            'total' => 10000,
-            'tax' => 0,
-            'discount_val' => 0,
-            'due_amount' => 10000,
-        ]);
+    $invoice = creditableInvoice([['price' => 10000, 'quantity' => 1]], ['template_name' => 'invoice3']);
 
     $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
         ->assertStatus(201)
@@ -456,7 +978,7 @@ test('shows a cancellation banner on the original invoice pdf under a non-defaul
 });
 
 test('shows a cancellation banner on the original invoice pdf under the default template', function () {
-    $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
+    $invoice = creditableInvoice();
 
     $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
         ->assertStatus(201)
@@ -474,7 +996,7 @@ test('shows a cancellation banner on the original invoice pdf under the default 
 test('sends a credit note to the customer through the normal send endpoint', function () {
     Mail::fake();
 
-    $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
+    $invoice = creditableInvoice();
 
     $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
         ->assertStatus(201)
@@ -520,7 +1042,7 @@ test('sending a regular invoice still uses the invoice mailable', function () {
 });
 
 test('previews the credit note email template, not the invoice one', function () {
-    $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
+    $invoice = creditableInvoice();
 
     $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
         ->assertStatus(201)
@@ -545,7 +1067,7 @@ test('previews the credit note email template, not the invoice one', function ()
 });
 
 test('a credit note cannot be edited', function () {
-    $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
+    $invoice = creditableInvoice();
 
     $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
         ->assertStatus(201)
@@ -571,41 +1093,19 @@ test('a client cannot mint a credit note through the invoice create endpoint', f
 
     $response = postJson('api/v1/invoices', $payload)->assertOk();
 
-    // Credit notes are minted only by createCreditNote(); the request payload
-    // must not be able to declare one.
+    // Credit notes are minted only by CreditNoteService::create(); the request
+    // payload must not be able to declare one.
     $created = Invoice::find($response->json('data.id'));
 
     expect($created->type)->toBe(Invoice::TYPE_INVOICE);
     expect($created->related_invoice_id)->toBeNull();
 });
 
-test('cannot credit an invoice that already has a payment', function () {
-    $invoice = Invoice::factory()
-        ->hasItems(1)
-        ->create([
-            'status' => Invoice::STATUS_SENT,
-            'sub_total' => 10000,
-            'total' => 10000,
-            'tax' => 0,
-            'discount_val' => 0,
-            'due_amount' => 6000,
-            'exchange_rate' => 1,
-        ]);
-
-    Payment::factory()->create([
-        'invoice_id' => $invoice->id,
-        'customer_id' => $invoice->customer_id,
-        'amount' => 4000,
-    ]);
-
-    postJson("api/v1/invoices/{$invoice->id}/credit-note")
-        ->assertStatus(422);
-
-    expect($invoice->creditNotes()->count())->toBe(0);
-});
-
 test('cannot credit a draft invoice', function () {
-    $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_DRAFT]);
+    $invoice = creditableInvoice([['price' => 10000, 'quantity' => 1]], [
+        'status' => Invoice::STATUS_DRAFT,
+        'sent' => false,
+    ]);
 
     // A draft was never issued, so there is nothing to reverse.
     postJson("api/v1/invoices/{$invoice->id}/credit-note")
@@ -615,7 +1115,7 @@ test('cannot credit a draft invoice', function () {
 });
 
 test('a credit note cannot be cloned or converted to an estimate', function () {
-    $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
+    $invoice = creditableInvoice();
 
     $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
         ->assertStatus(201)
@@ -628,7 +1128,7 @@ test('a credit note cannot be cloned or converted to an estimate', function () {
 });
 
 test('a credit note is never marked overdue by the status command', function () {
-    $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
+    $invoice = creditableInvoice();
 
     $creditNoteId = postJson("api/v1/invoices/{$invoice->id}/credit-note")
         ->assertStatus(201)
@@ -660,8 +1160,8 @@ test('a real invoice is still marked overdue by the status command', function ()
 
 describe('credit note numbering', function () {
     test('numbers credit notes in their own sequence, independent of invoices', function () {
-        $first = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
-        $second = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
+        $first = creditableInvoice();
+        $second = creditableInvoice();
 
         expect($first->invoice_number)->toBe('INV-000001');
         expect($first->sequence_number)->toBe(1);
@@ -689,7 +1189,7 @@ describe('credit note numbering', function () {
 
         // And the invoice sequence is untouched by the two credit notes: the
         // next invoice is 3, not 5.
-        $third = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
+        $third = creditableInvoice();
 
         expect($third->invoice_number)->toBe('INV-000003');
         expect($third->sequence_number)->toBe(3);
@@ -702,7 +1202,7 @@ describe('credit note numbering', function () {
             'credit_note_number_format' => '{{SERIES:STORNO}}{{DELIMITER:/}}{{SEQUENCE:4}}',
         ], $companyId);
 
-        $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
+        $invoice = creditableInvoice();
 
         $creditNote = Invoice::find(
             postJson("api/v1/invoices/{$invoice->id}/credit-note")
@@ -721,7 +1221,7 @@ describe('credit note numbering', function () {
                 'nextNumber' => 'CN-000001',
             ]);
 
-        $invoice = Invoice::factory()->hasItems(1)->create(['status' => Invoice::STATUS_SENT]);
+        $invoice = creditableInvoice();
 
         postJson("api/v1/invoices/{$invoice->id}/credit-note")->assertStatus(201);
 

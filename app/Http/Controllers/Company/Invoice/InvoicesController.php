@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Company\Invoice;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
+use App\Http\Requests\CreateCreditNoteRequest;
 use App\Http\Requests\DeleteInvoiceRequest;
 use App\Http\Requests\SendInvoiceRequest;
 use App\Http\Resources\CreditNoteResource;
@@ -12,6 +13,7 @@ use App\Http\Resources\InvoiceResource;
 use App\Jobs\GenerateInvoicePdfJob;
 use App\Models\Estimate;
 use App\Models\Invoice;
+use App\Services\Document\CreditNoteService;
 use App\Services\Document\InvoiceService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -22,6 +24,7 @@ class InvoicesController extends Controller
 {
     public function __construct(
         private readonly InvoiceService $invoiceService,
+        private readonly CreditNoteService $creditNoteService,
     ) {}
 
     /**
@@ -39,7 +42,7 @@ class InvoicesController extends Controller
         // eager-loaded (two columns) rather than probed per row.
         $invoices = Invoice::whereCompany()
             ->applyFilters($request->all())
-            ->with(['customer', 'creditNotes:id,related_invoice_id,invoice_number'])
+            ->with(['customer', 'creditNotes:id,related_invoice_id,invoice_number,total'])
             ->latest()
             ->paginateData($limit);
 
@@ -83,8 +86,13 @@ class InvoicesController extends Controller
             return new CreditNoteResource($invoice->load('relatedInvoice'));
         }
 
-        // Feeds the "cancelled via credit note" banner on the detail page.
-        return new InvoiceResource($invoice->load('creditNotes:id,related_invoice_id,invoice_number'));
+        // Feeds the credit-note banner on the detail page: how much of the
+        // invoice has been credited, and how much of each line, so the partial
+        // credit form can offer the remaining quantities.
+        return new InvoiceResource($invoice->load([
+            'creditNotes:id,related_invoice_id,invoice_number,total',
+            'creditNotes.items:id,invoice_id,source_invoice_item_id,quantity',
+        ]));
     }
 
     /**
@@ -190,7 +198,7 @@ class InvoicesController extends Controller
         return new EstimateResource($estimate);
     }
 
-    public function createCreditNote(Request $request, Invoice $invoice)
+    public function createCreditNote(CreateCreditNoteRequest $request, Invoice $invoice)
     {
         $this->authorize('create credit note', $invoice);
 
@@ -202,23 +210,6 @@ class InvoicesController extends Controller
             ]);
         }
 
-        // A credit note is a FULL reversal, so one per invoice: a second one
-        // would double-negate the books and break the delete-side restore.
-        if ($invoice->creditNotes()->exists()) {
-            throw ValidationException::withMessages([
-                'invoice' => ['the_invoice_already_has_a_credit_note'],
-            ]);
-        }
-
-        // Reversing an invoice that already received money would leave the
-        // payment stranded against a zeroed document; refund/delete the
-        // payment first.
-        if ($invoice->payments()->exists()) {
-            throw ValidationException::withMessages([
-                'invoice' => ['invoice_with_payments_cannot_be_credited'],
-            ]);
-        }
-
         // A draft was never issued, so there is nothing to reverse: edit or
         // delete it instead.
         if ($invoice->status === Invoice::STATUS_DRAFT) {
@@ -227,9 +218,20 @@ class InvoicesController extends Controller
             ]);
         }
 
-        $creditNote = $this->invoiceService->createCreditNote($invoice);
+        // How much of the invoice is still creditable, and whether the credit
+        // fits inside its unpaid balance, is decided by the service under a row
+        // lock. Guarding it here would race.
+        $creditNote = $this->creditNoteService->create(
+            $invoice,
+            $request->input('items', []),
+            $request->input('reason')
+        );
 
         GenerateInvoicePdfJob::dispatch($creditNote);
+
+        // The original's own PDF changed too: its balance moved and it now
+        // carries the cancellation banner, so the stored file is replaced.
+        GenerateInvoicePdfJob::dispatch($invoice->fresh(), true);
 
         return (new CreditNoteResource($creditNote))
             ->response()
