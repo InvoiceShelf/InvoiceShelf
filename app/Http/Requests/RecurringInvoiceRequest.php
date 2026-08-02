@@ -4,7 +4,8 @@ namespace App\Http\Requests;
 
 use App\Models\CompanySetting;
 use App\Models\Customer;
-use App\Models\RecurringInvoice;
+use App\Rules\ValidCronExpression;
+use App\Services\Document\RecurringInvoiceScheduleService;
 use App\Support\DocumentTotals;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -28,6 +29,7 @@ class RecurringInvoiceRequest extends FormRequest
         $rules = [
             'starts_at' => [
                 'required',
+                'date',
             ],
             'send_automatically' => [
                 'required',
@@ -67,6 +69,8 @@ class RecurringInvoiceRequest extends FormRequest
             ],
             'frequency' => [
                 'required',
+                'string',
+                new ValidCronExpression,
             ],
             'limit_by' => [
                 'required',
@@ -108,7 +112,10 @@ class RecurringInvoiceRequest extends FormRequest
         $exchange_rate = $company_currency != $current_currency ? $this->exchange_rate : 1;
         $currency = Customer::find($this->customer_id)->currency_id;
 
-        $nextInvoiceAt = RecurringInvoice::getNextInvoiceDate($this->frequency, $this->starts_at);
+        $schedule = app(RecurringInvoiceScheduleService::class);
+        $nextInvoiceAt = $schedule->toStored(
+            $schedule->firstFutureOccurrence($this->frequency, $this->starts_at, (int) $this->header('company'))
+        );
 
         $tax_per_item = CompanySetting::getSetting('tax_per_item', $this->header('company')) ?? 'NO ';
         $discount_per_item = CompanySetting::getSetting('discount_per_item', $this->header('company')) ?? 'NO';

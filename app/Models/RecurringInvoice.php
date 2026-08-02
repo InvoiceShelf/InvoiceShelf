@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
+use App\Services\Document\RecurringInvoiceScheduleService;
 use App\Support\SafeOrderBy;
 use App\Traits\HasCustomFieldsTrait;
 use Carbon\Carbon;
-use Cron;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -60,9 +60,15 @@ class RecurringInvoice extends Model
 
     public function getFormattedNextInvoiceAtAttribute()
     {
+        if (! $this->next_invoice_at) {
+            return null;
+        }
+
         $dateFormat = CompanySetting::getSetting('carbon_date_format', $this->company_id);
 
-        return Carbon::parse($this->next_invoice_at)->translatedFormat($dateFormat);
+        return app(RecurringInvoiceScheduleService::class)
+            ->fromStored($this->next_invoice_at, $this->company_id)
+            ->translatedFormat($dateFormat);
     }
 
     public function getFormattedLimitDateAttribute()
@@ -189,29 +195,5 @@ class RecurringInvoice extends Model
             $orderBy = $filters->get('orderBy') ? $filters->get('orderBy') : 'asc';
             $query->whereOrder($field, $orderBy);
         }
-    }
-
-    public function markStatusAsCompleted(): void
-    {
-        if ($this->status == $this->status) {
-            $this->status = self::COMPLETED;
-            $this->save();
-        }
-    }
-
-    public static function getNextInvoiceDate(string $frequency, string $starts_at): string
-    {
-        $cron = new Cron\CronExpression($frequency);
-        $timezone = config('app.timezone', 'UTC');
-
-        return $cron->getNextRunDate($starts_at, 0, false, $timezone)->format('Y-m-d H:i:s');
-    }
-
-    public function updateNextInvoiceDate(): void
-    {
-        $nextInvoiceAt = self::getNextInvoiceDate($this->frequency, $this->starts_at);
-
-        $this->next_invoice_at = $nextInvoiceAt;
-        $this->save();
     }
 }

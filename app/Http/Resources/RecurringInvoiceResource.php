@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Services\Document\RecurringInvoiceScheduleService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -26,7 +27,11 @@ class RecurringInvoiceResource extends JsonResource
             'company_id' => $this->company_id,
             'creator_id' => $this->creator_id,
             'status' => $this->status,
-            'next_invoice_at' => $this->next_invoice_at,
+            'next_invoice_at' => $this->next_invoice_at
+                ? app(RecurringInvoiceScheduleService::class)
+                    ->fromStored($this->next_invoice_at, $this->company_id)
+                    ->format('Y-m-d H:i:s')
+                : null,
             'frequency' => $this->frequency,
             'limit_by' => $this->limit_by,
             'limit_count' => $this->limit_count,

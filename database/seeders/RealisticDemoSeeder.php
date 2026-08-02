@@ -26,6 +26,7 @@ use App\Models\Tax;
 use App\Models\TaxType;
 use App\Models\Unit;
 use App\Models\User;
+use App\Services\Document\RecurringInvoiceScheduleService;
 use App\Services\Document\SerialNumberService;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
@@ -845,7 +846,9 @@ class RealisticDemoSeeder extends Seeder
             'company_id' => $this->companyId,
             'creator_id' => $this->user->id,
             'status' => RecurringInvoice::ACTIVE,
-            'next_invoice_at' => RecurringInvoice::getNextInvoiceDate($frequency, $startsAt),
+            'next_invoice_at' => app(RecurringInvoiceScheduleService::class)->toStored(
+                app(RecurringInvoiceScheduleService::class)->firstFutureOccurrence($frequency, $startsAt, $this->companyId)
+            ),
             'frequency' => $frequency,
             'limit_by' => RecurringInvoice::NONE,
             'currency_id' => $this->currencyId,

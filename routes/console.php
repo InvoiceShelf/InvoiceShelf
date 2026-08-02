@@ -1,8 +1,5 @@
 <?php
 
-use App\Models\CompanySetting;
-use App\Models\RecurringInvoice;
-use App\Services\Document\RecurringInvoiceService;
 use App\Support\Setup\InstallUtils;
 use Illuminate\Support\Facades\Schedule;
 
@@ -21,12 +18,7 @@ if (InstallUtils::isDbCreated()) {
     Schedule::command('check:estimates:status')
         ->daily();
 
-    $recurringInvoices = RecurringInvoice::where('status', 'ACTIVE')->get();
-    foreach ($recurringInvoices as $recurringInvoice) {
-        $timeZone = CompanySetting::getSetting('time_zone', $recurringInvoice->company_id);
-
-        Schedule::call(function () use ($recurringInvoice) {
-            app(RecurringInvoiceService::class)->generateInvoice($recurringInvoice);
-        })->cron($recurringInvoice->frequency)->timezone($timeZone);
-    }
+    Schedule::command('generate:recurring-invoices')
+        ->everyMinute()
+        ->withoutOverlapping(60);
 }

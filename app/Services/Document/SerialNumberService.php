@@ -4,6 +4,7 @@ namespace App\Services\Document;
 
 use App\Models\CompanySetting;
 use App\Models\Customer;
+use Carbon\Carbon;
 
 class SerialNumberService
 {
@@ -20,6 +21,8 @@ class SerialNumberService
     private $settingKey;
 
     private $sequenceScope = [];
+
+    private ?Carbon $occurrenceDate = null;
 
     /**
      * @var string
@@ -104,6 +107,13 @@ class SerialNumberService
     public function setSequenceScope(array $constraints)
     {
         $this->sequenceScope = $constraints;
+
+        return $this;
+    }
+
+    public function setOccurrenceDate(Carbon $date): self
+    {
+        $this->occurrenceDate = $date;
 
         return $this;
     }
@@ -241,7 +251,7 @@ class SerialNumberService
                     break;
                 case 'DATE_FORMAT':
                     $value = $value ? $value : 'Y';
-                    $serialNumber .= date($value);
+                    $serialNumber .= ($this->occurrenceDate ?: Carbon::now())->format($value);
 
                     break;
                 case 'RANDOM_SEQUENCE':
