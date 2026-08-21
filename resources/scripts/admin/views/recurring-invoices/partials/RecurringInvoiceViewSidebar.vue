@@ -142,14 +142,14 @@ onSearched = debounce(onSearched, 500)
     class="
       fixed
       top-0
-      left-0
+      inset-s-0
       hidden
       h-full
       pt-16
       pb-[6.4rem]
-      ml-56
+      ms-56
       bg-white
-      xl:ml-64
+      xl:ms-64
       w-88
       xl:block
     "
@@ -174,14 +174,23 @@ onSearched = debounce(onSearched, 500)
           variant="gray"
           @input="onSearched()"
         >
+          <template #left>
+            <BaseIcon
+              name="MagnifyingGlassIcon"
+              class="hidden h-5 text-gray-400 rtl:block"
+            />
+          </template>
           <template #right>
-            <BaseIcon name="MagnifyingGlassIcon" class="h-5 text-gray-400" />
+            <BaseIcon
+              name="MagnifyingGlassIcon"
+              class="h-5 text-gray-400 rtl:hidden"
+            />
           </template>
         </BaseInput>
       </div>
 
-      <div class="flex mb-6 ml-3" role="group" aria-label="First group">
-        <BaseDropdown class="ml-3" position="bottom-start">
+      <div class="flex mb-6 ms-3" role="group" aria-label="First group">
+        <BaseDropdown class="ms-3" position="bottom-start">
           <template #activator>
             <BaseButton size="md" variant="gray">
               <BaseIcon name="FunnelIcon" class="h-5" />
@@ -229,7 +238,7 @@ onSearched = debounce(onSearched, 500)
           </BaseDropdownItem>
         </BaseDropdown>
 
-        <BaseButton class="ml-1" size="md" variant="gray" @click="sortData">
+        <BaseButton class="ms-1" size="md" variant="gray" @click="sortData">
           <BaseIcon v-if="getOrderBy" name="SortAscendingIcon" class="h-5" />
           <BaseIcon v-else name="SortDescendingIcon" class="h-5" />
         </BaseButton>
@@ -241,7 +250,7 @@ onSearched = debounce(onSearched, 500)
       class="
         h-full
         overflow-y-scroll
-        border-l border-gray-200 border-solid
+        border-s border-gray-200 border-solid
         base-scroll
       "
     >
@@ -251,9 +260,9 @@ onSearched = debounce(onSearched, 500)
           :id="'recurring-invoice-' + invoice.id"
           :to="`/admin/recurring-invoices/${invoice.id}/view`"
           :class="[
-            'flex justify-between side-invoice p-4 cursor-pointer hover:bg-gray-100 items-center border-l-4 border-l-transparent',
+            'flex justify-between side-invoice p-4 cursor-pointer hover:bg-gray-100 items-center border-s-4 border-s-transparent',
             {
-              'bg-gray-100 border-l-4 border-l-primary-500 border-solid':
+              'bg-gray-100 border-s-4 border-s-primary-500 border-solid':
                 hasActiveUrl(invoice.id),
             },
           ]"
@@ -263,7 +272,7 @@ onSearched = debounce(onSearched, 500)
             <BaseText
               :text="invoice.customer.name"
               class="
-                pr-2
+                pe-2
                 mb-2
                 text-sm
                 not-italic
@@ -305,7 +314,7 @@ onSearched = debounce(onSearched, 500)
                 not-italic
                 font-semibold
                 leading-8
-                text-right text-gray-900
+                text-end text-gray-900
               "
               :amount="invoice.total"
               :currency="invoice.customer.currency"
@@ -317,7 +326,7 @@ onSearched = debounce(onSearched, 500)
                 not-italic
                 font-normal
                 leading-5
-                text-right text-gray-600
+                text-end text-gray-600
                 est-date
               "
             >

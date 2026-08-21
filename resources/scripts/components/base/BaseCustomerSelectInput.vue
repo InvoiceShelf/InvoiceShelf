@@ -22,7 +22,7 @@
       >
         <BaseIcon
           name="UserPlusIcon"
-          class="h-4 mr-2 -ml-2 text-center text-primary-400"
+          class="h-4 me-2 -ms-2 text-center text-primary-400"
         />
 
         {{ $t('customers.add_new_customer') }}

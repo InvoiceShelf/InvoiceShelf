@@ -14,9 +14,10 @@
       fill="currentColor"
       class="
         absolute
+        inset-s-0
         w-4
         h-4
-        mx-2
+        ms-2
         my-2.5
         text-sm
         not-italic
@@ -121,7 +122,7 @@ const props = defineProps({
   defaultInputClass: {
     type: String,
     default:
-      'font-base pl-8 py-2 outline-hidden focus:ring-primary-400 focus:outline-hidden focus:border-primary-400 block w-full sm:text-sm border-gray-200 rounded-md text-black',
+      'font-base ps-8 py-2 outline-hidden focus:ring-primary-400 focus:outline-hidden focus:border-primary-400 block w-full sm:text-sm border-gray-200 rounded-md text-black',
   },
   time24hr: {
     type: Boolean,

@@ -42,7 +42,7 @@
             :to="`/invoices/pdf/${invoiceStore.newInvoice.unique_hash}`"
             target="_blank"
           >
-            <BaseButton class="mr-3" variant="primary-outline" type="button">
+            <BaseButton class="me-3" variant="primary-outline" type="button">
               <span class="flex">
                 {{ $t('general.view_pdf') }}
               </span>

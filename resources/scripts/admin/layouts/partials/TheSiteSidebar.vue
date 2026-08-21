@@ -21,11 +21,11 @@
       <TransitionChild
         as="template"
         enter="transition ease-in-out duration-300"
-        enter-from="-translate-x-full"
+        enter-from="ltr:-translate-x-full rtl:translate-x-full"
         enter-to="translate-x-0"
         leave="transition ease-in-out duration-300"
         leave-from="translate-x-0"
-        leave-to="-translate-x-full"
+        leave-to="ltr:-translate-x-full rtl:translate-x-full"
       >
         <div class="relative flex flex-col flex-1 w-full max-w-xs bg-white">
           <TransitionChild
@@ -37,7 +37,7 @@
             leave-from="opacity-100"
             leave-to="opacity-0"
           >
-            <div class="absolute top-0 right-0 pt-2 -mr-12">
+            <div class="absolute top-0 inset-e-0 pt-2 -me-12">
               <button
                 class="
                   flex
@@ -45,7 +45,7 @@
                   justify-center
                   w-10
                   h-10
-                  ml-1
+                  ms-1
                   rounded-full
                   focus:outline-hidden
                   focus:ring-2
@@ -82,9 +82,9 @@
                 :to="item.link"
                 :class="[
                   hasActiveUrl(item.link)
-                    ? 'text-primary-500 border-l-primary-500 bg-gray-100 '
-                    : 'text-black border-l-transparent',
-                  'cursor-pointer px-0 pl-4 py-3 flex items-center border-l-4 border-solid text-sm not-italic font-medium',
+                    ? 'text-primary-500 border-s-primary-500 bg-gray-100 '
+                    : 'text-black border-s-transparent',
+                  'cursor-pointer px-0 ps-4 py-3 flex items-center border-s-4 border-solid text-sm not-italic font-medium',
                 ]"
                 @click="globalStore.setSidebarVisibility(false)"
               >
@@ -94,7 +94,7 @@
                     hasActiveUrl(item.link)
                       ? 'text-primary-500 '
                       : 'text-gray-400',
-                    'mr-4 shrink-0 h-5 w-5',
+                    'me-4 shrink-0 h-5 w-5',
                   ]"
                   @click="globalStore.setSidebarVisibility(false)"
                 />
@@ -119,9 +119,9 @@
       pb-32
       overflow-y-auto
       bg-white
-      border-r border-gray-200 border-solid
+      border-e border-gray-200 border-solid
       xl:w-64
-      md:fixed md:flex md:flex-col md:inset-y-0
+      md:fixed md:flex md:flex-col md:inset-y-0 md:inset-s-0
       pt-16
     "
   >
@@ -136,9 +136,9 @@
         :to="item.link"
         :class="[
           hasActiveUrl(item.link)
-            ? 'text-primary-500 border-l-primary-500 bg-gray-100 '
-            : 'text-black border-l-transparent',
-          'cursor-pointer px-0 pl-6 hover:bg-gray-50 py-3 group flex items-center border-l-4 border-solid text-sm not-italic font-medium',
+            ? 'text-primary-500 border-s-primary-500 bg-gray-100 '
+            : 'text-black border-s-transparent',
+          'cursor-pointer px-0 ps-6 hover:bg-gray-50 py-3 group flex items-center border-s-4 border-solid text-sm not-italic font-medium',
         ]"
       >
         <BaseIcon
@@ -147,7 +147,7 @@
             hasActiveUrl(item.link)
               ? 'text-primary-500 group-hover:text-primary-500 '
               : 'text-gray-400 group-hover:text-black',
-            'mr-4 shrink-0 h-5 w-5 ',
+            'me-4 shrink-0 h-5 w-5 ',
           ]"
         />
 

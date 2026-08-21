@@ -10,7 +10,6 @@
         px-3
         h-8
         md:h-9
-        ml-2
         text-sm text-white
         bg-white/20
         rounded
@@ -24,7 +23,7 @@
       >
         {{ companyStore.selectedCompany.name }}
       </span>
-      <BaseIcon name="ChevronDownIcon" class="h-5 ml-1 text-white" />
+      <BaseIcon name="ChevronDownIcon" class="h-5 ms-1 text-white" />
     </div>
 
     <transition
@@ -37,7 +36,7 @@
     >
       <div
         v-if="isShow"
-        class="absolute right-0 mt-2 bg-white rounded-md shadow-lg"
+        class="absolute inset-e-0 mt-2 bg-white rounded-md shadow-lg"
       >
         <div
           class="
@@ -103,7 +102,7 @@
                       flex
                       items-center
                       justify-center
-                      mr-3
+                      me-3
                       overflow-hidden
                       text-base
                       font-semibold
@@ -139,7 +138,7 @@
             items-center
             justify-center
             p-4
-            pl-3
+            ps-3
             border-t-2 border-gray-100
             cursor-pointer
             text-primary-400
@@ -147,7 +146,7 @@
           "
           @click="addNewCompany"
         >
-          <BaseIcon name="PlusIcon" class="h-5 mr-2" />
+          <BaseIcon name="PlusIcon" class="h-5 me-2" />
 
           <span class="font-medium">
             {{ $t('company_switcher.add_new_company') }}

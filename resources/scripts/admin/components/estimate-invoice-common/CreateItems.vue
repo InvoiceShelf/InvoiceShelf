@@ -171,7 +171,7 @@
     "
     @click="store.addItem"
   >
-    <BaseIcon name="PlusCircleIcon" class="mr-2" />
+    <BaseIcon name="PlusCircleIcon" class="me-2" />
     {{ $t('general.add_new_item') }}
   </div>
 </template>

@@ -26,14 +26,14 @@
       <div class="flex relative justify-between mb-2">
         <BaseText
           :text="selectedCustomer.name"
-          class="flex-1 text-base font-medium text-left text-gray-900"
+          class="flex-1 text-base font-medium text-start text-gray-900"
         />
         <div class="flex">
           <a
             class="
               relative
               my-0
-              ml-6
+              ms-6
               text-sm
               font-medium
               cursor-pointer
@@ -43,7 +43,7 @@
             "
             @click.stop="editCustomer"
           >
-            <BaseIcon name="PencilIcon" class="text-gray-500 h-4 w-4 mr-1" />
+            <BaseIcon name="PencilIcon" class="text-gray-500 h-4 w-4 me-1" />
 
             {{ $t('general.edit') }}
           </a>
@@ -51,7 +51,7 @@
             class="
               relative
               my-0
-              ml-6
+              ms-6
               text-sm
               flex
               items-center
@@ -61,7 +61,7 @@
             "
             @click="resetSelectedCustomer"
           >
-            <BaseIcon name="XCircleIcon" class="text-gray-500 h-4 w-4 mr-1" />
+            <BaseIcon name="XCircleIcon" class="text-gray-500 h-4 w-4 me-1" />
             {{ $t('general.deselect') }}
           </a>
         </div>
@@ -73,7 +73,7 @@
               mb-1
               text-sm
               font-medium
-              text-left text-gray-400
+              text-start text-gray-400
               uppercase
               whitespace-nowrap
             "
@@ -83,7 +83,7 @@
 
           <div
             v-if="selectedCustomer.billing"
-            class="flex flex-col flex-1 p-0 text-left"
+            class="flex flex-col flex-1 p-0 text-start"
           >
             <label
               v-if="selectedCustomer.billing.name"
@@ -123,7 +123,7 @@
               mb-1
               text-sm
               font-medium
-              text-left text-gray-400
+              text-start text-gray-400
               uppercase
               whitespace-nowrap
             "
@@ -133,7 +133,7 @@
 
           <div
             v-if="selectedCustomer.shipping"
-            class="flex flex-col flex-1 p-0 text-left"
+            class="flex flex-col flex-1 p-0 text-start"
           >
             <label
               v-if="selectedCustomer.shipping.name"
@@ -201,7 +201,7 @@
               !w-10
               !h-10
               p-2
-              mr-5
+              me-5
               text-sm text-white
               bg-gray-200
               rounded-full
@@ -217,7 +217,7 @@
 
             <p
               v-if="valid.$error && valid.$errors[0].$message"
-              class="text-red-500 text-sm absolute right-3 bottom-3"
+              class="text-red-500 text-sm absolute inset-e-3 bottom-3"
             >
               {{ $t('estimates.errors.required') }}
             </p>
@@ -290,7 +290,7 @@
                       justify-center
                       w-10
                       h-10
-                      mr-4
+                      me-4
                       text-xl
                       font-semibold
                       leading-9
@@ -303,7 +303,7 @@
                     {{ initGenerator(customer.name) }}
                   </span>
 
-                  <div class="flex flex-col justify-center text-left">
+                  <div class="flex flex-col justify-center text-start">
                     <BaseText
                       v-if="customer.name"
                       :text="customer.name"
@@ -362,7 +362,7 @@
               <label
                 class="
                   m-0
-                  ml-3
+                  ms-3
                   text-sm
                   leading-none
                   cursor-pointer

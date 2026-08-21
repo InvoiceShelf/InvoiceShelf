@@ -1,6 +1,6 @@
 <template>
   <router-link v-bind="$attrs" :class="containerClass">
-    <span v-if="hasIconSlot" class="mr-3">
+    <span v-if="hasIconSlot" class="me-3">
       <slot name="icon" />
     </span>
     <span>{{ title }}</span>
@@ -28,7 +28,7 @@ export default {
     },
   },
   setup(props, { slots }) {
-    const defaultClass = `cursor-pointer pb-2 pr-0 text-sm font-medium leading-5  flex items-center`
+    const defaultClass = `cursor-pointer pb-2 pe-0 text-sm font-medium leading-5 flex items-center`
     let hasIconSlot = computed(() => {
       return !!slots.icon
     })

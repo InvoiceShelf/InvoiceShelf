@@ -15,7 +15,7 @@
       <BaseDropdownItem v-show="row.allow_edit">
         <BaseIcon
           name="PencilIcon"
-          class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+          class="w-5 h-5 me-3 text-gray-400 group-hover:text-gray-500"
         />
         {{ $t('general.edit') }}
       </BaseDropdownItem>
@@ -25,7 +25,7 @@
     <BaseDropdownItem v-if="route.name === 'invoices.view'" @click="copyPdfUrl">
       <BaseIcon
         name="LinkIcon"
-        class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+        class="w-5 h-5 me-3 text-gray-400 group-hover:text-gray-500"
       />
       {{ $t('general.copy_pdf_url') }}
     </BaseDropdownItem>
@@ -41,7 +41,7 @@
       <BaseDropdownItem>
         <BaseIcon
           name="EyeIcon"
-          class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+          class="w-5 h-5 me-3 text-gray-400 group-hover:text-gray-500"
         />
         {{ $t('general.view') }}
       </BaseDropdownItem>
@@ -51,7 +51,7 @@
     <BaseDropdownItem v-if="canSendInvoice(row)" @click="sendInvoice(row)">
       <BaseIcon
         name="PaperAirplaneIcon"
-        class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+        class="w-5 h-5 me-3 text-gray-400 group-hover:text-gray-500"
       />
       {{ $t('invoices.send_invoice') }}
     </BaseDropdownItem>
@@ -60,7 +60,7 @@
     <BaseDropdownItem v-if="canReSendInvoice(row)" @click="sendInvoice(row)">
       <BaseIcon
         name="PaperAirplaneIcon"
-        class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+        class="w-5 h-5 me-3 text-gray-400 group-hover:text-gray-500"
       />
       {{ $t('invoices.resend_invoice') }}
     </BaseDropdownItem>
@@ -72,7 +72,7 @@
       >
         <BaseIcon
           name="CreditCardIcon"
-          class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+          class="w-5 h-5 me-3 text-gray-400 group-hover:text-gray-500"
         />
         {{ $t('invoices.record_payment') }}
       </BaseDropdownItem>
@@ -82,7 +82,7 @@
     <BaseDropdownItem v-if="canSendInvoice(row)" @click="onMarkAsSent(row.id)">
       <BaseIcon
         name="CheckCircleIcon"
-        class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+        class="w-5 h-5 me-3 text-gray-400 group-hover:text-gray-500"
       />
       {{ $t('invoices.mark_as_sent') }}
     </BaseDropdownItem>
@@ -94,7 +94,7 @@
     >
       <BaseIcon
         name="DocumentTextIcon"
-        class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+        class="w-5 h-5 me-3 text-gray-400 group-hover:text-gray-500"
       />
       {{ $t('invoices.clone_invoice') }}
     </BaseDropdownItem>
@@ -106,7 +106,7 @@
     >
       <BaseIcon
         name="TrashIcon"
-        class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+        class="w-5 h-5 me-3 text-gray-400 group-hover:text-gray-500"
       />
       {{ $t('general.delete') }}
     </BaseDropdownItem>

@@ -28,7 +28,7 @@
 
         <BaseButton
           v-if="userStore.hasAbilities(abilities.CREATE_EXPENSE)"
-          class="ml-4"
+          class="ms-4"
           variant="primary"
           @click="$router.push('expenses/create')"
         >
@@ -151,7 +151,7 @@
       >
         <!-- Select All Checkbox -->
         <template #header>
-          <div class="absolute items-center left-6 top-2.5 select-none">
+          <div class="absolute items-center inset-s-6 top-2.5 select-none">
             <BaseCheckbox
               v-model="selectAllFieldStatus"
               variant="primary"

@@ -102,9 +102,9 @@ const roundedClass = computed(() => {
 
 const iconLeftClass = computed(() => {
   return {
-    '-ml-0.5 mr-2 h-4 w-4': props.size == 'sm',
-    '-ml-1 mr-2 h-5 w-5': props.size === 'md',
-    '-ml-1 mr-3 h-5 w-5': props.size === 'lg' || props.size === 'xl',
+    '-ms-0.5 me-2 h-4 w-4': props.size == 'sm',
+    '-ms-1 me-2 h-5 w-5': props.size === 'md',
+    '-ms-1 me-3 h-5 w-5': props.size === 'lg' || props.size === 'xl',
   }
 })
 
@@ -119,9 +119,9 @@ const iconVariantClass = computed(() => {
 
 const iconRightClass = computed(() => {
   return {
-    'ml-2 -mr-0.5 h-4 w-4': props.size == 'sm',
-    'ml-2 -mr-1 h-5 w-5': props.size === 'md',
-    'ml-3 -mr-1 h-5 w-5': props.size === 'lg' || props.size === 'xl',
+    'ms-2 -me-0.5 h-4 w-4': props.size == 'sm',
+    'ms-2 -me-1 h-5 w-5': props.size === 'md',
+    'ms-3 -me-1 h-5 w-5': props.size === 'lg' || props.size === 'xl',
   }
 })
 </script>

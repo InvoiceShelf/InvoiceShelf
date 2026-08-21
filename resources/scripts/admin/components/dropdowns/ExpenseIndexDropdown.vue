@@ -15,7 +15,7 @@
       <BaseDropdownItem>
         <BaseIcon
           name="PencilIcon"
-          class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+          class="w-5 h-5 me-3 text-gray-400 group-hover:text-gray-500"
         />
         {{ $t('general.edit') }}
       </BaseDropdownItem>
@@ -28,7 +28,7 @@
     >
       <BaseIcon
         name="DocumentDuplicateIcon"
-        class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+        class="w-5 h-5 me-3 text-gray-400 group-hover:text-gray-500"
       />
       {{ $t('expenses.duplicate_expense') }}
     </BaseDropdownItem>
@@ -40,7 +40,7 @@
     >
       <BaseIcon
         name="TrashIcon"
-        class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+        class="w-5 h-5 me-3 text-gray-400 group-hover:text-gray-500"
       />
       {{ $t('general.delete') }}
     </BaseDropdownItem>

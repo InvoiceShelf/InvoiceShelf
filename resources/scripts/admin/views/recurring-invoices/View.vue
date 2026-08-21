@@ -1,5 +1,5 @@
 <template>
-  <BasePage class="xl:pl-96">
+  <BasePage class="xl:ps-96">
     <BasePageHeader :title="pageTitle">
       <template #actions>
         <RecurringInvoiceIndexDropdown

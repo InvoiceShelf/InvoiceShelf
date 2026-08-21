@@ -131,7 +131,7 @@
         class="mt-3"
       >
         <template #header>
-          <div class="absolute items-center left-6 top-2.5 select-none">
+          <div class="absolute items-center inset-s-6 top-2.5 select-none">
             <BaseCheckbox
               v-model="itemStore.selectAllField"
               variant="primary"

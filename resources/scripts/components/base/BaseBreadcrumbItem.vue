@@ -1,9 +1,9 @@
 <template>
-  <li class="pr-2 text-sm">
+  <li class="pe-2 text-sm">
     <router-link
       class="
         m-0
-        mr-2
+        me-2
         text-sm
         font-medium
         leading-5

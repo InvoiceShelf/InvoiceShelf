@@ -9,10 +9,24 @@
         @input="onSearch"
       >
         <template #left>
-          <BaseIcon name="MagnifyingGlassIcon" class="text-gray-400" />
+          <BaseIcon
+            name="MagnifyingGlassIcon"
+            class="text-gray-400 rtl:hidden"
+          />
+          <SpinnerIcon
+            v-if="isSearching"
+            class="hidden h-5 text-primary-500 rtl:block"
+          />
         </template>
         <template #right>
-          <SpinnerIcon v-if="isSearching" class="h-5 text-primary-500" />
+          <SpinnerIcon
+            v-if="isSearching"
+            class="h-5 text-primary-500 rtl:hidden"
+          />
+          <BaseIcon
+            name="MagnifyingGlassIcon"
+            class="hidden text-gray-400 rtl:block"
+          />
         </template>
       </BaseInput>
     </div>
@@ -40,7 +54,7 @@
           absolute
           w-[300px]
           h-[200px]
-          right-0
+          inset-e-0
         "
       >
         <div
@@ -81,7 +95,7 @@
                     justify-center
                     w-9
                     h-9
-                    mr-3
+                    me-3
                     text-base
                     font-semibold
                     bg-gray-200
@@ -129,7 +143,7 @@
                     justify-center
                     w-9
                     h-9
-                    mr-3
+                    me-3
                     text-base
                     font-semibold
                     bg-gray-200

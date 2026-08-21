@@ -37,7 +37,7 @@
             <BaseButton
               v-if="$route.name === 'invoices.edit'"
               target="_blank"
-              class="mr-3"
+              class="me-3"
               variant="primary-outline"
               type="button"
             >

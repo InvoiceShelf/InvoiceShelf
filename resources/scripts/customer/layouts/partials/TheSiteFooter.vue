@@ -9,7 +9,7 @@
       w-full
       h-10
       py-2
-      pr-8
+      pe-8
       text-sm
       font-normal
       text-gray-700
@@ -20,7 +20,7 @@
     <a
       href="http://bytefury.com/"
       target="_blank"
-      class="pl-1 font-normal text-gray-900"
+      class="ps-1 font-normal text-gray-900"
       >Bytefury
     </a>
   </footer>

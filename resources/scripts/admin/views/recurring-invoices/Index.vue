@@ -34,7 +34,7 @@
           v-if="userStore.hasAbilities(abilities.CREATE_RECURRING_INVOICE)"
           to="recurring-invoices/create"
         >
-          <BaseButton variant="primary" class="ml-4">
+          <BaseButton variant="primary" class="ms-4">
             <template #left="slotProps">
               <BaseIcon name="PlusIcon" :class="slotProps.class" />
             </template>
@@ -172,7 +172,7 @@
       >
         <!-- Select All Checkbox -->
         <template #header>
-          <div class="absolute items-center left-6 top-2.5 select-none">
+          <div class="absolute items-center inset-s-6 top-2.5 select-none">
             <BaseCheckbox
               v-model="recurringInvoiceStore.selectAllField"
               variant="primary"

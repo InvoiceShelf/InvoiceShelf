@@ -1,9 +1,9 @@
 <template>
   <SendEstimateModal @update="updateSentEstimate" />
-  <BasePage v-if="estimateData" class="xl:pl-96 xl:ml-8">
+  <BasePage v-if="estimateData" class="xl:ps-96 xl:ms-8">
     <BasePageHeader :title="pageTitle">
       <template #actions>
-        <div class="mr-3 text-sm">
+        <div class="me-3 text-sm">
           <BaseButton
             v-if="
               estimateData.status === 'DRAFT' &&
@@ -31,7 +31,7 @@
           {{ $t('estimates.send_estimate') }}
         </BaseButton>
 
-        <EstimateDropDown class="ml-3" :row="estimateData" />
+        <EstimateDropDown class="ms-3" :row="estimateData" />
       </template>
     </BasePageHeader>
 
@@ -40,14 +40,14 @@
       class="
         fixed
         top-0
-        left-0
+        inset-s-0
         hidden
         h-full
         pt-16
         pb-[6.4rem]
-        ml-56
+        ms-56
         bg-white
-        xl:ml-64
+        xl:ms-64
         w-88
         xl:block
       "
@@ -72,18 +72,27 @@
             variant="gray"
             @input="onSearched()"
           >
+            <template #left>
+              <BaseIcon
+                name="MagnifyingGlassIcon"
+                class="hidden text-gray-400 rtl:block"
+              />
+            </template>
             <template #right>
-              <BaseIcon name="MagnifyingGlassIcon" class="text-gray-400" />
+              <BaseIcon
+                name="MagnifyingGlassIcon"
+                class="text-gray-400 rtl:hidden"
+              />
             </template>
           </BaseInput>
         </div>
 
-        <div class="flex mb-6 ml-3" role="group" aria-label="First group">
+        <div class="flex mb-6 ms-3" role="group" aria-label="First group">
           <BaseDropdown
-            class="ml-3"
+            class="ms-3"
             position="bottom-start"
             width-class="w-45"
-            position-class="left-0"
+            position-class="inset-s-0"
           >
             <template #activator>
               <BaseButton size="md" variant="gray">
@@ -147,7 +156,7 @@
             </BaseDropdownItem>
           </BaseDropdown>
 
-          <BaseButton class="ml-1" size="md" variant="gray" @click="sortData">
+          <BaseButton class="ms-1" size="md" variant="gray" @click="sortData">
             <BaseIcon v-if="getOrderBy" name="SortAscendingIcon" />
             <BaseIcon v-else name="SortDescendingIcon" />
           </BaseButton>
@@ -159,7 +168,7 @@
         class="
           h-full
           overflow-y-scroll
-          border-l border-gray-200 border-solid
+          border-s border-gray-200 border-solid
           base-scroll
         "
       >
@@ -169,9 +178,9 @@
             :id="'estimate-' + estimate.id"
             :to="`/admin/estimates/${estimate.id}/view`"
             :class="[
-              'flex justify-between side-estimate p-4 cursor-pointer hover:bg-gray-100 items-center border-l-4 border-l-transparent',
+              'flex justify-between side-estimate p-4 cursor-pointer hover:bg-gray-100 items-center border-s-4 border-s-transparent',
               {
-                'bg-gray-100 border-l-4 border-l-primary-500 border-solid':
+                'bg-gray-100 border-s-4 border-s-primary-500 border-solid':
                   hasActiveUrl(estimate.id),
               },
             ]"
@@ -181,7 +190,7 @@
               <BaseText
                 :text="estimate.customer.name"
                 class="
-                  pr-2
+                  pe-2
                   mb-2
                   text-sm
                   not-italic
@@ -226,7 +235,7 @@
                   not-italic
                   font-semibold
                   leading-8
-                  text-right text-gray-900
+                  text-end text-gray-900
                 "
               />
 
@@ -236,7 +245,7 @@
                   not-italic
                   font-normal
                   leading-5
-                  text-right text-gray-600
+                  text-end text-gray-600
                   est-date
                 "
               >

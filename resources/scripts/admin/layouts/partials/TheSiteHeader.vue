@@ -3,7 +3,7 @@
     class="
       fixed
       top-0
-      left-0
+      inset-x-0
       z-20
       flex
       items-center
@@ -51,7 +51,7 @@
         border-0
         rounded
         cursor-pointer
-        md:hidden md:ml-0
+        md:hidden md:ms-0
         hover:bg-gray-100
       "
       @click.prevent="onToggle"
@@ -73,7 +73,6 @@
                 justify-center
                 w-8
                 h-8
-                ml-2
                 text-sm text-black
                 bg-white
                 rounded
@@ -90,7 +89,7 @@
             >
               <BaseIcon
                 name="DocumentTextIcon"
-                class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+                class="w-5 h-5 me-3 text-gray-400 group-hover:text-gray-500"
                 aria-hidden="true"
               />
               {{ $t('invoices.new_invoice') }}
@@ -102,7 +101,7 @@
             >
               <BaseIcon
                 name="DocumentIcon"
-                class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+                class="w-5 h-5 me-3 text-gray-400 group-hover:text-gray-500"
                 aria-hidden="true"
               />
               {{ $t('estimates.new_estimate') }}
@@ -115,7 +114,7 @@
             >
               <BaseIcon
                 name="UserIcon"
-                class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+                class="w-5 h-5 me-3 text-gray-400 group-hover:text-gray-500"
                 aria-hidden="true"
               />
               {{ $t('customers.new_customer') }}
@@ -124,7 +123,7 @@
         </BaseDropdown>
       </li>
 
-      <li class="ml-2">
+      <li class="ms-2">
         <GlobalSearchBar
           v-if="
             userStore.currentUser.is_owner ||
@@ -133,12 +132,12 @@
         />
       </li>
 
-      <li>
+      <li class="ms-2">
         <CompanySwitcher />
       </li>
 
       <!-- User Dropdown-->
-      <li class="relative block float-left ml-2">
+      <li class="relative block float-left ms-2">
         <BaseDropdown width-class="w-48">
           <template #activator>
             <img
@@ -151,7 +150,7 @@
             <BaseDropdownItem>
               <BaseIcon
                 name="CogIcon"
-                class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+                class="w-5 h-5 me-3 text-gray-400 group-hover:text-gray-500"
                 aria-hidden="true"
               />
               {{ $t('navigation.settings') }}
@@ -161,7 +160,7 @@
           <BaseDropdownItem @click="logout">
             <BaseIcon
               name="ArrowRightOnRectangleIcon"
-              class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+              class="w-5 h-5 me-3 text-gray-400 group-hover:text-gray-500"
               aria-hidden="true"
             />
             {{ $t('navigation.logout') }}

@@ -10,7 +10,7 @@
         :class="[checkboxClass, disabledClass]"
       />
     </div>
-    <div class="ml-3 text-sm">
+    <div class="ms-3 text-sm">
       <label
         v-if="label"
         :for="id"

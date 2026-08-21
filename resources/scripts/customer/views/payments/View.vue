@@ -1,5 +1,5 @@
 <template>
-  <BasePage class="xl:pl-96">
+  <BasePage class="xl:ps-96">
     <BasePageHeader :title="pageTitle.payment_number">
       <template #actions>
         <BaseButton
@@ -19,7 +19,7 @@
 
     <!-- Sidebar -->
     <div
-      class="fixed top-0 left-0 hidden h-full pt-16 pb-4 bg-white w-88 xl:block"
+      class="fixed top-0 inset-s-0 hidden h-full pt-16 pb-4 bg-white w-88 xl:block"
     >
       <div
         class="
@@ -39,16 +39,25 @@
           variant="gray"
           @input="onSearch"
         >
+          <template #left>
+            <BaseIcon
+              name="MagnifyingGlassIcon"
+              class="hidden h-5 text-gray-400 rtl:block"
+            />
+          </template>
           <template #right>
-            <BaseIcon name="MagnifyingGlassIcon" class="h-5 text-gray-400" />
+            <BaseIcon
+              name="MagnifyingGlassIcon"
+              class="h-5 text-gray-400 rtl:hidden"
+            />
           </template>
         </BaseInput>
 
-        <div class="flex ml-3" role="group" aria-label="First group">
+        <div class="flex ms-3" role="group" aria-label="First group">
           <BaseDropdown
             position="bottom-start"
             width-class="w-50"
-            position-class="left-0"
+            position-class="inset-s-0"
           >
             <template #activator>
               <BaseButton variant="gray">
@@ -118,7 +127,7 @@
             </div>
           </BaseDropdown>
 
-          <BaseButton class="ml-1" variant="white" @click="sortData">
+          <BaseButton class="ms-1" variant="white" @click="sortData">
             <BaseIcon v-if="getOrderBy" name="SortAscendingIcon" class="h-5" />
             <BaseIcon v-else name="SortDescendingIcon" class="h-5" />
           </BaseButton>
@@ -130,7 +139,7 @@
           h-full
           pb-32
           overflow-y-scroll
-          border-l border-gray-200 border-solid
+          border-s border-gray-200 border-solid
           sw-scroll
         "
       >
@@ -140,9 +149,9 @@
           :key="index"
           :to="`/${globalStore.companySlug}/customer/payments/${payment.id}/view`"
           :class="[
-            'flex justify-between p-4 items-center cursor-pointer hover:bg-gray-100 border-l-4 border-l-transparent',
+            'flex justify-between p-4 items-center cursor-pointer hover:bg-gray-100 border-s-4 border-s-transparent',
             {
-              'bg-gray-100 border-l-4 border-l-primary-500 border-solid':
+              'bg-gray-100 border-s-4 border-s-primary-500 border-solid':
                 hasActiveUrl(payment.id),
             },
           ]"
@@ -172,14 +181,14 @@
                 not-italic
                 font-semibold
                 leading-8
-                text-right text-gray-900
+                text-end text-gray-900
                 block
               "
               :amount="payment.amount"
               :currency="payment.currency"
             />
 
-            <div class="text-sm text-right text-gray-500 non-italic">
+            <div class="text-sm text-end text-gray-500 non-italic">
               {{ payment.formatted_payment_date }}
             </div>
           </div>

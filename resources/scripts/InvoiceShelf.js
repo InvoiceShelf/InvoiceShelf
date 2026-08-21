@@ -1,4 +1,4 @@
-import { createApp } from 'vue'
+import { createApp, watch } from 'vue'
 import App from '@/scripts/App.vue'
 import { createI18n } from 'vue-i18n'
 import messages from '/lang/locales'
@@ -8,6 +8,7 @@ import utils from '@/scripts/helpers/utilities.js'
 import _ from 'lodash'
 import { VTooltip } from 'v-tooltip'
 import { setI18nLanguage } from '@/scripts/helpers/language-loader.js'
+import { syncDocumentLocale } from '@/scripts/helpers/document-locale.js'
 
 const app = createApp(App)
 
@@ -59,6 +60,10 @@ export default class InvoiceShelf {
     })
 
     window.i18n = this.i18n
+
+    watch(this.i18n.global.locale, (locale) => syncDocumentLocale(locale), {
+      immediate: true,
+    })
 
     // Expose language loader globally
     window.loadLanguage = this.loadLanguage.bind(this)

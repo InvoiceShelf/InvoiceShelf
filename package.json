@@ -10,7 +10,8 @@
     "watch": "vite build --watch",
     "build": "vite build",
     "serve": "vite preview",
-    "test": "eslint ./resources/scripts"
+    "test": "eslint ./resources/scripts",
+    "test:unit": "node --test tests/JavaScript/*.test.js"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.10",

@@ -18,7 +18,7 @@
     >
       <BaseIcon
         name="LinkIcon"
-        class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+        class="w-5 h-5 me-3 text-gray-400 group-hover:text-gray-500"
       />
       {{ $t('general.copy_pdf_url') }}
     </BaseDropdown-item>
@@ -31,7 +31,7 @@
       <BaseDropdownItem>
         <BaseIcon
           name="PencilIcon"
-          class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+          class="w-5 h-5 me-3 text-gray-400 group-hover:text-gray-500"
         />
         {{ $t('general.edit') }}
       </BaseDropdownItem>
@@ -48,7 +48,7 @@
       <BaseDropdownItem>
         <BaseIcon
           name="EyeIcon"
-          class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+          class="w-5 h-5 me-3 text-gray-400 group-hover:text-gray-500"
         />
         {{ $t('general.view') }}
       </BaseDropdownItem>
@@ -65,7 +65,7 @@
     >
       <BaseIcon
         name="PaperAirplaneIcon"
-        class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+        class="w-5 h-5 me-3 text-gray-400 group-hover:text-gray-500"
       />
       {{ $t('payments.send_payment') }}
     </BaseDropdownItem>
@@ -77,7 +77,7 @@
     >
       <BaseIcon
         name="TrashIcon"
-        class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+        class="w-5 h-5 me-3 text-gray-400 group-hover:text-gray-500"
       />
       {{ $t('general.delete') }}
     </BaseDropdownItem>

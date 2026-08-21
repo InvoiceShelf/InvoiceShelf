@@ -2,7 +2,7 @@
   <Disclosure
     v-slot="{ open }"
     as="nav"
-    class="bg-white shadow-xs fixed top-0 left-0 z-20 w-full"
+    class="bg-white shadow-xs fixed top-0 inset-x-0 z-20 w-full"
   >
     <div class="mx-auto px-8">
       <div class="flex justify-between h-16 w-full">
@@ -26,7 +26,7 @@
               <img v-else :src="customerLogo" class="h-6" />
             </a>
           </div>
-          <div class="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
+          <div class="hidden sm:-my-px sm:ms-6 sm:flex sm:gap-x-8">
             <router-link
               v-for="item in globalStore.mainMenu"
               :key="item.title"
@@ -42,7 +42,7 @@
             </router-link>
           </div>
         </div>
-        <div class="hidden sm:ml-6 sm:flex sm:items-center">
+        <div class="hidden sm:ms-6 sm:flex sm:items-center">
           <button
             type="button"
             class="
@@ -60,7 +60,7 @@
 
           <!-- Profile dropdown -->
 
-          <Menu as="div" class="ml-3 relative">
+          <Menu as="div" class="ms-3 relative">
             <BaseDropdown width-class="w-48">
               <template #activator>
                 <MenuButton
@@ -85,7 +85,7 @@
               <router-link :to="{ name: 'customer.profile' }">
                 <BaseDropdownItem>
                   <CogIcon
-                    class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+                    class="w-5 h-5 me-3 text-gray-400 group-hover:text-gray-500"
                     aria-hidden="true"
                   />
                   {{ $t('navigation.settings') }}
@@ -94,7 +94,7 @@
 
               <BaseDropdownItem @click="logout">
                 <ArrowRightOnRectangleIcon
-                  class="w-5 h-5 mr-3 text-gray-400 group-hover:text-gray-500"
+                  class="w-5 h-5 me-3 text-gray-400 group-hover:text-gray-500"
                   aria-hidden="true"
                 />
                 {{ $t('navigation.logout') }}
@@ -102,7 +102,7 @@
             </BaseDropdown>
           </Menu>
         </div>
-        <div class="-mr-2 flex items-center sm:hidden">
+        <div class="-me-2 flex items-center sm:hidden">
           <!-- Mobile menu button -->
           <DisclosureButton
             class="
@@ -138,7 +138,7 @@
             hasActiveUrl(item.link)
               ? 'bg-primary-50 border-primary-500 text-primary-700'
               : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800',
-            'block pl-3 pr-4 py-2 border-l-4 text-base font-medium',
+            'block ps-3 pe-4 py-2 border-s-4 text-base font-medium',
           ]"
           :aria-current="item.current ? 'page' : undefined"
           >{{ $t(item.title) }}
@@ -149,7 +149,7 @@
           <div class="shrink-0">
             <img class="h-10 w-10 rounded-full" :src="previewAvatar" alt="" />
           </div>
-          <div class="ml-3">
+          <div class="ms-3">
             <div class="text-base font-medium text-gray-800">
               {{ globalStore.currentUser.title }}
             </div>
@@ -160,7 +160,7 @@
           <button
             type="button"
             class="
-              ml-auto
+              ms-auto
               bg-white
               shrink-0
               p-1
@@ -183,7 +183,7 @@
               hasActiveUrl(item.link)
                 ? 'bg-primary-50 border-primary-500 text-primary-700'
                 : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800',
-              'block pl-3 pr-4 py-2 border-l-4 text-base font-medium',
+              'block ps-3 pe-4 py-2 border-s-4 text-base font-medium',
             ]"
             >{{ $t(item.title) }}</router-link
           >
