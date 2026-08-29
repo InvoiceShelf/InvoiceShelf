@@ -22,7 +22,7 @@ final class PdfHtmlSanitizer
         // Legacy/invalid `</br>` is dropped by libxml and collapses lines in PDF output; normalize to `<br />`.
         $html = str_replace('</br>', '<br />', $html);
 
-        $allowedTags = '<br><br/><p><b><strong><i><em><u><ol><ul><li><table><tr><td><th><thead><tbody><tfoot><h1><h2><h3><h4><blockquote>';
+        $allowedTags = '<br><br/><p><b><strong><i><em><u><ol><ul><li><table><tr><td><th><thead><tbody><tfoot><h1><h2><h3><h4><blockquote><img>';
         $html = strip_tags($html, $allowedTags);
 
         $previous = libxml_use_internal_errors(true);
@@ -48,7 +48,7 @@ final class PdfHtmlSanitizer
             $toRemove = [];
 
             foreach ($element->attributes as $attr) {
-                if (self::shouldRemoveAttribute($attr->name)) {
+                if (self::shouldRemoveAttribute($element, $attr->name, (string) $attr->value)) {
                     $toRemove[] = $attr->name;
                 }
             }
@@ -67,12 +67,24 @@ final class PdfHtmlSanitizer
         return $result;
     }
 
-    private static function shouldRemoveAttribute(string $name): bool
+    private static function shouldRemoveAttribute(DOMElement $element, string $name, string $value): bool
     {
         $lower = strtolower($name);
 
         if (str_starts_with($lower, 'on')) {
             return true;
+        }
+
+        // Eingebettete Bilder bleiben erhalten, aber ausschliesslich als
+        // selbsttragende data:-URI. Die SSRF-Zusage dieser Klasse bleibt damit
+        // unangetastet: eine data:-URI kann keinen Netzwerkabruf ausloesen.
+        // SVG ist bewusst ausgenommen - es kann Skripte und externe
+        // Referenzen transportieren.
+        if ($lower === 'src' && strtolower($element->nodeName) === 'img') {
+            return preg_match(
+                '#^data:image/(png|jpeg|jpg|gif|webp);base64,[A-Za-z0-9+/=\s]+$#i',
+                $value
+            ) !== 1;
         }
 
         return in_array($lower, [
