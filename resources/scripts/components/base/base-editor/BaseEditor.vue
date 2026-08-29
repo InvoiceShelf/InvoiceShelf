@@ -73,6 +73,7 @@ import { ref, onUnmounted, watch, markRaw } from 'vue'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import TextAlign from '@tiptap/extension-text-align'
+import ResizableImage from './ResizableImage.js'
 import { EllipsisVerticalIcon } from '@heroicons/vue/24/outline'
 import {
   BoldIcon,
@@ -110,6 +111,51 @@ export default {
   emits: ['update:modelValue'],
 
   setup(props, { emit }) {
+    // --- Bilder per Strg+V / Drag&Drop ------------------------------------
+    // Eingefuegte Bilder werden auf MAX_WIDTH herunterskaliert und als
+    // Base64-Data-URI in die Notiz geschrieben. Das PDF-Template gibt die
+    // Notiz unescaped aus ({!! $notes !!}), dompdf rendert data:-URIs -
+    // derselbe Weg, ueber den auch das Firmenlogo ins PDF kommt.
+    // MAX_WIDTH ist auf die nutzbare Breite einer A4-Seite abgestimmt.
+    const MAX_WIDTH = 650
+
+    function fileToDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onerror = reject
+        reader.onload = () => {
+          // window.Image: der globale Bild-Konstruktor des Browsers.
+          const img = new window.Image()
+          img.onerror = reject
+          img.onload = () => {
+            const scale = Math.min(1, MAX_WIDTH / img.width)
+            const canvas = document.createElement('canvas')
+            canvas.width = Math.round(img.width * scale)
+            canvas.height = Math.round(img.height * scale)
+            canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height)
+            // PNG behalten, wo Transparenz zaehlt (Unterschrift, Stempel).
+            const keepAlpha = /png|webp|gif/i.test(file.type)
+            resolve(canvas.toDataURL(keepAlpha ? 'image/png' : 'image/jpeg', 0.82))
+          }
+          img.src = reader.result
+        }
+        reader.readAsDataURL(file)
+      })
+    }
+
+    function insertImageFiles(files) {
+      const images = files.filter((f) => f.type.startsWith('image/'))
+      if (!images.length) return false
+      images.forEach((file) => {
+        fileToDataUrl(file)
+          .then((src) => {
+            if (editor.value) editor.value.chain().focus().setImage({ src }).run()
+          })
+          .catch(() => {})
+      })
+      return true
+    }
+
     const editor = useEditor({
       content: props.modelValue,
       extensions: [
@@ -120,7 +166,14 @@ export default {
           types: ['heading', 'paragraph'],
           alignments: ['left', 'right', 'center', 'justify'],
         }),
+        ResizableImage.configure({ inline: true, allowBase64: true }),
       ],
+      editorProps: {
+        handlePaste: (view, event) =>
+          insertImageFiles(Array.from((event.clipboardData && event.clipboardData.files) || [])),
+        handleDrop: (view, event) =>
+          insertImageFiles(Array.from((event.dataTransfer && event.dataTransfer.files) || [])),
+      },
       onUpdate: ({ editor }) => {
         emit('update:modelValue', editor.getHTML())
       },
@@ -243,5 +296,47 @@ export default {
 
 .ProseMirror:focus {
   @apply border border-primary-400 ring-primary-400;
+}
+
+.editor__content img {
+  max-width: 100%;
+  height: auto;
+}
+
+.resizable-image {
+  position: relative;
+  display: inline-block;
+  line-height: 0;
+  max-width: 100%;
+}
+
+.resizable-image img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.resizable-image .resize-handle {
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  background: var(--color-primary-500);
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  cursor: nwse-resize;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.resizable-image:hover .resize-handle,
+.resizable-image.is-selected .resize-handle {
+  opacity: 1;
+}
+
+.resizable-image.is-selected img {
+  outline: 2px solid var(--color-primary-500);
 }
 </style>
