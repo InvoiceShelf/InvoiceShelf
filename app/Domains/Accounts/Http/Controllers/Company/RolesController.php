@@ -2,6 +2,7 @@
 
 namespace App\Domains\Accounts\Http\Controllers\Company;
 
+use App\Domains\Accounts\Contracts\AbilityCatalog;
 use App\Domains\Accounts\Http\Requests\RoleRequest;
 use App\Domains\Accounts\Http\Resources\RoleResource;
 use App\Domains\Accounts\Models\User;
@@ -31,6 +32,8 @@ class RolesController extends Controller
      * Human-readable counterpart of the in-use key.
      */
     private const IN_USE_MESSAGE = 'Roles Attached to user';
+
+    public function __construct(private readonly AbilityCatalog $catalog) {}
 
     /**
      * Every role visible in the active scope.
@@ -115,13 +118,14 @@ class RolesController extends Controller
      * The submission is read as a set of names: a catalog entry named in it is
      * granted, every other entry is revoked, so a role never keeps a grant the
      * caller left out. Names that match no catalog entry are simply never
-     * looked at.
+     * looked at -- including a module ability whose module has since been
+     * disabled, whose grant therefore survives untouched.
      */
     private function writeCatalogGrants($role, $submitted): void
     {
         $wanted = array_column($submitted, 'ability');
 
-        foreach (config('abilities.abilities') as $entry) {
+        foreach ($this->catalog->all() as $entry) {
             if (in_array($entry['ability'], $wanted)) {
                 BouncerFacade::allow($role)->to($entry['ability'], $entry['model']);
 

@@ -9,6 +9,8 @@ use App\Adapters\Accounts\EloquentMemberReferencesCleaner;
 use App\Adapters\Accounts\LaravelCompanyInvitationSender;
 use App\Adapters\Accounts\MediaLibraryCompanyLogoManager;
 use App\Adapters\Accounts\MediaLibraryUserAvatarManager;
+use App\Adapters\Accounts\ModuleAwareAbilityCatalog;
+use App\Domains\Accounts\Contracts\AbilityCatalog;
 use App\Domains\Accounts\Contracts\CompanyAddressWriter;
 use App\Domains\Accounts\Contracts\CompanyDataPurger;
 use App\Domains\Accounts\Contracts\CompanyDefaultsProvisioner;
@@ -31,6 +33,7 @@ class AccountsServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->bind(AbilityCatalog::class, ModuleAwareAbilityCatalog::class);
         $this->app->bind(CompanyAddressWriter::class, EloquentCompanyAddressWriter::class);
         $this->app->bind(CompanyDataPurger::class, EloquentCompanyDataPurger::class);
         $this->app->bind(CompanyDefaultsProvisioner::class, EloquentBusinessDefaultsProvisioner::class);

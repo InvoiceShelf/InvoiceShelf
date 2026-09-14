@@ -2,6 +2,7 @@
 
 namespace App\Domains\Accounts\Application;
 
+use App\Domains\Accounts\Contracts\AbilityCatalog;
 use App\Domains\Accounts\Contracts\CompanyDataPurger;
 use App\Domains\Accounts\Contracts\CompanyDefaultsProvisioner;
 use App\Domains\Accounts\Models\Company;
@@ -44,6 +45,7 @@ class CompanyService
     public function __construct(
         private readonly CompanyDefaultsProvisioner $companyDefaultsProvisioner,
         private readonly CompanyDataPurger $companyDataPurger,
+        private readonly AbilityCatalog $abilityCatalog,
     ) {}
 
     /**
@@ -66,8 +68,9 @@ class CompanyService
 
     /**
      * Create the company's `owner` role and grant it the whole ability
-     * catalogue — every entry in the configuration, against the subject model
-     * the entry names.
+     * catalogue - every entry the catalogue offers, against the subject model
+     * the entry names. A company created while a module is enabled therefore
+     * starts out holding that module's abilities too.
      *
      * Roles live inside a company's scope, so the scope is moved onto this
      * company first and left there for whatever the caller does next.
@@ -82,7 +85,7 @@ class CompanyService
             'scope' => $company->id,
         ]);
 
-        foreach (config('abilities.abilities') as $entry) {
+        foreach ($this->abilityCatalog->all() as $entry) {
             BouncerFacade::allow($owner)->to($entry['ability'], $entry['model']);
         }
     }

@@ -2,6 +2,7 @@
 
 // Domain behavioural suite — Accounts (spec: accounts-domain-spec.md).
 
+use App\Domains\Accounts\Contracts\AbilityCatalog;
 use App\Domains\Accounts\Models\User;
 use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\Sanctum;
@@ -43,7 +44,7 @@ it('provisions a new company with the documented defaults', function () {
     $roleId = DB::table('roles')->where('scope', $company['id'])->where('name', 'owner')->value('id');
     expect($roleId)->not->toBeNull();
     expect(DB::table('permissions')->where('entity_id', $roleId)->count())
-        ->toBe(count(config('abilities.abilities')));
+        ->toBe(count(app(AbilityCatalog::class)->all()));
     expect((int) $company['owner_id'])->toBe($this->owner->id);
 });
 
