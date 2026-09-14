@@ -12,5 +12,7 @@ declare module 'vue-router' {
     customerPortalGuest?: boolean
     isInstallation?: boolean
     title?: string
+    /** Set by extensions.registerPage: the module slug that owns the route. */
+    extensionModule?: string
   }
 }
