@@ -2,6 +2,7 @@
 
 namespace App\Platform\Modules\Infrastructure;
 
+use App\Domains\Accounts\Models\User;
 use App\Domains\Catalog\Models\Item;
 use App\Domains\Contacts\Models\Address;
 use App\Domains\Contacts\Models\Customer;
@@ -39,7 +40,7 @@ class EloquentCompanyDataReader implements CompanyDataReader
         $customer = Customer::query()
             ->where('company_id', $companyId)
             ->whereKey($customerId)
-            ->with(['billingAddress', 'shippingAddress'])
+            ->with(['billingAddress', 'shippingAddress', 'currency'])
             ->first();
 
         if ($customer === null) {
@@ -56,6 +57,13 @@ class EloquentCompanyDataReader implements CompanyDataReader
             'company_name' => $customer->company_name,
             'website' => $customer->website,
             'enable_portal' => (bool) $customer->enable_portal,
+            'currency_id' => $customer->currency_id,
+            'currency' => $customer->currency ? [
+                'id' => $customer->currency->id,
+                'code' => $customer->currency->code,
+                'symbol' => $customer->currency->symbol,
+                'precision' => $customer->currency->precision,
+            ] : null,
             'billing_address' => $this->address($customer->billingAddress),
             'shipping_address' => $this->address($customer->shippingAddress),
             'totals' => [
@@ -86,6 +94,7 @@ class EloquentCompanyDataReader implements CompanyDataReader
             'email' => $customer->email,
             'phone' => $customer->phone,
             'company_name' => $customer->company_name,
+            'currency_id' => $customer->currency_id,
         ])->all();
     }
 
@@ -236,6 +245,40 @@ class EloquentCompanyDataReader implements CompanyDataReader
         $catalog = Item::query()->where('company_id', $companyId)->whereIn('id', $rows->pluck('item_id'))->get()->keyBy('id');
 
         return $rows->map(fn ($row): array => ['item_id' => (int) $row->item_id, 'name' => $catalog->get($row->item_id)?->name, 'quantity_sold' => (float) $row->total_quantity, 'revenue' => (float) $row->total_revenue])->all();
+    }
+
+    public function companyMembers(int $companyId): array
+    {
+        return User::query()
+            ->whereHas('companies', fn ($query) => $query->whereKey($companyId))
+            ->with('media')
+            ->orderBy('name')
+            ->orderBy('id')
+            ->get()
+            ->map(fn (User $user): array => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'avatar' => $user->avatar ?: null,
+            ])
+            ->all();
+    }
+
+    public function existingInvoiceIds(int $companyId, array $invoiceIds): array
+    {
+        $ids = array_values(array_map('intval', $invoiceIds));
+
+        if ($ids === []) {
+            return [];
+        }
+
+        return Invoice::query()
+            ->where('company_id', $companyId)
+            ->whereIn('id', $ids)
+            ->pluck('id')
+            ->map(fn ($id): int => (int) $id)
+            ->values()
+            ->all();
     }
 
     private function customerInvoiceRanking(int $companyId, ?string $startDate, ?string $endDate, int $limit, string $aggregate): Collection

@@ -54,7 +54,7 @@ test('module:make generates a composer.json that requires invoiceshelf/modules',
     $manifest = json_decode(File::get($composerPath), true);
 
     expect($manifest['require'] ?? [])->toHaveKey('invoiceshelf/modules');
-    expect($manifest['require']['invoiceshelf/modules'])->toBe('^3.3');
+    expect($manifest['require']['invoiceshelf/modules'])->toBe('^3.4');
 });
 
 test('module:make generates starter lang files for menu and settings', function () {

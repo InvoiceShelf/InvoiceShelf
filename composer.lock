@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c72ff845827581c6cc675c52d10509d3",
+    "content-hash": "6bce32d4da2b6190d06889e3d7b3fe02",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -1735,16 +1735,16 @@
         },
         {
             "name": "invoiceshelf/modules",
-            "version": "3.3.0",
+            "version": "dev-feat/page-route-abilities-members",
             "source": {
                 "type": "git",
                 "url": "https://github.com/InvoiceShelf/modules.git",
-                "reference": "87f33519e14df47314dc8bcb7abbd26fd14976eb"
+                "reference": "fb7b62961153a42a7c12aabed795cd4107e4ad0d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/InvoiceShelf/modules/zipball/87f33519e14df47314dc8bcb7abbd26fd14976eb",
-                "reference": "87f33519e14df47314dc8bcb7abbd26fd14976eb",
+                "url": "https://api.github.com/repos/InvoiceShelf/modules/zipball/fb7b62961153a42a7c12aabed795cd4107e4ad0d",
+                "reference": "fb7b62961153a42a7c12aabed795cd4107e4ad0d",
                 "shasum": ""
             },
             "require": {
@@ -1796,10 +1796,10 @@
                 "modules"
             ],
             "support": {
-                "source": "https://github.com/InvoiceShelf/modules/tree/3.3.0",
+                "source": "https://github.com/InvoiceShelf/modules/tree/feat/page-route-abilities-members",
                 "issues": "https://github.com/InvoiceShelf/modules/issues"
             },
-            "time": "2026-08-05T19:47:16+00:00"
+            "time": "2026-09-14T14:50:56+00:00"
         },
         {
             "name": "laravel/framework",
@@ -13295,9 +13295,18 @@
             "time": "2026-05-20T13:07:01+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "package": "invoiceshelf/modules",
+            "version": "dev-feat/page-route-abilities-members",
+            "alias": "3.4.0",
+            "alias_normalized": "3.4.0.0"
+        }
+    ],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "invoiceshelf/modules": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
