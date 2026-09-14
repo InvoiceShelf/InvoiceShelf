@@ -86,6 +86,11 @@ class MarketplaceInstaller
                     ],
                 );
 
+                // The registry row is written first on purpose: the activator
+                // reads it, so by the time the repository is registered the
+                // module counts as enabled and its providers are registered and
+                // booted. A ModuleEnabledEvent listener therefore sees whatever
+                // the module declared to the SDK registry.
                 Module::register();
                 Module::find($moduleName)?->enable();
                 Artisan::call('optimize:clear --no-interaction');
