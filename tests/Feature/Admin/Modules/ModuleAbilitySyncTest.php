@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
 use InvoiceShelf\Modules\Registry;
 use Laravel\Sanctum\Sanctum;
 use Nwidart\Modules\Facades\Module as RuntimeModule;
@@ -144,6 +145,16 @@ it('enables and boots a module before the installer announces it', function () {
         ->and($seen['slug'])->toBe('sync-probe');
 });
 
+it('runs the migrations of a module that is disabled on disk when installing it', function () {
+    abilitySyncFiles();
+
+    expect(Schema::hasTable('ability_sync_probe'))->toBeFalse();
+    expect(ModuleInstaller::complete('AbilitySync', '1.0.0'))->toBeTrue();
+
+    expect(Schema::hasTable('ability_sync_probe'))->toBeTrue()
+        ->and(DB::table('migrations')->where('migration', '2026_01_01_000000_create_ability_sync_probe_table')->exists())->toBeTrue();
+});
+
 it('writes the manifest slug and grants through the installer path', function () {
     abilitySyncFiles();
 
@@ -206,6 +217,29 @@ class AbilitySyncServiceProvider extends ServiceProvider
         ]);
     }
 }
+PHP);
+
+    File::put($path.'/database/migrations/2026_01_01_000000_create_ability_sync_probe_table.php', <<<'PHP'
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('ability_sync_probe', function (Blueprint $table): void {
+            $table->bigIncrements('id');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('ability_sync_probe');
+    }
+};
 PHP);
 
     ModuleRuntimeAutoloader::register('AbilitySync');

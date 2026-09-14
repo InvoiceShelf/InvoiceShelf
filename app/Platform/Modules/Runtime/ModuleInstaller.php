@@ -25,7 +25,16 @@ class ModuleInstaller
     {
         Module::register();
 
-        Artisan::call(sprintf('module:migrate %s --force', $module));
+        // `module:migrate` only runs paths the framework migrator already knows,
+        // and a module's path is registered when its provider boots. A module that
+        // is disabled on disk has not booted, so its migrations would be skipped
+        // silently. Point the core migrate command at the directory instead.
+        $migrations = Module::findOrFail($module)->getExtraPath('database/migrations');
+
+        if (is_dir($migrations)) {
+            Artisan::call('migrate', ['--path' => [$migrations], '--realpath' => true, '--force' => true]);
+        }
+
         Artisan::call(sprintf('module:enable %s', $module));
 
         Module::register();
