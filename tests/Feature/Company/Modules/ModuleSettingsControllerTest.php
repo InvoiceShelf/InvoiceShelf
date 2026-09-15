@@ -48,6 +48,30 @@ test('show returns schema and default values for unsaved settings', function () 
     $response->assertJsonPath('values.sandbox', false);
 });
 
+test('show returns stored switch and number values in their declared types', function () {
+    Registry::registerSettings('test-module', [
+        'sections' => [
+            ['title' => 'general', 'fields' => [
+                ['key' => 'sandbox', 'type' => 'switch', 'default' => true],
+                ['key' => 'verbose', 'type' => 'switch', 'default' => false],
+                ['key' => 'rate', 'type' => 'number', 'default' => 0],
+            ]],
+        ],
+    ]);
+
+    CompanySetting::setSettings([
+        'module.test-module.sandbox' => '0',
+        'module.test-module.verbose' => '1',
+        'module.test-module.rate' => '90',
+    ], $this->companyId);
+
+    $response = getJson('api/v1/modules/test-module/settings')->assertOk();
+
+    expect($response->json('values.sandbox'))->toBeFalse()
+        ->and($response->json('values.verbose'))->toBeTrue()
+        ->and($response->json('values.rate'))->toBe(90);
+});
+
 test('update persists values to company_settings under module prefix', function () {
     Registry::registerSettings('test-module', [
         'sections' => [

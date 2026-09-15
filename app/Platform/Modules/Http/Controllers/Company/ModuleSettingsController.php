@@ -37,10 +37,10 @@ class ModuleSettingsController extends Controller
 
         $values = collect($schema->fields())
             ->mapWithKeys(fn (array $field) => [
-                $field['key'] => $this->settings->get(
+                $field['key'] => $this->castForField($field, $this->settings->get(
                     "module.{$slug}.{$field['key']}",
                     $request->header('company')
-                ) ?? $field['default'],
+                ) ?? $field['default']),
             ])
             ->all();
 
@@ -174,5 +174,23 @@ class ModuleSettingsController extends Controller
         }
 
         return (string) ($value ?? '');
+    }
+
+    /**
+     * Settings are stored as strings, so a switch saved as "0" would otherwise
+     * reach the form as a truthy value and render as on. Give each value back
+     * in the type its field declares.
+     */
+    private function castForField(array $field, mixed $value): mixed
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        return match ($field['type'] ?? null) {
+            'switch' => filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? (bool) $value,
+            'number' => is_numeric($value) ? $value + 0 : $value,
+            default => $value,
+        };
     }
 }
