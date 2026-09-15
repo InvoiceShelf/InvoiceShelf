@@ -61,7 +61,7 @@
           "
         >
           <BaseIcon
-            name="SelectorIcon"
+            name="ChevronUpDownIcon"
             class="text-subtle"
             aria-hidden="true"
           />
