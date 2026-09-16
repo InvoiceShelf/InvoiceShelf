@@ -45,11 +45,14 @@ export const useGlobalStore = defineStore('global', () => {
   const downloadReport = ref<(() => void) | null>(null)
 
   // Getters
+  // Groups keep the order the server sent them in (the core groups as configured,
+  // then module groups in registration order); priority only orders entries
+  // inside a group, so a module entry with a low priority cannot lift its whole
+  // group above the core ones.
   const menuGroups = computed<MenuItem[][]>(() => {
-    const sorted = [...mainMenu.value].sort((a, b) => (a.priority ?? 100) - (b.priority ?? 100))
-    const groups = groupBy(sorted, 'group')
-    return Object.values(groups).sort(
-      (a, b) => (a[0]?.priority ?? 100) - (b[0]?.priority ?? 100)
+    const groups = groupBy(mainMenu.value, 'group')
+    return Object.values(groups).map((items) =>
+      [...items].sort((a, b) => (a.priority ?? 100) - (b.priority ?? 100))
     )
   })
 
