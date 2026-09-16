@@ -38,6 +38,20 @@ if ! mkdir -p \
     exit 1
 fi
 
+# Marketplace installs unpack modules into Modules/, which the compose examples
+# mount as a named volume. An unwritable directory does not stop the app from
+# serving, so warn instead of aborting, with the same fix as for storage/.
+if ! mkdir -p Modules 2>/dev/null || ! touch Modules/.writable 2>/dev/null; then
+    echo "!!!! Cannot write to /var/www/html/Modules."
+    echo "!!!! Installing modules from the marketplace will fail until the mounted"
+    echo "!!!! directory belongs to uid 82 (www-data):"
+    echo "!!!!"
+    echo "!!!!     sudo chown -R 82:82 /path/to/your/Modules"
+    echo "!!!!"
+else
+    rm -f Modules/.writable
+fi
+
 if [ ! -e /var/www/html/.env ]; then
     cp .env.example .env
     echo "**** Setup initial .env values ****" && \
