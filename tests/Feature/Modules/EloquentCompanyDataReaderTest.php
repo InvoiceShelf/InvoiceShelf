@@ -1,9 +1,11 @@
 <?php
 
 use App\Domains\Accounts\Models\Company;
+use App\Domains\Accounts\Models\User;
 use App\Domains\Catalog\Models\Item;
 use App\Domains\Catalog\Models\Unit;
 use App\Domains\Contacts\Models\Customer;
+use App\Domains\Money\Models\Currency;
 use App\Domains\Purchases\Models\Expense;
 use App\Domains\Purchases\Models\ExpenseCategory;
 use App\Domains\Receivables\Models\Payment;
@@ -88,4 +90,61 @@ test('company data reader aggregates stats and rankings with date windows and ba
         ->and($reader->rankCustomers($company->id, 'outstanding_balance', null, null, 5))->toBeArray()
         ->and($reader->rankExpenseCategories($company->id, '2026-08-01', '2026-08-05', 5)[0]['name'])->toBe('Software')
         ->and($reader->rankItems($company->id, 'revenue', '2026-08-01', '2026-08-05', 5)[0])->toMatchArray(['name' => 'Top Item', 'revenue' => 3000.0]);
+});
+
+test('company data reader lists the members of one company ordered by name then id', function () {
+    $reader = new EloquentCompanyDataReader;
+    $companyA = Company::firstOrFail();
+    $companyB = Company::factory()->create();
+    $zoe = User::factory()->create(['name' => 'Zoe Member', 'email' => 'zoe@example.test']);
+    $firstAdam = User::factory()->create(['name' => 'Adam Member', 'email' => 'adam.one@example.test']);
+    $secondAdam = User::factory()->create(['name' => 'Adam Member', 'email' => 'adam.two@example.test']);
+    $outsider = User::factory()->create(['name' => 'Bea Outsider', 'email' => 'bea@example.test']);
+    $zoe->companies()->attach($companyA->id);
+    $firstAdam->companies()->attach($companyA->id);
+    $secondAdam->companies()->attach($companyA->id);
+    $outsider->companies()->attach($companyB->id);
+    $seededOwner = User::findOrFail($companyA->owner_id);
+
+    $members = $reader->companyMembers($companyA->id);
+
+    expect(collect($members)->pluck('id')->all())->toBe([$firstAdam->id, $secondAdam->id, $seededOwner->id, $zoe->id])
+        ->and(collect($members)->pluck('name')->all())->toBe(['Adam Member', 'Adam Member', $seededOwner->name, 'Zoe Member'])
+        ->and($members[0])->toBe(['id' => $firstAdam->id, 'name' => 'Adam Member', 'email' => 'adam.one@example.test', 'avatar' => null])
+        ->and(collect($reader->companyMembers($companyB->id))->pluck('email')->all())->toBe(['bea@example.test']);
+});
+
+test('company data reader narrows invoice ids to the ones stored in the company', function () {
+    $reader = new EloquentCompanyDataReader;
+    $companyA = Company::firstOrFail();
+    $companyB = Company::factory()->create();
+    $customerA = Customer::factory()->create(['company_id' => $companyA->id]);
+    $customerB = Customer::factory()->create(['company_id' => $companyB->id]);
+    $mine = Invoice::factory()->create(['company_id' => $companyA->id, 'customer_id' => $customerA->id]);
+    $theirs = Invoice::factory()->create(['company_id' => $companyB->id, 'customer_id' => $customerB->id]);
+
+    $existing = $reader->existingInvoiceIds($companyA->id, [$mine->id, $theirs->id, 987654321]);
+
+    expect($existing)->toBe([(int) $mine->id])
+        ->and($existing[0])->toBeInt()
+        ->and($reader->existingInvoiceIds($companyA->id, []))->toBe([])
+        ->and($reader->existingInvoiceIds($companyA->id, [(string) $mine->id]))->toBe([(int) $mine->id])
+        ->and($reader->existingInvoiceIds($companyB->id, [$mine->id]))->toBe([]);
+});
+
+test('company data reader reports the customer currency on single and list reads', function () {
+    $reader = new EloquentCompanyDataReader;
+    $company = Company::firstOrFail();
+    $euro = Currency::query()->where('code', 'EUR')->firstOrFail();
+    $priced = Customer::factory()->create(['company_id' => $company->id, 'name' => 'Priced Customer', 'currency_id' => $euro->id]);
+    $unpriced = Customer::factory()->create(['company_id' => $company->id, 'name' => 'Unpriced Customer', 'currency_id' => null]);
+
+    $found = $reader->findCustomer($company->id, $priced->id);
+    $rows = collect($reader->searchCustomers($company->id, 'Customer', 10))->keyBy('id');
+
+    expect($found['currency_id'])->toBe($euro->id)
+        ->and($found['currency'])->toBe(['id' => $euro->id, 'code' => 'EUR', 'symbol' => $euro->symbol, 'precision' => $euro->precision])
+        ->and($reader->findCustomer($company->id, $unpriced->id))->toMatchArray(['currency_id' => null, 'currency' => null])
+        ->and($rows[$priced->id]['currency_id'])->toBe($euro->id)
+        ->and($rows[$unpriced->id]['currency_id'])->toBeNull();
 });
