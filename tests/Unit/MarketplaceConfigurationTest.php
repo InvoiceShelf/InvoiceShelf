@@ -2,14 +2,18 @@
 
 const OFFICIAL_MARKETPLACE_KEY_ID = 'official-modules-2026-01';
 const OFFICIAL_MARKETPLACE_PUBLIC_KEY = 'sIDGuOAaMVzPv9I/GPbWp9ci5aUI5HcM5rZ0tKxW6dc=';
+const OFFICIAL_MARKETPLACE_KEY_ID_2026_09 = 'official-modules-2026-09';
+const OFFICIAL_MARKETPLACE_PUBLIC_KEY_2026_09 = 'VK8b5GsK7T7JFcQutq6Rv/xQ98Ata/HP1C74ZNNlYEo=';
 
 test('marketplace configuration advertises module API 1.3 by default', function () {
     expect(marketplaceConfigFor(null)['module_api_version'])->toBe('1.3.0');
 });
 
-test('marketplace configuration includes the official signing key by default', function () {
-    expect(marketplacePublicKeysConfigFor(null))
-        ->toBe([OFFICIAL_MARKETPLACE_KEY_ID => OFFICIAL_MARKETPLACE_PUBLIC_KEY]);
+test('marketplace configuration includes the official signing keys by default', function () {
+    expect(marketplacePublicKeysConfigFor(null))->toBe([
+        OFFICIAL_MARKETPLACE_KEY_ID => OFFICIAL_MARKETPLACE_PUBLIC_KEY,
+        OFFICIAL_MARKETPLACE_KEY_ID_2026_09 => OFFICIAL_MARKETPLACE_PUBLIC_KEY_2026_09,
+    ]);
 });
 
 test('marketplace public-key configuration adds and rotates trusted keys', function () {
@@ -20,6 +24,7 @@ test('marketplace public-key configuration adds and rotates trusted keys', funct
 
     expect($keys)->toBe([
         OFFICIAL_MARKETPLACE_KEY_ID => 'replacement-public-key',
+        OFFICIAL_MARKETPLACE_KEY_ID_2026_09 => OFFICIAL_MARKETPLACE_PUBLIC_KEY_2026_09,
         'rotated-modules-2027-01' => 'additional-public-key',
     ]);
 });

@@ -74,6 +74,7 @@ return [
         'public_keys' => array_replace(
             [
                 'official-modules-2026-01' => 'sIDGuOAaMVzPv9I/GPbWp9ci5aUI5HcM5rZ0tKxW6dc=',
+                'official-modules-2026-09' => 'VK8b5GsK7T7JFcQutq6Rv/xQ98Ata/HP1C74ZNNlYEo=',
             ],
             json_decode((string) env('MARKETPLACE_PUBLIC_KEYS', '{}'), true) ?: [],
         ),
