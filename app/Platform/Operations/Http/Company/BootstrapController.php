@@ -121,12 +121,22 @@ class BootstrapController extends Controller
      */
     private function companyView(Request $request, $user, $memberships): array
     {
+        $company = $this->activeCompany($request, $user);
+
+        // The owner gate on navigation entries reads the company header, and
+        // the SPA's first call after login carries none: it only learns its
+        // workspace from this response. The company middleware fills the
+        // header in for everyone except a platform administrator (no header
+        // is how admin mode announces itself), so name the workspace here,
+        // where admin mode has already been ruled out, and the menus describe
+        // the same company the payload does.
+        $request->headers->set('company', (string) $company->id);
+
         // Both menus are resolved against the abilities Bouncer has cached so
         // far, i.e. before the refresh further down. Keep that order.
         $mainMenu = $this->mainMenuWithModules($user);
         $settingMenu = $this->generateMenu('setting_menu', $user);
 
-        $company = $this->activeCompany($request, $user);
         $companySettings = CompanySetting::getAllSettings($company->id);
 
         $currency = $companySettings->has('currency')
