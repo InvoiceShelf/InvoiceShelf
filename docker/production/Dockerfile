@@ -39,6 +39,12 @@ FROM base AS production
     # never clobber the fresh one produced by static_builder.
     COPY --chown=www-data:www-data . /var/www/html
     COPY --from=static_builder --chown=www-data:www-data /var/www/html/public/build /var/www/html/public/build
+    # Nothing under Modules/ is tracked, so the copy above does not create the
+    # directory. The compose examples mount a named volume there, and Docker seeds
+    # a fresh volume from the image path, ownership included: with no directory in
+    # the image the mount point is created root-owned and every marketplace install
+    # dies with "mkdir(): Permission denied". Create it here, as www-data.
+    RUN mkdir -p /var/www/html/Modules
     # Authenticate composer against GitHub when a token is provided (build secret),
     # so multi-arch builds don't exhaust the unauthenticated API rate limit while the
     # merge-plugin resolves modules. The secret is build-time only (never in the image),
