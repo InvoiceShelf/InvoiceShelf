@@ -3,13 +3,18 @@
 namespace App\Platform\Modules;
 
 use App\Platform\Modules\Console\InstallModuleCommand;
+use App\Platform\Modules\Console\SyncModuleAbilitiesCommand;
 use App\Platform\Modules\Console\UninstallModuleCommand;
 use App\Platform\Modules\Contracts\ModuleSettingsStore;
+use App\Platform\Modules\Events\ModuleEnabledEvent;
+use App\Platform\Modules\Events\ModuleUninstalledEvent;
 use App\Platform\Modules\Infrastructure\BouncerModuleAuthorization;
 use App\Platform\Modules\Infrastructure\EloquentCompanyDataReader;
 use App\Platform\Modules\Infrastructure\EloquentHostSettingsStore;
 use App\Platform\Modules\Infrastructure\EloquentModuleSettingsStore;
+use App\Platform\Modules\Listeners\SyncModuleAbilities;
 use App\Platform\Modules\Policies\ModulePolicy;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use InvoiceShelf\Modules\Contracts\Host\CompanyDataReader;
@@ -34,9 +39,15 @@ class ModuleServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 InstallModuleCommand::class,
+                SyncModuleAbilitiesCommand::class,
                 UninstallModuleCommand::class,
             ]);
         }
+
+        // A module's abilities are Bouncer rows, so they have to be written
+        // when the module is switched on and cleared when it is removed.
+        Event::listen(ModuleEnabledEvent::class, [SyncModuleAbilities::class, 'handleEnabled']);
+        Event::listen(ModuleUninstalledEvent::class, [SyncModuleAbilities::class, 'handleUninstalled']);
 
         Gate::define('manage modules', [ModulePolicy::class, 'manageModules']);
         Gate::define('manage module settings', [ModulePolicy::class, 'manageSettings']);
