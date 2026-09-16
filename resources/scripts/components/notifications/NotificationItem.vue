@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="success || info ? 'bg-surface' : 'bg-alert-error-bg'"
+    :class="warning ? 'bg-alert-warning-bg' : success || info ? 'bg-surface' : 'bg-alert-error-bg'"
     class="
       max-w-sm
       mb-3
@@ -47,6 +47,20 @@
               ></path>
             </svg>
             <svg
+              v-if="warning"
+              class="w-6 h-6 text-alert-warning-text"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+              />
+            </svg>
+            <svg
               v-if="error"
               class="w-6 h-6 text-alert-error-text"
               fill="currentColor"
@@ -62,7 +76,7 @@
           <div class="flex-1 w-0 ml-3 text-left">
             <p
               :class="`text-sm leading-5 font-medium ${
-                success || info ? 'text-heading' : 'text-alert-error-text'
+                warning ? 'text-alert-warning-text' : success || info ? 'text-heading' : 'text-alert-error-text'
               }`"
             >
               {{
@@ -70,12 +84,14 @@
                   ? notification.title
                   : success
                   ? 'Success!'
+                  : warning
+                  ? 'Warning'
                   : 'Error'
               }}
             </p>
             <p
               :class="`mt-1 text-sm leading-5 ${
-                success || info ? 'text-muted' : 'text-alert-error-text'
+                warning ? 'text-alert-warning-text' : success || info ? 'text-muted' : 'text-alert-error-text'
               }`"
             >
               {{
@@ -90,7 +106,9 @@
           <div class="flex shrink-0">
             <button
               :class="
-                success || info
+                warning
+                  ? 'text-alert-warning-text focus:text-alert-warning-text'
+                  : success || info
                   ? ' text-subtle focus:text-muted'
                   : 'text-alert-error-text focus:text-alert-error-text'
               "
@@ -129,7 +147,7 @@
 import { onMounted, computed, ref } from 'vue'
 import { useNotificationStore } from '@/scripts/stores/notification.store'
 
-export type NotificationType = 'success' | 'error' | 'info'
+export type NotificationType = 'success' | 'error' | 'warning' | 'info'
 
 export interface Notification {
   id: string
@@ -159,6 +177,10 @@ const error = computed<boolean>(() => {
 
 const info = computed<boolean>(() => {
   return props.notification.type === 'info'
+})
+
+const warning = computed<boolean>(() => {
+  return props.notification.type === 'warning'
 })
 
 function hideNotificationAction(): void {
