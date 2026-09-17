@@ -131,6 +131,25 @@
           <BaseCustomInput v-model="paymentStore.currentPayment.notes" :content-loading="isLoadingContent" :fields="paymentFields" class="mt-1" />
         </div>
 
+        <div class="grid grid-cols-5 gap-2 mb-8">
+          <h6
+            class="col-span-5 text-lg font-semibold text-left lg:col-span-1"
+          >
+            {{ $t('settings.custom_fields.title') }}
+          </h6>
+
+          <div class="col-span-5 lg:col-span-4">
+            <CreateCustomFields
+              type="Payment"
+              :store="paymentStore"
+              store-prop="currentPayment"
+              :is-edit="isEdit"
+              :is-loading="isLoadingContent"
+              :custom-field-scope="customFieldValidationScope"
+            />
+          </div>
+        </div>
+
         <BaseButton :loading="isSaving" :content-loading="isLoadingContent" variant="primary" type="submit" class="flex justify-center w-full mt-4 sm:hidden">
           {{ isEdit ? $t('payments.update_payment') : $t('payments.save_payment') }}
         </BaseButton>
@@ -150,6 +169,7 @@ import { handleApiError, getErrorTranslationKey } from '../../../../utils/error-
 import { invoiceService } from '../../../../api/services/invoice.service'
 import { customerService } from '../../../../api/services/customer.service'
 import { ExchangeRateConverter } from '../../../shared/document-form'
+import CreateCustomFields from '../../customers/components/CreateCustomFields.vue'
 import type { Invoice } from '../../../../types/domain/invoice'
 
 const route = useRoute()
@@ -164,6 +184,7 @@ const isSaving = ref(false)
 const isLoadingInvoices = ref(false)
 const invoiceList = ref<Invoice[]>([])
 const paymentFields = ref(['customer', 'company', 'customerCustom', 'payment', 'paymentCustom'])
+const customFieldValidationScope = 'customFields'
 
 const amount = computed<number>({
   get: () => paymentStore.currentPayment.amount / 100,

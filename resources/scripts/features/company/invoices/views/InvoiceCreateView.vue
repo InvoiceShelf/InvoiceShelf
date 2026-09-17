@@ -83,6 +83,26 @@
               type="Invoice"
             />
 
+            <!-- Invoice Custom Fields -->
+            <div class="grid grid-cols-5 gap-2 mb-8">
+              <h6
+                class="col-span-5 text-lg font-semibold text-left lg:col-span-1"
+              >
+                {{ $t('settings.custom_fields.title') }}
+              </h6>
+
+              <div class="col-span-5 lg:col-span-4">
+                <CreateCustomFields
+                  type="Invoice"
+                  :store="invoiceStore"
+                  store-prop="newInvoice"
+                  :is-edit="isEdit"
+                  :is-loading="isLoadingContent"
+                  :custom-field-scope="customFieldValidationScope"
+                />
+              </div>
+            </div>
+
             <!-- Invoice Template Button -->
             <TemplateSelectButton
               :store="invoiceStore"
@@ -128,6 +148,7 @@ import {
   getErrorTranslationKey,
 } from '@/scripts/utils/error-handling'
 import InvoiceBasicFields from '../components/InvoiceBasicFields.vue'
+import CreateCustomFields from '../../customers/components/CreateCustomFields.vue'
 import {
   DocumentItemsTable,
   DocumentTotals,
@@ -145,6 +166,7 @@ const route = useRoute()
 const router = useRouter()
 
 const invoiceValidationScope = 'newInvoice'
+const customFieldValidationScope = 'customFields'
 const isSaving = ref<boolean>(false)
 const isMarkAsDefault = ref<boolean>(false)
 const isRecurring = ref<boolean>(false)

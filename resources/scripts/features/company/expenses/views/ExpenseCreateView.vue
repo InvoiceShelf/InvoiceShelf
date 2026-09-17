@@ -215,6 +215,26 @@
 
         </BaseInputGrid>
 
+        <!-- Expense Custom Fields -->
+        <div class="grid grid-cols-5 gap-2 mb-8 mt-6">
+          <h6
+            class="col-span-5 text-lg font-semibold text-left lg:col-span-1"
+          >
+            {{ $t('settings.custom_fields.title') }}
+          </h6>
+
+          <div class="col-span-5 lg:col-span-4">
+            <CreateCustomFields
+              type="Expense"
+              :store="expenseStore"
+              store-prop="currentExpense"
+              :is-edit="isEdit"
+              :is-loading="isFetchingInitialData"
+              :custom-field-scope="customFieldValidationScope"
+            />
+          </div>
+        </div>
+
         <ExpenseTaxSection
           v-model="expenseStore.currentExpense.taxes"
           :amount="expenseStore.currentExpense.amount"
@@ -259,6 +279,7 @@ import { useGlobalStore } from '../../../../stores/global.store'
 import { useCompanyStore } from '../../../../stores/company.store'
 import { ExchangeRateConverter } from '../../../shared/document-form'
 import ExpenseTaxSection from '../components/ExpenseTaxSection.vue'
+import CreateCustomFields from '../../customers/components/CreateCustomFields.vue'
 import type { ExpenseCategory } from '../../../../types/domain/expense'
 import type { Customer } from '../../../../types/domain/customer'
 import type { Currency } from '../../../../types/domain/currency'
@@ -269,6 +290,8 @@ const { t } = useI18n()
 const expenseStore = useExpenseStore()
 const globalStore = useGlobalStore()
 const companyStore = useCompanyStore()
+
+const customFieldValidationScope = 'customFields'
 
 const isSaving = ref<boolean>(false)
 const isFetchingInitialData = ref<boolean>(false)

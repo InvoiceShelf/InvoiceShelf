@@ -94,7 +94,7 @@ const defaultValueComponent = computed(() => {
     return defineAsyncComponent(
       () =>
         import(
-          `@/scripts/admin/components/custom-fields/types/${currentCustomField.value.type}Type.vue`
+          `@/scripts/features/company/customers/components/types/${currentCustomField.value.type}Type.vue`
         )
     )
   }
@@ -194,9 +194,7 @@ async function submitCustomFieldData(): Promise<void> {
     type: currentCustomField.value.type,
     placeholder: currentCustomField.value.placeholder,
     is_required: currentCustomField.value.is_required === 1,
-    options: currentCustomField.value.options.length
-      ? currentCustomField.value.options.map((o) => o.name)
-      : null,
+    options: currentCustomField.value.options.map((o) => o.name),
     order: currentCustomField.value.order,
     default_answer: defaultAnswer as string ?? null,
   }
