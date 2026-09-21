@@ -1,9 +1,11 @@
 <?php
 
+use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Accounts\Models\User;
 use App\Domains\Metadata\Contracts\CustomFieldValueWriter;
 use App\Domains\Metadata\Models\CustomField;
 use App\Domains\Sales\Models\Invoice;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Sanctum\Sanctum;
 
@@ -105,4 +107,27 @@ test('line-level columns follow the same flag', function () {
 
     expect($html)->toContain('Warranty')->toContain('24 months')
         ->and($html)->not->toContain('Internal Note');
+});
+
+test('a printed date matches the format the other dates use', function () {
+    $field = CustomField::factory()->create([
+        'company_id' => $this->company->id,
+        'model_type' => 'Invoice',
+        'type' => 'Date',
+        'label' => 'Supply Date',
+        'placement' => 'document',
+    ]);
+
+    app(CustomFieldValueWriter::class)
+        ->attach($this->invoice, [['id' => $field->id, 'value' => '2026-09-30']]);
+
+    // #237 is a date request: printing the stored 2026-09-30 beside an
+    // invoice date rendered as 2026/09/30 is not an answer to it.
+    $expected = Carbon::parse('2026-09-30')->format(
+        CompanySetting::getSetting('carbon_date_format', $this->company->id)
+    );
+
+    $html = get("/invoices/pdf/{$this->invoice->unique_hash}?preview")->assertOk()->getContent();
+
+    expect($html)->toContain('Supply Date')->toContain($expected);
 });

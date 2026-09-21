@@ -3,7 +3,7 @@
     stack of headings rather than a table.
 --}}
 @foreach($documentFields as $field)
-    @php($answer = $document->getCustomFieldValueBySlug($field->slug))
+    @php($answer = $document->getFormattedCustomFieldValueBySlug($field->slug))
     @if(filled($answer))
         <h4>{{ $field->label }}: {{ $answer }}</h4>
     @endif

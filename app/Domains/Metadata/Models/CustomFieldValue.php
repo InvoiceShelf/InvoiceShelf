@@ -3,6 +3,8 @@
 namespace App\Domains\Metadata\Models;
 
 use App\Domains\Accounts\Models\Company;
+use App\Domains\Accounts\Models\CompanySetting;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -67,6 +69,33 @@ class CustomFieldValue extends Model
     public function setTimeAnswerAttribute(mixed $value): void
     {
         $this->attributes['time_answer'] = $value ? date('H:i:s', strtotime($value)) : null;
+    }
+
+    /**
+     * The answer as a reader should see it.
+     *
+     * Dates go through the owning company's configured format so a custom
+     * date printed beside the invoice date matches it, and date-times through
+     * a fixed Y-m-d H:i. Everything else is handed back as stored.
+     *
+     * A company with no date format on file gets the stored value rather than
+     * an exception, which is what the formatter used to raise.
+     */
+    public function getFormattedAnswerAttribute(): mixed
+    {
+        $answer = $this->default_answer;
+
+        if (! $answer) {
+            return $answer;
+        }
+
+        return match (getCustomFieldValueKey($this->type)) {
+            'date_time_answer' => Carbon::parse($answer)->format('Y-m-d H:i'),
+            'date_answer' => ($format = CompanySetting::getSetting('carbon_date_format', $this->company_id))
+                ? Carbon::parse($answer)->format($format)
+                : $answer,
+            default => $answer,
+        };
     }
 
     /**

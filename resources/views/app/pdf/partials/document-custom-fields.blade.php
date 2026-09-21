@@ -8,7 +8,7 @@
     field left blank costs nothing on the page.
 --}}
 @foreach($documentFields as $field)
-    @php($answer = $document->getCustomFieldValueBySlug($field->slug))
+    @php($answer = $document->getFormattedCustomFieldValueBySlug($field->slug))
     @if(filled($answer))
         <tr>
             <td class="attribute-label">{{ $field->label }}</td>
