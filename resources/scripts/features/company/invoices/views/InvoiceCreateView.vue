@@ -70,16 +70,6 @@
           store-prop="newInvoice"
         />
 
-
-        <CustomFieldsSection
-          type="Invoice"
-          :store="invoiceStore"
-          store-prop="newInvoice"
-          :is-edit="isEdit"
-          :is-loading="isLoadingContent"
-          :scope="invoiceValidationScope"
-        />
-
         <!-- Invoice Footer Section -->
         <div
           class="block mt-10 invoice-foot lg:flex lg:justify-between lg:items-start"
@@ -129,7 +119,6 @@ import {
   decimal,
 } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
-import CustomFieldsSection from '@/scripts/features/shared/custom-fields/CustomFieldsSection.vue'
 import { useInvoiceStore } from '../store'
 import { useRecurringInvoiceStore } from '@/scripts/features/company/recurring-invoices/store'
 import { useCompanyStore } from '@/scripts/stores/company.store'

@@ -11,6 +11,8 @@
       v-if="isRecurring"
       :is-loading="isLoading"
       :is-edit="isEdit"
+      :custom-fields="customFields"
+      :custom-field-scope="customFieldScope"
     />
 
     <BaseInputGrid
@@ -66,6 +68,18 @@
         :is-edit="isEdit"
         :customer-currency="invoiceStore.newInvoice.currency_id"
       />
+
+      <!-- Document-level custom fields sit with the number and the dates:
+           they are attributes of the document, not a separate section. -->
+      <CustomFieldInput
+        v-for="(field, index) in customFields"
+        :key="field.id"
+        :custom-field-scope="customFieldScope"
+        :store="invoiceStore"
+        store-prop="newInvoice"
+        :index="index"
+        :field="field"
+      />
     </BaseInputGrid>
   </div>
 </template>
@@ -75,6 +89,8 @@ import { computed } from 'vue'
 import { ExchangeRateConverter } from '../../../shared/document-form'
 import { useInvoiceStore } from '../store'
 import RecurringFields from './RecurringFields.vue'
+import CustomFieldInput from '@/scripts/features/shared/custom-fields/CustomFieldInput.vue'
+import { useCustomFields } from '@/scripts/features/shared/custom-fields/use-custom-fields'
 
 interface ValidationField {
   $error: boolean
@@ -98,6 +114,15 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const invoiceStore = useInvoiceStore()
+const customFieldScope = 'newInvoice'
+
+const customFields = useCustomFields({
+  store: invoiceStore,
+  storeProp: 'newInvoice',
+  type: 'Invoice',
+  isEdit: () => props.isEdit === true,
+})
+
 
 const enableTime = computed<boolean>(() => {
   return props.companySettings?.invoice_use_time === 'YES'

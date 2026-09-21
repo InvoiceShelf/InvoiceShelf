@@ -187,6 +187,18 @@
               searchable
             />
           </BaseInputGroup>
+
+          <!-- Custom fields join the form's own grid rather than forming a
+               band of their own; they are attributes like the rest. -->
+          <CustomFieldInput
+            v-for="(field, index) in customFields"
+            :key="field.id"
+            :custom-field-scope="customFieldValidationScope"
+            :store="expenseStore"
+            store-prop="currentExpense"
+            :index="index"
+            :field="field"
+          />
         </BaseInputGrid>
 
         <BaseInputGrid class="mt-4">
@@ -220,16 +232,6 @@
           :amount="expenseStore.currentExpense.amount"
           :currency="expenseStore.currentExpense.selectedCurrency"
           :is-loading="isFetchingInitialData"
-        />
-
-
-        <CustomFieldsSection
-          type="Expense"
-          :store="expenseStore"
-          store-prop="currentExpense"
-          :is-edit="isEdit"
-          :is-loading="isFetchingInitialData"
-          :scope="customFieldValidationScope"
         />
 
         <!-- Mobile Save Button -->
@@ -269,7 +271,8 @@ import { useGlobalStore } from '../../../../stores/global.store'
 import { useCompanyStore } from '../../../../stores/company.store'
 import { ExchangeRateConverter } from '../../../shared/document-form'
 import ExpenseTaxSection from '../components/ExpenseTaxSection.vue'
-import CustomFieldsSection from '@/scripts/features/shared/custom-fields/CustomFieldsSection.vue'
+import CustomFieldInput from '@/scripts/features/shared/custom-fields/CustomFieldInput.vue'
+import { useCustomFields } from '@/scripts/features/shared/custom-fields/use-custom-fields'
 import type { ExpenseCategory } from '../../../../types/domain/expense'
 import type { Customer } from '../../../../types/domain/customer'
 import type { Currency } from '../../../../types/domain/currency'
@@ -295,6 +298,13 @@ const amountData = computed<number>({
 })
 
 const isEdit = computed<boolean>(() => route.name === 'expenses.edit')
+
+const customFields = useCustomFields({
+  store: expenseStore,
+  storeProp: 'currentExpense',
+  type: 'Expense',
+  isEdit: () => isEdit.value,
+})
 
 const pageTitle = computed<string>(() =>
   isEdit.value ? t('expenses.edit_expense') : t('expenses.new_expense'),

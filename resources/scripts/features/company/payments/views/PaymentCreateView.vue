@@ -69,6 +69,18 @@
               searchable
             />
           </BaseInputGroup>
+
+          <!-- Custom fields join the form's own grid rather than forming a
+               band of their own; they are attributes like the rest. -->
+          <CustomFieldInput
+            v-for="(field, index) in customFields"
+            :key="field.id"
+            :custom-field-scope="customFieldValidationScope"
+            :store="paymentStore"
+            store-prop="currentPayment"
+            :index="index"
+            :field="field"
+          />
         </BaseInputGrid>
 
         <section class="pt-6 mt-6 border-t border-line-default">
@@ -131,16 +143,6 @@
           <BaseCustomInput v-model="paymentStore.currentPayment.notes" :content-loading="isLoadingContent" :fields="paymentFields" class="mt-1" />
         </div>
 
-
-        <CustomFieldsSection
-          type="Payment"
-          :store="paymentStore"
-          store-prop="currentPayment"
-          :is-edit="isEdit"
-          :is-loading="isLoadingContent"
-          :scope="customFieldValidationScope"
-        />
-
         <BaseButton :loading="isSaving" :content-loading="isLoadingContent" variant="primary" type="submit" class="flex justify-center w-full mt-4 sm:hidden">
           {{ isEdit ? $t('payments.update_payment') : $t('payments.save_payment') }}
         </BaseButton>
@@ -154,7 +156,8 @@ import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { usePaymentStore } from '../store'
-import CustomFieldsSection from '@/scripts/features/shared/custom-fields/CustomFieldsSection.vue'
+import CustomFieldInput from '@/scripts/features/shared/custom-fields/CustomFieldInput.vue'
+import { useCustomFields } from '@/scripts/features/shared/custom-fields/use-custom-fields'
 import { useCompanyStore } from '../../../../stores/company.store'
 import { useNotificationStore } from '../../../../stores/notification.store'
 import { handleApiError, getErrorTranslationKey } from '../../../../utils/error-handling'
@@ -187,6 +190,13 @@ const allocatedAmount = computed(() => paymentStore.currentPayment.allocations.r
 const unallocatedAmount = computed(() => paymentStore.currentPayment.amount - allocatedAmount.value)
 const isLoadingContent = computed(() => paymentStore.isFetchingInitialData)
 const isEdit = computed(() => route.name === 'payments.edit')
+
+const customFields = useCustomFields({
+  store: paymentStore,
+  storeProp: 'currentPayment',
+  type: 'Payment',
+  isEdit: () => isEdit.value,
+})
 const pageTitle = computed(() => isEdit.value ? t('payments.edit_payment') : t('payments.new_payment'))
 
 paymentStore.resetCurrentPayment()
