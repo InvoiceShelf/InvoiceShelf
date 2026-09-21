@@ -403,19 +403,66 @@ class RecurringInvoice extends Model
         }
     }
 
-    public static function getNextInvoiceDate($frequency, $starts_at)
+    /**
+     * The moment a cron expression next fires after the given date.
+     *
+     * The expression is evaluated in the caller's time zone, which is the
+     * owning company's where one is known, because that is the zone the
+     * scheduler itself uses. The answer comes back in the application's zone.
+     */
+    public static function getNextInvoiceDate($frequency, $from, $timezone = null)
     {
-        $cron = new Cron\CronExpression($frequency);
+        $appZone = config('app.timezone', 'UTC');
+        $zone = $timezone ?: $appZone;
 
-        return $cron->getNextRunDate($starts_at)->format('Y-m-d H:i:s');
+        $next = (new Cron\CronExpression($frequency))->getNextRunDate($from, 0, false, $zone);
+
+        return Carbon::instance($next)->setTimezone($appZone)->format('Y-m-d H:i:s');
     }
 
+    /**
+     * Move the due date on to the next occurrence.
+     *
+     * Counted from now, not from starts_at: counting from the start date
+     * pinned this column to the first occurrence forever, so the date the
+     * schedule screen shows stopped being true the moment the first invoice
+     * was generated. A schedule that has not started yet counts from its
+     * start date instead, so it cannot read as due early.
+     */
     public function updateNextInvoiceDate()
     {
-        $nextInvoiceAt = self::getNextInvoiceDate($this->frequency, $this->starts_at);
+        $this->next_invoice_at = self::getNextInvoiceDate(
+            $this->frequency,
+            $this->nextRunCountsFrom(),
+            $this->companyTimeZone()
+        );
 
-        $this->next_invoice_at = $nextInvoiceAt;
         $this->save();
+    }
+
+    /**
+     * The point the next occurrence is measured from: now, unless the
+     * schedule has a start date still in the future.
+     */
+    public function nextRunCountsFrom($from = null)
+    {
+        $moment = Carbon::parse($from ?: Carbon::now());
+
+        if ($this->starts_at && Carbon::parse($this->starts_at)->greaterThan($moment)) {
+            $moment = Carbon::parse($this->starts_at);
+        }
+
+        return $moment->format('Y-m-d H:i:s');
+    }
+
+    /**
+     * The time zone the owning company keeps its books in.
+     */
+    public function companyTimeZone()
+    {
+        $zone = CompanySetting::getSetting('time_zone', $this->company_id);
+
+        return $zone ?: null;
     }
 
     public static function deleteRecurringInvoice($ids)

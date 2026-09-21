@@ -1,0 +1,23 @@
+#!/command/with-contenv sh
+# Laravel's scheduler, supervised alongside nginx and php-fpm.
+#
+# Without this the container runs no scheduler at all, and everything in
+# routes/console.php is dead: recurring invoices are never generated, invoices
+# are never flagged overdue, and estimates never expire. schedule:work stays in
+# the foreground and runs the due tasks every minute, which is the documented
+# way to schedule Laravel in a container.
+#
+# Set SCHEDULER_ENABLED=false when something else drives the schedule, such as
+# a separate scheduler container or more than one replica of this one.
+
+if [ "${SCHEDULER_ENABLED:-true}" != "true" ]; then
+    echo "**** Laravel scheduler disabled (SCHEDULER_ENABLED=${SCHEDULER_ENABLED:-unset}) ****"
+    # Tell the supervisor to leave the service down, then idle until it is
+    # stopped. The sleep is what stops s6 restarting this script in a loop if
+    # the command above is unavailable for any reason.
+    /command/s6-svc -d /run/service/scheduler 2>/dev/null || true
+    exec sleep 2147483647
+fi
+
+echo "**** Starting Laravel scheduler ****"
+exec php /var/www/html/artisan schedule:work --no-interaction
