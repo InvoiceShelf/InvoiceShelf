@@ -306,24 +306,67 @@ class RecurringInvoice extends Model
     }
 
     /**
-     * The moment a cron expression next fires, counted from the given start
-     * date rather than from now, in the application's own time zone.
+     * The moment a cron expression next fires after the given date.
+     *
+     * The expression is evaluated in the caller's time zone, which is the
+     * owning company's where one is known, and the answer comes back in the
+     * application's zone so it can be compared with `now()` without further
+     * conversion. Omitting the zone keeps the application's own, which is what
+     * the two screens that preview a first run from a start date want.
      */
-    public static function getNextInvoiceDate(string $frequency, string $starts_at): string
+    public static function getNextInvoiceDate(string $frequency, string $from, ?string $timezone = null): string
     {
-        $schedule = new CronExpression($frequency);
-        $zone = config('app.timezone', 'UTC');
+        $appZone = config('app.timezone', 'UTC');
+        $zone = $timezone ?: $appZone;
 
-        return $schedule->getNextRunDate($starts_at, 0, false, $zone)->format('Y-m-d H:i:s');
+        $next = (new CronExpression($frequency))->getNextRunDate($from, 0, false, $zone);
+
+        return Carbon::instance($next)->setTimezone($appZone)->format('Y-m-d H:i:s');
     }
 
     /**
-     * Recompute and store the date the next invoice falls due.
+     * Move the due date on to the next occurrence.
+     *
+     * Counted from now, not from `starts_at`: counting from the start date
+     * pinned this column to the first occurrence forever, so the figure the
+     * schedule screen shows stopped being true the moment the first invoice
+     * was generated. A schedule that has not started yet counts from its start
+     * date instead, so it cannot come due early.
      */
-    public function updateNextInvoiceDate(): void
+    public function updateNextInvoiceDate(?string $from = null): void
     {
-        $this->next_invoice_at = self::getNextInvoiceDate($this->frequency, $this->starts_at);
+        $this->next_invoice_at = self::getNextInvoiceDate(
+            $this->frequency,
+            $this->nextRunCountsFrom($from),
+            $this->companyTimeZone(),
+        );
+
         $this->save();
+    }
+
+    /**
+     * The point the next occurrence is measured from: now, unless the schedule
+     * has a start date still in the future.
+     */
+    public function nextRunCountsFrom(?string $from = null): string
+    {
+        $moment = Carbon::parse($from ?: Carbon::now());
+
+        if ($this->starts_at && Carbon::parse($this->starts_at)->greaterThan($moment)) {
+            $moment = Carbon::parse($this->starts_at);
+        }
+
+        return $moment->format('Y-m-d H:i:s');
+    }
+
+    /**
+     * The time zone the owning company keeps its books in.
+     */
+    public function companyTimeZone(): ?string
+    {
+        $zone = CompanySetting::getSetting('time_zone', $this->company_id);
+
+        return $zone ?: null;
     }
 
     /**

@@ -20,18 +20,28 @@ class CronJobMiddleware
     /**
      * Forward the request only when the presented token matches the one in
      * the configuration; anything else is refused outright.
+     *
+     * An install that has configured no token is not using this endpoint, so
+     * it is refused before any comparison: the alternative is a deployment
+     * where the secret is the empty string. The comparison itself is on
+     * strings and in constant time, because a loose one would have let any
+     * header through had the configured value ever been boolean true.
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $presented = $request->header(self::TOKEN_HEADER);
+        $configured = config('services.cron_job.auth_token');
 
-        // An empty (or literally "0") header is treated as no token at all,
-        // so it can never match, whatever the configured token happens to be.
-        if (! $presented) {
+        if (! is_scalar($configured) || (string) $configured === '') {
             return $this->refuse();
         }
 
-        return $presented == config('services.cron_job.auth_token')
+        $presented = $request->header(self::TOKEN_HEADER);
+
+        if (! is_string($presented) || $presented === '') {
+            return $this->refuse();
+        }
+
+        return hash_equals((string) $configured, $presented)
             ? $next($request)
             : $this->refuse();
     }

@@ -114,7 +114,14 @@ class RecurringInvoiceService
         return true;
     }
 
-    public function generateInvoice(RecurringInvoice $recurringInvoice): void
+    /**
+     * Mint one invoice from a schedule, if the schedule is still owed one.
+     *
+     * `$advanceSchedule` is false when the caller has already claimed the row
+     * by moving `next_invoice_at` on itself, which is how the scheduled
+     * command stops two runs in the same minute from billing twice.
+     */
+    public function generateInvoice(RecurringInvoice $recurringInvoice, bool $advanceSchedule = true): void
     {
         if (Carbon::now()->lessThan($recurringInvoice->starts_at)) {
             return;
@@ -126,7 +133,7 @@ class RecurringInvoiceService
 
             if ($endDate >= $startDate) {
                 $this->createInvoiceFromRecurring($recurringInvoice);
-                $recurringInvoice->updateNextInvoiceDate();
+                $this->advance($recurringInvoice, $advanceSchedule);
             } else {
                 $recurringInvoice->markStatusAsCompleted();
             }
@@ -135,12 +142,22 @@ class RecurringInvoiceService
 
             if ($invoiceCount < $recurringInvoice->limit_count) {
                 $this->createInvoiceFromRecurring($recurringInvoice);
-                $recurringInvoice->updateNextInvoiceDate();
+                $this->advance($recurringInvoice, $advanceSchedule);
             } else {
                 $recurringInvoice->markStatusAsCompleted();
             }
         } else {
             $this->createInvoiceFromRecurring($recurringInvoice);
+            $this->advance($recurringInvoice, $advanceSchedule);
+        }
+    }
+
+    /**
+     * Move the schedule on, unless the caller already did it.
+     */
+    private function advance(RecurringInvoice $recurringInvoice, bool $advanceSchedule): void
+    {
+        if ($advanceSchedule) {
             $recurringInvoice->updateNextInvoiceDate();
         }
     }
