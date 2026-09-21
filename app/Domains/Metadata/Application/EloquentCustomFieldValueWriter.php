@@ -60,8 +60,10 @@ class EloquentCustomFieldValueWriter implements CustomFieldValueWriter
      * Nothing upstream checks the submitted id: no form request declares a
      * rule for it, so an id belonging to another company, or to no field at
      * all, reaches this class as-is. A record that knows its own company may
-     * only answer that company's definitions. A record that does not know one
-     * -- a user, who belongs to several -- is left to the definition it names.
+     * only answer that company's definitions, which it names through
+     * `customFieldCompanyId()` because a company itself carries no
+     * `company_id`. A record that belongs to no single company -- a user, who
+     * belongs to several -- is left to the definition it names.
      */
     private function definitionFor(Model $valuable, mixed $id): ?CustomField
     {
@@ -70,7 +72,9 @@ class EloquentCustomFieldValueWriter implements CustomFieldValueWriter
         }
 
         $query = CustomField::query()->whereKey($id);
-        $company = $valuable->getAttribute('company_id');
+        $company = method_exists($valuable, 'customFieldCompanyId')
+            ? $valuable->customFieldCompanyId()
+            : $valuable->getAttribute('company_id');
 
         if ($company !== null) {
             $query->where('company_id', $company);

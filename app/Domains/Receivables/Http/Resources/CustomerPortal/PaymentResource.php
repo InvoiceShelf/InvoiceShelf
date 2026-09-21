@@ -81,8 +81,8 @@ class PaymentResource extends JsonResource
                 fn () => new PaymentMethodResource($payment->paymentMethod)
             ),
             'fields' => $this->when(
-                $payment->fields()->exists(),
-                fn () => CustomFieldValueResource::collection($payment->fields)
+                $payment->printedFields()->exists(),
+                fn () => CustomFieldValueResource::collection($payment->printedFields)
             ),
             'company' => $this->when(
                 $payment->company()->exists(),

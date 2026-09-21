@@ -97,6 +97,36 @@ class DocumentItemService
     }
 
     /**
+     * A document's line items as an array that carries their custom field
+     * answers, ready to hand back to {@see createItems()}.
+     *
+     * `$document->items->toArray()` alone does not: the answers live on a
+     * relation, and createItems only attaches what arrives under a
+     * `custom_fields` key. Every duplicate and convert path went through that
+     * gap, so a warranty or a service period typed on each line vanished from
+     * the copy and its printed column came out blank.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function itemsForCopy(Model $document): array
+    {
+        $document->loadMissing('items.fields');
+
+        return $document->items->map(function ($item) {
+            $row = $item->toArray();
+
+            $row['custom_fields'] = $item->fields
+                ->map(fn ($answer) => [
+                    'id' => $answer->custom_field_id,
+                    'value' => $answer->defaultAnswer,
+                ])
+                ->all();
+
+            return $row;
+        })->all();
+    }
+
+    /**
      * Persist the document-level tax rows.
      *
      * $recompute = false has the same meaning as in {@see createItems()}: the

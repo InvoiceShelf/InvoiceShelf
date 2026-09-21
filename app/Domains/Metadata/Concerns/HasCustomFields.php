@@ -32,6 +32,38 @@ trait HasCustomFields
     }
 
     /**
+     * The company whose definitions this record may answer, or null when it
+     * belongs to no single one.
+     *
+     * Almost every record carries a `company_id`. A company does not -- its
+     * own key is the answer -- and a user belongs to several, so a user is
+     * left unscoped here and the definition it names decides.
+     */
+    public function customFieldCompanyId(): ?int
+    {
+        $company = $this->getAttribute('company_id');
+
+        return $company === null ? null : (int) $company;
+    }
+
+    /**
+     * Only the answers whose definition is meant to be seen outside the
+     * admin interface.
+     *
+     * What the customer portal serialises. An `internal` definition is the
+     * private note #327 asked for, so it must not travel to the person the
+     * document was sent to; filtering on the relation keeps that decision in
+     * one place rather than in each of the seven portal resources.
+     */
+    public function printedFields(): MorphMany
+    {
+        return $this->fields()->whereHas(
+            'customField',
+            fn ($definition) => $definition->wherePrinted()
+        );
+    }
+
+    /**
      * Drop the answers when the record that owns them goes.
      *
      * The existence check spares the delete statement when there is nothing

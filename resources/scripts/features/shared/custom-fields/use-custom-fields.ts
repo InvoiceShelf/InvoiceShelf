@@ -19,6 +19,8 @@ export interface CustomFieldItem {
   placeholder: string | null
   order: number | null
   type: string
+  /** 'internal' or 'document'. */
+  placement?: string
   custom_field_id?: number
   custom_field?: {
     label: string

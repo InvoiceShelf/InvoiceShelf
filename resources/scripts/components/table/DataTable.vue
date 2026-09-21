@@ -311,6 +311,21 @@ const tableColumns = reactive<TableColumn[]>(
   props.columns.map((column) => createColumn(column))
 )
 
+// Columns were read once at setup, so a caller whose set arrives later --
+// the item list, whose custom-field columns are fetched -- never showed them.
+// Keyed on the column set rather than watched deeply, so a re-rendered but
+// unchanged list leaves the sort state alone.
+watch(
+  () => props.columns.map((column) => `${column.key}:${column.label ?? ''}`).join('|'),
+  () => {
+    tableColumns.splice(
+      0,
+      tableColumns.length,
+      ...props.columns.map((column) => createColumn(column))
+    )
+  }
+)
+
 const sort = reactive<SortState>({
   fieldName: '',
   order: '',

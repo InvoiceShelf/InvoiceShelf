@@ -64,8 +64,8 @@ class ExpenseResource extends JsonResource
                 fn () => new ExpenseCategoryResource($expense->category)
             ),
             'fields' => $this->when(
-                $expense->fields()->exists(),
-                fn () => CustomFieldValueResource::collection($expense->fields)
+                $expense->printedFields()->exists(),
+                fn () => CustomFieldValueResource::collection($expense->printedFields)
             ),
             'company' => $this->when(
                 $expense->company()->exists(),

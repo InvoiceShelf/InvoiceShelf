@@ -40,10 +40,9 @@ class ItemResource extends JsonResource
             'updated_at' => $this->updated_at,
             'tax_per_item' => $this->tax_per_item,
             'formatted_created_at' => $this->formattedCreatedAt,
-            'fields' => $this->when(
-                $this->fields()->exists(),
-                fn () => CustomFieldValueResource::collection($this->fields)
-            ),
+            // Loaded by the caller: the listing eager-loads it, so asking
+            // the database per row would undo that.
+            'fields' => CustomFieldValueResource::collection($this->whenLoaded('fields')),
             'unit' => $this->when(
                 $this->unit()->exists(),
                 fn () => new UnitResource($this->unit)

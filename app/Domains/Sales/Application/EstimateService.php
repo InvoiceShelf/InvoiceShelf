@@ -294,7 +294,7 @@ class EstimateService implements EstimatePdfDataProvider
         $newEstimate->save();
 
         $estimate->load('items.taxes');
-        $this->documentItemService->createItems($newEstimate, $estimate->items->toArray());
+        $this->documentItemService->createItems($newEstimate, $this->documentItemService->itemsForCopy($estimate));
 
         if ($estimate->taxes) {
             $this->documentItemService->createTaxes($newEstimate, $estimate->taxes->toArray());
@@ -383,7 +383,7 @@ class EstimateService implements EstimatePdfDataProvider
         $invoice->unique_hash = Hashids::connection(HashidConnection::Invoice->value)->encode($invoice->id);
         $invoice->save();
 
-        $this->documentItemService->createItems($invoice, $estimate->items->toArray());
+        $this->documentItemService->createItems($invoice, $this->documentItemService->itemsForCopy($estimate));
 
         if ($estimate->taxes) {
             $this->documentItemService->createTaxes($invoice, $estimate->taxes->toArray());

@@ -1,5 +1,6 @@
 <?php
 
+use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\User;
 use App\Domains\Catalog\Models\Item;
 use App\Domains\Metadata\Contracts\CustomFieldValueWriter;
@@ -127,4 +128,19 @@ test('a document line keeps its own answers, separate from the item it came from
 
     // The catalogue entry keeps what it had.
     expect($item->fields()->sole()->string_answer)->toBe('24 months');
+});
+
+test('a company cannot answer another company definition', function () {
+    $foreign = CustomField::factory()->create([
+        'company_id' => Company::factory()->create()->id,
+        'model_type' => 'Company',
+        'type' => 'Input',
+    ]);
+
+    // A company carries no company_id of its own, so the writer has to ask it
+    // which company it is rather than read an attribute that is not there.
+    app(CustomFieldValueWriter::class)
+        ->update($this->company, [['id' => $foreign->id, 'value' => 'leaked']]);
+
+    expect($this->company->fields()->count())->toBe(0);
 });

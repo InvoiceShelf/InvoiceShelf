@@ -407,7 +407,7 @@ class InvoiceService implements InvoicePdfDataProvider
         $newInvoice->save();
 
         $invoice->load('items.taxes');
-        $this->documentItemService->createItems($newInvoice, $invoice->items->toArray());
+        $this->documentItemService->createItems($newInvoice, $this->documentItemService->itemsForCopy($invoice));
 
         if ($invoice->taxes) {
             $this->documentItemService->createTaxes($newInvoice, $invoice->taxes->toArray());
@@ -478,7 +478,7 @@ class InvoiceService implements InvoicePdfDataProvider
         $estimate->unique_hash = Hashids::connection(HashidConnection::Estimate->value)->encode($estimate->id);
         $estimate->save();
 
-        $this->documentItemService->createItems($estimate, $invoice->items->toArray());
+        $this->documentItemService->createItems($estimate, $this->documentItemService->itemsForCopy($invoice));
 
         if ($invoice->taxes) {
             $this->documentItemService->createTaxes($estimate, $invoice->taxes->toArray());

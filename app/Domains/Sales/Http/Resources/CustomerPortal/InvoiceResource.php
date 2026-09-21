@@ -85,8 +85,8 @@ class InvoiceResource extends JsonResource
                 fn () => TaxResource::collection($invoice->taxes)
             ),
             'fields' => $this->when(
-                $invoice->fields()->exists(),
-                fn () => CustomFieldValueResource::collection($invoice->fields)
+                $invoice->printedFields()->exists(),
+                fn () => CustomFieldValueResource::collection($invoice->printedFields)
             ),
             'company' => $this->when(
                 $invoice->company()->exists(),
