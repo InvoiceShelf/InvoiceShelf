@@ -7,7 +7,11 @@ on:
     inputs:
       register_tag:
         description: 'Release tag to (re-)register on the updater, e.g. 2.4.2.'
-        required: true
+        required: false
+      docker_dry_run:
+        description: 'Build both architecture images from this branch without pushing or tagging anything, to measure build time.'
+        type: boolean
+        default: false
 
 # Single source of truth for which major owns the moving stable tags
 # (:latest, :{major}, :{major}.{minor}) and the temporary :nightly alias.
@@ -140,9 +144,11 @@ jobs:
           fi
           echo "$TAG is registered and downloadable."
 
-  release_docker_build:
-    name: 🐳 Release Docker Build
-    if: github.event_name == 'release'
+  # Both architecture builds need this check, and it must run once rather than
+  # per matrix leg, so it is its own job and they depend on it.
+  docker_guard:
+    name: 🔒 Release provenance
+    if: github.event_name == 'release' || inputs.docker_dry_run
     runs-on: ubuntu-latest
     steps:
       # Releases are cut by pushing a tag: release.yaml runs the tests, builds the
@@ -151,6 +157,7 @@ jobs:
       # updater is already protected — registration downloads this same asset and
       # fails without it.
       - name: Refuse a release that did not come from the pipeline
+        if: github.event_name == 'release'
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ github.event.release.tag_name }}
@@ -161,8 +168,100 @@ jobs:
             exit 1
           fi
 
+  # One job per architecture, each on a runner of that architecture. Building both
+  # platforms on one amd64 runner meant the arm64 half compiled every PHP extension
+  # under QEMU: `install-php-extensions intl` alone took 272 seconds there, against
+  # seconds natively, and the whole job ran 18 to 23 minutes. arm64 runners are free
+  # and unlimited on public repositories.
+  #
+  # Neither job tags anything. Each pushes its image by digest, and the manifest that
+  # carries the tags is assembled once, below, because a tag belongs to the manifest
+  # rather than to either architecture.
+  release_docker_build:
+    name: 🐳 Build ${{ matrix.platform }}
+    needs: docker_guard
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux/amd64
+            runner: ubuntu-latest
+          - platform: linux/arm64
+            runner: ubuntu-24.04-arm
+    steps:
+      - name: Name this platform for artifacts
+        env:
+          PLATFORM: ${{ matrix.platform }}
+        run: echo "PLATFORM_SLUG=${PLATFORM//\//-}" >> "$GITHUB_ENV"
+
       - name: Checkout code
         uses: actions/checkout@v6
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      # Labels only. The tag rules live in the manifest job.
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: invoiceshelf/invoiceshelf
+
+      # A dry run exports nothing, so it can be dispatched from a branch to measure
+      # build time without publishing anything, taggged or untagged.
+      - name: Build and push by digest
+        id: build
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: docker/production/Dockerfile
+          platforms: ${{ matrix.platform }}
+          labels: ${{ steps.meta.outputs.labels }}
+          outputs: ${{ github.event_name == 'release' && 'type=image,name=invoiceshelf/invoiceshelf,push-by-digest=true,name-canonical=true,push=true' || 'type=cacheonly' }}
+          # Scoped per platform, or the two jobs overwrite each other's cache.
+          cache-from: type=gha,scope=${{ matrix.platform }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.platform }}
+          secrets: |
+            composer_auth={"github-oauth":{"github.com":"${{ secrets.GITHUB_TOKEN }}"}}
+
+      - name: Export the digest
+        if: github.event_name == 'release'
+        env:
+          DIGEST: ${{ steps.build.outputs.digest }}
+        run: |
+          mkdir -p /tmp/digests
+          touch "/tmp/digests/${DIGEST#sha256:}"
+
+      - name: Upload the digest
+        if: github.event_name == 'release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: digest-${{ env.PLATFORM_SLUG }}
+          path: /tmp/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  # The tags, and the only place they are decided. Unchanged from when this was one
+  # job: a manifest referencing both digests is published under each tag.
+  release_docker_manifest:
+    name: 🐳 Publish the multi-architecture tags
+    needs: release_docker_build
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download the digests
+        uses: actions/download-artifact@v5
+        with:
+          path: /tmp/digests
+          pattern: digest-*
+          merge-multiple: true
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
@@ -198,16 +297,24 @@ jobs:
             # onto stable until they migrate. Remove this line at the 3.0.0 GA flip.
             type=raw,value=nightly,enable=${{ !contains(github.ref_name, '-') && startsWith(github.ref_name, format('{0}.', env.LATEST_MAJOR)) }}
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v7
-        with:
-          context: .
-          file: docker/production/Dockerfile
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          secrets: |
-            composer_auth={"github-oauth":{"github.com":"${{ secrets.GITHUB_TOKEN }}"}}
+      - name: Create the manifest
+        working-directory: /tmp/digests
+        run: |
+          docker buildx imagetools create \
+            $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+            $(printf 'invoiceshelf/invoiceshelf@sha256:%s ' *)
+
+      # Proof that both architectures actually made it into the published tag, which
+      # a per-architecture build can otherwise get wrong silently.
+      - name: Verify both architectures are published
+        env:
+          VERSION: ${{ steps.meta.outputs.version }}
+        run: |
+          docker buildx imagetools inspect "invoiceshelf/invoiceshelf:$VERSION" --format '{{json .Manifest}}' > /tmp/manifest.json
+          for arch in amd64 arm64; do
+            if ! jq -e --arg a "$arch" '.manifests[]? | select(.platform.architecture == $a)' /tmp/manifest.json > /dev/null; then
+              echo "::error::invoiceshelf/invoiceshelf:$VERSION has no $arch image."
+              exit 1
+            fi
+          done
+          echo "$VERSION publishes amd64 and arm64."
