@@ -7,6 +7,37 @@ section beneath it is what CI publishes to the updater — see
 Releases before 2.4.0 are on GitHub:
 https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 2.4.3 — 2026-09-21
+
+Maintenance release for the 2.x line. Recurring invoices have never been generated on a container install, and this fixes that. Recommended for every 2.x install.
+
+### Recurring invoices were never created
+
+Nothing started Laravel's scheduler. No compose file defined one, no entrypoint started one, and the base image ships none, so everything on the schedule was dead: recurring invoices were never generated, invoices were never flagged overdue and estimates never expired. The image now supervises the scheduler alongside the web server, so a container install needs no crontab of its own.
+
+The documentation made this hard to spot, because it said cron was handled for you in Docker. It never was.
+
+### The cron webhook refused every call
+
+`GET /api/cron` exists for hosts that can run neither a crontab nor a long-running process. Its middleware compares the request against a configuration key that was deleted in #479 without the middleware being touched, so the endpoint has rejected every caller since 2025-09-19, whatever you set in your environment.
+
+The key is restored, the comparison is constant time, and the endpoint refuses outright when no token is configured. It also runs the scheduler at most once a minute now, so calling it more often than intended cannot generate the same invoice twice.
+
+### The next invoice date never advanced
+
+It was recomputed from the schedule's start date on every run, so it stayed pinned to the first occurrence and the date on the schedule screen was wrong from the first generated invoice onwards. It now counts from the present, in the company's own time zone, and a migration corrects the stored values.
+
+### Upgrade notes
+
+- The container now runs the scheduler as a supervised service. Set `SCHEDULER_ENABLED=false` only if you drive the schedule elsewhere, such as a separate scheduler container.
+- On a bare-metal install, keep your existing crontab entry. Nothing changes for you.
+- `CRON_JOB_AUTH_TOKEN` enables the webhook again. The endpoint stays refused while it is unset.
+- A migration moves every recurring invoice's next run into the future. Periods missed while no scheduler ran are skipped rather than billed at once, which is deliberate on installs where the scheduler has never run.
+
+This release also carries the release-pipeline work described under 2.4.3-beta.1 through beta.3, which has no effect on the application.
+
+Docker: `invoiceshelf/invoiceshelf:2.4.3` (also `:2.4`, `:2` and `:latest`).
+
 ## 2.4.3-beta.3 — 2026-07-29
 
 A third pre-release, cut to verify the release pipeline end to end after the previous one exposed a hole in it. **It contains no application changes.**
