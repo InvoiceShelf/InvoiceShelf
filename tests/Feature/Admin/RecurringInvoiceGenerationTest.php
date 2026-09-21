@@ -162,3 +162,16 @@ test('the configured cron token is read from the environment', function () {
 
     expect($configuration)->toHaveKey('cron_job');
 });
+
+test('the cron webhook runs the scheduler once a minute however often it is called', function () {
+    // Laravel decides what is due from the current minute, so a second run
+    // inside the same minute would bill the same schedule again on any branch
+    // whose generation is not itself idempotent.
+    config(['services.cron_job.auth_token' => 'a-real-token']);
+
+    $this->withHeaders(['x-authorization-token' => 'a-real-token'])
+        ->getJson('/api/cron')->assertOk()->assertJson(['success' => true, 'ran' => true]);
+
+    $this->withHeaders(['x-authorization-token' => 'a-real-token'])
+        ->getJson('/api/cron')->assertOk()->assertJson(['success' => true, 'ran' => false]);
+});
