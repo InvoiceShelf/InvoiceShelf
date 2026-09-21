@@ -40,6 +40,15 @@ return [
         ],
     ],
 
+    /*
+     * Shared secret for the cron webhook at GET /api/cron, which lets an
+     * external scheduler drive Laravel's own on hosts that cannot register a
+     * crontab entry. Leave it unset and the endpoint refuses everything.
+     */
+    'cron_job' => [
+        'auth_token' => env('CRON_JOB_AUTH_TOKEN'),
+    ],
+
     'ses' => [
         'key' => env('SES_KEY'),
         'secret' => env('SES_SECRET'),

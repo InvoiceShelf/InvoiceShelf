@@ -25,6 +25,13 @@ FROM serversideup/php:8.4-fpm-nginx-alpine AS base
     COPY --chmod=755 docker/production/inject.sh /inject.sh
     COPY --chmod=755 docker/production/entrypoint.d/ /etc/entrypoint.d/
 
+    # Supervise Laravel's scheduler next to nginx and php-fpm. The base image
+    # starts neither a cron daemon nor a scheduler, so without this service
+    # nothing in routes/console.php ever runs: no recurring invoices, no
+    # overdue flagging, no estimate expiry. Set SCHEDULER_ENABLED=false to run
+    # the schedule from somewhere else instead.
+    COPY --chmod=755 docker/production/s6-overlay/ /etc/s6-overlay/
+
 FROM base AS production
     ENV AUTORUN_ENABLED=true
     ENV PHP_OPCACHE_ENABLE=1

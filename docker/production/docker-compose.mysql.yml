@@ -45,6 +45,14 @@ services:
       - SESSION_DRIVER=file
       - SESSION_LIFETIME=240
       - SESSION_DOMAIN=localhost
+      # The image runs Laravel's scheduler itself, which is what generates
+      # recurring invoices and flags overdue documents. Set this to false only
+      # if you run the schedule elsewhere, for example a second container with
+      #   command: ["php", "/var/www/html/artisan", "schedule:work"]
+      #   stop_signal: SIGTERM
+      #   healthcheck: {test: ["CMD", "healthcheck-schedule"], start_period: 10s}
+      # or more than one replica of this one.
+      # - SCHEDULER_ENABLED=true
       - SANCTUM_STATEFUL_DOMAINS=localhost:8090
     volumes:
       - invoiceshelf_storage:/var/www/html/storage/

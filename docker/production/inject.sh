@@ -83,4 +83,8 @@ fi
 if [ "$SESSION_DOMAIN" != '' ]; then
    replace_or_insert "SESSION_DOMAIN" "$SESSION_DOMAIN"
 fi
-
+# Shared secret for the GET /api/cron webhook, for installs that drive the
+# schedule from an external service rather than the built-in scheduler.
+if [ "$CRON_JOB_AUTH_TOKEN" != '' ]; then
+   replace_or_insert "CRON_JOB_AUTH_TOKEN" "$CRON_JOB_AUTH_TOKEN"
+fi
