@@ -31,6 +31,7 @@ beforeEach(function () {
         'model_type' => 'Item',
         'type' => 'Input',
         'label' => 'Service Period',
+        'placement' => 'document',
     ]);
 
     CustomField::factory()->create([
@@ -38,6 +39,7 @@ beforeEach(function () {
         'model_type' => 'Item',
         'type' => 'Input',
         'label' => 'Someone Elses Column',
+        'placement' => 'document',
     ]);
 });
 

@@ -31,6 +31,8 @@ export interface CustomField {
   slug: string
   label: string
   model_type: CustomFieldModelType
+  /** 'internal' or 'document'; whether it prints on the record's PDF. */
+  placement?: string
   type: CustomFieldType
   placeholder: string | null
   options: string[] | null

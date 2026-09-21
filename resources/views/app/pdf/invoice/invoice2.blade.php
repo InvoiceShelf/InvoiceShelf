@@ -420,6 +420,7 @@
                     <h1>@lang($invoice->isCreditNote() ? 'pdf_credit_note_label' : 'pdf_invoice_label')</h1>
                     <h4>{{ $invoice->invoice_number }}</h4>
                     <h4>{{ $invoice->formattedInvoiceDate }}</h4>
+                    @include('app.pdf.partials.document-custom-fields-stacked', ['document' => $invoice])
                 </td>
             </tr>
         </table>

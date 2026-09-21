@@ -3,6 +3,7 @@
 namespace App\Domains\Metadata\Http\Requests;
 
 use App\Domains\Metadata\Application\CustomFieldModelCatalog;
+use App\Domains\Metadata\Models\CustomField;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -39,6 +40,10 @@ class CustomFieldRequest extends FormRequest
             'is_required' => ['required', 'boolean'],
             'options' => ['array', 'nullable'],
             'placeholder' => ['string', 'nullable'],
+            'placement' => ['sometimes', Rule::in([
+                CustomField::PLACEMENT_INTERNAL,
+                CustomField::PLACEMENT_DOCUMENT,
+            ])],
         ];
     }
 }

@@ -452,6 +452,7 @@
                         <td class="attribute-label">@lang('pdf_estimate_expire_date')</td>
                         <td class="attribute-value"> &nbsp;{{ $estimate->formattedExpiryDate }}</td>
                     </tr>
+                    @include('app.pdf.partials.document-custom-fields', ['document' => $estimate])
                 </table>
             </div>
             <div style="clear: both;"></div>

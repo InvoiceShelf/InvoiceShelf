@@ -17,6 +17,7 @@ export interface CreateCustomFieldPayload {
   is_required?: boolean
   options?: string[]
   order?: number | null
+  placement?: string
   default_answer?: string | null
 }
 

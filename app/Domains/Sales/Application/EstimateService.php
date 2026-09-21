@@ -188,6 +188,17 @@ class EstimateService implements EstimatePdfDataProvider
         $customFields = CustomField::query()
             ->where('company_id', $estimate->company_id)
             ->where('model_type', 'Item')
+            ->wherePrinted()
+            ->get();
+
+        // Document-level definitions the author asked to have printed. They
+        // render in the details block beside the number and the dates, which
+        // is where a custom date belongs (#237).
+        $documentFields = CustomField::query()
+            ->where('company_id', $estimate->company_id)
+            ->where('model_type', 'Estimate')
+            ->wherePrinted()
+            ->orderBy('order')
             ->get();
 
         App::setLocale($language);
@@ -198,6 +209,7 @@ class EstimateService implements EstimatePdfDataProvider
         View::share([
             'estimate' => $estimate,
             'customFields' => $customFields,
+            'documentFields' => $documentFields,
             'logo' => $logo ?? null,
             'company_address' => $estimate->getCompanyAddress(),
             'shipping_address' => $estimate->getCustomerShippingAddress(),

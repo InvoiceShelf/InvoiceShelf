@@ -17,14 +17,18 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * whichever of the six typed columns the input type maps to, exactly the way
  * a record's own answer is, so a single mapping helper serves both.
  *
- * Two things are looser than they look. The record type is a free string:
- * nothing checks it against the handful of types the interface offers. And
- * the slug a template addresses the field by is stamped once, at creation,
- * and never recomputed, so renaming a field leaves every placeholder that
- * already names it working.
+ * One thing is looser than it looks: the slug a template addresses the field
+ * by is stamped once, at creation, and never recomputed, so renaming a field
+ * leaves every placeholder that already names it working.
  */
 class CustomField extends Model
 {
+    /** Answered and read in the interface, never printed. */
+    public const PLACEMENT_INTERNAL = 'internal';
+
+    /** Printed on the document the record belongs to. */
+    public const PLACEMENT_DOCUMENT = 'document';
+
     protected $table = 'custom_fields';
 
     use HasFactory;
@@ -145,6 +149,14 @@ class CustomField extends Model
             $grouped->where('label', 'LIKE', $needle)
                 ->orWhere('name', 'LIKE', $needle);
         });
+    }
+
+    /**
+     * Only the definitions meant to appear on the printed document.
+     */
+    public function scopeWherePrinted($query)
+    {
+        $query->where('custom_fields.placement', self::PLACEMENT_DOCUMENT);
     }
 
     /**
