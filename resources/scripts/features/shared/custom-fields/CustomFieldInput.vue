@@ -15,10 +15,11 @@
 </template>
 
 <script setup lang="ts">
-import { defineAsyncComponent, computed } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { helpers, requiredIf } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
+import { resolveCustomFieldTypeComponent } from './resolve-type-component'
 
 const props = defineProps<{
   field: Record<string, any>
@@ -45,13 +46,7 @@ const v$ = useVuelidate(
   { $scope: props.customFieldScope }
 )
 
-const getTypeComponent = computed(() => {
-  if (props.field.type) {
-    return defineAsyncComponent(() =>
-      import(`./types/${props.field.type}Type.vue`)
-    )
-  }
-
-  return false
-})
+const getTypeComponent = computed(() =>
+  resolveCustomFieldTypeComponent(props.field.type)
+)
 </script>

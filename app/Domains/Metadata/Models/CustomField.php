@@ -73,29 +73,13 @@ class CustomField extends Model
     /**
      * Reduce a time-of-day fallback to H:i:s.
      *
-     * An empty value never reaches the attribute bag -- not even as null --
-     * so clearing the time on a definition that already has one silently
-     * leaves the old time in place. A value the parser cannot read becomes
-     * midnight rather than an error.
+     * An empty value is written through as null so the fallback can be
+     * cleared, matching the answer model's copy of this mutator. A value the
+     * parser cannot read becomes midnight rather than an error.
      */
     public function setTimeAnswerAttribute(mixed $value): void
     {
-        if ($value) {
-            $this->attributes['time_answer'] = date('H:i:s', strtotime($value));
-        }
-    }
-
-    /**
-     * Encode the option list on the way in.
-     *
-     * A set mutator wins over the array cast, so this runs in its place and
-     * encodes whatever arrives: null is stored as the four characters "null",
-     * and a string that is already JSON is encoded a second time and reads
-     * back as a string rather than as the structure it spells.
-     */
-    public function setOptionsAttribute(mixed $value): void
-    {
-        $this->attributes['options'] = json_encode($value);
+        $this->attributes['time_answer'] = $value ? date('H:i:s', strtotime($value)) : null;
     }
 
     /**

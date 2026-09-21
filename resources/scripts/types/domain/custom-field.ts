@@ -1,10 +1,17 @@
 import type { Company } from './company'
 
+/**
+ * The stored `type` of a field definition, which is also the name of the
+ * component it is edited with: `Input` renders `types/InputType.vue`.
+ *
+ * These are the values, not the labels shown in the editor -- the dropdown
+ * offers "Text", "URL" and "Select Field" for `Input`, `Url` and `Dropdown`.
+ */
 export type CustomFieldType =
-  | 'Text'
-  | 'Textarea'
+  | 'Input'
+  | 'TextArea'
   | 'Phone'
-  | 'URL'
+  | 'Url'
   | 'Number'
   | 'Dropdown'
   | 'Switch'

@@ -16,7 +16,7 @@ import useVuelidate from '@vuelidate/core'
 import { useCustomerStore } from '../store'
 import { useGlobalStore } from '../../../../stores/global.store'
 import { useCompanyStore } from '../../../../stores/company.store'
-import CustomerCustomFields from '@/scripts/features/company/customers/components/CreateCustomFields.vue'
+import CustomFieldsGrid from '@/scripts/features/shared/custom-fields/CustomFieldsGrid.vue'
 import CopyInputField from '@/scripts/features/company/customers/components/CopyInputField.vue'
 
 const customerStore = useCustomerStore()
@@ -723,7 +723,7 @@ async function submitCustomerData(): Promise<void> {
           </h6>
 
           <div class="col-span-5 lg:col-span-4">
-            <CustomerCustomFields
+            <CustomFieldsGrid
               type="Customer"
               :store="customerStore"
               store-prop="currentCustomer"

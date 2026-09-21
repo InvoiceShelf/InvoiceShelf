@@ -3,7 +3,7 @@ import { computed, watch } from 'vue'
 import lodash from 'lodash'
 import { parse, format } from 'date-fns'
 import { customFieldService } from '@/scripts/api/services/custom-field.service'
-import SingleField from './CreateCustomFieldsSingle.vue'
+import SingleField from './CustomFieldInput.vue'
 
 interface CustomFieldItem {
   id: number

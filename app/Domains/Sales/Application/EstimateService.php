@@ -180,7 +180,15 @@ class EstimateService implements EstimatePdfDataProvider
 
         $company = Company::find($estimate->company_id);
         $language = CompanySetting::getSetting('language', $company->id);
-        $customFields = CustomField::query()->where('model_type', 'Item')->get();
+        // Scoped to this document's company: the definitions become column
+        // headers on the rendered page, so an unscoped lookup would print one
+        // tenant's field labels on another's documents. Not whereCompany(),
+        // which reads the request header and so is wrong for a portal
+        // download or a queued mail job.
+        $customFields = CustomField::query()
+            ->where('company_id', $estimate->company_id)
+            ->where('model_type', 'Item')
+            ->get();
 
         App::setLocale($language);
 
