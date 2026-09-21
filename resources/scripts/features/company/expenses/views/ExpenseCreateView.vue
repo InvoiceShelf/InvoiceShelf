@@ -222,6 +222,16 @@
           :is-loading="isFetchingInitialData"
         />
 
+
+        <CustomFieldsSection
+          type="Expense"
+          :store="expenseStore"
+          store-prop="currentExpense"
+          :is-edit="isEdit"
+          :is-loading="isFetchingInitialData"
+          :scope="customFieldValidationScope"
+        />
+
         <!-- Mobile Save Button -->
         <div class="mt-4 block md:hidden">
           <BaseButton
@@ -259,6 +269,7 @@ import { useGlobalStore } from '../../../../stores/global.store'
 import { useCompanyStore } from '../../../../stores/company.store'
 import { ExchangeRateConverter } from '../../../shared/document-form'
 import ExpenseTaxSection from '../components/ExpenseTaxSection.vue'
+import CustomFieldsSection from '@/scripts/features/shared/custom-fields/CustomFieldsSection.vue'
 import type { ExpenseCategory } from '../../../../types/domain/expense'
 import type { Customer } from '../../../../types/domain/customer'
 import type { Currency } from '../../../../types/domain/currency'
@@ -266,6 +277,8 @@ import type { Currency } from '../../../../types/domain/currency'
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
+const customFieldValidationScope = 'customFields'
+
 const expenseStore = useExpenseStore()
 const globalStore = useGlobalStore()
 const companyStore = useCompanyStore()

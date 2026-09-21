@@ -67,6 +67,16 @@
           store-prop="newEstimate"
         />
 
+
+        <CustomFieldsSection
+          type="Estimate"
+          :store="estimateStore"
+          store-prop="newEstimate"
+          :is-edit="isEdit"
+          :is-loading="isLoadingContent"
+          :scope="estimateValidationScope"
+        />
+
         <!-- Estimate Footer Section -->
         <div
           class="block mt-10 estimate-foot lg:flex lg:justify-between lg:items-start"
@@ -115,6 +125,7 @@ import {
   decimal,
 } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
+import CustomFieldsSection from '@/scripts/features/shared/custom-fields/CustomFieldsSection.vue'
 import { useEstimateStore } from '../store'
 import { useCompanyStore } from '@/scripts/stores/company.store'
 import { useNotificationStore } from '@/scripts/stores/notification.store'

@@ -131,6 +131,16 @@
           <BaseCustomInput v-model="paymentStore.currentPayment.notes" :content-loading="isLoadingContent" :fields="paymentFields" class="mt-1" />
         </div>
 
+
+        <CustomFieldsSection
+          type="Payment"
+          :store="paymentStore"
+          store-prop="currentPayment"
+          :is-edit="isEdit"
+          :is-loading="isLoadingContent"
+          :scope="customFieldValidationScope"
+        />
+
         <BaseButton :loading="isSaving" :content-loading="isLoadingContent" variant="primary" type="submit" class="flex justify-center w-full mt-4 sm:hidden">
           {{ isEdit ? $t('payments.update_payment') : $t('payments.save_payment') }}
         </BaseButton>
@@ -144,6 +154,7 @@ import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { usePaymentStore } from '../store'
+import CustomFieldsSection from '@/scripts/features/shared/custom-fields/CustomFieldsSection.vue'
 import { useCompanyStore } from '../../../../stores/company.store'
 import { useNotificationStore } from '../../../../stores/notification.store'
 import { handleApiError, getErrorTranslationKey } from '../../../../utils/error-handling'
@@ -155,6 +166,8 @@ import type { Invoice } from '../../../../types/domain/invoice'
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
+const customFieldValidationScope = 'customFields'
+
 const paymentStore = usePaymentStore()
 const exchangeRateStore = paymentStore as unknown as Record<string, unknown> & { showExchangeRate: boolean }
 const companyStore = useCompanyStore()

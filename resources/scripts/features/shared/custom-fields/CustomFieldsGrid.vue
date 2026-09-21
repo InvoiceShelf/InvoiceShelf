@@ -26,16 +26,9 @@ interface CustomFieldItem {
   }
 }
 
-interface StoreWithProp {
-  [key: string]: {
-    customFields: CustomFieldItem[]
-    fields: CustomFieldItem[]
-  }
-}
-
 const props = withDefaults(
   defineProps<{
-    store: StoreWithProp
+    store: Record<string, any>
     storeProp: string
     isEdit?: boolean
     type?: string | null
@@ -51,8 +44,14 @@ const props = withDefaults(
   }
 )
 
-const storeData = computed(() => {
-  const data = props.store[props.storeProp]
+/** The two arrays this component reads off whichever store it was handed. */
+interface CustomFieldHolder {
+  customFields: CustomFieldItem[]
+  fields: CustomFieldItem[]
+}
+
+const storeData = computed<CustomFieldHolder | null>(() => {
+  const data = props.store[props.storeProp] as CustomFieldHolder | undefined
 
   if (!data) {
     return null
@@ -72,11 +71,13 @@ const storeData = computed(() => {
 getInitialCustomFields()
 
 function mergeExistingValues(): void {
-  if (props.isEdit && storeData.value) {
-    storeData.value.fields.forEach((field) => {
-      const existingIndex = storeData.value?.customFields.findIndex(
+  const data = storeData.value
+
+  if (props.isEdit && data) {
+    data.fields.forEach((field) => {
+      const existingIndex = data.customFields.findIndex(
         (f) => f.id === field.custom_field_id
-      ) ?? -1
+      )
 
       if (existingIndex > -1) {
         let value: string | boolean | number | null = field.default_answer
@@ -88,7 +89,7 @@ function mergeExistingValues(): void {
           )
         }
 
-        storeData.value.customFields[existingIndex] = {
+        data.customFields[existingIndex] = {
           ...field,
           id: field.custom_field_id ?? field.id,
           value,
