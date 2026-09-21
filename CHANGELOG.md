@@ -7,6 +7,35 @@ section beneath it is what CI publishes to the updater — see
 The 2.x line has its own CHANGELOG.md on the `2.x` branch. Releases are also on
 GitHub: https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 3.0.0-alpha.3 — 2026-09-21
+
+Third public alpha of InvoiceShelf 3.0. The module platform is complete and carries its first official module, and recurring invoices generate again on a container install.
+
+⚠️ **Pre-release — not for production.** Back up your database before upgrading and use this release for evaluation and testing only.
+
+### Highlights
+
+- **Recurring invoices generate again.** On a container install nothing ever started a scheduler, so recurring invoices were never created, invoices were never flagged overdue and estimates never expired. The image now supervises the scheduler itself, generation is driven by each schedule's due date rather than by the minute the scheduler happens to wake up, and the date shown on the schedule screen finally advances.
+- **The module platform is finished.** Modules own a real full-page screen through a contracted route, register their own abilities into the role editor and have them granted and revoked across the module lifecycle, and read company members and invoice data through the SDK. Module API is now 1.3.0.
+- **The first official module.** Tasks and Projects is on the marketplace: projects, tasks in list, board and week views, time tracking from anywhere a task appears, and invoicing straight from the work. This release is the first that can install it.
+
+### Improvements and fixes
+
+- Installing a module in a container failed outright: the image shipped no `Modules` directory, so the mounted volume came up owned by root. A module disabled on disk gained no tables when installed, and module settings came back as strings instead of the types they declare.
+- The marketplace trusts a second official signing key, so releases signed with either verify.
+- Owner-only navigation no longer disappears until a page reload right after signing in, sidebar groups keep their order when a module registers a low priority, select inputs keep their chevron, warning notifications are no longer styled as errors, and the header logo is sized to the header.
+- The updater no longer treats a live SQLite database as a stale file to sweep away. Declined legacy invoice links survive, and `payments:restore-legacy-links` repairs installs that lost them.
+- The schema consolidation prunes the migration rows it replaced instead of leaving them behind.
+
+### Upgrade notes
+
+- The container now runs Laravel's scheduler as a supervised service. Set `SCHEDULER_ENABLED=false` only if you drive the schedule elsewhere, such as a separate scheduler container or a second replica.
+- `CRON_JOB_AUTH_TOKEN` enables the `GET /api/cron` webhook for hosts that can run neither a crontab nor a long-running process. The endpoint refuses every caller while it is unset.
+- A migration moves every recurring invoice's next run into the future. Periods missed while no scheduler ran are skipped rather than billed in a rush, which is deliberate: catch-up would have emitted years of back-dated invoices on installs where the scheduler has never run.
+- The module runtime uses InvoiceShelf Modules SDK 3.4.0 and advertises module API 1.3.0. Modules declaring `module_api` `^1.2.0` or `^1.3.0` install as before.
+
+Docker: `invoiceshelf/invoiceshelf:3.0.0-alpha.3` (also `:next`).
+
 ## 3.0.0-alpha.2 — 2026-08-14
 
 Second public alpha of InvoiceShelf 3.0, with major additions across payments, taxes, PDFs, and the module platform.
