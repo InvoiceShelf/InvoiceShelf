@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Silber\Bouncer\Database\Models as BouncerModels;
 
@@ -37,6 +38,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->bootHttps();
+
         ModelIdentityMap::enforce();
 
         Factory::guessFactoryNamesUsing(
@@ -116,6 +119,44 @@ class AppServiceProvider extends ServiceProvider
         foreach ($meta as $key => $value) {
             $item->data($key, $value);
         }
+    }
+
+    /**
+     * Pin generated URLs to https where the request cannot be trusted to say so.
+     *
+     * Behind a reverse proxy the scheme arrives in X-Forwarded-Proto, which the
+     * request only honours when the proxy is covered by TRUSTED_PROXIES. A list
+     * that names the proxy's LAN address rather than the address the container
+     * sees leaves the scheme at http, and the post-login redirect then points at
+     * http://, which the browser refuses.
+     */
+    public function bootHttps(): void
+    {
+        if ($this->shouldForceHttps()) {
+            URL::forceScheme('https');
+        }
+    }
+
+    /**
+     * Whether absolute URLs should be written as https.
+     *
+     * FORCE_HTTPS decides it when set to something meaningful; an empty value is
+     * treated as absent so a compose file passing an unset variable through does
+     * not count as "no". Otherwise an https APP_URL is taken as the intent.
+     */
+    protected function shouldForceHttps(): bool
+    {
+        $forced = config('app.force_https');
+
+        if (is_bool($forced)) {
+            return $forced;
+        }
+
+        if (is_string($forced) && trim($forced) !== '') {
+            return filter_var($forced, FILTER_VALIDATE_BOOLEAN);
+        }
+
+        return str_starts_with((string) config('app.url'), 'https://');
     }
 
     /**
