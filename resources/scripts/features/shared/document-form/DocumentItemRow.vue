@@ -151,6 +151,21 @@
             </td>
           </tr>
 
+          <!-- Per-item custom fields -->
+          <tr v-if="lineCustomFields.length > 0">
+            <td class="px-5 py-4 text-left align-top" />
+            <td colspan="4" class="px-5 py-4 text-left align-top">
+              <BaseInputGrid layout="three-column">
+                <CustomFieldInput
+                  v-for="field in lineCustomFields"
+                  :key="field.id"
+                  :custom-field-scope="itemValidationScope"
+                  :field="field"
+                />
+              </BaseInputGrid>
+            </td>
+          </tr>
+
           <!-- Per-item taxes -->
           <tr v-if="formData.tax_per_item === 'YES'">
             <td class="px-5 py-4 text-left align-top" />
@@ -192,12 +207,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { required, between, maxLength, helpers, minValue } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { useCompanyStore } from '../../../stores/company.store'
 import DocumentItemRowTax from './DocumentItemRowTax.vue'
+import CustomFieldInput from '@/scripts/features/shared/custom-fields/CustomFieldInput.vue'
+import {
+  buildLineCustomFields,
+  type CustomFieldItem,
+} from '@/scripts/features/shared/custom-fields/use-custom-fields'
 import DragIcon from '@/scripts/components/icons/DragIcon.vue'
 import { generateClientId } from '../../../utils'
 import type { Currency } from '../../../types/domain/currency'
@@ -218,6 +238,7 @@ interface Props {
   currency: Currency | Record<string, unknown>
   invoiceItems: DocumentItem[]
   itemValidationScope?: string
+  itemCustomFields?: CustomFieldItem[]
   taxTypes?: TaxType[]
   canAddTax?: boolean
 }
@@ -233,6 +254,7 @@ const props = withDefaults(defineProps<Props>(), {
   type: '',
   loading: false,
   itemValidationScope: '',
+  itemCustomFields: () => [],
   taxTypes: () => [],
   canAddTax: false,
 })
@@ -415,6 +437,41 @@ function searchVal(val: string): void {
   updateItemAttribute('name', val)
 }
 
+/**
+ * This line's answers: one entry per definition, seeded from whatever the
+ * line already holds, and mirrored onto the line itself so they travel with
+ * the item in the submitted payload.
+ */
+const lineCustomFields = ref<CustomFieldItem[]>([])
+
+function seedLineCustomFields(saved: CustomFieldItem[] = []): void {
+  lineCustomFields.value =
+    props.itemCustomFields.length > 0
+      ? buildLineCustomFields(props.itemCustomFields, saved)
+      : []
+}
+
+watch(
+  () => props.itemCustomFields,
+  () => seedLineCustomFields((props.itemData.fields as CustomFieldItem[]) ?? []),
+  { immediate: true }
+)
+
+// An edit screen fetches the document after the row is built, so the saved
+// answers arrive later than the definitions.
+watch(
+  () => props.itemData.fields,
+  (saved) => seedLineCustomFields((saved as CustomFieldItem[]) ?? [])
+)
+
+watch(
+  lineCustomFields,
+  (fields) => {
+    props.itemData.custom_fields = fields
+  },
+  { deep: true, immediate: true }
+)
+
 function onSelectItem(itm: Record<string, unknown>): void {
   props.store.$patch((state: Record<string, unknown>) => {
     const form = state[props.storeProp] as DocumentFormData
@@ -439,7 +496,11 @@ function onSelectItem(itm: Record<string, unknown>): void {
     if (form.exchange_rate) {
       item.price = Math.round(item.price / form.exchange_rate)
     }
+
+
   })
+
+  seedLineCustomFields((itm.fields as CustomFieldItem[]) ?? [])
 
   syncItemToStore()
 }

@@ -2,6 +2,9 @@
 
 namespace App\Domains\Metadata\Application;
 
+use App\Domains\Accounts\Models\Company;
+use App\Domains\Accounts\Models\User;
+use App\Domains\Catalog\Models\Item;
 use App\Domains\Contacts\Models\Customer;
 use App\Domains\Purchases\Models\Expense;
 use App\Domains\Receivables\Models\Payment;
@@ -34,6 +37,11 @@ class CustomFieldModelCatalog
      * lists them. Labels are i18n keys the frontend resolves; a module may
      * instead give a plain string, which is shown as it stands.
      *
+     * `Item` covers both ends of a catalogue entry: the answers recorded on
+     * the item itself, and the copies carried by each document line drawn
+     * from it, which is what the invoice and estimate templates print as
+     * extra columns.
+     *
      * @var array<string, array{label: string, class: class-string}>
      */
     private const BUILT_IN = [
@@ -42,6 +50,9 @@ class CustomFieldModelCatalog
         'Estimate' => ['label' => 'settings.custom_fields.model_type.estimate', 'class' => Estimate::class],
         'Payment' => ['label' => 'settings.custom_fields.model_type.payment', 'class' => Payment::class],
         'Expense' => ['label' => 'settings.custom_fields.model_type.expense', 'class' => Expense::class],
+        'Item' => ['label' => 'settings.custom_fields.model_type.item', 'class' => Item::class],
+        'Company' => ['label' => 'settings.custom_fields.model_type.company', 'class' => Company::class],
+        'User' => ['label' => 'settings.custom_fields.model_type.user', 'class' => User::class],
     ];
 
     /**

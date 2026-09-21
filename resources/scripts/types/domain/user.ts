@@ -1,3 +1,4 @@
+import type { CustomFieldValue } from './custom-field'
 import type { Currency } from './currency'
 import type { Company } from './company'
 import type { Role } from './role'
@@ -50,6 +51,8 @@ export interface User {
   formatted_created_at: string
   currency?: Currency
   companies?: Company[]
+  /** Answers to the user's own custom fields, when they have any. */
+  fields?: CustomFieldValue[]
 }
 
 export interface UserSetting {

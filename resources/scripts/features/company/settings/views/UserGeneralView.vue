@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { required, minLength, email, helpers } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { useUserStore } from '../../../../stores/user.store'
 import { useGlobalStore } from '../../../../stores/global.store'
 import { useCompanyStore } from '../../../../stores/company.store'
+import CustomFieldInput from '@/scripts/features/shared/custom-fields/CustomFieldInput.vue'
+import { useCustomFields } from '@/scripts/features/shared/custom-fields/use-custom-fields'
+import type { CustomFieldValue } from '@/scripts/types/domain/custom-field'
 
 const LANGUAGE_DEFAULT = 'default'
 
@@ -16,6 +19,24 @@ const { t } = useI18n()
 
 const isSaving = ref<boolean>(false)
 const userForm = computed(() => userStore.userForm)
+
+const customFieldScope = 'userCustomFields'
+
+// This screen keeps its form in the user store rather than a per-record
+// object, so the answers get a holder of their own.
+const customFieldHolder = reactive({
+  user: {
+    customFields: [] as CustomFieldValue[],
+    fields: (userStore.currentUser?.fields ?? []) as CustomFieldValue[],
+  },
+})
+
+const customFields = useCustomFields({
+  store: customFieldHolder,
+  storeProp: 'user',
+  type: 'User',
+  isEdit: () => true,
+})
 
 const selectedLanguage = computed<string>({
   get: () => userForm.value.language || LANGUAGE_DEFAULT,
@@ -58,6 +79,7 @@ async function updateGeneral(): Promise<void> {
     await userStore.updateCurrentUser({
       name: userForm.value.name,
       email: userForm.value.email,
+      customFields: customFieldHolder.user.customFields,
     })
 
     const effectiveLanguage = (language === 'default' ? '' : language) || companyStore.selectedCompanySettings?.language || 'en'
@@ -111,6 +133,13 @@ async function updateGeneral(): Promise<void> {
             :can-deselect="false"
           />
         </BaseInputGroup>
+
+        <CustomFieldInput
+          v-for="field in customFields"
+          :key="field.id"
+          :custom-field-scope="customFieldScope"
+          :field="field"
+        />
       </BaseInputGrid>
 
       <BaseButton :loading="isSaving" :disabled="isSaving" type="submit" class="mt-6">

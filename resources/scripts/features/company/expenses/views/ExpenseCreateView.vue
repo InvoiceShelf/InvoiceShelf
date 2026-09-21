@@ -142,7 +142,6 @@
 
           <!-- Exchange Rate -->
           <ExchangeRateConverter
-            :store="expenseStore"
             store-prop="currentExpense"
             :v="{ exchange_rate: { $error: false, $errors: [], $touch: () => {} } }"
             :is-loading="isFetchingInitialData"
@@ -191,12 +190,9 @@
           <!-- Custom fields join the form's own grid rather than forming a
                band of their own; they are attributes like the rest. -->
           <CustomFieldInput
-            v-for="(field, index) in customFields"
+            v-for="field in customFields"
             :key="field.id"
             :custom-field-scope="customFieldValidationScope"
-            :store="expenseStore"
-            store-prop="currentExpense"
-            :index="index"
             :field="field"
           />
         </BaseInputGrid>

@@ -2,6 +2,7 @@
 
 namespace App\Domains\Accounts\Http\Resources;
 
+use App\Domains\Metadata\Http\Resources\CustomFieldValueResource;
 use App\Domains\Money\Http\Resources\CurrencyResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -53,6 +54,10 @@ class UserResource extends JsonResource
             'companies' => $this->when(
                 $user->companies()->exists(),
                 fn () => CompanyResource::collection($user->companies)
+            ),
+            'fields' => $this->when(
+                $this->fields()->exists(),
+                fn () => CustomFieldValueResource::collection($this->fields)
             ),
         ];
     }

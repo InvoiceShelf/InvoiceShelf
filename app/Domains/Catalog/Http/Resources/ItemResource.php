@@ -3,6 +3,7 @@
 namespace App\Domains\Catalog\Http\Resources;
 
 use App\Domains\Accounts\Http\Resources\CompanyResource;
+use App\Domains\Metadata\Http\Resources\CustomFieldValueResource;
 use App\Domains\Money\Http\Resources\CurrencyResource;
 use App\Domains\Taxation\Http\Resources\TaxResource;
 use Illuminate\Http\Request;
@@ -39,6 +40,10 @@ class ItemResource extends JsonResource
             'updated_at' => $this->updated_at,
             'tax_per_item' => $this->tax_per_item,
             'formatted_created_at' => $this->formattedCreatedAt,
+            'fields' => $this->when(
+                $this->fields()->exists(),
+                fn () => CustomFieldValueResource::collection($this->fields)
+            ),
             'unit' => $this->when(
                 $this->unit()->exists(),
                 fn () => new UnitResource($this->unit)

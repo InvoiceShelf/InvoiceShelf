@@ -3,6 +3,7 @@
 namespace App\Domains\Accounts\Http\Resources;
 
 use App\Domains\Contacts\Http\Resources\AddressResource;
+use App\Domains\Metadata\Http\Resources\CustomFieldValueResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
@@ -47,6 +48,10 @@ class CompanyResource extends JsonResource
             ),
             'roles' => RoleResource::collection($company->roles),
             'user_role' => $this->assignedRoleTitle(),
+            'fields' => $this->when(
+                $this->fields()->exists(),
+                fn () => CustomFieldValueResource::collection($this->fields)
+            ),
         ];
     }
 

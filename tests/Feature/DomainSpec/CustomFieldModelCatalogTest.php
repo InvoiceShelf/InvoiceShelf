@@ -31,7 +31,7 @@ afterEach(function () {
 
 test('the catalogue offers the built-in models', function () {
     expect(app(CustomFieldModelCatalog::class)->keys())
-        ->toBe(['Customer', 'Invoice', 'Estimate', 'Payment', 'Expense']);
+        ->toBe(['Customer', 'Invoice', 'Estimate', 'Payment', 'Expense', 'Item', 'Company', 'User']);
 });
 
 test('the config endpoint serves the catalogue to the editor', function () {

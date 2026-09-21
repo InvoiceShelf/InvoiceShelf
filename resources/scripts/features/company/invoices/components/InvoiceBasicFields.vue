@@ -61,7 +61,6 @@
       </BaseInputGroup>
 
       <ExchangeRateConverter
-        :store="invoiceStore"
         store-prop="newInvoice"
         :v="v"
         :is-loading="isLoading"
@@ -72,12 +71,9 @@
       <!-- Document-level custom fields sit with the number and the dates:
            they are attributes of the document, not a separate section. -->
       <CustomFieldInput
-        v-for="(field, index) in customFields"
+        v-for="field in customFields"
         :key="field.id"
         :custom-field-scope="customFieldScope"
-        :store="invoiceStore"
-        store-prop="newInvoice"
-        :index="index"
         :field="field"
       />
     </BaseInputGrid>

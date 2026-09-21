@@ -6,6 +6,7 @@ use App\Domains\Catalog\Models\Item;
 use App\Domains\Catalog\Models\Unit;
 use App\Domains\Contacts\Models\Address;
 use App\Domains\Contacts\Models\Customer;
+use App\Domains\Metadata\Concerns\HasCustomFields;
 use App\Domains\Metadata\Models\CustomField;
 use App\Domains\Metadata\Models\CustomFieldValue;
 use App\Domains\Money\Models\ExchangeRateLog;
@@ -37,6 +38,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  */
 class Company extends Model implements HasMedia
 {
+    use HasCustomFields;
     use HasFactory;
     use InteractsWithMedia;
 

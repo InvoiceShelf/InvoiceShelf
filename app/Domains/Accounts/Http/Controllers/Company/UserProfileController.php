@@ -8,6 +8,7 @@ use App\Domains\Accounts\Http\Requests\GetSettingsRequest;
 use App\Domains\Accounts\Http\Requests\ProfileRequest;
 use App\Domains\Accounts\Http\Requests\UpdateSettingsRequest;
 use App\Domains\Accounts\Http\Resources\UserResource;
+use App\Domains\Metadata\Contracts\CustomFieldValueWriter;
 use App\Platform\Http\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -16,6 +17,7 @@ class UserProfileController extends Controller
 {
     public function __construct(
         private readonly UserAvatarManager $userAvatarManager,
+        private readonly CustomFieldValueWriter $customFieldValueWriter,
     ) {}
 
     public function show(Request $request)
@@ -29,7 +31,11 @@ class UserProfileController extends Controller
 
         $account->update($request->validated());
 
-        return new UserResource($account);
+        if ($customFields = $request->input('customFields')) {
+            $this->customFieldValueWriter->update($account, $customFields);
+        }
+
+        return new UserResource($account->refresh());
     }
 
     /**

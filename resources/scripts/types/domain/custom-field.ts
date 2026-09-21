@@ -1,4 +1,3 @@
-import type { Company } from './company'
 
 /**
  * The stored `type` of a field definition, which is also the name of the
@@ -46,7 +45,6 @@ export interface CustomField {
   order: number | null
   company_id: number
   default_answer: string | boolean | number | null
-  company?: Company
 }
 
 export interface CustomFieldValue {
@@ -65,5 +63,4 @@ export interface CustomFieldValue {
   default_answer: string | boolean | number | null
   default_formatted_answer: string | null
   custom_field?: CustomField
-  company?: Company
 }

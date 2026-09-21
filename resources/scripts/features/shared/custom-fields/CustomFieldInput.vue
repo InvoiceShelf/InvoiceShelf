@@ -21,12 +21,14 @@ import { helpers, requiredIf } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { resolveCustomFieldTypeComponent } from './resolve-type-component'
 
+/**
+ * One answer, bound straight to the object it lives on. The caller owns where
+ * that object sits -- a form store, a document line -- so nothing about the
+ * container reaches in here.
+ */
 const props = defineProps<{
   field: Record<string, any>
   customFieldScope: string
-  index: number
-  store: Record<string, any>
-  storeProp: string
 }>()
 
 const { t } = useI18n()

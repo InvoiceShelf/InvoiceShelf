@@ -3,6 +3,9 @@ import { reactive, ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { required, minLength, helpers } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
+import CustomFieldInput from '@/scripts/features/shared/custom-fields/CustomFieldInput.vue'
+import { useCustomFields } from '@/scripts/features/shared/custom-fields/use-custom-fields'
+import type { CustomFieldValue } from '@/scripts/types/domain/custom-field'
 import { useGlobalStore } from '../../../../stores/global.store'
 import { useCompanyStore } from '../../../../stores/company.store'
 import { useModalStore } from '../../../../stores/modal.store'
@@ -50,6 +53,23 @@ const companyForm = reactive<CompanyFormData>({
     phone: (companyStore.selectedCompany?.address as Record<string, string>)?.phone ?? '',
     zip: (companyStore.selectedCompany?.address as Record<string, string>)?.zip ?? '',
   },
+})
+
+const customFieldScope = 'companyCustomFields'
+
+const customFieldHolder = reactive({
+  company: {
+    customFields: [] as CustomFieldValue[],
+    fields: (companyStore.selectedCompany?.fields ?? []) as CustomFieldValue[],
+  },
+})
+
+const customFields = useCustomFields({
+  store: customFieldHolder,
+  storeProp: 'company',
+  type: 'Company',
+  // A company always exists, so its answers are always being edited.
+  isEdit: () => true,
 })
 
 const previewLogo = ref<FilePreview[]>([])
@@ -106,6 +126,7 @@ async function updateCompanyData(): Promise<void> {
     tax_id: companyForm.tax_id,
     vat_id: companyForm.vat_id,
     address: companyForm.address,
+    customFields: customFieldHolder.company.customFields,
   })
 
   if (res.data) {
@@ -219,6 +240,13 @@ async function updateCompanyData(): Promise<void> {
             <BaseInput v-model="companyForm.vat_id" type="text" />
           </BaseInputGroup>
         </div>
+
+        <CustomFieldInput
+          v-for="field in customFields"
+          :key="field.id"
+          :custom-field-scope="customFieldScope"
+          :field="field"
+        />
       </BaseInputGrid>
 
       <BaseButton
