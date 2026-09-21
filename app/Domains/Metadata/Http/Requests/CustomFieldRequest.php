@@ -2,16 +2,18 @@
 
 namespace App\Domains\Metadata\Http\Requests;
 
+use App\Domains\Metadata\Application\CustomFieldModelCatalog;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 /**
  * A custom-field definition as the admin screen submits it.
  *
- * Two absences are deliberate. `model_type` is checked for presence only, so
- * any string at all reaches the column — the handful of model names the UI
- * offers is a convention, not a constraint. And the default answer never
- * appears below: which value column it belongs in follows from `type`, so the
- * controller reads it off the request untouched and lets the service place it.
+ * `model_type` is checked against the catalogue, which the editor's dropdown
+ * is also built from, so the two cannot drift and an unknown model can no
+ * longer reach the column. The default answer never appears below: which
+ * value column it belongs in follows from `type`, so the controller reads it
+ * off the request untouched and lets the service place it.
  */
 class CustomFieldRequest extends FormRequest
 {
@@ -31,7 +33,7 @@ class CustomFieldRequest extends FormRequest
         return [
             'name' => ['required'],
             'label' => ['required'],
-            'model_type' => ['required'],
+            'model_type' => ['required', Rule::in(app(CustomFieldModelCatalog::class)->keys())],
             'order' => ['required'],
             'type' => ['required'],
             'is_required' => ['required', 'boolean'],

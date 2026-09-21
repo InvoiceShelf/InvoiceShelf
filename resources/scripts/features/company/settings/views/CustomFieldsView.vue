@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { useModalStore } from '../../../../stores/modal.store'
 import { useUserStore } from '../../../../stores/user.store'
 import { customFieldService } from '../../../../api/services/custom-field.service'
+import { useCustomFieldModels } from '@/scripts/features/shared/custom-fields/use-custom-field-models'
 import CustomFieldDropdown from '@/scripts/features/company/settings/components/CustomFieldDropdown.vue'
 import CustomFieldModal from '@/scripts/features/company/settings/components/CustomFieldModal.vue'
 
@@ -103,22 +104,7 @@ function refreshTable(): void {
   table.value?.refresh()
 }
 
-function getModelType(type: string): string {
-  switch (type) {
-    case 'Customer':
-      return t('settings.custom_fields.model_type.customer')
-    case 'Invoice':
-      return t('settings.custom_fields.model_type.invoice')
-    case 'Estimate':
-      return t('settings.custom_fields.model_type.estimate')
-    case 'Expense':
-      return t('settings.custom_fields.model_type.expense')
-    case 'Payment':
-      return t('settings.custom_fields.model_type.payment')
-    default:
-      return type
-  }
-}
+const { labelFor: getModelType } = useCustomFieldModels()
 </script>
 
 <template>
