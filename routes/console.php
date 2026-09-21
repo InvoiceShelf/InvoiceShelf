@@ -1,8 +1,5 @@
 <?php
 
-use App\Domains\Accounts\Models\CompanySetting;
-use App\Domains\Sales\Application\RecurringInvoiceService;
-use App\Domains\Sales\Models\RecurringInvoice;
 use App\Platform\Operations\Installation\Application\InstallationState;
 use Illuminate\Support\Facades\Schedule;
 
@@ -21,12 +18,12 @@ if (InstallationState::isDbCreated()) {
     Schedule::command('check:estimates:status')
         ->daily();
 
-    $recurringInvoices = RecurringInvoice::where('status', 'ACTIVE')->get();
-    foreach ($recurringInvoices as $recurringInvoice) {
-        $timeZone = CompanySetting::getSetting('time_zone', $recurringInvoice->company_id);
-
-        Schedule::call(function () use ($recurringInvoice) {
-            app(RecurringInvoiceService::class)->generateInvoice($recurringInvoice);
-        })->cron($recurringInvoice->frequency)->timezone($timeZone);
-    }
+    // One command that asks which schedules have fallen due, rather than one
+    // registered cron entry per recurring invoice. The old shape queried every
+    // active schedule on the boot of every artisan command, and only billed
+    // when the expression matched the exact minute the scheduler happened to
+    // wake up, so a missed minute silently skipped the period.
+    Schedule::command('recurring-invoices:generate')
+        ->everyMinute()
+        ->withoutOverlapping();
 }

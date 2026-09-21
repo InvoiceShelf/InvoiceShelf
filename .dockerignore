@@ -6,6 +6,7 @@
 docker/
 !docker/production/entrypoint.d
 !docker/production/inject.sh
+!docker/production/s6-overlay
 
 node_modules/
 
