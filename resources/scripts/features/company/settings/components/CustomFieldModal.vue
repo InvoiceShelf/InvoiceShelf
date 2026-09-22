@@ -360,7 +360,7 @@ function closeCustomFieldModal(): void {
     </template>
 
     <form action="" @submit.prevent="submitCustomFieldData">
-      <div class="overflow-y-auto max-h-[550px]">
+      <div class="overflow-y-auto max-h-[70vh]">
         <div class="px-4 py-6 space-y-8 md:px-8 sm:p-6">
           <!-- What the field is -->
           <section class="space-y-5">

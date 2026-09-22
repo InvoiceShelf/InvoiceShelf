@@ -119,6 +119,11 @@ trait ValidatesCustomFields
             return;
         }
 
+        // A dropdown's option list is its rule and needs no configuring, but
+        // nothing enforced it: the widget limits what can be picked in the
+        // browser and the API accepted any string at all.
+        $this->checkOptions($validator, $attribute, $value, $definition, $label);
+
         $rules = $definition->validation ?? [];
 
         if ($rules === []) {
@@ -128,6 +133,30 @@ trait ValidatesCustomFields
         $this->checkLength($validator, $attribute, $value, $rules, $label);
         $this->checkRange($validator, $attribute, $value, $rules, $label);
         $this->checkPattern($validator, $attribute, $value, $rules, $label);
+    }
+
+    /**
+     * A dropdown answer has to be one of the options offered.
+     *
+     * Options have been stored both as plain strings and as `{name: ...}`
+     * objects over the life of the column, so both are read.
+     */
+    private function checkOptions(Validator $validator, string $attribute, mixed $value, CustomField $definition, string $label): void
+    {
+        if ($definition->type !== 'Dropdown') {
+            return;
+        }
+
+        $options = collect($definition->options ?? [])
+            ->map(fn ($option) => is_array($option) ? ($option['name'] ?? null) : $option)
+            ->filter()
+            ->values();
+
+        if ($options->isEmpty() || $options->contains($value)) {
+            return;
+        }
+
+        $validator->errors()->add($attribute, "{$label} must be one of the options offered.");
     }
 
     /** @param  array<string, mixed>  $rules */

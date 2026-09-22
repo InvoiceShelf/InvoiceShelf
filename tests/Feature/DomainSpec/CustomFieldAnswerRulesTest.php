@@ -138,3 +138,24 @@ test('the definition serialises its validation so the editor can load it back', 
         ->assertOk()
         ->assertJsonPath('data.validation', ['min_length' => 2, 'pattern' => '^[A-Z]+$']);
 });
+
+test('a dropdown answer must be one of the options offered', function () {
+    $field = itemFieldWith([
+        'label' => 'Colour',
+        'type' => 'Dropdown',
+        'options' => ['Red', 'Green'],
+    ]);
+
+    // The widget limits what can be picked in the browser and nothing
+    // limited what the API would take, so the option list was decoration.
+    postItemAnswering($field, 'Chartreuse')
+        ->assertJsonValidationErrors(['customFields.0.value' => 'Colour must be one of the options offered.']);
+
+    postItemAnswering($field, 'Green')->assertSuccessful();
+});
+
+test('a dropdown with no options set constrains nothing', function () {
+    $field = itemFieldWith(['type' => 'Dropdown', 'options' => []]);
+
+    postItemAnswering($field, 'anything')->assertSuccessful();
+});
