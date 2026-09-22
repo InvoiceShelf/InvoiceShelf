@@ -653,8 +653,8 @@ class CurrenciesTableSeeder extends Seeder
                 'precision' => 2,
                 'thousand_separator' => ',',
                 'decimal_separator' => '.',
-                'swap_currency_symbol' => true
-            ]
+                'swap_currency_symbol' => true,
+            ],
         ];
 
         foreach ($currencies as $currency) {
