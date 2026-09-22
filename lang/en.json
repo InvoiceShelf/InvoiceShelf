@@ -200,7 +200,7 @@
       "view_invoices": "View invoices"
     },
     "cashflow": {
-      "title": "Sales, receipts and expenses",
+      "title": "Cash flow",
       "show_table": "Show as table",
       "hide_table": "Hide table",
       "month": "Month",
