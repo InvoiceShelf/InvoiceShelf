@@ -351,9 +351,32 @@ async function submitCustomFieldData(): Promise<void> {
       modalStore.refreshData()
     }
     closeCustomFieldModal()
-  } catch {
+  } catch (error) {
     isSaving.value = false
+
+    // The modal used to swallow this, so a refused save just stopped the
+    // spinner and said nothing. Server-side rules the form cannot know
+    // about, a name with no slug left or a pattern PCRE will not take,
+    // are worth repeating to whoever typed them.
+    notificationStore.showNotification({
+      type: 'error',
+      message: firstServerMessage(error),
+    })
   }
+}
+
+/**
+ * The first message out of a 422, or a generic one when the failure did not
+ * come with an explanation.
+ */
+function firstServerMessage(error: unknown): string {
+  const errors = (error as {
+    response?: { data?: { errors?: Record<string, string[]> } }
+  })?.response?.data?.errors
+
+  const first = errors ? Object.values(errors)[0]?.[0] : undefined
+
+  return first ?? t('general.action_failed')
 }
 
 const newOptionValue = ref<string>('')

@@ -137,3 +137,49 @@ test('a slug on a user resolves through the company the caller is acting for', f
         'string_answer' => 'on the user',
     ]);
 });
+
+test('a name with no slug left is refused, not a five hundred', function () {
+    // The base plus _1 to _10 is eleven; the twelfth has nowhere to go.
+    // It used to throw, which reached the caller as a 500 and the editor
+    // swallows a failed save, so nothing at all was said.
+    $service = app(CustomFieldService::class);
+
+    $attributes = [
+        'name' => 'Crowded',
+        'label' => 'Crowded',
+        'model_type' => 'Invoice',
+        'type' => 'Input',
+        'order' => 1,
+        'is_required' => false,
+    ];
+
+    foreach (range(1, 11) as $ignored) {
+        $service->create($attributes, null, $this->company->id);
+    }
+
+    postJson('api/v1/custom-fields', $attributes)
+        ->assertJsonValidationErrors(['name' => 'Too many fields on this model already share this name.']);
+});
+
+test('another company is unaffected by that crowding', function () {
+    // The eleven belong to one company, so the next company along still
+    // gets the plain slug. That was the whole point of scoping it.
+    $service = app(CustomFieldService::class);
+
+    $attributes = [
+        'name' => 'Crowded',
+        'label' => 'Crowded',
+        'model_type' => 'Invoice',
+        'type' => 'Input',
+        'order' => 1,
+        'is_required' => false,
+    ];
+
+    foreach (range(1, 11) as $ignored) {
+        $service->create($attributes, null, $this->company->id);
+    }
+
+    $theirs = $service->create($attributes, null, Company::factory()->create()->id);
+
+    expect($theirs->slug)->toBe('CUSTOM_INVOICE_CROWDED');
+});

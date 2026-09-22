@@ -68,6 +68,7 @@ class CustomFieldRequest extends FormRequest
             $this->validateBoundsAreOrdered($validator);
             $this->validateDateBounds($validator);
             $this->validatePatternCompiles($validator);
+            $this->validateSlugCanBeMinted($validator);
         });
     }
 
@@ -86,6 +87,38 @@ class CustomFieldRequest extends FormRequest
                     "The {$high} may not be less than the {$low}."
                 );
             }
+        }
+    }
+
+    /**
+     * Refuse a name that leaves no slug to mint.
+     *
+     * A slug is `CUSTOM_<MODEL>_<LABEL>` with `_1` to `_10` tried after it,
+     * and `clean_slug()` throws once those are gone. Uncaught, that reached
+     * the caller as a 500, and the editor swallows a failed save, so the
+     * spinner simply stopped and nothing was said. Answered here instead, on
+     * the field the author typed.
+     *
+     * Only on create: an existing definition keeps the slug it was stamped
+     * with, because documents already reference it.
+     */
+    private function validateSlugCanBeMinted(Validator $validator): void
+    {
+        if ($this->route('custom_field') !== null) {
+            return;
+        }
+
+        if ($validator->errors()->hasAny(['name', 'model_type'])) {
+            return;
+        }
+
+        try {
+            clean_slug($this->input('model_type'), $this->input('name'), $this->header('company'));
+        } catch (\Throwable) {
+            $validator->errors()->add(
+                'name',
+                'Too many fields on this model already share this name.'
+            );
         }
     }
 
