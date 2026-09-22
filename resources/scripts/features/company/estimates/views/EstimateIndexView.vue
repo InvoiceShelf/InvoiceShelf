@@ -137,7 +137,7 @@
         </template>
 
         <template #header>
-          <div class="absolute items-center left-6 top-2.5 select-none">
+          <div class="absolute items-center left-6 top-3.5 select-none">
             <BaseCheckbox
               v-model="estimateStore.selectAllField"
               variant="primary"

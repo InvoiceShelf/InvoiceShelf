@@ -90,9 +90,9 @@
       <!-- While rows are selected, their actions sit over the column headings -->
       <div
         v-if="selectedCount > 0 && $slots['bulk-actions']"
-        class="absolute top-0 right-0 z-10 flex items-center justify-between gap-3 pl-4 pr-4 h-9 left-14 bg-surface-secondary"
+        class="absolute top-0 right-0 z-10 flex items-center justify-between gap-3 pl-4 pr-4 h-12 left-14 bg-surface-secondary"
       >
-        <span class="text-xs font-medium text-heading">
+        <span class="text-sm font-medium text-heading">
           {{ $t('general.selected_count', { count: selectedCount }) }}
         </span>
         <div class="flex items-center gap-1.5">
@@ -117,7 +117,7 @@
                 <BaseIcon
                   v-if="sort.fieldName === column.key && sort.order"
                   :name="sort.order === 'asc' ? 'ChevronUpIcon' : 'ChevronDownIcon'"
-                  class="inline-block w-3.5 h-3.5 ml-0.5 -mt-0.5"
+                  class="inline-block w-4 h-4 ml-0.5 -mt-0.5"
                 />
               </th>
             </tr>
@@ -537,7 +537,7 @@ const sortedRows = computed<TableRow[]>(() => {
 
 function getThClass(column: TableColumn): string {
   let classes =
-    'whitespace-nowrap px-4 first:pl-6 last:pr-6 py-2.5 text-left text-xs font-medium text-muted select-none'
+    'whitespace-nowrap px-4 first:pl-6 last:pr-6 py-3.5 text-left text-sm font-medium text-muted select-none'
 
   if (column.align === 'end') {
     classes = `${classes} text-right`
