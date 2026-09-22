@@ -28,6 +28,13 @@ export default [
   eslintConfigPrettier,
   {
     files: ['resources/scripts/**/*.{js,ts,vue}'],
+    languageOptions: {
+      globals: {
+        // Injected by Vite's `define` in both build configs.
+        __INVOICESHELF_CLIENT__: 'readonly',
+        __INVOICESHELF_CLIENT_VERSION__: 'readonly',
+      },
+    },
     rules: {
       'vue/no-mutating-props': 'off',
       // Single-word components (Page, Breadcrumb) are intentional in this app.

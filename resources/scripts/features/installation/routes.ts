@@ -24,7 +24,7 @@ import InstallationLayout from '@/scripts/layouts/InstallationLayout.vue'
  * the router IS the state machine.
  */
 
-export const installationRoutes: RouteRecordRaw[] = [
+const wizardRoutes: RouteRecordRaw[] = [
   {
     path: '/installation',
     component: InstallationLayout,
@@ -120,3 +120,9 @@ export const installationRoutes: RouteRecordRaw[] = [
     ],
   },
 ]
+
+/**
+ * Empty in the mobile client. A client never installs anything: it connects
+ * to a server somebody else has already set up.
+ */
+export const installationRoutes: RouteRecordRaw[] = __INVOICESHELF_CLIENT__ ? [] : wizardRoutes

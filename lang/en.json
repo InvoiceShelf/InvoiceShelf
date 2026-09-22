@@ -808,6 +808,27 @@
     "enter_password": "Enter Password",
     "retype_password": "Retype Password"
   },
+  "client": {
+    "connect_heading": "Connect to your server",
+    "connect_description": "Enter the address of the InvoiceShelf server you want to use.",
+    "server_address": "Server address",
+    "connect": "Connect",
+    "connect_anyway": "Connect anyway",
+    "invalid_server_url": "Enter the full address, including http:// or https://",
+    "insecure_warning": "This address is not encrypted. Anyone on the network can read what you send to it.",
+    "app_url_mismatch": "The server calls itself {host}. Logos and attachments may not load.",
+    "unreachable_heading": "Cannot reach the server",
+    "unreachable_description": "Nothing answered at {server}. Check the address, and that the server is running and reachable from this device.",
+    "too_old_heading": "This server is too old",
+    "too_old_description": "It runs {version}, and this app needs {required} or newer.",
+    "too_old_short": "This server is too old for this app.",
+    "update_app_heading": "Update the app",
+    "update_app_description": "This server needs app version {required} or newer. This app is {current}.",
+    "retry": "Retry",
+    "change_server": "Change server",
+    "connected_to": "Connected to {server}",
+    "modules_failed": "Some add-ons did not load: {names}"
+  },
   "modules": {
     "buy_now": "Buy Now",
     "install": "Install",

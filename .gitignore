@@ -3,6 +3,7 @@
 /public/storage
 /public/hot
 /public/build
+/mobile/www
 /storage/*.key
 /vendor
 /.idea
