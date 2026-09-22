@@ -98,9 +98,16 @@ const routes: RouteRecordRaw[] = [
   // staff and admin only there, and the portal stays on the web.
   ...customerPortalRoutes,
 
-  // A client opens on an empty hash, which no other route claims.
+  // A client opens on an empty hash, which no other route claims. A signed-in
+  // session that lands here mid-way (a stray `href="#"`, a reload) goes to the
+  // dashboard, never back to the login screen.
   ...(__INVOICESHELF_CLIENT__
-    ? [{ path: '/', redirect: { name: 'login' } }]
+    ? [
+        {
+          path: '/',
+          redirect: () => ({ name: localStorage.getItem('auth.token') ? 'dashboard' : 'login' }),
+        },
+      ]
     : []),
 
   // Catch-all 404
