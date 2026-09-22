@@ -998,7 +998,9 @@
     "cancel_invitation": "Cancel Invitation",
     "role": "Role",
     "invited_by": "Invited By",
-    "sent_at": "Sent At"
+    "sent_at": "Sent At",
+    "no_users": "No members yet",
+    "list_of_users": "Invite the people who work with you. They show up here once they join."
   },
   "reports": {
     "title": "Report",
