@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, inject, ref, useSlots } from 'vue'
+import type { Ref } from 'vue'
 import SpinnerIcon from '@/scripts/components/icons/SpinnerIcon.vue'
 
 type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
@@ -34,8 +35,22 @@ const props = withDefaults(defineProps<Props>(), {
   variant: 'primary',
 })
 
+const slots = useSlots()
+
+// Inside a page header on a phone, a button with an icon shows only the icon;
+// its label stays in the markup for screen readers.
+const inCompactHeader = inject<Ref<boolean>>('pageHeaderCompact', ref(false))
+
+const iconOnly = computed<boolean>(() => {
+  return inCompactHeader.value && (!!slots.left || !!slots.right)
+})
+
 // Phones get 44px touch targets from md size up; wider screens stay compact.
-const sizeClass = computed<Record<string, boolean>>(() => {
+const sizeClass = computed<Record<string, boolean> | string>(() => {
+  if (iconOnly.value) {
+    return 'w-10 h-10 p-0 rounded-xl'
+  }
+
   return {
     'h-7 px-2.5 text-xs rounded-md': props.size === 'xs',
     'h-8 px-3 text-sm rounded-lg': props.size == 'sm',
@@ -83,7 +98,11 @@ const roundedClass = computed<string>(() => {
   return props.rounded ? '!rounded-full' : ''
 })
 
-const iconLeftClass = computed<Record<string, boolean>>(() => {
+const iconLeftClass = computed<Record<string, boolean> | string>(() => {
+  if (iconOnly.value) {
+    return 'h-5 w-5'
+  }
+
   return {
     '-ml-0.5 mr-1.5 h-4 w-4': props.size == 'sm' || props.size === 'xs',
     '-ml-1 mr-2 h-4.5 w-4.5': props.size === 'md',
@@ -99,7 +118,11 @@ const iconVariantClass = computed<Record<string, boolean>>(() => {
   }
 })
 
-const iconRightClass = computed<Record<string, boolean>>(() => {
+const iconRightClass = computed<Record<string, boolean> | string>(() => {
+  if (iconOnly.value) {
+    return 'h-5 w-5'
+  }
+
   return {
     'ml-1.5 -mr-0.5 h-4 w-4': props.size == 'sm' || props.size === 'xs',
     'ml-2 -mr-1 h-4.5 w-4.5': props.size === 'md',
@@ -130,7 +153,8 @@ const iconRightClass = computed<Record<string, boolean>>(() => {
 
     <slot v-else name="left" :class="[iconLeftClass, iconVariantClass]"></slot>
 
-    <slot />
+    <span v-if="iconOnly" class="sr-only"><slot /></span>
+    <slot v-else />
 
     <slot name="right" :class="[iconRightClass, iconVariantClass]"></slot>
   </BaseCustomTag>
