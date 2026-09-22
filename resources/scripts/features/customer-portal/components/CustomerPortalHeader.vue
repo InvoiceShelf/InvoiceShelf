@@ -12,7 +12,7 @@
       >
         <MainLogo
           v-if="!customerLogo"
-          class="h-6 w-auto text-primary-500"
+          class="w-auto h-7 text-heading"
         />
         <img
           v-else

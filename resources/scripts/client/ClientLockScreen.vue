@@ -41,7 +41,7 @@ defineEmits<Emits>()
         bg-surface-tertiary bg-glass-gradient
       "
     >
-      <MainLogo class="h-10 w-auto text-primary-500" />
+      <MainLogo class="w-auto h-10 text-heading" />
 
       <h1 class="mt-10 text-xl font-semibold text-center text-heading">
         {{ $t('client.app_lock_locked_heading') }}

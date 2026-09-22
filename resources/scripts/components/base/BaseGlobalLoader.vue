@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col items-center justify-center h-screen">
     <MainLogo
-      class="w-28 h-auto text-primary-400 mb-6"
+      class="w-auto h-10 mb-6 text-heading"
       alt="InvoiceShelf Logo"
     />
     <div class="flex space-x-1.5">
