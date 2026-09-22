@@ -821,7 +821,7 @@ class RealisticDemoSeeder extends Seeder
             CustomField::create($field + [
                 'label' => $field['name'],
                 'model_type' => 'Customer',
-                'slug' => clean_slug('Customer', $field['name']),
+                'slug' => clean_slug('Customer', $field['name'], $this->companyId),
                 'is_required' => false,
                 'order' => $order + 1,
                 'company_id' => $this->companyId,

@@ -39,11 +39,22 @@ trait ValidatesCustomFields
         return [
             $key => ['sometimes', 'array'],
             "{$key}.*" => ['required', 'array'],
+            // Either identifier will do. The slug is the one an integrator
+            // can write down: it survives a rename and is the same on every
+            // install, where the id is neither.
             "{$key}.*.id" => array_merge(
-                ['required', 'integer'],
+                ["required_without:{$key}.*.slug", 'nullable', 'integer'],
                 $this->customFieldUniquenessRule($key),
                 [
                     Rule::exists('custom_fields', 'id')
+                        ->where('company_id', $this->header('company')),
+                ]
+            ),
+            "{$key}.*.slug" => array_merge(
+                ["required_without:{$key}.*.id", 'nullable', 'string'],
+                $this->customFieldUniquenessRule($key),
+                [
+                    Rule::exists('custom_fields', 'slug')
                         ->where('company_id', $this->header('company')),
                 ]
             ),
@@ -74,13 +85,22 @@ trait ValidatesCustomFields
                 return;
             }
 
+            $company = $this->header('company');
+
             $definitions = CustomField::query()
-                ->whereIn('id', Arr::pluck($answers, 'id'))
-                ->get()
-                ->keyBy('id');
+                ->where('company_id', $company)
+                ->where(function ($query) use ($answers) {
+                    $query->whereIn('id', array_filter(Arr::pluck($answers, 'id')))
+                        ->orWhereIn('slug', array_filter(Arr::pluck($answers, 'slug')));
+                })
+                ->get();
+
+            $byId = $definitions->keyBy('id');
+            $bySlug = $definitions->keyBy('slug');
 
             foreach ($answers as $index => $answer) {
-                $definition = $definitions->get($answer['id'] ?? null);
+                $definition = $byId->get($answer['id'] ?? null)
+                    ?? $bySlug->get($answer['slug'] ?? null);
 
                 if (! $definition) {
                     // Already reported by the exists rule on the id.

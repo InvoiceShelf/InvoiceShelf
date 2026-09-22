@@ -51,7 +51,7 @@ class CompanyController extends Controller
         $this->companyAddressWriter->upsert($company, $address);
 
         if ($customFields = $request->input('customFields')) {
-            $this->customFieldValueWriter->update($company, $customFields);
+            $this->customFieldValueWriter->update($company, $customFields, $request->header('company'));
         }
 
         return new CompanyResource($company->refresh());
