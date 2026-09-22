@@ -147,6 +147,7 @@ const iconRightClass = computed<Record<string, boolean> | string>(() => {
     v-else
     :tag="tag"
     :disabled="disabled"
+    :data-icon-only="iconOnly ? '' : undefined"
     :class="[defaultClass, sizeClass, variantClass, roundedClass]"
   >
     <SpinnerIcon v-if="loading" :class="[iconLeftClass, iconVariantClass]" />

@@ -77,7 +77,7 @@ onMounted(() => {
 
 <template>
   <BasePage>
-    <BasePageHeader :title="$t('navigation.dashboard')">
+    <BasePageHeader :title="$t('navigation.dashboard')" phone-actions="inline">
       <template #actions>
         <div
           class="inline-flex p-0.5 border rounded-lg bg-surface border-line-default"

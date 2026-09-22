@@ -1,7 +1,7 @@
 <template>
   <BaseDropdown>
     <template #activator>
-      <span v-if="isDetailView" class="inline-flex items-center justify-center border rounded-lg w-11 h-11 md:w-9 md:h-9 bg-surface border-line-default text-body hover:bg-hover">
+      <span v-if="isDetailView" data-overflow class="inline-flex items-center justify-center border rounded-lg w-11 h-11 md:w-9 md:h-9 bg-surface border-line-default text-body hover:bg-hover">
         <BaseIcon name="EllipsisHorizontalIcon" class="w-5 h-5" />
       </span>
       <span v-else class="inline-flex items-center justify-center rounded-lg w-9 h-9 text-muted hover:bg-hover-strong hover:text-heading">

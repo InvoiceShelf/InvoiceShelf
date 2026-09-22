@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-12 gap-8 mt-6 mb-8">
+  <div class="grid grid-cols-12 gap-4 mt-5 mb-6 md:gap-8 md:mb-8">
     <BaseCustomerSelectPopup
       :valid="v.customer_id"
       :content-loading="isLoading"
@@ -17,7 +17,7 @@
 
     <BaseInputGrid
       v-else
-      class="col-span-12 lg:col-span-6 rounded-xl shadow border border-line-light bg-surface p-5"
+      class="col-span-12 p-4 border lg:col-span-6 glass rounded-xl md:p-5"
     >
       <BaseInputGroup
         :label="$t('invoices.invoice_date')"
