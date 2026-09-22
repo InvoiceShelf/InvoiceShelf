@@ -140,7 +140,7 @@ defineExpose({ openPdf, status })
   <!-- Phones and the app: a document card that opens the PDF -->
   <div
     v-else
-    class="flex items-center gap-4 p-4 border bg-surface border-line-light rounded-xl shadow-card"
+    class="flex items-center gap-4 p-4 border glass rounded-xl"
   >
     <div
       class="flex items-center justify-center w-12 shrink-0 rounded-md aspect-[3/4] bg-surface-secondary border border-line-light shadow-paper"

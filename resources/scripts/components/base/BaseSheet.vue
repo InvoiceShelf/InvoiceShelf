@@ -25,8 +25,8 @@
         >
           <DialogPanel
             class="
-              flex flex-col w-full max-w-lg max-h-[92dvh] bg-surface
-              rounded-t-2xl shadow-lg safe-bottom focus:outline-hidden
+              flex flex-col w-full max-w-lg max-h-[92dvh] glass-strong
+              rounded-t-2xl safe-bottom focus:outline-hidden
             "
           >
             <div class="flex justify-center pt-2.5 pb-1" aria-hidden="true">

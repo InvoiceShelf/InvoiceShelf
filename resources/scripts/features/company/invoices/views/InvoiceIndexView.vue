@@ -180,6 +180,7 @@
       <!-- Empty State -->
       <BaseEmptyPlaceholder
         v-show="showEmptyScreen"
+        icon="DocumentTextIcon"
         :title="$t('invoices.no_invoices')"
         :description="$t('invoices.list_of_invoices')"
       >
@@ -197,36 +198,13 @@
       </BaseEmptyPlaceholder>
 
       <!-- Table -->
-      <div v-show="!showEmptyScreen" class="relative table-container">
-        <div
-          class="relative flex items-center justify-between list-none"
-        >
-          <BaseTabGroup @change="setStatusFilter">
-            <BaseTab :title="$t('general.all')" filter="" />
-            <BaseTab :title="$t('general.draft')" filter="DRAFT" />
-            <BaseTab :title="$t('general.sent')" filter="SENT" />
-            <BaseTab :title="$t('general.due')" filter="DUE" />
-          </BaseTabGroup>
-
-          <BaseDropdown
-            v-if="invoiceStore.selectedInvoices.length && canDelete"
-            class="absolute float-right"
-          >
-            <template #activator>
-              <span
-                class="flex text-sm font-medium cursor-pointer select-none text-primary-400"
-              >
-                {{ $t('general.actions') }}
-                <BaseIcon name="ChevronDownIcon" />
-              </span>
-            </template>
-
-            <BaseDropdownItem @click="removeMultipleInvoices">
-              <BaseIcon name="TrashIcon" class="mr-3 text-body" />
-              {{ $t('general.delete') }}
-            </BaseDropdownItem>
-          </BaseDropdown>
-        </div>
+      <div v-show="!showEmptyScreen" class="relative flex flex-col gap-4 table-container">
+        <BaseTabGroup @change="setStatusFilter">
+          <BaseTab :title="$t('general.all')" filter="" />
+          <BaseTab :title="$t('general.draft')" filter="DRAFT" />
+          <BaseTab :title="$t('general.sent')" filter="SENT" />
+          <BaseTab :title="$t('general.due')" filter="DUE" />
+        </BaseTabGroup>
 
         <BaseTable
           ref="tableRef"
@@ -235,8 +213,17 @@
           :columns="invoiceColumns"
           :placeholder-count="invoiceStore.invoiceTotalCount >= 20 ? 10 : 5"
           :row-to="invoiceLink"
-          class="mt-4"
+          :selected-count="canDelete ? invoiceStore.selectedInvoices.length : 0"
         >
+          <template #bulk-actions>
+            <BaseButton size="xs" variant="white" @click="removeMultipleInvoices">
+              <template #left="slotProps">
+                <BaseIcon name="TrashIcon" :class="slotProps.class" />
+              </template>
+              {{ $t('general.delete') }}
+            </BaseButton>
+          </template>
+
           <template #header>
             <div class="absolute items-center left-6 top-2.5 select-none">
               <BaseCheckbox
@@ -378,6 +365,7 @@
       <!-- Empty State -->
       <BaseEmptyPlaceholder
         v-show="showRecurringEmptyScreen"
+        icon="ArrowPathIcon"
         :title="$t('recurring_invoices.no_invoices')"
         :description="$t('recurring_invoices.list_of_invoices')"
       >
@@ -394,43 +382,29 @@
         </template>
       </BaseEmptyPlaceholder>
 
-      <div v-show="!showRecurringEmptyScreen" class="relative table-container">
-        <!-- Recurring tabs -->
-        <div class="relative flex items-center justify-between mt-5 list-none">
-          <BaseTabGroup @change="setRecurringStatusFilter">
-            <BaseTab :title="$t('recurring_invoices.all')" filter="ALL" />
-            <BaseTab :title="$t('recurring_invoices.active')" filter="ACTIVE" />
-            <BaseTab :title="$t('recurring_invoices.on_hold')" filter="ON_HOLD" />
-          </BaseTabGroup>
+      <div v-show="!showRecurringEmptyScreen" class="relative flex flex-col gap-4 table-container">
+        <BaseTabGroup @change="setRecurringStatusFilter">
+          <BaseTab :title="$t('recurring_invoices.all')" filter="ALL" />
+          <BaseTab :title="$t('recurring_invoices.active')" filter="ACTIVE" />
+          <BaseTab :title="$t('recurring_invoices.on_hold')" filter="ON_HOLD" />
+        </BaseTabGroup>
 
-          <BaseDropdown
-            v-if="recurringInvoiceStore.selectedRecurringInvoices.length && canRecurringDelete"
-            class="absolute float-right"
-          >
-            <template #activator>
-              <span
-                class="flex text-sm font-medium cursor-pointer select-none text-primary-400"
-              >
-                {{ $t('general.actions') }}
-                <BaseIcon name="ChevronDownIcon" class="h-5" />
-              </span>
-            </template>
-
-            <BaseDropdownItem @click="removeMultipleRecurringInvoices">
-              <BaseIcon name="TrashIcon" class="mr-3 text-body" />
-              {{ $t('general.delete') }}
-            </BaseDropdownItem>
-          </BaseDropdown>
-        </div>
-
-        <!-- Recurring table -->
         <BaseTable
           ref="recurringTableRef"
           :data="fetchRecurringData"
           :columns="recurringColumns"
           :placeholder-count="recurringInvoiceStore.totalRecurringInvoices >= 20 ? 10 : 5"
-          class="mt-4"
+          :selected-count="canRecurringDelete ? recurringInvoiceStore.selectedRecurringInvoices.length : 0"
         >
+          <template #bulk-actions>
+            <BaseButton size="xs" variant="white" @click="removeMultipleRecurringInvoices">
+              <template #left="slotProps">
+                <BaseIcon name="TrashIcon" :class="slotProps.class" />
+              </template>
+              {{ $t('general.delete') }}
+            </BaseButton>
+          </template>
+
           <template #header>
             <div class="absolute items-center left-6 top-2.5 select-none">
               <BaseCheckbox

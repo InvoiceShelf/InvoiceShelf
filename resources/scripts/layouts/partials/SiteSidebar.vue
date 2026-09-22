@@ -4,7 +4,7 @@
     :class="[isRail ? 'w-16' : 'w-64']"
     class="
       fixed inset-y-0 left-0 z-30 hidden md:flex flex-col
-      bg-chrome text-chrome-fg safe-header
+      bg-chrome-lit text-chrome-fg safe-header
       transition-[width] duration-200
     "
   >
@@ -82,15 +82,42 @@
       </div>
     </nav>
 
+    <!-- The signed-in user, and the collapse control on desktops -->
     <div
-      v-if="isDesktop"
-      :class="[isRail ? 'justify-center' : 'justify-end px-3']"
-      class="flex py-2 border-t border-chrome-line safe-rail"
+      :class="isRail ? 'flex-col gap-1 px-0 items-center' : 'gap-1 px-3 items-center'"
+      class="flex py-2.5 border-t border-chrome-line safe-rail"
     >
+      <AccountMenu
+        position="top-start"
+        :wrapper-class="isRail ? 'flex' : 'flex flex-1 min-w-0'"
+      >
+        <template #activator="{ avatar }">
+          <span
+            :class="isRail ? 'justify-center w-10 h-10 p-0' : 'w-full gap-2.5 px-2 py-1.5'"
+            class="flex items-center min-w-0 text-left transition-colors rounded-lg hover:bg-chrome-hover"
+          >
+            <img
+              :src="avatar"
+              alt=""
+              class="object-cover w-8 h-8 rounded-full shrink-0 ring-2 ring-chrome-line"
+            />
+            <span v-if="!isRail" class="flex flex-col flex-1 min-w-0">
+              <span class="text-sm font-medium truncate text-chrome-fg">
+                {{ userStore.currentUser?.name }}
+              </span>
+              <span class="text-xs truncate text-chrome-muted">
+                {{ userStore.currentUser?.email }}
+              </span>
+            </span>
+          </span>
+        </template>
+      </AccountMenu>
+
       <button
-        v-tooltip="isRail ? { content: $t('general.expand'), placement: 'right' } : null"
+        v-if="isDesktop"
+        v-tooltip="{ content: isRail ? $t('general.expand') : $t('general.collapse'), placement: 'right' }"
         type="button"
-        class="flex items-center justify-center w-9 h-9 transition-colors rounded-lg text-chrome-muted hover:text-chrome-fg hover:bg-chrome-hover"
+        class="flex items-center justify-center w-9 h-9 transition-colors rounded-lg shrink-0 text-chrome-muted hover:text-chrome-fg hover:bg-chrome-hover"
         :aria-label="isRail ? $t('general.expand') : $t('general.collapse')"
         @click="globalStore.toggleSidebarCollapse()"
       >
@@ -114,10 +141,13 @@ import { assetUrl } from '@/scripts/config/runtime'
 import MainLogo from '@/scripts/components/icons/MainLogo.vue'
 import MainLogoMark from '@/scripts/components/icons/MainLogoMark.vue'
 import CompanySwitcher from './CompanySwitcher.vue'
+import AccountMenu from './AccountMenu.vue'
+import { useUserStore } from '@/scripts/stores/user.store'
 
 const route = useRoute()
 const globalStore = useGlobalStore()
 const companyStore = useCompanyStore()
+const userStore = useUserStore()
 const { isDesktop } = useBreakpoints()
 const { hasActiveUrl } = useActiveMenuLink(route)
 

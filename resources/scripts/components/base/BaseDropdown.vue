@@ -41,7 +41,7 @@
             <MenuItems
               class="
                 fixed inset-x-0 bottom-0 z-50 max-h-[80dvh] overflow-y-auto px-2 pt-2
-                bg-surface rounded-t-2xl shadow-lg safe-drawer focus:outline-hidden
+                glass-strong rounded-t-2xl safe-drawer focus:outline-hidden
               "
               :class="containerClass"
             >
@@ -110,7 +110,7 @@ provide('dropdownIsSheet', isPhone)
 
 const containerClasses = computed<string>(() => {
   const baseClass =
-    'origin-top-right p-1 rounded-xl shadow-lg bg-surface border border-line-light focus:outline-hidden'
+    'origin-top-right p-1 rounded-xl border glass-strong focus:outline-hidden'
   return `${baseClass} pointer-events-auto ${props.containerClass}`
 })
 

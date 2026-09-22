@@ -9,7 +9,7 @@
   >
     <div
       v-show="show"
-      class="relative z-10 p-4 pt-11 mb-5 border md:p-5 md:pt-5 md:pr-28 bg-surface rounded-xl border-line-light shadow-card"
+      class="relative z-10 p-4 border pt-11 md:p-5 md:pt-5 md:pr-28 glass rounded-xl"
     >
       <slot name="filter-header" />
 

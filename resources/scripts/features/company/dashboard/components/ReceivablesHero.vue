@@ -15,10 +15,16 @@
     <template v-if="loaded">
       <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div class="min-w-0">
-          <h2 :id="headingId" class="text-sm font-medium text-chrome-fg/75">
+          <h2 :id="headingId" class="flex items-center gap-2.5 text-sm font-medium text-chrome-fg/80">
+            <span
+              class="flex items-center justify-center w-9 h-9 rounded-xl bg-chrome-fg/12 ring-1 ring-inset ring-chrome-fg/15 text-chrome-fg"
+              aria-hidden="true"
+            >
+              <BaseIcon name="WalletIcon" class="w-5 h-5" />
+            </span>
             {{ $t('dashboard.receivables.title') }}
           </h2>
-          <p class="mt-2 font-semibold leading-none tracking-tight text-[2.5rem] md:text-[3.25rem]">
+          <p class="mt-4 font-semibold leading-none tracking-tight text-[2.5rem] md:text-[3.25rem]">
             <BaseFormatMoney
               :amount="summary.outstanding"
               :currency="companyStore.selectedCompanyCurrency"

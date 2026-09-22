@@ -1,8 +1,6 @@
 <template>
   <div
-    class="
-      flex flex-col gap-4 mb-6 md:flex-row md:items-end md:justify-between md:gap-6 md:mb-8
-    "
+    class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-6"
   >
     <div class="flex flex-col min-w-0">
       <h1 v-if="title" class="font-semibold text-left break-words text-title text-heading">
