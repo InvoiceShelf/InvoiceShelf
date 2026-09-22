@@ -35,9 +35,9 @@
               <div
                 :class="modalSize"
                 class="
-                  relative flex flex-col w-full max-h-[92dvh] text-left shadow-lg bg-surface
+                  relative flex flex-col w-full max-h-[92dvh] text-left glass-strong
                   rounded-t-2xl safe-bottom
-                  md:block md:max-h-none md:rounded-2xl md:border md:border-line-light md:pb-0
+                  md:block md:max-h-none md:rounded-2xl md:border md:pb-0
                 "
               >
                 <div class="flex justify-center pt-2.5 md:hidden" aria-hidden="true">

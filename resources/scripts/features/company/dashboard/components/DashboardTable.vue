@@ -135,7 +135,10 @@ const canCreateInvoiceFromEstimate = computed(() => userStore.hasAbilities(ABILI
         class="due-invoices"
       >
         <div class="flex items-center justify-between mb-3">
-          <h2 class="font-semibold text-section text-heading">
+          <h2 class="flex items-center gap-2.5 font-semibold text-section text-heading">
+            <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-primary-50 text-primary-600" aria-hidden="true">
+              <BaseIcon name="DocumentTextIcon" class="w-4.5 h-4.5" />
+            </span>
             {{ $t('dashboard.recent_invoices_card.title') }}
           </h2>
 
@@ -194,7 +197,10 @@ const canCreateInvoiceFromEstimate = computed(() => userStore.hasAbilities(ABILI
         class="recent-estimates"
       >
         <div class="flex items-center justify-between mb-3">
-          <h2 class="font-semibold text-section text-heading">
+          <h2 class="flex items-center gap-2.5 font-semibold text-section text-heading">
+            <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-primary-50 text-primary-600" aria-hidden="true">
+              <BaseIcon name="DocumentIcon" class="w-4.5 h-4.5" />
+            </span>
             {{ $t('dashboard.recent_estimate_card.title') }}
           </h2>
 

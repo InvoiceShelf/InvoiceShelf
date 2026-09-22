@@ -3,8 +3,8 @@
     <!-- The other invoices, beside the one on screen (wide screens only) -->
     <aside
       class="
-        sticky top-0 hidden xl:flex flex-col w-80 shrink-0 border-r bg-surface border-line-light
-        h-[calc(100dvh-var(--app-top-inset))]
+        sticky top-(--app-top-inset) hidden xl:flex flex-col w-80 shrink-0 mt-3 ml-8 mb-10 border rounded-2xl glass
+        h-[calc(100dvh-var(--app-top-inset)-1.5rem)] overflow-hidden
       "
     >
       <div class="flex items-center gap-2 p-3 border-b border-line-light">
@@ -191,9 +191,9 @@
 
       <!-- What the document says, without opening it -->
       <dl
-        class="grid grid-cols-2 gap-px mb-6 overflow-hidden border rounded-xl bg-line-light border-line-light shadow-card md:grid-cols-5"
+        class="grid grid-cols-2 gap-px overflow-hidden border rounded-xl bg-line-light/70 border-(--glass-edge) shadow-card backdrop-blur-xl md:grid-cols-5"
       >
-        <div class="col-span-2 px-4 py-3.5 md:col-span-1 bg-surface md:px-5">
+        <div class="col-span-2 px-4 py-3.5 md:col-span-1 bg-surface/85 md:px-5">
           <dt class="text-xs font-medium text-muted">{{ $t('invoices.customer') }}</dt>
           <dd class="mt-1 text-sm font-medium truncate text-heading">
             <router-link
@@ -205,11 +205,11 @@
             </router-link>
           </dd>
         </div>
-        <div class="px-4 py-3.5 bg-surface md:px-5">
+        <div class="px-4 py-3.5 bg-surface/85 md:px-5">
           <dt class="text-xs font-medium text-muted">{{ $t('invoices.invoice_date') }}</dt>
           <dd class="mt-1 text-sm font-medium tabular text-heading">{{ invoiceData.formatted_invoice_date }}</dd>
         </div>
-        <div class="px-4 py-3.5 bg-surface md:px-5">
+        <div class="px-4 py-3.5 bg-surface/85 md:px-5">
           <dt class="text-xs font-medium text-muted">{{ $t('invoices.due_date') }}</dt>
           <dd
             :class="invoiceData.overdue ? 'text-status-red' : 'text-heading'"
@@ -218,13 +218,13 @@
             {{ invoiceData.formatted_due_date || '-' }}
           </dd>
         </div>
-        <div class="px-4 py-3.5 bg-surface md:px-5">
+        <div class="px-4 py-3.5 bg-surface/85 md:px-5">
           <dt class="text-xs font-medium text-muted">{{ $t('invoices.total') }}</dt>
           <dd class="mt-1 text-sm font-medium text-heading">
             <BaseFormatMoney :amount="invoiceData.total" :currency="documentCurrency" />
           </dd>
         </div>
-        <div class="px-4 py-3.5 bg-surface md:px-5">
+        <div class="px-4 py-3.5 bg-surface/85 md:px-5">
           <dt class="text-xs font-medium text-muted">{{ $t('dashboard.recent_invoices_card.amount_due') }}</dt>
           <dd class="mt-1 text-base font-semibold text-heading">
             <BaseFormatMoney :amount="invoiceData.due_amount" :currency="documentCurrency" />
@@ -235,7 +235,7 @@
       <!-- Credit note: link back to the invoice it reverses -->
       <div
         v-if="invoiceData.type === 'CREDIT_NOTE'"
-        class="px-4 py-3 mb-6 text-sm rounded-xl bg-status-red-bg text-status-red"
+        class="px-4 py-3 text-sm rounded-xl bg-status-red-bg text-status-red"
       >
         <div class="flex flex-wrap items-center gap-2">
           <span class="font-semibold">{{ $t('invoices.credit_note') }}</span>
@@ -259,7 +259,7 @@
            is still live for the remainder. -->
       <div
         v-if="invoiceData.type !== 'CREDIT_NOTE' && isCredited"
-        class="flex flex-wrap items-center gap-2 px-4 py-3 mb-6 text-sm rounded-xl bg-status-yellow-bg text-status-yellow"
+        class="flex flex-wrap items-center gap-2 px-4 py-3 text-sm rounded-xl bg-status-yellow-bg text-status-yellow"
       >
         <span class="font-semibold">
           {{ isFullyCredited ? $t('invoices.cancelled') : $t('invoices.partially_credited') }}
@@ -288,7 +288,7 @@
         </span>
       </div>
 
-      <BaseCard v-if="invoicePaymentAllocations.length" class="mb-6">
+      <BaseCard v-if="invoicePaymentAllocations.length">
         <h2 class="mb-2 font-semibold text-section text-heading">{{ $t('invoices.allocated_payments') }}</h2>
         <div class="divide-y divide-line-light">
           <div v-for="allocation in invoicePaymentAllocations" :key="allocation.id" class="flex items-center justify-between gap-4 py-3 text-sm">

@@ -34,9 +34,9 @@
         >
           <DialogPanel
             class="
-              flex flex-col w-full h-full mx-auto overflow-hidden bg-surface
-              md:h-auto md:max-h-[70vh] md:max-w-xl md:rounded-2xl md:border md:border-line-light
-              shadow-lg safe-header
+              flex flex-col w-full h-full mx-auto overflow-hidden glass-strong
+              md:h-auto md:max-h-[70vh] md:max-w-xl md:rounded-2xl md:border
+              safe-header
             "
           >
             <div class="flex items-center gap-3 px-4 border-b h-14 shrink-0 border-line-light">

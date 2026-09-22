@@ -1,5 +1,6 @@
 <template>
-  <div v-if="isAppLoaded" class="flex h-dvh">
+  <!-- The ambient canvas sits behind everything; glass surfaces pick it up -->
+  <div v-if="isAppLoaded" class="flex h-dvh bg-ambient isolate">
     <NotificationRoot />
 
     <SiteSidebar v-if="hasCompany" />
@@ -12,17 +13,25 @@
     >
       <ImpersonationBanner />
 
-      <SiteHeader />
-
-      <main id="main-content" class="flex-1 min-h-0 overflow-y-auto overscroll-contain">
+      <!--
+        The top bar lives inside the scrolling area so content passes under
+        it; the bottom inset keeps the last rows clear of the phone's
+        floating tab bar or action bar.
+      -->
+      <main
+        id="main-content"
+        class="relative flex-1 min-h-0 overflow-y-auto overscroll-contain"
+        :style="{ paddingBottom: 'var(--app-bottom-inset)' }"
+      >
+        <SiteHeader />
         <router-view />
       </main>
-
-      <!-- BaseActionBar teleports a page's phone actions here -->
-      <div id="app-action-bar" class="shrink-0" />
-
-      <MobileTabBar v-if="showTabBar" />
     </div>
+
+    <!-- BaseActionBar teleports a page's phone actions here -->
+    <div id="app-action-bar" class="fixed inset-x-0 bottom-0 z-30" />
+
+    <MobileTabBar v-if="showTabBar" />
 
     <CommandPalette />
 
@@ -88,11 +97,16 @@ const showTabBar = computed<boolean>(() => {
 // modules (documented in resources/css/invoiceshelf.css).
 watchEffect(() => {
   const root = document.documentElement
-  root.style.setProperty('--app-top-inset', 'calc(3.5rem + env(safe-area-inset-top))')
+  // The top bar: 3.5rem, plus the status bar area on phones
+  root.style.setProperty(
+    '--app-top-inset',
+    isPhone.value ? 'calc(3.5rem + env(safe-area-inset-top))' : 'calc(3.5rem + 1px)',
+  )
   let bottom = 'env(safe-area-inset-bottom)'
 
   if (showTabBar.value) {
-    bottom = 'calc(3.5rem + env(safe-area-inset-bottom))'
+    // The floating tab bar: 3.75rem tall, 0.5rem above the home indicator, plus breathing room
+    bottom = 'calc(5rem + env(safe-area-inset-bottom))'
   } else if (isPhone.value && globalStore.actionBarCount > 0) {
     bottom = 'calc(4.5rem + env(safe-area-inset-bottom))'
   }

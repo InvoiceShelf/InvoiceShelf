@@ -1,5 +1,5 @@
 <template>
-  <div class="border bg-surface rounded-xl border-line-light shadow-card">
+  <div class="border glass rounded-xl">
     <div
       v-if="hasHeaderSlot"
       class="px-4 py-3.5 font-semibold border-b border-solid md:px-6 text-heading border-line-light"

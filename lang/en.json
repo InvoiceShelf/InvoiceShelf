@@ -151,7 +151,8 @@
     "theme_light": "Light",
     "theme_dark": "Dark",
     "theme_system": "System",
-    "breadcrumb": "Breadcrumb"
+    "breadcrumb": "Breadcrumb",
+    "selected_count": "{count} selected"
   },
   "dashboard": {
     "select_year": "Select year",
@@ -202,7 +203,10 @@
       "title": "Sales, receipts and expenses",
       "show_table": "Show as table",
       "hide_table": "Hide table",
-      "month": "Month"
+      "month": "Month",
+      "chart_style": "Chart style",
+      "area": "Area",
+      "bars": "Bars"
     },
     "counts": {
       "customers": "customer | customers",

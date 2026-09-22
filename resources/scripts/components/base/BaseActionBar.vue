@@ -6,7 +6,7 @@
   -->
   <Teleport v-if="isPhone" defer to="#app-action-bar">
     <div
-      class="flex items-center gap-2 px-4 pt-3 border-t bg-surface border-line-light safe-drawer"
+      class="flex items-center gap-2 px-4 pt-3 border-t glass-bar border-(--glass-edge) safe-drawer"
     >
       <slot />
     </div>

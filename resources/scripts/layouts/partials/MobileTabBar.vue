@@ -1,9 +1,10 @@
 <template>
+  <!-- A floating glass bar above the home indicator; content scrolls under it -->
   <nav
-    class="shrink-0 bg-surface border-t border-line-light safe-bottom"
+    class="fixed inset-x-3 z-30 border rounded-2xl glass-strong bottom-[calc(env(safe-area-inset-bottom)+0.5rem)]"
     :aria-label="$t('navigation.menu')"
   >
-    <ul class="grid h-14" :style="{ gridTemplateColumns: `repeat(${tabs.length + 1}, minmax(0, 1fr))` }">
+    <ul class="grid h-15 px-1" :style="{ gridTemplateColumns: `repeat(${tabs.length + 1}, minmax(0, 1fr))` }">
       <li v-for="tab in tabs" :key="tab.link">
         <router-link
           :to="tab.link"
@@ -11,9 +12,14 @@
           :class="[
             hasActiveUrl(tab.link) ? 'text-primary-600' : 'text-muted',
           ]"
-          class="flex flex-col items-center justify-center h-full gap-0.5 px-1"
+          class="relative flex flex-col items-center justify-center h-full gap-0.5 px-1"
         >
-          <BaseIcon :name="tab.icon" class="w-6 h-6" />
+          <span
+            :class="hasActiveUrl(tab.link) ? 'bg-primary-600/12' : ''"
+            class="flex items-center justify-center w-12 h-7 rounded-full transition-colors"
+          >
+            <BaseIcon :name="tab.icon" class="w-5.5 h-5.5" />
+          </span>
           <span class="max-w-full text-[11px] font-medium leading-4 truncate">
             {{ $t(tab.title) }}
           </span>
@@ -26,7 +32,12 @@
           class="flex flex-col items-center justify-center w-full h-full gap-0.5 px-1"
           @click="globalStore.setSidebarVisibility(true)"
         >
-          <BaseIcon name="Squares2X2Icon" class="w-6 h-6" />
+          <span
+            :class="isMoreActive ? 'bg-primary-600/12' : ''"
+            class="flex items-center justify-center w-12 h-7 rounded-full transition-colors"
+          >
+            <BaseIcon name="Squares2X2Icon" class="w-5.5 h-5.5" />
+          </span>
           <span class="text-[11px] font-medium leading-4">{{ $t('navigation.more') }}</span>
         </button>
       </li>

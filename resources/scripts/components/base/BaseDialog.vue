@@ -32,8 +32,8 @@
           >
             <div
               class="
-                relative w-full px-5 pt-6 text-left shadow-lg bg-surface rounded-t-2xl safe-drawer
-                md:p-6 md:rounded-2xl md:border md:border-line-light
+                relative w-full px-5 pt-6 text-left glass-strong rounded-t-2xl safe-drawer
+                md:p-6 md:rounded-2xl md:border
               "
               :class="dialogSizeClasses"
             >

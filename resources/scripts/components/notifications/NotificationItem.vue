@@ -1,8 +1,8 @@
 <template>
   <div
     class="
-      w-full max-w-sm mb-2.5 border rounded-xl shadow-lg cursor-pointer pointer-events-auto
-      md:w-96 bg-surface border-line-light
+      w-full max-w-sm mb-2.5 border rounded-xl cursor-pointer pointer-events-auto
+      md:w-96 glass-strong
     "
     @click.stop="hideNotificationAction"
     @mouseenter="clearNotificationTimeOut"

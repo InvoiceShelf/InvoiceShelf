@@ -51,7 +51,7 @@
       <div
         v-if="isShow && !isPhone"
         :class="[
-          'absolute z-50 w-72 max-h-[70vh] overflow-y-auto p-1 bg-surface border rounded-xl shadow-lg border-line-light',
+          'absolute z-50 w-72 max-h-[70vh] overflow-y-auto p-1 border rounded-xl glass-strong',
           variant === 'rail' ? 'left-full top-0 ml-2' : 'left-0 top-full mt-1.5',
         ]"
       >

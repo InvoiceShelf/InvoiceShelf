@@ -1,6 +1,6 @@
 <template>
   <div
-    class="relative flex flex-col overflow-hidden border bg-surface border-line-light rounded-xl shadow-card"
+    class="relative flex flex-col overflow-hidden border glass rounded-xl"
   >
     <!-- Phones: tappable rows built from the same cell slots -->
     <template v-if="isList">
@@ -86,6 +86,19 @@
     <!-- Tablet and desktop -->
     <template v-else>
       <slot name="header" />
+
+      <!-- While rows are selected, their actions sit over the column headings -->
+      <div
+        v-if="selectedCount > 0 && $slots['bulk-actions']"
+        class="absolute top-0 right-0 z-10 flex items-center justify-between gap-3 pl-4 pr-4 h-9 left-14 bg-surface-secondary"
+      >
+        <span class="text-xs font-medium text-heading">
+          {{ $t('general.selected_count', { count: selectedCount }) }}
+        </span>
+        <div class="flex items-center gap-1.5">
+          <slot name="bulk-actions" />
+        </div>
+      </div>
       <div class="overflow-x-auto">
         <table :class="tableClass">
           <thead :class="theadClass">
@@ -165,9 +178,14 @@
       v-else-if="
         !loading && !isLoading && sortedRows && sortedRows.length === 0
       "
-      class="flex flex-col items-center justify-center gap-2 py-12 text-sm text-center text-muted"
+      class="flex flex-col items-center justify-center gap-3 py-12 text-sm text-center text-muted"
     >
-      <BaseIcon name="InboxIcon" class="w-6 h-6 text-subtle" />
+      <span
+        class="flex items-center justify-center w-11 h-11 rounded-xl bg-primary-50 text-primary-600 ring-1 ring-inset ring-primary-600/10"
+        aria-hidden="true"
+      >
+        <BaseIcon name="MagnifyingGlassIcon" class="w-5 h-5" />
+      </span>
       <span>{{ $t('general.no_data_found') }}</span>
     </div>
 
@@ -276,13 +294,15 @@ interface Props {
   rowTo?: ((row: RowData) => RouteLocationRaw | null) | null
   /** Render as a table even on phones (for narrow tables that already fit) */
   keepTableOnPhone?: boolean
+  /** How many rows the page has selected; the #bulk-actions slot shows while it is above 0 */
+  selectedCount?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
   sortBy: '',
   sortOrder: '',
   tableClass: 'min-w-full',
-  theadClass: 'bg-surface-secondary border-b border-line-light',
+  theadClass: 'bg-surface-secondary/60 border-b border-line-light',
   tbodyClass: '',
   noResultsMessage: 'No Results Found',
   loading: false,
@@ -290,6 +310,7 @@ const props = withDefaults(defineProps<Props>(), {
   placeholderCount: 3,
   rowTo: null,
   keepTableOnPhone: false,
+  selectedCount: 0,
 })
 
 const router = useRouter()
