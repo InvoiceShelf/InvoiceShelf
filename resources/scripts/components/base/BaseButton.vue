@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject, ref, useSlots } from 'vue'
+import { computed, inject, ref, useAttrs, useSlots } from 'vue'
 import type { Ref } from 'vue'
 import SpinnerIcon from '@/scripts/components/icons/SpinnerIcon.vue'
 
@@ -36,13 +36,17 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const slots = useSlots()
+const attrs = useAttrs()
 
 // Inside a page header on a phone, a button with an icon shows only the icon;
-// its label stays in the markup for screen readers.
+// its label stays in the markup for screen readers. A form's submit button
+// keeps its label: "Save" is not something to guess from an icon.
 const inCompactHeader = inject<Ref<boolean>>('pageHeaderCompact', ref(false))
 
 const iconOnly = computed<boolean>(() => {
-  return inCompactHeader.value && (!!slots.left || !!slots.right)
+  return inCompactHeader.value
+    && attrs.type !== 'submit'
+    && (!!slots.left || !!slots.right)
 })
 
 // Phones get 44px touch targets from md size up; wider screens stay compact.

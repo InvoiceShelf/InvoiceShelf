@@ -161,7 +161,7 @@
         <div
           class="rounded-b-xl bg-surface-muted p-4 sm:p-5 lg:rounded-bl-none lg:rounded-r-xl"
         >
-          <p class="text-xs font-semibold uppercase tracking-wider text-muted">
+          <p class="text-xs font-semibold text-muted">
             {{ $t('expenses.tax_summary') }}
           </p>
 
