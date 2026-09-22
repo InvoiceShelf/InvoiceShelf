@@ -135,9 +135,15 @@ const showValidation = ref<boolean>(false)
 
 type BoundKey = 'earliest' | 'latest'
 
-/** A stored bound read back as the choice that produced it. */
+/**
+ * A stored bound read back as the choice that produced it.
+ *
+ * Only null is "no limit". An empty string means a fixed bound was chosen
+ * and no value picked yet, which has to stay distinguishable or the select
+ * snaps back the moment you choose it.
+ */
 function modeOf(bound: string | null): string {
-  if (!bound) return 'none'
+  if (bound === null || bound === undefined) return 'none'
 
   return bound === 'today' ? 'today' : 'fixed'
 }
@@ -678,6 +684,7 @@ function closeCustomFieldModal(): void {
                     value-prop="value"
                     :can-deselect="false"
                     :searchable="false"
+                    open-direction="top"
                   />
                   <component
                     :is="defaultValueComponent"
@@ -694,6 +701,7 @@ function closeCustomFieldModal(): void {
                     value-prop="value"
                     :can-deselect="false"
                     :searchable="false"
+                    open-direction="top"
                   />
                   <component
                     :is="defaultValueComponent"
