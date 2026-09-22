@@ -829,6 +829,20 @@
     "connected_to": "Connected to {server}",
     "modules_failed": "Some add-ons did not load: {names}"
   },
+  "devices": {
+    "title": "Devices",
+    "description": "The devices signed in to your account. Revoking one signs it out the next time it contacts the server.",
+    "this_device": "This device",
+    "added_on": "Added {date}",
+    "last_used": "Last used {date}",
+    "never_used": "Never used",
+    "revoke": "Revoke",
+    "revoke_confirm": "{name} will be signed out the next time it contacts the server.",
+    "revoke_current_confirm": "This is the device you are using. Revoking it signs you out here.",
+    "revoked_message": "Device revoked successfully",
+    "no_devices": "No devices",
+    "no_devices_description": "Devices signed in with the mobile app appear here."
+  },
   "modules": {
     "buy_now": "Buy Now",
     "install": "Install",

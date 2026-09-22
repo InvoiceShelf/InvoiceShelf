@@ -30,6 +30,11 @@ const settingsRoutes: RouteRecordRaw[] = [
         name: 'settings.account.security',
         component: () => import('./views/UserSecurityView.vue'),
       },
+      {
+        path: 'devices',
+        name: 'settings.account.devices',
+        component: () => import('./views/DevicesView.vue'),
+      },
     ],
   },
   {

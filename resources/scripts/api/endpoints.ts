@@ -5,6 +5,7 @@ export const API = {
   FORGOT_PASSWORD: '/api/v1/auth/password/email',
   RESET_PASSWORD: '/api/v1/auth/reset/password',
   AUTH_CHECK: '/api/v1/auth/check',
+  AUTH_TOKENS: '/api/v1/auth/tokens', // the caller's own devices: list, and revoke one by id
   CSRF_COOKIE: '/sanctum/csrf-cookie',
   // Bearer sign-in, used by the mobile client instead of the session pair
   // above. Both already end in `/login` and `/auth/logout`, so the 401
