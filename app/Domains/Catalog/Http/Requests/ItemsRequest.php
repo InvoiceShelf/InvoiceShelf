@@ -2,6 +2,7 @@
 
 namespace App\Domains\Catalog\Http\Requests;
 
+use App\Domains\Metadata\Http\Requests\Concerns\ValidatesCustomFields;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
@@ -15,6 +16,8 @@ use Illuminate\Foundation\Http\FormRequest;
  */
 class ItemsRequest extends FormRequest
 {
+    use ValidatesCustomFields;
+
     /**
      * Access is settled by the item policy in the controller.
      */
@@ -37,6 +40,7 @@ class ItemsRequest extends FormRequest
             'price' => ['required'],
             'unit_id' => ['nullable'],
             'description' => ['nullable'],
+            ...$this->customFieldRules(),
         ];
     }
 }

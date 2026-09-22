@@ -2,6 +2,7 @@
 
 namespace App\Domains\Accounts\Http\Requests;
 
+use App\Domains\Metadata\Http\Requests\Concerns\ValidatesCustomFields;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -17,6 +18,8 @@ use Illuminate\Validation\Rules\Unique;
  */
 class CompanyRequest extends FormRequest
 {
+    use ValidatesCustomFields;
+
     /** Columns lifted off the validated payload onto the company row. */
     private const COMPANY_FIELDS = [
         'name',
@@ -55,6 +58,7 @@ class CompanyRequest extends FormRequest
             'address.country_id' => [
                 'required',
             ],
+            ...$this->customFieldRules(),
         ];
     }
 

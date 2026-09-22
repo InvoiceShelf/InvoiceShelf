@@ -3,6 +3,7 @@
 namespace App\Domains\Contacts\Http\Requests;
 
 use App\Domains\Contacts\Models\Address;
+use App\Domains\Metadata\Http\Requests\Concerns\ValidatesCustomFields;
 use App\Rules\IdnEmail;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
@@ -17,6 +18,8 @@ use Illuminate\Validation\Rule;
  */
 class CustomerRequest extends FormRequest
 {
+    use ValidatesCustomFields;
+
     /**
      * Columns copied straight from the validated payload onto the contact row.
      *
@@ -100,7 +103,7 @@ class CustomerRequest extends FormRequest
             }
         }
 
-        return $rules;
+        return array_merge($rules, $this->customFieldRules());
     }
 
     /**

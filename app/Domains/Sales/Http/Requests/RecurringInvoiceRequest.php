@@ -4,6 +4,7 @@ namespace App\Domains\Sales\Http\Requests;
 
 use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Contacts\Models\Customer;
+use App\Domains\Metadata\Http\Requests\Concerns\ValidatesCustomFields;
 use App\Domains\Sales\Models\RecurringInvoice;
 use App\Support\DocumentTotals;
 use Illuminate\Foundation\Http\FormRequest;
@@ -21,6 +22,7 @@ use Illuminate\Validation\Validator;
 class RecurringInvoiceRequest extends FormRequest
 {
     use Concerns\ValidatesDocumentTaxPlaceholders;
+    use ValidatesCustomFields;
 
     /**
      * Every caller is let through; the controller holds the gate.
@@ -115,7 +117,11 @@ class RecurringInvoiceRequest extends FormRequest
             ];
         }
 
-        return $rules;
+        return array_merge(
+            $rules,
+            $this->customFieldRules(),
+            $this->customFieldRules('items.*.custom_fields'),
+        );
     }
 
     /**
