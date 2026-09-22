@@ -127,3 +127,15 @@
 :root .numInputWrapper span.arrowDown::after {
   border-top-color: var(--color-muted);
 }
+
+/* An inline calendar sits inside a popover or sheet, which is its card */
+:root .flatpickr-calendar.inline {
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+  padding: 0;
+}
+
+:root .flatpickr-calendar.inline .flatpickr-current-month .flatpickr-monthDropdown-months {
+  background: transparent;
+}

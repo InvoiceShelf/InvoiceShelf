@@ -39,7 +39,7 @@ const SUB: Record<Unit, (d: Date, amount: number) => Date> = {
   year: subYears,
 }
 
-interface Range {
+export interface Range {
   from: string
   to: string
 }
