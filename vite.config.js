@@ -1,8 +1,6 @@
 import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
-import { resolve } from 'path';
 import laravel from 'laravel-vite-plugin';
-import tailwindcss from '@tailwindcss/vite';
+import { appVersion, sharedAlias, sharedExtensions, sharedPlugins } from './vite.shared.mjs';
 
 export default defineConfig({
   server: {
@@ -12,23 +10,16 @@ export default defineConfig({
     }
   },
   resolve: {
-    alias: {
-      '@': resolve(__dirname, './resources/'),
-      $fonts: resolve(__dirname, './resources/static/fonts'),
-      $images: resolve(__dirname, './resources/static/img')
-    },
-    extensions: ['.js', '.ts', '.jsx', '.tsx', '.json', '.vue', '.mjs']
+    alias: sharedAlias,
+    extensions: sharedExtensions
+  },
+  // False here is what compiles every thin-client branch out of the web bundle.
+  define: {
+    __INVOICESHELF_CLIENT__: 'false',
+    __INVOICESHELF_CLIENT_VERSION__: JSON.stringify(appVersion())
   },
   plugins: [
-    tailwindcss(),
-    vue({
-      template: {
-        transformAssetUrls: {
-          base: null,
-          includeAbsolute: false,
-        },
-      },
-    }),
+    ...sharedPlugins(),
     laravel({
       input: ['resources/scripts/main.ts'],
     })

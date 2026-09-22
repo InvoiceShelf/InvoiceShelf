@@ -10,6 +10,9 @@ docker/
 
 node_modules/
 
+# The thin-client build target and its Capacitor shell never ship in the image
+mobile/
+
 # Vite output is rebuilt in the image's static_builder stage; never ship a stale host build
 public/build/
 

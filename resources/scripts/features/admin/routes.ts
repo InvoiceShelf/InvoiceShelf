@@ -68,6 +68,7 @@ export const adminRoutes: RouteRecordRaw[] = [
           isSuperAdmin: true,
         },
       },
+      // The marketplace, which the client build declares as an empty list.
       ...adminModuleRoutes,
       {
         path: 'settings',

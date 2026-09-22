@@ -12,6 +12,12 @@ importers:
 
   .:
     dependencies:
+      '@capacitor/core':
+        specifier: ^7.6.9
+        version: 7.6.9
+      '@capacitor/preferences':
+        specifier: ^7.0.4
+        version: 7.0.4(@capacitor/core@7.6.9)
       '@headlessui/vue':
         specifier: ^1.7.23
         version: 1.7.23(vue@3.5.31(typescript@6.0.2))
@@ -159,6 +165,14 @@ packages:
   '@babel/types@7.29.0':
     resolution: {integrity: sha512-LwdZHpScM4Qz8Xw2iKSzS+cfglZzJGvofQICy7W7v4caru4EaAmyUuO6BGrbyQ2mYV11W0U8j5mBhd14dd3B0A==}
     engines: {node: '>=6.9.0'}
+
+  '@capacitor/core@7.6.9':
+    resolution: {integrity: sha512-4DOh/xySC9S5ryhUIqpOppasIyi2WiTdF0JuZ/2DEs+vf5eunRzHDdNYBp1snA3faHciTw/3SVGXfR+WkYxsMA==}
+
+  '@capacitor/preferences@7.0.4':
+    resolution: {integrity: sha512-TJhkwaI2RCs/iDC9PjNczZV4h6JM4gUtTuKMeFdy0OwGgFEHf4TrtW2mFMc1TnPDalYQ91p9NT+UKgiJs9/xtg==}
+    peerDependencies:
+      '@capacitor/core': '>=7.0.0'
 
   '@emnapi/core@1.11.0':
     resolution: {integrity: sha512-l9Oo58x0HOP5znGzVhYW9U3e5wVuA4LAZU2AGezTmkhO1CgQRFDhDg4nneHsu/t3WniXg9QrG2nIXL/ZS8ln8Q==}
@@ -1807,6 +1821,14 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
 
+  '@capacitor/core@7.6.9':
+    dependencies:
+      tslib: 2.8.1
+
+  '@capacitor/preferences@7.0.4(@capacitor/core@7.6.9)':
+    dependencies:
+      '@capacitor/core': 7.6.9
+
   '@emnapi/core@1.11.0':
     dependencies:
       '@emnapi/wasi-threads': 1.2.2
@@ -3228,8 +3250,7 @@ snapshots:
     dependencies:
       typescript: 6.0.2
 
-  tslib@2.8.1:
-    optional: true
+  tslib@2.8.1: {}
 
   type-check@0.4.0:
     dependencies:

@@ -12,7 +12,7 @@ const ModuleDetailView = () => import('./views/ModuleDetailView.vue')
  * Company-context module routes (the read-only Active Modules index and the
  * schema-rendered settings page) live in features/company/modules/routes.ts.
  */
-export const adminModuleRoutes: RouteRecordRaw[] = [
+const marketplaceRoutes: RouteRecordRaw[] = [
   {
     path: 'modules',
     name: 'admin.modules.index',
@@ -32,3 +32,11 @@ export const adminModuleRoutes: RouteRecordRaw[] = [
     },
   },
 ]
+
+/**
+ * Empty in the mobile client. Browsing and installing modules is done on the
+ * web, which keeps the app clear of anything that reads as a store (App Store
+ * guideline 2.5.2) and keeps these views out of the package. Modules that are
+ * already installed still load and run.
+ */
+export const adminModuleRoutes: RouteRecordRaw[] = __INVOICESHELF_CLIENT__ ? [] : marketplaceRoutes

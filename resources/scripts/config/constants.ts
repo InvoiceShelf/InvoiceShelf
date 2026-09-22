@@ -58,6 +58,7 @@ export const LS_KEYS = {
   SELECTED_COMPANY: 'selectedCompany',
   IS_ADMIN_MODE: 'isAdminMode',
   SIDEBAR_COLLAPSED: 'sidebarCollapsed',
+  CLIENT_SERVER_URL: 'client.serverUrl',
   THEME: 'theme',
 } as const
 

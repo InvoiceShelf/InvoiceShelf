@@ -6,6 +6,11 @@ export const API = {
   RESET_PASSWORD: '/api/v1/auth/reset/password',
   AUTH_CHECK: '/api/v1/auth/check',
   CSRF_COOKIE: '/sanctum/csrf-cookie',
+  // Bearer sign-in, used by the mobile client instead of the session pair
+  // above. Both already end in `/login` and `/auth/logout`, so the 401
+  // interceptor's exempt list covers them without a second entry.
+  TOKEN_LOGIN: '/api/v1/auth/login',
+  TOKEN_LOGOUT: '/api/v1/auth/logout',
   REGISTER_WITH_INVITATION: '/api/v1/auth/register-with-invitation',
   INSTALLATION_LOGIN: '/api/v1/installation/login',
   INSTALLATION_SET_DOMAIN: '/api/v1/installation/set-domain',
