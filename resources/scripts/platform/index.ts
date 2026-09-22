@@ -1,7 +1,7 @@
 import { webPlatform } from './web'
-import type { Platform, PlatformStorage } from './types'
+import type { Platform, PlatformBiometrics, PlatformStorage } from './types'
 
-export type { Platform, PlatformStorage } from './types'
+export type { Platform, PlatformBiometrics, PlatformStorage } from './types'
 
 /**
  * The shell the app is running in, resolved once at boot.
@@ -45,6 +45,10 @@ export const platform: Platform = {
     get: (key: string) => active.storage.get(key),
     set: (key: string, value: string) => active.storage.set(key, value),
     remove: (key: string) => active.storage.remove(key),
+  },
+  biometrics: {
+    available: () => active.biometrics.available(),
+    verify: (reason: string) => active.biometrics.verify(reason),
   },
   deviceName: () => active.deviceName(),
   saveFile: (blob: Blob, filename: string) => active.saveFile(blob, filename),

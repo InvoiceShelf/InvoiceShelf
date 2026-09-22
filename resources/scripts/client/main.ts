@@ -5,6 +5,7 @@ import { restoreClientState } from '../utils/local-storage'
 import { LS_KEYS } from '../config/constants'
 import router from '../router'
 import { appUrlMismatch, fetchClientManifest, gateManifest, ManifestError } from './manifest'
+import { startAppLock } from './lock'
 import { clientState } from './state'
 import type { ClientManifest, ClientManifestModule } from './state'
 
@@ -257,5 +258,15 @@ boot()
   })
   .finally(() => {
     openingRoute()
-    window.InvoiceShelf.start()
+
+    // The app lock goes up after the app has mounted, and only then: the
+    // overlay is appended to `body`, which the mount clears. It covers
+    // whatever was painted, the login screen included.
+    void window.InvoiceShelf.start()
+      .catch((error: unknown) => {
+        // A mount failure has no screen left to be shown on, but it must
+        // not swallow the lock: the app still holds a token.
+        console.error(error)
+      })
+      .finally(startAppLock)
   })

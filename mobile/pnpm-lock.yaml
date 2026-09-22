@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@aparajita/capacitor-biometric-auth':
+        specifier: ^9.1.2
+        version: 9.1.2
       '@capacitor/android':
         specifier: ^7.6.9
         version: 7.6.9(@capacitor/core@7.6.9)
@@ -47,6 +50,10 @@ importers:
         version: 7.6.9
 
 packages:
+
+  '@aparajita/capacitor-biometric-auth@9.1.2':
+    resolution: {integrity: sha512-cDcTFOQW4iI1+/AwkA0hRfiP53BuCSWvoxxkyp2NC7Hf0tNSg5fZ4zmXI/PcpLKUR7cd91TxnAxWYAAGJKOBig==}
+    engines: {node: '>=20.0.0'}
 
   '@capacitor/android@7.6.9':
     resolution: {integrity: sha512-jvfU42aOuj92/KJqRscfDm+5612WzJainFL09xjJgD9oI3OMXN4PBfccn8Ig9i8x7bkVqZv/XNwFshiIRqmggg==}
@@ -911,6 +918,13 @@ packages:
     resolution: {integrity: sha512-p4a9I6X6nu6IhoGmBqAcbJy1mlC4j27vEPZX9F4L4/vZT3Lyq1VkFHw/V/PUcB9Buo+DG3iHkT0x3Qya58zc3g==}
 
 snapshots:
+
+  '@aparajita/capacitor-biometric-auth@9.1.2':
+    dependencies:
+      '@capacitor/android': 7.6.9(@capacitor/core@7.6.9)
+      '@capacitor/app': 7.1.2(@capacitor/core@7.6.9)
+      '@capacitor/core': 7.6.9
+      '@capacitor/ios': 7.6.9(@capacitor/core@7.6.9)
 
   '@capacitor/android@7.6.9(@capacitor/core@7.6.9)':
     dependencies:

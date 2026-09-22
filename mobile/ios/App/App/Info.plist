@@ -41,6 +41,8 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>InvoiceShelf uses the camera so you can photograph a receipt and attach it to an expense.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>InvoiceShelf uses Face ID to unlock the app, so your account stays closed to anyone else holding your phone.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>InvoiceShelf reads photos you pick so you can attach an existing receipt image to an expense.</string>
 	<key>UILaunchStoryboardName</key>
