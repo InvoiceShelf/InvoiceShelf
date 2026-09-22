@@ -48,8 +48,8 @@ class EstimateItemResource extends JsonResource
                 fn () => TaxResource::collection($item->taxes)
             ),
             'fields' => $this->when(
-                $item->fields()->exists(),
-                fn () => CustomFieldValueResource::collection($item->fields)
+                $item->printedFields()->exists(),
+                fn () => CustomFieldValueResource::collection($item->printedFields)
             ),
         ];
     }

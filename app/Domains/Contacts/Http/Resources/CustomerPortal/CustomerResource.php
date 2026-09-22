@@ -49,8 +49,8 @@ class CustomerResource extends JsonResource
                 fn () => new AddressResource($this->shippingAddress)
             ),
             'fields' => $this->when(
-                $this->fields()->exists(),
-                fn () => CustomFieldValueResource::collection($this->fields)
+                $this->printedFields()->exists(),
+                fn () => CustomFieldValueResource::collection($this->printedFields)
             ),
             'company' => $this->when(
                 $this->company()->exists(),

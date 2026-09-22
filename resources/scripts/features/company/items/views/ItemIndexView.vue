@@ -7,6 +7,7 @@ import { useDialogStore } from '../../../../stores/dialog.store'
 import { useCompanyStore } from '../../../../stores/company.store'
 import { useUserStore } from '../../../../stores/user.store'
 import ItemDropdown from '../components/ItemDropdown.vue'
+import { useCustomFieldDefinitions } from '@/scripts/features/shared/custom-fields/use-custom-fields'
 import SatelliteIcon from '@/scripts/components/icons/SatelliteIcon.vue'
 
 interface TableColumn {
@@ -74,6 +75,27 @@ const selectField = computed<number[]>({
   },
 })
 
+/**
+ * Item definitions the author marked as printed also become columns here.
+ * Reusing that flag rather than adding a second one keeps "where does this
+ * field show up" a single decision: it is on the document and in the list,
+ * or it is neither.
+ */
+const itemCustomFields = useCustomFieldDefinitions('Item')
+
+const printedFields = computed(() =>
+  itemCustomFields.value.filter((field) => field.placement === 'document')
+)
+
+/** The answer this row holds for a definition, already formatted. */
+function customFieldAnswer(row: Record<string, any>, id: number): string {
+  const answer = (row.fields ?? []).find(
+    (value: Record<string, any>) => value.custom_field_id === id
+  )
+
+  return answer?.default_formatted_answer ?? ''
+}
+
 const itemColumns = computed<TableColumn[]>(() => [
   {
     key: 'status',
@@ -91,6 +113,11 @@ const itemColumns = computed<TableColumn[]>(() => [
   { key: 'unit_name', label: t('items.unit') },
   { key: 'price', label: t('items.price') },
   { key: 'created_at', label: t('items.added_on') },
+  ...printedFields.value.map((field) => ({
+    key: `custom_field_${field.id}`,
+    label: field.label,
+    sortable: false,
+  })),
   {
     key: 'actions',
     thClass: 'text-right',
@@ -365,6 +392,14 @@ function removeMultipleItems(): void {
             :amount="row.data.price"
             :currency="companyStore.selectedCompanyCurrency"
           />
+        </template>
+
+        <template
+          v-for="field in printedFields"
+          :key="field.id"
+          #[`cell-custom_field_${field.id}`]="{ row }"
+        >
+          <span>{{ customFieldAnswer(row.data, field.id) }}</span>
         </template>
 
         <template #cell-created_at="{ row }">
