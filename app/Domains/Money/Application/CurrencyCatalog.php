@@ -7,8 +7,8 @@ namespace App\Domains\Money\Application;
  *
  * This list used to live inline in `CurrenciesTableSeeder`, in the order
  * currencies happened to be contributed, which made it impossible to see at a
- * glance what was missing: 78 circulating currencies were, among them the
- * Hungarian Forint and the South Korean Won. It also meant a new currency
+ * glance what was missing. 78 circulating currencies were, the Hungarian
+ * Forint and the South Korean Won among them. It also meant a new currency
  * reached an existing installation only through a migration, so the 2.x line
  * accumulated one migration per currency added.
  *

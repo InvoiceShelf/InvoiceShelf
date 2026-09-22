@@ -218,11 +218,10 @@ class RealisticDemoSeeder extends Seeder
         $this->unitId = $unit->id;
 
         // Override the company's default currency to match the USD id we just
-        // resolved. DemoSeeder hardcodes `'currency' => 1`, but since migration
-        // 2025_08_18 inserts Algerian Dinar (DZD, symbol "DA") via firstOrCreate()
-        // BEFORE CurrenciesTableSeeder runs, currency id 1 in a fresh install is
-        // Algerian Dinar, not USD. Without this override the company's display
-        // currency shows "DA" even though all our seeded records are priced in USD.
+        // resolved. Currency ids are not stable across installations -- an
+        // upgraded 2.x database can have the Algerian Dinar at id 1 -- and
+        // without this the company would display "DA" while every record it
+        // holds is priced in USD.
         CompanySetting::setSettings(
             ['currency' => (string) $this->currencyId],
             $this->companyId,
