@@ -8,6 +8,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Unique;
+use Illuminate\Validation\Validator;
 
 /**
  * The form behind editing the company the request header points at.
@@ -60,6 +61,11 @@ class CompanyRequest extends FormRequest
             ],
             ...$this->customFieldRules(),
         ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $this->validateCustomFieldAnswers($validator);
     }
 
     /**

@@ -29,6 +29,23 @@ class CustomField extends Model
     /** Printed on the document the record belongs to. */
     public const PLACEMENT_DOCUMENT = 'document';
 
+    /**
+     * How long an author's pattern may be.
+     *
+     * A cap rather than a safeguard against a slow expression: PCRE's
+     * backtrack limit already turns runaway matching into a failed match
+     * rather than a hung worker. This just keeps the column sane.
+     */
+    public const MAX_PATTERN_LENGTH = 255;
+
+    /**
+     * The one relative bound a date field may carry.
+     *
+     * Resolved against the owning company's zone, so a company thirteen
+     * hours ahead is not told the date it is living in is in the future.
+     */
+    public const BOUND_TODAY = 'today';
+
     protected $table = 'custom_fields';
 
     use HasFactory;
@@ -71,6 +88,7 @@ class CustomField extends Model
     {
         return [
             'options' => 'array',
+            'validation' => 'array',
         ];
     }
 
@@ -149,6 +167,19 @@ class CustomField extends Model
             $grouped->where('label', 'LIKE', $needle)
                 ->orWhere('name', 'LIKE', $needle);
         });
+    }
+
+    /**
+     * An author's pattern as PCRE wants it.
+     *
+     * The delimiters are added here and the author writes the expression
+     * alone, so a pattern cannot carry modifiers of its own. `u` is set
+     * because answers are UTF-8 and a pattern written against accented text
+     * should behave.
+     */
+    public static function compilePattern(string $pattern): string
+    {
+        return '/'.str_replace('/', '\\/', $pattern).'/u';
     }
 
     /**

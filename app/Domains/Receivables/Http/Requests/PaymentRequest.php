@@ -73,6 +73,7 @@ class PaymentRequest extends FormRequest
                 __('validation.prohibited', ['attribute' => 'invoice id'])
             );
         });
+        $this->validateCustomFieldAnswers($validator);
     }
 
     /**

@@ -49,6 +49,7 @@ class CustomFieldResource extends JsonResource
             'label' => $field->label,
             'model_type' => $field->model_type,
             'placement' => $field->placement,
+            'validation' => $field->validation,
             'type' => $field->type,
             'placeholder' => $field->placeholder,
             'options' => $field->options,

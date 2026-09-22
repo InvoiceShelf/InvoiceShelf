@@ -33,6 +33,8 @@ export interface CustomField {
   model_type: CustomFieldModelType
   /** 'internal' or 'document'; whether it prints on the record's PDF. */
   placement?: string
+  /** Bounds and an optional pattern an answer must satisfy. */
+  validation?: Record<string, unknown> | null
   type: CustomFieldType
   placeholder: string | null
   options: string[] | null

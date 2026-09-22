@@ -7,6 +7,7 @@ use App\Rules\IdnEmail;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 /**
  * Validates the signed-in account editing its own profile.
@@ -45,6 +46,11 @@ class ProfileRequest extends FormRequest
             ],
             ...$this->customFieldRules(),
         ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $this->validateCustomFieldAnswers($validator);
     }
 
     /**

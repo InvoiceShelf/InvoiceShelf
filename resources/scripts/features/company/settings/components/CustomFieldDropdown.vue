@@ -31,7 +31,7 @@ async function editCustomField(id: number): Promise<void> {
   modalStore.openModal({
     title: t('settings.custom_fields.edit_custom_field'),
     componentName: 'CustomFieldModal',
-    size: 'sm',
+    size: 'md',
     data: id,
     refreshData: props.loadData ?? undefined,
   })
