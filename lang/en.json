@@ -133,7 +133,9 @@
     "file_upload": {
       "drag_a_file": "Drag a file here or",
       "browse": "browse",
-      "to_choose": "to choose a file"
+      "to_choose": "to choose a file",
+      "take_photo": "Take photo",
+      "capture_failed": "The photo could not be taken. Choose a file instead."
     },
     "multiselect": {
       "the_list_is_empty": "The list is empty",

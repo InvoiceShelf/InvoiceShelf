@@ -12,10 +12,28 @@ importers:
 
   .:
     dependencies:
+      '@capacitor/app':
+        specifier: ^7.1.2
+        version: 7.1.2(@capacitor/core@7.6.9)
+      '@capacitor/browser':
+        specifier: ^7.0.5
+        version: 7.0.5(@capacitor/core@7.6.9)
+      '@capacitor/camera':
+        specifier: ^7.0.5
+        version: 7.0.5(@capacitor/core@7.6.9)
       '@capacitor/core':
         specifier: ^7.6.9
         version: 7.6.9
+      '@capacitor/device':
+        specifier: ^7.0.5
+        version: 7.0.5(@capacitor/core@7.6.9)
+      '@capacitor/filesystem':
+        specifier: ^7.1.8
+        version: 7.1.8(@capacitor/core@7.6.9)
       '@capacitor/preferences':
+        specifier: ^7.0.4
+        version: 7.0.4(@capacitor/core@7.6.9)
+      '@capacitor/share':
         specifier: ^7.0.4
         version: 7.0.4(@capacitor/core@7.6.9)
       '@headlessui/vue':
@@ -166,13 +184,46 @@ packages:
     resolution: {integrity: sha512-LwdZHpScM4Qz8Xw2iKSzS+cfglZzJGvofQICy7W7v4caru4EaAmyUuO6BGrbyQ2mYV11W0U8j5mBhd14dd3B0A==}
     engines: {node: '>=6.9.0'}
 
+  '@capacitor/app@7.1.2':
+    resolution: {integrity: sha512-d4I/oF/PRu4megL7/IGKYfe5j7yzSON1FRFgq6kH+m5kH6g7V+wyjHRLauCzGNjdRx4S+nWOumINds0qcRBtKg==}
+    peerDependencies:
+      '@capacitor/core': '>=7.0.0'
+
+  '@capacitor/browser@7.0.5':
+    resolution: {integrity: sha512-YF/kC1m1e6c81X/agtAnYItVlqiQ/nXLG+Q3QXNDuiMoRynqa3Guu8ZaV9kWvqQcHoE2w18xz7WGpPOuh+R1fA==}
+    peerDependencies:
+      '@capacitor/core': '>=7.0.0'
+
+  '@capacitor/camera@7.0.5':
+    resolution: {integrity: sha512-+53f1xHq8on7O+ULXbgWp00ooWvn3fUkWxTP3p5zHi1nVriCxLbYnY0zTpZQqn52M96vclFKkoABbTVQ3x755w==}
+    peerDependencies:
+      '@capacitor/core': '>=7.0.0'
+
   '@capacitor/core@7.6.9':
     resolution: {integrity: sha512-4DOh/xySC9S5ryhUIqpOppasIyi2WiTdF0JuZ/2DEs+vf5eunRzHDdNYBp1snA3faHciTw/3SVGXfR+WkYxsMA==}
+
+  '@capacitor/device@7.0.5':
+    resolution: {integrity: sha512-tf6BYeQMBARNLKELQq2RGsvG3z03oM/ga+aqVhvE8M4IM8+h/516eeSz07Eqm4+yySGaQFT+2rIkpJrvA7gaAA==}
+    peerDependencies:
+      '@capacitor/core': '>=7.0.0'
+
+  '@capacitor/filesystem@7.1.8':
+    resolution: {integrity: sha512-Qpw/2SE4/CzqAUvGgSM9hw/uXQ5qoOaF4wxbToXwpAaKPS+tzletS1h5ti3jjLmGcqizTs2sEXMtcsARW/Ceew==}
+    peerDependencies:
+      '@capacitor/core': '>=7.0.0'
 
   '@capacitor/preferences@7.0.4':
     resolution: {integrity: sha512-TJhkwaI2RCs/iDC9PjNczZV4h6JM4gUtTuKMeFdy0OwGgFEHf4TrtW2mFMc1TnPDalYQ91p9NT+UKgiJs9/xtg==}
     peerDependencies:
       '@capacitor/core': '>=7.0.0'
+
+  '@capacitor/share@7.0.4':
+    resolution: {integrity: sha512-wNXxmXUcChrtbZ5jQv8scFIbIGKo3rk6B7qpWySxfUhYJP5NANgAqQ9Z69m0k/zYsucdh66SBU7XW1ykd9aUug==}
+    peerDependencies:
+      '@capacitor/core': '>=7.0.0'
+
+  '@capacitor/synapse@1.0.4':
+    resolution: {integrity: sha512-/C1FUo8/OkKuAT4nCIu/34ny9siNHr9qtFezu4kxm6GY1wNFxrCFWjfYx5C1tUhVGz3fxBABegupkpjXvjCHrw==}
 
   '@emnapi/core@1.11.0':
     resolution: {integrity: sha512-l9Oo58x0HOP5znGzVhYW9U3e5wVuA4LAZU2AGezTmkhO1CgQRFDhDg4nneHsu/t3WniXg9QrG2nIXL/ZS8ln8Q==}
@@ -1821,13 +1872,40 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
 
+  '@capacitor/app@7.1.2(@capacitor/core@7.6.9)':
+    dependencies:
+      '@capacitor/core': 7.6.9
+
+  '@capacitor/browser@7.0.5(@capacitor/core@7.6.9)':
+    dependencies:
+      '@capacitor/core': 7.6.9
+
+  '@capacitor/camera@7.0.5(@capacitor/core@7.6.9)':
+    dependencies:
+      '@capacitor/core': 7.6.9
+
   '@capacitor/core@7.6.9':
     dependencies:
       tslib: 2.8.1
 
+  '@capacitor/device@7.0.5(@capacitor/core@7.6.9)':
+    dependencies:
+      '@capacitor/core': 7.6.9
+
+  '@capacitor/filesystem@7.1.8(@capacitor/core@7.6.9)':
+    dependencies:
+      '@capacitor/core': 7.6.9
+      '@capacitor/synapse': 1.0.4
+
   '@capacitor/preferences@7.0.4(@capacitor/core@7.6.9)':
     dependencies:
       '@capacitor/core': 7.6.9
+
+  '@capacitor/share@7.0.4(@capacitor/core@7.6.9)':
+    dependencies:
+      '@capacitor/core': 7.6.9
+
+  '@capacitor/synapse@1.0.4': {}
 
   '@emnapi/core@1.11.0':
     dependencies:

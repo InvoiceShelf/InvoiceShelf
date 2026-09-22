@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    A thin client connects to a server the user runs, not to one we operate,
+    and that server is routinely on a LAN name over plain http or behind a
+    certificate signed by a private CA. Android's defaults block both, so a
+    self-hosted install would be unreachable with no error a user could act on.
+
+    The two relaxations here are therefore the product, not an oversight:
+
+      * cleartextTrafficPermitted - a plain-http server is allowed. The connect
+        screen warns before it is used; the decision stays the user's and stays
+        visible.
+      * a `user` trust anchor - certificates the user installed on the device
+        are trusted, which is how a private CA is meant to be handled. Nothing
+        is pinned and no verification is skipped: an unknown certificate is
+        still rejected.
+
+    This does not touch the WebView's own origin. The app package is served
+    from https://app.invoiceshelf.internal by Capacitor's local scheme handler
+    and never leaves the device.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

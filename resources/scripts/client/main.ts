@@ -1,8 +1,9 @@
 import '../main'
 
-import { serverBaseUrl } from '../config/runtime'
+import { isNative, serverBaseUrl } from '../config/runtime'
 import { restoreClientState } from '../utils/local-storage'
 import { LS_KEYS } from '../config/constants'
+import router from '../router'
 import { appUrlMismatch, fetchClientManifest, gateManifest, ManifestError } from './manifest'
 import { clientState } from './state'
 import type { ClientManifest, ClientManifestModule } from './state'
@@ -24,6 +25,8 @@ import type { ClientManifest, ClientManifestModule } from './state'
 const MODULE_TIMEOUT_MS = 15_000
 
 async function boot(): Promise<void> {
+  registerBackButton()
+
   await restoreClientState()
 
   const serverUrl = serverBaseUrl()
@@ -64,6 +67,45 @@ async function boot(): Promise<void> {
   applyBranding(manifest)
 
   clientState.status = 'ready'
+}
+
+/**
+ * Android's back button, which is a system gesture and not ours to ignore.
+ *
+ * The rule the platform expects: go back a screen while there is one, and
+ * leave the app at the root rather than sitting there doing nothing, which is
+ * how a WebView app earns its reputation. `history.state.back` is the router's
+ * own record of the screen behind this one, and it is the right signal here
+ * where the WebView's `canGoBack` is not: the boot sequence writes the opening
+ * hash before the router exists, so the WebView counts entries the user never
+ * navigated to and would refuse to exit on the first screen.
+ *
+ * Registered before anything else in boot, because an app stuck on the
+ * unreachable-server screen is exactly when a user reaches for back. It is a
+ * no-op everywhere but a device: iOS has no hardware back button and a browser
+ * tab has its own.
+ */
+function registerBackButton(): void {
+  if (!isNative()) {
+    return
+  }
+
+  void import('@capacitor/app')
+    .then(({ App }) =>
+      App.addListener('backButton', () => {
+        if (window.history.state?.back) {
+          router.back()
+
+          return
+        }
+
+        void App.exitApp()
+      }),
+    )
+    .catch(() => {
+      // A shell without the plugin keeps the system default, which is to
+      // close the activity. That is the same outcome, minus the router step.
+    })
 }
 
 /**

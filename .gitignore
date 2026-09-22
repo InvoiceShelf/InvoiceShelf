@@ -4,6 +4,7 @@
 /public/hot
 /public/build
 /mobile/www
+/mobile/node_modules
 /storage/*.key
 /vendor
 /.idea
