@@ -4,6 +4,7 @@ namespace App\Domains\Receivables\Http\Requests;
 
 use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Contacts\Models\Customer;
+use App\Domains\Metadata\Http\Requests\Concerns\ValidatesCustomFields;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Unique;
@@ -16,6 +17,8 @@ use Illuminate\Validation\Validator;
  */
 class PaymentRequest extends FormRequest
 {
+    use ValidatesCustomFields;
+
     /**
      * The payment abilities are checked by the controller.
      */
@@ -49,6 +52,7 @@ class PaymentRequest extends FormRequest
             'allocations.*.amount' => ['required', 'integer', 'min:1'],
             'payment_method_id' => ['nullable'],
             'notes' => ['nullable'],
+            ...$this->customFieldRules(),
         ];
     }
 
@@ -85,7 +89,7 @@ class PaymentRequest extends FormRequest
         $rate = (string) $homeCurrency !== (string) $currencyId ? (float) $this->exchange_rate : 1;
 
         return collect($this->validated())
-            ->except('allocations')
+            ->except(['allocations', 'customFields'])
             ->merge([
                 'creator_id' => $this->user()->id,
                 'company_id' => $this->header('company'),

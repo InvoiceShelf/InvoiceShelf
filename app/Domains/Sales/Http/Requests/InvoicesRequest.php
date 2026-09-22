@@ -4,6 +4,7 @@ namespace App\Domains\Sales\Http\Requests;
 
 use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Contacts\Models\Customer;
+use App\Domains\Metadata\Http\Requests\Concerns\ValidatesCustomFields;
 use App\Domains\Sales\Models\Invoice;
 use App\Platform\Pdf\Rules\PdfTemplateExists;
 use App\Support\DocumentTotals;
@@ -19,6 +20,7 @@ use Illuminate\Validation\Validator;
 class InvoicesRequest extends FormRequest
 {
     use Concerns\ValidatesDocumentTaxPlaceholders;
+    use ValidatesCustomFields;
 
     /**
      * Gatekeeping happens in the controller, against the invoice itself.
@@ -51,6 +53,8 @@ class InvoicesRequest extends FormRequest
             'items.*.name' => 'required',
             'items.*.quantity' => 'numeric|required',
             'items.*.price' => 'numeric|required',
+            ...$this->customFieldRules(),
+            ...$this->customFieldRules('items.*.custom_fields'),
         ];
     }
 
@@ -90,7 +94,7 @@ class InvoicesRequest extends FormRequest
             $perItemDiscount
         );
 
-        return array_merge($this->except(['items', 'taxes']), [
+        return array_merge($this->withoutCustomFields($this->except(['items', 'taxes'])), [
             'creator_id' => $this->user()?->id,
             'type' => Invoice::TYPE_INVOICE,
             'related_invoice_id' => null,

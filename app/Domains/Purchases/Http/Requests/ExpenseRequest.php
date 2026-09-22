@@ -3,6 +3,7 @@
 namespace App\Domains\Purchases\Http\Requests;
 
 use App\Domains\Accounts\Models\CompanySetting;
+use App\Domains\Metadata\Http\Requests\Concerns\ValidatesCustomFields;
 use App\Domains\Taxation\Models\TaxType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
@@ -11,22 +12,31 @@ use Illuminate\Validation\Validator;
 
 class ExpenseRequest extends FormRequest
 {
+    use ValidatesCustomFields;
+
     /**
-     * Multipart clients send the tax rows as a JSON string; unpack them before validating.
+     * Multipart clients send the nested rows as JSON strings; unpack them
+     * before validating.
+     *
+     * The expense form uploads a receipt, so it posts multipart and every
+     * nested value arrives encoded. A rule cannot check a string, so this has
+     * to happen before validation rather than in the controller.
      */
     protected function prepareForValidation(): void
     {
-        $submittedTaxes = $this->input('taxes');
+        foreach (['taxes', 'customFields'] as $key) {
+            $submitted = $this->input($key);
 
-        if (! is_string($submittedTaxes)) {
-            return;
+            if (! is_string($submitted)) {
+                continue;
+            }
+
+            $decoded = json_decode($submitted, true);
+
+            $this->merge([
+                $key => json_last_error() === JSON_ERROR_NONE ? $decoded : null,
+            ]);
         }
-
-        $decoded = json_decode($submittedTaxes, true);
-
-        $this->merge([
-            'taxes' => json_last_error() === JSON_ERROR_NONE ? $decoded : null,
-        ]);
     }
 
     /**
@@ -78,7 +88,7 @@ class ExpenseRequest extends FormRequest
             $rules['exchange_rate'] = ['required'];
         }
 
-        return $rules;
+        return array_merge($rules, $this->customFieldRules());
     }
 
     /**
@@ -113,7 +123,7 @@ class ExpenseRequest extends FormRequest
         $chosenCurrency = $this->currency_id;
         $rate = $homeCurrency != $chosenCurrency ? $this->exchange_rate : 1;
 
-        return array_merge(Arr::except($this->validated(), 'taxes'), [
+        return array_merge(Arr::except($this->validated(), ['taxes', 'customFields']), [
             'creator_id' => $this->user()->id,
             'company_id' => $this->header('company'),
             'exchange_rate' => $rate,

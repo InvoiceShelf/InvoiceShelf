@@ -4,6 +4,7 @@ namespace App\Domains\Sales\Http\Requests;
 
 use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Contacts\Models\Customer;
+use App\Domains\Metadata\Http\Requests\Concerns\ValidatesCustomFields;
 use App\Domains\Sales\Models\Estimate;
 use App\Platform\Pdf\Rules\PdfTemplateExists;
 use App\Support\DocumentTotals;
@@ -19,6 +20,7 @@ use Illuminate\Validation\Validator;
 class EstimatesRequest extends FormRequest
 {
     use Concerns\ValidatesDocumentTaxPlaceholders;
+    use ValidatesCustomFields;
 
     /**
      * Gatekeeping happens in the controller, against the estimate itself.
@@ -51,6 +53,8 @@ class EstimatesRequest extends FormRequest
             'items.*.name' => 'required',
             'items.*.quantity' => 'numeric|required',
             'items.*.price' => 'integer|required',
+            ...$this->customFieldRules(),
+            ...$this->customFieldRules('items.*.custom_fields'),
         ];
     }
 
@@ -89,7 +93,7 @@ class EstimatesRequest extends FormRequest
 
         $sending = $this->has('estimateSend');
 
-        return collect($this->except(['items', 'taxes']))
+        return collect($this->withoutCustomFields($this->except(['items', 'taxes'])))
             ->merge([
                 'creator_id' => $this->user()?->id,
                 'status' => $sending ? Estimate::STATUS_SENT : Estimate::STATUS_DRAFT,
