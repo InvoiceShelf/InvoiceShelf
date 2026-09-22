@@ -296,7 +296,7 @@ function removeMultipleUsers(): void {
 
         <!-- Select All Checkbox -->
         <template #header>
-          <div class="absolute z-10 items-center left-6 top-2.5 select-none">
+          <div class="absolute z-10 items-center left-6 top-3.5 select-none">
             <BaseCheckbox
               v-model="selectAllFieldStatus"
               variant="primary"

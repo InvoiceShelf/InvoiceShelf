@@ -225,7 +225,7 @@
           </template>
 
           <template #header>
-            <div class="absolute items-center left-6 top-2.5 select-none">
+            <div class="absolute items-center left-6 top-3.5 select-none">
               <BaseCheckbox
                 v-model="invoiceStore.selectAllField"
                 variant="primary"
@@ -407,7 +407,7 @@
           </template>
 
           <template #header>
-            <div class="absolute items-center left-6 top-2.5 select-none">
+            <div class="absolute items-center left-6 top-3.5 select-none">
               <BaseCheckbox
                 v-model="recurringInvoiceStore.selectAllField"
                 variant="primary"

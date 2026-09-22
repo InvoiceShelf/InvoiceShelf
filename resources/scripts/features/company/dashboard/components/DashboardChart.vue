@@ -97,13 +97,13 @@
         <table class="min-w-full text-sm">
           <thead class="bg-surface-secondary">
             <tr>
-              <th class="px-5 py-2.5 text-xs font-medium text-left md:px-7 text-muted">
+              <th class="px-5 py-3 text-sm font-medium text-left md:px-7 text-muted">
                 {{ dashboardStore.resolvedPeriod?.granularity === 'day' ? $t('dashboard.cashflow.day') : $t('dashboard.cashflow.month') }}
               </th>
               <th
                 v-for="label in seriesLabels"
                 :key="label"
-                class="px-5 py-2.5 text-xs font-medium text-right md:px-7 text-muted"
+                class="px-5 py-3 text-sm font-medium text-right md:px-7 text-muted"
               >
                 {{ label }}
               </th>
