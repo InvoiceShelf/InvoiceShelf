@@ -1185,7 +1185,25 @@
         "user": "User"
       },
       "show_on_document": "Show on document",
-      "show_on_document_description": "Print this field on the invoice, estimate or receipt it belongs to."
+      "show_on_document_description": "Print this field on the invoice, estimate or receipt it belongs to.",
+      "section_field": "Field",
+      "section_behaviour": "Behaviour",
+      "section_validation": "Validation",
+      "validation_description": "restrict what can be entered",
+      "name_help": "Builds the placeholder that templates reference.",
+      "label_help": "Shown beside the input and on the document.",
+      "min_length": "Minimum length",
+      "max_length": "Maximum length",
+      "min_value": "Minimum",
+      "max_value": "Maximum",
+      "pattern": "Pattern",
+      "pattern_help": "A regular expression the answer must match. Leave empty unless you need one.",
+      "earliest": "Earliest",
+      "latest": "Latest",
+      "bound_none": "No limit",
+      "bound_today": "Today",
+      "bound_fixed_date": "A fixed date",
+      "bound_fixed_time": "A fixed time"
     },
     "customization": {
       "customization": "personalizzazione",
