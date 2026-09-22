@@ -14,12 +14,17 @@ import { initPlatform, platform } from '@/scripts/platform'
 /**
  * The keys the client mirrors. Everything else (UI preferences, the chosen
  * language) is cheap to lose and belongs to the device, not the session.
+ *
+ * The app lock is here rather than with the preferences on purpose: it is a
+ * decision about the session, and a WebView cache the OS drops must not be
+ * able to unlock the app by forgetting that the user asked for it.
  */
 const CLIENT_MIRRORED_KEYS: readonly string[] = [
   LS_KEYS.AUTH_TOKEN,
   LS_KEYS.SELECTED_COMPANY,
   LS_KEYS.IS_ADMIN_MODE,
   LS_KEYS.CLIENT_SERVER_URL,
+  LS_KEYS.CLIENT_APP_LOCK,
 ]
 
 /**

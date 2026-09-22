@@ -77,6 +77,21 @@ export const webPlatform: Platform = {
     },
   },
 
+  /**
+   * A browser has no identity check to offer. WebAuthn is not one either:
+   * it authenticates against a server-held credential, which is a different
+   * thing from the app lock's question, "is this the phone's owner".
+   */
+  biometrics: {
+    async available(): Promise<boolean> {
+      return false
+    },
+
+    async verify(): Promise<boolean> {
+      return false
+    },
+  },
+
   async deviceName(): Promise<string> {
     return describeBrowser()
   },

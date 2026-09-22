@@ -1,3 +1,4 @@
+import { BiometricAuth } from '@aparajita/capacitor-biometric-auth'
 import { Capacitor } from '@capacitor/core'
 import { Browser } from '@capacitor/browser'
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera'
@@ -186,6 +187,55 @@ export const capacitorPlatform: Platform = {
 
     async remove(key: string): Promise<void> {
       await Preferences.remove({ key })
+    },
+  },
+
+  /**
+   * The phone's own identity check, behind the app lock.
+   *
+   * `checkBiometry()` answers for the hardware and the enrolment together,
+   * which is the only answer worth acting on: a phone with a fingerprint
+   * reader nobody has registered a finger with cannot let its owner back in.
+   *
+   * `allowDeviceCredential` puts the PIN, pattern or passcode behind the
+   * prompt as the system's own fallback. Without it a wet thumb or a face
+   * the sensor will not take locks the owner out of their own books with no
+   * way past, and Android hands back `biometryLockout` after a few tries.
+   */
+  biometrics: {
+    async available(): Promise<boolean> {
+      if (!isNativeShell()) {
+        return webPlatform.biometrics.available()
+      }
+
+      try {
+        const { isAvailable } = await BiometricAuth.checkBiometry()
+
+        return isAvailable
+      } catch {
+        // A shell built without the native half. No lock is offered.
+        return false
+      }
+    },
+
+    async verify(reason: string): Promise<boolean> {
+      if (!isNativeShell()) {
+        return webPlatform.biometrics.verify(reason)
+      }
+
+      try {
+        await BiometricAuth.authenticate({
+          reason,
+          androidTitle: reason,
+          allowDeviceCredential: true,
+        })
+
+        return true
+      } catch {
+        // Cancelled, failed, locked out or unavailable. All of them mean
+        // the same thing here: not verified.
+        return false
+      }
     },
   },
 

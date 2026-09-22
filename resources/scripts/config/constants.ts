@@ -59,6 +59,7 @@ export const LS_KEYS = {
   IS_ADMIN_MODE: 'isAdminMode',
   SIDEBAR_COLLAPSED: 'sidebarCollapsed',
   CLIENT_SERVER_URL: 'client.serverUrl',
+  CLIENT_APP_LOCK: 'client.appLock',
   THEME: 'theme',
 } as const
 

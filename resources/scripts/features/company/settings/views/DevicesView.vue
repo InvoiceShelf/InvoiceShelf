@@ -9,6 +9,8 @@ import { handleApiError } from '@/scripts/utils/error-handling'
 import { formatDate, DEFAULT_DATETIME_FORMAT } from '@/scripts/utils/format-date'
 import * as localStore from '@/scripts/utils/local-storage'
 import { LS_KEYS } from '@/scripts/config/constants'
+import { isNative } from '@/scripts/config/runtime'
+import { platform } from '@/scripts/platform'
 import type { PersonalAccessToken } from '@/scripts/types/domain/personal-access-token'
 
 const { t } = useI18n()
@@ -24,7 +26,66 @@ const showEmptyScreen = computed<boolean>(
   () => !isFetching.value && devices.value.length === 0
 )
 
-onMounted(fetchDevices)
+/**
+ * The app lock is the mobile client's alone, and only on a device that can
+ * actually answer for its owner. A browser, and a phone with nothing
+ * enrolled, are not offered a setting they could switch on and then be
+ * unable to satisfy.
+ */
+const showAppLock = ref<boolean>(false)
+const appLock = ref<boolean>(localStore.getBoolean(LS_KEYS.CLIENT_APP_LOCK))
+const appLockBusy = ref<boolean>(false)
+
+onMounted(() => {
+  void fetchDevices()
+  void detectAppLock()
+})
+
+async function detectAppLock(): Promise<void> {
+  if (!__INVOICESHELF_CLIENT__ || !isNative()) {
+    return
+  }
+
+  showAppLock.value = await platform.biometrics.available()
+}
+
+/**
+ * Turning the lock on costs one successful check first.
+ *
+ * Without it a device that cannot pass the check would happily store the
+ * setting and lock its owner out of their own account at the next cold
+ * start, with nothing but the sign-out link left.
+ */
+async function onAppLockChange(enabled: boolean): Promise<void> {
+  if (appLockBusy.value) {
+    return
+  }
+
+  if (!enabled) {
+    localStore.remove(LS_KEYS.CLIENT_APP_LOCK)
+    appLock.value = false
+
+    return
+  }
+
+  appLockBusy.value = true
+
+  try {
+    if (!(await platform.biometrics.verify(t('client.app_lock_reason')))) {
+      notificationStore.showNotification({
+        type: 'error',
+        message: t('client.app_lock_enable_failed'),
+      })
+
+      return
+    }
+
+    localStore.set(LS_KEYS.CLIENT_APP_LOCK, 'true')
+    appLock.value = true
+  } finally {
+    appLockBusy.value = false
+  }
+}
 
 async function fetchDevices(): Promise<void> {
   isFetching.value = true
@@ -199,5 +260,23 @@ async function signOutThisDevice(): Promise<void> {
         </BaseButton>
       </div>
     </div>
+  </BaseSettingCard>
+
+  <!-- Client only: the phone's own check in front of the app. -->
+  <BaseSettingCard
+    v-if="showAppLock"
+    :title="$t('client.app_lock_title')"
+    :description="$t('client.app_lock_description')"
+    class="mt-6"
+  >
+    <ul class="divide-y divide-line-default">
+      <BaseSwitchSection
+        :model-value="appLock"
+        :disabled="appLockBusy"
+        :title="$t('client.app_lock_toggle')"
+        :description="$t('client.app_lock_toggle_description')"
+        @update:model-value="onAppLockChange"
+      />
+    </ul>
   </BaseSettingCard>
 </template>
