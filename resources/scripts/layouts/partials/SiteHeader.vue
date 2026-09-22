@@ -2,7 +2,7 @@
   <header
     class="
       fixed top-0 left-0 z-20 flex items-center justify-between w-full
-      px-4 py-3 md:h-16 md:px-8 bg-linear-to-r from-header-from to-header-to
+      px-4 py-3 safe-header md:h-16 md:px-8 bg-linear-to-r from-header-from to-header-to
     "
   >
     <div class="flex items-center">
@@ -187,6 +187,7 @@ import { useCompanyStore } from '@/scripts/stores/company.store'
 import { useTheme } from '@/scripts/composables/use-theme'
 import { ABILITIES } from '@/scripts/config/abilities'
 import { THEME } from '@/scripts/config/constants'
+import { assetUrl } from '@/scripts/config/runtime'
 import type { Theme } from '@/scripts/config/constants'
 import CompanySwitcher from './CompanySwitcher.vue'
 import GlobalSearchBar from './GlobalSearchBar.vue'
@@ -214,7 +215,7 @@ const previewAvatar = computed<string>(() => {
 
 const adminLogo = computed<string | false>(() => {
   if (globalStore.globalSettings?.admin_portal_logo) {
-    return '/storage/' + globalStore.globalSettings.admin_portal_logo
+    return assetUrl('/storage/' + globalStore.globalSettings.admin_portal_logo)
   }
   return false
 })

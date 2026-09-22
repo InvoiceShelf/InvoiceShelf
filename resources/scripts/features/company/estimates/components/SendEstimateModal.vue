@@ -173,6 +173,7 @@ import { useModalStore } from '../../../../stores/modal.store'
 import { useCompanyStore } from '../../../../stores/company.store'
 import { useNotificationStore } from '../../../../stores/notification.store'
 import { useEstimateStore } from '../store'
+import { emailPreviewUrl } from '@/scripts/utils/email-preview'
 
 const modalStore = useModalStore()
 const companyStore = useCompanyStore()
@@ -274,11 +275,7 @@ async function submitForm() {
       isLoading.value = false
 
       isPreview.value = true
-      const blob = new Blob(
-        [(previewResponse as { data: string }).data ?? previewResponse],
-        { type: 'text/html' },
-      )
-      templateUrl.value = URL.createObjectURL(blob)
+      templateUrl.value = emailPreviewUrl(previewResponse)
 
       return
     }

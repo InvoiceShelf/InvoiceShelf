@@ -9,6 +9,7 @@ import {
   getErrorTranslationKey,
   handleApiError,
 } from '@/scripts/utils/error-handling'
+import { CLIENT_VERSION, serverBaseUrl } from '@/scripts/config/runtime'
 
 type UpdateStepKey =
   | 'download'
@@ -77,6 +78,52 @@ const updateSteps = ref<UpdateStep[]>([
     time: null,
   },
 ])
+
+/**
+ * In a client this page drives the *server's* in-app updater, not the app
+ * package, which comes from the device's app store. Say so, and name the
+ * three versions that are now in play.
+ *
+ * `client/state` is imported lazily so it stays out of the web bundle, where
+ * the branch folds away entirely.
+ */
+const clientServerUrl = ref('')
+const clientServerVersion = ref('')
+
+if (__INVOICESHELF_CLIENT__) {
+  void import('@/scripts/client/state').then(({ clientState }) => {
+    clientServerUrl.value = clientState.serverUrl || serverBaseUrl()
+    clientServerVersion.value = clientState.manifest?.version ?? ''
+  })
+}
+
+const cardTitle = computed<string>(() => {
+  return t(
+    __INVOICESHELF_CLIENT__
+      ? 'settings.update_app.client_title'
+      : 'settings.update_app.title'
+  )
+})
+
+const cardDescription = computed<string>(() => {
+  return t(
+    __INVOICESHELF_CLIENT__
+      ? 'settings.update_app.client_description'
+      : 'settings.update_app.description'
+  )
+})
+
+const clientVersionLine = computed<string>(() => {
+  if (!__INVOICESHELF_CLIENT__) {
+    return ''
+  }
+
+  return t('settings.update_app.client_versions', {
+    server: clientServerUrl.value,
+    serverVersion: currentVersion.value || clientServerVersion.value,
+    appVersion: CLIENT_VERSION,
+  })
+})
 
 const isUpdateAvailable = computed<boolean>(() => {
   return Boolean(updateRelease.value)
@@ -301,11 +348,12 @@ function showApiError(error: unknown): void {
 </script>
 
 <template>
-  <BaseSettingCard
-    :title="$t('settings.update_app.title')"
-    :description="$t('settings.update_app.description')"
-  >
+  <BaseSettingCard :title="cardTitle" :description="cardDescription">
     <div class="pb-8">
+      <p v-if="clientVersionLine" class="mb-6 text-sm text-muted">
+        {{ clientVersionLine }}
+      </p>
+
       <label class="text-sm font-medium input-label">
         {{ $t('settings.update_app.current_version') }}
       </label>

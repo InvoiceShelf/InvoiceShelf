@@ -58,7 +58,12 @@ export default class InvoiceShelf {
   constructor() {
     this.app = createApp(App_)
     this.extensions = createExtensionApi(router)
-    window.addEventListener('pagehide', () => this.extensions.reset(), { once: true })
+    // A client WebView is never navigated away from, and iOS fires
+    // `pagehide` when the app is merely backgrounded, which would tear the
+    // extension registry down under a running app.
+    if (!__INVOICESHELF_CLIENT__) {
+      window.addEventListener('pagehide', () => this.extensions.reset(), { once: true })
+    }
   }
 
   /**

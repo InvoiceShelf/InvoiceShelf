@@ -257,3 +257,27 @@ html {
 .h-screen-ios {
     height: -webkit-fill-available;
 }
+
+/*
+ * Safe areas. The client shell renders with `viewport-fit=cover`, so on a
+ * notched phone the fixed chrome would otherwise sit under the status bar and
+ * the home indicator. Every inset is 0 where there is no notch, which leaves
+ * the desktop and ordinary-browser layout exactly as it was. Unlayered, so
+ * they win over the Tailwind padding utilities they extend.
+ */
+.safe-header {
+    padding-top: calc(0.75rem + env(safe-area-inset-top));
+}
+
+.safe-content {
+    padding-top: calc(4rem + env(safe-area-inset-top));
+    padding-bottom: calc(4rem + env(safe-area-inset-bottom));
+}
+
+.safe-rail {
+    padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
+}
+
+.safe-drawer {
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+}
