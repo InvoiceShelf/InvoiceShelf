@@ -3,6 +3,10 @@ import 'v-tooltip/dist/v-tooltip.css'
 
 import * as Vue from 'vue'
 import InvoiceShelf from './InvoiceShelf'
+import { reassertHostStylesAfterShellModules } from './utils/host-styles'
+
+// The shell's module stylesheets must not outrank the app's own utilities
+reassertHostStylesAfterShellModules()
 
 // Expose Vue runtime for module scripts that import from the shim.
 ;(window as Record<string, unknown>).__invoiceshelf_vue = Vue
