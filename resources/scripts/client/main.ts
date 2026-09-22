@@ -7,6 +7,7 @@ import router from '../router'
 import { appUrlMismatch, fetchClientManifest, gateManifest, ManifestError } from './manifest'
 import { startAppLock } from './lock'
 import { clientState } from './state'
+import { reassertHostStyles } from '../utils/host-styles'
 import type { ClientManifest, ClientManifestModule } from './state'
 
 /**
@@ -146,7 +147,8 @@ async function loadModules(modules: ClientManifestModule[]): Promise<void> {
   }
 
   if (styled) {
-    reassertHostStyles()
+    // Nothing re-injects the app's sheets here, so put them back on top
+    reassertHostStyles(hostStyles)
   }
 }
 
@@ -167,37 +169,6 @@ function appendModuleStyle(href: string): void {
   link.rel = 'stylesheet'
   link.href = href
   document.head.appendChild(link)
-}
-
-/**
- * Put the app's stylesheets back at the end of the cascade.
- *
- * Module CSS is a self-contained Tailwind build, so it carries utilities the
- * app also defines, and between two rules of equal weight the later sheet
- * wins. A browser loading the Blade shell ends up with the app's stylesheet
- * twice, because the entry chunk re-injects it after the shell's module
- * links, and that second copy is what stops a module flipping a layout
- * utility (`.hidden` over `md:flex`) out from under the app. Nothing
- * re-injects anything here, so this does it deliberately.
- *
- * A link is copied rather than moved: moving the node drops its stylesheet
- * and re-fetches it, which flashes. An inline `<style>` (the dev server's
- * form) has nothing to re-fetch, so it moves.
- */
-function reassertHostStyles(): void {
-  for (const node of hostStyles) {
-    if (node instanceof HTMLLinkElement) {
-      const copy = document.createElement('link')
-
-      copy.rel = 'stylesheet'
-      copy.href = node.href
-      document.head.appendChild(copy)
-
-      continue
-    }
-
-    document.head.appendChild(node)
-  }
 }
 
 function withTimeout<T>(work: Promise<T>, timeoutMs: number): Promise<T> {
