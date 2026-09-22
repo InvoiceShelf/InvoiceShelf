@@ -97,9 +97,12 @@ relaxed here rather than worked around:
 
 - **Android** `app/src/main/res/xml/network_security_config.xml` permits
   cleartext and adds `user` to the trust anchors, so a CA the user installed
-  on the device is honoured. Referenced from `AndroidManifest.xml`.
+  on the device is honoured. Referenced from `AndroidManifest.xml`. That is
+  not enough on its own: the app page is an https origin, and the WebView
+  blocks every http request from it as mixed content, so
+  `capacitor.config.ts` also sets `android.allowMixedContent`.
 - **iOS** `App/App/Info.plist` sets `NSAppTransportSecurity`
-  → `NSAllowsArbitraryLoads`. There is no domain exception list to write
+  and `NSAllowsArbitraryLoads` inside it. There is no domain exception list to write
   instead: the address is typed in at runtime. A private CA still needs its
   profile installed on the device, which is documented rather than bypassed.
 

@@ -20,6 +20,14 @@ const config: CapacitorConfig = {
     hostname: 'app.invoiceshelf.internal',
     androidScheme: 'https',
   },
+  android: {
+    // The app page is served as https://app.invoiceshelf.internal, and the
+    // Android WebView blocks any http:// request from an https page as mixed
+    // content, whatever network_security_config allows. Self-hosted servers
+    // on plain http are a supported case (the connect screen warns first), so
+    // the WebView has to let those requests through.
+    allowMixedContent: true,
+  },
 }
 
 export default config
