@@ -3,6 +3,7 @@
 namespace App\Domains\Money;
 
 use App\Adapters\Money\EloquentExchangeRateBackfill;
+use App\Domains\Money\Console\SyncCurrencies;
 use App\Domains\Money\Contracts\ExchangeRateBackfill;
 use App\Domains\Money\ExchangeRates\CurrencyConverterDriver;
 use App\Domains\Money\ExchangeRates\CurrencyFreakDriver;
@@ -26,6 +27,12 @@ class MoneyServiceProvider extends ServiceProvider
         Gate::policy(ExchangeRateProvider::class, ExchangeRateProviderPolicy::class);
 
         $this->registerExchangeRateDrivers();
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                SyncCurrencies::class,
+            ]);
+        }
     }
 
     protected function registerExchangeRateDrivers(): void

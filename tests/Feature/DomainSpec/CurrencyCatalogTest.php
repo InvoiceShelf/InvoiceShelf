@@ -6,6 +6,7 @@ use App\Domains\Accounts\Models\User;
 use App\Domains\Money\Application\CurrencyCatalog;
 use App\Domains\Money\Application\CurrencyService;
 use App\Domains\Money\Models\Currency;
+use App\Platform\Operations\Update\Updater;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -155,4 +156,27 @@ it('refuses the refresh to anyone else', function () {
     postJson('/api/v1/super-admin/currencies/refresh')->assertForbidden();
 
     expect(Currency::count())->toBe(count($this->catalog->codes()));
+});
+
+it('syncs from the command line, for installations that never see the button', function () {
+    Currency::query()->where('code', 'HUF')->delete();
+
+    $this->artisan('currencies:sync')
+        ->expectsOutputToContain('1 added')
+        ->expectsOutputToContain('HUF')
+        ->assertSuccessful();
+
+    expect(Currency::query()->where('code', 'HUF')->exists())->toBeTrue();
+
+    $this->artisan('currencies:sync')
+        ->expectsOutputToContain('already up to date')
+        ->assertSuccessful();
+});
+
+it('carries a release\'s new currencies into an upgraded installation', function () {
+    Currency::query()->where('code', 'KRW')->delete();
+
+    Updater::migrateUpdate();
+
+    expect(Currency::query()->where('code', 'KRW')->value('name'))->toBe('South Korean Won');
 });
