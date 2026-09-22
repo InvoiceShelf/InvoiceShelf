@@ -5,138 +5,45 @@ namespace App\Domains\Reporting\Http\Controllers\Company;
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Contacts\Models\Customer;
-use App\Domains\Purchases\Models\Expense;
-use App\Domains\Receivables\Models\Payment;
+use App\Domains\Reporting\Http\Requests\DashboardRequest;
+use App\Domains\Reporting\Queries\CashflowQuery;
 use App\Domains\Reporting\Queries\ReceivablesAgingQuery;
 use App\Domains\Sales\Models\Estimate;
 use App\Domains\Sales\Models\Invoice;
 use App\Platform\Http\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Silber\Bouncer\BouncerFacade;
 
 /**
- * The company overview: a twelve-month money series, the headline counters and
- * the two "latest activity" lists.
+ * The company overview: the money series over a period, the headline counters
+ * and the two "latest activity" lists.
  *
- * The series is anchored on the company's `fiscal_year` preference, whose first
- * dash-separated component names the opening month. Anything the parser cannot
- * read — the shipped default is the word "calendar_year" — intval()s to zero,
- * and month zero rolls Carbon back into December of the year before. That is
- * the window those companies really get, so it is reproduced rather than
- * corrected.
+ * The period is the company's fiscal year (see ReportingPeriod::fiscalYear),
+ * the one before it with `previous_year`, or the `from_date`/`to_date` range
+ * the request names.
  */
 class DashboardController extends Controller
 {
     /**
      * @return JsonResponse
      */
-    public function __invoke(Request $request, ReceivablesAgingQuery $receivables)
+    public function __invoke(DashboardRequest $request, ReceivablesAgingQuery $receivables, CashflowQuery $cashflowQuery)
     {
         $companyId = $request->header('company');
 
         $this->authorize('view dashboard', Company::find($companyId));
 
-        $openingMonth = intval(explode('-', CompanySetting::getSetting('fiscal_year', $companyId))[0]);
-
-        // Three cursors over the same starting instant: the fixed left edge of
-        // the whole window, and the pair that walks it a month at a time.
-        $windowStart = Carbon::now();
-        $monthStart = Carbon::now();
-        $monthEnd = Carbon::now();
-
-        // A fiscal year whose opening month is still ahead in the calendar year
-        // is the one that opened twelve months ago.
-        $openedLastYear = $openingMonth > $monthStart->month;
-
-        foreach ([$windowStart, $monthStart, $monthEnd] as $cursor) {
-            if ($openedLastYear) {
-                $cursor->subYear();
-            }
-
-            $cursor->month($openingMonth);
-        }
-
-        $windowStart->startOfMonth();
-        $monthStart->startOfMonth();
-        $monthEnd->endOfMonth();
-
-        // The key's presence is the whole signal — its value is never read.
-        $previousYear = $request->has('previous_year');
-
-        if ($previousYear) {
-            $windowStart->subYear()->startOfMonth();
-            $monthStart->subYear()->startOfMonth();
-            $monthEnd->subYear()->endOfMonth();
-        }
-
-        $months = [];
-        $invoiceTotals = [];
-        $expenseTotals = [];
-        $receiptTotals = [];
-        $netIncomeTotals = [];
-
-        for ($bucket = 0; $bucket < 12; $bucket++) {
-            $bucketSpan = [$monthStart->format('Y-m-d'), $monthEnd->format('Y-m-d')];
-
-            $invoiceTotals[] = Invoice::query()
-                ->whereBetween('invoice_date', $bucketSpan)
-                ->whereCompany()
-                ->sum('base_total');
-
-            $expenseTotals[] = Expense::query()
-                ->whereBetween('expense_date', $bucketSpan)
-                ->whereCompany()
-                ->sum('base_amount');
-
-            $receiptTotals[] = Payment::query()
-                ->whereBetween('payment_date', $bucketSpan)
-                ->whereCompany()
-                ->sum('base_amount');
-
-            // Net income is what came in less what went out. Invoiced money is
-            // not part of it — only money actually received counts.
-            $netIncomeTotals[] = $receiptTotals[$bucket] - $expenseTotals[$bucket];
-
-            $months[] = $monthStart->translatedFormat('M');
-
-            // Both cursors step forward off the first of their month, so a
-            // short month can never drag the walk backwards.
-            $monthEnd->startOfMonth()->addMonth()->endOfMonth();
-            $monthStart->addMonth()->startOfMonth();
-        }
-
-        // Twelve steps left the walking cursor on the month after the window.
-        // Back it up on to the last month and take that month's final day as
-        // the right edge of the whole-window figures.
-        $monthStart->subMonth()->endOfMonth();
-
-        $windowSpan = [$windowStart->format('Y-m-d'), $monthStart->format('Y-m-d')];
-
-        $totalSales = Invoice::query()
-            ->whereBetween('invoice_date', $windowSpan)
-            ->whereCompany()
-            ->sum('base_total');
-
-        $totalReceipts = Payment::query()
-            ->whereBetween('payment_date', $windowSpan)
-            ->whereCompany()
-            ->sum('base_amount');
-
-        $totalExpenses = Expense::query()
-            ->whereBetween('expense_date', $windowSpan)
-            ->whereCompany()
-            ->sum('base_amount');
-
-        $totalNetIncome = (int) $totalReceipts - (int) $totalExpenses;
+        // The money chart: the fiscal year by default, or the range asked for
+        $period = $request->reportingPeriod(CompanySetting::getSetting('fiscal_year', $companyId));
+        $cashflow = $cashflowQuery->series($period);
 
         $chartData = [
-            'months' => $months,
-            'invoice_totals' => $invoiceTotals,
-            'expense_totals' => $expenseTotals,
-            'receipt_totals' => $receiptTotals,
-            'net_income_totals' => $netIncomeTotals,
+            'months' => $cashflow['labels'],
+            'invoice_totals' => $cashflow['invoices'],
+            'expense_totals' => $cashflow['expenses'],
+            'receipt_totals' => $cashflow['receipts'],
+            'net_income_totals' => $cashflow['net'],
         ];
 
         $customerCount = Customer::query()->whereCompany()->count();
@@ -193,10 +100,11 @@ class DashboardController extends Controller
 
             'chart_data' => $chartData,
 
-            'total_sales' => $totalSales,
-            'total_receipts' => $totalReceipts,
-            'total_expenses' => $totalExpenses,
-            'total_net_income' => $totalNetIncome,
+            'total_sales' => $cashflow['total_sales'],
+            'total_receipts' => $cashflow['total_receipts'],
+            'total_expenses' => $cashflow['total_expenses'],
+            'total_net_income' => $cashflow['total_net_income'],
+            'period' => $cashflow['period'],
         ]);
     }
 }
