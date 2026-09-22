@@ -25,7 +25,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   contentLoading: false,
   defaultClass:
-    'inline-flex whitespace-nowrap items-center border font-medium focus:outline-hidden focus:ring-2 focus:ring-offset-2',
+    'inline-flex items-center justify-center whitespace-nowrap border font-medium transition-colors focus:outline-hidden focus-visible:ring-3 focus-visible:ring-focus disabled:opacity-55 disabled:cursor-not-allowed',
   tag: 'button',
   disabled: false,
   rounded: false,
@@ -34,28 +34,29 @@ const props = withDefaults(defineProps<Props>(), {
   variant: 'primary',
 })
 
+// Phones get 44px touch targets from md size up; wider screens stay compact.
 const sizeClass = computed<Record<string, boolean>>(() => {
   return {
-    'px-2.5 py-1.5 text-xs leading-4 rounded-lg': props.size === 'xs',
-    'px-3 py-2 text-sm leading-4 rounded-lg': props.size == 'sm',
-    'px-4 py-2 text-sm leading-5 rounded-lg': props.size === 'md',
-    'px-4 py-2 text-base leading-6 rounded-lg': props.size === 'lg',
-    'px-6 py-3 text-base leading-6 rounded-lg': props.size === 'xl',
+    'h-7 px-2.5 text-xs rounded-md': props.size === 'xs',
+    'h-8 px-3 text-sm rounded-lg': props.size == 'sm',
+    'h-11 md:h-9 px-3.5 text-sm rounded-lg': props.size === 'md',
+    'h-11 md:h-10 px-4 text-base md:text-sm rounded-lg': props.size === 'lg',
+    'h-12 px-5 text-base rounded-lg': props.size === 'xl',
   }
 })
 
 const placeHolderSize = computed<string>(() => {
   switch (props.size) {
     case 'xs':
-      return '32'
+      return '28'
     case 'sm':
-      return '38'
+      return '32'
     case 'md':
-      return '42'
+      return '36'
     case 'lg':
-      return '42'
+      return '40'
     case 'xl':
-      return '46'
+      return '48'
     default:
       return ''
   }
@@ -63,17 +64,17 @@ const placeHolderSize = computed<string>(() => {
 
 const variantClass = computed<Record<string, boolean>>(() => {
   return {
-    'border-transparent shadow-xs text-white bg-btn-primary hover:bg-btn-primary-hover focus:ring-primary-500':
+    'border-transparent shadow-xs bg-btn-primary text-on-primary hover:bg-btn-primary-hover':
       props.variant === 'primary',
-    'border-transparent text-primary-700 bg-primary-100 hover:bg-primary-200 focus:ring-primary-500':
+    'border-transparent bg-primary-50 text-primary-700 hover:bg-primary-100':
       props.variant === 'secondary',
-    'border-solid border-primary-500 font-normal transition ease-in-out duration-150 text-primary-500 hover:bg-primary-200 shadow-inner focus:ring-primary-500':
+    'border-line-default bg-surface text-heading shadow-xs hover:bg-hover hover:border-line-strong':
       props.variant == 'primary-outline',
-    'border-line-default text-body bg-surface hover:bg-hover focus:ring-primary-500 focus:ring-offset-0':
+    'border-line-default bg-surface text-body shadow-xs hover:bg-hover hover:text-heading':
       props.variant == 'white',
-    'border-transparent shadow-xs text-white bg-red-600 hover:bg-red-700 focus:ring-red-500':
+    'border-transparent shadow-xs bg-danger text-white hover:bg-danger-hover':
       props.variant === 'danger',
-    'border-transparent bg-surface-muted border hover:bg-surface-muted/60 focus:ring-gray-500 focus:ring-offset-0':
+    'border-transparent bg-surface-muted text-body hover:bg-hover-strong':
       props.variant === 'gray',
   }
 })
@@ -84,26 +85,25 @@ const roundedClass = computed<string>(() => {
 
 const iconLeftClass = computed<Record<string, boolean>>(() => {
   return {
-    '-ml-0.5 mr-2 h-4 w-4': props.size == 'sm',
-    '-ml-1 mr-2 h-5 w-5': props.size === 'md',
-    '-ml-1 mr-3 h-5 w-5': props.size === 'lg' || props.size === 'xl',
+    '-ml-0.5 mr-1.5 h-4 w-4': props.size == 'sm' || props.size === 'xs',
+    '-ml-1 mr-2 h-4.5 w-4.5': props.size === 'md',
+    '-ml-1 mr-2 h-5 w-5': props.size === 'lg' || props.size === 'xl',
   }
 })
 
 const iconVariantClass = computed<Record<string, boolean>>(() => {
   return {
-    'text-white': props.variant === 'primary',
-    'text-primary-700': props.variant === 'secondary',
-    'text-body': props.variant === 'white',
-    'text-subtle': props.variant === 'gray',
+    'text-on-primary': props.variant === 'primary' || props.variant === 'danger',
+    'text-primary-600': props.variant === 'secondary',
+    'text-muted': props.variant === 'white' || props.variant === 'primary-outline' || props.variant === 'gray',
   }
 })
 
 const iconRightClass = computed<Record<string, boolean>>(() => {
   return {
-    'ml-2 -mr-0.5 h-4 w-4': props.size == 'sm',
-    'ml-2 -mr-1 h-5 w-5': props.size === 'md',
-    'ml-3 -mr-1 h-5 w-5': props.size === 'lg' || props.size === 'xl',
+    'ml-1.5 -mr-0.5 h-4 w-4': props.size == 'sm' || props.size === 'xs',
+    'ml-2 -mr-1 h-4.5 w-4.5': props.size === 'md',
+    'ml-2 -mr-1 h-5 w-5': props.size === 'lg' || props.size === 'xl',
   }
 })
 </script>
@@ -111,7 +111,7 @@ const iconRightClass = computed<Record<string, boolean>>(() => {
 <template>
   <BaseContentPlaceholders
     v-if="contentLoading"
-    class="disabled cursor-normal pointer-events-none"
+    class="disabled pointer-events-none"
   >
     <BaseContentPlaceholdersBox
       :rounded="true"
@@ -128,7 +128,7 @@ const iconRightClass = computed<Record<string, boolean>>(() => {
   >
     <SpinnerIcon v-if="loading" :class="[iconLeftClass, iconVariantClass]" />
 
-    <slot v-else name="left" :class="iconLeftClass"></slot>
+    <slot v-else name="left" :class="[iconLeftClass, iconVariantClass]"></slot>
 
     <slot />
 

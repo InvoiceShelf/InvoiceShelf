@@ -1,8 +1,8 @@
 <template>
-  <div class="bg-surface rounded-xl shadow-sm border border-line-default">
+  <div class="border bg-surface rounded-xl border-line-light shadow-card">
     <div
       v-if="hasHeaderSlot"
-      class="px-5 py-4 text-heading border-b border-line-light border-solid"
+      class="px-4 py-3.5 font-semibold border-b border-solid md:px-6 text-heading border-line-light"
     >
       <slot name="header" />
     </div>
@@ -11,7 +11,7 @@
     </div>
     <div
       v-if="hasFooterSlot"
-      class="px-5 py-4 border-t border-line-light border-solid sm:px-6"
+      class="px-4 py-3.5 border-t border-solid md:px-6 border-line-light"
     >
       <slot name="footer" />
     </div>
@@ -26,7 +26,7 @@ interface Props {
 }
 
 withDefaults(defineProps<Props>(), {
-  containerClass: 'px-4 py-5 sm:px-8 sm:py-8',
+  containerClass: 'px-4 py-5 md:px-6 md:py-6',
 })
 
 const slots = useSlots()

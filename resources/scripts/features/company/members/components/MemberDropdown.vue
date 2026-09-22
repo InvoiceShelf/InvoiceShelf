@@ -53,10 +53,9 @@ function removeMember(id: number): void {
 <template>
   <BaseDropdown>
     <template #activator>
-      <BaseButton v-if="route.name === 'members.view'" variant="primary">
-        <BaseIcon name="EllipsisHorizontalIcon" class="h-5 text-white" />
-      </BaseButton>
-      <BaseIcon v-else name="EllipsisHorizontalIcon" class="h-5 text-muted" />
+      <span class="inline-flex items-center justify-center rounded-lg w-9 h-9 text-muted hover:bg-hover-strong hover:text-heading">
+        <BaseIcon name="EllipsisHorizontalIcon" class="w-5 h-5" />
+      </span>
     </template>
 
     <!-- Edit Member -->

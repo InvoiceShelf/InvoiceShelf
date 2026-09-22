@@ -1,27 +1,30 @@
 <template>
-  <div v-if="isAppLoaded" class="h-full">
+  <div v-if="isAppLoaded" class="flex h-dvh">
     <NotificationRoot />
-
-    <ImpersonationBanner />
-
-    <SiteHeader />
 
     <SiteSidebar v-if="hasCompany" />
 
-    <main
+    <div
       :class="[
-        'h-screen h-screen-ios overflow-y-auto min-h-0 transition-all duration-300',
-        hasCompany
-          ? globalStore.isSidebarCollapsed
-            ? 'md:pl-16'
-            : 'md:pl-56 xl:pl-64'
-          : '',
+        'flex flex-col flex-1 min-w-0 h-dvh',
+        hasCompany ? (isExpanded ? 'md:pl-16 lg:pl-64' : 'md:pl-16') : '',
       ]"
     >
-      <div class="pt-16 pb-16 safe-content">
+      <ImpersonationBanner />
+
+      <SiteHeader />
+
+      <main id="main-content" class="flex-1 min-h-0 overflow-y-auto overscroll-contain">
         <router-view />
-      </div>
-    </main>
+      </main>
+
+      <!-- BaseActionBar teleports a page's phone actions here -->
+      <div id="app-action-bar" class="shrink-0" />
+
+      <MobileTabBar v-if="showTabBar" />
+    </div>
+
+    <CommandPalette />
 
     <ExtensionSlot name="company-layout-overlays" />
   </div>
@@ -31,7 +34,7 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { onMounted, computed, watch } from 'vue'
+import { onMounted, onUnmounted, computed, watch, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useGlobalStore } from '@/scripts/stores/global.store'
 import { useUserStore } from '@/scripts/stores/user.store'
@@ -41,6 +44,9 @@ import SiteHeader from './partials/SiteHeader.vue'
 import SiteSidebar from './partials/SiteSidebar.vue'
 import NotificationRoot from '@/scripts/components/notifications/NotificationRoot.vue'
 import ImpersonationBanner from './partials/ImpersonationBanner.vue'
+import MobileTabBar from './partials/MobileTabBar.vue'
+import CommandPalette from './partials/CommandPalette.vue'
+import { useBreakpoints } from '@/scripts/composables/use-breakpoints'
 import ExtensionSlot from '@/scripts/extensions/ExtensionSlot.vue'
 
 interface RouteMeta {
@@ -64,6 +70,39 @@ const isAppLoaded = computed<boolean>(() => {
 
 const hasCompany = computed<boolean>(() => {
   return !!companyStore.selectedCompany || companyStore.isAdminMode
+})
+
+const { isPhone, isDesktop } = useBreakpoints()
+
+// Tablets always get the rail; desktops follow the collapse preference.
+const isExpanded = computed<boolean>(() => {
+  return isDesktop.value && !globalStore.isSidebarCollapsed
+})
+
+// A page's own sticky action bar takes the tab bar's place.
+const showTabBar = computed<boolean>(() => {
+  return isPhone.value && hasCompany.value && globalStore.actionBarCount === 0
+})
+
+// Publish how much of the viewport the fixed chrome covers, for overlays and
+// modules (documented in resources/css/invoiceshelf.css).
+watchEffect(() => {
+  const root = document.documentElement
+  root.style.setProperty('--app-top-inset', 'calc(3.5rem + env(safe-area-inset-top))')
+  let bottom = 'env(safe-area-inset-bottom)'
+
+  if (showTabBar.value) {
+    bottom = 'calc(3.5rem + env(safe-area-inset-bottom))'
+  } else if (isPhone.value && globalStore.actionBarCount > 0) {
+    bottom = 'calc(4.5rem + env(safe-area-inset-bottom))'
+  }
+
+  root.style.setProperty('--app-bottom-inset', bottom)
+})
+
+onUnmounted(() => {
+  document.documentElement.style.removeProperty('--app-top-inset')
+  document.documentElement.style.removeProperty('--app-bottom-inset')
 })
 
 const usesAdminBootstrap = computed<boolean>(() => {

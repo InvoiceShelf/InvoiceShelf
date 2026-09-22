@@ -9,19 +9,19 @@
   >
     <div
       v-show="show"
-      class="relative z-10 p-5 md:p-6 bg-surface rounded-xl border border-line-default shadow-sm mb-4"
+      class="relative z-10 p-4 pt-11 mb-5 border md:p-5 md:pt-5 md:pr-28 bg-surface rounded-xl border-line-light shadow-card"
     >
       <slot name="filter-header" />
 
       <button
         class="
-          absolute top-4 right-4
+          absolute top-3 right-3
           flex items-center gap-1
           text-xs font-medium
           text-muted hover:text-heading
           px-2 py-1
           rounded-md
-          hover:bg-surface-secondary
+          hover:bg-hover-strong
           transition-colors
         "
         @click="emit('clear')"
@@ -31,12 +31,8 @@
       </button>
 
       <div
-        class="flex flex-col space-y-3"
-        :class="
-          rowOnXl
-            ? 'xl:flex-row xl:space-x-4 xl:space-y-0 xl:items-end'
-            : 'lg:flex-row lg:space-x-4 lg:space-y-0 lg:items-end'
-        "
+        class="flex flex-col gap-4"
+        :class="rowOnXl ? 'xl:flex-row xl:items-end' : 'lg:flex-row lg:items-end'"
       >
         <slot />
       </div>

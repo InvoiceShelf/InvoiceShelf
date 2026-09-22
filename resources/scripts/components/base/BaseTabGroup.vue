@@ -2,6 +2,7 @@
 import { computed, useSlots } from 'vue'
 import type { VNode } from 'vue'
 import { TabGroup, TabList, Tab, TabPanels } from '@headlessui/vue'
+import { useBreakpoints } from '@/scripts/composables/use-breakpoints'
 
 interface TabData {
   title: string
@@ -28,6 +29,9 @@ const emit = defineEmits<Emits>()
 
 const slots = useSlots()
 
+// Underlined tabs on wider screens; a scrolling row of chips on phones
+const { isPhone } = useBreakpoints()
+
 const tabs = computed<TabData[]>(() => {
   const defaultSlot = slots.default?.()
   if (!defaultSlot) return []
@@ -44,9 +48,10 @@ function onChange(d: number): void {
     <TabGroup :default-index="defaultIndex" @change="onChange">
       <TabList
         :class="[
-          'flex border-b border-line-default',
-          'relative overflow-x-auto overflow-y-hidden',
-          'lg:pb-0 lg:ml-0',
+          'relative flex overflow-x-auto overflow-y-hidden',
+          isPhone
+            ? 'gap-2 -mx-4 px-4 pb-1 [scrollbar-width:none]'
+            : 'gap-6 border-b border-line-light',
         ]"
       >
         <Tab
@@ -56,23 +61,38 @@ function onChange(d: number): void {
           as="template"
         >
           <button
+            v-if="isPhone"
             :class="[
-              'px-5 py-2.5 text-sm leading-5 font-medium flex items-center relative -mb-px border-b-2 focus:outline-hidden whitespace-nowrap transition-colors',
+              'flex items-center shrink-0 h-8 px-3.5 text-sm font-medium rounded-full border whitespace-nowrap transition-colors focus:outline-hidden focus-visible:ring-3 focus-visible:ring-focus',
               selected
-                ? 'border-primary-400 text-heading'
-                : 'border-transparent text-muted hover:text-body hover:border-line-strong',
+                ? 'bg-heading text-surface border-transparent'
+                : 'bg-surface text-body border-line-default',
             ]"
           >
             {{ tab.title }}
-
-            <BaseBadge
+            <span
               v-if="tab.count"
-              class="!rounded-full overflow-hidden ml-2"
-              :variant="tab['count-variant']"
-              default-class="flex items-center justify-center w-5 h-5 p-1 rounded-full text-medium"
+              class="ml-1.5 text-xs tabular opacity-70"
             >
               {{ tab.count }}
-            </BaseBadge>
+            </span>
+          </button>
+          <button
+            v-else
+            :class="[
+              'relative flex items-center -mb-px py-2.5 text-sm font-medium border-b-2 whitespace-nowrap transition-colors focus:outline-hidden focus-visible:text-heading',
+              selected
+                ? 'border-primary-600 text-heading'
+                : 'border-transparent text-muted hover:text-heading',
+            ]"
+          >
+            {{ tab.title }}
+            <span
+              v-if="tab.count"
+              class="ml-2 px-1.5 min-w-5 h-5 inline-flex items-center justify-center text-xs rounded-full tabular bg-surface-muted text-body"
+            >
+              {{ tab.count }}
+            </span>
           </button>
         </Tab>
       </TabList>

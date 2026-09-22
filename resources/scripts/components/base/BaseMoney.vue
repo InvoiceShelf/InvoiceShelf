@@ -52,7 +52,7 @@ const props = withDefaults(defineProps<Props>(), {
   contentLoading: false,
   invalid: false,
   inputClass:
-    'font-base block w-full sm:text-sm border-line-default rounded-md text-heading',
+    'font-base block w-full md:text-sm tabular border-line-default rounded-lg text-heading',
   disabled: false,
   percent: false,
   currency: null,
@@ -94,8 +94,8 @@ const currencyBindings = computed<CurrencyBindings>(() => {
 
 const invalidClass = computed<string>(() => {
   if (props.invalid) {
-    return 'border-red-500 ring-red-500 focus:ring-red-500 focus:border-red-500'
+    return 'border-danger focus:border-danger focus:ring-danger/20'
   }
-  return 'focus:ring-primary-400 focus:border-primary-400'
+  return ''
 })
 </script>

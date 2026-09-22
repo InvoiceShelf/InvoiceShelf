@@ -1,17 +1,13 @@
 <template>
-  <div class="flex flex-col items-center justify-center mt-16">
-    <div class="flex flex-col items-center justify-center">
+  <div class="flex flex-col items-center justify-center px-6 py-14 text-center md:py-20">
+    <div class="flex flex-col items-center justify-center mb-5 [&>svg]:h-24 [&>svg]:w-auto">
       <slot></slot>
     </div>
-    <div class="mt-2">
-      <label class="font-medium">{{ title }}</label>
-    </div>
-    <div class="mt-2">
-      <label class="text-muted">
-        {{ description }}
-      </label>
-    </div>
-    <div class="mt-6">
+    <p class="font-semibold text-section text-heading">{{ title }}</p>
+    <p v-if="description" class="max-w-sm mt-1.5 text-sm text-muted">
+      {{ description }}
+    </p>
+    <div v-if="$slots.actions" class="mt-6">
       <slot name="actions" />
     </div>
   </div>

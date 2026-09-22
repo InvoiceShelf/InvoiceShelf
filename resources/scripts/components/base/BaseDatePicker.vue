@@ -12,18 +12,7 @@
       v-if="showCalendarIcon && !hasIconSlot"
       viewBox="0 0 20 20"
       fill="currentColor"
-      class="
-        absolute
-        w-4
-        h-4
-        mx-2
-        my-2.5
-        text-sm
-        not-italic
-        font-black
-        text-subtle
-        cursor-pointer
-      "
+      class="absolute z-10 w-4 h-4 -translate-y-1/2 cursor-pointer top-1/2 left-3 text-subtle"
       @click="onClickDp"
     >
       <path
@@ -113,7 +102,7 @@ const props = withDefaults(defineProps<Props>(), {
   showCalendarIcon: true,
   containerClass: '',
   defaultInputClass:
-    'font-base pl-8 py-2 outline-hidden focus:ring-primary-400 focus:outline-hidden focus:border-primary-400 block w-full sm:text-sm border-line-default rounded-md text-heading',
+    'font-base pl-9 py-2 outline-hidden block w-full md:text-sm tabular border-line-default rounded-lg text-heading',
   time24hr: false,
 })
 
@@ -216,7 +205,7 @@ const computedContainerClass = computed<string>(() => {
 
 const inputInvalidClass = computed<string>(() => {
   if (props.invalid) {
-    return 'border-red-400 ring-red-400 focus:ring-red-400 focus:border-red-400'
+    return 'border-danger focus:border-danger focus:ring-danger/20'
   }
 
   return ''
@@ -224,7 +213,7 @@ const inputInvalidClass = computed<string>(() => {
 
 const inputDisabledClass = computed<string>(() => {
   if (props.disabled) {
-    return 'border border-solid rounded-md outline-hidden input-field box-border-2 base-date-picker-input placeholder-gray-400 bg-surface-muted text-body border-line-default'
+    return 'border border-solid rounded-lg outline-hidden placeholder-subtle bg-surface-secondary text-muted border-line-light cursor-not-allowed'
   }
 
   return ''

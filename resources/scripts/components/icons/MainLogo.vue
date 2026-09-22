@@ -44,8 +44,8 @@ const color = computed(() => props.lightColor)
     <text
       x="56"
       y="32"
-      font-family="Poppins, ui-sans-serif, system-ui, sans-serif"
-      font-weight="700"
+      font-family="Geologica Variable, ui-sans-serif, system-ui, sans-serif"
+      font-weight="640"
       font-size="27"
       letter-spacing="-0.7"
       fill="currentColor"

@@ -1,277 +1,79 @@
 <template>
   <div
     v-if="shouldShowPagination"
-    class="
-      flex
-      items-center
-      justify-between
-      px-4
-      py-3
-      bg-surface
-      border-t border-line-default
-      sm:px-6
-    "
+    class="flex items-center justify-between gap-3 px-4 py-3 border-t md:px-6 border-line-light"
   >
-    <div class="flex justify-between flex-1 sm:hidden">
-      <a
-        href="#"
-        :class="{
-          'disabled cursor-normal pointer-events-none !bg-surface-tertiary !text-subtle':
-            pagination.currentPage === 1,
-        }"
-        class="
-          relative
-          inline-flex
-          items-center
-          px-4
-          py-2
-          text-sm
-          font-medium
-          text-body
-          bg-surface
-          border border-line-default
-          rounded-md
-          hover:bg-hover
-        "
+    <p class="text-sm text-muted tabular">
+      <template v-if="pagination.limit && pagination.currentPage">
+        <span class="md:hidden">
+          {{ pagination.currentPage }} / {{ pagination.totalPages }}
+        </span>
+        <span class="hidden md:inline">
+          {{ $t('general.pagination.showing') }}
+          <span class="font-medium text-body">{{ firstItem }}</span>
+          {{ $t('general.pagination.to') }}
+          <span class="font-medium text-body">{{ lastItem }}</span>
+          {{ $t('general.pagination.of') }}
+          <span class="font-medium text-body">{{ pagination.totalCount }}</span>
+          {{ $t('general.pagination.results') }}
+        </span>
+      </template>
+    </p>
+
+    <nav class="flex items-center gap-1" aria-label="Pagination">
+      <button
+        type="button"
+        :class="navButtonClass"
+        :disabled="pagination.currentPage === 1"
+        :aria-label="$t('general.pagination.previous')"
         @click="pageClicked(pagination.currentPage - 1)"
       >
-        {{ $t('general.pagination.previous') }}
-      </a>
-      <a
-        href="#"
-        :class="{
-          'disabled cursor-default pointer-events-none !bg-surface-tertiary !text-subtle':
-            pagination.currentPage === pagination.totalPages,
-        }"
-        class="
-          relative
-          inline-flex
-          items-center
-          px-4
-          py-2
-          ml-3
-          text-sm
-          font-medium
-          text-body
-          bg-surface
-          border border-line-default
-          rounded-md
-          hover:bg-hover
-        "
+        <BaseIcon name="ChevronLeftIcon" class="w-4 h-4" />
+      </button>
+
+      <div class="items-center hidden gap-1 md:flex">
+        <button
+          v-if="hasFirst"
+          type="button"
+          :class="pageButtonClass(1)"
+          :aria-current="isActive(1) ? 'page' : undefined"
+          @click="pageClicked(1)"
+        >
+          1
+        </button>
+        <span v-if="hasFirstEllipsis" class="px-1 text-sm text-subtle">…</span>
+        <button
+          v-for="page in pages"
+          :key="page"
+          type="button"
+          :class="pageButtonClass(page)"
+          :aria-current="isActive(page) ? 'page' : undefined"
+          @click="pageClicked(page)"
+        >
+          {{ page }}
+        </button>
+        <span v-if="hasLastEllipsis" class="px-1 text-sm text-subtle">…</span>
+        <button
+          v-if="hasLast"
+          type="button"
+          :class="pageButtonClass(pagination.totalPages)"
+          :aria-current="isActive(pagination.totalPages) ? 'page' : undefined"
+          @click="pageClicked(pagination.totalPages)"
+        >
+          {{ pagination.totalPages }}
+        </button>
+      </div>
+
+      <button
+        type="button"
+        :class="navButtonClass"
+        :disabled="pagination.currentPage === pagination.totalPages"
+        :aria-label="$t('general.pagination.next')"
         @click="pageClicked(pagination.currentPage + 1)"
       >
-        {{ $t('general.pagination.next') }}
-      </a>
-    </div>
-    <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-      <div>
-        <p class="text-sm text-body">
-          {{ $t('general.pagination.showing') }}
-          {{ ' ' }}
-          <span
-            v-if="pagination.limit && pagination.currentPage"
-            class="font-medium"
-          >
-            {{
-              pagination.currentPage * pagination.limit - (pagination.limit - 1)
-            }}
-          </span>
-          {{ ' ' }}
-          {{ $t('general.pagination.to') }}
-          {{ ' ' }}
-          <span
-            v-if="pagination.limit && pagination.currentPage"
-            class="font-medium"
-          >
-            <span
-              v-if="
-                pagination.currentPage * pagination.limit <=
-                pagination.totalCount
-              "
-            >
-              {{ pagination.currentPage * pagination.limit }}
-            </span>
-            <span v-else>
-              {{ pagination.totalCount }}
-            </span>
-          </span>
-          {{ ' ' }}
-          {{ $t('general.pagination.of') }}
-          {{ ' ' }}
-          <span v-if="pagination.totalCount" class="font-medium">
-            {{ pagination.totalCount }}
-          </span>
-          {{ ' ' }}
-          {{ $t('general.pagination.results') }}
-        </p>
-      </div>
-      <div>
-        <nav
-          class="relative z-0 inline-flex -space-x-px rounded-lg shadow-sm"
-          aria-label="Pagination"
-        >
-          <a
-            href="#"
-            :class="{
-              'disabled cursor-normal pointer-events-none !bg-surface-tertiary !text-subtle':
-                pagination.currentPage === 1,
-            }"
-            class="
-              relative
-              inline-flex
-              items-center
-              px-2
-              py-2
-              text-sm
-              font-medium
-              text-muted
-              bg-surface
-              border border-line-default
-              rounded-l-lg
-              hover:bg-hover
-            "
-            @click="pageClicked(pagination.currentPage - 1)"
-          >
-            <span class="sr-only">Previous</span>
-            <BaseIcon name="ChevronLeftIcon" />
-          </a>
-          <a
-            v-if="hasFirst"
-            href="#"
-            aria-current="page"
-            :class="{
-              'z-10 bg-primary-500 border-primary-500 text-white':
-                isActive(1),
-              'bg-surface border-line-default text-muted hover:bg-hover':
-                !isActive(1),
-            }"
-            class="
-              relative
-              inline-flex
-              items-center
-              px-4
-              py-2
-              text-sm
-              font-medium
-              border
-            "
-            @click="pageClicked(1)"
-          >
-            1
-          </a>
-
-          <span
-            v-if="hasFirstEllipsis"
-            class="
-              relative
-              inline-flex
-              items-center
-              px-4
-              py-2
-              text-sm
-              font-medium
-              text-body
-              bg-surface
-              border border-line-default
-            "
-          >
-            ...
-          </span>
-          <a
-            v-for="page in pages"
-            :key="page"
-            href="#"
-            :class="{
-              'z-10 bg-primary-500 border-primary-500 text-white':
-                isActive(page),
-              'bg-surface border-line-default text-muted hover:bg-hover':
-                !isActive(page),
-            }"
-            class="
-              relative
-              items-center
-              hidden
-              px-4
-              py-2
-              text-sm
-              font-medium
-              border
-              md:inline-flex
-            "
-            @click="pageClicked(page)"
-          >
-            {{ page }}
-          </a>
-
-          <span
-            v-if="hasLastEllipsis"
-            class="
-              relative
-              inline-flex
-              items-center
-              px-4
-              py-2
-              text-sm
-              font-medium
-              text-body
-              bg-surface
-              border border-line-default
-            "
-          >
-            ...
-          </span>
-          <a
-            v-if="hasLast"
-            href="#"
-            aria-current="page"
-            :class="{
-              'z-10 bg-primary-500 border-primary-500 text-white':
-                isActive(pagination.totalPages),
-              'bg-surface border-line-default text-muted hover:bg-hover':
-                !isActive(pagination.totalPages),
-            }"
-            class="
-              relative
-              inline-flex
-              items-center
-              px-4
-              py-2
-              text-sm
-              font-medium
-              border
-            "
-            @click="pageClicked(pagination.totalPages)"
-          >
-            {{ pagination.totalPages }}
-          </a>
-          <a
-            href="#"
-            class="
-              relative
-              inline-flex
-              items-center
-              px-2
-              py-2
-              text-sm
-              font-medium
-              text-muted
-              bg-surface
-              border border-line-default
-              rounded-r-lg
-              hover:bg-hover
-            "
-            :class="{
-              'disabled cursor-default pointer-events-none !bg-surface-tertiary !text-subtle':
-                pagination.currentPage === pagination.totalPages,
-            }"
-            @click="pageClicked(pagination.currentPage + 1)"
-          >
-            <span class="sr-only">Next</span>
-            <BaseIcon name="ChevronRightIcon" />
-          </a>
-        </nav>
-      </div>
-    </div>
+        <BaseIcon name="ChevronRightIcon" class="w-4 h-4" />
+      </button>
+    </nav>
   </div>
 </template>
 
@@ -334,6 +136,24 @@ const shouldShowPagination = computed<boolean>(() => {
     return false
   }
   return props.pagination.totalPages > 1
+})
+
+const navButtonClass =
+  'flex items-center justify-center w-10 h-10 md:w-8 md:h-8 rounded-lg border border-line-default text-body hover:bg-hover disabled:opacity-40 disabled:pointer-events-none'
+
+function pageButtonClass(page: number): string {
+  return [
+    'min-w-8 h-8 px-2 rounded-lg text-sm font-medium tabular transition-colors',
+    isActive(page) ? 'bg-primary-50 text-primary-700' : 'text-body hover:bg-hover',
+  ].join(' ')
+}
+
+const firstItem = computed<number>(() => {
+  return props.pagination.currentPage * props.pagination.limit - (props.pagination.limit - 1)
+})
+
+const lastItem = computed<number>(() => {
+  return Math.min(props.pagination.currentPage * props.pagination.limit, props.pagination.totalCount)
 })
 
 function isActive(page: number): boolean {

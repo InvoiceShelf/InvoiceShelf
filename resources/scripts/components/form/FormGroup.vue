@@ -6,35 +6,26 @@
     <label
       v-else-if="label"
       :class="labelClasses"
-      class="
-        flex
-        text-sm
-        not-italic
-        items-center
-        font-medium
-        text-heading
-        whitespace-nowrap
-        justify-between
-      "
+      class="flex items-center justify-between gap-2 text-sm font-medium text-heading"
     >
       <div>
         {{ label }}
-        <span v-show="required" class="text-sm text-red-500"> * </span>
+        <span v-show="required" class="text-danger" aria-hidden="true">*</span>
       </div>
       <slot v-if="hasRightLabelSlot" name="labelRight" />
       <BaseIcon
         v-if="tooltip"
         v-tooltip="{ content: tooltip }"
         name="InformationCircleIcon"
-        class="h-4 text-subtle cursor-pointer hover:text-body"
+        class="w-4 h-4 cursor-pointer text-subtle hover:text-body"
       />
     </label>
     <div :class="inputContainerClasses">
       <slot></slot>
-      <span v-if="helpText" class="text-muted text-xs mt-1 font-light">
+      <span v-if="helpText" class="mt-1.5 text-xs text-muted">
         {{ helpText }}
       </span>
-      <span v-if="error" class="block mt-0.5 text-sm text-red-500">
+      <span v-if="error" class="block mt-1.5 text-xs font-medium text-danger" role="alert">
         {{ error }}
       </span>
     </div>
@@ -85,7 +76,7 @@ const inputContainerClasses = computed<string>(() => {
   if (props.variant === 'horizontal') {
     return 'md:col-span-8 md:col-start-5 md:col-ends-12'
   }
-  return 'flex flex-col mt-1'
+  return 'flex flex-col mt-1.5'
 })
 
 const slots = useSlots()

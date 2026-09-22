@@ -1,148 +1,190 @@
 <template>
-  <div class="flex flex-col">
-    <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 pb-4 lg:pb-0">
-      <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-        <div
-          class="
-            relative
-            overflow-hidden
-            bg-surface
-            border border-line-default
-            shadow-sm
-            rounded-xl
-          "
+  <div
+    class="relative flex flex-col overflow-hidden border bg-surface border-line-light rounded-xl shadow-card"
+  >
+    <!-- Phones: tappable rows built from the same cell slots -->
+    <template v-if="isList">
+      <ul
+        v-if="loadingType === 'placeholder' && (loading || isLoading)"
+        class="divide-y divide-line-light"
+      >
+        <li v-for="placeRow in placeholderCount" :key="placeRow" class="px-4 py-4">
+          <ContentPlaceholder :rounded="true">
+            <ContentPlaceholderText class="w-2/3 h-4" :lines="1" />
+            <ContentPlaceholderText class="w-1/3 h-3 mt-2" :lines="1" />
+          </ContentPlaceholder>
+        </li>
+      </ul>
+      <ul v-else class="divide-y divide-line-light">
+        <li
+          v-for="(row, index) in sortedRows"
+          :key="row.data?.id ?? index"
+          :class="rowTo ? 'cursor-pointer active:bg-hover' : ''"
+          class="flex items-center gap-3 px-4 py-3.5"
+          @click="onRowClick(row, $event)"
         >
-          <slot name="header" />
-          <table :class="tableClass">
-            <thead :class="theadClass">
-              <tr>
-                <th
-                  v-for="column in tableColumns"
-                  :key="column.key"
-                  :class="[
-                    getThClass(column),
-                    {
-                      'text-bold text-heading': sort.fieldName === column.key,
-                    },
-                  ]"
-                  @click="changeSorting(column)"
-                >
-                  {{ column.label }}
-                  <span
-                    v-if="sort.fieldName === column.key && sort.order === 'asc'"
-                    class="asc-direction"
-                  >
-                    ↑
-                  </span>
-                  <span
-                    v-if="
-                      sort.fieldName === column.key && sort.order === 'desc'
-                    "
-                    class="desc-direction"
-                  >
-                    ↓
-                  </span>
-                </th>
-              </tr>
-            </thead>
-            <tbody
-              v-if="loadingType === 'placeholder' && (loading || isLoading)"
+          <div class="flex-1 min-w-0">
+            <div
+              v-if="mobileColumns.title"
+              class="text-[15px] font-medium leading-5 truncate text-heading [&_a]:text-heading [&_a]:font-medium"
             >
-              <tr
-                v-for="placeRow in placeholderCount"
-                :key="placeRow"
-                :class="placeRow % 2 === 0 ? 'bg-surface' : 'bg-surface-secondary'"
+              <slot :name="'cell-' + mobileColumns.title.key" :row="row">
+                {{ lodashGet(row.data, mobileColumns.title.key) }}
+              </slot>
+            </div>
+            <div
+              v-if="mobileColumns.subtitle.length"
+              class="flex flex-wrap items-center gap-x-2.5 gap-y-1 mt-1 text-[13px] leading-4 text-muted [&_a]:text-muted"
+            >
+              <span
+                v-for="column in mobileColumns.subtitle"
+                :key="column.key"
+                class="min-w-0 truncate"
               >
-                <td
-                  v-for="column in columns"
-                  :key="column.key"
-                  :class="getTdClass(column)"
-                >
-                  <ContentPlaceholder
-                    :class="getPlaceholderClass(column)"
-                    :rounded="true"
-                  >
-                    <ContentPlaceholderText
-                      class="w-full h-6"
-                      :lines="1"
-                    />
-                  </ContentPlaceholder>
-                </td>
-              </tr>
-            </tbody>
-            <tbody v-else>
-              <tr
-                v-for="(row, index) in sortedRows"
-                :key="row.data?.id ?? index"
-                :class="index % 2 === 0 ? 'bg-surface' : 'bg-surface-secondary'"
-              >
-                <td
-                  v-for="column in columns"
-                  :key="column.key"
-                  :class="getTdClass(column)"
-                >
-                  <slot :name="'cell-' + column.key" :row="row">
-                    {{ lodashGet(row.data, column.key) }}
-                  </slot>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-          <div
-            v-if="loadingType === 'spinner' && (loading || isLoading)"
-            class="
-              absolute
-              top-0
-              left-0
-              z-10
-              flex
-              items-center
-              justify-center
-              w-full
-              h-full
-              bg-white/60
-            "
-          >
-            <SpinnerIcon class="w-10 h-10 text-primary-500" />
+                <slot :name="'cell-' + column.key" :row="row">
+                  {{ lodashGet(row.data, column.key) }}
+                </slot>
+              </span>
+            </div>
           </div>
 
           <div
-            v-else-if="
-              !loading && !isLoading && sortedRows && sortedRows.length === 0
-            "
-            class="
-              text-center text-muted
-              pb-2
-              flex
-              h-[160px]
-              justify-center
-              items-center
-              flex-col
-            "
+            v-if="mobileColumns.trailing || mobileColumns.trailingSub.length || mobileColumns.badge"
+            class="flex flex-col items-end gap-1 text-right shrink-0"
           >
-            <BaseIcon
-              name="ExclamationCircleIcon"
-              class="w-6 h-6 text-subtle"
-            />
-
-            <span class="block mt-1">{{ $t('general.no_data_found') }}</span>
+            <div
+              v-if="mobileColumns.trailing"
+              class="text-[15px] font-medium leading-5 tabular text-heading"
+            >
+              <slot :name="'cell-' + mobileColumns.trailing.key" :row="row">
+                {{ lodashGet(row.data, mobileColumns.trailing.key) }}
+              </slot>
+            </div>
+            <div
+              v-for="column in mobileColumns.trailingSub"
+              :key="column.key"
+              class="text-[13px] leading-4 tabular text-muted"
+            >
+              <slot :name="'cell-' + column.key" :row="row">
+                {{ lodashGet(row.data, column.key) }}
+              </slot>
+            </div>
+            <div v-if="mobileColumns.badge">
+              <slot :name="'cell-' + mobileColumns.badge.key" :row="row">
+                {{ lodashGet(row.data, mobileColumns.badge.key) }}
+              </slot>
+            </div>
           </div>
 
-          <TablePagination
-            v-if="pagination"
-            :pagination="pagination"
-            @page-change="pageChange"
-          />
-        </div>
+          <div v-if="mobileColumns.actions" class="-mr-2 shrink-0">
+            <slot :name="'cell-' + mobileColumns.actions.key" :row="row" />
+          </div>
+        </li>
+      </ul>
+    </template>
+
+    <!-- Tablet and desktop -->
+    <template v-else>
+      <slot name="header" />
+      <div class="overflow-x-auto">
+        <table :class="tableClass">
+          <thead :class="theadClass">
+            <tr>
+              <th
+                v-for="column in visibleColumns"
+                :key="column.key"
+                :class="[
+                  getThClass(column),
+                  { 'text-heading': sort.fieldName === column.key },
+                ]"
+                :aria-sort="ariaSort(column)"
+                @click="changeSorting(column)"
+              >
+                {{ column.label }}
+                <BaseIcon
+                  v-if="sort.fieldName === column.key && sort.order"
+                  :name="sort.order === 'asc' ? 'ChevronUpIcon' : 'ChevronDownIcon'"
+                  class="inline-block w-3.5 h-3.5 ml-0.5 -mt-0.5"
+                />
+              </th>
+            </tr>
+          </thead>
+          <tbody
+            v-if="loadingType === 'placeholder' && (loading || isLoading)"
+            class="divide-y divide-line-light"
+          >
+            <tr v-for="placeRow in placeholderCount" :key="placeRow">
+              <td
+                v-for="column in visibleColumns"
+                :key="column.key"
+                :class="getTdClass(column)"
+              >
+                <ContentPlaceholder
+                  :class="getPlaceholderClass(column)"
+                  :rounded="true"
+                >
+                  <ContentPlaceholderText
+                    class="w-full h-5"
+                    :lines="1"
+                  />
+                </ContentPlaceholder>
+              </td>
+            </tr>
+          </tbody>
+          <tbody v-else :class="['divide-y divide-line-light', tbodyClass]">
+            <tr
+              v-for="(row, index) in sortedRows"
+              :key="row.data?.id ?? index"
+              :class="rowTo ? 'cursor-pointer' : ''"
+              class="transition-colors hover:bg-hover"
+              @click="onRowClick(row, $event)"
+            >
+              <td
+                v-for="column in visibleColumns"
+                :key="column.key"
+                :class="getTdClass(column)"
+              >
+                <slot :name="'cell-' + column.key" :row="row">
+                  {{ lodashGet(row.data, column.key) }}
+                </slot>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
+    </template>
+
+    <div
+      v-if="loadingType === 'spinner' && (loading || isLoading)"
+      class="absolute inset-0 z-10 flex items-center justify-center bg-surface/60"
+    >
+      <SpinnerIcon class="w-8 h-8 text-subtle" />
     </div>
+
+    <div
+      v-else-if="
+        !loading && !isLoading && sortedRows && sortedRows.length === 0
+      "
+      class="flex flex-col items-center justify-center gap-2 py-12 text-sm text-center text-muted"
+    >
+      <BaseIcon name="InboxIcon" class="w-6 h-6 text-subtle" />
+      <span>{{ $t('general.no_data_found') }}</span>
+    </div>
+
+    <TablePagination
+      v-if="pagination"
+      :pagination="pagination"
+      @page-change="pageChange"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, watch, ref, reactive } from 'vue'
+import { useRouter } from 'vue-router'
+import type { RouteLocationRaw } from 'vue-router'
 import { get } from 'lodash'
+import { useBreakpoints } from '@/scripts/composables/use-breakpoints'
 import TablePagination from './TablePagination.vue'
 import { ContentPlaceholder, ContentPlaceholderText } from '../layout'
 import SpinnerIcon from '@/scripts/components/icons/SpinnerIcon.vue'
@@ -157,9 +199,29 @@ export interface ColumnDef {
   placeholderClass?: string
   sortBy?: string
   sortable?: boolean
+  /** Not a table column: only feeds the phone list (with a `mobile` role) */
   hidden?: boolean
   dataType?: string
   filterOn?: string
+  /** 'end' right-aligns the column and sets its figures tabular (amounts, counts) */
+  align?: 'start' | 'end'
+  /**
+   * Where the cell goes when the table renders as a list on phones. Columns
+   * without a role are left out there; a table with no roles at all shows
+   * its first column as the title.
+   */
+  mobile?: MobileRole | false
+}
+
+export type MobileRole = 'title' | 'subtitle' | 'trailing' | 'trailing-sub' | 'badge' | 'actions'
+
+interface MobileColumns {
+  title: ColumnDef | null
+  subtitle: ColumnDef[]
+  trailing: ColumnDef | null
+  trailingSub: ColumnDef[]
+  badge: ColumnDef | null
+  actions: ColumnDef | null
 }
 
 interface TableColumn extends ColumnDef {
@@ -210,19 +272,108 @@ interface Props {
   loading?: boolean
   loadingType?: 'placeholder' | 'spinner'
   placeholderCount?: number
+  /** Makes each row open this location; clicks on links, buttons and inputs inside a row still go to them */
+  rowTo?: ((row: RowData) => RouteLocationRaw | null) | null
+  /** Render as a table even on phones (for narrow tables that already fit) */
+  keepTableOnPhone?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   sortBy: '',
   sortOrder: '',
-  tableClass: 'min-w-full divide-y divide-line-default',
-  theadClass: 'bg-surface-secondary',
+  tableClass: 'min-w-full',
+  theadClass: 'bg-surface-secondary border-b border-line-light',
   tbodyClass: '',
   noResultsMessage: 'No Results Found',
   loading: false,
   loadingType: 'placeholder',
   placeholderCount: 3,
+  rowTo: null,
+  keepTableOnPhone: false,
 })
+
+const router = useRouter()
+const { isPhone } = useBreakpoints()
+
+const isList = computed<boolean>(() => isPhone.value && !props.keepTableOnPhone)
+
+const visibleColumns = computed<TableColumn[]>(() => tableColumns.filter((column) => !column.hidden))
+
+const mobileColumns = computed<MobileColumns>(() => {
+  const result: MobileColumns = {
+    title: null,
+    subtitle: [],
+    trailing: null,
+    trailingSub: [],
+    badge: null,
+    actions: null,
+  }
+
+  const annotated = tableColumns.filter((column) => column.mobile)
+
+  // Unannotated tables: the first two labelled columns (selection columns
+  // have no label) as title and subtitle, and the row menu if there is one.
+  if (annotated.length === 0) {
+    const labelled = tableColumns.filter((column) => column.label && column.key !== 'actions')
+    result.title = labelled[0] ?? null
+    result.subtitle = labelled.slice(1, 2)
+    result.actions = tableColumns.find((column) => column.key === 'actions') ?? null
+    return result
+  }
+
+  for (const column of annotated) {
+    switch (column.mobile) {
+      case 'title':
+        result.title = column
+        break
+      case 'subtitle':
+        result.subtitle.push(column)
+        break
+      case 'trailing':
+        result.trailing = column
+        break
+      case 'trailing-sub':
+        result.trailingSub.push(column)
+        break
+      case 'badge':
+        result.badge = column
+        break
+      case 'actions':
+        result.actions = column
+        break
+    }
+  }
+
+  return result
+})
+
+const INTERACTIVE = 'a, button, input, select, textarea, label, [role="menuitem"], [role="button"], [role="checkbox"]'
+
+function onRowClick(row: TableRow, event: MouseEvent): void {
+  if (!props.rowTo) {
+    return
+  }
+
+  const target = event.target as HTMLElement | null
+
+  if (target?.closest(INTERACTIVE) || window.getSelection()?.toString()) {
+    return
+  }
+
+  const to = props.rowTo(row.data)
+
+  if (to) {
+    router.push(to)
+  }
+}
+
+function ariaSort(column: TableColumn): 'ascending' | 'descending' | undefined {
+  if (sort.fieldName !== column.key || !sort.order) {
+    return undefined
+  }
+
+  return sort.order === 'asc' ? 'ascending' : 'descending'
+}
 
 function createColumn(columnObj: ColumnDef): TableColumn {
   const col: TableColumn = {
@@ -365,7 +516,11 @@ const sortedRows = computed<TableRow[]>(() => {
 
 function getThClass(column: TableColumn): string {
   let classes =
-    'whitespace-nowrap px-6 py-3 text-left text-xs font-medium text-muted uppercase tracking-wider'
+    'whitespace-nowrap px-4 first:pl-6 last:pr-6 py-2.5 text-left text-xs font-medium text-muted select-none'
+
+  if (column.align === 'end') {
+    classes = `${classes} text-right`
+  }
 
   if (column.defaultThClass) {
     classes = column.defaultThClass
@@ -385,7 +540,11 @@ function getThClass(column: TableColumn): string {
 }
 
 function getTdClass(column: ColumnDef): string {
-  let classes = 'px-6 py-4 text-sm text-muted whitespace-nowrap'
+  let classes = 'px-4 first:pl-6 last:pr-6 py-3 text-sm text-body whitespace-nowrap'
+
+  if (column.align === 'end') {
+    classes = `${classes} text-right tabular`
+  }
 
   if (column.defaultTdClass) {
     classes = column.defaultTdClass

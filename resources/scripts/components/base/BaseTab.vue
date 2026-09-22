@@ -18,7 +18,7 @@ withDefaults(
     title: 'Tab',
     count: '',
     countVariant: '',
-    tabPanelContainer: 'py-4 mt-px',
+    tabPanelContainer: 'pt-4 empty:hidden',
   },
 )
 </script>

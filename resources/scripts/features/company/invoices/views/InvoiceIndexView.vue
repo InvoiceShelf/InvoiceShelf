@@ -3,7 +3,7 @@
     <BasePageHeader>
       <template #default>
         <div class="flex items-center gap-2">
-          <h1 class="text-2xl font-semibold text-heading">
+          <h1 class="font-semibold text-title text-heading">
             {{ $t('invoices.title') }}
           </h1>
           <BaseDropdown position="bottom-start" width-class="w-44">
@@ -63,7 +63,7 @@
           v-if="canCreate"
           :to="viewMode === 'recurring' ? 'invoices/create?recurring=1' : 'invoices/create'"
         >
-          <BaseButton variant="primary" class="ml-4">
+          <BaseButton variant="primary">
             <template #left="slotProps">
               <BaseIcon name="PlusIcon" :class="slotProps.class" />
             </template>
@@ -109,11 +109,10 @@
       </BaseInputGroup>
 
       <div
-        class="hidden w-8 h-0 mx-4 border border-gray-400 border-solid xl:block"
-        style="margin-top: 1.5rem"
+        class="hidden w-4 h-px mb-5 shrink-0 bg-line-strong xl:block"
       />
 
-      <BaseInputGroup :label="$t('general.to')" class="mt-2">
+      <BaseInputGroup :label="$t('general.to')">
         <BaseDatePicker
           v-model="filters.to_date"
           :calendar-button="true"
@@ -164,8 +163,7 @@
       </BaseInputGroup>
 
       <div
-        class="hidden w-8 h-0 mx-4 border border-gray-400 border-solid xl:block"
-        style="margin-top: 1.5rem"
+        class="hidden w-4 h-px mb-5 shrink-0 bg-line-strong xl:block"
       />
 
       <BaseInputGroup :label="$t('general.to')">
@@ -201,7 +199,7 @@
       <!-- Table -->
       <div v-show="!showEmptyScreen" class="relative table-container">
         <div
-          class="relative flex items-center justify-between mt-5 list-none"
+          class="relative flex items-center justify-between list-none"
         >
           <BaseTabGroup @change="setStatusFilter">
             <BaseTab :title="$t('general.all')" filter="" />
@@ -236,6 +234,7 @@
           :data="fetchData"
           :columns="invoiceColumns"
           :placeholder-count="invoiceStore.invoiceTotalCount >= 20 ? 10 : 5"
+          :row-to="invoiceLink"
           class="mt-4"
         >
           <template #header>
@@ -262,7 +261,7 @@
             <router-link
               v-if="row.data.customer?.id"
               :to="`/admin/customers/${row.data.customer.id}/view`"
-              class="font-medium text-primary-500 hover:text-primary-600"
+              class="font-medium text-heading hover:text-primary-600"
             >
               {{ row.data.customer.name }}
             </router-link>
@@ -272,13 +271,13 @@
           <template #cell-invoice_number="{ row }">
             <router-link
               :to="{ path: `invoices/${row.data.id}/view` }"
-              class="font-medium text-primary-500"
+              class="font-medium text-primary-600 hover:text-primary-700"
             >
               {{ row.data.invoice_number }}
             </router-link>
             <span
               v-if="row.data.type === 'CREDIT_NOTE'"
-              class="inline-block ml-2 px-2 py-0.5 text-xs font-medium rounded bg-red-100 text-red-700"
+              class="inline-block ml-2 px-2 py-0.5 text-xs font-medium rounded-md bg-status-red-bg text-status-red"
             >
               {{ $t('invoices.credit_note') }}
             </span>
@@ -296,13 +295,13 @@
           </template>
 
           <template #cell-status="{ row }">
-            <BaseInvoiceStatusBadge :status="row.data.status" class="px-3 py-1">
+            <BaseInvoiceStatusBadge :status="row.data.status">
               <BaseInvoiceStatusLabel :status="row.data.status" />
             </BaseInvoiceStatusBadge>
           </template>
 
           <template #cell-due_amount="{ row }">
-            <div class="flex justify-between">
+            <div class="flex items-center justify-between gap-3">
               <BaseFormatMoney
                 :amount="row.data.due_amount"
                 :currency="row.data.currency"
@@ -311,7 +310,6 @@
               <BasePaidStatusBadge
                 v-if="row.data.overdue"
                 status="OVERDUE"
-                class="px-1 py-0.5 ml-2"
               >
                 {{ $t('invoices.overdue') }}
               </BasePaidStatusBadge>
@@ -322,7 +320,7 @@
                    confused. -->
               <span
                 v-if="row.data.type !== 'CREDIT_NOTE' && row.data.credited_status === 'FULL'"
-                class="inline-block px-1 py-0.5 ml-2 text-xs font-medium rounded bg-amber-100 text-amber-800 whitespace-nowrap"
+                class="inline-block px-2 py-0.5 text-xs font-medium rounded-md bg-status-yellow-bg text-status-yellow whitespace-nowrap"
               >
                 {{ $t('invoices.cancelled') }}
               </span>
@@ -330,7 +328,6 @@
               <BasePaidStatusBadge
                 v-else
                 :status="row.data.paid_status"
-                class="px-1 py-0.5 ml-2"
               >
                 <BaseInvoiceStatusLabel :status="row.data.paid_status" />
               </BasePaidStatusBadge>
@@ -339,11 +336,24 @@
                    this badge sits ALONGSIDE it rather than replacing it. -->
               <span
                 v-if="row.data.type !== 'CREDIT_NOTE' && row.data.credited_status === 'PARTIAL'"
-                class="inline-block px-1 py-0.5 ml-1 text-[10px] font-medium rounded bg-amber-100 text-amber-800 whitespace-nowrap"
+                class="inline-block px-2 py-0.5 text-[11px] font-medium rounded-md bg-status-yellow-bg text-status-yellow whitespace-nowrap"
               >
                 {{ $t('invoices.partially_credited') }}
               </span>
             </div>
+          </template>
+
+          <!-- Phones: the one status that matters at a glance -->
+          <template #cell-mobile_status="{ row }">
+            <BasePaidStatusBadge v-if="row.data.overdue" status="OVERDUE">
+              {{ $t('invoices.overdue') }}
+            </BasePaidStatusBadge>
+            <BaseInvoiceStatusBadge v-else-if="row.data.status === 'DRAFT'" status="DRAFT">
+              <BaseInvoiceStatusLabel status="DRAFT" />
+            </BaseInvoiceStatusBadge>
+            <BasePaidStatusBadge v-else :status="row.data.paid_status">
+              <BaseInvoiceStatusLabel :status="row.data.paid_status" />
+            </BasePaidStatusBadge>
           </template>
 
           <template v-if="hasAtLeastOneAbility" #cell-actions="{ row }">
@@ -503,6 +513,7 @@
 </template>
 
 <script setup lang="ts">
+import type { ColumnDef } from '@/scripts/components/table/DataTable.vue'
 import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
@@ -690,14 +701,7 @@ const hasAtLeastOneAbility = computed<boolean>(() => {
   return canDelete.value || canEdit.value || canView.value || canSend.value
 })
 
-interface TableColumn {
-  key: string
-  label?: string
-  thClass?: string
-  tdClass?: string
-  placeholderClass?: string
-  sortable?: boolean
-}
+type TableColumn = Omit<ColumnDef, 'label'> & { label?: string }
 
 const invoiceColumns = computed<TableColumn[]>(() => [
   {
@@ -711,10 +715,10 @@ const invoiceColumns = computed<TableColumn[]>(() => [
     key: 'invoice_date',
     label: t('invoices.date'),
     thClass: 'extra',
-    tdClass: 'font-medium',
+    mobile: 'subtitle',
   },
-  { key: 'invoice_number', label: t('invoices.number') },
-  { key: 'name', label: t('invoices.customer') },
+  { key: 'invoice_number', label: t('invoices.number'), mobile: 'subtitle' },
+  { key: 'name', label: t('invoices.customer'), mobile: 'title' },
   { key: 'status', label: t('invoices.status') },
   {
     key: 'due_amount',
@@ -724,15 +728,21 @@ const invoiceColumns = computed<TableColumn[]>(() => [
     key: 'total',
     label: t('invoices.total'),
     tdClass: 'font-medium text-heading',
+    align: 'end',
+    mobile: 'trailing',
   },
+  { key: 'mobile_status', hidden: true, sortable: false, mobile: 'badge' },
   {
     key: 'actions',
-    label: t('invoices.action'),
-    tdClass: 'text-right text-sm font-medium',
+    tdClass: 'text-right text-sm font-medium w-12',
     thClass: 'text-right',
     sortable: false,
   },
 ])
+
+function invoiceLink(row: { id?: number | string }): string {
+  return `/admin/invoices/${row.id}/view`
+}
 
 debouncedWatch(filters, () => setFilters(), { debounce: 500 })
 

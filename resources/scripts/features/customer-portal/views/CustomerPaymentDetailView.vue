@@ -151,7 +151,7 @@
     </div>
 
     <!-- PDF Preview -->
-    <BasePdfPreview :src="shareableLink" />
+    <BasePdfPreview :src="shareableLink" class="mt-6" />
   </BasePage>
 </template>
 

@@ -29,14 +29,16 @@
           text-left
           bg-surface
           border border-line-default
-          rounded-md
-          shadow-xs
+          rounded-lg
           cursor-default
+          text-base
+          leading-6
+          md:text-sm
+          text-heading
           focus:outline-hidden
-          focus:ring-1
-          focus:ring-primary-500
+          focus:ring-3
+          focus:ring-focus
           focus:border-primary-500
-          sm:text-sm
         "
       >
         <span v-if="getValue(selectedValue)" class="block truncate">
@@ -82,13 +84,14 @@
             mt-1
             overflow-auto
             text-base
+            p-1
             bg-surface
-            rounded-md
+            rounded-xl
             shadow-lg
             max-h-60
-            ring-1 ring-black/5
+            border border-line-light
             focus:outline-hidden
-            sm:text-sm
+            md:text-sm
           "
         >
           <ListboxOption
@@ -100,8 +103,8 @@
           >
             <li
               :class="[
-                active ? 'text-white bg-primary-600' : 'text-heading',
-                'cursor-default select-none relative py-2 pl-3 pr-9',
+                active ? 'bg-hover-strong' : '',
+                'text-heading cursor-default select-none relative py-2 pl-3 pr-9 rounded-lg',
               ]"
             >
               <span
@@ -116,8 +119,7 @@
               <span
                 v-if="selected"
                 :class="[
-                  active ? 'text-white' : 'text-primary-600',
-                  'absolute inset-y-0 right-0 flex items-center pr-4',
+                  'text-primary-600 absolute inset-y-0 right-0 flex items-center pr-3',
                 ]"
               >
                 <BaseIcon name="CheckIcon" aria-hidden="true" />
