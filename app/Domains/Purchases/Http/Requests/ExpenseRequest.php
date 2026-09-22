@@ -115,6 +115,7 @@ class ExpenseRequest extends FormRequest
                 $validator->errors()->add('taxes', 'The total tax amount may not exceed the expense amount.');
             }
         });
+        $this->validateCustomFieldAnswers($validator);
     }
 
     public function getExpensePayload()

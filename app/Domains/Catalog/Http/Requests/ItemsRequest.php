@@ -4,6 +4,7 @@ namespace App\Domains\Catalog\Http\Requests;
 
 use App\Domains\Metadata\Http\Requests\Concerns\ValidatesCustomFields;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 /**
  * Incoming payload for creating or editing a catalog item.
@@ -42,6 +43,11 @@ class ItemsRequest extends FormRequest
             'description' => ['nullable'],
             ...$this->customFieldRules(),
         ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $this->validateCustomFieldAnswers($validator);
     }
 
     /**

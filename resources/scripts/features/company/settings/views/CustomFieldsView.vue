@@ -95,7 +95,7 @@ function addCustomField(): void {
   modalStore.openModal({
     title: t('settings.custom_fields.add_custom_field'),
     componentName: 'CustomFieldModal',
-    size: 'sm',
+    size: 'md',
     refreshData: table.value?.refresh,
   })
 }

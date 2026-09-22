@@ -18,6 +18,8 @@ export interface CreateCustomFieldPayload {
   options?: string[]
   order?: number | null
   placement?: string
+  /** Bounds and an optional pattern an answer must satisfy. */
+  validation?: Record<string, unknown> | null
   default_answer?: string | null
 }
 

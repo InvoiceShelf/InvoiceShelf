@@ -61,6 +61,8 @@ class InvoicesRequest extends FormRequest
     public function withValidator(Validator $validator): void
     {
         $this->validateDocumentTaxPlaceholders($validator);
+        $this->validateCustomFieldAnswers($validator);
+        $this->validateCustomFieldAnswers($validator, 'items.*.custom_fields');
     }
 
     /**

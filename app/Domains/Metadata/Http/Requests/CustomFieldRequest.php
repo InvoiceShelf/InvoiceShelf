@@ -6,6 +6,7 @@ use App\Domains\Metadata\Application\CustomFieldModelCatalog;
 use App\Domains\Metadata\Models\CustomField;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 /**
  * A custom-field definition as the admin screen submits it.
@@ -44,6 +45,64 @@ class CustomFieldRequest extends FormRequest
                 CustomField::PLACEMENT_INTERNAL,
                 CustomField::PLACEMENT_DOCUMENT,
             ])],
+            'validation' => ['sometimes', 'nullable', 'array'],
+            'validation.min_length' => ['sometimes', 'nullable', 'integer', 'min:0'],
+            'validation.max_length' => ['sometimes', 'nullable', 'integer', 'min:1'],
+            'validation.min' => ['sometimes', 'nullable', 'numeric'],
+            'validation.max' => ['sometimes', 'nullable', 'numeric'],
+            'validation.pattern' => [
+                'sometimes',
+                'nullable',
+                'string',
+                'max:'.CustomField::MAX_PATTERN_LENGTH,
+            ],
         ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $validator): void {
+            $this->validateBoundsAreOrdered($validator);
+            $this->validatePatternCompiles($validator);
+        });
+    }
+
+    /**
+     * A maximum below its minimum describes nothing an answer could satisfy.
+     */
+    private function validateBoundsAreOrdered(Validator $validator): void
+    {
+        foreach ([['min_length', 'max_length'], ['min', 'max']] as [$low, $high]) {
+            $from = $this->input("validation.{$low}");
+            $to = $this->input("validation.{$high}");
+
+            if ($from !== null && $to !== null && $to < $from) {
+                $validator->errors()->add(
+                    "validation.{$high}",
+                    "The {$high} may not be less than the {$low}."
+                );
+            }
+        }
+    }
+
+    /**
+     * Reject a pattern PCRE will not accept.
+     *
+     * Caught here, when it is written, rather than later when somebody tries
+     * to answer the field and cannot understand why nothing they type is
+     * allowed. The delimiters are ours, so the author writes the expression
+     * alone and cannot smuggle in modifiers.
+     */
+    private function validatePatternCompiles(Validator $validator): void
+    {
+        $pattern = $this->input('validation.pattern');
+
+        if (! is_string($pattern) || $pattern === '') {
+            return;
+        }
+
+        if (@preg_match(CustomField::compilePattern($pattern), '') === false) {
+            $validator->errors()->add('validation.pattern', 'This is not a valid pattern.');
+        }
     }
 }

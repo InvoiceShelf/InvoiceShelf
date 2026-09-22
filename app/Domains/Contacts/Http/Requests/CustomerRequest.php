@@ -8,6 +8,7 @@ use App\Rules\IdnEmail;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 /**
  * Validates and reshapes the admin contact form, for both create and update.
@@ -104,6 +105,11 @@ class CustomerRequest extends FormRequest
         }
 
         return array_merge($rules, $this->customFieldRules());
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $this->validateCustomFieldAnswers($validator);
     }
 
     /**
