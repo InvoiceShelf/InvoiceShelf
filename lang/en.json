@@ -153,7 +153,8 @@
     "theme_system": "System",
     "breadcrumb": "Breadcrumb",
     "selected_count": "{count} selected",
-    "close": "Close"
+    "close": "Close",
+    "apply": "Apply"
   },
   "dashboard": {
     "select_year": "Select year",
@@ -207,7 +208,8 @@
       "month": "Month",
       "chart_style": "Chart style",
       "area": "Area",
-      "bars": "Bars"
+      "bars": "Bars",
+      "day": "Day"
     },
     "counts": {
       "customers": "customer | customers",
@@ -245,15 +247,22 @@
   },
   "dateRange": {
     "today": "Today",
-    "this_week": "This Week",
-    "this_month": "This Month",
-    "this_quarter": "This Quarter",
+    "this_week": "This week",
+    "this_month": "This month",
+    "this_quarter": "This quarter",
     "this_year": "This year",
-    "previous_week": "Previous Week",
-    "previous_month": "Previous Month",
-    "previous_quarter": "Previous Quarter",
+    "previous_week": "Previous week",
+    "previous_month": "Previous month",
+    "previous_quarter": "Previous quarter",
     "previous_year": "Previous year",
-    "custom": "Custom"
+    "custom": "Custom",
+    "last_12_months": "Last 12 months",
+    "custom_range": "Custom range",
+    "period": "Period",
+    "showing": "Showing {range}",
+    "pick_start": "Pick the first day",
+    "pick_end": "Now pick the last day",
+    "too_long": "Pick a range of up to {years} years"
   },
   "customers": {
     "title": "Customers",

@@ -10,8 +10,8 @@ import CashflowChart from '@/scripts/components/charts/CashflowChart.vue'
 import type { CashflowChartType } from '@/scripts/components/charts/CashflowChart.vue'
 import CustomerInfo from './CustomerInfo.vue'
 import type { CustomerStatsChartData } from '@/scripts/api/services/customer.service'
-
-type Period = 'This year' | 'Previous year'
+import { formatPeriodRange, periodParams, yearPresets } from '@/scripts/utils/period'
+import type { PeriodValue } from '@/scripts/utils/period'
 
 interface Kpi {
   key: string
@@ -30,12 +30,16 @@ const { isPhone } = useBreakpoints()
 
 const isLoaded = ref<boolean>(false)
 const chartData = reactive<Partial<CustomerStatsChartData>>({})
-const period = ref<Period>('This year')
+const period = ref<PeriodValue>({ preset: 'this_year' })
+const presets = computed(() => yearPresets(t))
 
-const periods = computed(() => [
-  { value: 'This year' as Period, label: t('dateRange.this_year') },
-  { value: 'Previous year' as Period, label: t('dateRange.previous_year') },
-])
+const periodSummary = computed<string>(() => {
+  const resolved = chartData.period
+
+  return resolved
+    ? formatPeriodRange(resolved.from, resolved.to, userStore.currentUserSettings.language)
+    : ''
+})
 
 // The same style the user picked for the dashboard chart
 const chartType = computed<CashflowChartType>(() => (
@@ -82,7 +86,7 @@ const kpis = computed<Kpi[]>(() => [
 watch(
   () => route.params.id,
   (id) => {
-    period.value = 'This year'
+    period.value = { preset: 'this_year' }
 
     if (id) {
       isLoaded.value = false
@@ -95,7 +99,7 @@ watch(
 async function load(): Promise<void> {
   const response = await customerStore.fetchViewCustomer({
     id: Number(route.params.id),
-    ...(period.value === 'Previous year' ? { previous_year: true } : { this_year: true }),
+    ...periodParams(period.value),
   })
 
   if (response.meta.chartData) {
@@ -105,11 +109,7 @@ async function load(): Promise<void> {
   isLoaded.value = true
 }
 
-function selectPeriod(value: Period): void {
-  if (period.value === value) {
-    return
-  }
-
+function selectPeriod(value: PeriodValue): void {
   period.value = value
   void load()
 }
@@ -128,28 +128,12 @@ function selectPeriod(value: Period): void {
               {{ $t('dashboard.cashflow.title') }}
             </h2>
 
-            <div
-              class="inline-flex p-0.5 border rounded-lg shrink-0 bg-surface border-line-default"
-              role="radiogroup"
-              :aria-label="$t('dashboard.select_year')"
-            >
-              <button
-                v-for="option in periods"
-                :key="option.value"
-                type="button"
-                role="radio"
-                :aria-checked="period === option.value"
-                :class="[
-                  'px-3 h-8 md:h-7 text-sm rounded-md transition-colors',
-                  period === option.value
-                    ? 'bg-surface-muted text-heading font-medium'
-                    : 'text-muted hover:text-heading',
-                ]"
-                @click="selectPeriod(option.value)"
-              >
-                {{ option.label }}
-              </button>
-            </div>
+            <BasePeriodPicker
+              :model-value="period"
+              :presets="presets"
+              :summary="periodSummary"
+              @update:model-value="selectPeriod"
+            />
           </div>
 
           <!-- Period totals, doubling as the chart's legend -->

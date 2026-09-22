@@ -98,7 +98,7 @@
           <thead class="bg-surface-secondary">
             <tr>
               <th class="px-5 py-2.5 text-xs font-medium text-left md:px-7 text-muted">
-                {{ $t('dashboard.cashflow.month') }}
+                {{ dashboardStore.resolvedPeriod?.granularity === 'day' ? $t('dashboard.cashflow.day') : $t('dashboard.cashflow.month') }}
               </th>
               <th
                 v-for="label in seriesLabels"

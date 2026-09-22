@@ -1,3 +1,4 @@
+import type { ResolvedPeriod } from './dashboard.service'
 import { client } from '../client'
 import { API } from '../endpoints'
 import type { Customer, CreateCustomerPayload } from '@/scripts/types/domain/customer'
@@ -107,11 +108,13 @@ export interface CustomerStatsChartData {
   months: string[]
   receiptTotals: number[]
   invoiceTotals: number[]
+  period?: ResolvedPeriod
 }
 
 export interface CustomerStatsParams {
-  previous_year?: boolean
-  this_year?: boolean
+  previous_year?: boolean | number
+  from_date?: string
+  to_date?: string
 }
 
 export interface CustomerStatsResponse {

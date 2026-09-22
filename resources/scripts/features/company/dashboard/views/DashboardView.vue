@@ -1,18 +1,17 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from '../../../../stores/user.store'
 import { useDashboardStore } from '../store'
 import { ABILITIES } from '@/scripts/config/abilities'
+import { formatPeriodRange, periodParams, yearPresets } from '@/scripts/utils/period'
 import ReceivablesHero from '../components/ReceivablesHero.vue'
 import DashboardChart from '../components/DashboardChart.vue'
 import DashboardTable from '../components/DashboardTable.vue'
 import SendInvoiceModal from '@/scripts/features/company/invoices/components/SendInvoiceModal.vue'
 import CreditNoteModal from '@/scripts/features/company/invoices/components/CreditNoteModal.vue'
 import SendEstimateModal from '@/scripts/features/company/estimates/components/SendEstimateModal.vue'
-
-type Period = 'this_year' | 'previous_year'
 
 interface Count {
   key: string
@@ -27,12 +26,17 @@ const userStore = useUserStore()
 const dashboardStore = useDashboardStore()
 const { t } = useI18n()
 
-const period = ref<Period>('this_year')
+const presets = computed(() => yearPresets(t))
 
-const periods = computed(() => [
-  { value: 'this_year' as Period, label: t('dateRange.this_year') },
-  { value: 'previous_year' as Period, label: t('dateRange.previous_year') },
-])
+// The dates behind the current choice, e.g. what "This year" means for a
+// fiscal year that opens in April
+const periodSummary = computed<string>(() => {
+  const resolved = dashboardStore.resolvedPeriod
+
+  return resolved
+    ? formatPeriodRange(resolved.from, resolved.to, userStore.currentUserSettings.language)
+    : ''
+})
 
 // The customer, invoice and estimate counts: context, so they stay quiet
 const counts = computed<Count[]>(() => {
@@ -53,13 +57,13 @@ const counts = computed<Count[]>(() => {
 })
 
 watch(
-  period,
+  () => dashboardStore.period,
   (value) => {
     if (!userStore.hasAbilities('dashboard')) {
       return
     }
 
-    void dashboardStore.loadData(value === 'previous_year' ? { previous_year: 1 } : undefined)
+    void dashboardStore.loadData(periodParams(value))
   },
   { immediate: true },
 )
@@ -79,28 +83,11 @@ onMounted(() => {
   <BasePage>
     <BasePageHeader :title="$t('navigation.dashboard')" phone-actions="inline">
       <template #actions>
-        <div
-          class="inline-flex p-0.5 border rounded-lg bg-surface border-line-default"
-          role="radiogroup"
-          :aria-label="$t('dashboard.select_year')"
-        >
-          <button
-            v-for="option in periods"
-            :key="option.value"
-            type="button"
-            role="radio"
-            :aria-checked="period === option.value"
-            :class="[
-              'h-9 md:h-8 px-3 rounded-md text-sm font-medium transition-colors',
-              period === option.value
-                ? 'bg-surface-muted text-heading'
-                : 'text-muted hover:text-heading',
-            ]"
-            @click="period = option.value"
-          >
-            {{ option.label }}
-          </button>
-        </div>
+        <BasePeriodPicker
+          v-model="dashboardStore.period"
+          :presets="presets"
+          :summary="periodSummary"
+        />
       </template>
     </BasePageHeader>
 
