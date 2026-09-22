@@ -32,6 +32,7 @@ import { useI18n } from 'vue-i18n'
 import { useUserStore } from '../../../stores/user.store'
 import { useDialogStore } from '../../../stores/dialog.store'
 import { useAdminStore } from '../stores/admin.store'
+import { hardNavigate } from '@/scripts/utils/hard-navigate'
 import type { User } from '../../../types/domain/user'
 
 interface Props {
@@ -63,7 +64,7 @@ function onImpersonate(): void {
     .then((confirmed: boolean) => {
       if (confirmed) {
         adminStore.impersonateUser(props.row.id).then(() => {
-          window.location.href = '/admin/dashboard'
+          hardNavigate('/admin/dashboard')
         })
       }
     })

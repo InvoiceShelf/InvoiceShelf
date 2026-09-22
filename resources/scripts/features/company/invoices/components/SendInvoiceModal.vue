@@ -202,6 +202,7 @@ import { useModalStore } from '../../../../stores/modal.store'
 import { useCompanyStore } from '../../../../stores/company.store'
 import { useNotificationStore } from '../../../../stores/notification.store'
 import { useInvoiceStore } from '../store'
+import { emailPreviewUrl } from '@/scripts/utils/email-preview'
 
 interface InvoiceMailForm {
   id: number | string | null
@@ -328,11 +329,7 @@ async function submitForm(): Promise<void> {
       isLoading.value = false
 
       isPreview.value = true
-      const blob = new Blob(
-        [(previewResponse as { data: string }).data ?? previewResponse],
-        { type: 'text/html' },
-      )
-      templateUrl.value = URL.createObjectURL(blob)
+      templateUrl.value = emailPreviewUrl(previewResponse)
       return
     }
 

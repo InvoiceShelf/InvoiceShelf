@@ -18,7 +18,7 @@
           : '',
       ]"
     >
-      <div class="pt-16 pb-16">
+      <div class="pt-16 pb-16 safe-content">
         <router-view />
       </div>
     </main>

@@ -55,7 +55,7 @@
             </div>
           </TransitionChild>
 
-          <div class="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
+          <div class="flex-1 h-0 pt-5 pb-4 safe-drawer overflow-y-auto">
             <div class="flex items-center shrink-0 px-4 mb-10">
               <MainLogo
                 class="block h-auto max-w-full w-36 text-primary-400"
@@ -171,7 +171,7 @@
     </div>
 
     <!-- Bottom toolbar -->
-    <div class="mt-auto sticky bottom-0 border-t border-white/10 bg-surface/80 backdrop-blur-xl p-2 flex flex-col items-center gap-1">
+    <div class="mt-auto sticky bottom-0 border-t border-white/10 bg-surface/80 backdrop-blur-xl p-2 safe-rail flex flex-col items-center gap-1">
       <button
         v-tooltip="globalStore.isSidebarCollapsed ? { content: $t('general.collapse'), placement: 'right' } : null"
         :class="[
