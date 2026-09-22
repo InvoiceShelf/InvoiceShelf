@@ -1179,7 +1179,10 @@
         "invoice": "Invoice",
         "estimate": "Estimate",
         "expense": "Expense",
-        "payment": "Payment"
+        "payment": "Payment",
+        "item": "Item",
+        "company": "Company",
+        "user": "User"
       }
     },
     "customization": {

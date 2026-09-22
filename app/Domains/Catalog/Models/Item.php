@@ -5,6 +5,7 @@ namespace App\Domains\Catalog\Models;
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Accounts\Models\User;
+use App\Domains\Metadata\Concerns\HasCustomFields;
 use App\Domains\Money\Models\Currency;
 use App\Domains\Sales\Models\EstimateItem;
 use App\Domains\Sales\Models\InvoiceItem;
@@ -31,6 +32,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Item extends Model
 {
+    use HasCustomFields;
     use HasFactory;
 
     protected $table = 'items';

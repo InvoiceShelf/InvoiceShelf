@@ -128,7 +128,6 @@
 
       <!-- Exchange Rate -->
       <ExchangeRateConverter
-        :store="invoiceStore"
         store-prop="newInvoice"
         :v="{ exchange_rate: { $error: false, $errors: [], $touch: () => {} } }"
         :is-loading="isLoading"
@@ -138,12 +137,9 @@
       <!-- Handed down by InvoiceBasicFields, which renders this card in
            place of the ordinary details one. -->
       <CustomFieldInput
-        v-for="(field, index) in customFields"
+        v-for="field in customFields"
         :key="field.id"
         :custom-field-scope="customFieldScope"
-        :store="invoiceStore"
-        store-prop="newInvoice"
-        :index="index"
         :field="field"
       />
     </BaseInputGrid>

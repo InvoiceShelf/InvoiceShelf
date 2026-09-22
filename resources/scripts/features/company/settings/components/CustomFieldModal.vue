@@ -8,6 +8,7 @@ import { useNotificationStore } from '@/scripts/stores/notification.store'
 import { customFieldService } from '@/scripts/api/services/custom-field.service'
 import type { CreateCustomFieldPayload } from '@/scripts/api/services/custom-field.service'
 import { resolveCustomFieldTypeComponent } from '@/scripts/features/shared/custom-fields/resolve-type-component'
+import { useCustomFieldModels } from '@/scripts/features/shared/custom-fields/use-custom-field-models'
 
 interface FieldOption {
   name: string
@@ -55,13 +56,14 @@ const currentCustomField = ref<CustomFieldForm>({
   in_use: false,
 })
 
-const modelTypes = reactive([
-  { label: t('settings.custom_fields.model_type.customer'), value: 'Customer' },
-  { label: t('settings.custom_fields.model_type.invoice'), value: 'Invoice' },
-  { label: t('settings.custom_fields.model_type.estimate'), value: 'Estimate' },
-  { label: t('settings.custom_fields.model_type.expense'), value: 'Expense' },
-  { label: t('settings.custom_fields.model_type.payment'), value: 'Payment' },
-])
+const { models: modelCatalog, labelFor } = useCustomFieldModels()
+
+const modelTypes = computed(() =>
+  modelCatalog.value.map((model) => ({
+    label: labelFor(model.value),
+    value: model.value,
+  }))
+)
 
 const dataTypes = reactive<DataType[]>([
   { label: 'Text', value: 'Input' },
@@ -129,7 +131,8 @@ function setData(): void {
     )
     if (found) selectedType.value = found
   } else {
-    currentCustomField.value.model_type = modelTypes[0].value
+    currentCustomField.value.model_type =
+      modelTypes.value[0]?.value ?? 'Customer'
     currentCustomField.value.type = dataTypes[0].value
     selectedType.value = dataTypes[0]
   }

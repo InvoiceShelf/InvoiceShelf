@@ -92,6 +92,7 @@
             :loading="isLoading"
             :currency="defaultCurrency"
             :item-validation-scope="itemValidationScope"
+            :item-custom-fields="itemCustomFields"
             :invoice-items="formData.items"
             :tax-types="availableTaxTypes"
             :can-add-tax="canAddTax"
@@ -117,6 +118,7 @@
 import { computed, onMounted, ref } from 'vue'
 import draggable from 'vuedraggable'
 import DocumentItemRow from './DocumentItemRow.vue'
+import { useCustomFieldDefinitions } from '@/scripts/features/shared/custom-fields/use-custom-fields'
 import ItemModal from '@/scripts/features/company/items/components/ItemModal.vue'
 import TaxTypeModal from '@/scripts/features/company/settings/components/TaxTypeModal.vue'
 import { useUserStore } from '../../../stores/user.store'
@@ -142,6 +144,8 @@ const props = withDefaults(defineProps<Props>(), {
   itemValidationScope: '',
   taxIncludedSetting: 'NO',
 })
+
+const itemCustomFields = useCustomFieldDefinitions('Item')
 
 const userStore = useUserStore()
 const availableTaxTypes = ref<TaxType[]>([])

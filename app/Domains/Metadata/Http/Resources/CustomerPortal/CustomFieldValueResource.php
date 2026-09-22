@@ -2,7 +2,6 @@
 
 namespace App\Domains\Metadata\Http\Resources\CustomerPortal;
 
-use App\Domains\Accounts\Http\Resources\CustomerPortal\CompanyResource;
 use App\Platform\Persistence\ModelIdentityMap;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -56,10 +55,6 @@ class CustomFieldValueResource extends JsonResource
             'custom_field' => $this->when(
                 $value->customField()->exists(),
                 fn () => new CustomFieldResource($value->customField)
-            ),
-            'company' => $this->when(
-                $value->company()->exists(),
-                fn () => new CompanyResource($value->company)
             ),
         ];
     }

@@ -8,6 +8,7 @@ use App\Domains\Accounts\Http\Requests\CompanyLogoRequest;
 use App\Domains\Accounts\Http\Requests\CompanyRequest;
 use App\Domains\Accounts\Http\Resources\CompanyResource;
 use App\Domains\Accounts\Models\Company;
+use App\Domains\Metadata\Contracts\CustomFieldValueWriter;
 use App\Platform\Http\Controller;
 use Illuminate\Http\Request;
 
@@ -24,6 +25,7 @@ class CompanyController extends Controller
     public function __construct(
         private readonly CompanyAddressWriter $companyAddressWriter,
         private readonly CompanyLogoManager $companyLogoManager,
+        private readonly CustomFieldValueWriter $customFieldValueWriter,
     ) {}
 
     /**
@@ -48,7 +50,11 @@ class CompanyController extends Controller
 
         $this->companyAddressWriter->upsert($company, $address);
 
-        return new CompanyResource($company);
+        if ($customFields = $request->input('customFields')) {
+            $this->customFieldValueWriter->update($company, $customFields);
+        }
+
+        return new CompanyResource($company->refresh());
     }
 
     /**

@@ -34,12 +34,9 @@ const fields = useCustomFields({
   <div v-if="fields.length > 0 && !isLoading">
     <BaseInputGrid :layout="gridLayout">
       <SingleField
-        v-for="(field, index) in fields"
+        v-for="field in fields"
         :key="field.id"
         :custom-field-scope="customFieldScope"
-        :store="store"
-        :store-prop="storeProp"
-        :index="index"
         :field="field"
       />
     </BaseInputGrid>

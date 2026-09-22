@@ -1,4 +1,4 @@
-import { computed, watch, type ComputedRef } from 'vue'
+import { computed, ref, watch, type ComputedRef } from 'vue'
 import lodash from 'lodash'
 import { parse, format } from 'date-fns'
 import { customFieldService } from '@/scripts/api/services/custom-field.service'
@@ -128,8 +128,7 @@ export function useCustomFields(
       limit: 'all',
     })
 
-    const definitions = (res as Record<string, unknown>)
-      .data as CustomFieldItem[]
+    const definitions = res.data as unknown as CustomFieldItem[]
 
     definitions.forEach((definition) => {
       definition.value = definition.default_answer
@@ -150,4 +149,51 @@ export function useCustomFields(
   watch(() => holder.value?.fields, mergeExistingValues)
 
   return computed<CustomFieldItem[]>(() => holder.value?.customFields ?? [])
+}
+
+/**
+ * The definitions attached to one model, without writing them into a form
+ * store.
+ *
+ * Document lines need this rather than `useCustomFields`: the definitions are
+ * shared by every line, but each line keeps its own answers, and the store
+ * slot `useCustomFields` writes to is already taken by the document's own
+ * fields.
+ */
+export function useCustomFieldDefinitions(
+  type: string
+): ComputedRef<CustomFieldItem[]> {
+  const definitions = ref<CustomFieldItem[]>([])
+
+  customFieldService.list({ type, limit: 'all' }).then((res) => {
+    const loaded = res.data as unknown as CustomFieldItem[]
+
+    definitions.value = lodash.sortBy(loaded, (item) => item.order)
+  })
+
+  return computed(() => definitions.value)
+}
+
+/**
+ * One line's answers: every definition, carrying either what the line already
+ * answered or the definition's own default.
+ *
+ * Shaped for `CustomFieldInput` to bind to, and for the API, which reads
+ * `id` and `value` off each entry and ignores the rest.
+ */
+export function buildLineCustomFields(
+  definitions: CustomFieldItem[],
+  saved: CustomFieldItem[] = []
+): CustomFieldItem[] {
+  return definitions.map((definition) => {
+    const answer = saved.find(
+      (field) => field.custom_field_id === definition.id
+    )
+
+    return {
+      ...definition,
+      id: definition.id,
+      value: answer ? answer.default_answer : definition.default_answer,
+    }
+  })
 }

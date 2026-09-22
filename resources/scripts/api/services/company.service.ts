@@ -18,6 +18,8 @@ export interface UpdateCompanyPayload {
     zip?: string | null
     phone?: string | null
   }
+  /** Answers to the company's own custom fields. */
+  customFields?: unknown[]
 }
 
 export interface CompanySettingsPayload {

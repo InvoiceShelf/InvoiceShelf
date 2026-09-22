@@ -9,6 +9,8 @@ import {
   helpers,
 } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
+import CustomFieldInput from '@/scripts/features/shared/custom-fields/CustomFieldInput.vue'
+import { useCustomFields } from '@/scripts/features/shared/custom-fields/use-custom-fields'
 import { useItemStore } from '../store'
 import { useTaxTypes } from '../use-tax-types'
 import { useCompanyStore } from '../../../../stores/company.store'
@@ -45,6 +47,15 @@ const isSaving = ref<boolean>(false)
 const taxPerItem = ref<string>(companyStore.selectedCompanySettings.tax_per_item || 'NO')
 const isFetchingInitialData = ref<boolean>(false)
 const isEdit = computed<boolean>(() => route.name === 'items.edit')
+
+const customFieldScope = 'currentItem'
+
+const customFields = useCustomFields({
+  store: itemStore,
+  storeProp: 'currentItem',
+  type: 'Item',
+  isEdit: () => isEdit.value,
+})
 
 itemStore.resetCurrentItem()
 loadData()
@@ -308,6 +319,15 @@ async function submitItem(): Promise<void> {
               @input="v$.currentItem.description.$touch()"
             />
           </BaseInputGroup>
+
+          <!-- Answers recorded here are copied onto a document line when
+               the item is put on an invoice or an estimate. -->
+          <CustomFieldInput
+            v-for="field in customFields"
+            :key="field.id"
+            :custom-field-scope="customFieldScope"
+            :field="field"
+          />
 
           <div>
             <BaseButton

@@ -87,6 +87,7 @@ class ItemsController extends Controller
             $request->input('taxes', []),
             $companyId,
             $creatorId,
+            $request->input('customFields'),
         );
 
         return new ItemResource($created);
@@ -109,6 +110,7 @@ class ItemsController extends Controller
             $request->validated(),
             $request->input('taxes', []),
             $companyId,
+            $request->input('customFields'),
         );
 
         return new ItemResource($updated);

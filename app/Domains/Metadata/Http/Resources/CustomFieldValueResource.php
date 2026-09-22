@@ -2,7 +2,6 @@
 
 namespace App\Domains\Metadata\Http\Resources;
 
-use App\Domains\Accounts\Http\Resources\CompanyResource;
 use App\Domains\Accounts\Models\CompanySetting;
 use App\Platform\Persistence\ModelIdentityMap;
 use Carbon\Carbon;
@@ -58,10 +57,6 @@ class CustomFieldValueResource extends JsonResource
             'custom_field' => $this->when(
                 $value->customField()->exists(),
                 fn () => new CustomFieldResource($value->customField)
-            ),
-            'company' => $this->when(
-                $value->company()->exists(),
-                fn () => new CompanyResource($value->company)
             ),
         ];
     }

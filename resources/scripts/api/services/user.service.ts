@@ -8,6 +8,8 @@ export interface UpdateProfilePayload {
   email: string
   password?: string | null
   confirm_password?: string | null
+  /** Answers to the user's own custom fields. */
+  customFields?: unknown[]
 }
 
 export interface UserSettingsPayload {

@@ -2,7 +2,6 @@
 
 namespace App\Domains\Metadata\Http\Resources;
 
-use App\Domains\Accounts\Http\Resources\CompanyResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -63,10 +62,6 @@ class CustomFieldResource extends JsonResource
             'order' => $field->order,
             'company_id' => $field->company_id,
             'default_answer' => $field->default_answer,
-            'company' => $this->when(
-                $field->company()->exists(),
-                fn () => new CompanyResource($field->company)
-            ),
         ];
     }
 }

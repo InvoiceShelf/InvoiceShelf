@@ -1,3 +1,4 @@
+import type { CustomFieldValue } from './custom-field'
 import type { Address } from './user'
 import type { Role } from './role'
 import type { User } from './user'
@@ -18,6 +19,8 @@ export interface Company {
   owner?: User
   roles: Role[]
   user_role?: string | null
+  /** Answers to the company's own custom fields, when it has any. */
+  fields?: CustomFieldValue[]
 }
 
 export interface CompanySetting {

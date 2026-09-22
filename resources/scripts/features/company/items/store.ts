@@ -11,6 +11,7 @@ import { useNotificationStore } from '../../../stores/notification.store'
 import { handleApiError } from '../../../utils/error-handling'
 import type { Item, Unit } from '../../../types/domain/item'
 import type { Tax } from '../../../types/domain/tax'
+import type { CustomFieldValue } from '../../../types/domain/custom-field'
 import type { ApiResponse, DeletePayload } from '../../../types/api'
 
 export interface ItemForm {
@@ -22,6 +23,10 @@ export interface ItemForm {
   unit: Unit | null
   taxes: Tax[]
   tax_per_item?: boolean | number | string
+  /** Definitions to answer, filled by the form. */
+  customFields: CustomFieldValue[]
+  /** Answers already on record, as the API returns them. */
+  fields: CustomFieldValue[]
 }
 
 export interface ItemUnitForm {
@@ -38,6 +43,8 @@ function createItemStub(): ItemForm {
     unit: null,
     taxes: [],
     tax_per_item: false,
+    customFields: [],
+    fields: [],
   }
 }
 

@@ -2,6 +2,7 @@
 
 namespace App\Platform\Operations\Http\Company;
 
+use App\Domains\Metadata\Application\CustomFieldModelCatalog;
 use App\Platform\Http\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -12,8 +13,9 @@ class ConfigController extends Controller
     /**
      * Hand the SPA one value out of the application configuration.
      *
-     * Exchange-rate drivers are assembled at runtime rather than read from a
-     * config file, so that key takes its own path.
+     * Exchange-rate drivers and custom-field model types are assembled at
+     * runtime rather than read from a config file, so those keys take their
+     * own path.
      */
     public function __invoke(Request $request): JsonResponse
     {
@@ -21,6 +23,12 @@ class ConfigController extends Controller
 
         if ($key === 'exchange_rate_drivers') {
             return response()->json(['exchange_rate_drivers' => $this->exchangeRateDrivers()]);
+        }
+
+        if ($key === 'custom_field_models') {
+            return response()->json([
+                'custom_field_models' => app(CustomFieldModelCatalog::class)->options(),
+            ]);
         }
 
         return response()->json([$key => config('invoiceshelf.'.$key)]);
