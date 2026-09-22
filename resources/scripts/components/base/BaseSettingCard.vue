@@ -9,7 +9,8 @@ defineProps<Props>()
 </script>
 
 <template>
-  <BaseCard>
+  <!-- On phones a card's Save spans the card, in thumb reach and easy to hit -->
+  <BaseCard class="max-md:[&_button[type=submit]]:w-full">
     <div class="flex flex-col gap-4 mb-6 md:flex-row md:items-start md:justify-between">
       <div class="min-w-0">
         <h2 class="font-semibold text-left text-section text-heading">

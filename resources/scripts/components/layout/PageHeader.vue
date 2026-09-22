@@ -62,8 +62,12 @@ const actionsEl = ref<HTMLElement | null>(null)
 const allIcons = ref<boolean>(true)
 const deciding = ref<boolean>(false)
 
+// Only the company shell has a bottom bar; elsewhere (the customer portal,
+// say) actions stay on the title row
+const hasBar = ref<boolean>(false)
+
 const placement = computed<'inline' | 'bar'>(() => {
-  if (!isPhone.value || !slots.actions || props.phoneActions === 'inline') {
+  if (!isPhone.value || !slots.actions || !hasBar.value || props.phoneActions === 'inline') {
     return 'inline'
   }
 
@@ -76,7 +80,9 @@ const placement = computed<'inline' | 'bar'>(() => {
 
 // Render the actions on the title row, hidden, and look at what they are.
 async function decide(): Promise<void> {
-  if (!isPhone.value || props.phoneActions !== 'auto' || !slots.actions) {
+  hasBar.value = document.getElementById('app-action-bar') !== null
+
+  if (!isPhone.value || !hasBar.value || props.phoneActions !== 'auto' || !slots.actions) {
     deciding.value = false
     return
   }
