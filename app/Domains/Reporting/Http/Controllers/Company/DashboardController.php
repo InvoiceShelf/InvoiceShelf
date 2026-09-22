@@ -7,6 +7,7 @@ use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Contacts\Models\Customer;
 use App\Domains\Purchases\Models\Expense;
 use App\Domains\Receivables\Models\Payment;
+use App\Domains\Reporting\Queries\ReceivablesAgingQuery;
 use App\Domains\Sales\Models\Estimate;
 use App\Domains\Sales\Models\Invoice;
 use App\Platform\Http\Controller;
@@ -31,7 +32,7 @@ class DashboardController extends Controller
     /**
      * @return JsonResponse
      */
-    public function __invoke(Request $request)
+    public function __invoke(Request $request, ReceivablesAgingQuery $receivables)
     {
         $companyId = $request->header('company');
 
@@ -182,6 +183,7 @@ class DashboardController extends Controller
         // ability is enough to see company revenue.
         return response()->json([
             'total_amount_due' => $amountDue,
+            'receivables' => $receivables->summary($companyId, Carbon::now()),
             'total_customer_count' => $customerCount,
             'total_invoice_count' => $invoiceCount,
             'total_estimate_count' => $estimateCount,

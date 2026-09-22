@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { dashboardService } from '../../../api/services/dashboard.service'
-import type { DashboardParams, DashboardResponse, ChartData } from '../../../api/services/dashboard.service'
+import type { DashboardParams, DashboardResponse, ChartData, ReceivablesSummary } from '../../../api/services/dashboard.service'
 import type { Invoice } from '../../../types/domain/invoice'
 import type { Estimate } from '../../../types/domain/estimate'
 import { handleApiError } from '../../../utils/error-handling'
@@ -73,6 +73,15 @@ export const useDashboardStore = defineStore('dashboard', () => {
     netIncomeTotals: [],
   })
 
+  const receivables = ref<ReceivablesSummary>({
+    outstanding: 0,
+    outstanding_count: 0,
+    overdue: 0,
+    overdue_count: 0,
+    due_soon: 0,
+    due_later: 0,
+  })
+
   const totalSales = ref<number>(0)
   const totalReceipts = ref<number>(0)
   const totalExpenses = ref<number>(0)
@@ -93,6 +102,10 @@ export const useDashboardStore = defineStore('dashboard', () => {
       stats.value.totalCustomerCount = response.total_customer_count
       stats.value.totalInvoiceCount = response.total_invoice_count
       stats.value.totalEstimateCount = response.total_estimate_count
+
+      if (response.receivables) {
+        receivables.value = response.receivables
+      }
 
       // Chart Data
       if (response.chart_data) {
@@ -124,6 +137,7 @@ export const useDashboardStore = defineStore('dashboard', () => {
 
   return {
     stats,
+    receivables,
     chartData,
     totalSales,
     totalReceipts,

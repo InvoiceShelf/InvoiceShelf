@@ -38,7 +38,7 @@ const props = withDefaults(defineProps<Props>(), {
   income: () => [],
 })
 
-let myLineChart: Chart | null = null
+let myLineChart: Chart<'line', number[], string> | null = null
 const graph = ref<HTMLCanvasElement | null>(null)
 const companyStore = useCompanyStore()
 const defaultCurrency = computed<CurrencyInfo>(() => {

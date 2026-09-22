@@ -10,26 +10,18 @@ defineProps<Props>()
 
 <template>
   <BaseCard>
-    <div class="flex flex-wrap justify-between lg:flex-nowrap mb-5">
-      <div>
-        <h6 class="font-medium text-lg text-left">
+    <div class="flex flex-col gap-4 mb-6 md:flex-row md:items-start md:justify-between">
+      <div class="min-w-0">
+        <h2 class="font-semibold text-left text-section text-heading">
           {{ title }}
-        </h6>
+        </h2>
 
-        <p
-          class="
-            mt-2
-            text-sm
-            leading-snug
-            text-left text-muted
-            max-w-[680px]
-          "
-        >
+        <p class="mt-1 text-sm text-left text-muted max-w-[680px]">
           {{ description }}
         </p>
       </div>
 
-      <div class="mt-4 lg:mt-0 lg:ml-2">
+      <div v-if="$slots.action" class="shrink-0">
         <slot name="action" />
       </div>
     </div>

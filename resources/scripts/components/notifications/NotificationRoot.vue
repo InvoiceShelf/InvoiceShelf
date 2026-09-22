@@ -1,18 +1,10 @@
 <template>
   <div
     class="
-      fixed
-      inset-0
-      z-50
-      flex flex-col
-      items-end
-      justify-start
-      w-full
-      px-4
-      py-6
-      pointer-events-none
-      sm:p-6
+      fixed inset-x-0 top-0 z-50 flex flex-col items-center w-full px-4
+      pointer-events-none md:items-end md:px-6
     "
+    style="padding-top: calc(var(--app-top-inset, 0px) + 0.75rem)"
   >
     <transition-group
       enter-active-class="transition duration-300 ease-out"

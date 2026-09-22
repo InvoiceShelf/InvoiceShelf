@@ -13,8 +13,18 @@ export interface ChartData {
   net_income_totals: number[]
 }
 
+export interface ReceivablesSummary {
+  outstanding: number
+  outstanding_count: number
+  overdue: number
+  overdue_count: number
+  due_soon: number
+  due_later: number
+}
+
 export interface DashboardResponse {
   total_amount_due: number
+  receivables?: ReceivablesSummary
   total_customer_count: number
   total_invoice_count: number
   total_estimate_count: number

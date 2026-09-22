@@ -10,7 +10,7 @@
   <div
     v-else
     :class="[containerClass, computedContainerClass]"
-    class="relative rounded-md shadow-xs font-base"
+    class="relative rounded-lg font-base"
   >
     <div
       v-if="loading && loadingPosition === 'left'"
@@ -25,7 +25,7 @@
       "
     >
       <svg
-        class="animate-spin !text-primary-500"
+        class="animate-spin !text-subtle"
         :class="[iconLeftClass]"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -62,9 +62,9 @@
         px-3
         text-muted
         border border-r-0 border-line-default
-        rounded-l-md
+        rounded-l-lg
         bg-surface-secondary
-        sm:text-sm
+        text-sm
       "
     >
       {{ addon }}
@@ -82,7 +82,7 @@
         pointer-events-none
       "
     >
-      <span class="text-muted sm:text-sm">
+      <span class="text-muted text-base md:text-sm">
         {{ inlineAddon }}
       </span>
     </div>
@@ -115,7 +115,7 @@
       "
     >
       <svg
-        class="animate-spin !text-primary-500"
+        class="animate-spin !text-subtle"
         :class="[iconRightClass]"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -186,7 +186,7 @@ const props = withDefaults(defineProps<Props>(), {
   containerClass: '',
   contentLoadClass: '',
   defaultInputClass:
-    'font-base block w-full sm:text-sm border-line-default rounded-md text-heading',
+    'font-base block w-full md:text-sm border-line-default rounded-lg text-heading',
   iconLeftClass: 'h-5 w-5 text-subtle',
   iconRightClass: 'h-5 w-5 text-subtle',
   modelModifiers: () => ({}),
@@ -222,7 +222,7 @@ const inputPaddingClass = computed<string>(() => {
 
 const inputAddonClass = computed<string>(() => {
   if (props.addon) {
-    return 'flex-1 min-w-0 block w-full px-3 py-2 !rounded-none !rounded-r-md'
+    return 'flex-1 min-w-0 block w-full px-3 py-2 !rounded-none !rounded-r-lg'
   } else if (props.inlineAddon) {
     return 'pl-7'
   }
@@ -232,15 +232,15 @@ const inputAddonClass = computed<string>(() => {
 
 const inputInvalidClass = computed<string>(() => {
   if (props.invalid) {
-    return 'border-red-500 ring-red-500 focus:ring-red-500 focus:border-red-500'
+    return 'border-danger focus:border-danger focus:ring-danger/20'
   }
 
-  return 'focus:ring-primary-400 focus:border-primary-400'
+  return ''
 })
 
 const inputDisabledClass = computed<string>(() => {
   if (props.disabled) {
-    return `border-line-light bg-surface-tertiary !text-subtle ring-surface-muted focus:ring-surface-muted focus:border-line-light`
+    return `border-line-light bg-surface-secondary !text-muted cursor-not-allowed`
   }
 
   return ''

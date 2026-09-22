@@ -1,12 +1,19 @@
 <template>
-  <div class="flex flex-wrap justify-between">
-    <div>
-      <h3 class="text-2xl font-bold text-left text-heading">
+  <div
+    class="
+      flex flex-col gap-4 mb-6 md:flex-row md:items-end md:justify-between md:gap-6 md:mb-8
+    "
+  >
+    <div class="flex flex-col min-w-0">
+      <h1 v-if="title" class="font-semibold text-left break-words text-title text-heading">
         {{ title }}
-      </h3>
+      </h1>
       <slot />
     </div>
-    <div class="flex items-center">
+    <div
+      v-if="$slots.actions"
+      class="flex flex-wrap items-center gap-2 shrink-0 md:justify-end md:gap-3 *:ml-0"
+    >
       <slot name="actions" />
     </div>
   </div>
@@ -14,8 +21,10 @@
 
 <script setup lang="ts">
 interface Props {
-  title: string
+  title?: string
 }
 
-defineProps<Props>()
+withDefaults(defineProps<Props>(), {
+  title: '',
+})
 </script>

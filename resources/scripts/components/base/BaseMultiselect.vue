@@ -377,36 +377,36 @@ interface NormalizedGroup {
 
 const defaultClasses: Required<MultiselectClasses> = {
   container:
-    'p-0 relative mx-auto w-full flex items-center justify-end box-border cursor-pointer border border-line-default rounded-md bg-surface text-sm leading-snug outline-hidden max-h-10',
+    'p-0 relative mx-auto w-full flex items-center justify-end box-border cursor-pointer border border-line-default rounded-lg bg-surface text-base md:text-sm leading-snug text-heading outline-hidden max-h-11 md:max-h-10 transition-[border-color,box-shadow] duration-150',
   containerDisabled:
-    'cursor-default bg-surface-muted/50 !text-subtle',
+    'cursor-not-allowed bg-surface-secondary border-line-light !text-muted',
   containerOpen: '',
   containerOpenTop: '',
-  containerActive: 'ring-1 ring-primary-400 border-primary-400',
+  containerActive: 'ring-3 ring-focus border-primary-500',
   containerInvalid:
-    'border-red-400 ring-red-400 focus:ring-red-400 focus:border-red-400',
-  containerInvalidActive: 'ring-1 border-red-400 ring-red-400',
+    'border-danger',
+  containerInvalidActive: 'ring-3 border-danger ring-danger/20',
   singleLabel:
     'flex items-center h-full absolute left-0 top-0 pointer-events-none bg-transparent leading-snug pl-3.5',
   multipleLabel:
     'flex items-center h-full absolute left-0 top-0 pointer-events-none bg-transparent leading-snug pl-3.5',
   search:
-    'w-full absolute inset-0 outline-hidden appearance-none box-border border-0 text-sm font-sans bg-surface rounded-md pl-3.5',
+    'w-full absolute inset-0 outline-hidden appearance-none box-border border-0 text-base md:text-sm font-sans bg-surface rounded-lg pl-3.5 focus:ring-0',
   tags: 'grow shrink flex flex-wrap mt-1 pl-2',
-  tag: 'bg-primary-500 text-white text-sm font-semibold py-0.5 pl-2 rounded mr-1 mb-1 flex items-center whitespace-nowrap',
-  tagDisabled: 'pr-2 !bg-subtle text-white',
+  tag: 'bg-primary-50 text-primary-700 text-sm font-medium py-0.5 pl-2 rounded-md mr-1 mb-1 flex items-center whitespace-nowrap',
+  tagDisabled: 'pr-2 !bg-surface-muted text-muted',
   tagRemove:
-    'flex items-center justify-center p-1 mx-0.5 rounded-xs hover:bg-black/10 group',
+    'flex items-center justify-center p-1 mx-0.5 rounded-sm hover:bg-primary-100 group',
   tagRemoveIcon:
-    'bg-multiselect-remove text-white bg-center bg-no-repeat opacity-30 inline-block w-3 h-3 group-hover:opacity-60',
+    'bg-multiselect-remove bg-center bg-no-repeat opacity-50 inline-block w-3 h-3 group-hover:opacity-90',
   tagsSearchWrapper: 'inline-block relative mx-1 mb-1 grow shrink h-full',
   tagsSearch:
-    'absolute inset-0 border-0 focus:outline-hidden !shadow-none !focus:shadow-none appearance-none p-0 text-sm font-sans box-border w-full',
+    'absolute inset-0 border-0 focus:outline-hidden focus:ring-0 !shadow-none appearance-none p-0 text-base md:text-sm font-sans box-border w-full',
   tagsSearchCopy: 'invisible whitespace-pre-wrap inline-block h-px',
   placeholder:
-    'flex items-center h-full absolute left-0 top-0 pointer-events-none bg-transparent leading-snug pl-3.5 text-subtle text-sm',
+    'flex items-center h-full absolute left-0 top-0 pointer-events-none bg-transparent leading-snug pl-3.5 text-subtle text-base md:text-sm',
   caret:
-    'bg-multiselect-caret bg-center bg-no-repeat w-5 h-5 py-px box-content z-5 relative mr-1 opacity-40 shrink-0 grow-0 transition-transform',
+    'bg-multiselect-caret bg-center bg-no-repeat w-5 h-5 py-px box-content z-[5] relative mr-2 shrink-0 grow-0 transition-transform',
   caretOpen: 'rotate-180 pointer-events-auto',
   clear:
     'pr-3.5 relative z-10 opacity-40 transition duration-300 shrink-0 grow-0 flex hover:opacity-80',
@@ -415,37 +415,37 @@ const defaultClasses: Required<MultiselectClasses> = {
   spinner:
     'bg-multiselect-spinner bg-center bg-no-repeat w-4 h-4 z-10 mr-3.5 animate-spin shrink-0 grow-0',
   dropdown:
-    'max-h-60 shadow-lg absolute -left-px -right-px -bottom-1 border border-line-strong mt-1 overflow-y-auto z-50 bg-surface flex flex-col rounded-md',
+    'max-h-60 shadow-lg absolute -left-px -right-px -bottom-1.5 border border-line-light p-1 overflow-y-auto z-50 bg-surface flex flex-col rounded-xl',
   dropdownTop:
-    '-translate-y-full -top-2 bottom-auto flex-col-reverse rounded-md',
+    '-translate-y-full -top-1.5 bottom-auto flex-col-reverse rounded-xl',
   dropdownBottom: 'translate-y-full',
   dropdownHidden: 'hidden',
   options: 'flex flex-col p-0 m-0 list-none',
   optionsTop: 'flex-col-reverse',
   group: 'p-0 m-0',
   groupLabel:
-    'flex text-sm box-border items-center justify-start text-left py-1 px-3 font-semibold bg-surface-muted cursor-default leading-normal',
+    'flex text-xs box-border items-center justify-start text-left pt-2 pb-1 px-3 font-medium text-muted cursor-default leading-normal',
   groupLabelPointable: 'cursor-pointer',
-  groupLabelPointed: 'bg-surface-muted text-body',
-  groupLabelSelected: 'bg-primary-600 text-white',
+  groupLabelPointed: 'text-body',
+  groupLabelSelected: 'text-primary-700',
   groupLabelDisabled: 'bg-surface-tertiary text-subtle cursor-not-allowed',
-  groupLabelSelectedPointed: 'bg-primary-600 text-white opacity-90',
+  groupLabelSelectedPointed: 'text-primary-700',
   groupLabelSelectedDisabled:
-    'text-primary-100 bg-primary-600/50 cursor-not-allowed',
+    'text-subtle cursor-not-allowed',
   groupOptions: 'p-0 m-0',
   option:
-    'flex items-center justify-start box-border text-left cursor-pointer text-sm leading-snug py-2 px-3',
-  optionPointed: 'text-heading bg-surface-tertiary',
-  optionSelected: 'text-white bg-primary-500',
+    'flex items-center justify-start box-border text-left cursor-pointer text-base md:text-sm leading-snug py-2.5 md:py-2 px-3 rounded-lg text-heading',
+  optionPointed: 'bg-hover-strong',
+  optionSelected: 'bg-primary-50 text-primary-700 font-medium',
   optionDisabled: 'text-subtle cursor-not-allowed',
-  optionSelectedPointed: 'text-white bg-primary-500 opacity-90',
+  optionSelectedPointed: 'bg-primary-100 text-primary-700 font-medium',
   optionSelectedDisabled:
-    'text-primary-100 bg-primary-500/50 cursor-not-allowed',
-  noOptions: 'py-2 px-3 text-muted bg-surface',
-  noResults: 'py-2 px-3 text-muted bg-surface',
+    'text-subtle bg-primary-50 cursor-not-allowed',
+  noOptions: 'py-2 px-3 text-sm text-muted bg-surface',
+  noResults: 'py-2 px-3 text-sm text-muted bg-surface',
   fakeInput:
     'bg-transparent absolute left-0 right-0 -bottom-px w-full h-px border-0 p-0 appearance-none outline-hidden text-transparent',
-  spacer: 'h-9 py-px box-content',
+  spacer: 'h-10 md:h-9 py-px box-content',
 }
 
 const props = withDefaults(defineProps<Props>(), {

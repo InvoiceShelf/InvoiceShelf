@@ -1,27 +1,20 @@
 <template>
   <div
-    :class="warning ? 'bg-alert-warning-bg' : success || info ? 'bg-surface' : 'bg-alert-error-bg'"
     class="
-      max-w-sm
-      mb-3
-      rounded-lg
-      shadow-lg
-      cursor-pointer
-      pointer-events-auto
-      w-full
-      md:w-96
+      w-full max-w-sm mb-2.5 border rounded-xl shadow-lg cursor-pointer pointer-events-auto
+      md:w-96 bg-surface border-line-light
     "
     @click.stop="hideNotificationAction"
     @mouseenter="clearNotificationTimeOut"
     @mouseleave="setNotificationTimeOut"
   >
-    <div class="overflow-hidden rounded-lg shadow-xs">
-      <div class="p-4">
+    <div class="overflow-hidden rounded-xl">
+      <div class="p-3.5">
         <div class="flex items-start">
           <div class="shrink-0">
             <svg
               v-if="success"
-              class="w-6 h-6 text-alert-success-text"
+              class="w-5 h-5 text-status-green"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -35,7 +28,7 @@
             </svg>
             <svg
               v-if="info"
-              class="w-6 h-6 text-status-blue"
+              class="w-5 h-5 text-status-blue"
               fill="currentColor"
               viewBox="0 0 20 20"
               xmlns="http://www.w3.org/2000/svg"
@@ -48,7 +41,7 @@
             </svg>
             <svg
               v-if="warning"
-              class="w-6 h-6 text-alert-warning-text"
+              class="w-5 h-5 text-status-yellow"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -62,7 +55,7 @@
             </svg>
             <svg
               v-if="error"
-              class="w-6 h-6 text-alert-error-text"
+              class="w-5 h-5 text-status-red"
               fill="currentColor"
               viewBox="0 0 24 24"
             >
@@ -75,9 +68,7 @@
           </div>
           <div class="flex-1 w-0 ml-3 text-left">
             <p
-              :class="`text-sm leading-5 font-medium ${
-                warning ? 'text-alert-warning-text' : success || info ? 'text-heading' : 'text-alert-error-text'
-              }`"
+              class="text-sm font-medium leading-5 text-heading"
             >
               {{
                 notification.title
@@ -90,9 +81,7 @@
               }}
             </p>
             <p
-              :class="`mt-1 text-sm leading-5 ${
-                warning ? 'text-alert-warning-text' : success || info ? 'text-muted' : 'text-alert-error-text'
-              }`"
+              class="mt-0.5 text-sm leading-5 text-muted"
             >
               {{
                 notification.message
@@ -105,26 +94,11 @@
           </div>
           <div class="flex shrink-0">
             <button
-              :class="
-                warning
-                  ? 'text-alert-warning-text focus:text-alert-warning-text'
-                  : success || info
-                  ? ' text-subtle focus:text-muted'
-                  : 'text-alert-error-text focus:text-alert-error-text'
-              "
-              class="
-                inline-flex
-                w-5
-                h-5
-                transition
-                duration-150
-                ease-in-out
-                focus:outline-hidden
-              "
+              class="p-1 -m-1 transition-colors rounded-md text-subtle hover:text-body focus:outline-hidden"
               @click="hideNotificationAction"
             >
               <svg
-                class="w-6 h-6"
+                class="w-4 h-4"
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
