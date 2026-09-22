@@ -135,6 +135,7 @@ import { useInvoiceStore } from '../store'
 import { useDialogStore } from '../../../../stores/dialog.store'
 import { useModalStore } from '../../../../stores/modal.store'
 import { useNotificationStore } from '../../../../stores/notification.store'
+import { absoluteDocumentUrl } from '@/scripts/utils/documents'
 import {
   handleApiError,
   getErrorTranslationKey,
@@ -332,7 +333,7 @@ function sendInvoice(): void {
 }
 
 function copyPdfUrl(): void {
-  const pdfUrl = `${window.location.origin}/invoices/pdf/${props.row.unique_hash}`
+  const pdfUrl = absoluteDocumentUrl(`/invoices/pdf/${props.row.unique_hash}`)
   copyToClipboard(pdfUrl)
   notificationStore.showNotification({
     type: 'success',

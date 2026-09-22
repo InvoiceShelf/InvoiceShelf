@@ -1015,6 +1015,10 @@
       "date_range": "Select Date Range"
     }
   },
+  "pdf": {
+    "open_pdf": "Open PDF",
+    "download_failed": "Unable to download the document"
+  },
   "settings": {
     "menu_title": {
       "account_settings": "Account Settings",
