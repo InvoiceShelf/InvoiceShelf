@@ -86,7 +86,7 @@ class ItemsController extends Controller
         $creatorId = (int) $request->user()->getAuthIdentifier();
 
         $created = $this->itemService->create(
-            $request->validated(),
+            $request->getItemPayload(),
             $request->input('taxes', []),
             $companyId,
             $creatorId,
@@ -110,7 +110,7 @@ class ItemsController extends Controller
 
         $updated = $this->itemService->update(
             $item,
-            $request->validated(),
+            $request->getItemPayload(),
             $request->input('taxes', []),
             $companyId,
             $request->input('customFields'),

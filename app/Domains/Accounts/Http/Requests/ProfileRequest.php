@@ -46,4 +46,17 @@ class ProfileRequest extends FormRequest
             ...$this->customFieldRules(),
         ];
     }
+
+    /**
+     * The columns written to the account.
+     *
+     * The answers arrive alongside them and are persisted separately, so they
+     * are taken out here rather than left for the model to ignore.
+     *
+     * @return array<string, mixed>
+     */
+    public function getProfilePayload(): array
+    {
+        return $this->withoutCustomFields($this->validated());
+    }
 }

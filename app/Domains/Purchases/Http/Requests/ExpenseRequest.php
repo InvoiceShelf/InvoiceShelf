@@ -123,7 +123,7 @@ class ExpenseRequest extends FormRequest
         $chosenCurrency = $this->currency_id;
         $rate = $homeCurrency != $chosenCurrency ? $this->exchange_rate : 1;
 
-        return array_merge(Arr::except($this->validated(), 'taxes'), [
+        return array_merge(Arr::except($this->validated(), ['taxes', 'customFields']), [
             'creator_id' => $this->user()->id,
             'company_id' => $this->header('company'),
             'exchange_rate' => $rate,

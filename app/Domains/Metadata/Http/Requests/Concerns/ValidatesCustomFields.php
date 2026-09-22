@@ -2,6 +2,7 @@
 
 namespace App\Domains\Metadata\Http\Requests\Concerns;
 
+use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 
 /**
@@ -47,6 +48,25 @@ trait ValidatesCustomFields
             // missing one.
             "{$key}.*.value" => ['present'],
         ];
+    }
+
+    /**
+     * The attributes a record is saved with, minus the answers.
+     *
+     * Declaring the key in `rules()` puts it in `validated()`, and several
+     * endpoints hand that straight to a model. Eloquent guards any key that
+     * is not a real column, so nothing breaks today, but that is a framework
+     * behaviour rather than an intention of ours: turning on
+     * `Model::preventSilentlyDiscardingAttributes()` would make every one of
+     * those endpoints throw. Saying it here means the answers never reach a
+     * model whatever the framework decides to do about stray keys.
+     *
+     * @param  array<string, mixed>  $attributes
+     * @return array<string, mixed>
+     */
+    protected function withoutCustomFields(array $attributes): array
+    {
+        return Arr::except($attributes, ['customFields']);
     }
 
     /**

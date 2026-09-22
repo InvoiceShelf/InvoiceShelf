@@ -164,7 +164,7 @@ class RecurringInvoiceRequest extends FormRequest
             $perItemDiscount
         );
 
-        $submitted = collect($this->except('items', 'taxes'));
+        $submitted = collect($this->withoutCustomFields($this->except('items', 'taxes')));
 
         return $submitted
             ->merge([

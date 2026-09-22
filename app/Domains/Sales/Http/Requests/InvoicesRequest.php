@@ -94,7 +94,7 @@ class InvoicesRequest extends FormRequest
             $perItemDiscount
         );
 
-        return array_merge($this->except(['items', 'taxes']), [
+        return array_merge($this->withoutCustomFields($this->except(['items', 'taxes'])), [
             'creator_id' => $this->user()?->id,
             'type' => Invoice::TYPE_INVOICE,
             'related_invoice_id' => null,

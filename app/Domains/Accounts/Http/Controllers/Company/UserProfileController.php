@@ -29,7 +29,7 @@ class UserProfileController extends Controller
     {
         $account = $request->user();
 
-        $account->update($request->validated());
+        $account->update($request->getProfilePayload());
 
         if ($customFields = $request->input('customFields')) {
             $this->customFieldValueWriter->update($account, $customFields);

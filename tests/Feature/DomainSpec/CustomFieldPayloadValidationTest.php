@@ -1,9 +1,16 @@
 <?php
 
+use App\Domains\Accounts\Http\Requests\ProfileRequest;
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\User;
+use App\Domains\Catalog\Http\Requests\ItemsRequest;
 use App\Domains\Catalog\Models\Item;
 use App\Domains\Metadata\Models\CustomField;
+use App\Domains\Purchases\Http\Requests\ExpenseRequest;
+use App\Domains\Receivables\Http\Requests\PaymentRequest;
+use App\Domains\Sales\Http\Requests\EstimatesRequest;
+use App\Domains\Sales\Http\Requests\InvoicesRequest;
+use App\Domains\Sales\Http\Requests\RecurringInvoiceRequest;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Sanctum\Sanctum;
 
@@ -87,6 +94,26 @@ test('the payload the admin interface actually sends is accepted', function () {
         'string_answer' => 'from the form',
     ]);
 });
+
+test('no endpoint hands the answers to the model it saves', function (string $request, string $accessor) {
+    // The framework happens to guard a key that is not a column, so nothing
+    // breaks if this slips. That is its decision, not ours, and enabling
+    // Model::preventSilentlyDiscardingAttributes() would turn it into a throw
+    // on every one of these endpoints.
+    $reflection = new ReflectionClass($request);
+
+    expect($reflection->hasMethod($accessor))->toBeTrue(
+        "{$request} should build its payload through {$accessor}()"
+    );
+})->with([
+    [InvoicesRequest::class, 'getInvoicePayload'],
+    [EstimatesRequest::class, 'getEstimatePayload'],
+    [RecurringInvoiceRequest::class, 'getRecurringInvoicePayload'],
+    [PaymentRequest::class, 'getPaymentPayload'],
+    [ExpenseRequest::class, 'getExpensePayload'],
+    [ItemsRequest::class, 'getItemPayload'],
+    [ProfileRequest::class, 'getProfilePayload'],
+]);
 
 test('the key never reaches the record it was posted with', function () {
     postJson('api/v1/items', Item::factory()->raw([

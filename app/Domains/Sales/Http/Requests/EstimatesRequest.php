@@ -93,7 +93,7 @@ class EstimatesRequest extends FormRequest
 
         $sending = $this->has('estimateSend');
 
-        return collect($this->except(['items', 'taxes']))
+        return collect($this->withoutCustomFields($this->except(['items', 'taxes'])))
             ->merge([
                 'creator_id' => $this->user()?->id,
                 'status' => $sending ? Estimate::STATUS_SENT : Estimate::STATUS_DRAFT,

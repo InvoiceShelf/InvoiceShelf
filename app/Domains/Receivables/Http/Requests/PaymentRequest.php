@@ -89,7 +89,7 @@ class PaymentRequest extends FormRequest
         $rate = (string) $homeCurrency !== (string) $currencyId ? (float) $this->exchange_rate : 1;
 
         return collect($this->validated())
-            ->except('allocations')
+            ->except(['allocations', 'customFields'])
             ->merge([
                 'creator_id' => $this->user()->id,
                 'company_id' => $this->header('company'),
