@@ -392,6 +392,7 @@
                             <td class="attribute-value"> &nbsp;{{ $invoice->formattedDueDate }}</td>
                         </tr>
                     @endunless
+                    @include('app.pdf.partials.document-custom-fields', ['document' => $invoice])
                 </table>
             </div>
             <div style="clear: both;"></div>

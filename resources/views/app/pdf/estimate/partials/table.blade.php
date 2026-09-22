@@ -40,7 +40,7 @@
             </td>
             @foreach($customFields as $field)
                 <td class="text-right item-cell" style="vertical-align: top;">
-                    {{ $item->getCustomFieldValueBySlug($field->slug) }}
+                    {{ $item->getFormattedCustomFieldValueBySlug($field->slug) }}
                 </td>
             @endforeach
             <td

@@ -297,6 +297,17 @@ class InvoiceService implements InvoicePdfDataProvider
         $customFields = CustomField::query()
             ->where('company_id', $invoice->company_id)
             ->where('model_type', 'Item')
+            ->wherePrinted()
+            ->get();
+
+        // Document-level definitions the author asked to have printed. They
+        // render in the details block beside the number and the dates, which
+        // is where a custom date belongs (#237).
+        $documentFields = CustomField::query()
+            ->where('company_id', $invoice->company_id)
+            ->where('model_type', 'Invoice')
+            ->wherePrinted()
+            ->orderBy('order')
             ->get();
 
         App::setLocale($language);
@@ -307,6 +318,7 @@ class InvoiceService implements InvoicePdfDataProvider
         View::share([
             'invoice' => $invoice,
             'customFields' => $customFields,
+            'documentFields' => $documentFields,
             'company_address' => $invoice->getCompanyAddress(),
             'shipping_address' => $invoice->getCustomerShippingAddress(),
             'billing_address' => $invoice->getCustomerBillingAddress(),

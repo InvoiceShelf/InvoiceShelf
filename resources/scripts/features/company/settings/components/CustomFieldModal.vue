@@ -27,6 +27,7 @@ interface CustomFieldForm {
   type: string
   placeholder: string | null
   is_required: number
+  placement: string
   options: FieldOption[]
   order: number | null
   default_answer: string | boolean | number | null
@@ -49,6 +50,7 @@ const currentCustomField = ref<CustomFieldForm>({
   type: 'Input',
   placeholder: null,
   is_required: 0,
+  placement: 'internal',
   options: [],
   order: null,
   default_answer: null,
@@ -103,6 +105,18 @@ const isRequiredField = computed<boolean>({
   },
 })
 
+/**
+ * Whether the field reaches the printed document. Stored as a placement
+ * rather than a flag so a third destination, the customer portal say, does
+ * not need a second column.
+ */
+const isPrintedOnDocument = computed<boolean>({
+  get: () => currentCustomField.value.placement === 'document',
+  set: (value: boolean) => {
+    currentCustomField.value.placement = value ? 'document' : 'internal'
+  },
+})
+
 const rules = computed(() => ({
   name: {
     required: helpers.withMessage(t('validation.required'), required),
@@ -152,6 +166,7 @@ async function setInitialData(): Promise<void> {
         type: field.type,
         placeholder: field.placeholder,
         is_required: field.is_required ? 1 : 0,
+        placement: field.placement ?? 'internal',
         options: field.options
           ? field.options.map((o) => ({ name: typeof o === 'string' ? o : o }))
           : [],
@@ -190,6 +205,7 @@ async function submitCustomFieldData(): Promise<void> {
     type: currentCustomField.value.type,
     placeholder: currentCustomField.value.placeholder,
     is_required: currentCustomField.value.is_required === 1,
+    placement: currentCustomField.value.placement,
     options: currentCustomField.value.options.map((o) => o.name),
     order: currentCustomField.value.order,
     default_answer: defaultAnswer as string ?? null,
@@ -264,6 +280,7 @@ function resetForm(): void {
     type: 'Input',
     placeholder: null,
     is_required: 0,
+    placement: 'internal',
     options: [],
     order: null,
     default_answer: null,
@@ -340,6 +357,14 @@ function closeCustomFieldModal(): void {
               :label="$t('settings.custom_fields.required')"
             >
               <BaseSwitch v-model="isRequiredField" />
+            </BaseInputGroup>
+
+            <BaseInputGroup
+              class="flex items-center space-x-4"
+              :label="$t('settings.custom_fields.show_on_document')"
+              :help-text="$t('settings.custom_fields.show_on_document_description')"
+            >
+              <BaseSwitch v-model="isPrintedOnDocument" />
             </BaseInputGroup>
 
             <BaseInputGroup

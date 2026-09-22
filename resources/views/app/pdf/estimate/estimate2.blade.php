@@ -452,6 +452,7 @@
                     <h1>@lang('pdf_estimate_label')</h1>
                     <h4>{{ $estimate->estimate_number }}</h4>
                     <h4>{{ $estimate->formattedEstimateDate }}</h4>
+                    @include('app.pdf.partials.document-custom-fields-stacked', ['document' => $estimate])
                 </td>
             </tr>
         </table>

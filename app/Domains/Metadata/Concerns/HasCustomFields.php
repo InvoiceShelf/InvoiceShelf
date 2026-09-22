@@ -69,4 +69,14 @@ trait HasCustomFields
     {
         return $this->getCustomFieldBySlug($slug)?->defaultAnswer;
     }
+
+    /**
+     * The same answer, formatted for a reader: a date in the company's
+     * configured format, so a custom date printed on a document matches the
+     * dates already on it. This is what the PDF templates use.
+     */
+    public function getFormattedCustomFieldValueBySlug($slug)
+    {
+        return $this->getCustomFieldBySlug($slug)?->formatted_answer;
+    }
 }
