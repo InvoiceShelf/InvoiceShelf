@@ -76,6 +76,14 @@ Three guards: `web` (session), `api` (Sanctum tokens for `/api/v1/`), `customer`
 - **API**: All endpoints under `/api/v1/` in `routes/api.php`, grouped with `auth:sanctum`, `company`, and `bouncer` middleware
 - **Web**: `routes/web.php` serves PDF endpoints, auth pages, and catch-all SPA routes (`/admin/{vue?}`, `/{company:slug}/customer/{vue?}`)
 
+### Thin clients
+
+Mobile clients run the same SPA from their own origin and never load `resources/views/app.blade.php`, so the public `GET /api/v1/app/client-manifest` stands in for it: version, `min_client_version`, `app_url`, page title, login branding, module script/style URLs and the demo flag. **It mirrors the Blade shell; change one and change the other** (`ClientManifestService`).
+
+`config/cors.php` is published and covers `api/*`, the module asset routes, `reports/*` and the PDF routes. `allowed_origins` comes from `CORS_ALLOWED_ORIGINS`, defaulting to `capacitor://` and `https://` on `invoiceshelf.client.hostname`. That hostname must never be `localhost` or `127.0.0.1`: Sanctum's default stateful list holds both, so such an origin gets session and CSRF middleware and every bearer POST fails with 419.
+
+Tokens never expire, so `GET /api/v1/auth/tokens` and `DELETE /api/v1/auth/tokens/{id}` (the caller's own only) exist to cut off a lost device, and `POST /api/v1/auth/login` is throttled to 10 a minute.
+
 ### Frontend
 - Vue 3 + TypeScript + Pinia + vue-router + Tailwind v4 (`@tailwindcss/vite`)
 - Entry point: `resources/scripts/main.ts` (single Vite input)
