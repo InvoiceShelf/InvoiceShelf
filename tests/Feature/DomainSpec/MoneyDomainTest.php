@@ -25,8 +25,11 @@ it('lists currencies common-first, then the rest by name', function () {
     expect($codes->take(10)->values()->all())
         ->toBe(['USD', 'EUR', 'GBP', 'JPY', 'CAD', 'AUD', 'CHF', 'CNY', 'INR', 'BRL']);
 
+    // Case-insensitively: "CFP Franc" belongs beside "Central African Franc",
+    // not at the head of the C block where a byte comparison puts it.
     $restNames = collect(getJson('/api/v1/currencies')->json('data'))->skip(10)->pluck('name')->values();
-    expect($restNames->all())->toBe($restNames->sort()->values()->all());
+    expect($restNames->all())
+        ->toBe($restNames->sortBy(fn (string $name): string => mb_strtolower($name))->values()->all());
 });
 
 it('creates a provider after live validation and enforces the one-active-provider-per-currency rule', function () {

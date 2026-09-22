@@ -133,6 +133,8 @@ export const API = {
 
   // Exchange Rates & Currencies
   CURRENCIES: '/api/v1/currencies',
+  ADMIN_CURRENCIES: '/api/v1/super-admin/currencies',
+  ADMIN_CURRENCIES_REFRESH: '/api/v1/super-admin/currencies/refresh',
   CURRENCIES_USED: '/api/v1/currencies/used',
   CURRENCIES_BULK_UPDATE: '/api/v1/currencies/bulk-update-exchange-rate',
   EXCHANGE_RATE_PROVIDERS: '/api/v1/exchange-rate-providers',
