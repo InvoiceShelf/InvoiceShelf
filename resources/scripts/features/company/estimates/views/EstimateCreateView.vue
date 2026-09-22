@@ -17,7 +17,8 @@
           <BaseBreadcrumbItem v-else :title="$t('estimates.new_estimate')" to="#" active />
         </BaseBreadcrumb>
 
-        <template #actions>
+        <!-- Phones get these in the bottom bar instead -->
+        <template v-if="!isPhone" #actions>
           <router-link
             v-if="isEdit"
             :to="`/estimates/pdf/${estimateStore.newEstimate.unique_hash}`"
@@ -48,6 +49,15 @@
           </BaseButton>
         </template>
       </BasePageHeader>
+
+      <DocumentFormActionBar
+        :total="estimateStore.getTotal"
+        :currency="estimateStore.newEstimate.selectedCurrency"
+        :save-label="$t('estimates.save_estimate')"
+        :saving="isSaving"
+        :loading="isLoadingContent"
+        :pdf-url="isEdit ? `/estimates/pdf/${estimateStore.newEstimate.unique_hash}` : null"
+      />
 
       <!-- Select Customer & Basic Fields -->
       <EstimateBasicFields
@@ -118,6 +128,7 @@ import useVuelidate from '@vuelidate/core'
 import { useEstimateStore } from '../store'
 import { useCompanyStore } from '@/scripts/stores/company.store'
 import { useNotificationStore } from '@/scripts/stores/notification.store'
+import { useBreakpoints } from '@/scripts/composables/use-breakpoints'
 import {
   handleApiError,
   getErrorTranslationKey,
@@ -125,6 +136,7 @@ import {
 import EstimateBasicFields from '../components/EstimateBasicFields.vue'
 import {
   DocumentItemsTable,
+  DocumentFormActionBar,
   DocumentTotals,
   DocumentNotes,
   TemplateSelectButton,
@@ -137,6 +149,7 @@ const notificationStore = useNotificationStore()
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
+const { isPhone } = useBreakpoints()
 
 const estimateValidationScope = 'newEstimate'
 const isSaving = ref<boolean>(false)

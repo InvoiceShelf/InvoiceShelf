@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-6 mt-5 border-t border-solid lg:pt-8 md:pt-4 border-line-default">
+  <section class="px-5 py-5 border glass rounded-xl md:px-7 md:py-6">
     <!-- Basic Info -->
     <BaseHeading>
       {{ $t('customers.basic_info') }}
@@ -25,9 +25,6 @@
         :label="$t('customers.email')"
         :value="selectedViewCustomer?.email"
       />
-    </BaseDescriptionList>
-
-    <BaseDescriptionList class="mt-5">
       <BaseDescriptionListItem
         :content-loading="contentLoading"
         :label="$t('wizard.currency')"
@@ -53,56 +50,53 @@
     </BaseDescriptionList>
 
     <!-- Address -->
-    <BaseHeading
-      v-if="selectedViewCustomer.billing || selectedViewCustomer.shipping"
-      class="mt-8"
-    >
-      {{ $t('customers.address') }}
-    </BaseHeading>
+    <template v-if="selectedViewCustomer.billing || selectedViewCustomer.shipping">
+      <BaseHeading class="pt-6 mt-6 border-t border-line-light">
+        {{ $t('customers.address') }}
+      </BaseHeading>
 
-    <BaseDescriptionList class="mt-5">
-      <BaseDescriptionListItem
-        v-if="selectedViewCustomer.billing"
-        :content-loading="contentLoading"
-        :label="$t('customers.billing_address')"
-      >
-        <BaseCustomerAddressDisplay :address="selectedViewCustomer.billing" />
-      </BaseDescriptionListItem>
+      <BaseDescriptionList>
+        <BaseDescriptionListItem
+          v-if="selectedViewCustomer.billing"
+          :content-loading="contentLoading"
+          :label="$t('customers.billing_address')"
+        >
+          <BaseCustomerAddressDisplay :address="selectedViewCustomer.billing" />
+        </BaseDescriptionListItem>
 
-      <BaseDescriptionListItem
-        v-if="selectedViewCustomer.shipping"
-        :content-loading="contentLoading"
-        :label="$t('customers.shipping_address')"
-      >
-        <BaseCustomerAddressDisplay :address="selectedViewCustomer.shipping" />
-      </BaseDescriptionListItem>
-    </BaseDescriptionList>
+        <BaseDescriptionListItem
+          v-if="selectedViewCustomer.shipping"
+          :content-loading="contentLoading"
+          :label="$t('customers.shipping_address')"
+        >
+          <BaseCustomerAddressDisplay :address="selectedViewCustomer.shipping" />
+        </BaseDescriptionListItem>
+      </BaseDescriptionList>
+    </template>
 
     <!-- Custom Fields -->
-    <BaseHeading v-if="customerCustomFields.length > 0" class="mt-8">
-      {{ $t('settings.custom_fields.title') }}
-    </BaseHeading>
+    <template v-if="customerCustomFields.length > 0">
+      <BaseHeading class="pt-6 mt-6 border-t border-line-light">
+        {{ $t('settings.custom_fields.title') }}
+      </BaseHeading>
 
-    <BaseDescriptionList class="mt-5">
-      <BaseDescriptionListItem
-        v-for="(field, index) in customerCustomFields"
-        :key="index"
-        :content-loading="contentLoading"
-        :label="field.custom_field.label"
-      >
-        <p
-          v-if="field.type === 'Switch'"
-          class="text-sm font-bold leading-5 text-heading non-italic"
+      <BaseDescriptionList>
+        <BaseDescriptionListItem
+          v-for="(field, index) in customerCustomFields"
+          :key="index"
+          :content-loading="contentLoading"
+          :label="field.custom_field.label"
         >
-          <span v-if="field.default_answer === 1"> {{ $t('general.yes') }} </span>
-          <span v-else> {{ $t('general.no') }} </span>
-        </p>
-        <p v-else class="text-sm font-bold leading-5 text-heading non-italic">
-          {{ field.default_answer }}
-        </p>
-      </BaseDescriptionListItem>
-    </BaseDescriptionList>
-  </div>
+          <template v-if="field.type === 'Switch'">
+            {{ field.default_answer === 1 ? $t('general.yes') : $t('general.no') }}
+          </template>
+          <template v-else>
+            {{ field.default_answer }}
+          </template>
+        </BaseDescriptionListItem>
+      </BaseDescriptionList>
+    </template>
+  </section>
 </template>
 
 <script setup lang="ts">

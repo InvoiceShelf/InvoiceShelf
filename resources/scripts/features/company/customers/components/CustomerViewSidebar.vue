@@ -4,7 +4,8 @@ import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { useCustomerStore } from '../store'
 import { useDebounceFn } from '@vueuse/core'
-import LoadingIcon from '@/scripts/components/icons/LoadingIcon.vue'
+import RecordListPane from '@/scripts/components/layout/RecordListPane.vue'
+import RecordListItem from '@/scripts/components/layout/RecordListItem.vue'
 import type { Currency } from '@/scripts/types/domain/currency'
 
 interface SearchData {
@@ -37,7 +38,27 @@ const searchData = reactive<SearchData>({
 const customerList = ref<CustomerListItem[] | null>(null)
 const currentPageNumber = ref<number>(1)
 const lastPageNumber = ref<number>(1)
-const customerListSection = ref<HTMLElement | null>(null)
+const listPane = ref<InstanceType<typeof RecordListPane> | null>(null)
+const customerListSection = computed<HTMLElement | null>(() => listPane.value?.listEl ?? null)
+
+const sortOptions = computed(() => [
+  { value: 'invoices.created_at', label: t('customers.create_date') },
+  { value: 'name', label: t('customers.display_name') },
+])
+
+function onSearchText(value: string): void {
+  searchData.searchText = value
+  onSearch()
+}
+
+function setSortField(field: string): void {
+  searchData.orderByField = field
+  onSearch()
+}
+
+function balanceOf(customer: CustomerListItem): number {
+  return customer.account_balance ?? customer.due_amount ?? 0
+}
 
 const onSearch = useDebounceFn(async () => {
   customerList.value = []
@@ -118,8 +139,10 @@ async function loadCustomers(
 
 function scrollToCustomer(): void {
   const el = document.getElementById(`customer-${route.params.id}`)
-  if (el) {
-    el.scrollIntoView({ behavior: 'smooth' })
+  const list = customerListSection.value
+  if (el && list) {
+    // Scroll the list pane alone; scrollIntoView would also move the page
+    list.scrollTo({ top: el.offsetTop - list.offsetTop - 8, behavior: 'smooth' })
     el.classList.add('shake')
     addScrollListener()
   }
@@ -152,134 +175,32 @@ loadCustomers()
 </script>
 
 <template>
-  <div
-    class="fixed top-0 left-0 hidden h-full pt-16 pb-[6.6rem] ml-56 bg-surface xl:ml-64 w-88 xl:block"
+  <RecordListPane
+    ref="listPane"
+    :search="searchData.searchText"
+    :sort-options="sortOptions"
+    :sort-field="searchData.orderByField"
+    :ascending="getOrderBy"
+    :loading="isFetching"
+    :empty="!customerList?.length"
+    :empty-text="$t('customers.no_matching_customers')"
+    @update:search="onSearchText"
+    @update:sort-field="setSortField"
+    @toggle-order="sortData"
   >
-    <div
-      class="flex items-center justify-between px-4 pt-8 pb-2 border border-line-default border-solid height-full"
+    <RecordListItem
+      v-for="customer in (customerList ?? []).filter(Boolean)"
+      :id="'customer-' + customer.id"
+      :key="customer.id"
+      :to="`/admin/customers/${customer.id}/view`"
+      :active="hasActiveUrl(customer.id)"
+      :title="customer.name"
+      :subtitle="customer.contact_name ?? ''"
+      :meta="balanceOf(customer) < 0 ? $t('customers.credit') : ''"
     >
-      <BaseInput
-        v-model="searchData.searchText"
-        :placeholder="$t('general.search')"
-        container-class="mb-6"
-        type="text"
-        variant="gray"
-        @input="onSearch()"
-      >
-        <BaseIcon name="MagnifyingGlassIcon" class="text-muted" />
-      </BaseInput>
-
-      <div class="flex mb-6 ml-3" role="group" aria-label="First group">
-        <BaseDropdown
-          :close-on-select="false"
-          position="bottom-start"
-          width-class="w-40"
-          position-class="left-0"
-        >
-          <template #activator>
-            <BaseButton variant="gray">
-              <BaseIcon name="FunnelIcon" />
-            </BaseButton>
-          </template>
-
-          <div
-            class="px-4 py-3 pb-2 mb-2 text-sm border-b border-line-default border-solid"
-          >
-            {{ $t('general.sort_by') }}
-          </div>
-
-          <div class="px-2">
-            <BaseDropdownItem
-              class="flex px-1 py-2 mt-1 cursor-pointer hover:rounded-md"
-            >
-              <BaseInputGroup class="pt-2 -mt-4">
-                <BaseRadio
-                  id="filter_create_date"
-                  v-model="searchData.orderByField"
-                  :label="$t('customers.create_date')"
-                  size="sm"
-                  name="filter"
-                  value="invoices.created_at"
-                  @update:model-value="onSearch"
-                />
-              </BaseInputGroup>
-            </BaseDropdownItem>
-          </div>
-
-          <div class="px-2">
-            <BaseDropdownItem
-              class="flex px-1 cursor-pointer hover:rounded-md"
-            >
-              <BaseInputGroup class="pt-2 -mt-4">
-                <BaseRadio
-                  id="filter_display_name"
-                  v-model="searchData.orderByField"
-                  :label="$t('customers.display_name')"
-                  size="sm"
-                  name="filter"
-                  value="name"
-                  @update:model-value="onSearch"
-                />
-              </BaseInputGroup>
-            </BaseDropdownItem>
-          </div>
-        </BaseDropdown>
-
-        <BaseButton class="ml-1" size="md" variant="gray" @click="sortData">
-          <BaseIcon v-if="getOrderBy" name="SortAscendingIcon" />
-          <BaseIcon v-else name="SortDescendingIcon" />
-        </BaseButton>
-      </div>
-    </div>
-
-    <div
-      ref="customerListSection"
-      class="h-full overflow-y-scroll border-l border-line-default border-solid sidebar base-scroll"
-    >
-      <div v-for="(customer, index) in customerList" :key="index">
-        <router-link
-          v-if="customer"
-          :id="'customer-' + customer.id"
-          :to="`/admin/customers/${customer.id}/view`"
-          :class="[
-            'flex justify-between p-4 items-center cursor-pointer hover:bg-hover-strong border-l-4 border-l-transparent',
-            {
-              'bg-surface-tertiary border-l-4 border-l-primary-500 border-solid':
-                hasActiveUrl(customer.id),
-            },
-          ]"
-          style="border-top: 1px solid rgba(185, 193, 209, 0.41)"
-        >
-          <div>
-            <BaseText
-              :text="customer.name"
-              class="pr-2 text-sm not-italic font-normal leading-5 text-heading capitalize truncate"
-            />
-
-            <BaseText
-              v-if="customer.contact_name"
-              :text="customer.contact_name"
-              class="mt-1 text-xs not-italic font-medium leading-5 text-body"
-            />
-          </div>
-          <div class="flex-1 font-bold text-right whitespace-nowrap">
-            <BaseFormatMoney
-              :amount="Math.abs(customer.account_balance ?? customer.due_amount ?? 0)"
-              :currency="customer.currency"
-            />
-            <span v-if="(customer.account_balance ?? customer.due_amount ?? 0) < 0" class="block mt-1 text-xs font-medium text-status-green">{{ $t('customers.credit') }}</span>
-          </div>
-        </router-link>
-      </div>
-      <div v-if="isFetching" class="flex justify-center p-4 items-center">
-        <LoadingIcon class="h-6 m-1 animate-spin text-primary-400" />
-      </div>
-      <p
-        v-if="!customerList?.length && !isFetching"
-        class="flex justify-center px-4 mt-5 text-sm text-body"
-      >
-        {{ $t('customers.no_matching_customers') }}
-      </p>
-    </div>
-  </div>
+      <template #amount>
+        <BaseFormatMoney :amount="Math.abs(balanceOf(customer))" :currency="customer.currency" />
+      </template>
+    </RecordListItem>
+  </RecordListPane>
 </template>

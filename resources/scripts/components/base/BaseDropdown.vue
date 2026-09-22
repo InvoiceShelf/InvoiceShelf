@@ -11,8 +11,12 @@
       />
     </BaseContentPlaceholders>
     <Menu v-else v-slot="{ open }">
-      <span ref="trigger" class="inline-flex">
-        <MenuButton class="rounded-lg focus:outline-hidden focus-visible:ring-3 focus-visible:ring-focus" @click="onClick">
+      <span ref="trigger" :class="inActionBar ? 'flex w-full' : 'inline-flex'">
+        <MenuButton
+          :class="inActionBar ? 'w-full' : ''"
+          class="rounded-lg focus:outline-hidden focus-visible:ring-3 focus-visible:ring-focus"
+          @click="onClick"
+        >
           <slot name="activator" />
         </MenuButton>
       </span>
@@ -80,7 +84,7 @@
 
 <script setup lang="ts">
 import { Menu, MenuButton, MenuItems } from '@headlessui/vue'
-import { computed, nextTick, provide } from 'vue'
+import { computed, inject, nextTick, provide } from 'vue'
 import { usePopper } from '@/scripts/composables/use-popper'
 import { useBreakpoints } from '@/scripts/composables/use-breakpoints'
 import type { Placement } from '@popperjs/core'
@@ -104,6 +108,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const { isPhone } = useBreakpoints()
+const inActionBar = inject<boolean>('inActionBar', false)
 
 // BaseDropdownItem renders taller, touch-sized rows inside the sheet
 provide('dropdownIsSheet', isPhone)

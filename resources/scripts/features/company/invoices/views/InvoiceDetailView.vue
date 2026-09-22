@@ -1,125 +1,51 @@
 <template>
   <div v-if="invoiceData" class="flex min-h-full">
     <!-- The other invoices, beside the one on screen (wide screens only) -->
-    <aside
-      class="
-        sticky top-(--app-top-inset) hidden xl:flex flex-col w-80 shrink-0 mt-3 ml-8 mb-10 border rounded-2xl glass
-        h-[calc(100dvh-var(--app-top-inset)-1.5rem)] overflow-hidden
-      "
+    <RecordListPane
+      ref="listPane"
+      :search="searchData.searchText"
+      :sort-options="sortOptions"
+      :sort-field="searchData.orderByField"
+      :ascending="getOrderBy"
+      :loading="isLoading"
+      :empty="!invoiceList?.length"
+      :empty-text="$t('invoices.no_matching_invoices')"
+      @update:search="onSearchText"
+      @update:sort-field="setSortField"
+      @toggle-order="sortData"
     >
-      <div class="flex items-center gap-2 p-3 border-b border-line-light">
-        <BaseInput
-          v-model="searchData.searchText"
-          :placeholder="$t('general.search')"
-          type="text"
-          container-class="flex-1"
-          @input="onSearched()"
-        >
-          <template #left>
-            <BaseIcon name="MagnifyingGlassIcon" class="w-4 h-4 text-subtle" />
-          </template>
-        </BaseInput>
-
-        <BaseDropdown position="bottom-start" width-class="w-56">
-          <template #activator>
-            <span
-              class="flex items-center justify-center border rounded-lg w-9 h-9 border-line-default text-muted hover:bg-hover"
-              :aria-label="$t('general.sort_by')"
-            >
-              <BaseIcon name="FunnelIcon" class="w-4 h-4" />
-            </span>
-          </template>
-          <p class="px-3 pt-2 pb-1 text-xs font-medium text-muted">
-            {{ $t('general.sort_by') }}
-          </p>
-          <BaseDropdownItem
-            v-for="option in sortOptions"
-            :key="option.value"
-            @click="setSortField(option.value)"
-          >
-            <span class="flex-1">{{ option.label }}</span>
-            <BaseIcon
-              v-if="searchData.orderByField === option.value"
-              name="CheckIcon"
-              class="w-4 h-4 text-primary-600"
-            />
-          </BaseDropdownItem>
-        </BaseDropdown>
-
-        <button
-          type="button"
-          class="flex items-center justify-center border rounded-lg w-9 h-9 shrink-0 border-line-default text-muted hover:bg-hover"
-          :aria-label="$t('general.sort_by')"
-          @click="sortData"
-        >
-          <BaseIcon :name="getOrderBy ? 'BarsArrowUpIcon' : 'BarsArrowDownIcon'" class="w-4 h-4" />
-        </button>
-      </div>
-
-      <div
-        ref="invoiceListSection"
-        class="flex-1 min-h-0 overflow-y-auto"
+      <RecordListItem
+        v-for="invoice in (invoiceList ?? []).filter(Boolean)"
+        :id="'invoice-' + invoice.id"
+        :key="invoice.id"
+        :to="`/admin/invoices/${invoice.id}/view`"
+        :active="hasActiveUrl(invoice.id)"
+        :title="invoice.customer?.name ?? ''"
+        :subtitle="invoice.invoice_number"
+        :meta="invoice.formatted_invoice_date"
       >
-        <router-link
-          v-for="invoice in (invoiceList ?? []).filter(Boolean)"
-          :id="'invoice-' + invoice.id"
-          :key="invoice.id"
-          :to="`/admin/invoices/${invoice.id}/view`"
-          :aria-current="hasActiveUrl(invoice.id) ? 'page' : undefined"
-          :class="[
-            'flex items-start justify-between gap-3 px-4 py-3 border-b border-line-light transition-colors',
-            hasActiveUrl(invoice.id) ? 'bg-primary-50' : 'hover:bg-hover',
-          ]"
-        >
-          <div class="min-w-0">
-            <p class="text-sm font-medium truncate text-heading">
-              {{ invoice.customer?.name ?? '' }}
-            </p>
-            <p class="mt-0.5 text-xs text-muted">
-              {{ invoice.invoice_number }}
-            </p>
-            <div class="flex flex-wrap gap-1 mt-2">
-              <BaseInvoiceStatusBadge :status="invoice.status">
-                <BaseInvoiceStatusLabel :status="invoice.status" />
-              </BaseInvoiceStatusBadge>
-              <span
-                v-if="invoice.type !== 'CREDIT_NOTE' && invoice.credited_status === 'FULL'"
-                class="inline-flex items-center h-6 px-2 text-xs font-medium rounded-full bg-status-yellow-bg text-status-yellow"
-              >
-                {{ $t('invoices.cancelled') }}
-              </span>
-              <span
-                v-else-if="invoice.type !== 'CREDIT_NOTE' && invoice.credited_status === 'PARTIAL'"
-                class="inline-flex items-center h-6 px-2 text-xs font-medium rounded-full bg-status-yellow-bg text-status-yellow"
-              >
-                {{ $t('invoices.partially_credited') }}
-              </span>
-            </div>
-          </div>
-
-          <div class="text-right shrink-0">
-            <BaseFormatMoney
-              class="block text-sm font-semibold text-heading"
-              :amount="invoice.total"
-              :currency="invoice.customer?.currency"
-            />
-            <p class="mt-0.5 text-xs text-muted">
-              {{ invoice.formatted_invoice_date }}
-            </p>
-          </div>
-        </router-link>
-
-        <div v-if="isLoading" class="flex items-center justify-center p-4">
-          <LoadingIcon class="w-5 h-5 animate-spin text-subtle" />
-        </div>
-        <p
-          v-if="!invoiceList?.length && !isLoading"
-          class="px-4 py-8 text-sm text-center text-muted"
-        >
-          {{ $t('invoices.no_matching_invoices') }}
-        </p>
-      </div>
-    </aside>
+        <template #badges>
+          <BaseInvoiceStatusBadge :status="invoice.status">
+            <BaseInvoiceStatusLabel :status="invoice.status" />
+          </BaseInvoiceStatusBadge>
+          <BaseStatusPill
+            v-if="invoice.type !== 'CREDIT_NOTE' && invoice.credited_status === 'FULL'"
+            tone="yellow"
+          >
+            {{ $t('invoices.cancelled') }}
+          </BaseStatusPill>
+          <BaseStatusPill
+            v-else-if="invoice.type !== 'CREDIT_NOTE' && invoice.credited_status === 'PARTIAL'"
+            tone="yellow"
+          >
+            {{ $t('invoices.partially_credited') }}
+          </BaseStatusPill>
+        </template>
+        <template #amount>
+          <BaseFormatMoney :amount="invoice.total" :currency="invoice.customer?.currency" />
+        </template>
+      </RecordListItem>
+    </RecordListPane>
 
     <BasePage class="min-w-0">
       <BasePageHeader :title="pageTitle">
@@ -190,47 +116,31 @@
       </BasePageHeader>
 
       <!-- What the document says, without opening it -->
-      <dl
-        class="grid grid-cols-2 gap-px overflow-hidden border rounded-xl bg-line-light/70 border-(--glass-edge) shadow-card backdrop-blur-xl md:grid-cols-5"
-      >
-        <div class="col-span-2 px-4 py-3.5 md:col-span-1 bg-surface/85 md:px-5">
-          <dt class="text-xs font-medium text-muted">{{ $t('invoices.customer') }}</dt>
-          <dd class="mt-1 text-sm font-medium truncate text-heading">
-            <router-link
-              v-if="invoiceData.customer?.id"
-              :to="`/admin/customers/${invoiceData.customer.id}/view`"
-              class="hover:text-primary-600"
-            >
-              {{ invoiceData.customer.name }}
-            </router-link>
-          </dd>
-        </div>
-        <div class="px-4 py-3.5 bg-surface/85 md:px-5">
-          <dt class="text-xs font-medium text-muted">{{ $t('invoices.invoice_date') }}</dt>
-          <dd class="mt-1 text-sm font-medium tabular text-heading">{{ invoiceData.formatted_invoice_date }}</dd>
-        </div>
-        <div class="px-4 py-3.5 bg-surface/85 md:px-5">
-          <dt class="text-xs font-medium text-muted">{{ $t('invoices.due_date') }}</dt>
-          <dd
-            :class="invoiceData.overdue ? 'text-status-red' : 'text-heading'"
-            class="mt-1 text-sm font-medium tabular"
+      <BaseStatStrip :columns="5">
+        <BaseStat :label="$t('dashboard.recent_invoices_card.amount_due')" emphasis>
+          <BaseFormatMoney :amount="invoiceData.due_amount" :currency="documentCurrency" />
+        </BaseStat>
+        <BaseStat :label="$t('invoices.total')">
+          <BaseFormatMoney :amount="invoiceData.total" :currency="documentCurrency" />
+        </BaseStat>
+        <BaseStat :label="$t('invoices.customer')">
+          <router-link
+            v-if="invoiceData.customer?.id"
+            :to="`/admin/customers/${invoiceData.customer.id}/view`"
+            class="hover:text-primary-600"
           >
+            {{ invoiceData.customer.name }}
+          </router-link>
+        </BaseStat>
+        <BaseStat :label="$t('invoices.invoice_date')">
+          {{ invoiceData.formatted_invoice_date }}
+        </BaseStat>
+        <BaseStat :label="$t('invoices.due_date')">
+          <span :class="invoiceData.overdue ? 'text-status-red' : ''">
             {{ invoiceData.formatted_due_date || '-' }}
-          </dd>
-        </div>
-        <div class="px-4 py-3.5 bg-surface/85 md:px-5">
-          <dt class="text-xs font-medium text-muted">{{ $t('invoices.total') }}</dt>
-          <dd class="mt-1 text-sm font-medium text-heading">
-            <BaseFormatMoney :amount="invoiceData.total" :currency="documentCurrency" />
-          </dd>
-        </div>
-        <div class="px-4 py-3.5 bg-surface/85 md:px-5">
-          <dt class="text-xs font-medium text-muted">{{ $t('dashboard.recent_invoices_card.amount_due') }}</dt>
-          <dd class="mt-1 text-base font-semibold text-heading">
-            <BaseFormatMoney :amount="invoiceData.due_amount" :currency="documentCurrency" />
-          </dd>
-        </div>
-      </dl>
+          </span>
+        </BaseStat>
+      </BaseStatStrip>
 
       <!-- Credit note: link back to the invoice it reverses -->
       <div
@@ -367,7 +277,8 @@ import { useInvoiceStore } from '../store'
 import InvoiceDropdown from '../components/InvoiceDropdown.vue'
 import SendInvoiceModal from '../components/SendInvoiceModal.vue'
 import CreditNoteModal from '../components/CreditNoteModal.vue'
-import LoadingIcon from '@/scripts/components/icons/LoadingIcon.vue'
+import RecordListPane from '@/scripts/components/layout/RecordListPane.vue'
+import RecordListItem from '@/scripts/components/layout/RecordListItem.vue'
 import BasePdfPreview from '@/scripts/components/base/BasePdfPreview.vue'
 import { useBreakpoints } from '@/scripts/composables/use-breakpoints'
 import { useUserStore } from '../../../../stores/user.store'
@@ -446,7 +357,8 @@ const isLoading = ref<boolean>(false)
 const invoiceList = ref<Invoice[] | null>(null)
 const currentPageNumber = ref<number>(1)
 const lastPageNumber = ref<number>(1)
-const invoiceListSection = ref<HTMLElement | null>(null)
+const listPane = ref<InstanceType<typeof RecordListPane> | null>(null)
+const invoiceListSection = computed<HTMLElement | null>(() => listPane.value?.listEl ?? null)
 
 interface SearchData {
   orderBy: string | null
@@ -645,6 +557,11 @@ async function loadInvoice(): Promise<void> {
 }
 
 let searchTimeout: ReturnType<typeof setTimeout> | null = null
+
+function onSearchText(value: string): void {
+  searchData.searchText = value
+  onSearched()
+}
 
 function onSearched(): void {
   if (searchTimeout) clearTimeout(searchTimeout)

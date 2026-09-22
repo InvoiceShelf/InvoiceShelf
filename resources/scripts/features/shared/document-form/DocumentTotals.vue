@@ -1,13 +1,13 @@
 <template>
   <div
-    class="px-5 py-4 mt-6 bg-surface border border-line-light border-solid rounded-xl shadow md:min-w-[390px] min-w-[300px] lg:mt-7"
+    class="w-full px-5 py-4 mt-5 border glass rounded-xl lg:w-auto lg:min-w-[390px] lg:mt-7"
   >
     <!-- Subtotal -->
     <div class="flex items-center justify-between w-full">
       <BaseContentPlaceholders v-if="isLoading">
         <BaseContentPlaceholdersText :lines="1" class="w-16 h-5" />
       </BaseContentPlaceholders>
-      <label v-else class="text-sm font-semibold leading-5 text-subtle uppercase">
+      <label v-else class="text-sm leading-5 text-muted">
         {{ $t('estimates.sub_total') }}
       </label>
 
@@ -16,7 +16,7 @@
       </BaseContentPlaceholders>
       <label
         v-else
-        class="flex items-center justify-center m-0 text-lg text-heading uppercase"
+        class="flex items-center justify-center m-0 text-base font-medium text-heading"
       >
         <BaseFormatMoney :amount="store.getSubTotal" :currency="defaultCurrency" />
       </label>
@@ -31,7 +31,7 @@
         <BaseContentPlaceholders v-if="isLoading">
           <BaseContentPlaceholdersText :lines="1" class="w-16 h-5" />
         </BaseContentPlaceholders>
-        <label v-else class="text-sm font-semibold leading-5 text-muted uppercase">
+        <label v-else class="text-sm leading-5 text-muted">
           {{ $t('estimates.net_total') }}
         </label>
 
@@ -40,7 +40,7 @@
         </BaseContentPlaceholders>
         <label
           v-else
-          class="flex items-center justify-center m-0 text-lg text-heading uppercase"
+          class="flex items-center justify-center m-0 text-base font-medium text-heading"
         >
           <BaseFormatMoney :amount="store.getNetTotal" :currency="currency" />
         </label>
@@ -58,7 +58,7 @@
       </BaseContentPlaceholders>
       <label
         v-else-if="formData.tax_per_item === 'YES'"
-        class="m-0 text-sm font-semibold leading-5 text-muted uppercase"
+        class="m-0 text-sm leading-5 text-muted"
       >
         <template v-if="tax.calculation_type === 'percentage'">
           {{ tax.name }} - {{ tax.percent }}%
@@ -74,7 +74,7 @@
       </BaseContentPlaceholders>
       <label
         v-else-if="formData.tax_per_item === 'YES'"
-        class="flex items-center justify-center m-0 text-lg text-heading uppercase"
+        class="flex items-center justify-center m-0 text-base font-medium text-heading"
       >
         <BaseFormatMoney :amount="tax.amount" :currency="defaultCurrency" />
       </label>
@@ -88,7 +88,7 @@
       <BaseContentPlaceholders v-if="isLoading">
         <BaseContentPlaceholdersText :lines="1" class="w-16 h-5" />
       </BaseContentPlaceholders>
-      <label v-else class="text-sm font-semibold leading-5 text-subtle uppercase">
+      <label v-else class="text-sm leading-5 text-muted">
         {{ $t('estimates.discount') }}
       </label>
 
@@ -140,7 +140,7 @@
         <BaseContentPlaceholders v-if="isLoading">
           <BaseContentPlaceholdersText :lines="1" class="w-16 h-5" />
         </BaseContentPlaceholders>
-        <label v-else class="text-sm font-semibold leading-5 text-muted uppercase">
+        <label v-else class="text-sm leading-5 text-muted">
           {{ $t('estimates.net_total') }}
         </label>
 
@@ -149,7 +149,7 @@
         </BaseContentPlaceholders>
         <label
           v-else
-          class="flex items-center justify-center m-0 text-lg text-heading uppercase"
+          class="flex items-center justify-center m-0 text-base font-medium text-heading"
         >
           <BaseFormatMoney :amount="store.getNetTotal" :currency="currency" />
         </label>
@@ -165,13 +165,13 @@
         :key="tax.id"
         class="flex items-center justify-between w-full mt-2 text-sm"
       >
-        <label v-if="tax.calculation_type === 'percentage'" class="font-semibold leading-5 text-muted uppercase">
+        <label v-if="tax.calculation_type === 'percentage'" class="leading-5 text-muted">
           {{ tax.name }} ({{ tax.percent }} %)
         </label>
-        <label v-else class="font-semibold leading-5 text-muted uppercase">
+        <label v-else class="leading-5 text-muted">
           {{ tax.name }} (<BaseFormatMoney :amount="tax.fixed_amount" :currency="currency" />)
         </label>
-        <label class="flex items-center justify-center text-lg text-heading">
+        <label class="flex items-center justify-center text-base font-medium text-heading">
           <BaseFormatMoney :amount="tax.amount" :currency="currency" />
           <BaseIcon
             name="TrashIcon"
@@ -201,13 +201,13 @@
 
     <!-- Total Amount -->
     <div
-      class="flex items-center justify-between w-full pt-2 mt-5 border-t border-line-light border-solid"
+      class="flex items-center justify-between w-full pt-4 mt-4 border-t border-line-light border-solid"
     >
       <BaseContentPlaceholders v-if="isLoading">
         <BaseContentPlaceholdersText :lines="1" class="w-16 h-5" />
       </BaseContentPlaceholders>
-      <label v-else class="m-0 text-sm font-semibold leading-5 text-subtle uppercase">
-        {{ $t('estimates.total') }} {{ $t('estimates.amount') }}:
+      <label v-else class="m-0 text-sm font-semibold leading-5 text-heading">
+        {{ $t('general.total_amount') }}
       </label>
 
       <BaseContentPlaceholders v-if="isLoading">
@@ -215,7 +215,7 @@
       </BaseContentPlaceholders>
       <label
         v-else
-        class="flex items-center justify-center text-lg uppercase text-primary-400"
+        class="flex items-center justify-center text-xl font-semibold text-heading"
       >
         <BaseFormatMoney :amount="store.getTotal" :currency="defaultCurrency" />
       </label>

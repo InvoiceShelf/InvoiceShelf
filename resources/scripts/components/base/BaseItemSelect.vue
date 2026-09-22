@@ -107,25 +107,18 @@ function deselectItem(index: number): void {
     <!-- Selected Item Field  -->
     <div
       v-if="item.item_id"
-      class="
-        relative
-        flex
-        items-center
-        h-10
-        pl-2
-        bg-surface-muted
-        border border-line-default border-solid
-        rounded
-      "
+      class="relative flex items-center h-11 pl-3 pr-11 font-medium border rounded-lg md:h-10 bg-surface-muted border-line-default text-heading"
     >
-      {{ item.name }}
+      <span class="truncate">{{ item.name }}</span>
 
-      <span
-        class="absolute text-subtle cursor-pointer top-[8px] right-[10px]"
+      <button
+        type="button"
+        class="absolute inset-y-0 right-0 flex items-center justify-center w-10 rounded-r-lg text-subtle hover:text-heading"
+        :aria-label="$t('general.deselect')"
         @click="deselectItem(index)"
       >
-        <BaseIcon name="XCircleIcon" />
-      </span>
+        <BaseIcon name="XCircleIcon" class="w-5 h-5" />
+      </button>
     </div>
 
     <!-- Select Item Field -->
