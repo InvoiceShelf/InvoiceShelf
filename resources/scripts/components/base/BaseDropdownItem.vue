@@ -1,20 +1,20 @@
 <template>
   <MenuItem v-slot="{ active }" v-bind="$attrs">
     <!--
-      The anchor keeps its href for focus and cursor semantics, but the click
-      must never navigate: under hash history an empty fragment is a real
-      route change to "/", which the client build maps to the login screen.
+      A plain element rather than an anchor. Most items sit inside a
+      <router-link>, and the click has to reach that link untouched: an
+      href="#" here would navigate to "/" under hash history, and preventing
+      that default would also stop the router link, which skips navigation
+      for a default-prevented click.
     -->
-    <a
-      href="#"
+    <div
       :class="[
         active ? 'bg-hover-strong text-heading' : 'text-body',
-        'group flex items-center px-4 py-2 text-sm font-normal whitespace-normal',
+        'group flex items-center px-4 py-2 text-sm font-normal whitespace-normal cursor-pointer',
       ]"
-      @click.prevent
     >
       <slot :active="active" />
-    </a>
+    </div>
   </MenuItem>
 </template>
 
