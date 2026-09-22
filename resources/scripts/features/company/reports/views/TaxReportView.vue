@@ -5,6 +5,8 @@ import { presetRange, defaultMonthRange } from '@/scripts/utils/date-range'
 import { formatDate } from '@/scripts/utils/format-date'
 import { useCompanyStore } from '../../../../stores/company.store'
 import { useGlobalStore } from '../../../../stores/global.store'
+import { useReportDownload } from '../useReportDownload'
+import ReportPdfPane from '../components/ReportPdfPane.vue'
 
 interface DateRangeOption {
   label: string
@@ -35,6 +37,7 @@ const dateRange = reactive<DateRangeOption[]>([
 
 const selectedRange = ref<DateRangeOption>(dateRange[2])
 const url = ref<string | null>(null)
+const pdfPane = ref<InstanceType<typeof ReportPdfPane> | null>(null)
 const siteURL = ref<string | null>(null)
 
 const initialRange = defaultMonthRange()
@@ -51,7 +54,14 @@ const dateRangeUrl = computed<string>(() => {
   return `${siteURL.value}?from_date=${formatDate(formData.from_date)}&to_date=${formatDate(formData.to_date)}`
 })
 
-globalStore.downloadReport = downloadReport
+// The header button lives on the layout above, so the tab on screen lends it
+// its own parameters. They are read at click time, which is why it is a
+// callback and not the URL itself.
+globalStore.downloadReport = useReportDownload(() => {
+  getReports()
+
+  return url.value
+})
 
 onMounted(() => {
   siteURL.value = `/reports/tax-summary/${selectedCompany.value?.unique_hash}`
@@ -71,18 +81,11 @@ function getReports(): boolean {
   return true
 }
 
-async function viewReportsPDF(): Promise<void> {
+// The update button is desktop-only, so this is where a phone applies what it
+// typed into the form: the fresh path is handed straight to the pane.
+function viewReportsPDF(): void {
   getReports()
-  window.open(getReportUrl.value ?? '', '_blank')
-}
-
-function downloadReport(): void {
-  if (!getReports()) return
-
-  window.open(getReportUrl.value + '&download=true')
-  setTimeout(() => {
-    url.value = dateRangeUrl.value
-  }, 200)
+  void pdfPane.value?.view(url.value)
 }
 </script>
 
@@ -133,9 +136,10 @@ function downloadReport(): void {
     </div>
 
     <div class="col-span-8">
-      <iframe
-        :src="getReportUrl ?? undefined"
-        class="hidden w-full h-screen border-line-light border-solid rounded md:flex"
+      <ReportPdfPane
+        ref="pdfPane"
+        :path="getReportUrl"
+        class="hidden md:block"
       />
       <a
         class="flex items-center justify-center h-10 px-5 py-1 text-sm font-medium leading-none text-center text-white rounded whitespace-nowrap md:hidden bg-primary-500 cursor-pointer"

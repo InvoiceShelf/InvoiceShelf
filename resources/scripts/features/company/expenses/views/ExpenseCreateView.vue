@@ -17,11 +17,11 @@
         <template #actions>
           <BaseButton
             v-if="isEdit && expenseStore.currentExpense.attachment_receipt_url"
-            :href="receiptDownloadUrl"
-            tag="a"
+            :loading="isDownloadingReceipt"
             variant="primary-outline"
             type="button"
             class="mr-2"
+            @click="downloadReceipt"
           >
             <template #left="slotProps">
               <BaseIcon name="DownloadIcon" :class="slotProps.class" />
@@ -265,6 +265,8 @@ import { useI18n } from 'vue-i18n'
 import { useExpenseStore } from '../store'
 import { useGlobalStore } from '../../../../stores/global.store'
 import { useCompanyStore } from '../../../../stores/company.store'
+import { useNotificationStore } from '../../../../stores/notification.store'
+import { downloadDocument } from '@/scripts/utils/documents'
 import { ExchangeRateConverter } from '../../../shared/document-form'
 import ExpenseTaxSection from '../components/ExpenseTaxSection.vue'
 import CustomFieldInput from '@/scripts/features/shared/custom-fields/CustomFieldInput.vue'
@@ -281,10 +283,12 @@ const customFieldValidationScope = 'customFields'
 const expenseStore = useExpenseStore()
 const globalStore = useGlobalStore()
 const companyStore = useCompanyStore()
+const notificationStore = useNotificationStore()
 
 const isSaving = ref<boolean>(false)
 const isFetchingInitialData = ref<boolean>(false)
 const isAttachmentReceiptRemoved = ref<boolean>(false)
+const isDownloadingReceipt = ref<boolean>(false)
 
 const amountData = computed<number>({
   get: () => expenseStore.currentExpense.amount / 100,
@@ -306,9 +310,33 @@ const pageTitle = computed<string>(() =>
   isEdit.value ? t('expenses.edit_expense') : t('expenses.new_expense'),
 )
 
-const receiptDownloadUrl = computed<string>(() =>
+const receiptPath = computed<string>(() =>
   isEdit.value ? `/reports/expenses/${route.params.id}/download-receipt` : '',
 )
+
+/**
+ * The receipt used to be a plain link, which only reaches a server the page
+ * shares an origin with. Fetching it through the API client works from a
+ * client too, and a missing file now says so instead of saving the error.
+ */
+async function downloadReceipt(): Promise<void> {
+  if (!receiptPath.value) {
+    return
+  }
+
+  isDownloadingReceipt.value = true
+
+  try {
+    await downloadDocument(receiptPath.value, {}, 'receipt')
+  } catch {
+    notificationStore.showNotification({
+      type: 'error',
+      message: t('pdf.download_failed'),
+    })
+  } finally {
+    isDownloadingReceipt.value = false
+  }
+}
 
 // Initialize
 expenseStore.resetCurrentExpenseData()
