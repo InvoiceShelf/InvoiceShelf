@@ -165,8 +165,9 @@ async function submitCustomerData(): Promise<void> {
 
 <template>
   <BasePage>
-    <form @submit.prevent="submitCustomerData">
-      <BasePageHeader :title="pageTitle">
+    <form class="flex flex-col gap-4 md:gap-5" @submit.prevent="submitCustomerData">
+      <!-- On phones Save moves to the bottom bar, still submitting this form -->
+      <BasePageHeader :title="pageTitle" phone-actions="bar">
         <BaseBreadcrumb>
           <BaseBreadcrumbItem :title="$t('general.home')" to="dashboard" />
           <BaseBreadcrumbItem
@@ -177,27 +178,25 @@ async function submitCustomerData(): Promise<void> {
         </BaseBreadcrumb>
 
         <template #actions>
-          <div class="flex items-center justify-end">
-            <BaseButton type="submit" :loading="isSaving" :disabled="isSaving">
-              <template #left="slotProps">
-                <BaseIcon name="ArrowDownOnSquareIcon" :class="slotProps.class" />
-              </template>
-              {{
-                isEdit
-                  ? $t('customers.update_customer')
-                  : $t('customers.save_customer')
-              }}
-            </BaseButton>
-          </div>
+          <BaseButton type="submit" :loading="isSaving" :disabled="isSaving">
+            <template #left="slotProps">
+              <BaseIcon name="ArrowDownOnSquareIcon" :class="slotProps.class" />
+            </template>
+            {{
+              isEdit
+                ? $t('customers.update_customer')
+                : $t('customers.save_customer')
+            }}
+          </BaseButton>
         </template>
       </BasePageHeader>
 
-      <BaseCard class="mt-5">
+      <BaseCard container-class="p-4 md:p-5">
         <!-- Basic Info -->
         <div class="grid grid-cols-5 gap-4 mb-8">
-          <h6 class="col-span-5 text-lg font-semibold text-left lg:col-span-1">
+          <h2 class="col-span-5 font-semibold text-left text-section text-heading lg:col-span-1">
             {{ $t('customers.basic_info') }}
-          </h6>
+          </h2>
 
           <BaseInputGrid class="col-span-5 lg:col-span-4">
             <BaseInputGroup
@@ -336,9 +335,9 @@ async function submitCustomerData(): Promise<void> {
 
         <!-- Portal Access -->
         <div class="grid grid-cols-5 gap-4 mb-8">
-          <h6 class="col-span-5 text-lg font-semibold text-left lg:col-span-1">
+          <h2 class="col-span-5 font-semibold text-left text-section text-heading lg:col-span-1">
             {{ $t('customers.portal_access') }}
-          </h6>
+          </h2>
 
           <BaseInputGrid class="col-span-5 lg:col-span-4">
             <div class="md:col-span-2">
@@ -421,9 +420,9 @@ async function submitCustomerData(): Promise<void> {
 
         <!-- Billing Address -->
         <div class="grid grid-cols-5 gap-4 mb-8">
-          <h6 class="col-span-5 text-lg font-semibold text-left lg:col-span-1">
+          <h2 class="col-span-5 font-semibold text-left text-section text-heading lg:col-span-1">
             {{ $t('customers.billing_address') }}
-          </h6>
+          </h2>
 
           <BaseInputGrid
             v-if="customerStore.currentCustomer.billing"
@@ -582,9 +581,9 @@ async function submitCustomerData(): Promise<void> {
           v-if="customerStore.currentCustomer.shipping"
           class="grid grid-cols-5 gap-4 mb-8"
         >
-          <h6 class="col-span-5 text-lg font-semibold text-left lg:col-span-1">
+          <h2 class="col-span-5 font-semibold text-left text-section text-heading lg:col-span-1">
             {{ $t('customers.shipping_address') }}
-          </h6>
+          </h2>
 
           <BaseInputGrid class="col-span-5 lg:col-span-4">
             <BaseInputGroup

@@ -1,7 +1,8 @@
 <template>
   <BasePage class="relative">
-    <form action="" @submit.prevent="submitForm">
-      <BasePageHeader :title="pageTitle" class="mb-5">
+    <form action="" class="flex flex-col gap-4 md:gap-5" @submit.prevent="submitForm">
+      <!-- On phones Save moves to the bottom bar, still submitting this form -->
+      <BasePageHeader :title="pageTitle" phone-actions="bar">
         <BaseBreadcrumb>
           <BaseBreadcrumbItem
             :title="$t('general.home')"
@@ -18,43 +19,40 @@
           <BaseButton
             v-if="isEdit && expenseStore.currentExpense.attachment_receipt_url"
             :loading="isDownloadingReceipt"
-            variant="primary-outline"
+            variant="white"
             type="button"
-            class="mr-2"
             @click="downloadReceipt"
           >
             <template #left="slotProps">
-              <BaseIcon name="DownloadIcon" :class="slotProps.class" />
+              <BaseIcon name="ArrowDownTrayIcon" :class="slotProps.class" />
             </template>
             {{ $t('expenses.download_receipt') }}
           </BaseButton>
 
-          <div class="hidden md:block">
-            <BaseButton
-              :loading="isSaving"
-              :content-loading="isFetchingInitialData"
-              :disabled="isSaving"
-              variant="primary"
-              type="submit"
-            >
-              <template #left="slotProps">
-                <BaseIcon
-                  v-if="!isSaving"
-                  name="ArrowDownOnSquareIcon"
-                  :class="slotProps.class"
-                />
-              </template>
-              {{
-                isEdit
-                  ? $t('expenses.update_expense')
-                  : $t('expenses.save_expense')
-              }}
-            </BaseButton>
-          </div>
+          <BaseButton
+            :loading="isSaving"
+            :content-loading="isFetchingInitialData"
+            :disabled="isSaving"
+            variant="primary"
+            type="submit"
+          >
+            <template #left="slotProps">
+              <BaseIcon
+                v-if="!isSaving"
+                name="ArrowDownOnSquareIcon"
+                :class="slotProps.class"
+              />
+            </template>
+            {{
+              isEdit
+                ? $t('expenses.update_expense')
+                : $t('expenses.save_expense')
+            }}
+          </BaseButton>
         </template>
       </BasePageHeader>
 
-      <BaseCard>
+      <BaseCard container-class="p-4 md:p-5">
         <BaseInputGrid>
           <!-- Category -->
           <BaseInputGroup
@@ -229,30 +227,6 @@
           :currency="expenseStore.currentExpense.selectedCurrency"
           :is-loading="isFetchingInitialData"
         />
-
-        <!-- Mobile Save Button -->
-        <div class="mt-4 block md:hidden">
-          <BaseButton
-            :loading="isSaving"
-            :tabindex="6"
-            variant="primary"
-            type="submit"
-            class="flex w-full justify-center"
-          >
-            <template #left="slotProps">
-              <BaseIcon
-                v-if="!isSaving"
-                name="ArrowDownOnSquareIcon"
-                :class="slotProps.class"
-              />
-            </template>
-            {{
-              isEdit
-                ? $t('expenses.update_expense')
-                : $t('expenses.save_expense')
-            }}
-          </BaseButton>
-        </div>
       </BaseCard>
     </form>
   </BasePage>

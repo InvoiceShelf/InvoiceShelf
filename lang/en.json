@@ -692,6 +692,7 @@
     },
     "frequency": {
       "title": "Frequency (using cron format)",
+      "label": "Frequency",
       "select_frequency": "Select Frequency",
       "minute": "Minute",
       "hour": "Hour",
