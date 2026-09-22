@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ColumnDef } from '@/scripts/components/table/DataTable.vue'
 import { ref, computed, reactive, onUnmounted } from 'vue'
 import { debouncedWatch } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
@@ -8,16 +9,8 @@ import { useCompanyStore } from '../../../../stores/company.store'
 import { useUserStore } from '../../../../stores/user.store'
 import ItemDropdown from '../components/ItemDropdown.vue'
 import { useCustomFieldDefinitions } from '@/scripts/features/shared/custom-fields/use-custom-fields'
-import SatelliteIcon from '@/scripts/components/icons/SatelliteIcon.vue'
 
-interface TableColumn {
-  key: string
-  label?: string
-  thClass?: string
-  tdClass?: string
-  placeholderClass?: string
-  sortable?: boolean
-}
+type TableColumn = Omit<ColumnDef, 'label'> & { label?: string }
 
 interface FetchParams {
   page: number
@@ -109,9 +102,10 @@ const itemColumns = computed<TableColumn[]>(() => [
     label: t('items.name'),
     thClass: 'extra',
     tdClass: 'font-medium text-heading',
+    mobile: 'title',
   },
-  { key: 'unit_name', label: t('items.unit') },
-  { key: 'price', label: t('items.price') },
+  { key: 'unit_name', label: t('items.unit'), mobile: 'subtitle' },
+  { key: 'price', label: t('items.price'), align: 'end', mobile: 'trailing' },
   { key: 'created_at', label: t('items.added_on') },
   ...printedFields.value.map((field) => ({
     key: `custom_field_${field.id}`,
@@ -123,8 +117,13 @@ const itemColumns = computed<TableColumn[]>(() => [
     thClass: 'text-right',
     tdClass: 'text-right text-sm font-medium',
     sortable: false,
+    mobile: 'actions',
   },
 ])
+
+function itemLink(row: { id?: number | string }): string {
+  return `/admin/items/${row.id}/edit`
+}
 
 debouncedWatch(
   filters,
@@ -259,7 +258,7 @@ function removeMultipleItems(): void {
       </template>
     </BasePageHeader>
 
-    <BaseFilterWrapper :show="showFilters" class="mt-5" @clear="clearFilter">
+    <BaseFilterWrapper :show="showFilters" @clear="clearFilter">
       <BaseInputGroup :label="$t('items.name')" class="text-left">
         <BaseInput
           v-model="filters.name"
@@ -292,11 +291,10 @@ function removeMultipleItems(): void {
 
     <BaseEmptyPlaceholder
       v-show="showEmptyScreen"
+      icon="CubeIcon"
       :title="$t('items.no_items')"
       :description="$t('items.list_of_items')"
     >
-      <SatelliteIcon class="mt-5 mb-4" />
-
       <template #actions>
         <BaseButton
           v-if="userStore.hasAbilities(ABILITIES.CREATE_ITEM)"
@@ -312,46 +310,27 @@ function removeMultipleItems(): void {
     </BaseEmptyPlaceholder>
 
     <div v-show="!showEmptyScreen" class="relative table-container">
-      <div
-        class="
-          relative
-          flex
-          items-center
-          justify-end
-          h-5
-          border-line-default border-solid
-        "
-      >
-        <BaseDropdown v-if="itemStore.selectedItems.length">
-          <template #activator>
-            <span
-              class="
-                flex
-                text-sm
-                font-medium
-                cursor-pointer
-                select-none
-                text-primary-400
-              "
-            >
-              {{ $t('general.actions') }}
-              <BaseIcon name="ChevronDownIcon" />
-            </span>
-          </template>
-          <BaseDropdownItem @click="removeMultipleItems">
-            <BaseIcon name="TrashIcon" class="mr-3 text-body" />
-            {{ $t('general.delete') }}
-          </BaseDropdownItem>
-        </BaseDropdown>
-      </div>
-
       <BaseTable
         ref="table"
         :data="fetchData"
         :columns="itemColumns"
         :placeholder-count="itemStore.totalItems >= 20 ? 10 : 5"
-        class="mt-3"
+        :row-to="itemLink"
+        :selected-count="
+          userStore.hasAbilities(ABILITIES.DELETE_ITEM)
+            ? itemStore.selectedItems.length
+            : 0
+        "
       >
+        <template #bulk-actions>
+          <BaseButton size="xs" variant="white" @click="removeMultipleItems">
+            <template #left="slotProps">
+              <BaseIcon name="TrashIcon" :class="slotProps.class" />
+            </template>
+            {{ $t('general.delete') }}
+          </BaseButton>
+        </template>
+
         <template #header>
           <div class="absolute items-center left-6 top-2.5 select-none">
             <BaseCheckbox
@@ -375,7 +354,7 @@ function removeMultipleItems(): void {
         <template #cell-name="{ row }">
           <router-link
             :to="{ path: `items/${row.data.id}/edit` }"
-            class="font-medium text-primary-500"
+            class="font-medium text-heading hover:text-primary-600"
           >
             <BaseText :text="row.data.name" />
           </router-link>

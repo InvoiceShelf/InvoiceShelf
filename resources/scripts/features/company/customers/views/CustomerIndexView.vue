@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ColumnDef } from '@/scripts/components/table/DataTable.vue'
 import { debouncedWatch } from '@vueuse/core'
 import { reactive, ref, computed, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -7,15 +8,8 @@ import { useDialogStore } from '../../../../stores/dialog.store'
 import { useCompanyStore } from '../../../../stores/company.store'
 import { useUserStore } from '../../../../stores/user.store'
 import CustomerDropdown from '../components/CustomerDropdown.vue'
-import AstronautIcon from '@/scripts/components/icons/AstronautIcon.vue'
 
-interface TableColumn {
-  key: string
-  label?: string
-  thClass?: string
-  tdClass?: string
-  sortable?: boolean
-}
+type TableColumn = Omit<ColumnDef, 'label'> & { label?: string }
 
 interface FetchParams {
   page: number
@@ -92,12 +86,15 @@ const customerColumns = computed<TableColumn[]>(() => [
     label: t('customers.name'),
     thClass: 'extra',
     tdClass: 'font-medium text-heading',
+    mobile: 'title',
   },
-  { key: 'phone', label: t('customers.phone') },
+  { key: 'phone', label: t('customers.phone'), mobile: 'subtitle' },
   {
     key: 'account_balance',
     label: t('customers.net_account_balance'),
     sortable: false,
+    align: 'end',
+    mobile: 'trailing',
   },
   {
     key: 'created_at',
@@ -108,8 +105,13 @@ const customerColumns = computed<TableColumn[]>(() => [
     tdClass: 'text-right text-sm font-medium pl-0',
     thClass: 'pl-0',
     sortable: false,
+    mobile: 'actions',
   },
 ])
+
+function customerLink(row: { id?: number | string }): string {
+  return `/admin/customers/${row.id}/view`
+}
 
 debouncedWatch(
   filters,
@@ -246,7 +248,7 @@ function removeMultipleCustomers(): void {
       </template>
     </BasePageHeader>
 
-    <BaseFilterWrapper :show="showFilters" class="mt-5" @clear="clearFilter">
+    <BaseFilterWrapper :show="showFilters" @clear="clearFilter">
       <BaseInputGroup :label="$t('customers.display_name')" class="text-left">
         <BaseInput
           v-model="filters.display_name"
@@ -277,11 +279,10 @@ function removeMultipleCustomers(): void {
 
     <BaseEmptyPlaceholder
       v-show="showEmptyScreen"
+      icon="UsersIcon"
       :title="$t('customers.no_customers')"
       :description="$t('customers.list_of_customers')"
     >
-      <AstronautIcon class="mt-5 mb-4" />
-
       <template #actions>
         <BaseButton
           v-if="userStore.hasAbilities(ABILITIES.CREATE_CUSTOMER)"
@@ -298,37 +299,27 @@ function removeMultipleCustomers(): void {
 
     <!-- Total no of Customers in Table -->
     <div v-show="!showEmptyScreen" class="relative table-container">
-      <div class="relative flex items-center justify-end h-5">
-        <BaseDropdown v-if="customerStore.selectedCustomers.length">
-          <template #activator>
-            <span
-              class="
-                flex
-                text-sm
-                font-medium
-                cursor-pointer
-                select-none
-                text-primary-400
-              "
-            >
-              {{ $t('general.actions') }}
-              <BaseIcon name="ChevronDownIcon" />
-            </span>
-          </template>
-          <BaseDropdownItem @click="removeMultipleCustomers">
-            <BaseIcon name="TrashIcon" class="mr-3 text-body" />
-            {{ $t('general.delete') }}
-          </BaseDropdownItem>
-        </BaseDropdown>
-      </div>
-
       <!-- Table Section -->
       <BaseTable
         ref="tableComponent"
-        class="mt-3"
         :data="fetchData"
         :columns="customerColumns"
+        :row-to="customerLink"
+        :selected-count="
+          userStore.hasAbilities(ABILITIES.DELETE_CUSTOMER)
+            ? customerStore.selectedCustomers.length
+            : 0
+        "
       >
+        <template #bulk-actions>
+          <BaseButton size="xs" variant="white" @click="removeMultipleCustomers">
+            <template #left="slotProps">
+              <BaseIcon name="TrashIcon" :class="slotProps.class" />
+            </template>
+            {{ $t('general.delete') }}
+          </BaseButton>
+        </template>
+
         <!-- Select All Checkbox -->
         <template #header>
           <div class="absolute z-10 items-center left-6 top-2.5 select-none">
@@ -356,7 +347,7 @@ function removeMultipleCustomers(): void {
             <BaseText
               :text="row.data.name"
               tag="span"
-              class="font-medium text-primary-500 flex flex-col"
+              class="font-medium text-heading hover:text-primary-600 flex flex-col"
             />
             <BaseText
               :text="row.data.contact_name ? row.data.contact_name : ''"

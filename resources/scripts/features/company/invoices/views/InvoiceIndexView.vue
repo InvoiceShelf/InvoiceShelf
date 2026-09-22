@@ -394,6 +394,7 @@
           :data="fetchRecurringData"
           :columns="recurringColumns"
           :placeholder-count="recurringInvoiceStore.totalRecurringInvoices >= 20 ? 10 : 5"
+          :row-to="recurringInvoiceLink"
           :selected-count="canRecurringDelete ? recurringInvoiceStore.selectedRecurringInvoices.length : 0"
         >
           <template #bulk-actions>
@@ -711,6 +712,7 @@ const invoiceColumns = computed<TableColumn[]>(() => [
     tdClass: 'text-right text-sm font-medium w-12',
     thClass: 'text-right',
     sortable: false,
+    mobile: 'actions',
   },
 ])
 
@@ -936,19 +938,34 @@ const recurringColumns = computed<TableColumn[]>(() => [
     label: t('recurring_invoices.starts_at'),
     thClass: 'extra',
     tdClass: 'font-medium',
+    mobile: 'subtitle',
   },
-  { key: 'customer', label: t('invoices.customer') },
-  { key: 'frequency', label: t('recurring_invoices.frequency.title') },
-  { key: 'status', label: t('invoices.status') },
-  { key: 'total', label: t('invoices.total') },
+  { key: 'customer', label: t('invoices.customer'), mobile: 'title' },
+  {
+    key: 'frequency',
+    label: t('recurring_invoices.frequency.title'),
+    mobile: 'subtitle',
+  },
+  { key: 'status', label: t('invoices.status'), mobile: 'badge' },
+  {
+    key: 'total',
+    label: t('invoices.total'),
+    align: 'end',
+    mobile: 'trailing',
+  },
   {
     key: 'actions',
     label: t('recurring_invoices.action'),
     tdClass: 'text-right text-sm font-medium',
     thClass: 'text-right',
     sortable: false,
+    mobile: 'actions',
   },
 ])
+
+function recurringInvoiceLink(row: { id?: number | string }): string {
+  return `/admin/recurring-invoices/${row.id}/view`
+}
 
 debouncedWatch(recurringFilters, () => setRecurringFilters(), { debounce: 500 })
 
