@@ -311,6 +311,24 @@ select {
 :focus-visible {
     outline-color: var(--color-primary-500);
 }
+
+/* Tailwind v4 no longer gives buttons a pointer; everything clickable that is
+   not disabled gets it back here */
+button:not(:disabled),
+[role='button']:not([aria-disabled='true']),
+[role='tab'],
+[role='radio'],
+[role='switch'],
+[role='menuitem']:not([aria-disabled='true']),
+[role='option']:not([aria-disabled='true']),
+select:not(:disabled),
+summary,
+label[for],
+input[type='checkbox']:not(:disabled),
+input[type='radio']:not(:disabled),
+input[type='file']:not(:disabled) {
+    cursor: pointer;
+}
 } /* end @layer base */
 
 html {
