@@ -26,6 +26,9 @@ interface FieldValidation {
   min: number | null
   max: number | null
   pattern: string | null
+  /** A literal moment, the word today, or null for no bound. */
+  earliest: string | null
+  latest: string | null
 }
 
 interface CustomFieldForm {
@@ -50,13 +53,26 @@ function submittedValidation(): Record<string, unknown> | null {
     .filter(([, value]) => value !== null && value !== '' && value !== undefined)
     // A number input hands back a string; store the bounds as numbers so the
     // column holds what it says it holds.
-    .map(([key, value]) => [key, key === 'pattern' ? value : Number(value)])
+    // Only the numeric bounds are numbers; the pattern and the date bounds
+    // are text, and a date bound may be the word today.
+    .map(([key, value]) => [
+      key,
+      ['pattern', 'earliest', 'latest'].includes(key) ? value : Number(value),
+    ])
 
   return set.length > 0 ? Object.fromEntries(set) : null
 }
 
 function emptyValidation(): FieldValidation {
-  return { min_length: null, max_length: null, min: null, max: null, pattern: null }
+  return {
+    min_length: null,
+    max_length: null,
+    min: null,
+    max: null,
+    pattern: null,
+    earliest: null,
+    latest: null,
+  }
 }
 
 const modalStore = useModalStore()
@@ -117,6 +133,43 @@ const isSwitchTypeSelected = computed<boolean>(
 
 const showValidation = ref<boolean>(false)
 
+type BoundKey = 'earliest' | 'latest'
+
+/** A stored bound read back as the choice that produced it. */
+function modeOf(bound: string | null): string {
+  if (!bound) return 'none'
+
+  return bound === 'today' ? 'today' : 'fixed'
+}
+
+function boundModel(key: BoundKey) {
+  return computed<string>({
+    get: () => modeOf(currentCustomField.value.validation[key]),
+    set: (mode) => {
+      const current = currentCustomField.value.validation[key]
+
+      currentCustomField.value.validation[key] =
+        mode === 'none' ? null : mode === 'today' ? 'today' : (modeOf(current) === 'fixed' ? current : '')
+    },
+  })
+}
+
+const earliestMode = boundModel('earliest')
+const latestMode = boundModel('latest')
+
+const boundModes = computed(() => [
+  { label: t('settings.custom_fields.bound_none'), value: 'none' },
+  ...(isDateTypeSelected.value
+    ? [{ label: t('settings.custom_fields.bound_today'), value: 'today' }]
+    : []),
+  {
+    label: isTimeTypeSelected.value
+      ? t('settings.custom_fields.bound_fixed_time')
+      : t('settings.custom_fields.bound_fixed_date'),
+    value: 'fixed',
+  },
+])
+
 /** Free text, so length and shape mean something. */
 const isTextTypeSelected = computed<boolean>(() =>
   ['Input', 'TextArea', 'Phone', 'Url'].includes(currentCustomField.value.type)
@@ -126,12 +179,27 @@ const isNumberTypeSelected = computed<boolean>(
   () => currentCustomField.value.type === 'Number'
 )
 
+/** A calendar date, so `today` is a bound it can carry. */
+const isDateTypeSelected = computed<boolean>(() =>
+  ['Date', 'DateTime'].includes(currentCustomField.value.type)
+)
+
+/** A time of day, which only takes literal bounds. */
+const isTimeTypeSelected = computed<boolean>(
+  () => currentCustomField.value.type === 'Time'
+)
+
 /**
- * A switch, a date, a time and a dropdown are already constrained by the
- * widget that collects them, so the section is not offered for those.
+ * A switch is constrained by its widget and a dropdown by its own option
+ * list, so neither is offered the section. The rest can say something about
+ * what they will accept.
  */
 const supportsValidation = computed<boolean>(
-  () => isTextTypeSelected.value || isNumberTypeSelected.value
+  () =>
+    isTextTypeSelected.value ||
+    isNumberTypeSelected.value ||
+    isDateTypeSelected.value ||
+    isTimeTypeSelected.value
 )
 
 const isDropdownSelected = computed<boolean>(
@@ -595,6 +663,43 @@ function closeCustomFieldModal(): void {
                   <BaseInput
                     v-model="currentCustomField.validation.max"
                     type="number"
+                  />
+                </BaseInputGroup>
+              </BaseInputGrid>
+
+              <BaseInputGrid
+                v-if="isDateTypeSelected || isTimeTypeSelected"
+                layout="two-column"
+              >
+                <BaseInputGroup :label="$t('settings.custom_fields.earliest')">
+                  <BaseMultiselect
+                    v-model="earliestMode"
+                    :options="boundModes"
+                    value-prop="value"
+                    :can-deselect="false"
+                    :searchable="false"
+                  />
+                  <component
+                    :is="defaultValueComponent"
+                    v-if="defaultValueComponent && earliestMode === 'fixed'"
+                    v-model="currentCustomField.validation.earliest"
+                    class="mt-2"
+                  />
+                </BaseInputGroup>
+
+                <BaseInputGroup :label="$t('settings.custom_fields.latest')">
+                  <BaseMultiselect
+                    v-model="latestMode"
+                    :options="boundModes"
+                    value-prop="value"
+                    :can-deselect="false"
+                    :searchable="false"
+                  />
+                  <component
+                    :is="defaultValueComponent"
+                    v-if="defaultValueComponent && latestMode === 'fixed'"
+                    v-model="currentCustomField.validation.latest"
+                    class="mt-2"
                   />
                 </BaseInputGroup>
               </BaseInputGrid>

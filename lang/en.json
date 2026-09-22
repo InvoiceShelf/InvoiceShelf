@@ -1197,7 +1197,13 @@
       "min_value": "Minimum",
       "max_value": "Maximum",
       "pattern": "Pattern",
-      "pattern_help": "A regular expression the answer must match. Leave empty unless you need one."
+      "pattern_help": "A regular expression the answer must match. Leave empty unless you need one.",
+      "earliest": "Earliest",
+      "latest": "Latest",
+      "bound_none": "No limit",
+      "bound_today": "Today",
+      "bound_fixed_date": "A fixed date",
+      "bound_fixed_time": "A fixed time"
     },
     "customization": {
       "customization": "customization",

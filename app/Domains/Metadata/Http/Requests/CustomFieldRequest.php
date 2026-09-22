@@ -4,6 +4,7 @@ namespace App\Domains\Metadata\Http\Requests;
 
 use App\Domains\Metadata\Application\CustomFieldModelCatalog;
 use App\Domains\Metadata\Models\CustomField;
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
@@ -50,6 +51,8 @@ class CustomFieldRequest extends FormRequest
             'validation.max_length' => ['sometimes', 'nullable', 'integer', 'min:1'],
             'validation.min' => ['sometimes', 'nullable', 'numeric'],
             'validation.max' => ['sometimes', 'nullable', 'numeric'],
+            'validation.earliest' => ['sometimes', 'nullable', 'string', 'max:40'],
+            'validation.latest' => ['sometimes', 'nullable', 'string', 'max:40'],
             'validation.pattern' => [
                 'sometimes',
                 'nullable',
@@ -63,6 +66,7 @@ class CustomFieldRequest extends FormRequest
     {
         $validator->after(function (Validator $validator): void {
             $this->validateBoundsAreOrdered($validator);
+            $this->validateDateBounds($validator);
             $this->validatePatternCompiles($validator);
         });
     }
@@ -82,6 +86,41 @@ class CustomFieldRequest extends FormRequest
                     "The {$high} may not be less than the {$low}."
                 );
             }
+        }
+    }
+
+    /**
+     * A date bound is either the word `today` or a moment we can read, and
+     * the later one may not precede the earlier.
+     *
+     * Checked when the definition is written rather than when somebody tries
+     * to answer it, for the same reason the pattern is.
+     */
+    private function validateDateBounds(Validator $validator): void
+    {
+        $resolved = [];
+
+        foreach (['earliest', 'latest'] as $key) {
+            $bound = $this->input("validation.{$key}");
+
+            if (! is_string($bound) || $bound === '') {
+                continue;
+            }
+
+            if ($bound === CustomField::BOUND_TODAY) {
+                continue;
+            }
+
+            try {
+                $resolved[$key] = Carbon::parse($bound);
+            } catch (\Throwable) {
+                $validator->errors()->add("validation.{$key}", 'This is not a date we can read.');
+            }
+        }
+
+        if (isset($resolved['earliest'], $resolved['latest'])
+            && $resolved['latest']->lt($resolved['earliest'])) {
+            $validator->errors()->add('validation.latest', 'The latest may not be before the earliest.');
         }
     }
 

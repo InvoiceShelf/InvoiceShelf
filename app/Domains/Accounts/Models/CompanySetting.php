@@ -91,6 +91,18 @@ class CompanySetting extends Model
     }
 
     /**
+     * The time zone a company keeps its books in.
+     *
+     * Falls back to the application's own zone when the company has never
+     * been given one. Kept here rather than at each call site so "what is
+     * today for this company" has a single answer.
+     */
+    public static function timeZone(mixed $company_id): string
+    {
+        return static::getSetting('time_zone', $company_id) ?: config('app.timezone');
+    }
+
+    /**
      * Reduce preference rows to an option => value collection.
      */
     private static function flatten(Collection $rows): Collection

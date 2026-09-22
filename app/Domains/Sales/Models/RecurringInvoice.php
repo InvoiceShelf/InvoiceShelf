@@ -362,11 +362,9 @@ class RecurringInvoice extends Model
     /**
      * The time zone the owning company keeps its books in.
      */
-    public function companyTimeZone(): ?string
+    public function companyTimeZone(): string
     {
-        $zone = CompanySetting::getSetting('time_zone', $this->company_id);
-
-        return $zone ?: null;
+        return CompanySetting::timeZone($this->company_id);
     }
 
     /**

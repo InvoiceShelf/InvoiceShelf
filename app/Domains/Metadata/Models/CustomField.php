@@ -38,6 +38,14 @@ class CustomField extends Model
      */
     public const MAX_PATTERN_LENGTH = 255;
 
+    /**
+     * The one relative bound a date field may carry.
+     *
+     * Resolved against the owning company's zone, so a company thirteen
+     * hours ahead is not told the date it is living in is in the future.
+     */
+    public const BOUND_TODAY = 'today';
+
     protected $table = 'custom_fields';
 
     use HasFactory;

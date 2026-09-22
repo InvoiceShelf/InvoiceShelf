@@ -2,7 +2,9 @@
 
 namespace App\Domains\Metadata\Http\Requests\Concerns;
 
+use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Metadata\Models\CustomField;
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
@@ -133,6 +135,7 @@ trait ValidatesCustomFields
         $this->checkLength($validator, $attribute, $value, $rules, $label);
         $this->checkRange($validator, $attribute, $value, $rules, $label);
         $this->checkPattern($validator, $attribute, $value, $rules, $label);
+        $this->checkDateRange($validator, $attribute, $value, $rules, $definition, $label);
     }
 
     /**
@@ -191,6 +194,102 @@ trait ValidatesCustomFields
         if (isset($rules['max']) && $value + 0 > $rules['max'] + 0) {
             $validator->errors()->add($attribute, "{$label} may not be greater than {$rules['max']}.");
         }
+    }
+
+    /**
+     * A date, datetime or time answer against the bounds its definition sets.
+     *
+     * A time of day is compared as text: both sides are zero-padded `H:i`,
+     * which orders correctly without pretending a time of day is an instant.
+     * Dates and datetimes are compared as instants in the company's own zone,
+     * because `today` has to mean the company's today.
+     *
+     * @param  array<string, mixed>  $rules
+     */
+    private function checkDateRange(Validator $validator, string $attribute, mixed $value, array $rules, CustomField $definition, string $label): void
+    {
+        $earliest = $rules['earliest'] ?? null;
+        $latest = $rules['latest'] ?? null;
+
+        if (($earliest === null && $latest === null) || ! is_scalar($value)) {
+            return;
+        }
+
+        if (! in_array($definition->type, ['Date', 'DateTime', 'Time'], true)) {
+            return;
+        }
+
+        if ($definition->type === 'Time') {
+            $answer = $this->asTimeOfDay((string) $value);
+
+            if ($answer === null) {
+                return;
+            }
+
+            if ($earliest && ($from = $this->asTimeOfDay((string) $earliest)) && $answer < $from) {
+                $validator->errors()->add($attribute, "{$label} may not be earlier than {$from}.");
+            }
+
+            if ($latest && ($to = $this->asTimeOfDay((string) $latest)) && $answer > $to) {
+                $validator->errors()->add($attribute, "{$label} may not be later than {$to}.");
+            }
+
+            return;
+        }
+
+        $zone = CompanySetting::timeZone($this->header('company'));
+        $answer = $this->asInstant((string) $value, $zone);
+
+        if ($answer === null) {
+            return;
+        }
+
+        $from = $earliest === null ? null : $this->resolveBound((string) $earliest, $zone, upper: false);
+        $to = $latest === null ? null : $this->resolveBound((string) $latest, $zone, upper: true);
+
+        if ($from && $answer->lt($from)) {
+            $validator->errors()->add($attribute, "{$label} may not be earlier than {$from->toDateString()}.");
+        }
+
+        if ($to && $answer->gt($to)) {
+            $validator->errors()->add($attribute, "{$label} may not be later than {$to->toDateString()}.");
+        }
+    }
+
+    /**
+     * A bound as an instant.
+     *
+     * `today` is the company's today: the start of it for a lower bound and
+     * the end for an upper one, so "latest: today" accepts any moment today
+     * rather than only midnight.
+     */
+    private function resolveBound(string $bound, string $zone, bool $upper): ?Carbon
+    {
+        if ($bound === CustomField::BOUND_TODAY) {
+            return $upper ? Carbon::today($zone)->endOfDay() : Carbon::today($zone)->startOfDay();
+        }
+
+        return $this->asInstant($bound, $zone);
+    }
+
+    /** A submitted or configured moment, or null when it is not one. */
+    private function asInstant(string $value, string $zone): ?Carbon
+    {
+        try {
+            return Carbon::parse($value, $zone);
+        } catch (\Throwable) {
+            // Unparseable: the column will refuse it, and a second complaint
+            // about its range would only confuse.
+            return null;
+        }
+    }
+
+    /** A zero-padded `H:i`, which orders correctly as text, or null. */
+    private function asTimeOfDay(string $value): ?string
+    {
+        return preg_match('/^([01]\\d|2[0-3]):[0-5]\\d/', $value, $matches) === 1
+            ? substr($value, 0, 5)
+            : null;
     }
 
     /** @param  array<string, mixed>  $rules */
