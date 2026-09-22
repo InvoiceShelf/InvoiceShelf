@@ -23,8 +23,8 @@
           alt=""
           class="object-contain w-auto h-7 max-w-44"
         />
-        <MainLogoMark v-else-if="isRail" class="h-7 w-7 text-chrome-fg" />
-        <MainLogo v-else class="w-auto h-7" light-color="var(--color-chrome-fg)" />
+        <MainLogoMark v-else-if="isRail" class="w-8 h-8" />
+        <MainLogo v-else class="w-auto h-7 text-chrome-fg" />
       </router-link>
     </div>
 

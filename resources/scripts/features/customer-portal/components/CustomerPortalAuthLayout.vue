@@ -11,7 +11,7 @@
       <div class="mb-10 flex justify-center">
         <MainLogo
           v-if="!customerLogo"
-          class="block h-auto w-44 max-w-full text-primary-500"
+          class="block w-auto max-w-full h-11 text-heading"
         />
 
         <img
