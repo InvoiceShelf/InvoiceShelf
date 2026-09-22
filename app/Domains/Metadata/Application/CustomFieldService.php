@@ -11,7 +11,7 @@ class CustomFieldService
     {
         $attributes[getCustomFieldValueKey($attributes['type'])] = $defaultAnswer;
         $attributes['company_id'] = $companyId;
-        $attributes['slug'] = clean_slug($attributes['model_type'], $attributes['name']);
+        $attributes['slug'] = clean_slug($attributes['model_type'], $attributes['name'], $companyId);
 
         return CustomField::create($attributes);
     }

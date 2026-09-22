@@ -26,11 +26,11 @@ class CustomFieldFactory extends Factory
             'order' => $this->faker->randomDigitNotNull(),
             'is_required' => $this->faker->randomElement([true, false]),
             'model_type' => $this->faker->randomElement(['Customer', 'Invoice', 'Estimate', 'Expense', 'Payment']),
+            'company_id' => User::find(1)->companies()->first()->id,
             'slug' => function (array $item) {
-                return clean_slug($item['model_type'], $item['label']);
+                return clean_slug($item['model_type'], $item['label'], $item['company_id']);
             },
             'type' => $this->faker->randomElement(['Text', 'Textarea', 'Phone', 'URL', 'Number', 'Dropdown', 'Switch', 'Date', 'DateTime', 'Time']),
-            'company_id' => User::find(1)->companies()->first()->id,
         ];
     }
 }

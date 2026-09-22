@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class EloquentCustomFieldValueWriter implements CustomFieldValueWriter
 {
-    public function attach(Model $valuable, iterable $customFields): void
+    public function attach(Model $valuable, iterable $customFields, int|string|null $companyId = null): void
     {
         foreach ($customFields as $field) {
             $field = $this->normalize($field);
-            $customField = $this->definitionFor($valuable, $field['id'] ?? null);
+            $customField = $this->definitionFor($valuable, $field, $companyId);
 
             if (! $customField) {
                 continue;
@@ -27,11 +27,11 @@ class EloquentCustomFieldValueWriter implements CustomFieldValueWriter
         }
     }
 
-    public function update(Model $valuable, iterable $customFields): void
+    public function update(Model $valuable, iterable $customFields, int|string|null $companyId = null): void
     {
         foreach ($customFields as $field) {
             $field = $this->normalize($field);
-            $customField = $this->definitionFor($valuable, $field['id'] ?? null);
+            $customField = $this->definitionFor($valuable, $field, $companyId);
 
             if (! $customField) {
                 continue;
@@ -57,27 +57,42 @@ class EloquentCustomFieldValueWriter implements CustomFieldValueWriter
      * The definition an incoming answer names, or null when it names one this
      * record has no business answering.
      *
-     * Nothing upstream checks the submitted id: no form request declares a
-     * rule for it, so an id belonging to another company, or to no field at
-     * all, reaches this class as-is. A record that knows its own company may
-     * only answer that company's definitions, which it names through
-     * `customFieldCompanyId()` because a company itself carries no
-     * `company_id`. A record that belongs to no single company -- a user, who
-     * belongs to several -- is left to the definition it names.
+     * An answer names its definition by id or by slug. The slug is the one
+     * an integrator can write down: it is minted once and never recomputed,
+     * so it survives a rename, and it is what the templates already use.
+     *
+     * Either way the lookup is scoped to a company. A record that knows its
+     * own says so through `customFieldCompanyId()`, because a company itself
+     * carries no `company_id`; one that belongs to several, as a user does,
+     * relies on the caller passing the company it is acting for. Without a
+     * company a slug cannot be resolved at all, since it is unique only
+     * within one.
      */
-    private function definitionFor(Model $valuable, mixed $id): ?CustomField
+    private function definitionFor(Model $valuable, array $field, int|string|null $companyId): ?CustomField
     {
-        if (! is_numeric($id)) {
+        $id = $field['id'] ?? null;
+        $slug = $field['slug'] ?? null;
+
+        $query = CustomField::query();
+
+        if (is_numeric($id)) {
+            $query->whereKey($id);
+        } elseif (is_string($slug) && $slug !== '') {
+            $query->where('slug', $slug);
+        } else {
             return null;
         }
 
-        $query = CustomField::query()->whereKey($id);
-        $company = method_exists($valuable, 'customFieldCompanyId')
+        $company = $companyId ?? (method_exists($valuable, 'customFieldCompanyId')
             ? $valuable->customFieldCompanyId()
-            : $valuable->getAttribute('company_id');
+            : $valuable->getAttribute('company_id'));
 
         if ($company !== null) {
             $query->where('company_id', $company);
+        } elseif ($id === null) {
+            // A slug is unique only within a company, so resolving one
+            // without knowing the company would be a guess. An id is not.
+            return null;
         }
 
         return $query->first();

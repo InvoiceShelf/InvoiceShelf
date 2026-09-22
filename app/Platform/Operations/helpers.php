@@ -141,13 +141,15 @@ function getCustomFieldValueKey(string $type)
  *
  * @param  string  $type  Model type the field is attached to.
  * @param  string  $slug  Base slug to match as a prefix.
+ * @param  mixed  $companyId  Company whose slugs are being compared.
  * @param  int  $id  Custom field to leave out of the comparison.
  * @return Collection
  */
-function getRelatedSlugs($type, $slug, $id = 0)
+function getRelatedSlugs($type, $slug, $companyId, $id = 0)
 {
     return CustomField::query()
         ->select('slug')
+        ->where('company_id', $companyId)
         ->where('model_type', $type)
         ->where('slug', 'like', $slug.'%')
         ->where('id', '!=', $id)
@@ -158,21 +160,29 @@ function getRelatedSlugs($type, $slug, $id = 0)
  * Build the unique storage slug for a custom field.
  *
  * The shape is CUSTOM_<MODEL>_<LABEL>, upper-cased with underscores. When that
- * is taken, _1 .. _10 are tried in turn; an eleventh collision is a caller
- * problem, not something to paper over with a random suffix.
+ * is taken within the same company, _1 .. _10 are tried in turn; an eleventh
+ * collision is a caller problem, not something to paper over with a random
+ * suffix.
+ *
+ * Uniqueness is per company. It used to be global, so the second tenant to
+ * name a field "Supply Date" got CUSTOM_INVOICE_SUPPLY_DATE_1 on account of
+ * a company they cannot see, and the eleventh could not create the field at
+ * all. Nothing resolves a definition by slug outside the record that holds
+ * the answer, so narrowing it costs nothing.
  *
  * @param  string  $model  Model type the field is attached to.
  * @param  string  $title  Human label to slugify.
+ * @param  mixed  $companyId  Company the field belongs to.
  * @param  int  $id  Custom field being renamed, if any.
  * @return string
  *
  * @throws Exception When every candidate is already in use.
  */
-function clean_slug($model, $title, $id = 0)
+function clean_slug($model, $title, $companyId, $id = 0)
 {
     $base = Str::upper('CUSTOM_'.$model.'_'.Str::slug($title, '_'));
 
-    $taken = getRelatedSlugs($model, $base, $id)->pluck('slug')->all();
+    $taken = getRelatedSlugs($model, $base, $companyId, $id)->pluck('slug')->all();
 
     $candidates = [$base, ...array_map(fn ($n) => $base.'_'.$n, range(1, 10))];
 

@@ -32,7 +32,7 @@ class UserProfileController extends Controller
         $account->update($request->getProfilePayload());
 
         if ($customFields = $request->input('customFields')) {
-            $this->customFieldValueWriter->update($account, $customFields);
+            $this->customFieldValueWriter->update($account, $customFields, $request->header('company'));
         }
 
         return new UserResource($account->refresh());
