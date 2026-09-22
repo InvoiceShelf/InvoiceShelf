@@ -1,0 +1,13 @@
+# The shell installs its own dependencies: it is a Capacitor project, not a
+# package of the web app. Without this file pnpm walks up, finds the root
+# workspace and installs nothing here.
+#
+# Hoisted for the same reason the root is: the Capacitor CLI resolves each
+# plugin package from disk to read its native source, and a symlinked store
+# layout hides them.
+nodeLinker: hoisted
+
+# `sharp` is @capacitor/assets' image pipeline; its install script fetches the
+# prebuilt libvips binary, without which icon and splash generation cannot run.
+allowBuilds:
+  sharp: true

@@ -1,0 +1,14 @@
+<!--
+  Source artwork for `pnpm -C mobile run assets`, which rasterises these into
+  every density the two native projects want. All five are the mark from
+  `resources/static/img/logo-mark.svg`, re-cut per layer; the rounded corners
+  of that file are gone because iOS and Android each apply their own mask and
+  artwork that carried its own would be rounded twice.
+
+  icon-background: the lower layer of the Android adaptive icon. Flat
+  brand colour, because the launcher may shift this layer behind the
+  foreground as a parallax effect and any detail here would smear.
+-->
+<svg width="1024" height="1024" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="48" height="48" fill="#4A3DFF"></rect>
+</svg>

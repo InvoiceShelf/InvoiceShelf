@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">InvoiceShelf</string>
+    <string name="title_activity_main">InvoiceShelf</string>
+    <string name="package_name">com.invoiceshelf.app</string>
+    <string name="custom_url_scheme">com.invoiceshelf.app</string>
+</resources>

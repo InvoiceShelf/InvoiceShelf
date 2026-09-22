@@ -1,0 +1,27 @@
+{
+  "name": "invoiceshelf-mobile",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Capacitor shell for the InvoiceShelf thin client. The web bundle is built at the repository root into mobile/www.",
+  "scripts": {
+    "sync": "cap sync",
+    "assets": "capacitor-assets generate --ios --android --iconBackgroundColor '#4a3dff' --iconBackgroundColorDark '#4a3dff' --splashBackgroundColor '#4a3dff' --splashBackgroundColorDark '#4a3dff'",
+    "android:build": "cd android && ./gradlew assembleDebug"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.6.9",
+    "@capacitor/app": "^7.1.2",
+    "@capacitor/browser": "^7.0.5",
+    "@capacitor/camera": "^7.0.5",
+    "@capacitor/core": "^7.6.9",
+    "@capacitor/device": "^7.0.5",
+    "@capacitor/filesystem": "^7.1.8",
+    "@capacitor/ios": "^7.6.9",
+    "@capacitor/preferences": "^7.0.4",
+    "@capacitor/share": "^7.0.4"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^7.6.9"
+  }
+}
