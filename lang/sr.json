@@ -1179,8 +1179,13 @@
         "invoice": "Invoice",
         "estimate": "Estimate",
         "expense": "Expense",
-        "payment": "Payment"
-      }
+        "payment": "Payment",
+        "item": "Item",
+        "company": "Company",
+        "user": "User"
+      },
+      "show_on_document": "Show on document",
+      "show_on_document_description": "Print this field on the invoice, estimate or receipt it belongs to."
     },
     "customization": {
       "customization": "prilagođavanje",
