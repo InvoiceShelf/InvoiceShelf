@@ -16,7 +16,7 @@ import useVuelidate from '@vuelidate/core'
 import { useCustomerStore } from '../store'
 import { useGlobalStore } from '../../../../stores/global.store'
 import { useCompanyStore } from '../../../../stores/company.store'
-import CustomerCustomFields from '@/scripts/features/company/customers/components/CreateCustomFields.vue'
+import CustomFieldsSection from '@/scripts/features/shared/custom-fields/CustomFieldsSection.vue'
 import CopyInputField from '@/scripts/features/company/customers/components/CopyInputField.vue'
 
 const customerStore = useCustomerStore()
@@ -44,10 +44,6 @@ const isLoadingContent = computed<boolean>(
 const pageTitle = computed<string>(() =>
   isEdit.value ? t('customers.edit_customer') : t('customers.new_customer')
 )
-
-const hasCustomFields = computed<boolean>(() => {
-  return customerStore.currentCustomer.customFields.length > 0
-})
 
 const rules = computed(() => ({
   currentCustomer: {
@@ -708,31 +704,14 @@ async function submitCustomerData(): Promise<void> {
           </BaseInputGrid>
         </div>
 
-        <BaseDivider
-          v-if="hasCustomFields"
-          class="mb-5 md:mb-8"
+        <CustomFieldsSection
+          type="Customer"
+          :store="customerStore"
+          store-prop="currentCustomer"
+          :is-edit="isEdit"
+          :is-loading="isLoadingContent"
+          :scope="customFieldValidationScope"
         />
-
-        <!-- Customer Custom Fields -->
-        <div class="grid grid-cols-5 gap-2 mb-8">
-          <h6
-            v-if="hasCustomFields"
-            class="col-span-5 text-lg font-semibold text-left lg:col-span-1"
-          >
-            {{ $t('settings.custom_fields.title') }}
-          </h6>
-
-          <div class="col-span-5 lg:col-span-4">
-            <CustomerCustomFields
-              type="Customer"
-              :store="customerStore"
-              store-prop="currentCustomer"
-              :is-edit="isEdit"
-              :is-loading="isLoadingContent"
-              :custom-field-scope="customFieldValidationScope"
-            />
-          </div>
-        </div>
       </BaseCard>
     </form>
   </BasePage>

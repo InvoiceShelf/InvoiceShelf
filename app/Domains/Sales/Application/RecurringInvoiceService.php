@@ -70,6 +70,14 @@ class RecurringInvoiceService
             $this->exchangeRateRecorder->record($recurringInvoice);
         }
 
+        // Answers to item-level custom fields have no cascade of their own,
+        // so they are cleared row by row before the items are replaced.
+        foreach ($recurringInvoice->items as $lineItem) {
+            foreach ($lineItem->fields()->get() as $answer) {
+                $answer->delete();
+            }
+        }
+
         $recurringInvoice->items()->delete();
         $this->createItems($recurringInvoice, $items);
 
@@ -101,6 +109,14 @@ class RecurringInvoiceService
             $lineItems = $recurringInvoice->items();
 
             if ($lineItems->exists()) {
+                // Same reason as in update(): a bulk delete never reaches the
+                // per-row hook that would clear each line's answers.
+                foreach ($recurringInvoice->items as $lineItem) {
+                    foreach ($lineItem->fields()->get() as $answer) {
+                        $answer->delete();
+                    }
+                }
+
                 $lineItems->delete();
             }
 

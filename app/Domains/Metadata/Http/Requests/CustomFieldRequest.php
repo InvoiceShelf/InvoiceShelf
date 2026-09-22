@@ -35,7 +35,7 @@ class CustomFieldRequest extends FormRequest
             'order' => ['required'],
             'type' => ['required'],
             'is_required' => ['required', 'boolean'],
-            'options' => ['array'],
+            'options' => ['array', 'nullable'],
             'placeholder' => ['string', 'nullable'],
         ];
     }

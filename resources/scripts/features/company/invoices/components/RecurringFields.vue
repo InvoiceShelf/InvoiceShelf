@@ -135,6 +135,17 @@
         :is-edit="isEdit"
         :customer-currency="invoiceStore.newInvoice.currency_id"
       />
+      <!-- Handed down by InvoiceBasicFields, which renders this card in
+           place of the ordinary details one. -->
+      <CustomFieldInput
+        v-for="(field, index) in customFields"
+        :key="field.id"
+        :custom-field-scope="customFieldScope"
+        :store="invoiceStore"
+        store-prop="newInvoice"
+        :index="index"
+        :field="field"
+      />
     </BaseInputGrid>
   </div>
 </template>
@@ -146,16 +157,22 @@ import { useDebounceFn } from '@vueuse/core'
 import { useRecurringInvoiceStore } from '@/scripts/features/company/recurring-invoices/store'
 import { useInvoiceStore } from '../store'
 import { ExchangeRateConverter } from '../../../shared/document-form'
+import CustomFieldInput from '@/scripts/features/shared/custom-fields/CustomFieldInput.vue'
+import type { CustomFieldItem } from '@/scripts/features/shared/custom-fields/use-custom-fields'
 import type { FrequencyOption } from '@/scripts/features/company/recurring-invoices/store'
 
 interface Props {
   isLoading?: boolean
   isEdit?: boolean
+  customFields?: CustomFieldItem[]
+  customFieldScope?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
   isLoading: false,
   isEdit: false,
+  customFields: () => [],
+  customFieldScope: 'newInvoice',
 })
 
 const recurringInvoiceStore = useRecurringInvoiceStore()

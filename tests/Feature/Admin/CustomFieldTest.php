@@ -95,3 +95,14 @@ test('delete custom field', function () {
 
     $this->assertModelMissing($customField);
 });
+
+test('a field with no options saves', function (mixed $options) {
+    $data = CustomField::factory()->raw(['type' => 'Input', 'options' => $options]);
+
+    postJson('api/v1/custom-fields', $data)->assertStatus(201);
+
+    $this->assertDatabaseHas('custom_fields', ['name' => $data['name']]);
+})->with([
+    'an empty array, as the editor now sends' => [[]],
+    'null, which an older client may still send' => [null],
+]);

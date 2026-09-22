@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, ref, computed, defineAsyncComponent } from 'vue'
+import { reactive, ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import useVuelidate from '@vuelidate/core'
 import { required, numeric, helpers } from '@vuelidate/validators'
@@ -7,6 +7,7 @@ import { useModalStore } from '@/scripts/stores/modal.store'
 import { useNotificationStore } from '@/scripts/stores/notification.store'
 import { customFieldService } from '@/scripts/api/services/custom-field.service'
 import type { CreateCustomFieldPayload } from '@/scripts/api/services/custom-field.service'
+import { resolveCustomFieldTypeComponent } from '@/scripts/features/shared/custom-fields/resolve-type-component'
 
 interface FieldOption {
   name: string
@@ -89,17 +90,9 @@ const isDropdownSelected = computed<boolean>(
   () => selectedType.value?.label === 'Select Field'
 )
 
-const defaultValueComponent = computed(() => {
-  if (currentCustomField.value.type) {
-    return defineAsyncComponent(
-      () =>
-        import(
-          `@/scripts/admin/components/custom-fields/types/${currentCustomField.value.type}Type.vue`
-        )
-    )
-  }
-  return null
-})
+const defaultValueComponent = computed(() =>
+  resolveCustomFieldTypeComponent(currentCustomField.value.type)
+)
 
 const isRequiredField = computed<boolean>({
   get: () => currentCustomField.value.is_required === 1,
@@ -194,9 +187,7 @@ async function submitCustomFieldData(): Promise<void> {
     type: currentCustomField.value.type,
     placeholder: currentCustomField.value.placeholder,
     is_required: currentCustomField.value.is_required === 1,
-    options: currentCustomField.value.options.length
-      ? currentCustomField.value.options.map((o) => o.name)
-      : null,
+    options: currentCustomField.value.options.map((o) => o.name),
     order: currentCustomField.value.order,
     default_answer: defaultAnswer as string ?? null,
   }

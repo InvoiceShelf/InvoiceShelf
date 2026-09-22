@@ -109,6 +109,15 @@ class Payment extends Model implements HasMedia
         static::updated(function ($receipt) {
             self::queueRender($receipt, true);
         });
+
+        // HasCustomFields registers its clean-up from its own booted(), which
+        // a class declaring this method replaces outright rather than adds to.
+        // Repeated here so a deleted receipt does not leave its answers behind.
+        static::deleting(function ($receipt) {
+            if ($receipt->fields()->exists()) {
+                $receipt->fields()->delete();
+            }
+        });
     }
 
     /*
