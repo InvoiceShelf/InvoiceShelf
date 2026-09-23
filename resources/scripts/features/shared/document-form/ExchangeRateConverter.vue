@@ -6,21 +6,29 @@
     :error="
       v.exchange_rate.$error && v.exchange_rate.$errors[0].$message
     "
+    :help-text="
+      $t('settings.exchange_rate.exchange_help_text', {
+        currency: selectedCurrency.code,
+        baseCurrency: companyCurrency?.code ?? '',
+      })
+    "
     required
   >
     <template #labelRight>
-      <div v-if="hasActiveProvider && isEdit">
+      <button
+        v-if="hasActiveProvider && isEdit"
+        type="button"
+        class="p-1 -m-1 rounded-md text-primary-600 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus disabled:cursor-not-allowed"
+        :aria-label="$t('settings.exchange_rate.fetch_latest')"
+        :title="$t('settings.exchange_rate.fetch_latest')"
+        :disabled="isFetching"
+        @click="getCurrentExchangeRate(customerCurrency)"
+      >
         <BaseIcon
-          v-tooltip="{ content: 'Fetch Latest Exchange rate' }"
           name="ArrowPathIcon"
-          :class="`h-4 w-4 text-primary-500 cursor-pointer outline-hidden ${
-            isFetching
-              ? ' animate-spin rotate-180 cursor-not-allowed pointer-events-none '
-              : ''
-          }`"
-          @click="getCurrentExchangeRate(customerCurrency)"
+          :class="['w-4 h-4', isFetching ? 'animate-spin motion-reduce:animate-none' : '']"
         />
-      </div>
+      </button>
     </template>
 
     <BaseInput
@@ -36,15 +44,6 @@
         </span>
       </template>
     </BaseInput>
-
-    <span class="text-subtle text-xs mt-2 font-light">
-      {{
-        $t('settings.exchange_rate.exchange_help_text', {
-          currency: selectedCurrency.code,
-          baseCurrency: companyCurrency?.code ?? '',
-        })
-      }}
-    </span>
   </BaseInputGroup>
 </template>
 

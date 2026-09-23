@@ -17,6 +17,7 @@
         <img
           v-else
           :src="customerLogo"
+          alt=""
           class="block h-auto w-44 max-w-full"
         />
       </div>

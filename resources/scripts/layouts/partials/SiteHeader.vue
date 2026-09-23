@@ -84,16 +84,10 @@
             </span>
           </template>
 
-          <router-link
-            v-for="action in createActions"
-            :key="action.to"
-            :to="action.to"
-          >
-            <BaseDropdownItem>
-              <BaseIcon :name="action.icon" class="w-5 h-5 mr-3 text-subtle" />
-              {{ $t(action.label) }}
-            </BaseDropdownItem>
-          </router-link>
+          <BaseDropdownItem v-for="action in createActions" :key="action.to" :to="action.to">
+            <BaseIcon :name="action.icon" class="w-5 h-5 mr-3 text-subtle" />
+            {{ $t(action.label) }}
+          </BaseDropdownItem>
         </BaseDropdown>
 
         <!-- Theme: light, dark, then follow the system -->

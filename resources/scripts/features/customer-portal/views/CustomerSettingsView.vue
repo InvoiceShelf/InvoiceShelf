@@ -68,18 +68,11 @@
           >
             <BaseInput
               v-model="formData.password"
-              :type="isShowPassword ? 'text' : 'password'"
+              type="password"
+              revealable
               :invalid="v$.password.$error"
               @input="v$.password.$touch()"
-            >
-              <template #right>
-                <BaseIcon
-                  :name="isShowPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-                  class="mr-1 text-muted cursor-pointer"
-                  @click="isShowPassword = !isShowPassword"
-                />
-              </template>
-            </BaseInput>
+            />
           </BaseInputGroup>
 
           <BaseInputGroup
@@ -88,18 +81,11 @@
           >
             <BaseInput
               v-model="formData.confirm_password"
-              :type="isShowConfirmPassword ? 'text' : 'password'"
+              type="password"
+              revealable
               :invalid="v$.confirm_password.$error"
               @input="v$.confirm_password.$touch()"
-            >
-              <template #right>
-                <BaseIcon
-                  :name="isShowConfirmPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-                  class="mr-1 text-muted cursor-pointer"
-                  @click="isShowConfirmPassword = !isShowConfirmPassword"
-                />
-              </template>
-            </BaseInput>
+            />
           </BaseInputGroup>
         </div>
 
@@ -137,8 +123,6 @@ const { t, tm } = useI18n()
 const imgFiles = ref<AvatarFile[]>([])
 const isSaving = ref<boolean>(false)
 const avatarFileBlob = ref<File | null>(null)
-const isShowPassword = ref<boolean>(false)
-const isShowConfirmPassword = ref<boolean>(false)
 const isCustomerAvatarRemoved = ref<boolean>(false)
 
 const formData = reactive<{

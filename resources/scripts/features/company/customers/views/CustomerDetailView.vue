@@ -110,8 +110,9 @@ function refreshData(): void {
           <router-link
             v-if="userStore.hasAbilities(ABILITIES.EDIT_CUSTOMER)"
             :to="`/admin/customers/${route.params.id}/edit`"
+            class="inline-flex rounded-lg"
           >
-            <BaseButton variant="white" :content-loading="isLoading">
+            <BaseButton tag="span" variant="white" :content-loading="isLoading">
               <template #left="slotProps">
                 <BaseIcon name="PencilSquareIcon" :class="slotProps.class" />
               </template>
@@ -137,45 +138,37 @@ function refreshData(): void {
               </span>
             </template>
 
-            <router-link
+            <BaseDropdownItem
               v-if="userStore.hasAbilities(ABILITIES.CREATE_INVOICE)"
               :to="`/admin/invoices/create?customer=${$route.params.id}`"
             >
-              <BaseDropdownItem>
-                <BaseIcon name="DocumentTextIcon" class="w-5 h-5 mr-3 text-subtle" />
-                {{ $t('invoices.new_invoice') }}
-              </BaseDropdownItem>
-            </router-link>
+              <BaseIcon name="DocumentTextIcon" class="w-5 h-5 mr-3 text-subtle" />
+              {{ $t('invoices.new_invoice') }}
+            </BaseDropdownItem>
 
-            <router-link
+            <BaseDropdownItem
               v-if="userStore.hasAbilities(ABILITIES.CREATE_ESTIMATE)"
               :to="`/admin/estimates/create?customer=${$route.params.id}`"
             >
-              <BaseDropdownItem>
-                <BaseIcon name="DocumentIcon" class="w-5 h-5 mr-3 text-subtle" />
-                {{ $t('estimates.new_estimate') }}
-              </BaseDropdownItem>
-            </router-link>
+              <BaseIcon name="DocumentIcon" class="w-5 h-5 mr-3 text-subtle" />
+              {{ $t('estimates.new_estimate') }}
+            </BaseDropdownItem>
 
-            <router-link
+            <BaseDropdownItem
               v-if="userStore.hasAbilities(ABILITIES.CREATE_PAYMENT)"
               :to="`/admin/payments/create?customer=${$route.params.id}`"
             >
-              <BaseDropdownItem>
-                <BaseIcon name="CreditCardIcon" class="w-5 h-5 mr-3 text-subtle" />
-                {{ $t('payments.new_payment') }}
-              </BaseDropdownItem>
-            </router-link>
+              <BaseIcon name="CreditCardIcon" class="w-5 h-5 mr-3 text-subtle" />
+              {{ $t('payments.new_payment') }}
+            </BaseDropdownItem>
 
-            <router-link
+            <BaseDropdownItem
               v-if="userStore.hasAbilities(ABILITIES.CREATE_EXPENSE)"
               :to="`/admin/expenses/create?customer=${$route.params.id}`"
             >
-              <BaseDropdownItem>
-                <BaseIcon name="CalculatorIcon" class="w-5 h-5 mr-3 text-subtle" />
-                {{ $t('expenses.new_expense') }}
-              </BaseDropdownItem>
-            </router-link>
+              <BaseIcon name="CalculatorIcon" class="w-5 h-5 mr-3 text-subtle" />
+              {{ $t('expenses.new_expense') }}
+            </BaseDropdownItem>
           </BaseDropdown>
 
           <CustomerDropdown

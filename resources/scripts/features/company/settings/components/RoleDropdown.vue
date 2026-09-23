@@ -65,7 +65,7 @@ async function removeRole(id: number): Promise<void> {
 </script>
 
 <template>
-  <BaseDropdown>
+  <BaseDropdown :label="$t('general.actions_for', { name: row.name })">
     <template #activator>
       <span class="inline-flex items-center justify-center rounded-lg w-9 h-9 text-muted hover:bg-hover-strong hover:text-heading">
         <BaseIcon name="EllipsisHorizontalIcon" class="w-5 h-5" />

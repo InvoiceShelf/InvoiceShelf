@@ -2,9 +2,9 @@
   <div class="w-full mt-4 tax-select">
     <Popover class="relative">
       <PopoverButton
-        class="flex items-center text-sm font-medium text-primary-400 focus:outline-hidden focus:border-none"
+        class="flex items-center gap-1 text-sm font-medium rounded-md text-primary-600 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
       >
-        <BaseIcon name="PlusIcon" class="w-4 h-4 font-medium text-primary-400" />
+        <BaseIcon name="PlusIcon" class="w-4 h-4" />
         {{ $t('settings.tax_types.add_tax') }}
       </PopoverButton>
 
@@ -29,7 +29,8 @@
                   <BaseInput
                     v-model="textSearch"
                     :placeholder="$t('general.search')"
-                    type="text"
+                    :aria-label="$t('general.search')"
+                    type="search"
                     class="text-heading"
                   />
                 </div>
@@ -39,26 +40,24 @@
                   v-if="filteredTaxType.length > 0"
                   class="relative flex flex-col overflow-auto list max-h-36 border-t border-line-light"
                 >
-                  <div
+                  <button
                     v-for="(taxType, idx) in filteredTaxType"
                     :key="idx"
-                    :class="{
-                      'bg-surface-tertiary cursor-not-allowed opacity-50 pointer-events-none':
-                        existingTaxIds.has(taxType.id),
-                    }"
-                    tabindex="2"
-                    class="px-6 py-4 border-b border-line-light border-solid cursor-pointer hover:bg-surface-tertiary hover:cursor-pointer last:border-b-0"
+                    type="button"
+                    :disabled="existingTaxIds.has(taxType.id)"
+                    class="
+                      w-full px-6 py-4 text-left border-b border-line-light border-solid last:border-b-0
+                      hover:bg-surface-tertiary focus:outline-hidden focus-visible:bg-surface-tertiary
+                      focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus
+                      disabled:bg-surface-tertiary disabled:opacity-50 disabled:cursor-not-allowed
+                    "
                     @click="selectTaxType(taxType, close)"
                   >
-                    <div class="flex justify-between px-2">
-                      <label
-                        class="m-0 text-base font-semibold leading-tight text-body cursor-pointer"
-                      >
+                    <span class="flex justify-between px-2">
+                      <span class="m-0 text-base font-semibold leading-tight text-body">
                         {{ taxType.name }}
-                      </label>
-                      <label
-                        class="m-0 text-base font-semibold text-body cursor-pointer"
-                      >
+                      </span>
+                      <span class="m-0 text-base font-semibold text-body">
                         <template v-if="taxType.calculation_type === 'fixed'">
                           <BaseFormatMoney :amount="taxType.fixed_amount" :currency="companyCurrency" />
                         </template>
@@ -68,15 +67,15 @@
                             {{ $t('tax_types.compound_tax') }}
                           </BaseBadge>
                         </template>
-                      </label>
-                    </div>
-                  </div>
+                      </span>
+                    </span>
+                  </button>
                 </div>
 
-                <div v-else class="flex justify-center p-5 text-subtle">
-                  <label class="text-base text-muted cursor-pointer">
+                <div v-else class="flex justify-center p-5" role="status">
+                  <span class="text-base text-muted">
                     {{ $t('general.no_tax_found') }}
-                  </label>
+                  </span>
                 </div>
               </div>
 
@@ -84,15 +83,13 @@
               <button
                 v-if="canCreateTaxType"
                 type="button"
-                class="flex items-center justify-center w-full h-10 px-2 py-3 bg-surface-muted border-none outline-hidden"
+                class="flex items-center justify-center w-full h-10 px-2 py-3 border-none bg-surface-muted text-primary-600 outline-hidden focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus"
                 @click="openTaxTypeModal"
               >
-                <BaseIcon name="CheckCircleIcon" class="text-primary-400" />
-                <label
-                  class="m-0 ml-3 text-sm leading-none cursor-pointer font-base text-primary-400"
-                >
+                <BaseIcon name="CheckCircleIcon" />
+                <span class="m-0 ml-3 text-sm leading-none font-base">
                   {{ $t('estimates.add_new_tax') }}
-                </label>
+                </span>
               </button>
             </div>
           </PopoverPanel>

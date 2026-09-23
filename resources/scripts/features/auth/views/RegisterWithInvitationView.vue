@@ -67,18 +67,11 @@
       >
         <BaseInput
           v-model="form.password"
-          :type="isShowPassword ? 'text' : 'password'"
+          type="password"
+          revealable
           :invalid="v$.password.$error"
           @input="v$.password.$touch()"
-        >
-          <template #right>
-            <BaseIcon
-              :name="isShowPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-              class="mr-1 text-muted cursor-pointer"
-              @click="isShowPassword = !isShowPassword"
-            />
-          </template>
-        </BaseInput>
+        />
       </BaseInputGroup>
 
       <BaseInputGroup
@@ -92,18 +85,11 @@
       >
         <BaseInput
           v-model="form.password_confirmation"
-          :type="isShowConfirmPassword ? 'text' : 'password'"
+          type="password"
+          revealable
           :invalid="v$.password_confirmation.$error"
           @input="v$.password_confirmation.$touch()"
-        >
-          <template #right>
-            <BaseIcon
-              :name="isShowConfirmPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-              class="mr-1 text-muted cursor-pointer"
-              @click="isShowConfirmPassword = !isShowConfirmPassword"
-            />
-          </template>
-        </BaseInput>
+        />
       </BaseInputGroup>
 
       <div class="mt-5 mb-8">
@@ -152,8 +138,6 @@ const router = useRouter()
 
 const isLoading = ref<boolean>(true)
 const isSubmitting = ref<boolean>(false)
-const isShowPassword = ref<boolean>(false)
-const isShowConfirmPassword = ref<boolean>(false)
 const error = ref<string | null>(null)
 const invitationDetails = ref<InvitationDetailsData>({
   email: '',

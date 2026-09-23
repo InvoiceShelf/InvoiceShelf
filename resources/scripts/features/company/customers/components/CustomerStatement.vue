@@ -127,8 +127,8 @@
       </BaseCard>
     </template>
 
-    <BaseModal :show="showEmailModal" @close="showEmailModal = false">
-      <template #header><div class="flex items-center justify-between w-full">{{ $t('customers.send_statement') }}<BaseIcon name="XMarkIcon" class="w-5 h-5 cursor-pointer text-muted" @click="showEmailModal = false" /></div></template>
+    <BaseModal :show="showEmailModal" closable @close="showEmailModal = false">
+      <template #header>{{ $t('customers.send_statement') }}</template>
       <form @submit.prevent="sendStatement">
         <div class="p-6 space-y-4">
           <BaseInputGroup :label="$t('general.to')" required><BaseInput v-model="emailForm.to" type="email" /></BaseInputGroup>
@@ -141,8 +141,8 @@
       </form>
     </BaseModal>
 
-    <BaseModal :show="showCreditModal" @close="showCreditModal = false">
-      <template #header><div class="flex items-center justify-between w-full">{{ $t('customers.apply_credit') }}<BaseIcon name="XMarkIcon" class="w-5 h-5 cursor-pointer text-muted" @click="showCreditModal = false" /></div></template>
+    <BaseModal :show="showCreditModal" closable @close="showCreditModal = false">
+      <template #header>{{ $t('customers.apply_credit') }}</template>
       <div class="p-6">
         <p class="mb-4 text-sm text-muted">{{ $t('customers.apply_credit_description') }}</p>
         <div v-if="creditRows.length" class="space-y-3">

@@ -455,16 +455,9 @@ function isDisk(value: unknown): value is Disk {
 </script>
 
 <template>
-  <BaseModal :show="modalActive" @close="closeModal" @open="setInitialData">
+  <BaseModal :show="modalActive" closable @close="closeModal" @open="setInitialData">
     <template #header>
-      <div class="flex justify-between w-full">
-        {{ modalStore.title }}
-        <BaseIcon
-          name="XMarkIcon"
-          class="w-6 h-6 text-muted cursor-pointer"
-          @click="closeModal"
-        />
-      </div>
+      {{ modalStore.title }}
     </template>
 
     <form @submit.prevent="saveDisk">

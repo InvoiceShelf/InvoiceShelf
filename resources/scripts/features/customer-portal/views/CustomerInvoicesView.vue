@@ -13,6 +13,7 @@
         <BaseButton
           v-show="store.totalInvoices"
           variant="primary-outline"
+          :aria-expanded="showFilters"
           @click="toggleFilter"
         >
           {{ $t('general.filter') }}
@@ -123,12 +124,10 @@
             <template #activator>
               <BaseIcon name="EllipsisHorizontalIcon" class="h-5 text-muted" />
             </template>
-            <router-link :to="`invoices/${row.data.id}/view`">
-              <BaseDropdownItem>
-                <BaseIcon name="EyeIcon" class="h-5 mr-3 text-body" />
-                {{ $t('general.view') }}
-              </BaseDropdownItem>
-            </router-link>
+            <BaseDropdownItem :to="`invoices/${row.data.id}/view`">
+              <BaseIcon name="EyeIcon" class="h-5 mr-3 text-body" />
+              {{ $t('general.view') }}
+            </BaseDropdownItem>
           </BaseDropdown>
         </template>
       </BaseTable>

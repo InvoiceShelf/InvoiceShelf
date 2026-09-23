@@ -14,6 +14,7 @@
         <BaseButton
           v-show="paymentStore.paymentTotalCount"
           variant="primary-outline"
+          :aria-expanded="showFilters"
           @click="toggleFilter"
         >
           {{ $t('general.filter') }}
@@ -118,6 +119,7 @@
           <div class="absolute items-center left-6 top-3.5 select-none">
             <BaseCheckbox
               v-model="selectAllFieldStatus"
+              :aria-label="$t('general.select_all')"
               variant="primary"
               @change="paymentStore.selectAllPayments"
             />
@@ -129,6 +131,7 @@
             <BaseCheckbox
               :id="row.id"
               v-model="selectField"
+              :aria-label="$t('general.select_named', { name: row.data.payment_number })"
               :value="row.data.id"
               variant="primary"
             />

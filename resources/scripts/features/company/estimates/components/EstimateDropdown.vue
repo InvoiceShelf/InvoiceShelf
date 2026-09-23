@@ -1,5 +1,5 @@
 <template>
-  <BaseDropdown>
+  <BaseDropdown :label="$t('general.actions_for', { name: row.estimate_number })">
     <template #activator>
       <span v-if="isDetailView" data-overflow class="inline-flex items-center justify-center border rounded-lg w-11 h-11 md:w-9 md:h-9 bg-surface border-line-default text-body hover:bg-hover">
         <BaseIcon name="EllipsisHorizontalIcon" class="w-5 h-5" />
@@ -19,18 +19,13 @@
     </BaseDropdownItem>
 
     <!-- Edit Estimate -->
-    <router-link
-      v-if="canEdit"
-      :to="`/admin/estimates/${row.id}/edit`"
-    >
-      <BaseDropdownItem>
-        <BaseIcon
-          name="PencilIcon"
-          class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
-        />
-        {{ $t('general.edit') }}
-      </BaseDropdownItem>
-    </router-link>
+    <BaseDropdownItem v-if="canEdit" :to="`/admin/estimates/${row.id}/edit`">
+      <BaseIcon
+        name="PencilIcon"
+        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+      />
+      {{ $t('general.edit') }}
+    </BaseDropdownItem>
 
     <!-- Delete Estimate -->
     <BaseDropdownItem v-if="canDelete" @click="removeEstimate">
@@ -42,18 +37,13 @@
     </BaseDropdownItem>
 
     <!-- View Estimate -->
-    <router-link
-      v-if="!isDetailView && canView"
-      :to="`estimates/${row.id}/view`"
-    >
-      <BaseDropdownItem>
-        <BaseIcon
-          name="EyeIcon"
-          class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
-        />
-        {{ $t('general.view') }}
-      </BaseDropdownItem>
-    </router-link>
+    <BaseDropdownItem v-if="!isDetailView && canView" :to="`estimates/${row.id}/view`">
+      <BaseIcon
+        name="EyeIcon"
+        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+      />
+      {{ $t('general.view') }}
+    </BaseDropdownItem>
 
     <!-- Clone Estimate -->
     <BaseDropdownItem v-if="canCreate" @click="cloneEstimateData">

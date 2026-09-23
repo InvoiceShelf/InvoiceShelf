@@ -153,6 +153,7 @@
             :can-add-tax="canAddTax"
             :store="store"
             :store-prop="storeProp"
+            @move="moveItem"
             @tax-type-created="upsertAvailableTaxType"
           />
         </template>
@@ -250,7 +251,7 @@ const defaultCurrency = computed<Currency | Record<string, unknown>>(() => {
   return (props.currency || null) as Currency | Record<string, unknown>
 })
 
-// Phones reorder from each card's menu rather than by dragging
+// Phones reorder from each card's menu, keyboards from a row's drag handle
 function moveItem(from: number, to: number): void {
   const items = formData.value.items
 

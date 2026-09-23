@@ -66,8 +66,8 @@
         <div class="rounded-xl border border-line-default bg-surface-secondary p-6">
           <!-- Not purchased -->
           <template v-if="!moduleData.purchased">
-            <a :href="buyLink" target="_blank" rel="noopener">
-              <BaseButton size="lg" class="w-full flex items-center justify-center">
+            <a :href="buyLink" target="_blank" rel="noopener" class="block rounded-lg">
+              <BaseButton tag="span" size="lg" class="w-full flex items-center justify-center">
                 <BaseIcon name="ShoppingCartIcon" class="mr-2" />
                 {{ $t('modules.buy_now') }}
               </BaseButton>
@@ -237,6 +237,7 @@
         <div v-if="displayVideo" class="aspect-video">
           <iframe
             :src="videoUrl ?? ''"
+            :title="moduleData.name"
             class="w-full h-full"
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -336,12 +337,9 @@
 
     <div class="p-6" />
 
-    <BaseModal :show="showUninstallModal" @close="closeUninstallModal">
+    <BaseModal :show="showUninstallModal" closable @close="closeUninstallModal">
       <template #header>
-        <div class="flex w-full items-center justify-between">
-          {{ $t('modules.uninstall') }} {{ moduleData.name }}
-          <BaseIcon name="XMarkIcon" class="h-5 w-5 cursor-pointer text-muted" @click="closeUninstallModal" />
-        </div>
+        {{ $t('modules.uninstall') }} {{ moduleData.name }}
       </template>
 
       <div class="space-y-4 p-6">

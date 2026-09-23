@@ -237,16 +237,9 @@ function closeItemModal(): void {
 </script>
 
 <template>
-  <BaseModal :show="modalActive" @close="closeItemModal">
+  <BaseModal :show="modalActive" closable @close="closeItemModal">
     <template #header>
-      <div class="flex justify-between w-full">
-        {{ modalStore.title }}
-        <BaseIcon
-          name="XMarkIcon"
-          class="h-6 w-6 text-muted cursor-pointer"
-          @click="closeItemModal"
-        />
-      </div>
+      {{ modalStore.title }}
     </template>
     <div class="item-modal">
       <form action="" @submit.prevent="submitItemData">

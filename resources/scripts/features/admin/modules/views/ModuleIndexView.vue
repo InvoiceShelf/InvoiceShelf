@@ -45,9 +45,9 @@
         <ModuleCard v-for="mod in filteredModules" :key="mod.slug" :data="mod" />
       </div>
       <div v-else class="mt-24">
-        <label class="flex items-center justify-center text-muted">
+        <p class="flex items-center justify-center text-muted" role="status">
           {{ activeTab === 'INSTALLED' ? $t('modules.no_modules_installed') : 'No marketplace modules are available yet.' }}
-        </label>
+        </p>
       </div>
     </div>
   </BasePage>

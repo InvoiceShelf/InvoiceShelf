@@ -354,9 +354,9 @@ function showApiError(error: unknown): void {
         {{ clientVersionLine }}
       </p>
 
-      <label class="text-sm font-medium input-label">
+      <p class="text-sm font-medium input-label">
         {{ $t('settings.update_app.current_version') }}
-      </label>
+      </p>
 
       <div class="w-full border-b-2 border-line-light border-solid pb-4">
         <div
@@ -434,10 +434,9 @@ docker compose up --force-recreate --build -d</pre>
           </div>
         </div>
 
-        <label class="text-sm font-medium input-label">
+        <p class="text-sm font-medium input-label">
           {{ $t('settings.update_app.next_version') }}
-        </label>
-        <br />
+        </p>
         <div
           class="my-2 inline-block rounded-md border border-line-default bg-surface-muted p-3 text-sm text-body"
         >
@@ -452,9 +451,9 @@ docker compose up --force-recreate --build -d</pre>
         <BaseSanitizedHtml v-if="updateRelease.changelog" class="update-rich-text mt-4 max-w-[680px] text-sm leading-snug text-muted" :html="updateRelease.changelog" />
 
         <div v-if="requirementEntries.length" class="mt-6">
-          <label class="text-sm font-medium input-label">
+          <p class="text-sm font-medium input-label">
             {{ $t('settings.update_app.requirements') }}
-          </label>
+          </p>
 
           <table class="mt-2 w-full max-w-xl border border-line-default">
             <tbody>

@@ -233,18 +233,12 @@ function closeTaxTypeModal(): void {
 <template>
   <BaseModal
     :show="modalActive"
+    closable
     @close="closeTaxTypeModal"
     @open="setInitialData"
   >
     <template #header>
-      <div class="flex justify-between w-full">
-        {{ modalStore.title }}
-        <BaseIcon
-          name="XMarkIcon"
-          class="h-6 w-6 text-muted cursor-pointer"
-          @click="closeTaxTypeModal"
-        />
-      </div>
+      {{ modalStore.title }}
     </template>
     <form action="" @submit.prevent="submitTaxTypeData">
       <div class="p-4 sm:p-6">

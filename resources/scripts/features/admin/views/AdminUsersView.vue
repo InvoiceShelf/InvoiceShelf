@@ -12,7 +12,11 @@
 
       <template #actions>
         <div class="flex items-center justify-end space-x-5">
-          <BaseButton variant="primary-outline" @click="toggleFilter">
+          <BaseButton
+            variant="primary-outline"
+            :aria-expanded="showFilters"
+            @click="toggleFilter"
+          >
             {{ $t('general.filter') }}
             <template #right="slotProps">
               <BaseIcon

@@ -10,6 +10,7 @@
         <BaseButton
           v-show="estimateStore.totalEstimateCount"
           variant="primary-outline"
+          :aria-expanded="showFilters"
           @click="toggleFilter"
         >
           {{ $t('general.filter') }}
@@ -23,8 +24,8 @@
           </template>
         </BaseButton>
 
-        <router-link v-if="canCreate" to="estimates/create">
-          <BaseButton variant="primary" class="ml-4">
+        <router-link v-if="canCreate" to="estimates/create" class="inline-flex rounded-lg ml-4">
+          <BaseButton tag="span" variant="primary">
             <template #left="slotProps">
               <BaseIcon name="PlusIcon" :class="slotProps.class" />
             </template>
@@ -140,6 +141,7 @@
           <div class="absolute items-center left-6 top-3.5 select-none">
             <BaseCheckbox
               v-model="estimateStore.selectAllField"
+              :aria-label="$t('general.select_all')"
               variant="primary"
               @change="estimateStore.selectAllEstimates"
             />
@@ -151,6 +153,7 @@
             <BaseCheckbox
               :id="row.id"
               v-model="selectField"
+              :aria-label="$t('general.select_named', { name: row.data.estimate_number })"
               :value="row.data.id"
             />
           </div>

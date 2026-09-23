@@ -14,6 +14,8 @@
         :error="connectError"
         required
       >
+        <!-- The server address is this screen's only question, so it starts focused -->
+        <!-- eslint-disable vuejs-accessibility/no-autofocus -->
         <BaseInput
           v-model="serverUrlInput"
           :invalid="Boolean(connectError)"
@@ -25,6 +27,7 @@
           spellcheck="false"
           placeholder="https://books.example.com"
         />
+        <!-- eslint-enable vuejs-accessibility/no-autofocus -->
       </BaseInputGroup>
 
       <ul
@@ -122,18 +125,11 @@
         <BaseInput
           v-model="authStore.loginData.password"
           :invalid="v$.password.$error"
-          :type="inputType"
+          type="password"
+          revealable
           name="password"
           @input="v$.password.$touch()"
-        >
-          <template #right>
-            <BaseIcon
-              :name="isShowPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-              class="mr-1 text-muted cursor-pointer"
-              @click="isShowPassword = !isShowPassword"
-            />
-          </template>
-        </BaseInput>
+        />
       </BaseInputGroup>
 
       <div class="mt-5 mb-8">
@@ -215,7 +211,6 @@ const connectError = ref<string>('')
 const warnings = ref<string[]>([])
 const acknowledged = ref<string>('')
 const isBusy = ref<boolean>(false)
-const isShowPassword = ref<boolean>(false)
 
 const rules = {
   email: {
@@ -231,8 +226,6 @@ const v$ = useVuelidate(
   rules,
   computed(() => authStore.loginData)
 )
-
-const inputType = computed<string>(() => (isShowPassword.value ? 'text' : 'password'))
 
 const blockedHeading = computed<string>(() => {
   switch (state.status) {

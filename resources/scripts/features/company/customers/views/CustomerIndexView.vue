@@ -222,6 +222,7 @@ function removeMultipleCustomers(): void {
           <BaseButton
             v-show="customerStore.totalCustomers"
             variant="primary-outline"
+            :aria-expanded="showFilters"
             @click="toggleFilter"
           >
             {{ $t('general.filter') }}
@@ -325,6 +326,7 @@ function removeMultipleCustomers(): void {
           <div class="absolute z-10 items-center left-6 top-3.5 select-none">
             <BaseCheckbox
               v-model="selectAllFieldStatus"
+              :aria-label="$t('general.select_all')"
               variant="primary"
               @change="customerStore.selectAllCustomers"
             />
@@ -336,6 +338,7 @@ function removeMultipleCustomers(): void {
             <BaseCheckbox
               :id="row.data.id"
               v-model="selectField"
+              :aria-label="$t('general.select_named', { name: row.data.name })"
               :value="row.data.id"
               variant="primary"
             />

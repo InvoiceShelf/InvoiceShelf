@@ -1,18 +1,12 @@
 <template>
   <BaseModal
     :show="modalActive"
+    closable
     @close="closeModal"
     @open="loadSettings"
   >
     <template #header>
-      <div class="flex justify-between w-full">
-        {{ modalStore.title }}
-        <BaseIcon
-          name="XMarkIcon"
-          class="w-6 h-6 text-muted cursor-pointer"
-          @click="closeModal"
-        />
-      </div>
+      {{ modalStore.title }}
     </template>
 
     <div v-if="isFetching" class="p-8 sm:p-6 space-y-4">

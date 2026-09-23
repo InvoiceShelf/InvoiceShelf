@@ -79,16 +79,9 @@ async function submitInvitation(): Promise<void> {
 </script>
 
 <template>
-  <BaseModal :show="show" @close="$emit('close')">
+  <BaseModal :show="show" closable @close="$emit('close')">
     <template #header>
-      <div class="flex justify-between w-full">
-        {{ $t('members.invite_member') }}
-        <BaseIcon
-          name="XMarkIcon"
-          class="w-6 h-6 text-muted cursor-pointer"
-          @click="$emit('close')"
-        />
-      </div>
+      {{ $t('members.invite_member') }}
     </template>
 
     <form @submit.prevent="submitInvitation">

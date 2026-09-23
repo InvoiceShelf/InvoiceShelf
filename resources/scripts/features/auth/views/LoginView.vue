@@ -25,18 +25,11 @@
       <BaseInput
         v-model="authStore.loginData.password"
         :invalid="v$.password.$error"
-        :type="inputType"
+        type="password"
+        revealable
         name="password"
         @input="v$.password.$touch()"
-      >
-        <template #right>
-          <BaseIcon
-            :name="isShowPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-            class="mr-1 text-muted cursor-pointer"
-            @click="isShowPassword = !isShowPassword"
-          />
-        </template>
-      </BaseInput>
+      />
     </BaseInputGroup>
 
     <div class="mt-5 mb-8">
@@ -77,7 +70,6 @@ const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
 const isLoading = ref<boolean>(false)
-const isShowPassword = ref<boolean>(false)
 
 const rules = {
   email: {
@@ -93,10 +85,6 @@ const v$ = useVuelidate(
   rules,
   computed(() => authStore.loginData)
 )
-
-const inputType = computed<string>(() => {
-  return isShowPassword.value ? 'text' : 'password'
-})
 
 async function onSubmit(): Promise<void> {
   v$.value.$touch()

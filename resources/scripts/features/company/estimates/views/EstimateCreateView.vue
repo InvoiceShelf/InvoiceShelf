@@ -23,8 +23,9 @@
             v-if="isEdit"
             :to="`/estimates/pdf/${estimateStore.newEstimate.unique_hash}`"
             target="_blank"
+            class="inline-flex rounded-lg mr-3"
           >
-            <BaseButton class="mr-3" variant="primary-outline" type="button">
+            <BaseButton tag="span" variant="primary-outline">
               <span class="flex">
                 {{ $t('general.view_pdf') }}
               </span>

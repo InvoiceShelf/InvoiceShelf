@@ -23,18 +23,11 @@
       <BaseInput
         v-model="formData.password"
         :invalid="v$.password.$error"
-        :type="inputType"
+        type="password"
+        revealable
         name="password"
         @input="v$.password.$touch()"
-      >
-        <template #right>
-          <BaseIcon
-            :name="isShowPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-            class="mr-1 cursor-pointer text-muted"
-            @click="isShowPassword = !isShowPassword"
-          />
-        </template>
-      </BaseInput>
+      />
     </BaseInputGroup>
 
     <div class="flex items-center justify-between">
@@ -91,14 +84,9 @@ const formData = reactive<CustomerPortalLoginForm>({
 })
 
 const isLoading = ref<boolean>(false)
-const isShowPassword = ref<boolean>(false)
 
 const companySlug = computed<string>(() => {
   return resolveCompanySlug(route.params.company)
-})
-
-const inputType = computed<string>(() => {
-  return isShowPassword.value ? 'text' : 'password'
 })
 
 const rules = computed(() => ({

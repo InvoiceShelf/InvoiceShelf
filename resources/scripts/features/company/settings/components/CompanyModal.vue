@@ -132,16 +132,9 @@ function closeCompanyModal(): void {
 </script>
 
 <template>
-  <BaseModal :show="modalActive" @close="closeCompanyModal" @open="getInitials">
+  <BaseModal :show="modalActive" closable @close="closeCompanyModal" @open="getInitials">
     <template #header>
-      <div class="flex justify-between w-full">
-        {{ modalStore.title }}
-        <BaseIcon
-          name="XMarkIcon"
-          class="w-6 h-6 text-muted cursor-pointer"
-          @click="closeCompanyModal"
-        />
-      </div>
+      {{ modalStore.title }}
     </template>
 
     <form action="" @submit.prevent="submitCompanyData">

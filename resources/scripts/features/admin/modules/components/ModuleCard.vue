@@ -1,7 +1,10 @@
 <template>
+  <!-- The name is the link; it stretches over the card so all of it is clickable -->
   <div
-    class="group relative rounded-xl border border-line-default bg-surface cursor-pointer overflow-hidden transition-shadow hover:shadow-lg"
-    @click="$router.push(`/admin/administration/modules/${data.slug}`)"
+    class="
+      group relative rounded-xl border border-line-default bg-surface overflow-hidden transition-shadow hover:shadow-lg
+      has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-focus
+    "
   >
     <!-- Cover -->
     <div class="relative h-36 overflow-hidden">
@@ -38,7 +41,12 @@
     <!-- Info -->
     <div class="p-4">
       <h3 class="text-base font-semibold text-heading truncate">
-        {{ data.name }}
+        <router-link
+          :to="`/admin/administration/modules/${data.slug}`"
+          class="focus:outline-hidden after:absolute after:inset-0"
+        >
+          {{ data.name }}
+        </router-link>
       </h3>
 
       <div class="flex items-center gap-1.5 mt-1 text-xs text-muted">

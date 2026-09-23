@@ -14,6 +14,7 @@
         <BaseButton
           v-show="expenseStore.totalExpenses"
           variant="primary-outline"
+          :aria-expanded="showFilters"
           @click="toggleFilter"
         >
           {{ $t('general.filter') }}
@@ -130,6 +131,7 @@
           <div class="absolute items-center left-6 top-3.5 select-none">
             <BaseCheckbox
               v-model="selectAllFieldStatus"
+              :aria-label="$t('general.select_all')"
               variant="primary"
               @change="expenseStore.selectAllExpenses"
             />
@@ -141,6 +143,7 @@
             <BaseCheckbox
               :id="row.id"
               v-model="selectField"
+              :aria-label="$t('general.select_named', { name: row.data.expense_number || row.data.id })"
               :value="row.data.id"
               variant="primary"
             />

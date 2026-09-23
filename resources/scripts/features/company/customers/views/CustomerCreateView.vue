@@ -32,8 +32,6 @@ const router = useRouter()
 const route = useRoute()
 
 const isFetchingInitialData = ref<boolean>(false)
-const isShowPassword = ref<boolean>(false)
-const isShowConfirmPassword = ref<boolean>(false)
 const isSaving = ref<boolean>(false)
 
 const isEdit = computed<boolean>(() => route.name === 'customers.edit')
@@ -372,19 +370,12 @@ async function submitCustomerData(): Promise<void> {
               <BaseInput
                 v-model.trim="customerStore.currentCustomer.password"
                 :content-loading="isFetchingInitialData"
-                :type="isShowPassword ? 'text' : 'password'"
+                type="password"
+                revealable
                 name="password"
                 :invalid="v$.currentCustomer.password.$error"
                 @input="v$.currentCustomer.password.$touch()"
-              >
-                <template #right>
-                  <BaseIcon
-                    :name="isShowPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-                    class="mr-1 text-muted cursor-pointer"
-                    @click="isShowPassword = !isShowPassword"
-                  />
-                </template>
-              </BaseInput>
+              />
             </BaseInputGroup>
 
             <BaseInputGroup
@@ -399,19 +390,12 @@ async function submitCustomerData(): Promise<void> {
               <BaseInput
                 v-model.trim="customerStore.currentCustomer.confirm_password"
                 :content-loading="isFetchingInitialData"
-                :type="isShowConfirmPassword ? 'text' : 'password'"
+                type="password"
+                revealable
                 name="confirm_password"
                 :invalid="v$.currentCustomer.confirm_password.$error"
                 @input="v$.currentCustomer.confirm_password.$touch()"
-              >
-                <template #right>
-                  <BaseIcon
-                    :name="isShowConfirmPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-                    class="mr-1 text-muted cursor-pointer"
-                    @click="isShowConfirmPassword = !isShowConfirmPassword"
-                  />
-                </template>
-              </BaseInput>
+              />
             </BaseInputGroup>
           </BaseInputGrid>
         </div>

@@ -23,18 +23,11 @@
       <BaseInput
         v-model="formData.password"
         :invalid="v$.password.$error"
-        :type="passwordInputType"
+        type="password"
+        revealable
         name="password"
         @input="v$.password.$touch()"
-      >
-        <template #right>
-          <BaseIcon
-            :name="isShowPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-            class="mr-1 cursor-pointer text-muted"
-            @click="isShowPassword = !isShowPassword"
-          />
-        </template>
-      </BaseInput>
+      />
     </BaseInputGroup>
 
     <BaseInputGroup
@@ -45,18 +38,11 @@
       <BaseInput
         v-model="formData.password_confirmation"
         :invalid="v$.password_confirmation.$error"
-        :type="confirmPasswordInputType"
+        type="password"
+        revealable
         name="password_confirmation"
         @input="v$.password_confirmation.$touch()"
-      >
-        <template #right>
-          <BaseIcon
-            :name="isShowConfirmPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-            class="mr-1 cursor-pointer text-muted"
-            @click="isShowConfirmPassword = !isShowConfirmPassword"
-          />
-        </template>
-      </BaseInput>
+      />
     </BaseInputGroup>
 
     <BaseButton
@@ -110,19 +96,9 @@ const formData = reactive<CustomerPortalResetPasswordForm>({
 })
 
 const isLoading = ref<boolean>(false)
-const isShowPassword = ref<boolean>(false)
-const isShowConfirmPassword = ref<boolean>(false)
 
 const companySlug = computed<string>(() => {
   return resolveCompanySlug(route.params.company)
-})
-
-const passwordInputType = computed<string>(() => {
-  return isShowPassword.value ? 'text' : 'password'
-})
-
-const confirmPasswordInputType = computed<string>(() => {
-  return isShowConfirmPassword.value ? 'text' : 'password'
 })
 
 const rules = computed(() => ({

@@ -232,6 +232,7 @@ function removeMultipleItems(): void {
           <BaseButton
             v-show="itemStore.totalItems"
             variant="primary-outline"
+            :aria-expanded="showFilters"
             @click="toggleFilter"
           >
             {{ $t('general.filter') }}
@@ -335,6 +336,7 @@ function removeMultipleItems(): void {
           <div class="absolute items-center left-6 top-3.5 select-none">
             <BaseCheckbox
               v-model="itemStore.selectAllField"
+              :aria-label="$t('general.select_all')"
               variant="primary"
               @change="itemStore.selectAllItems"
             />
@@ -346,6 +348,7 @@ function removeMultipleItems(): void {
             <BaseCheckbox
               :id="row.id"
               v-model="selectField"
+              :aria-label="$t('general.select_named', { name: row.data.name })"
               :value="row.data.id"
             />
           </div>

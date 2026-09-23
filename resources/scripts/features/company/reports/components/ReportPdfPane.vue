@@ -168,6 +168,7 @@ defineExpose({ view })
     <iframe
       v-else
       :src="previewUrl ?? undefined"
+      :title="$t('general.pdf_preview')"
       class="w-full h-screen border border-line-default border-solid rounded bg-surface"
     />
   </div>

@@ -102,18 +102,12 @@ function closeItemUnitModal(): void {
 <template>
   <BaseModal
     :show="modalActive"
+    closable
     @close="closeItemUnitModal"
     @open="setInitialData"
   >
     <template #header>
-      <div class="flex justify-between w-full">
-        {{ modalStore.title }}
-        <BaseIcon
-          name="XMarkIcon"
-          class="w-6 h-6 text-muted cursor-pointer"
-          @click="closeItemUnitModal"
-        />
-      </div>
+      {{ modalStore.title }}
     </template>
 
     <form action="" @submit.prevent="submitItemUnit">

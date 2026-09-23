@@ -184,18 +184,12 @@ function closeNoteModal(): void {
 <template>
   <BaseModal
     :show="modalActive"
+    closable
     @close="closeNoteModal"
     @open="setInitialData"
   >
     <template #header>
-      <div class="flex justify-between w-full">
-        {{ modalStore.title }}
-        <BaseIcon
-          name="XMarkIcon"
-          class="h-6 w-6 text-muted cursor-pointer"
-          @click="closeNoteModal"
-        />
-      </div>
+      {{ modalStore.title }}
     </template>
     <form action="" @submit.prevent="submitNote">
       <div class="px-8 py-8 sm:p-6">

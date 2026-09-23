@@ -41,8 +41,6 @@ const { t } = useI18n()
 const route = useRoute()
 const isEdit = ref<boolean>(false)
 const isLoading = ref<boolean>(false)
-const isShowPassword = ref<boolean>(false)
-const isShowConfirmPassword = ref<boolean>(false)
 
 const modalActive = computed<boolean>(
   () => modalStore.active && modalStore.componentName === 'CustomerModal'
@@ -212,18 +210,12 @@ function closeCustomerModal(): void {
 <template>
   <BaseModal
     :show="modalActive"
+    closable
     @close="closeCustomerModal"
     @open="setInitialData"
   >
     <template #header>
-      <div class="flex justify-between w-full">
-        {{ modalStore.title }}
-        <BaseIcon
-          name="XMarkIcon"
-          class="h-6 w-6 text-muted cursor-pointer"
-          @click="closeCustomerModal"
-        />
-      </div>
+      {{ modalStore.title }}
     </template>
     <form action="" @submit.prevent="submitCustomerData">
       <div class="px-6 pb-3 max-h-[calc(80vh-8rem)] overflow-y-auto">
@@ -368,19 +360,12 @@ function closeCustomerModal(): void {
                 <BaseInput
                   v-model.trim="customerStore.currentCustomer.password"
                   :content-loading="isFetchingInitialData"
-                  :type="isShowPassword ? 'text' : 'password'"
+                  type="password"
+                  revealable
                   name="password"
                   :invalid="v$.password.$error"
                   @input="v$.password.$touch()"
-                >
-                  <template #right>
-                    <BaseIcon
-                      :name="isShowPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-                      class="mr-1 text-muted cursor-pointer"
-                      @click="isShowPassword = !isShowPassword"
-                    />
-                  </template>
-                </BaseInput>
+                />
               </BaseInputGroup>
 
               <BaseInputGroup
@@ -395,19 +380,12 @@ function closeCustomerModal(): void {
                 <BaseInput
                   v-model.trim="customerStore.currentCustomer.confirm_password"
                   :content-loading="isFetchingInitialData"
-                  :type="isShowConfirmPassword ? 'text' : 'password'"
+                  type="password"
+                  revealable
                   name="confirm_password"
                   :invalid="v$.confirm_password.$error"
                   @input="v$.confirm_password.$touch()"
-                >
-                  <template #right>
-                    <BaseIcon
-                      :name="isShowConfirmPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-                      class="mr-1 text-muted cursor-pointer"
-                      @click="isShowConfirmPassword = !isShowConfirmPassword"
-                    />
-                  </template>
-                </BaseInput>
+                />
               </BaseInputGroup>
             </BaseInputGrid>
           </BaseTab>

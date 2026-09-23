@@ -1,5 +1,5 @@
 <template>
-  <BaseDropdown>
+  <BaseDropdown :label="$t('general.actions_for', { name: row.invoice_number })">
     <template #activator>
       <span v-if="isDetailView" data-overflow class="inline-flex items-center justify-center border rounded-lg w-11 h-11 md:w-9 md:h-9 bg-surface border-line-default text-body hover:bg-hover">
         <BaseIcon name="EllipsisHorizontalIcon" class="w-5 h-5" />
@@ -10,18 +10,13 @@
     </template>
 
     <!-- Edit Invoice -->
-    <router-link
-      v-if="canEdit"
-      :to="`/admin/invoices/${row.id}/edit`"
-    >
-      <BaseDropdownItem v-show="row.allow_edit">
-        <BaseIcon
-          name="PencilIcon"
-          class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
-        />
-        {{ $t('general.edit') }}
-      </BaseDropdownItem>
-    </router-link>
+    <BaseDropdownItem v-if="canEdit" v-show="row.allow_edit" :to="`/admin/invoices/${row.id}/edit`">
+      <BaseIcon
+        name="PencilIcon"
+        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+      />
+      {{ $t('general.edit') }}
+    </BaseDropdownItem>
 
     <!-- Copy PDF url -->
     <BaseDropdownItem v-if="isDetailView" @click="copyPdfUrl">
@@ -33,18 +28,13 @@
     </BaseDropdownItem>
 
     <!-- View Invoice -->
-    <router-link
-      v-if="!isDetailView && canView"
-      :to="`/admin/invoices/${row.id}/view`"
-    >
-      <BaseDropdownItem>
-        <BaseIcon
-          name="EyeIcon"
-          class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
-        />
-        {{ $t('general.view') }}
-      </BaseDropdownItem>
-    </router-link>
+    <BaseDropdownItem v-if="!isDetailView && canView" :to="`/admin/invoices/${row.id}/view`">
+      <BaseIcon
+        name="EyeIcon"
+        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+      />
+      {{ $t('general.view') }}
+    </BaseDropdownItem>
 
     <!-- Send Invoice Mail -->
     <BaseDropdownItem v-if="canSendInvoice" @click="sendInvoice">
@@ -65,22 +55,21 @@
     </BaseDropdownItem>
 
     <!-- Record Payment -->
-    <router-link :to="`/admin/payments/${row.id}/create`">
-      <BaseDropdownItem
-        v-if="
-          row.status === 'SENT' &&
-          row.due_amount > 0 &&
-          !isDetailView &&
-          canCreatePayment
-        "
-      >
-        <BaseIcon
-          name="CreditCardIcon"
-          class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
-        />
-        {{ $t('invoices.record_payment') }}
-      </BaseDropdownItem>
-    </router-link>
+    <BaseDropdownItem
+      v-if="
+        row.status === 'SENT' &&
+        row.due_amount > 0 &&
+        !isDetailView &&
+        canCreatePayment
+      "
+      :to="`/admin/payments/${row.id}/create`"
+    >
+      <BaseIcon
+        name="CreditCardIcon"
+        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+      />
+      {{ $t('invoices.record_payment') }}
+    </BaseDropdownItem>
 
     <!-- Mark as Sent -->
     <BaseDropdownItem v-if="row.status === 'DRAFT' && !isDetailView && canSend" @click="onMarkAsSent">

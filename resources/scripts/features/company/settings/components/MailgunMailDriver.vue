@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, computed, reactive } from 'vue'
+import { onMounted, computed, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { required, email, helpers } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
@@ -35,7 +35,6 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 
-const isShowPassword = ref<boolean>(false)
 
 const mailgunConfig = reactive<MailgunConfig>({
   mail_driver: 'mailgun',
@@ -45,10 +44,6 @@ const mailgunConfig = reactive<MailgunConfig>({
   from_mail: '',
   from_name: '',
 })
-
-const getInputType = computed<string>(() =>
-  isShowPassword.value ? 'text' : 'password'
-)
 
 const rules = computed(() => ({
   mail_driver: {
@@ -147,20 +142,13 @@ function onChangeDriver(): void {
         <BaseInput
           v-model.trim="mailgunConfig.mail_mailgun_secret"
           :content-loading="isFetchingInitialData"
-          :type="getInputType"
+          type="password"
+          revealable
           name="mailgun_secret"
           autocomplete="off"
           :invalid="v$.mail_mailgun_secret.$error"
           @input="v$.mail_mailgun_secret.$touch()"
-        >
-          <template #right>
-            <BaseIcon
-              :name="isShowPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-              class="mr-1 text-muted cursor-pointer"
-              @click="isShowPassword = !isShowPassword"
-            />
-          </template>
-        </BaseInput>
+        />
       </BaseInputGroup>
 
       <BaseInputGroup

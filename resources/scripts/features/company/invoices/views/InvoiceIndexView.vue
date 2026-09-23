@@ -8,14 +8,14 @@
           </h1>
           <BaseDropdown position="bottom-start" width-class="w-44">
             <template #activator>
-              <button
+              <span
                 class="flex items-center gap-1 px-2 py-1 text-sm font-medium text-muted hover:text-heading rounded-md hover:bg-surface-secondary transition-colors"
               >
                 <span class="text-xs text-primary-500 bg-primary-50 px-2 py-0.5 rounded-full">
                   {{ viewMode === 'one-time' ? $t('invoices.one_time') : $t('recurring_invoices.recurring') }}
                 </span>
                 <BaseIcon name="ChevronDownIcon" class="w-4 h-4 text-muted" />
-              </button>
+              </span>
             </template>
             <BaseDropdownItem
               :class="{ 'bg-primary-50 text-primary-600': viewMode === 'one-time' }"
@@ -46,6 +46,7 @@
         <BaseButton
           v-show="viewMode === 'one-time' ? invoiceStore.invoiceTotalCount : recurringInvoiceStore.totalRecurringInvoices"
           variant="primary-outline"
+          :aria-expanded="showFilters"
           @click="toggleFilter"
         >
           {{ $t('general.filter') }}
@@ -62,8 +63,9 @@
         <router-link
           v-if="canCreate"
           :to="viewMode === 'recurring' ? 'invoices/create?recurring=1' : 'invoices/create'"
+          class="inline-flex rounded-lg"
         >
-          <BaseButton variant="primary">
+          <BaseButton tag="span" variant="primary">
             <template #left="slotProps">
               <BaseIcon name="PlusIcon" :class="slotProps.class" />
             </template>
@@ -228,6 +230,7 @@
             <div class="absolute items-center left-6 top-3.5 select-none">
               <BaseCheckbox
                 v-model="invoiceStore.selectAllField"
+                :aria-label="$t('general.select_all')"
                 variant="primary"
                 @change="invoiceStore.selectAllInvoices"
               />
@@ -239,6 +242,7 @@
               <BaseCheckbox
                 :id="row.id"
                 v-model="selectField"
+                :aria-label="$t('general.select_named', { name: row.data.invoice_number })"
                 :value="row.data.id"
               />
             </div>
@@ -410,6 +414,7 @@
             <div class="absolute items-center left-6 top-3.5 select-none">
               <BaseCheckbox
                 v-model="recurringInvoiceStore.selectAllField"
+                :aria-label="$t('general.select_all')"
                 variant="primary"
                 @change="recurringInvoiceStore.selectAllRecurringInvoices"
               />
@@ -421,6 +426,7 @@
               <BaseCheckbox
                 :id="row.id"
                 v-model="recurringSelectField"
+                :aria-label="$t('general.select_named', { name: row.data.customer?.name ?? row.data.id })"
                 :value="row.data.id"
               />
             </div>

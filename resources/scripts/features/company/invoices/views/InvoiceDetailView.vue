@@ -46,8 +46,9 @@
           <router-link
             v-if="canRecordPayment"
             :to="`/admin/payments/${$route.params.id}/create`"
+            class="inline-flex rounded-lg"
           >
-            <BaseButton variant="primary">
+            <BaseButton tag="span" variant="primary">
               <template #left="slotProps">
                 <BaseIcon name="BanknotesIcon" :class="slotProps.class" />
               </template>

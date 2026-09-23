@@ -125,7 +125,7 @@ async function submitForm(): Promise<void> {
 
     <BaseDivider class="mt-6 mb-2" />
 
-    <ul class="divide-y divide-line-default">
+    <div class="divide-y divide-line-default">
       <BaseSwitchSection
         v-model="invoiceViewedField"
         :title="$t('settings.notification.invoice_viewed')"
@@ -137,6 +137,6 @@ async function submitForm(): Promise<void> {
         :title="$t('settings.notification.estimate_viewed')"
         :description="$t('settings.notification.estimate_viewed_desc')"
       />
-    </ul>
+    </div>
   </BaseSettingCard>
 </template>

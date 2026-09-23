@@ -1,18 +1,12 @@
 <template>
   <BaseModal
     :show="modalActive"
+    closable
     @close="closeModal"
     @open="setInitialData"
   >
     <template #header>
-      <div class="flex justify-between w-full">
-        {{ modalTitle }}
-        <BaseIcon
-          name="XMarkIcon"
-          class="w-6 h-6 text-muted cursor-pointer"
-          @click="closeModal"
-        />
-      </div>
+      {{ modalTitle }}
     </template>
 
     <form v-if="!isPreview" @submit.prevent>
@@ -156,6 +150,7 @@
 
         <iframe
           :src="templateUrl"
+          :title="$t('general.email_preview')"
           frameborder="0"
           class="w-full"
           style="min-height: 500px"
