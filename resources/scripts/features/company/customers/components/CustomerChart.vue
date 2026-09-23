@@ -97,17 +97,26 @@ watch(
   { immediate: true },
 )
 
+// A failed load shows a retry rather than placeholders that never resolve
+const loadError = ref<boolean>(false)
+
 async function load(): Promise<void> {
-  const response = await customerStore.fetchViewCustomer({
-    id: Number(route.params.id),
-    ...periodParams(period.value),
-  })
+  loadError.value = false
 
-  if (response.meta.chartData) {
-    Object.assign(chartData, response.meta.chartData)
+  try {
+    const response = await customerStore.fetchViewCustomer({
+      id: Number(route.params.id),
+      ...periodParams(period.value),
+    })
+
+    if (response.meta?.chartData) {
+      Object.assign(chartData, response.meta.chartData)
+    }
+  } catch {
+    loadError.value = true
+  } finally {
+    isLoaded.value = true
   }
-
-  isLoaded.value = true
 }
 
 function selectPeriod(value: PeriodValue): void {
@@ -119,7 +128,18 @@ function selectPeriod(value: PeriodValue): void {
 <template>
   <div class="flex flex-col gap-5">
     <section class="border glass rounded-xl" aria-labelledby="customer-cashflow">
-      <template v-if="isLoaded">
+      <div
+        v-if="loadError"
+        class="flex flex-wrap items-center justify-between gap-3 p-5 md:p-7"
+        role="alert"
+      >
+        <span class="text-sm text-body">{{ $t('customers.activity_load_failed') }}</span>
+        <BaseButton size="sm" variant="primary-outline" @click="load">
+          {{ $t('general.retry') }}
+        </BaseButton>
+      </div>
+
+      <template v-else-if="isLoaded">
         <div class="px-5 pt-5 md:px-7 md:pt-6">
           <div class="flex flex-wrap items-center justify-between gap-3">
             <h2 id="customer-cashflow" class="flex items-center gap-2.5 font-semibold text-section text-heading">

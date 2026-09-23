@@ -1,6 +1,17 @@
 <template>
   <div class="relative" :style="{ height: `${height}px` }">
     <canvas ref="canvas" role="img" :aria-label="ariaLabel" />
+
+    <!-- Nothing recorded in the period: say so over the empty axes -->
+    <div
+      v-if="isEmpty"
+      class="absolute inset-0 grid px-4 pointer-events-none place-items-center"
+    >
+      <p class="flex flex-col gap-1 px-5 py-3 text-center rounded-xl bg-surface/85" role="status">
+        <span class="text-sm font-semibold text-heading">{{ $t('dashboard.cashflow.no_activity') }}</span>
+        <span class="text-sm text-muted">{{ $t('dashboard.cashflow.no_activity_hint') }}</span>
+      </p>
+    </div>
   </div>
 </template>
 
@@ -78,6 +89,11 @@ function withAlpha(color: string, alpha: number): string {
 
   return `rgba(${r}, ${g}, ${b}, ${alpha})`
 }
+
+// Every month at zero, as for a new company
+const isEmpty = computed<boolean>(() => (
+  [...props.sales, ...props.receipts, ...props.expenses].every((value) => !Number(value))
+))
 
 function compact(amountInCents: number): string {
   return new Intl.NumberFormat(undefined, {
@@ -240,6 +256,8 @@ function buildConfig(): ChartConfiguration<'line' | 'bar'> {
         y: {
           position: isRtl.value ? 'right' : 'left',
           beginAtZero: true,
+          // With no data Chart.js scales to one cent and every tick reads 0
+          suggestedMax: isEmpty.value ? 100000 : undefined,
           grid: { color: grid, drawTicks: false },
           border: { display: false },
           ticks: {
@@ -247,7 +265,12 @@ function buildConfig(): ChartConfiguration<'line' | 'bar'> {
             font,
             padding: 8,
             maxTicksLimit: 5,
-            callback: (value: string | number) => compact(Number(value)),
+            // Small amounts can round to the same label: show each one once
+            callback: (value: string | number, index: number, ticks: Array<{ value: number }>) => {
+              const label = compact(Number(value))
+
+              return index > 0 && compact(Number(ticks[index - 1].value)) === label ? '' : label
+            },
           },
         },
       },

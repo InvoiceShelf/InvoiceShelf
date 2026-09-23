@@ -500,8 +500,11 @@ async function loadInvoices(
   const response = await invoiceStore.fetchInvoices({
     page: pageNumber,
     ...params,
-  } as never)
+  } as never).catch(() => null)
   isLoading.value = false
+
+  // A failed page is skipped, and the next scroll or search tries again
+  if (!response) return
 
   invoiceList.value = invoiceList.value ?? []
   invoiceList.value = [...invoiceList.value, ...response.data.data]

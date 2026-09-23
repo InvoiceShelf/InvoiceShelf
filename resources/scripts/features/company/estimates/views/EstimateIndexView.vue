@@ -97,9 +97,8 @@
       :title="$t('estimates.no_estimates')"
       :description="$t('estimates.list_of_estimates')"
     >
-      <template #actions>
+      <template v-if="canCreate" #actions>
         <BaseButton
-          v-if="canCreate"
           variant="primary-outline"
           @click="$router.push('/admin/estimates/create')"
         >

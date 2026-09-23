@@ -143,7 +143,7 @@
       :ascending="getOrderBy"
       :loading="isSidebarLoading"
       :empty="!invoiceList?.length"
-      :empty-text="$t('invoices.no_matching_invoices')"
+      :empty-text="$t('recurring_invoices.no_matching_invoices')"
       @update:search="onSearchText"
       @update:sort-field="setSortField"
       @toggle-order="sortData"

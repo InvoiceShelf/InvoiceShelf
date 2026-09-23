@@ -296,9 +296,8 @@ function removeMultipleItems(): void {
       :title="$t('items.no_items')"
       :description="$t('items.list_of_items')"
     >
-      <template #actions>
+      <template v-if="userStore.hasAbilities(ABILITIES.CREATE_ITEM)" #actions>
         <BaseButton
-          v-if="userStore.hasAbilities(ABILITIES.CREATE_ITEM)"
           variant="primary-outline"
           @click="$router.push('/admin/items/create')"
         >

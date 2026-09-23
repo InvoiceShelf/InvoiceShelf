@@ -161,14 +161,14 @@ const canCreateInvoiceFromEstimate = computed(() => userStore.hasAbilities(ABILI
               :to="{ path: `invoices/${row.data.id}/view` }"
               class="font-medium text-heading hover:text-primary-600"
             >
-              {{ row.data.customer.name }}
+              {{ row.data.customer?.name ?? "-" }}
             </router-link>
           </template>
 
           <template #cell-due_amount="{ row }">
             <BaseFormatMoney
               :amount="row.data.due_amount"
-              :currency="row.data.customer.currency"
+              :currency="row.data.customer?.currency"
             />
           </template>
 
@@ -223,14 +223,14 @@ const canCreateInvoiceFromEstimate = computed(() => userStore.hasAbilities(ABILI
               :to="{ path: `estimates/${row.data.id}/view` }"
               class="font-medium text-heading hover:text-primary-600"
             >
-              {{ row.data.customer.name }}
+              {{ row.data.customer?.name ?? "-" }}
             </router-link>
           </template>
 
           <template #cell-total="{ row }">
             <BaseFormatMoney
               :amount="row.data.total"
-              :currency="row.data.customer.currency"
+              :currency="row.data.customer?.currency"
             />
           </template>
 

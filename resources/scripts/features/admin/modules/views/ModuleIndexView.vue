@@ -46,7 +46,7 @@
       </div>
       <div v-else class="mt-24">
         <p class="flex items-center justify-center text-muted" role="status">
-          {{ activeTab === 'INSTALLED' ? $t('modules.no_modules_installed') : 'No marketplace modules are available yet.' }}
+          {{ activeTab === 'INSTALLED' ? $t('modules.no_modules_installed') : $t('modules.no_marketplace_modules') }}
         </p>
       </div>
     </div>

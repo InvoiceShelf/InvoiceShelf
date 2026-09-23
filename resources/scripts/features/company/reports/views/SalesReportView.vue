@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { until } from '@vueuse/core'
 import { ref, computed, onMounted, reactive, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { defaultMonthRange } from '@/scripts/utils/date-range'
@@ -64,7 +65,10 @@ globalStore.downloadReport = useReportDownload(() => {
   return url.value
 })
 
-onMounted(() => {
+onMounted(async () => {
+  // A direct visit can arrive before the company has loaded: wait for its hash
+  await until(() => selectedCompany.value?.unique_hash).toBeTruthy()
+
   customerSiteURL.value = `/reports/sales/customers/${selectedCompany.value?.unique_hash}`
   itemsSiteURL.value = `/reports/sales/items/${selectedCompany.value?.unique_hash}`
   getInitialReport()

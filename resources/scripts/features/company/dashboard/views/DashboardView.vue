@@ -56,17 +56,13 @@ const counts = computed<Count[]>(() => {
   return list
 })
 
-watch(
-  () => dashboardStore.period,
-  (value) => {
-    if (!userStore.hasAbilities('dashboard')) {
-      return
-    }
+function load(): void {
+  if (userStore.hasAbilities('dashboard')) {
+    void dashboardStore.loadData(periodParams(dashboardStore.period))
+  }
+}
 
-    void dashboardStore.loadData(periodParams(value))
-  },
-  { immediate: true },
-)
+watch(() => dashboardStore.period, load, { immediate: true })
 
 onMounted(() => {
   const meta = route.meta as { ability?: string; isOwner?: boolean }
@@ -92,25 +88,39 @@ onMounted(() => {
     </BasePageHeader>
 
     <div class="flex flex-col gap-5 md:gap-6">
-      <ReceivablesHero v-if="userStore.hasAbilities(ABILITIES.VIEW_INVOICE)" />
-
+      <!-- A failed load says so, instead of leaving the placeholders up -->
       <div
-        v-if="counts.length && dashboardStore.isDashboardDataLoaded"
-        class="flex flex-wrap items-center -mt-1 gap-x-6 gap-y-2 md:-mt-2"
+        v-if="dashboardStore.loadError"
+        class="flex flex-wrap items-center justify-between gap-3 p-4 border rounded-xl border-line-light bg-surface"
+        role="alert"
       >
-        <router-link
-          v-for="count in counts"
-          :key="count.key"
-          :to="count.to"
-          class="text-sm rounded-md text-muted hover:text-heading focus-visible:outline-2"
-        >
-          <span class="font-semibold tabular text-heading">{{ count.value }}</span>
-          {{ count.label }}
-        </router-link>
+        <span class="text-sm text-body">{{ $t('dashboard.load_failed') }}</span>
+        <BaseButton size="sm" variant="primary-outline" @click="load">
+          {{ $t('general.retry') }}
+        </BaseButton>
       </div>
 
-      <DashboardChart />
-      <DashboardTable />
+      <template v-if="dashboardStore.isDashboardDataLoaded || !dashboardStore.loadError">
+        <ReceivablesHero v-if="userStore.hasAbilities(ABILITIES.VIEW_INVOICE)" />
+
+        <div
+          v-if="counts.length && dashboardStore.isDashboardDataLoaded"
+          class="flex flex-wrap items-center -mt-1 gap-x-6 gap-y-2 md:-mt-2"
+        >
+          <router-link
+            v-for="count in counts"
+            :key="count.key"
+            :to="count.to"
+            class="text-sm rounded-md text-muted hover:text-heading focus-visible:outline-2"
+          >
+            <span class="font-semibold tabular text-heading">{{ count.value }}</span>
+            {{ count.label }}
+          </router-link>
+        </div>
+
+        <DashboardChart />
+        <DashboardTable />
+      </template>
     </div>
   </BasePage>
 

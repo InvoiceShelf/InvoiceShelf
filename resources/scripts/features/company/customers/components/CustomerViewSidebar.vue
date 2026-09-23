@@ -97,8 +97,11 @@ async function loadCustomers(
     page: pageNumber ?? 1,
     ...params,
     limit: 15,
-  })
+  }).catch(() => null)
   isFetching.value = false
+
+  // A failed page is skipped, and the next scroll or search tries again
+  if (!response) return
 
   const nextCustomers: CustomerListItem[] = [
     ...(customerList.value ?? []),
