@@ -28,28 +28,27 @@
         role="group"
         :aria-label="$t('general.theme')"
       >
-        <MenuItem
+        <DropdownMenuItem
           v-for="opt in themeOptions"
           :key="opt.value"
-          v-slot="{ active }"
-          as="template"
+          as-child
           @click="setTheme(opt.value)"
         >
           <button
             type="button"
             :class="[
               'flex items-center justify-center gap-1.5 rounded-md h-7 text-xs font-medium transition-colors',
+              'outline-hidden data-highlighted:ring-2 data-highlighted:ring-focus',
               currentTheme === opt.value
                 ? 'bg-surface text-heading shadow-xs'
                 : 'text-muted hover:text-body',
-              active ? 'ring-2 ring-focus' : '',
             ]"
           >
             <BaseIcon :name="opt.icon" class="w-3.5 h-3.5" aria-hidden="true" />
             {{ $t(opt.label) }}
             <span v-if="currentTheme === opt.value" class="sr-only">{{ $t('general.current') }}</span>
           </button>
-        </MenuItem>
+        </DropdownMenuItem>
       </div>
     </div>
 
@@ -75,7 +74,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { MenuItem } from '@headlessui/vue'
+import { DropdownMenuItem } from 'reka-ui'
 import type { Placement } from '@popperjs/core'
 import { useAuthStore } from '@/scripts/stores/auth.store'
 import { useUserStore } from '@/scripts/stores/user.store'

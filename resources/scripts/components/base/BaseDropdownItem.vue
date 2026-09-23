@@ -5,24 +5,34 @@
     a menu item inside a link. Without `to` it is a plain element; the click
     still reaches a wrapping <router-link>, so older call sites keep working.
   -->
-  <MenuItem v-if="to" v-slot="{ active, disabled }" as="template" v-bind="$attrs">
-    <router-link :to="to" :class="itemClass(active, disabled)">
+  <DropdownMenuItem
+    v-if="to"
+    as-child
+    v-bind="$attrs"
+    @focus="active = true"
+    @blur="active = false"
+  >
+    <router-link :to="to" :class="itemClass">
       <slot :active="active" />
     </router-link>
-  </MenuItem>
+  </DropdownMenuItem>
 
-  <MenuItem v-else v-slot="{ active, disabled }" v-bind="$attrs">
-    <div :class="itemClass(active, disabled)">
-      <slot :active="active" />
-    </div>
-  </MenuItem>
+  <DropdownMenuItem
+    v-else
+    v-bind="$attrs"
+    :class="itemClass"
+    @focus="active = true"
+    @blur="active = false"
+  >
+    <slot :active="active" />
+  </DropdownMenuItem>
 </template>
 
 <script setup lang="ts">
-import { inject, ref } from 'vue'
+import { computed, inject, ref } from 'vue'
 import type { Ref } from 'vue'
 import type { RouteLocationRaw } from 'vue-router'
-import { MenuItem } from '@headlessui/vue'
+import { DropdownMenuItem } from 'reka-ui'
 
 interface Props {
   to?: RouteLocationRaw
@@ -36,12 +46,13 @@ defineOptions({ inheritAttrs: false })
 
 const isSheet = inject<Ref<boolean>>('dropdownIsSheet', ref(false))
 
-function itemClass(active: boolean, disabled: boolean): string[] {
-  return [
-    active ? 'bg-hover-strong text-heading' : 'text-body',
-    disabled ? 'opacity-50 pointer-events-none' : '',
-    isSheet.value ? 'px-3 min-h-12 text-base rounded-xl' : 'px-3 py-2 text-sm rounded-lg',
-    'group flex items-center font-normal whitespace-normal cursor-pointer',
-  ]
-}
+// The highlighted item holds focus, so focus is what the `active` slot prop reports
+const active = ref<boolean>(false)
+
+const itemClass = computed<string[]>(() => [
+  'text-body data-highlighted:bg-hover-strong data-highlighted:text-heading',
+  'data-disabled:opacity-50 data-disabled:pointer-events-none',
+  isSheet.value ? 'px-3 min-h-12 text-base rounded-xl' : 'px-3 py-2 text-sm rounded-lg',
+  'group flex items-center font-normal whitespace-normal cursor-pointer outline-hidden',
+])
 </script>

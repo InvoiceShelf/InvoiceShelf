@@ -10,21 +10,22 @@
         style="height: 40px"
       />
     </BaseContentPlaceholders>
-    <Menu v-else v-slot="{ open }">
+    <DropdownMenuRoot v-else v-model:open="open" :modal="false">
       <span ref="trigger" :class="inActionBar ? 'flex w-full' : 'inline-flex'">
-        <MenuButton
-          :class="inActionBar ? 'w-full' : ''"
-          :aria-label="triggerLabel"
-          class="rounded-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
-          @click="onClick"
-          @keydown="onClick"
-        >
-          <slot name="activator" />
-        </MenuButton>
+        <DropdownMenuTrigger as-child>
+          <button
+            type="button"
+            :class="inActionBar ? 'w-full' : ''"
+            :aria-label="triggerLabel"
+            class="rounded-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
+          >
+            <slot name="activator" />
+          </button>
+        </DropdownMenuTrigger>
       </span>
 
-      <Teleport to="body">
-        <!-- Phones: an action sheet from the bottom edge -->
+      <DropdownMenuPortal>
+        <!-- Phones: an action sheet from the bottom edge, over a dimmed page -->
         <template v-if="isPhone">
           <transition
             enter-active-class="transition duration-200 ease-out"
@@ -36,59 +37,55 @@
           >
             <div v-if="open" class="fixed inset-0 z-50 bg-overlay" aria-hidden="true" />
           </transition>
-          <transition
-            enter-active-class="transition duration-200 ease-out"
-            enter-from-class="translate-y-full"
-            enter-to-class="translate-y-0"
-            leave-active-class="transition duration-150 ease-in"
-            leave-from-class="translate-y-0"
-            leave-to-class="translate-y-full"
+          <DropdownMenuContent
+            :reference="bottomEdge"
+            side="top"
+            :side-offset="0"
+            :avoid-collisions="false"
+            class="
+              z-50 w-screen max-h-[80dvh] overflow-y-auto px-2 pt-2
+              glass-strong rounded-t-2xl safe-drawer focus:outline-hidden
+              data-[state=open]:animate-sheet-in data-[state=closed]:animate-sheet-out
+            "
+            :class="containerClass"
           >
-            <MenuItems
-              class="
-                fixed inset-x-0 bottom-0 z-50 max-h-[80dvh] overflow-y-auto px-2 pt-2
-                glass-strong rounded-t-2xl safe-drawer focus:outline-hidden
-              "
-              :class="containerClass"
-            >
-              <div class="flex justify-center pb-2" aria-hidden="true">
-                <span class="h-1 w-9 rounded-full bg-line-strong" />
-              </div>
-              <slot />
-            </MenuItems>
-          </transition>
+            <div class="flex justify-center pb-2" aria-hidden="true">
+              <span class="h-1 w-9 rounded-full bg-line-strong" />
+            </div>
+            <slot />
+          </DropdownMenuContent>
         </template>
 
-        <!-- Tablet and desktop: a popover anchored to the activator -->
-        <div
+        <!-- Tablet and desktop: anchored to the activator -->
+        <DropdownMenuContent
           v-else
-          ref="container"
-          class="fixed top-0 start-0 z-50 pointer-events-none"
-          :class="widthClass"
+          :side="placement.side"
+          :align="placement.align"
+          :side-offset="6"
+          :collision-padding="8"
+          class="
+            z-50 p-1 rounded-xl border glass-strong focus:outline-hidden
+            origin-(--reka-dropdown-menu-content-transform-origin)
+            data-[state=open]:animate-pop-in data-[state=closed]:animate-pop-out
+          "
+          :class="[widthClass, containerClass]"
         >
-          <transition
-            enter-active-class="transition duration-100 ease-out"
-            enter-from-class="scale-95 opacity-0"
-            enter-to-class="scale-100 opacity-100"
-            leave-active-class="transition duration-75 ease-in"
-            leave-from-class="scale-100 opacity-100"
-            leave-to-class="scale-95 opacity-0"
-          >
-            <MenuItems :class="containerClasses">
-              <slot />
-            </MenuItems>
-          </transition>
-        </div>
-      </Teleport>
-    </Menu>
+          <slot />
+        </DropdownMenuContent>
+      </DropdownMenuPortal>
+    </DropdownMenuRoot>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Menu, MenuButton, MenuItems } from '@headlessui/vue'
-import { computed, inject, nextTick, onMounted, onUpdated, provide, ref } from 'vue'
+import {
+  DropdownMenuContent,
+  DropdownMenuPortal,
+  DropdownMenuRoot,
+  DropdownMenuTrigger,
+} from 'reka-ui'
+import { computed, inject, onMounted, onUpdated, provide, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { usePopper } from '@/scripts/composables/use-popper'
 import { useBreakpoints } from '@/scripts/composables/use-breakpoints'
 import type { Placement } from '@popperjs/core'
 
@@ -96,6 +93,7 @@ interface Props {
   containerClass?: string
   widthClass?: string
   positionClass?: string
+  /** Where the menu opens, in popper terms ("bottom-end" is under the trigger's end edge) */
   position?: Placement
   wrapperClass?: string
   contentLoading?: boolean
@@ -117,27 +115,37 @@ const { t } = useI18n()
 const { isPhone } = useBreakpoints()
 const inActionBar = inject<boolean>('inActionBar', false)
 
+const open = ref<boolean>(false)
+
 // BaseDropdownItem renders taller, touch-sized rows inside the sheet
 provide('dropdownIsSheet', isPhone)
 
-const containerClasses = computed<string>(() => {
-  const baseClass =
-    'origin-top-right rtl:origin-top-left p-1 rounded-xl border glass-strong focus:outline-hidden'
-  return `${baseClass} pointer-events-auto ${props.containerClass}`
+type Side = 'top' | 'right' | 'bottom' | 'left'
+type Align = 'start' | 'center' | 'end'
+
+// "bottom-end" becomes side bottom, align end. Reka lays these out with
+// floating-ui, which mirrors start and end in a right-to-left page.
+const placement = computed<{ side: Side; align: Align }>(() => {
+  const [side, align] = props.position.split('-') as [string, string | undefined]
+
+  return {
+    side: (side === 'auto' ? 'bottom' : side) as Side,
+    align: (align ?? 'center') as Align,
+  }
 })
 
-const [trigger, container, popper] = usePopper({
-  placement: props.position,
-  strategy: 'fixed',
-  modifiers: [{ name: 'offset', options: { offset: [0, 6] } }],
-})
+// The phone sheet hangs from the bottom edge of the screen
+const bottomEdge = {
+  getBoundingClientRect: (): DOMRect => new DOMRect(0, window.innerHeight, window.innerWidth, 0),
+}
 
 // An activator that shows only an icon still needs a name: without a label
 // it falls back to "Actions"
+const trigger = ref<HTMLElement | null>(null)
 const activatorHasText = ref<boolean>(true)
 
 function checkActivatorText(): void {
-  activatorHasText.value = !!(trigger.value as HTMLElement | null)?.textContent?.trim()
+  activatorHasText.value = !!trigger.value?.textContent?.trim()
 }
 
 onMounted(checkActivatorText)
@@ -150,11 +158,4 @@ const triggerLabel = computed<string | undefined>(() => {
 
   return activatorHasText.value ? undefined : t('general.actions')
 })
-
-async function onClick(): Promise<void> {
-  await nextTick()
-  requestAnimationFrame(() => {
-    popper.value?.update()
-  })
-}
 </script>
