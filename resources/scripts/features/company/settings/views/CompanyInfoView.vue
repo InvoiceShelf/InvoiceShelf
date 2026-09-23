@@ -227,6 +227,7 @@ async function updateCompanyData(): Promise<void> {
           </BaseInputGroup>
           <BaseTextarea
             v-model="companyForm.address.address_street_2"
+            :aria-label="$t('general.street_2')"
             rows="2"
             class="mt-2"
           />

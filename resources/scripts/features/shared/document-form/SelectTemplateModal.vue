@@ -72,70 +72,71 @@ function closeModal(): void {
 </script>
 
 <template>
-  <BaseModal :show="modalActive" @close="closeModal" @open="setData">
+  <BaseModal :show="modalActive" closable @close="closeModal" @open="setData">
     <template #header>
-      <div class="flex justify-between w-full">
-        {{ modalStore.title }}
-        <BaseIcon
-          name="XMarkIcon"
-          class="h-6 w-6 text-muted cursor-pointer"
-          @click="closeModal"
-        />
-      </div>
+      {{ modalStore.title }}
     </template>
 
     <div class="px-8 py-8 sm:p-6">
-      <div
-        v-if="modalData"
-        class="grid grid-cols-3 gap-2 p-1 overflow-x-auto"
-      >
-        <div
-          v-for="(template, index) in modalData.templates"
-          :key="index"
-          :class="{
-            'border border-solid border-primary-500':
-              selectedTemplate === template.name,
-          }"
-          class="
-            relative
-            flex flex-col
-            m-2
-            border border-line-default border-solid
-            cursor-pointer
-            hover:border-primary-300
-          "
-          @click="selectedTemplate = template.name"
-        >
-          <img
-            :src="template.path"
-            :alt="template.name"
-            class="w-full min-h-[100px]"
-          />
-          <img
-            v-if="selectedTemplate === template.name"
-            :alt="template.name"
-            class="absolute z-10 w-5 h-5 text-primary-500"
-            style="top: -6px; right: -5px"
-            :src="getTickImage()"
-          />
-          <span
-            :class="[
-              'w-full p-1 bg-surface-muted text-sm text-center absolute bottom-0 left-0',
-              {
-                'text-primary-500 bg-primary-100':
-                  selectedTemplate === template.name,
-                'text-body': selectedTemplate !== template.name,
-              },
-            ]"
+      <!-- A radio group: Tab reaches the choice, the arrow keys change it -->
+      <fieldset v-if="modalData">
+        <legend class="sr-only">{{ $t('general.select_template') }}</legend>
+        <div class="grid grid-cols-3 gap-2 p-1 overflow-x-auto">
+          <label
+            v-for="(template, index) in modalData.templates"
+            :key="index"
+            :class="{
+              'border border-solid border-primary-500':
+                selectedTemplate === template.name,
+            }"
+            class="
+              relative
+              flex flex-col
+              m-2
+              border border-line-default border-solid
+              cursor-pointer
+              hover:border-primary-300
+              has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-focus has-[input:focus-visible]:ring-offset-2
+            "
           >
-            {{ template.name }}
-          </span>
+            <input
+              v-model="selectedTemplate"
+              type="radio"
+              name="document-template"
+              :value="template.name"
+              class="sr-only"
+            />
+            <img
+              :src="template.path"
+              alt=""
+              class="w-full min-h-[100px]"
+            />
+            <img
+              v-if="selectedTemplate === template.name"
+              alt=""
+              class="absolute z-10 w-5 h-5 text-primary-500"
+              style="top: -6px; inset-inline-end: -5px"
+              :src="getTickImage()"
+            />
+            <span
+              :class="[
+                'w-full p-1 bg-surface-muted text-sm text-center absolute bottom-0 start-0',
+                {
+                  'text-primary-600 bg-primary-100':
+                    selectedTemplate === template.name,
+                  'text-body': selectedTemplate !== template.name,
+                },
+              ]"
+            >
+              {{ template.name }}
+            </span>
+          </label>
         </div>
-      </div>
+      </fieldset>
 
       <div
         v-if="modalData && !modalData.store.isEdit"
-        class="z-0 flex ml-3 pt-5"
+        class="z-0 flex ms-3 pt-5"
       >
         <BaseCheckbox
           v-model="modalData.isMarkAsDefault"
@@ -150,7 +151,7 @@ function closeModal(): void {
     <div
       class="z-0 flex justify-end p-4 border-t border-line-default border-solid"
     >
-      <BaseButton class="mr-3" variant="primary-outline" @click="closeModal">
+      <BaseButton class="me-3" variant="primary-outline" @click="closeModal">
         {{ $t('general.cancel') }}
       </BaseButton>
       <BaseButton variant="primary" @click="chooseTemplate">

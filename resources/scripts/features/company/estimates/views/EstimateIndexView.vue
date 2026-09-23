@@ -10,6 +10,7 @@
         <BaseButton
           v-show="estimateStore.totalEstimateCount"
           variant="primary-outline"
+          :aria-expanded="showFilters"
           @click="toggleFilter"
         >
           {{ $t('general.filter') }}
@@ -23,8 +24,8 @@
           </template>
         </BaseButton>
 
-        <router-link v-if="canCreate" to="estimates/create">
-          <BaseButton variant="primary" class="ml-4">
+        <router-link v-if="canCreate" to="estimates/create" class="inline-flex rounded-lg ms-4">
+          <BaseButton tag="span" variant="primary">
             <template #left="slotProps">
               <BaseIcon name="PlusIcon" :class="slotProps.class" />
             </template>
@@ -137,9 +138,10 @@
         </template>
 
         <template #header>
-          <div class="absolute items-center left-6 top-3.5 select-none">
+          <div class="absolute items-center start-6 top-3.5 select-none">
             <BaseCheckbox
               v-model="estimateStore.selectAllField"
+              :aria-label="$t('general.select_all')"
               variant="primary"
               @change="estimateStore.selectAllEstimates"
             />
@@ -151,6 +153,7 @@
             <BaseCheckbox
               :id="row.id"
               v-model="selectField"
+              :aria-label="$t('general.select_named', { name: row.data.estimate_number })"
               :value="row.data.id"
             />
           </div>
@@ -328,9 +331,9 @@ type TableColumn = Omit<ColumnDef, 'label'> & { label?: string }
 const estimateColumns = computed<TableColumn[]>(() => [
   {
     key: 'checkbox',
-    thClass: 'extra w-10 pr-0',
+    thClass: 'extra w-10 pe-0',
     sortable: false,
-    tdClass: 'font-medium text-heading pr-0',
+    tdClass: 'font-medium text-heading pe-0',
   },
   {
     key: 'estimate_date',
@@ -355,8 +358,8 @@ const estimateColumns = computed<TableColumn[]>(() => [
   },
   {
     key: 'actions',
-    tdClass: 'text-right text-sm font-medium pl-0',
-    thClass: 'text-right pl-0',
+    tdClass: 'text-end text-sm font-medium ps-0',
+    thClass: 'text-end ps-0',
     sortable: false,
     mobile: 'actions',
   },

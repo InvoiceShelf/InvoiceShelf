@@ -75,7 +75,7 @@ const taxTypeColumns = computed<TableColumn[]>(() => [
   {
     key: 'actions',
     label: '',
-    tdClass: 'text-right text-sm font-medium',
+    tdClass: 'text-end text-sm font-medium',
     sortable: false,
   },
 ])
@@ -195,7 +195,7 @@ function openTaxModal(): void {
     >
       <template #cell-calculation_type="{ row }">
         {{ $t(`settings.tax_types.${row.data.calculation_type}`) }}
-        <BaseBadge v-if="row.data.compound_tax" class="ml-2">
+        <BaseBadge v-if="row.data.compound_tax" class="ms-2">
           {{ $t('tax_types.compound_tax') }}
         </BaseBadge>
       </template>

@@ -1,39 +1,5 @@
 <template>
   <div class="flex min-h-full">
-    <!-- The other recurring invoices, beside this one (wide screens only) -->
-    <RecordListPane
-      ref="listPane"
-      :search="searchData.searchText"
-      :sort-options="sortOptions"
-      :sort-field="searchData.orderByField"
-      :ascending="getOrderBy"
-      :loading="isSidebarLoading"
-      :empty="!invoiceList?.length"
-      :empty-text="$t('invoices.no_matching_invoices')"
-      @update:search="onSearchText"
-      @update:sort-field="setSortField"
-      @toggle-order="sortData"
-    >
-      <RecordListItem
-        v-for="invoice in (invoiceList ?? []).filter(Boolean)"
-        :id="'recurring-invoice-' + invoice.id"
-        :key="invoice.id"
-        :to="`/admin/recurring-invoices/${invoice.id}/view`"
-        :active="hasActiveUrl(invoice.id)"
-        :title="invoice.customer?.name ?? ''"
-        :subtitle="getFrequencyLabel(invoice.frequency)"
-        :meta="invoice.formatted_starts_at"
-      >
-        <template #badges>
-          <BaseRecurringInvoiceStatusBadge :status="invoice.status">
-            <BaseRecurringInvoiceStatusLabel :status="invoice.status" />
-          </BaseRecurringInvoiceStatusBadge>
-        </template>
-        <template #amount>
-          <BaseFormatMoney :amount="invoice.total" :currency="invoice.customer?.currency" />
-        </template>
-      </RecordListItem>
-    </RecordListPane>
 
     <BasePage class="min-w-0">
       <!-- The only action is the menu, which reads better on the title row than alone in a bar -->
@@ -167,6 +133,41 @@
         </section>
       </template>
     </BasePage>
+
+    <!-- The other recurring invoices, beside this one (wide screens only) -->
+    <RecordListPane
+      ref="listPane"
+      :search="searchData.searchText"
+      :sort-options="sortOptions"
+      :sort-field="searchData.orderByField"
+      :ascending="getOrderBy"
+      :loading="isSidebarLoading"
+      :empty="!invoiceList?.length"
+      :empty-text="$t('invoices.no_matching_invoices')"
+      @update:search="onSearchText"
+      @update:sort-field="setSortField"
+      @toggle-order="sortData"
+    >
+      <RecordListItem
+        v-for="invoice in (invoiceList ?? []).filter(Boolean)"
+        :id="'recurring-invoice-' + invoice.id"
+        :key="invoice.id"
+        :to="`/admin/recurring-invoices/${invoice.id}/view`"
+        :active="hasActiveUrl(invoice.id)"
+        :title="invoice.customer?.name ?? ''"
+        :subtitle="getFrequencyLabel(invoice.frequency)"
+        :meta="invoice.formatted_starts_at"
+      >
+        <template #badges>
+          <BaseRecurringInvoiceStatusBadge :status="invoice.status">
+            <BaseRecurringInvoiceStatusLabel :status="invoice.status" />
+          </BaseRecurringInvoiceStatusBadge>
+        </template>
+        <template #amount>
+          <BaseFormatMoney :amount="invoice.total" :currency="invoice.customer?.currency" />
+        </template>
+      </RecordListItem>
+    </RecordListPane>
   </div>
 </template>
 
@@ -181,6 +182,7 @@ import RecordListItem from '@/scripts/components/layout/RecordListItem.vue'
 import { useUserStore } from '../../../../stores/user.store'
 import type { RecurringInvoice } from '../../../../types/domain/recurring-invoice'
 import type { CurrencyConfig } from '@/scripts/utils/format-money'
+import { scrollBehavior } from '@/scripts/utils/motion'
 
 interface Props {
   canEdit?: boolean
@@ -405,7 +407,7 @@ function scrollToRecurringInvoice(): void {
   const list = invoiceListSection.value
   if (el && list) {
     // Scroll the list pane alone; scrollIntoView would also move the page
-    list.scrollTo({ top: el.offsetTop - list.offsetTop - 8, behavior: 'smooth' })
+    list.scrollTo({ top: el.offsetTop - list.offsetTop - 8, behavior: scrollBehavior() })
     el.classList.add('shake')
     addScrollListener()
   }

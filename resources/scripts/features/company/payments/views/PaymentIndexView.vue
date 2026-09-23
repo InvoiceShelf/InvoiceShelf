@@ -14,6 +14,7 @@
         <BaseButton
           v-show="paymentStore.paymentTotalCount"
           variant="primary-outline"
+          :aria-expanded="showFilters"
           @click="toggleFilter"
         >
           {{ $t('general.filter') }}
@@ -30,7 +31,7 @@
         <BaseButton
           v-if="canCreate"
           variant="primary"
-          class="ml-4"
+          class="ms-4"
           @click="$router.push('/admin/payments/create')"
         >
           <template #left="slotProps">
@@ -115,9 +116,10 @@
         </template>
 
         <template #header>
-          <div class="absolute items-center left-6 top-3.5 select-none">
+          <div class="absolute items-center start-6 top-3.5 select-none">
             <BaseCheckbox
               v-model="selectAllFieldStatus"
+              :aria-label="$t('general.select_all')"
               variant="primary"
               @change="paymentStore.selectAllPayments"
             />
@@ -129,6 +131,7 @@
             <BaseCheckbox
               :id="row.id"
               v-model="selectField"
+              :aria-label="$t('general.select_named', { name: row.data.payment_number })"
               :value="row.data.id"
               variant="primary"
             />
@@ -297,7 +300,7 @@ const paymentColumns = computed<TableColumn[]>(() => [
     key: 'status',
     sortable: false,
     thClass: 'extra w-10',
-    tdClass: 'text-left text-sm font-medium extra',
+    tdClass: 'text-start text-sm font-medium extra',
   },
   {
     key: 'payment_date',
@@ -323,7 +326,7 @@ const paymentColumns = computed<TableColumn[]>(() => [
   {
     key: 'actions',
     label: '',
-    tdClass: 'text-right text-sm font-medium',
+    tdClass: 'text-end text-sm font-medium',
     sortable: false,
     mobile: 'actions',
   },

@@ -1,18 +1,12 @@
 <template>
   <BaseModal
     :show="modalActive"
+    closable
     @close="closeSendPaymentModal"
     @open="setInitialData"
   >
     <template #header>
-      <div class="flex justify-between w-full">
-        {{ modalTitle }}
-        <BaseIcon
-          name="XMarkIcon"
-          class="w-6 h-6 text-muted cursor-pointer"
-          @click="closeSendPaymentModal"
-        />
-      </div>
+      {{ modalTitle }}
     </template>
     <form v-if="!isPreview" action="">
       <div class="px-8 py-8 sm:p-6">
@@ -93,7 +87,7 @@
         class="z-0 flex justify-end p-4 border-t border-line-default border-solid"
       >
         <BaseButton
-          class="mr-3"
+          class="me-3"
           variant="primary-outline"
           type="button"
           @click="closeSendPaymentModal"
@@ -105,7 +99,7 @@
           :disabled="isLoading"
           variant="primary"
           type="button"
-          class="mr-3"
+          class="me-3"
           @click="sendPaymentData"
         >
           <template #left="slotProps">
@@ -122,17 +116,18 @@
     <div v-else>
       <div class="my-6 mx-4 border border-line-default relative">
         <BaseButton
-          class="absolute top-4 right-4"
+          class="absolute top-4 end-4"
           :disabled="isLoading"
           variant="primary-outline"
           @click="cancelPreview"
         >
-          <BaseIcon name="PencilIcon" class="h-5 mr-2" />
+          <BaseIcon name="PencilIcon" class="h-5 me-2" />
           {{ $t('general.edit') }}
         </BaseButton>
 
         <iframe
           :src="templateUrl"
+          :title="$t('general.email_preview')"
           frameborder="0"
           class="w-full"
           style="min-height: 500px"
@@ -142,7 +137,7 @@
         class="z-0 flex justify-end p-4 border-t border-line-default border-solid"
       >
         <BaseButton
-          class="mr-3"
+          class="me-3"
           variant="primary-outline"
           type="button"
           @click="closeSendPaymentModal"
@@ -160,7 +155,7 @@
           <BaseIcon
             v-if="!isLoading"
             name="PaperAirplaneIcon"
-            class="h-5 mr-2"
+            class="h-5 me-2"
           />
           {{ $t('general.send') }}
         </BaseButton>

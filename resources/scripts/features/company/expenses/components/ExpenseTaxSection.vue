@@ -17,9 +17,9 @@
           <PopoverButton
             type="button"
             :disabled="isLoading"
-            class="inline-flex h-9 items-center justify-center rounded-lg border border-line-default bg-surface px-3 text-sm font-medium text-primary-400 transition hover:bg-hover focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
+            class="inline-flex h-9 items-center justify-center rounded-lg border border-line-default bg-surface px-3 text-sm font-medium text-primary-600 transition hover:bg-hover focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
           >
-            <BaseIcon name="PlusIcon" class="mr-1.5 h-4 w-4" />
+            <BaseIcon name="PlusIcon" class="me-1.5 h-4 w-4" />
             {{ $t('expenses.add_tax') }}
           </PopoverButton>
 
@@ -33,7 +33,7 @@
           >
             <PopoverPanel
               v-slot="{ close }"
-              class="absolute right-0 z-30 mt-2 w-[min(20rem,calc(100vw-3rem))] overflow-hidden rounded-xl border border-line-default bg-surface shadow-lg"
+              class="absolute end-0 z-30 mt-2 w-[min(20rem,calc(100vw-3rem))] overflow-hidden rounded-xl border border-line-default bg-surface shadow-lg"
             >
               <div class="p-4">
                 <BaseInput
@@ -51,7 +51,7 @@
                   v-for="taxType in filteredTaxTypes"
                   :key="taxType.id"
                   type="button"
-                  class="flex w-full items-center justify-between gap-4 border-b border-line-light px-5 py-3 text-left last:border-b-0 hover:bg-hover disabled:cursor-not-allowed disabled:opacity-50"
+                  class="flex w-full items-center justify-between gap-4 border-b border-line-light px-5 py-3 text-start last:border-b-0 hover:bg-hover disabled:cursor-not-allowed disabled:opacity-50"
                   :disabled="selectedTaxTypeIds.has(taxType.id)"
                   @click="selectTaxType(taxType, close)"
                 >
@@ -76,10 +76,10 @@
               <button
                 v-if="canCreateTaxType"
                 type="button"
-                class="flex h-11 w-full items-center justify-center border-t border-line-light bg-surface-muted px-2 text-sm font-medium text-primary-400 hover:bg-hover"
+                class="flex h-11 w-full items-center justify-center border-t border-line-light bg-surface-muted px-2 text-sm font-medium text-primary-600 hover:bg-hover"
                 @click="openTaxTypeModal(close)"
               >
-                <BaseIcon name="PlusCircleIcon" class="mr-2 h-4 w-4" />
+                <BaseIcon name="PlusCircleIcon" class="me-2 h-4 w-4" />
                 {{ $t('expenses.add_new_tax') }}
               </button>
             </PopoverPanel>
@@ -88,7 +88,7 @@
       </div>
 
       <div class="grid lg:grid-cols-[minmax(0,1fr)_19rem]">
-        <div class="min-w-0 p-4 sm:p-5 lg:border-r lg:border-line-light">
+        <div class="min-w-0 p-4 sm:p-5 lg:border-e lg:border-line-light">
           <div v-if="isLoading">
             <BaseContentPlaceholders>
               <BaseContentPlaceholdersText :lines="3" />
@@ -159,7 +159,7 @@
         </div>
 
         <div
-          class="rounded-b-xl bg-surface-muted p-4 sm:p-5 lg:rounded-bl-none lg:rounded-r-xl"
+          class="rounded-b-xl bg-surface-muted p-4 sm:p-5 lg:rounded-es-none lg:rounded-e-xl"
         >
           <p class="text-xs font-semibold text-muted">
             {{ $t('expenses.tax_summary') }}

@@ -1,20 +1,18 @@
 <template>
-  <BaseDropdown>
+  <BaseDropdown :label="$t('general.actions_for', { name: row.name })">
     <template #activator>
       <span class="inline-flex items-center justify-center rounded-lg w-9 h-9 text-muted hover:bg-hover-strong hover:text-heading">
         <BaseIcon name="EllipsisHorizontalIcon" class="w-5 h-5" />
       </span>
     </template>
 
-    <router-link :to="`/admin/administration/users/${row.id}/edit`">
-      <BaseDropdownItem>
-        <BaseIcon
-          name="PencilIcon"
-          class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
-        />
-        {{ $t('general.edit') }}
-      </BaseDropdownItem>
-    </router-link>
+    <BaseDropdownItem :to="`/admin/administration/users/${row.id}/edit`">
+      <BaseIcon
+        name="PencilIcon"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
+      />
+      {{ $t('general.edit') }}
+    </BaseDropdownItem>
 
     <BaseDropdownItem
       v-if="row.id !== userStore.currentUser?.id"
@@ -22,7 +20,7 @@
     >
       <BaseIcon
         name="ArrowRightEndOnRectangleIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('administration.users.impersonate') }}
     </BaseDropdownItem>

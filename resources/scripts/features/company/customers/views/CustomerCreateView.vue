@@ -32,8 +32,6 @@ const router = useRouter()
 const route = useRoute()
 
 const isFetchingInitialData = ref<boolean>(false)
-const isShowPassword = ref<boolean>(false)
-const isShowConfirmPassword = ref<boolean>(false)
 const isSaving = ref<boolean>(false)
 
 const isEdit = computed<boolean>(() => route.name === 'customers.edit')
@@ -194,7 +192,7 @@ async function submitCustomerData(): Promise<void> {
       <BaseCard container-class="p-4 md:p-5">
         <!-- Basic Info -->
         <div class="grid grid-cols-5 gap-4 mb-8">
-          <h2 class="col-span-5 font-semibold text-left text-section text-heading lg:col-span-1">
+          <h2 class="col-span-5 font-semibold text-start text-section text-heading lg:col-span-1">
             {{ $t('customers.basic_info') }}
           </h2>
 
@@ -335,7 +333,7 @@ async function submitCustomerData(): Promise<void> {
 
         <!-- Portal Access -->
         <div class="grid grid-cols-5 gap-4 mb-8">
-          <h2 class="col-span-5 font-semibold text-left text-section text-heading lg:col-span-1">
+          <h2 class="col-span-5 font-semibold text-start text-section text-heading lg:col-span-1">
             {{ $t('customers.portal_access') }}
           </h2>
 
@@ -372,19 +370,12 @@ async function submitCustomerData(): Promise<void> {
               <BaseInput
                 v-model.trim="customerStore.currentCustomer.password"
                 :content-loading="isFetchingInitialData"
-                :type="isShowPassword ? 'text' : 'password'"
+                type="password"
+                revealable
                 name="password"
                 :invalid="v$.currentCustomer.password.$error"
                 @input="v$.currentCustomer.password.$touch()"
-              >
-                <template #right>
-                  <BaseIcon
-                    :name="isShowPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-                    class="mr-1 text-muted cursor-pointer"
-                    @click="isShowPassword = !isShowPassword"
-                  />
-                </template>
-              </BaseInput>
+              />
             </BaseInputGroup>
 
             <BaseInputGroup
@@ -399,19 +390,12 @@ async function submitCustomerData(): Promise<void> {
               <BaseInput
                 v-model.trim="customerStore.currentCustomer.confirm_password"
                 :content-loading="isFetchingInitialData"
-                :type="isShowConfirmPassword ? 'text' : 'password'"
+                type="password"
+                revealable
                 name="confirm_password"
                 :invalid="v$.currentCustomer.confirm_password.$error"
                 @input="v$.currentCustomer.confirm_password.$touch()"
-              >
-                <template #right>
-                  <BaseIcon
-                    :name="isShowConfirmPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-                    class="mr-1 text-muted cursor-pointer"
-                    @click="isShowConfirmPassword = !isShowConfirmPassword"
-                  />
-                </template>
-              </BaseInput>
+              />
             </BaseInputGroup>
           </BaseInputGrid>
         </div>
@@ -420,7 +404,7 @@ async function submitCustomerData(): Promise<void> {
 
         <!-- Billing Address -->
         <div class="grid grid-cols-5 gap-4 mb-8">
-          <h2 class="col-span-5 font-semibold text-left text-section text-heading lg:col-span-1">
+          <h2 class="col-span-5 font-semibold text-start text-section text-heading lg:col-span-1">
             {{ $t('customers.billing_address') }}
           </h2>
 
@@ -525,7 +509,7 @@ async function submitCustomerData(): Promise<void> {
               <BaseInputGroup
                 :content-loading="isFetchingInitialData"
                 :label="$t('customers.phone')"
-                class="text-left"
+                class="text-start"
               >
                 <BaseInput
                   v-model.trim="customerStore.currentCustomer.billing.phone"
@@ -538,7 +522,7 @@ async function submitCustomerData(): Promise<void> {
               <BaseInputGroup
                 :label="$t('customers.zip_code')"
                 :content-loading="isFetchingInitialData"
-                class="mt-2 text-left"
+                class="mt-2 text-start"
               >
                 <BaseInput
                   v-model.trim="customerStore.currentCustomer.billing.zip"
@@ -581,7 +565,7 @@ async function submitCustomerData(): Promise<void> {
           v-if="customerStore.currentCustomer.shipping"
           class="grid grid-cols-5 gap-4 mb-8"
         >
-          <h2 class="col-span-5 font-semibold text-left text-section text-heading lg:col-span-1">
+          <h2 class="col-span-5 font-semibold text-start text-section text-heading lg:col-span-1">
             {{ $t('customers.shipping_address') }}
           </h2>
 
@@ -681,7 +665,7 @@ async function submitCustomerData(): Promise<void> {
               <BaseInputGroup
                 :content-loading="isFetchingInitialData"
                 :label="$t('customers.phone')"
-                class="text-left"
+                class="text-start"
               >
                 <BaseInput
                   v-model.trim="customerStore.currentCustomer.shipping.phone"
@@ -694,7 +678,7 @@ async function submitCustomerData(): Promise<void> {
               <BaseInputGroup
                 :label="$t('customers.zip_code')"
                 :content-loading="isFetchingInitialData"
-                class="mt-2 text-left"
+                class="mt-2 text-start"
               >
                 <BaseInput
                   v-model.trim="customerStore.currentCustomer.shipping.zip"

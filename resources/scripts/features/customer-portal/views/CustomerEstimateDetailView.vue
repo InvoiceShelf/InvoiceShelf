@@ -4,38 +4,6 @@
       The customer's other estimates (wide screens only). The portal publishes
       no top inset, so the pane is sized below its fixed header here.
     -->
-    <RecordListPane
-      ref="listPane"
-      class="!h-[calc(100dvh-5.5rem)]"
-      :search="searchData.estimate_number"
-      :sort-options="sortOptions"
-      :sort-field="searchData.orderByField"
-      :ascending="isAscending"
-      :empty="!store.estimates.length"
-      :empty-text="$t('estimates.no_matching_estimates')"
-      @update:search="onSearchText"
-      @update:sort-field="setSortField"
-      @toggle-order="sortData"
-    >
-      <RecordListItem
-        v-for="est in store.estimates"
-        :id="'estimate-' + est.id"
-        :key="est.id"
-        :to="`/${store.companySlug}/customer/estimates/${est.id}/view`"
-        :active="hasActiveUrl(est.id)"
-        :title="est.estimate_number"
-        :meta="est.formatted_estimate_date"
-      >
-        <template #badges>
-          <BaseEstimateStatusBadge :status="est.status">
-            <BaseEstimateStatusLabel :status="est.status" />
-          </BaseEstimateStatusBadge>
-        </template>
-        <template #amount>
-          <BaseFormatMoney :amount="est.total" :currency="est.currency" />
-        </template>
-      </RecordListItem>
-    </RecordListPane>
 
     <BasePage class="min-w-0">
       <BasePageHeader :title="pageTitle">
@@ -82,6 +50,39 @@
         :title="currentEstimate ? `${currentEstimate.estimate_number}.pdf` : ''"
       />
     </BasePage>
+
+    <RecordListPane
+      ref="listPane"
+      class="!h-[calc(100dvh-5.5rem)]"
+      :search="searchData.estimate_number"
+      :sort-options="sortOptions"
+      :sort-field="searchData.orderByField"
+      :ascending="isAscending"
+      :empty="!store.estimates.length"
+      :empty-text="$t('estimates.no_matching_estimates')"
+      @update:search="onSearchText"
+      @update:sort-field="setSortField"
+      @toggle-order="sortData"
+    >
+      <RecordListItem
+        v-for="est in store.estimates"
+        :id="'estimate-' + est.id"
+        :key="est.id"
+        :to="`/${store.companySlug}/customer/estimates/${est.id}/view`"
+        :active="hasActiveUrl(est.id)"
+        :title="est.estimate_number"
+        :meta="est.formatted_estimate_date"
+      >
+        <template #badges>
+          <BaseEstimateStatusBadge :status="est.status">
+            <BaseEstimateStatusLabel :status="est.status" />
+          </BaseEstimateStatusBadge>
+        </template>
+        <template #amount>
+          <BaseFormatMoney :amount="est.total" :currency="est.currency" />
+        </template>
+      </RecordListItem>
+    </RecordListPane>
   </div>
 </template>
 
@@ -96,6 +97,7 @@ import RecordListItem from '@/scripts/components/layout/RecordListItem.vue'
 import { useDialogStore } from '../../../stores/dialog.store'
 import { EstimateStatus } from '../../../types/domain/estimate'
 import type { Estimate } from '../../../types/domain/estimate'
+import { scrollBehavior } from '@/scripts/utils/motion'
 
 const store = useCustomerPortalStore()
 const dialogStore = useDialogStore()
@@ -170,7 +172,7 @@ function scrollToEstimate(): void {
   const list = listPane.value?.listEl
   if (el && list) {
     // Scroll the list pane alone; scrollIntoView would also move the page
-    list.scrollTo({ top: el.offsetTop - list.offsetTop - 8, behavior: 'smooth' })
+    list.scrollTo({ top: el.offsetTop - list.offsetTop - 8, behavior: scrollBehavior() })
     el.classList.add('shake')
   }
 }

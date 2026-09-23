@@ -324,7 +324,7 @@ async function submitData(): Promise<void> {
 
       <BaseDivider class="mt-6 mb-2" />
 
-      <ul>
+      <div>
         <form @submit.prevent="submitData">
           <BaseSwitchSection
             v-model="expirePdfField"
@@ -373,7 +373,7 @@ async function submitData(): Promise<void> {
           :title="$t('settings.preferences.discount_per_item')"
           :description="$t('settings.preferences.discount_setting_description')"
         />
-      </ul>
+      </div>
     </BaseSettingCard>
   </form>
 </template>

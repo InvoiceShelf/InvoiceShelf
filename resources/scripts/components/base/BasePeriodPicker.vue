@@ -6,7 +6,7 @@
       :class="[
         'flex items-center gap-2 min-w-0 px-3 text-sm font-medium transition-colors border rounded-xl',
         'bg-surface/80 border-line-default text-heading hover:border-line-strong',
-        'focus:outline-hidden focus-visible:ring-3 focus-visible:ring-focus',
+        'focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus',
         block ? 'w-full h-11' : 'h-10 md:h-9',
         open ? 'border-line-strong' : '',
       ]"
@@ -16,7 +16,7 @@
       @click="open ? close() : (open = true)"
     >
       <BaseIcon name="CalendarDaysIcon" class="w-4.5 h-4.5 text-muted shrink-0" />
-      <span class="truncate" :class="block ? 'flex-1 text-left' : ''">{{ label }}</span>
+      <span class="truncate" :class="block ? 'flex-1 text-start' : ''">{{ label }}</span>
       <BaseIcon
         name="ChevronDownIcon"
         class="w-4 h-4 transition-transform text-subtle shrink-0"
@@ -26,13 +26,15 @@
 
     <!-- Tablet and desktop: a popover under the trigger -->
     <Teleport v-if="!isPhone" to="body">
-      <div ref="container" class="fixed top-0 left-0 z-50 pointer-events-none">
+      <div ref="container" class="fixed top-0 start-0 z-50 pointer-events-none">
         <transition
           enter-active-class="transition duration-100 ease-out"
           enter-from-class="scale-95 opacity-0"
           leave-active-class="transition duration-75 ease-in"
           leave-to-class="scale-95 opacity-0"
         >
+          <!-- Escape and focus leaving close the popover -->
+          <!-- eslint-disable-next-line vuejs-accessibility/no-static-element-interactions -->
           <div
             v-if="open"
             ref="panel"
@@ -40,6 +42,7 @@
             :aria-label="$t('dateRange.period')"
             class="p-2 border shadow-lg pointer-events-auto w-84 max-h-[calc(100dvh-1rem)] overflow-y-auto glass-strong rounded-2xl"
             @keydown.esc.stop="closeAndFocus"
+            @focusout="onPanelFocusOut"
           >
             <PeriodPickerPanel
               :model-value="modelValue"
@@ -139,7 +142,7 @@ watch(open, async (isOpen) => {
 
   await nextTick()
   popper.value?.update()
-  panel.value?.querySelector<HTMLElement>('[aria-checked="true"], button')?.focus()
+  panel.value?.querySelector<HTMLElement>('[aria-current="true"], button')?.focus()
 })
 
 // The panel grows when the calendar opens; keep it on screen
@@ -155,6 +158,15 @@ onClickOutside(panel, () => {
 
 function close(): void {
   open.value = false
+}
+
+// The popover sits at the end of the page, so tabbing out of it closes it
+function onPanelFocusOut(event: FocusEvent): void {
+  const next = event.relatedTarget as Node | null
+
+  if (next && !panel.value?.contains(next) && !trigger.value?.contains(next)) {
+    close()
+  }
 }
 
 function closeAndFocus(): void {

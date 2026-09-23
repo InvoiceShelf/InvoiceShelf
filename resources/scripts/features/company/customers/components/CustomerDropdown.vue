@@ -101,7 +101,7 @@ function onRemoveCustomer(): void {
 </script>
 
 <template>
-  <BaseDropdown :content-loading="customerStore.isFetchingViewData">
+  <BaseDropdown :content-loading="customerStore.isFetchingViewData" :label="row?.name ? $t('general.actions_for', { name: String(row?.name) }) : ''">
     <template #activator>
       <span v-if="isDetailView" data-overflow class="inline-flex items-center justify-center border rounded-lg w-11 h-11 md:w-9 md:h-9 bg-surface border-line-default text-body hover:bg-hover">
         <BaseIcon name="EllipsisHorizontalIcon" class="w-5 h-5" />
@@ -112,39 +112,28 @@ function onRemoveCustomer(): void {
     </template>
 
     <!-- Edit Customer -->
-    <router-link
-      v-if="
-        userStore.hasAbilities(ABILITIES.EDIT_CUSTOMER) &&
-        customerId !== null
-      "
+    <BaseDropdownItem
+      v-if="userStore.hasAbilities(ABILITIES.EDIT_CUSTOMER) && customerId !== null"
       :to="`/admin/customers/${customerId}/edit`"
     >
-      <BaseDropdownItem>
-        <BaseIcon
-          name="PencilIcon"
-          class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
-        />
-        {{ $t('general.edit') }}
-      </BaseDropdownItem>
-    </router-link>
+      <BaseIcon
+        name="PencilIcon"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
+      />
+      {{ $t('general.edit') }}
+    </BaseDropdownItem>
 
     <!-- View Customer -->
-    <router-link
-      v-if="
-        !isDetailView &&
-        userStore.hasAbilities(ABILITIES.VIEW_CUSTOMER) &&
-        customerId !== null
-      "
+    <BaseDropdownItem
+      v-if="!isDetailView && userStore.hasAbilities(ABILITIES.VIEW_CUSTOMER) && customerId !== null"
       :to="`/admin/customers/${customerId}/view`"
     >
-      <BaseDropdownItem>
-        <BaseIcon
-          name="EyeIcon"
-          class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
-        />
-        {{ $t('general.view') }}
-      </BaseDropdownItem>
-    </router-link>
+      <BaseIcon
+        name="EyeIcon"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
+      />
+      {{ $t('general.view') }}
+    </BaseDropdownItem>
 
     <!-- Delete Customer -->
     <BaseDropdownItem
@@ -156,7 +145,7 @@ function onRemoveCustomer(): void {
     >
       <BaseIcon
         name="TrashIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.delete') }}
     </BaseDropdownItem>

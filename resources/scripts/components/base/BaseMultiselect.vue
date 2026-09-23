@@ -7,11 +7,13 @@
     />
   </BaseContentPlaceholders>
 
+  <!-- Handles the keys of the combobox inside it; when not searchable, the root is the combobox -->
+  <!-- eslint-disable-next-line vuejs-accessibility/no-static-element-interactions -->
   <div
     v-else
     :id="id"
     ref="rootRef"
-    v-bind="rootAttrs"
+    v-bind="{ ...rootAttrs, ...(searchable && !disabled ? {} : comboboxAttrs) }"
     :tabindex="rootTabIndex"
     :class="containerClass"
     @click="handleContainerClick"
@@ -35,6 +37,7 @@
             {{ getOptionLabel(option.raw) }}
             <span
               v-if="!disabled"
+              aria-hidden="true"
               :class="classes.tagRemove"
               @mousedown.prevent.stop="handleTagRemove(option.raw)"
             >
@@ -45,9 +48,12 @@
 
         <div :class="classes.tagsSearchWrapper">
           <span :class="classes.tagsSearchCopy">{{ search }}</span>
+          <!-- Named through comboboxAttrs -->
+          <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
           <input
             v-if="searchable && !disabled"
             ref="inputRef"
+            v-bind="comboboxAttrs"
             :type="inputType"
             :value="search"
             :class="classes.tagsSearch"
@@ -61,9 +67,12 @@
       </div>
     </template>
 
+    <!-- Named through comboboxAttrs -->
+    <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
     <input
       v-else-if="searchable && !disabled"
       ref="inputRef"
+      v-bind="comboboxAttrs"
       :type="inputType"
       :value="search"
       :class="classes.search"
@@ -110,6 +119,7 @@
       :clear="clearSelection"
     >
       <span
+        aria-hidden="true"
         :class="classes.clear"
         @mousedown.prevent.stop="clearSelection"
       >
@@ -119,6 +129,7 @@
 
     <slot v-if="caret" name="caret">
       <span
+        aria-hidden="true"
         :class="caretClass"
         @mousedown.prevent.stop="toggleDropdown"
       />
@@ -135,23 +146,37 @@
           :options="slotOptions"
         />
 
-        <ul :class="classes.options">
+        <ul
+          :id="listboxId"
+          role="listbox"
+          :aria-multiselectable="isMultiMode ? 'true' : undefined"
+          :aria-labelledby="fieldAttrs['aria-labelledby']"
+          :class="classes.options"
+        >
           <template v-if="groups">
             <li
               v-for="group in visibleGroups"
               :key="group.key"
+              role="group"
+              :aria-label="String(group.label)"
               :class="classes.group"
             >
-              <div :class="groupLabelClass(group)">
+              <div aria-hidden="true" :class="groupLabelClass(group)">
                 <slot name="grouplabel" :group="group.raw">
                   <span>{{ group.label }}</span>
                 </slot>
               </div>
 
-              <ul :class="classes.groupOptions">
+              <ul role="none" :class="classes.groupOptions">
+                <!-- Options take no focus: the combobox points at them with aria-activedescendant -->
+                <!-- eslint-disable-next-line vuejs-accessibility/interactive-supports-focus, vuejs-accessibility/mouse-events-have-key-events -->
                 <li
                   v-for="option in group.options"
+                  :id="optionDomId(option.key)"
                   :key="option.key"
+                  role="option"
+                  :aria-selected="isSelected(option.raw)"
+                  :aria-disabled="isOptionDisabled(option.raw) || undefined"
                   :class="optionClass(option)"
                   :data-pointed="isHighlighted(option.raw)"
                   @mouseenter="setHighlighted(option.raw)"
@@ -170,9 +195,14 @@
           </template>
 
           <template v-else>
+            <!-- eslint-disable-next-line vuejs-accessibility/interactive-supports-focus, vuejs-accessibility/mouse-events-have-key-events -->
             <li
               v-for="option in visibleOptions"
+              :id="optionDomId(option.key)"
               :key="option.key"
+              role="option"
+              :aria-selected="isSelected(option.raw)"
+              :aria-disabled="isOptionDisabled(option.raw) || undefined"
               :class="optionClass(option)"
               :data-pointed="isHighlighted(option.raw)"
               @mouseenter="setHighlighted(option.raw)"
@@ -190,13 +220,13 @@
         </ul>
 
         <slot v-if="noOptions" name="nooptions">
-          <div :class="classes.noOptions">
+          <div role="status" :class="classes.noOptions">
             {{ noOptionsText }}
           </div>
         </slot>
 
         <slot v-if="noResults" name="noresults">
-          <div :class="classes.noResults">
+          <div role="status" :class="classes.noResults">
             {{ noResultsText }}
           </div>
         </slot>
@@ -212,6 +242,7 @@
 
     <input
       v-if="required"
+      aria-hidden="true"
       :class="classes.fakeInput"
       tabindex="-1"
       :value="textValue"
@@ -248,8 +279,10 @@ import {
   onMounted,
   ref,
   useAttrs,
+  useId,
   watch,
 } from 'vue'
+import { useFormField } from '@/scripts/composables/use-form-field'
 
 type MultiselectMode = 'single' | 'multiple' | 'tags'
 type OpenDirection = 'top' | 'bottom'
@@ -377,24 +410,24 @@ interface NormalizedGroup {
 
 const defaultClasses: Required<MultiselectClasses> = {
   container:
-    'p-0 relative mx-auto w-full flex items-center justify-end box-border cursor-pointer border border-line-default rounded-lg bg-surface text-base md:text-sm leading-snug text-heading outline-hidden max-h-11 md:max-h-10 transition-[border-color,box-shadow] duration-150',
+    'p-0 relative mx-auto w-full flex items-center justify-end box-border cursor-pointer border border-control-border rounded-lg bg-surface text-base md:text-sm leading-snug text-heading outline-hidden max-h-11 md:max-h-10 transition-[border-color,box-shadow] duration-150',
   containerDisabled:
     'cursor-not-allowed bg-surface-secondary border-line-light !text-muted',
   containerOpen: '',
   containerOpenTop: '',
-  containerActive: 'ring-3 ring-focus border-primary-500',
+  containerActive: 'ring-2 ring-focus border-primary-500',
   containerInvalid:
     'border-danger',
-  containerInvalidActive: 'ring-3 border-danger ring-danger/20',
+  containerInvalidActive: 'ring-2 border-danger ring-danger/20',
   singleLabel:
-    'flex items-center h-full absolute left-0 top-0 pointer-events-none bg-transparent leading-snug pl-3.5',
+    'flex items-center h-full absolute start-0 top-0 pointer-events-none bg-transparent leading-snug ps-3.5',
   multipleLabel:
-    'flex items-center h-full absolute left-0 top-0 pointer-events-none bg-transparent leading-snug pl-3.5',
+    'flex items-center h-full absolute start-0 top-0 pointer-events-none bg-transparent leading-snug ps-3.5',
   search:
-    'w-full absolute inset-0 outline-hidden appearance-none box-border border-0 text-base md:text-sm font-sans bg-surface rounded-lg pl-3.5 focus:ring-0',
-  tags: 'grow shrink flex flex-wrap mt-1 pl-2',
-  tag: 'bg-primary-50 text-primary-700 text-sm font-medium py-0.5 pl-2 rounded-md mr-1 mb-1 flex items-center whitespace-nowrap',
-  tagDisabled: 'pr-2 !bg-surface-muted text-muted',
+    'w-full absolute inset-0 outline-hidden appearance-none box-border border-0 text-base md:text-sm font-sans bg-surface rounded-lg ps-3.5 focus:ring-0',
+  tags: 'grow shrink flex flex-wrap mt-1 ps-2',
+  tag: 'bg-primary-50 text-primary-700 text-sm font-medium py-0.5 ps-2 rounded-md me-1 mb-1 flex items-center whitespace-nowrap',
+  tagDisabled: 'pe-2 !bg-surface-muted text-muted',
   tagRemove:
     'flex items-center justify-center p-1 mx-0.5 rounded-sm hover:bg-primary-100 group',
   tagRemoveIcon:
@@ -404,18 +437,18 @@ const defaultClasses: Required<MultiselectClasses> = {
     'absolute inset-0 border-0 focus:outline-hidden focus:ring-0 !shadow-none appearance-none p-0 text-base md:text-sm font-sans box-border w-full',
   tagsSearchCopy: 'invisible whitespace-pre-wrap inline-block h-px',
   placeholder:
-    'flex items-center h-full absolute left-0 top-0 pointer-events-none bg-transparent leading-snug pl-3.5 text-subtle text-base md:text-sm',
+    'flex items-center h-full absolute start-0 top-0 pointer-events-none bg-transparent leading-snug ps-3.5 text-subtle text-base md:text-sm',
   caret:
-    'bg-multiselect-caret bg-center bg-no-repeat w-5 h-5 py-px box-content z-[5] relative mr-2 shrink-0 grow-0 transition-transform',
+    'bg-multiselect-caret bg-center bg-no-repeat w-5 h-5 py-px box-content z-[5] relative me-2 shrink-0 grow-0 transition-transform',
   caretOpen: 'rotate-180 pointer-events-auto',
   clear:
-    'pr-3.5 relative z-10 opacity-40 transition duration-300 shrink-0 grow-0 flex hover:opacity-80',
+    'pe-3.5 relative z-10 opacity-40 transition duration-300 shrink-0 grow-0 flex hover:opacity-80',
   clearIcon:
     'bg-multiselect-remove bg-center bg-no-repeat w-2.5 h-4 py-px box-content inline-block',
   spinner:
-    'bg-multiselect-spinner bg-center bg-no-repeat w-4 h-4 z-10 mr-3.5 animate-spin shrink-0 grow-0',
+    'bg-multiselect-spinner bg-center bg-no-repeat w-4 h-4 z-10 me-3.5 animate-spin shrink-0 grow-0',
   dropdown:
-    'max-h-60 shadow-lg absolute -left-px -right-px -bottom-1.5 border border-line-light p-1 overflow-y-auto z-50 bg-surface flex flex-col rounded-xl',
+    'max-h-60 shadow-lg absolute -start-px -end-px -bottom-1.5 border border-line-light p-1 overflow-y-auto z-50 bg-surface flex flex-col rounded-xl',
   dropdownTop:
     '-translate-y-full -top-1.5 bottom-auto flex-col-reverse rounded-xl',
   dropdownBottom: 'translate-y-full',
@@ -424,7 +457,7 @@ const defaultClasses: Required<MultiselectClasses> = {
   optionsTop: 'flex-col-reverse',
   group: 'p-0 m-0',
   groupLabel:
-    'flex text-xs box-border items-center justify-start text-left pt-2 pb-1 px-3 font-medium text-muted cursor-default leading-normal',
+    'flex text-xs box-border items-center justify-start text-start pt-2 pb-1 px-3 font-medium text-muted cursor-default leading-normal',
   groupLabelPointable: 'cursor-pointer',
   groupLabelPointed: 'text-body',
   groupLabelSelected: 'text-primary-700',
@@ -434,7 +467,7 @@ const defaultClasses: Required<MultiselectClasses> = {
     'text-subtle cursor-not-allowed',
   groupOptions: 'p-0 m-0',
   option:
-    'flex items-center justify-start box-border text-left cursor-pointer text-base md:text-sm leading-snug py-2.5 md:py-2 px-3 rounded-lg text-heading',
+    'flex items-center justify-start box-border text-start cursor-pointer text-base md:text-sm leading-snug py-2.5 md:py-2 px-3 rounded-lg text-heading',
   optionPointed: 'bg-hover-strong',
   optionSelected: 'bg-primary-50 text-primary-700 font-medium',
   optionDisabled: 'text-subtle cursor-not-allowed',
@@ -444,7 +477,7 @@ const defaultClasses: Required<MultiselectClasses> = {
   noOptions: 'py-2 px-3 text-sm text-muted bg-surface',
   noResults: 'py-2 px-3 text-sm text-muted bg-surface',
   fakeInput:
-    'bg-transparent absolute left-0 right-0 -bottom-px w-full h-px border-0 p-0 appearance-none outline-hidden text-transparent',
+    'bg-transparent absolute start-0 end-0 -bottom-px w-full h-px border-0 p-0 appearance-none outline-hidden text-transparent',
   spacer: 'h-10 md:h-9 py-px box-content',
 }
 
@@ -544,13 +577,62 @@ const classes = computed<Required<MultiselectClasses>>(() => ({
 const rootAttrs = computed<Record<string, unknown>>(() => {
   const { tabindex, ...rest } = attrs as Record<string, unknown>
 
-  return rest
+  return Object.fromEntries(Object.entries(rest).filter(([key]) => !key.startsWith('aria-')))
+})
+
+/*
+ * The ARIA 1.2 combobox pattern. The search input is the combobox when there
+ * is one; otherwise the box itself is. The highlighted option is announced
+ * through aria-activedescendant, so focus stays on the combobox.
+ */
+const listboxId = `multiselect-${useId()}-listbox`
+
+const { attrs: fieldAttrs } = useFormField({
+  invalid: () => props.invalid,
+  labelledBy: true,
+})
+
+function optionDomId(key: string): string {
+  const safe = Array.from(String(key), (char) => char.charCodeAt(0).toString(36)).join('')
+
+  return `${listboxId}-${safe}`
+}
+
+const comboboxAttrs = computed<Record<string, unknown>>(() => {
+  const passed = Object.fromEntries(
+    Object.entries(attrs as Record<string, unknown>).filter(([key]) => key.startsWith('aria-')),
+  )
+
+  return {
+    role: 'combobox',
+    'aria-haspopup': 'listbox',
+    'aria-expanded': dropdownVisible.value ? 'true' : 'false',
+    'aria-controls': listboxId,
+    'aria-autocomplete': props.searchable ? 'list' : undefined,
+    'aria-activedescendant':
+      dropdownVisible.value && highlightedKey.value !== null
+        ? optionDomId(highlightedKey.value)
+        : undefined,
+    'aria-disabled': props.disabled ? 'true' : undefined,
+    // Last resort: a select with no label anywhere is named by its placeholder
+    'aria-label':
+      !fieldAttrs.value['aria-labelledby'] && !passed['aria-label'] && props.placeholder
+        ? props.placeholder
+        : undefined,
+    ...fieldAttrs.value,
+    ...passed,
+  }
 })
 
 const rootTabIndex = computed<number>(() => {
   const rawTabIndex = (attrs as Record<string, unknown>).tabindex
 
   if (props.disabled) {
+    return -1
+  }
+
+  // A searchable select is reached through its input: one tab stop, not two
+  if (props.searchable) {
     return -1
   }
 
@@ -1282,6 +1364,7 @@ function handleFocusOut(event: FocusEvent): void {
 
   if (!rootRef.value?.contains(relatedTarget)) {
     isFocused.value = false
+    closeDropdown()
   }
 }
 
@@ -1291,6 +1374,15 @@ function handleDocumentMousedown(event: MouseEvent): void {
     closeDropdown()
   }
 }
+
+watch(highlightedKey, async (key) => {
+  if (key === null || !dropdownVisible.value) {
+    return
+  }
+
+  await nextTick()
+  document.getElementById(optionDomId(key))?.scrollIntoView({ block: 'nearest' })
+})
 
 function moveHighlight(direction: 1 | -1): void {
   const options = selectableOptions.value.filter(
@@ -1362,8 +1454,19 @@ function handleKeydown(event: KeyboardEvent): void {
     return
   }
 
+  // Tab moves on; an action at the foot of the list (e.g. "Add new item") is
+  // a button focus can reach, and leaving the select closes it
   if (event.key === 'Tab') {
-    closeDropdown()
+    return
+  }
+
+  // Enter, or Space on a select without search, opens it
+  if (
+    !dropdownVisible.value &&
+    (event.key === 'Enter' || (event.key === ' ' && !props.searchable))
+  ) {
+    event.preventDefault()
+    openDropdown()
     return
   }
 

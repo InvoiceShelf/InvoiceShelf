@@ -7,19 +7,19 @@
       <BaseContentPlaceholders v-if="isLoading">
         <BaseContentPlaceholdersText :lines="1" class="w-16 h-5" />
       </BaseContentPlaceholders>
-      <label v-else class="text-sm leading-5 text-muted">
+      <span v-else class="text-sm leading-5 text-muted">
         {{ $t('estimates.sub_total') }}
-      </label>
+      </span>
 
       <BaseContentPlaceholders v-if="isLoading">
         <BaseContentPlaceholdersText :lines="1" class="w-16 h-5" />
       </BaseContentPlaceholders>
-      <label
+      <span
         v-else
         class="flex items-center justify-center m-0 text-base font-medium text-heading"
       >
         <BaseFormatMoney :amount="store.getSubTotal" :currency="defaultCurrency" />
-      </label>
+      </span>
     </div>
 
     <!-- Net Total for per-item tax mode -->
@@ -31,19 +31,19 @@
         <BaseContentPlaceholders v-if="isLoading">
           <BaseContentPlaceholdersText :lines="1" class="w-16 h-5" />
         </BaseContentPlaceholders>
-        <label v-else class="text-sm leading-5 text-muted">
+        <span v-else class="text-sm leading-5 text-muted">
           {{ $t('estimates.net_total') }}
-        </label>
+        </span>
 
         <BaseContentPlaceholders v-if="isLoading">
           <BaseContentPlaceholdersText :lines="1" class="w-16 h-5" />
         </BaseContentPlaceholders>
-        <label
+        <span
           v-else
           class="flex items-center justify-center m-0 text-base font-medium text-heading"
         >
           <BaseFormatMoney :amount="store.getNetTotal" :currency="currency" />
-        </label>
+        </span>
       </div>
     </div>
 
@@ -56,7 +56,7 @@
       <BaseContentPlaceholders v-if="isLoading">
         <BaseContentPlaceholdersText :lines="1" class="w-16 h-5" />
       </BaseContentPlaceholders>
-      <label
+      <span
         v-else-if="formData.tax_per_item === 'YES'"
         class="m-0 text-sm leading-5 text-muted"
       >
@@ -67,17 +67,17 @@
           {{ tax.name }} -
           <BaseFormatMoney :amount="tax.fixed_amount" :currency="defaultCurrency" />
         </template>
-      </label>
+      </span>
 
       <BaseContentPlaceholders v-if="isLoading">
         <BaseContentPlaceholdersText :lines="1" class="w-16 h-5" />
       </BaseContentPlaceholders>
-      <label
+      <span
         v-else-if="formData.tax_per_item === 'YES'"
         class="flex items-center justify-center m-0 text-base font-medium text-heading"
       >
         <BaseFormatMoney :amount="tax.amount" :currency="defaultCurrency" />
-      </label>
+      </span>
     </div>
 
     <!-- Global Discount -->
@@ -88,9 +88,9 @@
       <BaseContentPlaceholders v-if="isLoading">
         <BaseContentPlaceholdersText :lines="1" class="w-16 h-5" />
       </BaseContentPlaceholders>
-      <label v-else class="text-sm leading-5 text-muted">
+      <span v-else class="text-sm leading-5 text-muted">
         {{ $t('estimates.discount') }}
-      </label>
+      </span>
 
       <BaseContentPlaceholders v-if="isLoading">
         <BaseContentPlaceholdersText
@@ -101,18 +101,22 @@
       <div v-else class="flex" style="width: 140px" role="group">
         <BaseInput
           v-model="totalDiscount"
-          class="border-r-0 focus:border-r-2 rounded-tr-sm rounded-br-sm h-[38px]"
+          :aria-label="$t('estimates.discount')"
+          class="border-e-0 focus:border-e-2 rounded-se-sm rounded-ee-sm h-[38px]"
         />
-        <BaseDropdown position="bottom-end">
+        <BaseDropdown
+          position="bottom-end"
+          :label="$t('invoices.item.discount_type', { type: formData.discount_type === 'fixed' ? defaultCurrencySymbol : '%' })"
+        >
           <template #activator>
             <BaseButton
-              class="p-2 rounded-none rounded-tr-md rounded-br-md"
-              type="button"
+              class="p-2 rounded-none rounded-se-md rounded-ee-md"
+              tag="span"
               variant="white"
             >
               <span class="flex items-center">
                 {{ formData.discount_type === 'fixed' ? defaultCurrencySymbol : '%' }}
-                <BaseIcon name="ChevronDownIcon" class="w-4 h-4 ml-1 text-muted" />
+                <BaseIcon name="ChevronDownIcon" class="w-4 h-4 ms-1 text-muted" />
               </span>
             </BaseButton>
           </template>
@@ -140,19 +144,19 @@
         <BaseContentPlaceholders v-if="isLoading">
           <BaseContentPlaceholdersText :lines="1" class="w-16 h-5" />
         </BaseContentPlaceholders>
-        <label v-else class="text-sm leading-5 text-muted">
+        <span v-else class="text-sm leading-5 text-muted">
           {{ $t('estimates.net_total') }}
-        </label>
+        </span>
 
         <BaseContentPlaceholders v-if="isLoading">
           <BaseContentPlaceholdersText :lines="1" class="w-16 h-5" />
         </BaseContentPlaceholders>
-        <label
+        <span
           v-else
           class="flex items-center justify-center m-0 text-base font-medium text-heading"
         >
           <BaseFormatMoney :amount="store.getNetTotal" :currency="currency" />
-        </label>
+        </span>
       </div>
     </div>
 
@@ -165,20 +169,23 @@
         :key="tax.id"
         class="flex items-center justify-between w-full mt-2 text-sm"
       >
-        <label v-if="tax.calculation_type === 'percentage'" class="leading-5 text-muted">
+        <span v-if="tax.calculation_type === 'percentage'" class="leading-5 text-muted">
           {{ tax.name }} ({{ tax.percent }} %)
-        </label>
-        <label v-else class="leading-5 text-muted">
+        </span>
+        <span v-else class="leading-5 text-muted">
           {{ tax.name }} (<BaseFormatMoney :amount="tax.fixed_amount" :currency="currency" />)
-        </label>
-        <label class="flex items-center justify-center text-base font-medium text-heading">
+        </span>
+        <span class="flex items-center justify-center gap-1 text-base font-medium text-heading">
           <BaseFormatMoney :amount="tax.amount" :currency="currency" />
-          <BaseIcon
-            name="TrashIcon"
-            class="h-5 ml-2 cursor-pointer"
+          <BaseIconButton
+            icon="TrashIcon"
+            :label="$t('general.remove_named', { name: tax.name })"
+            size="sm"
+            tone="danger"
+            class="-me-2"
             @click="removeTax(tax.id)"
           />
-        </label>
+        </span>
       </div>
     </div>
 
@@ -186,7 +193,7 @@
     <div
       v-if="formData.tax_per_item === 'NO' || formData.tax_per_item === null"
       ref="taxModal"
-      class="float-right pt-2 pb-4"
+      class="float-end pt-2 pb-4"
     >
       <TaxSelectPopup
         :store-prop="storeProp"
@@ -206,26 +213,26 @@
       <BaseContentPlaceholders v-if="isLoading">
         <BaseContentPlaceholdersText :lines="1" class="w-16 h-5" />
       </BaseContentPlaceholders>
-      <label v-else class="m-0 text-sm font-semibold leading-5 text-heading">
+      <span v-else class="m-0 text-sm font-semibold leading-5 text-heading">
         {{ $t('general.total_amount') }}
-      </label>
+      </span>
 
       <BaseContentPlaceholders v-if="isLoading">
         <BaseContentPlaceholdersText :lines="1" class="w-16 h-5" />
       </BaseContentPlaceholders>
-      <label
+      <span
         v-else
         class="flex items-center justify-center text-xl font-semibold text-heading"
       >
         <BaseFormatMoney :amount="store.getTotal" :currency="defaultCurrency" />
-      </label>
+      </span>
     </div>
 
     <!-- Base currency equivalent -->
     <div v-if="showBaseCurrencyEquivalent" class="flex items-center justify-end w-full mt-1">
-      <label class="text-xs text-muted">
+      <span class="text-xs text-muted">
         ≈ <BaseFormatMoney :amount="baseCurrencyGrandTotal" :currency="companyCurrency" />
-      </label>
+      </span>
     </div>
   </div>
 </template>

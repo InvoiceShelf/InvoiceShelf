@@ -184,18 +184,12 @@ function closeNoteModal(): void {
 <template>
   <BaseModal
     :show="modalActive"
+    closable
     @close="closeNoteModal"
     @open="setInitialData"
   >
     <template #header>
-      <div class="flex justify-between w-full">
-        {{ modalStore.title }}
-        <BaseIcon
-          name="XMarkIcon"
-          class="h-6 w-6 text-muted cursor-pointer"
-          @click="closeNoteModal"
-        />
-      </div>
+      {{ modalStore.title }}
     </template>
     <form action="" @submit.prevent="submitNote">
       <div class="px-8 py-8 sm:p-6">
@@ -253,7 +247,7 @@ function closeNoteModal(): void {
         class="z-0 flex justify-end px-4 py-4 border-t border-solid border-line-default"
       >
         <BaseButton
-          class="mr-2"
+          class="me-2"
           variant="primary-outline"
           type="button"
           @click="closeNoteModal"
@@ -277,11 +271,3 @@ function closeNoteModal(): void {
   </BaseModal>
 </template>
 
-<style>
-.note-modal {
-  .header-editior .editor-menu-bar {
-    margin-left: 0.5px;
-    margin-right: 0px;
-  }
-}
-</style>

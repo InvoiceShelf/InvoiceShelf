@@ -29,7 +29,7 @@
         :key="index"
         class="flex items-center justify-between px-4 py-3 hover:bg-hover transition-colors"
       >
-        <span class="text-sm text-body font-mono">{{ permission.folder }}</span>
+        <span class="text-sm text-body font-mono" dir="ltr">{{ permission.folder }}</span>
         <span class="flex items-center gap-2 text-sm text-muted">
           <span class="font-medium">{{ permission.permission }}</span>
           <RequirementBadge :ok="permission.isSet" />

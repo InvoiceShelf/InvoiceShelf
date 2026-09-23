@@ -1,34 +1,5 @@
 <template>
   <div class="flex min-h-full">
-    <!-- The other payments, beside the one on screen (wide screens only) -->
-    <RecordListPane
-      ref="listPane"
-      :search="searchData.searchText"
-      :sort-options="sortOptions"
-      :sort-field="searchData.orderByField"
-      :ascending="getOrderBy"
-      :loading="isLoading"
-      :empty="!paymentList?.length"
-      :empty-text="$t('payments.no_matching_payments')"
-      @update:search="onSearchText"
-      @update:sort-field="setSortField"
-      @toggle-order="sortData"
-    >
-      <RecordListItem
-        v-for="payment in (paymentList ?? []).filter(Boolean)"
-        :id="'payment-' + payment.id"
-        :key="payment.id"
-        :to="`/admin/payments/${payment.id}/view`"
-        :active="hasActiveUrl(payment.id)"
-        :title="payment.customer?.name ?? ''"
-        :subtitle="payment.payment_number"
-        :meta="payment.formatted_payment_date"
-      >
-        <template #amount>
-          <BaseFormatMoney :amount="payment.amount" :currency="payment.customer?.currency" />
-        </template>
-      </RecordListItem>
-    </RecordListPane>
 
     <BasePage class="min-w-0">
       <BasePageHeader :title="pageTitle">
@@ -119,6 +90,36 @@
       />
     </BasePage>
 
+    <!-- The other payments, beside the one on screen (wide screens only) -->
+    <RecordListPane
+      ref="listPane"
+      :search="searchData.searchText"
+      :sort-options="sortOptions"
+      :sort-field="searchData.orderByField"
+      :ascending="getOrderBy"
+      :loading="isLoading"
+      :empty="!paymentList?.length"
+      :empty-text="$t('payments.no_matching_payments')"
+      @update:search="onSearchText"
+      @update:sort-field="setSortField"
+      @toggle-order="sortData"
+    >
+      <RecordListItem
+        v-for="payment in (paymentList ?? []).filter(Boolean)"
+        :id="'payment-' + payment.id"
+        :key="payment.id"
+        :to="`/admin/payments/${payment.id}/view`"
+        :active="hasActiveUrl(payment.id)"
+        :title="payment.customer?.name ?? ''"
+        :subtitle="payment.payment_number"
+        :meta="payment.formatted_payment_date"
+      >
+        <template #amount>
+          <BaseFormatMoney :amount="payment.amount" :currency="payment.customer?.currency" />
+        </template>
+      </RecordListItem>
+    </RecordListPane>
+
     <SendPaymentModal />
   </div>
 </template>
@@ -136,6 +137,7 @@ import { useUserStore } from '../../../../stores/user.store'
 import { useModalStore } from '../../../../stores/modal.store'
 import type { Payment, PaymentAllocation } from '../../../../types/domain/payment'
 import type { Invoice } from '../../../../types/domain/invoice'
+import { scrollBehavior } from '@/scripts/utils/motion'
 
 interface Props {
   canEdit?: boolean
@@ -329,7 +331,7 @@ function scrollToPayment(): void {
   const list = paymentListSection.value
   if (el && list) {
     // Scroll the list pane alone; scrollIntoView would also move the page
-    list.scrollTo({ top: el.offsetTop - list.offsetTop - 8, behavior: 'smooth' })
+    list.scrollTo({ top: el.offsetTop - list.offsetTop - 8, behavior: scrollBehavior() })
     el.classList.add('shake')
     addScrollListener()
   }

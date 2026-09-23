@@ -78,7 +78,7 @@ const userTableColumns = computed<TableColumn[]>(() => [
   },
   {
     key: 'actions',
-    tdClass: 'text-right text-sm font-medium',
+    tdClass: 'text-end text-sm font-medium',
     sortable: false,
     mobile: 'actions',
   },
@@ -205,6 +205,7 @@ function removeMultipleUsers(): void {
           <BaseButton
             v-show="memberStore.totalUsers"
             variant="primary-outline"
+            :aria-expanded="showFilters"
             @click="toggleFilter"
           >
             {{ $t('general.filter') }}
@@ -296,9 +297,10 @@ function removeMultipleUsers(): void {
 
         <!-- Select All Checkbox -->
         <template #header>
-          <div class="absolute z-10 items-center left-6 top-3.5 select-none">
+          <div class="absolute z-10 items-center start-6 top-3.5 select-none">
             <BaseCheckbox
               v-model="selectAllFieldStatus"
+              :aria-label="$t('general.select_all')"
               variant="primary"
               @change="memberStore.selectAllUsers"
             />
@@ -310,6 +312,7 @@ function removeMultipleUsers(): void {
             <BaseCheckbox
               :id="row.data.id"
               v-model="selectField"
+              :aria-label="$t('general.select_named', { name: row.data.name })"
               :value="row.data.id"
               variant="primary"
             />

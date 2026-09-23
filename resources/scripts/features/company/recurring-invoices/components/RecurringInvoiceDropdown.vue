@@ -10,38 +10,28 @@
     </template>
 
     <!-- Edit Recurring Invoice -->
-    <router-link
-      v-if="canEdit"
-      :to="`/admin/recurring-invoices/${row.id}/edit`"
-    >
-      <BaseDropdownItem>
-        <BaseIcon
-          name="PencilIcon"
-          class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
-        />
-        {{ $t('general.edit') }}
-      </BaseDropdownItem>
-    </router-link>
+    <BaseDropdownItem v-if="canEdit" :to="`/admin/recurring-invoices/${row.id}/edit`">
+      <BaseIcon
+        name="PencilIcon"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
+      />
+      {{ $t('general.edit') }}
+    </BaseDropdownItem>
 
     <!-- View Recurring Invoice -->
-    <router-link
-      v-if="!isDetailView && canView"
-      :to="`recurring-invoices/${row.id}/view`"
-    >
-      <BaseDropdownItem>
-        <BaseIcon
-          name="EyeIcon"
-          class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
-        />
-        {{ $t('general.view') }}
-      </BaseDropdownItem>
-    </router-link>
+    <BaseDropdownItem v-if="!isDetailView && canView" :to="`recurring-invoices/${row.id}/view`">
+      <BaseIcon
+        name="EyeIcon"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
+      />
+      {{ $t('general.view') }}
+    </BaseDropdownItem>
 
     <!-- Delete Recurring Invoice -->
     <BaseDropdownItem v-if="canDelete" @click="removeRecurringInvoice">
       <BaseIcon
         name="TrashIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.delete') }}
     </BaseDropdownItem>

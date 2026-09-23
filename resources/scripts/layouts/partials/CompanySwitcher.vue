@@ -1,9 +1,13 @@
 <template>
-  <div ref="root" class="relative min-w-0">
+  <!-- Escape and focus leaving close the panel -->
+  <!-- eslint-disable-next-line vuejs-accessibility/no-static-element-interactions -->
+  <div ref="root" class="relative min-w-0" @focusout="onFocusOut" @keydown.esc="closeAndFocus">
     <button
+      ref="trigger"
       type="button"
       :class="triggerClass"
       :aria-expanded="isShow"
+      :aria-controls="isShow && !isPhone ? panelId : undefined"
       :aria-label="variant === 'rail' ? label : undefined"
       @click="isShow = !isShow"
     >
@@ -28,7 +32,7 @@
             variant === 'appbar' ? 'max-w-[50vw]' : 'flex-1 min-w-0',
             tone === 'chrome' ? 'text-chrome-fg' : 'text-heading',
           ]"
-          class="text-sm font-semibold text-left truncate"
+          class="text-sm font-semibold text-start truncate"
         >
           {{ label }}
         </span>
@@ -50,9 +54,11 @@
     >
       <div
         v-if="isShow && !isPhone"
+        :id="panelId"
+        ref="panel"
         :class="[
           'absolute z-50 w-72 max-h-[70vh] overflow-y-auto p-1 border rounded-xl glass-strong',
-          variant === 'rail' ? 'left-full top-0 ml-2' : 'left-0 top-full mt-1.5',
+          variant === 'rail' ? 'start-full top-0 ms-2' : 'start-0 top-full mt-1.5',
         ]"
       >
         <CompanySwitcherList
@@ -76,12 +82,13 @@
       />
     </BaseSheet>
 
-    <CompanyModal />
+    <!-- Phones mount a second switcher in the app bar; one modal is enough -->
+    <CompanyModal v-if="variant !== 'appbar'" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, nextTick, ref, useId, watch } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -115,6 +122,30 @@ const { isPhone } = useBreakpoints()
 
 const isShow = ref<boolean>(false)
 const root = ref<HTMLElement | null>(null)
+const trigger = ref<HTMLButtonElement | null>(null)
+const panel = ref<HTMLElement | null>(null)
+const panelId = `company-switcher-${useId()}`
+
+// Opening moves focus into the list; Escape or tabbing away closes it
+watch(isShow, async (open) => {
+  if (open && !isPhone.value) {
+    await nextTick()
+    panel.value?.querySelector<HTMLElement>('button, a[href]')?.focus()
+  }
+})
+
+function onFocusOut(event: FocusEvent): void {
+  if (!isPhone.value && isShow.value && !root.value?.contains(event.relatedTarget as Node | null)) {
+    isShow.value = false
+  }
+}
+
+function closeAndFocus(): void {
+  if (isShow.value && !isPhone.value) {
+    isShow.value = false
+    trigger.value?.focus()
+  }
+}
 
 const label = computed<string>(() => {
   if (companyStore.isAdminMode) {
@@ -136,7 +167,7 @@ const triggerClass = computed<string>(() => {
     case 'rail':
       return `flex items-center justify-center w-10 h-10 rounded-lg ${hover} transition-colors`
     case 'appbar':
-      return `flex items-center gap-2 px-1.5 py-1 -ml-1.5 rounded-lg ${hover} transition-colors`
+      return `flex items-center gap-2 px-1.5 py-1 -ms-1.5 rounded-lg ${hover} transition-colors`
     default:
       return `flex items-center w-full gap-2.5 px-2 py-1.5 rounded-lg ${hover} transition-colors`
   }
@@ -147,7 +178,7 @@ const avatarClass = computed<string>(() => {
     return 'bg-chrome-accent text-chrome'
   }
 
-  return companyStore.isAdminMode ? 'bg-primary-50 text-primary-600' : 'bg-primary-600 text-on-primary'
+  return companyStore.isAdminMode ? 'bg-primary-50 text-primary-600' : 'bg-btn-primary text-on-primary'
 })
 
 watch(route, () => {

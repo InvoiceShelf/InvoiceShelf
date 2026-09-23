@@ -8,31 +8,31 @@
           </h1>
           <BaseDropdown position="bottom-start" width-class="w-44">
             <template #activator>
-              <button
+              <span
                 class="flex items-center gap-1 px-2 py-1 text-sm font-medium text-muted hover:text-heading rounded-md hover:bg-surface-secondary transition-colors"
               >
                 <span class="text-xs text-primary-500 bg-primary-50 px-2 py-0.5 rounded-full">
                   {{ viewMode === 'one-time' ? $t('invoices.one_time') : $t('recurring_invoices.recurring') }}
                 </span>
                 <BaseIcon name="ChevronDownIcon" class="w-4 h-4 text-muted" />
-              </button>
+              </span>
             </template>
             <BaseDropdownItem
               :class="{ 'bg-primary-50 text-primary-600': viewMode === 'one-time' }"
               @click="setViewMode('one-time')"
             >
-              <BaseIcon name="DocumentTextIcon" class="w-4 h-4 mr-2 text-subtle" />
+              <BaseIcon name="DocumentTextIcon" class="w-4 h-4 me-2 text-subtle" />
               {{ $t('invoices.one_time') }}
-              <BaseIcon v-if="viewMode === 'one-time'" name="CheckIcon" class="w-4 h-4 ml-auto text-primary-500" />
+              <BaseIcon v-if="viewMode === 'one-time'" name="CheckIcon" class="w-4 h-4 ms-auto text-primary-500" />
             </BaseDropdownItem>
             <BaseDropdownItem
               v-if="canViewRecurring"
               :class="{ 'bg-primary-50 text-primary-600': viewMode === 'recurring' }"
               @click="setViewMode('recurring')"
             >
-              <BaseIcon name="ArrowPathIcon" class="w-4 h-4 mr-2 text-subtle" />
+              <BaseIcon name="ArrowPathIcon" class="w-4 h-4 me-2 text-subtle" />
               {{ $t('recurring_invoices.recurring') }}
-              <BaseIcon v-if="viewMode === 'recurring'" name="CheckIcon" class="w-4 h-4 ml-auto text-primary-500" />
+              <BaseIcon v-if="viewMode === 'recurring'" name="CheckIcon" class="w-4 h-4 ms-auto text-primary-500" />
             </BaseDropdownItem>
           </BaseDropdown>
         </div>
@@ -46,6 +46,7 @@
         <BaseButton
           v-show="viewMode === 'one-time' ? invoiceStore.invoiceTotalCount : recurringInvoiceStore.totalRecurringInvoices"
           variant="primary-outline"
+          :aria-expanded="showFilters"
           @click="toggleFilter"
         >
           {{ $t('general.filter') }}
@@ -62,8 +63,9 @@
         <router-link
           v-if="canCreate"
           :to="viewMode === 'recurring' ? 'invoices/create?recurring=1' : 'invoices/create'"
+          class="inline-flex rounded-lg"
         >
-          <BaseButton variant="primary">
+          <BaseButton tag="span" variant="primary">
             <template #left="slotProps">
               <BaseIcon name="PlusIcon" :class="slotProps.class" />
             </template>
@@ -225,9 +227,10 @@
           </template>
 
           <template #header>
-            <div class="absolute items-center left-6 top-3.5 select-none">
+            <div class="absolute items-center start-6 top-3.5 select-none">
               <BaseCheckbox
                 v-model="invoiceStore.selectAllField"
+                :aria-label="$t('general.select_all')"
                 variant="primary"
                 @change="invoiceStore.selectAllInvoices"
               />
@@ -239,6 +242,7 @@
               <BaseCheckbox
                 :id="row.id"
                 v-model="selectField"
+                :aria-label="$t('general.select_named', { name: row.data.invoice_number })"
                 :value="row.data.id"
               />
             </div>
@@ -264,7 +268,7 @@
             </router-link>
             <span
               v-if="row.data.type === 'CREDIT_NOTE'"
-              class="inline-block ml-2 px-2 py-0.5 text-xs font-medium rounded-md bg-status-red-bg text-status-red"
+              class="inline-block ms-2 px-2 py-0.5 text-xs font-medium rounded-md bg-status-red-bg text-status-red"
             >
               {{ $t('invoices.credit_note') }}
             </span>
@@ -407,9 +411,10 @@
           </template>
 
           <template #header>
-            <div class="absolute items-center left-6 top-3.5 select-none">
+            <div class="absolute items-center start-6 top-3.5 select-none">
               <BaseCheckbox
                 v-model="recurringInvoiceStore.selectAllField"
+                :aria-label="$t('general.select_all')"
                 variant="primary"
                 @change="recurringInvoiceStore.selectAllRecurringInvoices"
               />
@@ -421,6 +426,7 @@
               <BaseCheckbox
                 :id="row.id"
                 v-model="recurringSelectField"
+                :aria-label="$t('general.select_named', { name: row.data.customer?.name ?? row.data.id })"
                 :value="row.data.id"
               />
             </div>
@@ -709,8 +715,8 @@ const invoiceColumns = computed<TableColumn[]>(() => [
   { key: 'mobile_status', hidden: true, sortable: false, mobile: 'badge' },
   {
     key: 'actions',
-    tdClass: 'text-right text-sm font-medium w-12',
-    thClass: 'text-right',
+    tdClass: 'text-end text-sm font-medium w-12',
+    thClass: 'text-end',
     sortable: false,
     mobile: 'actions',
   },
@@ -956,8 +962,8 @@ const recurringColumns = computed<TableColumn[]>(() => [
   {
     key: 'actions',
     label: t('recurring_invoices.action'),
-    tdClass: 'text-right text-sm font-medium',
-    thClass: 'text-right',
+    tdClass: 'text-end text-sm font-medium',
+    thClass: 'text-end',
     sortable: false,
     mobile: 'actions',
   },

@@ -24,15 +24,21 @@
 }
 
 /*
- * Tasks and Projects 0.1.x: the quick-start launcher is teleported to <body>
- * at `fixed right-5 bottom-5` (or `bottom-24` above the AI assistant's
- * bubble), which on a phone lands on the tab bar. Lift it by the inset the
- * shell publishes.
+ * Tasks and Projects: the quick-start launcher is teleported to <body> at
+ * `fixed right-5 bottom-5` (0.1.x) or `end-5` (later), or `bottom-24` above
+ * the AI assistant's bubble, which on a phone lands on the tab bar. Lift it
+ * by the inset the shell publishes.
  */
-body > .fixed.right-5.z-40.bottom-5 {
+body > .fixed:is(.right-5, .end-5).z-40.bottom-5 {
   bottom: calc(var(--app-bottom-inset) + 1.25rem);
 }
 
-body > .fixed.right-5.z-40.bottom-24 {
+body > .fixed:is(.right-5, .end-5).z-40.bottom-24 {
   bottom: calc(var(--app-bottom-inset) + 6rem);
+}
+
+/* 0.1.x pins it to the right, where a right-to-left page has its sidebar */
+[dir='rtl'] body > .fixed.right-5.z-40 {
+  right: auto;
+  left: 1.25rem;
 }

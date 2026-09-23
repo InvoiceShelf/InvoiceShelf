@@ -1,51 +1,5 @@
 <template>
   <div v-if="invoiceData" class="flex min-h-full">
-    <!-- The other invoices, beside the one on screen (wide screens only) -->
-    <RecordListPane
-      ref="listPane"
-      :search="searchData.searchText"
-      :sort-options="sortOptions"
-      :sort-field="searchData.orderByField"
-      :ascending="getOrderBy"
-      :loading="isLoading"
-      :empty="!invoiceList?.length"
-      :empty-text="$t('invoices.no_matching_invoices')"
-      @update:search="onSearchText"
-      @update:sort-field="setSortField"
-      @toggle-order="sortData"
-    >
-      <RecordListItem
-        v-for="invoice in (invoiceList ?? []).filter(Boolean)"
-        :id="'invoice-' + invoice.id"
-        :key="invoice.id"
-        :to="`/admin/invoices/${invoice.id}/view`"
-        :active="hasActiveUrl(invoice.id)"
-        :title="invoice.customer?.name ?? ''"
-        :subtitle="invoice.invoice_number"
-        :meta="invoice.formatted_invoice_date"
-      >
-        <template #badges>
-          <BaseInvoiceStatusBadge :status="invoice.status">
-            <BaseInvoiceStatusLabel :status="invoice.status" />
-          </BaseInvoiceStatusBadge>
-          <BaseStatusPill
-            v-if="invoice.type !== 'CREDIT_NOTE' && invoice.credited_status === 'FULL'"
-            tone="yellow"
-          >
-            {{ $t('invoices.cancelled') }}
-          </BaseStatusPill>
-          <BaseStatusPill
-            v-else-if="invoice.type !== 'CREDIT_NOTE' && invoice.credited_status === 'PARTIAL'"
-            tone="yellow"
-          >
-            {{ $t('invoices.partially_credited') }}
-          </BaseStatusPill>
-        </template>
-        <template #amount>
-          <BaseFormatMoney :amount="invoice.total" :currency="invoice.customer?.currency" />
-        </template>
-      </RecordListItem>
-    </RecordListPane>
 
     <BasePage class="min-w-0">
       <BasePageHeader :title="pageTitle">
@@ -92,8 +46,9 @@
           <router-link
             v-if="canRecordPayment"
             :to="`/admin/payments/${$route.params.id}/create`"
+            class="inline-flex rounded-lg"
           >
-            <BaseButton variant="primary">
+            <BaseButton tag="span" variant="primary">
               <template #left="slotProps">
                 <BaseIcon name="BanknotesIcon" :class="slotProps.class" />
               </template>
@@ -184,7 +139,7 @@
             v-for="creditNote in invoiceData.credit_notes"
             :key="creditNote.id"
             :to="`/admin/invoices/${creditNote.id}/view`"
-            class="ml-1 font-medium underline"
+            class="ms-1 font-medium underline"
           >
             {{ creditNote.invoice_number }}
           </router-link>
@@ -264,6 +219,53 @@
       </BaseActionBar>
     </BasePage>
 
+    <!-- The other invoices, beside the one on screen (wide screens only) -->
+    <RecordListPane
+      ref="listPane"
+      :search="searchData.searchText"
+      :sort-options="sortOptions"
+      :sort-field="searchData.orderByField"
+      :ascending="getOrderBy"
+      :loading="isLoading"
+      :empty="!invoiceList?.length"
+      :empty-text="$t('invoices.no_matching_invoices')"
+      @update:search="onSearchText"
+      @update:sort-field="setSortField"
+      @toggle-order="sortData"
+    >
+      <RecordListItem
+        v-for="invoice in (invoiceList ?? []).filter(Boolean)"
+        :id="'invoice-' + invoice.id"
+        :key="invoice.id"
+        :to="`/admin/invoices/${invoice.id}/view`"
+        :active="hasActiveUrl(invoice.id)"
+        :title="invoice.customer?.name ?? ''"
+        :subtitle="invoice.invoice_number"
+        :meta="invoice.formatted_invoice_date"
+      >
+        <template #badges>
+          <BaseInvoiceStatusBadge :status="invoice.status">
+            <BaseInvoiceStatusLabel :status="invoice.status" />
+          </BaseInvoiceStatusBadge>
+          <BaseStatusPill
+            v-if="invoice.type !== 'CREDIT_NOTE' && invoice.credited_status === 'FULL'"
+            tone="yellow"
+          >
+            {{ $t('invoices.cancelled') }}
+          </BaseStatusPill>
+          <BaseStatusPill
+            v-else-if="invoice.type !== 'CREDIT_NOTE' && invoice.credited_status === 'PARTIAL'"
+            tone="yellow"
+          >
+            {{ $t('invoices.partially_credited') }}
+          </BaseStatusPill>
+        </template>
+        <template #amount>
+          <BaseFormatMoney :amount="invoice.total" :currency="invoice.customer?.currency" />
+        </template>
+      </RecordListItem>
+    </RecordListPane>
+
     <SendInvoiceModal />
     <CreditNoteModal />
   </div>
@@ -285,6 +287,7 @@ import { useUserStore } from '../../../../stores/user.store'
 import { useDialogStore } from '../../../../stores/dialog.store'
 import { useModalStore } from '../../../../stores/modal.store'
 import type { Invoice, InvoicePaymentAllocation } from '../../../../types/domain/invoice'
+import { scrollBehavior } from '@/scripts/utils/motion'
 
 interface Props {
   canEdit?: boolean
@@ -529,7 +532,7 @@ function scrollToInvoice(): void {
   const list = invoiceListSection.value
   if (el && list) {
     // Scroll the list pane alone; scrollIntoView would also move the page
-    list.scrollTo({ top: el.offsetTop - list.offsetTop - 8, behavior: 'smooth' })
+    list.scrollTo({ top: el.offsetTop - list.offsetTop - 8, behavior: scrollBehavior() })
     el.classList.add('shake')
     addScrollListener()
   }

@@ -26,7 +26,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   contentLoading: false,
   defaultClass:
-    'inline-flex items-center justify-center whitespace-nowrap border font-medium transition-colors focus:outline-hidden focus-visible:ring-3 focus-visible:ring-focus disabled:opacity-55 disabled:cursor-not-allowed',
+    'inline-flex items-center justify-center whitespace-nowrap border font-medium transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus disabled:opacity-55 disabled:cursor-not-allowed',
   tag: 'button',
   disabled: false,
   rounded: false,
@@ -91,7 +91,7 @@ const variantClass = computed<Record<string, boolean>>(() => {
       props.variant == 'primary-outline',
     'border-line-default bg-surface text-body shadow-xs hover:bg-hover hover:text-heading':
       props.variant == 'white',
-    'border-transparent shadow-xs bg-danger text-white hover:bg-danger-hover':
+    'border-transparent shadow-xs bg-btn-danger text-white hover:bg-btn-danger-hover':
       props.variant === 'danger',
     'border-transparent bg-surface-muted text-body hover:bg-hover-strong':
       props.variant === 'gray',
@@ -108,9 +108,9 @@ const iconLeftClass = computed<Record<string, boolean> | string>(() => {
   }
 
   return {
-    '-ml-0.5 mr-1.5 h-4 w-4': props.size == 'sm' || props.size === 'xs',
-    '-ml-1 mr-2 h-4.5 w-4.5': props.size === 'md',
-    '-ml-1 mr-2 h-5 w-5': props.size === 'lg' || props.size === 'xl',
+    '-ms-0.5 me-1.5 h-4 w-4': props.size == 'sm' || props.size === 'xs',
+    '-ms-1 me-2 h-4.5 w-4.5': props.size === 'md',
+    '-ms-1 me-2 h-5 w-5': props.size === 'lg' || props.size === 'xl',
   }
 })
 
@@ -128,9 +128,9 @@ const iconRightClass = computed<Record<string, boolean> | string>(() => {
   }
 
   return {
-    'ml-1.5 -mr-0.5 h-4 w-4': props.size == 'sm' || props.size === 'xs',
-    'ml-2 -mr-1 h-4.5 w-4.5': props.size === 'md',
-    'ml-2 -mr-1 h-5 w-5': props.size === 'lg' || props.size === 'xl',
+    'ms-1.5 -me-0.5 h-4 w-4': props.size == 'sm' || props.size === 'xs',
+    'ms-2 -me-1 h-4.5 w-4.5': props.size === 'md',
+    'ms-2 -me-1 h-5 w-5': props.size === 'lg' || props.size === 'xl',
   }
 })
 </script>

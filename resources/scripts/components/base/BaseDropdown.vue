@@ -14,8 +14,10 @@
       <span ref="trigger" :class="inActionBar ? 'flex w-full' : 'inline-flex'">
         <MenuButton
           :class="inActionBar ? 'w-full' : ''"
-          class="rounded-lg focus:outline-hidden focus-visible:ring-3 focus-visible:ring-focus"
+          :aria-label="triggerLabel"
+          class="rounded-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
           @click="onClick"
+          @keydown="onClick"
         >
           <slot name="activator" />
         </MenuButton>
@@ -61,7 +63,7 @@
         <div
           v-else
           ref="container"
-          class="fixed top-0 left-0 z-50 pointer-events-none"
+          class="fixed top-0 start-0 z-50 pointer-events-none"
           :class="widthClass"
         >
           <transition
@@ -84,7 +86,8 @@
 
 <script setup lang="ts">
 import { Menu, MenuButton, MenuItems } from '@headlessui/vue'
-import { computed, inject, nextTick, provide } from 'vue'
+import { computed, inject, nextTick, onMounted, onUpdated, provide, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { usePopper } from '@/scripts/composables/use-popper'
 import { useBreakpoints } from '@/scripts/composables/use-breakpoints'
 import type { Placement } from '@popperjs/core'
@@ -96,17 +99,21 @@ interface Props {
   position?: Placement
   wrapperClass?: string
   contentLoading?: boolean
+  /** The trigger's accessible name, for activators that show only an icon */
+  label?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
   containerClass: '',
   widthClass: 'w-56',
-  positionClass: 'absolute z-10 right-0',
+  positionClass: 'absolute z-10 end-0',
   position: 'bottom-end',
-  wrapperClass: 'inline-block h-full text-left',
+  wrapperClass: 'inline-block h-full text-start',
   contentLoading: false,
+  label: '',
 })
 
+const { t } = useI18n()
 const { isPhone } = useBreakpoints()
 const inActionBar = inject<boolean>('inActionBar', false)
 
@@ -115,7 +122,7 @@ provide('dropdownIsSheet', isPhone)
 
 const containerClasses = computed<string>(() => {
   const baseClass =
-    'origin-top-right p-1 rounded-xl border glass-strong focus:outline-hidden'
+    'origin-top-right rtl:origin-top-left p-1 rounded-xl border glass-strong focus:outline-hidden'
   return `${baseClass} pointer-events-auto ${props.containerClass}`
 })
 
@@ -123,6 +130,25 @@ const [trigger, container, popper] = usePopper({
   placement: props.position,
   strategy: 'fixed',
   modifiers: [{ name: 'offset', options: { offset: [0, 6] } }],
+})
+
+// An activator that shows only an icon still needs a name: without a label
+// it falls back to "Actions"
+const activatorHasText = ref<boolean>(true)
+
+function checkActivatorText(): void {
+  activatorHasText.value = !!(trigger.value as HTMLElement | null)?.textContent?.trim()
+}
+
+onMounted(checkActivatorText)
+onUpdated(checkActivatorText)
+
+const triggerLabel = computed<string | undefined>(() => {
+  if (props.label) {
+    return props.label
+  }
+
+  return activatorHasText.value ? undefined : t('general.actions')
 })
 
 async function onClick(): Promise<void> {

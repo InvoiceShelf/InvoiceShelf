@@ -6,9 +6,7 @@
     v-else
     v-model="selectedValue"
     as="div"
-    v-bind="{
-      ...$attrs,
-    }"
+    v-bind="rootAttrs"
   >
     <ListboxLabel
       v-if="label"
@@ -20,15 +18,17 @@
     <div class="relative">
       <!-- Select Input button -->
       <ListboxButton
+        ref="button"
+        v-bind="{ ...(label ? {} : fieldAttrs), ...buttonAria }"
         class="
           relative
           w-full
           py-2
-          pl-3
-          pr-10
-          text-left
+          ps-3
+          pe-10
+          text-start
           bg-surface
-          border border-line-default
+          border border-control-border
           rounded-lg
           cursor-default
           text-base
@@ -36,7 +36,7 @@
           md:text-sm
           text-heading
           focus:outline-hidden
-          focus:ring-3
+          focus:ring-2
           focus:ring-focus
           focus:border-primary-500
         "
@@ -55,10 +55,10 @@
           class="
             absolute
             inset-y-0
-            right-0
+            end-0
             flex
             items-center
-            pr-2
+            pe-2
             pointer-events-none
           "
         >
@@ -104,7 +104,7 @@
             <li
               :class="[
                 active ? 'bg-hover-strong' : '',
-                'text-heading cursor-default select-none relative py-2 pl-3 pr-9 rounded-lg',
+                'text-heading cursor-default select-none relative py-2 ps-3 pe-9 rounded-lg',
               ]"
             >
               <span
@@ -119,7 +119,7 @@
               <span
                 v-if="selected"
                 :class="[
-                  'text-primary-600 absolute inset-y-0 right-0 flex items-center pr-3',
+                  'text-primary-600 absolute inset-y-0 end-0 flex items-center pe-3',
                 ]"
               >
                 <BaseIcon name="CheckIcon" aria-hidden="true" />
@@ -134,7 +134,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { computed, ref, useAttrs, watch, watchEffect } from 'vue'
+import { useFormField } from '@/scripts/composables/use-form-field'
 import {
   Listbox,
   ListboxButton,
@@ -169,6 +170,40 @@ const props = withDefaults(defineProps<Props>(), {
   labelKey: 'label',
   valueProp: null,
   multiple: false,
+})
+
+// Named by the surrounding group's label when this select has none of its own
+const { attrs: fieldAttrs } = useFormField({ labelledBy: true })
+
+// aria-* attributes describe the button a screen reader lands on; the rest
+// (class, style, data-*) stay on the wrapper
+defineOptions({ inheritAttrs: false })
+
+const attrs = useAttrs()
+
+const rootAttrs = computed(() => Object.fromEntries(Object.entries(attrs).filter(([key]) => !key.startsWith('aria-'))))
+
+const buttonAria = computed(() => Object.fromEntries(Object.entries(attrs).filter(([key]) => key.startsWith('aria-'))))
+
+const button = ref<{ $el: HTMLElement } | null>(null)
+
+// Headless UI's ListboxButton writes its own aria-labelledby over anything
+// passed in (empty without a ListboxLabel), so the label reaches the button
+// through the DOM: the group's label, then the button itself, which reads
+// out the chosen value
+watchEffect(() => {
+  const element = button.value?.$el
+
+  if (!(element instanceof HTMLElement)) {
+    return
+  }
+
+  const labelledBy = (buttonAria.value['aria-labelledby'] as string | undefined)
+    ?? (props.label ? undefined : fieldAttrs.value['aria-labelledby'])
+
+  if (labelledBy) {
+    element.setAttribute('aria-labelledby', `${labelledBy} ${element.id}`)
+  }
 })
 
 interface Emits {

@@ -99,7 +99,7 @@ function openMailTestModal(): void {
         <BaseButton
           variant="primary-outline"
           type="button"
-          class="ml-2"
+          class="ms-2"
           :content-loading="isFetchingInitialData"
           @click="openMailTestModal"
         >

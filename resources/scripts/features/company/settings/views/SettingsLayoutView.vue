@@ -102,6 +102,7 @@ function navigateToSetting(setting: DropdownMenuItem): void {
         track-by="title"
         label="title"
         object
+        :aria-label="$t('navigation.settings')"
         @update:model-value="navigateToSetting"
       />
     </div>
@@ -130,11 +131,11 @@ function navigateToSetting(setting: DropdownMenuItem): void {
           :class="[
             'cursor-pointer px-3 py-2 mt-1 text-sm font-medium leading-5 flex items-center rounded-lg transition-colors',
             hasActiveUrl('/admin/settings/danger-zone')
-              ? 'text-red-600 bg-red-50 font-semibold'
-              : 'text-red-500 hover:bg-red-50 hover:text-red-600',
+              ? 'text-danger bg-hover-strong font-semibold'
+              : 'text-danger hover:bg-hover-strong',
           ]"
         >
-          <span class="mr-3">
+          <span class="me-3">
             <BaseIcon name="ExclamationTriangleIcon" />
           </span>
           <span>{{ $t('settings.company_info.danger_zone') }}</span>

@@ -66,9 +66,9 @@
         <div class="rounded-xl border border-line-default bg-surface-secondary p-6">
           <!-- Not purchased -->
           <template v-if="!moduleData.purchased">
-            <a :href="buyLink" target="_blank" rel="noopener">
-              <BaseButton size="lg" class="w-full flex items-center justify-center">
-                <BaseIcon name="ShoppingCartIcon" class="mr-2" />
+            <a :href="buyLink" target="_blank" rel="noopener" class="block rounded-lg">
+              <BaseButton tag="span" size="lg" class="w-full flex items-center justify-center">
+                <BaseIcon name="ShoppingCartIcon" class="me-2" />
                 {{ $t('modules.buy_now') }}
               </BaseButton>
             </a>
@@ -84,7 +84,7 @@
               class="w-full flex items-center justify-center"
               @click="handleInstall"
             >
-              <BaseIcon v-if="!isInstalling" name="ArrowDownTrayIcon" class="mr-2 h-4 w-4" />
+              <BaseIcon v-if="!isInstalling" name="ArrowDownTrayIcon" class="me-2 h-4 w-4" />
               {{ $t('modules.install') }} v{{ moduleData.latest_module_version }}
             </BaseButton>
           </template>
@@ -108,7 +108,7 @@
                 class="flex-1 flex items-center justify-center"
                 @click="handleInstall"
               >
-                <BaseIcon v-if="!isInstalling" name="ArrowPathIcon" class="mr-1.5 h-4 w-4" />
+                <BaseIcon v-if="!isInstalling" name="ArrowPathIcon" class="me-1.5 h-4 w-4" />
                 {{ $t('modules.update_to') }} {{ moduleData.latest_module_version }}
               </BaseButton>
 
@@ -121,7 +121,7 @@
                 class="flex items-center justify-center"
                 @click="handleDisable"
               >
-                <BaseIcon v-if="!isDisabling" name="NoSymbolIcon" class="h-4 w-4" :class="{ 'mr-1.5': !moduleData.update_available }" />
+                <BaseIcon v-if="!isDisabling" name="NoSymbolIcon" class="h-4 w-4" :class="{ 'me-1.5': !moduleData.update_available }" />
                 <span v-if="!moduleData.update_available">{{ $t('modules.disable') }}</span>
               </BaseButton>
               <BaseButton
@@ -132,7 +132,7 @@
                 class="flex-1 flex items-center justify-center"
                 @click="handleEnable"
               >
-                <BaseIcon v-if="!isEnabling" name="CheckIcon" class="mr-1.5 h-4 w-4" />
+                <BaseIcon v-if="!isEnabling" name="CheckIcon" class="me-1.5 h-4 w-4" />
                 {{ $t('modules.enable') }}
               </BaseButton>
             </div>
@@ -142,7 +142,7 @@
               class="mt-3 w-full flex items-center justify-center"
               @click="showUninstallModal = true"
             >
-              <BaseIcon name="TrashIcon" class="mr-1.5 h-4 w-4" />
+              <BaseIcon name="TrashIcon" class="me-1.5 h-4 w-4" />
               {{ $t('modules.uninstall') }}
             </BaseButton>
           </template>
@@ -237,6 +237,7 @@
         <div v-if="displayVideo" class="aspect-video">
           <iframe
             :src="videoUrl ?? ''"
+            :title="moduleData.name"
             class="w-full h-full"
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -246,7 +247,7 @@
         <div v-else-if="expandedImage" class="relative">
           <img :src="expandedImage" alt="" class="w-full" />
           <button
-            class="absolute top-3 right-3 rounded-full bg-black/50 hover:bg-black/70 p-1.5 text-white transition-colors"
+            class="absolute top-3 end-3 rounded-full bg-black/50 hover:bg-black/70 p-1.5 text-white transition-colors"
             @click="expandedImage = null"
           >
             <BaseIcon name="XMarkIcon" class="h-5 w-5" />
@@ -324,7 +325,7 @@
           class="whitespace-nowrap text-sm font-medium text-primary-600 hover:text-primary-500"
         >
           {{ $t('modules.view_all') }}
-          <span aria-hidden="true"> &rarr;</span>
+          <span aria-hidden="true" class="inline-block rtl:-scale-x-100"> &rarr;</span>
         </a>
       </div>
       <div class="mt-6 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
@@ -336,12 +337,9 @@
 
     <div class="p-6" />
 
-    <BaseModal :show="showUninstallModal" @close="closeUninstallModal">
+    <BaseModal :show="showUninstallModal" closable @close="closeUninstallModal">
       <template #header>
-        <div class="flex w-full items-center justify-between">
-          {{ $t('modules.uninstall') }} {{ moduleData.name }}
-          <BaseIcon name="XMarkIcon" class="h-5 w-5 cursor-pointer text-muted" @click="closeUninstallModal" />
-        </div>
+        {{ $t('modules.uninstall') }} {{ moduleData.name }}
       </template>
 
       <div class="space-y-4 p-6">

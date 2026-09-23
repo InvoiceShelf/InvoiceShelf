@@ -9,11 +9,16 @@
   <span ref="anchor" hidden />
 
   <Teleport v-if="isPhone" defer to="#app-action-bar">
+    <!--
+      Catches clicks from the submit buttons inside; they are real buttons, so
+      a keyboard fires them too
+    -->
+    <!-- eslint-disable-next-line vuejs-accessibility/click-events-have-key-events, vuejs-accessibility/no-static-element-interactions -->
     <div
       class="
         flex items-center gap-2 px-4 pt-3 border-t glass-bar border-(--glass-edge) safe-drawer
         *:min-w-0 *:flex-auto [&>*:has([data-overflow])]:flex-none [&>[data-bar-info]]:flex-none
-        [&_button]:whitespace-nowrap [&>*>button]:w-full [&>a>button]:w-full [&_[data-overflow]]:w-11
+        [&_button]:whitespace-nowrap [&>*>button]:w-full [&>a>:is(button,span)]:w-full [&_[data-overflow]]:w-11
       "
       @click="submitOwnerForm"
     >

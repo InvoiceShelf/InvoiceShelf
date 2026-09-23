@@ -1,12 +1,13 @@
 <template>
   <div class="flex items-center justify-between mb-3">
     <div class="flex items-center text-base" style="flex: 4">
-      <label class="pr-2 mb-0" align="right">
+      <span class="pe-2 mb-0" aria-hidden="true">
         {{ $t('invoices.item.tax') }}
-      </label>
+      </span>
 
       <BaseMultiselect
         v-model="selectedTax"
+        :aria-label="$t('invoices.item.tax')"
         value-prop="id"
         :options="filteredTypes"
         :placeholder="$t('general.select_a_tax')"
@@ -18,7 +19,7 @@
         @update:model-value="onSelectTax"
       >
         <template #singlelabel="{ value }">
-          <div class="absolute left-3.5">
+          <div class="absolute start-3.5">
             {{ value.name }} -
             <template v-if="value.calculation_type === 'fixed'">
               <BaseFormatMoney :amount="value.fixed_amount" :currency="currency" />
@@ -37,7 +38,7 @@
           <template v-else>
             {{ option.percent }} %
           </template>
-          <BaseBadge v-if="option.compound_tax" class="ml-2 text-xs">
+          <BaseBadge v-if="option.compound_tax" class="ms-2 text-xs">
             {{ $t('tax_types.compound_tax') }}
           </BaseBadge>
         </template>
@@ -45,28 +46,30 @@
         <template v-if="canAddTax" #action>
           <button
             type="button"
-            class="flex items-center justify-center w-full px-2 py-2 bg-surface-muted border-none outline-hidden cursor-pointer"
+            class="flex items-center justify-center w-full px-2 py-2 bg-surface-muted border-none outline-hidden cursor-pointer text-primary-600 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus"
             @click="openTaxModal"
           >
-            <BaseIcon name="CheckCircleIcon" class="h-5 text-primary-400" />
-            <label class="ml-2 text-sm leading-none cursor-pointer text-primary-400">
+            <BaseIcon name="CheckCircleIcon" class="h-5" />
+            <span class="ms-2 text-sm leading-none">
               {{ $t('invoices.add_new_tax') }}
-            </label>
+            </span>
           </button>
         </template>
       </BaseMultiselect>
       <br />
     </div>
 
-    <div class="text-sm text-right" style="flex: 3">
+    <div class="text-sm text-end" style="flex: 3">
       <BaseFormatMoney :amount="taxAmount" :currency="currency" />
     </div>
 
-    <div class="flex items-center justify-center w-6 h-10 mx-2 cursor-pointer">
-      <BaseIcon
+    <div class="flex items-center justify-center w-8 h-10 mx-1">
+      <BaseIconButton
         v-if="taxes.length && index !== taxes.length - 1"
-        name="TrashIcon"
-        class="h-5 text-body cursor-pointer"
+        icon="TrashIcon"
+        :label="$t('general.remove_named', { name: taxData.name || $t('invoices.item.tax') })"
+        size="sm"
+        tone="danger"
         @click="removeTax(index)"
       />
     </div>

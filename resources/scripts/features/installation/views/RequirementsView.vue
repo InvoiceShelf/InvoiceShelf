@@ -27,7 +27,7 @@
         :key="name"
         class="flex items-center justify-between px-4 py-3 hover:bg-hover transition-colors"
       >
-        <span class="text-sm text-body font-mono">{{ name }}</span>
+        <span class="text-sm text-body font-mono" dir="ltr">{{ name }}</span>
         <RequirementBadge :ok="fulfilled" />
       </div>
     </div>

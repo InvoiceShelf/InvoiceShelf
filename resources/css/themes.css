@@ -31,12 +31,14 @@
     --color-heading: #161827;
     --color-body: #3c4052;
     --color-muted: #646a7e;
-    --color-subtle: #9a9eae;
+    --color-subtle: #6a6e7d;
 
     /* Borders */
     --color-line-light: #e6e8ee;
     --color-line-default: #d8dbe3;
     --color-line-strong: #bfc3cf;
+    /* Form control edges: 3:1 against the surfaces they sit on (WCAG 1.4.11) */
+    --color-control-border: #888b96;
 
     /* Hover */
     --color-hover: #f5f6f9;
@@ -114,6 +116,9 @@
     /* Destructive actions and invalid fields */
     --color-danger: #d42a1e;
     --color-danger-hover: #b42318;
+    /* Danger buttons carry white text; the fill keeps 4.5:1 in both themes */
+    --color-btn-danger: #d42a1e;
+    --color-btn-danger-hover: #b42318;
 
     /*
      * Chart series, in fixed order (validated for colour-vision deficiency on
@@ -124,7 +129,7 @@
     --color-chart-3: #eb6834;
 
     /* Focus ring and the scrim behind overlays */
-    --color-focus: color-mix(in srgb, var(--color-primary-500) 38%, transparent);
+    --color-focus: var(--color-primary-500);
     --color-overlay: rgb(17 19 27 / 0.42);
 
     color-scheme: light;
@@ -139,6 +144,9 @@
     --color-primary-500: #a9a1f7;
     --color-primary-600: #b8b1f9;
     --color-primary-700: #cbc6fb;
+    --color-primary-800: #dad6fc;
+    --color-primary-900: #e7e4fd;
+    --color-primary-950: #f3f2fe;
     --color-on-primary: #ffffff;
 
     --color-surface: #18181f;
@@ -149,11 +157,12 @@
     --color-heading: #eef0f5;
     --color-body: #c7cbd6;
     --color-muted: #959bab;
-    --color-subtle: #6a7082;
+    --color-subtle: #7b8191;
 
     --color-line-light: #262a33;
     --color-line-default: #333844;
     --color-line-strong: #4a5060;
+    --color-control-border: #626670;
 
     --color-hover: #1f222a;
     --color-hover-strong: #282c36;
@@ -210,8 +219,11 @@
     --color-alert-success-bg: rgb(52 199 120 / 0.12);
     --color-alert-success-text: #5fd494;
 
-    --color-danger: #e5483c;
-    --color-danger-hover: #f05a4f;
+    --color-danger: #ef5b4f;
+    --color-danger-hover: #f46e63;
+    --color-btn-danger: #c9372c;
+    --color-btn-danger-hover: #b42318;
+    --color-focus: var(--color-primary-500);
 
     --color-overlay: rgb(0 0 0 / 0.6);
 

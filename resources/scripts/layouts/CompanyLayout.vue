@@ -1,6 +1,19 @@
 <template>
   <!-- The ambient canvas sits behind everything; glass surfaces pick it up -->
   <div v-if="isAppLoaded" class="flex h-dvh bg-ambient isolate">
+    <!-- First stop for keyboard users: past the navigation to the page -->
+    <a
+      href="#main-content"
+      class="
+        sr-only focus:not-sr-only focus:fixed focus:top-3 focus:start-3 focus:z-60 focus:px-4 focus:py-2.5
+        focus:rounded-xl focus:bg-surface focus:text-heading focus:font-medium focus:shadow-lg
+        focus:outline-2 focus:outline-focus
+      "
+      @click.prevent="focusMain"
+    >
+      {{ $t('general.skip_to_content') }}
+    </a>
+
     <NotificationRoot />
 
     <SiteSidebar v-if="hasCompany" />
@@ -8,7 +21,7 @@
     <div
       :class="[
         'flex flex-col flex-1 min-w-0 h-dvh',
-        hasCompany ? (isExpanded ? 'md:pl-16 lg:pl-64' : 'md:pl-16') : '',
+        hasCompany ? (isExpanded ? 'md:ps-16 lg:ps-64' : 'md:ps-16') : '',
       ]"
     >
       <ImpersonationBanner />
@@ -16,16 +29,19 @@
       <!--
         The top bar lives inside the scrolling area so content passes under
         it; the bottom inset keeps the last rows clear of the phone's
-        floating tab bar or action bar.
+        floating tab bar or action bar. The header and the page are siblings,
+        so the header is the page's banner rather than part of its content.
       -->
-      <main
-        id="main-content"
+      <div
+        id="app-scroll"
         class="relative flex-1 min-h-0 overflow-y-auto overscroll-contain"
         :style="{ paddingBottom: 'var(--app-bottom-inset)' }"
       >
         <SiteHeader />
-        <router-view />
-      </main>
+        <main id="main-content" tabindex="-1" class="focus:outline-hidden">
+          <router-view />
+        </main>
+      </div>
     </div>
 
     <!-- BaseActionBar teleports a page's phone actions here -->
@@ -43,6 +59,7 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+import { focusMain } from '@/scripts/utils/page-focus'
 import { onMounted, onUnmounted, computed, watch, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useGlobalStore } from '@/scripts/stores/global.store'

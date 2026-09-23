@@ -1,5 +1,5 @@
 <template>
-  <SwitchGroup as="li" class="py-4 flex items-center justify-between">
+  <SwitchGroup as="div" class="py-4 flex items-center justify-between">
     <div class="flex flex-col">
       <SwitchLabel
         as="p"
@@ -16,15 +16,15 @@
       :disabled="disabled"
       :model-value="modelValue"
       :class="[
-        modelValue ? 'bg-primary-500' : 'bg-surface-muted',
-        'ml-4 relative inline-flex shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-primary-500',
+        modelValue ? 'bg-primary-500' : 'bg-control-border',
+        'ms-4 relative inline-flex shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-focus',
       ]"
       @update:model-value="onUpdate"
     >
       <span
         aria-hidden="true"
         :class="[
-          modelValue ? 'translate-x-5' : 'translate-x-0',
+          modelValue ? 'translate-x-5 rtl:-translate-x-5' : 'translate-x-0',
           'inline-block h-5 w-5 rounded-full bg-white shadow ring-0 transition ease-in-out duration-200',
         ]"
       />

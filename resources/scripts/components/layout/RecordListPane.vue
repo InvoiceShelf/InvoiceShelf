@@ -3,11 +3,14 @@
     The other records beside the one on screen, on wide screens only: search,
     sort field, order, and a scrolling list the page fills with
     RecordListItem rows. It sits in the page's flex row (not fixed), so it
-    follows the sidebar's width and never overlaps the content.
+    follows the sidebar's width and never overlaps the content. Pages place it
+    after the record in the markup, so Tab reaches the record first; order-first
+    keeps it at the start of the line (the left, or the right in a right-to-left page).
   -->
   <aside
+    :aria-label="label || $t('general.list')"
     class="
-      sticky top-(--app-top-inset) hidden xl:flex flex-col w-80 shrink-0 mt-3 ml-8 mb-10
+      order-first sticky top-(--app-top-inset) hidden xl:flex flex-col w-80 shrink-0 mt-3 ms-8 mb-10
       border rounded-2xl glass h-[calc(100dvh-var(--app-top-inset)-1.5rem)] overflow-hidden
     "
   >
@@ -15,20 +18,25 @@
       <BaseInput
         :model-value="search ?? ''"
         :placeholder="$t('general.search')"
-        type="text"
+        :aria-label="$t('general.search')"
+        type="search"
         container-class="flex-1"
         @update:model-value="onSearch"
       >
         <template #left>
-          <BaseIcon name="MagnifyingGlassIcon" class="w-4 h-4 text-subtle" />
+          <BaseIcon name="MagnifyingGlassIcon" class="w-4 h-4 text-subtle" aria-hidden="true" />
         </template>
       </BaseInput>
 
-      <BaseDropdown v-if="sortOptions.length" position="bottom-start" width-class="w-56">
+      <BaseDropdown
+        v-if="sortOptions.length"
+        position="bottom-start"
+        width-class="w-56"
+        :label="$t('general.sort_by')"
+      >
         <template #activator>
           <span
             class="flex items-center justify-center border rounded-lg w-9 h-9 border-line-default text-muted hover:bg-hover"
-            :aria-label="$t('general.sort_by')"
           >
             <BaseIcon name="FunnelIcon" class="w-4 h-4" />
           </span>
@@ -53,7 +61,7 @@
       <button
         type="button"
         class="flex items-center justify-center border rounded-lg w-9 h-9 shrink-0 border-line-default text-muted hover:bg-hover"
-        :aria-label="$t('general.sort_by')"
+        :aria-label="ascending ? $t('general.sort_ascending') : $t('general.sort_descending')"
         @click="emit('toggleOrder')"
       >
         <BaseIcon :name="ascending ? 'BarsArrowUpIcon' : 'BarsArrowDownIcon'" class="w-4 h-4" />
@@ -63,10 +71,11 @@
     <div ref="listEl" class="flex-1 min-h-0 overflow-y-auto">
       <slot />
 
-      <div v-if="loading" class="flex items-center justify-center p-4">
-        <BaseSpinner class="w-5 h-5 text-subtle" />
+      <div v-if="loading" class="flex items-center justify-center p-4" role="status">
+        <BaseSpinner class="w-5 h-5 text-subtle" aria-hidden="true" />
+        <span class="sr-only">{{ $t('general.loading') }}</span>
       </div>
-      <p v-if="empty && !loading" class="px-4 py-8 text-sm text-center text-muted">
+      <p v-if="empty && !loading" class="px-4 py-8 text-sm text-center text-muted" role="status">
         {{ emptyText }}
       </p>
     </div>
@@ -89,6 +98,8 @@ interface Props {
   loading?: boolean
   empty?: boolean
   emptyText?: string
+  /** The landmark's name, such as "Invoices" */
+  label?: string
 }
 
 withDefaults(defineProps<Props>(), {
@@ -96,6 +107,7 @@ withDefaults(defineProps<Props>(), {
   sortOptions: () => [],
   sortField: null,
   ascending: false,
+  label: '',
   loading: false,
   empty: false,
   emptyText: '',

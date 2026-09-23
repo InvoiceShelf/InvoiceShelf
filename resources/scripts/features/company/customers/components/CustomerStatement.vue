@@ -18,7 +18,7 @@
           <BaseDatePicker v-model="filters.as_of" />
         </BaseInputGroup>
 
-        <div class="flex w-full flex-wrap gap-2 sm:ml-auto sm:w-auto">
+        <div class="flex w-full flex-wrap gap-2 sm:ms-auto sm:w-auto">
           <BaseButton variant="primary-outline" :loading="isLoading" @click="refreshStatement">
             <template #left="slotProps"><BaseIcon name="ArrowPathIcon" :class="slotProps.class" /></template>
             {{ $t('general.refresh') }}
@@ -63,20 +63,20 @@
           <table class="w-full text-sm">
             <thead class="border-b border-line-default text-muted">
               <tr>
-                <th class="px-3 py-3 text-left font-medium">{{ $t('general.date') }}</th>
-                <th class="px-3 py-3 text-left font-medium">{{ $t('customers.activity') }}</th>
-                <th class="px-3 py-3 text-right font-medium">{{ $t('customers.debit') }}</th>
-                <th class="px-3 py-3 text-right font-medium">{{ $t('customers.credit') }}</th>
-                <th class="px-3 py-3 text-right font-medium">{{ $t('customers.balance') }}</th>
+                <th class="px-3 py-3 text-start font-medium">{{ $t('general.date') }}</th>
+                <th class="px-3 py-3 text-start font-medium">{{ $t('customers.activity') }}</th>
+                <th class="px-3 py-3 text-end font-medium">{{ $t('customers.debit') }}</th>
+                <th class="px-3 py-3 text-end font-medium">{{ $t('customers.credit') }}</th>
+                <th class="px-3 py-3 text-end font-medium">{{ $t('customers.balance') }}</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="entry in statement.entries ?? []" :key="`${entry.entry_type}-${entry.id}`" class="border-b border-line-light">
                 <td class="px-3 py-3 whitespace-nowrap text-body">{{ entry.date }}</td>
                 <td class="px-3 py-3 text-heading"><span class="font-medium">{{ entry.reference }}</span><span v-if="entry.description" class="block text-xs text-muted">{{ entry.description }}</span></td>
-                <td class="px-3 py-3 text-right whitespace-nowrap"><BaseFormatMoney :amount="entry.debit_amount" :currency="statement.currency ?? customer.currency" /></td>
-                <td class="px-3 py-3 text-right whitespace-nowrap"><BaseFormatMoney :amount="entry.credit_amount" :currency="statement.currency ?? customer.currency" /></td>
-                <td class="px-3 py-3 text-right font-medium whitespace-nowrap text-heading"><BaseFormatMoney :amount="entry.balance ?? 0" :currency="statement.currency ?? customer.currency" /></td>
+                <td class="px-3 py-3 text-end whitespace-nowrap"><BaseFormatMoney :amount="entry.debit_amount" :currency="statement.currency ?? customer.currency" /></td>
+                <td class="px-3 py-3 text-end whitespace-nowrap"><BaseFormatMoney :amount="entry.credit_amount" :currency="statement.currency ?? customer.currency" /></td>
+                <td class="px-3 py-3 text-end font-medium whitespace-nowrap text-heading"><BaseFormatMoney :amount="entry.balance ?? 0" :currency="statement.currency ?? customer.currency" /></td>
               </tr>
             </tbody>
           </table>
@@ -98,20 +98,20 @@
           <table class="w-full text-sm">
             <thead class="border-b border-line-default text-muted">
               <tr>
-                <th class="px-3 py-3 text-left font-medium">{{ $t('payments.invoice') }}</th>
-                <th class="px-3 py-3 text-left font-medium">{{ $t('invoices.due_date') }}</th>
-                <th class="px-3 py-3 text-right font-medium">{{ $t('customers.original_amount') }}</th>
-                <th class="px-3 py-3 text-right font-medium">{{ $t('customers.applied') }}</th>
-                <th class="px-3 py-3 text-right font-medium">{{ $t('customers.remaining') }}</th>
+                <th class="px-3 py-3 text-start font-medium">{{ $t('payments.invoice') }}</th>
+                <th class="px-3 py-3 text-start font-medium">{{ $t('invoices.due_date') }}</th>
+                <th class="px-3 py-3 text-end font-medium">{{ $t('customers.original_amount') }}</th>
+                <th class="px-3 py-3 text-end font-medium">{{ $t('customers.applied') }}</th>
+                <th class="px-3 py-3 text-end font-medium">{{ $t('customers.remaining') }}</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="invoice in statement.invoices ?? []" :key="invoice.id" class="border-b border-line-light">
                 <td class="px-3 py-3 whitespace-nowrap"><router-link :to="`/admin/invoices/${invoice.id}/view`" class="font-medium text-primary-500">{{ invoice.invoice_number }}</router-link></td>
                 <td class="px-3 py-3 whitespace-nowrap text-body">{{ invoice.due_date }}</td>
-                <td class="px-3 py-3 text-right whitespace-nowrap"><BaseFormatMoney :amount="invoice.original_amount" :currency="statement.currency ?? customer.currency" /></td>
-                <td class="px-3 py-3 text-right whitespace-nowrap"><BaseFormatMoney :amount="invoice.applied_amount" :currency="statement.currency ?? customer.currency" /></td>
-                <td class="px-3 py-3 text-right font-medium whitespace-nowrap text-heading"><BaseFormatMoney :amount="invoice.remaining_amount" :currency="statement.currency ?? customer.currency" /></td>
+                <td class="px-3 py-3 text-end whitespace-nowrap"><BaseFormatMoney :amount="invoice.original_amount" :currency="statement.currency ?? customer.currency" /></td>
+                <td class="px-3 py-3 text-end whitespace-nowrap"><BaseFormatMoney :amount="invoice.applied_amount" :currency="statement.currency ?? customer.currency" /></td>
+                <td class="px-3 py-3 text-end font-medium whitespace-nowrap text-heading"><BaseFormatMoney :amount="invoice.remaining_amount" :currency="statement.currency ?? customer.currency" /></td>
               </tr>
             </tbody>
           </table>
@@ -127,8 +127,8 @@
       </BaseCard>
     </template>
 
-    <BaseModal :show="showEmailModal" @close="showEmailModal = false">
-      <template #header><div class="flex items-center justify-between w-full">{{ $t('customers.send_statement') }}<BaseIcon name="XMarkIcon" class="w-5 h-5 cursor-pointer text-muted" @click="showEmailModal = false" /></div></template>
+    <BaseModal :show="showEmailModal" closable @close="showEmailModal = false">
+      <template #header>{{ $t('customers.send_statement') }}</template>
       <form @submit.prevent="sendStatement">
         <div class="p-6 space-y-4">
           <BaseInputGroup :label="$t('general.to')" required><BaseInput v-model="emailForm.to" type="email" /></BaseInputGroup>
@@ -141,8 +141,8 @@
       </form>
     </BaseModal>
 
-    <BaseModal :show="showCreditModal" @close="showCreditModal = false">
-      <template #header><div class="flex items-center justify-between w-full">{{ $t('customers.apply_credit') }}<BaseIcon name="XMarkIcon" class="w-5 h-5 cursor-pointer text-muted" @click="showCreditModal = false" /></div></template>
+    <BaseModal :show="showCreditModal" closable @close="showCreditModal = false">
+      <template #header>{{ $t('customers.apply_credit') }}</template>
       <div class="p-6">
         <p class="mb-4 text-sm text-muted">{{ $t('customers.apply_credit_description') }}</p>
         <div v-if="creditRows.length" class="space-y-3">

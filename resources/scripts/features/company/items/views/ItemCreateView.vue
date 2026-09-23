@@ -293,7 +293,7 @@ async function submitItem(): Promise<void> {
                 <BaseSelectAction @click="addItemUnit">
                   <BaseIcon
                     name="PlusIcon"
-                    class="h-4 mr-2 -ml-2 text-center text-primary-400"
+                    class="h-4 me-2 -ms-2 text-center text-primary-400"
                   />
                   {{ $t('settings.customization.items.add_item_unit') }}
                 </BaseSelectAction>

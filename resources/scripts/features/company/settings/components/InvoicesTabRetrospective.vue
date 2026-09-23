@@ -41,7 +41,8 @@ async function submitForm(): Promise<void> {
       $t('settings.customization.invoices.retrospective_edits_description')
     "
   >
-    <BaseInputGroup required>
+    <fieldset class="flex flex-col mt-1.5">
+      <legend class="sr-only">{{ $t('settings.customization.invoices.retrospective_edits') }}</legend>
       <BaseRadio
         v-for="option in retrospectiveEditOptions"
         :id="option.value"
@@ -54,6 +55,6 @@ async function submitForm(): Promise<void> {
         class="mt-2"
         @update:model-value="submitForm"
       />
-    </BaseInputGroup>
+    </fieldset>
   </BaseSettingCard>
 </template>

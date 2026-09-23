@@ -27,6 +27,7 @@ import { Serbian } from 'flatpickr/dist/l10n/sr.js'
 import { Swedish } from 'flatpickr/dist/l10n/sv.js'
 import { Thai } from 'flatpickr/dist/l10n/th.js'
 import { Turkish } from 'flatpickr/dist/l10n/tr.js'
+import { Hebrew } from 'flatpickr/dist/l10n/he.js'
 import { Vietnamese } from 'flatpickr/dist/l10n/vn.js'
 import { Mandarin } from 'flatpickr/dist/l10n/zh.js'
 
@@ -44,6 +45,7 @@ const localeMap: Record<string, CustomLocale | Locale> = {
   fa: Persian,
   fi: Finnish,
   fr: French,
+  he: Hebrew,
   hi: Hindi,
   hr: Croatian,
   id: Indonesian,

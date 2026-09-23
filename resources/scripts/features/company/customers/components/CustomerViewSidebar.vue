@@ -7,6 +7,7 @@ import { useDebounceFn } from '@vueuse/core'
 import RecordListPane from '@/scripts/components/layout/RecordListPane.vue'
 import RecordListItem from '@/scripts/components/layout/RecordListItem.vue'
 import type { Currency } from '@/scripts/types/domain/currency'
+import { scrollBehavior } from '@/scripts/utils/motion'
 
 interface SearchData {
   orderBy: string | null
@@ -142,7 +143,7 @@ function scrollToCustomer(): void {
   const list = customerListSection.value
   if (el && list) {
     // Scroll the list pane alone; scrollIntoView would also move the page
-    list.scrollTo({ top: el.offsetTop - list.offsetTop - 8, behavior: 'smooth' })
+    list.scrollTo({ top: el.offsetTop - list.offsetTop - 8, behavior: scrollBehavior() })
     el.classList.add('shake')
     addScrollListener()
   }

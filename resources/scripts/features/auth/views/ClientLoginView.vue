@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-10 text-left">
+  <div class="mt-10 text-start">
     <!-- No server yet: point the app at one. -->
     <form v-if="state.status === 'no-server'" @submit.prevent="onConnect">
       <h2 class="text-base font-medium text-heading">
@@ -14,6 +14,8 @@
         :error="connectError"
         required
       >
+        <!-- The server address is this screen's only question, so it starts focused -->
+        <!-- eslint-disable vuejs-accessibility/no-autofocus -->
         <BaseInput
           v-model="serverUrlInput"
           :invalid="Boolean(connectError)"
@@ -25,6 +27,7 @@
           spellcheck="false"
           placeholder="https://books.example.com"
         />
+        <!-- eslint-enable vuejs-accessibility/no-autofocus -->
       </BaseInputGroup>
 
       <ul
@@ -73,7 +76,7 @@
       <button
         type="button"
         class="
-          mt-4 w-full text-sm text-primary-400 transition-colors
+          mt-4 w-full text-sm text-primary-600 transition-colors
           hover:text-body
         "
         @click="onChangeServer"
@@ -104,6 +107,7 @@
       >
         <BaseInput
           v-model="authStore.loginData.email"
+          autocomplete="username"
           :invalid="v$.email.$error"
           type="email"
           name="email"
@@ -121,25 +125,19 @@
       >
         <BaseInput
           v-model="authStore.loginData.password"
+          autocomplete="current-password"
           :invalid="v$.password.$error"
-          :type="inputType"
+          type="password"
+          revealable
           name="password"
           @input="v$.password.$touch()"
-        >
-          <template #right>
-            <BaseIcon
-              :name="isShowPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-              class="mr-1 text-muted cursor-pointer"
-              @click="isShowPassword = !isShowPassword"
-            />
-          </template>
-        </BaseInput>
+        />
       </BaseInputGroup>
 
       <div class="mt-5 mb-8">
         <router-link
           :to="{ name: 'forgot-password' }"
-          class="text-sm text-primary-400 hover:text-body"
+          class="text-sm text-primary-600 hover:text-body"
         >
           {{ $t('login.forgot_password') }}
         </router-link>
@@ -159,7 +157,7 @@
         </p>
         <button
           type="button"
-          class="mt-1 text-primary-400 transition-colors hover:text-body"
+          class="mt-1 text-primary-600 transition-colors hover:text-body"
           @click="onChangeServer"
         >
           {{ $t('client.change_server') }}
@@ -215,7 +213,6 @@ const connectError = ref<string>('')
 const warnings = ref<string[]>([])
 const acknowledged = ref<string>('')
 const isBusy = ref<boolean>(false)
-const isShowPassword = ref<boolean>(false)
 
 const rules = {
   email: {
@@ -231,8 +228,6 @@ const v$ = useVuelidate(
   rules,
   computed(() => authStore.loginData)
 )
-
-const inputType = computed<string>(() => (isShowPassword.value ? 'text' : 'password'))
 
 const blockedHeading = computed<string>(() => {
   switch (state.status) {

@@ -90,14 +90,12 @@ function refreshData(): void {
 
 <template>
   <div class="flex min-h-full">
-    <!-- The other customers, beside this one (wide screens only) -->
-    <CustomerViewSidebar />
 
     <BasePage class="min-w-0">
       <BasePageHeader :title="pageTitle" :subtitle="subtitle">
         <template #leading>
           <span
-            class="flex items-center justify-center w-12 h-12 text-base font-semibold rounded-2xl shrink-0 bg-primary-600 text-on-primary"
+            class="flex items-center justify-center w-12 h-12 text-base font-semibold rounded-2xl shrink-0 bg-btn-primary text-on-primary"
             aria-hidden="true"
           >
             {{ initials }}
@@ -112,8 +110,9 @@ function refreshData(): void {
           <router-link
             v-if="userStore.hasAbilities(ABILITIES.EDIT_CUSTOMER)"
             :to="`/admin/customers/${route.params.id}/edit`"
+            class="inline-flex rounded-lg"
           >
-            <BaseButton variant="white" :content-loading="isLoading">
+            <BaseButton tag="span" variant="white" :content-loading="isLoading">
               <template #left="slotProps">
                 <BaseIcon name="PencilSquareIcon" :class="slotProps.class" />
               </template>
@@ -139,45 +138,37 @@ function refreshData(): void {
               </span>
             </template>
 
-            <router-link
+            <BaseDropdownItem
               v-if="userStore.hasAbilities(ABILITIES.CREATE_INVOICE)"
               :to="`/admin/invoices/create?customer=${$route.params.id}`"
             >
-              <BaseDropdownItem>
-                <BaseIcon name="DocumentTextIcon" class="w-5 h-5 mr-3 text-subtle" />
-                {{ $t('invoices.new_invoice') }}
-              </BaseDropdownItem>
-            </router-link>
+              <BaseIcon name="DocumentTextIcon" class="w-5 h-5 me-3 text-subtle" />
+              {{ $t('invoices.new_invoice') }}
+            </BaseDropdownItem>
 
-            <router-link
+            <BaseDropdownItem
               v-if="userStore.hasAbilities(ABILITIES.CREATE_ESTIMATE)"
               :to="`/admin/estimates/create?customer=${$route.params.id}`"
             >
-              <BaseDropdownItem>
-                <BaseIcon name="DocumentIcon" class="w-5 h-5 mr-3 text-subtle" />
-                {{ $t('estimates.new_estimate') }}
-              </BaseDropdownItem>
-            </router-link>
+              <BaseIcon name="DocumentIcon" class="w-5 h-5 me-3 text-subtle" />
+              {{ $t('estimates.new_estimate') }}
+            </BaseDropdownItem>
 
-            <router-link
+            <BaseDropdownItem
               v-if="userStore.hasAbilities(ABILITIES.CREATE_PAYMENT)"
               :to="`/admin/payments/create?customer=${$route.params.id}`"
             >
-              <BaseDropdownItem>
-                <BaseIcon name="CreditCardIcon" class="w-5 h-5 mr-3 text-subtle" />
-                {{ $t('payments.new_payment') }}
-              </BaseDropdownItem>
-            </router-link>
+              <BaseIcon name="CreditCardIcon" class="w-5 h-5 me-3 text-subtle" />
+              {{ $t('payments.new_payment') }}
+            </BaseDropdownItem>
 
-            <router-link
+            <BaseDropdownItem
               v-if="userStore.hasAbilities(ABILITIES.CREATE_EXPENSE)"
               :to="`/admin/expenses/create?customer=${$route.params.id}`"
             >
-              <BaseDropdownItem>
-                <BaseIcon name="CalculatorIcon" class="w-5 h-5 mr-3 text-subtle" />
-                {{ $t('expenses.new_expense') }}
-              </BaseDropdownItem>
-            </router-link>
+              <BaseIcon name="CalculatorIcon" class="w-5 h-5 me-3 text-subtle" />
+              {{ $t('expenses.new_expense') }}
+            </BaseDropdownItem>
           </BaseDropdown>
 
           <CustomerDropdown
@@ -191,7 +182,7 @@ function refreshData(): void {
       <BaseStatStrip :columns="3">
         <BaseStat :label="$t('customers.net_account_balance')" emphasis>
           <BaseFormatMoney :amount="Math.abs(accountBalance)" :currency="customerCurrency" />
-          <span v-if="accountBalance < 0" class="ml-1.5 text-xs font-medium text-status-green">
+          <span v-if="accountBalance < 0" class="ms-1.5 text-xs font-medium text-status-green">
             {{ $t('customers.credit') }}
           </span>
         </BaseStat>
@@ -212,5 +203,8 @@ function refreshData(): void {
         </BaseTab>
       </BaseTabGroup>
     </BasePage>
+
+    <!-- The other customers, beside this one (wide screens only) -->
+    <CustomerViewSidebar />
   </div>
 </template>

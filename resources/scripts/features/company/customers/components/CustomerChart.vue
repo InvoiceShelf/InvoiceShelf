@@ -7,6 +7,7 @@ import { useCompanyStore } from '@/scripts/stores/company.store'
 import { useUserStore } from '@/scripts/stores/user.store'
 import { useBreakpoints } from '@/scripts/composables/use-breakpoints'
 import CashflowChart from '@/scripts/components/charts/CashflowChart.vue'
+import CashflowTable from '@/scripts/components/charts/CashflowTable.vue'
 import type { CashflowChartType } from '@/scripts/components/charts/CashflowChart.vue'
 import CustomerInfo from './CustomerInfo.vue'
 import type { CustomerStatsChartData } from '@/scripts/api/services/customer.service'
@@ -137,8 +138,8 @@ function selectPeriod(value: PeriodValue): void {
           </div>
 
           <!-- Period totals, doubling as the chart's legend -->
-          <dl class="grid grid-cols-2 mt-5 gap-x-6 gap-y-5 lg:grid-cols-4">
-            <div v-for="kpi in kpis" :key="kpi.key" class="flex items-center min-w-0 gap-3">
+          <ul role="list" class="grid grid-cols-1 min-[360px]:grid-cols-2 m-0 p-0 list-none mt-5 gap-x-6 gap-y-5 lg:grid-cols-4">
+            <li v-for="kpi in kpis" :key="kpi.key" class="flex items-center min-w-0 gap-3">
               <span
                 :class="kpi.chip"
                 class="flex items-center justify-center w-10 h-10 rounded-xl shrink-0"
@@ -147,17 +148,17 @@ function selectPeriod(value: PeriodValue): void {
                 <BaseIcon :name="kpi.icon" class="w-5 h-5" />
               </span>
               <div class="min-w-0">
-                <dt class="text-sm truncate text-muted">{{ kpi.label }}</dt>
-                <dd class="text-base font-semibold md:text-lg text-heading">
+                <p class="text-sm truncate text-muted">{{ kpi.label }}</p>
+                <p class="text-base font-semibold md:text-lg text-heading">
                   <BaseFormatMoney
                     :amount="kpi.amount"
                     :currency="companyStore.selectedCompanyCurrency"
                     proportional
                   />
-                </dd>
+                </p>
               </div>
-            </div>
-          </dl>
+            </li>
+          </ul>
         </div>
 
         <div class="px-2 pt-5 pb-3 md:px-5 md:pb-5">
@@ -173,6 +174,17 @@ function selectPeriod(value: PeriodValue): void {
             :aria-label="$t('dashboard.cashflow.title')"
           />
         </div>
+
+        <CashflowTable
+          :labels="chartData.months ?? []"
+          :sales="chartData.invoiceTotals ?? []"
+          :receipts="chartData.receiptTotals ?? []"
+          :expenses="chartData.expenseTotals ?? []"
+          :series-labels="seriesLabels"
+          :caption="$t('dashboard.cashflow.title')"
+          :granularity="chartData.period?.granularity"
+          :currency="companyStore.selectedCompanyCurrency"
+        />
       </template>
 
       <BaseContentPlaceholders v-else :rounded="true" class="p-5 md:p-7">

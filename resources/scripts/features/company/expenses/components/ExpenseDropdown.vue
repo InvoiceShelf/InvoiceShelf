@@ -1,5 +1,5 @@
 <template>
-  <BaseDropdown>
+  <BaseDropdown :label="row.expense_number ? $t('general.actions_for', { name: String(row.expense_number) }) : ''">
     <template #activator>
       <span class="inline-flex items-center justify-center rounded-lg w-9 h-9 text-muted hover:bg-hover-strong hover:text-heading">
         <BaseIcon name="EllipsisHorizontalIcon" class="w-5 h-5" />
@@ -7,21 +7,19 @@
     </template>
 
     <!-- Edit Expense -->
-    <router-link v-if="canEdit" :to="`/admin/expenses/${row.id}/edit`">
-      <BaseDropdownItem>
-        <BaseIcon
-          name="PencilIcon"
-          class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
-        />
-        {{ $t('general.edit') }}
-      </BaseDropdownItem>
-    </router-link>
+    <BaseDropdownItem v-if="canEdit" :to="`/admin/expenses/${row.id}/edit`">
+      <BaseIcon
+        name="PencilIcon"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
+      />
+      {{ $t('general.edit') }}
+    </BaseDropdownItem>
 
     <!-- Delete Expense -->
     <BaseDropdownItem v-if="canDelete" @click="removeExpense">
       <BaseIcon
         name="TrashIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.delete') }}
     </BaseDropdownItem>

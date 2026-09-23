@@ -8,6 +8,7 @@
     >
       <BaseInput
         v-model="formData.email"
+        autocomplete="email"
         :invalid="v$.email.$error"
         focus
         type="email"
@@ -34,7 +35,7 @@
     <div class="mt-4 mb-4 text-sm">
       <router-link
         to="/login"
-        class="text-sm text-primary-400 hover:text-body"
+        class="text-sm text-primary-600 hover:text-body"
       >
         {{ $t('general.back_to_login') }}
       </router-link>

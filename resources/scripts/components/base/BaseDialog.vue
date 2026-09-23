@@ -1,11 +1,12 @@
 <template>
-  <TransitionRoot as="template" :show="dialogStore.active">
+  <TransitionRoot as="template" :show="dialogStore.active" @after-leave="restoreFocus">
     <Dialog
       as="div"
       static
       class="relative z-50"
       :open="dialogStore.active"
-      @close="dialogStore.closeDialog"
+      :role="dialogStore.variant === 'danger' ? 'alertdialog' : 'dialog'"
+      @close="dialogStore.cancel"
     >
       <TransitionChild
         as="template"
@@ -32,7 +33,7 @@
           >
             <div
               class="
-                relative w-full px-5 pt-6 text-left glass-strong rounded-t-2xl safe-drawer
+                relative w-full px-5 pt-6 text-start glass-strong rounded-t-2xl safe-drawer
                 md:p-6 md:rounded-2xl md:border
               "
               :class="dialogSizeClasses"
@@ -61,9 +62,9 @@
                   >
                     {{ dialogStore.title }}
                   </DialogTitle>
-                  <p class="mt-1.5 text-sm text-muted">
+                  <DialogDescription as="p" class="mt-1.5 text-sm text-muted">
                     {{ dialogStore.message }}
-                  </p>
+                  </DialogDescription>
                 </div>
               </div>
               <div
@@ -97,15 +98,19 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useDialogStore } from '@/scripts/stores/dialog.store'
+import { useReturnFocus } from '@/scripts/composables/use-return-focus'
 import {
   Dialog,
   DialogOverlay,
   DialogTitle,
+  DialogDescription,
   TransitionChild,
   TransitionRoot,
 } from '@headlessui/vue'
 
 const dialogStore = useDialogStore()
+
+const { restoreFocus } = useReturnFocus(() => dialogStore.active)
 
 function resolveDialog(resValue: boolean): void {
   dialogStore.resolve(resValue)

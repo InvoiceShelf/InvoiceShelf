@@ -17,17 +17,18 @@
         <!-- Phones get these in the bottom bar and the form instead -->
         <template v-if="!isPhone" #actions>
           <!-- Make Recurring Toggle -->
-          <div v-if="!isEdit" class="flex items-center mr-4">
-            <BaseSwitch v-model="isRecurring" class="mr-2" />
-            <span class="text-sm font-medium text-heading whitespace-nowrap">{{ $t('recurring_invoices.make_recurring') }}</span>
+          <div v-if="!isEdit" class="flex items-center me-4">
+            <BaseSwitch v-model="isRecurring" class="me-2" aria-labelledby="make-recurring-label" />
+            <span id="make-recurring-label" class="text-sm font-medium text-heading whitespace-nowrap">{{ $t('recurring_invoices.make_recurring') }}</span>
           </div>
 
           <router-link
             v-if="isEdit"
             :to="`/invoices/pdf/${invoiceStore.newInvoice.unique_hash}`"
             target="_blank"
+            class="inline-flex rounded-lg me-3"
           >
-            <BaseButton class="mr-3" variant="primary-outline" type="button">
+            <BaseButton tag="span" variant="primary-outline">
               <span class="flex">
                 {{ $t('general.view_pdf') }}
               </span>
@@ -66,10 +67,10 @@
         v-if="isPhone && !isEdit"
         class="flex items-center justify-between gap-4 px-4 py-3 mt-5 border cursor-pointer glass rounded-xl"
       >
-        <span class="text-sm font-medium text-heading">
+        <span id="make-recurring-sheet-label" class="text-sm font-medium text-heading">
           {{ $t('recurring_invoices.make_recurring') }}
         </span>
-        <BaseSwitch v-model="isRecurring" />
+        <BaseSwitch v-model="isRecurring" aria-labelledby="make-recurring-sheet-label" />
       </label>
 
       <!-- Select Customer & Basic Fields -->
@@ -95,7 +96,7 @@
         <div
           class="block mt-10 invoice-foot lg:flex lg:justify-between lg:items-start"
         >
-          <div class="relative w-full lg:w-1/2 lg:mr-4">
+          <div class="relative w-full lg:w-1/2 lg:me-4">
             <!-- Invoice Custom Notes -->
             <DocumentNotes
               :store="invoiceStore"

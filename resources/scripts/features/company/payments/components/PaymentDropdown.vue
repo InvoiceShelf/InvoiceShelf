@@ -1,5 +1,5 @@
 <template>
-  <BaseDropdown :content-loading="contentLoading">
+  <BaseDropdown :content-loading="contentLoading" :label="row.payment_number ? $t('general.actions_for', { name: String(row.payment_number) }) : ''">
     <template #activator>
       <span v-if="isDetailView" data-overflow class="inline-flex items-center justify-center border rounded-lg w-11 h-11 md:w-9 md:h-9 bg-surface border-line-default text-body hover:bg-hover">
         <BaseIcon name="EllipsisHorizontalIcon" class="w-5 h-5" />
@@ -17,38 +17,28 @@
     >
       <BaseIcon
         name="LinkIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.copy_pdf_url') }}
     </BaseDropdownItem>
 
     <!-- Edit Payment -->
-    <router-link
-      v-if="canEdit"
-      :to="`/admin/payments/${row.id}/edit`"
-    >
-      <BaseDropdownItem>
-        <BaseIcon
-          name="PencilIcon"
-          class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
-        />
-        {{ $t('general.edit') }}
-      </BaseDropdownItem>
-    </router-link>
+    <BaseDropdownItem v-if="canEdit" :to="`/admin/payments/${row.id}/edit`">
+      <BaseIcon
+        name="PencilIcon"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
+      />
+      {{ $t('general.edit') }}
+    </BaseDropdownItem>
 
     <!-- View Payment -->
-    <router-link
-      v-if="!isDetailView && canView"
-      :to="`/admin/payments/${row.id}/view`"
-    >
-      <BaseDropdownItem>
-        <BaseIcon
-          name="EyeIcon"
-          class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
-        />
-        {{ $t('general.view') }}
-      </BaseDropdownItem>
-    </router-link>
+    <BaseDropdownItem v-if="!isDetailView && canView" :to="`/admin/payments/${row.id}/view`">
+      <BaseIcon
+        name="EyeIcon"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
+      />
+      {{ $t('general.view') }}
+    </BaseDropdownItem>
 
     <!-- Send Payment -->
     <BaseDropdownItem
@@ -57,7 +47,7 @@
     >
       <BaseIcon
         name="PaperAirplaneIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('payments.send_payment') }}
     </BaseDropdownItem>
@@ -66,7 +56,7 @@
     <BaseDropdownItem v-if="canDelete" @click="removePayment">
       <BaseIcon
         name="TrashIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.delete') }}
     </BaseDropdownItem>

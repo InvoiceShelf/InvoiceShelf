@@ -1,13 +1,14 @@
 <template>
   <header
     class="
-      fixed top-0 left-0 z-20 flex w-full items-center justify-between border-b
+      fixed top-0 start-0 z-20 flex w-full items-center justify-between border-b
       border-line-default bg-surface px-4 py-3 shadow-xs md:px-8
     "
   >
     <div class="flex min-w-0 items-center gap-6">
       <router-link
         :to="dashboardPath"
+        :aria-label="$t('navigation.dashboard')"
         class="shrink-0"
       >
         <MainLogo
@@ -17,11 +18,12 @@
         <img
           v-else
           :src="customerLogo"
+          alt=""
           class="h-6 w-auto"
         />
       </router-link>
 
-      <nav class="hidden items-center gap-5 md:flex">
+      <nav class="hidden items-center gap-5 md:flex" :aria-label="$t('navigation.menu')">
         <router-link
           v-for="item in store.mainMenu"
           :key="item.link"
@@ -39,7 +41,7 @@
     </div>
 
     <div class="flex items-center gap-3">
-      <div class="hidden text-right sm:block">
+      <div class="hidden text-end sm:block">
         <p class="text-sm font-medium text-heading">
           {{ store.currentUser?.name ?? '' }}
         </p>
@@ -48,48 +50,47 @@
         </p>
       </div>
 
-      <BaseDropdown width-class="w-56">
+      <BaseDropdown
+        width-class="w-56"
+        :label="$t('navigation.account_menu', { name: store.currentUser?.name ?? '' })"
+      >
         <template #activator>
-          <button
+          <span
             class="flex items-center gap-2 rounded-full p-1 transition-colors hover:bg-surface-tertiary"
-            type="button"
           >
             <img
               :src="previewAvatar"
+              alt=""
               class="h-9 w-9 rounded-full object-cover"
             />
             <BaseIcon
               class="hidden h-4 w-4 text-muted md:block"
               name="ChevronDownIcon"
             />
-          </button>
+          </span>
         </template>
 
         <div class="px-2 pb-2 md:hidden">
-          <router-link
+          <BaseDropdownItem
             v-for="item in store.mainMenu"
             :key="`${item.link}-mobile`"
             :to="menuLink(item.link)"
           >
-            <BaseDropdownItem>
-              {{ $t(item.title) }}
-            </BaseDropdownItem>
-          </router-link>
+            {{ $t(item.title) }}
+          </BaseDropdownItem>
         </div>
 
-        <router-link :to="settingsPath">
-          <BaseDropdownItem>
-            <BaseIcon
-              class="mr-3 h-5 w-5 text-subtle group-hover:text-muted"
-              name="CogIcon"
-            />
-            {{ $t('navigation.settings') }}
-          </BaseDropdownItem>
-        </router-link>
+        <BaseDropdownItem :to="settingsPath">
+          <BaseIcon
+            class="me-3 h-5 w-5 text-subtle group-hover:text-muted"
+            name="CogIcon"
+          />
+          {{ $t('navigation.settings') }}
+        </BaseDropdownItem>
 
         <BaseDropdownItem @click="logout">
           <BaseIcon
-            class="mr-3 h-5 w-5 text-subtle group-hover:text-muted"
+            class="me-3 h-5 w-5 text-subtle group-hover:text-muted"
             name="ArrowRightOnRectangleIcon"
           />
           {{ $t('navigation.logout') }}

@@ -5,10 +5,10 @@
     <Popover>
       <PopoverButton
         v-if="canViewNotes"
-        class="flex items-center z-10 font-medium text-primary-400 focus:outline-hidden focus:border-none"
+        class="z-10 flex items-center gap-1 font-medium rounded-md text-primary-600 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
         @click="fetchInitialData"
       >
-        <BaseIcon name="PlusIcon" class="w-4 h-4 font-medium text-primary-400" />
+        <BaseIcon name="PlusIcon" class="w-4 h-4" />
         {{ $t('general.insert_note') }}
       </PopoverButton>
 
@@ -22,7 +22,7 @@
       >
         <PopoverPanel
           v-slot="{ close }"
-          class="absolute z-20 px-4 mt-3 sm:px-0 w-screen max-w-full left-0 top-3"
+          class="absolute z-20 px-4 mt-3 sm:px-0 w-screen max-w-full start-0 top-3"
         >
           <div class="overflow-hidden rounded-md shadow-lg ring-1 ring-black/5">
             <div class="relative grid bg-surface">
@@ -30,7 +30,8 @@
                 <BaseInput
                   v-model="textSearch"
                   :placeholder="$t('general.search')"
-                  type="text"
+                  :aria-label="$t('general.search')"
+                  type="search"
                   class="text-heading"
                 />
               </div>
@@ -39,41 +40,41 @@
                 v-if="filteredNotes.length > 0"
                 class="relative flex flex-col overflow-auto list max-h-36"
               >
-                <div
+                <button
                   v-for="(note, idx) in filteredNotes"
                   :key="idx"
-                  tabindex="2"
-                  class="px-6 py-4 border-b border-line-default border-solid cursor-pointer hover:bg-surface-tertiary hover:cursor-pointer last:border-b-0"
+                  type="button"
+                  class="
+                    w-full px-6 py-4 text-start border-b border-line-default border-solid last:border-b-0
+                    hover:bg-surface-tertiary focus:outline-hidden focus-visible:bg-surface-tertiary
+                    focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus
+                  "
                   @click="selectNote(idx, close)"
                 >
-                  <div class="flex justify-between px-2">
-                    <label
-                      class="m-0 text-base font-semibold leading-tight text-body cursor-pointer"
-                    >
+                  <span class="flex justify-between px-2">
+                    <span class="m-0 text-base font-semibold leading-tight text-body">
                       {{ note.name }}
-                    </label>
-                  </div>
-                </div>
+                    </span>
+                  </span>
+                </button>
               </div>
-              <div v-else class="flex justify-center p-5 text-subtle">
-                <label class="text-base text-muted">
+              <div v-else class="flex justify-center p-5" role="status">
+                <span class="text-base text-muted">
                   {{ $t('general.no_note_found') }}
-                </label>
+                </span>
               </div>
             </div>
 
             <button
               v-if="canManageNotes"
               type="button"
-              class="h-10 flex items-center justify-center w-full px-2 py-3 bg-surface-muted border-none outline-hidden"
+              class="flex items-center justify-center w-full h-10 px-2 py-3 border-none bg-surface-muted text-primary-600 outline-hidden focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus"
               @click="openNoteModal"
             >
-              <BaseIcon name="CheckCircleIcon" class="text-primary-400" />
-              <label
-                class="m-0 ml-3 text-sm leading-none cursor-pointer font-base text-primary-400"
-              >
+              <BaseIcon name="CheckCircleIcon" />
+              <span class="m-0 ms-3 text-sm leading-none font-base">
                 {{ $t('settings.customization.notes.add_new_note') }}
-              </label>
+              </span>
             </button>
           </div>
         </PopoverPanel>

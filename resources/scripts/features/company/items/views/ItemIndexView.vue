@@ -114,8 +114,8 @@ const itemColumns = computed<TableColumn[]>(() => [
   })),
   {
     key: 'actions',
-    thClass: 'text-right',
-    tdClass: 'text-right text-sm font-medium',
+    thClass: 'text-end',
+    tdClass: 'text-end text-sm font-medium',
     sortable: false,
     mobile: 'actions',
   },
@@ -232,6 +232,7 @@ function removeMultipleItems(): void {
           <BaseButton
             v-show="itemStore.totalItems"
             variant="primary-outline"
+            :aria-expanded="showFilters"
             @click="toggleFilter"
           >
             {{ $t('general.filter') }}
@@ -259,7 +260,7 @@ function removeMultipleItems(): void {
     </BasePageHeader>
 
     <BaseFilterWrapper :show="showFilters" @clear="clearFilter">
-      <BaseInputGroup :label="$t('items.name')" class="text-left">
+      <BaseInputGroup :label="$t('items.name')" class="text-start">
         <BaseInput
           v-model="filters.name"
           type="text"
@@ -268,7 +269,7 @@ function removeMultipleItems(): void {
         />
       </BaseInputGroup>
 
-      <BaseInputGroup :label="$t('items.unit')" class="text-left">
+      <BaseInputGroup :label="$t('items.unit')" class="text-start">
         <BaseMultiselect
           v-model="filters.unit_id"
           :placeholder="$t('items.select_a_unit')"
@@ -284,7 +285,7 @@ function removeMultipleItems(): void {
         />
       </BaseInputGroup>
 
-      <BaseInputGroup class="text-left" :label="$t('items.price')">
+      <BaseInputGroup class="text-start" :label="$t('items.price')">
         <BaseMoney v-model="filters.price" />
       </BaseInputGroup>
     </BaseFilterWrapper>
@@ -332,9 +333,10 @@ function removeMultipleItems(): void {
         </template>
 
         <template #header>
-          <div class="absolute items-center left-6 top-3.5 select-none">
+          <div class="absolute items-center start-6 top-3.5 select-none">
             <BaseCheckbox
               v-model="itemStore.selectAllField"
+              :aria-label="$t('general.select_all')"
               variant="primary"
               @change="itemStore.selectAllItems"
             />
@@ -346,6 +348,7 @@ function removeMultipleItems(): void {
             <BaseCheckbox
               :id="row.id"
               v-model="selectField"
+              :aria-label="$t('general.select_named', { name: row.data.name })"
               :value="row.data.id"
             />
           </div>

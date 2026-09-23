@@ -10,9 +10,10 @@
   <div v-else :class="computedContainerClass" class="relative flex flex-row">
     <svg
       v-if="showCalendarIcon && !hasIconSlot"
+      aria-hidden="true"
       viewBox="0 0 20 20"
       fill="currentColor"
-      class="absolute z-10 w-4 h-4 -translate-y-1/2 cursor-pointer top-1/2 left-3 text-subtle"
+      class="absolute z-10 w-4 h-4 -translate-y-1/2 cursor-pointer top-1/2 start-3 text-subtle"
       @click="onClickDp"
     >
       <path
@@ -27,7 +28,7 @@
     <FlatPickr
       ref="dp"
       v-model="date"
-      v-bind="$attrs"
+      v-bind="passthroughAttrs"
       :disabled="disabled"
       :config="config"
       :class="[defaultInputClass, inputInvalidClass, inputDisabledClass]"
@@ -39,13 +40,14 @@
 import FlatPickr from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
 import type { CustomLocale, Locale } from 'flatpickr/dist/types/locale'
-import { computed, reactive, watch, ref, useSlots } from 'vue'
+import { computed, reactive, watch, ref, useAttrs, useSlots } from 'vue'
 import { useCompanyStore } from '@/scripts/stores/company.store'
 import { useUserStore } from '@/scripts/stores/user.store'
 import { flatpickrLocale } from '@/scripts/utils/flatpickr-locale'
+import { useFormField } from '@/scripts/composables/use-form-field'
 
 interface FlatPickrInstance {
-  fp: { open: () => void }
+  fp: { open: () => void; altInput?: HTMLInputElement }
 }
 
 const dp = ref<FlatPickrInstance | null>(null)
@@ -73,7 +75,7 @@ const props = withDefaults(defineProps<Props>(), {
   showCalendarIcon: true,
   containerClass: '',
   defaultInputClass:
-    'font-base pl-9 py-2 outline-hidden block w-full md:text-sm tabular border-line-default rounded-lg text-heading',
+    'font-base ps-9 py-2 outline-hidden block w-full md:text-sm tabular border-control-border rounded-lg text-heading',
   time24hr: false,
 })
 
@@ -98,6 +100,38 @@ interface FlatPickrConfig {
   time_24hr: boolean
   locale: CustomLocale | Locale
   altFormat?: string
+  onReady: Array<(dates: Date[], value: string, instance: { altInput?: HTMLInputElement }) => void>
+}
+
+const attrs = useAttrs()
+const { attrs: fieldAttrs } = useFormField({ invalid: () => props.invalid })
+
+// The id and ARIA attributes belong on the visible copy only (see below)
+const passthroughAttrs = computed(() => Object.fromEntries(
+  Object.entries(attrs).filter(([key]) => key !== 'id' && !key.startsWith('aria-')),
+))
+
+/**
+ * flatpickr hides the real input and shows a copy (its alt input) formatted
+ * for people. The copy is the one users focus, so the label, description and
+ * state go on it.
+ */
+function applyFieldAttrs(input?: HTMLInputElement): void {
+  if (!input) {
+    return
+  }
+
+  const passed = Object.fromEntries(
+    Object.entries(attrs).filter(([key]) => key === 'id' || key.startsWith('aria-')),
+  )
+
+  for (const [key, value] of Object.entries({ ...fieldAttrs.value, ...passed })) {
+    if (value === undefined || value === null || value === false) {
+      input.removeAttribute(key)
+    } else {
+      input.setAttribute(key, String(value))
+    }
+  }
 }
 
 const config = reactive<FlatPickrConfig>({
@@ -105,7 +139,10 @@ const config = reactive<FlatPickrConfig>({
   enableTime: props.enableTime,
   time_24hr: props.time24hr,
   locale: fpLocale,
+  onReady: [(_dates, _value, instance) => applyFieldAttrs(instance.altInput)],
 })
+
+watch(fieldAttrs, () => applyFieldAttrs(dp.value?.fp?.altInput))
 
 const date = computed<string | Date>({
   get: () => props.modelValue,

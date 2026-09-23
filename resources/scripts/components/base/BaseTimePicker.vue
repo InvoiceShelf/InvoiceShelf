@@ -10,6 +10,7 @@
   <div v-else :class="computedContainerClass" class="relative flex flex-row">
     <svg
       v-if="clockIcon && !hasIconSlot"
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
       class="
         absolute
@@ -40,7 +41,7 @@
     <FlatPickr
       ref="dpt"
       v-model="time"
-      v-bind="$attrs"
+      v-bind="{ ...fieldAttrs, ...$attrs }"
       :disabled="disabled"
       :config="config"
       :class="[defaultInputClass, inputInvalidClass, inputDisabledClass]"
@@ -52,6 +53,7 @@
 import FlatPickr from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
 import { computed, reactive, useSlots, ref } from 'vue'
+import { useFormField } from '@/scripts/composables/use-form-field'
 
 interface FlatPickrInstance {
   fp: { open: () => void }
@@ -79,8 +81,10 @@ const props = withDefaults(defineProps<Props>(), {
   containerClass: '',
   clockIcon: true,
   defaultInputClass:
-    'font-base pl-9 py-2 outline-hidden block w-full md:text-sm tabular border-line-default rounded-lg text-heading',
+    'font-base ps-9 py-2 outline-hidden block w-full md:text-sm tabular border-control-border rounded-lg text-heading',
 })
+
+const { attrs: fieldAttrs } = useFormField({ invalid: () => props.invalid })
 
 interface Emits {
   (e: 'update:modelValue', value: string | Date): void

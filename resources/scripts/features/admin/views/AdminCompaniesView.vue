@@ -12,7 +12,11 @@
 
       <template #actions>
         <div class="flex items-center justify-end space-x-5">
-          <BaseButton variant="primary-outline" @click="toggleFilter">
+          <BaseButton
+            variant="primary-outline"
+            :aria-expanded="showFilters"
+            @click="toggleFilter"
+          >
             {{ $t('general.filter') }}
             <template #right="slotProps">
               <BaseIcon
@@ -148,7 +152,7 @@ const companyTableColumns = computed<TableColumn[]>(() => [
   },
   {
     key: 'actions',
-    tdClass: 'text-right text-sm font-medium',
+    tdClass: 'text-end text-sm font-medium',
     sortable: false,
     mobile: 'actions',
   },

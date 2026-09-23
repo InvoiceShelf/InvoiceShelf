@@ -77,6 +77,7 @@ async function updateAccount(): Promise<void> {
         >
           <BaseInput
             v-model="userForm.name"
+            autocomplete="name"
             :invalid="v$.name.$error"
             @blur="v$.name.$touch()"
           />
@@ -89,6 +90,7 @@ async function updateAccount(): Promise<void> {
         >
           <BaseInput
             v-model="userForm.email"
+            autocomplete="email"
             type="email"
             :invalid="v$.email.$error"
             @blur="v$.email.$touch()"
@@ -101,6 +103,7 @@ async function updateAccount(): Promise<void> {
         >
           <BaseInput
             v-model="userForm.password"
+            autocomplete="new-password"
             type="password"
             :invalid="v$.password.$error"
             @blur="v$.password.$touch()"
@@ -116,6 +119,7 @@ async function updateAccount(): Promise<void> {
         >
           <BaseInput
             v-model="userForm.confirm_password"
+            autocomplete="new-password"
             type="password"
             :invalid="v$.confirm_password.$error"
             @blur="v$.confirm_password.$touch()"

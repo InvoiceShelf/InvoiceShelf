@@ -7,10 +7,13 @@
     />
   </BaseContentPlaceholders>
 
+  <!-- Labelled by the surrounding group through fieldAttrs, or by aria-label -->
+  <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
   <textarea
     v-else
-    v-bind="$attrs"
+    v-bind="{ ...fieldAttrs, ...$attrs }"
     ref="textarea"
+    :dir="($attrs.dir as string | undefined) ?? 'auto'"
     :value="modelValue"
     :class="[defaultInputClass, inputBorderClass]"
     :disabled="disabled"
@@ -20,6 +23,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+import { useFormField } from '@/scripts/composables/use-form-field'
 
 interface Props {
   contentLoading?: boolean
@@ -39,12 +43,14 @@ const props = withDefaults(defineProps<Props>(), {
   disabled: false,
   modelValue: '',
   defaultInputClass:
-    'box-border w-full px-3 py-2 text-base md:text-sm font-normal leading-6 text-left text-heading placeholder-subtle bg-surface border border-line-default border-solid rounded-lg outline-hidden',
+    'box-border w-full px-3 py-2 text-base md:text-sm font-normal leading-6 text-start text-heading placeholder-subtle bg-surface border border-control-border border-solid rounded-lg outline-hidden',
   autosize: false,
   borderless: false,
 })
 
 const textarea = ref<HTMLTextAreaElement | null>(null)
+
+const { attrs: fieldAttrs } = useFormField({ invalid: () => props.invalid })
 
 const inputBorderClass = computed<string>(() => {
   if (props.invalid && !props.borderless) {

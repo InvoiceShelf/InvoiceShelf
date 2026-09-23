@@ -51,7 +51,7 @@
       >
         {{ initial(company.name) }}
       </span>
-      <span class="flex flex-col flex-1 min-w-0 text-left">
+      <span class="flex flex-col flex-1 min-w-0 text-start">
         <span class="text-sm font-medium truncate">{{ company.name }}</span>
         <span v-if="company.user_role" class="text-xs truncate text-muted">
           {{ company.user_role }}
@@ -104,7 +104,7 @@ function isSelected(company: Company): boolean {
 
 function rowClass(active: boolean): string {
   return [
-    'flex items-center w-full gap-3 px-3 py-2 rounded-lg text-left transition-colors',
+    'flex items-center w-full gap-3 px-3 py-2 rounded-lg text-start transition-colors',
     active ? 'bg-primary-50 text-heading' : 'text-body hover:bg-hover',
   ].join(' ')
 }

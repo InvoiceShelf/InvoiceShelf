@@ -3,7 +3,7 @@
   <aside
     :class="[isRail ? 'w-16' : 'w-64']"
     class="
-      fixed inset-y-0 left-0 z-30 hidden md:flex flex-col
+      fixed inset-y-0 start-0 z-30 hidden md:flex flex-col
       bg-chrome-lit text-chrome-fg safe-header
       transition-[width] duration-200
     "
@@ -32,7 +32,7 @@
       <CompanySwitcher :variant="isRail ? 'rail' : 'sidebar'" tone="chrome" />
     </div>
 
-    <nav class="flex-1 min-h-0 pb-4 overflow-x-hidden overflow-y-auto">
+    <nav class="flex-1 min-h-0 pb-4 overflow-x-hidden overflow-y-auto" :aria-label="$t('navigation.menu')">
       <div
         v-for="(menu, index) in globalStore.menuGroups"
         :key="index"
@@ -54,12 +54,13 @@
         <ul class="space-y-0.5">
           <li v-for="item in menu" :key="item.name">
             <router-link
-              v-tooltip="isRail ? { content: $t(item.title), placement: 'right' } : null"
+              v-tooltip="isRail ? { content: $t(item.title), placement: flipPlacement('right') } : null"
               :to="item.link"
               :aria-current="hasActiveUrl(item.link) ? 'page' : undefined"
+              :aria-label="isRail ? $t(item.title) : undefined"
               :class="[
                 hasActiveUrl(item.link)
-                  ? 'bg-chrome-active text-chrome-fg before:absolute before:left-0 before:top-2 before:bottom-2 before:w-0.5 before:rounded-full before:bg-chrome-accent'
+                  ? 'bg-chrome-active text-chrome-fg before:absolute before:start-0 before:top-2 before:bottom-2 before:w-0.5 before:rounded-full before:bg-chrome-accent'
                   : 'text-chrome-muted hover:bg-chrome-hover hover:text-chrome-fg',
                 isRail ? 'justify-center w-10 h-10' : 'gap-3 px-2.5 h-9',
               ]"
@@ -67,6 +68,7 @@
             >
               <BaseIcon
                 :name="item.icon"
+                aria-hidden="true"
                 :class="[
                   hasActiveUrl(item.link)
                     ? 'text-chrome-accent'
@@ -94,7 +96,7 @@
         <template #activator="{ avatar }">
           <span
             :class="isRail ? 'justify-center w-10 h-10 p-0' : 'w-full gap-2.5 px-2 py-1.5'"
-            class="flex items-center min-w-0 text-left transition-colors rounded-lg hover:bg-chrome-hover"
+            class="flex items-center min-w-0 text-start transition-colors rounded-lg hover:bg-chrome-hover"
           >
             <img
               :src="avatar"
@@ -115,7 +117,7 @@
 
       <button
         v-if="isDesktop"
-        v-tooltip="{ content: isRail ? $t('general.expand') : $t('general.collapse'), placement: 'right' }"
+        v-tooltip="{ content: isRail ? $t('general.expand') : $t('general.collapse'), placement: flipPlacement('right') }"
         type="button"
         class="flex items-center justify-center w-9 h-9 transition-colors rounded-lg shrink-0 text-chrome-muted hover:text-chrome-fg hover:bg-chrome-hover"
         :aria-label="isRail ? $t('general.expand') : $t('general.collapse')"
@@ -131,6 +133,7 @@
 </template>
 
 <script setup lang="ts">
+import { flipPlacement } from '@/scripts/utils/direction'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useGlobalStore } from '@/scripts/stores/global.store'

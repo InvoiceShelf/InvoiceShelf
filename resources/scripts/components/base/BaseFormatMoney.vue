@@ -26,5 +26,6 @@ const formattedAmount = computed<string>(() => {
 </script>
 
 <template>
-  <span :class="proportional ? '' : 'tabular'" class="whitespace-nowrap">{{ formattedAmount }}</span>
+  <!-- Formatted left to right, so it stays that way inside right-to-left text -->
+  <span :class="proportional ? '' : 'tabular'" class="whitespace-nowrap" dir="ltr">{{ formattedAmount }}</span>
 </template>

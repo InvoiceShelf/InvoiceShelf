@@ -14,6 +14,7 @@
         <BaseButton
           v-show="recurringInvoiceStore.totalRecurringInvoices"
           variant="primary-outline"
+          :aria-expanded="showFilters"
           @click="toggleFilter"
         >
           {{ $t('general.filter') }}
@@ -30,8 +31,9 @@
         <router-link
           v-if="canCreate"
           to="recurring-invoices/create"
+          class="inline-flex rounded-lg ms-4"
         >
-          <BaseButton variant="primary" class="ml-4">
+          <BaseButton tag="span" variant="primary">
             <template #left="slotProps">
               <BaseIcon name="PlusIcon" :class="slotProps.class" />
             </template>
@@ -144,9 +146,10 @@
         </template>
 
         <template #header>
-          <div class="absolute items-center left-6 top-3.5 select-none">
+          <div class="absolute items-center start-6 top-3.5 select-none">
             <BaseCheckbox
               v-model="recurringInvoiceStore.selectAllField"
+              :aria-label="$t('general.select_all')"
               variant="primary"
               @change="recurringInvoiceStore.selectAllRecurringInvoices"
             />
@@ -158,6 +161,7 @@
             <BaseCheckbox
               :id="row.id"
               v-model="selectField"
+              :aria-label="$t('general.select_named', { name: row.data.customer?.name ?? row.data.id })"
               :value="row.data.id"
             />
           </div>
@@ -357,8 +361,8 @@ const invoiceColumns = computed<TableColumn[]>(() => [
   {
     key: 'actions',
     label: t('recurring_invoices.action'),
-    tdClass: 'text-right text-sm font-medium',
-    thClass: 'text-right',
+    tdClass: 'text-end text-sm font-medium',
+    thClass: 'text-end',
     sortable: false,
     mobile: 'actions',
   },

@@ -57,7 +57,7 @@ function removeItem(id: number): void {
 </script>
 
 <template>
-  <BaseDropdown>
+  <BaseDropdown :label="row?.name ? $t('general.actions_for', { name: String(row?.name) }) : ''">
     <template #activator>
       <span class="inline-flex items-center justify-center rounded-lg w-9 h-9 text-muted hover:bg-hover-strong hover:text-heading">
         <BaseIcon name="EllipsisHorizontalIcon" class="w-5 h-5" />
@@ -65,18 +65,16 @@ function removeItem(id: number): void {
     </template>
 
     <!-- Edit Item -->
-    <router-link
+    <BaseDropdownItem
       v-if="userStore.hasAbilities(ABILITIES.EDIT_ITEM) && row"
       :to="`/admin/items/${row.id}/edit`"
     >
-      <BaseDropdownItem>
-        <BaseIcon
-          name="PencilIcon"
-          class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
-        />
-        {{ $t('general.edit') }}
-      </BaseDropdownItem>
-    </router-link>
+      <BaseIcon
+        name="PencilIcon"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
+      />
+      {{ $t('general.edit') }}
+    </BaseDropdownItem>
 
     <!-- Delete Item -->
     <BaseDropdownItem
@@ -85,7 +83,7 @@ function removeItem(id: number): void {
     >
       <BaseIcon
         name="TrashIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.delete') }}
     </BaseDropdownItem>

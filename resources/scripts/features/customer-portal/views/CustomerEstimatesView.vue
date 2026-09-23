@@ -13,6 +13,7 @@
         <BaseButton
           v-if="store.totalEstimates"
           variant="primary-outline"
+          :aria-expanded="showFilters"
           @click="toggleFilter"
         >
           {{ $t('general.filter') }}
@@ -47,7 +48,7 @@
       >
         <BaseInput v-model="filters.estimate_number">
           <BaseIcon name="EllipsisHorizontalIcon" class="h-5 text-muted" />
-          <BaseIcon name="HashtagIcon" class="h-5 mr-3 text-body" />
+          <BaseIcon name="HashtagIcon" class="h-5 me-3 text-body" />
         </BaseInput>
       </BaseInputGroup>
 
@@ -115,12 +116,10 @@
             <template #activator>
               <BaseIcon name="EllipsisHorizontalIcon" class="h-5 text-muted" />
             </template>
-            <router-link :to="`estimates/${row.data.id}/view`">
-              <BaseDropdownItem>
-                <BaseIcon name="EyeIcon" class="h-5 mr-3 text-body" />
-                {{ $t('general.view') }}
-              </BaseDropdownItem>
-            </router-link>
+            <BaseDropdownItem :to="`estimates/${row.data.id}/view`">
+              <BaseIcon name="EyeIcon" class="h-5 me-3 text-body" />
+              {{ $t('general.view') }}
+            </BaseDropdownItem>
           </BaseDropdown>
         </template>
       </BaseTable>
@@ -199,8 +198,8 @@ const estimateColumns = computed<TableColumn[]>(() => [
   },
   {
     key: 'actions',
-    thClass: 'text-right',
-    tdClass: 'text-right text-sm font-medium',
+    thClass: 'text-end',
+    tdClass: 'text-end text-sm font-medium',
     sortable: false,
     mobile: 'actions',
   },

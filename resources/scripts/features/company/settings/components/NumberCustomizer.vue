@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, nextTick, watch } from 'vue'
 import { useDebounceFn } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 import draggable from 'vuedraggable'
@@ -7,6 +7,7 @@ import { generateClientId } from '@/scripts/utils/generate-client-id'
 import { useCompanyStore } from '../../../../stores/company.store'
 import { useGlobalStore } from '../../../../stores/global.store'
 import DragIcon from '@/scripts/components/icons/DragIcon.vue'
+import { announce } from '@/scripts/utils/page-focus'
 
 interface NumberField {
   id: string
@@ -182,6 +183,35 @@ function onSelectField(field: Omit<NumberField, 'id'>): void {
   fetchNextNumber()
 }
 
+const handles = new Map<string | number, HTMLButtonElement>()
+
+function setHandle(id: string | number, el: unknown): void {
+  if (el instanceof HTMLButtonElement) {
+    handles.set(id, el)
+  } else {
+    handles.delete(id)
+  }
+}
+
+// The keyboard's way to reorder: arrow keys on a row's drag handle
+async function moveField(index: number, step: number): Promise<void> {
+  const to = index + step
+  const count = selectedFields.value.length
+
+  if (to < 0 || to >= count) {
+    return
+  }
+
+  const fields = [...selectedFields.value]
+  const [moved] = fields.splice(index, 1)
+  fields.splice(to, 0, moved)
+  selectedFields.value = fields
+
+  await nextTick()
+  handles.get(moved.id)?.focus()
+  announce(t('invoices.item.moved', { position: to + 1, count }))
+}
+
 function removeComponent(component: NumberField): void {
   selectedFields.value = selectedFields.value.filter((el) => component.id !== el.id)
 }
@@ -247,9 +277,9 @@ async function submitForm(): Promise<boolean> {
 </script>
 
 <template>
-  <h6 class="text-heading text-lg font-medium">
+  <h3 class="text-heading text-lg font-medium">
     {{ $t(`settings.customization.${type}s.${type}_number_format`) }}
-  </h6>
+  </h3>
   <p class="mt-1 text-sm text-muted">
     {{ $t(`settings.customization.${type}s.${type}_number_format_description`) }}
   </p>
@@ -266,20 +296,20 @@ async function submitForm(): Promise<boolean> {
       <thead>
         <tr>
           <th
-            class="px-5 py-3 text-sm not-italic font-medium leading-5 text-left text-body border-t border-b border-line-default border-solid"
+            class="px-5 py-3 text-sm not-italic font-medium leading-5 text-start text-body border-t border-b border-line-default border-solid"
           />
           <th
-            class="px-5 py-3 text-sm not-italic font-medium leading-5 text-left text-body border-t border-b border-line-default border-solid"
+            class="px-5 py-3 text-sm not-italic font-medium leading-5 text-start text-body border-t border-b border-line-default border-solid"
           >
             {{ $t('settings.customization.component') }}
           </th>
           <th
-            class="px-5 py-3 text-sm not-italic font-medium leading-5 text-left text-body border-t border-b border-line-default border-solid"
+            class="px-5 py-3 text-sm not-italic font-medium leading-5 text-start text-body border-t border-b border-line-default border-solid"
           >
             {{ $t('settings.customization.Parameter') }}
           </th>
           <th
-            class="px-5 py-3 text-sm not-italic font-medium leading-5 text-left text-body border-t border-b border-line-default border-solid"
+            class="px-5 py-3 text-sm not-italic font-medium leading-5 text-start text-body border-t border-b border-line-default border-solid"
           />
         </tr>
       </thead>
@@ -292,22 +322,32 @@ async function submitForm(): Promise<boolean> {
         handle=".handle"
         filter=".ignore-element"
       >
-        <template #item="{ element }">
+        <template #item="{ element, index }">
           <tr class="relative">
-            <td class="text-subtle cursor-move handle align-middle">
-              <DragIcon />
+            <td class="align-middle">
+              <!-- Drag to reorder, or focus and use the arrow keys -->
+              <button
+                :ref="(el) => setHandle(element.id, el)"
+                type="button"
+                class="flex items-center justify-center w-6 h-8 rounded-md cursor-move handle text-subtle focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
+                :aria-label="$t('settings.customization.reorder_component', { name: element.label, position: index + 1, count: selectedFields.length })"
+                @keydown.up.prevent="moveField(index, -1)"
+                @keydown.down.prevent="moveField(index, 1)"
+              >
+                <DragIcon aria-hidden="true" />
+              </button>
             </td>
             <td class="px-5 py-4">
-              <label
-                class="block text-sm not-italic font-medium text-primary-500 whitespace-nowrap mr-2 min-w-[200px]"
+              <p
+                class="block text-sm not-italic font-medium text-primary-600 whitespace-nowrap me-2 min-w-[200px]"
               >
                 {{ element.label }}
-              </label>
+              </p>
               <p class="text-xs text-muted mt-1">
                 {{ element.description }}
               </p>
             </td>
-            <td class="px-5 py-4 text-left align-middle">
+            <td class="px-5 py-4 text-start align-middle">
               <BaseInputGroup
                 :label="element.paramLabel"
                 class="lg:col-span-3"
@@ -321,9 +361,10 @@ async function submitForm(): Promise<boolean> {
                 />
               </BaseInputGroup>
             </td>
-            <td class="px-5 py-4 text-right align-middle pt-10">
+            <td class="px-5 py-4 text-end align-middle pt-10">
               <BaseButton
                 variant="white"
+                :aria-label="$t('general.remove_named', { name: element.label })"
                 @click.prevent="removeComponent(element)"
               >
                 {{ $t('general.remove') }}
@@ -352,10 +393,10 @@ async function submitForm(): Promise<boolean> {
                 />
               </BaseInputGroup>
             </td>
-            <td class="px-5 py-4 text-right align-middle" colspan="2">
+            <td class="px-5 py-4 text-end align-middle" colspan="2">
               <BaseDropdown wrapper-class="flex items-center justify-end mt-5">
                 <template #activator>
-                  <BaseButton variant="primary-outline">
+                  <BaseButton tag="span" variant="primary-outline">
                     <template #left="slotProps">
                       <BaseIcon :class="slotProps.class" name="PlusIcon" />
                     </template>

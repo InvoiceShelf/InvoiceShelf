@@ -40,7 +40,7 @@
             "
           >
             <div class="flex items-center gap-3 px-4 border-b h-14 shrink-0 border-line-light">
-              <BaseIcon name="MagnifyingGlassIcon" class="w-5 h-5 shrink-0 text-subtle" />
+              <BaseIcon name="MagnifyingGlassIcon" class="w-5 h-5 shrink-0 text-subtle" aria-hidden="true" />
               <input
                 ref="input"
                 v-model="query"
@@ -48,7 +48,9 @@
                 role="combobox"
                 aria-controls="command-palette-results"
                 :aria-activedescendant="activeId"
-                :aria-expanded="true"
+                :aria-expanded="flatItems.length > 0"
+                :aria-label="$t('global_search.placeholder')"
+                aria-keyshortcuts="Control+K Meta+K"
                 autocomplete="off"
                 spellcheck="false"
                 :placeholder="$t('global_search.placeholder')"
@@ -76,21 +78,33 @@
               id="command-palette-results"
               ref="list"
               role="listbox"
+              :aria-label="$t('global_search.placeholder')"
               class="flex-1 min-h-0 p-2 overflow-y-auto overscroll-contain"
             >
-              <template v-for="section in sections" :key="section.key">
-                <p class="px-3 pt-3 pb-1 text-xs font-medium text-muted first:pt-1">
+              <div
+                v-for="section in sections"
+                :key="section.key"
+                role="group"
+                :aria-labelledby="`cp-section-${section.key}`"
+              >
+                <p
+                  :id="`cp-section-${section.key}`"
+                  role="presentation"
+                  class="px-3 pt-3 pb-1 text-xs font-medium text-muted first:pt-1"
+                >
                   {{ section.label }}
                 </p>
+                <!-- Options are reached with the arrow keys from the search box, not with Tab -->
                 <button
                   v-for="item in section.items"
                   :id="`cp-${item.index}`"
                   :key="item.key"
                   type="button"
                   role="option"
+                  tabindex="-1"
                   :aria-selected="item.index === activeIndex"
                   :class="[
-                    'flex items-center w-full gap-3 px-3 py-2 text-left rounded-lg',
+                    'flex items-center w-full gap-3 px-3 py-2 text-start rounded-lg',
                     item.index === activeIndex ? 'bg-hover-strong' : '',
                   ]"
                   @mousemove="activeIndex = item.index"
@@ -114,7 +128,7 @@
                     class="text-sm shrink-0 text-body"
                   />
                 </button>
-              </template>
+              </div>
 
               <p
                 v-if="query && !isSearching && flatItems.length === 0"
@@ -206,12 +220,21 @@ const isSearching = ref<boolean>(false)
 const remote = ref<Record<string, RawItem[]>>({})
 let requestId = 0
 
-// ⌘K / Ctrl+K from anywhere in the app
+// ⌘K / Ctrl+K from anywhere in the app. The physical key, so it works on any
+// keyboard layout; not while another dialog has the page.
 useEventListener(window, 'keydown', (event: KeyboardEvent) => {
-  if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
-    event.preventDefault()
-    globalStore.setSearchOpen(!globalStore.isSearchOpen)
+  if (!(event.metaKey || event.ctrlKey) || event.code !== 'KeyK') {
+    return
   }
+
+  const otherDialogOpen = !globalStore.isSearchOpen && document.querySelector('[role="dialog"], [role="alertdialog"]')
+
+  if (otherDialogOpen) {
+    return
+  }
+
+  event.preventDefault()
+  globalStore.setSearchOpen(!globalStore.isSearchOpen)
 })
 
 const needle = computed<string>(() => query.value.trim().toLowerCase())

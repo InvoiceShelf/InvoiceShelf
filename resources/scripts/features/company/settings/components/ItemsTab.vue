@@ -53,7 +53,7 @@ const columns = computed<TableColumn[]>(() => [
   {
     key: 'actions',
     label: '',
-    tdClass: 'text-right text-sm font-medium',
+    tdClass: 'text-end text-sm font-medium',
     sortable: false,
   },
 ])
@@ -140,14 +140,14 @@ function removeItemUnit(row: RowData): void {
         <BaseDropdownItem @click="editItemUnit(row)">
           <BaseIcon
             name="PencilIcon"
-            class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+            class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
           />
           {{ $t('general.edit') }}
         </BaseDropdownItem>
         <BaseDropdownItem @click="removeItemUnit(row)">
           <BaseIcon
             name="TrashIcon"
-            class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+            class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
           />
           {{ $t('general.delete') }}
         </BaseDropdownItem>

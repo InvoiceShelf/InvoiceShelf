@@ -9,13 +9,13 @@
   >
     <div
       v-show="show"
-      class="relative z-10 p-4 border pt-11 md:p-5 md:pt-5 md:pr-28 glass rounded-xl"
+      class="relative z-10 p-4 border pt-11 md:p-5 md:pt-5 md:pe-28 glass rounded-xl"
     >
       <slot name="filter-header" />
 
       <button
         class="
-          absolute top-3 right-3
+          absolute top-3 end-3
           flex items-center gap-1
           text-xs font-medium
           text-muted hover:text-heading

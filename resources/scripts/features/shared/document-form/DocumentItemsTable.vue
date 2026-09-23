@@ -57,7 +57,7 @@
     <!-- Tax Included Toggle -->
     <div
       v-if="taxIncludedSetting === 'YES'"
-      class="flex items-center justify-end w-full px-6 text-base border-b border-line-light cursor-pointer text-primary-400"
+      class="flex items-center justify-end w-full px-6 text-base border-b border-line-light cursor-pointer"
     >
       <BaseSwitchSection
         v-model="taxIncludedField"
@@ -82,17 +82,17 @@
       <thead class="border-b bg-surface-secondary/70 border-line-light">
         <tr>
           <th
-            class="px-5 py-3 text-sm font-medium leading-5 text-left text-muted"
-            :class="taxIncludedSetting === 'YES' ? '' : 'rounded-tl-xl'"
+            class="px-5 py-3 text-sm font-medium leading-5 text-start text-muted"
+            :class="taxIncludedSetting === 'YES' ? '' : 'rounded-ss-xl'"
           >
             <BaseContentPlaceholders v-if="isLoading">
               <BaseContentPlaceholdersText :lines="1" class="w-16 h-5" />
             </BaseContentPlaceholders>
-            <span v-else class="pl-7">
+            <span v-else class="ps-7">
               {{ $t('items.item', 2) }}
             </span>
           </th>
-          <th class="px-5 py-3 text-sm font-medium leading-5 text-right text-muted">
+          <th class="px-5 py-3 text-sm font-medium leading-5 text-end text-muted">
             <BaseContentPlaceholders v-if="isLoading">
               <BaseContentPlaceholdersText :lines="1" class="w-16 h-5" />
             </BaseContentPlaceholders>
@@ -100,7 +100,7 @@
               {{ $t('invoices.item.quantity') }}
             </span>
           </th>
-          <th class="px-5 py-3 text-sm font-medium leading-5 text-left text-muted">
+          <th class="px-5 py-3 text-sm font-medium leading-5 text-start text-muted">
             <BaseContentPlaceholders v-if="isLoading">
               <BaseContentPlaceholdersText :lines="1" class="w-16 h-5" />
             </BaseContentPlaceholders>
@@ -110,7 +110,7 @@
           </th>
           <th
             v-if="formData.discount_per_item === 'YES'"
-            class="px-5 py-3 text-sm font-medium leading-5 text-left text-muted"
+            class="px-5 py-3 text-sm font-medium leading-5 text-start text-muted"
           >
             <BaseContentPlaceholders v-if="isLoading">
               <BaseContentPlaceholdersText :lines="1" class="w-16 h-5" />
@@ -120,13 +120,13 @@
             </span>
           </th>
           <th
-            class="px-5 py-3 text-sm font-medium leading-5 text-right text-muted"
-            :class="taxIncludedSetting === 'YES' ? '' : 'rounded-tr-xl'"
+            class="px-5 py-3 text-sm font-medium leading-5 text-end text-muted"
+            :class="taxIncludedSetting === 'YES' ? '' : 'rounded-se-xl'"
           >
             <BaseContentPlaceholders v-if="isLoading">
               <BaseContentPlaceholdersText :lines="1" class="w-16 h-5" />
             </BaseContentPlaceholders>
-            <span v-else class="pr-10 column-heading">
+            <span v-else class="pe-10 column-heading">
               {{ $t('invoices.item.amount') }}
             </span>
           </th>
@@ -153,6 +153,7 @@
             :can-add-tax="canAddTax"
             :store="store"
             :store-prop="storeProp"
+            @move="moveItem"
             @tax-type-created="upsertAvailableTaxType"
           />
         </template>
@@ -250,7 +251,7 @@ const defaultCurrency = computed<Currency | Record<string, unknown>>(() => {
   return (props.currency || null) as Currency | Record<string, unknown>
 })
 
-// Phones reorder from each card's menu rather than by dragging
+// Phones reorder from each card's menu, keyboards from a row's drag handle
 function moveItem(from: number, to: number): void {
   const items = formData.value.items
 

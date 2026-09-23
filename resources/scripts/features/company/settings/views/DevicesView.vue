@@ -268,7 +268,7 @@ async function signOutThisDevice(): Promise<void> {
     :description="$t('client.app_lock_description')"
     class="mt-6"
   >
-    <ul class="divide-y divide-line-default">
+    <div class="divide-y divide-line-default">
       <BaseSwitchSection
         :model-value="appLock"
         :disabled="appLockBusy"
@@ -276,6 +276,6 @@ async function signOutThisDevice(): Promise<void> {
         :description="$t('client.app_lock_toggle_description')"
         @update:model-value="onAppLockChange"
       />
-    </ul>
+    </div>
   </BaseSettingCard>
 </template>

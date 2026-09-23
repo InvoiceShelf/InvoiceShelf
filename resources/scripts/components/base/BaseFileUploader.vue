@@ -1,7 +1,7 @@
 <template>
-  <form
-    enctype="multipart/form-data"
+  <div
     class="
+      has-[input[type=file]:focus-visible]:ring-2 has-[input[type=file]:focus-visible]:ring-focus
       relative
       flex
       items-center
@@ -24,10 +24,10 @@
     :class="avatar ? 'w-32 h-32' : 'w-full'"
   >
     <input
-      id="file-upload"
+      :id="inputId"
       ref="inputRef"
       type="file"
-      tabindex="-1"
+      :aria-label="$t('general.file_upload.choose_file')"
       :multiple="multiple"
       :name="inputFieldName"
       :accept="accept"
@@ -44,16 +44,17 @@
 
     <!-- Avatar Not Selected -->
     <div v-if="!localFiles.length && avatar" class="">
-      <img :src="getDefaultAvatar()" class="rounded" alt="Default Avatar" />
+      <img :src="getDefaultAvatar()" class="rounded" alt="" />
 
-      <a
-        href="#"
-        class="absolute z-30 bg-surface rounded-full -bottom-3 -right-3 group"
+      <button
+        type="button"
+        :aria-label="$t('general.file_upload.browse')"
+        class="absolute z-30 bg-surface rounded-full -bottom-3 -end-3 group"
         @click.prevent.stop="onBrowse"
       >
         <BaseIcon
           name="PlusCircleIcon"
-          class="
+        class="
             h-8
             text-xl
             leading-6
@@ -61,7 +62,7 @@
             group-hover:text-primary-600
           "
         />
-      </a>
+      </button>
     </div>
 
     <!-- Not Selected -->
@@ -72,19 +73,19 @@
       />
       <p class="text-xs leading-4 text-center text-subtle">
         {{ $t('general.file_upload.drag_a_file') }}
-        <a
-          class="
+        <button
+          type="button"
+        class="
             cursor-pointer
             text-primary-500
             hover:text-primary-600 hover:font-medium
             relative
             z-20
           "
-          href="#"
           @click.prevent.stop="onBrowse"
         >
           {{ $t('general.file_upload.browse') }}
-        </a>
+        </button>
         {{ $t('general.file_upload.to_choose') }}
       </p>
       <p class="text-xs leading-4 text-center text-subtle mt-2">
@@ -129,7 +130,7 @@
     >
       <img
         v-if="localFiles[0].image"
-        for="file-upload"
+        :alt="localFile.name ?? ''"
         :src="localFiles[0].image"
         class="block object-cover w-full h-full rounded opacity-100"
         style="animation: fadeIn 2s ease"
@@ -167,7 +168,7 @@
 
         <p
           v-if="localFiles[0].name"
-          class="
+        class="
             text-body
             font-medium
             text-sm
@@ -180,8 +181,9 @@
         </p>
       </div>
 
-      <a
-        href="#"
+      <button
+        type="button"
+        :aria-label="$t('general.file_upload.remove_file')"
         class="
           box-border
           absolute
@@ -196,14 +198,14 @@
           rounded-full
           shadow-md
           -bottom-3
-          -right-3
+          -end-3
           group
           hover:border-line-strong
         "
         @click.prevent.stop="onAvatarRemove(localFiles[0])"
       >
         <BaseIcon name="XMarkIcon" class="h-4 text-xl leading-6 text-heading" />
-      </a>
+      </button>
     </div>
 
     <!-- Preview Files Multiple -->
@@ -211,10 +213,9 @@
       v-else-if="localFiles.length && multiple"
       class="flex flex-wrap w-full"
     >
-      <a
+      <div
         v-for="(localFile, index) in localFiles"
         :key="index"
-        href="#"
         class="
           block
           p-2
@@ -226,11 +227,10 @@
           relative
           max-w-md
         "
-        @click.prevent
       >
         <img
           v-if="localFile.image"
-          for="file-upload"
+          :alt="localFile.name ?? ''"
           :src="localFile.image"
           class="block object-cover w-20 h-20 opacity-100"
           style="animation: fadeIn 2s ease"
@@ -238,7 +238,7 @@
 
         <div
           v-else
-          class="
+        class="
             flex
             justify-center
             items-center
@@ -268,7 +268,7 @@
 
           <p
             v-if="localFile.name"
-            class="
+        class="
               text-body
               font-medium
               text-sm
@@ -281,8 +281,10 @@
           </p>
         </div>
 
-        <span
-          class="
+        <button
+          type="button"
+          :aria-label="$t('general.file_upload.remove_file')"
+        class="
             cursor-pointer
             box-border
             absolute
@@ -297,22 +299,21 @@
             rounded-full
             shadow-md
             -bottom-3
-            -right-3
+            -end-3
             group
             hover:border-line-strong
           "
           @click.prevent.stop="onFileRemove(index)"
         >
           <BaseIcon name="XMarkIcon" class="h-4 text-xl leading-6 text-heading" />
-        </span>
-      </a>
+        </button>
+      </div>
     </div>
 
     <div v-else class="flex w-full items-center justify-center">
-      <a
+      <div
         v-for="(localFile, index) in localFiles"
         :key="index"
-        href="#"
         class="
           block
           p-2
@@ -324,11 +325,10 @@
           relative
           max-w-md
         "
-        @click.prevent
       >
         <img
           v-if="localFile.image"
-          for="file-upload"
+          :alt="localFile.name ?? ''"
           :src="localFile.image"
           class="block object-contain h-20 opacity-100 min-w-[5rem]"
           style="animation: fadeIn 2s ease"
@@ -336,7 +336,7 @@
 
         <div
           v-else
-          class="
+        class="
             flex
             justify-center
             items-center
@@ -366,7 +366,7 @@
 
           <p
             v-if="localFile.name"
-            class="
+        class="
               text-body
               font-medium
               text-sm
@@ -379,8 +379,10 @@
           </p>
         </div>
 
-        <span
-          class="
+        <button
+          type="button"
+          :aria-label="$t('general.file_upload.remove_file')"
+        class="
             cursor-pointer
             box-border
             absolute
@@ -395,21 +397,21 @@
             rounded-full
             shadow-md
             -bottom-3
-            -right-3
+            -end-3
             group
             hover:border-line-strong
           "
           @click.prevent.stop="onFileRemove(index)"
         >
           <BaseIcon name="XMarkIcon" class="h-4 text-xl leading-6 text-heading" />
-        </span>
-      </a>
+        </button>
+      </div>
     </div>
-  </form>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, useId, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { client as http } from '@/scripts/api/client'
 import { isNative } from '@/scripts/config/runtime'
@@ -482,6 +484,7 @@ const canCapture = isNative() && props.accept.includes('image/')
 const uploadedFiles = ref<UploadedFile[]>([])
 const localFiles = ref<LocalFile[]>([])
 const inputRef = ref<HTMLInputElement | null>(null)
+const inputId = `file-upload-${useId()}`
 const uploadError = ref<unknown>(null)
 const currentStatus = ref<number | null>(null)
 

@@ -6,6 +6,30 @@
 @import "./components/flatpickr.css";
 @import "./components/module-compat.css";
 
+/*
+ * Geologica has no Arabic or Hebrew letters. Only those scripts' subsets of
+ * Noto Sans are declared (the packages' own CSS also claims math, symbols
+ * and Latin), and unicode-range means a browser downloads one only when such
+ * a letter is on screen.
+ */
+@font-face {
+  font-family: 'Noto Sans Arabic Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('@fontsource-variable/noto-sans-arabic/files/noto-sans-arabic-arabic-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC,U+102E0-102FB,U+10E60-10E7E,U+10EC2-10EC4,U+10EFC-10EFF,U+1EE00-1EE03,U+1EE05-1EE1F,U+1EE21-1EE22,U+1EE24,U+1EE27,U+1EE29-1EE32,U+1EE34-1EE37,U+1EE39,U+1EE3B,U+1EE42,U+1EE47,U+1EE49,U+1EE4B,U+1EE4D-1EE4F,U+1EE51-1EE52,U+1EE54,U+1EE57,U+1EE59,U+1EE5B,U+1EE5D,U+1EE5F,U+1EE61-1EE62,U+1EE64,U+1EE67-1EE6A,U+1EE6C-1EE72,U+1EE74-1EE77,U+1EE79-1EE7C,U+1EE7E,U+1EE80-1EE89,U+1EE8B-1EE9B,U+1EEA1-1EEA3,U+1EEA5-1EEA9,U+1EEAB-1EEBB,U+1EEF0-1EEF1;
+}
+
+@font-face {
+  font-family: 'Noto Sans Hebrew Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('@fontsource-variable/noto-sans-hebrew/files/noto-sans-hebrew-hebrew-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0307-0308,U+0590-05FF,U+200C-2010,U+20AA,U+25CC,U+FB1D-FB4F;
+}
+
 @plugin "@tailwindcss/typography";
 @plugin "tailwind-scrollbar";
 
@@ -43,6 +67,7 @@
   --color-line-light: var(--color-line-light);
   --color-line-default: var(--color-line-default);
   --color-line-strong: var(--color-line-strong);
+  --color-control-border: var(--color-control-border);
   --color-hover: var(--color-hover);
   --color-hover-strong: var(--color-hover-strong);
   --color-header-from: var(--color-header-from);
@@ -51,6 +76,8 @@
   --color-btn-primary-hover: var(--color-btn-primary-hover);
   --color-danger: var(--color-danger);
   --color-danger-hover: var(--color-danger-hover);
+  --color-btn-danger: var(--color-btn-danger);
+  --color-btn-danger-hover: var(--color-btn-danger-hover);
   --color-focus: var(--color-focus);
   --color-overlay: var(--color-overlay);
   --color-chrome: var(--color-chrome);
@@ -95,8 +122,8 @@
 
 @theme {
   --spacing-88: 22rem;
-  --font-base: "Geologica Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "Geologica Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-base: "Geologica Variable", "Noto Sans Arabic Variable", "Noto Sans Hebrew Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Geologica Variable", "Noto Sans Arabic Variable", "Noto Sans Hebrew Variable", ui-sans-serif, system-ui, sans-serif;
 
   /*
    * Type roles on top of Tailwind's own scale (which modules inherit and is
@@ -142,7 +169,8 @@
  * Glass surfaces. `glass` for cards and tables, `glass-strong` for things
  * that float (menus, sheets, dialogs, the search palette), `glass-bar` for the
  * top bar and the phone's bottom bars, `glass-chrome` for the brand-coloured
- * phone app bar. People who ask for less transparency get solid fills.
+ * phone app bar. People who ask for less transparency or more contrast get
+ * solid fills.
  */
 @utility glass {
   background-color: var(--glass-fill);
@@ -151,7 +179,7 @@
   -webkit-backdrop-filter: blur(18px) saturate(170%);
   backdrop-filter: blur(18px) saturate(170%);
 
-  @media (prefers-reduced-transparency: reduce) {
+  @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
     background-color: var(--color-surface);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
@@ -165,7 +193,7 @@
   -webkit-backdrop-filter: blur(28px) saturate(180%);
   backdrop-filter: blur(28px) saturate(180%);
 
-  @media (prefers-reduced-transparency: reduce) {
+  @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
     background-color: var(--color-surface);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
@@ -177,7 +205,7 @@
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   backdrop-filter: blur(20px) saturate(180%);
 
-  @media (prefers-reduced-transparency: reduce) {
+  @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
     background-color: var(--color-surface-tertiary);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
@@ -189,7 +217,7 @@
   -webkit-backdrop-filter: blur(20px) saturate(160%);
   backdrop-filter: blur(20px) saturate(160%);
 
-  @media (prefers-reduced-transparency: reduce) {
+  @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
     background-color: var(--color-chrome);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
@@ -201,6 +229,13 @@
   background:
     radial-gradient(120% 55% at 0% 0%, color-mix(in srgb, var(--color-chrome-accent) 16%, transparent), transparent 62%),
     var(--color-chrome);
+
+  /* The light stays in the corner at the start of the line */
+  &:where([dir='rtl'] *) {
+    background:
+      radial-gradient(120% 55% at 100% 0%, color-mix(in srgb, var(--color-chrome-accent) 16%, transparent), transparent 62%),
+      var(--color-chrome);
+  }
 }
 
 /* The canvas behind the app: pale ground with a few soft pools of the accent */
@@ -235,7 +270,7 @@
 textarea,
 select {
     /* 16px below md so iOS does not zoom the page on focus */
-    @apply appearance-none bg-surface border border-line-default rounded-lg px-3 py-2 text-base md:text-sm leading-6 text-heading transition-[border-color,box-shadow] duration-150;
+    @apply appearance-none bg-surface border border-control-border rounded-lg px-3 py-2 text-base md:text-sm leading-6 text-heading transition-[border-color,box-shadow] duration-150;
 }
 
 [type='text']:focus,
@@ -253,19 +288,24 @@ select {
 [multiple]:focus,
 textarea:focus,
 select:focus {
-    @apply outline-2 outline-transparent outline-offset-2 border-primary-500 ring-3 ring-focus;
+    @apply outline-2 outline-transparent outline-offset-2 border-primary-500 ring-1 ring-focus;
 }
 
 select {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239a9eae' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-    @apply bg-no-repeat pr-10;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236a6e7d' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    @apply bg-no-repeat pe-10;
     background-position: right 0.5rem center;
     background-size: 1.5em 1.5em;
 }
 
+/* The chevron sits at the end of the field in either direction */
+[dir='rtl'] select {
+    background-position: left 0.5rem center;
+}
+
 [type='checkbox'],
 [type='radio'] {
-    @apply appearance-none p-0 text-btn-primary bg-surface border border-line-strong inline-block align-middle select-none shrink-0 h-4 w-4;
+    @apply appearance-none p-0 text-btn-primary bg-surface border border-control-border inline-block align-middle select-none shrink-0 h-4 w-4;
     background-origin: border-box;
     print-color-adjust: exact;
 }
@@ -306,6 +346,15 @@ select {
 
 ::placeholder {
     @apply text-subtle opacity-100;
+}
+
+/* Windows High Contrast and other forced colours: the drawn checkbox and radio
+   lose their fill, so hand them back to the system */
+@media (forced-colors: active) {
+    [type='checkbox'],
+    [type='radio'] {
+        appearance: auto;
+    }
 }
 
 :focus-visible {
@@ -422,4 +471,14 @@ body {
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
     }
+}
+
+/*
+ * Arabic script joins its letters; any letter-spacing (the title tokens'
+ * negative tracking, tracking-* on small labels) pulls the joins apart.
+ */
+:lang(ar),
+:lang(fa),
+:lang(ur) {
+    letter-spacing: normal !important;
 }

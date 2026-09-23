@@ -72,7 +72,7 @@ const backupColumns = computed<TableColumn[]>(() => [
   {
     key: 'actions',
     label: '',
-    tdClass: 'text-right text-sm font-medium',
+    tdClass: 'text-end text-sm font-medium',
     sortable: false,
   },
 ])
@@ -298,12 +298,12 @@ function showApiError(error: unknown): void {
           </template>
 
           <BaseDropdownItem @click="downloadBackup(row.data)">
-            <BaseIcon name="CloudArrowDownIcon" class="mr-3 text-body" />
+            <BaseIcon name="CloudArrowDownIcon" class="me-3 text-body" />
             {{ $t('general.download') }}
           </BaseDropdownItem>
 
           <BaseDropdownItem @click="removeBackup(row.data)">
-            <BaseIcon name="TrashIcon" class="mr-3 text-body" />
+            <BaseIcon name="TrashIcon" class="me-3 text-body" />
             {{ $t('general.delete') }}
           </BaseDropdownItem>
         </BaseDropdown>

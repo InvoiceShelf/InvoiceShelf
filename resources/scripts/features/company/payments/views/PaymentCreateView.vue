@@ -135,10 +135,9 @@
           </div>
         </section>
 
-        <div class="relative mt-5">
-          <label class="mb-4 text-sm font-medium text-heading">{{ $t('estimates.notes') }}</label>
-          <BaseCustomInput v-model="paymentStore.currentPayment.notes" :content-loading="isLoadingContent" :fields="paymentFields" class="mt-1" />
-        </div>
+        <BaseInputGroup :label="$t('estimates.notes')" class="mt-5">
+          <BaseCustomInput v-model="paymentStore.currentPayment.notes" :content-loading="isLoadingContent" :fields="paymentFields" />
+        </BaseInputGroup>
       </BaseCard>
     </form>
   </BasePage>

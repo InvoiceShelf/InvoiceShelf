@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, reactive, ref, nextTick } from 'vue'
+import { computed, reactive, ref, nextTick, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/scripts/stores/user.store'
 import { useModalStore } from '@/scripts/stores/modal.store'
@@ -94,7 +94,35 @@ function openItemModal(): void {
   })
 }
 
+const root = ref<HTMLElement | null>(null)
+
+// Picking or clearing swaps the field that had focus; focus follows to the
+// description after a pick and back to the search after a clear
+let focusAfterChange = false
+
+function onPick(val: Item): void {
+  focusAfterChange = true
+  emit('select', val)
+}
+
+watch(
+  () => props.item.item_id,
+  async (id, previous) => {
+    if (!focusAfterChange || id === previous) {
+      return
+    }
+
+    focusAfterChange = false
+    await nextTick()
+    root.value
+      ?.querySelector<HTMLElement>(id ? 'textarea' : 'input[role="combobox"], [role="combobox"]')
+      ?.focus()
+  },
+)
+
 function deselectItem(index: number): void {
+  focusAfterChange = true
+
   if (props.store) {
     props.store.deselectItem(index)
   }
@@ -103,17 +131,17 @@ function deselectItem(index: number): void {
 </script>
 
 <template>
-  <div class="flex-1 text-sm">
+  <div ref="root" class="flex-1 text-sm">
     <!-- Selected Item Field  -->
     <div
       v-if="item.item_id"
-      class="relative flex items-center h-11 pl-3 pr-11 font-medium border rounded-lg md:h-10 bg-surface-muted border-line-default text-heading"
+      class="relative flex items-center h-11 ps-3 pe-11 font-medium border rounded-lg md:h-10 bg-surface-muted border-line-default text-heading"
     >
       <span class="truncate">{{ item.name }}</span>
 
       <button
         type="button"
-        class="absolute inset-y-0 right-0 flex items-center justify-center w-10 rounded-r-lg text-subtle hover:text-heading"
+        class="absolute inset-y-0 end-0 flex items-center justify-center w-10 rounded-e-lg text-subtle hover:text-heading"
         :aria-label="$t('general.deselect')"
         @click="deselectItem(index)"
       >
@@ -126,6 +154,7 @@ function deselectItem(index: number): void {
       v-else
       ref="multiselectRef"
       v-model="itemSelect"
+      :aria-label="$t('invoices.item.select_an_item')"
       :content-loading="contentLoading"
       value-prop="id"
       track-by="name"
@@ -139,7 +168,7 @@ function deselectItem(index: number): void {
       searchable
       :options="searchItems"
       object
-      @update:model-value="(val: Item) => $emit('select', val)"
+      @update:model-value="onPick"
       @search-change="onSearchChange"
     >
       <!-- Add Item Action  -->
@@ -150,7 +179,7 @@ function deselectItem(index: number): void {
         >
           <BaseIcon
             name="PlusCircleIcon"
-            class="h-4 mr-2 -ml-2 text-center text-primary-400"
+            class="h-4 me-2 -ms-2 text-center text-primary-400"
           />
           {{ $t('general.add_new_item') }}
         </BaseSelectAction>

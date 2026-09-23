@@ -354,9 +354,9 @@ function showApiError(error: unknown): void {
         {{ clientVersionLine }}
       </p>
 
-      <label class="text-sm font-medium input-label">
+      <p class="text-sm font-medium input-label">
         {{ $t('settings.update_app.current_version') }}
-      </label>
+      </p>
 
       <div class="w-full border-b-2 border-line-light border-solid pb-4">
         <div
@@ -375,13 +375,14 @@ function showApiError(error: unknown): void {
               class="h-5 w-5 text-primary-400"
             />
           </div>
-          <div class="ml-3">
+          <div class="ms-3">
             <h3 class="text-sm font-medium text-primary-800">
               {{ $t('settings.update_app.containerized_title') }}
             </h3>
             <div class="mt-2 text-sm text-primary-700">
               <p>{{ $t('settings.update_app.containerized_message') }}</p>
               <pre
+                dir="ltr"
                 class="mt-3 overflow-x-auto rounded-md bg-surface-muted p-3 text-xs text-body"
               >docker compose pull
 docker compose up --force-recreate --build -d</pre>
@@ -411,7 +412,7 @@ docker compose up --force-recreate --build -d</pre>
       <BaseDivider v-if="isUpdateAvailable" class="mt-6 mb-4" />
 
       <div v-if="isUpdateAvailable && updateRelease && !isUpdating" class="mt-4">
-        <BaseHeading type="heading-title" class="mb-2">
+        <BaseHeading type="heading-title" :level="3" class="mb-2">
           {{ $t('settings.update_app.avail_update') }}
         </BaseHeading>
 
@@ -423,7 +424,7 @@ docker compose up --force-recreate --build -d</pre>
                 class="h-5 w-5 text-primary-400"
               />
             </div>
-            <div class="ml-3">
+            <div class="ms-3">
               <h3 class="text-sm font-medium text-primary-800">
                 {{ $t('general.note') }}
               </h3>
@@ -434,15 +435,14 @@ docker compose up --force-recreate --build -d</pre>
           </div>
         </div>
 
-        <label class="text-sm font-medium input-label">
+        <p class="text-sm font-medium input-label">
           {{ $t('settings.update_app.next_version') }}
-        </label>
-        <br />
+        </p>
         <div
           class="my-2 inline-block rounded-md border border-line-default bg-surface-muted p-3 text-sm text-body"
         >
           {{ updateRelease.version }}
-          <span v-if="isMinorUpdate" class="ml-2 text-xs text-muted">
+          <span v-if="isMinorUpdate" class="ms-2 text-xs text-muted">
             (minor)
           </span>
         </div>
@@ -452,9 +452,9 @@ docker compose up --force-recreate --build -d</pre>
         <BaseSanitizedHtml v-if="updateRelease.changelog" class="update-rich-text mt-4 max-w-[680px] text-sm leading-snug text-muted" :html="updateRelease.changelog" />
 
         <div v-if="requirementEntries.length" class="mt-6">
-          <label class="text-sm font-medium input-label">
+          <p class="text-sm font-medium input-label">
             {{ $t('settings.update_app.requirements') }}
-          </label>
+          </p>
 
           <table class="mt-2 w-full max-w-xl border border-line-default">
             <tbody>
@@ -466,7 +466,7 @@ docker compose up --force-recreate --build -d</pre>
                 <td class="p-3 text-sm">
                   {{ extension }}
                 </td>
-                <td class="p-3 text-right text-sm">
+                <td class="p-3 text-end text-sm">
                   <span
                     :class="available ? 'bg-success' : 'bg-red-500'"
                     class="inline-block h-4 w-4 rounded-full"
@@ -497,7 +497,7 @@ docker compose up --force-recreate --build -d</pre>
       <div v-if="isUpdating" class="mt-4">
         <div class="mb-6 flex items-start justify-between">
           <div>
-            <BaseHeading type="heading-title" class="mb-2">
+            <BaseHeading type="heading-title" :level="3" class="mb-2">
               {{ $t('settings.update_app.update_progress') }}
             </BaseHeading>
             <p class="max-w-[480px] text-sm leading-snug text-muted">
@@ -519,7 +519,7 @@ docker compose up --force-recreate --build -d</pre>
           >
             <p class="m-0 text-sm leading-8">{{ $t(step.translationKey) }}</p>
             <div class="flex items-center">
-              <span v-if="step.time" class="mr-3 text-xs text-muted">
+              <span v-if="step.time" class="me-3 text-xs text-muted">
                 {{ step.time }}
               </span>
               <span
@@ -540,7 +540,7 @@ docker compose up --force-recreate --build -d</pre>
 <style scoped>
 .update-rich-text :deep(ul) {
   list-style: disc;
-  margin-left: 1.5rem;
+  margin-inline-start: 1.5rem;
 }
 
 .update-rich-text :deep(li) {
