@@ -11,7 +11,9 @@ class BulkExchangeRateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        // Only the owner changes the company's currency, so only the owner
+        // may run the backfill that a change leaves pending.
+        return (bool) $this->user()?->isOwner();
     }
 
     /**
