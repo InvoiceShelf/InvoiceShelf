@@ -176,7 +176,6 @@ function createDefaultMailConfig(): MailConfig {
     mail_url: '',
     mail_timeout: '',
     mail_local_domain: '',
-    mail_sendmail_path: '/usr/sbin/sendmail -bs -i',
     mail_ses_key: '',
     mail_ses_secret: '',
     mail_ses_region: 'us-east-1',
@@ -219,8 +218,6 @@ function getAdvancedFields(driver: MailDriver): Array<keyof MailConfig> {
   switch (driver) {
     case 'smtp':
       return ['mail_scheme', 'mail_url', 'mail_timeout', 'mail_local_domain']
-    case 'sendmail':
-      return ['mail_sendmail_path']
     case 'mailgun':
       return ['mail_mailgun_scheme']
     case 'postmark':
@@ -589,19 +586,6 @@ async function saveEmailConfig(): Promise<void> {
             >
               <BaseInput
                 v-model.trim="mailConfig.mail_local_domain"
-                :content-loading="isFetchingInitialData"
-                type="text"
-              />
-            </BaseInputGroup>
-          </template>
-
-          <template v-if="currentDriver === 'sendmail'">
-            <BaseInputGroup
-              :label="$t(translationKey('sendmail_path'))"
-              :content-loading="isFetchingInitialData"
-            >
-              <BaseInput
-                v-model.trim="mailConfig.mail_sendmail_path"
                 :content-loading="isFetchingInitialData"
                 type="text"
               />

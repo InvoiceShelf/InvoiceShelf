@@ -183,3 +183,49 @@ test('saving the mask back keeps the stored secret, and a new value replaces it'
     expect(CompanySetting::getSetting('company_mail_password', $this->companyId))
         ->toBe('rotated-password');
 });
+
+test('a sendmail command stored in the settings is never run', function () {
+    $configured = config('mail.mailers.sendmail.path');
+
+    CompanySetting::setSettings([
+        'use_custom_mail_config' => 'YES',
+        'company_mail_driver' => 'sendmail',
+        'company_mail_sendmail_path' => 'touch /tmp/pwned; /usr/sbin/sendmail -bs -i',
+    ], $this->companyId);
+    Setting::setSettings([
+        'mail_driver' => 'sendmail',
+        'mail_sendmail_path' => 'touch /tmp/pwned-global; /usr/sbin/sendmail -bs -i',
+    ]);
+
+    app(MailConfigurationService::class)->applyCompanyConfig($this->companyId);
+    expect(config('mail.mailers.sendmail.path'))->toBe($configured);
+
+    app(MailConfigurationService::class)->applyGlobalConfig();
+    expect(config('mail.mailers.sendmail.path'))->toBe($configured);
+});
+
+test('a sendmail path is neither saved nor sent back', function () {
+    postJson('/api/v1/company/mail/company-config', [
+        'use_custom_mail_config' => 'YES',
+        'mail_driver' => 'sendmail',
+        'mail_sendmail_path' => 'id > /tmp/pwned',
+        'from_name' => 'Company Mailer',
+        'from_mail' => 'company@example.com',
+    ])->assertOk();
+
+    expect(CompanySetting::getSetting('company_mail_sendmail_path', $this->companyId))->toBeNull();
+
+    getJson('/api/v1/company/mail/company-config')
+        ->assertOk()
+        ->assertJsonMissingPath('mail_sendmail_path');
+});
+
+test('upgrading deletes the sendmail commands already stored', function () {
+    CompanySetting::setSettings(['company_mail_sendmail_path' => 'id > /tmp/pwned'], $this->companyId);
+    Setting::setSettings(['mail_sendmail_path' => 'id > /tmp/pwned']);
+
+    (require database_path('migrations/2026_09_23_110000_forget_stored_sendmail_paths.php'))->up();
+
+    expect(CompanySetting::getSetting('company_mail_sendmail_path', $this->companyId))->toBeNull()
+        ->and(Setting::getSetting('mail_sendmail_path'))->toBeNull();
+});
