@@ -1274,7 +1274,7 @@
       "show_advanced_settings": "Vis avanserte innstillinger",
       "hide_advanced_settings": "Skjul avanserte innstillinger",
       "native_mail_desc": "Bruk PHPs innebygde e-posttransport. Levering håndteres av serverens PHP-oppsett for e-post.",
-      "sendmail_desc": "Bruk systemets sendmail-program for levering. Du kan overstyre kommandostien under Avanserte innstillinger.",
+      "sendmail_desc": "Use the server's sendmail binary for delivery. Its path is set on the server with MAIL_SENDMAIL_PATH.",
       "drivers": {
         "smtp": "SMTP",
         "mail": "PHP Mail",
@@ -2006,7 +2006,7 @@
       "show_advanced_settings": "Vis avanserte innstillinger",
       "hide_advanced_settings": "Skjul avanserte innstillinger",
       "native_mail_desc": "Bruk PHPs innebygde e-posttransport. Levering håndteres av serverens PHP-oppsett for e-post.",
-      "sendmail_desc": "Bruk systemets sendmail-program for levering. Du kan overstyre kommandostien under Avanserte innstillinger.",
+      "sendmail_desc": "Use the server's sendmail binary for delivery. Its path is set on the server with MAIL_SENDMAIL_PATH.",
       "drivers": {
         "smtp": "SMTP",
         "mail": "PHP Mail",
