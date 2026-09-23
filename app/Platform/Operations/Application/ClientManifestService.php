@@ -3,6 +3,7 @@
 namespace App\Platform\Operations\Application;
 
 use App\Platform\Modules\Runtime\ModuleAssetVersion;
+use App\Platform\Operations\Demo\DemoMode;
 use App\Platform\Operations\Models\Setting;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
@@ -36,7 +37,8 @@ class ClientManifestService
             'page_title' => get_page_title(null),
             'branding' => $this->branding(),
             'modules' => $this->modules(),
-            'demo_mode' => config('app.env') === 'demo',
+            'demo_mode' => DemoMode::enabled(),
+            'demo' => DemoMode::enabled() ? DemoMode::clientState() : null,
         ];
     }
 

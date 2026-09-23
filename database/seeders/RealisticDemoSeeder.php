@@ -28,6 +28,7 @@ use App\Domains\Sales\Models\InvoiceItem;
 use App\Domains\Sales\Models\RecurringInvoice;
 use App\Domains\Taxation\Models\Tax;
 use App\Domains\Taxation\Models\TaxType;
+use App\Platform\Operations\Demo\DemoMode;
 use App\Support\PublicToken;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
@@ -197,8 +198,10 @@ class RealisticDemoSeeder extends Seeder
         $user = User::where('email', 'demo@invoiceshelf.com')->first();
 
         if ($user === null) {
-            $this->info('Demo user missing; running DemoSeeder first…');
-            Artisan::call('db:seed', ['--class' => 'DemoSeeder', '--force' => true]);
+            // The public demo has no Faker to run DemoSeeder's factories with.
+            $seeder = DemoMode::enabled() ? PublicDemoSeeder::class : 'DemoSeeder';
+            $this->info("Demo user missing; running {$seeder} first…");
+            Artisan::call('db:seed', ['--class' => $seeder, '--force' => true]);
             $user = User::where('email', 'demo@invoiceshelf.com')->firstOrFail();
         }
 

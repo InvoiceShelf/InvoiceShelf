@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Platform\Operations\Demo\DemoMode;
 use App\Platform\Operations\Installation\Application\InstallationState;
 use App\Platform\Persistence\ModelIdentityMap;
 use App\Support\Bouncer\BouncerDefaultScope;
@@ -114,6 +115,8 @@ class AppServiceProvider extends ServiceProvider
             'group' => $data['group'],
             'group_label' => $data['group_label'] ?? '',
             'priority' => $data['priority'] ?? 100,
+            // What the public demo refuses to change is not offered either.
+            'hidden' => ($data['hidden_in_demo'] ?? false) && DemoMode::enabled(),
         ];
 
         foreach ($meta as $key => $value) {

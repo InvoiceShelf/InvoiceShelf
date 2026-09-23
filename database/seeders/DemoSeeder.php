@@ -58,7 +58,7 @@ class DemoSeeder extends Seeder
         // Set default user settings
         $user->setSettings([
             'language' => 'en',
-            'timezone' => 'UTC',
+            'time_zone' => 'UTC',
             'date_format' => 'DD-MM-YYYY',
             'currency_id' => $currencyId,
         ]);
@@ -68,10 +68,12 @@ class DemoSeeder extends Seeder
             'currency' => $currencyId,
             'date_format' => 'DD-MM-YYYY',
             'language' => 'en',
-            'timezone' => 'UTC',
+            'time_zone' => 'UTC',
             'fiscal_year' => 'calendar_year',
-            'tax_per_item' => false,
-            'discount_per_item' => false,
+            // The forms show document-level tax and discount controls for NO
+            // only; a false here stored "0" and hid both.
+            'tax_per_item' => 'NO',
+            'discount_per_item' => 'NO',
             'invoice_prefix' => 'INV-',
             'estimate_prefix' => 'EST-',
             'payment_prefix' => 'PAY-',
