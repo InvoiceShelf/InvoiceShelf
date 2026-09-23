@@ -110,7 +110,7 @@
             <BaseDropdown position="bottom-end" wrapper-class="flex" :label="discountTypeLabel">
               <template #activator>
                 <span
-                  class="flex items-center h-11 gap-1 px-3 text-sm border border-s-0 rounded-e-lg bg-surface border-control-border text-body"
+                  class="flex items-center h-11 gap-1 px-3 text-sm border border-s-0 rounded-e-lg bg-surface field-edge text-body"
                 >
                   {{ itemData.discount_type === 'fixed' ? currencySymbol : '%' }}
                   <BaseIcon name="ChevronDownIcon" class="w-4 h-4 text-muted" />

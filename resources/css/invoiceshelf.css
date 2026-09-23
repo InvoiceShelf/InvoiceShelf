@@ -318,7 +318,21 @@
 textarea,
 select {
     /* 16px below md so iOS does not zoom the page on focus */
-    @apply appearance-none bg-surface border border-control-border rounded-lg px-3 py-2 text-base md:text-sm leading-6 text-heading transition-[border-color,box-shadow] duration-150;
+    @apply appearance-none bg-surface border rounded-lg px-3 py-2 text-base md:text-sm leading-6 text-heading transition-[border-color,box-shadow] duration-150;
+    border-color: var(--color-line-default);
+    border-bottom-color: var(--color-control-border);
+}
+
+/*
+ * A text field's edge: pale sides and one 3:1 bottom edge. The bottom edge is
+ * what identifies the field (WCAG 1.4.11) and the pale sides keep forms light.
+ * Fields drawn with a button or a div (selects, the multiselect, input addons)
+ * take it from this class. It sits in the base layer so focus, invalid and
+ * disabled styles still colour the whole edge.
+ */
+.field-edge {
+    border-color: var(--color-line-default);
+    border-bottom-color: var(--color-control-border);
 }
 
 [type='text']:focus,
