@@ -17,6 +17,7 @@ const AdminCurrenciesView = () =>
   import('./views/settings/AdminCurrenciesView.vue')
 const AdminUpdateAppView = () => import('./views/settings/AdminUpdateAppView.vue')
 const AdminAppearanceView = () => import('./views/settings/AdminAppearanceView.vue')
+const AdminMcpView = () => import('./views/settings/AdminMcpView.vue')
 
 export const adminRoutes: RouteRecordRaw[] = [
   {
@@ -145,6 +146,14 @@ export const adminRoutes: RouteRecordRaw[] = [
               isSuperAdmin: true,
             },
             component: AdminAppearanceView,
+          },
+          {
+            path: 'mcp',
+            name: 'admin.settings.mcp',
+            meta: {
+              isSuperAdmin: true,
+            },
+            component: AdminMcpView,
           },
         ],
       },
