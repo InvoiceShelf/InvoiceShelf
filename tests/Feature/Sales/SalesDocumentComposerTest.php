@@ -337,18 +337,3 @@ test('every mistake in an intent is reported at once', function () {
         'customer_id', 'date', 'template', 'lines.0.name', 'lines.0.quantity', 'lines.0.unit_price', 'lines.1.item_id',
     ]);
 });
-
-test('amounts in major units become minor units', function (mixed $major, ?int $minor) {
-    expect(SalesDocumentComposer::toMinor($major))->toBe($minor);
-})->with([
-    ['19.99', 1999],
-    ['120', 12000],
-    [12.5, 1250],
-    [7, 700],
-    ['-3.5', -350],
-    ['0.05', 5],
-    ['1.234', null],
-    ['1,50', null],
-    ['abc', null],
-    [null, null],
-]);

@@ -16,6 +16,7 @@ use App\Domains\Taxation\Models\Tax;
 use App\Domains\Taxation\Models\TaxType;
 use App\Platform\Pdf\Rendering\PdfTemplateUtils;
 use App\Support\DocumentTaxes;
+use App\Support\MinorUnits;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -514,7 +515,7 @@ class SalesDocumentComposer
     private function linePrice(array $line, ?Item $item, ?float $rate, string $path): int
     {
         if (array_key_exists('unit_price', $line) && $line['unit_price'] !== null) {
-            $price = self::toMinor($line['unit_price']);
+            $price = MinorUnits::fromMajor($line['unit_price']);
 
             if ($price === null) {
                 $this->fail("{$path}.unit_price", 'The unit price is an amount in major units with at most two decimals, like "120" or "19.99".');
@@ -841,29 +842,6 @@ class SalesDocumentComposer
         }
 
         return $serial->setModelObject(null)->getNextNumber();
-    }
-
-    /**
-     * An amount in major units, as a decimal string or a number, in minor
-     * units. Null when it is not an amount with at most two decimals.
-     */
-    public static function toMinor(mixed $value): ?int
-    {
-        if (is_int($value)) {
-            return $value * 100;
-        }
-
-        if (is_float($value)) {
-            $value = rtrim(rtrim(sprintf('%.10F', $value), '0'), '.');
-        }
-
-        if (! is_string($value) || preg_match('/^(-?)(\d+)(?:\.(\d{1,2}))?$/', trim($value), $match) !== 1) {
-            return null;
-        }
-
-        $minor = (int) $match[2] * 100 + (int) str_pad($match[3] ?? '', 2, '0');
-
-        return $match[1] === '-' ? -$minor : $minor;
     }
 
     private function fail(string $path, string $message): void
