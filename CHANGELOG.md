@@ -7,6 +7,55 @@ section beneath it is what CI publishes to the updater — see
 The 2.x line has its own CHANGELOG.md on the `2.x` branch. Releases are also on
 GitHub: https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 3.0.0-alpha.4 - 2026-09-23
+
+Fourth public alpha of InvoiceShelf 3.0. It closes a batch of security vulnerabilities, several of which affect every earlier 3.x alpha, and brings the redesign: a new look that works on a phone as well as a desktop, accessibility to WCAG 2.2 AA, right-to-left languages, and the server side of the mobile apps.
+
+⚠️ **Pre-release, not for production.** Back up your database before upgrading and use this release for evaluation and testing only. Upgrade every 3.x install you do run: the fixed vulnerabilities are public.
+
+### Security
+
+- **Public document links could be guessed.** The token in an emailed invoice, estimate or payment link was a Hashids encoding of the record's id, and Hashids reads only the start of its salt, so `APP_KEY` never counted and every installation gave the same record the same token. Links now carry 40 random characters, and the upgrade re-issues every existing one. (#815)
+- **Document PDFs opened for anyone signed in.** `/invoices/pdf/...` and its estimate and payment twins now open only for the document's customer, or for a member of its company who may view it. (#816)
+- Members could be placed in any company, with any role, through the member API, and an owner could change the password of someone who also owns another company. GHSA-c9cx (#822)
+- A company owner could run commands on the server through the sendmail path in the company mail settings. The path now comes from `MAIL_SENDMAIL_PATH` alone. GHSA-9qx7, GHSA-gx2q (#823)
+- Any member could make themselves owner through an invitation, cancel another company's invitations, or accept an invitation addressed to someone else. GHSA-p6v2, GHSA-xw9w, GHSA-xrm8, GHSA-528m, GHSA-6r33, GHSA-v32w (#811)
+- Any member could read the company's SMTP password and API tokens, and the bootstrap sent every member the mail transport and module settings, a module's API key included. Stored secrets now come back masked. (#819)
+- The generic settings endpoints read and wrote any key, so an administrator could reopen the installer or skip the validation of the mail, PDF and file disk settings. (#813)
+- An HTML file with image-like bytes passed as a logo or avatar and was served from your own domain, and uploads were stored under the name the client sent. Both the name and the content must now be an accepted type, the stored name is one of our making, and `spatie/laravel-medialibrary` moves past CVE-2026-48557. GHSA-vv96, GHSA-x7rx (#812, #835)
+- The roles of another company could be read by id. GHSA-72h9, GHSA-xxw7, GHSA-cv9w (#824)
+- The URL of a dedicated CurrencyConverter plan could be redirected to internal addresses. GHSA-vr74 (#825)
+- Any member could set the exchange rate of every foreign-currency document while a currency change left the backfill pending. Only the owner may run it now. GHSA-3838, GHSA-g7fh (#836)
+- `.env.example` shipped a fixed `APP_KEY`, which the Docker image kept. GHSA-4752 (#814)
+
+### Highlights
+
+- **Redesigned for phones and desktops.** Geologica, refined indigo in both themes, a dark sidebar, glass surfaces, and layouts that hold up at phone width. Base components keep their names, props and slots, so modules keep working. (#802)
+- **Accessible, and right to left.** The shared components meet WCAG 2.2 AA, so modules get it too, and Arabic, Persian, Hebrew and Urdu lay out right to left. (#804)
+- **Ready for the mobile apps.** The server side of the thin clients: a public client manifest, CORS for the apps' origin, a list of your signed-in devices so a lost one can be cut off, and a throttled login. The apps need this release. (#797, #799, #800)
+- **Custom fields that work.** The editor works again, fields attach to items, the company and users, a field says whether it prints on the document and what a valid answer is, and the API documents and validates the write path, addressing a field by its slug. (#789 to #795)
+- **Every circulating currency.** One catalogue of all circulating currencies, refreshable from the admin area. (#796, #766)
+
+### Improvements and fixes
+
+- Headless UI, which has had no stable release since 2024, is replaced by Reka UI. Dialogs keep focus, and tabs and selects work right to left. (#807)
+- A brand-new company no longer runs into dead ends and stuck screens, and its empty lists show what will be there and how to add the first record. (#809, #810)
+- Form fields have one light border. (#808)
+- Behind a TLS-terminating proxy the app generates https URLs, and `FORCE_HTTPS=true` settles it when the proxy's address is not known. (#788)
+- The installer and the updater require PHP 8.4.1, which the bundled dependencies need. (#834)
+
+### Upgrade notes
+
+- **Links in emails sent before the upgrade stop working.** Customers still find their documents in the customer portal, and you can send any document again.
+- **An installation still on the shipped `APP_KEY` gets a key of its own.** The Docker image generates it on first start and keeps it in `storage/app/.app_key`, the in-app updater replaces it in `.env` as its last step, and `php artisan invoiceshelf:retire-shipped-key --rotate` does it by hand. Everyone signs in again once, and the marketplace pairing is kept. A key set in the container's environment is left alone, with a warning at startup if it is the shipped one.
+- **Sendmail:** a custom sendmail path moves to `MAIL_SENDMAIL_PATH` in the environment. Paths saved in the mail settings are deleted by the upgrade.
+- **Members API:** `POST` and `PUT /members` accept only companies you own, each with a role that exists there.
+- **Settings API:** `GET` and `POST /settings` handle only the shell settings (branding, sidebar group labels, saving PDFs to disk), and `POST /company/settings` refuses the mail transport and module settings, which have endpoints of their own.
+- **Mobile apps:** `CORS_ALLOWED_ORIGINS` is only needed for an app build of your own; the default covers the official apps. `INVOICESHELF_CLIENT_MIN_VERSION` sets the oldest app version the server accepts.
+- The module runtime still advertises module API 1.3.0, so modules need no change.
+
+Docker: `invoiceshelf/invoiceshelf:3.0.0-alpha.4` (also `:next`).
+
 ## 3.0.0-alpha.3 — 2026-09-21
 
 Third public alpha of InvoiceShelf 3.0. The module platform is complete and carries its first official module, and recurring invoices generate again on a container install.
