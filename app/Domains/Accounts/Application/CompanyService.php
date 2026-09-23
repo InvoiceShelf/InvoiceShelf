@@ -7,6 +7,10 @@ use App\Domains\Accounts\Contracts\CompanyDataPurger;
 use App\Domains\Accounts\Contracts\CompanyDefaultsProvisioner;
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\CompanySetting;
+use App\Domains\Accounts\Models\User;
+use App\Facades\Hashids;
+use App\Support\Hashids\HashidConnection;
+use Illuminate\Support\Str;
 use Silber\Bouncer\BouncerFacade;
 use Silber\Bouncer\Database\Role;
 
@@ -56,6 +60,31 @@ class CompanyService
      * assigned; then the reference data; then the preference sheet, which is
      * where the chosen currency lands.
      */
+    /**
+     * A new company with everything a company starts with: its public hash,
+     * roles, default records and settings, and the given user as its owner.
+     *
+     * @param  array<string, mixed>  $attributes  the company columns; owner_id and slug default from the owner and the name
+     */
+    public function createFor(User $owner, array $attributes, int $currencyId): Company
+    {
+        $company = Company::query()->create($attributes + [
+            'owner_id' => $owner->id,
+            'slug' => Str::slug((string) ($attributes['name'] ?? '')),
+        ]);
+
+        $company->unique_hash = Hashids::connection(HashidConnection::Company->value)->encode($company->id);
+        $company->save();
+
+        $this->setupDefaults($company, $currencyId);
+        $owner->companies()->attach($company->id);
+
+        BouncerFacade::scope()->to($company->id);
+        $owner->assign(self::OWNER_ROLE);
+
+        return $company;
+    }
+
     public function setupDefaults(Company $company, int $currencyId = 13): bool
     {
         $this->setupRoles($company);
