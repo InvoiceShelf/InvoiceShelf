@@ -15,6 +15,26 @@ return [
     'core' => [
         'minPhpVersion' => '8.4.1',
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Headless installation
+    |--------------------------------------------------------------------------
+    |
+    | What `php artisan invoiceshelf:install` sets up when the web installer is
+    | not used: the super administrator and the first company. Options given
+    | on the command line win over these.
+    |
+    */
+    'headless' => [
+        'admin_name' => env('INSTALL_ADMIN_NAME', 'Administrator'),
+        'admin_email' => env('INSTALL_ADMIN_EMAIL'),
+        'admin_password' => env('INSTALL_ADMIN_PASSWORD'),
+        'company_name' => env('INSTALL_COMPANY_NAME', 'My Company'),
+        'currency' => env('INSTALL_CURRENCY', 'USD'),
+        'time_zone' => env('INSTALL_TIMEZONE', 'UTC'),
+        'language' => env('INSTALL_LANGUAGE', 'en'),
+    ],
     'final' => [
         'key' => true,
         'publish' => false,

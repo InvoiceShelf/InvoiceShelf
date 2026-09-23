@@ -8,11 +8,8 @@ use App\Domains\Accounts\Http\Requests\AdminCompanyUpdateRequest;
 use App\Domains\Accounts\Http\Requests\CompaniesRequest;
 use App\Domains\Accounts\Http\Resources\CompanyResource;
 use App\Domains\Accounts\Models\Company;
-use App\Facades\Hashids;
 use App\Platform\Http\Controller;
-use App\Support\Hashids\HashidConnection;
 use Illuminate\Http\Request;
-use Silber\Bouncer\BouncerFacade;
 
 class CompaniesController extends Controller
 {
@@ -67,15 +64,11 @@ class CompaniesController extends Controller
     {
         $this->authorize('create company');
 
-        $user = $request->user();
-        $company = Company::query()->create($request->getCompanyPayload());
-        $company->unique_hash = Hashids::connection(HashidConnection::Company->value)->encode($company->id);
-        $company->save();
-        $this->companyService->setupDefaults($company, (int) $request->validated('currency'));
-        $user->companies()->attach($company->id);
-
-        BouncerFacade::scope()->to($company->id);
-        $user->assign('owner');
+        $company = $this->companyService->createFor(
+            $request->user(),
+            $request->getCompanyPayload(),
+            (int) $request->validated('currency'),
+        );
 
         if ($request->address) {
             $this->companyAddressWriter->upsert($company, $request->validated('address'));
