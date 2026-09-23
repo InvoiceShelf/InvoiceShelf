@@ -18,7 +18,11 @@
     "admin": "Administration",
     "administration": "Administration",
     "companies": "Companies",
-    "all_users": "Users"
+    "all_users": "Users",
+    "more": "More",
+    "menu": "Menu",
+    "account_settings": "Account settings",
+    "account_menu": "Account menu for {name}"
   },
   "general": {
     "add_company": "Adicionar Empresa",
@@ -71,12 +75,12 @@
     "showing": "Mostrando",
     "of": "de",
     "actions": "Ações",
-    "subtotal": "Total parcial",
-    "discount": "Desconto",
+    "subtotal": "Subtotal",
+    "discount": "Discount",
     "fixed": "Fixado",
     "percentage": "Porcentagem",
     "tax": "Imposto",
-    "total_amount": "Quantidade Total",
+    "total_amount": "Total amount",
     "bill_to": "Cobrar a",
     "ship_to": "Envie a",
     "due": "Vencida",
@@ -128,18 +132,72 @@
       "showing": "Mostrando",
       "to": "para",
       "of": "de",
-      "results": "resultados"
+      "results": "resultados",
+      "label": "Pagination",
+      "page": "Page {page}"
     },
     "file_upload": {
       "drag_a_file": "Arraste um arquivo aqui ou",
       "browse": "procure",
-      "to_choose": "Escolher um arquivo"
+      "to_choose": "Escolher um arquivo",
+      "take_photo": "Take photo",
+      "capture_failed": "The photo could not be taken. Choose a file instead.",
+      "choose_file": "Choose a file",
+      "remove_file": "Remove file"
     },
     "multiselect": {
       "the_list_is_empty": "A lista está vazia",
       "no_results_found": "Nenhum resultado encontrado"
     },
-    "copy_to_clipboard": "Copiar para Área de Transferência"
+    "copy_to_clipboard": "Copiar para Área de Transferência",
+    "new": "New",
+    "expand": "Expand",
+    "theme": "Theme",
+    "theme_light": "Light",
+    "theme_dark": "Dark",
+    "theme_system": "System",
+    "breadcrumb": "Breadcrumb",
+    "selected_count": "{count} selected",
+    "close": "Close",
+    "apply": "Apply",
+    "show_password": "Show password",
+    "hide_password": "Hide password",
+    "successful": "Done.",
+    "something_went_wrong": "Something went wrong. Please try again.",
+    "skip_to_content": "Skip to content",
+    "current": "(current)",
+    "list": "List",
+    "sort_ascending": "Sort order: ascending",
+    "sort_descending": "Sort order: descending",
+    "remove_named": "Remove {name}",
+    "editor": {
+      "toolbar": "Formatting",
+      "bold": "Bold",
+      "italic": "Italic",
+      "strike": "Strikethrough",
+      "code": "Inline code",
+      "paragraph": "Paragraph",
+      "h1": "Heading 1",
+      "h2": "Heading 2",
+      "h3": "Heading 3",
+      "bulletList": "Bulleted list",
+      "orderedList": "Numbered list",
+      "blockquote": "Quote",
+      "codeBlock": "Code block",
+      "undo": "Undo",
+      "redo": "Redo",
+      "alignLeft": "Align left",
+      "alignRight": "Align right",
+      "alignJustify": "Justify",
+      "alignCenter": "Center",
+      "addLink": "Link",
+      "link_url": "Link address"
+    },
+    "email_preview": "Email preview",
+    "pdf_preview": "PDF preview",
+    "step_of": "Step {step} of {count}",
+    "actions_for": "Actions for {name}",
+    "select_named": "Select {name}"
   },
   "dashboard": {
     "select_year": "Selecione Ano",
@@ -154,27 +212,52 @@
       "total_sales": "Vendas",
       "total_receipts": "Receitas",
       "total_expense": "Despesas",
-      "net_income": "Resultado líquido",
+      "net_income": "Net income",
       "year": "Selecione Ano"
     },
     "monthly_chart": {
       "title": "Vendas e Despesas"
     },
     "recent_invoices_card": {
-      "title": "Faturas vencidas",
-      "due_on": "vencido em",
+      "title": "Due invoices",
+      "due_on": "Due on",
       "customer": "Cliente",
-      "amount_due": "Valor Devido",
+      "amount_due": "Amount due",
       "actions": "Ações",
-      "view_all": "Ver todos"
+      "view_all": "View all"
     },
     "recent_estimate_card": {
-      "title": "Orçamentos Recentes",
+      "title": "Recent estimates",
       "date": "Data",
       "customer": "Cliente",
-      "amount_due": "Valor Devido",
+      "amount_due": "Amount",
       "actions": "Ações",
-      "view_all": "Ver todos"
+      "view_all": "View all"
+    },
+    "receivables": {
+      "title": "Owed to you",
+      "on_invoices": "On {count} sent invoice | On {count} sent invoices",
+      "overdue": "Overdue",
+      "due_soon": "Due in the next 30 days",
+      "due_later": "Due later",
+      "invoice_count": "{count} invoice | {count} invoices",
+      "nothing_owed": "Nothing is owed to you right now.",
+      "view_invoices": "View invoices"
+    },
+    "cashflow": {
+      "title": "Cash flow",
+      "show_table": "Show as table",
+      "hide_table": "Hide table",
+      "month": "Month",
+      "chart_style": "Chart style",
+      "area": "Area",
+      "bars": "Bars",
+      "day": "Day"
+    },
+    "counts": {
+      "customers": "customer | customers",
+      "invoices": "invoice | invoices",
+      "estimates": "estimate | estimates"
     }
   },
   "tax_types": {
@@ -193,10 +276,13 @@
     "search": "Buscar...",
     "customers": "Clientes",
     "users": "Usuários",
-    "no_results_found": "Nenhum Resultado Encontrado"
+    "no_results_found": "Nenhum Resultado Encontrado",
+    "placeholder": "Search or jump to…",
+    "go_to": "Go to",
+    "create": "Create"
   },
   "company_switcher": {
-    "label": "TROCAR EMPRESA",
+    "label": "Switch company",
     "no_results_found": "Nenhum Resultado Encontrado",
     "add_new_company": "Adicionar nova empresa",
     "new_company": "Nova Empresa",
@@ -204,15 +290,22 @@
   },
   "dateRange": {
     "today": "Hoje",
-    "this_week": "Esta Semana",
-    "this_month": "Este mês",
-    "this_quarter": "Este trimestre",
-    "this_year": "Este ano",
-    "previous_week": "Semana anterior",
-    "previous_month": "Mês anterior",
-    "previous_quarter": "Trimestre anterior",
-    "previous_year": "Ano Anterior",
-    "custom": "Personalizado"
+    "this_week": "This week",
+    "this_month": "This month",
+    "this_quarter": "This quarter",
+    "this_year": "This year",
+    "previous_week": "Previous week",
+    "previous_month": "Previous month",
+    "previous_quarter": "Previous quarter",
+    "previous_year": "Previous year",
+    "custom": "Personalizado",
+    "last_12_months": "Last 12 months",
+    "custom_range": "Custom range",
+    "period": "Period",
+    "showing": "Showing {range}",
+    "pick_start": "Pick the first day",
+    "pick_end": "Now pick the last day",
+    "too_long": "Pick a range of up to {years} years"
   },
   "customers": {
     "title": "Clientes",
@@ -347,10 +440,10 @@
     "all": "Todos",
     "paid": "Pago",
     "unpaid": "Não pago",
-    "customer": "CLIENTE",
-    "ref_no": "NÚMERO DE REFERÊNCIA.",
-    "number": "NÚMERO",
-    "amount_due": "Valor Devido",
+    "customer": "Customer",
+    "ref_no": "Ref no.",
+    "number": "Number",
+    "amount_due": "Amount due",
     "partially_paid": "Pago parcialmente",
     "total": "Total",
     "discount": "Desconto",
@@ -449,11 +542,11 @@
     "viewed": "Visualizado",
     "overdue": "Atrasado",
     "completed": "Concluído",
-    "customer": "CLIENTE",
-    "paid_status": "STATUS PAGAMENTO",
-    "ref_no": "REFERÊNCIA",
-    "number": "NÚMERO",
-    "amount_due": "VALOR DEVIDO",
+    "customer": "Customer",
+    "paid_status": "Paid status",
+    "ref_no": "Ref no.",
+    "number": "Number",
+    "amount_due": "Amount due",
     "partially_paid": "Parcialmente pago",
     "total": "Total",
     "discount": "Desconto",
@@ -539,7 +632,16 @@
       "tax": "Imposto",
       "amount": "Montante",
       "select_an_item": "Digite ou clique para selecionar um artigo",
-      "type_item_description": "Tipo Descrição do item (opcional)"
+      "type_item_description": "Tipo Descrição do item (opcional)",
+      "options": "Options",
+      "item_actions": "Item actions",
+      "move_up": "Move up",
+      "move_down": "Move down",
+      "remove": "Remove item",
+      "item_actions_for": "Actions for item {position}",
+      "discount_type": "Discount type: {type}",
+      "reorder": "Move item {position} of {count}. Use the up and down arrow keys",
+      "moved": "Moved to position {position} of {count}"
     },
     "payment_attached_message": "Uma das faturas selecionadas já possui um pagamento anexado. Certifique-se de excluir os pagamentos anexados primeiro, para continuar com a exclusão",
     "confirm_delete": "Você não poderá recuperar esta fatura | Você não poderá recuperar essas faturas",
@@ -564,11 +666,11 @@
     "overdue": "Atrasado",
     "active": "Ativo",
     "completed": "Concluído",
-    "customer": "CLIENTE",
-    "paid_status": "STATUS PAGAMENTO",
-    "ref_no": "NÚM. REFERÊNCIA",
-    "number": "NÚMERO",
-    "amount_due": "VALOR DEVIDO",
+    "customer": "Customer",
+    "paid_status": "Paid status",
+    "ref_no": "Ref no.",
+    "number": "Number",
+    "amount_due": "Amount due",
     "partially_paid": "Parcialmente pago",
     "total": "Total",
     "discount": "Desconto",
@@ -646,6 +748,7 @@
     },
     "frequency": {
       "title": "Frequência (usando o formato Cron)",
+      "label": "Frequency",
       "select_frequency": "Selecionar frequência",
       "minute": "Minuto",
       "hour": "Hora",
@@ -808,6 +911,51 @@
     "enter_password": "Digite a senha",
     "retype_password": "Confirme a Senha"
   },
+  "client": {
+    "connect_heading": "Connect to your server",
+    "connect_description": "Enter the address of the InvoiceShelf server you want to use.",
+    "server_address": "Server address",
+    "connect": "Connect",
+    "connect_anyway": "Connect anyway",
+    "invalid_server_url": "Enter the full address, including http:// or https://",
+    "insecure_warning": "This address is not encrypted. Anyone on the network can read what you send to it.",
+    "app_url_mismatch": "The server calls itself {host}. Logos and attachments may not load.",
+    "unreachable_heading": "Cannot reach the server",
+    "unreachable_description": "Nothing answered at {server}. Check the address, and that the server is running and reachable from this device.",
+    "too_old_heading": "This server is too old",
+    "too_old_description": "It runs {version}, and this app needs {required} or newer.",
+    "too_old_short": "This server is too old for this app.",
+    "update_app_heading": "Update the app",
+    "update_app_description": "This server needs app version {required} or newer. This app is {current}.",
+    "retry": "Retry",
+    "change_server": "Change server",
+    "connected_to": "Connected to {server}",
+    "modules_failed": "Some add-ons did not load: {names}",
+    "app_lock_title": "App lock",
+    "app_lock_description": "Ask for this device's Face ID, fingerprint or passcode before the app opens.",
+    "app_lock_toggle": "Require Face ID or fingerprint to open the app",
+    "app_lock_toggle_description": "The app locks when you open it, and when you come back to it after a while.",
+    "app_lock_enable_failed": "The app lock was not turned on: this device did not confirm it is you.",
+    "app_lock_reason": "Unlock InvoiceShelf",
+    "app_lock_locked_heading": "InvoiceShelf is locked",
+    "app_lock_locked_description": "Confirm it is you to get back to your account.",
+    "app_lock_unlock": "Unlock",
+    "app_lock_sign_out": "Sign out instead"
+  },
+  "devices": {
+    "title": "Devices",
+    "description": "The devices signed in to your account. Revoking one signs it out the next time it contacts the server.",
+    "this_device": "This device",
+    "added_on": "Added {date}",
+    "last_used": "Last used {date}",
+    "never_used": "Never used",
+    "revoke": "Revoke",
+    "revoke_confirm": "{name} will be signed out the next time it contacts the server.",
+    "revoke_current_confirm": "This is the device you are using. Revoking it signs you out here.",
+    "revoked_message": "Device revoked successfully",
+    "no_devices": "No devices",
+    "no_devices_description": "Devices signed in with the mobile app appear here."
+  },
   "modules": {
     "buy_now": "Comprar Agora",
     "install": "Instalar",
@@ -913,7 +1061,9 @@
     "cancel_invitation": "Cancel Invitation",
     "role": "Role",
     "invited_by": "Invited By",
-    "sent_at": "Sent At"
+    "sent_at": "Sent At",
+    "no_users": "No members yet",
+    "list_of_users": "Invite the people who work with you. They show up here once they join."
   },
   "reports": {
     "title": "Relatório",
@@ -980,6 +1130,10 @@
       "date_range": "Selecionar período"
     }
   },
+  "pdf": {
+    "open_pdf": "Open PDF",
+    "download_failed": "Unable to download the document"
+  },
   "settings": {
     "menu_title": {
       "account_settings": "Configurações da conta",
@@ -993,6 +1147,7 @@
       "backup": "Cópia de segurança",
       "file_disk": "Disco de Arquivos",
       "fonts": "Font Packages",
+      "currencies": "Currencies",
       "custom_fields": "Os campos personalizados",
       "payment_modes": "Meios de Pagamento",
       "notes": "Observações",
@@ -1035,7 +1190,16 @@
       "right": "Direita",
       "left": "Esquerda",
       "action": "Ação",
-      "add_currency": "Adicionar Moeda"
+      "add_currency": "Adicionar Moeda",
+      "description": "Every currency this installation can invoice in. The list is shared by all companies rather than set per company.",
+      "refresh": "Refresh list",
+      "search": "Search by name or code",
+      "count": "No currencies | 1 currency | {count} currencies",
+      "decimals": "no decimals | 1 decimal | {count} decimals",
+      "refreshed": "Currency list refreshed: {added} added, {updated} corrected.",
+      "already_current": "The currency list is already up to date.",
+      "refresh_failed": "The currency list could not be refreshed.",
+      "none_found": "No currency matches that search."
     },
     "mail": {
       "host": "Servidor de e-mail",
@@ -1340,7 +1504,8 @@
           "invoice": "Fatura",
           "payment": "Pagamento"
         }
-      }
+      },
+      "reorder_component": "Move {name}, {position} of {count}. Use the up and down arrow keys"
     },
     "account_settings": {
       "profile_picture": "Foto do Perfil",
@@ -1410,7 +1575,7 @@
       "key": "Chave API",
       "name": "Nome",
       "driver": "Provedor",
-      "is_default": "É PADRÃO",
+      "is_default": "Is default",
       "currency": "Moeda",
       "exchange_rate_confirm_delete": "Você não poderá recuperar este provedor",
       "created_message": "Provedor criado com sucesso",
@@ -1427,7 +1592,8 @@
       "url": "URL",
       "active": "Ativo",
       "currency_help_text": "Este provedor será usado apenas nas moedas selecionadas acima",
-      "currency_in_used": "As seguintes moedas já estão ativas em outro provedor. Remova essas moedas da seleção para ativar este provedor novamente."
+      "currency_in_used": "As seguintes moedas já estão ativas em outro provedor. Remova essas moedas da seleção para ativar este provedor novamente.",
+      "fetch_latest": "Fetch the latest exchange rate"
     },
     "tax_types": {
       "title": "Tipos de Impostos",
@@ -1547,6 +1713,9 @@
     "update_app": {
       "title": "Atualizar Aplicativo",
       "description": "Você pode atualizar facilmente o InvoiceShelf, verifique se hà novas atualizações, clicando no botão abaixo",
+      "client_title": "Server Update",
+      "client_description": "Check the server this app is connected to for a new InvoiceShelf release and install it. The app itself is updated through your device's app store.",
+      "client_versions": "Connected to {server}, server {serverVersion}, app {appVersion}",
       "check_update": "Verifique se há atualizações",
       "insider_consent": "Optar por versões Insider. Recomendado apenas para testes.",
       "avail_update": "Nova atualização disponível",
@@ -1640,7 +1809,7 @@
       "dropbox_app": "Aplicativo Dropbox",
       "dropbox_root": "Root Dropbox",
       "default_driver": "Driver Padrão",
-      "is_default": "ESTÁ PADRÃO",
+      "is_default": "Is default",
       "set_default_disk": "Definir Disco Padrão",
       "set_default_disk_confirm": "Este disco será definido como padrão e todos os novos PDFs serão salvos neste disco",
       "success_set_default_disk": "Disco definido como padrão com sucesso",
@@ -2019,5 +2188,11 @@
       "impersonating_banner": "You are currently impersonating a user. All actions are logged.",
       "stop_impersonating": "Stop Impersonating"
     }
+  },
+  "notifications": {
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Note"
   }
 }
