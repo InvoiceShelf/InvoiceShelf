@@ -47,7 +47,11 @@ class OnboardingWizardController extends Controller
         $step = Setting::getSetting('profile_complete');
 
         if ($step !== self::FINISHED) {
-            Setting::setSetting('profile_complete', $request->input('profile_complete'));
+            if ($request->input('profile_complete') === self::FINISHED) {
+                InstallationState::complete();
+            } else {
+                Setting::setSetting('profile_complete', $request->input('profile_complete'));
+            }
 
             $step = Setting::getSetting('profile_complete');
         }
