@@ -1274,7 +1274,7 @@
       "show_advanced_settings": "Show Advanced Settings",
       "hide_advanced_settings": "Hide Advanced Settings",
       "native_mail_desc": "Use PHP's native mail transport. Delivery is handled by the server's PHP mail configuration.",
-      "sendmail_desc": "Use the system sendmail binary for delivery. You can override the command path in Advanced Settings.",
+      "sendmail_desc": "Use the server's sendmail binary for delivery. Its path is set on the server with MAIL_SENDMAIL_PATH.",
       "drivers": {
         "smtp": "SMTP",
         "mail": "PHP Mail",
@@ -2006,7 +2006,7 @@
       "show_advanced_settings": "Show Advanced Settings",
       "hide_advanced_settings": "Hide Advanced Settings",
       "native_mail_desc": "Use PHP's native mail transport. Delivery is handled by the server's PHP mail configuration.",
-      "sendmail_desc": "Use the system sendmail binary for delivery. You can override the command path in Advanced Settings.",
+      "sendmail_desc": "Use the server's sendmail binary for delivery. Its path is set on the server with MAIL_SENDMAIL_PATH.",
       "drivers": {
         "smtp": "SMTP",
         "mail": "PHP Mail",
