@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use App\Facades\Hashids;
 use App\Jobs\GeneratePaymentPdfJob;
 use App\Mail\SendPaymentMail;
 use App\Services\SerialNumberFormatter;
+use App\Support\PublicToken;
 use App\Support\SafeOrderBy;
 use App\Traits\GeneratesPdfTrait;
 use App\Traits\HasCustomFieldsTrait;
@@ -169,7 +169,7 @@ class Payment extends Model implements HasMedia
         }
 
         $payment = Payment::create($data);
-        $payment->unique_hash = Hashids::connection(Payment::class)->encode($payment->id);
+        $payment->unique_hash = PublicToken::make();
 
         $serial = (new SerialNumberFormatter)
             ->setModel($payment)
@@ -479,7 +479,7 @@ class Payment extends Model implements HasMedia
         $data['transaction_id'] = $transaction->id;
 
         $payment = Payment::create($data);
-        $payment->unique_hash = Hashids::connection(Payment::class)->encode($payment->id);
+        $payment->unique_hash = PublicToken::make();
         $payment->sequence_number = $serial->nextSequenceNumber;
         $payment->customer_sequence_number = $serial->nextCustomerSequenceNumber;
         $payment->save();

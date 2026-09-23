@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\V1\Admin\Estimate;
 
-use App\Facades\Hashids;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\EstimateResource;
 use App\Models\CompanySetting;
 use App\Models\Estimate;
 use App\Services\SerialNumberFormatter;
+use App\Support\PublicToken;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -80,7 +80,7 @@ class CloneEstimateController extends Controller
             'sales_tax_address_type' => $estimate->sales_tax_address_type,
         ]);
 
-        $newEstimate->unique_hash = Hashids::connection(Estimate::class)->encode($newEstimate->id);
+        $newEstimate->unique_hash = PublicToken::make();
         $newEstimate->save();
         $estimate->load('items.taxes');
 

@@ -3,12 +3,12 @@
 namespace App\Models;
 
 use App;
-use App\Facades\Hashids;
 use App\Facades\PDF;
 use App\Mail\SendEstimateMail;
 use App\Services\SerialNumberFormatter;
 use App\Space\PdfTemplateUtils;
 use App\Support\DocumentTotals;
+use App\Support\PublicToken;
 use App\Support\SafeOrderBy;
 use App\Traits\GeneratesPdfTrait;
 use App\Traits\HasCustomFieldsTrait;
@@ -227,7 +227,7 @@ class Estimate extends Model implements HasMedia
         }
 
         $estimate = self::create($data);
-        $estimate->unique_hash = Hashids::connection(Estimate::class)->encode($estimate->id);
+        $estimate->unique_hash = PublicToken::make();
         $serial = (new SerialNumberFormatter)
             ->setModel($estimate)
             ->setCompany($estimate->company_id)

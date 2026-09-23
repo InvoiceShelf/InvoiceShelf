@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use App\Facades\Hashids;
 use App\Http\Requests\RecurringInvoiceRequest;
 use App\Services\SerialNumberFormatter;
 use App\Support\DocumentTotals;
+use App\Support\PublicToken;
 use App\Support\SafeOrderBy;
 use App\Traits\HasCustomFieldsTrait;
 use Carbon\Carbon;
@@ -356,7 +356,7 @@ class RecurringInvoice extends Model
         $newInvoice['base_tax'] = $this->exchange_rate * $this->tax;
         $newInvoice['base_total'] = $this->exchange_rate * $this->total;
         $invoice = Invoice::create($newInvoice);
-        $invoice->unique_hash = Hashids::connection(Invoice::class)->encode($invoice->id);
+        $invoice->unique_hash = PublicToken::make();
         $invoice->save();
 
         $this->load('items.taxes');

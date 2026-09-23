@@ -2,9 +2,9 @@
 
 namespace App\Mail;
 
-use App\Facades\Hashids;
 use App\Models\EmailLog;
 use App\Models\Invoice;
+use App\Support\PublicToken;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -44,7 +44,7 @@ class SendInvoiceMail extends Mailable
             'mailable_id' => $this->data['invoice']['id'],
         ]);
 
-        $log->token = Hashids::connection(EmailLog::class)->encode($log->id);
+        $log->token = PublicToken::make();
         $log->save();
 
         $this->data['url'] = route('invoice', ['email_log' => $log->token]);

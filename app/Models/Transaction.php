@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Facades\Hashids;
+use App\Support\PublicToken;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -57,7 +57,7 @@ class Transaction extends Model
     public static function createTransaction($data)
     {
         $transaction = self::create($data);
-        $transaction->unique_hash = Hashids::connection(Transaction::class)->encode($transaction->id);
+        $transaction->unique_hash = PublicToken::make();
         $transaction->save();
 
         return $transaction;
