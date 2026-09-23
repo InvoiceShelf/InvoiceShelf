@@ -104,4 +104,9 @@ echo "**** Creating storage link ****"
 echo "**** Running migrations (if app is installed) ****"
 if ./artisan migrate:status > /dev/null 2>&1; then
     ./artisan migrate --force
+
+    # Currencies ship as a catalogue rather than one migration each, so a
+    # release that adds one needs this to reach an existing install. Nothing is
+    # ever removed, and it is a single query when the list is already current.
+    ./artisan currencies:sync || true
 fi

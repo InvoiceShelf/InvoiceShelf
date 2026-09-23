@@ -95,6 +95,11 @@ const menuItems = computed<SettingsMenuItem[]>(() => [
     icon: 'LanguageIcon',
   },
   {
+    title: t('settings.menu_title.currencies'),
+    link: '/admin/administration/settings/currencies',
+    icon: 'BanknotesIcon',
+  },
+  {
     title: t('settings.menu_title.update_app'),
     link: '/admin/administration/settings/update-app',
     icon: 'ArrowPathIcon',

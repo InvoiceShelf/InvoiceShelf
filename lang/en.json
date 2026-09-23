@@ -1147,6 +1147,7 @@
       "backup": "Backups",
       "file_disk": "File Disks",
       "fonts": "Font Packages",
+      "currencies": "Currencies",
       "custom_fields": "Custom Fields",
       "payment_modes": "Payment Modes",
       "notes": "Record Notes",
@@ -1189,7 +1190,16 @@
       "right": "Right",
       "left": "Left",
       "action": "Action",
-      "add_currency": "Add Currency"
+      "add_currency": "Add Currency",
+      "description": "Every currency this installation can invoice in. The list is shared by all companies rather than set per company.",
+      "refresh": "Refresh list",
+      "search": "Search by name or code",
+      "count": "No currencies | 1 currency | {count} currencies",
+      "decimals": "no decimals | 1 decimal | {count} decimals",
+      "refreshed": "Currency list refreshed: {added} added, {updated} corrected.",
+      "already_current": "The currency list is already up to date.",
+      "refresh_failed": "The currency list could not be refreshed.",
+      "none_found": "No currency matches that search."
     },
     "mail": {
       "host": "Mail Host",

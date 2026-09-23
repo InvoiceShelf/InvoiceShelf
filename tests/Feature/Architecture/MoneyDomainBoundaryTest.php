@@ -60,3 +60,20 @@ test('the money domain preserves its public routes and middleware', function () 
             ->and($route->gatherMiddleware())->toContain('auth:sanctum', 'company', 'bouncer');
     }
 });
+
+test('the money domain owns the installation-wide currency routes', function () {
+    $routes = collect(Route::getRoutes()->getRoutes())
+        ->filter(fn ($route): bool => str_starts_with($route->uri(), 'api/v1/super-admin/currencies'))
+        ->keyBy(fn ($route): string => implode('|', $route->methods()).' '.$route->uri());
+
+    expect($routes->keys()->sort()->values()->all())->toBe([
+        'GET|HEAD api/v1/super-admin/currencies',
+        'POST api/v1/super-admin/currencies/refresh',
+    ]);
+
+    foreach ($routes as $route) {
+        expect($route->getActionName())
+            ->toStartWith('App\\Domains\\Money\\Http\\Controllers\\Admin\\')
+            ->and($route->gatherMiddleware())->toContain('auth:sanctum', 'super-admin');
+    }
+});
