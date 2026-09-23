@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\V1\Admin\Invoice;
 
-use App\Facades\Hashids;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\InvoiceResource;
 use App\Models\CompanySetting;
 use App\Models\Invoice;
 use App\Services\SerialNumberFormatter;
+use App\Support\PublicToken;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -91,7 +91,7 @@ class CloneInvoiceController extends Controller
             'sales_tax_address_type' => $invoice->sales_tax_address_type,
         ]);
 
-        $newInvoice->unique_hash = Hashids::connection(Invoice::class)->encode($newInvoice->id);
+        $newInvoice->unique_hash = PublicToken::make();
         $newInvoice->save();
         $invoice->load('items.taxes');
 

@@ -3,12 +3,12 @@
 namespace App\Models;
 
 use App;
-use App\Facades\Hashids;
 use App\Facades\PDF;
 use App\Mail\SendInvoiceMail;
 use App\Services\SerialNumberFormatter;
 use App\Space\PdfTemplateUtils;
 use App\Support\DocumentTotals;
+use App\Support\PublicToken;
 use App\Support\SafeOrderBy;
 use App\Traits\GeneratesPdfTrait;
 use App\Traits\HasCustomFieldsTrait;
@@ -344,7 +344,7 @@ class Invoice extends Model implements HasMedia
 
         $invoice->sequence_number = $serial->nextSequenceNumber;
         $invoice->customer_sequence_number = $serial->nextCustomerSequenceNumber;
-        $invoice->unique_hash = Hashids::connection(Invoice::class)->encode($invoice->id);
+        $invoice->unique_hash = PublicToken::make();
         $invoice->save();
 
         self::createItems($invoice, $request->items);

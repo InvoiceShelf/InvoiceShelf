@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\V1\Admin\Estimate;
 
-use App\Facades\Hashids;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\InvoiceResource;
 use App\Models\CompanySetting;
 use App\Models\Estimate;
 use App\Models\Invoice;
 use App\Services\SerialNumberFormatter;
+use App\Support\PublicToken;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -90,7 +90,7 @@ class ConvertEstimateController extends Controller
             'sales_tax_address_type' => $estimate->sales_tax_address_type,
         ]);
 
-        $invoice->unique_hash = Hashids::connection(Invoice::class)->encode($invoice->id);
+        $invoice->unique_hash = PublicToken::make();
         $invoice->save();
         $invoiceItems = $estimate->items->toArray();
 
