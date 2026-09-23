@@ -140,10 +140,6 @@ class MailEnvironmentRequest extends FormRequest
                         'required',
                         'string',
                     ],
-                    'mail_sendmail_path' => [
-                        'nullable',
-                        'string',
-                    ],
                     'from_name' => [
                         'required',
                         'string',
