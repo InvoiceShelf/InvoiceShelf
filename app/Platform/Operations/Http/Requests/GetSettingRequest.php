@@ -2,7 +2,9 @@
 
 namespace App\Platform\Operations\Http\Requests;
 
+use App\Platform\Operations\Models\Setting;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 /**
  * Query parameters for a single-option read from the settings store.
@@ -19,15 +21,16 @@ class GetSettingRequest extends FormRequest
     }
 
     /**
-     * The option name to look up. It is echoed back as the response key, so
-     * it has to be a scalar string.
+     * The option name to look up: a shell setting, since the rest of the
+     * store holds credentials among other things. It is echoed back as the
+     * response key.
      *
-     * @return array<string, string>
+     * @return array<string, array<int, mixed>>
      */
     public function rules(): array
     {
         return [
-            'key' => 'required|string',
+            'key' => ['required', 'string', Rule::in(Setting::SHELL_SETTINGS)],
         ];
     }
 }
