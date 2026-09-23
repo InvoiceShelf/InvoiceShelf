@@ -45,6 +45,9 @@
     "download": "دانلود",
     "refresh": "Refresh",
     "loading": "Loading…",
+    "check_highlighted_fields": "Some details are missing. Check the highlighted fields and try again.",
+    "taxes_are_added_in_settings": "Taxes are added under Settings, Tax Types.",
+    "select_an_option": "Select an option",
     "date": "Date",
     "from_date": "از تاریخ",
     "to_date": "تا تاریخ",
@@ -200,6 +203,7 @@
     "select_named": "Select {name}"
   },
   "dashboard": {
+    "load_failed": "The dashboard could not be loaded.",
     "select_year": "انتخاب سال",
     "cards": {
       "due_amount": "مبلغ قابل پرداخت",
@@ -224,7 +228,10 @@
       "customer": "مشتری",
       "amount_due": "Amount due",
       "actions": "اقدامات",
-      "view_all": "View all"
+      "view_all": "View all",
+      "empty_title": "Nothing awaiting payment",
+      "empty_description": "Sent invoices that are still due show up here.",
+      "portal_empty_description": "Invoices you still need to pay show up here."
     },
     "recent_estimate_card": {
       "title": "Recent estimates",
@@ -232,7 +239,10 @@
       "customer": "مشتری",
       "amount_due": "Amount",
       "actions": "اقدامات",
-      "view_all": "View all"
+      "view_all": "View all",
+      "empty_title": "No estimates yet",
+      "empty_description": "Estimates you send show up here.",
+      "portal_empty_description": "Estimates sent to you show up here."
     },
     "receivables": {
       "title": "Owed to you",
@@ -242,9 +252,12 @@
       "due_later": "Due later",
       "invoice_count": "{count} invoice | {count} invoices",
       "nothing_owed": "Nothing is owed to you right now.",
+      "first_invoice_hint": "Send your first invoice and what customers owe you shows up here.",
       "view_invoices": "View invoices"
     },
     "cashflow": {
+      "no_activity": "No activity in this period",
+      "no_activity_hint": "Invoices, payments and expenses you record will show up here.",
       "title": "Cash flow",
       "show_table": "Show as table",
       "hide_table": "Hide table",
@@ -354,8 +367,13 @@
     "billing_address": "آدرس صورت حساب",
     "shipping_address": "نشانی ارسال",
     "copy_billing_address": "کپی از صورت حساب",
-    "no_customers": "هنوز مشتریی موجود نیست!",
+    "no_customers": "No customers yet",
+    "empty_description": "Add the people and businesses you bill, then invoice them in a few clicks.",
     "no_customers_found": "هیچ مشتری یافت نشد!",
+    "add_first_customer": "Add your first customer to start invoicing them.",
+    "activity_load_failed": "This customer's activity could not be loaded.",
+    "statement_load_failed": "The statement could not be loaded.",
+    "ask_to_add_customers": "Someone who can manage customers needs to add one first.",
     "no_contact": "بدون مخاطب",
     "no_contact_name": "بدون نام مشتری",
     "list_of_customers": "این قسمت شامل لیست مشتریان است.",
@@ -364,7 +382,7 @@
     "select_a_customer": "انتخاب مشتری",
     "type_or_click": "برای انتخاب تایپ و یا انتخاب کنید",
     "new_transaction": "تراکنش جدید",
-    "no_matching_customers": "هیچ مشتری منطبقی وجود ندارد!",
+    "no_matching_customers": "No customers match these filters",
     "phone_number": "شماره تلفن",
     "create_date": "تاریخ ایجاد",
     "confirm_delete": "شما قادر به بازیابی این مشتری و کلیه فاکتورها ، برآورد ها و پرداخت های مربوطه نخواهید بود. | شما قادر به بازیابی این مشتریان و کلیه فاکتورها ، برآورد ها و پرداخت های مربوطه نخواهید بود.",
@@ -418,7 +436,9 @@
     "add_new_item": "افزودن آیتم جدید",
     "new_item": "آیتم جدید",
     "edit_item": "بروزرسانی آیتم",
-    "no_items": "هیچ آیتمی انتخاب نشده است!",
+    "no_items": "No items yet",
+    "empty_description": "Save the products and services you sell to add them to invoices in one click.",
+    "no_matching_items": "No items match these filters",
     "list_of_items": "این قسمت شامل لیست آیتم ها می باشد.",
     "select_a_unit": "واحد را انتخاب کنید",
     "taxes": "مالیات",
@@ -480,7 +500,7 @@
     "confirm_mark_as_sent": "وضعیت این برآورد به ارسال شده تغییر پیدا می کند",
     "confirm_mark_as_accepted": "وضعیت این برآورد به تایید شده تغییر پیدا می کند",
     "confirm_mark_as_rejected": "وضعیت این برآورد به عدم تایید تغییر پیدا می کند",
-    "no_matching_estimates": "هیچ برآورد منطبقی وجود ندارد!",
+    "no_matching_estimates": "No estimates match these filters",
     "mark_as_sent_successfully": "وضعیت این برآورد به ارسال شده تغییر پیدا می کند",
     "send_estimate_successfully": "برآورد با موفقیت ارسال شد",
     "errors": {
@@ -500,7 +520,9 @@
     "items": "موارد",
     "Estimate": "برآورد | برآوردها",
     "add_new_tax": "افزودن مالیات جدید",
-    "no_estimates": "بدون برآورد",
+    "no_estimates": "No estimates yet",
+    "empty_description": "Send a quote, then turn it into an invoice once it's accepted.",
+    "portal_empty_description": "Estimates sent to you will show up here.",
     "list_of_estimates": "این قسمت شامل لیست آیتم ها می باشد.",
     "mark_as_rejected": "علامت‌گذاری به عنوان رد شده",
     "mark_as_accepted": "علامت‌گذاری به عنوان تایید شده",
@@ -585,12 +607,14 @@
     "save_invoice": "ارسال صورت‌حساب",
     "update_invoice": "ویرایش صورت‌حساب",
     "add_new_tax": "افزودن مالیات جدید",
-    "no_invoices": "No Invoices yet!",
+    "no_invoices": "No invoices yet",
+    "empty_description": "Create an invoice and send it to a customer to get paid.",
+    "portal_empty_description": "Invoices sent to you will show up here.",
     "mark_as_rejected": "علامت‌گذاری به عنوان رد شده",
     "mark_as_accepted": "علامت‌گذاری به عنوان تایید شده",
     "list_of_invoices": "این قسمت شامل لیست صورت‌حساب‌ها است.",
     "select_invoice": "انتخاب صورت‌حساب",
-    "no_matching_invoices": "هیچ فاکتور منطبقی وجود ندارد!",
+    "no_matching_invoices": "No invoices match these filters",
     "mark_as_sent_successfully": "وضعیت این فاکتور به ارسال شده تغییر پیدا می کند",
     "invoice_sent_successfully": "فاکتور با موفقیت ایجاد شد",
     "cloned_successfully": "فاکتور با موفقیت ایجاد شد",
@@ -720,12 +744,13 @@
     "save_invoice": "Save Recurring Invoice",
     "update_invoice": "Update Recurring Invoice",
     "add_new_tax": "Add New Tax",
-    "no_invoices": "No Recurring Invoices yet!",
+    "no_invoices": "No recurring invoices yet",
+    "empty_description": "Set up an invoice that goes out on a schedule, such as a monthly retainer.",
     "mark_as_rejected": "Mark as rejected",
     "mark_as_accepted": "Mark as accepted",
     "list_of_invoices": "This section will contain the list of recurring invoices.",
     "select_invoice": "Select Invoice",
-    "no_matching_invoices": "There are no matching recurring invoices!",
+    "no_matching_invoices": "No recurring invoices match these filters",
     "mark_as_sent_successfully": "Recurring Invoice marked as sent successfully",
     "invoice_sent_successfully": "Recurring Invoice sent successfully",
     "cloned_successfully": "Recurring Invoice cloned successfully",
@@ -786,7 +811,9 @@
       "date": "Date",
       "count": "Count"
     },
-    "make_recurring": "Make Recurring"
+    "make_recurring": "Make Recurring",
+    "no_generated_invoices": "No invoices yet",
+    "no_generated_invoices_description": "Invoices this schedule creates show up here."
   },
   "payments": {
     "title": "Payments",
@@ -810,10 +837,12 @@
     "save_payment": "Save Payment",
     "update_payment": "Update Payment",
     "payment": "Payment | Payments",
-    "no_payments": "No payments yet!",
+    "no_payments": "No payments yet",
+    "empty_description": "Record a payment when a customer pays and apply it to their invoices.",
+    "portal_empty_description": "Payments you make will show up here.",
     "not_selected": "Not selected",
     "no_invoice": "No invoice",
-    "no_matching_payments": "There are no matching payments!",
+    "no_matching_payments": "No payments match these filters",
     "list_of_payments": "This section will contain the list of payments.",
     "select_payment_mode": "Select payment mode",
     "confirm_mark_as_sent": "This estimate will be marked as sent",
@@ -832,6 +861,7 @@
     "add_allocation": "Add Allocation",
     "select_customer_to_allocate": "Select a customer before allocating this payment.",
     "no_allocations": "No invoices selected. This payment will remain available as customer credit.",
+    "no_open_invoices": "This customer has no open invoices, so the payment will stay as customer credit.",
     "allocated": "Allocated",
     "unapplied_credit": "Unapplied Credit",
     "remove_allocation": "Remove allocation",
@@ -879,7 +909,9 @@
     "edit_expense": "Edit Expense",
     "new_expense": "New Expense",
     "expense": "Expense | Expenses",
-    "no_expenses": "No expenses yet!",
+    "no_expenses": "No expenses yet",
+    "empty_description": "Record what the business spends to see your profit and reclaim tax.",
+    "no_matching_expenses": "No expenses match these filters",
     "list_of_expenses": "This section will contain the list of expenses.",
     "confirm_delete": "You will not be able to recover this Expense | You will not be able to recover these Expenses",
     "created_message": "Expense created successfully",
@@ -999,6 +1031,7 @@
     "purchased": "Purchased",
     "installed": "Installed",
     "no_modules_installed": "No Modules Installed Yet!",
+    "no_marketplace_modules": "No marketplace modules are available yet.",
     "disable_warning": "All the settings for this particular will be reverted.",
     "uninstall": "Uninstall",
     "uninstall_warning": "Uninstalling removes this module's runtime files. Its data and settings are preserved unless you explicitly choose to remove them.",
@@ -1063,6 +1096,8 @@
     "invited_by": "Invited By",
     "sent_at": "Sent At",
     "no_users": "No members yet",
+    "empty_description": "Invite the people who work on this company with you.",
+    "no_matching_members": "No members match these filters",
     "list_of_users": "Invite the people who work with you. They show up here once they join."
   },
   "reports": {
@@ -1367,7 +1402,9 @@
       "bound_none": "No limit",
       "bound_today": "Today",
       "bound_fixed_date": "A fixed date",
-      "bound_fixed_time": "A fixed time"
+      "bound_fixed_time": "A fixed time",
+      "empty_title": "No custom fields yet",
+      "empty_description": "Add your own fields to invoices, customers, items and more."
     },
     "customization": {
       "customization": "customization",
@@ -1503,7 +1540,9 @@
           "estimate": "Estimate",
           "invoice": "Invoice",
           "payment": "Payment"
-        }
+        },
+        "empty_title": "No notes yet",
+        "empty_description": "Save text you use often, like payment terms, and insert it into any document."
       },
       "reorder_component": "Move {name}, {position} of {count}. Use the up and down arrow keys"
     },
@@ -1593,7 +1632,9 @@
       "active": "Active",
       "currency_help_text": "This provider will only be used on above selected currencies",
       "currency_in_used": "The following currencies are already active on another provider. Please remove these currencies from selection to activate this provider again.",
-      "fetch_latest": "Fetch the latest exchange rate"
+      "fetch_latest": "Fetch the latest exchange rate",
+      "empty_title": "No exchange rate providers yet",
+      "empty_description": "Connect a provider to fetch rates for documents in other currencies."
     },
     "tax_types": {
       "title": "Tax Types",
@@ -1622,7 +1663,9 @@
       "tax_included": "Inclusive taxes",
       "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
       "tax_included_by_default": "Enable inclusive taxes by default",
-      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default",
+      "empty_title": "No tax types yet",
+      "empty_description": "Add a tax once, then pick it on any invoice or expense."
     },
     "payment_modes": {
       "title": "Payment Modes",
@@ -1650,7 +1693,9 @@
       "deleted_message": "Expense category deleted successfully",
       "updated_message": "Expense category updated successfully",
       "confirm_delete": "You will not be able to recover this Expense Category",
-      "already_in_use": "Category is already in use"
+      "already_in_use": "Category is already in use",
+      "empty_title": "No expense categories yet",
+      "empty_description": "Group expenses by what they're for, such as travel or software. Every expense needs one."
     },
     "preferences": {
       "currency": "Currency",
@@ -1762,7 +1807,9 @@
       "action": "Action",
       "deleted_message": "Backup deleted successfully",
       "created_message": "Backup created successfully",
-      "invalid_disk_credentials": "Invalid credential of selected disk"
+      "invalid_disk_credentials": "Invalid credential of selected disk",
+      "empty_title": "No backups yet",
+      "empty_description": "Create a backup to keep a copy of your data and files."
     },
     "disk": {
       "title": "File Disk | File Disks",
