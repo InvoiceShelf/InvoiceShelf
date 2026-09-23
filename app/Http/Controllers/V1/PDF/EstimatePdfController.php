@@ -4,6 +4,7 @@ namespace App\Http\Controllers\V1\PDF;
 
 use App\Http\Controllers\Controller;
 use App\Models\Estimate;
+use App\Support\DocumentPdfAccess;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -16,6 +17,8 @@ class EstimatePdfController extends Controller
      */
     public function __invoke(Request $request, Estimate $estimate)
     {
+        DocumentPdfAccess::authorize($estimate);
+
         if ($request->has('preview')) {
             return $estimate->getPDFData();
         }
