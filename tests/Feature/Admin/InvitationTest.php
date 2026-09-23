@@ -327,7 +327,7 @@ test('cannot register with mismatched email', function () {
  */
 function invitationMember(Company $company, string $email = 'member@example.com'): User
 {
-    $member = User::factory()->create(['email' => $email]);
+    $member = User::factory()->create(['email' => $email, 'role' => 'user']);
     $member->companies()->attach($company->id);
 
     return $member;
@@ -409,7 +409,7 @@ test('only the invited person can accept or decline an invitation', function () 
         'expires_at' => now()->addDays(7),
     ]);
 
-    $intruder = User::factory()->create(['email' => 'intruder@example.com']);
+    $intruder = User::factory()->create(['email' => 'intruder@example.com', 'role' => 'user']);
     Sanctum::actingAs($intruder, ['*']);
 
     postJson("api/v1/invitations/{$invitation->token}/accept")->assertForbidden();
