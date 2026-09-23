@@ -45,6 +45,9 @@
     "download": "Downloaden",
     "refresh": "Refresh",
     "loading": "Loading…",
+    "check_highlighted_fields": "Some details are missing. Check the highlighted fields and try again.",
+    "taxes_are_added_in_settings": "Taxes are added under Settings, Tax Types.",
+    "select_an_option": "Select an option",
     "date": "Date",
     "from_date": "Vanaf datum",
     "to_date": "T/m datum",
@@ -200,6 +203,7 @@
     "select_named": "Select {name}"
   },
   "dashboard": {
+    "load_failed": "The dashboard could not be loaded.",
     "select_year": "Selecteer jaar",
     "cards": {
       "due_amount": "Openstaand bedrag",
@@ -224,7 +228,10 @@
       "customer": "Klant",
       "amount_due": "Amount due",
       "actions": "Acties",
-      "view_all": "View all"
+      "view_all": "View all",
+      "empty_title": "Nothing awaiting payment",
+      "empty_description": "Sent invoices that are still due show up here.",
+      "portal_empty_description": "Invoices you still need to pay show up here."
     },
     "recent_estimate_card": {
       "title": "Recent estimates",
@@ -232,7 +239,10 @@
       "customer": "Klant",
       "amount_due": "Amount",
       "actions": "Acties",
-      "view_all": "View all"
+      "view_all": "View all",
+      "empty_title": "No estimates yet",
+      "empty_description": "Estimates you send show up here.",
+      "portal_empty_description": "Estimates sent to you show up here."
     },
     "receivables": {
       "title": "Owed to you",
@@ -242,9 +252,12 @@
       "due_later": "Due later",
       "invoice_count": "{count} invoice | {count} invoices",
       "nothing_owed": "Nothing is owed to you right now.",
+      "first_invoice_hint": "Send your first invoice and what customers owe you shows up here.",
       "view_invoices": "View invoices"
     },
     "cashflow": {
+      "no_activity": "No activity in this period",
+      "no_activity_hint": "Invoices, payments and expenses you record will show up here.",
       "title": "Cash flow",
       "show_table": "Show as table",
       "hide_table": "Hide table",
@@ -354,8 +367,13 @@
     "billing_address": "factuur adres",
     "shipping_address": "Verzendingsadres",
     "copy_billing_address": "Kopiëren van facturering",
-    "no_customers": "Nog geen klanten!",
+    "no_customers": "No customers yet",
+    "empty_description": "Add the people and businesses you bill, then invoice them in a few clicks.",
     "no_customers_found": "Geen klanten gevonden!",
+    "add_first_customer": "Add your first customer to start invoicing them.",
+    "activity_load_failed": "This customer's activity could not be loaded.",
+    "statement_load_failed": "The statement could not be loaded.",
+    "ask_to_add_customers": "Someone who can manage customers needs to add one first.",
     "no_contact": "Geen contact",
     "no_contact_name": "Geen contactnaam",
     "list_of_customers": "Hier vind je jouw klanten terug.",
@@ -364,7 +382,7 @@
     "select_a_customer": "Selecteer een klant",
     "type_or_click": "Typ of klik om te selecteren",
     "new_transaction": "Nieuwe transactie",
-    "no_matching_customers": "Er zijn geen overeenkomende klanten!",
+    "no_matching_customers": "No customers match these filters",
     "phone_number": "Telefoonnummer",
     "create_date": "Aangemaakt op",
     "confirm_delete": "Deze klant en alle gerelateerde facturen, offertes en betalingen worden permanent verwijderd. | Deze klanten en alle gerelateerde facturen, offertes en betalingen worden permanent verwijderd.",
@@ -418,7 +436,9 @@
     "add_new_item": "Voeg een nieuw item toe",
     "new_item": "Nieuw item",
     "edit_item": "Item bewerken",
-    "no_items": "Nog geen items!",
+    "no_items": "No items yet",
+    "empty_description": "Save the products and services you sell to add them to invoices in one click.",
+    "no_matching_items": "No items match these filters",
     "list_of_items": "Hier vind je jouw artikelen terug.",
     "select_a_unit": "selecteer eenheid",
     "taxes": "Belastingen",
@@ -480,7 +500,7 @@
     "confirm_mark_as_sent": "Deze offerte wordt gemarkeerd als verzonden",
     "confirm_mark_as_accepted": "Deze offerte wordt gemarkeerd als Geaccepteerd",
     "confirm_mark_as_rejected": "Deze offerte wordt gemarkeerd als Afgewezen",
-    "no_matching_estimates": "Er zijn geen overeenkomende offertes!",
+    "no_matching_estimates": "No estimates match these filters",
     "mark_as_sent_successfully": "Offerte gemarkeerd als succesvol verzonden",
     "send_estimate_successfully": "Offerte succesvol verzonden",
     "errors": {
@@ -500,7 +520,9 @@
     "items": "artikelen",
     "Estimate": "Offerte | Offertes",
     "add_new_tax": "Nieuwe belasting toevoegen",
-    "no_estimates": "Nog geen offertes!",
+    "no_estimates": "No estimates yet",
+    "empty_description": "Send a quote, then turn it into an invoice once it's accepted.",
+    "portal_empty_description": "Estimates sent to you will show up here.",
     "list_of_estimates": "Hier vind je jouw offertes terug.",
     "mark_as_rejected": "Markeer als afgewezen",
     "mark_as_accepted": "Markeer als geaccepteerd",
@@ -585,12 +607,14 @@
     "save_invoice": "Factuur opslaan",
     "update_invoice": "Factuur bijwerken",
     "add_new_tax": "Nieuwe belasting toevoegen",
-    "no_invoices": "Nog geen facturen!",
+    "no_invoices": "No invoices yet",
+    "empty_description": "Create an invoice and send it to a customer to get paid.",
+    "portal_empty_description": "Invoices sent to you will show up here.",
     "mark_as_rejected": "Markeer als afgewezen",
     "mark_as_accepted": "Markeer als geaccepteerd",
     "list_of_invoices": "Hier vind je jouw facturen terug.",
     "select_invoice": "Selecteer Factuur",
-    "no_matching_invoices": "Er zijn geen overeenkomende facturen!",
+    "no_matching_invoices": "No invoices match these filters",
     "mark_as_sent_successfully": "Factuur gemarkeerd als succesvol verzonden",
     "invoice_sent_successfully": "Factuur succesvol verzonden",
     "cloned_successfully": "Factuur succesvol gekloond",
@@ -720,12 +744,13 @@
     "save_invoice": "Bewaar periodieke factuur",
     "update_invoice": "Periodieke factuur bewerken",
     "add_new_tax": "Nieuwe btw toevoegen",
-    "no_invoices": "Nog geen periodieke facturen!",
+    "no_invoices": "No recurring invoices yet",
+    "empty_description": "Set up an invoice that goes out on a schedule, such as a monthly retainer.",
     "mark_as_rejected": "Markeer als afgewezen",
     "mark_as_accepted": "Markeer als geaccepteerd",
     "list_of_invoices": "Hier vind je de periodieke facturen terug.",
     "select_invoice": "Selecteer Factuur",
-    "no_matching_invoices": "Er zijn geen overeenkomende periodieke facturen!",
+    "no_matching_invoices": "No recurring invoices match these filters",
     "mark_as_sent_successfully": "Periodieke factuur gemarkeerd als succesvol verzonden",
     "invoice_sent_successfully": "Periodieke factuur succesvol verzonden",
     "cloned_successfully": "Terugkerende factuur succesvol gekopieerd",
@@ -786,7 +811,9 @@
       "date": "Datum",
       "count": "Tel"
     },
-    "make_recurring": "Make Recurring"
+    "make_recurring": "Make Recurring",
+    "no_generated_invoices": "No invoices yet",
+    "no_generated_invoices_description": "Invoices this schedule creates show up here."
   },
   "payments": {
     "title": "Betalingen",
@@ -810,10 +837,12 @@
     "save_payment": "Betaling opslaan",
     "update_payment": "Betaling bijwerken",
     "payment": "Betaling | Betalingen",
-    "no_payments": "Nog geen betalingen!",
+    "no_payments": "No payments yet",
+    "empty_description": "Record a payment when a customer pays and apply it to their invoices.",
+    "portal_empty_description": "Payments you make will show up here.",
     "not_selected": "Niet geselecteerd",
     "no_invoice": "Geen factuur",
-    "no_matching_payments": "Er zijn geen overeenkomende betalingen!",
+    "no_matching_payments": "No payments match these filters",
     "list_of_payments": "Hier vind je jouw betalingen terug.",
     "select_payment_mode": "Selecteer betalingswijze",
     "confirm_mark_as_sent": "Deze offerte wordt gemarkeerd als verzonden",
@@ -832,6 +861,7 @@
     "add_allocation": "Add Allocation",
     "select_customer_to_allocate": "Select a customer before allocating this payment.",
     "no_allocations": "No invoices selected. This payment will remain available as customer credit.",
+    "no_open_invoices": "This customer has no open invoices, so the payment will stay as customer credit.",
     "allocated": "Allocated",
     "unapplied_credit": "Unapplied Credit",
     "remove_allocation": "Remove allocation",
@@ -879,7 +909,9 @@
     "edit_expense": "Uitgaven bewerken",
     "new_expense": "Kosten toevoegen",
     "expense": "Uitgaven | Uitgaven",
-    "no_expenses": "Nog geen kosten!",
+    "no_expenses": "No expenses yet",
+    "empty_description": "Record what the business spends to see your profit and reclaim tax.",
+    "no_matching_expenses": "No expenses match these filters",
     "list_of_expenses": "Hier vind je jouw uitgaven terug.",
     "confirm_delete": "Deze uitgave wordt permanent verwijderd | Deze kosten worden permanent verwijderd",
     "created_message": "Kosten succesvol gemaakt",
@@ -999,6 +1031,7 @@
     "purchased": "Gekocht",
     "installed": "Geïnstalleerd",
     "no_modules_installed": "Nog geen modules geïnstalleerd!",
+    "no_marketplace_modules": "No marketplace modules are available yet.",
     "disable_warning": "Alle instellingen voor dit specifiek zullen worden teruggedraaid.",
     "uninstall": "Uninstall",
     "uninstall_warning": "Uninstalling removes this module's runtime files. Its data and settings are preserved unless you explicitly choose to remove them.",
@@ -1063,6 +1096,8 @@
     "invited_by": "Invited By",
     "sent_at": "Sent At",
     "no_users": "No members yet",
+    "empty_description": "Invite the people who work on this company with you.",
+    "no_matching_members": "No members match these filters",
     "list_of_users": "Invite the people who work with you. They show up here once they join."
   },
   "reports": {
@@ -1367,7 +1402,9 @@
       "bound_none": "No limit",
       "bound_today": "Today",
       "bound_fixed_date": "A fixed date",
-      "bound_fixed_time": "A fixed time"
+      "bound_fixed_time": "A fixed time",
+      "empty_title": "No custom fields yet",
+      "empty_description": "Add your own fields to invoices, customers, items and more."
     },
     "customization": {
       "customization": "aanpassen",
@@ -1503,7 +1540,9 @@
           "estimate": "Offertes",
           "invoice": "Invoice",
           "payment": "Payment"
-        }
+        },
+        "empty_title": "No notes yet",
+        "empty_description": "Save text you use often, like payment terms, and insert it into any document."
       },
       "reorder_component": "Move {name}, {position} of {count}. Use the up and down arrow keys"
     },
@@ -1593,7 +1632,9 @@
       "active": "Actief",
       "currency_help_text": "Deze aanbieder wordt alleen gebruikt voor de hier boven geselecteerde valuta",
       "currency_in_used": "De volgende valuta zijn al actief bij een andere aanbieder. Verwijder deze valuta uit de selectie om deze aanbieder opnieuw te activeren.",
-      "fetch_latest": "Fetch the latest exchange rate"
+      "fetch_latest": "Fetch the latest exchange rate",
+      "empty_title": "No exchange rate providers yet",
+      "empty_description": "Connect a provider to fetch rates for documents in other currencies."
     },
     "tax_types": {
       "title": "Belastingtypen",
@@ -1622,7 +1663,9 @@
       "tax_included": "Inclusive taxes",
       "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
       "tax_included_by_default": "Enable inclusive taxes by default",
-      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default",
+      "empty_title": "No tax types yet",
+      "empty_description": "Add a tax once, then pick it on any invoice or expense."
     },
     "payment_modes": {
       "title": "Betaalmethodes",
@@ -1650,7 +1693,9 @@
       "deleted_message": "Uitgavencategorie is verwijderd",
       "updated_message": "Uitgavencategorie is bijgewerkt",
       "confirm_delete": "U kunt deze uitgavencategorie niet herstellen",
-      "already_in_use": "Categorie al in gebruik"
+      "already_in_use": "Categorie al in gebruik",
+      "empty_title": "No expense categories yet",
+      "empty_description": "Group expenses by what they're for, such as travel or software. Every expense needs one."
     },
     "preferences": {
       "currency": "Valuta",
@@ -1762,7 +1807,9 @@
       "action": "Actie",
       "deleted_message": "Back-up is succesvol verwijderd",
       "created_message": "Back-up successvol gemaakt",
-      "invalid_disk_credentials": "Ongeldige inloggegevens voor geselecteerde schijf"
+      "invalid_disk_credentials": "Ongeldige inloggegevens voor geselecteerde schijf",
+      "empty_title": "No backups yet",
+      "empty_description": "Create a backup to keep a copy of your data and files."
     },
     "disk": {
       "title": "Bestandsschijf | Bestandsschijven",
