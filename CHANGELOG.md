@@ -7,6 +7,38 @@ section beneath it is what CI publishes to the updater — see
 The 2.x line has its own CHANGELOG.md on the `2.x` branch. Releases are also on
 GitHub: https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 3.0.0-alpha.5 - 2026-09-24
+
+Fifth public alpha of InvoiceShelf 3.0. AI assistants can now work in InvoiceShelf: Claude, ChatGPT, Claude Code and Cursor connect over the Model Context Protocol and read, draft and send documents with the permissions of the user who connected them. The release also brings a headless install for servers that are configured rather than clicked through, the demo mode behind demo.invoiceshelf.com, and images on GHCR.
+
+⚠️ **Pre-release, not for production.** Back up your database before upgrading and use this release for evaluation and testing only.
+
+### Security
+
+- **The setup wizard's token worked as a super-administrator sign-in.** Sent without the wizard's header it opened the whole API, and nothing revoked it once the install finished. It now opens the installer alone, only while the install is unfinished, and finishing the install revokes it. (#847)
+
+### Highlights
+
+- **Connect an AI assistant.** An MCP server at `/mcp`, off until a super administrator switches it on under Administration > Settings > AI connections (or `php artisan mcp:enable`). Assistants sign in with OAuth, and each connection is bound to one user, one company and read or read-and-write access, chosen on a consent screen. Every user sees their connected apps under Account settings, with how to connect each client, and can make one read-only or disconnect it. (#805, #806, #845)
+- **39 tools.** Search and read customers, items, invoices, estimates, payments and expenses, company figures and rankings; create and update customers, items, invoices and estimates, record payments and expenses, preview a document before saving it; send documents and delete records, which need the user's confirmation. The server does the document arithmetic exactly as the invoice form does, validates with the app's own rules, and logs every change and email. (#841 to #844)
+- **Headless install.** `php artisan invoiceshelf:install` migrates, creates the super administrator and the first company from options or `INSTALL_*` variables, and closes the installer. It never creates the default `admin@invoiceshelf.com` account, and does nothing on an installed app, so it can run on every start. (#847)
+- **Demo mode.** With `APP_ENV=demo` the app rebuilds itself on a schedule with sample data and a customer portal sign-in, refuses the changes that would lock out the next visitor, and tells visitors they are in the demo. This is what runs demo.invoiceshelf.com. (#848)
+
+### Improvements and fixes
+
+- A signed-out visitor to the customer portal's login page was sent to the staff login. (#848)
+- Release images are published on GHCR as well as Docker Hub. (#849)
+
+### Upgrade notes
+
+- **The MCP server stays off until you switch it on.** Switching it on creates the OAuth signing keys in `storage/` if there are none; the Docker image creates them on start. To keep them outside the volume, set `PASSPORT_PRIVATE_KEY` and `PASSPORT_PUBLIC_KEY`. Replacing the keys signs every connected app out.
+- Hosted assistants such as Claude and ChatGPT connect only over HTTPS, to the address in `APP_URL`.
+- An unfinished install's wizard token no longer works outside the installer. Finish the install in the browser, or run `php artisan invoiceshelf:install`.
+- The client manifest gains a `demo` block for the apps.
+- The module runtime still advertises module API 1.3.0, so modules need no change.
+
+Docker: `invoiceshelf/invoiceshelf:3.0.0-alpha.5` or `ghcr.io/invoiceshelf/invoiceshelf:3.0.0-alpha.5` (also `:next`).
+
 ## 3.0.0-alpha.4 - 2026-09-23
 
 Fourth public alpha of InvoiceShelf 3.0. It closes a batch of security vulnerabilities, several of which affect every earlier 3.x alpha, and brings the redesign: a new look that works on a phone as well as a desktop, accessibility to WCAG 2.2 AA, right-to-left languages, and the server side of the mobile apps.
