@@ -45,6 +45,9 @@
     "download": "Преземи",
     "refresh": "Refresh",
     "loading": "Loading…",
+    "check_highlighted_fields": "Some details are missing. Check the highlighted fields and try again.",
+    "taxes_are_added_in_settings": "Taxes are added under Settings, Tax Types.",
+    "select_an_option": "Select an option",
     "date": "Date",
     "from_date": "Од датум",
     "to_date": "До датум",
@@ -200,6 +203,7 @@
     "select_named": "Select {name}"
   },
   "dashboard": {
+    "load_failed": "The dashboard could not be loaded.",
     "select_year": "Избери година",
     "cards": {
       "due_amount": "Доспеан износ",
@@ -224,7 +228,10 @@
       "customer": "Корисник",
       "amount_due": "Amount due",
       "actions": "Акции",
-      "view_all": "View all"
+      "view_all": "View all",
+      "empty_title": "Nothing awaiting payment",
+      "empty_description": "Sent invoices that are still due show up here.",
+      "portal_empty_description": "Invoices you still need to pay show up here."
     },
     "recent_estimate_card": {
       "title": "Recent estimates",
@@ -232,7 +239,10 @@
       "customer": "Корисник",
       "amount_due": "Amount",
       "actions": "Акции",
-      "view_all": "View all"
+      "view_all": "View all",
+      "empty_title": "No estimates yet",
+      "empty_description": "Estimates you send show up here.",
+      "portal_empty_description": "Estimates sent to you show up here."
     },
     "receivables": {
       "title": "Owed to you",
@@ -242,9 +252,12 @@
       "due_later": "Due later",
       "invoice_count": "{count} invoice | {count} invoices",
       "nothing_owed": "Nothing is owed to you right now.",
+      "first_invoice_hint": "Send your first invoice and what customers owe you shows up here.",
       "view_invoices": "View invoices"
     },
     "cashflow": {
+      "no_activity": "No activity in this period",
+      "no_activity_hint": "Invoices, payments and expenses you record will show up here.",
       "title": "Cash flow",
       "show_table": "Show as table",
       "hide_table": "Hide table",
@@ -354,8 +367,13 @@
     "billing_address": "Адреса за наплата",
     "shipping_address": "Адреса за испорака",
     "copy_billing_address": "Копирај од адреса за наплата",
-    "no_customers": "Сè уште нема корисници!",
+    "no_customers": "No customers yet",
+    "empty_description": "Add the people and businesses you bill, then invoice them in a few clicks.",
     "no_customers_found": "Не се пронајдени корисници!",
+    "add_first_customer": "Add your first customer to start invoicing them.",
+    "activity_load_failed": "This customer's activity could not be loaded.",
+    "statement_load_failed": "The statement could not be loaded.",
+    "ask_to_add_customers": "Someone who can manage customers needs to add one first.",
     "no_contact": "Нема контакт",
     "no_contact_name": "Нема име на контакт",
     "list_of_customers": "Овој дел ќе го содржи списокот на корисници.",
@@ -364,7 +382,7 @@
     "select_a_customer": "Избери корисник",
     "type_or_click": "Внесете или кликнете за избор",
     "new_transaction": "Нова трансакција",
-    "no_matching_customers": "Нема корисници кои се совпаѓаат!",
+    "no_matching_customers": "No customers match these filters",
     "phone_number": "Телефонски број",
     "create_date": "Датум на креирање",
     "confirm_delete": "Нема да можете да го вратите овој корисник и сите поврзани фактури, понуди и плаќања. | Нема да можете да ги вратите овие корисници и сите поврзани фактури, понуди и плаќања.",
@@ -418,7 +436,9 @@
     "add_new_item": "Додај нова ставка",
     "new_item": "Нова ставка",
     "edit_item": "Измени ставка",
-    "no_items": "Сè уште нема ставки!",
+    "no_items": "No items yet",
+    "empty_description": "Save the products and services you sell to add them to invoices in one click.",
+    "no_matching_items": "No items match these filters",
     "list_of_items": "Овој дел ќе го содржи списокот на ставки.",
     "select_a_unit": "избери единица",
     "taxes": "Даноци",
@@ -480,7 +500,7 @@
     "confirm_mark_as_sent": "Оваа понуда ќе биде означена како испратена",
     "confirm_mark_as_accepted": "Оваа понуда ќе биде означена како прифатена",
     "confirm_mark_as_rejected": "Оваа понуда ќе биде означена како одбиена",
-    "no_matching_estimates": "Нема понуди кои се совпаѓаат!",
+    "no_matching_estimates": "No estimates match these filters",
     "mark_as_sent_successfully": "Понудата е означена како испратена успешно",
     "send_estimate_successfully": "Понудата е испратена успешно",
     "errors": {
@@ -500,7 +520,9 @@
     "items": "ставки",
     "Estimate": "Понуда | Понуди",
     "add_new_tax": "Додај нов данок",
-    "no_estimates": "Сè уште нема понуди!",
+    "no_estimates": "No estimates yet",
+    "empty_description": "Send a quote, then turn it into an invoice once it's accepted.",
+    "portal_empty_description": "Estimates sent to you will show up here.",
     "list_of_estimates": "Овој дел ќе го содржи списокот на понуди.",
     "mark_as_rejected": "Означи како одбиено",
     "mark_as_accepted": "Означи како прифатено",
@@ -585,12 +607,14 @@
     "save_invoice": "Зачувај фактура",
     "update_invoice": "Ажурирај фактура",
     "add_new_tax": "Додај нов данок",
-    "no_invoices": "Сè уште нема фактури!",
+    "no_invoices": "No invoices yet",
+    "empty_description": "Create an invoice and send it to a customer to get paid.",
+    "portal_empty_description": "Invoices sent to you will show up here.",
     "mark_as_rejected": "Означи како одбиено",
     "mark_as_accepted": "Означи како прифатено",
     "list_of_invoices": "Овој дел ќе го содржи списокот на фактури.",
     "select_invoice": "Избери фактура",
-    "no_matching_invoices": "Нема фактури кои се совпаѓаат!",
+    "no_matching_invoices": "No invoices match these filters",
     "mark_as_sent_successfully": "Фактурата е означена како испратена успешно",
     "invoice_sent_successfully": "Фактурата е испратена успешно",
     "cloned_successfully": "Фактурата е клонирана успешно",
@@ -720,12 +744,13 @@
     "save_invoice": "Зачувај повторлива фактура",
     "update_invoice": "Ажурирај повторлива фактура",
     "add_new_tax": "Додај нов данок",
-    "no_invoices": "Сè уште нема повторливи фактури!",
+    "no_invoices": "No recurring invoices yet",
+    "empty_description": "Set up an invoice that goes out on a schedule, such as a monthly retainer.",
     "mark_as_rejected": "Означи како одбиено",
     "mark_as_accepted": "Означи како прифатено",
     "list_of_invoices": "Овој дел ќе го содржи списокот на повторливи фактури.",
     "select_invoice": "Избери фактура",
-    "no_matching_invoices": "Нема повторливи фактури кои се совпаѓаат!",
+    "no_matching_invoices": "No recurring invoices match these filters",
     "mark_as_sent_successfully": "Повторливата фактура е означена како испратена успешно",
     "invoice_sent_successfully": "Повторливата фактура е испратена успешно",
     "cloned_successfully": "Повторливата фактура е клонирана успешно",
@@ -786,7 +811,9 @@
       "date": "Датум",
       "count": "Број"
     },
-    "make_recurring": "Направи повторливо"
+    "make_recurring": "Направи повторливо",
+    "no_generated_invoices": "No invoices yet",
+    "no_generated_invoices_description": "Invoices this schedule creates show up here."
   },
   "payments": {
     "title": "Плаќања",
@@ -810,10 +837,12 @@
     "save_payment": "Зачувај плаќање",
     "update_payment": "Ажурирај плаќање",
     "payment": "Плаќање | Плаќања",
-    "no_payments": "Сè уште нема плаќања!",
+    "no_payments": "No payments yet",
+    "empty_description": "Record a payment when a customer pays and apply it to their invoices.",
+    "portal_empty_description": "Payments you make will show up here.",
     "not_selected": "Не е избрано",
     "no_invoice": "Нема фактура",
-    "no_matching_payments": "Нема плаќања кои се совпаѓаат!",
+    "no_matching_payments": "No payments match these filters",
     "list_of_payments": "Овој дел ќе го содржи списокот на плаќања.",
     "select_payment_mode": "Избери начин на плаќање",
     "confirm_mark_as_sent": "Оваа понуда ќе биде означена како испратена",
@@ -832,6 +861,7 @@
     "add_allocation": "Add Allocation",
     "select_customer_to_allocate": "Select a customer before allocating this payment.",
     "no_allocations": "No invoices selected. This payment will remain available as customer credit.",
+    "no_open_invoices": "This customer has no open invoices, so the payment will stay as customer credit.",
     "allocated": "Allocated",
     "unapplied_credit": "Unapplied Credit",
     "remove_allocation": "Remove allocation",
@@ -879,7 +909,9 @@
     "edit_expense": "Измени трошок",
     "new_expense": "Нов трошок",
     "expense": "Трошок | Трошоци",
-    "no_expenses": "Сè уште нема трошоци!",
+    "no_expenses": "No expenses yet",
+    "empty_description": "Record what the business spends to see your profit and reclaim tax.",
+    "no_matching_expenses": "No expenses match these filters",
     "list_of_expenses": "Овој дел ќе го содржи списокот на трошоци.",
     "confirm_delete": "Нема да можете да го вратите овој трошок | Нема да можете да ги вратите овие трошоци",
     "created_message": "Трошокот е креиран успешно",
@@ -999,6 +1031,7 @@
     "purchased": "Купено",
     "installed": "Инсталирано",
     "no_modules_installed": "Сè уште нема инсталирани модули!",
+    "no_marketplace_modules": "No marketplace modules are available yet.",
     "disable_warning": "Сите поставки за овој модул ќе бидат вратени.",
     "uninstall": "Uninstall",
     "uninstall_warning": "Uninstalling removes this module's runtime files. Its data and settings are preserved unless you explicitly choose to remove them.",
@@ -1063,6 +1096,8 @@
     "invited_by": "Поканет од",
     "sent_at": "Испратено на",
     "no_users": "No members yet",
+    "empty_description": "Invite the people who work on this company with you.",
+    "no_matching_members": "No members match these filters",
     "list_of_users": "Invite the people who work with you. They show up here once they join."
   },
   "reports": {
@@ -1367,7 +1402,9 @@
       "bound_none": "No limit",
       "bound_today": "Today",
       "bound_fixed_date": "A fixed date",
-      "bound_fixed_time": "A fixed time"
+      "bound_fixed_time": "A fixed time",
+      "empty_title": "No custom fields yet",
+      "empty_description": "Add your own fields to invoices, customers, items and more."
     },
     "customization": {
       "customization": "прилагодување",
@@ -1503,7 +1540,9 @@
           "estimate": "Понуда",
           "invoice": "Фактура",
           "payment": "Плаќање"
-        }
+        },
+        "empty_title": "No notes yet",
+        "empty_description": "Save text you use often, like payment terms, and insert it into any document."
       },
       "reorder_component": "Move {name}, {position} of {count}. Use the up and down arrow keys"
     },
@@ -1593,7 +1632,9 @@
       "active": "Активно",
       "currency_help_text": "Овој провајдер ќе се користи само на горенаведените избрани валути",
       "currency_in_used": "Следните валути се веќе активни на друг провајдер. Ве молиме отстранете ги овие валути од изборот за повторно да го активирате овој провајдер.",
-      "fetch_latest": "Fetch the latest exchange rate"
+      "fetch_latest": "Fetch the latest exchange rate",
+      "empty_title": "No exchange rate providers yet",
+      "empty_description": "Connect a provider to fetch rates for documents in other currencies."
     },
     "tax_types": {
       "title": "Типови на данок",
@@ -1622,7 +1663,9 @@
       "tax_included": "Вклучени даноци",
       "tax_included_description": "Овозможете го ова ако сакате да известите дека даноците се веќе вклучени во ставките на фактурата или вкупниот износ на фактурата.",
       "tax_included_by_default": "Овозможи вклучени даноци стандардно",
-      "tax_included_by_default_description": "Овозможете го ова ако сакате стандардно да поставите вклучени даноци"
+      "tax_included_by_default_description": "Овозможете го ова ако сакате стандардно да поставите вклучени даноци",
+      "empty_title": "No tax types yet",
+      "empty_description": "Add a tax once, then pick it on any invoice or expense."
     },
     "payment_modes": {
       "title": "Начини на плаќање",
@@ -1650,7 +1693,9 @@
       "deleted_message": "Категоријата на трошок е избришана успешно",
       "updated_message": "Категоријата на трошок е ажурирана успешно",
       "confirm_delete": "Нема да можете да ја вратите оваа категорија на трошок",
-      "already_in_use": "Категоријата е веќе во употреба"
+      "already_in_use": "Категоријата е веќе во употреба",
+      "empty_title": "No expense categories yet",
+      "empty_description": "Group expenses by what they're for, such as travel or software. Every expense needs one."
     },
     "preferences": {
       "currency": "Валута",
@@ -1762,7 +1807,9 @@
       "action": "Акција",
       "deleted_message": "Резервната копија е избришана успешно",
       "created_message": "Резервната копија е креирана успешно",
-      "invalid_disk_credentials": "Невалидни акредитиви на избраниот диск"
+      "invalid_disk_credentials": "Невалидни акредитиви на избраниот диск",
+      "empty_title": "No backups yet",
+      "empty_description": "Create a backup to keep a copy of your data and files."
     },
     "disk": {
       "title": "Дискови за датотеки | Дискови за датотеки",
