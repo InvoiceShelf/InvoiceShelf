@@ -128,6 +128,15 @@ echo "**** Clearing cached config ****"
 echo "**** Creating storage link ****"
 ./artisan storage:link --force 2>/dev/null || true
 
+# The OAuth server (used by the MCP server) signs tokens with a key pair kept
+# in storage/. Create it once, so it exists before anyone switches the server
+# on; PASSPORT_PRIVATE_KEY and PASSPORT_PUBLIC_KEY take precedence when set.
+echo "**** Ensuring OAuth signing keys ****"
+./artisan oauth:keys --if-missing 2>/dev/null || true
+if [ "$(id -u)" = "0" ]; then
+    chown www-data:www-data storage/oauth-*.key 2>/dev/null || true
+fi
+
 echo "**** Running migrations (if app is installed) ****"
 if ./artisan migrate:status > /dev/null 2>&1; then
     ./artisan migrate --force

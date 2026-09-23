@@ -46,6 +46,7 @@ class CompanyService
         private readonly CompanyDefaultsProvisioner $companyDefaultsProvisioner,
         private readonly CompanyDataPurger $companyDataPurger,
         private readonly AbilityCatalog $abilityCatalog,
+        private readonly AccessRevoker $accessRevoker,
     ) {}
 
     /**
@@ -111,6 +112,10 @@ class CompanyService
             ->each(function ($role) {
                 $role->delete();
             });
+
+        foreach ($company->users()->pluck('users.id') as $userId) {
+            $this->accessRevoker->revokeCompany((int) $userId, $company->id);
+        }
 
         $company->users()->detach();
 

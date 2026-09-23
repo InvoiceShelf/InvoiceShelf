@@ -1,7 +1,9 @@
 <?php
 
+use App\Domains\Accounts\Application\PostLoginRedirect;
 use App\Domains\Accounts\Http\Middleware\Authenticate;
 use App\Domains\Accounts\Http\Middleware\CompanyMiddleware;
+use App\Domains\Accounts\Http\Middleware\EnsureOAuthServerEnabled;
 use App\Domains\Accounts\Http\Middleware\RedirectIfAuthenticated;
 use App\Domains\Accounts\Http\Middleware\RedirectIfUnauthorized;
 use App\Domains\Accounts\Http\Middleware\ScopeBouncer;
@@ -27,11 +29,13 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Lavary\Menu\ServiceProvider;
+use League\OAuth2\Server\Exception\OAuthServerException;
 
 // Marketplace modules are installed after Composer's autoload map is built.
 // Register their app/ prefixes before package discovery loads enabled module
@@ -50,7 +54,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->redirectGuestsTo(fn () => route('login'));
+        $middleware->redirectGuestsTo(fn (Request $request) => PostLoginRedirect::loginUrlFor($request));
         $middleware->redirectUsersTo(AppServiceProvider::HOME);
 
         $middleware->preventRequestForgery(except: [
@@ -90,6 +94,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'guest' => RedirectIfAuthenticated::class,
             'install' => EnsureInstalled::class,
             'not-containerized' => EnsureNotContainerized::class,
+            'oauth.enabled' => EnsureOAuthServerEnabled::class,
             'pdf-auth' => PdfMiddleware::class,
             'redirect-if-installed' => RedirectIfInstalled::class,
             'redirect-if-unauthenticated' => RedirectIfUnauthorized::class,
@@ -107,5 +112,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        // Passport's guard reports every bearer token it cannot verify, which
+        // on a public endpoint is routine traffic rather than an error.
+        $exceptions->dontReport(OAuthServerException::class);
     })->create();

@@ -73,6 +73,20 @@ const router = useRouter()
 const route = useRoute()
 const isLoading = ref<boolean>(false)
 
+// Server-rendered pages a sign-in may return to. Keep in step with
+// PostLoginRedirect::SERVER_PATHS (app/Domains/Accounts/Application).
+const SERVER_REDIRECT_PATHS = ['/oauth/authorize']
+
+function isServerRedirectPath(path: string): boolean {
+  if (path.includes('\\')) {
+    return false
+  }
+
+  return SERVER_REDIRECT_PATHS.some(
+    (prefix) => path === prefix || path.startsWith(`${prefix}?`)
+  )
+}
+
 const rules = {
   email: {
     required: helpers.withMessage(t('validation.required'), required),
@@ -110,6 +124,13 @@ async function onSubmit(): Promise<void> {
       nextRaw.startsWith('/') && !nextRaw.startsWith('//')
         ? nextRaw
         : '/admin/dashboard'
+
+    // Pages the server renders itself, such as the OAuth consent screen, are
+    // not SPA routes: load them with a full navigation.
+    if (isServerRedirectPath(safeNext)) {
+      window.location.assign(safeNext)
+      return
+    }
 
     router.push(safeNext)
 

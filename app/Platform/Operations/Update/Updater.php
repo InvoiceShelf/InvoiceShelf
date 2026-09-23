@@ -297,10 +297,18 @@ class Updater
 
     /**
      * Record the new version and announce the finished update.
+     *
+     * Cached configuration, routes and compiled services describe the release
+     * that was replaced; an installation that ran `config:cache` would
+     * otherwise keep serving, for example, an auth guard list without a guard
+     * the new release added. They are cleared so the next request rebuilds
+     * them from the new files.
      */
     public static function finishUpdate($installed, $version)
     {
         Setting::setSetting('version', $version);
+
+        Artisan::call('optimize:clear');
 
         static::retireShippedKey();
 

@@ -2,6 +2,7 @@
 
 namespace App\Domains\Accounts\Http\Middleware;
 
+use App\Domains\Accounts\Application\PostLoginRedirect;
 use App\Providers\RouteServiceProvider;
 use Closure;
 use Illuminate\Http\Request;
@@ -10,14 +11,14 @@ use Illuminate\Support\Facades\Auth;
 /**
  * The `guest` alias: keeps signed-in staff off the sign-in pages.
  *
- * Rather than refusing, it forwards the caller to the dashboard, so hitting
- * the login page a second time in the same browser simply lands where they
- * were already headed.
+ * Rather than refusing, it forwards the caller on, so hitting the login page
+ * a second time in the same browser simply lands where they were already
+ * headed: the page named by a safe `next` parameter, or the dashboard.
  */
 class RedirectIfAuthenticated
 {
     /**
-     * Pass guests through; send anyone already holding a session home.
+     * Pass guests through; send anyone already holding a session onwards.
      *
      * With no guard named on the route the default one is consulted, which
      * means a customer-portal session does not count as being signed in here.
@@ -28,8 +29,12 @@ class RedirectIfAuthenticated
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        return Auth::guard($guard)->check()
-            ? redirect(RouteServiceProvider::HOME)
-            : $next($request);
+        if (! Auth::guard($guard)->check()) {
+            return $next($request);
+        }
+
+        $destination = PostLoginRedirect::sanitize($request->query('next'));
+
+        return redirect($destination ?? RouteServiceProvider::HOME);
     }
 }
