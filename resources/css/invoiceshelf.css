@@ -122,6 +122,54 @@
 
 @theme {
   --spacing-88: 22rem;
+
+  /*
+   * Enter and leave motion for dialogs, sheets, menus and popovers. Reka UI keeps an
+   * element mounted until its closing animation ends, so these are keyframes
+   * keyed on data-state rather than transitions. Reduced motion cuts them to
+   * nothing (see the prefers-reduced-motion rule below).
+   */
+  --animate-overlay-in: overlay-in 200ms ease-out;
+  --animate-overlay-out: overlay-out 150ms ease-in;
+  --animate-panel-in: panel-in 200ms ease-out;
+  --animate-panel-out: panel-out 150ms ease-in;
+  --animate-sheet-in: sheet-in 200ms ease-out;
+  --animate-sheet-out: sheet-out 150ms ease-in;
+  --animate-pop-in: pop-in 100ms ease-out;
+  --animate-pop-out: pop-out 75ms ease-in;
+  --animate-rise-in: rise-in 200ms ease-out;
+  --animate-rise-out: rise-out 150ms ease-in;
+
+  @keyframes overlay-in {
+    from { opacity: 0; }
+  }
+  @keyframes overlay-out {
+    to { opacity: 0; }
+  }
+  @keyframes panel-in {
+    from { opacity: 0; transform: translateY(0.5rem) scale(0.98); }
+  }
+  @keyframes panel-out {
+    to { opacity: 0; transform: translateY(0.5rem) scale(0.98); }
+  }
+  @keyframes sheet-in {
+    from { transform: translateY(100%); }
+  }
+  @keyframes sheet-out {
+    to { transform: translateY(100%); }
+  }
+  @keyframes pop-in {
+    from { opacity: 0; transform: scale(0.95); }
+  }
+  @keyframes pop-out {
+    to { opacity: 0; transform: scale(0.95); }
+  }
+  @keyframes rise-in {
+    from { opacity: 0; transform: translateY(0.25rem); }
+  }
+  @keyframes rise-out {
+    to { opacity: 0; transform: translateY(0.25rem); }
+  }
   --font-base: "Geologica Variable", "Noto Sans Arabic Variable", "Noto Sans Hebrew Variable", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Geologica Variable", "Noto Sans Arabic Variable", "Noto Sans Hebrew Variable", ui-sans-serif, system-ui, sans-serif;
 
@@ -481,4 +529,14 @@ body {
 :lang(fa),
 :lang(ur) {
     letter-spacing: normal !important;
+}
+
+/*
+ * A modal dialog makes the page behind it inert to the pointer. Popups that
+ * other code appends to <body> while one is open (flatpickr's calendar, a
+ * module's own teleported dialog) stay usable.
+ */
+.flatpickr-calendar,
+body > [role='dialog'] {
+    pointer-events: auto;
 }

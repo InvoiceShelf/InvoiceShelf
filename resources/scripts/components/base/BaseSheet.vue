@@ -1,37 +1,31 @@
 <template>
-  <TransitionRoot as="template" :show="show">
-    <Dialog as="div" class="relative z-40" @close="emit('close')">
-      <TransitionChild
-        as="template"
-        enter="ease-out duration-200"
-        enter-from="opacity-0"
-        enter-to="opacity-100"
-        leave="ease-in duration-150"
-        leave-from="opacity-100"
-        leave-to="opacity-0"
+  <DialogRoot :open="show" @update:open="(open) => !open && emit('close')">
+    <DialogPortal>
+      <DialogOverlay
+        class="
+          fixed inset-0 z-40 bg-overlay
+          data-[state=open]:animate-overlay-in data-[state=closed]:animate-overlay-out
+        "
       >
-        <div class="fixed inset-0 bg-overlay" aria-hidden="true" />
-      </TransitionChild>
-
-      <div class="fixed inset-x-0 bottom-0 flex justify-center">
-        <TransitionChild
-          as="template"
-          enter="ease-out duration-250"
-          enter-from="translate-y-full"
-          enter-to="translate-y-0"
-          leave="ease-in duration-200"
-          leave-from="translate-y-0"
-          leave-to="translate-y-full"
-        >
-          <DialogPanel
+        <div class="fixed inset-x-0 bottom-0 flex justify-center">
+          <DialogContent
+            ref="panel"
+            :aria-describedby="undefined"
             class="
               flex flex-col w-full max-w-lg max-h-[92dvh] glass-strong
               rounded-t-2xl safe-bottom focus:outline-hidden
+              data-[state=open]:animate-sheet-in data-[state=closed]:animate-sheet-out
             "
+            @pointer-down-outside="keepForeignLayers"
+            @focus-outside="keepForeignLayers"
+            @interact-outside="keepForeignLayers"
           >
             <div class="flex justify-center pt-2.5 pb-1" aria-hidden="true">
               <span class="h-1 w-9 rounded-full bg-line-strong" />
             </div>
+
+            <!-- A sheet with no visible title is still named for screen readers -->
+            <DialogTitle v-if="!title && label" class="sr-only">{{ label }}</DialogTitle>
 
             <div
               v-if="title || $slots.header"
@@ -63,21 +57,18 @@
             >
               <slot name="footer" />
             </div>
-          </DialogPanel>
-        </TransitionChild>
-      </div>
-    </Dialog>
-  </TransitionRoot>
+          </DialogContent>
+        </div>
+      </DialogOverlay>
+    </DialogPortal>
+  </DialogRoot>
 </template>
 
 <script setup lang="ts">
-import {
-  Dialog,
-  DialogPanel,
-  DialogTitle,
-  TransitionChild,
-  TransitionRoot,
-} from '@headlessui/vue'
+import { computed, provide, ref } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
+import { DialogContent, DialogOverlay, DialogPortal, DialogRoot, DialogTitle } from 'reka-ui'
+import { DIALOG_LAYER, keepForeignLayers } from '@/scripts/utils/dialog-layers'
 
 /**
  * A bottom sheet for phones: the screen dims, the panel slides up from the
@@ -87,11 +78,19 @@ import {
 interface Props {
   show: boolean
   title?: string
+  /** The sheet's name for screen readers when it shows no title */
+  label?: string
 }
 
 withDefaults(defineProps<Props>(), {
   title: '',
+  label: '',
 })
+
+const panel = ref<ComponentPublicInstance | null>(null)
+
+// Date pickers and selects inside open in place, within the focus trap
+provide(DIALOG_LAYER, computed(() => (panel.value?.$el as HTMLElement | undefined) ?? null))
 
 const emit = defineEmits<{
   (e: 'close'): void

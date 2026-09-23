@@ -160,3 +160,9 @@
 :root .flatpickr-calendar.inline .flatpickr-current-month .flatpickr-monthDropdown-months {
   background: transparent;
 }
+
+/* Inside a dialog the calendar renders in place, in a wrapper around the field: keep the field full width */
+:root .flatpickr-wrapper {
+  display: block;
+  width: 100%;
+}

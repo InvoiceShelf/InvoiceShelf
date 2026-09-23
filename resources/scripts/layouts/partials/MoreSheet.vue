@@ -1,6 +1,7 @@
 <template>
   <BaseSheet
     :show="globalStore.isSidebarOpen"
+    :label="$t('navigation.more')"
     @close="globalStore.setSidebarVisibility(false)"
   >
     <nav class="pb-1">
