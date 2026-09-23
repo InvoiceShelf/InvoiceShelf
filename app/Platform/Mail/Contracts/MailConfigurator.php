@@ -16,4 +16,12 @@ interface MailConfigurator
      * @return list<string>
      */
     public function getCompanySettingKeys(): array;
+
+    /**
+     * The sender the send dialogs prefill: the configured from name and
+     * address.
+     *
+     * @return array{from_name: mixed, from_mail: mixed}
+     */
+    public function getDefaultConfig(): array;
 }
