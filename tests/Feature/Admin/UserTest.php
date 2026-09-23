@@ -128,3 +128,88 @@ test('cannot bulk delete a user belonging to another company', function () {
 
     $this->assertDatabaseHas('users', ['id' => $user->id]);
 });
+
+/**
+ * A company with the owner role every company is set up with, owned by someone
+ * other than the acting user.
+ */
+function foreignCompany(): Company
+{
+    $company = Company::factory()->create(['owner_id' => User::factory()->create(['role' => 'user'])->id]);
+    $company->setupRoles();
+
+    return $company;
+}
+
+function userPayload(array $companies, array $overrides = []): array
+{
+    return [
+        'name' => 'New User',
+        'email' => 'new.user@example.com',
+        'password' => 'long-enough-password',
+        'companies' => $companies,
+        ...$overrides,
+    ];
+}
+
+test('a user cannot be filed into a company the caller does not own', function () {
+    $own = User::where('role', 'super admin')->first()->companies()->first();
+    $foreign = foreignCompany();
+
+    postJson('/api/v1/users', userPayload([
+        ['id' => $own->id, 'role' => 'super admin'],
+        ['id' => $foreign->id, 'role' => 'super admin'],
+    ]))->assertUnprocessable();
+
+    expect(User::where('email', 'new.user@example.com')->exists())->toBeFalse();
+});
+
+test('a role must exist in the company it is granted in', function () {
+    $own = User::where('role', 'super admin')->first()->companies()->first();
+
+    postJson('/api/v1/users', userPayload([['id' => $own->id, 'role' => 'made-up-role']]))->assertUnprocessable();
+});
+
+test('an edit cannot move a user into a company the caller does not own', function () {
+    $own = User::where('role', 'super admin')->first()->companies()->first();
+    $foreign = foreignCompany();
+    $user = User::factory()->create(['role' => 'user']);
+    $user->companies()->attach($own->id);
+
+    putJson("/api/v1/users/{$user->id}", userPayload([
+        ['id' => $own->id, 'role' => 'super admin'],
+        ['id' => $foreign->id, 'role' => 'super admin'],
+    ], ['email' => $user->email, 'password' => null]))->assertUnprocessable();
+
+    expect($user->fresh()->hasCompany($foreign->id))->toBeFalse();
+});
+
+test('an edit leaves a user\'s other companies alone', function () {
+    $own = User::where('role', 'super admin')->first()->companies()->first();
+    $foreign = foreignCompany();
+    $user = User::factory()->create(['role' => 'user']);
+    $user->companies()->attach([$own->id, $foreign->id]);
+
+    putJson("/api/v1/users/{$user->id}", userPayload(
+        [['id' => $own->id, 'role' => 'super admin']],
+        ['name' => 'Renamed', 'email' => $user->email, 'password' => null],
+    ))->assertOk();
+
+    expect($user->fresh()->name)->toBe('Renamed')
+        ->and($user->fresh()->hasCompany($foreign->id))->toBeTrue();
+});
+
+test('the credentials of a user who belongs elsewhere too cannot be changed', function () {
+    $own = User::where('role', 'super admin')->first()->companies()->first();
+    $foreign = foreignCompany();
+    $user = User::factory()->create(['role' => 'user', 'email' => 'shared@example.com']);
+    $user->companies()->attach([$own->id, $foreign->id]);
+    $password = $user->password;
+
+    putJson("/api/v1/users/{$user->id}", userPayload(
+        [['id' => $own->id, 'role' => 'super admin']],
+        ['email' => 'shared@example.com', 'password' => 'taken-over-password'],
+    ))->assertUnprocessable();
+
+    expect($user->fresh()->password)->toBe($password);
+});
