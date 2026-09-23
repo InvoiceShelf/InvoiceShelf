@@ -57,7 +57,8 @@ onMounted(() => {
     }
 
     if (
-      res.data.current_company_settings.bulk_exchange_rate_configured === 'NO'
+      res.data.current_company_settings.bulk_exchange_rate_configured === 'NO' &&
+      userStore.currentUser.is_owner
     ) {
       exchangeRateStore.fetchBulkCurrencies().then((res) => {
         if (res.data.currencies.length) {
