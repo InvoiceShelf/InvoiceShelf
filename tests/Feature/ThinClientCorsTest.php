@@ -165,6 +165,6 @@ test('the allowed origins are built from the client hostname unless the env name
     expect($default['allowed_origins'])->toBe([CLIENT_CAPACITOR_ORIGIN, CLIENT_ORIGIN])
         ->and($renamed['allowed_origins'])->toBe(['capacitor://phone.example.test', 'https://phone.example.test'])
         ->and($listed['allowed_origins'])->toBe(['http://127.0.0.1:4173', 'https://app.example.test'])
-        ->and($default['paths'])->toContain('api/*', 'modules/scripts/*', 'modules/styles/*', 'reports/*', 'invoices/pdf/*', 'estimates/pdf/*', 'payments/pdf/*')
+        ->and($default['paths'])->toContain('api/*', 'modules/scripts/*', 'modules/styles/*', 'reports/*', 'invoices/pdf/*', 'estimates/pdf/*', 'payments/pdf/*', 'mcp')
         ->and($default['supports_credentials'])->toBeFalse();
 });

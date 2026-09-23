@@ -11,7 +11,7 @@
 |
 | The listed paths are everything a client talks to: the JSON API, the module
 | assets it loads at runtime the way the Blade shell does, the report
-| endpoints and the web-served PDF routes.
+| endpoints, the web-served PDF routes and the MCP endpoint.
 |
 | Credentials stay off on purpose. Clients authenticate with a bearer token,
 | never with the session cookie, and allowing credentials here would force a
@@ -36,6 +36,7 @@ return [
         'invoices/pdf/*',
         'estimates/pdf/*',
         'payments/pdf/*',
+        'mcp',
     ],
 
     'allowed_methods' => ['*'],

@@ -109,6 +109,11 @@ const menuItems = computed<SettingsMenuItem[]>(() => [
     link: '/admin/administration/settings/appearance',
     icon: 'PaintBrushIcon',
   },
+  {
+    title: t('mcp.admin.menu_title'),
+    link: '/admin/administration/settings/mcp',
+    icon: 'SparklesIcon',
+  },
   ...extensionItems(extensionRegistry.adminSettingsNavigation.value).map((item) => ({
     title: t(item.title),
     link: router.resolve(item.to).fullPath,

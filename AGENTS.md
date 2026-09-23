@@ -70,7 +70,7 @@ Every major model has a `company_id` foreign key. The `CompanyMiddleware` sets t
 - **`owner`** — company-level admin (scoped to a company via Bouncer, full access to that company).
 
 ### Authentication
-Three guards: `web` (session), `api` (Sanctum tokens for `/api/v1/`), `customer` (session for customer portal). API routes use `auth:sanctum` middleware; customer portal uses `auth:customer`.
+Four guards: `web` (session), `api` (Sanctum tokens for `/api/v1/`), `customer` (session for customer portal) and `oauth` (Passport access tokens, used by the MCP server). API routes use `auth:sanctum` middleware; customer portal uses `auth:customer`.
 
 ### Routing
 - **API**: All endpoints under `/api/v1/` in `routes/api.php`, grouped with `auth:sanctum`, `company`, and `bouncer` middleware
@@ -85,6 +85,16 @@ Mobile clients run the same SPA from their own origin and never load `resources/
 Tokens never expire, so `GET /api/v1/auth/tokens` and `DELETE /api/v1/auth/tokens/{id}` (the caller's own only) exist to cut off a lost device, and `POST /api/v1/auth/login` is throttled to 10 a minute.
 
 **Mobile shell** (`mobile/`, see `mobile/README.md`): a Capacitor 7 project wrapping the `pnpm build:client` output in `mobile/www`. `android/` and `ios/` are committed; `www/` and `node_modules/` are not. Native pieces live in `resources/scripts/platform/capacitor.ts` alone (device name, share-sheet file delivery, in-app browser, receipt camera, the biometric check behind the app lock in `resources/scripts/client/lock.ts`), behind a dynamic import gated on `__INVOICESHELF_CLIENT__` so no Capacitor code reaches the web bundle. The plugins are declared twice, in `mobile/package.json` and the root one, and must stay at the same versions. `capacitor.config.ts`'s `server.hostname` is the contract above: never `localhost`.
+
+### MCP server
+
+`app/Platform/Mcp/` lets AI assistants (Claude, ChatGPT, Claude Code, Cursor) use the app over the Model Context Protocol at `/mcp`, built on `laravel/mcp` and Passport. It is off until a super admin switches it on (`php artisan mcp:enable`, or Administration → Settings → AI connections). The user guide is `docs/guide/ai-assistants.md` in the docs repo.
+
+- **Connections.** Clients register themselves (DCR) and sign in with OAuth 2.1 and PKCE. The consent screen (`OAuth/ConsentScreen`) binds each connection (`McpConnection`) to one user, one company and an access level, `read` or `write`. `BindMcpConnection` puts that company in the `company` header, so `whereCompany()`, Bouncer scoping and the policies work unchanged. A client never names a company.
+- **Tools** live in `Tools/{area}/*Tool.php` and extend `McpTool`. Each one declares all four annotations and the ability it needs (`ability()`). A tool that writes extends `McpWriteTool`, which hides it from read-only connections, limits a connection to 30 changes a minute, takes an `idempotency_key` when `creates()` is true, and logs every change in `mcp_activity`. Tools that delete or send email take a required `confirm` and do nothing without it (`RequiresConfirmation`). Sends are also limited per connection and per company (`SendsMail`). `ToolCatalogueTest` enforces all of this for every tool on the server.
+- **Writes use the app's own path.** A tool composes the payload the SPA would send (`SalesDocumentComposer`, `PaymentComposer`; the arithmetic is `App\Support\DocumentTaxes`, a port of the document forms), validates it with the domain's form request through `Support/DomainRequestValidator`, and stores it with the same service the controller uses. Never compute amounts in a tool, and never write a model directly.
+- **Reads** return presenters (`Presenters/*`) with explicit fields, never `toArray()`. Money is `{amount, currency, formatted}` with a major-unit decimal string. Company figures sum the `base_*` columns.
+- **Adding a tool:** a class in `Tools/`, listed in `Servers/InvoiceShelfServer::$tools`, and a test. Its name and description are what the model reads, so write them for someone who has never seen the app.
 
 ### Frontend
 - Vue 3 + TypeScript + Pinia + vue-router + Tailwind v4 (`@tailwindcss/vite`)
