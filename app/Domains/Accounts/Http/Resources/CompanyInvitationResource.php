@@ -13,7 +13,8 @@ class CompanyInvitationResource extends JsonResource
             'id' => $this->id,
             'company_id' => $this->company_id,
             'email' => $this->email,
-            'token' => $this->token,
+            // The token accepts the invitation, so only the person it was sent to sees it
+            'token' => $this->when($this->isFor($request), $this->token),
             'status' => $this->status,
             'expires_at' => $this->expires_at,
             'created_at' => $this->created_at,
@@ -27,5 +28,12 @@ class CompanyInvitationResource extends JsonResource
                 return new UserResource($this->invitedBy);
             }),
         ];
+    }
+
+    private function isFor(Request $request): bool
+    {
+        $email = $request->user()?->email;
+
+        return is_string($email) && strcasecmp($email, (string) $this->email) === 0;
     }
 }

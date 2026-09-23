@@ -7,6 +7,7 @@ use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\CompanyInvitation;
 use App\Domains\Accounts\Models\User;
 use Carbon\Carbon;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -71,6 +72,8 @@ class InvitationService
      */
     public function accept(CompanyInvitation $invitation, User $user): void
     {
+        $this->assertAddressedTo($invitation, $user);
+
         if (! $invitation->isPending()) {
             throw ValidationException::withMessages([
                 'invitation' => ['This invitation is no longer valid.'],
@@ -97,6 +100,8 @@ class InvitationService
      */
     public function decline(CompanyInvitation $invitation, User $user): void
     {
+        $this->assertAddressedTo($invitation, $user);
+
         if (! $invitation->isPending()) {
             throw ValidationException::withMessages([
                 'invitation' => ['This invitation is no longer valid.'],
@@ -118,5 +123,16 @@ class InvitationService
             ->pending()
             ->with(['company', 'role', 'invitedBy'])
             ->get();
+    }
+
+    /**
+     * An invitation is answered by the person it was sent to, and nobody else:
+     * holding its token is not enough.
+     */
+    private function assertAddressedTo(CompanyInvitation $invitation, User $user): void
+    {
+        if (strcasecmp((string) $user->email, (string) $invitation->email) !== 0) {
+            throw new AuthorizationException('This invitation was sent to someone else.');
+        }
     }
 }

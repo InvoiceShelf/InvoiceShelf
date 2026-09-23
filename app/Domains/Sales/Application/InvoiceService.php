@@ -13,12 +13,11 @@ use App\Domains\Sales\Contracts\InvoicePdfDataProvider;
 use App\Domains\Sales\Mail\SendInvoiceMail;
 use App\Domains\Sales\Models\Estimate;
 use App\Domains\Sales\Models\Invoice;
-use App\Facades\Hashids;
 use App\Platform\Mail\Contracts\MailConfigurator;
 use App\Platform\Pdf\Facades\Pdf;
 use App\Platform\Pdf\Rendering\PdfMetadata;
 use App\Platform\Pdf\Rendering\PdfTemplateUtils;
-use App\Support\Hashids\HashidConnection;
+use App\Support\PublicToken;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\View;
@@ -66,7 +65,7 @@ class InvoiceService implements InvoicePdfDataProvider
             'sequence_number' => $serial->nextSequenceNumber,
             'customer_sequence_number' => $serial->nextCustomerSequenceNumber,
         ]);
-        $invoice->unique_hash = Hashids::connection(HashidConnection::Invoice->value)->encode($invoice->id);
+        $invoice->unique_hash = PublicToken::make();
         $invoice->save();
 
         $this->documentItemService->createItems($invoice, $items);
@@ -403,7 +402,7 @@ class InvoiceService implements InvoicePdfDataProvider
             ...$carriedOver,
         ]);
 
-        $newInvoice->unique_hash = Hashids::connection(HashidConnection::Invoice->value)->encode($newInvoice->id);
+        $newInvoice->unique_hash = PublicToken::make();
         $newInvoice->save();
 
         $invoice->load('items.taxes');
@@ -475,7 +474,7 @@ class InvoiceService implements InvoicePdfDataProvider
             ...$carriedOver,
         ]);
 
-        $estimate->unique_hash = Hashids::connection(HashidConnection::Estimate->value)->encode($estimate->id);
+        $estimate->unique_hash = PublicToken::make();
         $estimate->save();
 
         $this->documentItemService->createItems($estimate, $this->documentItemService->itemsForCopy($invoice));

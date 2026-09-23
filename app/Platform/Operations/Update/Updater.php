@@ -302,6 +302,8 @@ class Updater
     {
         Setting::setSetting('version', $version);
 
+        static::retireShippedKey();
+
         event(new UpdateFinished($installed, $version));
 
         return [
@@ -309,6 +311,25 @@ class Updater
             'error' => false,
             'data' => [],
         ];
+    }
+
+    /**
+     * Move an installation still on the APP_KEY that `.env.example` used to
+     * ship onto a key of its own. It runs last because the new key signs
+     * everyone out, the admin running this update included.
+     *
+     * A failure is logged rather than thrown, like the currency sync: the
+     * update itself has succeeded, and the command can be run by hand.
+     */
+    private static function retireShippedKey(): void
+    {
+        try {
+            if (Artisan::call('invoiceshelf:retire-shipped-key', ['--rotate' => true]) !== 0) {
+                Log::critical('APP_KEY is still the public key InvoiceShelf used to ship: '.trim(Artisan::output()));
+            }
+        } catch (\Throwable $e) {
+            Log::critical('Retiring the shipped APP_KEY after update failed: '.$e->getMessage());
+        }
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Platform\Operations;
 
 use App\Platform\Operations\Application\RuntimeConfigurationService;
 use App\Platform\Operations\Console\ResetApp;
+use App\Platform\Operations\Console\RetireShippedKey;
 use App\Platform\Operations\Console\UpdateCommand;
 use App\Platform\Operations\Installation\Authentication\InstallWizardAuth;
 use App\Platform\Operations\Policies\OperationsAccessPolicy;
@@ -28,6 +29,7 @@ class OperationsServiceProvider extends ServiceProvider
 
         $this->commands([
             ResetApp::class,
+            RetireShippedKey::class,
             UpdateCommand::class,
         ]);
 

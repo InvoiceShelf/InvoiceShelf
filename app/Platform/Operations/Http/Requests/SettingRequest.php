@@ -2,6 +2,8 @@
 
 namespace App\Platform\Operations\Http\Requests;
 
+use App\Platform\Operations\Models\Setting;
+use Closure;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
@@ -19,15 +21,26 @@ class SettingRequest extends FormRequest
     }
 
     /**
-     * The map of options to write must be present; individual option names
-     * are free-form, so nothing below `settings` is constrained here.
+     * A map of options to write, every one of them a shell setting. Anything
+     * else in the store has an endpoint of its own, or is not for writing.
      *
-     * @return array<string, string>
+     * @return array<string, array<int, mixed>>
      */
     public function rules(): array
     {
         return [
-            'settings' => 'required',
+            'settings' => [
+                'bail',
+                'required',
+                'array',
+                function (string $attribute, mixed $value, Closure $fail): void {
+                    $refused = array_diff(array_keys($value), Setting::SHELL_SETTINGS);
+
+                    if ($refused !== []) {
+                        $fail('These settings cannot be changed here: '.implode(', ', $refused).'.');
+                    }
+                },
+            ],
         ];
     }
 }

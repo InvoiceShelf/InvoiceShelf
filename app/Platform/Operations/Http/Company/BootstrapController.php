@@ -31,23 +31,9 @@ class BootstrapController extends Controller
     use GeneratesMenu;
 
     /**
-     * Instance-wide settings the shell needs before it can paint anything.
-     *
-     * Deliberately an allow-list rather than a dump of the settings table:
-     * credentials and tokens stored alongside these must not reach a browser.
+     * Every member gets this payload, so it carries no credentials; see
+     * MemberVisibleSettings and Setting::SHELL_SETTINGS.
      */
-    private const SHELL_SETTINGS = [
-        'admin_portal_theme',
-        'admin_portal_logo',
-        'login_page_logo',
-        'login_page_heading',
-        'login_page_description',
-        'admin_page_title',
-        'copyright_text',
-        'save_pdf_to_disk',
-        'show_sidebar_group_labels',
-    ];
-
     public function __construct(private readonly MemberVisibleSettings $memberVisibleSettings) {}
 
     /**
@@ -95,7 +81,7 @@ class BootstrapController extends Controller
             'current_company_settings' => [],
             'current_company_currency' => $currency,
             'config' => config('invoiceshelf'),
-            'global_settings' => Setting::getSettings(self::SHELL_SETTINGS),
+            'global_settings' => Setting::getSettings(Setting::SHELL_SETTINGS),
             'main_menu' => [],
             'setting_menu' => [],
             'modules' => [],
