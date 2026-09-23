@@ -18,7 +18,11 @@
     "admin": "Administration",
     "administration": "Администрација",
     "companies": "Компании",
-    "all_users": "Корисници"
+    "all_users": "Корисници",
+    "more": "More",
+    "menu": "Menu",
+    "account_settings": "Account settings",
+    "account_menu": "Account menu for {name}"
   },
   "general": {
     "add_company": "Додај компанија",
@@ -71,12 +75,12 @@
     "showing": "Прикажано",
     "of": "од",
     "actions": "Акции",
-    "subtotal": "МЕЃУЗБИР",
-    "discount": "ПОПУСТ",
+    "subtotal": "Subtotal",
+    "discount": "Discount",
     "fixed": "Фиксно",
     "percentage": "Процент",
     "tax": "ДАНОК",
-    "total_amount": "Вкупен износ",
+    "total_amount": "Total amount",
     "bill_to": "Фактурирано на",
     "ship_to": "Испратено на",
     "due": "Доспеано",
@@ -128,18 +132,72 @@
       "showing": "Прикажано",
       "to": "до",
       "of": "од",
-      "results": "резултати"
+      "results": "резултати",
+      "label": "Pagination",
+      "page": "Page {page}"
     },
     "file_upload": {
       "drag_a_file": "Повлечете го фаилот овде или",
       "browse": "прелистајте",
-      "to_choose": "за да изберете датотека"
+      "to_choose": "за да изберете датотека",
+      "take_photo": "Take photo",
+      "capture_failed": "The photo could not be taken. Choose a file instead.",
+      "choose_file": "Choose a file",
+      "remove_file": "Remove file"
     },
     "multiselect": {
       "the_list_is_empty": "Списокот е празен",
       "no_results_found": "Нема пронајдени резултати"
     },
-    "copy_to_clipboard": "Копирај во клипборд"
+    "copy_to_clipboard": "Копирај во клипборд",
+    "new": "New",
+    "expand": "Expand",
+    "theme": "Theme",
+    "theme_light": "Light",
+    "theme_dark": "Dark",
+    "theme_system": "System",
+    "breadcrumb": "Breadcrumb",
+    "selected_count": "{count} selected",
+    "close": "Close",
+    "apply": "Apply",
+    "show_password": "Show password",
+    "hide_password": "Hide password",
+    "successful": "Done.",
+    "something_went_wrong": "Something went wrong. Please try again.",
+    "skip_to_content": "Skip to content",
+    "current": "(current)",
+    "list": "List",
+    "sort_ascending": "Sort order: ascending",
+    "sort_descending": "Sort order: descending",
+    "remove_named": "Remove {name}",
+    "editor": {
+      "toolbar": "Formatting",
+      "bold": "Bold",
+      "italic": "Italic",
+      "strike": "Strikethrough",
+      "code": "Inline code",
+      "paragraph": "Paragraph",
+      "h1": "Heading 1",
+      "h2": "Heading 2",
+      "h3": "Heading 3",
+      "bulletList": "Bulleted list",
+      "orderedList": "Numbered list",
+      "blockquote": "Quote",
+      "codeBlock": "Code block",
+      "undo": "Undo",
+      "redo": "Redo",
+      "alignLeft": "Align left",
+      "alignRight": "Align right",
+      "alignJustify": "Justify",
+      "alignCenter": "Center",
+      "addLink": "Link",
+      "link_url": "Link address"
+    },
+    "email_preview": "Email preview",
+    "pdf_preview": "PDF preview",
+    "step_of": "Step {step} of {count}",
+    "actions_for": "Actions for {name}",
+    "select_named": "Select {name}"
   },
   "dashboard": {
     "select_year": "Избери година",
@@ -154,27 +212,52 @@
       "total_sales": "Продажби",
       "total_receipts": "Приходи",
       "total_expense": "Трошоци",
-      "net_income": "Нето приход",
+      "net_income": "Net income",
       "year": "Избери година"
     },
     "monthly_chart": {
       "title": "Продажби и трошоци"
     },
     "recent_invoices_card": {
-      "title": "Доспеани фактури",
-      "due_on": "Доспева на",
+      "title": "Due invoices",
+      "due_on": "Due on",
       "customer": "Корисник",
-      "amount_due": "Доспеан износ",
+      "amount_due": "Amount due",
       "actions": "Акции",
-      "view_all": "Прикажи ги сите"
+      "view_all": "View all"
     },
     "recent_estimate_card": {
-      "title": "Неодамнешни понуди",
+      "title": "Recent estimates",
       "date": "Датум",
       "customer": "Корисник",
-      "amount_due": "Доспеан износ",
+      "amount_due": "Amount",
       "actions": "Акции",
-      "view_all": "Прикажи ги сите"
+      "view_all": "View all"
+    },
+    "receivables": {
+      "title": "Owed to you",
+      "on_invoices": "On {count} sent invoice | On {count} sent invoices",
+      "overdue": "Overdue",
+      "due_soon": "Due in the next 30 days",
+      "due_later": "Due later",
+      "invoice_count": "{count} invoice | {count} invoices",
+      "nothing_owed": "Nothing is owed to you right now.",
+      "view_invoices": "View invoices"
+    },
+    "cashflow": {
+      "title": "Cash flow",
+      "show_table": "Show as table",
+      "hide_table": "Hide table",
+      "month": "Month",
+      "chart_style": "Chart style",
+      "area": "Area",
+      "bars": "Bars",
+      "day": "Day"
+    },
+    "counts": {
+      "customers": "customer | customers",
+      "invoices": "invoice | invoices",
+      "estimates": "estimate | estimates"
     }
   },
   "tax_types": {
@@ -193,10 +276,13 @@
     "search": "Барај...",
     "customers": "Корисници",
     "users": "Корисници",
-    "no_results_found": "Нема пронајдени резултати"
+    "no_results_found": "Нема пронајдени резултати",
+    "placeholder": "Search or jump to…",
+    "go_to": "Go to",
+    "create": "Create"
   },
   "company_switcher": {
-    "label": "СМЕНИ КОМПАНИЈА",
+    "label": "Switch company",
     "no_results_found": "Нема пронајдени резултати",
     "add_new_company": "Додај нова компанија",
     "new_company": "Нова компанија",
@@ -204,15 +290,22 @@
   },
   "dateRange": {
     "today": "Денес",
-    "this_week": "Оваа недела",
-    "this_month": "Овој месец",
-    "this_quarter": "Овој квартал",
-    "this_year": "Оваа година",
-    "previous_week": "Претходна недела",
-    "previous_month": "Претходен месец",
-    "previous_quarter": "Претходен квартал",
-    "previous_year": "Претходна година",
-    "custom": "Прилагодено"
+    "this_week": "This week",
+    "this_month": "This month",
+    "this_quarter": "This quarter",
+    "this_year": "This year",
+    "previous_week": "Previous week",
+    "previous_month": "Previous month",
+    "previous_quarter": "Previous quarter",
+    "previous_year": "Previous year",
+    "custom": "Прилагодено",
+    "last_12_months": "Last 12 months",
+    "custom_range": "Custom range",
+    "period": "Period",
+    "showing": "Showing {range}",
+    "pick_start": "Pick the first day",
+    "pick_end": "Now pick the last day",
+    "too_long": "Pick a range of up to {years} years"
   },
   "customers": {
     "title": "Корисници",
@@ -347,10 +440,10 @@
     "all": "Сите",
     "paid": "Платени",
     "unpaid": "Неплатени",
-    "customer": "КОРИСНИК",
-    "ref_no": "РЕФ. БР.",
-    "number": "БРОЈ",
-    "amount_due": "ДОСПЕАН ИЗНОС",
+    "customer": "Customer",
+    "ref_no": "Ref no.",
+    "number": "Number",
+    "amount_due": "Amount due",
     "partially_paid": "Делумно платени",
     "total": "Вкупно",
     "discount": "Попуст",
@@ -449,11 +542,11 @@
     "viewed": "Прегледани",
     "overdue": "Задоцнети",
     "completed": "Завршени",
-    "customer": "КОРИСНИК",
-    "paid_status": "СТАТУС НА ПЛАЌАЊЕ",
-    "ref_no": "РЕФ. БР.",
-    "number": "БРОЈ",
-    "amount_due": "ДОСПЕАН ИЗНОС",
+    "customer": "Customer",
+    "paid_status": "Paid status",
+    "ref_no": "Ref no.",
+    "number": "Number",
+    "amount_due": "Amount due",
     "partially_paid": "Делумно платени",
     "total": "Вкупно",
     "discount": "Попуст",
@@ -539,7 +632,16 @@
       "tax": "Данок",
       "amount": "Износ",
       "select_an_item": "Внесете или кликнете за избор на ставка",
-      "type_item_description": "Внесете опис на ставка (опционално)"
+      "type_item_description": "Внесете опис на ставка (опционално)",
+      "options": "Options",
+      "item_actions": "Item actions",
+      "move_up": "Move up",
+      "move_down": "Move down",
+      "remove": "Remove item",
+      "item_actions_for": "Actions for item {position}",
+      "discount_type": "Discount type: {type}",
+      "reorder": "Move item {position} of {count}. Use the up and down arrow keys",
+      "moved": "Moved to position {position} of {count}"
     },
     "payment_attached_message": "На една од избраните фактури веќе ѝ е прикачено плаќање. Прво избришете ги прикачените плаќања за да продолжите со отстранувањето",
     "confirm_delete": "Нема да можете да ја вратите оваа фактура | Нема да можете да ги вратите овие фактури",
@@ -564,11 +666,11 @@
     "overdue": "Задоцнети",
     "active": "Активни",
     "completed": "Завршени",
-    "customer": "КОРИСНИК",
-    "paid_status": "СТАТУС НА ПЛАЌАЊЕ",
-    "ref_no": "РЕФ. БР.",
-    "number": "БРОЈ",
-    "amount_due": "ДОСПЕАН ИЗНОС",
+    "customer": "Customer",
+    "paid_status": "Paid status",
+    "ref_no": "Ref no.",
+    "number": "Number",
+    "amount_due": "Amount due",
     "partially_paid": "Делумно платени",
     "total": "Вкупно",
     "discount": "Попуст",
@@ -646,6 +748,7 @@
     },
     "frequency": {
       "title": "Фреквенција (во cron формат)",
+      "label": "Frequency",
       "select_frequency": "Избери фреквенција",
       "minute": "Минута",
       "hour": "Час",
@@ -808,6 +911,51 @@
     "enter_password": "Внеси лозинка",
     "retype_password": "Повтори лозинка"
   },
+  "client": {
+    "connect_heading": "Connect to your server",
+    "connect_description": "Enter the address of the InvoiceShelf server you want to use.",
+    "server_address": "Server address",
+    "connect": "Connect",
+    "connect_anyway": "Connect anyway",
+    "invalid_server_url": "Enter the full address, including http:// or https://",
+    "insecure_warning": "This address is not encrypted. Anyone on the network can read what you send to it.",
+    "app_url_mismatch": "The server calls itself {host}. Logos and attachments may not load.",
+    "unreachable_heading": "Cannot reach the server",
+    "unreachable_description": "Nothing answered at {server}. Check the address, and that the server is running and reachable from this device.",
+    "too_old_heading": "This server is too old",
+    "too_old_description": "It runs {version}, and this app needs {required} or newer.",
+    "too_old_short": "This server is too old for this app.",
+    "update_app_heading": "Update the app",
+    "update_app_description": "This server needs app version {required} or newer. This app is {current}.",
+    "retry": "Retry",
+    "change_server": "Change server",
+    "connected_to": "Connected to {server}",
+    "modules_failed": "Some add-ons did not load: {names}",
+    "app_lock_title": "App lock",
+    "app_lock_description": "Ask for this device's Face ID, fingerprint or passcode before the app opens.",
+    "app_lock_toggle": "Require Face ID or fingerprint to open the app",
+    "app_lock_toggle_description": "The app locks when you open it, and when you come back to it after a while.",
+    "app_lock_enable_failed": "The app lock was not turned on: this device did not confirm it is you.",
+    "app_lock_reason": "Unlock InvoiceShelf",
+    "app_lock_locked_heading": "InvoiceShelf is locked",
+    "app_lock_locked_description": "Confirm it is you to get back to your account.",
+    "app_lock_unlock": "Unlock",
+    "app_lock_sign_out": "Sign out instead"
+  },
+  "devices": {
+    "title": "Devices",
+    "description": "The devices signed in to your account. Revoking one signs it out the next time it contacts the server.",
+    "this_device": "This device",
+    "added_on": "Added {date}",
+    "last_used": "Last used {date}",
+    "never_used": "Never used",
+    "revoke": "Revoke",
+    "revoke_confirm": "{name} will be signed out the next time it contacts the server.",
+    "revoke_current_confirm": "This is the device you are using. Revoking it signs you out here.",
+    "revoked_message": "Device revoked successfully",
+    "no_devices": "No devices",
+    "no_devices_description": "Devices signed in with the mobile app appear here."
+  },
   "modules": {
     "buy_now": "Купи сега",
     "install": "Инсталирај",
@@ -913,7 +1061,9 @@
     "cancel_invitation": "Откажи покана",
     "role": "Улога",
     "invited_by": "Поканет од",
-    "sent_at": "Испратено на"
+    "sent_at": "Испратено на",
+    "no_users": "No members yet",
+    "list_of_users": "Invite the people who work with you. They show up here once they join."
   },
   "reports": {
     "title": "Извештај",
@@ -980,6 +1130,10 @@
       "date_range": "Избери опсег на датуми"
     }
   },
+  "pdf": {
+    "open_pdf": "Open PDF",
+    "download_failed": "Unable to download the document"
+  },
   "settings": {
     "menu_title": {
       "account_settings": "Поставки на сметка",
@@ -993,6 +1147,7 @@
       "backup": "Резервни копии",
       "file_disk": "Дискови за датотеки",
       "fonts": "Пакети со фонтови",
+      "currencies": "Currencies",
       "custom_fields": "Прилагодени полиња",
       "payment_modes": "Начини на плаќање",
       "notes": "Запиши белешки",
@@ -1035,7 +1190,16 @@
       "right": "Десно",
       "left": "Лево",
       "action": "Акција",
-      "add_currency": "Додај валута"
+      "add_currency": "Додај валута",
+      "description": "Every currency this installation can invoice in. The list is shared by all companies rather than set per company.",
+      "refresh": "Refresh list",
+      "search": "Search by name or code",
+      "count": "No currencies | 1 currency | {count} currencies",
+      "decimals": "no decimals | 1 decimal | {count} decimals",
+      "refreshed": "Currency list refreshed: {added} added, {updated} corrected.",
+      "already_current": "The currency list is already up to date.",
+      "refresh_failed": "The currency list could not be refreshed.",
+      "none_found": "No currency matches that search."
     },
     "mail": {
       "host": "Хост за е-пошта",
@@ -1340,7 +1504,8 @@
           "invoice": "Фактура",
           "payment": "Плаќање"
         }
-      }
+      },
+      "reorder_component": "Move {name}, {position} of {count}. Use the up and down arrow keys"
     },
     "account_settings": {
       "profile_picture": "Профилна слика",
@@ -1410,7 +1575,7 @@
       "key": "API клуч",
       "name": "Име",
       "driver": "Драјвер",
-      "is_default": "СТАНДАРДНО",
+      "is_default": "Is default",
       "currency": "Валути",
       "exchange_rate_confirm_delete": "Нема да можете да го вратите овој драјвер",
       "created_message": "Провајдерот е креиран успешно",
@@ -1427,7 +1592,8 @@
       "url": "URL",
       "active": "Активно",
       "currency_help_text": "Овој провајдер ќе се користи само на горенаведените избрани валути",
-      "currency_in_used": "Следните валути се веќе активни на друг провајдер. Ве молиме отстранете ги овие валути од изборот за повторно да го активирате овој провајдер."
+      "currency_in_used": "Следните валути се веќе активни на друг провајдер. Ве молиме отстранете ги овие валути од изборот за повторно да го активирате овој провајдер.",
+      "fetch_latest": "Fetch the latest exchange rate"
     },
     "tax_types": {
       "title": "Типови на данок",
@@ -1547,6 +1713,9 @@
     "update_app": {
       "title": "Ажурирај апликација",
       "description": "Можете лесно да го ажурирате InvoiceShelf со проверка за нови ажурирања кликнувајќи го копчето подолу",
+      "client_title": "Server Update",
+      "client_description": "Check the server this app is connected to for a new InvoiceShelf release and install it. The app itself is updated through your device's app store.",
+      "client_versions": "Connected to {server}, server {serverVersion}, app {appVersion}",
       "check_update": "Провери за ажурирања",
       "insider_consent": "Опт-ин за Insider изданија. Се препорачува само за тестирање.",
       "avail_update": "Достапно е ново ажурирање",
@@ -1640,7 +1809,7 @@
       "dropbox_app": "Dropbox апликација",
       "dropbox_root": "Dropbox корен",
       "default_driver": "Стандарден драјвер",
-      "is_default": "СТАНДАРДНО",
+      "is_default": "Is default",
       "set_default_disk": "Постави стандарден диск",
       "set_default_disk_confirm": "Овој диск ќе биде поставен како стандарден и сите нови PDF документи ќе бидат зачувани на овој диск",
       "success_set_default_disk": "Дискот е поставен како стандарден успешно",
@@ -2019,5 +2188,11 @@
       "impersonating_banner": "Моментално имитирате корисник. Сите акции се запишуваат.",
       "stop_impersonating": "Запри имитирање"
     }
+  },
+  "notifications": {
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Note"
   }
 }
