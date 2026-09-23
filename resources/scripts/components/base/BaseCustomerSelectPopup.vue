@@ -51,6 +51,8 @@ const recurringInvoiceStore = useRecurringInvoiceStore()
 
 const search = ref<string | null>(null)
 const isSearchingCustomer = ref<boolean>(false)
+// Until the first page arrives, so "no customers" does not flash on open
+const isLoadingCustomers = ref<boolean>(true)
 
 const { isPhone } = useBreakpoints()
 
@@ -137,10 +139,14 @@ const selectedCustomer = computed(() => {
 
 // Fetch initial customers on setup
 async function fetchInitialCustomers(): Promise<void> {
-  await customerStore.fetchCustomers({
-    orderByField: '',
-    orderBy: '',
-  })
+  try {
+    await customerStore.fetchCustomers({
+      orderByField: '',
+      orderBy: '',
+    })
+  } finally {
+    isLoadingCustomers.value = false
+  }
 }
 
 // Select customer on setup if customerId is provided
@@ -162,11 +168,14 @@ const debounceSearchCustomer = useDebounceFn(() => {
 }, 500)
 
 async function searchCustomer(): Promise<void> {
-  await customerStore.fetchCustomers({
-    display_name: search.value ?? '',
-    page: 1,
-  })
-  isSearchingCustomer.value = false
+  try {
+    await customerStore.fetchCustomers({
+      display_name: search.value ?? '',
+      page: 1,
+    })
+  } finally {
+    isSearchingCustomer.value = false
+  }
 }
 
 function selectNewCustomer(id: number): void {
@@ -316,6 +325,7 @@ const addressBlocks = computed(() => {
         type="button"
         :aria-expanded="isOpen"
         aria-haspopup="dialog"
+        :data-invalid="valid.$error ? 'true' : undefined"
         :class="valid.$error ? 'border-danger' : 'border-line-strong hover:border-primary-400'"
         class="
           flex items-center w-full gap-4 p-4 text-start transition-colors border-2 border-dashed md:p-5
@@ -424,10 +434,32 @@ const addressBlocks = computed(() => {
               </li>
 
               <li
-                v-if="customerStore.customers.length === 0"
+                v-if="isLoadingCustomers || isSearchingCustomer"
                 class="px-4 py-8 text-sm text-center text-muted"
+                role="status"
               >
-                {{ $t('customers.no_customers_found') }}
+                {{ $t('general.loading') }}
+              </li>
+
+              <!-- A search that found nothing, or a company with no customers yet -->
+              <li
+                v-else-if="customerStore.customers.length === 0"
+                class="flex flex-col gap-1 px-4 py-8 text-sm text-center"
+                role="status"
+              >
+                <template v-if="search">
+                  <span class="text-muted">{{ $t('customers.no_customers_found') }}</span>
+                </template>
+                <template v-else>
+                  <span class="font-medium text-heading">{{ $t('customers.no_customers') }}</span>
+                  <span class="text-muted">
+                    {{
+                      userStore.hasAbilities(ABILITIES.CREATE_CUSTOMER)
+                        ? $t('customers.add_first_customer')
+                        : $t('customers.ask_to_add_customers')
+                    }}
+                  </span>
+                </template>
               </li>
             </ul>
 

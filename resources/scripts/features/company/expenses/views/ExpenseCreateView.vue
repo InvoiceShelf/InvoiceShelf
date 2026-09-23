@@ -60,8 +60,10 @@
             :content-loading="isFetchingInitialData"
             required
           >
+            <!-- A new company has no categories: one can be added from here -->
             <BaseMultiselect
               v-if="!isFetchingInitialData"
+              :key="categoryReloadKey"
               v-model="expenseStore.currentExpense.expense_category_id"
               :content-loading="isFetchingInitialData"
               value-prop="id"
@@ -73,7 +75,17 @@
               :delay="500"
               searchable
               :placeholder="$t('expenses.categories.select_a_category')"
-            />
+            >
+              <template v-if="userStore.hasAbilities(ABILITIES.VIEW_EXPENSE)" #action>
+                <BaseSelectAction @click="addCategory">
+                  <BaseIcon
+                    name="PlusIcon"
+                    class="h-4 me-2 -ms-2 text-center text-primary-400"
+                  />
+                  {{ $t('settings.expense_category.add_new_category') }}
+                </BaseSelectAction>
+              </template>
+            </BaseMultiselect>
           </BaseInputGroup>
 
           <!-- Expense Date -->
@@ -140,6 +152,7 @@
 
           <!-- Exchange Rate -->
           <ExchangeRateConverter
+            :store="expenseStore"
             store-prop="currentExpense"
             :v="{ exchange_rate: { $error: false, $errors: [], $touch: () => {} } }"
             :is-loading="isFetchingInitialData"
@@ -152,19 +165,11 @@
             :content-loading="isFetchingInitialData"
             :label="$t('expenses.customer')"
           >
-            <BaseMultiselect
+            <BaseCustomerSelectInput
               v-if="!isFetchingInitialData"
               v-model="expenseStore.currentExpense.customer_id"
-              :content-loading="isFetchingInitialData"
-              value-prop="id"
-              label="name"
-              track-by="id"
-              :options="searchCustomer"
-              :filter-results="false"
-              resolve-on-load
-              :delay="500"
-              searchable
-              :placeholder="$t('customers.select_a_customer')"
+              can-deselect
+              show-action
             />
           </BaseInputGroup>
 
@@ -229,6 +234,8 @@
         />
       </BaseCard>
     </form>
+
+    <CategoryModal />
   </BasePage>
 </template>
 
@@ -240,13 +247,18 @@ import { useExpenseStore } from '../store'
 import { useGlobalStore } from '../../../../stores/global.store'
 import { useCompanyStore } from '../../../../stores/company.store'
 import { useNotificationStore } from '../../../../stores/notification.store'
+import { useUserStore } from '../../../../stores/user.store'
+import { useModalStore } from '../../../../stores/modal.store'
+import { ABILITIES } from '../../../../config/abilities'
+import { handleApiError, getErrorTranslationKey } from '@/scripts/utils/error-handling'
+import { formatDate } from '@/scripts/utils/format-date'
+import CategoryModal from '@/scripts/features/company/settings/components/CategoryModal.vue'
 import { downloadDocument } from '@/scripts/utils/documents'
 import { ExchangeRateConverter } from '../../../shared/document-form'
 import ExpenseTaxSection from '../components/ExpenseTaxSection.vue'
 import CustomFieldInput from '@/scripts/features/shared/custom-fields/CustomFieldInput.vue'
 import { useCustomFields } from '@/scripts/features/shared/custom-fields/use-custom-fields'
 import type { ExpenseCategory } from '../../../../types/domain/expense'
-import type { Customer } from '../../../../types/domain/customer'
 import type { Currency } from '../../../../types/domain/currency'
 
 const route = useRoute()
@@ -258,6 +270,8 @@ const expenseStore = useExpenseStore()
 const globalStore = useGlobalStore()
 const companyStore = useCompanyStore()
 const notificationStore = useNotificationStore()
+const userStore = useUserStore()
+const modalStore = useModalStore()
 
 const isSaving = ref<boolean>(false)
 const isFetchingInitialData = ref<boolean>(false)
@@ -330,6 +344,10 @@ function onCurrencyChange(currencyId: number): void {
   expenseStore.currentExpense.selectedCurrency = found ?? null
 }
 
+// A category added from the select, kept in its options until they include it
+const createdCategory = ref<ExpenseCategory | null>(null)
+const categoryReloadKey = ref<number>(0)
+
 async function searchCategory(
   search: string,
 ): Promise<ExpenseCategory[]> {
@@ -337,15 +355,30 @@ async function searchCategory(
     '../../../../api/services/expense.service'
   )
   const res = await expenseService.listCategories({ search })
-  return res.data
+  const categories = res.data ?? []
+
+  if (createdCategory.value && !categories.some((c) => c.id === createdCategory.value?.id)) {
+    categories.unshift(createdCategory.value)
+  }
+
+  return categories
 }
 
-async function searchCustomer(search: string): Promise<Customer[]> {
-  const { customerService } = await import(
-    '../../../../api/services/customer.service'
-  )
-  const res = await customerService.list({ search })
-  return res.data
+function addCategory(): void {
+  modalStore.openModal({
+    title: t('settings.expense_category.add_category'),
+    componentName: 'CategoryModal',
+    size: 'sm',
+    refreshData: (category: unknown) => {
+      const saved = category as ExpenseCategory | undefined
+
+      if (saved?.id) {
+        createdCategory.value = saved
+        categoryReloadKey.value++
+        expenseStore.currentExpense.expense_category_id = saved.id
+      }
+    },
+  })
 }
 
 async function loadData(): Promise<void> {
@@ -366,8 +399,13 @@ async function loadData(): Promise<void> {
       expenseStore.currentExpense.currency_id =
         expenseStore.currentExpense.selectedCurrency.id
     }
-  } else if (route.query.customer) {
-    expenseStore.currentExpense.customer_id = Number(route.query.customer)
+  } else {
+    // A new expense is dated today, like a new invoice or payment
+    expenseStore.currentExpense.expense_date ||= formatDate(new Date())
+
+    if (route.query.customer) {
+      expenseStore.currentExpense.customer_id = Number(route.query.customer)
+    }
   }
 
   isFetchingInitialData.value = false
@@ -399,8 +437,16 @@ async function submitForm(): Promise<void> {
     expenseStore.currentExpense.attachment_receipt = null
     isAttachmentReceiptRemoved.value = false
     router.push('/admin/expenses')
-  } catch {
+  } catch (error) {
     isSaving.value = false
+
+    // Say why it did not save instead of leaving the form as it was
+    const normalized = handleApiError(error)
+    const translationKey = getErrorTranslationKey(normalized.message)
+    notificationStore.showNotification({
+      type: 'error',
+      message: translationKey ? t(translationKey) : normalized.message,
+    })
   }
 }
 

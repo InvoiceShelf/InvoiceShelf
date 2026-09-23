@@ -49,7 +49,7 @@
                     hover:bg-surface-tertiary focus:outline-hidden focus-visible:bg-surface-tertiary
                     focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus
                   "
-                  @click="selectNote(idx, close)"
+                  @click="selectNote(note, close)"
                 >
                   <span class="flex justify-between px-2">
                     <span class="m-0 text-base font-semibold leading-tight text-body">
@@ -145,10 +145,16 @@ async function fetchInitialData(): Promise<void> {
   }
 }
 
-function selectNote(index: number, close: () => void): void {
-  emit('select', { ...notes.value[index] })
+// By note, not position: the list may be filtered by a search
+function selectNote(note: Note, close?: () => void): void {
+  emit('select', { ...note })
   textSearch.value = null
-  close()
+  close?.()
+}
+
+// Loaded up front, so the list does not open empty and then fill
+if (canViewNotes.value) {
+  void fetchInitialData()
 }
 
 function openNoteModal(): void {
@@ -157,7 +163,14 @@ function openNoteModal(): void {
     componentName: 'NoteModal',
     size: 'lg',
     data: props.type,
-    refreshData: () => fetchInitialData(),
+    // A note created from here is inserted straight away
+    refreshData: async (note: unknown) => {
+      await fetchInitialData()
+
+      if ((note as Note | undefined)?.id) {
+        selectNote(note as Note)
+      }
+    },
   })
 }
 </script>

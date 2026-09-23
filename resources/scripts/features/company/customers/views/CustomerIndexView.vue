@@ -284,9 +284,8 @@ function removeMultipleCustomers(): void {
       :title="$t('customers.no_customers')"
       :description="$t('customers.list_of_customers')"
     >
-      <template #actions>
+      <template v-if="userStore.hasAbilities(ABILITIES.CREATE_CUSTOMER)" #actions>
         <BaseButton
-          v-if="userStore.hasAbilities(ABILITIES.CREATE_CUSTOMER)"
           variant="primary-outline"
           @click="$router.push('/admin/customers/create')"
         >

@@ -58,6 +58,7 @@
           >
             {{ currentPayment.customer.name }}
           </router-link>
+          <template v-else>-</template>
         </BaseStat>
       </BaseStatStrip>
 
@@ -287,8 +288,11 @@ async function loadPayments(
   const response = await paymentStore.fetchPayments({
     page: pageNumber,
     ...params,
-  } as never)
+  } as never).catch(() => null)
   isLoading.value = false
+
+  // A failed page is skipped, and the next scroll or search tries again
+  if (!response) return
 
   paymentList.value = paymentList.value ?? []
   paymentList.value = [...paymentList.value, ...response.data.data]

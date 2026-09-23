@@ -92,6 +92,10 @@ export const useDashboardStore = defineStore('dashboard', () => {
   const recentEstimates = ref<RecentEstimate[]>([])
 
   const isDashboardDataLoaded = ref<boolean>(false)
+  // The last load failed; the view offers to try again
+  const loadError = ref<boolean>(false)
+  // Only the latest request may fill the dashboard, when the period changes fast
+  let latestRequest = 0
 
   // The period picked on the dashboard, kept while the app is open, and the
   // dates the server resolved it to
@@ -99,15 +103,22 @@ export const useDashboardStore = defineStore('dashboard', () => {
   const resolvedPeriod = ref<ResolvedPeriod | null>(null)
 
   // Actions
-  async function loadData(params?: DashboardParams): Promise<DashboardResponse> {
+  async function loadData(params?: DashboardParams): Promise<DashboardResponse | null> {
+    const request = ++latestRequest
+    loadError.value = false
+
     try {
       const response = await dashboardService.load(params)
 
+      if (request !== latestRequest) {
+        return null
+      }
+
       // Stats
-      stats.value.totalAmountDue = response.total_amount_due
-      stats.value.totalCustomerCount = response.total_customer_count
-      stats.value.totalInvoiceCount = response.total_invoice_count
-      stats.value.totalEstimateCount = response.total_estimate_count
+      stats.value.totalAmountDue = response.total_amount_due ?? 0
+      stats.value.totalCustomerCount = response.total_customer_count ?? 0
+      stats.value.totalInvoiceCount = response.total_invoice_count ?? 0
+      stats.value.totalEstimateCount = response.total_estimate_count ?? 0
 
       if (response.receivables) {
         receivables.value = response.receivables
@@ -131,15 +142,20 @@ export const useDashboardStore = defineStore('dashboard', () => {
       totalNetIncome.value = Number(response.total_net_income) || 0
 
       // Table Data
-      recentDueInvoices.value = response.recent_due_invoices as unknown as DueInvoice[]
-      recentEstimates.value = response.recent_estimates as unknown as RecentEstimate[]
+      recentDueInvoices.value = (response.recent_due_invoices ?? []) as unknown as DueInvoice[]
+      recentEstimates.value = (response.recent_estimates ?? []) as unknown as RecentEstimate[]
 
       isDashboardDataLoaded.value = true
 
       return response
     } catch (err: unknown) {
       handleApiError(err)
-      throw err
+
+      if (request === latestRequest) {
+        loadError.value = true
+      }
+
+      return null
     }
   }
 
@@ -154,6 +170,7 @@ export const useDashboardStore = defineStore('dashboard', () => {
     recentDueInvoices,
     recentEstimates,
     isDashboardDataLoaded,
+    loadError,
     period,
     resolvedPeriod,
     loadData,

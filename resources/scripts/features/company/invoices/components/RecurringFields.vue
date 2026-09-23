@@ -128,6 +128,7 @@
 
       <!-- Exchange Rate -->
       <ExchangeRateConverter
+        :store="invoiceStore"
         store-prop="newInvoice"
         :v="{ exchange_rate: { $error: false, $errors: [], $touch: () => {} } }"
         :is-loading="isLoading"

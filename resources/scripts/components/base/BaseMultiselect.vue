@@ -221,13 +221,13 @@
 
         <slot v-if="noOptions" name="nooptions">
           <div role="status" :class="classes.noOptions">
-            {{ noOptionsText }}
+            {{ noOptionsText || $t('general.multiselect.the_list_is_empty') }}
           </div>
         </slot>
 
         <slot v-if="noResults" name="noresults">
           <div role="status" :class="classes.noResults">
-            {{ noResultsText }}
+            {{ noResultsText || $t('general.multiselect.no_results_found') }}
           </div>
         </slot>
 
@@ -504,8 +504,9 @@ const props = withDefaults(defineProps<Props>(), {
   appendNewTag: true,
   caret: true,
   loading: false,
-  noOptionsText: 'The list is empty',
-  noResultsText: 'No results found',
+  // Translated in the template when left empty
+  noOptionsText: '',
+  noResultsText: '',
   multipleLabel: null,
   object: false,
   delay: -1,

@@ -61,6 +61,7 @@
       </BaseInputGroup>
 
       <ExchangeRateConverter
+        :store="invoiceStore"
         store-prop="newInvoice"
         :v="v"
         :is-loading="isLoading"

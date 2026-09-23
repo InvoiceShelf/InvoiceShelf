@@ -127,6 +127,14 @@
       </BaseCard>
     </template>
 
+    <!-- The statement failed to load: say so, with a way to try again -->
+    <BaseCard v-else class="flex flex-wrap items-center justify-between gap-3 p-5" role="alert">
+      <span class="text-sm text-body">{{ $t('customers.statement_load_failed') }}</span>
+      <BaseButton size="sm" variant="primary-outline" @click="loadStatement">
+        {{ $t('general.retry') }}
+      </BaseButton>
+    </BaseCard>
+
     <BaseModal :show="showEmailModal" closable @close="showEmailModal = false">
       <template #header>{{ $t('customers.send_statement') }}</template>
       <form @submit.prevent="sendStatement">

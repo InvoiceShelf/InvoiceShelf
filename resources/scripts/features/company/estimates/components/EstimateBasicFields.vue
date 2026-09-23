@@ -51,6 +51,7 @@
       </BaseInputGroup>
 
       <ExchangeRateConverter
+        :store="estimateStore"
         store-prop="newEstimate"
         :v="v"
         :is-loading="isLoading"

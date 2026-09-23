@@ -498,7 +498,8 @@ function getSortPredicate(
 }
 
 const rows = ref<TableRow[]>([])
-const isLoading = ref<boolean>(false)
+// Server-fed tables start loading, so "no data" does not flash before the first page
+const isLoading = ref<boolean>(!Array.isArray(props.data))
 
 const tableColumns = reactive<TableColumn[]>(
   props.columns.map((column) => createColumn(column))
@@ -622,20 +623,25 @@ async function fetchServerData(): Promise<RowData[] | null> {
 
   isLoading.value = true
 
-  const response = await (props.data as ServerDataFn)({
-    sort,
-    page,
-  })
+  try {
+    const response = await (props.data as ServerDataFn)({
+      sort,
+      page,
+    })
 
-  isLoading.value = false
+    const currentPage = pagination.value?.currentPage ?? 1
+    if (page !== currentPage) {
+      return null
+    }
 
-  const currentPage = pagination.value?.currentPage ?? 1
-  if (page !== currentPage) {
+    pagination.value = response.pagination
+    return response.data
+  } catch {
+    // A failed page leaves what was shown; the loading state still ends
     return null
+  } finally {
+    isLoading.value = false
   }
-
-  pagination.value = response.pagination
-  return response.data
 }
 
 function changeSorting(column: TableColumn): void {

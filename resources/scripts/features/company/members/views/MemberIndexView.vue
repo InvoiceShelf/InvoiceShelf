@@ -84,8 +84,13 @@ const userTableColumns = computed<TableColumn[]>(() => [
   },
 ])
 
+// Only the viewer in the company, not a filter that matched nobody
+const hasOtherMembers = computed<boolean>(() => (
+  memberStore.companyUserCount !== null ? memberStore.companyUserCount > 1 : memberStore.totalUsers > 0
+))
+
 const showEmptyScreen = computed<boolean>(
-  () => !memberStore.totalUsers && !isFetchingInitialData.value
+  () => !hasOtherMembers.value && !isFetchingInitialData.value
 )
 
 const selectField = computed<number[]>({
@@ -111,7 +116,7 @@ debouncedWatch(
 )
 
 onMounted(() => {
-  memberStore.fetchUsers()
+  // The table loads the members itself
   memberStore.fetchRoles()
   memberStore.fetchPendingInvitations()
 })
@@ -203,7 +208,7 @@ function removeMultipleUsers(): void {
       <template #actions>
         <div class="flex items-center justify-end space-x-5">
           <BaseButton
-            v-show="memberStore.totalUsers"
+            v-show="hasOtherMembers"
             variant="primary-outline"
             :aria-expanded="showFilters"
             @click="toggleFilter"
@@ -275,7 +280,16 @@ function removeMultipleUsers(): void {
       icon="UserGroupIcon"
       :title="$t('members.no_users')"
       :description="$t('members.list_of_users')"
-    />
+    >
+      <template v-if="userStore.currentUser?.is_owner" #actions>
+        <BaseButton @click="showInviteModal = true">
+          <template #left="slotProps">
+            <BaseIcon name="EnvelopeIcon" :class="slotProps.class" aria-hidden="true" />
+          </template>
+          {{ $t('members.invite_member') }}
+        </BaseButton>
+      </template>
+    </BaseEmptyPlaceholder>
 
     <div v-show="!showEmptyScreen" class="relative table-container">
       <BaseTable

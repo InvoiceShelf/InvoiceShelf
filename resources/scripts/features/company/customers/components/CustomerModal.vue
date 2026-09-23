@@ -191,6 +191,8 @@ async function submitCustomerData(): Promise<void> {
       ) {
         recurringInvoiceStore.selectCustomer(response.data.id)
       }
+      // Anywhere else, whoever opened the modal selects it
+      modalStore.refreshData?.(response.data)
       closeCustomerModal()
     }
   } catch {

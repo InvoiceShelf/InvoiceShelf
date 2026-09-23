@@ -68,9 +68,12 @@
                 </button>
               </div>
 
-              <p v-else class="border-t border-line-light p-5 text-center text-sm text-muted">
-                {{ $t('general.no_tax_found') }}
-              </p>
+              <div v-else class="flex flex-col gap-1 border-t border-line-light p-5 text-center text-sm" role="status">
+                <span class="text-muted">{{ $t('general.no_tax_found') }}</span>
+                <span v-if="!canCreateTaxType" class="text-subtle">
+                  {{ $t('general.taxes_are_added_in_settings') }}
+                </span>
+              </div>
 
               <button
                 v-if="canCreateTaxType"
@@ -293,7 +296,7 @@ async function fetchTaxTypes(): Promise<void> {
   }
 }
 
-function selectTaxType(taxType: TaxType, close: () => void): void {
+function selectTaxType(taxType: TaxType, close?: () => void): void {
   if (selectedTaxTypeIds.value.has(taxType.id)) {
     return
   }
@@ -312,7 +315,7 @@ function selectTaxType(taxType: TaxType, close: () => void): void {
 
   automaticTaxTypeIds.value.add(tax.tax_type_id)
   emit('update:modelValue', [...props.modelValue, tax])
-  close()
+  close?.()
 }
 
 function updateTaxAmount(index: number, amount: string | number): void {
@@ -362,7 +365,14 @@ function openTaxTypeModal(close: () => void): void {
     componentName: 'TaxTypeModal',
     size: 'sm',
     data: { transaction_type: 'purchases' },
-    refreshData: fetchTaxTypes,
+    // Add the tax just created, as the invoice's tax popup does
+    refreshData: async (taxType: unknown) => {
+      await fetchTaxTypes()
+
+      if ((taxType as TaxType | undefined)?.id) {
+        selectTaxType(taxType as TaxType)
+      }
+    },
   })
 }
 </script>
