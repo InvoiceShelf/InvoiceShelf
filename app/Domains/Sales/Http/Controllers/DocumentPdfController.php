@@ -7,6 +7,7 @@ use App\Domains\Sales\Application\InvoiceService;
 use App\Domains\Sales\Models\Estimate;
 use App\Domains\Sales\Models\Invoice;
 use App\Platform\Http\Controller;
+use App\Platform\Pdf\Http\DocumentPdfAccess;
 use Illuminate\Http\Request;
 
 class DocumentPdfController extends Controller
@@ -18,6 +19,8 @@ class DocumentPdfController extends Controller
 
     public function invoice(Request $request, Invoice $invoice)
     {
+        DocumentPdfAccess::authorize($invoice);
+
         if ($request->exists('preview')) {
             return $this->invoiceService->getPdfData($invoice);
         }
@@ -29,6 +32,8 @@ class DocumentPdfController extends Controller
 
     public function estimate(Request $request, Estimate $estimate)
     {
+        DocumentPdfAccess::authorize($estimate);
+
         if ($request->exists('preview')) {
             return $this->estimateService->getPdfData($estimate);
         }
