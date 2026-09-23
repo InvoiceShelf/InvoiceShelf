@@ -1,0 +1,83 @@
+{
+  "name": "document-taxes-fixed-discount",
+  "settings": {
+    "tax_per_item": "NO",
+    "discount_per_item": "NO"
+  },
+  "form": {
+    "customer": "Parity Home LLC",
+    "lines": [
+      {
+        "name": "Consulting",
+        "qty": 10,
+        "price": "120.00"
+      },
+      {
+        "name": "Design",
+        "qty": 3,
+        "price": "19.99"
+      }
+    ],
+    "discount": "5",
+    "discount_type": "fixed",
+    "taxes": [
+      "Parity VAT",
+      "Parity Levy"
+    ]
+  },
+  "submitted": {
+    "currency_id": 142,
+    "exchange_rate": null,
+    "discount": 500,
+    "discount_type": "fixed",
+    "discount_val": 500,
+    "tax_per_item": "NO",
+    "discount_per_item": "NO",
+    "tax_included": false,
+    "sub_total": 125997,
+    "tax": 32629,
+    "total": 158126,
+    "taxes": [
+      {
+        "name": "Parity VAT",
+        "percent": 20,
+        "calculation_type": "percentage",
+        "fixed_amount": null,
+        "compound_tax": false,
+        "amount": 25099
+      },
+      {
+        "name": "Parity Levy",
+        "percent": 5,
+        "calculation_type": "percentage",
+        "fixed_amount": null,
+        "compound_tax": true,
+        "amount": 7530
+      }
+    ],
+    "items": [
+      {
+        "name": "Consulting",
+        "quantity": 10,
+        "price": 12000,
+        "discount": 0,
+        "discount_type": "fixed",
+        "discount_val": 0,
+        "tax": 0,
+        "total": 120000,
+        "taxes": []
+      },
+      {
+        "name": "Design",
+        "quantity": 3,
+        "price": 1999,
+        "discount": 0,
+        "discount_type": "fixed",
+        "discount_val": 0,
+        "tax": 0,
+        "total": 5997,
+        "taxes": []
+      }
+    ]
+  }
+}

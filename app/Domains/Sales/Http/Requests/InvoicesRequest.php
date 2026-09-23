@@ -5,9 +5,9 @@ namespace App\Domains\Sales\Http\Requests;
 use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Contacts\Models\Customer;
 use App\Domains\Metadata\Http\Requests\Concerns\ValidatesCustomFields;
+use App\Domains\Sales\Application\Composition\InvoiceAttributes;
 use App\Domains\Sales\Models\Invoice;
 use App\Platform\Pdf\Rules\PdfTemplateExists;
-use App\Support\DocumentTotals;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Unique;
@@ -68,58 +68,11 @@ class InvoicesRequest extends FormRequest
     /**
      * The stored attributes for a create or an update.
      *
-     * Totals are recomputed here from the submitted lines (GHSA-8c69): whatever
-     * sub_total / total / tax the client sent is discarded. The document is
-     * always denominated in the customer's currency, and it is never allowed to
-     * declare itself a credit note: those are minted by the credit-note service
-     * alone.
-     *
      * @return array<string, mixed>
      */
     public function getInvoicePayload(): array
     {
-        $companyId = $this->header('company');
-        $rate = CompanySetting::getSetting('currency', $companyId) != $this->currency_id
-            ? $this->exchange_rate
-            : 1;
-
-        $perItemTax = CompanySetting::getSetting('tax_per_item', $companyId) ?? 'NO';
-        $perItemDiscount = CompanySetting::getSetting('discount_per_item', $companyId) ?? 'NO';
-        $taxIncluded = (bool) $this->tax_included;
-
-        $sums = DocumentTotals::compute(
-            $this->items ?? [],
-            $this->taxes ?? [],
-            $this->discount_val,
-            $perItemTax,
-            $taxIncluded,
-            $perItemDiscount
-        );
-
-        return array_merge($this->withoutCustomFields($this->except(['items', 'taxes'])), [
-            'creator_id' => $this->user()?->id,
-            'type' => Invoice::TYPE_INVOICE,
-            'related_invoice_id' => null,
-            'credit_reason' => null,
-            'status' => $this->exists('invoiceSend') ? Invoice::STATUS_SENT : Invoice::STATUS_DRAFT,
-            'paid_status' => Invoice::STATUS_UNPAID,
-            'company_id' => $companyId,
-            'tax_per_item' => $perItemTax,
-            'discount_per_item' => $perItemDiscount,
-            'sub_total' => $sums['sub_total'],
-            'total' => $sums['total'],
-            'tax' => $sums['tax'],
-            'due_amount' => $sums['total'],
-            'sent' => (bool) $this->sent,
-            'viewed' => (bool) $this->viewed,
-            'exchange_rate' => $rate,
-            'base_total' => $sums['total'] * $rate,
-            'base_discount_val' => $this->discount_val * $rate,
-            'base_sub_total' => $sums['sub_total'] * $rate,
-            'base_tax' => $sums['tax'] * $rate,
-            'base_due_amount' => $sums['total'] * $rate,
-            'currency_id' => Customer::find($this->customer_id)->currency_id,
-        ]);
+        return InvoiceAttributes::fromInput($this->all(), $this->header('company'), $this->user()?->id);
     }
 
     /**

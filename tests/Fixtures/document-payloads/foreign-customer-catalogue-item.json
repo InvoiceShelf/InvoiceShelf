@@ -1,0 +1,72 @@
+{
+  "name": "foreign-customer-catalogue-item",
+  "settings": {
+    "tax_per_item": "NO",
+    "discount_per_item": "NO"
+  },
+  "form": {
+    "customer": "Parity Euro GmbH",
+    "exchange_rate": "1.1",
+    "lines": [
+      {
+        "item": "Parity Widget",
+        "qty": 2
+      },
+      {
+        "name": "Freight",
+        "qty": 1,
+        "price": "15.00"
+      }
+    ],
+    "taxes": [
+      "Parity VAT"
+    ]
+  },
+  "submitted": {
+    "currency_id": 43,
+    "exchange_rate": "1.1",
+    "discount": 0,
+    "discount_type": "fixed",
+    "discount_val": 0,
+    "tax_per_item": "NO",
+    "discount_per_item": "NO",
+    "tax_included": false,
+    "sub_total": 23946,
+    "tax": 4789,
+    "total": 28735,
+    "taxes": [
+      {
+        "name": "Parity VAT",
+        "percent": 20,
+        "calculation_type": "percentage",
+        "fixed_amount": null,
+        "compound_tax": false,
+        "amount": 4789
+      }
+    ],
+    "items": [
+      {
+        "name": "Parity Widget",
+        "quantity": 2,
+        "price": 11223,
+        "discount": 0,
+        "discount_type": "fixed",
+        "discount_val": 0,
+        "tax": 0,
+        "total": 22446,
+        "taxes": []
+      },
+      {
+        "name": "Freight",
+        "quantity": 1,
+        "price": 1500,
+        "discount": 0,
+        "discount_type": "fixed",
+        "discount_val": 0,
+        "tax": 0,
+        "total": 1500,
+        "taxes": []
+      }
+    ]
+  }
+}
