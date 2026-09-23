@@ -249,12 +249,18 @@ jobs:
           retention-days: 1
 
   # The tags, and the only place they are decided. Unchanged from when this was one
-  # job: a manifest referencing both digests is published under each tag.
+  # job: a manifest referencing both digests is published under each tag, on Docker
+  # Hub and on GHCR. The images are built and pushed to Docker Hub only; imagetools
+  # copies them to GHCR when it writes the tags there. GHCR has none of Docker Hub's
+  # anonymous pull limits, which matter to anything that polls for new tags.
   release_docker_manifest:
     name: 🐳 Publish the multi-architecture tags
     needs: release_docker_build
     if: github.event_name == 'release'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Download the digests
         uses: actions/download-artifact@v5
@@ -272,11 +278,20 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
+      - name: Log in to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Extract metadata
         id: meta
         uses: docker/metadata-action@v6
         with:
-          images: invoiceshelf/invoiceshelf
+          images: |
+            invoiceshelf/invoiceshelf
+            ghcr.io/invoiceshelf/invoiceshelf
           # Pre-release semver (e.g. 3.0.0-beta.1) automatically gets ONLY the exact
           # {{version}} tag — metadata-action withholds {{major}} / {{major}}.{{minor}}.
           # The moving stable tags (:latest, etc.) are gated on LATEST_MAJOR so a 2.x
@@ -304,17 +319,19 @@ jobs:
             $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
             $(printf 'invoiceshelf/invoiceshelf@sha256:%s ' *)
 
-      # Proof that both architectures actually made it into the published tag, which
-      # a per-architecture build can otherwise get wrong silently.
+      # Proof that both architectures actually made it into the published tag on each
+      # registry, which a per-architecture build can otherwise get wrong silently.
       - name: Verify both architectures are published
         env:
           VERSION: ${{ steps.meta.outputs.version }}
         run: |
-          docker buildx imagetools inspect "invoiceshelf/invoiceshelf:$VERSION" --format '{{json .Manifest}}' > /tmp/manifest.json
-          for arch in amd64 arm64; do
-            if ! jq -e --arg a "$arch" '.manifests[]? | select(.platform.architecture == $a)' /tmp/manifest.json > /dev/null; then
-              echo "::error::invoiceshelf/invoiceshelf:$VERSION has no $arch image."
-              exit 1
-            fi
+          for image in invoiceshelf/invoiceshelf ghcr.io/invoiceshelf/invoiceshelf; do
+            docker buildx imagetools inspect "$image:$VERSION" --format '{{json .Manifest}}' > /tmp/manifest.json
+            for arch in amd64 arm64; do
+              if ! jq -e --arg a "$arch" '.manifests[]? | select(.platform.architecture == $a)' /tmp/manifest.json > /dev/null; then
+                echo "::error::$image:$VERSION has no $arch image."
+                exit 1
+              fi
+            done
           done
-          echo "$VERSION publishes amd64 and arm64."
+          echo "$VERSION publishes amd64 and arm64 on Docker Hub and GHCR."
