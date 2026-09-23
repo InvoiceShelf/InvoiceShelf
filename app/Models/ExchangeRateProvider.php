@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Http\Requests\ExchangeRateProviderRequest;
+use App\Rules\SafeRemoteUrl;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -133,7 +134,7 @@ class ExchangeRateProvider extends Model
 
                 $query = 'INR_USD';
                 $url = $url."&q={$query}".'&compact=y';
-                $response = Http::get($url)->json();
+                $response = Http::withoutRedirecting()->get($url)->json();
 
                 return response()->json([
                     'exchangeRate' => array_values($response[$query]),
@@ -162,6 +163,10 @@ class ExchangeRateProvider extends Model
                 break;
 
             case 'DEDICATED':
+                // The URL is the user's: it must name a public host, and the
+                // request is not allowed to follow a redirect elsewhere.
+                abort_unless(is_string($data['url'] ?? null) && SafeRemoteUrl::isSafe($data['url']), 422, 'The dedicated URL must be a publicly reachable http(s) URL.');
+
                 return $data['url'];
 
                 break;
