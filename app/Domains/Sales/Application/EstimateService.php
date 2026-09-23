@@ -12,12 +12,11 @@ use App\Domains\Sales\Contracts\EstimateEmailSender;
 use App\Domains\Sales\Contracts\EstimatePdfDataProvider;
 use App\Domains\Sales\Models\Estimate;
 use App\Domains\Sales\Models\Invoice;
-use App\Facades\Hashids;
 use App\Platform\Mail\Contracts\MailConfigurator;
 use App\Platform\Pdf\Facades\Pdf;
 use App\Platform\Pdf\Rendering\PdfMetadata;
 use App\Platform\Pdf\Rendering\PdfTemplateUtils;
-use App\Support\Hashids\HashidConnection;
+use App\Support\PublicToken;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
@@ -44,7 +43,7 @@ class EstimateService implements EstimatePdfDataProvider
         ?iterable $customFields = null,
     ): Estimate {
         $estimate = Estimate::create($attributes);
-        $estimate->unique_hash = Hashids::connection(HashidConnection::Estimate->value)->encode($estimate->id);
+        $estimate->unique_hash = PublicToken::make();
         $serial = (new SerialNumberService)
             ->setCompany($estimate->company_id)
             ->setCustomer($estimate->customer_id)
@@ -290,7 +289,7 @@ class EstimateService implements EstimatePdfDataProvider
             ...$estimate->only(['currency_id', 'sales_tax_type', 'sales_tax_address_type']),
         ]);
 
-        $newEstimate->unique_hash = Hashids::connection(HashidConnection::Estimate->value)->encode($newEstimate->id);
+        $newEstimate->unique_hash = PublicToken::make();
         $newEstimate->save();
 
         $estimate->load('items.taxes');
@@ -380,7 +379,7 @@ class EstimateService implements EstimatePdfDataProvider
             ...$carriedOver,
         ]);
 
-        $invoice->unique_hash = Hashids::connection(HashidConnection::Invoice->value)->encode($invoice->id);
+        $invoice->unique_hash = PublicToken::make();
         $invoice->save();
 
         $this->documentItemService->createItems($invoice, $this->documentItemService->itemsForCopy($estimate));

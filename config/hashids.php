@@ -3,6 +3,11 @@
 /**
  * Hashids connection config (per model class).
  *
+ * Only companies are still addressed by a Hashid, and only in URLs that also
+ * need a signed-in member. Hashids read just the start of a salt, so the
+ * APP_KEY appended here does not make them secret. Links that open a document
+ * without signing in use App\Support\PublicToken instead.
+ *
  * Wired by App\Support\Hashids\HashidsServiceProvider using the hashids/hashids package.
  */
 
@@ -35,35 +40,10 @@ return [
     */
 
     'connections' => [
-        HashidConnection::Invoice->value => [
-            'salt' => 'App\\Models\\Invoice'.config('app.key'),
-            'length' => 20,
-            'alphabet' => 'XKAR7m8jD2bqP9OSVeNGiYL465T10zhfWuc3',
-        ],
-        HashidConnection::Estimate->value => [
-            'salt' => 'App\\Models\\Estimate'.config('app.key'),
-            'length' => 20,
-            'alphabet' => 'yJW2P79M8rCHsVq5zbn1fXl6IUt3dAekGo40',
-        ],
-        HashidConnection::Payment->value => [
-            'salt' => 'App\\Models\\Payment'.config('app.key'),
-            'length' => 20,
-            'alphabet' => 'aqW3eR2Icf0jp65Gl7UVS1dhyb8Mn9XKTZ4O',
-        ],
         HashidConnection::Company->value => [
             'salt' => 'App\\Models\\Company'.config('app.key'),
             'length' => 20,
             'alphabet' => 's0D7xOFYEqn2uKJm3Pr9g8Cz46A1iHLBTVW5',
-        ],
-        HashidConnection::EmailLog->value => [
-            'salt' => 'App\\Models\\EmailLog'.config('app.key'),
-            'length' => 20,
-            'alphabet' => 'BA5tJUVNPe93fCq6DHlY2x4ZO1Kg7i8wSm0R',
-        ],
-        HashidConnection::Transaction->value => [
-            'salt' => 'App\\Models\\Transaction'.config('app.key'),
-            'length' => 20,
-            'alphabet' => 'ADyWE86Cg7jF23vS0bonXrZ5KLH9puIQ4M1T',
         ],
     ],
 ];

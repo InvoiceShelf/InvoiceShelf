@@ -14,10 +14,5 @@ test('hashid connections retain their historical salts', function (HashidConnect
 
     expect(HashidsFacade::connection($connection->value)->encode(1))->toBe($legacy->encode(1));
 })->with([
-    [HashidConnection::Invoice, 'App\\Models\\Invoice'],
-    [HashidConnection::Estimate, 'App\\Models\\Estimate'],
-    [HashidConnection::Payment, 'App\\Models\\Payment'],
     [HashidConnection::Company, 'App\\Models\\Company'],
-    [HashidConnection::EmailLog, 'App\\Models\\EmailLog'],
-    [HashidConnection::Transaction, 'App\\Models\\Transaction'],
 ]);
