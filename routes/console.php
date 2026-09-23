@@ -26,4 +26,9 @@ if (InstallationState::isDbCreated()) {
     Schedule::command('recurring-invoices:generate')
         ->everyMinute()
         ->withoutOverlapping();
+
+    // Client registrations that never led to a connection, and OAuth tokens
+    // long expired.
+    Schedule::command('mcp:prune')
+        ->daily();
 }

@@ -64,12 +64,13 @@ final class OAuthTesting
 
     /**
      * Run the authorization code grant with PKCE for a signed-in user and
-     * return the token endpoint's JSON: consent page, approval, then the
-     * code exchange.
+     * return the token endpoint's JSON: consent page, approval (with any extra
+     * fields the consent form posts), then the code exchange.
      *
+     * @param  array<string, mixed>  $approve
      * @return array<string, mixed>
      */
-    public static function authorize(TestCase $test, User $user, Client $client, string $scope = ''): array
+    public static function authorize(TestCase $test, User $user, Client $client, string $scope = '', array $approve = [], string $redirectUri = self::REDIRECT_URI): array
     {
         $verifier = Str::random(64);
         $challenge = strtr(rtrim(base64_encode(hash('sha256', $verifier, true)), '='), '+/', '-_');
@@ -78,7 +79,7 @@ final class OAuthTesting
 
         $test->get('/oauth/authorize?'.http_build_query([
             'client_id' => $client->getKey(),
-            'redirect_uri' => self::REDIRECT_URI,
+            'redirect_uri' => $redirectUri,
             'response_type' => 'code',
             'scope' => $scope,
             'state' => 'state-value',
@@ -90,6 +91,7 @@ final class OAuthTesting
             'state' => 'state-value',
             'client_id' => $client->getKey(),
             'auth_token' => session('authToken'),
+            ...$approve,
         ]);
 
         $approval->assertRedirect();
@@ -98,7 +100,7 @@ final class OAuthTesting
         $response = $test->post('/oauth/token', [
             'grant_type' => 'authorization_code',
             'client_id' => $client->getKey(),
-            'redirect_uri' => self::REDIRECT_URI,
+            'redirect_uri' => $redirectUri,
             'code_verifier' => $verifier,
             'code' => $query['code'] ?? null,
         ]);

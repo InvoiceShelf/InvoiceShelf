@@ -54,6 +54,7 @@ Route::prefix('/v1')->group(function () {
     Route::middleware(['auth:sanctum', 'super-admin'])->prefix('super-admin')->group(function () {
         require app_path('Platform/Operations/routes/admin.php');
         require app_path('Domains/Accounts/routes/admin.php');
+        require app_path('Platform/Mcp/routes/admin.php');
 
         // Currencies are installation-wide reference data, so the list and
         // its refresh live here rather than under a company.
@@ -139,6 +140,11 @@ Route::prefix('/v1')->group(function () {
         require app_path('Platform/Operations/routes/updater.php');
 
         require app_path('Domains/Accounts/routes/management.php');
+
+        // Connected AI apps (MCP)
+        // ----------------------------------
+
+        require app_path('Platform/Mcp/routes/api.php');
 
     });
 

@@ -17,6 +17,7 @@
         "invoiceshelf/modules": "^3.4",
         "laravel/framework": "^13.0",
         "laravel/helpers": "^1.7",
+        "laravel/mcp": "^1.0",
         "laravel/passport": "^13.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^3.0",
