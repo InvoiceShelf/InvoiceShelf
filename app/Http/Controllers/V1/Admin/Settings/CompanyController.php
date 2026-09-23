@@ -10,6 +10,7 @@ use App\Http\Requests\ProfileRequest;
 use App\Http\Resources\CompanyResource;
 use App\Http\Resources\UserResource;
 use App\Models\Company;
+use App\Support\SafeFileName;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -81,7 +82,7 @@ class CompanyController extends Controller
                 $company->clearMediaCollection('logo');
 
                 $company->addMediaFromBase64($data->data)
-                    ->usingFileName($data->name)
+                    ->usingFileName(SafeFileName::from($data->name))
                     ->toMediaCollection('logo');
             }
         }
@@ -115,7 +116,7 @@ class CompanyController extends Controller
             $user->clearMediaCollection('admin_avatar');
 
             $user->addMediaFromBase64($data->data)
-                ->usingFileName($data->name)
+                ->usingFileName(SafeFileName::from($data->name))
                 ->toMediaCollection('admin_avatar');
         }
 

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ExpenseRequest;
 use App\Http\Requests\UploadExpenseReceiptRequest;
 use App\Models\Expense;
+use App\Support\SafeFileName;
 use Illuminate\Http\JsonResponse;
 
 class UploadReceiptController extends Controller
@@ -28,7 +29,7 @@ class UploadReceiptController extends Controller
             }
 
             $expense->addMediaFromBase64($data->data)
-                ->usingFileName($data->name)
+                ->usingFileName(SafeFileName::from($data->name))
                 ->toMediaCollection('receipts');
         }
 
