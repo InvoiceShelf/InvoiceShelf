@@ -2,27 +2,27 @@
   <div>
     <NoteModal />
     <div class="w-full">
-    <Popover>
-      <PopoverButton
+    <PopoverRoot v-slot="{ close }">
+      <PopoverTrigger
         v-if="canViewNotes"
         class="z-10 flex items-center gap-1 font-medium rounded-md text-primary-600 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
         @click="fetchInitialData"
       >
         <BaseIcon name="PlusIcon" class="w-4 h-4" />
         {{ $t('general.insert_note') }}
-      </PopoverButton>
+      </PopoverTrigger>
 
-      <transition
-        enter-active-class="transition duration-200 ease-out"
-        enter-from-class="translate-y-1 opacity-0"
-        enter-to-class="translate-y-0 opacity-100"
-        leave-active-class="transition duration-150 ease-in"
-        leave-from-class="translate-y-0 opacity-100"
-        leave-to-class="translate-y-1 opacity-0"
-      >
-        <PopoverPanel
-          v-slot="{ close }"
-          class="absolute z-20 px-4 mt-3 sm:px-0 w-screen max-w-full start-0 top-3"
+      <PopoverPortal>
+        <!-- As wide as the notes field it sits over, and ending with it -->
+        <PopoverContent
+          side="bottom"
+          align="end"
+          :side-offset="4"
+          :collision-padding="16"
+          class="
+            z-20 w-[min(35rem,calc(100vw-2rem))] text-sm font-semibold leading-5 focus:outline-hidden
+            data-[state=open]:animate-rise-in data-[state=closed]:animate-rise-out
+          "
         >
           <div class="overflow-hidden rounded-md shadow-lg ring-1 ring-black/5">
             <div class="relative grid bg-surface">
@@ -77,15 +77,15 @@
               </span>
             </button>
           </div>
-        </PopoverPanel>
-      </transition>
-    </Popover>
+        </PopoverContent>
+      </PopoverPortal>
+    </PopoverRoot>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
+import { PopoverContent, PopoverPortal, PopoverRoot, PopoverTrigger } from 'reka-ui'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useModalStore } from '../../../stores/modal.store'

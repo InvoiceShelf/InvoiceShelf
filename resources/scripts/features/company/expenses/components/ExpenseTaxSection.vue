@@ -13,27 +13,26 @@
           </p>
         </div>
 
-        <Popover class="relative shrink-0">
-          <PopoverButton
+        <PopoverRoot v-slot="{ close }">
+          <PopoverTrigger
             type="button"
             :disabled="isLoading"
-            class="inline-flex h-9 items-center justify-center rounded-lg border border-line-default bg-surface px-3 text-sm font-medium text-primary-600 transition hover:bg-hover focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
+            class="inline-flex h-9 shrink-0 items-center justify-center rounded-lg border border-line-default bg-surface px-3 text-sm font-medium text-primary-600 transition hover:bg-hover focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
           >
             <BaseIcon name="PlusIcon" class="me-1.5 h-4 w-4" />
             {{ $t('expenses.add_tax') }}
-          </PopoverButton>
+          </PopoverTrigger>
 
-          <transition
-            enter-active-class="transition duration-200 ease-out"
-            enter-from-class="translate-y-1 opacity-0"
-            enter-to-class="translate-y-0 opacity-100"
-            leave-active-class="transition duration-150 ease-in"
-            leave-from-class="translate-y-0 opacity-100"
-            leave-to-class="translate-y-1 opacity-0"
-          >
-            <PopoverPanel
-              v-slot="{ close }"
-              class="absolute end-0 z-30 mt-2 w-[min(20rem,calc(100vw-3rem))] overflow-hidden rounded-xl border border-line-default bg-surface shadow-lg"
+          <PopoverPortal>
+            <PopoverContent
+              side="bottom"
+              align="end"
+              :side-offset="8"
+              :collision-padding="16"
+              class="
+                z-30 w-[min(20rem,calc(100vw-3rem))] overflow-hidden rounded-xl border border-line-default bg-surface shadow-lg
+                focus:outline-hidden data-[state=open]:animate-rise-in data-[state=closed]:animate-rise-out
+              "
             >
               <div class="p-4">
                 <BaseInput
@@ -82,9 +81,9 @@
                 <BaseIcon name="PlusCircleIcon" class="me-2 h-4 w-4" />
                 {{ $t('expenses.add_new_tax') }}
               </button>
-            </PopoverPanel>
-          </transition>
-        </Popover>
+            </PopoverContent>
+          </PopoverPortal>
+        </PopoverRoot>
       </div>
 
       <div class="grid lg:grid-cols-[minmax(0,1fr)_19rem]">
@@ -194,7 +193,7 @@
 </template>
 
 <script setup lang="ts">
-import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
+import { PopoverContent, PopoverPortal, PopoverRoot, PopoverTrigger } from 'reka-ui'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { taxTypeService } from '@/scripts/api/services/tax-type.service'
