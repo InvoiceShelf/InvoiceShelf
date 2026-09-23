@@ -53,7 +53,7 @@ const props = withDefaults(defineProps<Props>(), {
   contentLoading: false,
   invalid: false,
   inputClass:
-    'font-base block w-full md:text-sm tabular border-control-border rounded-lg text-heading',
+    'font-base block w-full md:text-sm tabular field-border rounded-lg text-heading',
   disabled: false,
   percent: false,
   currency: null,

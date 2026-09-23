@@ -37,8 +37,12 @@
     --color-line-light: #e6e8ee;
     --color-line-default: #d8dbe3;
     --color-line-strong: #bfc3cf;
-    /* Form control edges: 3:1 against the surfaces they sit on (WCAG 1.4.11) */
-    --color-control-border: #888b96;
+    /*
+     * Checkbox and switch outlines: 3:1 against the darkest surface they sit
+     * on, a modal's glass over the dimmed page (WCAG 1.4.11). Text fields use
+     * line-strong instead (see the form base styles in invoiceshelf.css).
+     */
+    --color-control-border: #828590;
 
     /* Hover */
     --color-hover: #f5f6f9;
@@ -162,7 +166,7 @@
     --color-line-light: #262a33;
     --color-line-default: #333844;
     --color-line-strong: #4a5060;
-    --color-control-border: #626670;
+    --color-control-border: #666a75;
 
     --color-hover: #1f222a;
     --color-hover-strong: #282c36;

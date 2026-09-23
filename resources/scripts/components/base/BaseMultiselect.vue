@@ -410,7 +410,7 @@ interface NormalizedGroup {
 
 const defaultClasses: Required<MultiselectClasses> = {
   container:
-    'p-0 relative mx-auto w-full flex items-center justify-end box-border cursor-pointer border border-control-border rounded-lg bg-surface text-base md:text-sm leading-snug text-heading outline-hidden max-h-11 md:max-h-10 transition-[border-color,box-shadow] duration-150',
+    'p-0 relative mx-auto w-full flex items-center justify-end box-border cursor-pointer border field-border rounded-lg bg-surface text-base md:text-sm leading-snug text-heading outline-hidden max-h-11 md:max-h-10 transition-[border-color,box-shadow] duration-150',
   containerDisabled:
     'cursor-not-allowed bg-surface-secondary border-line-light !text-muted',
   containerOpen: '',

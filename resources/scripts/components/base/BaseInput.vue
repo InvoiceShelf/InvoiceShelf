@@ -63,7 +63,7 @@
         items-center
         px-3
         text-muted
-        border border-e-0 border-control-border
+        border border-e-0 field-border
         rounded-s-lg
         bg-surface-secondary
         text-sm
@@ -212,7 +212,7 @@ const props = withDefaults(defineProps<Props>(), {
   containerClass: '',
   contentLoadClass: '',
   defaultInputClass:
-    'font-base block w-full md:text-sm border-control-border rounded-lg text-heading',
+    'font-base block w-full md:text-sm field-border rounded-lg text-heading',
   iconLeftClass: 'h-5 w-5 text-subtle',
   iconRightClass: 'h-5 w-5 text-subtle',
   modelModifiers: () => ({}),
