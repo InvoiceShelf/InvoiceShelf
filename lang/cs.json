@@ -18,7 +18,11 @@
     "admin": "Administration",
     "administration": "Administration",
     "companies": "Companies",
-    "all_users": "Users"
+    "all_users": "Users",
+    "more": "More",
+    "menu": "Menu",
+    "account_settings": "Account settings",
+    "account_menu": "Account menu for {name}"
   },
   "general": {
     "add_company": "Přidat firmu",
@@ -71,12 +75,12 @@
     "showing": "Zobrazuji",
     "of": "z",
     "actions": "Akce",
-    "subtotal": "MEZISOUČET",
-    "discount": "SLEVA",
+    "subtotal": "Subtotal",
+    "discount": "Discount",
     "fixed": "Fixní",
     "percentage": "Procentuálně",
     "tax": "DANĚ",
-    "total_amount": "CELKOVÉ MNOŽSTVÍ",
+    "total_amount": "Total amount",
     "bill_to": "Příjemce faktury",
     "ship_to": "Doručovací adresa",
     "due": "Datum platnosti",
@@ -128,18 +132,72 @@
       "showing": "Zobrazeno",
       "to": "až",
       "of": "z",
-      "results": "výsledků"
+      "results": "výsledků",
+      "label": "Pagination",
+      "page": "Page {page}"
     },
     "file_upload": {
       "drag_a_file": "Sem přetáhněte soubor nebo",
       "browse": "procházet",
-      "to_choose": "pro výběr souboru"
+      "to_choose": "pro výběr souboru",
+      "take_photo": "Take photo",
+      "capture_failed": "The photo could not be taken. Choose a file instead.",
+      "choose_file": "Choose a file",
+      "remove_file": "Remove file"
     },
     "multiselect": {
       "the_list_is_empty": "Seznam je prázdný",
       "no_results_found": "Nebyly nalezeny žádné výsledky"
     },
-    "copy_to_clipboard": "Kopírovat do schránky"
+    "copy_to_clipboard": "Kopírovat do schránky",
+    "new": "New",
+    "expand": "Expand",
+    "theme": "Theme",
+    "theme_light": "Light",
+    "theme_dark": "Dark",
+    "theme_system": "System",
+    "breadcrumb": "Breadcrumb",
+    "selected_count": "{count} selected",
+    "close": "Close",
+    "apply": "Apply",
+    "show_password": "Show password",
+    "hide_password": "Hide password",
+    "successful": "Done.",
+    "something_went_wrong": "Something went wrong. Please try again.",
+    "skip_to_content": "Skip to content",
+    "current": "(current)",
+    "list": "List",
+    "sort_ascending": "Sort order: ascending",
+    "sort_descending": "Sort order: descending",
+    "remove_named": "Remove {name}",
+    "editor": {
+      "toolbar": "Formatting",
+      "bold": "Bold",
+      "italic": "Italic",
+      "strike": "Strikethrough",
+      "code": "Inline code",
+      "paragraph": "Paragraph",
+      "h1": "Heading 1",
+      "h2": "Heading 2",
+      "h3": "Heading 3",
+      "bulletList": "Bulleted list",
+      "orderedList": "Numbered list",
+      "blockquote": "Quote",
+      "codeBlock": "Code block",
+      "undo": "Undo",
+      "redo": "Redo",
+      "alignLeft": "Align left",
+      "alignRight": "Align right",
+      "alignJustify": "Justify",
+      "alignCenter": "Center",
+      "addLink": "Link",
+      "link_url": "Link address"
+    },
+    "email_preview": "Email preview",
+    "pdf_preview": "PDF preview",
+    "step_of": "Step {step} of {count}",
+    "actions_for": "Actions for {name}",
+    "select_named": "Select {name}"
   },
   "dashboard": {
     "select_year": "Vybrat rok",
@@ -154,27 +212,52 @@
       "total_sales": "Vydané faktury",
       "total_receipts": "Zaplacené faktury",
       "total_expense": "Výdaje",
-      "net_income": "Čistý příjem",
+      "net_income": "Net income",
       "year": "Vybrat rok"
     },
     "monthly_chart": {
       "title": "Prodeje a výdaje"
     },
     "recent_invoices_card": {
-      "title": "Splatné faktury",
-      "due_on": "Splatnost",
+      "title": "Due invoices",
+      "due_on": "Due on",
       "customer": "Zákazník",
-      "amount_due": "Splatná částka",
+      "amount_due": "Amount due",
       "actions": "Akce",
-      "view_all": "Zobrazit vše"
+      "view_all": "View all"
     },
     "recent_estimate_card": {
-      "title": "Nedávné nabídky",
+      "title": "Recent estimates",
       "date": "Datum",
       "customer": "Zákazník",
-      "amount_due": "Částka k zaplacení",
+      "amount_due": "Amount",
       "actions": "Akce",
-      "view_all": "Zobrazit vše"
+      "view_all": "View all"
+    },
+    "receivables": {
+      "title": "Owed to you",
+      "on_invoices": "On {count} sent invoice | On {count} sent invoices",
+      "overdue": "Overdue",
+      "due_soon": "Due in the next 30 days",
+      "due_later": "Due later",
+      "invoice_count": "{count} invoice | {count} invoices",
+      "nothing_owed": "Nothing is owed to you right now.",
+      "view_invoices": "View invoices"
+    },
+    "cashflow": {
+      "title": "Cash flow",
+      "show_table": "Show as table",
+      "hide_table": "Hide table",
+      "month": "Month",
+      "chart_style": "Chart style",
+      "area": "Area",
+      "bars": "Bars",
+      "day": "Day"
+    },
+    "counts": {
+      "customers": "customer | customers",
+      "invoices": "invoice | invoices",
+      "estimates": "estimate | estimates"
     }
   },
   "tax_types": {
@@ -193,10 +276,13 @@
     "search": "Hledat...",
     "customers": "Zákazníci",
     "users": "Uživatelé",
-    "no_results_found": "Nebyly nalezeny žádné výsledky"
+    "no_results_found": "Nebyly nalezeny žádné výsledky",
+    "placeholder": "Search or jump to…",
+    "go_to": "Go to",
+    "create": "Create"
   },
   "company_switcher": {
-    "label": "Přepnout firmy",
+    "label": "Switch company",
     "no_results_found": "Nebyly nalezeny žádné výsledky",
     "add_new_company": "Přidat firmu",
     "new_company": "Nová firma",
@@ -204,15 +290,22 @@
   },
   "dateRange": {
     "today": "Dnes",
-    "this_week": "Tento týden",
-    "this_month": "Tento měsíc",
-    "this_quarter": "Toto čtvrtletí",
-    "this_year": "Tento rok",
-    "previous_week": "Předchozí týden",
-    "previous_month": "Předchozí měsíc",
-    "previous_quarter": "Předchozí čtvrtletí",
-    "previous_year": "Předchozí rok",
-    "custom": "Vlastní"
+    "this_week": "This week",
+    "this_month": "This month",
+    "this_quarter": "This quarter",
+    "this_year": "This year",
+    "previous_week": "Previous week",
+    "previous_month": "Previous month",
+    "previous_quarter": "Previous quarter",
+    "previous_year": "Previous year",
+    "custom": "Vlastní",
+    "last_12_months": "Last 12 months",
+    "custom_range": "Custom range",
+    "period": "Period",
+    "showing": "Showing {range}",
+    "pick_start": "Pick the first day",
+    "pick_end": "Now pick the last day",
+    "too_long": "Pick a range of up to {years} years"
   },
   "customers": {
     "title": "Zákazníci",
@@ -347,10 +440,10 @@
     "all": "Vše",
     "paid": "Zaplacené",
     "unpaid": "Neplacené",
-    "customer": "ZÁKAZNÍK",
-    "ref_no": "REFERENČNÍ ČÍSLO",
-    "number": "ČÍSLO",
-    "amount_due": "ČÁSTKA K ZAPLACENÍ",
+    "customer": "Customer",
+    "ref_no": "Ref no.",
+    "number": "Number",
+    "amount_due": "Amount due",
     "partially_paid": "Částečně zaplaceno",
     "total": "Celkem",
     "discount": "Sleva",
@@ -449,11 +542,11 @@
     "viewed": "Zobrazené",
     "overdue": "Po splatnosti",
     "completed": "Dokončené",
-    "customer": "ZÁKAZNÍK",
-    "paid_status": "STAV PLATBY",
-    "ref_no": "REFERENČNÍ ČÍSLO",
-    "number": "ČÍSLO",
-    "amount_due": "ČÁSTKA K ZAPLACENÍ",
+    "customer": "Customer",
+    "paid_status": "Paid status",
+    "ref_no": "Ref no.",
+    "number": "Number",
+    "amount_due": "Amount due",
     "partially_paid": "Částečně zaplaceno",
     "total": "Celkem",
     "discount": "Sleva",
@@ -539,7 +632,16 @@
       "tax": "Daň",
       "amount": "Množství",
       "select_an_item": "Pište nebo klikněte pro výběr položky",
-      "type_item_description": "Zadejte popis položky (volitelné)"
+      "type_item_description": "Zadejte popis položky (volitelné)",
+      "options": "Options",
+      "item_actions": "Item actions",
+      "move_up": "Move up",
+      "move_down": "Move down",
+      "remove": "Remove item",
+      "item_actions_for": "Actions for item {position}",
+      "discount_type": "Discount type: {type}",
+      "reorder": "Move item {position} of {count}. Use the up and down arrow keys",
+      "moved": "Moved to position {position} of {count}"
     },
     "payment_attached_message": "Na jedné z vybraných faktur je již přiložena platba. Nezapomeňte nejprve odstranit připojené platby, abyste mohli pokračovat s odstraněním",
     "confirm_delete": "Nebudete moci obnovit tuto fakturu | Nebudete moci obnovit tyto faktury",
@@ -564,11 +666,11 @@
     "overdue": "Po splatnosti",
     "active": "Aktivní",
     "completed": "Dokončené",
-    "customer": "ZÁKAZNÍK",
-    "paid_status": "STAV PLATBY",
-    "ref_no": "REFERENČNÍ ČÍSLO",
-    "number": "ČÍSLO",
-    "amount_due": "ČÁSTKA K ZAPLACENÍ",
+    "customer": "Customer",
+    "paid_status": "Paid status",
+    "ref_no": "Ref no.",
+    "number": "Number",
+    "amount_due": "Amount due",
     "partially_paid": "Částečně zaplaceno",
     "total": "Celkem",
     "discount": "Sleva",
@@ -646,6 +748,7 @@
     },
     "frequency": {
       "title": "Frekvence (pomocí formátu cron)",
+      "label": "Frequency",
       "select_frequency": "Vybrat četnost",
       "minute": "Minuta",
       "hour": "Hodina",
@@ -808,6 +911,51 @@
     "enter_password": "Zadejte heslo",
     "retype_password": "Zadejte heslo znovu"
   },
+  "client": {
+    "connect_heading": "Connect to your server",
+    "connect_description": "Enter the address of the InvoiceShelf server you want to use.",
+    "server_address": "Server address",
+    "connect": "Connect",
+    "connect_anyway": "Connect anyway",
+    "invalid_server_url": "Enter the full address, including http:// or https://",
+    "insecure_warning": "This address is not encrypted. Anyone on the network can read what you send to it.",
+    "app_url_mismatch": "The server calls itself {host}. Logos and attachments may not load.",
+    "unreachable_heading": "Cannot reach the server",
+    "unreachable_description": "Nothing answered at {server}. Check the address, and that the server is running and reachable from this device.",
+    "too_old_heading": "This server is too old",
+    "too_old_description": "It runs {version}, and this app needs {required} or newer.",
+    "too_old_short": "This server is too old for this app.",
+    "update_app_heading": "Update the app",
+    "update_app_description": "This server needs app version {required} or newer. This app is {current}.",
+    "retry": "Retry",
+    "change_server": "Change server",
+    "connected_to": "Connected to {server}",
+    "modules_failed": "Some add-ons did not load: {names}",
+    "app_lock_title": "App lock",
+    "app_lock_description": "Ask for this device's Face ID, fingerprint or passcode before the app opens.",
+    "app_lock_toggle": "Require Face ID or fingerprint to open the app",
+    "app_lock_toggle_description": "The app locks when you open it, and when you come back to it after a while.",
+    "app_lock_enable_failed": "The app lock was not turned on: this device did not confirm it is you.",
+    "app_lock_reason": "Unlock InvoiceShelf",
+    "app_lock_locked_heading": "InvoiceShelf is locked",
+    "app_lock_locked_description": "Confirm it is you to get back to your account.",
+    "app_lock_unlock": "Unlock",
+    "app_lock_sign_out": "Sign out instead"
+  },
+  "devices": {
+    "title": "Devices",
+    "description": "The devices signed in to your account. Revoking one signs it out the next time it contacts the server.",
+    "this_device": "This device",
+    "added_on": "Added {date}",
+    "last_used": "Last used {date}",
+    "never_used": "Never used",
+    "revoke": "Revoke",
+    "revoke_confirm": "{name} will be signed out the next time it contacts the server.",
+    "revoke_current_confirm": "This is the device you are using. Revoking it signs you out here.",
+    "revoked_message": "Device revoked successfully",
+    "no_devices": "No devices",
+    "no_devices_description": "Devices signed in with the mobile app appear here."
+  },
   "modules": {
     "buy_now": "Koupit",
     "install": "Instalovat",
@@ -913,7 +1061,9 @@
     "cancel_invitation": "Cancel Invitation",
     "role": "Role",
     "invited_by": "Invited By",
-    "sent_at": "Sent At"
+    "sent_at": "Sent At",
+    "no_users": "No members yet",
+    "list_of_users": "Invite the people who work with you. They show up here once they join."
   },
   "reports": {
     "title": "Hlášení",
@@ -980,6 +1130,10 @@
       "date_range": "Vyberte rozsah data"
     }
   },
+  "pdf": {
+    "open_pdf": "Open PDF",
+    "download_failed": "Unable to download the document"
+  },
   "settings": {
     "menu_title": {
       "account_settings": "Nastavení účtu",
@@ -993,6 +1147,7 @@
       "backup": "Zálohování",
       "file_disk": "Souborový disk",
       "fonts": "Font Packages",
+      "currencies": "Currencies",
       "custom_fields": "Vlastní pole",
       "payment_modes": "Způsoby plateb",
       "notes": "Poznámky",
@@ -1035,7 +1190,16 @@
       "right": "Vpravo",
       "left": "Vlevo",
       "action": "Akce",
-      "add_currency": "Přidat měnu"
+      "add_currency": "Přidat měnu",
+      "description": "Every currency this installation can invoice in. The list is shared by all companies rather than set per company.",
+      "refresh": "Refresh list",
+      "search": "Search by name or code",
+      "count": "No currencies | 1 currency | {count} currencies",
+      "decimals": "no decimals | 1 decimal | {count} decimals",
+      "refreshed": "Currency list refreshed: {added} added, {updated} corrected.",
+      "already_current": "The currency list is already up to date.",
+      "refresh_failed": "The currency list could not be refreshed.",
+      "none_found": "No currency matches that search."
     },
     "mail": {
       "host": "Hostitel e-mailu",
@@ -1340,7 +1504,8 @@
           "invoice": "Faktura",
           "payment": "Platba"
         }
-      }
+      },
+      "reorder_component": "Move {name}, {position} of {count}. Use the up and down arrow keys"
     },
     "account_settings": {
       "profile_picture": "Profilový obrázek",
@@ -1410,7 +1575,7 @@
       "key": "API klíč",
       "name": "Název",
       "driver": "Ovladač",
-      "is_default": "JE VÝCHOZÍ",
+      "is_default": "Is default",
       "currency": "Měny",
       "exchange_rate_confirm_delete": "Nebudete moci obnovit tento ovladač",
       "created_message": "Poskytovatel úspěšně vytvořen",
@@ -1427,7 +1592,8 @@
       "url": "URL",
       "active": "Aktivní",
       "currency_help_text": "Tento poskytovatel bude použit pouze na výše vybraných měnách",
-      "currency_in_used": "Následující měny jsou již aktivní u jiného poskytovatele. Odstraňte tyto měny z výběru a znovu aktivujte tohoto poskytovatele."
+      "currency_in_used": "Následující měny jsou již aktivní u jiného poskytovatele. Odstraňte tyto měny z výběru a znovu aktivujte tohoto poskytovatele.",
+      "fetch_latest": "Fetch the latest exchange rate"
     },
     "tax_types": {
       "title": "Typy daní",
@@ -1547,6 +1713,9 @@
     "update_app": {
       "title": "Aktualizace aplikace",
       "description": "Kliknutím na tlačítko níže můžete jednoduše aktualizovat InvoiceShelf",
+      "client_title": "Server Update",
+      "client_description": "Check the server this app is connected to for a new InvoiceShelf release and install it. The app itself is updated through your device's app store.",
+      "client_versions": "Connected to {server}, server {serverVersion}, app {appVersion}",
       "check_update": "Zkontrolovat aktualizace",
       "insider_consent": "Přihlaste se k odběru novinek Insider. Doporučujeme pouze pro testovací účely.",
       "avail_update": "K dispozici je nová aktualizace",
@@ -1640,7 +1809,7 @@
       "dropbox_app": "Aplikace Dropboxu",
       "dropbox_root": "Kořenový adresář Dropboxu",
       "default_driver": "Výchozí ovladač",
-      "is_default": "JE VÝCHOZÍ",
+      "is_default": "Is default",
       "set_default_disk": "Nastavit výchozí disk",
       "set_default_disk_confirm": "Tento disk bude nastaven jako výchozí a všechny nové PDF budou uloženy na tomto disku",
       "success_set_default_disk": "Disk úspěšně nastaven jako výchozí",
@@ -2019,5 +2188,11 @@
       "impersonating_banner": "You are currently impersonating a user. All actions are logged.",
       "stop_impersonating": "Stop Impersonating"
     }
+  },
+  "notifications": {
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Note"
   }
 }
