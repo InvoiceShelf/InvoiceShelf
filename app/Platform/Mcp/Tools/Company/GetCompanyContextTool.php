@@ -7,7 +7,11 @@ use App\Domains\Catalog\Models\Unit;
 use App\Domains\Metadata\Models\CustomField;
 use App\Domains\Money\Models\Currency;
 use App\Domains\Purchases\Models\ExpenseCategory;
+use App\Domains\Receivables\Models\Payment;
 use App\Domains\Receivables\Models\PaymentMethod;
+use App\Domains\Sales\Application\SerialNumberService;
+use App\Domains\Sales\Models\Estimate;
+use App\Domains\Sales\Models\Invoice;
 use App\Domains\Taxation\Models\TaxType;
 use App\Platform\Mcp\McpContext;
 use App\Platform\Mcp\Tools\McpTool;
@@ -30,8 +34,10 @@ use Laravel\Mcp\Server\Tools\Annotations\IsReadOnly;
     Describe the company this connection works in: its base currency, how taxes
     and discounts are applied (per line or per document, prices with or without
     tax), the sales tax types, payment methods, units, document templates,
-    custom fields (and which are required), expense categories, and what this
-    connection may do. Call this first, before reading or writing anything.
+    custom fields (which are required, whether they print on the document, and
+    what a valid answer is), expense categories, the next document numbers, and
+    what this connection may do. Call this first, before reading or writing
+    anything. Custom fields that apply to Item are answered per line.
     TEXT)]
 #[IsReadOnly]
 #[IsIdempotent]
@@ -120,8 +126,39 @@ class GetCompanyContextTool extends McpTool
                     'type' => $field->type,
                     'required' => (bool) $field->is_required,
                     'options' => $field->options ?: null,
+                    'prints_on_document' => $field->placement === CustomField::PLACEMENT_DOCUMENT,
+                    'validation' => $field->validation ?: null,
                 ])->all(),
+            // What the next document of each kind would be numbered. A format
+            // with a per-customer series is only final once the customer is
+            // known, so creating a document settles it.
+            'next_numbers' => [
+                'invoice' => $this->nextNumber(new Invoice, $company->id, ['type' => Invoice::TYPE_INVOICE]),
+                'estimate' => $this->nextNumber(new Estimate, $company->id),
+                'payment' => $this->nextNumber(new Payment, $company->id),
+            ],
         ]);
+    }
+
+    /**
+     * The next number in a sequence, previewed the way the document forms do,
+     * without taking it.
+     *
+     * @param  array<string, mixed>  $scope
+     */
+    private function nextNumber(Model $model, int $companyId, array $scope = []): ?string
+    {
+        try {
+            $serial = (new SerialNumberService)->setCompany($companyId)->setModel($model);
+
+            if ($scope !== []) {
+                $serial->setSequenceScope($scope);
+            }
+
+            return $serial->setModelObject(null)->getNextNumber();
+        } catch (\Throwable) {
+            return null;
+        }
     }
 
     /**

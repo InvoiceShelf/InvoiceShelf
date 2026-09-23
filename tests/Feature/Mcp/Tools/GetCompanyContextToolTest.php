@@ -1,6 +1,8 @@
 <?php
 
 use App\Domains\Accounts\Models\User;
+use App\Domains\Sales\Application\SerialNumberService;
+use App\Domains\Sales\Models\Invoice;
 use App\Platform\Mcp\Models\McpConnection;
 use App\Platform\Mcp\Servers\InvoiceShelfServer;
 use App\Platform\Mcp\Tools\Company\GetCompanyContextTool;
@@ -33,8 +35,27 @@ test('it describes the bound company and the connection', function () {
                 ->has('expense_categories')
                 ->has('templates.invoice')
                 ->has('custom_fields')
+                ->has('next_numbers.invoice')
+                ->has('next_numbers.estimate')
+                ->has('next_numbers.payment')
                 ->etc();
         });
+});
+
+test('it previews the next invoice number from the invoice sequence alone', function () {
+    McpTesting::actAs($this->user, $this->company->id, McpConnection::ACCESS_READ);
+
+    $expected = (new SerialNumberService)
+        ->setCompany($this->company->id)
+        ->setModel(new Invoice)
+        ->setSequenceScope(['type' => Invoice::TYPE_INVOICE])
+        ->setModelObject(null)
+        ->getNextNumber();
+
+    InvoiceShelfServer::actingAs($this->user)
+        ->tool(GetCompanyContextTool::class)
+        ->assertOk()
+        ->assertStructuredContent(fn ($content) => $content->where('next_numbers.invoice', $expected)->etc());
 });
 
 test('it is read-only and closed-world', function () {
