@@ -18,7 +18,11 @@
     "admin": "Administration",
     "administration": "Administration",
     "companies": "Companies",
-    "all_users": "Users"
+    "all_users": "Users",
+    "more": "More",
+    "menu": "Menu",
+    "account_settings": "Account settings",
+    "account_menu": "Account menu for {name}"
   },
   "general": {
     "add_company": "Додати компанію",
@@ -71,12 +75,12 @@
     "showing": "Показано",
     "of": "з",
     "actions": "Дії",
-    "subtotal": "ПІДСУМОК",
-    "discount": "ЗНИЖКА",
+    "subtotal": "Subtotal",
+    "discount": "Discount",
     "fixed": "Фіксована",
     "percentage": "Відсоток",
     "tax": "ПОДАТОК",
-    "total_amount": "ЗАГАЛЬНА СУМА",
+    "total_amount": "Total amount",
     "bill_to": "Надіслати рахунок до",
     "ship_to": "Відправити до",
     "due": "ДО СПЛАТИ",
@@ -128,18 +132,72 @@
       "showing": "Показано",
       "to": "до",
       "of": "з",
-      "results": "результати"
+      "results": "результати",
+      "label": "Pagination",
+      "page": "Page {page}"
     },
     "file_upload": {
       "drag_a_file": "Перетягніть файл сюди або",
       "browse": "перегляд",
-      "to_choose": "обрати файл"
+      "to_choose": "обрати файл",
+      "take_photo": "Take photo",
+      "capture_failed": "The photo could not be taken. Choose a file instead.",
+      "choose_file": "Choose a file",
+      "remove_file": "Remove file"
     },
     "multiselect": {
       "the_list_is_empty": "Список порожній",
       "no_results_found": "Результатів не знайдено"
     },
-    "copy_to_clipboard": "Копіювати до буферу обміну"
+    "copy_to_clipboard": "Копіювати до буферу обміну",
+    "new": "New",
+    "expand": "Expand",
+    "theme": "Theme",
+    "theme_light": "Light",
+    "theme_dark": "Dark",
+    "theme_system": "System",
+    "breadcrumb": "Breadcrumb",
+    "selected_count": "{count} selected",
+    "close": "Close",
+    "apply": "Apply",
+    "show_password": "Show password",
+    "hide_password": "Hide password",
+    "successful": "Done.",
+    "something_went_wrong": "Something went wrong. Please try again.",
+    "skip_to_content": "Skip to content",
+    "current": "(current)",
+    "list": "List",
+    "sort_ascending": "Sort order: ascending",
+    "sort_descending": "Sort order: descending",
+    "remove_named": "Remove {name}",
+    "editor": {
+      "toolbar": "Formatting",
+      "bold": "Bold",
+      "italic": "Italic",
+      "strike": "Strikethrough",
+      "code": "Inline code",
+      "paragraph": "Paragraph",
+      "h1": "Heading 1",
+      "h2": "Heading 2",
+      "h3": "Heading 3",
+      "bulletList": "Bulleted list",
+      "orderedList": "Numbered list",
+      "blockquote": "Quote",
+      "codeBlock": "Code block",
+      "undo": "Undo",
+      "redo": "Redo",
+      "alignLeft": "Align left",
+      "alignRight": "Align right",
+      "alignJustify": "Justify",
+      "alignCenter": "Center",
+      "addLink": "Link",
+      "link_url": "Link address"
+    },
+    "email_preview": "Email preview",
+    "pdf_preview": "PDF preview",
+    "step_of": "Step {step} of {count}",
+    "actions_for": "Actions for {name}",
+    "select_named": "Select {name}"
   },
   "dashboard": {
     "select_year": "Виберіть рік",
@@ -154,27 +212,52 @@
       "total_sales": "Продажі",
       "total_receipts": "Квитанції",
       "total_expense": "Витрати",
-      "net_income": "Чистий дохід",
+      "net_income": "Net income",
       "year": "Виберіть рік"
     },
     "monthly_chart": {
       "title": "Продажі & Витрати"
     },
     "recent_invoices_card": {
-      "title": "РАХУНКИ ДО СПЛАТИ",
-      "due_on": "До сплати",
+      "title": "Due invoices",
+      "due_on": "Due on",
       "customer": "Клієнт",
-      "amount_due": "СУМА ДО СПЛАТИ",
+      "amount_due": "Amount due",
       "actions": "Дії",
-      "view_all": "Переглянути все"
+      "view_all": "View all"
     },
     "recent_estimate_card": {
-      "title": "ОСТАННІ КОШТОРИСИ",
+      "title": "Recent estimates",
       "date": "Дата",
       "customer": "Клієнт",
-      "amount_due": "СУМА ДО СПЛАТИ",
+      "amount_due": "Amount",
       "actions": "Дії",
-      "view_all": "Переглянути все"
+      "view_all": "View all"
+    },
+    "receivables": {
+      "title": "Owed to you",
+      "on_invoices": "On {count} sent invoice | On {count} sent invoices",
+      "overdue": "Overdue",
+      "due_soon": "Due in the next 30 days",
+      "due_later": "Due later",
+      "invoice_count": "{count} invoice | {count} invoices",
+      "nothing_owed": "Nothing is owed to you right now.",
+      "view_invoices": "View invoices"
+    },
+    "cashflow": {
+      "title": "Cash flow",
+      "show_table": "Show as table",
+      "hide_table": "Hide table",
+      "month": "Month",
+      "chart_style": "Chart style",
+      "area": "Area",
+      "bars": "Bars",
+      "day": "Day"
+    },
+    "counts": {
+      "customers": "customer | customers",
+      "invoices": "invoice | invoices",
+      "estimates": "estimate | estimates"
     }
   },
   "tax_types": {
@@ -193,10 +276,13 @@
     "search": "Шукати...",
     "customers": "Клієнти",
     "users": "Користувачі",
-    "no_results_found": "Результатів не знайдено"
+    "no_results_found": "Результатів не знайдено",
+    "placeholder": "Search or jump to…",
+    "go_to": "Go to",
+    "create": "Create"
   },
   "company_switcher": {
-    "label": "ЗМIНИТИ КОМПАНІЮ",
+    "label": "Switch company",
     "no_results_found": "Результатів не знайдено",
     "add_new_company": "Додати нову компанію",
     "new_company": "Нова компанія",
@@ -204,15 +290,22 @@
   },
   "dateRange": {
     "today": "Сьогодні",
-    "this_week": "Цього тижня",
-    "this_month": "Цього місяця",
-    "this_quarter": "Цього кварталу",
-    "this_year": "Цього року",
-    "previous_week": "Попередній тиждень",
-    "previous_month": "Попередній Місяць",
-    "previous_quarter": "Попередній Квартал",
-    "previous_year": "Попередній рік",
-    "custom": "Користувацька"
+    "this_week": "This week",
+    "this_month": "This month",
+    "this_quarter": "This quarter",
+    "this_year": "This year",
+    "previous_week": "Previous week",
+    "previous_month": "Previous month",
+    "previous_quarter": "Previous quarter",
+    "previous_year": "Previous year",
+    "custom": "Користувацька",
+    "last_12_months": "Last 12 months",
+    "custom_range": "Custom range",
+    "period": "Period",
+    "showing": "Showing {range}",
+    "pick_start": "Pick the first day",
+    "pick_end": "Now pick the last day",
+    "too_long": "Pick a range of up to {years} years"
   },
   "customers": {
     "title": "Клієнти",
@@ -347,10 +440,10 @@
     "all": "Усі",
     "paid": "Сплачено",
     "unpaid": "Несплачені",
-    "customer": "КЛІЄНТ",
-    "ref_no": "НОМЕР ВІДСТЕЖЕННЯ",
-    "number": "НОМЕР",
-    "amount_due": "СУМА ДО СПЛАТИ",
+    "customer": "Customer",
+    "ref_no": "Ref no.",
+    "number": "Number",
+    "amount_due": "Amount due",
     "partially_paid": "Частково сплачено",
     "total": "До сплати",
     "discount": "Знижка",
@@ -449,11 +542,11 @@
     "viewed": "Переглянуто",
     "overdue": "Прострочений",
     "completed": "Виконано",
-    "customer": "КЛІЄНТСЬКА",
-    "paid_status": "СТАТУС ОПЛАТИ",
-    "ref_no": "НОМЕР ВІДСТЕЖЕННЯ.",
-    "number": "НОМЕР РАХУНКУ",
-    "amount_due": "РОЗРАХУНКОВА СУМА",
+    "customer": "Customer",
+    "paid_status": "Paid status",
+    "ref_no": "Ref no.",
+    "number": "Number",
+    "amount_due": "Amount due",
     "partially_paid": "Частково сплачено",
     "total": "До сплати",
     "discount": "Знижка",
@@ -539,7 +632,16 @@
       "tax": "Податок",
       "amount": "Сума",
       "select_an_item": "Введіть або натисніть щоб вибрати товар",
-      "type_item_description": "Опис товару (необов’язково)"
+      "type_item_description": "Опис товару (необов’язково)",
+      "options": "Options",
+      "item_actions": "Item actions",
+      "move_up": "Move up",
+      "move_down": "Move down",
+      "remove": "Remove item",
+      "item_actions_for": "Actions for item {position}",
+      "discount_type": "Discount type: {type}",
+      "reorder": "Move item {position} of {count}. Use the up and down arrow keys",
+      "moved": "Moved to position {position} of {count}"
     },
     "payment_attached_message": "Один із вибраних рахунків уже має прикріплений платіж. Спочатку видаліть прикріплені платежі, щоб продовжити видалення.",
     "confirm_delete": "Ви не зможете відновити цей рахунок | Ви не зможете відновити ці рахунки",
@@ -564,11 +666,11 @@
     "overdue": "Прострочений",
     "active": "Активний",
     "completed": "Виконано",
-    "customer": "КЛІЄНТ",
-    "paid_status": "СТАТУС ОПЛАТИ",
-    "ref_no": "НОМЕР ВІДСТЕЖЕННЯ.",
-    "number": "НОМЕР",
-    "amount_due": "РОЗРАХУНКОВА СУМА",
+    "customer": "Customer",
+    "paid_status": "Paid status",
+    "ref_no": "Ref no.",
+    "number": "Number",
+    "amount_due": "Amount due",
     "partially_paid": "Частково сплачено",
     "total": "Всього",
     "discount": "Знижка",
@@ -646,6 +748,7 @@
     },
     "frequency": {
       "title": "Частота (у форматі cron)",
+      "label": "Frequency",
       "select_frequency": "Вибрати частоту",
       "minute": "Хвилина",
       "hour": "Година",
@@ -808,6 +911,51 @@
     "enter_password": "Введіть пароль",
     "retype_password": "Повторіть пароль"
   },
+  "client": {
+    "connect_heading": "Connect to your server",
+    "connect_description": "Enter the address of the InvoiceShelf server you want to use.",
+    "server_address": "Server address",
+    "connect": "Connect",
+    "connect_anyway": "Connect anyway",
+    "invalid_server_url": "Enter the full address, including http:// or https://",
+    "insecure_warning": "This address is not encrypted. Anyone on the network can read what you send to it.",
+    "app_url_mismatch": "The server calls itself {host}. Logos and attachments may not load.",
+    "unreachable_heading": "Cannot reach the server",
+    "unreachable_description": "Nothing answered at {server}. Check the address, and that the server is running and reachable from this device.",
+    "too_old_heading": "This server is too old",
+    "too_old_description": "It runs {version}, and this app needs {required} or newer.",
+    "too_old_short": "This server is too old for this app.",
+    "update_app_heading": "Update the app",
+    "update_app_description": "This server needs app version {required} or newer. This app is {current}.",
+    "retry": "Retry",
+    "change_server": "Change server",
+    "connected_to": "Connected to {server}",
+    "modules_failed": "Some add-ons did not load: {names}",
+    "app_lock_title": "App lock",
+    "app_lock_description": "Ask for this device's Face ID, fingerprint or passcode before the app opens.",
+    "app_lock_toggle": "Require Face ID or fingerprint to open the app",
+    "app_lock_toggle_description": "The app locks when you open it, and when you come back to it after a while.",
+    "app_lock_enable_failed": "The app lock was not turned on: this device did not confirm it is you.",
+    "app_lock_reason": "Unlock InvoiceShelf",
+    "app_lock_locked_heading": "InvoiceShelf is locked",
+    "app_lock_locked_description": "Confirm it is you to get back to your account.",
+    "app_lock_unlock": "Unlock",
+    "app_lock_sign_out": "Sign out instead"
+  },
+  "devices": {
+    "title": "Devices",
+    "description": "The devices signed in to your account. Revoking one signs it out the next time it contacts the server.",
+    "this_device": "This device",
+    "added_on": "Added {date}",
+    "last_used": "Last used {date}",
+    "never_used": "Never used",
+    "revoke": "Revoke",
+    "revoke_confirm": "{name} will be signed out the next time it contacts the server.",
+    "revoke_current_confirm": "This is the device you are using. Revoking it signs you out here.",
+    "revoked_message": "Device revoked successfully",
+    "no_devices": "No devices",
+    "no_devices_description": "Devices signed in with the mobile app appear here."
+  },
   "modules": {
     "buy_now": "Придбайте зараз",
     "install": "Встановити",
@@ -913,7 +1061,9 @@
     "cancel_invitation": "Cancel Invitation",
     "role": "Role",
     "invited_by": "Invited By",
-    "sent_at": "Sent At"
+    "sent_at": "Sent At",
+    "no_users": "No members yet",
+    "list_of_users": "Invite the people who work with you. They show up here once they join."
   },
   "reports": {
     "title": "Звіт",
@@ -980,6 +1130,10 @@
       "date_range": "Виберіть діапазон дат"
     }
   },
+  "pdf": {
+    "open_pdf": "Open PDF",
+    "download_failed": "Unable to download the document"
+  },
   "settings": {
     "menu_title": {
       "account_settings": "Параметри облікового запису",
@@ -993,6 +1147,7 @@
       "backup": "Резервне копіювання",
       "file_disk": "Файл диска",
       "fonts": "Font Packages",
+      "currencies": "Currencies",
       "custom_fields": "Індивідуальні поля",
       "payment_modes": "Способи оплати",
       "notes": "Примітки",
@@ -1035,7 +1190,16 @@
       "right": "Праворуч",
       "left": "Ліворуч",
       "action": "Дія",
-      "add_currency": "Додати валюту"
+      "add_currency": "Додати валюту",
+      "description": "Every currency this installation can invoice in. The list is shared by all companies rather than set per company.",
+      "refresh": "Refresh list",
+      "search": "Search by name or code",
+      "count": "No currencies | 1 currency | {count} currencies",
+      "decimals": "no decimals | 1 decimal | {count} decimals",
+      "refreshed": "Currency list refreshed: {added} added, {updated} corrected.",
+      "already_current": "The currency list is already up to date.",
+      "refresh_failed": "The currency list could not be refreshed.",
+      "none_found": "No currency matches that search."
     },
     "mail": {
       "host": "Поштовий сервер",
@@ -1340,7 +1504,8 @@
           "invoice": "Рахунок",
           "payment": "Оплата"
         }
-      }
+      },
+      "reorder_component": "Move {name}, {position} of {count}. Use the up and down arrow keys"
     },
     "account_settings": {
       "profile_picture": "Зображення профілю",
@@ -1410,7 +1575,7 @@
       "key": "Ключ API",
       "name": "Назва",
       "driver": "Джерело",
-      "is_default": "ЗА ЗАМОВЧУВАННЯМ",
+      "is_default": "Is default",
       "currency": "Валюти",
       "exchange_rate_confirm_delete": "Ви не зможете відновити це джерело",
       "created_message": "Постачальника успішно створено",
@@ -1427,7 +1592,8 @@
       "url": "URL",
       "active": "Активний",
       "currency_help_text": "Цей провайдер буде використовуватися лише для вищевказаних валют",
-      "currency_in_used": "Наступні валюти вже активовані в іншого провайдера. Будь ласка, видаліть ці валюти з вибору, щоб знову активувати цього провайдера."
+      "currency_in_used": "Наступні валюти вже активовані в іншого провайдера. Будь ласка, видаліть ці валюти з вибору, щоб знову активувати цього провайдера.",
+      "fetch_latest": "Fetch the latest exchange rate"
     },
     "tax_types": {
       "title": "Типи податків",
@@ -1547,6 +1713,9 @@
     "update_app": {
       "title": "Оновити застосунок",
       "description": "Ви можете легко оновити InvoiceShelf, перевіривши наявність нового оновлення, натиснувши кнопку нижче",
+      "client_title": "Server Update",
+      "client_description": "Check the server this app is connected to for a new InvoiceShelf release and install it. The app itself is updated through your device's app store.",
+      "client_versions": "Connected to {server}, server {serverVersion}, app {appVersion}",
       "check_update": "Перевірити оновлення",
       "insider_consent": "Підпишіться на інсайдерські випуски. Рекомендовано лише для тестування.",
       "avail_update": "Доступне нове оновлення",
@@ -1640,7 +1809,7 @@
       "dropbox_app": "Dropbox назва",
       "dropbox_root": "Dropbox шлях",
       "default_driver": "Використовувати за замовчуванням",
-      "is_default": "ЗА ЗАМОВЧУВАННЯМ",
+      "is_default": "Is default",
       "set_default_disk": "Встановити диск за замовчуванням",
       "set_default_disk_confirm": "Цей диск буде встановлено за замовчуванням, і всі нові PDF-файли будуть зберігатися на ньому",
       "success_set_default_disk": "Диск встановлено за замовчуванням",
@@ -2019,5 +2188,11 @@
       "impersonating_banner": "You are currently impersonating a user. All actions are logged.",
       "stop_impersonating": "Stop Impersonating"
     }
+  },
+  "notifications": {
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Note"
   }
 }
