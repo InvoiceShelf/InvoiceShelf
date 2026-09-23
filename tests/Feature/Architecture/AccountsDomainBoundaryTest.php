@@ -17,6 +17,7 @@ use App\Domains\Accounts\Contracts\MemberReferencesCleaner;
 use App\Domains\Accounts\Contracts\UserAvatarManager;
 use App\Domains\Accounts\Http\Middleware\Authenticate;
 use App\Domains\Accounts\Http\Middleware\CompanyMiddleware;
+use App\Domains\Accounts\Http\Middleware\EnsureOAuthServerEnabled;
 use App\Domains\Accounts\Http\Middleware\RedirectIfAuthenticated;
 use App\Domains\Accounts\Http\Middleware\RedirectIfUnauthorized;
 use App\Domains\Accounts\Http\Middleware\ScopeBouncer;
@@ -77,6 +78,7 @@ test('account middleware aliases resolve to the accounts domain', function () {
     expect($middleware['auth'])->toBe(Authenticate::class)
         ->and($middleware['company'])->toBe(CompanyMiddleware::class)
         ->and($middleware['guest'])->toBe(RedirectIfAuthenticated::class)
+        ->and($middleware['oauth.enabled'])->toBe(EnsureOAuthServerEnabled::class)
         ->and($middleware['redirect-if-unauthenticated'])->toBe(RedirectIfUnauthorized::class)
         ->and($middleware['bouncer'])->toBe(ScopeBouncer::class)
         ->and($middleware['super-admin'])->toBe(SuperAdminMiddleware::class);
@@ -138,4 +140,24 @@ test('the accounts domain preserves company account routes and middleware', func
             expect($route->gatherMiddleware())->toContain('bouncer');
         }
     }
+});
+
+test('the accounts domain owns the oauth server and gates every passport route', function () {
+    $routes = collect(Route::getRoutes()->getRoutes())
+        ->filter(fn ($route): bool => str_starts_with((string) $route->getName(), 'passport.'));
+
+    expect($routes->map->getName()->sort()->values()->all())->toBe([
+        'passport.authorizations.approve',
+        'passport.authorizations.authorize',
+        'passport.authorizations.deny',
+        'passport.token',
+        'passport.token.refresh',
+    ]);
+
+    foreach ($routes as $route) {
+        expect($route->gatherMiddleware())->toContain('oauth.enabled');
+    }
+
+    expect(config('auth.guards.oauth.driver'))->toBe('passport')
+        ->and(config('passport.guard'))->toBe('web');
 });

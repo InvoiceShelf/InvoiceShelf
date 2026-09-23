@@ -24,6 +24,7 @@ class MemberService
 {
     public function __construct(
         private readonly MemberReferencesCleaner $memberReferencesCleaner,
+        private readonly AccessRevoker $accessRevoker,
     ) {}
 
     /**
@@ -67,7 +68,13 @@ class MemberService
 
         $memberships = collect($companies);
 
-        $user->companies()->sync($memberships->pluck('id'));
+        $changes = $user->companies()->sync($memberships->pluck('id'));
+
+        // Access granted to outside clients inside a company the account just
+        // left ends with the membership.
+        foreach ($changes['detached'] as $companyId) {
+            $this->accessRevoker->revokeCompany($user->id, (int) $companyId);
+        }
 
         $this->grantRoles($user, $memberships);
 
@@ -95,6 +102,8 @@ class MemberService
             }
 
             $this->memberReferencesCleaner->clear($member);
+
+            $this->accessRevoker->revokeUser($member->id);
 
             if ($member->settings()->exists()) {
                 $member->settings()->delete();

@@ -43,10 +43,20 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        // Unused as a guard, but Passport reads `auth.guards.api.provider` to
+        // find the users an OAuth client belongs to, so it has to stay.
         'api' => [
             'driver' => 'token',
             'provider' => 'users',
             'hash' => false,
+        ],
+
+        // Bearer tokens issued by the OAuth server (Passport). Separate from
+        // Sanctum's personal access tokens, which the SPA and the thin clients
+        // use; a token from one is never accepted by the other.
+        'oauth' => [
+            'driver' => 'passport',
+            'provider' => 'users',
         ],
         'customer' => [
             'driver' => 'session',
