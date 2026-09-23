@@ -134,8 +134,9 @@ async function refresh(): Promise<void> {
         </div>
 
         <div class="flex items-center gap-6 text-sm text-muted">
-          <span>{{ currency.symbol }}</span>
-          <span class="w-24 text-right text-xs whitespace-nowrap">
+          <!-- Isolated, so "C$" or "Fr." keeps its order in right-to-left text -->
+          <bdi>{{ currency.symbol }}</bdi>
+          <span class="w-24 text-end text-xs whitespace-nowrap">
             {{ $t('settings.currencies.decimals', { count: currency.precision }) }}
           </span>
         </div>
