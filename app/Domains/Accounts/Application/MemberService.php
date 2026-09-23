@@ -54,20 +54,26 @@ class MemberService
     /**
      * Overwrite an account and re-point it at the listed companies.
      *
-     * Memberships are replaced wholesale, so an edit that omits a company both
-     * detaches the account from it and leaves the roles it held there behind —
-     * the role sync below only visits companies still on the list.
+     * Only memberships in the companies the caller manages are replaced: one of
+     * those left off the list is detached, and the roles held there are left
+     * behind, since the role sync below only visits companies still on the
+     * list. Memberships in any other company stay as they are.
      *
      * @param  array<string, mixed>  $attributes
      * @param  iterable<int, array{id: int, role: string}>  $companies
+     * @param  array<int, int>  $managedCompanyIds
      */
-    public function update(User $user, array $attributes, iterable $companies): User
+    public function update(User $user, array $attributes, iterable $companies, array $managedCompanyIds): User
     {
         $user->update($attributes);
 
         $memberships = collect($companies);
 
-        $user->companies()->sync($memberships->pluck('id'));
+        $elsewhere = $user->companies()
+            ->whereNotIn('companies.id', $managedCompanyIds)
+            ->pluck('companies.id');
+
+        $user->companies()->sync($elsewhere->merge($memberships->pluck('id'))->unique()->values());
 
         $this->grantRoles($user, $memberships);
 
