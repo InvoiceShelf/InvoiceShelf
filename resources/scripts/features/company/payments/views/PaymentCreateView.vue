@@ -50,6 +50,7 @@
           </BaseInputGroup>
 
           <ExchangeRateConverter
+            :store="exchangeRateStore"
             store-prop="currentPayment"
             :v="{ exchange_rate: { $error: false, $errors: [], $touch: () => {} } }"
             :is-loading="isLoadingContent"
@@ -87,10 +88,10 @@
               <p class="mt-1 text-sm text-muted">{{ $t('payments.allocations_description') }}</p>
             </div>
             <div class="flex gap-2">
-              <BaseButton type="button" size="sm" variant="primary-outline" :disabled="!invoiceList.length || !amount" @click="allocateOldestFirst">
+              <BaseButton type="button" size="sm" variant="primary-outline" :disabled="!eligibleInvoices.length || !amount" @click="allocateOldestFirst">
                 {{ $t('payments.allocate_oldest_first') }}
               </BaseButton>
-              <BaseButton type="button" size="sm" variant="primary-outline" :disabled="!paymentStore.currentPayment.customer_id" @click="addAllocation">
+              <BaseButton type="button" size="sm" variant="primary-outline" :disabled="!paymentStore.currentPayment.customer_id || !availableInvoices(0).length" @click="addAllocation">
                 <template #left="slotProps"><BaseIcon name="PlusIcon" :class="slotProps.class" /></template>
                 {{ $t('payments.add_allocation') }}
               </BaseButton>
@@ -101,8 +102,9 @@
             {{ $t('payments.select_customer_to_allocate') }}
           </div>
 
-          <div v-else-if="!paymentStore.currentPayment.allocations.length" class="p-4 text-sm rounded-lg bg-surface-secondary text-muted">
-            {{ $t('payments.no_allocations') }}
+          <!-- Nothing open to apply it to: say so rather than offer buttons that do nothing -->
+          <div v-else-if="!paymentStore.currentPayment.allocations.length" class="p-4 text-sm rounded-lg bg-surface-secondary text-muted" role="status">
+            {{ !isLoadingInvoices && !eligibleInvoices.length ? $t('payments.no_open_invoices') : $t('payments.no_allocations') }}
           </div>
 
           <div v-else class="space-y-3">
@@ -254,6 +256,9 @@ function availableInvoices(selectedInvoiceId: number): Invoice[] {
     .filter((invoice) => isEligibleInvoice(invoice) || invoice.id === selectedInvoiceId)
     .filter((invoice) => !chosenInvoiceIds.includes(invoice.id))
 }
+
+// Invoices this payment can still be applied to
+const eligibleInvoices = computed<Invoice[]>(() => invoiceList.value.filter(isEligibleInvoice))
 
 function isEligibleInvoice(invoice: Invoice): boolean {
   return invoice.type === 'INVOICE' && invoice.status !== 'DRAFT' && invoice.due_amount > 0

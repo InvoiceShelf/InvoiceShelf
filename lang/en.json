@@ -45,6 +45,9 @@
     "download": "Download",
     "refresh": "Refresh",
     "loading": "Loading…",
+    "check_highlighted_fields": "Some details are missing. Check the highlighted fields and try again.",
+    "taxes_are_added_in_settings": "Taxes are added under Settings, Tax Types.",
+    "select_an_option": "Select an option",
     "date": "Date",
     "from_date": "From Date",
     "to_date": "To Date",
@@ -200,6 +203,7 @@
     "select_named": "Select {name}"
   },
   "dashboard": {
+    "load_failed": "The dashboard could not be loaded.",
     "select_year": "Select year",
     "cards": {
       "due_amount": "Amount Due",
@@ -245,6 +249,8 @@
       "view_invoices": "View invoices"
     },
     "cashflow": {
+      "no_activity": "No activity in this period",
+      "no_activity_hint": "Invoices, payments and expenses you record will show up here.",
       "title": "Cash flow",
       "show_table": "Show as table",
       "hide_table": "Hide table",
@@ -356,6 +362,10 @@
     "copy_billing_address": "Copy from Billing",
     "no_customers": "No customers yet!",
     "no_customers_found": "No customers found!",
+    "add_first_customer": "Add your first customer to start invoicing them.",
+    "activity_load_failed": "This customer's activity could not be loaded.",
+    "statement_load_failed": "The statement could not be loaded.",
+    "ask_to_add_customers": "Someone who can manage customers needs to add one first.",
     "no_contact": "No contact",
     "no_contact_name": "No contact name",
     "list_of_customers": "This section will contain the list of customers.",
@@ -832,6 +842,7 @@
     "add_allocation": "Add Allocation",
     "select_customer_to_allocate": "Select a customer before allocating this payment.",
     "no_allocations": "No invoices selected. This payment will remain available as customer credit.",
+    "no_open_invoices": "This customer has no open invoices, so the payment will stay as customer credit.",
     "allocated": "Allocated",
     "unapplied_credit": "Unapplied Credit",
     "remove_allocation": "Remove allocation",
@@ -999,6 +1010,7 @@
     "purchased": "Purchased",
     "installed": "Installed",
     "no_modules_installed": "No Modules Installed Yet!",
+    "no_marketplace_modules": "No marketplace modules are available yet.",
     "disable_warning": "All the settings for this particular will be reverted.",
     "uninstall": "Uninstall",
     "uninstall_warning": "Uninstalling removes this module's runtime files. Its data and settings are preserved unless you explicitly choose to remove them.",

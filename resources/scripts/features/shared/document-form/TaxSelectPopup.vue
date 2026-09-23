@@ -70,9 +70,13 @@
                 </button>
               </div>
 
-              <div v-else class="flex justify-center p-5" role="status">
+              <div v-else class="flex flex-col items-center gap-1 p-5 text-center" role="status">
                 <span class="text-base text-muted">
                   {{ $t('general.no_tax_found') }}
+                </span>
+                <!-- Without the right to add one here, say where taxes come from -->
+                <span v-if="!canCreateTaxType" class="text-sm text-subtle">
+                  {{ $t('general.taxes_are_added_in_settings') }}
                 </span>
               </div>
             </div>

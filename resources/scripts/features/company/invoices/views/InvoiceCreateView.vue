@@ -369,9 +369,8 @@ async function submitForm(): Promise<void> {
   v$.value.$touch()
 
   if (v$.value.$invalid) {
-    console.log('Invoice form invalid. Errors:', JSON.stringify(
-      v$.value.$errors.map((e: { $property: string; $message: string }) => `${e.$property}: ${e.$message}`)
-    ))
+    // The first invalid field, often the customer, takes focus on its own
+    notificationStore.showNotification({ type: 'error', message: t('general.check_highlighted_fields') })
     return
   }
 

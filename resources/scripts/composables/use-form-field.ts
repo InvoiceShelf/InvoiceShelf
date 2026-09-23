@@ -115,12 +115,18 @@ export function useFormField(options: FieldOptions = {}) {
 }
 
 /**
+ * Fields marked invalid. A button that opens a picker cannot carry
+ * aria-invalid, so it marks itself with data-invalid instead.
+ */
+const INVALID = '[aria-invalid="true"], [data-invalid="true"]'
+
+/**
  * After a failed submit, move focus to the first field marked invalid so a
  * keyboard or screen reader user lands on the problem.
  */
 export function focusFirstInvalid(root: ParentNode = document): void {
   requestAnimationFrame(() => {
-    root.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus()
+    root.querySelector<HTMLElement>(INVALID)?.focus()
   })
 }
 
@@ -142,11 +148,11 @@ export function focusInvalidAfterSubmit(): void {
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           const invalid = form.isConnected
-            ? form.querySelector<HTMLElement>('[aria-invalid="true"]')
+            ? form.querySelector<HTMLElement>(INVALID)
             : null
           const active = document.activeElement
 
-          if (invalid && active?.getAttribute('aria-invalid') !== 'true') {
+          if (invalid && !active?.matches(INVALID)) {
             invalid.focus()
           }
         })

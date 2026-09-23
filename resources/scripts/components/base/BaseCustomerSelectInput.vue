@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCustomerStore } from '../../features/company/customers/store'
 import { useModalStore } from '../../stores/modal.store'
@@ -11,12 +11,15 @@ interface Props {
   modelValue?: string | number | Record<string, unknown> | null
   fetchAll?: boolean
   showAction?: boolean
+  /** For an optional customer, such as on an expense */
+  canDeselect?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   modelValue: '',
   fetchAll: false,
   showAction: false,
+  canDeselect: false,
 })
 
 const emit = defineEmits<{
@@ -45,6 +48,11 @@ async function searchCustomers(search: string) {
   const response = await customerStore.fetchCustomers(data)
   const results = response.data ?? []
 
+  // A customer just added here may sort past the first page of results
+  if (created.value && !results.some((c: Record<string, unknown>) => c.id === created.value?.id)) {
+    results.unshift(created.value as typeof results[0])
+  }
+
   if (results.length > 0 && customerStore.editCustomer) {
     const customerFound = results.find(
       (c: Record<string, unknown>) => c.id === customerStore.editCustomer?.id
@@ -58,18 +66,33 @@ async function searchCustomers(search: string) {
   return results
 }
 
+const created = ref<Record<string, unknown> | null>(null)
+
+// Remounting the select reloads its options, so the new customer shows by name
+const reloadKey = ref<number>(0)
+
 function addCustomer(): void {
   customerStore.resetCurrentCustomer()
 
   modalStore.openModal({
     title: t('customers.add_new_customer'),
     componentName: 'CustomerModal',
+    refreshData: (customer: unknown) => {
+      const saved = customer as Record<string, unknown> | undefined
+
+      if (saved?.id) {
+        created.value = saved
+        reloadKey.value++
+        selectedCustomer.value = saved.id as number
+      }
+    },
   })
 }
 </script>
 
 <template>
   <BaseMultiselect
+    :key="reloadKey"
     v-model="selectedCustomer"
     v-bind="$attrs"
     track-by="name"
@@ -82,7 +105,7 @@ function addCustomer(): void {
     :options="searchCustomers"
     label-value="name"
     :placeholder="$t('customers.type_or_click')"
-    :can-deselect="false"
+    :can-deselect="canDeselect"
     class="w-full"
   >
     <template v-if="showAction" #action>

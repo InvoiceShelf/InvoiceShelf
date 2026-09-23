@@ -133,6 +133,8 @@ async function submitNote(): Promise<void> {
     is_default: currentNote.value.is_default,
   }
 
+  let created: unknown = null
+
   try {
     if (isEdit.value && currentNote.value.id) {
       const res = await noteService.update(currentNote.value.id, payload)
@@ -144,6 +146,8 @@ async function submitNote(): Promise<void> {
       }
     } else {
       const res = await noteService.create(payload)
+      // The service is typed as returning the note, but the body wraps it in data
+      created = (res as unknown as { data?: unknown } | undefined)?.data ?? null
       if (res) {
         notificationStore.showNotification({
           type: 'success',
@@ -153,9 +157,8 @@ async function submitNote(): Promise<void> {
     }
 
     isSaving.value = false
-    if (modalStore.refreshData) {
-      modalStore.refreshData()
-    }
+    // A new note goes back to whoever opened the modal, to insert it
+    modalStore.refreshData?.(...(created ? [created] : []))
     closeNoteModal()
   } catch {
     isSaving.value = false
