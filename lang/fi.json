@@ -45,6 +45,9 @@
     "download": "Lataa",
     "refresh": "Refresh",
     "loading": "Loading…",
+    "check_highlighted_fields": "Some details are missing. Check the highlighted fields and try again.",
+    "taxes_are_added_in_settings": "Taxes are added under Settings, Tax Types.",
+    "select_an_option": "Select an option",
     "date": "Date",
     "from_date": "Päivästä",
     "to_date": "Päivään",
@@ -200,6 +203,7 @@
     "select_named": "Select {name}"
   },
   "dashboard": {
+    "load_failed": "The dashboard could not be loaded.",
     "select_year": "Valitse vuosi",
     "cards": {
       "due_amount": "Avoin summa",
@@ -224,7 +228,10 @@
       "customer": "Asiakas",
       "amount_due": "Amount due",
       "actions": "Toiminnot",
-      "view_all": "View all"
+      "view_all": "View all",
+      "empty_title": "Nothing awaiting payment",
+      "empty_description": "Sent invoices that are still due show up here.",
+      "portal_empty_description": "Invoices you still need to pay show up here."
     },
     "recent_estimate_card": {
       "title": "Recent estimates",
@@ -232,7 +239,10 @@
       "customer": "Asiakas",
       "amount_due": "Amount",
       "actions": "Toiminnot",
-      "view_all": "View all"
+      "view_all": "View all",
+      "empty_title": "No estimates yet",
+      "empty_description": "Estimates you send show up here.",
+      "portal_empty_description": "Estimates sent to you show up here."
     },
     "receivables": {
       "title": "Owed to you",
@@ -242,9 +252,12 @@
       "due_later": "Due later",
       "invoice_count": "{count} invoice | {count} invoices",
       "nothing_owed": "Nothing is owed to you right now.",
+      "first_invoice_hint": "Send your first invoice and what customers owe you shows up here.",
       "view_invoices": "View invoices"
     },
     "cashflow": {
+      "no_activity": "No activity in this period",
+      "no_activity_hint": "Invoices, payments and expenses you record will show up here.",
       "title": "Cash flow",
       "show_table": "Show as table",
       "hide_table": "Hide table",
@@ -354,8 +367,13 @@
     "billing_address": "Laskutusosoite",
     "shipping_address": "Toimitusosoite",
     "copy_billing_address": "Kopioi laskutusosoitteesta",
-    "no_customers": "Ei tallennettuja asiakkaita!",
+    "no_customers": "No customers yet",
+    "empty_description": "Add the people and businesses you bill, then invoice them in a few clicks.",
     "no_customers_found": "Asiakkaita ei löytynyt!",
+    "add_first_customer": "Add your first customer to start invoicing them.",
+    "activity_load_failed": "This customer's activity could not be loaded.",
+    "statement_load_failed": "The statement could not be loaded.",
+    "ask_to_add_customers": "Someone who can manage customers needs to add one first.",
     "no_contact": "No contact",
     "no_contact_name": "No contact name",
     "list_of_customers": "Tämä osio sisältää asiakasluettelon.",
@@ -364,7 +382,7 @@
     "select_a_customer": "Valitse asiakas",
     "type_or_click": "Kirjoita tai klikkaa valitaksesi",
     "new_transaction": "Uusi transaktio",
-    "no_matching_customers": "Asiakas vastaavuuksia ei löytynyt!",
+    "no_matching_customers": "No customers match these filters",
     "phone_number": "Puhelinnumero",
     "create_date": "Luontipäivä",
     "confirm_delete": "Et voi palauttaa tätä asiakasta ja liittyviä laskuja, tarjouksia ja maksuja. | Et voi palauttaa näitä asiakkaita ja liittyviä laskuja, tarjouksia ja maksuja.",
@@ -418,7 +436,9 @@
     "add_new_item": "Lisää uusi tuote",
     "new_item": "Uusi tuote",
     "edit_item": "Muokkaa tuotettä",
-    "no_items": "Ei tallennettuja tuotteita!",
+    "no_items": "No items yet",
+    "empty_description": "Save the products and services you sell to add them to invoices in one click.",
+    "no_matching_items": "No items match these filters",
     "list_of_items": "Tämä osio sisältää luettelon tuotteista.",
     "select_a_unit": "Valitse yksikkö",
     "taxes": "Verot",
@@ -480,7 +500,7 @@
     "confirm_mark_as_sent": "Tämä tarjous merkitään lähetetyksi",
     "confirm_mark_as_accepted": "Tämä tarjous merkitään hyväksytyksi",
     "confirm_mark_as_rejected": "Tämä tarjous merkitään hylätyksi",
-    "no_matching_estimates": "Vastaavia tarjouksia ei löytynyt!",
+    "no_matching_estimates": "No estimates match these filters",
     "mark_as_sent_successfully": "Tarjous merkittiin onnistuneesti lähetetyksi",
     "send_estimate_successfully": "Tarjous lähetettiin onnistuneesti",
     "errors": {
@@ -500,7 +520,9 @@
     "items": "Tuotteet",
     "Estimate": "Tarjous | Tarjoukset",
     "add_new_tax": "Lisää uusi verokanta",
-    "no_estimates": "Ei tallennettuja tarjouksia!",
+    "no_estimates": "No estimates yet",
+    "empty_description": "Send a quote, then turn it into an invoice once it's accepted.",
+    "portal_empty_description": "Estimates sent to you will show up here.",
     "list_of_estimates": "Tämä osio sisältää luettelon tarjouksista.",
     "mark_as_rejected": "Merkitse hylätyksi",
     "mark_as_accepted": "Merkitse hyväksytyksi",
@@ -585,12 +607,14 @@
     "save_invoice": "Tallenna lasku",
     "update_invoice": "Päivitä lasku",
     "add_new_tax": "Lisää uusi verokanta",
-    "no_invoices": "Ei tallennettuja laskuja!",
+    "no_invoices": "No invoices yet",
+    "empty_description": "Create an invoice and send it to a customer to get paid.",
+    "portal_empty_description": "Invoices sent to you will show up here.",
     "mark_as_rejected": "Mark as rejected",
     "mark_as_accepted": "Mark as accepted",
     "list_of_invoices": "Tämä osio sisältää luottelon laskuista.",
     "select_invoice": "Valitse lasku",
-    "no_matching_invoices": "Vastaavia laskuja ei ole!",
+    "no_matching_invoices": "No invoices match these filters",
     "mark_as_sent_successfully": "Lasku merkitty lähetetyksi onnistuneesti",
     "invoice_sent_successfully": "Lasku lähetettiin onnistuneesti",
     "cloned_successfully": "Lasku kopioitu onnistuneesti",
@@ -720,12 +744,13 @@
     "save_invoice": "Save Recurring Invoice",
     "update_invoice": "Update Recurring Invoice",
     "add_new_tax": "Add New Tax",
-    "no_invoices": "No Recurring Invoices yet!",
+    "no_invoices": "No recurring invoices yet",
+    "empty_description": "Set up an invoice that goes out on a schedule, such as a monthly retainer.",
     "mark_as_rejected": "Mark as rejected",
     "mark_as_accepted": "Mark as accepted",
     "list_of_invoices": "This section will contain the list of recurring invoices.",
     "select_invoice": "Select Invoice",
-    "no_matching_invoices": "There are no matching recurring invoices!",
+    "no_matching_invoices": "No recurring invoices match these filters",
     "mark_as_sent_successfully": "Recurring Invoice marked as sent successfully",
     "invoice_sent_successfully": "Recurring Invoice sent successfully",
     "cloned_successfully": "Recurring Invoice cloned successfully",
@@ -786,7 +811,9 @@
       "date": "Date",
       "count": "Count"
     },
-    "make_recurring": "Make Recurring"
+    "make_recurring": "Make Recurring",
+    "no_generated_invoices": "No invoices yet",
+    "no_generated_invoices_description": "Invoices this schedule creates show up here."
   },
   "payments": {
     "title": "Maksut",
@@ -810,10 +837,12 @@
     "save_payment": "Tallenna maksu",
     "update_payment": "Päivitä maksu",
     "payment": "Maksu | Maksut",
-    "no_payments": "Ei tallennettuja maksuja!",
+    "no_payments": "No payments yet",
+    "empty_description": "Record a payment when a customer pays and apply it to their invoices.",
+    "portal_empty_description": "Payments you make will show up here.",
     "not_selected": "Ei valittu",
     "no_invoice": "Ei laskua",
-    "no_matching_payments": "Vastaavia maksuja ei ole!",
+    "no_matching_payments": "No payments match these filters",
     "list_of_payments": "Tämä osio sisältää luettelon maksuista.",
     "select_payment_mode": "Valitse maksutapa",
     "confirm_mark_as_sent": "Tämä tarjous merkitään lähetetyksi",
@@ -832,6 +861,7 @@
     "add_allocation": "Add Allocation",
     "select_customer_to_allocate": "Select a customer before allocating this payment.",
     "no_allocations": "No invoices selected. This payment will remain available as customer credit.",
+    "no_open_invoices": "This customer has no open invoices, so the payment will stay as customer credit.",
     "allocated": "Allocated",
     "unapplied_credit": "Unapplied Credit",
     "remove_allocation": "Remove allocation",
@@ -879,7 +909,9 @@
     "edit_expense": "Muokkaa kulua",
     "new_expense": "Uusi kulu",
     "expense": "Kulu | Kulut",
-    "no_expenses": "Ei tallennettuja kuluja!",
+    "no_expenses": "No expenses yet",
+    "empty_description": "Record what the business spends to see your profit and reclaim tax.",
+    "no_matching_expenses": "No expenses match these filters",
     "list_of_expenses": "Tämä osio sisältää listan kuluista.",
     "confirm_delete": "Et voi palauttaa tätä kulua | Et voi palauttaa näitä kuluja",
     "created_message": "Kulu luotiin onnistuneesti",
@@ -999,6 +1031,7 @@
     "purchased": "Ostetut",
     "installed": "Asennetut",
     "no_modules_installed": "Ei Asennettuja Moduuleja!",
+    "no_marketplace_modules": "No marketplace modules are available yet.",
     "disable_warning": "Kaikki tämän nimenomaisen asetuksen tiedot peruutetaan.",
     "uninstall": "Uninstall",
     "uninstall_warning": "Uninstalling removes this module's runtime files. Its data and settings are preserved unless you explicitly choose to remove them.",
@@ -1063,6 +1096,8 @@
     "invited_by": "Invited By",
     "sent_at": "Sent At",
     "no_users": "No members yet",
+    "empty_description": "Invite the people who work on this company with you.",
+    "no_matching_members": "No members match these filters",
     "list_of_users": "Invite the people who work with you. They show up here once they join."
   },
   "reports": {
@@ -1367,7 +1402,9 @@
       "bound_none": "No limit",
       "bound_today": "Today",
       "bound_fixed_date": "A fixed date",
-      "bound_fixed_time": "A fixed time"
+      "bound_fixed_time": "A fixed time",
+      "empty_title": "No custom fields yet",
+      "empty_description": "Add your own fields to invoices, customers, items and more."
     },
     "customization": {
       "customization": "räätälöinti",
@@ -1503,7 +1540,9 @@
           "estimate": "Estimate",
           "invoice": "Invoice",
           "payment": "Payment"
-        }
+        },
+        "empty_title": "No notes yet",
+        "empty_description": "Save text you use often, like payment terms, and insert it into any document."
       },
       "reorder_component": "Move {name}, {position} of {count}. Use the up and down arrow keys"
     },
@@ -1593,7 +1632,9 @@
       "active": "Active",
       "currency_help_text": "This provider will only be used on above selected currencies",
       "currency_in_used": "The following currencies are already active on another provider. Please remove these currencies from selection to activate this provider again.",
-      "fetch_latest": "Fetch the latest exchange rate"
+      "fetch_latest": "Fetch the latest exchange rate",
+      "empty_title": "No exchange rate providers yet",
+      "empty_description": "Connect a provider to fetch rates for documents in other currencies."
     },
     "tax_types": {
       "title": "ALV Verokannat",
@@ -1622,7 +1663,9 @@
       "tax_included": "Inclusive taxes",
       "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
       "tax_included_by_default": "Enable inclusive taxes by default",
-      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default",
+      "empty_title": "No tax types yet",
+      "empty_description": "Add a tax once, then pick it on any invoice or expense."
     },
     "payment_modes": {
       "title": "Payment Modes",
@@ -1650,7 +1693,9 @@
       "deleted_message": "Kululuokka poistettiin onnistuneesti",
       "updated_message": "Kululuokka päivitettiin onnistuneesti",
       "confirm_delete": "Et voi palauttaa tätä kululuokkaa",
-      "already_in_use": "Luokka on jo käytössä"
+      "already_in_use": "Luokka on jo käytössä",
+      "empty_title": "No expense categories yet",
+      "empty_description": "Group expenses by what they're for, such as travel or software. Every expense needs one."
     },
     "preferences": {
       "currency": "Valuutta",
@@ -1762,7 +1807,9 @@
       "action": "Toiminta",
       "deleted_message": "Varmuuskopio poistettiin onnistuneesti",
       "created_message": "Varmuuskopio luotiin onnistuneesti",
-      "invalid_disk_credentials": "Väärät käyttäjäasetukset valitulle levylle"
+      "invalid_disk_credentials": "Väärät käyttäjäasetukset valitulle levylle",
+      "empty_title": "No backups yet",
+      "empty_description": "Create a backup to keep a copy of your data and files."
     },
     "disk": {
       "title": "Tiedostolevy | Tiedostolevyt",
