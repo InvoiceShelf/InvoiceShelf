@@ -15,7 +15,7 @@ return [
     /*
     * Minimum php version.
     */
-    'min_php_version' => '8.4.0',
+    'min_php_version' => '8.4.1',
 
     /*
     * Minimum mysql version.
