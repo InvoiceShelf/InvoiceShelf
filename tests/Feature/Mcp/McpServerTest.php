@@ -266,3 +266,24 @@ test('the server answers 503 when switched on without signing keys', function ()
     File::deleteDirectory($directory);
     Passport::$keyPath = null;
 });
+
+test('the consent screen reads in the direction of the user\'s language', function () {
+    McpTesting::enable();
+    config(['invoiceshelf.rtl_languages' => ['ar', 'fa', 'he', 'ur']]);
+    $client = McpTesting::register($this, 'https://claude.ai/api/mcp/auth_callback');
+    $query = '/oauth/authorize?'.http_build_query([
+        'client_id' => $client->getKey(),
+        'redirect_uri' => 'https://claude.ai/api/mcp/auth_callback',
+        'response_type' => 'code',
+        'scope' => 'mcp:use',
+        'state' => 'abc',
+        'code_challenge' => str_repeat('a', 43),
+        'code_challenge_method' => 'S256',
+    ]);
+
+    $this->actingAs($this->user, 'web')->get($query)->assertSee('dir="ltr"', false);
+
+    $this->user->setSettings(['language' => 'ar']);
+
+    $this->actingAs($this->user, 'web')->get($query)->assertSee('lang="ar" dir="rtl"', false);
+});

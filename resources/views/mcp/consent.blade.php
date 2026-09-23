@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', $locale) }}">
+<html lang="{{ str_replace('_', '-', $locale) }}" dir="{{ $direction }}">
 
 <head>
     <meta charset="utf-8">

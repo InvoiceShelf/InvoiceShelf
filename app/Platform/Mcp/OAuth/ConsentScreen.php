@@ -8,6 +8,7 @@ use App\Platform\Mcp\Application\ConnectionService;
 use App\Platform\Mcp\Models\McpConnection;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Laravel\Passport\Client;
 
 /**
@@ -66,8 +67,20 @@ class ConsentScreen
             'stylesheets' => $this->stylesheets(),
             'theme' => get_app_setting('admin_portal_theme') ?? 'invoiceshelf',
             'locale' => $locale,
+            'direction' => $this->directionOf($locale),
             't' => fn (string $key, array $replace = []): string => $this->text($locale, $key, $replace),
         ]);
+    }
+
+    /**
+     * `rtl` for a right-to-left language, read from the same list as the app
+     * shell (`invoiceshelf.rtl_languages`); left to right when there is none.
+     */
+    private function directionOf(string $locale): string
+    {
+        $language = Str::before(str_replace('-', '_', $locale), '_');
+
+        return in_array($language, (array) config('invoiceshelf.rtl_languages', []), true) ? 'rtl' : 'ltr';
     }
 
     /**
