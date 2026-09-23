@@ -34,13 +34,26 @@
           <p v-if="summary.outstanding > 0" class="mt-3 text-sm text-chrome-fg/75">
             {{ $t('dashboard.receivables.on_invoices', { count: summary.outstanding_count }, summary.outstanding_count) }}
           </p>
+          <!-- A company with no invoices yet is told how this fills up, not that nothing is owed -->
           <p v-else class="mt-3 text-sm text-chrome-fg/75">
-            {{ $t('dashboard.receivables.nothing_owed') }}
+            {{ isFirstRun ? $t('dashboard.receivables.first_invoice_hint') : $t('dashboard.receivables.nothing_owed') }}
           </p>
         </div>
 
         <router-link
-          v-if="canViewInvoices"
+          v-if="isFirstRun && canCreateInvoice"
+          to="/admin/invoices/create"
+          class="
+            inline-flex items-center gap-1.5 self-start h-9 px-3.5 text-sm font-semibold transition-colors rounded-lg shrink-0
+            bg-chrome-fg text-hero-from hover:bg-chrome-fg/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-chrome-fg
+          "
+        >
+          <BaseIcon name="PlusIcon" class="w-4 h-4" />
+          {{ $t('invoices.new_invoice') }}
+        </router-link>
+
+        <router-link
+          v-else-if="canViewInvoices"
           to="/admin/invoices"
           class="
             inline-flex items-center self-start h-9 px-3.5 text-sm font-medium transition-colors border rounded-lg shrink-0
@@ -130,6 +143,10 @@ const { t } = useI18n()
 const loaded = computed<boolean>(() => dashboardStore.isDashboardDataLoaded)
 const summary = computed(() => dashboardStore.receivables)
 const canViewInvoices = computed<boolean>(() => userStore.hasAbilities(ABILITIES.VIEW_INVOICE))
+const canCreateInvoice = computed<boolean>(() => userStore.hasAbilities(ABILITIES.CREATE_INVOICE))
+
+// No invoice at all yet, as for a new company
+const isFirstRun = computed<boolean>(() => loaded.value && !dashboardStore.stats.totalInvoiceCount)
 
 const buckets = computed<Bucket[]>(() => {
   const total = summary.value.outstanding || 1
