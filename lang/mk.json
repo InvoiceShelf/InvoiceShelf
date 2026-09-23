@@ -1058,6 +1058,26 @@
       "section_title": "Modules"
     }
   },
+  "mcp": {
+    "consent": {
+      "page_title": "Connect an app",
+      "title": "Connect {client}",
+      "subtitle": "{client} is asking to use your InvoiceShelf account.",
+      "redirect_notice": "After you decide, you will be sent back to {host}. Only continue if you started this from there.",
+      "signed_in_as": "Signed in as {email}",
+      "company": "Company",
+      "company_help": "The app works in this company only. Connect again to use another one.",
+      "access": "Access",
+      "access_read": "Read only",
+      "access_read_help": "Look up customers, items, invoices, estimates, payments, expenses and reports.",
+      "access_write": "Read and write",
+      "access_write_help": "Also create and change records, send documents by email and record payments.",
+      "role_notice": "It can never do more than your own role allows in that company.",
+      "allow": "Allow access",
+      "deny": "Cancel",
+      "no_company": "Your account does not belong to a company yet, so there is nothing to connect."
+    }
+  },
   "members": {
     "title": "Членови",
     "members_list": "Список на членови",
