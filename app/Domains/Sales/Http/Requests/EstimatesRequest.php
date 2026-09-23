@@ -81,7 +81,7 @@ class EstimatesRequest extends FormRequest
             ? $this->exchange_rate
             : 1;
 
-        $perItemTax = CompanySetting::getSetting('tax_per_item', $companyId) ?? 'NO ';
+        $perItemTax = CompanySetting::getSetting('tax_per_item', $companyId) ?? 'NO';
         $perItemDiscount = CompanySetting::getSetting('discount_per_item', $companyId) ?? 'NO';
 
         $sums = DocumentTotals::compute(

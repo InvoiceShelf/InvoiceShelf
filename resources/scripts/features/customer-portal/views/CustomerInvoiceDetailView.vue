@@ -1,185 +1,133 @@
 <template>
-  <BasePage class="xl:pl-96">
-    <BasePageHeader :title="pageTitle">
-      <template #actions>
-        <BaseButton
-          :disabled="isSendingEmail"
-          variant="primary-outline"
-          class="mr-2"
-          tag="a"
-          :href="downloadLink"
-          download
-        >
-          <template #left="slotProps">
-            <BaseIcon name="DownloadIcon" :class="slotProps.class" />
-            {{ $t('invoices.download') }}
-          </template>
-        </BaseButton>
+  <div class="flex min-h-full">
+    <!--
+      The customer's other invoices (wide screens only). The portal publishes
+      no top inset, so the pane is sized below its fixed header here.
+    -->
 
-        <BaseButton
-          v-if="canPay"
-          variant="primary"
-          @click="payInvoice"
-        >
-          {{ $t('invoices.pay_invoice') }}
-        </BaseButton>
-      </template>
-    </BasePageHeader>
+    <BasePage class="min-w-0">
+      <BasePageHeader :title="pageTitle">
+        <BaseBreadcrumb>
+          <BaseBreadcrumbItem
+            :title="$t('invoices.invoice', 2)"
+            :to="`/${store.companySlug}/customer/invoices`"
+          />
+        </BaseBreadcrumb>
 
-    <!-- Sidebar -->
-    <div
-      class="fixed top-0 left-0 hidden h-full pt-16 pb-4 bg-surface w-88 xl:block"
-    >
-      <div
-        class="flex items-center justify-between px-4 pt-8 pb-6 border border-line-default border-solid"
-      >
-        <BaseInput
-          v-model="searchData.invoice_number"
-          :placeholder="$t('general.search')"
-          type="text"
-          variant="gray"
-          @input="onSearchDebounced"
-        >
-          <template #right>
-            <BaseIcon name="MagnifyingGlassIcon" class="h-5 text-subtle" />
-          </template>
-        </BaseInput>
-
-        <div class="flex ml-3" role="group">
-          <BaseDropdown
-            position="bottom-start"
-            width-class="w-50"
-            position-class="left-0"
-          >
-            <template #activator>
-              <BaseButton variant="gray">
-                <BaseIcon name="FunnelIcon" class="h-5" />
-              </BaseButton>
-            </template>
-
-            <div class="px-4 py-1 pb-2 mb-2 text-sm border-b border-line-default border-solid">
-              {{ $t('general.sort_by') }}
-            </div>
-
-            <div class="px-2">
-              <BaseDropdownItem class="pt-3 rounded-md hover:rounded-md">
-                <BaseInputGroup class="-mt-3 font-normal">
-                  <BaseRadio
-                    id="filter_invoice_date"
-                    v-model="searchData.orderByField"
-                    :label="$t('invoices.invoice_date')"
-                    name="filter"
-                    size="sm"
-                    value="invoice_date"
-                    @update:model-value="onSearchDebounced"
-                  />
-                </BaseInputGroup>
-              </BaseDropdownItem>
-            </div>
-
-            <div class="px-2">
-              <BaseDropdownItem class="pt-3 rounded-md hover:rounded-md">
-                <BaseInputGroup class="-mt-3 font-normal">
-                  <BaseRadio
-                    id="filter_due_date"
-                    v-model="searchData.orderByField"
-                    :label="$t('invoices.due_date')"
-                    name="filter"
-                    size="sm"
-                    value="due_date"
-                    @update:model-value="onSearchDebounced"
-                  />
-                </BaseInputGroup>
-              </BaseDropdownItem>
-            </div>
-
-            <div class="px-2">
-              <BaseDropdownItem class="pt-3 rounded-md hover:rounded-md">
-                <BaseInputGroup class="-mt-3 font-normal">
-                  <BaseRadio
-                    id="filter_invoice_number"
-                    v-model="searchData.orderByField"
-                    :label="$t('invoices.invoice_number')"
-                    size="sm"
-                    name="filter"
-                    value="invoice_number"
-                    @update:model-value="onSearchDebounced"
-                  />
-                </BaseInputGroup>
-              </BaseDropdownItem>
-            </div>
-          </BaseDropdown>
-
-          <BaseButton class="ml-1" variant="white" @click="sortData">
-            <BaseIcon v-if="isAscending" name="SortAscendingIcon" class="h-5" />
-            <BaseIcon v-else name="SortDescendingIcon" class="h-5" />
-          </BaseButton>
+        <div v-if="currentInvoice" class="flex flex-wrap items-center gap-1.5 mt-2">
+          <BaseInvoiceStatusBadge :status="currentInvoice.status">
+            <BaseInvoiceStatusLabel :status="currentInvoice.status" />
+          </BaseInvoiceStatusBadge>
+          <BasePaidStatusBadge v-if="currentInvoice.overdue" status="OVERDUE">
+            {{ $t('invoices.overdue') }}
+          </BasePaidStatusBadge>
+          <BasePaidStatusBadge v-else :status="currentInvoice.paid_status">
+            <BaseInvoiceStatusLabel :status="currentInvoice.paid_status" />
+          </BasePaidStatusBadge>
         </div>
-      </div>
 
-      <div class="h-full pb-32 overflow-y-scroll border-l border-line-default border-solid sw-scroll">
-        <router-link
-          v-for="(inv, index) in store.invoices"
-          :id="'invoice-' + inv.id"
-          :key="index"
-          :to="`/${store.companySlug}/customer/invoices/${inv.id}/view`"
-          :class="[
-            'flex justify-between p-4 items-center cursor-pointer hover:bg-hover-strong border-l-4 border-l-transparent',
-            {
-              'bg-surface-tertiary border-l-4 border-l-primary-500 border-solid':
-                hasActiveUrl(inv.id),
-            },
-          ]"
-          style="border-bottom: 1px solid rgba(185, 193, 209, 0.41)"
-        >
-          <div class="flex-2">
-            <div class="mb-1 not-italic font-medium leading-5 text-muted capitalize text-md">
-              {{ inv.invoice_number }}
-            </div>
-            <BaseInvoiceStatusBadge :status="inv.status">
-              <BaseInvoiceStatusLabel :status="inv.status" />
-            </BaseInvoiceStatusBadge>
-          </div>
+        <template #actions>
+          <BaseButton
+            :disabled="isSendingEmail"
+            variant="white"
+            tag="a"
+            :href="downloadLink"
+            download
+          >
+            <template #left="slotProps">
+              <BaseIcon name="ArrowDownTrayIcon" :class="slotProps.class" />
+            </template>
+            {{ $t('invoices.download') }}
+          </BaseButton>
 
-          <div class="flex-1 whitespace-nowrap right">
-            <BaseFormatMoney
-              class="mb-2 text-xl not-italic font-semibold leading-8 text-right text-heading block"
-              :amount="inv.total"
-              :currency="inv.currency"
-            />
-            <div class="text-sm text-right text-muted non-italic">
-              {{ inv.formatted_invoice_date }}
-            </div>
-          </div>
-        </router-link>
+          <BaseButton
+            v-if="canPay"
+            variant="primary"
+            @click="payInvoice"
+          >
+            {{ $t('invoices.pay_invoice') }}
+          </BaseButton>
+        </template>
+      </BasePageHeader>
 
-        <p
-          v-if="!store.invoices.length"
-          class="flex justify-center px-4 mt-5 text-sm text-body"
-        >
-          {{ $t('invoices.no_matching_invoices') }}
-        </p>
-      </div>
-    </div>
+      <!-- What the invoice says, without opening it -->
+      <BaseStatStrip v-if="currentInvoice" :columns="4">
+        <BaseStat :label="$t('dashboard.recent_invoices_card.amount_due')" emphasis>
+          <BaseFormatMoney :amount="currentInvoice.due_amount" :currency="currentInvoice.currency" />
+        </BaseStat>
+        <BaseStat :label="$t('invoices.total')">
+          <BaseFormatMoney :amount="currentInvoice.total" :currency="currentInvoice.currency" />
+        </BaseStat>
+        <BaseStat :label="$t('invoices.invoice_date')">
+          {{ currentInvoice.formatted_invoice_date }}
+        </BaseStat>
+        <BaseStat :label="$t('invoices.due_date')">
+          <span :class="currentInvoice.overdue ? 'text-status-red' : ''">
+            {{ currentInvoice.formatted_due_date || '-' }}
+          </span>
+        </BaseStat>
+      </BaseStatStrip>
 
-    <!-- PDF Preview -->
-    <BasePdfPreview :src="shareableLink" />
-  </BasePage>
+      <BasePdfPreview
+        :src="shareableLink"
+        :title="currentInvoice ? `${currentInvoice.invoice_number}.pdf` : ''"
+      />
+    </BasePage>
+
+    <RecordListPane
+      ref="listPane"
+      class="!h-[calc(100dvh-5.5rem)]"
+      :search="searchData.invoice_number"
+      :sort-options="sortOptions"
+      :sort-field="searchData.orderByField"
+      :ascending="isAscending"
+      :empty="!store.invoices.length"
+      :empty-text="$t('invoices.no_matching_invoices')"
+      @update:search="onSearchText"
+      @update:sort-field="setSortField"
+      @toggle-order="sortData"
+    >
+      <RecordListItem
+        v-for="inv in store.invoices"
+        :id="'invoice-' + inv.id"
+        :key="inv.id"
+        :to="`/${store.companySlug}/customer/invoices/${inv.id}/view`"
+        :active="hasActiveUrl(inv.id)"
+        :title="inv.invoice_number"
+        :meta="inv.formatted_invoice_date"
+      >
+        <template #badges>
+          <BaseInvoiceStatusBadge :status="inv.status">
+            <BaseInvoiceStatusLabel :status="inv.status" />
+          </BaseInvoiceStatusBadge>
+        </template>
+        <template #amount>
+          <BaseFormatMoney :amount="inv.total" :currency="inv.currency" />
+        </template>
+      </RecordListItem>
+    </RecordListPane>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, computed, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useDebounceFn } from '@vueuse/core'
 import { useCustomerPortalStore } from '../store'
+import RecordListPane from '@/scripts/components/layout/RecordListPane.vue'
+import RecordListItem from '@/scripts/components/layout/RecordListItem.vue'
 import type { Invoice } from '../../../types/domain/invoice'
+import { scrollBehavior } from '@/scripts/utils/motion'
 
 const store = useCustomerPortalStore()
 const route = useRoute()
 const router = useRouter()
+const { t } = useI18n()
 
 const invoice = ref<Partial<Invoice>>({})
 const isSendingEmail = ref<boolean>(false)
+const listPane = ref<InstanceType<typeof RecordListPane> | null>(null)
 
 const searchData = reactive<{
   orderBy: string
@@ -194,6 +142,14 @@ const searchData = reactive<{
 const pageTitle = computed<string>(() => {
   return store.selectedViewInvoice?.invoice_number ?? ''
 })
+
+const currentInvoice = computed<Invoice | null>(() => store.selectedViewInvoice)
+
+const sortOptions = computed(() => [
+  { value: 'invoice_date', label: t('invoices.invoice_date') },
+  { value: 'due_date', label: t('invoices.due_date') },
+  { value: 'invoice_number', label: t('invoices.invoice_number') },
+])
 
 const isAscending = computed<boolean>(() => {
   return searchData.orderBy === 'asc' || !searchData.orderBy
@@ -245,8 +201,10 @@ async function loadInvoice(): Promise<void> {
 
 function scrollToInvoice(): void {
   const el = document.getElementById(`invoice-${route.params.id}`)
-  if (el) {
-    el.scrollIntoView({ behavior: 'smooth' })
+  const list = listPane.value?.listEl
+  if (el && list) {
+    // Scroll the list pane alone; scrollIntoView would also move the page
+    list.scrollTo({ top: el.offsetTop - list.offsetTop - 8, behavior: scrollBehavior() })
     el.classList.add('shake')
   }
 }
@@ -260,6 +218,16 @@ async function onSearch(): Promise<void> {
 }
 
 const onSearchDebounced = useDebounceFn(onSearch, 500)
+
+function onSearchText(value: string): void {
+  searchData.invoice_number = value
+  onSearchDebounced()
+}
+
+function setSortField(field: string): void {
+  searchData.orderByField = field
+  onSearchDebounced()
+}
 
 function sortData(): void {
   searchData.orderBy = searchData.orderBy === 'asc' ? 'desc' : 'asc'

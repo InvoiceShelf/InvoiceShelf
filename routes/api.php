@@ -55,6 +55,11 @@ Route::prefix('/v1')->group(function () {
         require app_path('Platform/Operations/routes/admin.php');
         require app_path('Domains/Accounts/routes/admin.php');
         require app_path('Platform/Mcp/routes/admin.php');
+
+        // Currencies are installation-wide reference data, so the list and
+        // its refresh live here rather than under a company.
+
+        require app_path('Domains/Money/routes/admin.php');
     });
 
     // Stop impersonation - uses auth:sanctum only (the impersonated user's token, not super-admin)

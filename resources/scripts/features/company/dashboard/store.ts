@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { dashboardService } from '../../../api/services/dashboard.service'
-import type { DashboardParams, DashboardResponse, ChartData } from '../../../api/services/dashboard.service'
+import type { DashboardParams, DashboardResponse, ChartData, ReceivablesSummary, ResolvedPeriod } from '../../../api/services/dashboard.service'
+import type { PeriodValue } from '../../../utils/period'
 import type { Invoice } from '../../../types/domain/invoice'
 import type { Estimate } from '../../../types/domain/estimate'
 import { handleApiError } from '../../../utils/error-handling'
@@ -73,6 +74,15 @@ export const useDashboardStore = defineStore('dashboard', () => {
     netIncomeTotals: [],
   })
 
+  const receivables = ref<ReceivablesSummary>({
+    outstanding: 0,
+    outstanding_count: 0,
+    overdue: 0,
+    overdue_count: 0,
+    due_soon: 0,
+    due_later: 0,
+  })
+
   const totalSales = ref<number>(0)
   const totalReceipts = ref<number>(0)
   const totalExpenses = ref<number>(0)
@@ -82,17 +92,37 @@ export const useDashboardStore = defineStore('dashboard', () => {
   const recentEstimates = ref<RecentEstimate[]>([])
 
   const isDashboardDataLoaded = ref<boolean>(false)
+  // The last load failed; the view offers to try again
+  const loadError = ref<boolean>(false)
+  // Only the latest request may fill the dashboard, when the period changes fast
+  let latestRequest = 0
+
+  // The period picked on the dashboard, kept while the app is open, and the
+  // dates the server resolved it to
+  const period = ref<PeriodValue>({ preset: 'this_year' })
+  const resolvedPeriod = ref<ResolvedPeriod | null>(null)
 
   // Actions
-  async function loadData(params?: DashboardParams): Promise<DashboardResponse> {
+  async function loadData(params?: DashboardParams): Promise<DashboardResponse | null> {
+    const request = ++latestRequest
+    loadError.value = false
+
     try {
       const response = await dashboardService.load(params)
 
+      if (request !== latestRequest) {
+        return null
+      }
+
       // Stats
-      stats.value.totalAmountDue = response.total_amount_due
-      stats.value.totalCustomerCount = response.total_customer_count
-      stats.value.totalInvoiceCount = response.total_invoice_count
-      stats.value.totalEstimateCount = response.total_estimate_count
+      stats.value.totalAmountDue = response.total_amount_due ?? 0
+      stats.value.totalCustomerCount = response.total_customer_count ?? 0
+      stats.value.totalInvoiceCount = response.total_invoice_count ?? 0
+      stats.value.totalEstimateCount = response.total_estimate_count ?? 0
+
+      if (response.receivables) {
+        receivables.value = response.receivables
+      }
 
       // Chart Data
       if (response.chart_data) {
@@ -103,6 +133,8 @@ export const useDashboardStore = defineStore('dashboard', () => {
         chartData.value.netIncomeTotals = response.chart_data.net_income_totals
       }
 
+      resolvedPeriod.value = response.period ?? null
+
       // Chart Labels
       totalSales.value = Number(response.total_sales) || 0
       totalReceipts.value = Number(response.total_receipts) || 0
@@ -110,20 +142,26 @@ export const useDashboardStore = defineStore('dashboard', () => {
       totalNetIncome.value = Number(response.total_net_income) || 0
 
       // Table Data
-      recentDueInvoices.value = response.recent_due_invoices as unknown as DueInvoice[]
-      recentEstimates.value = response.recent_estimates as unknown as RecentEstimate[]
+      recentDueInvoices.value = (response.recent_due_invoices ?? []) as unknown as DueInvoice[]
+      recentEstimates.value = (response.recent_estimates ?? []) as unknown as RecentEstimate[]
 
       isDashboardDataLoaded.value = true
 
       return response
     } catch (err: unknown) {
       handleApiError(err)
-      throw err
+
+      if (request === latestRequest) {
+        loadError.value = true
+      }
+
+      return null
     }
   }
 
   return {
     stats,
+    receivables,
     chartData,
     totalSales,
     totalReceipts,
@@ -132,6 +170,9 @@ export const useDashboardStore = defineStore('dashboard', () => {
     recentDueInvoices,
     recentEstimates,
     isDashboardDataLoaded,
+    loadError,
+    period,
+    resolvedPeriod,
     loadData,
   }
 })

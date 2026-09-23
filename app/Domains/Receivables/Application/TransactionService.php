@@ -3,15 +3,14 @@
 namespace App\Domains\Receivables\Application;
 
 use App\Domains\Receivables\Models\Transaction;
-use App\Facades\Hashids;
-use App\Support\Hashids\HashidConnection;
+use App\Support\PublicToken;
 
 class TransactionService
 {
     public function create(array $data): Transaction
     {
         $transaction = Transaction::create($data);
-        $transaction->unique_hash = Hashids::connection(HashidConnection::Transaction->value)->encode($transaction->id);
+        $transaction->unique_hash = PublicToken::make();
         $transaction->save();
 
         return $transaction;

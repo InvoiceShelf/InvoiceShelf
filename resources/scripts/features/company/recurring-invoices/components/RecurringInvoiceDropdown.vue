@@ -1,45 +1,37 @@
 <template>
   <BaseDropdown :content-loading="recurringInvoiceStore.isFetchingViewData">
     <template #activator>
-      <BaseButton v-if="isDetailView" variant="primary">
-        <BaseIcon name="EllipsisHorizontalIcon" class="h-5 text-white" />
-      </BaseButton>
-      <BaseIcon v-else name="EllipsisHorizontalIcon" class="h-5 text-muted" />
+      <span v-if="isDetailView" data-overflow class="inline-flex items-center justify-center border rounded-lg w-11 h-11 md:w-9 md:h-9 bg-surface border-line-default text-body hover:bg-hover">
+        <BaseIcon name="EllipsisHorizontalIcon" class="w-5 h-5" />
+      </span>
+      <span v-else class="inline-flex items-center justify-center rounded-lg w-9 h-9 text-muted hover:bg-hover-strong hover:text-heading">
+        <BaseIcon name="EllipsisHorizontalIcon" class="w-5 h-5" />
+      </span>
     </template>
 
     <!-- Edit Recurring Invoice -->
-    <router-link
-      v-if="canEdit"
-      :to="`/admin/recurring-invoices/${row.id}/edit`"
-    >
-      <BaseDropdownItem>
-        <BaseIcon
-          name="PencilIcon"
-          class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
-        />
-        {{ $t('general.edit') }}
-      </BaseDropdownItem>
-    </router-link>
+    <BaseDropdownItem v-if="canEdit" :to="`/admin/recurring-invoices/${row.id}/edit`">
+      <BaseIcon
+        name="PencilIcon"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
+      />
+      {{ $t('general.edit') }}
+    </BaseDropdownItem>
 
     <!-- View Recurring Invoice -->
-    <router-link
-      v-if="!isDetailView && canView"
-      :to="`recurring-invoices/${row.id}/view`"
-    >
-      <BaseDropdownItem>
-        <BaseIcon
-          name="EyeIcon"
-          class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
-        />
-        {{ $t('general.view') }}
-      </BaseDropdownItem>
-    </router-link>
+    <BaseDropdownItem v-if="!isDetailView && canView" :to="`recurring-invoices/${row.id}/view`">
+      <BaseIcon
+        name="EyeIcon"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
+      />
+      {{ $t('general.view') }}
+    </BaseDropdownItem>
 
     <!-- Delete Recurring Invoice -->
     <BaseDropdownItem v-if="canDelete" @click="removeRecurringInvoice">
       <BaseIcon
         name="TrashIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.delete') }}
     </BaseDropdownItem>

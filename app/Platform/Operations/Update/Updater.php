@@ -8,6 +8,7 @@ use App\Platform\Operations\Models\Setting;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use ZipArchive;
 
 /**
@@ -266,7 +267,32 @@ class Updater
 
         Artisan::call('migrate --force');
 
+        static::syncCurrencies();
+
         return true;
+    }
+
+    /**
+     * Hand the release's currency list to the database.
+     *
+     * Currencies are reference data, and shipping them as migrations meant one
+     * migration per currency for ever. They come from a catalogue now, and this
+     * is what carries a new release's additions to an installation that already
+     * exists. It is insert-if-absent, so running it on every upgrade costs one
+     * query on an installation that is already current.
+     *
+     * A failure here is logged rather than thrown: the upgrade itself has
+     * succeeded by this point, and refusing to finish it over a missing
+     * currency would be worse than the missing currency. The admin area's
+     * refresh button covers the gap.
+     */
+    private static function syncCurrencies(): void
+    {
+        try {
+            Artisan::call('currencies:sync');
+        } catch (\Throwable $e) {
+            Log::warning('Currency sync after update failed: '.$e->getMessage());
+        }
     }
 
     /**
@@ -284,6 +310,8 @@ class Updater
 
         Artisan::call('optimize:clear');
 
+        static::retireShippedKey();
+
         event(new UpdateFinished($installed, $version));
 
         return [
@@ -291,6 +319,25 @@ class Updater
             'error' => false,
             'data' => [],
         ];
+    }
+
+    /**
+     * Move an installation still on the APP_KEY that `.env.example` used to
+     * ship onto a key of its own. It runs last because the new key signs
+     * everyone out, the admin running this update included.
+     *
+     * A failure is logged rather than thrown, like the currency sync: the
+     * update itself has succeeded, and the command can be run by hand.
+     */
+    private static function retireShippedKey(): void
+    {
+        try {
+            if (Artisan::call('invoiceshelf:retire-shipped-key', ['--rotate' => true]) !== 0) {
+                Log::critical('APP_KEY is still the public key InvoiceShelf used to ship: '.trim(Artisan::output()));
+            }
+        } catch (\Throwable $e) {
+            Log::critical('Retiring the shipped APP_KEY after update failed: '.$e->getMessage());
+        }
     }
 
     /**

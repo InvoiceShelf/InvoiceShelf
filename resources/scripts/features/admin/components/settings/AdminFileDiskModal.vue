@@ -455,16 +455,9 @@ function isDisk(value: unknown): value is Disk {
 </script>
 
 <template>
-  <BaseModal :show="modalActive" @close="closeModal" @open="setInitialData">
+  <BaseModal :show="modalActive" closable @close="closeModal" @open="setInitialData">
     <template #header>
-      <div class="flex justify-between w-full">
-        {{ modalStore.title }}
-        <BaseIcon
-          name="XMarkIcon"
-          class="w-6 h-6 text-muted cursor-pointer"
-          @click="closeModal"
-        />
-      </div>
+      {{ modalStore.title }}
     </template>
 
     <form @submit.prevent="saveDisk">
@@ -529,7 +522,7 @@ function isDisk(value: unknown): value is Disk {
             />
           </div>
 
-          <div class="ml-4">
+          <div class="ms-4">
             <p class="mb-1 text-base leading-snug text-heading">
               {{ $t('settings.disk.is_default') }}
             </p>
@@ -543,7 +536,7 @@ function isDisk(value: unknown): value is Disk {
         <BaseButton
           type="button"
           variant="primary-outline"
-          class="mr-3"
+          class="me-3"
           @click="closeModal"
         >
           {{ $t('general.cancel') }}

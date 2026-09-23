@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Export options for the `xcodebuild -exportArchive` step in
+  .github/workflows/mobile.yaml.
+
+  The workflow copies this file into $RUNNER_TEMP and writes the real team id
+  into the copy with PlistBuddy, so the team id is never committed: it is not a
+  secret in the cryptographic sense, but it identifies the account and there is
+  no reason to publish it. This file is the shape; the secret supplies the value.
+-->
+<plist version="1.0">
+<dict>
+	<key>method</key>
+	<string>app-store</string>
+
+	<!-- Replaced from secrets.APPLE_TEAM_ID at export time. -->
+	<key>teamID</key>
+	<string>REPLACED_BY_CI</string>
+
+	<!--
+	  Manual, because the runner has exactly one certificate and one profile,
+	  both imported from secrets. Automatic signing would try to talk to the
+	  developer portal mid-export and fail on a machine with no Xcode account.
+
+	  The profile is matched by name, so the App Store distribution profile
+	  created in the developer portal must be named exactly this. The name is
+	  written down in mobile/README.md alongside the secret it travels with.
+	-->
+	<key>signingStyle</key>
+	<string>manual</string>
+	<key>provisioningProfiles</key>
+	<dict>
+		<key>com.invoiceshelf.app</key>
+		<string>InvoiceShelf App Store</string>
+	</dict>
+
+	<!--
+	  Xcode 15 and later rewrite CFBundleVersion during an App Store export
+	  unless this is false, which would throw away the tag-derived build number
+	  the workflow just set and replace it with one of Xcode's own. The build
+	  number has to stay the versionCode: it is the only thing tying a
+	  TestFlight build back to the tag it came from.
+	-->
+	<key>manageAppVersionAndBuildNumber</key>
+	<false/>
+
+	<!-- dSYMs go up with the build, or a crash report from TestFlight is unreadable. -->
+	<key>uploadSymbols</key>
+	<true/>
+	<key>stripSwiftSymbols</key>
+	<true/>
+</dict>
+</plist>

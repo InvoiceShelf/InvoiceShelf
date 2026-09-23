@@ -55,9 +55,9 @@ async function submitForm() {
 
 <template>
   <form @submit.prevent="submitForm">
-    <h6 class="text-heading text-lg font-medium">
+    <h3 class="text-heading text-lg font-medium">
       {{ $t('settings.customization.estimates.default_formats') }}
-    </h6>
+    </h3>
     <p class="mt-1 text-sm text-muted mb-2">
       {{ $t('settings.customization.estimates.default_formats_description') }}
     </p>

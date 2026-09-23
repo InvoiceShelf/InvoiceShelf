@@ -48,7 +48,7 @@ const roleColumns = computed<TableColumn[]>(() => [
   {
     key: 'actions',
     label: '',
-    tdClass: 'text-right text-sm font-medium',
+    tdClass: 'text-end text-sm font-medium',
     sortable: false,
   },
 ])
@@ -122,7 +122,7 @@ async function openRoleModal(): Promise<void> {
         />
         <span
           v-else-if="row.data.name === 'owner' || row.data.name === 'super admin'"
-          class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 ring-1 ring-inset ring-gray-300/50"
+          class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-surface-tertiary text-muted ring-1 ring-inset ring-line-default"
         >
           {{ $t('settings.roles.system_role') }}
         </span>

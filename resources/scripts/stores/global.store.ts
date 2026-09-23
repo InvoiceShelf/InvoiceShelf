@@ -38,8 +38,13 @@ export const useGlobalStore = defineStore('global', () => {
   const settingMenu = ref<MenuItem[]>([])
   const userMenu = ref<Array<{ title: string; link: string; icon: string; name: string }>>([])
   const isAppLoaded = ref<boolean>(false)
+  // On phones the navigation lives in the More sheet; this is its open state.
   const isSidebarOpen = ref<boolean>(false)
   const isSidebarCollapsed = ref<boolean>(localStore.getBoolean('sidebarCollapsed'))
+  const isSearchOpen = ref<boolean>(false)
+  // Pages with a sticky bottom action bar (editors, document views) register it
+  // here so the phone tab bar steps aside while they are mounted.
+  const actionBarCount = ref<number>(0)
   const areCurrenciesLoading = ref<boolean>(false)
 
   const downloadReport = ref<(() => void) | null>(null)
@@ -250,6 +255,22 @@ export const useGlobalStore = defineStore('global', () => {
     isSidebarOpen.value = val
   }
 
+  function setSearchOpen(val: boolean): void {
+    isSearchOpen.value = val
+  }
+
+  function registerActionBar(): () => void {
+    actionBarCount.value++
+    let released = false
+
+    return () => {
+      if (!released) {
+        released = true
+        actionBarCount.value--
+      }
+    }
+  }
+
   function toggleSidebarCollapse(): void {
     isSidebarCollapsed.value = !isSidebarCollapsed.value
     localStore.set('sidebarCollapsed', isSidebarCollapsed.value)
@@ -303,6 +324,8 @@ export const useGlobalStore = defineStore('global', () => {
     isAppLoaded,
     isSidebarOpen,
     isSidebarCollapsed,
+    isSearchOpen,
+    actionBarCount,
     areCurrenciesLoading,
     downloadReport,
     // Getters
@@ -317,6 +340,8 @@ export const useGlobalStore = defineStore('global', () => {
     fetchCountries,
     fetchPlaceholders,
     setSidebarVisibility,
+    setSearchOpen,
+    registerActionBar,
     toggleSidebarCollapse,
     setIsAppLoaded,
     updateGlobalSettings,

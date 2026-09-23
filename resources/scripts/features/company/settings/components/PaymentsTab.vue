@@ -50,7 +50,7 @@ const sendAsAttachmentField = computed<boolean>({
   <PaymentsTabDefaultFormats />
   <BaseDivider class="mt-6 mb-2" />
 
-  <ul class="divide-y divide-line-default">
+  <div class="divide-y divide-line-default">
     <BaseSwitchSection
       v-model="sendAsAttachmentField"
       :title="$t('settings.customization.payments.payment_email_attachment')"
@@ -60,5 +60,5 @@ const sendAsAttachmentField = computed<boolean>({
         )
       "
     />
-  </ul>
+  </div>
 </template>

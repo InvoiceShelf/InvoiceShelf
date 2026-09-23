@@ -12,7 +12,11 @@
 
       <template #actions>
         <div class="flex items-center justify-end space-x-5">
-          <BaseButton variant="primary-outline" @click="toggleFilter">
+          <BaseButton
+            variant="primary-outline"
+            :aria-expanded="showFilters"
+            @click="toggleFilter"
+          >
             {{ $t('general.filter') }}
             <template #right="slotProps">
               <BaseIcon
@@ -27,10 +31,10 @@
       </template>
     </BasePageHeader>
 
-    <BaseFilterWrapper :show="showFilters" class="mt-3" @clear="clearFilter">
+    <BaseFilterWrapper :show="showFilters" @clear="clearFilter">
       <BaseInputGroup
         :label="$t('administration.companies.company_name')"
-        class="flex-1 mt-2"
+        class="flex-1"
       >
         <BaseInput
           v-model="filters.search"
@@ -43,18 +47,17 @@
 
     <BaseEmptyPlaceholder
       v-show="showEmptyScreen"
+      icon="BuildingOfficeIcon"
       :title="$t('administration.companies.no_companies')"
       :description="$t('administration.companies.list_description')"
-    >
-      <BaseIcon name="BuildingOfficeIcon" class="mt-5 mb-4 h-16 w-16 text-subtle" />
-    </BaseEmptyPlaceholder>
+    />
 
     <div v-show="!showEmptyScreen" class="relative table-container">
       <BaseTable
         ref="tableRef"
         :data="fetchData"
         :columns="companyTableColumns"
-        class="mt-3"
+        :row-to="companyLink"
       >
         <template #cell-name="{ row }">
           <router-link
@@ -62,7 +65,7 @@
               name: 'admin.companies.edit',
               params: { id: row.data.id },
             }"
-            class="font-medium text-primary-500"
+            class="font-medium text-heading hover:text-primary-600"
           >
             {{ row.data.name }}
           </router-link>
@@ -91,19 +94,14 @@
 </template>
 
 <script setup lang="ts">
+import type { ColumnDef } from '@/scripts/components/table/DataTable.vue'
 import { computed, ref, reactive, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAdminStore } from '../stores/admin.store'
 import AdminCompanyDropdown from '../components/AdminCompanyDropdown.vue'
 import type { Company } from '../../../types/domain/company'
 
-interface TableColumn {
-  key: string
-  label?: string
-  thClass?: string
-  tdClass?: string
-  sortable?: boolean
-}
+type TableColumn = Omit<ColumnDef, 'label'> & { label?: string }
 
 interface FetchParams {
   page: number
@@ -138,23 +136,31 @@ const companyTableColumns = computed<TableColumn[]>(() => [
     label: t('administration.companies.company_name'),
     thClass: 'extra',
     tdClass: 'font-medium text-heading',
+    mobile: 'title',
   },
   {
     key: 'owner',
     label: t('administration.companies.owner'),
     sortable: false,
+    mobile: 'subtitle',
   },
   {
     key: 'owner_email',
     label: t('general.email'),
     sortable: false,
+    mobile: 'subtitle',
   },
   {
     key: 'actions',
-    tdClass: 'text-right text-sm font-medium',
+    tdClass: 'text-end text-sm font-medium',
     sortable: false,
+    mobile: 'actions',
   },
 ])
+
+function companyLink(row: { id?: number | string }): string {
+  return `/admin/administration/companies/${row.id}/edit`
+}
 
 const showEmptyScreen = computed<boolean>(() => {
   return !adminStore.totalCompanies && !isFetchingInitialData.value

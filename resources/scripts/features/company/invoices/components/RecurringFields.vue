@@ -1,6 +1,6 @@
 <template>
   <div
-    class="col-span-12 lg:col-span-6 rounded-xl shadow border border-line-light bg-surface p-5"
+    class="col-span-12 p-4 border lg:col-span-6 glass rounded-xl md:p-5"
   >
     <!-- Send Automatically -->
     <BaseSwitchSection
@@ -128,6 +128,7 @@
 
       <!-- Exchange Rate -->
       <ExchangeRateConverter
+        :store="invoiceStore"
         store-prop="newInvoice"
         :v="{ exchange_rate: { $error: false, $errors: [], $touch: () => {} } }"
         :is-loading="isLoading"

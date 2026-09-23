@@ -1,0 +1,44 @@
+/*
+ * Compatibility for module releases built against the 3.0 alpha shell, which
+ * had a coloured gradient header and no phone tab bar. Each block names the
+ * module version it serves; delete a block once that module ships a release
+ * that uses the shell tokens and insets instead.
+ */
+
+/*
+ * Tasks and Projects 0.1.x: the running-timer chip in `header-actions` is
+ * white text on `bg-white/20`, written for the old gradient. On the light
+ * header it becomes a solid accent pill.
+ */
+.header-actions .bg-white\/20 {
+  background-color: var(--color-btn-primary);
+  color: var(--color-on-primary);
+}
+
+.header-actions .bg-white\/20 .text-white {
+  color: var(--color-on-primary);
+}
+
+.header-actions .bg-white\/20 .bg-white {
+  background-color: var(--color-on-primary);
+}
+
+/*
+ * Tasks and Projects: the quick-start launcher is teleported to <body> at
+ * `fixed right-5 bottom-5` (0.1.x) or `end-5` (later), or `bottom-24` above
+ * the AI assistant's bubble, which on a phone lands on the tab bar. Lift it
+ * by the inset the shell publishes.
+ */
+body > .fixed:is(.right-5, .end-5).z-40.bottom-5 {
+  bottom: calc(var(--app-bottom-inset) + 1.25rem);
+}
+
+body > .fixed:is(.right-5, .end-5).z-40.bottom-24 {
+  bottom: calc(var(--app-bottom-inset) + 6rem);
+}
+
+/* 0.1.x pins it to the right, where a right-to-left page has its sidebar */
+[dir='rtl'] body > .fixed.right-5.z-40 {
+  right: auto;
+  left: 1.25rem;
+}

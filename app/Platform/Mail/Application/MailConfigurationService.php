@@ -17,6 +17,12 @@ class MailConfigurationService implements MailConfigurator
 {
     public const DEFAULT_DRIVER = 'sendmail';
 
+    /**
+     * Stands in for a stored secret in every configuration sent to the
+     * browser. A save that returns it unchanged keeps the stored value.
+     */
+    public const SECRET_MASK = '********';
+
     private const GLOBAL_SCOPE = 'global';
 
     private const COMPANY_SCOPE = 'company';
@@ -43,9 +49,9 @@ class MailConfigurationService implements MailConfigurator
             'mail_local_domain',
         ],
         'mail' => [],
-        'sendmail' => [
-            'mail_sendmail_path',
-        ],
+        // The sendmail binary comes from MAIL_SENDMAIL_PATH alone. Whatever is
+        // configured there is run as a command, so it never comes from a form.
+        'sendmail' => [],
         'ses' => [
             'mail_ses_key',
             'mail_ses_secret',
@@ -61,6 +67,16 @@ class MailConfigurationService implements MailConfigurator
             'mail_postmark_token',
             'mail_postmark_message_stream_id',
         ],
+    ];
+
+    /**
+     * Fields that are credentials: never sent back once stored.
+     */
+    private const SECRET_FIELDS = [
+        'mail_password',
+        'mail_ses_secret',
+        'mail_mailgun_secret',
+        'mail_postmark_token',
     ];
 
     private const BASE_FIELDS = [
@@ -104,7 +120,9 @@ class MailConfigurationService implements MailConfigurator
 
     public function saveGlobalConfig(array $payload): void
     {
-        Setting::setSettings($this->prepareSettingsForStorage($payload, self::GLOBAL_SCOPE));
+        $current = Setting::getSettings($this->getGlobalSettingKeys())->all();
+
+        Setting::setSettings($this->prepareSettingsForStorage($payload, self::GLOBAL_SCOPE, $current));
     }
 
     public function saveCompanyConfig(int|string $companyId, array $payload): void
@@ -117,8 +135,10 @@ class MailConfigurationService implements MailConfigurator
             return;
         }
 
+        $current = CompanySetting::getSettings($this->getCompanySettingKeys(), $companyId)->all();
+
         CompanySetting::setSettings(
-            $this->prepareSettingsForStorage($payload, self::COMPANY_SCOPE) + [
+            $this->prepareSettingsForStorage($payload, self::COMPANY_SCOPE, $current) + [
                 'use_custom_mail_config' => 'YES',
             ],
             $companyId
@@ -177,9 +197,6 @@ class MailConfigurationService implements MailConfigurator
                 'mail_url' => ['nullable', 'string'],
                 'mail_timeout' => ['nullable', 'integer'],
                 'mail_local_domain' => ['nullable', 'string'],
-            ],
-            'sendmail' => [
-                'mail_sendmail_path' => ['nullable', 'string'],
             ],
             'ses' => [
                 'mail_ses_key' => ['required', 'string'],
@@ -242,13 +259,18 @@ class MailConfigurationService implements MailConfigurator
         ];
 
         foreach (self::DRIVER_FIELDS[$driver] as $field) {
-            $payload[$field] = $this->resolveStoredValue($settings, $scope, $field);
+            $value = $this->resolveStoredValue($settings, $scope, $field);
+
+            $payload[$field] = $this->isSecret($field) && filled($value) ? self::SECRET_MASK : $value;
         }
 
         return $payload;
     }
 
-    private function prepareSettingsForStorage(array $payload, string $scope): array
+    /**
+     * @param  array<string, mixed>  $current  The settings stored now, so a secret sent back masked keeps its value.
+     */
+    private function prepareSettingsForStorage(array $payload, string $scope, array $current): array
     {
         $driver = $this->normalizeRequestedDriver($payload['mail_driver'] ?? null, $this->getAvailableDrivers());
 
@@ -259,10 +281,13 @@ class MailConfigurationService implements MailConfigurator
         ];
 
         foreach (self::DRIVER_FIELDS[$driver] as $field) {
-            $settings[$this->storedKey($scope, $field)] = $this->normalizeStoredValue(
-                $field,
-                $payload[$field] ?? $this->getDefaultValue($field)
-            );
+            $value = $payload[$field] ?? $this->getDefaultValue($field);
+
+            if ($this->isSecret($field) && $value === self::SECRET_MASK) {
+                $value = $this->resolveStoredValue($current, $scope, $field);
+            }
+
+            $settings[$this->storedKey($scope, $field)] = $this->normalizeStoredValue($field, $value);
         }
 
         return $settings;
@@ -280,7 +305,6 @@ class MailConfigurationService implements MailConfigurator
 
         match ($driver) {
             'smtp' => $this->applySmtpSettings($settings, $scope),
-            'sendmail' => $this->applySendmailSettings($settings, $scope),
             'ses' => $this->applySesSettings($settings, $scope),
             'mailgun' => $this->applyMailgunSettings($settings, $scope),
             'postmark' => $this->applyPostmarkSettings($settings, $scope),
@@ -304,11 +328,6 @@ class MailConfigurationService implements MailConfigurator
         Config::set('mail.mailers.smtp.url', $this->nullIfBlank($this->resolveStoredValue($settings, $scope, 'mail_url')));
         Config::set('mail.mailers.smtp.timeout', $this->nullIfBlank($this->resolveStoredValue($settings, $scope, 'mail_timeout')));
         Config::set('mail.mailers.smtp.local_domain', $this->nullIfBlank($this->resolveStoredValue($settings, $scope, 'mail_local_domain')));
-    }
-
-    private function applySendmailSettings(array $settings, string $scope): void
-    {
-        Config::set('mail.mailers.sendmail.path', $this->resolveStoredValue($settings, $scope, 'mail_sendmail_path'));
     }
 
     private function applySesSettings(array $settings, string $scope): void
@@ -357,6 +376,11 @@ class MailConfigurationService implements MailConfigurator
         return $this->getDefaultValue($field);
     }
 
+    private function isSecret(string $field): bool
+    {
+        return in_array($field, self::SECRET_FIELDS, true);
+    }
+
     private function storedKey(string $scope, string $field): string
     {
         return $scope === self::COMPANY_SCOPE ? "company_{$field}" : $field;
@@ -372,7 +396,6 @@ class MailConfigurationService implements MailConfigurator
             'mail_port' => config('mail.mailers.smtp.port', 587),
             'mail_username', 'mail_password', 'mail_scheme', 'mail_url', 'mail_timeout', 'mail_local_domain' => '',
             'mail_encryption' => config('mail.mailers.smtp.encryption', 'none'),
-            'mail_sendmail_path' => config('mail.mailers.sendmail.path', '/usr/sbin/sendmail -bs -i'),
             'mail_ses_key' => config('services.ses.key', ''),
             'mail_ses_secret' => config('services.ses.secret', ''),
             'mail_ses_region' => config('services.ses.region', 'us-east-1'),
@@ -420,7 +443,6 @@ class MailConfigurationService implements MailConfigurator
             'mail_postmark_message_stream_id' => $value === '' ? '' : $value,
             'mail_mailgun_endpoint' => $value === '' ? 'api.mailgun.net' : $value,
             'mail_mailgun_scheme' => $value === '' ? 'https' : $value,
-            'mail_sendmail_path' => $value === '' ? '/usr/sbin/sendmail -bs -i' : $value,
             'mail_ses_region' => $value === '' ? 'us-east-1' : $value,
             'mail_encryption' => $value === '' ? 'none' : $value,
             default => $value,

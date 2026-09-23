@@ -258,18 +258,12 @@ function closeRolesModal(): void {
 <template>
   <BaseModal
     :show="modalActive"
+    closable
     @close="closeRolesModal"
     @open="setInitialData"
   >
     <template #header>
-      <div class="flex justify-between w-full">
-        {{ modalStore.title }}
-        <BaseIcon
-          name="XMarkIcon"
-          class="w-6 h-6 text-muted cursor-pointer"
-          @click="closeRolesModal"
-        />
-      </div>
+      {{ modalStore.title }}
     </template>
 
     <form @submit.prevent="submitRoleData">
@@ -292,28 +286,30 @@ function closeRolesModal(): void {
       </div>
 
       <div class="flex justify-between">
-        <h6
+        <h2
           class="text-sm not-italic font-medium text-heading px-4 md:px-8 py-1.5"
         >
           {{ $t('settings.roles.permission', 2) }}
-          <span class="text-sm text-red-500"> *</span>
-        </h6>
+          <span class="text-sm text-danger" aria-hidden="true"> *</span>
+        </h2>
         <div
           class="text-sm not-italic font-medium text-subtle px-4 md:px-8 py-1.5"
         >
-          <a
-            class="cursor-pointer text-primary-400"
+          <button
+            type="button"
+            class="rounded-sm text-primary-600 hover:underline focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
             @click="setSelectAll(true)"
           >
             {{ $t('settings.roles.select_all') }}
-          </a>
-          /
-          <a
-            class="cursor-pointer text-primary-400"
+          </button>
+          <span aria-hidden="true"> / </span>
+          <button
+            type="button"
+            class="rounded-sm text-primary-600 hover:underline focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
             @click="setSelectAll(false)"
           >
             {{ $t('settings.roles.none') }}
-          </a>
+          </button>
         </div>
       </div>
 
@@ -321,16 +317,16 @@ function closeRolesModal(): void {
         <div
           class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-8 sm:px-8"
         >
-          <div
+          <fieldset
             v-for="(abilityGroup, gIndex) in abilitiesList"
             :key="gIndex"
             class="flex flex-col space-y-1"
           >
-            <p
-              class="text-sm text-muted border-b border-line-default pb-1 mb-2"
+            <legend
+              class="w-full pb-1 mb-2 text-sm border-b text-muted border-line-default"
             >
               {{ gIndex }}
-            </p>
+            </legend>
             <div
               v-for="(ability, index) in abilityGroup"
               :key="index"
@@ -346,10 +342,10 @@ function closeRolesModal(): void {
                 @update:model-value="onUpdateAbility(ability)"
               />
             </div>
-          </div>
+          </fieldset>
           <span
             v-if="v$.abilities.$error"
-            class="block mt-0.5 text-sm text-red-500"
+            class="block mt-0.5 text-sm text-danger"
           >
             {{ v$.abilities.$errors[0].$message }}
           </span>
@@ -360,7 +356,7 @@ function closeRolesModal(): void {
         class="z-0 flex justify-end p-4 border-t border-solid border-line-default"
       >
         <BaseButton
-          class="mr-3 text-sm"
+          class="me-3 text-sm"
           variant="primary-outline"
           type="button"
           @click="closeRolesModal"

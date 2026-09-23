@@ -12,7 +12,11 @@
 
       <template #actions>
         <div class="flex items-center justify-end space-x-5">
-          <BaseButton variant="primary-outline" @click="toggleFilter">
+          <BaseButton
+            variant="primary-outline"
+            :aria-expanded="showFilters"
+            @click="toggleFilter"
+          >
             {{ $t('general.filter') }}
             <template #right="slotProps">
               <BaseIcon
@@ -27,11 +31,8 @@
       </template>
     </BasePageHeader>
 
-    <BaseFilterWrapper :show="showFilters" class="mt-3" @clear="clearFilter">
-      <BaseInputGroup
-        :label="$t('users.name')"
-        class="flex-1 mt-2 mr-4"
-      >
+    <BaseFilterWrapper :show="showFilters" @clear="clearFilter">
+      <BaseInputGroup :label="$t('users.name')" class="flex-1">
         <BaseInput
           v-model="filters.display_name"
           type="text"
@@ -40,7 +41,7 @@
         />
       </BaseInputGroup>
 
-      <BaseInputGroup :label="$t('general.email')" class="flex-1 mt-2 mr-4">
+      <BaseInputGroup :label="$t('general.email')" class="flex-1">
         <BaseInput
           v-model="filters.email"
           type="text"
@@ -49,7 +50,7 @@
         />
       </BaseInputGroup>
 
-      <BaseInputGroup :label="$t('users.phone')" class="flex-1 mt-2">
+      <BaseInputGroup :label="$t('users.phone')" class="flex-1">
         <BaseInput
           v-model="filters.phone"
           type="text"
@@ -61,18 +62,17 @@
 
     <BaseEmptyPlaceholder
       v-show="showEmptyScreen"
+      icon="UsersIcon"
       :title="$t('administration.users.no_users')"
       :description="$t('administration.users.list_description')"
-    >
-      <BaseIcon name="UsersIcon" class="mt-5 mb-4 h-16 w-16 text-subtle" />
-    </BaseEmptyPlaceholder>
+    />
 
     <div v-show="!showEmptyScreen" class="relative table-container">
       <BaseTable
         ref="tableRef"
         :data="fetchData"
         :columns="userTableColumns"
-        class="mt-3"
+        :row-to="userLink"
       >
         <template #cell-name="{ row }">
           <router-link
@@ -80,7 +80,7 @@
               name: 'admin.users.edit',
               params: { id: row.data.id },
             }"
-            class="font-medium text-primary-500"
+            class="font-medium text-heading hover:text-primary-600"
           >
             {{ row.data.name }}
           </router-link>
@@ -131,19 +131,14 @@
 </template>
 
 <script setup lang="ts">
+import type { ColumnDef } from '@/scripts/components/table/DataTable.vue'
 import { computed, ref, reactive, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAdminStore } from '../stores/admin.store'
 import AdminUserDropdown from '../components/AdminUserDropdown.vue'
 import type { User } from '../../../types/domain/user'
 
-interface TableColumn {
-  key: string
-  label?: string
-  thClass?: string
-  tdClass?: string
-  sortable?: boolean
-}
+type TableColumn = Omit<ColumnDef, 'label'> & { label?: string }
 
 interface FetchParams {
   page: number
@@ -180,15 +175,18 @@ const userTableColumns = computed<TableColumn[]>(() => [
     label: t('users.name'),
     thClass: 'extra',
     tdClass: 'font-medium text-heading',
+    mobile: 'title',
   },
   {
     key: 'email',
     label: t('general.email'),
+    mobile: 'subtitle',
   },
   {
     key: 'role',
     label: t('administration.users.role'),
     sortable: false,
+    mobile: 'badge',
   },
   {
     key: 'companies',
@@ -197,10 +195,15 @@ const userTableColumns = computed<TableColumn[]>(() => [
   },
   {
     key: 'actions',
-    tdClass: 'text-right text-sm font-medium',
+    tdClass: 'text-end text-sm font-medium',
     sortable: false,
+    mobile: 'actions',
   },
 ])
+
+function userLink(row: { id?: number | string }): string {
+  return `/admin/administration/users/${row.id}/edit`
+}
 
 const showEmptyScreen = computed<boolean>(() => {
   return !adminStore.totalUsers && !isFetchingInitialData.value
@@ -248,9 +251,9 @@ async function fetchData({ page, sort }: FetchParams): Promise<TableResult> {
 function getRoleBadgeClass(role: string | null): string {
   switch (role) {
     case 'super admin':
-      return 'bg-purple-100 text-purple-800'
+      return 'bg-status-purple-bg text-status-purple'
     case 'admin':
-      return 'bg-blue-100 text-blue-800'
+      return 'bg-status-blue-bg text-status-blue'
     default:
       return 'bg-surface-tertiary text-heading'
   }

@@ -12,7 +12,7 @@
       <div class="mb-8 flex justify-center">
         <MainLogo
           v-if="!loginPageLogo"
-          class="h-12 w-auto text-primary-500"
+          class="w-auto h-11 text-heading"
         />
         <img
           v-else
@@ -34,10 +34,14 @@
           px-8 py-10 sm:px-10 sm:py-12
         "
       >
-        <!-- Step progress indicator -->
+        <!-- Step progress indicator: dots to see, a sentence to hear -->
+        <p v-if="totalSteps > 0" class="sr-only">
+          {{ $t('general.step_of', { step: currentStep, count: totalSteps }) }}
+        </p>
         <div
           v-if="totalSteps > 0"
           class="mb-8 flex items-center justify-center gap-2"
+          aria-hidden="true"
         >
           <span
             v-for="step in totalSteps"

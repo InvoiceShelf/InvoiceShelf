@@ -68,12 +68,11 @@ function removeTaxType(id: number): void {
 </script>
 
 <template>
-  <BaseDropdown>
+  <BaseDropdown :label="$t('general.actions_for', { name: row.name })">
     <template #activator>
-      <BaseButton v-if="route.name === 'settings.tax-types'" variant="primary">
-        <BaseIcon name="EllipsisHorizontalIcon" class="h-5 text-white" />
-      </BaseButton>
-      <BaseIcon v-else name="EllipsisHorizontalIcon" class="h-5 text-muted" />
+      <span class="inline-flex items-center justify-center rounded-lg w-9 h-9 text-muted hover:bg-hover-strong hover:text-heading">
+        <BaseIcon name="EllipsisHorizontalIcon" class="w-5 h-5" />
+      </span>
     </template>
 
     <BaseDropdownItem
@@ -82,7 +81,7 @@ function removeTaxType(id: number): void {
     >
       <BaseIcon
         name="PencilIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.edit') }}
     </BaseDropdownItem>
@@ -93,7 +92,7 @@ function removeTaxType(id: number): void {
     >
       <BaseIcon
         name="TrashIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.delete') }}
     </BaseDropdownItem>

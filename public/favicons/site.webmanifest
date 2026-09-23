@@ -1,6 +1,6 @@
 {
-    "name": "",
-    "short_name": "",
+    "name": "InvoiceShelf",
+    "short_name": "InvoiceShelf",
     "icons": [
         {
             "src": "/favicons/android-chrome-192x192.png",
@@ -13,7 +13,7 @@
             "type": "image/png"
         }
     ],
-    "theme_color": "#ffffff",
-    "background_color": "#ffffff",
+    "theme_color": "#1c1845",
+    "background_color": "#f2f2f8",
     "display": "standalone"
 }

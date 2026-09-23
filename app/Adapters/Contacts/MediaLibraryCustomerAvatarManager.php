@@ -4,6 +4,7 @@ namespace App\Adapters\Contacts;
 
 use App\Domains\Contacts\Contracts\CustomerAvatarManager;
 use App\Domains\Contacts\Models\Customer;
+use App\Support\Media\SafeFileName;
 
 class MediaLibraryCustomerAvatarManager implements CustomerAvatarManager
 {
@@ -18,7 +19,7 @@ class MediaLibraryCustomerAvatarManager implements CustomerAvatarManager
     {
         $this->clear($customer);
         $customer->addMedia($path)
-            ->usingFileName($fileName)
+            ->usingFileName(SafeFileName::from($fileName))
             ->toMediaCollection(self::COLLECTION);
     }
 }

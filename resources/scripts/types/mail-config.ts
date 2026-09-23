@@ -19,7 +19,6 @@ export interface MailConfig {
   mail_url: string
   mail_timeout: string
   mail_local_domain: string
-  mail_sendmail_path: string
   mail_ses_key: string
   mail_ses_secret: string
   mail_ses_region: string

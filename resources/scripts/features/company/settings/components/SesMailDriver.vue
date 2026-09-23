@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { required, email, numeric, helpers } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
@@ -38,7 +38,6 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 
-const isShowPassword = ref<boolean>(false)
 const encryptions = reactive<string[]>(['tls', 'ssl', 'starttls'])
 
 const sesConfig = reactive<SesConfig>({
@@ -52,10 +51,6 @@ const sesConfig = reactive<SesConfig>({
   from_mail: '',
   from_name: '',
 })
-
-const getInputType = computed<string>(() =>
-  isShowPassword.value ? 'text' : 'password'
-)
 
 const rules = computed(() => ({
   mail_driver: {
@@ -254,20 +249,13 @@ function onChangeDriver(): void {
         <BaseInput
           v-model.trim="sesConfig.mail_ses_secret"
           :content-loading="isFetchingInitialData"
-          :type="getInputType"
+          type="password"
+          revealable
           name="mail_ses_secret"
           autocomplete="off"
           :invalid="v$.mail_ses_secret.$error"
           @input="v$.mail_ses_secret.$touch()"
-        >
-          <template #right>
-            <BaseIcon
-              :name="isShowPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-              class="mr-1 text-muted cursor-pointer"
-              @click="isShowPassword = !isShowPassword"
-            />
-          </template>
-        </BaseInput>
+        />
       </BaseInputGroup>
 
       <BaseInputGroup

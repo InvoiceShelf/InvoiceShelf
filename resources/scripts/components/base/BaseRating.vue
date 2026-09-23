@@ -198,7 +198,7 @@ onBeforeMount(() => {
     display: flex;
   }
   .star-container:not(:last-child) {
-    margin-right: 5px;
+    margin-inline-end: 5px;
   }
 }
 </style>

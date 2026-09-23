@@ -76,13 +76,14 @@ test('the operations platform owns bootstrap configuration and admin diagnostics
 test('the operations platform preserves its public routes and middleware', function () {
     $routes = collect(Route::getRoutes()->getRoutes())
         ->filter(fn ($route): bool => preg_match(
-            '#^api/(?:v1/(?:app/version|settings$|check/update$|update/)|cron$)#',
+            '#^api/(?:v1/(?:app/(?:version|client-manifest)|settings$|check/update$|update/)|cron$)#',
             $route->uri(),
         ) === 1)
         ->keyBy(fn ($route): string => implode('|', $route->methods()).' '.$route->uri());
 
     expect($routes->keys()->sort()->values()->all())->toBe(collect([
         'GET|HEAD api/cron',
+        'GET|HEAD api/v1/app/client-manifest',
         'GET|HEAD api/v1/app/version',
         'GET|HEAD api/v1/check/update',
         'GET|HEAD api/v1/settings',

@@ -5,6 +5,8 @@ import type { LoginPayload, ForgotPasswordPayload, ResetPasswordPayload } from '
 import { useNotificationStore } from './notification.store'
 import { handleApiError } from '../utils/error-handling'
 import * as localStore from '../utils/local-storage'
+import { platform } from '../platform'
+import { LS_KEYS } from '../config/constants'
 
 export interface LoginData {
   email: string
@@ -45,7 +47,21 @@ export const useAuthStore = defineStore('auth', () => {
   // Actions
   async function login(data: LoginPayload): Promise<void> {
     try {
-      await authService.login(data)
+      if (__INVOICESHELF_CLIENT__) {
+        // No cookie jar and no CSRF round trip in a client: trade the
+        // credentials for a token named after the device holding it.
+        const { token } = await authService.loginWithToken({
+          username: data.email,
+          password: data.password,
+          device_name: await platform.deviceName(),
+        })
+
+        // Stored with the scheme, because that is what the request
+        // interceptor puts in the Authorization header verbatim.
+        localStore.set(LS_KEYS.AUTH_TOKEN, `Bearer ${token}`)
+      } else {
+        await authService.login(data)
+      }
 
       setTimeout(() => {
         loginData.value.email = ''
@@ -61,7 +77,11 @@ export const useAuthStore = defineStore('auth', () => {
     const notificationStore = useNotificationStore()
 
     try {
-      await authService.logout()
+      if (__INVOICESHELF_CLIENT__) {
+        await authService.logoutWithToken()
+      } else {
+        await authService.logout()
+      }
 
       notificationStore.showNotification({
         type: 'success',
@@ -71,12 +91,19 @@ export const useAuthStore = defineStore('auth', () => {
       localStore.remove('auth.token')
       localStore.remove('selectedCompany')
 
-      await authService.refreshCsrfCookie().catch(() => {})
+      // There is no session to re-arm a CSRF token for in a client.
+      if (!__INVOICESHELF_CLIENT__) {
+        await authService.refreshCsrfCookie().catch(() => {})
+      }
     } catch (err: unknown) {
       handleApiError(err)
       localStore.remove('auth.token')
       localStore.remove('selectedCompany')
-      await authService.refreshCsrfCookie().catch(() => {})
+
+      if (!__INVOICESHELF_CLIENT__) {
+        await authService.refreshCsrfCookie().catch(() => {})
+      }
+
       throw err
     }
   }

@@ -32,35 +32,18 @@ export const useModalStore = defineStore('modal', () => {
   })
 
   // Actions
+  // Everything the caller leaves out starts empty, so a modal never picks
+  // up the previous one's record, data or callback
   function openModal(payload: OpenModalPayload): void {
     componentName.value = payload.componentName
     active.value = true
-
-    if (payload.id) {
-      id.value = payload.id
-    }
-
+    id.value = payload.id ?? ''
     title.value = payload.title
-
-    if (payload.content) {
-      content.value = payload.content
-    }
-
-    if (payload.data) {
-      data.value = payload.data
-    }
-
-    if (payload.refreshData) {
-      refreshData.value = payload.refreshData
-    }
-
-    if (payload.variant) {
-      variant.value = payload.variant
-    }
-
-    if (payload.size) {
-      size.value = payload.size
-    }
+    content.value = payload.content ?? ''
+    data.value = payload.data ?? null
+    refreshData.value = payload.refreshData ?? null
+    variant.value = payload.variant ?? ''
+    size.value = payload.size ?? 'md'
   }
 
   function resetModalData(): void {
@@ -75,8 +58,11 @@ export const useModalStore = defineStore('modal', () => {
   function closeModal(): void {
     active.value = false
 
+    // After the closing animation, unless another modal opened meanwhile
     setTimeout(() => {
-      resetModalData()
+      if (!active.value) {
+        resetModalData()
+      }
     }, 300)
   }
 

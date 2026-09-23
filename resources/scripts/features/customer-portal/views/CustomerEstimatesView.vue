@@ -13,6 +13,7 @@
         <BaseButton
           v-if="store.totalEstimates"
           variant="primary-outline"
+          :aria-expanded="showFilters"
           @click="toggleFilter"
         >
           {{ $t('general.filter') }}
@@ -43,11 +44,11 @@
       <BaseInputGroup
         :label="$t('estimates.estimate_number')"
         color="black-light"
-        class="px-3 mt-2"
+        class="px-3"
       >
         <BaseInput v-model="filters.estimate_number">
           <BaseIcon name="EllipsisHorizontalIcon" class="h-5 text-muted" />
-          <BaseIcon name="HashtagIcon" class="h-5 mr-3 text-body" />
+          <BaseIcon name="HashtagIcon" class="h-5 me-3 text-body" />
         </BaseInput>
       </BaseInputGroup>
 
@@ -60,8 +61,7 @@
       </BaseInputGroup>
 
       <div
-        class="hidden w-8 h-0 mx-4 border border-gray-400 border-solid xl:block"
-        style="margin-top: 1.5rem"
+        class="hidden w-4 h-px mb-5 shrink-0 bg-line-strong xl:block"
       />
 
       <BaseInputGroup :label="$t('general.to')" class="px-3">
@@ -75,8 +75,10 @@
 
     <BaseEmptyPlaceholder
       v-if="showEmptyScreen"
+      art="estimate"
+      :ghost="5"
       :title="$t('estimates.no_estimates')"
-      :description="$t('estimates.list_of_estimates')"
+      :description="$t('estimates.portal_empty_description')"
     />
 
     <div v-show="!showEmptyScreen" class="relative table-container">
@@ -85,7 +87,7 @@
         :data="fetchData"
         :columns="estimateColumns"
         :placeholder-count="store.totalEstimates >= 20 ? 10 : 5"
-        class="mt-10"
+        :row-to="estimateLink"
       >
         <template #cell-estimate_date="{ row }">
           {{ row.data.formatted_estimate_date }}
@@ -94,7 +96,7 @@
         <template #cell-estimate_number="{ row }">
           <router-link
             :to="{ path: `estimates/${row.data.id}/view` }"
-            class="font-medium text-primary-500"
+            class="font-medium text-primary-600 hover:text-primary-700"
           >
             {{ row.data.estimate_number }}
           </router-link>
@@ -115,12 +117,10 @@
             <template #activator>
               <BaseIcon name="EllipsisHorizontalIcon" class="h-5 text-muted" />
             </template>
-            <router-link :to="`estimates/${row.data.id}/view`">
-              <BaseDropdownItem>
-                <BaseIcon name="EyeIcon" class="h-5 mr-3 text-body" />
-                {{ $t('general.view') }}
-              </BaseDropdownItem>
-            </router-link>
+            <BaseDropdownItem :to="`estimates/${row.data.id}/view`">
+              <BaseIcon name="EyeIcon" class="h-5 me-3 text-body" />
+              {{ $t('general.view') }}
+            </BaseDropdownItem>
           </BaseDropdown>
         </template>
       </BaseTable>
@@ -129,6 +129,7 @@
 </template>
 
 <script setup lang="ts">
+import type { ColumnDef } from '@/scripts/components/table/DataTable.vue'
 import { ref, computed, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { debouncedWatch } from '@vueuse/core'
@@ -174,13 +175,7 @@ const showEmptyScreen = computed<boolean>(
   () => !store.totalEstimates && !isFetchingInitialData.value,
 )
 
-interface TableColumn {
-  key: string
-  label?: string
-  thClass?: string
-  tdClass?: string
-  sortable?: boolean
-}
+type TableColumn = Omit<ColumnDef, 'label'> & { label?: string }
 
 const estimateColumns = computed<TableColumn[]>(() => [
   {
@@ -188,17 +183,32 @@ const estimateColumns = computed<TableColumn[]>(() => [
     label: t('estimates.date'),
     thClass: 'extra',
     tdClass: 'font-medium text-heading',
+    mobile: 'subtitle',
   },
-  { key: 'estimate_number', label: t('estimates.number', 2) },
-  { key: 'status', label: t('estimates.status') },
-  { key: 'total', label: t('estimates.total') },
+  {
+    key: 'estimate_number',
+    label: t('estimates.number', 2),
+    mobile: 'title',
+  },
+  { key: 'status', label: t('estimates.status'), mobile: 'badge' },
+  {
+    key: 'total',
+    label: t('estimates.total'),
+    align: 'end',
+    mobile: 'trailing',
+  },
   {
     key: 'actions',
-    thClass: 'text-right',
-    tdClass: 'text-right text-sm font-medium',
+    thClass: 'text-end',
+    tdClass: 'text-end text-sm font-medium',
     sortable: false,
+    mobile: 'actions',
   },
 ])
+
+function estimateLink(row: { id?: number | string }): string {
+  return `/${store.companySlug}/customer/estimates/${row.id}/view`
+}
 
 debouncedWatch(filters, () => refreshTable(), { debounce: 500 })
 

@@ -1,0 +1,377 @@
+name: Mobile Apps
+
+# The mobile apps are built from a published release, never from a tag push. The
+# app version is the server tag it was built from, so there is nothing to build
+# until a tag exists and has been through release.yaml. And `release: published`
+# is the same event publish.yaml listens for, which means the apps are built by
+# the same button press that registers the release and builds the images, under
+# the maintainer's own identity rather than as github-actions[bot].
+#
+# workflow_dispatch is the repair path: a signing secret that expired, a store
+# upload that failed, a run that needs repeating for a release that already
+# exists. It takes the tag because there is no release payload to read it from.
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to build the apps for, e.g. 3.0.0-alpha.4.'
+        required: true
+
+# Read-only by default. Only the step that attaches the APK to the release needs
+# more, and it is the android job that asks for it.
+permissions:
+  contents: read
+
+# Per tag, and deliberately not cancelling: two runs for the same tag would race
+# on `gh release upload --clobber` and on the store upload, but killing a run
+# halfway through a signed upload is worse than making the second one wait.
+concurrency:
+  group: mobile-${{ github.event.release.tag_name || inputs.tag }}
+  cancel-in-progress: false
+
+jobs:
+  android:
+    name: Android
+    # Gated on a repository variable rather than on the secrets being present,
+    # because a job that fails for a missing secret fails on every single release
+    # and trains everyone to ignore a red tick. Until the keystore exists this
+    # whole workflow is a no-op nobody has to look at; set MOBILE_RELEASES_ENABLED
+    # to `true` once the secrets below are in place, and the next published
+    # release builds the apps.
+    if: vars.MOBILE_RELEASES_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      # Only for `gh release upload`, which attaches the APK to the release.
+      contents: write
+
+    steps:
+      - name: Resolve the tag being built
+        id: resolve
+        env:
+          EVENT: ${{ github.event_name }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          INPUT_TAG: ${{ inputs.tag }}
+        run: |
+          if [ "$EVENT" = "release" ]; then TAG="$RELEASE_TAG"; else TAG="$INPUT_TAG"; fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      # At the tag, not at HEAD: the app ships the SPA that release shipped, and a
+      # re-run months later has to produce the same app it produced the first time.
+      - name: Checkout code at that tag
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ steps.resolve.outputs.tag }}
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+          # Two lockfiles: the root one the SPA builds from, and the Capacitor
+          # shell's own. mobile/ is a separate pnpm project, not a workspace
+          # package of the root one.
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            mobile/pnpm-lock.yaml
+
+      - name: Use JDK 21
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 21
+
+      # The runner image already ships the SDK; this accepts the licences and
+      # puts a current cmdline-tools on PATH, which is what Gradle needs to pull
+      # anything the image is missing.
+      - name: Set up the Android SDK
+        uses: android-actions/setup-android@v4
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # The app has no source of its own: this is the whole UI, built by
+      # vite.client.config.ts into mobile/www.
+      - name: Build the thin client
+        run: pnpm build:client
+
+      - name: Install the Capacitor shell's dependencies
+        run: pnpm -C mobile install --frozen-lockfile
+
+      # Not optional. The Android project keeps its own copy of www, so an
+      # unsynced bundle means the APK ships the last one that was synced.
+      - name: Sync the web build into the Android project
+        run: pnpm -C mobile exec cap sync android
+
+      # Before anything is signed or uploaded, because a versionCode is permanent:
+      # Play will not take a second upload with a code it has already seen, so a
+      # code spent on a malformed tag is spent for good. The script refuses
+      # anything it cannot derive a monotonic code from, and fails the run here.
+      - name: Derive the version from the tag
+        id: version
+        env:
+          TAG: ${{ steps.resolve.outputs.tag }}
+        run: |
+          node mobile/scripts/version-code.mjs "$TAG" > "$RUNNER_TEMP/version.txt"
+          cat "$RUNNER_TEMP/version.txt"
+          cat "$RUNNER_TEMP/version.txt" >> "$GITHUB_OUTPUT"
+
+      # Into $RUNNER_TEMP, which is outside the checkout and is destroyed with the
+      # runner: the keystore cannot be swept up by a step that packages the tree,
+      # and it needs no cleanup step of its own.
+      - name: Decode the signing keystore
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+        run: |
+          if [ -z "$KEYSTORE_B64" ]; then
+            echo "::error::ANDROID_KEYSTORE_B64 is not set, but MOBILE_RELEASES_ENABLED is true. See the Releasing section of mobile/README.md."
+            exit 1
+          fi
+          printf '%s' "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/release.keystore"
+
+      # Both artifacts, one build: the AAB is what Play takes, the APK is what
+      # someone sideloads from the GitHub release. Passing the secrets through env
+      # rather than inline ${{ }} keeps them out of the generated shell script,
+      # the same rule publish.yaml follows for the release body.
+      - name: Build the signed bundle and APK
+        working-directory: mobile/android
+        env:
+          VERSION_CODE: ${{ steps.version.outputs.versionCode }}
+          VERSION_NAME: ${{ steps.version.outputs.versionName }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          ./gradlew bundleRelease assembleRelease \
+            -PversionCode="$VERSION_CODE" \
+            -PversionName="$VERSION_NAME" \
+            -PkeystoreFile="$RUNNER_TEMP/release.keystore" \
+            -PkeystorePassword="$KEYSTORE_PASSWORD" \
+            -PkeyAlias="$KEY_ALIAS" \
+            -PkeyPassword="$KEY_PASSWORD"
+
+      # Kept whether or not the store uploads below are switched on, so there is
+      # always something to hand-upload or to bisect against.
+      - name: Upload the build outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-${{ steps.resolve.outputs.tag }}
+          path: |
+            mobile/android/app/build/outputs/bundle/release/app-release.aab
+            mobile/android/app/build/outputs/apk/release/app-release.apk
+          if-no-files-found: error
+          retention-days: 30
+
+      # The APK is a real distribution channel for this app: the server is the
+      # user's, so sideloading is a legitimate way to run the client and not only
+      # a test path. The AAB is not attached, because it is useless outside Play.
+      - name: Attach the APK to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.resolve.outputs.tag }}
+        run: |
+          cp mobile/android/app/build/outputs/apk/release/app-release.apk \
+             "$RUNNER_TEMP/InvoiceShelf-$TAG-android.apk"
+          gh release upload "$TAG" "$RUNNER_TEMP/InvoiceShelf-$TAG-android.apk" \
+            --repo "$GITHUB_REPOSITORY" --clobber
+
+      # Its own gate, because the Play listing arrives later than the keystore: a
+      # new personal developer account has to run closed testing before it may
+      # publish at all, and the very first upload of a package has to be made by
+      # hand in the console because the API cannot create the app entry. Switch
+      # MOBILE_PLAY_UPLOAD_ENABLED on once that first upload exists.
+      - name: Upload to the Play internal track
+        if: vars.MOBILE_PLAY_UPLOAD_ENABLED == 'true'
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: com.invoiceshelf.app
+          releaseFiles: mobile/android/app/build/outputs/bundle/release/app-release.aab
+          track: internal
+          status: completed
+
+      - name: Say what was built
+        env:
+          TAG: ${{ steps.resolve.outputs.tag }}
+          VERSION_CODE: ${{ steps.version.outputs.versionCode }}
+          VERSION_NAME: ${{ steps.version.outputs.versionName }}
+          PLAY: ${{ vars.MOBILE_PLAY_UPLOAD_ENABLED == 'true' }}
+        run: |
+          {
+            echo "### Android $VERSION_NAME"
+            echo
+            echo "- versionCode: \`$VERSION_CODE\` (permanent; Play will never accept it twice)"
+            echo "- APK attached to the release as \`InvoiceShelf-$TAG-android.apk\`"
+            echo "- Play internal track upload: \`$PLAY\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  # UNTESTED. Every step below is written from the documented behaviour of the
+  # actions and of xcodebuild; none of it has run, because it needs an Apple
+  # organisation account, a distribution certificate and an App Store Connect app
+  # record, none of which exist yet. Treat the first green run on a macOS runner
+  # as the point at which this comment comes out, and expect to fix signing
+  # details before then.
+  ios:
+    name: iOS
+    # Two gates. The shared one, plus an iOS-specific one, because the Apple side
+    # lands months after the Android side (organisation enrolment needs a D-U-N-S
+    # number) and because a macOS runner is billed at ten times an ubuntu one, so
+    # it should not spin up on every release until it can produce something.
+    if: vars.MOBILE_RELEASES_ENABLED == 'true' && vars.MOBILE_IOS_ENABLED == 'true'
+    runs-on: macos-latest
+
+    steps:
+      - name: Resolve the tag being built
+        id: resolve
+        env:
+          EVENT: ${{ github.event_name }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          INPUT_TAG: ${{ inputs.tag }}
+        run: |
+          if [ "$EVENT" = "release" ]; then TAG="$RELEASE_TAG"; else TAG="$INPUT_TAG"; fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout code at that tag
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ steps.resolve.outputs.tag }}
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            mobile/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build the thin client
+        run: pnpm build:client
+
+      - name: Install the Capacitor shell's dependencies
+        run: pnpm -C mobile install --frozen-lockfile
+
+      # On macOS this also runs `pod install`, which is the half that is skipped
+      # with a warning on Linux and the reason the iOS project cannot be built
+      # there. CocoaPods ships on the runner image.
+      - name: Sync the web build into the iOS project
+        run: pnpm -C mobile exec cap sync ios
+
+      - name: Derive the version from the tag
+        id: version
+        env:
+          TAG: ${{ steps.resolve.outputs.tag }}
+        run: |
+          node mobile/scripts/version-code.mjs "$TAG" > "$RUNNER_TEMP/version.txt"
+          cat "$RUNNER_TEMP/version.txt"
+          cat "$RUNNER_TEMP/version.txt" >> "$GITHUB_OUTPUT"
+
+      # The same two numbers Android gets. iOS has no monotonicity rule of its own
+      # beyond "higher than the last build of this version", but reusing the
+      # versionCode means a TestFlight build number names the tag it came from.
+      #
+      # Info.plist ships the Xcode variables `$(MARKETING_VERSION)` and
+      # `$(CURRENT_PROJECT_VERSION)`; PlistBuddy replaces them with literals, so
+      # this must run after `cap sync` (which rewrites parts of the project) and
+      # before the archive.
+      - name: Set the bundle version
+        env:
+          VERSION_CODE: ${{ steps.version.outputs.versionCode }}
+          VERSION_NAME: ${{ steps.version.outputs.versionName }}
+        run: |
+          PLIST=mobile/ios/App/App/Info.plist
+          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $VERSION_NAME" "$PLIST"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $VERSION_CODE" "$PLIST"
+          /usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$PLIST"
+          /usr/libexec/PlistBuddy -c "Print :CFBundleVersion" "$PLIST"
+
+      # Creates a temporary keychain, imports the .p12 into it and makes it the
+      # default for the rest of the job. The keychain dies with the runner.
+      - name: Import the distribution certificate
+        uses: apple-actions/import-codesign-certs@v7
+        with:
+          p12-file-base64: ${{ secrets.IOS_CERTIFICATE_P12_B64 }}
+          p12-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+
+      # Both locations on purpose: Xcode 16 reads profiles from the Developer
+      # directory, everything before it from the MobileDevice one, and the runner
+      # image's Xcode version moves under us.
+      - name: Install the provisioning profile
+        env:
+          PROFILE_B64: ${{ secrets.IOS_PROVISIONING_PROFILE_B64 }}
+        run: |
+          OLD="$HOME/Library/MobileDevice/Provisioning Profiles"
+          NEW="$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles"
+          mkdir -p "$OLD" "$NEW"
+          printf '%s' "$PROFILE_B64" | base64 -d > "$RUNNER_TEMP/invoiceshelf.mobileprovision"
+          cp "$RUNNER_TEMP/invoiceshelf.mobileprovision" "$OLD/invoiceshelf.mobileprovision"
+          cp "$RUNNER_TEMP/invoiceshelf.mobileprovision" "$NEW/invoiceshelf.mobileprovision"
+
+      # The workspace, not the .xcodeproj: the Pods project is the other half of
+      # it. Manual signing, because the runner has exactly one certificate and one
+      # profile and no Xcode account to ask the portal for more.
+      - name: Archive
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          xcodebuild archive \
+            -workspace mobile/ios/App/App.xcworkspace \
+            -scheme App \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath "$RUNNER_TEMP/App.xcarchive" \
+            CODE_SIGN_STYLE=Manual \
+            DEVELOPMENT_TEAM="$APPLE_TEAM_ID" \
+            PROVISIONING_PROFILE_SPECIFIER="InvoiceShelf App Store"
+
+      # mobile/ios/ExportOptions.plist carries the shape; the team id is written
+      # into a copy in $RUNNER_TEMP so it is never committed.
+      - name: Export the IPA
+        id: export
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          cp mobile/ios/ExportOptions.plist "$RUNNER_TEMP/ExportOptions.plist"
+          /usr/libexec/PlistBuddy -c "Set :teamID $APPLE_TEAM_ID" "$RUNNER_TEMP/ExportOptions.plist"
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/App.xcarchive" \
+            -exportPath "$RUNNER_TEMP/export" \
+            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist"
+          IPA=$(find "$RUNNER_TEMP/export" -maxdepth 1 -name '*.ipa' | head -1)
+          if [ -z "$IPA" ]; then
+            echo "::error::exportArchive produced no .ipa."
+            exit 1
+          fi
+          echo "ipa=$IPA" >> "$GITHUB_OUTPUT"
+
+      # Kept for the same reason as the Android outputs: if the TestFlight upload
+      # below fails, the build itself is still here to upload by hand.
+      - name: Upload the IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-${{ steps.resolve.outputs.tag }}
+          path: ${{ steps.export.outputs.ipa }}
+          if-no-files-found: error
+          retention-days: 30
+
+      # TestFlight, never straight to the App Store. Submitting for review is a
+      # separate, human-initiated step in App Store Connect: an app that connects
+      # to a server the user names is exactly the kind a reviewer asks questions
+      # about, and those answers are not something a workflow can give.
+      - name: Upload to TestFlight
+        uses: apple-actions/upload-testflight-build@v5
+        with:
+          app-path: ${{ steps.export.outputs.ipa }}
+          issuer-id: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          api-key-id: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          api-private-key: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ColumnDef } from '@/scripts/components/table/DataTable.vue'
 import { ref, computed, reactive, onUnmounted } from 'vue'
 import { debouncedWatch } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
@@ -8,16 +9,8 @@ import { useCompanyStore } from '../../../../stores/company.store'
 import { useUserStore } from '../../../../stores/user.store'
 import ItemDropdown from '../components/ItemDropdown.vue'
 import { useCustomFieldDefinitions } from '@/scripts/features/shared/custom-fields/use-custom-fields'
-import SatelliteIcon from '@/scripts/components/icons/SatelliteIcon.vue'
 
-interface TableColumn {
-  key: string
-  label?: string
-  thClass?: string
-  tdClass?: string
-  placeholderClass?: string
-  sortable?: boolean
-}
+type TableColumn = Omit<ColumnDef, 'label'> & { label?: string }
 
 interface FetchParams {
   page: number
@@ -109,9 +102,10 @@ const itemColumns = computed<TableColumn[]>(() => [
     label: t('items.name'),
     thClass: 'extra',
     tdClass: 'font-medium text-heading',
+    mobile: 'title',
   },
-  { key: 'unit_name', label: t('items.unit') },
-  { key: 'price', label: t('items.price') },
+  { key: 'unit_name', label: t('items.unit'), mobile: 'subtitle' },
+  { key: 'price', label: t('items.price'), align: 'end', mobile: 'trailing' },
   { key: 'created_at', label: t('items.added_on') },
   ...printedFields.value.map((field) => ({
     key: `custom_field_${field.id}`,
@@ -120,11 +114,16 @@ const itemColumns = computed<TableColumn[]>(() => [
   })),
   {
     key: 'actions',
-    thClass: 'text-right',
-    tdClass: 'text-right text-sm font-medium',
+    thClass: 'text-end',
+    tdClass: 'text-end text-sm font-medium',
     sortable: false,
+    mobile: 'actions',
   },
 ])
+
+function itemLink(row: { id?: number | string }): string {
+  return `/admin/items/${row.id}/edit`
+}
 
 debouncedWatch(
   filters,
@@ -233,6 +232,7 @@ function removeMultipleItems(): void {
           <BaseButton
             v-show="itemStore.totalItems"
             variant="primary-outline"
+            :aria-expanded="showFilters"
             @click="toggleFilter"
           >
             {{ $t('general.filter') }}
@@ -259,8 +259,8 @@ function removeMultipleItems(): void {
       </template>
     </BasePageHeader>
 
-    <BaseFilterWrapper :show="showFilters" class="mt-5" @clear="clearFilter">
-      <BaseInputGroup :label="$t('items.name')" class="text-left">
+    <BaseFilterWrapper :show="showFilters" @clear="clearFilter">
+      <BaseInputGroup :label="$t('items.name')" class="text-start">
         <BaseInput
           v-model="filters.name"
           type="text"
@@ -269,7 +269,7 @@ function removeMultipleItems(): void {
         />
       </BaseInputGroup>
 
-      <BaseInputGroup :label="$t('items.unit')" class="text-left">
+      <BaseInputGroup :label="$t('items.unit')" class="text-start">
         <BaseMultiselect
           v-model="filters.unit_id"
           :placeholder="$t('items.select_a_unit')"
@@ -285,22 +285,21 @@ function removeMultipleItems(): void {
         />
       </BaseInputGroup>
 
-      <BaseInputGroup class="text-left" :label="$t('items.price')">
+      <BaseInputGroup class="text-start" :label="$t('items.price')">
         <BaseMoney v-model="filters.price" />
       </BaseInputGroup>
     </BaseFilterWrapper>
 
     <BaseEmptyPlaceholder
       v-show="showEmptyScreen"
+      art="item"
+      :ghost="4"
       :title="$t('items.no_items')"
-      :description="$t('items.list_of_items')"
+      :description="$t('items.empty_description')"
     >
-      <SatelliteIcon class="mt-5 mb-4" />
-
-      <template #actions>
+      <template v-if="userStore.hasAbilities(ABILITIES.CREATE_ITEM)" #actions>
         <BaseButton
-          v-if="userStore.hasAbilities(ABILITIES.CREATE_ITEM)"
-          variant="primary-outline"
+          variant="primary"
           @click="$router.push('/admin/items/create')"
         >
           <template #left="slotProps">
@@ -312,50 +311,33 @@ function removeMultipleItems(): void {
     </BaseEmptyPlaceholder>
 
     <div v-show="!showEmptyScreen" class="relative table-container">
-      <div
-        class="
-          relative
-          flex
-          items-center
-          justify-end
-          h-5
-          border-line-default border-solid
-        "
-      >
-        <BaseDropdown v-if="itemStore.selectedItems.length">
-          <template #activator>
-            <span
-              class="
-                flex
-                text-sm
-                font-medium
-                cursor-pointer
-                select-none
-                text-primary-400
-              "
-            >
-              {{ $t('general.actions') }}
-              <BaseIcon name="ChevronDownIcon" />
-            </span>
-          </template>
-          <BaseDropdownItem @click="removeMultipleItems">
-            <BaseIcon name="TrashIcon" class="mr-3 text-body" />
-            {{ $t('general.delete') }}
-          </BaseDropdownItem>
-        </BaseDropdown>
-      </div>
-
       <BaseTable
         ref="table"
+        :no-results-message="$t('items.no_matching_items')"
         :data="fetchData"
         :columns="itemColumns"
         :placeholder-count="itemStore.totalItems >= 20 ? 10 : 5"
-        class="mt-3"
+        :row-to="itemLink"
+        :selected-count="
+          userStore.hasAbilities(ABILITIES.DELETE_ITEM)
+            ? itemStore.selectedItems.length
+            : 0
+        "
       >
+        <template #bulk-actions>
+          <BaseButton size="xs" variant="white" @click="removeMultipleItems">
+            <template #left="slotProps">
+              <BaseIcon name="TrashIcon" :class="slotProps.class" />
+            </template>
+            {{ $t('general.delete') }}
+          </BaseButton>
+        </template>
+
         <template #header>
-          <div class="absolute items-center left-6 top-2.5 select-none">
+          <div class="absolute items-center start-6 top-3.5 select-none">
             <BaseCheckbox
               v-model="itemStore.selectAllField"
+              :aria-label="$t('general.select_all')"
               variant="primary"
               @change="itemStore.selectAllItems"
             />
@@ -367,6 +349,7 @@ function removeMultipleItems(): void {
             <BaseCheckbox
               :id="row.id"
               v-model="selectField"
+              :aria-label="$t('general.select_named', { name: row.data.name })"
               :value="row.data.id"
             />
           </div>
@@ -375,7 +358,7 @@ function removeMultipleItems(): void {
         <template #cell-name="{ row }">
           <router-link
             :to="{ path: `items/${row.data.id}/edit` }"
-            class="font-medium text-primary-500"
+            class="font-medium text-heading hover:text-primary-600"
           >
             <BaseText :text="row.data.name" />
           </router-link>

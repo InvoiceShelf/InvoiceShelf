@@ -85,7 +85,8 @@ test('removing a member from a company announces it for that company only', func
     $member = User::factory()->create();
     $member->companies()->attach([$first->id, $second->id]);
 
-    app(MemberService::class)->update($member, [], [['id' => $first->id, 'role' => 'owner']]);
+    // The caller manages both companies, so leaving the second off detaches it.
+    app(MemberService::class)->update($member, [], [['id' => $first->id, 'role' => 'owner']], [$first->id, $second->id]);
 
     Event::assertDispatched(CompanyAccessRevoked::class, fn ($event) => $event->userId === $member->id && $event->companyId === $second->id);
     Event::assertDispatchedTimes(CompanyAccessRevoked::class, 1);

@@ -14,7 +14,7 @@ const CustomerPaymentsView = () => import('./views/CustomerPaymentsView.vue')
 const CustomerPaymentDetailView = () => import('./views/CustomerPaymentDetailView.vue')
 const CustomerSettingsView = () => import('./views/CustomerSettingsView.vue')
 
-export const customerPortalRoutes: RouteRecordRaw[] = [
+const portalRoutes: RouteRecordRaw[] = [
   {
     path: '/:company/customer',
     component: CustomerPortalAuthLayout,
@@ -91,3 +91,11 @@ export const customerPortalRoutes: RouteRecordRaw[] = [
     ],
   },
 ]
+
+/**
+ * Empty in the mobile client: the portal is session-authenticated and for
+ * customers, while a client is a staff tool signed in with a bearer token.
+ * Declaring it here, rather than at the point of use, is what keeps the
+ * portal's views out of the client package entirely.
+ */
+export const customerPortalRoutes: RouteRecordRaw[] = __INVOICESHELF_CLIENT__ ? [] : portalRoutes

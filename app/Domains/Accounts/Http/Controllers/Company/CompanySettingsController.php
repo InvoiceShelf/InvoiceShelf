@@ -2,6 +2,7 @@
 
 namespace App\Domains\Accounts\Http\Controllers\Company;
 
+use App\Domains\Accounts\Application\MemberVisibleSettings;
 use App\Domains\Accounts\Http\Requests\GetSettingsRequest;
 use App\Domains\Accounts\Http\Requests\UpdateSettingsRequest;
 use App\Domains\Accounts\Models\Company;
@@ -24,19 +25,22 @@ use Silber\Bouncer\BouncerFacade;
  */
 class CompanySettingsController extends Controller
 {
+    public function __construct(private readonly MemberVisibleSettings $memberVisibleSettings) {}
+
     /**
      * The named preferences of the active company.
      *
      * Options with no row on file are absent from the reply rather than null,
      * so the map that comes back can be shorter than the one asked for — and
-     * empty when none of them exist, which serialises as an empty list.
+     * empty when none of them exist, which serialises as an empty list. The
+     * mail transport and module settings are never among them.
      */
     public function show(GetSettingsRequest $request): JsonResponse
     {
         $wanted = (array) $request->input('settings');
 
         return response()->json(
-            CompanySetting::getSettings($wanted, $request->header('company'))
+            $this->memberVisibleSettings->only($wanted, $request->header('company'))
         );
     }
 

@@ -1,7 +1,8 @@
 <template>
   <BasePage class="relative">
-    <form action="" @submit.prevent="submitForm">
-      <BasePageHeader :title="pageTitle" class="mb-5">
+    <form action="" class="flex flex-col gap-4 md:gap-5" @submit.prevent="submitForm">
+      <!-- On phones Save moves to the bottom bar, still submitting this form -->
+      <BasePageHeader :title="pageTitle" phone-actions="bar">
         <BaseBreadcrumb>
           <BaseBreadcrumbItem
             :title="$t('general.home')"
@@ -17,44 +18,41 @@
         <template #actions>
           <BaseButton
             v-if="isEdit && expenseStore.currentExpense.attachment_receipt_url"
-            :href="receiptDownloadUrl"
-            tag="a"
-            variant="primary-outline"
+            :loading="isDownloadingReceipt"
+            variant="white"
             type="button"
-            class="mr-2"
+            @click="downloadReceipt"
           >
             <template #left="slotProps">
-              <BaseIcon name="DownloadIcon" :class="slotProps.class" />
+              <BaseIcon name="ArrowDownTrayIcon" :class="slotProps.class" />
             </template>
             {{ $t('expenses.download_receipt') }}
           </BaseButton>
 
-          <div class="hidden md:block">
-            <BaseButton
-              :loading="isSaving"
-              :content-loading="isFetchingInitialData"
-              :disabled="isSaving"
-              variant="primary"
-              type="submit"
-            >
-              <template #left="slotProps">
-                <BaseIcon
-                  v-if="!isSaving"
-                  name="ArrowDownOnSquareIcon"
-                  :class="slotProps.class"
-                />
-              </template>
-              {{
-                isEdit
-                  ? $t('expenses.update_expense')
-                  : $t('expenses.save_expense')
-              }}
-            </BaseButton>
-          </div>
+          <BaseButton
+            :loading="isSaving"
+            :content-loading="isFetchingInitialData"
+            :disabled="isSaving"
+            variant="primary"
+            type="submit"
+          >
+            <template #left="slotProps">
+              <BaseIcon
+                v-if="!isSaving"
+                name="ArrowDownOnSquareIcon"
+                :class="slotProps.class"
+              />
+            </template>
+            {{
+              isEdit
+                ? $t('expenses.update_expense')
+                : $t('expenses.save_expense')
+            }}
+          </BaseButton>
         </template>
       </BasePageHeader>
 
-      <BaseCard>
+      <BaseCard container-class="p-4 md:p-5">
         <BaseInputGrid>
           <!-- Category -->
           <BaseInputGroup
@@ -62,8 +60,10 @@
             :content-loading="isFetchingInitialData"
             required
           >
+            <!-- A new company has no categories: one can be added from here -->
             <BaseMultiselect
               v-if="!isFetchingInitialData"
+              :key="categoryReloadKey"
               v-model="expenseStore.currentExpense.expense_category_id"
               :content-loading="isFetchingInitialData"
               value-prop="id"
@@ -75,7 +75,17 @@
               :delay="500"
               searchable
               :placeholder="$t('expenses.categories.select_a_category')"
-            />
+            >
+              <template v-if="userStore.hasAbilities(ABILITIES.VIEW_EXPENSE)" #action>
+                <BaseSelectAction @click="addCategory">
+                  <BaseIcon
+                    name="PlusIcon"
+                    class="h-4 me-2 -ms-2 text-center text-primary-400"
+                  />
+                  {{ $t('settings.expense_category.add_new_category') }}
+                </BaseSelectAction>
+              </template>
+            </BaseMultiselect>
           </BaseInputGroup>
 
           <!-- Expense Date -->
@@ -142,6 +152,7 @@
 
           <!-- Exchange Rate -->
           <ExchangeRateConverter
+            :store="expenseStore"
             store-prop="currentExpense"
             :v="{ exchange_rate: { $error: false, $errors: [], $touch: () => {} } }"
             :is-loading="isFetchingInitialData"
@@ -154,19 +165,11 @@
             :content-loading="isFetchingInitialData"
             :label="$t('expenses.customer')"
           >
-            <BaseMultiselect
+            <BaseCustomerSelectInput
               v-if="!isFetchingInitialData"
               v-model="expenseStore.currentExpense.customer_id"
-              :content-loading="isFetchingInitialData"
-              value-prop="id"
-              label="name"
-              track-by="id"
-              :options="searchCustomer"
-              :filter-results="false"
-              resolve-on-load
-              :delay="500"
-              searchable
-              :placeholder="$t('customers.select_a_customer')"
+              can-deselect
+              show-action
             />
           </BaseInputGroup>
 
@@ -229,32 +232,10 @@
           :currency="expenseStore.currentExpense.selectedCurrency"
           :is-loading="isFetchingInitialData"
         />
-
-        <!-- Mobile Save Button -->
-        <div class="mt-4 block md:hidden">
-          <BaseButton
-            :loading="isSaving"
-            :tabindex="6"
-            variant="primary"
-            type="submit"
-            class="flex w-full justify-center"
-          >
-            <template #left="slotProps">
-              <BaseIcon
-                v-if="!isSaving"
-                name="ArrowDownOnSquareIcon"
-                :class="slotProps.class"
-              />
-            </template>
-            {{
-              isEdit
-                ? $t('expenses.update_expense')
-                : $t('expenses.save_expense')
-            }}
-          </BaseButton>
-        </div>
       </BaseCard>
     </form>
+
+    <CategoryModal />
   </BasePage>
 </template>
 
@@ -265,12 +246,19 @@ import { useI18n } from 'vue-i18n'
 import { useExpenseStore } from '../store'
 import { useGlobalStore } from '../../../../stores/global.store'
 import { useCompanyStore } from '../../../../stores/company.store'
+import { useNotificationStore } from '../../../../stores/notification.store'
+import { useUserStore } from '../../../../stores/user.store'
+import { useModalStore } from '../../../../stores/modal.store'
+import { ABILITIES } from '../../../../config/abilities'
+import { handleApiError, getErrorTranslationKey } from '@/scripts/utils/error-handling'
+import { formatDate } from '@/scripts/utils/format-date'
+import CategoryModal from '@/scripts/features/company/settings/components/CategoryModal.vue'
+import { downloadDocument } from '@/scripts/utils/documents'
 import { ExchangeRateConverter } from '../../../shared/document-form'
 import ExpenseTaxSection from '../components/ExpenseTaxSection.vue'
 import CustomFieldInput from '@/scripts/features/shared/custom-fields/CustomFieldInput.vue'
 import { useCustomFields } from '@/scripts/features/shared/custom-fields/use-custom-fields'
 import type { ExpenseCategory } from '../../../../types/domain/expense'
-import type { Customer } from '../../../../types/domain/customer'
 import type { Currency } from '../../../../types/domain/currency'
 
 const route = useRoute()
@@ -281,10 +269,14 @@ const customFieldValidationScope = 'customFields'
 const expenseStore = useExpenseStore()
 const globalStore = useGlobalStore()
 const companyStore = useCompanyStore()
+const notificationStore = useNotificationStore()
+const userStore = useUserStore()
+const modalStore = useModalStore()
 
 const isSaving = ref<boolean>(false)
 const isFetchingInitialData = ref<boolean>(false)
 const isAttachmentReceiptRemoved = ref<boolean>(false)
+const isDownloadingReceipt = ref<boolean>(false)
 
 const amountData = computed<number>({
   get: () => expenseStore.currentExpense.amount / 100,
@@ -306,9 +298,33 @@ const pageTitle = computed<string>(() =>
   isEdit.value ? t('expenses.edit_expense') : t('expenses.new_expense'),
 )
 
-const receiptDownloadUrl = computed<string>(() =>
+const receiptPath = computed<string>(() =>
   isEdit.value ? `/reports/expenses/${route.params.id}/download-receipt` : '',
 )
+
+/**
+ * The receipt used to be a plain link, which only reaches a server the page
+ * shares an origin with. Fetching it through the API client works from a
+ * client too, and a missing file now says so instead of saving the error.
+ */
+async function downloadReceipt(): Promise<void> {
+  if (!receiptPath.value) {
+    return
+  }
+
+  isDownloadingReceipt.value = true
+
+  try {
+    await downloadDocument(receiptPath.value, {}, 'receipt')
+  } catch {
+    notificationStore.showNotification({
+      type: 'error',
+      message: t('pdf.download_failed'),
+    })
+  } finally {
+    isDownloadingReceipt.value = false
+  }
+}
 
 // Initialize
 expenseStore.resetCurrentExpenseData()
@@ -328,6 +344,10 @@ function onCurrencyChange(currencyId: number): void {
   expenseStore.currentExpense.selectedCurrency = found ?? null
 }
 
+// A category added from the select, kept in its options until they include it
+const createdCategory = ref<ExpenseCategory | null>(null)
+const categoryReloadKey = ref<number>(0)
+
 async function searchCategory(
   search: string,
 ): Promise<ExpenseCategory[]> {
@@ -335,15 +355,30 @@ async function searchCategory(
     '../../../../api/services/expense.service'
   )
   const res = await expenseService.listCategories({ search })
-  return res.data
+  const categories = res.data ?? []
+
+  if (createdCategory.value && !categories.some((c) => c.id === createdCategory.value?.id)) {
+    categories.unshift(createdCategory.value)
+  }
+
+  return categories
 }
 
-async function searchCustomer(search: string): Promise<Customer[]> {
-  const { customerService } = await import(
-    '../../../../api/services/customer.service'
-  )
-  const res = await customerService.list({ search })
-  return res.data
+function addCategory(): void {
+  modalStore.openModal({
+    title: t('settings.expense_category.add_category'),
+    componentName: 'CategoryModal',
+    size: 'sm',
+    refreshData: (category: unknown) => {
+      const saved = category as ExpenseCategory | undefined
+
+      if (saved?.id) {
+        createdCategory.value = saved
+        categoryReloadKey.value++
+        expenseStore.currentExpense.expense_category_id = saved.id
+      }
+    },
+  })
 }
 
 async function loadData(): Promise<void> {
@@ -364,8 +399,13 @@ async function loadData(): Promise<void> {
       expenseStore.currentExpense.currency_id =
         expenseStore.currentExpense.selectedCurrency.id
     }
-  } else if (route.query.customer) {
-    expenseStore.currentExpense.customer_id = Number(route.query.customer)
+  } else {
+    // A new expense is dated today, like a new invoice or payment
+    expenseStore.currentExpense.expense_date ||= formatDate(new Date())
+
+    if (route.query.customer) {
+      expenseStore.currentExpense.customer_id = Number(route.query.customer)
+    }
   }
 
   isFetchingInitialData.value = false
@@ -397,8 +437,16 @@ async function submitForm(): Promise<void> {
     expenseStore.currentExpense.attachment_receipt = null
     isAttachmentReceiptRemoved.value = false
     router.push('/admin/expenses')
-  } catch {
+  } catch (error) {
     isSaving.value = false
+
+    // Say why it did not save instead of leaving the form as it was
+    const normalized = handleApiError(error)
+    const translationKey = getErrorTranslationKey(normalized.message)
+    notificationStore.showNotification({
+      type: 'error',
+      message: translationKey ? t(translationKey) : normalized.message,
+    })
   }
 }
 

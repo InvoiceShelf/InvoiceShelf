@@ -14,6 +14,7 @@
         <BaseButton
           v-show="expenseStore.totalExpenses"
           variant="primary-outline"
+          :aria-expanded="showFilters"
           @click="toggleFilter"
         >
           {{ $t('general.filter') }}
@@ -29,7 +30,7 @@
 
         <BaseButton
           v-if="canCreate"
-          class="ml-4"
+          class="ms-4"
           variant="primary"
           @click="$router.push('expenses/create')"
         >
@@ -42,7 +43,7 @@
     </BasePageHeader>
 
     <!-- Filters -->
-    <BaseFilterWrapper :show="showFilters" class="mt-5" @clear="clearFilter">
+    <BaseFilterWrapper :show="showFilters" @clear="clearFilter">
       <BaseInputGroup :label="$t('expenses.customer')">
         <BaseCustomerSelectInput
           v-model="filters.customer_id"
@@ -76,8 +77,7 @@
       </BaseInputGroup>
 
       <div
-        class="hidden w-8 h-0 mx-4 border border-gray-400 border-solid xl:block"
-        style="margin-top: 1.5rem"
+        class="hidden w-4 h-px mb-5 shrink-0 bg-line-strong xl:block"
       />
 
       <BaseInputGroup :label="$t('expenses.to_date')">
@@ -92,12 +92,14 @@
     <!-- Empty State -->
     <BaseEmptyPlaceholder
       v-show="showEmptyScreen"
+      art="expense"
+      :ghost="6"
       :title="$t('expenses.no_expenses')"
-      :description="$t('expenses.list_of_expenses')"
+      :description="$t('expenses.empty_description')"
     >
       <template v-if="canCreate" #actions>
         <BaseButton
-          variant="primary-outline"
+          variant="primary"
           @click="$router.push('/admin/expenses/create')"
         >
           <template #left="slotProps">
@@ -110,36 +112,28 @@
 
     <!-- Table -->
     <div v-show="!showEmptyScreen" class="relative table-container">
-      <div class="relative flex items-center justify-end h-5">
-        <BaseDropdown
-          v-if="expenseStore.selectedExpenses.length && canDelete"
-        >
-          <template #activator>
-            <span
-              class="flex text-sm font-medium cursor-pointer select-none text-primary-400"
-            >
-              {{ $t('general.actions') }}
-              <BaseIcon name="ChevronDownIcon" />
-            </span>
-          </template>
-
-          <BaseDropdownItem @click="removeMultipleExpenses">
-            <BaseIcon name="TrashIcon" class="h-5 mr-3 text-body" />
-            {{ $t('general.delete') }}
-          </BaseDropdownItem>
-        </BaseDropdown>
-      </div>
-
       <BaseTable
         ref="tableRef"
+        :no-results-message="$t('expenses.no_matching_expenses')"
         :data="fetchData"
         :columns="expenseColumns"
-        class="mt-3"
+        :row-to="expenseLink"
+        :selected-count="canDelete ? expenseStore.selectedExpenses.length : 0"
       >
+        <template #bulk-actions>
+          <BaseButton size="xs" variant="white" @click="removeMultipleExpenses">
+            <template #left="slotProps">
+              <BaseIcon name="TrashIcon" :class="slotProps.class" />
+            </template>
+            {{ $t('general.delete') }}
+          </BaseButton>
+        </template>
+
         <template #header>
-          <div class="absolute items-center left-6 top-2.5 select-none">
+          <div class="absolute items-center start-6 top-3.5 select-none">
             <BaseCheckbox
               v-model="selectAllFieldStatus"
+              :aria-label="$t('general.select_all')"
               variant="primary"
               @change="expenseStore.selectAllExpenses"
             />
@@ -151,6 +145,7 @@
             <BaseCheckbox
               :id="row.id"
               v-model="selectField"
+              :aria-label="$t('general.select_named', { name: row.data.expense_number || row.data.id })"
               :value="row.data.id"
               variant="primary"
             />
@@ -160,7 +155,7 @@
         <template #cell-name="{ row }">
           <router-link
             :to="{ path: `expenses/${row.data.id}/edit` }"
-            class="font-medium text-primary-500"
+            class="font-medium text-heading hover:text-primary-600"
           >
             {{ row.data.expense_category?.name ?? '-' }}
           </router-link>
@@ -185,7 +180,7 @@
           <router-link
             v-if="row.data.customer?.id"
             :to="`/admin/customers/${row.data.customer.id}/view`"
-            class="font-medium text-primary-500 hover:text-primary-600"
+            class="font-medium text-heading hover:text-primary-600"
           >
             {{ row.data.customer.name }}
           </router-link>
@@ -215,6 +210,7 @@
 </template>
 
 <script setup lang="ts">
+import type { ColumnDef } from '@/scripts/components/table/DataTable.vue'
 import { ref, onMounted, computed, reactive, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { debouncedWatch } from '@vueuse/core'
@@ -299,14 +295,7 @@ const selectAllFieldStatus = computed<boolean>({
   },
 })
 
-interface TableColumn {
-  key: string
-  label?: string
-  thClass?: string
-  tdClass?: string
-  placeholderClass?: string
-  sortable?: boolean
-}
+type TableColumn = Omit<ColumnDef, 'label'> & { label?: string }
 
 const expenseColumns = computed<TableColumn[]>(() => [
   {
@@ -321,6 +310,7 @@ const expenseColumns = computed<TableColumn[]>(() => [
     label: t('expenses.date'),
     thClass: 'extra',
     tdClass: 'font-medium text-heading',
+    mobile: 'subtitle',
   },
   {
     key: 'expense_number',
@@ -332,17 +322,28 @@ const expenseColumns = computed<TableColumn[]>(() => [
     key: 'name',
     label: t('expenses.category'),
     thClass: 'extra',
-    tdClass: 'cursor-pointer font-medium text-primary-500',
+    tdClass: 'font-medium text-heading',
+    mobile: 'title',
   },
   { key: 'user_name', label: t('expenses.customer') },
   { key: 'notes', label: t('expenses.note') },
-  { key: 'amount', label: t('expenses.amount') },
+  {
+    key: 'amount',
+    label: t('expenses.amount'),
+    align: 'end',
+    mobile: 'trailing',
+  },
   {
     key: 'actions',
     sortable: false,
-    tdClass: 'text-right text-sm font-medium',
+    tdClass: 'text-end text-sm font-medium',
+    mobile: 'actions',
   },
 ])
+
+function expenseLink(row: { id?: number | string }): string {
+  return `/admin/expenses/${row.id}/edit`
+}
 
 debouncedWatch(filters, () => setFilters(), { debounce: 500 })
 

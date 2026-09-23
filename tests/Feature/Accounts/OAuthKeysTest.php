@@ -2,11 +2,16 @@
 
 use App\Domains\Accounts\Application\OAuth\OAuthKeyManager;
 use App\Domains\Accounts\Models\User;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Laravel\Passport\Passport;
 
 beforeEach(function () {
+    // Currencies come from the catalogue now, not from migrations, and the
+    // user factory needs one.
+    Artisan::call('db:seed', ['--class' => 'CurrenciesTableSeeder', '--force' => true]);
+
     $this->keyDirectory = storage_path('framework/testing/oauth-keys-'.Str::random(8));
     File::ensureDirectoryExists($this->keyDirectory);
     Passport::loadKeysFrom($this->keyDirectory);

@@ -15,6 +15,7 @@
         <BaseButton
           v-show="store.totalPayments"
           variant="primary-outline"
+          :aria-expanded="showFilters"
           @click="toggleFilter"
         >
           {{ $t('general.filter') }}
@@ -56,8 +57,10 @@
 
     <BaseEmptyPlaceholder
       v-if="showEmptyScreen"
+      art="payment"
+      :ghost="5"
       :title="$t('payments.no_payments')"
-      :description="$t('payments.list_of_payments')"
+      :description="$t('payments.portal_empty_description')"
     />
 
     <div v-show="!showEmptyScreen" class="relative table-container">
@@ -66,7 +69,7 @@
         :data="fetchData"
         :columns="paymentColumns"
         :placeholder-count="store.totalPayments >= 20 ? 10 : 5"
-        class="mt-10"
+        :row-to="paymentLink"
       >
         <template #cell-payment_date="{ row }">
           {{ row.data.formatted_payment_date }}
@@ -75,7 +78,7 @@
         <template #cell-payment_number="{ row }">
           <router-link
             :to="{ path: `payments/${row.data.id}/view` }"
-            class="font-medium text-primary-500"
+            class="font-medium text-primary-600 hover:text-primary-700"
           >
             {{ row.data.payment_number }}
           </router-link>
@@ -106,12 +109,10 @@
             <template #activator>
               <BaseIcon name="EllipsisHorizontalIcon" class="w-5 text-muted" />
             </template>
-            <router-link :to="`payments/${row.data.id}/view`">
-              <BaseDropdownItem>
-                <BaseIcon name="EyeIcon" class="h-5 mr-3 text-body" />
-                {{ $t('general.view') }}
-              </BaseDropdownItem>
-            </router-link>
+            <BaseDropdownItem :to="`payments/${row.data.id}/view`">
+              <BaseIcon name="EyeIcon" class="h-5 me-3 text-body" />
+              {{ $t('general.view') }}
+            </BaseDropdownItem>
           </BaseDropdown>
         </template>
       </BaseTable>
@@ -120,6 +121,7 @@
 </template>
 
 <script setup lang="ts">
+import type { ColumnDef } from '@/scripts/components/table/DataTable.vue'
 import { ref, computed, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { debouncedWatch } from '@vueuse/core'
@@ -147,13 +149,7 @@ const showEmptyScreen = computed<boolean>(
   () => !store.totalPayments && !isFetchingInitialData.value,
 )
 
-interface TableColumn {
-  key: string
-  label?: string
-  thClass?: string
-  tdClass?: string
-  sortable?: boolean
-}
+type TableColumn = Omit<ColumnDef, 'label'> & { label?: string }
 
 const paymentColumns = computed<TableColumn[]>(() => [
   {
@@ -161,18 +157,37 @@ const paymentColumns = computed<TableColumn[]>(() => [
     label: t('payments.date'),
     thClass: 'extra',
     tdClass: 'font-medium text-heading',
+    mobile: 'subtitle',
   },
-  { key: 'payment_number', label: t('payments.payment_number') },
-  { key: 'payment_mode', label: t('payments.payment_mode') },
+  {
+    key: 'payment_number',
+    label: t('payments.payment_number'),
+    mobile: 'title',
+  },
+  {
+    key: 'payment_mode',
+    label: t('payments.payment_mode'),
+    mobile: 'subtitle',
+  },
   { key: 'allocations', label: t('invoices.invoice_number'), sortable: false },
-  { key: 'amount', label: t('payments.amount') },
+  {
+    key: 'amount',
+    label: t('payments.amount'),
+    align: 'end',
+    mobile: 'trailing',
+  },
   {
     key: 'actions',
     label: '',
-    tdClass: 'text-right text-sm font-medium',
+    tdClass: 'text-end text-sm font-medium',
     sortable: false,
+    mobile: 'actions',
   },
 ])
+
+function paymentLink(row: { id?: number | string }): string {
+  return `/${store.companySlug}/customer/payments/${row.id}/view`
+}
 
 debouncedWatch(filters, () => refreshTable(), { debounce: 500 })
 

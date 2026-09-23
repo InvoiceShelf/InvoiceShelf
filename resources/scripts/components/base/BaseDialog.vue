@@ -1,131 +1,60 @@
 <template>
-  <TransitionRoot as="template" :show="dialogStore.active">
-    <Dialog
-      as="div"
-      static
-      class="fixed inset-0 z-20 overflow-y-auto"
-      :open="dialogStore.active"
-      @close="dialogStore.closeDialog"
-    >
-      <div
+  <DialogRoot :open="dialogStore.active" @update:open="(open) => !open && dialogStore.cancel()">
+    <DialogPortal>
+      <DialogOverlay
         class="
-          flex
-          items-end
-          justify-center
-          min-h-screen
-          px-4
-          pt-4
-          pb-20
-          text-center
-          sm:block sm:p-0
+          fixed inset-0 z-50 overflow-y-auto bg-overlay
+          data-[state=open]:animate-overlay-in data-[state=closed]:animate-overlay-out
         "
       >
-        <TransitionChild
-          as="template"
-          enter="ease-out duration-300"
-          enter-from="opacity-0"
-          enter-to="opacity-100"
-          leave="ease-in duration-200"
-          leave-from="opacity-100"
-          leave-to="opacity-0"
-        >
-          <DialogOverlay
-            class="fixed inset-0 transition-opacity bg-black/50"
-          />
-        </TransitionChild>
-
-        <!-- This element is to trick the browser into centering the modal contents. -->
-        <span
-          class="hidden sm:inline-block sm:align-middle sm:h-screen"
-          aria-hidden="true"
-          >&#8203;</span
-        >
-        <TransitionChild
-          as="template"
-          enter="ease-out duration-300"
-          enter-from="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-          enter-to="opacity-100 translate-y-0 sm:scale-100"
-          leave="ease-in duration-200"
-          leave-from="opacity-100 translate-y-0 sm:scale-100"
-          leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-        >
-          <div
+        <div class="flex items-end justify-center min-h-full md:items-center md:p-6">
+          <DialogContent
+            :role="dialogStore.variant === 'danger' ? 'alertdialog' : 'dialog'"
             class="
-              inline-block
-              px-4
-              pt-5
-              pb-4
-              overflow-hidden
-              text-left
-              align-bottom
-              transition-all
-              bg-surface/95 backdrop-blur-xl backdrop-saturate-150
-              rounded-xl border border-line-default
-              shadow-2xl
-              sm:my-8 sm:align-middle sm:w-full sm:p-6
-              relative
+              relative w-full px-5 pt-6 text-start glass-strong rounded-t-2xl safe-drawer focus:outline-hidden
+              md:p-6 md:rounded-2xl md:border
+              data-[state=open]:animate-sheet-in data-[state=closed]:animate-sheet-out
+              md:data-[state=open]:animate-panel-in md:data-[state=closed]:animate-panel-out
             "
             :class="dialogSizeClasses"
+            @pointer-down-outside="keepForeignLayers"
+            @focus-outside="keepForeignLayers"
+            @interact-outside="keepForeignLayers"
+            @open-auto-focus="focusReturn.remember"
+            @close-auto-focus="focusReturn.restore"
           >
-            <div>
+            <div class="flex items-start gap-4">
               <div
-                class="
-                  flex
-                  items-center
-                  justify-center
-                  w-12
-                  h-12
-                  mx-auto
-                  bg-alert-success-bg
-                  rounded-full
-                "
-                :class="{
-                  'bg-alert-success-bg': dialogStore.variant === 'primary',
-                  'bg-alert-error-bg': dialogStore.variant === 'danger',
-                }"
+                class="flex items-center justify-center w-10 h-10 rounded-full shrink-0"
+                :class="dialogStore.variant === 'danger' ? 'bg-status-red-bg' : 'bg-status-green-bg'"
               >
                 <BaseIcon
                   v-if="dialogStore.variant === 'primary'"
                   name="CheckCircleIcon"
-                  class="w-6 h-6 text-alert-success-text"
+                  class="w-5 h-5 text-status-green"
                 />
                 <BaseIcon
                   v-else
                   name="ExclamationTriangleIcon"
-                  class="w-6 h-6 text-alert-error-text"
+                  class="w-5 h-5 text-status-red"
                   aria-hidden="true"
                 />
               </div>
-              <div class="mt-3 text-center sm:mt-5">
+              <div class="min-w-0 pt-1.5">
                 <DialogTitle
                   as="h3"
-                  class="text-lg font-medium leading-6 text-heading"
+                  class="font-semibold text-section text-heading"
                 >
                   {{ dialogStore.title }}
                 </DialogTitle>
-                <div class="mt-2">
-                  <p class="text-sm text-muted">
-                    {{ dialogStore.message }}
-                  </p>
-                </div>
+                <DialogDescription as="p" class="mt-1.5 text-sm text-muted">
+                  {{ dialogStore.message }}
+                </DialogDescription>
               </div>
             </div>
             <div
-              class="mt-5 sm:mt-6 grid gap-3"
-              :class="{
-                'sm:grid-cols-2 sm:grid-flow-row-dense':
-                  !dialogStore.hideNoButton,
-              }"
+              class="flex flex-col-reverse gap-2 mt-6 md:flex-row md:justify-end"
             >
-              <base-button
-                class="justify-center"
-                :variant="dialogStore.variant"
-                :class="{ 'w-full': dialogStore.hideNoButton }"
-                @click="resolveDialog(true)"
-              >
-                {{ dialogStore.yesLabel }}
-              </base-button>
-
               <base-button
                 v-if="!dialogStore.hideNoButton"
                 class="justify-center"
@@ -134,26 +63,32 @@
               >
                 {{ dialogStore.noLabel }}
               </base-button>
+
+              <base-button
+                class="justify-center"
+                :variant="dialogStore.variant"
+                @click="resolveDialog(true)"
+              >
+                {{ dialogStore.yesLabel }}
+              </base-button>
             </div>
-          </div>
-        </TransitionChild>
-      </div>
-    </Dialog>
-  </TransitionRoot>
+          </DialogContent>
+        </div>
+      </DialogOverlay>
+    </DialogPortal>
+  </DialogRoot>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useDialogStore } from '@/scripts/stores/dialog.store'
-import {
-  Dialog,
-  DialogOverlay,
-  DialogTitle,
-  TransitionChild,
-  TransitionRoot,
-} from '@headlessui/vue'
+import { DialogContent, DialogDescription, DialogOverlay, DialogPortal, DialogRoot, DialogTitle } from 'reka-ui'
+import { keepForeignLayers, useFocusReturn } from '@/scripts/utils/dialog-layers'
 
 const dialogStore = useDialogStore()
+
+// Back to the control that opened it, even from a menu that has since closed
+const focusReturn = useFocusReturn()
 
 function resolveDialog(resValue: boolean): void {
   dialogStore.resolve(resValue)
@@ -165,14 +100,14 @@ const dialogSizeClasses = computed<string>(() => {
 
   switch (size) {
     case 'sm':
-      return 'sm:max-w-sm'
+      return 'md:max-w-sm'
     case 'md':
-      return 'sm:max-w-md'
+      return 'md:max-w-md'
     case 'lg':
-      return 'sm:max-w-lg'
+      return 'md:max-w-lg'
 
     default:
-      return 'sm:max-w-md'
+      return 'md:max-w-md'
   }
 })
 </script>

@@ -40,6 +40,8 @@ export const useMemberStore = defineStore('members', () => {
   // State
   const users = ref<User[]>([])
   const totalUsers = ref<number>(0)
+  // Everyone in the company, the viewer included; null until the first load
+  const companyUserCount = ref<number | null>(null)
   const roles = ref<Role[]>([])
   const pendingInvitations = ref<CompanyInvitation[]>([])
   const currentMember = ref<MemberForm>(createMemberStub())
@@ -59,6 +61,7 @@ export const useMemberStore = defineStore('members', () => {
       const response = await memberService.list(params)
       users.value = response.data
       totalUsers.value = response.meta.total
+      companyUserCount.value = response.meta.user_total_count ?? null
       return response
     } catch (err: unknown) {
       handleApiError(err)
@@ -260,6 +263,7 @@ export const useMemberStore = defineStore('members', () => {
   return {
     users,
     totalUsers,
+    companyUserCount,
     roles,
     pendingInvitations,
     currentMember,

@@ -211,22 +211,42 @@ async function submitItem(): Promise<void> {
 
 <template>
   <BasePage>
-    <BasePageHeader :title="pageTitle">
-      <BaseBreadcrumb>
-        <BaseBreadcrumbItem :title="$t('general.home')" to="dashboard" />
-        <BaseBreadcrumbItem :title="$t('items.item', 2)" to="/admin/items" />
-        <BaseBreadcrumbItem :title="pageTitle" to="#" active />
-      </BaseBreadcrumb>
-    </BasePageHeader>
-
     <ItemUnitModal />
 
+    <!-- A short form: the header keeps to its width, so Save sits above it -->
     <form
-      class="grid lg:grid-cols-2 mt-6"
+      class="flex flex-col w-full max-w-2xl gap-4 md:gap-5"
       action="submit"
       @submit.prevent="submitItem"
     >
-      <BaseCard class="w-full">
+      <!-- On phones Save moves to the bottom bar, still submitting this form -->
+      <BasePageHeader :title="pageTitle" phone-actions="bar">
+        <BaseBreadcrumb>
+          <BaseBreadcrumbItem :title="$t('general.home')" to="dashboard" />
+          <BaseBreadcrumbItem :title="$t('items.item', 2)" to="/admin/items" />
+          <BaseBreadcrumbItem :title="pageTitle" to="#" active />
+        </BaseBreadcrumb>
+
+        <template #actions>
+          <BaseButton
+            :content-loading="isFetchingInitialData"
+            type="submit"
+            :loading="isSaving"
+            :disabled="isSaving"
+          >
+            <template #left="slotProps">
+              <BaseIcon
+                v-if="!isSaving"
+                name="ArrowDownOnSquareIcon"
+                :class="slotProps.class"
+              />
+            </template>
+            {{ isEdit ? $t('items.update_item') : $t('items.save_item') }}
+          </BaseButton>
+        </template>
+      </BasePageHeader>
+
+      <BaseCard class="w-full" container-class="p-4 md:p-5">
         <BaseInputGrid layout="one-column">
           <BaseInputGroup
             :label="$t('items.name')"
@@ -273,7 +293,7 @@ async function submitItem(): Promise<void> {
                 <BaseSelectAction @click="addItemUnit">
                   <BaseIcon
                     name="PlusIcon"
-                    class="h-4 mr-2 -ml-2 text-center text-primary-400"
+                    class="h-4 me-2 -ms-2 text-center text-primary-400"
                   />
                   {{ $t('settings.customization.items.add_item_unit') }}
                 </BaseSelectAction>
@@ -328,23 +348,6 @@ async function submitItem(): Promise<void> {
             :custom-field-scope="customFieldScope"
             :field="field"
           />
-
-          <div>
-            <BaseButton
-              :content-loading="isFetchingInitialData"
-              type="submit"
-              :loading="isSaving"
-            >
-              <template #left="slotProps">
-                <BaseIcon
-                  v-if="!isSaving"
-                  name="ArrowDownOnSquareIcon"
-                  :class="slotProps.class"
-                />
-              </template>
-              {{ isEdit ? $t('items.update_item') : $t('items.save_item') }}
-            </BaseButton>
-          </div>
         </BaseInputGrid>
       </BaseCard>
     </form>

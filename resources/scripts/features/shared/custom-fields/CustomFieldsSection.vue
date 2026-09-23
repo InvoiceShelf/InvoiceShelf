@@ -42,12 +42,12 @@ const hasCustomFields = computed<boolean>(
   />
 
   <div class="grid grid-cols-5 gap-2 mb-8">
-    <h6
+    <h2
       v-if="hasCustomFields"
-      class="col-span-5 text-lg font-semibold text-left lg:col-span-1"
+      class="col-span-5 font-semibold text-start text-section text-heading lg:col-span-1"
     >
       {{ $t('settings.custom_fields.title') }}
-    </h6>
+    </h2>
 
     <div class="col-span-5 lg:col-span-4">
       <CustomFieldsGrid

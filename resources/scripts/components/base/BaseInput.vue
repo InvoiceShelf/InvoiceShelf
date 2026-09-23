@@ -10,22 +10,23 @@
   <div
     v-else
     :class="[containerClass, computedContainerClass]"
-    class="relative rounded-md shadow-xs font-base"
+    class="relative rounded-lg font-base"
   >
     <div
       v-if="loading && loadingPosition === 'left'"
       class="
         absolute
         inset-y-0
-        left-0
+        start-0
         flex
         items-center
-        pl-3
+        ps-3
         pointer-events-none
       "
     >
       <svg
-        class="animate-spin !text-primary-500"
+        aria-hidden="true"
+        class="animate-spin !text-subtle"
         :class="[iconLeftClass]"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -49,8 +50,9 @@
 
     <div
       v-else-if="hasLeftIconSlot"
-      class="absolute inset-y-0 left-0 flex items-center pl-3"
+      class="absolute inset-y-0 start-0 flex items-center ps-3"
     >
+      <!-- "left" and "right" slots sit at the start and end of the field -->
       <slot name="left" :class="iconLeftClass" />
     </div>
 
@@ -61,10 +63,10 @@
         items-center
         px-3
         text-muted
-        border border-r-0 border-line-default
-        rounded-l-md
+        border border-e-0 field-border
+        rounded-s-lg
         bg-surface-secondary
-        sm:text-sm
+        text-sm
       "
     >
       {{ addon }}
@@ -75,21 +77,24 @@
       class="
         absolute
         inset-y-0
-        left-0
+        start-0
         flex
         items-center
-        pl-3
+        ps-3
         pointer-events-none
       "
     >
-      <span class="text-muted sm:text-sm">
+      <span class="text-muted text-base md:text-sm">
         {{ inlineAddon }}
       </span>
     </div>
 
+    <!-- Labelled by the surrounding group through fieldAttrs, or by aria-label -->
+    <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
     <input
-      v-bind="$attrs"
-      :type="type"
+      :dir="inputDir"
+      v-bind="{ ...fieldAttrs, ...$attrs }"
+      :type="inputType"
       :value="modelValue"
       :disabled="disabled"
       :class="[
@@ -107,15 +112,16 @@
       class="
         absolute
         inset-y-0
-        right-0
+        end-0
         flex
         items-center
-        pr-3
+        pe-3
         pointer-events-none
       "
     >
       <svg
-        class="animate-spin !text-primary-500"
+        aria-hidden="true"
+        class="animate-spin !text-subtle"
         :class="[iconRightClass]"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -137,9 +143,26 @@
       </svg>
     </div>
 
+    <!-- Show or hide a password: a real button, so a keyboard can reach it -->
     <div
-      v-if="hasRightIconSlot"
-      class="absolute inset-y-0 right-0 flex items-center pr-3"
+      v-if="canReveal"
+      class="absolute inset-y-0 end-0 flex items-center pe-1.5"
+    >
+      <button
+        type="button"
+        class="flex items-center justify-center w-8 h-8 rounded-md text-subtle hover:text-body focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
+        :aria-label="$t('general.show_password')"
+        :aria-pressed="revealed"
+        :disabled="disabled"
+        @click="revealed = !revealed"
+      >
+        <BaseIcon :name="revealed ? 'EyeSlashIcon' : 'EyeIcon'" class="w-5 h-5" />
+      </button>
+    </div>
+
+    <div
+      v-else-if="hasRightIconSlot"
+      class="absolute inset-y-0 end-0 flex items-center pe-3"
     >
       <slot name="right" :class="iconRightClass" />
     </div>
@@ -147,7 +170,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, useSlots } from 'vue'
+import { computed, ref, useSlots } from 'vue'
+import { useFormField } from '@/scripts/composables/use-form-field'
 
 interface ModelModifiers {
   uppercase?: boolean
@@ -169,6 +193,8 @@ interface Props {
   iconLeftClass?: string
   iconRightClass?: string
   modelModifiers?: ModelModifiers
+  /** For type="password": a button that shows and hides what was typed */
+  revealable?: boolean
 }
 
 defineOptions({ inheritAttrs: false })
@@ -186,13 +212,34 @@ const props = withDefaults(defineProps<Props>(), {
   containerClass: '',
   contentLoadClass: '',
   defaultInputClass:
-    'font-base block w-full sm:text-sm border-line-default rounded-md text-heading',
+    'font-base block w-full md:text-sm field-border rounded-lg text-heading',
   iconLeftClass: 'h-5 w-5 text-subtle',
   iconRightClass: 'h-5 w-5 text-subtle',
   modelModifiers: () => ({}),
+  revealable: false,
 })
 
 const slots = useSlots()
+
+// Label, description, invalid and required state from the surrounding group
+const { attrs: fieldAttrs } = useFormField({ invalid: () => props.invalid })
+
+const revealed = ref<boolean>(false)
+
+const canReveal = computed<boolean>(() => props.type === 'password' && props.revealable)
+
+const inputType = computed<number | string>(() => (canReveal.value && revealed.value ? 'text' : props.type))
+
+// Addresses always read left to right; free text follows what is typed in it,
+// so an Arabic name reads right to left and an invoice number left to right
+// on a page of either direction
+const inputDir = computed<string | undefined>(() => {
+  if (['email', 'url', 'tel'].includes(String(props.type))) {
+    return 'ltr'
+  }
+
+  return ['text', 'search'].includes(String(props.type)) ? 'auto' : undefined
+})
 
 interface Emits {
   (e: 'update:modelValue', value: string | number): void
@@ -205,16 +252,16 @@ const hasLeftIconSlot = computed<boolean>(() => {
 })
 
 const hasRightIconSlot = computed<boolean>(() => {
-  return !!slots.right || (props.loading && props.loadingPosition === 'right')
+  return canReveal.value || !!slots.right || (props.loading && props.loadingPosition === 'right')
 })
 
 const inputPaddingClass = computed<string>(() => {
   if (hasLeftIconSlot.value && hasRightIconSlot.value) {
     return 'px-10'
   } else if (hasLeftIconSlot.value) {
-    return 'pl-10'
+    return 'ps-10'
   } else if (hasRightIconSlot.value) {
-    return 'pr-10'
+    return 'pe-10'
   }
 
   return ''
@@ -222,9 +269,9 @@ const inputPaddingClass = computed<string>(() => {
 
 const inputAddonClass = computed<string>(() => {
   if (props.addon) {
-    return 'flex-1 min-w-0 block w-full px-3 py-2 !rounded-none !rounded-r-md'
+    return 'flex-1 min-w-0 block w-full px-3 py-2 !rounded-none !rounded-e-lg'
   } else if (props.inlineAddon) {
-    return 'pl-7'
+    return 'ps-7'
   }
 
   return ''
@@ -232,15 +279,15 @@ const inputAddonClass = computed<string>(() => {
 
 const inputInvalidClass = computed<string>(() => {
   if (props.invalid) {
-    return 'border-red-500 ring-red-500 focus:ring-red-500 focus:border-red-500'
+    return 'border-danger focus:border-danger focus:ring-danger/20'
   }
 
-  return 'focus:ring-primary-400 focus:border-primary-400'
+  return ''
 })
 
 const inputDisabledClass = computed<string>(() => {
   if (props.disabled) {
-    return `border-line-light bg-surface-tertiary !text-subtle ring-surface-muted focus:ring-surface-muted focus:border-line-light`
+    return `border-line-light bg-surface-secondary !text-muted cursor-not-allowed`
   }
 
   return ''

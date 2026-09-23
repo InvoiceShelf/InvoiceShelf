@@ -186,7 +186,8 @@ test('a connection ends when its user is removed from the company', function () 
 
     $token = McpTesting::connect($this, $member, $second->id)['tokens']['access_token'];
 
-    app(MemberService::class)->update($member, [], [['id' => $this->company->id, 'role' => 'owner']]);
+    // The caller manages both companies, so leaving the second off detaches it.
+    app(MemberService::class)->update($member, [], [['id' => $this->company->id, 'role' => 'owner']], [$this->company->id, $second->id]);
 
     expect(McpConnection::query()->count())->toBe(0);
     McpTesting::rpc($this, $token, 'tools/list')->assertUnauthorized();

@@ -18,7 +18,11 @@
     "admin": "Administration",
     "administration": "Administration",
     "companies": "Companies",
-    "all_users": "Users"
+    "all_users": "Users",
+    "more": "More",
+    "menu": "Menu",
+    "account_settings": "Account settings",
+    "account_menu": "Account menu for {name}"
   },
   "general": {
     "add_company": "Add Company",
@@ -41,6 +45,9 @@
     "download": "Download",
     "refresh": "Refresh",
     "loading": "Loading…",
+    "check_highlighted_fields": "Some details are missing. Check the highlighted fields and try again.",
+    "taxes_are_added_in_settings": "Taxes are added under Settings, Tax Types.",
+    "select_an_option": "Select an option",
     "date": "Date",
     "from_date": "From Date",
     "to_date": "To Date",
@@ -71,12 +78,12 @@
     "showing": "Showing",
     "of": "of",
     "actions": "Actions",
-    "subtotal": "SUBTOTAL",
-    "discount": "DISCOUNT",
+    "subtotal": "Subtotal",
+    "discount": "Discount",
     "fixed": "Fixed",
     "percentage": "Percentage",
     "tax": "TAX",
-    "total_amount": "TOTAL AMOUNT",
+    "total_amount": "Total amount",
     "bill_to": "Bill to",
     "ship_to": "Ship to",
     "due": "Due",
@@ -128,20 +135,75 @@
       "showing": "Showing",
       "to": "to",
       "of": "of",
-      "results": "results"
+      "results": "results",
+      "label": "Pagination",
+      "page": "Page {page}"
     },
     "file_upload": {
       "drag_a_file": "Drag a file here or",
       "browse": "browse",
-      "to_choose": "to choose a file"
+      "to_choose": "to choose a file",
+      "take_photo": "Take photo",
+      "capture_failed": "The photo could not be taken. Choose a file instead.",
+      "choose_file": "Choose a file",
+      "remove_file": "Remove file"
     },
     "multiselect": {
       "the_list_is_empty": "The list is empty",
       "no_results_found": "No results found"
     },
-    "copy_to_clipboard": "Copy to Clipboard"
+    "copy_to_clipboard": "Copy to Clipboard",
+    "new": "New",
+    "expand": "Expand",
+    "theme": "Theme",
+    "theme_light": "Light",
+    "theme_dark": "Dark",
+    "theme_system": "System",
+    "breadcrumb": "Breadcrumb",
+    "selected_count": "{count} selected",
+    "close": "Close",
+    "apply": "Apply",
+    "show_password": "Show password",
+    "hide_password": "Hide password",
+    "successful": "Done.",
+    "something_went_wrong": "Something went wrong. Please try again.",
+    "skip_to_content": "Skip to content",
+    "current": "(current)",
+    "list": "List",
+    "sort_ascending": "Sort order: ascending",
+    "sort_descending": "Sort order: descending",
+    "remove_named": "Remove {name}",
+    "editor": {
+      "toolbar": "Formatting",
+      "bold": "Bold",
+      "italic": "Italic",
+      "strike": "Strikethrough",
+      "code": "Inline code",
+      "paragraph": "Paragraph",
+      "h1": "Heading 1",
+      "h2": "Heading 2",
+      "h3": "Heading 3",
+      "bulletList": "Bulleted list",
+      "orderedList": "Numbered list",
+      "blockquote": "Quote",
+      "codeBlock": "Code block",
+      "undo": "Undo",
+      "redo": "Redo",
+      "alignLeft": "Align left",
+      "alignRight": "Align right",
+      "alignJustify": "Justify",
+      "alignCenter": "Center",
+      "addLink": "Link",
+      "link_url": "Link address"
+    },
+    "email_preview": "Email preview",
+    "pdf_preview": "PDF preview",
+    "step_of": "Step {step} of {count}",
+    "actions_for": "Actions for {name}",
+    "select_named": "Select {name}"
   },
   "dashboard": {
+    "load_failed": "The dashboard could not be loaded.",
     "select_year": "Select year",
     "cards": {
       "due_amount": "Amount Due",
@@ -154,27 +216,61 @@
       "total_sales": "Sales",
       "total_receipts": "Receipts",
       "total_expense": "Expenses",
-      "net_income": "Net Income",
+      "net_income": "Net income",
       "year": "Select year"
     },
     "monthly_chart": {
       "title": "Sales & Expenses"
     },
     "recent_invoices_card": {
-      "title": "Due Invoices",
-      "due_on": "Due On",
+      "title": "Due invoices",
+      "due_on": "Due on",
       "customer": "Customer",
-      "amount_due": "Amount Due",
+      "amount_due": "Amount due",
       "actions": "Actions",
-      "view_all": "View All"
+      "view_all": "View all",
+      "empty_title": "Nothing awaiting payment",
+      "empty_description": "Sent invoices that are still due show up here.",
+      "portal_empty_description": "Invoices you still need to pay show up here."
     },
     "recent_estimate_card": {
-      "title": "Recent Estimates",
+      "title": "Recent estimates",
       "date": "Date",
       "customer": "Customer",
-      "amount_due": "Amount Due",
+      "amount_due": "Amount",
       "actions": "Actions",
-      "view_all": "View All"
+      "view_all": "View all",
+      "empty_title": "No estimates yet",
+      "empty_description": "Estimates you send show up here.",
+      "portal_empty_description": "Estimates sent to you show up here."
+    },
+    "receivables": {
+      "title": "Owed to you",
+      "on_invoices": "On {count} sent invoice | On {count} sent invoices",
+      "overdue": "Overdue",
+      "due_soon": "Due in the next 30 days",
+      "due_later": "Due later",
+      "invoice_count": "{count} invoice | {count} invoices",
+      "nothing_owed": "Nothing is owed to you right now.",
+      "first_invoice_hint": "Send your first invoice and what customers owe you shows up here.",
+      "view_invoices": "View invoices"
+    },
+    "cashflow": {
+      "no_activity": "No activity in this period",
+      "no_activity_hint": "Invoices, payments and expenses you record will show up here.",
+      "title": "Cash flow",
+      "show_table": "Show as table",
+      "hide_table": "Hide table",
+      "month": "Month",
+      "chart_style": "Chart style",
+      "area": "Area",
+      "bars": "Bars",
+      "day": "Day"
+    },
+    "counts": {
+      "customers": "customer | customers",
+      "invoices": "invoice | invoices",
+      "estimates": "estimate | estimates"
     }
   },
   "tax_types": {
@@ -193,10 +289,13 @@
     "search": "Search...",
     "customers": "Customers",
     "users": "Users",
-    "no_results_found": "No Results Found"
+    "no_results_found": "No Results Found",
+    "placeholder": "Search or jump to…",
+    "go_to": "Go to",
+    "create": "Create"
   },
   "company_switcher": {
-    "label": "SWITCH COMPANY",
+    "label": "Switch company",
     "no_results_found": "No Results Found",
     "add_new_company": "Add new company",
     "new_company": "New company",
@@ -204,15 +303,22 @@
   },
   "dateRange": {
     "today": "Today",
-    "this_week": "This Week",
-    "this_month": "This Month",
-    "this_quarter": "This Quarter",
-    "this_year": "This Year",
-    "previous_week": "Previous Week",
-    "previous_month": "Previous Month",
-    "previous_quarter": "Previous Quarter",
-    "previous_year": "Previous Year",
-    "custom": "Custom"
+    "this_week": "This week",
+    "this_month": "This month",
+    "this_quarter": "This quarter",
+    "this_year": "This year",
+    "previous_week": "Previous week",
+    "previous_month": "Previous month",
+    "previous_quarter": "Previous quarter",
+    "previous_year": "Previous year",
+    "custom": "Custom",
+    "last_12_months": "Last 12 months",
+    "custom_range": "Custom range",
+    "period": "Period",
+    "showing": "Showing {range}",
+    "pick_start": "Pick the first day",
+    "pick_end": "Now pick the last day",
+    "too_long": "Pick a range of up to {years} years"
   },
   "customers": {
     "title": "Customers",
@@ -261,8 +367,13 @@
     "billing_address": "Billing Address",
     "shipping_address": "Shipping Address",
     "copy_billing_address": "Copy from Billing",
-    "no_customers": "No customers yet!",
+    "no_customers": "No customers yet",
+    "empty_description": "Add the people and businesses you bill, then invoice them in a few clicks.",
     "no_customers_found": "No customers found!",
+    "add_first_customer": "Add your first customer to start invoicing them.",
+    "activity_load_failed": "This customer's activity could not be loaded.",
+    "statement_load_failed": "The statement could not be loaded.",
+    "ask_to_add_customers": "Someone who can manage customers needs to add one first.",
     "no_contact": "No contact",
     "no_contact_name": "No contact name",
     "list_of_customers": "This section will contain the list of customers.",
@@ -271,7 +382,7 @@
     "select_a_customer": "Select a customer",
     "type_or_click": "Type or click to select",
     "new_transaction": "New Transaction",
-    "no_matching_customers": "There are no matching customers!",
+    "no_matching_customers": "No customers match these filters",
     "phone_number": "Phone Number",
     "create_date": "Create Date",
     "confirm_delete": "You will not be able to recover this customer and all the related Invoices, Estimates and Payments. | You will not be able to recover these customers and all the related Invoices, Estimates and Payments.",
@@ -325,7 +436,9 @@
     "add_new_item": "Add New Item",
     "new_item": "New Item",
     "edit_item": "Edit Item",
-    "no_items": "No items yet!",
+    "no_items": "No items yet",
+    "empty_description": "Save the products and services you sell to add them to invoices in one click.",
+    "no_matching_items": "No items match these filters",
     "list_of_items": "This section will contain the list of items.",
     "select_a_unit": "select unit",
     "taxes": "Taxes",
@@ -347,10 +460,10 @@
     "all": "All",
     "paid": "Paid",
     "unpaid": "Unpaid",
-    "customer": "CUSTOMER",
-    "ref_no": "REF NO.",
-    "number": "NUMBER",
-    "amount_due": "AMOUNT DUE",
+    "customer": "Customer",
+    "ref_no": "Ref no.",
+    "number": "Number",
+    "amount_due": "Amount due",
     "partially_paid": "Partially Paid",
     "total": "Total",
     "discount": "Discount",
@@ -387,7 +500,7 @@
     "confirm_mark_as_sent": "This estimate will be marked as sent",
     "confirm_mark_as_accepted": "This estimate will be marked as Accepted",
     "confirm_mark_as_rejected": "This estimate will be marked as Rejected",
-    "no_matching_estimates": "There are no matching estimates!",
+    "no_matching_estimates": "No estimates match these filters",
     "mark_as_sent_successfully": "Estimate marked as sent successfully",
     "send_estimate_successfully": "Estimate sent successfully",
     "errors": {
@@ -407,7 +520,9 @@
     "items": "items",
     "Estimate": "Estimate | Estimates",
     "add_new_tax": "Add New Tax",
-    "no_estimates": "No estimates yet!",
+    "no_estimates": "No estimates yet",
+    "empty_description": "Send a quote, then turn it into an invoice once it's accepted.",
+    "portal_empty_description": "Estimates sent to you will show up here.",
     "list_of_estimates": "This section will contain the list of estimates.",
     "mark_as_rejected": "Mark as rejected",
     "mark_as_accepted": "Mark as accepted",
@@ -449,11 +564,11 @@
     "viewed": "Viewed",
     "overdue": "Overdue",
     "completed": "Completed",
-    "customer": "CUSTOMER",
-    "paid_status": "PAID STATUS",
-    "ref_no": "REF NO.",
-    "number": "NUMBER",
-    "amount_due": "AMOUNT DUE",
+    "customer": "Customer",
+    "paid_status": "Paid status",
+    "ref_no": "Ref no.",
+    "number": "Number",
+    "amount_due": "Amount due",
     "partially_paid": "Partially Paid",
     "total": "Total",
     "discount": "Discount",
@@ -492,12 +607,14 @@
     "save_invoice": "Save Invoice",
     "update_invoice": "Update Invoice",
     "add_new_tax": "Add New Tax",
-    "no_invoices": "No Invoices yet!",
+    "no_invoices": "No invoices yet",
+    "empty_description": "Create an invoice and send it to a customer to get paid.",
+    "portal_empty_description": "Invoices sent to you will show up here.",
     "mark_as_rejected": "Mark as rejected",
     "mark_as_accepted": "Mark as accepted",
     "list_of_invoices": "This section will contain the list of invoices.",
     "select_invoice": "Select Invoice",
-    "no_matching_invoices": "There are no matching invoices!",
+    "no_matching_invoices": "No invoices match these filters",
     "mark_as_sent_successfully": "Invoice marked as sent successfully",
     "invoice_sent_successfully": "Invoice sent successfully",
     "cloned_successfully": "Invoice cloned successfully",
@@ -539,7 +656,16 @@
       "tax": "Tax",
       "amount": "Amount",
       "select_an_item": "Type or click to select an item",
-      "type_item_description": "Type Item Description (optional)"
+      "type_item_description": "Type Item Description (optional)",
+      "options": "Options",
+      "item_actions": "Item actions",
+      "move_up": "Move up",
+      "move_down": "Move down",
+      "remove": "Remove item",
+      "item_actions_for": "Actions for item {position}",
+      "discount_type": "Discount type: {type}",
+      "reorder": "Move item {position} of {count}. Use the up and down arrow keys",
+      "moved": "Moved to position {position} of {count}"
     },
     "payment_attached_message": "One of the selected invoices already have a payment attached to it. Make sure to delete the attached payments first in order to go ahead with the removal",
     "confirm_delete": "You will not be able to recover this Invoice | You will not be able to recover these Invoices",
@@ -564,11 +690,11 @@
     "overdue": "Overdue",
     "active": "Active",
     "completed": "Completed",
-    "customer": "CUSTOMER",
-    "paid_status": "PAID STATUS",
-    "ref_no": "REF NO.",
-    "number": "NUMBER",
-    "amount_due": "AMOUNT DUE",
+    "customer": "Customer",
+    "paid_status": "Paid status",
+    "ref_no": "Ref no.",
+    "number": "Number",
+    "amount_due": "Amount due",
     "partially_paid": "Partially Paid",
     "total": "Total",
     "discount": "Discount",
@@ -618,12 +744,13 @@
     "save_invoice": "Save Recurring Invoice",
     "update_invoice": "Update Recurring Invoice",
     "add_new_tax": "Add New Tax",
-    "no_invoices": "No Recurring Invoices yet!",
+    "no_invoices": "No recurring invoices yet",
+    "empty_description": "Set up an invoice that goes out on a schedule, such as a monthly retainer.",
     "mark_as_rejected": "Mark as rejected",
     "mark_as_accepted": "Mark as accepted",
     "list_of_invoices": "This section will contain the list of recurring invoices.",
     "select_invoice": "Select Invoice",
-    "no_matching_invoices": "There are no matching recurring invoices!",
+    "no_matching_invoices": "No recurring invoices match these filters",
     "mark_as_sent_successfully": "Recurring Invoice marked as sent successfully",
     "invoice_sent_successfully": "Recurring Invoice sent successfully",
     "cloned_successfully": "Recurring Invoice cloned successfully",
@@ -646,6 +773,7 @@
     },
     "frequency": {
       "title": "Frequency (using cron format)",
+      "label": "Frequency",
       "select_frequency": "Select Frequency",
       "minute": "Minute",
       "hour": "Hour",
@@ -683,7 +811,9 @@
       "date": "Date",
       "count": "Count"
     },
-    "make_recurring": "Make Recurring"
+    "make_recurring": "Make Recurring",
+    "no_generated_invoices": "No invoices yet",
+    "no_generated_invoices_description": "Invoices this schedule creates show up here."
   },
   "payments": {
     "title": "Payments",
@@ -707,10 +837,12 @@
     "save_payment": "Save Payment",
     "update_payment": "Update Payment",
     "payment": "Payment | Payments",
-    "no_payments": "No payments yet!",
+    "no_payments": "No payments yet",
+    "empty_description": "Record a payment when a customer pays and apply it to their invoices.",
+    "portal_empty_description": "Payments you make will show up here.",
     "not_selected": "Not selected",
     "no_invoice": "No invoice",
-    "no_matching_payments": "There are no matching payments!",
+    "no_matching_payments": "No payments match these filters",
     "list_of_payments": "This section will contain the list of payments.",
     "select_payment_mode": "Select payment mode",
     "confirm_mark_as_sent": "This estimate will be marked as sent",
@@ -729,6 +861,7 @@
     "add_allocation": "Add Allocation",
     "select_customer_to_allocate": "Select a customer before allocating this payment.",
     "no_allocations": "No invoices selected. This payment will remain available as customer credit.",
+    "no_open_invoices": "This customer has no open invoices, so the payment will stay as customer credit.",
     "allocated": "Allocated",
     "unapplied_credit": "Unapplied Credit",
     "remove_allocation": "Remove allocation",
@@ -776,7 +909,9 @@
     "edit_expense": "Edit Expense",
     "new_expense": "New Expense",
     "expense": "Expense | Expenses",
-    "no_expenses": "No expenses yet!",
+    "no_expenses": "No expenses yet",
+    "empty_description": "Record what the business spends to see your profit and reclaim tax.",
+    "no_matching_expenses": "No expenses match these filters",
     "list_of_expenses": "This section will contain the list of expenses.",
     "confirm_delete": "You will not be able to recover this Expense | You will not be able to recover these Expenses",
     "created_message": "Expense created successfully",
@@ -807,6 +942,51 @@
     "enter_email": "Enter email",
     "enter_password": "Enter Password",
     "retype_password": "Retype Password"
+  },
+  "client": {
+    "connect_heading": "Connect to your server",
+    "connect_description": "Enter the address of the InvoiceShelf server you want to use.",
+    "server_address": "Server address",
+    "connect": "Connect",
+    "connect_anyway": "Connect anyway",
+    "invalid_server_url": "Enter the full address, including http:// or https://",
+    "insecure_warning": "This address is not encrypted. Anyone on the network can read what you send to it.",
+    "app_url_mismatch": "The server calls itself {host}. Logos and attachments may not load.",
+    "unreachable_heading": "Cannot reach the server",
+    "unreachable_description": "Nothing answered at {server}. Check the address, and that the server is running and reachable from this device.",
+    "too_old_heading": "This server is too old",
+    "too_old_description": "It runs {version}, and this app needs {required} or newer.",
+    "too_old_short": "This server is too old for this app.",
+    "update_app_heading": "Update the app",
+    "update_app_description": "This server needs app version {required} or newer. This app is {current}.",
+    "retry": "Retry",
+    "change_server": "Change server",
+    "connected_to": "Connected to {server}",
+    "modules_failed": "Some add-ons did not load: {names}",
+    "app_lock_title": "App lock",
+    "app_lock_description": "Ask for this device's Face ID, fingerprint or passcode before the app opens.",
+    "app_lock_toggle": "Require Face ID or fingerprint to open the app",
+    "app_lock_toggle_description": "The app locks when you open it, and when you come back to it after a while.",
+    "app_lock_enable_failed": "The app lock was not turned on: this device did not confirm it is you.",
+    "app_lock_reason": "Unlock InvoiceShelf",
+    "app_lock_locked_heading": "InvoiceShelf is locked",
+    "app_lock_locked_description": "Confirm it is you to get back to your account.",
+    "app_lock_unlock": "Unlock",
+    "app_lock_sign_out": "Sign out instead"
+  },
+  "devices": {
+    "title": "Devices",
+    "description": "The devices signed in to your account. Revoking one signs it out the next time it contacts the server.",
+    "this_device": "This device",
+    "added_on": "Added {date}",
+    "last_used": "Last used {date}",
+    "never_used": "Never used",
+    "revoke": "Revoke",
+    "revoke_confirm": "{name} will be signed out the next time it contacts the server.",
+    "revoke_current_confirm": "This is the device you are using. Revoking it signs you out here.",
+    "revoked_message": "Device revoked successfully",
+    "no_devices": "No devices",
+    "no_devices_description": "Devices signed in with the mobile app appear here."
   },
   "modules": {
     "buy_now": "Buy Now",
@@ -851,6 +1031,7 @@
     "purchased": "Purchased",
     "installed": "Installed",
     "no_modules_installed": "No Modules Installed Yet!",
+    "no_marketplace_modules": "No marketplace modules are available yet.",
     "disable_warning": "All the settings for this particular will be reverted.",
     "uninstall": "Uninstall",
     "uninstall_warning": "Uninstalling removes this module's runtime files. Its data and settings are preserved unless you explicitly choose to remove them.",
@@ -933,7 +1114,11 @@
     "cancel_invitation": "Cancel Invitation",
     "role": "Role",
     "invited_by": "Invited By",
-    "sent_at": "Sent At"
+    "sent_at": "Sent At",
+    "no_users": "No members yet",
+    "empty_description": "Invite the people who work on this company with you.",
+    "no_matching_members": "No members match these filters",
+    "list_of_users": "Invite the people who work with you. They show up here once they join."
   },
   "reports": {
     "title": "Report",
@@ -1000,6 +1185,10 @@
       "date_range": "Select Date Range"
     }
   },
+  "pdf": {
+    "open_pdf": "Open PDF",
+    "download_failed": "Unable to download the document"
+  },
   "settings": {
     "menu_title": {
       "account_settings": "Account Settings",
@@ -1013,6 +1202,7 @@
       "backup": "Backups",
       "file_disk": "File Disks",
       "fonts": "Font Packages",
+      "currencies": "Currencies",
       "custom_fields": "Custom Fields",
       "payment_modes": "Payment Modes",
       "notes": "Record Notes",
@@ -1055,7 +1245,16 @@
       "right": "Right",
       "left": "Left",
       "action": "Action",
-      "add_currency": "Add Currency"
+      "add_currency": "Add Currency",
+      "description": "Every currency this installation can invoice in. The list is shared by all companies rather than set per company.",
+      "refresh": "Refresh list",
+      "search": "Search by name or code",
+      "count": "No currencies | 1 currency | {count} currencies",
+      "decimals": "no decimals | 1 decimal | {count} decimals",
+      "refreshed": "Currency list refreshed: {added} added, {updated} corrected.",
+      "already_current": "The currency list is already up to date.",
+      "refresh_failed": "The currency list could not be refreshed.",
+      "none_found": "No currency matches that search."
     },
     "mail": {
       "host": "Mail Host",
@@ -1095,7 +1294,7 @@
       "show_advanced_settings": "Show Advanced Settings",
       "hide_advanced_settings": "Hide Advanced Settings",
       "native_mail_desc": "Use PHP's native mail transport. Delivery is handled by the server's PHP mail configuration.",
-      "sendmail_desc": "Use the system sendmail binary for delivery. You can override the command path in Advanced Settings.",
+      "sendmail_desc": "Use the server's sendmail binary for delivery. Its path is set on the server with MAIL_SENDMAIL_PATH.",
       "drivers": {
         "smtp": "SMTP",
         "mail": "PHP Mail",
@@ -1223,7 +1422,9 @@
       "bound_none": "No limit",
       "bound_today": "Today",
       "bound_fixed_date": "A fixed date",
-      "bound_fixed_time": "A fixed time"
+      "bound_fixed_time": "A fixed time",
+      "empty_title": "No custom fields yet",
+      "empty_description": "Add your own fields to invoices, customers, items and more."
     },
     "customization": {
       "customization": "customization",
@@ -1359,8 +1560,11 @@
           "estimate": "Estimate",
           "invoice": "Invoice",
           "payment": "Payment"
-        }
-      }
+        },
+        "empty_title": "No notes yet",
+        "empty_description": "Save text you use often, like payment terms, and insert it into any document."
+      },
+      "reorder_component": "Move {name}, {position} of {count}. Use the up and down arrow keys"
     },
     "account_settings": {
       "profile_picture": "Profile Photo",
@@ -1430,7 +1634,7 @@
       "key": "API Key",
       "name": "Name",
       "driver": "Driver",
-      "is_default": "IS DEFAULT",
+      "is_default": "Is default",
       "currency": "Currencies",
       "exchange_rate_confirm_delete": "You will not be able to recover this driver",
       "created_message": "Provider Created successfully",
@@ -1447,7 +1651,10 @@
       "url": "URL",
       "active": "Active",
       "currency_help_text": "This provider will only be used on above selected currencies",
-      "currency_in_used": "The following currencies are already active on another provider. Please remove these currencies from selection to activate this provider again."
+      "currency_in_used": "The following currencies are already active on another provider. Please remove these currencies from selection to activate this provider again.",
+      "fetch_latest": "Fetch the latest exchange rate",
+      "empty_title": "No exchange rate providers yet",
+      "empty_description": "Connect a provider to fetch rates for documents in other currencies."
     },
     "tax_types": {
       "title": "Tax Types",
@@ -1476,7 +1683,9 @@
       "tax_included": "Inclusive taxes",
       "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
       "tax_included_by_default": "Enable inclusive taxes by default",
-      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default",
+      "empty_title": "No tax types yet",
+      "empty_description": "Add a tax once, then pick it on any invoice or expense."
     },
     "payment_modes": {
       "title": "Payment Modes",
@@ -1504,7 +1713,9 @@
       "deleted_message": "Expense category deleted successfully",
       "updated_message": "Expense category updated successfully",
       "confirm_delete": "You will not be able to recover this Expense Category",
-      "already_in_use": "Category is already in use"
+      "already_in_use": "Category is already in use",
+      "empty_title": "No expense categories yet",
+      "empty_description": "Group expenses by what they're for, such as travel or software. Every expense needs one."
     },
     "preferences": {
       "currency": "Currency",
@@ -1567,6 +1778,9 @@
     "update_app": {
       "title": "Update App",
       "description": "You can easily update InvoiceShelf by checking for a new update by clicking the button below",
+      "client_title": "Server Update",
+      "client_description": "Check the server this app is connected to for a new InvoiceShelf release and install it. The app itself is updated through your device's app store.",
+      "client_versions": "Connected to {server}, server {serverVersion}, app {appVersion}",
       "check_update": "Check for updates",
       "insider_consent": "Opt-in for Insider releases. Recommended for testing purposes only.",
       "avail_update": "New Update available",
@@ -1613,7 +1827,9 @@
       "action": "Action",
       "deleted_message": "Backup deleted successfully",
       "created_message": "Backup created successfully",
-      "invalid_disk_credentials": "Invalid credential of selected disk"
+      "invalid_disk_credentials": "Invalid credential of selected disk",
+      "empty_title": "No backups yet",
+      "empty_description": "Create a backup to keep a copy of your data and files."
     },
     "disk": {
       "title": "File Disks | File Disks",
@@ -1660,7 +1876,7 @@
       "dropbox_app": "Dropbox App",
       "dropbox_root": "Dropbox Root",
       "default_driver": "Default Driver",
-      "is_default": "IS DEFAULT",
+      "is_default": "Is default",
       "set_default_disk": "Set Default Disk",
       "set_default_disk_confirm": "This disk will be set as default and all the new PDFs will be saved on this disk",
       "success_set_default_disk": "Disk set as default successfully",
@@ -1810,7 +2026,7 @@
       "show_advanced_settings": "Show Advanced Settings",
       "hide_advanced_settings": "Hide Advanced Settings",
       "native_mail_desc": "Use PHP's native mail transport. Delivery is handled by the server's PHP mail configuration.",
-      "sendmail_desc": "Use the system sendmail binary for delivery. You can override the command path in Advanced Settings.",
+      "sendmail_desc": "Use the server's sendmail binary for delivery. Its path is set on the server with MAIL_SENDMAIL_PATH.",
       "drivers": {
         "smtp": "SMTP",
         "mail": "PHP Mail",
@@ -2039,5 +2255,11 @@
       "impersonating_banner": "You are currently impersonating a user. All actions are logged.",
       "stop_impersonating": "Stop Impersonating"
     }
+  },
+  "notifications": {
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Note"
   }
 }

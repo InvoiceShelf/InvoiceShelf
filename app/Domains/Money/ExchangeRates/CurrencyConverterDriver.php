@@ -4,6 +4,7 @@ namespace App\Domains\Money\ExchangeRates;
 
 use App\Support\Net\BlockedUrlException;
 use App\Support\Net\PrivateNetworkGuard;
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
 
 class CurrencyConverterDriver extends ExchangeRateDriver
@@ -13,7 +14,7 @@ class CurrencyConverterDriver extends ExchangeRateDriver
         $baseUrl = $this->getBaseUrl();
         $query = "{$baseCurrency}_{$targetCurrency}";
         $url = "{$baseUrl}/api/v7/convert?apiKey={$this->apiKey}&q={$query}&compact=y";
-        $response = Http::get($url)->json();
+        $response = $this->client()->get($url)->json();
 
         return array_values($response[$query]);
     }
@@ -22,7 +23,7 @@ class CurrencyConverterDriver extends ExchangeRateDriver
     {
         $baseUrl = $this->getBaseUrl();
         $url = "{$baseUrl}/api/v7/currencies?apiKey={$this->apiKey}";
-        $response = Http::get($url)->json();
+        $response = $this->client()->get($url)->json();
 
         if ($response == null) {
             throw new ExchangeRateException('Server not responding', 'server_error');
@@ -40,9 +41,19 @@ class CurrencyConverterDriver extends ExchangeRateDriver
         $baseUrl = $this->getBaseUrl();
         $query = 'INR_USD';
         $url = "{$baseUrl}/api/v7/convert?apiKey={$this->apiKey}&q={$query}&compact=y";
-        $response = Http::get($url)->json();
+        $response = $this->client()->get($url)->json();
 
         return array_values($response[$query]);
+    }
+
+    /**
+     * The URL of a dedicated plan is the user's, and passed the private-network
+     * guard only as given: a redirect would take the request, API key and all,
+     * wherever the host pointed it, internal addresses included.
+     */
+    private function client(): PendingRequest
+    {
+        return Http::withoutRedirecting();
     }
 
     private function getBaseUrl(): string

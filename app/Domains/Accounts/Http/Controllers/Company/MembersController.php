@@ -63,8 +63,8 @@ class MembersController extends Controller
     /**
      * Open a staff account and place it in the companies the form listed.
      *
-     * Note the gate: only the active company is weighed, so an owner may file
-     * an account into any company whose id they care to submit.
+     * The gate weighs the active company; MemberRequest limits the listed
+     * companies to those the caller owns.
      *
      * @return JsonResponse
      */
@@ -105,6 +105,7 @@ class MembersController extends Controller
             $member,
             $request->getUserPayload(),
             $request->validated('companies'),
+            $request->managedCompanyIds(),
         );
 
         return new UserResource($member);
