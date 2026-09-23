@@ -11,7 +11,7 @@
     v-else
     :id="id"
     ref="rootRef"
-    v-bind="rootAttrs"
+    v-bind="{ ...rootAttrs, ...(searchable && !disabled ? {} : comboboxAttrs) }"
     :tabindex="rootTabIndex"
     :class="containerClass"
     @click="handleContainerClick"
@@ -35,6 +35,7 @@
             {{ getOptionLabel(option.raw) }}
             <span
               v-if="!disabled"
+              aria-hidden="true"
               :class="classes.tagRemove"
               @mousedown.prevent.stop="handleTagRemove(option.raw)"
             >
@@ -48,6 +49,7 @@
           <input
             v-if="searchable && !disabled"
             ref="inputRef"
+            v-bind="comboboxAttrs"
             :type="inputType"
             :value="search"
             :class="classes.tagsSearch"
@@ -64,6 +66,7 @@
     <input
       v-else-if="searchable && !disabled"
       ref="inputRef"
+      v-bind="comboboxAttrs"
       :type="inputType"
       :value="search"
       :class="classes.search"
@@ -110,6 +113,7 @@
       :clear="clearSelection"
     >
       <span
+        aria-hidden="true"
         :class="classes.clear"
         @mousedown.prevent.stop="clearSelection"
       >
@@ -119,6 +123,7 @@
 
     <slot v-if="caret" name="caret">
       <span
+        aria-hidden="true"
         :class="caretClass"
         @mousedown.prevent.stop="toggleDropdown"
       />
@@ -135,23 +140,35 @@
           :options="slotOptions"
         />
 
-        <ul :class="classes.options">
+        <ul
+          :id="listboxId"
+          role="listbox"
+          :aria-multiselectable="isMultiMode ? 'true' : undefined"
+          :aria-labelledby="fieldAttrs['aria-labelledby']"
+          :class="classes.options"
+        >
           <template v-if="groups">
             <li
               v-for="group in visibleGroups"
               :key="group.key"
+              role="group"
+              :aria-label="String(group.label)"
               :class="classes.group"
             >
-              <div :class="groupLabelClass(group)">
+              <div aria-hidden="true" :class="groupLabelClass(group)">
                 <slot name="grouplabel" :group="group.raw">
                   <span>{{ group.label }}</span>
                 </slot>
               </div>
 
-              <ul :class="classes.groupOptions">
+              <ul role="none" :class="classes.groupOptions">
                 <li
                   v-for="option in group.options"
+                  :id="optionDomId(option.key)"
                   :key="option.key"
+                  role="option"
+                  :aria-selected="isSelected(option.raw)"
+                  :aria-disabled="isOptionDisabled(option.raw) || undefined"
                   :class="optionClass(option)"
                   :data-pointed="isHighlighted(option.raw)"
                   @mouseenter="setHighlighted(option.raw)"
@@ -172,7 +189,11 @@
           <template v-else>
             <li
               v-for="option in visibleOptions"
+              :id="optionDomId(option.key)"
               :key="option.key"
+              role="option"
+              :aria-selected="isSelected(option.raw)"
+              :aria-disabled="isOptionDisabled(option.raw) || undefined"
               :class="optionClass(option)"
               :data-pointed="isHighlighted(option.raw)"
               @mouseenter="setHighlighted(option.raw)"
@@ -190,13 +211,13 @@
         </ul>
 
         <slot v-if="noOptions" name="nooptions">
-          <div :class="classes.noOptions">
+          <div role="status" :class="classes.noOptions">
             {{ noOptionsText }}
           </div>
         </slot>
 
         <slot v-if="noResults" name="noresults">
-          <div :class="classes.noResults">
+          <div role="status" :class="classes.noResults">
             {{ noResultsText }}
           </div>
         </slot>
@@ -212,6 +233,7 @@
 
     <input
       v-if="required"
+      aria-hidden="true"
       :class="classes.fakeInput"
       tabindex="-1"
       :value="textValue"
@@ -248,8 +270,10 @@ import {
   onMounted,
   ref,
   useAttrs,
+  useId,
   watch,
 } from 'vue'
+import { useFormField } from '@/scripts/composables/use-form-field'
 
 type MultiselectMode = 'single' | 'multiple' | 'tags'
 type OpenDirection = 'top' | 'bottom'
@@ -377,15 +401,15 @@ interface NormalizedGroup {
 
 const defaultClasses: Required<MultiselectClasses> = {
   container:
-    'p-0 relative mx-auto w-full flex items-center justify-end box-border cursor-pointer border border-line-default rounded-lg bg-surface text-base md:text-sm leading-snug text-heading outline-hidden max-h-11 md:max-h-10 transition-[border-color,box-shadow] duration-150',
+    'p-0 relative mx-auto w-full flex items-center justify-end box-border cursor-pointer border border-control-border rounded-lg bg-surface text-base md:text-sm leading-snug text-heading outline-hidden max-h-11 md:max-h-10 transition-[border-color,box-shadow] duration-150',
   containerDisabled:
     'cursor-not-allowed bg-surface-secondary border-line-light !text-muted',
   containerOpen: '',
   containerOpenTop: '',
-  containerActive: 'ring-3 ring-focus border-primary-500',
+  containerActive: 'ring-2 ring-focus border-primary-500',
   containerInvalid:
     'border-danger',
-  containerInvalidActive: 'ring-3 border-danger ring-danger/20',
+  containerInvalidActive: 'ring-2 border-danger ring-danger/20',
   singleLabel:
     'flex items-center h-full absolute left-0 top-0 pointer-events-none bg-transparent leading-snug pl-3.5',
   multipleLabel:
@@ -544,13 +568,57 @@ const classes = computed<Required<MultiselectClasses>>(() => ({
 const rootAttrs = computed<Record<string, unknown>>(() => {
   const { tabindex, ...rest } = attrs as Record<string, unknown>
 
-  return rest
+  return Object.fromEntries(Object.entries(rest).filter(([key]) => !key.startsWith('aria-')))
+})
+
+/*
+ * The ARIA 1.2 combobox pattern. The search input is the combobox when there
+ * is one; otherwise the box itself is. The highlighted option is announced
+ * through aria-activedescendant, so focus stays on the combobox.
+ */
+const listboxId = `multiselect-${useId()}-listbox`
+
+const { attrs: fieldAttrs } = useFormField({
+  invalid: () => props.invalid,
+  labelledBy: true,
+})
+
+function optionDomId(key: string): string {
+  const safe = Array.from(String(key), (char) => char.charCodeAt(0).toString(36)).join('')
+
+  return `${listboxId}-${safe}`
+}
+
+const comboboxAttrs = computed<Record<string, unknown>>(() => {
+  const passed = Object.fromEntries(
+    Object.entries(attrs as Record<string, unknown>).filter(([key]) => key.startsWith('aria-')),
+  )
+
+  return {
+    role: 'combobox',
+    'aria-haspopup': 'listbox',
+    'aria-expanded': dropdownVisible.value ? 'true' : 'false',
+    'aria-controls': listboxId,
+    'aria-autocomplete': props.searchable ? 'list' : undefined,
+    'aria-activedescendant':
+      dropdownVisible.value && highlightedKey.value !== null
+        ? optionDomId(highlightedKey.value)
+        : undefined,
+    'aria-disabled': props.disabled ? 'true' : undefined,
+    ...fieldAttrs.value,
+    ...passed,
+  }
 })
 
 const rootTabIndex = computed<number>(() => {
   const rawTabIndex = (attrs as Record<string, unknown>).tabindex
 
   if (props.disabled) {
+    return -1
+  }
+
+  // A searchable select is reached through its input: one tab stop, not two
+  if (props.searchable) {
     return -1
   }
 
@@ -1282,6 +1350,7 @@ function handleFocusOut(event: FocusEvent): void {
 
   if (!rootRef.value?.contains(relatedTarget)) {
     isFocused.value = false
+    closeDropdown()
   }
 }
 
@@ -1291,6 +1360,15 @@ function handleDocumentMousedown(event: MouseEvent): void {
     closeDropdown()
   }
 }
+
+watch(highlightedKey, async (key) => {
+  if (key === null || !dropdownVisible.value) {
+    return
+  }
+
+  await nextTick()
+  document.getElementById(optionDomId(key))?.scrollIntoView({ block: 'nearest' })
+})
 
 function moveHighlight(direction: 1 | -1): void {
   const options = selectableOptions.value.filter(
@@ -1362,8 +1440,19 @@ function handleKeydown(event: KeyboardEvent): void {
     return
   }
 
+  // Tab moves on; an action at the foot of the list (e.g. "Add new item") is
+  // a button focus can reach, and leaving the select closes it
   if (event.key === 'Tab') {
-    closeDropdown()
+    return
+  }
+
+  // Enter, or Space on a select without search, opens it
+  if (
+    !dropdownVisible.value &&
+    (event.key === 'Enter' || (event.key === ' ' && !props.searchable))
+  ) {
+    event.preventDefault()
+    openDropdown()
     return
   }
 

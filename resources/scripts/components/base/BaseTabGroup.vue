@@ -63,7 +63,7 @@ function onChange(d: number): void {
           <button
             v-if="isPhone"
             :class="[
-              'flex items-center shrink-0 h-8 px-3.5 text-sm font-medium rounded-full border whitespace-nowrap transition-colors focus:outline-hidden focus-visible:ring-3 focus-visible:ring-focus',
+              'flex items-center shrink-0 h-8 px-3.5 text-sm font-medium rounded-full border whitespace-nowrap transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus',
               selected
                 ? 'bg-heading text-surface border-transparent'
                 : 'bg-surface text-body border-line-default',

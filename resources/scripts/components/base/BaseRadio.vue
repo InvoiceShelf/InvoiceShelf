@@ -1,46 +1,34 @@
 <template>
-  <RadioGroup v-model="selected">
-    <RadioGroupLabel class="sr-only"> Privacy setting </RadioGroupLabel>
-    <div class="-space-y-px rounded-md">
-      <RadioGroupOption
-        :id="id"
-        v-slot="{ checked, active }"
-        as="template"
-        :value="value"
-        :name="name"
-        v-bind="$attrs"
-      >
-        <div class="relative flex cursor-pointer focus:outline-hidden">
-          <span
-            :class="[
-              checked ? checkedStateClass : unCheckedStateClass,
-              active ? optionGroupActiveStateClass : '',
-              optionGroupClass,
-            ]"
-            aria-hidden="true"
-          >
-            <span class="rounded-full bg-white w-1.5 h-1.5" />
-          </span>
-          <div class="flex flex-col ml-3">
-            <RadioGroupLabel
-              as="span"
-              :class="[
-                checked ? checkedStateLabelClass : unCheckedStateLabelClass,
-                optionGroupLabelClass,
-              ]"
-            >
-              {{ label }}
-            </RadioGroupLabel>
-          </div>
-        </div>
-      </RadioGroupOption>
-    </div>
-  </RadioGroup>
+  <!--
+    A native radio: every BaseRadio with the same name forms one group, so the
+    arrow keys move between options and screen readers count them. Wrap a set
+    in a fieldset or role="radiogroup" with a heading to name the group.
+  -->
+  <label :for="String(id)" class="relative flex items-start gap-3 cursor-pointer">
+    <input
+      :id="String(id)"
+      v-model="selected"
+      v-bind="$attrs"
+      type="radio"
+      :name="String(name)"
+      :value="value"
+      class="mt-0.5 shrink-0"
+    />
+    <span
+      :class="[
+        selected === value ? checkedStateLabelClass : unCheckedStateLabelClass,
+        optionGroupLabelClass,
+      ]"
+    >
+      {{ label }}
+    </span>
+  </label>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { RadioGroup, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue'
+
+defineOptions({ inheritAttrs: false })
 
 interface Props {
   id?: string | number
@@ -66,11 +54,11 @@ const props = withDefaults(defineProps<Props>(), {
   checkedStateClass: 'bg-primary-500',
   unCheckedStateClass: 'bg-surface ',
   optionGroupActiveStateClass: 'ring-2 ring-offset-2 ring-primary-500',
-  checkedStateLabelClass: 'text-primary-500 ',
+  checkedStateLabelClass: 'text-heading font-medium',
   unCheckedStateLabelClass: 'text-heading',
   optionGroupClass:
     'h-4 w-4 mt-0.5 cursor-pointer rounded-full border flex items-center justify-center',
-  optionGroupLabelClass: 'block text-sm font-light',
+  optionGroupLabelClass: 'block text-sm',
 })
 
 interface Emits {

@@ -44,15 +44,17 @@
                   <span class="h-1 rounded-full w-9 bg-line-strong" />
                 </div>
 
-                <div
+                <!-- The header names the dialog for screen readers -->
+                <DialogTitle
                   v-if="hasHeaderSlot"
+                  as="div"
                   class="
                     flex items-center justify-between shrink-0 gap-3 px-5 py-3.5 md:px-6 md:py-4
                     font-semibold text-section text-heading border-b border-line-light
                   "
                 >
                   <slot name="header" />
-                </div>
+                </DialogTitle>
 
                 <div class="flex-1 min-h-0 overflow-y-auto overscroll-contain md:overflow-visible">
                   <slot />
@@ -74,6 +76,7 @@ import { computed, watch, useSlots } from 'vue'
 import {
   Dialog,
   DialogOverlay,
+  DialogTitle,
   TransitionChild,
   TransitionRoot,
 } from '@headlessui/vue'

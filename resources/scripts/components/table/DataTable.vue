@@ -16,6 +16,8 @@
         </li>
       </ul>
       <ul v-else class="divide-y divide-line-light">
+        <!-- A row tap is a shortcut; the title cell holds the row's link -->
+        <!-- eslint-disable-next-line vuejs-accessibility/click-events-have-key-events -->
         <li
           v-for="(row, index) in sortedRows"
           :key="row.data?.id ?? index"
@@ -92,7 +94,7 @@
         v-if="selectedCount > 0 && $slots['bulk-actions']"
         class="absolute top-0 right-0 z-10 flex items-center justify-between gap-3 pl-4 pr-4 h-12 left-14 bg-surface-secondary"
       >
-        <span class="text-sm font-medium text-heading">
+        <span class="text-sm font-medium text-heading" role="status">
           {{ $t('general.selected_count', { count: selectedCount }) }}
         </span>
         <div class="flex items-center gap-1.5">
@@ -100,25 +102,36 @@
         </div>
       </div>
       <div class="overflow-x-auto">
-        <table :class="tableClass">
+        <table :class="tableClass" :aria-busy="loading || isLoading ? 'true' : undefined">
+          <caption v-if="caption" class="sr-only">{{ caption }}</caption>
           <thead :class="theadClass">
             <tr>
               <th
                 v-for="column in visibleColumns"
                 :key="column.key"
+                scope="col"
                 :class="[
                   getThClass(column),
                   { 'text-heading': sort.fieldName === column.key },
                 ]"
                 :aria-sort="ariaSort(column)"
-                @click="changeSorting(column)"
               >
-                {{ column.label }}
-                <BaseIcon
-                  v-if="sort.fieldName === column.key && sort.order"
-                  :name="sort.order === 'asc' ? 'ChevronUpIcon' : 'ChevronDownIcon'"
-                  class="inline-block w-4 h-4 ml-0.5 -mt-0.5"
-                />
+                <!-- A sortable heading is a button, so a keyboard can sort by it -->
+                <button
+                  v-if="column.sortable && column.label"
+                  type="button"
+                  class="inline-flex items-center gap-0.5 -mx-1 px-1 rounded-md font-medium hover:text-heading focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
+                  @click="changeSorting(column)"
+                >
+                  {{ column.label }}
+                  <BaseIcon
+                    v-if="sort.fieldName === column.key && sort.order"
+                    :name="sort.order === 'asc' ? 'ChevronUpIcon' : 'ChevronDownIcon'"
+                    class="w-4 h-4"
+                  />
+                </button>
+                <template v-else-if="column.label">{{ column.label }}</template>
+                <span v-else class="sr-only">{{ $t('general.actions') }}</span>
               </th>
             </tr>
           </thead>
@@ -145,6 +158,8 @@
             </tr>
           </tbody>
           <tbody v-else :class="['divide-y divide-line-light', tbodyClass]">
+            <!-- A row click is a mouse shortcut; every rowTo table has a link in a cell -->
+            <!-- eslint-disable-next-line vuejs-accessibility/click-events-have-key-events -->
             <tr
               v-for="(row, index) in sortedRows"
               :key="row.data?.id ?? index"
@@ -170,8 +185,10 @@
     <div
       v-if="loadingType === 'spinner' && (loading || isLoading)"
       class="absolute inset-0 z-10 flex items-center justify-center bg-surface/60"
+      role="status"
     >
-      <SpinnerIcon class="w-8 h-8 text-subtle" />
+      <SpinnerIcon class="w-8 h-8 text-subtle" aria-hidden="true" />
+      <span class="sr-only">{{ $t('general.loading') }}</span>
     </div>
 
     <div
@@ -179,6 +196,7 @@
         !loading && !isLoading && sortedRows && sortedRows.length === 0
       "
       class="flex flex-col items-center justify-center gap-3 py-12 text-sm text-center text-muted"
+      role="status"
     >
       <span
         class="flex items-center justify-center w-11 h-11 rounded-xl bg-primary-50 text-primary-600 ring-1 ring-inset ring-primary-600/10"
@@ -296,6 +314,8 @@ interface Props {
   keepTableOnPhone?: boolean
   /** How many rows the page has selected; the #bulk-actions slot shows while it is above 0 */
   selectedCount?: number
+  /** Read to screen readers as the table's name */
+  caption?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -311,6 +331,7 @@ const props = withDefaults(defineProps<Props>(), {
   rowTo: null,
   keepTableOnPhone: false,
   selectedCount: 0,
+  caption: '',
 })
 
 const router = useRouter()
@@ -547,9 +568,8 @@ function getThClass(column: TableColumn): string {
     classes = column.defaultThClass
   }
 
-  if (column.sortable) {
-    classes = `${classes} cursor-pointer`
-  } else {
+  // A sortable heading's button carries the pointer; the others ignore it
+  if (!column.sortable) {
     classes = `${classes} pointer-events-none`
   }
 

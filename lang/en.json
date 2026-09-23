@@ -154,7 +154,11 @@
     "breadcrumb": "Breadcrumb",
     "selected_count": "{count} selected",
     "close": "Close",
-    "apply": "Apply"
+    "apply": "Apply",
+    "show_password": "Show password",
+    "hide_password": "Hide password",
+    "successful": "Done.",
+    "something_went_wrong": "Something went wrong. Please try again."
   },
   "dashboard": {
     "select_year": "Select year",
@@ -2129,5 +2133,11 @@
       "impersonating_banner": "You are currently impersonating a user. All actions are logged.",
       "stop_impersonating": "Stop Impersonating"
     }
+  },
+  "notifications": {
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Note"
   }
 }

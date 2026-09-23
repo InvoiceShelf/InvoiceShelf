@@ -43,6 +43,7 @@
   --color-line-light: var(--color-line-light);
   --color-line-default: var(--color-line-default);
   --color-line-strong: var(--color-line-strong);
+  --color-control-border: var(--color-control-border);
   --color-hover: var(--color-hover);
   --color-hover-strong: var(--color-hover-strong);
   --color-header-from: var(--color-header-from);
@@ -51,6 +52,8 @@
   --color-btn-primary-hover: var(--color-btn-primary-hover);
   --color-danger: var(--color-danger);
   --color-danger-hover: var(--color-danger-hover);
+  --color-btn-danger: var(--color-btn-danger);
+  --color-btn-danger-hover: var(--color-btn-danger-hover);
   --color-focus: var(--color-focus);
   --color-overlay: var(--color-overlay);
   --color-chrome: var(--color-chrome);
@@ -235,7 +238,7 @@
 textarea,
 select {
     /* 16px below md so iOS does not zoom the page on focus */
-    @apply appearance-none bg-surface border border-line-default rounded-lg px-3 py-2 text-base md:text-sm leading-6 text-heading transition-[border-color,box-shadow] duration-150;
+    @apply appearance-none bg-surface border border-control-border rounded-lg px-3 py-2 text-base md:text-sm leading-6 text-heading transition-[border-color,box-shadow] duration-150;
 }
 
 [type='text']:focus,
@@ -253,11 +256,11 @@ select {
 [multiple]:focus,
 textarea:focus,
 select:focus {
-    @apply outline-2 outline-transparent outline-offset-2 border-primary-500 ring-3 ring-focus;
+    @apply outline-2 outline-transparent outline-offset-2 border-primary-500 ring-1 ring-focus;
 }
 
 select {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239a9eae' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236a6e7d' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
     @apply bg-no-repeat pr-10;
     background-position: right 0.5rem center;
     background-size: 1.5em 1.5em;
@@ -265,7 +268,7 @@ select {
 
 [type='checkbox'],
 [type='radio'] {
-    @apply appearance-none p-0 text-btn-primary bg-surface border border-line-strong inline-block align-middle select-none shrink-0 h-4 w-4;
+    @apply appearance-none p-0 text-btn-primary bg-surface border border-control-border inline-block align-middle select-none shrink-0 h-4 w-4;
     background-origin: border-box;
     print-color-adjust: exact;
 }
@@ -306,6 +309,15 @@ select {
 
 ::placeholder {
     @apply text-subtle opacity-100;
+}
+
+/* Windows High Contrast and other forced colours: the drawn checkbox and radio
+   lose their fill, so hand them back to the system */
+@media (forced-colors: active) {
+    [type='checkbox'],
+    [type='radio'] {
+        appearance: auto;
+    }
 }
 
 :focus-visible {

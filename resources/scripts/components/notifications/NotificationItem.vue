@@ -1,12 +1,14 @@
 <template>
+  <!-- Announced through the live region in NotificationRoot, not from here -->
   <div
     class="
-      w-full max-w-sm mb-2.5 border rounded-xl cursor-pointer pointer-events-auto
+      w-full max-w-sm mb-2.5 border rounded-xl pointer-events-auto
       md:w-96 glass-strong
     "
-    @click.stop="hideNotificationAction"
     @mouseenter="clearNotificationTimeOut"
     @mouseleave="setNotificationTimeOut"
+    @focusin="clearNotificationTimeOut"
+    @focusout="setNotificationTimeOut"
   >
     <div class="overflow-hidden rounded-xl">
       <div class="p-3.5">
@@ -14,6 +16,7 @@
           <div class="shrink-0">
             <svg
               v-if="success"
+              aria-hidden="true"
               class="w-5 h-5 text-status-green"
               fill="none"
               viewBox="0 0 24 24"
@@ -28,6 +31,7 @@
             </svg>
             <svg
               v-if="info"
+              aria-hidden="true"
               class="w-5 h-5 text-status-blue"
               fill="currentColor"
               viewBox="0 0 20 20"
@@ -41,6 +45,7 @@
             </svg>
             <svg
               v-if="warning"
+              aria-hidden="true"
               class="w-5 h-5 text-status-yellow"
               fill="none"
               viewBox="0 0 24 24"
@@ -55,6 +60,7 @@
             </svg>
             <svg
               v-if="error"
+              aria-hidden="true"
               class="w-5 h-5 text-status-red"
               fill="currentColor"
               viewBox="0 0 24 24"
@@ -70,34 +76,23 @@
             <p
               class="text-sm font-medium leading-5 text-heading"
             >
-              {{
-                notification.title
-                  ? notification.title
-                  : success
-                  ? 'Success!'
-                  : warning
-                  ? 'Warning'
-                  : 'Error'
-              }}
+              {{ title }}
             </p>
             <p
               class="mt-0.5 text-sm leading-5 text-muted"
             >
-              {{
-                notification.message
-                  ? $t(notification.message)
-                  : success
-                  ? $t('general.successful')
-                  : $t('general.something_went_wrong')
-              }}
+              {{ message }}
             </p>
           </div>
           <div class="flex shrink-0">
             <button
-              class="p-1 -m-1 transition-colors rounded-md text-subtle hover:text-body focus:outline-hidden"
+              type="button"
+              class="p-1 -m-1 transition-colors rounded-md text-muted hover:text-heading focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
+              :aria-label="$t('general.close')"
               @click="hideNotificationAction"
             >
               <svg
+                aria-hidden="true"
                 class="w-4 h-4"
                 fill="currentColor"
                 viewBox="0 0 20 20"
@@ -119,7 +114,9 @@
 
 <script setup lang="ts">
 import { onMounted, computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useNotificationStore } from '@/scripts/stores/notification.store'
+import { notificationMessage, notificationTitle } from './notification-text'
 
 export type NotificationType = 'success' | 'error' | 'warning' | 'info'
 
@@ -138,6 +135,7 @@ interface Props {
 const props = defineProps<Props>()
 
 const notificationStore = useNotificationStore()
+const { t } = useI18n()
 
 const notiTimeOut = ref<ReturnType<typeof setTimeout> | null>(null)
 
@@ -157,6 +155,10 @@ const warning = computed<boolean>(() => {
   return props.notification.type === 'warning'
 })
 
+const title = computed<string>(() => notificationTitle(props.notification, t))
+
+const message = computed<string>(() => notificationMessage(props.notification, t))
+
 function hideNotificationAction(): void {
   notificationStore.hideNotification(props.notification)
 }
@@ -168,6 +170,13 @@ function clearNotificationTimeOut(): void {
 }
 
 function setNotificationTimeOut(): void {
+  clearNotificationTimeOut()
+
+  // An error stays until it is dismissed: it may need reading twice
+  if (error.value && !props.notification.time) {
+    return
+  }
+
   notiTimeOut.value = setTimeout(() => {
     notificationStore.hideNotification(props.notification)
   }, props.notification.time || 5000)

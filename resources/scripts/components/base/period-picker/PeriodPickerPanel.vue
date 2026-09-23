@@ -46,7 +46,7 @@
     <div v-else class="flex flex-col gap-3">
       <button
         type="button"
-        class="flex items-center self-start gap-1.5 h-9 pl-1.5 pr-3 text-sm font-medium rounded-lg text-heading hover:bg-hover-strong focus:outline-hidden focus-visible:ring-3 focus-visible:ring-focus"
+        class="flex items-center self-start gap-1.5 h-9 pl-1.5 pr-3 text-sm font-medium rounded-lg text-heading hover:bg-hover-strong focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
         @click="closeCustom"
       >
         <BaseIcon name="ChevronLeftIcon" class="w-4.5 h-4.5 text-muted" />
@@ -176,7 +176,7 @@ const canApply = computed<boolean>(() => !!draftFrom.value && !!draftTo.value &&
 function rowClass(active: boolean): string {
   return [
     'flex items-center justify-between w-full gap-3 px-3 text-left transition-colors rounded-lg',
-    'focus:outline-hidden focus-visible:ring-3 focus-visible:ring-focus',
+    'focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus',
     isPhone.value ? 'min-h-12 py-1.5 text-base' : 'min-h-9 py-1 text-sm',
     active ? 'bg-hover-strong text-heading font-medium' : 'text-body hover:bg-hover-strong hover:text-heading',
   ].join(' ')

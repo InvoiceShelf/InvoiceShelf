@@ -25,6 +25,7 @@
       "
     >
       <svg
+        aria-hidden="true"
         class="animate-spin !text-subtle"
         :class="[iconLeftClass]"
         xmlns="http://www.w3.org/2000/svg"
@@ -61,7 +62,7 @@
         items-center
         px-3
         text-muted
-        border border-r-0 border-line-default
+        border border-r-0 border-control-border
         rounded-l-lg
         bg-surface-secondary
         text-sm
@@ -88,8 +89,8 @@
     </div>
 
     <input
-      v-bind="$attrs"
-      :type="type"
+      v-bind="{ ...fieldAttrs, ...$attrs }"
+      :type="inputType"
       :value="modelValue"
       :disabled="disabled"
       :class="[
@@ -115,6 +116,7 @@
       "
     >
       <svg
+        aria-hidden="true"
         class="animate-spin !text-subtle"
         :class="[iconRightClass]"
         xmlns="http://www.w3.org/2000/svg"
@@ -137,8 +139,25 @@
       </svg>
     </div>
 
+    <!-- Show or hide a password: a real button, so a keyboard can reach it -->
     <div
-      v-if="hasRightIconSlot"
+      v-if="canReveal"
+      class="absolute inset-y-0 right-0 flex items-center pr-1.5"
+    >
+      <button
+        type="button"
+        class="flex items-center justify-center w-8 h-8 rounded-md text-subtle hover:text-body focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
+        :aria-label="revealed ? $t('general.hide_password') : $t('general.show_password')"
+        :aria-pressed="revealed"
+        :disabled="disabled"
+        @click="revealed = !revealed"
+      >
+        <BaseIcon :name="revealed ? 'EyeSlashIcon' : 'EyeIcon'" class="w-5 h-5" />
+      </button>
+    </div>
+
+    <div
+      v-else-if="hasRightIconSlot"
       class="absolute inset-y-0 right-0 flex items-center pr-3"
     >
       <slot name="right" :class="iconRightClass" />
@@ -147,7 +166,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, useSlots } from 'vue'
+import { computed, ref, useSlots } from 'vue'
+import { useFormField } from '@/scripts/composables/use-form-field'
 
 interface ModelModifiers {
   uppercase?: boolean
@@ -169,6 +189,8 @@ interface Props {
   iconLeftClass?: string
   iconRightClass?: string
   modelModifiers?: ModelModifiers
+  /** For type="password": a button that shows and hides what was typed */
+  revealable?: boolean
 }
 
 defineOptions({ inheritAttrs: false })
@@ -186,13 +208,23 @@ const props = withDefaults(defineProps<Props>(), {
   containerClass: '',
   contentLoadClass: '',
   defaultInputClass:
-    'font-base block w-full md:text-sm border-line-default rounded-lg text-heading',
+    'font-base block w-full md:text-sm border-control-border rounded-lg text-heading',
   iconLeftClass: 'h-5 w-5 text-subtle',
   iconRightClass: 'h-5 w-5 text-subtle',
   modelModifiers: () => ({}),
+  revealable: false,
 })
 
 const slots = useSlots()
+
+// Label, description, invalid and required state from the surrounding group
+const { attrs: fieldAttrs } = useFormField({ invalid: () => props.invalid })
+
+const revealed = ref<boolean>(false)
+
+const canReveal = computed<boolean>(() => props.type === 'password' && props.revealable)
+
+const inputType = computed<number | string>(() => (canReveal.value && revealed.value ? 'text' : props.type))
 
 interface Emits {
   (e: 'update:modelValue', value: string | number): void
@@ -205,7 +237,7 @@ const hasLeftIconSlot = computed<boolean>(() => {
 })
 
 const hasRightIconSlot = computed<boolean>(() => {
-  return !!slots.right || (props.loading && props.loadingPosition === 'right')
+  return canReveal.value || !!slots.right || (props.loading && props.loadingPosition === 'right')
 })
 
 const inputPaddingClass = computed<string>(() => {

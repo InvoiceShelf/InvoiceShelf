@@ -5,7 +5,8 @@
       static
       class="relative z-50"
       :open="dialogStore.active"
-      @close="dialogStore.closeDialog"
+      :role="dialogStore.variant === 'danger' ? 'alertdialog' : 'dialog'"
+      @close="dialogStore.cancel"
     >
       <TransitionChild
         as="template"
@@ -61,9 +62,9 @@
                   >
                     {{ dialogStore.title }}
                   </DialogTitle>
-                  <p class="mt-1.5 text-sm text-muted">
+                  <DialogDescription as="p" class="mt-1.5 text-sm text-muted">
                     {{ dialogStore.message }}
-                  </p>
+                  </DialogDescription>
                 </div>
               </div>
               <div
@@ -101,6 +102,7 @@ import {
   Dialog,
   DialogOverlay,
   DialogTitle,
+  DialogDescription,
   TransitionChild,
   TransitionRoot,
 } from '@headlessui/vue'

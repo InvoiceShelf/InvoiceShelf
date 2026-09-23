@@ -26,7 +26,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   contentLoading: false,
   defaultClass:
-    'inline-flex items-center justify-center whitespace-nowrap border font-medium transition-colors focus:outline-hidden focus-visible:ring-3 focus-visible:ring-focus disabled:opacity-55 disabled:cursor-not-allowed',
+    'inline-flex items-center justify-center whitespace-nowrap border font-medium transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus disabled:opacity-55 disabled:cursor-not-allowed',
   tag: 'button',
   disabled: false,
   rounded: false,
@@ -91,7 +91,7 @@ const variantClass = computed<Record<string, boolean>>(() => {
       props.variant == 'primary-outline',
     'border-line-default bg-surface text-body shadow-xs hover:bg-hover hover:text-heading':
       props.variant == 'white',
-    'border-transparent shadow-xs bg-danger text-white hover:bg-danger-hover':
+    'border-transparent shadow-xs bg-btn-danger text-white hover:bg-btn-danger-hover':
       props.variant === 'danger',
     'border-transparent bg-surface-muted text-body hover:bg-hover-strong':
       props.variant === 'gray',

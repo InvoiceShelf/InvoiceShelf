@@ -14,8 +14,10 @@
       <span ref="trigger" :class="inActionBar ? 'flex w-full' : 'inline-flex'">
         <MenuButton
           :class="inActionBar ? 'w-full' : ''"
-          class="rounded-lg focus:outline-hidden focus-visible:ring-3 focus-visible:ring-focus"
+          :aria-label="label || undefined"
+          class="rounded-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
           @click="onClick"
+          @keydown="onClick"
         >
           <slot name="activator" />
         </MenuButton>
@@ -96,6 +98,8 @@ interface Props {
   position?: Placement
   wrapperClass?: string
   contentLoading?: boolean
+  /** The trigger's accessible name, for activators that show only an icon */
+  label?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -105,6 +109,7 @@ const props = withDefaults(defineProps<Props>(), {
   position: 'bottom-end',
   wrapperClass: 'inline-block h-full text-left',
   contentLoading: false,
+  label: '',
 })
 
 const { isPhone } = useBreakpoints()

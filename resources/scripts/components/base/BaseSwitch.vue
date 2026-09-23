@@ -7,7 +7,7 @@
 
       <Switch
         v-model="enabled"
-        :class="enabled ? 'bg-btn-primary' : 'bg-line-strong'"
+        :class="enabled ? 'bg-btn-primary' : 'bg-control-border'"
         class="
           relative
           inline-flex
@@ -16,9 +16,9 @@
           transition-colors
           rounded-full
           w-11
-          shrink-0 focus:outline-hidden focus-visible:ring-3 focus-visible:ring-focus
+          shrink-0 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus
         "
-        v-bind="$attrs"
+        v-bind="{ ...(labelLeft || labelRight ? {} : fieldAttrs), ...$attrs }"
       >
         <span
           :class="enabled ? 'translate-x-6' : 'translate-x-1'"
@@ -44,6 +44,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Switch, SwitchGroup, SwitchLabel } from '@headlessui/vue'
+import { useFormField } from '@/scripts/composables/use-form-field'
 
 interface Props {
   labelLeft?: string
@@ -62,6 +63,9 @@ interface Emits {
 }
 
 const emit = defineEmits<Emits>()
+
+// With no label of its own, the switch is named by the surrounding group's label
+const { attrs: fieldAttrs } = useFormField({ labelledBy: true })
 
 const enabled = computed<boolean>({
   get: () => props.modelValue,

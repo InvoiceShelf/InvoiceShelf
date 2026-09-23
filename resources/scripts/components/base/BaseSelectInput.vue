@@ -20,6 +20,7 @@
     <div class="relative">
       <!-- Select Input button -->
       <ListboxButton
+        v-bind="label ? {} : fieldAttrs"
         class="
           relative
           w-full
@@ -28,7 +29,7 @@
           pr-10
           text-left
           bg-surface
-          border border-line-default
+          border border-control-border
           rounded-lg
           cursor-default
           text-base
@@ -36,7 +37,7 @@
           md:text-sm
           text-heading
           focus:outline-hidden
-          focus:ring-3
+          focus:ring-2
           focus:ring-focus
           focus:border-primary-500
         "
@@ -135,6 +136,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
+import { useFormField } from '@/scripts/composables/use-form-field'
 import {
   Listbox,
   ListboxButton,
@@ -170,6 +172,9 @@ const props = withDefaults(defineProps<Props>(), {
   valueProp: null,
   multiple: false,
 })
+
+// Named by the surrounding group's label when this select has none of its own
+const { attrs: fieldAttrs } = useFormField({ labelledBy: true })
 
 interface Emits {
   (e: 'update:modelValue', value: ModelValue): void

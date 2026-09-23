@@ -278,7 +278,7 @@ const addressBlocks = computed(() => {
         :class="valid.$error ? 'border-danger' : 'border-line-strong hover:border-primary-400'"
         class="
           flex items-center w-full gap-4 p-4 text-left transition-colors border-2 border-dashed md:p-5
-          rounded-xl bg-surface/50 focus:outline-hidden focus-visible:ring-3 focus-visible:ring-focus
+          rounded-xl bg-surface/50 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus
         "
         @click="isOpen ? closePicker() : openPicker()"
       >

@@ -6,7 +6,7 @@
       :class="[
         'flex items-center gap-2 min-w-0 px-3 text-sm font-medium transition-colors border rounded-xl',
         'bg-surface/80 border-line-default text-heading hover:border-line-strong',
-        'focus:outline-hidden focus-visible:ring-3 focus-visible:ring-focus',
+        'focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus',
         block ? 'w-full h-11' : 'h-10 md:h-9',
         open ? 'border-line-strong' : '',
       ]"

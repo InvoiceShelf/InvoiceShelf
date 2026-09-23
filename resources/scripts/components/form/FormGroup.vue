@@ -3,29 +3,31 @@
     <ContentPlaceholder v-if="contentLoading">
       <ContentPlaceholderText :lines="1" :class="contentLoadClass" />
     </ContentPlaceholder>
-    <label
+    <div
       v-else-if="label"
       :class="labelClasses"
       class="flex items-center justify-between gap-2 text-sm font-medium text-heading"
     >
-      <div>
+      <label :id="ids.labelId" :for="ids.controlId">
         {{ label }}
         <span v-show="required" class="text-danger" aria-hidden="true">*</span>
-      </div>
+      </label>
       <slot v-if="hasRightLabelSlot" name="labelRight" />
       <BaseIcon
         v-if="tooltip"
         v-tooltip="{ content: tooltip }"
         name="InformationCircleIcon"
-        class="w-4 h-4 cursor-pointer text-subtle hover:text-body"
+        class="w-4 h-4 cursor-help text-subtle hover:text-body"
       />
-    </label>
+    </div>
     <div :class="inputContainerClasses">
       <slot></slot>
-      <span v-if="helpText" class="mt-1.5 text-xs text-muted">
+      <!-- The tooltip's text, for keyboard and screen reader users -->
+      <span v-if="tooltip" :id="ids.hintId" class="sr-only">{{ tooltip }}</span>
+      <span v-if="helpText" :id="ids.helpId" class="mt-1.5 text-xs text-muted">
         {{ helpText }}
       </span>
-      <span v-if="error" class="block mt-1.5 text-xs font-medium text-danger" role="alert">
+      <span v-if="error" :id="ids.errorId" class="block mt-1.5 text-xs font-medium text-danger">
         {{ error }}
       </span>
     </div>
@@ -35,6 +37,7 @@
 <script setup lang="ts">
 import { computed, useSlots } from 'vue'
 import { ContentPlaceholder, ContentPlaceholderText } from '../layout'
+import { provideFormField } from '@/scripts/composables/use-form-field'
 
 interface Props {
   contentLoading?: boolean
@@ -80,6 +83,15 @@ const inputContainerClasses = computed<string>(() => {
 })
 
 const slots = useSlots()
+
+// Label, hint, help and error are tied to the control inside by id
+const ids = provideFormField({
+  hasLabel: computed(() => !!props.label),
+  hasHelp: computed(() => !!props.helpText),
+  hasHint: computed(() => !!props.tooltip),
+  hasError: computed(() => !!props.error),
+  required: computed(() => props.required),
+})
 
 const hasRightLabelSlot = computed<boolean>(() => {
   return !!slots.labelRight

@@ -44,6 +44,13 @@
                 {{ title }}
               </DialogTitle>
               <slot name="header" />
+              <BaseIconButton
+                icon="XMarkIcon"
+                :label="$t('general.close')"
+                size="sm"
+                class="-mr-1.5 ms-auto"
+                @click="emit('close')"
+              />
             </div>
 
             <div class="flex-1 min-h-0 px-2 pb-3 overflow-y-auto overscroll-contain">
