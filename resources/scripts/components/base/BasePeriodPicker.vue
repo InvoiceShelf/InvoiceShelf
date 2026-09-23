@@ -142,7 +142,7 @@ watch(open, async (isOpen) => {
 
   await nextTick()
   popper.value?.update()
-  panel.value?.querySelector<HTMLElement>('[aria-checked="true"], button')?.focus()
+  panel.value?.querySelector<HTMLElement>('[aria-current="true"], button')?.focus()
 })
 
 // The panel grows when the calendar opens; keep it on screen

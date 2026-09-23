@@ -5,13 +5,23 @@
         {{ $t('dateRange.showing', { range: summary }) }}
       </p>
 
-      <div class="flex flex-col gap-0.5" role="radiogroup" :aria-label="$t('dateRange.period')">
+      <!--
+        Choosing applies at once, so these are buttons, not radios (arrow keys
+        on a radio would choose). The arrows only move between them.
+      -->
+      <!-- eslint-disable-next-line vuejs-accessibility/no-static-element-interactions -->
+      <div
+        class="flex flex-col gap-0.5"
+        role="group"
+        :aria-label="$t('dateRange.period')"
+        @keydown.down.prevent="moveFocus($event, 1)"
+        @keydown.up.prevent="moveFocus($event, -1)"
+      >
         <button
           v-for="preset in presets"
           :key="preset.key"
           type="button"
-          role="radio"
-          :aria-checked="modelValue.preset === preset.key"
+          :aria-current="modelValue.preset === preset.key ? 'true' : undefined"
           :class="rowClass(modelValue.preset === preset.key)"
           @click="emit('select', presetValue(preset))"
         >
@@ -27,8 +37,7 @@
           v-if="allowCustom"
           ref="customRow"
           type="button"
-          role="radio"
-          :aria-checked="modelValue.preset === CUSTOM_PERIOD"
+          :aria-current="modelValue.preset === CUSTOM_PERIOD ? 'true' : undefined"
           :class="rowClass(modelValue.preset === CUSTOM_PERIOD)"
           @click="openCustom"
         >
@@ -214,5 +223,13 @@ function apply(): void {
   }
 
   emit('select', { preset: CUSTOM_PERIOD, from: draftFrom.value, to: draftTo.value })
+}
+
+function moveFocus(event: KeyboardEvent, step: number): void {
+  const group = event.currentTarget as HTMLElement
+  const buttons = Array.from(group.querySelectorAll<HTMLButtonElement>(':scope > button'))
+  const current = buttons.indexOf(document.activeElement as HTMLButtonElement)
+
+  buttons[(current + step + buttons.length) % buttons.length]?.focus()
 }
 </script>

@@ -15,7 +15,7 @@
 
           <div
             class="inline-flex p-0.5 border rounded-lg shrink-0 bg-surface border-line-default"
-            role="radiogroup"
+            role="group"
             :aria-label="$t('dashboard.cashflow.chart_style')"
           >
             <button
@@ -23,8 +23,7 @@
               :key="option.value"
               v-tooltip="{ content: option.label }"
               type="button"
-              role="radio"
-              :aria-checked="chartType === option.value"
+              :aria-pressed="chartType === option.value"
               :aria-label="option.label"
               :class="[
                 'flex items-center justify-center w-9 h-8 md:w-8 md:h-7 rounded-md transition-colors',
