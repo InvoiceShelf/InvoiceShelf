@@ -277,9 +277,10 @@ function removeMultipleUsers(): void {
     <!-- Empty Placeholder -->
     <BaseEmptyPlaceholder
       v-show="showEmptyScreen"
-      icon="UserGroupIcon"
+      art="member"
+      :ghost="4"
       :title="$t('members.no_users')"
-      :description="$t('members.list_of_users')"
+      :description="$t('members.empty_description')"
     >
       <template v-if="userStore.currentUser?.is_owner" #actions>
         <BaseButton @click="showInviteModal = true">
@@ -294,6 +295,7 @@ function removeMultipleUsers(): void {
     <div v-show="!showEmptyScreen" class="relative table-container">
       <BaseTable
         ref="tableComponent"
+        :no-results-message="$t('members.no_matching_members')"
         :data="fetchData"
         :columns="userTableColumns"
         :selected-count="

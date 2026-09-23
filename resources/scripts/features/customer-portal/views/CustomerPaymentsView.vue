@@ -57,9 +57,10 @@
 
     <BaseEmptyPlaceholder
       v-if="showEmptyScreen"
-      icon="CreditCardIcon"
+      art="payment"
+      :ghost="5"
       :title="$t('payments.no_payments')"
-      :description="$t('payments.list_of_payments')"
+      :description="$t('payments.portal_empty_description')"
     />
 
     <div v-show="!showEmptyScreen" class="relative table-container">

@@ -104,7 +104,7 @@ onMounted(() => {
         <ReceivablesHero v-if="userStore.hasAbilities(ABILITIES.VIEW_INVOICE)" />
 
         <div
-          v-if="counts.length && dashboardStore.isDashboardDataLoaded"
+          v-if="counts.some((count) => count.value > 0) && dashboardStore.isDashboardDataLoaded"
           class="flex flex-wrap items-center -mt-1 gap-x-6 gap-y-2 md:-mt-2"
         >
           <router-link

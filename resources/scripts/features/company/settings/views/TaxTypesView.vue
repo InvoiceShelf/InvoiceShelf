@@ -223,6 +223,25 @@ function openTaxModal(): void {
           :load-data="refreshTable"
         />
       </template>
+      <!-- Nothing here yet: say what goes here and offer to add the first -->
+      <template #empty>
+        <BaseEmptyPlaceholder
+          compact
+          art="tax"
+          :ghost="4"
+          :title="$t('settings.tax_types.empty_title')"
+          :description="$t('settings.tax_types.empty_description')"
+        >
+          <template v-if="userStore.hasAbilities(ABILITIES.CREATE_TAX_TYPE)" #actions>
+            <BaseButton variant="primary-outline" @click="openTaxModal">
+              <template #left="slotProps">
+                <BaseIcon name="PlusIcon" :class="slotProps.class" />
+              </template>
+              {{ $t('settings.tax_types.add_new_tax') }}
+            </BaseButton>
+          </template>
+        </BaseEmptyPlaceholder>
+      </template>
     </BaseTable>
 
     <div v-if="userStore.currentUser?.is_owner">

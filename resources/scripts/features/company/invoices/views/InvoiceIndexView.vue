@@ -182,13 +182,14 @@
       <!-- Empty State -->
       <BaseEmptyPlaceholder
         v-show="showEmptyScreen"
-        icon="DocumentTextIcon"
+        art="invoice"
+        :ghost="6"
         :title="$t('invoices.no_invoices')"
-        :description="$t('invoices.list_of_invoices')"
+        :description="$t('invoices.empty_description')"
       >
         <template v-if="canCreate" #actions>
           <BaseButton
-            variant="primary-outline"
+            variant="primary"
             @click="$router.push('/admin/invoices/create')"
           >
             <template #left="slotProps">
@@ -211,6 +212,7 @@
         <BaseTable
           ref="tableRef"
           :key="tableKey"
+          :no-results-message="$t('invoices.no_matching_invoices')"
           :data="fetchData"
           :columns="invoiceColumns"
           :placeholder-count="invoiceStore.invoiceTotalCount >= 20 ? 10 : 5"
@@ -369,13 +371,14 @@
       <!-- Empty State -->
       <BaseEmptyPlaceholder
         v-show="showRecurringEmptyScreen"
-        icon="ArrowPathIcon"
+        art="recurring"
+        :ghost="6"
         :title="$t('recurring_invoices.no_invoices')"
-        :description="$t('recurring_invoices.list_of_invoices')"
+        :description="$t('recurring_invoices.empty_description')"
       >
         <template v-if="canCreate" #actions>
           <BaseButton
-            variant="primary-outline"
+            variant="primary"
             @click="$router.push('/admin/invoices/create?recurring=1')"
           >
             <template #left="slotProps">
@@ -395,6 +398,7 @@
 
         <BaseTable
           ref="recurringTableRef"
+          :no-results-message="$t('recurring_invoices.no_matching_invoices')"
           :data="fetchRecurringData"
           :columns="recurringColumns"
           :placeholder-count="recurringInvoiceStore.totalRecurringInvoices >= 20 ? 10 : 5"

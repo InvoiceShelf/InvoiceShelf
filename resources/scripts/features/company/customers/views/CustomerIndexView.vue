@@ -280,13 +280,14 @@ function removeMultipleCustomers(): void {
 
     <BaseEmptyPlaceholder
       v-show="showEmptyScreen"
-      icon="UsersIcon"
+      art="customer"
+      :ghost="5"
       :title="$t('customers.no_customers')"
-      :description="$t('customers.list_of_customers')"
+      :description="$t('customers.empty_description')"
     >
       <template v-if="userStore.hasAbilities(ABILITIES.CREATE_CUSTOMER)" #actions>
         <BaseButton
-          variant="primary-outline"
+          variant="primary"
           @click="$router.push('/admin/customers/create')"
         >
           <template #left="slotProps">
@@ -302,6 +303,7 @@ function removeMultipleCustomers(): void {
       <!-- Table Section -->
       <BaseTable
         ref="tableComponent"
+        :no-results-message="$t('customers.no_matching_customers')"
         :data="fetchData"
         :columns="customerColumns"
         :row-to="customerLink"

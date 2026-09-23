@@ -188,6 +188,24 @@ const canCreateInvoiceFromEstimate = computed(() => userStore.hasAbilities(ABILI
               :can-create-estimate="canCreateEstimate"
             />
           </template>
+          <template #empty>
+            <BaseEmptyPlaceholder
+              compact
+              art="due"
+              :ghost="3"
+              :title="$t('dashboard.recent_invoices_card.empty_title')"
+              :description="$t('dashboard.recent_invoices_card.empty_description')"
+            >
+              <template v-if="userStore.hasAbilities(ABILITIES.CREATE_INVOICE)" #actions>
+                <BaseButton size="sm" variant="primary-outline" @click="$router.push('/admin/invoices/create')">
+                  <template #left="slotProps">
+                    <BaseIcon name="PlusIcon" :class="slotProps.class" />
+                  </template>
+                  {{ $t('invoices.new_invoice') }}
+                </BaseButton>
+              </template>
+            </BaseEmptyPlaceholder>
+          </template>
         </BaseTable>
       </div>
 
@@ -248,6 +266,24 @@ const canCreateInvoiceFromEstimate = computed(() => userStore.hasAbilities(ABILI
               :can-send="canSendEstimate"
               :can-create-invoice="canCreateInvoiceFromEstimate"
             />
+          </template>
+          <template #empty>
+            <BaseEmptyPlaceholder
+              compact
+              art="estimate"
+              :ghost="3"
+              :title="$t('dashboard.recent_estimate_card.empty_title')"
+              :description="$t('dashboard.recent_estimate_card.empty_description')"
+            >
+              <template v-if="userStore.hasAbilities(ABILITIES.CREATE_ESTIMATE)" #actions>
+                <BaseButton size="sm" variant="primary-outline" @click="$router.push('/admin/estimates/create')">
+                  <template #left="slotProps">
+                    <BaseIcon name="PlusIcon" :class="slotProps.class" />
+                  </template>
+                  {{ $t('estimates.new_estimate') }}
+                </BaseButton>
+              </template>
+            </BaseEmptyPlaceholder>
           </template>
         </BaseTable>
       </div>

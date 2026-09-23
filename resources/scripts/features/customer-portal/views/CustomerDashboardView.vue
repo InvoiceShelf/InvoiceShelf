@@ -120,6 +120,15 @@
               :currency="store.currency"
             />
           </template>
+          <template #empty>
+            <BaseEmptyPlaceholder
+              compact
+              art="due"
+              :ghost="3"
+              :title="$t('dashboard.recent_invoices_card.empty_title')"
+              :description="$t('dashboard.recent_invoices_card.portal_empty_description')"
+            />
+          </template>
         </BaseTable>
       </div>
 
@@ -162,6 +171,15 @@
             <BaseFormatMoney
               :amount="row.data.total"
               :currency="store.currency"
+            />
+          </template>
+          <template #empty>
+            <BaseEmptyPlaceholder
+              compact
+              art="estimate"
+              :ghost="3"
+              :title="$t('dashboard.recent_estimate_card.empty_title')"
+              :description="$t('dashboard.recent_estimate_card.portal_empty_description')"
             />
           </template>
         </BaseTable>

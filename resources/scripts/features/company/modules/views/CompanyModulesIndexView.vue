@@ -14,24 +14,13 @@
     </div>
 
     <!-- Empty state -->
-    <div
+    <BaseEmptyPlaceholder
       v-else-if="store.modules.length === 0"
-      class="mt-16 flex flex-col items-center justify-center text-center"
-    >
-      <div
-class="
-        h-16 w-16 rounded-full bg-surface-tertiary
-        flex items-center justify-center mb-4
-      ">
-        <BaseIcon name="PuzzlePieceIcon" class="h-8 w-8 text-subtle" />
-      </div>
-      <h3 class="text-lg font-medium text-heading">
-        {{ $t('modules.index.empty_title') }}
-      </h3>
-      <p class="text-sm text-muted mt-2 max-w-md">
-        {{ $t('modules.index.empty_description') }}
-      </p>
-    </div>
+      class="mt-8"
+      art="module"
+      :title="$t('modules.index.empty_title')"
+      :description="$t('modules.index.empty_description')"
+    />
 
     <!-- Module list -->
     <div
