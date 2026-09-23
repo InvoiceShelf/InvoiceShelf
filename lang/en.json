@@ -133,7 +133,9 @@
     "file_upload": {
       "drag_a_file": "Drag a file here or",
       "browse": "browse",
-      "to_choose": "to choose a file"
+      "to_choose": "to choose a file",
+      "take_photo": "Take photo",
+      "capture_failed": "The photo could not be taken. Choose a file instead."
     },
     "multiselect": {
       "the_list_is_empty": "The list is empty",
@@ -827,7 +829,17 @@
     "retry": "Retry",
     "change_server": "Change server",
     "connected_to": "Connected to {server}",
-    "modules_failed": "Some add-ons did not load: {names}"
+    "modules_failed": "Some add-ons did not load: {names}",
+    "app_lock_title": "App lock",
+    "app_lock_description": "Ask for this device's Face ID, fingerprint or passcode before the app opens.",
+    "app_lock_toggle": "Require Face ID or fingerprint to open the app",
+    "app_lock_toggle_description": "The app locks when you open it, and when you come back to it after a while.",
+    "app_lock_enable_failed": "The app lock was not turned on: this device did not confirm it is you.",
+    "app_lock_reason": "Unlock InvoiceShelf",
+    "app_lock_locked_heading": "InvoiceShelf is locked",
+    "app_lock_locked_description": "Confirm it is you to get back to your account.",
+    "app_lock_unlock": "Unlock",
+    "app_lock_sign_out": "Sign out instead"
   },
   "devices": {
     "title": "Devices",

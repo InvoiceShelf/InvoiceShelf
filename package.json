@@ -37,8 +37,15 @@
     "vue-tsc": "^3.2.6"
   },
   "dependencies": {
+    "@aparajita/capacitor-biometric-auth": "^9.1.2",
+    "@capacitor/app": "^7.1.2",
+    "@capacitor/browser": "^7.0.5",
+    "@capacitor/camera": "^7.0.5",
     "@capacitor/core": "^7.6.9",
+    "@capacitor/device": "^7.0.5",
+    "@capacitor/filesystem": "^7.1.8",
     "@capacitor/preferences": "^7.0.4",
+    "@capacitor/share": "^7.0.4",
     "@headlessui/vue": "^1.7.23",
     "@heroicons/vue": "^2.2.0",
     "@popperjs/core": "^2.11.8",

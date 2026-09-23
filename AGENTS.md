@@ -84,6 +84,8 @@ Mobile clients run the same SPA from their own origin and never load `resources/
 
 Tokens never expire, so `GET /api/v1/auth/tokens` and `DELETE /api/v1/auth/tokens/{id}` (the caller's own only) exist to cut off a lost device, and `POST /api/v1/auth/login` is throttled to 10 a minute.
 
+**Mobile shell** (`mobile/`, see `mobile/README.md`): a Capacitor 7 project wrapping the `pnpm build:client` output in `mobile/www`. `android/` and `ios/` are committed; `www/` and `node_modules/` are not. Native pieces live in `resources/scripts/platform/capacitor.ts` alone (device name, share-sheet file delivery, in-app browser, receipt camera, the biometric check behind the app lock in `resources/scripts/client/lock.ts`), behind a dynamic import gated on `__INVOICESHELF_CLIENT__` so no Capacitor code reaches the web bundle. The plugins are declared twice, in `mobile/package.json` and the root one, and must stay at the same versions. `capacitor.config.ts`'s `server.hostname` is the contract above: never `localhost`.
+
 ### Frontend
 - Vue 3 + TypeScript + Pinia + vue-router + Tailwind v4 (`@tailwindcss/vite`)
 - Entry point: `resources/scripts/main.ts` (single Vite input)
@@ -204,6 +206,16 @@ Notes on the mechanics:
   That path is idempotent and does not rebuild the Docker images.
 - `.github/scripts/changelog-section.php <version>` prints what the updater will be
   sent, so you can check the notes locally before tagging.
+
+**The mobile apps ride the same button.** `mobile.yaml` also listens for
+`release: published`, so publishing the draft builds the Android AAB and APK
+(and, separately gated, the iOS archive) from that tag, attaches the APK to the
+release and uploads to the internal store tracks. Both its jobs are gated on the
+repository variable `MOBILE_RELEASES_ENABLED`, so until the signing secrets exist
+the whole workflow is a no-op rather than a failure on every release. The
+variables, the secrets and how to produce each one are a top-to-bottom checklist
+in the Releasing section of `mobile/README.md`; the version numbers come from the
+tag via `mobile/scripts/version-code.mjs` and are never edited by hand.
 
 ## CI Pipeline
 
