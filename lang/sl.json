@@ -45,6 +45,9 @@
     "download": "Prenesi",
     "refresh": "Refresh",
     "loading": "Loading…",
+    "check_highlighted_fields": "Some details are missing. Check the highlighted fields and try again.",
+    "taxes_are_added_in_settings": "Taxes are added under Settings, Tax Types.",
+    "select_an_option": "Select an option",
     "date": "Date",
     "from_date": "Datum od",
     "to_date": "Do datuma",
@@ -200,6 +203,7 @@
     "select_named": "Select {name}"
   },
   "dashboard": {
+    "load_failed": "The dashboard could not be loaded.",
     "select_year": "Izberite leto",
     "cards": {
       "due_amount": "Dolgovani znesek",
@@ -224,7 +228,10 @@
       "customer": "Stranka",
       "amount_due": "Amount due",
       "actions": "Dejanja",
-      "view_all": "View all"
+      "view_all": "View all",
+      "empty_title": "Nothing awaiting payment",
+      "empty_description": "Sent invoices that are still due show up here.",
+      "portal_empty_description": "Invoices you still need to pay show up here."
     },
     "recent_estimate_card": {
       "title": "Recent estimates",
@@ -232,7 +239,10 @@
       "customer": "Stranka",
       "amount_due": "Amount",
       "actions": "Ukrepi",
-      "view_all": "View all"
+      "view_all": "View all",
+      "empty_title": "No estimates yet",
+      "empty_description": "Estimates you send show up here.",
+      "portal_empty_description": "Estimates sent to you show up here."
     },
     "receivables": {
       "title": "Owed to you",
@@ -242,9 +252,12 @@
       "due_later": "Due later",
       "invoice_count": "{count} invoice | {count} invoices",
       "nothing_owed": "Nothing is owed to you right now.",
+      "first_invoice_hint": "Send your first invoice and what customers owe you shows up here.",
       "view_invoices": "View invoices"
     },
     "cashflow": {
+      "no_activity": "No activity in this period",
+      "no_activity_hint": "Invoices, payments and expenses you record will show up here.",
       "title": "Cash flow",
       "show_table": "Show as table",
       "hide_table": "Hide table",
@@ -354,8 +367,13 @@
     "billing_address": "Naslov prejemnika računa",
     "shipping_address": "Naslov za dostavo",
     "copy_billing_address": "Kopiraj iz računa",
-    "no_customers": "Strank še ni!",
+    "no_customers": "No customers yet",
+    "empty_description": "Add the people and businesses you bill, then invoice them in a few clicks.",
     "no_customers_found": "Strank še ni!",
+    "add_first_customer": "Add your first customer to start invoicing them.",
+    "activity_load_failed": "This customer's activity could not be loaded.",
+    "statement_load_failed": "The statement could not be loaded.",
+    "ask_to_add_customers": "Someone who can manage customers needs to add one first.",
     "no_contact": "Ničesar ni bilo treba storiti",
     "no_contact_name": "Ni kontaktnega imena",
     "list_of_customers": "Ta razdelek bo vseboval seznam strank.",
@@ -364,7 +382,7 @@
     "select_a_customer": "Izberi stranko",
     "type_or_click": "Vnesite ali kliknite, da izberete",
     "new_transaction": "Nova transakcija",
-    "no_matching_customers": "Ni enakih strank!",
+    "no_matching_customers": "No customers match these filters",
     "phone_number": "Telefonska številka",
     "create_date": "Ustvarjeno dne",
     "confirm_delete": "Te stranke in vseh povezanih računov, predračunov in plačil ne boste mogli obnoviti. | Te stranke in vseh povezanih računov, predračunov in plačil ne boste mogli obnoviti.",
@@ -418,7 +436,9 @@
     "add_new_item": "Dodajanje novega elementa",
     "new_item": "Nova postavka",
     "edit_item": "Urejanje predmeta",
-    "no_items": "Ni še nobenega artikla!",
+    "no_items": "No items yet",
+    "empty_description": "Save the products and services you sell to add them to invoices in one click.",
+    "no_matching_items": "No items match these filters",
     "list_of_items": "Ta razdelek vsebuje seznam elementov.",
     "select_a_unit": "izberite enoto",
     "taxes": "Davki",
@@ -480,7 +500,7 @@
     "confirm_mark_as_sent": "Ta ocena bo označena kot poslana",
     "confirm_mark_as_accepted": "Ta ocena bo označena kot sprejeta",
     "confirm_mark_as_rejected": "Ta ocena bo označena kot zavrnjena",
-    "no_matching_estimates": "Ni ustreznih ocen!",
+    "no_matching_estimates": "No estimates match these filters",
     "mark_as_sent_successfully": "Ocena je označena kot uspešno poslana",
     "send_estimate_successfully": "Ocena uspešno poslana",
     "errors": {
@@ -500,7 +520,9 @@
     "items": "izdelki",
     "Estimate": "Ocena | Ocene",
     "add_new_tax": "Dodaj nov davek",
-    "no_estimates": "Ocene še ni!",
+    "no_estimates": "No estimates yet",
+    "empty_description": "Send a quote, then turn it into an invoice once it's accepted.",
+    "portal_empty_description": "Estimates sent to you will show up here.",
     "list_of_estimates": "Ta razdelek bo vseboval seznam ocen.",
     "mark_as_rejected": "Označi kot zavrnjeno",
     "mark_as_accepted": "Označi kot sprejeto",
@@ -585,12 +607,14 @@
     "save_invoice": "Shrani račun",
     "update_invoice": "Posodobitev računa",
     "add_new_tax": "Dodajanje novega davka",
-    "no_invoices": "Računov še ni!",
+    "no_invoices": "No invoices yet",
+    "empty_description": "Create an invoice and send it to a customer to get paid.",
+    "portal_empty_description": "Invoices sent to you will show up here.",
     "mark_as_rejected": "Označi kot zavrnjeno",
     "mark_as_accepted": "Označi kot sprejeto",
     "list_of_invoices": "Ta razdelek vsebuje seznam računov.",
     "select_invoice": "Izberite račun",
-    "no_matching_invoices": "Ni ustreznih računov!",
+    "no_matching_invoices": "No invoices match these filters",
     "mark_as_sent_successfully": "Račun je označen kot uspešno poslan",
     "invoice_sent_successfully": "Račun je bil uspešno poslan",
     "cloned_successfully": "Račun je bil uspešno kloniran",
@@ -720,12 +744,13 @@
     "save_invoice": "Shranjevanje ponavljajočih se računov",
     "update_invoice": "Posodobitev ponavljajočega se računa",
     "add_new_tax": "Dodajanje novega davka",
-    "no_invoices": "Ponavljajočih se računov še ni!",
+    "no_invoices": "No recurring invoices yet",
+    "empty_description": "Set up an invoice that goes out on a schedule, such as a monthly retainer.",
     "mark_as_rejected": "Označi kot zavrnjeno",
     "mark_as_accepted": "Označi kot sprejeto",
     "list_of_invoices": "Ta razdelek vsebuje seznam ponavljajočih se računov.",
     "select_invoice": "Izberite račun",
-    "no_matching_invoices": "Ni ustreznih ponavljajočih se računov!",
+    "no_matching_invoices": "No recurring invoices match these filters",
     "mark_as_sent_successfully": "Ponavljajoči se račun je označen kot uspešno poslan",
     "invoice_sent_successfully": "Ponavljajoči se račun je bil uspešno poslan",
     "cloned_successfully": "Ponavljajoči se račun je bil uspešno kloniran",
@@ -786,7 +811,9 @@
       "date": "Datum",
       "count": "Count"
     },
-    "make_recurring": "Make Recurring"
+    "make_recurring": "Make Recurring",
+    "no_generated_invoices": "No invoices yet",
+    "no_generated_invoices_description": "Invoices this schedule creates show up here."
   },
   "payments": {
     "title": "Plačila",
@@ -810,10 +837,12 @@
     "save_payment": "Shrani plačilo",
     "update_payment": "Posodobitev plačila",
     "payment": "Plačilo | Plačila",
-    "no_payments": "Plačil še ni!",
+    "no_payments": "No payments yet",
+    "empty_description": "Record a payment when a customer pays and apply it to their invoices.",
+    "portal_empty_description": "Payments you make will show up here.",
     "not_selected": "Ni izbrano",
     "no_invoice": "Brez računa",
-    "no_matching_payments": "Ujemajočih se plačil ni!",
+    "no_matching_payments": "No payments match these filters",
     "list_of_payments": "Ta razdelek vsebuje seznam plačil.",
     "select_payment_mode": "Izberite način plačila",
     "confirm_mark_as_sent": "Ta ocena bo označena kot poslana",
@@ -832,6 +861,7 @@
     "add_allocation": "Add Allocation",
     "select_customer_to_allocate": "Select a customer before allocating this payment.",
     "no_allocations": "No invoices selected. This payment will remain available as customer credit.",
+    "no_open_invoices": "This customer has no open invoices, so the payment will stay as customer credit.",
     "allocated": "Allocated",
     "unapplied_credit": "Unapplied Credit",
     "remove_allocation": "Remove allocation",
@@ -879,7 +909,9 @@
     "edit_expense": "Urejanje izdatkov",
     "new_expense": "Novi izdatki",
     "expense": "Odhodki | Odhodki",
-    "no_expenses": "Stroškov še ni!",
+    "no_expenses": "No expenses yet",
+    "empty_description": "Record what the business spends to see your profit and reclaim tax.",
+    "no_matching_expenses": "No expenses match these filters",
     "list_of_expenses": "Ta razdelek vsebuje seznam stroškov.",
     "confirm_delete": "Tega stroška ne boste mogli izterjati | Teh stroškov ne boste mogli izterjati",
     "created_message": "Uspešno ustvarjen strošek",
@@ -999,6 +1031,7 @@
     "purchased": "Kupljeno",
     "installed": "Nameščen",
     "no_modules_installed": "Moduli še niso nameščeni!",
+    "no_marketplace_modules": "No marketplace modules are available yet.",
     "disable_warning": "Vse nastavitve za ta podatek bodo povrnjene.",
     "uninstall": "Uninstall",
     "uninstall_warning": "Uninstalling removes this module's runtime files. Its data and settings are preserved unless you explicitly choose to remove them.",
@@ -1063,6 +1096,8 @@
     "invited_by": "Invited By",
     "sent_at": "Sent At",
     "no_users": "No members yet",
+    "empty_description": "Invite the people who work on this company with you.",
+    "no_matching_members": "No members match these filters",
     "list_of_users": "Invite the people who work with you. They show up here once they join."
   },
   "reports": {
@@ -1367,7 +1402,9 @@
       "bound_none": "No limit",
       "bound_today": "Today",
       "bound_fixed_date": "A fixed date",
-      "bound_fixed_time": "A fixed time"
+      "bound_fixed_time": "A fixed time",
+      "empty_title": "No custom fields yet",
+      "empty_description": "Add your own fields to invoices, customers, items and more."
     },
     "customization": {
       "customization": "prilagajanje",
@@ -1503,7 +1540,9 @@
           "estimate": "Ocena",
           "invoice": "Račun",
           "payment": "Plačilo"
-        }
+        },
+        "empty_title": "No notes yet",
+        "empty_description": "Save text you use often, like payment terms, and insert it into any document."
       },
       "reorder_component": "Move {name}, {position} of {count}. Use the up and down arrow keys"
     },
@@ -1593,7 +1632,9 @@
       "active": "Aktivno",
       "currency_help_text": "Ta ponudnik se bo uporabljal samo v zgoraj izbranih valutah.",
       "currency_in_used": "Naslednje valute so že aktivne pri drugem ponudniku. Če želite ponovno aktivirati tega ponudnika, odstranite te valute iz izbire.",
-      "fetch_latest": "Fetch the latest exchange rate"
+      "fetch_latest": "Fetch the latest exchange rate",
+      "empty_title": "No exchange rate providers yet",
+      "empty_description": "Connect a provider to fetch rates for documents in other currencies."
     },
     "tax_types": {
       "title": "Vrste davkov",
@@ -1622,7 +1663,9 @@
       "tax_included": "Inclusive taxes",
       "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
       "tax_included_by_default": "Enable inclusive taxes by default",
-      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default",
+      "empty_title": "No tax types yet",
+      "empty_description": "Add a tax once, then pick it on any invoice or expense."
     },
     "payment_modes": {
       "title": "Načini plačila",
@@ -1650,7 +1693,9 @@
       "deleted_message": "Kategorija izdatkov je bila uspešno izbrisana",
       "updated_message": "Kategorija izdatkov je bila uspešno posodobljena",
       "confirm_delete": "Te kategorije stroškov ne boste mogli povrniti.",
-      "already_in_use": "Kategorija je že v uporabi"
+      "already_in_use": "Kategorija je že v uporabi",
+      "empty_title": "No expense categories yet",
+      "empty_description": "Group expenses by what they're for, such as travel or software. Every expense needs one."
     },
     "preferences": {
       "currency": "Valuta",
@@ -1762,7 +1807,9 @@
       "action": "Akcija",
       "deleted_message": "Varnostno kopiranje uspešno izbrisano",
       "created_message": "Varnostna kopija je bila uspešno ustvarjena",
-      "invalid_disk_credentials": "Neveljavno pooblastilo izbranega diska"
+      "invalid_disk_credentials": "Neveljavno pooblastilo izbranega diska",
+      "empty_title": "No backups yet",
+      "empty_description": "Create a backup to keep a copy of your data and files."
     },
     "disk": {
       "title": "Datotečni disk | Datotečni diski",
