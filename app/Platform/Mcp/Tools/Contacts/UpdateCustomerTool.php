@@ -26,7 +26,7 @@ use Laravel\Mcp\Server\Tools\Annotations\IsReadOnly;
 #[Description('Change a customer\'s details. Only what is given changes; within an address, only the given fields.')]
 #[IsReadOnly(false)]
 #[IsIdempotent(true)]
-#[IsDestructive(true)]
+#[IsDestructive(false)]
 #[IsOpenWorld(false)]
 class UpdateCustomerTool extends McpWriteTool
 {

@@ -25,7 +25,7 @@ use Laravel\Mcp\Server\Tools\Annotations\IsReadOnly;
 #[Description('Change a catalogue item. Only what is given changes. Documents already issued keep the prices they were issued with.')]
 #[IsReadOnly(false)]
 #[IsIdempotent(true)]
-#[IsDestructive(true)]
+#[IsDestructive(false)]
 #[IsOpenWorld(false)]
 class UpdateItemTool extends McpWriteTool
 {

@@ -33,7 +33,7 @@ use Laravel\Mcp\Server\Tools\Annotations\IsReadOnly;
     TEXT)]
 #[IsReadOnly(false)]
 #[IsIdempotent(true)]
-#[IsDestructive(true)]
+#[IsDestructive(false)]
 #[IsOpenWorld(false)]
 class UpdateInvoiceTool extends McpWriteTool
 {

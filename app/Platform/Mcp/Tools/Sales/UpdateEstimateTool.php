@@ -27,7 +27,7 @@ use Laravel\Mcp\Server\Tools\Annotations\IsReadOnly;
 #[Description('Change an estimate. Only what is given changes; lines, when given, replace all the current ones. The totals are worked out again, and a tax already on the estimate keeps the rate it was applied at.')]
 #[IsReadOnly(false)]
 #[IsIdempotent(true)]
-#[IsDestructive(true)]
+#[IsDestructive(false)]
 #[IsOpenWorld(false)]
 class UpdateEstimateTool extends McpWriteTool
 {
