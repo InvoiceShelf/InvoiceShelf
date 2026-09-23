@@ -370,7 +370,13 @@ class User extends Authenticatable implements HasMedia
         $this->update($request->getUserPayload());
 
         $companies = collect($request->companies);
-        $this->companies()->sync($companies->pluck('id'));
+
+        // Memberships in companies the caller does not own stay as they are.
+        $elsewhere = $this->companies()
+            ->whereNotIn('companies.id', $request->managedCompanyIds())
+            ->pluck('companies.id');
+
+        $this->companies()->sync($elsewhere->merge($companies->pluck('id'))->unique()->values());
 
         foreach ($companies as $company) {
             BouncerFacade::scope()->to($company['id']);
