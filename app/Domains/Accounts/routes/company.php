@@ -1,6 +1,7 @@
 <?php
 
 use App\Domains\Accounts\Http\Controllers\Auth\AuthController;
+use App\Domains\Accounts\Http\Controllers\Auth\TokenController;
 use App\Domains\Accounts\Http\Controllers\Company\AbilitiesController;
 use App\Domains\Accounts\Http\Controllers\Company\CompanyController;
 use App\Domains\Accounts\Http\Controllers\Company\CompanySettingsController;
@@ -14,6 +15,10 @@ Route::get('/invitations/pending', [InvitationResponseController::class, 'pendin
 Route::post('/invitations/{invitation:token}/accept', [InvitationResponseController::class, 'accept']);
 Route::post('/invitations/{invitation:token}/decline', [InvitationResponseController::class, 'decline']);
 Route::get('auth/check', [AuthController::class, 'check']); // is the caller's token still live?
+
+// The caller's own devices: list them, and cut a lost one off.
+Route::get('auth/tokens', [TokenController::class, 'index']);
+Route::delete('auth/tokens/{id}', [TokenController::class, 'destroy']);
 
 Route::apiResource('company-invitations', InvitationController::class)->only(['index', 'store', 'destroy']);
 
