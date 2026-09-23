@@ -154,7 +154,7 @@ class RecurringInvoiceRequest extends FormRequest
 
         $nextRun = RecurringInvoice::getNextInvoiceDate($this->frequency, $this->starts_at);
 
-        $perItemTax = CompanySetting::getSetting('tax_per_item', $company) ?? 'NO ';
+        $perItemTax = CompanySetting::getSetting('tax_per_item', $company) ?? 'NO';
         $perItemDiscount = CompanySetting::getSetting('discount_per_item', $company) ?? 'NO';
 
         $totals = DocumentTotals::compute(
