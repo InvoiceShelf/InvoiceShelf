@@ -3,12 +3,17 @@
 use App\Domains\Accounts\Models\User;
 use App\Platform\Mcp\Application\McpSettings;
 use App\Platform\Mcp\Models\McpConnection;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Laravel\Passport\ClientRepository;
 use Laravel\Passport\Passport;
 
 beforeEach(function () {
+    // Currencies come from the catalogue now, not from migrations, and the
+    // user factory needs one.
+    Artisan::call('db:seed', ['--class' => 'CurrenciesTableSeeder', '--force' => true]);
+
     $this->keyDirectory = storage_path('framework/testing/mcp-cli-keys-'.Str::random(8));
     File::ensureDirectoryExists($this->keyDirectory);
     Passport::loadKeysFrom($this->keyDirectory);
