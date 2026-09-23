@@ -106,12 +106,6 @@ class MailConfigurationController extends Controller
                     'mail_ses_region' => $request->get('mail_ses_region', 'us-east-1'),
                 ]);
                 break;
-
-            case 'sendmail':
-                $settings = array_merge($settings, [
-                    'mail_sendmail_path' => $request->get('mail_sendmail_path', '/usr/sbin/sendmail -bs -i'),
-                ]);
-                break;
         }
 
         return $settings;
@@ -149,7 +143,6 @@ class MailConfigurationController extends Controller
             'mail_ses_key',
             'mail_ses_secret',
             'mail_ses_region',
-            'mail_sendmail_path',
         ]);
 
         $driver = $mailSettings['mail_driver'] ?? config('mail.default');
@@ -191,12 +184,6 @@ class MailConfigurationController extends Controller
                     'mail_ses_key' => $mailSettings['mail_ses_key'] ?? '',
                     'mail_ses_secret' => $mailSettings['mail_ses_secret'] ?? '',
                     'mail_ses_region' => $mailSettings['mail_ses_region'] ?? 'us-east-1',
-                ]);
-                break;
-
-            case 'sendmail':
-                $MailData = array_merge($MailData, [
-                    'mail_sendmail_path' => $mailSettings['mail_sendmail_path'] ?? '/usr/sbin/sendmail -bs -i',
                 ]);
                 break;
 

@@ -52,7 +52,6 @@ class AppConfigProvider extends ServiceProvider
                 'mail_ses_key',
                 'mail_ses_secret',
                 'mail_ses_region',
-                'mail_sendmail_path',
             ]);
 
             if (! empty($mailSettings['mail_driver'])) {
@@ -93,9 +92,8 @@ class AppConfigProvider extends ServiceProvider
                         Config::set('services.ses.region', $mailSettings['mail_ses_region'] ?? 'us-east-1');
                         break;
 
-                    case 'sendmail':
-                        Config::set('mail.mailers.sendmail.path', $mailSettings['mail_sendmail_path'] ?? '/usr/sbin/sendmail -bs -i');
-                        break;
+                        // The sendmail binary comes from MAIL_SENDMAIL_PATH alone:
+                        // whatever is configured there is run as a command.
                 }
 
                 // Set global from address and name
