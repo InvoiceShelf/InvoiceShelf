@@ -2,12 +2,12 @@
 
 namespace App\Platform\Operations\Http\Company;
 
+use App\Domains\Accounts\Application\MemberVisibleSettings;
 use App\Domains\Accounts\Http\Resources\CompanyInvitationResource;
 use App\Domains\Accounts\Http\Resources\CompanyResource;
 use App\Domains\Accounts\Http\Resources\UserResource;
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\CompanyInvitation;
-use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Money\Models\Currency;
 use App\Platform\Http\Controller;
 use App\Platform\Modules\Models\Module;
@@ -47,6 +47,8 @@ class BootstrapController extends Controller
         'save_pdf_to_disk',
         'show_sidebar_group_labels',
     ];
+
+    public function __construct(private readonly MemberVisibleSettings $memberVisibleSettings) {}
 
     /**
      * Handle the incoming request.
@@ -137,7 +139,9 @@ class BootstrapController extends Controller
         $mainMenu = $this->mainMenuWithModules($user);
         $settingMenu = $this->generateMenu('setting_menu', $user);
 
-        $companySettings = CompanySetting::getAllSettings($company->id);
+        // Every member gets this payload, so it carries no credentials: the
+        // mail transport and module settings stay behind their own endpoints.
+        $companySettings = $this->memberVisibleSettings->all($company->id);
 
         $currency = $companySettings->has('currency')
             ? Currency::find($companySettings->get('currency'))

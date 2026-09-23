@@ -116,7 +116,7 @@ test('a member who is not the owner cannot read the mail configuration', functio
         'company_mail_postmark_token' => 'owner-only-token',
     ], $this->companyId);
 
-    $member = User::factory()->create(['email' => 'member@example.com']);
+    $member = User::factory()->create(['email' => 'member@example.com', 'role' => 'user']);
     $member->companies()->attach($this->companyId);
     Sanctum::actingAs($member, ['*']);
 
