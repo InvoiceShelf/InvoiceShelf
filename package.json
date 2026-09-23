@@ -9,6 +9,9 @@
     "dev": "vite",
     "watch": "vite build --watch",
     "build": "vite build",
+    "dev:client": "vite --config vite.client.config.ts",
+    "build:client": "vite build --config vite.client.config.ts",
+    "preview:client": "vite preview --config vite.client.config.ts --port 4173 --strictPort",
     "serve": "vite preview",
     "test": "eslint ./resources/scripts",
     "lint": "eslint ./resources/scripts --max-warnings 0",
@@ -34,6 +37,8 @@
     "vue-tsc": "^3.2.6"
   },
   "dependencies": {
+    "@capacitor/core": "^7.6.9",
+    "@capacitor/preferences": "^7.0.4",
     "@headlessui/vue": "^1.7.23",
     "@heroicons/vue": "^2.2.0",
     "@popperjs/core": "^2.11.8",

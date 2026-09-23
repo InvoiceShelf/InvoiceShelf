@@ -78,6 +78,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { usePaymentStore } from '../store'
 import { useDialogStore } from '../../../../stores/dialog.store'
 import { useModalStore } from '../../../../stores/modal.store'
+import { absoluteDocumentUrl } from '@/scripts/utils/documents'
 import type { Payment } from '../../../../types/domain/payment'
 
 interface TableRef {
@@ -135,10 +136,10 @@ function removePayment(): void {
 
 function copyPdfUrl(): void {
   const payment = props.row as Payment
-  const pdfUrl = `${window.location.origin}/payments/pdf/${payment.unique_hash}`
+  const pdfUrl = absoluteDocumentUrl(`/payments/pdf/${payment.unique_hash}`)
 
   // navigator.clipboard is [SecureContext]-gated, so on a plain-HTTP origin it is
-  // undefined and `.writeText` throws on property access — before any promise
+  // undefined and `.writeText` throws on property access, before any promise
   // exists for .catch() to handle. Test up front, as the invoice and estimate
   // dropdowns already do.
   if (navigator.clipboard && window.isSecureContext) {

@@ -23,12 +23,10 @@
             <template #left="slotProps"><BaseIcon name="ArrowPathIcon" :class="slotProps.class" /></template>
             {{ $t('general.refresh') }}
           </BaseButton>
-          <a v-if="pdfUrl" :href="pdfUrl" target="_blank" rel="noopener">
-            <BaseButton variant="primary-outline">
-              <template #left="slotProps"><BaseIcon name="ArrowDownTrayIcon" :class="slotProps.class" /></template>
-              {{ $t('customers.download_statement') }}
-            </BaseButton>
-          </a>
+          <BaseButton v-if="pdfUrl" variant="primary-outline" :loading="isDownloadingPdf" @click="downloadStatement">
+            <template #left="slotProps"><BaseIcon name="ArrowDownTrayIcon" :class="slotProps.class" /></template>
+            {{ $t('customers.download_statement') }}
+          </BaseButton>
           <BaseButton variant="primary" :disabled="!statement" @click="openEmailModal">
             <template #left="slotProps"><BaseIcon name="PaperAirplaneIcon" :class="slotProps.class" /></template>
             {{ $t('customers.send_statement') }}
@@ -175,6 +173,7 @@ import { invoiceService } from '@/scripts/api/services/invoice.service'
 import { paymentService } from '@/scripts/api/services/payment.service'
 import { useNotificationStore } from '@/scripts/stores/notification.store'
 import { useUserStore } from '@/scripts/stores/user.store'
+import { downloadDocument } from '@/scripts/utils/documents'
 import { getErrorTranslationKey, handleApiError } from '@/scripts/utils/error-handling'
 import { formatDate } from '@/scripts/utils/format-date'
 import type { Customer } from '@/scripts/types/domain/customer'
@@ -191,6 +190,7 @@ const monthStart = `${today.slice(0, 8)}01`
 const filters = reactive<CustomerStatementParams>({ type: 'activity', from_date: monthStart, to_date: today, as_of: today })
 const statement = ref<CustomerStatement | null>(null)
 const isLoading = ref(false)
+const isDownloadingPdf = ref(false)
 const showEmailModal = ref(false)
 const isSending = ref(false)
 const showCreditModal = ref(false)
@@ -232,6 +232,30 @@ async function loadStatement(): Promise<void> {
 function refreshStatement(): void {
   filters.page = 1
   void loadStatement()
+}
+
+/**
+ * The statement used to be a link opened in a new tab, which only reaches a
+ * server the page shares an origin with. It is fetched through the API client
+ * and handed over as a file instead, the same thing the tab ended up doing.
+ */
+async function downloadStatement(): Promise<void> {
+  if (!pdfUrl.value) {
+    return
+  }
+
+  isDownloadingPdf.value = true
+
+  try {
+    await downloadDocument(pdfUrl.value, {}, 'statement.pdf')
+  } catch {
+    notificationStore.showNotification({
+      type: 'error',
+      message: t('pdf.download_failed'),
+    })
+  } finally {
+    isDownloadingPdf.value = false
+  }
 }
 
 function changeActivityPage(page: number): void {

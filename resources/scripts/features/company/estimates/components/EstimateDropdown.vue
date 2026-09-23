@@ -138,6 +138,7 @@ import { useEstimateStore } from '../store'
 import { useDialogStore } from '../../../../stores/dialog.store'
 import { useModalStore } from '../../../../stores/modal.store'
 import { useNotificationStore } from '../../../../stores/notification.store'
+import { absoluteDocumentUrl } from '@/scripts/utils/documents'
 import type { Estimate } from '../../../../types/domain/estimate'
 
 interface TableRef {
@@ -290,7 +291,7 @@ function onMarkAsRejected(): void {
 }
 
 function copyPdfUrl(): void {
-  const pdfUrl = `${window.location.origin}/estimates/pdf/${props.row.unique_hash}`
+  const pdfUrl = absoluteDocumentUrl(`/estimates/pdf/${props.row.unique_hash}`)
   copyToClipboard(pdfUrl)
   notificationStore.showNotification({
     type: 'success',

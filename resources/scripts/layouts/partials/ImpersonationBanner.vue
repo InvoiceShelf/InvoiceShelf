@@ -20,6 +20,7 @@ import { computed, ref } from 'vue'
 import * as ls from '@/scripts/utils/local-storage'
 import { client } from '@/scripts/api/client'
 import { API } from '@/scripts/api/endpoints'
+import { hardNavigate } from '@/scripts/utils/hard-navigate'
 
 const isStopping = ref<boolean>(false)
 
@@ -39,6 +40,6 @@ async function stopImpersonating(): Promise<void> {
   ls.remove('admin.impersonating')
   ls.remove('auth.token')
 
-  window.location.href = '/admin/administration/users'
+  hardNavigate('/admin/administration/users')
 }
 </script>

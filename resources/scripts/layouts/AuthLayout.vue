@@ -24,6 +24,7 @@
 
       <!-- Auth card — same visual language as BaseCard -->
       <article
+        :class="showHeading ? 'py-10 sm:py-12' : 'pt-0 pb-10 sm:pb-12'"
         class="
           w-full max-w-md
           bg-surface
@@ -31,10 +32,10 @@
           border border-line-default
           shadow-sm
           backdrop-blur-sm
-          px-8 py-10 sm:px-10 sm:py-12
+          px-8 sm:px-10
         "
       >
-        <header class="text-center mb-8">
+        <header v-if="showHeading" class="text-center mb-8">
           <h1 class="text-2xl font-semibold text-heading">
             {{ heading }}
           </h1>
@@ -64,7 +65,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, shallowRef } from 'vue'
 import { useRoute } from 'vue-router'
 import NotificationRoot from '@/scripts/components/notifications/NotificationRoot.vue'
 import MainLogo from '@/scripts/components/icons/MainLogo.vue'
@@ -114,6 +115,30 @@ const subheading = computed<string>(() => {
   if (window.login_page_description) return window.login_page_description
   const name = route.name?.toString() ?? 'login'
   return COPY[name]?.subheading ?? COPY.login.subheading
+})
+
+/**
+ * Before a client is connected the card belongs to the connect and retry
+ * screens, which carry their own headings. The generic "Welcome back" only
+ * makes sense once there is a server to sign in to.
+ *
+ * The boot state is imported lazily so `client/state` stays out of the web
+ * bundle, where the branch folds away entirely.
+ */
+const clientBoot = shallowRef<{ status: string } | null>(null)
+
+if (__INVOICESHELF_CLIENT__) {
+  void import('@/scripts/client/state').then((module) => {
+    clientBoot.value = module.clientState
+  })
+}
+
+const showHeading = computed<boolean>(() => {
+  if (!__INVOICESHELF_CLIENT__) {
+    return true
+  }
+
+  return clientBoot.value !== null && clientBoot.value.status === 'ready'
 })
 
 const copyrightText = computed<string | null>(() => window.copyright_text ?? null)
