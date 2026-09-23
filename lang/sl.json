@@ -18,7 +18,11 @@
     "admin": "Administration",
     "administration": "Administration",
     "companies": "Companies",
-    "all_users": "Users"
+    "all_users": "Users",
+    "more": "More",
+    "menu": "Menu",
+    "account_settings": "Account settings",
+    "account_menu": "Account menu for {name}"
   },
   "general": {
     "add_company": "Dodaj Podjetje",
@@ -71,12 +75,12 @@
     "showing": "Prikazujem",
     "of": "od",
     "actions": "Dejanja",
-    "subtotal": "PODSKUPAJ",
-    "discount": "POPUST",
+    "subtotal": "Subtotal",
+    "discount": "Discount",
     "fixed": "Določeno",
     "percentage": "Procent",
     "tax": "Davek",
-    "total_amount": "SKUPNI ZNESEK",
+    "total_amount": "Total amount",
     "bill_to": "Račun na",
     "ship_to": "Poslano na",
     "due": "Zapadlost",
@@ -128,18 +132,72 @@
       "showing": "Prikaz",
       "to": "na .",
       "of": "na spletnem mestu .",
-      "results": "rezultati"
+      "results": "rezultati",
+      "label": "Pagination",
+      "page": "Page {page}"
     },
     "file_upload": {
       "drag_a_file": "Povlecite datoteko sem ali",
       "browse": "Brskanje po",
-      "to_choose": "za izbiro datoteke"
+      "to_choose": "za izbiro datoteke",
+      "take_photo": "Take photo",
+      "capture_failed": "The photo could not be taken. Choose a file instead.",
+      "choose_file": "Choose a file",
+      "remove_file": "Remove file"
     },
     "multiselect": {
       "the_list_is_empty": "Seznam je prazen",
       "no_results_found": "Ni bilo najdenih rezultatov"
     },
-    "copy_to_clipboard": "Kopiranje v odložišče"
+    "copy_to_clipboard": "Kopiranje v odložišče",
+    "new": "New",
+    "expand": "Expand",
+    "theme": "Theme",
+    "theme_light": "Light",
+    "theme_dark": "Dark",
+    "theme_system": "System",
+    "breadcrumb": "Breadcrumb",
+    "selected_count": "{count} selected",
+    "close": "Close",
+    "apply": "Apply",
+    "show_password": "Show password",
+    "hide_password": "Hide password",
+    "successful": "Done.",
+    "something_went_wrong": "Something went wrong. Please try again.",
+    "skip_to_content": "Skip to content",
+    "current": "(current)",
+    "list": "List",
+    "sort_ascending": "Sort order: ascending",
+    "sort_descending": "Sort order: descending",
+    "remove_named": "Remove {name}",
+    "editor": {
+      "toolbar": "Formatting",
+      "bold": "Bold",
+      "italic": "Italic",
+      "strike": "Strikethrough",
+      "code": "Inline code",
+      "paragraph": "Paragraph",
+      "h1": "Heading 1",
+      "h2": "Heading 2",
+      "h3": "Heading 3",
+      "bulletList": "Bulleted list",
+      "orderedList": "Numbered list",
+      "blockquote": "Quote",
+      "codeBlock": "Code block",
+      "undo": "Undo",
+      "redo": "Redo",
+      "alignLeft": "Align left",
+      "alignRight": "Align right",
+      "alignJustify": "Justify",
+      "alignCenter": "Center",
+      "addLink": "Link",
+      "link_url": "Link address"
+    },
+    "email_preview": "Email preview",
+    "pdf_preview": "PDF preview",
+    "step_of": "Step {step} of {count}",
+    "actions_for": "Actions for {name}",
+    "select_named": "Select {name}"
   },
   "dashboard": {
     "select_year": "Izberite leto",
@@ -154,27 +212,52 @@
       "total_sales": "Prodaja",
       "total_receipts": "Prejemki",
       "total_expense": "Stroški",
-      "net_income": "Neto prihodki",
+      "net_income": "Net income",
       "year": "Izberite leto"
     },
     "monthly_chart": {
       "title": "Prodaja in odhodki"
     },
     "recent_invoices_card": {
-      "title": "zapadli računi",
-      "due_on": "Rok za plačilo na",
+      "title": "Due invoices",
+      "due_on": "Due on",
       "customer": "Stranka",
-      "amount_due": "Dolgovani znesek",
+      "amount_due": "Amount due",
       "actions": "Dejanja",
-      "view_all": "Prikaži vse"
+      "view_all": "View all"
     },
     "recent_estimate_card": {
-      "title": "Nedavne ocene",
+      "title": "Recent estimates",
       "date": "Datum",
       "customer": "Stranka",
-      "amount_due": "Dolgovani znesek",
+      "amount_due": "Amount",
       "actions": "Ukrepi",
-      "view_all": "Prikaži vse"
+      "view_all": "View all"
+    },
+    "receivables": {
+      "title": "Owed to you",
+      "on_invoices": "On {count} sent invoice | On {count} sent invoices",
+      "overdue": "Overdue",
+      "due_soon": "Due in the next 30 days",
+      "due_later": "Due later",
+      "invoice_count": "{count} invoice | {count} invoices",
+      "nothing_owed": "Nothing is owed to you right now.",
+      "view_invoices": "View invoices"
+    },
+    "cashflow": {
+      "title": "Cash flow",
+      "show_table": "Show as table",
+      "hide_table": "Hide table",
+      "month": "Month",
+      "chart_style": "Chart style",
+      "area": "Area",
+      "bars": "Bars",
+      "day": "Day"
+    },
+    "counts": {
+      "customers": "customer | customers",
+      "invoices": "invoice | invoices",
+      "estimates": "estimate | estimates"
     }
   },
   "tax_types": {
@@ -193,10 +276,13 @@
     "search": "Iskanje...",
     "customers": "Stranke",
     "users": "Uporabniki",
-    "no_results_found": "Ni bilo najdenih rezultatov"
+    "no_results_found": "Ni bilo najdenih rezultatov",
+    "placeholder": "Search or jump to…",
+    "go_to": "Go to",
+    "create": "Create"
   },
   "company_switcher": {
-    "label": "Zamenjaj podjetje",
+    "label": "Switch company",
     "no_results_found": "Ni bilo najdenih rezultatov",
     "add_new_company": "Dodajanje novega podjetja",
     "new_company": "Novo podjetje",
@@ -204,15 +290,22 @@
   },
   "dateRange": {
     "today": "Danes",
-    "this_week": "Ta teden",
-    "this_month": "Ta mesec",
-    "this_quarter": "To četrtletje",
-    "this_year": "Letos",
-    "previous_week": "Prejšnji teden",
-    "previous_month": "Prejšnji mesec",
-    "previous_quarter": "Prejšnja četrtina",
-    "previous_year": "Predhodno Leto",
-    "custom": "Po meri"
+    "this_week": "This week",
+    "this_month": "This month",
+    "this_quarter": "This quarter",
+    "this_year": "This year",
+    "previous_week": "Previous week",
+    "previous_month": "Previous month",
+    "previous_quarter": "Previous quarter",
+    "previous_year": "Previous year",
+    "custom": "Po meri",
+    "last_12_months": "Last 12 months",
+    "custom_range": "Custom range",
+    "period": "Period",
+    "showing": "Showing {range}",
+    "pick_start": "Pick the first day",
+    "pick_end": "Now pick the last day",
+    "too_long": "Pick a range of up to {years} years"
   },
   "customers": {
     "title": "Stranke",
@@ -347,10 +440,10 @@
     "all": "Vse",
     "paid": "Plačano",
     "unpaid": "Neplačano",
-    "customer": "NAROČNIK",
-    "ref_no": "REF. ŠT.",
-    "number": "ŠTEVILKA",
-    "amount_due": "DOLGOVANI ZNESEK",
+    "customer": "Customer",
+    "ref_no": "Ref no.",
+    "number": "Number",
+    "amount_due": "Amount due",
     "partially_paid": "Delno plačano",
     "total": "Skupaj",
     "discount": "Popust",
@@ -449,11 +542,11 @@
     "viewed": "Ogledno",
     "overdue": "Zapadli",
     "completed": "Zaključeno",
-    "customer": "NAROČNIK",
-    "paid_status": "PLAČANO STANJE",
-    "ref_no": "REF. ŠT.",
-    "number": "ŠTEVILKA",
-    "amount_due": "DOLGOVANI ZNESEK",
+    "customer": "Customer",
+    "paid_status": "Paid status",
+    "ref_no": "Ref no.",
+    "number": "Number",
+    "amount_due": "Amount due",
     "partially_paid": "Delno plačano",
     "total": "Skupaj",
     "discount": "Popust",
@@ -539,7 +632,16 @@
       "tax": "Davek",
       "amount": "Znesek",
       "select_an_item": "Vnesite ali kliknite za izbiro elementa",
-      "type_item_description": "Vrsta Postavka Opis (neobvezno)"
+      "type_item_description": "Vrsta Postavka Opis (neobvezno)",
+      "options": "Options",
+      "item_actions": "Item actions",
+      "move_up": "Move up",
+      "move_down": "Move down",
+      "remove": "Remove item",
+      "item_actions_for": "Actions for item {position}",
+      "discount_type": "Discount type: {type}",
+      "reorder": "Move item {position} of {count}. Use the up and down arrow keys",
+      "moved": "Moved to position {position} of {count}"
     },
     "payment_attached_message": "Enemu od izbranih računov je že priloženo plačilo. Če želite nadaljevati z odstranjevanjem, najprej izbrišite priložena plačila.",
     "confirm_delete": "Tega računa ne boste mogli izterjati | Teh računov ne boste mogli izterjati",
@@ -564,11 +666,11 @@
     "overdue": "Zapadli",
     "active": "Aktivno",
     "completed": "Zaključeno",
-    "customer": "NAROČNIK",
-    "paid_status": "PLAČANO STANJE",
-    "ref_no": "REF. ŠT.",
-    "number": "ŠTEVILKA",
-    "amount_due": "DOLGOVANI ZNESEK",
+    "customer": "Customer",
+    "paid_status": "Paid status",
+    "ref_no": "Ref no.",
+    "number": "Number",
+    "amount_due": "Amount due",
     "partially_paid": "Delno plačano",
     "total": "Skupaj",
     "discount": "Popust",
@@ -646,6 +748,7 @@
     },
     "frequency": {
       "title": "Pogostost (z uporabo formata cron)",
+      "label": "Frequency",
       "select_frequency": "Izberite frekvenco",
       "minute": "Minuta",
       "hour": "Ura",
@@ -808,6 +911,51 @@
     "enter_password": "Vnesite geslo",
     "retype_password": "Ponovite geslo"
   },
+  "client": {
+    "connect_heading": "Connect to your server",
+    "connect_description": "Enter the address of the InvoiceShelf server you want to use.",
+    "server_address": "Server address",
+    "connect": "Connect",
+    "connect_anyway": "Connect anyway",
+    "invalid_server_url": "Enter the full address, including http:// or https://",
+    "insecure_warning": "This address is not encrypted. Anyone on the network can read what you send to it.",
+    "app_url_mismatch": "The server calls itself {host}. Logos and attachments may not load.",
+    "unreachable_heading": "Cannot reach the server",
+    "unreachable_description": "Nothing answered at {server}. Check the address, and that the server is running and reachable from this device.",
+    "too_old_heading": "This server is too old",
+    "too_old_description": "It runs {version}, and this app needs {required} or newer.",
+    "too_old_short": "This server is too old for this app.",
+    "update_app_heading": "Update the app",
+    "update_app_description": "This server needs app version {required} or newer. This app is {current}.",
+    "retry": "Retry",
+    "change_server": "Change server",
+    "connected_to": "Connected to {server}",
+    "modules_failed": "Some add-ons did not load: {names}",
+    "app_lock_title": "App lock",
+    "app_lock_description": "Ask for this device's Face ID, fingerprint or passcode before the app opens.",
+    "app_lock_toggle": "Require Face ID or fingerprint to open the app",
+    "app_lock_toggle_description": "The app locks when you open it, and when you come back to it after a while.",
+    "app_lock_enable_failed": "The app lock was not turned on: this device did not confirm it is you.",
+    "app_lock_reason": "Unlock InvoiceShelf",
+    "app_lock_locked_heading": "InvoiceShelf is locked",
+    "app_lock_locked_description": "Confirm it is you to get back to your account.",
+    "app_lock_unlock": "Unlock",
+    "app_lock_sign_out": "Sign out instead"
+  },
+  "devices": {
+    "title": "Devices",
+    "description": "The devices signed in to your account. Revoking one signs it out the next time it contacts the server.",
+    "this_device": "This device",
+    "added_on": "Added {date}",
+    "last_used": "Last used {date}",
+    "never_used": "Never used",
+    "revoke": "Revoke",
+    "revoke_confirm": "{name} will be signed out the next time it contacts the server.",
+    "revoke_current_confirm": "This is the device you are using. Revoking it signs you out here.",
+    "revoked_message": "Device revoked successfully",
+    "no_devices": "No devices",
+    "no_devices_description": "Devices signed in with the mobile app appear here."
+  },
   "modules": {
     "buy_now": "Kupi zdaj",
     "install": "Namestitev",
@@ -913,7 +1061,9 @@
     "cancel_invitation": "Cancel Invitation",
     "role": "Role",
     "invited_by": "Invited By",
-    "sent_at": "Sent At"
+    "sent_at": "Sent At",
+    "no_users": "No members yet",
+    "list_of_users": "Invite the people who work with you. They show up here once they join."
   },
   "reports": {
     "title": "Poročilo",
@@ -980,6 +1130,10 @@
       "date_range": "Izberite razpon datumov"
     }
   },
+  "pdf": {
+    "open_pdf": "Open PDF",
+    "download_failed": "Unable to download the document"
+  },
   "settings": {
     "menu_title": {
       "account_settings": "Nastavitve računa",
@@ -993,6 +1147,7 @@
       "backup": "Varnostna kopija",
       "file_disk": "Datoteka Disk",
       "fonts": "Font Packages",
+      "currencies": "Currencies",
       "custom_fields": "Polja po meri",
       "payment_modes": "Načini plačila",
       "notes": "Opombe",
@@ -1035,7 +1190,16 @@
       "right": "Desno",
       "left": "Leva stran",
       "action": "Akcija",
-      "add_currency": "Dodajanje valute"
+      "add_currency": "Dodajanje valute",
+      "description": "Every currency this installation can invoice in. The list is shared by all companies rather than set per company.",
+      "refresh": "Refresh list",
+      "search": "Search by name or code",
+      "count": "No currencies | 1 currency | {count} currencies",
+      "decimals": "no decimals | 1 decimal | {count} decimals",
+      "refreshed": "Currency list refreshed: {added} added, {updated} corrected.",
+      "already_current": "The currency list is already up to date.",
+      "refresh_failed": "The currency list could not be refreshed.",
+      "none_found": "No currency matches that search."
     },
     "mail": {
       "host": "Gostitelj pošte",
@@ -1340,7 +1504,8 @@
           "invoice": "Račun",
           "payment": "Plačilo"
         }
-      }
+      },
+      "reorder_component": "Move {name}, {position} of {count}. Use the up and down arrow keys"
     },
     "account_settings": {
       "profile_picture": "Profilna slika",
@@ -1410,7 +1575,7 @@
       "key": "Ključ API",
       "name": "Ime",
       "driver": "Voznik",
-      "is_default": "JE PRIVZETO",
+      "is_default": "Is default",
       "currency": "Valute",
       "exchange_rate_confirm_delete": "Tega gonilnika ne boste mogli obnoviti.",
       "created_message": "Ponudnik Uspešno ustvarjen",
@@ -1427,7 +1592,8 @@
       "url": "URL",
       "active": "Aktivno",
       "currency_help_text": "Ta ponudnik se bo uporabljal samo v zgoraj izbranih valutah.",
-      "currency_in_used": "Naslednje valute so že aktivne pri drugem ponudniku. Če želite ponovno aktivirati tega ponudnika, odstranite te valute iz izbire."
+      "currency_in_used": "Naslednje valute so že aktivne pri drugem ponudniku. Če želite ponovno aktivirati tega ponudnika, odstranite te valute iz izbire.",
+      "fetch_latest": "Fetch the latest exchange rate"
     },
     "tax_types": {
       "title": "Vrste davkov",
@@ -1547,6 +1713,9 @@
     "update_app": {
       "title": "Posodobitev aplikacije",
       "description": "Program InvoiceShelf lahko preprosto posodobite tako, da s klikom na spodnji gumb preverite, ali je na voljo nova posodobitev.",
+      "client_title": "Server Update",
+      "client_description": "Check the server this app is connected to for a new InvoiceShelf release and install it. The app itself is updated through your device's app store.",
+      "client_versions": "Connected to {server}, server {serverVersion}, app {appVersion}",
       "check_update": "Preverite posodobitve",
       "insider_consent": "Prijavite se na prejemanje sporočil Insider. Priporočamo samo za testiranje.",
       "avail_update": "Na voljo je nova posodobitev",
@@ -1640,7 +1809,7 @@
       "dropbox_app": "Aplikacija Dropbox",
       "dropbox_root": "Korenski koren Dropboxa",
       "default_driver": "Privzet voznik",
-      "is_default": "JE PRIVZETO",
+      "is_default": "Is default",
       "set_default_disk": "Nastavitev privzetega diska",
       "set_default_disk_confirm": "Ta disk bo nastavljen kot privzeti in vsi novi dokumenti PDF bodo shranjeni na tem disku.",
       "success_set_default_disk": "Disk je uspešno nastavljen kot privzeti",
@@ -2019,5 +2188,11 @@
       "impersonating_banner": "You are currently impersonating a user. All actions are logged.",
       "stop_impersonating": "Stop Impersonating"
     }
+  },
+  "notifications": {
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Note"
   }
 }
