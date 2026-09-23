@@ -49,9 +49,9 @@ class MailConfigurationService implements MailConfigurator
             'mail_local_domain',
         ],
         'mail' => [],
-        'sendmail' => [
-            'mail_sendmail_path',
-        ],
+        // The sendmail binary comes from MAIL_SENDMAIL_PATH alone. Whatever is
+        // configured there is run as a command, so it never comes from a form.
+        'sendmail' => [],
         'ses' => [
             'mail_ses_key',
             'mail_ses_secret',
@@ -198,9 +198,6 @@ class MailConfigurationService implements MailConfigurator
                 'mail_timeout' => ['nullable', 'integer'],
                 'mail_local_domain' => ['nullable', 'string'],
             ],
-            'sendmail' => [
-                'mail_sendmail_path' => ['nullable', 'string'],
-            ],
             'ses' => [
                 'mail_ses_key' => ['required', 'string'],
                 'mail_ses_secret' => ['required', 'string'],
@@ -308,7 +305,6 @@ class MailConfigurationService implements MailConfigurator
 
         match ($driver) {
             'smtp' => $this->applySmtpSettings($settings, $scope),
-            'sendmail' => $this->applySendmailSettings($settings, $scope),
             'ses' => $this->applySesSettings($settings, $scope),
             'mailgun' => $this->applyMailgunSettings($settings, $scope),
             'postmark' => $this->applyPostmarkSettings($settings, $scope),
@@ -332,11 +328,6 @@ class MailConfigurationService implements MailConfigurator
         Config::set('mail.mailers.smtp.url', $this->nullIfBlank($this->resolveStoredValue($settings, $scope, 'mail_url')));
         Config::set('mail.mailers.smtp.timeout', $this->nullIfBlank($this->resolveStoredValue($settings, $scope, 'mail_timeout')));
         Config::set('mail.mailers.smtp.local_domain', $this->nullIfBlank($this->resolveStoredValue($settings, $scope, 'mail_local_domain')));
-    }
-
-    private function applySendmailSettings(array $settings, string $scope): void
-    {
-        Config::set('mail.mailers.sendmail.path', $this->resolveStoredValue($settings, $scope, 'mail_sendmail_path'));
     }
 
     private function applySesSettings(array $settings, string $scope): void
@@ -405,7 +396,6 @@ class MailConfigurationService implements MailConfigurator
             'mail_port' => config('mail.mailers.smtp.port', 587),
             'mail_username', 'mail_password', 'mail_scheme', 'mail_url', 'mail_timeout', 'mail_local_domain' => '',
             'mail_encryption' => config('mail.mailers.smtp.encryption', 'none'),
-            'mail_sendmail_path' => config('mail.mailers.sendmail.path', '/usr/sbin/sendmail -bs -i'),
             'mail_ses_key' => config('services.ses.key', ''),
             'mail_ses_secret' => config('services.ses.secret', ''),
             'mail_ses_region' => config('services.ses.region', 'us-east-1'),
@@ -453,7 +443,6 @@ class MailConfigurationService implements MailConfigurator
             'mail_postmark_message_stream_id' => $value === '' ? '' : $value,
             'mail_mailgun_endpoint' => $value === '' ? 'api.mailgun.net' : $value,
             'mail_mailgun_scheme' => $value === '' ? 'https' : $value,
-            'mail_sendmail_path' => $value === '' ? '/usr/sbin/sendmail -bs -i' : $value,
             'mail_ses_region' => $value === '' ? 'us-east-1' : $value,
             'mail_encryption' => $value === '' ? 'none' : $value,
             default => $value,
