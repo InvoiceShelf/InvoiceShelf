@@ -29,6 +29,7 @@
     "eslint": "^10.0.0",
     "eslint-config-prettier": "^10.0.0",
     "eslint-plugin-vue": "^10.0.0",
+    "eslint-plugin-vuejs-accessibility": "^2.6.0",
     "prettier": "^3.4.2",
     "tailwind-scrollbar": "^4.0.0",
     "tailwindcss": "^4.0.0",
