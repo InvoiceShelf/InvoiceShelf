@@ -23,7 +23,7 @@ class RolePolicy
      */
     public function view(User $user, Role $role): bool
     {
-        return $user->isOwner();
+        return $user->isOwner() && $this->inActiveCompany($role);
     }
 
     /**
@@ -39,7 +39,7 @@ class RolePolicy
      */
     public function update(User $user, Role $role): bool
     {
-        return $user->isOwner();
+        return $user->isOwner() && $this->inActiveCompany($role);
     }
 
     /**
@@ -47,7 +47,7 @@ class RolePolicy
      */
     public function delete(User $user, Role $role): bool
     {
-        return $user->isOwner();
+        return $user->isOwner() && $this->inActiveCompany($role);
     }
 
     /**
@@ -55,7 +55,7 @@ class RolePolicy
      */
     public function restore(User $user, Role $role): bool
     {
-        return $user->isOwner();
+        return $user->isOwner() && $this->inActiveCompany($role);
     }
 
     /**
@@ -63,6 +63,15 @@ class RolePolicy
      */
     public function forceDelete(User $user, Role $role): bool
     {
-        return $user->isOwner();
+        return $user->isOwner() && $this->inActiveCompany($role);
+    }
+
+    /**
+     * Bouncer's query scoping does not cover route binding, so a role of
+     * another company would otherwise resolve here.
+     */
+    private function inActiveCompany(Role $role): bool
+    {
+        return (int) $role->scope === (int) request()->header('company');
     }
 }
