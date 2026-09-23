@@ -2,7 +2,23 @@
 
 namespace App\Platform\Mcp\Servers;
 
+use App\Platform\Mcp\Tools\Catalog\SearchItemsTool;
 use App\Platform\Mcp\Tools\Company\GetCompanyContextTool;
+use App\Platform\Mcp\Tools\Contacts\GetCustomerTool;
+use App\Platform\Mcp\Tools\Contacts\SearchCustomersTool;
+use App\Platform\Mcp\Tools\Purchases\ListExpenseCategoriesTool;
+use App\Platform\Mcp\Tools\Purchases\SearchExpensesTool;
+use App\Platform\Mcp\Tools\Receivables\GetPaymentTool;
+use App\Platform\Mcp\Tools\Receivables\ListRecentPaymentsTool;
+use App\Platform\Mcp\Tools\Reporting\GetCompanyStatsTool;
+use App\Platform\Mcp\Tools\Reporting\RankExpenseCategoriesTool;
+use App\Platform\Mcp\Tools\Reporting\RankTopCustomersTool;
+use App\Platform\Mcp\Tools\Reporting\RankTopItemsTool;
+use App\Platform\Mcp\Tools\Sales\GetEstimateTool;
+use App\Platform\Mcp\Tools\Sales\GetInvoiceTool;
+use App\Platform\Mcp\Tools\Sales\ListOverdueInvoicesTool;
+use App\Platform\Mcp\Tools\Sales\SearchEstimatesTool;
+use App\Platform\Mcp\Tools\Sales\SearchInvoicesTool;
 use Laravel\Mcp\Server;
 use Laravel\Mcp\Server\Attributes\Instructions;
 use Laravel\Mcp\Server\Attributes\Name;
@@ -36,6 +52,22 @@ class InvoiceShelfServer extends Server
 
     protected array $tools = [
         GetCompanyContextTool::class,
+        SearchCustomersTool::class,
+        GetCustomerTool::class,
+        SearchItemsTool::class,
+        SearchInvoicesTool::class,
+        GetInvoiceTool::class,
+        ListOverdueInvoicesTool::class,
+        SearchEstimatesTool::class,
+        GetEstimateTool::class,
+        ListRecentPaymentsTool::class,
+        GetPaymentTool::class,
+        SearchExpensesTool::class,
+        ListExpenseCategoriesTool::class,
+        GetCompanyStatsTool::class,
+        RankTopCustomersTool::class,
+        RankTopItemsTool::class,
+        RankExpenseCategoriesTool::class,
     ];
 
     protected function boot(): void
