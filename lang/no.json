@@ -2325,5 +2325,16 @@
     "error": "Feil",
     "warning": "Advarsel",
     "info": "Notat"
+  },
+  "demo": {
+    "banner": "This is the InvoiceShelf demo. Everyone shares it, and changes are wiped at every reset.",
+    "resets_in_hours": "Next reset in {hours} h {minutes} min.",
+    "resets_in_minutes": "Next reset in {minutes} min.",
+    "blocked": "This is turned off in the demo.",
+    "login_title": "Try the demo",
+    "login_note": "Sign in as {email} with the password {password}. Every visitor shares this account, and the data is reset every few hours.",
+    "try_portal": "Try the customer portal",
+    "portal_note": "Sign in there as {email} with the password {password}.",
+    "portal_login_note": "This is the demo's customer portal: the sign-in is filled in for you."
   }
 }
