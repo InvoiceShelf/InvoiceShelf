@@ -7,6 +7,40 @@ section beneath it is what CI publishes to the updater — see
 Releases before 2.4.0 are on GitHub:
 https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 2.4.4 - 2026-09-23
+
+Security release for the 2.x line. It closes nine vulnerabilities: two let people read documents they should never have seen, and one let an administrator run commands on the server. **Upgrade every 2.x install**, and read the upgrade notes first, because links in emails you have already sent stop working.
+
+### Public document links could be guessed
+
+The link in an invoice, estimate or payment email opens the document without signing in, so the token in it has to be secret. It was built from the record's number with Hashids, salted with `APP_KEY`, but Hashids reads only the start of its salt and the key never counted: every installation gave the same record the same token. Anyone could work through the numbers and open every emailed document still inside its link expiry, which is 7 days by default and unlimited if a company turned expiry off.
+
+Links now carry 40 random characters, and the upgrade gives every existing document and sent email a new one. (#817)
+
+### Document PDFs opened for anyone signed in
+
+`/invoices/pdf/...`, `/estimates/pdf/...` and `/payments/pdf/...` only checked that someone was signed in, so any customer portal account, or any user of any company on the installation, could open any document whose link it had or could guess. A customer now opens only their own documents, and a user only their own company's. (#820)
+
+### Other fixes
+
+- Adding or editing a user trusted the list of companies it was given, so an owner could put an account into any other company on the installation with any role. A user now goes only into companies you own, with a role that exists there, and a user who also belongs to someone else's company keeps their email and password. GHSA-c9cx (#826)
+- The sendmail path in the mail settings was run as a command, which let an administrator run anything on the server. It now comes from `MAIL_SENDMAIL_PATH` alone. GHSA-gx2q (#827)
+- A payment could name another company's invoice, marking it paid and returning it to the caller. The invoice, customer and payment method must now belong to your company. GHSA-99x6, GHSA-95jm, GHSA-jc2f (#828)
+- Roles of another company could be read by id. GHSA-72h9, GHSA-xxw7, GHSA-cv9w (#829)
+- The URL of a dedicated CurrencyConverter plan was fetched as given, so it could reach internal addresses and the cloud metadata endpoint. It must now be a public address, and redirects are no longer followed. GHSA-3w68, GHSA-vr74 (#830)
+- An upload whose content looked like an image passed even when its name did not, so an HTML file could be stored as a logo or avatar and served from your own domain. GHSA-vv96, GHSA-x7rx (#818)
+- `.env.example` shipped a fixed `APP_KEY`, and the Docker image kept it, so Docker installs without a key of their own shared one public key. GHSA-4752 (#821)
+
+### Upgrade notes
+
+- **Links in emails sent before the upgrade stop working.** Customers still find their documents in the customer portal, and you can send any document again.
+- **Docker:** on the first start after upgrading, the container generates an `APP_KEY` of its own and keeps it in `storage/app/.app_key`, so it survives recreating the container. Everyone signs in again once. If you set `APP_KEY` yourself nothing changes, unless you set it to the key from the old `.env.example`: the container warns about that at startup, and you should replace it.
+- **Manual installs:** if your `.env` still has `APP_KEY=base64:kgk/4DW1vEVy7aEvet5FPp5un6PIGe/so8H0mvoUtW0=`, run `php artisan key:generate --force`. Everyone signs in again once; 2.x stores nothing else encrypted with it.
+- **Sendmail:** if you use the sendmail driver with a custom path, set it as `MAIL_SENDMAIL_PATH` in the environment. A path saved in the mail settings is deleted by the upgrade.
+- **CurrencyConverter:** the URL of a dedicated plan must be publicly reachable.
+
+Docker: `invoiceshelf/invoiceshelf:2.4.4` (also `:2.4`, `:2` and `:latest`).
+
 ## 2.4.3 — 2026-09-21
 
 Maintenance release for the 2.x line. Recurring invoices have never been generated on a container install, and this fixes that. Recommended for every 2.x install.
