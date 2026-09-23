@@ -3,6 +3,7 @@
 namespace App\Platform\Mcp\Tools;
 
 use App\Platform\Mcp\McpContext;
+use App\Platform\Mcp\Models\McpActivity;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\RateLimiter;
@@ -65,7 +66,7 @@ abstract class McpWriteTool extends McpTool
         $key = $request->get('idempotency_key');
 
         if (! $this->creates() || ! is_string($key) || trim($key) === '') {
-            return Response::structured($this->write($request, $context));
+            return Response::structured($this->recorded($this->write($request, $context), $context));
         }
 
         $cacheKey = 'mcp:idempotency:'.$context->connection->id.':'.$this->name().':'.hash('sha256', $key);
@@ -77,13 +78,35 @@ abstract class McpWriteTool extends McpTool
                 return $stored + ['replayed' => true];
             }
 
-            $result = $this->write($request, $context);
+            $result = $this->recorded($this->write($request, $context), $context);
             Cache::put($cacheKey, $result, now()->addMinutes(self::IDEMPOTENCY_MINUTES));
 
             return $result;
         });
 
         return Response::structured($result);
+    }
+
+    /**
+     * Log a change that went through, with the id of the record it wrote.
+     * An aborted call changed nothing and is not logged.
+     *
+     * @param  array<string, mixed>  $result
+     * @return array<string, mixed>
+     */
+    private function recorded(array $result, McpContext $context): array
+    {
+        if (! ($result['aborted'] ?? false)) {
+            McpActivity::query()->create([
+                'mcp_connection_id' => $context->connection->id,
+                'user_id' => $context->user->id,
+                'company_id' => $context->company->id,
+                'tool' => $this->name(),
+                'subject_id' => is_int($result['id'] ?? null) ? $result['id'] : null,
+            ]);
+        }
+
+        return $result;
     }
 
     /**
