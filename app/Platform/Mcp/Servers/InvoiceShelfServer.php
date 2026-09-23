@@ -11,11 +11,14 @@ use App\Platform\Mcp\Tools\Contacts\GetCustomerTool;
 use App\Platform\Mcp\Tools\Contacts\SearchCustomersTool;
 use App\Platform\Mcp\Tools\Contacts\UpdateCustomerTool;
 use App\Platform\Mcp\Tools\Purchases\CreateExpenseTool;
+use App\Platform\Mcp\Tools\Purchases\DeleteExpenseTool;
 use App\Platform\Mcp\Tools\Purchases\ListExpenseCategoriesTool;
 use App\Platform\Mcp\Tools\Purchases\SearchExpensesTool;
+use App\Platform\Mcp\Tools\Receivables\DeletePaymentTool;
 use App\Platform\Mcp\Tools\Receivables\GetPaymentTool;
 use App\Platform\Mcp\Tools\Receivables\ListRecentPaymentsTool;
 use App\Platform\Mcp\Tools\Receivables\RecordPaymentTool;
+use App\Platform\Mcp\Tools\Receivables\SendPaymentReceiptTool;
 use App\Platform\Mcp\Tools\Reporting\GetCompanyStatsTool;
 use App\Platform\Mcp\Tools\Reporting\RankExpenseCategoriesTool;
 use App\Platform\Mcp\Tools\Reporting\RankTopCustomersTool;
@@ -26,12 +29,16 @@ use App\Platform\Mcp\Tools\Sales\CloneInvoiceTool;
 use App\Platform\Mcp\Tools\Sales\ConvertEstimateToInvoiceTool;
 use App\Platform\Mcp\Tools\Sales\CreateEstimateTool;
 use App\Platform\Mcp\Tools\Sales\CreateInvoiceTool;
+use App\Platform\Mcp\Tools\Sales\DeleteEstimateTool;
+use App\Platform\Mcp\Tools\Sales\DeleteInvoiceTool;
 use App\Platform\Mcp\Tools\Sales\GetEstimateTool;
 use App\Platform\Mcp\Tools\Sales\GetInvoiceTool;
 use App\Platform\Mcp\Tools\Sales\ListOverdueInvoicesTool;
 use App\Platform\Mcp\Tools\Sales\PreviewDocumentTool;
 use App\Platform\Mcp\Tools\Sales\SearchEstimatesTool;
 use App\Platform\Mcp\Tools\Sales\SearchInvoicesTool;
+use App\Platform\Mcp\Tools\Sales\SendEstimateTool;
+use App\Platform\Mcp\Tools\Sales\SendInvoiceTool;
 use App\Platform\Mcp\Tools\Sales\UpdateEstimateTool;
 use App\Platform\Mcp\Tools\Sales\UpdateInvoiceTool;
 use Laravel\Mcp\Server;
@@ -98,6 +105,13 @@ class InvoiceShelfServer extends Server
         ConvertEstimateToInvoiceTool::class,
         RecordPaymentTool::class,
         CreateExpenseTool::class,
+        SendInvoiceTool::class,
+        SendEstimateTool::class,
+        SendPaymentReceiptTool::class,
+        DeleteInvoiceTool::class,
+        DeleteEstimateTool::class,
+        DeletePaymentTool::class,
+        DeleteExpenseTool::class,
     ];
 
     protected function boot(): void
