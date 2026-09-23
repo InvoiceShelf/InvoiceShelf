@@ -17,6 +17,11 @@ use Laravel\Mcp\Server\Tools\Annotations\IsReadOnly;
 use Laravel\Mcp\Server\Transport\FakeTransporter;
 use Laravel\Passport\Http\Controllers\ApproveAuthorizationController;
 use Laravel\Passport\Http\Controllers\AuthorizationController;
+use Tests\Support\OAuthTesting;
+
+// Resolving the OAuth controllers builds the authorization server, which
+// needs signing keys; a CI checkout has none on disk.
+beforeEach(fn () => OAuthTesting::useKeys());
 
 test('the mcp platform capability is registered once and replaces the oauth endpoints it extends', function () {
     expect(app()->getProviders(McpServiceProvider::class))->toHaveCount(1)
