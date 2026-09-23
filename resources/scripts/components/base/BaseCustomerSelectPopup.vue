@@ -2,7 +2,7 @@
 import { computed, nextTick, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { onClickOutside, onKeyStroke, useDebounceFn } from '@vueuse/core'
-import { FocusTrap } from '@headlessui/vue'
+import { FocusScope } from 'reka-ui'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/scripts/stores/user.store'
 import { useBreakpoints } from '@/scripts/composables/use-breakpoints'
@@ -85,6 +85,10 @@ watch(
     }
   },
 )
+
+function leaveFocus(event: Event): void {
+  event.preventDefault()
+}
 
 function openPicker(): void {
   isOpen.value = true
@@ -347,11 +351,15 @@ const addressBlocks = computed(() => {
           :leave-active-class="isPhone ? 'transition duration-150 ease-in' : 'transition duration-100 ease-in'"
           :leave-to-class="isPhone ? 'translate-y-full' : 'translate-y-1 opacity-0'"
         >
-          <!-- On phones the sheet keeps focus inside it until it closes -->
+          <!--
+            On phones the sheet keeps focus inside it until it closes. Where
+            focus starts and ends is left to openPicker and closePicker.
+          -->
           <component
-            :is="isPhone ? FocusTrap : 'div'"
+            :is="isPhone ? FocusScope : 'div'"
             v-if="isOpen"
             ref="panel"
+            v-bind="isPhone ? { trapped: true, loop: true } : {}"
             role="dialog"
             :aria-modal="isPhone ? 'true' : undefined"
             :aria-label="$t('customers.select_a_customer')"
@@ -360,6 +368,8 @@ const addressBlocks = computed(() => {
                 ? 'fixed inset-0 z-50 flex flex-col bg-surface'
                 : 'absolute inset-x-0 z-30 mt-2 overflow-hidden border glass-strong rounded-xl'
             "
+            @mount-auto-focus="leaveFocus"
+            @unmount-auto-focus="leaveFocus"
           >
             <div v-if="isPhone" class="flex items-center gap-2 px-2 border-b safe-header border-line-light">
               <button

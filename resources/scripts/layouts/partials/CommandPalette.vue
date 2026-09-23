@@ -1,44 +1,27 @@
 <template>
-  <TransitionRoot
-    as="template"
-    :show="globalStore.isSearchOpen"
-    @after-leave="reset"
-  >
-    <Dialog
-      as="div"
-      class="relative z-50"
-      :initial-focus="input"
-      @close="close"
-    >
-      <TransitionChild
-        as="template"
-        enter="ease-out duration-150"
-        enter-from="opacity-0"
-        enter-to="opacity-100"
-        leave="ease-in duration-100"
-        leave-from="opacity-100"
-        leave-to="opacity-0"
+  <DialogRoot :open="globalStore.isSearchOpen" @update:open="(open) => !open && close()">
+    <DialogPortal>
+      <DialogOverlay
+        class="
+          fixed inset-0 z-50 bg-overlay
+          data-[state=open]:animate-overlay-in data-[state=closed]:animate-overlay-out
+        "
       >
-        <div class="fixed inset-0 bg-overlay" aria-hidden="true" />
-      </TransitionChild>
-
-      <div class="fixed inset-0 md:px-6 md:pt-[12vh]">
-        <TransitionChild
-          as="template"
-          enter="ease-out duration-150"
-          enter-from="opacity-0 md:scale-[0.98]"
-          enter-to="opacity-100 md:scale-100"
-          leave="ease-in duration-100"
-          leave-from="opacity-100 md:scale-100"
-          leave-to="opacity-0 md:scale-[0.98]"
-        >
-          <DialogPanel
+        <div class="fixed inset-0 md:px-6 md:pt-[12vh]">
+          <DialogContent
+            :aria-describedby="undefined"
             class="
-              flex flex-col w-full h-full mx-auto overflow-hidden glass-strong
+              flex flex-col w-full h-full mx-auto overflow-hidden glass-strong focus:outline-hidden
               md:h-auto md:max-h-[70vh] md:max-w-xl md:rounded-2xl md:border
               safe-header
+              md:data-[state=open]:animate-pop-in md:data-[state=closed]:animate-pop-out
             "
+            @open-auto-focus="focusInput"
+            @pointer-down-outside="keepForeignLayers"
+            @focus-outside="keepForeignLayers"
+            @interact-outside="keepForeignLayers"
           >
+            <DialogTitle class="sr-only">{{ $t('global_search.placeholder') }}</DialogTitle>
             <div class="flex items-center gap-3 px-4 border-b h-14 shrink-0 border-line-light">
               <BaseIcon name="MagnifyingGlassIcon" class="w-5 h-5 shrink-0 text-subtle" aria-hidden="true" />
               <input
@@ -137,21 +120,17 @@
                 {{ $t('global_search.no_results_found') }}
               </p>
             </div>
-          </DialogPanel>
-        </TransitionChild>
-      </div>
-    </Dialog>
-  </TransitionRoot>
+          </DialogContent>
+        </div>
+      </DialogOverlay>
+    </DialogPortal>
+  </DialogRoot>
 </template>
 
 <script setup lang="ts">
 import { computed, nextTick, ref, watch } from 'vue'
-import {
-  Dialog,
-  DialogPanel,
-  TransitionChild,
-  TransitionRoot,
-} from '@headlessui/vue'
+import { DialogContent, DialogOverlay, DialogPortal, DialogRoot, DialogTitle } from 'reka-ui'
+import { keepForeignLayers } from '@/scripts/utils/dialog-layers'
 import { useDebounceFn, useEventListener } from '@vueuse/core'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -227,7 +206,10 @@ useEventListener(window, 'keydown', (event: KeyboardEvent) => {
     return
   }
 
-  const otherDialogOpen = !globalStore.isSearchOpen && document.querySelector('[role="dialog"], [role="alertdialog"]')
+  // An open modal dialog, not an anchored popover (Reka gives those role=dialog too)
+  const otherDialogOpen = !globalStore.isSearchOpen && document.querySelector(
+    '[role="alertdialog"], [role="dialog"]:not([data-reka-popper-content-wrapper] [role="dialog"])',
+  )
 
   if (otherDialogOpen) {
     return
@@ -437,5 +419,18 @@ function reset(): void {
   query.value = ''
   remote.value = {}
   activeIndex.value = 0
+}
+
+// Each opening starts from an empty search
+watch(() => globalStore.isSearchOpen, (open) => {
+  if (open) {
+    reset()
+  }
+})
+
+// The search field, not the first button, takes focus when the palette opens
+function focusInput(event: Event): void {
+  event.preventDefault()
+  input.value?.focus()
 }
 </script>

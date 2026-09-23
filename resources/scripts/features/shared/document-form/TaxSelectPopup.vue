@@ -1,106 +1,103 @@
 <template>
   <div class="w-full mt-4 tax-select">
-    <Popover class="relative">
-      <PopoverButton
+    <PopoverRoot v-slot="{ close }">
+      <PopoverTrigger
         class="flex items-center gap-1 text-sm font-medium rounded-md text-primary-600 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
       >
         <BaseIcon name="PlusIcon" class="w-4 h-4" />
         {{ $t('settings.tax_types.add_tax') }}
-      </PopoverButton>
+      </PopoverTrigger>
 
-      <div class="relative w-full max-w-md px-4">
-        <transition
-          enter-active-class="transition duration-200 ease-out"
-          enter-from-class="translate-y-1 opacity-0"
-          enter-to-class="translate-y-0 opacity-100"
-          leave-active-class="transition duration-150 ease-in"
-          leave-from-class="translate-y-0 opacity-100"
-          leave-to-class="translate-y-1 opacity-0"
+      <PopoverPortal>
+        <!-- Over the button, opening towards the start: the totals sit at the end of the form -->
+        <PopoverContent
+          side="bottom"
+          align="end"
+          :side-offset="-20"
+          :avoid-collisions="false"
+          class="
+            z-10 min-w-[350px] focus:outline-hidden
+            data-[state=open]:animate-rise-in data-[state=closed]:animate-rise-out
+          "
         >
-          <PopoverPanel
-            v-slot="{ close }"
-            style="min-width: 350px; margin-inline-start: 62px; top: -28px"
-            class="absolute z-10 px-4 py-2 -translate-x-full rtl:translate-x-full sm:px-0"
-          >
-            <div class="overflow-hidden rounded-xl shadow ring-1 ring-black/5">
-              <!-- Search Input -->
-              <div class="relative bg-surface">
-                <div class="relative p-4">
-                  <BaseInput
-                    v-model="textSearch"
-                    :placeholder="$t('general.search')"
-                    :aria-label="$t('general.search')"
-                    type="search"
-                    class="text-heading"
-                  />
-                </div>
-
-                <!-- List of Taxes -->
-                <div
-                  v-if="filteredTaxType.length > 0"
-                  class="relative flex flex-col overflow-auto list max-h-36 border-t border-line-light"
-                >
-                  <button
-                    v-for="(taxType, idx) in filteredTaxType"
-                    :key="idx"
-                    type="button"
-                    :disabled="existingTaxIds.has(taxType.id)"
-                    class="
-                      w-full px-6 py-4 text-start border-b border-line-light border-solid last:border-b-0
-                      hover:bg-surface-tertiary focus:outline-hidden focus-visible:bg-surface-tertiary
-                      focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus
-                      disabled:bg-surface-tertiary disabled:opacity-50 disabled:cursor-not-allowed
-                    "
-                    @click="selectTaxType(taxType, close)"
-                  >
-                    <span class="flex justify-between px-2">
-                      <span class="m-0 text-base font-semibold leading-tight text-body">
-                        {{ taxType.name }}
-                      </span>
-                      <span class="m-0 text-base font-semibold text-body">
-                        <template v-if="taxType.calculation_type === 'fixed'">
-                          <BaseFormatMoney :amount="taxType.fixed_amount" :currency="companyCurrency" />
-                        </template>
-                        <template v-else>
-                          {{ taxType.percent }} %
-                          <BaseBadge v-if="taxType.compound_tax" class="text-xs">
-                            {{ $t('tax_types.compound_tax') }}
-                          </BaseBadge>
-                        </template>
-                      </span>
-                    </span>
-                  </button>
-                </div>
-
-                <div v-else class="flex justify-center p-5" role="status">
-                  <span class="text-base text-muted">
-                    {{ $t('general.no_tax_found') }}
-                  </span>
-                </div>
+          <div class="overflow-hidden rounded-xl shadow ring-1 ring-black/5">
+            <!-- Search Input -->
+            <div class="relative bg-surface">
+              <div class="relative p-4">
+                <BaseInput
+                  v-model="textSearch"
+                  :placeholder="$t('general.search')"
+                  :aria-label="$t('general.search')"
+                  type="search"
+                  class="text-heading"
+                />
               </div>
 
-              <!-- Add new Tax action -->
-              <button
-                v-if="canCreateTaxType"
-                type="button"
-                class="flex items-center justify-center w-full h-10 px-2 py-3 border-none bg-surface-muted text-primary-600 outline-hidden focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus"
-                @click="openTaxTypeModal"
+              <!-- List of Taxes -->
+              <div
+                v-if="filteredTaxType.length > 0"
+                class="relative flex flex-col overflow-auto list max-h-36 border-t border-line-light"
               >
-                <BaseIcon name="CheckCircleIcon" />
-                <span class="m-0 ms-3 text-sm leading-none font-base">
-                  {{ $t('estimates.add_new_tax') }}
+                <button
+                  v-for="(taxType, idx) in filteredTaxType"
+                  :key="idx"
+                  type="button"
+                  :disabled="existingTaxIds.has(taxType.id)"
+                  class="
+                    w-full px-6 py-4 text-start border-b border-line-light border-solid last:border-b-0
+                    hover:bg-surface-tertiary focus:outline-hidden focus-visible:bg-surface-tertiary
+                    focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus
+                    disabled:bg-surface-tertiary disabled:opacity-50 disabled:cursor-not-allowed
+                  "
+                  @click="selectTaxType(taxType, close)"
+                >
+                  <span class="flex justify-between px-2">
+                    <span class="m-0 text-base font-semibold leading-tight text-body">
+                      {{ taxType.name }}
+                    </span>
+                    <span class="m-0 text-base font-semibold text-body">
+                      <template v-if="taxType.calculation_type === 'fixed'">
+                        <BaseFormatMoney :amount="taxType.fixed_amount" :currency="companyCurrency" />
+                      </template>
+                      <template v-else>
+                        {{ taxType.percent }} %
+                        <BaseBadge v-if="taxType.compound_tax" class="text-xs">
+                          {{ $t('tax_types.compound_tax') }}
+                        </BaseBadge>
+                      </template>
+                    </span>
+                  </span>
+                </button>
+              </div>
+
+              <div v-else class="flex justify-center p-5" role="status">
+                <span class="text-base text-muted">
+                  {{ $t('general.no_tax_found') }}
                 </span>
-              </button>
+              </div>
             </div>
-          </PopoverPanel>
-        </transition>
-      </div>
-    </Popover>
+
+            <!-- Add new Tax action -->
+            <button
+              v-if="canCreateTaxType"
+              type="button"
+              class="flex items-center justify-center w-full h-10 px-2 py-3 border-none bg-surface-muted text-primary-600 outline-hidden focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus"
+              @click="openTaxTypeModal"
+            >
+              <BaseIcon name="CheckCircleIcon" />
+              <span class="m-0 ms-3 text-sm leading-none font-base">
+                {{ $t('estimates.add_new_tax') }}
+              </span>
+            </button>
+          </div>
+        </PopoverContent>
+      </PopoverPortal>
+    </PopoverRoot>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
+import { PopoverContent, PopoverPortal, PopoverRoot, PopoverTrigger } from 'reka-ui'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useModalStore } from '../../../stores/modal.store'

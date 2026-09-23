@@ -40,11 +40,12 @@
 import FlatPickr from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
 import type { CustomLocale, Locale } from 'flatpickr/dist/types/locale'
-import { computed, reactive, watch, ref, useAttrs, useSlots } from 'vue'
+import { computed, inject, reactive, watch, ref, useAttrs, useSlots } from 'vue'
 import { useCompanyStore } from '@/scripts/stores/company.store'
 import { useUserStore } from '@/scripts/stores/user.store'
 import { flatpickrLocale } from '@/scripts/utils/flatpickr-locale'
 import { useFormField } from '@/scripts/composables/use-form-field'
+import { DIALOG_LAYER } from '@/scripts/utils/dialog-layers'
 
 interface FlatPickrInstance {
   fp: { open: () => void; altInput?: HTMLInputElement }
@@ -100,6 +101,7 @@ interface FlatPickrConfig {
   time_24hr: boolean
   locale: CustomLocale | Locale
   altFormat?: string
+  static?: boolean
   onReady: Array<(dates: Date[], value: string, instance: { altInput?: HTMLInputElement }) => void>
 }
 
@@ -136,6 +138,8 @@ function applyFieldAttrs(input?: HTMLInputElement): void {
 
 const config = reactive<FlatPickrConfig>({
   altInput: true,
+  // Inside a dialog the calendar opens in place, within its focus trap
+  static: inject(DIALOG_LAYER, null) !== null,
   enableTime: props.enableTime,
   time_24hr: props.time24hr,
   locale: fpLocale,

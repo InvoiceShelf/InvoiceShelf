@@ -1,8 +1,5 @@
 <template>
-  <!--
-    A native switch: a button with role="switch". Headless UI's Switch set its
-    own aria-labelledby last, which wiped out any label passed in.
-  -->
+  <!-- A native switch: a button with role="switch", named by its label -->
   <div class="flex flex-row items-start" :class="$attrs.class" :style="$attrs.style as StyleValue">
     <label v-if="labelLeft" :id="labelId" :for="switchId" class="me-4 cursor-pointer">
       {{ labelLeft }}
