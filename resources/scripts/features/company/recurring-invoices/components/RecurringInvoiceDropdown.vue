@@ -1,10 +1,12 @@
 <template>
   <BaseDropdown :content-loading="recurringInvoiceStore.isFetchingViewData">
     <template #activator>
-      <BaseButton v-if="isDetailView" variant="primary">
-        <BaseIcon name="EllipsisHorizontalIcon" class="h-5 text-white" />
-      </BaseButton>
-      <BaseIcon v-else name="EllipsisHorizontalIcon" class="h-5 text-muted" />
+      <span v-if="isDetailView" data-overflow class="inline-flex items-center justify-center border rounded-lg w-11 h-11 md:w-9 md:h-9 bg-surface border-line-default text-body hover:bg-hover">
+        <BaseIcon name="EllipsisHorizontalIcon" class="w-5 h-5" />
+      </span>
+      <span v-else class="inline-flex items-center justify-center rounded-lg w-9 h-9 text-muted hover:bg-hover-strong hover:text-heading">
+        <BaseIcon name="EllipsisHorizontalIcon" class="w-5 h-5" />
+      </span>
     </template>
 
     <!-- Edit Recurring Invoice -->

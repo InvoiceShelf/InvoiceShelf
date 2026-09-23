@@ -1,31 +1,170 @@
 <template>
-  <BasePage v-if="estimateData" class="xl:pl-96 xl:ml-8">
-    <BasePageHeader :title="pageTitle">
-      <template #actions>
-        <div class="mr-3 text-sm">
+  <div v-if="estimateData" class="flex min-h-full">
+    <!-- The other estimates, beside the one on screen (wide screens only) -->
+    <RecordListPane
+      ref="listPane"
+      :search="searchData.searchText"
+      :sort-options="sortOptions"
+      :sort-field="searchData.orderByField"
+      :ascending="getOrderBy"
+      :loading="isLoading"
+      :empty="!estimateList?.length"
+      :empty-text="$t('estimates.no_matching_estimates')"
+      @update:search="onSearchText"
+      @update:sort-field="setSortField"
+      @toggle-order="sortData"
+    >
+      <RecordListItem
+        v-for="estimate in (estimateList ?? []).filter(Boolean)"
+        :id="'estimate-' + estimate.id"
+        :key="estimate.id"
+        :to="`/admin/estimates/${estimate.id}/view`"
+        :active="hasActiveUrl(estimate.id)"
+        :title="estimate.customer?.name ?? ''"
+        :subtitle="estimate.estimate_number"
+        :meta="estimate.formatted_estimate_date"
+      >
+        <template #badges>
+          <BaseEstimateStatusBadge :status="estimate.status">
+            <BaseEstimateStatusLabel :status="estimate.status" />
+          </BaseEstimateStatusBadge>
+        </template>
+        <template #amount>
+          <BaseFormatMoney :amount="estimate.total" :currency="estimate.customer?.currency" />
+        </template>
+      </RecordListItem>
+    </RecordListPane>
+
+    <BasePage class="min-w-0">
+      <BasePageHeader :title="pageTitle">
+        <BaseBreadcrumb>
+          <BaseBreadcrumbItem :title="$t('estimates.estimate', 2)" to="/admin/estimates" />
+        </BaseBreadcrumb>
+
+        <div class="flex flex-wrap items-center gap-1.5 mt-2">
+          <BaseEstimateStatusBadge :status="estimateData.status">
+            <BaseEstimateStatusLabel :status="estimateData.status" />
+          </BaseEstimateStatusBadge>
+        </div>
+
+        <template v-if="!isPhone" #actions>
           <BaseButton
             v-if="estimateData.status === 'DRAFT' && canEdit"
             :disabled="isMarkAsSent"
             :content-loading="isLoadingEstimate"
-            variant="primary-outline"
+            variant="white"
             @click="onMarkAsSent"
           >
             {{ $t('estimates.mark_as_sent') }}
           </BaseButton>
-        </div>
 
+          <BaseButton
+            v-if="estimateData.status === 'DRAFT' && canSend"
+            :content-loading="isLoadingEstimate"
+            variant="primary"
+            @click="onSendEstimate"
+          >
+            <template #left="slotProps">
+              <BaseIcon name="PaperAirplaneIcon" :class="slotProps.class" />
+            </template>
+            {{ $t('estimates.send_estimate') }}
+          </BaseButton>
+
+          <BaseButton
+            v-else-if="canConvert"
+            :content-loading="isLoadingEstimate"
+            variant="primary"
+            @click="onConvertToInvoice"
+          >
+            <template #left="slotProps">
+              <BaseIcon name="DocumentTextIcon" :class="slotProps.class" />
+            </template>
+            {{ $t('estimates.convert_to_invoice') }}
+          </BaseButton>
+
+          <EstimateDropdown
+            :row="estimateData"
+            :can-edit="canEdit"
+            :can-view="canView"
+            :can-create="canCreate"
+            :can-delete="canDelete"
+            :can-send="canSend"
+            :can-create-invoice="canCreateInvoice"
+          />
+        </template>
+      </BasePageHeader>
+
+      <!-- What the document says, without opening it -->
+      <BaseStatStrip :columns="4">
+        <BaseStat :label="$t('estimates.total')" emphasis>
+          <BaseFormatMoney :amount="estimateData.total" :currency="documentCurrency" />
+        </BaseStat>
+        <BaseStat :label="$t('estimates.customer')" wide>
+          <router-link
+            v-if="estimateData.customer?.id"
+            :to="`/admin/customers/${estimateData.customer.id}/view`"
+            class="hover:text-primary-600"
+          >
+            {{ estimateData.customer.name }}
+          </router-link>
+        </BaseStat>
+        <BaseStat :label="$t('reports.estimates.estimate_date')">
+          {{ estimateData.formatted_estimate_date }}
+        </BaseStat>
+        <BaseStat :label="$t('estimates.expiry_date')">
+          <span :class="estimateData.status === 'EXPIRED' ? 'text-status-red' : ''">
+            {{ estimateData.formatted_expiry_date || '-' }}
+          </span>
+        </BaseStat>
+      </BaseStatStrip>
+
+      <BasePdfPreview
+        ref="pdfPreview"
+        :src="shareableLink"
+        :title="`${estimateData.estimate_number}.pdf`"
+      />
+
+      <!-- Phones: the next step for this estimate, within thumb reach -->
+      <BaseActionBar>
         <BaseButton
           v-if="estimateData.status === 'DRAFT' && canSend"
-          :content-loading="isLoadingEstimate"
           variant="primary"
-          class="text-sm"
+          class="flex-1"
           @click="onSendEstimate"
         >
+          <template #left="slotProps">
+            <BaseIcon name="PaperAirplaneIcon" :class="slotProps.class" />
+          </template>
           {{ $t('estimates.send_estimate') }}
         </BaseButton>
-
+        <BaseButton
+          v-else-if="canConvert"
+          variant="primary"
+          class="flex-1"
+          @click="onConvertToInvoice"
+        >
+          <template #left="slotProps">
+            <BaseIcon name="DocumentTextIcon" :class="slotProps.class" />
+          </template>
+          {{ $t('estimates.convert_to_invoice') }}
+        </BaseButton>
+        <!-- A draft is not out yet; the PDF is also on the document card above -->
+        <BaseButton
+          v-if="estimateData.status === 'DRAFT' && canEdit"
+          :disabled="isMarkAsSent"
+          variant="white"
+          class="flex-1"
+          @click="onMarkAsSent"
+        >
+          {{ $t('estimates.mark_as_sent') }}
+        </BaseButton>
+        <BaseButton v-else variant="white" class="flex-1" @click="openPdf">
+          <template #left="slotProps">
+            <BaseIcon name="ArrowUpOnSquareIcon" :class="slotProps.class" />
+          </template>
+          {{ $t('pdf.open_pdf') }}
+        </BaseButton>
         <EstimateDropdown
-          class="ml-3"
           :row="estimateData"
           :can-edit="canEdit"
           :can-view="canView"
@@ -34,177 +173,24 @@
           :can-send="canSend"
           :can-create-invoice="canCreateInvoice"
         />
-      </template>
-    </BasePageHeader>
-
-    <!-- Sidebar -->
-    <div
-      class="fixed top-0 left-0 hidden h-full pt-16 pb-[6.4rem] ml-56 bg-surface xl:ml-64 w-88 xl:block"
-    >
-      <div
-        class="flex items-center justify-between px-4 pt-8 pb-2 border border-line-default border-solid height-full"
-      >
-        <div class="mb-6">
-          <BaseInput
-            v-model="searchData.searchText"
-            :placeholder="$t('general.search')"
-            type="text"
-            variant="gray"
-            @input="onSearched()"
-          >
-            <template #right>
-              <BaseIcon name="MagnifyingGlassIcon" class="text-subtle" />
-            </template>
-          </BaseInput>
-        </div>
-
-        <div class="flex mb-6 ml-3" role="group" aria-label="First group">
-          <BaseDropdown
-            class="ml-3"
-            position="bottom-start"
-            width-class="w-45"
-            position-class="left-0"
-          >
-            <template #activator>
-              <BaseButton size="md" variant="gray">
-                <BaseIcon name="FunnelIcon" />
-              </BaseButton>
-            </template>
-
-            <div
-              class="px-4 py-1 pb-2 mb-1 mb-2 text-sm border-b border-line-default border-solid"
-            >
-              {{ $t('general.sort_by') }}
-            </div>
-
-            <BaseDropdownItem class="flex px-4 py-2 cursor-pointer">
-              <BaseInputGroup class="-mt-3 font-normal">
-                <BaseRadio
-                  id="filter_estimate_date"
-                  v-model="searchData.orderByField"
-                  :label="$t('reports.estimates.estimate_date')"
-                  size="sm"
-                  name="filter"
-                  value="estimate_date"
-                  @update:model-value="onSearched"
-                />
-              </BaseInputGroup>
-            </BaseDropdownItem>
-
-            <BaseDropdownItem class="flex px-4 py-2 cursor-pointer">
-              <BaseInputGroup class="-mt-3 font-normal">
-                <BaseRadio
-                  id="filter_due_date"
-                  v-model="searchData.orderByField"
-                  :label="$t('estimates.due_date')"
-                  value="expiry_date"
-                  size="sm"
-                  name="filter"
-                  @update:model-value="onSearched"
-                />
-              </BaseInputGroup>
-            </BaseDropdownItem>
-
-            <BaseDropdownItem class="flex px-4 py-2 cursor-pointer">
-              <BaseInputGroup class="-mt-3 font-normal">
-                <BaseRadio
-                  id="filter_estimate_number"
-                  v-model="searchData.orderByField"
-                  :label="$t('estimates.estimate_number')"
-                  value="estimate_number"
-                  size="sm"
-                  name="filter"
-                  @update:model-value="onSearched"
-                />
-              </BaseInputGroup>
-            </BaseDropdownItem>
-          </BaseDropdown>
-
-          <BaseButton class="ml-1" size="md" variant="gray" @click="sortData">
-            <BaseIcon v-if="getOrderBy" name="BarsArrowUpIcon" />
-            <BaseIcon v-else name="BarsArrowDownIcon" />
-          </BaseButton>
-        </div>
-      </div>
-
-      <div
-        ref="estimateListSection"
-        class="h-full overflow-y-scroll border-l border-line-default border-solid base-scroll"
-      >
-        <div v-for="(estimate, index) in estimateList" :key="index">
-          <router-link
-            v-if="estimate"
-            :id="'estimate-' + estimate.id"
-            :to="`/admin/estimates/${estimate.id}/view`"
-            :class="[
-              'flex justify-between side-estimate p-4 cursor-pointer hover:bg-hover-strong items-center border-l-4 border-l-transparent',
-              {
-                'bg-surface-tertiary border-l-4 border-l-primary-500 border-solid':
-                  hasActiveUrl(estimate.id),
-              },
-            ]"
-            style="border-bottom: 1px solid rgba(185, 193, 209, 0.41)"
-          >
-            <div class="flex-2">
-              <BaseText
-                :text="estimate.customer?.name ?? ''"
-                class="pr-2 mb-2 text-sm not-italic font-normal leading-5 text-heading capitalize truncate"
-              />
-              <div
-                class="mt-1 mb-2 text-xs not-italic font-medium leading-5 text-body"
-              >
-                {{ estimate.estimate_number }}
-              </div>
-              <BaseEstimateStatusBadge
-                :status="estimate.status"
-                class="px-1 text-xs"
-              >
-                <BaseEstimateStatusLabel :status="estimate.status" />
-              </BaseEstimateStatusBadge>
-            </div>
-
-            <div class="flex-1 whitespace-nowrap right">
-              <BaseFormatMoney
-                :amount="estimate.total"
-                :currency="estimate.customer?.currency"
-                class="block mb-2 text-xl not-italic font-semibold leading-8 text-right text-heading"
-              />
-              <div
-                class="text-sm not-italic font-normal leading-5 text-right text-body est-date"
-              >
-                {{ estimate.formatted_estimate_date }}
-              </div>
-            </div>
-          </router-link>
-        </div>
-
-        <div v-if="isLoading" class="flex justify-center p-4 items-center">
-          <LoadingIcon class="h-6 m-1 animate-spin text-primary-400" />
-        </div>
-        <p
-          v-if="!estimateList?.length && !isLoading"
-          class="flex justify-center px-4 mt-5 text-sm text-body"
-        >
-          {{ $t('estimates.no_matching_estimates') }}
-        </p>
-      </div>
-    </div>
-
-    <!-- PDF Preview -->
-    <BasePdfPreview :src="shareableLink" />
+      </BaseActionBar>
+    </BasePage>
 
     <SendEstimateModal @update="updateSentEstimate" />
-  </BasePage>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useEstimateStore } from '../store'
 import EstimateDropdown from '../components/EstimateDropdown.vue'
 import SendEstimateModal from '../components/SendEstimateModal.vue'
-import LoadingIcon from '@/scripts/components/icons/LoadingIcon.vue'
+import RecordListPane from '@/scripts/components/layout/RecordListPane.vue'
+import RecordListItem from '@/scripts/components/layout/RecordListItem.vue'
+import BasePdfPreview from '@/scripts/components/base/BasePdfPreview.vue'
+import { useBreakpoints } from '@/scripts/composables/use-breakpoints'
 import { useUserStore } from '../../../../stores/user.store'
 import { useDialogStore } from '../../../../stores/dialog.store'
 import { useModalStore } from '../../../../stores/modal.store'
@@ -243,6 +229,7 @@ const dialogStore = useDialogStore()
 const modalStore = useModalStore()
 const { t } = useI18n()
 const route = useRoute()
+const router = useRouter()
 
 const canEdit = computed<boolean>(() => {
   return props.canEdit || userStore.hasAbilities(ABILITIES.EDIT)
@@ -278,7 +265,8 @@ const isLoadingEstimate = ref<boolean>(false)
 const estimateList = ref<Estimate[] | null>(null)
 const currentPageNumber = ref<number>(1)
 const lastPageNumber = ref<number>(1)
-const estimateListSection = ref<HTMLElement | null>(null)
+const listPane = ref<InstanceType<typeof RecordListPane> | null>(null)
+const estimateListSection = computed<HTMLElement | null>(() => listPane.value?.listEl ?? null)
 
 interface SearchData {
   orderBy: string | null
@@ -293,6 +281,33 @@ const searchData = reactive<SearchData>({
 })
 
 const pageTitle = computed<string>(() => estimateData.value?.estimate_number ?? '')
+
+const { isPhone } = useBreakpoints()
+const pdfPreview = ref<InstanceType<typeof BasePdfPreview> | null>(null)
+
+const documentCurrency = computed(() => estimateData.value?.currency ?? estimateData.value?.customer?.currency ?? null)
+
+// Once it has gone out, turning it into an invoice is the next step
+const canConvert = computed<boolean>(() => {
+  const status = estimateData.value?.status
+
+  return canCreateInvoice.value && !!status && status !== 'DRAFT' && status !== 'REJECTED'
+})
+
+const sortOptions = computed(() => [
+  { value: 'estimate_date', label: t('reports.estimates.estimate_date') },
+  { value: 'expiry_date', label: t('estimates.due_date') },
+  { value: 'estimate_number', label: t('estimates.estimate_number') },
+])
+
+function setSortField(field: string): void {
+  searchData.orderByField = field
+  onSearched()
+}
+
+function openPdf(): void {
+  pdfPreview.value?.openPdf()
+}
 
 const getOrderBy = computed<boolean>(() => {
   return searchData.orderBy === 'asc' || searchData.orderBy === null
@@ -363,8 +378,10 @@ async function loadEstimates(
 
 function scrollToEstimate(): void {
   const el = document.getElementById(`estimate-${route.params.id}`)
-  if (el) {
-    el.scrollIntoView({ behavior: 'smooth' })
+  const list = estimateListSection.value
+  if (el && list) {
+    // Scroll the list pane alone; scrollIntoView would also move the page
+    list.scrollTo({ top: el.offsetTop - list.offsetTop - 8, behavior: 'smooth' })
     el.classList.add('shake')
     addScrollListener()
   }
@@ -394,6 +411,11 @@ async function loadEstimate(): Promise<void> {
 }
 
 let searchTimeout: ReturnType<typeof setTimeout> | null = null
+
+function onSearchText(value: string): void {
+  searchData.searchText = value
+  onSearched()
+}
 
 function onSearched(): void {
   if (searchTimeout) clearTimeout(searchTimeout)
@@ -442,6 +464,25 @@ function onSendEstimate(): void {
     id: estimateData.value!.id,
     data: estimateData.value,
     refreshData: () => loadEstimate(),
+  })
+}
+
+function onConvertToInvoice(): void {
+  dialogStore.openDialog({
+    title: t('general.are_you_sure'),
+    message: t('estimates.confirm_conversion'),
+    yesLabel: t('general.ok'),
+    noLabel: t('general.cancel'),
+    variant: 'primary',
+    hideNoButton: false,
+    size: 'lg',
+  }).then(async (res: boolean) => {
+    if (res) {
+      const response = await estimateStore.convertToInvoice(estimateData.value!.id)
+      if (response.data) {
+        router.push(`/admin/invoices/${response.data.data.id}/edit`)
+      }
+    }
   })
 }
 

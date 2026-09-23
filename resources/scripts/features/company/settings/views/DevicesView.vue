@@ -202,11 +202,10 @@ async function signOutThisDevice(): Promise<void> {
 
     <BaseEmptyPlaceholder
       v-else-if="showEmptyScreen"
+      icon="DevicePhoneMobileIcon"
       :title="$t('devices.no_devices')"
       :description="$t('devices.no_devices_description')"
-    >
-      <BaseIcon name="DevicePhoneMobileIcon" class="w-12 h-12 text-subtle" />
-    </BaseEmptyPlaceholder>
+    />
 
     <div v-else class="border-t border-line-default divide-y divide-line-default">
       <div

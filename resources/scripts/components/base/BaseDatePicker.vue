@@ -12,18 +12,7 @@
       v-if="showCalendarIcon && !hasIconSlot"
       viewBox="0 0 20 20"
       fill="currentColor"
-      class="
-        absolute
-        w-4
-        h-4
-        mx-2
-        my-2.5
-        text-sm
-        not-italic
-        font-black
-        text-subtle
-        cursor-pointer
-      "
+      class="absolute z-10 w-4 h-4 -translate-y-1/2 cursor-pointer top-1/2 left-3 text-subtle"
       @click="onClickDp"
     >
       <path
@@ -49,40 +38,11 @@
 <script setup lang="ts">
 import FlatPickr from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
-import { Arabic } from 'flatpickr/dist/l10n/ar.js'
-import { Czech } from 'flatpickr/dist/l10n/cs.js'
-import { German } from 'flatpickr/dist/l10n/de.js'
-import { Greek } from 'flatpickr/dist/l10n/gr.js'
-import { english } from 'flatpickr/dist/l10n/default.js'
-import { Spanish } from 'flatpickr/dist/l10n/es.js'
-import { Persian } from 'flatpickr/dist/l10n/fa.js'
-import { Finnish } from 'flatpickr/dist/l10n/fi.js'
-import { French } from 'flatpickr/dist/l10n/fr.js'
-import { Hindi } from 'flatpickr/dist/l10n/hi.js'
-import { Croatian } from 'flatpickr/dist/l10n/hr.js'
-import { Indonesian } from 'flatpickr/dist/l10n/id.js'
-import { Italian } from 'flatpickr/dist/l10n/it.js'
-import { Japanese } from 'flatpickr/dist/l10n/ja.js'
-import { Korean } from 'flatpickr/dist/l10n/ko.js'
-import { Lithuanian } from 'flatpickr/dist/l10n/lt.js'
-import { Latvian } from 'flatpickr/dist/l10n/lv.js'
-import { Dutch } from 'flatpickr/dist/l10n/nl.js'
-import { Polish } from 'flatpickr/dist/l10n/pl.js'
-import { Portuguese } from 'flatpickr/dist/l10n/pt.js'
-import { Romanian } from 'flatpickr/dist/l10n/ro.js'
-import { Russian } from 'flatpickr/dist/l10n/ru.js'
-import { Slovak } from 'flatpickr/dist/l10n/sk.js'
-import { Slovenian } from 'flatpickr/dist/l10n/sl.js'
-import { Serbian } from 'flatpickr/dist/l10n/sr.js'
-import { Swedish } from 'flatpickr/dist/l10n/sv.js'
-import { Thai } from 'flatpickr/dist/l10n/th.js'
-import { Turkish } from 'flatpickr/dist/l10n/tr.js'
-import { Vietnamese } from 'flatpickr/dist/l10n/vn.js'
-import { Mandarin } from 'flatpickr/dist/l10n/zh.js'
 import type { CustomLocale, Locale } from 'flatpickr/dist/types/locale'
 import { computed, reactive, watch, ref, useSlots } from 'vue'
 import { useCompanyStore } from '@/scripts/stores/company.store'
 import { useUserStore } from '@/scripts/stores/user.store'
+import { flatpickrLocale } from '@/scripts/utils/flatpickr-locale'
 
 interface FlatPickrInstance {
   fp: { open: () => void }
@@ -113,7 +73,7 @@ const props = withDefaults(defineProps<Props>(), {
   showCalendarIcon: true,
   containerClass: '',
   defaultInputClass:
-    'font-base pl-8 py-2 outline-hidden focus:ring-primary-400 focus:outline-hidden focus:border-primary-400 block w-full sm:text-sm border-line-default rounded-md text-heading',
+    'font-base pl-9 py-2 outline-hidden block w-full md:text-sm tabular border-line-default rounded-lg text-heading',
   time24hr: false,
 })
 
@@ -130,43 +90,7 @@ const companyStore = useCompanyStore()
 const userStore = useUserStore()
 
 // Localize Flatpicker
-const lang: string = userStore.currentUserSettings.language
-
-const localeMap: Record<string, CustomLocale | Locale> = {
-  ar: Arabic,
-  cs: Czech,
-  de: German,
-  el: Greek,
-  en: english,
-  es: Spanish,
-  fa: Persian,
-  fi: Finnish,
-  fr: French,
-  hi: Hindi,
-  hr: Croatian,
-  id: Indonesian,
-  it: Italian,
-  ja: Japanese,
-  ko: Korean,
-  lt: Lithuanian,
-  lv: Latvian,
-  nl: Dutch,
-  pl: Polish,
-  pt: Portuguese,
-  pt_BR: Portuguese,
-  ro: Romanian,
-  ru: Russian,
-  sk: Slovak,
-  sl: Slovenian,
-  sr: Serbian,
-  sv: Swedish,
-  th: Thai,
-  tr: Turkish,
-  vi: Vietnamese,
-  zh: Mandarin,
-}
-
-const fpLocale = localeMap[lang] ?? english
+const fpLocale = flatpickrLocale(userStore.currentUserSettings.language)
 
 interface FlatPickrConfig {
   altInput: boolean
@@ -216,7 +140,7 @@ const computedContainerClass = computed<string>(() => {
 
 const inputInvalidClass = computed<string>(() => {
   if (props.invalid) {
-    return 'border-red-400 ring-red-400 focus:ring-red-400 focus:border-red-400'
+    return 'border-danger focus:border-danger focus:ring-danger/20'
   }
 
   return ''
@@ -224,7 +148,7 @@ const inputInvalidClass = computed<string>(() => {
 
 const inputDisabledClass = computed<string>(() => {
   if (props.disabled) {
-    return 'border border-solid rounded-md outline-hidden input-field box-border-2 base-date-picker-input placeholder-gray-400 bg-surface-muted text-body border-line-default'
+    return 'border border-solid rounded-lg outline-hidden placeholder-subtle bg-surface-secondary text-muted border-line-light cursor-not-allowed'
   }
 
   return ''

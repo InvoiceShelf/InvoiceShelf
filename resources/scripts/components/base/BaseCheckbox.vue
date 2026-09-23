@@ -72,6 +72,6 @@ const disabledClass = computed<string>(() => {
     return 'text-subtle cursor-not-allowed'
   }
 
-  return 'text-primary-600 focus:ring-primary-500'
+  return 'text-btn-primary'
 })
 </script>

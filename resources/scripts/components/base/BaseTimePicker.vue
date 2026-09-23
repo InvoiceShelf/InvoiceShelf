@@ -79,7 +79,7 @@ const props = withDefaults(defineProps<Props>(), {
   containerClass: '',
   clockIcon: true,
   defaultInputClass:
-    'font-base pl-8 py-2 outline-hidden focus:ring-primary-400 focus:outline-hidden focus:border-primary-400 block w-full sm:text-sm border-line-strong rounded-md text-heading',
+    'font-base pl-9 py-2 outline-hidden block w-full md:text-sm tabular border-line-default rounded-lg text-heading',
 })
 
 interface Emits {
@@ -125,7 +125,7 @@ const computedContainerClass = computed<string>(() => {
 
 const inputInvalidClass = computed<string>(() => {
   if (props.invalid) {
-    return 'border-red-400 ring-red-400 focus:ring-red-400 focus:border-red-400'
+    return 'border-danger focus:border-danger focus:ring-danger/20'
   }
 
   return ''
@@ -133,7 +133,7 @@ const inputInvalidClass = computed<string>(() => {
 
 const inputDisabledClass = computed<string>(() => {
   if (props.disabled) {
-    return 'border border-solid rounded-md outline-hidden input-field box-border-2 base-date-picker-input placeholder-subtle bg-surface-muted text-body border-line-strong'
+    return 'border border-solid rounded-lg outline-hidden placeholder-subtle bg-surface-secondary text-muted border-line-light cursor-not-allowed'
   }
 
   return ''

@@ -1,7 +1,8 @@
 <template>
   <BasePage class="relative payment-create">
-    <form @submit.prevent="submitPaymentData">
-      <BasePageHeader :title="pageTitle" class="mb-5">
+    <form class="flex flex-col gap-4 md:gap-5" @submit.prevent="submitPaymentData">
+      <!-- On phones Save moves to the bottom bar, still submitting this form -->
+      <BasePageHeader :title="pageTitle" phone-actions="bar">
         <BaseBreadcrumb>
           <BaseBreadcrumbItem :title="$t('general.home')" to="/admin/dashboard" />
           <BaseBreadcrumbItem :title="$t('payments.payment', 2)" to="/admin/payments" />
@@ -9,7 +10,7 @@
         </BaseBreadcrumb>
 
         <template #actions>
-          <BaseButton :loading="isSaving" :disabled="isSaving" variant="primary" type="submit" class="hidden sm:flex">
+          <BaseButton :loading="isSaving" :disabled="isSaving" :content-loading="isLoadingContent" variant="primary" type="submit">
             <template #left="slotProps">
               <BaseIcon v-if="!isSaving" name="ArrowDownOnSquareIcon" :class="slotProps.class" />
             </template>
@@ -18,7 +19,7 @@
         </template>
       </BasePageHeader>
 
-      <BaseCard>
+      <BaseCard container-class="p-4 md:p-5">
         <BaseInputGrid>
           <BaseInputGroup :label="$t('payments.date')" :content-loading="isLoadingContent" required>
             <BaseDatePicker v-model="paymentStore.currentPayment.payment_date" :content-loading="isLoadingContent" :calendar-button="true" calendar-button-icon="calendar" />
@@ -79,10 +80,10 @@
           />
         </BaseInputGrid>
 
-        <section class="pt-6 mt-6 border-t border-line-default">
+        <section class="pt-5 mt-5 border-t border-line-light">
           <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
             <div>
-              <h2 class="text-base font-semibold text-heading">{{ $t('payments.allocations') }}</h2>
+              <h2 class="font-semibold text-section text-heading">{{ $t('payments.allocations') }}</h2>
               <p class="mt-1 text-sm text-muted">{{ $t('payments.allocations_description') }}</p>
             </div>
             <div class="flex gap-2">
@@ -128,20 +129,16 @@
             </div>
           </div>
 
-          <div class="flex flex-wrap justify-end gap-x-8 gap-y-2 pt-4 mt-4 text-sm border-t border-line-default">
+          <div class="flex flex-wrap justify-end gap-x-8 gap-y-2 pt-4 mt-4 text-sm border-t border-line-light">
             <span class="text-muted">{{ $t('payments.allocated') }}: <BaseFormatMoney :amount="allocatedAmount" :currency="paymentStore.currentPayment.currency" /></span>
             <span :class="unallocatedAmount < 0 ? 'text-status-red' : 'text-heading'">{{ $t('payments.unapplied_credit') }}: <BaseFormatMoney :amount="Math.max(unallocatedAmount, 0)" :currency="paymentStore.currentPayment.currency" /></span>
           </div>
         </section>
 
-        <div class="relative mt-6">
+        <div class="relative mt-5">
           <label class="mb-4 text-sm font-medium text-heading">{{ $t('estimates.notes') }}</label>
           <BaseCustomInput v-model="paymentStore.currentPayment.notes" :content-loading="isLoadingContent" :fields="paymentFields" class="mt-1" />
         </div>
-
-        <BaseButton :loading="isSaving" :content-loading="isLoadingContent" variant="primary" type="submit" class="flex justify-center w-full mt-4 sm:hidden">
-          {{ isEdit ? $t('payments.update_payment') : $t('payments.save_payment') }}
-        </BaseButton>
       </BaseCard>
     </form>
   </BasePage>

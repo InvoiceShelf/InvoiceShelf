@@ -1,5 +1,5 @@
 <template>
-  <div class="md:grid-cols-12 grid-cols-1 md:gap-x-6 mt-6 mb-8 grid gap-y-5">
+  <div class="grid grid-cols-1 mt-5 mb-6 md:grid-cols-12 md:gap-x-6 gap-y-4 md:gap-y-5 md:mb-8">
     <BaseCustomerSelectPopup
       :valid="v.customer_id"
       :content-loading="isLoading"
@@ -8,7 +8,7 @@
     />
 
     <BaseInputGrid
-      class="col-span-6 rounded-xl shadow border border-line-light bg-surface p-5"
+      class="col-span-6 p-4 border glass rounded-xl md:p-5"
     >
       <BaseInputGroup
         :label="$t('reports.estimates.estimate_date')"

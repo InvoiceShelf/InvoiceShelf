@@ -3,7 +3,7 @@
     <BasePageHeader>
       <template #default>
         <div class="flex items-center gap-2">
-          <h1 class="text-2xl font-semibold text-heading">
+          <h1 class="font-semibold text-title text-heading">
             {{ $t('invoices.title') }}
           </h1>
           <BaseDropdown position="bottom-start" width-class="w-44">
@@ -63,7 +63,7 @@
           v-if="canCreate"
           :to="viewMode === 'recurring' ? 'invoices/create?recurring=1' : 'invoices/create'"
         >
-          <BaseButton variant="primary" class="ml-4">
+          <BaseButton variant="primary">
             <template #left="slotProps">
               <BaseIcon name="PlusIcon" :class="slotProps.class" />
             </template>
@@ -109,11 +109,10 @@
       </BaseInputGroup>
 
       <div
-        class="hidden w-8 h-0 mx-4 border border-gray-400 border-solid xl:block"
-        style="margin-top: 1.5rem"
+        class="hidden w-4 h-px mb-5 shrink-0 bg-line-strong xl:block"
       />
 
-      <BaseInputGroup :label="$t('general.to')" class="mt-2">
+      <BaseInputGroup :label="$t('general.to')">
         <BaseDatePicker
           v-model="filters.to_date"
           :calendar-button="true"
@@ -164,8 +163,7 @@
       </BaseInputGroup>
 
       <div
-        class="hidden w-8 h-0 mx-4 border border-gray-400 border-solid xl:block"
-        style="margin-top: 1.5rem"
+        class="hidden w-4 h-px mb-5 shrink-0 bg-line-strong xl:block"
       />
 
       <BaseInputGroup :label="$t('general.to')">
@@ -182,6 +180,7 @@
       <!-- Empty State -->
       <BaseEmptyPlaceholder
         v-show="showEmptyScreen"
+        icon="DocumentTextIcon"
         :title="$t('invoices.no_invoices')"
         :description="$t('invoices.list_of_invoices')"
       >
@@ -199,36 +198,13 @@
       </BaseEmptyPlaceholder>
 
       <!-- Table -->
-      <div v-show="!showEmptyScreen" class="relative table-container">
-        <div
-          class="relative flex items-center justify-between mt-5 list-none"
-        >
-          <BaseTabGroup @change="setStatusFilter">
-            <BaseTab :title="$t('general.all')" filter="" />
-            <BaseTab :title="$t('general.draft')" filter="DRAFT" />
-            <BaseTab :title="$t('general.sent')" filter="SENT" />
-            <BaseTab :title="$t('general.due')" filter="DUE" />
-          </BaseTabGroup>
-
-          <BaseDropdown
-            v-if="invoiceStore.selectedInvoices.length && canDelete"
-            class="absolute float-right"
-          >
-            <template #activator>
-              <span
-                class="flex text-sm font-medium cursor-pointer select-none text-primary-400"
-              >
-                {{ $t('general.actions') }}
-                <BaseIcon name="ChevronDownIcon" />
-              </span>
-            </template>
-
-            <BaseDropdownItem @click="removeMultipleInvoices">
-              <BaseIcon name="TrashIcon" class="mr-3 text-body" />
-              {{ $t('general.delete') }}
-            </BaseDropdownItem>
-          </BaseDropdown>
-        </div>
+      <div v-show="!showEmptyScreen" class="relative flex flex-col gap-4 table-container">
+        <BaseTabGroup @change="setStatusFilter">
+          <BaseTab :title="$t('general.all')" filter="" />
+          <BaseTab :title="$t('general.draft')" filter="DRAFT" />
+          <BaseTab :title="$t('general.sent')" filter="SENT" />
+          <BaseTab :title="$t('general.due')" filter="DUE" />
+        </BaseTabGroup>
 
         <BaseTable
           ref="tableRef"
@@ -236,10 +212,20 @@
           :data="fetchData"
           :columns="invoiceColumns"
           :placeholder-count="invoiceStore.invoiceTotalCount >= 20 ? 10 : 5"
-          class="mt-4"
+          :row-to="invoiceLink"
+          :selected-count="canDelete ? invoiceStore.selectedInvoices.length : 0"
         >
+          <template #bulk-actions>
+            <BaseButton size="xs" variant="white" @click="removeMultipleInvoices">
+              <template #left="slotProps">
+                <BaseIcon name="TrashIcon" :class="slotProps.class" />
+              </template>
+              {{ $t('general.delete') }}
+            </BaseButton>
+          </template>
+
           <template #header>
-            <div class="absolute items-center left-6 top-2.5 select-none">
+            <div class="absolute items-center left-6 top-3.5 select-none">
               <BaseCheckbox
                 v-model="invoiceStore.selectAllField"
                 variant="primary"
@@ -262,7 +248,7 @@
             <router-link
               v-if="row.data.customer?.id"
               :to="`/admin/customers/${row.data.customer.id}/view`"
-              class="font-medium text-primary-500 hover:text-primary-600"
+              class="font-medium text-heading hover:text-primary-600"
             >
               {{ row.data.customer.name }}
             </router-link>
@@ -272,13 +258,13 @@
           <template #cell-invoice_number="{ row }">
             <router-link
               :to="{ path: `invoices/${row.data.id}/view` }"
-              class="font-medium text-primary-500"
+              class="font-medium text-primary-600 hover:text-primary-700"
             >
               {{ row.data.invoice_number }}
             </router-link>
             <span
               v-if="row.data.type === 'CREDIT_NOTE'"
-              class="inline-block ml-2 px-2 py-0.5 text-xs font-medium rounded bg-red-100 text-red-700"
+              class="inline-block ml-2 px-2 py-0.5 text-xs font-medium rounded-md bg-status-red-bg text-status-red"
             >
               {{ $t('invoices.credit_note') }}
             </span>
@@ -296,13 +282,13 @@
           </template>
 
           <template #cell-status="{ row }">
-            <BaseInvoiceStatusBadge :status="row.data.status" class="px-3 py-1">
+            <BaseInvoiceStatusBadge :status="row.data.status">
               <BaseInvoiceStatusLabel :status="row.data.status" />
             </BaseInvoiceStatusBadge>
           </template>
 
           <template #cell-due_amount="{ row }">
-            <div class="flex justify-between">
+            <div class="flex items-center justify-between gap-3">
               <BaseFormatMoney
                 :amount="row.data.due_amount"
                 :currency="row.data.currency"
@@ -311,7 +297,6 @@
               <BasePaidStatusBadge
                 v-if="row.data.overdue"
                 status="OVERDUE"
-                class="px-1 py-0.5 ml-2"
               >
                 {{ $t('invoices.overdue') }}
               </BasePaidStatusBadge>
@@ -322,7 +307,7 @@
                    confused. -->
               <span
                 v-if="row.data.type !== 'CREDIT_NOTE' && row.data.credited_status === 'FULL'"
-                class="inline-block px-1 py-0.5 ml-2 text-xs font-medium rounded bg-amber-100 text-amber-800 whitespace-nowrap"
+                class="inline-block px-2 py-0.5 text-xs font-medium rounded-md bg-status-yellow-bg text-status-yellow whitespace-nowrap"
               >
                 {{ $t('invoices.cancelled') }}
               </span>
@@ -330,7 +315,6 @@
               <BasePaidStatusBadge
                 v-else
                 :status="row.data.paid_status"
-                class="px-1 py-0.5 ml-2"
               >
                 <BaseInvoiceStatusLabel :status="row.data.paid_status" />
               </BasePaidStatusBadge>
@@ -339,11 +323,24 @@
                    this badge sits ALONGSIDE it rather than replacing it. -->
               <span
                 v-if="row.data.type !== 'CREDIT_NOTE' && row.data.credited_status === 'PARTIAL'"
-                class="inline-block px-1 py-0.5 ml-1 text-[10px] font-medium rounded bg-amber-100 text-amber-800 whitespace-nowrap"
+                class="inline-block px-2 py-0.5 text-[11px] font-medium rounded-md bg-status-yellow-bg text-status-yellow whitespace-nowrap"
               >
                 {{ $t('invoices.partially_credited') }}
               </span>
             </div>
+          </template>
+
+          <!-- Phones: the one status that matters at a glance -->
+          <template #cell-mobile_status="{ row }">
+            <BasePaidStatusBadge v-if="row.data.overdue" status="OVERDUE">
+              {{ $t('invoices.overdue') }}
+            </BasePaidStatusBadge>
+            <BaseInvoiceStatusBadge v-else-if="row.data.status === 'DRAFT'" status="DRAFT">
+              <BaseInvoiceStatusLabel status="DRAFT" />
+            </BaseInvoiceStatusBadge>
+            <BasePaidStatusBadge v-else :status="row.data.paid_status">
+              <BaseInvoiceStatusLabel :status="row.data.paid_status" />
+            </BasePaidStatusBadge>
           </template>
 
           <template v-if="hasAtLeastOneAbility" #cell-actions="{ row }">
@@ -368,6 +365,7 @@
       <!-- Empty State -->
       <BaseEmptyPlaceholder
         v-show="showRecurringEmptyScreen"
+        icon="ArrowPathIcon"
         :title="$t('recurring_invoices.no_invoices')"
         :description="$t('recurring_invoices.list_of_invoices')"
       >
@@ -384,45 +382,32 @@
         </template>
       </BaseEmptyPlaceholder>
 
-      <div v-show="!showRecurringEmptyScreen" class="relative table-container">
-        <!-- Recurring tabs -->
-        <div class="relative flex items-center justify-between mt-5 list-none">
-          <BaseTabGroup @change="setRecurringStatusFilter">
-            <BaseTab :title="$t('recurring_invoices.all')" filter="ALL" />
-            <BaseTab :title="$t('recurring_invoices.active')" filter="ACTIVE" />
-            <BaseTab :title="$t('recurring_invoices.on_hold')" filter="ON_HOLD" />
-          </BaseTabGroup>
+      <div v-show="!showRecurringEmptyScreen" class="relative flex flex-col gap-4 table-container">
+        <BaseTabGroup @change="setRecurringStatusFilter">
+          <BaseTab :title="$t('recurring_invoices.all')" filter="ALL" />
+          <BaseTab :title="$t('recurring_invoices.active')" filter="ACTIVE" />
+          <BaseTab :title="$t('recurring_invoices.on_hold')" filter="ON_HOLD" />
+        </BaseTabGroup>
 
-          <BaseDropdown
-            v-if="recurringInvoiceStore.selectedRecurringInvoices.length && canRecurringDelete"
-            class="absolute float-right"
-          >
-            <template #activator>
-              <span
-                class="flex text-sm font-medium cursor-pointer select-none text-primary-400"
-              >
-                {{ $t('general.actions') }}
-                <BaseIcon name="ChevronDownIcon" class="h-5" />
-              </span>
-            </template>
-
-            <BaseDropdownItem @click="removeMultipleRecurringInvoices">
-              <BaseIcon name="TrashIcon" class="mr-3 text-body" />
-              {{ $t('general.delete') }}
-            </BaseDropdownItem>
-          </BaseDropdown>
-        </div>
-
-        <!-- Recurring table -->
         <BaseTable
           ref="recurringTableRef"
           :data="fetchRecurringData"
           :columns="recurringColumns"
           :placeholder-count="recurringInvoiceStore.totalRecurringInvoices >= 20 ? 10 : 5"
-          class="mt-4"
+          :row-to="recurringInvoiceLink"
+          :selected-count="canRecurringDelete ? recurringInvoiceStore.selectedRecurringInvoices.length : 0"
         >
+          <template #bulk-actions>
+            <BaseButton size="xs" variant="white" @click="removeMultipleRecurringInvoices">
+              <template #left="slotProps">
+                <BaseIcon name="TrashIcon" :class="slotProps.class" />
+              </template>
+              {{ $t('general.delete') }}
+            </BaseButton>
+          </template>
+
           <template #header>
-            <div class="absolute items-center left-6 top-2.5 select-none">
+            <div class="absolute items-center left-6 top-3.5 select-none">
               <BaseCheckbox
                 v-model="recurringInvoiceStore.selectAllField"
                 variant="primary"
@@ -503,6 +488,7 @@
 </template>
 
 <script setup lang="ts">
+import type { ColumnDef } from '@/scripts/components/table/DataTable.vue'
 import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
@@ -690,14 +676,7 @@ const hasAtLeastOneAbility = computed<boolean>(() => {
   return canDelete.value || canEdit.value || canView.value || canSend.value
 })
 
-interface TableColumn {
-  key: string
-  label?: string
-  thClass?: string
-  tdClass?: string
-  placeholderClass?: string
-  sortable?: boolean
-}
+type TableColumn = Omit<ColumnDef, 'label'> & { label?: string }
 
 const invoiceColumns = computed<TableColumn[]>(() => [
   {
@@ -711,10 +690,10 @@ const invoiceColumns = computed<TableColumn[]>(() => [
     key: 'invoice_date',
     label: t('invoices.date'),
     thClass: 'extra',
-    tdClass: 'font-medium',
+    mobile: 'subtitle',
   },
-  { key: 'invoice_number', label: t('invoices.number') },
-  { key: 'name', label: t('invoices.customer') },
+  { key: 'invoice_number', label: t('invoices.number'), mobile: 'subtitle' },
+  { key: 'name', label: t('invoices.customer'), mobile: 'title' },
   { key: 'status', label: t('invoices.status') },
   {
     key: 'due_amount',
@@ -724,15 +703,22 @@ const invoiceColumns = computed<TableColumn[]>(() => [
     key: 'total',
     label: t('invoices.total'),
     tdClass: 'font-medium text-heading',
+    align: 'end',
+    mobile: 'trailing',
   },
+  { key: 'mobile_status', hidden: true, sortable: false, mobile: 'badge' },
   {
     key: 'actions',
-    label: t('invoices.action'),
-    tdClass: 'text-right text-sm font-medium',
+    tdClass: 'text-right text-sm font-medium w-12',
     thClass: 'text-right',
     sortable: false,
+    mobile: 'actions',
   },
 ])
+
+function invoiceLink(row: { id?: number | string }): string {
+  return `/admin/invoices/${row.id}/view`
+}
 
 debouncedWatch(filters, () => setFilters(), { debounce: 500 })
 
@@ -952,19 +938,34 @@ const recurringColumns = computed<TableColumn[]>(() => [
     label: t('recurring_invoices.starts_at'),
     thClass: 'extra',
     tdClass: 'font-medium',
+    mobile: 'subtitle',
   },
-  { key: 'customer', label: t('invoices.customer') },
-  { key: 'frequency', label: t('recurring_invoices.frequency.title') },
-  { key: 'status', label: t('invoices.status') },
-  { key: 'total', label: t('invoices.total') },
+  { key: 'customer', label: t('invoices.customer'), mobile: 'title' },
+  {
+    key: 'frequency',
+    label: t('recurring_invoices.frequency.title'),
+    mobile: 'subtitle',
+  },
+  { key: 'status', label: t('invoices.status'), mobile: 'badge' },
+  {
+    key: 'total',
+    label: t('invoices.total'),
+    align: 'end',
+    mobile: 'trailing',
+  },
   {
     key: 'actions',
     label: t('recurring_invoices.action'),
     tdClass: 'text-right text-sm font-medium',
     thClass: 'text-right',
     sortable: false,
+    mobile: 'actions',
   },
 ])
+
+function recurringInvoiceLink(row: { id?: number | string }): string {
+  return `/admin/recurring-invoices/${row.id}/view`
+}
 
 debouncedWatch(recurringFilters, () => setRecurringFilters(), { debounce: 500 })
 

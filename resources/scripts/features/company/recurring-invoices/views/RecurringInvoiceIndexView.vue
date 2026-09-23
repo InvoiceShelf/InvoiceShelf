@@ -72,8 +72,7 @@
       </BaseInputGroup>
 
       <div
-        class="hidden w-8 h-0 mx-4 border border-gray-400 border-solid xl:block"
-        style="margin-top: 1.5rem"
+        class="hidden w-4 h-px mb-5 shrink-0 bg-line-strong xl:block"
       />
 
       <BaseInputGroup :label="$t('general.to')">
@@ -88,6 +87,7 @@
     <!-- Empty State -->
     <BaseEmptyPlaceholder
       v-show="showEmptyScreen"
+      icon="ArrowPathIcon"
       :title="$t('recurring_invoices.no_invoices')"
       :description="$t('recurring_invoices.list_of_invoices')"
     >
@@ -105,41 +105,18 @@
     </BaseEmptyPlaceholder>
 
     <!-- Table -->
-    <div v-show="!showEmptyScreen" class="relative table-container">
-      <div
-        class="relative flex items-center justify-between mt-5 list-none"
+    <div v-show="!showEmptyScreen" class="relative flex flex-col gap-4 table-container">
+      <BaseTabGroup
+        :default-index="currentStatusIndex"
+        @change="setStatusFilter"
       >
-        <BaseTabGroup
-          :default-index="currentStatusIndex"
-          @change="setStatusFilter"
-        >
-          <BaseTab :title="$t('recurring_invoices.all')" filter="ALL" />
-          <BaseTab :title="$t('recurring_invoices.active')" filter="ACTIVE" />
-          <BaseTab
-            :title="$t('recurring_invoices.on_hold')"
-            filter="ON_HOLD"
-          />
-        </BaseTabGroup>
-
-        <BaseDropdown
-          v-if="recurringInvoiceStore.selectedRecurringInvoices.length"
-          class="absolute float-right"
-        >
-          <template #activator>
-            <span
-              class="flex text-sm font-medium cursor-pointer select-none text-primary-400"
-            >
-              {{ $t('general.actions') }}
-              <BaseIcon name="ChevronDownIcon" class="h-5" />
-            </span>
-          </template>
-
-          <BaseDropdownItem @click="removeMultipleRecurringInvoices()">
-            <BaseIcon name="TrashIcon" class="mr-3 text-body" />
-            {{ $t('general.delete') }}
-          </BaseDropdownItem>
-        </BaseDropdown>
-      </div>
+        <BaseTab :title="$t('recurring_invoices.all')" filter="ALL" />
+        <BaseTab :title="$t('recurring_invoices.active')" filter="ACTIVE" />
+        <BaseTab
+          :title="$t('recurring_invoices.on_hold')"
+          filter="ON_HOLD"
+        />
+      </BaseTabGroup>
 
       <BaseTable
         ref="tableRef"
@@ -148,10 +125,26 @@
         :placeholder-count="
           recurringInvoiceStore.totalRecurringInvoices >= 20 ? 10 : 5
         "
-        class="mt-4"
+        :row-to="recurringInvoiceLink"
+        :selected-count="
+          canDelete ? recurringInvoiceStore.selectedRecurringInvoices.length : 0
+        "
       >
+        <template #bulk-actions>
+          <BaseButton
+            size="xs"
+            variant="white"
+            @click="removeMultipleRecurringInvoices()"
+          >
+            <template #left="slotProps">
+              <BaseIcon name="TrashIcon" :class="slotProps.class" />
+            </template>
+            {{ $t('general.delete') }}
+          </BaseButton>
+        </template>
+
         <template #header>
-          <div class="absolute items-center left-6 top-2.5 select-none">
+          <div class="absolute items-center left-6 top-3.5 select-none">
             <BaseCheckbox
               v-model="recurringInvoiceStore.selectAllField"
               variant="primary"
@@ -181,7 +174,7 @@
             <BaseText
               :text="row.data.customer.name"
               tag="span"
-              class="font-medium text-primary-500 flex flex-col"
+              class="font-medium text-heading hover:text-primary-600 flex flex-col"
             />
             <BaseText
               :text="row.data.customer.contact_name ?? ''"
@@ -226,6 +219,7 @@
 </template>
 
 <script setup lang="ts">
+import type { ColumnDef } from '@/scripts/components/table/DataTable.vue'
 import { computed, onUnmounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { debouncedWatch } from '@vueuse/core'
@@ -332,13 +326,7 @@ const currentStatusIndex = computed<number>(() => {
   )
 })
 
-interface TableColumn {
-  key: string
-  label?: string
-  thClass?: string
-  tdClass?: string
-  sortable?: boolean
-}
+type TableColumn = Omit<ColumnDef, 'label'> & { label?: string }
 
 const invoiceColumns = computed<TableColumn[]>(() => [
   {
@@ -351,19 +339,34 @@ const invoiceColumns = computed<TableColumn[]>(() => [
     label: t('recurring_invoices.starts_at'),
     thClass: 'extra',
     tdClass: 'font-medium',
+    mobile: 'subtitle',
   },
-  { key: 'customer', label: t('invoices.customer') },
-  { key: 'frequency', label: t('recurring_invoices.frequency.title') },
-  { key: 'status', label: t('invoices.status') },
-  { key: 'total', label: t('invoices.total') },
+  { key: 'customer', label: t('invoices.customer'), mobile: 'title' },
+  {
+    key: 'frequency',
+    label: t('recurring_invoices.frequency.title'),
+    mobile: 'subtitle',
+  },
+  { key: 'status', label: t('invoices.status'), mobile: 'badge' },
+  {
+    key: 'total',
+    label: t('invoices.total'),
+    align: 'end',
+    mobile: 'trailing',
+  },
   {
     key: 'actions',
     label: t('recurring_invoices.action'),
     tdClass: 'text-right text-sm font-medium',
     thClass: 'text-right',
     sortable: false,
+    mobile: 'actions',
   },
 ])
+
+function recurringInvoiceLink(row: { id?: number | string }): string {
+  return `/admin/recurring-invoices/${row.id}/view`
+}
 
 debouncedWatch(filters, () => setFilters(), { debounce: 500 })
 

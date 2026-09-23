@@ -1,0 +1,141 @@
+/*
+ * flatpickr on the theme tokens, so the calendar follows the accent and dark
+ * mode. The stock stylesheet is imported by the picker components and can
+ * load after this file, hence the :root prefix on every rule.
+ */
+:root .flatpickr-calendar {
+  background: var(--color-surface);
+  border: 1px solid var(--color-line-default);
+  border-radius: 0.875rem;
+  box-shadow: 0 12px 32px -12px rgb(16 18 27 / 0.28);
+  font-family: var(--font-base);
+  width: 19rem;
+  padding: 0.5rem;
+}
+
+:root .flatpickr-calendar.arrowTop::before,
+:root .flatpickr-calendar.arrowTop::after,
+:root .flatpickr-calendar.arrowBottom::before,
+:root .flatpickr-calendar.arrowBottom::after {
+  display: none;
+}
+
+:root .flatpickr-months .flatpickr-month,
+:root .flatpickr-current-month .flatpickr-monthDropdown-months,
+:root .flatpickr-current-month input.cur-year {
+  color: var(--color-heading);
+  fill: var(--color-heading);
+  font-weight: 600;
+}
+
+:root .flatpickr-current-month {
+  font-size: 0.9375rem;
+}
+
+:root .flatpickr-current-month .flatpickr-monthDropdown-months {
+  background: var(--color-surface);
+}
+
+:root .flatpickr-months .flatpickr-prev-month,
+:root .flatpickr-months .flatpickr-next-month {
+  color: var(--color-muted);
+  fill: var(--color-muted);
+  top: 0.5rem;
+}
+
+:root .flatpickr-months .flatpickr-prev-month:hover svg,
+:root .flatpickr-months .flatpickr-next-month:hover svg {
+  fill: var(--color-primary-500);
+}
+
+:root span.flatpickr-weekday {
+  color: var(--color-subtle);
+  font-weight: 500;
+  font-size: 0.75rem;
+}
+
+:root .flatpickr-innerContainer,
+:root .flatpickr-rContainer,
+:root .flatpickr-days,
+:root .dayContainer {
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+}
+
+:root .flatpickr-day {
+  color: var(--color-body);
+  border-radius: 0.5rem;
+  font-variant-numeric: tabular-nums;
+  max-width: none;
+}
+
+:root .flatpickr-day:hover,
+:root .flatpickr-day:focus {
+  background: var(--color-hover-strong);
+  border-color: transparent;
+}
+
+:root .flatpickr-day.today {
+  border-color: var(--color-line-strong);
+}
+
+:root .flatpickr-day.selected,
+:root .flatpickr-day.selected:hover,
+:root .flatpickr-day.startRange,
+:root .flatpickr-day.endRange {
+  background: var(--color-btn-primary);
+  border-color: var(--color-btn-primary);
+  color: var(--color-on-primary);
+}
+
+:root .flatpickr-day.inRange {
+  background: var(--color-primary-50);
+  border-color: transparent;
+  box-shadow: none;
+}
+
+:root .flatpickr-day.prevMonthDay,
+:root .flatpickr-day.nextMonthDay,
+:root .flatpickr-day.flatpickr-disabled {
+  color: var(--color-subtle);
+}
+
+:root .flatpickr-time {
+  border-top: 1px solid var(--color-line-light) !important;
+}
+
+:root .flatpickr-time input,
+:root .flatpickr-time .flatpickr-am-pm,
+:root .flatpickr-time .flatpickr-time-separator {
+  color: var(--color-heading);
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+:root .flatpickr-time input:hover,
+:root .flatpickr-time input:focus,
+:root .flatpickr-time .flatpickr-am-pm:hover {
+  background: var(--color-hover-strong);
+}
+
+:root .numInputWrapper span.arrowUp::after {
+  border-bottom-color: var(--color-muted);
+}
+
+:root .numInputWrapper span.arrowDown::after {
+  border-top-color: var(--color-muted);
+}
+
+/* An inline calendar sits inside a popover or sheet, which is its card */
+:root .flatpickr-calendar.inline {
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+  padding: 0;
+}
+
+:root .flatpickr-calendar.inline .flatpickr-current-month .flatpickr-monthDropdown-months {
+  background: transparent;
+}

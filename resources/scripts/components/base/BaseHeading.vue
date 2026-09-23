@@ -11,7 +11,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const typeClass = computed<Record<string, boolean>>(() => ({
   'text-heading text-lg font-medium': props.type === 'heading-title',
-  'text-muted uppercase text-base': props.type === 'section-title',
+  'text-heading text-section font-semibold': props.type === 'section-title',
 }))
 </script>
 

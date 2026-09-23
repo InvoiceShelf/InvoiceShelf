@@ -3,140 +3,92 @@
     <Dialog
       as="div"
       static
-      class="fixed inset-0 z-20 overflow-y-auto"
+      class="relative z-50"
       :open="dialogStore.active"
       @close="dialogStore.closeDialog"
     >
-      <div
-        class="
-          flex
-          items-end
-          justify-center
-          min-h-screen
-          px-4
-          pt-4
-          pb-20
-          text-center
-          sm:block sm:p-0
-        "
+      <TransitionChild
+        as="template"
+        enter="ease-out duration-200"
+        enter-from="opacity-0"
+        enter-to="opacity-100"
+        leave="ease-in duration-150"
+        leave-from="opacity-100"
+        leave-to="opacity-0"
       >
-        <TransitionChild
-          as="template"
-          enter="ease-out duration-300"
-          enter-from="opacity-0"
-          enter-to="opacity-100"
-          leave="ease-in duration-200"
-          leave-from="opacity-100"
-          leave-to="opacity-0"
-        >
-          <DialogOverlay
-            class="fixed inset-0 transition-opacity bg-black/50"
-          />
-        </TransitionChild>
+        <DialogOverlay class="fixed inset-0 bg-overlay" />
+      </TransitionChild>
 
-        <!-- This element is to trick the browser into centering the modal contents. -->
-        <span
-          class="hidden sm:inline-block sm:align-middle sm:h-screen"
-          aria-hidden="true"
-          >&#8203;</span
-        >
-        <TransitionChild
-          as="template"
-          enter="ease-out duration-300"
-          enter-from="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-          enter-to="opacity-100 translate-y-0 sm:scale-100"
-          leave="ease-in duration-200"
-          leave-from="opacity-100 translate-y-0 sm:scale-100"
-          leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-        >
-          <div
-            class="
-              inline-block
-              px-4
-              pt-5
-              pb-4
-              overflow-hidden
-              text-left
-              align-bottom
-              transition-all
-              bg-surface/95 backdrop-blur-xl backdrop-saturate-150
-              rounded-xl border border-line-default
-              shadow-2xl
-              sm:my-8 sm:align-middle sm:w-full sm:p-6
-              relative
-            "
-            :class="dialogSizeClasses"
+      <div class="fixed inset-0 overflow-y-auto">
+        <div class="flex items-end justify-center min-h-full md:items-center md:p-6">
+          <TransitionChild
+            as="template"
+            enter="ease-out duration-200"
+            enter-from="translate-y-full md:translate-y-2 md:opacity-0 md:scale-[0.98]"
+            enter-to="translate-y-0 md:opacity-100 md:scale-100"
+            leave="ease-in duration-150"
+            leave-from="translate-y-0 md:opacity-100 md:scale-100"
+            leave-to="translate-y-full md:translate-y-2 md:opacity-0 md:scale-[0.98]"
           >
-            <div>
-              <div
-                class="
-                  flex
-                  items-center
-                  justify-center
-                  w-12
-                  h-12
-                  mx-auto
-                  bg-alert-success-bg
-                  rounded-full
-                "
-                :class="{
-                  'bg-alert-success-bg': dialogStore.variant === 'primary',
-                  'bg-alert-error-bg': dialogStore.variant === 'danger',
-                }"
-              >
-                <BaseIcon
-                  v-if="dialogStore.variant === 'primary'"
-                  name="CheckCircleIcon"
-                  class="w-6 h-6 text-alert-success-text"
-                />
-                <BaseIcon
-                  v-else
-                  name="ExclamationTriangleIcon"
-                  class="w-6 h-6 text-alert-error-text"
-                  aria-hidden="true"
-                />
-              </div>
-              <div class="mt-3 text-center sm:mt-5">
-                <DialogTitle
-                  as="h3"
-                  class="text-lg font-medium leading-6 text-heading"
+            <div
+              class="
+                relative w-full px-5 pt-6 text-left glass-strong rounded-t-2xl safe-drawer
+                md:p-6 md:rounded-2xl md:border
+              "
+              :class="dialogSizeClasses"
+            >
+              <div class="flex items-start gap-4">
+                <div
+                  class="flex items-center justify-center w-10 h-10 rounded-full shrink-0"
+                  :class="dialogStore.variant === 'danger' ? 'bg-status-red-bg' : 'bg-status-green-bg'"
                 >
-                  {{ dialogStore.title }}
-                </DialogTitle>
-                <div class="mt-2">
-                  <p class="text-sm text-muted">
+                  <BaseIcon
+                    v-if="dialogStore.variant === 'primary'"
+                    name="CheckCircleIcon"
+                    class="w-5 h-5 text-status-green"
+                  />
+                  <BaseIcon
+                    v-else
+                    name="ExclamationTriangleIcon"
+                    class="w-5 h-5 text-status-red"
+                    aria-hidden="true"
+                  />
+                </div>
+                <div class="min-w-0 pt-1.5">
+                  <DialogTitle
+                    as="h3"
+                    class="font-semibold text-section text-heading"
+                  >
+                    {{ dialogStore.title }}
+                  </DialogTitle>
+                  <p class="mt-1.5 text-sm text-muted">
                     {{ dialogStore.message }}
                   </p>
                 </div>
               </div>
-            </div>
-            <div
-              class="mt-5 sm:mt-6 grid gap-3"
-              :class="{
-                'sm:grid-cols-2 sm:grid-flow-row-dense':
-                  !dialogStore.hideNoButton,
-              }"
-            >
-              <base-button
-                class="justify-center"
-                :variant="dialogStore.variant"
-                :class="{ 'w-full': dialogStore.hideNoButton }"
-                @click="resolveDialog(true)"
+              <div
+                class="flex flex-col-reverse gap-2 mt-6 md:flex-row md:justify-end"
               >
-                {{ dialogStore.yesLabel }}
-              </base-button>
+                <base-button
+                  v-if="!dialogStore.hideNoButton"
+                  class="justify-center"
+                  variant="white"
+                  @click="resolveDialog(false)"
+                >
+                  {{ dialogStore.noLabel }}
+                </base-button>
 
-              <base-button
-                v-if="!dialogStore.hideNoButton"
-                class="justify-center"
-                variant="white"
-                @click="resolveDialog(false)"
-              >
-                {{ dialogStore.noLabel }}
-              </base-button>
+                <base-button
+                  class="justify-center"
+                  :variant="dialogStore.variant"
+                  @click="resolveDialog(true)"
+                >
+                  {{ dialogStore.yesLabel }}
+                </base-button>
+              </div>
             </div>
-          </div>
-        </TransitionChild>
+          </TransitionChild>
+        </div>
       </div>
     </Dialog>
   </TransitionRoot>
@@ -165,14 +117,14 @@ const dialogSizeClasses = computed<string>(() => {
 
   switch (size) {
     case 'sm':
-      return 'sm:max-w-sm'
+      return 'md:max-w-sm'
     case 'md':
-      return 'sm:max-w-md'
+      return 'md:max-w-md'
     case 'lg':
-      return 'sm:max-w-lg'
+      return 'md:max-w-lg'
 
     default:
-      return 'sm:max-w-md'
+      return 'md:max-w-md'
   }
 })
 </script>

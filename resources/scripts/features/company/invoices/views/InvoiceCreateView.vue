@@ -14,7 +14,8 @@
           <BaseBreadcrumbItem v-else :title="$t('invoices.new_invoice')" to="#" active />
         </BaseBreadcrumb>
 
-        <template #actions>
+        <!-- Phones get these in the bottom bar and the form instead -->
+        <template v-if="!isPhone" #actions>
           <!-- Make Recurring Toggle -->
           <div v-if="!isEdit" class="flex items-center mr-4">
             <BaseSwitch v-model="isRecurring" class="mr-2" />
@@ -50,6 +51,26 @@
           </BaseButton>
         </template>
       </BasePageHeader>
+
+      <DocumentFormActionBar
+        :total="invoiceStore.getTotal"
+        :currency="invoiceStore.newInvoice.selectedCurrency"
+        :save-label="isRecurring ? $t('recurring_invoices.save_invoice') : $t('invoices.save_invoice')"
+        :saving="isSaving"
+        :loading="isLoadingContent"
+        :pdf-url="isEdit ? `/invoices/pdf/${invoiceStore.newInvoice.unique_hash}` : null"
+      />
+
+      <!-- On phones, making it recurring is a setting of the document -->
+      <label
+        v-if="isPhone && !isEdit"
+        class="flex items-center justify-between gap-4 px-4 py-3 mt-5 border cursor-pointer glass rounded-xl"
+      >
+        <span class="text-sm font-medium text-heading">
+          {{ $t('recurring_invoices.make_recurring') }}
+        </span>
+        <BaseSwitch v-model="isRecurring" />
+      </label>
 
       <!-- Select Customer & Basic Fields -->
       <InvoiceBasicFields
@@ -123,6 +144,7 @@ import { useInvoiceStore } from '../store'
 import { useRecurringInvoiceStore } from '@/scripts/features/company/recurring-invoices/store'
 import { useCompanyStore } from '@/scripts/stores/company.store'
 import { useNotificationStore } from '@/scripts/stores/notification.store'
+import { useBreakpoints } from '@/scripts/composables/use-breakpoints'
 import {
   handleApiError,
   getErrorTranslationKey,
@@ -130,6 +152,7 @@ import {
 import InvoiceBasicFields from '../components/InvoiceBasicFields.vue'
 import {
   DocumentItemsTable,
+  DocumentFormActionBar,
   DocumentTotals,
   DocumentNotes,
   TemplateSelectButton,
@@ -143,6 +166,7 @@ const notificationStore = useNotificationStore()
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
+const { isPhone } = useBreakpoints()
 
 const invoiceValidationScope = 'newInvoice'
 const isSaving = ref<boolean>(false)

@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { dashboardService } from '../../../api/services/dashboard.service'
-import type { DashboardParams, DashboardResponse, ChartData } from '../../../api/services/dashboard.service'
+import type { DashboardParams, DashboardResponse, ChartData, ReceivablesSummary, ResolvedPeriod } from '../../../api/services/dashboard.service'
+import type { PeriodValue } from '../../../utils/period'
 import type { Invoice } from '../../../types/domain/invoice'
 import type { Estimate } from '../../../types/domain/estimate'
 import { handleApiError } from '../../../utils/error-handling'
@@ -73,6 +74,15 @@ export const useDashboardStore = defineStore('dashboard', () => {
     netIncomeTotals: [],
   })
 
+  const receivables = ref<ReceivablesSummary>({
+    outstanding: 0,
+    outstanding_count: 0,
+    overdue: 0,
+    overdue_count: 0,
+    due_soon: 0,
+    due_later: 0,
+  })
+
   const totalSales = ref<number>(0)
   const totalReceipts = ref<number>(0)
   const totalExpenses = ref<number>(0)
@@ -82,6 +92,11 @@ export const useDashboardStore = defineStore('dashboard', () => {
   const recentEstimates = ref<RecentEstimate[]>([])
 
   const isDashboardDataLoaded = ref<boolean>(false)
+
+  // The period picked on the dashboard, kept while the app is open, and the
+  // dates the server resolved it to
+  const period = ref<PeriodValue>({ preset: 'this_year' })
+  const resolvedPeriod = ref<ResolvedPeriod | null>(null)
 
   // Actions
   async function loadData(params?: DashboardParams): Promise<DashboardResponse> {
@@ -94,6 +109,10 @@ export const useDashboardStore = defineStore('dashboard', () => {
       stats.value.totalInvoiceCount = response.total_invoice_count
       stats.value.totalEstimateCount = response.total_estimate_count
 
+      if (response.receivables) {
+        receivables.value = response.receivables
+      }
+
       // Chart Data
       if (response.chart_data) {
         chartData.value.months = response.chart_data.months
@@ -102,6 +121,8 @@ export const useDashboardStore = defineStore('dashboard', () => {
         chartData.value.receiptTotals = response.chart_data.receipt_totals
         chartData.value.netIncomeTotals = response.chart_data.net_income_totals
       }
+
+      resolvedPeriod.value = response.period ?? null
 
       // Chart Labels
       totalSales.value = Number(response.total_sales) || 0
@@ -124,6 +145,7 @@ export const useDashboardStore = defineStore('dashboard', () => {
 
   return {
     stats,
+    receivables,
     chartData,
     totalSales,
     totalReceipts,
@@ -132,6 +154,8 @@ export const useDashboardStore = defineStore('dashboard', () => {
     recentDueInvoices,
     recentEstimates,
     isDashboardDataLoaded,
+    period,
+    resolvedPeriod,
     loadData,
   }
 })

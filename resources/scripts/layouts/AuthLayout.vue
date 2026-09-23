@@ -12,7 +12,7 @@
       <div class="mb-8 flex justify-center">
         <MainLogo
           v-if="!loginPageLogo"
-          class="h-12 w-auto text-primary-500"
+          class="w-auto h-11 text-heading"
         />
         <img
           v-else

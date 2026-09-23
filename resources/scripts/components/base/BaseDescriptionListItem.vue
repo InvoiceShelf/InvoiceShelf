@@ -12,22 +12,22 @@ withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <div>
+  <div class="min-w-0">
     <BaseContentPlaceholders v-if="contentLoading">
       <BaseContentPlaceholdersBox class="w-20 h-5 mb-1" />
       <BaseContentPlaceholdersBox class="w-40 h-5" />
     </BaseContentPlaceholders>
 
-    <div v-else>
-      <BaseLabel class="font-normal mb-1">
+    <template v-else>
+      <p class="mb-1 text-sm text-muted">
         {{ label }}
-      </BaseLabel>
+      </p>
 
-      <p class="text-sm font-bold leading-5 text-heading non-italic">
+      <div class="text-sm font-medium leading-5 break-words text-heading">
         {{ value }}
 
         <slot />
-      </p>
-    </div>
+      </div>
+    </template>
   </div>
 </template>

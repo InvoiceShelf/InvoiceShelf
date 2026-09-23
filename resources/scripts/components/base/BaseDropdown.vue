@@ -2,26 +2,67 @@
   <div class="relative" :class="wrapperClass">
     <BaseContentPlaceholders
       v-if="contentLoading"
-      class="disabled cursor-normal pointer-events-none"
+      class="disabled pointer-events-none"
     >
       <BaseContentPlaceholdersBox
         :rounded="true"
         class="w-14"
-        style="height: 42px"
+        style="height: 40px"
       />
     </BaseContentPlaceholders>
-    <Menu v-else>
-      <span ref="trigger" class="inline-flex">
-        <MenuButton class="focus:outline-hidden" @click="onClick">
+    <Menu v-else v-slot="{ open }">
+      <span ref="trigger" :class="inActionBar ? 'flex w-full' : 'inline-flex'">
+        <MenuButton
+          :class="inActionBar ? 'w-full' : ''"
+          class="rounded-lg focus:outline-hidden focus-visible:ring-3 focus-visible:ring-focus"
+          @click="onClick"
+        >
           <slot name="activator" />
         </MenuButton>
       </span>
 
       <Teleport to="body">
+        <!-- Phones: an action sheet from the bottom edge -->
+        <template v-if="isPhone">
+          <transition
+            enter-active-class="transition duration-200 ease-out"
+            enter-from-class="opacity-0"
+            enter-to-class="opacity-100"
+            leave-active-class="transition duration-150 ease-in"
+            leave-from-class="opacity-100"
+            leave-to-class="opacity-0"
+          >
+            <div v-if="open" class="fixed inset-0 z-50 bg-overlay" aria-hidden="true" />
+          </transition>
+          <transition
+            enter-active-class="transition duration-200 ease-out"
+            enter-from-class="translate-y-full"
+            enter-to-class="translate-y-0"
+            leave-active-class="transition duration-150 ease-in"
+            leave-from-class="translate-y-0"
+            leave-to-class="translate-y-full"
+          >
+            <MenuItems
+              class="
+                fixed inset-x-0 bottom-0 z-50 max-h-[80dvh] overflow-y-auto px-2 pt-2
+                glass-strong rounded-t-2xl safe-drawer focus:outline-hidden
+              "
+              :class="containerClass"
+            >
+              <div class="flex justify-center pb-2" aria-hidden="true">
+                <span class="h-1 w-9 rounded-full bg-line-strong" />
+              </div>
+              <slot />
+            </MenuItems>
+          </transition>
+        </template>
+
+        <!-- Tablet and desktop: a popover anchored to the activator -->
         <div
+          v-else
           ref="container"
-          class="fixed top-0 left-0 z-10"
-          :class="[widthClass, !contentLoading ? 'pointer-events-none' : '']"
+          class="fixed top-0 left-0 z-50 pointer-events-none"
+          :class="widthClass"
         >
           <transition
             enter-active-class="transition duration-100 ease-out"
@@ -32,9 +73,7 @@
             leave-to-class="scale-95 opacity-0"
           >
             <MenuItems :class="containerClasses">
-              <div class="py-1">
-                <slot />
-              </div>
+              <slot />
             </MenuItems>
           </transition>
         </div>
@@ -45,8 +84,9 @@
 
 <script setup lang="ts">
 import { Menu, MenuButton, MenuItems } from '@headlessui/vue'
-import { computed, nextTick } from 'vue'
+import { computed, inject, nextTick, provide } from 'vue'
 import { usePopper } from '@/scripts/composables/use-popper'
+import { useBreakpoints } from '@/scripts/composables/use-breakpoints'
 import type { Placement } from '@popperjs/core'
 
 interface Props {
@@ -67,15 +107,22 @@ const props = withDefaults(defineProps<Props>(), {
   contentLoading: false,
 })
 
+const { isPhone } = useBreakpoints()
+const inActionBar = inject<boolean>('inActionBar', false)
+
+// BaseDropdownItem renders taller, touch-sized rows inside the sheet
+provide('dropdownIsSheet', isPhone)
+
 const containerClasses = computed<string>(() => {
-  const baseClass = `origin-top-right rounded-xl shadow-xl bg-surface/80 backdrop-blur-xl border border-white/15 divide-y divide-line-light focus:outline-hidden`
+  const baseClass =
+    'origin-top-right p-1 rounded-xl border glass-strong focus:outline-hidden'
   return `${baseClass} pointer-events-auto ${props.containerClass}`
 })
 
 const [trigger, container, popper] = usePopper({
   placement: props.position,
   strategy: 'fixed',
-  modifiers: [{ name: 'offset', options: { offset: [0, 10] } }],
+  modifiers: [{ name: 'offset', options: { offset: [0, 6] } }],
 })
 
 async function onClick(): Promise<void> {

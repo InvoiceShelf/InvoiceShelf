@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ColumnDef } from '@/scripts/components/table/DataTable.vue'
 import { debouncedWatch } from '@vueuse/core'
 import { reactive, ref, computed, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -8,15 +9,8 @@ import { useUserStore } from '../../../../stores/user.store'
 import { useNotificationStore } from '../../../../stores/notification.store'
 import MemberDropdown from '../components/MemberDropdown.vue'
 import InviteMemberModal from '../components/InviteMemberModal.vue'
-import AstronautIcon from '@/scripts/components/icons/AstronautIcon.vue'
 
-interface TableColumn {
-  key: string
-  label?: string
-  thClass?: string
-  tdClass?: string
-  sortable?: boolean
-}
+type TableColumn = Omit<ColumnDef, 'label'> & { label?: string }
 
 interface FetchParams {
   page: number
@@ -69,12 +63,14 @@ const userTableColumns = computed<TableColumn[]>(() => [
     label: t('members.name'),
     thClass: 'extra',
     tdClass: 'font-medium text-heading',
+    mobile: 'title',
   },
-  { key: 'email', label: 'Email' },
+  { key: 'email', label: 'Email', mobile: 'subtitle' },
   {
     key: 'role',
     label: t('members.role'),
     sortable: false,
+    mobile: 'trailing-sub',
   },
   {
     key: 'created_at',
@@ -84,6 +80,7 @@ const userTableColumns = computed<TableColumn[]>(() => [
     key: 'actions',
     tdClass: 'text-right text-sm font-medium',
     sortable: false,
+    mobile: 'actions',
   },
 ])
 
@@ -238,8 +235,8 @@ function removeMultipleUsers(): void {
       </template>
     </BasePageHeader>
 
-    <BaseFilterWrapper :show="showFilters" class="mt-3" @clear="clearFilter">
-      <BaseInputGroup :label="$t('members.name')" class="flex-1 mt-2 mr-4">
+    <BaseFilterWrapper :show="showFilters" @clear="clearFilter">
+      <BaseInputGroup :label="$t('members.name')" class="flex-1">
         <BaseInput
           v-model="filters.name"
           type="text"
@@ -248,7 +245,7 @@ function removeMultipleUsers(): void {
         />
       </BaseInputGroup>
 
-      <BaseInputGroup :label="$t('members.email')" class="flex-1 mt-2 mr-4">
+      <BaseInputGroup :label="$t('members.email')" class="flex-1">
         <BaseInput
           v-model="filters.email"
           type="text"
@@ -257,7 +254,7 @@ function removeMultipleUsers(): void {
         />
       </BaseInputGroup>
 
-      <BaseInputGroup class="flex-1 mt-2" :label="$t('members.role')">
+      <BaseInputGroup class="flex-1" :label="$t('members.role')">
         <BaseMultiselect
           v-model="filters.role"
           :options="memberStore.roles"
@@ -274,41 +271,32 @@ function removeMultipleUsers(): void {
     <!-- Empty Placeholder -->
     <BaseEmptyPlaceholder
       v-show="showEmptyScreen"
+      icon="UserGroupIcon"
       :title="$t('members.no_users')"
       :description="$t('members.list_of_users')"
-    >
-      <AstronautIcon class="mt-5 mb-4" />
-    </BaseEmptyPlaceholder>
+    />
 
     <div v-show="!showEmptyScreen" class="relative table-container">
-      <div
-        class="relative flex items-center justify-end h-5 border-line-default border-solid"
-      >
-        <BaseDropdown v-if="memberStore.selectedUsers.length">
-          <template #activator>
-            <span
-              class="flex text-sm font-medium cursor-pointer select-none text-primary-400"
-            >
-              {{ $t('general.actions') }}
-              <BaseIcon name="ChevronDownIcon" class="h-5" />
-            </span>
-          </template>
-          <BaseDropdownItem @click="removeMultipleUsers">
-            <BaseIcon name="TrashIcon" class="h-5 mr-3 text-body" />
-            {{ $t('general.delete') }}
-          </BaseDropdownItem>
-        </BaseDropdown>
-      </div>
-
       <BaseTable
         ref="tableComponent"
         :data="fetchData"
         :columns="userTableColumns"
-        class="mt-3"
+        :selected-count="
+          userStore.currentUser?.is_owner ? memberStore.selectedUsers.length : 0
+        "
       >
+        <template #bulk-actions>
+          <BaseButton size="xs" variant="white" @click="removeMultipleUsers">
+            <template #left="slotProps">
+              <BaseIcon name="TrashIcon" :class="slotProps.class" />
+            </template>
+            {{ $t('general.delete') }}
+          </BaseButton>
+        </template>
+
         <!-- Select All Checkbox -->
         <template #header>
-          <div class="absolute z-10 items-center left-6 top-2.5 select-none">
+          <div class="absolute z-10 items-center left-6 top-3.5 select-none">
             <BaseCheckbox
               v-model="selectAllFieldStatus"
               variant="primary"
@@ -331,7 +319,7 @@ function removeMultipleUsers(): void {
         <template #cell-name="{ row }">
           <router-link
             :to="{ path: `users/${row.data.id}/edit` }"
-            class="font-medium text-primary-500"
+            class="font-medium text-heading hover:text-primary-600"
           >
             {{ row.data.name }}
           </router-link>
@@ -358,7 +346,6 @@ function removeMultipleUsers(): void {
     <!-- Pending Invitations Section -->
     <div
       v-if="userStore.currentUser?.is_owner && memberStore.pendingInvitations.length > 0"
-      class="mt-8"
     >
       <h3 class="text-lg font-medium text-heading mb-4">
         {{ $t('members.pending_invitations') }}

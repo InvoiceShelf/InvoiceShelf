@@ -1,180 +1,126 @@
 <template>
-  <BasePage class="xl:pl-96 xl:ml-8">
-    <BasePageHeader :title="pageTitle">
-      <template #actions>
-        <BaseButton
-          v-if="canSend"
-          :content-loading="isFetching"
-          variant="primary"
-          @click="onPaymentSend"
-        >
-          {{ $t('payments.send_payment_receipt') }}
-        </BaseButton>
-
-        <PaymentDropdown
-          :content-loading="isFetching"
-          class="ml-3"
-          :row="paymentData"
-          :can-edit="canEdit"
-          :can-view="canView"
-          :can-delete="canDelete"
-          :can-send="canSend"
-        />
-      </template>
-    </BasePageHeader>
-
-    <!-- Sidebar -->
-    <div
-      class="fixed top-0 left-0 hidden h-full pt-16 pb-[6rem] ml-56 bg-surface xl:ml-64 w-88 xl:block"
+  <div class="flex min-h-full">
+    <!-- The other payments, beside the one on screen (wide screens only) -->
+    <RecordListPane
+      ref="listPane"
+      :search="searchData.searchText"
+      :sort-options="sortOptions"
+      :sort-field="searchData.orderByField"
+      :ascending="getOrderBy"
+      :loading="isLoading"
+      :empty="!paymentList?.length"
+      :empty-text="$t('payments.no_matching_payments')"
+      @update:search="onSearchText"
+      @update:sort-field="setSortField"
+      @toggle-order="sortData"
     >
-      <div
-        class="flex items-center justify-between px-4 pt-8 pb-6 border border-line-default border-solid"
+      <RecordListItem
+        v-for="payment in (paymentList ?? []).filter(Boolean)"
+        :id="'payment-' + payment.id"
+        :key="payment.id"
+        :to="`/admin/payments/${payment.id}/view`"
+        :active="hasActiveUrl(payment.id)"
+        :title="payment.customer?.name ?? ''"
+        :subtitle="payment.payment_number"
+        :meta="payment.formatted_payment_date"
       >
-        <BaseInput
-          v-model="searchData.searchText"
-          :placeholder="$t('general.search')"
-          type="text"
-          @input="onSearch"
-        >
-          <BaseIcon name="MagnifyingGlassIcon" class="h-5" />
-        </BaseInput>
+        <template #amount>
+          <BaseFormatMoney :amount="payment.amount" :currency="payment.customer?.currency" />
+        </template>
+      </RecordListItem>
+    </RecordListPane>
 
-        <div class="flex ml-3" role="group">
-          <BaseDropdown
-            position="bottom-start"
-            width-class="w-50"
-            position-class="left-0"
+    <BasePage class="min-w-0">
+      <BasePageHeader :title="pageTitle">
+        <BaseBreadcrumb>
+          <BaseBreadcrumbItem :title="$t('payments.payment', 2)" to="/admin/payments" />
+        </BaseBreadcrumb>
+
+        <template #actions>
+          <BaseButton
+            v-if="canSend"
+            :content-loading="isFetching"
+            variant="primary"
+            @click="onPaymentSend"
           >
-            <template #activator>
-              <BaseButton variant="gray">
-                <BaseIcon name="FunnelIcon" />
-              </BaseButton>
+            <template #left="slotProps">
+              <BaseIcon name="PaperAirplaneIcon" :class="slotProps.class" />
             </template>
-
-            <div
-              class="px-4 py-1 pb-2 mb-2 text-sm border-b border-line-default border-solid"
-            >
-              {{ $t('general.sort_by') }}
-            </div>
-
-            <div class="px-2">
-              <BaseDropdownItem class="pt-3 rounded-md hover:rounded-md">
-                <BaseInputGroup class="-mt-3 font-normal">
-                  <BaseRadio
-                    v-model="searchData.orderByField"
-                    :label="$t('payments.date')"
-                    size="sm"
-                    name="filter"
-                    value="payment_date"
-                    @update:model-value="onSearch"
-                  />
-                </BaseInputGroup>
-              </BaseDropdownItem>
-            </div>
-
-            <div class="px-2">
-              <BaseDropdownItem class="pt-3 rounded-md hover:rounded-md">
-                <BaseInputGroup class="-mt-3 font-normal">
-                  <BaseRadio
-                    v-model="searchData.orderByField"
-                    :label="$t('payments.payment_number')"
-                    size="sm"
-                    name="filter"
-                    value="payment_number"
-                    @update:model-value="onSearch"
-                  />
-                </BaseInputGroup>
-              </BaseDropdownItem>
-            </div>
-          </BaseDropdown>
-
-          <BaseButton class="ml-1" size="md" variant="gray" @click="sortData">
-            <BaseIcon v-if="getOrderBy" name="BarsArrowUpIcon" />
-            <BaseIcon v-else name="BarsArrowDownIcon" />
+            {{ $t('payments.send_payment_receipt') }}
           </BaseButton>
-        </div>
-      </div>
 
-      <div
-        ref="paymentListSection"
-        class="h-full overflow-y-scroll border-l border-line-default border-solid base-scroll"
-      >
-        <div v-for="(payment, index) in paymentList" :key="index">
+          <PaymentDropdown
+            :content-loading="isFetching"
+            :row="paymentData"
+            :can-edit="canEdit"
+            :can-view="canView"
+            :can-delete="canDelete"
+            :can-send="canSend"
+          />
+        </template>
+      </BasePageHeader>
+
+      <!-- What the receipt says, without opening it -->
+      <BaseStatStrip v-if="currentPayment.id" :columns="allocatedInvoices.length ? 5 : 4">
+        <BaseStat :label="$t('payments.amount')" emphasis>
+          <BaseFormatMoney :amount="currentPayment.amount" :currency="paymentCurrency" />
+        </BaseStat>
+        <BaseStat :label="$t('payments.date')">
+          {{ currentPayment.formatted_payment_date }}
+        </BaseStat>
+        <BaseStat :label="$t('payments.payment_mode')">
+          {{ currentPayment.payment_method?.name || '-' }}
+        </BaseStat>
+        <BaseStat v-if="allocatedInvoices.length" :label="$t('payments.invoice')">
+          <template v-for="(invoice, index) in allocatedInvoices" :key="invoice.id">
+            <span v-if="index > 0">, </span>
+            <router-link :to="`/admin/invoices/${invoice.id}/view`" class="hover:text-primary-600">
+              {{ invoice.invoice_number }}
+            </router-link>
+          </template>
+        </BaseStat>
+        <BaseStat :label="$t('payments.customer')" :wide="!allocatedInvoices.length">
           <router-link
-            v-if="payment"
-            :id="'payment-' + payment.id"
-            :to="`/admin/payments/${payment.id}/view`"
-            :class="[
-              'flex justify-between p-4 items-center cursor-pointer hover:bg-hover-strong border-l-4 border-l-transparent',
-              {
-                'bg-surface-tertiary border-l-4 border-l-primary-500 border-solid':
-                  hasActiveUrl(payment.id),
-              },
-            ]"
-            style="border-bottom: 1px solid rgba(185, 193, 209, 0.41)"
+            v-if="currentPayment.customer?.id"
+            :to="`/admin/customers/${currentPayment.customer.id}/view`"
+            class="hover:text-primary-600"
           >
-            <div class="flex-2">
-              <BaseText
-                :text="payment.customer?.name ?? ''"
-                class="pr-2 mb-2 text-sm not-italic font-normal leading-5 text-heading capitalize truncate"
-              />
-              <div
-                class="mb-1 text-xs not-italic font-medium leading-5 text-muted capitalize"
-              >
-                {{ payment.payment_number }}
-              </div>
-            </div>
-
-            <div class="flex-1 whitespace-nowrap right">
-              <BaseFormatMoney
-                class="block mb-2 text-xl not-italic font-semibold leading-8 text-right text-heading"
-                :amount="payment.amount"
-                :currency="payment.customer?.currency"
-              />
-              <div class="text-sm text-right text-muted non-italic">
-                {{ payment.formatted_payment_date }}
-              </div>
-            </div>
+            {{ currentPayment.customer.name }}
           </router-link>
-        </div>
+        </BaseStat>
+      </BaseStatStrip>
 
-        <div v-if="isLoading" class="flex justify-center p-4 items-center">
-          <LoadingIcon class="h-6 m-1 animate-spin text-primary-400" />
+      <BaseCard v-if="currentPayment.id">
+        <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 mb-2">
+          <h2 class="font-semibold text-section text-heading">{{ $t('payments.allocations') }}</h2>
+          <div class="text-sm text-muted">
+            {{ $t('payments.unapplied_credit') }}:
+            <BaseFormatMoney :amount="paymentUnallocatedAmount" :currency="currentPayment.customer?.currency" class="font-medium text-heading" />
+          </div>
         </div>
-        <p
-          v-if="!paymentList?.length && !isLoading"
-          class="flex justify-center px-4 mt-5 text-sm text-body"
-        >
-          {{ $t('payments.no_matching_payments') }}
-        </p>
-      </div>
-    </div>
+        <div v-if="paymentAllocations.length" class="divide-y divide-line-light">
+          <div v-for="allocation in paymentAllocations" :key="allocation.id ?? allocation.invoice_id" class="flex items-center justify-between gap-4 py-3 text-sm">
+            <div>
+              <router-link v-if="allocation.invoice" :to="`/admin/invoices/${allocation.invoice.id}/view`" class="font-medium text-primary-600 hover:text-primary-700">
+                {{ allocation.invoice.invoice_number }}
+              </router-link>
+              <span v-else class="font-medium text-heading">{{ $t('payments.invoice') }}</span>
+              <span v-if="allocation.invoice?.formatted_invoice_date" class="block mt-0.5 text-xs text-muted">{{ allocation.invoice.formatted_invoice_date }}</span>
+            </div>
+            <BaseFormatMoney :amount="allocation.amount" :currency="currentPayment.customer?.currency" class="font-medium text-heading" />
+          </div>
+        </div>
+        <p v-else class="py-2 text-sm text-muted">{{ $t('payments.no_allocations') }}</p>
+      </BaseCard>
 
-    <BaseCard v-if="currentPayment.id" class="mb-4">
-      <div class="flex flex-wrap items-center justify-between gap-4 mb-3">
-        <h2 class="text-base font-semibold text-heading">{{ $t('payments.allocations') }}</h2>
-        <div class="text-sm text-muted">
-          {{ $t('payments.unapplied_credit') }}:
-          <BaseFormatMoney :amount="paymentUnallocatedAmount" :currency="currentPayment.customer?.currency" />
-        </div>
-      </div>
-      <div v-if="paymentAllocations.length" class="divide-y divide-line-light">
-        <div v-for="allocation in paymentAllocations" :key="allocation.id ?? allocation.invoice_id" class="flex items-center justify-between gap-4 py-3 text-sm">
-          <router-link v-if="allocation.invoice" :to="`/admin/invoices/${allocation.invoice.id}/view`" class="font-medium text-primary-500">
-            {{ allocation.invoice.invoice_number }}
-          </router-link>
-          <span v-else class="font-medium text-heading">{{ $t('payments.invoice') }}</span>
-          <BaseFormatMoney :amount="allocation.amount" :currency="currentPayment.customer?.currency" class="font-medium text-heading" />
-        </div>
-      </div>
-      <p v-else class="py-2 text-sm text-muted">{{ $t('payments.no_allocations') }}</p>
-    </BaseCard>
-
-    <!-- PDF Preview -->
-    <BasePdfPreview :src="shareableLink" />
+      <BasePdfPreview
+        :src="shareableLink"
+        :title="currentPayment.payment_number ? `${currentPayment.payment_number}.pdf` : ''"
+      />
+    </BasePage>
 
     <SendPaymentModal />
-  </BasePage>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -184,10 +130,12 @@ import { useI18n } from 'vue-i18n'
 import { usePaymentStore } from '../store'
 import PaymentDropdown from '../components/PaymentDropdown.vue'
 import SendPaymentModal from '../components/SendPaymentModal.vue'
-import LoadingIcon from '@/scripts/components/icons/LoadingIcon.vue'
+import RecordListPane from '@/scripts/components/layout/RecordListPane.vue'
+import RecordListItem from '@/scripts/components/layout/RecordListItem.vue'
 import { useUserStore } from '../../../../stores/user.store'
 import { useModalStore } from '../../../../stores/modal.store'
 import type { Payment, PaymentAllocation } from '../../../../types/domain/payment'
+import type { Invoice } from '../../../../types/domain/invoice'
 
 interface Props {
   canEdit?: boolean
@@ -239,7 +187,8 @@ const isLoading = ref<boolean>(false)
 const paymentList = ref<Payment[] | null>(null)
 const currentPageNumber = ref<number>(1)
 const lastPageNumber = ref<number>(1)
-const paymentListSection = ref<HTMLElement | null>(null)
+const listPane = ref<InstanceType<typeof RecordListPane> | null>(null)
+const paymentListSection = computed<HTMLElement | null>(() => listPane.value?.listEl ?? null)
 
 interface SearchData {
   orderBy: string | null
@@ -269,6 +218,29 @@ const shareableLink = computed<string | false>(() => {
 const currentPayment = computed<Payment>(() => paymentData.value as Payment)
 const paymentAllocations = computed<PaymentAllocation[]>(() => (paymentData.value as Payment).allocations ?? [])
 const paymentUnallocatedAmount = computed<number>(() => (paymentData.value as Payment).unallocated_amount ?? 0)
+const paymentCurrency = computed(() => currentPayment.value.currency ?? currentPayment.value.customer?.currency ?? null)
+
+// The invoices this payment settles, if it was allocated to any
+const allocatedInvoices = computed<Invoice[]>(() => {
+  return paymentAllocations.value
+    .map((allocation) => allocation.invoice)
+    .filter((invoice): invoice is Invoice => !!invoice)
+})
+
+const sortOptions = computed(() => [
+  { value: 'payment_date', label: t('payments.date') },
+  { value: 'payment_number', label: t('payments.payment_number') },
+])
+
+function setSortField(field: string): void {
+  searchData.orderByField = field
+  onSearch()
+}
+
+function onSearchText(value: string): void {
+  searchData.searchText = value
+  onSearch()
+}
 
 watch(route, () => {
   loadPayment()
@@ -354,8 +326,10 @@ async function loadPayment(): Promise<void> {
 
 function scrollToPayment(): void {
   const el = document.getElementById(`payment-${route.params.id}`)
-  if (el) {
-    el.scrollIntoView({ behavior: 'smooth' })
+  const list = paymentListSection.value
+  if (el && list) {
+    // Scroll the list pane alone; scrollIntoView would also move the page
+    list.scrollTo({ top: el.offsetTop - list.offsetTop - 8, behavior: 'smooth' })
     el.classList.add('shake')
     addScrollListener()
   }

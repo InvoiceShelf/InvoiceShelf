@@ -1,233 +1,173 @@
 <template>
-  <!-- MOBILE MENU -->
-  <TransitionRoot as="template" :show="globalStore.isSidebarOpen">
-    <Dialog
-      as="div"
-      class="fixed inset-0 z-40 flex md:hidden"
-      @close="globalStore.setSidebarVisibility(false)"
-    >
-      <TransitionChild
-        as="template"
-        enter="transition-opacity ease-linear duration-300"
-        enter-from="opacity-0"
-        enter-to="opacity-100"
-        leave="transition-opacity ease-linear duration-300"
-        leave-from="opacity-100"
-        leave-to="opacity-0"
-      >
-        <DialogOverlay class="fixed inset-0 bg-gray-600/75" />
-      </TransitionChild>
-
-      <TransitionChild
-        as="template"
-        enter="transition ease-in-out duration-300"
-        enter-from="-translate-x-full"
-        enter-to="translate-x-0"
-        leave="transition ease-in-out duration-300"
-        leave-from="translate-x-0"
-        leave-to="-translate-x-full"
-      >
-        <div class="relative flex flex-col flex-1 w-full max-w-xs bg-surface">
-          <TransitionChild
-            as="template"
-            enter="ease-in-out duration-300"
-            enter-from="opacity-0"
-            enter-to="opacity-100"
-            leave="ease-in-out duration-300"
-            leave-from="opacity-100"
-            leave-to="opacity-0"
-          >
-            <div class="absolute top-0 right-0 pt-2 -mr-12">
-              <button
-                class="
-                  flex items-center justify-center w-10 h-10 ml-1 rounded-full
-                  focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-white
-                "
-                @click="globalStore.setSidebarVisibility(false)"
-              >
-                <span class="sr-only">Close sidebar</span>
-                <BaseIcon
-                  name="XMarkIcon"
-                  class="w-6 h-6 text-white"
-                  aria-hidden="true"
-                />
-              </button>
-            </div>
-          </TransitionChild>
-
-          <div class="flex-1 h-0 pt-5 pb-4 safe-drawer overflow-y-auto">
-            <div class="flex items-center shrink-0 px-4 mb-10">
-              <MainLogo
-                class="block h-auto max-w-full w-36 text-primary-400"
-                alt="InvoiceShelf Logo"
-              />
-            </div>
-
-            <nav
-              v-for="(menu, index) in globalStore.menuGroups"
-              :key="index"
-              class="mt-5 space-y-1"
-            >
-              <div
-                v-if="menu[0] && menu[0].group_label"
-                class="px-4 mt-6 mb-2 text-xs font-semibold text-subtle uppercase tracking-wider"
-              >
-                {{ $t(menu[0].group_label) }}
-              </div>
-              <router-link
-                v-for="item in menu"
-                :key="item.name"
-                :to="item.link"
-                :class="[
-                  hasActiveUrl(item.link)
-                    ? 'text-primary-600 bg-primary-50 font-semibold'
-                    : 'text-body hover:bg-hover',
-                  'cursor-pointer mx-3 px-3 py-2.5 flex items-center rounded-lg text-sm not-italic font-medium transition-colors',
-                ]"
-                @click="globalStore.setSidebarVisibility(false)"
-              >
-                <BaseIcon
-                  :name="item.icon"
-                  :class="[
-                    hasActiveUrl(item.link)
-                      ? 'text-primary-500'
-                      : 'text-subtle',
-                    'mr-3 shrink-0 h-5 w-5',
-                  ]"
-                  @click="globalStore.setSidebarVisibility(false)"
-                />
-                {{ $t(item.title) }}
-              </router-link>
-            </nav>
-          </div>
-        </div>
-      </TransitionChild>
-
-      <div class="shrink-0 w-14">
-        <!-- Force sidebar to shrink to fit close icon -->
-      </div>
-    </Dialog>
-  </TransitionRoot>
-
-  <!-- DESKTOP MENU -->
-  <div
-    :class="[
-      globalStore.isSidebarCollapsed ? 'w-16' : 'w-56 xl:w-64',
-    ]"
+  <!-- Tablet and desktop. Phones reach the same menu through the tab bar's More sheet. -->
+  <aside
+    :class="[isRail ? 'w-16' : 'w-64']"
     class="
-      hidden h-screen pb-0 overflow-y-auto overflow-x-hidden
-      bg-surface/80 backdrop-blur-xl border-r border-white/10
-      md:fixed md:flex md:flex-col md:inset-y-0 pt-16
-      transition-all duration-300
+      fixed inset-y-0 left-0 z-30 hidden md:flex flex-col
+      bg-chrome-lit text-chrome-fg safe-header
+      transition-[width] duration-200
     "
   >
     <div
-      v-for="(menu, index) in globalStore.menuGroups"
-      :key="index"
-      class="p-0 m-0 mt-4 list-none"
+      :class="[isRail ? 'justify-center px-0' : 'px-5']"
+      class="flex items-center h-14 shrink-0"
     >
-      <template v-if="menu[0] && menu[0].group_label">
-        <div
-          v-if="showGroupLabels && !globalStore.isSidebarCollapsed"
-          class="px-6 mt-6 mb-2 text-xs font-semibold text-subtle uppercase tracking-wider whitespace-nowrap"
-        >
-          {{ $t(menu[0].group_label) }}
-        </div>
-        <div
-          v-else-if="globalStore.isSidebarCollapsed"
-          class="mx-3 my-2 border-t border-line-light"
-        />
-      </template>
       <router-link
-        v-for="item in menu"
-        :key="item.name"
-        v-tooltip="globalStore.isSidebarCollapsed ? { content: $t(item.title), placement: 'right' } : null"
-        :to="item.link"
-        :class="[
-          hasActiveUrl(item.link)
-            ? 'text-primary-600 bg-primary-50 font-semibold'
-            : 'text-body hover:bg-hover',
-          globalStore.isSidebarCollapsed
-            ? 'cursor-pointer mx-2 px-0 py-2.5 group flex items-center justify-center rounded-lg text-sm font-medium transition-colors'
-            : 'cursor-pointer mx-3 px-3 py-2.5 group flex items-center rounded-lg text-sm not-italic font-medium transition-colors',
-        ]"
+        :to="homeLink"
+        class="flex items-center rounded-md focus-visible:outline-2"
+        :aria-label="$t('navigation.dashboard')"
       >
-        <BaseIcon
-          :name="item.icon"
-          :class="[
-            hasActiveUrl(item.link)
-              ? 'text-primary-500'
-              : 'text-subtle group-hover:text-body',
-            globalStore.isSidebarCollapsed
-              ? 'shrink-0 h-6 w-6'
-              : 'mr-3 shrink-0 h-5 w-5',
-          ]"
+        <img
+          v-if="adminLogo && !isRail"
+          :src="adminLogo"
+          alt=""
+          class="object-contain w-auto h-7 max-w-44"
         />
-
-        <span v-if="!globalStore.isSidebarCollapsed" class="whitespace-nowrap">
-          {{ $t(item.title) }}
-        </span>
+        <MainLogoMark v-else-if="isRail" class="w-8 h-8" />
+        <MainLogo v-else class="w-auto h-7 text-chrome-fg" />
       </router-link>
     </div>
 
-    <!-- Bottom toolbar -->
-    <div class="mt-auto sticky bottom-0 border-t border-white/10 bg-surface/80 backdrop-blur-xl p-2 safe-rail flex flex-col items-center gap-1">
+    <div :class="[isRail ? 'flex justify-center px-0' : 'px-3']" class="pb-2">
+      <CompanySwitcher :variant="isRail ? 'rail' : 'sidebar'" tone="chrome" />
+    </div>
+
+    <nav class="flex-1 min-h-0 pb-4 overflow-x-hidden overflow-y-auto">
+      <div
+        v-for="(menu, index) in globalStore.menuGroups"
+        :key="index"
+        :class="[isRail ? 'px-3' : 'px-3', index === 0 ? 'mt-2' : 'mt-5']"
+      >
+        <template v-if="menu[0] && menu[0].group_label">
+          <p
+            v-if="showGroupLabels && !isRail"
+            class="px-2.5 pb-1.5 text-xs font-medium text-chrome-muted whitespace-nowrap"
+          >
+            {{ $t(menu[0].group_label) }}
+          </p>
+          <div
+            v-else-if="isRail && index > 0"
+            class="mx-2 mb-3 border-t border-chrome-line"
+          />
+        </template>
+
+        <ul class="space-y-0.5">
+          <li v-for="item in menu" :key="item.name">
+            <router-link
+              v-tooltip="isRail ? { content: $t(item.title), placement: 'right' } : null"
+              :to="item.link"
+              :aria-current="hasActiveUrl(item.link) ? 'page' : undefined"
+              :class="[
+                hasActiveUrl(item.link)
+                  ? 'bg-chrome-active text-chrome-fg before:absolute before:left-0 before:top-2 before:bottom-2 before:w-0.5 before:rounded-full before:bg-chrome-accent'
+                  : 'text-chrome-muted hover:bg-chrome-hover hover:text-chrome-fg',
+                isRail ? 'justify-center w-10 h-10' : 'gap-3 px-2.5 h-9',
+              ]"
+              class="relative flex items-center text-sm font-medium transition-colors rounded-lg group"
+            >
+              <BaseIcon
+                :name="item.icon"
+                :class="[
+                  hasActiveUrl(item.link)
+                    ? 'text-chrome-accent'
+                    : 'text-chrome-muted group-hover:text-chrome-fg',
+                  isRail ? 'h-5.5 w-5.5' : 'h-5 w-5',
+                ]"
+                class="shrink-0"
+              />
+              <span v-if="!isRail" class="truncate">{{ $t(item.title) }}</span>
+            </router-link>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- The signed-in user, and the collapse control on desktops -->
+    <div
+      :class="isRail ? 'flex-col gap-1 px-0 items-center' : 'gap-1 px-3 items-center'"
+      class="flex py-2.5 border-t border-chrome-line safe-rail"
+    >
+      <AccountMenu
+        position="top-start"
+        :wrapper-class="isRail ? 'flex' : 'flex flex-1 min-w-0'"
+      >
+        <template #activator="{ avatar }">
+          <span
+            :class="isRail ? 'justify-center w-10 h-10 p-0' : 'w-full gap-2.5 px-2 py-1.5'"
+            class="flex items-center min-w-0 text-left transition-colors rounded-lg hover:bg-chrome-hover"
+          >
+            <img
+              :src="avatar"
+              alt=""
+              class="object-cover w-8 h-8 rounded-full shrink-0 ring-2 ring-chrome-line"
+            />
+            <span v-if="!isRail" class="flex flex-col flex-1 min-w-0">
+              <span class="text-sm font-medium truncate text-chrome-fg">
+                {{ userStore.currentUser?.name }}
+              </span>
+              <span class="text-xs truncate text-chrome-muted">
+                {{ userStore.currentUser?.email }}
+              </span>
+            </span>
+          </span>
+        </template>
+      </AccountMenu>
+
       <button
-        v-tooltip="globalStore.isSidebarCollapsed ? { content: $t('general.collapse'), placement: 'right' } : null"
-        :class="[
-          globalStore.isSidebarCollapsed
-            ? 'w-10 h-10 justify-center'
-            : 'w-full px-3 h-10 justify-end',
-        ]"
-        class="flex items-center rounded-lg text-subtle hover:text-body hover:bg-hover transition-colors"
+        v-if="isDesktop"
+        v-tooltip="{ content: isRail ? $t('general.expand') : $t('general.collapse'), placement: 'right' }"
+        type="button"
+        class="flex items-center justify-center w-9 h-9 transition-colors rounded-lg shrink-0 text-chrome-muted hover:text-chrome-fg hover:bg-chrome-hover"
+        :aria-label="isRail ? $t('general.expand') : $t('general.collapse')"
         @click="globalStore.toggleSidebarCollapse()"
       >
         <BaseIcon
-          :name="globalStore.isSidebarCollapsed ? 'ChevronDoubleRightIcon' : 'ChevronDoubleLeftIcon'"
-          class="w-4 h-4 shrink-0"
+          :name="isRail ? 'ChevronDoubleRightIcon' : 'ChevronDoubleLeftIcon'"
+          class="w-4 h-4"
         />
       </button>
     </div>
-  </div>
+  </aside>
 </template>
 
 <script setup lang="ts">
-import {
-  Dialog,
-  DialogOverlay,
-  TransitionChild,
-  TransitionRoot,
-} from '@headlessui/vue'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useGlobalStore } from '@/scripts/stores/global.store'
+import { useCompanyStore } from '@/scripts/stores/company.store'
+import { useBreakpoints } from '@/scripts/composables/use-breakpoints'
+import { useActiveMenuLink } from '@/scripts/composables/use-active-menu-link'
+import { assetUrl } from '@/scripts/config/runtime'
 import MainLogo from '@/scripts/components/icons/MainLogo.vue'
-
-interface MenuItemData {
-  name: string
-  title: string
-  icon: string
-  link: string
-  group_label?: string
-}
+import MainLogoMark from '@/scripts/components/icons/MainLogoMark.vue'
+import CompanySwitcher from './CompanySwitcher.vue'
+import AccountMenu from './AccountMenu.vue'
+import { useUserStore } from '@/scripts/stores/user.store'
 
 const route = useRoute()
 const globalStore = useGlobalStore()
+const companyStore = useCompanyStore()
+const userStore = useUserStore()
+const { isDesktop } = useBreakpoints()
+const { hasActiveUrl } = useActiveMenuLink(route)
+
+// Tablets always get the rail; desktops follow the collapse preference.
+const isRail = computed<boolean>(() => {
+  return !isDesktop.value || globalStore.isSidebarCollapsed
+})
+
+const homeLink = computed<string>(() => {
+  return companyStore.isAdminMode ? '/admin/administration/dashboard' : '/admin/dashboard'
+})
 
 const showGroupLabels = computed<boolean>(() => {
   return globalStore.globalSettings?.show_sidebar_group_labels === 'YES'
 })
 
-const activeMenuLink = computed<string | null>(() => {
-  const allLinks = globalStore.menuGroups.flat().map((item) => item.link)
-  const matches = allLinks.filter(
-    (url) => route.path === url || route.path.startsWith(url + '/'),
-  )
-  // Return the longest (most specific) match
-  return matches.sort((a, b) => b.length - a.length)[0] ?? null
+const adminLogo = computed<string | false>(() => {
+  if (globalStore.globalSettings?.admin_portal_logo) {
+    return assetUrl('/storage/' + globalStore.globalSettings.admin_portal_logo)
+  }
+  return false
 })
-
-function hasActiveUrl(url: string): boolean {
-  return url === activeMenuLink.value
-}
 </script>

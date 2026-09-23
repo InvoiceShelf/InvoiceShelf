@@ -69,8 +69,7 @@
       </BaseInputGroup>
 
       <div
-        class="hidden w-8 h-0 mx-4 border border-gray-400 border-solid xl:block"
-        style="margin-top: 1.5rem"
+        class="hidden w-4 h-px mb-5 shrink-0 bg-line-strong xl:block"
       />
 
       <BaseInputGroup :label="$t('general.to')">
@@ -93,6 +92,7 @@
     <!-- Empty State -->
     <BaseEmptyPlaceholder
       v-show="showEmptyScreen"
+      icon="DocumentIcon"
       :title="$t('estimates.no_estimates')"
       :description="$t('estimates.list_of_estimates')"
     >
@@ -111,35 +111,12 @@
     </BaseEmptyPlaceholder>
 
     <!-- Table -->
-    <div v-show="!showEmptyScreen" class="relative table-container">
-      <div
-        class="relative flex items-center justify-between mt-5 list-none"
-      >
-        <BaseTabGroup @change="setStatusFilter">
-          <BaseTab :title="$t('general.all')" filter="" />
-          <BaseTab :title="$t('general.draft')" filter="DRAFT" />
-          <BaseTab :title="$t('general.sent')" filter="SENT" />
-        </BaseTabGroup>
-
-        <BaseDropdown
-          v-if="estimateStore.selectedEstimates.length && canDelete"
-          class="absolute float-right"
-        >
-          <template #activator>
-            <span
-              class="flex text-sm font-medium cursor-pointer select-none text-primary-400"
-            >
-              {{ $t('general.actions') }}
-              <BaseIcon name="ChevronDownIcon" />
-            </span>
-          </template>
-
-          <BaseDropdownItem @click="removeMultipleEstimates">
-            <BaseIcon name="TrashIcon" class="mr-3 text-body" />
-            {{ $t('general.delete') }}
-          </BaseDropdownItem>
-        </BaseDropdown>
-      </div>
+    <div v-show="!showEmptyScreen" class="relative flex flex-col gap-4 table-container">
+      <BaseTabGroup @change="setStatusFilter">
+        <BaseTab :title="$t('general.all')" filter="" />
+        <BaseTab :title="$t('general.draft')" filter="DRAFT" />
+        <BaseTab :title="$t('general.sent')" filter="SENT" />
+      </BaseTabGroup>
 
       <BaseTable
         ref="tableRef"
@@ -147,10 +124,20 @@
         :data="fetchData"
         :columns="estimateColumns"
         :placeholder-count="estimateStore.totalEstimateCount >= 20 ? 10 : 5"
-        class="mt-4"
+        :row-to="estimateLink"
+        :selected-count="canDelete ? estimateStore.selectedEstimates.length : 0"
       >
+        <template #bulk-actions>
+          <BaseButton size="xs" variant="white" @click="removeMultipleEstimates">
+            <template #left="slotProps">
+              <BaseIcon name="TrashIcon" :class="slotProps.class" />
+            </template>
+            {{ $t('general.delete') }}
+          </BaseButton>
+        </template>
+
         <template #header>
-          <div class="absolute items-center left-6 top-2.5 select-none">
+          <div class="absolute items-center left-6 top-3.5 select-none">
             <BaseCheckbox
               v-model="estimateStore.selectAllField"
               variant="primary"
@@ -176,7 +163,7 @@
         <template #cell-estimate_number="{ row }">
           <router-link
             :to="{ path: `estimates/${row.data.id}/view` }"
-            class="font-medium text-primary-500"
+            class="font-medium text-primary-600 hover:text-primary-700"
           >
             {{ row.data.estimate_number }}
           </router-link>
@@ -186,7 +173,7 @@
           <router-link
             v-if="row.data.customer?.id"
             :to="`/admin/customers/${row.data.customer.id}/view`"
-            class="font-medium text-primary-500 hover:text-primary-600"
+            class="font-medium text-heading hover:text-primary-600"
           >
             {{ row.data.customer.name }}
           </router-link>
@@ -225,6 +212,7 @@
 </template>
 
 <script setup lang="ts">
+import type { ColumnDef } from '@/scripts/components/table/DataTable.vue'
 import { computed, onUnmounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { debouncedWatch } from '@vueuse/core'
@@ -335,13 +323,7 @@ const hasAtLeastOneAbility = computed<boolean>(() => {
   return canCreate.value || canEdit.value || canView.value || canSend.value
 })
 
-interface TableColumn {
-  key: string
-  label?: string
-  thClass?: string
-  tdClass?: string
-  sortable?: boolean
-}
+type TableColumn = Omit<ColumnDef, 'label'> & { label?: string }
 
 const estimateColumns = computed<TableColumn[]>(() => [
   {
@@ -355,22 +337,34 @@ const estimateColumns = computed<TableColumn[]>(() => [
     label: t('estimates.date'),
     thClass: 'extra',
     tdClass: 'font-medium text-muted',
+    mobile: 'subtitle',
   },
-  { key: 'estimate_number', label: t('estimates.number', 2) },
-  { key: 'name', label: t('estimates.customer') },
-  { key: 'status', label: t('estimates.status') },
+  {
+    key: 'estimate_number',
+    label: t('estimates.number', 2),
+    mobile: 'subtitle',
+  },
+  { key: 'name', label: t('estimates.customer'), mobile: 'title' },
+  { key: 'status', label: t('estimates.status'), mobile: 'badge' },
   {
     key: 'total',
     label: t('estimates.total'),
     tdClass: 'font-medium text-heading',
+    align: 'end',
+    mobile: 'trailing',
   },
   {
     key: 'actions',
     tdClass: 'text-right text-sm font-medium pl-0',
     thClass: 'text-right pl-0',
     sortable: false,
+    mobile: 'actions',
   },
 ])
+
+function estimateLink(row: { id?: number | string }): string {
+  return `/admin/estimates/${row.id}/view`
+}
 
 debouncedWatch(filters, () => setFilters(), { debounce: 500 })
 

@@ -1,172 +1,112 @@
 <template>
-  <BasePage class="xl:pl-96">
-    <BasePageHeader :title="pageTitle">
-      <template #actions>
-        <BaseButton
-          :disabled="isSendingEmail"
-          variant="primary-outline"
-          tag="a"
-          download
-          :href="downloadLink"
-        >
-          <template #left="slotProps">
-            <BaseIcon name="DownloadIcon" :class="slotProps.class" />
-            {{ $t('general.download') }}
-          </template>
-        </BaseButton>
-      </template>
-    </BasePageHeader>
-
-    <!-- Sidebar -->
-    <div
-      class="fixed top-0 left-0 hidden h-full pt-16 pb-4 bg-surface w-88 xl:block"
+  <div class="flex min-h-full">
+    <!--
+      The customer's other payments (wide screens only). The portal publishes
+      no top inset, so the pane is sized below its fixed header here.
+    -->
+    <RecordListPane
+      ref="listPane"
+      class="!h-[calc(100dvh-5.5rem)]"
+      :search="searchData.payment_number"
+      :sort-options="sortOptions"
+      :sort-field="searchData.orderByField"
+      :ascending="isAscending"
+      :empty="!store.payments.length"
+      :empty-text="$t('payments.no_matching_payments')"
+      @update:search="onSearchText"
+      @update:sort-field="setSortField"
+      @toggle-order="sortData"
     >
-      <div
-        class="flex items-center justify-between px-4 pt-8 pb-6 border border-line-default border-solid"
+      <RecordListItem
+        v-for="pmt in store.payments"
+        :id="'payment-' + pmt.id"
+        :key="pmt.id"
+        :to="`/${store.companySlug}/customer/payments/${pmt.id}/view`"
+        :active="hasActiveUrl(pmt.id)"
+        :title="pmt.payment_number"
+        :meta="pmt.formatted_payment_date"
       >
-        <BaseInput
-          v-model="searchData.payment_number"
-          :placeholder="$t('general.search')"
-          type="text"
-          variant="gray"
-          @input="onSearchDebounced"
-        >
-          <template #right>
-            <BaseIcon name="MagnifyingGlassIcon" class="h-5 text-subtle" />
-          </template>
-        </BaseInput>
+        <template #amount>
+          <BaseFormatMoney :amount="pmt.amount" :currency="pmt.currency" />
+        </template>
+      </RecordListItem>
+    </RecordListPane>
 
-        <div class="flex ml-3" role="group">
-          <BaseDropdown
-            position="bottom-start"
-            width-class="w-50"
-            position-class="left-0"
+    <BasePage class="min-w-0">
+      <BasePageHeader :title="pageTitle">
+        <BaseBreadcrumb>
+          <BaseBreadcrumbItem
+            :title="$t('payments.payment', 2)"
+            :to="`/${store.companySlug}/customer/payments`"
+          />
+        </BaseBreadcrumb>
+
+        <template #actions>
+          <BaseButton
+            :disabled="isSendingEmail"
+            variant="white"
+            tag="a"
+            download
+            :href="downloadLink"
           >
-            <template #activator>
-              <BaseButton variant="gray">
-                <BaseIcon name="FunnelIcon" class="h-5" />
-              </BaseButton>
+            <template #left="slotProps">
+              <BaseIcon name="ArrowDownTrayIcon" :class="slotProps.class" />
             </template>
-
-            <div class="px-4 py-1 pb-2 mb-2 text-sm border-b border-line-default border-solid">
-              {{ $t('general.sort_by') }}
-            </div>
-
-            <div class="px-2">
-              <BaseDropdownItem class="rounded-md pt-3 hover:rounded-md">
-                <BaseInputGroup class="-mt-3 font-normal">
-                  <BaseRadio
-                    id="filter_invoice_number"
-                    v-model="searchData.orderByField"
-                    :label="$t('invoices.title')"
-                    size="sm"
-                    name="filter"
-                    value="invoice_number"
-                    @update:model-value="onSearchDebounced"
-                  />
-                </BaseInputGroup>
-              </BaseDropdownItem>
-            </div>
-
-            <div class="px-2">
-              <BaseDropdownItem class="rounded-md pt-3 hover:rounded-md">
-                <BaseInputGroup class="-mt-3 font-normal">
-                  <BaseRadio
-                    id="filter_payment_date"
-                    v-model="searchData.orderByField"
-                    :label="$t('payments.date')"
-                    size="sm"
-                    name="filter"
-                    value="payment_date"
-                    @update:model-value="onSearchDebounced"
-                  />
-                </BaseInputGroup>
-              </BaseDropdownItem>
-            </div>
-
-            <div class="px-2">
-              <BaseDropdownItem class="rounded-md pt-3 hover:rounded-md">
-                <BaseInputGroup class="-mt-3 font-normal">
-                  <BaseRadio
-                    id="filter_payment_number"
-                    v-model="searchData.orderByField"
-                    :label="$t('payments.payment_number')"
-                    size="sm"
-                    name="filter"
-                    value="payment_number"
-                    @update:model-value="onSearchDebounced"
-                  />
-                </BaseInputGroup>
-              </BaseDropdownItem>
-            </div>
-          </BaseDropdown>
-
-          <BaseButton class="ml-1" variant="white" @click="sortData">
-            <BaseIcon v-if="isAscending" name="SortAscendingIcon" class="h-5" />
-            <BaseIcon v-else name="SortDescendingIcon" class="h-5" />
+            {{ $t('general.download') }}
           </BaseButton>
-        </div>
-      </div>
+        </template>
+      </BasePageHeader>
 
-      <div class="h-full pb-32 overflow-y-scroll border-l border-line-default border-solid sw-scroll">
-        <router-link
-          v-for="(pmt, index) in store.payments"
-          :id="'payment-' + pmt.id"
-          :key="index"
-          :to="`/${store.companySlug}/customer/payments/${pmt.id}/view`"
-          :class="[
-            'flex justify-between p-4 items-center cursor-pointer hover:bg-hover-strong border-l-4 border-l-transparent',
-            {
-              'bg-surface-tertiary border-l-4 border-l-primary-500 border-solid':
-                hasActiveUrl(pmt.id),
-            },
-          ]"
-          style="border-bottom: 1px solid rgba(185, 193, 209, 0.41)"
-        >
-          <div class="flex-2">
-            <div class="mb-1 text-md not-italic font-medium leading-5 text-muted capitalize">
-              {{ pmt.payment_number }}
-            </div>
-          </div>
+      <!-- What the receipt says, without opening it -->
+      <BaseStatStrip v-if="currentPayment" :columns="allocatedInvoices.length ? 4 : 3">
+        <BaseStat :label="$t('payments.amount')" emphasis>
+          <BaseFormatMoney :amount="currentPayment.amount" :currency="currentPayment.currency" />
+        </BaseStat>
+        <BaseStat :label="$t('payments.date')">
+          {{ currentPayment.formatted_payment_date }}
+        </BaseStat>
+        <BaseStat :label="$t('payments.payment_mode')">
+          {{ currentPayment.payment_method?.name || '-' }}
+        </BaseStat>
+        <BaseStat v-if="allocatedInvoices.length" :label="$t('payments.invoice')" wide>
+          <template v-for="(inv, index) in allocatedInvoices" :key="inv.id">
+            <span v-if="index > 0">, </span>
+            <router-link
+              :to="`/${store.companySlug}/customer/invoices/${inv.id}/view`"
+              class="hover:text-primary-600"
+            >
+              {{ inv.invoice_number }}
+            </router-link>
+          </template>
+        </BaseStat>
+      </BaseStatStrip>
 
-          <div class="flex-1 whitespace-nowrap right">
-            <BaseFormatMoney
-              class="mb-2 text-xl not-italic font-semibold leading-8 text-right text-heading block"
-              :amount="pmt.amount"
-              :currency="pmt.currency"
-            />
-            <div class="text-sm text-right text-muted non-italic">
-              {{ pmt.formatted_payment_date }}
-            </div>
-          </div>
-        </router-link>
-
-        <p
-          v-if="!store.payments.length"
-          class="flex justify-center px-4 mt-5 text-sm text-body"
-        >
-          {{ $t('payments.no_matching_payments') }}
-        </p>
-      </div>
-    </div>
-
-    <!-- PDF Preview -->
-    <BasePdfPreview :src="shareableLink" />
-  </BasePage>
+      <BasePdfPreview
+        :src="shareableLink"
+        :title="currentPayment ? `${currentPayment.payment_number}.pdf` : ''"
+      />
+    </BasePage>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, computed, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useDebounceFn } from '@vueuse/core'
 import { useCustomerPortalStore } from '../store'
+import RecordListPane from '@/scripts/components/layout/RecordListPane.vue'
+import RecordListItem from '@/scripts/components/layout/RecordListItem.vue'
 import type { Payment } from '../../../types/domain/payment'
+import type { Invoice } from '../../../types/domain/invoice'
 
 const store = useCustomerPortalStore()
 const route = useRoute()
+const { t } = useI18n()
 
 const payment = ref<Partial<Payment>>({})
 const isSendingEmail = ref<boolean>(false)
+const listPane = ref<InstanceType<typeof RecordListPane> | null>(null)
 
 const searchData = reactive<{
   orderBy: string
@@ -181,6 +121,21 @@ const searchData = reactive<{
 const pageTitle = computed<string>(() => {
   return store.selectedViewPayment?.payment_number ?? ''
 })
+
+const currentPayment = computed<Payment | null>(() => store.selectedViewPayment)
+
+// The invoices this payment settles, if it was allocated to any
+const allocatedInvoices = computed<Invoice[]>(() => {
+  return (currentPayment.value?.allocations ?? [])
+    .map((allocation) => allocation.invoice)
+    .filter((inv): inv is Invoice => !!inv)
+})
+
+const sortOptions = computed(() => [
+  { value: 'invoice_number', label: t('invoices.title') },
+  { value: 'payment_date', label: t('payments.date') },
+  { value: 'payment_number', label: t('payments.payment_number') },
+])
 
 const isAscending = computed<boolean>(() => {
   return searchData.orderBy === 'asc' || !searchData.orderBy
@@ -225,8 +180,10 @@ async function loadPayment(): Promise<void> {
 
 function scrollToPayment(): void {
   const el = document.getElementById(`payment-${route.params.id}`)
-  if (el) {
-    el.scrollIntoView({ behavior: 'smooth' })
+  const list = listPane.value?.listEl
+  if (el && list) {
+    // Scroll the list pane alone; scrollIntoView would also move the page
+    list.scrollTo({ top: el.offsetTop - list.offsetTop - 8, behavior: 'smooth' })
     el.classList.add('shake')
   }
 }
@@ -240,6 +197,16 @@ async function onSearch(): Promise<void> {
 }
 
 const onSearchDebounced = useDebounceFn(onSearch, 500)
+
+function onSearchText(value: string): void {
+  searchData.payment_number = value
+  onSearchDebounced()
+}
+
+function setSortField(field: string): void {
+  searchData.orderByField = field
+  onSearchDebounced()
+}
 
 function sortData(): void {
   searchData.orderBy = searchData.orderBy === 'asc' ? 'desc' : 'asc'

@@ -39,7 +39,7 @@ const props = withDefaults(defineProps<Props>(), {
   disabled: false,
   modelValue: '',
   defaultInputClass:
-    'box-border w-full px-3 py-2 text-sm not-italic font-normal leading-snug text-left text-heading placeholder-subtle bg-surface border border-line-default border-solid rounded outline-hidden',
+    'box-border w-full px-3 py-2 text-base md:text-sm font-normal leading-6 text-left text-heading placeholder-subtle bg-surface border border-line-default border-solid rounded-lg outline-hidden',
   autosize: false,
   borderless: false,
 })
@@ -48,12 +48,12 @@ const textarea = ref<HTMLTextAreaElement | null>(null)
 
 const inputBorderClass = computed<string>(() => {
   if (props.invalid && !props.borderless) {
-    return 'border-red-400 ring-red-400 focus:ring-red-400 focus:border-red-400'
+    return 'border-danger focus:border-danger focus:ring-danger/20'
   } else if (!props.borderless) {
-    return 'focus:ring-primary-400 focus:border-primary-400'
+    return ''
   }
 
-  return 'border-none outline-hidden focus:ring-primary-400 focus:border focus:border-primary-400'
+  return 'border-none outline-hidden focus:border'
 })
 
 const loadingPlaceholderSize = computed<string>(() => {

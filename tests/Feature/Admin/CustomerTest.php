@@ -84,6 +84,32 @@ test('customer stats', function () {
         ]);
 });
 
+test('customer stats cover a custom range, for that customer alone', function () {
+    $customer = Customer::factory()->create();
+    $other = Customer::factory()->create();
+
+    Invoice::factory()->create(['customer_id' => $customer->id, 'invoice_date' => '2026-02-10', 'base_total' => 1200]);
+    Invoice::factory()->create(['customer_id' => $customer->id, 'invoice_date' => '2026-05-01', 'base_total' => 999]);
+    Invoice::factory()->create(['customer_id' => $other->id, 'invoice_date' => '2026-02-10', 'base_total' => 5000]);
+
+    $response = getJson("api/v1/customers/{$customer->id}/stats?from_date=2026-01-01&to_date=2026-03-31")
+        ->assertOk();
+
+    expect($response->json('meta.chartData.months'))->toBe(['Jan', 'Feb', 'Mar'])
+        ->and($response->json('meta.chartData.invoiceTotals'))->toBe([0, 1200, 0])
+        ->and($response->json('meta.chartData.salesTotal'))->toBe(1200)
+        ->and($response->json('meta.chartData.period'))
+        ->toBe(['from' => '2026-01-01', 'to' => '2026-03-31', 'granularity' => 'month']);
+});
+
+test('customer stats refuse a reversed range', function () {
+    $customer = Customer::factory()->create();
+
+    getJson("api/v1/customers/{$customer->id}/stats?from_date=2026-03-01&to_date=2026-01-01")
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors('to_date');
+});
+
 test('create customer', function () {
     $customer = Customer::factory()->raw([
         'shipping' => [

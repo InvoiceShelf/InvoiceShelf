@@ -42,7 +42,7 @@
       <BaseInputGroup
         :label="$t('invoices.invoice_number')"
         color="black-light"
-        class="px-3 mt-2"
+        class="px-3"
       >
         <BaseInput v-model="filters.invoice_number">
           <BaseIcon name="EllipsisHorizontalIcon" class="h-5 text-muted" />
@@ -59,8 +59,7 @@
       </BaseInputGroup>
 
       <div
-        class="hidden w-8 h-0 mx-4 border border-gray-400 border-solid xl:block"
-        style="margin-top: 1.5rem"
+        class="hidden w-4 h-px mb-5 shrink-0 bg-line-strong xl:block"
       />
 
       <BaseInputGroup :label="$t('general.to')" class="px-3">
@@ -74,6 +73,7 @@
 
     <BaseEmptyPlaceholder
       v-if="showEmptyScreen"
+      icon="DocumentTextIcon"
       :title="$t('invoices.no_invoices')"
       :description="$t('invoices.list_of_invoices')"
     />
@@ -84,7 +84,7 @@
         :data="fetchData"
         :columns="invoiceColumns"
         :placeholder-count="store.totalInvoices >= 20 ? 10 : 5"
-        class="mt-10"
+        :row-to="invoiceLink"
       >
         <template #cell-invoice_date="{ row }">
           {{ row.data.formatted_invoice_date }}
@@ -93,7 +93,7 @@
         <template #cell-invoice_number="{ row }">
           <router-link
             :to="{ path: `invoices/${row.data.id}/view` }"
-            class="font-medium text-primary-500"
+            class="font-medium text-primary-600 hover:text-primary-700"
           >
             {{ row.data.invoice_number }}
           </router-link>
@@ -137,6 +137,7 @@
 </template>
 
 <script setup lang="ts">
+import type { ColumnDef } from '@/scripts/components/table/DataTable.vue'
 import { ref, computed, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { debouncedWatch } from '@vueuse/core'
@@ -181,13 +182,7 @@ const showEmptyScreen = computed<boolean>(
   () => !store.totalInvoices && !isFetchingInitialData.value,
 )
 
-interface TableColumn {
-  key: string
-  label?: string
-  thClass?: string
-  tdClass?: string
-  sortable?: boolean
-}
+type TableColumn = Omit<ColumnDef, 'label'> & { label?: string }
 
 const invoiceColumns = computed<TableColumn[]>(() => [
   {
@@ -195,21 +190,29 @@ const invoiceColumns = computed<TableColumn[]>(() => [
     label: t('invoices.date'),
     thClass: 'extra',
     tdClass: 'font-medium text-heading',
+    mobile: 'subtitle',
   },
-  { key: 'invoice_number', label: t('invoices.number') },
+  { key: 'invoice_number', label: t('invoices.number'), mobile: 'title' },
   { key: 'status', label: t('invoices.status') },
-  { key: 'paid_status', label: t('invoices.paid_status') },
+  { key: 'paid_status', label: t('invoices.paid_status'), mobile: 'badge' },
   {
     key: 'due_amount',
     label: t('dashboard.recent_invoices_card.amount_due'),
+    align: 'end',
+    mobile: 'trailing',
   },
   {
     key: 'actions',
     thClass: 'text-right',
     tdClass: 'text-right text-sm font-medium',
     sortable: false,
+    mobile: 'actions',
   },
 ])
+
+function invoiceLink(row: { id?: number | string }): string {
+  return `/${store.companySlug}/customer/invoices/${row.id}/view`
+}
 
 debouncedWatch(filters, () => refreshTable(), { debounce: 500 })
 
