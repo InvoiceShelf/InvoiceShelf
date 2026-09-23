@@ -170,6 +170,25 @@ const { labelFor: getModelType } = useCustomFieldModels()
           :load-data="refreshTable"
         />
       </template>
+      <!-- Nothing here yet: say what goes here and offer to add the first -->
+      <template #empty>
+        <BaseEmptyPlaceholder
+          compact
+          art="field"
+          :ghost="4"
+          :title="$t('settings.custom_fields.empty_title')"
+          :description="$t('settings.custom_fields.empty_description')"
+        >
+          <template v-if="userStore.hasAbilities(ABILITIES.CREATE_CUSTOM_FIELDS)" #actions>
+            <BaseButton variant="primary-outline" @click="addCustomField">
+              <template #left="slotProps">
+                <BaseIcon name="PlusIcon" :class="slotProps.class" />
+              </template>
+              {{ $t('settings.custom_fields.add_custom_field') }}
+            </BaseButton>
+          </template>
+        </BaseEmptyPlaceholder>
+      </template>
     </BaseTable>
   </BaseSettingCard>
 </template>

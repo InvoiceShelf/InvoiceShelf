@@ -129,6 +129,25 @@ function refreshTable(): void {
           :load-data="refreshTable"
         />
       </template>
+      <!-- Nothing here yet: say what goes here and offer to add the first -->
+      <template #empty>
+        <BaseEmptyPlaceholder
+          compact
+          art="category"
+          :ghost="3"
+          :title="$t('settings.expense_category.empty_title')"
+          :description="$t('settings.expense_category.empty_description')"
+        >
+          <template #actions>
+            <BaseButton variant="primary-outline" @click="openCategoryModal">
+              <template #left="slotProps">
+                <BaseIcon name="PlusIcon" :class="slotProps.class" />
+              </template>
+              {{ $t('settings.expense_category.add_new_category') }}
+            </BaseButton>
+          </template>
+        </BaseEmptyPlaceholder>
+      </template>
     </BaseTable>
   </BaseSettingCard>
 </template>

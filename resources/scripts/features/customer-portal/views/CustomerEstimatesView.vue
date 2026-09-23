@@ -75,9 +75,10 @@
 
     <BaseEmptyPlaceholder
       v-if="showEmptyScreen"
-      icon="DocumentIcon"
+      art="estimate"
+      :ghost="5"
       :title="$t('estimates.no_estimates')"
-      :description="$t('estimates.list_of_estimates')"
+      :description="$t('estimates.portal_empty_description')"
     />
 
     <div v-show="!showEmptyScreen" class="relative table-container">

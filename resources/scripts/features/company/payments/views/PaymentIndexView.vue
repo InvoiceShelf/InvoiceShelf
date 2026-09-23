@@ -79,13 +79,14 @@
     <!-- Empty State -->
     <BaseEmptyPlaceholder
       v-if="showEmptyScreen"
-      icon="CreditCardIcon"
+      art="payment"
+      :ghost="6"
       :title="$t('payments.no_payments')"
-      :description="$t('payments.list_of_payments')"
+      :description="$t('payments.empty_description')"
     >
       <template v-if="canCreate" #actions>
         <BaseButton
-          variant="primary-outline"
+          variant="primary"
           @click="$router.push('/admin/payments/create')"
         >
           <template #left="slotProps">
@@ -100,6 +101,7 @@
     <div v-show="!showEmptyScreen" class="relative table-container">
       <BaseTable
         ref="tableRef"
+        :no-results-message="$t('payments.no_matching_payments')"
         :data="fetchData"
         :columns="paymentColumns"
         :placeholder-count="paymentStore.paymentTotalCount >= 20 ? 10 : 5"

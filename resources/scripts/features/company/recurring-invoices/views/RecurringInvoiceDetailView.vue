@@ -129,6 +129,15 @@
                 <BaseInvoiceStatusLabel :status="row.data.status" />
               </BaseInvoiceStatusBadge>
             </template>
+            <!-- The schedule has not run yet -->
+            <template #empty>
+              <BaseEmptyPlaceholder
+                compact
+                art="invoice"
+                :title="$t('recurring_invoices.no_generated_invoices')"
+                :description="$t('recurring_invoices.no_generated_invoices_description')"
+              />
+            </template>
           </BaseTable>
         </section>
       </template>

@@ -292,13 +292,14 @@ function removeMultipleItems(): void {
 
     <BaseEmptyPlaceholder
       v-show="showEmptyScreen"
-      icon="CubeIcon"
+      art="item"
+      :ghost="4"
       :title="$t('items.no_items')"
-      :description="$t('items.list_of_items')"
+      :description="$t('items.empty_description')"
     >
       <template v-if="userStore.hasAbilities(ABILITIES.CREATE_ITEM)" #actions>
         <BaseButton
-          variant="primary-outline"
+          variant="primary"
           @click="$router.push('/admin/items/create')"
         >
           <template #left="slotProps">
@@ -312,6 +313,7 @@ function removeMultipleItems(): void {
     <div v-show="!showEmptyScreen" class="relative table-container">
       <BaseTable
         ref="table"
+        :no-results-message="$t('items.no_matching_items')"
         :data="fetchData"
         :columns="itemColumns"
         :placeholder-count="itemStore.totalItems >= 20 ? 10 : 5"

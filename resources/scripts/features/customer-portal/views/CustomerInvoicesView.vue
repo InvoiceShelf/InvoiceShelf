@@ -74,9 +74,10 @@
 
     <BaseEmptyPlaceholder
       v-if="showEmptyScreen"
-      icon="DocumentTextIcon"
+      art="invoice"
+      :ghost="5"
       :title="$t('invoices.no_invoices')"
-      :description="$t('invoices.list_of_invoices')"
+      :description="$t('invoices.portal_empty_description')"
     />
 
     <div v-show="!showEmptyScreen" class="relative table-container">

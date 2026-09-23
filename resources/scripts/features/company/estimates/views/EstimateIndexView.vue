@@ -93,13 +93,14 @@
     <!-- Empty State -->
     <BaseEmptyPlaceholder
       v-show="showEmptyScreen"
-      icon="DocumentIcon"
+      art="estimate"
+      :ghost="6"
       :title="$t('estimates.no_estimates')"
-      :description="$t('estimates.list_of_estimates')"
+      :description="$t('estimates.empty_description')"
     >
       <template v-if="canCreate" #actions>
         <BaseButton
-          variant="primary-outline"
+          variant="primary"
           @click="$router.push('/admin/estimates/create')"
         >
           <template #left="slotProps">
@@ -121,6 +122,7 @@
       <BaseTable
         ref="tableRef"
         :key="tableKey"
+        :no-results-message="$t('estimates.no_matching_estimates')"
         :data="fetchData"
         :columns="estimateColumns"
         :placeholder-count="estimateStore.totalEstimateCount >= 20 ? 10 : 5"

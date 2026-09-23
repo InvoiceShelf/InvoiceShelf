@@ -92,13 +92,14 @@
     <!-- Empty State -->
     <BaseEmptyPlaceholder
       v-show="showEmptyScreen"
-      icon="CalculatorIcon"
+      art="expense"
+      :ghost="6"
       :title="$t('expenses.no_expenses')"
-      :description="$t('expenses.list_of_expenses')"
+      :description="$t('expenses.empty_description')"
     >
       <template v-if="canCreate" #actions>
         <BaseButton
-          variant="primary-outline"
+          variant="primary"
           @click="$router.push('/admin/expenses/create')"
         >
           <template #left="slotProps">
@@ -113,6 +114,7 @@
     <div v-show="!showEmptyScreen" class="relative table-container">
       <BaseTable
         ref="tableRef"
+        :no-results-message="$t('expenses.no_matching_expenses')"
         :data="fetchData"
         :columns="expenseColumns"
         :row-to="expenseLink"

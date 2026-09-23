@@ -89,13 +89,14 @@
     <!-- Empty State -->
     <BaseEmptyPlaceholder
       v-show="showEmptyScreen"
-      icon="ArrowPathIcon"
+      art="recurring"
+      :ghost="6"
       :title="$t('recurring_invoices.no_invoices')"
-      :description="$t('recurring_invoices.list_of_invoices')"
+      :description="$t('recurring_invoices.empty_description')"
     >
       <template v-if="canCreate" #actions>
         <BaseButton
-          variant="primary-outline"
+          variant="primary"
           @click="$router.push('/admin/recurring-invoices/create')"
         >
           <template #left="slotProps">
@@ -122,6 +123,7 @@
 
       <BaseTable
         ref="tableRef"
+        :no-results-message="$t('recurring_invoices.no_matching_invoices')"
         :data="fetchData"
         :columns="invoiceColumns"
         :placeholder-count="
