@@ -32,7 +32,7 @@
       <CompanySwitcher :variant="isRail ? 'rail' : 'sidebar'" tone="chrome" />
     </div>
 
-    <nav class="flex-1 min-h-0 pb-4 overflow-x-hidden overflow-y-auto">
+    <nav class="flex-1 min-h-0 pb-4 overflow-x-hidden overflow-y-auto" :aria-label="$t('navigation.menu')">
       <div
         v-for="(menu, index) in globalStore.menuGroups"
         :key="index"
@@ -57,6 +57,7 @@
               v-tooltip="isRail ? { content: $t(item.title), placement: 'right' } : null"
               :to="item.link"
               :aria-current="hasActiveUrl(item.link) ? 'page' : undefined"
+              :aria-label="isRail ? $t(item.title) : undefined"
               :class="[
                 hasActiveUrl(item.link)
                   ? 'bg-chrome-active text-chrome-fg before:absolute before:left-0 before:top-2 before:bottom-2 before:w-0.5 before:rounded-full before:bg-chrome-accent'
@@ -67,6 +68,7 @@
             >
               <BaseIcon
                 :name="item.icon"
+                aria-hidden="true"
                 :class="[
                   hasActiveUrl(item.link)
                     ? 'text-chrome-accent'

@@ -1,39 +1,5 @@
 <template>
   <div v-if="estimateData" class="flex min-h-full">
-    <!-- The other estimates, beside the one on screen (wide screens only) -->
-    <RecordListPane
-      ref="listPane"
-      :search="searchData.searchText"
-      :sort-options="sortOptions"
-      :sort-field="searchData.orderByField"
-      :ascending="getOrderBy"
-      :loading="isLoading"
-      :empty="!estimateList?.length"
-      :empty-text="$t('estimates.no_matching_estimates')"
-      @update:search="onSearchText"
-      @update:sort-field="setSortField"
-      @toggle-order="sortData"
-    >
-      <RecordListItem
-        v-for="estimate in (estimateList ?? []).filter(Boolean)"
-        :id="'estimate-' + estimate.id"
-        :key="estimate.id"
-        :to="`/admin/estimates/${estimate.id}/view`"
-        :active="hasActiveUrl(estimate.id)"
-        :title="estimate.customer?.name ?? ''"
-        :subtitle="estimate.estimate_number"
-        :meta="estimate.formatted_estimate_date"
-      >
-        <template #badges>
-          <BaseEstimateStatusBadge :status="estimate.status">
-            <BaseEstimateStatusLabel :status="estimate.status" />
-          </BaseEstimateStatusBadge>
-        </template>
-        <template #amount>
-          <BaseFormatMoney :amount="estimate.total" :currency="estimate.customer?.currency" />
-        </template>
-      </RecordListItem>
-    </RecordListPane>
 
     <BasePage class="min-w-0">
       <BasePageHeader :title="pageTitle">
@@ -175,6 +141,41 @@
         />
       </BaseActionBar>
     </BasePage>
+
+    <!-- The other estimates, beside the one on screen (wide screens only) -->
+    <RecordListPane
+      ref="listPane"
+      :search="searchData.searchText"
+      :sort-options="sortOptions"
+      :sort-field="searchData.orderByField"
+      :ascending="getOrderBy"
+      :loading="isLoading"
+      :empty="!estimateList?.length"
+      :empty-text="$t('estimates.no_matching_estimates')"
+      @update:search="onSearchText"
+      @update:sort-field="setSortField"
+      @toggle-order="sortData"
+    >
+      <RecordListItem
+        v-for="estimate in (estimateList ?? []).filter(Boolean)"
+        :id="'estimate-' + estimate.id"
+        :key="estimate.id"
+        :to="`/admin/estimates/${estimate.id}/view`"
+        :active="hasActiveUrl(estimate.id)"
+        :title="estimate.customer?.name ?? ''"
+        :subtitle="estimate.estimate_number"
+        :meta="estimate.formatted_estimate_date"
+      >
+        <template #badges>
+          <BaseEstimateStatusBadge :status="estimate.status">
+            <BaseEstimateStatusLabel :status="estimate.status" />
+          </BaseEstimateStatusBadge>
+        </template>
+        <template #amount>
+          <BaseFormatMoney :amount="estimate.total" :currency="estimate.customer?.currency" />
+        </template>
+      </RecordListItem>
+    </RecordListPane>
 
     <SendEstimateModal @update="updateSentEstimate" />
   </div>

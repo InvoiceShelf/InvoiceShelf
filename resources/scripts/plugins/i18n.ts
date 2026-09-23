@@ -124,6 +124,9 @@ export async function setI18nLanguage(
   }
 
   i18n.global.locale.value = locale
+
+  // Screen readers pick their voice and pronunciation from the page language
+  document.documentElement.lang = locale.replace('_', '-')
 }
 
 /**

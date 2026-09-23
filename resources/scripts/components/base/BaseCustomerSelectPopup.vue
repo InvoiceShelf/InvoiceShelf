@@ -2,6 +2,7 @@
 import { computed, nextTick, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { onClickOutside, onKeyStroke, useDebounceFn } from '@vueuse/core'
+import { FocusTrap } from '@headlessui/vue'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/scripts/stores/user.store'
 import { useBreakpoints } from '@/scripts/composables/use-breakpoints'
@@ -59,13 +60,43 @@ const isOpen = ref<boolean>(false)
 const trigger = ref<HTMLElement | null>(null)
 const panel = ref<HTMLElement | null>(null)
 const searchField = ref<HTMLElement | null>(null)
+const card = ref<HTMLElement | null>(null)
+
+/*
+ * Picking, clearing and closing all replace the element that had focus, so
+ * focus is put back on what took its place: the customer card after a pick,
+ * the picker button otherwise.
+ */
+async function restoreFocus(): Promise<void> {
+  await nextTick()
+  ;(card.value ?? trigger.value)?.focus()
+}
+
+// A pick or a clear swaps the card and the button once the customer has
+// loaded; focus follows then, and only after the user did it
+let focusAfterChange = false
+
+watch(
+  () => selectedCustomer.value?.id,
+  (id, previous) => {
+    if (focusAfterChange && id !== previous) {
+      focusAfterChange = false
+      void restoreFocus()
+    }
+  },
+)
 
 function openPicker(): void {
   isOpen.value = true
 }
 
 function closePicker(): void {
+  const wasOpen = isOpen.value
   isOpen.value = false
+
+  if (wasOpen) {
+    void restoreFocus()
+  }
 }
 
 watch(isOpen, async (open) => {
@@ -148,11 +179,14 @@ function selectNewCustomer(id: number): void {
     recurringInvoiceStore.selectCustomer(id)
   }
 
+  focusAfterChange = true
   closePicker()
   search.value = null
 }
 
 function resetSelectedCustomer(): void {
+  focusAfterChange = true
+
   if (props.type === 'invoice') {
     invoiceStore.resetSelectedCustomer()
   } else if (props.type === 'estimate') {
@@ -225,7 +259,10 @@ const addressBlocks = computed(() => {
     <!-- The chosen customer -->
     <div
       v-else-if="selectedCustomer"
-      class="flex flex-col gap-4 p-4 border md:p-5 glass rounded-xl"
+      ref="card"
+      tabindex="-1"
+      :aria-label="`${$t('invoices.customer')}: ${selectedCustomer.name}`"
+      class="flex flex-col gap-4 p-4 border md:p-5 glass rounded-xl focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
     >
       <div class="flex items-start gap-3">
         <span
@@ -310,7 +347,9 @@ const addressBlocks = computed(() => {
           :leave-active-class="isPhone ? 'transition duration-150 ease-in' : 'transition duration-100 ease-in'"
           :leave-to-class="isPhone ? 'translate-y-full' : 'translate-y-1 opacity-0'"
         >
-          <div
+          <!-- On phones the sheet keeps focus inside it until it closes -->
+          <component
+            :is="isPhone ? FocusTrap : 'div'"
             v-if="isOpen"
             ref="panel"
             role="dialog"
@@ -395,7 +434,7 @@ const addressBlocks = computed(() => {
               <BaseIcon name="UserPlusIcon" class="w-5 h-5" />
               {{ $t('customers.add_new_customer') }}
             </button>
-          </div>
+          </component>
         </transition>
       </Teleport>
     </div>

@@ -1,9 +1,11 @@
 <template>
-  <div ref="root" class="relative min-w-0">
+  <div ref="root" class="relative min-w-0" @focusout="onFocusOut" @keydown.esc="closeAndFocus">
     <button
+      ref="trigger"
       type="button"
       :class="triggerClass"
       :aria-expanded="isShow"
+      :aria-controls="isShow && !isPhone ? panelId : undefined"
       :aria-label="variant === 'rail' ? label : undefined"
       @click="isShow = !isShow"
     >
@@ -50,6 +52,8 @@
     >
       <div
         v-if="isShow && !isPhone"
+        :id="panelId"
+        ref="panel"
         :class="[
           'absolute z-50 w-72 max-h-[70vh] overflow-y-auto p-1 border rounded-xl glass-strong',
           variant === 'rail' ? 'left-full top-0 ml-2' : 'left-0 top-full mt-1.5',
@@ -76,12 +80,13 @@
       />
     </BaseSheet>
 
-    <CompanyModal />
+    <!-- Phones mount a second switcher in the app bar; one modal is enough -->
+    <CompanyModal v-if="variant !== 'appbar'" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, nextTick, ref, useId, watch } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -115,6 +120,30 @@ const { isPhone } = useBreakpoints()
 
 const isShow = ref<boolean>(false)
 const root = ref<HTMLElement | null>(null)
+const trigger = ref<HTMLButtonElement | null>(null)
+const panel = ref<HTMLElement | null>(null)
+const panelId = `company-switcher-${useId()}`
+
+// Opening moves focus into the list; Escape or tabbing away closes it
+watch(isShow, async (open) => {
+  if (open && !isPhone.value) {
+    await nextTick()
+    panel.value?.querySelector<HTMLElement>('button, a[href]')?.focus()
+  }
+})
+
+function onFocusOut(event: FocusEvent): void {
+  if (!isPhone.value && isShow.value && !root.value?.contains(event.relatedTarget as Node | null)) {
+    isShow.value = false
+  }
+}
+
+function closeAndFocus(): void {
+  if (isShow.value && !isPhone.value) {
+    isShow.value = false
+    trigger.value?.focus()
+  }
+}
 
 const label = computed<string>(() => {
   if (companyStore.isAdminMode) {

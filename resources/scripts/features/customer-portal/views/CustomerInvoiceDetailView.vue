@@ -4,38 +4,6 @@
       The customer's other invoices (wide screens only). The portal publishes
       no top inset, so the pane is sized below its fixed header here.
     -->
-    <RecordListPane
-      ref="listPane"
-      class="!h-[calc(100dvh-5.5rem)]"
-      :search="searchData.invoice_number"
-      :sort-options="sortOptions"
-      :sort-field="searchData.orderByField"
-      :ascending="isAscending"
-      :empty="!store.invoices.length"
-      :empty-text="$t('invoices.no_matching_invoices')"
-      @update:search="onSearchText"
-      @update:sort-field="setSortField"
-      @toggle-order="sortData"
-    >
-      <RecordListItem
-        v-for="inv in store.invoices"
-        :id="'invoice-' + inv.id"
-        :key="inv.id"
-        :to="`/${store.companySlug}/customer/invoices/${inv.id}/view`"
-        :active="hasActiveUrl(inv.id)"
-        :title="inv.invoice_number"
-        :meta="inv.formatted_invoice_date"
-      >
-        <template #badges>
-          <BaseInvoiceStatusBadge :status="inv.status">
-            <BaseInvoiceStatusLabel :status="inv.status" />
-          </BaseInvoiceStatusBadge>
-        </template>
-        <template #amount>
-          <BaseFormatMoney :amount="inv.total" :currency="inv.currency" />
-        </template>
-      </RecordListItem>
-    </RecordListPane>
 
     <BasePage class="min-w-0">
       <BasePageHeader :title="pageTitle">
@@ -105,6 +73,39 @@
         :title="currentInvoice ? `${currentInvoice.invoice_number}.pdf` : ''"
       />
     </BasePage>
+
+    <RecordListPane
+      ref="listPane"
+      class="!h-[calc(100dvh-5.5rem)]"
+      :search="searchData.invoice_number"
+      :sort-options="sortOptions"
+      :sort-field="searchData.orderByField"
+      :ascending="isAscending"
+      :empty="!store.invoices.length"
+      :empty-text="$t('invoices.no_matching_invoices')"
+      @update:search="onSearchText"
+      @update:sort-field="setSortField"
+      @toggle-order="sortData"
+    >
+      <RecordListItem
+        v-for="inv in store.invoices"
+        :id="'invoice-' + inv.id"
+        :key="inv.id"
+        :to="`/${store.companySlug}/customer/invoices/${inv.id}/view`"
+        :active="hasActiveUrl(inv.id)"
+        :title="inv.invoice_number"
+        :meta="inv.formatted_invoice_date"
+      >
+        <template #badges>
+          <BaseInvoiceStatusBadge :status="inv.status">
+            <BaseInvoiceStatusLabel :status="inv.status" />
+          </BaseInvoiceStatusBadge>
+        </template>
+        <template #amount>
+          <BaseFormatMoney :amount="inv.total" :currency="inv.currency" />
+        </template>
+      </RecordListItem>
+    </RecordListPane>
   </div>
 </template>
 

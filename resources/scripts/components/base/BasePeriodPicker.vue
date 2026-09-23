@@ -40,6 +40,7 @@
             :aria-label="$t('dateRange.period')"
             class="p-2 border shadow-lg pointer-events-auto w-84 max-h-[calc(100dvh-1rem)] overflow-y-auto glass-strong rounded-2xl"
             @keydown.esc.stop="closeAndFocus"
+            @focusout="onPanelFocusOut"
           >
             <PeriodPickerPanel
               :model-value="modelValue"
@@ -155,6 +156,15 @@ onClickOutside(panel, () => {
 
 function close(): void {
   open.value = false
+}
+
+// The popover sits at the end of the page, so tabbing out of it closes it
+function onPanelFocusOut(event: FocusEvent): void {
+  const next = event.relatedTarget as Node | null
+
+  if (next && !panel.value?.contains(next) && !trigger.value?.contains(next)) {
+    close()
+  }
 }
 
 function closeAndFocus(): void {

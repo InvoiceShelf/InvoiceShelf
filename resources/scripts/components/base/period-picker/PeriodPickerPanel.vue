@@ -25,6 +25,7 @@
 
         <button
           v-if="allowCustom"
+          ref="customRow"
           type="button"
           role="radio"
           :aria-checked="modelValue.preset === CUSTOM_PERIOD"
@@ -45,6 +46,7 @@
     <!-- The custom range takes the presets' place: two taps pick the first and last day -->
     <div v-else class="flex flex-col gap-3">
       <button
+        ref="backButton"
         type="button"
         class="flex items-center self-start gap-1.5 h-9 pl-1.5 pr-3 text-sm font-medium rounded-lg text-heading hover:bg-hover-strong focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
         @click="closeCustom"
@@ -78,7 +80,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, shallowRef } from 'vue'
+import { computed, nextTick, ref, shallowRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { format } from 'date-fns'
 import FlatPickr from 'vue-flatpickr-component'
@@ -182,15 +184,23 @@ function rowClass(active: boolean): string {
   ].join(' ')
 }
 
-function openCustom(): void {
+const customRow = ref<HTMLButtonElement | null>(null)
+const backButton = ref<HTMLButtonElement | null>(null)
+
+// Switching views replaces the focused button, so focus follows into the new one
+async function openCustom(): Promise<void> {
   calendarStart.value = startingDates()
   customOpen.value = true
+  await nextTick()
+  backButton.value?.focus()
 }
 
-function closeCustom(): void {
+async function closeCustom(): Promise<void> {
   customOpen.value = false
   draftFrom.value = props.modelValue.from ?? null
   draftTo.value = props.modelValue.to ?? null
+  await nextTick()
+  customRow.value?.focus()
 }
 
 function onCalendarChange(selected: Date[]): void {

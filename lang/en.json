@@ -21,7 +21,8 @@
     "all_users": "Users",
     "more": "More",
     "menu": "Menu",
-    "account_settings": "Account settings"
+    "account_settings": "Account settings",
+    "account_menu": "Account menu for {name}"
   },
   "general": {
     "add_company": "Add Company",
@@ -138,7 +139,9 @@
       "browse": "browse",
       "to_choose": "to choose a file",
       "take_photo": "Take photo",
-      "capture_failed": "The photo could not be taken. Choose a file instead."
+      "capture_failed": "The photo could not be taken. Choose a file instead.",
+      "choose_file": "Choose a file",
+      "remove_file": "Remove file"
     },
     "multiselect": {
       "the_list_is_empty": "The list is empty",
@@ -158,7 +161,12 @@
     "show_password": "Show password",
     "hide_password": "Hide password",
     "successful": "Done.",
-    "something_went_wrong": "Something went wrong. Please try again."
+    "something_went_wrong": "Something went wrong. Please try again.",
+    "skip_to_content": "Skip to content",
+    "current": "(current)",
+    "list": "List",
+    "sort_ascending": "Sort order: ascending",
+    "sort_descending": "Sort order: descending"
   },
   "dashboard": {
     "select_year": "Select year",

@@ -1,51 +1,5 @@
 <template>
   <div v-if="invoiceData" class="flex min-h-full">
-    <!-- The other invoices, beside the one on screen (wide screens only) -->
-    <RecordListPane
-      ref="listPane"
-      :search="searchData.searchText"
-      :sort-options="sortOptions"
-      :sort-field="searchData.orderByField"
-      :ascending="getOrderBy"
-      :loading="isLoading"
-      :empty="!invoiceList?.length"
-      :empty-text="$t('invoices.no_matching_invoices')"
-      @update:search="onSearchText"
-      @update:sort-field="setSortField"
-      @toggle-order="sortData"
-    >
-      <RecordListItem
-        v-for="invoice in (invoiceList ?? []).filter(Boolean)"
-        :id="'invoice-' + invoice.id"
-        :key="invoice.id"
-        :to="`/admin/invoices/${invoice.id}/view`"
-        :active="hasActiveUrl(invoice.id)"
-        :title="invoice.customer?.name ?? ''"
-        :subtitle="invoice.invoice_number"
-        :meta="invoice.formatted_invoice_date"
-      >
-        <template #badges>
-          <BaseInvoiceStatusBadge :status="invoice.status">
-            <BaseInvoiceStatusLabel :status="invoice.status" />
-          </BaseInvoiceStatusBadge>
-          <BaseStatusPill
-            v-if="invoice.type !== 'CREDIT_NOTE' && invoice.credited_status === 'FULL'"
-            tone="yellow"
-          >
-            {{ $t('invoices.cancelled') }}
-          </BaseStatusPill>
-          <BaseStatusPill
-            v-else-if="invoice.type !== 'CREDIT_NOTE' && invoice.credited_status === 'PARTIAL'"
-            tone="yellow"
-          >
-            {{ $t('invoices.partially_credited') }}
-          </BaseStatusPill>
-        </template>
-        <template #amount>
-          <BaseFormatMoney :amount="invoice.total" :currency="invoice.customer?.currency" />
-        </template>
-      </RecordListItem>
-    </RecordListPane>
 
     <BasePage class="min-w-0">
       <BasePageHeader :title="pageTitle">
@@ -263,6 +217,53 @@
         />
       </BaseActionBar>
     </BasePage>
+
+    <!-- The other invoices, beside the one on screen (wide screens only) -->
+    <RecordListPane
+      ref="listPane"
+      :search="searchData.searchText"
+      :sort-options="sortOptions"
+      :sort-field="searchData.orderByField"
+      :ascending="getOrderBy"
+      :loading="isLoading"
+      :empty="!invoiceList?.length"
+      :empty-text="$t('invoices.no_matching_invoices')"
+      @update:search="onSearchText"
+      @update:sort-field="setSortField"
+      @toggle-order="sortData"
+    >
+      <RecordListItem
+        v-for="invoice in (invoiceList ?? []).filter(Boolean)"
+        :id="'invoice-' + invoice.id"
+        :key="invoice.id"
+        :to="`/admin/invoices/${invoice.id}/view`"
+        :active="hasActiveUrl(invoice.id)"
+        :title="invoice.customer?.name ?? ''"
+        :subtitle="invoice.invoice_number"
+        :meta="invoice.formatted_invoice_date"
+      >
+        <template #badges>
+          <BaseInvoiceStatusBadge :status="invoice.status">
+            <BaseInvoiceStatusLabel :status="invoice.status" />
+          </BaseInvoiceStatusBadge>
+          <BaseStatusPill
+            v-if="invoice.type !== 'CREDIT_NOTE' && invoice.credited_status === 'FULL'"
+            tone="yellow"
+          >
+            {{ $t('invoices.cancelled') }}
+          </BaseStatusPill>
+          <BaseStatusPill
+            v-else-if="invoice.type !== 'CREDIT_NOTE' && invoice.credited_status === 'PARTIAL'"
+            tone="yellow"
+          >
+            {{ $t('invoices.partially_credited') }}
+          </BaseStatusPill>
+        </template>
+        <template #amount>
+          <BaseFormatMoney :amount="invoice.total" :currency="invoice.customer?.currency" />
+        </template>
+      </RecordListItem>
+    </RecordListPane>
 
     <SendInvoiceModal />
     <CreditNoteModal />

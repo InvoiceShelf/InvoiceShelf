@@ -605,6 +605,11 @@ const comboboxAttrs = computed<Record<string, unknown>>(() => {
         ? optionDomId(highlightedKey.value)
         : undefined,
     'aria-disabled': props.disabled ? 'true' : undefined,
+    // Last resort: a select with no label anywhere is named by its placeholder
+    'aria-label':
+      !fieldAttrs.value['aria-labelledby'] && !passed['aria-label'] && props.placeholder
+        ? props.placeholder
+        : undefined,
     ...fieldAttrs.value,
     ...passed,
   }

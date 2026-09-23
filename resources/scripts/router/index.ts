@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
+import { installPageAnnouncer } from './page-announcer'
 import type { RouteRecordRaw } from 'vue-router'
 
 // Ensure route meta augmentation is loaded
@@ -127,5 +128,7 @@ const router = createRouter({
 })
 
 router.beforeEach(authGuard)
+
+installPageAnnouncer(router)
 
 export default router

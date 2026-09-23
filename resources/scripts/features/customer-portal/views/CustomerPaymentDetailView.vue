@@ -4,33 +4,6 @@
       The customer's other payments (wide screens only). The portal publishes
       no top inset, so the pane is sized below its fixed header here.
     -->
-    <RecordListPane
-      ref="listPane"
-      class="!h-[calc(100dvh-5.5rem)]"
-      :search="searchData.payment_number"
-      :sort-options="sortOptions"
-      :sort-field="searchData.orderByField"
-      :ascending="isAscending"
-      :empty="!store.payments.length"
-      :empty-text="$t('payments.no_matching_payments')"
-      @update:search="onSearchText"
-      @update:sort-field="setSortField"
-      @toggle-order="sortData"
-    >
-      <RecordListItem
-        v-for="pmt in store.payments"
-        :id="'payment-' + pmt.id"
-        :key="pmt.id"
-        :to="`/${store.companySlug}/customer/payments/${pmt.id}/view`"
-        :active="hasActiveUrl(pmt.id)"
-        :title="pmt.payment_number"
-        :meta="pmt.formatted_payment_date"
-      >
-        <template #amount>
-          <BaseFormatMoney :amount="pmt.amount" :currency="pmt.currency" />
-        </template>
-      </RecordListItem>
-    </RecordListPane>
 
     <BasePage class="min-w-0">
       <BasePageHeader :title="pageTitle">
@@ -86,6 +59,34 @@
         :title="currentPayment ? `${currentPayment.payment_number}.pdf` : ''"
       />
     </BasePage>
+
+    <RecordListPane
+      ref="listPane"
+      class="!h-[calc(100dvh-5.5rem)]"
+      :search="searchData.payment_number"
+      :sort-options="sortOptions"
+      :sort-field="searchData.orderByField"
+      :ascending="isAscending"
+      :empty="!store.payments.length"
+      :empty-text="$t('payments.no_matching_payments')"
+      @update:search="onSearchText"
+      @update:sort-field="setSortField"
+      @toggle-order="sortData"
+    >
+      <RecordListItem
+        v-for="pmt in store.payments"
+        :id="'payment-' + pmt.id"
+        :key="pmt.id"
+        :to="`/${store.companySlug}/customer/payments/${pmt.id}/view`"
+        :active="hasActiveUrl(pmt.id)"
+        :title="pmt.payment_number"
+        :meta="pmt.formatted_payment_date"
+      >
+        <template #amount>
+          <BaseFormatMoney :amount="pmt.amount" :currency="pmt.currency" />
+        </template>
+      </RecordListItem>
+    </RecordListPane>
   </div>
 </template>
 

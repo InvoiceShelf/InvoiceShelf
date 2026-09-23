@@ -1,5 +1,10 @@
 <template>
-  <BaseDropdown width-class="w-64" :position="position" :wrapper-class="wrapperClass">
+  <BaseDropdown
+    width-class="w-64"
+    :position="position"
+    :wrapper-class="wrapperClass"
+    :label="$t('navigation.account_menu', { name: userStore.currentUser?.name ?? '' })"
+  >
     <template #activator>
       <slot name="activator" :avatar="avatar" />
     </template>
@@ -16,29 +21,35 @@
       </div>
     </div>
 
+    <!-- Theme: three menu items in a row, so the arrow keys reach them -->
     <div class="px-2 pb-2">
       <div
         class="grid grid-cols-3 gap-1 p-1 rounded-lg bg-surface-muted/60"
-        role="radiogroup"
+        role="group"
         :aria-label="$t('general.theme')"
       >
-        <button
+        <MenuItem
           v-for="opt in themeOptions"
           :key="opt.value"
-          type="button"
-          role="radio"
-          :aria-checked="currentTheme === opt.value"
-          :class="[
-            'flex items-center justify-center gap-1.5 rounded-md h-7 text-xs font-medium transition-colors',
-            currentTheme === opt.value
-              ? 'bg-surface text-heading shadow-xs'
-              : 'text-muted hover:text-body',
-          ]"
-          @click.stop="setTheme(opt.value)"
+          v-slot="{ active }"
+          as="template"
+          @click="setTheme(opt.value)"
         >
-          <BaseIcon :name="opt.icon" class="w-3.5 h-3.5" />
-          {{ $t(opt.label) }}
-        </button>
+          <button
+            type="button"
+            :class="[
+              'flex items-center justify-center gap-1.5 rounded-md h-7 text-xs font-medium transition-colors',
+              currentTheme === opt.value
+                ? 'bg-surface text-heading shadow-xs'
+                : 'text-muted hover:text-body',
+              active ? 'ring-2 ring-focus' : '',
+            ]"
+          >
+            <BaseIcon :name="opt.icon" class="w-3.5 h-3.5" aria-hidden="true" />
+            {{ $t(opt.label) }}
+            <span v-if="currentTheme === opt.value" class="sr-only">{{ $t('general.current') }}</span>
+          </button>
+        </MenuItem>
       </div>
     </div>
 
@@ -72,6 +83,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { MenuItem } from '@headlessui/vue'
 import type { Placement } from '@popperjs/core'
 import { useAuthStore } from '@/scripts/stores/auth.store'
 import { useUserStore } from '@/scripts/stores/user.store'

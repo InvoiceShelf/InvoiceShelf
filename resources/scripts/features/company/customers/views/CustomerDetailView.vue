@@ -90,8 +90,6 @@ function refreshData(): void {
 
 <template>
   <div class="flex min-h-full">
-    <!-- The other customers, beside this one (wide screens only) -->
-    <CustomerViewSidebar />
 
     <BasePage class="min-w-0">
       <BasePageHeader :title="pageTitle" :subtitle="subtitle">
@@ -212,5 +210,8 @@ function refreshData(): void {
         </BaseTab>
       </BaseTabGroup>
     </BasePage>
+
+    <!-- The other customers, beside this one (wide screens only) -->
+    <CustomerViewSidebar />
   </div>
 </template>

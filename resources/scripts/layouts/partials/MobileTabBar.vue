@@ -30,6 +30,8 @@
           type="button"
           :class="[isMoreActive ? 'text-primary-600' : 'text-muted']"
           class="flex flex-col items-center justify-center w-full h-full gap-0.5 px-1"
+          aria-haspopup="dialog"
+          :aria-expanded="globalStore.isSidebarOpen"
           @click="globalStore.setSidebarVisibility(true)"
         >
           <span
