@@ -7,6 +7,7 @@ import { useCompanyStore } from '@/scripts/stores/company.store'
 import { useUserStore } from '@/scripts/stores/user.store'
 import { useBreakpoints } from '@/scripts/composables/use-breakpoints'
 import CashflowChart from '@/scripts/components/charts/CashflowChart.vue'
+import CashflowTable from '@/scripts/components/charts/CashflowTable.vue'
 import type { CashflowChartType } from '@/scripts/components/charts/CashflowChart.vue'
 import CustomerInfo from './CustomerInfo.vue'
 import type { CustomerStatsChartData } from '@/scripts/api/services/customer.service'
@@ -137,7 +138,7 @@ function selectPeriod(value: PeriodValue): void {
           </div>
 
           <!-- Period totals, doubling as the chart's legend -->
-          <ul role="list" class="grid grid-cols-2 m-0 p-0 list-none mt-5 gap-x-6 gap-y-5 lg:grid-cols-4">
+          <ul role="list" class="grid grid-cols-1 min-[360px]:grid-cols-2 m-0 p-0 list-none mt-5 gap-x-6 gap-y-5 lg:grid-cols-4">
             <li v-for="kpi in kpis" :key="kpi.key" class="flex items-center min-w-0 gap-3">
               <span
                 :class="kpi.chip"
@@ -173,6 +174,17 @@ function selectPeriod(value: PeriodValue): void {
             :aria-label="$t('dashboard.cashflow.title')"
           />
         </div>
+
+        <CashflowTable
+          :labels="chartData.months ?? []"
+          :sales="chartData.invoiceTotals ?? []"
+          :receipts="chartData.receiptTotals ?? []"
+          :expenses="chartData.expenseTotals ?? []"
+          :series-labels="seriesLabels"
+          :caption="$t('dashboard.cashflow.title')"
+          :granularity="chartData.period?.granularity"
+          :currency="companyStore.selectedCompanyCurrency"
+        />
       </template>
 
       <BaseContentPlaceholders v-else :rounded="true" class="p-5 md:p-7">

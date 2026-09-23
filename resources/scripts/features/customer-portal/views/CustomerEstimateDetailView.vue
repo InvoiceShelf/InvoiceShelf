@@ -97,6 +97,7 @@ import RecordListItem from '@/scripts/components/layout/RecordListItem.vue'
 import { useDialogStore } from '../../../stores/dialog.store'
 import { EstimateStatus } from '../../../types/domain/estimate'
 import type { Estimate } from '../../../types/domain/estimate'
+import { scrollBehavior } from '@/scripts/utils/motion'
 
 const store = useCustomerPortalStore()
 const dialogStore = useDialogStore()
@@ -171,7 +172,7 @@ function scrollToEstimate(): void {
   const list = listPane.value?.listEl
   if (el && list) {
     // Scroll the list pane alone; scrollIntoView would also move the page
-    list.scrollTo({ top: el.offsetTop - list.offsetTop - 8, behavior: 'smooth' })
+    list.scrollTo({ top: el.offsetTop - list.offsetTop - 8, behavior: scrollBehavior() })
     el.classList.add('shake')
   }
 }

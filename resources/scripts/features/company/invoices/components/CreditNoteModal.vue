@@ -20,9 +20,9 @@
 
         <template v-else>
           <div>
-            <h6 class="text-sm not-italic font-medium text-heading">
+            <h2 class="text-sm not-italic font-medium text-heading">
               {{ $t('invoices.credit_note_items') }}
-            </h6>
+            </h2>
 
             <div
               class="mt-2 overflow-x-auto rounded-xl border border-line-light bg-surface"
@@ -147,7 +147,7 @@
                       />
                       <span
                         v-if="rowError(index)"
-                        class="block mt-1 text-xs text-left text-red-500"
+                        class="block mt-1 text-xs text-left text-danger"
                       >
                         {{ rowError(index) }}
                       </span>
@@ -168,7 +168,7 @@
 
             <span
               v-if="selectionError"
-              class="block mt-2 text-sm text-red-500"
+              class="block mt-2 text-sm text-danger"
             >
               {{ selectionError }}
             </span>

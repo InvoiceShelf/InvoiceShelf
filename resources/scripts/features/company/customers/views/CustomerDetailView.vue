@@ -95,7 +95,7 @@ function refreshData(): void {
       <BasePageHeader :title="pageTitle" :subtitle="subtitle">
         <template #leading>
           <span
-            class="flex items-center justify-center w-12 h-12 text-base font-semibold rounded-2xl shrink-0 bg-primary-600 text-on-primary"
+            class="flex items-center justify-center w-12 h-12 text-base font-semibold rounded-2xl shrink-0 bg-btn-primary text-on-primary"
             aria-hidden="true"
           >
             {{ initials }}

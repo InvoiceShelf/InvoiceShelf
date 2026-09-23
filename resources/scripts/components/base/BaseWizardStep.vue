@@ -27,9 +27,10 @@ withDefaults(defineProps<Props>(), {
 <template>
   <div :class="stepContainerClass">
     <header v-if="title || description" class="mb-6">
-      <h2 v-if="title" :class="stepTitleClass">
+      <!-- The step is the page, so its title is the page's heading -->
+      <h1 v-if="title" :class="stepTitleClass">
         {{ title }}
-      </h2>
+      </h1>
       <p v-if="description" :class="stepDescriptionClass">
         {{ description }}
       </p>

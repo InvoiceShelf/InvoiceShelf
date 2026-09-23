@@ -57,7 +57,7 @@
     <!-- Tax Included Toggle -->
     <div
       v-if="taxIncludedSetting === 'YES'"
-      class="flex items-center justify-end w-full px-6 text-base border-b border-line-light cursor-pointer text-primary-400"
+      class="flex items-center justify-end w-full px-6 text-base border-b border-line-light cursor-pointer"
     >
       <BaseSwitchSection
         v-model="taxIncludedField"

@@ -76,7 +76,7 @@
       <button
         type="button"
         class="
-          mt-4 w-full text-sm text-primary-400 transition-colors
+          mt-4 w-full text-sm text-primary-600 transition-colors
           hover:text-body
         "
         @click="onChangeServer"
@@ -107,6 +107,7 @@
       >
         <BaseInput
           v-model="authStore.loginData.email"
+          autocomplete="username"
           :invalid="v$.email.$error"
           type="email"
           name="email"
@@ -124,6 +125,7 @@
       >
         <BaseInput
           v-model="authStore.loginData.password"
+          autocomplete="current-password"
           :invalid="v$.password.$error"
           type="password"
           revealable
@@ -135,7 +137,7 @@
       <div class="mt-5 mb-8">
         <router-link
           :to="{ name: 'forgot-password' }"
-          class="text-sm text-primary-400 hover:text-body"
+          class="text-sm text-primary-600 hover:text-body"
         >
           {{ $t('login.forgot_password') }}
         </router-link>
@@ -155,7 +157,7 @@
         </p>
         <button
           type="button"
-          class="mt-1 text-primary-400 transition-colors hover:text-body"
+          class="mt-1 text-primary-600 transition-colors hover:text-body"
           @click="onChangeServer"
         >
           {{ $t('client.change_server') }}

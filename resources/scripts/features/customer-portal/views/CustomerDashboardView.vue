@@ -1,5 +1,7 @@
 <template>
   <BasePage>
+    <h1 class="sr-only">{{ $t('navigation.dashboard') }}</h1>
+
     <!-- Stats Cards -->
     <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-8">
       <router-link
@@ -80,9 +82,9 @@
       <!-- Recent Invoices -->
       <div>
         <div class="relative z-10 flex items-center justify-between mb-3">
-          <h6 class="mb-0 text-xl font-semibold leading-normal">
+          <h2 class="mb-0 text-xl font-semibold leading-normal">
             {{ $t('dashboard.recent_invoices_card.title') }}
-          </h6>
+          </h2>
           <BaseButton
             size="sm"
             variant="primary-outline"
@@ -124,9 +126,9 @@
       <!-- Recent Estimates -->
       <div>
         <div class="relative z-10 flex items-center justify-between mb-3">
-          <h6 class="mb-0 text-xl font-semibold leading-normal">
+          <h2 class="mb-0 text-xl font-semibold leading-normal">
             {{ $t('dashboard.recent_estimate_card.title') }}
-          </h6>
+          </h2>
           <BaseButton
             variant="primary-outline"
             size="sm"

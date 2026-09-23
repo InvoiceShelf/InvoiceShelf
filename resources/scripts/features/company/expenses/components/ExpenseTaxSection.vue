@@ -17,7 +17,7 @@
           <PopoverButton
             type="button"
             :disabled="isLoading"
-            class="inline-flex h-9 items-center justify-center rounded-lg border border-line-default bg-surface px-3 text-sm font-medium text-primary-400 transition hover:bg-hover focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
+            class="inline-flex h-9 items-center justify-center rounded-lg border border-line-default bg-surface px-3 text-sm font-medium text-primary-600 transition hover:bg-hover focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
           >
             <BaseIcon name="PlusIcon" class="mr-1.5 h-4 w-4" />
             {{ $t('expenses.add_tax') }}
@@ -76,7 +76,7 @@
               <button
                 v-if="canCreateTaxType"
                 type="button"
-                class="flex h-11 w-full items-center justify-center border-t border-line-light bg-surface-muted px-2 text-sm font-medium text-primary-400 hover:bg-hover"
+                class="flex h-11 w-full items-center justify-center border-t border-line-light bg-surface-muted px-2 text-sm font-medium text-primary-600 hover:bg-hover"
                 @click="openTaxTypeModal(close)"
               >
                 <BaseIcon name="PlusCircleIcon" class="mr-2 h-4 w-4" />

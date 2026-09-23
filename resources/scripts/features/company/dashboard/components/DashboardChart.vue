@@ -40,7 +40,7 @@
         </div>
 
         <!-- Period totals, doubling as the chart's legend: each chip wears its series colour -->
-        <ul role="list" class="grid grid-cols-2 m-0 p-0 list-none mt-5 gap-x-6 gap-y-5 lg:grid-cols-4">
+        <ul role="list" class="grid grid-cols-1 min-[360px]:grid-cols-2 m-0 p-0 list-none mt-5 gap-x-6 gap-y-5 lg:grid-cols-4">
           <li v-for="kpi in kpis" :key="kpi.key" class="flex items-center min-w-0 gap-3">
             <span
               :class="kpi.chip"
@@ -77,55 +77,16 @@
         />
       </div>
 
-      <div class="flex justify-end px-5 pb-4 md:px-7">
-        <button
-          type="button"
-          class="text-sm font-medium rounded-md text-muted hover:text-heading focus-visible:outline-2"
-          :aria-expanded="showTable"
-          aria-controls="dashboard-cashflow-table"
-          @click="showTable = !showTable"
-        >
-          {{ showTable ? $t('dashboard.cashflow.hide_table') : $t('dashboard.cashflow.show_table') }}
-        </button>
-      </div>
-
-      <div
-        v-if="showTable"
-        id="dashboard-cashflow-table"
-        class="overflow-x-auto border-t border-line-light"
-      >
-        <table class="min-w-full text-sm">
-          <thead class="bg-surface-secondary">
-            <tr>
-              <th class="px-5 py-3 text-sm font-medium text-left md:px-7 text-muted">
-                {{ dashboardStore.resolvedPeriod?.granularity === 'day' ? $t('dashboard.cashflow.day') : $t('dashboard.cashflow.month') }}
-              </th>
-              <th
-                v-for="label in seriesLabels"
-                :key="label"
-                class="px-5 py-3 text-sm font-medium text-right md:px-7 text-muted"
-              >
-                {{ label }}
-              </th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-line-light">
-            <tr v-for="(month, index) in dashboardStore.chartData.months" :key="month + index">
-              <td class="px-5 py-2.5 md:px-7 text-body">{{ month }}</td>
-              <td
-                v-for="series in tableSeries"
-                :key="series.key"
-                class="px-5 py-2.5 text-right md:px-7 text-heading"
-              >
-                <BaseFormatMoney
-                  :amount="series.values[index] ?? 0"
-                  :currency="companyStore.selectedCompanyCurrency"
-                />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <CashflowTable
+        :labels="dashboardStore.chartData.months"
+        :sales="dashboardStore.chartData.invoiceTotals"
+        :receipts="dashboardStore.chartData.receiptTotals"
+        :expenses="dashboardStore.chartData.expenseTotals"
+        :series-labels="seriesLabels"
+        :caption="$t('dashboard.cashflow.title')"
+        :granularity="dashboardStore.resolvedPeriod?.granularity"
+        :currency="companyStore.selectedCompanyCurrency"
+      />
     </template>
 
     <BaseContentPlaceholders v-else :rounded="true" class="p-5 md:p-7">
@@ -139,12 +100,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDashboardStore } from '../store'
 import { useCompanyStore } from '@/scripts/stores/company.store'
 import { useBreakpoints } from '@/scripts/composables/use-breakpoints'
 import CashflowChart from '@/scripts/components/charts/CashflowChart.vue'
+import CashflowTable from '@/scripts/components/charts/CashflowTable.vue'
 import type { CashflowChartType } from '@/scripts/components/charts/CashflowChart.vue'
 import { useUserStore } from '@/scripts/stores/user.store'
 import { userService } from '@/scripts/api/services/user.service'
@@ -164,7 +126,6 @@ const { isPhone } = useBreakpoints()
 
 const userStore = useUserStore()
 
-const showTable = ref<boolean>(false)
 
 // Saved with the user's settings, so the choice follows them to other devices
 const chartType = computed<CashflowChartType>({
@@ -217,11 +178,5 @@ const kpis = computed<Kpi[]>(() => [
     icon: 'ScaleIcon',
     chip: 'bg-primary-50 text-primary-600',
   },
-])
-
-const tableSeries = computed(() => [
-  { key: 'sales', values: dashboardStore.chartData.invoiceTotals },
-  { key: 'receipts', values: dashboardStore.chartData.receiptTotals },
-  { key: 'expenses', values: dashboardStore.chartData.expenseTotals },
 ])
 </script>

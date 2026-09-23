@@ -8,6 +8,7 @@
     >
       <BaseInput
         v-model="authStore.loginData.email"
+        autocomplete="username"
         :invalid="v$.email.$error"
         focus
         type="email"
@@ -24,6 +25,7 @@
     >
       <BaseInput
         v-model="authStore.loginData.password"
+        autocomplete="current-password"
         :invalid="v$.password.$error"
         type="password"
         revealable
@@ -36,7 +38,7 @@
       <div class="mb-4">
         <router-link
           to="forgot-password"
-          class="text-sm text-primary-400 hover:text-body"
+          class="text-sm text-primary-600 hover:text-body"
         >
           {{ $t('login.forgot_password') }}
         </router-link>

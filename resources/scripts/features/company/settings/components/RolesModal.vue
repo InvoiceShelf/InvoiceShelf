@@ -286,12 +286,12 @@ function closeRolesModal(): void {
       </div>
 
       <div class="flex justify-between">
-        <h6
+        <h2
           class="text-sm not-italic font-medium text-heading px-4 md:px-8 py-1.5"
         >
           {{ $t('settings.roles.permission', 2) }}
           <span class="text-sm text-danger" aria-hidden="true"> *</span>
-        </h6>
+        </h2>
         <div
           class="text-sm not-italic font-medium text-subtle px-4 md:px-8 py-1.5"
         >

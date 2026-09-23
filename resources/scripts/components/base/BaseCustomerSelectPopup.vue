@@ -266,7 +266,7 @@ const addressBlocks = computed(() => {
     >
       <div class="flex items-start gap-3">
         <span
-          class="flex items-center justify-center w-11 h-11 text-sm font-semibold rounded-xl shrink-0 bg-primary-600 text-on-primary"
+          class="flex items-center justify-center w-11 h-11 text-sm font-semibold rounded-xl shrink-0 bg-btn-primary text-on-primary"
           aria-hidden="true"
         >
           {{ initials(selectedCustomer.name) }}

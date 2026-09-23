@@ -7,6 +7,7 @@
     >
       <BaseInput
         v-model="formData.email"
+        autocomplete="email"
         :invalid="v$.email.$error"
         focus
         name="email"
@@ -22,6 +23,7 @@
     >
       <BaseInput
         v-model="formData.password"
+        autocomplete="new-password"
         :invalid="v$.password.$error"
         type="password"
         revealable
@@ -37,6 +39,7 @@
     >
       <BaseInput
         v-model="formData.password_confirmation"
+        autocomplete="new-password"
         :invalid="v$.password_confirmation.$error"
         type="password"
         revealable

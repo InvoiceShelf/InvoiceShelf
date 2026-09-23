@@ -130,9 +130,9 @@ function removeExchangeRate(id: number): void {
     <template #header>
       <div class="flex flex-wrap justify-between lg:flex-nowrap">
         <div>
-          <h6 class="text-lg font-medium text-left">
+          <h2 class="text-lg font-medium text-left">
             {{ $t('settings.menu_title.exchange_rate') }}
-          </h6>
+          </h2>
           <p
             class="mt-2 text-sm leading-snug text-left text-muted"
             style="max-width: 680px"

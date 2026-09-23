@@ -145,7 +145,8 @@
  * Glass surfaces. `glass` for cards and tables, `glass-strong` for things
  * that float (menus, sheets, dialogs, the search palette), `glass-bar` for the
  * top bar and the phone's bottom bars, `glass-chrome` for the brand-coloured
- * phone app bar. People who ask for less transparency get solid fills.
+ * phone app bar. People who ask for less transparency or more contrast get
+ * solid fills.
  */
 @utility glass {
   background-color: var(--glass-fill);
@@ -154,7 +155,7 @@
   -webkit-backdrop-filter: blur(18px) saturate(170%);
   backdrop-filter: blur(18px) saturate(170%);
 
-  @media (prefers-reduced-transparency: reduce) {
+  @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
     background-color: var(--color-surface);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
@@ -168,7 +169,7 @@
   -webkit-backdrop-filter: blur(28px) saturate(180%);
   backdrop-filter: blur(28px) saturate(180%);
 
-  @media (prefers-reduced-transparency: reduce) {
+  @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
     background-color: var(--color-surface);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
@@ -180,7 +181,7 @@
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   backdrop-filter: blur(20px) saturate(180%);
 
-  @media (prefers-reduced-transparency: reduce) {
+  @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
     background-color: var(--color-surface-tertiary);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
@@ -192,7 +193,7 @@
   -webkit-backdrop-filter: blur(20px) saturate(160%);
   backdrop-filter: blur(20px) saturate(160%);
 
-  @media (prefers-reduced-transparency: reduce) {
+  @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
     background-color: var(--color-chrome);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;

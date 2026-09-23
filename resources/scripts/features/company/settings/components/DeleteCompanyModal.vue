@@ -86,9 +86,9 @@ function closeModal(): void {
 <template>
   <BaseModal :show="modalActive" @close="closeModal" @open="setInitialData">
     <div class="px-6 pt-6">
-      <h6 class="font-medium text-lg text-heading">
+      <h2 class="font-medium text-lg text-heading">
         {{ $t('settings.company_info.are_you_absolutely_sure') }}
-      </h6>
+      </h2>
       <p class="mt-2 text-sm text-muted" style="max-width: 680px">
         {{ $t('settings.company_info.delete_company_modal_desc', { company: companyName }) }}
       </p>

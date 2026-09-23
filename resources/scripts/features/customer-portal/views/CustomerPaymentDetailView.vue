@@ -100,6 +100,7 @@ import RecordListPane from '@/scripts/components/layout/RecordListPane.vue'
 import RecordListItem from '@/scripts/components/layout/RecordListItem.vue'
 import type { Payment } from '../../../types/domain/payment'
 import type { Invoice } from '../../../types/domain/invoice'
+import { scrollBehavior } from '@/scripts/utils/motion'
 
 const store = useCustomerPortalStore()
 const route = useRoute()
@@ -184,7 +185,7 @@ function scrollToPayment(): void {
   const list = listPane.value?.listEl
   if (el && list) {
     // Scroll the list pane alone; scrollIntoView would also move the page
-    list.scrollTo({ top: el.offsetTop - list.offsetTop - 8, behavior: 'smooth' })
+    list.scrollTo({ top: el.offsetTop - list.offsetTop - 8, behavior: scrollBehavior() })
     el.classList.add('shake')
   }
 }

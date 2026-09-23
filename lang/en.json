@@ -132,7 +132,9 @@
       "showing": "Showing",
       "to": "to",
       "of": "of",
-      "results": "results"
+      "results": "results",
+      "label": "Pagination",
+      "page": "Page {page}"
     },
     "file_upload": {
       "drag_a_file": "Drag a file here or",

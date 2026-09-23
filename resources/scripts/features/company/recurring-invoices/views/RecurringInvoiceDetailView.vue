@@ -182,6 +182,7 @@ import RecordListItem from '@/scripts/components/layout/RecordListItem.vue'
 import { useUserStore } from '../../../../stores/user.store'
 import type { RecurringInvoice } from '../../../../types/domain/recurring-invoice'
 import type { CurrencyConfig } from '@/scripts/utils/format-money'
+import { scrollBehavior } from '@/scripts/utils/motion'
 
 interface Props {
   canEdit?: boolean
@@ -406,7 +407,7 @@ function scrollToRecurringInvoice(): void {
   const list = invoiceListSection.value
   if (el && list) {
     // Scroll the list pane alone; scrollIntoView would also move the page
-    list.scrollTo({ top: el.offsetTop - list.offsetTop - 8, behavior: 'smooth' })
+    list.scrollTo({ top: el.offsetTop - list.offsetTop - 8, behavior: scrollBehavior() })
     el.classList.add('shake')
     addScrollListener()
   }

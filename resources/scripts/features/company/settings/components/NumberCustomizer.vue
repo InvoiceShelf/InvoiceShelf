@@ -277,9 +277,9 @@ async function submitForm(): Promise<boolean> {
 </script>
 
 <template>
-  <h6 class="text-heading text-lg font-medium">
+  <h3 class="text-heading text-lg font-medium">
     {{ $t(`settings.customization.${type}s.${type}_number_format`) }}
-  </h6>
+  </h3>
   <p class="mt-1 text-sm text-muted">
     {{ $t(`settings.customization.${type}s.${type}_number_format_description`) }}
   </p>

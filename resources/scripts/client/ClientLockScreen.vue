@@ -65,7 +65,7 @@ defineEmits<Emits>()
       <button
         type="button"
         class="
-          mt-6 text-sm text-primary-400 transition-colors hover:text-body
+          mt-6 text-sm text-primary-600 transition-colors hover:text-body
         "
         @click="$emit('sign-out')"
       >

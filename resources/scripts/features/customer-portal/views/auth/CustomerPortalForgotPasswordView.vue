@@ -7,6 +7,7 @@
     >
       <BaseInput
         v-model="formData.email"
+        autocomplete="email"
         :invalid="v$.email.$error"
         focus
         name="email"

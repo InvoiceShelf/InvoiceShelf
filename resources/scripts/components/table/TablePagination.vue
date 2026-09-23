@@ -20,7 +20,7 @@
       </template>
     </p>
 
-    <nav class="flex items-center gap-1" aria-label="Pagination">
+    <nav class="flex items-center gap-1" :aria-label="$t('general.pagination.label')">
       <button
         type="button"
         :class="navButtonClass"
@@ -37,27 +37,30 @@
           type="button"
           :class="pageButtonClass(1)"
           :aria-current="isActive(1) ? 'page' : undefined"
+          :aria-label="$t('general.pagination.page', { page: 1 })"
           @click="pageClicked(1)"
         >
           1
         </button>
-        <span v-if="hasFirstEllipsis" class="px-1 text-sm text-subtle">…</span>
+        <span v-if="hasFirstEllipsis" class="px-1 text-sm text-subtle" aria-hidden="true">…</span>
         <button
           v-for="page in pages"
           :key="page"
           type="button"
           :class="pageButtonClass(page)"
           :aria-current="isActive(page) ? 'page' : undefined"
+          :aria-label="$t('general.pagination.page', { page: page })"
           @click="pageClicked(page)"
         >
           {{ page }}
         </button>
-        <span v-if="hasLastEllipsis" class="px-1 text-sm text-subtle">…</span>
+        <span v-if="hasLastEllipsis" class="px-1 text-sm text-subtle" aria-hidden="true">…</span>
         <button
           v-if="hasLast"
           type="button"
           :class="pageButtonClass(pagination.totalPages)"
           :aria-current="isActive(pagination.totalPages) ? 'page' : undefined"
+          :aria-label="$t('general.pagination.page', { page: pagination.totalPages })"
           @click="pageClicked(pagination.totalPages)"
         >
           {{ pagination.totalPages }}

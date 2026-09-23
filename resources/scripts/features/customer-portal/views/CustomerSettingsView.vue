@@ -45,6 +45,7 @@
           >
             <BaseInput
               v-model="formData.name"
+              autocomplete="name"
               :invalid="v$.name.$error"
               @input="v$.name.$touch()"
             />
@@ -57,6 +58,7 @@
           >
             <BaseInput
               v-model="formData.email"
+              autocomplete="email"
               :invalid="v$.email.$error"
               @input="v$.email.$touch()"
             />
@@ -68,6 +70,7 @@
           >
             <BaseInput
               v-model="formData.password"
+              autocomplete="new-password"
               type="password"
               revealable
               :invalid="v$.password.$error"
@@ -81,6 +84,7 @@
           >
             <BaseInput
               v-model="formData.confirm_password"
+              autocomplete="new-password"
               type="password"
               revealable
               :invalid="v$.confirm_password.$error"

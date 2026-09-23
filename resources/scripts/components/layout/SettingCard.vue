@@ -2,9 +2,9 @@
   <BaseCard>
     <div class="flex flex-wrap justify-between lg:flex-nowrap mb-5">
       <div>
-        <h6 class="font-medium text-lg text-left">
+        <h2 class="font-medium text-lg text-left">
           {{ title }}
-        </h6>
+        </h2>
 
         <p
           class="

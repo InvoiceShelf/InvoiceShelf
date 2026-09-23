@@ -17,7 +17,7 @@
     <p class="text-sm text-muted mb-4">{{ error }}</p>
     <router-link
       to="/login"
-      class="text-sm text-primary-400 hover:text-primary-500"
+      class="text-sm text-primary-600 hover:text-primary-700"
     >
       Go to Login
     </router-link>
@@ -45,6 +45,7 @@
       >
         <BaseInput
           v-model="form.name"
+          autocomplete="name"
           :invalid="v$.name.$error"
           focus
           @input="v$.name.$touch()"
@@ -54,6 +55,7 @@
       <BaseInputGroup label="Email" class="mb-4">
         <BaseInput
           v-model="form.email"
+          autocomplete="email"
           type="email"
           disabled
         />
@@ -67,6 +69,7 @@
       >
         <BaseInput
           v-model="form.password"
+          autocomplete="new-password"
           type="password"
           revealable
           :invalid="v$.password.$error"
@@ -85,6 +88,7 @@
       >
         <BaseInput
           v-model="form.password_confirmation"
+          autocomplete="new-password"
           type="password"
           revealable
           :invalid="v$.password_confirmation.$error"
@@ -95,7 +99,7 @@
       <div class="mt-5 mb-8">
         <router-link
           to="/login"
-          class="text-sm text-primary-400 hover:text-body"
+          class="text-sm text-primary-600 hover:text-body"
         >
           Already have an account? Log in
         </router-link>

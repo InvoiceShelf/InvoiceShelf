@@ -10,6 +10,7 @@ import type { ChartConfiguration, ChartDataset, Plugin, ScriptableContext, Toolt
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useMutationObserver } from '@vueuse/core'
 import { formatMoney } from '@/scripts/utils/format-money'
+import { prefersReducedMotion } from '@/scripts/utils/motion'
 import type { CurrencyConfig } from '@/scripts/utils/format-money'
 
 /**
@@ -191,7 +192,8 @@ function buildConfig(): ChartConfiguration<'line' | 'bar'> {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      animation: { duration: 300 },
+      // No animated draw-in for people who asked their system for less motion
+      animation: prefersReducedMotion() ? false : { duration: 300 },
       interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: { display: false },

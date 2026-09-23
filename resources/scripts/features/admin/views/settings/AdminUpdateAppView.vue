@@ -411,7 +411,7 @@ docker compose up --force-recreate --build -d</pre>
       <BaseDivider v-if="isUpdateAvailable" class="mt-6 mb-4" />
 
       <div v-if="isUpdateAvailable && updateRelease && !isUpdating" class="mt-4">
-        <BaseHeading type="heading-title" class="mb-2">
+        <BaseHeading type="heading-title" :level="3" class="mb-2">
           {{ $t('settings.update_app.avail_update') }}
         </BaseHeading>
 
@@ -496,7 +496,7 @@ docker compose up --force-recreate --build -d</pre>
       <div v-if="isUpdating" class="mt-4">
         <div class="mb-6 flex items-start justify-between">
           <div>
-            <BaseHeading type="heading-title" class="mb-2">
+            <BaseHeading type="heading-title" :level="3" class="mb-2">
               {{ $t('settings.update_app.update_progress') }}
             </BaseHeading>
             <p class="max-w-[480px] text-sm leading-snug text-muted">

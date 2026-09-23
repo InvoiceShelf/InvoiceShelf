@@ -178,7 +178,7 @@ const avatarClass = computed<string>(() => {
     return 'bg-chrome-accent text-chrome'
   }
 
-  return companyStore.isAdminMode ? 'bg-primary-50 text-primary-600' : 'bg-primary-600 text-on-primary'
+  return companyStore.isAdminMode ? 'bg-primary-50 text-primary-600' : 'bg-btn-primary text-on-primary'
 })
 
 watch(route, () => {

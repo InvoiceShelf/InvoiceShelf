@@ -10,7 +10,7 @@
     <BaseCard class="mt-6">
       <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
-          <h6 class="text-heading text-lg font-medium">Marketplace access</h6>
+          <h2 class="text-heading text-lg font-medium">Marketplace access</h2>
           <p class="mt-1 text-sm text-muted">
             Pair this InvoiceShelf instance with your marketplace account. The device credential stays encrypted on this server.
           </p>

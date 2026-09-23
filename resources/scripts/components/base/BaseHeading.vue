@@ -3,10 +3,13 @@ import { computed } from 'vue'
 
 interface Props {
   type?: 'section-title' | 'heading-title'
+  /** The heading's place in the page outline; the look comes from `type` */
+  level?: 1 | 2 | 3 | 4 | 5 | 6
 }
 
 const props = withDefaults(defineProps<Props>(), {
   type: 'section-title',
+  level: 2,
 })
 
 const typeClass = computed<Record<string, boolean>>(() => ({
@@ -16,7 +19,7 @@ const typeClass = computed<Record<string, boolean>>(() => ({
 </script>
 
 <template>
-  <h6 :class="typeClass">
+  <component :is="`h${level}`" :class="typeClass">
     <slot />
-  </h6>
+  </component>
 </template>

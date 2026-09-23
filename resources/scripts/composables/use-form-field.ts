@@ -123,3 +123,35 @@ export function focusFirstInvalid(root: ParentNode = document): void {
     root.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus()
   })
 }
+
+/**
+ * Does the same for every form in the app, once: submit handlers validate and
+ * the errors render a frame or two later, so look then. A field that is
+ * itself invalid keeps focus, so pressing Enter in it does not move you.
+ */
+export function focusInvalidAfterSubmit(): void {
+  document.addEventListener(
+    'submit',
+    (event) => {
+      const form = event.target
+
+      if (!(form instanceof HTMLFormElement)) {
+        return
+      }
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const invalid = form.isConnected
+            ? form.querySelector<HTMLElement>('[aria-invalid="true"]')
+            : null
+          const active = document.activeElement
+
+          if (invalid && active?.getAttribute('aria-invalid') !== 'true') {
+            invalid.focus()
+          }
+        })
+      })
+    },
+    true,
+  )
+}

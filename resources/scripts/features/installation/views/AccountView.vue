@@ -23,6 +23,7 @@
         >
           <BaseInput
             v-model.trim="userForm.name"
+            autocomplete="name"
             :invalid="v$.name.$error"
             type="text"
             name="name"
@@ -37,6 +38,7 @@
         >
           <BaseInput
             v-model.trim="userForm.email"
+            autocomplete="email"
             :invalid="v$.email.$error"
             type="text"
             name="email"
@@ -53,6 +55,7 @@
         >
           <BaseInput
             v-model.trim="userForm.password"
+            autocomplete="new-password"
             :invalid="v$.password.$error"
             type="password"
             revealable
@@ -68,6 +71,7 @@
         >
           <BaseInput
             v-model.trim="userForm.confirm_password"
+            autocomplete="new-password"
             :invalid="v$.confirm_password.$error"
             type="password"
             revealable
