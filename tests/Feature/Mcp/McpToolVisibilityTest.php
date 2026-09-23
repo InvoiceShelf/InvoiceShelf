@@ -2,6 +2,7 @@
 
 use App\Domains\Accounts\Models\User;
 use App\Domains\Sales\Models\Invoice;
+use App\Platform\Mcp\McpContext;
 use App\Platform\Mcp\Models\McpConnection;
 use App\Platform\Mcp\Tools\McpTool;
 use Illuminate\Support\Facades\Artisan;
@@ -24,7 +25,7 @@ beforeEach(function () {
             return true;
         }
 
-        protected function ability(): ?array
+        protected function ability(McpContext $context): ?array
         {
             return ['create', Invoice::class];
         }

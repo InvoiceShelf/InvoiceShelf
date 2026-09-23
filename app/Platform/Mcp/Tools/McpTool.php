@@ -3,6 +3,8 @@
 namespace App\Platform\Mcp\Tools;
 
 use App\Platform\Mcp\McpContext;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\Model;
 use Laravel\Mcp\Server\Tool;
 
 /**
@@ -21,12 +23,12 @@ abstract class McpTool extends Tool
 {
     /**
      * The policy ability checked before the tool is listed, as a pair of
-     * ability and model class for Gate, or null when belonging to the company
-     * is enough.
+     * ability and argument for Gate (a model class, or the bound company), or
+     * null when belonging to the company is enough.
      *
-     * @return array{0: string, 1: class-string}|null
+     * @return array{0: string, 1: class-string|Model}|null
      */
-    protected function ability(): ?array
+    protected function ability(McpContext $context): ?array
     {
         return null;
     }
@@ -46,8 +48,21 @@ abstract class McpTool extends Tool
             return false;
         }
 
-        $ability = $this->ability();
+        $ability = $this->ability($context);
 
         return $ability === null || $context->user->can($ability[0], $ability[1]);
+    }
+
+    /**
+     * Refuse a record the user may not act on, the same check the REST
+     * endpoint makes, so a listed tool never reaches further than the app.
+     *
+     * @throws AuthorizationException
+     */
+    protected function authorizeRecord(McpContext $context, string $ability, Model $record): void
+    {
+        if (! $context->user->can($ability, $record)) {
+            throw new AuthorizationException('This connection may not '.$ability.' that record.');
+        }
     }
 }
