@@ -38,7 +38,6 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 
-const visibleSecrets = reactive<Record<string, boolean>>({})
 const showAdvancedFields = ref(false)
 
 const mailConfig = reactive<MailConfig>(createDefaultMailConfig())
@@ -177,7 +176,6 @@ function createDefaultMailConfig(): MailConfig {
     mail_url: '',
     mail_timeout: '',
     mail_local_domain: '',
-    mail_sendmail_path: '/usr/sbin/sendmail -bs -i',
     mail_ses_key: '',
     mail_ses_secret: '',
     mail_ses_region: 'us-east-1',
@@ -220,8 +218,6 @@ function getAdvancedFields(driver: MailDriver): Array<keyof MailConfig> {
   switch (driver) {
     case 'smtp':
       return ['mail_scheme', 'mail_url', 'mail_timeout', 'mail_local_domain']
-    case 'sendmail':
-      return ['mail_sendmail_path']
     case 'mailgun':
       return ['mail_mailgun_scheme']
     case 'postmark':
@@ -239,14 +235,6 @@ function getFieldError(field: string): string | undefined {
   }
 
   return validationField.$errors[0]?.$message as string | undefined
-}
-
-function toggleSecret(field: string): void {
-  visibleSecrets[field] = !visibleSecrets[field]
-}
-
-function getSecretInputType(field: string): string {
-  return visibleSecrets[field] ? 'text' : 'password'
 }
 
 function translationKey(key: string): string {
@@ -359,17 +347,10 @@ async function saveEmailConfig(): Promise<void> {
             <BaseInput
               v-model.trim="mailConfig.mail_password"
               :content-loading="isFetchingInitialData"
-              :type="getSecretInputType('mail_password')"
+              type="password"
+              revealable
               autocomplete="off"
-            >
-              <template #right>
-                <BaseIcon
-                  :name="visibleSecrets.mail_password ? 'EyeIcon' : 'EyeSlashIcon'"
-                  class="mr-1 text-muted cursor-pointer"
-                  @click="toggleSecret('mail_password')"
-                />
-              </template>
-            </BaseInput>
+            />
           </BaseInputGroup>
 
           <BaseInputGroup
@@ -414,18 +395,11 @@ async function saveEmailConfig(): Promise<void> {
               v-model.trim="mailConfig.mail_ses_secret"
               :content-loading="isFetchingInitialData"
               :invalid="v$.mail_ses_secret?.$error"
-              :type="getSecretInputType('mail_ses_secret')"
+              type="password"
+              revealable
               autocomplete="off"
               @input="v$.mail_ses_secret?.$touch()"
-            >
-              <template #right>
-                <BaseIcon
-                  :name="visibleSecrets.mail_ses_secret ? 'EyeIcon' : 'EyeSlashIcon'"
-                  class="mr-1 text-muted cursor-pointer"
-                  @click="toggleSecret('mail_ses_secret')"
-                />
-              </template>
-            </BaseInput>
+            />
           </BaseInputGroup>
 
           <BaseInputGroup
@@ -470,18 +444,11 @@ async function saveEmailConfig(): Promise<void> {
               v-model.trim="mailConfig.mail_mailgun_secret"
               :content-loading="isFetchingInitialData"
               :invalid="v$.mail_mailgun_secret?.$error"
-              :type="getSecretInputType('mail_mailgun_secret')"
+              type="password"
+              revealable
               autocomplete="off"
               @input="v$.mail_mailgun_secret?.$touch()"
-            >
-              <template #right>
-                <BaseIcon
-                  :name="visibleSecrets.mail_mailgun_secret ? 'EyeIcon' : 'EyeSlashIcon'"
-                  class="mr-1 text-muted cursor-pointer"
-                  @click="toggleSecret('mail_mailgun_secret')"
-                />
-              </template>
-            </BaseInput>
+            />
           </BaseInputGroup>
 
           <BaseInputGroup
@@ -511,18 +478,11 @@ async function saveEmailConfig(): Promise<void> {
               v-model.trim="mailConfig.mail_postmark_token"
               :content-loading="isFetchingInitialData"
               :invalid="v$.mail_postmark_token?.$error"
-              :type="getSecretInputType('mail_postmark_token')"
+              type="password"
+              revealable
               autocomplete="off"
               @input="v$.mail_postmark_token?.$touch()"
-            >
-              <template #right>
-                <BaseIcon
-                  :name="visibleSecrets.mail_postmark_token ? 'EyeIcon' : 'EyeSlashIcon'"
-                  class="mr-1 text-muted cursor-pointer"
-                  @click="toggleSecret('mail_postmark_token')"
-                />
-              </template>
-            </BaseInput>
+            />
           </BaseInputGroup>
         </template>
 
@@ -626,19 +586,6 @@ async function saveEmailConfig(): Promise<void> {
             >
               <BaseInput
                 v-model.trim="mailConfig.mail_local_domain"
-                :content-loading="isFetchingInitialData"
-                type="text"
-              />
-            </BaseInputGroup>
-          </template>
-
-          <template v-if="currentDriver === 'sendmail'">
-            <BaseInputGroup
-              :label="$t(translationKey('sendmail_path'))"
-              :content-loading="isFetchingInitialData"
-            >
-              <BaseInput
-                v-model.trim="mailConfig.mail_sendmail_path"
                 :content-loading="isFetchingInitialData"
                 type="text"
               />

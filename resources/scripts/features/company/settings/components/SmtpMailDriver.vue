@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, onMounted, ref, computed } from 'vue'
+import { reactive, onMounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { required, email, numeric, helpers } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
@@ -37,7 +37,6 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 
-const isShowPassword = ref<boolean>(false)
 const schemes = reactive<string[]>(['smtp', 'smtps', 'none'])
 
 const smtpConfig = reactive<SmtpConfig>({
@@ -50,10 +49,6 @@ const smtpConfig = reactive<SmtpConfig>({
   from_mail: '',
   from_name: '',
 })
-
-const getInputType = computed<string>(() =>
-  isShowPassword.value ? 'text' : 'password'
-)
 
 const rules = computed(() => ({
   mail_driver: {
@@ -156,17 +151,10 @@ function onChangeDriver(): void {
         <BaseInput
           v-model.trim="smtpConfig.mail_password"
           :content-loading="isFetchingInitialData"
-          :type="getInputType"
+          type="password"
+          revealable
           name="password"
-        >
-          <template #right>
-            <BaseIcon
-              :name="isShowPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-              class="mr-1 text-muted cursor-pointer"
-              @click="isShowPassword = !isShowPassword"
-            />
-          </template>
-        </BaseInput>
+        />
       </BaseInputGroup>
 
       <BaseInputGroup

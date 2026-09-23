@@ -1,18 +1,17 @@
 <template>
-  <div class="mb-6">
-    <div class="z-20 text-sm font-semibold leading-5 text-primary-400 float-right">
-      <NoteSelectPopup :type="type" @select="onSelectNote" />
-    </div>
-    <label class="text-heading font-medium mb-4 text-sm">
-      {{ $t('invoices.notes') }}
-    </label>
+  <!-- The group names the editor; the note picker sits on the label row -->
+  <BaseInputGroup :label="$t('invoices.notes')" class="mb-6">
+    <template #labelRight>
+      <div class="z-20 text-sm font-semibold leading-5">
+        <NoteSelectPopup :type="type" @select="onSelectNote" />
+      </div>
+    </template>
     <BaseCustomInput
       v-model="notes"
       :content-loading="contentLoading"
       :fields="fields"
-      class="mt-1"
     />
-  </div>
+  </BaseInputGroup>
 </template>
 
 <script setup lang="ts">

@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
-import { computed, ref } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useDebounceFn } from '@vueuse/core'
+import { onClickOutside, onKeyStroke, useDebounceFn } from '@vueuse/core'
+import { FocusScope } from 'reka-ui'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/scripts/stores/user.store'
+import { useBreakpoints } from '@/scripts/composables/use-breakpoints'
 import { useModalStore } from '@/scripts/stores/modal.store'
 import { ABILITIES } from '@/scripts/config/abilities'
 import { useCustomerStore } from '@/scripts/features/company/customers/store'
@@ -50,6 +51,78 @@ const recurringInvoiceStore = useRecurringInvoiceStore()
 
 const search = ref<string | null>(null)
 const isSearchingCustomer = ref<boolean>(false)
+// Until the first page arrives, so "no customers" does not flash on open
+const isLoadingCustomers = ref<boolean>(true)
+
+const { isPhone } = useBreakpoints()
+
+// The picker: a panel under the field on wider screens, a full-screen sheet
+// on phones
+const isOpen = ref<boolean>(false)
+const trigger = ref<HTMLElement | null>(null)
+const panel = ref<HTMLElement | null>(null)
+const searchField = ref<HTMLElement | null>(null)
+const card = ref<HTMLElement | null>(null)
+
+/*
+ * Picking, clearing and closing all replace the element that had focus, so
+ * focus is put back on what took its place: the customer card after a pick,
+ * the picker button otherwise.
+ */
+async function restoreFocus(): Promise<void> {
+  await nextTick()
+  ;(card.value ?? trigger.value)?.focus()
+}
+
+// A pick or a clear swaps the card and the button once the customer has
+// loaded; focus follows then, and only after the user did it
+let focusAfterChange = false
+
+watch(
+  () => selectedCustomer.value?.id,
+  (id, previous) => {
+    if (focusAfterChange && id !== previous) {
+      focusAfterChange = false
+      void restoreFocus()
+    }
+  },
+)
+
+function leaveFocus(event: Event): void {
+  event.preventDefault()
+}
+
+function openPicker(): void {
+  isOpen.value = true
+}
+
+function closePicker(): void {
+  const wasOpen = isOpen.value
+  isOpen.value = false
+
+  if (wasOpen) {
+    void restoreFocus()
+  }
+}
+
+watch(isOpen, async (open) => {
+  if (open) {
+    await nextTick()
+    searchField.value?.querySelector('input')?.focus()
+  }
+})
+
+onClickOutside(panel, () => {
+  if (!isPhone.value) {
+    closePicker()
+  }
+}, { ignore: [trigger] })
+
+onKeyStroke('Escape', () => {
+  if (isOpen.value) {
+    closePicker()
+  }
+})
 
 const selectedCustomer = computed(() => {
   switch (props.type) {
@@ -66,10 +139,14 @@ const selectedCustomer = computed(() => {
 
 // Fetch initial customers on setup
 async function fetchInitialCustomers(): Promise<void> {
-  await customerStore.fetchCustomers({
-    orderByField: '',
-    orderBy: '',
-  })
+  try {
+    await customerStore.fetchCustomers({
+      orderByField: '',
+      orderBy: '',
+    })
+  } finally {
+    isLoadingCustomers.value = false
+  }
 }
 
 // Select customer on setup if customerId is provided
@@ -91,14 +168,17 @@ const debounceSearchCustomer = useDebounceFn(() => {
 }, 500)
 
 async function searchCustomer(): Promise<void> {
-  await customerStore.fetchCustomers({
-    display_name: search.value ?? '',
-    page: 1,
-  })
-  isSearchingCustomer.value = false
+  try {
+    await customerStore.fetchCustomers({
+      display_name: search.value ?? '',
+      page: 1,
+    })
+  } finally {
+    isSearchingCustomer.value = false
+  }
 }
 
-function selectNewCustomer(id: number, close: () => void): void {
+function selectNewCustomer(id: number): void {
   const params: Record<string, unknown> = { userId: id }
   if (route.params.id) params.model_id = route.params.id
 
@@ -112,11 +192,14 @@ function selectNewCustomer(id: number, close: () => void): void {
     recurringInvoiceStore.selectCustomer(id)
   }
 
-  close()
+  focusAfterChange = true
+  closePicker()
   search.value = null
 }
 
 function resetSelectedCustomer(): void {
+  focusAfterChange = true
+
   if (props.type === 'invoice') {
     invoiceStore.resetSelectedCustomer()
   } else if (props.type === 'estimate') {
@@ -136,6 +219,7 @@ async function editCustomer(): Promise<void> {
 }
 
 function openCustomerModal(): void {
+  closePicker()
   customerStore.resetCurrentCustomer()
   modalStore.openModal({
     title: t('customers.add_customer'),
@@ -144,13 +228,37 @@ function openCustomerModal(): void {
   })
 }
 
-function initGenerator(name: string): string {
-  if (name) {
-    const nameSplit = name.split(' ')
-    return nameSplit[0].charAt(0).toUpperCase()
-  }
-  return ''
+function initials(name: string | null | undefined): string {
+  const words = (name ?? '').trim().split(/\s+/)
+  return words.slice(0, 2).map((word) => word.charAt(0).toUpperCase()).join('')
 }
+
+interface AddressLike {
+  name?: string | null
+  city?: string | null
+  state?: string | null
+  zip?: string | null
+}
+
+// Name, then "City, State", then the postcode; empty parts drop out
+function addressLines(address: AddressLike | null | undefined): string[] {
+  if (!address) {
+    return []
+  }
+
+  const place = [address.city, address.state].filter(Boolean).join(', ')
+
+  return [address.name, place, address.zip].filter((line): line is string => !!line)
+}
+
+const addressBlocks = computed(() => {
+  const customer = selectedCustomer.value as { billing?: AddressLike; shipping?: AddressLike } | null
+
+  return [
+    { key: 'billing', label: t('general.bill_to'), lines: addressLines(customer?.billing) },
+    { key: 'shipping', label: t('general.ship_to'), lines: addressLines(customer?.shipping) },
+  ].filter((block) => block.lines.length > 0)
+})
 </script>
 
 <template>
@@ -158,382 +266,219 @@ function initGenerator(name: string): string {
     <CustomerModal />
 
     <BaseContentPlaceholders v-if="contentLoading">
-    <BaseContentPlaceholdersBox
-      :rounded="true"
-      class="w-full"
-      style="min-height: 170px"
-    />
-  </BaseContentPlaceholders>
+      <BaseContentPlaceholdersBox :rounded="true" class="w-full h-24 md:h-32" />
+    </BaseContentPlaceholders>
 
-  <div v-else class="max-h-[173px]">
+    <!-- The chosen customer -->
     <div
-      v-if="selectedCustomer"
-      class="
-        flex flex-col
-        p-4
-        bg-surface
-        border border-line-light border-solid
-        min-h-[170px]
-        rounded-xl
-        shadow
-      "
-      @click.stop
+      v-else-if="selectedCustomer"
+      ref="card"
+      tabindex="-1"
+      :aria-label="`${$t('invoices.customer')}: ${selectedCustomer.name}`"
+      class="flex flex-col gap-4 p-4 border md:p-5 glass rounded-xl focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
     >
-      <div class="flex relative justify-between mb-2">
-        <BaseText
-          :text="selectedCustomer.name"
-          class="flex-1 text-base font-medium text-left text-heading"
-        />
-        <div class="flex">
-          <a
-            class="
-              relative
-              my-0
-              ml-6
-              text-sm
-              font-medium
-              cursor-pointer
-              text-primary-500
-              items-center
-              flex
-            "
+      <div class="flex items-start gap-3">
+        <span
+          class="flex items-center justify-center w-11 h-11 text-sm font-semibold rounded-xl shrink-0 bg-btn-primary text-on-primary"
+          aria-hidden="true"
+        >
+          {{ initials(selectedCustomer.name) }}
+        </span>
+
+        <div class="flex-1 min-w-0">
+          <p class="text-xs font-medium text-muted">{{ $t('invoices.customer') }}</p>
+          <p class="text-base font-semibold truncate text-heading">{{ selectedCustomer.name }}</p>
+        </div>
+
+        <div class="flex items-center gap-1 -me-1 shrink-0">
+          <button
+            type="button"
+            class="flex items-center justify-center w-10 h-10 transition-colors rounded-lg md:w-9 md:h-9 text-muted hover:bg-hover-strong hover:text-heading"
+            :aria-label="$t('customers.edit_customer')"
             @click.stop="editCustomer"
           >
-            <BaseIcon name="PencilIcon" class="text-muted h-4 w-4 mr-1" />
-
-            {{ $t('general.edit') }}
-          </a>
-          <a
-            class="
-              relative
-              my-0
-              ml-6
-              text-sm
-              flex
-              items-center
-              font-medium
-              cursor-pointer
-              text-primary-500
-            "
+            <BaseIcon name="PencilSquareIcon" class="w-5 h-5" />
+          </button>
+          <button
+            type="button"
+            class="flex items-center justify-center w-10 h-10 transition-colors rounded-lg md:w-9 md:h-9 text-muted hover:bg-hover-strong hover:text-heading"
+            :aria-label="$t('general.deselect')"
             @click="resetSelectedCustomer"
           >
-            <BaseIcon name="XCircleIcon" class="text-muted h-4 w-4 mr-1" />
-            {{ $t('general.deselect') }}
-          </a>
+            <BaseIcon name="XMarkIcon" class="w-5 h-5" />
+          </button>
         </div>
       </div>
-      <div class="grid grid-cols-2 gap-8 mt-2">
-        <div v-if="selectedCustomer.billing" class="flex flex-col">
-          <label
-            class="
-              mb-1
-              text-sm
-              font-medium
-              text-left text-subtle
-              uppercase
-              whitespace-nowrap
-            "
-          >
-            {{ $t('general.bill_to') }}
-          </label>
 
-          <div
-            v-if="selectedCustomer.billing"
-            class="flex flex-col flex-1 p-0 text-left"
-          >
-            <label
-              v-if="selectedCustomer.billing.name"
-              class="relative w-11/12 text-sm truncate"
-            >
-              {{ selectedCustomer.billing.name }}
-            </label>
-
-            <label class="relative w-11/12 text-sm truncate">
-              <span v-if="selectedCustomer.billing.city">
-                {{ selectedCustomer.billing.city }}
-              </span>
-              <span
-                v-if="
-                  selectedCustomer.billing.city &&
-                  selectedCustomer.billing.state
-                "
-              >
-                ,
-              </span>
-              <span v-if="selectedCustomer.billing.state">
-                {{ selectedCustomer.billing.state }}
-              </span>
-            </label>
-            <label
-              v-if="selectedCustomer.billing.zip"
-              class="relative w-11/12 text-sm truncate"
-            >
-              {{ selectedCustomer.billing.zip }}
-            </label>
-          </div>
+      <dl v-if="addressBlocks.length" class="grid grid-cols-2 gap-4 pt-4 border-t border-line-light">
+        <div v-for="block in addressBlocks" :key="block.key" class="min-w-0">
+          <dt class="mb-1 text-xs font-medium text-muted">{{ block.label }}</dt>
+          <dd v-for="line in block.lines" :key="line" class="text-sm truncate text-body">{{ line }}</dd>
         </div>
-
-        <div v-if="selectedCustomer.shipping" class="flex flex-col">
-          <label
-            class="
-              mb-1
-              text-sm
-              font-medium
-              text-left text-subtle
-              uppercase
-              whitespace-nowrap
-            "
-          >
-            {{ $t('general.ship_to') }}
-          </label>
-
-          <div
-            v-if="selectedCustomer.shipping"
-            class="flex flex-col flex-1 p-0 text-left"
-          >
-            <label
-              v-if="selectedCustomer.shipping.name"
-              class="relative w-11/12 text-sm truncate"
-            >
-              {{ selectedCustomer.shipping.name }}
-            </label>
-
-            <label class="relative w-11/12 text-sm truncate">
-              <span v-if="selectedCustomer.shipping.city">
-                {{ selectedCustomer.shipping.city }}
-              </span>
-              <span
-                v-if="
-                  selectedCustomer.shipping.city &&
-                  selectedCustomer.shipping.state
-                "
-              >
-                ,
-              </span>
-              <span v-if="selectedCustomer.shipping.state">
-                {{ selectedCustomer.shipping.state }}
-              </span>
-            </label>
-            <label
-              v-if="selectedCustomer.shipping.zip"
-              class="relative w-11/12 text-sm truncate"
-            >
-              {{ selectedCustomer.shipping.zip }}
-            </label>
-          </div>
-        </div>
-      </div>
+      </dl>
     </div>
 
-    <Popover v-else v-slot="{ open }" class="relative flex flex-col rounded-xl">
-      <PopoverButton
-        :class="{
-          '': open,
-          'border border-solid border-red-500 focus:ring-red-500 rounded':
-            valid.$error,
-          'focus:ring-2 focus:ring-primary-400': !valid.$error,
-        }"
-        class="w-full outline-hidden rounded-xl"
+    <!-- No customer yet: the field that opens the picker -->
+    <div v-else class="relative">
+      <button
+        ref="trigger"
+        type="button"
+        :aria-expanded="isOpen"
+        aria-haspopup="dialog"
+        :data-invalid="valid.$error ? 'true' : undefined"
+        :class="valid.$error ? 'border-danger' : 'border-line-strong hover:border-primary-400'"
+        class="
+          flex items-center w-full gap-4 p-4 text-start transition-colors border-2 border-dashed md:p-5
+          rounded-xl bg-surface/50 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus
+        "
+        @click="isOpen ? closePicker() : openPicker()"
       >
-        <div
-          class="
-            relative
-            flex
-            justify-center
-            px-0
-            p-0
-            py-16
-            bg-surface
-            border border-line-light border-solid
-            rounded-xl
-            shadow
-            min-h-[170px]
-          "
+        <span
+          class="flex items-center justify-center w-11 h-11 rounded-xl shrink-0 bg-primary-50 text-primary-600"
+          aria-hidden="true"
         >
-          <BaseIcon
-            name="UserIcon"
-            class="
-              flex
-              justify-center
-              !w-10
-              !h-10
-              p-2
-              mr-5
-              text-sm text-white
-              bg-surface-muted
-              rounded-full
-              font-base
+          <BaseIcon name="UserPlusIcon" class="w-5 h-5" />
+        </span>
+
+        <span class="flex flex-col flex-1 min-w-0">
+          <span class="text-base font-semibold text-heading">
+            {{ $t('invoices.customer') }}
+            <span class="text-danger" aria-hidden="true">*</span>
+          </span>
+          <span v-if="valid.$error" class="text-sm text-danger">
+            {{ $t('estimates.errors.required') }}
+          </span>
+          <span v-else class="text-sm text-muted">{{ $t('customers.select_a_customer') }}</span>
+        </span>
+
+        <BaseIcon name="ChevronDownIcon" class="w-5 h-5 text-subtle shrink-0" />
+      </button>
+
+      <Teleport to="body" :disabled="!isPhone">
+        <transition
+          :enter-active-class="isPhone ? 'transition duration-200 ease-out' : 'transition duration-150 ease-out'"
+          :enter-from-class="isPhone ? 'translate-y-full' : 'translate-y-1 opacity-0'"
+          :leave-active-class="isPhone ? 'transition duration-150 ease-in' : 'transition duration-100 ease-in'"
+          :leave-to-class="isPhone ? 'translate-y-full' : 'translate-y-1 opacity-0'"
+        >
+          <!--
+            On phones the sheet keeps focus inside it until it closes. Where
+            focus starts and ends is left to openPicker and closePicker.
+          -->
+          <component
+            :is="isPhone ? FocusScope : 'div'"
+            v-if="isOpen"
+            ref="panel"
+            v-bind="isPhone ? { trapped: true, loop: true } : {}"
+            role="dialog"
+            :aria-modal="isPhone ? 'true' : undefined"
+            :aria-label="$t('customers.select_a_customer')"
+            :class="
+              isPhone
+                ? 'fixed inset-0 z-50 flex flex-col bg-surface'
+                : 'absolute inset-x-0 z-30 mt-2 overflow-hidden border glass-strong rounded-xl'
             "
-          />
-
-          <div class="mt-1">
-            <label class="text-lg font-medium text-heading">
-              {{ $t('customers.new_customer') }}
-              <span class="text-red-500"> * </span>
-            </label>
-
-            <p
-              v-if="valid.$error && valid.$errors[0]?.$message"
-              class="text-red-500 text-sm absolute right-3 bottom-3"
-            >
-              {{ $t('estimates.errors.required') }}
-            </p>
-          </div>
-        </div>
-      </PopoverButton>
-
-      <!-- Customer Select Popup -->
-      <transition
-        enter-active-class="transition duration-200 ease-out"
-        enter-from-class="translate-y-1 opacity-0"
-        enter-to-class="translate-y-0 opacity-100"
-        leave-active-class="transition duration-150 ease-in"
-        leave-from-class="translate-y-0 opacity-100"
-        leave-to-class="translate-y-1 opacity-0"
-      >
-        <div v-if="open" class="absolute min-w-full z-10">
-          <PopoverPanel
-            v-slot="{ close }"
-            focus
-            static
-            class="
-              overflow-hidden
-              rounded-xl
-              shadow
-              ring-1 ring-black/5
-              bg-surface
-            "
+            @mount-auto-focus="leaveFocus"
+            @unmount-auto-focus="leaveFocus"
           >
-            <div class="relative">
+            <div v-if="isPhone" class="flex items-center gap-2 px-2 border-b safe-header border-line-light">
+              <button
+                type="button"
+                class="flex items-center justify-center w-11 h-11 rounded-lg text-muted hover:bg-hover-strong"
+                :aria-label="$t('general.close')"
+                @click="closePicker"
+              >
+                <BaseIcon name="XMarkIcon" class="w-6 h-6" />
+              </button>
+              <h2 class="flex-1 text-base font-semibold text-heading">
+                {{ $t('customers.select_a_customer') }}
+              </h2>
+            </div>
+
+            <div ref="searchField" class="p-3">
               <BaseInput
                 v-model="search"
-                container-class="m-4"
                 :placeholder="$t('general.search')"
-                type="text"
+                type="search"
                 icon="search"
                 @update:model-value="() => debounceSearchCustomer()"
               />
+            </div>
 
-              <ul
-                class="
-                  max-h-80
-                  flex flex-col
-                  overflow-auto
-                  list
-                  border-t border-line-light
-                "
-              >
-                <li
-                  v-for="(customer, index) in customerStore.customers"
-                  :key="index"
-                  href="#"
+            <ul
+              class="flex flex-col overflow-y-auto border-t border-line-light overscroll-contain"
+              :class="isPhone ? 'flex-1' : 'max-h-80'"
+            >
+              <li v-for="customer in customerStore.customers" :key="customer.id">
+                <button
+                  type="button"
                   class="
-                    flex
-                    px-6
-                    py-2
-                    border-b border-line-light border-solid
-                    cursor-pointer
-                    hover:cursor-pointer hover:bg-hover-strong
-                    focus:outline-hidden focus:bg-surface-tertiary
-                    last:border-b-0
+                    flex items-center w-full gap-3 px-4 py-3 text-start transition-colors
+                    hover:bg-hover-strong focus:outline-hidden focus-visible:bg-hover-strong
                   "
-                  @click="selectNewCustomer(customer.id, close)"
+                  @click="selectNewCustomer(customer.id)"
                 >
                   <span
-                    class="
-                      flex
-                      items-center
-                      content-center
-                      justify-center
-                      w-10
-                      h-10
-                      mr-4
-                      text-xl
-                      font-semibold
-                      leading-9
-                      text-white
-                      bg-surface-muted
-                      rounded-full
-                      avatar
-                    "
+                    class="flex items-center justify-center w-10 h-10 text-sm font-semibold rounded-xl shrink-0 bg-primary-50 text-primary-700"
+                    aria-hidden="true"
                   >
-                    {{ initGenerator(customer.name) }}
+                    {{ initials(customer.name) }}
                   </span>
+                  <span class="flex flex-col min-w-0">
+                    <span class="text-sm font-medium truncate text-heading">{{ customer.name }}</span>
+                    <span v-if="customer.contact_name" class="text-sm truncate text-muted">
+                      {{ customer.contact_name }}
+                    </span>
+                  </span>
+                </button>
+              </li>
 
-                  <div class="flex flex-col justify-center text-left">
-                    <BaseText
-                      v-if="customer.name"
-                      :text="customer.name"
-                      class="
-                        m-0
-                        text-base
-                        font-normal
-                        leading-tight
-                        cursor-pointer
-                      "
-                    />
-                    <BaseText
-                      v-if="customer.contact_name"
-                      :text="customer.contact_name"
-                      class="
-                        m-0
-                        text-sm
-                        font-medium
-                        text-subtle
-                        cursor-pointer
-                      "
-                    />
-                  </div>
-                </li>
-                <div
-                  v-if="customerStore.customers.length === 0"
-                  class="flex justify-center p-5 text-subtle"
-                >
-                  <label class="text-base text-muted cursor-pointer">
-                    {{ $t('customers.no_customers_found') }}
-                  </label>
-                </div>
-              </ul>
-            </div>
+              <li
+                v-if="isLoadingCustomers || isSearchingCustomer"
+                class="px-4 py-8 text-sm text-center text-muted"
+                role="status"
+              >
+                {{ $t('general.loading') }}
+              </li>
+
+              <!-- A search that found nothing, or a company with no customers yet -->
+              <li
+                v-else-if="customerStore.customers.length === 0"
+                class="flex flex-col gap-1 px-4 py-8 text-sm text-center"
+                role="status"
+              >
+                <template v-if="search">
+                  <span class="text-muted">{{ $t('customers.no_customers_found') }}</span>
+                </template>
+                <template v-else>
+                  <span class="font-medium text-heading">{{ $t('customers.no_customers') }}</span>
+                  <span class="text-muted">
+                    {{
+                      userStore.hasAbilities(ABILITIES.CREATE_CUSTOMER)
+                        ? $t('customers.add_first_customer')
+                        : $t('customers.ask_to_add_customers')
+                    }}
+                  </span>
+                </template>
+              </li>
+            </ul>
 
             <button
               v-if="userStore.hasAbilities(ABILITIES.CREATE_CUSTOMER)"
               type="button"
               class="
-                h-10
-                flex
-                items-center
-                justify-center
-                w-full
-                px-2
-                py-3
-                bg-surface-muted
-                border-none
-                outline-hidden
-                focus:bg-surface-muted
+                flex items-center justify-center w-full gap-2 text-sm font-medium transition-colors border-t
+                h-12 border-line-light text-primary-600 hover:bg-primary-50/60
               "
+              :class="isPhone ? 'safe-drawer h-auto pt-3.5' : ''"
               @click="openCustomerModal"
             >
-              <BaseIcon name="UserPlusIcon" class="text-primary-400" />
-
-              <label
-                class="
-                  m-0
-                  ml-3
-                  text-sm
-                  leading-none
-                  cursor-pointer
-                  font-base
-                  text-primary-400
-                "
-              >
-                {{ $t('customers.add_new_customer') }}
-              </label>
+              <BaseIcon name="UserPlusIcon" class="w-5 h-5" />
+              {{ $t('customers.add_new_customer') }}
             </button>
-          </PopoverPanel>
-        </div>
-      </transition>
-    </Popover>
-  </div>
+          </component>
+        </transition>
+      </Teleport>
+    </div>
   </div>
 </template>

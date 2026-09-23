@@ -1,18 +1,18 @@
 <template>
-  <BaseDropdown>
+  <BaseDropdown :label="$t('general.actions_for', { name: row.name })">
     <template #activator>
-      <BaseIcon name="EllipsisHorizontalIcon" class="h-5 text-muted" />
+      <span class="inline-flex items-center justify-center rounded-lg w-9 h-9 text-muted hover:bg-hover-strong hover:text-heading">
+        <BaseIcon name="EllipsisHorizontalIcon" class="w-5 h-5" />
+      </span>
     </template>
 
-    <router-link :to="`/admin/administration/users/${row.id}/edit`">
-      <BaseDropdownItem>
-        <BaseIcon
-          name="PencilIcon"
-          class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
-        />
-        {{ $t('general.edit') }}
-      </BaseDropdownItem>
-    </router-link>
+    <BaseDropdownItem :to="`/admin/administration/users/${row.id}/edit`">
+      <BaseIcon
+        name="PencilIcon"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
+      />
+      {{ $t('general.edit') }}
+    </BaseDropdownItem>
 
     <BaseDropdownItem
       v-if="row.id !== userStore.currentUser?.id"
@@ -20,7 +20,7 @@
     >
       <BaseIcon
         name="ArrowRightEndOnRectangleIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('administration.users.impersonate') }}
     </BaseDropdownItem>
@@ -32,6 +32,7 @@ import { useI18n } from 'vue-i18n'
 import { useUserStore } from '../../../stores/user.store'
 import { useDialogStore } from '../../../stores/dialog.store'
 import { useAdminStore } from '../stores/admin.store'
+import { hardNavigate } from '@/scripts/utils/hard-navigate'
 import type { User } from '../../../types/domain/user'
 
 interface Props {
@@ -63,7 +64,7 @@ function onImpersonate(): void {
     .then((confirmed: boolean) => {
       if (confirmed) {
         adminStore.impersonateUser(props.row.id).then(() => {
-          window.location.href = '/admin/dashboard'
+          hardNavigate('/admin/dashboard')
         })
       }
     })

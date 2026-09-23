@@ -1,35 +1,34 @@
 <template>
-  <li class="pr-2 text-sm">
+  <li
+    v-if="!isHidden"
+    class="crumb flex items-center [&+li.crumb]:before:content-['/'] [&+li.crumb]:before:px-1.5 [&+li.crumb]:before:text-subtle"
+  >
     <router-link
-      class="
-        m-0
-        mr-2
-        text-sm
-        font-medium
-        leading-5
-        text-heading
-        outline-hidden
-        focus:ring-2 focus:ring-offset-2 focus:ring-primary-400
-      "
+      class="font-medium rounded-sm text-muted hover:text-heading focus-visible:outline-2"
       :to="to"
     >
       {{ title }}
     </router-link>
-
-    <span v-if="!active" class="px-1">/</span>
   </li>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+
 interface Props {
   title?: string
   to?: string
   active?: boolean
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   title: '',
   to: '#',
   active: false,
+})
+
+// The current page is already the title, and "Home" is one tap away in every shell
+const isHidden = computed<boolean>(() => {
+  return props.active || props.to === 'dashboard' || props.to.endsWith('/dashboard')
 })
 </script>

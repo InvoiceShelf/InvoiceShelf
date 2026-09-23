@@ -58,7 +58,7 @@ const drivers = computed<TableColumn[]>(() => [
   {
     key: 'actions',
     label: '',
-    tdClass: 'text-right text-sm font-medium',
+    tdClass: 'text-end text-sm font-medium',
     sortable: false,
   },
 ])
@@ -130,17 +130,17 @@ function removeExchangeRate(id: number): void {
     <template #header>
       <div class="flex flex-wrap justify-between lg:flex-nowrap">
         <div>
-          <h6 class="text-lg font-medium text-left">
+          <h2 class="text-lg font-medium text-start">
             {{ $t('settings.menu_title.exchange_rate') }}
-          </h6>
+          </h2>
           <p
-            class="mt-2 text-sm leading-snug text-left text-muted"
+            class="mt-2 text-sm leading-snug text-start text-muted"
             style="max-width: 680px"
           >
             {{ $t('settings.exchange_rate.providers_description') }}
           </p>
         </div>
-        <div class="mt-4 lg:mt-0 lg:ml-2">
+        <div class="mt-4 lg:mt-0 lg:ms-2">
           <BaseButton
             variant="primary-outline"
             size="lg"
@@ -178,15 +178,34 @@ function removeExchangeRate(id: number): void {
           </template>
 
           <BaseDropdownItem @click="editExchangeRate(row.data.id)">
-            <BaseIcon name="PencilIcon" class="h-5 mr-3 text-body" />
+            <BaseIcon name="PencilIcon" class="h-5 me-3 text-body" />
             {{ $t('general.edit') }}
           </BaseDropdownItem>
 
           <BaseDropdownItem @click="removeExchangeRate(row.data.id)">
-            <BaseIcon name="TrashIcon" class="h-5 mr-3 text-body" />
+            <BaseIcon name="TrashIcon" class="h-5 me-3 text-body" />
             {{ $t('general.delete') }}
           </BaseDropdownItem>
         </BaseDropdown>
+      </template>
+      <!-- Nothing here yet: say what goes here and offer to add the first -->
+      <template #empty>
+        <BaseEmptyPlaceholder
+          compact
+          art="exchange"
+          :ghost="3"
+          :title="$t('settings.exchange_rate.empty_title')"
+          :description="$t('settings.exchange_rate.empty_description')"
+        >
+          <template #actions>
+            <BaseButton variant="primary-outline" @click="addExchangeRate">
+              <template #left="slotProps">
+                <BaseIcon name="PlusIcon" :class="slotProps.class" />
+              </template>
+              {{ $t('settings.exchange_rate.new_driver') }}
+            </BaseButton>
+          </template>
+        </BaseEmptyPlaceholder>
       </template>
     </BaseTable>
   </BaseCard>

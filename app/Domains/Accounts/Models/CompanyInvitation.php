@@ -42,9 +42,14 @@ class CompanyInvitation extends Model
         return $this->belongsTo(User::class, 'invited_by');
     }
 
+    /**
+     * The role the invitation grants. It is one specific role of the inviting
+     * company, so Bouncer's filter to whichever company is current does not
+     * apply: a public invitation page has no current company at all.
+     */
     public function role(): BelongsTo
     {
-        return $this->belongsTo(Role::class);
+        return $this->belongsTo(Role::class)->withoutGlobalScopes();
     }
 
     public function isExpired(): bool

@@ -1,18 +1,12 @@
 <template>
   <BaseModal
     :show="modalActive"
+    closable
     @close="closeModal"
     @open="setInitialData"
   >
     <template #header>
-      <div class="flex justify-between w-full">
-        {{ modalTitle }}
-        <BaseIcon
-          name="XMarkIcon"
-          class="w-6 h-6 text-muted cursor-pointer"
-          @click="closeModal"
-        />
-      </div>
+      {{ modalTitle }}
     </template>
 
     <form v-if="!isPreview" @submit.prevent>
@@ -114,7 +108,7 @@
         class="z-0 flex justify-end p-4 border-t border-line-default border-solid"
       >
         <BaseButton
-          class="mr-3"
+          class="me-3"
           variant="primary-outline"
           type="button"
           @click="closeModal"
@@ -127,7 +121,7 @@
           :disabled="isLoading"
           variant="primary"
           type="button"
-          class="mr-3"
+          class="me-3"
           @click="submitForm"
         >
           <template #left="slotProps">
@@ -145,17 +139,18 @@
     <div v-else>
       <div class="my-6 mx-4 border border-line-default relative">
         <BaseButton
-          class="absolute top-4 right-4"
+          class="absolute top-4 end-4"
           :disabled="isLoading"
           variant="primary-outline"
           @click="cancelPreview"
         >
-          <BaseIcon name="PencilIcon" class="h-5 mr-2" />
+          <BaseIcon name="PencilIcon" class="h-5 me-2" />
           {{ $t('general.edit') }}
         </BaseButton>
 
         <iframe
           :src="templateUrl"
+          :title="$t('general.email_preview')"
           frameborder="0"
           class="w-full"
           style="min-height: 500px"
@@ -166,7 +161,7 @@
         class="z-0 flex justify-end p-4 border-t border-line-default border-solid"
       >
         <BaseButton
-          class="mr-3"
+          class="me-3"
           variant="primary-outline"
           type="button"
           @click="closeModal"
@@ -184,7 +179,7 @@
           <BaseIcon
             v-if="!isLoading"
             name="PaperAirplaneIcon"
-            class="h-5 mr-2"
+            class="h-5 me-2"
           />
           {{ $t('general.send') }}
         </BaseButton>
@@ -202,6 +197,7 @@ import { useModalStore } from '../../../../stores/modal.store'
 import { useCompanyStore } from '../../../../stores/company.store'
 import { useNotificationStore } from '../../../../stores/notification.store'
 import { useInvoiceStore } from '../store'
+import { emailPreviewUrl } from '@/scripts/utils/email-preview'
 
 interface InvoiceMailForm {
   id: number | string | null
@@ -328,11 +324,7 @@ async function submitForm(): Promise<void> {
       isLoading.value = false
 
       isPreview.value = true
-      const blob = new Blob(
-        [(previewResponse as { data: string }).data ?? previewResponse],
-        { type: 'text/html' },
-      )
-      templateUrl.value = URL.createObjectURL(blob)
+      templateUrl.value = emailPreviewUrl(previewResponse)
       return
     }
 

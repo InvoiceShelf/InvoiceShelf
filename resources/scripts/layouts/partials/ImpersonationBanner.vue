@@ -1,12 +1,20 @@
 <template>
   <div
     v-if="isImpersonating"
-    class="fixed top-0 left-0 right-0 z-50 flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-orange-600"
+    class="
+      flex flex-wrap items-center justify-center shrink-0 gap-x-3 gap-y-1 px-4 py-2
+      text-sm font-medium bg-alert-warning-bg text-alert-warning-text
+      border-b border-line-light
+    "
+    role="status"
   >
-    <BaseIcon name="ExclamationTriangleIcon" class="w-4 h-4 mr-2" />
-    <span>{{ $t('administration.users.impersonating_banner') }}</span>
+    <span class="flex items-center gap-2">
+      <BaseIcon name="ExclamationTriangleIcon" class="w-4 h-4 shrink-0" />
+      {{ $t('administration.users.impersonating_banner') }}
+    </span>
     <button
-      class="ml-4 px-3 py-1 text-xs font-semibold text-orange-600 bg-white rounded hover:bg-orange-50"
+      type="button"
+      class="px-2.5 py-1 text-xs font-semibold rounded-md bg-surface text-heading border border-line-default hover:bg-hover disabled:opacity-60"
       :disabled="isStopping"
       @click="stopImpersonating"
     >
@@ -20,6 +28,7 @@ import { computed, ref } from 'vue'
 import * as ls from '@/scripts/utils/local-storage'
 import { client } from '@/scripts/api/client'
 import { API } from '@/scripts/api/endpoints'
+import { hardNavigate } from '@/scripts/utils/hard-navigate'
 
 const isStopping = ref<boolean>(false)
 
@@ -39,6 +48,6 @@ async function stopImpersonating(): Promise<void> {
   ls.remove('admin.impersonating')
   ls.remove('auth.token')
 
-  window.location.href = '/admin/administration/users'
+  hardNavigate('/admin/administration/users')
 }
 </script>

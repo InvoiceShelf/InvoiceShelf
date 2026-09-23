@@ -28,8 +28,7 @@ use App\Domains\Sales\Models\InvoiceItem;
 use App\Domains\Sales\Models\RecurringInvoice;
 use App\Domains\Taxation\Models\Tax;
 use App\Domains\Taxation\Models\TaxType;
-use App\Facades\Hashids;
-use App\Support\Hashids\HashidConnection;
+use App\Support\PublicToken;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Artisan;
@@ -218,11 +217,10 @@ class RealisticDemoSeeder extends Seeder
         $this->unitId = $unit->id;
 
         // Override the company's default currency to match the USD id we just
-        // resolved. DemoSeeder hardcodes `'currency' => 1`, but since migration
-        // 2025_08_18 inserts Algerian Dinar (DZD, symbol "DA") via firstOrCreate()
-        // BEFORE CurrenciesTableSeeder runs, currency id 1 in a fresh install is
-        // Algerian Dinar, not USD. Without this override the company's display
-        // currency shows "DA" even though all our seeded records are priced in USD.
+        // resolved. Currency ids are not stable across installations -- an
+        // upgraded 2.x database can have the Algerian Dinar at id 1 -- and
+        // without this the company would display "DA" while every record it
+        // holds is priced in USD.
         CompanySetting::setSettings(
             ['currency' => (string) $this->currencyId],
             $this->companyId,
@@ -519,7 +517,7 @@ class RealisticDemoSeeder extends Seeder
 
         $invoice->sequence_number = $serial->nextSequenceNumber;
         $invoice->customer_sequence_number = $serial->nextCustomerSequenceNumber;
-        $invoice->unique_hash = Hashids::connection(HashidConnection::Invoice->value)->encode($invoice->id);
+        $invoice->unique_hash = PublicToken::make();
         $invoice->created_at = $invoiceDate;
         $invoice->updated_at = $invoiceDate;
         $invoice->save();
@@ -596,7 +594,7 @@ class RealisticDemoSeeder extends Seeder
 
         $payment->sequence_number = $serial->nextSequenceNumber;
         $payment->customer_sequence_number = $serial->nextCustomerSequenceNumber;
-        $payment->unique_hash = Hashids::connection(HashidConnection::Payment->value)->encode($payment->id);
+        $payment->unique_hash = PublicToken::make();
         $payment->created_at = $paymentDate;
         $payment->updated_at = $paymentDate;
         Payment::withoutEvents(fn () => $payment->save());
@@ -696,7 +694,7 @@ class RealisticDemoSeeder extends Seeder
 
         $estimate->sequence_number = $serial->nextSequenceNumber;
         $estimate->customer_sequence_number = $serial->nextCustomerSequenceNumber;
-        $estimate->unique_hash = Hashids::connection(HashidConnection::Estimate->value)->encode($estimate->id);
+        $estimate->unique_hash = PublicToken::make();
         $estimate->created_at = $estimateDate;
         $estimate->updated_at = $estimateDate;
         $estimate->save();

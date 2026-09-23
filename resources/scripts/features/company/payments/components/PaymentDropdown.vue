@@ -1,10 +1,12 @@
 <template>
-  <BaseDropdown :content-loading="contentLoading">
+  <BaseDropdown :content-loading="contentLoading" :label="row.payment_number ? $t('general.actions_for', { name: String(row.payment_number) }) : ''">
     <template #activator>
-      <BaseButton v-if="isDetailView" variant="primary">
-        <BaseIcon name="EllipsisHorizontalIcon" class="h-5 text-white" />
-      </BaseButton>
-      <BaseIcon v-else name="EllipsisHorizontalIcon" class="h-5 text-muted" />
+      <span v-if="isDetailView" data-overflow class="inline-flex items-center justify-center border rounded-lg w-11 h-11 md:w-9 md:h-9 bg-surface border-line-default text-body hover:bg-hover">
+        <BaseIcon name="EllipsisHorizontalIcon" class="w-5 h-5" />
+      </span>
+      <span v-else class="inline-flex items-center justify-center rounded-lg w-9 h-9 text-muted hover:bg-hover-strong hover:text-heading">
+        <BaseIcon name="EllipsisHorizontalIcon" class="w-5 h-5" />
+      </span>
     </template>
 
     <!-- Copy PDF url -->
@@ -15,38 +17,28 @@
     >
       <BaseIcon
         name="LinkIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.copy_pdf_url') }}
     </BaseDropdownItem>
 
     <!-- Edit Payment -->
-    <router-link
-      v-if="canEdit"
-      :to="`/admin/payments/${row.id}/edit`"
-    >
-      <BaseDropdownItem>
-        <BaseIcon
-          name="PencilIcon"
-          class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
-        />
-        {{ $t('general.edit') }}
-      </BaseDropdownItem>
-    </router-link>
+    <BaseDropdownItem v-if="canEdit" :to="`/admin/payments/${row.id}/edit`">
+      <BaseIcon
+        name="PencilIcon"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
+      />
+      {{ $t('general.edit') }}
+    </BaseDropdownItem>
 
     <!-- View Payment -->
-    <router-link
-      v-if="!isDetailView && canView"
-      :to="`/admin/payments/${row.id}/view`"
-    >
-      <BaseDropdownItem>
-        <BaseIcon
-          name="EyeIcon"
-          class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
-        />
-        {{ $t('general.view') }}
-      </BaseDropdownItem>
-    </router-link>
+    <BaseDropdownItem v-if="!isDetailView && canView" :to="`/admin/payments/${row.id}/view`">
+      <BaseIcon
+        name="EyeIcon"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
+      />
+      {{ $t('general.view') }}
+    </BaseDropdownItem>
 
     <!-- Send Payment -->
     <BaseDropdownItem
@@ -55,7 +47,7 @@
     >
       <BaseIcon
         name="PaperAirplaneIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('payments.send_payment') }}
     </BaseDropdownItem>
@@ -64,7 +56,7 @@
     <BaseDropdownItem v-if="canDelete" @click="removePayment">
       <BaseIcon
         name="TrashIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.delete') }}
     </BaseDropdownItem>
@@ -78,6 +70,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { usePaymentStore } from '../store'
 import { useDialogStore } from '../../../../stores/dialog.store'
 import { useModalStore } from '../../../../stores/modal.store'
+import { absoluteDocumentUrl } from '@/scripts/utils/documents'
 import type { Payment } from '../../../../types/domain/payment'
 
 interface TableRef {
@@ -135,10 +128,10 @@ function removePayment(): void {
 
 function copyPdfUrl(): void {
   const payment = props.row as Payment
-  const pdfUrl = `${window.location.origin}/payments/pdf/${payment.unique_hash}`
+  const pdfUrl = absoluteDocumentUrl(`/payments/pdf/${payment.unique_hash}`)
 
   // navigator.clipboard is [SecureContext]-gated, so on a plain-HTTP origin it is
-  // undefined and `.writeText` throws on property access — before any promise
+  // undefined and `.writeText` throws on property access, before any promise
   // exists for .catch() to handle. Test up front, as the invoice and estimate
   // dropdowns already do.
   if (navigator.clipboard && window.isSecureContext) {

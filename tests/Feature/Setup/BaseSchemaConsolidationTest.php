@@ -259,26 +259,16 @@ it('seeds the two system file disks', function () {
     ]);
 });
 
-it('seeds the three late currencies', function () {
+/**
+ * The consolidation used to insert three currencies here, which only ever ran
+ * against an empty database and so only ever ran ahead of
+ * `CurrenciesTableSeeder`. The result was three duplicated rows on every fresh
+ * install. The seeder owns the whole list now, so this step is gone.
+ */
+it('leaves the currency list to the seeder', function () {
     runConsolidation();
 
-    $currencies = DB::connection('squash')->table('currencies')->orderBy('code')->get()
-        ->keyBy('code');
-
-    expect($currencies->keys()->all())->toBe(['DZD', 'PYG', 'QAR'])
-        ->and($currencies['DZD']->name)->toBe('Algerian Dinar')
-        ->and($currencies['DZD']->symbol)->toBe('DA')
-        ->and($currencies['DZD']->precision)->toBe(2)
-        ->and($currencies['DZD']->thousand_separator)->toBe(',')
-        ->and($currencies['DZD']->decimal_separator)->toBe('.')
-        ->and($currencies['PYG']->name)->toBe('Paraguayan Guaraní')
-        ->and($currencies['PYG']->symbol)->toBe('₲')
-        ->and($currencies['PYG']->precision)->toBe(0)
-        ->and($currencies['PYG']->thousand_separator)->toBe('.')
-        ->and($currencies['PYG']->decimal_separator)->toBe(',')
-        ->and($currencies['QAR']->name)->toBe('Qatari Riyal')
-        ->and($currencies['QAR']->symbol)->toBe('QR')
-        ->and($currencies['QAR']->precision)->toBe(2);
+    expect(DB::connection('squash')->table('currencies')->count())->toBe(0);
 });
 
 it('stamps the boundary version', function () {
@@ -286,40 +276,6 @@ it('stamps the boundary version', function () {
 
     expect(DB::connection('squash')->table('settings')->where('option', 'version')->value('value'))
         ->toBe('1.3.0');
-});
-
-/**
- * The collision the seed step exists to survive: something else got a currency
- * into the table first. The row is planted the moment the currencies table
- * appears, so the seed step meets it exactly as it would in the wild.
- */
-it('inserts only the currencies that are missing at seed time', function () {
-    DB::connection('squash')->listen(function ($query) {
-        static $planted = false;
-
-        if ($planted || preg_match('/^create table "currencies"/i', $query->sql) !== 1) {
-            return;
-        }
-
-        $planted = true;
-
-        DB::connection('squash')->table('currencies')->insert([
-            'name' => 'Guarani From Somewhere Else',
-            'code' => 'PYG',
-            'symbol' => 'G',
-            'precision' => 0,
-            'thousand_separator' => '.',
-            'decimal_separator' => ',',
-        ]);
-    });
-
-    runConsolidation();
-
-    $currencies = DB::connection('squash')->table('currencies')->orderBy('code')->get();
-
-    expect($currencies)->toHaveCount(3)
-        ->and($currencies->pluck('code')->all())->toBe(['DZD', 'PYG', 'QAR'])
-        ->and($currencies->firstWhere('code', 'PYG')->name)->toBe('Guarani From Somewhere Else');
 });
 
 // -- SKIP -------------------------------------------------------------------

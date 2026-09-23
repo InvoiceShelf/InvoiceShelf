@@ -37,6 +37,16 @@ function dateFieldWith(array $validation, string $type = 'Date'): CustomField
     ]);
 }
 
+/**
+ * Today where the company is. Bounds like "today" resolve in the company's
+ * zone, so a test that built its dates in the server's zone would disagree
+ * with the rule for part of every day.
+ */
+function companyToday(): Carbon
+{
+    return Carbon::today(CompanySetting::timeZone(test()->company->id));
+}
+
 function answer(CustomField $field, string $value): TestResponse
 {
     return postJson('api/v1/items', Item::factory()->raw([
@@ -65,18 +75,23 @@ test('a date inside a fixed window is kept', function () {
 });
 
 test('latest today refuses tomorrow and accepts today', function () {
+    // Pinned to an evening in UTC, when the demo company (Asia/Kolkata) is
+    // already on the next day: the hour at which server-zone dates used to
+    // make this test fail.
+    $this->travelTo(Carbon::parse('2026-06-15 20:00:00', 'UTC'));
+
     $field = dateFieldWith(['latest' => 'today']);
 
-    answer($field, now()->addDay()->toDateString())
+    answer($field, companyToday()->addDay()->toDateString())
         ->assertJsonValidationErrors('customFields.0.value');
 
-    answer($field, now()->toDateString())->assertSuccessful();
+    answer($field, companyToday()->toDateString())->assertSuccessful();
 });
 
 test('earliest today refuses yesterday', function () {
     $field = dateFieldWith(['earliest' => 'today']);
 
-    answer($field, now()->subDay()->toDateString())
+    answer($field, companyToday()->subDay()->toDateString())
         ->assertJsonValidationErrors('customFields.0.value');
 });
 
@@ -110,7 +125,7 @@ test('a datetime is bounded to the whole of the latest day', function () {
     $field = dateFieldWith(['latest' => 'today'], 'DateTime');
 
     // "Today" is a day, not an instant, so any time today is inside it.
-    answer($field, now()->setTime(23, 30)->format('Y-m-d H:i'))->assertSuccessful();
+    answer($field, companyToday()->setTime(23, 30)->format('Y-m-d H:i'))->assertSuccessful();
 });
 
 test('a date field with no bounds accepts anything, as every existing one does', function () {

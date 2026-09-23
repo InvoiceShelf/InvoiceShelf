@@ -4,192 +4,218 @@ import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useCustomerStore } from '../store'
 import { useCompanyStore } from '@/scripts/stores/company.store'
-import LineChart from '@/scripts/components/charts/LineChart.vue'
-import ChartPlaceholder from './CustomerChartPlaceholder.vue'
+import { useUserStore } from '@/scripts/stores/user.store'
+import { useBreakpoints } from '@/scripts/composables/use-breakpoints'
+import CashflowChart from '@/scripts/components/charts/CashflowChart.vue'
+import CashflowTable from '@/scripts/components/charts/CashflowTable.vue'
+import type { CashflowChartType } from '@/scripts/components/charts/CashflowChart.vue'
 import CustomerInfo from './CustomerInfo.vue'
 import type { CustomerStatsChartData } from '@/scripts/api/services/customer.service'
+import { formatPeriodRange, periodParams, yearPresets } from '@/scripts/utils/period'
+import type { PeriodValue } from '@/scripts/utils/period'
 
-interface YearOption {
+interface Kpi {
+  key: string
   label: string
-  value: string
+  amount: number
+  icon: string
+  chip: string
 }
 
 const companyStore = useCompanyStore()
 const customerStore = useCustomerStore()
+const userStore = useUserStore()
 const { t } = useI18n()
 const route = useRoute()
+const { isPhone } = useBreakpoints()
 
-const isLoading = ref<boolean>(false)
+const isLoaded = ref<boolean>(false)
 const chartData = reactive<Partial<CustomerStatsChartData>>({})
-const years = reactive<YearOption[]>([
-  { label: t('dateRange.this_year'), value: 'This year' },
-  { label: t('dateRange.previous_year'), value: 'Previous year' },
-])
-const selectedYear = ref<string>('This year')
+const period = ref<PeriodValue>({ preset: 'this_year' })
+const presets = computed(() => yearPresets(t))
 
-const getChartExpenses = computed<number[]>(() => chartData.expenseTotals ?? [])
-const getNetProfits = computed<number[]>(() => chartData.netProfits ?? [])
-const getChartMonths = computed<string[]>(() => chartData.months ?? [])
-const getReceiptTotals = computed<number[]>(() => chartData.receiptTotals ?? [])
-const getChartInvoices = computed<number[]>(() => chartData.invoiceTotals ?? [])
+const periodSummary = computed<string>(() => {
+  const resolved = chartData.period
+
+  return resolved
+    ? formatPeriodRange(resolved.from, resolved.to, userStore.currentUserSettings.language)
+    : ''
+})
+
+// The same style the user picked for the dashboard chart
+const chartType = computed<CashflowChartType>(() => (
+  userStore.currentUserSettings.dashboard_chart === 'bars' ? 'bars' : 'area'
+))
+
+const seriesLabels = computed<[string, string, string]>(() => [
+  t('dashboard.chart_info.total_sales'),
+  t('dashboard.chart_info.total_receipts'),
+  t('dashboard.chart_info.total_expense'),
+])
+
+const kpis = computed<Kpi[]>(() => [
+  {
+    key: 'sales',
+    label: seriesLabels.value[0],
+    amount: chartData.salesTotal ?? 0,
+    icon: 'DocumentTextIcon',
+    chip: 'bg-chart-1/12 text-chart-1',
+  },
+  {
+    key: 'receipts',
+    label: seriesLabels.value[1],
+    amount: chartData.totalReceipts ?? 0,
+    icon: 'BanknotesIcon',
+    chip: 'bg-chart-2/12 text-chart-2',
+  },
+  {
+    key: 'expenses',
+    label: seriesLabels.value[2],
+    amount: chartData.totalExpenses ?? 0,
+    icon: 'CreditCardIcon',
+    chip: 'bg-chart-3/12 text-chart-3',
+  },
+  {
+    key: 'net',
+    label: t('dashboard.chart_info.net_income'),
+    amount: chartData.netProfit ?? 0,
+    icon: 'ScaleIcon',
+    chip: 'bg-primary-50 text-primary-600',
+  },
+])
 
 watch(
-  route,
-  () => {
-    if (route.params.id) {
-      loadCustomer()
+  () => route.params.id,
+  (id) => {
+    period.value = { preset: 'this_year' }
+
+    if (id) {
+      isLoaded.value = false
+      void load()
     }
-    selectedYear.value = 'This year'
   },
-  { immediate: true }
+  { immediate: true },
 )
 
-async function loadCustomer(): Promise<void> {
-  isLoading.value = false
-  const response = await customerStore.fetchViewCustomer({
-    id: Number(route.params.id),
-  })
+// A failed load shows a retry rather than placeholders that never resolve
+const loadError = ref<boolean>(false)
 
-  if (response.meta.chartData) {
-    Object.assign(chartData, response.meta.chartData)
+async function load(): Promise<void> {
+  loadError.value = false
+
+  try {
+    const response = await customerStore.fetchViewCustomer({
+      id: Number(route.params.id),
+      ...periodParams(period.value),
+    })
+
+    if (response.meta?.chartData) {
+      Object.assign(chartData, response.meta.chartData)
+    }
+  } catch {
+    loadError.value = true
+  } finally {
+    isLoaded.value = true
   }
-
-  isLoading.value = true
 }
 
-async function onChangeYear(data: string): Promise<boolean> {
-  const params: {
-    id: number
-    previous_year?: boolean
-    this_year?: boolean
-  } = {
-    id: Number(route.params.id),
-  }
-
-  if (data === 'Previous year') {
-    params.previous_year = true
-  } else {
-    params.this_year = true
-  }
-
-  const response = await customerStore.fetchViewCustomer(params)
-
-  if (response.meta.chartData) {
-    Object.assign(chartData, response.meta.chartData)
-  }
-
-  return true
+function selectPeriod(value: PeriodValue): void {
+  period.value = value
+  void load()
 }
 </script>
 
 <template>
-  <BaseCard class="flex flex-col mt-6">
-    <ChartPlaceholder v-if="!isLoading" />
+  <div class="flex flex-col gap-5">
+    <section class="border glass rounded-xl" aria-labelledby="customer-cashflow">
+      <div
+        v-if="loadError"
+        class="flex flex-wrap items-center justify-between gap-3 p-5 md:p-7"
+        role="alert"
+      >
+        <span class="text-sm text-body">{{ $t('customers.activity_load_failed') }}</span>
+        <BaseButton size="sm" variant="primary-outline" @click="load">
+          {{ $t('general.retry') }}
+        </BaseButton>
+      </div>
 
-    <div v-else class="grid grid-cols-12">
-      <div class="col-span-12 xl:col-span-9 xxl:col-span-10">
-        <div class="flex justify-between mt-1 mb-6">
-          <h6 class="flex items-center">
-            <BaseIcon name="ChartBarSquareIcon" class="h-5 text-primary-400" />
-            {{ $t('dashboard.monthly_chart.title') }}
-          </h6>
+      <template v-else-if="isLoaded">
+        <div class="px-5 pt-5 md:px-7 md:pt-6">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <h2 id="customer-cashflow" class="flex items-center gap-2.5 font-semibold text-section text-heading">
+              <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-primary-50 text-primary-600" aria-hidden="true">
+                <BaseIcon name="PresentationChartLineIcon" class="w-4.5 h-4.5" />
+              </span>
+              {{ $t('dashboard.cashflow.title') }}
+            </h2>
 
-          <div class="w-40 h-10">
-            <BaseMultiselect
-              v-model="selectedYear"
-              :options="years"
-              :allow-empty="false"
-              :show-labels="false"
-              :placeholder="$t('dashboard.select_year')"
-              :can-deselect="false"
-              @select="onChangeYear"
+            <BasePeriodPicker
+              :model-value="period"
+              :presets="presets"
+              :summary="periodSummary"
+              @update:model-value="selectPeriod"
             />
           </div>
+
+          <!-- Period totals, doubling as the chart's legend -->
+          <ul role="list" class="grid grid-cols-1 min-[360px]:grid-cols-2 m-0 p-0 list-none mt-5 gap-x-6 gap-y-5 lg:grid-cols-4">
+            <li v-for="kpi in kpis" :key="kpi.key" class="flex items-center min-w-0 gap-3">
+              <span
+                :class="kpi.chip"
+                class="flex items-center justify-center w-10 h-10 rounded-xl shrink-0"
+                aria-hidden="true"
+              >
+                <BaseIcon :name="kpi.icon" class="w-5 h-5" />
+              </span>
+              <div class="min-w-0">
+                <p class="text-sm truncate text-muted">{{ kpi.label }}</p>
+                <p class="text-base font-semibold md:text-lg text-heading">
+                  <BaseFormatMoney
+                    :amount="kpi.amount"
+                    :currency="companyStore.selectedCompanyCurrency"
+                    proportional
+                  />
+                </p>
+              </div>
+            </li>
+          </ul>
         </div>
 
-        <LineChart
-          v-if="isLoading"
-          :invoices="getChartInvoices"
-          :expenses="getChartExpenses"
-          :receipts="getReceiptTotals"
-          :income="getNetProfits"
-          :labels="getChartMonths"
-          class="sm:w-full"
+        <div class="px-2 pt-5 pb-3 md:px-5 md:pb-5">
+          <CashflowChart
+            :type="chartType"
+            :labels="chartData.months ?? []"
+            :sales="chartData.invoiceTotals ?? []"
+            :receipts="chartData.receiptTotals ?? []"
+            :expenses="chartData.expenseTotals ?? []"
+            :series-labels="seriesLabels"
+            :currency="companyStore.selectedCompanyCurrency"
+            :height="isPhone ? 200 : 260"
+            :aria-label="$t('dashboard.cashflow.title')"
+          />
+        </div>
+
+        <CashflowTable
+          :labels="chartData.months ?? []"
+          :sales="chartData.invoiceTotals ?? []"
+          :receipts="chartData.receiptTotals ?? []"
+          :expenses="chartData.expenseTotals ?? []"
+          :series-labels="seriesLabels"
+          :caption="$t('dashboard.cashflow.title')"
+          :granularity="chartData.period?.granularity"
+          :currency="companyStore.selectedCompanyCurrency"
         />
-      </div>
+      </template>
 
-      <div
-        class="grid col-span-12 mt-6 text-center xl:mt-0 sm:grid-cols-4 xl:text-right xl:col-span-3 xl:grid-cols-1 xxl:col-span-2"
-      >
-        <div class="px-6 py-2">
-          <span class="text-xs leading-5 lg:text-sm">
-            {{ $t('dashboard.chart_info.total_sales') }}
-          </span>
-          <br />
-          <span
-            v-if="isLoading"
-            class="block mt-1 text-xl font-semibold leading-8"
-          >
-            <BaseFormatMoney
-              :amount="chartData.salesTotal"
-              :currency="companyStore.selectedCompanyCurrency"
-            />
-          </span>
+      <BaseContentPlaceholders v-else :rounded="true" class="p-5 md:p-7">
+        <BaseContentPlaceholdersText class="w-40 h-5" :lines="1" />
+        <div class="grid grid-cols-2 gap-6 mt-5 lg:grid-cols-4">
+          <BaseContentPlaceholdersText v-for="n in 4" :key="n" class="h-10" :lines="1" />
         </div>
-
-        <div class="px-6 py-2">
-          <span class="text-xs leading-5 lg:text-sm">
-            {{ $t('dashboard.chart_info.total_receipts') }}
-          </span>
-          <br />
-          <span
-            v-if="isLoading"
-            class="block mt-1 text-xl font-semibold leading-8"
-            style="color: #00c99c"
-          >
-            <BaseFormatMoney
-              :amount="chartData.totalReceipts"
-              :currency="companyStore.selectedCompanyCurrency"
-            />
-          </span>
-        </div>
-
-        <div class="px-6 py-2">
-          <span class="text-xs leading-5 lg:text-sm">
-            {{ $t('dashboard.chart_info.total_expense') }}
-          </span>
-          <br />
-          <span
-            v-if="isLoading"
-            class="block mt-1 text-xl font-semibold leading-8"
-            style="color: #fb7178"
-          >
-            <BaseFormatMoney
-              :amount="chartData.totalExpenses"
-              :currency="companyStore.selectedCompanyCurrency"
-            />
-          </span>
-        </div>
-
-        <div class="px-6 py-2">
-          <span class="text-xs leading-5 lg:text-sm">
-            {{ $t('dashboard.chart_info.net_income') }}
-          </span>
-          <br />
-          <span
-            v-if="isLoading"
-            class="block mt-1 text-xl font-semibold leading-8"
-            style="color: #5851d8"
-          >
-            <BaseFormatMoney
-              :amount="chartData.netProfit"
-              :currency="companyStore.selectedCompanyCurrency"
-            />
-          </span>
-        </div>
-      </div>
-    </div>
+        <BaseContentPlaceholdersBox class="w-full mt-6 h-52" />
+      </BaseContentPlaceholders>
+    </section>
 
     <CustomerInfo />
-  </BaseCard>
+  </div>
 </template>

@@ -1,0 +1,104 @@
+apply plugin: 'com.android.application'
+
+// The version fields are the release tag, not a number edited in this file.
+// `mobile/scripts/version-code.mjs` derives both from the tag and
+// `.github/workflows/mobile.yaml` passes them in as -PversionCode / -PversionName,
+// so there is one place to bump a version and it is the tag.
+//
+// The Capacitor template's `1` and `"1.0"` remain the defaults on purpose: a
+// developer running `./gradlew assembleDebug` gets exactly what an untouched
+// Capacitor project gives, with no properties to remember.
+def appVersionCode = Integer.parseInt((project.findProperty('versionCode') ?: '1').toString())
+def appVersionName = (project.findProperty('versionName') ?: '1.0').toString()
+
+// Release signing is attached only when all four properties arrive together,
+// which in practice means the workflow decoded the keystore from the secrets.
+// With none of them, `assembleRelease` still builds and simply leaves the output
+// unsigned rather than failing: the release build type has to stay runnable by
+// anyone with a checkout, and by CI on a repository where the signing secrets do
+// not exist yet.
+def signingProperties = ['keystoreFile', 'keystorePassword', 'keyAlias', 'keyPassword']
+def suppliedSigningProperties = signingProperties.findAll { project.hasProperty(it) }
+def hasSigningConfig = suppliedSigningProperties.size() == signingProperties.size()
+
+// Three properties out of four is a typo, never an intention. Left alone it would
+// produce an unsigned artifact from a run that believed it was signing one, so it
+// stops here instead.
+if (!suppliedSigningProperties.isEmpty() && !hasSigningConfig) {
+    throw new GradleException(
+        "Release signing needs all four of ${signingProperties.join(', ')} as -P properties. " +
+        "Given: ${suppliedSigningProperties.join(', ')}."
+    )
+}
+
+android {
+    namespace "com.invoiceshelf.app"
+    compileSdk rootProject.ext.compileSdkVersion
+    defaultConfig {
+        applicationId "com.invoiceshelf.app"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode appVersionCode
+        versionName appVersionName
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        aaptOptions {
+             // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
+             // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
+            ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
+        }
+    }
+    signingConfigs {
+        // Declared conditionally: an empty signing config with no storeFile fails
+        // the build as soon as anything references it, so when the properties are
+        // absent the config does not exist at all.
+        if (hasSigningConfig) {
+            release {
+                // Absolute in CI. The workflow decodes the keystore into $RUNNER_TEMP,
+                // outside the project, and a relative path here would resolve against
+                // android/app.
+                storeFile file(project.property('keystoreFile'))
+                storePassword project.property('keystorePassword')
+                keyAlias project.property('keyAlias')
+                keyPassword project.property('keyPassword')
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (hasSigningConfig) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+}
+
+repositories {
+    flatDir{
+        dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
+    implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
+    implementation project(':capacitor-android')
+    testImplementation "junit:junit:$junitVersion"
+    androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
+    implementation project(':capacitor-cordova-android-plugins')
+}
+
+apply from: 'capacitor.build.gradle'
+
+try {
+    def servicesJSON = file('google-services.json')
+    if (servicesJSON.text) {
+        apply plugin: 'com.google.gms.google-services'
+    }
+} catch(Exception e) {
+    logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
+}

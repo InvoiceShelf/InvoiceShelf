@@ -6,9 +6,12 @@ import axios, {
 } from 'axios'
 import { API } from './endpoints'
 import * as localStore from '@/scripts/utils/local-storage'
+import { serverBaseUrl } from '@/scripts/config/runtime'
 
 const client: AxiosInstance = axios.create({
-  withCredentials: true,
+  // A client is bearer-only and cross-origin: sending credentials would ask
+  // the server for `Access-Control-Allow-Credentials`, which it refuses.
+  withCredentials: !__INVOICESHELF_CLIENT__,
   headers: {
     common: {
       'X-Requested-With': 'XMLHttpRequest',
@@ -17,6 +20,12 @@ const client: AxiosInstance = axios.create({
 })
 
 client.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+  if (__INVOICESHELF_CLIENT__) {
+    // Read per request rather than baked in at creation, so switching
+    // servers does not need a new instance.
+    config.baseURL = serverBaseUrl()
+  }
+
   const companyId = localStorage.getItem('selectedCompany')
   const authToken = localStorage.getItem('auth.token')
   const isAdminMode = localStorage.getItem('isAdminMode') === 'true'
@@ -103,8 +112,10 @@ client.interceptors.response.use(
     localStore.remove('isAdminMode')
 
     // Remember where the user was trying to go, so LoginView can
-    // return them there after re-auth. Same-origin path only.
-    const nextPath = window.location.pathname + window.location.search
+    // return them there after re-auth. The router's own path, which is
+    // the only correct answer under hash history and the same answer as
+    // the address bar on the web.
+    const nextPath = currentRoute.fullPath
 
     try {
       await router.push({ name: 'login', query: { next: nextPath } })

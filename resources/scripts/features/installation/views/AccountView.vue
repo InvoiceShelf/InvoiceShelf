@@ -23,6 +23,7 @@
         >
           <BaseInput
             v-model.trim="userForm.name"
+            autocomplete="name"
             :invalid="v$.name.$error"
             type="text"
             name="name"
@@ -37,6 +38,7 @@
         >
           <BaseInput
             v-model.trim="userForm.email"
+            autocomplete="email"
             :invalid="v$.email.$error"
             type="text"
             name="email"
@@ -53,19 +55,13 @@
         >
           <BaseInput
             v-model.trim="userForm.password"
+            autocomplete="new-password"
             :invalid="v$.password.$error"
-            :type="isShowPassword ? 'text' : 'password'"
+            type="password"
+            revealable
             name="password"
             @input="v$.password.$touch()"
-          >
-            <template #right>
-              <BaseIcon
-                :name="isShowPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-                class="mr-1 text-muted cursor-pointer"
-                @click="isShowPassword = !isShowPassword"
-              />
-            </template>
-          </BaseInput>
+          />
         </BaseInputGroup>
 
         <BaseInputGroup
@@ -75,19 +71,13 @@
         >
           <BaseInput
             v-model.trim="userForm.confirm_password"
+            autocomplete="new-password"
             :invalid="v$.confirm_password.$error"
-            :type="isShowConfirmPassword ? 'text' : 'password'"
+            type="password"
+            revealable
             name="confirm_password"
             @input="v$.confirm_password.$touch()"
-          >
-            <template #right>
-              <BaseIcon
-                :name="isShowConfirmPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-                class="mr-1 text-muted cursor-pointer"
-                @click="isShowConfirmPassword = !isShowConfirmPassword"
-              />
-            </template>
-          </BaseInput>
+          />
         </BaseInputGroup>
       </div>
 
@@ -130,8 +120,6 @@ const { t } = useI18n()
 const { showRequestError } = useInstallationFeedback()
 
 const isSaving = ref<boolean>(false)
-const isShowPassword = ref<boolean>(false)
-const isShowConfirmPassword = ref<boolean>(false)
 const avatarUrl = ref<string>('')
 const avatarFileBlob = ref<File | null>(null)
 

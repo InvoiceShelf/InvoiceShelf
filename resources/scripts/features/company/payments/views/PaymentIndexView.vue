@@ -14,6 +14,7 @@
         <BaseButton
           v-show="paymentStore.paymentTotalCount"
           variant="primary-outline"
+          :aria-expanded="showFilters"
           @click="toggleFilter"
         >
           {{ $t('general.filter') }}
@@ -30,7 +31,7 @@
         <BaseButton
           v-if="canCreate"
           variant="primary"
-          class="ml-4"
+          class="ms-4"
           @click="$router.push('/admin/payments/create')"
         >
           <template #left="slotProps">
@@ -42,7 +43,7 @@
     </BasePageHeader>
 
     <!-- Filters -->
-    <BaseFilterWrapper :show="showFilters" class="mt-3" @clear="clearFilter">
+    <BaseFilterWrapper :show="showFilters" @clear="clearFilter">
       <BaseInputGroup :label="$t('payments.customer')">
         <BaseCustomerSelectInput
           v-model="filters.customer_id"
@@ -78,12 +79,14 @@
     <!-- Empty State -->
     <BaseEmptyPlaceholder
       v-if="showEmptyScreen"
+      art="payment"
+      :ghost="6"
       :title="$t('payments.no_payments')"
-      :description="$t('payments.list_of_payments')"
+      :description="$t('payments.empty_description')"
     >
       <template v-if="canCreate" #actions>
         <BaseButton
-          variant="primary-outline"
+          variant="primary"
           @click="$router.push('/admin/payments/create')"
         >
           <template #left="slotProps">
@@ -96,34 +99,29 @@
 
     <!-- Table -->
     <div v-show="!showEmptyScreen" class="relative table-container">
-      <div class="relative flex items-center justify-end h-5">
-        <BaseDropdown v-if="paymentStore.selectedPayments.length && canDelete">
-          <template #activator>
-            <span
-              class="flex text-sm font-medium cursor-pointer select-none text-primary-400"
-            >
-              {{ $t('general.actions') }}
-              <BaseIcon name="ChevronDownIcon" />
-            </span>
-          </template>
-          <BaseDropdownItem @click="removeMultiplePayments">
-            <BaseIcon name="TrashIcon" class="mr-3 text-body" />
-            {{ $t('general.delete') }}
-          </BaseDropdownItem>
-        </BaseDropdown>
-      </div>
-
       <BaseTable
         ref="tableRef"
+        :no-results-message="$t('payments.no_matching_payments')"
         :data="fetchData"
         :columns="paymentColumns"
         :placeholder-count="paymentStore.paymentTotalCount >= 20 ? 10 : 5"
-        class="mt-3"
+        :row-to="paymentLink"
+        :selected-count="canDelete ? paymentStore.selectedPayments.length : 0"
       >
+        <template #bulk-actions>
+          <BaseButton size="xs" variant="white" @click="removeMultiplePayments">
+            <template #left="slotProps">
+              <BaseIcon name="TrashIcon" :class="slotProps.class" />
+            </template>
+            {{ $t('general.delete') }}
+          </BaseButton>
+        </template>
+
         <template #header>
-          <div class="absolute items-center left-6 top-2.5 select-none">
+          <div class="absolute items-center start-6 top-3.5 select-none">
             <BaseCheckbox
               v-model="selectAllFieldStatus"
+              :aria-label="$t('general.select_all')"
               variant="primary"
               @change="paymentStore.selectAllPayments"
             />
@@ -135,6 +133,7 @@
             <BaseCheckbox
               :id="row.id"
               v-model="selectField"
+              :aria-label="$t('general.select_named', { name: row.data.payment_number })"
               :value="row.data.id"
               variant="primary"
             />
@@ -148,7 +147,7 @@
         <template #cell-payment_number="{ row }">
           <router-link
             :to="{ path: `payments/${row.data.id}/view` }"
-            class="font-medium text-primary-500"
+            class="font-medium text-primary-600 hover:text-primary-700"
           >
             {{ row.data.payment_number }}
           </router-link>
@@ -158,7 +157,7 @@
           <router-link
             v-if="row.data.customer?.id"
             :to="`/admin/customers/${row.data.customer.id}/view`"
-            class="font-medium text-primary-500 hover:text-primary-600"
+            class="font-medium text-heading hover:text-primary-600"
           >
             {{ row.data.customer.name }}
           </router-link>
@@ -177,7 +176,7 @@
               <div v-if="allocation.invoice" class="flex items-center gap-2">
                 <router-link
                   :to="`/admin/invoices/${allocation.invoice.id}/view`"
-                  class="font-medium text-primary-500 hover:text-primary-600"
+                  class="font-medium text-primary-600 hover:text-primary-700"
                 >
                   {{ allocation.invoice.invoice_number }}
                 </router-link>
@@ -213,6 +212,7 @@
 </template>
 
 <script setup lang="ts">
+import type { ColumnDef } from '@/scripts/components/table/DataTable.vue'
 import { computed, onUnmounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { debouncedWatch } from '@vueuse/core'
@@ -295,39 +295,48 @@ const hasAtLeastOneAbility = computed<boolean>(() => {
   return canDelete.value || canEdit.value || canView.value || canSend.value
 })
 
-interface TableColumn {
-  key: string
-  label?: string
-  thClass?: string
-  tdClass?: string
-  sortable?: boolean
-}
+type TableColumn = Omit<ColumnDef, 'label'> & { label?: string }
 
 const paymentColumns = computed<TableColumn[]>(() => [
   {
     key: 'status',
     sortable: false,
     thClass: 'extra w-10',
-    tdClass: 'text-left text-sm font-medium extra',
+    tdClass: 'text-start text-sm font-medium extra',
   },
   {
     key: 'payment_date',
     label: t('payments.date'),
     thClass: 'extra',
     tdClass: 'font-medium text-heading',
+    mobile: 'subtitle',
   },
-  { key: 'payment_number', label: t('payments.payment_number') },
-  { key: 'name', label: t('payments.customer') },
+  {
+    key: 'payment_number',
+    label: t('payments.payment_number'),
+    mobile: 'subtitle',
+  },
+  { key: 'name', label: t('payments.customer'), mobile: 'title' },
   { key: 'payment_mode', label: t('payments.payment_mode') },
   { key: 'allocations', label: t('payments.allocations'), sortable: false },
-  { key: 'amount', label: t('payments.amount') },
+  {
+    key: 'amount',
+    label: t('payments.amount'),
+    align: 'end',
+    mobile: 'trailing',
+  },
   {
     key: 'actions',
     label: '',
-    tdClass: 'text-right text-sm font-medium',
+    tdClass: 'text-end text-sm font-medium',
     sortable: false,
+    mobile: 'actions',
   },
 ])
+
+function paymentLink(row: { id?: number | string }): string {
+  return `/admin/payments/${row.id}/view`
+}
 
 const selectField = computed<number[]>({
   get: () => paymentStore.selectedPayments,

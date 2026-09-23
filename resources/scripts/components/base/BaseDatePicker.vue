@@ -10,20 +10,10 @@
   <div v-else :class="computedContainerClass" class="relative flex flex-row">
     <svg
       v-if="showCalendarIcon && !hasIconSlot"
+      aria-hidden="true"
       viewBox="0 0 20 20"
       fill="currentColor"
-      class="
-        absolute
-        w-4
-        h-4
-        mx-2
-        my-2.5
-        text-sm
-        not-italic
-        font-black
-        text-subtle
-        cursor-pointer
-      "
+      class="absolute z-10 w-4 h-4 -translate-y-1/2 cursor-pointer top-1/2 start-3 text-subtle"
       @click="onClickDp"
     >
       <path
@@ -38,7 +28,7 @@
     <FlatPickr
       ref="dp"
       v-model="date"
-      v-bind="$attrs"
+      v-bind="passthroughAttrs"
       :disabled="disabled"
       :config="config"
       :class="[defaultInputClass, inputInvalidClass, inputDisabledClass]"
@@ -49,43 +39,16 @@
 <script setup lang="ts">
 import FlatPickr from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
-import { Arabic } from 'flatpickr/dist/l10n/ar.js'
-import { Czech } from 'flatpickr/dist/l10n/cs.js'
-import { German } from 'flatpickr/dist/l10n/de.js'
-import { Greek } from 'flatpickr/dist/l10n/gr.js'
-import { english } from 'flatpickr/dist/l10n/default.js'
-import { Spanish } from 'flatpickr/dist/l10n/es.js'
-import { Persian } from 'flatpickr/dist/l10n/fa.js'
-import { Finnish } from 'flatpickr/dist/l10n/fi.js'
-import { French } from 'flatpickr/dist/l10n/fr.js'
-import { Hindi } from 'flatpickr/dist/l10n/hi.js'
-import { Croatian } from 'flatpickr/dist/l10n/hr.js'
-import { Indonesian } from 'flatpickr/dist/l10n/id.js'
-import { Italian } from 'flatpickr/dist/l10n/it.js'
-import { Japanese } from 'flatpickr/dist/l10n/ja.js'
-import { Korean } from 'flatpickr/dist/l10n/ko.js'
-import { Lithuanian } from 'flatpickr/dist/l10n/lt.js'
-import { Latvian } from 'flatpickr/dist/l10n/lv.js'
-import { Dutch } from 'flatpickr/dist/l10n/nl.js'
-import { Polish } from 'flatpickr/dist/l10n/pl.js'
-import { Portuguese } from 'flatpickr/dist/l10n/pt.js'
-import { Romanian } from 'flatpickr/dist/l10n/ro.js'
-import { Russian } from 'flatpickr/dist/l10n/ru.js'
-import { Slovak } from 'flatpickr/dist/l10n/sk.js'
-import { Slovenian } from 'flatpickr/dist/l10n/sl.js'
-import { Serbian } from 'flatpickr/dist/l10n/sr.js'
-import { Swedish } from 'flatpickr/dist/l10n/sv.js'
-import { Thai } from 'flatpickr/dist/l10n/th.js'
-import { Turkish } from 'flatpickr/dist/l10n/tr.js'
-import { Vietnamese } from 'flatpickr/dist/l10n/vn.js'
-import { Mandarin } from 'flatpickr/dist/l10n/zh.js'
 import type { CustomLocale, Locale } from 'flatpickr/dist/types/locale'
-import { computed, reactive, watch, ref, useSlots } from 'vue'
+import { computed, inject, reactive, watch, ref, useAttrs, useSlots } from 'vue'
 import { useCompanyStore } from '@/scripts/stores/company.store'
 import { useUserStore } from '@/scripts/stores/user.store'
+import { flatpickrLocale } from '@/scripts/utils/flatpickr-locale'
+import { useFormField } from '@/scripts/composables/use-form-field'
+import { DIALOG_LAYER } from '@/scripts/utils/dialog-layers'
 
 interface FlatPickrInstance {
-  fp: { open: () => void }
+  fp: { open: () => void; altInput?: HTMLInputElement }
 }
 
 const dp = ref<FlatPickrInstance | null>(null)
@@ -113,7 +76,7 @@ const props = withDefaults(defineProps<Props>(), {
   showCalendarIcon: true,
   containerClass: '',
   defaultInputClass:
-    'font-base pl-8 py-2 outline-hidden focus:ring-primary-400 focus:outline-hidden focus:border-primary-400 block w-full sm:text-sm border-line-default rounded-md text-heading',
+    'font-base ps-9 py-2 outline-hidden block w-full md:text-sm tabular field-border rounded-lg text-heading',
   time24hr: false,
 })
 
@@ -130,43 +93,7 @@ const companyStore = useCompanyStore()
 const userStore = useUserStore()
 
 // Localize Flatpicker
-const lang: string = userStore.currentUserSettings.language
-
-const localeMap: Record<string, CustomLocale | Locale> = {
-  ar: Arabic,
-  cs: Czech,
-  de: German,
-  el: Greek,
-  en: english,
-  es: Spanish,
-  fa: Persian,
-  fi: Finnish,
-  fr: French,
-  hi: Hindi,
-  hr: Croatian,
-  id: Indonesian,
-  it: Italian,
-  ja: Japanese,
-  ko: Korean,
-  lt: Lithuanian,
-  lv: Latvian,
-  nl: Dutch,
-  pl: Polish,
-  pt: Portuguese,
-  pt_BR: Portuguese,
-  ro: Romanian,
-  ru: Russian,
-  sk: Slovak,
-  sl: Slovenian,
-  sr: Serbian,
-  sv: Swedish,
-  th: Thai,
-  tr: Turkish,
-  vi: Vietnamese,
-  zh: Mandarin,
-}
-
-const fpLocale = localeMap[lang] ?? english
+const fpLocale = flatpickrLocale(userStore.currentUserSettings.language)
 
 interface FlatPickrConfig {
   altInput: boolean
@@ -174,14 +101,52 @@ interface FlatPickrConfig {
   time_24hr: boolean
   locale: CustomLocale | Locale
   altFormat?: string
+  static?: boolean
+  onReady: Array<(dates: Date[], value: string, instance: { altInput?: HTMLInputElement }) => void>
+}
+
+const attrs = useAttrs()
+const { attrs: fieldAttrs } = useFormField({ invalid: () => props.invalid })
+
+// The id and ARIA attributes belong on the visible copy only (see below)
+const passthroughAttrs = computed(() => Object.fromEntries(
+  Object.entries(attrs).filter(([key]) => key !== 'id' && !key.startsWith('aria-')),
+))
+
+/**
+ * flatpickr hides the real input and shows a copy (its alt input) formatted
+ * for people. The copy is the one users focus, so the label, description and
+ * state go on it.
+ */
+function applyFieldAttrs(input?: HTMLInputElement): void {
+  if (!input) {
+    return
+  }
+
+  const passed = Object.fromEntries(
+    Object.entries(attrs).filter(([key]) => key === 'id' || key.startsWith('aria-')),
+  )
+
+  for (const [key, value] of Object.entries({ ...fieldAttrs.value, ...passed })) {
+    if (value === undefined || value === null || value === false) {
+      input.removeAttribute(key)
+    } else {
+      input.setAttribute(key, String(value))
+    }
+  }
 }
 
 const config = reactive<FlatPickrConfig>({
   altInput: true,
+  // Inside a dialog the calendar opens in place, within its focus trap
+  static: inject(DIALOG_LAYER, null) !== null,
   enableTime: props.enableTime,
   time_24hr: props.time24hr,
   locale: fpLocale,
+  onReady: [(_dates, _value, instance) => applyFieldAttrs(instance.altInput)],
 })
+
+watch(fieldAttrs, () => applyFieldAttrs(dp.value?.fp?.altInput))
 
 const date = computed<string | Date>({
   get: () => props.modelValue,
@@ -216,7 +181,7 @@ const computedContainerClass = computed<string>(() => {
 
 const inputInvalidClass = computed<string>(() => {
   if (props.invalid) {
-    return 'border-red-400 ring-red-400 focus:ring-red-400 focus:border-red-400'
+    return 'border-danger focus:border-danger focus:ring-danger/20'
   }
 
   return ''
@@ -224,7 +189,7 @@ const inputInvalidClass = computed<string>(() => {
 
 const inputDisabledClass = computed<string>(() => {
   if (props.disabled) {
-    return 'border border-solid rounded-md outline-hidden input-field box-border-2 base-date-picker-input placeholder-gray-400 bg-surface-muted text-body border-line-default'
+    return 'border border-solid rounded-lg outline-hidden placeholder-subtle bg-surface-secondary text-muted border-line-light cursor-not-allowed'
   }
 
   return ''

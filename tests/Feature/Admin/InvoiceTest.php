@@ -1,6 +1,7 @@
 <?php
 
 use App\Domains\Accounts\Models\Company;
+use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Accounts\Models\User;
 use App\Domains\Receivables\Models\Payment;
 use App\Domains\Receivables\Models\PaymentAllocation;
@@ -800,5 +801,29 @@ test('create invoice with tax included', function () {
 
     $this->assertDatabaseHas('invoices', [
         'tax_included' => true,
+    ]);
+});
+
+/**
+ * The fallback for a company with no tax-per-item setting used to be 'NO '
+ * with a trailing space, which matched neither YES nor NO, so the form showed
+ * no tax controls at all.
+ */
+test('an invoice for a company with no tax-per-item setting taxes the whole invoice', function () {
+    $companyId = User::find(1)->companies()->first()->id;
+    CompanySetting::where('company_id', $companyId)->where('option', 'tax_per_item')->delete();
+
+    $invoice = Invoice::factory()->raw([
+        'items' => [InvoiceItem::factory()->raw(['price' => 10000, 'quantity' => 1, 'discount_val' => 0, 'tax' => 0, 'taxes' => []])],
+        'taxes' => [],
+        'discount_val' => 0,
+        'tax_included' => false,
+    ]);
+
+    postJson('api/v1/invoices', $invoice)->assertOk();
+
+    $this->assertDatabaseHas('invoices', [
+        'invoice_number' => $invoice['invoice_number'],
+        'tax_per_item' => 'NO',
     ]);
 });

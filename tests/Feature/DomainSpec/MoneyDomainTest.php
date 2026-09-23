@@ -25,8 +25,11 @@ it('lists currencies common-first, then the rest by name', function () {
     expect($codes->take(10)->values()->all())
         ->toBe(['USD', 'EUR', 'GBP', 'JPY', 'CAD', 'AUD', 'CHF', 'CNY', 'INR', 'BRL']);
 
+    // Case-insensitively: "CFP Franc" belongs beside "Central African Franc",
+    // not at the head of the C block where a byte comparison puts it.
     $restNames = collect(getJson('/api/v1/currencies')->json('data'))->skip(10)->pluck('name')->values();
-    expect($restNames->all())->toBe($restNames->sort()->values()->all());
+    expect($restNames->all())
+        ->toBe($restNames->sortBy(fn (string $name): string => mb_strtolower($name))->values()->all());
 });
 
 it('creates a provider after live validation and enforces the one-active-provider-per-currency rule', function () {
@@ -123,4 +126,21 @@ it('gates the historical backfill and reproduces its defective arithmetic', func
 
     expect(DB::table('company_settings')->where('company_id', $this->companyId)
         ->where('option', 'bulk_exchange_rate_configured')->value('value'))->toBe('YES');
+});
+
+it('lets only the owner run the exchange-rate backfill', function () {
+    DB::table('company_settings')->updateOrInsert(
+        ['company_id' => $this->companyId, 'option' => 'bulk_exchange_rate_configured'],
+        ['value' => 'NO'],
+    );
+    $member = User::factory()->create(['role' => 'user']);
+    $member->companies()->attach($this->companyId);
+    Sanctum::actingAs($member, ['*']);
+
+    postJson('/api/v1/currencies/bulk-update-exchange-rate', [
+        'currencies' => [['id' => 1, 'exchange_rate' => 2]],
+    ])->assertForbidden();
+
+    expect(DB::table('company_settings')->where('company_id', $this->companyId)
+        ->where('option', 'bulk_exchange_rate_configured')->value('value'))->toBe('NO');
 });

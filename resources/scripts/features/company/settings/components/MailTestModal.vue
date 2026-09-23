@@ -101,16 +101,9 @@ function closeTestModal(): void {
 </script>
 
 <template>
-  <BaseModal :show="modalActive" @close="closeTestModal">
+  <BaseModal :show="modalActive" closable @close="closeTestModal">
     <template #header>
-      <div class="flex justify-between w-full">
-        {{ modalStore.title }}
-        <BaseIcon
-          name="XMarkIcon"
-          class="w-6 h-6 text-muted cursor-pointer"
-          @click="closeTestModal"
-        />
-      </div>
+      {{ modalStore.title }}
     </template>
     <form action="" @submit.prevent="onTestMailSend">
       <div class="p-4 md:p-8">
@@ -171,7 +164,7 @@ function closeTestModal(): void {
         <BaseButton
           variant="primary-outline"
           type="button"
-          class="mr-3"
+          class="me-3"
           @click="closeTestModal()"
         >
           {{ $t('general.cancel') }}

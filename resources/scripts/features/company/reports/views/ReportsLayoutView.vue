@@ -30,7 +30,7 @@ function onDownload(): void {
       </BaseBreadcrumb>
 
       <template #actions>
-        <BaseButton variant="primary" class="ml-4" @click="onDownload">
+        <BaseButton variant="primary" class="ms-4" @click="onDownload">
           <template #left="slotProps">
             <BaseIcon name="ArrowDownTrayIcon" :class="slotProps.class" />
           </template>

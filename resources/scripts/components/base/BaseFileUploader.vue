@@ -1,7 +1,7 @@
 <template>
-  <form
-    enctype="multipart/form-data"
+  <div
     class="
+      has-[input[type=file]:focus-visible]:ring-2 has-[input[type=file]:focus-visible]:ring-focus
       relative
       flex
       items-center
@@ -24,10 +24,10 @@
     :class="avatar ? 'w-32 h-32' : 'w-full'"
   >
     <input
-      id="file-upload"
+      :id="inputId"
       ref="inputRef"
       type="file"
-      tabindex="-1"
+      :aria-label="$t('general.file_upload.choose_file')"
       :multiple="multiple"
       :name="inputFieldName"
       :accept="accept"
@@ -44,16 +44,17 @@
 
     <!-- Avatar Not Selected -->
     <div v-if="!localFiles.length && avatar" class="">
-      <img :src="getDefaultAvatar()" class="rounded" alt="Default Avatar" />
+      <img :src="getDefaultAvatar()" class="rounded" alt="" />
 
-      <a
-        href="#"
-        class="absolute z-30 bg-surface rounded-full -bottom-3 -right-3 group"
+      <button
+        type="button"
+        :aria-label="$t('general.file_upload.browse')"
+        class="absolute z-30 bg-surface rounded-full -bottom-3 -end-3 group"
         @click.prevent.stop="onBrowse"
       >
         <BaseIcon
           name="PlusCircleIcon"
-          class="
+        class="
             h-8
             text-xl
             leading-6
@@ -61,7 +62,7 @@
             group-hover:text-primary-600
           "
         />
-      </a>
+      </button>
     </div>
 
     <!-- Not Selected -->
@@ -72,24 +73,55 @@
       />
       <p class="text-xs leading-4 text-center text-subtle">
         {{ $t('general.file_upload.drag_a_file') }}
-        <a
-          class="
+        <button
+          type="button"
+        class="
             cursor-pointer
             text-primary-500
             hover:text-primary-600 hover:font-medium
             relative
             z-20
           "
-          href="#"
           @click.prevent.stop="onBrowse"
         >
           {{ $t('general.file_upload.browse') }}
-        </a>
+        </button>
         {{ $t('general.file_upload.to_choose') }}
       </p>
       <p class="text-xs leading-4 text-center text-subtle mt-2">
         {{ recommendedText }}
       </p>
+
+      <!--
+        On a phone the file picker is the wrong first answer for a receipt:
+        the photo does not exist yet. `relative z-20` lifts this above the
+        invisible file input that covers the whole dropzone.
+      -->
+      <button
+        v-if="canCapture"
+        type="button"
+        class="
+          relative
+          z-20
+          mt-3
+          inline-flex
+          items-center
+          gap-1.5
+          px-3
+          py-1.5
+          text-xs
+          font-medium
+          rounded-md
+          border border-line-default
+          bg-surface
+          text-body
+          hover:border-line-strong
+        "
+        @click.prevent.stop="onCapture"
+      >
+        <BaseIcon name="CameraIcon" class="h-4 text-subtle" />
+        {{ $t('general.file_upload.take_photo') }}
+      </button>
     </div>
 
     <div
@@ -98,7 +130,7 @@
     >
       <img
         v-if="localFiles[0].image"
-        for="file-upload"
+        :alt="localFile.name ?? ''"
         :src="localFiles[0].image"
         class="block object-cover w-full h-full rounded opacity-100"
         style="animation: fadeIn 2s ease"
@@ -136,7 +168,7 @@
 
         <p
           v-if="localFiles[0].name"
-          class="
+        class="
             text-body
             font-medium
             text-sm
@@ -149,8 +181,9 @@
         </p>
       </div>
 
-      <a
-        href="#"
+      <button
+        type="button"
+        :aria-label="$t('general.file_upload.remove_file')"
         class="
           box-border
           absolute
@@ -165,14 +198,14 @@
           rounded-full
           shadow-md
           -bottom-3
-          -right-3
+          -end-3
           group
           hover:border-line-strong
         "
         @click.prevent.stop="onAvatarRemove(localFiles[0])"
       >
         <BaseIcon name="XMarkIcon" class="h-4 text-xl leading-6 text-heading" />
-      </a>
+      </button>
     </div>
 
     <!-- Preview Files Multiple -->
@@ -180,10 +213,9 @@
       v-else-if="localFiles.length && multiple"
       class="flex flex-wrap w-full"
     >
-      <a
+      <div
         v-for="(localFile, index) in localFiles"
         :key="index"
-        href="#"
         class="
           block
           p-2
@@ -195,11 +227,10 @@
           relative
           max-w-md
         "
-        @click.prevent
       >
         <img
           v-if="localFile.image"
-          for="file-upload"
+          :alt="localFile.name ?? ''"
           :src="localFile.image"
           class="block object-cover w-20 h-20 opacity-100"
           style="animation: fadeIn 2s ease"
@@ -207,7 +238,7 @@
 
         <div
           v-else
-          class="
+        class="
             flex
             justify-center
             items-center
@@ -237,7 +268,7 @@
 
           <p
             v-if="localFile.name"
-            class="
+        class="
               text-body
               font-medium
               text-sm
@@ -250,8 +281,10 @@
           </p>
         </div>
 
-        <span
-          class="
+        <button
+          type="button"
+          :aria-label="$t('general.file_upload.remove_file')"
+        class="
             cursor-pointer
             box-border
             absolute
@@ -266,22 +299,21 @@
             rounded-full
             shadow-md
             -bottom-3
-            -right-3
+            -end-3
             group
             hover:border-line-strong
           "
           @click.prevent.stop="onFileRemove(index)"
         >
           <BaseIcon name="XMarkIcon" class="h-4 text-xl leading-6 text-heading" />
-        </span>
-      </a>
+        </button>
+      </div>
     </div>
 
     <div v-else class="flex w-full items-center justify-center">
-      <a
+      <div
         v-for="(localFile, index) in localFiles"
         :key="index"
-        href="#"
         class="
           block
           p-2
@@ -293,11 +325,10 @@
           relative
           max-w-md
         "
-        @click.prevent
       >
         <img
           v-if="localFile.image"
-          for="file-upload"
+          :alt="localFile.name ?? ''"
           :src="localFile.image"
           class="block object-contain h-20 opacity-100 min-w-[5rem]"
           style="animation: fadeIn 2s ease"
@@ -305,7 +336,7 @@
 
         <div
           v-else
-          class="
+        class="
             flex
             justify-center
             items-center
@@ -335,7 +366,7 @@
 
           <p
             v-if="localFile.name"
-            class="
+        class="
               text-body
               font-medium
               text-sm
@@ -348,8 +379,10 @@
           </p>
         </div>
 
-        <span
-          class="
+        <button
+          type="button"
+          :aria-label="$t('general.file_upload.remove_file')"
+        class="
             cursor-pointer
             box-border
             absolute
@@ -364,22 +397,25 @@
             rounded-full
             shadow-md
             -bottom-3
-            -right-3
+            -end-3
             group
             hover:border-line-strong
           "
           @click.prevent.stop="onFileRemove(index)"
         >
           <BaseIcon name="XMarkIcon" class="h-4 text-xl leading-6 text-heading" />
-        </span>
-      </a>
+        </button>
+      </div>
     </div>
-  </form>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, useId, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { client as http } from '@/scripts/api/client'
+import { isNative } from '@/scripts/config/runtime'
+import { useNotificationStore } from '@/scripts/stores/notification.store'
 import * as utils from '@/scripts/utils/format-money'
 
 interface LocalFile {
@@ -435,9 +471,20 @@ const STATUS_SAVING = 1
 const STATUS_SUCCESS = 2
 const STATUS_FAILED = 3
 
+const { t } = useI18n()
+const notificationStore = useNotificationStore()
+
+/**
+ * Whether to offer the camera. Fixed for the life of the component: the shell
+ * cannot change under a running app, and an uploader that takes no images has
+ * no use for a photograph.
+ */
+const canCapture = isNative() && props.accept.includes('image/')
+
 const uploadedFiles = ref<UploadedFile[]>([])
 const localFiles = ref<LocalFile[]>([])
 const inputRef = ref<HTMLInputElement | null>(null)
+const inputId = `file-upload-${useId()}`
 const uploadError = ref<unknown>(null)
 const currentStatus = ref<number | null>(null)
 
@@ -499,22 +546,32 @@ function onChange(fieldName: string, fileList: FileList, fileCount: number): voi
   if (props.multiple) {
     emit('change', fieldName, fileList, fileCount)
   } else {
-    if (props.base64) {
-      getBase64(fileList[0]).then((res) => {
-        emit('change', fieldName, res, fileCount, fileList[0])
-      })
-    } else {
-      emit('change', fieldName, fileList[0], fileCount)
-    }
+    emitSingle(fieldName, fileList[0], fileCount)
   }
 
+  absorb(fieldName, Array.from(fileList))
+}
+
+// One file, announced the way the caller asked for it.
+function emitSingle(fieldName: string, file: File, fileCount: number): void {
+  if (props.base64) {
+    getBase64(file).then((res) => {
+      emit('change', fieldName, res, fileCount, file)
+    })
+  } else {
+    emit('change', fieldName, file, fileCount)
+  }
+}
+
+// Everything that happens to a chosen file whatever it was chosen with: the
+// previews, the v-model, and the optional immediate upload. Split out of
+// `onChange` so a photograph goes through the very same steps as a pick.
+function absorb(fieldName: string, files: File[]): void {
   if (!props.preserveLocalFiles) {
     localFiles.value = []
   }
 
-  Array.from(Array(fileList.length).keys()).forEach((x) => {
-    const file = fileList[x]
-
+  files.forEach((file) => {
     if (utils.isImageFile(file.type)) {
       getBase64(file).then((image) => {
         localFiles.value.push({
@@ -540,12 +597,45 @@ function onChange(fieldName: string, fileList: FileList, fileCount: number): voi
   // append the files to FormData
   const formData = new FormData()
 
-  Array.from(Array(fileList.length).keys()).forEach((x) => {
-    formData.append(fieldName, fileList[x], fileList[x].name)
+  files.forEach((file) => {
+    formData.append(fieldName, file, file.name)
   })
 
   // save it
   save(formData)
+}
+
+/**
+ * Photograph the file instead of picking it.
+ *
+ * The import sits inside the build-define branch, which is the folded
+ * constant `false` on the web, so the camera plugin and the rest of the
+ * Capacitor adapter are dropped from that bundle entirely.
+ *
+ * A capture is one file, so it takes the single-file path even where
+ * `multiple` is set; the picker underneath is still there for the rest.
+ */
+async function onCapture(): Promise<void> {
+  if (__INVOICESHELF_CLIENT__) {
+    try {
+      const { capturePhoto } = await import('@/scripts/platform/capacitor')
+      const file = await capturePhoto()
+
+      // Null is a user who changed their mind. Nothing to report.
+      if (!file) return
+
+      emitSingle(props.inputFieldName, file, 1)
+      absorb(props.inputFieldName, [file])
+    } catch {
+      // A refused permission or a camera the OS would not hand over. Saying
+      // so beats an unhandled rejection and a button that did nothing; the
+      // file picker underneath still works.
+      notificationStore.showNotification({
+        type: 'error',
+        message: t('general.file_upload.capture_failed'),
+      })
+    }
+  }
 }
 
 function onBrowse(): void {

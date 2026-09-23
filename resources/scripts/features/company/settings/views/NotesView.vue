@@ -54,7 +54,7 @@ const notesColumns = computed<TableColumn[]>(() => [
   {
     key: 'actions',
     label: '',
-    tdClass: 'text-right text-sm font-medium',
+    tdClass: 'text-end text-sm font-medium',
     sortable: false,
   },
 ])
@@ -149,6 +149,25 @@ function getLabelNote(type: string): string {
       </template>
       <template #cell-type="{ row }">
         {{ getLabelNote(row.data.type) }}
+      </template>
+      <!-- Nothing here yet: say what goes here and offer to add the first -->
+      <template #empty>
+        <BaseEmptyPlaceholder
+          compact
+          art="note"
+          :ghost="3"
+          :title="$t('settings.customization.notes.empty_title')"
+          :description="$t('settings.customization.notes.empty_description')"
+        >
+          <template v-if="userStore.hasAbilities(ABILITIES.MANAGE_NOTE)" #actions>
+            <BaseButton variant="primary-outline" @click="openNoteSelectModal">
+              <template #left="slotProps">
+                <BaseIcon name="PlusIcon" :class="slotProps.class" />
+              </template>
+              {{ $t('settings.customization.notes.add_note') }}
+            </BaseButton>
+          </template>
+        </BaseEmptyPlaceholder>
       </template>
     </BaseTable>
   </BaseSettingCard>

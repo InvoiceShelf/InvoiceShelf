@@ -1,13 +1,15 @@
 <template>
   <div>
-    <label class="flex text-heading font-medium text-sm mb-2">
+    <p class="flex mb-2 text-sm font-medium text-heading">
       {{ $t('general.select_template') }}
-      <span class="text-sm text-red-500"> *</span>
-    </label>
+      <span class="text-sm text-danger" aria-hidden="true">&nbsp;*</span>
+    </p>
     <BaseButton
       type="button"
       class="flex justify-center w-full text-sm lg:w-auto hover:bg-surface-muted"
       variant="gray"
+      :aria-label="`${$t('general.select_template')}: ${templateName}`"
+      aria-haspopup="dialog"
       @click="openTemplateModal"
     >
       <template #right="slotProps">

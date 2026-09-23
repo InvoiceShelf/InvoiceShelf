@@ -15,7 +15,7 @@ return [
     /*
     * Minimum php version.
     */
-    'min_php_version' => '8.4.0',
+    'min_php_version' => '8.4.1',
 
     /*
     * Minimum mysql version.
@@ -52,6 +52,27 @@ return [
     * of the invoiceshelf/website repo).
     */
     'base_url' => env('INVOICESHELF_BASE_URL', 'https://invoiceshelf.com'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Thin clients (mobile apps)
+    |--------------------------------------------------------------------------
+    |
+    | The hostname a Capacitor client serves its bundle from, which decides the
+    | two origins config/cors.php allows by default. It must not be `localhost`
+    | or `127.0.0.1`: Sanctum's default stateful list contains both, so a
+    | request from such an origin is treated as a same-site browser request and
+    | gets session plus CSRF handling, which makes every bearer POST fail
+    | with 419.
+    |
+    | `min_version` is the oldest client build this server will talk to; the
+    | client reads it from the manifest and tells the user to update.
+    |
+    */
+    'client' => [
+        'hostname' => env('INVOICESHELF_CLIENT_HOSTNAME', 'app.invoiceshelf.internal'),
+        'min_version' => env('INVOICESHELF_CLIENT_MIN_VERSION', '3.0.0-alpha.4'),
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -156,6 +177,12 @@ return [
         ['code' => 'uk', 'name' => 'Ukrainian'],
         ['code' => 'ur', 'name' => 'اردو'],
     ],
+
+    /*
+    * Languages that read right to left. The app shell renders dir="rtl" for
+    * them; resources/scripts/utils/direction.ts keeps the same list.
+    */
+    'rtl_languages' => ['ar', 'fa', 'he', 'ur'],
 
     /*
     * List of Fiscal Years

@@ -6,6 +6,7 @@ import useVuelidate from '@vuelidate/core'
 import { useModalStore } from '@/scripts/stores/modal.store'
 import { useNotificationStore } from '@/scripts/stores/notification.store'
 import { expenseService } from '@/scripts/api/services/expense.service'
+import type { ExpenseCategory } from '@/scripts/types/domain/expense'
 
 interface CategoryForm {
   id: number | null
@@ -72,6 +73,7 @@ async function submitCategoryData(): Promise<void> {
   }
 
   isSaving.value = true
+  let created: ExpenseCategory | null = null
 
   try {
     if (isEdit.value && currentCategory.value.id) {
@@ -84,10 +86,11 @@ async function submitCategoryData(): Promise<void> {
         message: 'settings.expense_category.updated_message',
       })
     } else {
-      await expenseService.createCategory({
+      const response = await expenseService.createCategory({
         name: currentCategory.value.name,
         description: currentCategory.value.description || null,
       })
+      created = response.data
       notificationStore.showNotification({
         type: 'success',
         message: 'settings.expense_category.created_message',
@@ -95,9 +98,8 @@ async function submitCategoryData(): Promise<void> {
     }
 
     isSaving.value = false
-    if (modalStore.refreshData) {
-      modalStore.refreshData()
-    }
+    // A new category goes back to whoever opened the modal, to select it
+    modalStore.refreshData?.(...(created ? [created] : []))
     closeCategoryModal()
   } catch {
     isSaving.value = false
@@ -124,18 +126,12 @@ function closeCategoryModal(): void {
 <template>
   <BaseModal
     :show="modalActive"
+    closable
     @close="closeCategoryModal"
     @open="setInitialData"
   >
     <template #header>
-      <div class="flex justify-between w-full">
-        {{ modalStore.title }}
-        <BaseIcon
-          name="XMarkIcon"
-          class="w-6 h-6 text-muted cursor-pointer"
-          @click="closeCategoryModal"
-        />
-      </div>
+      {{ modalStore.title }}
     </template>
 
     <form action="" @submit.prevent="submitCategoryData">
@@ -176,7 +172,7 @@ function closeCategoryModal(): void {
         <BaseButton
           type="button"
           variant="primary-outline"
-          class="mr-3 text-sm"
+          class="me-3 text-sm"
           @click="closeCategoryModal"
         >
           {{ $t('general.cancel') }}

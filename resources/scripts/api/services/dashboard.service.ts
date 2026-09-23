@@ -3,6 +3,15 @@ import { API } from '../endpoints'
 
 export interface DashboardParams {
   previous_year?: number
+  from_date?: string
+  to_date?: string
+}
+
+/** The dates the money chart covers, and whether it counts by day or month */
+export interface ResolvedPeriod {
+  from: string
+  to: string
+  granularity: 'day' | 'month'
 }
 
 export interface ChartData {
@@ -13,8 +22,18 @@ export interface ChartData {
   net_income_totals: number[]
 }
 
+export interface ReceivablesSummary {
+  outstanding: number
+  outstanding_count: number
+  overdue: number
+  overdue_count: number
+  due_soon: number
+  due_later: number
+}
+
 export interface DashboardResponse {
   total_amount_due: number
+  receivables?: ReceivablesSummary
   total_customer_count: number
   total_invoice_count: number
   total_estimate_count: number
@@ -23,6 +42,7 @@ export interface DashboardResponse {
   total_receipts: string
   total_expenses: string
   total_net_income: string
+  period?: ResolvedPeriod
   recent_due_invoices: Array<{
     id: number
     invoice_number: string

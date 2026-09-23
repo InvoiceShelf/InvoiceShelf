@@ -9,7 +9,7 @@
   <money3
     v-else
     v-model="money"
-    v-bind="currencyBindings"
+    v-bind="{ ...currencyBindings, ...fieldAttrs, ...$attrs }"
     :class="[inputClass, invalidClass]"
     :disabled="disabled"
   />
@@ -18,6 +18,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Money3Component } from 'v-money3'
+import { useFormField } from '@/scripts/composables/use-form-field'
 
 import { useCompanyStore } from '@/scripts/stores/company.store'
 
@@ -52,7 +53,7 @@ const props = withDefaults(defineProps<Props>(), {
   contentLoading: false,
   invalid: false,
   inputClass:
-    'font-base block w-full sm:text-sm border-line-default rounded-md text-heading',
+    'font-base block w-full md:text-sm tabular field-border rounded-lg text-heading',
   disabled: false,
   percent: false,
   currency: null,
@@ -64,6 +65,10 @@ interface Emits {
 
 const emit = defineEmits<Emits>()
 const companyStore = useCompanyStore()
+
+defineOptions({ inheritAttrs: false })
+
+const { attrs: fieldAttrs } = useFormField({ invalid: () => props.invalid })
 let hasInitialValueSet = false
 
 const money = computed<string | number>({
@@ -94,8 +99,8 @@ const currencyBindings = computed<CurrencyBindings>(() => {
 
 const invalidClass = computed<string>(() => {
   if (props.invalid) {
-    return 'border-red-500 ring-red-500 focus:ring-red-500 focus:border-red-500'
+    return 'border-danger focus:border-danger focus:ring-danger/20'
   }
-  return 'focus:ring-primary-400 focus:border-primary-400'
+  return ''
 })
 </script>

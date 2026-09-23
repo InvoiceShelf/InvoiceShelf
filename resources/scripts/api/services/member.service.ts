@@ -15,6 +15,8 @@ export interface MemberListResponse {
     last_page: number
     per_page: number
     total: number
+    /** Everyone in the company, the viewer included, whatever the filters */
+    user_total_count?: number
   }
 }
 

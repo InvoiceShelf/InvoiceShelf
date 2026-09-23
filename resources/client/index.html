@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>InvoiceShelf</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <link rel="icon" href="data:,">
+
+    <script>
+        (function() {
+            var theme = localStorage.getItem('theme') || 'system';
+            if (theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+</head>
+
+<body class="h-full overflow-hidden bg-surface-tertiary bg-glass-gradient font-base">
+    <script type="module" src="../scripts/client/main.ts"></script>
+</body>
+
+</html>

@@ -6,6 +6,7 @@ use App\Domains\Purchases\Contracts\ExpenseReceiptManager;
 use App\Domains\Purchases\Data\PendingExpenseReceipt;
 use App\Domains\Purchases\Data\StoredExpenseReceipt;
 use App\Domains\Purchases\Models\Expense;
+use App\Support\Media\SafeFileName;
 
 class MediaLibraryExpenseReceiptManager implements ExpenseReceiptManager
 {
@@ -14,7 +15,7 @@ class MediaLibraryExpenseReceiptManager implements ExpenseReceiptManager
     public function attach(Expense $expense, PendingExpenseReceipt $receipt): void
     {
         $expense->addMedia($receipt->path)
-            ->usingFileName($receipt->fileName)
+            ->usingFileName(SafeFileName::from($receipt->fileName))
             ->toMediaCollection(self::COLLECTION);
     }
 
@@ -35,7 +36,7 @@ class MediaLibraryExpenseReceiptManager implements ExpenseReceiptManager
         }
 
         $expense->addMediaFromBase64($contents)
-            ->usingFileName($fileName)
+            ->usingFileName(SafeFileName::from($fileName))
             ->toMediaCollection(self::COLLECTION);
     }
 

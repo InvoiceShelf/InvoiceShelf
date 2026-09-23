@@ -1,4 +1,5 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
+import { installPageAnnouncer } from './page-announcer'
 import type { RouteRecordRaw } from 'vue-router'
 
 // Ensure route meta augmentation is loaded
@@ -62,15 +63,21 @@ const companyChildren: RouteRecordRaw[] = [
  * Top-level route definitions assembled from all feature modules.
  */
 const routes: RouteRecordRaw[] = [
-  // Installation wizard (no auth)
+  // Installation wizard (no auth), which the client build declares as an
+  // empty list: a client connects to a server that is already set up.
   ...installationRoutes,
 
-  // Public invoice view (no auth, no layout)
-  {
-    path: '/customer/invoices/view/:hash',
-    name: 'invoice.public',
-    component: InvoicePublicPage,
-  },
+  // Public invoice view (no auth, no layout). It is reached by a link a
+  // customer was emailed, which opens in a browser, not in the app.
+  ...(__INVOICESHELF_CLIENT__
+    ? []
+    : [
+        {
+          path: '/customer/invoices/view/:hash',
+          name: 'invoice.public',
+          component: InvoicePublicPage,
+        },
+      ]),
 
   // Auth routes (login, register, forgot/reset password)
   ...authRoutes,
@@ -88,8 +95,21 @@ const routes: RouteRecordRaw[] = [
   // the admin feature module self-contained)
   ...adminRoutes,
 
-  // Customer portal
+  // Customer portal, which the client build declares as an empty list:
+  // staff and admin only there, and the portal stays on the web.
   ...customerPortalRoutes,
+
+  // A client opens on an empty hash, which no other route claims. A signed-in
+  // session that lands here mid-way (a stray `href="#"`, a reload) goes to the
+  // dashboard, never back to the login screen.
+  ...(__INVOICESHELF_CLIENT__
+    ? [
+        {
+          path: '/',
+          redirect: () => ({ name: localStorage.getItem('auth.token') ? 'dashboard' : 'login' }),
+        },
+      ]
+    : []),
 
   // Catch-all 404
   {
@@ -100,11 +120,15 @@ const routes: RouteRecordRaw[] = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
+  // A client is served from a file package under capacitor:// or https://
+  // with no server to rewrite paths, so its history lives in the hash.
+  history: __INVOICESHELF_CLIENT__ ? createWebHashHistory() : createWebHistory(),
   linkActiveClass: 'active',
   routes,
 })
 
 router.beforeEach(authGuard)
+
+installPageAnnouncer(router)
 
 export default router

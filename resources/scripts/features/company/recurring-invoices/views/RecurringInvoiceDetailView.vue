@@ -1,266 +1,183 @@
 <template>
-  <BasePage class="xl:pl-96">
-    <BasePageHeader :title="pageTitle">
-      <template #actions>
-        <RecurringInvoiceDropdown
-          v-if="hasAtLeastOneAbility"
-          :row="recurringInvoiceStore.newRecurringInvoice"
-          :can-edit="canEdit"
-          :can-view="canView"
-          :can-delete="canDelete"
-        />
-      </template>
-    </BasePageHeader>
+  <div class="flex min-h-full">
 
-    <!-- LEFT SIDEBAR (fixed) -->
-    <div
-      class="fixed top-0 left-0 hidden h-full pt-16 pb-[6.4rem] ml-56 bg-surface xl:ml-64 w-88 xl:block"
-    >
-      <div
-        class="flex items-center justify-between px-4 pt-8 pb-2 border border-line-default border-solid height-full"
-      >
-        <div class="mb-6">
-          <BaseInput
-            v-model="searchData.searchText"
-            :placeholder="$t('general.search')"
-            type="text"
-            variant="gray"
-            @input="onSearched()"
-          >
-            <template #right>
-              <BaseIcon name="MagnifyingGlassIcon" class="h-5 text-subtle" />
-            </template>
-          </BaseInput>
+    <BasePage class="min-w-0">
+      <!-- The only action is the menu, which reads better on the title row than alone in a bar -->
+      <BasePageHeader :title="pageTitle" phone-actions="inline">
+        <BaseBreadcrumb>
+          <BaseBreadcrumbItem :title="$t('recurring_invoices.title')" to="/admin/recurring-invoices" />
+        </BaseBreadcrumb>
+
+        <div v-if="!isFetching && recurringInvoice.status" class="flex flex-wrap items-center gap-1.5 mt-2">
+          <BaseRecurringInvoiceStatusBadge :status="recurringInvoice.status">
+            <BaseRecurringInvoiceStatusLabel :status="recurringInvoice.status" />
+          </BaseRecurringInvoiceStatusBadge>
         </div>
 
-        <div class="flex mb-6 ml-3" role="group" aria-label="First group">
-          <BaseDropdown class="ml-3" position="bottom-start">
-            <template #activator>
-              <BaseButton size="md" variant="gray">
-                <BaseIcon name="FunnelIcon" class="h-5" />
-              </BaseButton>
-            </template>
-            <div
-              class="px-2 py-1 pb-2 mb-1 mb-2 text-sm border-b border-line-default border-solid"
-            >
-              {{ $t('general.sort_by') }}
-            </div>
+        <template #actions>
+          <RecurringInvoiceDropdown
+            v-if="hasAtLeastOneAbility"
+            :row="recurringInvoiceStore.newRecurringInvoice"
+            :can-edit="canEdit"
+            :can-view="canView"
+            :can-delete="canDelete"
+          />
+        </template>
+      </BasePageHeader>
 
-            <BaseDropdownItem class="flex px-1 py-2 cursor-pointer">
-              <BaseInputGroup class="-mt-3 font-normal">
-                <BaseRadio
-                  id="filter_next_invoice_date"
-                  v-model="searchData.orderByField"
-                  :label="$t('recurring_invoices.next_invoice_date')"
-                  size="sm"
-                  name="filter"
-                  value="next_invoice_at"
-                  @update:model-value="onSearched"
-                />
-              </BaseInputGroup>
-            </BaseDropdownItem>
-
-            <BaseDropdownItem class="flex px-1 py-2 cursor-pointer">
-              <BaseInputGroup class="-mt-3 font-normal">
-                <BaseRadio
-                  id="filter_start_date"
-                  v-model="searchData.orderByField"
-                  :label="$t('recurring_invoices.starts_at')"
-                  value="starts_at"
-                  size="sm"
-                  name="filter"
-                  @update:model-value="onSearched"
-                />
-              </BaseInputGroup>
-            </BaseDropdownItem>
-          </BaseDropdown>
-
-          <BaseButton class="ml-1" size="md" variant="gray" @click="sortData">
-            <BaseIcon v-if="getOrderBy" name="BarsArrowUpIcon" class="h-5" />
-            <BaseIcon v-else name="BarsArrowDownIcon" class="h-5" />
-          </BaseButton>
-        </div>
+      <div v-if="isFetching" class="flex justify-center p-12">
+        <BaseSpinner class="w-7 h-7 text-subtle" />
       </div>
 
-      <div
-        ref="invoiceListSection"
-        class="h-full overflow-y-scroll border-l border-line-default border-solid base-scroll"
-      >
-        <div v-for="(invoice, index) in invoiceList" :key="index">
-          <router-link
-            v-if="invoice"
-            :id="'recurring-invoice-' + invoice.id"
-            :to="`/admin/recurring-invoices/${invoice.id}/view`"
-            :class="[
-              'flex justify-between side-invoice p-4 cursor-pointer hover:bg-hover-strong items-center border-l-4 border-l-transparent',
-              {
-                'bg-surface-tertiary border-l-4 border-l-primary-500 border-solid':
-                  hasActiveUrl(invoice.id),
-              },
-            ]"
-            style="border-bottom: 1px solid rgba(185, 193, 209, 0.41)"
-          >
-            <div class="flex-2">
-              <BaseText
-                :text="invoice.customer?.name ?? ''"
-                class="pr-2 mb-2 text-sm not-italic font-normal leading-5 text-heading capitalize truncate"
-              />
+      <template v-else>
+        <!-- What each invoice will be, and when the next one goes out -->
+        <BaseStatStrip :columns="4">
+          <BaseStat :label="$t('recurring_invoices.amount')" emphasis>
+            <BaseFormatMoney :amount="recurringInvoice.total" :currency="documentCurrency" />
+          </BaseStat>
+          <BaseStat :label="$t('recurring_invoices.frequency.label')" wide>
+            {{ frequencyText || '-' }}
+          </BaseStat>
+          <BaseStat :label="$t('recurring_invoices.next_invoice_date')">
+            {{ recurringInvoice.formatted_next_invoice_at || '-' }}
+          </BaseStat>
+          <BaseStat :label="$t('recurring_invoices.starts_at')">
+            {{ recurringInvoice.formatted_starts_at || '-' }}
+          </BaseStat>
+        </BaseStatStrip>
 
-              <div
-                class="mt-1 mb-2 text-xs not-italic font-medium leading-5 text-body"
-              >
-                {{ invoice.invoice_number }}
-              </div>
-              <BaseRecurringInvoiceStatusBadge
-                :status="invoice.status"
-                class="px-1 text-xs"
-              >
-                <BaseRecurringInvoiceStatusLabel :status="invoice.status" />
-              </BaseRecurringInvoiceStatusBadge>
-            </div>
+        <BaseCard>
+          <BaseHeading>
+            {{ $t('customers.basic_info') }}
+          </BaseHeading>
 
-            <div class="flex-1 whitespace-nowrap right">
-              <BaseFormatMoney
-                class="block mb-2 text-xl not-italic font-semibold leading-8 text-right text-heading"
-                :amount="invoice.total"
-                :currency="invoice.customer?.currency"
-              />
-
-              <div
-                class="text-sm not-italic font-normal leading-5 text-right text-body est-date"
-              >
-                {{ invoice.formatted_starts_at }}
-              </div>
-            </div>
-          </router-link>
-        </div>
-        <div v-if="isSidebarLoading" class="flex justify-center p-4 items-center">
-          <LoadingIcon class="h-6 m-1 animate-spin text-primary-400" />
-        </div>
-        <p
-          v-if="!invoiceList?.length && !isSidebarLoading"
-          class="flex justify-center px-4 mt-5 text-sm text-body"
-        >
-          {{ $t('invoices.no_matching_invoices') }}
-        </p>
-      </div>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div
-      v-if="recurringInvoiceStore.isFetchingViewData"
-      class="flex justify-center p-12"
-    >
-      <LoadingIcon class="h-8 animate-spin text-primary-400" />
-    </div>
-
-    <BaseCard v-else class="mt-10">
-      <BaseHeading>
-        {{ $t('customers.basic_info') }}
-      </BaseHeading>
-
-      <BaseDescriptionList class="mt-5">
-        <BaseDescriptionListItem
-          :label="$t('recurring_invoices.starts_at')"
-          :content-loading="recurringInvoiceStore.isFetchingViewData"
-          :value="recurringInvoiceStore.newRecurringInvoice?.formatted_starts_at"
-        />
-
-        <BaseDescriptionListItem
-          :label="$t('recurring_invoices.next_invoice_date')"
-          :content-loading="recurringInvoiceStore.isFetchingViewData"
-          :value="recurringInvoiceStore.newRecurringInvoice?.formatted_next_invoice_at"
-        />
-
-        <BaseDescriptionListItem
-          v-if="selectedFrequencyLabel"
-          :label="$t('recurring_invoices.frequency.title')"
-          :value="selectedFrequencyLabel"
-          :content-loading="recurringInvoiceStore.isFetchingViewData"
-        />
-
-        <BaseDescriptionListItem
-          v-if="
-            recurringInvoiceStore.newRecurringInvoice?.limit_by !== 'NONE'
-          "
-          :label="$t('recurring_invoices.limit_by')"
-          :content-loading="recurringInvoiceStore.isFetchingViewData"
-          :value="recurringInvoiceStore.newRecurringInvoice?.limit_by"
-        />
-
-        <BaseDescriptionListItem
-          v-if="
-            recurringInvoiceStore.newRecurringInvoice?.limit_date &&
-            recurringInvoiceStore.newRecurringInvoice?.limit_by !== 'NONE'
-          "
-          :label="$t('recurring_invoices.limit_date')"
-          :content-loading="recurringInvoiceStore.isFetchingViewData"
-          :value="recurringInvoiceStore.newRecurringInvoice?.limit_date"
-        />
-
-        <BaseDescriptionListItem
-          v-if="recurringInvoiceStore.newRecurringInvoice?.limit_by === 'COUNT'"
-          :label="$t('recurring_invoices.limit_count')"
-          :value="recurringInvoiceStore.newRecurringInvoice?.limit_count"
-          :content-loading="recurringInvoiceStore.isFetchingViewData"
-        />
-
-        <BaseDescriptionListItem
-          :label="$t('recurring_invoices.send_automatically')"
-          :content-loading="recurringInvoiceStore.isFetchingViewData"
-          :value="
-            recurringInvoiceStore.newRecurringInvoice?.send_automatically
-              ? $t('general.yes')
-              : $t('general.no')
-          "
-        />
-      </BaseDescriptionList>
-
-      <BaseHeading class="mt-8">
-        {{ $t('invoices.title', 2) }}
-      </BaseHeading>
-
-      <div class="relative table-container">
-        <BaseTable
-          :data="recurringInvoiceStore.newRecurringInvoice.invoices"
-          :columns="invoiceColumns"
-          :loading="recurringInvoiceStore.isFetchingViewData"
-          :placeholder-count="5"
-          class="mt-5"
-        >
-          <!-- Invoice date -->
-          <template #cell-invoice_date="{ row }">
-            {{ row.data.formatted_invoice_date }}
-          </template>
-
-          <!-- Invoice Number -->
-          <template #cell-invoice_number="{ row }">
-            <router-link
-              :to="{ path: `/admin/invoices/${row.data.id}/view` }"
-              class="font-medium text-primary-500"
+          <BaseDescriptionList>
+            <BaseDescriptionListItem
+              v-if="recurringInvoice.customer?.name"
+              :label="$t('invoices.customer')"
             >
-              {{ row.data.invoice_number }}
-            </router-link>
-          </template>
+              <router-link
+                :to="`/admin/customers/${recurringInvoice.customer.id}/view`"
+                class="hover:text-primary-600"
+              >
+                {{ recurringInvoice.customer.name }}
+              </router-link>
+            </BaseDescriptionListItem>
 
-          <!-- Invoice total -->
-          <template #cell-total="{ row }">
-            <BaseFormatMoney
-              :amount="row.data.due_amount"
-              :currency="row.data.currency"
+            <BaseDescriptionListItem
+              v-if="recurringInvoice.limit_by !== 'NONE'"
+              :label="$t('recurring_invoices.limit_by')"
+              :value="recurringInvoice.limit_by"
             />
-          </template>
 
-          <!-- Invoice status -->
-          <template #cell-status="{ row }">
-            <BaseInvoiceStatusBadge :status="row.data.status" class="px-3 py-1">
-              <BaseInvoiceStatusLabel :status="row.data.status" />
-            </BaseInvoiceStatusBadge>
-          </template>
-        </BaseTable>
-      </div>
-    </BaseCard>
-  </BasePage>
+            <BaseDescriptionListItem
+              v-if="recurringInvoice.limit_date && recurringInvoice.limit_by !== 'NONE'"
+              :label="$t('recurring_invoices.limit_date')"
+              :value="recurringInvoice.limit_date ?? ''"
+            />
+
+            <BaseDescriptionListItem
+              v-if="recurringInvoice.limit_by === 'COUNT'"
+              :label="$t('recurring_invoices.limit_count')"
+              :value="recurringInvoice.limit_count ?? ''"
+            />
+
+            <BaseDescriptionListItem
+              :label="$t('recurring_invoices.send_automatically')"
+              :value="recurringInvoice.send_automatically ? $t('general.yes') : $t('general.no')"
+            />
+          </BaseDescriptionList>
+        </BaseCard>
+
+        <section class="flex flex-col gap-3">
+          <BaseHeading>
+            {{ $t('invoices.title', 2) }}
+          </BaseHeading>
+
+          <BaseTable
+            :data="recurringInvoice.invoices ?? []"
+            :columns="invoiceColumns"
+            :row-to="invoiceRoute"
+            :placeholder-count="5"
+          >
+            <!-- Invoice date -->
+            <template #cell-invoice_date="{ row }">
+              {{ row.data.formatted_invoice_date }}
+            </template>
+
+            <!-- Invoice Number -->
+            <template #cell-invoice_number="{ row }">
+              <router-link
+                :to="{ path: `/admin/invoices/${row.data.id}/view` }"
+                class="font-medium text-primary-600 hover:text-primary-700"
+              >
+                {{ row.data.invoice_number }}
+              </router-link>
+            </template>
+
+            <!-- Invoice total -->
+            <template #cell-total="{ row }">
+              <BaseFormatMoney
+                :amount="row.data.due_amount"
+                :currency="row.data.currency"
+              />
+            </template>
+
+            <!-- Invoice status -->
+            <template #cell-status="{ row }">
+              <BaseInvoiceStatusBadge :status="row.data.status">
+                <BaseInvoiceStatusLabel :status="row.data.status" />
+              </BaseInvoiceStatusBadge>
+            </template>
+            <!-- The schedule has not run yet -->
+            <template #empty>
+              <BaseEmptyPlaceholder
+                compact
+                art="invoice"
+                :title="$t('recurring_invoices.no_generated_invoices')"
+                :description="$t('recurring_invoices.no_generated_invoices_description')"
+              />
+            </template>
+          </BaseTable>
+        </section>
+      </template>
+    </BasePage>
+
+    <!-- The other recurring invoices, beside this one (wide screens only) -->
+    <RecordListPane
+      ref="listPane"
+      :search="searchData.searchText"
+      :sort-options="sortOptions"
+      :sort-field="searchData.orderByField"
+      :ascending="getOrderBy"
+      :loading="isSidebarLoading"
+      :empty="!invoiceList?.length"
+      :empty-text="$t('recurring_invoices.no_matching_invoices')"
+      @update:search="onSearchText"
+      @update:sort-field="setSortField"
+      @toggle-order="sortData"
+    >
+      <RecordListItem
+        v-for="invoice in (invoiceList ?? []).filter(Boolean)"
+        :id="'recurring-invoice-' + invoice.id"
+        :key="invoice.id"
+        :to="`/admin/recurring-invoices/${invoice.id}/view`"
+        :active="hasActiveUrl(invoice.id)"
+        :title="invoice.customer?.name ?? ''"
+        :subtitle="getFrequencyLabel(invoice.frequency)"
+        :meta="invoice.formatted_starts_at"
+      >
+        <template #badges>
+          <BaseRecurringInvoiceStatusBadge :status="invoice.status">
+            <BaseRecurringInvoiceStatusLabel :status="invoice.status" />
+          </BaseRecurringInvoiceStatusBadge>
+        </template>
+        <template #amount>
+          <BaseFormatMoney :amount="invoice.total" :currency="invoice.customer?.currency" />
+        </template>
+      </RecordListItem>
+    </RecordListPane>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -269,9 +186,12 @@ import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useRecurringInvoiceStore } from '../store'
 import RecurringInvoiceDropdown from '../components/RecurringInvoiceDropdown.vue'
-import LoadingIcon from '@/scripts/components/icons/LoadingIcon.vue'
+import RecordListPane from '@/scripts/components/layout/RecordListPane.vue'
+import RecordListItem from '@/scripts/components/layout/RecordListItem.vue'
 import { useUserStore } from '../../../../stores/user.store'
 import type { RecurringInvoice } from '../../../../types/domain/recurring-invoice'
+import type { CurrencyConfig } from '@/scripts/utils/format-money'
+import { scrollBehavior } from '@/scripts/utils/motion'
 
 interface Props {
   canEdit?: boolean
@@ -324,6 +244,20 @@ const pageTitle = computed<string>(() => {
   return recurringInvoiceStore.newRecurringInvoice?.customer?.name ?? ''
 })
 
+const isFetching = computed<boolean>(() => recurringInvoiceStore.isFetchingViewData)
+
+// The form's state holds the fetched record, response fields included
+const recurringInvoice = computed(() => {
+  return recurringInvoiceStore.newRecurringInvoice as typeof recurringInvoiceStore.newRecurringInvoice &
+    Partial<Pick<RecurringInvoice, 'formatted_starts_at' | 'formatted_next_invoice_at'>>
+})
+
+const documentCurrency = computed<CurrencyConfig | null>(() => {
+  const currency = recurringInvoice.value.currency ?? recurringInvoice.value.customer?.currency
+
+  return currency && typeof currency === 'object' ? currency as CurrencyConfig : null
+})
+
 // ---------------------------------------------------------------------------
 // Frequency label
 // ---------------------------------------------------------------------------
@@ -336,6 +270,24 @@ const selectedFrequencyLabel = computed<string>(() => {
   return inv?.frequency ?? ''
 })
 
+// A custom schedule reads better as its cron expression than as "Custom"
+const frequencyText = computed<string>(() => {
+  const inv = recurringInvoiceStore.newRecurringInvoice
+
+  if (inv?.selectedFrequency?.value === 'CUSTOM' && inv.frequency) {
+    return inv.frequency
+  }
+
+  return selectedFrequencyLabel.value
+})
+
+function getFrequencyLabel(frequencyFormat: string): string {
+  const frequencyObj = recurringInvoiceStore.frequencies.find(
+    (f) => f.value === frequencyFormat,
+  )
+  return frequencyObj ? frequencyObj.label : frequencyFormat
+}
+
 // ---------------------------------------------------------------------------
 // Invoices table columns
 // ---------------------------------------------------------------------------
@@ -347,13 +299,18 @@ const invoiceColumns = computed(() => {
       label: t('invoices.date'),
       thClass: 'extra',
       tdClass: 'font-medium text-heading',
+      mobile: 'subtitle' as const,
     },
-    { key: 'invoice_number', label: t('invoices.invoice') },
+    { key: 'invoice_number', label: t('invoices.invoice'), mobile: 'title' as const },
     { key: 'customer.name', label: t('invoices.customer') },
-    { key: 'status', label: t('invoices.status') },
-    { key: 'total', label: t('invoices.total') },
+    { key: 'status', label: t('invoices.status'), mobile: 'badge' as const },
+    { key: 'total', label: t('invoices.total'), align: 'end' as const, mobile: 'trailing' as const },
   ]
 })
+
+function invoiceRoute(row: { id?: number | string }): string | null {
+  return row.id ? `/admin/invoices/${row.id}/view` : null
+}
 
 // ---------------------------------------------------------------------------
 // Sidebar state
@@ -363,7 +320,8 @@ const isSidebarLoading = ref<boolean>(false)
 const invoiceList = ref<RecurringInvoice[] | null>(null)
 const currentPageNumber = ref<number>(1)
 const lastPageNumber = ref<number>(1)
-const invoiceListSection = ref<HTMLElement | null>(null)
+const listPane = ref<InstanceType<typeof RecordListPane> | null>(null)
+const invoiceListSection = computed<HTMLElement | null>(() => listPane.value?.listEl ?? null)
 
 interface SearchData {
   orderBy: string | null
@@ -380,6 +338,21 @@ const searchData = reactive<SearchData>({
 const getOrderBy = computed<boolean>(() => {
   return searchData.orderBy === 'asc' || searchData.orderBy === null
 })
+
+const sortOptions = computed(() => [
+  { value: 'next_invoice_at', label: t('recurring_invoices.next_invoice_date') },
+  { value: 'starts_at', label: t('recurring_invoices.starts_at') },
+])
+
+function setSortField(field: string): void {
+  searchData.orderByField = field
+  onSearched()
+}
+
+function onSearchText(value: string): void {
+  searchData.searchText = value
+  onSearched()
+}
 
 function hasActiveUrl(id: number): boolean {
   return Number(route.params.id) === id
@@ -440,8 +413,10 @@ async function loadRecurringInvoices(
 
 function scrollToRecurringInvoice(): void {
   const el = document.getElementById(`recurring-invoice-${route.params.id}`)
-  if (el) {
-    el.scrollIntoView({ behavior: 'smooth' })
+  const list = invoiceListSection.value
+  if (el && list) {
+    // Scroll the list pane alone; scrollIntoView would also move the page
+    list.scrollTo({ top: el.offsetTop - list.offsetTop - 8, behavior: scrollBehavior() })
     el.classList.add('shake')
     addScrollListener()
   }

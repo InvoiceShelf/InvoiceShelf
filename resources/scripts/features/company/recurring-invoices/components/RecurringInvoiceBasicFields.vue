@@ -1,5 +1,5 @@
 <template>
-  <div class="col-span-6 pr-0">
+  <div class="col-span-6 pe-0">
     <BaseCustomerSelectPopup
       :content-loading="isLoading"
       type="recurring-invoice"
@@ -13,12 +13,12 @@
         />
       </div>
 
-      <div class="ml-2">
-        <p class="p-0 mb-1 leading-snug text-left text-heading">
+      <div class="ms-2">
+        <p class="p-0 mb-1 leading-snug text-start text-heading">
           {{ $t('recurring_invoices.send_automatically') }}
         </p>
         <p
-          class="p-0 m-0 text-xs leading-tight text-left text-muted"
+          class="p-0 m-0 text-xs leading-tight text-start text-muted"
           style="max-width: 480px"
         >
           {{ $t('recurring_invoices.send_automatically_desc') }}

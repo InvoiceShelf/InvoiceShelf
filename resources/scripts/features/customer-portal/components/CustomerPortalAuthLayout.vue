@@ -11,18 +11,19 @@
       <div class="mb-10 flex justify-center">
         <MainLogo
           v-if="!customerLogo"
-          class="block h-auto w-44 max-w-full text-primary-500"
+          class="block w-auto max-w-full h-11 text-heading"
         />
 
         <img
           v-else
           :src="customerLogo"
+          alt=""
           class="block h-auto w-44 max-w-full"
         />
       </div>
 
       <div class="rounded-2xl border border-line-default bg-surface px-6 py-8 shadow-sm sm:px-8">
-        <div class="mb-8 text-left">
+        <div class="mb-8 text-start">
           <h1 class="text-2xl font-semibold tracking-tight text-heading">
             {{ pageTitle }}
           </h1>

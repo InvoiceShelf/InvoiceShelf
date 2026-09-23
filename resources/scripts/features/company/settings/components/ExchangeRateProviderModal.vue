@@ -288,18 +288,12 @@ function closeExchangeRateModal(): void {
 <template>
   <BaseModal
     :show="modalActive"
+    closable
     @close="closeExchangeRateModal"
     @open="fetchInitialData"
   >
     <template #header>
-      <div class="flex justify-between w-full">
-        {{ modalStore.title }}
-        <BaseIcon
-          name="XMarkIcon"
-          class="w-6 h-6 text-muted cursor-pointer"
-          @click="closeExchangeRateModal"
-        />
-      </div>
+      {{ modalStore.title }}
     </template>
 
     <form @submit.prevent="submitExchangeRate">
@@ -419,7 +413,7 @@ function closeExchangeRateModal(): void {
         class="z-0 flex justify-end p-4 border-t border-line-default border-solid"
       >
         <BaseButton
-          class="mr-3"
+          class="me-3"
           variant="primary-outline"
           type="button"
           :disabled="isSaving"

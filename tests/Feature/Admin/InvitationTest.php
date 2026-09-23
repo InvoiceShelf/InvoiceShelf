@@ -24,11 +24,20 @@ beforeEach(function () {
     Sanctum::actingAs($user, ['*']);
 });
 
+/**
+ * The owner role of a company. Bouncer scopes role queries to whichever
+ * company it last worked in, so the lookup steps outside that scope.
+ */
+function invitationOwnerRole(Company $company): Role
+{
+    return Role::withoutGlobalScopes()->where('name', 'owner')->where('scope', $company->id)->firstOrFail();
+}
+
 test('invite user to company', function () {
     Mail::fake();
 
     $company = Company::first();
-    $role = Role::where('name', 'owner')->first();
+    $role = invitationOwnerRole($company);
 
     $response = postJson('api/v1/company-invitations', [
         'email' => 'newuser@example.com',
@@ -50,7 +59,7 @@ test('invite user to company', function () {
 
 test('cannot invite user already in company', function () {
     $company = Company::first();
-    $role = Role::where('name', 'owner')->first();
+    $role = invitationOwnerRole($company);
     $existingUser = User::first();
 
     $response = postJson('api/v1/company-invitations', [
@@ -65,7 +74,7 @@ test('cannot send duplicate invitation', function () {
     Mail::fake();
 
     $company = Company::first();
-    $role = Role::where('name', 'owner')->first();
+    $role = invitationOwnerRole($company);
 
     postJson('api/v1/company-invitations', [
         'email' => 'duplicate@example.com',
@@ -82,7 +91,7 @@ test('list pending invitations for company', function () {
     Mail::fake();
 
     $company = Company::first();
-    $role = Role::where('name', 'owner')->first();
+    $role = invitationOwnerRole($company);
 
     postJson('api/v1/company-invitations', [
         'email' => 'invited@example.com',
@@ -99,7 +108,7 @@ test('cancel pending invitation', function () {
     Mail::fake();
 
     $company = Company::first();
-    $role = Role::where('name', 'owner')->first();
+    $role = invitationOwnerRole($company);
 
     $storeResponse = postJson('api/v1/company-invitations', [
         'email' => 'cancel@example.com',
@@ -122,7 +131,7 @@ test('accept invitation adds user to company', function () {
     Mail::fake();
 
     $company = Company::first();
-    $role = Role::where('name', 'owner')->first();
+    $role = invitationOwnerRole($company);
 
     // Create a new user not in the company
     $newUser = User::factory()->create(['email' => 'accept@example.com']);
@@ -154,7 +163,7 @@ test('accept invitation adds user to company', function () {
 
 test('decline invitation', function () {
     $company = Company::first();
-    $role = Role::where('name', 'owner')->first();
+    $role = invitationOwnerRole($company);
     $newUser = User::factory()->create(['email' => 'decline@example.com']);
 
     $invitation = CompanyInvitation::create([
@@ -182,7 +191,7 @@ test('decline invitation', function () {
 
 test('cannot accept expired invitation', function () {
     $company = Company::first();
-    $role = Role::where('name', 'owner')->first();
+    $role = invitationOwnerRole($company);
     $newUser = User::factory()->create(['email' => 'expired@example.com']);
 
     $invitation = CompanyInvitation::create([
@@ -206,7 +215,7 @@ test('cannot accept expired invitation', function () {
 
 test('bootstrap includes pending invitations', function () {
     $company = Company::first();
-    $role = Role::where('name', 'owner')->first();
+    $role = invitationOwnerRole($company);
     $user = User::first();
 
     CompanyInvitation::create([
@@ -230,7 +239,7 @@ test('get invitation details by token', function () {
     Mail::fake();
 
     $company = Company::first();
-    $role = Role::where('name', 'owner')->first();
+    $role = invitationOwnerRole($company);
 
     // Create invitation for non-existent user
     $invitation = CompanyInvitation::create([
@@ -253,7 +262,7 @@ test('get invitation details by token', function () {
 
 test('register with invitation creates account and accepts', function () {
     $company = Company::first();
-    $role = Role::where('name', 'owner')->first();
+    $role = invitationOwnerRole($company);
 
     $invitation = CompanyInvitation::create([
         'company_id' => $company->id,
@@ -288,7 +297,7 @@ test('register with invitation creates account and accepts', function () {
 
 test('cannot register with mismatched email', function () {
     $company = Company::first();
-    $role = Role::where('name', 'owner')->first();
+    $role = invitationOwnerRole($company);
 
     CompanyInvitation::create([
         'company_id' => $company->id,
@@ -310,4 +319,102 @@ test('cannot register with mismatched email', function () {
     ]);
 
     $response->assertStatus(422);
+});
+
+/**
+ * A member of the company who is not its owner, able to see customers and no
+ * more: enough to be signed in, not enough to manage who belongs.
+ */
+function invitationMember(Company $company, string $email = 'member@example.com'): User
+{
+    $member = User::factory()->create(['email' => $email, 'role' => 'user']);
+    $member->companies()->attach($company->id);
+
+    return $member;
+}
+
+test('a member who is not the owner cannot list, send or cancel invitations', function () {
+    Mail::fake();
+
+    $company = Company::first();
+    $role = invitationOwnerRole($company);
+    $invitation = CompanyInvitation::create([
+        'company_id' => $company->id,
+        'email' => 'pending@example.com',
+        'role_id' => $role->id,
+        'token' => 'member-cannot-see',
+        'status' => 'pending',
+        'invited_by' => User::first()->id,
+        'expires_at' => now()->addDays(7),
+    ]);
+
+    Sanctum::actingAs(invitationMember($company), ['*']);
+
+    getJson('api/v1/company-invitations')->assertForbidden();
+    postJson('api/v1/company-invitations', ['email' => 'escalate@example.com', 'role_id' => $role->id])->assertForbidden();
+    deleteJson("api/v1/company-invitations/{$invitation->id}")->assertForbidden();
+
+    $this->assertDatabaseMissing('company_invitations', ['email' => 'escalate@example.com']);
+    $this->assertDatabaseHas('company_invitations', ['id' => $invitation->id]);
+});
+
+test('an invitation from another company cannot be cancelled', function () {
+    $other = Company::factory()->create();
+    $invitation = CompanyInvitation::create([
+        'company_id' => $other->id,
+        'email' => 'elsewhere@example.com',
+        'role_id' => invitationOwnerRole(Company::first())->id,
+        'token' => 'other-company-token',
+        'status' => 'pending',
+        'invited_by' => User::first()->id,
+        'expires_at' => now()->addDays(7),
+    ]);
+
+    deleteJson("api/v1/company-invitations/{$invitation->id}")->assertNotFound();
+
+    $this->assertDatabaseHas('company_invitations', ['id' => $invitation->id]);
+});
+
+test('an invitation takes a role of the company it is for', function () {
+    $other = Company::factory()->create();
+    $foreignRole = Role::create(['name' => 'foreign-role', 'title' => 'Foreign', 'scope' => $other->id]);
+
+    postJson('api/v1/company-invitations', [
+        'email' => 'foreign-role@example.com',
+        'role_id' => $foreignRole->id,
+    ])->assertUnprocessable()->assertJsonValidationErrors('role_id');
+});
+
+test('sending an invitation does not hand its token back', function () {
+    Mail::fake();
+
+    $company = Company::first();
+    $role = invitationOwnerRole($company);
+
+    postJson('api/v1/company-invitations', ['email' => 'no-token@example.com', 'role_id' => $role->id])
+        ->assertOk()
+        ->assertJsonMissingPath('invitation.token');
+});
+
+test('only the invited person can accept or decline an invitation', function () {
+    $company = Company::first();
+    $role = invitationOwnerRole($company);
+    $invitation = CompanyInvitation::create([
+        'company_id' => $company->id,
+        'email' => 'invited@example.com',
+        'role_id' => $role->id,
+        'token' => 'someone-elses-token',
+        'status' => 'pending',
+        'invited_by' => User::first()->id,
+        'expires_at' => now()->addDays(7),
+    ]);
+
+    $intruder = User::factory()->create(['email' => 'intruder@example.com', 'role' => 'user']);
+    Sanctum::actingAs($intruder, ['*']);
+
+    postJson("api/v1/invitations/{$invitation->token}/accept")->assertForbidden();
+    postJson("api/v1/invitations/{$invitation->token}/decline")->assertForbidden();
+
+    expect($intruder->fresh()->hasCompany($company->id))->toBeFalse();
+    $this->assertDatabaseHas('company_invitations', ['id' => $invitation->id, 'status' => 'pending']);
 });

@@ -1,63 +1,55 @@
 <template>
-  <BaseDropdown>
+  <BaseDropdown :label="$t('general.actions_for', { name: row.estimate_number })">
     <template #activator>
-      <BaseButton v-if="isDetailView" variant="primary">
-        <BaseIcon name="EllipsisHorizontalIcon" class="text-white" />
-      </BaseButton>
-      <BaseIcon v-else class="text-muted" name="EllipsisHorizontalIcon" />
+      <span v-if="isDetailView" data-overflow class="inline-flex items-center justify-center border rounded-lg w-11 h-11 md:w-9 md:h-9 bg-surface border-line-default text-body hover:bg-hover">
+        <BaseIcon name="EllipsisHorizontalIcon" class="w-5 h-5" />
+      </span>
+      <span v-else class="inline-flex items-center justify-center rounded-lg w-9 h-9 text-muted hover:bg-hover-strong hover:text-heading">
+        <BaseIcon name="EllipsisHorizontalIcon" class="w-5 h-5" />
+      </span>
     </template>
 
     <!-- Copy PDF url -->
     <BaseDropdownItem v-if="isDetailView" @click="copyPdfUrl">
       <BaseIcon
         name="LinkIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.copy_pdf_url') }}
     </BaseDropdownItem>
 
     <!-- Edit Estimate -->
-    <router-link
-      v-if="canEdit"
-      :to="`/admin/estimates/${row.id}/edit`"
-    >
-      <BaseDropdownItem>
-        <BaseIcon
-          name="PencilIcon"
-          class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
-        />
-        {{ $t('general.edit') }}
-      </BaseDropdownItem>
-    </router-link>
+    <BaseDropdownItem v-if="canEdit" :to="`/admin/estimates/${row.id}/edit`">
+      <BaseIcon
+        name="PencilIcon"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
+      />
+      {{ $t('general.edit') }}
+    </BaseDropdownItem>
 
     <!-- Delete Estimate -->
     <BaseDropdownItem v-if="canDelete" @click="removeEstimate">
       <BaseIcon
         name="TrashIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.delete') }}
     </BaseDropdownItem>
 
     <!-- View Estimate -->
-    <router-link
-      v-if="!isDetailView && canView"
-      :to="`estimates/${row.id}/view`"
-    >
-      <BaseDropdownItem>
-        <BaseIcon
-          name="EyeIcon"
-          class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
-        />
-        {{ $t('general.view') }}
-      </BaseDropdownItem>
-    </router-link>
+    <BaseDropdownItem v-if="!isDetailView && canView" :to="`estimates/${row.id}/view`">
+      <BaseIcon
+        name="EyeIcon"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
+      />
+      {{ $t('general.view') }}
+    </BaseDropdownItem>
 
     <!-- Clone Estimate -->
     <BaseDropdownItem v-if="canCreate" @click="cloneEstimateData">
       <BaseIcon
         name="DocumentTextIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('estimates.clone_estimate') }}
     </BaseDropdownItem>
@@ -66,7 +58,7 @@
     <BaseDropdownItem v-if="canCreateInvoice && row.status !== 'REJECTED'" @click="convertToInvoice">
       <BaseIcon
         name="DocumentTextIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('estimates.convert_to_invoice') }}
     </BaseDropdownItem>
@@ -78,7 +70,7 @@
     >
       <BaseIcon
         name="CheckCircleIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('estimates.mark_as_sent') }}
     </BaseDropdownItem>
@@ -90,7 +82,7 @@
     >
       <BaseIcon
         name="PaperAirplaneIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('estimates.send_estimate') }}
     </BaseDropdownItem>
@@ -99,7 +91,7 @@
     <BaseDropdownItem v-if="canResendEstimate" @click="sendEstimate">
       <BaseIcon
         name="PaperAirplaneIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('estimates.resend_estimate') }}
     </BaseDropdownItem>
@@ -111,7 +103,7 @@
     >
       <BaseIcon
         name="CheckCircleIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('estimates.mark_as_accepted') }}
     </BaseDropdownItem>
@@ -123,7 +115,7 @@
     >
       <BaseIcon
         name="XCircleIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('estimates.mark_as_rejected') }}
     </BaseDropdownItem>
@@ -138,6 +130,7 @@ import { useEstimateStore } from '../store'
 import { useDialogStore } from '../../../../stores/dialog.store'
 import { useModalStore } from '../../../../stores/modal.store'
 import { useNotificationStore } from '../../../../stores/notification.store'
+import { absoluteDocumentUrl } from '@/scripts/utils/documents'
 import type { Estimate } from '../../../../types/domain/estimate'
 
 interface TableRef {
@@ -290,7 +283,7 @@ function onMarkAsRejected(): void {
 }
 
 function copyPdfUrl(): void {
-  const pdfUrl = `${window.location.origin}/estimates/pdf/${props.row.unique_hash}`
+  const pdfUrl = absoluteDocumentUrl(`/estimates/pdf/${props.row.unique_hash}`)
   copyToClipboard(pdfUrl)
   notificationStore.showNotification({
     type: 'success',

@@ -2,7 +2,7 @@
     "openapi": "3.1.0",
     "info": {
         "title": "InvoiceShelf API",
-        "version": "3.0.0-alpha.3",
+        "version": "3.0.0-alpha.4",
         "description": "REST API for InvoiceShelf \u2014 open-source invoicing & expense tracking. Authenticate with a Sanctum personal access token (Authorization: Bearer <token>). Company-scoped endpoints additionally require a `company` header carrying the company ID."
     },
     "servers": [
@@ -1390,6 +1390,81 @@
                 }
             }
         },
+        "/app/client-manifest": {
+            "get": {
+                "operationId": "operations.clientManifest",
+                "tags": [
+                    "ClientManifest"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Short enough that a rebuilt module asset is picked up on the next\ncold start, long enough to survive a boot sequence's own retries.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "version": {
+                                            "type": "string"
+                                        },
+                                        "min_client_version": {
+                                            "type": "string"
+                                        },
+                                        "app_url": {
+                                            "type": "string",
+                                            "description": "Media URLs are built from APP_URL, so a client whose server\naddress disagrees with this one is about to load broken images."
+                                        },
+                                        "page_title": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ],
+                                            "description": "Never the customer-portal title: that one is per company and\nthis endpoint runs with no tenant in hand."
+                                        },
+                                        "branding": {
+                                            "type": "object",
+                                            "properties": {
+                                                "login_page_logo": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "login_page_heading": {},
+                                                "login_page_description": {},
+                                                "copyright_text": {}
+                                            },
+                                            "required": [
+                                                "login_page_logo",
+                                                "login_page_heading",
+                                                "login_page_description",
+                                                "copyright_text"
+                                            ]
+                                        },
+                                        "modules": {
+                                            "type": "array",
+                                            "items": {}
+                                        },
+                                        "demo_mode": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "version",
+                                        "min_client_version",
+                                        "app_url",
+                                        "page_title",
+                                        "branding",
+                                        "modules",
+                                        "demo_mode"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/super-admin/companies": {
             "get": {
                 "operationId": "companies.index",
@@ -1961,6 +2036,9 @@
                             }
                         }
                     },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
                     }
@@ -1995,6 +2073,9 @@
                                 }
                             }
                         }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
@@ -2246,7 +2327,7 @@
         "/company/settings": {
             "get": {
                 "operationId": "companySettings.show",
-                "description": "Options with no row on file are absent from the reply rather than null,\nso the map that comes back can be shorter than the one asked for \u2014 and\nempty when none of them exist, which serialises as an empty list.",
+                "description": "Options with no row on file are absent from the reply rather than null,\nso the map that comes back can be shorter than the one asked for \u2014 and\nempty when none of them exist, which serialises as an empty list. The\nmail transport and module settings are never among them.",
                 "summary": "The named preferences of the active company",
                 "tags": [
                     "CompanySettings"
@@ -2502,7 +2583,7 @@
         "/config": {
             "get": {
                 "operationId": "company.config",
-                "description": "Exchange-rate drivers are assembled at runtime rather than read from a\nconfig file, so that key takes its own path.",
+                "description": "Exchange-rate drivers and custom-field model types are assembled at\nruntime rather than read from a config file, so those keys take their\nown path.",
                 "summary": "Hand the SPA one value out of the application configuration",
                 "tags": [
                     "Config"
@@ -2535,6 +2616,17 @@
                                             "minItems": 1,
                                             "maxItems": 1,
                                             "additionalItems": false
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "custom_field_models": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "custom_field_models"
+                                            ]
                                         },
                                         {
                                             "type": "object",
@@ -2716,6 +2808,87 @@
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/super-admin/currencies": {
+            "get": {
+                "operationId": "currencies.index",
+                "tags": [
+                    "Currencies"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `CurrencyResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/CurrencyResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/super-admin/currencies/refresh": {
+            "post": {
+                "operationId": "currencies.refresh",
+                "summary": "Plant anything the shipped catalogue has and this installation does not",
+                "tags": [
+                    "Currencies"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "added": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "updated": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "total": {
+                                            "type": "integer",
+                                            "minimum": 0
+                                        }
+                                    },
+                                    "required": [
+                                        "added",
+                                        "updated",
+                                        "total"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     }
                 }
             }
@@ -3222,6 +3395,35 @@
                         }
                     },
                     {
+                        "name": "previous_year",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "from_date",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "to_date",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "format": "date"
+                        }
+                    },
+                    {
                         "name": "company",
                         "in": "header",
                         "required": true,
@@ -3271,6 +3473,9 @@
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
                     }
                 }
             }
@@ -3591,6 +3796,35 @@
                 ],
                 "parameters": [
                     {
+                        "name": "previous_year",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "from_date",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "to_date",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "format": "date"
+                        }
+                    },
+                    {
                         "name": "company",
                         "in": "header",
                         "required": true,
@@ -3609,6 +3843,39 @@
                                     "type": "object",
                                     "properties": {
                                         "total_amount_due": {},
+                                        "receivables": {
+                                            "type": "object",
+                                            "properties": {
+                                                "outstanding": {
+                                                    "type": "string"
+                                                },
+                                                "outstanding_count": {
+                                                    "type": "integer",
+                                                    "minimum": 0
+                                                },
+                                                "overdue": {
+                                                    "type": "integer"
+                                                },
+                                                "overdue_count": {
+                                                    "type": "integer",
+                                                    "minimum": 0
+                                                },
+                                                "due_soon": {
+                                                    "type": "integer"
+                                                },
+                                                "due_later": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": [
+                                                "outstanding",
+                                                "outstanding_count",
+                                                "overdue",
+                                                "overdue_count",
+                                                "due_soon",
+                                                "due_later"
+                                            ]
+                                        },
                                         "total_customer_count": {
                                             "type": "integer",
                                             "minimum": 0
@@ -3664,9 +3931,7 @@
                                             "properties": {
                                                 "months": {
                                                     "type": "array",
-                                                    "items": {
-                                                        "type": "string"
-                                                    }
+                                                    "items": {}
                                                 },
                                                 "invoice_totals": {
                                                     "type": "array",
@@ -3682,9 +3947,7 @@
                                                 },
                                                 "net_income_totals": {
                                                     "type": "array",
-                                                    "items": {
-                                                        "type": "string"
-                                                    }
+                                                    "items": {}
                                                 }
                                             },
                                             "required": [
@@ -3695,15 +3958,66 @@
                                                 "net_income_totals"
                                             ]
                                         },
-                                        "total_sales": {},
-                                        "total_receipts": {},
-                                        "total_expenses": {},
+                                        "total_sales": {
+                                            "anyOf": [
+                                                {
+                                                    "type": "integer"
+                                                },
+                                                {
+                                                    "type": "number"
+                                                }
+                                            ]
+                                        },
+                                        "total_receipts": {
+                                            "anyOf": [
+                                                {
+                                                    "type": "integer"
+                                                },
+                                                {
+                                                    "type": "number"
+                                                }
+                                            ]
+                                        },
+                                        "total_expenses": {
+                                            "anyOf": [
+                                                {
+                                                    "type": "integer"
+                                                },
+                                                {
+                                                    "type": "number"
+                                                }
+                                            ]
+                                        },
                                         "total_net_income": {
                                             "type": "string"
+                                        },
+                                        "period": {
+                                            "type": "object",
+                                            "properties": {
+                                                "from": {
+                                                    "type": "string"
+                                                },
+                                                "to": {
+                                                    "type": "string"
+                                                },
+                                                "granularity": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "day",
+                                                        "month"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "from",
+                                                "to",
+                                                "granularity"
+                                            ]
                                         }
                                     },
                                     "required": [
                                         "total_amount_due",
+                                        "receivables",
                                         "total_customer_count",
                                         "total_invoice_count",
                                         "total_estimate_count",
@@ -3713,7 +4027,8 @@
                                         "total_sales",
                                         "total_receipts",
                                         "total_expenses",
-                                        "total_net_income"
+                                        "total_net_income",
+                                        "period"
                                     ]
                                 }
                             }
@@ -3724,6 +4039,9 @@
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
                     }
                 }
             }
@@ -5419,6 +5737,9 @@
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
                     }
                 }
             }
@@ -7524,6 +7845,9 @@
                             }
                         }
                     },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
                     }
@@ -7557,7 +7881,7 @@
                                         "format": "email"
                                     },
                                     "role_id": {
-                                        "type": "integer"
+                                        "type": "string"
                                     }
                                 },
                                 "required": [
@@ -7590,6 +7914,9 @@
                                 }
                             }
                         }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -7667,6 +7994,9 @@
                                 }
                             }
                         }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
                     },
                     "404": {
                         "$ref": "#/components/responses/ModelNotFoundException"
@@ -10082,7 +10412,7 @@
             },
             "post": {
                 "operationId": "members.store",
-                "description": "Note the gate: only the active company is weighed, so an owner may file\nan account into any company whose id they care to submit.",
+                "description": "The gate weighs the active company; MemberRequest limits the listed\ncompanies to those the caller owns.",
                 "summary": "Open a staff account and place it in the companies the form listed",
                 "tags": [
                     "Members"
@@ -14083,7 +14413,18 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "admin_portal_theme",
+                                "admin_portal_logo",
+                                "login_page_logo",
+                                "login_page_heading",
+                                "login_page_description",
+                                "admin_page_title",
+                                "copyright_text",
+                                "save_pdf_to_disk",
+                                "show_sidebar_group_labels"
+                            ]
                         }
                     },
                     {
@@ -14465,6 +14806,90 @@
                     },
                     "403": {
                         "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/auth/tokens": {
+            "get": {
+                "operationId": "token.index",
+                "tags": [
+                    "Token"
+                ],
+                "parameters": [
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `PersonalAccessTokenResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PersonalAccessTokenResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/auth/tokens/{id}": {
+            "delete": {
+                "operationId": "token.destroy",
+                "summary": "A token id that belongs to somebody else is answered 404, exactly as an\nid nobody holds would be",
+                "tags": [
+                    "Token"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
                     },
                     "404": {
                         "$ref": "#/components/responses/ModelNotFoundException"
@@ -16424,6 +16849,12 @@
                     "model_type": {
                         "type": "string"
                     },
+                    "placement": {
+                        "type": "string"
+                    },
+                    "validation": {
+                        "type": "string"
+                    },
                     "type": {
                         "type": "string"
                     },
@@ -16465,9 +16896,6 @@
                     },
                     "default_answer": {
                         "type": "string"
-                    },
-                    "company": {
-                        "$ref": "#/components/schemas/App.Domains.Accounts.Http.Resources.CustomerPortal.CompanyResource"
                     }
                 },
                 "required": [
@@ -16476,6 +16904,8 @@
                     "slug",
                     "label",
                     "model_type",
+                    "placement",
+                    "validation",
                     "type",
                     "placeholder",
                     "options",
@@ -16537,9 +16967,6 @@
                     },
                     "custom_field": {
                         "$ref": "#/components/schemas/App.Domains.Metadata.Http.Resources.CustomerPortal.CustomFieldResource"
-                    },
-                    "company": {
-                        "$ref": "#/components/schemas/App.Domains.Accounts.Http.Resources.CustomerPortal.CompanyResource"
                     }
                 },
                 "required": [
@@ -17606,7 +18033,7 @@
             },
             "BulkExchangeRateRequest": {
                 "type": "object",
-                "description": "Payload for the one-shot historical exchange-rate backfill: a list of\n{id, exchange_rate} pairs. Access is gated by the company setting, not here.",
+                "description": "Payload for the one-shot historical exchange-rate backfill: a list of\n{id, exchange_rate} pairs. The company setting decides whether the backfill\nstill runs; only the owner, who is also the one who changes the company's\ncurrency, may run it.",
                 "properties": {
                     "currencies": {
                         "type": "array",
@@ -17816,7 +18243,8 @@
                         "type": "string"
                     },
                     "token": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "The token accepts the invitation, so only the person it was sent to sees it"
                     },
                     "status": {
                         "type": "string"
@@ -17841,7 +18269,6 @@
                     "id",
                     "company_id",
                     "email",
-                    "token",
                     "status",
                     "expires_at",
                     "created_at"
@@ -17912,6 +18339,32 @@
                         "required": [
                             "country_id"
                         ]
+                    },
+                    "customFields": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "slug": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                },
+                                "value": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "value"
+                            ]
+                        }
                     }
                 },
                 "required": [
@@ -17973,6 +18426,12 @@
                             "string",
                             "null"
                         ]
+                    },
+                    "fields": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CustomFieldValueResource"
+                        }
                     }
                 },
                 "required": [
@@ -18383,7 +18842,7 @@
                         "type": "string"
                     },
                     "swap_currency_symbol": {
-                        "type": "integer"
+                        "type": "boolean"
                     },
                     "created_at": {
                         "type": [
@@ -18460,7 +18919,7 @@
             },
             "CustomFieldRequest": {
                 "type": "object",
-                "description": "A custom-field definition as the admin screen submits it.\n\nTwo absences are deliberate. `model_type` is checked for presence only, so\nany string at all reaches the column \u2014 the handful of model names the UI\noffers is a convention, not a constraint. And the default answer never\nappears below: which value column it belongs in follows from `type`, so the\ncontroller reads it off the request untouched and lets the service place it.",
+                "description": "A custom-field definition as the admin screen submits it.\n\n`model_type` is checked against the catalogue, which the editor's dropdown\nis also built from, so the two cannot drift and an unknown model can no\nlonger reach the column. The default answer never appears below: which\nvalue column it belongs in follows from `type`, so the controller reads it\noff the request untouched and lets the service place it.",
                 "properties": {
                     "name": {
                         "type": "string"
@@ -18469,7 +18928,17 @@
                         "type": "string"
                     },
                     "model_type": {
-                        "type": "string"
+                        "type": "string",
+                        "enum": [
+                            "Customer",
+                            "Invoice",
+                            "Estimate",
+                            "Payment",
+                            "Expense",
+                            "Item",
+                            "Company",
+                            "User"
+                        ]
                     },
                     "order": {
                         "type": "string"
@@ -18481,7 +18950,10 @@
                         "type": "boolean"
                     },
                     "options": {
-                        "type": "array",
+                        "type": [
+                            "array",
+                            "null"
+                        ],
                         "items": {
                             "type": "string"
                         }
@@ -18491,6 +18963,65 @@
                             "string",
                             "null"
                         ]
+                    },
+                    "placement": {
+                        "type": "string",
+                        "enum": [
+                            "internal",
+                            "document"
+                        ]
+                    },
+                    "validation": {
+                        "type": "object",
+                        "properties": {
+                            "min_length": {
+                                "type": [
+                                    "integer",
+                                    "null"
+                                ],
+                                "minimum": 0
+                            },
+                            "max_length": {
+                                "type": [
+                                    "integer",
+                                    "null"
+                                ],
+                                "minimum": 1
+                            },
+                            "min": {
+                                "type": [
+                                    "number",
+                                    "null"
+                                ]
+                            },
+                            "max": {
+                                "type": [
+                                    "number",
+                                    "null"
+                                ]
+                            },
+                            "earliest": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "maxLength": 40
+                            },
+                            "latest": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "maxLength": 40
+                            },
+                            "pattern": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "maxLength": 255
+                            }
+                        }
                     }
                 },
                 "required": [
@@ -18519,6 +19050,12 @@
                         "type": "string"
                     },
                     "model_type": {
+                        "type": "string"
+                    },
+                    "placement": {
+                        "type": "string"
+                    },
+                    "validation": {
                         "type": "string"
                     },
                     "type": {
@@ -18562,9 +19099,6 @@
                     },
                     "default_answer": {
                         "type": "string"
-                    },
-                    "company": {
-                        "$ref": "#/components/schemas/CompanyResource"
                     }
                 },
                 "required": [
@@ -18573,6 +19107,8 @@
                     "slug",
                     "label",
                     "model_type",
+                    "placement",
+                    "validation",
                     "type",
                     "placeholder",
                     "options",
@@ -18633,16 +19169,10 @@
                         "type": "string"
                     },
                     "default_formatted_answer": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
+                        "type": "string"
                     },
                     "custom_field": {
                         "$ref": "#/components/schemas/CustomFieldResource"
-                    },
-                    "company": {
-                        "$ref": "#/components/schemas/CompanyResource"
                     }
                 },
                 "required": [
@@ -19136,6 +19666,32 @@
                                     "null"
                                 ]
                             }
+                        }
+                    },
+                    "customFields": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "slug": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                },
+                                "value": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "value"
+                            ]
                         }
                     }
                 },
@@ -20140,6 +20696,32 @@
                                 },
                                 "price": {
                                     "type": "integer"
+                                },
+                                "custom_fields": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": [
+                                                    "integer",
+                                                    "null"
+                                                ]
+                                            },
+                                            "slug": {
+                                                "type": [
+                                                    "string",
+                                                    "null"
+                                                ]
+                                            },
+                                            "value": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "value"
+                                        ]
+                                    }
                                 }
                             },
                             "required": [
@@ -20149,6 +20731,32 @@
                             ]
                         },
                         "minItems": 1
+                    },
+                    "customFields": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "slug": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                },
+                                "value": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "value"
+                            ]
+                        }
                     }
                 },
                 "required": [
@@ -20379,6 +20987,32 @@
                             "required": [
                                 "tax_type_id",
                                 "amount"
+                            ]
+                        }
+                    },
+                    "customFields": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "slug": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                },
+                                "value": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "value"
                             ]
                         }
                     }
@@ -21243,6 +21877,32 @@
                                 },
                                 "price": {
                                     "type": "number"
+                                },
+                                "custom_fields": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": [
+                                                    "integer",
+                                                    "null"
+                                                ]
+                                            },
+                                            "slug": {
+                                                "type": [
+                                                    "string",
+                                                    "null"
+                                                ]
+                                            },
+                                            "value": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "value"
+                                        ]
+                                    }
                                 }
                             },
                             "required": [
@@ -21252,6 +21912,32 @@
                             ]
                         },
                         "minItems": 1
+                    },
+                    "customFields": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "slug": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                },
+                                "value": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "value"
+                            ]
+                        }
                     }
                 },
                 "required": [
@@ -21307,6 +21993,13 @@
                     "formatted_created_at": {
                         "type": "string"
                     },
+                    "fields": {
+                        "type": "array",
+                        "description": "Loaded by the caller: the listing eager-loads it, so asking\nthe database per row would undo that.",
+                        "items": {
+                            "$ref": "#/components/schemas/CustomFieldValueResource"
+                        }
+                    },
                     "unit": {
                         "$ref": "#/components/schemas/UnitResource"
                     },
@@ -21360,6 +22053,32 @@
                             "string",
                             "null"
                         ]
+                    },
+                    "customFields": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "slug": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                },
+                                "value": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "value"
+                            ]
+                        }
                     }
                 },
                 "required": [
@@ -21410,12 +22129,6 @@
                     "from_mail": {
                         "type": "string",
                         "format": "email"
-                    },
-                    "mail_sendmail_path": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
                     }
                 },
                 "required": [
@@ -21427,7 +22140,7 @@
             },
             "MemberRequest": {
                 "type": "object",
-                "description": "Validates the staff-account form, which serves both filing a new member and\nediting one that already exists.\n\nThe two verbs part company in exactly two places: on an edit the uniqueness\ncheck steps over the row being edited, and the password turns optional so a\nform saved with the field left alone keeps the hash already on file.\n\nThe address is unique across the whole installation rather than within the\ncompany, so a collision tells one tenant that an address is already spoken\nfor somewhere else entirely. Kept as it stands.",
+                "description": "Validates the staff-account form, which serves both filing a new member and\nediting one that already exists.\n\nThe two verbs part company in exactly two places: on an edit the uniqueness\ncheck steps over the row being edited, and the password turns optional so a\nform saved with the field left alone keeps the hash already on file.\n\nThe address is unique across the whole installation rather than within the\ncompany, so a collision tells one tenant that an address is already spoken\nfor somewhere else entirely. Kept as it stands.\n\nThe membership list may only name companies the caller owns, each with a\nrole that exists in that company. A member who also belongs to a company the\ncaller does not own keeps their email and password: changing either would\nhand the caller that account, and with it the other company.",
                 "properties": {
                     "name": {
                         "type": "string"
@@ -21451,7 +22164,7 @@
                             "type": "object",
                             "properties": {
                                 "id": {
-                                    "type": "string"
+                                    "type": "integer"
                                 },
                                 "role": {
                                     "type": "string"
@@ -21461,7 +22174,8 @@
                                 "id",
                                 "role"
                             ]
-                        }
+                        },
+                        "minItems": 1
                     }
                 },
                 "required": [
@@ -21716,6 +22430,32 @@
                             "null"
                         ]
                     },
+                    "customFields": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "slug": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                },
+                                "value": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "value"
+                            ]
+                        }
+                    },
                     "allocations": {
                         "type": "array",
                         "description": "Row-level shape only. What the rows are allowed to add up to, and\nwhich invoices they may name, is the allocation engine's call.",
@@ -21955,6 +22695,34 @@
                 ],
                 "title": "PdfConfigurationRequest"
             },
+            "PersonalAccessTokenResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "last_used_at": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "current": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "last_used_at",
+                    "created_at",
+                    "current"
+                ],
+                "title": "PersonalAccessTokenResource"
+            },
             "ProfileRequest": {
                 "type": "object",
                 "description": "Validates the signed-in account editing its own profile.\n\nA display name is the only thing genuinely demanded. The password field is\noptional, so a form saved with it left alone keeps the hash already on file,\nand the address has to stay unique installation-wide with the caller's own\nrow stepped over \u2014 otherwise re-saving an unchanged form would collide with\nitself.",
@@ -21971,6 +22739,32 @@
                     },
                     "email": {
                         "type": "string"
+                    },
+                    "customFields": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "slug": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                },
+                                "value": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "value"
+                            ]
+                        }
                     }
                 },
                 "required": [
@@ -22039,8 +22833,60 @@
                                         "string",
                                         "null"
                                     ]
+                                },
+                                "custom_fields": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": [
+                                                    "integer",
+                                                    "null"
+                                                ]
+                                            },
+                                            "slug": {
+                                                "type": [
+                                                    "string",
+                                                    "null"
+                                                ]
+                                            },
+                                            "value": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "value"
+                                        ]
+                                    }
                                 }
                             }
+                        }
+                    },
+                    "customFields": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "slug": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                },
+                                "value": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "value"
+                            ]
                         }
                     }
                 },
@@ -22488,7 +23334,11 @@
                 "description": "Payload for a bulk write to the settings store.",
                 "properties": {
                     "settings": {
-                        "type": "string"
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "minItems": 1
                     }
                 },
                 "required": [
@@ -22875,10 +23725,14 @@
             },
             "UpdateSettingsRequest": {
                 "type": "object",
-                "description": "The payload behind writing preferences: one map of option names to values.\n\nOnly its presence is checked. Neither the option names nor the values are\nconstrained in any way, so anything the caller sends is upserted as-is \u2014\nbar the currency, which the controller guards once the books are open.",
+                "description": "The payload behind writing preferences: one map of option names to values.\n\nValues are not constrained, and the currency is guarded by the controller\nonce the books are open. The names are, a little: the mail transport and\nmodule settings are refused, because each has an endpoint of its own that\nvalidates it.",
                 "properties": {
                     "settings": {
-                        "type": "string"
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "minItems": 1
                     }
                 },
                 "required": [
@@ -23095,6 +23949,12 @@
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/CompanyResource"
+                        }
+                    },
+                    "fields": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CustomFieldValueResource"
                         }
                     }
                 },

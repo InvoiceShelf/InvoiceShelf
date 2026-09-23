@@ -2,27 +2,27 @@
   <div>
     <NoteModal />
     <div class="w-full">
-    <Popover>
-      <PopoverButton
+    <PopoverRoot v-slot="{ close }">
+      <PopoverTrigger
         v-if="canViewNotes"
-        class="flex items-center z-10 font-medium text-primary-400 focus:outline-hidden focus:border-none"
+        class="z-10 flex items-center gap-1 font-medium rounded-md text-primary-600 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
         @click="fetchInitialData"
       >
-        <BaseIcon name="PlusIcon" class="w-4 h-4 font-medium text-primary-400" />
+        <BaseIcon name="PlusIcon" class="w-4 h-4" />
         {{ $t('general.insert_note') }}
-      </PopoverButton>
+      </PopoverTrigger>
 
-      <transition
-        enter-active-class="transition duration-200 ease-out"
-        enter-from-class="translate-y-1 opacity-0"
-        enter-to-class="translate-y-0 opacity-100"
-        leave-active-class="transition duration-150 ease-in"
-        leave-from-class="translate-y-0 opacity-100"
-        leave-to-class="translate-y-1 opacity-0"
-      >
-        <PopoverPanel
-          v-slot="{ close }"
-          class="absolute z-20 px-4 mt-3 sm:px-0 w-screen max-w-full left-0 top-3"
+      <PopoverPortal>
+        <!-- As wide as the notes field it sits over, and ending with it -->
+        <PopoverContent
+          side="bottom"
+          align="end"
+          :side-offset="4"
+          :collision-padding="16"
+          class="
+            z-20 w-[min(35rem,calc(100vw-2rem))] text-sm font-semibold leading-5 focus:outline-hidden
+            data-[state=open]:animate-rise-in data-[state=closed]:animate-rise-out
+          "
         >
           <div class="overflow-hidden rounded-md shadow-lg ring-1 ring-black/5">
             <div class="relative grid bg-surface">
@@ -30,7 +30,8 @@
                 <BaseInput
                   v-model="textSearch"
                   :placeholder="$t('general.search')"
-                  type="text"
+                  :aria-label="$t('general.search')"
+                  type="search"
                   class="text-heading"
                 />
               </div>
@@ -39,52 +40,52 @@
                 v-if="filteredNotes.length > 0"
                 class="relative flex flex-col overflow-auto list max-h-36"
               >
-                <div
+                <button
                   v-for="(note, idx) in filteredNotes"
                   :key="idx"
-                  tabindex="2"
-                  class="px-6 py-4 border-b border-line-default border-solid cursor-pointer hover:bg-surface-tertiary hover:cursor-pointer last:border-b-0"
-                  @click="selectNote(idx, close)"
+                  type="button"
+                  class="
+                    w-full px-6 py-4 text-start border-b border-line-default border-solid last:border-b-0
+                    hover:bg-surface-tertiary focus:outline-hidden focus-visible:bg-surface-tertiary
+                    focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus
+                  "
+                  @click="selectNote(note, close)"
                 >
-                  <div class="flex justify-between px-2">
-                    <label
-                      class="m-0 text-base font-semibold leading-tight text-body cursor-pointer"
-                    >
+                  <span class="flex justify-between px-2">
+                    <span class="m-0 text-base font-semibold leading-tight text-body">
                       {{ note.name }}
-                    </label>
-                  </div>
-                </div>
+                    </span>
+                  </span>
+                </button>
               </div>
-              <div v-else class="flex justify-center p-5 text-subtle">
-                <label class="text-base text-muted">
+              <div v-else class="flex justify-center p-5" role="status">
+                <span class="text-base text-muted">
                   {{ $t('general.no_note_found') }}
-                </label>
+                </span>
               </div>
             </div>
 
             <button
               v-if="canManageNotes"
               type="button"
-              class="h-10 flex items-center justify-center w-full px-2 py-3 bg-surface-muted border-none outline-hidden"
+              class="flex items-center justify-center w-full h-10 px-2 py-3 border-none bg-surface-muted text-primary-600 outline-hidden focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus"
               @click="openNoteModal"
             >
-              <BaseIcon name="CheckCircleIcon" class="text-primary-400" />
-              <label
-                class="m-0 ml-3 text-sm leading-none cursor-pointer font-base text-primary-400"
-              >
+              <BaseIcon name="CheckCircleIcon" />
+              <span class="m-0 ms-3 text-sm leading-none font-base">
                 {{ $t('settings.customization.notes.add_new_note') }}
-              </label>
+              </span>
             </button>
           </div>
-        </PopoverPanel>
-      </transition>
-    </Popover>
+        </PopoverContent>
+      </PopoverPortal>
+    </PopoverRoot>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
+import { PopoverContent, PopoverPortal, PopoverRoot, PopoverTrigger } from 'reka-ui'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useModalStore } from '../../../stores/modal.store'
@@ -144,10 +145,16 @@ async function fetchInitialData(): Promise<void> {
   }
 }
 
-function selectNote(index: number, close: () => void): void {
-  emit('select', { ...notes.value[index] })
+// By note, not position: the list may be filtered by a search
+function selectNote(note: Note, close?: () => void): void {
+  emit('select', { ...note })
   textSearch.value = null
-  close()
+  close?.()
+}
+
+// Loaded up front, so the list does not open empty and then fill
+if (canViewNotes.value) {
+  void fetchInitialData()
 }
 
 function openNoteModal(): void {
@@ -156,7 +163,14 @@ function openNoteModal(): void {
     componentName: 'NoteModal',
     size: 'lg',
     data: props.type,
-    refreshData: () => fetchInitialData(),
+    // A note created from here is inserted straight away
+    refreshData: async (note: unknown) => {
+      await fetchInitialData()
+
+      if ((note as Note | undefined)?.id) {
+        selectNote(note as Note)
+      }
+    },
   })
 }
 </script>

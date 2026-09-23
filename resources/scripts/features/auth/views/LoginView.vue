@@ -1,5 +1,5 @@
 <template>
-  <form id="loginForm" class="mt-12 text-left" @submit.prevent="onSubmit">
+  <form id="loginForm" class="mt-12 text-start" @submit.prevent="onSubmit">
     <BaseInputGroup
       :error="v$.email.$error && v$.email.$errors[0].$message"
       :label="$t('login.email')"
@@ -8,6 +8,7 @@
     >
       <BaseInput
         v-model="authStore.loginData.email"
+        autocomplete="username"
         :invalid="v$.email.$error"
         focus
         type="email"
@@ -24,26 +25,20 @@
     >
       <BaseInput
         v-model="authStore.loginData.password"
+        autocomplete="current-password"
         :invalid="v$.password.$error"
-        :type="inputType"
+        type="password"
+        revealable
         name="password"
         @input="v$.password.$touch()"
-      >
-        <template #right>
-          <BaseIcon
-            :name="isShowPassword ? 'EyeIcon' : 'EyeSlashIcon'"
-            class="mr-1 text-muted cursor-pointer"
-            @click="isShowPassword = !isShowPassword"
-          />
-        </template>
-      </BaseInput>
+      />
     </BaseInputGroup>
 
     <div class="mt-5 mb-8">
       <div class="mb-4">
         <router-link
           to="forgot-password"
-          class="text-sm text-primary-400 hover:text-body"
+          class="text-sm text-primary-600 hover:text-body"
         >
           {{ $t('login.forgot_password') }}
         </router-link>
@@ -77,7 +72,6 @@ const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
 const isLoading = ref<boolean>(false)
-const isShowPassword = ref<boolean>(false)
 
 // Server-rendered pages a sign-in may return to. Keep in step with
 // PostLoginRedirect::SERVER_PATHS (app/Domains/Accounts/Application).
@@ -107,10 +101,6 @@ const v$ = useVuelidate(
   rules,
   computed(() => authStore.loginData)
 )
-
-const inputType = computed<string>(() => {
-  return isShowPassword.value ? 'text' : 'password'
-})
 
 async function onSubmit(): Promise<void> {
   v$.value.$touch()

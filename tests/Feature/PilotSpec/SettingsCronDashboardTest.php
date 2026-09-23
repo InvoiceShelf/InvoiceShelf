@@ -20,27 +20,60 @@ beforeEach(function () {
 });
 
 it('upserts settings by key and reads them back', function () {
-    postJson('/api/v1/settings', ['settings' => ['pilot_key_a' => 'v1', 'pilot_key_b' => 'v2']])
+    postJson('/api/v1/settings', ['settings' => ['login_page_heading' => 'v1', 'copyright_text' => 'v2']])
         ->assertOk()
         ->assertJson(['success' => true]);
 
-    postJson('/api/v1/settings', ['settings' => ['pilot_key_a' => 'v3']])->assertOk();
+    postJson('/api/v1/settings', ['settings' => ['login_page_heading' => 'v3']])->assertOk();
 
-    expect(DB::table('settings')->where('option', 'pilot_key_a')->count())->toBe(1);
-    expect(DB::table('settings')->where('option', 'pilot_key_a')->value('value'))->toBe('v3');
+    expect(DB::table('settings')->where('option', 'login_page_heading')->count())->toBe(1);
+    expect(DB::table('settings')->where('option', 'login_page_heading')->value('value'))->toBe('v3');
 
-    getJson('/api/v1/settings?key=pilot_key_a')->assertOk()->assertJson(['pilot_key_a' => 'v3']);
+    getJson('/api/v1/settings?key=login_page_heading')->assertOk()->assertJson(['login_page_heading' => 'v3']);
 });
 
 it('reads a missing setting as null', function () {
-    getJson('/api/v1/settings?key=pilot_absent_key')
+    DB::table('settings')->where('option', 'copyright_text')->delete();
+
+    getJson('/api/v1/settings?key=copyright_text')
         ->assertOk()
-        ->assertJson(['pilot_absent_key' => null]);
+        ->assertJson(['copyright_text' => null]);
 });
 
 it('validates the settings endpoints', function () {
     postJson('/api/v1/settings', [])->assertStatus(422)->assertJsonValidationErrors(['settings']);
     getJson('/api/v1/settings')->assertStatus(422);
+});
+
+it('reads and writes only the settings the shell paints with', function () {
+    DB::table('settings')->updateOrInsert(['option' => 'mail_password'], ['value' => 'stored-password']);
+    $installed = DB::table('settings')->where('option', 'profile_complete')->value('value');
+
+    foreach ([
+        ['profile_complete' => '0'],
+        ['gotenberg_host' => 'http://169.254.169.254'],
+        ['media_disk_id' => '999'],
+        ['mail_password' => 'replaced'],
+        ['show_sidebar_group_labels' => 'YES', 'updater_channel' => 'insider'],
+    ] as $settings) {
+        postJson('/api/v1/settings', ['settings' => $settings])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['settings']);
+    }
+
+    expect(DB::table('settings')->where('option', 'profile_complete')->value('value'))->toBe($installed)
+        ->and(DB::table('settings')->where('option', 'gotenberg_host')->exists())->toBeFalse()
+        ->and(DB::table('settings')->where('option', 'mail_password')->value('value'))->toBe('stored-password')
+        ->and(DB::table('settings')->where('option', 'updater_channel')->exists())->toBeFalse();
+
+    getJson('/api/v1/settings?key=mail_password')
+        ->assertStatus(422)
+        ->assertDontSee('stored-password');
+
+    postJson('/api/v1/settings', ['settings' => ['show_sidebar_group_labels' => 'NO', 'save_pdf_to_disk' => 'YES']])
+        ->assertOk();
+
+    expect(DB::table('settings')->where('option', 'show_sidebar_group_labels')->value('value'))->toBe('NO');
 });
 
 it('guards the cron webhook with the shared token', function () {

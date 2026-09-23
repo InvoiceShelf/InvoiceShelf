@@ -4,6 +4,7 @@ namespace App\Adapters\Accounts;
 
 use App\Domains\Accounts\Contracts\UserAvatarManager;
 use App\Domains\Accounts\Models\User;
+use App\Support\Media\SafeFileName;
 
 class MediaLibraryUserAvatarManager implements UserAvatarManager
 {
@@ -18,7 +19,7 @@ class MediaLibraryUserAvatarManager implements UserAvatarManager
     {
         $this->clear($user);
         $user->addMedia($path)
-            ->usingFileName($fileName)
+            ->usingFileName(SafeFileName::from($fileName))
             ->toMediaCollection(self::COLLECTION);
     }
 
@@ -26,7 +27,7 @@ class MediaLibraryUserAvatarManager implements UserAvatarManager
     {
         $this->clear($user);
         $user->addMediaFromBase64($contents)
-            ->usingFileName($fileName)
+            ->usingFileName(SafeFileName::from($fileName))
             ->toMediaCollection(self::COLLECTION);
     }
 }

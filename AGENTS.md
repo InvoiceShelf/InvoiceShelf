@@ -76,6 +76,16 @@ Three guards: `web` (session), `api` (Sanctum tokens for `/api/v1/`), `customer`
 - **API**: All endpoints under `/api/v1/` in `routes/api.php`, grouped with `auth:sanctum`, `company`, and `bouncer` middleware
 - **Web**: `routes/web.php` serves PDF endpoints, auth pages, and catch-all SPA routes (`/admin/{vue?}`, `/{company:slug}/customer/{vue?}`)
 
+### Thin clients
+
+Mobile clients run the same SPA from their own origin and never load `resources/views/app.blade.php`, so the public `GET /api/v1/app/client-manifest` stands in for it: version, `min_client_version`, `app_url`, page title, login branding, module script/style URLs and the demo flag. **It mirrors the Blade shell; change one and change the other** (`ClientManifestService`).
+
+`config/cors.php` is published and covers `api/*`, the module asset routes, `reports/*` and the PDF routes. `allowed_origins` comes from `CORS_ALLOWED_ORIGINS`, defaulting to `capacitor://` and `https://` on `invoiceshelf.client.hostname`. That hostname must never be `localhost` or `127.0.0.1`: Sanctum's default stateful list holds both, so such an origin gets session and CSRF middleware and every bearer POST fails with 419.
+
+Tokens never expire, so `GET /api/v1/auth/tokens` and `DELETE /api/v1/auth/tokens/{id}` (the caller's own only) exist to cut off a lost device, and `POST /api/v1/auth/login` is throttled to 10 a minute.
+
+**Mobile shell** (`mobile/`, see `mobile/README.md`): a Capacitor 7 project wrapping the `pnpm build:client` output in `mobile/www`. `android/` and `ios/` are committed; `www/` and `node_modules/` are not. Native pieces live in `resources/scripts/platform/capacitor.ts` alone (device name, share-sheet file delivery, in-app browser, receipt camera, the biometric check behind the app lock in `resources/scripts/client/lock.ts`), behind a dynamic import gated on `__INVOICESHELF_CLIENT__` so no Capacitor code reaches the web bundle. The plugins are declared twice, in `mobile/package.json` and the root one, and must stay at the same versions. `capacitor.config.ts`'s `server.hostname` is the contract above: never `localhost`.
+
 ### Frontend
 - Vue 3 + TypeScript + Pinia + vue-router + Tailwind v4 (`@tailwindcss/vite`)
 - Entry point: `resources/scripts/main.ts` (single Vite input)
@@ -95,7 +105,8 @@ The styling system uses **Tailwind v4 with CSS custom properties as the source o
 - `primary-{50…950}` — brand color scale
 - `surface`, `surface-secondary`, `surface-tertiary`, `surface-muted` — background depth tiers
 - `heading`, `body`, `muted`, `subtle` — text emphasis tiers
-- `line-{light,default,strong}` — borders
+- `line-{light,default,strong}` — borders (`line-strong` is also the text field border)
+- `control-border` — checkbox and switch outlines, 3:1 against a modal's glass
 - `hover`, `hover-strong` — hover backgrounds
 - `header-from`, `header-to` — fixed header gradient stops (not dark-mode-aware)
 - `btn-primary`, `btn-primary-hover` — button colors (fixed, always bold)
@@ -111,6 +122,10 @@ The styling system uses **Tailwind v4 with CSS custom properties as the source o
 After that the token is usable as `bg-X` / `text-X` / `border-X` in Vue templates and as `var(--color-X)` in raw CSS. Skip step 2 and the value exists at the CSS level but Tailwind utility classes won't be generated.
 
 **Convention — never hardcode hex/rgb values in components.** Use the semantic tokens: `text-heading` not `text-gray-900`, `bg-surface` not `bg-white`, `border-line-default` not `border-gray-300`. Hardcoded values won't follow dark-mode flips and will diverge from the rest of the app over time. There are **no exceptions** in the project — even the auth pages (which sit outside the admin chrome) use the same `bg-surface` / `text-heading` / `border-line-default` vocabulary as `BaseCard`, just composed differently.
+
+**Form field borders.** Text fields (inputs, textareas, selects, the multiselect, the rich editor) get their border from the form base styles in `invoiceshelf.css`, or from the `field-border` class when the field is a button or a div. Don't give a field a border colour utility such as `border-line-strong`: Tailwind orders same-property utilities alphabetically, so it would outrank `border-danger` and hide the invalid state.
+
+**Accessibility.** The app targets WCAG 2.2 AA, and `pnpm lint` runs eslint-plugin-vuejs-accessibility. One known exception, decided on 2026-09-23: text field borders measure 1.5 to 2.3:1 against their background, below the 3:1 that SC 1.4.11 asks of a component's boundary, because 3:1 borders made forms look heavy. Fields are still identified by their labels and layout, focus turns the whole border indigo and an invalid field turns it red. Checkboxes and switches do meet 3:1. Revisit that decision before raising field borders to 3:1.
 
 ### Backend Patterns
 - **Authorization**: Silber/Bouncer with policies in `app/Policies/`. Controllers use `$this->authorize()`.
@@ -196,6 +211,16 @@ Notes on the mechanics:
   That path is idempotent and does not rebuild the Docker images.
 - `.github/scripts/changelog-section.php <version>` prints what the updater will be
   sent, so you can check the notes locally before tagging.
+
+**The mobile apps ride the same button.** `mobile.yaml` also listens for
+`release: published`, so publishing the draft builds the Android AAB and APK
+(and, separately gated, the iOS archive) from that tag, attaches the APK to the
+release and uploads to the internal store tracks. Both its jobs are gated on the
+repository variable `MOBILE_RELEASES_ENABLED`, so until the signing secrets exist
+the whole workflow is a no-op rather than a failure on every release. The
+variables, the secrets and how to produce each one are a top-to-bottom checklist
+in the Releasing section of `mobile/README.md`; the version numbers come from the
+tag via `mobile/scripts/version-code.mjs` and are never edited by hand.
 
 ## CI Pipeline
 

@@ -1,19 +1,20 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ in_array(\Illuminate\Support\Str::before(str_replace('-', '_', app()->getLocale()), '_'), config('invoiceshelf.rtl_languages', []), true) ? 'rtl' : 'ltr' }}">
 
 <head>
     <meta charset="utf-8">
     <title>{{ get_page_title(!Request::header('company')) }}</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/svg+xml" href="/favicons/favicon.svg">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png">
     <link rel="manifest" href="/favicons/site.webmanifest">
-    <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#4a3dff">
+    <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#4c3cd6">
     <link rel="shortcut icon" href="/favicons/favicon.ico">
-    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileColor" content="#4c3cd6">
     <meta name="msapplication-config" content="/favicons/browserconfig.xml">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="theme-color" content="#1c1845">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     @vite('resources/scripts/main.ts')

@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed, useSlots } from 'vue'
+import { computed, Comment, Fragment, ref, useSlots } from 'vue'
 import type { VNode } from 'vue'
-import { TabGroup, TabList, Tab, TabPanels } from '@headlessui/vue'
+import { TabsList, TabsRoot, TabsTrigger } from 'reka-ui'
+import { useBreakpoints } from '@/scripts/composables/use-breakpoints'
 
 interface TabData {
   title: string
@@ -28,60 +29,89 @@ const emit = defineEmits<Emits>()
 
 const slots = useSlots()
 
-const tabs = computed<TabData[]>(() => {
-  const defaultSlot = slots.default?.()
-  if (!defaultSlot) return []
-  return defaultSlot.map((tab: VNode) => (tab.props ?? {}) as TabData)
-})
+// Underlined tabs on wider screens; a scrolling row of chips on phones
+const { isPhone } = useBreakpoints()
 
-function onChange(d: number): void {
-  emit('change', tabs.value[d])
+// The BaseTab children, flattened out of v-for fragments and without the
+// placeholders a false v-if leaves, so each tab lines up with its panel
+function flatten(nodes: VNode[]): VNode[] {
+  return nodes.flatMap((node) => {
+    if (node.type === Comment) return []
+    if (node.type === Fragment && Array.isArray(node.children)) return flatten(node.children as VNode[])
+    return [node]
+  })
+}
+
+const tabs = computed<TabData[]>(() => flatten(slots.default?.() ?? []).map((tab) => (tab.props ?? {}) as TabData))
+
+// Tabs and panels pair up by position
+const current = ref<number>(props.defaultIndex)
+
+function onChange(index: string | number): void {
+  current.value = Number(index)
+  emit('change', tabs.value[current.value])
 }
 </script>
 
 <template>
   <div class="w-full">
-    <TabGroup :default-index="defaultIndex" @change="onChange">
-      <TabList
+    <TabsRoot :model-value="current" @update:model-value="onChange">
+      <TabsList
         :class="[
-          'flex border-b border-line-default',
-          'relative overflow-x-auto overflow-y-hidden',
-          'lg:pb-0 lg:ml-0',
+          'relative flex overflow-x-auto overflow-y-hidden',
+          isPhone
+            ? 'gap-2 -mx-4 px-4 pb-1 [scrollbar-width:none]'
+            : 'gap-6 border-b border-line-light',
         ]"
       >
-        <Tab
-          v-for="(tab, index) in tabs"
-          v-slot="{ selected }"
-          :key="index"
-          as="template"
-        >
-          <button
+        <template v-for="(tab, index) in tabs" :key="index">
+          <TabsTrigger
+            v-if="isPhone"
+            :value="index"
             :class="[
-              'px-5 py-2.5 text-sm leading-5 font-medium flex items-center relative -mb-px border-b-2 focus:outline-hidden whitespace-nowrap transition-colors',
-              selected
-                ? 'border-primary-400 text-heading'
-                : 'border-transparent text-muted hover:text-body hover:border-line-strong',
+              'flex items-center shrink-0 h-8 px-3.5 text-sm font-medium rounded-full border whitespace-nowrap transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus',
+              current === index
+                ? 'bg-heading text-surface border-transparent'
+                : 'bg-surface text-body border-line-default',
             ]"
           >
             {{ tab.title }}
-
-            <BaseBadge
+            <span
               v-if="tab.count"
-              class="!rounded-full overflow-hidden ml-2"
-              :variant="tab['count-variant']"
-              default-class="flex items-center justify-center w-5 h-5 p-1 rounded-full text-medium"
+              class="ms-1.5 text-xs tabular opacity-70"
             >
               {{ tab.count }}
-            </BaseBadge>
-          </button>
-        </Tab>
-      </TabList>
+            </span>
+          </TabsTrigger>
+          <TabsTrigger
+            v-else
+            :value="index"
+            :class="[
+              'relative flex items-center -mb-px py-2.5 text-sm font-medium border-b-2 whitespace-nowrap transition-colors focus:outline-hidden focus-visible:text-heading',
+              current === index
+                ? 'border-primary-600 text-heading'
+                : 'border-transparent text-muted hover:text-heading',
+            ]"
+          >
+            {{ tab.title }}
+            <span
+              v-if="tab.count"
+              class="ms-2 px-1.5 min-w-5 h-5 inline-flex items-center justify-center text-xs rounded-full tabular bg-surface-muted text-body"
+            >
+              {{ tab.count }}
+            </span>
+          </TabsTrigger>
+        </template>
+      </TabsList>
 
       <slot name="before-tabs" />
 
-      <TabPanels>
-        <slot />
-      </TabPanels>
-    </TabGroup>
+      <component
+        :is="panel"
+        v-for="(panel, index) in flatten($slots.default?.() ?? [])"
+        :key="index"
+        :value="index"
+      />
+    </TabsRoot>
   </div>
 </template>

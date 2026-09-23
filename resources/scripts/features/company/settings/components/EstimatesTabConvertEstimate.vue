@@ -43,14 +43,14 @@ async function submitForm() {
 </script>
 
 <template>
-  <h6 class="text-heading text-lg font-medium">
+  <h3 id="estimate-convert-heading" class="text-heading text-lg font-medium">
     {{ $t('settings.customization.estimates.convert_estimate_setting') }}
-  </h6>
+  </h3>
   <p class="mt-1 text-sm text-muted">
     {{ $t('settings.customization.estimates.convert_estimate_description') }}
   </p>
 
-  <BaseInputGroup required>
+  <div role="radiogroup" aria-labelledby="estimate-convert-heading" class="flex flex-col mt-1.5">
     <BaseRadio
       v-for="option in convertEstimateOptions"
       :id="option.value"
@@ -63,5 +63,5 @@ async function submitForm() {
       class="mt-2"
       @update:model-value="submitForm"
     />
-  </BaseInputGroup>
+  </div>
 </template>

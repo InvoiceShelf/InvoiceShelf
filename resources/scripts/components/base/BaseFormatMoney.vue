@@ -7,10 +7,13 @@ import type { CurrencyConfig } from '../../utils/format-money'
 interface Props {
   amount: number | string
   currency?: CurrencyConfig | null
+  /** Proportional figures for a standalone headline amount; columns keep tabular ones */
+  proportional?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   currency: null,
+  proportional: false,
 })
 
 const companyStore = useCompanyStore()
@@ -23,5 +26,6 @@ const formattedAmount = computed<string>(() => {
 </script>
 
 <template>
-  <span style="font-family: sans-serif">{{ formattedAmount }}</span>
+  <!-- Formatted left to right, so it stays that way inside right-to-left text -->
+  <span :class="proportional ? '' : 'tabular'" class="whitespace-nowrap" dir="ltr">{{ formattedAmount }}</span>
 </template>

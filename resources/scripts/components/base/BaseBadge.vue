@@ -1,15 +1,7 @@
 <template>
   <span
-    class="
-      px-2
-      py-1
-      text-sm
-      font-normal
-      text-center text-status-green
-      uppercase
-      bg-success
-    "
-    :style="{ backgroundColor: bgColor, color }"
+    class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-md bg-status-green-bg text-status-green"
+    :style="{ backgroundColor: bgColor ?? undefined, color: color ?? undefined }"
   >
     <slot />
   </span>

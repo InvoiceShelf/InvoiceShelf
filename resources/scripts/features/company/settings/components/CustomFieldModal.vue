@@ -444,16 +444,14 @@ function closeCustomFieldModal(): void {
 </script>
 
 <template>
-  <BaseModal :show="modalActive" @open="setInitialData">
+  <BaseModal
+    :show="modalActive"
+    closable
+    @close="closeCustomFieldModal"
+    @open="setInitialData"
+  >
     <template #header>
-      <div class="flex justify-between w-full">
-        {{ modalStore.title }}
-        <BaseIcon
-          name="XMarkIcon"
-          class="w-6 h-6 text-muted cursor-pointer"
-          @click="closeCustomFieldModal"
-        />
-      </div>
+      {{ modalStore.title }}
     </template>
 
     <form action="" @submit.prevent="submitCustomFieldData">
@@ -548,15 +546,15 @@ function closeCustomFieldModal(): void {
                  length; they used to sit in label-first groups and did not. -->
             <div class="flex flex-wrap gap-x-10 gap-y-4">
               <label class="flex items-center gap-3 cursor-pointer">
-                <BaseSwitch v-model="isRequiredField" />
-                <span class="text-sm text-heading">
+                <BaseSwitch v-model="isRequiredField" aria-labelledby="custom-field-required-label" />
+                <span id="custom-field-required-label" class="text-sm text-heading">
                   {{ $t('settings.custom_fields.required') }}
                 </span>
               </label>
 
               <label class="flex items-center gap-3 cursor-pointer">
-                <BaseSwitch v-model="isPrintedOnDocument" />
-                <span class="text-sm text-heading">
+                <BaseSwitch v-model="isPrintedOnDocument" aria-labelledby="custom-field-printed-label" />
+                <span id="custom-field-printed-label" class="text-sm text-heading">
                   {{ $t('settings.custom_fields.show_on_document') }}
                 </span>
               </label>
@@ -596,9 +594,10 @@ function closeCustomFieldModal(): void {
                   :placeholder="$t('settings.custom_fields.press_enter_to_add')"
                   @keydown.enter.prevent.stop="onAddOption"
                 />
-                <BaseIcon
-                  name="PlusCircleIcon"
-                  class="ml-1 text-primary-500 cursor-pointer"
+                <BaseIconButton
+                  icon="PlusCircleIcon"
+                  :label="$t('settings.custom_fields.add_option')"
+                  class="ms-1 !text-primary-600"
                   @click="onAddOption"
                 />
               </div>
@@ -609,10 +608,12 @@ function closeCustomFieldModal(): void {
                 class="flex items-center mt-5"
               >
                 <BaseInput v-model="option.name" class="w-64" />
-                <BaseIcon
-                  name="MinusCircleIcon"
-                  class="ml-1 cursor-pointer"
-                  :class="currentCustomField.in_use ? 'text-subtle' : 'text-red-300'"
+                <BaseIconButton
+                  icon="MinusCircleIcon"
+                  :label="$t('general.remove_named', { name: option.name })"
+                  tone="danger"
+                  class="ms-1"
+                  :disabled="isEdit && !!currentCustomField.in_use"
                   @click="removeOption(index)"
                 />
               </div>
@@ -754,7 +755,7 @@ function closeCustomFieldModal(): void {
         class="z-0 flex justify-end p-4 border-t border-solid border-line-default"
       >
         <BaseButton
-          class="mr-3"
+          class="me-3"
           type="button"
           variant="primary-outline"
           @click="closeCustomFieldModal"

@@ -17,13 +17,15 @@
           <BaseBreadcrumbItem v-else :title="$t('estimates.new_estimate')" to="#" active />
         </BaseBreadcrumb>
 
-        <template #actions>
+        <!-- Phones get these in the bottom bar instead -->
+        <template v-if="!isPhone" #actions>
           <router-link
             v-if="isEdit"
             :to="`/estimates/pdf/${estimateStore.newEstimate.unique_hash}`"
             target="_blank"
+            class="inline-flex rounded-lg me-3"
           >
-            <BaseButton class="mr-3" variant="primary-outline" type="button">
+            <BaseButton tag="span" variant="primary-outline">
               <span class="flex">
                 {{ $t('general.view_pdf') }}
               </span>
@@ -48,6 +50,15 @@
           </BaseButton>
         </template>
       </BasePageHeader>
+
+      <DocumentFormActionBar
+        :total="estimateStore.getTotal"
+        :currency="estimateStore.newEstimate.selectedCurrency"
+        :save-label="$t('estimates.save_estimate')"
+        :saving="isSaving"
+        :loading="isLoadingContent"
+        :pdf-url="isEdit ? `/estimates/pdf/${estimateStore.newEstimate.unique_hash}` : null"
+      />
 
       <!-- Select Customer & Basic Fields -->
       <EstimateBasicFields
@@ -118,6 +129,7 @@ import useVuelidate from '@vuelidate/core'
 import { useEstimateStore } from '../store'
 import { useCompanyStore } from '@/scripts/stores/company.store'
 import { useNotificationStore } from '@/scripts/stores/notification.store'
+import { useBreakpoints } from '@/scripts/composables/use-breakpoints'
 import {
   handleApiError,
   getErrorTranslationKey,
@@ -125,6 +137,7 @@ import {
 import EstimateBasicFields from '../components/EstimateBasicFields.vue'
 import {
   DocumentItemsTable,
+  DocumentFormActionBar,
   DocumentTotals,
   DocumentNotes,
   TemplateSelectButton,
@@ -137,6 +150,7 @@ const notificationStore = useNotificationStore()
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
+const { isPhone } = useBreakpoints()
 
 const estimateValidationScope = 'newEstimate'
 const isSaving = ref<boolean>(false)
@@ -201,9 +215,8 @@ async function submitForm(): Promise<void> {
   v$.value.$touch()
 
   if (v$.value.$invalid) {
-    console.log('Estimate form invalid. Errors:', JSON.stringify(
-      v$.value.$errors.map((e: { $property: string; $message: string }) => `${e.$property}: ${e.$message}`)
-    ))
+    // The first invalid field, often the customer, takes focus on its own
+    notificationStore.showNotification({ type: 'error', message: t('general.check_highlighted_fields') })
     return
   }
 

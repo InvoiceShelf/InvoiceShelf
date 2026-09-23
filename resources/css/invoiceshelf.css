@@ -1,8 +1,34 @@
 @import "tailwindcss";
+@import "@fontsource-variable/geologica";
 @import "./themes.css";
 @import "./components/animation.css";
-@import "./components/pace-loader.css";
 @import "./components/v-tooltips.css";
+@import "./components/flatpickr.css";
+@import "./components/module-compat.css";
+
+/*
+ * Geologica has no Arabic or Hebrew letters. Only those scripts' subsets of
+ * Noto Sans are declared (the packages' own CSS also claims math, symbols
+ * and Latin), and unicode-range means a browser downloads one only when such
+ * a letter is on screen.
+ */
+@font-face {
+  font-family: 'Noto Sans Arabic Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('@fontsource-variable/noto-sans-arabic/files/noto-sans-arabic-arabic-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC,U+102E0-102FB,U+10E60-10E7E,U+10EC2-10EC4,U+10EFC-10EFF,U+1EE00-1EE03,U+1EE05-1EE1F,U+1EE21-1EE22,U+1EE24,U+1EE27,U+1EE29-1EE32,U+1EE34-1EE37,U+1EE39,U+1EE3B,U+1EE42,U+1EE47,U+1EE49,U+1EE4B,U+1EE4D-1EE4F,U+1EE51-1EE52,U+1EE54,U+1EE57,U+1EE59,U+1EE5B,U+1EE5D,U+1EE5F,U+1EE61-1EE62,U+1EE64,U+1EE67-1EE6A,U+1EE6C-1EE72,U+1EE74-1EE77,U+1EE79-1EE7C,U+1EE7E,U+1EE80-1EE89,U+1EE8B-1EE9B,U+1EEA1-1EEA3,U+1EEA5-1EEA9,U+1EEAB-1EEBB,U+1EEF0-1EEF1;
+}
+
+@font-face {
+  font-family: 'Noto Sans Hebrew Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('@fontsource-variable/noto-sans-hebrew/files/noto-sans-hebrew-hebrew-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0307-0308,U+0590-05FF,U+200C-2010,U+20AA,U+25CC,U+FB1D-FB4F;
+}
 
 @plugin "@tailwindcss/typography";
 @plugin "tailwind-scrollbar";
@@ -26,6 +52,7 @@
   --color-primary-800: var(--color-primary-800);
   --color-primary-900: var(--color-primary-900);
   --color-primary-950: var(--color-primary-950);
+  --color-on-primary: var(--color-on-primary);
   --color-black: #040405;
 
   /* Semantic theme tokens */
@@ -40,19 +67,49 @@
   --color-line-light: var(--color-line-light);
   --color-line-default: var(--color-line-default);
   --color-line-strong: var(--color-line-strong);
+  --color-control-border: var(--color-control-border);
   --color-hover: var(--color-hover);
   --color-hover-strong: var(--color-hover-strong);
   --color-header-from: var(--color-header-from);
   --color-header-to: var(--color-header-to);
   --color-btn-primary: var(--color-btn-primary);
   --color-btn-primary-hover: var(--color-btn-primary-hover);
+  --color-danger: var(--color-danger);
+  --color-danger-hover: var(--color-danger-hover);
+  --color-btn-danger: var(--color-btn-danger);
+  --color-btn-danger-hover: var(--color-btn-danger-hover);
+  --color-focus: var(--color-focus);
+  --color-overlay: var(--color-overlay);
+  --color-chrome: var(--color-chrome);
+  --color-chrome-raised: var(--color-chrome-raised);
+  --color-chrome-fg: var(--color-chrome-fg);
+  --color-chrome-muted: var(--color-chrome-muted);
+  --color-chrome-line: var(--color-chrome-line);
+  --color-chrome-hover: var(--color-chrome-hover);
+  --color-chrome-active: var(--color-chrome-active);
+  --color-chrome-accent: var(--color-chrome-accent);
+  --color-hero-from: var(--color-hero-from);
+  --color-hero-to: var(--color-hero-to);
+  --color-chart-1: var(--color-chart-1);
+  --color-chart-2: var(--color-chart-2);
+  --color-chart-3: var(--color-chart-3);
 
-  /* Status badge text */
+  /* Status: text colour, and the tint it sits on */
   --color-status-yellow: var(--color-status-yellow);
   --color-status-green: var(--color-status-green);
   --color-status-blue: var(--color-status-blue);
   --color-status-red: var(--color-status-red);
   --color-status-purple: var(--color-status-purple);
+  --color-status-gray: var(--color-status-gray);
+  --color-status-yellow-bg: var(--color-status-yellow-bg);
+  --color-status-green-bg: var(--color-status-green-bg);
+  --color-status-blue-bg: var(--color-status-blue-bg);
+  --color-status-red-bg: var(--color-status-red-bg);
+  --color-status-purple-bg: var(--color-status-purple-bg);
+  --color-status-gray-bg: var(--color-status-gray-bg);
+  --color-status-red-fill: var(--color-status-red-fill);
+  --color-status-yellow-fill: var(--color-status-yellow-fill);
+  --color-status-blue-fill: var(--color-status-blue-fill);
 
   /* Alert colors */
   --color-alert-warning-bg: var(--color-alert-warning-bg);
@@ -65,72 +122,182 @@
 
 @theme {
   --spacing-88: 22rem;
-  --font-base: Poppins, sans-serif;
+
+  /*
+   * Enter and leave motion for dialogs, sheets, menus and popovers. Reka UI keeps an
+   * element mounted until its closing animation ends, so these are keyframes
+   * keyed on data-state rather than transitions. Reduced motion cuts them to
+   * nothing (see the prefers-reduced-motion rule below).
+   */
+  --animate-overlay-in: overlay-in 200ms ease-out;
+  --animate-overlay-out: overlay-out 150ms ease-in;
+  --animate-panel-in: panel-in 200ms ease-out;
+  --animate-panel-out: panel-out 150ms ease-in;
+  --animate-sheet-in: sheet-in 200ms ease-out;
+  --animate-sheet-out: sheet-out 150ms ease-in;
+  --animate-pop-in: pop-in 100ms ease-out;
+  --animate-pop-out: pop-out 75ms ease-in;
+  --animate-rise-in: rise-in 200ms ease-out;
+  --animate-rise-out: rise-out 150ms ease-in;
+
+  @keyframes overlay-in {
+    from { opacity: 0; }
+  }
+  @keyframes overlay-out {
+    to { opacity: 0; }
+  }
+  @keyframes panel-in {
+    from { opacity: 0; transform: translateY(0.5rem) scale(0.98); }
+  }
+  @keyframes panel-out {
+    to { opacity: 0; transform: translateY(0.5rem) scale(0.98); }
+  }
+  @keyframes sheet-in {
+    from { transform: translateY(100%); }
+  }
+  @keyframes sheet-out {
+    to { transform: translateY(100%); }
+  }
+  @keyframes pop-in {
+    from { opacity: 0; transform: scale(0.95); }
+  }
+  @keyframes pop-out {
+    to { opacity: 0; transform: scale(0.95); }
+  }
+  @keyframes rise-in {
+    from { opacity: 0; transform: translateY(0.25rem); }
+  }
+  @keyframes rise-out {
+    to { opacity: 0; transform: translateY(0.25rem); }
+  }
+  --font-base: "Geologica Variable", "Noto Sans Arabic Variable", "Noto Sans Hebrew Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Geologica Variable", "Noto Sans Arabic Variable", "Noto Sans Hebrew Variable", ui-sans-serif, system-ui, sans-serif;
+
+  /*
+   * Type roles on top of Tailwind's own scale (which modules inherit and is
+   * left alone): the money figure a screen is about, page titles, and the
+   * heading of a section inside a page.
+   */
+  --text-display: 2rem;
+  --text-display--line-height: 2.5rem;
+  --text-display--letter-spacing: -0.02em;
+  --text-title: 1.375rem;
+  --text-title--line-height: 1.75rem;
+  --text-title--letter-spacing: -0.012em;
+  --text-section: 1rem;
+  --text-section--line-height: 1.5rem;
+
+  /* Cards: a hairline plus a soft two-layer lift */
+  --shadow-card: 0 1px 2px rgb(20 18 50 / 0.04), 0 2px 8px -2px rgb(20 18 50 / 0.06);
+
+  /* The one real elevation in the UI: a document sheet on the canvas */
+  --shadow-paper:
+    0 1px 2px rgb(16 18 27 / 0.06), 0 10px 24px -8px rgb(16 18 27 / 0.14),
+    0 28px 56px -16px rgb(16 18 27 / 0.12);
 }
 
-/* Glass UI background gradient */
+/* The canvas. Kept as a utility because the shells and modules still use it. */
 @utility bg-glass-gradient {
-  background-image: linear-gradient(
-    135deg,
-    var(--color-surface-tertiary) 0%,
-    color-mix(in srgb, var(--color-primary-500) 8%, var(--color-surface-tertiary)) 30%,
-    var(--color-surface-tertiary) 50%,
-    color-mix(in srgb, var(--color-primary-400) 6%, var(--color-surface-tertiary)) 70%,
-    var(--color-surface-tertiary) 100%
-  );
-  background-attachment: fixed;
+  background-color: var(--color-surface-tertiary);
 }
 
 @utility bg-multiselect-caret {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' class='h-5 w-5' viewBox='0 0 20 20' fill='currentColor'%3E%3Cpath fill-rule='evenodd' d='M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' class='h-5 w-5' viewBox='0 0 20 20' fill='%239a9eae'%3E%3Cpath fill-rule='evenodd' d='M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
 }
 
 @utility bg-multiselect-spinner {
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' fill='%234a3dff' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M456.433 371.72l-27.79-16.045c-7.192-4.152-10.052-13.136-6.487-20.636 25.82-54.328 23.566-118.602-6.768-171.03-30.265-52.529-84.802-86.621-144.76-91.424C262.35 71.922 256 64.953 256 56.649V24.56c0-9.31 7.916-16.609 17.204-15.96 81.795 5.717 156.412 51.902 197.611 123.408 41.301 71.385 43.99 159.096 8.042 232.792-4.082 8.369-14.361 11.575-22.424 6.92z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' fill='%239a9eae' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M456.433 371.72l-27.79-16.045c-7.192-4.152-10.052-13.136-6.487-20.636 25.82-54.328 23.566-118.602-6.768-171.03-30.265-52.529-84.802-86.621-144.76-91.424C262.35 71.922 256 64.953 256 56.649V24.56c0-9.31 7.916-16.609 17.204-15.960 81.795 5.717 156.412 51.902 197.611 123.408 41.301 71.385 43.99 159.096 8.042 232.792-4.082 8.369-14.361 11.575-22.424 6.92z'/%3E%3C/svg%3E");
 }
 
 @utility bg-multiselect-remove {
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 320 512' fill='white' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M207.6 256l107.72-107.72c6.23-6.23 6.23-16.34 0-22.58l-25.03-25.03c-6.23-6.23-16.34-6.23-22.58 0L160 208.4 52.28 100.68c-6.23-6.23-16.34-6.23-22.58 0L4.68 125.7c-6.23 6.23-6.23 16.34 0 22.58L112.4 256 4.68 363.72c-6.23 6.23-6.23 16.34 0 22.58l25.03 25.03c6.23 6.23 16.34 6.23 22.58 0L160 303.6l107.72 107.72c6.23 6.23 16.34 6.23 22.58 0l25.03-25.03c6.23-6.23 6.23-16.34 0-22.58L207.6 256z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' fill='%239a9eae' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z'/%3E%3C/svg%3E");
 }
 
-@font-face {
-    font-family: "Poppins";
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: url("$fonts/Poppins-Black.ttf") format("truetype");
+/*
+ * Glass surfaces. `glass` for cards and tables, `glass-strong` for things
+ * that float (menus, sheets, dialogs, the search palette), `glass-bar` for the
+ * top bar and the phone's bottom bars, `glass-chrome` for the brand-coloured
+ * phone app bar. People who ask for less transparency or more contrast get
+ * solid fills.
+ */
+@utility glass {
+  background-color: var(--glass-fill);
+  border-color: var(--glass-edge);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--shadow-card);
+  -webkit-backdrop-filter: blur(18px) saturate(170%);
+  backdrop-filter: blur(18px) saturate(170%);
+
+  @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+    background-color: var(--color-surface);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
 }
 
-@font-face {
-    font-family: "Poppins";
-    font-style: normal;
-    font-weight: 300;
-    font-display: swap;
-    src: url("$fonts/Poppins-Light.ttf") format("truetype");
+@utility glass-strong {
+  background-color: var(--glass-fill-strong);
+  border-color: var(--glass-edge);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), 0 18px 48px -12px rgb(20 18 50 / 0.28);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  backdrop-filter: blur(28px) saturate(180%);
+
+  @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+    background-color: var(--color-surface);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
 }
 
-@font-face {
-    font-family: "Poppins";
-    font-style: normal;
-    font-weight: 500;
-    font-display: swap;
-    src: url("$fonts/Poppins-Medium.ttf") format("truetype");
+@utility glass-bar {
+  background-color: var(--glass-bar);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+
+  @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+    background-color: var(--color-surface-tertiary);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
 }
 
-@font-face {
-    font-family: "Poppins";
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: url("$fonts/Poppins-Regular.ttf") format("truetype");
+@utility glass-chrome {
+  background-color: color-mix(in srgb, var(--color-chrome) 84%, transparent);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  backdrop-filter: blur(20px) saturate(160%);
+
+  @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+    background-color: var(--color-chrome);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
 }
 
-@font-face {
-    font-family: "Poppins";
-    font-style: normal;
-    font-weight: 600;
-    font-display: swap;
-    src: url("$fonts/Poppins-SemiBold.ttf") format("truetype");
+/* The sidebar: brand chrome with a soft light in its top corner */
+@utility bg-chrome-lit {
+  background:
+    radial-gradient(120% 55% at 0% 0%, color-mix(in srgb, var(--color-chrome-accent) 16%, transparent), transparent 62%),
+    var(--color-chrome);
+
+  /* The light stays in the corner at the start of the line */
+  &:where([dir='rtl'] *) {
+    background:
+      radial-gradient(120% 55% at 100% 0%, color-mix(in srgb, var(--color-chrome-accent) 16%, transparent), transparent 62%),
+      var(--color-chrome);
+  }
+}
+
+/* The canvas behind the app: pale ground with a few soft pools of the accent */
+@utility bg-ambient {
+  background:
+    radial-gradient(60rem 36rem at 88% -8%, var(--ambient-1), transparent 62%),
+    radial-gradient(48rem 32rem at 4% 108%, var(--ambient-2), transparent 62%),
+    radial-gradient(36rem 26rem at 42% 38%, var(--ambient-3), transparent 70%),
+    var(--color-surface-tertiary);
+}
+
+/* Amounts line up in columns wherever they appear */
+@utility tabular {
+  font-variant-numeric: tabular-nums;
 }
 
 /* Form base styles (replaces @tailwindcss/forms) */
@@ -150,7 +317,23 @@
 [multiple],
 textarea,
 select {
-    @apply appearance-none bg-surface border border-line-default rounded-lg px-3 py-2 text-sm leading-6 text-heading;
+    /* 16px below md so iOS does not zoom the page on focus */
+    @apply appearance-none bg-surface border rounded-lg px-3 py-2 text-base md:text-sm leading-6 text-heading transition-[border-color,box-shadow] duration-150;
+    border-color: var(--color-line-strong);
+}
+
+/*
+ * The border every text field shares. Fields drawn with a button or a div
+ * (selects, the multiselect, input addons, the rich editor) take it from this
+ * class. It sits in the base layer so focus, invalid and disabled styles
+ * still colour the whole border.
+ *
+ * At 1.5 to 2.3:1 it is below the 3:1 WCAG 1.4.11 asks of a field's boundary:
+ * a deliberate choice, since 3:1 borders made forms look heavy. See the
+ * Accessibility note in AGENTS.md before changing it.
+ */
+.field-border {
+    border-color: var(--color-line-strong);
 }
 
 [type='text']:focus,
@@ -168,19 +351,24 @@ select {
 [multiple]:focus,
 textarea:focus,
 select:focus {
-    @apply outline-2 outline-transparent outline-offset-2 border-primary-500 ring-1 ring-primary-500;
+    @apply outline-2 outline-transparent outline-offset-2 border-primary-500 ring-1 ring-focus;
 }
 
 select {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-    @apply bg-no-repeat pr-10;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236a6e7d' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    @apply bg-no-repeat pe-10;
     background-position: right 0.5rem center;
     background-size: 1.5em 1.5em;
 }
 
+/* The chevron sits at the end of the field in either direction */
+[dir='rtl'] select {
+    background-position: left 0.5rem center;
+}
+
 [type='checkbox'],
 [type='radio'] {
-    @apply appearance-none p-0 text-primary-500 bg-surface border border-line-strong inline-block align-middle select-none shrink-0 h-4 w-4;
+    @apply appearance-none p-0 text-btn-primary bg-surface border border-control-border inline-block align-middle select-none shrink-0 h-4 w-4;
     background-origin: border-box;
     print-color-adjust: exact;
 }
@@ -193,10 +381,10 @@ select {
     @apply rounded-full;
 }
 
-[type='checkbox']:focus,
-[type='radio']:focus {
+[type='checkbox']:focus-visible,
+[type='radio']:focus-visible {
     @apply outline-2 outline-transparent outline-offset-2;
-    box-shadow: 0 0 0 2px var(--color-surface), 0 0 0 4px var(--color-primary-500);
+    box-shadow: 0 0 0 2px var(--color-surface), 0 0 0 4px var(--color-focus);
 }
 
 [type='checkbox']:checked,
@@ -222,38 +410,208 @@ select {
 ::placeholder {
     @apply text-subtle opacity-100;
 }
+
+/* Windows High Contrast and other forced colours: the drawn checkbox and radio
+   lose their fill, so hand them back to the system */
+@media (forced-colors: active) {
+    [type='checkbox'],
+    [type='radio'] {
+        appearance: auto;
+    }
+}
+
+:focus-visible {
+    outline-color: var(--color-primary-500);
+}
+
+/* Tailwind v4 no longer gives buttons a pointer; everything clickable that is
+   not disabled gets it back here */
+button:not(:disabled),
+[role='button']:not([aria-disabled='true']),
+[role='tab'],
+[role='radio'],
+[role='switch'],
+[role='menuitem']:not([aria-disabled='true']),
+[role='option']:not([aria-disabled='true']),
+select:not(:disabled),
+summary,
+label[for],
+input[type='checkbox']:not(:disabled),
+input[type='radio']:not(:disabled),
+input[type='file']:not(:disabled) {
+    cursor: pointer;
+}
 } /* end @layer base */
+
+html {
+    height: -webkit-fill-available;
+    -webkit-tap-highlight-color: transparent;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
 
 body {
     min-height: 100vh;
-    min-height: -webkit-fill-available;
+    min-height: 100dvh;
     color: var(--color-heading);
-    scrollbar-color: var(--color-surface-muted) var(--color-surface-secondary);
+    background-color: var(--color-surface-tertiary);
+    scrollbar-color: var(--color-line-strong) transparent;
 }
 
 /* Webkit scrollbars */
 ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--color-surface-secondary);
+    background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--color-surface-muted);
-    border-radius: 4px;
+    background: var(--color-line-default);
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background-clip: content-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--color-line-strong);
-}
-
-html {
-    height: -webkit-fill-available;
+    background-color: var(--color-line-strong);
 }
 
 .h-screen-ios {
     height: -webkit-fill-available;
+}
+
+/*
+ * Shell insets. The layout publishes how much of the viewport its fixed chrome
+ * covers, notch and home indicator included, so page content and module
+ * overlays can stay clear of it:
+ *   --app-top-inset     top bar (and the status bar area in the app)
+ *   --app-bottom-inset  phone tab bar or sticky action bar, plus the home indicator
+ * Both are 0 until the shell sets them.
+ */
+:root {
+    --app-top-inset: 0px;
+    --app-bottom-inset: 0px;
+}
+
+/*
+ * Safe areas. The client shell renders with `viewport-fit=cover`, so on a
+ * notched phone the fixed chrome would otherwise sit under the status bar and
+ * the home indicator. Every inset is 0 where there is no notch, which leaves
+ * the desktop and ordinary-browser layout exactly as it was. Unlayered, so
+ * they win over the Tailwind padding utilities they extend.
+ */
+.safe-header {
+    padding-top: env(safe-area-inset-top);
+}
+
+.safe-content {
+    padding-top: var(--app-top-inset);
+    padding-bottom: var(--app-bottom-inset);
+}
+
+.safe-rail {
+    padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
+}
+
+.safe-drawer {
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+}
+
+.safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/*
+ * Arabic script joins its letters; any letter-spacing (the title tokens'
+ * negative tracking, tracking-* on small labels) pulls the joins apart.
+ */
+:lang(ar),
+:lang(fa),
+:lang(ur) {
+    letter-spacing: normal !important;
+}
+
+/*
+ * A modal dialog makes the page behind it inert to the pointer. Popups that
+ * other code appends to <body> while one is open (flatpickr's calendar, a
+ * module's own teleported dialog) stay usable.
+ */
+.flatpickr-calendar,
+body > [role='dialog'] {
+    pointer-events: auto;
+}
+
+/*
+ * Empty states: line art and placeholder rows (EmptyArt.vue and
+ * EmptyPlaceholder.vue). The art strokes are the brand colour thinned
+ * towards the surface, so the drawing reads in both themes without its own
+ * palette; the rows fade into the card, hinting at the table to come.
+ */
+@layer components {
+  .empty-art {
+    --ea-stroke: color-mix(in oklab, var(--color-primary-500) 72%, var(--color-surface));
+    --ea-soft: color-mix(in oklab, var(--color-primary-500) 14%, var(--color-surface));
+
+    position: relative;
+    width: 8.25rem;
+    height: 6.5rem;
+  }
+
+  .empty-art::before {
+    content: "";
+    position: absolute;
+    inset: -0.75rem -1.25rem;
+    border-radius: 9999px;
+    background: radial-gradient(closest-side, color-mix(in oklab, var(--color-primary-500) 15%, transparent), transparent);
+  }
+
+  .empty-art svg {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    fill: none;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .empty-art .ea-paper { fill: var(--color-surface); stroke: var(--ea-stroke); }
+  .empty-art .ea-paper-back { fill: var(--ea-soft); stroke: var(--ea-stroke); opacity: 0.8; }
+  .empty-art .ea-ink { stroke: var(--ea-stroke); }
+  .empty-art .ea-faint { stroke: var(--color-line-strong); }
+  .empty-art .ea-badge { fill: var(--ea-soft); stroke: var(--ea-stroke); }
+  .empty-art .ea-mark { stroke: var(--color-primary-600); stroke-width: 2; }
+  .empty-art .ea-dot { fill: var(--color-primary-500); stroke: none; }
+
+  .empty-ghost {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    padding: 0.875rem 1.125rem;
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgb(0 0 0 / 0.75) 30%, transparent 88%);
+    mask-image: linear-gradient(to bottom, #000 0%, rgb(0 0 0 / 0.75) 30%, transparent 88%);
+  }
+
+  .empty-veil {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(closest-side at 50% 52%, color-mix(in oklab, var(--color-surface) 92%, transparent) 30%, transparent 100%);
+  }
 }

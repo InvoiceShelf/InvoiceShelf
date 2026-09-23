@@ -14,6 +14,21 @@ export interface LoginResponse {
   user: User
 }
 
+/**
+ * Bearer sign-in. `username` is the account's email address; `device_name`
+ * names the token so a lost device can be cut off from another session.
+ */
+export interface TokenLoginPayload {
+  username: string
+  password: string
+  device_name: string
+}
+
+export interface TokenLoginResponse {
+  type: string
+  token: string
+}
+
 export interface ForgotPasswordPayload {
   email: string
 }
@@ -57,6 +72,22 @@ export const authService = {
 
   async logout(): Promise<void> {
     await client.post(API.LOGOUT)
+  },
+
+  /**
+   * Sign in for a client that has no cookie jar to put a session in.
+   */
+  async loginWithToken(payload: TokenLoginPayload): Promise<TokenLoginResponse> {
+    const { data } = await client.post<TokenLoginResponse>(API.TOKEN_LOGIN, payload)
+    return data
+  },
+
+  /**
+   * Revoke the token that carries this request, and only that one, so the
+   * account's other devices stay signed in.
+   */
+  async logoutWithToken(): Promise<void> {
+    await client.post(API.TOKEN_LOGOUT)
   },
 
   async forgotPassword(payload: ForgotPasswordPayload): Promise<ApiResponse<{ success: boolean }>> {

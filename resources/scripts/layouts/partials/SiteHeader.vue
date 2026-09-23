@@ -1,249 +1,156 @@
 <template>
+  <!-- Phones: the brand app bar, glass over the content scrolling beneath -->
   <header
-    class="
-      fixed top-0 left-0 z-20 flex items-center justify-between w-full
-      px-4 py-3 md:h-16 md:px-8 bg-linear-to-r from-header-from to-header-to
-    "
+    v-if="isPhone"
+    class="sticky top-0 z-20 glass-chrome text-chrome-fg safe-header"
   >
-    <div class="flex items-center">
-      <router-link
-        :to="companyStore.isAdminMode ? '/admin/administration/dashboard' : '/admin/dashboard'"
+    <div class="flex items-center gap-1.5 h-14 px-3">
+      <div class="flex flex-1 min-w-0">
+        <CompanySwitcher v-if="hasCompany" variant="appbar" tone="chrome" />
+      </div>
+
+      <button
+        type="button"
+        class="flex items-center justify-center w-10 h-10 rounded-lg text-chrome-fg hover:bg-chrome-hover"
+        :aria-label="$t('general.search')"
+        @click="globalStore.setSearchOpen(true)"
+      >
+        <BaseIcon name="MagnifyingGlassIcon" class="w-5.5 h-5.5" />
+      </button>
+
+      <ul class="flex items-center m-0 list-none header-actions">
+        <ExtensionSlot name="header-actions" />
+      </ul>
+
+      <AccountMenu>
+        <template #activator="{ avatar }">
+          <img
+            :src="avatar"
+            alt=""
+            class="block object-cover w-8 h-8 rounded-full ring-2 ring-chrome-line"
+          />
+        </template>
+      </AccountMenu>
+    </div>
+  </header>
+
+  <!-- Tablet and desktop: a full-width glass bar; content scrolls under it -->
+  <header
+    v-else
+    class="sticky top-0 z-20 border-b glass-bar border-line-light/80"
+  >
+    <div class="flex items-center gap-3 px-4 h-14 md:px-6 lg:px-8">
+      <button
+        type="button"
         class="
-          text-lg not-italic font-black tracking-wider text-white
-          brand-main font-base hidden md:block
+          flex items-center w-full max-w-md gap-2.5 h-9 px-3 text-sm transition-colors
+          border rounded-xl bg-surface/80 border-line-default text-subtle
+          hover:border-line-strong hover:text-muted
         "
+        @click="globalStore.setSearchOpen(true)"
       >
-        <img v-if="adminLogo" :src="adminLogo" class="h-9 w-auto max-w-48 object-contain" />
-        <MainLogo v-else class="h-9 w-auto" light-color="white" dark-color="white" />
-      </router-link>
-    </div>
+        <BaseIcon name="MagnifyingGlassIcon" class="w-4 h-4 shrink-0" />
+        <span class="flex-1 text-start truncate">{{ $t('global_search.placeholder') }}</span>
+        <kbd
+          class="hidden px-1.5 font-sans text-[11px] leading-5 border rounded-md lg:block border-line-default text-subtle"
+        >
+          {{ shortcutLabel }}
+        </kbd>
+      </button>
 
-    <!-- Mobile toggle button -->
-    <div
-      :class="{ 'is-active': globalStore.isSidebarOpen }"
-      class="
-        flex float-left p-1 overflow-visible text-sm ease-linear bg-surface
-        border-0 rounded cursor-pointer md:hidden md:ml-0 hover:bg-hover-strong
-      "
-      @click.prevent="onToggle"
-    >
-      <BaseIcon name="Bars3Icon" class="!w-6 !h-6 text-muted" />
-    </div>
+      <div class="flex-1" />
 
-    <ul class="flex float-right h-8 m-0 list-none md:h-9">
-      <!-- Create dropdown -->
-      <li
-        v-if="hasCreateAbilities && !companyStore.isAdminMode"
-        class="relative hidden float-left m-0 md:block"
-      >
-        <BaseDropdown width-class="w-48">
+      <div class="flex items-center gap-1">
+        <ul class="flex items-center m-0 list-none header-actions">
+          <ExtensionSlot name="header-actions" />
+        </ul>
+
+        <!-- Create -->
+        <BaseDropdown
+          v-if="createActions.length"
+          width-class="w-56"
+          wrapper-class="flex items-center"
+        >
           <template #activator>
-            <div
+            <span
               class="
-                flex items-center justify-center w-8 h-8 ml-2 text-sm text-white
-                bg-white/20 rounded-lg hover:bg-white/30 md:h-9 md:w-9
+                inline-flex items-center gap-1.5 h-9 ps-2.5 pe-3 text-sm font-medium rounded-xl transition-colors
+                bg-primary-600/10 text-primary-700 ring-1 ring-inset ring-primary-600/15 hover:bg-primary-600/15
               "
             >
-              <BaseIcon name="PlusIcon" class="w-5 h-5 text-white" />
-            </div>
+              <BaseIcon name="PlusIcon" class="w-4 h-4" />
+              {{ $t('general.new') }}
+              <BaseIcon name="ChevronDownIcon" class="w-3.5 h-3.5 -me-0.5 opacity-70" />
+            </span>
           </template>
 
-          <router-link to="/admin/invoices/create">
-            <BaseDropdownItem
-              v-if="userStore.hasAbilities(ABILITIES.CREATE_INVOICE)"
-            >
-              <BaseIcon
-                name="DocumentTextIcon"
-                class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
-                aria-hidden="true"
-              />
-              {{ $t('invoices.new_invoice') }}
-            </BaseDropdownItem>
-          </router-link>
-
-          <router-link to="/admin/estimates/create">
-            <BaseDropdownItem
-              v-if="userStore.hasAbilities(ABILITIES.CREATE_ESTIMATE)"
-            >
-              <BaseIcon
-                name="DocumentIcon"
-                class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
-                aria-hidden="true"
-              />
-              {{ $t('estimates.new_estimate') }}
-            </BaseDropdownItem>
-          </router-link>
-
-          <router-link to="/admin/customers/create">
-            <BaseDropdownItem
-              v-if="userStore.hasAbilities(ABILITIES.CREATE_CUSTOMER)"
-            >
-              <BaseIcon
-                name="UserIcon"
-                class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
-                aria-hidden="true"
-              />
-              {{ $t('customers.new_customer') }}
-            </BaseDropdownItem>
-          </router-link>
-        </BaseDropdown>
-      </li>
-
-      <!-- Global search -->
-      <li v-if="!companyStore.isAdminMode" class="ml-2">
-        <GlobalSearchBar
-          v-if="
-            userStore.currentUser?.is_owner ||
-            userStore.hasAbilities(ABILITIES.VIEW_CUSTOMER)
-          "
-        />
-      </li>
-
-      <ExtensionSlot name="header-actions" />
-
-      <!-- Company switcher -->
-      <li>
-        <CompanySwitcher />
-      </li>
-
-      <!-- User dropdown -->
-      <li class="relative block float-left ml-2">
-        <BaseDropdown width-class="w-48">
-          <template #activator>
-            <img
-              :src="previewAvatar"
-              class="block w-8 h-8 rounded-full ring-2 ring-white/30 md:h-9 md:w-9 object-cover"
-            />
-          </template>
-
-          <!-- Theme Toggle -->
-          <div class="px-3 py-2">
-            <div class="flex items-center justify-between rounded-lg bg-surface-secondary p-1">
-              <button
-                v-for="opt in themeOptions"
-                :key="opt.value"
-                :class="[
-                  'flex items-center justify-center rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors',
-                  currentTheme === opt.value
-                    ? 'bg-surface text-heading shadow-sm'
-                    : 'text-muted hover:text-body',
-                ]"
-                @click.stop="setTheme(opt.value)"
-              >
-                <BaseIcon :name="opt.icon" class="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </div>
-
-          <router-link to="/admin/settings/account-settings">
-            <BaseDropdownItem>
-              <BaseIcon
-                name="CogIcon"
-                class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
-                aria-hidden="true"
-              />
-              {{ $t('navigation.settings') }}
-            </BaseDropdownItem>
-          </router-link>
-
-          <router-link
-            v-for="item in globalStore.userMenu"
-            :key="item.name"
-            :to="item.link"
-          >
-            <BaseDropdownItem>
-              <BaseIcon
-                :name="item.icon"
-                class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
-                aria-hidden="true"
-              />
-              {{ item.title }}
-            </BaseDropdownItem>
-          </router-link>
-
-          <div class="my-1 border-t border-line-light" />
-
-          <BaseDropdownItem @click="logout">
-            <BaseIcon
-              name="ArrowRightOnRectangleIcon"
-              class="w-5 h-5 mr-3 text-red-400"
-              aria-hidden="true"
-            />
-            <span class="text-red-600">{{ $t('navigation.logout') }}</span>
+          <BaseDropdownItem v-for="action in createActions" :key="action.to" :to="action.to">
+            <BaseIcon :name="action.icon" class="w-5 h-5 me-3 text-subtle" />
+            {{ $t(action.label) }}
           </BaseDropdownItem>
         </BaseDropdown>
-      </li>
-    </ul>
+
+        <!-- Theme: light, dark, then follow the system -->
+        <button
+          v-tooltip="{ content: themeLabel }"
+          type="button"
+          class="flex items-center justify-center transition-colors w-9 h-9 rounded-xl text-muted hover:bg-hover-strong hover:text-heading"
+          :aria-label="themeLabel"
+          @click="cycleTheme"
+        >
+          <BaseIcon :name="themeIcon" class="w-5 h-5" />
+        </button>
+      </div>
+    </div>
   </header>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/scripts/stores/auth.store'
-import { useUserStore } from '@/scripts/stores/user.store'
+import { useI18n } from 'vue-i18n'
 import { useGlobalStore } from '@/scripts/stores/global.store'
 import { useCompanyStore } from '@/scripts/stores/company.store'
 import { useTheme } from '@/scripts/composables/use-theme'
-import { ABILITIES } from '@/scripts/config/abilities'
+import { useBreakpoints } from '@/scripts/composables/use-breakpoints'
+import { useCreateActions } from '@/scripts/composables/use-create-actions'
 import { THEME } from '@/scripts/config/constants'
 import type { Theme } from '@/scripts/config/constants'
 import CompanySwitcher from './CompanySwitcher.vue'
-import GlobalSearchBar from './GlobalSearchBar.vue'
-import MainLogo from '@/scripts/components/icons/MainLogo.vue'
+import AccountMenu from './AccountMenu.vue'
 import ExtensionSlot from '@/scripts/extensions/ExtensionSlot.vue'
 
-interface ThemeOption {
-  value: Theme
-  icon: string
-}
-
-const authStore = useAuthStore()
-const userStore = useUserStore()
 const globalStore = useGlobalStore()
 const companyStore = useCompanyStore()
-const router = useRouter()
+const { t } = useI18n()
 const { currentTheme, setTheme } = useTheme()
+const { isPhone } = useBreakpoints()
+const { createActions } = useCreateActions()
 
-const previewAvatar = computed<string>(() => {
-  if (userStore.currentUser && userStore.currentUser.avatar !== 0) {
-    return userStore.currentUser.avatar as string
-  }
-  return getDefaultAvatar()
+const hasCompany = computed<boolean>(() => {
+  return !!companyStore.selectedCompany || companyStore.isAdminMode
 })
 
-const adminLogo = computed<string | false>(() => {
-  if (globalStore.globalSettings?.admin_portal_logo) {
-    return '/storage/' + globalStore.globalSettings.admin_portal_logo
-  }
-  return false
+const shortcutLabel = computed<string>(() => {
+  return /Mac|iPhone|iPad/.test(navigator.platform) ? '⌘K' : 'Ctrl K'
 })
 
-const hasCreateAbilities = computed<boolean>(() => {
-  return userStore.hasAbilities([
-    ABILITIES.CREATE_INVOICE,
-    ABILITIES.CREATE_ESTIMATE,
-    ABILITIES.CREATE_CUSTOMER,
-  ])
+const THEME_CYCLE: Theme[] = [THEME.LIGHT, THEME.DARK, THEME.SYSTEM]
+
+const THEME_META: Record<string, { icon: string; label: string }> = {
+  [THEME.LIGHT]: { icon: 'SunIcon', label: 'general.theme_light' },
+  [THEME.DARK]: { icon: 'MoonIcon', label: 'general.theme_dark' },
+  [THEME.SYSTEM]: { icon: 'ComputerDesktopIcon', label: 'general.theme_system' },
+}
+
+const themeIcon = computed<string>(() => THEME_META[currentTheme.value]?.icon ?? 'SunIcon')
+
+const themeLabel = computed<string>(() => {
+  const label = THEME_META[currentTheme.value]?.label ?? 'general.theme_light'
+  return `${t('general.theme')}: ${t(label)}`
 })
 
-function getDefaultAvatar(): string {
-  const imgUrl = new URL('$images/default-avatar.jpg', import.meta.url)
-  return imgUrl.href
+function cycleTheme(): void {
+  const index = THEME_CYCLE.indexOf(currentTheme.value)
+  setTheme(THEME_CYCLE[(index + 1) % THEME_CYCLE.length])
 }
-
-async function logout(): Promise<void> {
-  await authStore.logout()
-  router.push('/login')
-}
-
-function onToggle(): void {
-  globalStore.setSidebarVisibility(true)
-}
-
-const themeOptions: ThemeOption[] = [
-  { value: THEME.LIGHT, icon: 'SunIcon' },
-  { value: THEME.DARK, icon: 'MoonIcon' },
-  { value: THEME.SYSTEM, icon: 'ComputerDesktopIcon' },
-]
 </script>

@@ -72,7 +72,7 @@ const backupColumns = computed<TableColumn[]>(() => [
   {
     key: 'actions',
     label: '',
-    tdClass: 'text-right text-sm font-medium',
+    tdClass: 'text-end text-sm font-medium',
     sortable: false,
   },
 ])
@@ -298,15 +298,34 @@ function showApiError(error: unknown): void {
           </template>
 
           <BaseDropdownItem @click="downloadBackup(row.data)">
-            <BaseIcon name="CloudArrowDownIcon" class="mr-3 text-body" />
+            <BaseIcon name="CloudArrowDownIcon" class="me-3 text-body" />
             {{ $t('general.download') }}
           </BaseDropdownItem>
 
           <BaseDropdownItem @click="removeBackup(row.data)">
-            <BaseIcon name="TrashIcon" class="mr-3 text-body" />
+            <BaseIcon name="TrashIcon" class="me-3 text-body" />
             {{ $t('general.delete') }}
           </BaseDropdownItem>
         </BaseDropdown>
+      </template>
+      <!-- Nothing here yet: say what goes here and offer to add the first -->
+      <template #empty>
+        <BaseEmptyPlaceholder
+          compact
+          art="backup"
+          :ghost="3"
+          :title="$t('settings.backup.empty_title')"
+          :description="$t('settings.backup.empty_description')"
+        >
+          <template #actions>
+            <BaseButton variant="primary-outline" @click="openCreateBackupModal">
+              <template #left="slotProps">
+                <BaseIcon name="PlusIcon" :class="slotProps.class" />
+              </template>
+              {{ $t('settings.backup.new_backup') }}
+            </BaseButton>
+          </template>
+        </BaseEmptyPlaceholder>
       </template>
     </BaseTable>
   </BaseSettingCard>

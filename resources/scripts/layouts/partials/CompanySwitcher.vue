@@ -1,242 +1,199 @@
 <template>
-  <div ref="companySwitchBar" class="relative rounded">
-    <div
-      class="
-        flex items-center justify-center px-3 h-8 md:h-9 ml-2 text-sm text-white
-        bg-white/20 rounded-lg cursor-pointer hover:bg-white/30 transition-colors
-      "
+  <!-- Escape and focus leaving close the panel -->
+  <!-- eslint-disable-next-line vuejs-accessibility/no-static-element-interactions -->
+  <div ref="root" class="relative min-w-0" @focusout="onFocusOut" @keydown.esc="closeAndFocus">
+    <button
+      ref="trigger"
+      type="button"
+      :class="triggerClass"
+      :aria-expanded="isShow"
+      :aria-controls="isShow && !isPhone ? panelId : undefined"
+      :aria-label="variant === 'rail' ? label : undefined"
       @click="isShow = !isShow"
     >
       <span
-        v-if="companyStore.isAdminMode"
-        class="w-16 text-sm font-medium truncate sm:w-auto"
+        :class="[
+          'flex items-center justify-center overflow-hidden font-semibold rounded-lg shrink-0',
+          avatarClass,
+          variant === 'appbar' ? 'w-7 h-7 text-xs' : 'w-8 h-8 text-sm',
+        ]"
       >
-        {{ $t('navigation.administration') }}
+        <BaseIcon
+          v-if="companyStore.isAdminMode"
+          name="ShieldCheckIcon"
+          class="w-4.5 h-4.5"
+        />
+        <span v-else>{{ initial }}</span>
       </span>
-      <span
-        v-else-if="companyStore.selectedCompany"
-        class="w-16 text-sm font-medium truncate sm:w-auto"
-      >
-        {{ companyStore.selectedCompany.name }}
-      </span>
-      <BaseIcon name="ChevronDownIcon" class="h-5 ml-1 text-white" />
-    </div>
+
+      <template v-if="variant !== 'rail'">
+        <span
+          :class="[
+            variant === 'appbar' ? 'max-w-[50vw]' : 'flex-1 min-w-0',
+            tone === 'chrome' ? 'text-chrome-fg' : 'text-heading',
+          ]"
+          class="text-sm font-semibold text-start truncate"
+        >
+          {{ label }}
+        </span>
+        <BaseIcon
+          name="ChevronUpDownIcon"
+          :class="tone === 'chrome' ? 'text-chrome-muted' : 'text-subtle'"
+          class="w-4 h-4 shrink-0"
+        />
+      </template>
+    </button>
 
     <transition
-      enter-active-class="transition duration-200 ease-out"
-      enter-from-class="translate-y-1 opacity-0"
+      enter-active-class="transition duration-150 ease-out"
+      enter-from-class="-translate-y-1 opacity-0"
       enter-to-class="translate-y-0 opacity-100"
-      leave-active-class="transition duration-150 ease-in"
+      leave-active-class="transition duration-100 ease-in"
       leave-from-class="translate-y-0 opacity-100"
-      leave-to-class="translate-y-1 opacity-0"
+      leave-to-class="-translate-y-1 opacity-0"
     >
       <div
-        v-if="isShow"
-        class="absolute right-0 mt-2 bg-surface rounded-md shadow-lg"
+        v-if="isShow && !isPhone"
+        :id="panelId"
+        ref="panel"
+        :class="[
+          'absolute z-50 w-72 max-h-[70vh] overflow-y-auto p-1 border rounded-xl glass-strong',
+          variant === 'rail' ? 'start-full top-0 ms-2' : 'start-0 top-full mt-1.5',
+        ]"
       >
-        <div
-          class="
-            overflow-y-auto scrollbar-thin scrollbar-thumb-rounded-full
-            w-[300px] max-h-[350px]
-            scrollbar-thumb-surface-muted scrollbar-track-surface-secondary pb-4
-          "
-        >
-          <!-- Administration Mode -->
-          <div v-if="userStore.currentUser?.is_super_admin">
-            <div
-              class="p-2 px-3 rounded-md cursor-pointer hover:bg-hover-strong hover:text-primary-500"
-              :class="{
-                'bg-surface-tertiary text-primary-500': companyStore.isAdminMode,
-              }"
-              @click="enterAdminMode"
-            >
-              <div class="flex items-center">
-                <span
-                  class="flex items-center justify-center mr-3 overflow-hidden text-base font-semibold bg-primary-100 rounded-md w-9 h-9 shrink-0 text-primary-500"
-                >
-                  <BaseIcon name="ShieldCheckIcon" class="w-5 h-5" />
-                </span>
-                <div class="flex flex-col">
-                  <span class="text-sm font-medium">{{ $t('navigation.administration') }}</span>
-                </div>
-              </div>
-            </div>
-            <div class="border-t border-line-light my-1" />
-          </div>
-
-          <label
-            class="px-3 py-2 text-xs font-semibold text-subtle mb-0.5 block uppercase"
-          >
-            {{ $t('company_switcher.label') }}
-          </label>
-
-          <div
-            v-if="companyStore.companies.length < 1"
-            class="flex flex-col items-center justify-center p-2 px-3 mt-4 text-base text-subtle"
-          >
-            <BaseIcon name="ExclamationCircleIcon" class="h-5 text-subtle" />
-            {{ $t('company_switcher.no_results_found') }}
-          </div>
-
-          <div v-else>
-            <div v-if="companyStore.companies.length > 0">
-              <div
-                v-for="(company, index) in companyStore.companies"
-                :key="index"
-                class="p-2 px-3 rounded-md cursor-pointer hover:bg-hover-strong hover:text-primary-500"
-                :class="{
-                  'bg-surface-tertiary text-primary-500':
-                    companyStore.selectedCompany && companyStore.selectedCompany.id === company.id,
-                }"
-                @click="changeCompany(company)"
-              >
-                <div class="flex items-center">
-                  <span
-                    class="
-                      flex items-center justify-center mr-3 overflow-hidden text-base font-semibold
-                      bg-surface-muted rounded-md w-9 h-9 text-primary-500
-                    "
-                  >
-                    <span v-if="!company.logo">
-                      {{ initGenerator(company.name) }}
-                    </span>
-                    <img
-                      v-else
-                      :src="company.logo"
-                      alt="Company logo"
-                      class="w-full h-full object-contain"
-                    />
-                  </span>
-                  <div class="flex flex-col">
-                    <span class="text-sm">{{ company.name }}</span>
-                    <span v-if="company.user_role" class="text-xs text-subtle">
-                      {{ company.user_role }}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Pending Invitations -->
-        <div
-          v-if="pendingInvitations.length > 0"
-          class="border-t border-line-light p-2"
-        >
-          <label
-            class="block px-1 pt-1 pb-2 text-xs font-semibold leading-tight text-subtle uppercase"
-          >
-            {{ $t('members.pending_invitations') }}
-          </label>
-          <div
-            v-for="invitation in pendingInvitations"
-            :key="invitation.id"
-            class="p-2 px-3 rounded-md"
-          >
-            <div class="flex items-center mb-2">
-              <span
-                class="
-                  flex items-center justify-center mr-3 overflow-hidden text-xs font-semibold
-                  bg-surface-muted rounded-md w-9 h-9 shrink-0 text-subtle
-                "
-              >
-                {{ initGenerator(invitation.company?.name ?? '?') }}
-              </span>
-              <div class="flex flex-col min-w-0">
-                <span class="text-sm text-body truncate">{{ invitation.company?.name }}</span>
-                <span class="text-xs text-subtle">{{ invitation.role?.title }}</span>
-              </div>
-            </div>
-            <div class="flex space-x-1 pl-12">
-              <button
-                class="text-xs px-2 py-1 rounded bg-primary-500 text-white hover:bg-primary-600"
-                @click.stop="acceptInvitation(invitation.token)"
-              >
-                {{ $t('general.accept') }}
-              </button>
-              <button
-                class="text-xs px-2 py-1 rounded bg-surface-muted text-body hover:bg-hover-strong"
-                @click.stop="declineInvitation(invitation.token)"
-              >
-                {{ $t('general.decline') }}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div
-          v-if="userStore.currentUser?.is_owner"
-          class="
-            flex items-center justify-center p-4 pl-3 border-t-2 border-line-light
-            cursor-pointer text-primary-400 hover:text-primary-500
-          "
-          @click="addNewCompany"
-        >
-          <BaseIcon name="PlusIcon" class="h-5 mr-2" />
-
-          <span class="font-medium">
-            {{ $t('company_switcher.add_new_company') }}
-          </span>
-        </div>
+        <CompanySwitcherList
+          @select="changeCompany"
+          @admin="enterAdminMode"
+          @add="addNewCompany"
+        />
       </div>
     </transition>
 
-    <CompanyModal />
+    <BaseSheet
+      v-if="isPhone"
+      :show="isShow"
+      :title="$t('company_switcher.label')"
+      @close="isShow = false"
+    >
+      <CompanySwitcherList
+        @select="changeCompany"
+        @admin="enterAdminMode"
+        @add="addNewCompany"
+      />
+    </BaseSheet>
+
+    <!-- Phones mount a second switcher in the app bar; one modal is enough -->
+    <CompanyModal v-if="variant !== 'appbar'" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { computed, nextTick, ref, useId, watch } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useCompanyStore } from '@/scripts/stores/company.store'
 import { useGlobalStore } from '@/scripts/stores/global.store'
-import { useUserStore } from '@/scripts/stores/user.store'
 import { useModalStore } from '@/scripts/stores/modal.store'
+import { useBreakpoints } from '@/scripts/composables/use-breakpoints'
 import CompanyModal from '@/scripts/features/company/settings/components/CompanyModal.vue'
-import type { Company, CompanyInvitation } from '@/scripts/types/domain/company'
-import type { Role } from '@/scripts/types/domain/role'
+import CompanySwitcherList from './CompanySwitcherList.vue'
+import type { Company } from '@/scripts/types/domain/company'
 
-interface PendingInvitation {
-  id: number
-  token: string
-  company?: { name: string }
-  role?: { title: string }
+interface Props {
+  /** sidebar: full row; rail: the avatar alone; appbar: compact row for the phone app bar */
+  variant?: 'sidebar' | 'rail' | 'appbar'
+  /** chrome: drawn on the brand-coloured sidebar or app bar */
+  tone?: 'surface' | 'chrome'
 }
+
+const props = withDefaults(defineProps<Props>(), {
+  variant: 'sidebar',
+  tone: 'surface',
+})
 
 const companyStore = useCompanyStore()
 const modalStore = useModalStore()
+const globalStore = useGlobalStore()
 const route = useRoute()
 const router = useRouter()
-const globalStore = useGlobalStore()
 const { t } = useI18n()
-const userStore = useUserStore()
+const { isPhone } = useBreakpoints()
 
 const isShow = ref<boolean>(false)
-const companySwitchBar = ref<HTMLElement | null>(null)
+const root = ref<HTMLElement | null>(null)
+const trigger = ref<HTMLButtonElement | null>(null)
+const panel = ref<HTMLElement | null>(null)
+const panelId = `company-switcher-${useId()}`
 
-// TODO: Wire up pending invitations from a dedicated invitation store or bootstrap data
-const pendingInvitations = ref<PendingInvitation[]>([])
+// Opening moves focus into the list; Escape or tabbing away closes it
+watch(isShow, async (open) => {
+  if (open && !isPhone.value) {
+    await nextTick()
+    panel.value?.querySelector<HTMLElement>('button, a[href]')?.focus()
+  }
+})
+
+function onFocusOut(event: FocusEvent): void {
+  if (!isPhone.value && isShow.value && !root.value?.contains(event.relatedTarget as Node | null)) {
+    isShow.value = false
+  }
+}
+
+function closeAndFocus(): void {
+  if (isShow.value && !isPhone.value) {
+    isShow.value = false
+    trigger.value?.focus()
+  }
+}
+
+const label = computed<string>(() => {
+  if (companyStore.isAdminMode) {
+    return t('navigation.administration')
+  }
+
+  return companyStore.selectedCompany?.name ?? ''
+})
+
+const initial = computed<string>(() => {
+  const name = companyStore.selectedCompany?.name ?? ''
+  return name ? name.trim().charAt(0).toUpperCase() : ''
+})
+
+const triggerClass = computed<string>(() => {
+  const hover = props.tone === 'chrome' ? 'hover:bg-chrome-hover' : 'hover:bg-hover'
+
+  switch (props.variant) {
+    case 'rail':
+      return `flex items-center justify-center w-10 h-10 rounded-lg ${hover} transition-colors`
+    case 'appbar':
+      return `flex items-center gap-2 px-1.5 py-1 -ms-1.5 rounded-lg ${hover} transition-colors`
+    default:
+      return `flex items-center w-full gap-2.5 px-2 py-1.5 rounded-lg ${hover} transition-colors`
+  }
+})
+
+const avatarClass = computed<string>(() => {
+  if (props.tone === 'chrome') {
+    return 'bg-chrome-accent text-chrome'
+  }
+
+  return companyStore.isAdminMode ? 'bg-primary-50 text-primary-600' : 'bg-btn-primary text-on-primary'
+})
 
 watch(route, () => {
   isShow.value = false
 })
 
-onClickOutside(companySwitchBar, () => {
-  isShow.value = false
+// The sheet renders outside this element, so outside clicks only count for the popover
+onClickOutside(root, () => {
+  if (!isPhone.value) {
+    isShow.value = false
+  }
 })
 
-function initGenerator(name: string): string {
-  if (name) {
-    const nameSplit = name.split(' ')
-    return nameSplit[0].charAt(0).toUpperCase()
-  }
-  return ''
-}
-
 function addNewCompany(): void {
+  isShow.value = false
   modalStore.openModal({
     title: t('company_switcher.new_company'),
     componentName: 'CompanyModal',
@@ -253,25 +210,11 @@ async function enterAdminMode(): Promise<void> {
 }
 
 async function changeCompany(company: Company): Promise<void> {
+  isShow.value = false
   companyStore.setAdminMode(false)
   companyStore.setSelectedCompany(company)
   router.push('/admin/dashboard')
   globalStore.setIsAppLoaded(false)
   await globalStore.bootstrap()
-}
-
-async function acceptInvitation(token: string): Promise<void> {
-  // TODO: call invitation accept API, then re-bootstrap
-  pendingInvitations.value = pendingInvitations.value.filter(
-    (inv) => inv.token !== token
-  )
-  await globalStore.bootstrap()
-}
-
-async function declineInvitation(token: string): Promise<void> {
-  // TODO: call invitation decline API
-  pendingInvitations.value = pendingInvitations.value.filter(
-    (inv) => inv.token !== token
-  )
 }
 </script>
