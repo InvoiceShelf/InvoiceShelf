@@ -58,20 +58,22 @@ function stepStyle(number: number): string[] {
       after:w-full
     "
   >
-    <a
+    <button
       v-for="(number, index) in steps"
       :key="index"
+      type="button"
       :class="stepStyle(index)"
-      class="z-10"
-      href="#"
-      @click.prevent="$emit('click', index)"
+      class="z-10 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
+      :aria-label="$t('general.step_of', { step: index + 1, count: steps ?? 0 })"
+      :aria-current="currentStep === index ? 'step' : undefined"
+      @click="$emit('click', index)"
     >
       <svg
         v-if="currentStep !== null && currentStep > index"
         :class="iconClass"
         fill="currentColor"
         viewBox="0 0 20 20"
-        @click="$emit('click', index)"
+        aria-hidden="true"
       >
         <path
           fill-rule="evenodd"
@@ -79,6 +81,6 @@ function stepStyle(number: number): string[] {
           clip-rule="evenodd"
         ></path>
       </svg>
-    </a>
+    </button>
   </div>
 </template>

@@ -88,6 +88,8 @@
       </span>
     </div>
 
+    <!-- Labelled by the surrounding group through fieldAttrs, or by aria-label -->
+    <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
     <input
       v-bind="{ ...fieldAttrs, ...$attrs }"
       :type="inputType"
@@ -147,7 +149,7 @@
       <button
         type="button"
         class="flex items-center justify-center w-8 h-8 rounded-md text-subtle hover:text-body focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
-        :aria-label="revealed ? $t('general.hide_password') : $t('general.show_password')"
+        :aria-label="$t('general.show_password')"
         :aria-pressed="revealed"
         :disabled="disabled"
         @click="revealed = !revealed"

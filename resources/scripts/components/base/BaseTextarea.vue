@@ -7,6 +7,8 @@
     />
   </BaseContentPlaceholders>
 
+  <!-- Labelled by the surrounding group through fieldAttrs, or by aria-label -->
+  <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
   <textarea
     v-else
     v-bind="{ ...fieldAttrs, ...$attrs }"

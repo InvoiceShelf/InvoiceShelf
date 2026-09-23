@@ -14,7 +14,7 @@
       <span ref="trigger" :class="inActionBar ? 'flex w-full' : 'inline-flex'">
         <MenuButton
           :class="inActionBar ? 'w-full' : ''"
-          :aria-label="label || undefined"
+          :aria-label="triggerLabel"
           class="rounded-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
           @click="onClick"
           @keydown="onClick"
@@ -86,7 +86,8 @@
 
 <script setup lang="ts">
 import { Menu, MenuButton, MenuItems } from '@headlessui/vue'
-import { computed, inject, nextTick, provide } from 'vue'
+import { computed, inject, nextTick, onMounted, onUpdated, provide, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { usePopper } from '@/scripts/composables/use-popper'
 import { useBreakpoints } from '@/scripts/composables/use-breakpoints'
 import type { Placement } from '@popperjs/core'
@@ -112,6 +113,7 @@ const props = withDefaults(defineProps<Props>(), {
   label: '',
 })
 
+const { t } = useI18n()
 const { isPhone } = useBreakpoints()
 const inActionBar = inject<boolean>('inActionBar', false)
 
@@ -128,6 +130,25 @@ const [trigger, container, popper] = usePopper({
   placement: props.position,
   strategy: 'fixed',
   modifiers: [{ name: 'offset', options: { offset: [0, 6] } }],
+})
+
+// An activator that shows only an icon still needs a name: without a label
+// it falls back to "Actions"
+const activatorHasText = ref<boolean>(true)
+
+function checkActivatorText(): void {
+  activatorHasText.value = !!(trigger.value as HTMLElement | null)?.textContent?.trim()
+}
+
+onMounted(checkActivatorText)
+onUpdated(checkActivatorText)
+
+const triggerLabel = computed<string | undefined>(() => {
+  if (props.label) {
+    return props.label
+  }
+
+  return activatorHasText.value ? undefined : t('general.actions')
 })
 
 async function onClick(): Promise<void> {

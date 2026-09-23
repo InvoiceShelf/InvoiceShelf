@@ -22,11 +22,14 @@ defineEmits<Emits>()
 
 <template>
   <div class="rounded-md bg-alert-warning-bg p-4 relative">
-    <BaseIcon
-      name="XMarkIcon"
-      class="h-5 w-5 text-alert-warning-text absolute right-4 cursor-pointer"
+    <button
+      type="button"
+      class="absolute p-1 rounded-md top-3 right-3 text-alert-warning-text focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
+      :aria-label="$t('general.close')"
       @click="$emit('hide')"
-    />
+    >
+      <BaseIcon name="XMarkIcon" class="w-5 h-5" />
+    </button>
     <div class="flex flex-col">
       <div class="flex">
         <div class="shrink-0">

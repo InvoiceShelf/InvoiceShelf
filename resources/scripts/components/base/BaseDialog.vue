@@ -1,5 +1,5 @@
 <template>
-  <TransitionRoot as="template" :show="dialogStore.active">
+  <TransitionRoot as="template" :show="dialogStore.active" @after-leave="restoreFocus">
     <Dialog
       as="div"
       static
@@ -98,6 +98,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useDialogStore } from '@/scripts/stores/dialog.store'
+import { useReturnFocus } from '@/scripts/composables/use-return-focus'
 import {
   Dialog,
   DialogOverlay,
@@ -108,6 +109,8 @@ import {
 } from '@headlessui/vue'
 
 const dialogStore = useDialogStore()
+
+const { restoreFocus } = useReturnFocus(() => dialogStore.active)
 
 function resolveDialog(resValue: boolean): void {
   dialogStore.resolve(resValue)

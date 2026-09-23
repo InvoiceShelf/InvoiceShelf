@@ -7,6 +7,8 @@
     />
   </BaseContentPlaceholders>
 
+  <!-- Handles the keys of the combobox inside it; when not searchable, the root is the combobox -->
+  <!-- eslint-disable-next-line vuejs-accessibility/no-static-element-interactions -->
   <div
     v-else
     :id="id"
@@ -46,6 +48,8 @@
 
         <div :class="classes.tagsSearchWrapper">
           <span :class="classes.tagsSearchCopy">{{ search }}</span>
+          <!-- Named through comboboxAttrs -->
+          <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
           <input
             v-if="searchable && !disabled"
             ref="inputRef"
@@ -63,6 +67,8 @@
       </div>
     </template>
 
+    <!-- Named through comboboxAttrs -->
+    <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
     <input
       v-else-if="searchable && !disabled"
       ref="inputRef"
@@ -162,6 +168,8 @@
               </div>
 
               <ul role="none" :class="classes.groupOptions">
+                <!-- Options take no focus: the combobox points at them with aria-activedescendant -->
+                <!-- eslint-disable-next-line vuejs-accessibility/interactive-supports-focus, vuejs-accessibility/mouse-events-have-key-events -->
                 <li
                   v-for="option in group.options"
                   :id="optionDomId(option.key)"
@@ -187,6 +195,7 @@
           </template>
 
           <template v-else>
+            <!-- eslint-disable-next-line vuejs-accessibility/interactive-supports-focus, vuejs-accessibility/mouse-events-have-key-events -->
             <li
               v-for="option in visibleOptions"
               :id="optionDomId(option.key)"

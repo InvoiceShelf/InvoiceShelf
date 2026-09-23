@@ -1,4 +1,6 @@
 <template>
+  <!-- Escape and focus leaving close the panel -->
+  <!-- eslint-disable-next-line vuejs-accessibility/no-static-element-interactions -->
   <div ref="root" class="relative min-w-0" @focusout="onFocusOut" @keydown.esc="closeAndFocus">
     <button
       ref="trigger"

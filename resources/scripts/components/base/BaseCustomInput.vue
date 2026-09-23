@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch, onMounted } from 'vue'
+import { computed, ref, watch, onMounted, useId } from 'vue'
 import type { Ref } from 'vue'
 
 interface CustomFieldOption {
@@ -210,6 +210,8 @@ function getFields(): void {
 }
 
 getFields()
+
+const groupId = `insert-fields-${useId()}`
 </script>
 
 <template>
@@ -231,7 +233,7 @@ getFields()
         class="mb-2"
       >
         <template #activator>
-          <BaseButton type="button" variant="primary-outline" class="mr-4">
+          <BaseButton tag="span" variant="primary-outline" class="mr-4">
             {{ $t('settings.customization.insert_fields') }}
             <template #left="slotProps">
               <BaseIcon name="PlusSmIcon" :class="slotProps.class" />
@@ -239,37 +241,31 @@ getFields()
           </BaseButton>
         </template>
 
+        <!-- Each field is a menu item, so the arrow keys reach it -->
         <div class="flex p-2">
-          <ul v-for="(type, index) in fieldList" :key="index" class="list-none">
-            <li class="mb-1 ml-2 text-xs font-semibold text-muted uppercase">
+          <div
+            v-for="(type, index) in fieldList"
+            :key="index"
+            role="group"
+            :aria-labelledby="`${groupId}-${index}`"
+          >
+            <p :id="`${groupId}-${index}`" class="mb-1 ml-2 text-xs font-semibold uppercase text-muted">
               {{ type.label }}
-            </li>
+            </p>
 
-            <li
+            <BaseDropdownItem
               v-for="(field, fieldIndex) in type.fields"
               :key="fieldIndex"
-              class="
-                w-48
-                text-sm
-                font-normal
-                cursor-pointer
-                hover:bg-hover-strong
-                rounded
-                ml-1
-                py-0.5
-              "
+              class="w-48 !py-1"
               @click="value += `{${field.value}}`"
             >
-              <div class="flex pl-1">
-                <BaseIcon
-                  name="ChevronDoubleRightIcon"
-                  class="h-3 mt-1 mr-2 text-subtle"
-                />
-
-                {{ field.label }}
-              </div>
-            </li>
-          </ul>
+              <BaseIcon
+                name="ChevronDoubleRightIcon"
+                class="h-3 mr-2 shrink-0 text-subtle"
+              />
+              {{ field.label }}
+            </BaseDropdownItem>
+          </div>
         </div>
       </BaseDropdown>
     </div>

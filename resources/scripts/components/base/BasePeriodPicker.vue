@@ -33,6 +33,8 @@
           leave-active-class="transition duration-75 ease-in"
           leave-to-class="scale-95 opacity-0"
         >
+          <!-- Escape and focus leaving close the popover -->
+          <!-- eslint-disable-next-line vuejs-accessibility/no-static-element-interactions -->
           <div
             v-if="open"
             ref="panel"

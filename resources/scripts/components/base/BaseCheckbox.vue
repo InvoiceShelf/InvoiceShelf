@@ -1,10 +1,11 @@
 <template>
-  <div class="relative flex items-start">
+  <div class="relative flex items-start" :class="$attrs.class" :style="$attrs.style as StyleValue">
     <div class="flex items-center h-5">
       <input
         :id="id"
         v-model="checked"
-        v-bind="$attrs"
+        v-bind="controlAttrs"
+        :aria-describedby="description ? `${id}-description` : undefined"
         :disabled="disabled"
         type="checkbox"
         :class="[checkboxClass, disabledClass]"
@@ -20,13 +21,14 @@
       >
         {{ label }}
       </label>
-      <p v-if="description" class="text-muted">{{ description }}</p>
+      <p v-if="description" :id="`${id}-description`" class="text-muted">{{ description }}</p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, useAttrs } from 'vue'
+import type { StyleValue } from 'vue'
 
 interface Props {
   label?: string
@@ -44,7 +46,7 @@ const props = withDefaults(defineProps<Props>(), {
   modelValue: false,
   id: () => `check_${Math.random().toString(36).substr(2, 9)}`,
   disabled: false,
-  checkboxClass: 'w-4 h-4 border-line-strong rounded cursor-pointer',
+  checkboxClass: 'w-4 h-4 border-control-border rounded cursor-pointer',
   setInitialValue: false,
 })
 
@@ -54,6 +56,18 @@ interface Emits {
 }
 
 const emit = defineEmits<Emits>()
+
+// Layout classes style the wrapper; everything else (aria-*, value, name)
+// belongs to the checkbox itself
+defineOptions({ inheritAttrs: false })
+
+const attrs = useAttrs()
+
+const controlAttrs = computed<Record<string, unknown>>(() => {
+  const { class: _class, style: _style, ...rest } = attrs
+
+  return rest
+})
 
 if (props.setInitialValue) {
   emit('update:modelValue', props.modelValue)

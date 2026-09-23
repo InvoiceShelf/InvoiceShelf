@@ -166,7 +166,36 @@
     "current": "(current)",
     "list": "List",
     "sort_ascending": "Sort order: ascending",
-    "sort_descending": "Sort order: descending"
+    "sort_descending": "Sort order: descending",
+    "remove_named": "Remove {name}",
+    "editor": {
+      "toolbar": "Formatting",
+      "bold": "Bold",
+      "italic": "Italic",
+      "strike": "Strikethrough",
+      "code": "Inline code",
+      "paragraph": "Paragraph",
+      "h1": "Heading 1",
+      "h2": "Heading 2",
+      "h3": "Heading 3",
+      "bulletList": "Bulleted list",
+      "orderedList": "Numbered list",
+      "blockquote": "Quote",
+      "codeBlock": "Code block",
+      "undo": "Undo",
+      "redo": "Redo",
+      "alignLeft": "Align left",
+      "alignRight": "Align right",
+      "alignJustify": "Justify",
+      "alignCenter": "Center",
+      "addLink": "Link",
+      "link_url": "Link address"
+    },
+    "email_preview": "Email preview",
+    "pdf_preview": "PDF preview",
+    "step_of": "Step {step} of {count}",
+    "actions_for": "Actions for {name}",
+    "select_named": "Select {name}"
   },
   "dashboard": {
     "select_year": "Select year",
@@ -606,7 +635,11 @@
       "item_actions": "Item actions",
       "move_up": "Move up",
       "move_down": "Move down",
-      "remove": "Remove item"
+      "remove": "Remove item",
+      "item_actions_for": "Actions for item {position}",
+      "discount_type": "Discount type: {type}",
+      "reorder": "Move item {position} of {count}. Use the up and down arrow keys",
+      "moved": "Moved to position {position} of {count}"
     },
     "payment_attached_message": "One of the selected invoices already have a payment attached to it. Make sure to delete the attached payments first in order to go ahead with the removal",
     "confirm_delete": "You will not be able to recover this Invoice | You will not be able to recover these Invoices",
@@ -1459,7 +1492,8 @@
           "invoice": "Invoice",
           "payment": "Payment"
         }
-      }
+      },
+      "reorder_component": "Move {name}, {position} of {count}. Use the up and down arrow keys"
     },
     "account_settings": {
       "profile_picture": "Profile Photo",
@@ -1546,7 +1580,8 @@
       "url": "URL",
       "active": "Active",
       "currency_help_text": "This provider will only be used on above selected currencies",
-      "currency_in_used": "The following currencies are already active on another provider. Please remove these currencies from selection to activate this provider again."
+      "currency_in_used": "The following currencies are already active on another provider. Please remove these currencies from selection to activate this provider again.",
+      "fetch_latest": "Fetch the latest exchange rate"
     },
     "tax_types": {
       "title": "Tax Types",

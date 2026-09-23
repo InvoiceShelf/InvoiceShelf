@@ -1,5 +1,9 @@
 <template>
-  <!-- Announced through the live region in NotificationRoot, not from here -->
+  <!--
+    Announced through the live region in NotificationRoot, not from here.
+    Hover and focus both pause the timer.
+  -->
+  <!-- eslint-disable-next-line vuejs-accessibility/no-static-element-interactions -->
   <div
     class="
       w-full max-w-sm mb-2.5 border rounded-xl pointer-events-auto

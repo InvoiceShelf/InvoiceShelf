@@ -130,7 +130,7 @@
     >
       <img
         v-if="localFiles[0].image"
-        :alt="localFile.name"
+        :alt="localFile.name ?? ''"
         :src="localFiles[0].image"
         class="block object-cover w-full h-full rounded opacity-100"
         style="animation: fadeIn 2s ease"
@@ -230,7 +230,7 @@
       >
         <img
           v-if="localFile.image"
-          :alt="localFile.name"
+          :alt="localFile.name ?? ''"
           :src="localFile.image"
           class="block object-cover w-20 h-20 opacity-100"
           style="animation: fadeIn 2s ease"
@@ -328,7 +328,7 @@
       >
         <img
           v-if="localFile.image"
-          :alt="localFile.name"
+          :alt="localFile.name ?? ''"
           :src="localFile.image"
           class="block object-contain h-20 opacity-100 min-w-[5rem]"
           style="animation: fadeIn 2s ease"

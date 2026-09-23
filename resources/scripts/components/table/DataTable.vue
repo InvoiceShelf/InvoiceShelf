@@ -17,7 +17,7 @@
       </ul>
       <ul v-else class="divide-y divide-line-light">
         <!-- A row tap is a shortcut; the title cell holds the row's link -->
-        <!-- eslint-disable-next-line vuejs-accessibility/click-events-have-key-events -->
+        <!-- eslint-disable-next-line vuejs-accessibility/click-events-have-key-events, vuejs-accessibility/no-static-element-interactions -->
         <li
           v-for="(row, index) in sortedRows"
           :key="row.data?.id ?? index"
