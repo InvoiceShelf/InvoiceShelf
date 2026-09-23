@@ -84,14 +84,41 @@ if [ "$(id -u)" = "0" ]; then
     chown -R www-data:www-data storage bootstrap/cache
 fi
 
-if ! grep -q "APP_KEY" /var/www/html/.env
-then
-    echo "**** Creating empty APP_KEY variable ****"
-    echo "$(printf "APP_KEY=\n"; cat /var/www/html/.env)" > /var/www/html/.env
-fi
-if ! grep -q '^APP_KEY=[^[:space:]]' /var/www/html/.env; then
-    echo "**** Generating new APP_KEY variable ****"
-    ./artisan key:generate -n
+# .env is rebuilt from .env.example whenever the container is recreated, and
+# .env.example used to carry a key. Every install without an APP_KEY of its
+# own therefore ran on the same public key. A key is now generated once and
+# kept on the storage volume, so it survives recreating the container.
+SHIPPED_APP_KEY='base64:kgk/4DW1vEVy7aEvet5FPp5un6PIGe/so8H0mvoUtW0='
+APP_KEY_FILE=/var/www/html/storage/app/.app_key
+
+if [ "$APP_KEY" = "$SHIPPED_APP_KEY" ]; then
+    echo "!!!! APP_KEY in this container's environment is the key InvoiceShelf"
+    echo "!!!! used to ship in .env.example, and that key is public. Remove APP_KEY"
+    echo "!!!! from the environment (a key is then generated and kept in storage),"
+    echo "!!!! or set one of your own, which you can make with:"
+    echo "!!!!"
+    echo "!!!!     echo \"base64:\$(openssl rand -base64 32)\""
+    echo "!!!!"
+elif [ -z "$APP_KEY" ]; then
+    if ! grep -q "^APP_KEY=" /var/www/html/.env; then
+        echo "$(printf "APP_KEY=\n"; cat /var/www/html/.env)" > /var/www/html/.env
+    fi
+
+    current_key=$(sed -n 's/^APP_KEY=//p' /var/www/html/.env | head -n 1 | tr -d "\"'")
+
+    if [ -n "$current_key" ] && [ "$current_key" != "$SHIPPED_APP_KEY" ]; then
+        # A key of this install's own, in a .env that survived; keep a copy.
+        if [ ! -s "$APP_KEY_FILE" ]; then
+            (umask 077 && printf '%s\n' "$current_key" > "$APP_KEY_FILE")
+        fi
+    elif [ -s "$APP_KEY_FILE" ]; then
+        echo "**** Using the APP_KEY kept in storage ****"
+        sed -i "s|^APP_KEY=.*|APP_KEY=$(head -n 1 "$APP_KEY_FILE")|" /var/www/html/.env
+    else
+        echo "**** Generating new APP_KEY and keeping it in storage ****"
+        ./artisan key:generate --force -n
+        (umask 077 && sed -n 's/^APP_KEY=//p' /var/www/html/.env | head -n 1 > "$APP_KEY_FILE")
+    fi
 fi
 
 echo "**** Clearing cached config ****"
@@ -104,6 +131,10 @@ echo "**** Creating storage link ****"
 echo "**** Running migrations (if app is installed) ****"
 if ./artisan migrate:status > /dev/null 2>&1; then
     ./artisan migrate --force
+
+    # Reseals the marketplace credential when the key has just moved off the
+    # shipped one. It changes nothing on later starts.
+    ./artisan invoiceshelf:retire-shipped-key || true
 
     # Currencies ship as a catalogue rather than one migration each, so a
     # release that adds one needs this to reach an existing install. Nothing is
