@@ -16,11 +16,15 @@ class CompanyMailConfigurationController extends Controller
 
     public function getDefaultConfig(Request $request): JsonResponse
     {
+        $this->authorize('owner only');
+
         return response()->json($this->mailConfigurationService->getDefaultConfig());
     }
 
     public function getMailConfig(Request $request): JsonResponse
     {
+        $this->authorize('owner only');
+
         return response()->json(
             $this->mailConfigurationService->getCompanyConfig($request->header('company'))
         );

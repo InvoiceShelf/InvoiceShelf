@@ -1,6 +1,8 @@
 <?php
 
 use App\Domains\Accounts\Models\User;
+use App\Platform\Mail\Application\MailConfigurationService;
+use App\Platform\Operations\Models\Setting;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Sanctum\Sanctum;
 use Symfony\Component\HttpClient\HttpClient;
@@ -70,6 +72,30 @@ test('get global mail configuration', function () {
             'from_name',
             'from_mail',
         ]);
+});
+
+test('the global mail configuration never sends a stored secret back', function () {
+    Setting::setSettings([
+        'mail_driver' => 'smtp',
+        'mail_host' => 'smtp.example.com',
+        'mail_password' => 'stored-global-password',
+    ]);
+
+    getJson('/api/v1/mail/config')
+        ->assertOk()
+        ->assertJson(['mail_password' => MailConfigurationService::SECRET_MASK])
+        ->assertDontSee('stored-global-password');
+
+    postJson('/api/v1/mail/config', [
+        'mail_driver' => 'smtp',
+        'mail_host' => 'smtp.example.com',
+        'mail_port' => 587,
+        'mail_password' => MailConfigurationService::SECRET_MASK,
+        'from_name' => 'InvoiceShelf',
+        'from_mail' => 'hello@example.com',
+    ])->assertOk();
+
+    expect(Setting::getSetting('mail_password'))->toBe('stored-global-password');
 });
 
 test('get global mail drivers returns capability-backed drivers', function () {
