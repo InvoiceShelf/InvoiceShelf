@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Artisan;
 use Laravel\Sanctum\Sanctum;
 
 use function Pest\Laravel\getJson;
+use function Pest\Laravel\postJson;
 
 beforeEach(function (): void {
     Artisan::call('db:seed', ['--force' => true, '--class' => 'DatabaseSeeder']);
@@ -56,4 +57,31 @@ test('a member cannot read the mail transport or module settings by name', funct
         ->json();
 
     expect(array_keys($settings))->toBe(['currency']);
+});
+
+test('the owner cannot write the mail transport or module settings through the generic endpoint', function () {
+    Sanctum::actingAs(User::query()->find(1), ['*']);
+
+    postJson('/api/v1/company/settings', ['settings' => [
+        'language' => 'de',
+        'company_mail_host' => 'attacker.example.com',
+        'module.ai-assistant.api_key' => 'replaced',
+    ]])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['settings']);
+
+    expect(CompanySetting::getSetting('company_mail_host', $this->companyId))->toBe('smtp.example.com')
+        ->and(CompanySetting::getSetting('module.ai-assistant.api_key', $this->companyId))->toBe('stored-module-key');
+
+    postJson('/api/v1/company/settings', ['settings' => ['language' => 'de']])->assertOk();
+
+    expect(CompanySetting::getSetting('language', $this->companyId))->toBe('de');
+});
+
+test('settings that are not a map are refused', function () {
+    Sanctum::actingAs(User::query()->find(1), ['*']);
+
+    postJson('/api/v1/company/settings', ['settings' => 'language'])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['settings']);
 });

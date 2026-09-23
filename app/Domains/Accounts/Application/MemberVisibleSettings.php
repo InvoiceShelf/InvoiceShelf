@@ -7,11 +7,13 @@ use App\Platform\Mail\Contracts\MailConfigurator;
 use Illuminate\Support\Collection;
 
 /**
- * A company's preferences as any of its members may read them.
+ * A company's preferences as any of its members may read them, and as the
+ * generic settings endpoint may write them.
  *
  * Two kinds of setting are left out, because they can hold credentials and
- * have endpoints of their own that only the owner reaches: the company's mail
- * transport and the settings of its modules (`module.{slug}.{key}`).
+ * have endpoints of their own that only the owner reaches, with their own
+ * validation: the company's mail transport and the settings of its modules
+ * (`module.{slug}.{key}`).
  */
 class MemberVisibleSettings
 {
@@ -41,7 +43,10 @@ class MemberVisibleSettings
         return CompanySetting::getSettings(array_values($readable), $companyId);
     }
 
-    private function isPrivate(string $key): bool
+    /**
+     * Whether the key belongs to one of those endpoints of its own.
+     */
+    public function isPrivate(string $key): bool
     {
         return str_starts_with($key, self::MODULE_PREFIX)
             || in_array($key, $this->mailConfigurator->getCompanySettingKeys(), true);
