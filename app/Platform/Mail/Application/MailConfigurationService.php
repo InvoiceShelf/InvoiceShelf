@@ -17,6 +17,12 @@ class MailConfigurationService implements MailConfigurator
 {
     public const DEFAULT_DRIVER = 'sendmail';
 
+    /**
+     * Stands in for a stored secret in every configuration sent to the
+     * browser. A save that returns it unchanged keeps the stored value.
+     */
+    public const SECRET_MASK = '********';
+
     private const GLOBAL_SCOPE = 'global';
 
     private const COMPANY_SCOPE = 'company';
@@ -63,6 +69,16 @@ class MailConfigurationService implements MailConfigurator
         ],
     ];
 
+    /**
+     * Fields that are credentials: never sent back once stored.
+     */
+    private const SECRET_FIELDS = [
+        'mail_password',
+        'mail_ses_secret',
+        'mail_mailgun_secret',
+        'mail_postmark_token',
+    ];
+
     private const BASE_FIELDS = [
         'mail_driver',
         'from_name',
@@ -104,7 +120,9 @@ class MailConfigurationService implements MailConfigurator
 
     public function saveGlobalConfig(array $payload): void
     {
-        Setting::setSettings($this->prepareSettingsForStorage($payload, self::GLOBAL_SCOPE));
+        $current = Setting::getSettings($this->getGlobalSettingKeys())->all();
+
+        Setting::setSettings($this->prepareSettingsForStorage($payload, self::GLOBAL_SCOPE, $current));
     }
 
     public function saveCompanyConfig(int|string $companyId, array $payload): void
@@ -117,8 +135,10 @@ class MailConfigurationService implements MailConfigurator
             return;
         }
 
+        $current = CompanySetting::getSettings($this->getCompanySettingKeys(), $companyId)->all();
+
         CompanySetting::setSettings(
-            $this->prepareSettingsForStorage($payload, self::COMPANY_SCOPE) + [
+            $this->prepareSettingsForStorage($payload, self::COMPANY_SCOPE, $current) + [
                 'use_custom_mail_config' => 'YES',
             ],
             $companyId
@@ -242,13 +262,18 @@ class MailConfigurationService implements MailConfigurator
         ];
 
         foreach (self::DRIVER_FIELDS[$driver] as $field) {
-            $payload[$field] = $this->resolveStoredValue($settings, $scope, $field);
+            $value = $this->resolveStoredValue($settings, $scope, $field);
+
+            $payload[$field] = $this->isSecret($field) && filled($value) ? self::SECRET_MASK : $value;
         }
 
         return $payload;
     }
 
-    private function prepareSettingsForStorage(array $payload, string $scope): array
+    /**
+     * @param  array<string, mixed>  $current  The settings stored now, so a secret sent back masked keeps its value.
+     */
+    private function prepareSettingsForStorage(array $payload, string $scope, array $current): array
     {
         $driver = $this->normalizeRequestedDriver($payload['mail_driver'] ?? null, $this->getAvailableDrivers());
 
@@ -259,10 +284,13 @@ class MailConfigurationService implements MailConfigurator
         ];
 
         foreach (self::DRIVER_FIELDS[$driver] as $field) {
-            $settings[$this->storedKey($scope, $field)] = $this->normalizeStoredValue(
-                $field,
-                $payload[$field] ?? $this->getDefaultValue($field)
-            );
+            $value = $payload[$field] ?? $this->getDefaultValue($field);
+
+            if ($this->isSecret($field) && $value === self::SECRET_MASK) {
+                $value = $this->resolveStoredValue($current, $scope, $field);
+            }
+
+            $settings[$this->storedKey($scope, $field)] = $this->normalizeStoredValue($field, $value);
         }
 
         return $settings;
@@ -355,6 +383,11 @@ class MailConfigurationService implements MailConfigurator
         }
 
         return $this->getDefaultValue($field);
+    }
+
+    private function isSecret(string $field): bool
+    {
+        return in_array($field, self::SECRET_FIELDS, true);
     }
 
     private function storedKey(string $scope, string $field): string

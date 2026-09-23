@@ -108,3 +108,78 @@ test('company mail runtime apply maps postmark settings into laravel config', fu
     expect(config('mail.from.name'))->toBe('Runtime Mailer');
     expect(config('mail.from.address'))->toBe('runtime@example.com');
 });
+
+test('a member who is not the owner cannot read the mail configuration', function () {
+    CompanySetting::setSettings([
+        'use_custom_mail_config' => 'YES',
+        'company_mail_driver' => 'postmark',
+        'company_mail_postmark_token' => 'owner-only-token',
+    ], $this->companyId);
+
+    $member = User::factory()->create(['email' => 'member@example.com']);
+    $member->companies()->attach($this->companyId);
+    Sanctum::actingAs($member, ['*']);
+
+    getJson('/api/v1/company/mail/company-config')->assertForbidden();
+    getJson('/api/v1/company/mail/config')->assertForbidden();
+});
+
+test('the mail configuration never sends a stored secret back', function () {
+    CompanySetting::setSettings([
+        'use_custom_mail_config' => 'YES',
+        'company_mail_driver' => 'postmark',
+        'company_mail_postmark_token' => 'stored-postmark-token',
+        'company_mail_postmark_message_stream_id' => 'outbound',
+    ], $this->companyId);
+
+    getJson('/api/v1/company/mail/company-config')
+        ->assertOk()
+        ->assertJson([
+            'mail_postmark_token' => MailConfigurationService::SECRET_MASK,
+            'mail_postmark_message_stream_id' => 'outbound',
+        ])
+        ->assertDontSee('stored-postmark-token');
+});
+
+test('an unset secret reads back empty rather than masked', function () {
+    CompanySetting::setSettings([
+        'use_custom_mail_config' => 'YES',
+        'company_mail_driver' => 'smtp',
+        'company_mail_host' => 'smtp.example.com',
+        'company_mail_password' => '',
+    ], $this->companyId);
+
+    getJson('/api/v1/company/mail/company-config')
+        ->assertOk()
+        ->assertJson(['mail_password' => '']);
+});
+
+test('saving the mask back keeps the stored secret, and a new value replaces it', function () {
+    CompanySetting::setSettings([
+        'use_custom_mail_config' => 'YES',
+        'company_mail_driver' => 'smtp',
+        'company_mail_password' => 'stored-smtp-password',
+    ], $this->companyId);
+
+    $payload = [
+        'use_custom_mail_config' => 'YES',
+        'mail_driver' => 'smtp',
+        'mail_host' => 'smtp.example.com',
+        'mail_port' => 587,
+        'mail_username' => 'mailer',
+        'mail_timeout' => 30,
+        'mail_password' => MailConfigurationService::SECRET_MASK,
+        'from_name' => 'Company Mailer',
+        'from_mail' => 'company@example.com',
+    ];
+
+    postJson('/api/v1/company/mail/company-config', $payload)->assertOk();
+
+    expect(CompanySetting::getSetting('company_mail_password', $this->companyId))
+        ->toBe('stored-smtp-password');
+
+    postJson('/api/v1/company/mail/company-config', ['mail_password' => 'rotated-password'] + $payload)->assertOk();
+
+    expect(CompanySetting::getSetting('company_mail_password', $this->companyId))
+        ->toBe('rotated-password');
+});
