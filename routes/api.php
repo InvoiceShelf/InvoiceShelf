@@ -54,6 +54,7 @@ Route::prefix('/v1')->group(function () {
     Route::middleware(['auth:sanctum', 'super-admin'])->prefix('super-admin')->group(function () {
         require app_path('Platform/Operations/routes/admin.php');
         require app_path('Domains/Accounts/routes/admin.php');
+        require app_path('Platform/Mcp/routes/admin.php');
     });
 
     // Stop impersonation - uses auth:sanctum only (the impersonated user's token, not super-admin)
@@ -134,6 +135,11 @@ Route::prefix('/v1')->group(function () {
         require app_path('Platform/Operations/routes/updater.php');
 
         require app_path('Domains/Accounts/routes/management.php');
+
+        // Connected AI apps (MCP)
+        // ----------------------------------
+
+        require app_path('Platform/Mcp/routes/api.php');
 
     });
 

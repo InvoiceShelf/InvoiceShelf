@@ -11,6 +11,7 @@ use App\Domains\Reporting\ReportingServiceProvider;
 use App\Domains\Sales\SalesServiceProvider;
 use App\Domains\Taxation\TaxationServiceProvider;
 use App\Platform\Mail\MailServiceProvider;
+use App\Platform\Mcp\McpServiceProvider;
 use App\Platform\Modules\ModuleServiceProvider;
 use App\Platform\Operations\OperationsServiceProvider;
 use App\Platform\Pdf\PdfServiceProvider;
@@ -41,5 +42,6 @@ return [
     MailServiceProvider::class,
     OperationsServiceProvider::class,
     ModuleServiceProvider::class,
+    McpServiceProvider::class,
     ScrambleServiceProvider::class,
 ];

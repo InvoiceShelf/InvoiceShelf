@@ -16,7 +16,7 @@ use Tests\Support\OAuthTesting;
 beforeEach(function () {
     OAuthTesting::useKeys();
 
-    Passport::tokensCan(['test:use' => 'Use the test consumer']);
+    Passport::tokensCan([...Passport::$scopes, 'test:use' => 'Use the test consumer']);
     Passport::authorizationView(fn (array $parameters) => response('consent for '.$parameters['client']->name));
 
     Route::middleware('auth:oauth')->get('/_oauth-test/whoami', function (Request $request) {
