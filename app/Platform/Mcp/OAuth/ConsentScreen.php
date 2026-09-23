@@ -2,10 +2,11 @@
 
 namespace App\Platform\Mcp\OAuth;
 
-use App\Domains\Accounts\Models\CompanySetting;
+use App\Domains\Accounts\Application\UserLocale;
 use App\Domains\Accounts\Models\User;
 use App\Platform\Mcp\Application\ConnectionService;
 use App\Platform\Mcp\Models\McpConnection;
+use App\Support\SpaTranslations;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -21,18 +22,6 @@ use Laravel\Passport\Client;
  */
 class ConsentScreen
 {
-    /**
-     * Locale codes whose translation file is named differently, mirroring
-     * LOCALE_FILE_MAP in resources/scripts/plugins/i18n.ts.
-     */
-    private const LOCALE_FILE_MAP = [
-        'zh_CN' => 'zh-cn',
-        'pt_BR' => 'pt-br',
-    ];
-
-    /** @var array<string, array<string, mixed>> */
-    private array $messages = [];
-
     public function __construct(
         private readonly ConnectionService $connections,
     ) {}
@@ -52,7 +41,7 @@ class ConsentScreen
             ->where('oauth_client_id', $client->getKey())
             ->first();
 
-        $locale = $this->localeFor($user, $companies->first()?->id);
+        $locale = UserLocale::for($user, $companies->first()?->id);
 
         return view('mcp.consent', [
             'clientId' => $client->getKey(),
@@ -68,7 +57,7 @@ class ConsentScreen
             'theme' => get_app_setting('admin_portal_theme') ?? 'invoiceshelf',
             'locale' => $locale,
             'direction' => $this->directionOf($locale),
-            't' => fn (string $key, array $replace = []): string => $this->text($locale, $key, $replace),
+            't' => fn (string $key, array $replace = []): string => SpaTranslations::get($locale, $key, $replace),
         ]);
     }
 
@@ -81,60 +70,6 @@ class ConsentScreen
         $language = Str::before(str_replace('-', '_', $locale), '_');
 
         return in_array($language, (array) config('invoiceshelf.rtl_languages', []), true) ? 'rtl' : 'ltr';
-    }
-
-    /**
-     * The user's own language, or their company's when they left it at the
-     * default, or English.
-     */
-    private function localeFor(User $user, ?int $companyId): string
-    {
-        $language = $user->getSettings(['language'])->get('language');
-
-        if ((! $language || $language === 'default') && $companyId !== null) {
-            $language = CompanySetting::getSetting('language', $companyId);
-        }
-
-        return is_string($language) && $language !== '' && $language !== 'default' ? $language : 'en';
-    }
-
-    /**
-     * A string from the `mcp` group of the SPA's translation files, which is
-     * nested JSON the framework's translator cannot address, with `{name}`
-     * placeholders filled in. Falls back to English, then to the key.
-     *
-     * @param  array<string, string>  $replace
-     */
-    private function text(string $locale, string $key, array $replace = []): string
-    {
-        $line = data_get($this->messages($locale), $key) ?? data_get($this->messages('en'), $key);
-
-        if (! is_string($line)) {
-            return $key;
-        }
-
-        foreach ($replace as $name => $value) {
-            $line = str_replace('{'.$name.'}', $value, $line);
-        }
-
-        return $line;
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function messages(string $locale): array
-    {
-        if (! isset($this->messages[$locale])) {
-            $file = lang_path((self::LOCALE_FILE_MAP[$locale] ?? $locale).'.json');
-            $decoded = preg_match('/^[A-Za-z_-]+$/', $locale) === 1 && is_file($file)
-                ? json_decode((string) file_get_contents($file), true)
-                : null;
-
-            $this->messages[$locale] = is_array($decoded) ? $decoded : [];
-        }
-
-        return $this->messages[$locale];
     }
 
     /**

@@ -1,0 +1,86 @@
+{
+  "name": "line-taxes-document-fixed-discount-tie",
+  "settings": {
+    "tax_per_item": "YES",
+    "discount_per_item": "NO"
+  },
+  "form": {
+    "customer": "Parity Home LLC",
+    "lines": [
+      {
+        "name": "Small",
+        "qty": 1,
+        "price": "10.00",
+        "taxes": [
+          "Parity Odd"
+        ]
+      },
+      {
+        "name": "Large",
+        "qty": 1,
+        "price": "70.00",
+        "taxes": [
+          "Parity Odd"
+        ]
+      }
+    ],
+    "discount": "1",
+    "discount_type": "fixed"
+  },
+  "submitted": {
+    "currency_id": 142,
+    "exchange_rate": null,
+    "discount": 100,
+    "discount_type": "fixed",
+    "discount_val": 100,
+    "tax_per_item": "YES",
+    "discount_per_item": "NO",
+    "tax_included": false,
+    "sub_total": 8000,
+    "tax": 573,
+    "total": 8473,
+    "taxes": [],
+    "items": [
+      {
+        "name": "Small",
+        "quantity": 1,
+        "price": 1000,
+        "discount": 0,
+        "discount_type": "fixed",
+        "discount_val": 0,
+        "tax": 72,
+        "total": 1000,
+        "taxes": [
+          {
+            "name": "Parity Odd",
+            "percent": 7.25,
+            "calculation_type": "percentage",
+            "fixed_amount": 0,
+            "compound_tax": false,
+            "amount": 72
+          }
+        ]
+      },
+      {
+        "name": "Large",
+        "quantity": 1,
+        "price": 7000,
+        "discount": 0,
+        "discount_type": "fixed",
+        "discount_val": 0,
+        "tax": 501,
+        "total": 7000,
+        "taxes": [
+          {
+            "name": "Parity Odd",
+            "percent": 7.25,
+            "calculation_type": "percentage",
+            "fixed_amount": 0,
+            "compound_tax": false,
+            "amount": 501
+          }
+        ]
+      }
+    ]
+  }
+}

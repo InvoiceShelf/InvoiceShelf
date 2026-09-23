@@ -1,0 +1,82 @@
+{
+  "name": "line-taxes-catalogue-item-taxes",
+  "settings": {
+    "tax_per_item": "YES",
+    "discount_per_item": "YES"
+  },
+  "form": {
+    "customer": "Parity Home LLC",
+    "lines": [
+      {
+        "item": "Parity Widget",
+        "qty": 1.5
+      },
+      {
+        "name": "Setup",
+        "qty": 1,
+        "price": "45.50",
+        "discount": "5",
+        "discount_type": "fixed",
+        "taxes": [
+          "Parity Levy"
+        ]
+      }
+    ]
+  },
+  "submitted": {
+    "currency_id": 142,
+    "exchange_rate": null,
+    "discount": 0,
+    "discount_type": "fixed",
+    "discount_val": 0,
+    "tax_per_item": "YES",
+    "discount_per_item": "YES",
+    "tax_included": false,
+    "sub_total": 22568,
+    "tax": 3907,
+    "total": 26475,
+    "taxes": [],
+    "items": [
+      {
+        "name": "Parity Widget",
+        "quantity": 1.5,
+        "price": 12345,
+        "discount": 0,
+        "discount_type": "fixed",
+        "discount_val": 0,
+        "tax": 3704,
+        "total": 18518,
+        "taxes": [
+          {
+            "name": "Parity VAT",
+            "percent": 20,
+            "calculation_type": "percentage",
+            "fixed_amount": null,
+            "compound_tax": false,
+            "amount": 3704
+          }
+        ]
+      },
+      {
+        "name": "Setup",
+        "quantity": 1,
+        "price": 4550,
+        "discount": 500,
+        "discount_type": "fixed",
+        "discount_val": 500,
+        "tax": 203,
+        "total": 4050,
+        "taxes": [
+          {
+            "name": "Parity Levy",
+            "percent": 5,
+            "calculation_type": "percentage",
+            "fixed_amount": 0,
+            "compound_tax": true,
+            "amount": 203
+          }
+        ]
+      }
+    ]
+  }
+}

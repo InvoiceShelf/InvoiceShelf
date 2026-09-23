@@ -2,7 +2,7 @@
 
 namespace App\Domains\Money\Http\Controllers;
 
-use App\Domains\Accounts\Models\CompanySetting;
+use App\Domains\Money\Application\ExchangeRateLookup;
 use App\Domains\Money\Application\ExchangeRateProviderService;
 use App\Domains\Money\Contracts\ExchangeRateBackfill;
 use App\Domains\Money\ExchangeRates\ExchangeRateException;
@@ -10,7 +10,6 @@ use App\Domains\Money\Http\Requests\BulkExchangeRateRequest;
 use App\Domains\Money\Http\Requests\ExchangeRateProviderRequest;
 use App\Domains\Money\Http\Resources\ExchangeRateProviderResource;
 use App\Domains\Money\Models\Currency;
-use App\Domains\Money\Models\ExchangeRateLog;
 use App\Domains\Money\Models\ExchangeRateProvider;
 use App\Platform\Http\Controller;
 use Illuminate\Http\Request;
@@ -30,6 +29,7 @@ class ExchangeRateProviderController extends Controller
     public function __construct(
         private readonly ExchangeRateProviderService $exchangeRateProviderService,
         private readonly ExchangeRateBackfill $exchangeRateBackfill,
+        private readonly ExchangeRateLookup $exchangeRateLookup,
     ) {}
 
     public function index(Request $request)
@@ -177,25 +177,10 @@ class ExchangeRateProviderController extends Controller
      */
     public function getRate(Request $request, Currency $currency)
     {
-        $baseCurrency = $this->companyBaseCurrency($request);
+        $quote = $this->exchangeRateLookup->quote($currency, $request->header('company'));
 
-        $live = $this->fetchLiveRate($currency, $baseCurrency);
-
-        if ($live !== null) {
-            return response()->json(['exchangeRate' => $live]);
-        }
-
-        // Note the column naming: base_currency_id carries the document
-        // currency and currency_id the company's base currency.
-        $logged = ExchangeRateLog::where('base_currency_id', $currency->id)
-            ->where('currency_id', $baseCurrency->id)
-            ->latest()
-            ->value('exchange_rate');
-
-        if ($logged) {
-            return response()->json([
-                'exchangeRate' => [$logged],
-            ], 200);
+        if ($quote !== null) {
+            return response()->json(['exchangeRate' => $quote]);
         }
 
         return response()->json([
@@ -245,42 +230,5 @@ class ExchangeRateProviderController extends Controller
             ->flatten(1)
             ->values()
             ->all();
-    }
-
-    private function companyBaseCurrency(Request $request): Currency
-    {
-        $settings = CompanySetting::getSettings(['currency'], $request->header('company'));
-
-        return Currency::findOrFail($settings['currency']);
-    }
-
-    /**
-     * Ask the first active provider covering the code — any company's, by
-     * long-standing design. An unreachable or misconfigured service is not an
-     * error here; the caller falls back to the rate log.
-     *
-     * @return array<int, mixed>|null
-     */
-    private function fetchLiveRate(Currency $currency, Currency $baseCurrency): ?array
-    {
-        $provider = ExchangeRateProvider::whereJsonContains('currencies', $currency->code)
-            ->where('active', true)
-            ->first();
-
-        if (! $provider) {
-            return null;
-        }
-
-        try {
-            return $this->exchangeRateProviderService->getExchangeRate(
-                $provider->driver,
-                $provider->key,
-                $provider->driver_config ?? [],
-                $currency->code,
-                $baseCurrency->code,
-            );
-        } catch (ExchangeRateException) {
-            return null;
-        }
     }
 }

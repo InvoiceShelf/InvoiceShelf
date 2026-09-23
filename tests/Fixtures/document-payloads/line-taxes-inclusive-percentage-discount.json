@@ -1,0 +1,124 @@
+{
+  "name": "line-taxes-inclusive-percentage-discount",
+  "settings": {
+    "tax_per_item": "YES",
+    "discount_per_item": "NO"
+  },
+  "form": {
+    "customer": "Parity Home LLC",
+    "inclusive": true,
+    "lines": [
+      {
+        "name": "One",
+        "qty": 1,
+        "price": "33.33",
+        "taxes": [
+          "Parity VAT"
+        ]
+      },
+      {
+        "name": "Two",
+        "qty": 3,
+        "price": "66.67",
+        "taxes": [
+          "Parity VAT",
+          "Parity Levy"
+        ]
+      },
+      {
+        "name": "Three",
+        "qty": 0.5,
+        "price": "12.35",
+        "taxes": [
+          "Parity Odd"
+        ]
+      }
+    ],
+    "discount": "12.5",
+    "discount_type": "percentage"
+  },
+  "submitted": {
+    "currency_id": 142,
+    "exchange_rate": null,
+    "discount": "12.5",
+    "discount_type": "percentage",
+    "discount_val": 2994,
+    "tax_per_item": "YES",
+    "discount_per_item": "NO",
+    "tax_included": true,
+    "sub_total": 23952,
+    "tax": 4310,
+    "total": 21832,
+    "taxes": [],
+    "items": [
+      {
+        "name": "One",
+        "quantity": 1,
+        "price": 3333,
+        "discount": 0,
+        "discount_type": "fixed",
+        "discount_val": 0,
+        "tax": 486,
+        "total": 3333,
+        "taxes": [
+          {
+            "name": "Parity VAT",
+            "percent": 20,
+            "calculation_type": "percentage",
+            "fixed_amount": 0,
+            "compound_tax": false,
+            "amount": 486
+          }
+        ]
+      },
+      {
+        "name": "Two",
+        "quantity": 3,
+        "price": 6667,
+        "discount": 0,
+        "discount_type": "fixed",
+        "discount_val": 0,
+        "tax": 3788,
+        "total": 20001,
+        "taxes": [
+          {
+            "name": "Parity VAT",
+            "percent": 20,
+            "calculation_type": "percentage",
+            "fixed_amount": 0,
+            "compound_tax": false,
+            "amount": 2914
+          },
+          {
+            "name": "Parity Levy",
+            "percent": 5,
+            "calculation_type": "percentage",
+            "fixed_amount": 0,
+            "compound_tax": true,
+            "amount": 874
+          }
+        ]
+      },
+      {
+        "name": "Three",
+        "quantity": 0.5,
+        "price": 1235,
+        "discount": 0,
+        "discount_type": "fixed",
+        "discount_val": 0,
+        "tax": 36,
+        "total": 618,
+        "taxes": [
+          {
+            "name": "Parity Odd",
+            "percent": 7.25,
+            "calculation_type": "percentage",
+            "fixed_amount": 0,
+            "compound_tax": false,
+            "amount": 36
+          }
+        ]
+      }
+    ]
+  }
+}
