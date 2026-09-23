@@ -1179,13 +1179,13 @@
       "tax_types": "Tax Types",
       "expense_category": "Expense Categories",
       "update_app": "Update App",
-      "backup": "Backup",
-      "file_disk": "File Disk",
+      "backup": "Backups",
+      "file_disk": "File Disks",
       "fonts": "Font Packages",
       "currencies": "Currencies",
       "custom_fields": "Custom Fields",
       "payment_modes": "Payment Modes",
-      "notes": "Notes",
+      "notes": "Record Notes",
       "exchange_rate": "Exchange Rate",
       "address_information": "Address Information",
       "pdf_generation": "PDF Generation",
@@ -1262,7 +1262,7 @@
       "from_name": "From Mail Name",
       "from_mail": "From Mail Address",
       "encryption": "Mail Encryption",
-      "mail_config_desc": "Below is the form for Configuring Email driver for sending emails from the app. You can also configure third party providers like Sendgrid, SES etc.",
+      "mail_config_desc": "Configure the Laravel mail driver used to send emails from the application, including provider-specific credentials when needed.",
       "company_mail_config": "Mail Configuration",
       "company_mail_config_desc": "Configure a custom mail driver for this company. When enabled, this overrides the global mail configuration.",
       "company_mail_config_updated": "Company mail configuration updated successfully",
@@ -1274,7 +1274,7 @@
       "show_advanced_settings": "Show Advanced Settings",
       "hide_advanced_settings": "Hide Advanced Settings",
       "native_mail_desc": "Use PHP's native mail transport. Delivery is handled by the server's PHP mail configuration.",
-      "sendmail_desc": "Use the system sendmail binary for delivery. You can override the command path in Advanced Settings.",
+      "sendmail_desc": "Use the server's sendmail binary for delivery. Its path is set on the server with MAIL_SENDMAIL_PATH.",
       "drivers": {
         "smtp": "SMTP",
         "mail": "PHP Mail",
@@ -1547,12 +1547,12 @@
       "reorder_component": "Move {name}, {position} of {count}. Use the up and down arrow keys"
     },
     "account_settings": {
-      "profile_picture": "Profile Picture",
+      "profile_picture": "Profile Photo",
       "name": "Name",
       "email": "Email",
       "password": "Password",
       "confirm_password": "Confirm Password",
-      "account_settings": "Account Settings",
+      "account_settings": "User Settings",
       "general": "General",
       "general_description": "Update your name, email and language preference.",
       "security": "Security",
@@ -1582,7 +1582,7 @@
       "please_enter_email": "Please Enter Email"
     },
     "roles": {
-      "title": "Roles",
+      "title": "Company Roles",
       "description": "Manage the roles & permissions of this company",
       "save": "Save",
       "add_new_role": "Add New Role",
@@ -1787,7 +1787,7 @@
       "containerized_message": "The in-app updater is disabled for Docker installs. To upgrade, pull the latest image and recreate the container:"
     },
     "backup": {
-      "title": "Backup | Backups",
+      "title": "Backups | Backups",
       "description": "The backup is a zipfile that contains all files in the directories you specify along with a dump of your database",
       "new_backup": "Add New Backup",
       "create_backup": "Create Backup",
@@ -1812,7 +1812,7 @@
       "empty_description": "Create a backup to keep a copy of your data and files."
     },
     "disk": {
-      "title": "File Disk | File Disks",
+      "title": "File Disks | File Disks",
       "description": "By default, InvoiceShelf will use your local disk for saving backups, avatar and other image files. You can configure more than one disk drivers like DigitalOcean, S3 and Dropbox according to your preference.",
       "created_at": "created at",
       "dropbox": "dropbox",
@@ -2000,13 +2000,13 @@
       "from_name": "From Mail Name",
       "from_mail": "From Mail Address",
       "encryption": "Mail Encryption",
-      "mail_config_desc": "Below is the form for Configuring Email driver for sending emails from the app. You can also configure third party providers like Sendgrid, SES etc.",
+      "mail_config_desc": "Configure the mail driver used to send emails from the application. If you are unsure how to configure this, leave it set to Sendmail.",
       "basic_settings": "Basic Settings",
       "advanced_settings": "Advanced Settings",
       "show_advanced_settings": "Show Advanced Settings",
       "hide_advanced_settings": "Hide Advanced Settings",
       "native_mail_desc": "Use PHP's native mail transport. Delivery is handled by the server's PHP mail configuration.",
-      "sendmail_desc": "Use the system sendmail binary for delivery. You can override the command path in Advanced Settings.",
+      "sendmail_desc": "Use the server's sendmail binary for delivery. Its path is set on the server with MAIL_SENDMAIL_PATH.",
       "drivers": {
         "smtp": "SMTP",
         "mail": "PHP Mail",
