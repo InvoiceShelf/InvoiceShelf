@@ -6,9 +6,7 @@
     v-else
     v-model="selectedValue"
     as="div"
-    v-bind="{
-      ...$attrs,
-    }"
+    v-bind="rootAttrs"
   >
     <ListboxLabel
       v-if="label"
@@ -20,7 +18,8 @@
     <div class="relative">
       <!-- Select Input button -->
       <ListboxButton
-        v-bind="label ? {} : fieldAttrs"
+        ref="button"
+        v-bind="{ ...(label ? {} : fieldAttrs), ...buttonAria }"
         class="
           relative
           w-full
@@ -135,7 +134,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { computed, ref, useAttrs, watch, watchEffect } from 'vue'
 import { useFormField } from '@/scripts/composables/use-form-field'
 import {
   Listbox,
@@ -175,6 +174,37 @@ const props = withDefaults(defineProps<Props>(), {
 
 // Named by the surrounding group's label when this select has none of its own
 const { attrs: fieldAttrs } = useFormField({ labelledBy: true })
+
+// aria-* attributes describe the button a screen reader lands on; the rest
+// (class, style, data-*) stay on the wrapper
+defineOptions({ inheritAttrs: false })
+
+const attrs = useAttrs()
+
+const rootAttrs = computed(() => Object.fromEntries(Object.entries(attrs).filter(([key]) => !key.startsWith('aria-'))))
+
+const buttonAria = computed(() => Object.fromEntries(Object.entries(attrs).filter(([key]) => key.startsWith('aria-'))))
+
+const button = ref<{ $el: HTMLElement } | null>(null)
+
+// Headless UI's ListboxButton writes its own aria-labelledby over anything
+// passed in (empty without a ListboxLabel), so the label reaches the button
+// through the DOM: the group's label, then the button itself, which reads
+// out the chosen value
+watchEffect(() => {
+  const element = button.value?.$el
+
+  if (!(element instanceof HTMLElement)) {
+    return
+  }
+
+  const labelledBy = (buttonAria.value['aria-labelledby'] as string | undefined)
+    ?? (props.label ? undefined : fieldAttrs.value['aria-labelledby'])
+
+  if (labelledBy) {
+    element.setAttribute('aria-labelledby', `${labelledBy} ${element.id}`)
+  }
+})
 
 interface Emits {
   (e: 'update:modelValue', value: ModelValue): void
