@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\SafeRemoteUrl;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ExchangeRateProviderRequest extends FormRequest
@@ -34,6 +35,12 @@ class ExchangeRateProviderRequest extends FormRequest
             ],
             'driver_config' => [
                 'nullable',
+            ],
+            'driver_config.url' => [
+                'nullable',
+                'string',
+                'url',
+                new SafeRemoteUrl,
             ],
             'active' => [
                 'nullable',

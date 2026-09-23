@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Rules\SafeRemoteUrl;
 use Illuminate\Support\Facades\Http;
 
 trait ExchangeRateProvidersTrait
@@ -63,7 +64,7 @@ trait ExchangeRateProvidersTrait
 
                 $query = "{$baseCurrencyCode}_{$currencyCode}";
                 $url = $url."&q={$query}".'&compact=y';
-                $response = Http::get($url)->json();
+                $response = Http::withoutRedirecting()->get($url)->json();
 
                 return response()->json([
                     'exchangeRate' => array_values($response[$query]),
@@ -92,6 +93,10 @@ trait ExchangeRateProvidersTrait
                 break;
 
             case 'DEDICATED':
+                // The URL is the user's: it must name a public host, and the
+                // request is not allowed to follow a redirect elsewhere.
+                abort_unless(is_string($data['url'] ?? null) && SafeRemoteUrl::isSafe($data['url']), 422, 'The dedicated URL must be a publicly reachable http(s) URL.');
+
                 return $data['url'];
 
                 break;
@@ -205,7 +210,7 @@ trait ExchangeRateProvidersTrait
             case 'currency_converter':
                 $url = $this->getCurrencyConverterUrl($request).'/api/v7/currencies?apiKey='.$request->key;
 
-                return Http::get($url)->json();
+                return Http::withoutRedirecting()->get($url)->json();
 
                 break;
         }
