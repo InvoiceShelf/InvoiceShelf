@@ -7,6 +7,26 @@ section beneath it is what CI publishes to the updater — see
 Releases before 2.4.0 are on GitHub:
 https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 2.4.5 - 2026-09-23
+
+Security follow-up to 2.4.4. It completes two fixes that 2.4.4 only partly covered, and corrects the PHP version the installer and the updater ask for. **Upgrade every 2.x install.**
+
+### Security
+
+- Logos, avatars and receipts were stored under the name the client sent, so a name such as `shell.php.jpg` passed the type check and reached web servers that run any file with `.php` anywhere in its name. The stored name now keeps only the last extension, and `spatie/laravel-medialibrary` moves to 11.23.8, past CVE-2026-48557. GHSA-x7rx (#838)
+- Any member of a company could set the exchange rate of every foreign-currency document while a currency change left the backfill pending. Only the owner may run it now. GHSA-3838 (#839)
+
+### Fixes
+
+- The installer and the updater ask for PHP 8.4.1, which the bundled dependencies have needed since 2.2.0. Installs on PHP 8.2 or 8.3 were offered updates that left them unable to start. (#833)
+
+### Upgrade notes
+
+- If you are still on PHP 8.2 or 8.3, move to PHP 8.4.1 or later first. The updater now says so instead of letting the update through.
+- New uploads are stored under the new names; files already uploaded keep theirs.
+
+Docker: `invoiceshelf/invoiceshelf:2.4.5` (also `:2.4`, `:2` and `:latest`).
+
 ## 2.4.4 - 2026-09-23
 
 Security release for the 2.x line. It closes nine vulnerabilities: two let people read documents they should never have seen, and one let an administrator run commands on the server. **Upgrade every 2.x install**, and read the upgrade notes first, because links in emails you have already sent stop working.
