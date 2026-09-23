@@ -4,6 +4,7 @@ namespace App\Adapters\Accounts;
 
 use App\Domains\Accounts\Contracts\CompanyLogoManager;
 use App\Domains\Accounts\Models\Company;
+use App\Support\Media\SafeFileName;
 
 class MediaLibraryCompanyLogoManager implements CompanyLogoManager
 {
@@ -18,7 +19,7 @@ class MediaLibraryCompanyLogoManager implements CompanyLogoManager
     {
         $this->clear($company);
         $company->addMediaFromBase64($contents)
-            ->usingFileName($fileName)
+            ->usingFileName(SafeFileName::from($fileName))
             ->toMediaCollection(self::COLLECTION);
     }
 }
