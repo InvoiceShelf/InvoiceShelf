@@ -8,7 +8,7 @@
   </ContentPlaceholder>
   <div
     v-else
-    class="box-border w-full text-sm leading-8 text-start bg-surface border border-line-light rounded-xl shadow min-h-[200px] overflow-hidden"
+    class="box-border w-full text-sm leading-8 text-start bg-surface border field-border rounded-xl min-h-[200px] overflow-hidden"
   >
     <div v-if="editor" class="editor-content">
       <!--

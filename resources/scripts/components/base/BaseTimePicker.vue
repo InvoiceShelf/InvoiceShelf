@@ -81,7 +81,7 @@ const props = withDefaults(defineProps<Props>(), {
   containerClass: '',
   clockIcon: true,
   defaultInputClass:
-    'font-base ps-9 py-2 outline-hidden block w-full md:text-sm tabular field-edge rounded-lg text-heading',
+    'font-base ps-9 py-2 outline-hidden block w-full md:text-sm tabular field-border rounded-lg text-heading',
 })
 
 const { attrs: fieldAttrs } = useFormField({ invalid: () => props.invalid })

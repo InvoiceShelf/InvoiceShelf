@@ -319,20 +319,21 @@ textarea,
 select {
     /* 16px below md so iOS does not zoom the page on focus */
     @apply appearance-none bg-surface border rounded-lg px-3 py-2 text-base md:text-sm leading-6 text-heading transition-[border-color,box-shadow] duration-150;
-    border-color: var(--color-line-default);
-    border-bottom-color: var(--color-control-border);
+    border-color: var(--color-line-strong);
 }
 
 /*
- * A text field's edge: pale sides and one 3:1 bottom edge. The bottom edge is
- * what identifies the field (WCAG 1.4.11) and the pale sides keep forms light.
- * Fields drawn with a button or a div (selects, the multiselect, input addons)
- * take it from this class. It sits in the base layer so focus, invalid and
- * disabled styles still colour the whole edge.
+ * The border every text field shares. Fields drawn with a button or a div
+ * (selects, the multiselect, input addons, the rich editor) take it from this
+ * class. It sits in the base layer so focus, invalid and disabled styles
+ * still colour the whole border.
+ *
+ * At 1.5 to 2.3:1 it is below the 3:1 WCAG 1.4.11 asks of a field's boundary:
+ * a deliberate choice, since 3:1 borders made forms look heavy. See the
+ * Accessibility note in AGENTS.md before changing it.
  */
-.field-edge {
-    border-color: var(--color-line-default);
-    border-bottom-color: var(--color-control-border);
+.field-border {
+    border-color: var(--color-line-strong);
 }
 
 [type='text']:focus,

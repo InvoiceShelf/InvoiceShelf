@@ -25,7 +25,7 @@
             pe-10
             text-start
             bg-surface
-            border field-edge
+            border field-border
             rounded-lg
             cursor-default
             text-base

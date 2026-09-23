@@ -38,9 +38,9 @@
     --color-line-default: #d8dbe3;
     --color-line-strong: #bfc3cf;
     /*
-     * Form control edges: 3:1 against the darkest surface a control sits on,
-     * a modal's glass over the dimmed page (WCAG 1.4.11). Text fields use it
-     * for their bottom edge only; checkboxes and switches for their outline.
+     * Checkbox and switch outlines: 3:1 against the darkest surface they sit
+     * on, a modal's glass over the dimmed page (WCAG 1.4.11). Text fields use
+     * line-strong instead (see the form base styles in invoiceshelf.css).
      */
     --color-control-border: #828590;
 

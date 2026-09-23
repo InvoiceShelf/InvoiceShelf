@@ -105,7 +105,8 @@ The styling system uses **Tailwind v4 with CSS custom properties as the source o
 - `primary-{50…950}` — brand color scale
 - `surface`, `surface-secondary`, `surface-tertiary`, `surface-muted` — background depth tiers
 - `heading`, `body`, `muted`, `subtle` — text emphasis tiers
-- `line-{light,default,strong}` — borders
+- `line-{light,default,strong}` — borders (`line-strong` is also the text field border)
+- `control-border` — checkbox and switch outlines, 3:1 against a modal's glass
 - `hover`, `hover-strong` — hover backgrounds
 - `header-from`, `header-to` — fixed header gradient stops (not dark-mode-aware)
 - `btn-primary`, `btn-primary-hover` — button colors (fixed, always bold)
@@ -121,6 +122,10 @@ The styling system uses **Tailwind v4 with CSS custom properties as the source o
 After that the token is usable as `bg-X` / `text-X` / `border-X` in Vue templates and as `var(--color-X)` in raw CSS. Skip step 2 and the value exists at the CSS level but Tailwind utility classes won't be generated.
 
 **Convention — never hardcode hex/rgb values in components.** Use the semantic tokens: `text-heading` not `text-gray-900`, `bg-surface` not `bg-white`, `border-line-default` not `border-gray-300`. Hardcoded values won't follow dark-mode flips and will diverge from the rest of the app over time. There are **no exceptions** in the project — even the auth pages (which sit outside the admin chrome) use the same `bg-surface` / `text-heading` / `border-line-default` vocabulary as `BaseCard`, just composed differently.
+
+**Form field borders.** Text fields (inputs, textareas, selects, the multiselect, the rich editor) get their border from the form base styles in `invoiceshelf.css`, or from the `field-border` class when the field is a button or a div. Don't give a field a border colour utility such as `border-line-strong`: Tailwind orders same-property utilities alphabetically, so it would outrank `border-danger` and hide the invalid state.
+
+**Accessibility.** The app targets WCAG 2.2 AA, and `pnpm lint` runs eslint-plugin-vuejs-accessibility. One known exception, decided on 2026-09-23: text field borders measure 1.5 to 2.3:1 against their background, below the 3:1 that SC 1.4.11 asks of a component's boundary, because 3:1 borders made forms look heavy. Fields are still identified by their labels and layout, focus turns the whole border indigo and an invalid field turns it red. Checkboxes and switches do meet 3:1. Revisit that decision before raising field borders to 3:1.
 
 ### Backend Patterns
 - **Authorization**: Silber/Bouncer with policies in `app/Policies/`. Controllers use `$this->authorize()`.
