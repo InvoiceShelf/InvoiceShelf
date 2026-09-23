@@ -35,6 +35,11 @@ const settingsRoutes: RouteRecordRaw[] = [
         name: 'settings.account.devices',
         component: () => import('./views/DevicesView.vue'),
       },
+      {
+        path: 'connected-apps',
+        name: 'settings.account.connected-apps',
+        component: () => import('./views/ConnectedAppsView.vue'),
+      },
     ],
   },
   {
