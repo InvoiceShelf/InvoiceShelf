@@ -45,6 +45,9 @@
     "download": "Stáhnout",
     "refresh": "Refresh",
     "loading": "Loading…",
+    "check_highlighted_fields": "Some details are missing. Check the highlighted fields and try again.",
+    "taxes_are_added_in_settings": "Taxes are added under Settings, Tax Types.",
+    "select_an_option": "Select an option",
     "date": "Date",
     "from_date": "Od data",
     "to_date": "Do data",
@@ -200,6 +203,7 @@
     "select_named": "Select {name}"
   },
   "dashboard": {
+    "load_failed": "The dashboard could not be loaded.",
     "select_year": "Vybrat rok",
     "cards": {
       "due_amount": "Částka k zaplacení",
@@ -224,7 +228,10 @@
       "customer": "Zákazník",
       "amount_due": "Amount due",
       "actions": "Akce",
-      "view_all": "View all"
+      "view_all": "View all",
+      "empty_title": "Nothing awaiting payment",
+      "empty_description": "Sent invoices that are still due show up here.",
+      "portal_empty_description": "Invoices you still need to pay show up here."
     },
     "recent_estimate_card": {
       "title": "Recent estimates",
@@ -232,7 +239,10 @@
       "customer": "Zákazník",
       "amount_due": "Amount",
       "actions": "Akce",
-      "view_all": "View all"
+      "view_all": "View all",
+      "empty_title": "No estimates yet",
+      "empty_description": "Estimates you send show up here.",
+      "portal_empty_description": "Estimates sent to you show up here."
     },
     "receivables": {
       "title": "Owed to you",
@@ -242,9 +252,12 @@
       "due_later": "Due later",
       "invoice_count": "{count} invoice | {count} invoices",
       "nothing_owed": "Nothing is owed to you right now.",
+      "first_invoice_hint": "Send your first invoice and what customers owe you shows up here.",
       "view_invoices": "View invoices"
     },
     "cashflow": {
+      "no_activity": "No activity in this period",
+      "no_activity_hint": "Invoices, payments and expenses you record will show up here.",
       "title": "Cash flow",
       "show_table": "Show as table",
       "hide_table": "Hide table",
@@ -354,8 +367,13 @@
     "billing_address": "Fakturační adresa",
     "shipping_address": "Doručovací adresa",
     "copy_billing_address": "Zkopírovat z fakturace",
-    "no_customers": "Dosud žádní zákazníci!",
+    "no_customers": "No customers yet",
+    "empty_description": "Add the people and businesses you bill, then invoice them in a few clicks.",
     "no_customers_found": "Nebyli nalezeni žádní zákazníci!",
+    "add_first_customer": "Add your first customer to start invoicing them.",
+    "activity_load_failed": "This customer's activity could not be loaded.",
+    "statement_load_failed": "The statement could not be loaded.",
+    "ask_to_add_customers": "Someone who can manage customers needs to add one first.",
     "no_contact": "Žádný kontakt",
     "no_contact_name": "Bez jména kontaktu",
     "list_of_customers": "Tato sekce bude obsahovat seznam zákazníků.",
@@ -364,7 +382,7 @@
     "select_a_customer": "Vybrat zákazníka",
     "type_or_click": "Zadejte nebo klikněte pro výběr",
     "new_transaction": "Nová transakce",
-    "no_matching_customers": "Neexistují žádní odpovídající zákazníci!",
+    "no_matching_customers": "No customers match these filters",
     "phone_number": "Telefonní číslo",
     "create_date": "Datum vytvoření",
     "confirm_delete": "Nebudete moci obnovit tohoto zákazníka a všechny jeho faktury, odhady a platby. | Nebudete moci obnovit tyto zákazníky a všechny jejich faktury, odhady a platby.",
@@ -418,7 +436,9 @@
     "add_new_item": "Přidat novou položku",
     "new_item": "Nová položka",
     "edit_item": "Upravit položku",
-    "no_items": "Zatím žádné položky!",
+    "no_items": "No items yet",
+    "empty_description": "Save the products and services you sell to add them to invoices in one click.",
+    "no_matching_items": "No items match these filters",
     "list_of_items": "Tato sekce bude obsahovat seznam položek.",
     "select_a_unit": "vyberte jednotku",
     "taxes": "Daně",
@@ -480,7 +500,7 @@
     "confirm_mark_as_sent": "Tento odhad bude označen jako odeslaný",
     "confirm_mark_as_accepted": "Tento odhad bude označen jako Přijatý",
     "confirm_mark_as_rejected": "Tento odhad bude označen jako Odmítnutý",
-    "no_matching_estimates": "Neexistují žádné odpovídající odhady!",
+    "no_matching_estimates": "No estimates match these filters",
     "mark_as_sent_successfully": "Odhad byl označen jako úspěšně odeslán",
     "send_estimate_successfully": "Odhad byl úspěšně odeslán",
     "errors": {
@@ -500,7 +520,9 @@
     "items": "položky",
     "Estimate": "Odhad | Odhady",
     "add_new_tax": "Přidat novou daň",
-    "no_estimates": "Zatím žádné odhady!",
+    "no_estimates": "No estimates yet",
+    "empty_description": "Send a quote, then turn it into an invoice once it's accepted.",
+    "portal_empty_description": "Estimates sent to you will show up here.",
     "list_of_estimates": "Tato sekce bude obsahovat seznam odhadů.",
     "mark_as_rejected": "Označit jako odmítnuté",
     "mark_as_accepted": "Označit jako přijaté",
@@ -585,12 +607,14 @@
     "save_invoice": "Uložit fakturu",
     "update_invoice": "Upravit fakturu",
     "add_new_tax": "Přidat novou daň",
-    "no_invoices": "Zatím žádné faktury!",
+    "no_invoices": "No invoices yet",
+    "empty_description": "Create an invoice and send it to a customer to get paid.",
+    "portal_empty_description": "Invoices sent to you will show up here.",
     "mark_as_rejected": "Označit jako odmítnuté",
     "mark_as_accepted": "Označit jako přijaté",
     "list_of_invoices": "Tato sekce bude obsahovat seznam faktur.",
     "select_invoice": "Vybrat fakturu",
-    "no_matching_invoices": "Neexistují žádné odpovídající faktury!",
+    "no_matching_invoices": "No invoices match these filters",
     "mark_as_sent_successfully": "Faktura označena jako úspěšně odeslaná",
     "invoice_sent_successfully": "Faktura byla úspěšně odeslána",
     "cloned_successfully": "Faktura úspěšně naklonována",
@@ -720,12 +744,13 @@
     "save_invoice": "Uložit opakující se fakturu",
     "update_invoice": "Upravit opakující se fakturu",
     "add_new_tax": "Přidat novou daň",
-    "no_invoices": "Zatím žádné opakující se faktury!",
+    "no_invoices": "No recurring invoices yet",
+    "empty_description": "Set up an invoice that goes out on a schedule, such as a monthly retainer.",
     "mark_as_rejected": "Označit jako odmítnuté",
     "mark_as_accepted": "Označit jako přijaté",
     "list_of_invoices": "Tato sekce bude obsahovat seznam opakujících se faktur.",
     "select_invoice": "Vybrat fakturu",
-    "no_matching_invoices": "Neexistují žádné odpovídající opakující se faktury!",
+    "no_matching_invoices": "No recurring invoices match these filters",
     "mark_as_sent_successfully": "Opakující se faktura označena jako úspěšně odeslaná",
     "invoice_sent_successfully": "Opakující se faktura byla úspěšně odeslána",
     "cloned_successfully": "Opakující se faktura úspěšně naklonována",
@@ -786,7 +811,9 @@
       "date": "Datum",
       "count": "Počet"
     },
-    "make_recurring": "Make Recurring"
+    "make_recurring": "Make Recurring",
+    "no_generated_invoices": "No invoices yet",
+    "no_generated_invoices_description": "Invoices this schedule creates show up here."
   },
   "payments": {
     "title": "Platby",
@@ -810,10 +837,12 @@
     "save_payment": "Uložit platbu",
     "update_payment": "Upravit platbu",
     "payment": "Platba | Platby",
-    "no_payments": "Zatím žádné platby!",
+    "no_payments": "No payments yet",
+    "empty_description": "Record a payment when a customer pays and apply it to their invoices.",
+    "portal_empty_description": "Payments you make will show up here.",
     "not_selected": "Nevybráno",
     "no_invoice": "Žádná faktura",
-    "no_matching_payments": "Neexistují žádné odpovídající platby!",
+    "no_matching_payments": "No payments match these filters",
     "list_of_payments": "Tato sekce bude obsahovat seznam plateb.",
     "select_payment_mode": "Vyberte platební metodu",
     "confirm_mark_as_sent": "Tento odhad bude označen jako odeslaný",
@@ -832,6 +861,7 @@
     "add_allocation": "Add Allocation",
     "select_customer_to_allocate": "Select a customer before allocating this payment.",
     "no_allocations": "No invoices selected. This payment will remain available as customer credit.",
+    "no_open_invoices": "This customer has no open invoices, so the payment will stay as customer credit.",
     "allocated": "Allocated",
     "unapplied_credit": "Unapplied Credit",
     "remove_allocation": "Remove allocation",
@@ -879,7 +909,9 @@
     "edit_expense": "Upravit výdaj",
     "new_expense": "Nový výdaj",
     "expense": "Výdaj | Výdaje",
-    "no_expenses": "Zatím žádné výdaje!",
+    "no_expenses": "No expenses yet",
+    "empty_description": "Record what the business spends to see your profit and reclaim tax.",
+    "no_matching_expenses": "No expenses match these filters",
     "list_of_expenses": "Tato sekce bude obsahovat seznam výdajů.",
     "confirm_delete": "Nebudete moci obnovit tento výdaj | Nebudete moci obnovit tyto výdaje",
     "created_message": "Výdaj úspěšně vytvořen",
@@ -999,6 +1031,7 @@
     "purchased": "Zakoupeno",
     "installed": "Nainstalováno",
     "no_modules_installed": "Nejsou nainstalovány žádné moduly!",
+    "no_marketplace_modules": "No marketplace modules are available yet.",
     "disable_warning": "Všechna nastavení pro tuto konkrétní položku budou vrácena zpět.",
     "uninstall": "Uninstall",
     "uninstall_warning": "Uninstalling removes this module's runtime files. Its data and settings are preserved unless you explicitly choose to remove them.",
@@ -1063,6 +1096,8 @@
     "invited_by": "Invited By",
     "sent_at": "Sent At",
     "no_users": "No members yet",
+    "empty_description": "Invite the people who work on this company with you.",
+    "no_matching_members": "No members match these filters",
     "list_of_users": "Invite the people who work with you. They show up here once they join."
   },
   "reports": {
@@ -1367,7 +1402,9 @@
       "bound_none": "No limit",
       "bound_today": "Today",
       "bound_fixed_date": "A fixed date",
-      "bound_fixed_time": "A fixed time"
+      "bound_fixed_time": "A fixed time",
+      "empty_title": "No custom fields yet",
+      "empty_description": "Add your own fields to invoices, customers, items and more."
     },
     "customization": {
       "customization": "přizpůsobení",
@@ -1503,7 +1540,9 @@
           "estimate": "Odhad",
           "invoice": "Faktura",
           "payment": "Platba"
-        }
+        },
+        "empty_title": "No notes yet",
+        "empty_description": "Save text you use often, like payment terms, and insert it into any document."
       },
       "reorder_component": "Move {name}, {position} of {count}. Use the up and down arrow keys"
     },
@@ -1593,7 +1632,9 @@
       "active": "Aktivní",
       "currency_help_text": "Tento poskytovatel bude použit pouze na výše vybraných měnách",
       "currency_in_used": "Následující měny jsou již aktivní u jiného poskytovatele. Odstraňte tyto měny z výběru a znovu aktivujte tohoto poskytovatele.",
-      "fetch_latest": "Fetch the latest exchange rate"
+      "fetch_latest": "Fetch the latest exchange rate",
+      "empty_title": "No exchange rate providers yet",
+      "empty_description": "Connect a provider to fetch rates for documents in other currencies."
     },
     "tax_types": {
       "title": "Typy daní",
@@ -1622,7 +1663,9 @@
       "tax_included": "Inclusive taxes",
       "tax_included_description": "Enable this if you want to report that taxes are already included in the invoice items or invoice total.",
       "tax_included_by_default": "Enable inclusive taxes by default",
-      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default"
+      "tax_included_by_default_description": "Enable this if you want to set inclusive taxes by default",
+      "empty_title": "No tax types yet",
+      "empty_description": "Add a tax once, then pick it on any invoice or expense."
     },
     "payment_modes": {
       "title": "Platební metody",
@@ -1650,7 +1693,9 @@
       "deleted_message": "Kategorie výdajů úspěšně odstraněna",
       "updated_message": "Kategorie výdajů úspěšně upravena",
       "confirm_delete": "Nebudete moci obnovit tuto kategorii výdajů",
-      "already_in_use": "Kategorie se již používá"
+      "already_in_use": "Kategorie se již používá",
+      "empty_title": "No expense categories yet",
+      "empty_description": "Group expenses by what they're for, such as travel or software. Every expense needs one."
     },
     "preferences": {
       "currency": "Měna",
@@ -1762,7 +1807,9 @@
       "action": "Akce",
       "deleted_message": "Záloha úspěšně odstraněna",
       "created_message": "Záloha byla úspěšně vytvořena",
-      "invalid_disk_credentials": "Nesprávné přihlašovací údaje pro vybraný disk"
+      "invalid_disk_credentials": "Nesprávné přihlašovací údaje pro vybraný disk",
+      "empty_title": "No backups yet",
+      "empty_description": "Create a backup to keep a copy of your data and files."
     },
     "disk": {
       "title": "Souborový disk | Souborové disky",
