@@ -39,14 +39,14 @@ function copyUrl(): void {
   >
     <span
       ref="publicUrl"
-      class="pr-10 text-sm font-medium text-heading truncate select-all select-color"
+      class="pe-10 text-sm font-medium text-heading truncate select-all select-color"
     >
       {{ token }}
     </span>
     <button
       v-tooltip="{ content: $t('general.copy_to_clipboard') }"
       type="button"
-      class="absolute inset-y-0 right-0 h-full rounded-[10px] focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
+      class="absolute inset-y-0 end-0 h-full rounded-[10px] focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
       :aria-label="$t('general.copy_to_clipboard')"
       @click="copyUrl"
     >

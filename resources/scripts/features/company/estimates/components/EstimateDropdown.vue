@@ -13,7 +13,7 @@
     <BaseDropdownItem v-if="isDetailView" @click="copyPdfUrl">
       <BaseIcon
         name="LinkIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.copy_pdf_url') }}
     </BaseDropdownItem>
@@ -22,7 +22,7 @@
     <BaseDropdownItem v-if="canEdit" :to="`/admin/estimates/${row.id}/edit`">
       <BaseIcon
         name="PencilIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.edit') }}
     </BaseDropdownItem>
@@ -31,7 +31,7 @@
     <BaseDropdownItem v-if="canDelete" @click="removeEstimate">
       <BaseIcon
         name="TrashIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.delete') }}
     </BaseDropdownItem>
@@ -40,7 +40,7 @@
     <BaseDropdownItem v-if="!isDetailView && canView" :to="`estimates/${row.id}/view`">
       <BaseIcon
         name="EyeIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.view') }}
     </BaseDropdownItem>
@@ -49,7 +49,7 @@
     <BaseDropdownItem v-if="canCreate" @click="cloneEstimateData">
       <BaseIcon
         name="DocumentTextIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('estimates.clone_estimate') }}
     </BaseDropdownItem>
@@ -58,7 +58,7 @@
     <BaseDropdownItem v-if="canCreateInvoice && row.status !== 'REJECTED'" @click="convertToInvoice">
       <BaseIcon
         name="DocumentTextIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('estimates.convert_to_invoice') }}
     </BaseDropdownItem>
@@ -70,7 +70,7 @@
     >
       <BaseIcon
         name="CheckCircleIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('estimates.mark_as_sent') }}
     </BaseDropdownItem>
@@ -82,7 +82,7 @@
     >
       <BaseIcon
         name="PaperAirplaneIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('estimates.send_estimate') }}
     </BaseDropdownItem>
@@ -91,7 +91,7 @@
     <BaseDropdownItem v-if="canResendEstimate" @click="sendEstimate">
       <BaseIcon
         name="PaperAirplaneIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('estimates.resend_estimate') }}
     </BaseDropdownItem>
@@ -103,7 +103,7 @@
     >
       <BaseIcon
         name="CheckCircleIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('estimates.mark_as_accepted') }}
     </BaseDropdownItem>
@@ -115,7 +115,7 @@
     >
       <BaseIcon
         name="XCircleIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('estimates.mark_as_rejected') }}
     </BaseDropdownItem>

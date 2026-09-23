@@ -109,7 +109,7 @@
               <BaseIcon name="EllipsisHorizontalIcon" class="w-5 text-muted" />
             </template>
             <BaseDropdownItem :to="`payments/${row.data.id}/view`">
-              <BaseIcon name="EyeIcon" class="h-5 mr-3 text-body" />
+              <BaseIcon name="EyeIcon" class="h-5 me-3 text-body" />
               {{ $t('general.view') }}
             </BaseDropdownItem>
           </BaseDropdown>
@@ -178,7 +178,7 @@ const paymentColumns = computed<TableColumn[]>(() => [
   {
     key: 'actions',
     label: '',
-    tdClass: 'text-right text-sm font-medium',
+    tdClass: 'text-end text-sm font-medium',
     sortable: false,
     mobile: 'actions',
   },

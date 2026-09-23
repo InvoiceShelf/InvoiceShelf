@@ -3,7 +3,7 @@
   <aside
     :class="[isRail ? 'w-16' : 'w-64']"
     class="
-      fixed inset-y-0 left-0 z-30 hidden md:flex flex-col
+      fixed inset-y-0 start-0 z-30 hidden md:flex flex-col
       bg-chrome-lit text-chrome-fg safe-header
       transition-[width] duration-200
     "
@@ -60,7 +60,7 @@
               :aria-label="isRail ? $t(item.title) : undefined"
               :class="[
                 hasActiveUrl(item.link)
-                  ? 'bg-chrome-active text-chrome-fg before:absolute before:left-0 before:top-2 before:bottom-2 before:w-0.5 before:rounded-full before:bg-chrome-accent'
+                  ? 'bg-chrome-active text-chrome-fg before:absolute before:start-0 before:top-2 before:bottom-2 before:w-0.5 before:rounded-full before:bg-chrome-accent'
                   : 'text-chrome-muted hover:bg-chrome-hover hover:text-chrome-fg',
                 isRail ? 'justify-center w-10 h-10' : 'gap-3 px-2.5 h-9',
               ]"
@@ -96,7 +96,7 @@
         <template #activator="{ avatar }">
           <span
             :class="isRail ? 'justify-center w-10 h-10 p-0' : 'w-full gap-2.5 px-2 py-1.5'"
-            class="flex items-center min-w-0 text-left transition-colors rounded-lg hover:bg-chrome-hover"
+            class="flex items-center min-w-0 text-start transition-colors rounded-lg hover:bg-chrome-hover"
           >
             <img
               :src="avatar"

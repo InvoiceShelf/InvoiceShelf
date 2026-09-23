@@ -6,7 +6,7 @@
     hairlines divide the cells without doubling the strip's own border.
   -->
   <div class="overflow-hidden border glass rounded-xl">
-    <dl :class="columnsClass" class="grid grid-cols-2 -mt-px -ml-px">
+    <dl :class="columnsClass" class="grid grid-cols-2 -mt-px -ms-px">
       <slot />
     </dl>
   </div>

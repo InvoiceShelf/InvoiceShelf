@@ -8,7 +8,7 @@
   </ContentPlaceholder>
   <div
     v-else
-    class="box-border w-full text-sm leading-8 text-left bg-surface border border-line-light rounded-xl shadow min-h-[200px] overflow-hidden"
+    class="box-border w-full text-sm leading-8 text-start bg-surface border border-line-light rounded-xl shadow min-h-[200px] overflow-hidden"
   >
     <div v-if="editor" class="editor-content">
       <!--
@@ -59,7 +59,7 @@
       </div>
       <editor-content
         :editor="editor"
-        class="box-border relative w-full text-sm leading-8 text-left editor__content"
+        class="box-border relative w-full text-sm leading-8 text-start editor__content"
       />
     </div>
   </div>
@@ -273,7 +273,7 @@ onUnmounted(() => {
   min-height: 200px;
   padding: 8px 12px;
   outline: none;
-  @apply rounded-xl rounded-tl-none rounded-tr-none border border-transparent;
+  @apply rounded-xl rounded-ss-none rounded-se-none border border-transparent;
 
   h1 {
     font-size: 2em;

@@ -77,9 +77,9 @@ const selectAllFieldStatus = computed<boolean>({
 const customerColumns = computed<TableColumn[]>(() => [
   {
     key: 'status',
-    thClass: 'extra w-10 pr-0',
+    thClass: 'extra w-10 pe-0',
     sortable: false,
-    tdClass: 'font-medium text-heading pr-0',
+    tdClass: 'font-medium text-heading pe-0',
   },
   {
     key: 'name',
@@ -102,8 +102,8 @@ const customerColumns = computed<TableColumn[]>(() => [
   },
   {
     key: 'actions',
-    tdClass: 'text-right text-sm font-medium pl-0',
-    thClass: 'pl-0',
+    tdClass: 'text-end text-sm font-medium ps-0',
+    thClass: 'ps-0',
     sortable: false,
     mobile: 'actions',
   },
@@ -250,7 +250,7 @@ function removeMultipleCustomers(): void {
     </BasePageHeader>
 
     <BaseFilterWrapper :show="showFilters" @clear="clearFilter">
-      <BaseInputGroup :label="$t('customers.display_name')" class="text-left">
+      <BaseInputGroup :label="$t('customers.display_name')" class="text-start">
         <BaseInput
           v-model="filters.display_name"
           type="text"
@@ -259,7 +259,7 @@ function removeMultipleCustomers(): void {
         />
       </BaseInputGroup>
 
-      <BaseInputGroup :label="$t('customers.contact_name')" class="text-left">
+      <BaseInputGroup :label="$t('customers.contact_name')" class="text-start">
         <BaseInput
           v-model="filters.contact_name"
           type="text"
@@ -268,7 +268,7 @@ function removeMultipleCustomers(): void {
         />
       </BaseInputGroup>
 
-      <BaseInputGroup :label="$t('customers.phone')" class="text-left">
+      <BaseInputGroup :label="$t('customers.phone')" class="text-start">
         <BaseInput
           v-model="filters.phone"
           type="text"
@@ -323,7 +323,7 @@ function removeMultipleCustomers(): void {
 
         <!-- Select All Checkbox -->
         <template #header>
-          <div class="absolute z-10 items-center left-6 top-3.5 select-none">
+          <div class="absolute z-10 items-center start-6 top-3.5 select-none">
             <BaseCheckbox
               v-model="selectAllFieldStatus"
               :aria-label="$t('general.select_all')"

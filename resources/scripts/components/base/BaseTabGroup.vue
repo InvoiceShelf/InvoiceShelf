@@ -72,7 +72,7 @@ function onChange(d: number): void {
             {{ tab.title }}
             <span
               v-if="tab.count"
-              class="ml-1.5 text-xs tabular opacity-70"
+              class="ms-1.5 text-xs tabular opacity-70"
             >
               {{ tab.count }}
             </span>
@@ -89,7 +89,7 @@ function onChange(d: number): void {
             {{ tab.title }}
             <span
               v-if="tab.count"
-              class="ml-2 px-1.5 min-w-5 h-5 inline-flex items-center justify-center text-xs rounded-full tabular bg-surface-muted text-body"
+              class="ms-2 px-1.5 min-w-5 h-5 inline-flex items-center justify-center text-xs rounded-full tabular bg-surface-muted text-body"
             >
               {{ tab.count }}
             </span>

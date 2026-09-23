@@ -22,7 +22,7 @@
       </div>
 
       <!-- Badges -->
-      <div class="absolute top-2.5 right-2.5 flex gap-1.5">
+      <div class="absolute top-2.5 end-2.5 flex gap-1.5">
         <span class="bg-white/85 backdrop-blur-sm text-xs px-2 py-0.5 font-medium rounded-md text-heading">
           {{ data.access_tier === 'premium' ? 'Premium' : 'Public' }}
         </span>
@@ -57,7 +57,7 @@
           alt=""
         />
         <span>{{ data.author_name }}</span>
-        <span v-if="data.latest_module_version" class="ml-auto font-medium text-body">
+        <span v-if="data.latest_module_version" class="ms-auto font-medium text-body">
           v{{ data.latest_module_version }}
         </span>
       </div>

@@ -33,7 +33,7 @@
           >
             <div
               class="
-                relative w-full px-5 pt-6 text-left glass-strong rounded-t-2xl safe-drawer
+                relative w-full px-5 pt-6 text-start glass-strong rounded-t-2xl safe-drawer
                 md:p-6 md:rounded-2xl md:border
               "
               :class="dialogSizeClasses"

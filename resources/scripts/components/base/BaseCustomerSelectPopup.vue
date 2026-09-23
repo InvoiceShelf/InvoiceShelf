@@ -277,7 +277,7 @@ const addressBlocks = computed(() => {
           <p class="text-base font-semibold truncate text-heading">{{ selectedCustomer.name }}</p>
         </div>
 
-        <div class="flex items-center gap-1 -mr-1 shrink-0">
+        <div class="flex items-center gap-1 -me-1 shrink-0">
           <button
             type="button"
             class="flex items-center justify-center w-10 h-10 transition-colors rounded-lg md:w-9 md:h-9 text-muted hover:bg-hover-strong hover:text-heading"
@@ -314,7 +314,7 @@ const addressBlocks = computed(() => {
         aria-haspopup="dialog"
         :class="valid.$error ? 'border-danger' : 'border-line-strong hover:border-primary-400'"
         class="
-          flex items-center w-full gap-4 p-4 text-left transition-colors border-2 border-dashed md:p-5
+          flex items-center w-full gap-4 p-4 text-start transition-colors border-2 border-dashed md:p-5
           rounded-xl bg-surface/50 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus
         "
         @click="isOpen ? closePicker() : openPicker()"
@@ -393,7 +393,7 @@ const addressBlocks = computed(() => {
                 <button
                   type="button"
                   class="
-                    flex items-center w-full gap-3 px-4 py-3 text-left transition-colors
+                    flex items-center w-full gap-3 px-4 py-3 text-start transition-colors
                     hover:bg-hover-strong focus:outline-hidden focus-visible:bg-hover-strong
                   "
                   @click="selectNewCustomer(customer.id)"

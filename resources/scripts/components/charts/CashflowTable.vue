@@ -21,14 +21,14 @@
       <caption class="sr-only">{{ caption }}</caption>
       <thead class="bg-surface-secondary">
         <tr>
-          <th scope="col" class="px-5 py-3 text-sm font-medium text-left md:px-7 text-muted">
+          <th scope="col" class="px-5 py-3 text-sm font-medium text-start md:px-7 text-muted">
             {{ granularity === 'day' ? $t('dashboard.cashflow.day') : $t('dashboard.cashflow.month') }}
           </th>
           <th
             v-for="label in seriesLabels"
             :key="label"
             scope="col"
-            class="px-5 py-3 text-sm font-medium text-right md:px-7 text-muted"
+            class="px-5 py-3 text-sm font-medium text-end md:px-7 text-muted"
           >
             {{ label }}
           </th>
@@ -36,11 +36,11 @@
       </thead>
       <tbody class="divide-y divide-line-light">
         <tr v-for="(label, index) in labels" :key="label + index">
-          <th scope="row" class="px-5 py-2.5 font-normal text-left md:px-7 text-body">{{ label }}</th>
+          <th scope="row" class="px-5 py-2.5 font-normal text-start md:px-7 text-body">{{ label }}</th>
           <td
             v-for="(values, series) in [sales, receipts, expenses]"
             :key="series"
-            class="px-5 py-2.5 text-right md:px-7 text-heading"
+            class="px-5 py-2.5 text-end md:px-7 text-heading"
           >
             <BaseFormatMoney :amount="values[index] ?? 0" :currency="currency" />
           </td>

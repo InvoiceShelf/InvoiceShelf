@@ -522,7 +522,7 @@ function isDisk(value: unknown): value is Disk {
             />
           </div>
 
-          <div class="ml-4">
+          <div class="ms-4">
             <p class="mb-1 text-base leading-snug text-heading">
               {{ $t('settings.disk.is_default') }}
             </p>
@@ -536,7 +536,7 @@ function isDisk(value: unknown): value is Disk {
         <BaseButton
           type="button"
           variant="primary-outline"
-          class="mr-3"
+          class="me-3"
           @click="closeModal"
         >
           {{ $t('general.cancel') }}

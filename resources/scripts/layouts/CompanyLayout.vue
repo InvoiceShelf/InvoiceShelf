@@ -5,7 +5,7 @@
     <a
       href="#main-content"
       class="
-        sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-60 focus:px-4 focus:py-2.5
+        sr-only focus:not-sr-only focus:fixed focus:top-3 focus:start-3 focus:z-60 focus:px-4 focus:py-2.5
         focus:rounded-xl focus:bg-surface focus:text-heading focus:font-medium focus:shadow-lg
         focus:outline-2 focus:outline-focus
       "
@@ -21,7 +21,7 @@
     <div
       :class="[
         'flex flex-col flex-1 min-w-0 h-dvh',
-        hasCompany ? (isExpanded ? 'md:pl-16 lg:pl-64' : 'md:pl-16') : '',
+        hasCompany ? (isExpanded ? 'md:ps-16 lg:ps-64' : 'md:ps-16') : '',
       ]"
     >
       <ImpersonationBanner />

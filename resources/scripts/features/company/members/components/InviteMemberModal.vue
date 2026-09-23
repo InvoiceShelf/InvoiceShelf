@@ -118,7 +118,7 @@ async function submitInvitation(): Promise<void> {
       <div class="flex justify-end p-4 border-t border-line-default">
         <BaseButton
           variant="primary-outline"
-          class="mr-3"
+          class="me-3"
           @click="$emit('close')"
         >
           {{ $t('general.cancel') }}

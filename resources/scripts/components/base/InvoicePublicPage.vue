@@ -95,7 +95,7 @@ function payInvoice(): void {
               absolute
               md:relative
               bottom-2
-              left-0
+              start-0
               px-4
               md:px-0
               w-full
@@ -137,7 +137,7 @@ function payInvoice(): void {
       >
         Powered by
         <a href="https://invoiceshelf.com" target="_blank">
-          <img :src="getLogo().href" alt="InvoiceShelf" class="h-4 ml-1 mb-1" />
+          <img :src="getLogo().href" alt="InvoiceShelf" class="h-4 ms-1 mb-1" />
         </a>
       </div>
     </div>

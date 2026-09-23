@@ -32,7 +32,7 @@
             variant === 'appbar' ? 'max-w-[50vw]' : 'flex-1 min-w-0',
             tone === 'chrome' ? 'text-chrome-fg' : 'text-heading',
           ]"
-          class="text-sm font-semibold text-left truncate"
+          class="text-sm font-semibold text-start truncate"
         >
           {{ label }}
         </span>
@@ -58,7 +58,7 @@
         ref="panel"
         :class="[
           'absolute z-50 w-72 max-h-[70vh] overflow-y-auto p-1 border rounded-xl glass-strong',
-          variant === 'rail' ? 'left-full top-0 ml-2' : 'left-0 top-full mt-1.5',
+          variant === 'rail' ? 'start-full top-0 ms-2' : 'start-0 top-full mt-1.5',
         ]"
       >
         <CompanySwitcherList
@@ -167,7 +167,7 @@ const triggerClass = computed<string>(() => {
     case 'rail':
       return `flex items-center justify-center w-10 h-10 rounded-lg ${hover} transition-colors`
     case 'appbar':
-      return `flex items-center gap-2 px-1.5 py-1 -ml-1.5 rounded-lg ${hover} transition-colors`
+      return `flex items-center gap-2 px-1.5 py-1 -ms-1.5 rounded-lg ${hover} transition-colors`
     default:
       return `flex items-center w-full gap-2.5 px-2 py-1.5 rounded-lg ${hover} transition-colors`
   }

@@ -35,17 +35,17 @@
         </template>
 
         <BaseDropdownItem v-if="index > 0" @click="emit('move', index, index - 1)">
-          <BaseIcon name="ArrowUpIcon" class="w-5 h-5 mr-3 text-subtle" />
+          <BaseIcon name="ArrowUpIcon" class="w-5 h-5 me-3 text-subtle" />
           {{ $t('invoices.item.move_up') }}
         </BaseDropdownItem>
 
         <BaseDropdownItem v-if="index < invoiceItems.length - 1" @click="emit('move', index, index + 1)">
-          <BaseIcon name="ArrowDownIcon" class="w-5 h-5 mr-3 text-subtle" />
+          <BaseIcon name="ArrowDownIcon" class="w-5 h-5 me-3 text-subtle" />
           {{ $t('invoices.item.move_down') }}
         </BaseDropdownItem>
 
         <BaseDropdownItem @click="store.removeItem(index)">
-          <BaseIcon name="TrashIcon" class="w-5 h-5 mr-3 text-danger" />
+          <BaseIcon name="TrashIcon" class="w-5 h-5 me-3 text-danger" />
           <span class="text-danger">{{ $t('invoices.item.remove') }}</span>
         </BaseDropdownItem>
       </BaseDropdown>
@@ -105,12 +105,12 @@
               :content-loading="loading"
               :aria-label="$t('invoices.item.discount')"
               inputmode="decimal"
-              class="flex-1 min-w-0 [&_input]:rounded-r-none"
+              class="flex-1 min-w-0 [&_input]:rounded-e-none"
             />
             <BaseDropdown position="bottom-end" wrapper-class="flex" :label="discountTypeLabel">
               <template #activator>
                 <span
-                  class="flex items-center h-11 gap-1 px-3 text-sm border border-l-0 rounded-r-lg bg-surface border-control-border text-body"
+                  class="flex items-center h-11 gap-1 px-3 text-sm border border-s-0 rounded-e-lg bg-surface border-control-border text-body"
                 >
                   {{ itemData.discount_type === 'fixed' ? currencySymbol : '%' }}
                   <BaseIcon name="ChevronDownIcon" class="w-4 h-4 text-muted" />
@@ -164,7 +164,7 @@
 
     <div class="flex items-baseline justify-between gap-3 pt-3 border-t border-line-light">
       <span class="text-sm text-muted">{{ $t('invoices.item.amount') }}</span>
-      <span class="text-right">
+      <span class="text-end">
         <BaseContentPlaceholders v-if="loading">
           <BaseContentPlaceholdersText :lines="1" class="w-20 h-5" />
         </BaseContentPlaceholders>
@@ -179,7 +179,7 @@
   </div>
 
   <tr v-else class="box-border border-b border-line-light">
-    <td colspan="5" class="p-0 text-left align-top">
+    <td colspan="5" class="p-0 text-start align-top">
       <table class="w-full">
         <colgroup>
           <col style="width: 40%; min-width: 280px" />
@@ -194,13 +194,13 @@
         <tbody>
           <tr>
             <!-- Item Name + Description -->
-            <td class="px-5 py-4 text-left align-top">
+            <td class="px-5 py-4 text-start align-top">
               <div class="flex justify-start">
                 <button
                   ref="handle"
                   type="button"
                   class="
-                    flex items-center justify-center w-6 h-8 mt-1 mr-1.5 rounded-md shrink-0 text-subtle cursor-move handle
+                    flex items-center justify-center w-6 h-8 mt-1 me-1.5 rounded-md shrink-0 text-subtle cursor-move handle
                     focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus
                   "
                   :aria-label="$t('invoices.item.reorder', { position: index + 1, count: invoiceItems.length })"
@@ -226,7 +226,7 @@
             </td>
 
             <!-- Quantity -->
-            <td class="px-5 py-4 text-right align-top">
+            <td class="px-5 py-4 text-end align-top">
               <BaseInput
                 v-model="quantity"
                 :invalid="v$.quantity.$error"
@@ -241,7 +241,7 @@
             </td>
 
             <!-- Price -->
-            <td class="px-5 py-4 text-left align-top">
+            <td class="px-5 py-4 text-start align-top">
               <div class="flex flex-col">
                 <div class="flex-auto flex-fill bd-highlight">
                   <div class="relative w-full">
@@ -261,7 +261,7 @@
             <!-- Discount -->
             <td
               v-if="formData.discount_per_item === 'YES'"
-              class="px-5 py-4 text-left align-top"
+              class="px-5 py-4 text-start align-top"
             >
               <div class="flex flex-col">
                 <div class="flex" style="width: 120px" role="group">
@@ -270,13 +270,13 @@
                     :invalid="v$.discount_val.$error"
                     :content-loading="loading"
                     :aria-label="$t('invoices.item.discount')"
-                    class="border-r-0 focus:border-r-2 rounded-tr-sm rounded-br-sm h-[38px]"
+                    class="border-e-0 focus:border-e-2 rounded-se-sm rounded-ee-sm h-[38px]"
                   />
                   <BaseDropdown position="bottom-end" :label="discountTypeLabel">
                     <template #activator>
                       <BaseButton
                         :content-loading="loading"
-                        class="rounded-tr-md rounded-br-md !p-2 rounded-none"
+                        class="rounded-se-md rounded-ee-md !p-2 rounded-none"
                         tag="span"
                         variant="white"
                       >
@@ -288,7 +288,7 @@
                           }}
                           <BaseIcon
                             name="ChevronDownIcon"
-                            class="w-4 h-4 ml-1 text-muted"
+                            class="w-4 h-4 ms-1 text-muted"
                           />
                         </span>
                       </BaseButton>
@@ -307,7 +307,7 @@
             </td>
 
             <!-- Amount -->
-            <td class="px-5 py-4 text-right align-top">
+            <td class="px-5 py-4 text-end align-top">
               <div class="flex items-center justify-end text-sm">
                 <span>
                   <BaseContentPlaceholders v-if="loading">
@@ -345,8 +345,8 @@
 
           <!-- Per-item custom fields -->
           <tr v-if="lineCustomFields.length > 0">
-            <td class="px-5 py-4 text-left align-top" />
-            <td colspan="4" class="px-5 py-4 text-left align-top">
+            <td class="px-5 py-4 text-start align-top" />
+            <td colspan="4" class="px-5 py-4 text-start align-top">
               <BaseInputGrid layout="three-column">
                 <CustomFieldInput
                   v-for="field in lineCustomFields"
@@ -360,8 +360,8 @@
 
           <!-- Per-item taxes -->
           <tr v-if="formData.tax_per_item === 'YES'">
-            <td class="px-5 py-4 text-left align-top" />
-            <td colspan="4" class="px-5 py-4 text-left align-top">
+            <td class="px-5 py-4 text-start align-top" />
+            <td colspan="4" class="px-5 py-4 text-start align-top">
               <BaseContentPlaceholders v-if="loading">
                 <BaseContentPlaceholdersText
                   :lines="1"

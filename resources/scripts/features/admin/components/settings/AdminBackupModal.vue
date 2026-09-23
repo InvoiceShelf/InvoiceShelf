@@ -150,7 +150,7 @@ function closeModal(): void {
         <BaseButton
           type="button"
           variant="primary-outline"
-          class="mr-3"
+          class="me-3"
           @click="closeModal"
         >
           {{ $t('general.cancel') }}

@@ -597,7 +597,7 @@ function closeCustomFieldModal(): void {
                 <BaseIconButton
                   icon="PlusCircleIcon"
                   :label="$t('settings.custom_fields.add_option')"
-                  class="ml-1 !text-primary-600"
+                  class="ms-1 !text-primary-600"
                   @click="onAddOption"
                 />
               </div>
@@ -612,7 +612,7 @@ function closeCustomFieldModal(): void {
                   icon="MinusCircleIcon"
                   :label="$t('general.remove_named', { name: option.name })"
                   tone="danger"
-                  class="ml-1"
+                  class="ms-1"
                   :disabled="isEdit && !!currentCustomField.in_use"
                   @click="removeOption(index)"
                 />
@@ -755,7 +755,7 @@ function closeCustomFieldModal(): void {
         class="z-0 flex justify-end p-4 border-t border-solid border-line-default"
       >
         <BaseButton
-          class="mr-3"
+          class="me-3"
           type="button"
           variant="primary-outline"
           @click="closeCustomFieldModal"

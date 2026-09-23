@@ -22,7 +22,7 @@
       >
         <PopoverPanel
           v-slot="{ close }"
-          class="absolute z-20 px-4 mt-3 sm:px-0 w-screen max-w-full left-0 top-3"
+          class="absolute z-20 px-4 mt-3 sm:px-0 w-screen max-w-full start-0 top-3"
         >
           <div class="overflow-hidden rounded-md shadow-lg ring-1 ring-black/5">
             <div class="relative grid bg-surface">
@@ -45,7 +45,7 @@
                   :key="idx"
                   type="button"
                   class="
-                    w-full px-6 py-4 text-left border-b border-line-default border-solid last:border-b-0
+                    w-full px-6 py-4 text-start border-b border-line-default border-solid last:border-b-0
                     hover:bg-surface-tertiary focus:outline-hidden focus-visible:bg-surface-tertiary
                     focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus
                   "
@@ -72,7 +72,7 @@
               @click="openNoteModal"
             >
               <BaseIcon name="CheckCircleIcon" />
-              <span class="m-0 ml-3 text-sm leading-none font-base">
+              <span class="m-0 ms-3 text-sm leading-none font-base">
                 {{ $t('settings.customization.notes.add_new_note') }}
               </span>
             </button>

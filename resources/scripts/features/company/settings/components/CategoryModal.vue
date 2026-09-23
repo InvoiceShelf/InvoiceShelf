@@ -170,7 +170,7 @@ function closeCategoryModal(): void {
         <BaseButton
           type="button"
           variant="primary-outline"
-          class="mr-3 text-sm"
+          class="me-3 text-sm"
           @click="closeCategoryModal"
         >
           {{ $t('general.cancel') }}

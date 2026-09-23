@@ -104,7 +104,7 @@
                   tabindex="-1"
                   :aria-selected="item.index === activeIndex"
                   :class="[
-                    'flex items-center w-full gap-3 px-3 py-2 text-left rounded-lg',
+                    'flex items-center w-full gap-3 px-3 py-2 text-start rounded-lg',
                     item.index === activeIndex ? 'bg-hover-strong' : '',
                   ]"
                   @mousemove="activeIndex = item.index"

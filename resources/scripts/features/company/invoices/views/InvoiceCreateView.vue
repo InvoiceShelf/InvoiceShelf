@@ -17,8 +17,8 @@
         <!-- Phones get these in the bottom bar and the form instead -->
         <template v-if="!isPhone" #actions>
           <!-- Make Recurring Toggle -->
-          <div v-if="!isEdit" class="flex items-center mr-4">
-            <BaseSwitch v-model="isRecurring" class="mr-2" aria-labelledby="make-recurring-label" />
+          <div v-if="!isEdit" class="flex items-center me-4">
+            <BaseSwitch v-model="isRecurring" class="me-2" aria-labelledby="make-recurring-label" />
             <span id="make-recurring-label" class="text-sm font-medium text-heading whitespace-nowrap">{{ $t('recurring_invoices.make_recurring') }}</span>
           </div>
 
@@ -26,7 +26,7 @@
             v-if="isEdit"
             :to="`/invoices/pdf/${invoiceStore.newInvoice.unique_hash}`"
             target="_blank"
-            class="inline-flex rounded-lg mr-3"
+            class="inline-flex rounded-lg me-3"
           >
             <BaseButton tag="span" variant="primary-outline">
               <span class="flex">
@@ -96,7 +96,7 @@
         <div
           class="block mt-10 invoice-foot lg:flex lg:justify-between lg:items-start"
         >
-          <div class="relative w-full lg:w-1/2 lg:mr-4">
+          <div class="relative w-full lg:w-1/2 lg:me-4">
             <!-- Invoice Custom Notes -->
             <DocumentNotes
               :store="invoiceStore"

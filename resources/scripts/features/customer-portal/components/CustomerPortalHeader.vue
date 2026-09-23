@@ -1,7 +1,7 @@
 <template>
   <header
     class="
-      fixed top-0 left-0 z-20 flex w-full items-center justify-between border-b
+      fixed top-0 start-0 z-20 flex w-full items-center justify-between border-b
       border-line-default bg-surface px-4 py-3 shadow-xs md:px-8
     "
   >
@@ -41,7 +41,7 @@
     </div>
 
     <div class="flex items-center gap-3">
-      <div class="hidden text-right sm:block">
+      <div class="hidden text-end sm:block">
         <p class="text-sm font-medium text-heading">
           {{ store.currentUser?.name ?? '' }}
         </p>
@@ -82,7 +82,7 @@
 
         <BaseDropdownItem :to="settingsPath">
           <BaseIcon
-            class="mr-3 h-5 w-5 text-subtle group-hover:text-muted"
+            class="me-3 h-5 w-5 text-subtle group-hover:text-muted"
             name="CogIcon"
           />
           {{ $t('navigation.settings') }}
@@ -90,7 +90,7 @@
 
         <BaseDropdownItem @click="logout">
           <BaseIcon
-            class="mr-3 h-5 w-5 text-subtle group-hover:text-muted"
+            class="me-3 h-5 w-5 text-subtle group-hover:text-muted"
             name="ArrowRightOnRectangleIcon"
           />
           {{ $t('navigation.logout') }}

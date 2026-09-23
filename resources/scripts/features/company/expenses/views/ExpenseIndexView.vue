@@ -30,7 +30,7 @@
 
         <BaseButton
           v-if="canCreate"
-          class="ml-4"
+          class="ms-4"
           variant="primary"
           @click="$router.push('expenses/create')"
         >
@@ -128,7 +128,7 @@
         </template>
 
         <template #header>
-          <div class="absolute items-center left-6 top-3.5 select-none">
+          <div class="absolute items-center start-6 top-3.5 select-none">
             <BaseCheckbox
               v-model="selectAllFieldStatus"
               :aria-label="$t('general.select_all')"
@@ -334,7 +334,7 @@ const expenseColumns = computed<TableColumn[]>(() => [
   {
     key: 'actions',
     sortable: false,
-    tdClass: 'text-right text-sm font-medium',
+    tdClass: 'text-end text-sm font-medium',
     mobile: 'actions',
   },
 ])

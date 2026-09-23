@@ -108,9 +108,9 @@ const iconLeftClass = computed<Record<string, boolean> | string>(() => {
   }
 
   return {
-    '-ml-0.5 mr-1.5 h-4 w-4': props.size == 'sm' || props.size === 'xs',
-    '-ml-1 mr-2 h-4.5 w-4.5': props.size === 'md',
-    '-ml-1 mr-2 h-5 w-5': props.size === 'lg' || props.size === 'xl',
+    '-ms-0.5 me-1.5 h-4 w-4': props.size == 'sm' || props.size === 'xs',
+    '-ms-1 me-2 h-4.5 w-4.5': props.size === 'md',
+    '-ms-1 me-2 h-5 w-5': props.size === 'lg' || props.size === 'xl',
   }
 })
 
@@ -128,9 +128,9 @@ const iconRightClass = computed<Record<string, boolean> | string>(() => {
   }
 
   return {
-    'ml-1.5 -mr-0.5 h-4 w-4': props.size == 'sm' || props.size === 'xs',
-    'ml-2 -mr-1 h-4.5 w-4.5': props.size === 'md',
-    'ml-2 -mr-1 h-5 w-5': props.size === 'lg' || props.size === 'xl',
+    'ms-1.5 -me-0.5 h-4 w-4': props.size == 'sm' || props.size === 'xs',
+    'ms-2 -me-1 h-4.5 w-4.5': props.size === 'md',
+    'ms-2 -me-1 h-5 w-5': props.size === 'lg' || props.size === 'xl',
   }
 })
 </script>

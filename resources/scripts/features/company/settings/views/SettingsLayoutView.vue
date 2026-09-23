@@ -135,7 +135,7 @@ function navigateToSetting(setting: DropdownMenuItem): void {
               : 'text-danger hover:bg-hover-strong',
           ]"
         >
-          <span class="mr-3">
+          <span class="me-3">
             <BaseIcon name="ExclamationTriangleIcon" />
           </span>
           <span>{{ $t('settings.company_info.danger_zone') }}</span>

@@ -1,5 +1,5 @@
 <template>
-  <div :class="containerClasses" class="relative w-full text-left">
+  <div :class="containerClasses" class="relative w-full text-start">
     <ContentPlaceholder v-if="contentLoading">
       <ContentPlaceholderText :lines="1" :class="contentLoadClass" />
     </ContentPlaceholder>
@@ -70,7 +70,7 @@ const containerClasses = computed<string>(() => {
 
 const labelClasses = computed<string>(() => {
   if (props.variant === 'horizontal') {
-    return 'relative pr-0 pt-1 mr-3 text-sm md:col-span-4 md:text-right mb-1  md:mb-0'
+    return 'relative pe-0 pt-1 me-3 text-sm md:col-span-4 md:text-end mb-1  md:mb-0'
   }
   return ''
 })

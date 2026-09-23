@@ -25,9 +25,9 @@
           relative
           w-full
           py-2
-          pl-3
-          pr-10
-          text-left
+          ps-3
+          pe-10
+          text-start
           bg-surface
           border border-control-border
           rounded-lg
@@ -56,10 +56,10 @@
           class="
             absolute
             inset-y-0
-            right-0
+            end-0
             flex
             items-center
-            pr-2
+            pe-2
             pointer-events-none
           "
         >
@@ -105,7 +105,7 @@
             <li
               :class="[
                 active ? 'bg-hover-strong' : '',
-                'text-heading cursor-default select-none relative py-2 pl-3 pr-9 rounded-lg',
+                'text-heading cursor-default select-none relative py-2 ps-3 pe-9 rounded-lg',
               ]"
             >
               <span
@@ -120,7 +120,7 @@
               <span
                 v-if="selected"
                 :class="[
-                  'text-primary-600 absolute inset-y-0 right-0 flex items-center pr-3',
+                  'text-primary-600 absolute inset-y-0 end-0 flex items-center pe-3',
                 ]"
               >
                 <BaseIcon name="CheckIcon" aria-hidden="true" />

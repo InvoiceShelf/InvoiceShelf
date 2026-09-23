@@ -296,20 +296,20 @@ async function submitForm(): Promise<boolean> {
       <thead>
         <tr>
           <th
-            class="px-5 py-3 text-sm not-italic font-medium leading-5 text-left text-body border-t border-b border-line-default border-solid"
+            class="px-5 py-3 text-sm not-italic font-medium leading-5 text-start text-body border-t border-b border-line-default border-solid"
           />
           <th
-            class="px-5 py-3 text-sm not-italic font-medium leading-5 text-left text-body border-t border-b border-line-default border-solid"
+            class="px-5 py-3 text-sm not-italic font-medium leading-5 text-start text-body border-t border-b border-line-default border-solid"
           >
             {{ $t('settings.customization.component') }}
           </th>
           <th
-            class="px-5 py-3 text-sm not-italic font-medium leading-5 text-left text-body border-t border-b border-line-default border-solid"
+            class="px-5 py-3 text-sm not-italic font-medium leading-5 text-start text-body border-t border-b border-line-default border-solid"
           >
             {{ $t('settings.customization.Parameter') }}
           </th>
           <th
-            class="px-5 py-3 text-sm not-italic font-medium leading-5 text-left text-body border-t border-b border-line-default border-solid"
+            class="px-5 py-3 text-sm not-italic font-medium leading-5 text-start text-body border-t border-b border-line-default border-solid"
           />
         </tr>
       </thead>
@@ -339,7 +339,7 @@ async function submitForm(): Promise<boolean> {
             </td>
             <td class="px-5 py-4">
               <p
-                class="block text-sm not-italic font-medium text-primary-600 whitespace-nowrap mr-2 min-w-[200px]"
+                class="block text-sm not-italic font-medium text-primary-600 whitespace-nowrap me-2 min-w-[200px]"
               >
                 {{ element.label }}
               </p>
@@ -347,7 +347,7 @@ async function submitForm(): Promise<boolean> {
                 {{ element.description }}
               </p>
             </td>
-            <td class="px-5 py-4 text-left align-middle">
+            <td class="px-5 py-4 text-start align-middle">
               <BaseInputGroup
                 :label="element.paramLabel"
                 class="lg:col-span-3"
@@ -361,7 +361,7 @@ async function submitForm(): Promise<boolean> {
                 />
               </BaseInputGroup>
             </td>
-            <td class="px-5 py-4 text-right align-middle pt-10">
+            <td class="px-5 py-4 text-end align-middle pt-10">
               <BaseButton
                 variant="white"
                 :aria-label="$t('general.remove_named', { name: element.label })"
@@ -393,7 +393,7 @@ async function submitForm(): Promise<boolean> {
                 />
               </BaseInputGroup>
             </td>
-            <td class="px-5 py-4 text-right align-middle" colspan="2">
+            <td class="px-5 py-4 text-end align-middle" colspan="2">
               <BaseDropdown wrapper-class="flex items-center justify-end mt-5">
                 <template #activator>
                   <BaseButton tag="span" variant="primary-outline">

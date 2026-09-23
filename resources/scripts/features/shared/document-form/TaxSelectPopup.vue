@@ -46,7 +46,7 @@
                     type="button"
                     :disabled="existingTaxIds.has(taxType.id)"
                     class="
-                      w-full px-6 py-4 text-left border-b border-line-light border-solid last:border-b-0
+                      w-full px-6 py-4 text-start border-b border-line-light border-solid last:border-b-0
                       hover:bg-surface-tertiary focus:outline-hidden focus-visible:bg-surface-tertiary
                       focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus
                       disabled:bg-surface-tertiary disabled:opacity-50 disabled:cursor-not-allowed
@@ -87,7 +87,7 @@
                 @click="openTaxTypeModal"
               >
                 <BaseIcon name="CheckCircleIcon" />
-                <span class="m-0 ml-3 text-sm leading-none font-base">
+                <span class="m-0 ms-3 text-sm leading-none font-base">
                   {{ $t('estimates.add_new_tax') }}
                 </span>
               </button>

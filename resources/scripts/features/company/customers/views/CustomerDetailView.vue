@@ -142,7 +142,7 @@ function refreshData(): void {
               v-if="userStore.hasAbilities(ABILITIES.CREATE_INVOICE)"
               :to="`/admin/invoices/create?customer=${$route.params.id}`"
             >
-              <BaseIcon name="DocumentTextIcon" class="w-5 h-5 mr-3 text-subtle" />
+              <BaseIcon name="DocumentTextIcon" class="w-5 h-5 me-3 text-subtle" />
               {{ $t('invoices.new_invoice') }}
             </BaseDropdownItem>
 
@@ -150,7 +150,7 @@ function refreshData(): void {
               v-if="userStore.hasAbilities(ABILITIES.CREATE_ESTIMATE)"
               :to="`/admin/estimates/create?customer=${$route.params.id}`"
             >
-              <BaseIcon name="DocumentIcon" class="w-5 h-5 mr-3 text-subtle" />
+              <BaseIcon name="DocumentIcon" class="w-5 h-5 me-3 text-subtle" />
               {{ $t('estimates.new_estimate') }}
             </BaseDropdownItem>
 
@@ -158,7 +158,7 @@ function refreshData(): void {
               v-if="userStore.hasAbilities(ABILITIES.CREATE_PAYMENT)"
               :to="`/admin/payments/create?customer=${$route.params.id}`"
             >
-              <BaseIcon name="CreditCardIcon" class="w-5 h-5 mr-3 text-subtle" />
+              <BaseIcon name="CreditCardIcon" class="w-5 h-5 me-3 text-subtle" />
               {{ $t('payments.new_payment') }}
             </BaseDropdownItem>
 
@@ -166,7 +166,7 @@ function refreshData(): void {
               v-if="userStore.hasAbilities(ABILITIES.CREATE_EXPENSE)"
               :to="`/admin/expenses/create?customer=${$route.params.id}`"
             >
-              <BaseIcon name="CalculatorIcon" class="w-5 h-5 mr-3 text-subtle" />
+              <BaseIcon name="CalculatorIcon" class="w-5 h-5 me-3 text-subtle" />
               {{ $t('expenses.new_expense') }}
             </BaseDropdownItem>
           </BaseDropdown>
@@ -182,7 +182,7 @@ function refreshData(): void {
       <BaseStatStrip :columns="3">
         <BaseStat :label="$t('customers.net_account_balance')" emphasis>
           <BaseFormatMoney :amount="Math.abs(accountBalance)" :currency="customerCurrency" />
-          <span v-if="accountBalance < 0" class="ml-1.5 text-xs font-medium text-status-green">
+          <span v-if="accountBalance < 0" class="ms-1.5 text-xs font-medium text-status-green">
             {{ $t('customers.credit') }}
           </span>
         </BaseStat>

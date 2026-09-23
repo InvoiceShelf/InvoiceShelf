@@ -63,7 +63,7 @@
         <div
           v-else
           ref="container"
-          class="fixed top-0 left-0 z-50 pointer-events-none"
+          class="fixed top-0 start-0 z-50 pointer-events-none"
           :class="widthClass"
         >
           <transition
@@ -106,9 +106,9 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   containerClass: '',
   widthClass: 'w-56',
-  positionClass: 'absolute z-10 right-0',
+  positionClass: 'absolute z-10 end-0',
   position: 'bottom-end',
-  wrapperClass: 'inline-block h-full text-left',
+  wrapperClass: 'inline-block h-full text-start',
   contentLoading: false,
   label: '',
 })

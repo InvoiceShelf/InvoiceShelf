@@ -52,7 +52,7 @@
 
           <div
             v-if="mobileColumns.trailing || mobileColumns.trailingSub.length || mobileColumns.badge"
-            class="flex flex-col items-end gap-1 text-right shrink-0"
+            class="flex flex-col items-end gap-1 text-end shrink-0"
           >
             <div
               v-if="mobileColumns.trailing"
@@ -78,7 +78,7 @@
             </div>
           </div>
 
-          <div v-if="mobileColumns.actions" class="-mr-2 shrink-0">
+          <div v-if="mobileColumns.actions" class="-me-2 shrink-0">
             <slot :name="'cell-' + mobileColumns.actions.key" :row="row" />
           </div>
         </li>
@@ -92,7 +92,7 @@
       <!-- While rows are selected, their actions sit over the column headings -->
       <div
         v-if="selectedCount > 0 && $slots['bulk-actions']"
-        class="absolute top-0 right-0 z-10 flex items-center justify-between gap-3 pl-4 pr-4 h-12 left-14 bg-surface-secondary"
+        class="absolute top-0 end-0 z-10 flex items-center justify-between gap-3 ps-4 pe-4 h-12 start-14 bg-surface-secondary"
       >
         <span class="text-sm font-medium text-heading" role="status">
           {{ $t('general.selected_count', { count: selectedCount }) }}
@@ -563,10 +563,10 @@ function getThClass(column: TableColumn): string {
   // order in the stylesheet, not by which one was meant
   const align = column.thClass && TEXT_ALIGN.test(column.thClass)
     ? ''
-    : column.align === 'end' ? 'text-right' : 'text-left'
+    : column.align === 'end' ? 'text-end' : 'text-start'
 
   let classes =
-    `whitespace-nowrap px-4 first:pl-6 last:pr-6 py-3.5 ${align} text-sm font-medium text-muted select-none`
+    `whitespace-nowrap px-4 first:ps-6 last:pe-6 py-3.5 ${align} text-sm font-medium text-muted select-none`
 
   if (column.defaultThClass) {
     classes = column.defaultThClass
@@ -585,10 +585,10 @@ function getThClass(column: TableColumn): string {
 }
 
 function getTdClass(column: ColumnDef): string {
-  let classes = 'px-4 first:pl-6 last:pr-6 py-3 text-sm text-body whitespace-nowrap'
+  let classes = 'px-4 first:ps-6 last:pe-6 py-3 text-sm text-body whitespace-nowrap'
 
   if (column.align === 'end') {
-    classes = `${classes} text-right tabular`
+    classes = `${classes} text-end tabular`
   }
 
   if (column.defaultTdClass) {

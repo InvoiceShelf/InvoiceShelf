@@ -76,7 +76,7 @@
               />
             </svg>
           </div>
-          <div class="flex-1 w-0 ml-3 text-left">
+          <div class="flex-1 w-0 ms-3 text-start">
             <p
               class="text-sm font-medium leading-5 text-heading"
             >

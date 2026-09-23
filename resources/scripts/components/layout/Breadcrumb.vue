@@ -9,7 +9,7 @@
     :aria-label="$t('general.breadcrumb')"
   >
     <ol class="flex flex-wrap items-center text-sm text-muted">
-      <li aria-hidden="true" class="flex items-center -ml-1 mr-0.5">
+      <li aria-hidden="true" class="flex items-center -ms-1 me-0.5">
         <BaseIcon name="ChevronLeftIcon" class="w-4 h-4" />
       </li>
       <slot />

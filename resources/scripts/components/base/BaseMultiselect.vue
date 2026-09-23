@@ -420,14 +420,14 @@ const defaultClasses: Required<MultiselectClasses> = {
     'border-danger',
   containerInvalidActive: 'ring-2 border-danger ring-danger/20',
   singleLabel:
-    'flex items-center h-full absolute left-0 top-0 pointer-events-none bg-transparent leading-snug pl-3.5',
+    'flex items-center h-full absolute start-0 top-0 pointer-events-none bg-transparent leading-snug ps-3.5',
   multipleLabel:
-    'flex items-center h-full absolute left-0 top-0 pointer-events-none bg-transparent leading-snug pl-3.5',
+    'flex items-center h-full absolute start-0 top-0 pointer-events-none bg-transparent leading-snug ps-3.5',
   search:
-    'w-full absolute inset-0 outline-hidden appearance-none box-border border-0 text-base md:text-sm font-sans bg-surface rounded-lg pl-3.5 focus:ring-0',
-  tags: 'grow shrink flex flex-wrap mt-1 pl-2',
-  tag: 'bg-primary-50 text-primary-700 text-sm font-medium py-0.5 pl-2 rounded-md mr-1 mb-1 flex items-center whitespace-nowrap',
-  tagDisabled: 'pr-2 !bg-surface-muted text-muted',
+    'w-full absolute inset-0 outline-hidden appearance-none box-border border-0 text-base md:text-sm font-sans bg-surface rounded-lg ps-3.5 focus:ring-0',
+  tags: 'grow shrink flex flex-wrap mt-1 ps-2',
+  tag: 'bg-primary-50 text-primary-700 text-sm font-medium py-0.5 ps-2 rounded-md me-1 mb-1 flex items-center whitespace-nowrap',
+  tagDisabled: 'pe-2 !bg-surface-muted text-muted',
   tagRemove:
     'flex items-center justify-center p-1 mx-0.5 rounded-sm hover:bg-primary-100 group',
   tagRemoveIcon:
@@ -437,18 +437,18 @@ const defaultClasses: Required<MultiselectClasses> = {
     'absolute inset-0 border-0 focus:outline-hidden focus:ring-0 !shadow-none appearance-none p-0 text-base md:text-sm font-sans box-border w-full',
   tagsSearchCopy: 'invisible whitespace-pre-wrap inline-block h-px',
   placeholder:
-    'flex items-center h-full absolute left-0 top-0 pointer-events-none bg-transparent leading-snug pl-3.5 text-subtle text-base md:text-sm',
+    'flex items-center h-full absolute start-0 top-0 pointer-events-none bg-transparent leading-snug ps-3.5 text-subtle text-base md:text-sm',
   caret:
-    'bg-multiselect-caret bg-center bg-no-repeat w-5 h-5 py-px box-content z-[5] relative mr-2 shrink-0 grow-0 transition-transform',
+    'bg-multiselect-caret bg-center bg-no-repeat w-5 h-5 py-px box-content z-[5] relative me-2 shrink-0 grow-0 transition-transform',
   caretOpen: 'rotate-180 pointer-events-auto',
   clear:
-    'pr-3.5 relative z-10 opacity-40 transition duration-300 shrink-0 grow-0 flex hover:opacity-80',
+    'pe-3.5 relative z-10 opacity-40 transition duration-300 shrink-0 grow-0 flex hover:opacity-80',
   clearIcon:
     'bg-multiselect-remove bg-center bg-no-repeat w-2.5 h-4 py-px box-content inline-block',
   spinner:
-    'bg-multiselect-spinner bg-center bg-no-repeat w-4 h-4 z-10 mr-3.5 animate-spin shrink-0 grow-0',
+    'bg-multiselect-spinner bg-center bg-no-repeat w-4 h-4 z-10 me-3.5 animate-spin shrink-0 grow-0',
   dropdown:
-    'max-h-60 shadow-lg absolute -left-px -right-px -bottom-1.5 border border-line-light p-1 overflow-y-auto z-50 bg-surface flex flex-col rounded-xl',
+    'max-h-60 shadow-lg absolute -start-px -end-px -bottom-1.5 border border-line-light p-1 overflow-y-auto z-50 bg-surface flex flex-col rounded-xl',
   dropdownTop:
     '-translate-y-full -top-1.5 bottom-auto flex-col-reverse rounded-xl',
   dropdownBottom: 'translate-y-full',
@@ -457,7 +457,7 @@ const defaultClasses: Required<MultiselectClasses> = {
   optionsTop: 'flex-col-reverse',
   group: 'p-0 m-0',
   groupLabel:
-    'flex text-xs box-border items-center justify-start text-left pt-2 pb-1 px-3 font-medium text-muted cursor-default leading-normal',
+    'flex text-xs box-border items-center justify-start text-start pt-2 pb-1 px-3 font-medium text-muted cursor-default leading-normal',
   groupLabelPointable: 'cursor-pointer',
   groupLabelPointed: 'text-body',
   groupLabelSelected: 'text-primary-700',
@@ -467,7 +467,7 @@ const defaultClasses: Required<MultiselectClasses> = {
     'text-subtle cursor-not-allowed',
   groupOptions: 'p-0 m-0',
   option:
-    'flex items-center justify-start box-border text-left cursor-pointer text-base md:text-sm leading-snug py-2.5 md:py-2 px-3 rounded-lg text-heading',
+    'flex items-center justify-start box-border text-start cursor-pointer text-base md:text-sm leading-snug py-2.5 md:py-2 px-3 rounded-lg text-heading',
   optionPointed: 'bg-hover-strong',
   optionSelected: 'bg-primary-50 text-primary-700 font-medium',
   optionDisabled: 'text-subtle cursor-not-allowed',
@@ -477,7 +477,7 @@ const defaultClasses: Required<MultiselectClasses> = {
   noOptions: 'py-2 px-3 text-sm text-muted bg-surface',
   noResults: 'py-2 px-3 text-sm text-muted bg-surface',
   fakeInput:
-    'bg-transparent absolute left-0 right-0 -bottom-px w-full h-px border-0 p-0 appearance-none outline-hidden text-transparent',
+    'bg-transparent absolute start-0 end-0 -bottom-px w-full h-px border-0 p-0 appearance-none outline-hidden text-transparent',
   spacer: 'h-10 md:h-9 py-px box-content',
 }
 

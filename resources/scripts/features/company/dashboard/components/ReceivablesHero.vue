@@ -8,7 +8,7 @@
   >
     <!-- A soft light source in the corner, so the panel reads as a surface rather than a flat fill -->
     <div
-      class="absolute rounded-full pointer-events-none -z-10 -right-28 -top-32 w-96 h-96 bg-chrome-fg/10 blur-3xl"
+      class="absolute rounded-full pointer-events-none -z-10 -end-28 -top-32 w-96 h-96 bg-chrome-fg/10 blur-3xl"
       aria-hidden="true"
     />
 
@@ -62,7 +62,7 @@
             v-for="bucket in visibleBuckets"
             :key="bucket.key"
             :class="bucket.fill"
-            class="h-full min-w-1 first:rounded-l-full last:rounded-r-full"
+            class="h-full min-w-1 first:rounded-s-full last:rounded-e-full"
             :style="{ width: `${bucket.share}%` }"
           />
         </div>
@@ -77,14 +77,14 @@
               <span :class="bucket.fill" class="w-2.5 h-2.5 rounded-full shrink-0" aria-hidden="true" />
               {{ bucket.label }}
             </dt>
-            <dd class="text-sm font-semibold sm:mt-1 sm:pl-4.5 sm:text-base">
+            <dd class="text-sm font-semibold sm:mt-1 sm:ps-4.5 sm:text-base">
               <BaseFormatMoney
                 :amount="bucket.amount"
                 :currency="companyStore.selectedCompanyCurrency"
               />
               <span
                 v-if="bucket.count !== null && bucket.amount > 0"
-                class="ml-1.5 text-sm font-normal text-chrome-fg/70"
+                class="ms-1.5 text-sm font-normal text-chrome-fg/70"
               >
                 {{ $t('dashboard.receivables.invoice_count', { count: bucket.count }, bucket.count) }}
               </span>

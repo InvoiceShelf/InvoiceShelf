@@ -247,7 +247,7 @@ function closeNoteModal(): void {
         class="z-0 flex justify-end px-4 py-4 border-t border-solid border-line-default"
       >
         <BaseButton
-          class="mr-2"
+          class="me-2"
           variant="primary-outline"
           type="button"
           @click="closeNoteModal"

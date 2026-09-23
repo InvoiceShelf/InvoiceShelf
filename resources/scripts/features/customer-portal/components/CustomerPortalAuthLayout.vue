@@ -23,7 +23,7 @@
       </div>
 
       <div class="rounded-2xl border border-line-default bg-surface px-6 py-8 shadow-sm sm:px-8">
-        <div class="mb-8 text-left">
+        <div class="mb-8 text-start">
           <h1 class="text-2xl font-semibold tracking-tight text-heading">
             {{ pageTitle }}
           </h1>

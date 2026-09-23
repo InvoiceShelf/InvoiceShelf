@@ -118,7 +118,7 @@ function onRemoveCustomer(): void {
     >
       <BaseIcon
         name="PencilIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.edit') }}
     </BaseDropdownItem>
@@ -130,7 +130,7 @@ function onRemoveCustomer(): void {
     >
       <BaseIcon
         name="EyeIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.view') }}
     </BaseDropdownItem>
@@ -145,7 +145,7 @@ function onRemoveCustomer(): void {
     >
       <BaseIcon
         name="TrashIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.delete') }}
     </BaseDropdownItem>

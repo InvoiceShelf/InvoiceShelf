@@ -10,7 +10,7 @@
     <BaseDropdownItem v-if="canEdit" @click="editExpenseCategory">
       <BaseIcon
         name="PencilIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.edit') }}
     </BaseDropdownItem>
@@ -19,7 +19,7 @@
     <BaseDropdownItem v-if="canDelete" @click="removeExpenseCategory">
       <BaseIcon
         name="TrashIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.delete') }}
     </BaseDropdownItem>

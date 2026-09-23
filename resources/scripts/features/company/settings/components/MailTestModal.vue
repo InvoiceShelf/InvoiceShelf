@@ -164,7 +164,7 @@ function closeTestModal(): void {
         <BaseButton
           variant="primary-outline"
           type="button"
-          class="mr-3"
+          class="me-3"
           @click="closeTestModal()"
         >
           {{ $t('general.cancel') }}

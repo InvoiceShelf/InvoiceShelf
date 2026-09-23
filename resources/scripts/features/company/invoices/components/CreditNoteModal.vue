@@ -43,37 +43,37 @@
                   <tr>
                     <th class="px-4 py-3" />
                     <th
-                      class="px-4 py-3 text-sm not-italic font-medium leading-5 text-left text-body"
+                      class="px-4 py-3 text-sm not-italic font-medium leading-5 text-start text-body"
                     >
                       {{ $t('items.item', 2) }}
                     </th>
                     <th
-                      class="px-4 py-3 text-sm not-italic font-medium leading-5 text-right text-body"
+                      class="px-4 py-3 text-sm not-italic font-medium leading-5 text-end text-body"
                     >
                       {{ $t('invoices.item.price') }}
                     </th>
                     <th
-                      class="px-4 py-3 text-sm not-italic font-medium leading-5 text-right text-body"
+                      class="px-4 py-3 text-sm not-italic font-medium leading-5 text-end text-body"
                     >
                       {{ $t('invoices.credit_note_original_quantity') }}
                     </th>
                     <th
-                      class="px-4 py-3 text-sm not-italic font-medium leading-5 text-right text-body"
+                      class="px-4 py-3 text-sm not-italic font-medium leading-5 text-end text-body"
                     >
                       {{ $t('invoices.credit_note_already_credited') }}
                     </th>
                     <th
-                      class="px-4 py-3 text-sm not-italic font-medium leading-5 text-right text-body"
+                      class="px-4 py-3 text-sm not-italic font-medium leading-5 text-end text-body"
                     >
                       {{ $t('invoices.credit_note_remaining_quantity') }}
                     </th>
                     <th
-                      class="px-4 py-3 text-sm not-italic font-medium leading-5 text-right text-body"
+                      class="px-4 py-3 text-sm not-italic font-medium leading-5 text-end text-body"
                     >
                       {{ $t('invoices.credit_note_quantity_to_credit') }}
                     </th>
                     <th
-                      class="px-4 py-3 text-sm not-italic font-medium leading-5 text-right text-body"
+                      class="px-4 py-3 text-sm not-italic font-medium leading-5 text-end text-body"
                     >
                       {{ $t('invoices.credit_note_amount') }}
                     </th>
@@ -95,7 +95,7 @@
                       />
                     </td>
 
-                    <td class="px-4 py-4 text-left align-top">
+                    <td class="px-4 py-4 text-start align-top">
                       <span class="block text-sm font-medium text-heading">
                         {{ row.name }}
                       </span>
@@ -113,28 +113,28 @@
                       </span>
                     </td>
 
-                    <td class="px-4 py-4 text-sm text-right align-top text-body">
+                    <td class="px-4 py-4 text-sm text-end align-top text-body">
                       <BaseFormatMoney :amount="row.price" :currency="currency" />
                     </td>
 
-                    <td class="px-4 py-4 text-sm text-right align-top text-body">
+                    <td class="px-4 py-4 text-sm text-end align-top text-body">
                       {{ formatQuantity(row.invoiced) }}
                       <span v-if="row.unitName" class="text-xs text-muted">
                         {{ row.unitName }}
                       </span>
                     </td>
 
-                    <td class="px-4 py-4 text-sm text-right align-top text-body">
+                    <td class="px-4 py-4 text-sm text-end align-top text-body">
                       {{ formatQuantity(row.credited) }}
                     </td>
 
                     <td
-                      class="px-4 py-4 text-sm font-medium text-right align-top text-heading"
+                      class="px-4 py-4 text-sm font-medium text-end align-top text-heading"
                     >
                       {{ formatQuantity(row.available) }}
                     </td>
 
-                    <td class="px-4 py-4 text-right align-top">
+                    <td class="px-4 py-4 text-end align-top">
                       <BaseInput
                         v-model="row.quantity"
                         :invalid="!!rowError(index)"
@@ -147,14 +147,14 @@
                       />
                       <span
                         v-if="rowError(index)"
-                        class="block mt-1 text-xs text-left text-danger"
+                        class="block mt-1 text-xs text-start text-danger"
                       >
                         {{ rowError(index) }}
                       </span>
                     </td>
 
                     <td
-                      class="px-4 py-4 text-sm text-right align-top text-heading"
+                      class="px-4 py-4 text-sm text-end align-top text-heading"
                     >
                       <BaseFormatMoney
                         :amount="rowAmount(row)"
@@ -188,7 +188,7 @@
               </div>
             </div>
 
-            <p class="mt-2 text-xs text-right text-muted">
+            <p class="mt-2 text-xs text-end text-muted">
               {{ $t('invoices.credit_note_proportional_note') }}
             </p>
           </div>
@@ -209,7 +209,7 @@
         class="z-0 flex justify-end p-4 border-t border-line-default border-solid"
       >
         <BaseButton
-          class="mr-3"
+          class="me-3"
           variant="primary-outline"
           type="button"
           @click="closeModal"

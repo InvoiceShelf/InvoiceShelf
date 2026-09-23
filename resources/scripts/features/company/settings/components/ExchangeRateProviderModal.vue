@@ -413,7 +413,7 @@ function closeExchangeRateModal(): void {
         class="z-0 flex justify-end p-4 border-t border-line-default border-solid"
       >
         <BaseButton
-          class="mr-3"
+          class="me-3"
           variant="primary-outline"
           type="button"
           :disabled="isSaving"

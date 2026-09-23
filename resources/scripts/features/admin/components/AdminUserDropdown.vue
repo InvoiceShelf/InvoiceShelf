@@ -9,7 +9,7 @@
     <BaseDropdownItem :to="`/admin/administration/users/${row.id}/edit`">
       <BaseIcon
         name="PencilIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.edit') }}
     </BaseDropdownItem>
@@ -20,7 +20,7 @@
     >
       <BaseIcon
         name="ArrowRightEndOnRectangleIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('administration.users.impersonate') }}
     </BaseDropdownItem>

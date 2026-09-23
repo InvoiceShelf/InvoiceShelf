@@ -4,7 +4,7 @@
       <div v-if="title || $slots.leading" class="flex items-center min-w-0 gap-3">
         <slot name="leading" />
         <div class="min-w-0">
-          <h1 v-if="title" class="font-semibold text-left break-words text-title text-heading">
+          <h1 v-if="title" class="font-semibold text-start break-words text-title text-heading">
             {{ title }}
           </h1>
           <p v-if="subtitle" class="mt-0.5 text-sm truncate text-muted">{{ subtitle }}</p>
@@ -24,7 +24,7 @@
       v-if="$slots.actions && placement === 'inline'"
       ref="actionsEl"
       :class="deciding ? 'invisible' : ''"
-      class="flex flex-wrap items-center justify-end gap-2 ml-auto shrink-0 md:gap-3 *:ml-0"
+      class="flex flex-wrap items-center justify-end gap-2 ms-auto shrink-0 md:gap-3 *:ms-0"
     >
       <slot name="actions" />
     </div>

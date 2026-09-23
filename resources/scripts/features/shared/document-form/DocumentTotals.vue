@@ -102,7 +102,7 @@
         <BaseInput
           v-model="totalDiscount"
           :aria-label="$t('estimates.discount')"
-          class="border-r-0 focus:border-r-2 rounded-tr-sm rounded-br-sm h-[38px]"
+          class="border-e-0 focus:border-e-2 rounded-se-sm rounded-ee-sm h-[38px]"
         />
         <BaseDropdown
           position="bottom-end"
@@ -110,13 +110,13 @@
         >
           <template #activator>
             <BaseButton
-              class="p-2 rounded-none rounded-tr-md rounded-br-md"
+              class="p-2 rounded-none rounded-se-md rounded-ee-md"
               tag="span"
               variant="white"
             >
               <span class="flex items-center">
                 {{ formData.discount_type === 'fixed' ? defaultCurrencySymbol : '%' }}
-                <BaseIcon name="ChevronDownIcon" class="w-4 h-4 ml-1 text-muted" />
+                <BaseIcon name="ChevronDownIcon" class="w-4 h-4 ms-1 text-muted" />
               </span>
             </BaseButton>
           </template>
@@ -182,7 +182,7 @@
             :label="$t('general.remove_named', { name: tax.name })"
             size="sm"
             tone="danger"
-            class="-mr-2"
+            class="-me-2"
             @click="removeTax(tax.id)"
           />
         </span>
@@ -193,7 +193,7 @@
     <div
       v-if="formData.tax_per_item === 'NO' || formData.tax_per_item === null"
       ref="taxModal"
-      class="float-right pt-2 pb-4"
+      class="float-end pt-2 pb-4"
     >
       <TaxSelectPopup
         :store-prop="storeProp"

@@ -149,7 +149,7 @@ const fileDiskColumns = computed<TableColumn[]>(() => [
   {
     key: 'actions',
     label: '',
-    tdClass: 'text-right text-sm font-medium',
+    tdClass: 'text-end text-sm font-medium',
     sortable: false,
   },
 ])
@@ -335,7 +335,7 @@ function showApiError(error: unknown): void {
             v-if="!row.data.set_as_default"
             @click="setDefaultDisk(row.data.id)"
           >
-            <BaseIcon class="mr-3 text-body" name="CheckCircleIcon" />
+            <BaseIcon class="me-3 text-body" name="CheckCircleIcon" />
             {{ $t('settings.disk.set_default_disk') }}
           </BaseDropdownItem>
 
@@ -343,7 +343,7 @@ function showApiError(error: unknown): void {
             v-if="row.data.type !== 'SYSTEM'"
             @click="openEditDiskModal(row.data)"
           >
-            <BaseIcon name="PencilIcon" class="mr-3 text-body" />
+            <BaseIcon name="PencilIcon" class="me-3 text-body" />
             {{ $t('general.edit') }}
           </BaseDropdownItem>
 
@@ -351,7 +351,7 @@ function showApiError(error: unknown): void {
             v-if="row.data.type !== 'SYSTEM' && !row.data.set_as_default"
             @click="removeDisk(row.data.id)"
           >
-            <BaseIcon name="TrashIcon" class="mr-3 text-body" />
+            <BaseIcon name="TrashIcon" class="me-3 text-body" />
             {{ $t('general.delete') }}
           </BaseDropdownItem>
         </BaseDropdown>

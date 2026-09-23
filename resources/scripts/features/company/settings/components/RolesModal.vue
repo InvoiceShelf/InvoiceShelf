@@ -356,7 +356,7 @@ function closeRolesModal(): void {
         class="z-0 flex justify-end p-4 border-t border-solid border-line-default"
       >
         <BaseButton
-          class="mr-3 text-sm"
+          class="me-3 text-sm"
           variant="primary-outline"
           type="button"
           @click="closeRolesModal"

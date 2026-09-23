@@ -16,7 +16,7 @@
       @click="open ? close() : (open = true)"
     >
       <BaseIcon name="CalendarDaysIcon" class="w-4.5 h-4.5 text-muted shrink-0" />
-      <span class="truncate" :class="block ? 'flex-1 text-left' : ''">{{ label }}</span>
+      <span class="truncate" :class="block ? 'flex-1 text-start' : ''">{{ label }}</span>
       <BaseIcon
         name="ChevronDownIcon"
         class="w-4 h-4 transition-transform text-subtle shrink-0"
@@ -26,7 +26,7 @@
 
     <!-- Tablet and desktop: a popover under the trigger -->
     <Teleport v-if="!isPhone" to="body">
-      <div ref="container" class="fixed top-0 left-0 z-50 pointer-events-none">
+      <div ref="container" class="fixed top-0 start-0 z-50 pointer-events-none">
         <transition
           enter-active-class="transition duration-100 ease-out"
           enter-from-class="scale-95 opacity-0"

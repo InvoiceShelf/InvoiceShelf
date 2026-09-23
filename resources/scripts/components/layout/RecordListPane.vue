@@ -10,7 +10,7 @@
   <aside
     :aria-label="label || $t('general.list')"
     class="
-      order-first sticky top-(--app-top-inset) hidden xl:flex flex-col w-80 shrink-0 mt-3 ml-8 mb-10
+      order-first sticky top-(--app-top-inset) hidden xl:flex flex-col w-80 shrink-0 mt-3 ms-8 mb-10
       border rounded-2xl glass h-[calc(100dvh-var(--app-top-inset)-1.5rem)] overflow-hidden
     "
   >

@@ -375,7 +375,7 @@ function showApiError(error: unknown): void {
               class="h-5 w-5 text-primary-400"
             />
           </div>
-          <div class="ml-3">
+          <div class="ms-3">
             <h3 class="text-sm font-medium text-primary-800">
               {{ $t('settings.update_app.containerized_title') }}
             </h3>
@@ -423,7 +423,7 @@ docker compose up --force-recreate --build -d</pre>
                 class="h-5 w-5 text-primary-400"
               />
             </div>
-            <div class="ml-3">
+            <div class="ms-3">
               <h3 class="text-sm font-medium text-primary-800">
                 {{ $t('general.note') }}
               </h3>
@@ -441,7 +441,7 @@ docker compose up --force-recreate --build -d</pre>
           class="my-2 inline-block rounded-md border border-line-default bg-surface-muted p-3 text-sm text-body"
         >
           {{ updateRelease.version }}
-          <span v-if="isMinorUpdate" class="ml-2 text-xs text-muted">
+          <span v-if="isMinorUpdate" class="ms-2 text-xs text-muted">
             (minor)
           </span>
         </div>
@@ -465,7 +465,7 @@ docker compose up --force-recreate --build -d</pre>
                 <td class="p-3 text-sm">
                   {{ extension }}
                 </td>
-                <td class="p-3 text-right text-sm">
+                <td class="p-3 text-end text-sm">
                   <span
                     :class="available ? 'bg-success' : 'bg-red-500'"
                     class="inline-block h-4 w-4 rounded-full"
@@ -518,7 +518,7 @@ docker compose up --force-recreate --build -d</pre>
           >
             <p class="m-0 text-sm leading-8">{{ $t(step.translationKey) }}</p>
             <div class="flex items-center">
-              <span v-if="step.time" class="mr-3 text-xs text-muted">
+              <span v-if="step.time" class="me-3 text-xs text-muted">
                 {{ step.time }}
               </span>
               <span

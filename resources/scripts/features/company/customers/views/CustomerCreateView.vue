@@ -192,7 +192,7 @@ async function submitCustomerData(): Promise<void> {
       <BaseCard container-class="p-4 md:p-5">
         <!-- Basic Info -->
         <div class="grid grid-cols-5 gap-4 mb-8">
-          <h2 class="col-span-5 font-semibold text-left text-section text-heading lg:col-span-1">
+          <h2 class="col-span-5 font-semibold text-start text-section text-heading lg:col-span-1">
             {{ $t('customers.basic_info') }}
           </h2>
 
@@ -333,7 +333,7 @@ async function submitCustomerData(): Promise<void> {
 
         <!-- Portal Access -->
         <div class="grid grid-cols-5 gap-4 mb-8">
-          <h2 class="col-span-5 font-semibold text-left text-section text-heading lg:col-span-1">
+          <h2 class="col-span-5 font-semibold text-start text-section text-heading lg:col-span-1">
             {{ $t('customers.portal_access') }}
           </h2>
 
@@ -404,7 +404,7 @@ async function submitCustomerData(): Promise<void> {
 
         <!-- Billing Address -->
         <div class="grid grid-cols-5 gap-4 mb-8">
-          <h2 class="col-span-5 font-semibold text-left text-section text-heading lg:col-span-1">
+          <h2 class="col-span-5 font-semibold text-start text-section text-heading lg:col-span-1">
             {{ $t('customers.billing_address') }}
           </h2>
 
@@ -509,7 +509,7 @@ async function submitCustomerData(): Promise<void> {
               <BaseInputGroup
                 :content-loading="isFetchingInitialData"
                 :label="$t('customers.phone')"
-                class="text-left"
+                class="text-start"
               >
                 <BaseInput
                   v-model.trim="customerStore.currentCustomer.billing.phone"
@@ -522,7 +522,7 @@ async function submitCustomerData(): Promise<void> {
               <BaseInputGroup
                 :label="$t('customers.zip_code')"
                 :content-loading="isFetchingInitialData"
-                class="mt-2 text-left"
+                class="mt-2 text-start"
               >
                 <BaseInput
                   v-model.trim="customerStore.currentCustomer.billing.zip"
@@ -565,7 +565,7 @@ async function submitCustomerData(): Promise<void> {
           v-if="customerStore.currentCustomer.shipping"
           class="grid grid-cols-5 gap-4 mb-8"
         >
-          <h2 class="col-span-5 font-semibold text-left text-section text-heading lg:col-span-1">
+          <h2 class="col-span-5 font-semibold text-start text-section text-heading lg:col-span-1">
             {{ $t('customers.shipping_address') }}
           </h2>
 
@@ -665,7 +665,7 @@ async function submitCustomerData(): Promise<void> {
               <BaseInputGroup
                 :content-loading="isFetchingInitialData"
                 :label="$t('customers.phone')"
-                class="text-left"
+                class="text-start"
               >
                 <BaseInput
                   v-model.trim="customerStore.currentCustomer.shipping.phone"
@@ -678,7 +678,7 @@ async function submitCustomerData(): Promise<void> {
               <BaseInputGroup
                 :label="$t('customers.zip_code')"
                 :content-loading="isFetchingInitialData"
-                class="mt-2 text-left"
+                class="mt-2 text-start"
               >
                 <BaseInput
                   v-model.trim="customerStore.currentCustomer.shipping.zip"

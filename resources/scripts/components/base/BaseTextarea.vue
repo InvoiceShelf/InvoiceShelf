@@ -42,7 +42,7 @@ const props = withDefaults(defineProps<Props>(), {
   disabled: false,
   modelValue: '',
   defaultInputClass:
-    'box-border w-full px-3 py-2 text-base md:text-sm font-normal leading-6 text-left text-heading placeholder-subtle bg-surface border border-control-border border-solid rounded-lg outline-hidden',
+    'box-border w-full px-3 py-2 text-base md:text-sm font-normal leading-6 text-start text-heading placeholder-subtle bg-surface border border-control-border border-solid rounded-lg outline-hidden',
   autosize: false,
   borderless: false,
 })

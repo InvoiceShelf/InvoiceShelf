@@ -49,7 +49,7 @@
       <button
         type="button"
         :aria-label="$t('general.file_upload.browse')"
-        class="absolute z-30 bg-surface rounded-full -bottom-3 -right-3 group"
+        class="absolute z-30 bg-surface rounded-full -bottom-3 -end-3 group"
         @click.prevent.stop="onBrowse"
       >
         <BaseIcon
@@ -198,7 +198,7 @@
           rounded-full
           shadow-md
           -bottom-3
-          -right-3
+          -end-3
           group
           hover:border-line-strong
         "
@@ -299,7 +299,7 @@
             rounded-full
             shadow-md
             -bottom-3
-            -right-3
+            -end-3
             group
             hover:border-line-strong
           "
@@ -397,7 +397,7 @@
             rounded-full
             shadow-md
             -bottom-3
-            -right-3
+            -end-3
             group
             hover:border-line-strong
           "

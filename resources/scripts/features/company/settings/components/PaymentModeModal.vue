@@ -136,7 +136,7 @@ function closePaymentModeModal(): void {
       >
         <BaseButton
           variant="primary-outline"
-          class="mr-3"
+          class="me-3"
           type="button"
           @click="closePaymentModeModal"
         >

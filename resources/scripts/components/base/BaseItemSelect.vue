@@ -135,13 +135,13 @@ function deselectItem(index: number): void {
     <!-- Selected Item Field  -->
     <div
       v-if="item.item_id"
-      class="relative flex items-center h-11 pl-3 pr-11 font-medium border rounded-lg md:h-10 bg-surface-muted border-line-default text-heading"
+      class="relative flex items-center h-11 ps-3 pe-11 font-medium border rounded-lg md:h-10 bg-surface-muted border-line-default text-heading"
     >
       <span class="truncate">{{ item.name }}</span>
 
       <button
         type="button"
-        class="absolute inset-y-0 right-0 flex items-center justify-center w-10 rounded-r-lg text-subtle hover:text-heading"
+        class="absolute inset-y-0 end-0 flex items-center justify-center w-10 rounded-e-lg text-subtle hover:text-heading"
         :aria-label="$t('general.deselect')"
         @click="deselectItem(index)"
       >
@@ -179,7 +179,7 @@ function deselectItem(index: number): void {
         >
           <BaseIcon
             name="PlusCircleIcon"
-            class="h-4 mr-2 -ml-2 text-center text-primary-400"
+            class="h-4 me-2 -ms-2 text-center text-primary-400"
           />
           {{ $t('general.add_new_item') }}
         </BaseSelectAction>

@@ -50,7 +50,7 @@
         @click="globalStore.setSearchOpen(true)"
       >
         <BaseIcon name="MagnifyingGlassIcon" class="w-4 h-4 shrink-0" />
-        <span class="flex-1 text-left truncate">{{ $t('global_search.placeholder') }}</span>
+        <span class="flex-1 text-start truncate">{{ $t('global_search.placeholder') }}</span>
         <kbd
           class="hidden px-1.5 font-sans text-[11px] leading-5 border rounded-md lg:block border-line-default text-subtle"
         >
@@ -74,18 +74,18 @@
           <template #activator>
             <span
               class="
-                inline-flex items-center gap-1.5 h-9 pl-2.5 pr-3 text-sm font-medium rounded-xl transition-colors
+                inline-flex items-center gap-1.5 h-9 ps-2.5 pe-3 text-sm font-medium rounded-xl transition-colors
                 bg-primary-600/10 text-primary-700 ring-1 ring-inset ring-primary-600/15 hover:bg-primary-600/15
               "
             >
               <BaseIcon name="PlusIcon" class="w-4 h-4" />
               {{ $t('general.new') }}
-              <BaseIcon name="ChevronDownIcon" class="w-3.5 h-3.5 -mr-0.5 opacity-70" />
+              <BaseIcon name="ChevronDownIcon" class="w-3.5 h-3.5 -me-0.5 opacity-70" />
             </span>
           </template>
 
           <BaseDropdownItem v-for="action in createActions" :key="action.to" :to="action.to">
-            <BaseIcon :name="action.icon" class="w-5 h-5 mr-3 text-subtle" />
+            <BaseIcon :name="action.icon" class="w-5 h-5 me-3 text-subtle" />
             {{ $t(action.label) }}
           </BaseDropdownItem>
         </BaseDropdown>

@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-10 text-left">
+  <div class="mt-10 text-start">
     <!-- No server yet: point the app at one. -->
     <form v-if="state.status === 'no-server'" @submit.prevent="onConnect">
       <h2 class="text-base font-medium text-heading">

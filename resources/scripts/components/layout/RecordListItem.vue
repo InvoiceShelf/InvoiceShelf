@@ -13,7 +13,7 @@
       </div>
     </div>
 
-    <div class="text-right shrink-0">
+    <div class="text-end shrink-0">
       <div v-if="$slots.amount" class="text-sm font-semibold text-heading">
         <slot name="amount" />
       </div>

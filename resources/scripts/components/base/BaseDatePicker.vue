@@ -13,7 +13,7 @@
       aria-hidden="true"
       viewBox="0 0 20 20"
       fill="currentColor"
-      class="absolute z-10 w-4 h-4 -translate-y-1/2 cursor-pointer top-1/2 left-3 text-subtle"
+      class="absolute z-10 w-4 h-4 -translate-y-1/2 cursor-pointer top-1/2 start-3 text-subtle"
       @click="onClickDp"
     >
       <path
@@ -75,7 +75,7 @@ const props = withDefaults(defineProps<Props>(), {
   showCalendarIcon: true,
   containerClass: '',
   defaultInputClass:
-    'font-base pl-9 py-2 outline-hidden block w-full md:text-sm tabular border-control-border rounded-lg text-heading',
+    'font-base ps-9 py-2 outline-hidden block w-full md:text-sm tabular border-control-border rounded-lg text-heading',
   time24hr: false,
 })
 

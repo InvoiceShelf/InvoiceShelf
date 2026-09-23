@@ -13,7 +13,7 @@
     <BaseDropdownItem v-if="canEdit" v-show="row.allow_edit" :to="`/admin/invoices/${row.id}/edit`">
       <BaseIcon
         name="PencilIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.edit') }}
     </BaseDropdownItem>
@@ -22,7 +22,7 @@
     <BaseDropdownItem v-if="isDetailView" @click="copyPdfUrl">
       <BaseIcon
         name="LinkIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.copy_pdf_url') }}
     </BaseDropdownItem>
@@ -31,7 +31,7 @@
     <BaseDropdownItem v-if="!isDetailView && canView" :to="`/admin/invoices/${row.id}/view`">
       <BaseIcon
         name="EyeIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.view') }}
     </BaseDropdownItem>
@@ -40,7 +40,7 @@
     <BaseDropdownItem v-if="canSendInvoice" @click="sendInvoice">
       <BaseIcon
         name="PaperAirplaneIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('invoices.send_invoice') }}
     </BaseDropdownItem>
@@ -49,7 +49,7 @@
     <BaseDropdownItem v-if="canReSendInvoice && !isDetailView" @click="sendInvoice">
       <BaseIcon
         name="PaperAirplaneIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('invoices.resend_invoice') }}
     </BaseDropdownItem>
@@ -66,7 +66,7 @@
     >
       <BaseIcon
         name="CreditCardIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('invoices.record_payment') }}
     </BaseDropdownItem>
@@ -75,7 +75,7 @@
     <BaseDropdownItem v-if="row.status === 'DRAFT' && !isDetailView && canSend" @click="onMarkAsSent">
       <BaseIcon
         name="CheckCircleIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('invoices.mark_as_sent') }}
     </BaseDropdownItem>
@@ -84,7 +84,7 @@
     <BaseDropdownItem v-if="canCreate" @click="cloneInvoiceData">
       <BaseIcon
         name="DocumentTextIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('invoices.clone_invoice') }}
     </BaseDropdownItem>
@@ -93,7 +93,7 @@
     <BaseDropdownItem v-if="canCreateEstimate" @click="convertToEstimate">
       <BaseIcon
         name="DocumentIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('invoices.convert_to_estimate') }}
     </BaseDropdownItem>
@@ -102,7 +102,7 @@
     <BaseDropdownItem v-if="canCreateCreditNote" @click="createCreditNote">
       <BaseIcon
         name="ReceiptRefundIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('invoices.create_credit_note') }}
     </BaseDropdownItem>
@@ -111,7 +111,7 @@
     <BaseDropdownItem v-if="canDelete" @click="removeInvoice">
       <BaseIcon
         name="TrashIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.delete') }}
     </BaseDropdownItem>

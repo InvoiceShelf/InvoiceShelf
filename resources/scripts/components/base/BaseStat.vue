@@ -1,7 +1,7 @@
 <template>
   <div
     :class="[wide || emphasis ? 'col-span-2 md:col-span-1' : '']"
-    class="min-w-0 px-4 py-3.5 border-t border-l md:px-5 border-line-light"
+    class="min-w-0 px-4 py-3.5 border-t border-s md:px-5 border-line-light"
   >
     <dt class="text-xs font-medium truncate text-muted">{{ label }}</dt>
     <dd

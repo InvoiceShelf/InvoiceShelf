@@ -224,7 +224,7 @@ const groupId = `insert-fields-${useId()}`
   </BaseContentPlaceholders>
 
   <div v-else class="relative">
-    <div class="absolute bottom-0 right-0 z-10">
+    <div class="absolute bottom-0 end-0 z-10">
       <BaseDropdown
         :close-on-select="true"
         max-height="220"
@@ -233,7 +233,7 @@ const groupId = `insert-fields-${useId()}`
         class="mb-2"
       >
         <template #activator>
-          <BaseButton tag="span" variant="primary-outline" class="mr-4">
+          <BaseButton tag="span" variant="primary-outline" class="me-4">
             {{ $t('settings.customization.insert_fields') }}
             <template #left="slotProps">
               <BaseIcon name="PlusSmIcon" :class="slotProps.class" />
@@ -249,7 +249,7 @@ const groupId = `insert-fields-${useId()}`
             role="group"
             :aria-labelledby="`${groupId}-${index}`"
           >
-            <p :id="`${groupId}-${index}`" class="mb-1 ml-2 text-xs font-semibold uppercase text-muted">
+            <p :id="`${groupId}-${index}`" class="mb-1 ms-2 text-xs font-semibold uppercase text-muted">
               {{ type.label }}
             </p>
 
@@ -261,7 +261,7 @@ const groupId = `insert-fields-${useId()}`
             >
               <BaseIcon
                 name="ChevronDoubleRightIcon"
-                class="h-3 mr-2 shrink-0 text-subtle"
+                class="h-3 me-2 shrink-0 text-subtle"
               />
               {{ field.label }}
             </BaseDropdownItem>

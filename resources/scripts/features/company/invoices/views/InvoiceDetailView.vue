@@ -139,7 +139,7 @@
             v-for="creditNote in invoiceData.credit_notes"
             :key="creditNote.id"
             :to="`/admin/invoices/${creditNote.id}/view`"
-            class="ml-1 font-medium underline"
+            class="ms-1 font-medium underline"
           >
             {{ creditNote.invoice_number }}
           </router-link>

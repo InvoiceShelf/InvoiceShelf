@@ -58,7 +58,7 @@ const drivers = computed<TableColumn[]>(() => [
   {
     key: 'actions',
     label: '',
-    tdClass: 'text-right text-sm font-medium',
+    tdClass: 'text-end text-sm font-medium',
     sortable: false,
   },
 ])
@@ -130,17 +130,17 @@ function removeExchangeRate(id: number): void {
     <template #header>
       <div class="flex flex-wrap justify-between lg:flex-nowrap">
         <div>
-          <h2 class="text-lg font-medium text-left">
+          <h2 class="text-lg font-medium text-start">
             {{ $t('settings.menu_title.exchange_rate') }}
           </h2>
           <p
-            class="mt-2 text-sm leading-snug text-left text-muted"
+            class="mt-2 text-sm leading-snug text-start text-muted"
             style="max-width: 680px"
           >
             {{ $t('settings.exchange_rate.providers_description') }}
           </p>
         </div>
-        <div class="mt-4 lg:mt-0 lg:ml-2">
+        <div class="mt-4 lg:mt-0 lg:ms-2">
           <BaseButton
             variant="primary-outline"
             size="lg"
@@ -178,12 +178,12 @@ function removeExchangeRate(id: number): void {
           </template>
 
           <BaseDropdownItem @click="editExchangeRate(row.data.id)">
-            <BaseIcon name="PencilIcon" class="h-5 mr-3 text-body" />
+            <BaseIcon name="PencilIcon" class="h-5 me-3 text-body" />
             {{ $t('general.edit') }}
           </BaseDropdownItem>
 
           <BaseDropdownItem @click="removeExchangeRate(row.data.id)">
-            <BaseIcon name="TrashIcon" class="h-5 mr-3 text-body" />
+            <BaseIcon name="TrashIcon" class="h-5 me-3 text-body" />
             {{ $t('general.delete') }}
           </BaseDropdownItem>
         </BaseDropdown>

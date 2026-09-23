@@ -1,5 +1,5 @@
 <template>
-  <form id="loginForm" class="mt-12 text-left" @submit.prevent="onSubmit">
+  <form id="loginForm" class="mt-12 text-start" @submit.prevent="onSubmit">
     <BaseInputGroup
       :error="v$.email.$error && v$.email.$errors[0].$message"
       :label="$t('login.email')"

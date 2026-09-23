@@ -286,7 +286,7 @@ function closeItemModal(): void {
                   <BaseSelectAction @click="addItemUnit">
                     <BaseIcon
                       name="PlusCircleIcon"
-                      class="h-4 mr-2 -ml-2 text-center text-primary-400"
+                      class="h-4 me-2 -ms-2 text-center text-primary-400"
                     />
                     {{ $t('settings.customization.items.add_item_unit') }}
                   </BaseSelectAction>
@@ -331,7 +331,7 @@ function closeItemModal(): void {
           class="z-0 flex justify-end p-4 border-t border-line-default border-solid"
         >
           <BaseButton
-            class="mr-3"
+            class="me-3"
             variant="primary-outline"
             type="button"
             @click="closeItemModal"

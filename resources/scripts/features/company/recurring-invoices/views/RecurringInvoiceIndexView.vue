@@ -31,7 +31,7 @@
         <router-link
           v-if="canCreate"
           to="recurring-invoices/create"
-          class="inline-flex rounded-lg ml-4"
+          class="inline-flex rounded-lg ms-4"
         >
           <BaseButton tag="span" variant="primary">
             <template #left="slotProps">
@@ -146,7 +146,7 @@
         </template>
 
         <template #header>
-          <div class="absolute items-center left-6 top-3.5 select-none">
+          <div class="absolute items-center start-6 top-3.5 select-none">
             <BaseCheckbox
               v-model="recurringInvoiceStore.selectAllField"
               :aria-label="$t('general.select_all')"
@@ -361,8 +361,8 @@ const invoiceColumns = computed<TableColumn[]>(() => [
   {
     key: 'actions',
     label: t('recurring_invoices.action'),
-    tdClass: 'text-right text-sm font-medium',
-    thClass: 'text-right',
+    tdClass: 'text-end text-sm font-medium',
+    thClass: 'text-end',
     sortable: false,
     mobile: 'actions',
   },

@@ -50,8 +50,8 @@ const dueInvoiceColumns = computed<TableColumn[]>(() => [
   },
   {
     key: 'actions',
-    tdClass: 'text-right text-sm font-medium w-12',
-    thClass: 'text-right',
+    tdClass: 'text-end text-sm font-medium w-12',
+    thClass: 'text-end',
     sortable: false,
     mobile: 'actions',
   },
@@ -76,8 +76,8 @@ const recentEstimateColumns = computed<TableColumn[]>(() => [
   },
   {
     key: 'actions',
-    tdClass: 'text-right text-sm font-medium w-12',
-    thClass: 'text-right',
+    tdClass: 'text-end text-sm font-medium w-12',
+    thClass: 'text-end',
     sortable: false,
     mobile: 'actions',
   },

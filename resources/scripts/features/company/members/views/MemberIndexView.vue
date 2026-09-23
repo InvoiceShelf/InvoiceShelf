@@ -78,7 +78,7 @@ const userTableColumns = computed<TableColumn[]>(() => [
   },
   {
     key: 'actions',
-    tdClass: 'text-right text-sm font-medium',
+    tdClass: 'text-end text-sm font-medium',
     sortable: false,
     mobile: 'actions',
   },
@@ -297,7 +297,7 @@ function removeMultipleUsers(): void {
 
         <!-- Select All Checkbox -->
         <template #header>
-          <div class="absolute z-10 items-center left-6 top-3.5 select-none">
+          <div class="absolute z-10 items-center start-6 top-3.5 select-none">
             <BaseCheckbox
               v-model="selectAllFieldStatus"
               :aria-label="$t('general.select_all')"

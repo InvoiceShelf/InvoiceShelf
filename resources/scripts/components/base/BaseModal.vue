@@ -37,7 +37,7 @@
                 ref="panel"
                 :class="modalSize"
                 class="
-                  relative flex flex-col w-full max-h-[92dvh] text-left glass-strong
+                  relative flex flex-col w-full max-h-[92dvh] text-start glass-strong
                   rounded-t-2xl safe-bottom
                   md:block md:max-h-none md:rounded-2xl md:border md:pb-0
                 "
@@ -50,7 +50,7 @@
                 <DialogTitle
                   v-if="hasHeaderSlot"
                   as="div"
-                  :class="closable ? 'pr-14 md:pr-16' : ''"
+                  :class="closable ? 'pe-14 md:pe-16' : ''"
                   class="
                     flex items-center justify-between shrink-0 gap-3 px-5 py-3.5 md:px-6 md:py-4
                     font-semibold text-section text-heading border-b border-line-light
@@ -74,7 +74,7 @@
                   v-if="closable && hasHeaderSlot"
                   icon="XMarkIcon"
                   :label="$t('general.close')"
-                  class="absolute top-6 right-3 md:top-3 md:right-4"
+                  class="absolute top-6 end-3 md:top-3 md:end-4"
                   @click="$emit('close')"
                 />
               </div>

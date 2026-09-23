@@ -111,7 +111,7 @@ function closeModal(): void {
 
       <div class="z-0 flex justify-end p-4 bg-surface-secondary border-t border-line-default">
         <BaseButton
-          class="mr-3 text-sm"
+          class="me-3 text-sm"
           variant="primary-outline"
           type="button"
           @click="closeModal"

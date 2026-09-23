@@ -19,7 +19,7 @@ const props = withDefaults(defineProps<Props>(), {
   currentStep: null,
   steps: null,
   containerClass: 'flex justify-between w-full my-10 max-w-xl mx-auto',
-  progress: 'rounded-full float-left w-6 h-6 border-4 cursor-pointer',
+  progress: 'rounded-full float-start w-6 h-6 border-4 cursor-pointer',
   currentStepClass: 'bg-white border-primary-500',
   nextStepClass: 'border-line-default bg-surface',
   previousStepClass:

@@ -4,7 +4,7 @@
       :valid="v.customer_id"
       :content-loading="isLoading"
       type="invoice"
-      class="col-span-12 lg:col-span-6 pr-0"
+      class="col-span-12 lg:col-span-6 pe-0"
     />
 
     <RecurringFields

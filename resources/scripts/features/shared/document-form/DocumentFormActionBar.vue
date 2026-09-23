@@ -5,7 +5,7 @@
     It must sit inside the editor's <form>, so Save submits that form.
   -->
   <BaseActionBar>
-    <div data-bar-info class="flex flex-col min-w-0 pr-1">
+    <div data-bar-info class="flex flex-col min-w-0 pe-1">
       <span class="text-xs text-muted">{{ $t('invoices.total') }}</span>
       <span class="text-base font-semibold leading-tight text-heading">
         <BaseFormatMoney :amount="total" :currency="moneyCurrency" />
@@ -37,7 +37,7 @@
       </template>
 
       <BaseDropdownItem :to="pdfUrl" target="_blank">
-        <BaseIcon name="DocumentTextIcon" class="w-5 h-5 mr-3 text-subtle" />
+        <BaseIcon name="DocumentTextIcon" class="w-5 h-5 me-3 text-subtle" />
         {{ $t('general.view_pdf') }}
       </BaseDropdownItem>
     </BaseDropdown>

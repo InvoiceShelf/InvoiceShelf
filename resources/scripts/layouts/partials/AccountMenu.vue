@@ -54,19 +54,19 @@
     </div>
 
     <BaseDropdownItem to="/admin/settings/account-settings">
-      <BaseIcon name="UserCircleIcon" class="w-5 h-5 mr-3 text-subtle" />
+      <BaseIcon name="UserCircleIcon" class="w-5 h-5 me-3 text-subtle" />
       {{ $t('navigation.account_settings') }}
     </BaseDropdownItem>
 
     <BaseDropdownItem v-for="item in globalStore.userMenu" :key="item.name" :to="item.link">
-      <BaseIcon :name="item.icon" class="w-5 h-5 mr-3 text-subtle" />
+      <BaseIcon :name="item.icon" class="w-5 h-5 me-3 text-subtle" />
       {{ item.title }}
     </BaseDropdownItem>
 
     <div class="my-1 border-t border-line-light" />
 
     <BaseDropdownItem @click="logout">
-      <BaseIcon name="ArrowRightOnRectangleIcon" class="w-5 h-5 mr-3 text-subtle" />
+      <BaseIcon name="ArrowRightOnRectangleIcon" class="w-5 h-5 me-3 text-subtle" />
       {{ $t('navigation.logout') }}
     </BaseDropdownItem>
   </BaseDropdown>

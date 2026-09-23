@@ -13,7 +13,7 @@
     <BaseDropdownItem v-if="canEdit" :to="`/admin/recurring-invoices/${row.id}/edit`">
       <BaseIcon
         name="PencilIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.edit') }}
     </BaseDropdownItem>
@@ -22,7 +22,7 @@
     <BaseDropdownItem v-if="!isDetailView && canView" :to="`recurring-invoices/${row.id}/view`">
       <BaseIcon
         name="EyeIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.view') }}
     </BaseDropdownItem>
@@ -31,7 +31,7 @@
     <BaseDropdownItem v-if="canDelete" @click="removeRecurringInvoice">
       <BaseIcon
         name="TrashIcon"
-        class="w-5 h-5 mr-3 text-subtle group-hover:text-muted"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('general.delete') }}
     </BaseDropdownItem>

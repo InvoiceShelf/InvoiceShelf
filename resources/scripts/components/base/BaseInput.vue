@@ -17,10 +17,10 @@
       class="
         absolute
         inset-y-0
-        left-0
+        start-0
         flex
         items-center
-        pl-3
+        ps-3
         pointer-events-none
       "
     >
@@ -50,7 +50,7 @@
 
     <div
       v-else-if="hasLeftIconSlot"
-      class="absolute inset-y-0 left-0 flex items-center pl-3"
+      class="absolute inset-y-0 start-0 flex items-center ps-3"
     >
       <slot name="left" :class="iconLeftClass" />
     </div>
@@ -62,8 +62,8 @@
         items-center
         px-3
         text-muted
-        border border-r-0 border-control-border
-        rounded-l-lg
+        border border-e-0 border-control-border
+        rounded-s-lg
         bg-surface-secondary
         text-sm
       "
@@ -76,10 +76,10 @@
       class="
         absolute
         inset-y-0
-        left-0
+        start-0
         flex
         items-center
-        pl-3
+        ps-3
         pointer-events-none
       "
     >
@@ -110,10 +110,10 @@
       class="
         absolute
         inset-y-0
-        right-0
+        end-0
         flex
         items-center
-        pr-3
+        pe-3
         pointer-events-none
       "
     >
@@ -144,7 +144,7 @@
     <!-- Show or hide a password: a real button, so a keyboard can reach it -->
     <div
       v-if="canReveal"
-      class="absolute inset-y-0 right-0 flex items-center pr-1.5"
+      class="absolute inset-y-0 end-0 flex items-center pe-1.5"
     >
       <button
         type="button"
@@ -160,7 +160,7 @@
 
     <div
       v-else-if="hasRightIconSlot"
-      class="absolute inset-y-0 right-0 flex items-center pr-3"
+      class="absolute inset-y-0 end-0 flex items-center pe-3"
     >
       <slot name="right" :class="iconRightClass" />
     </div>
@@ -246,9 +246,9 @@ const inputPaddingClass = computed<string>(() => {
   if (hasLeftIconSlot.value && hasRightIconSlot.value) {
     return 'px-10'
   } else if (hasLeftIconSlot.value) {
-    return 'pl-10'
+    return 'ps-10'
   } else if (hasRightIconSlot.value) {
-    return 'pr-10'
+    return 'pe-10'
   }
 
   return ''
@@ -256,9 +256,9 @@ const inputPaddingClass = computed<string>(() => {
 
 const inputAddonClass = computed<string>(() => {
   if (props.addon) {
-    return 'flex-1 min-w-0 block w-full px-3 py-2 !rounded-none !rounded-r-lg'
+    return 'flex-1 min-w-0 block w-full px-3 py-2 !rounded-none !rounded-e-lg'
   } else if (props.inlineAddon) {
-    return 'pl-7'
+    return 'ps-7'
   }
 
   return ''

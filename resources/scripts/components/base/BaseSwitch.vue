@@ -4,7 +4,7 @@
     own aria-labelledby last, which wiped out any label passed in.
   -->
   <div class="flex flex-row items-start" :class="$attrs.class" :style="$attrs.style as StyleValue">
-    <label v-if="labelLeft" :id="labelId" :for="switchId" class="mr-4 cursor-pointer">
+    <label v-if="labelLeft" :id="labelId" :for="switchId" class="me-4 cursor-pointer">
       {{ labelLeft }}
     </label>
 
@@ -42,7 +42,7 @@
       />
     </button>
 
-    <label v-if="labelRight" :id="labelId" :for="switchId" class="ml-4 cursor-pointer">
+    <label v-if="labelRight" :id="labelId" :for="switchId" class="ms-4 cursor-pointer">
       {{ labelRight }}
     </label>
   </div>

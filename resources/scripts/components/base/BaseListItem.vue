@@ -1,6 +1,6 @@
 <template>
   <router-link v-bind="$attrs" :class="containerClass">
-    <span v-if="hasIconSlot" class="mr-3">
+    <span v-if="hasIconSlot" class="me-3">
       <slot name="icon" />
     </span>
     <span>{{ title }}</span>

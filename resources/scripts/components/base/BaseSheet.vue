@@ -48,7 +48,7 @@
                 icon="XMarkIcon"
                 :label="$t('general.close')"
                 size="sm"
-                class="-mr-1.5 ms-auto"
+                class="-me-1.5 ms-auto"
                 @click="emit('close')"
               />
             </div>

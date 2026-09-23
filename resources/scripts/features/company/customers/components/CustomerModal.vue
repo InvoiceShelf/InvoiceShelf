@@ -613,7 +613,7 @@ function closeCustomerModal(): void {
         class="z-0 flex justify-end p-4 border-t border-line-default border-solid"
       >
         <BaseButton
-          class="mr-3 text-sm"
+          class="me-3 text-sm"
           type="button"
           variant="primary-outline"
           @click="closeCustomerModal"

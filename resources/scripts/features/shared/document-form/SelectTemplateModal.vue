@@ -120,7 +120,7 @@ function closeModal(): void {
             />
             <span
               :class="[
-                'w-full p-1 bg-surface-muted text-sm text-center absolute bottom-0 left-0',
+                'w-full p-1 bg-surface-muted text-sm text-center absolute bottom-0 start-0',
                 {
                   'text-primary-600 bg-primary-100':
                     selectedTemplate === template.name,
@@ -136,7 +136,7 @@ function closeModal(): void {
 
       <div
         v-if="modalData && !modalData.store.isEdit"
-        class="z-0 flex ml-3 pt-5"
+        class="z-0 flex ms-3 pt-5"
       >
         <BaseCheckbox
           v-model="modalData.isMarkAsDefault"
@@ -151,7 +151,7 @@ function closeModal(): void {
     <div
       class="z-0 flex justify-end p-4 border-t border-line-default border-solid"
     >
-      <BaseButton class="mr-3" variant="primary-outline" @click="closeModal">
+      <BaseButton class="me-3" variant="primary-outline" @click="closeModal">
         {{ $t('general.cancel') }}
       </BaseButton>
       <BaseButton variant="primary" @click="chooseTemplate">

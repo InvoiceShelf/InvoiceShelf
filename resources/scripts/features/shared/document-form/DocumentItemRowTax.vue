@@ -1,7 +1,7 @@
 <template>
   <div class="flex items-center justify-between mb-3">
     <div class="flex items-center text-base" style="flex: 4">
-      <span class="pr-2 mb-0" aria-hidden="true">
+      <span class="pe-2 mb-0" aria-hidden="true">
         {{ $t('invoices.item.tax') }}
       </span>
 
@@ -19,7 +19,7 @@
         @update:model-value="onSelectTax"
       >
         <template #singlelabel="{ value }">
-          <div class="absolute left-3.5">
+          <div class="absolute start-3.5">
             {{ value.name }} -
             <template v-if="value.calculation_type === 'fixed'">
               <BaseFormatMoney :amount="value.fixed_amount" :currency="currency" />
@@ -38,7 +38,7 @@
           <template v-else>
             {{ option.percent }} %
           </template>
-          <BaseBadge v-if="option.compound_tax" class="ml-2 text-xs">
+          <BaseBadge v-if="option.compound_tax" class="ms-2 text-xs">
             {{ $t('tax_types.compound_tax') }}
           </BaseBadge>
         </template>
@@ -50,7 +50,7 @@
             @click="openTaxModal"
           >
             <BaseIcon name="CheckCircleIcon" class="h-5" />
-            <span class="ml-2 text-sm leading-none">
+            <span class="ms-2 text-sm leading-none">
               {{ $t('invoices.add_new_tax') }}
             </span>
           </button>
@@ -59,7 +59,7 @@
       <br />
     </div>
 
-    <div class="text-sm text-right" style="flex: 3">
+    <div class="text-sm text-end" style="flex: 3">
       <BaseFormatMoney :amount="taxAmount" :currency="currency" />
     </div>
 
