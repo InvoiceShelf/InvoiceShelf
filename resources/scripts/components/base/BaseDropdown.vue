@@ -122,7 +122,7 @@ provide('dropdownIsSheet', isPhone)
 
 const containerClasses = computed<string>(() => {
   const baseClass =
-    'origin-top-right p-1 rounded-xl border glass-strong focus:outline-hidden'
+    'origin-top-right rtl:origin-top-left p-1 rounded-xl border glass-strong focus:outline-hidden'
   return `${baseClass} pointer-events-auto ${props.containerClass}`
 })
 

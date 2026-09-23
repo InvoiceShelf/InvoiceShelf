@@ -325,7 +325,7 @@
           class="whitespace-nowrap text-sm font-medium text-primary-600 hover:text-primary-500"
         >
           {{ $t('modules.view_all') }}
-          <span aria-hidden="true"> &rarr;</span>
+          <span aria-hidden="true" class="inline-block rtl:-scale-x-100"> &rarr;</span>
         </a>
       </div>
       <div class="mt-6 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">

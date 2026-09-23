@@ -23,8 +23,9 @@ withDefaults(defineProps<Props>(), {
         {{ label }}
       </p>
 
+      <!-- Isolated: an email or phone number keeps its order in right-to-left text -->
       <div class="text-sm font-medium leading-5 break-words text-heading">
-        {{ value }}
+        <bdi>{{ value }}</bdi>
 
         <slot />
       </div>

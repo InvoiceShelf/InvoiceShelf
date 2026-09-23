@@ -29,7 +29,7 @@
       @click="enabled = !enabled"
     >
       <span
-        :class="enabled ? 'translate-x-6' : 'translate-x-1'"
+        :class="enabled ? 'translate-x-6 rtl:-translate-x-6' : 'translate-x-1 rtl:-translate-x-1'"
         class="
           inline-block
           w-4

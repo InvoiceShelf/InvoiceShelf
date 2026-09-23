@@ -5,7 +5,7 @@
     RecordListItem rows. It sits in the page's flex row (not fixed), so it
     follows the sidebar's width and never overlaps the content. Pages place it
     after the record in the markup, so Tab reaches the record first; order-first
-    keeps it on the left.
+    keeps it at the start of the line (the left, or the right in a right-to-left page).
   -->
   <aside
     :aria-label="label || $t('general.list')"

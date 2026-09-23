@@ -24,7 +24,7 @@
       <span
         aria-hidden="true"
         :class="[
-          modelValue ? 'translate-x-5' : 'translate-x-0',
+          modelValue ? 'translate-x-5 rtl:-translate-x-5' : 'translate-x-0',
           'inline-block h-5 w-5 rounded-full bg-white shadow ring-0 transition ease-in-out duration-200',
         ]"
       />

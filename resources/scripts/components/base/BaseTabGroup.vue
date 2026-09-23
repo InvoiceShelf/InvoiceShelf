@@ -3,6 +3,7 @@ import { computed, useSlots } from 'vue'
 import type { VNode } from 'vue'
 import { TabGroup, TabList, Tab, TabPanels } from '@headlessui/vue'
 import { useBreakpoints } from '@/scripts/composables/use-breakpoints'
+import { isRtl } from '@/scripts/utils/direction'
 
 interface TabData {
   title: string
@@ -41,6 +42,23 @@ const tabs = computed<TabData[]>(() => {
 function onChange(d: number): void {
   emit('change', tabs.value[d])
 }
+
+// Headless UI's tabs treat ArrowLeft as "previous" whatever the direction.
+// On a right-to-left page previous is to the right, so swap the two before
+// the tab sees them. Our own re-sent key is untrusted and passes through.
+function mirrorArrowKeys(event: KeyboardEvent): void {
+  if (!isRtl.value || !event.isTrusted || (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight')) {
+    return
+  }
+
+  event.preventDefault()
+  event.stopPropagation()
+  event.target?.dispatchEvent(new KeyboardEvent('keydown', {
+    key: event.key === 'ArrowLeft' ? 'ArrowRight' : 'ArrowLeft',
+    bubbles: true,
+    cancelable: true,
+  }))
+}
 </script>
 
 <template>
@@ -53,6 +71,7 @@ function onChange(d: number): void {
             ? 'gap-2 -mx-4 px-4 pb-1 [scrollbar-width:none]'
             : 'gap-6 border-b border-line-light',
         ]"
+        @keydown.capture="mirrorArrowKeys"
       >
         <Tab
           v-for="(tab, index) in tabs"

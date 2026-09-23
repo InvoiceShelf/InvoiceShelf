@@ -12,7 +12,7 @@
   >
     <transition-group
       enter-active-class="transition duration-300 ease-out"
-      enter-from-class="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+      enter-from-class="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2 rtl:sm:-translate-x-2"
       enter-to-class="translate-y-0 opacity-100 sm:translate-x-0"
       leave-active-class="transition duration-100 ease-in"
       leave-from-class="opacity-100"

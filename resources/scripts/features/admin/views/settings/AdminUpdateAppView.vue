@@ -382,6 +382,7 @@ function showApiError(error: unknown): void {
             <div class="mt-2 text-sm text-primary-700">
               <p>{{ $t('settings.update_app.containerized_message') }}</p>
               <pre
+                dir="ltr"
                 class="mt-3 overflow-x-auto rounded-md bg-surface-muted p-3 text-xs text-body"
               >docker compose pull
 docker compose up --force-recreate --build -d</pre>
@@ -539,7 +540,7 @@ docker compose up --force-recreate --build -d</pre>
 <style scoped>
 .update-rich-text :deep(ul) {
   list-style: disc;
-  margin-left: 1.5rem;
+  margin-inline-start: 1.5rem;
 }
 
 .update-rich-text :deep(li) {

@@ -13,6 +13,7 @@
     v-else
     v-bind="{ ...fieldAttrs, ...$attrs }"
     ref="textarea"
+    :dir="($attrs.dir as string | undefined) ?? 'auto'"
     :value="modelValue"
     :class="[defaultInputClass, inputBorderClass]"
     :disabled="disabled"

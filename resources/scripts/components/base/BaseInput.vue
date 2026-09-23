@@ -52,6 +52,7 @@
       v-else-if="hasLeftIconSlot"
       class="absolute inset-y-0 start-0 flex items-center ps-3"
     >
+      <!-- "left" and "right" slots sit at the start and end of the field -->
       <slot name="left" :class="iconLeftClass" />
     </div>
 
@@ -91,6 +92,7 @@
     <!-- Labelled by the surrounding group through fieldAttrs, or by aria-label -->
     <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
     <input
+      :dir="inputDir"
       v-bind="{ ...fieldAttrs, ...$attrs }"
       :type="inputType"
       :value="modelValue"
@@ -227,6 +229,17 @@ const revealed = ref<boolean>(false)
 const canReveal = computed<boolean>(() => props.type === 'password' && props.revealable)
 
 const inputType = computed<number | string>(() => (canReveal.value && revealed.value ? 'text' : props.type))
+
+// Addresses always read left to right; free text follows what is typed in it,
+// so an Arabic name reads right to left and an invoice number left to right
+// on a page of either direction
+const inputDir = computed<string | undefined>(() => {
+  if (['email', 'url', 'tel'].includes(String(props.type))) {
+    return 'ltr'
+  }
+
+  return ['text', 'search'].includes(String(props.type)) ? 'auto' : undefined
+})
 
 interface Emits {
   (e: 'update:modelValue', value: string | number): void

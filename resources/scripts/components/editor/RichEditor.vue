@@ -20,7 +20,7 @@
         role="toolbar"
         :aria-label="$t('general.editor.toolbar')"
         :aria-controls="contentId"
-        class="flex p-2 overflow-x-auto border-b border-line-light md:overflow-visible"
+        class="flex p-2 overflow-x-auto border-b contain-inline-size border-line-light md:overflow-visible"
         @keydown="onToolbarKeydown"
       >
         <div class="flex gap-1 md:flex-wrap">
@@ -45,6 +45,7 @@
               :is="button.icon"
               v-if="button.icon"
               class="w-4 h-4 fill-current text-body"
+              :class="button.mirror ? 'rtl:-scale-x-100' : ''"
               aria-hidden="true"
             />
             <span v-else-if="button.text" class="px-1 text-sm font-medium text-body" aria-hidden="true">
@@ -96,10 +97,13 @@ import { ContentPlaceholder, ContentPlaceholderBox } from '../layout'
 import ExtensionSlot from '@/scripts/extensions/ExtensionSlot.vue'
 import type { RichEditorContext } from '@/scripts/extensions/types'
 import { useFormField } from '@/scripts/composables/use-form-field'
+import { isRtl } from '@/scripts/utils/direction'
 
 interface EditorButton {
   /** Also the key of its name under general.editor */
   name: string
+  /** Mirrors in a right-to-left page (lists, quotes, undo and redo) */
+  mirror?: boolean
   icon?: Component
   text?: string
   action: () => void
@@ -195,8 +199,9 @@ function onToolbarKeydown(event: KeyboardEvent): void {
 
   const last = buttons.length - 1
   const next = {
-    ArrowLeft: current === 0 ? last : current - 1,
-    ArrowRight: current === last ? 0 : current + 1,
+    // Arrows follow the screen: in a right-to-left page the next button is to the left
+    [isRtl.value ? 'ArrowRight' : 'ArrowLeft']: current === 0 ? last : current - 1,
+    [isRtl.value ? 'ArrowLeft' : 'ArrowRight']: current === last ? 0 : current + 1,
     Home: 0,
     End: last,
   }[event.key] as number
@@ -217,12 +222,12 @@ const editorButtons = ref<EditorButton[]>([
   { name: 'h1', text: 'H1', isActive: isActive('heading', { level: 1 }), action: () => editor.value?.chain().focus().toggleHeading({ level: 1 }).run() },
   { name: 'h2', text: 'H2', isActive: isActive('heading', { level: 2 }), action: () => editor.value?.chain().focus().toggleHeading({ level: 2 }).run() },
   { name: 'h3', text: 'H3', isActive: isActive('heading', { level: 3 }), action: () => editor.value?.chain().focus().toggleHeading({ level: 3 }).run() },
-  { name: 'bulletList', icon: markRaw(ListUlIcon) as Component, isActive: isActive('bulletList'), action: () => editor.value?.chain().focus().toggleBulletList().run() },
-  { name: 'orderedList', icon: markRaw(ListIcon) as Component, isActive: isActive('orderedList'), action: () => editor.value?.chain().focus().toggleOrderedList().run() },
-  { name: 'blockquote', icon: markRaw(QuoteIcon) as Component, isActive: isActive('blockquote'), action: () => editor.value?.chain().focus().toggleBlockquote().run() },
+  { name: 'bulletList', icon: markRaw(ListUlIcon) as Component, mirror: true, isActive: isActive('bulletList'), action: () => editor.value?.chain().focus().toggleBulletList().run() },
+  { name: 'orderedList', icon: markRaw(ListIcon) as Component, mirror: true, isActive: isActive('orderedList'), action: () => editor.value?.chain().focus().toggleOrderedList().run() },
+  { name: 'blockquote', icon: markRaw(QuoteIcon) as Component, mirror: true, isActive: isActive('blockquote'), action: () => editor.value?.chain().focus().toggleBlockquote().run() },
   { name: 'codeBlock', icon: markRaw(CodeBlockIcon) as Component, isActive: isActive('codeBlock'), action: () => editor.value?.chain().focus().toggleCodeBlock().run() },
-  { name: 'undo', icon: markRaw(UndoIcon) as Component, action: () => editor.value?.chain().focus().undo().run() },
-  { name: 'redo', icon: markRaw(RedoIcon) as Component, action: () => editor.value?.chain().focus().redo().run() },
+  { name: 'undo', icon: markRaw(UndoIcon) as Component, mirror: true, action: () => editor.value?.chain().focus().undo().run() },
+  { name: 'redo', icon: markRaw(RedoIcon) as Component, mirror: true, action: () => editor.value?.chain().focus().redo().run() },
   { name: 'alignLeft', icon: markRaw(Bars3BottomLeftIcon) as Component, isActive: isAligned('left'), action: () => editor.value?.chain().focus().setTextAlign('left').run() },
   { name: 'alignRight', icon: markRaw(Bars3BottomRightIcon) as Component, isActive: isAligned('right'), action: () => editor.value?.chain().focus().setTextAlign('right').run() },
   { name: 'alignJustify', icon: markRaw(Bars3Icon) as Component, isActive: isAligned('justify'), action: () => editor.value?.chain().focus().setTextAlign('justify').run() },
@@ -301,8 +306,8 @@ onUnmounted(() => {
   }
 
   blockquote {
-    padding-left: 1rem;
-    border-left: 2px solid var(--color-line-default);
+    padding-inline-start: 1rem;
+    border-inline-start: 2px solid var(--color-line-default);
   }
 
   code {

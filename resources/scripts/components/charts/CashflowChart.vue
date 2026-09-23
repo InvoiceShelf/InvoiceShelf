@@ -11,6 +11,7 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useMutationObserver } from '@vueuse/core'
 import { formatMoney } from '@/scripts/utils/format-money'
 import { prefersReducedMotion } from '@/scripts/utils/motion'
+import { isRtl } from '@/scripts/utils/direction'
 import type { CurrencyConfig } from '@/scripts/utils/format-money'
 
 /**
@@ -195,6 +196,8 @@ function buildConfig(): ChartConfiguration<'line' | 'bar'> {
       // No animated draw-in for people who asked their system for less motion
       animation: prefersReducedMotion() ? false : { duration: 300 },
       interaction: { mode: 'index', intersect: false },
+      // A reversed axis ends at the left edge, where nothing pads its last label
+      layout: { padding: isRtl.value ? { left: 12 } : 0 },
       plugins: {
         legend: { display: false },
         tooltip: {
@@ -212,6 +215,8 @@ function buildConfig(): ChartConfiguration<'line' | 'bar'> {
           boxPadding: 6,
           caretSize: 0,
           usePointStyle: false,
+          rtl: isRtl.value,
+          textDirection: isRtl.value ? 'rtl' : 'ltr',
           callbacks: {
             // The value leads; the series name follows
             label: (item: TooltipItem<'line' | 'bar'>) =>
@@ -225,12 +230,15 @@ function buildConfig(): ChartConfiguration<'line' | 'bar'> {
         },
       },
       scales: {
+        // Right to left, months run from the right and the values sit there
         x: {
+          reverse: isRtl.value,
           grid: { display: false },
           border: { color: grid },
           ticks: { color: axis, font, maxRotation: 0, autoSkipPadding: 8 },
         },
         y: {
+          position: isRtl.value ? 'right' : 'left',
           beginAtZero: true,
           grid: { color: grid, drawTicks: false },
           border: { display: false },
@@ -264,11 +272,11 @@ watch(
   { deep: true },
 )
 
-// Theme switches repaint with the new token values
+// Theme and direction switches repaint with the new tokens and axes
 useMutationObserver(
   document.documentElement,
   () => render(),
-  { attributes: true, attributeFilter: ['data-theme'] },
+  { attributes: true, attributeFilter: ['data-theme', 'dir'] },
 )
 
 onBeforeUnmount(() => {

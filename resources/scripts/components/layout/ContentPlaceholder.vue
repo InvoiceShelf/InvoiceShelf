@@ -48,7 +48,7 @@ const classObject = computed<Record<string, boolean>>(() => {
 }
 
 .base-content-placeholders-heading__img {
-  margin-right: 15px;
+  margin-inline-end: 15px;
   position: relative;
   overflow: hidden;
   min-height: 15px;
@@ -208,5 +208,22 @@ const classObject = computed<Record<string, boolean>>(() => {
 
 .base-content-placeholders-is-rounded {
   border-radius: 6px;
+}
+
+/* Right to left, the shimmer sweeps from the other side */
+@keyframes vueContentPlaceholdersAnimationRtl {
+  0% {
+    transform: translate3d(30%, 0, 0);
+  }
+  100% {
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
+[dir='rtl'] .base-content-placeholders-is-animated [class*='base-content-placeholders-']::before {
+  right: 0;
+  left: auto;
+  background: linear-gradient(to left, transparent 0%, var(--color-hover-strong) 15%, transparent 30%);
+  animation-name: vueContentPlaceholdersAnimationRtl;
 }
 </style>

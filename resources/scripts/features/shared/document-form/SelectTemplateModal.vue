@@ -115,7 +115,7 @@ function closeModal(): void {
               v-if="selectedTemplate === template.name"
               alt=""
               class="absolute z-10 w-5 h-5 text-primary-500"
-              style="top: -6px; right: -5px"
+              style="top: -6px; inset-inline-end: -5px"
               :src="getTickImage()"
             />
             <span

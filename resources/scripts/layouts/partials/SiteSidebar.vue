@@ -54,7 +54,7 @@
         <ul class="space-y-0.5">
           <li v-for="item in menu" :key="item.name">
             <router-link
-              v-tooltip="isRail ? { content: $t(item.title), placement: 'right' } : null"
+              v-tooltip="isRail ? { content: $t(item.title), placement: flipPlacement('right') } : null"
               :to="item.link"
               :aria-current="hasActiveUrl(item.link) ? 'page' : undefined"
               :aria-label="isRail ? $t(item.title) : undefined"
@@ -117,7 +117,7 @@
 
       <button
         v-if="isDesktop"
-        v-tooltip="{ content: isRail ? $t('general.expand') : $t('general.collapse'), placement: 'right' }"
+        v-tooltip="{ content: isRail ? $t('general.expand') : $t('general.collapse'), placement: flipPlacement('right') }"
         type="button"
         class="flex items-center justify-center w-9 h-9 transition-colors rounded-lg shrink-0 text-chrome-muted hover:text-chrome-fg hover:bg-chrome-hover"
         :aria-label="isRail ? $t('general.expand') : $t('general.collapse')"
@@ -133,6 +133,7 @@
 </template>
 
 <script setup lang="ts">
+import { flipPlacement } from '@/scripts/utils/direction'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useGlobalStore } from '@/scripts/stores/global.store'

@@ -43,6 +43,27 @@
   top: 0.5rem;
 }
 
+/* flatpickr pins its calendar left to right; let the week run from the right */
+[dir='rtl'] .flatpickr-calendar {
+  direction: rtl;
+}
+
+/* Right to left, "previous" is on the right and points right */
+[dir='rtl'] .flatpickr-months .flatpickr-prev-month.flatpickr-prev-month {
+  right: 0;
+  left: auto;
+}
+
+[dir='rtl'] .flatpickr-months .flatpickr-next-month.flatpickr-next-month {
+  right: auto;
+  left: 0;
+}
+
+[dir='rtl'] .flatpickr-months .flatpickr-prev-month svg,
+[dir='rtl'] .flatpickr-months .flatpickr-next-month svg {
+  transform: scaleX(-1);
+}
+
 :root .flatpickr-months .flatpickr-prev-month:hover svg,
 :root .flatpickr-months .flatpickr-next-month:hover svg {
   fill: var(--color-primary-500);

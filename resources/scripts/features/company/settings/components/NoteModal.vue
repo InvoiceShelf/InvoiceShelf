@@ -271,11 +271,3 @@ function closeNoteModal(): void {
   </BaseModal>
 </template>
 
-<style>
-.note-modal {
-  .header-editior .editor-menu-bar {
-    margin-left: 0.5px;
-    margin-right: 0px;
-  }
-}
-</style>

@@ -19,8 +19,8 @@
         >
           <PopoverPanel
             v-slot="{ close }"
-            style="min-width: 350px; margin-left: 62px; top: -28px"
-            class="absolute z-10 px-4 py-2 -translate-x-full sm:px-0"
+            style="min-width: 350px; margin-inline-start: 62px; top: -28px"
+            class="absolute z-10 px-4 py-2 -translate-x-full rtl:translate-x-full sm:px-0"
           >
             <div class="overflow-hidden rounded-xl shadow ring-1 ring-black/5">
               <!-- Search Input -->
