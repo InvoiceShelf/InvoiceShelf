@@ -20,15 +20,17 @@ beforeEach(function () {
     );
 });
 
-test('create super admin role', function () {
+test('create a member with one of the company\'s roles', function () {
     $data = [
         'email' => 'loremipsum@gmail.com',
         'name' => 'lorem',
         'password' => 'lorem@123',
     ];
+    // The role has to exist in the company: an unknown name is refused rather
+    // than created on the fly.
     $data['companies'] = [
         [
-            'role' => 'super admin',
+            'role' => 'owner',
             'id' => 1,
         ],
     ];
