@@ -499,7 +499,6 @@ class RealisticDemoSeeder extends Seeder
             'currency_id' => $this->currencyId,
             'customer_id' => $customer->id,
             'company_id' => $this->companyId,
-            'user_id' => $this->user->id,
             'creator_id' => $this->user->id,
             'sent' => $status !== Invoice::STATUS_DRAFT,
             'viewed' => in_array($status, [Invoice::STATUS_VIEWED, Invoice::STATUS_COMPLETED], true),
@@ -579,7 +578,6 @@ class RealisticDemoSeeder extends Seeder
             'amount' => $amount,
             'base_amount' => $amount,
             'exchange_rate' => 1,
-            'user_id' => $this->user->id,
             'creator_id' => $this->user->id,
             'customer_id' => $invoice->customer_id,
             'payment_method_id' => $this->paymentMethodId,
@@ -679,7 +677,6 @@ class RealisticDemoSeeder extends Seeder
             'currency_id' => $this->currencyId,
             'customer_id' => $customer->id,
             'company_id' => $this->companyId,
-            'user_id' => $this->user->id,
             'creator_id' => $this->user->id,
             'notes' => null,
         ]);

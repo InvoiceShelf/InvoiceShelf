@@ -16,6 +16,7 @@ use App\Platform\Modules\Listeners\SyncModuleAbilities;
 use App\Platform\Modules\Policies\ModulePolicy;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use InvoiceShelf\Modules\Contracts\Host\CompanyDataReader;
 use InvoiceShelf\Modules\Contracts\Host\ModuleAuthorization;
@@ -51,5 +52,32 @@ class ModuleServiceProvider extends ServiceProvider
 
         Gate::define('manage modules', [ModulePolicy::class, 'manageModules']);
         Gate::define('manage module settings', [ModulePolicy::class, 'manageSettings']);
+
+        $this->app->booted(fn () => $this->dropMissingModuleViewPaths());
+    }
+
+    /**
+     * Forget the view directories modules register but do not ship.
+     *
+     * A module's service provider registers `resources/views` whether or not
+     * the module has any, and `view:cache` fails on a directory that does not
+     * exist. The Docker image runs `optimize` on every start, so one installed
+     * module without views stopped the container from starting.
+     */
+    public function dropMissingModuleViewPaths(): void
+    {
+        $modules = rtrim((string) config('modules.paths.modules'), '/').'/';
+        $finder = View::getFinder();
+
+        foreach ($finder->getHints() as $namespace => $paths) {
+            $kept = array_values(array_filter(
+                $paths,
+                fn (string $path): bool => ! str_starts_with($path, $modules) || is_dir($path),
+            ));
+
+            if ($kept !== array_values($paths)) {
+                $finder->replaceNamespace($namespace, $kept);
+            }
+        }
     }
 }
