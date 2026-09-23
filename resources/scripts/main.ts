@@ -5,6 +5,7 @@ import * as Vue from 'vue'
 import InvoiceShelf from './InvoiceShelf'
 import { reassertHostStylesAfterShellModules } from './utils/host-styles'
 import { focusInvalidAfterSubmit } from './composables/use-form-field'
+import type { DemoState } from './utils/demo'
 
 // The shell's module stylesheets must not outrank the app's own utilities
 reassertHostStylesAfterShellModules()
@@ -26,6 +27,7 @@ declare global {
     login_page_description?: string
     copyright_text?: string
     demo_mode?: boolean
+    demo?: DemoState
   }
 }
 

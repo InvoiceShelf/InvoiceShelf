@@ -3,12 +3,14 @@
     <NotificationRoot />
     <CustomerPortalHeader />
     <main class="mt-16 pb-16 h-screen overflow-y-auto min-h-0">
+      <DemoBanner />
       <router-view />
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
+import DemoBanner from '@/scripts/layouts/partials/DemoBanner.vue'
 import { computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useCustomerPortalStore } from '../store'

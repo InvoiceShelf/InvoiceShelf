@@ -190,6 +190,7 @@ function applyBranding(manifest: ClientManifest): void {
   window.login_page_description = branding.login_page_description ?? undefined
   window.copyright_text = branding.copyright_text ?? undefined
   window.demo_mode = manifest.demo_mode === true
+  window.demo = manifest.demo ?? undefined
 
   if (manifest.page_title) {
     document.title = manifest.page_title

@@ -63,10 +63,36 @@ function isAuthExemptRequest(url: string | undefined): boolean {
   return AUTH_EXEMPT_URLS.some((exempt) => url.endsWith(exempt))
 }
 
+// The public demo refuses some changes. Views do not all report errors, so
+// the refusal is announced here, once for requests that fail together.
+let lastDemoRefusal = 0
+
+async function announceDemoRefusal(): Promise<void> {
+  if (Date.now() - lastDemoRefusal < 2000) {
+    return
+  }
+
+  lastDemoRefusal = Date.now()
+
+  // A dynamic import for the same circular-dependency reason as the router.
+  const { useNotificationStore } = await import('@/scripts/stores/notification.store')
+
+  useNotificationStore().showNotification({
+    type: 'error',
+    message: 'demo.blocked',
+  })
+}
+
 client.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: AxiosError) => {
     const status = error.response?.status
+
+    if (status === 403 && (error.response?.data as { error?: unknown } | undefined)?.error === 'demo_mode') {
+      await announceDemoRefusal()
+
+      return Promise.reject(error)
+    }
 
     if (status !== 401) {
       return Promise.reject(error)
@@ -85,7 +111,14 @@ client.interceptors.response.use(
     // it's effectively free at runtime.
     const { default: router } = await import('@/scripts/router')
 
-    const currentRoute = router.currentRoute.value
+    // Before the first navigation settles the router still reports its empty
+    // start location, which has no meta: resolve the address being opened
+    // instead, or a portal page is taken for a staff page and sent to the
+    // staff login.
+    const settled = router.currentRoute.value
+    const currentRoute = settled.matched.length > 0
+      ? settled
+      : router.resolve(router.options.history.location)
 
     // Login form handles its own errors — don't self-redirect.
     if (currentRoute.name === 'login') {

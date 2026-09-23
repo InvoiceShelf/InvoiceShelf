@@ -1,3 +1,4 @@
+import type { DemoState } from '@/scripts/utils/demo'
 import { reactive } from 'vue'
 
 /**
@@ -44,6 +45,7 @@ export interface ClientManifest {
   branding: ClientManifestBranding
   modules: ClientManifestModule[]
   demo_mode: boolean
+  demo?: DemoState | null
 }
 
 export interface ClientBootState {

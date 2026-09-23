@@ -32,6 +32,8 @@ export interface NormalizedApiError {
  * Known error message to translation key map.
  */
 const ERROR_TRANSLATION_MAP: Record<string, string> = {
+  'demo_mode': 'demo.blocked',
+  'This is turned off in the demo.': 'demo.blocked',
   'These credentials do not match our records.': 'errors.login_invalid_credentials',
   'The provided credentials are incorrect.': 'errors.login_invalid_credentials',
   'invalid_key': 'errors.invalid_provider_key',

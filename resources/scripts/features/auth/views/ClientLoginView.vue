@@ -168,6 +168,7 @@
 </template>
 
 <script setup lang="ts">
+import { demoState } from '@/scripts/utils/demo'
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { email, helpers, required } from '@vuelidate/validators'
@@ -414,9 +415,11 @@ async function onSubmit(): Promise<void> {
 onMounted(() => {
   serverUrlInput.value = state.serverUrl
 
-  if (window.demo_mode) {
-    authStore.loginData.email = 'demo@invoiceshelf.com'
-    authStore.loginData.password = 'demo'
+  const demo = demoState()
+
+  if (demo) {
+    authStore.loginData.email = demo.email
+    authStore.loginData.password = demo.password
   }
 })
 </script>
