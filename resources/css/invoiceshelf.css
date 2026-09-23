@@ -540,3 +540,63 @@ body {
 body > [role='dialog'] {
     pointer-events: auto;
 }
+
+/*
+ * Empty states: line art and placeholder rows (EmptyArt.vue and
+ * EmptyPlaceholder.vue). The art strokes are the brand colour thinned
+ * towards the surface, so the drawing reads in both themes without its own
+ * palette; the rows fade into the card, hinting at the table to come.
+ */
+@layer components {
+  .empty-art {
+    --ea-stroke: color-mix(in oklab, var(--color-primary-500) 72%, var(--color-surface));
+    --ea-soft: color-mix(in oklab, var(--color-primary-500) 14%, var(--color-surface));
+
+    position: relative;
+    width: 8.25rem;
+    height: 6.5rem;
+  }
+
+  .empty-art::before {
+    content: "";
+    position: absolute;
+    inset: -0.75rem -1.25rem;
+    border-radius: 9999px;
+    background: radial-gradient(closest-side, color-mix(in oklab, var(--color-primary-500) 15%, transparent), transparent);
+  }
+
+  .empty-art svg {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    fill: none;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .empty-art .ea-paper { fill: var(--color-surface); stroke: var(--ea-stroke); }
+  .empty-art .ea-paper-back { fill: var(--ea-soft); stroke: var(--ea-stroke); opacity: 0.8; }
+  .empty-art .ea-ink { stroke: var(--ea-stroke); }
+  .empty-art .ea-faint { stroke: var(--color-line-strong); }
+  .empty-art .ea-badge { fill: var(--ea-soft); stroke: var(--ea-stroke); }
+  .empty-art .ea-mark { stroke: var(--color-primary-600); stroke-width: 2; }
+  .empty-art .ea-dot { fill: var(--color-primary-500); stroke: none; }
+
+  .empty-ghost {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    padding: 0.875rem 1.125rem;
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgb(0 0 0 / 0.75) 30%, transparent 88%);
+    mask-image: linear-gradient(to bottom, #000 0%, rgb(0 0 0 / 0.75) 30%, transparent 88%);
+  }
+
+  .empty-veil {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(closest-side at 50% 52%, color-mix(in oklab, var(--color-surface) 92%, transparent) 30%, transparent 100%);
+  }
+}

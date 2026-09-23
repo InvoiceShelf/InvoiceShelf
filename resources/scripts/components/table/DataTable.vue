@@ -195,16 +195,16 @@
       v-else-if="
         !loading && !isLoading && sortedRows && sortedRows.length === 0
       "
-      class="flex flex-col items-center justify-center gap-3 py-12 text-sm text-center text-muted"
       role="status"
     >
-      <span
-        class="flex items-center justify-center w-11 h-11 rounded-xl bg-primary-50 text-primary-600 ring-1 ring-inset ring-primary-600/10"
-        aria-hidden="true"
-      >
-        <BaseIcon name="MagnifyingGlassIcon" class="w-5 h-5" />
-      </span>
-      <span>{{ $t('general.no_data_found') }}</span>
+      <!-- A page can say what an empty table means; otherwise it reads as no results -->
+      <slot name="empty">
+        <BaseEmptyPlaceholder
+          compact
+          art="search"
+          :title="noResultsMessage || $t('general.no_data_found')"
+        />
+      </slot>
     </div>
 
     <TablePagination
@@ -324,7 +324,7 @@ const props = withDefaults(defineProps<Props>(), {
   tableClass: 'min-w-full',
   theadClass: 'bg-surface-secondary/60 border-b border-line-light',
   tbodyClass: '',
-  noResultsMessage: 'No Results Found',
+  noResultsMessage: '',
   loading: false,
   loadingType: 'placeholder',
   placeholderCount: 3,

@@ -7,7 +7,8 @@
       v-if="isEmpty"
       class="absolute inset-0 grid px-4 pointer-events-none place-items-center"
     >
-      <p class="flex flex-col gap-1 px-5 py-3 text-center rounded-xl bg-surface/85" role="status">
+      <p class="flex flex-col items-center gap-1 px-5 py-3 text-center rounded-xl bg-surface/85" role="status">
+        <EmptyArt name="activity" class="scale-[0.65] -my-5" />
         <span class="text-sm font-semibold text-heading">{{ $t('dashboard.cashflow.no_activity') }}</span>
         <span class="text-sm text-muted">{{ $t('dashboard.cashflow.no_activity_hint') }}</span>
       </p>
@@ -21,6 +22,7 @@ import type { ChartConfiguration, ChartDataset, Plugin, ScriptableContext, Toolt
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useMutationObserver } from '@vueuse/core'
 import { formatMoney } from '@/scripts/utils/format-money'
+import EmptyArt from '@/scripts/components/empty-art/EmptyArt.vue'
 import { prefersReducedMotion } from '@/scripts/utils/motion'
 import { isRtl } from '@/scripts/utils/direction'
 import type { CurrencyConfig } from '@/scripts/utils/format-money'
