@@ -1,0 +1,134 @@
+{
+  "name": "line-taxes-line-discounts",
+  "settings": {
+    "tax_per_item": "YES",
+    "discount_per_item": "YES"
+  },
+  "form": {
+    "customer": "Parity Home LLC",
+    "lines": [
+      {
+        "name": "A",
+        "qty": 2,
+        "price": "50.00",
+        "discount": "10",
+        "discount_type": "percentage",
+        "taxes": [
+          "Parity VAT"
+        ]
+      },
+      {
+        "name": "B",
+        "qty": 1,
+        "price": "30.00",
+        "discount": "2.50",
+        "discount_type": "fixed",
+        "taxes": [
+          "Parity VAT",
+          "Parity Levy"
+        ]
+      },
+      {
+        "name": "C",
+        "qty": 3,
+        "price": "9.99",
+        "taxes": [
+          "Parity Eco",
+          "Parity Odd"
+        ]
+      }
+    ]
+  },
+  "submitted": {
+    "currency_id": 142,
+    "exchange_rate": null,
+    "discount": 0,
+    "discount_type": "fixed",
+    "discount_val": 0,
+    "tax_per_item": "YES",
+    "discount_per_item": "YES",
+    "tax_included": false,
+    "sub_total": 14747,
+    "tax": 2982,
+    "total": 17729,
+    "taxes": [],
+    "items": [
+      {
+        "name": "A",
+        "quantity": 2,
+        "price": 5000,
+        "discount": "10",
+        "discount_type": "percentage",
+        "discount_val": 1000,
+        "tax": 1800,
+        "total": 9000,
+        "taxes": [
+          {
+            "name": "Parity VAT",
+            "percent": 20,
+            "calculation_type": "percentage",
+            "fixed_amount": 0,
+            "compound_tax": false,
+            "amount": 1800
+          }
+        ]
+      },
+      {
+        "name": "B",
+        "quantity": 1,
+        "price": 3000,
+        "discount": 250,
+        "discount_type": "fixed",
+        "discount_val": 250,
+        "tax": 715,
+        "total": 2750,
+        "taxes": [
+          {
+            "name": "Parity VAT",
+            "percent": 20,
+            "calculation_type": "percentage",
+            "fixed_amount": 0,
+            "compound_tax": false,
+            "amount": 550
+          },
+          {
+            "name": "Parity Levy",
+            "percent": 5,
+            "calculation_type": "percentage",
+            "fixed_amount": 0,
+            "compound_tax": true,
+            "amount": 165
+          }
+        ]
+      },
+      {
+        "name": "C",
+        "quantity": 3,
+        "price": 999,
+        "discount": 0,
+        "discount_type": "fixed",
+        "discount_val": 0,
+        "tax": 467,
+        "total": 2997,
+        "taxes": [
+          {
+            "name": "Parity Eco",
+            "percent": null,
+            "calculation_type": "fixed",
+            "fixed_amount": 250,
+            "compound_tax": false,
+            "amount": 250
+          },
+          {
+            "name": "Parity Odd",
+            "percent": 7.25,
+            "calculation_type": "percentage",
+            "fixed_amount": 0,
+            "compound_tax": false,
+            "amount": 217
+          }
+        ]
+      }
+    ]
+  }
+}

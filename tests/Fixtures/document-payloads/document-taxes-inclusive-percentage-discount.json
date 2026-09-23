@@ -1,0 +1,93 @@
+{
+  "name": "document-taxes-inclusive-percentage-discount",
+  "settings": {
+    "tax_per_item": "NO",
+    "discount_per_item": "NO"
+  },
+  "form": {
+    "customer": "Parity Home LLC",
+    "inclusive": true,
+    "lines": [
+      {
+        "name": "Retainer",
+        "qty": 1,
+        "price": "1200.00"
+      },
+      {
+        "name": "Support",
+        "qty": 2.5,
+        "price": "80.00"
+      }
+    ],
+    "discount": "10",
+    "discount_type": "percentage",
+    "taxes": [
+      "Parity VAT",
+      "Parity Levy",
+      "Parity Eco"
+    ]
+  },
+  "submitted": {
+    "currency_id": 142,
+    "exchange_rate": null,
+    "discount": "10",
+    "discount_type": "percentage",
+    "discount_val": 14000,
+    "tax_per_item": "NO",
+    "discount_per_item": "NO",
+    "tax_included": true,
+    "sub_total": 140000,
+    "tax": 27550,
+    "total": 132300,
+    "taxes": [
+      {
+        "name": "Parity VAT",
+        "percent": 20,
+        "calculation_type": "percentage",
+        "fixed_amount": null,
+        "compound_tax": false,
+        "amount": 21000
+      },
+      {
+        "name": "Parity Levy",
+        "percent": 5,
+        "calculation_type": "percentage",
+        "fixed_amount": null,
+        "compound_tax": true,
+        "amount": 6300
+      },
+      {
+        "name": "Parity Eco",
+        "percent": 0,
+        "calculation_type": "fixed",
+        "fixed_amount": 250,
+        "compound_tax": false,
+        "amount": 250
+      }
+    ],
+    "items": [
+      {
+        "name": "Retainer",
+        "quantity": 1,
+        "price": 120000,
+        "discount": 0,
+        "discount_type": "fixed",
+        "discount_val": 0,
+        "tax": 0,
+        "total": 120000,
+        "taxes": []
+      },
+      {
+        "name": "Support",
+        "quantity": 2.5,
+        "price": 8000,
+        "discount": 0,
+        "discount_type": "fixed",
+        "discount_val": 0,
+        "tax": 0,
+        "total": 20000,
+        "taxes": []
+      }
+    ]
+  }
+}
