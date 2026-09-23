@@ -28,6 +28,7 @@ class PaymentRequest extends FormRequest
             ],
             'customer_id' => [
                 'required',
+                Rule::exists('customers', 'id')->where('company_id', $this->header('company')),
             ],
             'exchange_rate' => [
                 'nullable',
@@ -39,11 +40,15 @@ class PaymentRequest extends FormRequest
                 'required',
                 Rule::unique('payments')->where('company_id', $this->header('company')),
             ],
+            // The invoice is loaded and its balance changed without any further
+            // check, so it must belong to the company the request is for.
             'invoice_id' => [
                 'nullable',
+                Rule::exists('invoices', 'id')->where('company_id', $this->header('company')),
             ],
             'payment_method_id' => [
                 'nullable',
+                Rule::exists('payment_methods', 'id')->where('company_id', $this->header('company')),
             ],
             'notes' => [
                 'nullable',

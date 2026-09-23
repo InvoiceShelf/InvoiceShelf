@@ -3,8 +3,11 @@
 use App\Http\Controllers\V1\Admin\Payment\PaymentsController;
 use App\Http\Requests\PaymentRequest;
 use App\Mail\SendPaymentMail;
+use App\Models\Company;
+use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\Payment;
+use App\Models\PaymentMethod;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Sanctum\Sanctum;
@@ -238,4 +241,32 @@ test('create payment with partially paid', function () {
         'base_total' => $response['data']['invoice']['base_total'],
         'paid_status' => $response['data']['invoice']['paid_status'],
     ]);
+});
+
+test('a payment cannot name another company\'s invoice, customer or payment method', function () {
+    $other = Company::factory()->create();
+    $foreignInvoice = Invoice::factory()->create([
+        'company_id' => $other->id,
+        'customer_id' => Customer::factory()->create(['company_id' => $other->id])->id,
+        'due_amount' => 100,
+        'exchange_rate' => 1,
+    ]);
+    $foreignCustomer = Customer::factory()->create(['company_id' => $other->id]);
+    $foreignMethod = PaymentMethod::factory()->create(['company_id' => $other->id]);
+
+    foreach ([
+        ['invoice_id' => $foreignInvoice->id],
+        ['customer_id' => $foreignCustomer->id],
+        ['payment_method_id' => $foreignMethod->id],
+    ] as $foreign) {
+        postJson('api/v1/payments', Payment::factory()->raw([
+            'payment_number' => 'PAY-000001',
+            'amount' => 50,
+            'exchange_rate' => 1,
+            ...$foreign,
+        ]))->assertUnprocessable();
+    }
+
+    expect((int) $foreignInvoice->fresh()->due_amount)->toBe(100)
+        ->and(Payment::where('invoice_id', $foreignInvoice->id)->exists())->toBeFalse();
 });
