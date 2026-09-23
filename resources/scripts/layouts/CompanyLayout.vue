@@ -25,6 +25,7 @@
       ]"
     >
       <ImpersonationBanner />
+      <DemoBanner />
 
       <!--
         The top bar lives inside the scrolling area so content passes under
@@ -70,6 +71,7 @@ import SiteHeader from './partials/SiteHeader.vue'
 import SiteSidebar from './partials/SiteSidebar.vue'
 import NotificationRoot from '@/scripts/components/notifications/NotificationRoot.vue'
 import ImpersonationBanner from './partials/ImpersonationBanner.vue'
+import DemoBanner from './partials/DemoBanner.vue'
 import MobileTabBar from './partials/MobileTabBar.vue'
 import CommandPalette from './partials/CommandPalette.vue'
 import { useBreakpoints } from '@/scripts/composables/use-breakpoints'

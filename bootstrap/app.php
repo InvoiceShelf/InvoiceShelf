@@ -16,6 +16,7 @@ use App\Http\Middleware\PreventRequestForgery;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustProxies;
 use App\Platform\Modules\Runtime\ModuleRuntimeAutoloader;
+use App\Platform\Operations\Demo\BlockDemoChanges;
 use App\Platform\Operations\Http\Middleware\CronJobMiddleware;
 use App\Platform\Operations\Http\Middleware\EnsureNotContainerized;
 use App\Platform\Operations\Installation\Http\Middleware\EnsureInstalled;
@@ -74,6 +75,10 @@ return Application::configure(basePath: dirname(__DIR__))
             EncryptCookies::class,
             PreventRequestForgery::class,
         ]);
+
+        // First in the group, so what the demo refuses is refused before a
+        // route binding can answer 404 for a record that is not there.
+        $middleware->prependToGroup('api', BlockDemoChanges::class);
 
         $middleware->statefulApi();
         $middleware->throttleApi('180,1');

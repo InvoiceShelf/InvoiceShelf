@@ -538,6 +538,10 @@ class User extends Authenticatable implements HasMedia
     {
         $meta = $data->data;
 
+        if (! empty($meta['hidden'])) {
+            return false;
+        }
+
         if (! empty($meta['super_admin_only'])) {
             return $this->isSuperAdmin();
         }

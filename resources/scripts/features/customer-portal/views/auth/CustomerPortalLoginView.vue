@@ -55,6 +55,14 @@
       </template>
       {{ $t('login.login') }}
     </BaseButton>
+
+    <p
+      v-if="demo"
+      role="note"
+      class="p-4 mt-8 text-sm border rounded-lg border-line-default bg-surface-secondary text-body"
+    >
+      {{ $t('demo.portal_login_note') }}
+    </p>
   </form>
 </template>
 
@@ -68,6 +76,7 @@ import { useNotificationStore } from '@/scripts/stores/notification.store'
 import { getErrorTranslationKey, handleApiError } from '@/scripts/utils/error-handling'
 import { useCustomerPortalStore } from '../../store'
 import { resolveCompanySlug } from '../../utils/routes'
+import { demoState } from '@/scripts/utils/demo'
 
 interface CustomerPortalLoginForm {
   email: string
@@ -80,9 +89,12 @@ const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
 
+// On the public demo the sign-in it offers is already filled in.
+const demo = demoState()
+
 const formData = reactive<CustomerPortalLoginForm>({
-  email: '',
-  password: '',
+  email: demo?.portal_email ?? '',
+  password: demo?.portal_password ?? '',
 })
 
 const isLoading = ref<boolean>(false)

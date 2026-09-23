@@ -48,10 +48,28 @@
     <BaseButton :loading="isLoading" type="submit" class="w-full justify-center">
       {{ $t('login.login') }}
     </BaseButton>
+
+    <div
+      v-if="demo"
+      role="note"
+      class="p-4 mt-8 text-sm border rounded-lg border-line-default bg-surface-secondary text-body"
+    >
+      <p class="font-medium text-heading">{{ $t('demo.login_title') }}</p>
+      <p class="mt-1">{{ $t('demo.login_note', { email: demo.email, password: demo.password }) }}</p>
+      <template v-if="demo.portal_path">
+        <a :href="demo.portal_path" class="inline-flex mt-3 font-medium text-primary-600 hover:underline">
+          {{ $t('demo.try_portal') }}
+        </a>
+        <p class="mt-1 text-muted">
+          {{ $t('demo.portal_note', { email: demo.portal_email, password: demo.portal_password }) }}
+        </p>
+      </template>
+    </div>
   </form>
 </template>
 
 <script setup lang="ts">
+import { demoState } from '@/scripts/utils/demo'
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { required, email, helpers } from '@vuelidate/validators'
@@ -149,10 +167,12 @@ async function onSubmit(): Promise<void> {
   }
 }
 
+const demo = demoState()
+
 onMounted(() => {
-  if (window.demo_mode) {
-    authStore.loginData.email = 'demo@invoiceshelf.com'
-    authStore.loginData.password = 'demo'
+  if (demo) {
+    authStore.loginData.email = demo.email
+    authStore.loginData.password = demo.password
   }
 })
 </script>

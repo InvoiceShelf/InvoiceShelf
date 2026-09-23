@@ -81,8 +81,9 @@
 
         @endif
 
-        @if(config('app.env') === 'demo')
+        @if(\App\Platform\Operations\Demo\DemoMode::enabled())
             window.demo_mode = true
+            window.demo = @json(\App\Platform\Operations\Demo\DemoMode::clientState())
         @endif
 
         window.InvoiceShelf.start()

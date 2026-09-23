@@ -264,6 +264,7 @@ return [
             'owner_only' => true,
             'ability' => '',
             'model' => '',
+            'hidden_in_demo' => true,
         ],
         [
             'title' => 'settings.menu_title.exchange_rate',
@@ -344,6 +345,7 @@ return [
             'owner_only' => true,
             'ability' => '',
             'model' => '',
+            'hidden_in_demo' => true,
         ],
         [
             'title' => 'settings.menu_title.module_configuration',
@@ -456,6 +458,7 @@ return [
             'owner_only' => true,
             'ability' => '',
             'model' => '',
+            'hidden_in_demo' => true,
         ],
         [
             'title' => 'navigation.reports',
@@ -633,5 +636,20 @@ return [
         'Invoice',
         'Payment',
         'Expense',
+    ],
+
+    /*
+    * The public demo (APP_ENV=demo): what `php artisan reset:app` rebuilds on
+    * the schedule below, and the sign-ins the login pages offer visitors.
+    * `modules` pins the marketplace releases to install, as slug@version
+    * separated by commas.
+    */
+    'demo' => [
+        'reset_cron' => env('DEMO_RESET_CRON', '0 */6 * * *'),
+        'modules' => env('DEMO_MODULES', ''),
+        'email' => 'demo@invoiceshelf.com',
+        'password' => 'demo',
+        'portal_email' => 'customer@invoiceshelf.com',
+        'portal_password' => 'demo',
     ],
 ];

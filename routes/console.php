@@ -1,14 +1,19 @@
 <?php
 
+use App\Platform\Operations\Demo\DemoMode;
 use App\Platform\Operations\Installation\Application\InstallationState;
 use Illuminate\Support\Facades\Schedule;
 
-// Only run in demo environment
-if (config('app.env') === 'demo') {
+// The public demo rebuilds itself on a schedule. It runs even in maintenance
+// mode: a reset that failed halfway leaves the site down, and only the next
+// reset brings it back.
+if (DemoMode::enabled()) {
     Schedule::command('reset:app --force')
-        ->daily()
+        ->cron((string) config('invoiceshelf.demo.reset_cron'))
         ->runInBackground()
-        ->withoutOverlapping();
+        ->withoutOverlapping()
+        ->onOneServer()
+        ->evenInMaintenanceMode();
 }
 
 if (InstallationState::isDbCreated()) {
