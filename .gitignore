@@ -42,3 +42,7 @@ yarn.lock
 /_ide_helper.php
 /_ide_helper_models.php
 /*.code-workspace
+
+# Browser-verification scratch: playwright-cli writes snapshots, screenshots
+# and console logs next to wherever it was invoked.
+/.playwright-cli/

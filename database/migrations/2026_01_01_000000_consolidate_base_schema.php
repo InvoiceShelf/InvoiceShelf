@@ -74,7 +74,6 @@ return new class extends Migration
         $this->placeRelocatedColumns();
 
         $this->seedFileDisks();
-        $this->seedCurrencies();
         $this->seedVersion();
     }
 
@@ -975,57 +974,6 @@ return new class extends Migration
                 'updated_at' => $now,
             ],
         ]);
-    }
-
-    /**
-     * Three currencies the replaced chain added later. Insert-if-absent, so
-     * pre-existing rows are kept.
-     */
-    private function seedCurrencies(): void
-    {
-        $now = now();
-
-        $currencies = [
-            [
-                'code' => 'DZD',
-                'name' => 'Algerian Dinar',
-                'symbol' => 'DA',
-                'precision' => 2,
-                'thousand_separator' => ',',
-                'decimal_separator' => '.',
-            ],
-            [
-                'code' => 'PYG',
-                'name' => 'Paraguayan Guaraní',
-                'symbol' => '₲',
-                'precision' => 0,
-                'thousand_separator' => '.',
-                'decimal_separator' => ',',
-            ],
-            [
-                'code' => 'QAR',
-                'name' => 'Qatari Riyal',
-                'symbol' => 'QR',
-                'precision' => 2,
-                'thousand_separator' => ',',
-                'decimal_separator' => '.',
-            ],
-        ];
-
-        foreach ($currencies as $currency) {
-            $alreadyKnown = DB::table('currencies')
-                ->where('code', $currency['code'])
-                ->exists();
-
-            if ($alreadyKnown) {
-                continue;
-            }
-
-            DB::table('currencies')->insert($currency + [
-                'created_at' => $now,
-                'updated_at' => $now,
-            ]);
-        }
     }
 
     /**

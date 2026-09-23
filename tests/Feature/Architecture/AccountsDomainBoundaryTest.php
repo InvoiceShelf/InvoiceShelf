@@ -105,9 +105,17 @@ test('the accounts domain preserves public and super-admin routes', function () 
         expect($route->getActionName())->toStartWith('App\\Domains\\Accounts\\Http\\Controllers\\');
     }
 
+    // Routes other areas own under the same prefix. Listed rather than
+    // filtered by namespace, so a new one has to be added here on purpose.
+    $notOurs = [
+        'api/v1/super-admin/dashboard',
+        'api/v1/super-admin/currencies',
+        'api/v1/super-admin/currencies/refresh',
+    ];
+
     $adminRoutes = $routes
         ->filter(fn ($route): bool => str_starts_with($route->uri(), 'api/v1/super-admin/'))
-        ->reject(fn ($route): bool => $route->uri() === 'api/v1/super-admin/dashboard');
+        ->reject(fn ($route): bool => in_array($route->uri(), $notOurs, true));
 
     expect($adminRoutes)->toHaveCount(8);
 
