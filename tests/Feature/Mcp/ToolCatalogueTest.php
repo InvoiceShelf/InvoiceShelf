@@ -7,8 +7,12 @@ use App\Platform\Mcp\Models\McpConnection;
 use App\Platform\Mcp\Servers\InvoiceShelfServer;
 use App\Platform\Mcp\Tools\Company\GetCompanyContextTool;
 use App\Platform\Mcp\Tools\McpTool;
+use App\Platform\Mcp\Tools\McpWriteTool;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Artisan;
+use Laravel\Mcp\Server\Tools\Annotations\IsDestructive;
+use Laravel\Mcp\Server\Tools\Annotations\IsOpenWorld;
+use Laravel\Mcp\Server\Tools\Annotations\IsReadOnly;
 use Laravel\Mcp\Server\Transport\FakeTransporter;
 use Silber\Bouncer\BouncerFacade;
 use Tests\Support\McpTesting;
@@ -48,11 +52,24 @@ test('every tool but the company context names the permission it needs', functio
     }
 });
 
-test('an owner on a read-only connection sees every read tool', function () {
-    $context = McpTesting::actAs($this->owner, $this->company->id, McpConnection::ACCESS_READ);
+test('a read-only connection sees the read tools and a writing one sees them all', function () {
+    $read = toolsListedFor(McpTesting::actAs($this->owner, $this->company->id, McpConnection::ACCESS_READ), $this->tools);
+    $write = toolsListedFor(McpTesting::actAs($this->owner, $this->company->id, McpConnection::ACCESS_WRITE), $this->tools);
 
-    expect(toolsListedFor($context, $this->tools))->toBe($this->tools->keys()->sort()->values()->all())
-        ->and($this->tools)->toHaveCount(17);
+    $readTools = $this->tools->reject(fn (McpTool $tool) => $tool instanceof McpWriteTool)->keys()->sort()->values()->all();
+
+    expect($read)->toBe($readTools)
+        ->and($readTools)->toHaveCount(18)
+        ->and($write)->toBe($this->tools->keys()->sort()->values()->all())
+        ->and($this->tools)->toHaveCount(39);
+});
+
+test('a tool is read-only exactly when it does not write', function () {
+    foreach ($this->tools as $name => $tool) {
+        $readOnly = (new ReflectionClass($tool))->getAttributes(IsReadOnly::class)[0]->newInstance()->value;
+
+        expect($readOnly)->toBe(! $tool instanceof McpWriteTool, "{$name} is annotated read-only: ".var_export($readOnly, true));
+    }
 });
 
 test('a member sees only the tools for what their role may view', function () {
@@ -72,4 +89,26 @@ test('a member sees only the tools for what their role may view', function () {
         'rank_top_customers',
         'search_customers',
     ]);
+});
+
+test('a tool that deletes or reaches outside the app takes confirm', function () {
+    foreach ($this->tools as $name => $tool) {
+        $reflection = new ReflectionClass($tool);
+        $destructive = $reflection->getAttributes(IsDestructive::class)[0]->newInstance()->value;
+        $openWorld = $reflection->getAttributes(IsOpenWorld::class)[0]->newInstance()->value;
+
+        if (! $destructive && ! $openWorld) {
+            continue;
+        }
+
+        $schema = $tool->toArray()['inputSchema'];
+
+        expect(array_key_exists('confirm', $schema['properties']))->toBeTrue("{$name} must take confirm");
+
+        // Converting an estimate asks for it only when the company deletes the
+        // estimate on conversion; every other such tool always does.
+        if ($name !== 'convert_estimate_to_invoice') {
+            expect($schema['required'] ?? [])->toContain('confirm');
+        }
+    }
 });
