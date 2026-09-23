@@ -14,6 +14,10 @@ use Laravel\Sanctum\PersonalAccessToken;
 use Tests\Support\OAuthTesting;
 
 beforeEach(function () {
+    // Currencies come from the catalogue now, not from migrations, and the
+    // user factory needs one.
+    Artisan::call('db:seed', ['--class' => 'CurrenciesTableSeeder', '--force' => true]);
+
     OAuthTesting::useKeys();
 
     Passport::tokensCan(['test:use' => 'Use the test consumer']);

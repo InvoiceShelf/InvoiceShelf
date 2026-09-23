@@ -2,6 +2,7 @@
 
 use App\Domains\Accounts\Application\PostLoginRedirect;
 use App\Domains\Accounts\Models\User;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 test('a same-origin path is accepted', function (string $next) {
@@ -38,6 +39,10 @@ test('only listed pages count as server-rendered', function () {
 // per process before the test schema exists, so the `guest` middleware is
 // exercised on a route of its own.
 beforeEach(function () {
+    // Currencies come from the catalogue now, not from migrations, and the
+    // user factory needs one.
+    Artisan::call('db:seed', ['--class' => 'CurrenciesTableSeeder', '--force' => true]);
+
     Route::middleware('guest')->get('/_guest-test', fn () => 'sign-in page');
 });
 
