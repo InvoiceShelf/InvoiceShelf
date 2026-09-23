@@ -127,3 +127,20 @@ it('gates the historical backfill and reproduces its defective arithmetic', func
     expect(DB::table('company_settings')->where('company_id', $this->companyId)
         ->where('option', 'bulk_exchange_rate_configured')->value('value'))->toBe('YES');
 });
+
+it('lets only the owner run the exchange-rate backfill', function () {
+    DB::table('company_settings')->updateOrInsert(
+        ['company_id' => $this->companyId, 'option' => 'bulk_exchange_rate_configured'],
+        ['value' => 'NO'],
+    );
+    $member = User::factory()->create(['role' => 'user']);
+    $member->companies()->attach($this->companyId);
+    Sanctum::actingAs($member, ['*']);
+
+    postJson('/api/v1/currencies/bulk-update-exchange-rate', [
+        'currencies' => [['id' => 1, 'exchange_rate' => 2]],
+    ])->assertForbidden();
+
+    expect(DB::table('company_settings')->where('company_id', $this->companyId)
+        ->where('option', 'bulk_exchange_rate_configured')->value('value'))->toBe('NO');
+});

@@ -165,8 +165,11 @@ async function initializeLayout(): Promise<void> {
     router.push({ name: 'settings.account' })
   }
 
+  // Only the owner changes the company's currency, and only the owner may run
+  // the backfill that a change leaves pending.
   if (
-    companyStore.selectedCompanySettings.bulk_exchange_rate_configured === 'NO'
+    companyStore.selectedCompanySettings.bulk_exchange_rate_configured === 'NO' &&
+    userStore.currentUser?.is_owner
   ) {
     modalStore.openModal({
       componentName: 'ExchangeRateBulkUpdateModal',
