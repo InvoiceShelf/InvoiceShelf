@@ -75,7 +75,7 @@ class PublicDemoSeeder extends Seeder
     public static function openPortal(): void
     {
         $credentials = DemoMode::credentials();
-        $companyId = User::query()->where('email', $credentials['email'])->firstOrFail()->companies()->value('companies.id');
+        $companyId = DemoMode::company()?->id;
 
         $customer = Customer::query()->where('company_id', $companyId)->where('name', self::PORTAL_CUSTOMER)->first()
             ?? Customer::query()->where('company_id', $companyId)->orderBy('id')->firstOrFail();

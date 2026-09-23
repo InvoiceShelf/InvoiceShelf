@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Modules\DemoProbe\Demo\DemoSeeder as ProbeDemoSeeder;
+use Nwidart\Modules\Facades\Module;
 use Silber\Bouncer\BouncerFacade;
 
 uses()->group('isolated', 'serial-only');
@@ -97,4 +99,24 @@ test('the site comes back up when a step fails', function () {
 
     expect(fn () => Artisan::call('reset:app', ['--force' => true]))->toThrow(RuntimeException::class, 'Installing nowhere 9.9.9 failed: offline')
         ->and(app()->isDownForMaintenance())->toBeFalse();
+});
+
+test('a pinned module is installed after the company exists and its demo seeder is told which company to fill', function () {
+    require_once base_path('tests/Fixtures/modules/DemoProbeSeeder.php');
+    config(['invoiceshelf.demo.modules' => 'demo-probe@1.2.0']);
+
+    $marketplace = Mockery::mock(MarketplaceInstaller::class);
+    $marketplace->shouldReceive('install')->once()->with('demo-probe', '1.2.0', 'stable')->andReturn(['success' => true]);
+    app()->instance(MarketplaceInstaller::class, $marketplace);
+
+    $probe = Mockery::mock();
+    $probe->shouldReceive('get')->with('slug')->andReturn('demo-probe');
+    $probe->shouldReceive('get')->with('version')->andReturn(null);
+    $probe->shouldReceive('getName')->andReturn('DemoProbe');
+    Module::partialMock()->shouldReceive('scan')->andReturn([]);
+    Module::shouldReceive('all')->andReturn([$probe]);
+
+    Artisan::call('reset:app', ['--force' => true]);
+
+    expect(ProbeDemoSeeder::$companyId)->toBe(User::query()->sole()->companies()->sole()->id);
 });

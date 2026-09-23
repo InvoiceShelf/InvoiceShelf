@@ -2,6 +2,7 @@
 
 namespace App\Platform\Operations\Demo;
 
+use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\User;
 use Carbon\CarbonImmutable;
 use Cron\CronExpression;
@@ -77,12 +78,20 @@ final class DemoMode
     {
         $credentials = self::credentials();
 
-        $slug = User::query()->where('email', $credentials['email'])->first()?->companies()->value('slug');
+        $slug = self::company()?->slug;
 
         return [
             'next_reset_at' => self::nextResetAt()?->toIso8601String(),
             ...$credentials,
             'portal_path' => $slug ? "/{$slug}/customer/login" : null,
         ];
+    }
+
+    /**
+     * The company the demo owner signs in to, once the demo has been built.
+     */
+    public static function company(): ?Company
+    {
+        return User::query()->where('email', self::credentials()['email'])->first()?->companies()->orderBy('companies.id')->first();
     }
 }

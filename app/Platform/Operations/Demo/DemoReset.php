@@ -74,7 +74,7 @@ class DemoReset
     /**
      * Install a pinned module release, from disk when that exact version is
      * already there and from the marketplace otherwise, then give it sample
-     * data when it ships a demo seeder.
+     * data when it ships a demo seeder (`Modules\{Name}\Demo\DemoSeeder`).
      */
     private function installModule(string $slug, string $version): void
     {
@@ -97,8 +97,10 @@ class DemoReset
 
         $seeder = "Modules\\{$name}\\Demo\\DemoSeeder";
 
+        // db:seed cannot say which company to fill, so the seeder is called
+        // directly: run(int $companyId), its services resolved by the container.
         if ($name !== null && class_exists($seeder)) {
-            $this->seed($seeder);
+            app($seeder)->setContainer(app())->__invoke(['companyId' => DemoMode::company()->id]);
         }
     }
 

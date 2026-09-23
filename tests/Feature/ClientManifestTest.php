@@ -30,7 +30,7 @@ test('the manifest is public and describes the running build', function () {
     $response = getJson('/api/v1/app/client-manifest')->assertOk();
 
     expect(array_keys($response->json()))->toEqualCanonicalizing([
-        'version', 'min_client_version', 'app_url', 'page_title', 'branding', 'modules', 'demo_mode',
+        'version', 'min_client_version', 'app_url', 'page_title', 'branding', 'modules', 'demo_mode', 'demo',
     ])
         ->and($response->json('version'))->toBe(trim(File::get(base_path('version.md'))))
         ->and($response->json('min_client_version'))->toBe(config('invoiceshelf.client.min_version'))
