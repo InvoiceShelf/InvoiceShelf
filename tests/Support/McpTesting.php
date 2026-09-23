@@ -6,8 +6,11 @@ use App\Domains\Accounts\Models\User;
 use App\Platform\Mcp\Application\McpSettings;
 use App\Platform\Mcp\McpContext;
 use App\Platform\Mcp\Models\McpConnection;
+use App\Platform\Mcp\Servers\InvoiceShelfServer;
 use Illuminate\Support\Str;
+use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Testing\TestResponse;
+use Laravel\Mcp\Server\Tool;
 use Laravel\Passport\Client;
 use Laravel\Passport\ClientRepository;
 use Silber\Bouncer\BouncerFacade;
@@ -107,5 +110,27 @@ final class McpTesting
         app()->instance(McpContext::class, $context);
 
         return $context;
+    }
+
+    /**
+     * Call a tool as the given connection and hand back what it returned,
+     * failing the test when the tool answered with an error.
+     *
+     * @param  class-string<Tool>  $tool
+     * @return array<string, mixed>
+     */
+    public static function call(User $user, string $tool, array $arguments = []): array
+    {
+        $content = null;
+
+        InvoiceShelfServer::actingAs($user)
+            ->tool($tool, $arguments)
+            ->assertHasNoErrors()
+            ->assertStructuredContent(function (AssertableJson $json) use (&$content) {
+                $content = $json->toArray();
+                $json->etc();
+            });
+
+        return $content;
     }
 }
