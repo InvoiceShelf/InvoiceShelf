@@ -59,27 +59,54 @@ return new class extends Migration
             $this->recalculateAffectedInvoices();
         });
 
-        try {
-            Schema::table('payments', function (Blueprint $table) {
-                $table->dropForeign(['invoice_id']);
+        // Only what is actually there is dropped. A failed DDL statement cannot
+        // be caught and stepped over on PostgreSQL: the migration runs in a
+        // transaction there, and the first error aborts everything after it.
+        // Manually upgraded databases may lack the constraint, the base schema
+        // never indexed the column, and SQLite refuses to drop an indexed one.
+        foreach ($this->foreignKeysOn('payments', 'invoice_id') as $foreignKey) {
+            Schema::table('payments', function (Blueprint $table) use ($foreignKey) {
+                // SQLite's foreign keys have no name and are dropped by column.
+                $table->dropForeign($foreignKey['name'] ?? $foreignKey['columns']);
             });
-        } catch (Throwable) {
-            // SQLite and manually upgraded databases may not carry the old
-            // constraint. The column can still be removed below.
         }
 
-        try {
-            Schema::table('payments', function (Blueprint $table) {
-                $table->dropIndex(['invoice_id']);
+        foreach ($this->indexesOn('payments', 'invoice_id') as $index) {
+            Schema::table('payments', function (Blueprint $table) use ($index) {
+                $table->dropIndex($index);
             });
-        } catch (Throwable) {
-            // SQLite keeps the legacy index and requires explicit removal;
-            // MySQL can remove it together with its foreign key.
         }
 
         Schema::table('payments', function (Blueprint $table) {
             $table->dropColumn('invoice_id');
         });
+    }
+
+    /**
+     * The foreign keys on exactly this column.
+     *
+     * @return list<array{name: string|null, columns: list<string>}>
+     */
+    private function foreignKeysOn(string $table, string $column): array
+    {
+        return collect(Schema::getForeignKeys($table))
+            ->filter(fn (array $foreignKey): bool => $foreignKey['columns'] === [$column])
+            ->values()
+            ->all();
+    }
+
+    /**
+     * Names of the plain indexes on exactly this column.
+     *
+     * @return list<string>
+     */
+    private function indexesOn(string $table, string $column): array
+    {
+        return collect(Schema::getIndexes($table))
+            ->filter(fn (array $index): bool => $index['columns'] === [$column] && ! $index['primary'])
+            ->pluck('name')
+            ->values()
+            ->all();
     }
 
     /**

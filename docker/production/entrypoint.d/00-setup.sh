@@ -17,10 +17,12 @@ cd /var/www/html
 # provide a valid cache path" (config/view.php resolves its compiled path with
 # realpath(), which returns false for a missing directory). Recreate them before
 # anything writes there, including the sqlite database placed in storage/app
-# below. See InvoiceShelf/docker#75, #69 and #77.
+# below. See InvoiceShelf/docker#75, #69 and #77. templates/pdf is a view
+# namespace, so without it `optimize` fails caching views.
 echo "**** Ensuring storage directories exist ****"
 if ! mkdir -p \
     storage/app/public \
+    storage/app/templates/pdf \
     storage/framework/cache/data \
     storage/framework/sessions \
     storage/framework/views \
