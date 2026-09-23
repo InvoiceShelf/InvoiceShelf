@@ -9,8 +9,7 @@ use App\Domains\Metadata\Contracts\CustomFieldValueWriter;
 use App\Domains\Sales\Contracts\DocumentExchangeRateRecorder;
 use App\Domains\Sales\Models\Invoice;
 use App\Domains\Sales\Models\RecurringInvoice;
-use App\Facades\Hashids;
-use App\Support\Hashids\HashidConnection;
+use App\Support\PublicToken;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
@@ -232,7 +231,7 @@ class RecurringInvoiceService
         ];
 
         $invoice = Invoice::create($newInvoice);
-        $invoice->unique_hash = Hashids::connection(HashidConnection::Invoice->value)->encode($invoice->id);
+        $invoice->unique_hash = PublicToken::make();
         $invoice->save();
 
         $recurringInvoice->load('items.taxes');

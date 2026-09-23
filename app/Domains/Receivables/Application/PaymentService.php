@@ -10,12 +10,11 @@ use App\Domains\Receivables\Contracts\PaymentExchangeRateRecorder;
 use App\Domains\Receivables\Contracts\PaymentNumberAssigner;
 use App\Domains\Receivables\Contracts\PaymentPdfDataProvider;
 use App\Domains\Receivables\Models\Payment;
-use App\Facades\Hashids;
 use App\Platform\Mail\Contracts\MailConfigurator;
 use App\Platform\Pdf\Facades\Pdf;
 use App\Platform\Pdf\Rendering\PdfMetadata;
 use App\Platform\Pdf\Rendering\PdfTemplateUtils;
-use App\Support\Hashids\HashidConnection;
+use App\Support\PublicToken;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -42,7 +41,7 @@ class PaymentService implements PaymentPdfDataProvider
     ): Payment {
         $payment = DB::transaction(function () use ($attributes, $allocations, $customFields): Payment {
             $payment = Payment::create($attributes);
-            $payment->unique_hash = Hashids::connection(HashidConnection::Payment->value)->encode($payment->id);
+            $payment->unique_hash = PublicToken::make();
 
             $numbering = $this->paymentNumberAssigner->next(
                 $payment,

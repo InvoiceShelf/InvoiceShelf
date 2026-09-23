@@ -5,9 +5,8 @@ namespace App\Domains\Sales\Application;
 use App\Domains\Metadata\Contracts\CustomFieldValueWriter;
 use App\Domains\Sales\Models\Invoice;
 use App\Domains\Sales\Models\InvoiceItem;
-use App\Facades\Hashids;
 use App\Support\CreditNoteAmounts;
-use App\Support\Hashids\HashidConnection;
+use App\Support\PublicToken;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -245,7 +244,7 @@ class CreditNoteService
             ...$carriedOver,
         ]);
 
-        $creditNote->unique_hash = Hashids::connection(HashidConnection::Invoice->value)->encode($creditNote->id);
+        $creditNote->unique_hash = PublicToken::make();
         $creditNote->save();
 
         // recompute: false throughout. The calculator has already decided every
