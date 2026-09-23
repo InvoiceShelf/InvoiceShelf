@@ -179,6 +179,12 @@ return [
     ],
 
     /*
+    * Languages that read right to left. The app shell renders dir="rtl" for
+    * them; resources/scripts/utils/direction.ts keeps the same list.
+    */
+    'rtl_languages' => ['ar', 'fa', 'he', 'ur'],
+
+    /*
     * List of Fiscal Years
     */
     'fiscal_years' => [

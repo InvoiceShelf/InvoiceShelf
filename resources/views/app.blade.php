@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ in_array(\Illuminate\Support\Str::before(str_replace('-', '_', app()->getLocale()), '_'), config('invoiceshelf.rtl_languages', []), true) ? 'rtl' : 'ltr' }}">
 
 <head>
     <meta charset="utf-8">

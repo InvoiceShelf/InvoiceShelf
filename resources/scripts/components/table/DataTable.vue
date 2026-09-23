@@ -556,13 +556,17 @@ const sortedRows = computed<TableRow[]>(() => {
   return sorted
 })
 
-function getThClass(column: TableColumn): string {
-  let classes =
-    'whitespace-nowrap px-4 first:pl-6 last:pr-6 py-3.5 text-left text-sm font-medium text-muted select-none'
+const TEXT_ALIGN = /(^|\s)text-(left|right|center|justify|start|end)(\s|$)/
 
-  if (column.align === 'end') {
-    classes = `${classes} text-right`
-  }
+function getThClass(column: TableColumn): string {
+  // One alignment class only: two stacked text-* classes resolve by their
+  // order in the stylesheet, not by which one was meant
+  const align = column.thClass && TEXT_ALIGN.test(column.thClass)
+    ? ''
+    : column.align === 'end' ? 'text-right' : 'text-left'
+
+  let classes =
+    `whitespace-nowrap px-4 first:pl-6 last:pr-6 py-3.5 ${align} text-sm font-medium text-muted select-none`
 
   if (column.defaultThClass) {
     classes = column.defaultThClass

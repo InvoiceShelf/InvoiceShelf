@@ -1,6 +1,7 @@
 import { createI18n } from 'vue-i18n'
 import type { I18n, I18nOptions } from 'vue-i18n'
 import en from '../../../lang/en.json'
+import { applyDirection } from '../utils/direction'
 
 /**
  * Locale-to-filename mapping for language files whose filename does
@@ -125,8 +126,10 @@ export async function setI18nLanguage(
 
   i18n.global.locale.value = locale
 
-  // Screen readers pick their voice and pronunciation from the page language
+  // Screen readers pick their voice and pronunciation from the page language,
+  // and the layout mirrors for languages that read right to left
   document.documentElement.lang = locale.replace('_', '-')
+  applyDirection(locale)
 }
 
 /**
