@@ -7,6 +7,19 @@ section beneath it is what CI publishes to the updater — see
 The 2.x line has its own CHANGELOG.md on the `2.x` branch. Releases are also on
 GitHub: https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 3.0.0-alpha.7 - 2026-09-24
+
+Seventh public alpha of InvoiceShelf 3.0, with two fixes.
+
+⚠️ **Pre-release, not for production.** Back up your database before upgrading and use this release for evaluation and testing only.
+
+### Fixes
+
+- **PDFs failed in a Docker container whose storage volume started empty.** The PDF renderer keeps its font cache in `storage/fonts` but never created that folder, so every invoice, estimate and payment PDF failed. The container now creates it on start. (#854)
+- **Opening the address of an install while signed out showed a "page not found" screen.** It now opens the sign-in page. A signed-in user still goes to the dashboard, and an unfinished install to the setup wizard. (#856)
+
+Docker: `invoiceshelf/invoiceshelf:3.0.0-alpha.7` or `ghcr.io/invoiceshelf/invoiceshelf:3.0.0-alpha.7` (also `:next`).
+
 ## 3.0.0-alpha.6 - 2026-09-24
 
 Sixth public alpha of InvoiceShelf 3.0. It fixes three problems that stopped a 3.x install from being created or from starting, found while preparing the public demo.
