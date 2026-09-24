@@ -16,6 +16,7 @@ use App\Platform\Mail\Contracts\MailConfigurator;
 use App\Platform\Pdf\Facades\Pdf;
 use App\Platform\Pdf\Rendering\PdfMetadata;
 use App\Platform\Pdf\Rendering\PdfTemplateUtils;
+use App\Support\MoneyConversion;
 use App\Support\PublicToken;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -281,11 +282,11 @@ class EstimateService implements EstimatePdfDataProvider
             'tax' => $estimate->tax,
             'notes' => $estimate->notes,
             'exchange_rate' => $exchangeRate,
-            'base_total' => $estimate->total * $exchangeRate,
-            'base_discount_val' => $estimate->discount_val * $exchangeRate,
-            'base_sub_total' => $estimate->sub_total * $exchangeRate,
-            'base_tax' => $estimate->tax * $exchangeRate,
-            'base_due_amount' => $estimate->total * $exchangeRate,
+            'base_total' => MoneyConversion::toBaseMinor($estimate->total, $exchangeRate),
+            'base_discount_val' => MoneyConversion::toBaseMinor($estimate->discount_val, $exchangeRate),
+            'base_sub_total' => MoneyConversion::toBaseMinor($estimate->sub_total, $exchangeRate),
+            'base_tax' => MoneyConversion::toBaseMinor($estimate->tax, $exchangeRate),
+            'base_due_amount' => MoneyConversion::toBaseMinor($estimate->total, $exchangeRate),
             ...$estimate->only(['currency_id', 'sales_tax_type', 'sales_tax_address_type']),
         ]);
 
@@ -372,10 +373,11 @@ class EstimateService implements EstimatePdfDataProvider
             'paid_status' => Invoice::STATUS_UNPAID,
             'due_amount' => $estimate->total,
             'exchange_rate' => $exchangeRate,
-            'base_discount_val' => $estimate->discount_val * $exchangeRate,
-            'base_sub_total' => $estimate->sub_total * $exchangeRate,
-            'base_total' => $estimate->total * $exchangeRate,
-            'base_tax' => $estimate->tax * $exchangeRate,
+            'base_discount_val' => MoneyConversion::toBaseMinor($estimate->discount_val, $exchangeRate),
+            'base_sub_total' => MoneyConversion::toBaseMinor($estimate->sub_total, $exchangeRate),
+            'base_total' => MoneyConversion::toBaseMinor($estimate->total, $exchangeRate),
+            'base_due_amount' => MoneyConversion::toBaseMinor($estimate->total, $exchangeRate),
+            'base_tax' => MoneyConversion::toBaseMinor($estimate->tax, $exchangeRate),
             ...$carriedOver,
         ]);
 

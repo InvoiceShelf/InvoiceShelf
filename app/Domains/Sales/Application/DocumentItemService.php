@@ -4,6 +4,7 @@ namespace App\Domains\Sales\Application;
 
 use App\Domains\Metadata\Contracts\CustomFieldValueWriter;
 use App\Support\DocumentTotals;
+use App\Support\MoneyConversion;
 use Illuminate\Database\Eloquent\Model;
 
 class DocumentItemService
@@ -45,14 +46,14 @@ class DocumentItemService
                 // Recompute the item total from price/quantity so a tampered item
                 // total can't desync from the recomputed document totals (GHSA-8c69).
                 $item['total'] = DocumentTotals::itemTotal($item, $document->discount_per_item === 'YES');
-                $item['base_price'] = $item['price'] * $exchangeRate;
-                $item['base_discount_val'] = $item['discount_val'] * $exchangeRate;
-                $item['base_tax'] = $item['tax'] * $exchangeRate;
-                $item['base_total'] = $item['total'] * $exchangeRate;
+                $item['base_price'] = MoneyConversion::toBaseMinor($item['price'], $exchangeRate);
+                $item['base_discount_val'] = MoneyConversion::toBaseMinor($item['discount_val'], $exchangeRate);
+                $item['base_tax'] = MoneyConversion::toBaseMinor($item['tax'], $exchangeRate);
+                $item['base_total'] = MoneyConversion::toBaseMinor($item['total'], $exchangeRate);
             } else {
                 foreach (self::BASE_FIELDS as $baseField => $field) {
                     if (! array_key_exists($baseField, $item)) {
-                        $item[$baseField] = ($item[$field] ?? 0) * $exchangeRate;
+                        $item[$baseField] = MoneyConversion::toBaseMinor($item[$field] ?? 0, $exchangeRate);
                     }
                 }
             }
@@ -75,7 +76,7 @@ class DocumentItemService
                     $tax['currency_id'] = $document->currency_id;
 
                     if ($recompute || ! array_key_exists('base_amount', $tax)) {
-                        $tax['base_amount'] = $tax['amount'] * $exchangeRate;
+                        $tax['base_amount'] = MoneyConversion::toBaseMinor($tax['amount'], $exchangeRate);
                     }
 
                     if (gettype($tax['amount']) !== 'NULL') {
@@ -142,7 +143,7 @@ class DocumentItemService
             $tax['currency_id'] = $document->currency_id;
 
             if ($recompute || ! array_key_exists('base_amount', $tax)) {
-                $tax['base_amount'] = $tax['amount'] * $exchangeRate;
+                $tax['base_amount'] = MoneyConversion::toBaseMinor($tax['amount'], $exchangeRate);
             }
 
             if (gettype($tax['amount']) !== 'NULL') {

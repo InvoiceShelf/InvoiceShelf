@@ -5,6 +5,7 @@ namespace App\Adapters\Purchases;
 use App\Domains\Purchases\Contracts\ExpenseTaxManager;
 use App\Domains\Purchases\Models\Expense;
 use App\Domains\Taxation\Models\TaxType;
+use App\Support\MoneyConversion;
 
 class TaxationExpenseTaxManager implements ExpenseTaxManager
 {
@@ -33,7 +34,7 @@ class TaxationExpenseTaxManager implements ExpenseTaxManager
                 'currency_id' => $expense->currency_id,
                 'exchange_rate' => $expense->exchange_rate,
                 'amount' => (int) $tax['amount'],
-                'base_amount' => (int) round($tax['amount'] * $expense->exchange_rate),
+                'base_amount' => MoneyConversion::toBaseMinor($tax['amount'], $expense->exchange_rate),
                 'name' => $taxType->name,
                 'percent' => $taxType->percent,
                 'fixed_amount' => $taxType->fixed_amount,

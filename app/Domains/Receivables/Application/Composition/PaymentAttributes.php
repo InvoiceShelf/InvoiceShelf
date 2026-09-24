@@ -4,6 +4,7 @@ namespace App\Domains\Receivables\Application\Composition;
 
 use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Contacts\Models\Customer;
+use App\Support\MoneyConversion;
 use Illuminate\Support\Arr;
 
 /**
@@ -30,7 +31,7 @@ final class PaymentAttributes
             'creator_id' => $creatorId,
             'company_id' => $companyId,
             'exchange_rate' => $rate,
-            'base_amount' => (int) round(($validated['amount'] ?? 0) * $rate),
+            'base_amount' => MoneyConversion::toBaseMinor(($validated['amount'] ?? 0), $rate),
             'currency_id' => $currencyId,
         ]);
     }

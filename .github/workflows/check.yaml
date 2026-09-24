@@ -110,3 +110,43 @@ jobs:
                   php artisan test --group=modules
                   php artisan test --group=architecture
                   php artisan test --group=isolated
+
+    money_postgres:
+        name: PostgreSQL money conversion
+        needs: [php_syntax_errors, changes]
+        if: needs.changes.outputs.php == 'true'
+        runs-on: ubuntu-latest
+        services:
+            postgres:
+                image: postgres:18
+                env:
+                    POSTGRES_USER: invoiceshelf
+                    POSTGRES_PASSWORD: test-only-password
+                    POSTGRES_DB: invoiceshelf_money_test
+                ports:
+                    - 5432:5432
+                options: >-
+                    --health-cmd="pg_isready -U invoiceshelf -d invoiceshelf_money_test"
+                    --health-interval=10s
+                    --health-timeout=5s
+                    --health-retries=5
+        env:
+            DB_CONNECTION: pgsql
+            DB_HOST: 127.0.0.1
+            DB_PORT: 5432
+            DB_DATABASE: invoiceshelf_money_test
+            DB_USERNAME: invoiceshelf
+            DB_PASSWORD: test-only-password
+        steps:
+            - uses: actions/checkout@v6
+            - uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.4'
+                  extensions: bcmath, curl, dom, gd, imagick, json, libxml, mbstring, pcntl, pdo, pdo_pgsql, zip
+                  coverage: none
+            - uses: ramsey/composer-install@4.0.0
+            - name: Run currency conversion regressions on PostgreSQL
+              run: |
+                  cp .env.example .env
+                  php artisan key:generate --no-interaction
+                  php artisan test --group=money-conversion

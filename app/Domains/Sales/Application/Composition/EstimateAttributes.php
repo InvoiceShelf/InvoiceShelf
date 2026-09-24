@@ -6,6 +6,7 @@ use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Contacts\Models\Customer;
 use App\Domains\Sales\Models\Estimate;
 use App\Support\DocumentTotals;
+use App\Support\MoneyConversion;
 use Illuminate\Support\Arr;
 
 /**
@@ -51,10 +52,10 @@ final class EstimateAttributes
             'total' => $sums['total'],
             'tax' => $sums['tax'],
             'exchange_rate' => $rate,
-            'base_discount_val' => $discountVal * $rate,
-            'base_sub_total' => $sums['sub_total'] * $rate,
-            'base_total' => $sums['total'] * $rate,
-            'base_tax' => $sums['tax'] * $rate,
+            'base_discount_val' => MoneyConversion::toBaseMinor($discountVal, $rate),
+            'base_sub_total' => MoneyConversion::toBaseMinor($sums['sub_total'], $rate),
+            'base_total' => MoneyConversion::toBaseMinor($sums['total'], $rate),
+            'base_tax' => MoneyConversion::toBaseMinor($sums['tax'], $rate),
             'currency_id' => Customer::find($input['customer_id'] ?? null)->currency_id,
         ]);
     }

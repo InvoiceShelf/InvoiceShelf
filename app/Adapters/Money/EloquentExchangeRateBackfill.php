@@ -8,6 +8,7 @@ use App\Domains\Receivables\Models\Payment;
 use App\Domains\Sales\Models\Estimate;
 use App\Domains\Sales\Models\Invoice;
 use App\Domains\Taxation\Models\Tax;
+use App\Support\MoneyConversion;
 
 /**
  * Coordinates the one-time exchange-rate backfill across durable document
@@ -37,11 +38,11 @@ class EloquentExchangeRateBackfill implements ExchangeRateBackfill
             foreach (Invoice::where('currency_id', $currency['id'])->get() as $invoice) {
                 $invoice->update([
                     'exchange_rate' => $rate,
-                    'base_discount_val' => $invoice->sub_total * $rate,
-                    'base_sub_total' => $invoice->sub_total * $rate,
-                    'base_total' => $invoice->total * $rate,
-                    'base_tax' => $invoice->tax * $rate,
-                    'base_due_amount' => $invoice->due_amount * $rate,
+                    'base_discount_val' => MoneyConversion::toBaseMinor($invoice->discount_val, $rate),
+                    'base_sub_total' => MoneyConversion::toBaseMinor($invoice->sub_total, $rate),
+                    'base_total' => MoneyConversion::toBaseMinor($invoice->total, $rate),
+                    'base_tax' => MoneyConversion::toBaseMinor($invoice->tax, $rate),
+                    'base_due_amount' => MoneyConversion::toBaseMinor($invoice->due_amount, $rate),
                 ]);
 
                 $this->updateItemsExchangeRate($invoice);
@@ -50,23 +51,26 @@ class EloquentExchangeRateBackfill implements ExchangeRateBackfill
             foreach (Estimate::where('currency_id', $currency['id'])->get() as $estimate) {
                 $estimate->update([
                     'exchange_rate' => $rate,
-                    'base_discount_val' => $estimate->sub_total * $rate,
-                    'base_sub_total' => $estimate->sub_total * $rate,
-                    'base_total' => $estimate->total * $rate,
-                    'base_tax' => $estimate->tax * $rate,
+                    'base_discount_val' => MoneyConversion::toBaseMinor($estimate->discount_val, $rate),
+                    'base_sub_total' => MoneyConversion::toBaseMinor($estimate->sub_total, $rate),
+                    'base_total' => MoneyConversion::toBaseMinor($estimate->total, $rate),
+                    'base_tax' => MoneyConversion::toBaseMinor($estimate->tax, $rate),
                 ]);
 
                 $this->updateItemsExchangeRate($estimate);
             }
 
             foreach (Tax::where('currency_id', $currency['id'])->get() as $tax) {
-                $tax->update(['base_amount' => $tax->base_amount * $rate]);
+                $tax->update([
+                    'exchange_rate' => $rate,
+                    'base_amount' => MoneyConversion::toBaseMinor($tax->amount, $rate),
+                ]);
             }
 
             foreach (Payment::where('currency_id', $currency['id'])->get() as $payment) {
                 $payment->update([
                     'exchange_rate' => $rate,
-                    'base_amount' => $payment->amount * $rate,
+                    'base_amount' => MoneyConversion::toBaseMinor($payment->amount, $rate),
                 ]);
             }
         }
@@ -83,10 +87,10 @@ class EloquentExchangeRateBackfill implements ExchangeRateBackfill
         foreach ($document->items as $item) {
             $item->update([
                 'exchange_rate' => $document->exchange_rate,
-                'base_discount_val' => $item->discount_val * $document->exchange_rate,
-                'base_price' => $item->price * $document->exchange_rate,
-                'base_tax' => $item->tax * $document->exchange_rate,
-                'base_total' => $item->total * $document->exchange_rate,
+                'base_discount_val' => MoneyConversion::toBaseMinor($item->discount_val, $document->exchange_rate),
+                'base_price' => MoneyConversion::toBaseMinor($item->price, $document->exchange_rate),
+                'base_tax' => MoneyConversion::toBaseMinor($item->tax, $document->exchange_rate),
+                'base_total' => MoneyConversion::toBaseMinor($item->total, $document->exchange_rate),
             ]);
 
             $this->updateTaxesExchangeRate($item);
@@ -104,7 +108,7 @@ class EloquentExchangeRateBackfill implements ExchangeRateBackfill
         $taxable->taxes->each(function ($tax) use ($taxable): void {
             $tax->update([
                 'exchange_rate' => $taxable->exchange_rate,
-                'base_amount' => $tax->amount * $taxable->exchange_rate,
+                'base_amount' => MoneyConversion::toBaseMinor($tax->amount, $taxable->exchange_rate),
             ]);
         });
     }

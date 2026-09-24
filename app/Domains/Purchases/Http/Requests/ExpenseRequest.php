@@ -5,6 +5,7 @@ namespace App\Domains\Purchases\Http\Requests;
 use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Metadata\Http\Requests\Concerns\ValidatesCustomFields;
 use App\Domains\Taxation\Models\TaxType;
+use App\Support\MoneyConversion;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
@@ -128,7 +129,7 @@ class ExpenseRequest extends FormRequest
             'creator_id' => $this->user()->id,
             'company_id' => $this->header('company'),
             'exchange_rate' => $rate,
-            'base_amount' => $this->amount * $rate,
+            'base_amount' => MoneyConversion::toBaseMinor($this->amount, $rate),
             'currency_id' => $chosenCurrency,
         ]);
     }

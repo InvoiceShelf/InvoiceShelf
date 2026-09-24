@@ -3,6 +3,7 @@
 namespace App\Domains\Sales\Application;
 
 use App\Domains\Sales\Models\Invoice;
+use App\Support\MoneyConversion;
 
 class InvoiceBalanceService
 {
@@ -27,7 +28,7 @@ class InvoiceBalanceService
         $due = max(0, (int) $invoice->total - $allocated - $credited);
 
         $invoice->due_amount = $due;
-        $invoice->base_due_amount = (int) round($due * $invoice->exchange_rate);
+        $invoice->base_due_amount = MoneyConversion::toBaseMinor($due, $invoice->exchange_rate);
 
         if ($due === 0) {
             // Nothing left outstanding, so the document closes out on both
