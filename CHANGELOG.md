@@ -7,6 +7,22 @@ section beneath it is what CI publishes to the updater — see
 Releases before 2.4.0 are on GitHub:
 https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 2.4.6 - 2026-09-24
+
+Fixes foreign-currency documents on PostgreSQL.
+
+### Fixes
+
+- **On PostgreSQL, saving an estimate, invoice, recurring invoice, payment or expense in a foreign currency failed** whenever the exchange rate had decimals, with `invalid input syntax for type bigint`. Amounts converted to the company currency are now rounded to whole cents before they are stored. The exchange rate keeps its decimals. (#798, #861, #863)
+- An invoice converted from an estimate now gets its balance in the company currency, and estimate lines take their company-currency tax from the line instead of from the whole estimate. (#861)
+- The exchange-rate update for existing documents, which runs after the company currency changes, took each document's discount from its subtotal and converted taxes twice. It now converts each amount from its own value. (#861)
+
+### Upgrade notes
+
+- Documents saved before this release keep the company-currency amounts they were stored with. Saving a document again recalculates them.
+
+Docker: `invoiceshelf/invoiceshelf:2.4.6` (also `:2.4`, `:2` and `:latest`).
+
 ## 2.4.5 - 2026-09-23
 
 Security follow-up to 2.4.4. It completes two fixes that 2.4.4 only partly covered, and corrects the PHP version the installer and the updater ask for. **Upgrade every 2.x install.**
