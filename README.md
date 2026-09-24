@@ -1,5 +1,8 @@
 <p align="center">
-  <img src="resources/static/img/logo-full.svg" alt="InvoiceShelf" width="232">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/logo-dark.svg">
+    <img src="resources/static/img/logo-full.svg" alt="InvoiceShelf" width="232">
+  </picture>
 </p>
 
 <p align="center">
@@ -20,7 +23,10 @@
 > [`2.x` release](https://github.com/InvoiceShelf/InvoiceShelf/tree/2.x) for a
 > production installation.
 
-![InvoiceShelf dashboard](resources/static/img/invoiceshelf-dashboard.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/dashboard-dark.webp">
+  <img alt="The InvoiceShelf dashboard: what customers owe, split into overdue and due soon, and a year of sales, receipts and expenses" src=".github/assets/dashboard-light.webp">
+</picture>
 
 ## Run your invoicing from one place
 
