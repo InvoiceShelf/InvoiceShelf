@@ -32,7 +32,11 @@ final class MoneyConversion
             throw new InvalidArgumentException('Currency conversion must produce a finite amount.');
         }
 
-        $rounded = round($converted, 0, PHP_ROUND_HALF_UP);
+        // Rates are stored with six decimals and amounts are whole minor units,
+        // so the exact product never needs more than six. Rounding to six first
+        // drops the binary error (150 x 1.13 arrives as 169.49999999999997)
+        // before the half-away-from-zero step picks the unit.
+        $rounded = round(round($converted, 6), 0, PHP_ROUND_HALF_UP);
         // The floating-point representation of PHP_INT_MAX rounds up to 2^63.
         // Exact integer products took the branch above; this boundary cannot
         // safely be cast back to a signed integer.
