@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Jobs\GeneratePaymentPdfJob;
 use App\Mail\SendPaymentMail;
 use App\Services\SerialNumberFormatter;
+use App\Support\MoneyConversion;
 use App\Support\PublicToken;
 use App\Support\SafeOrderBy;
 use App\Traits\GeneratesPdfTrait;
@@ -473,7 +474,7 @@ class Payment extends Model implements HasMedia
         $data['payment_method_id'] = request()->payment_method_id;
         $data['customer_id'] = $invoice->customer_id;
         $data['exchange_rate'] = $invoice->exchange_rate;
-        $data['base_amount'] = $data['amount'] * $data['exchange_rate'];
+        $data['base_amount'] = MoneyConversion::toBaseMinor($data['amount'], $data['exchange_rate']);
         $data['currency_id'] = $invoice->currency_id;
         $data['company_id'] = $invoice->company_id;
         $data['transaction_id'] = $transaction->id;

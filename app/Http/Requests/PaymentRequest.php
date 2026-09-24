@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\CompanySetting;
 use App\Models\Customer;
+use App\Support\MoneyConversion;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -91,7 +92,7 @@ class PaymentRequest extends FormRequest
                 'creator_id' => $this->user()->id,
                 'company_id' => $this->header('company'),
                 'exchange_rate' => $exchange_rate,
-                'base_amount' => $this->amount * $exchange_rate,
+                'base_amount' => MoneyConversion::toBaseMinor($this->amount, $exchange_rate),
                 'currency_id' => $currency,
             ])
             ->toArray();

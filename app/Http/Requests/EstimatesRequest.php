@@ -6,6 +6,7 @@ use App\Models\CompanySetting;
 use App\Models\Customer;
 use App\Models\Estimate;
 use App\Support\DocumentTotals;
+use App\Support\MoneyConversion;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -144,10 +145,10 @@ class EstimatesRequest extends FormRequest
                 'total' => $totals['total'],
                 'tax' => $totals['tax'],
                 'exchange_rate' => $exchange_rate,
-                'base_discount_val' => $this->discount_val * $exchange_rate,
-                'base_sub_total' => $totals['sub_total'] * $exchange_rate,
-                'base_total' => $totals['total'] * $exchange_rate,
-                'base_tax' => $totals['tax'] * $exchange_rate,
+                'base_discount_val' => MoneyConversion::toBaseMinor($this->discount_val, $exchange_rate),
+                'base_sub_total' => MoneyConversion::toBaseMinor($totals['sub_total'], $exchange_rate),
+                'base_total' => MoneyConversion::toBaseMinor($totals['total'], $exchange_rate),
+                'base_tax' => MoneyConversion::toBaseMinor($totals['tax'], $exchange_rate),
                 'currency_id' => $currency,
             ])
             ->toArray();

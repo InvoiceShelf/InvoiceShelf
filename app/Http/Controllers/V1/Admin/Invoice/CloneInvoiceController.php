@@ -7,6 +7,7 @@ use App\Http\Resources\InvoiceResource;
 use App\Models\CompanySetting;
 use App\Models\Invoice;
 use App\Services\SerialNumberFormatter;
+use App\Support\MoneyConversion;
 use App\Support\PublicToken;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -81,11 +82,11 @@ class CloneInvoiceController extends Controller
             'tax' => $invoice->tax,
             'notes' => $invoice->notes,
             'exchange_rate' => $exchange_rate,
-            'base_total' => $invoice->total * $exchange_rate,
-            'base_discount_val' => $invoice->discount_val * $exchange_rate,
-            'base_sub_total' => $invoice->sub_total * $exchange_rate,
-            'base_tax' => $invoice->tax * $exchange_rate,
-            'base_due_amount' => $invoice->total * $exchange_rate,
+            'base_total' => MoneyConversion::toBaseMinor($invoice->total, $exchange_rate),
+            'base_discount_val' => MoneyConversion::toBaseMinor($invoice->discount_val, $exchange_rate),
+            'base_sub_total' => MoneyConversion::toBaseMinor($invoice->sub_total, $exchange_rate),
+            'base_tax' => MoneyConversion::toBaseMinor($invoice->tax, $exchange_rate),
+            'base_due_amount' => MoneyConversion::toBaseMinor($invoice->total, $exchange_rate),
             'currency_id' => $invoice->currency_id,
             'sales_tax_type' => $invoice->sales_tax_type,
             'sales_tax_address_type' => $invoice->sales_tax_address_type,
@@ -101,16 +102,18 @@ class CloneInvoiceController extends Controller
             $invoiceItem['company_id'] = $request->header('company');
             $invoiceItem['name'] = $invoiceItem['name'];
             $invoiceItem['exchange_rate'] = $exchange_rate;
-            $invoiceItem['base_price'] = $invoiceItem['price'] * $exchange_rate;
-            $invoiceItem['base_discount_val'] = $invoiceItem['discount_val'] * $exchange_rate;
-            $invoiceItem['base_tax'] = $invoiceItem['tax'] * $exchange_rate;
-            $invoiceItem['base_total'] = $invoiceItem['total'] * $exchange_rate;
+            $invoiceItem['base_price'] = MoneyConversion::toBaseMinor($invoiceItem['price'], $exchange_rate);
+            $invoiceItem['base_discount_val'] = MoneyConversion::toBaseMinor($invoiceItem['discount_val'], $exchange_rate);
+            $invoiceItem['base_tax'] = MoneyConversion::toBaseMinor($invoiceItem['tax'], $exchange_rate);
+            $invoiceItem['base_total'] = MoneyConversion::toBaseMinor($invoiceItem['total'], $exchange_rate);
 
             $item = $newInvoice->items()->create($invoiceItem);
 
             if (array_key_exists('taxes', $invoiceItem) && $invoiceItem['taxes']) {
                 foreach ($invoiceItem['taxes'] as $tax) {
                     $tax['company_id'] = $request->header('company');
+                    $tax['exchange_rate'] = $exchange_rate;
+                    $tax['base_amount'] = MoneyConversion::toBaseMinor($tax['amount'], $exchange_rate);
 
                     if ($tax['amount']) {
                         $item->taxes()->create($tax);
@@ -122,6 +125,8 @@ class CloneInvoiceController extends Controller
         if ($invoice->taxes) {
             foreach ($invoice->taxes->toArray() as $tax) {
                 $tax['company_id'] = $request->header('company');
+                $tax['exchange_rate'] = $exchange_rate;
+                $tax['base_amount'] = MoneyConversion::toBaseMinor($tax['amount'], $exchange_rate);
                 $newInvoice->taxes()->create($tax);
             }
         }

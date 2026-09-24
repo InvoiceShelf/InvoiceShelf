@@ -6,6 +6,7 @@ use App\Models\CompanySetting;
 use App\Models\Customer;
 use App\Models\RecurringInvoice;
 use App\Support\DocumentTotals;
+use App\Support\MoneyConversion;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RecurringInvoiceRequest extends FormRequest
@@ -133,9 +134,9 @@ class RecurringInvoiceRequest extends FormRequest
                 'tax' => $totals['tax'],
                 'due_amount' => $totals['total'],
                 'exchange_rate' => $exchange_rate,
-                'base_sub_total' => $totals['sub_total'] * $exchange_rate,
-                'base_total' => $totals['total'] * $exchange_rate,
-                'base_tax' => $totals['tax'] * $exchange_rate,
+                'base_sub_total' => MoneyConversion::toBaseMinor($totals['sub_total'], $exchange_rate),
+                'base_total' => MoneyConversion::toBaseMinor($totals['total'], $exchange_rate),
+                'base_tax' => MoneyConversion::toBaseMinor($totals['tax'], $exchange_rate),
                 'currency_id' => $currency,
             ])
             ->toArray();

@@ -8,6 +8,7 @@ use App\Mail\SendEstimateMail;
 use App\Services\SerialNumberFormatter;
 use App\Space\PdfTemplateUtils;
 use App\Support\DocumentTotals;
+use App\Support\MoneyConversion;
 use App\Support\PublicToken;
 use App\Support\SafeOrderBy;
 use App\Traits\GeneratesPdfTrait;
@@ -320,10 +321,10 @@ class Estimate extends Model implements HasMedia
             $estimateItem['exchange_rate'] = $exchange_rate;
             // Recompute the item total from price/quantity (GHSA-8c69).
             $estimateItem['total'] = DocumentTotals::itemTotal($estimateItem, $estimate->discount_per_item === 'YES');
-            $estimateItem['base_price'] = $estimateItem['price'] * $exchange_rate;
-            $estimateItem['base_discount_val'] = $estimateItem['discount_val'] * $exchange_rate;
-            $estimateItem['base_tax'] = $estimate['tax'] * $exchange_rate;
-            $estimateItem['base_total'] = $estimateItem['total'] * $exchange_rate;
+            $estimateItem['base_price'] = MoneyConversion::toBaseMinor($estimateItem['price'], $exchange_rate);
+            $estimateItem['base_discount_val'] = MoneyConversion::toBaseMinor($estimateItem['discount_val'], $exchange_rate);
+            $estimateItem['base_tax'] = MoneyConversion::toBaseMinor($estimateItem['tax'] ?? 0, $exchange_rate);
+            $estimateItem['base_total'] = MoneyConversion::toBaseMinor($estimateItem['total'], $exchange_rate);
 
             $item = $estimate->items()->create($estimateItem);
 
@@ -331,6 +332,9 @@ class Estimate extends Model implements HasMedia
                 foreach ($estimateItem['taxes'] as $tax) {
                     if (gettype($tax['amount']) !== 'NULL') {
                         $tax['company_id'] = $request->header('company');
+                        $tax['exchange_rate'] = $exchange_rate;
+                        $tax['currency_id'] = $estimate->currency_id;
+                        $tax['base_amount'] = MoneyConversion::toBaseMinor($tax['amount'], $exchange_rate);
                         $item->taxes()->create($tax);
                     }
                 }
@@ -350,7 +354,7 @@ class Estimate extends Model implements HasMedia
             if (gettype($tax['amount']) !== 'NULL') {
                 $tax['company_id'] = $request->header('company');
                 $tax['exchange_rate'] = $exchange_rate;
-                $tax['base_amount'] = $tax['amount'] * $exchange_rate;
+                $tax['base_amount'] = MoneyConversion::toBaseMinor($tax['amount'], $exchange_rate);
                 $tax['currency_id'] = $estimate->currency_id;
 
                 $estimate->taxes()->create($tax);
