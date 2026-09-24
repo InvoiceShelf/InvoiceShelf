@@ -12,6 +12,8 @@
 <p align="center">
   <a href="https://invoiceshelf.com/download"><strong>Download InvoiceShelf</strong></a>
   ·
+  <a href="https://demo.invoiceshelf.com/"><strong>Try the live demo</strong></a>
+  ·
   <a href="https://docs.invoiceshelf.com/">Documentation</a>
   ·
   <a href="https://discord.gg/eHXf4zWhsR">Join Discord</a>
@@ -34,6 +36,9 @@ InvoiceShelf is a self-hosted web application for creating invoices, tracking
 payments and expenses, and keeping customer accounts organised. It is built for
 freelancers and small businesses that want a focused workflow without giving up
 control of their data.
+
+Want to look around before installing? The [public demo](https://demo.invoiceshelf.com/)
+includes sample data and resets automatically.
 
 - Create invoices and estimates, then export polished PDFs.
 - Record payments and see what each customer still owes.
