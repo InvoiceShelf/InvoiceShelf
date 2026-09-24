@@ -90,8 +90,10 @@ jobs:
           fi
           echo "registered=true" >> "$GITHUB_OUTPUT"
 
-          MIN_PHP=$(php -r '$c=require "config/installer.php"; echo $c["core"]["minPhpVersion"] ?? "";')
-          EXTS=$(php -r '$c=require "config/installer.php"; echo implode(", ", $c["requirements"]["php"] ?? []);')
+          # A Laravel config file may call env(), which plain PHP lacks (3.0.0-alpha.5
+          # added one), so a stand-in answers with the default.
+          MIN_PHP=$(php -r 'function env($k, $d = null) { return $d; } $c = require "config/installer.php"; echo $c["core"]["minPhpVersion"] ?? "";')
+          EXTS=$(php -r 'function env($k, $d = null) { return $d; } $c = require "config/installer.php"; echo implode(", ", $c["requirements"]["php"] ?? []);')
 
           # CHANGELOG.md is the source: it is written and reviewed alongside the
           # change itself, so what installs are offered cannot drift from what was
