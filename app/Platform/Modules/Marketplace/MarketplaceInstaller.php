@@ -93,8 +93,8 @@ class MarketplaceInstaller
                 // the module declared to the SDK registry.
                 Module::register();
                 Module::find($moduleName)?->enable();
-                Artisan::call('optimize:clear --no-interaction');
-                Artisan::call('queue:restart --no-interaction');
+                Artisan::call('optimize:clear');
+                Artisan::call('queue:restart');
                 ModuleInstalledEvent::dispatch($record);
                 ModuleEnabledEvent::dispatch($record);
                 $this->operations->finish($operation, 'completed');

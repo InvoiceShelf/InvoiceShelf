@@ -246,8 +246,8 @@ class MarketplaceUninstaller
 
     private function refreshRuntimeCaches(): void
     {
-        if (Artisan::call('optimize:clear --no-interaction') !== 0
-            || Artisan::call('queue:restart --no-interaction') !== 0) {
+        if (Artisan::call('optimize:clear') !== 0
+            || Artisan::call('queue:restart') !== 0) {
             throw new RuntimeException('Could not refresh module runtime caches.');
         }
     }
