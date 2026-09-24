@@ -18,11 +18,13 @@ cd /var/www/html
 # realpath(), which returns false for a missing directory). Recreate them before
 # anything writes there, including the sqlite database placed in storage/app
 # below. See InvoiceShelf/docker#75, #69 and #77. templates/pdf is a view
-# namespace, so without it `optimize` fails caching views.
+# namespace, so without it `optimize` fails caching views, and dompdf writes its
+# font cache to fonts/ without creating it, so without it every PDF fails.
 echo "**** Ensuring storage directories exist ****"
 if ! mkdir -p \
     storage/app/public \
     storage/app/templates/pdf \
+    storage/fonts \
     storage/framework/cache/data \
     storage/framework/sessions \
     storage/framework/views \
