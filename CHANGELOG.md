@@ -7,6 +7,25 @@ section beneath it is what CI publishes to the updater — see
 The 2.x line has its own CHANGELOG.md on the `2.x` branch. Releases are also on
 GitHub: https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 3.0.0-alpha.8 - 2026-09-24
+
+Eighth public alpha of InvoiceShelf 3.0. It fixes foreign-currency documents on PostgreSQL, module installs from the marketplace and the customer picker on document forms.
+
+⚠️ **Pre-release, not for production.** Back up your database before upgrading and use this release for evaluation and testing only.
+
+### Fixes
+
+- **On PostgreSQL, saving an estimate, invoice or expense in a foreign currency failed** whenever the exchange rate had decimals, with `invalid input syntax for type bigint`. Amounts converted to the company currency are now rounded to whole cents before they are stored, everywhere they are written: documents, lines, taxes, copies, recurring invoices, payments and balances. The exchange rate keeps its decimals. (#798, #862, #864)
+- The exchange-rate update for existing documents, which runs after the company currency changes, took each document's discount from its subtotal and converted taxes twice. It now converts each amount from its own value. (#862)
+- **Installing or removing a module from the marketplace could fail at the last step**, while clearing caches, after the module had been downloaded and verified. (#858)
+- **The customer picker on invoice, estimate and recurring invoice forms logged an error in the browser console**, and keyboard focus did not follow a pick or a clear: it now moves to the customer card after a pick and back to the picker after Deselect. (#865)
+
+### Upgrade notes
+
+- Documents saved before this release keep the company-currency amounts they were stored with. Saving a document again recalculates them.
+
+Docker: `invoiceshelf/invoiceshelf:3.0.0-alpha.8` or `ghcr.io/invoiceshelf/invoiceshelf:3.0.0-alpha.8` (also `:next`).
+
 ## 3.0.0-alpha.7 - 2026-09-24
 
 Seventh public alpha of InvoiceShelf 3.0, with two fixes.
