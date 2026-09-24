@@ -9,6 +9,7 @@ use App\Domains\Metadata\Contracts\CustomFieldValueWriter;
 use App\Domains\Sales\Contracts\DocumentExchangeRateRecorder;
 use App\Domains\Sales\Models\Invoice;
 use App\Domains\Sales\Models\RecurringInvoice;
+use App\Support\MoneyConversion;
 use App\Support\PublicToken;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -41,10 +42,10 @@ class RecurringInvoiceService
             $this->exchangeRateRecorder->record($recurringInvoice);
         }
 
-        $this->createItems($recurringInvoice, $items);
+        $this->documentItemService->createItems($recurringInvoice, $items);
 
         if ($taxes) {
-            $this->createTaxes($recurringInvoice, $taxes);
+            $this->documentItemService->createTaxes($recurringInvoice, $taxes);
         }
 
         if ($customFields) {
@@ -78,11 +79,11 @@ class RecurringInvoiceService
         }
 
         $recurringInvoice->items()->delete();
-        $this->createItems($recurringInvoice, $items);
+        $this->documentItemService->createItems($recurringInvoice, $items);
 
         $recurringInvoice->taxes()->delete();
         if ($taxes) {
-            $this->createTaxes($recurringInvoice, $taxes);
+            $this->documentItemService->createTaxes($recurringInvoice, $taxes);
         }
 
         if ($customFields) {
@@ -216,11 +217,11 @@ class RecurringInvoiceService
         $newInvoice['exchange_rate'] = $recurringInvoice->exchange_rate;
         $newInvoice['sales_tax_type'] = $recurringInvoice->sales_tax_type;
         $newInvoice['sales_tax_address_type'] = $recurringInvoice->sales_tax_address_type;
-        $newInvoice['base_due_amount'] = $recurringInvoice->exchange_rate * $recurringInvoice->due_amount;
-        $newInvoice['base_discount_val'] = $recurringInvoice->exchange_rate * $recurringInvoice->discount_val;
-        $newInvoice['base_sub_total'] = $recurringInvoice->exchange_rate * $recurringInvoice->sub_total;
-        $newInvoice['base_tax'] = $recurringInvoice->exchange_rate * $recurringInvoice->tax;
-        $newInvoice['base_total'] = $recurringInvoice->exchange_rate * $recurringInvoice->total;
+        $newInvoice['base_due_amount'] = MoneyConversion::toBaseMinor($newInvoice['due_amount'], $recurringInvoice->exchange_rate);
+        $newInvoice['base_discount_val'] = MoneyConversion::toBaseMinor($recurringInvoice->discount_val, $recurringInvoice->exchange_rate);
+        $newInvoice['base_sub_total'] = MoneyConversion::toBaseMinor($recurringInvoice->sub_total, $recurringInvoice->exchange_rate);
+        $newInvoice['base_tax'] = MoneyConversion::toBaseMinor($recurringInvoice->tax, $recurringInvoice->exchange_rate);
+        $newInvoice['base_total'] = MoneyConversion::toBaseMinor($recurringInvoice->total, $recurringInvoice->exchange_rate);
 
         // Stamped last: the visible number is rendered from a format that may
         // embed either of the two sequences.
@@ -265,39 +266,6 @@ class RecurringInvoiceService
             ];
 
             $this->invoiceService->send($invoice, $data);
-        }
-    }
-
-    private function createItems(RecurringInvoice $recurringInvoice, array $items): void
-    {
-        foreach ($items as $item) {
-            $item['company_id'] = $recurringInvoice->company_id;
-            $createdItem = $recurringInvoice->items()->create($item);
-            if (array_key_exists('taxes', $item) && $item['taxes']) {
-                foreach ($item['taxes'] as $tax) {
-                    if (empty($tax['tax_type_id'])) {
-                        continue;
-                    }
-
-                    $tax['company_id'] = $recurringInvoice->company_id;
-                    if (gettype($tax['amount']) !== 'NULL') {
-                        $createdItem->taxes()->create($tax);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Write the template's own tax rows, skipping the ones carrying no amount.
-     */
-    private function createTaxes(RecurringInvoice $recurringInvoice, array $taxes): void
-    {
-        foreach ($taxes as $tax) {
-            if (gettype($tax['amount']) !== 'NULL') {
-                $tax['company_id'] = $recurringInvoice->company_id;
-                $recurringInvoice->taxes()->create($tax);
-            }
         }
     }
 }

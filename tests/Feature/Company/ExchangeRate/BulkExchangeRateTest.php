@@ -27,6 +27,7 @@ test('bulk exchange-rate setup still updates legacy documents through the domain
         'company_id' => $this->companyId,
         'currency_id' => $currency->id,
         'sub_total' => 100,
+        'discount_val' => 8,
         'total' => 140,
         'tax' => 20,
         'due_amount' => 80,
@@ -43,7 +44,7 @@ test('bulk exchange-rate setup still updates legacy documents through the domain
     $invoice->refresh();
 
     expect($invoice->exchange_rate)->toBe(2.0)
-        ->and($invoice->base_discount_val)->toBe(200)
+        ->and($invoice->base_discount_val)->toBe(16)
         ->and($invoice->base_sub_total)->toBe(200)
         ->and($invoice->base_total)->toBe(280)
         ->and($invoice->base_tax)->toBe(40)

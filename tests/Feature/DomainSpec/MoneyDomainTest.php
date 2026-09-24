@@ -90,7 +90,7 @@ it('resolves rates live first, then from the log, then reports none', function (
         ->assertOk()->assertJsonPath('exchangeRate.0', '99.9');
 });
 
-it('gates the historical backfill and reproduces its defective arithmetic', function () {
+it('gates the historical backfill and converts original monetary amounts', function () {
     $usd = DB::table('currencies')->where('code', 'USD')->value('id');
     $customerId = postJson('/api/v1/customers', ['name' => 'Backfill Co', 'currency_id' => $usd])
         ->assertSuccessful()->json('data.id');
@@ -121,8 +121,8 @@ it('gates the historical backfill and reproduces its defective arithmetic', func
     expect((float) $row->exchange_rate)->toBe(2.0);
     expect((int) $row->base_sub_total)->toBe(2000);
     expect((int) $row->base_total)->toBe(2000);
-    // Defect, kept deliberately: base discount sourced from the sub-total.
-    expect((int) $row->base_discount_val)->toBe(2000);
+    // A zero discount remains zero instead of being copied from the subtotal.
+    expect((int) $row->base_discount_val)->toBe(0);
 
     expect(DB::table('company_settings')->where('company_id', $this->companyId)
         ->where('option', 'bulk_exchange_rate_configured')->value('value'))->toBe('YES');

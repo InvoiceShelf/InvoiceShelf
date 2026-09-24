@@ -165,11 +165,11 @@ test('a foreign invoice takes the submitted rate and is denominated in the custo
 
     expect($payload['exchange_rate'])->toBe(1.1)
         ->and($payload['currency_id'])->toBe($this->eur)
-        ->and($payload['base_total'])->toBe(143400 * 1.1)
-        ->and($payload['base_sub_total'])->toBe(120000 * 1.1)
-        ->and($payload['base_tax'])->toBe(23900 * 1.1)
-        ->and($payload['base_discount_val'])->toBe(500 * 1.1)
-        ->and($payload['base_due_amount'])->toBe(143400 * 1.1);
+        ->and($payload['base_total'])->toBe(157740)
+        ->and($payload['base_sub_total'])->toBe(132000)
+        ->and($payload['base_tax'])->toBe(26290)
+        ->and($payload['base_discount_val'])->toBe(550)
+        ->and($payload['base_due_amount'])->toBe(157740);
 });
 
 test('the rate follows the submitted currency, the stored currency follows the customer', function () {

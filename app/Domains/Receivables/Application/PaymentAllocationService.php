@@ -6,6 +6,7 @@ use App\Domains\Receivables\Contracts\InvoiceBalanceUpdater;
 use App\Domains\Receivables\Models\Payment;
 use App\Domains\Receivables\Models\PaymentAllocation;
 use App\Domains\Sales\Models\Invoice;
+use App\Support\MoneyConversion;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -240,7 +241,7 @@ class PaymentAllocationService
     {
         $paymentAmount = (int) $payment->amount;
         $paymentBaseAmount = $payment->base_amount === null
-            ? (int) round($paymentAmount * ((float) $payment->exchange_rate ?: 1))
+            ? MoneyConversion::toBaseMinor($paymentAmount, (float) $payment->exchange_rate ?: 1)
             : (int) $payment->base_amount;
         $allocatedAmount = (int) collect($allocations)->sum('amount');
         $allocatedBaseAmount = 0;

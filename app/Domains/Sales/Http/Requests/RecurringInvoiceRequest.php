@@ -7,6 +7,7 @@ use App\Domains\Contacts\Models\Customer;
 use App\Domains\Metadata\Http\Requests\Concerns\ValidatesCustomFields;
 use App\Domains\Sales\Models\RecurringInvoice;
 use App\Support\DocumentTotals;
+use App\Support\MoneyConversion;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 
@@ -180,9 +181,9 @@ class RecurringInvoiceRequest extends FormRequest
                 'tax' => $totals['tax'],
                 'due_amount' => $totals['total'],
                 'exchange_rate' => $rate,
-                'base_sub_total' => $totals['sub_total'] * $rate,
-                'base_total' => $totals['total'] * $rate,
-                'base_tax' => $totals['tax'] * $rate,
+                'base_sub_total' => MoneyConversion::toBaseMinor($totals['sub_total'], $rate),
+                'base_total' => MoneyConversion::toBaseMinor($totals['total'], $rate),
+                'base_tax' => MoneyConversion::toBaseMinor($totals['tax'], $rate),
                 'currency_id' => $contactCurrency,
             ])
             ->toArray();

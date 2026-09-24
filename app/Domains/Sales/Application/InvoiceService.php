@@ -17,6 +17,7 @@ use App\Platform\Mail\Contracts\MailConfigurator;
 use App\Platform\Pdf\Facades\Pdf;
 use App\Platform\Pdf\Rendering\PdfMetadata;
 use App\Platform\Pdf\Rendering\PdfTemplateUtils;
+use App\Support\MoneyConversion;
 use App\Support\PublicToken;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -128,7 +129,7 @@ class InvoiceService implements InvoicePdfDataProvider
         }
 
         $attributes['due_amount'] = ($invoice->due_amount + $oldTotal);
-        $attributes['base_due_amount'] = $attributes['due_amount'] * $attributes['exchange_rate'];
+        $attributes['base_due_amount'] = MoneyConversion::toBaseMinor($attributes['due_amount'], $attributes['exchange_rate']);
         $attributes['customer_sequence_number'] = $serial->nextCustomerSequenceNumber;
 
         $invoice->update($attributes);
@@ -394,11 +395,11 @@ class InvoiceService implements InvoicePdfDataProvider
             'paid_status' => Invoice::STATUS_UNPAID,
             'due_amount' => $invoice->total,
             'exchange_rate' => $exchangeRate,
-            'base_total' => $invoice->total * $exchangeRate,
-            'base_discount_val' => $invoice->discount_val * $exchangeRate,
-            'base_sub_total' => $invoice->sub_total * $exchangeRate,
-            'base_tax' => $invoice->tax * $exchangeRate,
-            'base_due_amount' => $invoice->total * $exchangeRate,
+            'base_total' => MoneyConversion::toBaseMinor($invoice->total, $exchangeRate),
+            'base_discount_val' => MoneyConversion::toBaseMinor($invoice->discount_val, $exchangeRate),
+            'base_sub_total' => MoneyConversion::toBaseMinor($invoice->sub_total, $exchangeRate),
+            'base_tax' => MoneyConversion::toBaseMinor($invoice->tax, $exchangeRate),
+            'base_due_amount' => MoneyConversion::toBaseMinor($invoice->total, $exchangeRate),
             ...$carriedOver,
         ]);
 
@@ -467,10 +468,10 @@ class InvoiceService implements InvoicePdfDataProvider
             'template_name' => $invoice->getEstimateTemplateName(),
             'status' => Estimate::STATUS_DRAFT,
             'exchange_rate' => $exchangeRate,
-            'base_discount_val' => $invoice->discount_val * $exchangeRate,
-            'base_sub_total' => $invoice->sub_total * $exchangeRate,
-            'base_total' => $invoice->total * $exchangeRate,
-            'base_tax' => $invoice->tax * $exchangeRate,
+            'base_discount_val' => MoneyConversion::toBaseMinor($invoice->discount_val, $exchangeRate),
+            'base_sub_total' => MoneyConversion::toBaseMinor($invoice->sub_total, $exchangeRate),
+            'base_total' => MoneyConversion::toBaseMinor($invoice->total, $exchangeRate),
+            'base_tax' => MoneyConversion::toBaseMinor($invoice->tax, $exchangeRate),
             ...$carriedOver,
         ]);
 
