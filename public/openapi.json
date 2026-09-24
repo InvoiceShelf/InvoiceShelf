@@ -2,7 +2,7 @@
     "openapi": "3.1.0",
     "info": {
         "title": "InvoiceShelf API",
-        "version": "3.0.0-alpha.4",
+        "version": "3.0.0-alpha.5",
         "description": "REST API for InvoiceShelf \u2014 open-source invoicing & expense tracking. Authenticate with a Sanctum personal access token (Authorization: Bearer <token>). Company-scoped endpoints additionally require a `company` header carrying the company ID."
     },
     "servers": [
@@ -1447,6 +1447,43 @@
                                         },
                                         "demo_mode": {
                                             "type": "boolean"
+                                        },
+                                        "demo": {
+                                            "type": [
+                                                "object",
+                                                "null"
+                                            ],
+                                            "properties": {
+                                                "next_reset_at": {
+                                                    "type": "string"
+                                                },
+                                                "email": {
+                                                    "type": "string"
+                                                },
+                                                "password": {
+                                                    "type": "string"
+                                                },
+                                                "portal_email": {
+                                                    "type": "string"
+                                                },
+                                                "portal_password": {
+                                                    "type": "string"
+                                                },
+                                                "portal_path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "next_reset_at",
+                                                "email",
+                                                "password",
+                                                "portal_email",
+                                                "portal_password",
+                                                "portal_path"
+                                            ]
                                         }
                                     },
                                     "required": [
@@ -1456,7 +1493,8 @@
                                         "page_title",
                                         "branding",
                                         "modules",
-                                        "demo_mode"
+                                        "demo_mode",
+                                        "demo"
                                     ]
                                 }
                             }
@@ -2660,6 +2698,231 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/mcp/server": {
+            "get": {
+                "operationId": "connections.server",
+                "summary": "Where clients connect, for the setup instructions on the page",
+                "tags": [
+                    "Connections"
+                ],
+                "parameters": [
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "enabled": {
+                                                    "type": "boolean"
+                                                },
+                                                "server_url": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "enabled",
+                                                "server_url"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/mcp/connections": {
+            "get": {
+                "operationId": "connections.index",
+                "tags": [
+                    "Connections"
+                ],
+                "parameters": [
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `McpConnectionResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/McpConnectionResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/mcp/connections/{connection}": {
+            "patch": {
+                "operationId": "connections.update",
+                "tags": [
+                    "Connections"
+                ],
+                "parameters": [
+                    {
+                        "name": "connection",
+                        "in": "path",
+                        "required": true,
+                        "description": "The connection ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateConnectionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`McpConnectionResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/McpConnectionResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "connections.destroy",
+                "tags": [
+                    "Connections"
+                ],
+                "parameters": [
+                    {
+                        "name": "connection",
+                        "in": "path",
+                        "required": true,
+                        "description": "The connection ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "success"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
@@ -5794,28 +6057,24 @@
                                             "type": "object",
                                             "properties": {
                                                 "exchangeRate": {
-                                                    "type": "array",
-                                                    "prefixItems": [
-                                                        {}
-                                                    ],
-                                                    "minItems": 1,
-                                                    "maxItems": 1,
-                                                    "additionalItems": false
-                                                }
-                                            },
-                                            "required": [
-                                                "exchangeRate"
-                                            ]
-                                        },
-                                        {
-                                            "type": "object",
-                                            "properties": {
-                                                "exchangeRate": {
-                                                    "type": [
-                                                        "array",
-                                                        "null"
-                                                    ],
-                                                    "items": {}
+                                                    "anyOf": [
+                                                        {
+                                                            "type": "array",
+                                                            "prefixItems": [
+                                                                {}
+                                                            ],
+                                                            "minItems": 1,
+                                                            "maxItems": 1,
+                                                            "additionalItems": false
+                                                        },
+                                                        {
+                                                            "type": "null"
+                                                        },
+                                                        {
+                                                            "type": "array",
+                                                            "items": {}
+                                                        }
+                                                    ]
                                                 }
                                             },
                                             "required": [
@@ -10171,6 +10430,251 @@
                     },
                     "403": {
                         "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/super-admin/mcp": {
+            "get": {
+                "operationId": "mcpSettings.show",
+                "tags": [
+                    "McpSettings"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "enabled": {
+                                                    "type": "boolean"
+                                                },
+                                                "server_url": {
+                                                    "type": "string"
+                                                },
+                                                "secure": {
+                                                    "type": "boolean"
+                                                },
+                                                "key_status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "file",
+                                                        "missing",
+                                                        "env"
+                                                    ]
+                                                },
+                                                "default_redirect_domains": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "redirect_domains": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "connection_count": {
+                                                    "type": "integer",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "enabled",
+                                                "server_url",
+                                                "secure",
+                                                "key_status",
+                                                "default_redirect_domains",
+                                                "redirect_domains",
+                                                "connection_count"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "mcpSettings.update",
+                "summary": "Switching the server on creates the signing keys when there are none,\nfrom this web request, so the files belong to the user that serves the\napplication",
+                "tags": [
+                    "McpSettings"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateMcpSettingsRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "enabled": {
+                                                    "type": "boolean"
+                                                },
+                                                "server_url": {
+                                                    "type": "string"
+                                                },
+                                                "secure": {
+                                                    "type": "boolean"
+                                                },
+                                                "key_status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "file",
+                                                        "missing",
+                                                        "env"
+                                                    ]
+                                                },
+                                                "default_redirect_domains": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "redirect_domains": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "connection_count": {
+                                                    "type": "integer",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "enabled",
+                                                "server_url",
+                                                "secure",
+                                                "key_status",
+                                                "default_redirect_domains",
+                                                "redirect_domains",
+                                                "connection_count"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/super-admin/mcp/keys": {
+            "post": {
+                "operationId": "mcpSettings.regenerateKeys",
+                "summary": "Replace the signing keys. Every connected client is signed out and must\nconnect again",
+                "tags": [
+                    "McpSettings"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "enabled": {
+                                                    "type": "boolean"
+                                                },
+                                                "server_url": {
+                                                    "type": "string"
+                                                },
+                                                "secure": {
+                                                    "type": "boolean"
+                                                },
+                                                "key_status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "file",
+                                                        "missing",
+                                                        "env"
+                                                    ]
+                                                },
+                                                "default_redirect_domains": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "redirect_domains": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                },
+                                                "connection_count": {
+                                                    "type": "integer",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "enabled",
+                                                "server_url",
+                                                "secure",
+                                                "key_status",
+                                                "default_redirect_domains",
+                                                "redirect_domains",
+                                                "connection_count"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "An error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview.",
+                                            "example": "The keys are set through PASSPORT_PRIVATE_KEY and PASSPORT_PUBLIC_KEY; replace them there."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
@@ -22138,6 +22642,63 @@
                 ],
                 "title": "MailEnvironmentRequest"
             },
+            "McpConnectionResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "client_name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "redirect_host": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "company": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "name": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "name"
+                        ]
+                    },
+                    "access": {
+                        "type": "string"
+                    },
+                    "last_used_at": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "client_name",
+                    "redirect_host",
+                    "company",
+                    "access",
+                    "last_used_at",
+                    "created_at"
+                ],
+                "title": "McpConnectionResource"
+            },
             "MemberRequest": {
                 "type": "object",
                 "description": "Validates the staff-account form, which serves both filing a new member and\nediting one that already exists.\n\nThe two verbs part company in exactly two places: on an edit the uniqueness\ncheck steps over the row being edited, and the password turns optional so a\nform saved with the field left alone keeps the hash already on file.\n\nThe address is unique across the whole installation rather than within the\ncompany, so a collision tells one tenant that an address is already spoken\nfor somewhere else entirely. Kept as it stands.\n\nThe membership list may only name companies the caller owns, each with a\nrole that exists in that company. A member who also belongs to a company the\ncaller does not own keeps their email and password: changing either would\nhand the caller that account, and with it the other company.",
@@ -23722,6 +24283,40 @@
                     "company_id"
                 ],
                 "title": "UnitResource"
+            },
+            "UpdateConnectionRequest": {
+                "type": "object",
+                "description": "A connection can only be lowered to read only from here; more access, or\nanother company, takes a new consent from the client.",
+                "properties": {
+                    "access": {
+                        "type": "string",
+                        "enum": [
+                            "read"
+                        ]
+                    }
+                },
+                "required": [
+                    "access"
+                ],
+                "title": "UpdateConnectionRequest"
+            },
+            "UpdateMcpSettingsRequest": {
+                "type": "object",
+                "description": "The administrator's MCP settings: the switch, and extra redirect origins.",
+                "properties": {
+                    "enabled": {
+                        "type": "boolean"
+                    },
+                    "redirect_domains": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "maxLength": 255
+                        },
+                        "maxItems": 50
+                    }
+                },
+                "title": "UpdateMcpSettingsRequest"
             },
             "UpdateSettingsRequest": {
                 "type": "object",
