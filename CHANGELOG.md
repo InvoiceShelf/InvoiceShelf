@@ -7,6 +7,25 @@ section beneath it is what CI publishes to the updater — see
 The 2.x line has its own CHANGELOG.md on the `2.x` branch. Releases are also on
 GitHub: https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 3.0.0-alpha.6 - 2026-09-24
+
+Sixth public alpha of InvoiceShelf 3.0. It fixes three problems that stopped a 3.x install from being created or from starting, found while preparing the public demo.
+
+⚠️ **Pre-release, not for production.** Back up your database before upgrading and use this release for evaluation and testing only.
+
+### Fixes
+
+- **Fresh installs on PostgreSQL stopped during the migrations**, from 3.0.0-alpha.2 on. The payment allocations migration stepped over a missing constraint in a way PostgreSQL does not allow, and every statement after it failed. (#851)
+- **A Docker container with a module that ships no views did not start again.** The container prepares its caches on every start, and that step failed on the module's missing views directory. Tasks and Projects is one such module. (#851)
+- **A Docker container whose storage volume started empty did not start**, because the PDF templates directory was missing. (#851)
+- The sample data from `RealisticDemoSeeder` now seeds on MySQL and PostgreSQL, not only SQLite. (#851)
+
+### Upgrade notes
+
+- A PostgreSQL install that stopped during the migrations continues where it stopped: restart the container, or run `php artisan migrate --force`.
+
+Docker: `invoiceshelf/invoiceshelf:3.0.0-alpha.6` or `ghcr.io/invoiceshelf/invoiceshelf:3.0.0-alpha.6` (also `:next`).
+
 ## 3.0.0-alpha.5 - 2026-09-24
 
 Fifth public alpha of InvoiceShelf 3.0. AI assistants can now work in InvoiceShelf: Claude, ChatGPT, Claude Code and Cursor connect over the Model Context Protocol and read, draft and send documents with the permissions of the user who connected them. The release also brings a headless install for servers that are configured rather than clicked through, the demo mode behind demo.invoiceshelf.com, and images on GHCR.
