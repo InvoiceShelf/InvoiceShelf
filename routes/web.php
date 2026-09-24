@@ -58,9 +58,12 @@ Route::get('{company:slug}/customer/{vue?}', function (Company $company) {
     ]);
 })->where('vue', '[\/\w\.-]*')->name('customer.dashboard')->middleware(['install']);
 
-Route::get('/', function () {
-    return view('app');
-})->where('vue', '[\/\w\.-]*')->name('home')->middleware(['install', 'guest']);
+// The root is where people land by typing the address. `install` sends an
+// unfinished install to the wizard and `guest` sends anyone signed in to the
+// dashboard; everyone else signs in.
+Route::get('/', fn () => redirect()->route('login'))
+    ->name('home')
+    ->middleware(['install', 'guest']);
 
 Route::get('/reset-password/{token}', function () {
     return view('app');
