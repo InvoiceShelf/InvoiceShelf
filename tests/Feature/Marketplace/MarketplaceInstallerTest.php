@@ -2,6 +2,7 @@
 
 use App\Platform\Modules\Marketplace\CanonicalJson;
 use App\Platform\Modules\Marketplace\MarketplaceInstaller;
+use App\Platform\Modules\Marketplace\MarketplaceUninstaller;
 use App\Platform\Modules\Models\Module;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
@@ -21,6 +22,19 @@ it('installs an exact signed marketplace archive', function () {
     expect($result['success'])->toBeTrue()
         ->and(base_path('Modules/SecureProbe/module.json'))->toBeFile()
         ->and(Module::query()->where('name', 'SecureProbe')->value('version'))->toBe('1.0.0');
+});
+
+it('uninstalls a signed module and refreshes the runtime', function () {
+    [$archive, $manifest, $keypair] = marketplaceRelease();
+    fakeMarketplaceRelease($archive, $manifest, $keypair);
+
+    expect(app(MarketplaceInstaller::class)->install('secure-probe', '1.0.0', 'stable')['success'])->toBeTrue();
+
+    $result = app(MarketplaceUninstaller::class)->uninstall('SecureProbe', false);
+
+    expect($result['success'])->toBeTrue()
+        ->and(base_path('Modules/SecureProbe'))->not->toBeDirectory()
+        ->and(Module::query()->where('name', 'SecureProbe')->value('installed'))->toBeFalse();
 });
 
 it('reinstalls the same version after a code-only uninstall record', function () {
