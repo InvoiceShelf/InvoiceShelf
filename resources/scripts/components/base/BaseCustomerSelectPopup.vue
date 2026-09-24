@@ -74,20 +74,6 @@ async function restoreFocus(): Promise<void> {
   ;(card.value ?? trigger.value)?.focus()
 }
 
-// A pick or a clear swaps the card and the button once the customer has
-// loaded; focus follows then, and only after the user did it
-let focusAfterChange = false
-
-watch(
-  () => selectedCustomer.value?.id,
-  (id, previous) => {
-    if (focusAfterChange && id !== previous) {
-      focusAfterChange = false
-      void restoreFocus()
-    }
-  },
-)
-
 function leaveFocus(event: Event): void {
   event.preventDefault()
 }
@@ -136,6 +122,22 @@ const selectedCustomer = computed(() => {
       return null
   }
 })
+
+// A pick or a clear swaps the card and the button once the customer has
+// loaded; focus follows then, and only after the user did it. Declared after
+// selectedCustomer: the getter runs during setup, and reading the computed
+// before its declaration throws and leaves the watcher tracking nothing.
+let focusAfterChange = false
+
+watch(
+  () => selectedCustomer.value?.id,
+  (id, previous) => {
+    if (focusAfterChange && id !== previous) {
+      focusAfterChange = false
+      void restoreFocus()
+    }
+  },
+)
 
 // Fetch initial customers on setup
 async function fetchInitialCustomers(): Promise<void> {
