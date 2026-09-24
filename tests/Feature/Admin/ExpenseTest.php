@@ -35,7 +35,7 @@ test('create expense', function () {
     $expense = Expense::factory()->raw([
         'amount' => 150,
         'exchange_rate' => 76.217498,
-        'base_amount' => 11432.6247,
+        'base_amount' => 11433,
     ]);
 
     postJson('api/v1/expenses', $expense)->assertStatus(201);
@@ -219,7 +219,7 @@ test('update expense with EUR currency', function () {
     $expense2 = Expense::factory()->raw([
         'amount' => 150,
         'exchange_rate' => 76.217498,
-        'base_amount' => 11432.6247,
+        'base_amount' => 11433,
     ]);
 
     putJson('api/v1/expenses/'.$expense->id, $expense2)->assertOk();

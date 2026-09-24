@@ -8,6 +8,7 @@ use App\Http\Resources\ExpenseResource;
 use App\Models\CompanySetting;
 use App\Models\ExchangeRateLog;
 use App\Models\Expense;
+use App\Support\MoneyConversion;
 
 class DuplicateExpenseController extends Controller
 {
@@ -40,7 +41,7 @@ class DuplicateExpenseController extends Controller
             'creator_id' => $request->user()->id,
             'company_id' => $request->header('company'),
             'exchange_rate' => $exchangeRate,
-            'base_amount' => $expense->amount * $exchangeRate,
+            'base_amount' => MoneyConversion::toBaseMinor($expense->amount, $exchangeRate),
         ]);
 
         if ((string) $newExpense->currency_id !== (string) $companyCurrency) {

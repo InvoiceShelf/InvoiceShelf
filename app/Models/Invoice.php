@@ -8,6 +8,7 @@ use App\Mail\SendInvoiceMail;
 use App\Services\SerialNumberFormatter;
 use App\Space\PdfTemplateUtils;
 use App\Support\DocumentTotals;
+use App\Support\MoneyConversion;
 use App\Support\PublicToken;
 use App\Support\SafeOrderBy;
 use App\Traits\GeneratesPdfTrait;
@@ -404,7 +405,7 @@ class Invoice extends Model implements HasMedia
         }
 
         $data['due_amount'] = ($this->due_amount + $oldTotal);
-        $data['base_due_amount'] = $data['due_amount'] * $data['exchange_rate'];
+        $data['base_due_amount'] = MoneyConversion::toBaseMinor($data['due_amount'], $data['exchange_rate']);
         $data['customer_sequence_number'] = $serial->nextCustomerSequenceNumber;
 
         $this->update($data);
@@ -510,10 +511,10 @@ class Invoice extends Model implements HasMedia
             // Recompute the item total from price/quantity so a tampered item
             // total can't desync from the recomputed document totals (GHSA-8c69).
             $invoiceItem['total'] = DocumentTotals::itemTotal($invoiceItem, $invoice->discount_per_item === 'YES');
-            $invoiceItem['base_price'] = $invoiceItem['price'] * $exchange_rate;
-            $invoiceItem['base_discount_val'] = $invoiceItem['discount_val'] * $exchange_rate;
-            $invoiceItem['base_tax'] = $invoiceItem['tax'] * $exchange_rate;
-            $invoiceItem['base_total'] = $invoiceItem['total'] * $exchange_rate;
+            $invoiceItem['base_price'] = MoneyConversion::toBaseMinor($invoiceItem['price'], $exchange_rate);
+            $invoiceItem['base_discount_val'] = MoneyConversion::toBaseMinor($invoiceItem['discount_val'], $exchange_rate);
+            $invoiceItem['base_tax'] = MoneyConversion::toBaseMinor($invoiceItem['tax'], $exchange_rate);
+            $invoiceItem['base_total'] = MoneyConversion::toBaseMinor($invoiceItem['total'], $exchange_rate);
 
             if (array_key_exists('recurring_invoice_id', $invoiceItem)) {
                 unset($invoiceItem['recurring_invoice_id']);
@@ -525,7 +526,7 @@ class Invoice extends Model implements HasMedia
                 foreach ($invoiceItem['taxes'] as $tax) {
                     $tax['company_id'] = $invoice->company_id;
                     $tax['exchange_rate'] = $invoice->exchange_rate;
-                    $tax['base_amount'] = $tax['amount'] * $exchange_rate;
+                    $tax['base_amount'] = MoneyConversion::toBaseMinor($tax['amount'], $exchange_rate);
                     $tax['currency_id'] = $invoice->currency_id;
 
                     if (gettype($tax['amount']) !== 'NULL') {
@@ -552,7 +553,7 @@ class Invoice extends Model implements HasMedia
         foreach ($taxes as $tax) {
             $tax['company_id'] = $invoice->company_id;
             $tax['exchange_rate'] = $invoice->exchange_rate;
-            $tax['base_amount'] = $tax['amount'] * $exchange_rate;
+            $tax['base_amount'] = MoneyConversion::toBaseMinor($tax['amount'], $exchange_rate);
             $tax['currency_id'] = $invoice->currency_id;
 
             if (gettype($tax['amount']) !== 'NULL') {
@@ -687,7 +688,7 @@ class Invoice extends Model implements HasMedia
     public function addInvoicePayment($amount)
     {
         $this->due_amount += $amount;
-        $this->base_due_amount = $this->due_amount * $this->exchange_rate;
+        $this->base_due_amount = MoneyConversion::toBaseMinor($this->due_amount, $this->exchange_rate);
 
         $this->changeInvoiceStatus($this->due_amount);
     }
@@ -695,7 +696,7 @@ class Invoice extends Model implements HasMedia
     public function subtractInvoicePayment($amount)
     {
         $this->due_amount -= $amount;
-        $this->base_due_amount = $this->due_amount * $this->exchange_rate;
+        $this->base_due_amount = MoneyConversion::toBaseMinor($this->due_amount, $this->exchange_rate);
 
         $this->changeInvoiceStatus($this->due_amount);
     }

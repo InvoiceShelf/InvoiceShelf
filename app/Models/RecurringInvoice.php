@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Http\Requests\RecurringInvoiceRequest;
 use App\Services\SerialNumberFormatter;
 use App\Support\DocumentTotals;
+use App\Support\MoneyConversion;
 use App\Support\PublicToken;
 use App\Support\SafeOrderBy;
 use App\Traits\HasCustomFieldsTrait;
@@ -251,10 +252,17 @@ class RecurringInvoice extends Model
             $invoiceItem['company_id'] = $recurringInvoice->company_id;
             // Recompute the item total from price/quantity (GHSA-8c69).
             $invoiceItem['total'] = DocumentTotals::itemTotal($invoiceItem, $recurringInvoice->discount_per_item === 'YES');
+            $invoiceItem['exchange_rate'] = $recurringInvoice->exchange_rate;
+            foreach (['price', 'discount_val', 'tax', 'total'] as $field) {
+                $invoiceItem['base_'.$field] = MoneyConversion::toBaseMinor($invoiceItem[$field] ?? 0, $recurringInvoice->exchange_rate);
+            }
             $item = $recurringInvoice->items()->create($invoiceItem);
             if (array_key_exists('taxes', $invoiceItem) && $invoiceItem['taxes']) {
                 foreach ($invoiceItem['taxes'] as $tax) {
                     $tax['company_id'] = $recurringInvoice->company_id;
+                    $tax['exchange_rate'] = $recurringInvoice->exchange_rate;
+                    $tax['currency_id'] = $recurringInvoice->currency_id;
+                    $tax['base_amount'] = MoneyConversion::toBaseMinor($tax['amount'], $recurringInvoice->exchange_rate);
                     if (gettype($tax['amount']) !== 'NULL') {
                         $item->taxes()->create($tax);
                     }
@@ -267,6 +275,9 @@ class RecurringInvoice extends Model
     {
         foreach ($taxes as $tax) {
             $tax['company_id'] = $recurringInvoice->company_id;
+            $tax['exchange_rate'] = $recurringInvoice->exchange_rate;
+            $tax['currency_id'] = $recurringInvoice->currency_id;
+            $tax['base_amount'] = MoneyConversion::toBaseMinor($tax['amount'], $recurringInvoice->exchange_rate);
 
             if (gettype($tax['amount']) !== 'NULL') {
                 $recurringInvoice->taxes()->create($tax);
@@ -350,11 +361,11 @@ class RecurringInvoice extends Model
         $newInvoice['invoice_number'] = $serial->getNextNumber();
         $newInvoice['sequence_number'] = $serial->nextSequenceNumber;
         $newInvoice['customer_sequence_number'] = $serial->nextCustomerSequenceNumber;
-        $newInvoice['base_due_amount'] = $this->exchange_rate * $this->due_amount;
-        $newInvoice['base_discount_val'] = $this->exchange_rate * $this->discount_val;
-        $newInvoice['base_sub_total'] = $this->exchange_rate * $this->sub_total;
-        $newInvoice['base_tax'] = $this->exchange_rate * $this->tax;
-        $newInvoice['base_total'] = $this->exchange_rate * $this->total;
+        $newInvoice['base_due_amount'] = MoneyConversion::toBaseMinor($newInvoice['due_amount'], $this->exchange_rate);
+        $newInvoice['base_discount_val'] = MoneyConversion::toBaseMinor($this->discount_val, $this->exchange_rate);
+        $newInvoice['base_sub_total'] = MoneyConversion::toBaseMinor($this->sub_total, $this->exchange_rate);
+        $newInvoice['base_tax'] = MoneyConversion::toBaseMinor($this->tax, $this->exchange_rate);
+        $newInvoice['base_total'] = MoneyConversion::toBaseMinor($this->total, $this->exchange_rate);
         $invoice = Invoice::create($newInvoice);
         $invoice->unique_hash = PublicToken::make();
         $invoice->save();
