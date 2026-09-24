@@ -1,5 +1,8 @@
 <p align="center">
-  <img src="resources/static/img/logo-full.svg" alt="InvoiceShelf" width="232">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/logo-dark.svg">
+    <img src="resources/static/img/logo-full.svg" alt="InvoiceShelf" width="232">
+  </picture>
 </p>
 
 <p align="center">
