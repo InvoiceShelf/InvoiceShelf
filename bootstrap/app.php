@@ -23,7 +23,6 @@ use App\Platform\Operations\Installation\Http\Middleware\EnsureInstalled;
 use App\Platform\Operations\Installation\Http\Middleware\RedirectIfInstalled;
 use App\Platform\Operations\Installation\Http\Middleware\UseInstallWizardTokenAuth;
 use App\Platform\Pdf\Http\Middleware\PdfMiddleware;
-use App\Platform\Storage\Http\Middleware\ConfigMiddleware;
 use App\Providers\AppServiceProvider;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Foundation\Application;
@@ -68,7 +67,6 @@ return Application::configure(basePath: dirname(__DIR__))
             TrimStrings::class,
             TrustProxies::class,
             UseInstallWizardTokenAuth::class,
-            ConfigMiddleware::class,
         ]);
 
         $middleware->web([
