@@ -124,6 +124,7 @@
     "copy_to_clipboard": "Copiar al portapapeles"
   },
   "dashboard": {
+    "load_failed": "El panel no se pudo cargar.",
     "select_year": "Seleccionar año",
     "cards": {
       "due_amount": "Importe pendiente",
@@ -148,7 +149,10 @@
       "customer": "Cliente",
       "amount_due": "Importe pendiente",
       "actions": "Acciones",
-      "view_all": "Ver todo"
+      "view_all": "Ver todo",
+      "empty_title": "No hay facturas pendientes",
+      "empty_description": "Las facturas enviadas que aún están vencidas o pendientes de pago aparecen aquí.",
+      "portal_empty_description": "Las facturas que aún necesita pagar aparecen aquí."
     },
     "recent_estimate_card": {
       "title": "Presupuestos recientes",
@@ -156,7 +160,38 @@
       "customer": "Cliente",
       "amount_due": "Importe pendiente",
       "actions": "Acciones",
-      "view_all": "Ver todo"
+      "view_all": "Ver todo",
+      "empty_title": "Sin Presupuestos",
+      "empty_description": "Los presupuestos enviados se mostrarán aquí.",
+      "portal_empty_description": "Los presupuestos que te han enviado se mostraran aquí."
+    },
+    "receivables": {
+      "title": "Lo que te deben",
+      "on_invoices": "{count} enviar factura  | {count} enviar facturas",
+      "overdue": "Atrasado",
+      "due_soon": "Vence en los próximos 30 días",
+      "due_later": "Vence más tarde",
+      "invoice_count": "{count} factura | {count} facturas",
+      "nothing_owed": "No hay cuentas por cobrar actualmente.",
+      "first_invoice_hint": "Envia tu primera factura y lo que deben tus clientes se mostrara aquí.",
+      "view_invoices": "Ver facturas"
+    },
+    "cashflow": {
+      "no_activity": "No hay actividad en este periodo de tiempo.",
+      "no_activity_hint": "Las facturas, pagos y gastos que registres se mostrarán aquí.",
+      "title": "Flujo de efectivo",
+      "show_table": "Mostrar como tabla",
+      "hide_table": "Ocultar tabla",
+      "month": "Mes",
+      "chart_style": "Estilo de grafico",
+      "area": "area",
+      "bars": "Barras",
+      "day": "Día"
+    },
+    "counts": {
+      "customers": "cliente | clientes",
+      "invoices": "factura | facturas",
+      "estimates": "presupuesto | presupuestos"
     }
   },
   "tax_types": {
