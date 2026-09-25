@@ -2,7 +2,7 @@
     "openapi": "3.1.0",
     "info": {
         "title": "InvoiceShelf API",
-        "version": "3.0.0-alpha.7",
+        "version": "3.0.0-alpha.8",
         "description": "REST API for InvoiceShelf \u2014 open-source invoicing & expense tracking. Authenticate with a Sanctum personal access token (Authorization: Bearer <token>). Company-scoped endpoints additionally require a `company` header carrying the company ID."
     },
     "servers": [
@@ -1432,13 +1432,32 @@
                                                 },
                                                 "login_page_heading": {},
                                                 "login_page_description": {},
-                                                "copyright_text": {}
+                                                "copyright_text": {},
+                                                "powered_by": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "url": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "name",
+                                                        "url"
+                                                    ]
+                                                }
                                             },
                                             "required": [
                                                 "login_page_logo",
                                                 "login_page_heading",
                                                 "login_page_description",
-                                                "copyright_text"
+                                                "copyright_text",
+                                                "powered_by"
                                             ]
                                         },
                                         "modules": {
@@ -1484,6 +1503,35 @@
                                                 "portal_password",
                                                 "portal_path"
                                             ]
+                                        },
+                                        "managed_mode": {
+                                            "type": "boolean"
+                                        },
+                                        "managed": {
+                                            "type": [
+                                                "object",
+                                                "null"
+                                            ],
+                                            "properties": {
+                                                "support_url": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "support_url"
+                                            ]
+                                        },
+                                        "source_url": {
+                                            "type": "string"
+                                        },
+                                        "customer_portal_url": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
                                         }
                                     },
                                     "required": [
@@ -1494,7 +1542,11 @@
                                         "branding",
                                         "modules",
                                         "demo_mode",
-                                        "demo"
+                                        "demo",
+                                        "managed_mode",
+                                        "managed",
+                                        "source_url",
+                                        "customer_portal_url"
                                     ]
                                 }
                             }
@@ -2030,6 +2082,61 @@
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/company/mail/drivers": {
+            "get": {
+                "operationId": "companyMailConfiguration.getDrivers",
+                "summary": "The transports a company may choose for its own mail",
+                "tags": [
+                    "CompanyMailConfiguration"
+                ],
+                "parameters": [
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "anyOf": [
+                                        {
+                                            "type": "array",
+                                            "prefixItems": [
+                                                {
+                                                    "type": "string",
+                                                    "const": "smtp"
+                                                }
+                                            ],
+                                            "minItems": 1,
+                                            "maxItems": 1,
+                                            "additionalItems": false
+                                        },
+                                        {
+                                            "type": "array",
+                                            "items": {}
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     }
                 }
             }
@@ -4668,7 +4775,7 @@
             },
             "put": {
                 "operationId": "disks.update",
-                "description": "Which of those happens is decided by what the body carries. Credentials\nand a driver together mean a rewrite, and the new blob is proven live\nfirst. Without both, the only thing this endpoint will do is move the\ndefault flag -- and it does that only when the body asks for it.\n\nSystem disks never take the first branch whatever the body says: their\ncredentials point at the two built-in local trees and rewriting them\nwould strand every file already stored there. They fall through to the\nflag, which is the one thing about them that is allowed to change.\n\nThe payload is built from the model as it stands in memory. On the\nset-default branch that is the saved state; on a no-op call it is simply\nthe row as loaded. This is not validated input -- no form request stands\nin front of this route -- so a rewrite accepts whatever name, driver and\ncredential shape the caller sent, and the live check is the only filter.",
+                "description": "Which of those happens is decided by what the body carries. Credentials\nand a driver together mean a rewrite, and the new blob is proven live\nfirst. Without both, the only thing this endpoint will do is move the\ndefault flag -- and it does that only when the body asks for it.\n\nSystem disks never take the first branch whatever the body says: their\ncredentials point at the two built-in local trees and rewriting them\nwould strand every file already stored there. They fall through to the\nflag, which is the one thing about them that is allowed to change.\n\nThe payload is built from the model as it stands in memory. On the\nset-default branch that is the saved state; on a no-op call it is simply\nthe row as loaded. A rewrite is validated like a registration before the\nlive check runs.",
                 "summary": "Rewrite a disk, or just hand it the default flag",
                 "tags": [
                     "Disk"
@@ -4693,6 +4800,15 @@
                         }
                     }
                 ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateDiskRequest"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "`FileDiskResource`",
@@ -4727,6 +4843,9 @@
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
                     }
                 }
             },
@@ -7672,6 +7791,9 @@
                                                     },
                                                     "bundled": {
                                                         "type": "boolean"
+                                                    },
+                                                    "downloadable": {
+                                                        "type": "string"
                                                     }
                                                 },
                                                 "required": [
@@ -7681,7 +7803,8 @@
                                                     "locales",
                                                     "size",
                                                     "installed",
-                                                    "bundled"
+                                                    "bundled",
+                                                    "downloadable"
                                                 ]
                                             }
                                         }
@@ -7787,6 +7910,29 @@
                                                 "message"
                                             ]
                                         }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "const": "Font downloads are turned off on this server (PDF_FONTS_DOWNLOAD=false)."
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "error"
                                     ]
                                 }
                             }
@@ -9831,7 +9977,7 @@
         "/installation/login": {
             "post": {
                 "operationId": "installation.login",
-                "summary": "There is exactly one candidate at this point in the install: the first\nplatform administrator, and the first company attached to them. Any\nbrowser session that got this far is thrown away \u2014 the wizard carries on\nwith a bearer token limited to the wizard ability, and only one such\ntoken is ever live at a time",
+                "summary": "There is exactly one candidate at this point in the install: the first\nplatform administrator, and the first company attached to them. Any\nbrowser session that got this far is thrown away \u2014 the wizard carries on\nwith a bearer token limited to the wizard ability that expires after\ninstaller.wizard_token_ttl minutes, and only one such token is ever live\nat a time",
                 "tags": [
                     "Login"
                 ],
@@ -20629,13 +20775,20 @@
             },
             "DiskEnvironmentRequest": {
                 "type": "object",
-                "description": "Shapes the body that registers a new storage target.\n\nOnly the label and the driver are asked of every caller. What a driver needs\nbeyond that varies, so the credential rules are picked from the driver named\nin the body and merged underneath the two common ones -- which also means a\ndriver nobody wrote rules for sails through with whatever credential blob it\nwas handed, and is caught later (if at all) by the live credential check the\ncontroller runs.\n\nWhere a driver takes a custom endpoint the server will later sign requests\nagainst, the value has to be a URL that resolves somewhere publicly routable:\nthese credentials are supplied by an administrator and exercised server-side,\nso an endpoint pointed at the loopback interface or a cloud metadata address\nwould turn disk registration into a request forgery primitive.\n\nKNOWN GAP: the S3-compatible driver takes an endpoint too and has no rules\nhere at all, so its endpoint reaches the live check unguarded. Preserved as\nfound.",
+                "description": "Shapes the body that registers a new storage target.\n\nOnly the label and the driver are asked of every caller, and the driver must\nbe one of FileDisk::DRIVERS. What a driver needs beyond that varies, so the\ncredential rules are picked from the driver named in the body and merged\nunderneath the two common ones. A local disk takes only a root, which the\nlive credential check the controller runs then proves writable.\n\nWhere a driver takes a custom endpoint the server will later sign requests\nagainst, the value has to be a URL that resolves somewhere publicly routable:\nthese credentials are supplied by an administrator and exercised server-side,\nso an endpoint pointed at the loopback interface or a cloud metadata address\nwould turn disk registration into a request forgery primitive.",
                 "properties": {
                     "name": {
                         "type": "string"
                     },
                     "driver": {
-                        "type": "string"
+                        "type": "string",
+                        "enum": [
+                            "local",
+                            "s3",
+                            "s3compat",
+                            "doSpaces",
+                            "dropbox"
+                        ]
                     }
                 },
                 "required": [
@@ -24299,6 +24452,29 @@
                     "access"
                 ],
                 "title": "UpdateConnectionRequest"
+            },
+            "UpdateDiskRequest": {
+                "type": "object",
+                "description": "Shapes the body that rewrites a storage target, or only moves the default flag.\n\nA rewrite is validated exactly like a registration. A body that carries no\ndriver is the flag-only call, so the common fields become optional and the\nper-driver credential rules simply find no driver to key on.",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "driver": {
+                        "type": "string",
+                        "enum": [
+                            "local",
+                            "s3",
+                            "s3compat",
+                            "doSpaces",
+                            "dropbox"
+                        ]
+                    },
+                    "set_as_default": {
+                        "type": "boolean"
+                    }
+                },
+                "title": "UpdateDiskRequest"
             },
             "UpdateMcpSettingsRequest": {
                 "type": "object",
