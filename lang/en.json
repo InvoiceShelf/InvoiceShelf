@@ -22,7 +22,8 @@
     "more": "More",
     "menu": "Menu",
     "account_settings": "Account settings",
-    "account_menu": "Account menu for {name}"
+    "account_menu": "Account menu for {name}",
+    "source_code": "Source code"
   },
   "general": {
     "add_company": "Add Company",
@@ -2336,5 +2337,9 @@
     "try_portal": "Try the customer portal",
     "portal_note": "Sign in there as {email} with the password {password}.",
     "portal_login_note": "This is the demo's customer portal: the sign-in is filled in for you."
+  },
+  "managed": {
+    "blocked": "Your hosting provider manages this setting.",
+    "modules_note": "Your hosting provider installs and updates modules for this account."
   }
 }
