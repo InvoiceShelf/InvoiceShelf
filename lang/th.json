@@ -22,7 +22,8 @@
     "more": "More",
     "menu": "Menu",
     "account_settings": "Account settings",
-    "account_menu": "Account menu for {name}"
+    "account_menu": "Account menu for {name}",
+    "source_code": "Source code"
   },
   "general": {
     "add_company": "เพิ่มบริษัท",
