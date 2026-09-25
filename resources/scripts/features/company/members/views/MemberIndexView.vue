@@ -9,6 +9,7 @@ import { useUserStore } from '../../../../stores/user.store'
 import { useNotificationStore } from '../../../../stores/notification.store'
 import MemberDropdown from '../components/MemberDropdown.vue'
 import InviteMemberModal from '../components/InviteMemberModal.vue'
+import AddMemberModal from '../components/AddMemberModal.vue'
 
 type TableColumn = Omit<ColumnDef, 'label'> & { label?: string }
 
@@ -42,6 +43,7 @@ const userStore = useUserStore()
 const tableComponent = ref<{ refresh: () => void } | null>(null)
 const showFilters = ref<boolean>(false)
 const showInviteModal = ref<boolean>(false)
+const showAddModal = ref<boolean>(false)
 const isFetchingInitialData = ref<boolean>(true)
 const { t } = useI18n()
 
@@ -226,6 +228,21 @@ function removeMultipleUsers(): void {
 
           <BaseButton
             v-if="userStore.currentUser?.is_owner"
+            variant="primary-outline"
+            @click="showAddModal = true"
+          >
+            <template #left="slotProps">
+              <BaseIcon
+                name="UserPlusIcon"
+                :class="slotProps.class"
+                aria-hidden="true"
+              />
+            </template>
+            {{ $t('members.add_member') }}
+          </BaseButton>
+
+          <BaseButton
+            v-if="userStore.currentUser?.is_owner"
             @click="showInviteModal = true"
           >
             <template #left="slotProps">
@@ -283,6 +300,12 @@ function removeMultipleUsers(): void {
       :description="$t('members.empty_description')"
     >
       <template v-if="userStore.currentUser?.is_owner" #actions>
+        <BaseButton variant="primary-outline" @click="showAddModal = true">
+          <template #left="slotProps">
+            <BaseIcon name="UserPlusIcon" :class="slotProps.class" aria-hidden="true" />
+          </template>
+          {{ $t('members.add_member') }}
+        </BaseButton>
         <BaseButton @click="showInviteModal = true">
           <template #left="slotProps">
             <BaseIcon name="EnvelopeIcon" :class="slotProps.class" aria-hidden="true" />
@@ -400,6 +423,12 @@ function removeMultipleUsers(): void {
     <InviteMemberModal
       :show="showInviteModal"
       @close="showInviteModal = false"
+    />
+
+    <AddMemberModal
+      :show="showAddModal"
+      @close="showAddModal = false"
+      @added="refreshTable"
     />
   </BasePage>
 </template>

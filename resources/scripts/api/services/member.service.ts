@@ -24,6 +24,7 @@ export interface UpdateMemberPayload {
   name?: string
   email?: string
   phone?: string | null
+  password?: string
   role?: string | null
   companies?: Array<{
     id: number
