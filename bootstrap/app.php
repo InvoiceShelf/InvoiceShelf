@@ -53,7 +53,6 @@ return Application::configure(basePath: dirname(__DIR__))
             CheckForMaintenanceMode::class,
             TrimStrings::class,
             TrustProxies::class,
-            ConfigMiddleware::class,
         ]);
 
         $middleware->web([
@@ -74,6 +73,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'bouncer' => ScopeBouncer::class,
             'company' => CompanyMiddleware::class,
             'cron-job' => CronJobMiddleware::class,
+            'file-disk' => ConfigMiddleware::class,
             'customer' => CustomerRedirectIfAuthenticated::class,
             'customer-guest' => CustomerGuest::class,
             'customer-portal' => CustomerPortalMiddleware::class,

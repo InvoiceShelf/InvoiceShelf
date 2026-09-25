@@ -15,6 +15,12 @@ class FileDisk extends Model
 
     public const DISK_TYPE_REMOTE = 'REMOTE';
 
+    /**
+     * The drivers a disk may be registered with. Every other entry in
+     * config/filesystems.php is an internal disk rooted in the application.
+     */
+    public const DRIVERS = ['local', 's3', 's3compat', 'doSpaces', 'dropbox'];
+
     protected $guarded = [
         'id',
     ];
@@ -97,6 +103,10 @@ class FileDisk extends Model
 
     public static function setFilesystem($credentials, $driver)
     {
+        if (! in_array($driver, self::DRIVERS, true)) {
+            return;
+        }
+
         $prefix = env('DYNAMIC_DISK_PREFIX', 'temp_');
 
         config(['filesystems.default' => $prefix.$driver]);
@@ -104,7 +114,9 @@ class FileDisk extends Model
         $disks = config('filesystems.disks.'.$driver);
 
         foreach ($disks as $key => $value) {
-            if ($credentials->has($key)) {
+            // The driver is never taken from the credentials: a disk saved as
+            // one driver must not turn into another at runtime.
+            if ($key !== 'driver' && $credentials->has($key)) {
                 $disks[$key] = $credentials[$key];
             }
         }
@@ -115,6 +127,10 @@ class FileDisk extends Model
     public static function validateCredentials($credentials, $disk)
     {
         $exists = false;
+
+        if (! in_array($disk, self::DRIVERS, true)) {
+            return false;
+        }
 
         self::setFilesystem(collect($credentials), $disk);
 
