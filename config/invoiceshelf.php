@@ -118,6 +118,19 @@ return [
     ],
 
     /*
+    * The customer portal on a host of its own, such as
+    * https://clients-acme.example.com. When set, every link sent to a customer
+    * points there, that host serves the portal and public documents only, and
+    * the app host sends customers there. CUSTOMER_PORTAL_HOSTS lists every
+    * host that serves the portal (comma separated) when there is more than
+    * the URL's own. Unset, the portal lives on the app host as always.
+    */
+    'customer_portal' => [
+        'url' => env('CUSTOMER_PORTAL_URL'),
+        'hosts' => env('CUSTOMER_PORTAL_HOSTS'),
+    ],
+
+    /*
     * Where the source code of the running version is, offered to everyone who
     * uses the install (AGPL section 13). {version} becomes the running
     * version. A modified build points it at its own source.

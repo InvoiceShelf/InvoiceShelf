@@ -6,6 +6,7 @@ use App\Domains\Sales\Models\Estimate;
 use App\Platform\Mail\Models\EmailLog;
 use App\Platform\Persistence\ModelIdentityMap;
 use App\Support\PublicToken;
+use App\Support\Urls\CustomerUrl;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -45,7 +46,7 @@ class SendEstimateMail extends Mailable
      */
     public function build()
     {
-        $this->data['url'] = route('estimate', [
+        $this->data['url'] = CustomerUrl::route('estimate', [
             'email_log' => $this->logDelivery(),
         ]);
 

@@ -53,6 +53,7 @@ export interface ClientManifest {
   managed_mode?: boolean
   managed?: ManagedState | null
   source_url?: string
+  customer_portal_url?: string | null
 }
 
 export interface ClientBootState {

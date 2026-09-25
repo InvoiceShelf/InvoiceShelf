@@ -7,6 +7,7 @@ use App\Platform\Operations\Demo\DemoMode;
 use App\Platform\Operations\Managed\ManagedMode;
 use App\Platform\Operations\Models\Setting;
 use App\Support\PoweredBy;
+use App\Support\Urls\CustomerUrl;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use InvoiceShelf\Modules\Registry as ModuleRegistry;
@@ -44,6 +45,7 @@ class ClientManifestService
             'managed_mode' => ManagedMode::enabled(),
             'managed' => ManagedMode::enabled() ? ManagedMode::clientState() : null,
             'source_url' => PoweredBy::sourceUrl(),
+            'customer_portal_url' => CustomerUrl::portalUrl(),
         ];
     }
 
