@@ -137,12 +137,14 @@ class MailConfigurationService implements MailConfigurator
 
         $current = CompanySetting::getSettings($this->getCompanySettingKeys(), $companyId)->all();
 
-        CompanySetting::setSettings(
-            $this->prepareSettingsForStorage($payload, self::COMPANY_SCOPE, $current) + [
-                'use_custom_mail_config' => 'YES',
-            ],
-            $companyId
+        // company_settings.value is NOT NULL; a blank optional field is stored
+        // as an empty string, which the apply step already reads as unset.
+        $settings = array_map(
+            fn (mixed $value): mixed => $value ?? '',
+            $this->prepareSettingsForStorage($payload, self::COMPANY_SCOPE, $current)
         );
+
+        CompanySetting::setSettings($settings + ['use_custom_mail_config' => 'YES'], $companyId);
     }
 
     public function applyGlobalConfig(): void
