@@ -55,11 +55,14 @@ import { ref, computed, watchEffect } from 'vue'
 import { useRoute, useRouter, RouterView } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { extensionItems, extensionRegistry } from '@/scripts/extensions/runtime'
+import { isManaged } from '@/scripts/utils/managed'
 
 interface SettingsMenuItem {
   title: string
   link: string
   icon: string
+  // Owned by the hosting provider on a managed install.
+  managedHidden?: boolean
 }
 
 const { t } = useI18n()
@@ -68,30 +71,35 @@ const router = useRouter()
 
 const currentSetting = ref<SettingsMenuItem | undefined>(undefined)
 
-const menuItems = computed<SettingsMenuItem[]>(() => [
+const allMenuItems = computed<SettingsMenuItem[]>(() => [
   {
     title: t('settings.mail.mail_config'),
     link: '/admin/administration/settings/mail-configuration',
+    managedHidden: true,
     icon: 'EnvelopeIcon',
   },
   {
     title: t('settings.menu_title.pdf_generation'),
     link: '/admin/administration/settings/pdf-generation',
+    managedHidden: true,
     icon: 'DocumentIcon',
   },
   {
     title: t('settings.menu_title.backup'),
     link: '/admin/administration/settings/backup',
+    managedHidden: true,
     icon: 'CircleStackIcon',
   },
   {
     title: t('settings.menu_title.file_disk'),
     link: '/admin/administration/settings/file-disk',
+    managedHidden: true,
     icon: 'FolderIcon',
   },
   {
     title: t('settings.menu_title.fonts'),
     link: '/admin/administration/settings/fonts',
+    managedHidden: true,
     icon: 'LanguageIcon',
   },
   {
@@ -102,6 +110,7 @@ const menuItems = computed<SettingsMenuItem[]>(() => [
   {
     title: t('settings.menu_title.update_app'),
     link: '/admin/administration/settings/update-app',
+    managedHidden: true,
     icon: 'ArrowPathIcon',
   },
   {
@@ -121,9 +130,18 @@ const menuItems = computed<SettingsMenuItem[]>(() => [
   })),
 ])
 
+const menuItems = computed<SettingsMenuItem[]>(() =>
+  isManaged() ? allMenuItems.value.filter((item) => !item.managedHidden) : allMenuItems.value,
+)
+
 watchEffect(() => {
-  if (route.path === '/admin/administration/settings') {
-    router.push('/admin/administration/settings/mail-configuration')
+  // A managed install lands on the first setting it offers, whether the
+  // admin menu pointed at a hidden one or the URL was typed.
+  const onHiddenSetting = isManaged()
+    && allMenuItems.value.some((item) => item.managedHidden && route.path.startsWith(item.link))
+
+  if ((route.path === '/admin/administration/settings' || onHiddenSetting) && menuItems.value.length > 0) {
+    router.replace(menuItems.value[0].link)
   }
 
   const item = menuItems.value.find((item) => {

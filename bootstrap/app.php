@@ -22,6 +22,7 @@ use App\Platform\Operations\Http\Middleware\EnsureNotContainerized;
 use App\Platform\Operations\Installation\Http\Middleware\EnsureInstalled;
 use App\Platform\Operations\Installation\Http\Middleware\RedirectIfInstalled;
 use App\Platform\Operations\Installation\Http\Middleware\UseInstallWizardTokenAuth;
+use App\Platform\Operations\Managed\EnsureNotManaged;
 use App\Platform\Pdf\Http\Middleware\PdfMiddleware;
 use App\Platform\Storage\Http\Middleware\ConfigMiddleware;
 use App\Providers\AppServiceProvider;
@@ -99,6 +100,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'guest' => RedirectIfAuthenticated::class,
             'install' => EnsureInstalled::class,
             'not-containerized' => EnsureNotContainerized::class,
+            'not-managed' => EnsureNotManaged::class,
             'oauth.enabled' => EnsureOAuthServerEnabled::class,
             'pdf-auth' => PdfMiddleware::class,
             'redirect-if-installed' => RedirectIfInstalled::class,

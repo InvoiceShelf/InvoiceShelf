@@ -78,13 +78,17 @@ Four guards: `web` (session), `api` (Sanctum tokens for `/api/v1/`), `customer` 
 
 ### Thin clients
 
-Mobile clients run the same SPA from their own origin and never load `resources/views/app.blade.php`, so the public `GET /api/v1/app/client-manifest` stands in for it: version, `min_client_version`, `app_url`, page title, login branding, module script/style URLs and the demo flag. **It mirrors the Blade shell; change one and change the other** (`ClientManifestService`).
+Mobile clients run the same SPA from their own origin and never load `resources/views/app.blade.php`, so the public `GET /api/v1/app/client-manifest` stands in for it: version, `min_client_version`, `app_url`, page title, login branding, module script/style URLs, and the demo and managed flags. **It mirrors the Blade shell; change one and change the other** (`ClientManifestService`).
 
 `config/cors.php` is published and covers `api/*`, the module asset routes, `reports/*` and the PDF routes. `allowed_origins` comes from `CORS_ALLOWED_ORIGINS`, defaulting to `capacitor://` and `https://` on `invoiceshelf.client.hostname`. That hostname must never be `localhost` or `127.0.0.1`: Sanctum's default stateful list holds both, so such an origin gets session and CSRF middleware and every bearer POST fails with 419.
 
 Tokens never expire, so `GET /api/v1/auth/tokens` and `DELETE /api/v1/auth/tokens/{id}` (the caller's own only) exist to cut off a lost device, and `POST /api/v1/auth/login` is throttled to 10 a minute.
 
 **Mobile shell** (`mobile/`, see `mobile/README.md`): a Capacitor 7 project wrapping the `pnpm build:client` output in `mobile/www`. `android/` and `ios/` are committed; `www/` and `node_modules/` are not. Native pieces live in `resources/scripts/platform/capacitor.ts` alone (device name, share-sheet file delivery, in-app browser, receipt camera, the biometric check behind the app lock in `resources/scripts/client/lock.ts`), behind a dynamic import gated on `__INVOICESHELF_CLIENT__` so no Capacitor code reaches the web bundle. The plugins are declared twice, in `mobile/package.json` and the root one, and must stay at the same versions. `capacitor.config.ts`'s `server.hostname` is the contract above: never `localhost`.
+
+### Managed mode
+
+`INVOICESHELF_MANAGED=true` (`config/managed.php`, deliberately outside `config('invoiceshelf')`, which the SPA bootstrap sends to every member) marks an install that a hosting provider runs for its owner, such as InvoiceShelf Cloud. The provider owns storage and backups, PDF rendering and fonts, the server's mail transport and module installation: those route files are mounted behind the `not-managed` middleware (`EnsureNotManaged`, a 403 with `error: managed_mode`), and the SPA hides their settings entries and the marketplace pairing and install controls (`utils/managed.ts`, fed by `window.managed` or the client manifest). Company mail settings, module enable/disable and everything else stay open. A new provider-owned surface goes behind `not-managed` and is listed in `ManagedModeTest`.
 
 ### MCP server
 

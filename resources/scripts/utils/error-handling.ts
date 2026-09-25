@@ -33,6 +33,7 @@ export interface NormalizedApiError {
  */
 const ERROR_TRANSLATION_MAP: Record<string, string> = {
   'demo_mode': 'demo.blocked',
+  'managed_mode': 'managed.blocked',
   'This is turned off in the demo.': 'demo.blocked',
   'These credentials do not match our records.': 'errors.login_invalid_credentials',
   'The provided credentials are incorrect.': 'errors.login_invalid_credentials',
