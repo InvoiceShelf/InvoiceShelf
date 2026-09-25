@@ -7,9 +7,14 @@ section beneath it is what CI publishes to the updater — see
 Releases before 2.4.0 are on GitHub:
 https://github.com/InvoiceShelf/InvoiceShelf/releases
 
-## 2.4.6 - 2026-09-24
+## 2.4.6 - 2026-09-25
 
-Fixes foreign-currency documents on PostgreSQL.
+Closes two security issues in the file disk settings and fixes foreign-currency documents on PostgreSQL.
+
+### Security
+
+- Any request could pick the file disk the app wrote to for its whole lifetime with a `file_disk_id` parameter. Only the backup routes choose a disk now. (#873)
+- A file disk's saved credentials could set the storage driver and other internal options. The driver comes only from the disk's type, which must be one InvoiceShelf supports. (#873)
 
 ### Fixes
 
