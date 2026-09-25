@@ -62,6 +62,11 @@
       {{ item.title }}
     </BaseDropdownItem>
 
+    <BaseDropdownItem v-if="source" :href="source">
+      <BaseIcon name="CodeBracketIcon" class="w-5 h-5 me-3 text-subtle" />
+      {{ $t('navigation.source_code') }}
+    </BaseDropdownItem>
+
     <div class="my-1 border-t border-line-light" />
 
     <BaseDropdownItem @click="logout">
@@ -81,11 +86,12 @@ import { useUserStore } from '@/scripts/stores/user.store'
 import { useGlobalStore } from '@/scripts/stores/global.store'
 import { useTheme } from '@/scripts/composables/use-theme'
 import { THEME } from '@/scripts/config/constants'
+import { sourceUrl } from '@/scripts/utils/branding'
 import type { Theme } from '@/scripts/config/constants'
 
 /**
  * The signed-in user's menu: who they are, theme, account settings, module
- * user-menu entries and sign out. The sidebar footer opens it on wider
+ * user-menu entries, the source code of the running version and sign out. The sidebar footer opens it on wider
  * screens and the phone app bar opens it as a sheet; the activator is the
  * caller's.
  */
@@ -110,6 +116,7 @@ const userStore = useUserStore()
 const globalStore = useGlobalStore()
 const router = useRouter()
 const { currentTheme, setTheme } = useTheme()
+const source = sourceUrl()
 
 const avatar = computed<string>(() => {
   if (userStore.currentUser && userStore.currentUser.avatar !== 0) {

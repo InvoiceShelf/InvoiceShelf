@@ -50,15 +50,7 @@
       <!-- Footer -->
       <footer class="mt-8 text-center text-xs text-subtle">
         <span v-if="copyrightText">{{ copyrightText }}</span>
-        <span v-else>
-          Powered by
-          <a
-            href="https://invoiceshelf.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-primary-500 hover:text-primary-600 font-medium transition-colors"
-          >InvoiceShelf</a>
-        </span>
+        <PoweredBy v-else />
       </footer>
     </main>
   </div>
@@ -69,6 +61,7 @@ import { computed, shallowRef } from 'vue'
 import { useRoute } from 'vue-router'
 import NotificationRoot from '@/scripts/components/notifications/NotificationRoot.vue'
 import MainLogo from '@/scripts/components/icons/MainLogo.vue'
+import PoweredBy from '@/scripts/components/layout/PoweredBy.vue'
 
 declare global {
   interface Window {

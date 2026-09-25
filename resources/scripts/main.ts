@@ -7,6 +7,7 @@ import { reassertHostStylesAfterShellModules } from './utils/host-styles'
 import { focusInvalidAfterSubmit } from './composables/use-form-field'
 import type { DemoState } from './utils/demo'
 import type { ManagedState } from './utils/managed'
+import type { PoweredBy } from './utils/branding'
 
 // The shell's module stylesheets must not outrank the app's own utilities
 reassertHostStylesAfterShellModules()
@@ -31,6 +32,8 @@ declare global {
     demo?: DemoState
     managed_mode?: boolean
     managed?: ManagedState
+    powered_by?: PoweredBy | null
+    source_url?: string
   }
 }
 
