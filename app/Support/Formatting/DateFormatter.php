@@ -34,6 +34,21 @@ class DateFormatter
         ['carbon_format' => 'Y-m-d', 'moment_format' => 'YYYY-MM-DD'],
     ];
 
+    /**
+     * The browser pattern for an offered server pattern, or null when the
+     * server pattern is not one of the offered layouts.
+     */
+    public static function momentFormatFor(string $carbonFormat): ?string
+    {
+        foreach (static::$formats as $layout) {
+            if ($layout['carbon_format'] === $carbonFormat) {
+                return $layout['moment_format'];
+            }
+        }
+
+        return null;
+    }
+
     public static function get_list()
     {
         return array_map(
