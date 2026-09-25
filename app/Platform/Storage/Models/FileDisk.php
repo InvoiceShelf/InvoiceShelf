@@ -20,6 +20,13 @@ class FileDisk extends Model
 
     public const DISK_TYPE_REMOTE = 'REMOTE';
 
+    /**
+     * The drivers a disk may be registered with. Every other entry in
+     * config/filesystems.php is an internal disk rooted somewhere in the
+     * application tree and must never be reachable through a disk row.
+     */
+    public const DRIVERS = ['local', 's3', 's3compat', 'doSpaces', 'dropbox'];
+
     protected $table = 'file_disks';
 
     protected $guarded = ['id'];
