@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { email, helpers, numeric, required } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import type { MailConfig, MailDriver } from '@/scripts/types/mail-config'
+import { isManaged } from '@/scripts/utils/managed'
 
 interface SelectOption<TValue extends string = string> {
   label: string
@@ -38,13 +39,17 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 
+// A managed install only sends through another server over TLS, and takes
+// no DSN, which would sidestep the host and port rules.
+const managed = isManaged()
+
 const showAdvancedFields = ref(false)
 
 const mailConfig = reactive<MailConfig>(createDefaultMailConfig())
 
 const fallbackDrivers: MailDriver[] = ['sendmail', 'smtp', 'mail']
 const encryptionOptions: SelectOption[] = [
-  { label: 'None', value: 'none' },
+  ...(managed ? [] : [{ label: 'None', value: 'none' }]),
   { label: 'TLS', value: 'tls' },
   { label: 'SSL', value: 'ssl' },
 ]
@@ -171,7 +176,7 @@ function createDefaultMailConfig(): MailConfig {
     mail_port: '587',
     mail_username: '',
     mail_password: '',
-    mail_encryption: 'none',
+    mail_encryption: managed ? 'tls' : 'none',
     mail_scheme: '',
     mail_url: '',
     mail_timeout: '',
@@ -199,6 +204,9 @@ function normalizeDriver(driver: MailConfig['mail_driver'], drivers: MailDriver[
 function syncMailConfig(): void {
   Object.assign(mailConfig, createDefaultMailConfig(), props.configData)
   mailConfig.mail_driver = normalizeDriver(mailConfig.mail_driver, availableDrivers.value)
+  if (managed && !['tls', 'ssl'].includes(mailConfig.mail_encryption)) {
+    mailConfig.mail_encryption = 'tls'
+  }
   showAdvancedFields.value = hasAdvancedValues(currentDriver.value)
   v$.value.$reset()
 }
@@ -217,7 +225,9 @@ function hasAdvancedValues(driver: MailDriver): boolean {
 function getAdvancedFields(driver: MailDriver): Array<keyof MailConfig> {
   switch (driver) {
     case 'smtp':
-      return ['mail_scheme', 'mail_url', 'mail_timeout', 'mail_local_domain']
+      return managed
+        ? ['mail_scheme', 'mail_timeout', 'mail_local_domain']
+        : ['mail_scheme', 'mail_url', 'mail_timeout', 'mail_local_domain']
     case 'mailgun':
       return ['mail_mailgun_scheme']
     case 'postmark':
@@ -556,6 +566,7 @@ async function saveEmailConfig(): Promise<void> {
             </BaseInputGroup>
 
             <BaseInputGroup
+              v-if="!managed"
               :label="$t(translationKey('url'))"
               :content-loading="isFetchingInitialData"
             >

@@ -114,6 +114,7 @@ export const API = {
 
   // Mail Configuration (global)
   MAIL_DRIVERS: '/api/v1/mail/drivers',
+  COMPANY_MAIL_DRIVERS: '/api/v1/company/mail/drivers',
   MAIL_CONFIG: '/api/v1/mail/config',
   MAIL_TEST: '/api/v1/mail/test',
 
