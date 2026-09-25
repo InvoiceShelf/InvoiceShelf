@@ -172,6 +172,17 @@ class MailConfigurationService implements MailConfigurator
     }
 
     /**
+     * Private hosts the operator named as usable by company owners
+     * (MAIL_ALLOWED_PRIVATE_HOSTS).
+     *
+     * @return list<string>
+     */
+    private function allowedPrivateHosts(): array
+    {
+        return (array) config('mail.allowed_private_hosts', []);
+    }
+
+    /**
      * The field of a company's stored custom configuration that points the
      * server at a private or reserved address, or null when there is none.
      *
@@ -192,7 +203,9 @@ class MailConfigurationService implements MailConfigurator
             'smtp' => collect(['mail_host', 'mail_url'])->first(function (string $field) use ($stored): bool {
                 $host = $stored($field) === '' ? null : PublicHost::hostOf($stored($field));
 
-                return $host !== null && PublicHost::isBlocked($host);
+                return $host !== null
+                    && ! PublicHost::isNamed($host, $this->allowedPrivateHosts())
+                    && PublicHost::isBlocked($host);
             }),
             'mailgun' => in_array($stored('mail_mailgun_endpoint'), self::MAILGUN_ENDPOINTS, true) ? null : 'mail_mailgun_endpoint',
             default => null,
@@ -203,10 +216,11 @@ class MailConfigurationService implements MailConfigurator
      * Rules for a submitted mail configuration.
      *
      * With $allowPrivateHosts off, every connection target must be publicly
-     * routable: the SMTP host and DSN, and the Mailgun endpoint, which may then
-     * only be one of Mailgun's own hosts. That is how company owners are held;
-     * the super administrator keeps the private network, where a local relay is
-     * an ordinary setup.
+     * routable, or one of the private hosts named in MAIL_ALLOWED_PRIVATE_HOSTS:
+     * the SMTP host and DSN, and the Mailgun endpoint, which may then only be
+     * one of Mailgun's own hosts. That is how company owners are held; the
+     * super administrator keeps the private network, where a local relay is an
+     * ordinary setup.
      */
     public function validationRules(?string $driver, bool $allowDisabledCustomConfig = false, bool $allowPrivateHosts = true): array
     {
@@ -231,7 +245,7 @@ class MailConfigurationService implements MailConfigurator
             ];
         }
 
-        $publicOnly = $allowPrivateHosts ? [] : [new PublicHost];
+        $publicOnly = $allowPrivateHosts ? [] : [new PublicHost($this->allowedPrivateHosts())];
 
         return array_merge($rules, match ($driver) {
             'smtp' => [

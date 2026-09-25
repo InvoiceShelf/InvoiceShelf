@@ -4,6 +4,7 @@ use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Accounts\Models\User;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Mail;
 use Laravel\Sanctum\Sanctum;
 
 use function Pest\Laravel\postJson;
@@ -99,4 +100,43 @@ test('a test mail refuses a private host stored before the check existed', funct
         'subject' => 'Hello',
         'message' => 'Test',
     ])->assertUnprocessable()->assertJsonValidationErrors(['mail_host']);
+});
+
+test('a private relay the operator names in MAIL_ALLOWED_PRIVATE_HOSTS is allowed', function () {
+    config(['mail.allowed_private_hosts' => ['192.168.1.10', 'mail.lan']]);
+    actAsCompanyOwner($this->company);
+
+    postJson('/api/v1/company/mail/company-config', smtpPayload(['mail_host' => '192.168.1.10']))
+        ->assertOk();
+
+    postJson('/api/v1/company/mail/company-config', smtpPayload(['mail_url' => 'smtp://user:pass@192.168.1.10:25']))
+        ->assertOk();
+});
+
+test('naming one private relay leaves every other private address blocked', function () {
+    config(['mail.allowed_private_hosts' => ['192.168.1.10']]);
+    actAsCompanyOwner($this->company);
+
+    postJson('/api/v1/company/mail/company-config', smtpPayload(['mail_host' => '10.0.0.5']))
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['mail_host']);
+});
+
+test('a test mail goes out through a named private relay', function () {
+    Mail::fake();
+    config(['mail.allowed_private_hosts' => ['192.168.1.10']]);
+    actAsCompanyOwner($this->company);
+
+    CompanySetting::setSettings([
+        'use_custom_mail_config' => 'YES',
+        'company_mail_driver' => 'smtp',
+        'company_mail_host' => '192.168.1.10',
+        'company_mail_port' => '25',
+    ], $this->company->id);
+
+    postJson('/api/v1/company/mail/company-test', [
+        'to' => 'someone@example.com',
+        'subject' => 'Hello',
+        'message' => 'Test',
+    ])->assertOk();
 });

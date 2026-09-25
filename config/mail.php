@@ -127,4 +127,22 @@ return [
         'name' => env('MAIL_FROM_NAME', 'InvoiceShelf'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Private mail hosts company owners may use
+    |--------------------------------------------------------------------------
+    |
+    | Company owners (other than the super administrator) are held to publicly
+    | routable mail hosts, so a company's mail settings cannot aim the server
+    | at the private network. An operator who runs a relay there and accepts
+    | that risk names it here, comma separated, and only those hosts become
+    | usable: MAIL_ALLOWED_PRIVATE_HOSTS=mail.lan,192.168.1.10
+    |
+    */
+
+    'allowed_private_hosts' => array_values(array_filter(array_map(
+        fn (string $host): string => strtolower(trim($host, " \t[]")),
+        explode(',', (string) env('MAIL_ALLOWED_PRIVATE_HOSTS', '')),
+    ))),
+
 ];

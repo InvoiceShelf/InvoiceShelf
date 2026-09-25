@@ -16,9 +16,18 @@ use Illuminate\Contracts\Validation\ValidationRule;
  * URL of any scheme, whose host is checked. Empty values pass so the rule
  * composes with `nullable`. Like PublicHttpUrl, a hostname that does not
  * resolve is allowed: a connection to it cannot reach a private network.
+ *
+ * Hosts in $allowedHosts are exempt: private hosts an operator has named as
+ * trusted (for mail, MAIL_ALLOWED_PRIVATE_HOSTS). Matching is on the exact
+ * host, case-insensitive.
  */
 class PublicHost implements ValidationRule
 {
+    /**
+     * @param  list<string>  $allowedHosts
+     */
+    public function __construct(private readonly array $allowedHosts = []) {}
+
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if (! is_string($value) || trim($value) === '') {
@@ -33,7 +42,7 @@ class PublicHost implements ValidationRule
             return;
         }
 
-        if (self::isBlocked($host)) {
+        if (! self::isNamed($host, $this->allowedHosts) && self::isBlocked($host)) {
             $fail('The :attribute must be a publicly reachable host, not a private or reserved address.');
         }
     }
@@ -46,6 +55,16 @@ class PublicHost implements ValidationRule
         $literal = filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false ? "[{$host}]" : $host;
 
         return PrivateNetworkGuard::blockedReason('https://'.$literal) !== null;
+    }
+
+    /**
+     * Whether the host is one of the named, trusted ones.
+     *
+     * @param  list<string>  $allowedHosts
+     */
+    public static function isNamed(string $host, array $allowedHosts): bool
+    {
+        return in_array(strtolower(trim($host, '[]')), $allowedHosts, true);
     }
 
     /**
