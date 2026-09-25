@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\FileDisk;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class DiskEnvironmentRequest extends FormRequest
 {
@@ -77,6 +79,32 @@ class DiskEnvironmentRequest extends FormRequest
 
                 break;
 
+            case 's3compat':
+                $rules = [
+                    'credentials.endpoint' => [
+                        'required',
+                        'string',
+                    ],
+                    'credentials.key' => [
+                        'required',
+                        'string',
+                    ],
+                    'credentials.secret' => [
+                        'required',
+                        'string',
+                    ],
+                    'credentials.region' => [
+                        'required',
+                        'string',
+                    ],
+                    'credentials.bucket' => [
+                        'required',
+                        'string',
+                    ],
+                ];
+
+                break;
+
             case 'dropbox':
                 $rules = [
                     'credentials.token' => [
@@ -110,6 +138,7 @@ class DiskEnvironmentRequest extends FormRequest
             ],
             'driver' => [
                 'required',
+                Rule::in(FileDisk::DRIVERS),
             ],
         ];
 
