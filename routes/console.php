@@ -16,24 +16,30 @@ if (DemoMode::enabled()) {
         ->evenInMaintenanceMode();
 }
 
-if (InstallationState::isDbCreated()) {
-    Schedule::command('check:invoices:status')
-        ->daily();
+// Nothing below runs before the installer has built the schema; the check
+// happens when the scheduler runs, not when this file loads.
+$installed = fn (): bool => (bool) InstallationState::isDbCreated();
 
-    Schedule::command('check:estimates:status')
-        ->daily();
+// The daily status sweeps (overdue invoices, expired estimates). Asked for
+// every hour and kept to once a day by invoiceshelf:catch-up, so an install
+// that was down at midnight catches up instead of skipping the day.
+Schedule::command('invoiceshelf:catch-up')
+    ->hourly()
+    ->withoutOverlapping()
+    ->when($installed);
 
-    // One command that asks which schedules have fallen due, rather than one
-    // registered cron entry per recurring invoice. The old shape queried every
-    // active schedule on the boot of every artisan command, and only billed
-    // when the expression matched the exact minute the scheduler happened to
-    // wake up, so a missed minute silently skipped the period.
-    Schedule::command('recurring-invoices:generate')
-        ->everyMinute()
-        ->withoutOverlapping();
+// One command that asks which schedules have fallen due, rather than one
+// registered cron entry per recurring invoice. The old shape queried every
+// active schedule on the boot of every artisan command, and only billed
+// when the expression matched the exact minute the scheduler happened to
+// wake up, so a missed minute silently skipped the period.
+Schedule::command('recurring-invoices:generate')
+    ->everyMinute()
+    ->withoutOverlapping()
+    ->when($installed);
 
-    // Client registrations that never led to a connection, and OAuth tokens
-    // long expired.
-    Schedule::command('mcp:prune')
-        ->daily();
-}
+// Client registrations that never led to a connection, and OAuth tokens
+// long expired.
+Schedule::command('mcp:prune')
+    ->daily()
+    ->when($installed);
