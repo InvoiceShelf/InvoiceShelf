@@ -103,7 +103,7 @@ test('a test mail refuses a private host stored before the check existed', funct
 });
 
 test('a private relay the operator names in MAIL_ALLOWED_PRIVATE_HOSTS is allowed', function () {
-    config(['mail.allowed_private_hosts' => ['192.168.1.10', 'mail.lan']]);
+    config(['network.allowed_private_hosts.mail' => ['192.168.1.10', 'mail.lan']]);
     actAsCompanyOwner($this->company);
 
     postJson('/api/v1/company/mail/company-config', smtpPayload(['mail_host' => '192.168.1.10']))
@@ -114,7 +114,7 @@ test('a private relay the operator names in MAIL_ALLOWED_PRIVATE_HOSTS is allowe
 });
 
 test('naming one private relay leaves every other private address blocked', function () {
-    config(['mail.allowed_private_hosts' => ['192.168.1.10']]);
+    config(['network.allowed_private_hosts.mail' => ['192.168.1.10']]);
     actAsCompanyOwner($this->company);
 
     postJson('/api/v1/company/mail/company-config', smtpPayload(['mail_host' => '10.0.0.5']))
@@ -124,7 +124,7 @@ test('naming one private relay leaves every other private address blocked', func
 
 test('a test mail goes out through a named private relay', function () {
     Mail::fake();
-    config(['mail.allowed_private_hosts' => ['192.168.1.10']]);
+    config(['network.allowed_private_hosts.mail' => ['192.168.1.10']]);
     actAsCompanyOwner($this->company);
 
     CompanySetting::setSettings([

@@ -142,6 +142,7 @@ After that the token is usable as `bg-X` / `text-X` / `border-X` in Vue template
 - **Validation**: Form Request classes, never inline validation
 - **API responses**: Eloquent API Resources in `app/Http/Resources/`
 - **PDF generation**: Pluggable driver — `dompdf` (default, via `GeneratesPdfTrait`) or `gotenberg` (headless Chromium). Driver chosen per company through the **PDF Generation** admin settings page.
+- **Outbound hosts**: a setting that names a host the server connects to is checked by `App\Support\Net\PrivateNetworkGuard`, at save time (`PublicHttpUrl`, `PublicHost`) and again when the connection is made. Legitimate private hosts are exempted per feature in `config/network.php` (`GOTENBERG_ALLOWED_PRIVATE_HOST`, `MAIL_ALLOWED_PRIVATE_HOSTS`) through `PrivateNetworkGuard::isExempt($feature, $target)`: the operator names the hosts, never a boolean, never a settings toggle, and one feature's exemption never covers another.
 - **Email**: Mailable classes with `EmailLog` tracking. Mail driver is configurable globally and may be overridden per-company.
 - **File storage**: Spatie MediaLibrary backed by the **FileDisk** model — admins create named disk entries (local / S3 / Dropbox / DigitalOcean Spaces) and assign them to purposes (`media_storage`, `pdf_storage`, `backup_storage`) in **Admin → File Disks → Disk Assignments**. New uploads go to the assigned disk; existing files stay where they were and require `php artisan media:secure` to migrate.
 - **Serial numbers**: `SerialNumberService`

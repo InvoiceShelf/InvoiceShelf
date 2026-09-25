@@ -118,6 +118,82 @@ class PrivateNetworkGuard
     }
 
     /**
+     * Whether an operator has named this target as a trusted private host for
+     * one feature (config/network.php, allowed_private_hosts.<feature>).
+     *
+     * An entry with a scheme matches the exact URL, ignoring case and a
+     * trailing slash; a bare entry matches the target's host, whether the
+     * target is a bare host or a URL. An exemption for one feature never
+     * applies to another.
+     */
+    public static function isExempt(string $feature, ?string $target): bool
+    {
+        if (! is_string($target) || trim($target) === '') {
+            return false;
+        }
+
+        foreach ((array) config("network.allowed_private_hosts.{$feature}", []) as $allowed) {
+            if (! is_string($allowed) || trim($allowed) === '') {
+                continue;
+            }
+
+            $matches = str_contains($allowed, '://')
+                ? self::normalizedUrl($allowed) !== null && self::normalizedUrl($allowed) === self::normalizedUrl($target)
+                : self::hostOf($target) === strtolower(trim($allowed, " \t[]"));
+
+            if ($matches) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * The host a target names: the host part of a URL, or the value itself,
+     * lowercased and without IPv6 brackets. Null when a URL carries no host.
+     */
+    public static function hostOf(string $target): ?string
+    {
+        $target = trim($target);
+
+        if (str_contains($target, '://')) {
+            $host = parse_url($target, PHP_URL_HOST);
+
+            return is_string($host) && $host !== '' ? strtolower(trim($host, '[]')) : null;
+        }
+
+        return strtolower(trim($target, '[]'));
+    }
+
+    /**
+     * A URL reduced to scheme://host[:port][/path], lowercased, without a
+     * trailing slash; null when it has no scheme and host.
+     */
+    private static function normalizedUrl(string $url): ?string
+    {
+        $parts = parse_url(trim($url));
+
+        if ($parts === false || ! isset($parts['scheme'], $parts['host'])) {
+            return null;
+        }
+
+        $host = strtolower(trim($parts['host'], '[]'));
+
+        if ($host === '') {
+            return null;
+        }
+
+        return sprintf(
+            '%s://%s%s%s',
+            strtolower($parts['scheme']),
+            $host,
+            isset($parts['port']) ? ':'.$parts['port'] : '',
+            rtrim($parts['path'] ?? '', '/'),
+        );
+    }
+
+    /**
      * Throw when the URL is not safe to request. Used by runtime driver guards.
      *
      * @throws BlockedUrlException

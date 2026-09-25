@@ -33,7 +33,7 @@ test('gotenberg host allows a public address', function () {
 });
 
 test('gotenberg host accepts the private host declared in the environment', function () {
-    config(['pdf.connections.gotenberg.allowed_private_host' => 'http://10.0.0.5:3000']);
+    config(['network.allowed_private_hosts.gotenberg' => ['http://10.0.0.5:3000']]);
 
     expect(validateGotenbergHost('http://10.0.0.5:3000')->errors()->has('gotenberg_host'))->toBeFalse();
 });
@@ -45,7 +45,7 @@ test('gotenberg host accepts the private host declared in the environment', func
  * setting at a cloud metadata endpoint and read the response back as a "PDF".
  */
 test('declaring one private host does not exempt any other', function (string $url) {
-    config(['pdf.connections.gotenberg.allowed_private_host' => 'http://pdf:3000']);
+    config(['network.allowed_private_hosts.gotenberg' => ['http://pdf:3000']]);
 
     expect(validateGotenbergHost($url)->fails())->toBeTrue();
 })->with([
@@ -55,13 +55,13 @@ test('declaring one private host does not exempt any other', function (string $u
 ]);
 
 test('an unset allowlist exempts nothing', function () {
-    config(['pdf.connections.gotenberg.allowed_private_host' => null]);
+    config(['network.allowed_private_hosts.gotenberg' => []]);
 
     expect(validateGotenbergHost('http://10.0.0.5:3000')->fails())->toBeTrue();
 });
 
 test('the declared host is matched ignoring case and trailing slash', function (string $configured, string $submitted) {
-    config(['pdf.connections.gotenberg.allowed_private_host' => $configured]);
+    config(['network.allowed_private_hosts.gotenberg' => [$configured]]);
 
     expect(GotenbergHostPolicy::isExemptFromPrivateNetworkGuard($submitted))->toBeTrue();
 })->with([
@@ -72,7 +72,7 @@ test('the declared host is matched ignoring case and trailing slash', function (
 ]);
 
 test('the policy rejects hosts that differ in any meaningful part', function (string $submitted) {
-    config(['pdf.connections.gotenberg.allowed_private_host' => 'http://pdf:3000']);
+    config(['network.allowed_private_hosts.gotenberg' => ['http://pdf:3000']]);
 
     expect(GotenbergHostPolicy::isExemptFromPrivateNetworkGuard($submitted))->toBeFalse();
 })->with([
@@ -95,7 +95,7 @@ test('gotenberg driver still blocks a private host that was not declared', funct
     config([
         'pdf.connections.gotenberg.host' => 'http://169.254.169.254',
         'pdf.connections.gotenberg.papersize' => '210mm 297mm',
-        'pdf.connections.gotenberg.allowed_private_host' => 'http://pdf:3000',
+        'network.allowed_private_hosts.gotenberg' => ['http://pdf:3000'],
     ]);
 
     expect(fn () => (new GotenbergPdfDriver)->loadView('app.pdf.invoice.invoice1'))

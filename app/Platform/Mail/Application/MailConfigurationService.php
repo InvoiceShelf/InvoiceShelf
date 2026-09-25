@@ -6,6 +6,7 @@ use App\Domains\Accounts\Models\CompanySetting;
 use App\Platform\Mail\Contracts\MailConfigurator;
 use App\Platform\Operations\Models\Setting;
 use App\Rules\PublicHost;
+use App\Support\Net\PrivateNetworkGuard;
 use Aws\Sdk;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
@@ -172,17 +173,6 @@ class MailConfigurationService implements MailConfigurator
     }
 
     /**
-     * Private hosts the operator named as usable by company owners
-     * (MAIL_ALLOWED_PRIVATE_HOSTS).
-     *
-     * @return list<string>
-     */
-    private function allowedPrivateHosts(): array
-    {
-        return (array) config('mail.allowed_private_hosts', []);
-    }
-
-    /**
      * The field of a company's stored custom configuration that points the
      * server at a private or reserved address, or null when there is none.
      *
@@ -204,7 +194,7 @@ class MailConfigurationService implements MailConfigurator
                 $host = $stored($field) === '' ? null : PublicHost::hostOf($stored($field));
 
                 return $host !== null
-                    && ! PublicHost::isNamed($host, $this->allowedPrivateHosts())
+                    && ! PrivateNetworkGuard::isExempt('mail', $host)
                     && PublicHost::isBlocked($host);
             }),
             'mailgun' => in_array($stored('mail_mailgun_endpoint'), self::MAILGUN_ENDPOINTS, true) ? null : 'mail_mailgun_endpoint',
@@ -245,7 +235,7 @@ class MailConfigurationService implements MailConfigurator
             ];
         }
 
-        $publicOnly = $allowPrivateHosts ? [] : [new PublicHost($this->allowedPrivateHosts())];
+        $publicOnly = $allowPrivateHosts ? [] : [new PublicHost(exemptFor: 'mail')];
 
         return array_merge($rules, match ($driver) {
             'smtp' => [

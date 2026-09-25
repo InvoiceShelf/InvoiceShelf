@@ -21,7 +21,8 @@ use App\Support\Net\PrivateNetworkGuard;
  * every other private target stays blocked.
  *
  * Both the save-time validation rule and the runtime driver guard call this, so the
- * two layers cannot drift apart.
+ * two layers cannot drift apart. The matching itself is the shared
+ * {@see PrivateNetworkGuard::isExempt()}, fed by config/network.php.
  */
 class GotenbergHostPolicy
 {
@@ -31,53 +32,6 @@ class GotenbergHostPolicy
      */
     public static function isExemptFromPrivateNetworkGuard(?string $host): bool
     {
-        $allowed = config('pdf.connections.gotenberg.allowed_private_host');
-
-        if (! is_string($allowed) || ! is_string($host)) {
-            return false;
-        }
-
-        $allowed = self::normalize($allowed);
-        $host = self::normalize($host);
-
-        // An unset or unparseable allowlist never exempts anything.
-        return $allowed !== null && $allowed === $host;
-    }
-
-    /**
-     * Reduce a URL to scheme://host[:port][/path] with casing and any trailing
-     * slash removed, so `HTTP://PDF:3000/` and `http://pdf:3000` compare equal.
-     *
-     * Returns null when the value is empty or carries no scheme and host.
-     */
-    private static function normalize(string $url): ?string
-    {
-        $url = trim($url);
-
-        if ($url === '') {
-            return null;
-        }
-
-        $parts = parse_url($url);
-
-        if ($parts === false || ! isset($parts['scheme'], $parts['host'])) {
-            return null;
-        }
-
-        // parse_url keeps IPv6 literals bracketed; strip them on both sides so the
-        // comparison is consistent.
-        $host = strtolower(trim($parts['host'], '[]'));
-
-        if ($host === '') {
-            return null;
-        }
-
-        return sprintf(
-            '%s://%s%s%s',
-            strtolower($parts['scheme']),
-            $host,
-            isset($parts['port']) ? ':'.$parts['port'] : '',
-            rtrim($parts['path'] ?? '', '/'),
-        );
+        return PrivateNetworkGuard::isExempt('gotenberg', $host);
     }
 }
