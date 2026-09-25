@@ -15,6 +15,23 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Fonts
+    |--------------------------------------------------------------------------
+    | Scripts beyond Latin, Greek and Cyrillic (CJK, Arabic, Hebrew, ...) use
+    | font packages that are downloaded the first time a document needs them.
+    | An image can bake them in instead with `pdf:fonts:install --all
+    | --path=...`: name that directory here (it must sit under the application
+    | directory, dompdf's chroot) and turn run-time downloads off.
+    |
+    */
+
+    'fonts' => [
+        'path' => env('PDF_FONTS_PATH'),
+        'download' => (bool) env('PDF_FONTS_DOWNLOAD', true),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Page Setup
     |--------------------------------------------------------------------------
     | Geometry applied to every document, whichever driver renders it. Sizes and

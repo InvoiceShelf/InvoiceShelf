@@ -13,6 +13,7 @@ interface FontPackage {
   size: string
   installed: boolean
   bundled?: boolean
+  downloadable?: boolean
 }
 
 const { t } = useI18n()
@@ -103,7 +104,7 @@ async function installFont(pkg: FontPackage): Promise<void> {
             size="sm"
             variant="primary-outline"
             :loading="installing.has(pkg.key)"
-            :disabled="installing.has(pkg.key)"
+            :disabled="installing.has(pkg.key) || pkg.downloadable === false"
             @click="installFont(pkg)"
           >
             <template #left="slotProps">
