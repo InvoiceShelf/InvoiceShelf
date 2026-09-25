@@ -1,4 +1,5 @@
 import type { DemoState } from '@/scripts/utils/demo'
+import type { ManagedState } from '@/scripts/utils/managed'
 import { reactive } from 'vue'
 
 /**
@@ -46,6 +47,8 @@ export interface ClientManifest {
   modules: ClientManifestModule[]
   demo_mode: boolean
   demo?: DemoState | null
+  managed_mode?: boolean
+  managed?: ManagedState | null
 }
 
 export interface ClientBootState {

@@ -81,7 +81,7 @@ export const adminRoutes: RouteRecordRaw[] = [
         children: [
           {
             path: '',
-            redirect: 'mail-configuration',
+            redirect: { name: 'admin.settings.mail' },
           },
           {
             path: 'mail-configuration',

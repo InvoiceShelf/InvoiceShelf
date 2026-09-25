@@ -191,6 +191,8 @@ function applyBranding(manifest: ClientManifest): void {
   window.copyright_text = branding.copyright_text ?? undefined
   window.demo_mode = manifest.demo_mode === true
   window.demo = manifest.demo ?? undefined
+  window.managed_mode = manifest.managed_mode === true
+  window.managed = manifest.managed ?? undefined
 
   if (manifest.page_title) {
     document.title = manifest.page_title

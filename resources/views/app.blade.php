@@ -81,6 +81,11 @@
 
         @endif
 
+        @if(\App\Platform\Operations\Managed\ManagedMode::enabled())
+            window.managed_mode = true
+            window.managed = @json(\App\Platform\Operations\Managed\ManagedMode::clientState())
+        @endif
+
         @if(\App\Platform\Operations\Demo\DemoMode::enabled())
             window.demo_mode = true
             window.demo = @json(\App\Platform\Operations\Demo\DemoMode::clientState())

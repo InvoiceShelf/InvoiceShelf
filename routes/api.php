@@ -108,15 +108,17 @@ Route::prefix('/v1')->group(function () {
 
             require app_path('Domains/Metadata/routes/company.php');
 
-            // Backup & Disk
+            // Backup & Disk, PDF rendering and fonts, the server's mail
+            // transport: a hosting provider owns these on a managed install.
             // ----------------------------------
 
-            require app_path('Platform/Storage/routes/company.php');
+            Route::middleware('not-managed')->group(function () {
+                require app_path('Platform/Storage/routes/company.php');
 
-            // PDF rendering and fonts
-            // ----------------------------------
+                require app_path('Platform/Pdf/routes/admin.php');
 
-            require app_path('Platform/Pdf/routes/admin.php');
+                require app_path('Platform/Mail/routes/admin.php');
+            });
 
             require app_path('Platform/Operations/routes/settings.php');
 

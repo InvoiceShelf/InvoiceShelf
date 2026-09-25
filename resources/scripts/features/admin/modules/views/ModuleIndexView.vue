@@ -7,7 +7,7 @@
       </BaseBreadcrumb>
     </BasePageHeader>
 
-    <BaseCard class="mt-6">
+    <BaseCard v-if="!managed" class="mt-6">
       <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <h2 class="text-heading text-lg font-medium">Marketplace access</h2>
@@ -34,7 +34,7 @@
     </BaseCard>
 
     <div class="mt-6">
-      <BaseTabGroup @change="setStatusFilter">
+      <BaseTabGroup v-if="!managed" @change="setStatusFilter">
         <BaseTab :title="$t('general.all')" filter="" />
         <BaseTab :title="$t('modules.installed')" filter="INSTALLED" />
       </BaseTabGroup>
@@ -46,7 +46,7 @@
       </div>
       <div v-else class="mt-24">
         <p class="flex items-center justify-center text-muted" role="status">
-          {{ activeTab === 'INSTALLED' ? $t('modules.no_modules_installed') : $t('modules.no_marketplace_modules') }}
+          {{ managed || activeTab === 'INSTALLED' ? $t('modules.no_modules_installed') : $t('modules.no_marketplace_modules') }}
         </p>
       </div>
     </div>
@@ -60,6 +60,7 @@ import ModuleCard from '../components/ModuleCard.vue'
 import type { MarketplacePairingCode } from '@/scripts/api/services/module.service'
 import type { Module } from '@/scripts/types/domain/module'
 import { useNotificationStore } from '@/scripts/stores/notification.store'
+import { isManaged } from '@/scripts/utils/managed'
 
 const moduleStore = useModuleStore()
 const notificationStore = useNotificationStore()
@@ -69,12 +70,16 @@ const isPairing = ref(false)
 const isPolling = ref(false)
 const pairingCode = ref<MarketplacePairingCode | null>(null)
 
-const filteredModules = computed<Module[]>(() => activeTab.value === 'INSTALLED'
+// On a managed install the provider installs modules, so only what is
+// installed is listed.
+const managed = isManaged()
+
+const filteredModules = computed<Module[]>(() => managed || activeTab.value === 'INSTALLED'
   ? moduleStore.installedModules
   : moduleStore.modules)
 
 onMounted(async () => {
-  await Promise.all([moduleStore.fetchMarketplacePairing(), fetchModulesData()])
+  await Promise.all([managed ? Promise.resolve() : moduleStore.fetchMarketplacePairing(), fetchModulesData()])
 })
 
 async function fetchModulesData(): Promise<void> {
