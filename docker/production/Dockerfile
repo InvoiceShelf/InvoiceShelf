@@ -26,6 +26,9 @@ FROM serversideup/php:8.4-fpm-nginx-alpine AS base
 FROM base AS production
     ENV AUTORUN_ENABLED=true
     ENV PHP_OPCACHE_ENABLE=1
+    # Turns off the in-app updater: the image is upgraded by pulling a new one.
+    # inject.sh also writes it to .env; this covers INVOICESHELF_DOTENV=false.
+    ENV CONTAINERIZED=true
 
     # Set `www-data` as the user to start FPM
     USER root
@@ -48,6 +51,9 @@ FROM base AS production
     # the image the mount point is created root-owned and every marketplace install
     # dies with "mkdir(): Permission denied". Create it here, as www-data.
     RUN mkdir -p /var/www/html/Modules
+    # The public disk's link, made here so a read-only root has it too. The
+    # entrypoint still repairs it on a writable one.
+    RUN ln -sfn /var/www/html/storage/app/public /var/www/html/public/storage
     # Authenticate composer against GitHub when a token is provided (build secret),
     # so multi-arch builds don't exhaust the unauthenticated API rate limit while the
     # merge-plugin resolves modules. The secret is build-time only (never in the image),

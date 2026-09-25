@@ -19,6 +19,7 @@ jobs:
         runs-on: ubuntu-latest
         outputs:
             php: ${{ steps.filter.outputs.php }}
+            docker: ${{ steps.filter.outputs.docker }}
         steps:
             - name: Checkout code
               uses: actions/checkout@v6
@@ -37,6 +38,9 @@ jobs:
                           - 'composer.json'
                           - 'composer.lock'
                           - 'phpunit.xml'
+                      docker:
+                          - 'docker/production/**'
+                          - '.github/workflows/check.yaml'
 
     kill_previous:
         name: 0️⃣ Kill previous runs
@@ -150,3 +154,37 @@ jobs:
                   cp .env.example .env
                   php artisan key:generate --no-interaction
                   php artisan test --group=money-conversion
+
+    # Boots the image as a hosting provider runs it: read-only root, no .env,
+    # no capabilities, managed mode, headless install. Building the image takes
+    # minutes, so it runs when docker/production changes and on every push to
+    # 3.x rather than on every PR.
+    docker_readonly_smoke:
+        name: Docker read-only smoke
+        needs: [kill_previous, changes]
+        if: needs.changes.outputs.docker == 'true' || github.ref == 'refs/heads/3.x' || github.event_name == 'workflow_dispatch'
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v6
+
+            - uses: docker/setup-buildx-action@v4
+
+            - name: Build the image
+              uses: docker/build-push-action@v7
+              with:
+                  context: .
+                  file: docker/production/Dockerfile
+                  platforms: linux/amd64
+                  load: true
+                  tags: invoiceshelf:smoke
+                  # Reads the release build's cache too, which holds the slow
+                  # PHP extension layers.
+                  cache-from: |
+                      type=gha,scope=linux/amd64
+                      type=gha,scope=readonly-smoke
+                  cache-to: type=gha,mode=max,scope=readonly-smoke
+                  secrets: |
+                      composer_auth={"github-oauth":{"github.com":"${{ secrets.GITHUB_TOKEN }}"}}
+
+            - name: Boot it read-only
+              run: docker/production/readonly-smoke.sh invoiceshelf:smoke
