@@ -2,11 +2,11 @@
 
 namespace App\Domains\Accounts\Application;
 
-use App\Domains\Accounts\Contracts\AbilityCatalog;
 use App\Domains\Accounts\Contracts\CompanyDataPurger;
 use App\Domains\Accounts\Contracts\CompanyDefaultsProvisioner;
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\CompanySetting;
+use App\Domains\Accounts\Models\RolePreset;
 use App\Domains\Accounts\Models\User;
 use App\Facades\Hashids;
 use App\Support\Hashids\HashidConnection;
@@ -24,10 +24,8 @@ use Silber\Bouncer\Database\Role;
  */
 class CompanyService
 {
-    /** Name and title of the role every company is created with. */
-    private const OWNER_ROLE = 'owner';
-
-    private const OWNER_ROLE_TITLE = 'Owner';
+    /** The role every company's creator is given. */
+    private const OWNER_ROLE = RolePreset::OWNER;
 
     /** Mail bodies quoted into the outgoing document mails. */
     private const INVOICE_MAIL_BODY = 'You have received a new invoice from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:';
@@ -49,7 +47,7 @@ class CompanyService
     public function __construct(
         private readonly CompanyDefaultsProvisioner $companyDefaultsProvisioner,
         private readonly CompanyDataPurger $companyDataPurger,
-        private readonly AbilityCatalog $abilityCatalog,
+        private readonly RolePresetService $rolePresets,
         private readonly AccessRevoker $accessRevoker,
     ) {}
 
@@ -97,10 +95,9 @@ class CompanyService
     }
 
     /**
-     * Create the company's `owner` role and grant it the whole ability
-     * catalogue - every entry the catalogue offers, against the subject model
-     * the entry names. A company created while a module is enabled therefore
-     * starts out holding that module's abilities too.
+     * Give the company its copy of every role preset: the `owner` role, which
+     * holds the whole ability catalogue (a module enabled at the time
+     * included), and the others the super administrator defines.
      *
      * Roles live inside a company's scope, so the scope is moved onto this
      * company first and left there for whatever the caller does next.
@@ -109,15 +106,7 @@ class CompanyService
     {
         BouncerFacade::scope()->to($company->id);
 
-        $owner = BouncerFacade::role()->firstOrCreate([
-            'name' => self::OWNER_ROLE,
-            'title' => self::OWNER_ROLE_TITLE,
-            'scope' => $company->id,
-        ]);
-
-        foreach ($this->abilityCatalog->all() as $entry) {
-            BouncerFacade::allow($owner)->to($entry['ability'], $entry['model']);
-        }
+        $this->rolePresets->syncCompany($company->id);
     }
 
     /**

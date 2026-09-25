@@ -8,6 +8,7 @@ use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\CompanyInvitation;
 use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Accounts\Models\ImpersonationLog;
+use App\Domains\Accounts\Models\RolePreset;
 use App\Domains\Accounts\Models\User;
 use App\Domains\Accounts\Models\UserSetting;
 use App\Domains\Catalog\Models\Item;
@@ -100,6 +101,7 @@ final class ModelIdentityMap
             'payment_allocation' => PaymentAllocation::class,
             'payment_method' => PaymentMethod::class,
             'recurring_invoice' => RecurringInvoice::class,
+            'role_preset' => RolePreset::class,
             'setting' => Setting::class,
             'tax' => Tax::class,
             'tax_type' => TaxType::class,

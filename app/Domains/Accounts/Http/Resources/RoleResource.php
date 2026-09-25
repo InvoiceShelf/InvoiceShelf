@@ -3,6 +3,7 @@
 namespace App\Domains\Accounts\Http\Resources;
 
 use App\Domains\Accounts\Models\CompanySetting;
+use App\Domains\Accounts\Models\RolePreset;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -29,6 +30,8 @@ class RoleResource extends JsonResource
             'name' => $role->name,
             'title' => $role->title,
             'level' => $role->level,
+            // The preset this role is a company's copy of, if any: read only here.
+            'preset' => RolePreset::keyFromRoleName($role->name),
             'formatted_created_at' => $createdAt,
             'abilities' => $role->getAbilities(),
         ];

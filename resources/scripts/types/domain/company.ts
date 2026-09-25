@@ -17,7 +17,6 @@ export interface Company {
   updated_at: string
   address?: Address
   owner?: User
-  roles: Role[]
   user_role?: string | null
   /** Answers to the company's own custom fields, when it has any. */
   fields?: CustomFieldValue[]

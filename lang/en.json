@@ -1673,6 +1673,8 @@
       "save": "Save",
       "add_new_role": "Add New Role",
       "system_role": "System Role",
+      "preset": "Preset",
+      "preset_hint": "Set by the administrator for every company. You can assign it, not change it.",
       "role_name": "Role Name",
       "added_on": "Added on",
       "add_role": "Add Role",
