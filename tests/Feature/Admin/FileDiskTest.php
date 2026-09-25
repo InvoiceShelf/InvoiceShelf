@@ -92,18 +92,14 @@ test('creating a disk with a driver outside the allowlist is refused', function 
     ])->assertUnprocessable()->assertJsonValidationErrors(['driver']);
 });
 
-test('an s3 compatible endpoint on a private address is refused', function () {
+test('an s3 compatible disk needs its endpoint and credentials', function () {
     postJson('/api/v1/disks', [
         'name' => 'minio',
         'driver' => 's3compat',
-        'credentials' => [
-            'endpoint' => 'http://127.0.0.1:9000',
-            'key' => 'key',
-            'secret' => 'secret',
-            'region' => 'us-east-1',
-            'bucket' => 'bucket',
-        ],
-    ])->assertUnprocessable()->assertJsonValidationErrors(['credentials.endpoint']);
+        'credentials' => ['key' => 'key'],
+    ])->assertUnprocessable()->assertJsonValidationErrors([
+        'credentials.endpoint', 'credentials.secret', 'credentials.region', 'credentials.bucket',
+    ]);
 });
 
 test('updating a disk is validated like creating one', function () {

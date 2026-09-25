@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use App\Models\FileDisk;
-use App\Rules\SafeRemoteUrl;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -71,7 +70,6 @@ class DiskEnvironmentRequest extends FormRequest
                     'credentials.endpoint' => [
                         'required',
                         'string',
-                        new SafeRemoteUrl,
                     ],
                     'credentials.root' => [
                         'required',
@@ -86,7 +84,6 @@ class DiskEnvironmentRequest extends FormRequest
                     'credentials.endpoint' => [
                         'required',
                         'string',
-                        new SafeRemoteUrl,
                     ],
                     'credentials.key' => [
                         'required',
