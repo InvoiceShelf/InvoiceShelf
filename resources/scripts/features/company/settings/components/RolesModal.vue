@@ -199,28 +199,63 @@ function onUpdateAbility(currentAbility: AbilityItem): void {
   })
 }
 
-function setSelectAll(checked: boolean): void {
-  const dependList: string[] = []
-  Object.keys(abilitiesList.value).forEach((group) => {
-    abilitiesList.value[group].forEach((_a) => {
-      if (_a.depends_on) {
-        dependList.push(..._a.depends_on)
+type Selection = 'all' | 'view' | 'none'
+
+/** Read-only abilities: seeing records, reports and the dashboard. */
+function isViewAbility(item: AbilityItem): boolean {
+  return item.ability.startsWith('view-') || item.ability === 'dashboard'
+}
+
+function allAbilities(): AbilityItem[] {
+  return Object.values(abilitiesList.value).flat()
+}
+
+function hasViewAndMore(items: AbilityItem[]): boolean {
+  return items.some(isViewAbility) && items.some((item) => !isViewAbility(item))
+}
+
+/**
+ * Give a set of abilities (one group, or all of them) everything, only the
+ * read-only ones, or nothing, leaving the rest of the role as it is. The
+ * shortcut for building a role without ticking boxes one by one.
+ */
+function applySelection(items: AbilityItem[], selection: Selection): void {
+  const kept = currentRole.value.abilities.filter((a) => !items.includes(a))
+  const added =
+    selection === 'all' ? items : selection === 'view' ? items.filter(isViewAbility) : []
+
+  currentRole.value.abilities = [...kept, ...added]
+  settleDependencies()
+}
+
+/**
+ * An ability pulls in the ones it depends on, which then cannot be unticked
+ * while it is on. After a bulk change, add what the chosen abilities need and
+ * lock exactly those.
+ */
+function settleDependencies(): void {
+  const all = allAbilities()
+  const byName = new Map(all.map((a) => [a.ability, a]))
+  const selected = new Set(currentRole.value.abilities)
+  const locked = new Set<string>()
+
+  const queue = [...selected]
+  while (queue.length) {
+    const item = queue.pop() as AbilityItem
+    item.depends_on?.forEach((name) => {
+      locked.add(name)
+      const dependency = byName.get(name)
+      if (dependency && !selected.has(dependency)) {
+        selected.add(dependency)
+        queue.push(dependency)
       }
     })
-  })
-
-  Object.keys(abilitiesList.value).forEach((group) => {
-    abilitiesList.value[group].forEach((_a) => {
-      if (dependList.includes(_a.ability)) {
-        _a.disabled = checked
-      }
-      currentRole.value.abilities.push(_a)
-    })
-  })
-
-  if (!checked) {
-    currentRole.value.abilities = []
   }
+
+  currentRole.value.abilities = all.filter((a) => selected.has(a))
+  all.forEach((a) => {
+    a.disabled = locked.has(a.ability)
+  })
 }
 
 function enableAbilities(ability: AbilityItem): void {
@@ -298,7 +333,7 @@ function closeRolesModal(): void {
           <button
             type="button"
             class="rounded-sm text-primary-600 hover:underline focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
-            @click="setSelectAll(true)"
+            @click="applySelection(allAbilities(), 'all')"
           >
             {{ $t('settings.roles.select_all') }}
           </button>
@@ -306,7 +341,15 @@ function closeRolesModal(): void {
           <button
             type="button"
             class="rounded-sm text-primary-600 hover:underline focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
-            @click="setSelectAll(false)"
+            @click="applySelection(allAbilities(), 'view')"
+          >
+            {{ $t('settings.roles.view_only') }}
+          </button>
+          <span aria-hidden="true"> / </span>
+          <button
+            type="button"
+            class="rounded-sm text-primary-600 hover:underline focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
+            @click="applySelection(allAbilities(), 'none')"
           >
             {{ $t('settings.roles.none') }}
           </button>
@@ -323,9 +366,36 @@ function closeRolesModal(): void {
             class="flex flex-col space-y-1"
           >
             <legend
-              class="w-full pb-1 mb-2 text-sm border-b text-muted border-line-default"
+              class="flex w-full items-baseline justify-between gap-2 pb-1 mb-2 text-sm border-b text-muted border-line-default"
             >
-              {{ gIndex }}
+              <span>{{ gIndex }}</span>
+              <span class="flex shrink-0 gap-2 text-xs">
+                <button
+                  type="button"
+                  class="rounded-sm text-primary-600 hover:underline focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
+                  :aria-label="$t('settings.roles.group_all', { group: gIndex })"
+                  @click="applySelection(abilityGroup, 'all')"
+                >
+                  {{ $t('settings.roles.all') }}
+                </button>
+                <button
+                  v-if="hasViewAndMore(abilityGroup)"
+                  type="button"
+                  class="rounded-sm text-primary-600 hover:underline focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
+                  :aria-label="$t('settings.roles.group_view', { group: gIndex })"
+                  @click="applySelection(abilityGroup, 'view')"
+                >
+                  {{ $t('settings.roles.view') }}
+                </button>
+                <button
+                  type="button"
+                  class="rounded-sm text-primary-600 hover:underline focus:outline-hidden focus-visible:ring-2 focus-visible:ring-focus"
+                  :aria-label="$t('settings.roles.group_none', { group: gIndex })"
+                  @click="applySelection(abilityGroup, 'none')"
+                >
+                  {{ $t('settings.roles.none') }}
+                </button>
+              </span>
             </legend>
             <div
               v-for="(ability, index) in abilityGroup"
