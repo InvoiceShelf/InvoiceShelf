@@ -96,7 +96,7 @@ The "Powered by" line under the sign-in pages, public documents and document ema
 
 ### Customer portal host
 
-`CUSTOMER_PORTAL_URL` (with `CUSTOMER_PORTAL_HOSTS` for extra hosts) gives the customer portal a host of its own, such as `clients-acme.invhost.com` on InvoiceShelf Cloud. Every link sent to a customer is built with `App\Support\Urls\CustomerUrl` (`route()`, `to()`), never `route()` or `url()` directly, so it lands there. The global `RestrictPortalHost` middleware lets a portal host serve only the portal pages and API, public documents, PDFs by hash, module assets and `/up`, answering 404 to everything else, and moves customer pages opened on the app host to the portal host with a 301. The staff SPA reads the address as `window.customer_portal_url` (`customerBaseUrl()` in `utils/documents.ts`). Unset, or set to the app's own host, nothing changes.
+`CUSTOMER_PORTAL_URL` (with `CUSTOMER_PORTAL_HOSTS` for extra hosts) gives the customer portal a host of its own, such as `portal.example.com`. Every link sent to a customer is built with `App\Support\Urls\CustomerUrl` (`route()`, `to()`), never `route()` or `url()` directly, so it lands there. The global `RestrictPortalHost` middleware lets a portal host serve only the portal pages and API, public documents, PDFs by hash, module assets and `/up`, answering 404 to everything else, and moves customer pages opened on the app host to the portal host with a 301. The staff SPA reads the address as `window.customer_portal_url` (`customerBaseUrl()` in `utils/documents.ts`). Unset, or set to the app's own host, nothing changes.
 
 ### MCP server
 
