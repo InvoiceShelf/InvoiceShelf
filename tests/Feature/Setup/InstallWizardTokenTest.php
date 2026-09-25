@@ -58,3 +58,14 @@ test('finishing the wizard revokes its tokens', function () {
 
     getJson('/api/v1/me', asBearer($this->wizardToken, true, $this->company->id))->assertUnauthorized();
 });
+
+test('a wizard token expires on its own', function () {
+    $token = postJson('/api/v1/installation/login')->assertOk()->json('token');
+
+    getJson('/api/v1/me', asBearer($token, true, $this->company->id))->assertOk();
+
+    $this->travel(config('installer.wizard_token_ttl') + 1)->minutes();
+    app('auth')->forgetGuards();
+
+    getJson('/api/v1/me', asBearer($token, true, $this->company->id))->assertUnauthorized();
+});

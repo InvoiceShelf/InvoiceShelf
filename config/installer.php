@@ -35,6 +35,17 @@ return [
         'time_zone' => env('INSTALL_TIMEZONE', 'UTC'),
         'language' => env('INSTALL_LANGUAGE', 'en'),
     ],
+    /*
+    |--------------------------------------------------------------------------
+    | Setup wizard token lifetime
+    |--------------------------------------------------------------------------
+    |
+    | Minutes the wizard's bearer token stays valid. The wizard asks for a new
+    | one whenever it signs in again, so this only bounds a token nobody uses.
+    |
+    */
+    'wizard_token_ttl' => (int) env('INSTALL_WIZARD_TOKEN_TTL', 120),
+
     'final' => [
         'key' => true,
         'publish' => false,
