@@ -2,11 +2,24 @@
   <!--
     A menu item. Given `to`, the item is the link itself, so a keyboard or
     screen reader meets one element (a link with the menuitem role) rather than
-    a menu item inside a link. Without `to` it is a plain element; the click
+    a menu item inside a link. `href` does the same for an address outside the
+    app, opened in a new tab. Without either it is a plain element; the click
     still reaches a wrapping <router-link>, so older call sites keep working.
   -->
   <DropdownMenuItem
-    v-if="to"
+    v-if="href"
+    as-child
+    v-bind="$attrs"
+    @focus="active = true"
+    @blur="active = false"
+  >
+    <a :href="href" target="_blank" rel="noopener noreferrer" :class="itemClass">
+      <slot :active="active" />
+    </a>
+  </DropdownMenuItem>
+
+  <DropdownMenuItem
+    v-else-if="to"
     as-child
     v-bind="$attrs"
     @focus="active = true"
@@ -36,10 +49,12 @@ import { DropdownMenuItem } from 'reka-ui'
 
 interface Props {
   to?: RouteLocationRaw
+  href?: string
 }
 
 withDefaults(defineProps<Props>(), {
   to: undefined,
+  href: undefined,
 })
 
 defineOptions({ inheritAttrs: false })

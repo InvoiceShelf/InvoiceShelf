@@ -88,6 +88,14 @@
           {{ $t('navigation.settings') }}
         </BaseDropdownItem>
 
+        <BaseDropdownItem v-if="source" :href="source">
+          <BaseIcon
+            class="me-3 h-5 w-5 text-subtle group-hover:text-muted"
+            name="CodeBracketIcon"
+          />
+          {{ $t('navigation.source_code') }}
+        </BaseDropdownItem>
+
         <BaseDropdownItem @click="logout">
           <BaseIcon
             class="me-3 h-5 w-5 text-subtle group-hover:text-muted"
@@ -106,6 +114,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useCustomerPortalStore } from '../store'
 import { buildCustomerPortalPath, prefixCustomerPortalMenuLink } from '../utils/routes'
 import MainLogo from '@/scripts/components/icons/MainLogo.vue'
+import { sourceUrl } from '@/scripts/utils/branding'
 
 declare global {
   interface Window {
@@ -116,6 +125,7 @@ declare global {
 const store = useCustomerPortalStore()
 const route = useRoute()
 const router = useRouter()
+const source = sourceUrl()
 
 const customerLogo = computed<string | false>(() => {
   return window.customer_logo || false

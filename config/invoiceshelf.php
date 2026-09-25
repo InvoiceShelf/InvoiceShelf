@@ -107,6 +107,24 @@ return [
     ],
 
     /*
+    * The "Powered by" line under the sign-in pages, public documents and
+    * emails. A host may put its own name and address there, or hide it with
+    * INVOICESHELF_POWERED_BY=false.
+    */
+    'powered_by' => [
+        'enabled' => (bool) env('INVOICESHELF_POWERED_BY', true),
+        'name' => env('INVOICESHELF_POWERED_BY_NAME', 'InvoiceShelf'),
+        'url' => env('INVOICESHELF_POWERED_BY_URL', 'https://invoiceshelf.com'),
+    ],
+
+    /*
+    * Where the source code of the running version is, offered to everyone who
+    * uses the install (AGPL section 13). {version} becomes the running
+    * version. A modified build points it at its own source.
+    */
+    'source_url' => env('INVOICESHELF_SOURCE_URL', 'https://github.com/InvoiceShelf/InvoiceShelf/tree/{version}'),
+
+    /*
     * Whether the app runs inside the official Docker image. The image's
     * docker/production/inject.sh sets CONTAINERIZED=true in .env at startup.
     * When true, the in-app updater is disabled (the API refuses and the UI hides
