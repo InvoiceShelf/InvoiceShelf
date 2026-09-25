@@ -30,6 +30,8 @@ Eighth public alpha of InvoiceShelf 3.0. It closes security issues in the mail, 
 
 ### Improvements and fixes
 
+- **Owners can add a member with a password**, next to Invite member on the Members page, for a server that sends no mail or a colleague who should not wait for an invitation. (#859, #883)
+- **Building a company role takes a few clicks:** View Only next to Select All and None, and All, View and None on each module, with the permissions they depend on ticked for you. Select All no longer adds every permission twice. (#860, #884)
 - **On PostgreSQL, saving an estimate, invoice or expense in a foreign currency failed** whenever the exchange rate had decimals, with `invalid input syntax for type bigint`. Amounts converted to the company currency are now rounded to whole cents before they are stored, everywhere they are written: documents, lines, taxes, copies, recurring invoices, payments and balances. The exchange rate keeps its decimals. (#798, #862, #864)
 - The exchange-rate update for existing documents, which runs after the company currency changes, took each document's discount from its subtotal and converted taxes twice. It now converts each amount from its own value. (#862)
 - **Installing or removing a module from the marketplace could fail at the last step**, while clearing caches, after the module had been downloaded and verified. (#858)
