@@ -10,6 +10,17 @@ export interface Ability {
   updated_at: string
 }
 
+/** A role the super administrator defines for every company. */
+export interface RolePreset {
+  id: number
+  key: string
+  title: string
+  /** The Owner preset: every ability, cannot be changed or removed. */
+  is_owner: boolean
+  role_name: string
+  abilities: string[]
+}
+
 export interface Role {
   id: number
   name: string
