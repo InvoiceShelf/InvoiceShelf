@@ -22,7 +22,8 @@
     "more": "Mer",
     "menu": "Meny",
     "account_settings": "Kontoinnstillinger",
-    "account_menu": "Kontomeny for {name}"
+    "account_menu": "Kontomeny for {name}",
+    "source_code": "Source code"
   },
   "general": {
     "add_company": "Legg til bedrift",
