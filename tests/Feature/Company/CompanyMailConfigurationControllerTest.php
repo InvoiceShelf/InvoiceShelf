@@ -229,3 +229,20 @@ test('upgrading deletes the sendmail commands already stored', function () {
     expect(CompanySetting::getSetting('company_mail_sendmail_path', $this->companyId))->toBeNull()
         ->and(Setting::getSetting('mail_sendmail_path'))->toBeNull();
 });
+
+test('smtp settings save with the optional fields left blank', function () {
+    postJson('/api/v1/company/mail/company-config', [
+        'use_custom_mail_config' => 'YES',
+        'mail_driver' => 'smtp',
+        'mail_host' => 'smtp.example.com',
+        'mail_port' => 587,
+        'from_name' => 'Company Mailer',
+        'from_mail' => 'company@example.com',
+    ])->assertOk();
+
+    $this->assertDatabaseHas('company_settings', [
+        'company_id' => $this->companyId,
+        'option' => 'company_mail_timeout',
+        'value' => '',
+    ]);
+});

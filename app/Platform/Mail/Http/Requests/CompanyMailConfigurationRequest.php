@@ -30,7 +30,8 @@ class CompanyMailConfigurationRequest extends FormRequest
 
         return app(MailConfigurationService::class)->validationRules(
             $this->string('mail_driver')->toString(),
-            true
+            allowDisabledCustomConfig: true,
+            allowPrivateHosts: (bool) $this->user()?->isSuperAdmin(),
         );
     }
 }

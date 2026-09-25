@@ -95,15 +95,8 @@ return [
              */
             'pdfa' => env('GOTENBERG_PDFA'),
 
-            /*
-             * Gotenberg usually runs as a sidecar on a private network, which the
-             * SSRF guard rejects. Name that one host here to exempt it — e.g.
-             * GOTENBERG_ALLOWED_PRIVATE_HOST=http://pdf:3000. Only this exact value
-             * is exempt; the guard still blocks every other private target, so the
-             * host setting cannot be repointed at an internal service. No default:
-             * the `host` fallback above must never be trusted implicitly.
-             */
-            'allowed_private_host' => env('GOTENBERG_ALLOWED_PRIVATE_HOST'),
+            // A private Gotenberg host is exempted in config/network.php
+            // (GOTENBERG_ALLOWED_PRIVATE_HOST), never implicitly.
         ],
     ],
 
