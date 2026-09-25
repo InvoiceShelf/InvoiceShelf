@@ -16,9 +16,10 @@ use Silber\Bouncer\BouncerFacade;
  * account is to hold inside that company, displacing whatever it held there
  * before.
  *
- * Handing out a role means moving Bouncer's scope onto the company first. The
- * scope is left wherever the last company in the list put it; nothing here puts
- * it back. Kept as it stands.
+ * Roles are handed out inside each company's own Bouncer scope, which is put
+ * back afterwards, so this works the same from a company request and from the
+ * super administrator's, which has none. Leaving a company takes the role held
+ * there with it.
  */
 class MemberService
 {
@@ -80,6 +81,12 @@ class MemberService
         // left ends with the membership.
         foreach ($changes['detached'] as $companyId) {
             $this->accessRevoker->revokeCompany($user->id, (int) $companyId);
+
+            // Or an invitation back into the company would restore the old
+            // role next to the new one.
+            BouncerFacade::scope()->onceTo((int) $companyId, function () use ($user): void {
+                BouncerFacade::sync($user)->roles([]);
+            });
         }
 
         $this->grantRoles($user, $memberships);
@@ -130,9 +137,11 @@ class MemberService
     private function grantRoles(User $member, Collection $memberships): void
     {
         foreach ($memberships as $membership) {
-            BouncerFacade::scope()->to($membership['id']);
-
-            BouncerFacade::sync($member)->roles([$membership['role']]);
+            BouncerFacade::scope()->onceTo((int) $membership['id'], function () use ($member, $membership): void {
+                BouncerFacade::sync($member)->roles([$membership['role']]);
+            });
         }
+
+        BouncerFacade::refresh();
     }
 }

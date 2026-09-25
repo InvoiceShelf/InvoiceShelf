@@ -27,6 +27,7 @@ export interface FetchCompaniesParams {
   orderByField?: string
   orderBy?: string
   page?: number
+  limit?: number
 }
 
 export interface FetchUsersParams {
@@ -54,11 +55,28 @@ export interface UpdateCompanyData {
   }
 }
 
+/** A company a user belongs to, and the role (by name) they hold there. */
+export interface AdminMembership {
+  id: number | null
+  role: string | null
+}
+
 export interface UpdateUserData {
   name: string
   email: string
   phone?: string
   password?: string
+  is_super_admin?: boolean
+  /** Sent to replace every membership; left out to keep them as they are. */
+  companies?: Array<{ id: number; role: string }>
+}
+
+/** A role a user can be given in one company. */
+export interface CompanyRoleOption {
+  id: number
+  name: string
+  title: string
+  preset: string | null
 }
 
 export const useAdminStore = defineStore('admin', () => {
@@ -144,6 +162,23 @@ export const useAdminStore = defineStore('admin', () => {
     }
   }
 
+  async function createUser(payload: UpdateUserData): Promise<User> {
+    const { data } = await client.post(API.SUPER_ADMIN_USERS, payload)
+
+    const notificationStore = useNotificationStore()
+    notificationStore.showNotification({
+      type: 'success',
+      message: 'administration.users.created_message',
+    })
+
+    return data.data
+  }
+
+  async function fetchCompanyRoles(companyId: number): Promise<CompanyRoleOption[]> {
+    const { data } = await client.get(`${API.SUPER_ADMIN_COMPANIES}/${companyId}/roles`)
+    return data.data
+  }
+
   async function updateUser(id: number | string, payload: UpdateUserData): Promise<void> {
     try {
       await client.put(`${API.SUPER_ADMIN_USERS}/${id}`, payload)
@@ -196,7 +231,9 @@ export const useAdminStore = defineStore('admin', () => {
     updateCompany,
     fetchUsers,
     fetchUser,
+    createUser,
     updateUser,
+    fetchCompanyRoles,
     impersonateUser,
     stopImpersonating,
   }

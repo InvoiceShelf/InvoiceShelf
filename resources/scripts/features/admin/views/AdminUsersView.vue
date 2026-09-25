@@ -27,6 +27,13 @@
               <BaseIcon v-else name="XMarkIcon" :class="slotProps.class" />
             </template>
           </BaseButton>
+
+          <BaseButton @click="$router.push({ name: 'admin.users.create' })">
+            <template #left="slotProps">
+              <BaseIcon name="PlusIcon" :class="slotProps.class" aria-hidden="true" />
+            </template>
+            {{ $t('administration.users.new_user') }}
+          </BaseButton>
         </div>
       </template>
     </BasePageHeader>

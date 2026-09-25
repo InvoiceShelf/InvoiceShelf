@@ -8,8 +8,11 @@ use App\Domains\Accounts\Http\Requests\AdminCompanyUpdateRequest;
 use App\Domains\Accounts\Http\Requests\CompaniesRequest;
 use App\Domains\Accounts\Http\Resources\CompanyResource;
 use App\Domains\Accounts\Models\Company;
+use App\Domains\Accounts\Models\RolePreset;
 use App\Platform\Http\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Silber\Bouncer\Database\Role;
 
 class CompaniesController extends Controller
 {
@@ -100,5 +103,29 @@ class CompaniesController extends Controller
     public function userCompanies(Request $request)
     {
         return CompanyResource::collection($request->user()->companies);
+    }
+
+    /**
+     * The roles a user can hold in a company, for the super administrator's
+     * membership picker: Owner, then the presets, then the company's own.
+     */
+    public function roles(Company $company): JsonResponse
+    {
+        $roles = Role::query()->withoutGlobalScopes()
+            ->where('scope', $company->id)
+            ->get()
+            ->map(fn (Role $role) => [
+                'id' => $role->id,
+                'name' => $role->name,
+                'title' => $role->title ?? $role->name,
+                'preset' => RolePreset::keyFromRoleName($role->name),
+            ])
+            ->sortBy(fn (array $role) => [
+                $role['preset'] === RolePreset::OWNER ? 0 : ($role['preset'] !== null ? 1 : 2),
+                mb_strtolower($role['title']),
+            ])
+            ->values();
+
+        return response()->json(['data' => $roles]);
     }
 }
