@@ -160,6 +160,8 @@ Two non-obvious constraints when extending the font system:
 1. **dompdf's PHP-Font-Lib does not parse variable fonts** (`fvar`/`gvar` tables). Any new package must source **static TTF** files — Google Fonts' main repo ships variable fonts and produces empty boxes. Reliable static-TTF sources used today: `openmaptiles/fonts` for non-CJK Noto scripts, `life888888/cjk-fonts-ttf` for the CJK packages, `google/fonts/ofl/sarabun` for Thai.
 2. **dompdf does not glyph-fall-back through the `font-family` chain** — it uses the *first* font for ALL characters. So locale-specific packages must be the **primary** font for that locale, not a fallback. Selection happens in `FontService::getFontFamilyForLocale()`. This is also why a Latin-locale company with a Hebrew customer name will still render boxes for the Hebrew text — solving that needs Gotenberg or a custom mid-render font-switching pass.
 
+Every downloadable file names a release or commit URL (never a branch) and a `sha256`; a download that does not match is refused, and a new package needs both. `pdf:fonts:install --all --path=<dir>` fetches packages ahead of time: an image that bakes them points `PDF_FONTS_PATH` at that directory (it must sit under the app directory, dompdf's chroot; `FontService` checks it before `storage/fonts/`) and sets `PDF_FONTS_DOWNLOAD=false`, which stops run-time and admin downloads.
+
 The bundled NotoSans is also surfaced as a `bundled: true` package entry (no download URL, files served from `resources/static/fonts/` instead of `storage/fonts/`) so it appears alongside the on-demand packages in the admin UI with a "Bundled" pill instead of an Install button.
 
 ### Database

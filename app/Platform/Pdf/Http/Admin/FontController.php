@@ -35,6 +35,13 @@ class FontController extends Controller
             return response()->json(['success' => true, 'message' => 'Already installed']);
         }
 
+        if (! $this->fontService->downloadsEnabled()) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Font downloads are turned off on this server (PDF_FONTS_DOWNLOAD=false).',
+            ], 409);
+        }
+
         try {
             $this->fontService->downloadPackage($pkg);
 
