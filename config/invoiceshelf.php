@@ -138,8 +138,8 @@ return [
     'source_url' => env('INVOICESHELF_SOURCE_URL', 'https://github.com/InvoiceShelf/InvoiceShelf/tree/{version}'),
 
     /*
-    * Whether the app runs inside the official Docker image. The image's
-    * docker/production/inject.sh sets CONTAINERIZED=true in .env at startup.
+    * Whether the app runs inside the official Docker image, which sets
+    * CONTAINERIZED=true in its environment (and inject.sh in .env).
     * When true, the in-app updater is disabled (the API refuses and the UI hides
     * it) because containers upgrade via `docker compose pull`, not by copying
     * release files over the read-only/ephemeral image filesystem.

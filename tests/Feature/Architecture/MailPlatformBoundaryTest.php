@@ -31,6 +31,7 @@ test('the mail platform preserves its public configuration routes and middleware
     expect($routes->keys()->sort()->values()->all())->toBe(collect([
         'GET|HEAD api/v1/company/mail/company-config',
         'GET|HEAD api/v1/company/mail/config',
+        'GET|HEAD api/v1/company/mail/drivers',
         'GET|HEAD api/v1/mail/config',
         'GET|HEAD api/v1/mail/drivers',
         'POST api/v1/company/mail/company-config',

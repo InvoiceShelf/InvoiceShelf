@@ -27,7 +27,7 @@ async function loadData(): Promise<void> {
   isFetchingInitialData.value = true
   try {
     const [driversResponse, configResponse] = await Promise.all([
-      mailService.getDrivers(),
+      mailService.getCompanyDrivers(),
       companyService.getMailConfig(),
     ])
 

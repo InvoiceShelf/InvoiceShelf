@@ -3,6 +3,7 @@
 namespace App\Domains\Sales\Mail;
 
 use App\Domains\Sales\Models\Invoice;
+use App\Platform\Mail\Application\OutgoingSender;
 use App\Platform\Mail\Models\EmailLog;
 use App\Platform\Persistence\ModelIdentityMap;
 use App\Support\PublicToken;
@@ -48,7 +49,7 @@ class SendCreditNoteMail extends Mailable
 
         $this->data['url'] = CustomerUrl::route('invoice', ['email_log' => $log->token]);
 
-        $mailContent = $this->from($this->data['from'], config('mail.from.name'))
+        $mailContent = OutgoingSender::apply($this, $this->data['from'], config('mail.from.name'))
             ->subject($this->data['subject'])
             ->markdown('emails.send.credit-note', ['data' => $this->data]);
 

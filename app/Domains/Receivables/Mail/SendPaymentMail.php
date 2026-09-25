@@ -3,6 +3,7 @@
 namespace App\Domains\Receivables\Mail;
 
 use App\Domains\Receivables\Models\Payment;
+use App\Platform\Mail\Application\OutgoingSender;
 use App\Platform\Mail\Contracts\EmailLogWriter;
 use App\Support\Urls\CustomerUrl;
 use Illuminate\Bus\Queueable;
@@ -52,7 +53,7 @@ class SendPaymentMail extends Mailable
 
         $payload = $this->data;
 
-        $message = $this->from($payload['from'], config('mail.from.name'))
+        $message = OutgoingSender::apply($this, $payload['from'], config('mail.from.name'))
             ->subject($payload['subject'])
             ->markdown('emails.send.payment', [
                 // Passed as a list, not as a keyed array. The numeric keys
