@@ -78,13 +78,25 @@ Four guards: `web` (session), `api` (Sanctum tokens for `/api/v1/`), `customer` 
 
 ### Thin clients
 
-Mobile clients run the same SPA from their own origin and never load `resources/views/app.blade.php`, so the public `GET /api/v1/app/client-manifest` stands in for it: version, `min_client_version`, `app_url`, page title, login branding, module script/style URLs and the demo flag. **It mirrors the Blade shell; change one and change the other** (`ClientManifestService`).
+Mobile clients run the same SPA from their own origin and never load `resources/views/app.blade.php`, so the public `GET /api/v1/app/client-manifest` stands in for it: version, `min_client_version`, `app_url`, page title, login branding, module script/style URLs, and the demo and managed flags. **It mirrors the Blade shell; change one and change the other** (`ClientManifestService`).
 
 `config/cors.php` is published and covers `api/*`, the module asset routes, `reports/*` and the PDF routes. `allowed_origins` comes from `CORS_ALLOWED_ORIGINS`, defaulting to `capacitor://` and `https://` on `invoiceshelf.client.hostname`. That hostname must never be `localhost` or `127.0.0.1`: Sanctum's default stateful list holds both, so such an origin gets session and CSRF middleware and every bearer POST fails with 419.
 
 Tokens never expire, so `GET /api/v1/auth/tokens` and `DELETE /api/v1/auth/tokens/{id}` (the caller's own only) exist to cut off a lost device, and `POST /api/v1/auth/login` is throttled to 10 a minute.
 
 **Mobile shell** (`mobile/`, see `mobile/README.md`): a Capacitor 7 project wrapping the `pnpm build:client` output in `mobile/www`. `android/` and `ios/` are committed; `www/` and `node_modules/` are not. Native pieces live in `resources/scripts/platform/capacitor.ts` alone (device name, share-sheet file delivery, in-app browser, receipt camera, the biometric check behind the app lock in `resources/scripts/client/lock.ts`), behind a dynamic import gated on `__INVOICESHELF_CLIENT__` so no Capacitor code reaches the web bundle. The plugins are declared twice, in `mobile/package.json` and the root one, and must stay at the same versions. `capacitor.config.ts`'s `server.hostname` is the contract above: never `localhost`.
+
+### Managed mode
+
+`INVOICESHELF_MANAGED=true` (`config/managed.php`, deliberately outside `config('invoiceshelf')`, which the SPA bootstrap sends to every member) marks an install that a hosting provider runs for its owner, such as InvoiceShelf Cloud. The provider owns storage and backups, PDF rendering and fonts, the server's mail transport and module installation: those route files are mounted behind the `not-managed` middleware (`EnsureNotManaged`, a 403 with `error: managed_mode`), and the SPA hides their settings entries and the marketplace pairing and install controls (`utils/managed.ts`, fed by `window.managed` or the client manifest). Company mail settings, module enable/disable and everything else stay open. Mail on a managed install: the environment sets the server transport and stored global settings are ignored; a company may bring its own SMTP server only (public host, port 465, 587 or 2525, TLS or SSL, no DSN); and mail sent through the provider's transport goes out from `mail.from` with the user's chosen address as Reply-To (`OutgoingSender`, used by every mailable that takes a user-chosen sender). A new provider-owned surface goes behind `not-managed` and is listed in `ManagedModeTest`.
+
+### Powered by and the source link
+
+The "Powered by" line under the sign-in pages, public documents and document emails comes from one place: `App\Support\PoweredBy`, fed by `config('invoiceshelf.powered_by')` (`INVOICESHELF_POWERED_BY`, `_NAME`, `_URL`), rendered by `emails/partials/powered-by.blade.php` and `components/layout/PoweredBy.vue` and handed to the SPA as `window.powered_by` (Blade shell) or the manifest's `branding.powered_by`. A host may rename or hide it. The account menus (staff and customer portal) always link to the running version's source (`INVOICESHELF_SOURCE_URL`, `{version}` filled in), which AGPL section 13 asks of a hosted install. Never hard-code either.
+
+### Customer portal host
+
+`CUSTOMER_PORTAL_URL` (with `CUSTOMER_PORTAL_HOSTS` for extra hosts) gives the customer portal a host of its own, such as `clients-acme.invhost.com` on InvoiceShelf Cloud. Every link sent to a customer is built with `App\Support\Urls\CustomerUrl` (`route()`, `to()`), never `route()` or `url()` directly, so it lands there. The global `RestrictPortalHost` middleware lets a portal host serve only the portal pages and API, public documents, PDFs by hash, module assets and `/up`, answering 404 to everything else, and moves customer pages opened on the app host to the portal host with a 301. The staff SPA reads the address as `window.customer_portal_url` (`customerBaseUrl()` in `utils/documents.ts`). Unset, or set to the app's own host, nothing changes.
 
 ### MCP server
 
@@ -142,6 +154,7 @@ After that the token is usable as `bg-X` / `text-X` / `border-X` in Vue template
 - **Validation**: Form Request classes, never inline validation
 - **API responses**: Eloquent API Resources in `app/Http/Resources/`
 - **PDF generation**: Pluggable driver — `dompdf` (default, via `GeneratesPdfTrait`) or `gotenberg` (headless Chromium). Driver chosen per company through the **PDF Generation** admin settings page.
+- **Outbound hosts**: a setting that names a host the server connects to is checked by `App\Support\Net\PrivateNetworkGuard`, at save time (`PublicHttpUrl`, `PublicHost`) and again when the connection is made. Legitimate private hosts are exempted per feature in `config/network.php` (`GOTENBERG_ALLOWED_PRIVATE_HOST`, `MAIL_ALLOWED_PRIVATE_HOSTS`) through `PrivateNetworkGuard::isExempt($feature, $target)`: the operator names the hosts, never a boolean, never a settings toggle, and one feature's exemption never covers another.
 - **Email**: Mailable classes with `EmailLog` tracking. Mail driver is configurable globally and may be overridden per-company.
 - **File storage**: Spatie MediaLibrary backed by the **FileDisk** model — admins create named disk entries (local / S3 / Dropbox / DigitalOcean Spaces) and assign them to purposes (`media_storage`, `pdf_storage`, `backup_storage`) in **Admin → File Disks → Disk Assignments**. New uploads go to the assigned disk; existing files stay where they were and require `php artisan media:secure` to migrate.
 - **Serial numbers**: `SerialNumberService`
@@ -154,6 +167,8 @@ PDFs ship with bundled **Noto Sans** (Latin / Greek / Cyrillic) as the default f
 Two non-obvious constraints when extending the font system:
 1. **dompdf's PHP-Font-Lib does not parse variable fonts** (`fvar`/`gvar` tables). Any new package must source **static TTF** files — Google Fonts' main repo ships variable fonts and produces empty boxes. Reliable static-TTF sources used today: `openmaptiles/fonts` for non-CJK Noto scripts, `life888888/cjk-fonts-ttf` for the CJK packages, `google/fonts/ofl/sarabun` for Thai.
 2. **dompdf does not glyph-fall-back through the `font-family` chain** — it uses the *first* font for ALL characters. So locale-specific packages must be the **primary** font for that locale, not a fallback. Selection happens in `FontService::getFontFamilyForLocale()`. This is also why a Latin-locale company with a Hebrew customer name will still render boxes for the Hebrew text — solving that needs Gotenberg or a custom mid-render font-switching pass.
+
+Every downloadable file names a release or commit URL (never a branch) and a `sha256`; a download that does not match is refused, and a new package needs both. `pdf:fonts:install --all --path=<dir>` fetches packages ahead of time: an image that bakes them points `PDF_FONTS_PATH` at that directory (it must sit under the app directory, dompdf's chroot; `FontService` checks it before `storage/fonts/`) and sets `PDF_FONTS_DOWNLOAD=false`, which stops run-time and admin downloads.
 
 The bundled NotoSans is also surfaced as a `bundled: true` package entry (no download URL, files served from `resources/static/fonts/` instead of `storage/fonts/`) so it appears alongside the on-demand packages in the admin UI with a "Bundled" pill instead of an Install button.
 
@@ -234,4 +249,4 @@ tag via `mobile/scripts/version-code.mjs` and are never edited by hand.
 
 ## CI Pipeline
 
-GitHub Actions (`check.yaml`): runs Pint style check, then runs Pest tests in parallel (`php artisan test --parallel`) on PHP 8.4 with Xdebug disabled (`coverage: none`). The test job does **not** build the frontend — the suite is API/JSON only and never renders the Vite blade, so no Node/Vite step is needed (release/docker workflows still build assets in their own jobs).
+GitHub Actions (`check.yaml`): runs Pint style check, then runs Pest tests in parallel (`php artisan test --parallel`) on PHP 8.4 with Xdebug disabled (`coverage: none`). The test job does **not** build the frontend — the suite is API/JSON only and never renders the Vite blade, so no Node/Vite step is needed (release/docker workflows still build assets in their own jobs). When `docker/production/` changes, and on every push to 3.x, it also builds the production image and runs `docker/production/readonly-smoke.sh` on it: read-only root, `INVOICESHELF_DOTENV=false` (no `.env`; the entrypoint refuses to start without `APP_KEY` in the environment), managed mode, headless install. Anything that writes outside `storage/` and `bootstrap/cache` at boot or per request fails it; run it locally with `docker build -f docker/production/Dockerfile -t invoiceshelf:local . && docker/production/readonly-smoke.sh invoiceshelf:local`.

@@ -3,9 +3,11 @@
 namespace App\Domains\Sales\Mail;
 
 use App\Domains\Sales\Models\Invoice;
+use App\Platform\Mail\Application\OutgoingSender;
 use App\Platform\Mail\Models\EmailLog;
 use App\Platform\Persistence\ModelIdentityMap;
 use App\Support\PublicToken;
+use App\Support\Urls\CustomerUrl;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -45,13 +47,13 @@ class SendInvoiceMail extends Mailable
      */
     public function build()
     {
-        $this->data['url'] = route('invoice', [
+        $this->data['url'] = CustomerUrl::route('invoice', [
             'email_log' => $this->logDelivery(),
         ]);
 
         $payload = $this->data;
 
-        $message = $this->from($payload['from'], config('mail.from.name'))
+        $message = OutgoingSender::apply($this, $payload['from'], config('mail.from.name'))
             ->subject($payload['subject'])
             ->markdown('emails.send.invoice', [
                 // Handed over as a list, not as a keyed array. The numeric

@@ -6,6 +6,7 @@ use App\Platform\Storage\Contracts\StorageConfigurator;
 use App\Platform\Storage\Models\FileDisk;
 use App\Support\Net\PrivateNetworkGuard;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class FileDiskService implements StorageConfigurator
 {
@@ -97,19 +98,16 @@ class FileDiskService implements StorageConfigurator
             return $diskName;
         }
 
-        $credentials = $disk->getDecodedCredentials();
-        $baseConfig = config('filesystems.disks.'.$disk->driver, []);
+        if (! in_array($disk->driver, FileDisk::DRIVERS, true)) {
+            Log::warning('File disk has a driver outside the allowlist; using the local disk instead.', [
+                'file_disk_id' => $disk->id,
+                'driver' => $disk->driver,
+            ]);
 
-        foreach ($baseConfig as $key => $value) {
-            if ($credentials->has($key)) {
-                $baseConfig[$key] = $credentials[$key];
-            }
+            return 'local';
         }
 
-        // Resolve relative local roots to storage/app/{path}
-        if ($disk->driver === 'local' && isset($baseConfig['root']) && ! str_starts_with($baseConfig['root'], '/')) {
-            $baseConfig['root'] = storage_path('app/'.$baseConfig['root']);
-        }
+        $baseConfig = $this->buildConfig($disk->getDecodedCredentials()->all(), $disk->driver);
 
         config(['filesystems.disks.'.$diskName => $baseConfig]);
 
@@ -127,18 +125,12 @@ class FileDiskService implements StorageConfigurator
             return false;
         }
 
+        if (! in_array($driver, FileDisk::DRIVERS, true)) {
+            return false;
+        }
+
         // Create a temporary disk config for validation
-        $baseConfig = config('filesystems.disks.'.$driver, []);
-
-        foreach ($baseConfig as $key => $value) {
-            if (isset($credentials[$key])) {
-                $baseConfig[$key] = $credentials[$key];
-            }
-        }
-
-        if ($driver === 'local' && isset($baseConfig['root']) && ! str_starts_with($baseConfig['root'], '/')) {
-            $baseConfig['root'] = storage_path('app/'.$baseConfig['root']);
-        }
+        $baseConfig = $this->buildConfig($credentials, $driver);
 
         $tempDiskName = 'validation_temp';
         config(['filesystems.disks.'.$tempDiskName => $baseConfig]);
@@ -160,6 +152,31 @@ class FileDiskService implements StorageConfigurator
         }
 
         return false;
+    }
+
+    /**
+     * The runtime config for a driver: its base entry in config/filesystems.php
+     * with the stored credentials laid over the keys it already has.
+     *
+     * The driver itself is never taken from the credentials, so a row saved as
+     * one driver cannot turn into another at runtime. Relative local roots
+     * resolve under storage/app.
+     */
+    private function buildConfig(array $credentials, string $driver): array
+    {
+        $config = config('filesystems.disks.'.$driver, []);
+
+        foreach ($config as $key => $value) {
+            if ($key !== 'driver' && array_key_exists($key, $credentials)) {
+                $config[$key] = $credentials[$key];
+            }
+        }
+
+        if ($driver === 'local' && isset($config['root']) && ! str_starts_with($config['root'], '/')) {
+            $config['root'] = storage_path('app/'.$config['root']);
+        }
+
+        return $config;
     }
 
     /**

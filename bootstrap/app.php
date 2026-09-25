@@ -13,6 +13,7 @@ use App\Domains\Contacts\Http\Middleware\CustomerPortalMiddleware;
 use App\Domains\Contacts\Http\Middleware\CustomerRedirectIfAuthenticated;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\PreventRequestForgery;
+use App\Http\Middleware\RestrictPortalHost;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustProxies;
 use App\Platform\Modules\Runtime\ModuleRuntimeAutoloader;
@@ -22,8 +23,8 @@ use App\Platform\Operations\Http\Middleware\EnsureNotContainerized;
 use App\Platform\Operations\Installation\Http\Middleware\EnsureInstalled;
 use App\Platform\Operations\Installation\Http\Middleware\RedirectIfInstalled;
 use App\Platform\Operations\Installation\Http\Middleware\UseInstallWizardTokenAuth;
+use App\Platform\Operations\Managed\EnsureNotManaged;
 use App\Platform\Pdf\Http\Middleware\PdfMiddleware;
-use App\Platform\Storage\Http\Middleware\ConfigMiddleware;
 use App\Providers\AppServiceProvider;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Foundation\Application;
@@ -68,7 +69,8 @@ return Application::configure(basePath: dirname(__DIR__))
             TrimStrings::class,
             TrustProxies::class,
             UseInstallWizardTokenAuth::class,
-            ConfigMiddleware::class,
+            // After TrustProxies, so the host is the one the visitor asked for.
+            RestrictPortalHost::class,
         ]);
 
         $middleware->web([
@@ -99,6 +101,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'guest' => RedirectIfAuthenticated::class,
             'install' => EnsureInstalled::class,
             'not-containerized' => EnsureNotContainerized::class,
+            'not-managed' => EnsureNotManaged::class,
             'oauth.enabled' => EnsureOAuthServerEnabled::class,
             'pdf-auth' => PdfMiddleware::class,
             'redirect-if-installed' => RedirectIfInstalled::class,

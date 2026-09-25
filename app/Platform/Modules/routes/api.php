@@ -13,14 +13,19 @@ Route::middleware(['api', 'auth:sanctum', 'company'])
         Route::prefix('modules')->group(function () {
             Route::get('/', [ModulesController::class, 'index']);
             Route::get('/pairing', [MarketplacePairingController::class, 'status']);
-            Route::post('/pairing/start', [MarketplacePairingController::class, 'start']);
-            Route::post('/pairing/poll', [MarketplacePairingController::class, 'poll']);
-            Route::delete('/pairing', [MarketplacePairingController::class, 'disconnect']);
+
+            // On a managed install the provider installs and pairs modules.
+            Route::middleware('not-managed')->group(function () {
+                Route::post('/pairing/start', [MarketplacePairingController::class, 'start']);
+                Route::post('/pairing/poll', [MarketplacePairingController::class, 'poll']);
+                Route::delete('/pairing', [MarketplacePairingController::class, 'disconnect']);
+                Route::post('/{module}/uninstall', [ModuleInstallationController::class, 'uninstall']);
+                Route::post('/install', [ModuleInstallationController::class, 'install']);
+            });
+
             Route::get('/{module}', [ModulesController::class, 'show']);
             Route::post('/{module}/enable', [ModulesController::class, 'enable']);
             Route::post('/{module}/disable', [ModulesController::class, 'disable']);
-            Route::post('/{module}/uninstall', [ModuleInstallationController::class, 'uninstall']);
-            Route::post('/install', [ModuleInstallationController::class, 'install']);
             Route::get('/{slug}/settings', [ModuleSettingsController::class, 'show']);
             Route::put('/{slug}/settings', [ModuleSettingsController::class, 'update']);
         });

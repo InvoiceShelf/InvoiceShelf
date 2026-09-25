@@ -5,6 +5,7 @@ namespace App\Platform\Pdf;
 use App\Platform\Pdf\Application\PdfConfigurationService;
 use App\Platform\Pdf\Console\ComparePdfDriversCommand;
 use App\Platform\Pdf\Console\CreateTemplateCommand;
+use App\Platform\Pdf\Console\InstallFontsCommand;
 use App\Platform\Pdf\Contracts\PdfConfigurator;
 use App\Platform\Pdf\Policies\PdfAccessPolicy;
 use App\Platform\Pdf\Rendering\PdfService;
@@ -33,6 +34,7 @@ class PdfServiceProvider extends ServiceProvider
         $this->commands([
             ComparePdfDriversCommand::class,
             CreateTemplateCommand::class,
+            InstallFontsCommand::class,
         ]);
     }
 }

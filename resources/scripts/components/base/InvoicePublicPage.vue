@@ -4,6 +4,7 @@ import type { Ref, ComputedRef } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { client } from '@/scripts/api/client'
 import InvoiceInformationCard from './InvoiceInformationCard.vue'
+import PoweredBy from '@/scripts/components/layout/PoweredBy.vue'
 import type { Currency } from '@/scripts/types/domain'
 import type { Company } from '@/scripts/types/domain'
 import type { Customer } from '@/scripts/types/domain'
@@ -135,10 +136,7 @@ function payInvoice(): void {
         v-if="!customerLogo"
         class="flex items-center justify-center mt-4 text-muted font-normal"
       >
-        Powered by
-        <a href="https://invoiceshelf.com" target="_blank">
-          <img :src="getLogo().href" alt="InvoiceShelf" class="h-4 ms-1 mb-1" />
-        </a>
+        <PoweredBy :logo="getLogo().href" />
       </div>
     </div>
   </div>

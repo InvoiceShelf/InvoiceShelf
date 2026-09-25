@@ -4,7 +4,10 @@ namespace App\Platform\Mail\Application;
 
 use App\Domains\Accounts\Models\CompanySetting;
 use App\Platform\Mail\Contracts\MailConfigurator;
+use App\Platform\Operations\Managed\ManagedMode;
 use App\Platform\Operations\Models\Setting;
+use App\Rules\PublicHost;
+use App\Support\Net\PrivateNetworkGuard;
 use Aws\Sdk;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
@@ -22,6 +25,11 @@ class MailConfigurationService implements MailConfigurator
      * browser. A save that returns it unchanged keeps the stored value.
      */
     public const SECRET_MASK = '********';
+
+    /**
+     * The only Mailgun API hosts there are (US and EU regions).
+     */
+    public const MAILGUN_ENDPOINTS = ['api.mailgun.net', 'api.eu.mailgun.net'];
 
     private const GLOBAL_SCOPE = 'global';
 
@@ -137,16 +145,24 @@ class MailConfigurationService implements MailConfigurator
 
         $current = CompanySetting::getSettings($this->getCompanySettingKeys(), $companyId)->all();
 
-        CompanySetting::setSettings(
-            $this->prepareSettingsForStorage($payload, self::COMPANY_SCOPE, $current) + [
-                'use_custom_mail_config' => 'YES',
-            ],
-            $companyId
+        // company_settings.value is NOT NULL; a blank optional field is stored
+        // as an empty string, which the apply step already reads as unset.
+        $settings = array_map(
+            fn (mixed $value): mixed => $value ?? '',
+            $this->prepareSettingsForStorage($payload, self::COMPANY_SCOPE, $current)
         );
+
+        CompanySetting::setSettings($settings + ['use_custom_mail_config' => 'YES'], $companyId);
     }
 
     public function applyGlobalConfig(): void
     {
+        // On a managed install the provider sets the transport in the
+        // environment; stored settings never override it.
+        if (ManagedMode::enabled()) {
+            return;
+        }
+
         $settings = Setting::getSettings($this->getGlobalSettingKeys())->all();
 
         $this->applyStoredSettings($settings, self::GLOBAL_SCOPE);
@@ -155,17 +171,77 @@ class MailConfigurationService implements MailConfigurator
     public function applyCompanyConfig(int|string $companyId): void
     {
         $settings = CompanySetting::getSettings($this->getCompanySettingKeys(), $companyId)->all();
+        $ownTransport = ($settings['use_custom_mail_config'] ?? 'NO') === 'YES';
 
-        if (($settings['use_custom_mail_config'] ?? 'NO') !== 'YES') {
+        // Read by OutgoingSender: mail through a company's own server keeps
+        // the sender the user chose.
+        Config::set('mail.company_transport', $ownTransport);
+
+        if (! $ownTransport) {
             return;
         }
 
         $this->applyStoredSettings($settings, self::COMPANY_SCOPE);
     }
 
-    public function validationRules(?string $driver, bool $allowDisabledCustomConfig = false): array
+    /**
+     * The drivers a company may choose for its own mail: SMTP alone on a
+     * managed install, where the provider runs every other transport.
+     *
+     * @return list<string>
+     */
+    public function getCompanyDrivers(): array
     {
-        $availableDrivers = $this->getAvailableDrivers();
+        return ManagedMode::enabled() ? ['smtp'] : $this->getAvailableDrivers();
+    }
+
+    /**
+     * The field of a company's stored custom configuration that points the
+     * server at a private or reserved address, or null when there is none.
+     *
+     * Save-time validation holds new values to the public network; this checks
+     * values saved before that rule existed.
+     */
+    public function companyPrivateTarget(int|string $companyId): ?string
+    {
+        $settings = CompanySetting::getSettings($this->getCompanySettingKeys(), $companyId)->all();
+
+        if (($settings['use_custom_mail_config'] ?? 'NO') !== 'YES') {
+            return null;
+        }
+
+        $stored = fn (string $field): string => (string) ($this->resolveStoredValue($settings, self::COMPANY_SCOPE, $field) ?? '');
+
+        return match ($settings[$this->storedKey(self::COMPANY_SCOPE, 'mail_driver')] ?? null) {
+            'smtp' => collect(['mail_host', 'mail_url'])->first(function (string $field) use ($stored): bool {
+                $host = $stored($field) === '' ? null : PublicHost::hostOf($stored($field));
+
+                return $host !== null
+                    && ! PrivateNetworkGuard::isExempt('mail', $host)
+                    && PublicHost::isBlocked($host);
+            }),
+            'mailgun' => in_array($stored('mail_mailgun_endpoint'), self::MAILGUN_ENDPOINTS, true) ? null : 'mail_mailgun_endpoint',
+            default => null,
+        };
+    }
+
+    /**
+     * Rules for a submitted mail configuration.
+     *
+     * With $allowPrivateHosts off, every connection target must be publicly
+     * routable, or one of the private hosts named in MAIL_ALLOWED_PRIVATE_HOSTS:
+     * the SMTP host and DSN, and the Mailgun endpoint, which may then only be
+     * one of Mailgun's own hosts. That is how company owners are held; the
+     * super administrator keeps the private network, where a local relay is an
+     * ordinary setup.
+     *
+     * With $managed on (a company's own server on a managed install), only
+     * SMTP is offered, on a submission port with TLS, and no DSN, which
+     * would bypass the host and port rules.
+     */
+    public function validationRules(?string $driver, bool $allowDisabledCustomConfig = false, bool $allowPrivateHosts = true, bool $managed = false): array
+    {
+        $availableDrivers = $managed ? ['smtp'] : $this->getAvailableDrivers();
         $driver = $this->normalizeRequestedDriver($driver, $availableDrivers);
 
         $rules = [
@@ -186,15 +262,19 @@ class MailConfigurationService implements MailConfigurator
             ];
         }
 
+        $publicOnly = $allowPrivateHosts ? [] : [new PublicHost(exemptFor: 'mail')];
+
         return array_merge($rules, match ($driver) {
             'smtp' => [
-                'mail_host' => ['required', 'string'],
-                'mail_port' => ['required', 'integer'],
+                'mail_host' => ['required', 'string', ...$publicOnly],
+                'mail_port' => ['required', 'integer', ...($managed ? [Rule::in([465, 587, 2525])] : [])],
                 'mail_username' => ['nullable', 'string'],
                 'mail_password' => ['nullable', 'string'],
-                'mail_encryption' => ['nullable', 'string', Rule::in(['none', 'tls', 'ssl'])],
+                'mail_encryption' => $managed
+                    ? ['required', 'string', Rule::in(['tls', 'ssl'])]
+                    : ['nullable', 'string', Rule::in(['none', 'tls', 'ssl'])],
                 'mail_scheme' => ['nullable', 'string', Rule::in(['smtp', 'smtps'])],
-                'mail_url' => ['nullable', 'string'],
+                'mail_url' => $managed ? ['prohibited'] : ['nullable', 'string', ...$publicOnly],
                 'mail_timeout' => ['nullable', 'integer'],
                 'mail_local_domain' => ['nullable', 'string'],
             ],
@@ -206,7 +286,7 @@ class MailConfigurationService implements MailConfigurator
             'mailgun' => [
                 'mail_mailgun_domain' => ['required', 'string'],
                 'mail_mailgun_secret' => ['required', 'string'],
-                'mail_mailgun_endpoint' => ['required', 'string'],
+                'mail_mailgun_endpoint' => ['required', 'string', ...($allowPrivateHosts ? [] : [Rule::in(self::MAILGUN_ENDPOINTS)])],
                 'mail_mailgun_scheme' => ['nullable', 'string', Rule::in(['https', 'api'])],
             ],
             'postmark' => [

@@ -15,6 +15,23 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Fonts
+    |--------------------------------------------------------------------------
+    | Scripts beyond Latin, Greek and Cyrillic (CJK, Arabic, Hebrew, ...) use
+    | font packages that are downloaded the first time a document needs them.
+    | An image can bake them in instead with `pdf:fonts:install --all
+    | --path=...`: name that directory here (it must sit under the application
+    | directory, dompdf's chroot) and turn run-time downloads off.
+    |
+    */
+
+    'fonts' => [
+        'path' => env('PDF_FONTS_PATH'),
+        'download' => (bool) env('PDF_FONTS_DOWNLOAD', true),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Page Setup
     |--------------------------------------------------------------------------
     | Geometry applied to every document, whichever driver renders it. Sizes and
@@ -95,15 +112,8 @@ return [
              */
             'pdfa' => env('GOTENBERG_PDFA'),
 
-            /*
-             * Gotenberg usually runs as a sidecar on a private network, which the
-             * SSRF guard rejects. Name that one host here to exempt it — e.g.
-             * GOTENBERG_ALLOWED_PRIVATE_HOST=http://pdf:3000. Only this exact value
-             * is exempt; the guard still blocks every other private target, so the
-             * host setting cannot be repointed at an internal service. No default:
-             * the `host` fallback above must never be trusted implicitly.
-             */
-            'allowed_private_host' => env('GOTENBERG_ALLOWED_PRIVATE_HOST'),
+            // A private Gotenberg host is exempted in config/network.php
+            // (GOTENBERG_ALLOWED_PRIVATE_HOST), never implicitly.
         ],
     ],
 

@@ -6,6 +6,7 @@ use App\Platform\Operations\Demo\DemoMode;
 use App\Platform\Operations\Installation\Application\InstallationState;
 use App\Platform\Persistence\ModelIdentityMap;
 use App\Support\Bouncer\BouncerDefaultScope;
+use App\Support\Urls\CustomerUrl;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Mail;
@@ -40,6 +41,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->bootHttps();
+
+        CustomerUrl::trustPortalHosts();
 
         ModelIdentityMap::enforce();
 

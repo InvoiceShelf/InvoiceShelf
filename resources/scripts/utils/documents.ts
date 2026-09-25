@@ -58,9 +58,17 @@ export function serverPath(src: string): string {
 }
 
 /**
- * The same address as something a user can paste elsewhere. On the web that
- * is this origin; in a client it is the server they connected to, which is
- * the only host that can actually serve the document.
+ * Where customers open the install: the customer portal's own host when the
+ * server has one (window.customer_portal_url), otherwise the server itself,
+ * which on the web is this origin and in a client the server it connected to.
+ */
+export function customerBaseUrl(): string {
+  return window.customer_portal_url || serverBaseUrl() || window.location.origin
+}
+
+/**
+ * The same address as something a user can paste elsewhere, which is mostly
+ * to a customer, so it is on the customer's side of the install.
  */
 export function absoluteDocumentUrl(path: string): string {
   const relative = serverPath(path)
@@ -69,9 +77,7 @@ export function absoluteDocumentUrl(path: string): string {
     return relative
   }
 
-  const base = serverBaseUrl() || window.location.origin
-
-  return `${base}${relative}`
+  return `${customerBaseUrl()}${relative}`
 }
 
 /** `decodeURIComponent` on a name the server encoded badly is not fatal. */

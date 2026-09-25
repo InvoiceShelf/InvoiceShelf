@@ -3,6 +3,7 @@
 namespace App\Platform\Operations;
 
 use App\Platform\Operations\Application\RuntimeConfigurationService;
+use App\Platform\Operations\Console\CatchUp;
 use App\Platform\Operations\Console\InstallInvoiceShelf;
 use App\Platform\Operations\Console\ResetApp;
 use App\Platform\Operations\Console\RetireShippedKey;
@@ -29,6 +30,7 @@ class OperationsServiceProvider extends ServiceProvider
         Gate::define('manage update app', [OperationsAccessPolicy::class, 'manage']);
 
         $this->commands([
+            CatchUp::class,
             InstallInvoiceShelf::class,
             ResetApp::class,
             RetireShippedKey::class,

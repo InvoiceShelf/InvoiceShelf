@@ -64,8 +64,13 @@
       <!-- Action Card (1/3) -->
       <div class="mt-6 lg:mt-0">
         <div class="rounded-xl border border-line-default bg-surface-secondary p-6">
+          <!-- Managed install, not installed: the provider handles it -->
+          <p v-if="managed && !moduleData.installed" class="text-sm text-muted">
+            {{ $t('managed.modules_note') }}
+          </p>
+
           <!-- Not purchased -->
-          <template v-if="!moduleData.purchased">
+          <template v-else-if="!moduleData.purchased">
             <a :href="buyLink" target="_blank" rel="noopener" class="block rounded-lg">
               <BaseButton tag="span" size="lg" class="w-full flex items-center justify-center">
                 <BaseIcon name="ShoppingCartIcon" class="me-2" />
@@ -101,7 +106,7 @@
 
             <div class="flex gap-2">
               <BaseButton
-                v-if="moduleData.update_available"
+                v-if="moduleData.update_available && !managed"
                 variant="primary"
                 :loading="isInstalling"
                 :disabled="isInstalling"
@@ -117,12 +122,12 @@
                 variant="danger"
                 :loading="isDisabling"
                 :disabled="isDisabling"
-                :class="moduleData.update_available ? '' : 'flex-1'"
+                :class="moduleData.update_available && !managed ? '' : 'flex-1'"
                 class="flex items-center justify-center"
                 @click="handleDisable"
               >
-                <BaseIcon v-if="!isDisabling" name="NoSymbolIcon" class="h-4 w-4" :class="{ 'me-1.5': !moduleData.update_available }" />
-                <span v-if="!moduleData.update_available">{{ $t('modules.disable') }}</span>
+                <BaseIcon v-if="!isDisabling" name="NoSymbolIcon" class="h-4 w-4" :class="{ 'me-1.5': !moduleData.update_available || managed }" />
+                <span v-if="!moduleData.update_available || managed">{{ $t('modules.disable') }}</span>
               </BaseButton>
               <BaseButton
                 v-else
@@ -138,6 +143,7 @@
             </div>
 
             <BaseButton
+              v-if="!managed"
               variant="primary-outline"
               class="mt-3 w-full flex items-center justify-center"
               @click="showUninstallModal = true"
@@ -400,6 +406,7 @@ import { useDialogStore } from '../../../../stores/dialog.store'
 import { useNotificationStore } from '../../../../stores/notification.store'
 import type { Module, ModuleLink } from '../../../../types/domain/module'
 import { getErrorTranslationKey, handleApiError } from '../../../../utils/error-handling'
+import { isManaged } from '../../../../utils/managed'
 
 interface ModuleLinkItem {
   icon: string
@@ -412,6 +419,8 @@ interface TabItem {
   label: string
 }
 
+// On a managed install the provider installs, updates and removes modules.
+const managed = isManaged()
 const moduleStore = useModuleStore()
 const dialogStore = useDialogStore()
 const notificationStore = useNotificationStore()

@@ -19,7 +19,7 @@ import { useCompanyStore } from '../../../../stores/company.store'
 import { useGlobalStore } from '../../../../stores/global.store'
 import { useNotificationStore } from '../../../../stores/notification.store'
 import CopyInputField from '@/scripts/features/company/customers/components/CopyInputField.vue'
-import { serverBaseUrl } from '@/scripts/config/runtime'
+import { customerBaseUrl } from '@/scripts/utils/documents'
 
 // These stores are needed for auto-selecting customer after creation
 import { useEstimateStore } from '@/scripts/features/company/estimates/store'
@@ -128,10 +128,7 @@ const v$ = useVuelidate(
 )
 
 const getCustomerPortalUrl = computed<string>(() => {
-  // A client has no portal of its own: the link belongs to the server.
-  const origin = serverBaseUrl() || window.location.origin
-
-  return `${origin}/${companyStore.selectedCompany?.slug}/customer/login`
+  return `${customerBaseUrl()}/${companyStore.selectedCompany?.slug}/customer/login`
 })
 
 function copyAddress(): void {

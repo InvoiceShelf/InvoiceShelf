@@ -2,11 +2,13 @@
 
 use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Accounts\Models\User;
+use App\Domains\Accounts\Notifications\MailResetPasswordNotification;
 use App\Domains\Money\Models\Currency;
 use App\Platform\Operations\Installation\Application\InstallationState;
 use App\Platform\Operations\Models\Setting;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
 use Silber\Bouncer\BouncerFacade;
 
 /*
@@ -80,3 +82,55 @@ test('it refuses to install without an administrator or with a currency that doe
     'bad time zone' => [['--timezone' => 'Mars/Olympus']],
     'unknown currency' => [['--currency' => 'XXX']],
 ]);
+
+test('a random password never leaves the host, and the welcome mail lets the owner set one', function () {
+    Notification::fake();
+
+    expect(install(['--admin-password' => null, '--admin-password-random' => true, '--send-welcome' => true]))->toBe(0);
+
+    $admin = User::query()->sole();
+
+    expect($admin->password)->not->toBeEmpty()
+        ->and(Artisan::output())->not->toContain('password:');
+
+    Notification::assertSentTo($admin, MailResetPasswordNotification::class);
+});
+
+test('the welcome mail can go out with a chosen password too', function () {
+    Notification::fake();
+
+    expect(install(['--send-welcome' => true]))->toBe(0);
+
+    Notification::assertSentTo(User::query()->sole(), MailResetPasswordNotification::class);
+});
+
+test('it sets the company date format and fiscal year', function () {
+    expect(install(['--date-format' => 'd.m.Y', '--fiscal-year' => '4-3']))->toBe(0);
+
+    $company = User::query()->sole()->companies()->sole();
+
+    expect(CompanySetting::getSetting('carbon_date_format', $company->id))->toBe('d.m.Y')
+        ->and(CompanySetting::getSetting('moment_date_format', $company->id))->toBe('DD.MM.YYYY')
+        ->and(CompanySetting::getSetting('fiscal_year', $company->id))->toBe('4-3');
+});
+
+test('it refuses a date format or fiscal year the app does not offer', function (array $options) {
+    expect(install($options))->toBe(1)
+        ->and(InstallationState::isComplete())->toBeFalse();
+})->with([
+    'date format' => [['--date-format' => 'Y.d.m']],
+    'fiscal year' => [['--fiscal-year' => '13-12']],
+]);
+
+test('it reads the password from a file', function () {
+    $file = tempnam(sys_get_temp_dir(), 'pw');
+    file_put_contents($file, "from a secret file\n");
+    config(['installer.headless.admin_password_file' => $file]);
+
+    try {
+        expect(install(['--admin-password' => null]))->toBe(0)
+            ->and(Hash::check('from a secret file', User::query()->sole()->password))->toBeTrue();
+    } finally {
+        @unlink($file);
+    }
+});

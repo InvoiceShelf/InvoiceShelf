@@ -189,8 +189,13 @@ function applyBranding(manifest: ClientManifest): void {
   window.login_page_heading = branding.login_page_heading ?? undefined
   window.login_page_description = branding.login_page_description ?? undefined
   window.copyright_text = branding.copyright_text ?? undefined
+  window.powered_by = branding.powered_by
+  window.source_url = manifest.source_url
+  window.customer_portal_url = manifest.customer_portal_url ?? null
   window.demo_mode = manifest.demo_mode === true
   window.demo = manifest.demo ?? undefined
+  window.managed_mode = manifest.managed_mode === true
+  window.managed = manifest.managed ?? undefined
 
   if (manifest.page_title) {
     document.title = manifest.page_title

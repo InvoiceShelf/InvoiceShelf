@@ -107,8 +107,39 @@ return [
     ],
 
     /*
-    * Whether the app runs inside the official Docker image. The image's
-    * docker/production/inject.sh sets CONTAINERIZED=true in .env at startup.
+    * The "Powered by" line under the sign-in pages, public documents and
+    * emails. A host may put its own name and address there, or hide it with
+    * INVOICESHELF_POWERED_BY=false.
+    */
+    'powered_by' => [
+        'enabled' => (bool) env('INVOICESHELF_POWERED_BY', true),
+        'name' => env('INVOICESHELF_POWERED_BY_NAME', 'InvoiceShelf'),
+        'url' => env('INVOICESHELF_POWERED_BY_URL', 'https://invoiceshelf.com'),
+    ],
+
+    /*
+    * The customer portal on a host of its own, such as
+    * https://clients-acme.example.com. When set, every link sent to a customer
+    * points there, that host serves the portal and public documents only, and
+    * the app host sends customers there. CUSTOMER_PORTAL_HOSTS lists every
+    * host that serves the portal (comma separated) when there is more than
+    * the URL's own. Unset, the portal lives on the app host as always.
+    */
+    'customer_portal' => [
+        'url' => env('CUSTOMER_PORTAL_URL'),
+        'hosts' => env('CUSTOMER_PORTAL_HOSTS'),
+    ],
+
+    /*
+    * Where the source code of the running version is, offered to everyone who
+    * uses the install (AGPL section 13). {version} becomes the running
+    * version. A modified build points it at its own source.
+    */
+    'source_url' => env('INVOICESHELF_SOURCE_URL', 'https://github.com/InvoiceShelf/InvoiceShelf/tree/{version}'),
+
+    /*
+    * Whether the app runs inside the official Docker image, which sets
+    * CONTAINERIZED=true in its environment (and inject.sh in .env).
     * When true, the in-app updater is disabled (the API refuses and the UI hides
     * it) because containers upgrade via `docker compose pull`, not by copying
     * release files over the read-only/ephemeral image filesystem.

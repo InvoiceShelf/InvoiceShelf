@@ -6,6 +6,7 @@ use App\Platform\Http\Controller;
 use App\Platform\Operations\Models\Setting;
 use App\Platform\Storage\Application\FileDiskService;
 use App\Platform\Storage\Http\Requests\DiskEnvironmentRequest;
+use App\Platform\Storage\Http\Requests\UpdateDiskRequest;
 use App\Platform\Storage\Http\Resources\FileDiskResource;
 use App\Platform\Storage\Models\FileDisk;
 use Illuminate\Http\JsonResponse;
@@ -105,11 +106,10 @@ class DiskController extends Controller
      *
      * The payload is built from the model as it stands in memory. On the
      * set-default branch that is the saved state; on a no-op call it is simply
-     * the row as loaded. This is not validated input -- no form request stands
-     * in front of this route -- so a rewrite accepts whatever name, driver and
-     * credential shape the caller sent, and the live check is the only filter.
+     * the row as loaded. A rewrite is validated like a registration before the
+     * live check runs.
      */
-    public function update(FileDisk $disk, Request $request): JsonResponse|FileDiskResource
+    public function update(FileDisk $disk, UpdateDiskRequest $request): JsonResponse|FileDiskResource
     {
         $this->authorize('manage file disk');
 

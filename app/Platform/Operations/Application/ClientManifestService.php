@@ -4,7 +4,10 @@ namespace App\Platform\Operations\Application;
 
 use App\Platform\Modules\Runtime\ModuleAssetVersion;
 use App\Platform\Operations\Demo\DemoMode;
+use App\Platform\Operations\Managed\ManagedMode;
 use App\Platform\Operations\Models\Setting;
+use App\Support\PoweredBy;
+use App\Support\Urls\CustomerUrl;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use InvoiceShelf\Modules\Registry as ModuleRegistry;
@@ -39,6 +42,10 @@ class ClientManifestService
             'modules' => $this->modules(),
             'demo_mode' => DemoMode::enabled(),
             'demo' => DemoMode::enabled() ? DemoMode::clientState() : null,
+            'managed_mode' => ManagedMode::enabled(),
+            'managed' => ManagedMode::enabled() ? ManagedMode::clientState() : null,
+            'source_url' => PoweredBy::sourceUrl(),
+            'customer_portal_url' => CustomerUrl::portalUrl(),
         ];
     }
 
@@ -58,7 +65,7 @@ class ClientManifestService
      * yet. A setting nobody has stored answers null so the client can fall
      * back to its own defaults.
      *
-     * @return array<string, string|null>
+     * @return array<string, mixed>
      */
     private function branding(): array
     {
@@ -74,6 +81,7 @@ class ClientManifestService
             'login_page_heading' => $stored->get('login_page_heading'),
             'login_page_description' => $stored->get('login_page_description'),
             'copyright_text' => $stored->get('copyright_text'),
+            'powered_by' => PoweredBy::clientState(),
         ];
     }
 
