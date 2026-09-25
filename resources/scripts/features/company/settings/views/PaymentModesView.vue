@@ -3,6 +3,8 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useModalStore } from '../../../../stores/modal.store'
 import { paymentService } from '../../../../api/services/payment.service'
+import { useUserStore } from '@/scripts/stores/user.store'
+import { ABILITIES } from '@/scripts/config/abilities'
 import PaymentModeModal from '@/scripts/features/company/settings/components/PaymentModeModal.vue'
 import PaymentModeDropdown from '@/scripts/features/company/settings/components/PaymentModeDropdown.vue'
 
@@ -31,6 +33,12 @@ interface FetchResult {
 }
 
 const modalStore = useModalStore()
+const userStore = useUserStore()
+// Adding takes create or edit, changing edit; seeing the list only view.
+const canEdit = computed<boolean>(() => userStore.hasAbilities(ABILITIES.EDIT_PAYMENT))
+const canAdd = computed<boolean>(
+  () => canEdit.value || userStore.hasAbilities(ABILITIES.CREATE_PAYMENT)
+)
 const { t } = useI18n()
 
 const table = ref<{ refresh: () => void } | null>(null)
@@ -91,7 +99,7 @@ function addPaymentMode(): void {
     :title="$t('settings.payment_modes.title')"
     :description="$t('settings.payment_modes.description')"
   >
-    <template #action>
+    <template v-if="canAdd" #action>
       <BaseButton
         type="submit"
         variant="primary-outline"
@@ -112,6 +120,7 @@ function addPaymentMode(): void {
     >
       <template #cell-actions="{ row }">
         <PaymentModeDropdown
+          v-if="canEdit"
           :row="row.data"
           :table="table"
           :load-data="refreshTable"

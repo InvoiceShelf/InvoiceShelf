@@ -14,12 +14,10 @@ use Silber\Bouncer\BouncerFacade;
  * Two things about this table are worth stating plainly, because neither
  * follows the shape the other policies in the domain use.
  *
- * First, there is no ability of its own. Every decision -- reading the list,
- * adding a method, renaming one, removing one -- is checked against the
- * ability to *view* payments. Anyone who can see the payments of a company can
- * therefore also reshape that company's set of payment methods; there is no
- * separate create or edit gate to hold them back. This is the established
- * behaviour and is kept as-is.
+ * First, there is no ability of its own. Reading the list is checked against
+ * the ability to *view* payments, adding a method against *create* or *edit*,
+ * and renaming or removing one against *edit*, so a role that can only see
+ * payments cannot reshape the company's set of payment methods.
  *
  * Second, the payment method is not what Bouncer is asked about: the check
  * names the payment class instead, so the ability is only ever evaluated at
@@ -47,17 +45,17 @@ class PaymentMethodPolicy
 
     public function create(User $user): bool
     {
-        return $this->mayReadPayments();
+        return BouncerFacade::can('create-payment', Payment::class) || $this->mayEditPayments();
     }
 
     public function update(User $user, PaymentMethod $paymentMethod): bool
     {
-        return $this->mayReadPayments() && $this->sameCompany($user, $paymentMethod);
+        return $this->mayEditPayments() && $this->sameCompany($user, $paymentMethod);
     }
 
     public function delete(User $user, PaymentMethod $paymentMethod): bool
     {
-        return $this->mayReadPayments() && $this->sameCompany($user, $paymentMethod);
+        return $this->mayEditPayments() && $this->sameCompany($user, $paymentMethod);
     }
 
     /**
@@ -66,20 +64,28 @@ class PaymentMethodPolicy
      */
     public function restore(User $user, PaymentMethod $paymentMethod): bool
     {
-        return $this->mayReadPayments() && $this->sameCompany($user, $paymentMethod);
+        return $this->mayEditPayments() && $this->sameCompany($user, $paymentMethod);
     }
 
     public function forceDelete(User $user, PaymentMethod $paymentMethod): bool
     {
-        return $this->mayReadPayments() && $this->sameCompany($user, $paymentMethod);
+        return $this->mayEditPayments() && $this->sameCompany($user, $paymentMethod);
     }
 
     /**
-     * The single ability behind every decision on this table.
+     * Reading the list follows the ability to see payments.
      */
     private function mayReadPayments(): bool
     {
         return BouncerFacade::can('view-payment', Payment::class);
+    }
+
+    /**
+     * Changing it follows the ability to edit them.
+     */
+    private function mayEditPayments(): bool
+    {
+        return BouncerFacade::can('edit-payment', Payment::class);
     }
 
     private function sameCompany(User $user, PaymentMethod $paymentMethod): bool

@@ -11,11 +11,12 @@ use Silber\Bouncer\BouncerFacade;
 /**
  * Who may work with expense headings.
  *
- * Headings have no abilities of their own: every decision here asks for the
- * *view* ability on expenses, so anyone who can read a company's expenses can
- * also add, rename and remove its headings. Anything aimed at an existing
- * heading additionally requires membership of the company that heading belongs
- * to, so an ability held in one company never reaches another company's data.
+ * Headings have no abilities of their own: reading them asks for the *view*
+ * ability on expenses, adding one for *create* or *edit* (the expense form
+ * adds headings inline), renaming and removing them for *edit*, so a role
+ * that can only read a company's expenses cannot reshape its headings. Anything aimed at an existing heading additionally requires
+ * membership of the company that heading belongs to, so an ability held in
+ * one company never reaches another company's data.
  *
  * Bouncer answers for the user it currently has scoped, not for the $user
  * handed in; that argument only feeds the membership half.
@@ -36,17 +37,17 @@ class ExpenseCategoryPolicy
 
     public function create(User $user): bool
     {
-        return $this->mayRead();
+        return BouncerFacade::can('create-expense', Expense::class) || $this->mayEdit();
     }
 
     public function update(User $user, ExpenseCategory $expenseCategory): bool
     {
-        return $this->mayReach($user, $expenseCategory);
+        return $this->mayEdit() && $this->belongs($user, $expenseCategory);
     }
 
     public function delete(User $user, ExpenseCategory $expenseCategory): bool
     {
-        return $this->mayReach($user, $expenseCategory);
+        return $this->mayEdit() && $this->belongs($user, $expenseCategory);
     }
 
     /**
@@ -55,25 +56,34 @@ class ExpenseCategoryPolicy
      */
     public function restore(User $user, ExpenseCategory $expenseCategory): bool
     {
-        return $this->mayReach($user, $expenseCategory);
+        return $this->mayEdit() && $this->belongs($user, $expenseCategory);
     }
 
     public function forceDelete(User $user, ExpenseCategory $expenseCategory): bool
     {
-        return $this->mayReach($user, $expenseCategory);
+        return $this->mayEdit() && $this->belongs($user, $expenseCategory);
     }
 
     /**
-     * The one ability every decision here rests on, asked of the expense class
-     * rather than of any heading.
+     * Both abilities are asked of the expense class rather than of any heading.
      */
     private function mayRead(): bool
     {
         return BouncerFacade::can('view-expense', Expense::class);
     }
 
+    private function mayEdit(): bool
+    {
+        return BouncerFacade::can('edit-expense', Expense::class);
+    }
+
     private function mayReach(User $user, ExpenseCategory $expenseCategory): bool
     {
-        return $this->mayRead() && $user->hasCompany($expenseCategory->company_id);
+        return $this->mayRead() && $this->belongs($user, $expenseCategory);
+    }
+
+    private function belongs(User $user, ExpenseCategory $expenseCategory): bool
+    {
+        return $user->hasCompany($expenseCategory->company_id);
     }
 }

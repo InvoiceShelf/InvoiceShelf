@@ -11,10 +11,11 @@ use Silber\Bouncer\BouncerFacade;
 /**
  * Who may work with measurement units.
  *
- * Units have no abilities of their own. Every action -- listing, reading,
- * creating, updating, removing -- rests on the item *view* ability, so anyone
- * who can see the catalogue can also reshape the unit list behind it. That is
- * the established behaviour and is kept deliberately.
+ * Units have no abilities of their own. Listing and reading them rest on the
+ * item *view* ability. Adding one takes the item *create* or *edit* ability,
+ * since the item form adds units inline; changing or removing one takes
+ * *edit*. A role that can only see the catalogue cannot reshape the unit list
+ * behind it.
  *
  * The ability is always asked about the Item class rather than the unit at
  * hand, which means Bouncer's own scoping never sees the unit; keeping
@@ -37,17 +38,17 @@ class UnitPolicy
 
     public function create(User $user): bool
     {
-        return $this->mayViewItems();
+        return BouncerFacade::can('create-item', Item::class) || $this->mayEditItems();
     }
 
     public function update(User $user, Unit $unit): bool
     {
-        return $this->mayViewItems() && $this->sameCompany($user, $unit);
+        return $this->mayEditItems() && $this->sameCompany($user, $unit);
     }
 
     public function delete(User $user, Unit $unit): bool
     {
-        return $this->mayViewItems() && $this->sameCompany($user, $unit);
+        return $this->mayEditItems() && $this->sameCompany($user, $unit);
     }
 
     /**
@@ -56,17 +57,22 @@ class UnitPolicy
      */
     public function restore(User $user, Unit $unit): bool
     {
-        return $this->mayViewItems() && $this->sameCompany($user, $unit);
+        return $this->mayEditItems() && $this->sameCompany($user, $unit);
     }
 
     public function forceDelete(User $user, Unit $unit): bool
     {
-        return $this->mayViewItems() && $this->sameCompany($user, $unit);
+        return $this->mayEditItems() && $this->sameCompany($user, $unit);
     }
 
     private function mayViewItems(): bool
     {
         return BouncerFacade::can('view-item', Item::class);
+    }
+
+    private function mayEditItems(): bool
+    {
+        return BouncerFacade::can('edit-item', Item::class);
     }
 
     private function sameCompany(User $user, Unit $unit): bool

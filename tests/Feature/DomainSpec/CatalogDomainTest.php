@@ -91,7 +91,7 @@ it('enforces unit name uniqueness per company and refuses deleting a used unit',
         ->assertJson(['success' => 'Unit deleted successfully']);
 });
 
-it('gates every unit action on the item view ability alone', function () {
+it('lists units on the item view ability and adds them on create or edit', function () {
     $abilities = fn (array $names) => array_map(fn ($a) => ['ability' => $a], $names);
 
     postJson('/api/v1/roles', ['name' => 'item-viewer', 'abilities' => $abilities(['view-item'])])->assertSuccessful();
@@ -103,8 +103,10 @@ it('gates every unit action on the item view ability alone', function () {
         'companies' => [['id' => $this->companyId, 'role' => 'item-editor']]])->assertSuccessful();
 
     Sanctum::actingAs(User::where('email', 'viewer@x.test')->first(), ['*']);
-    postJson('/api/v1/units', ['name' => 'viewer-made'])->assertSuccessful();
+    getJson('/api/v1/units')->assertOk();
+    postJson('/api/v1/units', ['name' => 'viewer-made'])->assertForbidden();
 
     Sanctum::actingAs(User::where('email', 'editor@x.test')->first(), ['*']);
     getJson('/api/v1/units')->assertForbidden();
+    postJson('/api/v1/units', ['name' => 'editor-made'])->assertSuccessful();
 });
