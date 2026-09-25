@@ -2,6 +2,7 @@
 
 use App\Models\FileDisk;
 use App\Models\User;
+use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Sanctum\Sanctum;
 
@@ -62,4 +63,63 @@ test('get drivers', function () {
     $response = getJson('/api/v1/disk/drivers');
 
     $response->assertStatus(200);
+});
+
+test('no global middleware lets a request pick the storage disk', function () {
+    $global = app(Kernel::class)->getGlobalMiddleware();
+
+    expect($global)->not->toContain('App\Http\Middleware\ConfigMiddleware');
+});
+
+test('a disk cannot borrow another driver through its credentials', function () {
+    FileDisk::setFilesystem(collect([
+        'driver' => 'local',
+        'root' => '/',
+        'key' => 'key',
+        'secret' => 'secret',
+        'region' => 'eu-central-1',
+        'bucket' => 'bucket',
+    ]), 's3');
+
+    expect(config('filesystems.disks.'.env('DYNAMIC_DISK_PREFIX', 'temp_').'s3.driver'))->toBe('s3');
+});
+
+test('creating a disk with a driver outside the allowlist is refused', function () {
+    postJson('/api/v1/disks', [
+        'name' => 'templates',
+        'driver' => 'views',
+        'credentials' => ['root' => '/tmp'],
+    ])->assertUnprocessable()->assertJsonValidationErrors(['driver']);
+});
+
+test('an s3 compatible endpoint on a private address is refused', function () {
+    postJson('/api/v1/disks', [
+        'name' => 'minio',
+        'driver' => 's3compat',
+        'credentials' => [
+            'endpoint' => 'http://127.0.0.1:9000',
+            'key' => 'key',
+            'secret' => 'secret',
+            'region' => 'us-east-1',
+            'bucket' => 'bucket',
+        ],
+    ])->assertUnprocessable()->assertJsonValidationErrors(['credentials.endpoint']);
+});
+
+test('updating a disk is validated like creating one', function () {
+    $disk = FileDisk::factory()->create();
+
+    putJson("/api/v1/disks/{$disk->id}", [
+        'name' => 'templates',
+        'driver' => 'views',
+        'credentials' => ['root' => '/tmp'],
+    ])->assertUnprocessable()->assertJsonValidationErrors(['driver']);
+});
+
+test('moving the default flag alone needs no credentials', function () {
+    $disk = FileDisk::factory()->create();
+
+    putJson("/api/v1/disks/{$disk->id}", ['set_as_default' => true])->assertOk();
+
+    expect($disk->fresh()->set_as_default)->toBeTrue();
 });

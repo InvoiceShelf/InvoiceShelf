@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\FileDisk;
+use App\Rules\SafeRemoteUrl;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class DiskEnvironmentRequest extends FormRequest
 {
@@ -68,8 +71,36 @@ class DiskEnvironmentRequest extends FormRequest
                     'credentials.endpoint' => [
                         'required',
                         'string',
+                        new SafeRemoteUrl,
                     ],
                     'credentials.root' => [
+                        'required',
+                        'string',
+                    ],
+                ];
+
+                break;
+
+            case 's3compat':
+                $rules = [
+                    'credentials.endpoint' => [
+                        'required',
+                        'string',
+                        new SafeRemoteUrl,
+                    ],
+                    'credentials.key' => [
+                        'required',
+                        'string',
+                    ],
+                    'credentials.secret' => [
+                        'required',
+                        'string',
+                    ],
+                    'credentials.region' => [
+                        'required',
+                        'string',
+                    ],
+                    'credentials.bucket' => [
                         'required',
                         'string',
                     ],
@@ -110,6 +141,7 @@ class DiskEnvironmentRequest extends FormRequest
             ],
             'driver' => [
                 'required',
+                Rule::in(FileDisk::DRIVERS),
             ],
         ];
 

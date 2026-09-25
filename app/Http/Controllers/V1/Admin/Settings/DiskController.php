@@ -4,6 +4,7 @@ namespace App\Http\Controllers\V1\Admin\Settings;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DiskEnvironmentRequest;
+use App\Http\Requests\UpdateDiskRequest;
 use App\Http\Resources\FileDiskResource;
 use App\Models\FileDisk;
 use Illuminate\Http\JsonResponse;
@@ -47,7 +48,7 @@ class DiskController extends Controller
      * @param  FileDisk  $file_disk
      * @return JsonResponse
      */
-    public function update(FileDisk $disk, Request $request)
+    public function update(FileDisk $disk, UpdateDiskRequest $request)
     {
         $this->authorize('manage file disk');
 

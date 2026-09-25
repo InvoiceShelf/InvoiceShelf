@@ -340,11 +340,15 @@ Route::prefix('/v1')->group(function () {
             // Backup & Disk
             // ----------------------------------
 
-            Route::apiResource('backups', BackupsController::class);
+            // The backup endpoints read the disk a file_disk_id names from the
+            // runtime default, so only they get the switching middleware.
+            Route::middleware('file-disk')->group(function () {
+                Route::apiResource('backups', BackupsController::class);
+
+                Route::get('download-backup', DownloadBackupController::class);
+            });
 
             Route::apiResource('/disks', DiskController::class);
-
-            Route::get('download-backup', DownloadBackupController::class);
 
             Route::get('/disk/drivers', [DiskController::class, 'getDiskDrivers']);
 
