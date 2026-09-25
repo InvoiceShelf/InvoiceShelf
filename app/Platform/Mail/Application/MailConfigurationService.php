@@ -4,6 +4,7 @@ namespace App\Platform\Mail\Application;
 
 use App\Domains\Accounts\Models\CompanySetting;
 use App\Platform\Mail\Contracts\MailConfigurator;
+use App\Platform\Operations\Managed\ManagedMode;
 use App\Platform\Operations\Models\Setting;
 use App\Rules\PublicHost;
 use App\Support\Net\PrivateNetworkGuard;
@@ -156,6 +157,12 @@ class MailConfigurationService implements MailConfigurator
 
     public function applyGlobalConfig(): void
     {
+        // On a managed install the provider sets the transport in the
+        // environment; stored settings never override it.
+        if (ManagedMode::enabled()) {
+            return;
+        }
+
         $settings = Setting::getSettings($this->getGlobalSettingKeys())->all();
 
         $this->applyStoredSettings($settings, self::GLOBAL_SCOPE);
@@ -164,12 +171,28 @@ class MailConfigurationService implements MailConfigurator
     public function applyCompanyConfig(int|string $companyId): void
     {
         $settings = CompanySetting::getSettings($this->getCompanySettingKeys(), $companyId)->all();
+        $ownTransport = ($settings['use_custom_mail_config'] ?? 'NO') === 'YES';
 
-        if (($settings['use_custom_mail_config'] ?? 'NO') !== 'YES') {
+        // Read by OutgoingSender: mail through a company's own server keeps
+        // the sender the user chose.
+        Config::set('mail.company_transport', $ownTransport);
+
+        if (! $ownTransport) {
             return;
         }
 
         $this->applyStoredSettings($settings, self::COMPANY_SCOPE);
+    }
+
+    /**
+     * The drivers a company may choose for its own mail: SMTP alone on a
+     * managed install, where the provider runs every other transport.
+     *
+     * @return list<string>
+     */
+    public function getCompanyDrivers(): array
+    {
+        return ManagedMode::enabled() ? ['smtp'] : $this->getAvailableDrivers();
     }
 
     /**
@@ -211,10 +234,14 @@ class MailConfigurationService implements MailConfigurator
      * one of Mailgun's own hosts. That is how company owners are held; the
      * super administrator keeps the private network, where a local relay is an
      * ordinary setup.
+     *
+     * With $managed on (a company's own server on a managed install), only
+     * SMTP is offered, on a submission port with TLS, and no DSN, which
+     * would bypass the host and port rules.
      */
-    public function validationRules(?string $driver, bool $allowDisabledCustomConfig = false, bool $allowPrivateHosts = true): array
+    public function validationRules(?string $driver, bool $allowDisabledCustomConfig = false, bool $allowPrivateHosts = true, bool $managed = false): array
     {
-        $availableDrivers = $this->getAvailableDrivers();
+        $availableDrivers = $managed ? ['smtp'] : $this->getAvailableDrivers();
         $driver = $this->normalizeRequestedDriver($driver, $availableDrivers);
 
         $rules = [
@@ -240,12 +267,14 @@ class MailConfigurationService implements MailConfigurator
         return array_merge($rules, match ($driver) {
             'smtp' => [
                 'mail_host' => ['required', 'string', ...$publicOnly],
-                'mail_port' => ['required', 'integer'],
+                'mail_port' => ['required', 'integer', ...($managed ? [Rule::in([465, 587, 2525])] : [])],
                 'mail_username' => ['nullable', 'string'],
                 'mail_password' => ['nullable', 'string'],
-                'mail_encryption' => ['nullable', 'string', Rule::in(['none', 'tls', 'ssl'])],
+                'mail_encryption' => $managed
+                    ? ['required', 'string', Rule::in(['tls', 'ssl'])]
+                    : ['nullable', 'string', Rule::in(['none', 'tls', 'ssl'])],
                 'mail_scheme' => ['nullable', 'string', Rule::in(['smtp', 'smtps'])],
-                'mail_url' => ['nullable', 'string', ...$publicOnly],
+                'mail_url' => $managed ? ['prohibited'] : ['nullable', 'string', ...$publicOnly],
                 'mail_timeout' => ['nullable', 'integer'],
                 'mail_local_domain' => ['nullable', 'string'],
             ],

@@ -20,7 +20,7 @@ export const useSettingsStore = defineStore('settings', () => {
 
   async function fetchMailDrivers(): Promise<MailDriver[]> {
     try {
-      const response = await mailService.getDrivers()
+      const response = await mailService.getCompanyDrivers()
       mailDrivers.value = response
       return response
     } catch (err: unknown) {

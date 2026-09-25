@@ -8,6 +8,12 @@ export const mailService = {
     return data
   },
 
+  /** The transports a company may choose for its own mail (SMTP only on a managed install). */
+  async getCompanyDrivers(): Promise<MailDriver[]> {
+    const { data } = await client.get(API.COMPANY_MAIL_DRIVERS)
+    return data
+  },
+
   async getConfig(): Promise<MailConfig> {
     const { data } = await client.get(API.MAIL_CONFIG)
     return data

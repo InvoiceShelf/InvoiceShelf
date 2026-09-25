@@ -2,6 +2,7 @@
 
 namespace App\Domains\Reporting\Mail;
 
+use App\Platform\Mail\Application\OutgoingSender;
 use App\Platform\Mail\Models\EmailLog;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
@@ -31,7 +32,7 @@ class SendCustomerStatementMail extends Mailable
             'mailable_id' => $this->data['customer']->id,
         ]);
 
-        return $this->from($this->data['from'], $this->data['from_name'])
+        return OutgoingSender::apply($this, $this->data['from'], $this->data['from_name'])
             ->subject($this->data['subject'])
             ->markdown('emails.send.customer-statement', ['data' => $this->data])
             ->attachData($this->data['pdf']->output(), $this->data['filename']);
