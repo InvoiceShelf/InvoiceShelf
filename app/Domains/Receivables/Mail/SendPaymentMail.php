@@ -5,6 +5,7 @@ namespace App\Domains\Receivables\Mail;
 use App\Domains\Receivables\Models\Payment;
 use App\Platform\Mail\Application\OutgoingSender;
 use App\Platform\Mail\Contracts\EmailLogWriter;
+use App\Support\Urls\CustomerUrl;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -46,7 +47,7 @@ class SendPaymentMail extends Mailable
      */
     public function build()
     {
-        $this->data['url'] = route('payment', [
+        $this->data['url'] = CustomerUrl::route('payment', [
             'email_log' => $this->logDelivery(),
         ]);
 

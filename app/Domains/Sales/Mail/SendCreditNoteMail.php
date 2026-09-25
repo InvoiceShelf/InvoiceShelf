@@ -7,6 +7,7 @@ use App\Platform\Mail\Application\OutgoingSender;
 use App\Platform\Mail\Models\EmailLog;
 use App\Platform\Persistence\ModelIdentityMap;
 use App\Support\PublicToken;
+use App\Support\Urls\CustomerUrl;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -46,7 +47,7 @@ class SendCreditNoteMail extends Mailable
         $log->token = PublicToken::make();
         $log->save();
 
-        $this->data['url'] = route('invoice', ['email_log' => $log->token]);
+        $this->data['url'] = CustomerUrl::route('invoice', ['email_log' => $log->token]);
 
         $mailContent = OutgoingSender::apply($this, $this->data['from'], config('mail.from.name'))
             ->subject($this->data['subject'])

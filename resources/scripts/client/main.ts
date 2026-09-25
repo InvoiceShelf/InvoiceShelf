@@ -191,6 +191,7 @@ function applyBranding(manifest: ClientManifest): void {
   window.copyright_text = branding.copyright_text ?? undefined
   window.powered_by = branding.powered_by
   window.source_url = manifest.source_url
+  window.customer_portal_url = manifest.customer_portal_url ?? null
   window.demo_mode = manifest.demo_mode === true
   window.demo = manifest.demo ?? undefined
   window.managed_mode = manifest.managed_mode === true

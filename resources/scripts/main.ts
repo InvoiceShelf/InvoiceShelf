@@ -34,6 +34,7 @@ declare global {
     managed?: ManagedState
     powered_by?: PoweredBy | null
     source_url?: string
+    customer_portal_url?: string | null
   }
 }
 

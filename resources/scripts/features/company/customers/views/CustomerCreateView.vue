@@ -18,7 +18,7 @@ import { useGlobalStore } from '../../../../stores/global.store'
 import { useCompanyStore } from '../../../../stores/company.store'
 import CustomFieldsSection from '@/scripts/features/shared/custom-fields/CustomFieldsSection.vue'
 import CopyInputField from '@/scripts/features/company/customers/components/CopyInputField.vue'
-import { serverBaseUrl } from '@/scripts/config/runtime'
+import { customerBaseUrl } from '@/scripts/utils/documents'
 
 const customerStore = useCustomerStore()
 const globalStore = useGlobalStore()
@@ -123,10 +123,7 @@ const rules = computed(() => ({
 }))
 
 const getCustomerPortalUrl = computed<string>(() => {
-  // A client has no portal of its own: the link belongs to the server.
-  const origin = serverBaseUrl() || window.location.origin
-
-  return `${origin}/${companyStore.selectedCompany?.slug}/customer/login`
+  return `${customerBaseUrl()}/${companyStore.selectedCompany?.slug}/customer/login`
 })
 
 const v$ = useVuelidate(rules, customerStore, {

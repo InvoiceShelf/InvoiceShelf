@@ -94,6 +94,10 @@ Tokens never expire, so `GET /api/v1/auth/tokens` and `DELETE /api/v1/auth/token
 
 The "Powered by" line under the sign-in pages, public documents and document emails comes from one place: `App\Support\PoweredBy`, fed by `config('invoiceshelf.powered_by')` (`INVOICESHELF_POWERED_BY`, `_NAME`, `_URL`), rendered by `emails/partials/powered-by.blade.php` and `components/layout/PoweredBy.vue` and handed to the SPA as `window.powered_by` (Blade shell) or the manifest's `branding.powered_by`. A host may rename or hide it. The account menus (staff and customer portal) always link to the running version's source (`INVOICESHELF_SOURCE_URL`, `{version}` filled in), which AGPL section 13 asks of a hosted install. Never hard-code either.
 
+### Customer portal host
+
+`CUSTOMER_PORTAL_URL` (with `CUSTOMER_PORTAL_HOSTS` for extra hosts) gives the customer portal a host of its own, such as `clients-acme.invhost.com` on InvoiceShelf Cloud. Every link sent to a customer is built with `App\Support\Urls\CustomerUrl` (`route()`, `to()`), never `route()` or `url()` directly, so it lands there. The global `RestrictPortalHost` middleware lets a portal host serve only the portal pages and API, public documents, PDFs by hash, module assets and `/up`, answering 404 to everything else, and moves customer pages opened on the app host to the portal host with a 301. The staff SPA reads the address as `window.customer_portal_url` (`customerBaseUrl()` in `utils/documents.ts`). Unset, or set to the app's own host, nothing changes.
+
 ### MCP server
 
 `app/Platform/Mcp/` lets AI assistants (Claude, ChatGPT, Claude Code, Cursor) use the app over the Model Context Protocol at `/mcp`, built on `laravel/mcp` and Passport. It is off until a super admin switches it on (`php artisan mcp:enable`, or Administration → Settings → AI connections). The user guide is `docs/guide/ai-assistants.md` in the docs repo.

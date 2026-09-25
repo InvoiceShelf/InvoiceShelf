@@ -2,6 +2,7 @@
 
 namespace App\Domains\Contacts\Notifications;
 
+use App\Support\Urls\CustomerUrl;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -50,7 +51,7 @@ class CustomerMailResetPasswordNotification extends ResetPassword
     public function toMail($notifiable): MailMessage
     {
         $slug = $notifiable->company->slug;
-        $resetUrl = url("/{$slug}/customer/reset/password/".$this->token);
+        $resetUrl = CustomerUrl::to("/{$slug}/customer/reset/password/".$this->token);
         $minutes = config('auth.passwords.users.expire');
 
         $opening = 'Hello! You are receiving this email because we received a password reset request for your account.';

@@ -13,6 +13,7 @@ use App\Domains\Contacts\Http\Middleware\CustomerPortalMiddleware;
 use App\Domains\Contacts\Http\Middleware\CustomerRedirectIfAuthenticated;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\PreventRequestForgery;
+use App\Http\Middleware\RestrictPortalHost;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustProxies;
 use App\Platform\Modules\Runtime\ModuleRuntimeAutoloader;
@@ -68,6 +69,8 @@ return Application::configure(basePath: dirname(__DIR__))
             TrimStrings::class,
             TrustProxies::class,
             UseInstallWizardTokenAuth::class,
+            // After TrustProxies, so the host is the one the visitor asked for.
+            RestrictPortalHost::class,
         ]);
 
         $middleware->web([
