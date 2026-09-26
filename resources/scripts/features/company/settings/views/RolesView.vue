@@ -105,26 +105,29 @@ async function openRoleModal(): Promise<void> {
       :columns="roleColumns"
       class="mt-14"
     >
+      <!-- A preset's copy is named preset:{key}; show its title instead -->
+      <template #cell-name="{ row }">
+        {{ row.data.preset ? row.data.title : row.data.name }}
+      </template>
+
       <template #cell-created_at="{ row }">
         {{ row.data.formatted_created_at }}
       </template>
 
       <template #cell-actions="{ row }">
         <RoleDropdown
-          v-if="
-            userStore.currentUser?.is_owner &&
-            row.data.name !== 'super admin' &&
-            row.data.name !== 'owner'
-          "
+          v-if="userStore.currentUser?.is_owner && !row.data.preset && row.data.name !== 'super admin'"
           :row="row.data"
           :table="table"
           :load-data="refreshTable"
         />
+        <!-- Presets belong to the super administrator: assignable, not editable here -->
         <span
-          v-else-if="row.data.name === 'owner' || row.data.name === 'super admin'"
+          v-else-if="row.data.preset || row.data.name === 'super admin'"
           class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-surface-tertiary text-muted ring-1 ring-inset ring-line-default"
+          :title="row.data.preset && row.data.preset !== 'owner' ? $t('settings.roles.preset_hint') : undefined"
         >
-          {{ $t('settings.roles.system_role') }}
+          {{ row.data.preset && row.data.preset !== 'owner' ? $t('settings.roles.preset') : $t('settings.roles.system_role') }}
         </span>
       </template>
     </BaseTable>

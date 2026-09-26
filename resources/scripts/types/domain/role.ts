@@ -15,6 +15,8 @@ export interface Role {
   name: string
   title: string | null
   level: number | null
+  /** The role preset this is a company's copy of (`owner` included), or null. */
+  preset?: string | null
   formatted_created_at: string
   abilities: Ability[]
 }

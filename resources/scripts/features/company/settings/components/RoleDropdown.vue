@@ -10,6 +10,7 @@ import { roleService } from '@/scripts/api/services/role.service'
 interface RoleRow {
   id: number
   name: string
+  preset?: string | null
   [key: string]: unknown
 }
 
@@ -26,10 +27,11 @@ const route = useRoute()
 const userStore = useUserStore()
 const modalStore = useModalStore()
 
-const PROTECTED_ROLES = ['owner', 'super admin']
+// Presets (the owner role among them) are the super administrator's to change.
+const isProtected = (): boolean => !!props.row.preset || props.row.name === 'super admin'
 
 async function editRole(id: number): Promise<void> {
-  if (PROTECTED_ROLES.includes(props.row.name)) return
+  if (isProtected()) return
   modalStore.openModal({
     title: t('settings.roles.edit_role'),
     componentName: 'RolesModal',
@@ -40,7 +42,7 @@ async function editRole(id: number): Promise<void> {
 }
 
 async function removeRole(id: number): Promise<void> {
-  if (PROTECTED_ROLES.includes(props.row.name)) return
+  if (isProtected()) return
   dialogStore
     .openDialog({
       title: t('general.are_you_sure'),

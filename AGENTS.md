@@ -68,6 +68,8 @@ Every major model has a `company_id` foreign key. The `CompanyMiddleware` sets t
 ### Roles
 - **`super admin`** — global platform admin (unscoped, manages all companies).
 - **`owner`** — company-level admin (scoped to a company via Bouncer, full access to that company).
+- **Role presets** (`role_presets`, `RolePresetService`): roles the super admin defines once (Administration API `super-admin/role-presets`); every company holds a copy named `owner` (the Owner preset, always the whole catalogue) or `preset:{key}`, which it can assign but not edit or delete (`RolePolicy`). Shipped: Owner, Manager, Read only. `CompanyService::setupRoles` gives a new company its copies; editing a preset rewrites every copy; `roles:sync-presets` repairs them.
+- Every write of a role's grants goes through `RoleGrantWriter`, which runs in the role's own Bouncer scope. A super-admin request has no scope, and Bouncer writes made without one land in the wrong company. Note `BouncerFacade::allow($role)->to('name')` with one argument is lazy and runs when the conductor is destroyed, possibly after a scope set with `onceTo()` has ended; pass the model (or `null`) as a second argument inside a scoped closure.
 
 ### Authentication
 Four guards: `web` (session), `api` (Sanctum tokens for `/api/v1/`), `customer` (session for customer portal) and `oauth` (Passport access tokens, used by the MCP server). API routes use `auth:sanctum` middleware; customer portal uses `auth:customer`.

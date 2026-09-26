@@ -106,6 +106,10 @@ class UpdateController extends Controller
     {
         $this->authorizeUpdates();
 
+        // Some migrations rewrite data in every company (role presets, for
+        // one), which outlasts PHP's default limit on a large install.
+        set_time_limit(self::CHECK_TIME_BUDGET);
+
         try {
             Updater::migrateUpdate();
         } catch (Exception $failure) {

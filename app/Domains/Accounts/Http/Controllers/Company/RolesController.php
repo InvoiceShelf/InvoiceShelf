@@ -2,14 +2,14 @@
 
 namespace App\Domains\Accounts\Http\Controllers\Company;
 
-use App\Domains\Accounts\Contracts\AbilityCatalog;
+use App\Domains\Accounts\Application\RoleGrantWriter;
 use App\Domains\Accounts\Http\Requests\RoleRequest;
 use App\Domains\Accounts\Http\Resources\RoleResource;
 use App\Domains\Accounts\Models\User;
 use App\Platform\Http\Controller;
 use Illuminate\Http\Request;
-use Silber\Bouncer\BouncerFacade;
 use Silber\Bouncer\Database\Role;
+use Silber\Bouncer\Database\Titles\RoleTitle;
 
 /**
  * The roles a company defines for its own members.
@@ -33,7 +33,7 @@ class RolesController extends Controller
      */
     private const IN_USE_MESSAGE = 'Roles Attached to user';
 
-    public function __construct(private readonly AbilityCatalog $catalog) {}
+    public function __construct(private readonly RoleGrantWriter $grants) {}
 
     /**
      * Every role visible in the active scope.
@@ -67,7 +67,7 @@ class RolesController extends Controller
 
         $role = Role::query()->create($request->getRolePayload());
 
-        $this->writeCatalogGrants($role, $request->abilities);
+        $this->grants->sync($role, array_column($request->abilities, 'ability'));
 
         return RoleResource::make($role);
     }
@@ -83,15 +83,18 @@ class RolesController extends Controller
     }
 
     /**
-     * Rename a role and rewrite its grants.
+     * Rename a role and rewrite its grants. The title is derived from the name
+     * again, as Bouncer does on create, so the member pickers show the new one.
      */
     public function update(RoleRequest $request, Role $role)
     {
         $this->authorize('update', $role);
 
-        $role->fill($request->getRolePayload())->save();
+        $role->fill($request->getRolePayload());
+        $role->title = RoleTitle::from($role)->toString();
+        $role->save();
 
-        $this->writeCatalogGrants($role, $request->abilities);
+        $this->grants->sync($role, array_column($request->abilities, 'ability'));
 
         return RoleResource::make($role);
     }
@@ -110,29 +113,5 @@ class RolesController extends Controller
         $role->delete();
 
         return response()->json(['success' => true]);
-    }
-
-    /**
-     * Walk the whole ability catalog and make the role match the submission.
-     *
-     * The submission is read as a set of names: a catalog entry named in it is
-     * granted, every other entry is revoked, so a role never keeps a grant the
-     * caller left out. Names that match no catalog entry are simply never
-     * looked at -- including a module ability whose module has since been
-     * disabled, whose grant therefore survives untouched.
-     */
-    private function writeCatalogGrants($role, $submitted): void
-    {
-        $wanted = array_column($submitted, 'ability');
-
-        foreach ($this->catalog->all() as $entry) {
-            if (in_array($entry['ability'], $wanted)) {
-                BouncerFacade::allow($role)->to($entry['ability'], $entry['model']);
-
-                continue;
-            }
-
-            BouncerFacade::disallow($role)->to($entry['ability'], $entry['model']);
-        }
     }
 }

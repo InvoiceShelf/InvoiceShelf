@@ -2,6 +2,7 @@
 
 namespace App\Domains\Accounts\Policies;
 
+use App\Domains\Accounts\Models\RolePreset;
 use App\Domains\Accounts\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Silber\Bouncer\Database\Role;
@@ -13,6 +14,9 @@ use Silber\Bouncer\Database\Role;
  * header, and where a role is handed in, whether that role belongs to the
  * same company. Bouncer's query scoping does not cover route binding, so a
  * role of another company would otherwise resolve here.
+ *
+ * A company's copy of a role preset (the `owner` role included) belongs to the
+ * super administrator: it can be read and assigned, never changed or removed.
  */
 class RolePolicy
 {
@@ -47,7 +51,7 @@ class RolePolicy
      */
     public function update(User $user, Role $role): bool
     {
-        return $user->isOwner() && $this->inActiveCompany($role);
+        return $this->mayChange($user, $role);
     }
 
     /**
@@ -56,7 +60,7 @@ class RolePolicy
      */
     public function delete(User $user, Role $role): bool
     {
-        return $user->isOwner() && $this->inActiveCompany($role);
+        return $this->mayChange($user, $role);
     }
 
     /**
@@ -64,7 +68,7 @@ class RolePolicy
      */
     public function restore(User $user, Role $role): bool
     {
-        return $user->isOwner() && $this->inActiveCompany($role);
+        return $this->mayChange($user, $role);
     }
 
     /**
@@ -72,7 +76,14 @@ class RolePolicy
      */
     public function forceDelete(User $user, Role $role): bool
     {
-        return $user->isOwner() && $this->inActiveCompany($role);
+        return $this->mayChange($user, $role);
+    }
+
+    private function mayChange(User $user, Role $role): bool
+    {
+        return $user->isOwner()
+            && $this->inActiveCompany($role)
+            && RolePreset::keyFromRoleName($role->name) === null;
     }
 
     private function inActiveCompany(Role $role): bool

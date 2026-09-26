@@ -12,6 +12,7 @@ use App\Adapters\Accounts\MediaLibraryUserAvatarManager;
 use App\Adapters\Accounts\ModuleAwareAbilityCatalog;
 use App\Domains\Accounts\Application\OAuth\OAuthServer;
 use App\Domains\Accounts\Console\GenerateOAuthKeys;
+use App\Domains\Accounts\Console\SyncRolePresets;
 use App\Domains\Accounts\Contracts\AbilityCatalog;
 use App\Domains\Accounts\Contracts\CompanyAddressWriter;
 use App\Domains\Accounts\Contracts\CompanyDataPurger;
@@ -75,6 +76,7 @@ class AccountsServiceProvider extends ServiceProvider
 
         $this->commands([
             GenerateOAuthKeys::class,
+            SyncRolePresets::class,
         ]);
     }
 

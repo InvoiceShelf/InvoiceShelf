@@ -2,6 +2,7 @@
 
 namespace App\Domains\Accounts\Http\Requests;
 
+use App\Domains\Accounts\Models\RolePreset;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -35,24 +36,25 @@ class RoleRequest extends FormRequest
         }
 
         return [
-            'name' => ['required', 'string', $name],
+            'name' => ['required', 'string', $name, function (string $attribute, mixed $value, \Closure $fail): void {
+                if (RolePreset::keyFromRoleName(strtolower((string) $value)) !== null) {
+                    $fail('This name is reserved for the role presets.');
+                }
+            }],
             'abilities' => ['required'],
             'abilities.*' => ['required'],
         ];
     }
 
     /**
-     * The submitted attributes, minus the abilities, stamped with the scope.
-     *
-     * Everything the caller sent survives the trip; the role model's own
-     * fillable list decides what is actually written.
+     * The name, stamped with the scope. Nothing else the caller sent is
+     * written: the title follows the name.
      */
     public function getRolePayload()
     {
-        $attributes = $this->except('abilities');
-
-        $attributes['scope'] = $this->header('company');
-
-        return $attributes;
+        return [
+            'name' => $this->input('name'),
+            'scope' => $this->header('company'),
+        ];
     }
 }

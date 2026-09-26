@@ -121,7 +121,8 @@ test('the accounts domain preserves public and super-admin routes', function () 
         ->filter(fn ($route): bool => str_starts_with($route->uri(), 'api/v1/super-admin/'))
         ->reject(fn ($route): bool => in_array($route->uri(), $notOurs, true));
 
-    expect($adminRoutes)->toHaveCount(8);
+    // 8 for companies and users, 5 for role presets and the ability catalogue.
+    expect($adminRoutes)->toHaveCount(13);
 
     foreach ($adminRoutes as $route) {
         expect($route->getActionName())->toStartWith('App\\Domains\\Accounts\\Http\\Controllers\\Admin\\')

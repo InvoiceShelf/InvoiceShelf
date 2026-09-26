@@ -2,6 +2,7 @@
 
 namespace App\Platform\Modules\Application;
 
+use App\Domains\Accounts\Application\RolePresetService;
 use App\Domains\Accounts\Models\Company;
 use Illuminate\Support\Str;
 use InvoiceShelf\Modules\Registry;
@@ -14,14 +15,15 @@ use Silber\Bouncer\Database\Models;
  *
  * A module's abilities are namespaced `{slug}:{ability}` and never subject to a
  * model, so the slug is the only handle needed to find them again. Enabling a
- * module hands its abilities to every company's `owner` role; uninstalling it
+ * module hands its abilities to every company's `owner` role, and to the copies
+ * of any role preset the super administrator gave them to; uninstalling it
  * takes the ability rows away entirely. Disabling deliberately does neither:
  * the grants stay put so a module switched back on finds its permissions the
  * way its owners left them.
  */
 class ModuleAbilitySync
 {
-    /** The role every company is created with, and the only one granted here. */
+    /** The role every company is created with, which always holds every ability. */
     private const OWNER_ROLE = 'owner';
 
     /**
@@ -57,6 +59,9 @@ class ModuleAbilitySync
         }
 
         BouncerFacade::refresh();
+
+        // Role presets that list any of these abilities get them too.
+        app(RolePresetService::class)->grantListed(array_column($entries, 'ability'));
     }
 
     /**
