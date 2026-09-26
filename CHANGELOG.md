@@ -7,6 +7,28 @@ section beneath it is what CI publishes to the updater — see
 The 2.x line has its own CHANGELOG.md on the `2.x` branch. Releases are also on
 GitHub: https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 3.0.0-alpha.10 - 2026-09-26
+
+Tenth public alpha of InvoiceShelf 3.0. Owners of a managed install can now add official modules themselves when their host allows it, and every Docker start checks installed modules against the running version.
+
+⚠️ **Pre-release, not for production.** Back up your database before upgrading and use this release for evaluation and testing only.
+
+### Highlights
+
+- **Official modules on managed installs.** When the hosting provider mounts a writable `Modules/` directory, the owner installs, updates and removes official modules from Administration → Modules, as on any other install. Only signed releases from the official marketplace install. Pairing with a marketplace account stays with the provider, and paid modules are not offered there yet. Without a writable `Modules/` directory, a managed install behaves as before. (#893)
+- **`php artisan modules:reconcile`** disables every enabled module whose `module.json` no longer fits the running InvoiceShelf version, module API, PHP version or extensions, and records the reason on the module. The Docker image runs it on every start, before migrations, so an upgrade never boots or migrates a module built for another version. (#893)
+
+### Improvements and fixes
+
+- **Installing, updating or removing a module now clears PHP's opcode cache.** On servers set never to re-read PHP files (`opcache.validate_timestamps=0`), an updated module otherwise kept running its old code until PHP restarted. (#893)
+
+### Upgrade notes
+
+- **Docker:** the image runs `modules:reconcile` when it starts. A module disabled that way keeps its data. Enable it again after installing a release that fits.
+- **Hosting providers:** managed installs now reach install and uninstall whenever `Modules/` is writable. Leave it read-only to keep modules in your hands.
+
+Docker: `invoiceshelf/invoiceshelf:3.0.0-alpha.10` or `ghcr.io/invoiceshelf/invoiceshelf:3.0.0-alpha.10` (also `:next`).
+
 ## 3.0.0-alpha.9 - 2026-09-26
 
 Ninth public alpha of InvoiceShelf 3.0. The super administrator can now define role presets that every company gets, and create users and place them in companies from Administration.
