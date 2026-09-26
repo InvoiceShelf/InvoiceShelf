@@ -7,6 +7,7 @@ use App\Domains\Sales\Http\Resources\CustomerPortal\InvoiceResource;
 use App\Domains\Sales\Models\Invoice;
 use App\Platform\Http\Controller;
 use App\Platform\Mail\Models\EmailLog;
+use App\Platform\Operations\Managed\ManagedMode;
 use Illuminate\Http\Request;
 
 class InvoicePdfController extends Controller
@@ -72,6 +73,10 @@ class InvoicePdfController extends Controller
      */
     private function recordReading(Invoice $invoice): void
     {
+        if (ManagedMode::readOnly()) {
+            return;
+        }
+
         $unread = [Invoice::STATUS_SENT, Invoice::STATUS_DRAFT];
 
         if (! in_array($invoice->status, $unread)) {

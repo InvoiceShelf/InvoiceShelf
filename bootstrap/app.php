@@ -25,6 +25,7 @@ use App\Platform\Operations\Installation\Http\Middleware\RedirectIfInstalled;
 use App\Platform\Operations\Installation\Http\Middleware\UseInstallWizardTokenAuth;
 use App\Platform\Operations\Managed\EnsureModulesInstallable;
 use App\Platform\Operations\Managed\EnsureNotManaged;
+use App\Platform\Operations\Managed\EnsureWritable;
 use App\Platform\Pdf\Http\Middleware\PdfMiddleware;
 use App\Providers\AppServiceProvider;
 use Illuminate\Auth\Middleware\Authorize;
@@ -82,6 +83,9 @@ return Application::configure(basePath: dirname(__DIR__))
         // First in the group, so what the demo refuses is refused before a
         // route binding can answer 404 for a record that is not there.
         $middleware->prependToGroup('api', BlockDemoChanges::class);
+
+        $middleware->appendToGroup('web', EnsureWritable::class);
+        $middleware->appendToGroup('api', EnsureWritable::class);
 
         $middleware->statefulApi();
         $middleware->throttleApi('180,1');

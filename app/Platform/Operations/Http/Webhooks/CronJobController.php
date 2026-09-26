@@ -3,6 +3,7 @@
 namespace App\Platform\Operations\Http\Webhooks;
 
 use App\Platform\Http\Controller;
+use App\Platform\Operations\Managed\ManagedMode;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
@@ -34,6 +35,10 @@ class CronJobController extends Controller
      */
     public function __invoke(Request $request): JsonResponse
     {
+        if (ManagedMode::readOnly()) {
+            return response()->json(['success' => true, 'ran' => false, 'reason' => 'read_only']);
+        }
+
         if (! Cache::lock('cron-webhook', self::LOCK_SECONDS)->get()) {
             return response()->json(['success' => true, 'ran' => false]);
         }

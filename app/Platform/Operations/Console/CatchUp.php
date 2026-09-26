@@ -2,6 +2,7 @@
 
 namespace App\Platform\Operations\Console;
 
+use App\Platform\Operations\Managed\ManagedMode;
 use App\Platform\Operations\Models\Setting;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
@@ -27,6 +28,10 @@ class CatchUp extends Command
 
     public function handle(): int
     {
+        if (ManagedMode::readOnly()) {
+            return self::SUCCESS;
+        }
+
         $today = now()->toDateString();
 
         if (! $this->option('force') && Setting::getSetting(self::LAST_RUN_SETTING) === $today) {

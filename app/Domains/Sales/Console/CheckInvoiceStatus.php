@@ -4,6 +4,7 @@ namespace App\Domains\Sales\Console;
 
 use App\Domains\Sales\Events\InvoiceBecameOverdue;
 use App\Domains\Sales\Models\Invoice;
+use App\Platform\Operations\Managed\ManagedMode;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
@@ -27,6 +28,10 @@ class CheckInvoiceStatus extends Command
      */
     public function handle(): void
     {
+        if (ManagedMode::readOnly()) {
+            return;
+        }
+
         $today = Carbon::now();
 
         $exempt = [Invoice::STATUS_COMPLETED, Invoice::STATUS_DRAFT];

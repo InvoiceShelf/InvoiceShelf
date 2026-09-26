@@ -7,6 +7,7 @@ use App\Domains\Sales\Http\Resources\EstimateResource;
 use App\Domains\Sales\Models\Estimate;
 use App\Platform\Http\Controller;
 use App\Platform\Mail\Models\EmailLog;
+use App\Platform\Operations\Managed\ManagedMode;
 use Illuminate\Http\Request;
 
 class EstimatePdfController extends Controller
@@ -63,6 +64,10 @@ class EstimatePdfController extends Controller
      */
     private function recordReading(Estimate $estimate): void
     {
+        if (ManagedMode::readOnly()) {
+            return;
+        }
+
         $unread = [Estimate::STATUS_SENT, Estimate::STATUS_DRAFT];
 
         if (! in_array($estimate->status, $unread)) {

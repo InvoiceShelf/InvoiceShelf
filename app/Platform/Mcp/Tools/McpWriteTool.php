@@ -4,6 +4,7 @@ namespace App\Platform\Mcp\Tools;
 
 use App\Platform\Mcp\McpContext;
 use App\Platform\Mcp\Models\McpActivity;
+use App\Platform\Operations\Managed\ManagedMode;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\RateLimiter;
@@ -55,6 +56,10 @@ abstract class McpWriteTool extends McpTool
 
     public function handle(Request $request, McpContext $context): Response|ResponseFactory
     {
+        if (ManagedMode::readOnly()) {
+            return Response::error('read_only: This instance is read-only. You can still view and download your documents.');
+        }
+
         $limiter = 'mcp-writes:'.$context->connection->id;
 
         if (RateLimiter::tooManyAttempts($limiter, self::WRITES_PER_MINUTE)) {

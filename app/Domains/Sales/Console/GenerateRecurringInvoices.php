@@ -3,6 +3,7 @@
 namespace App\Domains\Sales\Console;
 
 use App\Domains\Sales\Application\RecurringInvoiceService;
+use App\Platform\Operations\Managed\ManagedMode;
 use Illuminate\Console\Command;
 
 /**
@@ -21,6 +22,10 @@ class GenerateRecurringInvoices extends Command
 
     public function handle(RecurringInvoiceService $service): int
     {
+        if (ManagedMode::readOnly()) {
+            return self::SUCCESS;
+        }
+
         $generated = $service->generateDue();
 
         $this->info($generated === 0
