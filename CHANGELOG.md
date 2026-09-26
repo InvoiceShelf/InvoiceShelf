@@ -7,6 +7,34 @@ section beneath it is what CI publishes to the updater — see
 The 2.x line has its own CHANGELOG.md on the `2.x` branch. Releases are also on
 GitHub: https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 3.0.0-alpha.9 - 2026-09-26
+
+Ninth public alpha of InvoiceShelf 3.0. The super administrator can now define role presets that every company gets, and create users and place them in companies from Administration.
+
+⚠️ **Pre-release, not for production.** Back up your database before upgrading and use this release for evaluation and testing only.
+
+### Highlights
+
+- **Role presets.** The super administrator defines roles once in Administration → Settings → Role Presets, and every company gets each one as a role it can assign but not change. Three ship: Owner (every permission), Manager (everything except managing custom fields and exchange-rate providers) and Read only (every view permission and the dashboard). Editing a preset updates it in every company; a preset still held by a member or offered in a pending invitation cannot be deleted. Companies keep their own roles. (#860, #887, #888)
+- **Create users in Administration.** Users → New User creates an account with a password, a super-administrator switch and the companies it belongs to, with a role in each. An existing user's companies and roles are edited the same way. (#859, #889)
+- **One permission grid** for role presets and company roles, with the shortcuts from alpha.8, and a View button that shows a preset's permissions from a company. (#888)
+- `php artisan invoiceshelf:send-welcome --email=...` emails a user a link to set their password, for hosts that install with a random password and hand the instance over later. It fails when the mail is not sent. (#891)
+
+### Improvements and fixes
+
+- **A role with only the view permission for items, payments or expenses could add, rename and delete units, payment modes and expense categories.** Changing them now needs the edit permission, and adding them the create or edit permission. The settings pages hide those actions from members who cannot use them. (#886)
+- A company owner could rename the Owner role or remove its permissions through the API. Owner and the preset roles cannot be edited or deleted from a company, and a company role can no longer be named `owner` or start with `preset:`. (#887)
+- A member removed from a company kept the role they held there, so inviting them again gave it back. Leaving a company now removes it. (#889)
+- A role's title follows its name when it is renamed. (#887)
+
+### Upgrade notes
+
+- **API:** company resources no longer include `roles`. Read a company's roles from the roles endpoint. (#887)
+- The upgrade creates the three presets and gives every existing company its copies; the company's own roles are left alone. `php artisan roles:sync-presets` (optionally `--company=`) repairs a company's copies.
+- **Custom roles that relied on the view-only behaviour above** lose the ability to change units, payment modes and expense categories. Give them the edit permission to keep it.
+
+Docker: `invoiceshelf/invoiceshelf:3.0.0-alpha.9` or `ghcr.io/invoiceshelf/invoiceshelf:3.0.0-alpha.9` (also `:next`).
+
 ## 3.0.0-alpha.8 - 2026-09-25
 
 Eighth public alpha of InvoiceShelf 3.0. It closes security issues in the mail, file disk and installer settings, fixes foreign-currency documents on PostgreSQL, and makes the Docker image ready for hosting: it runs on a read-only filesystem, gives the customer portal a host of its own and carries its PDF fonts.
