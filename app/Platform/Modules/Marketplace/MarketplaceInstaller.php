@@ -5,9 +5,9 @@ namespace App\Platform\Modules\Marketplace;
 use App\Platform\Modules\Events\ModuleEnabledEvent;
 use App\Platform\Modules\Events\ModuleInstalledEvent;
 use App\Platform\Modules\Models\Module as InstalledModule;
+use App\Platform\Modules\Runtime\ModuleCompatibility;
 use App\Platform\Modules\Runtime\ModuleRuntimeAutoloader;
-use App\Platform\Operations\Models\Setting;
-use Composer\Semver\Semver;
+use App\Platform\Modules\Runtime\OpcacheReset;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
@@ -95,6 +95,7 @@ class MarketplaceInstaller
                 Module::find($moduleName)?->enable();
                 Artisan::call('optimize:clear');
                 Artisan::call('queue:restart');
+                OpcacheReset::afterCodeChange();
                 ModuleInstalledEvent::dispatch($record);
                 ModuleEnabledEvent::dispatch($record);
                 $this->operations->finish($operation, 'completed');
@@ -103,6 +104,7 @@ class MarketplaceInstaller
                 return ['success' => true, 'operation_id' => $operation->id];
             } catch (Throwable $exception) {
                 $this->restore($moduleName, $backup);
+                OpcacheReset::afterCodeChange();
                 $this->restoreDatabaseState($moduleName, $previous, $slug, $exception);
                 throw $exception;
             }
@@ -181,31 +183,9 @@ class MarketplaceInstaller
             throw new RuntimeException('Release channel does not match the requested channel.');
         }
 
-        $compatibility = $manifest['compatibility'] ?? [];
-        if (! is_array($compatibility)) {
-            throw new RuntimeException('Release compatibility metadata is invalid.');
-        }
-
-        $appVersion = (string) config('app.version', Setting::getSetting('version'));
-        $minimum = $compatibility['invoiceshelf'] ?? null;
-        if (is_string($minimum) && $minimum !== '' && ! $this->satisfiesConstraint($appVersion, $minimum)) {
-            throw new RuntimeException('This module requires a newer InvoiceShelf version.');
-        }
-
-        $php = $compatibility['php'] ?? null;
-        if (is_string($php) && $php !== '' && ! $this->satisfiesConstraint(PHP_VERSION, $php)) {
-            throw new RuntimeException('This module requires a newer PHP version.');
-        }
-
-        $moduleApi = $compatibility['module_api'] ?? null;
-        if (! is_string($moduleApi) || ! $this->satisfiesConstraint((string) config('invoiceshelf.marketplace.module_api_version'), $moduleApi)) {
-            throw new RuntimeException('This module requires an unsupported module runtime API.');
-        }
-
-        foreach (($compatibility['extensions'] ?? []) as $extension) {
-            if (! is_string($extension) || ! str_starts_with($extension, 'ext-') || ! extension_loaded(substr($extension, 4))) {
-                throw new RuntimeException('A required PHP extension is unavailable.');
-            }
+        $problems = ModuleCompatibility::problems($manifest['compatibility'] ?? []);
+        if ($problems !== []) {
+            throw new RuntimeException($problems[0]);
         }
     }
 
@@ -313,11 +293,7 @@ class MarketplaceInstaller
 
     private function satisfiesConstraint(string $version, string $constraint): bool
     {
-        try {
-            return Semver::satisfies(ltrim($version, 'v'), $constraint);
-        } catch (Throwable) {
-            return false;
-        }
+        return ModuleCompatibility::satisfies($version, $constraint);
     }
 
     private function isSemverVersion(string $version): bool

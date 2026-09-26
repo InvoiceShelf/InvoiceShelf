@@ -69,6 +69,11 @@
             {{ $t('managed.modules_note') }}
           </p>
 
+          <!-- Paid module on a managed install: not sold there yet -->
+          <p v-else-if="hosted && !moduleData.purchased" class="text-sm text-muted">
+            {{ $t('managed.paid_modules_note') }}
+          </p>
+
           <!-- Not purchased -->
           <template v-else-if="!moduleData.purchased">
             <a :href="buyLink" target="_blank" rel="noopener" class="block rounded-lg">
@@ -406,7 +411,7 @@ import { useDialogStore } from '../../../../stores/dialog.store'
 import { useNotificationStore } from '../../../../stores/notification.store'
 import type { Module, ModuleLink } from '../../../../types/domain/module'
 import { getErrorTranslationKey, handleApiError } from '../../../../utils/error-handling'
-import { isManaged } from '../../../../utils/managed'
+import { isManaged, providerManagesModules } from '../../../../utils/managed'
 
 interface ModuleLinkItem {
   icon: string
@@ -419,8 +424,11 @@ interface TabItem {
   label: string
 }
 
-// On a managed install the provider installs, updates and removes modules.
-const managed = isManaged()
+// On a managed install without a writable Modules directory the provider
+// installs, updates and removes modules; with one, owners install official
+// modules themselves, but paid ones are not sold there yet.
+const managed = providerManagesModules()
+const hosted = isManaged()
 const moduleStore = useModuleStore()
 const dialogStore = useDialogStore()
 const notificationStore = useNotificationStore()

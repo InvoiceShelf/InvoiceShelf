@@ -3,6 +3,7 @@
 namespace App\Platform\Modules;
 
 use App\Platform\Modules\Console\InstallModuleCommand;
+use App\Platform\Modules\Console\ReconcileModulesCommand;
 use App\Platform\Modules\Console\SyncModuleAbilitiesCommand;
 use App\Platform\Modules\Console\UninstallModuleCommand;
 use App\Platform\Modules\Contracts\ModuleSettingsStore;
@@ -40,6 +41,7 @@ class ModuleServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 InstallModuleCommand::class,
+                ReconcileModulesCommand::class,
                 SyncModuleAbilitiesCommand::class,
                 UninstallModuleCommand::class,
             ]);

@@ -14,14 +14,27 @@ final class ManagedMode
     }
 
     /**
+     * Whether owners may install official modules here: a provider that wants
+     * them mounts a writable, per-install Modules directory. Everywhere else
+     * on a managed install the code is read-only and installs stay refused.
+     */
+    public static function modulesInstallable(): bool
+    {
+        $path = (string) config('modules.paths.modules');
+
+        return $path !== '' && is_dir($path) && is_writable($path);
+    }
+
+    /**
      * What the SPA is told about it (window.managed, and the client manifest).
      *
-     * @return array{support_url: string|null}
+     * @return array{support_url: string|null, modules_installable: bool}
      */
     public static function clientState(): array
     {
         return [
             'support_url' => config('managed.support_url') ?: null,
+            'modules_installable' => self::modulesInstallable(),
         ];
     }
 }

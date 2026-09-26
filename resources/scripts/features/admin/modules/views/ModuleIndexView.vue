@@ -34,7 +34,7 @@
     </BaseCard>
 
     <div class="mt-6">
-      <BaseTabGroup v-if="!managed" @change="setStatusFilter">
+      <BaseTabGroup v-if="!providerOnly" @change="setStatusFilter">
         <BaseTab :title="$t('general.all')" filter="" />
         <BaseTab :title="$t('modules.installed')" filter="INSTALLED" />
       </BaseTabGroup>
@@ -46,7 +46,7 @@
       </div>
       <div v-else class="mt-24">
         <p class="flex items-center justify-center text-muted" role="status">
-          {{ managed || activeTab === 'INSTALLED' ? $t('modules.no_modules_installed') : $t('modules.no_marketplace_modules') }}
+          {{ providerOnly || activeTab === 'INSTALLED' ? $t('modules.no_modules_installed') : $t('modules.no_marketplace_modules') }}
         </p>
       </div>
     </div>
@@ -60,7 +60,7 @@ import ModuleCard from '../components/ModuleCard.vue'
 import type { MarketplacePairingCode } from '@/scripts/api/services/module.service'
 import type { Module } from '@/scripts/types/domain/module'
 import { useNotificationStore } from '@/scripts/stores/notification.store'
-import { isManaged } from '@/scripts/utils/managed'
+import { isManaged, providerManagesModules } from '@/scripts/utils/managed'
 
 const moduleStore = useModuleStore()
 const notificationStore = useNotificationStore()
@@ -70,11 +70,13 @@ const isPairing = ref(false)
 const isPolling = ref(false)
 const pairingCode = ref<MarketplacePairingCode | null>(null)
 
-// On a managed install the provider installs modules, so only what is
+// On a managed install the provider pairs the install with the marketplace.
+// Where it also handles modules (no writable Modules directory), only what is
 // installed is listed.
 const managed = isManaged()
+const providerOnly = providerManagesModules()
 
-const filteredModules = computed<Module[]>(() => managed || activeTab.value === 'INSTALLED'
+const filteredModules = computed<Module[]>(() => providerOnly || activeTab.value === 'INSTALLED'
   ? moduleStore.installedModules
   : moduleStore.modules)
 
