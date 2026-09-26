@@ -15,6 +15,8 @@ const AdminFileDiskView = () => import('./views/settings/AdminFileDiskView.vue')
 const AdminFontView = () => import('./views/settings/AdminFontView.vue')
 const AdminCurrenciesView = () =>
   import('./views/settings/AdminCurrenciesView.vue')
+const AdminRolePresetsView = () =>
+  import('./views/settings/AdminRolePresetsView.vue')
 const AdminUpdateAppView = () => import('./views/settings/AdminUpdateAppView.vue')
 const AdminAppearanceView = () => import('./views/settings/AdminAppearanceView.vue')
 const AdminMcpView = () => import('./views/settings/AdminMcpView.vue')
@@ -130,6 +132,14 @@ export const adminRoutes: RouteRecordRaw[] = [
               isSuperAdmin: true,
             },
             component: AdminCurrenciesView,
+          },
+          {
+            path: 'role-presets',
+            name: 'admin.settings.role-presets',
+            meta: {
+              isSuperAdmin: true,
+            },
+            component: AdminRolePresetsView,
           },
           {
             path: 'update-app',

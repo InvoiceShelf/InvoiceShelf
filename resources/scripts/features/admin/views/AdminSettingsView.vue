@@ -108,6 +108,11 @@ const allMenuItems = computed<SettingsMenuItem[]>(() => [
     icon: 'BanknotesIcon',
   },
   {
+    title: t('settings.menu_title.role_presets'),
+    link: '/admin/administration/settings/role-presets',
+    icon: 'UserGroupIcon',
+  },
+  {
     title: t('settings.menu_title.update_app'),
     link: '/admin/administration/settings/update-app',
     managedHidden: true,

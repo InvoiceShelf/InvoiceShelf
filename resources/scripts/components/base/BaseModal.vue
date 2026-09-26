@@ -80,11 +80,14 @@ interface Props {
   show?: boolean
   /** A close button in the header, which emits `close` */
   closable?: boolean
+  /** Width for a modal opened by its own `show`; otherwise the modal store's size applies */
+  size?: 'sm' | 'md' | 'lg'
 }
 
 const props = withDefaults(defineProps<Props>(), {
   show: false,
   closable: false,
+  size: undefined,
 })
 
 const slots = useSlots()
@@ -153,7 +156,7 @@ watch(() => props.show, (newVal) => {
 })
 
 const modalSize = computed<string>(() => {
-  const size = modalStore.size
+  const size = props.size ?? modalStore.size
   switch (size) {
     case 'sm':
       return 'md:max-w-2xl'
