@@ -3,6 +3,7 @@
 namespace App\Platform\Mcp\Tools;
 
 use App\Platform\Mcp\McpContext;
+use App\Platform\Operations\Managed\ManagedMode;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Mcp\Server\Tool;
@@ -44,7 +45,7 @@ abstract class McpTool extends Tool
 
     public function shouldRegister(McpContext $context): bool
     {
-        if ($this->writes() && ! $context->canWrite()) {
+        if ($this->writes() && (ManagedMode::readOnly() || ! $context->canWrite())) {
             return false;
         }
 

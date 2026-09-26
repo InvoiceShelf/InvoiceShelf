@@ -3,6 +3,7 @@
 namespace App\Domains\Sales\Console;
 
 use App\Domains\Sales\Models\Estimate;
+use App\Platform\Operations\Managed\ManagedMode;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
@@ -25,6 +26,10 @@ class CheckEstimateStatus extends Command
      */
     public function handle(): void
     {
+        if (ManagedMode::readOnly()) {
+            return;
+        }
+
         $today = Carbon::now();
 
         $expired = Estimate::STATUS_EXPIRED;

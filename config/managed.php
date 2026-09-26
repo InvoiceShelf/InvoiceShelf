@@ -14,6 +14,9 @@
 */
 
 return [
+    'read_only' => (bool) env('INVOICESHELF_READ_ONLY', false),
+    'billing_url' => env('INVOICESHELF_BILLING_URL') ?: null,
+
     'enabled' => (bool) env('INVOICESHELF_MANAGED', false),
 
     // Where the owner asks the provider for help, shown instead of the

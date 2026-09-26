@@ -205,6 +205,17 @@ InvoiceShelf follows TDD development style:
 
 ## Releasing
 
+### Managed read-only access
+
+`INVOICESHELF_READ_ONLY=true` takes effect only with managed mode enabled. `EnsureWritable`
+blocks business HTTP mutations; MCP write tools guard their own POST transport. Reading public
+PDFs must not mark documents viewed or send mail. Login, logout, a user's own password and
+password recovery remain available. `ReadOnlyMailGuard` permits only the two recovery
+notifications, and `ReadOnlyScheduleRunCommand` skips all schedules, including module callbacks.
+Direct recurring/status/catch-up commands also guard themselves. Keep these boundaries covered
+by `ManagedReadOnlyTest`. The UI reads `managed.read_only` and `managed.billing_url` from both
+the web bootstrap and client manifest. This mode does not implement a full database/files export.
+
 Releases are cut by pushing a tag. Nothing is typed into GitHub by hand.
 
 ```bash

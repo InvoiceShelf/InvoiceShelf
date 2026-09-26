@@ -13,6 +13,11 @@ final class ManagedMode
         return (bool) config('managed.enabled');
     }
 
+    public static function readOnly(): bool
+    {
+        return self::enabled() && (bool) config('managed.read_only');
+    }
+
     /**
      * Whether owners may install official modules here: a provider that wants
      * them mounts a writable, per-install Modules directory. Everywhere else
@@ -28,12 +33,14 @@ final class ManagedMode
     /**
      * What the SPA is told about it (window.managed, and the client manifest).
      *
-     * @return array{support_url: string|null, modules_installable: bool}
+     * @return array{support_url: string|null, modules_installable: bool, read_only: bool, billing_url: string|null}
      */
     public static function clientState(): array
     {
         return [
             'support_url' => config('managed.support_url') ?: null,
+            'read_only' => self::readOnly(),
+            'billing_url' => config('managed.billing_url') ?: null,
             'modules_installable' => self::modulesInstallable(),
         ];
     }

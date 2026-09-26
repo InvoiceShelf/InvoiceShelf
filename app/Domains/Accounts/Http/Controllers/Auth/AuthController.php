@@ -7,6 +7,7 @@ use App\Domains\Accounts\Http\Requests\LoginRequest;
 use App\Domains\Accounts\Models\CompanyInvitation;
 use App\Domains\Accounts\Models\User;
 use App\Platform\Http\Controller;
+use App\Platform\Operations\Managed\ManagedMode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -47,7 +48,9 @@ class AuthController extends Controller
 
         // Deliberately reached only once the pair has been proven, so nobody
         // can spend an invitation by guessing at somebody else's password.
-        $this->redeemPendingInvitation($request, $staff);
+        if (! ManagedMode::readOnly()) {
+            $this->redeemPendingInvitation($request, $staff);
+        }
 
         $minted = $staff->createToken($request->device_name);
 

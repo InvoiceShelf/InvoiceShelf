@@ -9,6 +9,7 @@ use App\Domains\Sales\Mail\EstimateViewedMail;
 use App\Domains\Sales\Models\Estimate;
 use App\Platform\Http\Controller;
 use App\Platform\Mail\Models\EmailLog;
+use App\Platform\Operations\Managed\ManagedMode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -66,6 +67,10 @@ class EstimatePdfController extends Controller
      */
     private function recordReading(Estimate $estimate): void
     {
+        if (ManagedMode::readOnly()) {
+            return;
+        }
+
         $unread = [Estimate::STATUS_SENT, Estimate::STATUS_DRAFT];
 
         if (! in_array($estimate->status, $unread)) {
