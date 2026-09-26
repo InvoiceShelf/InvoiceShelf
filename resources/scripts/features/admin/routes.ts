@@ -64,6 +64,14 @@ export const adminRoutes: RouteRecordRaw[] = [
         },
       },
       {
+        path: 'users/create',
+        name: 'admin.users.create',
+        component: AdminUserEditView,
+        meta: {
+          isSuperAdmin: true,
+        },
+      },
+      {
         path: 'users/:id/edit',
         name: 'admin.users.edit',
         component: AdminUserEditView,

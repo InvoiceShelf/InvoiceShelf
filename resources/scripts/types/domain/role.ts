@@ -28,6 +28,8 @@ export interface Role {
   level: number | null
   /** The role preset this is a company's copy of (`owner` included), or null. */
   preset?: string | null
+  /** The company the role belongs to (present on a user's roles). */
+  scope?: number | null
   formatted_created_at: string
   abilities: Ability[]
 }

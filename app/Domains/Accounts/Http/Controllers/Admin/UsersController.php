@@ -2,16 +2,20 @@
 
 namespace App\Domains\Accounts\Http\Controllers\Admin;
 
-use App\Domains\Accounts\Http\Requests\AdminUserUpdateRequest;
+use App\Domains\Accounts\Application\MemberService;
+use App\Domains\Accounts\Http\Requests\AdminUserRequest;
 use App\Domains\Accounts\Http\Resources\UserResource;
 use App\Domains\Accounts\Models\ImpersonationLog;
 use App\Domains\Accounts\Models\User;
 use App\Platform\Http\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\PersonalAccessToken;
 
 class UsersController extends Controller
 {
+    public function __construct(private readonly MemberService $members) {}
+
     public function index(Request $request)
     {
         $limit = $request->has('limit') ? $request->limit : 10;
@@ -31,17 +35,45 @@ class UsersController extends Controller
         return new UserResource($user);
     }
 
-    public function update(AdminUserUpdateRequest $request, User $user)
+    /**
+     * A new account, in the companies listed (possibly none) with a role in
+     * each. Without a company it lands on the page for making its first one.
+     */
+    public function store(AdminUserRequest $request)
     {
-        $data = $request->only(['name', 'email', 'phone']);
+        $user = DB::transaction(fn () => $this->members->create(
+            $request->accountAttributes() + ['creator_id' => $request->user()->id, 'role' => 'user'],
+            $request->validated('companies', []),
+        ));
 
-        if ($request->filled('password')) {
-            $data['password'] = $request->password;
-        }
+        return (new UserResource($user->fresh('companies')))->response()->setStatusCode(201);
+    }
 
-        $user->update($data);
+    /**
+     * The account, and when companies are sent, every company it belongs to
+     * with its role there; companies left off the list are left.
+     */
+    public function update(AdminUserRequest $request, User $user)
+    {
+        DB::transaction(function () use ($request, $user): void {
+            if (! $request->has('companies')) {
+                $user->update($request->accountAttributes());
 
-        return new UserResource($user);
+                return;
+            }
+
+            $companies = $request->validated('companies', []);
+            $managed = $user->companies()->pluck('companies.id')
+                ->merge(array_column($companies, 'id'))
+                ->map(fn ($id) => (int) $id)
+                ->unique()
+                ->values()
+                ->all();
+
+            $this->members->update($user, $request->accountAttributes(), $companies, $managed);
+        });
+
+        return new UserResource($user->fresh('companies'));
     }
 
     public function impersonate(Request $request, User $user)

@@ -5,10 +5,10 @@ namespace App\Domains\Accounts\Http\Requests;
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\User;
 use App\Rules\IdnEmail;
+use App\Rules\RoleExistsInCompany;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
-use Silber\Bouncer\Database\Role;
 
 /**
  * Validates the staff-account form, which serves both filing a new member and
@@ -71,7 +71,7 @@ class MemberRequest extends FormRequest
             'password' => $editing ? ['nullable', 'min:8'] : ['required', 'min:8'],
             'companies' => ['required', 'array', 'min:1'],
             'companies.*.id' => ['required', 'integer', 'distinct', Rule::in($this->managedCompanyIds())],
-            'companies.*.role' => ['required', 'string'],
+            'companies.*.role' => ['required', 'string', new RoleExistsInCompany],
         ];
     }
 
@@ -82,17 +82,6 @@ class MemberRequest extends FormRequest
     {
         return [
             function (Validator $validator): void {
-                foreach ((array) $this->input('companies') as $index => $membership) {
-                    $exists = Role::withoutGlobalScopes()
-                        ->where('name', $membership['role'] ?? null)
-                        ->where('scope', $membership['id'] ?? null)
-                        ->exists();
-
-                    if (! $exists) {
-                        $validator->errors()->add("companies.{$index}.role", 'This role does not exist in that company.');
-                    }
-                }
-
                 if ($this->changesCredentialsOfSharedMember()) {
                     $validator->errors()->add('email', 'This member also belongs to a company you do not own, so their email and password cannot be changed here.');
                 }
