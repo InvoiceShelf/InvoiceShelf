@@ -1,3 +1,4 @@
+import { allowsManagedAbility } from '@/scripts/utils/managed'
 import { ref, computed } from 'vue'
 import type { Ref, ComputedRef } from 'vue'
 import { ABILITIES } from '@/scripts/config/abilities'
@@ -71,15 +72,10 @@ export function usePermissions(): UsePermissionsReturn {
    * @returns True if the user has the ability
    */
   function hasAbility(ability: Ability | Ability[]): boolean {
-    return !!currentAbilities.value.find((ab) => {
-      if (ab.name === '*') return true
-
-      if (typeof ability === 'string') {
-        return ab.name === ability
-      }
-
-      return !!ability.find((p) => ab.name === p)
-    })
+    const requested = (typeof ability === 'string' ? [ability] : ability).filter(allowsManagedAbility)
+    return requested.length > 0 && currentAbilities.value.some((current) =>
+      current.name === '*' || requested.includes(current.name as Ability)
+    )
   }
 
   /**
@@ -89,6 +85,7 @@ export function usePermissions(): UsePermissionsReturn {
    * @returns True if the user has every listed ability
    */
   function hasAllAbilities(abilities: Ability[]): boolean {
+    if (!abilities.every(allowsManagedAbility)) return false
     return abilities.every((ability) =>
       currentAbilities.value.some(
         (ab) => ab.name === '*' || ab.name === ability

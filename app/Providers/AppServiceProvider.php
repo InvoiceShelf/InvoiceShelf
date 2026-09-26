@@ -4,11 +4,16 @@ namespace App\Providers;
 
 use App\Platform\Operations\Demo\DemoMode;
 use App\Platform\Operations\Installation\Application\InstallationState;
+use App\Platform\Operations\Managed\ReadOnlyMailGuard;
+use App\Platform\Operations\Managed\ReadOnlyScheduleRunCommand;
 use App\Platform\Persistence\ModelIdentityMap;
 use App\Support\Bouncer\BouncerDefaultScope;
 use App\Support\Urls\CustomerUrl;
+use Illuminate\Console\Scheduling\ScheduleRunCommand;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Mail\Events\MessageSending;
 use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\URL;
@@ -40,6 +45,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Event::listen(MessageSending::class, ReadOnlyMailGuard::class);
+
         $this->bootHttps();
 
         CustomerUrl::trustPortalHosts();
@@ -70,6 +77,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->extend(ScheduleRunCommand::class, fn () => new ReadOnlyScheduleRunCommand);
         BouncerModels::scope(new BouncerDefaultScope);
     }
 

@@ -4,6 +4,7 @@ namespace App\Domains\Sales\Console;
 
 use App\Domains\Sales\Application\RecurringInvoiceService;
 use App\Domains\Sales\Models\RecurringInvoice;
+use App\Platform\Operations\Managed\ManagedMode;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
@@ -30,6 +31,10 @@ class GenerateRecurringInvoices extends Command
 
     public function handle(RecurringInvoiceService $service): int
     {
+        if (ManagedMode::readOnly()) {
+            return self::SUCCESS;
+        }
+
         $due = 0;
 
         RecurringInvoice::query()

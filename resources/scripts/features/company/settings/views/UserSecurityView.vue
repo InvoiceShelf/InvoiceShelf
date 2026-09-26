@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isReadOnly } from '@/scripts/utils/managed'
 import { ref, reactive, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { minLength, sameAs, helpers } from '@vuelidate/validators'
@@ -85,7 +86,7 @@ async function updatePassword(): Promise<void> {
         </BaseInputGroup>
       </BaseInputGrid>
 
-      <BaseButton :loading="isSaving" :disabled="isSaving" type="submit" class="mt-6">
+      <BaseButton :loading="isSaving" :disabled="isSaving || (isReadOnly() && !form.password)" type="submit" class="mt-6">
         <template #left="slotProps">
           <BaseIcon v-if="!isSaving" name="ArrowDownOnSquareIcon" :class="slotProps.class" />
         </template>
