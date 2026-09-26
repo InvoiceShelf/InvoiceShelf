@@ -2384,6 +2384,7 @@
   },
   "managed": {
     "blocked": "Your hosting provider manages this setting.",
-    "modules_note": "Your hosting provider installs and updates modules for this account."
+    "modules_note": "Your hosting provider installs and updates modules for this account.",
+    "paid_modules_note": "Paid modules are not available on this hosted account yet."
   }
 }
