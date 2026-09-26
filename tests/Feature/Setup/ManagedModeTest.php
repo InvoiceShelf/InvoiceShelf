@@ -3,6 +3,7 @@
 use App\Domains\Accounts\Models\User;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route as Router;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\Sanctum;
@@ -36,9 +37,32 @@ test('the provider-owned settings refuse on a managed install', function (string
     'pdf driver' => ['GET', '/api/v1/pdf/config'],
     'fonts' => ['GET', '/api/v1/fonts/status'],
     'server mail' => ['GET', '/api/v1/mail/config'],
-    'module install' => ['POST', '/api/v1/modules/install'],
     'marketplace pairing' => ['POST', '/api/v1/modules/pairing/start'],
+    'marketplace pairing poll' => ['POST', '/api/v1/modules/pairing/poll'],
 ]);
+
+test('module installs follow the provider: refused without a writable Modules directory', function () {
+    config(['managed.enabled' => true, 'modules.paths.modules' => storage_path('framework/testing/no-such-modules-dir')]);
+
+    $this->postJson('/api/v1/modules/install', ['slug' => 'tasks-projects', 'version' => '1.0.0'])
+        ->assertForbidden()->assertJson(['error' => 'managed_mode']);
+    $this->postJson('/api/v1/modules/SomeModule/uninstall')->assertForbidden();
+    getJson('/api/v1/app/client-manifest')->assertJsonPath('managed.modules_installable', false);
+});
+
+test('module installs follow the provider: open with a writable Modules directory', function () {
+    $dir = storage_path('framework/testing/modules-mount');
+    File::ensureDirectoryExists($dir);
+    config(['managed.enabled' => true, 'modules.paths.modules' => $dir]);
+
+    // Past the gate, the request reaches the controller's own validation.
+    $this->postJson('/api/v1/modules/install', [])->assertUnprocessable();
+    getJson('/api/v1/app/client-manifest')->assertJsonPath('managed.modules_installable', true);
+    // Pairing stays with the provider.
+    $this->postJson('/api/v1/modules/pairing/start')->assertForbidden();
+
+    File::deleteDirectory($dir);
+});
 
 test('everything else stays open on a managed install', function () {
     config(['managed.enabled' => true]);
@@ -75,8 +99,7 @@ test('every provider-owned route carries the managed gate', function () {
 
         return Str::is([
             'api/v1/disks*', 'api/v1/disk/*', 'api/v1/backups*', 'api/v1/download-backup',
-            'api/v1/pdf/*', 'api/v1/fonts/*', 'api/v1/mail/*',
-            'api/v1/modules/install', 'api/v1/modules/{module}/uninstall', 'api/v1/modules/pairing/*',
+            'api/v1/pdf/*', 'api/v1/fonts/*', 'api/v1/mail/*', 'api/v1/modules/pairing/*',
         ], $uri) || ($uri === 'api/v1/modules/pairing' && in_array('DELETE', $route->methods(), true));
     });
 
@@ -84,5 +107,12 @@ test('every provider-owned route carries the managed gate', function () {
 
     foreach ($locked as $route) {
         expect($route->gatherMiddleware())->toContain('not-managed');
+    }
+
+    $installs = collect(Router::getRoutes()->getRoutes())
+        ->filter(fn (Route $route) => Str::is(['api/v1/modules/install', 'api/v1/modules/{module}/uninstall'], $route->uri()));
+    expect($installs)->toHaveCount(2);
+    foreach ($installs as $route) {
+        expect($route->gatherMiddleware())->toContain('modules-installable');
     }
 });

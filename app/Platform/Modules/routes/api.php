@@ -14,11 +14,15 @@ Route::middleware(['api', 'auth:sanctum', 'company'])
             Route::get('/', [ModulesController::class, 'index']);
             Route::get('/pairing', [MarketplacePairingController::class, 'status']);
 
-            // On a managed install the provider installs and pairs modules.
+            // On a managed install the provider pairs the install with the
+            // marketplace; owners install official modules only when the
+            // provider mounts a writable Modules directory.
             Route::middleware('not-managed')->group(function () {
                 Route::post('/pairing/start', [MarketplacePairingController::class, 'start']);
                 Route::post('/pairing/poll', [MarketplacePairingController::class, 'poll']);
                 Route::delete('/pairing', [MarketplacePairingController::class, 'disconnect']);
+            });
+            Route::middleware('modules-installable')->group(function () {
                 Route::post('/{module}/uninstall', [ModuleInstallationController::class, 'uninstall']);
                 Route::post('/install', [ModuleInstallationController::class, 'install']);
             });

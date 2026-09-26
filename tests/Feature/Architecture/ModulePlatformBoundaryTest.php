@@ -51,23 +51,29 @@ test('the module platform preserves its public routes and middleware', function 
         'GET modules/styles/{style}',
     ])->sort()->values()->all());
 
-    // Installing, removing and pairing belong to the hosting provider on a
-    // managed install.
+    // Pairing belongs to the hosting provider on a managed install; installing
+    // and removing are open there only with a writable Modules directory.
     $providerOwned = [
         'POST api/v1/modules/pairing/start',
         'POST api/v1/modules/pairing/poll',
         'DELETE api/v1/modules/pairing',
+    ];
+    $installs = [
         'POST api/v1/modules/{module}/uninstall',
         'POST api/v1/modules/install',
     ];
 
-    $routes->each(function (IlluminateRoute $route) use ($providerOwned): void {
+    $routes->each(function (IlluminateRoute $route) use ($providerOwned, $installs): void {
         $expected = str_starts_with($route->uri(), 'api/')
             ? ['api', 'auth:sanctum', 'company']
             : ['web'];
 
-        if (in_array($route->methods()[0].' '.$route->uri(), $providerOwned, true)) {
+        $key = $route->methods()[0].' '.$route->uri();
+        if (in_array($key, $providerOwned, true)) {
             $expected[] = 'not-managed';
+        }
+        if (in_array($key, $installs, true)) {
+            $expected[] = 'modules-installable';
         }
 
         expect($route->middleware())->toBe($expected)

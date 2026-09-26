@@ -53,8 +53,9 @@ fi
 
 # Marketplace installs unpack modules into Modules/, which the compose examples
 # mount as a named volume. An unwritable directory does not stop the app from
-# serving, so warn instead of aborting, with the same fix as for storage/. A
-# managed install cannot install modules, so its Modules/ stays read-only.
+# serving, so warn instead of aborting, with the same fix as for storage/. On a
+# managed install the provider decides: it mounts a writable Modules/ when its
+# owners may install official modules, and leaves it read-only when not.
 if [ "$MANAGED" = "true" ]; then
     :
 elif ! mkdir -p Modules 2>/dev/null || ! touch Modules/.writable 2>/dev/null; then
@@ -178,6 +179,11 @@ fi
 
 echo "**** Running migrations (if app is installed) ****"
 if ./artisan migrate:status > /dev/null 2>&1; then
+    # A module built for another InvoiceShelf version is disabled before the
+    # migrations run, so an upgrade never migrates or boots it. Enabled
+    # modules' migrations run with the app's below.
+    ./artisan modules:reconcile || true
+
     ./artisan migrate --force
 
     # Reseals the marketplace credential when the key has just moved off the
