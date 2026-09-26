@@ -2,7 +2,7 @@
     "openapi": "3.1.0",
     "info": {
         "title": "InvoiceShelf API",
-        "version": "3.0.0-alpha.9",
+        "version": "3.0.0-alpha.10",
         "description": "REST API for InvoiceShelf \u2014 open-source invoicing & expense tracking. Authenticate with a Sanctum personal access token (Authorization: Bearer <token>). Company-scoped endpoints additionally require a `company` header carrying the company ID."
     },
     "servers": [
@@ -1582,10 +1582,14 @@
                                                         "string",
                                                         "null"
                                                     ]
+                                                },
+                                                "modules_installable": {
+                                                    "type": "boolean"
                                                 }
                                             },
                                             "required": [
-                                                "support_url"
+                                                "support_url",
+                                                "modules_installable"
                                             ]
                                         },
                                         "source_url": {
