@@ -2,7 +2,7 @@
     "openapi": "3.1.0",
     "info": {
         "title": "InvoiceShelf API",
-        "version": "3.0.0-alpha.8",
+        "version": "3.0.0-alpha.9",
         "description": "REST API for InvoiceShelf \u2014 open-source invoicing & expense tracking. Authenticate with a Sanctum personal access token (Authorization: Bearer <token>). Company-scoped endpoints additionally require a `company` header carrying the company ID."
     },
     "servers": [
@@ -17,6 +17,70 @@
         }
     ],
     "paths": {
+        "/super-admin/abilities": {
+            "get": {
+                "operationId": "admin.abilities",
+                "tags": [
+                    "Abilities"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "abilities": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "ability": {
+                                                        "type": "string"
+                                                    },
+                                                    "model": {
+                                                        "type": [
+                                                            "object",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "depends_on": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "owner_only": {
+                                                        "type": "boolean"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "name",
+                                                    "ability",
+                                                    "model",
+                                                    "depends_on",
+                                                    "owner_only"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "abilities"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/abilities": {
             "get": {
                 "operationId": "company.abilities",
@@ -1817,6 +1881,78 @@
                     },
                     "403": {
                         "$ref": "#/components/responses/AuthorizationException"
+                    }
+                }
+            }
+        },
+        "/super-admin/companies/{company}/roles": {
+            "get": {
+                "operationId": "companies.roles",
+                "summary": "The roles a user can hold in a company, for the super administrator's\nmembership picker: Owner, then the presets, then the company's own",
+                "tags": [
+                    "Companies"
+                ],
+                "parameters": [
+                    {
+                        "name": "company",
+                        "in": "path",
+                        "required": true,
+                        "description": "The company ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "title": {
+                                                        "type": "string"
+                                                    },
+                                                    "preset": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "name",
+                                                    "title",
+                                                    "preset"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     }
                 }
             }
@@ -14102,6 +14238,196 @@
                 }
             }
         },
+        "/super-admin/role-presets": {
+            "get": {
+                "operationId": "role-presets.index",
+                "tags": [
+                    "RolePresets"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `RolePresetResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/RolePresetResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "role-presets.store",
+                "tags": [
+                    "RolePresets"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RolePresetRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "`RolePresetResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/RolePresetResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    }
+                }
+            }
+        },
+        "/super-admin/role-presets/{rolePreset}": {
+            "put": {
+                "operationId": "role-presets.update",
+                "tags": [
+                    "RolePresets"
+                ],
+                "parameters": [
+                    {
+                        "name": "rolePreset",
+                        "in": "path",
+                        "required": true,
+                        "description": "The role preset ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RolePresetRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`RolePresetResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "anyOf": [
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "data": {
+                                                    "$ref": "#/components/schemas/RolePresetResource"
+                                                }
+                                            },
+                                            "required": [
+                                                "data"
+                                            ]
+                                        },
+                                        {
+                                            "type": "object"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "role-presets.destroy",
+                "tags": [
+                    "RolePresets"
+                ],
+                "parameters": [
+                    {
+                        "name": "rolePreset",
+                        "in": "path",
+                        "required": true,
+                        "description": "The role preset ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "success"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/roles": {
             "get": {
                 "operationId": "roles.index",
@@ -14268,7 +14594,7 @@
             },
             "put": {
                 "operationId": "roles.update",
-                "summary": "Rename a role and rewrite its grants",
+                "summary": "Rename a role and rewrite its grants. The title is derived from the name\nagain, as Bouncer does on create, so the member pickers show the new one",
                 "tags": [
                     "Roles"
                 ],
@@ -16851,6 +17177,52 @@
                         "$ref": "#/components/responses/AuthenticationException"
                     }
                 }
+            },
+            "post": {
+                "operationId": "users.store",
+                "summary": "A new account, in the companies listed (possibly none) with a role in\neach. Without a company it lands on the page for making its first one",
+                "tags": [
+                    "Users"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AdminUserRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "`UserResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    }
+                }
             }
         },
         "/super-admin/users/{user}": {
@@ -16899,6 +17271,7 @@
             },
             "put": {
                 "operationId": "users.update",
+                "summary": "The account, and when companies are sent, every company it belongs to\nwith its role there; companies left off the list are left",
                 "tags": [
                     "Users"
                 ],
@@ -16918,7 +17291,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/AdminUserUpdateRequest"
+                                "$ref": "#/components/schemas/AdminUserRequest"
                             }
                         }
                     }
@@ -17249,8 +17622,9 @@
                 ],
                 "title": "AdminCompanyUpdateRequest"
             },
-            "AdminUserUpdateRequest": {
+            "AdminUserRequest": {
                 "type": "object",
+                "description": "A user as the super administrator creates or edits one in Administration \u2192\nUsers: the account, whether it is a super administrator, and, when sent,\nevery company it belongs to with the role it holds there.\n\nSomeone who owns a company stays in it as its owner, and nobody can take\naway their own super administrator access.",
                 "properties": {
                     "name": {
                         "type": "string"
@@ -17265,18 +17639,38 @@
                         ]
                     },
                     "password": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
+                        "type": "string",
                         "minLength": 8
+                    },
+                    "is_super_admin": {
+                        "type": "boolean"
+                    },
+                    "companies": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                },
+                                "role": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "id",
+                                "role"
+                            ]
+                        }
                     }
                 },
                 "required": [
                     "name",
-                    "email"
+                    "email",
+                    "password",
+                    "companies"
                 ],
-                "title": "AdminUserUpdateRequest"
+                "title": "AdminUserRequest"
             },
             "App.Domains.Accounts.Http.Resources.CustomerPortal.CompanyResource": {
                 "type": "object",
@@ -19065,12 +19459,6 @@
                     "owner": {
                         "$ref": "#/components/schemas/UserResource"
                     },
-                    "roles": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/RoleResource"
-                        }
-                    },
                     "user_role": {
                         "type": [
                             "string",
@@ -19096,7 +19484,6 @@
                     "slug",
                     "created_at",
                     "updated_at",
-                    "roles",
                     "user_role"
                 ],
                 "title": "CompanyResource"
@@ -23816,6 +24203,110 @@
                 ],
                 "title": "ReplacePaymentAllocationsRequest"
             },
+            "RolePresetRequest": {
+                "type": "object",
+                "description": "A role preset as the super administrator submits it: a title, and ability\nnames from the catalogue (or ones the preset already holds from a module\nthat is switched off).",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "abilities": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "view-customer",
+                                "create-customer",
+                                "edit-customer",
+                                "delete-customer",
+                                "view-item",
+                                "create-item",
+                                "edit-item",
+                                "delete-item",
+                                "view-tax-type",
+                                "create-tax-type",
+                                "edit-tax-type",
+                                "delete-tax-type",
+                                "view-estimate",
+                                "create-estimate",
+                                "edit-estimate",
+                                "delete-estimate",
+                                "send-estimate",
+                                "view-invoice",
+                                "create-invoice",
+                                "edit-invoice",
+                                "delete-invoice",
+                                "send-invoice",
+                                "view-recurring-invoice",
+                                "create-recurring-invoice",
+                                "edit-recurring-invoice",
+                                "delete-recurring-invoice",
+                                "view-payment",
+                                "create-payment",
+                                "edit-payment",
+                                "delete-payment",
+                                "send-payment",
+                                "view-expense",
+                                "create-expense",
+                                "edit-expense",
+                                "delete-expense",
+                                "view-custom-field",
+                                "create-custom-field",
+                                "edit-custom-field",
+                                "delete-custom-field",
+                                "view-financial-reports",
+                                "view-exchange-rate-provider",
+                                "create-exchange-rate-provider",
+                                "edit-exchange-rate-provider",
+                                "delete-exchange-rate-provider",
+                                "dashboard",
+                                "view-all-notes",
+                                "manage-all-notes"
+                            ]
+                        },
+                        "minItems": 1
+                    }
+                },
+                "required": [
+                    "title",
+                    "abilities"
+                ],
+                "title": "RolePresetRequest"
+            },
+            "RolePresetResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "key": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "is_owner": {
+                        "type": "boolean"
+                    },
+                    "role_name": {
+                        "type": "string"
+                    },
+                    "abilities": {
+                        "type": "array",
+                        "items": {}
+                    }
+                },
+                "required": [
+                    "id",
+                    "key",
+                    "title",
+                    "is_owner",
+                    "role_name",
+                    "abilities"
+                ],
+                "title": "RolePresetResource"
+            },
             "RoleRequest": {
                 "type": "object",
                 "description": "Payload rules for defining or renaming a company role.\n\nRole names are unique per company rather than per install, so the uniqueness\ncheck is narrowed by hand to the scope named in the `company` header. A\nrename excuses the role from its own name, but only when the verb is PUT --\nkept as is, an otherwise identical PATCH collides with the stored name.",
@@ -23851,6 +24342,13 @@
                     "level": {
                         "type": "string"
                     },
+                    "preset": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "The preset this role is a company's copy of, if any: read only here."
+                    },
                     "formatted_created_at": {
                         "type": "string"
                     },
@@ -23863,6 +24361,7 @@
                     "name",
                     "title",
                     "level",
+                    "preset",
                     "formatted_created_at",
                     "abilities"
                 ],
