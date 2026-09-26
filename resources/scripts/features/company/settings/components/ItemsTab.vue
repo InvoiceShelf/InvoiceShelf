@@ -4,6 +4,8 @@ import { useI18n } from 'vue-i18n'
 import { useModalStore } from '@/scripts/stores/modal.store'
 import { useDialogStore } from '@/scripts/stores/dialog.store'
 import { itemService } from '@/scripts/api/services/item.service'
+import { useUserStore } from '@/scripts/stores/user.store'
+import { ABILITIES } from '@/scripts/config/abilities'
 import ItemUnitModal from './ItemUnitModal.vue'
 
 interface TableColumn {
@@ -41,6 +43,12 @@ const { t } = useI18n()
 const table = ref<{ refresh: () => void } | null>(null)
 
 const modalStore = useModalStore()
+const userStore = useUserStore()
+// Adding a unit takes create or edit on items, changing edit; seeing them only view.
+const canEdit = computed<boolean>(() => userStore.hasAbilities(ABILITIES.EDIT_ITEM))
+const canAdd = computed<boolean>(
+  () => canEdit.value || userStore.hasAbilities(ABILITIES.CREATE_ITEM)
+)
 const dialogStore = useDialogStore()
 
 const columns = computed<TableColumn[]>(() => [
@@ -119,7 +127,7 @@ function removeItemUnit(row: RowData): void {
 <template>
   <ItemUnitModal />
 
-  <div class="flex flex-wrap justify-end mt-2 lg:flex-nowrap">
+  <div v-if="canAdd" class="flex flex-wrap justify-end mt-2 lg:flex-nowrap">
     <BaseButton variant="primary-outline" @click="addItemUnit">
       <template #left="slotProps">
         <BaseIcon :class="slotProps.class" name="PlusIcon" />
@@ -130,7 +138,7 @@ function removeItemUnit(row: RowData): void {
 
   <BaseTable ref="table" class="mt-10" :data="fetchData" :columns="columns">
     <template #cell-actions="{ row }">
-      <BaseDropdown>
+      <BaseDropdown v-if="canEdit">
         <template #activator>
           <div class="inline-block">
             <BaseIcon name="EllipsisHorizontalIcon" class="text-muted" />
