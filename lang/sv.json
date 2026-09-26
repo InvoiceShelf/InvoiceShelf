@@ -2384,6 +2384,7 @@
   },
   "managed": {
     "blocked": "Din driftleverantör hanterar den här inställningen.",
-    "modules_note": "Din driftleverantör installerar och uppdaterar moduler för det här kontot."
+    "modules_note": "Din driftleverantör installerar och uppdaterar moduler för det här kontot.",
+    "paid_modules_note": "Paid modules are not available on this hosted account yet."
   }
 }
