@@ -22,6 +22,11 @@
             <span id="make-recurring-label" class="text-sm font-medium text-heading whitespace-nowrap">{{ $t('recurring_invoices.make_recurring') }}</span>
           </div>
 
+          <ExtensionSlot
+            name="invoice-create-actions"
+            :context="invoiceCreateContext"
+          />
+
           <router-link
             v-if="isEdit"
             :to="`/invoices/pdf/${invoiceStore.newInvoice.unique_hash}`"
@@ -73,6 +78,13 @@
         <BaseSwitch v-model="isRecurring" aria-labelledby="make-recurring-sheet-label" />
       </label>
 
+      <div v-if="isPhone && !isEdit" class="flex items-center px-4 py-3 mt-3 border glass rounded-xl">
+        <ExtensionSlot
+          name="invoice-create-actions"
+          :context="invoiceCreateContext"
+        />
+      </div>
+
       <!-- Select Customer & Basic Fields -->
       <InvoiceBasicFields
         :v="v$"
@@ -90,6 +102,11 @@
           :tax-included-setting="companyStore.selectedCompanySettings.tax_included"
           :store="invoiceStore"
           store-prop="newInvoice"
+        />
+
+        <ExtensionSlot
+          name="invoice-create-sections"
+          :context="invoiceCreateContext"
         />
 
         <!-- Invoice Footer Section -->
@@ -150,6 +167,11 @@ import {
   handleApiError,
   getErrorTranslationKey,
 } from '@/scripts/utils/error-handling'
+import ExtensionSlot from '@/scripts/extensions/ExtensionSlot.vue'
+import {
+  runInvoiceCreateSaveHooks,
+} from '@/scripts/extensions/runtime'
+import type { InvoiceCreateContext, InvoiceExtensionRecord } from '@/scripts/extensions/types'
 import InvoiceBasicFields from '../components/InvoiceBasicFields.vue'
 import {
   DocumentItemsTable,
@@ -159,10 +181,12 @@ import {
   TemplateSelectButton,
   SelectTemplateModal,
 } from '../../../shared/document-form'
+import { useUserStore } from '@/scripts/stores/user.store'
 
 const invoiceStore = useInvoiceStore()
 const recurringInvoiceStore = useRecurringInvoiceStore()
 const companyStore = useCompanyStore()
+const userStore = useUserStore()
 const notificationStore = useNotificationStore()
 const { t } = useI18n()
 const route = useRoute()
@@ -199,6 +223,16 @@ const isEdit = computed<boolean>(() =>
 const isRecurringEdit = computed<boolean>(() =>
   route.name === 'recurring-invoices.edit',
 )
+
+const invoiceCreateContext: InvoiceCreateContext = {
+  isEdit: () => isEdit.value,
+  isRecurring: () => isRecurring.value,
+  can: (ability: string | string[]) => userStore.hasAbilities(ability),
+  total: () => invoiceStore.getTotal,
+  currency: () => invoiceStore.newInvoice.selectedCurrency,
+  invoiceDate: () => invoiceStore.newInvoice.invoice_date || null,
+  dueDate: () => invoiceStore.newInvoice.due_date || null,
+}
 
 const rules = computed(() => {
   if (isRecurring.value) {
@@ -455,7 +489,14 @@ async function submitForm(): Promise<void> {
         : invoiceStore.addInvoice
 
       const response = await action(data)
-      router.push(`/admin/invoices/${response.data.data.id}/view`)
+      const handled = await runInvoiceCreateSaveHooks(
+        response.data.data as unknown as InvoiceExtensionRecord,
+        invoiceCreateContext,
+      )
+
+      if (!handled) {
+        router.push(`/admin/invoices/${response.data.data.id}/view`)
+      }
     }
   } catch (err: unknown) {
     const normalized = handleApiError(err)

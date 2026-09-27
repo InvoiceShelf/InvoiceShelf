@@ -52,4 +52,4 @@ Deplay-Changes-to-Docker.ps1
 deploy-payment-plan-test.ps1
 deploy-payment-plan.ps1
 .gitmodules
-/docker
+/docker/
