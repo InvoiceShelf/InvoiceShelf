@@ -1,9 +1,15 @@
-export type {
+import type {
   BootstrapCompletedEvent,
   CompanyChangeEvent,
   ComponentExtensionContribution,
+  CreateActionContribution,
   ExtensionContribution,
   ExtensionVisibilityPredicate,
+  InvoiceActionContext,
+  InvoiceCreateContext,
+  InvoiceCreateSaveHookContribution,
+  InvoiceDetailContext,
+  InvoiceExtensionRecord,
   InvoiceShelfExtensionApi,
   InvoiceShelfExtensionEvents,
   PageChildContribution,
@@ -13,3 +19,25 @@ export type {
   SettingsNavigationContribution,
   SettingsPageContribution,
 } from '../../../vendor/invoiceshelf/modules/frontend/index'
+
+export type {
+  BootstrapCompletedEvent,
+  CompanyChangeEvent,
+  ComponentExtensionContribution,
+  CreateActionContribution,
+  ExtensionContribution,
+  ExtensionVisibilityPredicate,
+  InvoiceActionContext,
+  InvoiceCreateContext,
+  InvoiceCreateSaveHookContribution,
+  InvoiceDetailContext,
+  InvoiceExtensionRecord,
+  InvoiceShelfExtensionApi,
+  InvoiceShelfExtensionEvents,
+  PageChildContribution,
+  PageContribution,
+  PageRouteMeta,
+  RichEditorContext,
+  SettingsNavigationContribution,
+  SettingsPageContribution,
+}
