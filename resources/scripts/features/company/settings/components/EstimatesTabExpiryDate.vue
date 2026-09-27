@@ -1,16 +1,18 @@
 <script setup lang="ts">
+import { useProposalContext, useProposalSettings } from '@/scripts/features/company/estimates/use-proposal-context'
 import { ref, computed, reactive, inject } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { useCompanyStore } from '@/scripts/stores/company.store'
 import { numeric, helpers, requiredIf } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
+
+const { t } = useProposalContext()
+const { settings, updateSettings } = useProposalSettings()
+
 
 interface Utils {
   mergeSettings: (target: Record<string, unknown>, source: Record<string, unknown>) => void
 }
 
-const { t } = useI18n()
-const companyStore = useCompanyStore()
+
 const utils = inject<Utils>('utils')!
 
 const isSaving = ref(false)
@@ -25,7 +27,7 @@ const expiryDateSettings = reactive<{
 
 utils.mergeSettings(
   expiryDateSettings as unknown as Record<string, unknown>,
-  { ...companyStore.selectedCompanySettings }
+  { ...settings }
 )
 
 const expiryDateAutoField = computed<boolean>({
@@ -72,7 +74,7 @@ async function submitForm() {
     delete data.settings.estimate_expiry_date_days
   }
 
-  await companyStore.updateCompanySettings({
+  await updateSettings({
     data,
     message: 'settings.customization.estimates.estimate_settings_updated',
   })
@@ -86,19 +88,19 @@ async function submitForm() {
 <template>
   <form @submit.prevent="submitForm">
     <h3 class="text-heading text-lg font-medium">
-      {{ $t('settings.customization.estimates.expiry_date_setting') }}
+      {{ t('settings.customization.estimates.expiry_date_setting') }}
     </h3>
     <p class="mt-1 text-sm text-muted mb-2">
-      {{ $t('settings.customization.estimates.expiry_date_description') }}
+      {{ t('settings.customization.estimates.expiry_date_description') }}
     </p>
 
     <BaseSwitchSection
       v-model="expiryDateAutoField"
       :title="
-        $t('settings.customization.estimates.set_expiry_date_automatically')
+        t('settings.customization.estimates.set_expiry_date_automatically')
       "
       :description="
-        $t(
+        t(
           'settings.customization.estimates.set_expiry_date_automatically_description'
         )
       "
@@ -106,7 +108,7 @@ async function submitForm() {
 
     <BaseInputGroup
       v-if="expiryDateAutoField"
-      :label="$t('settings.customization.estimates.expiry_date_days')"
+      :label="t('settings.customization.estimates.expiry_date_days')"
       :error="
         v$.expiryDateSettings.estimate_expiry_date_days.$error &&
         v$.expiryDateSettings.estimate_expiry_date_days.$errors[0].$message
@@ -133,7 +135,7 @@ async function submitForm() {
       <template #left="slotProps">
         <BaseIcon v-if="!isSaving" :class="slotProps.class" name="ArrowDownOnSquareIcon" />
       </template>
-      {{ $t('settings.customization.save') }}
+      {{ t('settings.customization.save') }}
     </BaseButton>
   </form>
 </template>

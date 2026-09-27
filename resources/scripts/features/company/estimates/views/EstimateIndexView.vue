@@ -1,9 +1,9 @@
 <template>
   <BasePage>
-    <BasePageHeader :title="$t('estimates.title')">
+    <BasePageHeader :title="t('estimates.title')">
       <BaseBreadcrumb>
-        <BaseBreadcrumbItem :title="$t('general.home')" to="dashboard" />
-        <BaseBreadcrumbItem :title="$t('estimates.estimate', 2)" to="#" active />
+        <BaseBreadcrumbItem :title="t('general.home')" to="dashboard" />
+        <BaseBreadcrumbItem :title="t('estimates.estimate', 2)" to="#" active />
       </BaseBreadcrumb>
 
       <template #actions>
@@ -13,7 +13,7 @@
           :aria-expanded="showFilters"
           @click="toggleFilter"
         >
-          {{ $t('general.filter') }}
+          {{ t('general.filter') }}
           <template #right="slotProps">
             <BaseIcon
               v-if="!showFilters"
@@ -24,12 +24,12 @@
           </template>
         </BaseButton>
 
-        <router-link v-if="canCreate" to="estimates/create" class="inline-flex rounded-lg ms-4">
+        <router-link v-if="canCreate" :to="`${basePath}/create`" class="inline-flex rounded-lg ms-4">
           <BaseButton tag="span" variant="primary">
             <template #left="slotProps">
               <BaseIcon name="PlusIcon" :class="slotProps.class" />
             </template>
-            {{ $t('estimates.new_estimate') }}
+            {{ t('estimates.new_estimate') }}
           </BaseButton>
         </router-link>
       </template>
@@ -41,27 +41,27 @@
       :row-on-xl="true"
       @clear="clearFilter"
     >
-      <BaseInputGroup :label="$t('customers.customer', 1)">
+      <BaseInputGroup :label="t('customers.customer', 1)">
         <BaseCustomerSelectInput
           v-model="filters.customer_id"
-          :placeholder="$t('customers.type_or_click')"
+          :placeholder="t('customers.type_or_click')"
           value-prop="id"
           label="name"
         />
       </BaseInputGroup>
 
-      <BaseInputGroup :label="$t('estimates.status')">
+      <BaseInputGroup :label="t('estimates.status')">
         <BaseMultiselect
           v-model="filters.status"
           :options="statusOptions"
           searchable
-          :placeholder="$t('general.select_a_status')"
+          :placeholder="t('general.select_a_status')"
           @update:model-value="setActiveTab"
           @remove="clearStatusSearch()"
         />
       </BaseInputGroup>
 
-      <BaseInputGroup :label="$t('general.from')">
+      <BaseInputGroup :label="t('general.from')">
         <BaseDatePicker
           v-model="filters.from_date"
           :calendar-button="true"
@@ -73,7 +73,7 @@
         class="hidden w-4 h-px mb-5 shrink-0 bg-line-strong xl:block"
       />
 
-      <BaseInputGroup :label="$t('general.to')">
+      <BaseInputGroup :label="t('general.to')">
         <BaseDatePicker
           v-model="filters.to_date"
           :calendar-button="true"
@@ -81,7 +81,7 @@
         />
       </BaseInputGroup>
 
-      <BaseInputGroup :label="$t('estimates.estimate_number')">
+      <BaseInputGroup :label="t('estimates.estimate_number')">
         <BaseInput v-model="filters.estimate_number">
           <template #left="slotProps">
             <BaseIcon name="HashtagIcon" :class="slotProps.class" />
@@ -95,18 +95,18 @@
       v-show="showEmptyScreen"
       art="estimate"
       :ghost="6"
-      :title="$t('estimates.no_estimates')"
-      :description="$t('estimates.empty_description')"
+      :title="t('estimates.no_estimates')"
+      :description="t('estimates.empty_description')"
     >
       <template v-if="canCreate" #actions>
         <BaseButton
           variant="primary"
-          @click="$router.push('/admin/estimates/create')"
+          @click="$router.push(`${basePath}/create`)"
         >
           <template #left="slotProps">
             <BaseIcon name="PlusIcon" :class="slotProps.class" />
           </template>
-          {{ $t('estimates.add_new_estimate') }}
+          {{ t('estimates.add_new_estimate') }}
         </BaseButton>
       </template>
     </BaseEmptyPlaceholder>
@@ -114,15 +114,15 @@
     <!-- Table -->
     <div v-show="!showEmptyScreen" class="relative flex flex-col gap-4 table-container">
       <BaseTabGroup @change="setStatusFilter">
-        <BaseTab :title="$t('general.all')" filter="" />
-        <BaseTab :title="$t('general.draft')" filter="DRAFT" />
-        <BaseTab :title="$t('general.sent')" filter="SENT" />
+        <BaseTab :title="t('general.all')" filter="" />
+        <BaseTab :title="t('general.draft')" filter="DRAFT" />
+        <BaseTab :title="t('general.sent')" filter="SENT" />
       </BaseTabGroup>
 
       <BaseTable
         ref="tableRef"
         :key="tableKey"
-        :no-results-message="$t('estimates.no_matching_estimates')"
+        :no-results-message="t('estimates.no_matching_estimates')"
         :data="fetchData"
         :columns="estimateColumns"
         :placeholder-count="estimateStore.totalEstimateCount >= 20 ? 10 : 5"
@@ -134,7 +134,7 @@
             <template #left="slotProps">
               <BaseIcon name="TrashIcon" :class="slotProps.class" />
             </template>
-            {{ $t('general.delete') }}
+            {{ t('general.delete') }}
           </BaseButton>
         </template>
 
@@ -142,7 +142,7 @@
           <div class="absolute items-center start-6 top-3.5 select-none">
             <BaseCheckbox
               v-model="estimateStore.selectAllField"
-              :aria-label="$t('general.select_all')"
+              :aria-label="t('general.select_all')"
               variant="primary"
               @change="estimateStore.selectAllEstimates"
             />
@@ -154,7 +154,7 @@
             <BaseCheckbox
               :id="row.id"
               v-model="selectField"
-              :aria-label="$t('general.select_named', { name: row.data.estimate_number })"
+              :aria-label="t('general.select_named', { name: row.data.estimate_number })"
               :value="row.data.id"
             />
           </div>
@@ -218,9 +218,8 @@
 <script setup lang="ts">
 import type { ColumnDef } from '@/scripts/components/table/DataTable.vue'
 import { computed, onUnmounted, reactive, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { debouncedWatch } from '@vueuse/core'
-import { useEstimateStore } from '../store'
+import { useProposalStore, useProposalContext } from '../use-proposal-context'
 import EstimateDropdown from '../components/EstimateDropdown.vue'
 import SendEstimateModal from '../components/SendEstimateModal.vue'
 import { useUserStore } from '../../../../stores/user.store'
@@ -235,6 +234,8 @@ interface Props {
   canSend?: boolean
 }
 
+const { kind, t, basePath } = useProposalContext()
+
 const props = withDefaults(defineProps<Props>(), {
   canCreate: false,
   canEdit: false,
@@ -244,17 +245,17 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const ABILITIES = {
-  CREATE: 'create-estimate',
-  EDIT: 'edit-estimate',
-  VIEW: 'view-estimate',
-  DELETE: 'delete-estimate',
-  SEND: 'send-estimate',
+  CREATE: `create-${kind}`,
+  EDIT: `edit-${kind}`,
+  VIEW: `view-${kind}`,
+  DELETE: `delete-${kind}`,
+  SEND: `send-${kind}`,
 } as const
 
-const estimateStore = useEstimateStore()
+const estimateStore = useProposalStore()
 const userStore = useUserStore()
 const dialogStore = useDialogStore()
-const { t } = useI18n()
+
 
 const tableRef = ref<{ refresh: () => void } | null>(null)
 const tableKey = ref<number>(0)
@@ -367,7 +368,7 @@ const estimateColumns = computed<TableColumn[]>(() => [
 ])
 
 function estimateLink(row: { id?: number | string }): string {
-  return `/admin/estimates/${row.id}/view`
+  return `${basePath}/${row.id}/view`
 }
 
 debouncedWatch(filters, () => setFilters(), { debounce: 500 })

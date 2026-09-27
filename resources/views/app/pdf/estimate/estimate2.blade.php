@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>@lang('pdf_estimate_label') - {{ $estimate->estimate_number }}</title>
+    <title>@lang('pdf_'.$estimate->documentKind().'_label') - {{ $estimate->documentNumber }}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 @include("app.pdf.partials.fonts")
 
@@ -449,9 +449,9 @@
                     </td>
                 @endif
                 <td width="40%" class="header-section-right estimate-details-container">
-                    <h1>@lang('pdf_estimate_label')</h1>
-                    <h4>{{ $estimate->estimate_number }}</h4>
-                    <h4>{{ $estimate->formattedEstimateDate }}</h4>
+                    <h1>@lang('pdf_'.$estimate->documentKind().'_label')</h1>
+                    <h4>{{ $estimate->documentNumber }}</h4>
+                    <h4>{{ $estimate->formattedDocumentDate }}</h4>
                     @include('app.pdf.partials.document-custom-fields-stacked', ['document' => $estimate])
                 </td>
             </tr>

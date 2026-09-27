@@ -4,6 +4,8 @@ use App\Domains\Sales\Http\Controllers\Company\EstimatesController;
 use App\Domains\Sales\Http\Controllers\Company\EstimateTemplatesController;
 use App\Domains\Sales\Http\Controllers\Company\InvoicesController;
 use App\Domains\Sales\Http\Controllers\Company\InvoiceTemplatesController;
+use App\Domains\Sales\Http\Controllers\Company\QuotesController;
+use App\Domains\Sales\Http\Controllers\Company\QuoteTemplatesController;
 use App\Domains\Sales\Http\Controllers\Company\RecurringInvoiceController;
 use App\Domains\Sales\Http\Controllers\Company\RecurringInvoiceFrequencyController;
 use App\Domains\Sales\Http\Controllers\Company\SerialNumberController;
@@ -47,3 +49,17 @@ Route::prefix('estimates')->group(function (): void {
     Route::post('delete', [EstimatesController::class, 'delete']);
 });
 Route::apiResources(['estimates' => EstimatesController::class]);
+
+Route::get('/quotes/{quote}/send/preview', [QuotesController::class, 'sendPreview']);
+Route::post('/quotes/{quote}/send', [QuotesController::class, 'send']);
+Route::post('/quotes/{quote}/clone', [QuotesController::class, 'clone']);
+Route::post('/quotes/{quote}/status', [QuotesController::class, 'changeStatus']);
+Route::post('/quotes/{quote}/convert-to-invoice', [QuotesController::class, 'convertToInvoice']);
+
+// As for invoices, ahead of the resource — here the templates listing comes
+// first, which is the order this file has always used for offers.
+Route::prefix('quotes')->group(function (): void {
+    Route::get('templates', QuoteTemplatesController::class);
+    Route::post('delete', [QuotesController::class, 'delete']);
+});
+Route::apiResources(['quotes' => QuotesController::class]);

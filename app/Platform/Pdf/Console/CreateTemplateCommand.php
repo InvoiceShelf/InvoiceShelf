@@ -28,7 +28,7 @@ class CreateTemplateCommand extends Command
      * die on an uncaught FileNotFoundException further down, with a stack trace
      * instead of a message.
      */
-    private const SELECTABLE_TYPES = ['invoice', 'estimate'];
+    private const SELECTABLE_TYPES = ['invoice', 'estimate', 'quote'];
 
     /**
      * Types with no picker. A custom template here replaces the built-in outright
@@ -99,9 +99,10 @@ class CreateTemplateCommand extends Command
 
         // An override clones the document it replaces; a selectable template
         // clones the first built-in design.
-        $sourceName = $isOverride ? $templateName : "{$templateType}1";
+        $sourceType = $templateType === 'quote' ? 'estimate' : $templateType;
+        $sourceName = $isOverride ? $templateName : "{$sourceType}1";
 
-        $source = Storage::disk('views')->get("/app/pdf/{$templateType}/{$sourceName}.blade.php");
+        $source = Storage::disk('views')->get("/app/pdf/{$sourceType}/{$sourceName}.blade.php");
 
         // Point this template at its own copies of the partials its type ships
         // before the blanket namespace rewrite below catches them. Previously
@@ -115,7 +116,7 @@ class CreateTemplateCommand extends Command
         );
 
         $source = Str::replace(
-            sprintf('app.pdf.%s', $templateType),
+            sprintf('app.pdf.%s', $sourceType),
             sprintf('pdf_templates::%s', $templateType),
             $source,
         );
@@ -146,7 +147,7 @@ class CreateTemplateCommand extends Command
         // with the {template}_header / {template}_footer suffix the Gotenberg
         // driver looks for.
         foreach (['_header', '_footer'] as $suffix) {
-            $companion = "/app/pdf/{$templateType}/{$sourceName}{$suffix}.blade.php";
+            $companion = "/app/pdf/{$sourceType}/{$sourceName}{$suffix}.blade.php";
 
             if (Storage::disk('views')->exists($companion)) {
                 PdfTemplateUtils::toCustomTemplateFile(

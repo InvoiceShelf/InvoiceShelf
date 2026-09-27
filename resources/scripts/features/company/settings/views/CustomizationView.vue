@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { provide } from 'vue'
 import InvoicesTab from '@/scripts/features/company/settings/components/InvoicesTab.vue'
+import QuotesTab from '@/scripts/features/company/settings/components/QuotesTab.vue'
 import EstimatesTab from '@/scripts/features/company/settings/components/EstimatesTab.vue'
 import PaymentsTab from '@/scripts/features/company/settings/components/PaymentsTab.vue'
 import ItemsTab from '@/scripts/features/company/settings/components/ItemsTab.vue'
@@ -32,6 +33,10 @@ provide('utils', {
           :title="$t('settings.customization.estimates.title')"
         >
           <EstimatesTab />
+        </BaseTab>
+
+        <BaseTab tab-panel-container="py-4 mt-px" :title="$t('settings.customization.quotes.title')">
+          <QuotesTab />
         </BaseTab>
 
         <BaseTab

@@ -8,6 +8,8 @@ const CustomerPortalResetPasswordView = () => import('./views/auth/CustomerPorta
 const CustomerDashboardView = () => import('./views/CustomerDashboardView.vue')
 const CustomerInvoicesView = () => import('./views/CustomerInvoicesView.vue')
 const CustomerInvoiceDetailView = () => import('./views/CustomerInvoiceDetailView.vue')
+const CustomerQuotesView = () => import('./views/CustomerQuotesView.vue')
+const CustomerQuoteDetailView = () => import('./views/CustomerQuoteDetailView.vue')
 const CustomerEstimatesView = () => import('./views/CustomerEstimatesView.vue')
 const CustomerEstimateDetailView = () => import('./views/CustomerEstimateDetailView.vue')
 const CustomerPaymentsView = () => import('./views/CustomerPaymentsView.vue')
@@ -72,6 +74,16 @@ const portalRoutes: RouteRecordRaw[] = [
         path: 'estimates/:id/view',
         name: 'customer-portal.estimates.view',
         component: CustomerEstimateDetailView,
+      },
+      {
+        path: 'quotes',
+        name: 'customer-portal.quotes',
+        component: CustomerQuotesView,
+      },
+      {
+        path: 'quotes/:id/view',
+        name: 'customer-portal.quotes.view',
+        component: CustomerQuoteDetailView,
       },
       {
         path: 'payments',

@@ -36,12 +36,13 @@ class PdfTemplateUtils
     public static function getFormattedTemplates($templateType, $imageFormat = 'base64')
     {
 
+        $stockType = $templateType === 'quote' ? 'estimate' : $templateType;
         $files_native = array_map(function ($file) {
             return [
                 'path' => $file,
                 'custom' => false,
             ];
-        }, Storage::disk('views')->files(sprintf('/app/pdf/%s', $templateType)));
+        }, Storage::disk('views')->files(sprintf('/app/pdf/%s', $stockType)));
 
         $files_custom = array_map(function ($file) {
             return [
@@ -82,7 +83,8 @@ class PdfTemplateUtils
                     $imagePath = resource_path("static/img/PDF/{$templateType}1.png");
                 }
             } else {
-                $imagePath = resource_path('static/img/PDF/'.$templateName.'.png');
+                $previewName = $templateType === 'quote' ? preg_replace('/^estimate/', 'quote', $templateName) : $templateName;
+                $imagePath = resource_path('static/img/PDF/'.$previewName.'.png');
             }
 
             if (empty($imageFormat)) {
@@ -98,6 +100,9 @@ class PdfTemplateUtils
             // win, which matches what findFormattedTemplate() already resolved
             // to — the picker just used to show both tiles with no way to tell
             // which one you were clicking.
+            if ($templateType === 'quote' && ! $file['custom']) {
+                $templateName = preg_replace('/^estimate/', 'quote', $templateName);
+            }
             $formatted[$templateName] = [
                 'name' => $templateName,
                 'path' => $imageValue,
@@ -131,7 +136,7 @@ class PdfTemplateUtils
             // disagree about where custom templates live.
             foreach ([
                 sprintf('pdf_templates::%s.%s', $templateType, $candidate),
-                sprintf('app.pdf.%s.%s', $templateType, $candidate),
+                sprintf('app.pdf.%s.%s', $templateType === 'quote' ? 'estimate' : $templateType, $templateType === 'quote' ? preg_replace('/^quote/', 'estimate', $candidate) : $candidate),
             ] as $view) {
                 if (View::exists($view)) {
                     if ($candidate !== $templateName) {
@@ -228,7 +233,7 @@ class PdfTemplateUtils
         foreach (self::stockPartials($templateType) as $partial) {
             $view = str_replace('/', '.', $partial);
 
-            $map[sprintf('app.pdf.%s.partials.%s', $templateType, $view)] = sprintf(
+            $map[sprintf('app.pdf.%s.partials.%s', $templateType === 'quote' ? 'estimate' : $templateType, $view)] = sprintf(
                 'pdf_templates::%s.partials.%s.%s',
                 $templateType,
                 $templateName,
@@ -269,7 +274,7 @@ class PdfTemplateUtils
 
         foreach (self::stockPartials($templateType) as $partial) {
             $contents = Storage::disk('views')->get(
-                sprintf('/app/pdf/%s/partials/%s.blade.php', $templateType, $partial)
+                sprintf('/app/pdf/%s/partials/%s.blade.php', $templateType === 'quote' ? 'estimate' : $templateType, $partial)
             );
 
             self::toCustomTemplateFile(
@@ -288,7 +293,7 @@ class PdfTemplateUtils
      */
     private static function stockPartials(string $templateType): array
     {
-        $directory = sprintf('app/pdf/%s/partials', $templateType);
+        $directory = sprintf('app/pdf/%s/partials', $templateType === 'quote' ? 'estimate' : $templateType);
 
         $partials = [];
 

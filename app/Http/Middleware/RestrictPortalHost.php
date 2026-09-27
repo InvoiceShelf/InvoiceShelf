@@ -31,8 +31,8 @@ class RestrictPortalHost
         '#^api/v1/app/version$#',
         '#^[^/]+/customer(/.*)?$#',
         '#^api/v1/[^/]+/customer(/.*)?$#',
-        '#^customer/(invoices|estimates|payments)/.+$#',
-        '#^(invoices|estimates|payments)/pdf/[^/]+$#',
+        '#^customer/(invoices|estimates|quotes|payments)/.+$#',
+        '#^(invoices|estimates|quotes|payments)/pdf/[^/]+$#',
         '#^modules/(scripts|styles)/[^/]+$#',
     ];
 
@@ -42,7 +42,7 @@ class RestrictPortalHost
      */
     private const CUSTOMER_PAGES = [
         '#^[^/]+/customer(/.*)?$#',
-        '#^customer/(invoices|estimates|payments)/view/.+$#',
+        '#^customer/(invoices|estimates|quotes|payments)/view/.+$#',
     ];
 
     public function handle(Request $request, Closure $next): Response

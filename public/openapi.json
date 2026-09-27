@@ -207,6 +207,75 @@
                 }
             }
         },
+        "/{company}/customer/quote/{id}/status": {
+            "post": {
+                "operationId": "customerPortal.acceptQuote",
+                "tags": [
+                    "AcceptQuote"
+                ],
+                "parameters": [
+                    {
+                        "name": "company",
+                        "in": "path",
+                        "required": true,
+                        "description": "The company slug",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RespondToQuoteRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`App.Domains.Sales.Http.Resources.CustomerPortal.QuoteResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/App.Domains.Sales.Http.Resources.CustomerPortal.QuoteResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/super-admin/dashboard": {
             "get": {
                 "operationId": "adminDashboard.index",
@@ -13687,6 +13756,820 @@
                 }
             }
         },
+        "/quotes/templates": {
+            "get": {
+                "operationId": "company.quoteTemplates",
+                "summary": "List the PDF templates a quote can be rendered with, each already\npaired with its preview image",
+                "tags": [
+                    "QuoteTemplates"
+                ],
+                "parameters": [
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "quoteTemplates": {
+                                            "type": "array",
+                                            "items": {}
+                                        }
+                                    },
+                                    "required": [
+                                        "quoteTemplates"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/quotes/{quote}/send/preview": {
+            "get": {
+                "operationId": "quotes.sendPreview",
+                "summary": "Render the mail body the customer would receive, without sending it",
+                "tags": [
+                    "Quotes"
+                ],
+                "parameters": [
+                    {
+                        "name": "quote",
+                        "in": "path",
+                        "required": true,
+                        "description": "The quote ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "subject",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "body",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "cc",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "bcc",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/quotes/{quote}/send": {
+            "post": {
+                "operationId": "quotes.send",
+                "tags": [
+                    "Quotes"
+                ],
+                "parameters": [
+                    {
+                        "name": "quote",
+                        "in": "path",
+                        "required": true,
+                        "description": "The quote ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SendQuotesRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "type": {
+                                            "type": "string",
+                                            "const": "send"
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "type"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/quotes/{quote}/clone": {
+            "post": {
+                "operationId": "quotes.clone",
+                "tags": [
+                    "Quotes"
+                ],
+                "parameters": [
+                    {
+                        "name": "quote",
+                        "in": "path",
+                        "required": true,
+                        "description": "The quote ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`QuoteResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/QuoteResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/quotes/{quote}/status": {
+            "post": {
+                "operationId": "quotes.changeStatus",
+                "tags": [
+                    "Quotes"
+                ],
+                "parameters": [
+                    {
+                        "name": "quote",
+                        "in": "path",
+                        "required": true,
+                        "description": "The quote ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChangeQuoteStatusRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "success"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/quotes/{quote}/convert-to-invoice": {
+            "post": {
+                "operationId": "quotes.convertToInvoice",
+                "summary": "Reading the source quote is checked on top of the invoice-create\nability so the conversion cannot reach across companies",
+                "tags": [
+                    "Quotes"
+                ],
+                "parameters": [
+                    {
+                        "name": "quote",
+                        "in": "path",
+                        "required": true,
+                        "description": "The quote ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`InvoiceResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/InvoiceResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/quotes/delete": {
+            "post": {
+                "operationId": "quotes.delete",
+                "summary": "Bulk removal. Ids outside the active company are silently skipped",
+                "tags": [
+                    "Quotes"
+                ],
+                "parameters": [
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DeleteQuotesRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "success"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/quotes": {
+            "get": {
+                "operationId": "quotes.index",
+                "summary": "Paginated quotes of the active company, joined to their customer so the\nlist can be filtered and sorted by customer name",
+                "tags": [
+                    "Quotes"
+                ],
+                "parameters": [
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `QuoteResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/QuoteResource"
+                                            }
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "quote_total_count": {
+                                                    "type": "integer",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "quote_total_count"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "quotes.store",
+                "summary": "Persist a draft quote and queue the\nPDF render",
+                "tags": [
+                    "Quotes"
+                ],
+                "parameters": [
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/QuotesRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`QuoteResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/QuoteResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/quotes/{quote}": {
+            "get": {
+                "operationId": "quotes.show",
+                "tags": [
+                    "Quotes"
+                ],
+                "parameters": [
+                    {
+                        "name": "quote",
+                        "in": "path",
+                        "required": true,
+                        "description": "The quote ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`QuoteResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/QuoteResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "quotes.update",
+                "summary": "Overwrite a quote \u2014 lines and taxes are replaced wholesale \u2014 and\nre-render its PDF",
+                "tags": [
+                    "Quotes"
+                ],
+                "parameters": [
+                    {
+                        "name": "quote",
+                        "in": "path",
+                        "required": true,
+                        "description": "The quote ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`QuoteResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/QuoteResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/{company}/customer/quotes": {
+            "get": {
+                "operationId": "domains.sales.customerPortal.quotes.index",
+                "description": "Unsent work stays private to the issuer, so drafts reach neither the\npage itself nor the counter beside it.",
+                "summary": "Page through the offers addressed to the signed-in contact",
+                "tags": [
+                    "Quotes"
+                ],
+                "parameters": [
+                    {
+                        "name": "company",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `App.Domains.Sales.Http.Resources.CustomerPortal.QuoteResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/App.Domains.Sales.Http.Resources.CustomerPortal.QuoteResource"
+                                            }
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "quoteTotalCount": {
+                                                    "type": "integer",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "quoteTotalCount"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/{company}/customer/quotes/{id}": {
+            "get": {
+                "operationId": "domains.sales.customerPortal.quotes.show",
+                "summary": "Hand back a single offer, looked up inside the portal's company and\nnarrowed to the signed-in contact so ids cannot be probed",
+                "tags": [
+                    "Quotes"
+                ],
+                "parameters": [
+                    {
+                        "name": "company",
+                        "in": "path",
+                        "required": true,
+                        "description": "The company slug",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/recurring-invoices/delete": {
             "post": {
                 "operationId": "recurringInvoice.delete",
@@ -18940,6 +19823,245 @@
                 ],
                 "title": "App.Domains.Sales.Http.Resources.CustomerPortal.InvoiceResource"
             },
+            "App.Domains.Sales.Http.Resources.CustomerPortal.QuoteItemResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "discount_type": {
+                        "type": "string"
+                    },
+                    "quantity": {
+                        "type": "string"
+                    },
+                    "unit_name": {
+                        "type": "string"
+                    },
+                    "discount": {
+                        "type": "string"
+                    },
+                    "discount_val": {
+                        "type": "string"
+                    },
+                    "price": {
+                        "type": "string"
+                    },
+                    "tax": {
+                        "type": "string"
+                    },
+                    "total": {
+                        "type": "string"
+                    },
+                    "item_id": {
+                        "type": "string"
+                    },
+                    "quote_id": {
+                        "type": "string"
+                    },
+                    "company_id": {
+                        "type": "string"
+                    },
+                    "exchange_rate": {
+                        "type": "string"
+                    },
+                    "base_discount_val": {
+                        "type": "string"
+                    },
+                    "base_price": {
+                        "type": "string"
+                    },
+                    "base_tax": {
+                        "type": "string"
+                    },
+                    "base_total": {
+                        "type": "string"
+                    },
+                    "taxes": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/App.Domains.Taxation.Http.Resources.CustomerPortal.TaxResource"
+                        }
+                    },
+                    "fields": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/App.Domains.Metadata.Http.Resources.CustomerPortal.CustomFieldValueResource"
+                        }
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "discount_type",
+                    "quantity",
+                    "unit_name",
+                    "discount",
+                    "discount_val",
+                    "price",
+                    "tax",
+                    "total",
+                    "item_id",
+                    "quote_id",
+                    "company_id",
+                    "exchange_rate",
+                    "base_discount_val",
+                    "base_price",
+                    "base_tax",
+                    "base_total"
+                ],
+                "title": "App.Domains.Sales.Http.Resources.CustomerPortal.QuoteItemResource"
+            },
+            "App.Domains.Sales.Http.Resources.CustomerPortal.QuoteResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "quote_date": {
+                        "type": "string"
+                    },
+                    "expiry_date": {
+                        "type": "string"
+                    },
+                    "quote_number": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "reference_number": {
+                        "type": "string"
+                    },
+                    "tax_per_item": {
+                        "type": "string"
+                    },
+                    "discount_per_item": {
+                        "type": "string"
+                    },
+                    "notes": {
+                        "type": "string"
+                    },
+                    "discount": {
+                        "type": "string"
+                    },
+                    "discount_type": {
+                        "type": "string"
+                    },
+                    "discount_val": {
+                        "type": "string"
+                    },
+                    "sub_total": {
+                        "type": "string"
+                    },
+                    "total": {
+                        "type": "string"
+                    },
+                    "tax": {
+                        "type": "string"
+                    },
+                    "unique_hash": {
+                        "type": "string"
+                    },
+                    "template_name": {
+                        "type": "string"
+                    },
+                    "customer_id": {
+                        "type": "string"
+                    },
+                    "exchange_rate": {
+                        "type": "string"
+                    },
+                    "base_discount_val": {
+                        "type": "string"
+                    },
+                    "base_sub_total": {
+                        "type": "string"
+                    },
+                    "base_total": {
+                        "type": "string"
+                    },
+                    "base_tax": {
+                        "type": "string"
+                    },
+                    "currency_id": {
+                        "type": "string"
+                    },
+                    "formatted_expiry_date": {
+                        "type": "string"
+                    },
+                    "formatted_quote_date": {
+                        "type": "string"
+                    },
+                    "quote_pdf_url": {
+                        "type": "string"
+                    },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/App.Domains.Sales.Http.Resources.CustomerPortal.QuoteItemResource"
+                        }
+                    },
+                    "customer": {
+                        "$ref": "#/components/schemas/App.Domains.Contacts.Http.Resources.CustomerPortal.CustomerResource"
+                    },
+                    "taxes": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/App.Domains.Taxation.Http.Resources.CustomerPortal.TaxResource"
+                        }
+                    },
+                    "fields": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/App.Domains.Metadata.Http.Resources.CustomerPortal.CustomFieldValueResource"
+                        }
+                    },
+                    "company": {
+                        "$ref": "#/components/schemas/App.Domains.Accounts.Http.Resources.CustomerPortal.CompanyResource"
+                    },
+                    "currency": {
+                        "$ref": "#/components/schemas/App.Domains.Money.Http.Resources.CustomerPortal.CurrencyResource"
+                    }
+                },
+                "required": [
+                    "id",
+                    "quote_date",
+                    "expiry_date",
+                    "quote_number",
+                    "status",
+                    "reference_number",
+                    "tax_per_item",
+                    "discount_per_item",
+                    "notes",
+                    "discount",
+                    "discount_type",
+                    "discount_val",
+                    "sub_total",
+                    "total",
+                    "tax",
+                    "unique_hash",
+                    "template_name",
+                    "customer_id",
+                    "exchange_rate",
+                    "base_discount_val",
+                    "base_sub_total",
+                    "base_total",
+                    "base_tax",
+                    "currency_id",
+                    "formatted_expiry_date",
+                    "formatted_quote_date",
+                    "quote_pdf_url"
+                ],
+                "title": "App.Domains.Sales.Http.Resources.CustomerPortal.QuoteResource"
+            },
             "App.Domains.Taxation.Http.Resources.CustomerPortal.TaxResource": {
                 "type": "object",
                 "properties": {
@@ -19122,6 +20244,26 @@
                     "status"
                 ],
                 "title": "ChangeInvoiceStatusRequest"
+            },
+            "ChangeQuoteStatusRequest": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "DRAFT",
+                            "SENT",
+                            "VIEWED",
+                            "ACCEPTED",
+                            "REJECTED",
+                            "EXPIRED"
+                        ]
+                    }
+                },
+                "required": [
+                    "status"
+                ],
+                "title": "ChangeQuoteStatusRequest"
             },
             "CompaniesRequest": {
                 "type": "object",
@@ -19974,6 +21116,7 @@
                             "Customer",
                             "Invoice",
                             "Estimate",
+                            "Quote",
                             "Payment",
                             "Expense",
                             "Item",
@@ -21164,6 +22307,23 @@
                 ],
                 "title": "DeletePaymentsRequest"
             },
+            "DeleteQuotesRequest": {
+                "type": "object",
+                "description": "Payload of the bulk quote removal endpoint: a list of ids, each of which\nhas to be a quote. Company scoping is applied by the controller when it\nresolves the ids, not here.",
+                "properties": {
+                    "ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "minItems": 1
+                    }
+                },
+                "required": [
+                    "ids"
+                ],
+                "title": "DeleteQuotesRequest"
+            },
             "DiskEnvironmentRequest": {
                 "type": "object",
                 "description": "Shapes the body that registers a new storage target.\n\nOnly the label and the driver are asked of every caller, and the driver must\nbe one of FileDisk::DRIVERS. What a driver needs beyond that varies, so the\ncredential rules are picked from the driver named in the body and merged\nunderneath the two common ones. A local disk takes only a root, which the\nlive credential check the controller runs then proves writable.\n\nWhere a driver takes a custom endpoint the server will later sign requests\nagainst, the value has to be a URL that resolves somewhere publicly routable:\nthese credentials are supplied by an administrator and exercised server-side,\nso an endpoint pointed at the loopback interface or a cloud metadata address\nwould turn disk registration into a request forgery primitive.",
@@ -21683,7 +22843,6 @@
             },
             "EstimatesRequest": {
                 "type": "object",
-                "description": "Validates the estimate write surface and assembles the attributes the service\nlayer persists. Money arrives as integer minor units.",
                 "properties": {
                     "estimate_date": {
                         "type": "string"
@@ -21695,14 +22854,14 @@
                         ]
                     },
                     "customer_id": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "estimate_number": {
                         "type": "string"
                     },
                     "exchange_rate": {
                         "type": [
-                            "string",
+                            "number",
                             "null"
                         ]
                     },
@@ -23878,6 +25037,413 @@
                 ],
                 "title": "ProfileRequest"
             },
+            "QuoteItemResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "discount_type": {
+                        "type": "string"
+                    },
+                    "quantity": {
+                        "type": "string"
+                    },
+                    "unit_name": {
+                        "type": "string"
+                    },
+                    "discount": {
+                        "type": "string"
+                    },
+                    "discount_val": {
+                        "type": "string"
+                    },
+                    "price": {
+                        "type": "string"
+                    },
+                    "tax": {
+                        "type": "string"
+                    },
+                    "total": {
+                        "type": "string"
+                    },
+                    "item_id": {
+                        "type": "string"
+                    },
+                    "quote_id": {
+                        "type": "string"
+                    },
+                    "company_id": {
+                        "type": "string"
+                    },
+                    "exchange_rate": {
+                        "type": "string"
+                    },
+                    "base_discount_val": {
+                        "type": "string"
+                    },
+                    "base_price": {
+                        "type": "string"
+                    },
+                    "base_tax": {
+                        "type": "string"
+                    },
+                    "base_total": {
+                        "type": "string"
+                    },
+                    "taxes": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TaxResource"
+                        }
+                    },
+                    "fields": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CustomFieldValueResource"
+                        }
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "discount_type",
+                    "quantity",
+                    "unit_name",
+                    "discount",
+                    "discount_val",
+                    "price",
+                    "tax",
+                    "total",
+                    "item_id",
+                    "quote_id",
+                    "company_id",
+                    "exchange_rate",
+                    "base_discount_val",
+                    "base_price",
+                    "base_tax",
+                    "base_total"
+                ],
+                "title": "QuoteItemResource"
+            },
+            "QuoteResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "quote_date": {
+                        "type": "string"
+                    },
+                    "expiry_date": {
+                        "type": "string"
+                    },
+                    "quote_number": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "reference_number": {
+                        "type": "string"
+                    },
+                    "tax_per_item": {
+                        "type": "string"
+                    },
+                    "tax_included": {
+                        "type": "string"
+                    },
+                    "discount_per_item": {
+                        "type": "string"
+                    },
+                    "notes": {
+                        "type": "string"
+                    },
+                    "discount": {
+                        "type": "string"
+                    },
+                    "discount_type": {
+                        "type": "string"
+                    },
+                    "discount_val": {
+                        "type": "string"
+                    },
+                    "sub_total": {
+                        "type": "string"
+                    },
+                    "total": {
+                        "type": "string"
+                    },
+                    "tax": {
+                        "type": "string"
+                    },
+                    "unique_hash": {
+                        "type": "string"
+                    },
+                    "creator_id": {
+                        "type": "string"
+                    },
+                    "template_name": {
+                        "type": "string"
+                    },
+                    "customer_id": {
+                        "type": "string"
+                    },
+                    "exchange_rate": {
+                        "type": "string"
+                    },
+                    "base_discount_val": {
+                        "type": "string"
+                    },
+                    "base_sub_total": {
+                        "type": "string"
+                    },
+                    "base_total": {
+                        "type": "string"
+                    },
+                    "base_tax": {
+                        "type": "string"
+                    },
+                    "sequence_number": {
+                        "type": "string"
+                    },
+                    "currency_id": {
+                        "type": "string"
+                    },
+                    "formatted_expiry_date": {
+                        "type": "string"
+                    },
+                    "formatted_quote_date": {
+                        "type": "string"
+                    },
+                    "quote_pdf_url": {
+                        "type": "string"
+                    },
+                    "sales_tax_type": {
+                        "type": "string"
+                    },
+                    "sales_tax_address_type": {
+                        "type": "string"
+                    },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/QuoteItemResource"
+                        }
+                    },
+                    "customer": {
+                        "$ref": "#/components/schemas/CustomerResource"
+                    },
+                    "creator": {
+                        "$ref": "#/components/schemas/UserResource"
+                    },
+                    "taxes": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TaxResource"
+                        }
+                    },
+                    "fields": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CustomFieldValueResource"
+                        }
+                    },
+                    "company": {
+                        "$ref": "#/components/schemas/CompanyResource"
+                    },
+                    "currency": {
+                        "$ref": "#/components/schemas/CurrencyResource"
+                    }
+                },
+                "required": [
+                    "id",
+                    "quote_date",
+                    "expiry_date",
+                    "quote_number",
+                    "status",
+                    "reference_number",
+                    "tax_per_item",
+                    "tax_included",
+                    "discount_per_item",
+                    "notes",
+                    "discount",
+                    "discount_type",
+                    "discount_val",
+                    "sub_total",
+                    "total",
+                    "tax",
+                    "unique_hash",
+                    "creator_id",
+                    "template_name",
+                    "customer_id",
+                    "exchange_rate",
+                    "base_discount_val",
+                    "base_sub_total",
+                    "base_total",
+                    "base_tax",
+                    "sequence_number",
+                    "currency_id",
+                    "formatted_expiry_date",
+                    "formatted_quote_date",
+                    "quote_pdf_url",
+                    "sales_tax_type",
+                    "sales_tax_address_type"
+                ],
+                "title": "QuoteResource"
+            },
+            "QuotesRequest": {
+                "type": "object",
+                "properties": {
+                    "quote_date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "expiry_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date"
+                    },
+                    "customer_id": {
+                        "type": "integer"
+                    },
+                    "quote_number": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "exchange_rate": {
+                        "type": [
+                            "number",
+                            "null"
+                        ]
+                    },
+                    "discount": {
+                        "type": "number"
+                    },
+                    "discount_val": {
+                        "type": "integer"
+                    },
+                    "sub_total": {
+                        "type": "integer"
+                    },
+                    "total": {
+                        "type": "integer",
+                        "maximum": 999999999999
+                    },
+                    "tax": {
+                        "type": "string"
+                    },
+                    "template_name": {
+                        "type": "string"
+                    },
+                    "quoteSend": {
+                        "type": "string"
+                    },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "description": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                },
+                                "name": {
+                                    "type": "string"
+                                },
+                                "quantity": {
+                                    "type": "number"
+                                },
+                                "price": {
+                                    "type": "integer"
+                                },
+                                "custom_fields": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": [
+                                                    "integer",
+                                                    "null"
+                                                ]
+                                            },
+                                            "slug": {
+                                                "type": [
+                                                    "string",
+                                                    "null"
+                                                ]
+                                            },
+                                            "value": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "value"
+                                        ]
+                                    }
+                                }
+                            },
+                            "required": [
+                                "name",
+                                "quantity",
+                                "price"
+                            ]
+                        },
+                        "minItems": 1
+                    },
+                    "customFields": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": [
+                                        "integer",
+                                        "null"
+                                    ]
+                                },
+                                "slug": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                },
+                                "value": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "value"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "quote_date",
+                    "customer_id",
+                    "quote_number",
+                    "discount",
+                    "discount_val",
+                    "sub_total",
+                    "total",
+                    "tax",
+                    "template_name",
+                    "items"
+                ],
+                "title": "QuotesRequest"
+            },
             "RecurringInvoiceRequest": {
                 "type": "object",
                 "description": "Vets a standing order and reshapes it into the row the service stores.\n\nA schedule carries a whole invoice in template form, so what arrives is a\ndocument's payload with three extra fields bolted on: the cron expression\nthat decides when it fires, the date it starts running, and the limit that\neventually retires it. Everything else \u2014 items, discounts, taxes \u2014 is\nchecked and recomputed exactly as it is on a real invoice.",
@@ -24207,6 +25773,22 @@
                 ],
                 "title": "ReplacePaymentAllocationsRequest"
             },
+            "RespondToQuoteRequest": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "ACCEPTED",
+                            "REJECTED"
+                        ]
+                    }
+                },
+                "required": [
+                    "status"
+                ],
+                "title": "RespondToQuoteRequest"
+            },
             "RolePresetRequest": {
                 "type": "object",
                 "description": "A role preset as the super administrator submits it: a title, and ability\nnames from the catalogue (or ones the preset already holds from a module\nthat is switched off).",
@@ -24237,6 +25819,11 @@
                                 "edit-estimate",
                                 "delete-estimate",
                                 "send-estimate",
+                                "view-quote",
+                                "create-quote",
+                                "edit-quote",
+                                "delete-quote",
+                                "send-quote",
                                 "view-invoice",
                                 "create-invoice",
                                 "edit-invoice",
@@ -24545,6 +26132,43 @@
                     "to"
                 ],
                 "title": "SendPaymentRequest"
+            },
+            "SendQuotesRequest": {
+                "type": "object",
+                "description": "The envelope of a quote mail: who it goes to, what it says, and the\noptional carbon copies.",
+                "properties": {
+                    "subject": {
+                        "type": "string"
+                    },
+                    "body": {
+                        "type": "string"
+                    },
+                    "from": {
+                        "type": "string"
+                    },
+                    "to": {
+                        "type": "string"
+                    },
+                    "cc": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "bcc": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                },
+                "required": [
+                    "subject",
+                    "body",
+                    "from",
+                    "to"
+                ],
+                "title": "SendQuotesRequest"
             },
             "SettingRequest": {
                 "type": "object",

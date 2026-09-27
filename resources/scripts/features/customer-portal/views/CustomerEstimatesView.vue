@@ -1,22 +1,22 @@
 <template>
   <BasePage>
-    <BasePageHeader :title="$t('estimates.title')">
+    <BasePageHeader :title="t('estimates.title')">
       <BaseBreadcrumb>
         <BaseBreadcrumbItem
-          :title="$t('general.home')"
+          :title="t('general.home')"
           :to="`/${store.companySlug}/customer/dashboard`"
         />
-        <BaseBreadcrumbItem :title="$t('estimates.estimate', 2)" to="#" active />
+        <BaseBreadcrumbItem :title="t('estimates.estimate', 2)" to="#" active />
       </BaseBreadcrumb>
 
       <template #actions>
         <BaseButton
-          v-if="store.totalEstimates"
+          v-if="store[kind === 'quote' ? 'totalQuotes' : 'totalEstimates']"
           variant="primary-outline"
           :aria-expanded="showFilters"
           @click="toggleFilter"
         >
-          {{ $t('general.filter') }}
+          {{ t('general.filter') }}
           <template #right="slotProps">
             <BaseIcon
               v-if="!showFilters"
@@ -30,19 +30,19 @@
     </BasePageHeader>
 
     <BaseFilterWrapper v-show="showFilters" @clear="clearFilter">
-      <BaseInputGroup :label="$t('estimates.status')" class="px-3">
+      <BaseInputGroup :label="t('estimates.status')" class="px-3">
         <BaseSelectInput
           v-model="filters.status"
           :options="statusOptions"
           searchable
           :show-labels="false"
           :allow-empty="false"
-          :placeholder="$t('general.select_a_status')"
+          :placeholder="t('general.select_a_status')"
         />
       </BaseInputGroup>
 
       <BaseInputGroup
-        :label="$t('estimates.estimate_number')"
+        :label="t('estimates.estimate_number')"
         color="black-light"
         class="px-3"
       >
@@ -52,7 +52,7 @@
         </BaseInput>
       </BaseInputGroup>
 
-      <BaseInputGroup :label="$t('general.from')" class="px-3">
+      <BaseInputGroup :label="t('general.from')" class="px-3">
         <BaseDatePicker
           v-model="filters.from_date"
           :calendar-button="true"
@@ -64,7 +64,7 @@
         class="hidden w-4 h-px mb-5 shrink-0 bg-line-strong xl:block"
       />
 
-      <BaseInputGroup :label="$t('general.to')" class="px-3">
+      <BaseInputGroup :label="t('general.to')" class="px-3">
         <BaseDatePicker
           v-model="filters.to_date"
           :calendar-button="true"
@@ -77,8 +77,8 @@
       v-if="showEmptyScreen"
       art="estimate"
       :ghost="5"
-      :title="$t('estimates.no_estimates')"
-      :description="$t('estimates.portal_empty_description')"
+      :title="t('estimates.no_estimates')"
+      :description="t('estimates.portal_empty_description')"
     />
 
     <div v-show="!showEmptyScreen" class="relative table-container">
@@ -86,7 +86,7 @@
         ref="tableRef"
         :data="fetchData"
         :columns="estimateColumns"
-        :placeholder-count="store.totalEstimates >= 20 ? 10 : 5"
+        :placeholder-count="store[kind === 'quote' ? 'totalQuotes' : 'totalEstimates'] >= 20 ? 10 : 5"
         :row-to="estimateLink"
       >
         <template #cell-estimate_date="{ row }">
@@ -95,7 +95,7 @@
 
         <template #cell-estimate_number="{ row }">
           <router-link
-            :to="{ path: `estimates/${row.data.id}/view` }"
+            :to="{ path: `${kind}s/${row.data.id}/view` }"
             class="font-medium text-primary-600 hover:text-primary-700"
           >
             {{ row.data.estimate_number }}
@@ -117,9 +117,9 @@
             <template #activator>
               <BaseIcon name="EllipsisHorizontalIcon" class="h-5 text-muted" />
             </template>
-            <BaseDropdownItem :to="`estimates/${row.data.id}/view`">
+            <BaseDropdownItem :to="`${kind}s/${row.data.id}/view`">
               <BaseIcon name="EyeIcon" class="h-5 me-3 text-body" />
-              {{ $t('general.view') }}
+              {{ t('general.view') }}
             </BaseDropdownItem>
           </BaseDropdown>
         </template>
@@ -131,13 +131,14 @@
 <script setup lang="ts">
 import type { ColumnDef } from '@/scripts/components/table/DataTable.vue'
 import { ref, computed, reactive } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { useProposalContext } from '@/scripts/features/company/estimates/use-proposal-context'
 import { debouncedWatch } from '@vueuse/core'
 import { useCustomerPortalStore } from '../store'
 import type { Estimate } from '../../../types/domain/estimate'
 
 const store = useCustomerPortalStore()
-const { t } = useI18n()
+const { t, kind } = useProposalContext()
+const fetchEstimates = (input: Parameters<typeof store.fetchEstimates>[0]) => store.fetchEstimates(input, kind)
 
 const tableRef = ref<{ refresh: () => void } | null>(null)
 const isFetchingInitialData = ref<boolean>(true)
@@ -172,7 +173,7 @@ const filters = reactive<EstimateFilters>({
 })
 
 const showEmptyScreen = computed<boolean>(
-  () => !store.totalEstimates && !isFetchingInitialData.value,
+  () => !store[kind === 'quote' ? 'totalQuotes' : 'totalEstimates'] && !isFetchingInitialData.value,
 )
 
 type TableColumn = Omit<ColumnDef, 'label'> & { label?: string }
@@ -207,7 +208,7 @@ const estimateColumns = computed<TableColumn[]>(() => [
 ])
 
 function estimateLink(row: { id?: number | string }): string {
-  return `/${store.companySlug}/customer/estimates/${row.id}/view`
+  return `/${store.companySlug}/customer/${kind}s/${row.id}/view`
 }
 
 debouncedWatch(filters, () => refreshTable(), { debounce: 500 })
@@ -239,7 +240,7 @@ async function fetchData({ page, sort }: FetchParams): Promise<FetchResult> {
   }
 
   isFetchingInitialData.value = true
-  const response = await store.fetchEstimates(data)
+  const response = await fetchEstimates(data)
   isFetchingInitialData.value = false
 
   return {

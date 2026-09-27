@@ -16,6 +16,7 @@ import dashboardRoutes from '../features/company/dashboard/routes'
 import customerRoutes from '../features/company/customers/routes'
 import { invoiceRoutes } from '../features/company/invoices/routes'
 import { estimateRoutes } from '../features/company/estimates/routes'
+import { quoteRoutes } from '../features/company/quotes/routes'
 import { recurringInvoiceRoutes } from '../features/company/recurring-invoices/routes'
 import { paymentRoutes } from '../features/company/payments/routes'
 import { expenseRoutes } from '../features/company/expenses/routes'
@@ -50,6 +51,7 @@ const companyChildren: RouteRecordRaw[] = [
   ...customerRoutes,
   ...invoiceRoutes,
   ...estimateRoutes,
+  ...quoteRoutes,
   ...recurringInvoiceRoutes,
   ...paymentRoutes,
   ...expenseRoutes,

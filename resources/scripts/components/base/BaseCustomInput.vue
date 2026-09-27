@@ -25,6 +25,7 @@ type FieldType =
   | 'customer'
   | 'invoice'
   | 'estimate'
+  | 'quote'
   | 'payment'
   | 'company'
 
@@ -51,6 +52,7 @@ const emit = defineEmits<Emits>()
 const fieldList = ref<FieldGroup[]>([])
 const invoiceFields = ref<CustomFieldData[]>([])
 const estimateFields = ref<CustomFieldData[]>([])
+const quoteFields = ref<CustomFieldData[]>([])
 const paymentFields = ref<CustomFieldData[]>([])
 const customerFields = ref<CustomFieldData[]>([])
 
@@ -74,6 +76,7 @@ watch(
     paymentFields.value = data.filter(
       (field) => field.model_type === 'Payment'
     )
+    quoteFields.value = data.filter((field) => field.model_type === 'Quote')
     estimateFields.value = data.filter(
       (field) => field.model_type === 'Estimate'
     )
@@ -167,6 +170,22 @@ function getFields(): void {
         { label: 'Number', value: 'ESTIMATE_NUMBER' },
         { label: 'Ref Number', value: 'ESTIMATE_REF_NUMBER' },
         ...estimateFields.value.map((i) => ({
+          label: i.label,
+          value: i.slug,
+        })),
+      ],
+    })
+  }
+
+  if (props.fields.includes('quote')) {
+    fieldList.value.push({
+      label: 'Quote',
+      fields: [
+        { label: 'Date', value: 'QUOTE_DATE' },
+        { label: 'Expiry Date', value: 'QUOTE_EXPIRY_DATE' },
+        { label: 'Number', value: 'QUOTE_NUMBER' },
+        { label: 'Ref Number', value: 'QUOTE_REF_NUMBER' },
+        ...quoteFields.value.map((i) => ({
           label: i.label,
           value: i.slug,
         })),

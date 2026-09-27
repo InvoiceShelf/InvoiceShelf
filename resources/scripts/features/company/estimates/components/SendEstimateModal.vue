@@ -13,7 +13,7 @@
       <div class="px-8 py-8 sm:p-6">
         <BaseInputGrid layout="one-column">
           <BaseInputGroup
-            :label="$t('general.from')"
+            :label="t('general.from')"
             required
             :error="v$.from.$error && v$.from.$errors[0].$message"
           >
@@ -25,7 +25,7 @@
             />
           </BaseInputGroup>
           <BaseInputGroup
-            :label="$t('general.to')"
+            :label="t('general.to')"
             required
             :error="v$.to.$error && v$.to.$errors[0].$message"
           >
@@ -37,7 +37,7 @@
             />
           </BaseInputGroup>
           <BaseInputGroup
-            :label="$t('general.cc')"
+            :label="t('general.cc')"
             :error="v$.cc && v$.cc.$error && v$.cc.$errors[0].$message"
           >
             <BaseInput
@@ -49,7 +49,7 @@
             />
           </BaseInputGroup>
           <BaseInputGroup
-            :label="$t('general.bcc')"
+            :label="t('general.bcc')"
             :error="v$.bcc && v$.bcc.$error && v$.bcc.$errors[0].$message"
           >
             <BaseInput
@@ -61,7 +61,7 @@
             />
           </BaseInputGroup>
           <BaseInputGroup
-            :label="$t('general.subject')"
+            :label="t('general.subject')"
             required
             :error="v$.subject.$error && v$.subject.$errors[0].$message"
           >
@@ -73,13 +73,13 @@
             />
           </BaseInputGroup>
           <BaseInputGroup
-            :label="$t('general.body')"
+            :label="t('general.body')"
             :error="v$.body.$error && v$.body.$errors[0].$message"
             required
           >
             <BaseCustomInput
               v-model="estimateMailForm.body"
-              :fields="['customer', 'company', 'estimate']"
+              :fields="['customer', 'company', kind]"
             />
           </BaseInputGroup>
         </BaseInputGrid>
@@ -93,7 +93,7 @@
           type="button"
           @click="closeSendEstimateModal"
         >
-          {{ $t('general.cancel') }}
+          {{ t('general.cancel') }}
         </BaseButton>
 
         <BaseButton
@@ -105,7 +105,7 @@
           @click="submitForm"
         >
           <BaseIcon v-if="!isLoading" name="PhotoIcon" class="h-5 me-2" />
-          {{ $t('general.preview') }}
+          {{ t('general.preview') }}
         </BaseButton>
       </div>
     </form>
@@ -118,11 +118,11 @@
           @click="cancelPreview"
         >
           <BaseIcon name="PencilIcon" class="h-5 me-2" />
-          {{ $t('general.edit') }}
+          {{ t('general.edit') }}
         </BaseButton>
         <iframe
           :src="templateUrl"
-          :title="$t('general.email_preview')"
+          :title="t('general.email_preview')"
           frameborder="0"
           class="w-full"
           style="min-height: 500px"
@@ -138,7 +138,7 @@
           type="button"
           @click="closeSendEstimateModal"
         >
-          {{ $t('general.cancel') }}
+          {{ t('general.cancel') }}
         </BaseButton>
         <BaseButton
           :loading="isLoading"
@@ -152,7 +152,7 @@
             name="PaperAirplaneIcon"
             class="h-5 me-2"
           />
-          {{ $t('general.send') }}
+          {{ t('general.send') }}
         </BaseButton>
       </div>
     </div>
@@ -161,21 +161,22 @@
 
 <script setup lang="ts">
 import { ref, computed, reactive } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { required, email, helpers } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { useModalStore } from '../../../../stores/modal.store'
 import { useCompanyStore } from '../../../../stores/company.store'
 import { useNotificationStore } from '../../../../stores/notification.store'
-import { useEstimateStore } from '../store'
+import { useProposalStore, useProposalContext } from '../use-proposal-context'
 import { emailPreviewUrl } from '@/scripts/utils/email-preview'
 
 const modalStore = useModalStore()
 const companyStore = useCompanyStore()
 const notificationStore = useNotificationStore()
-const estimateStore = useEstimateStore()
+const { kind, t, textKey } = useProposalContext()
 
-const { t } = useI18n()
+const estimateStore = useProposalStore()
+
+
 const isLoading = ref(false)
 const templateUrl = ref<string>('')
 const isPreview = ref(false)
@@ -249,7 +250,7 @@ async function setInitialData() {
   }
 
   estimateMailForm.body =
-    companyStore.selectedCompanySettings.estimate_mail_body
+    (companyStore.selectedCompanySettings as Record<string, unknown>)[`${kind}_mail_body`] as string
   estimateMailForm.subject = t('estimates.new_estimate')
 }
 
@@ -283,7 +284,7 @@ async function submitForm() {
 
     notificationStore.showNotification({
       type: 'success',
-      message: 'estimates.estimate_sent_successfully',
+      message: textKey('estimates.estimate_sent_successfully'),
     })
 
     if (modalStore.refreshData) {
@@ -297,7 +298,7 @@ async function submitForm() {
     isLoading.value = false
     notificationStore.showNotification({
       type: 'error',
-      message: 'estimates.something_went_wrong',
+      message: textKey('estimates.something_went_wrong'),
     })
   }
 }

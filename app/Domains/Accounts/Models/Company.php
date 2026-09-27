@@ -17,6 +17,7 @@ use App\Domains\Receivables\Models\Payment;
 use App\Domains\Receivables\Models\PaymentMethod;
 use App\Domains\Sales\Models\Estimate;
 use App\Domains\Sales\Models\Invoice;
+use App\Domains\Sales\Models\Quote;
 use App\Domains\Sales\Models\RecurringInvoice;
 use App\Domains\Taxation\Models\TaxType;
 use App\Platform\Storage\Models\FileDisk;
@@ -151,6 +152,11 @@ class Company extends Model implements HasMedia
     public function estimates(): HasMany
     {
         return $this->hasMany(Estimate::class);
+    }
+
+    public function quotes(): HasMany
+    {
+        return $this->hasMany(Quote::class);
     }
 
     /**

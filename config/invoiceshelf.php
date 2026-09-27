@@ -9,6 +9,7 @@ use App\Domains\Purchases\Models\Expense;
 use App\Domains\Receivables\Models\Payment;
 use App\Domains\Sales\Models\Estimate;
 use App\Domains\Sales\Models\Invoice;
+use App\Domains\Sales\Models\Quote;
 use App\Domains\Taxation\Models\TaxType;
 
 return [
@@ -241,6 +242,11 @@ return [
         ['key' => 'settings.preferences.delete_estimate', 'value' => 'delete_estimate'],
         ['key' => 'settings.preferences.mark_estimate_as_accepted', 'value' => 'mark_estimate_as_accepted'],
     ],
+    'convert_quote_options' => [
+        ['key' => 'settings.preferences.no_action', 'value' => 'no_action'],
+        ['key' => 'settings.preferences.delete_quote', 'value' => 'delete_quote'],
+        ['key' => 'settings.preferences.mark_quote_as_accepted', 'value' => 'mark_quote_as_accepted'],
+    ],
 
     /*
     * List of retrospective edits
@@ -443,6 +449,18 @@ return [
             'model' => Estimate::class,
         ],
         [
+            'title' => 'navigation.quotes',
+            'group' => 'documents',
+            'group_label' => 'navigation.documents',
+            'priority' => 15,
+            'link' => '/admin/quotes',
+            'icon' => 'DocumentIcon',
+            'name' => 'Quotes',
+            'owner_only' => false,
+            'ability' => 'view-quote',
+            'model' => Quote::class,
+        ],
+        [
             'title' => 'navigation.invoices',
             'group' => 'documents',
             'group_label' => 'navigation.documents',
@@ -613,6 +631,16 @@ return [
             'model' => '',
         ],
         [
+            'title' => 'navigation.quotes',
+            'link' => '/customer/quotes',
+            'icon' => '',
+            'name' => '',
+            'owner_only' => false,
+            'ability' => '',
+            'group' => '',
+            'model' => '',
+        ],
+        [
             'title' => 'navigation.payments',
             'link' => '/customer/payments',
             'icon' => '',
@@ -664,6 +692,7 @@ return [
     'custom_field_models' => [
         'Customer',
         'Estimate',
+        'Quote',
         'Invoice',
         'Payment',
         'Expense',

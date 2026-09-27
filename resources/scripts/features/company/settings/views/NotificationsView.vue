@@ -13,12 +13,14 @@ const isSaving = ref<boolean>(false)
 const settingsForm = reactive<{
   notify_invoice_viewed: string
   notify_estimate_viewed: string
+  notify_quote_viewed: string
   notification_email: string
 }>({
   notify_invoice_viewed:
     companyStore.selectedCompanySettings.notify_invoice_viewed ?? 'NO',
   notify_estimate_viewed:
     companyStore.selectedCompanySettings.notify_estimate_viewed ?? 'NO',
+  notify_quote_viewed: String(companyStore.selectedCompanySettings.notify_quote_viewed ?? 'NO'),
   notification_email:
     companyStore.selectedCompanySettings.notification_email ?? '',
 })
@@ -56,6 +58,19 @@ const estimateViewedField = computed<boolean>({
 
     await companyStore.updateCompanySettings({
       data: { settings: { notify_estimate_viewed: value } },
+      message: 'general.setting_updated',
+    })
+  },
+})
+
+const quoteViewedField = computed<boolean>({
+  get: () => settingsForm.notify_quote_viewed === 'YES',
+  set: async (newValue: boolean) => {
+    const value = newValue ? 'YES' : 'NO'
+    settingsForm.notify_quote_viewed = value
+
+    await companyStore.updateCompanySettings({
+      data: { settings: { notify_quote_viewed: value } },
       message: 'general.setting_updated',
     })
   },
@@ -136,6 +151,12 @@ async function submitForm(): Promise<void> {
         v-model="estimateViewedField"
         :title="$t('settings.notification.estimate_viewed')"
         :description="$t('settings.notification.estimate_viewed_desc')"
+      />
+
+      <BaseSwitchSection
+        v-model="quoteViewedField"
+        :title="$t('settings.notification.quote_viewed')"
+        :description="$t('settings.notification.quote_viewed_desc')"
       />
     </div>
   </BaseSettingCard>

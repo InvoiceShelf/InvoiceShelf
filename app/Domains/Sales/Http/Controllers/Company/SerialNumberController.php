@@ -6,6 +6,7 @@ use App\Domains\Receivables\Models\Payment;
 use App\Domains\Sales\Application\SerialNumberService;
 use App\Domains\Sales\Models\Estimate;
 use App\Domains\Sales\Models\Invoice;
+use App\Domains\Sales\Models\Quote;
 use App\Platform\Http\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -48,6 +49,10 @@ class SerialNumberController extends Controller
             case 'estimate':
                 $serial->setModel($estimate);
 
+                break;
+
+            case 'quote':
+                $serial->setModel(new Quote);
                 break;
 
             case 'payment':

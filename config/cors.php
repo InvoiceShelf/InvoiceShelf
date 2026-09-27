@@ -35,6 +35,7 @@ return [
         'reports/*',
         'invoices/pdf/*',
         'estimates/pdf/*',
+        'quotes/pdf/*',
         'payments/pdf/*',
         'mcp',
     ],

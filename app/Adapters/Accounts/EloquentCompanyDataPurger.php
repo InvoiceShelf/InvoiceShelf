@@ -5,12 +5,15 @@ namespace App\Adapters\Accounts;
 use App\Domains\Accounts\Contracts\CompanyDataPurger;
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Receivables\Models\PaymentAllocation;
+use App\Domains\Sales\Application\QuoteService;
 use Illuminate\Database\Eloquent\Model;
 
 class EloquentCompanyDataPurger implements CompanyDataPurger
 {
     public function purge(Company $company): void
     {
+
+        $company->quotes->each(fn ($quote) => app(QuoteService::class)->delete($quote));
         $company->exchangeRateLogs()->delete();
         $company->exchangeRateProviders()->delete();
         $company->expenses->each->delete();

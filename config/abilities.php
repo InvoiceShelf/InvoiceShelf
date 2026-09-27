@@ -9,6 +9,7 @@ use App\Domains\Purchases\Models\Expense;
 use App\Domains\Receivables\Models\Payment;
 use App\Domains\Sales\Models\Estimate;
 use App\Domains\Sales\Models\Invoice;
+use App\Domains\Sales\Models\Quote;
 use App\Domains\Sales\Models\RecurringInvoice;
 use App\Domains\Taxation\Models\TaxType;
 
@@ -168,6 +169,52 @@ return [
             'name' => 'send estimate',
             'ability' => 'send-estimate',
             'model' => Estimate::class,
+        ],
+
+        // Quote
+        [
+            'name' => 'view quote',
+            'ability' => 'view-quote',
+            'model' => Quote::class,
+        ],
+        [
+            'name' => 'create quote',
+            'ability' => 'create-quote',
+            'model' => Quote::class,
+            'depends_on' => [
+                'view-quote',
+                'view-item',
+                'view-tax-type',
+                'view-customer',
+                'view-custom-field',
+                'view-all-notes',
+            ],
+        ],
+        [
+            'name' => 'edit quote',
+            'ability' => 'edit-quote',
+            'model' => Quote::class,
+            'depends_on' => [
+                'view-item',
+                'view-quote',
+                'view-tax-type',
+                'view-customer',
+                'view-custom-field',
+                'view-all-notes',
+            ],
+        ],
+        [
+            'name' => 'delete quote',
+            'ability' => 'delete-quote',
+            'model' => Quote::class,
+            'depends_on' => [
+                'view-quote',
+            ],
+        ],
+        [
+            'name' => 'send quote',
+            'ability' => 'send-quote',
+            'model' => Quote::class,
         ],
 
         // Invoice

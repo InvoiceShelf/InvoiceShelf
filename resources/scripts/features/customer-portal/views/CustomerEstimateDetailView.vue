@@ -9,8 +9,8 @@
       <BasePageHeader :title="pageTitle">
         <BaseBreadcrumb>
           <BaseBreadcrumbItem
-            :title="$t('estimates.estimate', 2)"
-            :to="`/${store.companySlug}/customer/estimates`"
+            :title="t('estimates.estimate', 2)"
+            :to="`/${store.companySlug}/customer/${kind}s`"
           />
         </BaseBreadcrumb>
 
@@ -20,25 +20,25 @@
           </BaseEstimateStatusBadge>
         </div>
 
-        <template v-if="currentEstimate?.status === 'DRAFT'" #actions>
+        <template v-if="currentEstimate && ['DRAFT', 'SENT', 'VIEWED'].includes(currentEstimate.status)" #actions>
           <BaseButton variant="white" @click="rejectEstimate">
-            {{ $t('estimates.reject_estimate') }}
+            {{ t('estimates.reject_estimate') }}
           </BaseButton>
           <BaseButton variant="primary" @click="acceptEstimate">
-            {{ $t('estimates.accept_estimate') }}
+            {{ t('estimates.accept_estimate') }}
           </BaseButton>
         </template>
       </BasePageHeader>
 
       <!-- What the estimate says, without opening it -->
       <BaseStatStrip v-if="currentEstimate" :columns="3">
-        <BaseStat :label="$t('estimates.total')" emphasis>
+        <BaseStat :label="t('estimates.total')" emphasis>
           <BaseFormatMoney :amount="currentEstimate.total" :currency="currentEstimate.currency" />
         </BaseStat>
-        <BaseStat :label="$t('reports.estimates.estimate_date')">
+        <BaseStat :label="t('reports.estimates.estimate_date')">
           {{ currentEstimate.formatted_estimate_date }}
         </BaseStat>
-        <BaseStat :label="$t('estimates.expiry_date')">
+        <BaseStat :label="t('estimates.expiry_date')">
           <span :class="currentEstimate.status === 'EXPIRED' ? 'text-status-red' : ''">
             {{ currentEstimate.formatted_expiry_date || '-' }}
           </span>
@@ -58,17 +58,17 @@
       :sort-options="sortOptions"
       :sort-field="searchData.orderByField"
       :ascending="isAscending"
-      :empty="!store.estimates.length"
-      :empty-text="$t('estimates.no_matching_estimates')"
+      :empty="!store[kind === 'quote' ? 'quotes' : 'estimates'].length"
+      :empty-text="t('estimates.no_matching_estimates')"
       @update:search="onSearchText"
       @update:sort-field="setSortField"
       @toggle-order="sortData"
     >
       <RecordListItem
-        v-for="est in store.estimates"
+        v-for="est in store[kind === 'quote' ? 'quotes' : 'estimates']"
         :id="'estimate-' + est.id"
         :key="est.id"
-        :to="`/${store.companySlug}/customer/estimates/${est.id}/view`"
+        :to="`/${store.companySlug}/customer/${kind}s/${est.id}/view`"
         :active="hasActiveUrl(est.id)"
         :title="est.estimate_number"
         :meta="est.formatted_estimate_date"
@@ -89,7 +89,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
+import { useProposalContext } from '@/scripts/features/company/estimates/use-proposal-context'
 import { useDebounceFn } from '@vueuse/core'
 import { useCustomerPortalStore } from '../store'
 import RecordListPane from '@/scripts/components/layout/RecordListPane.vue'
@@ -103,7 +103,11 @@ const store = useCustomerPortalStore()
 const dialogStore = useDialogStore()
 const route = useRoute()
 const router = useRouter()
-const { t } = useI18n()
+const { t, kind } = useProposalContext()
+const fetchEstimates = (input: Parameters<typeof store.fetchEstimates>[0]) => store.fetchEstimates(input, kind)
+const fetchViewEstimate = (input: Parameters<typeof store.fetchViewEstimate>[0]) => store.fetchViewEstimate(input, kind)
+const searchEstimates = (input: Parameters<typeof store.searchEstimates>[0]) => store.searchEstimates(input, kind)
+const updateEstimateStatus = (id: number | string, status: EstimateStatus) => store.updateEstimateStatus(id, status, kind)
 
 const estimate = ref<Partial<Estimate>>({})
 const listPane = ref<InstanceType<typeof RecordListPane> | null>(null)
@@ -119,10 +123,10 @@ const searchData = reactive<{
 })
 
 const pageTitle = computed<string>(() => {
-  return store.selectedViewEstimate?.estimate_number ?? ''
+  return store[kind === 'quote' ? 'selectedViewQuote' : 'selectedViewEstimate']?.estimate_number ?? ''
 })
 
-const currentEstimate = computed<Estimate | null>(() => store.selectedViewEstimate)
+const currentEstimate = computed<Estimate | null>(() => store[kind === 'quote' ? 'selectedViewQuote' : 'selectedViewEstimate'])
 
 const sortOptions = computed(() => [
   { value: 'estimate_date', label: t('reports.estimates.estimate_date') },
@@ -136,7 +140,7 @@ const isAscending = computed<boolean>(() => {
 
 const shareableLink = computed<string | false>(() => {
   return estimate.value.unique_hash
-    ? `/estimates/pdf/${estimate.value.unique_hash}`
+    ? `/${kind}s/pdf/${estimate.value.unique_hash}`
     : false
 })
 
@@ -144,9 +148,9 @@ watch(() => route.params.id, () => {
   loadEstimate()
 })
 
-onMounted(() => {
-  loadEstimates()
-  loadEstimate()
+onMounted(async () => {
+  await loadEstimate()
+  await loadEstimates()
 })
 
 function hasActiveUrl(id: number): boolean {
@@ -154,14 +158,14 @@ function hasActiveUrl(id: number): boolean {
 }
 
 async function loadEstimates(): Promise<void> {
-  await store.fetchEstimates({ limit: 'all' })
+  await fetchEstimates({ limit: 'all' })
   setTimeout(() => scrollToEstimate(), 500)
 }
 
 async function loadEstimate(): Promise<void> {
   const id = route.params.id
   if (!id) return
-  const response = await store.fetchViewEstimate(id as string)
+  const response = await fetchViewEstimate(id as string)
   if (response.data?.data) {
     estimate.value = response.data.data
   }
@@ -182,7 +186,7 @@ async function onSearch(): Promise<void> {
   if (searchData.estimate_number) params.estimate_number = searchData.estimate_number
   if (searchData.orderBy) params.orderBy = searchData.orderBy
   if (searchData.orderByField) params.orderByField = searchData.orderByField
-  await store.searchEstimates(params)
+  await searchEstimates(params)
 }
 
 const onSearchDebounced = useDebounceFn(onSearch, 500)
@@ -209,17 +213,17 @@ function acceptEstimate(): void {
       message: t('estimates.confirm_mark_as_accepted', 1),
       yesLabel: t('general.ok'),
       noLabel: t('general.cancel'),
-      variant: 'danger',
+      variant: 'primary',
       hideNoButton: false,
       size: 'lg',
     })
     .then(async (res: boolean) => {
       if (res) {
-        await store.updateEstimateStatus(
+        await updateEstimateStatus(
           route.params.id as string,
           EstimateStatus.ACCEPTED,
         )
-        router.push({ name: 'customer-portal.estimates' })
+        router.push({ name: `customer-portal.${kind}s` })
       }
     })
 }
@@ -237,11 +241,11 @@ function rejectEstimate(): void {
     })
     .then(async (res: boolean) => {
       if (res) {
-        await store.updateEstimateStatus(
+        await updateEstimateStatus(
           route.params.id as string,
           EstimateStatus.REJECTED,
         )
-        router.push({ name: 'customer-portal.estimates' })
+        router.push({ name: `customer-portal.${kind}s` })
       }
     })
 }

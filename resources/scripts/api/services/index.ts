@@ -1,7 +1,7 @@
 export { authService } from './auth.service'
 export { bootstrapService } from './bootstrap.service'
 export { invoiceService } from './invoice.service'
-export { estimateService } from './estimate.service'
+export { estimateService, quoteService } from './estimate.service'
 export { recurringInvoiceService } from './recurring-invoice.service'
 export { customerService } from './customer.service'
 export { paymentService } from './payment.service'

@@ -19,7 +19,7 @@ class CatchUp extends Command
 {
     public const LAST_RUN_SETTING = 'daily_sweeps_ran_on';
 
-    public const SWEEPS = ['check:invoices:status', 'check:estimates:status'];
+    public const SWEEPS = ['check:invoices:status', 'check:estimates:status', 'check:quotes:status'];
 
     protected $signature = 'invoiceshelf:catch-up {--force : Run the sweeps even if they already ran today}';
 

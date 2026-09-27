@@ -60,6 +60,7 @@ export const API = {
 
   // Estimates
   ESTIMATES: '/api/v1/estimates',
+  QUOTES: '/api/v1/quotes',
   ESTIMATES_DELETE: '/api/v1/estimates/delete',
   ESTIMATE_TEMPLATES: '/api/v1/estimates/templates',
 

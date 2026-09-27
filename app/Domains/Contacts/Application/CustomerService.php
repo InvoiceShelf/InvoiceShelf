@@ -55,7 +55,7 @@ class CustomerService
         ?array $billingAddress = null,
         ?iterable $customFields = null,
     ): Customer {
-        $hasCurrencyLockedActivity = $customer->estimates()->exists()
+        $hasCurrencyLockedActivity = $customer->quotes()->exists() || $customer->estimates()->exists()
             || $customer->invoices()->exists()
             || $customer->payments()->exists()
             || $customer->recurringInvoices()->exists();

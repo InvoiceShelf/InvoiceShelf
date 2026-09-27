@@ -23,7 +23,8 @@
     "menu": "Menu",
     "account_settings": "Account settings",
     "account_menu": "Account menu for {name}",
-    "source_code": "Source code"
+    "source_code": "Source code",
+    "quotes": "Quotes"
   },
   "general": {
     "add_company": "Add Company",
@@ -211,7 +212,8 @@
       "customers": "Customer | Customers",
       "invoices": "Invoice | Invoices",
       "estimates": "Estimate | Estimates",
-      "payments": "Payment | Payments"
+      "payments": "Payment | Payments",
+      "quotes": "Quote | Quotes"
     },
     "chart_info": {
       "total_sales": "Sales",
@@ -271,7 +273,19 @@
     "counts": {
       "customers": "customer | customers",
       "invoices": "invoice | invoices",
-      "estimates": "estimate | estimates"
+      "estimates": "estimate | estimates",
+      "quotes": "quote | quotes"
+    },
+    "recent_quote_card": {
+      "title": "Recent quotes",
+      "date": "Date",
+      "customer": "Customer",
+      "amount_due": "Amount",
+      "actions": "Actions",
+      "view_all": "View all",
+      "empty_title": "No quotes yet",
+      "empty_description": "Quotes you send show up here.",
+      "portal_empty_description": "Quotes sent to you show up here."
     }
   },
   "tax_types": {
@@ -417,7 +431,8 @@
     "apply_credit_description": "Choose the available payment credit and invoices to settle. Amounts are only applied when you confirm.",
     "statement_sent": "Statement sent successfully",
     "credit_applied": "Customer credit applied successfully",
-    "statement_email_body": "Please find your account statement attached."
+    "statement_email_body": "Please find your account statement attached.",
+    "quote_prefix": "Quote Prefix"
   },
   "items": {
     "title": "Items",
@@ -676,7 +691,9 @@
     "marked_as_sent_message": "Invoice marked as sent successfully",
     "something_went_wrong": "something went wrong",
     "invalid_due_amount_message": "Total Invoice amount cannot be less than total paid amount for this Invoice. Please update the invoice or delete the associated payments to continue.",
-    "mark_as_default_invoice_template_description": "If enabled, the selected template will be automatically selected for new invoices."
+    "mark_as_default_invoice_template_description": "If enabled, the selected template will be automatically selected for new invoices.",
+    "convert_to_quote": "Convert to Quote",
+    "confirm_convert_to_quote": "This invoice will be converted into a new Quote"
   },
   "recurring_invoices": {
     "title": "Recurring Invoices",
@@ -1249,6 +1266,16 @@
       "to_date": "To Date",
       "from_date": "From Date",
       "date_range": "Select Date Range"
+    },
+    "quotes": {
+      "quote": "Quote",
+      "quote_date": "Quote Date",
+      "due_date": "Due Date",
+      "quote_number": "Quote Number",
+      "ref_number": "Ref Number",
+      "amount": "Amount",
+      "contact_name": "Contact Name",
+      "status": "Status"
     }
   },
   "pdf": {
@@ -1468,7 +1495,8 @@
         "payment": "Payment",
         "item": "Item",
         "company": "Company",
-        "user": "User"
+        "user": "User",
+        "quote": "Quote"
       },
       "show_on_document": "Show on document",
       "show_on_document_description": "Print this field on the invoice, estimate or receipt it belongs to.",
@@ -1626,12 +1654,38 @@
         "types": {
           "estimate": "Estimate",
           "invoice": "Invoice",
-          "payment": "Payment"
+          "payment": "Payment",
+          "quote": "Quote"
         },
         "empty_title": "No notes yet",
         "empty_description": "Save text you use often, like payment terms, and insert it into any document."
       },
-      "reorder_component": "Move {name}, {position} of {count}. Use the up and down arrow keys"
+      "reorder_component": "Move {name}, {position} of {count}. Use the up and down arrow keys",
+      "quotes": {
+        "title": "Quotes",
+        "quote_number_format": "Quote Number Format",
+        "quote_number_format_description": "Customize how your quote number gets generated automatically when you create a new quote.",
+        "preview_quote_number": "Preview Quote Number",
+        "expiry_date": "Expiry Date",
+        "expiry_date_description": "Specify how expiry date is automatically set when you create an quote.",
+        "expiry_date_days": "Quote Expires after days",
+        "set_expiry_date_automatically": "Set Expiry Date Automatically",
+        "set_expiry_date_automatically_description": "Enable this if you wish to set expiry date automatically when you create a new quote.",
+        "default_formats": "Default Formats",
+        "default_formats_description": "Below given formats are used to fill up the fields automatically on quote creation.",
+        "default_quote_email_body": "Default Quote Email Body",
+        "company_address_format": "Company Address Format",
+        "shipping_address_format": "Shipping Address Format",
+        "billing_address_format": "Billing Address Format",
+        "quote_email_attachment": "Send quotes as attachments",
+        "quote_email_attachment_setting_description": "Enable this if you want to send the quotes as an email attachment. Please note that 'View Quote' button in emails will not be displayed anymore when enabled.",
+        "quote_settings_updated": "Quote Settings updated successfully",
+        "convert_quote_options": "Quote Convert Action",
+        "convert_quote_description": "Specify what happens to the quote after it gets converted to an invoice.",
+        "no_action": "No action",
+        "delete_quote": "Delete quote",
+        "mark_quote_as_accepted": "Mark quote as accepted"
+      }
     },
     "account_settings": {
       "profile_picture": "Profile Photo",
@@ -1666,7 +1720,9 @@
       "estimate_viewed_desc": "When your customer views the estimate sent via invoiceshelf dashboard.",
       "save": "Save",
       "email_save_message": "Email saved successfully",
-      "please_enter_email": "Please Enter Email"
+      "please_enter_email": "Please Enter Email",
+      "quote_viewed": "Quote viewed",
+      "quote_viewed_desc": "When your customer views the quote sent via invoiceshelf dashboard."
     },
     "roles": {
       "title": "Company Roles",
@@ -2242,7 +2298,8 @@
     "api_error": "Server not responding.",
     "feature_not_enabled": "Feature not enabled.",
     "request_limit_met": "Api request limit exceeded.",
-    "address_incomplete": "Incomplete Address"
+    "address_incomplete": "Incomplete Address",
+    "quote_number_used": "The quote number has already been taken."
   },
   "pdf_estimate_label": "Estimate",
   "pdf_estimate_number": "Estimate Number",
@@ -2386,5 +2443,113 @@
     "blocked": "Your hosting provider manages this setting.",
     "modules_note": "Your hosting provider installs and updates modules for this account.",
     "paid_modules_note": "Paid modules are not available on this hosted account yet."
-  }
+  },
+  "quotes": {
+    "title": "Quotes",
+    "accept_quote": "Accept Quote",
+    "reject_quote": "Reject Quote",
+    "quote": "Quote | Quotes",
+    "quotes_list": "Quotes List",
+    "days": "{days} Days",
+    "months": "{months} Month",
+    "years": "{years} Year",
+    "all": "All",
+    "paid": "Paid",
+    "unpaid": "Unpaid",
+    "customer": "Customer",
+    "ref_no": "Ref no.",
+    "number": "Number",
+    "amount_due": "Amount due",
+    "partially_paid": "Partially Paid",
+    "total": "Total",
+    "discount": "Discount",
+    "sub_total": "Sub Total",
+    "net_total": "Net",
+    "quote_number": "Quote Number",
+    "ref_number": "Ref Number",
+    "contact": "Contact",
+    "add_item": "Add an Item",
+    "date": "Date",
+    "due_date": "Due Date",
+    "expiry_date": "Expiry Date",
+    "status": "Status",
+    "add_tax": "Add Tax",
+    "amount": "Amount",
+    "action": "Action",
+    "notes": "Notes",
+    "tax": "Tax",
+    "quote_template": "Template",
+    "convert_to_invoice": "Convert to Invoice",
+    "mark_as_sent": "Mark as Sent",
+    "send_quote": "Send Quote",
+    "resend_quote": "Resend Quote",
+    "record_payment": "Record Payment",
+    "allocated_payments": "Allocated Payments",
+    "add_quote": "Add Quote",
+    "save_quote": "Save Quote",
+    "cloned_successfully": "Quote cloned successfully",
+    "clone_quote": "Clone Quote",
+    "confirm_clone": "This Quote will be cloned into a new Quote",
+    "confirm_conversion": "This quote will be used to create a new Invoice.",
+    "conversion_message": "Invoice created successful",
+    "confirm_send_quote": "This quote will be sent via email to the customer",
+    "confirm_mark_as_sent": "This quote will be marked as sent",
+    "confirm_mark_as_accepted": "This quote will be marked as Accepted",
+    "confirm_mark_as_rejected": "This quote will be marked as Rejected",
+    "no_matching_quotes": "No quotes match these filters",
+    "mark_as_sent_successfully": "Quote marked as sent successfully",
+    "send_quote_successfully": "Quote sent successfully",
+    "errors": {
+      "required": "Field is required"
+    },
+    "accepted": "Accepted",
+    "rejected": "Rejected",
+    "expired": "Expired",
+    "sent": "Sent",
+    "draft": "Draft",
+    "viewed": "Viewed",
+    "declined": "Declined",
+    "new_quote": "New Quote",
+    "add_new_quote": "Add New Quote",
+    "update_Quote": "Update Quote",
+    "edit_quote": "Edit Quote",
+    "items": "items",
+    "Quote": "Quote | Quotes",
+    "add_new_tax": "Add New Tax",
+    "no_quotes": "No quotes yet",
+    "empty_description": "Send a quote, then turn it into an invoice once it's accepted.",
+    "portal_empty_description": "Quotes sent to you will show up here.",
+    "list_of_quotes": "This section will contain the list of quotes.",
+    "mark_as_rejected": "Mark as rejected",
+    "mark_as_accepted": "Mark as accepted",
+    "marked_as_accepted_message": "Quote marked as accepted",
+    "marked_as_rejected_message": "Quote marked as rejected",
+    "confirm_delete": "You will not be able to recover this Quote | You will not be able to recover these Quotes",
+    "created_message": "Quote created successfully",
+    "updated_message": "Quote updated successfully",
+    "deleted_message": "Quote deleted successfully | Quotes deleted successfully",
+    "something_went_wrong": "something went wrong",
+    "item": {
+      "title": "Item Title",
+      "description": "Description",
+      "quantity": "Quantity",
+      "price": "Price",
+      "discount": "Discount",
+      "total": "Total",
+      "total_discount": "Total Discount",
+      "sub_total": "Sub Total",
+      "tax": "Tax",
+      "amount": "Amount",
+      "select_an_item": "Type or click to select an item",
+      "type_item_description": "Type Item Description (optional)"
+    },
+    "mark_as_default_quote_template_description": "If enabled, the selected template will be automatically selected for new quotes."
+  },
+  "pdf_quote_label": "Quote",
+  "pdf_quote_number": "Quote Number",
+  "pdf_quote_date": "Quote Date",
+  "pdf_quote_expire_date": "Expiry Date",
+  "mail_view_quote": "View Quote",
+  "mail_viewed_quote": ":name viewed this Quote.",
+  "notification_view_quote": "[Notification] Quote viewed"
 }

@@ -3,31 +3,31 @@
     <form @submit.prevent="submitForm">
       <BasePageHeader :title="pageTitle">
         <BaseBreadcrumb>
-          <BaseBreadcrumbItem :title="$t('general.home')" to="/admin/dashboard" />
+          <BaseBreadcrumbItem :title="t('general.home')" to="/admin/dashboard" />
           <BaseBreadcrumbItem
-            :title="$t('estimates.estimate', 2)"
-            to="/admin/estimates"
+            :title="t('estimates.estimate', 2)"
+            :to="`${basePath}`"
           />
           <BaseBreadcrumbItem
             v-if="isEdit"
-            :title="$t('estimates.edit_estimate')"
+            :title="t('estimates.edit_estimate')"
             to="#"
             active
           />
-          <BaseBreadcrumbItem v-else :title="$t('estimates.new_estimate')" to="#" active />
+          <BaseBreadcrumbItem v-else :title="t('estimates.new_estimate')" to="#" active />
         </BaseBreadcrumb>
 
         <!-- Phones get these in the bottom bar instead -->
         <template v-if="!isPhone" #actions>
           <router-link
             v-if="isEdit"
-            :to="`/estimates/pdf/${estimateStore.newEstimate.unique_hash}`"
+            :to="`/${kind}s/pdf/${estimateStore.newEstimate.unique_hash}`"
             target="_blank"
             class="inline-flex rounded-lg me-3"
           >
             <BaseButton tag="span" variant="primary-outline">
               <span class="flex">
-                {{ $t('general.view_pdf') }}
+                {{ t('general.view_pdf') }}
               </span>
             </BaseButton>
           </router-link>
@@ -46,7 +46,7 @@
                 name="ArrowDownOnSquareIcon"
               />
             </template>
-            {{ $t('estimates.save_estimate') }}
+            {{ t('estimates.save_estimate') }}
           </BaseButton>
         </template>
       </BasePageHeader>
@@ -54,10 +54,10 @@
       <DocumentFormActionBar
         :total="estimateStore.getTotal"
         :currency="estimateStore.newEstimate.selectedCurrency"
-        :save-label="$t('estimates.save_estimate')"
+        :save-label="t('estimates.save_estimate')"
         :saving="isSaving"
         :loading="isLoadingContent"
-        :pdf-url="isEdit ? `/estimates/pdf/${estimateStore.newEstimate.unique_hash}` : null"
+        :pdf-url="isEdit ? `/${kind}s/pdf/${estimateStore.newEstimate.unique_hash}` : null"
       />
 
       <!-- Select Customer & Basic Fields -->
@@ -88,7 +88,7 @@
               :store="estimateStore"
               store-prop="newEstimate"
               :fields="estimateNoteFieldList"
-              type="Estimate"
+              :type="modelType"
             />
 
             <!-- Estimate Template Button -->
@@ -105,7 +105,7 @@
             :is-loading="isLoadingContent"
             :store="estimateStore"
             store-prop="newEstimate"
-            tax-popup-type="estimate"
+            tax-popup-:type="kind"
           />
         </div>
       </BaseScrollPane>
@@ -116,7 +116,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
 import cloneDeep from 'lodash/cloneDeep'
 import {
   required,
@@ -126,7 +125,7 @@ import {
   decimal,
 } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
-import { useEstimateStore } from '../store'
+import { useProposalStore, useProposalContext } from '../use-proposal-context'
 import { useCompanyStore } from '@/scripts/stores/company.store'
 import { useNotificationStore } from '@/scripts/stores/notification.store'
 import { useBreakpoints } from '@/scripts/composables/use-breakpoints'
@@ -144,10 +143,12 @@ import {
   SelectTemplateModal,
 } from '../../../shared/document-form'
 
-const estimateStore = useEstimateStore()
+const { kind, t, basePath, modelType } = useProposalContext()
+
+const estimateStore = useProposalStore()
 const companyStore = useCompanyStore()
 const notificationStore = useNotificationStore()
-const { t } = useI18n()
+
 const route = useRoute()
 const router = useRouter()
 const { isPhone } = useBreakpoints()
@@ -156,7 +157,7 @@ const estimateValidationScope = 'newEstimate'
 const isSaving = ref<boolean>(false)
 const isMarkAsDefault = ref<boolean>(false)
 
-const estimateNoteFieldList = ref<string[]>(['customer', 'company', 'estimate'])
+const estimateNoteFieldList = ref<string[]>(['customer', 'company', kind])
 
 const isLoadingContent = computed<boolean>(
   () => estimateStore.isFetchingInitialSettings,
@@ -166,7 +167,7 @@ const pageTitle = computed<string>(() =>
   isEdit.value ? t('estimates.edit_estimate') : t('estimates.new_estimate'),
 )
 
-const isEdit = computed<boolean>(() => route.name === 'estimates.edit')
+const isEdit = computed<boolean>(() => route.name === `${kind}s.edit`)
 
 const rules = {
   estimate_date: {
@@ -254,7 +255,7 @@ async function submitForm(): Promise<void> {
 
     const res = await action(data)
     if (res.data.data) {
-      router.push(`/admin/estimates/${res.data.data.id}/view`)
+      router.push(`${basePath}/${res.data.data.id}/view`)
     }
   } catch (err: unknown) {
     const normalized = handleApiError(err)

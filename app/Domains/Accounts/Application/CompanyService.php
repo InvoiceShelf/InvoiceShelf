@@ -32,6 +32,8 @@ class CompanyService
 
     private const ESTIMATE_MAIL_BODY = 'You have received a new estimate from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:';
 
+    private const QUOTE_MAIL_BODY = 'You have received a new quote from <b>{COMPANY_NAME}</b>.</br> Please download using the button below:';
+
     private const PAYMENT_MAIL_BODY = 'Thank you for the payment.</b></br> Please download your payment receipt using the button below:';
 
     /** Address blocks printed on the documents; placeholders filled at render. */
@@ -158,13 +160,17 @@ class CompanyService
         CompanySetting::setSettings([
             'invoice_mail_body' => self::INVOICE_MAIL_BODY,
             'estimate_mail_body' => self::ESTIMATE_MAIL_BODY,
+            'quote_mail_body' => self::QUOTE_MAIL_BODY,
             'payment_mail_body' => self::PAYMENT_MAIL_BODY,
             'invoice_company_address_format' => self::COMPANY_ADDRESS_FORMAT,
             'invoice_shipping_address_format' => self::SHIPPING_ADDRESS_FORMAT,
             'invoice_billing_address_format' => self::BILLING_ADDRESS_FORMAT,
             'estimate_company_address_format' => self::COMPANY_ADDRESS_FORMAT,
+            'quote_company_address_format' => self::COMPANY_ADDRESS_FORMAT,
             'estimate_shipping_address_format' => self::SHIPPING_ADDRESS_FORMAT,
+            'quote_shipping_address_format' => self::SHIPPING_ADDRESS_FORMAT,
             'estimate_billing_address_format' => self::BILLING_ADDRESS_FORMAT,
+            'quote_billing_address_format' => self::BILLING_ADDRESS_FORMAT,
             'payment_company_address_format' => self::COMPANY_ADDRESS_FORMAT,
             'payment_from_customer_address_format' => self::PAYMENT_CUSTOMER_ADDRESS_FORMAT,
             'currency' => $currencyId,
@@ -179,22 +185,28 @@ class CompanyService
             'notification_email' => 'noreply@invoiceshelf.com',
             'notify_invoice_viewed' => 'NO',
             'notify_estimate_viewed' => 'NO',
+            'notify_quote_viewed' => 'NO',
             'tax_per_item' => 'NO',
             'discount_per_item' => 'NO',
             'invoice_email_attachment' => 'NO',
             'estimate_email_attachment' => 'NO',
+            'quote_email_attachment' => 'NO',
             'payment_email_attachment' => 'NO',
             'retrospective_edits' => 'allow',
             'invoice_number_format' => '{{SERIES:INV}}{{DELIMITER:-}}{{SEQUENCE:6}}',
             'credit_note_number_format' => '{{SERIES:CN}}{{DELIMITER:-}}{{SEQUENCE:6}}',
             'estimate_number_format' => '{{SERIES:EST}}{{DELIMITER:-}}{{SEQUENCE:6}}',
+            'quote_number_format' => '{{SERIES:QUO}}{{DELIMITER:-}}{{SEQUENCE:6}}',
             'payment_number_format' => '{{SERIES:PAY}}{{DELIMITER:-}}{{SEQUENCE:6}}',
             'estimate_set_expiry_date_automatically' => 'YES',
+            'quote_set_expiry_date_automatically' => 'YES',
             'estimate_expiry_date_days' => 7,
+            'quote_expiry_date_days' => 7,
             'invoice_set_due_date_automatically' => 'YES',
             'invoice_due_date_days' => 7,
             'bulk_exchange_rate_configured' => 'YES',
             'estimate_convert_action' => 'no_action',
+            'quote_convert_action' => 'no_action',
             'automatically_expire_public_links' => 'YES',
             'link_expiry_days' => 7,
         ], $company->id);

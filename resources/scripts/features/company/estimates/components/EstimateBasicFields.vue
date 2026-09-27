@@ -3,7 +3,7 @@
     <BaseCustomerSelectPopup
       :valid="v.customer_id"
       :content-loading="isLoading"
-      type="estimate"
+      :type="kind"
       class="col-span-6 pe-0"
     />
 
@@ -11,7 +11,7 @@
       class="col-span-6 p-4 border glass rounded-xl md:p-5"
     >
       <BaseInputGroup
-        :label="$t('reports.estimates.estimate_date')"
+        :label="t('reports.estimates.estimate_date')"
         :content-loading="isLoading"
         required
         :error="v.estimate_date.$error && v.estimate_date.$errors[0].$message"
@@ -25,7 +25,7 @@
       </BaseInputGroup>
 
       <BaseInputGroup
-        :label="$t('estimates.expiry_date')"
+        :label="t('estimates.expiry_date')"
         :content-loading="isLoading"
       >
         <BaseDatePicker
@@ -37,7 +37,7 @@
       </BaseInputGroup>
 
       <BaseInputGroup
-        :label="$t('estimates.estimate_number')"
+        :label="t('estimates.estimate_number')"
         :content-loading="isLoading"
         required
         :error="
@@ -72,7 +72,7 @@
 
 <script setup lang="ts">
 import { ExchangeRateConverter } from '../../../shared/document-form'
-import { useEstimateStore } from '../store'
+import { useProposalStore, useProposalContext } from '../use-proposal-context'
 import CustomFieldInput from '@/scripts/features/shared/custom-fields/CustomFieldInput.vue'
 import { useCustomFields } from '@/scripts/features/shared/custom-fields/use-custom-fields'
 
@@ -88,19 +88,21 @@ interface Props {
   isEdit?: boolean
 }
 
+const { kind, t, modelType } = useProposalContext()
+
 const props = withDefaults(defineProps<Props>(), {
   isLoading: false,
   isEdit: false,
 })
 
-const estimateStore = useEstimateStore()
+const estimateStore = useProposalStore()
 
 const customFieldScope = 'newEstimate'
 
 const customFields = useCustomFields({
   store: estimateStore,
   storeProp: 'newEstimate',
-  type: 'Estimate',
+  type: modelType,
   isEdit: () => props.isEdit === true,
 })
 </script>

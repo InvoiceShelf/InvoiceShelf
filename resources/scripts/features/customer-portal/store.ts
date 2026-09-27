@@ -1,3 +1,4 @@
+import { mapProposalFields, type ProposalKind } from '@/scripts/api/services/proposal-fields'
 import { defineStore } from 'pinia'
 import { client } from '@/scripts/api/client'
 import type { Invoice } from '@/scripts/types/domain/invoice'
@@ -217,6 +218,9 @@ export interface CustomerPortalState {
   estimates: Estimate[]
   totalEstimates: number
   selectedViewEstimate: Estimate | null
+  quotes: Estimate[]
+  totalQuotes: number
+  selectedViewQuote: Estimate | null
 
   // Payments
   payments: Payment[]
@@ -255,6 +259,9 @@ export const useCustomerPortalStore = defineStore('customerPortal', {
     estimates: [],
     totalEstimates: 0,
     selectedViewEstimate: null,
+    quotes: [],
+    totalQuotes: 0,
+    selectedViewQuote: null,
 
     payments: [],
     totalPayments: 0,
@@ -358,48 +365,57 @@ export const useCustomerPortalStore = defineStore('customerPortal', {
 
     async fetchEstimates(
       params: PaginatedListParams,
+      kind: ProposalKind = 'estimate',
     ): Promise<{ data: PaginatedResponse<Estimate> }> {
-      const { data } = await client.get(
-        customerApi(this.companySlug, '/estimates'),
-        { params },
+      const { data: raw } = await client.get(
+        customerApi(this.companySlug, `/${kind}s`),
+        { params: mapProposalFields(params, 'estimate', kind) },
       )
-      this.estimates = data.data
+      const data = mapProposalFields(raw, kind, 'estimate')
+      this[kind === 'quote' ? 'quotes' : 'estimates'] = data.data
       if (data.meta?.estimateTotalCount !== undefined) {
-        this.totalEstimates = data.meta.estimateTotalCount
+        this[kind === 'quote' ? 'totalQuotes' : 'totalEstimates'] = data.meta.estimateTotalCount
       }
       return { data }
     },
 
-    async fetchViewEstimate(id: number | string): Promise<{ data: { data: Estimate } }> {
-      const { data } = await client.get(
-        customerApi(this.companySlug, `/estimates/${id}`),
+    async fetchViewEstimate(id: number | string, kind: ProposalKind = 'estimate'): Promise<{ data: { data: Estimate } }> {
+      const { data: raw } = await client.get(
+        customerApi(this.companySlug, `/${kind}s/${id}`),
       )
-      this.selectedViewEstimate = data.data
+      const data = mapProposalFields(raw, kind, 'estimate')
+      this[kind === 'quote' ? 'selectedViewQuote' : 'selectedViewEstimate'] = data.data
+      const documents = this[kind === 'quote' ? 'quotes' : 'estimates']
+      const index = documents.findIndex(document => document.id === Number(id))
+      if (index !== -1) documents[index] = data.data
       return { data }
     },
 
     async searchEstimates(
       params: PaginatedListParams,
+      kind: ProposalKind = 'estimate',
     ): Promise<Estimate[]> {
-      const { data } = await client.get(
-        customerApi(this.companySlug, '/estimates'),
-        { params },
+      const { data: raw } = await client.get(
+        customerApi(this.companySlug, `/${kind}s`),
+        { params: mapProposalFields(params, 'estimate', kind) },
       )
-      this.estimates = data.data ?? data
-      return this.estimates
+      const data = mapProposalFields(raw, kind, 'estimate')
+      this[kind === 'quote' ? 'quotes' : 'estimates'] = data.data ?? data
+      return this[kind === 'quote' ? 'quotes' : 'estimates']
     },
 
     async updateEstimateStatus(
       id: number | string,
       status: EstimateStatus,
+      kind: ProposalKind = 'estimate',
     ): Promise<void> {
       await client.post(
-        customerApi(this.companySlug, `/estimate/${id}/status`),
+        customerApi(this.companySlug, `/${kind}/${id}/status`),
         { status },
       )
-      const pos = this.estimates.findIndex((e) => e.id === Number(id))
+      const pos = this[kind === 'quote' ? 'quotes' : 'estimates'].findIndex((e) => e.id === Number(id))
       if (pos !== -1) {
-        this.estimates[pos].status = status
+        this[kind === 'quote' ? 'quotes' : 'estimates'][pos].status = status
       }
     },
 

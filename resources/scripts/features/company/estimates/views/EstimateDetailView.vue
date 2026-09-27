@@ -4,7 +4,7 @@
     <BasePage class="min-w-0">
       <BasePageHeader :title="pageTitle">
         <BaseBreadcrumb>
-          <BaseBreadcrumbItem :title="$t('estimates.estimate', 2)" to="/admin/estimates" />
+          <BaseBreadcrumbItem :title="t('estimates.estimate', 2)" :to="`${basePath}`" />
         </BaseBreadcrumb>
 
         <div class="flex flex-wrap items-center gap-1.5 mt-2">
@@ -21,7 +21,7 @@
             variant="white"
             @click="onMarkAsSent"
           >
-            {{ $t('estimates.mark_as_sent') }}
+            {{ t('estimates.mark_as_sent') }}
           </BaseButton>
 
           <BaseButton
@@ -33,7 +33,7 @@
             <template #left="slotProps">
               <BaseIcon name="PaperAirplaneIcon" :class="slotProps.class" />
             </template>
-            {{ $t('estimates.send_estimate') }}
+            {{ t('estimates.send_estimate') }}
           </BaseButton>
 
           <BaseButton
@@ -45,7 +45,7 @@
             <template #left="slotProps">
               <BaseIcon name="DocumentTextIcon" :class="slotProps.class" />
             </template>
-            {{ $t('estimates.convert_to_invoice') }}
+            {{ t('estimates.convert_to_invoice') }}
           </BaseButton>
 
           <EstimateDropdown
@@ -62,10 +62,10 @@
 
       <!-- What the document says, without opening it -->
       <BaseStatStrip :columns="4">
-        <BaseStat :label="$t('estimates.total')" emphasis>
+        <BaseStat :label="t('estimates.total')" emphasis>
           <BaseFormatMoney :amount="estimateData.total" :currency="documentCurrency" />
         </BaseStat>
-        <BaseStat :label="$t('estimates.customer')" wide>
+        <BaseStat :label="t('estimates.customer')" wide>
           <router-link
             v-if="estimateData.customer?.id"
             :to="`/admin/customers/${estimateData.customer.id}/view`"
@@ -74,10 +74,10 @@
             {{ estimateData.customer.name }}
           </router-link>
         </BaseStat>
-        <BaseStat :label="$t('reports.estimates.estimate_date')">
+        <BaseStat :label="t('reports.estimates.estimate_date')">
           {{ estimateData.formatted_estimate_date }}
         </BaseStat>
-        <BaseStat :label="$t('estimates.expiry_date')">
+        <BaseStat :label="t('estimates.expiry_date')">
           <span :class="estimateData.status === 'EXPIRED' ? 'text-status-red' : ''">
             {{ estimateData.formatted_expiry_date || '-' }}
           </span>
@@ -101,7 +101,7 @@
           <template #left="slotProps">
             <BaseIcon name="PaperAirplaneIcon" :class="slotProps.class" />
           </template>
-          {{ $t('estimates.send_estimate') }}
+          {{ t('estimates.send_estimate') }}
         </BaseButton>
         <BaseButton
           v-else-if="canConvert"
@@ -112,7 +112,7 @@
           <template #left="slotProps">
             <BaseIcon name="DocumentTextIcon" :class="slotProps.class" />
           </template>
-          {{ $t('estimates.convert_to_invoice') }}
+          {{ t('estimates.convert_to_invoice') }}
         </BaseButton>
         <!-- A draft is not out yet; the PDF is also on the document card above -->
         <BaseButton
@@ -122,13 +122,13 @@
           class="flex-1"
           @click="onMarkAsSent"
         >
-          {{ $t('estimates.mark_as_sent') }}
+          {{ t('estimates.mark_as_sent') }}
         </BaseButton>
         <BaseButton v-else variant="white" class="flex-1" @click="openPdf">
           <template #left="slotProps">
             <BaseIcon name="ArrowUpOnSquareIcon" :class="slotProps.class" />
           </template>
-          {{ $t('pdf.open_pdf') }}
+          {{ t('pdf.open_pdf') }}
         </BaseButton>
         <EstimateDropdown
           :row="estimateData"
@@ -151,7 +151,7 @@
       :ascending="getOrderBy"
       :loading="isLoading"
       :empty="!estimateList?.length"
-      :empty-text="$t('estimates.no_matching_estimates')"
+      :empty-text="t('estimates.no_matching_estimates')"
       @update:search="onSearchText"
       @update:sort-field="setSortField"
       @toggle-order="sortData"
@@ -160,7 +160,7 @@
         v-for="estimate in (estimateList ?? []).filter(Boolean)"
         :id="'estimate-' + estimate.id"
         :key="estimate.id"
-        :to="`/admin/estimates/${estimate.id}/view`"
+        :to="`${basePath}/${estimate.id}/view`"
         :active="hasActiveUrl(estimate.id)"
         :title="estimate.customer?.name ?? ''"
         :subtitle="estimate.estimate_number"
@@ -184,8 +184,7 @@
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
-import { useEstimateStore } from '../store'
+import { useProposalStore, useProposalContext } from '../use-proposal-context'
 import EstimateDropdown from '../components/EstimateDropdown.vue'
 import SendEstimateModal from '../components/SendEstimateModal.vue'
 import RecordListPane from '@/scripts/components/layout/RecordListPane.vue'
@@ -207,6 +206,8 @@ interface Props {
   canCreateInvoice?: boolean
 }
 
+const { kind, t, basePath } = useProposalContext()
+
 const props = withDefaults(defineProps<Props>(), {
   canEdit: false,
   canView: false,
@@ -217,19 +218,19 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const ABILITIES = {
-  EDIT: 'edit-estimate',
-  VIEW: 'view-estimate',
-  CREATE: 'create-estimate',
-  DELETE: 'delete-estimate',
-  SEND: 'send-estimate',
+  EDIT: `edit-${kind}`,
+  VIEW: `view-${kind}`,
+  CREATE: `create-${kind}`,
+  DELETE: `delete-${kind}`,
+  SEND: `send-${kind}`,
   CREATE_INVOICE: 'create-invoice',
 } as const
 
-const estimateStore = useEstimateStore()
+const estimateStore = useProposalStore()
 const userStore = useUserStore()
 const dialogStore = useDialogStore()
 const modalStore = useModalStore()
-const { t } = useI18n()
+
 const route = useRoute()
 const router = useRouter()
 
@@ -316,11 +317,11 @@ const getOrderBy = computed<boolean>(() => {
 })
 
 const shareableLink = computed<string>(() => {
-  return `/estimates/pdf/${estimateData.value?.unique_hash ?? ''}`
+  return `/${kind}s/pdf/${estimateData.value?.unique_hash ?? ''}`
 })
 
 watch(route, (to) => {
-  if (to.name === 'estimates.view') {
+  if (to.name === `${kind}s.view`) {
     loadEstimate()
   }
 })

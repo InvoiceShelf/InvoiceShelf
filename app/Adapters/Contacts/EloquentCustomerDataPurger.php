@@ -5,6 +5,7 @@ namespace App\Adapters\Contacts;
 use App\Domains\Contacts\Contracts\CustomerDataPurger;
 use App\Domains\Contacts\Models\Customer;
 use App\Domains\Receivables\Models\PaymentAllocation;
+use App\Domains\Sales\Application\QuoteService;
 use App\Domains\Sales\Models\Invoice;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,6 +13,8 @@ class EloquentCustomerDataPurger implements CustomerDataPurger
 {
     public function purge(Customer $customer): void
     {
+
+        $customer->quotes->each(fn ($quote) => app(QuoteService::class)->delete($quote));
         $customer->estimates->each(function (Model $estimate): void {
             $this->clearDocumentData($estimate);
             $estimate->delete();

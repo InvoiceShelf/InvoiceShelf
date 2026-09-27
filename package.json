@@ -17,7 +17,8 @@
     "lint": "eslint ./resources/scripts --max-warnings 0",
     "lint:fix": "eslint ./resources/scripts --fix",
     "typecheck": "vue-tsc --noEmit",
-    "prepare": "git config core.hooksPath .githooks || true"
+    "prepare": "git config core.hooksPath .githooks || true",
+    "test:unit": "node --test tests/Frontend/*.test.mjs"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.16",

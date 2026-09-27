@@ -52,6 +52,7 @@ class CustomPathGenerator implements PathGenerator
         return match ($media->model_type) {
             ModelIdentityMap::INVOICE_ALIAS => 'Invoices',
             ModelIdentityMap::ESTIMATE_ALIAS => 'Estimates',
+            ModelIdentityMap::QUOTE_ALIAS => 'Quotes',
             ModelIdentityMap::PAYMENT_ALIAS => 'Payments',
             default => $media->getKey(),
         };

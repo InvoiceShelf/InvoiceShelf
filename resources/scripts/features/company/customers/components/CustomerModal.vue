@@ -22,13 +22,13 @@ import CopyInputField from '@/scripts/features/company/customers/components/Copy
 import { customerBaseUrl } from '@/scripts/utils/documents'
 
 // These stores are needed for auto-selecting customer after creation
-import { useEstimateStore } from '@/scripts/features/company/estimates/store'
+import { useProposalStore } from '@/scripts/features/company/estimates/use-proposal-context'
 import { useInvoiceStore } from '@/scripts/features/company/invoices/store'
 import { useRecurringInvoiceStore } from '@/scripts/features/company/recurring-invoices/store'
 
 const recurringInvoiceStore = useRecurringInvoiceStore()
 const modalStore = useModalStore()
-const estimateStore = useEstimateStore()
+const estimateStore = useProposalStore()
 const customerStore = useCustomerStore()
 const companyStore = useCompanyStore()
 const globalStore = useGlobalStore()
@@ -179,7 +179,7 @@ async function submitCustomerData(): Promise<void> {
       if (route.name === 'invoices.create' || route.name === 'invoices.edit') {
         invoiceStore.selectCustomer(response.data.id)
       }
-      if (route.name === 'estimates.create' || route.name === 'estimates.edit') {
+      if (['estimates.create', 'estimates.edit', 'quotes.create', 'quotes.edit'].includes(String(route.name))) {
         estimateStore.selectCustomer(response.data.id)
       }
       if (

@@ -1,6 +1,10 @@
 import { client } from '../client'
 import { API } from '../endpoints'
-import type { Estimate, CreateEstimatePayload } from '@/scripts/types/domain/estimate'
+import { mapProposalFields, type ProposalKind } from './proposal-fields'
+import type {
+  Estimate,
+  CreateEstimatePayload,
+} from '@/scripts/types/domain/estimate'
 import type { Invoice } from '@/scripts/types/domain/invoice'
 import type {
   ApiResponse,
@@ -51,64 +55,94 @@ export interface EstimateTemplatesResponse {
   estimateTemplates: EstimateTemplate[]
 }
 
-export const estimateService = {
-  async list(params?: EstimateListParams): Promise<EstimateListResponse> {
-    const { data } = await client.get(API.ESTIMATES, { params })
-    return data
-  },
+export function createProposalService(kind: ProposalKind) {
+  const base = `/api/v1/${kind}s`
+  const wire = <T>(value: T): T => mapProposalFields(value, 'estimate', kind)
+  const read = <T>(value: T): T => mapProposalFields(value, kind, 'estimate')
+  return {
+    async list(params?: EstimateListParams): Promise<EstimateListResponse> {
+      const { data } = await client.get(base, { params: wire(params) })
+      return read(data)
+    },
 
-  async get(id: number): Promise<ApiResponse<Estimate>> {
-    const { data } = await client.get(`${API.ESTIMATES}/${id}`)
-    return data
-  },
+    async get(id: number): Promise<ApiResponse<Estimate>> {
+      const { data } = await client.get(`${base}/${id}`)
+      return read(data)
+    },
 
-  async create(payload: CreateEstimatePayload): Promise<ApiResponse<Estimate>> {
-    const { data } = await client.post(API.ESTIMATES, payload)
-    return data
-  },
+    async create(
+      payload: CreateEstimatePayload,
+    ): Promise<ApiResponse<Estimate>> {
+      const { data } = await client.post(base, wire(payload))
+      return read(data)
+    },
 
-  async update(id: number, payload: Partial<CreateEstimatePayload>): Promise<ApiResponse<Estimate>> {
-    const { data } = await client.put(`${API.ESTIMATES}/${id}`, payload)
-    return data
-  },
+    async update(
+      id: number,
+      payload: Partial<CreateEstimatePayload>,
+    ): Promise<ApiResponse<Estimate>> {
+      const { data } = await client.put(`${base}/${id}`, wire(payload))
+      return read(data)
+    },
 
-  async delete(payload: DeletePayload): Promise<{ success: boolean }> {
-    const { data } = await client.post(API.ESTIMATES_DELETE, payload)
-    return data
-  },
+    async delete(payload: DeletePayload): Promise<{ success: boolean }> {
+      const { data } = await client.post(`${base}/delete`, wire(payload))
+      return read(data)
+    },
 
-  async send(payload: SendEstimatePayload): Promise<ApiResponse<Estimate>> {
-    const { data } = await client.post(`${API.ESTIMATES}/${payload.id}/send`, payload)
-    return data
-  },
+    async send(payload: SendEstimatePayload): Promise<ApiResponse<Estimate>> {
+      const { data } = await client.post(
+        `${base}/${payload.id}/send`,
+        wire(payload),
+      )
+      return read(data)
+    },
 
-  async sendPreview(id: number, params?: Record<string, unknown>): Promise<ApiResponse<string>> {
-    const { data } = await client.get(`${API.ESTIMATES}/${id}/send/preview`, { params })
-    return data
-  },
+    async sendPreview(
+      id: number,
+      params?: Record<string, unknown>,
+    ): Promise<ApiResponse<string>> {
+      const { data } = await client.get(`${base}/${id}/send/preview`, {
+        params: wire(params),
+      })
+      return read(data)
+    },
 
-  async clone(id: number): Promise<ApiResponse<Estimate>> {
-    const { data } = await client.post(`${API.ESTIMATES}/${id}/clone`)
-    return data
-  },
+    async clone(id: number): Promise<ApiResponse<Estimate>> {
+      const { data } = await client.post(`${base}/${id}/clone`)
+      return read(data)
+    },
 
-  async changeStatus(payload: EstimateStatusPayload): Promise<ApiResponse<Estimate>> {
-    const { data } = await client.post(`${API.ESTIMATES}/${payload.id}/status`, payload)
-    return data
-  },
+    async changeStatus(
+      payload: EstimateStatusPayload,
+    ): Promise<ApiResponse<Estimate>> {
+      const { data } = await client.post(
+        `${base}/${payload.id}/status`,
+        wire(payload),
+      )
+      return read(data)
+    },
 
-  async convertToInvoice(id: number): Promise<ApiResponse<Invoice>> {
-    const { data } = await client.post(`${API.ESTIMATES}/${id}/convert-to-invoice`)
-    return data
-  },
+    async convertToInvoice(id: number): Promise<ApiResponse<Invoice>> {
+      const { data } = await client.post(`${base}/${id}/convert-to-invoice`)
+      return read(data)
+    },
 
-  async getNextNumber(params?: { key?: string }): Promise<NextNumberResponse> {
-    const { data } = await client.get(API.NEXT_NUMBER, { params: { key: 'estimate', ...params } })
-    return data
-  },
+    async getNextNumber(params?: {
+      key?: string
+    }): Promise<NextNumberResponse> {
+      const { data } = await client.get(API.NEXT_NUMBER, {
+        params: { ...params, key: kind },
+      })
+      return read(data)
+    },
 
-  async getTemplates(): Promise<EstimateTemplatesResponse> {
-    const { data } = await client.get(API.ESTIMATE_TEMPLATES)
-    return data
-  },
+    async getTemplates(): Promise<EstimateTemplatesResponse> {
+      const { data } = await client.get(`${base}/templates`)
+      return read(data)
+    },
+  }
 }
+
+export const estimateService = createProposalService('estimate')
+export const quoteService = createProposalService('quote')

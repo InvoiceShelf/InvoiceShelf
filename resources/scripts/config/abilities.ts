@@ -22,10 +22,15 @@ export const ABILITIES = {
 
   // Estimates
   CREATE_ESTIMATE: 'create-estimate',
+  CREATE_QUOTE: 'create-quote',
   DELETE_ESTIMATE: 'delete-estimate',
+  DELETE_QUOTE: 'delete-quote',
   EDIT_ESTIMATE: 'edit-estimate',
+  EDIT_QUOTE: 'edit-quote',
   VIEW_ESTIMATE: 'view-estimate',
+  VIEW_QUOTE: 'view-quote',
   SEND_ESTIMATE: 'send-estimate',
+  SEND_QUOTE: 'send-quote',
 
   // Invoices
   CREATE_INVOICE: 'create-invoice',

@@ -11,6 +11,7 @@ use App\Domains\Purchases\Models\Expense;
 use App\Domains\Receivables\Models\Payment;
 use App\Domains\Sales\Models\Estimate;
 use App\Domains\Sales\Models\Invoice;
+use App\Domains\Sales\Models\Quote;
 use App\Domains\Sales\Models\RecurringInvoice;
 use App\Platform\Mail\Models\EmailLog;
 use App\Support\SafeOrderBy;
@@ -128,6 +129,11 @@ class Customer extends Authenticatable implements HasMedia
     public function estimates(): HasMany
     {
         return $this->hasMany(Estimate::class, 'customer_id');
+    }
+
+    public function quotes(): HasMany
+    {
+        return $this->hasMany(Quote::class, 'customer_id');
     }
 
     /**

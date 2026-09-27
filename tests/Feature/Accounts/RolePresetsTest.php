@@ -83,9 +83,11 @@ test('a new company gets Owner, Manager and Read only with their exact abilities
         ->and($manager->title)->toBe('Manager')
         ->and($readOnly->title)->toBe('Read only')
         ->and(heldAbilities($owner))->toBe($catalogue)
-        ->and(heldAbilities($manager))->toHaveCount(41)
+        ->and(heldAbilities($manager))->toHaveCount(46)
+        ->toContain('view-quote', 'create-quote', 'edit-quote', 'delete-quote', 'send-quote')
         ->not->toContain('create-custom-field', 'edit-exchange-rate-provider')
-        ->and(heldAbilities($readOnly))->toHaveCount(13)
+        ->and(heldAbilities($readOnly))->toHaveCount(14)
+        ->toContain('view-quote')
         ->and(collect(heldAbilities($readOnly))->every(fn ($a) => str_starts_with($a, 'view-') || $a === 'dashboard'))->toBeTrue();
 });
 

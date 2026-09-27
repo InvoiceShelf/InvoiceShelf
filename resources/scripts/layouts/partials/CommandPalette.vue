@@ -167,6 +167,7 @@ interface DocumentRow {
   id: number
   invoice_number?: string
   estimate_number?: string
+  quote_number?: string
   payment_number?: string
   total?: number
   amount?: number
@@ -250,6 +251,7 @@ const sections = computed<Section[]>(() => {
     raw.push({ key: 'customers', label: t('global_search.customers'), items: remote.value.customers ?? [] })
     raw.push({ key: 'invoices', label: t('navigation.invoices'), items: remote.value.invoices ?? [] })
     raw.push({ key: 'estimates', label: t('navigation.estimates'), items: remote.value.estimates ?? [] })
+    raw.push({ key: 'quotes', label: t('navigation.quotes'), items: remote.value.quotes ?? [] })
     raw.push({ key: 'payments', label: t('navigation.payments'), items: remote.value.payments ?? [] })
     raw.push({ key: 'users', label: t('global_search.users'), items: remote.value.users ?? [] })
   }
@@ -348,7 +350,7 @@ const searchRemote = useDebounceFn(async () => {
 
   const id = ++requestId
 
-  const [contacts, invoices, estimates, payments] = await Promise.all([
+  const [contacts, invoices, estimates, payments, quotes] = await Promise.all([
     fetchContacts(),
     fetchDocuments(API.INVOICES, ABILITIES.VIEW_INVOICE, (row) => ({
       key: `invoice-${row.id}`,
@@ -377,6 +379,15 @@ const searchRemote = useDebounceFn(async () => {
       currency: row.currency,
       to: `/admin/payments/${row.id}/view`,
     })),
+    fetchDocuments(API.QUOTES, ABILITIES.VIEW_QUOTE, (row) => ({
+      key: `quote-${row.id}`,
+      icon: 'DocumentIcon',
+      title: row.quote_number ?? '',
+      subtitle: row.customer?.name,
+      amount: row.total,
+      currency: row.currency,
+      to: `/admin/quotes/${row.id}/view`,
+    })),
   ])
 
   // A slower, older request must not overwrite a newer one
@@ -384,7 +395,7 @@ const searchRemote = useDebounceFn(async () => {
     return
   }
 
-  remote.value = { ...contacts, invoices, estimates, payments }
+  remote.value = { ...contacts, invoices, estimates, payments, quotes }
   isSearching.value = false
 }, 220)
 

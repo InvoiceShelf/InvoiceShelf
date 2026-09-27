@@ -32,6 +32,8 @@ use App\Domains\Sales\Models\Estimate;
 use App\Domains\Sales\Models\EstimateItem;
 use App\Domains\Sales\Models\Invoice;
 use App\Domains\Sales\Models\InvoiceItem;
+use App\Domains\Sales\Models\Quote;
+use App\Domains\Sales\Models\QuoteItem;
 use App\Domains\Sales\Models\RecurringInvoice;
 use App\Domains\Taxation\Models\Tax;
 use App\Domains\Taxation\Models\TaxType;
@@ -60,6 +62,8 @@ final class ModelIdentityMap
 {
     public const ESTIMATE_ALIAS = 'estimate';
 
+    public const QUOTE_ALIAS = 'quote';
+
     public const INVOICE_ALIAS = 'invoice';
 
     public const PAYMENT_ALIAS = 'payment';
@@ -82,6 +86,8 @@ final class ModelIdentityMap
             'email_log' => EmailLog::class,
             self::ESTIMATE_ALIAS => Estimate::class,
             'estimate_item' => EstimateItem::class,
+            self::QUOTE_ALIAS => Quote::class,
+            'quote_item' => QuoteItem::class,
             'exchange_rate_log' => ExchangeRateLog::class,
             'exchange_rate_provider' => ExchangeRateProvider::class,
             'expense' => Expense::class,

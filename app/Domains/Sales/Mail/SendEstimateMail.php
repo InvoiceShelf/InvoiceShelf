@@ -31,6 +31,10 @@ class SendEstimateMail extends Mailable
 
     public $data = [];
 
+    protected string $kind = 'estimate';
+
+    protected string $modelClass = Estimate::class;
+
     /**
      * @param  array  $data  sender and recipients, the already-interpolated
      *                       subject and body, the estimate payload, and the
@@ -47,7 +51,7 @@ class SendEstimateMail extends Mailable
      */
     public function build()
     {
-        $this->data['url'] = CustomerUrl::route('estimate', [
+        $this->data['url'] = CustomerUrl::route($this->kind, [
             'email_log' => $this->logDelivery(),
         ]);
 
@@ -55,7 +59,7 @@ class SendEstimateMail extends Mailable
 
         $message = OutgoingSender::apply($this, $payload['from'], config('mail.from.name'))
             ->subject($payload['subject'])
-            ->markdown('emails.send.estimate', [
+            ->markdown('emails.send.'.$this->kind, [
                 // Handed over as a list, not as a keyed array. The numeric
                 // keys that produces are inert: the view reads $data, which
                 // Laravel already supplies from the public property above.
@@ -68,7 +72,7 @@ class SendEstimateMail extends Mailable
         if ($pdf) {
             $message->attachData(
                 $pdf->output(),
-                $payload['estimate']['estimate_number'].'.pdf'
+                $payload[$this->kind][$this->kind.'_number'].'.pdf'
             );
         }
 
@@ -82,7 +86,7 @@ class SendEstimateMail extends Mailable
     private function logDelivery(): string
     {
         $payload = $this->data;
-        $alias = ModelIdentityMap::aliasFor(Estimate::class);
+        $alias = ModelIdentityMap::aliasFor($this->modelClass);
 
         $log = EmailLog::create([
             'from' => $payload['from'],
@@ -92,7 +96,7 @@ class SendEstimateMail extends Mailable
             'subject' => $payload['subject'],
             'body' => $payload['body'],
             'mailable_type' => $alias,
-            'mailable_id' => $payload['estimate']['id'],
+            'mailable_id' => $payload[$this->kind]['id'],
         ]);
 
         $log->token = PublicToken::make();

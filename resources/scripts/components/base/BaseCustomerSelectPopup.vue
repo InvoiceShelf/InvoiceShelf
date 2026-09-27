@@ -10,11 +10,11 @@ import { useModalStore } from '@/scripts/stores/modal.store'
 import { ABILITIES } from '@/scripts/config/abilities'
 import { useCustomerStore } from '@/scripts/features/company/customers/store'
 import { useInvoiceStore } from '@/scripts/features/company/invoices/store'
-import { useEstimateStore } from '@/scripts/features/company/estimates/store'
+import { useEstimateStore, useQuoteStore } from '@/scripts/features/company/estimates/store'
 import { useRecurringInvoiceStore } from '@/scripts/features/company/recurring-invoices/store'
 import CustomerModal from '@/scripts/features/company/customers/components/CustomerModal.vue'
 
-type DocumentType = 'estimate' | 'invoice' | 'recurring-invoice'
+type DocumentType = 'quote' | 'estimate' | 'invoice' | 'recurring-invoice'
 
 interface ValidationError {
   $message: string
@@ -46,7 +46,7 @@ const route = useRoute()
 
 const customerStore = useCustomerStore()
 const invoiceStore = useInvoiceStore()
-const estimateStore = useEstimateStore()
+const estimateStore = props.type === 'quote' ? useQuoteStore() : useEstimateStore()
 const recurringInvoiceStore = useRecurringInvoiceStore()
 
 const search = ref<string | null>(null)
@@ -114,6 +114,7 @@ const selectedCustomer = computed(() => {
   switch (props.type) {
     case 'invoice':
       return invoiceStore.newInvoice.customer
+    case 'quote':
     case 'estimate':
       return estimateStore.newEstimate.customer
     case 'recurring-invoice':
@@ -155,7 +156,7 @@ async function fetchInitialCustomers(): Promise<void> {
 if (props.customerId) {
   if (props.type === 'invoice') {
     invoiceStore.selectCustomer(props.customerId)
-  } else if (props.type === 'estimate') {
+  } else if ((props.type === 'estimate' || props.type === 'quote')) {
     estimateStore.selectCustomer(props.customerId)
   } else if (props.type === 'recurring-invoice') {
     recurringInvoiceStore.selectCustomer(props.customerId)
@@ -187,7 +188,7 @@ function selectNewCustomer(id: number): void {
   if (props.type === 'invoice') {
     invoiceStore.getNextNumber(params, true)
     invoiceStore.selectCustomer(id)
-  } else if (props.type === 'estimate') {
+  } else if ((props.type === 'estimate' || props.type === 'quote')) {
     estimateStore.getNextNumber(params, true)
     estimateStore.selectCustomer(id)
   } else if (props.type === 'recurring-invoice') {
@@ -204,7 +205,7 @@ function resetSelectedCustomer(): void {
 
   if (props.type === 'invoice') {
     invoiceStore.resetSelectedCustomer()
-  } else if (props.type === 'estimate') {
+  } else if ((props.type === 'estimate' || props.type === 'quote')) {
     estimateStore.resetSelectedCustomer()
   } else if (props.type === 'recurring-invoice') {
     recurringInvoiceStore.resetSelectedCustomer()

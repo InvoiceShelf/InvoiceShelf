@@ -1,19 +1,22 @@
 <script setup lang="ts">
+import { useProposalContext, useProposalSettings } from '@/scripts/features/company/estimates/use-proposal-context'
 import { computed, reactive, inject } from 'vue'
-import { useCompanyStore } from '@/scripts/stores/company.store'
-import { useEstimateStore } from '@/scripts/features/company/estimates/store'
+import { useProposalStore } from '@/scripts/features/company/estimates/use-proposal-context'
 import NumberCustomizer from './NumberCustomizer.vue'
 import EstimatesTabExpiryDate from './EstimatesTabExpiryDate.vue'
 import EstimatesTabConvertEstimate from './EstimatesTabConvertEstimate.vue'
 import EstimatesTabDefaultFormats from './EstimatesTabDefaultFormats.vue'
+
+const { kind, t } = useProposalContext()
+const { settings, updateSettings } = useProposalSettings()
+
 
 interface Utils {
   mergeSettings: (target: Record<string, unknown>, source: Record<string, unknown>) => void
 }
 
 const utils = inject<Utils>('utils')!
-const companyStore = useCompanyStore()
-const estimateStore = useEstimateStore()
+const estimateStore = useProposalStore()
 
 const estimateSettings = reactive<{ estimate_email_attachment: string | null }>({
   estimate_email_attachment: null,
@@ -21,7 +24,7 @@ const estimateSettings = reactive<{ estimate_email_attachment: string | null }>(
 
 utils.mergeSettings(
   estimateSettings as unknown as Record<string, unknown>,
-  { ...companyStore.selectedCompanySettings }
+  { ...settings }
 )
 
 const sendAsAttachmentField = computed<boolean>({
@@ -37,7 +40,7 @@ const sendAsAttachmentField = computed<boolean>({
 
     estimateSettings.estimate_email_attachment = value
 
-    await companyStore.updateCompanySettings({
+    await updateSettings({
       data,
       message: 'general.setting_updated',
     })
@@ -46,7 +49,7 @@ const sendAsAttachmentField = computed<boolean>({
 </script>
 
 <template>
-  <NumberCustomizer type="estimate" :type-store="estimateStore" />
+  <NumberCustomizer :type="kind" :type-store="estimateStore" />
 
   <BaseDivider class="mt-6 mb-2" />
   <EstimatesTabExpiryDate />
@@ -59,9 +62,9 @@ const sendAsAttachmentField = computed<boolean>({
   <div class="divide-y divide-line-default">
     <BaseSwitchSection
       v-model="sendAsAttachmentField"
-      :title="$t('settings.customization.estimates.estimate_email_attachment')"
+      :title="t('settings.customization.estimates.estimate_email_attachment')"
       :description="
-        $t(
+        t(
           'settings.customization.estimates.estimate_email_attachment_setting_description'
         )
       "

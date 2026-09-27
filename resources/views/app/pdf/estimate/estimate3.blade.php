@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>@lang('pdf_estimate_label') - {{ $estimate->estimate_number }}</title>
+    <title>@lang('pdf_'.$estimate->documentKind().'_label') - {{ $estimate->documentNumber }}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
 @include("app.pdf.partials.fonts")
@@ -418,15 +418,15 @@
             <div class="estimate-details-container">
                 <table>
                     <tr>
-                        <td class="attribute-label">@lang('pdf_estimate_number')</td>
-                        <td class="attribute-value"> &nbsp;{{ $estimate->estimate_number }}</td>
+                        <td class="attribute-label">@lang('pdf_'.$estimate->documentKind().'_number')</td>
+                        <td class="attribute-value"> &nbsp;{{ $estimate->documentNumber }}</td>
                     </tr>
                     <tr>
-                        <td class="attribute-label">@lang('pdf_estimate_date') </td>
-                        <td class="attribute-value"> &nbsp;{{ $estimate->formattedEstimateDate }}</td>
+                        <td class="attribute-label">@lang('pdf_'.$estimate->documentKind().'_date') </td>
+                        <td class="attribute-value"> &nbsp;{{ $estimate->formattedDocumentDate }}</td>
                     </tr>
                     <tr>
-                        <td class="attribute-label">@lang('pdf_estimate_expire_date')</td>
+                        <td class="attribute-label">@lang('pdf_'.$estimate->documentKind().'_expire_date')</td>
                         <td class="attribute-value"> &nbsp;{{ $estimate->formattedExpiryDate }}</td>
                     </tr>
                     @include('app.pdf.partials.document-custom-fields', ['document' => $estimate])

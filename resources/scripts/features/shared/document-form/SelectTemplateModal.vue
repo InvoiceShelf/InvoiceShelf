@@ -47,7 +47,7 @@ async function chooseTemplate(): Promise<void> {
     if (modalData.value.storeProp === 'newEstimate') {
       await userStore.updateUserSettings({
         settings: {
-          default_estimate_template: selectedTemplate.value,
+          [modalData.value.store.$id === 'quote' ? 'default_quote_template' : 'default_estimate_template']: selectedTemplate.value,
         },
       })
     } else if (modalData.value.storeProp === 'newInvoice') {

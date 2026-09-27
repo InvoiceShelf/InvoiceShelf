@@ -52,7 +52,7 @@ const templateName = computed<string>(() => {
 function openTemplateModal(): void {
   let markAsDefaultDescription = ''
   if (props.storeProp === 'newEstimate') {
-    markAsDefaultDescription = t('estimates.mark_as_default_estimate_template_description')
+    markAsDefaultDescription = props.store.$id === 'quote' ? t('quotes.mark_as_default_quote_template_description') : t('estimates.mark_as_default_estimate_template_description')
   } else if (props.storeProp === 'newInvoice') {
     markAsDefaultDescription = t('invoices.mark_as_default_invoice_template_description')
   }

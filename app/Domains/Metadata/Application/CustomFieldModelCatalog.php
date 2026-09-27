@@ -10,6 +10,7 @@ use App\Domains\Purchases\Models\Expense;
 use App\Domains\Receivables\Models\Payment;
 use App\Domains\Sales\Models\Estimate;
 use App\Domains\Sales\Models\Invoice;
+use App\Domains\Sales\Models\Quote;
 use InvoiceShelf\Modules\Registry;
 
 /**
@@ -48,6 +49,7 @@ class CustomFieldModelCatalog
         'Customer' => ['label' => 'settings.custom_fields.model_type.customer', 'class' => Customer::class],
         'Invoice' => ['label' => 'settings.custom_fields.model_type.invoice', 'class' => Invoice::class],
         'Estimate' => ['label' => 'settings.custom_fields.model_type.estimate', 'class' => Estimate::class],
+        'Quote' => ['label' => 'settings.custom_fields.model_type.quote', 'class' => Quote::class],
         'Payment' => ['label' => 'settings.custom_fields.model_type.payment', 'class' => Payment::class],
         'Expense' => ['label' => 'settings.custom_fields.model_type.expense', 'class' => Expense::class],
         'Item' => ['label' => 'settings.custom_fields.model_type.item', 'class' => Item::class],

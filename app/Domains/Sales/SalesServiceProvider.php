@@ -4,23 +4,30 @@ namespace App\Domains\Sales;
 
 use App\Adapters\Sales\LaravelEstimateEmailSender;
 use App\Adapters\Sales\LaravelInvoiceEmailSender;
+use App\Adapters\Sales\LaravelQuoteEmailSender;
 use App\Adapters\Sales\MoneyDocumentExchangeRateRecorder;
 use App\Domains\Sales\Application\EstimateService;
 use App\Domains\Sales\Application\InvoiceService;
+use App\Domains\Sales\Application\QuoteService;
 use App\Domains\Sales\Console\CheckEstimateStatus;
 use App\Domains\Sales\Console\CheckInvoiceStatus;
+use App\Domains\Sales\Console\CheckQuoteStatus;
 use App\Domains\Sales\Console\GenerateRecurringInvoices;
 use App\Domains\Sales\Contracts\DocumentExchangeRateRecorder;
 use App\Domains\Sales\Contracts\EstimateEmailSender;
 use App\Domains\Sales\Contracts\EstimatePdfDataProvider;
 use App\Domains\Sales\Contracts\InvoiceEmailSender;
 use App\Domains\Sales\Contracts\InvoicePdfDataProvider;
+use App\Domains\Sales\Contracts\QuoteEmailSender;
+use App\Domains\Sales\Contracts\QuotePdfDataProvider;
 use App\Domains\Sales\Models\Estimate;
 use App\Domains\Sales\Models\Invoice;
+use App\Domains\Sales\Models\Quote;
 use App\Domains\Sales\Models\RecurringInvoice;
 use App\Domains\Sales\Policies\CreditNotePolicy;
 use App\Domains\Sales\Policies\EstimatePolicy;
 use App\Domains\Sales\Policies\InvoicePolicy;
+use App\Domains\Sales\Policies\QuotePolicy;
 use App\Domains\Sales\Policies\RecurringInvoicePolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -35,17 +42,21 @@ class SalesServiceProvider extends ServiceProvider
         'send invoice' => [InvoicePolicy::class, 'send'],
         'create credit note' => [CreditNotePolicy::class, 'create'],
         'send estimate' => [EstimatePolicy::class, 'send'],
+        'send quote' => [QuotePolicy::class, 'send'],
         'delete multiple invoices' => [InvoicePolicy::class, 'deleteMultiple'],
         'delete multiple estimates' => [EstimatePolicy::class, 'deleteMultiple'],
+        'delete multiple quotes' => [QuotePolicy::class, 'deleteMultiple'],
         'delete multiple recurring invoices' => [RecurringInvoicePolicy::class, 'deleteMultiple'],
     ];
 
     public function register(): void
     {
         $this->app->bind(EstimatePdfDataProvider::class, EstimateService::class);
+        $this->app->bind(QuotePdfDataProvider::class, QuoteService::class);
         $this->app->bind(InvoicePdfDataProvider::class, InvoiceService::class);
         $this->app->bind(DocumentExchangeRateRecorder::class, MoneyDocumentExchangeRateRecorder::class);
         $this->app->bind(EstimateEmailSender::class, LaravelEstimateEmailSender::class);
+        $this->app->bind(QuoteEmailSender::class, LaravelQuoteEmailSender::class);
         $this->app->bind(InvoiceEmailSender::class, LaravelInvoiceEmailSender::class);
     }
 
@@ -53,11 +64,13 @@ class SalesServiceProvider extends ServiceProvider
     {
         $this->commands([
             CheckEstimateStatus::class,
+            CheckQuoteStatus::class,
             CheckInvoiceStatus::class,
             GenerateRecurringInvoices::class,
         ]);
 
         Gate::policy(Estimate::class, EstimatePolicy::class);
+        Gate::policy(Quote::class, QuotePolicy::class);
         Gate::policy(Invoice::class, InvoicePolicy::class);
         Gate::policy(RecurringInvoice::class, RecurringInvoicePolicy::class);
 

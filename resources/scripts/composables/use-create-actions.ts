@@ -12,6 +12,7 @@ export interface CreateAction {
 const ACTIONS: Array<CreateAction & { ability: string }> = [
   { label: 'invoices.new_invoice', icon: 'DocumentTextIcon', to: '/admin/invoices/create', ability: ABILITIES.CREATE_INVOICE },
   { label: 'estimates.new_estimate', icon: 'DocumentIcon', to: '/admin/estimates/create', ability: ABILITIES.CREATE_ESTIMATE },
+  { label: 'quotes.new_quote', icon: 'DocumentIcon', to: '/admin/quotes/create', ability: ABILITIES.CREATE_QUOTE },
   { label: 'payments.new_payment', icon: 'CreditCardIcon', to: '/admin/payments/create', ability: ABILITIES.CREATE_PAYMENT },
   { label: 'expenses.new_expense', icon: 'CalculatorIcon', to: '/admin/expenses/create', ability: ABILITIES.CREATE_EXPENSE },
   { label: 'customers.new_customer', icon: 'UserIcon', to: '/admin/customers/create', ability: ABILITIES.CREATE_CUSTOMER },

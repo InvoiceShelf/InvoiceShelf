@@ -84,7 +84,7 @@ class DocumentItemService
                         // the template's key, which means nothing on the
                         // generated document. Dropping an absent key is a
                         // no-op, so it needs no guard.
-                        unset($tax['recurring_invoice_id']);
+                        unset($tax['recurring_invoice_id'], $tax['invoice_id'], $tax['invoice_item_id'], $tax['estimate_id'], $tax['estimate_item_id'], $tax['quote_id'], $tax['quote_item_id'], $tax['item_id']);
 
                         $createdItem->taxes()->create($tax);
                     }
@@ -148,7 +148,7 @@ class DocumentItemService
 
             if (gettype($tax['amount']) !== 'NULL') {
                 // Same template key as in createItems(), dropped the same way.
-                unset($tax['recurring_invoice_id']);
+                unset($tax['recurring_invoice_id'], $tax['invoice_id'], $tax['invoice_item_id'], $tax['estimate_id'], $tax['estimate_item_id'], $tax['quote_id'], $tax['quote_item_id'], $tax['item_id']);
 
                 $document->taxes()->create($tax);
             }

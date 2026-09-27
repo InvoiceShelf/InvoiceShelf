@@ -4,6 +4,8 @@ use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\User;
 use App\Domains\Contacts\Models\Customer;
 use App\Domains\Sales\Models\Invoice;
+use App\Domains\Sales\Models\Quote;
+use App\Domains\Sales\Models\QuoteItem;
 use App\Platform\Modules\Models\MarketplaceCredential;
 use App\Platform\Modules\Models\MarketplaceOperation;
 use App\Platform\Modules\Models\Module;
@@ -17,6 +19,8 @@ test('first-party and bouncer models use stable morph aliases', function () {
         ->toHaveKey('company', Company::class)
         ->toHaveKey('customer', Customer::class)
         ->toHaveKey('invoice', Invoice::class)
+        ->toHaveKey('quote', Quote::class)
+        ->toHaveKey('quote_item', QuoteItem::class)
         ->toHaveKey('marketplace_credential', MarketplaceCredential::class)
         ->toHaveKey('marketplace_operation', MarketplaceOperation::class)
         ->toHaveKey('module', Module::class)
@@ -30,7 +34,7 @@ test('first-party and bouncer models use stable morph aliases', function () {
         ->and(Relation::getMorphedModel('customer'))->toBe(Customer::class);
 });
 
-test('every first-party model has a stable identity', function () {
+test('every concrete first-party model has a stable identity', function () {
     $models = collect([app_path('Models'), app_path('Domains'), app_path('Platform')])
         ->filter(fn (string $directory): bool => is_dir($directory))
         ->flatMap(function (string $directory): array {
@@ -46,7 +50,8 @@ test('every first-party model has a stable identity', function () {
                 }
             }
 
-            return $files;
+            // Abstract proposal bases have no rows or persisted morph identity.
+            return array_values(array_filter($files, fn (string $model): bool => ! (new ReflectionClass($model))->isAbstract()));
         })
         ->values();
 

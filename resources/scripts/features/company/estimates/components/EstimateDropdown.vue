@@ -1,5 +1,5 @@
 <template>
-  <BaseDropdown :label="$t('general.actions_for', { name: row.estimate_number })">
+  <BaseDropdown :label="t('general.actions_for', { name: row.estimate_number })">
     <template #activator>
       <span v-if="isDetailView" data-overflow class="inline-flex items-center justify-center border rounded-lg w-11 h-11 md:w-9 md:h-9 bg-surface border-line-default text-body hover:bg-hover">
         <BaseIcon name="EllipsisHorizontalIcon" class="w-5 h-5" />
@@ -15,16 +15,16 @@
         name="LinkIcon"
         class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
-      {{ $t('general.copy_pdf_url') }}
+      {{ t('general.copy_pdf_url') }}
     </BaseDropdownItem>
 
     <!-- Edit Estimate -->
-    <BaseDropdownItem v-if="canEdit" :to="`/admin/estimates/${row.id}/edit`">
+    <BaseDropdownItem v-if="canEdit" :to="`${basePath}/${row.id}/edit`">
       <BaseIcon
         name="PencilIcon"
         class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
-      {{ $t('general.edit') }}
+      {{ t('general.edit') }}
     </BaseDropdownItem>
 
     <!-- Delete Estimate -->
@@ -33,7 +33,7 @@
         name="TrashIcon"
         class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
-      {{ $t('general.delete') }}
+      {{ t('general.delete') }}
     </BaseDropdownItem>
 
     <!-- View Estimate -->
@@ -42,7 +42,7 @@
         name="EyeIcon"
         class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
-      {{ $t('general.view') }}
+      {{ t('general.view') }}
     </BaseDropdownItem>
 
     <!-- Clone Estimate -->
@@ -51,7 +51,7 @@
         name="DocumentTextIcon"
         class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
-      {{ $t('estimates.clone_estimate') }}
+      {{ t('estimates.clone_estimate') }}
     </BaseDropdownItem>
 
     <!-- Convert into Invoice -->
@@ -60,7 +60,7 @@
         name="DocumentTextIcon"
         class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
-      {{ $t('estimates.convert_to_invoice') }}
+      {{ t('estimates.convert_to_invoice') }}
     </BaseDropdownItem>
 
     <!-- Mark as Sent -->
@@ -72,7 +72,7 @@
         name="CheckCircleIcon"
         class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
-      {{ $t('estimates.mark_as_sent') }}
+      {{ t('estimates.mark_as_sent') }}
     </BaseDropdownItem>
 
     <!-- Send Estimate -->
@@ -84,7 +84,7 @@
         name="PaperAirplaneIcon"
         class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
-      {{ $t('estimates.send_estimate') }}
+      {{ t('estimates.send_estimate') }}
     </BaseDropdownItem>
 
     <!-- Resend Estimate -->
@@ -93,7 +93,7 @@
         name="PaperAirplaneIcon"
         class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
-      {{ $t('estimates.resend_estimate') }}
+      {{ t('estimates.resend_estimate') }}
     </BaseDropdownItem>
 
     <!-- Mark as Accepted -->
@@ -105,7 +105,7 @@
         name="CheckCircleIcon"
         class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
-      {{ $t('estimates.mark_as_accepted') }}
+      {{ t('estimates.mark_as_accepted') }}
     </BaseDropdownItem>
 
     <!-- Mark as Rejected -->
@@ -117,16 +117,15 @@
         name="XCircleIcon"
         class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
-      {{ $t('estimates.mark_as_rejected') }}
+      {{ t('estimates.mark_as_rejected') }}
     </BaseDropdownItem>
   </BaseDropdown>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
-import { useEstimateStore } from '../store'
+import { useProposalStore, useProposalContext } from '../use-proposal-context'
 import { useDialogStore } from '../../../../stores/dialog.store'
 import { useModalStore } from '../../../../stores/modal.store'
 import { useNotificationStore } from '../../../../stores/notification.store'
@@ -148,6 +147,8 @@ interface Props {
   canCreateInvoice?: boolean
 }
 
+const { kind, t, basePath } = useProposalContext()
+
 const props = withDefaults(defineProps<Props>(), {
   table: null,
   canEdit: false,
@@ -158,15 +159,15 @@ const props = withDefaults(defineProps<Props>(), {
   canCreateInvoice: false,
 })
 
-const estimateStore = useEstimateStore()
+const estimateStore = useProposalStore()
 const dialogStore = useDialogStore()
 const modalStore = useModalStore()
 const notificationStore = useNotificationStore()
-const { t } = useI18n()
+
 const route = useRoute()
 const router = useRouter()
 
-const isDetailView = computed<boolean>(() => route.name === 'estimates.view')
+const isDetailView = computed<boolean>(() => route.name === `${kind}s.view`)
 
 const canResendEstimate = computed<boolean>(() => {
   return (
@@ -191,7 +192,7 @@ function removeEstimate(): void {
       if (response.data) {
         props.table?.refresh()
         if (response.data.success) {
-          router.push('/admin/estimates')
+          router.push(`${basePath}`)
         }
         estimateStore.$patch((state) => {
           state.selectedEstimates = []
@@ -283,7 +284,7 @@ function onMarkAsRejected(): void {
 }
 
 function copyPdfUrl(): void {
-  const pdfUrl = absoluteDocumentUrl(`/estimates/pdf/${props.row.unique_hash}`)
+  const pdfUrl = absoluteDocumentUrl(`/${kind}s/pdf/${props.row.unique_hash}`)
   copyToClipboard(pdfUrl)
   notificationStore.showNotification({
     type: 'success',
@@ -319,7 +320,7 @@ function cloneEstimateData(): void {
   }).then(async (res: boolean) => {
     if (res) {
       const response = await estimateStore.cloneEstimate({ id: props.row.id })
-      router.push(`/admin/estimates/${response.data.data.id}/edit`)
+      router.push(`${basePath}/${response.data.data.id}/edit`)
     }
   })
 }
