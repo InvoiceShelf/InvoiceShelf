@@ -37,7 +37,7 @@
     </BaseDropdownItem>
 
     <!-- View Estimate -->
-    <BaseDropdownItem v-if="!isDetailView && canView" :to="`estimates/${row.id}/view`">
+    <BaseDropdownItem v-if="!isDetailView && canView" :to="`${basePath}/${row.id}/view`">
       <BaseIcon
         name="EyeIcon"
         class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
@@ -242,7 +242,7 @@ function onMarkAsSent(): void {
 function sendEstimate(): void {
   modalStore.openModal({
     title: t('estimates.send_estimate'),
-    componentName: 'SendEstimateModal',
+    componentName: kind === 'quote' ? 'SendQuoteModal' : 'SendEstimateModal',
     id: props.row.id,
     data: props.row,
     variant: 'lg',

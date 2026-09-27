@@ -160,7 +160,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, reactive } from 'vue'
+import { ref, computed, reactive, onBeforeUnmount } from 'vue'
 import { required, email, helpers } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { useModalStore } from '../../../../stores/modal.store'
@@ -194,7 +194,7 @@ const estimateMailForm = reactive({
 })
 
 const modalActive = computed(() => {
-  return modalStore.active && modalStore.componentName === 'SendEstimateModal'
+  return modalStore.active && modalStore.componentName === (kind === 'quote' ? 'SendQuoteModal' : 'SendEstimateModal')
 })
 
 const modalData = computed(() => {
@@ -302,6 +302,8 @@ async function submitForm() {
     })
   }
 }
+
+onBeforeUnmount(() => { if (modalActive.value) modalStore.closeModal() })
 
 function closeSendEstimateModal() {
   modalStore.closeModal()

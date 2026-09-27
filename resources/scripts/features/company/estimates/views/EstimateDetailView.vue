@@ -463,7 +463,7 @@ function onMarkAsSent(): void {
 function onSendEstimate(): void {
   modalStore.openModal({
     title: t('estimates.send_estimate'),
-    componentName: 'SendEstimateModal',
+    componentName: kind === 'quote' ? 'SendQuoteModal' : 'SendEstimateModal',
     id: estimateData.value!.id,
     data: estimateData.value,
     refreshData: () => loadEstimate(),
