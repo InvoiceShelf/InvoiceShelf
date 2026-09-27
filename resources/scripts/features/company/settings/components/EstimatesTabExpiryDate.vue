@@ -88,7 +88,7 @@ async function submitForm() {
 <template>
   <form @submit.prevent="submitForm">
     <h3 class="text-heading text-lg font-medium">
-      {{ t('settings.customization.estimates.expiry_date_setting') }}
+      {{ t('settings.customization.estimates.expiry_date') }}
     </h3>
     <p class="mt-1 text-sm text-muted mb-2">
       {{ t('settings.customization.estimates.expiry_date_description') }}

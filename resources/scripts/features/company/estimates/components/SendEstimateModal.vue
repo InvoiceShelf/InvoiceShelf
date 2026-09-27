@@ -284,7 +284,7 @@ async function submitForm() {
 
     notificationStore.showNotification({
       type: 'success',
-      message: textKey('estimates.estimate_sent_successfully'),
+      message: textKey('estimates.send_estimate_successfully'),
     })
 
     if (modalStore.refreshData) {
