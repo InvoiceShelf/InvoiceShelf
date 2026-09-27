@@ -150,7 +150,7 @@ function refreshData(): void {
               v-if="userStore.hasAbilities(ABILITIES.CREATE_ESTIMATE)"
               :to="`/admin/estimates/create?customer=${$route.params.id}`"
             >
-              <BaseIcon name="DocumentIcon" class="w-5 h-5 me-3 text-subtle" />
+              <BaseIcon name="ClipboardDocumentListIcon" class="w-5 h-5 me-3 text-subtle" />
               {{ $t('estimates.new_estimate') }}
             </BaseDropdownItem>
 

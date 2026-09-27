@@ -363,7 +363,7 @@ const searchRemote = useDebounceFn(async () => {
     })),
     fetchDocuments(API.ESTIMATES, ABILITIES.VIEW_ESTIMATE, (row) => ({
       key: `estimate-${row.id}`,
-      icon: 'DocumentIcon',
+      icon: 'ClipboardDocumentListIcon',
       title: row.estimate_number ?? '',
       subtitle: row.customer?.name,
       amount: row.total,
@@ -381,7 +381,7 @@ const searchRemote = useDebounceFn(async () => {
     })),
     fetchDocuments(API.QUOTES, ABILITIES.VIEW_QUOTE, (row) => ({
       key: `quote-${row.id}`,
-      icon: 'DocumentIcon',
+      icon: 'TagIcon',
       title: row.quote_number ?? '',
       subtitle: row.customer?.name,
       amount: row.total,

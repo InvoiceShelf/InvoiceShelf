@@ -92,7 +92,7 @@
     <!-- Convert to Estimate -->
     <BaseDropdownItem v-if="canCreateEstimate" @click="convertToEstimate">
       <BaseIcon
-        name="DocumentIcon"
+        name="ClipboardDocumentListIcon"
         class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
       />
       {{ $t('invoices.convert_to_estimate') }}
