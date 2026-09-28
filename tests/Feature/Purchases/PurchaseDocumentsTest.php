@@ -1,11 +1,14 @@
 <?php
 
+use App\Domains\Money\Models\Currency;
 use App\Domains\Purchases\Models\Bill;
+use App\Domains\Purchases\Models\Expense;
 use App\Domains\Purchases\Models\Supplier;
 use App\Domains\Purchases\Models\SupplierCredit;
 use App\Domains\Taxation\Models\TaxType;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 beforeEach(fn () => purchaseFixtures($this));
 
@@ -78,4 +81,37 @@ test('the quantity left to credit has no float residue and can be credited as of
     $credit['items'][0]['quantity'] = $left;
     $this->postJson('/api/v1/supplier-credits', $credit)->assertSuccessful();
     expect($this->getJson('/api/v1/bills/'.$bill['id'])->json('data.creditable_quantities.'.$line))->toEqual(0);
+});
+
+test('an older expense with no stored exchange rate can be credited and edited afterwards', function () {
+    $expense = Expense::factory()->create([
+        'company_id' => $this->companyId,
+        'supplier_id' => $this->supplier->id,
+        'expense_category_id' => $this->category->id,
+        'currency_id' => $this->currencyId,
+        'amount' => 1000,
+        'base_amount' => 1000,
+    ]);
+    $expense->forceFill(['exchange_rate' => null])->saveQuietly();
+    $credit = ['supplier_id' => $this->supplier->id, 'currency_id' => $this->currencyId, 'exchange_rate' => 1, 'document_date' => '2026-09-05', 'source_expense_id' => $expense->id, 'source_amount' => 400, 'items' => purchaseBillPayload($this)['items']];
+
+    $this->postJson('/api/v1/supplier-credits', $credit)->assertSuccessful()->assertJsonPath('data.exchange_rate', 1);
+
+    $expense->refresh()->update(['exchange_rate' => 1, 'notes' => 'Receipt checked']);
+    expect($expense->fresh()->notes)->toBe('Receipt checked')
+        ->and(fn () => $expense->update(['amount' => 2000]))->toThrow(ValidationException::class);
+
+    $foreign = Expense::factory()->create([
+        'company_id' => $this->companyId,
+        'supplier_id' => $this->supplier->id,
+        'expense_category_id' => $this->category->id,
+        'currency_id' => Currency::query()->where('code', 'EUR')->value('id'),
+        'amount' => 1000,
+        'base_amount' => 1100,
+    ]);
+    $foreign->forceFill(['exchange_rate' => null])->saveQuietly();
+
+    $this->postJson('/api/v1/supplier-credits', [...$credit, 'currency_id' => $foreign->currency_id, 'source_expense_id' => $foreign->id])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors('source_expense_id');
 });

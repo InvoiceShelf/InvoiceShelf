@@ -89,7 +89,13 @@ class PurchaseDocumentService
             } elseif (! empty($data['source_expense_id'])) {
                 $expense = Expense::query()->where('company_id', $companyId)->lockForUpdate()->findOrFail($data['source_expense_id']);
                 PurchaseInputs::ensure($expense->supplier_id == $supplier->id && $expense->currency_id == $data['currency_id'], 'source_expense_id', 'Assign this expense to the same supplier and currency first.');
-                $money = $expense->only(['currency_id', 'exchange_rate']);
+                // Older expenses may have no stored rate; one in the company currency is at 1.
+                PurchaseInputs::ensure(
+                    $expense->exchange_rate !== null || (int) $expense->currency_id === PurchaseInputs::companyCurrency($companyId),
+                    'source_expense_id',
+                    'Set the exchange rate on this expense before crediting it.',
+                );
+                $money = PurchaseInputs::money($companyId, $expense->only(['currency_id', 'exchange_rate']));
                 $data['tax_included'] = true;
                 $items = [$this->creditExpense($expense, (int) $data['source_amount'])];
             } else {
