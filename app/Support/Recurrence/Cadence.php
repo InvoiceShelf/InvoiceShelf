@@ -23,12 +23,23 @@ final class Cadence
 
     /**
      * The first occurrence strictly after the given moment.
+     *
+     * When the clocks go back, the hour before the change happens twice, and
+     * the cron library finds a fixed time in it (02:30) in both passes. Like
+     * cron itself, a schedule runs once at a wall-clock time: an occurrence
+     * reading the same local time as the moment it follows is skipped.
      */
     public static function next(string $frequency, CarbonInterface|string $after, string $timezone): CarbonImmutable
     {
-        $next = (new CronExpression($frequency))->getNextRunDate(self::moment($after, $timezone), 0, false, $timezone);
+        $cron = new CronExpression($frequency);
+        $from = self::moment($after, $timezone);
+        $next = CarbonImmutable::instance($cron->getNextRunDate($from, 0, false, $timezone));
 
-        return CarbonImmutable::instance($next)->setTimezone(config('app.timezone', 'UTC'));
+        if ($next->setTimezone($timezone)->format('Y-m-d H:i') === $from->format('Y-m-d H:i')) {
+            $next = CarbonImmutable::instance($cron->getNextRunDate($next, 0, false, $timezone));
+        }
+
+        return $next->setTimezone(config('app.timezone', 'UTC'));
     }
 
     /**
