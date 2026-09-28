@@ -135,6 +135,14 @@ export async function setI18nLanguage(
 /**
  * Check whether a language has already been loaded.
  */
+/**
+ * Translate a key with the app's active i18n instance, for code that runs
+ * outside a component. Before the app is created the key comes back as is.
+ */
+export function translate(key: string): string {
+  return activeI18n ? String(activeI18n.global.t(key)) : key
+}
+
 export function isLanguageLoaded(locale: string): boolean {
   return loadedLanguages.has(locale)
 }

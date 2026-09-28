@@ -16,7 +16,7 @@ class PurchaseAttachmentService
      */
     public function attach(Bill|SupplierCredit $document, UploadedFile $file, ?int $actorId): Media
     {
-        PurchaseInputs::ensure($document->status !== 'VOID', 'file', 'A void document cannot accept attachments.');
+        PurchaseInputs::ensure($document->status !== 'VOID', 'file', 'purchase_void_document_attachment');
 
         $media = $document->addMedia($file)
             ->usingFileName(SafeFileName::from($file->getClientOriginalName()))

@@ -38,7 +38,7 @@ final class PurchaseInputs
             ? 1
             : (float) $data['exchange_rate'];
 
-        self::ensure($rate > 0 && is_finite($rate), 'exchange_rate', 'A positive exchange rate is required.');
+        self::ensure($rate > 0 && is_finite($rate), 'exchange_rate', 'purchase_exchange_rate_required');
 
         return ['currency_id' => (int) $data['currency_id'], 'exchange_rate' => $rate];
     }

@@ -1,4 +1,6 @@
 import { isAxiosError } from 'axios'
+import { translate } from '@/scripts/plugins/i18n'
+import { getErrorTranslationKey } from '@/scripts/utils/error-handling'
 import type { PurchaseKind } from '@/scripts/types/domain/purchase'
 export const entityAbility = (kind: PurchaseKind) =>
   ({
@@ -14,10 +16,14 @@ export function purchaseError(error: unknown): string {
       | Record<string, string[]>
       | undefined
     return messages
-      ? Object.values(messages).flat().join(' ')
-      : (error.response?.data?.message ?? error.message)
+      ? Object.values(messages).flat().map(translateMessage).join(' ')
+      : translateMessage(error.response?.data?.message ?? error.message)
   }
   return error instanceof Error ? error.message : String(error)
+}
+function translateMessage(message: string): string {
+  const key = getErrorTranslationKey(message)
+  return key ? translate(key) : message
 }
 export const localDate = () => new Date().toLocaleDateString('en-CA')
 export const blankLine = () => ({

@@ -56,8 +56,8 @@ class PurchaseDocumentService
                 ->get()
                 ->keyBy('id');
             $supplier = $suppliers->get($data['supplier_id']);
-            PurchaseInputs::ensure($supplier !== null, 'supplier_id', 'Supplier not found.');
-            PurchaseInputs::ensure($supplier->enabled, 'supplier_id', 'This supplier is inactive.');
+            PurchaseInputs::ensure($supplier !== null, 'supplier_id', 'purchase_supplier_not_found');
+            PurchaseInputs::ensure($supplier->enabled, 'supplier_id', 'purchase_supplier_inactive');
 
             $money = PurchaseInputs::money($companyId, $data);
             $record = $bill
@@ -66,13 +66,13 @@ class PurchaseDocumentService
             $answers = $this->customFields->resolve($companyId, 'Bill', $data['customFields'] ?? [], $this->customFields->saved($record));
 
             if ($bill) {
-                PurchaseInputs::ensure($record->status !== 'VOID', 'bill', 'A void bill cannot be edited.');
+                PurchaseInputs::ensure($record->status !== 'VOID', 'bill', 'purchase_void_bill_locked');
 
                 if ($record->financial_locked_at) {
                     PurchaseInputs::ensure(
                         $this->unchanged($record, $data, $money),
                         'items',
-                        'Financial details are locked after settlement or credit. Use a supplier credit to adjust this bill.',
+                        'purchase_bill_financials_locked',
                     );
                     $record->update(Arr::only($data, ['reference', 'due_date', 'notes']));
                     $this->customFields->save($record, $answers);
@@ -159,13 +159,13 @@ class PurchaseDocumentService
             $record->refresh();
 
             if ($action === 'open' && $record instanceof Bill) {
-                PurchaseInputs::ensure($record->status === 'DRAFT', 'action', 'Only a draft bill can be opened.');
+                PurchaseInputs::ensure($record->status === 'DRAFT', 'action', 'purchase_bill_not_draft');
                 $record->update(['status' => 'OPEN']);
 
                 return;
             }
 
-            PurchaseInputs::ensure($action === 'void' && trim((string) $reason) !== '', 'action', 'A void reason is required.');
+            PurchaseInputs::ensure($action === 'void' && trim((string) $reason) !== '', 'action', 'purchase_void_reason_required');
 
             if ($record->status === 'VOID') {
                 return;
@@ -177,13 +177,13 @@ class PurchaseDocumentService
                         && ! $record->creditAllocations()->exists()
                         && ! $record->credits()->where('status', '!=', 'VOID')->exists(),
                     'bill',
-                    'Release settlements and void linked credits before voiding this bill.',
+                    'purchase_bill_in_use',
                 );
             } else {
                 PurchaseInputs::ensure(
                     ! $record->allocations()->exists() && ! $record->refunds()->where('status', 'OPEN')->exists(),
                     'credit',
-                    'Release allocations and void refunds before voiding this credit.',
+                    'purchase_credit_in_use',
                 );
             }
 
@@ -198,7 +198,7 @@ class PurchaseDocumentService
         PurchaseInputs::ensure(
             $bill->supplier_id == $supplier->id && $bill->currency_id == $data['currency_id'] && $bill->status === 'OPEN',
             'source_bill_id',
-            'The source bill must be posted and belong to this supplier and currency.',
+            'purchase_source_bill_mismatch',
         );
 
         $bill->setRelation('items', $bill->items()->lockForUpdate()->get());
@@ -213,14 +213,14 @@ class PurchaseDocumentService
         PurchaseInputs::ensure(
             $expense->supplier_id == $supplier->id && $expense->currency_id == $data['currency_id'],
             'source_expense_id',
-            'Assign this expense to the same supplier and currency first.',
+            'purchase_expense_supplier_mismatch',
         );
 
         // Older expenses may have no stored rate; one in the company currency is at 1.
         PurchaseInputs::ensure(
             $expense->exchange_rate !== null || (int) $expense->currency_id === PurchaseInputs::companyCurrency($companyId),
             'source_expense_id',
-            'Set the exchange rate on this expense before crediting it.',
+            'purchase_expense_rate_missing',
         );
 
         return $expense;
@@ -239,7 +239,7 @@ class PurchaseDocumentService
         PurchaseInputs::ensure(
             $computed['total'] > 0 && $computed['total'] <= self::MONEY_LIMIT,
             'items',
-            'The document total must be positive and within the supported money range.',
+            'purchase_document_total_out_of_range',
         );
 
         $items = [];
@@ -284,13 +284,13 @@ class PurchaseDocumentService
         return array_map(function (array $line) use ($types): array {
             $taxIds = $line['tax_type_ids'] ?? [];
 
-            PurchaseInputs::ensure($line['price'] * $line['quantity'] <= self::MONEY_LIMIT, 'items', 'The line amount exceeds the supported money range.');
-            PurchaseInputs::ensure(count($taxIds) === count(array_unique($taxIds)), 'items', 'A tax can only appear once per line.');
+            PurchaseInputs::ensure($line['price'] * $line['quantity'] <= self::MONEY_LIMIT, 'items', 'purchase_line_out_of_range');
+            PurchaseInputs::ensure(count($taxIds) === count(array_unique($taxIds)), 'items', 'purchase_tax_repeated');
 
             $line['discount_type'] = 'percentage';
             $line['taxes'] = array_map(function ($id) use ($types): array {
                 $type = $types->get($id);
-                PurchaseInputs::ensure($type !== null, 'items', 'Unknown purchase tax.');
+                PurchaseInputs::ensure($type !== null, 'items', 'purchase_tax_unknown');
 
                 return [
                     ...$type->only(['name', 'percent', 'calculation_type', 'fixed_amount', 'compound_tax']),
@@ -346,7 +346,7 @@ class PurchaseDocumentService
 
         foreach ($input as $line) {
             $source = $bill->items->firstWhere('id', $line['source_bill_item_id'] ?? null);
-            PurchaseInputs::ensure($source !== null, 'items', 'Each credit line must reference a line on its source bill.');
+            PurchaseInputs::ensure($source !== null, 'items', 'purchase_credit_line_unknown');
 
             $previous = SupplierCreditItem::query()
                 ->where('source_bill_item_id', $source->id)
@@ -356,7 +356,7 @@ class PurchaseDocumentService
             $before = $previous->sum(fn ($item) => CreditNoteAmounts::toHundredths($item->quantity));
             $after = $before + CreditNoteAmounts::toHundredths($line['quantity']);
             $whole = CreditNoteAmounts::toHundredths($source->quantity);
-            PurchaseInputs::ensure($after <= $whole, 'items', 'The credited quantity exceeds the remaining source quantity.');
+            PurchaseInputs::ensure($after <= $whole, 'items', 'purchase_credit_quantity_exceeds');
 
             $item = $source->only(['company_id', 'description', 'expense_category_id', 'price', 'discount', 'discount_type']);
             $item += ['quantity' => $line['quantity'], 'source_bill_item_id' => $source->id];
@@ -393,7 +393,7 @@ class PurchaseDocumentService
             ->get()
             ->sum('total');
         $after = $before + $amount;
-        PurchaseInputs::ensure($after <= $expense->amount, 'source_amount', 'The credit exceeds the remaining expense amount.');
+        PurchaseInputs::ensure($after <= $expense->amount, 'source_amount', 'purchase_credit_exceeds_expense');
 
         $taxes = $expense->taxes->map(fn ($tax) => [
             ...$tax->only(['tax_type_id', 'name', 'percent', 'calculation_type', 'fixed_amount', 'compound_tax']),
@@ -419,7 +419,7 @@ class PurchaseDocumentService
     private function totals(array $items): array
     {
         $total = array_sum(array_column($items, 'total'));
-        PurchaseInputs::ensure($total > 0, 'items', 'The document must credit or charge at least one minor unit.');
+        PurchaseInputs::ensure($total > 0, 'items', 'purchase_document_empty');
 
         return [
             'sub_total' => array_sum(array_column($items, 'sub_total')),
