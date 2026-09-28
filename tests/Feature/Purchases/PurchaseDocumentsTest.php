@@ -60,3 +60,22 @@ test('a bill supplier can be corrected before settlement and is locked afterward
     $data['supplier_id'] = $this->supplier->id;
     $this->putJson('/api/v1/bills/'.$bill['id'], $data)->assertUnprocessable();
 });
+
+test('the quantity left to credit has no float residue and can be credited as offered', function () {
+    $data = purchaseBillPayload($this, 1000);
+    $bill = $this->postJson('/api/v1/bills', $data)->assertSuccessful()->json('data');
+    $line = $bill['items'][0]['id'];
+    $credit = [...$data, 'source_bill_id' => $bill['id']];
+
+    foreach ([0.7, 0.1] as $quantity) {
+        $credit['items'][0] = [...$data['items'][0], 'source_bill_item_id' => $line, 'quantity' => $quantity];
+        $this->postJson('/api/v1/supplier-credits', $credit)->assertSuccessful();
+    }
+
+    $left = $this->getJson('/api/v1/bills/'.$bill['id'])->assertOk()->json('data.creditable_quantities.'.$line);
+    expect($left)->toBe(0.2);
+
+    $credit['items'][0]['quantity'] = $left;
+    $this->postJson('/api/v1/supplier-credits', $credit)->assertSuccessful();
+    expect($this->getJson('/api/v1/bills/'.$bill['id'])->json('data.creditable_quantities.'.$line))->toEqual(0);
+});

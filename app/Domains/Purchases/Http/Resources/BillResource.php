@@ -5,6 +5,7 @@ namespace App\Domains\Purchases\Http\Resources;
 use App\Domains\Metadata\Http\Resources\CustomFieldValueResource;
 use App\Domains\Money\Http\Resources\CurrencyResource;
 use App\Domains\Purchases\Models\Bill;
+use App\Support\CreditNoteAmounts;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -48,9 +49,28 @@ class BillResource extends JsonResource
         ];
     }
 
-    /** @return array<string, float> */
-    private function creditableQuantities(): array
+    /**
+     * How much of each line is left to credit, by line id.
+     *
+     * Worked in integer hundredths, like the check that guards the credit, so
+     * 1.00 less 0.70 and 0.10 is 0.2 and not 0.20000000000000007, which the
+     * credit form would send back and the request would refuse. An object,
+     * because the resource would re-index an array keyed by id into a list.
+     */
+    private function creditableQuantities(): object
     {
-        return $this->items->mapWithKeys(fn ($item) => [$item->id => max(0, (float) $item->quantity - $this->credits->where('status', '!=', 'VOID')->flatMap->items->where('source_bill_item_id', $item->id)->sum('quantity'))])->all();
+        $credited = $this->credits
+            ->where('status', '!=', 'VOID')
+            ->flatMap->items
+            ->groupBy('source_bill_item_id')
+            ->map(fn ($items) => $items->sum(fn ($item) => CreditNoteAmounts::toHundredths($item->quantity)));
+
+        return (object) $this->items
+            ->mapWithKeys(function ($item) use ($credited) {
+                $left = CreditNoteAmounts::toHundredths($item->quantity) - ($credited[$item->id] ?? 0);
+
+                return [$item->id => CreditNoteAmounts::fromHundredths(max(0, $left))];
+            })
+            ->all();
     }
 }
