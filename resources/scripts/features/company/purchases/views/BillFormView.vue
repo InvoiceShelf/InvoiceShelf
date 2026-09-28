@@ -119,10 +119,11 @@
               :fields="customFields"
               :scope="customValidation.scope"
             />
-            <BaseCheckbox
+            <BaseSwitch
               v-model="form.tax_included"
               :disabled="locked || linked"
-              :label="$t('purchases.tax_included')"
+              class="text-sm font-medium text-body"
+              :label-right="$t('purchases.tax_included')"
             />
           </div>
         </BaseCard>
