@@ -150,111 +150,7 @@
           </div>
         </form>
       </BaseCard>
-      <template v-if="kind === 'suppliers'">
-        <div
-          v-for="balance in record.balances"
-          :key="balance.currency_id"
-          class="space-y-2"
-        >
-          <h2 class="text-sm font-medium text-muted">
-            {{ balance.currency.code }}
-          </h2>
-          <BaseStatStrip :columns="3">
-            <BaseStat
-              v-for="field in ['due', 'advances', 'credits'] as const"
-              :key="field"
-              :label="$t(`purchases.${field}`)"
-              :emphasis="field === 'due'"
-              ><BaseFormatMoney
-                :amount="balance[field]"
-                :currency="balance.currency"
-            /></BaseStat>
-          </BaseStatStrip>
-        </div>
-        <div class="grid items-start gap-5 lg:grid-cols-3">
-          <BaseCard container-class="p-4 md:p-5">
-            <div class="mb-4 flex items-center justify-between gap-3">
-              <h2 class="font-semibold text-section text-heading">
-                {{ $t('purchases.supplier') }}
-              </h2>
-              <PurchaseStatus :kind="kind" :record="record" />
-            </div>
-            <dl class="space-y-4 text-sm">
-              <div
-                v-for="field in [
-                  'contact_name',
-                  'email',
-                  'phone',
-                  'website',
-                  'tax_id',
-                ] as const"
-                v-show="record[field]"
-                :key="field"
-              >
-                <dt class="text-muted">{{ $t(`purchases.${field}`) }}</dt>
-                <dd class="mt-1 break-words text-heading">
-                  {{ record[field] }}
-                </dd>
-              </div>
-              <div>
-                <dt class="text-muted">
-                  {{ $t('purchases.payment_terms') }}
-                </dt>
-                <dd class="mt-1 text-heading">
-                  {{ record.payment_terms }}
-                </dd>
-              </div>
-            </dl>
-            <PurchaseCustomFieldValues
-              :fields="record.fields"
-              class="mt-4"
-            />
-            <div
-              v-for="(address, index) in (record.addresses || []).filter(
-                (address) => Object.values(address).some(Boolean),
-              )"
-              :key="index"
-              class="mt-5 border-t border-line-light pt-4 text-sm text-body"
-            >
-              <h3 class="mb-1 text-muted">
-                {{ $t('purchases.address') }} {{ index + 1 }}
-              </h3>
-              {{
-                [
-                  address.address_street_1,
-                  address.address_street_2,
-                  address.city,
-                  address.state,
-                  address.zip,
-                ]
-                  .filter(Boolean)
-                  .join(', ')
-              }}
-            </div>
-            <p
-              v-if="record.notes"
-              class="mt-5 whitespace-pre-wrap text-sm text-body"
-            >
-              {{ record.notes }}
-            </p>
-          </BaseCard>
-          <BaseCard class="lg:col-span-2" container-class="p-4 md:p-5">
-            <h2 class="mb-3 font-semibold text-section text-heading">
-              {{ $t('purchases.transactions') }}
-            </h2>
-            <router-link
-              v-for="target in supplierLinks"
-              :key="target.key"
-              :to="target.to"
-              class="flex items-center justify-between border-b border-line-light py-4 text-sm font-medium text-heading hover:text-primary-600"
-              >{{ $t(target.label)
-              }}<BaseIcon
-                name="ChevronRightIcon"
-                class="h-4 w-4 text-muted"
-            /></router-link>
-          </BaseCard>
-        </div>
-      </template>
+      <SupplierOverview v-if="kind === 'suppliers'" :record="record" />
       <template v-else>
         <BaseStatStrip
           v-if="record.amount !== undefined || record.total !== undefined"
@@ -405,23 +301,7 @@
                 :kind="kind"
                 @saved="allocationsSaved"
             /></BaseCard>
-            <BaseCard v-if="settlements.length" container-class="p-4 md:p-5"
-              ><h2 class="mb-3 font-semibold text-section text-heading">
-                {{ $t('purchases.settlements') }}
-              </h2>
-              <div
-                v-for="settlement in settlements"
-                :key="settlement.key"
-                class="flex justify-between gap-4 border-b border-line-light py-3 text-sm"
-              >
-                <router-link :to="settlement.url" class="text-primary-600">{{
-                  settlement.label
-                }}</router-link
-                ><BaseFormatMoney
-                  :amount="settlement.amount"
-                  :currency="record.currency"
-                /></div
-            ></BaseCard>
+            <PurchaseSettlements :kind="kind" :record="record" />
           </div>
           <div class="space-y-5">
             <BaseCard v-if="record.credits?.length" container-class="p-4 md:p-5"
@@ -461,38 +341,14 @@
                   :currency="record.currency"
                 /></div
             ></BaseCard>
-            <BaseCard
+            <PurchaseDocumentFiles
               v-if="kind === 'bills' || kind === 'supplier-credits'"
-              container-class="p-4 md:p-5"
-            >
-              <h2 class="mb-3 font-semibold text-section text-heading">
-                {{ $t('purchases.attachments') }}
-              </h2>
-              <div
-                v-for="file in record.attachments"
-                :key="file.id"
-                class="py-2"
-              >
-                <button
-                  class="text-sm text-primary-600"
-                  @click="download(file.url, file.name)"
-                >
-                  {{ file.name }}
-                </button>
-              </div>
-              <BaseInputGroup
-                v-if="canEdit && record.status !== 'VOID'"
-                :label="$t('purchases.add_attachment')"
-                class="mt-3"
-                ><BaseFileUploader
-                  :key="uploadKey"
-                  accept=".pdf,.jpg,.jpeg,.png,.webp"
-                  @change="upload"
-              /></BaseInputGroup>
-              <p v-if="busy" role="status" class="mt-2 text-sm text-muted">
-                {{ $t('purchases.loading') }}
-              </p>
-            </BaseCard>
+              :kind="kind"
+              :record="record"
+              :can-edit="canEdit"
+              @changed="load"
+              @error="error = $event"
+            />
           </div>
         </div>
       </template>
@@ -504,11 +360,7 @@ import PurchaseCustomFieldValues from '../components/PurchaseCustomFieldValues.v
 import PurchaseDate from '../components/PurchaseDate.vue'
 import PurchaseBreadcrumb from '../components/PurchaseBreadcrumb.vue'
 import PurchaseStatus from '../components/PurchaseStatus.vue'
-import {
-  purchaseParent,
-  purchaseCreateLabels,
-  purchaseHelpKeys,
-} from '../navigation'
+import { purchaseCreateLabels, purchaseHelpKeys } from '../navigation'
 
 import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -521,6 +373,9 @@ import type {
 } from '@/scripts/types/domain/purchase'
 import { entityAbility, purchaseError } from '../helpers'
 import AllocationEditor from '../components/AllocationEditor.vue'
+import PurchaseDocumentFiles from '../components/PurchaseDocumentFiles.vue'
+import PurchaseSettlements from '../components/PurchaseSettlements.vue'
+import SupplierOverview from '../components/SupplierOverview.vue'
 const { t } = useI18n()
 const itemColumns = computed(() => [
   { key: 'description', label: t('purchases.description'), mobile: 'title' },
@@ -567,26 +422,6 @@ const canVoid = computed(
     props.kind !== 'suppliers' &&
     user.hasAbilities(`delete-${entityAbility(props.kind)}`),
 )
-const supplierLinks = computed(() =>
-  (
-    [
-      'bills',
-      'supplier-payments',
-      'supplier-credits',
-      'supplier-refunds',
-    ] as PurchaseKind[]
-  )
-    .filter((kind) => user.hasAbilities(`view-${entityAbility(kind)}`))
-    .map((kind) => {
-      const parent = purchaseParent(kind)
-      return {
-        key: kind,
-        label: `purchases.${kind}`,
-        to: { ...parent, query: { ...parent.query, supplier_id: id.value } },
-      }
-    }),
-)
-const uploadKey = ref(0)
 const initials = computed(() =>
   (record.value?.name || '')
     .trim()
@@ -628,30 +463,6 @@ const hasActions = computed(() => {
     (canAllocate.value && current.status === 'OPEN')
   )
 })
-const settlements = computed(() => {
-  const rows = record.value?.allocations ?? []
-  if (props.kind !== 'bills')
-    return rows.map((row) => ({
-      key: `bill-${row.id}`,
-      url: `/admin/bills/${row.bill_id}/view`,
-      label: row.bill?.number ?? String(row.bill_id),
-      amount: row.amount,
-    }))
-  return [
-    ...(record.value?.payment_allocations ?? []).map((row) => ({
-      key: `payment-${row.id}`,
-      url: `/admin/supplier-payments/${row.payment?.id}/view`,
-      label: row.payment?.number ?? '',
-      amount: row.amount,
-    })),
-    ...(record.value?.credit_allocations ?? []).map((row) => ({
-      key: `credit-${row.id}`,
-      url: `/admin/supplier-credits/${row.credit?.id}/view`,
-      label: row.credit?.number ?? '',
-      amount: row.amount,
-    })),
-  ]
-})
 async function allocationsSaved() {
   editingAllocations.value = false
   await load()
@@ -692,26 +503,6 @@ async function act(action: string) {
     error.value = purchaseError(e)
   } finally {
     busy.value = false
-  }
-}
-async function upload(_field: string, file: FileList | File | string) {
-  if (!(file instanceof File) || busy.value) return
-  busy.value = true
-  try {
-    await purchaseService.upload(props.kind, id.value, file)
-    await load()
-  } catch (e) {
-    error.value = purchaseError(e)
-  } finally {
-    busy.value = false
-    uploadKey.value++
-  }
-}
-async function download(url: string, name: string) {
-  try {
-    await purchaseService.download(url, name)
-  } catch (e) {
-    error.value = purchaseError(e)
   }
 }
 </script>
