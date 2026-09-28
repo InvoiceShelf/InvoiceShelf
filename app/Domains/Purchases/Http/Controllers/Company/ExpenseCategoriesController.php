@@ -82,6 +82,7 @@ class ExpenseCategoriesController extends Controller
             || Supplier::query()->where('expense_category_id', $category->id)->exists()) {
             return respondJson('expense_attached', 'Expense Attached');
         }
+
         $category->delete();
 
         return response()->json(['success' => true]);

@@ -17,8 +17,13 @@ class CustomFieldAnswerValidator
      * server: it lived on the definition and only the browser honoured it, so
      * any caller could save a record with a required answer missing.
      */
-    public function validate(Validator $validator, string $attribute, mixed $value, CustomField $definition, int $companyId): void
-    {
+    public function validate(
+        Validator $validator,
+        string $attribute,
+        mixed $value,
+        CustomField $definition,
+        int $companyId,
+    ): void {
         $label = $definition->label;
 
         // A switch turned off and a zero are answers; only nothing is not.
@@ -57,8 +62,13 @@ class CustomFieldAnswerValidator
      * Options have been stored both as plain strings and as `{name: ...}`
      * objects over the life of the column, so both are read.
      */
-    private function checkOptions(Validator $validator, string $attribute, mixed $value, CustomField $definition, string $label): void
-    {
+    private function checkOptions(
+        Validator $validator,
+        string $attribute,
+        mixed $value,
+        CustomField $definition,
+        string $label,
+    ): void {
         if ($definition->type !== 'Dropdown') {
             return;
         }
@@ -76,8 +86,13 @@ class CustomFieldAnswerValidator
     }
 
     /** @param  array<string, mixed>  $rules */
-    private function checkLength(Validator $validator, string $attribute, mixed $value, array $rules, string $label): void
-    {
+    private function checkLength(
+        Validator $validator,
+        string $attribute,
+        mixed $value,
+        array $rules,
+        string $label,
+    ): void {
         if (! is_scalar($value)) {
             return;
         }
@@ -94,8 +109,13 @@ class CustomFieldAnswerValidator
     }
 
     /** @param  array<string, mixed>  $rules */
-    private function checkRange(Validator $validator, string $attribute, mixed $value, array $rules, string $label): void
-    {
+    private function checkRange(
+        Validator $validator,
+        string $attribute,
+        mixed $value,
+        array $rules,
+        string $label,
+    ): void {
         if (! is_numeric($value)) {
             return;
         }
@@ -119,8 +139,15 @@ class CustomFieldAnswerValidator
      *
      * @param  array<string, mixed>  $rules
      */
-    private function checkDateRange(Validator $validator, string $attribute, mixed $value, array $rules, CustomField $definition, string $label, int $companyId): void
-    {
+    private function checkDateRange(
+        Validator $validator,
+        string $attribute,
+        mixed $value,
+        array $rules,
+        CustomField $definition,
+        string $label,
+        int $companyId,
+    ): void {
         $earliest = $rules['earliest'] ?? null;
         $latest = $rules['latest'] ?? null;
 
@@ -206,8 +233,13 @@ class CustomFieldAnswerValidator
     }
 
     /** @param  array<string, mixed>  $rules */
-    private function checkPattern(Validator $validator, string $attribute, mixed $value, array $rules, string $label): void
-    {
+    private function checkPattern(
+        Validator $validator,
+        string $attribute,
+        mixed $value,
+        array $rules,
+        string $label,
+    ): void {
         $pattern = $rules['pattern'] ?? null;
 
         if (! is_string($pattern) || $pattern === '' || ! is_scalar($value)) {

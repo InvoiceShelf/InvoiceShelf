@@ -18,18 +18,39 @@ Route::match(['POST'], 'expenses/delete', [ExpensesController::class, 'delete'])
 Route::resource('expenses', ExpensesController::class)->except(['create', 'edit']);
 Route::resource('categories', ExpenseCategoriesController::class)->except(['create', 'edit']);
 
-Route::apiResource('suppliers', SuppliersController::class)->parameters(['suppliers' => 'supplier'])->only(['index', 'show', 'store', 'update']);
+Route::apiResource('suppliers', SuppliersController::class)
+    ->parameters(['suppliers' => 'supplier'])
+    ->only(['index', 'show', 'store', 'update']);
+
 Route::post('bills/{bill}/actions', [BillsController::class, 'action']);
-Route::apiResource('bills', BillsController::class)->parameters(['bills' => 'bill'])->only(['index', 'show', 'store', 'update']);
+Route::apiResource('bills', BillsController::class)
+    ->parameters(['bills' => 'bill'])
+    ->only(['index', 'show', 'store', 'update']);
+
 Route::post('supplier-payments/{supplierPayment}/actions', [SupplierPaymentsController::class, 'action']);
 Route::put('supplier-payments/{supplierPayment}/allocations', [SupplierPaymentsController::class, 'allocations']);
-Route::apiResource('supplier-payments', SupplierPaymentsController::class)->parameters(['supplier-payments' => 'supplierPayment'])->only(['index', 'show', 'store']);
+Route::apiResource('supplier-payments', SupplierPaymentsController::class)
+    ->parameters(['supplier-payments' => 'supplierPayment'])
+    ->only(['index', 'show', 'store']);
+
 Route::post('supplier-credits/{supplierCredit}/actions', [SupplierCreditsController::class, 'action']);
 Route::put('supplier-credits/{supplierCredit}/allocations', [SupplierCreditsController::class, 'allocations']);
-Route::apiResource('supplier-credits', SupplierCreditsController::class)->parameters(['supplier-credits' => 'supplierCredit'])->only(['index', 'show', 'store']);
+Route::apiResource('supplier-credits', SupplierCreditsController::class)
+    ->parameters(['supplier-credits' => 'supplierCredit'])
+    ->only(['index', 'show', 'store']);
+
 Route::post('supplier-refunds/{supplierRefund}/actions', [SupplierRefundsController::class, 'action']);
-Route::apiResource('supplier-refunds', SupplierRefundsController::class)->parameters(['supplier-refunds' => 'supplierRefund'])->only(['index', 'show', 'store']);
-Route::post('{kind}/{record}/attachments', [PurchaseAttachmentsController::class, 'store'])->whereIn('kind', ['bills', 'supplier-credits'])->whereNumber('record');
-Route::get('{kind}/{record}/attachments/{attachment}', [PurchaseAttachmentsController::class, 'show'])->whereIn('kind', ['bills', 'supplier-credits'])->whereNumber(['record', 'attachment']);
+Route::apiResource('supplier-refunds', SupplierRefundsController::class)
+    ->parameters(['supplier-refunds' => 'supplierRefund'])
+    ->only(['index', 'show', 'store']);
+
+// Bills and supplier credits share one attachment endpoint, keyed by {kind}.
+Route::post('{kind}/{record}/attachments', [PurchaseAttachmentsController::class, 'store'])
+    ->whereIn('kind', ['bills', 'supplier-credits'])
+    ->whereNumber('record');
+Route::get('{kind}/{record}/attachments/{attachment}', [PurchaseAttachmentsController::class, 'show'])
+    ->whereIn('kind', ['bills', 'supplier-credits'])
+    ->whereNumber(['record', 'attachment']);
+
 Route::get('reports/purchases', PurchasesReportController::class);
 Route::get('purchase-options', PurchaseOptionsController::class);

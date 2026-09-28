@@ -66,8 +66,15 @@ class CashflowQuery
 
         if (! $customerId) {
             $companyId = (int) request()->header('company');
+
             foreach ([SupplierPayment::class => 1, SupplierRefund::class => -1] as $model => $sign) {
-                $rows = $this->bucket($period, $model::query()->forCompany($companyId)->where('status', 'OPEN')->whereBetween('payment_date', $span), 'payment_date', 'base_amount');
+                $supplierCash = $model::query()
+                    ->forCompany($companyId)
+                    ->where('status', 'OPEN')
+                    ->whereBetween('payment_date', $span);
+
+                $rows = $this->bucket($period, $supplierCash, 'payment_date', 'base_amount');
+
                 foreach ($rows as $index => $amount) {
                     $expenseTotals[$index] += $amount * $sign;
                 }

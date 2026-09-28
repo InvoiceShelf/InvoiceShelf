@@ -53,10 +53,18 @@ class ProfitLossReportController extends Controller
             ->expensesAttributes()
             ->get();
 
-        $cash = app(PurchasesQuery::class)->cash($company->id, $window['from_date'] ?? null, $window['to_date'] ?? null);
+        $cash = app(PurchasesQuery::class)->cash(
+            $company->id,
+            $window['from_date'] ?? null,
+            $window['to_date'] ?? null,
+        );
+
         foreach (['supplier_payments' => 1, 'supplier_refunds' => -1] as $key => $sign) {
             if ($cash[$key]) {
-                $spending->push((object) ['category' => (object) ['name' => __('pdf_'.$key.'_label')], 'total_amount' => $cash[$key] * $sign]);
+                $spending->push((object) [
+                    'category' => (object) ['name' => __('pdf_'.$key.'_label')],
+                    'total_amount' => $cash[$key] * $sign,
+                ]);
             }
         }
 

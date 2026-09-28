@@ -28,7 +28,12 @@ return new class extends Migration
             $table->timestamps();
             $table->index(['company_id', 'name']);
         });
-        Schema::table('expenses', fn (Blueprint $table) => $table->unsignedBigInteger('supplier_id')->nullable()->index());
+
+        Schema::table('expenses', function (Blueprint $table): void {
+            $table->unsignedBigInteger('supplier_id')->nullable()->index();
+        });
+
+        // Bills and supplier credits share one document shape.
         foreach (['bills', 'supplier_credits'] as $name) {
             Schema::create($name, function (Blueprint $table): void {
                 $this->record($table);
@@ -48,7 +53,13 @@ return new class extends Migration
                 $table->unique(['company_id', 'number']);
             });
         }
-        foreach (['bill_items' => 'bill_id', 'supplier_credit_items' => 'supplier_credit_id'] as $name => $parent) {
+
+        $itemTables = [
+            'bill_items' => 'bill_id',
+            'supplier_credit_items' => 'supplier_credit_id',
+        ];
+
+        foreach ($itemTables as $name => $parent) {
             Schema::create($name, function (Blueprint $table) use ($parent): void {
                 $table->bigIncrements('id');
                 $table->unsignedBigInteger($parent)->index();
@@ -69,6 +80,7 @@ return new class extends Migration
                 $table->timestamps();
             });
         }
+
         foreach (['supplier_payments', 'supplier_refunds'] as $name) {
             Schema::create($name, function (Blueprint $table) use ($name): void {
                 $this->record($table);
@@ -76,14 +88,22 @@ return new class extends Migration
                 $table->bigInteger('amount');
                 $table->bigInteger('base_amount');
                 $table->unsignedInteger('payment_method_id')->nullable()->index();
+
                 if ($name === 'supplier_refunds') {
                     $table->unsignedBigInteger('supplier_payment_id')->nullable()->index();
                     $table->unsignedBigInteger('supplier_credit_id')->nullable()->index();
                 }
+
                 $table->unique(['company_id', 'number']);
             });
         }
-        foreach (['supplier_payment_allocations' => 'supplier_payment_id', 'supplier_credit_allocations' => 'supplier_credit_id'] as $name => $parent) {
+
+        $allocationTables = [
+            'supplier_payment_allocations' => 'supplier_payment_id',
+            'supplier_credit_allocations' => 'supplier_credit_id',
+        ];
+
+        foreach ($allocationTables as $name => $parent) {
             Schema::create($name, function (Blueprint $table) use ($parent): void {
                 $table->bigIncrements('id');
                 $table->unsignedInteger('company_id')->index();
@@ -92,12 +112,21 @@ return new class extends Migration
                 $table->bigInteger('amount');
                 $table->bigInteger('base_amount');
                 $table->timestamps();
-                $table->unique([$parent, 'bill_id'], $parent === 'supplier_payment_id' ? 'supplier_payment_bill_unique' : 'supplier_credit_bill_unique');
+
+                $uniqueName = $parent === 'supplier_payment_id'
+                    ? 'supplier_payment_bill_unique'
+                    : 'supplier_credit_bill_unique';
+
+                $table->unique([$parent, 'bill_id'], $uniqueName);
             });
         }
+
         app(RolePresetService::class)->syncAll();
     }
 
+    /**
+     * The columns every supplier payment, refund, bill and credit carries.
+     */
     private function record(Blueprint $table): void
     {
         $table->bigIncrements('id');
@@ -120,9 +149,21 @@ return new class extends Migration
 
     public function down(): void
     {
-        foreach (['supplier_credit_allocations', 'supplier_payment_allocations', 'supplier_refunds', 'supplier_payments', 'supplier_credit_items', 'bill_items', 'supplier_credits', 'bills'] as $table) {
+        $tables = [
+            'supplier_credit_allocations',
+            'supplier_payment_allocations',
+            'supplier_refunds',
+            'supplier_payments',
+            'supplier_credit_items',
+            'bill_items',
+            'supplier_credits',
+            'bills',
+        ];
+
+        foreach ($tables as $table) {
             Schema::dropIfExists($table);
         }
+
         Schema::table('expenses', fn (Blueprint $table) => $table->dropColumn('supplier_id'));
         Schema::dropIfExists('suppliers');
     }

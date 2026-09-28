@@ -78,11 +78,19 @@ class Bill extends Model implements HasMedia
 
     public function getSettlementStatusAttribute(): string
     {
-        return $this->due_amount === 0 ? 'SETTLED' : ($this->due_amount < $this->total ? 'PARTIAL' : 'UNPAID');
+        if ($this->due_amount === 0) {
+            return 'SETTLED';
+        }
+
+        return $this->due_amount < $this->total ? 'PARTIAL' : 'UNPAID';
     }
 
+    /**
+     * Bind route parameters only to the current company's records.
+     */
     public function resolveRouteBindingQuery($query, $value, $field = null)
     {
-        return parent::resolveRouteBindingQuery($query, $value, $field)->where($this->qualifyColumn('company_id'), (int) request()->header('company'));
+        return parent::resolveRouteBindingQuery($query, $value, $field)
+            ->where($this->qualifyColumn('company_id'), (int) request()->header('company'));
     }
 }

@@ -32,26 +32,179 @@ return [
     */
 
     'abilities' => [
-        ['name' => 'view supplier', 'ability' => 'view-supplier', 'model' => Supplier::class, 'depends_on' => []],
-        ['name' => 'create supplier', 'ability' => 'create-supplier', 'model' => Supplier::class, 'depends_on' => ['view-supplier']],
-        ['name' => 'edit supplier', 'ability' => 'edit-supplier', 'model' => Supplier::class, 'depends_on' => ['view-supplier']],
-        ['name' => 'delete supplier', 'ability' => 'delete-supplier', 'model' => Supplier::class, 'depends_on' => ['view-supplier']],
-        ['name' => 'view bill', 'ability' => 'view-bill', 'model' => Bill::class, 'depends_on' => []],
-        ['name' => 'create bill', 'ability' => 'create-bill', 'model' => Bill::class, 'depends_on' => ['view-bill', 'view-supplier']],
-        ['name' => 'edit bill', 'ability' => 'edit-bill', 'model' => Bill::class, 'depends_on' => ['view-bill', 'view-supplier']],
-        ['name' => 'delete bill', 'ability' => 'delete-bill', 'model' => Bill::class, 'depends_on' => ['view-bill']],
-        ['name' => 'view supplier payment', 'ability' => 'view-supplier-payment', 'model' => SupplierPayment::class, 'depends_on' => []],
-        ['name' => 'create supplier payment', 'ability' => 'create-supplier-payment', 'model' => SupplierPayment::class, 'depends_on' => ['view-supplier-payment', 'view-supplier', 'view-bill']],
-        ['name' => 'edit supplier payment', 'ability' => 'edit-supplier-payment', 'model' => SupplierPayment::class, 'depends_on' => ['view-supplier-payment', 'view-supplier', 'view-bill']],
-        ['name' => 'delete supplier payment', 'ability' => 'delete-supplier-payment', 'model' => SupplierPayment::class, 'depends_on' => ['view-supplier-payment']],
-        ['name' => 'view supplier credit', 'ability' => 'view-supplier-credit', 'model' => SupplierCredit::class, 'depends_on' => []],
-        ['name' => 'create supplier credit', 'ability' => 'create-supplier-credit', 'model' => SupplierCredit::class, 'depends_on' => ['view-supplier-credit', 'view-supplier', 'view-bill']],
-        ['name' => 'edit supplier credit', 'ability' => 'edit-supplier-credit', 'model' => SupplierCredit::class, 'depends_on' => ['view-supplier-credit', 'view-supplier', 'view-bill']],
-        ['name' => 'delete supplier credit', 'ability' => 'delete-supplier-credit', 'model' => SupplierCredit::class, 'depends_on' => ['view-supplier-credit']],
-        ['name' => 'view supplier refund', 'ability' => 'view-supplier-refund', 'model' => SupplierRefund::class, 'depends_on' => []],
-        ['name' => 'create supplier refund', 'ability' => 'create-supplier-refund', 'model' => SupplierRefund::class, 'depends_on' => ['view-supplier-refund', 'view-supplier', 'view-supplier-payment', 'view-supplier-credit']],
-        ['name' => 'edit supplier refund', 'ability' => 'edit-supplier-refund', 'model' => SupplierRefund::class, 'depends_on' => ['view-supplier-refund', 'view-supplier']],
-        ['name' => 'delete supplier refund', 'ability' => 'delete-supplier-refund', 'model' => SupplierRefund::class, 'depends_on' => ['view-supplier-refund']],
+        // Supplier
+        [
+            'name' => 'view supplier',
+            'ability' => 'view-supplier',
+            'model' => Supplier::class,
+            'depends_on' => [],
+        ],
+        [
+            'name' => 'create supplier',
+            'ability' => 'create-supplier',
+            'model' => Supplier::class,
+            'depends_on' => [
+                'view-supplier',
+            ],
+        ],
+        [
+            'name' => 'edit supplier',
+            'ability' => 'edit-supplier',
+            'model' => Supplier::class,
+            'depends_on' => [
+                'view-supplier',
+            ],
+        ],
+        [
+            'name' => 'delete supplier',
+            'ability' => 'delete-supplier',
+            'model' => Supplier::class,
+            'depends_on' => [
+                'view-supplier',
+            ],
+        ],
+
+        // Bill
+        [
+            'name' => 'view bill',
+            'ability' => 'view-bill',
+            'model' => Bill::class,
+            'depends_on' => [],
+        ],
+        [
+            'name' => 'create bill',
+            'ability' => 'create-bill',
+            'model' => Bill::class,
+            'depends_on' => [
+                'view-bill',
+                'view-supplier',
+            ],
+        ],
+        [
+            'name' => 'edit bill',
+            'ability' => 'edit-bill',
+            'model' => Bill::class,
+            'depends_on' => [
+                'view-bill',
+                'view-supplier',
+            ],
+        ],
+        [
+            'name' => 'delete bill',
+            'ability' => 'delete-bill',
+            'model' => Bill::class,
+            'depends_on' => [
+                'view-bill',
+            ],
+        ],
+
+        // Supplier Payment
+        [
+            'name' => 'view supplier payment',
+            'ability' => 'view-supplier-payment',
+            'model' => SupplierPayment::class,
+            'depends_on' => [],
+        ],
+        [
+            'name' => 'create supplier payment',
+            'ability' => 'create-supplier-payment',
+            'model' => SupplierPayment::class,
+            'depends_on' => [
+                'view-supplier-payment',
+                'view-supplier',
+                'view-bill',
+            ],
+        ],
+        [
+            'name' => 'edit supplier payment',
+            'ability' => 'edit-supplier-payment',
+            'model' => SupplierPayment::class,
+            'depends_on' => [
+                'view-supplier-payment',
+                'view-supplier',
+                'view-bill',
+            ],
+        ],
+        [
+            'name' => 'delete supplier payment',
+            'ability' => 'delete-supplier-payment',
+            'model' => SupplierPayment::class,
+            'depends_on' => [
+                'view-supplier-payment',
+            ],
+        ],
+
+        // Supplier Credit
+        [
+            'name' => 'view supplier credit',
+            'ability' => 'view-supplier-credit',
+            'model' => SupplierCredit::class,
+            'depends_on' => [],
+        ],
+        [
+            'name' => 'create supplier credit',
+            'ability' => 'create-supplier-credit',
+            'model' => SupplierCredit::class,
+            'depends_on' => [
+                'view-supplier-credit',
+                'view-supplier',
+                'view-bill',
+            ],
+        ],
+        [
+            'name' => 'edit supplier credit',
+            'ability' => 'edit-supplier-credit',
+            'model' => SupplierCredit::class,
+            'depends_on' => [
+                'view-supplier-credit',
+                'view-supplier',
+                'view-bill',
+            ],
+        ],
+        [
+            'name' => 'delete supplier credit',
+            'ability' => 'delete-supplier-credit',
+            'model' => SupplierCredit::class,
+            'depends_on' => [
+                'view-supplier-credit',
+            ],
+        ],
+
+        // Supplier Refund
+        [
+            'name' => 'view supplier refund',
+            'ability' => 'view-supplier-refund',
+            'model' => SupplierRefund::class,
+            'depends_on' => [],
+        ],
+        [
+            'name' => 'create supplier refund',
+            'ability' => 'create-supplier-refund',
+            'model' => SupplierRefund::class,
+            'depends_on' => [
+                'view-supplier-refund',
+                'view-supplier',
+                'view-supplier-payment',
+                'view-supplier-credit',
+            ],
+        ],
+        [
+            'name' => 'edit supplier refund',
+            'ability' => 'edit-supplier-refund',
+            'model' => SupplierRefund::class,
+            'depends_on' => [
+                'view-supplier-refund',
+                'view-supplier',
+            ],
+        ],
+        [
+            'name' => 'delete supplier refund',
+            'ability' => 'delete-supplier-refund',
+            'model' => SupplierRefund::class,
+            'depends_on' => [
+                'view-supplier-refund',
+            ],
+        ],
 
         // Customer
         [

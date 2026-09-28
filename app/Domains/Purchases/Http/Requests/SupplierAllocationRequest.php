@@ -7,11 +7,17 @@ use Illuminate\Validation\Rule;
 
 class SupplierAllocationRequest extends FormRequest
 {
+    /**
+     * Gatekeeping happens in the controller, so let every caller through here.
+     */
     public function authorize(): bool
     {
         return true;
     }
 
+    /**
+     * Rules for the company named in the request header.
+     */
     public function rules(): array
     {
         return self::rulesFor((int) $this->header('company'));
@@ -21,7 +27,12 @@ class SupplierAllocationRequest extends FormRequest
     {
         return [
             'allocations' => [$required ? 'present' : 'sometimes', 'array', 'list', 'max:200'],
-            'allocations.*.bill_id' => ['required', 'integer', 'distinct', Rule::exists('bills', 'id')->where('company_id', $companyId)],
+            'allocations.*.bill_id' => [
+                'required',
+                'integer',
+                'distinct',
+                Rule::exists('bills', 'id')->where('company_id', $companyId),
+            ],
             'allocations.*.amount' => ['required', 'integer', 'min:1', 'max:999999999999'],
         ];
     }

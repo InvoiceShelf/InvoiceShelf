@@ -10,11 +10,17 @@ use Illuminate\Validation\Rule;
 #[BodyParameter('customFields.*.value', description: 'Answer matching the field type; null clears an optional answer.', type: 'string|float|bool|null')]
 class SupplierRequest extends FormRequest
 {
+    /**
+     * Gatekeeping happens in the controller, so let every caller through here.
+     */
     public function authorize(): bool
     {
         return true;
     }
 
+    /**
+     * Rules for the company named in the request header.
+     */
     public function rules(): array
     {
         return self::rulesFor((int) $this->header('company'));
@@ -31,7 +37,11 @@ class SupplierRequest extends FormRequest
             'website' => ['nullable', 'url', 'max:255'],
             'tax_id' => ['nullable', 'string', 'max:255'],
             'currency_id' => ['required', 'integer', Rule::exists('currencies', 'id')],
-            'expense_category_id' => ['nullable', 'integer', Rule::exists('expense_categories', 'id')->where('company_id', $companyId)],
+            'expense_category_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('expense_categories', 'id')->where('company_id', $companyId),
+            ],
             'payment_terms' => ['required', 'integer', 'between:0,3650'],
             'addresses' => ['sometimes', 'array', 'list', 'max:5'],
             'addresses.*' => ['array:address_street_1,address_street_2,city,state,zip,country_id'],

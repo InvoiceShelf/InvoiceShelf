@@ -73,15 +73,40 @@ class ExpenseService
     ): Expense {
         DB::transaction(function () use ($expense, $attributes, $taxes): void {
             if ($expense->supplier_id || ($attributes['supplier_id'] ?? null)) {
-                Supplier::query()->where('company_id', $expense->company_id)->whereIn('id', array_filter([$expense->supplier_id, $attributes['supplier_id'] ?? null]))->orderBy('id')->lockForUpdate()->get();
+                Supplier::query()
+                    ->where('company_id', $expense->company_id)
+                    ->whereIn('id', array_filter([$expense->supplier_id, $attributes['supplier_id'] ?? null]))
+                    ->orderBy('id')
+                    ->lockForUpdate()
+                    ->get();
             }
-            $expense->setRawAttributes(Expense::query()->whereKey($expense->id)->lockForUpdate()->firstOrFail()->getAttributes(), true);
+
+            $locked = Expense::query()->whereKey($expense->id)->lockForUpdate()->firstOrFail();
+            $expense->setRawAttributes($locked->getAttributes(), true);
+
             if ($taxes !== null && SupplierCredit::query()->where('source_expense_id', $expense->id)->exists()) {
-                $old = $expense->taxes()->get()->map(fn ($tax) => ['tax_type_id' => (int) $tax->tax_type_id, 'amount' => (int) $tax->amount])->sortBy('tax_type_id')->values()->all();
-                $new = collect($taxes)->map(fn ($tax) => ['tax_type_id' => (int) $tax['tax_type_id'], 'amount' => (int) $tax['amount']])->sortBy('tax_type_id')->values()->all();
-                PurchaseInputs::ensure($old === $new, 'taxes', 'An expense with supplier credits must retain its original taxes.');
+                $old = $expense->taxes()
+                    ->get()
+                    ->map(fn ($tax) => ['tax_type_id' => (int) $tax->tax_type_id, 'amount' => (int) $tax->amount])
+                    ->sortBy('tax_type_id')
+                    ->values()
+                    ->all();
+
+                $new = collect($taxes)
+                    ->map(fn ($tax) => ['tax_type_id' => (int) $tax['tax_type_id'], 'amount' => (int) $tax['amount']])
+                    ->sortBy('tax_type_id')
+                    ->values()
+                    ->all();
+
+                PurchaseInputs::ensure(
+                    $old === $new,
+                    'taxes',
+                    'An expense with supplier credits must retain its original taxes.',
+                );
+
                 $taxes = null;
             }
+
             $expense->update($attributes);
 
             if ($taxes !== null) {
@@ -110,12 +135,36 @@ class ExpenseService
         return $expense->fresh('taxes.taxType');
     }
 
+    /**
+     * Delete a batch of one company's expenses. The suppliers involved are
+     * locked first, in id order, so a delete cannot race a supplier credit
+     * being raised against the same expense.
+     */
     public function delete(array $ids, int $companyId): void
     {
-        $suppliers = Expense::query()->where('company_id', $companyId)->whereIn('id', $ids)->whereNotNull('supplier_id')->pluck('supplier_id')->unique();
+        $suppliers = Expense::query()
+            ->where('company_id', $companyId)
+            ->whereIn('id', $ids)
+            ->whereNotNull('supplier_id')
+            ->pluck('supplier_id')
+            ->unique();
+
         DB::transaction(function () use ($ids, $companyId, $suppliers): void {
-            Supplier::query()->forCompany($companyId)->whereIn('id', $suppliers)->orderBy('id')->lockForUpdate()->get();
-            foreach (Expense::query()->where('company_id', $companyId)->whereIn('id', $ids)->orderBy('id')->lockForUpdate()->get() as $expense) {
+            Supplier::query()
+                ->forCompany($companyId)
+                ->whereIn('id', $suppliers)
+                ->orderBy('id')
+                ->lockForUpdate()
+                ->get();
+
+            $expenses = Expense::query()
+                ->where('company_id', $companyId)
+                ->whereIn('id', $ids)
+                ->orderBy('id')
+                ->lockForUpdate()
+                ->get();
+
+            foreach ($expenses as $expense) {
                 $expense->delete();
             }
         });
