@@ -165,3 +165,16 @@ test('a start date is read as that day where the company is', function () {
         ->assertOk()
         ->assertJsonPath('upcoming.0', '2026-10-01');
 });
+
+test('a daily invoice at a time the clocks repeat is sent once that day', function () {
+    // 02:30 in Skopje happens twice on 25 October 2026: at 00:30 and 01:30 UTC.
+    $schedule = scheduledInvoice($this->companyId, ['frequency' => '30 2 * * *', 'next_invoice_at' => '2026-10-25 00:30:00']);
+
+    Carbon::setTestNow('2026-10-25 00:31:00');
+    artisan('recurring-invoices:generate')->assertSuccessful();
+    Carbon::setTestNow('2026-10-25 01:31:00');
+    artisan('recurring-invoices:generate')->assertSuccessful();
+
+    expect(Invoice::query()->where('recurring_invoice_id', $schedule->id)->count())->toBe(1)
+        ->and($schedule->fresh()->next_invoice_at)->toBe('2026-10-26 01:30:00');
+});

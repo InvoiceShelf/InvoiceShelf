@@ -11,6 +11,7 @@ use App\Domains\Purchases\Models\Bill;
 use App\Domains\Purchases\Models\Expense;
 use App\Domains\Purchases\Models\ExpenseCategory;
 use App\Domains\Purchases\Models\RecurringCost;
+use App\Support\Recurrence\RecurrenceRunner;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Mail;
@@ -355,4 +356,81 @@ test('a failure handler that throws does not stop the schedules after it', funct
     artisan('recurring-costs:generate')->assertSuccessful();
 
     expect($schedule->fresh()->last_error)->toBe('purchase_supplier_inactive');
+});
+
+function expenseTemplate($test): array
+{
+    return ['amount' => 1999, 'currency_id' => $test->currencyId, 'exchange_rate' => 1, 'expense_category_id' => $test->category->id];
+}
+
+test('a schedule far behind catches up 100 runs a pass and never twice', function () {
+    // 151 daily runs, 16 January to 15 June.
+    $schedule = overdueSchedule($this, ['mode' => 'EXPENSE', 'frequency' => '0 0 * * *', 'template' => expenseTemplate($this)], '2026-01-16 00:00:00');
+
+    artisan('recurring-costs:generate')->assertSuccessful();
+    expect(Expense::query()->count())->toBe(100);
+
+    artisan('recurring-costs:generate')->assertSuccessful();
+    artisan('recurring-costs:generate')->assertSuccessful();
+
+    expect(Expense::query()->count())->toBe(151)
+        ->and($schedule->occurrences()->count())->toBe(151)
+        ->and(Expense::query()->min('expense_date'))->toStartWith('2026-01-16')
+        ->and(Expense::query()->max('expense_date'))->toStartWith('2026-06-15')
+        ->and($schedule->fresh()->next_run_at)->toBe('2026-06-16 00:00:00');
+});
+
+test('a date limit stops a schedule after its last day, even when it is behind', function () {
+    // Set up in March; the scheduler is next run in June.
+    Carbon::setTestNow('2026-03-15 12:00:00');
+    $schedule = overdueSchedule($this, ['starts_at' => '2026-03-01', 'limit_by' => 'DATE', 'limit_date' => '2026-05-15']);
+    Carbon::setTestNow('2026-06-15 12:00:00');
+
+    artisan('recurring-costs:generate')->assertSuccessful();
+
+    expect(Bill::query()->orderBy('document_date')->pluck('document_date')->all())->toBe(['2026-04-01', '2026-05-01'])
+        ->and($schedule->fresh()->status)->toBe('COMPLETED');
+});
+
+test('a failed schedule waits out the hour unless its failure is forgotten', function () {
+    $schedule = overdueSchedule($this, [], '2026-06-01 00:00:00');
+    $this->supplier->update(['enabled' => false]);
+    artisan('recurring-costs:generate')->assertSuccessful();
+
+    $this->supplier->update(['enabled' => true]);
+    artisan('recurring-costs:generate')->assertSuccessful();
+    expect(Bill::query()->count())->toBe(0);
+
+    app(RecurrenceRunner::class)->forgetFailure($schedule);
+    artisan('recurring-costs:generate')->assertSuccessful();
+    expect(Bill::query()->count())->toBe(1);
+});
+
+test('a bill on the 31st is made in the months that have one', function () {
+    overdueSchedule($this, ['starts_at' => '2026-01-01', 'frequency' => '0 0 31 * *'], '2026-01-31 00:00:00');
+
+    artisan('recurring-costs:generate')->assertSuccessful();
+    artisan('recurring-costs:generate')->assertSuccessful();
+
+    expect(Bill::query()->orderBy('document_date')->pluck('document_date')->all())->toBe(['2026-01-31', '2026-03-31', '2026-05-31']);
+});
+
+test('a daily expense makes one record a day through both clock changes', function () {
+    CompanySetting::setSettings(['time_zone' => 'Europe/Skopje'], $this->companyId);
+    Carbon::setTestNow('2026-10-27 12:00:00');
+    // 02:30 in Skopje: skipped by the spring change, repeated by the autumn one.
+    $schedule = overdueSchedule($this, ['mode' => 'EXPENSE', 'frequency' => '30 2 * * *', 'starts_at' => '2026-10-27', 'template' => expenseTemplate($this)], '2026-03-27 01:30:00');
+
+    artisan('recurring-costs:generate')->assertSuccessful();
+    artisan('recurring-costs:generate')->assertSuccessful();
+    artisan('recurring-costs:generate')->assertSuccessful();
+
+    $dates = Expense::query()->orderBy('expense_date')->pluck('expense_date')->map(fn ($date) => substr($date, 0, 10));
+
+    // 27 March to 27 October: 215 days, each once.
+    expect($dates)->toHaveCount(215)
+        ->and($dates->unique())->toHaveCount(215)
+        ->and($dates->contains('2026-03-29'))->toBeTrue()
+        ->and($dates->contains('2026-10-25'))->toBeTrue()
+        ->and($schedule->occurrences()->count())->toBe(215);
 });
