@@ -9,6 +9,7 @@ use App\Domains\Purchases\Models\RecurringCost;
 use App\Support\Recurrence\Cadence;
 use App\Support\Recurrence\RecurrenceRunner;
 use App\Support\Recurrence\RecurringSchedule;
+use App\Support\Recurrence\ScheduleState;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
@@ -89,14 +90,7 @@ class RecurringCostService
                 $record->next_run_at = $this->firstRun($record)->format('Y-m-d H:i:s');
             }
 
-            $this->settleStatus($record);
-
-            if ($record->exists && ! $cadenceChanged && $record->status === RecurringSchedule::ACTIVE
-                && $record->getOriginal('status') !== RecurringSchedule::ACTIVE) {
-                $this->restartFromToday($record);
-                $this->settleStatus($record);
-            }
-
+            ScheduleState::afterEdit($record, $cadenceChanged);
             $record->save();
             $this->runner->forgetFailure($record);
 
@@ -119,8 +113,8 @@ class RecurringCostService
             } else {
                 PurchaseInputs::ensure($record->status === RecurringSchedule::ON_HOLD, 'action', 'purchase_recurring_not_paused');
                 $record->status = RecurringSchedule::ACTIVE;
-                $this->restartFromToday($record);
-                $this->settleStatus($record);
+                ScheduleState::restartFromToday($record);
+                ScheduleState::settle($record);
             }
 
             $record->save();
@@ -139,16 +133,16 @@ class RecurringCostService
     {
         return $this->runner->run(
             RecurringCost::query(),
-            fn (RecurringCost $schedule, string $date) => $this->generate($schedule, $date),
+            fn (RecurringCost $schedule, string $date, CarbonImmutable $at) => $this->generate($schedule, $date, $at),
             fn (RecurringCost $schedule, Throwable $error) => $this->failed($schedule, $error),
         );
     }
 
     /**
      * The record for one run, inside the runner's transaction. A run already
-     * made for that day is not made again.
+     * made for that day is not made again: a bill or an expense is one a day.
      */
-    private function generate(RecurringCost $schedule, string $date): void
+    private function generate(RecurringCost $schedule, string $date, CarbonImmutable $at): void
     {
         $exists = $schedule->occurrences()->where('scheduled_for', $date)->exists();
 
@@ -161,6 +155,7 @@ class RecurringCostService
             $schedule->occurrences()->create([
                 'company_id' => $schedule->company_id,
                 'scheduled_for' => $date,
+                'scheduled_at' => $at->format('Y-m-d H:i:s'),
                 'record_type' => $record->getMorphClass(),
                 'record_id' => $record->getKey(),
             ]);
@@ -209,7 +204,7 @@ class RecurringCostService
      */
     private function failed(RecurringCost $schedule, Throwable $error): void
     {
-        $reason = $this->failureReason($error);
+        $reason = ScheduleState::failureReason($error, 'purchase_recurring_template_invalid', 'purchase_recurring_failed');
 
         if (! $error instanceof ValidationException) {
             report($error);
@@ -224,38 +219,6 @@ class RecurringCostService
     }
 
     /**
-     * The error code a failed run is shown with. Our own checks fail with a
-     * code; a rule of the bill or expense form fails with a sentence about a
-     * field, which the schedule's page and email cannot place, so it is
-     * shown as a template that needs opening and saving again, where the
-     * form points at the field.
-     */
-    private function failureReason(Throwable $error): string
-    {
-        if (! $error instanceof ValidationException) {
-            return 'purchase_recurring_failed';
-        }
-
-        $message = (string) (Arr::flatten($error->errors())[0] ?? '');
-
-        return preg_match('/^[a-z][a-z0-9_]*$/', $message) === 1 ? $message : 'purchase_recurring_template_invalid';
-    }
-
-    /**
-     * Carry a schedule on from today: its next run becomes the first one
-     * today or later, when the stored one has already gone by.
-     */
-    private function restartFromToday(RecurringCost $record): void
-    {
-        $timezone = $record->scheduleTimeZone();
-        $startOfToday = CarbonImmutable::now($timezone)->startOfDay();
-
-        if ($record->next_run_at === null || CarbonImmutable::parse($record->next_run_at)->lessThan($startOfToday)) {
-            $record->next_run_at = Cadence::next($record->frequency, $startOfToday->subSecond(), $timezone)->format('Y-m-d H:i:s');
-        }
-    }
-
-    /**
      * The first run on or after the start date, or after now when the start
      * is past: a schedule never generates for days before it was set up.
      */
@@ -266,22 +229,6 @@ class RecurringCostService
         $today = CarbonImmutable::now($timezone)->startOfDay();
 
         return Cadence::next($record->frequency, ($start->greaterThan($today) ? $start : $today)->subSecond(), $timezone);
-    }
-
-    /**
-     * Complete a schedule whose limit leaves no more runs, and reactivate a
-     * completed one whose limit was extended.
-     */
-    private function settleStatus(RecurringCost $record): void
-    {
-        $nextDate = Cadence::localDate($record->next_run_at, $record->scheduleTimeZone());
-        $finished = RecurrenceRunner::limitReached($record, $nextDate);
-
-        if ($finished && $record->status === RecurringSchedule::ACTIVE) {
-            $record->status = RecurringSchedule::COMPLETED;
-        } elseif (! $finished && $record->status === RecurringSchedule::COMPLETED) {
-            $record->status = RecurringSchedule::ACTIVE;
-        }
     }
 
     /**

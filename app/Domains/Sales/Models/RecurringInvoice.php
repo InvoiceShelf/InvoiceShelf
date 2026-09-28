@@ -9,6 +9,7 @@ use App\Domains\Contacts\Models\Customer;
 use App\Domains\Metadata\Concerns\HasCustomFields;
 use App\Domains\Money\Models\Currency;
 use App\Domains\Taxation\Models\Tax;
+use App\Platform\Recurrence\Models\RecurrenceOccurrence;
 use App\Support\Recurrence\Cadence;
 use App\Support\Recurrence\RecurringSchedule;
 use App\Support\SafeOrderBy;
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
  * A standing order that mints invoices on a timetable.
@@ -91,6 +93,7 @@ class RecurringInvoice extends Model implements RecurringSchedule
         return [
             'exchange_rate' => 'float',
             'send_automatically' => 'boolean',
+            'notify_creator' => 'boolean',
         ];
     }
 
@@ -325,9 +328,24 @@ class RecurringInvoice extends Model implements RecurringSchedule
         return 'next_invoice_at';
     }
 
+    /**
+     * The runs this schedule has made, kept when their invoices are deleted.
+     */
+    public function occurrences(): MorphMany
+    {
+        return $this->morphMany(RecurrenceOccurrence::class, 'schedule');
+    }
+
+    /**
+     * Every run counts toward the limit, including those whose invoice was
+     * deleted since. Invoices from before runs were logged count as runs of
+     * their own.
+     */
     public function generatedCount(): int
     {
-        return $this->invoices()->count();
+        $logged = $this->occurrences()->select('record_id')->where('record_type', (new Invoice)->getMorphClass());
+
+        return $this->occurrences()->count() + $this->invoices()->whereNotIn('id', $logged)->count();
     }
 
     /**

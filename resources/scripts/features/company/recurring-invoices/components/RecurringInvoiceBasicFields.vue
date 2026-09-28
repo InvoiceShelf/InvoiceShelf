@@ -25,6 +25,27 @@
         </p>
       </div>
     </div>
+
+    <div class="flex mt-5">
+      <div class="relative w-20 mt-8">
+        <BaseSwitch
+          v-model="recurringInvoiceStore.newRecurringInvoice.notify_creator"
+          class="absolute -top-4"
+        />
+      </div>
+
+      <div class="ms-2">
+        <p class="p-0 mb-1 leading-snug text-start text-heading">
+          {{ $t('recurring_invoices.notify_creator') }}
+        </p>
+        <p
+          class="p-0 m-0 text-xs leading-tight text-start text-muted"
+          style="max-width: 480px"
+        >
+          {{ $t('recurring_invoices.notify_creator_help') }}
+        </p>
+      </div>
+    </div>
   </div>
 
   <div
@@ -68,7 +89,8 @@
 
     <RecurrenceStatusSelect
       v-model="recurringInvoiceStore.newRecurringInvoice.status"
-      :include-completed="isEdit"
+      :include-completed="isCompleted"
+      :disabled="isCompleted"
       :content-loading="isLoading"
     />
 
@@ -82,7 +104,7 @@
 </template>
 
 <script setup lang="ts">
-import { watch } from 'vue'
+import { computed, watch } from 'vue'
 import { useRecurringInvoiceStore } from '../store'
 import RecurrenceFrequencyField from '@/scripts/components/recurrence/RecurrenceFrequencyField.vue'
 import RecurrenceLimitFields from '@/scripts/components/recurrence/RecurrenceLimitFields.vue'
@@ -101,18 +123,25 @@ const props = withDefaults(defineProps<Props>(), {
 
 const recurringInvoiceStore = useRecurringInvoiceStore()
 
+/** A completed schedule's status is shown, not chosen; raising its limit restarts it. */
+const isCompleted = computed(
+  () => recurringInvoiceStore.newRecurringInvoice.status === 'COMPLETED',
+)
+
 /**
  * The schedule as it was loaded. An edited schedule keeps its stored next
  * invoice date until its frequency or start date changes.
  */
 let loaded: { frequency: string | null; starts_at: string } | null = null
 
+// Taken when the saved record arrives, which can be after the loading flag
+// settles; a new schedule has no id and never keeps a stored date.
 watch(
-  () => props.isLoading,
-  (loading) => {
-    if (!loading && props.isEdit) {
+  () => recurringInvoiceStore.newRecurringInvoice.id,
+  (id) => {
+    if (id && props.isEdit) {
       const { frequency, starts_at } = recurringInvoiceStore.newRecurringInvoice
-      loaded = { frequency, starts_at }
+      loaded = { frequency, starts_at: String(starts_at ?? '').slice(0, 10) }
     }
   },
   { immediate: true },
@@ -123,7 +152,7 @@ function setNextInvoiceDate(preview: RecurrencePreview | null): void {
   const unchanged =
     loaded !== null &&
     loaded.frequency === current.frequency &&
-    loaded.starts_at === current.starts_at
+    loaded.starts_at === String(current.starts_at ?? '').slice(0, 10)
 
   if (preview && !unchanged) {
     current.next_invoice_at = preview.next_invoice_at

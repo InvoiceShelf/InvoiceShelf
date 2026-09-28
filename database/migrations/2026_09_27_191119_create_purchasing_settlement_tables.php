@@ -144,18 +144,23 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // What each run generated, one row per scheduled day: a second run of
-        // the same day finds it and writes nothing.
-        Schema::create('recurring_cost_occurrences', function (Blueprint $table): void {
+        // What each run of a recurring schedule generated: recurring bills and
+        // expenses here, recurring invoices too. A run already written for
+        // its moment is not written again, and the rows outlive the records
+        // they point at, so a count limit counts what was generated.
+        Schema::create('recurrence_occurrences', function (Blueprint $table): void {
             $table->bigIncrements('id');
             $table->unsignedInteger('company_id')->index();
-            $table->unsignedBigInteger('recurring_cost_id')->index();
+            $table->string('schedule_type');
+            $table->unsignedBigInteger('schedule_id');
             $table->date('scheduled_for');
+            $table->dateTime('scheduled_at');
             $table->string('record_type');
             $table->unsignedBigInteger('record_id');
             $table->timestamps();
 
-            $table->unique(['recurring_cost_id', 'scheduled_for'], 'recurring_cost_occurrence_unique');
+            $table->unique(['schedule_type', 'schedule_id', 'scheduled_at'], 'recurrence_occurrence_unique');
+            $table->index(['schedule_type', 'schedule_id', 'scheduled_for'], 'recurrence_occurrence_day');
             $table->index(['record_type', 'record_id']);
         });
     }
@@ -186,7 +191,7 @@ return new class extends Migration
     public function down(): void
     {
         $tables = [
-            'recurring_cost_occurrences',
+            'recurrence_occurrences',
             'recurring_costs',
             'supplier_credit_allocations',
             'supplier_payment_allocations',

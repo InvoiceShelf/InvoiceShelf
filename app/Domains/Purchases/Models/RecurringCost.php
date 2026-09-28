@@ -3,11 +3,12 @@
 namespace App\Domains\Purchases\Models;
 
 use App\Domains\Accounts\Models\CompanySetting;
+use App\Platform\Recurrence\Models\RecurrenceOccurrence;
 use App\Support\Recurrence\RecurringSchedule;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
  * A recurring bill (an unpaid bill with a due date, in payables) or a
@@ -47,9 +48,9 @@ class RecurringCost extends Model implements RecurringSchedule
         return $this->belongsTo(Supplier::class, 'supplier_id');
     }
 
-    public function occurrences(): HasMany
+    public function occurrences(): MorphMany
     {
-        return $this->hasMany(RecurringCostOccurrence::class, 'recurring_cost_id');
+        return $this->morphMany(RecurrenceOccurrence::class, 'schedule');
     }
 
     public function nextRunColumn(): string

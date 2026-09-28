@@ -3,6 +3,7 @@
 namespace App\Domains\Sales\Http\Controllers\Company;
 
 use App\Domains\Sales\Application\RecurringInvoiceService;
+use App\Domains\Sales\Http\Requests\RecurringInvoiceActionRequest;
 use App\Domains\Sales\Http\Requests\RecurringInvoiceRequest;
 use App\Domains\Sales\Http\Resources\RecurringInvoiceResource;
 use App\Domains\Sales\Models\RecurringInvoice;
@@ -94,6 +95,18 @@ class RecurringInvoiceController extends Controller
         );
 
         return new RecurringInvoiceResource($recurringInvoice);
+    }
+
+    /**
+     * Pause a schedule, or resume one from today.
+     */
+    public function action(RecurringInvoiceActionRequest $request, RecurringInvoice $recurringInvoice)
+    {
+        $this->authorize('update', $recurringInvoice);
+
+        $schedule = $this->recurringInvoiceService->act($recurringInvoice, $request->validated('action'));
+
+        return new RecurringInvoiceResource($schedule);
     }
 
     /**

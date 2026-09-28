@@ -59,6 +59,12 @@ export const recurringInvoiceService = {
     return data
   },
 
+  /** Pause a schedule, or resume it from today. */
+  async act(id: number, action: 'pause' | 'resume'): Promise<ApiResponse<RecurringInvoice>> {
+    const { data } = await client.post(`${API.RECURRING_INVOICES}/${id}/actions`, { action })
+    return data
+  },
+
   async delete(payload: DeletePayload): Promise<{ success: boolean }> {
     const { data } = await client.post(API.RECURRING_INVOICES_DELETE, payload)
     return data
