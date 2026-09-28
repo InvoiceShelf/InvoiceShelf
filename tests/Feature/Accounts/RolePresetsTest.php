@@ -11,6 +11,8 @@ use App\Domains\Accounts\Models\User;
 use App\Domains\Purchases\Models\Expense;
 use App\Domains\Sales\Models\Invoice;
 use App\Platform\Modules\Application\ModuleAbilitySync;
+use Illuminate\Database\Events\MigrationsEnded;
+use Illuminate\Database\Events\NoPendingMigrations;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -325,4 +327,137 @@ test('enabling a module hands its abilities to presets that list them', function
         ->and(heldAbilities(presetCopy($this->company, 'preset:read-only')))->not->toContain('preset-probe:view-thing');
 
     Registry::flush();
+});
+
+/**
+ * List an ability in config/abilities.php for the given presets, as a release
+ * that ships a new default would.
+ *
+ * @param  list<string>  $presets
+ */
+function tagAbilityForPresets(string $ability, array $presets): void
+{
+    config()->set('abilities.abilities', array_map(
+        fn (array $entry) => $entry['ability'] === $ability ? [...$entry, 'presets' => $presets] : $entry,
+        config('abilities.abilities'),
+    ));
+}
+
+test('the shipped presets start with every current default already applied', function () {
+    $manager = RolePreset::query()->where('key', 'manager')->firstOrFail();
+
+    expect(app(RolePresetService::class)->applyDefaults())->toBe([])
+        ->and($manager->applied_defaults)->toBe($manager->abilities)
+        ->and(heldAbilities(presetCopy($this->company, 'preset:manager')))->toHaveCount(41);
+});
+
+test('a newly tagged ability reaches the preset and every company copy once', function () {
+    $other = presetCompany();
+    tagAbilityForPresets('create-custom-field', ['manager', 'owner']);
+
+    expect(app(RolePresetService::class)->applyDefaults())->toBe(['manager' => ['create-custom-field']])
+        ->and(RolePreset::query()->where('key', 'manager')->value('abilities'))->toContain('create-custom-field')
+        ->and(heldAbilities(presetCopy($this->company, 'preset:manager')))->toContain('create-custom-field')
+        ->and(heldAbilities(presetCopy($other, 'preset:manager')))->toContain('create-custom-field')
+        ->and(heldAbilities(presetCopy($this->company, 'preset:read-only')))->not->toContain('create-custom-field');
+
+    $permissions = DB::table('permissions')->count();
+
+    expect(app(RolePresetService::class)->applyDefaults())->toBe([])
+        ->and(DB::table('permissions')->count())->toBe($permissions);
+});
+
+test('a default the super administrator took away is not handed back', function () {
+    $service = app(RolePresetService::class);
+    tagAbilityForPresets('create-custom-field', ['manager']);
+    $service->applyDefaults();
+
+    $manager = RolePreset::query()->where('key', 'manager')->firstOrFail();
+    $service->update($manager, $manager->title, array_values(array_diff($manager->abilities, ['create-custom-field'])));
+
+    expect($service->applyDefaults())->toBe([])
+        ->and($manager->fresh()->abilities)->not->toContain('create-custom-field')
+        ->and(heldAbilities(presetCopy($this->company, 'preset:manager')))->not->toContain('create-custom-field');
+});
+
+test('a deleted preset is not made again for a new default', function () {
+    $service = app(RolePresetService::class);
+    $service->delete(RolePreset::query()->where('key', 'read-only')->firstOrFail());
+    tagAbilityForPresets('view-custom-field', ['manager', 'read-only']);
+    tagAbilityForPresets('create-custom-field', ['read-only']);
+
+    expect($service->applyDefaults())->toBe([])
+        ->and(RolePreset::query()->where('key', 'read-only')->exists())->toBeFalse()
+        ->and(presetCopy($this->company, 'preset:read-only'))->toBeNull();
+});
+
+test('a new default brings the abilities it depends on', function () {
+    tagAbilityForPresets('create-custom-field', ['read-only']);
+    tagAbilityForPresets('create-exchange-rate-provider', ['read-only']);
+
+    app(RolePresetService::class)->applyDefaults();
+
+    expect(RolePreset::query()->where('key', 'read-only')->value('abilities'))
+        ->toContain('create-custom-field', 'view-custom-field', 'create-exchange-rate-provider', 'view-exchange-rate-provider');
+});
+
+test('migrating applies new defaults, and the command reports them', function () {
+    tagAbilityForPresets('create-custom-field', ['manager']);
+
+    event(new NoPendingMigrations('up'));
+
+    expect(heldAbilities(presetCopy($this->company, 'preset:manager')))->toContain('create-custom-field');
+
+    tagAbilityForPresets('edit-custom-field', ['manager']);
+    event(new MigrationsEnded('down'));
+    event(new MigrationsEnded('up', ['pretend' => true]));
+
+    expect(heldAbilities(presetCopy($this->company, 'preset:manager')))->not->toContain('edit-custom-field');
+
+    $this->artisan('roles:apply-preset-defaults')
+        ->expectsOutputToContain('manager: edit-custom-field')
+        ->assertSuccessful();
+    $this->artisan('roles:apply-preset-defaults')
+        ->expectsOutputToContain('Every preset already has its defaults.')
+        ->assertSuccessful();
+});
+
+test('the upgrade marks what Manager and Read only were seeded with, whatever the catalogue says now', function () {
+    DB::table('role_presets')->whereIn('key', ['manager', 'read-only'])->update(['applied_defaults' => null]);
+    tagAbilityForPresets('create-custom-field', ['manager']);
+
+    $migration = require database_path('migrations/2026_09_26_100000_add_applied_defaults_to_role_presets_table.php');
+    $migration->up();
+    $migration->up();
+
+    expect(RolePreset::query()->where('key', 'manager')->value('applied_defaults'))->toHaveCount(41)
+        ->not->toContain('create-custom-field')
+        ->and(RolePreset::query()->where('key', 'read-only')->value('applied_defaults'))->toHaveCount(13)
+        ->and(app(RolePresetService::class)->applyDefaults())->toBe(['manager' => ['create-custom-field']]);
+});
+
+test('a new ability reaches every owner role without a migration', function () {
+    $other = presetCompany();
+    config()->push('abilities.abilities', ['name' => 'view probe', 'ability' => 'view-probe', 'model' => null]);
+
+    expect(app(RolePresetService::class)->applyDefaults())->toBe(['owner' => ['view-probe']])
+        ->and(heldAbilities(presetCopy($this->company, 'owner')))->toContain('view-probe')
+        ->and(heldAbilities(presetCopy($other, 'owner')))->toContain('view-probe')
+        ->and(heldAbilities(presetCopy($this->company, 'preset:manager')))->not->toContain('view-probe')
+        ->and(RolePreset::query()->where('key', 'owner')->value('abilities'))->toBeNull()
+        ->and(app(RolePresetService::class)->applyDefaults())->toBe([]);
+});
+
+test('the first run after the upgrade tops up every owner role once', function () {
+    DB::table('role_presets')->where('key', 'owner')->update(['applied_defaults' => null]);
+    $owner = presetCopy($this->company, 'owner');
+    BouncerFacade::scope()->onceTo($this->company->id, fn () => BouncerFacade::disallow($owner)->to('view-invoice', Invoice::class));
+    BouncerFacade::refresh();
+
+    $offered = app(RolePresetService::class)->applyDefaults();
+    $catalogue = collect(app(AbilityCatalog::class)->all())->pluck('ability')->sort()->values()->all();
+
+    expect(array_keys($offered))->toBe(['owner'])
+        ->and(heldAbilities($owner))->toBe($catalogue)
+        ->and(app(RolePresetService::class)->applyDefaults())->toBe([]);
 });

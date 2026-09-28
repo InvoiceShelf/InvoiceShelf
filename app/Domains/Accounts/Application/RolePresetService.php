@@ -183,6 +183,47 @@ class RolePresetService
     }
 
     /**
+     * Hand each preset the abilities the catalogue lists it for (an entry's
+     * `presets`) that it has not been offered before, in every company. The
+     * Owner preset is offered every ability in the catalogue.
+     *
+     * Each default is offered once: one the super administrator has since
+     * taken away stays away, and a preset they deleted is not made again.
+     * Runs after every `migrate`; a run with nothing new writes nothing.
+     *
+     * @return array<string, list<string>> the abilities offered, by preset key
+     */
+    public function applyDefaults(): array
+    {
+        $defaults = $this->defaultsByPreset();
+        $offered = [];
+
+        foreach (RolePreset::query()->orderBy('id')->get() as $preset) {
+            $listed = $preset->isOwner() ? $this->catalogueNames() : ($defaults[$preset->key] ?? []);
+            $new = array_values(array_diff($listed, $preset->applied_defaults ?? []));
+
+            if ($new === []) {
+                continue;
+            }
+
+            DB::transaction(function () use ($preset, $listed, $new): void {
+                $preset->update([
+                    'abilities' => $preset->isOwner()
+                        ? null
+                        : array_values(array_unique([...($preset->abilities ?? []), ...$this->settle($new)])),
+                    'applied_defaults' => array_values(array_unique([...($preset->applied_defaults ?? []), ...$listed])),
+                ]);
+
+                $this->syncPreset($preset);
+            });
+
+            $offered[$preset->key] = $new;
+        }
+
+        return $offered;
+    }
+
+    /**
      * A module was switched on: hand its abilities to every copy of a preset
      * that lists them. The owner copies already have them.
      *
@@ -259,6 +300,24 @@ class RolePresetService
         }
 
         return $entries->keys()->filter(fn (string $name) => isset($chosen[$name]))->values()->all();
+    }
+
+    /**
+     * The catalogue's default abilities for each preset, by preset key.
+     *
+     * @return array<string, list<string>>
+     */
+    private function defaultsByPreset(): array
+    {
+        $defaults = [];
+
+        foreach ($this->catalog->all() as $entry) {
+            foreach ($entry['presets'] as $key) {
+                $defaults[$key][] = $entry['ability'];
+            }
+        }
+
+        return $defaults;
     }
 
     /**
