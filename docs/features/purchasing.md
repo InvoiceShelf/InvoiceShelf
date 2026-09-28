@@ -215,6 +215,9 @@ The migration renames `payments` to `customer_payments` and `payment_allocations
 `payment_allocation` to `customer_payment` and `customer_payment_allocation` in media,
 email logs, custom-field values, and authorization/type-bearing columns. Record IDs,
 foreign-key column names, receipt URLs, and public v1 discriminator strings remain.
+A module that queries `payments` or `payment_allocations` directly must switch to
+`customer_payments` and `customer_payment_allocations`; one that goes through the
+`Payment` model or the API is unaffected.
 Historical migrations are retained. A new migration synchronizes owner role grants.
 
 The new purchasing tables are additive. Historical expenses are not converted and
