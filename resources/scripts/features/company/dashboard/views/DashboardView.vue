@@ -77,7 +77,7 @@ onMounted(() => {
 
 <template>
   <BasePage>
-    <BasePageHeader :title="$t('navigation.dashboard')" phone-actions="inline">
+    <BasePageHeader :help="$t('page_help.dashboard')" :title="$t('navigation.dashboard')" phone-actions="inline">
       <template #actions>
         <BasePeriodPicker
           v-model="dashboardStore.period"

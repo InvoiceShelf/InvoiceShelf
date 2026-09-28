@@ -2,13 +2,13 @@
   <BaseInputGroup
     :label="field.label"
     :required="field.is_required ? true : false"
-    :error="v$.value.$error && v$.value.$errors[0].$message"
+    :error="error || (v$.value.$error && v$.value.$errors[0].$message)"
   >
     <component
       :is="getTypeComponent"
       v-model="field.value"
       :options="field.options"
-      :invalid="v$.value.$error"
+      :invalid="!!error || v$.value.$error"
       :placeholder="field.placeholder"
     />
   </BaseInputGroup>
@@ -27,6 +27,7 @@ import { resolveCustomFieldTypeComponent } from './resolve-type-component'
  * container reaches in here.
  */
 const props = defineProps<{
+  error?: string
   field: Record<string, any>
   customFieldScope: string
 }>()

@@ -2,7 +2,7 @@
   <div v-if="estimateData" class="flex min-h-full">
 
     <BasePage class="min-w-0">
-      <BasePageHeader :title="pageTitle">
+      <BasePageHeader :help="$t('page_help.estimates')" :title="pageTitle">
         <BaseBreadcrumb>
           <BaseBreadcrumbItem :title="$t('estimates.estimate', 2)" to="/admin/estimates" />
         </BaseBreadcrumb>

@@ -4,6 +4,18 @@ namespace App\Adapters\Accounts;
 
 use App\Domains\Accounts\Contracts\CompanyDataPurger;
 use App\Domains\Accounts\Models\Company;
+use App\Domains\Purchases\Models\Bill;
+use App\Domains\Purchases\Models\BillItem;
+use App\Domains\Purchases\Models\PurchaseActivity;
+use App\Domains\Purchases\Models\RecurringCost;
+use App\Domains\Purchases\Models\RecurringCostOccurrence;
+use App\Domains\Purchases\Models\Supplier;
+use App\Domains\Purchases\Models\SupplierCredit;
+use App\Domains\Purchases\Models\SupplierCreditAllocation;
+use App\Domains\Purchases\Models\SupplierCreditItem;
+use App\Domains\Purchases\Models\SupplierPayment;
+use App\Domains\Purchases\Models\SupplierPaymentAllocation;
+use App\Domains\Purchases\Models\SupplierRefund;
 use App\Domains\Receivables\Models\PaymentAllocation;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,6 +23,22 @@ class EloquentCompanyDataPurger implements CompanyDataPurger
 {
     public function purge(Company $company): void
     {
+        foreach ([
+            SupplierRefund::class,
+            SupplierPaymentAllocation::class,
+            SupplierCreditAllocation::class,
+            SupplierCreditItem::class,
+            BillItem::class,
+            SupplierCredit::class,
+            Bill::class,
+            SupplierPayment::class,
+            RecurringCostOccurrence::class,
+            RecurringCost::class,
+            PurchaseActivity::class,
+            Supplier::class,
+        ] as $model) {
+            $model::query()->forCompany($company->id)->eachById(fn ($record) => $record->delete());
+        }
         $company->exchangeRateLogs()->delete();
         $company->exchangeRateProviders()->delete();
         $company->expenses->each->delete();

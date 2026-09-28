@@ -6,7 +6,9 @@ use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\User;
 use App\Domains\Catalog\Models\Item;
 use App\Domains\Contacts\Models\Customer;
+use App\Domains\Purchases\Models\Bill;
 use App\Domains\Purchases\Models\Expense;
+use App\Domains\Purchases\Models\Supplier;
 use App\Domains\Receivables\Models\Payment;
 use App\Domains\Sales\Models\Estimate;
 use App\Domains\Sales\Models\Invoice;
@@ -49,6 +51,8 @@ class CustomFieldModelCatalog
         'Invoice' => ['label' => 'settings.custom_fields.model_type.invoice', 'class' => Invoice::class],
         'Estimate' => ['label' => 'settings.custom_fields.model_type.estimate', 'class' => Estimate::class],
         'Payment' => ['label' => 'settings.custom_fields.model_type.payment', 'class' => Payment::class],
+        'Supplier' => ['label' => 'purchases.supplier', 'class' => Supplier::class],
+        'Bill' => ['label' => 'purchases.bill', 'class' => Bill::class],
         'Expense' => ['label' => 'settings.custom_fields.model_type.expense', 'class' => Expense::class],
         'Item' => ['label' => 'settings.custom_fields.model_type.item', 'class' => Item::class],
         'Company' => ['label' => 'settings.custom_fields.model_type.company', 'class' => Company::class],

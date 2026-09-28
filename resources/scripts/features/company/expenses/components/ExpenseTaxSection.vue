@@ -5,12 +5,10 @@
         class="flex items-start justify-between gap-4 border-b border-line-light p-4 sm:p-5"
       >
         <div class="min-w-0">
-          <h2 class="text-base font-semibold text-heading">
-            {{ $t('expenses.taxes') }}
-          </h2>
-          <p class="mt-1 text-sm leading-5 text-muted">
-            {{ $t('expenses.taxes_description') }}
-          </p>
+          <div class="flex items-center gap-2">
+            <h2 class="text-base font-semibold text-heading">{{ $t('expenses.taxes') }}</h2>
+            <BaseHelpPopover :title="$t('expenses.taxes')" :text="$t('expenses.taxes_description')" />
+          </div>
         </div>
 
         <PopoverRoot v-slot="{ close }">
@@ -196,6 +194,7 @@
 </template>
 
 <script setup lang="ts">
+import BaseHelpPopover from '@/scripts/components/base/BaseHelpPopover.vue'
 import { PopoverContent, PopoverPortal, PopoverRoot, PopoverTrigger } from 'reka-ui'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'

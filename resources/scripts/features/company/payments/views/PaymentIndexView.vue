@@ -1,6 +1,6 @@
 <template>
   <BasePage class="payments">
-    <BasePageHeader :title="$t('payments.title')">
+    <BasePageHeader :help="$t('page_help.payments')" :title="$t('payments.title')">
       <BaseBreadcrumb>
         <BaseBreadcrumbItem :title="$t('general.home')" to="dashboard" />
         <BaseBreadcrumbItem

@@ -1,16 +1,26 @@
 <template>
-  <div class="flex flex-wrap items-end justify-between gap-3 md:flex-nowrap md:gap-6">
-    <div class="flex flex-col min-w-0 grow">
+  <div :class="mobileViewRow() ? 'grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3' : 'flex flex-wrap items-end justify-between gap-3 md:flex-nowrap md:gap-6'">
+    <div :class="mobileViewRow() ? 'col-span-2' : 'flex-1'" class="flex min-w-0 flex-col">
       <div v-if="title || $slots.leading" class="flex items-center min-w-0 gap-3">
         <slot name="leading" />
         <div class="min-w-0">
-          <h1 v-if="title" class="font-semibold text-start break-words text-title text-heading">
-            {{ title }}
-          </h1>
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="flex min-w-0 items-center gap-1">
+              <h1 v-if="title" class="min-w-0 font-semibold text-start break-words text-title text-heading">
+                {{ title }}
+              </h1>
+              <BaseHelpPopover v-if="help" :title="helpTitle || title" :text="help" />
+            </div>
+            <slot v-if="!mobileViewRow()" name="title-suffix" />
+          </div>
           <p v-if="subtitle" class="mt-0.5 text-sm truncate text-muted">{{ subtitle }}</p>
         </div>
       </div>
       <slot />
+    </div>
+
+    <div v-if="mobileViewRow()" class="col-start-1 row-start-2 min-w-0">
+      <slot name="title-suffix" />
     </div>
 
     <!--
@@ -23,7 +33,7 @@
     <div
       v-if="$slots.actions && placement === 'inline'"
       ref="actionsEl"
-      :class="deciding ? 'invisible' : ''"
+      :class="[deciding ? 'invisible' : '', mobileViewRow() ? 'col-start-2 row-start-2' : '']"
       class="flex flex-wrap items-center justify-end gap-2 ms-auto shrink-0 md:gap-3 *:ms-0"
     >
       <slot name="actions" />
@@ -37,12 +47,16 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onMounted, provide, ref, useSlots, watch } from 'vue'
+import BaseHelpPopover from '../base/BaseHelpPopover.vue'
 import { useBreakpoints } from '@/scripts/composables/use-breakpoints'
 
 interface Props {
   title?: string
   /** One quiet line under the title: an email, a date, a contact */
   subtitle?: string
+  /** Optional explanation revealed by the title's info button. */
+  help?: string
+  helpTitle?: string
   /** Phones only: 'auto' picks the title row or the action bar from the actions themselves */
   phoneActions?: 'auto' | 'inline' | 'bar'
 }
@@ -50,11 +64,17 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   title: '',
   subtitle: '',
+  help: '',
+  helpTitle: '',
   phoneActions: 'auto',
 })
 
 const slots = useSlots()
 const { isPhone } = useBreakpoints()
+// View selection gets its own control row on phones, next to the list actions.
+function mobileViewRow(): boolean {
+  return isPhone.value && !!slots['title-suffix']
+}
 
 provide('pageHeaderCompact', isPhone)
 

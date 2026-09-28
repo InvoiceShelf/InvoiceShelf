@@ -4,7 +4,10 @@ namespace App\Domains\Purchases\Http\Controllers\Company;
 
 use App\Domains\Purchases\Http\Requests\ExpenseCategoryRequest;
 use App\Domains\Purchases\Http\Resources\ExpenseCategoryResource;
+use App\Domains\Purchases\Models\BillItem;
 use App\Domains\Purchases\Models\ExpenseCategory;
+use App\Domains\Purchases\Models\Supplier;
+use App\Domains\Purchases\Models\SupplierCreditItem;
 use App\Platform\Http\Controller;
 use Illuminate\Http\Request;
 
@@ -74,6 +77,11 @@ class ExpenseCategoriesController extends Controller
             return respondJson('expense_attached', 'Expense Attached');
         }
 
+        if (BillItem::query()->where('expense_category_id', $category->id)->exists()
+            || SupplierCreditItem::query()->where('expense_category_id', $category->id)->exists()
+            || Supplier::query()->where('expense_category_id', $category->id)->exists()) {
+            return respondJson('expense_attached', 'Expense Attached');
+        }
         $category->delete();
 
         return response()->json(['success' => true]);

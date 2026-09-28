@@ -61,14 +61,14 @@ class CustomerStatementQuery
         $paymentTotals = Payment::query()
             ->whereIn('customer_id', $customerIds)
             ->leftJoinSub($allocationTotals, 'allocation_totals', function ($join) {
-                $join->on('payments.id', '=', 'allocation_totals.payment_id');
+                $join->on('customer_payments.id', '=', 'allocation_totals.payment_id');
             })
-            ->select('payments.customer_id')
-            ->selectRaw('COALESCE(SUM(payments.amount), 0) as payment_amount')
-            ->selectRaw('COALESCE(SUM(payments.base_amount), 0) as base_payment_amount')
+            ->select('customer_payments.customer_id')
+            ->selectRaw('COALESCE(SUM(customer_payments.amount), 0) as payment_amount')
+            ->selectRaw('COALESCE(SUM(customer_payments.base_amount), 0) as base_payment_amount')
             ->selectRaw('COALESCE(SUM(COALESCE(allocation_totals.allocated_amount, 0)), 0) as allocated_amount')
             ->selectRaw('COALESCE(SUM(COALESCE(allocation_totals.base_allocated_amount, 0)), 0) as base_allocated_amount')
-            ->groupBy('payments.customer_id')
+            ->groupBy('customer_payments.customer_id')
             ->get()
             ->keyBy('customer_id');
 
@@ -325,12 +325,12 @@ class CustomerStatementQuery
         }
 
         return PaymentAllocation::query()
-            ->join('payments', 'payments.id', '=', 'payment_allocations.payment_id')
-            ->whereIn('payment_allocations.invoice_id', $invoiceIds)
-            ->where('payments.payment_date', '<=', $asOf->toDateString())
-            ->where('payment_allocations.created_at', '<=', $asOf->copy()->endOfDay())
-            ->selectRaw('payment_allocations.invoice_id, SUM(payment_allocations.amount) as amount, SUM(payment_allocations.base_amount) as base_amount')
-            ->groupBy('payment_allocations.invoice_id')
+            ->join('customer_payments', 'customer_payments.id', '=', 'customer_payment_allocations.payment_id')
+            ->whereIn('customer_payment_allocations.invoice_id', $invoiceIds)
+            ->where('customer_payments.payment_date', '<=', $asOf->toDateString())
+            ->where('customer_payment_allocations.created_at', '<=', $asOf->copy()->endOfDay())
+            ->selectRaw('customer_payment_allocations.invoice_id, SUM(customer_payment_allocations.amount) as amount, SUM(customer_payment_allocations.base_amount) as base_amount')
+            ->groupBy('customer_payment_allocations.invoice_id')
             ->get()
             ->mapWithKeys(fn (PaymentAllocation $allocation) => [$allocation->invoice_id => [
                 'amount' => (int) $allocation->amount,

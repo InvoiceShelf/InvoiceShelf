@@ -1,7 +1,7 @@
 <template>
   <BasePage class="relative estimate-create-page">
     <form @submit.prevent="submitForm">
-      <BasePageHeader :title="pageTitle">
+      <BasePageHeader :help="$t('page_help.estimates')" :title="pageTitle">
         <BaseBreadcrumb>
           <BaseBreadcrumbItem :title="$t('general.home')" to="/admin/dashboard" />
           <BaseBreadcrumbItem

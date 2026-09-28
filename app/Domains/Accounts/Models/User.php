@@ -554,6 +554,16 @@ class User extends Authenticatable implements HasMedia
             return false;
         }
 
+        if (! empty($meta['any_abilities'])) {
+            foreach ($meta['any_abilities'] as $requirement) {
+                if ($this->can($requirement['ability'], $requirement['model']) || $this->can($requirement['ability'])) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         if (empty($meta['ability'])) {
             return true;
         }

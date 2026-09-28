@@ -44,10 +44,10 @@ class PaymentsController extends Controller
         // filters, because the payment_id filter widens the query with an OR.
         $payments = Payment::with(['allocations.invoice'])
             ->whereCompany()
-            ->join('customers', 'customers.id', '=', 'payments.customer_id')
-            ->leftJoin('payment_methods', 'payment_methods.id', '=', 'payments.payment_method_id')
+            ->join('customers', 'customers.id', '=', 'customer_payments.customer_id')
+            ->leftJoin('payment_methods', 'payment_methods.id', '=', 'customer_payments.payment_method_id')
             ->applyFilters($request->all())
-            ->select('payments.*', 'customers.name', 'payment_methods.name as payment_mode')
+            ->select('customer_payments.*', 'customers.name', 'payment_methods.name as payment_mode')
             ->latest()
             ->paginateData($request->input('limit', 10));
 

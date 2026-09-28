@@ -22,8 +22,20 @@ use App\Domains\Metadata\Models\Note;
 use App\Domains\Money\Models\Currency;
 use App\Domains\Money\Models\ExchangeRateLog;
 use App\Domains\Money\Models\ExchangeRateProvider;
+use App\Domains\Purchases\Models\Bill;
+use App\Domains\Purchases\Models\BillItem;
 use App\Domains\Purchases\Models\Expense;
 use App\Domains\Purchases\Models\ExpenseCategory;
+use App\Domains\Purchases\Models\PurchaseActivity;
+use App\Domains\Purchases\Models\RecurringCost;
+use App\Domains\Purchases\Models\RecurringCostOccurrence;
+use App\Domains\Purchases\Models\Supplier;
+use App\Domains\Purchases\Models\SupplierCredit;
+use App\Domains\Purchases\Models\SupplierCreditAllocation;
+use App\Domains\Purchases\Models\SupplierCreditItem;
+use App\Domains\Purchases\Models\SupplierPayment;
+use App\Domains\Purchases\Models\SupplierPaymentAllocation;
+use App\Domains\Purchases\Models\SupplierRefund;
 use App\Domains\Receivables\Models\Payment;
 use App\Domains\Receivables\Models\PaymentAllocation;
 use App\Domains\Receivables\Models\PaymentMethod;
@@ -62,7 +74,7 @@ final class ModelIdentityMap
 
     public const INVOICE_ALIAS = 'invoice';
 
-    public const PAYMENT_ALIAS = 'payment';
+    public const PAYMENT_ALIAS = 'customer_payment';
 
     /**
      * @return array<string, class-string<Model>>
@@ -98,7 +110,19 @@ final class ModelIdentityMap
             'module' => Module::class,
             'note' => Note::class,
             self::PAYMENT_ALIAS => Payment::class,
-            'payment_allocation' => PaymentAllocation::class,
+            'customer_payment_allocation' => PaymentAllocation::class,
+            'supplier' => Supplier::class,
+            'bill' => Bill::class,
+            'supplier_credit' => SupplierCredit::class,
+            'supplier_payment' => SupplierPayment::class,
+            'supplier_refund' => SupplierRefund::class,
+            'bill_item' => BillItem::class,
+            'supplier_credit_item' => SupplierCreditItem::class,
+            'supplier_payment_allocation' => SupplierPaymentAllocation::class,
+            'supplier_credit_allocation' => SupplierCreditAllocation::class,
+            'recurring_cost' => RecurringCost::class,
+            'recurring_cost_occurrence' => RecurringCostOccurrence::class,
+            'purchase_activity' => PurchaseActivity::class,
             'payment_method' => PaymentMethod::class,
             'recurring_invoice' => RecurringInvoice::class,
             'role_preset' => RolePreset::class,

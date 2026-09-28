@@ -147,7 +147,7 @@ test('create payment', function () {
 
     $response->assertOk();
 
-    $this->assertDatabaseHas('payments', [
+    $this->assertDatabaseHas('customer_payments', [
         'payment_number' => $payment['payment_number'],
         'customer_id' => $payment['customer_id'],
         'amount' => $payment['amount'],
@@ -238,7 +238,7 @@ test('update payment', function () {
     putJson("api/v1/payments/{$payment->id}", $payment2)
         ->assertOk();
 
-    $this->assertDatabaseHas('payments', [
+    $this->assertDatabaseHas('customer_payments', [
         'id' => $payment->id,
         'payment_number' => $payment2['payment_number'],
         'customer_id' => $payment2['customer_id'],
@@ -375,7 +375,7 @@ test('create payment without invoice', function () {
 
     postJson('api/v1/payments', $payment)->assertOk();
 
-    $this->assertDatabaseHas('payments', [
+    $this->assertDatabaseHas('customer_payments', [
         'payment_number' => $payment['payment_number'],
         'customer_id' => $payment['customer_id'],
         'amount' => $payment['amount'],
@@ -403,7 +403,7 @@ test('create payment with invoice', function () {
 
     postJson('api/v1/payments', $payment)->assertOk();
 
-    $this->assertDatabaseHas('payments', [
+    $this->assertDatabaseHas('customer_payments', [
         'payment_number' => $payment['payment_number'],
         'customer_id' => $payment['customer_id'],
         'amount' => $payment['amount'],
@@ -440,7 +440,7 @@ test('create payment with partially paid', function () {
 
     $response = postJson('api/v1/payments', $payment)->assertOk();
 
-    $this->assertDatabaseHas('payments', [
+    $this->assertDatabaseHas('customer_payments', [
         'payment_number' => $payment['payment_number'],
         'customer_id' => (string) $payment['customer_id'],
         'amount' => (string) $payment['amount'],

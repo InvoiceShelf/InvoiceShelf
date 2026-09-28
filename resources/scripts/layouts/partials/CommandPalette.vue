@@ -141,6 +141,7 @@ import { useGlobalStore } from '@/scripts/stores/global.store'
 import { useUserStore } from '@/scripts/stores/user.store'
 import { useCompanyStore } from '@/scripts/stores/company.store'
 import { useBreakpoints } from '@/scripts/composables/use-breakpoints'
+import { useMenuLabel } from '@/scripts/composables/use-menu-label'
 import { useCreateActions } from '@/scripts/composables/use-create-actions'
 import type { CurrencyConfig } from '@/scripts/utils/format-money'
 
@@ -190,6 +191,7 @@ const router = useRouter()
 const { t } = useI18n()
 const { isPhone } = useBreakpoints()
 const { createActions } = useCreateActions()
+const { menuContext } = useMenuLabel()
 
 const input = ref<HTMLInputElement | null>(null)
 const list = ref<HTMLElement | null>(null)
@@ -226,6 +228,7 @@ const pages = computed<RawItem[]>(() => {
     key: `page-${item.link}`,
     icon: item.icon,
     title: t(item.title),
+    subtitle: menuContext(item),
     to: item.link,
   }))
 })
@@ -240,7 +243,7 @@ const actions = computed<RawItem[]>(() => {
 })
 
 function matches(item: RawItem): boolean {
-  return !needle.value || item.title.toLowerCase().includes(needle.value)
+  return !needle.value || `${item.title} ${item.subtitle || ''}`.toLowerCase().includes(needle.value)
 }
 
 const sections = computed<Section[]>(() => {

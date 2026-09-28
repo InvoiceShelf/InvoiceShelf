@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PaymentAllocation extends Model
 {
-    protected $table = 'payment_allocations';
+    protected $table = 'customer_payment_allocations';
 
     use HasFactory;
 

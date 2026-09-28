@@ -1,6 +1,6 @@
 import type { RouteRecordRaw } from 'vue-router'
 
-const ExpenseIndexView = () => import('./views/ExpenseIndexView.vue')
+const ExpenseIndexView = () => import('../purchases/views/PurchaseWorkspaceView.vue')
 const ExpenseCreateView = () => import('./views/ExpenseCreateView.vue')
 
 export const expenseRoutes: RouteRecordRaw[] = [
@@ -8,9 +8,10 @@ export const expenseRoutes: RouteRecordRaw[] = [
     path: 'expenses',
     name: 'expenses.index',
     component: ExpenseIndexView,
+    props: { section: 'expenses' },
     meta: {
       requiresAuth: true,
-      ability: 'view-expense',
+      ability: ['view-expense', 'view-recurring-cost'],
       title: 'expenses.title',
     },
   },

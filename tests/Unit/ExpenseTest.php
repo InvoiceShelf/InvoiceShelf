@@ -95,7 +95,7 @@ test('customer deletion removes payment allocations before bulk payment deletion
 
     app(CustomerService::class)->delete(collect([$customer->id]));
 
-    $this->assertDatabaseMissing('payment_allocations', ['id' => $allocation->id]);
+    $this->assertDatabaseMissing('customer_payment_allocations', ['id' => $allocation->id]);
 });
 
 test('company deletion removes payment allocations before bulk payment deletion', function () {
@@ -118,5 +118,5 @@ test('company deletion removes payment allocations before bulk payment deletion'
 
     app(CompanyService::class)->delete($company);
 
-    $this->assertDatabaseMissing('payment_allocations', ['id' => $allocation->id]);
+    $this->assertDatabaseMissing('customer_payment_allocations', ['id' => $allocation->id]);
 });

@@ -24,6 +24,8 @@ export type CustomFieldModelType =
   | 'Estimate'
   | 'Payment'
   | 'Expense'
+  | 'Supplier'
+  | 'Bill'
 
 export interface CustomField {
   id: number
