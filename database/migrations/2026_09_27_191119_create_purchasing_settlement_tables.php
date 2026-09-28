@@ -164,7 +164,11 @@ return new class extends Migration
             Schema::dropIfExists($table);
         }
 
-        Schema::table('expenses', fn (Blueprint $table) => $table->dropColumn('supplier_id'));
+        // SQLite rebuilds the table on a column drop and fails while the index still names it.
+        Schema::table('expenses', function (Blueprint $table): void {
+            $table->dropIndex(['supplier_id']);
+            $table->dropColumn('supplier_id');
+        });
         Schema::dropIfExists('suppliers');
     }
 };
