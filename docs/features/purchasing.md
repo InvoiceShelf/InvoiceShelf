@@ -126,8 +126,12 @@ The existing cash dashboard and cash profit/loss report include supplier payment
 refunds. The profit/loss PDF explicitly labels its cash basis and includes advances.
 The dashboard also displays current payables for users with bill-view permission.
 
-**Reports → Taxes** is unchanged: bills and supplier credits are not part of it yet.
-They join it in a follow-up that moves both sides of that report to document dates.
+**Reports → Taxes** uses document dates consistently: issued invoices and customer
+credit notes contribute sales tax; expenses and recorded bills, less supplier credits,
+contribute purchase tax. Unpaid and partially paid invoices are included. Drafts and
+void purchase documents are excluded. Payments, refunds, and allocations do not add
+another tax entry. The report uses stored tax amounts, names, and exchange-rate
+snapshots. This replaces the previous sales-tax filter that required fully paid invoices.
 
 The Expenses report continues to cover direct expenses. Historical payables and
 custom-field filtering/grouping are not provided by this reporting pass.
