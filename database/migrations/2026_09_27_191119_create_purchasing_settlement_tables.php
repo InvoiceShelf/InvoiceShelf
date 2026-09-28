@@ -1,6 +1,5 @@
 <?php
 
-use App\Domains\Accounts\Application\RolePresetService;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -120,8 +119,6 @@ return new class extends Migration
                 $table->unique([$parent, 'bill_id'], $uniqueName);
             });
         }
-
-        app(RolePresetService::class)->syncAll();
     }
 
     /**

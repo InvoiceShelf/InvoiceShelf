@@ -43,12 +43,14 @@ return [
         [
             'name' => 'view supplier',
             'ability' => 'view-supplier',
+            'presets' => ['manager', 'read-only'],
             'model' => Supplier::class,
             'depends_on' => [],
         ],
         [
             'name' => 'create supplier',
             'ability' => 'create-supplier',
+            'presets' => ['manager'],
             'model' => Supplier::class,
             'depends_on' => [
                 'view-supplier',
@@ -57,6 +59,7 @@ return [
         [
             'name' => 'edit supplier',
             'ability' => 'edit-supplier',
+            'presets' => ['manager'],
             'model' => Supplier::class,
             'depends_on' => [
                 'view-supplier',
@@ -65,6 +68,7 @@ return [
         [
             'name' => 'delete supplier',
             'ability' => 'delete-supplier',
+            'presets' => ['manager'],
             'model' => Supplier::class,
             'depends_on' => [
                 'view-supplier',
@@ -75,12 +79,14 @@ return [
         [
             'name' => 'view bill',
             'ability' => 'view-bill',
+            'presets' => ['manager', 'read-only'],
             'model' => Bill::class,
             'depends_on' => [],
         ],
         [
             'name' => 'create bill',
             'ability' => 'create-bill',
+            'presets' => ['manager'],
             'model' => Bill::class,
             'depends_on' => [
                 'view-bill',
@@ -90,6 +96,7 @@ return [
         [
             'name' => 'edit bill',
             'ability' => 'edit-bill',
+            'presets' => ['manager'],
             'model' => Bill::class,
             'depends_on' => [
                 'view-bill',
@@ -99,6 +106,7 @@ return [
         [
             'name' => 'delete bill',
             'ability' => 'delete-bill',
+            'presets' => ['manager'],
             'model' => Bill::class,
             'depends_on' => [
                 'view-bill',
@@ -109,12 +117,14 @@ return [
         [
             'name' => 'view supplier payment',
             'ability' => 'view-supplier-payment',
+            'presets' => ['manager', 'read-only'],
             'model' => SupplierPayment::class,
             'depends_on' => [],
         ],
         [
             'name' => 'create supplier payment',
             'ability' => 'create-supplier-payment',
+            'presets' => ['manager'],
             'model' => SupplierPayment::class,
             'depends_on' => [
                 'view-supplier-payment',
@@ -125,6 +135,7 @@ return [
         [
             'name' => 'edit supplier payment',
             'ability' => 'edit-supplier-payment',
+            'presets' => ['manager'],
             'model' => SupplierPayment::class,
             'depends_on' => [
                 'view-supplier-payment',
@@ -135,6 +146,7 @@ return [
         [
             'name' => 'delete supplier payment',
             'ability' => 'delete-supplier-payment',
+            'presets' => ['manager'],
             'model' => SupplierPayment::class,
             'depends_on' => [
                 'view-supplier-payment',
@@ -145,12 +157,14 @@ return [
         [
             'name' => 'view supplier credit',
             'ability' => 'view-supplier-credit',
+            'presets' => ['manager', 'read-only'],
             'model' => SupplierCredit::class,
             'depends_on' => [],
         ],
         [
             'name' => 'create supplier credit',
             'ability' => 'create-supplier-credit',
+            'presets' => ['manager'],
             'model' => SupplierCredit::class,
             'depends_on' => [
                 'view-supplier-credit',
@@ -161,6 +175,7 @@ return [
         [
             'name' => 'edit supplier credit',
             'ability' => 'edit-supplier-credit',
+            'presets' => ['manager'],
             'model' => SupplierCredit::class,
             'depends_on' => [
                 'view-supplier-credit',
@@ -171,6 +186,7 @@ return [
         [
             'name' => 'delete supplier credit',
             'ability' => 'delete-supplier-credit',
+            'presets' => ['manager'],
             'model' => SupplierCredit::class,
             'depends_on' => [
                 'view-supplier-credit',
@@ -181,12 +197,14 @@ return [
         [
             'name' => 'view supplier refund',
             'ability' => 'view-supplier-refund',
+            'presets' => ['manager', 'read-only'],
             'model' => SupplierRefund::class,
             'depends_on' => [],
         ],
         [
             'name' => 'create supplier refund',
             'ability' => 'create-supplier-refund',
+            'presets' => ['manager'],
             'model' => SupplierRefund::class,
             'depends_on' => [
                 'view-supplier-refund',
@@ -198,6 +216,7 @@ return [
         [
             'name' => 'edit supplier refund',
             'ability' => 'edit-supplier-refund',
+            'presets' => ['manager'],
             'model' => SupplierRefund::class,
             'depends_on' => [
                 'view-supplier-refund',
@@ -207,6 +226,7 @@ return [
         [
             'name' => 'delete supplier refund',
             'ability' => 'delete-supplier-refund',
+            'presets' => ['manager'],
             'model' => SupplierRefund::class,
             'depends_on' => [
                 'view-supplier-refund',

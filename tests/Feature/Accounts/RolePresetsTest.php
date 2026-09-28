@@ -85,9 +85,9 @@ test('a new company gets Owner, Manager and Read only with their exact abilities
         ->and($manager->title)->toBe('Manager')
         ->and($readOnly->title)->toBe('Read only')
         ->and(heldAbilities($owner))->toBe($catalogue)
-        ->and(heldAbilities($manager))->toHaveCount(41)
+        ->and(heldAbilities($manager))->toHaveCount(61)
         ->not->toContain('create-custom-field', 'edit-exchange-rate-provider')
-        ->and(heldAbilities($readOnly))->toHaveCount(13)
+        ->and(heldAbilities($readOnly))->toHaveCount(18)
         ->and(collect(heldAbilities($readOnly))->every(fn ($a) => str_starts_with($a, 'view-') || $a === 'dashboard'))->toBeTrue();
 });
 
@@ -348,7 +348,7 @@ test('the shipped presets start with every current default already applied', fun
 
     expect(app(RolePresetService::class)->applyDefaults())->toBe([])
         ->and($manager->applied_defaults)->toBe($manager->abilities)
-        ->and(heldAbilities(presetCopy($this->company, 'preset:manager')))->toHaveCount(41);
+        ->and(heldAbilities(presetCopy($this->company, 'preset:manager')))->toHaveCount(61);
 });
 
 test('a newly tagged ability reaches the preset and every company copy once', function () {
@@ -432,8 +432,14 @@ test('the upgrade marks what Manager and Read only were seeded with, whatever th
 
     expect(RolePreset::query()->where('key', 'manager')->value('applied_defaults'))->toHaveCount(41)
         ->not->toContain('create-custom-field')
-        ->and(RolePreset::query()->where('key', 'read-only')->value('applied_defaults'))->toHaveCount(13)
-        ->and(app(RolePresetService::class)->applyDefaults())->toBe(['manager' => ['create-custom-field']]);
+        ->and(RolePreset::query()->where('key', 'read-only')->value('applied_defaults'))->toHaveCount(13);
+
+    // Everything tagged after the seeded lists is offered, the probe included.
+    $offered = app(RolePresetService::class)->applyDefaults();
+
+    expect($offered['manager'])->toContain('create-custom-field', 'view-bill', 'delete-supplier-refund')
+        ->not->toContain('view-customer')
+        ->and($offered['read-only'])->toContain('view-bill')->not->toContain('create-bill');
 });
 
 test('a new ability reaches every owner role without a migration', function () {
