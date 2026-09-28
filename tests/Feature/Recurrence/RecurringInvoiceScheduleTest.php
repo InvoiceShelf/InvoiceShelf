@@ -96,12 +96,12 @@ test('a frequency the scheduler cannot read is a validation error', function () 
         ->assertJsonValidationErrors('frequency');
 });
 
-test('saving a schedule works out its first run in the company time zone', function () {
-    $schedule = scheduledInvoice($this->companyId);
-    $payload = [
+function recurringInvoicePayload(RecurringInvoice $schedule, array $overrides = []): array
+{
+    return [
         ...$schedule->only(['customer_id', 'discount_type', 'discount', 'discount_val', 'template_name', 'exchange_rate', 'currency_id']),
-        'starts_at' => '2026-06-20',
-        'frequency' => '0 0 * * *',
+        'starts_at' => '2026-06-01',
+        'frequency' => $schedule->frequency,
         'limit_by' => 'NONE',
         'status' => 'ACTIVE',
         'send_automatically' => false,
@@ -110,10 +110,58 @@ test('saving a schedule works out its first run in the company time zone', funct
         'sub_total' => 1000,
         'total' => 1000,
         'tax' => 0,
+        ...$overrides,
     ];
+}
 
-    $this->putJson('/api/v1/recurring-invoices/'.$schedule->id, $payload)->assertSuccessful();
+test('saving a schedule works out its first run in the company time zone', function () {
+    $schedule = scheduledInvoice($this->companyId);
+
+    $this->putJson('/api/v1/recurring-invoices/'.$schedule->id, recurringInvoicePayload($schedule, ['starts_at' => '2026-06-20']))
+        ->assertSuccessful();
 
     // Midnight on 21 June in Skopje, not in UTC.
     expect($schedule->fresh()->next_invoice_at)->toBe('2026-06-20 22:00:00');
+});
+
+test('editing a schedule keeps its next run, so the period already billed is not billed again', function () {
+    $schedule = scheduledInvoice($this->companyId, ['frequency' => '0 0 1 * *', 'next_invoice_at' => '2026-05-31 22:00:00']);
+    artisan('recurring-invoices:generate')->assertSuccessful();
+    expect($schedule->fresh()->next_invoice_at)->toBe('2026-06-30 22:00:00');
+
+    $this->putJson('/api/v1/recurring-invoices/'.$schedule->id, recurringInvoicePayload($schedule->fresh(), [
+        'items' => [['name' => 'Retainer (fixed typo)', 'quantity' => 1, 'price' => 1000, 'discount_type' => 'fixed', 'discount' => 0, 'discount_val' => 0, 'tax' => 0, 'total' => 1000]],
+    ]))->assertSuccessful();
+    artisan('recurring-invoices:generate')->assertSuccessful();
+
+    expect($schedule->fresh()->next_invoice_at)->toBe('2026-06-30 22:00:00')
+        ->and(Invoice::query()->where('recurring_invoice_id', $schedule->id)->count())->toBe(1);
+});
+
+test('changing the frequency counts the next run from now', function () {
+    $schedule = scheduledInvoice($this->companyId, ['frequency' => '0 0 1 * *', 'next_invoice_at' => '2026-06-30 22:00:00']);
+
+    $this->putJson('/api/v1/recurring-invoices/'.$schedule->id, recurringInvoicePayload($schedule, ['frequency' => '0 0 * * 1']))
+        ->assertSuccessful();
+
+    // The Monday after 15 June, midnight in Skopje.
+    expect($schedule->fresh()->next_invoice_at)->toBe('2026-06-21 22:00:00');
+});
+
+test('a sub-daily schedule far behind still sends a single invoice', function () {
+    $schedule = scheduledInvoice($this->companyId, ['frequency' => '* * * * *', 'next_invoice_at' => '2026-05-15 12:00:00']);
+
+    artisan('recurring-invoices:generate')->assertSuccessful();
+    artisan('recurring-invoices:generate')->assertSuccessful();
+
+    expect(Invoice::query()->where('recurring_invoice_id', $schedule->id)->count())->toBe(1)
+        ->and($schedule->fresh()->next_invoice_at)->toBe('2026-06-15 12:01:00');
+});
+
+test('a start date is read as that day where the company is', function () {
+    CompanySetting::setSettings(['time_zone' => 'America/New_York'], $this->companyId);
+
+    $this->getJson('/api/v1/recurring-invoice-frequency?frequency=0 0 * * *&starts_at=2026-09-30')
+        ->assertOk()
+        ->assertJsonPath('upcoming.0', '2026-10-01');
 });

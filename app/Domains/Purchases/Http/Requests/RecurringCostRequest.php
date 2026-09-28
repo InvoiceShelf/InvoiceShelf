@@ -2,8 +2,8 @@
 
 namespace App\Domains\Purchases\Http\Requests;
 
-use App\Domains\Purchases\Application\PurchaseCustomFields;
 use App\Domains\Purchases\Models\RecurringCost;
+use App\Domains\Taxation\Models\TaxType;
 use App\Rules\CronFrequency;
 use App\Support\Recurrence\RecurringSchedule;
 use Dedoc\Scramble\Attributes\BodyParameter;
@@ -37,12 +37,13 @@ class RecurringCostRequest extends FormRequest
     }
 
     /**
-     * The schedule's own fields; the template is checked by the service.
+     * The schedule's own fields; the template is checked by the service,
+     * custom field answers included, since which fields apply depends on the
+     * mode.
      */
     public static function rulesFor(int $companyId): array
     {
         return [
-            ...PurchaseCustomFields::answerRules($companyId, 'Bill', 'template.customFields'),
             'name' => ['required', 'string', 'max:255'],
             'supplier_id' => ['required', 'integer', Rule::exists('suppliers', 'id')->where('company_id', $companyId)],
             'mode' => ['required', Rule::in([RecurringCost::MODE_BILL, RecurringCost::MODE_EXPENSE])],
@@ -56,6 +57,35 @@ class RecurringCostRequest extends FormRequest
             'create_as_draft' => ['sometimes', 'boolean'],
             'notify_creator' => ['sometimes', 'boolean'],
             'template' => ['required', 'array'],
+        ];
+    }
+
+    /**
+     * An expense template: the expense form's fields, without the date a run
+     * fills in or the receipt a run cannot carry, scoped to the company.
+     * The amount is at least one minor unit, since a schedule for nothing is
+     * a mistake rather than an expense.
+     */
+    public static function expenseTemplateRules(int $companyId): array
+    {
+        return [
+            'amount' => ['required', 'integer', 'min:1', 'max:999999999999'],
+            'currency_id' => ['required', 'integer', Rule::exists('currencies', 'id')],
+            'exchange_rate' => ['required', 'numeric', 'gt:0', 'max:1000000'],
+            'expense_category_id' => ['required', 'integer', Rule::exists('expense_categories', 'id')->where('company_id', $companyId)],
+            'payment_method_id' => ['nullable', 'integer', Rule::exists('payment_methods', 'id')->where('company_id', $companyId)],
+            'notes' => ['nullable', 'string', 'max:10000'],
+            'taxes' => ['sometimes', 'array'],
+            'taxes.*.tax_type_id' => [
+                'required',
+                'integer',
+                'distinct',
+                Rule::exists('tax_types', 'id')
+                    ->where('company_id', $companyId)
+                    ->where('type', TaxType::TYPE_GENERAL)
+                    ->where('transaction_type', TaxType::TRANSACTION_TYPE_PURCHASES),
+            ],
+            'taxes.*.amount' => ['required', 'integer', 'min:0'],
         ];
     }
 }

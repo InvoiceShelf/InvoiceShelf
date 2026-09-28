@@ -256,6 +256,12 @@
               >{{ $t('purchases.new_purchase_tax') }}</BaseButton
             >
           </div>
+          <PurchaseCustomFieldInputs
+            v-if="expenseCustomFields.length"
+            :fields="expenseCustomFields"
+            :scope="customValidation.scope"
+            prefix="template.customFields"
+          />
         </div>
         <PurchaseField
           class="mt-5"
@@ -308,6 +314,8 @@ import PurchaseLinesEditor from '../components/PurchaseLinesEditor.vue'
 const lookups = providePurchaseLookups()
 const { error, errors, setError, clearError } = usePurchaseForm()
 const customFields = ref<CustomFieldItem[]>([])
+/** The expense form's custom fields, for a schedule that records expenses. */
+const expenseCustomFields = ref<CustomFieldItem[]>([])
 const customValidation = usePurchaseCustomFieldValidation()
 const uid = useId()
 const { t } = useI18n()
@@ -412,8 +420,15 @@ function resetExpenseTaxes() {
 
 onMounted(async () => {
   try {
-    options.value = await purchaseService.options('Bill')
-    customFields.value = purchaseCustomFields(options.value.custom_fields || [])
+    const [billOptions, expenseOptions] = await Promise.all([
+      purchaseService.options('Bill'),
+      purchaseService.options('Expense'),
+    ])
+    options.value = billOptions
+    customFields.value = purchaseCustomFields(billOptions.custom_fields || [])
+    expenseCustomFields.value = purchaseCustomFields(
+      expenseOptions.custom_fields || [],
+    )
     resetExpenseTaxes()
     if (!id && route.query.supplier_id) {
       form.supplier_id = Number(route.query.supplier_id)
@@ -453,6 +468,10 @@ onMounted(async () => {
         expense.payment_method_id = template.payment_method_id ?? null
         for (const tax of template.taxes ?? [])
           expenseTaxes.value[tax.tax_type_id] = tax.amount
+        expenseCustomFields.value = purchaseCustomFields(
+          expenseOptions.custom_fields || [],
+          (template.customFields || []) as PurchaseCustomFieldAnswer[],
+        )
       } else {
         bill.tax_included = !!template.tax_included
         bill.reference = template.reference ?? ''
@@ -517,6 +536,7 @@ function template() {
           tax_type_id: Number(taxId),
           amount: Number(amount),
         })),
+      customFields: purchaseCustomFieldPayload(expenseCustomFields.value),
     }
   return {
     ...shared,
@@ -537,7 +557,7 @@ function template() {
 async function save() {
   if (saving.value || loading.value) return
   clearError()
-  if (form.mode === 'BILL' && !(await customValidation.validate())) return
+  if (!(await customValidation.validate())) return
   saving.value = true
   try {
     const record = await purchaseService.save(

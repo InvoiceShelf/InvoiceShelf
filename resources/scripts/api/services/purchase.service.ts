@@ -17,7 +17,7 @@ export const purchaseService = {
   async allocate(kind: PurchaseKind, id: number, allocations: Allocation[]) {
     return (await client.put<{data: PurchaseRecord}>(`/api/v1/${kind}/${id}/allocations`, { allocations: allocations.map(({bill_id, amount}) => ({bill_id, amount})) })).data.data
   },
-  async options(customFieldModel?: 'Supplier' | 'Bill') { return (await client.get<{data: PurchaseOptions}>('/api/v1/purchase-options', {params: customFieldModel ? {custom_field_model: customFieldModel} : undefined})).data.data },
+  async options(customFieldModel?: 'Supplier' | 'Bill' | 'Expense') { return (await client.get<{data: PurchaseOptions}>('/api/v1/purchase-options', {params: customFieldModel ? {custom_field_model: customFieldModel} : undefined})).data.data },
   async suppliers(search: string) { return (await this.list('suppliers', {search, limit: 100})).data },
   async upload(kind: PurchaseKind, id: number, file: File) {
     const body = new FormData(); body.append('file', file)
