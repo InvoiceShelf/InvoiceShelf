@@ -318,7 +318,7 @@
                   class="text-primary-600"
                   >{{ credit.number }}</router-link
                 ><BaseFormatMoney
-                  :amount="credit.total || 0"
+                  :amount="credit.amount || 0"
                   :currency="record.currency"
                 /></div
             ></BaseCard>
