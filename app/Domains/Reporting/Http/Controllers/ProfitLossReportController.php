@@ -7,6 +7,7 @@ use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Money\Models\Currency;
 use App\Domains\Purchases\Models\Expense;
 use App\Domains\Receivables\Models\Payment;
+use App\Domains\Reporting\Queries\PurchasesQuery;
 use App\Platform\Http\Controller;
 use App\Platform\Pdf\Facades\Pdf;
 use App\Platform\Pdf\Rendering\PdfPageSetup;
@@ -51,6 +52,21 @@ class ProfitLossReportController extends Controller
             ->applyFilters($window)
             ->expensesAttributes()
             ->get();
+
+        $cash = app(PurchasesQuery::class)->cash(
+            $company->id,
+            $window['from_date'] ?? null,
+            $window['to_date'] ?? null,
+        );
+
+        foreach (['supplier_payments' => 1, 'supplier_refunds' => -1] as $key => $sign) {
+            if ($cash[$key]) {
+                $spending->push((object) [
+                    'category' => (object) ['name' => __('pdf_'.$key.'_label')],
+                    'total_amount' => $cash[$key] * $sign,
+                ]);
+            }
+        }
 
         view()->share([
             'income' => $received,

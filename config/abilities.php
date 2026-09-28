@@ -5,7 +5,12 @@ use App\Domains\Contacts\Models\Customer;
 use App\Domains\Metadata\Models\CustomField;
 use App\Domains\Metadata\Models\Note;
 use App\Domains\Money\Models\ExchangeRateProvider;
+use App\Domains\Purchases\Models\Bill;
 use App\Domains\Purchases\Models\Expense;
+use App\Domains\Purchases\Models\Supplier;
+use App\Domains\Purchases\Models\SupplierCredit;
+use App\Domains\Purchases\Models\SupplierPayment;
+use App\Domains\Purchases\Models\SupplierRefund;
 use App\Domains\Receivables\Models\Payment;
 use App\Domains\Sales\Models\Estimate;
 use App\Domains\Sales\Models\Invoice;
@@ -24,19 +29,221 @@ return [
     | model, and any dependencies on other abilities. This configuration helps
     | manage user permissions and access control throughout the application.
     |
+    | `presets` names the role presets (by key) that get the ability by
+    | default; the Owner preset gets every ability without being named. After
+    | every `migrate` run each preset is offered, once, the abilities it has
+    | not been offered before (RolePresetService::applyDefaults), so a new
+    | ability needs no migration of its own, and one the super administrator
+    | later takes away stays away.
+    |
     */
 
     'abilities' => [
+        // Supplier
+        [
+            'name' => 'view supplier',
+            'ability' => 'view-supplier',
+            'presets' => ['manager', 'read-only'],
+            'model' => Supplier::class,
+            'depends_on' => [],
+        ],
+        [
+            'name' => 'create supplier',
+            'ability' => 'create-supplier',
+            'presets' => ['manager'],
+            'model' => Supplier::class,
+            'depends_on' => [
+                'view-supplier',
+            ],
+        ],
+        [
+            'name' => 'edit supplier',
+            'ability' => 'edit-supplier',
+            'presets' => ['manager'],
+            'model' => Supplier::class,
+            'depends_on' => [
+                'view-supplier',
+            ],
+        ],
+        [
+            'name' => 'delete supplier',
+            'ability' => 'delete-supplier',
+            'presets' => ['manager'],
+            'model' => Supplier::class,
+            'depends_on' => [
+                'view-supplier',
+            ],
+        ],
+
+        // Bill
+        [
+            'name' => 'view bill',
+            'ability' => 'view-bill',
+            'presets' => ['manager', 'read-only'],
+            'model' => Bill::class,
+            'depends_on' => [],
+        ],
+        [
+            'name' => 'create bill',
+            'ability' => 'create-bill',
+            'presets' => ['manager'],
+            'model' => Bill::class,
+            'depends_on' => [
+                'view-bill',
+                'view-supplier',
+            ],
+        ],
+        [
+            'name' => 'edit bill',
+            'ability' => 'edit-bill',
+            'presets' => ['manager'],
+            'model' => Bill::class,
+            'depends_on' => [
+                'view-bill',
+                'view-supplier',
+            ],
+        ],
+        [
+            'name' => 'delete bill',
+            'ability' => 'delete-bill',
+            'presets' => ['manager'],
+            'model' => Bill::class,
+            'depends_on' => [
+                'view-bill',
+            ],
+        ],
+
+        // Supplier Payment
+        [
+            'name' => 'view supplier payment',
+            'ability' => 'view-supplier-payment',
+            'presets' => ['manager', 'read-only'],
+            'model' => SupplierPayment::class,
+            'depends_on' => [],
+        ],
+        [
+            'name' => 'create supplier payment',
+            'ability' => 'create-supplier-payment',
+            'presets' => ['manager'],
+            'model' => SupplierPayment::class,
+            'depends_on' => [
+                'view-supplier-payment',
+                'view-supplier',
+                'view-bill',
+            ],
+        ],
+        [
+            'name' => 'edit supplier payment',
+            'ability' => 'edit-supplier-payment',
+            'presets' => ['manager'],
+            'model' => SupplierPayment::class,
+            'depends_on' => [
+                'view-supplier-payment',
+                'view-supplier',
+                'view-bill',
+            ],
+        ],
+        [
+            'name' => 'delete supplier payment',
+            'ability' => 'delete-supplier-payment',
+            'presets' => ['manager'],
+            'model' => SupplierPayment::class,
+            'depends_on' => [
+                'view-supplier-payment',
+            ],
+        ],
+
+        // Supplier Credit
+        [
+            'name' => 'view supplier credit',
+            'ability' => 'view-supplier-credit',
+            'presets' => ['manager', 'read-only'],
+            'model' => SupplierCredit::class,
+            'depends_on' => [],
+        ],
+        [
+            'name' => 'create supplier credit',
+            'ability' => 'create-supplier-credit',
+            'presets' => ['manager'],
+            'model' => SupplierCredit::class,
+            'depends_on' => [
+                'view-supplier-credit',
+                'view-supplier',
+                'view-bill',
+            ],
+        ],
+        [
+            'name' => 'edit supplier credit',
+            'ability' => 'edit-supplier-credit',
+            'presets' => ['manager'],
+            'model' => SupplierCredit::class,
+            'depends_on' => [
+                'view-supplier-credit',
+                'view-supplier',
+                'view-bill',
+            ],
+        ],
+        [
+            'name' => 'delete supplier credit',
+            'ability' => 'delete-supplier-credit',
+            'presets' => ['manager'],
+            'model' => SupplierCredit::class,
+            'depends_on' => [
+                'view-supplier-credit',
+            ],
+        ],
+
+        // Supplier Refund
+        [
+            'name' => 'view supplier refund',
+            'ability' => 'view-supplier-refund',
+            'presets' => ['manager', 'read-only'],
+            'model' => SupplierRefund::class,
+            'depends_on' => [],
+        ],
+        [
+            'name' => 'create supplier refund',
+            'ability' => 'create-supplier-refund',
+            'presets' => ['manager'],
+            'model' => SupplierRefund::class,
+            'depends_on' => [
+                'view-supplier-refund',
+                'view-supplier',
+                'view-supplier-payment',
+                'view-supplier-credit',
+            ],
+        ],
+        [
+            'name' => 'edit supplier refund',
+            'ability' => 'edit-supplier-refund',
+            'presets' => ['manager'],
+            'model' => SupplierRefund::class,
+            'depends_on' => [
+                'view-supplier-refund',
+                'view-supplier',
+            ],
+        ],
+        [
+            'name' => 'delete supplier refund',
+            'ability' => 'delete-supplier-refund',
+            'presets' => ['manager'],
+            'model' => SupplierRefund::class,
+            'depends_on' => [
+                'view-supplier-refund',
+            ],
+        ],
 
         // Customer
         [
             'name' => 'view customer',
             'ability' => 'view-customer',
+            'presets' => ['manager', 'read-only'],
             'model' => Customer::class,
         ],
         [
             'name' => 'create customer',
             'ability' => 'create-customer',
+            'presets' => ['manager'],
             'model' => Customer::class,
             'depends_on' => [
                 'view-customer',
@@ -46,6 +253,7 @@ return [
         [
             'name' => 'edit customer',
             'ability' => 'edit-customer',
+            'presets' => ['manager'],
             'model' => Customer::class,
             'depends_on' => [
                 'view-customer',
@@ -55,6 +263,7 @@ return [
         [
             'name' => 'delete customer',
             'ability' => 'delete-customer',
+            'presets' => ['manager'],
             'model' => Customer::class,
             'depends_on' => [
                 'view-customer',
@@ -65,11 +274,13 @@ return [
         [
             'name' => 'view item',
             'ability' => 'view-item',
+            'presets' => ['manager', 'read-only'],
             'model' => Item::class,
         ],
         [
             'name' => 'create item',
             'ability' => 'create-item',
+            'presets' => ['manager'],
             'model' => Item::class,
             'depends_on' => [
                 'view-item',
@@ -79,6 +290,7 @@ return [
         [
             'name' => 'edit item',
             'ability' => 'edit-item',
+            'presets' => ['manager'],
             'model' => Item::class,
             'depends_on' => [
                 'view-item',
@@ -87,6 +299,7 @@ return [
         [
             'name' => 'delete item',
             'ability' => 'delete-item',
+            'presets' => ['manager'],
             'model' => Item::class,
             'depends_on' => [
                 'view-item',
@@ -97,11 +310,13 @@ return [
         [
             'name' => 'view tax type',
             'ability' => 'view-tax-type',
+            'presets' => ['manager', 'read-only'],
             'model' => TaxType::class,
         ],
         [
             'name' => 'create tax type',
             'ability' => 'create-tax-type',
+            'presets' => ['manager'],
             'model' => TaxType::class,
             'depends_on' => [
                 'view-tax-type',
@@ -110,6 +325,7 @@ return [
         [
             'name' => 'edit tax type',
             'ability' => 'edit-tax-type',
+            'presets' => ['manager'],
             'model' => TaxType::class,
             'depends_on' => [
                 'view-tax-type',
@@ -118,6 +334,7 @@ return [
         [
             'name' => 'delete tax type',
             'ability' => 'delete-tax-type',
+            'presets' => ['manager'],
             'model' => TaxType::class,
             'depends_on' => [
                 'view-tax-type',
@@ -128,11 +345,13 @@ return [
         [
             'name' => 'view estimate',
             'ability' => 'view-estimate',
+            'presets' => ['manager', 'read-only'],
             'model' => Estimate::class,
         ],
         [
             'name' => 'create estimate',
             'ability' => 'create-estimate',
+            'presets' => ['manager'],
             'model' => Estimate::class,
             'depends_on' => [
                 'view-estimate',
@@ -146,6 +365,7 @@ return [
         [
             'name' => 'edit estimate',
             'ability' => 'edit-estimate',
+            'presets' => ['manager'],
             'model' => Estimate::class,
             'depends_on' => [
                 'view-item',
@@ -159,6 +379,7 @@ return [
         [
             'name' => 'delete estimate',
             'ability' => 'delete-estimate',
+            'presets' => ['manager'],
             'model' => Estimate::class,
             'depends_on' => [
                 'view-estimate',
@@ -167,6 +388,7 @@ return [
         [
             'name' => 'send estimate',
             'ability' => 'send-estimate',
+            'presets' => ['manager'],
             'model' => Estimate::class,
         ],
 
@@ -174,11 +396,13 @@ return [
         [
             'name' => 'view invoice',
             'ability' => 'view-invoice',
+            'presets' => ['manager', 'read-only'],
             'model' => Invoice::class,
         ],
         [
             'name' => 'create invoice',
             'ability' => 'create-invoice',
+            'presets' => ['manager'],
             'model' => Invoice::class,
             'owner_only' => false,
             'depends_on' => [
@@ -193,6 +417,7 @@ return [
         [
             'name' => 'edit invoice',
             'ability' => 'edit-invoice',
+            'presets' => ['manager'],
             'model' => Invoice::class,
             'depends_on' => [
                 'view-item',
@@ -206,6 +431,7 @@ return [
         [
             'name' => 'delete invoice',
             'ability' => 'delete-invoice',
+            'presets' => ['manager'],
             'model' => Invoice::class,
             'depends_on' => [
                 'view-invoice',
@@ -214,6 +440,7 @@ return [
         [
             'name' => 'send invoice',
             'ability' => 'send-invoice',
+            'presets' => ['manager'],
             'model' => Invoice::class,
         ],
 
@@ -221,11 +448,13 @@ return [
         [
             'name' => 'view recurring invoice',
             'ability' => 'view-recurring-invoice',
+            'presets' => ['manager', 'read-only'],
             'model' => RecurringInvoice::class,
         ],
         [
             'name' => 'create recurring invoice',
             'ability' => 'create-recurring-invoice',
+            'presets' => ['manager'],
             'model' => RecurringInvoice::class,
             'depends_on' => [
                 'view-item',
@@ -239,6 +468,7 @@ return [
         [
             'name' => 'edit recurring invoice',
             'ability' => 'edit-recurring-invoice',
+            'presets' => ['manager'],
             'model' => RecurringInvoice::class,
             'depends_on' => [
                 'view-item',
@@ -252,6 +482,7 @@ return [
         [
             'name' => 'delete recurring invoice',
             'ability' => 'delete-recurring-invoice',
+            'presets' => ['manager'],
             'model' => RecurringInvoice::class,
             'depends_on' => [
                 'view-recurring-invoice',
@@ -262,11 +493,13 @@ return [
         [
             'name' => 'view payment',
             'ability' => 'view-payment',
+            'presets' => ['manager', 'read-only'],
             'model' => Payment::class,
         ],
         [
             'name' => 'create payment',
             'ability' => 'create-payment',
+            'presets' => ['manager'],
             'model' => Payment::class,
             'depends_on' => [
                 'view-customer',
@@ -279,6 +512,7 @@ return [
         [
             'name' => 'edit payment',
             'ability' => 'edit-payment',
+            'presets' => ['manager'],
             'model' => Payment::class,
             'depends_on' => [
                 'view-customer',
@@ -291,6 +525,7 @@ return [
         [
             'name' => 'delete payment',
             'ability' => 'delete-payment',
+            'presets' => ['manager'],
             'model' => Payment::class,
             'depends_on' => [
                 'view-payment',
@@ -299,6 +534,7 @@ return [
         [
             'name' => 'send payment',
             'ability' => 'send-payment',
+            'presets' => ['manager'],
             'model' => Payment::class,
         ],
 
@@ -306,11 +542,13 @@ return [
         [
             'name' => 'view expense',
             'ability' => 'view-expense',
+            'presets' => ['manager', 'read-only'],
             'model' => Expense::class,
         ],
         [
             'name' => 'create expense',
             'ability' => 'create-expense',
+            'presets' => ['manager'],
             'model' => Expense::class,
             'depends_on' => [
                 'view-customer',
@@ -321,6 +559,7 @@ return [
         [
             'name' => 'edit expense',
             'ability' => 'edit-expense',
+            'presets' => ['manager'],
             'model' => Expense::class,
             'depends_on' => [
                 'view-customer',
@@ -331,6 +570,7 @@ return [
         [
             'name' => 'delete expense',
             'ability' => 'delete-expense',
+            'presets' => ['manager'],
             'model' => Expense::class,
             'depends_on' => [
                 'view-expense',
@@ -341,6 +581,7 @@ return [
         [
             'name' => 'view custom field',
             'ability' => 'view-custom-field',
+            'presets' => ['manager', 'read-only'],
             'model' => CustomField::class,
         ],
         [
@@ -372,6 +613,7 @@ return [
         [
             'name' => 'view financial reports',
             'ability' => 'view-financial-reports',
+            'presets' => ['manager', 'read-only'],
             'model' => null,
         ],
 
@@ -379,6 +621,7 @@ return [
         [
             'name' => 'view exchange rate provider',
             'ability' => 'view-exchange-rate-provider',
+            'presets' => ['manager', 'read-only'],
             'model' => ExchangeRateProvider::class,
             'owner_only' => false,
         ],
@@ -414,16 +657,19 @@ return [
         [
             'name' => 'view company dashboard',
             'ability' => 'dashboard',
+            'presets' => ['manager', 'read-only'],
             'model' => null,
         ],
         [
             'name' => 'view all notes',
             'ability' => 'view-all-notes',
+            'presets' => ['manager', 'read-only'],
             'model' => Note::class,
         ],
         [
             'name' => 'manage notes',
             'ability' => 'manage-all-notes',
+            'presets' => ['manager'],
             'model' => Note::class,
             'depends_on' => [
                 'view-all-notes',

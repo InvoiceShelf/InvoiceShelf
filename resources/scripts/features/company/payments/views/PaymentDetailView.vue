@@ -2,7 +2,7 @@
   <div class="flex min-h-full">
 
     <BasePage class="min-w-0">
-      <BasePageHeader :title="pageTitle">
+      <BasePageHeader :help="$t('page_help.payments')" :title="pageTitle">
         <BaseBreadcrumb>
           <BaseBreadcrumbItem :title="$t('payments.payment', 2)" to="/admin/payments" />
         </BaseBreadcrumb>

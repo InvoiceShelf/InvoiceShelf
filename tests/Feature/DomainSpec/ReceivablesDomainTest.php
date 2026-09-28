@@ -102,7 +102,7 @@ it('prorates base amounts with the last-row remainder rule', function () {
         ],
     ])->assertSuccessful()->json('data.id');
 
-    $bases = DB::table('payment_allocations')->where('payment_id', $id)
+    $bases = DB::table('customer_payment_allocations')->where('payment_id', $id)
         ->orderBy('invoice_id')->pluck('base_amount')->map(fn ($v) => (int) $v)->all();
     expect(array_sum($bases))->toBe(300);
     expect($bases)->toBe([99, 99, 102]);
@@ -161,7 +161,7 @@ it('applies customer credit on top of existing allocations', function () {
         'allocations' => [['payment_id' => $paymentId, 'invoice_id' => $b, 'amount' => 30]],
     ])->assertOk()->assertJson(['success' => true]);
 
-    $rows = DB::table('payment_allocations')->where('payment_id', $paymentId)
+    $rows = DB::table('customer_payment_allocations')->where('payment_id', $paymentId)
         ->orderBy('invoice_id')->get(['invoice_id', 'amount']);
     expect($rows->pluck('amount')->map(fn ($v) => (int) $v)->all())->toBe([40, 30]);
     expect((int) DB::table('invoices')->where('id', $b)->value('due_amount'))->toBe(70);

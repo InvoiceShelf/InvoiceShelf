@@ -65,6 +65,9 @@ class CustomFieldRequest extends FormRequest
     public function withValidator(Validator $validator): void
     {
         $validator->after(function (Validator $validator): void {
+            if (in_array($this->input('model_type'), ['Supplier', 'Bill'], true) && $this->input('placement', 'internal') !== 'internal') {
+                $validator->errors()->add('placement', 'Supplier and bill fields are internal.');
+            }
             $this->validateBoundsAreOrdered($validator);
             $this->validateDateBounds($validator);
             $this->validatePatternCompiles($validator);

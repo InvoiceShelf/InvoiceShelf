@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import { until } from '@vueuse/core'
-import { ref, computed, onMounted, reactive, watch } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { defaultMonthRange } from '@/scripts/utils/date-range'
-import { presetValue, reportPresets } from '@/scripts/utils/period'
-import type { PeriodValue } from '@/scripts/utils/period'
 import { formatDate } from '@/scripts/utils/format-date'
 import { useCompanyStore } from '../../../../stores/company.store'
 import { useGlobalStore } from '../../../../stores/global.store'
 import { useReportDownload } from '../useReportDownload'
+import { useReportPeriod } from '../use-report-period'
 import ReportPdfPane from '../components/ReportPdfPane.vue'
 
 interface ReportTypeOption {
@@ -16,18 +14,14 @@ interface ReportTypeOption {
   value: string
 }
 
-interface ReportFormData {
-  from_date: string
-  to_date: string
-}
-
 const { t } = useI18n()
 const globalStore = useGlobalStore()
 const companyStore = useCompanyStore()
 
 // The report's dates: a preset or a custom range, This month to start with
-const presets = reportPresets(t)
-const period = ref<PeriodValue>(presetValue(presets[2]))
+const { presets, period, formData, syncUrl } = useReportPeriod(() =>
+  getReports(false),
+)
 const reportTypes = ref<ReportTypeOption[]>([
   { label: t('reports.sales.sort.by_customer'), value: 'By Customer' },
   { label: t('reports.sales.sort.by_item'), value: 'By Item' },
@@ -37,12 +31,6 @@ const url = ref<string | null>(null)
 const pdfPane = ref<InstanceType<typeof ReportPdfPane> | null>(null)
 const customerSiteURL = ref<string | null>(null)
 const itemsSiteURL = ref<string | null>(null)
-
-const initialRange = defaultMonthRange()
-const formData = reactive<ReportFormData>({
-  from_date: initialRange.from,
-  to_date: initialRange.to,
-})
 
 const getReportUrl = computed<string | null>(() => url.value)
 
@@ -74,13 +62,6 @@ onMounted(async () => {
   getInitialReport()
 })
 
-watch(period, (value) => {
-  if (value.from && value.to) {
-    formData.from_date = value.from
-    formData.to_date = value.to
-  }
-})
-
 function getInitialReport(): void {
   if (selectedType.value === 'By Customer') {
     url.value = customerDateRangeUrl.value
@@ -89,7 +70,8 @@ function getInitialReport(): void {
   url.value = itemDateRangeUrl.value
 }
 
-function getReports(): boolean {
+function getReports(persist = true): boolean {
+  if (persist) void syncUrl()
   if (selectedType.value === 'By Customer') {
     url.value = customerDateRangeUrl.value
     return true
@@ -110,7 +92,12 @@ function viewReportsPDF(): void {
   <div class="grid gap-8 md:grid-cols-12 pt-10">
     <div class="col-span-8 md:col-span-4">
       <BaseInputGroup :label="$t('reports.sales.date_range')" class="mb-6">
-        <BasePeriodPicker v-model="period" :presets="presets" block position="bottom-start" />
+        <BasePeriodPicker
+          v-model="period"
+          :presets="presets"
+          block
+          position="bottom-start"
+        />
       </BaseInputGroup>
 
       <BaseInputGroup
@@ -132,7 +119,7 @@ function viewReportsPDF(): void {
           variant="primary"
           class="justify-center w-full"
           type="submit"
-          @click.prevent="getReports"
+          @click.prevent="getReports()"
         >
           <template #left="slotProps">
             <BaseIcon name="ArrowPathIcon" :class="slotProps.class" />

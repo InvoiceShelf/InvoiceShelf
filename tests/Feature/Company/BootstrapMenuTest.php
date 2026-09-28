@@ -1,9 +1,12 @@
 <?php
 
 use App\Domains\Accounts\Models\User;
+use App\Domains\Purchases\Models\SupplierCredit;
+use App\Domains\Purchases\Models\SupplierRefund;
 use App\Providers\AppServiceProvider;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Sanctum\Sanctum;
+use Silber\Bouncer\BouncerFacade;
 
 use function Pest\Laravel\getJson;
 
@@ -40,3 +43,29 @@ test('owner-only navigation survives the first bootstrap after login', function 
     expect($withoutHeader->json('main_menu'))->toEqual($withHeader->json('main_menu'));
     expect($withoutHeader->json('setting_menu'))->toEqual($withHeader->json('setting_menu'));
 });
+
+test('sales and purchases each expose four primary destinations', function () {
+    Sanctum::actingAs(User::findOrFail(1), ['*']);
+    $menu = collect(getJson('/api/v1/bootstrap')->assertOk()->json('main_menu'));
+
+    expect($menu->where('group', 'documents')->sortBy('priority')->pluck('name')->values()->all())
+        ->toBe(['Customers', 'Estimates', 'Invoices', 'Payments']);
+    expect($menu->where('group', 'purchases')->sortBy('priority')->pluck('name')->values()->all())
+        ->toBe(['Supplier', 'Bill', 'Expenses', 'SupplierPayment']);
+});
+
+test('secondary purchase permissions keep their parent navigation accessible', function (string $ability, string $model, array $expected) {
+    $company = User::findOrFail(1)->companies()->firstOrFail();
+    $user = User::factory()->create(['role' => 'customer']);
+    $user->companies()->attach($company->id);
+    BouncerFacade::scope()->to($company->id);
+    BouncerFacade::allow($user)->to($ability, $model);
+    BouncerFacade::refresh();
+    Sanctum::actingAs($user);
+
+    $menu = collect($this->withHeaders(['company' => $company->id])->getJson('/api/v1/bootstrap')->assertOk()->json('main_menu'));
+    expect($menu->where('group', 'purchases')->pluck('name')->sort()->values()->all())->toBe($expected);
+})->with([
+    ['view-supplier-credit', SupplierCredit::class, ['Bill']],
+    ['view-supplier-refund', SupplierRefund::class, ['SupplierPayment']],
+]);

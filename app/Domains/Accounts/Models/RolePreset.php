@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $key
  * @property string $title
  * @property list<string>|null $abilities null for the Owner preset, which holds the whole catalogue
+ * @property list<string>|null $applied_defaults the catalogue defaults this preset has already been offered
  */
 class RolePreset extends Model
 {
@@ -34,6 +35,7 @@ class RolePreset extends Model
     {
         return [
             'abilities' => 'array',
+            'applied_defaults' => 'array',
         ];
     }
 

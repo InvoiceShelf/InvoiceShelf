@@ -13,6 +13,8 @@ export function useActiveMenuLink(route: RouteLocationNormalizedLoaded) {
 
   const activeMenuLink = computed<string | null>(() => {
     const allLinks = globalStore.menuGroups.flat().map((item) => item.link)
+    const parent = route.meta.menuParent
+    if (typeof parent === 'string' && allLinks.includes(parent)) return parent
     const matches = allLinks.filter(
       (url) => route.path === url || route.path.startsWith(url + '/'),
     )

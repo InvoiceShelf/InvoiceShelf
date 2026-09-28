@@ -92,7 +92,7 @@ function refreshData(): void {
   <div class="flex min-h-full">
 
     <BasePage class="min-w-0">
-      <BasePageHeader :title="pageTitle" :subtitle="subtitle">
+      <BasePageHeader :help="$t('page_help.customers')" :title="pageTitle" :subtitle="subtitle">
         <template #leading>
           <span
             class="flex items-center justify-center w-12 h-12 text-base font-semibold rounded-2xl shrink-0 bg-btn-primary text-on-primary"

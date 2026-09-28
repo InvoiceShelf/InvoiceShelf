@@ -7,6 +7,7 @@ import { useDashboardStore } from '../store'
 import { ABILITIES } from '@/scripts/config/abilities'
 import { formatPeriodRange, periodParams, yearPresets } from '@/scripts/utils/period'
 import ReceivablesHero from '../components/ReceivablesHero.vue'
+import PayablesCard from '../components/PayablesCard.vue'
 import DashboardChart from '../components/DashboardChart.vue'
 import DashboardTable from '../components/DashboardTable.vue'
 import SendInvoiceModal from '@/scripts/features/company/invoices/components/SendInvoiceModal.vue'
@@ -77,7 +78,7 @@ onMounted(() => {
 
 <template>
   <BasePage>
-    <BasePageHeader :title="$t('navigation.dashboard')" phone-actions="inline">
+    <BasePageHeader :help="$t('page_help.dashboard')" :title="$t('navigation.dashboard')" phone-actions="inline">
       <template #actions>
         <BasePeriodPicker
           v-model="dashboardStore.period"
@@ -118,6 +119,7 @@ onMounted(() => {
           </router-link>
         </div>
 
+        <PayablesCard v-if="userStore.hasAbilities('view-bill')" />
         <DashboardChart />
         <DashboardTable />
       </template>

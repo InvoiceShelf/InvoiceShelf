@@ -85,8 +85,8 @@ it('purges the customer’s documents, payments and allocations on delete', func
     postJson('/api/v1/customers/delete', ['ids' => [$id]])->assertOk()->assertJson(['success' => true]);
 
     expect(DB::table('invoices')->where('customer_id', $id)->count())->toBe(0);
-    expect(DB::table('payments')->where('customer_id', $id)->count())->toBe(0);
-    expect(DB::table('payment_allocations')->count())->toBe(0);
+    expect(DB::table('customer_payments')->where('customer_id', $id)->count())->toBe(0);
+    expect(DB::table('customer_payment_allocations')->count())->toBe(0);
     expect(DB::table('customers')->where('id', $id)->exists())->toBeFalse();
 });
 

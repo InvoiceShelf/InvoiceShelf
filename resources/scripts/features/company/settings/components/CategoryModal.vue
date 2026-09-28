@@ -3,7 +3,7 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { required, minLength, maxLength, helpers } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
-import { useModalStore } from '@/scripts/stores/modal.store'
+import { useLookupDialog } from '@/scripts/composables/use-lookup-dialog'
 import { useNotificationStore } from '@/scripts/stores/notification.store'
 import { expenseService } from '@/scripts/api/services/expense.service'
 import type { ExpenseCategory } from '@/scripts/types/domain/expense'
@@ -14,7 +14,20 @@ interface CategoryForm {
   description: string
 }
 
-const modalStore = useModalStore()
+const props = withDefaults(
+  defineProps<{
+    show?: boolean
+    title?: string
+    data?: unknown
+    lockTransactionType?: boolean
+  }>(),
+  { show: undefined, title: '', data: undefined, lockTransactionType: false },
+)
+const emit = defineEmits<{ close: []; saved: [record: unknown] }>()
+const dialog = useLookupDialog(props, 'CategoryModal', {
+  close: () => emit('close'),
+  saved: (record) => emit('saved', record),
+})
 const notificationStore = useNotificationStore()
 const { t } = useI18n()
 
@@ -27,22 +40,20 @@ const currentCategory = ref<CategoryForm>({
   description: '',
 })
 
-const modalActive = computed<boolean>(
-  () => modalStore.active && modalStore.componentName === 'CategoryModal'
-)
+const modalActive = dialog.active
 
 const rules = computed(() => ({
   name: {
     required: helpers.withMessage(t('validation.required'), required),
     minLength: helpers.withMessage(
       t('validation.name_min_length', { count: 3 }),
-      minLength(3)
+      minLength(3),
     ),
   },
   description: {
     maxLength: helpers.withMessage(
       t('validation.description_maxlength', { count: 255 }),
-      maxLength(255)
+      maxLength(255),
     ),
   },
 }))
@@ -50,9 +61,11 @@ const rules = computed(() => ({
 const v$ = useVuelidate(rules, currentCategory)
 
 async function setInitialData(): Promise<void> {
-  if (modalStore.data && typeof modalStore.data === 'number') {
+  dialog.clearErrors()
+  v$.value.$reset()
+  if (dialog.data.value && typeof dialog.data.value === 'number') {
     isEdit.value = true
-    const response = await expenseService.getCategory(modalStore.data)
+    const response = await expenseService.getCategory(dialog.data.value)
     if (response.data) {
       currentCategory.value = {
         id: response.data.id,
@@ -73,6 +86,7 @@ async function submitCategoryData(): Promise<void> {
   }
 
   isSaving.value = true
+  dialog.clearErrors()
   let created: ExpenseCategory | null = null
 
   try {
@@ -99,9 +113,10 @@ async function submitCategoryData(): Promise<void> {
 
     isSaving.value = false
     // A new category goes back to whoever opened the modal, to select it
-    modalStore.refreshData?.(...(created ? [created] : []))
+    dialog.saved(created || undefined)
     closeCategoryModal()
-  } catch {
+  } catch (error) {
+    dialog.fail(error)
     isSaving.value = false
   }
 }
@@ -115,36 +130,42 @@ function resetForm(): void {
 }
 
 function closeCategoryModal(): void {
-  modalStore.closeModal()
-  setTimeout(() => {
-    resetForm()
-    v$.value.$reset()
-  }, 300)
+  if (!isSaving.value) dialog.close()
 }
 </script>
 
 <template>
   <BaseModal
     :show="modalActive"
-    closable
+    :closable="!isSaving"
     @close="closeCategoryModal"
     @open="setInitialData"
   >
     <template #header>
-      {{ modalStore.title }}
+      {{ dialog.title.value }}
     </template>
 
-    <form action="" @submit.prevent="submitCategoryData">
+    <form action="" @submit.stop.prevent="submitCategoryData">
+      <p
+        v-if="dialog.error.value"
+        role="alert"
+        class="px-6 pt-4 text-sm text-danger"
+      >
+        {{ dialog.error.value }}
+      </p>
       <div class="p-8 sm:p-6">
         <BaseInputGrid layout="one-column">
           <BaseInputGroup
             :label="$t('expenses.category')"
-            :error="v$.name.$error && v$.name.$errors[0].$message"
+            :error="
+              dialog.errors.value.name?.[0] ||
+              (v$.name.$error && v$.name.$errors[0].$message)
+            "
             required
           >
             <BaseInput
               v-model="currentCategory.name"
-              :invalid="v$.name.$error"
+              :invalid="v$.name.$error || !!dialog.errors.value.name"
               type="text"
               @input="v$.name.$touch()"
             />
@@ -152,9 +173,7 @@ function closeCategoryModal(): void {
 
           <BaseInputGroup
             :label="$t('expenses.description')"
-            :error="
-              v$.description.$error && v$.description.$errors[0].$message
-            "
+            :error="v$.description.$error && v$.description.$errors[0].$message"
           >
             <BaseTextarea
               v-model="currentCategory.description"

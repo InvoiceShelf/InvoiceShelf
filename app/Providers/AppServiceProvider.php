@@ -114,6 +114,7 @@ class AppServiceProvider extends ServiceProvider
             'owner_only' => $data['owner_only'],
             'super_admin_only' => $data['super_admin_only'] ?? false,
             'ability' => $data['ability'],
+            'any_abilities' => $data['any_abilities'] ?? [],
             'model' => $data['model'],
             'group' => $data['group'],
             'group_label' => $data['group_label'] ?? '',

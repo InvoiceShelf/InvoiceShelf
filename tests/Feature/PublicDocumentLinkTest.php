@@ -93,7 +93,7 @@ test('upgrading re-issues every token a public link was derived from', function 
 
     getJson('/customer/invoices/'.$derived)->assertOk();
 
-    (require database_path('migrations/2026_09_23_100000_reissue_public_link_tokens.php'))->up();
+    withLegacyPaymentStorage(fn () => (require database_path('migrations/2026_09_23_100000_reissue_public_link_tokens.php'))->up());
 
     $issued = $log->fresh()->token;
 

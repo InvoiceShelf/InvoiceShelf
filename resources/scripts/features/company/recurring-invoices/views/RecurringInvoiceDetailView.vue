@@ -3,7 +3,7 @@
 
     <BasePage class="min-w-0">
       <!-- The only action is the menu, which reads better on the title row than alone in a bar -->
-      <BasePageHeader :title="pageTitle" phone-actions="inline">
+      <BasePageHeader :help="$t('page_help.recurring_invoices')" :title="pageTitle" phone-actions="inline">
         <BaseBreadcrumb>
           <BaseBreadcrumbItem :title="$t('recurring_invoices.title')" to="/admin/recurring-invoices" />
         </BaseBreadcrumb>

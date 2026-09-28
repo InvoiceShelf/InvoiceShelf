@@ -3,6 +3,8 @@
 namespace App\Domains\Reporting\Queries;
 
 use App\Domains\Purchases\Models\Expense;
+use App\Domains\Purchases\Models\SupplierPayment;
+use App\Domains\Purchases\Models\SupplierRefund;
 use App\Domains\Receivables\Models\Payment;
 use App\Domains\Sales\Models\Invoice;
 use App\Support\ReportingPeriod;
@@ -61,6 +63,23 @@ class CashflowQuery
         $invoiceTotals = $this->bucket($period, $invoices, 'invoice_date', 'base_total');
         $receiptTotals = $this->bucket($period, $payments, 'payment_date', 'base_amount');
         $expenseTotals = $this->bucket($period, $expenses, 'expense_date', 'base_amount');
+
+        if (! $customerId) {
+            $companyId = (int) request()->header('company');
+
+            foreach ([SupplierPayment::class => 1, SupplierRefund::class => -1] as $model => $sign) {
+                $supplierCash = $model::query()
+                    ->forCompany($companyId)
+                    ->where('status', 'OPEN')
+                    ->whereBetween('payment_date', $span);
+
+                $rows = $this->bucket($period, $supplierCash, 'payment_date', 'base_amount');
+
+                foreach ($rows as $index => $amount) {
+                    $expenseTotals[$index] += $amount * $sign;
+                }
+            }
+        }
 
         $totalReceipts = array_sum($receiptTotals);
         $totalExpenses = array_sum($expenseTotals);

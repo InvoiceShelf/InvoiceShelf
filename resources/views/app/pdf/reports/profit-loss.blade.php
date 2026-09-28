@@ -8,6 +8,7 @@
 @section('footer-value'){!! format_money_pdf($income - $totalExpense, $currency) !!}@endsection
 
 @section('report-body')
+    <p class="report-muted">@lang('pdf_cash_basis_note')</p>
     <div class="report-section">
         <table class="report-table">
             <tr>

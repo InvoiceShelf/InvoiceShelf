@@ -221,7 +221,7 @@ function removeMultipleItems(): void {
 
 <template>
   <BasePage>
-    <BasePageHeader :title="$t('items.title')">
+    <BasePageHeader :help="$t('page_help.items')" :title="$t('items.title')">
       <BaseBreadcrumb>
         <BaseBreadcrumbItem :title="$t('general.home')" to="dashboard" />
         <BaseBreadcrumbItem :title="$t('items.item', 2)" to="#" active />

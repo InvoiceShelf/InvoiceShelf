@@ -8,6 +8,7 @@
       <li v-for="tab in tabs" :key="tab.link">
         <router-link
           :to="tab.link"
+          :aria-label="menuLabel(tab)"
           :aria-current="hasActiveUrl(tab.link) ? 'page' : undefined"
           :class="[
             hasActiveUrl(tab.link) ? 'text-primary-600' : 'text-muted',
@@ -21,7 +22,7 @@
             <BaseIcon :name="tab.icon" class="w-5.5 h-5.5" />
           </span>
           <span class="max-w-full text-[11px] font-medium leading-4 truncate">
-            {{ $t(tab.title) }}
+            {{ tabLabel(tab) }}
           </span>
         </router-link>
       </li>
@@ -50,6 +51,8 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+import { useMenuLabel } from '@/scripts/composables/use-menu-label'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useGlobalStore } from '@/scripts/stores/global.store'
@@ -67,6 +70,8 @@ const PREFERRED_LINKS = [
 ]
 const TAB_COUNT = 4
 
+const { t } = useI18n()
+const { menuContext, menuLabel } = useMenuLabel()
 const route = useRoute()
 const globalStore = useGlobalStore()
 const companyStore = useCompanyStore()
@@ -87,6 +92,14 @@ const tabs = computed<MenuItem[]>(() => {
 
   return [...preferred, ...rest].slice(0, TAB_COUNT)
 })
+
+// A shortcut bar has no section headings. Use the section for duplicate names,
+// such as Sales / Purchases, while the More sheet keeps their grouped labels.
+function tabLabel(item: MenuItem): string {
+  const title = t(item.title)
+  const duplicate = globalStore.menuGroups.flat().filter(other => t(other.title) === title).length > 1
+  return duplicate && menuContext(item) ? menuContext(item) : title
+}
 
 const isMoreActive = computed<boolean>(() => {
   return (

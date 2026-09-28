@@ -14,10 +14,11 @@ interface AbilityCatalog
     /**
      * Every ability on offer, in catalogue order.
      *
-     * Each entry carries `name`, `ability`, `model`, `depends_on` and
-     * `owner_only`; callers never have to test for a missing key.
+     * Each entry carries `name`, `ability`, `model`, `depends_on`,
+     * `owner_only` and `presets` (the keys of the role presets that get it by
+     * default); callers never have to test for a missing key.
      *
-     * @return list<array{name: string, ability: string, model: class-string|null, depends_on: list<string>, owner_only: bool}>
+     * @return list<array{name: string, ability: string, model: class-string|null, depends_on: list<string>, owner_only: bool, presets: list<string>}>
      */
     public function all(): array;
 }

@@ -5,7 +5,12 @@ use App\Domains\Contacts\Models\Customer;
 use App\Domains\Metadata\Models\CustomField;
 use App\Domains\Metadata\Models\Note;
 use App\Domains\Money\Models\ExchangeRateProvider;
+use App\Domains\Purchases\Models\Bill;
 use App\Domains\Purchases\Models\Expense;
+use App\Domains\Purchases\Models\Supplier;
+use App\Domains\Purchases\Models\SupplierCredit;
+use App\Domains\Purchases\Models\SupplierPayment;
+use App\Domains\Purchases\Models\SupplierRefund;
 use App\Domains\Receivables\Models\Payment;
 use App\Domains\Sales\Models\Estimate;
 use App\Domains\Sales\Models\Invoice;
@@ -408,9 +413,9 @@ return [
         ],
         [
             'title' => 'navigation.customers',
-            'group' => 'main',
-            'group_label' => '',
-            'priority' => 20,
+            'group' => 'documents',
+            'group_label' => 'purchases.sales',
+            'priority' => 5,
             'link' => '/admin/customers',
             'icon' => 'UserIcon',
             'name' => 'Customers',
@@ -433,7 +438,7 @@ return [
         [
             'title' => 'navigation.estimates',
             'group' => 'documents',
-            'group_label' => 'navigation.documents',
+            'group_label' => 'purchases.sales',
             'priority' => 10,
             'link' => '/admin/estimates',
             'icon' => 'DocumentIcon',
@@ -445,7 +450,7 @@ return [
         [
             'title' => 'navigation.invoices',
             'group' => 'documents',
-            'group_label' => 'navigation.documents',
+            'group_label' => 'purchases.sales',
             'priority' => 20,
             'link' => '/admin/invoices',
             'icon' => 'DocumentTextIcon',
@@ -457,7 +462,7 @@ return [
         [
             'title' => 'navigation.payments',
             'group' => 'documents',
-            'group_label' => 'navigation.documents',
+            'group_label' => 'purchases.sales',
             'priority' => 30,
             'link' => '/admin/payments',
             'icon' => 'CreditCardIcon',
@@ -467,16 +472,60 @@ return [
             'model' => Payment::class,
         ],
         [
+            'title' => 'purchases.suppliers',
+            'group' => 'purchases',
+            'group_label' => 'purchases.title',
+            'priority' => 10,
+            'link' => '/admin/suppliers',
+            'icon' => 'UserGroupIcon',
+            'name' => 'Supplier',
+            'owner_only' => false,
+            'ability' => 'view-supplier',
+            'model' => Supplier::class,
+        ],
+        [
+            'title' => 'purchases.bills',
+            'group' => 'purchases',
+            'group_label' => 'purchases.title',
+            'priority' => 20,
+            'link' => '/admin/bills',
+            'icon' => 'DocumentTextIcon',
+            'name' => 'Bill',
+            'owner_only' => false,
+            'ability' => 'view-bill',
+            'model' => Bill::class,
+            'any_abilities' => [
+                ['ability' => 'view-bill', 'model' => Bill::class],
+                ['ability' => 'view-supplier-credit', 'model' => SupplierCredit::class],
+            ],
+        ],
+        [
             'title' => 'navigation.expenses',
-            'group' => 'documents',
-            'group_label' => 'navigation.documents',
-            'priority' => 40,
+            'group' => 'purchases',
+            'group_label' => 'purchases.title',
+            'priority' => 30,
             'link' => '/admin/expenses',
             'icon' => 'CalculatorIcon',
             'name' => 'Expenses',
             'owner_only' => false,
             'ability' => 'view-expense',
             'model' => Expense::class,
+        ],
+        [
+            'title' => 'navigation.payments',
+            'group' => 'purchases',
+            'group_label' => 'purchases.title',
+            'priority' => 40,
+            'link' => '/admin/supplier-payments',
+            'icon' => 'CreditCardIcon',
+            'name' => 'SupplierPayment',
+            'owner_only' => false,
+            'ability' => 'view-supplier-payment',
+            'model' => SupplierPayment::class,
+            'any_abilities' => [
+                ['ability' => 'view-supplier-payment', 'model' => SupplierPayment::class],
+                ['ability' => 'view-supplier-refund', 'model' => SupplierRefund::class],
+            ],
         ],
         [
             'title' => 'navigation.members',

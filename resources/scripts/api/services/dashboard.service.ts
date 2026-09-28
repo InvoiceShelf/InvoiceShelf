@@ -1,5 +1,6 @@
 import { client } from '../client'
 import { API } from '../endpoints'
+import type { PurchasePayables } from '@/scripts/types/domain/purchase'
 
 export interface DashboardParams {
   previous_year?: number
@@ -34,6 +35,7 @@ export interface ReceivablesSummary {
 export interface DashboardResponse {
   total_amount_due: number
   receivables?: ReceivablesSummary
+  payables?: PurchasePayables | null
   total_customer_count: number
   total_invoice_count: number
   total_estimate_count: number

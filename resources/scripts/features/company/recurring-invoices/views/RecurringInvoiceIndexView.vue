@@ -1,6 +1,6 @@
 <template>
   <BasePage>
-    <BasePageHeader :title="$t('recurring_invoices.title')">
+    <BasePageHeader :help="$t('page_help.recurring_invoices')" :title="$t('recurring_invoices.title')">
       <BaseBreadcrumb>
         <BaseBreadcrumbItem :title="$t('general.home')" to="dashboard" />
         <BaseBreadcrumbItem

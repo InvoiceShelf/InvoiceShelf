@@ -5,6 +5,7 @@ use App\Domains\Reporting\Http\Controllers\CustomerStatementReportController;
 use App\Domains\Reporting\Http\Controllers\ExpensesReportController;
 use App\Domains\Reporting\Http\Controllers\ItemSalesReportController;
 use App\Domains\Reporting\Http\Controllers\ProfitLossReportController;
+use App\Domains\Reporting\Http\Controllers\PurchasesReportController;
 use App\Domains\Reporting\Http\Controllers\TaxSummaryReportController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +19,7 @@ $hashedReports = [
     '/sales/items' => ItemSalesReportController::class,
     '/expenses' => ExpensesReportController::class,
     '/tax-summary' => TaxSummaryReportController::class,
+    '/purchases' => PurchasesReportController::class,
     '/profit-loss' => ProfitLossReportController::class,
 ];
 

@@ -11,8 +11,13 @@ use App\Domains\Metadata\Models\CustomField;
 use App\Domains\Metadata\Models\CustomFieldValue;
 use App\Domains\Money\Models\ExchangeRateLog;
 use App\Domains\Money\Models\ExchangeRateProvider;
+use App\Domains\Purchases\Models\Bill;
 use App\Domains\Purchases\Models\Expense;
 use App\Domains\Purchases\Models\ExpenseCategory;
+use App\Domains\Purchases\Models\Supplier;
+use App\Domains\Purchases\Models\SupplierCredit;
+use App\Domains\Purchases\Models\SupplierPayment;
+use App\Domains\Purchases\Models\SupplierRefund;
 use App\Domains\Receivables\Models\Payment;
 use App\Domains\Receivables\Models\PaymentMethod;
 use App\Domains\Sales\Models\Estimate;
@@ -280,8 +285,10 @@ class Company extends Model implements HasMedia
     /**
      * Whether any business record has been filed under this company yet.
      *
-     * Contacts, catalog entries, invoices, estimates, expenses, payments and
-     * recurring schedules all count; the first one found ends the search.
+     * Contacts, catalog entries, invoices, estimates, expenses, payments,
+     * recurring schedules and purchasing records (suppliers, bills, supplier
+     * credits, payments and refunds) all count; the first one found ends the
+     * search.
      */
     public function hasTransactions(): bool
     {
@@ -297,6 +304,20 @@ class Company extends Model implements HasMedia
 
         foreach ($ledgers as $ledger) {
             if ($this->{$ledger}()->exists()) {
+                return true;
+            }
+        }
+
+        $purchasing = [
+            Supplier::class,
+            Bill::class,
+            SupplierCredit::class,
+            SupplierPayment::class,
+            SupplierRefund::class,
+        ];
+
+        foreach ($purchasing as $model) {
+            if ($model::query()->forCompany($this->id)->exists()) {
                 return true;
             }
         }

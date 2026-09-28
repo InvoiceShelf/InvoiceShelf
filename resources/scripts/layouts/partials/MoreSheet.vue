@@ -20,6 +20,7 @@
           v-for="item in menu"
           :key="item.name"
           :to="item.link"
+          :aria-label="menuLabel(item)"
           :aria-current="hasActiveUrl(item.link) ? 'page' : undefined"
           :class="[
             hasActiveUrl(item.link)
@@ -42,11 +43,13 @@
 </template>
 
 <script setup lang="ts">
+import { useMenuLabel } from '@/scripts/composables/use-menu-label'
 import { watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useGlobalStore } from '@/scripts/stores/global.store'
 import { useActiveMenuLink } from '@/scripts/composables/use-active-menu-link'
 
+const { menuLabel } = useMenuLabel()
 const route = useRoute()
 const globalStore = useGlobalStore()
 const { hasActiveUrl } = useActiveMenuLink(route)

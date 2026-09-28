@@ -1,4 +1,6 @@
 import { useI18n } from 'vue-i18n'
+import { onBeforeUnmount } from 'vue'
+import { useGlobalStore } from '@/scripts/stores/global.store'
 import { useNotificationStore } from '@/scripts/stores/notification.store'
 import { downloadDocument } from '@/scripts/utils/documents'
 
@@ -13,7 +15,9 @@ import { downloadDocument } from '@/scripts/utils/documents'
  * `resolvePath` is called at click time: the report parameters are read off
  * the form as they stand, exactly as the old code did before opening the URL.
  */
-export function useReportDownload(resolvePath: () => string | null): () => void {
+export function useReportDownload(
+  resolvePath: () => string | null,
+): () => void {
   const { t } = useI18n()
   const notificationStore = useNotificationStore()
 
@@ -34,7 +38,12 @@ export function useReportDownload(resolvePath: () => string | null): () => void 
     }
   }
 
-  return () => {
+  const handler = () => {
     void download()
   }
+  const global = useGlobalStore()
+  onBeforeUnmount(() => {
+    if (global.downloadReport === handler) global.downloadReport = null
+  })
+  return handler
 }

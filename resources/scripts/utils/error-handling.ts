@@ -204,5 +204,12 @@ export function extractValidationErrors(err: unknown): Record<string, string[]> 
  * @returns The translation key if known, or null if not mapped
  */
 export function getErrorTranslationKey(errorMessage: string): string | null {
-  return ERROR_TRANSLATION_MAP[errorMessage] ?? null
+  if (ERROR_TRANSLATION_MAP[errorMessage]) {
+    return ERROR_TRANSLATION_MAP[errorMessage]
+  }
+
+  // Purchasing sends codes that name their own key under `errors`.
+  return /^purchase_[a-z_]+$/.test(errorMessage)
+    ? `errors.${errorMessage}`
+    : null
 }

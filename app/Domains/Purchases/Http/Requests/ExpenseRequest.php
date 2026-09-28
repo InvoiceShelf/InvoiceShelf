@@ -61,6 +61,11 @@ class ExpenseRequest extends FormRequest
             'payment_method_id' => ['nullable'],
             'amount' => ['required', 'integer', 'min:0'],
             'customer_id' => ['nullable'],
+            'supplier_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('suppliers', 'id')->where('company_id', $this->header('company')),
+            ],
             'notes' => ['nullable'],
             'currency_id' => ['required'],
             'attachment_receipt' => [

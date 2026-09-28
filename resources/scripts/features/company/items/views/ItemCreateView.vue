@@ -220,7 +220,7 @@ async function submitItem(): Promise<void> {
       @submit.prevent="submitItem"
     >
       <!-- On phones Save moves to the bottom bar, still submitting this form -->
-      <BasePageHeader :title="pageTitle" phone-actions="bar">
+      <BasePageHeader :help="$t('page_help.items')" :title="pageTitle" phone-actions="bar">
         <BaseBreadcrumb>
           <BaseBreadcrumbItem :title="$t('general.home')" to="dashboard" />
           <BaseBreadcrumbItem :title="$t('items.item', 2)" to="/admin/items" />
