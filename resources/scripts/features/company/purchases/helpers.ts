@@ -7,7 +7,6 @@ export const entityAbility = (kind: PurchaseKind) =>
     'supplier-payments': 'supplier-payment',
     'supplier-credits': 'supplier-credit',
     'supplier-refunds': 'supplier-refund',
-    'recurring-costs': 'recurring-cost',
   })[kind]
 export function purchaseError(error: unknown): string {
   if (isAxiosError(error)) {

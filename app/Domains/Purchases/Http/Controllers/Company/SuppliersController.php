@@ -29,7 +29,7 @@ class SuppliersController extends Controller
         $this->authorize('view', $supplier);
         $supplier->setAttribute('balances', app(PurchasesQuery::class)->supplierBalances($supplier));
 
-        return new SupplierResource($supplier->load([...self::RELATIONS, 'activities']));
+        return new SupplierResource($supplier->load(self::RELATIONS));
     }
 
     public function store(SupplierRequest $request, SupplierService $service): SupplierResource

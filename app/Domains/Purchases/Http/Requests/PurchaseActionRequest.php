@@ -20,7 +20,7 @@ class PurchaseActionRequest extends FormRequest
     public static function rulesFor(int $companyId): array
     {
         return [
-            'action' => ['required', Rule::in(['open', 'void', 'pause', 'resume'])],
+            'action' => ['required', Rule::in(['open', 'void'])],
             'reason' => ['required_if:action,void', 'nullable', 'string', 'max:2000'],
         ];
     }

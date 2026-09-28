@@ -7,7 +7,6 @@ use App\Domains\Metadata\Models\Note;
 use App\Domains\Money\Models\ExchangeRateProvider;
 use App\Domains\Purchases\Models\Bill;
 use App\Domains\Purchases\Models\Expense;
-use App\Domains\Purchases\Models\RecurringCost;
 use App\Domains\Purchases\Models\Supplier;
 use App\Domains\Purchases\Models\SupplierCredit;
 use App\Domains\Purchases\Models\SupplierPayment;
@@ -53,10 +52,6 @@ return [
         ['name' => 'create supplier refund', 'ability' => 'create-supplier-refund', 'model' => SupplierRefund::class, 'depends_on' => ['view-supplier-refund', 'view-supplier', 'view-supplier-payment', 'view-supplier-credit']],
         ['name' => 'edit supplier refund', 'ability' => 'edit-supplier-refund', 'model' => SupplierRefund::class, 'depends_on' => ['view-supplier-refund', 'view-supplier']],
         ['name' => 'delete supplier refund', 'ability' => 'delete-supplier-refund', 'model' => SupplierRefund::class, 'depends_on' => ['view-supplier-refund']],
-        ['name' => 'view recurring cost', 'ability' => 'view-recurring-cost', 'model' => RecurringCost::class, 'depends_on' => []],
-        ['name' => 'create recurring cost', 'ability' => 'create-recurring-cost', 'model' => RecurringCost::class, 'depends_on' => ['view-recurring-cost', 'view-supplier']],
-        ['name' => 'edit recurring cost', 'ability' => 'edit-recurring-cost', 'model' => RecurringCost::class, 'depends_on' => ['view-recurring-cost', 'view-supplier']],
-        ['name' => 'delete recurring cost', 'ability' => 'delete-recurring-cost', 'model' => RecurringCost::class, 'depends_on' => ['view-recurring-cost']],
 
         // Customer
         [

@@ -21,7 +21,6 @@ class SupplierService
             $answers = $this->customFields->resolve($companyId, 'Supplier', $data['customFields'] ?? [], $this->customFields->saved($record));
             $record->fill(Arr::except($data, ['customFields']))->save();
             $this->customFields->save($record, $answers);
-            PurchaseAudit::record($record, $supplier ? 'updated' : 'created', $actorId);
 
             return $record;
         });

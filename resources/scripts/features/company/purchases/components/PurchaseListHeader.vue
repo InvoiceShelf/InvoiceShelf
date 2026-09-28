@@ -65,17 +65,11 @@ const showSwitcher = computed(
     (active.value && active.value.key !== purchaseViews[props.section][0].key),
 )
 const helpTitle = computed(() =>
-  active.value?.kind === 'recurring-costs'
-    ? t(
-        active.value.mode === 'EXPENSE'
-          ? 'purchases.recurring_expenses'
-          : 'purchases.recurring_bills',
-      )
-    : t(
-        active.value?.kind === 'expenses'
-          ? 'expenses.title'
-          : `purchases.${active.value?.kind || props.section}`,
-      ),
+  t(
+    active.value?.kind === 'expenses'
+      ? 'expenses.title'
+      : `purchases.${active.value?.kind || props.section}`,
+  ),
 )
 async function selectView(value: string) {
   const view = views.value.find((view) => view.key === value)

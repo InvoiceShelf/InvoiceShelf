@@ -99,7 +99,6 @@
           'due_date',
           'document_date',
           'payment_date',
-          'next_run_at',
         ]"
         :key="field"
         #[`cell-${field}`]="{ row }"
@@ -145,7 +144,6 @@ import PurchaseStatus from '../components/PurchaseStatus.vue'
 const props = defineProps<{
   kind: PurchaseKind
   section: PurchaseSection
-  mode?: 'BILL' | 'EXPENSE'
 }>()
 const router = useRouter(),
   route = useRoute(),
@@ -164,40 +162,25 @@ const showFilters = ref(!!filters.supplier_id)
 const hasFilters = computed(
   () => !!(filters.search || filters.status || filters.supplier_id),
 )
-const emptyDescriptionKey = computed(() =>
-  props.kind === 'recurring-costs'
-    ? props.mode === 'EXPENSE'
-      ? 'purchases.empty_recurring_expenses'
-      : 'purchases.empty_recurring_bills'
-    : `purchases.empty_${props.kind}`,
-)
-const canCreate = computed(
-  () =>
-    user.hasAbilities(`create-${entityAbility(props.kind)}`) &&
-    (props.mode !== 'EXPENSE' || user.hasAbilities('create-expense')),
+const emptyDescriptionKey = computed(() => `purchases.empty_${props.kind}`)
+const canCreate = computed(() =>
+  user.hasAbilities(`create-${entityAbility(props.kind)}`),
 )
 const createLink = computed(() => ({
   path: `/admin/${props.kind}/create`,
-  query: {
-    ...(props.mode ? { mode: props.mode } : {}),
-    ...(filters.supplier_id ? { supplier_id: filters.supplier_id } : {}),
-  },
+  query: filters.supplier_id ? { supplier_id: filters.supplier_id } : {},
 }))
 const states = computed(() =>
-  props.kind === 'recurring-costs'
-    ? ['ACTIVE', 'PAUSED', 'COMPLETED']
-    : props.kind === 'bills'
-      ? ['DRAFT', 'UNPAID', 'PARTIAL', 'SETTLED', 'OVERDUE', 'VOID']
-      : ['OPEN', 'VOID'],
+  props.kind === 'bills'
+    ? ['DRAFT', 'UNPAID', 'PARTIAL', 'SETTLED', 'OVERDUE', 'VOID']
+    : ['OPEN', 'VOID'],
 )
 const columns = computed<ColumnDef[]>(() => {
   const list: ColumnDef[] = [
     {
       key: 'number',
       label: t(
-        props.kind === 'suppliers' || props.kind === 'recurring-costs'
-          ? 'purchases.name'
-          : 'purchases.reference',
+        props.kind === 'suppliers' ? 'purchases.name' : 'purchases.reference',
       ),
       mobile: 'title',
     },
@@ -210,13 +193,7 @@ const columns = computed<ColumnDef[]>(() => {
       label: t('purchases.supplier'),
       mobile: 'subtitle',
     })
-  if (props.kind === 'recurring-costs')
-    list.push({
-      key: 'next_run_at',
-      label: t('purchases.next_run'),
-      mobile: 'trailing',
-    })
-  else if (props.kind !== 'suppliers') {
+  if (props.kind !== 'suppliers') {
     list.push({
       key:
         props.kind === 'bills'
@@ -254,7 +231,7 @@ const columns = computed<ColumnDef[]>(() => {
   return list.map((column) => ({ ...column, sortable: false }))
 })
 function rowLink(row: RowData) {
-  return `/admin/${props.kind}/${row.id}/view${props.mode ? `?mode=${props.mode}` : ''}`
+  return `/admin/${props.kind}/${row.id}/view`
 }
 async function searchSuppliers(search = '') {
   const rows = await purchaseService.suppliers(search)
@@ -279,7 +256,6 @@ async function fetchData({ page }: { page: number }) {
       supplier_id: filters.supplier_id,
       status: settlement ? '' : filters.status,
       settlement_status: settlement ? filters.status : '',
-      mode: props.mode,
     })
     total.value = result.meta.total
     initialLoaded.value = true

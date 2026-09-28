@@ -8,7 +8,6 @@ export type PurchaseKind =
   | 'supplier-payments'
   | 'supplier-credits'
   | 'supplier-refunds'
-  | 'recurring-costs'
 export interface PurchaseLine {
   id?: number
   source_bill_item_id?: number
@@ -58,12 +57,6 @@ export interface PurchaseRecord {
   refunds?: PurchaseRecord[]
   credits?: PurchaseRecord[]
   attachments?: Array<{ id: number; name: string; size: number; url: string }>
-  activities?: Array<{
-    id: number
-    action: string
-    created_at: string
-    details: Record<string, unknown>
-  }>
   balances?: Array<{
     currency_id: number
     currency: Currency
@@ -92,24 +85,6 @@ export interface PurchaseRecord {
   supplier_payment_id?: number | null
   supplier_credit_id?: number | null
   void_reason?: string | null
-  mode?: 'BILL' | 'EXPENSE'
-  frequency?: 'DAY' | 'WEEK' | 'MONTH' | 'YEAR'
-  interval?: number
-  starts_at?: string
-  next_run_at?: string | null
-  ends_at?: string | null
-  max_occurrences?: number | null
-  occurrence_count?: number
-  due_days?: number
-  auto_record_paid?: boolean
-  template?: Record<string, unknown>
-  last_error?: string | null
-  occurrences?: Array<{
-    id: number
-    scheduled_for: string
-    record_type: string
-    record_id: number
-  }>
 }
 export interface Allocation {
   id?: number

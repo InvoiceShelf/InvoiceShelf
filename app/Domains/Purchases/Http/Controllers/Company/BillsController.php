@@ -47,7 +47,7 @@ class BillsController extends Controller
         $this->authorize('view', $bill);
         $bill->load(['paymentAllocations.payment', 'creditAllocations.credit', 'credits.items']);
 
-        return new BillResource($bill->load([...self::RELATIONS, 'activities']));
+        return new BillResource($bill->load(self::RELATIONS));
     }
 
     public function store(BillRequest $request, PurchaseDocumentService $service): BillResource

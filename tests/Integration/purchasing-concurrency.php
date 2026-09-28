@@ -6,7 +6,6 @@ use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Accounts\Models\User;
 use App\Domains\Money\Models\Currency;
 use App\Domains\Purchases\Application\PurchaseDocumentService;
-use App\Domains\Purchases\Application\RecurringCostService;
 use App\Domains\Purchases\Application\SupplierSettlementService;
 use App\Domains\Purchases\Models\ExpenseCategory;
 use App\Domains\Purchases\Models\Supplier;
@@ -97,12 +96,6 @@ $creditInput['source_bill_id'] = $bill->id;
 $creditInput['items'][0]['source_bill_item_id'] = $bill->items->first()->id;
 $creditInput['items'][0]['quantity'] = 0.75;
 singleWinner(race(fn () => app(PurchaseDocumentService::class)->createCredit($company->id, $user->id, $creditInput)->id), 'Concurrent supplier credits');
-$schedule = app(RecurringCostService::class)->save(null, $company->id, $user->id, ['supplier_id' => $supplier->id, 'name' => 'Concurrent recurrence', 'mode' => 'BILL', 'frequency' => 'MONTH', 'interval' => 1, 'starts_at' => '2026-09-01', 'max_occurrences' => 1, 'due_days' => 30, 'auto_record_paid' => false, 'template' => $payload]);
-$results = race(fn () => app(RecurringCostService::class)->generate($schedule));
-if (array_sum(array_column($results, 'value')) !== 1 || $schedule->occurrences()->count() !== 1) {
-    throw new RuntimeException('Recurring generation duplicated or lost an occurrence.');
-}
-echo "Concurrent recurrence: passed\n";
 
 $otherSupplier = Supplier::create(['company_id' => $company->id, 'name' => 'Corrected supplier', 'currency_id' => $currency]);
 $editable = app(PurchaseDocumentService::class)->saveBill(null, $company->id, $user->id, $payload);

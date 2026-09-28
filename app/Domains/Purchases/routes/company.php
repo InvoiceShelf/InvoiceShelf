@@ -6,7 +6,6 @@ use App\Domains\Purchases\Http\Controllers\Company\ExpensesController;
 use App\Domains\Purchases\Http\Controllers\Company\PurchaseAttachmentsController;
 use App\Domains\Purchases\Http\Controllers\Company\PurchaseOptionsController;
 use App\Domains\Purchases\Http\Controllers\Company\PurchasesReportController;
-use App\Domains\Purchases\Http\Controllers\Company\RecurringCostsController;
 use App\Domains\Purchases\Http\Controllers\Company\SupplierCreditsController;
 use App\Domains\Purchases\Http\Controllers\Company\SupplierPaymentsController;
 use App\Domains\Purchases\Http\Controllers\Company\SupplierRefundsController;
@@ -30,8 +29,6 @@ Route::put('supplier-credits/{supplierCredit}/allocations', [SupplierCreditsCont
 Route::apiResource('supplier-credits', SupplierCreditsController::class)->parameters(['supplier-credits' => 'supplierCredit'])->only(['index', 'show', 'store']);
 Route::post('supplier-refunds/{supplierRefund}/actions', [SupplierRefundsController::class, 'action']);
 Route::apiResource('supplier-refunds', SupplierRefundsController::class)->parameters(['supplier-refunds' => 'supplierRefund'])->only(['index', 'show', 'store']);
-Route::post('recurring-costs/{recurringCost}/actions', [RecurringCostsController::class, 'action']);
-Route::apiResource('recurring-costs', RecurringCostsController::class)->parameters(['recurring-costs' => 'recurringCost'])->only(['index', 'show', 'store', 'update']);
 Route::post('{kind}/{record}/attachments', [PurchaseAttachmentsController::class, 'store'])->whereIn('kind', ['bills', 'supplier-credits'])->whereNumber('record');
 Route::get('{kind}/{record}/attachments/{attachment}', [PurchaseAttachmentsController::class, 'show'])->whereIn('kind', ['bills', 'supplier-credits'])->whereNumber(['record', 'attachment']);
 Route::get('reports/purchases', PurchasesReportController::class);

@@ -17,7 +17,7 @@
           >{{ initials }}</span
         >
       </template>
-      <PurchaseBreadcrumb :kind="kind" :mode="record?.mode" />
+      <PurchaseBreadcrumb :kind="kind" />
       <template v-if="record && !loading && hasActions" #actions>
         <BaseDropdown
           v-if="kind === 'suppliers' && supplierActions.length"
@@ -68,22 +68,6 @@
           @click="editingAllocations = !editingAllocations"
           >{{ $t('purchases.manage_allocations') }}</BaseButton
         >
-        <BaseButton
-          v-if="
-            kind === 'recurring-costs' &&
-            canEdit &&
-            record.status !== 'COMPLETED'
-          "
-          :loading="busy"
-          @click="act(record.status === 'ACTIVE' ? 'pause' : 'resume')"
-          >{{
-            $t(
-              record.status === 'ACTIVE'
-                ? 'purchases.pause'
-                : 'purchases.resume',
-            )
-          }}</BaseButton
-        >
         <BaseDropdown
           v-if="hasSecondaryActions"
           position="bottom-end"
@@ -100,10 +84,7 @@
           >
           <BaseDropdownItem
             v-if="editable && record.status !== 'VOID'"
-            :to="{
-              path: `/admin/${kind}/${id}/edit`,
-              query: record.mode ? { mode: record.mode } : {},
-            }"
+            :to="`/admin/${kind}/${id}/edit`"
             ><BaseIcon
               name="PencilSquareIcon"
               class="me-3 h-5 w-5 text-muted"
@@ -190,96 +171,89 @@
             /></BaseStat>
           </BaseStatStrip>
         </div>
-        <BaseTabGroup>
-          <BaseTab :title="$t('customers.overview')">
-            <div class="mt-5 grid items-start gap-5 lg:grid-cols-3">
-              <BaseCard container-class="p-4 md:p-5">
-                <div class="mb-4 flex items-center justify-between gap-3">
-                  <h2 class="font-semibold text-section text-heading">
-                    {{ $t('purchases.supplier') }}
-                  </h2>
-                  <PurchaseStatus :kind="kind" :record="record" />
-                </div>
-                <dl class="space-y-4 text-sm">
-                  <div
-                    v-for="field in [
-                      'contact_name',
-                      'email',
-                      'phone',
-                      'website',
-                      'tax_id',
-                    ] as const"
-                    v-show="record[field]"
-                    :key="field"
-                  >
-                    <dt class="text-muted">{{ $t(`purchases.${field}`) }}</dt>
-                    <dd class="mt-1 break-words text-heading">
-                      {{ record[field] }}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt class="text-muted">
-                      {{ $t('purchases.payment_terms') }}
-                    </dt>
-                    <dd class="mt-1 text-heading">
-                      {{ record.payment_terms }}
-                    </dd>
-                  </div>
-                </dl>
-                <PurchaseCustomFieldValues
-                  :fields="record.fields"
-                  class="mt-4"
-                />
-                <div
-                  v-for="(address, index) in (record.addresses || []).filter(
-                    (address) => Object.values(address).some(Boolean),
-                  )"
-                  :key="index"
-                  class="mt-5 border-t border-line-light pt-4 text-sm text-body"
-                >
-                  <h3 class="mb-1 text-muted">
-                    {{ $t('purchases.address') }} {{ index + 1 }}
-                  </h3>
-                  {{
-                    [
-                      address.address_street_1,
-                      address.address_street_2,
-                      address.city,
-                      address.state,
-                      address.zip,
-                    ]
-                      .filter(Boolean)
-                      .join(', ')
-                  }}
-                </div>
-                <p
-                  v-if="record.notes"
-                  class="mt-5 whitespace-pre-wrap text-sm text-body"
-                >
-                  {{ record.notes }}
-                </p>
-              </BaseCard>
-              <BaseCard class="lg:col-span-2" container-class="p-4 md:p-5">
-                <h2 class="mb-3 font-semibold text-section text-heading">
-                  {{ $t('purchases.transactions') }}
-                </h2>
-                <router-link
-                  v-for="target in supplierLinks"
-                  :key="target.key"
-                  :to="target.to"
-                  class="flex items-center justify-between border-b border-line-light py-4 text-sm font-medium text-heading hover:text-primary-600"
-                  >{{ $t(target.label)
-                  }}<BaseIcon
-                    name="ChevronRightIcon"
-                    class="h-4 w-4 text-muted"
-                /></router-link>
-              </BaseCard>
+        <div class="grid items-start gap-5 lg:grid-cols-3">
+          <BaseCard container-class="p-4 md:p-5">
+            <div class="mb-4 flex items-center justify-between gap-3">
+              <h2 class="font-semibold text-section text-heading">
+                {{ $t('purchases.supplier') }}
+              </h2>
+              <PurchaseStatus :kind="kind" :record="record" />
             </div>
-          </BaseTab>
-          <BaseTab :title="$t('purchases.history')"
-            ><div class="mt-5"><PurchaseHistory :record="record" /></div
-          ></BaseTab>
-        </BaseTabGroup>
+            <dl class="space-y-4 text-sm">
+              <div
+                v-for="field in [
+                  'contact_name',
+                  'email',
+                  'phone',
+                  'website',
+                  'tax_id',
+                ] as const"
+                v-show="record[field]"
+                :key="field"
+              >
+                <dt class="text-muted">{{ $t(`purchases.${field}`) }}</dt>
+                <dd class="mt-1 break-words text-heading">
+                  {{ record[field] }}
+                </dd>
+              </div>
+              <div>
+                <dt class="text-muted">
+                  {{ $t('purchases.payment_terms') }}
+                </dt>
+                <dd class="mt-1 text-heading">
+                  {{ record.payment_terms }}
+                </dd>
+              </div>
+            </dl>
+            <PurchaseCustomFieldValues
+              :fields="record.fields"
+              class="mt-4"
+            />
+            <div
+              v-for="(address, index) in (record.addresses || []).filter(
+                (address) => Object.values(address).some(Boolean),
+              )"
+              :key="index"
+              class="mt-5 border-t border-line-light pt-4 text-sm text-body"
+            >
+              <h3 class="mb-1 text-muted">
+                {{ $t('purchases.address') }} {{ index + 1 }}
+              </h3>
+              {{
+                [
+                  address.address_street_1,
+                  address.address_street_2,
+                  address.city,
+                  address.state,
+                  address.zip,
+                ]
+                  .filter(Boolean)
+                  .join(', ')
+              }}
+            </div>
+            <p
+              v-if="record.notes"
+              class="mt-5 whitespace-pre-wrap text-sm text-body"
+            >
+              {{ record.notes }}
+            </p>
+          </BaseCard>
+          <BaseCard class="lg:col-span-2" container-class="p-4 md:p-5">
+            <h2 class="mb-3 font-semibold text-section text-heading">
+              {{ $t('purchases.transactions') }}
+            </h2>
+            <router-link
+              v-for="target in supplierLinks"
+              :key="target.key"
+              :to="target.to"
+              class="flex items-center justify-between border-b border-line-light py-4 text-sm font-medium text-heading hover:text-primary-600"
+              >{{ $t(target.label)
+              }}<BaseIcon
+                name="ChevronRightIcon"
+                class="h-4 w-4 text-muted"
+            /></router-link>
+          </BaseCard>
+        </div>
       </template>
       <template v-else>
         <BaseStatStrip
@@ -448,50 +422,6 @@
                   :currency="record.currency"
                 /></div
             ></BaseCard>
-            <BaseCard
-              v-if="kind === 'recurring-costs'"
-              container-class="p-4 md:p-5"
-            >
-              <div class="mb-4 flex items-center justify-between">
-                <h2 class="font-semibold text-section text-heading">
-                  {{ $t('purchases.schedule') }}
-                </h2>
-                <PurchaseStatus :kind="kind" :record="record" />
-              </div>
-              <p class="text-sm text-body">
-                {{
-                  $t(
-                    record.mode === 'BILL'
-                      ? 'purchases.unpaid_bill'
-                      : 'purchases.paid_expense',
-                  )
-                }}
-                · {{ record.interval }}
-                {{ $t(`purchases.frequency_${record.frequency}`) }} ·
-                {{ record.timezone }}
-              </p>
-              <p class="mt-2 text-sm text-body">
-                {{ $t('purchases.next_run') }}:
-                <PurchaseDate :value="record.next_run_at" /> ·
-                {{ $t('purchases.generated') }}: {{ record.occurrence_count }}
-              </p>
-              <p v-if="record.last_error" role="alert" class="mt-3 text-danger">
-                {{ record.last_error }}
-              </p>
-              <div
-                v-for="occurrence in record.occurrences"
-                :key="occurrence.id"
-                class="mt-3"
-              >
-                <router-link
-                  :to="`/admin/${occurrence.record_type === 'bill' ? 'bills' : 'expenses'}/${occurrence.record_id}/${occurrence.record_type === 'bill' ? 'view' : 'edit'}`"
-                  class="text-sm text-primary-600"
-                  ><PurchaseDate :value="occurrence.scheduled_for" /> ·
-                  {{ $t('purchases.view_generated') }}</router-link
-                >
-              </div>
-            </BaseCard>
-            <PurchaseHistory :record="record" />
           </div>
           <div class="space-y-5">
             <BaseCard v-if="record.credits?.length" container-class="p-4 md:p-5"
@@ -573,7 +503,6 @@
 import PurchaseCustomFieldValues from '../components/PurchaseCustomFieldValues.vue'
 import PurchaseDate from '../components/PurchaseDate.vue'
 import PurchaseBreadcrumb from '../components/PurchaseBreadcrumb.vue'
-import PurchaseHistory from '../components/PurchaseHistory.vue'
 import PurchaseStatus from '../components/PurchaseStatus.vue'
 import {
   purchaseParent,
@@ -617,7 +546,7 @@ const canEdit = computed(() =>
 )
 const editable = computed(
   () =>
-    ['suppliers', 'bills', 'recurring-costs'].includes(props.kind) &&
+    ['suppliers', 'bills'].includes(props.kind) &&
     canEdit.value &&
     record.value?.status !== 'VOID',
 )
@@ -635,7 +564,7 @@ const refundable = computed(
 )
 const canVoid = computed(
   () =>
-    !['suppliers', 'recurring-costs'].includes(props.kind) &&
+    props.kind !== 'suppliers' &&
     user.hasAbilities(`delete-${entityAbility(props.kind)}`),
 )
 const supplierLinks = computed(() =>
@@ -645,24 +574,17 @@ const supplierLinks = computed(() =>
       'supplier-payments',
       'supplier-credits',
       'supplier-refunds',
-      'recurring-costs',
     ] as PurchaseKind[]
   )
     .filter((kind) => user.hasAbilities(`view-${entityAbility(kind)}`))
-    .flatMap((kind) =>
-      (kind === 'recurring-costs' ? ['BILL', 'EXPENSE'] : ['']).map((mode) => {
-        const parent = purchaseParent(kind, mode)
-        return {
-          key: `${kind}-${mode}`,
-          label: mode
-            ? mode === 'BILL'
-              ? 'purchases.recurring_bills'
-              : 'purchases.recurring_expenses'
-            : `purchases.${kind}`,
-          to: { ...parent, query: { ...parent.query, supplier_id: id.value } },
-        }
-      }),
-    ),
+    .map((kind) => {
+      const parent = purchaseParent(kind)
+      return {
+        key: kind,
+        label: `purchases.${kind}`,
+        to: { ...parent, query: { ...parent.query, supplier_id: id.value } },
+      }
+    }),
 )
 const uploadKey = ref(0)
 const initials = computed(() =>
@@ -679,7 +601,6 @@ const supplierActions = computed(() =>
       'bills',
       'supplier-payments',
       'supplier-credits',
-      'recurring-costs',
     ] as PurchaseKind[]
   ).filter((kind) => user.hasAbilities(`create-${entityAbility(kind)}`)),
 )
@@ -704,10 +625,7 @@ const hasActions = computed(() => {
         (current.status === 'OPEN' &&
           (current.due_amount || 0) > 0 &&
           user.hasAbilities('create-supplier-payment')))) ||
-    (canAllocate.value && current.status === 'OPEN') ||
-    (props.kind === 'recurring-costs' &&
-      canEdit.value &&
-      current.status !== 'COMPLETED')
+    (canAllocate.value && current.status === 'OPEN')
   )
 })
 const settlements = computed(() => {
@@ -743,13 +661,6 @@ async function load() {
   error.value = ''
   try {
     record.value = await purchaseService.get(props.kind, id.value)
-    if (
-      props.kind === 'recurring-costs' &&
-      route.query.mode !== record.value.mode
-    )
-      await router.replace({
-        query: { ...route.query, mode: record.value.mode },
-      })
   } catch (e) {
     error.value = purchaseError(e)
   } finally {

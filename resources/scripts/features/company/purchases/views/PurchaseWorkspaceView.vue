@@ -5,7 +5,6 @@
     :key="`${section}-${active.key}`"
     :section="section"
     :kind="active.kind"
-    :mode="active.mode"
   />
 </template>
 <script setup lang="ts">

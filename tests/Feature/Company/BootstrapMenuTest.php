@@ -1,7 +1,6 @@
 <?php
 
 use App\Domains\Accounts\Models\User;
-use App\Domains\Purchases\Models\RecurringCost;
 use App\Domains\Purchases\Models\SupplierCredit;
 use App\Domains\Purchases\Models\SupplierRefund;
 use App\Providers\AppServiceProvider;
@@ -69,5 +68,4 @@ test('secondary purchase permissions keep their parent navigation accessible', f
 })->with([
     ['view-supplier-credit', SupplierCredit::class, ['Bill']],
     ['view-supplier-refund', SupplierRefund::class, ['SupplierPayment']],
-    ['view-recurring-cost', RecurringCost::class, ['Bill', 'Expenses']],
 ]);

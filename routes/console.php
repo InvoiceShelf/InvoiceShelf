@@ -43,5 +43,3 @@ Schedule::command('recurring-invoices:generate')
 Schedule::command('mcp:prune')
     ->daily()
     ->when($installed);
-
-Schedule::command('recurring-costs:generate')->everyMinute()->withoutOverlapping()->when($installed);

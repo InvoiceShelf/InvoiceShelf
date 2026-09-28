@@ -32,11 +32,9 @@ const state = computed(() => {
   return props.record.status
 })
 const tone = computed<StatusTone>(() => {
-  if (['SETTLED', 'ACTIVE', 'COMPLETED'].includes(state.value || ''))
-    return 'green'
+  if (['SETTLED', 'ACTIVE'].includes(state.value || '')) return 'green'
   if (state.value === 'OVERDUE') return 'red'
-  if (['UNPAID', 'PARTIAL', 'PAUSED'].includes(state.value || ''))
-    return 'yellow'
+  if (['UNPAID', 'PARTIAL'].includes(state.value || '')) return 'yellow'
   if (state.value === 'OPEN') return 'blue'
   return 'gray'
 })

@@ -6,7 +6,6 @@ use App\Domains\Money\Models\Currency;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class SupplierRefund extends Model
 {
@@ -46,11 +45,6 @@ class SupplierRefund extends Model
     public function credit(): BelongsTo
     {
         return $this->belongsTo(SupplierCredit::class, 'supplier_credit_id');
-    }
-
-    public function activities(): MorphMany
-    {
-        return $this->morphMany(PurchaseActivity::class, 'subject')->orderByDesc('id');
     }
 
     public function resolveRouteBindingQuery($query, $value, $field = null)

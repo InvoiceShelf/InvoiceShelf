@@ -32,7 +32,6 @@ class SupplierPaymentResource extends JsonResource
             'available_amount' => (int) $this->available_amount,
             'allocations' => PurchaseAllocationResource::collection($this->whenLoaded('allocations')),
             'refunds' => SupplierRefundResource::collection($this->whenLoaded('refunds')),
-            'activities' => PurchaseActivityResource::collection($this->whenLoaded('activities')),
         ];
     }
 }

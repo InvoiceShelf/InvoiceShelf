@@ -38,7 +38,7 @@ test('credits on paid bills retain source prices and lock historical financial d
     expect(Bill::find($bill['id'])->total)->toBe(101)->and((int) SupplierCredit::sum('total'))->toBe(101);
 });
 
-test('bills and source attachments stay private and can be opened and voided with history', function () {
+test('bills and source attachments stay private and can be opened and voided', function () {
     Storage::fake(config('media-library.disk_name'));
     $data = [...purchaseBillPayload($this), 'status' => 'DRAFT'];
     $bill = $this->postJson('/api/v1/bills', $data)->assertSuccessful()->json('data');
@@ -47,7 +47,7 @@ test('bills and source attachments stay private and can be opened and voided wit
     $this->get('/api/v1/bills/'.$bill['id'].'/attachments/'.$upload->json('data.id'))->assertOk();
     $this->postJson('/api/v1/bills/'.$bill['id'].'/actions', ['action' => 'void'])->assertUnprocessable();
     $this->postJson('/api/v1/bills/'.$bill['id'].'/actions', ['action' => 'void', 'reason' => 'Duplicate supplier invoice'])->assertSuccessful()->assertJsonPath('data.status', 'VOID');
-    $this->getJson('/api/v1/bills/'.$bill['id'])->assertOk()->assertJsonCount(4, 'data.activities');
+    $this->getJson('/api/v1/bills/'.$bill['id'])->assertOk()->assertJsonPath('data.void_reason', 'Duplicate supplier invoice');
 });
 
 test('a bill supplier can be corrected before settlement and is locked afterwards', function () {

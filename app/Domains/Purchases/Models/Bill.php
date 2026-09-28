@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -74,11 +73,6 @@ class Bill extends Model implements HasMedia
     public function getSettlementStatusAttribute(): string
     {
         return $this->due_amount === 0 ? 'SETTLED' : ($this->due_amount < $this->total ? 'PARTIAL' : 'UNPAID');
-    }
-
-    public function activities(): MorphMany
-    {
-        return $this->morphMany(PurchaseActivity::class, 'subject')->orderByDesc('id');
     }
 
     public function resolveRouteBindingQuery($query, $value, $field = null)

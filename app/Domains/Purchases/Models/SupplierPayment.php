@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class SupplierPayment extends Model
 {
@@ -58,11 +57,6 @@ class SupplierPayment extends Model
     public function getAvailableAmountAttribute(): int
     {
         return $this->status === 'OPEN' ? (int) $this->amount - (int) $this->allocations->sum('amount') - (int) $this->refunds->where('status', 'OPEN')->sum('amount') : 0;
-    }
-
-    public function activities(): MorphMany
-    {
-        return $this->morphMany(PurchaseActivity::class, 'subject')->orderByDesc('id');
     }
 
     public function resolveRouteBindingQuery($query, $value, $field = null)

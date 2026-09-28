@@ -33,7 +33,7 @@ class SupplierCreditsController extends Controller
     {
         $this->authorize('view', $supplierCredit);
 
-        return new SupplierCreditResource($supplierCredit->load([...self::RELATIONS, 'activities']));
+        return new SupplierCreditResource($supplierCredit->load(self::RELATIONS));
     }
 
     public function store(SupplierCreditRequest $request, PurchaseDocumentService $service): SupplierCreditResource
