@@ -62,7 +62,11 @@ credits, payments or refunds, and these internal fields do not print on PDFs.
 Choose the supplier, supplier reference, document date, due date, and currency. Each
 line has a description, quantity, unit price, category, optional percentage discount,
 and purchase taxes. Choose whether prices include tax. Save as Draft while preparing
-it, or Recorded when it should contribute to payables and purchase reporting. Attach the
+it, or Recorded when it should contribute to payables and purchase reporting. Bills,
+supplier credits, payments and refunds are numbered per company, like invoices
+(`BILL-000001`, `SC-000001`, `SP-000001`, `SR-000001`); the company settings
+`bill_number_format`, `supplier_credit_number_format`, `supplier_payment_number_format`
+and `supplier_refund_number_format` take the same placeholders as invoice numbers. Attach the
 original PDF or image; downloads require company access and the document's permission.
 
 Use **New supplier payment** for money already sent. Enter its actual date, amount, method,

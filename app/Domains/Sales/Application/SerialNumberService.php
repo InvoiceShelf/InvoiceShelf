@@ -45,6 +45,8 @@ class SerialNumberService
 
     private $sequenceScope = [];
 
+    private bool $customerSequence = true;
+
     /**
      * @var string
      */
@@ -145,6 +147,19 @@ class SerialNumberService
     }
 
     /**
+     * Leave out the per-customer sequence, for documents whose table has no
+     * `customer_id` (purchasing documents belong to suppliers).
+     *
+     * @return $this
+     */
+    public function withoutCustomerSequence()
+    {
+        $this->customerSequence = false;
+
+        return $this;
+    }
+
+    /**
      * Render the number the next document should carry.
      *
      * Passing no format falls back to the company setting for this document
@@ -177,7 +192,7 @@ class SerialNumberService
             $this->setNextSequenceNumber();
         }
 
-        if (! $this->nextCustomerSequenceNumber) {
+        if ($this->customerSequence && ! $this->nextCustomerSequenceNumber) {
             $this->setNextCustomerSequenceNumber();
         }
 

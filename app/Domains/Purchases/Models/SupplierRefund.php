@@ -9,6 +9,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SupplierRefund extends Model
 {
+    /** The company setting that holds this document's number format. */
+    public const NUMBER_FORMAT_SETTING = 'supplier_refund_number_format';
+
+    /** The number format used while the company has not set one. */
+    public const DEFAULT_NUMBER_FORMAT = '{{SERIES:SR}}{{DELIMITER:-}}{{SEQUENCE:6}}';
+
     protected $table = 'supplier_refunds';
 
     protected $guarded = ['id'];

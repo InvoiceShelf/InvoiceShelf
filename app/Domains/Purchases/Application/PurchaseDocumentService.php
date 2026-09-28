@@ -2,6 +2,7 @@
 
 namespace App\Domains\Purchases\Application;
 
+use App\Domains\Purchases\Contracts\DocumentNumberAssigner;
 use App\Domains\Purchases\Http\Requests\BillRequest;
 use App\Domains\Purchases\Http\Requests\SupplierCreditRequest;
 use App\Domains\Purchases\Models\Bill;
@@ -19,7 +20,11 @@ use Illuminate\Support\Facades\Validator;
 
 class PurchaseDocumentService
 {
-    public function __construct(private readonly SupplierSettlementService $settlements, private readonly PurchaseCustomFields $customFields) {}
+    public function __construct(
+        private readonly SupplierSettlementService $settlements,
+        private readonly PurchaseCustomFields $customFields,
+        private readonly DocumentNumberAssigner $numbers,
+    ) {}
 
     public function saveBill(?Bill $bill, int $companyId, ?int $actorId, array $data): Bill
     {
@@ -52,11 +57,12 @@ class PurchaseDocumentService
                 ...$money, ...$this->totals($items),
                 'status' => $bill && $record->status === 'OPEN' ? 'OPEN' : ($data['status'] ?? 'DRAFT'),
                 'supplier_snapshot' => $supplier->only(['name', 'contact_name', 'email', 'tax_id', 'addresses']),
-            ])->save();
-            $this->customFields->save($record, $answers);
+            ]);
             if (! $record->number) {
-                $record->update(['number' => 'BILL-'.str_pad((string) $record->id, 6, '0', STR_PAD_LEFT)]);
+                $record->fill($this->numbers->next(Bill::class, $companyId));
             }
+            $record->save();
+            $this->customFields->save($record, $answers);
             $record->items()->delete();
             $record->items()->createMany($items);
             $this->settlements->recalculate($record);
@@ -93,8 +99,8 @@ class PurchaseDocumentService
                 ...Arr::only($data, ['supplier_id', 'reference', 'document_date', 'notes', 'tax_included', 'source_bill_id', 'source_expense_id']),
                 ...$money, ...$this->totals($items), 'company_id' => $companyId, 'creator_id' => $actorId, 'status' => 'OPEN',
                 'supplier_snapshot' => $supplier->only(['name', 'contact_name', 'email', 'tax_id', 'addresses']),
+                ...$this->numbers->next(SupplierCredit::class, $companyId),
             ]);
-            $credit->update(['number' => 'SC-'.str_pad((string) $credit->id, 6, '0', STR_PAD_LEFT)]);
             $credit->items()->createMany($items);
 
             return $credit->load(['supplier', 'currency', 'items', 'allocations', 'refunds']);

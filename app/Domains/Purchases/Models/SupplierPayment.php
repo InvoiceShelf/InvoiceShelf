@@ -11,6 +11,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class SupplierPayment extends Model
 {
+    /** The company setting that holds this document's number format. */
+    public const NUMBER_FORMAT_SETTING = 'supplier_payment_number_format';
+
+    /** The number format used while the company has not set one. */
+    public const DEFAULT_NUMBER_FORMAT = '{{SERIES:SP}}{{DELIMITER:-}}{{SEQUENCE:6}}';
+
     protected $table = 'supplier_payments';
 
     protected $guarded = ['id'];

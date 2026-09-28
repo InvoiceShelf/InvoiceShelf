@@ -2,6 +2,7 @@
 
 namespace App\Domains\Purchases\Application;
 
+use App\Domains\Purchases\Contracts\DocumentNumberAssigner;
 use App\Domains\Purchases\Http\Requests\SupplierAllocationRequest;
 use App\Domains\Purchases\Http\Requests\SupplierPaymentRequest;
 use App\Domains\Purchases\Http\Requests\SupplierRefundRequest;
@@ -16,6 +17,8 @@ use Illuminate\Support\Facades\Validator;
 
 class SupplierSettlementService
 {
+    public function __construct(private readonly DocumentNumberAssigner $numbers) {}
+
     public function recordPayment(int $companyId, ?int $actorId, array $data): SupplierPayment
     {
         $data = Validator::make($data, SupplierPaymentRequest::rulesFor($companyId))->validate();
@@ -28,8 +31,8 @@ class SupplierSettlementService
                 ...Arr::only($data, ['supplier_id', 'amount', 'payment_date', 'payment_method_id', 'reference', 'notes']),
                 ...$money, 'company_id' => $companyId, 'creator_id' => $actorId,
                 'base_amount' => PurchaseInputs::base($data['amount'], $money['exchange_rate']), 'status' => 'OPEN',
+                ...$this->numbers->next(SupplierPayment::class, $companyId),
             ]);
-            $payment->update(['number' => 'SP-'.str_pad((string) $payment->id, 6, '0', STR_PAD_LEFT)]);
             $this->replaceAllocations($payment, $data['allocations'] ?? [], $actorId);
 
             return $payment->fresh(['supplier', 'currency', 'allocations.bill', 'refunds']);
@@ -96,8 +99,8 @@ class SupplierSettlementService
                 ...Arr::only($data, ['supplier_payment_id', 'supplier_credit_id', 'amount', 'payment_date', 'payment_method_id', 'reference', 'notes']),
                 ...$money, 'company_id' => $companyId, 'creator_id' => $actorId, 'supplier_id' => $source->supplier_id,
                 'base_amount' => PurchaseInputs::base($data['amount'], $money['exchange_rate']), 'status' => 'OPEN',
+                ...$this->numbers->next(SupplierRefund::class, $companyId),
             ]);
-            $refund->update(['number' => 'SR-'.str_pad((string) $refund->id, 6, '0', STR_PAD_LEFT)]);
 
             return $refund->load(['supplier', 'currency']);
         });

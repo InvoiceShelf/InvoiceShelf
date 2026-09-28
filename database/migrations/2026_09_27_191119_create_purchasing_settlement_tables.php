@@ -107,6 +107,7 @@ return new class extends Migration
         $table->unsignedInteger('currency_id');
         $table->decimal('exchange_rate', 20, 6)->default(1);
         $table->string('number')->nullable();
+        $table->unsignedInteger('sequence_number')->nullable();
         $table->string('reference')->nullable();
         $table->string('status')->default('DRAFT');
         $table->text('notes')->nullable();
@@ -114,6 +115,7 @@ return new class extends Migration
         $table->text('void_reason')->nullable();
         $table->timestamps();
         $table->index(['company_id', 'supplier_id', 'status']);
+        $table->index(['company_id', 'sequence_number']);
     }
 
     public function down(): void

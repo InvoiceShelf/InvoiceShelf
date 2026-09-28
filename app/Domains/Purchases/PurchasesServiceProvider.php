@@ -4,10 +4,12 @@ namespace App\Domains\Purchases;
 
 use App\Adapters\Purchases\MediaLibraryExpenseReceiptManager;
 use App\Adapters\Purchases\MoneyExpenseExchangeRateRecorder;
+use App\Adapters\Purchases\SalesDocumentNumberAssigner;
 use App\Adapters\Purchases\TaxationExpenseTaxManager;
 use App\Domains\Purchases\Application\ClearExpenseTaxes;
 use App\Domains\Purchases\Application\ProtectCreditedExpenses;
 use App\Domains\Purchases\Application\ProtectPurchaseTaxes;
+use App\Domains\Purchases\Contracts\DocumentNumberAssigner;
 use App\Domains\Purchases\Contracts\ExpenseExchangeRateRecorder;
 use App\Domains\Purchases\Contracts\ExpenseReceiptManager;
 use App\Domains\Purchases\Contracts\ExpenseTaxManager;
@@ -36,6 +38,7 @@ class PurchasesServiceProvider extends ServiceProvider
         $this->app->bind(ExpenseTaxManager::class, TaxationExpenseTaxManager::class);
         $this->app->bind(ExpenseExchangeRateRecorder::class, MoneyExpenseExchangeRateRecorder::class);
         $this->app->bind(ExpenseReceiptManager::class, MediaLibraryExpenseReceiptManager::class);
+        $this->app->bind(DocumentNumberAssigner::class, SalesDocumentNumberAssigner::class);
     }
 
     public function boot(): void

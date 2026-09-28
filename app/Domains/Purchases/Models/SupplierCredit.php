@@ -14,6 +14,12 @@ class SupplierCredit extends Model implements HasMedia
 {
     use InteractsWithMedia;
 
+    /** The company setting that holds this document's number format. */
+    public const NUMBER_FORMAT_SETTING = 'supplier_credit_number_format';
+
+    /** The number format used while the company has not set one. */
+    public const DEFAULT_NUMBER_FORMAT = '{{SERIES:SC}}{{DELIMITER:-}}{{SEQUENCE:6}}';
+
     protected $table = 'supplier_credits';
 
     protected $guarded = ['id'];
