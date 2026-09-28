@@ -2277,7 +2277,8 @@
     "purchase_tax_in_use": "This tax is used by a bill or supplier credit. Its rates may change, but its purchase identity must be retained.",
     "purchase_tax_unknown": "Unknown purchase tax.",
     "purchase_payment_has_refunds": "Void the linked refunds first.",
-    "purchase_bill_in_use": "Release settlements and void linked credits before voiding this bill."
+    "purchase_bill_in_use": "Release settlements and void linked credits before voiding this bill.",
+    "recurrence_frequency_invalid": "Enter a frequency the scheduler can read, such as a cron expression like 0 0 1 * *."
   },
   "pdf_estimate_label": "Estimate",
   "pdf_estimate_number": "Estimate Number",

@@ -9,9 +9,10 @@ use App\Domains\Contacts\Models\Customer;
 use App\Domains\Metadata\Concerns\HasCustomFields;
 use App\Domains\Money\Models\Currency;
 use App\Domains\Taxation\Models\Tax;
+use App\Support\Recurrence\Cadence;
+use App\Support\Recurrence\RecurringSchedule;
 use App\Support\SafeOrderBy;
 use Carbon\Carbon;
-use Cron\CronExpression;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -25,7 +26,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * expression that decides when the next copy falls due and the limit, if any,
  * that eventually retires the schedule.
  */
-class RecurringInvoice extends Model
+class RecurringInvoice extends Model implements RecurringSchedule
 {
     use HasCustomFields;
     use HasFactory;
@@ -316,12 +317,31 @@ class RecurringInvoice extends Model
      */
     public static function getNextInvoiceDate(string $frequency, string $from, ?string $timezone = null): string
     {
-        $appZone = config('app.timezone', 'UTC');
-        $zone = $timezone ?: $appZone;
+        return Cadence::next($frequency, $from, $timezone ?: config('app.timezone', 'UTC'))->format('Y-m-d H:i:s');
+    }
 
-        $next = (new CronExpression($frequency))->getNextRunDate($from, 0, false, $zone);
+    public function nextRunColumn(): string
+    {
+        return 'next_invoice_at';
+    }
 
-        return Carbon::instance($next)->setTimezone($appZone)->format('Y-m-d H:i:s');
+    public function generatedCount(): int
+    {
+        return $this->invoices()->count();
+    }
+
+    /**
+     * An invoice goes to a customer, so a schedule that missed runs sends one
+     * invoice for the latest of them rather than a burst of back-dated ones.
+     */
+    public function catchesUp(): bool
+    {
+        return false;
+    }
+
+    public function scheduleTimeZone(): string
+    {
+        return $this->companyTimeZone();
     }
 
     /**

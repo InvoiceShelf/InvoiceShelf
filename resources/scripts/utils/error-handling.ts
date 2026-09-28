@@ -108,6 +108,7 @@ const ERROR_TRANSLATION_MAP: Record<string, string> = {
   'module_runtime_missing': 'modules.runtime_missing',
   'request_limit_met': 'errors.request_limit_met',
   'address_incomplete': 'errors.address_incomplete',
+  'recurrence_frequency_invalid': 'errors.recurrence_frequency_invalid',
   'invalid_address': 'errors.invalid_address',
   'Email could not be sent to this email address.': 'errors.email_could_not_be_sent',
 }
