@@ -11,6 +11,7 @@ use App\Adapters\Accounts\MediaLibraryCompanyLogoManager;
 use App\Adapters\Accounts\MediaLibraryUserAvatarManager;
 use App\Adapters\Accounts\ModuleAwareAbilityCatalog;
 use App\Domains\Accounts\Application\OAuth\OAuthServer;
+use App\Domains\Accounts\Console\ApplyRolePresetDefaults as ApplyRolePresetDefaultsCommand;
 use App\Domains\Accounts\Console\GenerateOAuthKeys;
 use App\Domains\Accounts\Console\SyncRolePresets;
 use App\Domains\Accounts\Contracts\AbilityCatalog;
@@ -21,6 +22,7 @@ use App\Domains\Accounts\Contracts\CompanyInvitationSender;
 use App\Domains\Accounts\Contracts\CompanyLogoManager;
 use App\Domains\Accounts\Contracts\MemberReferencesCleaner;
 use App\Domains\Accounts\Contracts\UserAvatarManager;
+use App\Domains\Accounts\Listeners\ApplyRolePresetDefaults;
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\User;
 use App\Domains\Accounts\Policies\CompanyPolicy;
@@ -29,6 +31,9 @@ use App\Domains\Accounts\Policies\RolePolicy;
 use App\Domains\Accounts\Policies\SettingsPolicy;
 use App\Domains\Accounts\Policies\UserPolicy;
 use Carbon\CarbonInterval;
+use Illuminate\Database\Events\MigrationsEnded;
+use Illuminate\Database\Events\NoPendingMigrations;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Passport\Passport;
@@ -74,7 +79,10 @@ class AccountsServiceProvider extends ServiceProvider
         Passport::tokensExpireIn(CarbonInterval::minutes((int) config('passport.access_token_minutes', 60)));
         Passport::refreshTokensExpireIn(CarbonInterval::days((int) config('passport.refresh_token_days', 30)));
 
+        Event::listen([MigrationsEnded::class, NoPendingMigrations::class], ApplyRolePresetDefaults::class);
+
         $this->commands([
+            ApplyRolePresetDefaultsCommand::class,
             GenerateOAuthKeys::class,
             SyncRolePresets::class,
         ]);
