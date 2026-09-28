@@ -85,7 +85,10 @@ class PurchasesQuery
         foreach ($bills as $bill) {
             $summary['outstanding'] += $bill->base_due_amount;
 
-            if ($bill->due_date < $today->toDateString()) {
+            // A bill without a due date is not late, as on the receivables side.
+            if ($bill->due_date === null) {
+                $bucket = 'due_later';
+            } elseif ($bill->due_date < $today->toDateString()) {
                 $bucket = 'overdue';
             } elseif ($bill->due_date <= $today->addDays(30)->toDateString()) {
                 $bucket = 'due_soon';

@@ -24,7 +24,7 @@ class PurchaseAttachmentsController extends Controller
         $document = $this->document($kind, $record, (int) $request->header('company'));
         $this->authorize('update', $document);
 
-        $file = $service->attach($document, $request->file('file'), $request->user()->id);
+        $file = $service->attach($document, $request->file('file'));
 
         return response()->json(['data' => ['id' => $file->id, 'name' => $file->file_name]], 201);
     }

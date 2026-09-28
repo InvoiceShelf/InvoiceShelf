@@ -14,7 +14,7 @@ class PurchaseAttachmentService
      * Attach an uploaded file to a bill or supplier credit, under a safe file
      * name. A void document takes no new attachments.
      */
-    public function attach(Bill|SupplierCredit $document, UploadedFile $file, ?int $actorId): Media
+    public function attach(Bill|SupplierCredit $document, UploadedFile $file): Media
     {
         PurchaseInputs::ensure($document->status !== 'VOID', 'file', 'purchase_void_document_attachment');
 

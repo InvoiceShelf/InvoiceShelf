@@ -3,7 +3,6 @@
 namespace App\Domains\Reporting\Http\Controllers;
 
 use App\Domains\Accounts\Models\CompanySetting;
-use App\Domains\Purchases\Models\Supplier;
 use App\Domains\Reporting\Http\Requests\PurchaseReportPdfRequest;
 use App\Domains\Reporting\Queries\PurchasesQuery;
 use App\Platform\Http\Controller;
@@ -41,7 +40,8 @@ class PurchasesReportController extends Controller
             'logo' => $company->logo_path,
             'currency' => $report['currency'],
             'report' => $report,
-            'supplier' => $supplierId ? Supplier::query()->forCompany($company->id)->findOrFail($supplierId) : null,
+            // The query has already found the supplier; the view reads its name.
+            'supplier' => $report['supplier'] ? (object) $report['supplier'] : null,
             'from_date' => CarbonImmutable::parse($request->validated('from_date'))->translatedFormat($pattern),
             'to_date' => CarbonImmutable::parse($request->validated('to_date'))->translatedFormat($pattern),
             'as_of_date' => CarbonImmutable::parse($report['payables']['as_of_date'])->translatedFormat($pattern),
