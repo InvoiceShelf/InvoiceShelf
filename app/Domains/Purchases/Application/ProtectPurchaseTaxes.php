@@ -38,7 +38,7 @@ class ProtectPurchaseTaxes
                 PurchaseInputs::ensure(
                     ! in_array((int) $tax->id, $taxTypeIds, true),
                     'tax_type',
-                    'This tax is used by a bill or supplier credit. Its rates may change, but its purchase identity must be retained.',
+                    'purchase_tax_in_use',
                 );
             }
         }

@@ -50,7 +50,7 @@ class SupplierRefundsController extends Controller
     public function action(PurchaseActionRequest $request, SupplierRefund $supplierRefund, SupplierSettlementService $service): SupplierRefundResource
     {
         $this->authorize($request->input('action') === 'void' ? 'delete' : 'update', $supplierRefund);
-        PurchaseInputs::ensure($request->input('action') === 'void', 'action', 'Only void is supported.');
+        PurchaseInputs::ensure($request->input('action') === 'void', 'action', 'purchase_only_void');
         $service->void($supplierRefund, (string) $request->input('reason'));
 
         return new SupplierRefundResource($supplierRefund->fresh(self::RELATIONS));

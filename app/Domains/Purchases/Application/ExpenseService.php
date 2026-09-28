@@ -101,7 +101,7 @@ class ExpenseService
                 PurchaseInputs::ensure(
                     $old === $new,
                     'taxes',
-                    'An expense with supplier credits must retain its original taxes.',
+                    'purchase_credited_expense_taxes_locked',
                 );
 
                 $taxes = null;

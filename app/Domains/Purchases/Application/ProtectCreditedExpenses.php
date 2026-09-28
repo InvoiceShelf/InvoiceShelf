@@ -45,7 +45,7 @@ class ProtectCreditedExpenses
         PurchaseInputs::ensure(
             ! SupplierCredit::query()->where('source_expense_id', $expense->id)->exists(),
             'expense',
-            'An expense with supplier credits must retain its original financial details.',
+            'purchase_credited_expense_locked',
         );
     }
 }

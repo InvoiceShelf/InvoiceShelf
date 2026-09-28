@@ -51,7 +51,7 @@ class SupplierPaymentsController extends Controller
     public function action(PurchaseActionRequest $request, SupplierPayment $supplierPayment, SupplierSettlementService $service): SupplierPaymentResource
     {
         $this->authorize($request->input('action') === 'void' ? 'delete' : 'update', $supplierPayment);
-        PurchaseInputs::ensure($request->input('action') === 'void', 'action', 'Only void is supported.');
+        PurchaseInputs::ensure($request->input('action') === 'void', 'action', 'purchase_only_void');
         $service->void($supplierPayment, (string) $request->input('reason'));
 
         return new SupplierPaymentResource($supplierPayment->fresh(self::RELATIONS));

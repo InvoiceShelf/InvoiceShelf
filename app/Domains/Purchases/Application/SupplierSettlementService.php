@@ -37,7 +37,7 @@ class SupplierSettlementService
 
         return DB::transaction(function () use ($companyId, $actorId, $data): SupplierPayment {
             $supplier = PurchaseInputs::lockSupplier($companyId, $data['supplier_id']);
-            PurchaseInputs::ensure($supplier->enabled, 'supplier_id', 'This supplier is inactive.');
+            PurchaseInputs::ensure($supplier->enabled, 'supplier_id', 'purchase_supplier_inactive');
 
             $money = PurchaseInputs::money($companyId, $data);
             $payment = SupplierPayment::query()->create([
@@ -67,14 +67,14 @@ class SupplierSettlementService
         return DB::transaction(function () use ($source, $rows) {
             PurchaseInputs::lockSupplier($source->company_id, $source->supplier_id);
             $source = $this->lockSource($source);
-            PurchaseInputs::ensure($source->status === 'OPEN', 'allocations', 'Only posted records can be allocated.');
+            PurchaseInputs::ensure($source->status === 'OPEN', 'allocations', 'purchase_allocation_not_posted');
 
             $total = $source instanceof SupplierPayment ? $source->amount : $source->total;
             $refunded = (int) $source->refunds->where('status', 'OPEN')->sum('amount');
             PurchaseInputs::ensure(
                 array_sum(array_column($rows, 'amount')) <= $total - $refunded,
                 'allocations',
-                'Allocations exceed the available balance.',
+                'purchase_allocations_exceed_balance',
             );
 
             $bills = $this->lockAllocatedBills($source, $rows);
@@ -92,7 +92,7 @@ class SupplierSettlementService
 
                 $this->recalculate($bill);
                 $own = (int) $source->allocations->where('bill_id', $bill->id)->sum('amount');
-                PurchaseInputs::ensure($row['amount'] <= $bill->due_amount + $own, 'allocations', 'An allocation exceeds the bill balance.');
+                PurchaseInputs::ensure($row['amount'] <= $bill->due_amount + $own, 'allocations', 'purchase_allocation_exceeds_bill');
             }
 
             $source->allocations()->delete();
@@ -142,7 +142,7 @@ class SupplierSettlementService
             PurchaseInputs::ensure(
                 $data['amount'] <= $source->available_amount,
                 'amount',
-                'The refund exceeds the available balance. Release allocations before refunding an applied payment.',
+                'purchase_refund_exceeds_balance',
             );
 
             $money = PurchaseInputs::money($companyId, [...$data, 'currency_id' => $source->currency_id]);
@@ -175,10 +175,10 @@ class SupplierSettlementService
                 return;
             }
 
-            PurchaseInputs::ensure(trim($reason) !== '', 'reason', 'A reason is required.');
+            PurchaseInputs::ensure(trim($reason) !== '', 'reason', 'purchase_reason_required');
 
             if ($record instanceof SupplierPayment) {
-                PurchaseInputs::ensure(! $record->refunds()->where('status', 'OPEN')->exists(), 'payment', 'Void the linked refunds first.');
+                PurchaseInputs::ensure(! $record->refunds()->where('status', 'OPEN')->exists(), 'payment', 'purchase_payment_has_refunds');
                 $this->replaceAllocations($record, []);
             }
 
@@ -194,7 +194,7 @@ class SupplierSettlementService
         $paid = (int) $bill->paymentAllocations()->lockForUpdate()->get()->sum('amount');
         $credited = (int) $bill->creditAllocations()->lockForUpdate()->get()->sum('amount');
         $due = $bill->total - $paid - $credited;
-        PurchaseInputs::ensure($due >= 0, 'bill', 'Settlements exceed the bill total.');
+        PurchaseInputs::ensure($due >= 0, 'bill', 'purchase_settlements_exceed_bill');
 
         $bill->update([
             'due_amount' => $due,

@@ -115,3 +115,11 @@ test('an older expense with no stored exchange rate can be credited and edited a
         ->assertUnprocessable()
         ->assertJsonValidationErrors('source_expense_id');
 });
+
+test('a refused purchase answers with a translatable code', function () {
+    $this->supplier->update(['enabled' => false]);
+
+    $this->postJson('/api/v1/bills', purchaseBillPayload($this))
+        ->assertUnprocessable()
+        ->assertJsonPath('errors.supplier_id.0', 'purchase_supplier_inactive');
+});
