@@ -16,6 +16,12 @@ class Bill extends Model implements HasMedia
     use HasCustomFields;
     use InteractsWithMedia;
 
+    /** The company setting that holds this document's number format. */
+    public const NUMBER_FORMAT_SETTING = 'bill_number_format';
+
+    /** The number format used while the company has not set one. */
+    public const DEFAULT_NUMBER_FORMAT = '{{SERIES:BILL}}{{DELIMITER:-}}{{SEQUENCE:6}}';
+
     protected $table = 'bills';
 
     protected $guarded = ['id'];
