@@ -5,7 +5,7 @@ namespace App\Domains\Purchases\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class PurchaseListRequest extends FormRequest
+class PurchaseOptionsRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -14,6 +14,8 @@ class PurchaseListRequest extends FormRequest
 
     public function rules(): array
     {
-        return ['mode' => ['nullable', Rule::in(['BILL', 'EXPENSE'])]];
+        return [
+            'custom_field_model' => ['sometimes', Rule::in(['Supplier', 'Bill'])],
+        ];
     }
 }

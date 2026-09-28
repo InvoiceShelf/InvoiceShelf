@@ -5,37 +5,81 @@ namespace App\Domains\Purchases\Http\Controllers\Company;
 use App\Domains\Metadata\Http\Resources\CustomFieldResource;
 use App\Domains\Money\Models\Currency;
 use App\Domains\Purchases\Application\PurchaseCustomFields;
+use App\Domains\Purchases\Http\Requests\PurchaseOptionsRequest;
 use App\Domains\Purchases\Models\Bill;
 use App\Domains\Purchases\Models\ExpenseCategory;
 use App\Domains\Purchases\Models\Supplier;
 use App\Domains\Receivables\Models\PaymentMethod;
 use App\Domains\Taxation\Models\TaxType;
 use App\Platform\Http\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
+use Illuminate\Http\JsonResponse;
 use Silber\Bouncer\BouncerFacade;
 
+/**
+ * The reference lists the purchasing forms need (categories, currencies,
+ * purchase taxes, payment methods), and optionally the custom fields of one
+ * form, without access to the settings screens those lists come from.
+ */
 class PurchaseOptionsController extends Controller
 {
-    public function __invoke(Request $request, PurchaseCustomFields $customFields)
+    public function __invoke(PurchaseOptionsRequest $request, PurchaseCustomFields $customFields): JsonResponse
     {
-        $request->validate(['custom_field_model' => ['sometimes', Rule::in(['Supplier', 'Bill'])]]);
-        $model = $request->input('custom_field_model');
-        $canUse = fn (string $entity, string $class) => collect(['view', 'create', 'edit'])->contains(fn ($action) => BouncerFacade::can("{$action}-{$entity}", $class));
-        $allowed = match ($model) {
-            'Supplier' => $canUse('supplier', Supplier::class),
-            'Bill' => $canUse('bill', Bill::class),
+        $model = $request->validated('custom_field_model');
+
+        abort_unless($this->allowed($model), 403);
+
+        $company = (int) $request->header('company');
+        $data = [];
+
+        if ($model) {
+            $data['custom_fields'] = CustomFieldResource::collection($customFields->definitions($company, $model));
+        }
+
+        $data['categories'] = ExpenseCategory::query()
+            ->where('company_id', $company)
+            ->orderBy('name')
+            ->toBase()
+            ->get(['id', 'name']);
+
+        $data['currencies'] = Currency::query()->orderBy('code')->get();
+
+        $data['taxes'] = TaxType::query()
+            ->where('company_id', $company)
+            ->where('type', TaxType::TYPE_GENERAL)
+            ->where('transaction_type', TaxType::TRANSACTION_TYPE_PURCHASES)
+            ->toBase()
+            ->get(['id', 'name', 'percent', 'calculation_type', 'fixed_amount', 'compound_tax']);
+
+        $data['payment_methods'] = PaymentMethod::query()
+            ->where('company_id', $company)
+            ->where('type', PaymentMethod::TYPE_GENERAL)
+            ->toBase()
+            ->get(['id', 'name']);
+
+        return response()->json(['data' => $data]);
+    }
+
+    /**
+     * A form's custom fields go to whoever can view, create or edit its
+     * records; the lists alone to whoever can view suppliers or bills.
+     */
+    private function allowed(?string $model): bool
+    {
+        return match ($model) {
+            'Supplier' => $this->canUse('supplier', Supplier::class),
+            'Bill' => $this->canUse('bill', Bill::class),
             default => BouncerFacade::can('view-supplier', Supplier::class) || BouncerFacade::can('view-bill', Bill::class),
         };
-        abort_unless($allowed, 403);
-        $company = (int) $request->header('company');
+    }
 
-        return response()->json(['data' => [
-            ...($model ? ['custom_fields' => CustomFieldResource::collection($customFields->definitions($company, $model))] : []),
-            'categories' => ExpenseCategory::query()->where('company_id', $company)->orderBy('name')->toBase()->get(['id', 'name']),
-            'currencies' => Currency::query()->orderBy('code')->get(),
-            'taxes' => TaxType::query()->where('company_id', $company)->where('type', TaxType::TYPE_GENERAL)->where('transaction_type', TaxType::TRANSACTION_TYPE_PURCHASES)->toBase()->get(['id', 'name', 'percent', 'calculation_type', 'fixed_amount', 'compound_tax']),
-            'payment_methods' => PaymentMethod::query()->where('company_id', $company)->where('type', PaymentMethod::TYPE_GENERAL)->toBase()->get(['id', 'name']),
-        ]]);
+    private function canUse(string $entity, string $class): bool
+    {
+        foreach (['view', 'create', 'edit'] as $action) {
+            if (BouncerFacade::can("{$action}-{$entity}", $class)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
