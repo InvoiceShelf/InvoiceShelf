@@ -7,6 +7,7 @@ use App\Domains\Money\Models\Currency;
 use App\Domains\Purchases\Application\PurchaseCustomFields;
 use App\Domains\Purchases\Http\Requests\PurchaseOptionsRequest;
 use App\Domains\Purchases\Models\Bill;
+use App\Domains\Purchases\Models\Expense;
 use App\Domains\Purchases\Models\ExpenseCategory;
 use App\Domains\Purchases\Models\RecurringCost;
 use App\Domains\Purchases\Models\Supplier;
@@ -69,6 +70,7 @@ class PurchaseOptionsController extends Controller
         return match ($model) {
             'Supplier' => $this->canUse('supplier', Supplier::class),
             'Bill' => $this->canUse('bill', Bill::class) || $this->canUse('recurring-cost', RecurringCost::class),
+            'Expense' => $this->canUse('expense', Expense::class) || $this->canUse('recurring-cost', RecurringCost::class),
             default => BouncerFacade::can('view-supplier', Supplier::class) || BouncerFacade::can('view-bill', Bill::class),
         };
     }

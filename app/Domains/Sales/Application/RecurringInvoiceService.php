@@ -14,6 +14,7 @@ use App\Support\PublicToken;
 use App\Support\Recurrence\Cadence;
 use App\Support\Recurrence\RecurrenceRunner;
 use Carbon\Carbon;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -59,6 +60,15 @@ class RecurringInvoiceService
         return $recurringInvoice;
     }
 
+    /**
+     * Save changes to a schedule.
+     *
+     * The next run stays where it was unless the frequency or the start date
+     * changed: the form sends one counted from the start date, and taking it
+     * would bill the latest period again. A changed cadence, or a paused
+     * schedule made active once its next run has gone by, carries on from
+     * now (or from a start date still ahead).
+     */
     public function update(
         RecurringInvoice $recurringInvoice,
         array $attributes,
@@ -66,7 +76,18 @@ class RecurringInvoiceService
         ?array $taxes = null,
         ?iterable $customFields = null,
     ): RecurringInvoice {
-        $recurringInvoice->update($attributes);
+        $cadenceChanged = $this->cadenceChanged($recurringInvoice, $attributes);
+        $resumed = $recurringInvoice->status !== RecurringInvoice::ACTIVE
+            && ($attributes['status'] ?? $recurringInvoice->status) === RecurringInvoice::ACTIVE;
+
+        $recurringInvoice->update(Arr::except($attributes, ['next_invoice_at']));
+
+        $overdue = $recurringInvoice->next_invoice_at === null
+            || Carbon::parse($recurringInvoice->next_invoice_at)->isPast();
+
+        if ($cadenceChanged || ($resumed && $overdue)) {
+            $recurringInvoice->updateNextInvoiceDate();
+        }
 
         $companyCurrency = CompanySetting::getSetting('currency', $recurringInvoice->company_id);
 
@@ -95,6 +116,25 @@ class RecurringInvoiceService
         }
 
         return $recurringInvoice;
+    }
+
+    /**
+     * Whether a save changes when the schedule runs.
+     *
+     * @param  array<string, mixed>  $attributes
+     */
+    private function cadenceChanged(RecurringInvoice $recurringInvoice, array $attributes): bool
+    {
+        if (array_key_exists('frequency', $attributes) && $attributes['frequency'] !== $recurringInvoice->frequency) {
+            return true;
+        }
+
+        if (! array_key_exists('starts_at', $attributes)) {
+            return false;
+        }
+
+        return $recurringInvoice->starts_at === null
+            || ! Carbon::parse($attributes['starts_at'])->equalTo(Carbon::parse($recurringInvoice->starts_at));
     }
 
     public function delete(Collection $ids): bool

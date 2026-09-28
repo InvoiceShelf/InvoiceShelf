@@ -2284,6 +2284,7 @@
     "purchase_recurring_not_active": "Only an active schedule can be paused.",
     "purchase_recurring_not_paused": "Only a paused schedule can be resumed.",
     "purchase_recurring_failed": "The record could not be generated. The schedule will try again.",
+    "purchase_recurring_template_invalid": "This schedule no longer passes validation. Open it and save it to see what needs fixing.",
     "purchase_recurring_tax_exceeds_amount": "Purchase tax cannot exceed the expense amount."
   },
   "pdf_estimate_label": "Estimate",

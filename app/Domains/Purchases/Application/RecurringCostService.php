@@ -6,7 +6,6 @@ use App\Domains\Purchases\Contracts\RecurringCostNotifier;
 use App\Domains\Purchases\Http\Requests\BillRequest;
 use App\Domains\Purchases\Http\Requests\RecurringCostRequest;
 use App\Domains\Purchases\Models\RecurringCost;
-use App\Domains\Taxation\Models\TaxType;
 use App\Support\Recurrence\Cadence;
 use App\Support\Recurrence\RecurrenceRunner;
 use App\Support\Recurrence\RecurringSchedule;
@@ -15,7 +14,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Throwable;
 
@@ -45,7 +43,10 @@ class RecurringCostService
      * Once a schedule has generated anything its supplier and mode are fixed:
      * a different supplier or kind of record is a different schedule. A
      * change of frequency or start moves the next run; a completed schedule
-     * whose limit no longer holds is active again.
+     * whose limit no longer holds is active again. A schedule made active
+     * again, from paused or completed, carries on from today like a resumed
+     * one rather than making up the runs it sat out. Saving clears the last
+     * failure, so a fixed template is tried on the next run.
      */
     public function save(?RecurringCost $schedule, int $companyId, ?int $actorId, array $data): RecurringCost
     {
@@ -63,7 +64,7 @@ class RecurringCostService
                 PurchaseInputs::ensure($data['mode'] === $record->mode, 'mode', 'purchase_recurring_supplier_locked');
             }
 
-            $existingAnswers = $record->mode === RecurringCost::MODE_BILL ? ($record->template['customFields'] ?? []) : [];
+            $existingAnswers = $record->mode === $data['mode'] ? ($record->template['customFields'] ?? []) : [];
             $template = $this->validateTemplate($companyId, $data, $existingAnswers);
             $cadenceChanged = ! $record->exists
                 || $record->frequency !== $data['frequency']
@@ -75,6 +76,7 @@ class RecurringCostService
                 'due_days' => $data['due_days'] ?? 0,
                 'create_as_draft' => $data['mode'] === RecurringCost::MODE_BILL && ($data['create_as_draft'] ?? false),
                 'notify_creator' => $data['notify_creator'] ?? false,
+                'last_error' => null,
             ]);
 
             if (! $record->exists) {
@@ -88,7 +90,15 @@ class RecurringCostService
             }
 
             $this->settleStatus($record);
+
+            if ($record->exists && ! $cadenceChanged && $record->status === RecurringSchedule::ACTIVE
+                && $record->getOriginal('status') !== RecurringSchedule::ACTIVE) {
+                $this->restartFromToday($record);
+                $this->settleStatus($record);
+            }
+
             $record->save();
+            $this->runner->forgetFailure($record);
 
             return $record;
         });
@@ -109,14 +119,7 @@ class RecurringCostService
             } else {
                 PurchaseInputs::ensure($record->status === RecurringSchedule::ON_HOLD, 'action', 'purchase_recurring_not_paused');
                 $record->status = RecurringSchedule::ACTIVE;
-
-                $startOfToday = CarbonImmutable::now($record->scheduleTimeZone())->startOfDay();
-
-                if ($record->next_run_at === null || CarbonImmutable::parse($record->next_run_at)->lessThan($startOfToday)) {
-                    $record->next_run_at = Cadence::next($record->frequency, $startOfToday->subSecond(), $record->scheduleTimeZone())
-                        ->format('Y-m-d H:i:s');
-                }
-
+                $this->restartFromToday($record);
                 $this->settleStatus($record);
             }
 
@@ -189,35 +192,66 @@ class RecurringCostService
         $money = PurchaseInputs::money($schedule->company_id, $template);
 
         return $this->expenses->create([
-            ...Arr::except($template, ['taxes']),
+            ...Arr::except($template, ['taxes', 'customFields']),
             ...$money,
             'company_id' => $schedule->company_id,
             'creator_id' => $schedule->creator_id,
             'supplier_id' => $schedule->supplier_id,
             'expense_date' => $date,
             'base_amount' => PurchaseInputs::base($template['amount'], $money['exchange_rate']),
-        ], $template['taxes'] ?? []);
+        ], $template['taxes'] ?? [], null, $template['customFields'] ?? []);
     }
 
     /**
-     * Note why a run failed on the schedule, and tell its creator when a run
-     * of failures begins; the runner tries again later.
+     * Note why a run failed on the schedule, and tell its creator when the
+     * runs start failing or start failing for a different reason; the runner
+     * tries again later.
      */
     private function failed(RecurringCost $schedule, Throwable $error): void
     {
-        $reason = $error instanceof ValidationException
-            ? (string) (Arr::flatten($error->errors())[0] ?? 'purchase_recurring_failed')
-            : 'purchase_recurring_failed';
+        $reason = $this->failureReason($error);
 
         if (! $error instanceof ValidationException) {
             report($error);
         }
 
-        $firstFailure = $schedule->last_error === null;
+        $newReason = $schedule->last_error !== $reason;
         RecurringCost::query()->whereKey($schedule->id)->update(['last_error' => $reason]);
 
-        if ($firstFailure && $schedule->notify_creator) {
+        if ($newReason && $schedule->notify_creator) {
             $this->notifier->failed($schedule, $reason);
+        }
+    }
+
+    /**
+     * The error code a failed run is shown with. Our own checks fail with a
+     * code; a rule of the bill or expense form fails with a sentence about a
+     * field, which the schedule's page and email cannot place, so it is
+     * shown as a template that needs opening and saving again, where the
+     * form points at the field.
+     */
+    private function failureReason(Throwable $error): string
+    {
+        if (! $error instanceof ValidationException) {
+            return 'purchase_recurring_failed';
+        }
+
+        $message = (string) (Arr::flatten($error->errors())[0] ?? '');
+
+        return preg_match('/^[a-z][a-z0-9_]*$/', $message) === 1 ? $message : 'purchase_recurring_template_invalid';
+    }
+
+    /**
+     * Carry a schedule on from today: its next run becomes the first one
+     * today or later, when the stored one has already gone by.
+     */
+    private function restartFromToday(RecurringCost $record): void
+    {
+        $timezone = $record->scheduleTimeZone();
+        $startOfToday = CarbonImmutable::now($timezone)->startOfDay();
+
+        if ($record->next_run_at === null || CarbonImmutable::parse($record->next_run_at)->lessThan($startOfToday)) {
+            $record->next_run_at = Cadence::next($record->frequency, $startOfToday->subSecond(), $timezone)->format('Y-m-d H:i:s');
         }
     }
 
@@ -251,32 +285,35 @@ class RecurringCostService
     }
 
     /**
-     * The template as the record's own form would accept it.
+     * The template as the record's own form would accept it, carrying its
+     * custom field answers for bills or for expenses.
      *
      * A bill template is checked with the bill rules (the dates filled in for
-     * the check and taken out again), carrying its custom field answers; when
-     * generating, answers to fields deleted since are dropped. An expense
-     * template has its own rules and no custom fields.
+     * the check and taken out again); an expense template with the expense
+     * template rules. When generating, answers to fields deleted since are
+     * dropped, and a field made required since fails the run.
      */
     private function validateTemplate(int $companyId, array $data, array $existing = [], bool $generating = false): array
     {
         $input = $data['template'];
+        $model = $data['mode'] === RecurringCost::MODE_BILL ? 'Bill' : 'Expense';
 
-        if ($data['mode'] === RecurringCost::MODE_BILL) {
-            if ($generating) {
-                $input['customFields'] = $this->customFields->retained($companyId, 'Bill', $input['customFields'] ?? []);
-            }
+        if ($generating) {
+            $input['customFields'] = $this->customFields->retained($companyId, $model, $input['customFields'] ?? []);
+        }
 
-            $input['customFields'] = $this->customFields->resolve(
-                $companyId,
-                'Bill',
-                $input['customFields'] ?? [],
-                $this->customFields->retained($companyId, 'Bill', $existing),
-                'template.customFields',
-            );
+        $answers = $this->customFields->resolve(
+            $companyId,
+            $model,
+            $input['customFields'] ?? [],
+            $this->customFields->retained($companyId, $model, $existing),
+            'template.customFields',
+        );
 
+        if ($model === 'Bill') {
             $validated = Validator::make([
                 ...$input,
+                'customFields' => $answers,
                 'supplier_id' => $data['supplier_id'],
                 'document_date' => $data['starts_at'],
                 'due_date' => $data['starts_at'],
@@ -286,26 +323,10 @@ class RecurringCostService
             return Arr::except($validated, ['supplier_id', 'document_date', 'due_date', 'status']);
         }
 
-        $validated = Validator::make($input, [
-            'customFields' => ['prohibited'],
-            'amount' => ['required', 'integer', 'min:1', 'max:999999999999'],
-            'currency_id' => ['required', 'integer', Rule::exists('currencies', 'id')],
-            'exchange_rate' => ['required', 'numeric', 'gt:0', 'max:1000000'],
-            'expense_category_id' => ['required', 'integer', Rule::exists('expense_categories', 'id')->where('company_id', $companyId)],
-            'payment_method_id' => ['nullable', 'integer', Rule::exists('payment_methods', 'id')->where('company_id', $companyId)],
-            'notes' => ['nullable', 'string', 'max:10000'],
-            'taxes' => ['sometimes', 'array'],
-            'taxes.*.tax_type_id' => [
-                'required',
-                'integer',
-                'distinct',
-                Rule::exists('tax_types', 'id')
-                    ->where('company_id', $companyId)
-                    ->where('type', TaxType::TYPE_GENERAL)
-                    ->where('transaction_type', TaxType::TRANSACTION_TYPE_PURCHASES),
-            ],
-            'taxes.*.amount' => ['required', 'integer', 'min:0'],
-        ])->validate();
+        $validated = Validator::make(
+            Arr::except($input, ['customFields']),
+            RecurringCostRequest::expenseTemplateRules($companyId),
+        )->validate();
 
         PurchaseInputs::ensure(
             array_sum(array_column($validated['taxes'] ?? [], 'amount')) <= $validated['amount'],
@@ -313,6 +334,6 @@ class RecurringCostService
             'purchase_recurring_tax_exceeds_amount',
         );
 
-        return $validated;
+        return [...$validated, 'customFields' => $answers];
     }
 }

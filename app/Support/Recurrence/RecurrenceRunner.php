@@ -82,11 +82,7 @@ final class RecurrenceRunner
             } catch (Throwable $error) {
                 Cache::put($this->failureKey($schedule), time(), self::RETRY_AFTER_SECONDS);
 
-                if ($failed) {
-                    $failed($schedule->fresh() ?? $schedule, $error);
-                } else {
-                    report($error);
-                }
+                $this->reportFailure($schedule, $error, $failed);
 
                 return $generated;
             }
@@ -103,6 +99,37 @@ final class RecurrenceRunner
         }
 
         return $generated;
+    }
+
+    /**
+     * Let a schedule be tried on the next run instead of waiting out its
+     * failure, for when someone has just fixed what made it fail.
+     */
+    public function forgetFailure(Model $schedule): void
+    {
+        Cache::forget($this->failureKey($schedule));
+    }
+
+    /**
+     * Hand a failure to the schedule's own handler. That handler failing in
+     * turn is reported, never allowed to stop the schedules after this one.
+     *
+     * @param  (Closure(Model&RecurringSchedule, Throwable): void)|null  $failed
+     */
+    private function reportFailure(Model $schedule, Throwable $error, ?Closure $failed): void
+    {
+        if ($failed === null) {
+            report($error);
+
+            return;
+        }
+
+        try {
+            $failed($schedule->fresh() ?? $schedule, $error);
+        } catch (Throwable $handlerError) {
+            report($error);
+            report($handlerError);
+        }
     }
 
     /**
@@ -178,19 +205,9 @@ final class RecurrenceRunner
      */
     private function latestDue(string $frequency, CarbonImmutable $due, string $timezone): CarbonImmutable
     {
-        $now = $this->now();
+        $latest = Cadence::latestAtOrBefore($frequency, $this->now(), $timezone);
 
-        for ($i = 0; $i < 10000; $i++) {
-            $next = Cadence::next($frequency, $due, $timezone);
-
-            if ($next->greaterThan($now)) {
-                return $due;
-            }
-
-            $due = $next;
-        }
-
-        return $due;
+        return $latest->greaterThan($due) ? $latest : $due;
     }
 
     private function now(): CarbonImmutable

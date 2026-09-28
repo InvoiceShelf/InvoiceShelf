@@ -18,7 +18,7 @@ class PurchaseOptionsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'custom_field_model' => ['sometimes', Rule::in(['Supplier', 'Bill'])],
+            'custom_field_model' => ['sometimes', Rule::in(['Supplier', 'Bill', 'Expense'])],
         ];
     }
 }

@@ -4,6 +4,7 @@ use App\Domains\Accounts\Application\RolePresetService;
 use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Accounts\Models\User;
 use App\Domains\Metadata\Models\CustomField;
+use App\Domains\Purchases\Contracts\RecurringCostNotifier;
 use App\Domains\Purchases\Mail\RecurringCostFailedMail;
 use App\Domains\Purchases\Mail\RecurringCostGeneratedMail;
 use App\Domains\Purchases\Models\Bill;
@@ -11,6 +12,7 @@ use App\Domains\Purchases\Models\Expense;
 use App\Domains\Purchases\Models\ExpenseCategory;
 use App\Domains\Purchases\Models\RecurringCost;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Mail;
 use Laravel\Sanctum\Sanctum;
 use Silber\Bouncer\BouncerFacade;
@@ -118,9 +120,28 @@ test('a count limit completes the schedule, and raising it reactivates it', func
     expect(Bill::query()->count())->toBe(2)
         ->and($schedule->fresh()->status)->toBe('COMPLETED');
 
+    // Months later the limit is raised: the schedule carries on from today
+    // instead of making up the runs it sat out.
+    Carbon::setTestNow('2026-09-15 12:00:00');
     $this->putJson('/api/v1/recurring-costs/'.$schedule->id, recurringBillPayload($this, ['limit_by' => 'COUNT', 'limit_count' => 5]))
         ->assertSuccessful()
-        ->assertJsonPath('data.status', 'ACTIVE');
+        ->assertJsonPath('data.status', 'ACTIVE')
+        ->assertJsonPath('data.next_run_at', '2026-10-01 00:00:00');
+
+    artisan('recurring-costs:generate')->assertSuccessful();
+    expect(Bill::query()->count())->toBe(2);
+});
+
+test('a paused schedule made active from the form skips the runs it sat out', function () {
+    $schedule = overdueSchedule($this, ['status' => 'ON_HOLD']);
+
+    $this->putJson('/api/v1/recurring-costs/'.$schedule->id, recurringBillPayload($this, ['status' => 'ACTIVE']))
+        ->assertSuccessful()
+        ->assertJsonPath('data.status', 'ACTIVE')
+        ->assertJsonPath('data.next_run_at', '2026-07-01 00:00:00');
+
+    artisan('recurring-costs:generate')->assertSuccessful();
+    expect(Bill::query()->count())->toBe(0);
 });
 
 test('a paused schedule makes nothing, and resuming keeps today but skips the paused runs', function () {
@@ -227,4 +248,111 @@ test('the detail lists what the schedule generated', function () {
         ->assertJsonPath('data.occurrences.0.scheduled_for', '2026-06-01')
         ->assertJsonPath('data.occurrences.0.record_type', 'bill')
         ->assertJsonPath('data.occurrences.0.amount', 5000);
+});
+
+test('a mail server that is down fails neither the run nor the runs after it', function () {
+    Mail::shouldReceive('to')->andThrow(new RuntimeException('SMTP is down'));
+    $travel = ExpenseCategory::create(['company_id' => $this->companyId, 'name' => 'Travel']);
+    $broken = overdueSchedule($this, [
+        'mode' => 'EXPENSE',
+        'notify_creator' => true,
+        'template' => ['amount' => 1999, 'currency_id' => $this->currencyId, 'exchange_rate' => 1, 'expense_category_id' => $travel->id],
+    ], '2026-06-01 00:00:00');
+    $working = overdueSchedule($this, ['notify_creator' => true], '2026-05-01 00:00:00');
+    // Taken away underneath the expense schedule, past the deletion guard.
+    ExpenseCategory::query()->whereKey($travel->id)->delete();
+
+    artisan('recurring-costs:generate')->assertSuccessful();
+
+    expect($broken->fresh()->last_error)->toBe('purchase_recurring_template_invalid')
+        ->and(Bill::query()->count())->toBe(2)
+        ->and($working->fresh()->last_error)->toBeNull()
+        ->and($working->fresh()->next_run_at)->toBe('2026-07-01 00:00:00');
+});
+
+test('a failure from a form rule is shown as a template to fix, in words', function () {
+    $errors = json_decode(file_get_contents(base_path('lang/en.json')), true)['errors'];
+
+    expect($errors)->toHaveKey('purchase_recurring_template_invalid');
+});
+
+test('someone no longer in the company is not emailed about its schedules', function () {
+    Mail::fake();
+    overdueSchedule($this, ['notify_creator' => true], '2026-06-01 00:00:00');
+    $this->user->companies()->detach($this->companyId);
+
+    artisan('recurring-costs:generate')->assertSuccessful();
+
+    expect(Bill::query()->count())->toBe(1);
+    Mail::assertNothingSent();
+});
+
+test('expense custom field answers are required like the form and carry over', function () {
+    $field = CustomField::factory()->create(['company_id' => $this->companyId, 'model_type' => 'Expense', 'type' => 'Input', 'label' => 'Project', 'is_required' => true, 'placement' => 'internal', 'order' => 0]);
+    $payload = recurringBillPayload($this, [
+        'mode' => 'EXPENSE',
+        'template' => ['amount' => 1999, 'currency_id' => $this->currencyId, 'exchange_rate' => 1, 'expense_category_id' => $this->category->id],
+    ]);
+
+    $this->postJson('/api/v1/recurring-costs', $payload)->assertUnprocessable();
+
+    $payload['template']['customFields'] = [['id' => $field->id, 'value' => 'Apollo']];
+    $id = $this->postJson('/api/v1/recurring-costs', $payload)->assertSuccessful()->json('data.id');
+    RecurringCost::query()->whereKey($id)->update(['next_run_at' => '2026-06-01 00:00:00']);
+
+    artisan('recurring-costs:generate')->assertSuccessful();
+
+    expect(Expense::query()->sole()->fields()->first()->defaultAnswer)->toBe('Apollo');
+});
+
+test('saving a failing schedule clears its failure, and a new reason is emailed again', function () {
+    Mail::fake();
+    $schedule = overdueSchedule($this, [
+        'mode' => 'EXPENSE',
+        'notify_creator' => true,
+        'template' => ['amount' => 1999, 'currency_id' => $this->currencyId, 'exchange_rate' => 1, 'expense_category_id' => $this->category->id],
+    ], '2026-06-01 00:00:00');
+    $this->supplier->update(['enabled' => false]);
+
+    artisan('recurring-costs:generate')->assertSuccessful();
+    expect($schedule->fresh()->last_error)->toBe('purchase_supplier_inactive');
+
+    // A different reason after the retry window is a new email.
+    $this->supplier->update(['enabled' => true]);
+    ExpenseCategory::query()->whereKey($this->category->id)->delete();
+    Carbon::setTestNow('2026-06-15 14:00:00');
+    artisan('recurring-costs:generate')->assertSuccessful();
+    expect($schedule->fresh()->last_error)->toBe('purchase_recurring_template_invalid');
+    Mail::assertSent(RecurringCostFailedMail::class, 2);
+
+    // Fixing and saving it lets the very next run go ahead.
+    $category = ExpenseCategory::create(['company_id' => $this->companyId, 'name' => 'Rent']);
+    $this->putJson('/api/v1/recurring-costs/'.$schedule->id, recurringBillPayload($this, [
+        'mode' => 'EXPENSE',
+        'notify_creator' => true,
+        'template' => ['amount' => 1999, 'currency_id' => $this->currencyId, 'exchange_rate' => 1, 'expense_category_id' => $category->id],
+    ]))->assertSuccessful()->assertJsonPath('data.last_error', null);
+    $schedule->refresh()->forceFill(['next_run_at' => '2026-06-01 00:00:00'])->save();
+
+    Carbon::setTestNow('2026-06-15 14:01:00');
+    artisan('recurring-costs:generate')->assertSuccessful();
+
+    expect(Expense::query()->count())->toBe(1);
+});
+
+test('a failure handler that throws does not stop the schedules after it', function () {
+    app()->instance(RecurringCostNotifier::class, new class implements RecurringCostNotifier
+    {
+        public function generated(RecurringCost $schedule, Model $record): void {}
+
+        public function failed(RecurringCost $schedule, string $reason): void
+        {
+            throw new RuntimeException('Notifier is broken');
+        }
+    });
+    $schedule = overdueSchedule($this, ['notify_creator' => true], '2026-06-01 00:00:00');
+    $this->supplier->update(['enabled' => false]);
+    artisan('recurring-costs:generate')->assertSuccessful();
+
+    expect($schedule->fresh()->last_error)->toBe('purchase_supplier_inactive');
 });

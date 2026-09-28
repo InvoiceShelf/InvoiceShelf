@@ -373,7 +373,11 @@ class RecurringInvoice extends Model implements RecurringSchedule
         $moment = Carbon::parse($from ?: Carbon::now());
 
         if ($this->starts_at && Carbon::parse($this->starts_at)->greaterThan($moment)) {
-            $moment = Carbon::parse($this->starts_at);
+            $start = Carbon::parse($this->starts_at);
+
+            // A start date the form set (midnight) goes as a bare date, which
+            // Cadence reads as that day in the company's zone.
+            return $start->isStartOfDay() ? $start->toDateString() : $start->format('Y-m-d H:i:s');
         }
 
         return $moment->format('Y-m-d H:i:s');

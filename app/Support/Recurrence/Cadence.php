@@ -26,12 +26,19 @@ final class Cadence
      */
     public static function next(string $frequency, CarbonInterface|string $after, string $timezone): CarbonImmutable
     {
-        $appZone = config('app.timezone', 'UTC');
-        $from = CarbonImmutable::parse($after, $appZone)->setTimezone($timezone);
+        $next = (new CronExpression($frequency))->getNextRunDate(self::moment($after, $timezone), 0, false, $timezone);
 
-        $next = (new CronExpression($frequency))->getNextRunDate($from, 0, false, $timezone);
+        return CarbonImmutable::instance($next)->setTimezone(config('app.timezone', 'UTC'));
+    }
 
-        return CarbonImmutable::instance($next)->setTimezone($appZone);
+    /**
+     * The last occurrence at or before the given moment.
+     */
+    public static function latestAtOrBefore(string $frequency, CarbonInterface|string $moment, string $timezone): CarbonImmutable
+    {
+        $previous = (new CronExpression($frequency))->getPreviousRunDate(self::moment($moment, $timezone), 0, true, $timezone);
+
+        return CarbonImmutable::instance($previous)->setTimezone(config('app.timezone', 'UTC'));
     }
 
     /**
@@ -50,6 +57,21 @@ final class Cadence
         }
 
         return $dates;
+    }
+
+    /**
+     * A moment in the company's zone. A bare date (`2026-10-01`) is the start
+     * of that day where the company is, which is what a person means by a
+     * schedule's start date; anything with a time is a stored moment in the
+     * application's zone.
+     */
+    private static function moment(CarbonInterface|string $value, string $timezone): CarbonImmutable
+    {
+        if (is_string($value) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
+            return CarbonImmutable::parse($value, $timezone)->startOfDay();
+        }
+
+        return CarbonImmutable::parse($value, config('app.timezone', 'UTC'))->setTimezone($timezone);
     }
 
     /**

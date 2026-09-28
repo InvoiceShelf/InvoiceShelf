@@ -139,7 +139,7 @@ return new class extends Migration
             $table->unsignedInteger('due_days')->default(30);
             $table->boolean('create_as_draft')->default(false);
             $table->boolean('notify_creator')->default(false);
-            $table->text('template');
+            $table->longText('template');
             $table->text('last_error')->nullable();
             $table->timestamps();
         });
