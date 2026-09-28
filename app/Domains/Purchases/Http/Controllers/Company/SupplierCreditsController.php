@@ -24,9 +24,12 @@ class SupplierCreditsController extends Controller
         $query->when($request->integer('supplier_id'), fn ($q, $id) => $q->where('supplier_id', $id));
         $query->when($request->input('search'), fn ($q, $term) => $q->where('number', 'like', '%'.$term.'%'));
         $query->when($request->input('status'), fn ($q, $status) => $q->where('status', $status));
-        $query->when($request->input('from_date'), fn ($q, $date) => $q->where('document_date', '>=', $date))->when($request->input('to_date'), fn ($q, $date) => $q->where('document_date', '<=', $date));
+        $query->when($request->input('from_date'), fn ($q, $date) => $q->where('document_date', '>=', $date));
+        $query->when($request->input('to_date'), fn ($q, $date) => $q->where('document_date', '<=', $date));
 
-        return SupplierCreditResource::collection($query->orderByDesc('id')->paginate(min(100, max(1, $request->integer('limit', 20)))));
+        $limit = min(100, max(1, $request->integer('limit', 20)));
+
+        return SupplierCreditResource::collection($query->orderByDesc('id')->paginate($limit));
     }
 
     public function show(SupplierCredit $supplierCredit): SupplierCreditResource
@@ -40,13 +43,15 @@ class SupplierCreditsController extends Controller
     {
         $this->authorize('create', SupplierCredit::class);
 
-        return new SupplierCreditResource($service->createCredit((int) $request->header('company'), $request->user()->id, $request->validated())->load(self::RELATIONS));
+        $credit = $service->createCredit((int) $request->header('company'), $request->user()->id, $request->validated());
+
+        return new SupplierCreditResource($credit->load(self::RELATIONS));
     }
 
     public function action(PurchaseActionRequest $request, SupplierCredit $supplierCredit, PurchaseDocumentService $service): SupplierCreditResource
     {
         $this->authorize($request->input('action') === 'void' ? 'delete' : 'update', $supplierCredit);
-        $service->act($supplierCredit, $request->input('action'), $request->input('reason'), $request->user()->id);
+        $service->act($supplierCredit, $request->input('action'), $request->input('reason'));
 
         return new SupplierCreditResource($supplierCredit->fresh(self::RELATIONS));
     }
@@ -55,6 +60,6 @@ class SupplierCreditsController extends Controller
     {
         $this->authorize('update', $supplierCredit);
 
-        return new SupplierCreditResource($service->replaceAllocations($supplierCredit, $request->validated('allocations'), $request->user()->id));
+        return new SupplierCreditResource($service->replaceAllocations($supplierCredit, $request->validated('allocations')));
     }
 }

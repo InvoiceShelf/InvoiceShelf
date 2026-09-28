@@ -69,7 +69,7 @@ test('purchase costs exclude drafts and voids while credits retain their signs',
     $service = app(PurchaseDocumentService::class);
     $service->saveBill(null, $this->companyId, $this->user->id, [...$payload, 'status' => 'DRAFT']);
     $void = $service->saveBill(null, $this->companyId, $this->user->id, $payload);
-    $service->act($void, 'void', 'Duplicate', $this->user->id);
+    $service->act($void, 'void', 'Duplicate');
     $service->saveBill(null, $this->companyId, $this->user->id, [...$payload, 'document_date' => '2026-10-01', 'due_date' => '2026-10-30']);
     $service->saveBill(null, $this->companyId, $this->user->id, $payload);
     $creditPayload = $payload;

@@ -23,9 +23,12 @@ class SupplierRefundsController extends Controller
         $query->when($request->integer('supplier_id'), fn ($q, $id) => $q->where('supplier_id', $id));
         $query->when($request->input('search'), fn ($q, $term) => $q->where('number', 'like', '%'.$term.'%'));
         $query->when($request->input('status'), fn ($q, $status) => $q->where('status', $status));
-        $query->when($request->input('from_date'), fn ($q, $date) => $q->where('payment_date', '>=', $date))->when($request->input('to_date'), fn ($q, $date) => $q->where('payment_date', '<=', $date));
+        $query->when($request->input('from_date'), fn ($q, $date) => $q->where('payment_date', '>=', $date));
+        $query->when($request->input('to_date'), fn ($q, $date) => $q->where('payment_date', '<=', $date));
 
-        return SupplierRefundResource::collection($query->orderByDesc('id')->paginate(min(100, max(1, $request->integer('limit', 20)))));
+        $limit = min(100, max(1, $request->integer('limit', 20)));
+
+        return SupplierRefundResource::collection($query->orderByDesc('id')->paginate($limit));
     }
 
     public function show(SupplierRefund $supplierRefund): SupplierRefundResource
@@ -39,14 +42,16 @@ class SupplierRefundsController extends Controller
     {
         $this->authorize('create', SupplierRefund::class);
 
-        return new SupplierRefundResource($service->recordRefund((int) $request->header('company'), $request->user()->id, $request->validated())->load(self::RELATIONS));
+        $refund = $service->recordRefund((int) $request->header('company'), $request->user()->id, $request->validated());
+
+        return new SupplierRefundResource($refund->load(self::RELATIONS));
     }
 
     public function action(PurchaseActionRequest $request, SupplierRefund $supplierRefund, SupplierSettlementService $service): SupplierRefundResource
     {
         $this->authorize($request->input('action') === 'void' ? 'delete' : 'update', $supplierRefund);
         PurchaseInputs::ensure($request->input('action') === 'void', 'action', 'Only void is supported.');
-        $service->void($supplierRefund, (string) $request->input('reason'), $request->user()->id);
+        $service->void($supplierRefund, (string) $request->input('reason'));
 
         return new SupplierRefundResource($supplierRefund->fresh(self::RELATIONS));
     }

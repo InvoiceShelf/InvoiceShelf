@@ -24,9 +24,12 @@ class SupplierPaymentsController extends Controller
         $query->when($request->integer('supplier_id'), fn ($q, $id) => $q->where('supplier_id', $id));
         $query->when($request->input('search'), fn ($q, $term) => $q->where('number', 'like', '%'.$term.'%'));
         $query->when($request->input('status'), fn ($q, $status) => $q->where('status', $status));
-        $query->when($request->input('from_date'), fn ($q, $date) => $q->where('payment_date', '>=', $date))->when($request->input('to_date'), fn ($q, $date) => $q->where('payment_date', '<=', $date));
+        $query->when($request->input('from_date'), fn ($q, $date) => $q->where('payment_date', '>=', $date));
+        $query->when($request->input('to_date'), fn ($q, $date) => $q->where('payment_date', '<=', $date));
 
-        return SupplierPaymentResource::collection($query->orderByDesc('id')->paginate(min(100, max(1, $request->integer('limit', 20)))));
+        $limit = min(100, max(1, $request->integer('limit', 20)));
+
+        return SupplierPaymentResource::collection($query->orderByDesc('id')->paginate($limit));
     }
 
     public function show(SupplierPayment $supplierPayment): SupplierPaymentResource
@@ -40,14 +43,16 @@ class SupplierPaymentsController extends Controller
     {
         $this->authorize('create', SupplierPayment::class);
 
-        return new SupplierPaymentResource($service->recordPayment((int) $request->header('company'), $request->user()->id, $request->validated())->load(self::RELATIONS));
+        $payment = $service->recordPayment((int) $request->header('company'), $request->user()->id, $request->validated());
+
+        return new SupplierPaymentResource($payment->load(self::RELATIONS));
     }
 
     public function action(PurchaseActionRequest $request, SupplierPayment $supplierPayment, SupplierSettlementService $service): SupplierPaymentResource
     {
         $this->authorize($request->input('action') === 'void' ? 'delete' : 'update', $supplierPayment);
         PurchaseInputs::ensure($request->input('action') === 'void', 'action', 'Only void is supported.');
-        $service->void($supplierPayment, (string) $request->input('reason'), $request->user()->id);
+        $service->void($supplierPayment, (string) $request->input('reason'));
 
         return new SupplierPaymentResource($supplierPayment->fresh(self::RELATIONS));
     }
@@ -56,6 +61,6 @@ class SupplierPaymentsController extends Controller
     {
         $this->authorize('update', $supplierPayment);
 
-        return new SupplierPaymentResource($service->replaceAllocations($supplierPayment, $request->validated('allocations'), $request->user()->id));
+        return new SupplierPaymentResource($service->replaceAllocations($supplierPayment, $request->validated('allocations')));
     }
 }
