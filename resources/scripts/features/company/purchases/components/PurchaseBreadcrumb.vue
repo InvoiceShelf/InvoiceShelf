@@ -11,18 +11,11 @@ import type { PurchaseKind } from '@/scripts/types/domain/purchase'
 import { purchaseParent } from '../navigation'
 const props = defineProps<{
   kind: PurchaseKind
-  mode?: string
   title?: string
 }>()
 const router = useRouter()
 const parent = computed(
-  () => router.resolve(purchaseParent(props.kind, props.mode)).fullPath,
+  () => router.resolve(purchaseParent(props.kind)).fullPath,
 )
-const label = computed(() =>
-  props.kind === 'recurring-costs'
-    ? props.mode === 'EXPENSE'
-      ? 'purchases.recurring_expenses'
-      : 'purchases.recurring_bills'
-    : `purchases.${props.kind}`,
-)
+const label = computed(() => `purchases.${props.kind}`)
 </script>

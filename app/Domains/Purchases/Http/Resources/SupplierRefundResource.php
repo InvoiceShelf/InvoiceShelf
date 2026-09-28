@@ -31,7 +31,6 @@ class SupplierRefundResource extends JsonResource
             'voided_at' => $this->voided_at === null ? null : (string) $this->voided_at,
             'supplier' => new SupplierResource($this->whenLoaded('supplier')),
             'currency' => new CurrencyResource($this->whenLoaded('currency')),
-            'activities' => PurchaseActivityResource::collection($this->whenLoaded('activities')),
         ];
     }
 }

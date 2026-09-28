@@ -14,7 +14,6 @@ class PurchaseAttachmentService
     {
         PurchaseInputs::ensure($document->status !== 'VOID', 'file', 'A void document cannot accept attachments.');
         $media = $document->addMedia($file)->usingFileName(SafeFileName::from($file->getClientOriginalName()))->toMediaCollection('purchase_documents');
-        PurchaseAudit::record($document, 'attachment_added', $actorId, ['media_id' => $media->id, 'name' => $media->file_name]);
 
         return $media;
     }

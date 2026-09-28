@@ -42,7 +42,6 @@ class PurchaseDocumentService
                     PurchaseInputs::ensure($this->unchanged($record, $data, $money), 'items', 'Financial details are locked after settlement or credit. Use a supplier credit to adjust this bill.');
                     $record->update(Arr::only($data, ['reference', 'due_date', 'notes']));
                     $this->customFields->save($record, $answers);
-                    PurchaseAudit::record($record, 'details_updated', $actorId);
 
                     return $record->load(['supplier', 'currency', 'items']);
                 }
@@ -61,7 +60,6 @@ class PurchaseDocumentService
             $record->items()->delete();
             $record->items()->createMany($items);
             $this->settlements->recalculate($record);
-            PurchaseAudit::record($record, $bill ? 'updated' : 'created', $actorId, ['total' => $record->total, 'status' => $record->status]);
 
             return $record->load(['supplier', 'currency', 'items']);
         });
@@ -98,7 +96,6 @@ class PurchaseDocumentService
             ]);
             $credit->update(['number' => 'SC-'.str_pad((string) $credit->id, 6, '0', STR_PAD_LEFT)]);
             $credit->items()->createMany($items);
-            PurchaseAudit::record($credit, 'recorded', $actorId, ['total' => $credit->total, 'source_bill_id' => $credit->source_bill_id, 'source_expense_id' => $credit->source_expense_id]);
 
             return $credit->load(['supplier', 'currency', 'items', 'allocations', 'refunds']);
         });
@@ -106,7 +103,7 @@ class PurchaseDocumentService
 
     public function act(Bill|SupplierCredit $record, string $action, ?string $reason, ?int $actorId): void
     {
-        DB::transaction(function () use ($record, $action, $reason, $actorId): void {
+        DB::transaction(function () use ($record, $action, $reason): void {
             PurchaseInputs::lockSupplier($record->company_id, $record->supplier_id);
             $record->refresh();
             if ($action === 'open' && $record instanceof Bill) {
@@ -124,7 +121,6 @@ class PurchaseDocumentService
                 }
                 $record->update(['status' => 'VOID', 'voided_at' => now(), 'void_reason' => $reason]);
             }
-            PurchaseAudit::record($record, $action, $actorId, ['reason' => $reason]);
         });
     }
 

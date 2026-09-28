@@ -7,7 +7,6 @@ use App\Domains\Money\Models\Currency;
 use App\Domains\Purchases\Application\PurchaseCustomFields;
 use App\Domains\Purchases\Models\Bill;
 use App\Domains\Purchases\Models\ExpenseCategory;
-use App\Domains\Purchases\Models\RecurringCost;
 use App\Domains\Purchases\Models\Supplier;
 use App\Domains\Receivables\Models\PaymentMethod;
 use App\Domains\Taxation\Models\TaxType;
@@ -25,7 +24,7 @@ class PurchaseOptionsController extends Controller
         $canUse = fn (string $entity, string $class) => collect(['view', 'create', 'edit'])->contains(fn ($action) => BouncerFacade::can("{$action}-{$entity}", $class));
         $allowed = match ($model) {
             'Supplier' => $canUse('supplier', Supplier::class),
-            'Bill' => $canUse('bill', Bill::class) || $canUse('recurring-cost', RecurringCost::class),
+            'Bill' => $canUse('bill', Bill::class),
             default => BouncerFacade::can('view-supplier', Supplier::class) || BouncerFacade::can('view-bill', Bill::class),
         };
         abort_unless($allowed, 403);

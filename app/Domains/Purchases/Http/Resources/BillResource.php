@@ -45,7 +45,6 @@ class BillResource extends JsonResource
             'payment_allocations' => PurchaseAllocationResource::collection($this->whenLoaded('paymentAllocations')),
             'credit_allocations' => PurchaseAllocationResource::collection($this->whenLoaded('creditAllocations')),
             'credits' => PurchaseLinkResource::collection($this->whenLoaded('credits')),
-            'activities' => PurchaseActivityResource::collection($this->whenLoaded('activities')),
         ];
     }
 

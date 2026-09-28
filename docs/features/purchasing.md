@@ -7,8 +7,7 @@ branch; publication into the versioned documentation book follows its release re
 
 The Purchases menu contains **Suppliers**, **Bills**, **Expenses**, and **Payments**. Use the view selector in each list header:
 
-- Bills offers **One-time**, **Credits**, and **Recurring** views.
-- Expenses offers **One-time** and **Recurring** views.
+- Bills offers **Bills** and **Credits** views.
 - Payments offers **Payments** and **Refunds** views.
 
 The info icon beside a page or report-section title opens its explanation. The same
@@ -17,8 +16,8 @@ control is used across the business screens, including sales, customers, items, 
 Sales and Purchases both use **Payments** in their menus. Their section headings,
 collapsed-sidebar tooltips, and search results identify which side a payment belongs to.
 
-The available views follow the user's permissions. Existing links to credits,
-refunds, and recurring costs still open the corresponding screen.
+The available views follow the user's permissions. Existing links to credits and
+refunds still open the corresponding screen.
 
 ## Choosing a record
 
@@ -38,8 +37,7 @@ Category, payment-method, and purchase-tax selectors offer inline creation when 
 user has permission. Saving selects the new record in the field that opened the dialog;
 a new tax is added to the line's existing selection. Cancelling keeps the purchase
 draft intact. A supplier's default category can also be created inside its form.
-Settled bills, linked credits, and schedules that have generated records keep their
-supplier fixed. Refunds display the supplier belonging to the chosen source.
+Settled bills and linked credits keep their supplier fixed. Refunds display the supplier belonging to the chosen source.
 
 ## Custom fields
 
@@ -56,14 +54,8 @@ validated when saving. Paid or credited bills still allow custom-field edits und
 the bill-edit permission, while their financial details remain locked. Void bills
 remain read-only.
 
-Recurring bills use **Bill** definitions. Template answers are copied into each new
-bill; changing the template never changes previous bills. Generation ignores
-definitions deleted since the template was saved. Missing required or invalid
-answers leave the occurrence pending with an error for correction and retry.
-
-This support is for supplier and bill records, including recurring bills. It does
-not add fields to bill lines, credits, payments, refunds, or recurring expenses,
-and these internal fields do not print on PDFs.
+This support is for supplier and bill records. It does not add fields to bill lines,
+credits, payments or refunds, and these internal fields do not print on PDFs.
 
 ## Recording a bill
 
@@ -80,7 +72,7 @@ currency. The unapplied remainder is an advance available for later bills.
 On a supplier payment, **Manage allocations** changes which bills it settles. Zero
 releases an allocation, reopening that bill. Payment creation and allocation updates
 are separate permissions. Supplier details link to the supplier's bills, payments,
-credits, refunds, and recurring costs, with balances grouped by currency.
+credits and refunds, with balances grouped by currency.
 
 ## Credits and refunds
 
@@ -100,23 +92,14 @@ be refunded. A refund cannot exceed the available balance.
 **More → Void** corrects an entry made in error and requires a reason. It is not a substitute
 for recording returned cash. A bill cannot be voided while settlements or active linked
 credits remain; credits cannot be voided while allocations or active refunds remain;
-payments cannot be voided while active refunds remain. Changes appear in history.
+payments cannot be voided while active refunds remain. A void keeps its reason on the
+record.
 
-## Recurring costs
+## Not yet available
 
-Use **Bills → Recurring bills** for unpaid invoices, or **Expenses → Recurring expenses** for known paid charges. A recurring cost normally creates an unpaid bill. Choose a frequency and interval,
-start date, optional end date or occurrence count, and the bill's payment terms.
-Monthly dates retain their original day, using the last day in shorter months.
-
-The **Paid expense** mode requires explicit permission to create expenses and explicit
-consent to record the known charge automatically. It does not check a bank balance or
-initiate a payment. Each occurrence uses the template's saved exchange rate.
-
-The scheduler runs `recurring-costs:generate` every minute. Generation catches up after
-downtime, in batches of at most 100 occurrences per schedule. Each successful record,
-occurrence marker, and next date are committed together. A failed occurrence retains
-its date for retry and exposes its error on the schedule. Pausing creates no records;
-resuming starts with the next future occurrence and skips the paused dates.
+Recurring bills and recurring paid expenses are planned as a follow-up, built on
+a scheduler shared with recurring invoices rather than a second engine. Until then,
+recurring supplier charges are entered as they arrive.
 
 ## Reports
 
@@ -156,9 +139,7 @@ OpenAPI document describes the resource inputs and responses. Money uses the hos
 integer minor-unit convention (100 represents 1.00).
 
 New resources: `/api/v1/suppliers`, `/bills`, `/supplier-payments`, `/supplier-credits`,
-`/supplier-refunds`, and `/recurring-costs`. Existing `/api/v1/payments` remains the
-customer-receipt API. The recurring-cost list accepts an optional `mode=BILL` or
-`mode=EXPENSE` filter; omitting it continues to return both kinds.
+and `/supplier-refunds`. Existing `/api/v1/payments` remains the customer-receipt API.
 
 Example bill body:
 
@@ -197,15 +178,14 @@ report permission, and company membership are still required.
 
 Pass `custom_field_model=Supplier` or `custom_field_model=Bill` to also receive
 the corresponding definitions in `data.custom_fields`. This request uses the
-relevant record permissions, including recurring-cost permissions for Bill fields.
+relevant record permissions.
 
 Supplier and bill writes accept `customFields: [{"id": 1, "value": "PO-123"}]`;
 their responses expose stored answers as `fields` using the existing custom-field
 resource format. IDs must belong to the active company and the correct model.
 Creation applies definition defaults. Updates preserve omitted answers; an
 explicit `null` clears an optional answer. Required fields are checked against
-the resulting values, including defaults and preserved answers. Recurring bills
-accept the same answer array under `template.customFields`.
+the resulting values, including defaults and preserved answers.
 
 Payment creation accepts `allocations: [{"bill_id": 1, "amount": 100000}]` and may leave
 an unapplied balance. `PUT /supplier-payments/{id}/allocations` and
@@ -221,15 +201,8 @@ Refund creation accepts exactly one of `supplier_payment_id` or `supplier_credit
 plus `amount`, `payment_date`, and `exchange_rate`. Optional fields are
 `payment_method_id`, `reference`, and `notes`.
 
-`POST /{resource}/{id}/actions` accepts `open`/`void` for bills, `void` for monetary
-records, and `pause`/`resume` for recurring costs. A void requires `reason`.
-
-A recurring cost's `template` is a bill input without dates/status, or an expense input
-with `amount`, `currency_id`, `exchange_rate`, `expense_category_id`, and optional
-`payment_method_id`, `notes`, and `taxes: [{"tax_type_id": 1, "amount": 100}]`.
-Top-level fields include `name`, `supplier_id`, `mode` (`BILL` or `EXPENSE`), `frequency`
-(`DAY`, `WEEK`, `MONTH`, `YEAR`), `interval`, `starts_at`, optional `ends_at` and
-`max_occurrences`, `due_days`, and `auto_record_paid`.
+`POST /{resource}/{id}/actions` accepts `open`/`void` for bills and `void` for monetary
+records. A void requires `reason`.
 
 ## Upgrade
 

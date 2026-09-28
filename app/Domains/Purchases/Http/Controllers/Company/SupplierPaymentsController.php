@@ -33,7 +33,7 @@ class SupplierPaymentsController extends Controller
     {
         $this->authorize('view', $supplierPayment);
 
-        return new SupplierPaymentResource($supplierPayment->load([...self::RELATIONS, 'activities']));
+        return new SupplierPaymentResource($supplierPayment->load(self::RELATIONS));
     }
 
     public function store(SupplierPaymentRequest $request, SupplierSettlementService $service): SupplierPaymentResource

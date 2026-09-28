@@ -30,7 +30,6 @@ class SupplierSettlementService
                 'base_amount' => PurchaseInputs::base($data['amount'], $money['exchange_rate']), 'status' => 'OPEN',
             ]);
             $payment->update(['number' => 'SP-'.str_pad((string) $payment->id, 6, '0', STR_PAD_LEFT)]);
-            PurchaseAudit::record($payment, 'recorded', $actorId, ['amount' => $payment->amount]);
             $this->replaceAllocations($payment, $data['allocations'] ?? [], $actorId);
 
             return $payment->fresh(['supplier', 'currency', 'allocations.bill', 'refunds']);
@@ -42,7 +41,7 @@ class SupplierSettlementService
     {
         Validator::make(['allocations' => $rows], SupplierAllocationRequest::rulesFor($source->company_id))->validate();
 
-        return DB::transaction(function () use ($source, $rows, $actorId) {
+        return DB::transaction(function () use ($source, $rows) {
             PurchaseInputs::lockSupplier($source->company_id, $source->supplier_id);
             $source = $this->lockSource($source);
             PurchaseInputs::ensure($source->status === 'OPEN', 'allocations', 'Only posted records can be allocated.');
@@ -72,13 +71,7 @@ class SupplierSettlementService
             }
             foreach ($bills as $bill) {
                 $this->recalculate($bill);
-                $beforeAmount = (int) collect($old)->where('bill_id', $bill->id)->sum('amount');
-                $afterAmount = (int) collect($rows)->where('bill_id', $bill->id)->sum('amount');
-                if ($beforeAmount !== $afterAmount) {
-                    PurchaseAudit::record($bill, 'allocation_changed', $actorId, ['source_type' => $source->getMorphClass(), 'source_id' => $source->id, 'before_amount' => $beforeAmount, 'after_amount' => $afterAmount]);
-                }
             }
-            PurchaseAudit::record($source, 'allocations_replaced', $actorId, ['before' => $old, 'after' => $rows]);
 
             return $source->fresh(['allocations.bill', 'refunds', 'currency', 'supplier']);
         });
@@ -105,7 +98,6 @@ class SupplierSettlementService
                 'base_amount' => PurchaseInputs::base($data['amount'], $money['exchange_rate']), 'status' => 'OPEN',
             ]);
             $refund->update(['number' => 'SR-'.str_pad((string) $refund->id, 6, '0', STR_PAD_LEFT)]);
-            PurchaseAudit::record($refund, 'recorded', $actorId, ['source_type' => $source->getMorphClass(), 'source_id' => $source->id, 'amount' => $refund->amount]);
 
             return $refund->load(['supplier', 'currency']);
         });
@@ -125,7 +117,6 @@ class SupplierSettlementService
                 $this->replaceAllocations($record, [], $actorId);
             }
             $record->update(['status' => 'VOID', 'voided_at' => now(), 'void_reason' => $reason]);
-            PurchaseAudit::record($record, 'voided', $actorId, ['reason' => $reason]);
         });
     }
 

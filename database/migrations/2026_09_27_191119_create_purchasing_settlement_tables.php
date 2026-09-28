@@ -95,50 +95,6 @@ return new class extends Migration
                 $table->unique([$parent, 'bill_id'], $parent === 'supplier_payment_id' ? 'supplier_payment_bill_unique' : 'supplier_credit_bill_unique');
             });
         }
-        Schema::create('recurring_costs', function (Blueprint $table): void {
-            $table->bigIncrements('id');
-            $table->unsignedInteger('company_id')->index();
-            $table->unsignedInteger('creator_id')->nullable();
-            $table->unsignedBigInteger('supplier_id')->nullable()->index();
-            $table->string('name');
-            $table->string('mode')->default('BILL');
-            $table->string('status')->default('ACTIVE');
-            $table->string('frequency')->default('MONTH');
-            $table->unsignedInteger('interval')->default(1);
-            $table->string('timezone');
-            $table->date('starts_at');
-            $table->date('next_run_at')->nullable()->index();
-            $table->date('ends_at')->nullable();
-            $table->unsignedInteger('max_occurrences')->nullable();
-            $table->unsignedInteger('occurrence_count')->default(0);
-            $table->unsignedInteger('due_days')->default(30);
-            $table->boolean('auto_record_paid')->default(false);
-            $table->text('template');
-            $table->text('last_error')->nullable();
-            $table->timestamps();
-        });
-        Schema::create('recurring_cost_occurrences', function (Blueprint $table): void {
-            $table->bigIncrements('id');
-            $table->unsignedInteger('company_id')->index();
-            $table->unsignedBigInteger('recurring_cost_id')->index();
-            $table->date('scheduled_for');
-            $table->string('record_type');
-            $table->unsignedBigInteger('record_id');
-            $table->timestamps();
-            $table->unique(['recurring_cost_id', 'scheduled_for'], 'recurring_cost_occurrence_unique');
-        });
-        Schema::create('purchase_activities', function (Blueprint $table): void {
-            $table->bigIncrements('id');
-            $table->unsignedInteger('company_id')->index();
-            $table->unsignedBigInteger('supplier_id')->nullable()->index();
-            $table->string('subject_type');
-            $table->unsignedBigInteger('subject_id');
-            $table->unsignedInteger('actor_id')->nullable();
-            $table->string('action');
-            $table->text('details')->nullable();
-            $table->timestamps();
-            $table->index(['subject_type', 'subject_id']);
-        });
         app(RolePresetService::class)->syncAll();
     }
 
@@ -162,7 +118,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        foreach (['purchase_activities', 'recurring_cost_occurrences', 'recurring_costs', 'supplier_credit_allocations', 'supplier_payment_allocations', 'supplier_refunds', 'supplier_payments', 'supplier_credit_items', 'bill_items', 'supplier_credits', 'bills'] as $table) {
+        foreach (['supplier_credit_allocations', 'supplier_payment_allocations', 'supplier_refunds', 'supplier_payments', 'supplier_credit_items', 'bill_items', 'supplier_credits', 'bills'] as $table) {
             Schema::dropIfExists($table);
         }
         Schema::table('expenses', fn (Blueprint $table) => $table->dropColumn('supplier_id'));

@@ -11,7 +11,6 @@ export interface PurchaseView {
   label: string
   icon: string
   ability: string
-  mode?: 'BILL' | 'EXPENSE'
 }
 export const purchaseViews: Record<PurchaseSection, PurchaseView[]> = {
   suppliers: [
@@ -38,14 +37,6 @@ export const purchaseViews: Record<PurchaseSection, PurchaseView[]> = {
       icon: 'ArrowUturnLeftIcon',
       ability: 'view-supplier-credit',
     },
-    {
-      key: 'recurring',
-      kind: 'recurring-costs',
-      label: 'view_switcher.recurring',
-      icon: 'ArrowPathIcon',
-      ability: 'view-recurring-cost',
-      mode: 'BILL',
-    },
   ],
   expenses: [
     {
@@ -54,14 +45,6 @@ export const purchaseViews: Record<PurchaseSection, PurchaseView[]> = {
       label: 'view_switcher.one_time',
       icon: 'CalculatorIcon',
       ability: 'view-expense',
-    },
-    {
-      key: 'recurring',
-      kind: 'recurring-costs',
-      label: 'view_switcher.recurring',
-      icon: 'ArrowPathIcon',
-      ability: 'view-recurring-cost',
-      mode: 'EXPENSE',
     },
   ],
   'supplier-payments': [
@@ -81,16 +64,11 @@ export const purchaseViews: Record<PurchaseSection, PurchaseView[]> = {
     },
   ],
 }
-export function purchaseParent(kind: PurchaseKind, mode?: string) {
+export function purchaseParent(kind: PurchaseKind) {
   if (kind === 'supplier-credits')
     return { path: '/admin/bills', query: { view: 'credits' } }
   if (kind === 'supplier-refunds')
     return { path: '/admin/supplier-payments', query: { view: 'refunds' } }
-  if (kind === 'recurring-costs')
-    return {
-      path: mode === 'EXPENSE' ? '/admin/expenses' : '/admin/bills',
-      query: { view: 'recurring' },
-    }
   return { path: `/admin/${kind}`, query: {} }
 }
 export const purchaseCreateLabels: Record<PurchaseKind, string> = {
@@ -99,7 +77,6 @@ export const purchaseCreateLabels: Record<PurchaseKind, string> = {
   'supplier-payments': 'purchases.new_payment',
   'supplier-credits': 'purchases.new_credit',
   'supplier-refunds': 'purchases.new_refund',
-  'recurring-costs': 'purchases.new_schedule',
 }
 
 export const purchaseHelpKeys: Record<PurchaseKind | 'expenses', string> = {
@@ -109,5 +86,4 @@ export const purchaseHelpKeys: Record<PurchaseKind | 'expenses', string> = {
   'supplier-payments': 'purchases.payment_help',
   'supplier-credits': 'purchases.intro_supplier-credits',
   'supplier-refunds': 'purchases.refund_help',
-  'recurring-costs': 'page_help.recurring_costs',
 }

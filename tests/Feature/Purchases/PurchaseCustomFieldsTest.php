@@ -3,18 +3,14 @@
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\User;
 use App\Domains\Metadata\Models\CustomField;
-use App\Domains\Purchases\Application\RecurringCostService;
 use App\Domains\Purchases\Application\SupplierService;
 use App\Domains\Purchases\Models\Bill;
-use App\Domains\Purchases\Models\RecurringCost;
 use App\Domains\Purchases\Models\Supplier;
-use Carbon\CarbonImmutable;
 use Illuminate\Validation\ValidationException;
 use Laravel\Sanctum\Sanctum;
 use Silber\Bouncer\BouncerFacade;
 
 beforeEach(fn () => purchaseFixtures($this));
-afterEach(fn () => CarbonImmutable::setTestNow());
 
 function purchaseField($test, string $model = 'Bill', array $attributes = []): CustomField
 {
@@ -23,10 +19,6 @@ function purchaseField($test, string $model = 'Bill', array $attributes = []): C
 function customPurchasePayload($test, string $model): array
 {
     return $model === 'Supplier' ? ['name' => 'Custom supplier', 'currency_id' => $test->currencyId, 'payment_terms' => 30] : purchaseBillPayload($test, 10000);
-}
-function customRecurringPayload($test): array
-{
-    return ['name' => 'Monthly bill fields', 'supplier_id' => $test->supplier->id, 'mode' => 'BILL', 'frequency' => 'MONTH', 'interval' => 1, 'starts_at' => '2026-01-01', 'max_occurrences' => 3, 'due_days' => 14, 'auto_record_paid' => false, 'template' => purchaseBillPayload($test, 10000)];
 }
 
 test('purchase answers round trip, preserve omitted values and allow explicit clearing', function (string $model, string $endpoint) {
@@ -93,43 +85,9 @@ test('purchase form definitions follow record permissions without custom field s
     $this->getJson('/api/v1/purchase-options?custom_field_model='.$model)->assertOk()->assertJsonCount(1, 'data.custom_fields')->assertJsonPath('data.custom_fields.0.id', $field->id);
     $this->getJson('/api/v1/custom-fields')->assertForbidden();
     $this->getJson('/api/v1/purchase-options?custom_field_model='.($model === 'Supplier' ? 'Bill' : 'Supplier'))->assertForbidden();
-})->with([['Supplier', 'create-supplier', Supplier::class], ['Bill', 'edit-bill', Bill::class], ['Bill', 'create-recurring-cost', RecurringCost::class]]);
+})->with([['Supplier', 'create-supplier', Supplier::class], ['Bill', 'edit-bill', Bill::class]]);
 
-test('recurring templates copy answers, preserve omitted edits and affect only future bills', function () {
-    CarbonImmutable::setTestNow('2026-01-02');
-    $field = purchaseField($this);
-    $data = customRecurringPayload($this);
-    $data['template']['customFields'] = [['id' => $field->id, 'value' => 'January']];
-    $service = app(RecurringCostService::class);
-    $schedule = $service->save(null, $this->companyId, $this->user->id, $data);
-    expect($service->generate($schedule))->toBe(1);
-    $data['template']['customFields'][0]['value'] = 'February';
-    $service->save($schedule, $this->companyId, $this->user->id, $data);
-    unset($data['template']['customFields']);
-    $service->save($schedule, $this->companyId, $this->user->id, $data);
-    CarbonImmutable::setTestNow('2026-02-02');
-    expect($service->generate($schedule))->toBe(1);
-    $bills = Bill::orderBy('id')->get();
-    expect($bills[0]->fields()->first()->defaultAnswer)->toBe('January')->and($bills[1]->fields()->first()->defaultAnswer)->toBe('February');
-});
-
-test('recurring generation drops deleted definitions and retries missing required answers atomically', function () {
-    CarbonImmutable::setTestNow('2026-01-02');
-    $old = purchaseField($this);
-    $data = customRecurringPayload($this);
-    $data['template']['customFields'] = [['id' => $old->id, 'value' => 'Old']];
-    $service = app(RecurringCostService::class);
-    $schedule = $service->save(null, $this->companyId, $this->user->id, $data);
-    $old->delete();
-    $required = purchaseField($this, 'Bill', ['is_required' => true, 'string_answer' => null]);
-    expect($service->generate($schedule))->toBe(0)->and(Bill::count())->toBe(0)->and($schedule->fresh()->next_run_at)->toBe('2026-01-01')->and($schedule->fresh()->last_error)->not->toBeNull();
-    $data['template']['customFields'] = [['id' => $required->id, 'value' => 'Fixed']];
-    $service->save($schedule, $this->companyId, $this->user->id, $data);
-    expect($service->generate($schedule))->toBe(1)->and($service->generate($schedule))->toBe(0)->and($schedule->fresh()->last_error)->toBeNull();
-    expect(Bill::first()->fields()->count())->toBe(1);
-});
-
-test('bill custom fields do not leak into credits or recurring expenses and answers clean up with owners', function () {
+test('bill custom fields do not leak into credits and answers clean up with owners', function () {
     $field = purchaseField($this);
     $this->postJson('/api/v1/supplier-credits', [...purchaseBillPayload($this), 'customFields' => [['id' => $field->id, 'value' => 'No']]])->assertUnprocessable();
     $bill = $this->postJson('/api/v1/bills', purchaseBillPayload($this))->assertSuccessful()->json('data');
@@ -154,19 +112,4 @@ test('purchase fields enforce dropdown, numeric and date constraints', function 
         $this->postJson('/api/v1/bills', [...purchaseBillPayload($this), 'customFields' => [['id' => $field->id, 'value' => $value]]])->assertUnprocessable()->assertJsonValidationErrors('customFields.0.value');
     }
     expect(Bill::count())->toBe(0);
-});
-
-test('recurring custom field payloads are validated before service processing', function () {
-    $data = customRecurringPayload($this);
-    foreach (['not an array', [['value' => 'missing id']], [['id' => 999999, 'value' => 'unknown field']]] as $answers) {
-        $data['template']['customFields'] = $answers;
-        $this->postJson('/api/v1/recurring-costs', $data)->assertUnprocessable();
-        expect(fn () => app(RecurringCostService::class)->save(null, $this->companyId, $this->user->id, $data))->toThrow(ValidationException::class);
-    }
-    $field = purchaseField($this);
-    $data['mode'] = 'EXPENSE';
-    $data['auto_record_paid'] = true;
-    $data['template'] = ['amount' => 100, 'currency_id' => $this->currencyId, 'exchange_rate' => 1, 'expense_category_id' => $this->category->id, 'customFields' => [['id' => $field->id, 'value' => 'Bill answer']]];
-    $this->postJson('/api/v1/recurring-costs', $data)->assertUnprocessable()->assertJsonValidationErrors('customFields');
-    expect(RecurringCost::count())->toBe(0);
 });

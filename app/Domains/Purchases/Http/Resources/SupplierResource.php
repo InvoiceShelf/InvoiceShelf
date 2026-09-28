@@ -30,7 +30,6 @@ class SupplierResource extends JsonResource
             'enabled' => (bool) $this->enabled,
             'currency' => new CurrencyResource($this->whenLoaded('currency')),
             'balances' => SupplierBalanceResource::collection($this->resource->getAttribute('balances') ?? []),
-            'activities' => PurchaseActivityResource::collection($this->whenLoaded('activities')),
         ];
     }
 }

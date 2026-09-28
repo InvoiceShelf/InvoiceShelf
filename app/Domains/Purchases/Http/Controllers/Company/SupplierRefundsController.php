@@ -32,7 +32,7 @@ class SupplierRefundsController extends Controller
     {
         $this->authorize('view', $supplierRefund);
 
-        return new SupplierRefundResource($supplierRefund->load([...self::RELATIONS, 'activities']));
+        return new SupplierRefundResource($supplierRefund->load(self::RELATIONS));
     }
 
     public function store(SupplierRefundRequest $request, SupplierSettlementService $service): SupplierRefundResource

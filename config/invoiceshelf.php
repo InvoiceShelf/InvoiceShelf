@@ -7,7 +7,6 @@ use App\Domains\Metadata\Models\Note;
 use App\Domains\Money\Models\ExchangeRateProvider;
 use App\Domains\Purchases\Models\Bill;
 use App\Domains\Purchases\Models\Expense;
-use App\Domains\Purchases\Models\RecurringCost;
 use App\Domains\Purchases\Models\Supplier;
 use App\Domains\Purchases\Models\SupplierCredit;
 use App\Domains\Purchases\Models\SupplierPayment;
@@ -473,6 +472,34 @@ return [
             'model' => Payment::class,
         ],
         [
+            'title' => 'purchases.suppliers',
+            'group' => 'purchases',
+            'group_label' => 'purchases.title',
+            'priority' => 10,
+            'link' => '/admin/suppliers',
+            'icon' => 'UserGroupIcon',
+            'name' => 'Supplier',
+            'owner_only' => false,
+            'ability' => 'view-supplier',
+            'model' => Supplier::class,
+        ],
+        [
+            'title' => 'purchases.bills',
+            'group' => 'purchases',
+            'group_label' => 'purchases.title',
+            'priority' => 20,
+            'link' => '/admin/bills',
+            'icon' => 'DocumentTextIcon',
+            'name' => 'Bill',
+            'owner_only' => false,
+            'ability' => 'view-bill',
+            'model' => Bill::class,
+            'any_abilities' => [
+                ['ability' => 'view-bill', 'model' => Bill::class],
+                ['ability' => 'view-supplier-credit', 'model' => SupplierCredit::class],
+            ],
+        ],
+        [
             'title' => 'navigation.expenses',
             'group' => 'purchases',
             'group_label' => 'purchases.title',
@@ -483,11 +510,23 @@ return [
             'owner_only' => false,
             'ability' => 'view-expense',
             'model' => Expense::class,
-            'any_abilities' => [['ability' => 'view-expense', 'model' => Expense::class], ['ability' => 'view-recurring-cost', 'model' => RecurringCost::class]],
         ],
-        ['title' => 'purchases.suppliers', 'group' => 'purchases', 'group_label' => 'purchases.title', 'priority' => 10, 'link' => '/admin/suppliers', 'icon' => 'UserGroupIcon', 'name' => 'Supplier', 'owner_only' => false, 'ability' => 'view-supplier', 'model' => Supplier::class],
-        ['title' => 'purchases.bills', 'group' => 'purchases', 'group_label' => 'purchases.title', 'priority' => 20, 'link' => '/admin/bills', 'icon' => 'DocumentTextIcon', 'name' => 'Bill', 'owner_only' => false, 'ability' => 'view-bill', 'model' => Bill::class, 'any_abilities' => [['ability' => 'view-bill', 'model' => Bill::class], ['ability' => 'view-supplier-credit', 'model' => SupplierCredit::class], ['ability' => 'view-recurring-cost', 'model' => RecurringCost::class]]],
-        ['title' => 'navigation.payments', 'group' => 'purchases', 'group_label' => 'purchases.title', 'priority' => 40, 'link' => '/admin/supplier-payments', 'icon' => 'CreditCardIcon', 'name' => 'SupplierPayment', 'owner_only' => false, 'ability' => 'view-supplier-payment', 'model' => SupplierPayment::class, 'any_abilities' => [['ability' => 'view-supplier-payment', 'model' => SupplierPayment::class], ['ability' => 'view-supplier-refund', 'model' => SupplierRefund::class]]],
+        [
+            'title' => 'navigation.payments',
+            'group' => 'purchases',
+            'group_label' => 'purchases.title',
+            'priority' => 40,
+            'link' => '/admin/supplier-payments',
+            'icon' => 'CreditCardIcon',
+            'name' => 'SupplierPayment',
+            'owner_only' => false,
+            'ability' => 'view-supplier-payment',
+            'model' => SupplierPayment::class,
+            'any_abilities' => [
+                ['ability' => 'view-supplier-payment', 'model' => SupplierPayment::class],
+                ['ability' => 'view-supplier-refund', 'model' => SupplierRefund::class],
+            ],
+        ],
         [
             'title' => 'navigation.members',
             'group' => 'admin',
