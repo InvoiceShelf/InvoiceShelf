@@ -14,9 +14,14 @@ final class PurchaseInputs
         return Supplier::query()->forCompany($companyId)->whereKey($supplierId)->lockForUpdate()->firstOrFail();
     }
 
+    public static function companyCurrency(int $companyId): int
+    {
+        return (int) CompanySetting::getSetting('currency', $companyId);
+    }
+
     public static function money(int $companyId, array $data): array
     {
-        $rate = (int) CompanySetting::getSetting('currency', $companyId) === (int) $data['currency_id'] ? 1 : (float) $data['exchange_rate'];
+        $rate = self::companyCurrency($companyId) === (int) $data['currency_id'] ? 1 : (float) $data['exchange_rate'];
         self::ensure($rate > 0 && is_finite($rate), 'exchange_rate', 'A positive exchange rate is required.');
 
         return ['currency_id' => (int) $data['currency_id'], 'exchange_rate' => $rate];
