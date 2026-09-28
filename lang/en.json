@@ -2614,6 +2614,5 @@
   "pdf_open_bills_label": "Outstanding bills",
   "pdf_bill_label": "Bill",
   "pdf_supplier_label": "Supplier",
-  "pdf_all_suppliers_label": "All suppliers",
-  "pdf_tax_document_basis_note": "Document-date basis: issued invoices, recorded bills and credits are included whether paid or unpaid. Expenses use their expense date. Payments and refunds do not create additional tax."
+  "pdf_all_suppliers_label": "All suppliers"
 }
