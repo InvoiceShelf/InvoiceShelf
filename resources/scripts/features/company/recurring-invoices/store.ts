@@ -87,6 +87,8 @@ export interface RecurringInvoiceFormData {
   limit_count: number | null
   limit_date: string | null
   send_automatically: boolean
+  notify_creator: boolean
+  last_error?: string | null
   notes: string | null
   discount: number
   discount_type: DiscountType
@@ -127,6 +129,7 @@ function createRecurringInvoiceStub(): RecurringInvoiceFormData {
     limit_count: null,
     limit_date: null,
     send_automatically: false,
+    notify_creator: false,
     notes: '',
     discount: 0,
     discount_type: 'fixed',
@@ -377,9 +380,13 @@ export const useRecurringInvoiceStore = defineStore('recurring-invoice', {
     async updateRecurringInvoice(
       data: Record<string, unknown>,
     ): Promise<{ data: { data: RecurringInvoice } }> {
+      // A completed schedule keeps its status; the server makes it active
+      // again when a raised limit leaves runs to make.
+      const { status, ...rest } = data
+      const payload = status === 'COMPLETED' ? rest : data
       const response = await recurringInvoiceService.update(
         data.id as number,
-        data as never,
+        payload as never,
       )
       const pos = this.recurringInvoices.findIndex(
         (inv) => inv.id === response.data.id,

@@ -10,6 +10,7 @@ use App\Rules\CronFrequency;
 use App\Support\DocumentTotals;
 use App\Support\MoneyConversion;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
 /**
@@ -37,11 +38,11 @@ class RecurringInvoiceRequest extends FormRequest
     /**
      * Rules for the schedule and for the invoice template it carries.
      *
-     * The cron expression, the start date and the status are checked for
-     * presence only: a string the cron parser cannot read gets no validation
-     * message and instead surfaces as an error when the first firing is worked
-     * out. The limit fields answer to the chosen limit mode — a count is
-     * demanded for COUNT, an end date for DATE, and neither for NONE.
+     * The customer must be one of the company's. A status can only be set to
+     * active or paused: a schedule completes when its limit runs out, and an
+     * edit that leaves the status out keeps it (a completed schedule sends
+     * none). The limit fields answer to the chosen limit mode: a count of 1
+     * to 10000 for COUNT, an end date on or after the start for DATE.
      */
     public function rules(): array
     {
@@ -50,6 +51,7 @@ class RecurringInvoiceRequest extends FormRequest
         $rules = [
             'starts_at' => [
                 'required',
+                'date',
             ],
             'send_automatically' => [
                 'required',
@@ -57,6 +59,8 @@ class RecurringInvoiceRequest extends FormRequest
             ],
             'customer_id' => [
                 'required',
+                'integer',
+                Rule::exists('customers', 'id')->where('company_id', $this->header('company')),
             ],
             'exchange_rate' => [
                 'nullable',
@@ -82,7 +86,12 @@ class RecurringInvoiceRequest extends FormRequest
                 'required',
             ],
             'status' => [
-                'required',
+                Rule::requiredIf(! $this->route('recurring_invoice')),
+                Rule::in([RecurringInvoice::ACTIVE, RecurringInvoice::ON_HOLD]),
+            ],
+            'notify_creator' => [
+                'sometimes',
+                'boolean',
             ],
             'frequency' => [
                 'required',
@@ -90,12 +99,19 @@ class RecurringInvoiceRequest extends FormRequest
             ],
             'limit_by' => [
                 'required',
+                Rule::in([RecurringInvoice::NONE, RecurringInvoice::COUNT, RecurringInvoice::DATE]),
             ],
             'limit_count' => [
+                'nullable',
                 'required_if:limit_by,COUNT',
+                'integer',
+                'between:1,10000',
             ],
             'limit_date' => [
+                'nullable',
                 'required_if:limit_by,DATE',
+                'date',
+                'after_or_equal:starts_at',
             ],
             'items' => [
                 'required',

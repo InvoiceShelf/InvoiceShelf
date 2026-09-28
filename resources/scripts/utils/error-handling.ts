@@ -209,8 +209,9 @@ export function getErrorTranslationKey(errorMessage: string): string | null {
     return ERROR_TRANSLATION_MAP[errorMessage]
   }
 
-  // Purchasing sends codes that name their own key under `errors`.
-  return /^purchase_[a-z_]+$/.test(errorMessage)
+  // Purchasing and recurring invoices send codes that name their own key
+  // under `errors`.
+  return /^(purchase|recurring_invoice)_[a-z_]+$/.test(errorMessage)
     ? `errors.${errorMessage}`
     : null
 }

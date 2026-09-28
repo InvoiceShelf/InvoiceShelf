@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Domains\Purchases\Models;
+namespace App\Platform\Recurrence\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
- * The bill or expense one run of a recurring cost generated, and the day it
- * was scheduled for.
+ * One run of a recurring schedule: the moment it was due, the day it was
+ * dated where the company is, and the record it generated. Kept when that
+ * record is deleted, so a schedule's count of runs stays true.
  */
-class RecurringCostOccurrence extends Model
+class RecurrenceOccurrence extends Model
 {
-    protected $table = 'recurring_cost_occurrences';
+    protected $table = 'recurrence_occurrences';
 
     protected $guarded = ['id'];
 
@@ -22,9 +22,9 @@ class RecurringCostOccurrence extends Model
         return $query->where($this->qualifyColumn('company_id'), $companyId);
     }
 
-    public function schedule(): BelongsTo
+    public function schedule(): MorphTo
     {
-        return $this->belongsTo(RecurringCost::class, 'recurring_cost_id');
+        return $this->morphTo();
     }
 
     public function record(): MorphTo

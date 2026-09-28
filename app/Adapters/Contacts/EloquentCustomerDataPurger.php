@@ -34,6 +34,7 @@ class EloquentCustomerDataPurger implements CustomerDataPurger
 
         $customer->recurringInvoices->each(function (Model $recurringInvoice): void {
             $this->clearDocumentData($recurringInvoice);
+            $recurringInvoice->occurrences()->delete();
             $recurringInvoice->delete();
         });
     }

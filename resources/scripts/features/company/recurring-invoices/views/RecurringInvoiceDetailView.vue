@@ -15,6 +15,21 @@
         </div>
 
         <template #actions>
+          <BaseButton
+            v-if="canEdit && !isFetching && canToggle"
+            variant="primary-outline"
+            :loading="isActing"
+            :disabled="isActing"
+            @click="toggleStatus"
+          >
+            {{
+              $t(
+                recurringInvoice.status === 'ACTIVE'
+                  ? 'recurring_invoices.pause'
+                  : 'recurring_invoices.resume',
+              )
+            }}
+          </BaseButton>
           <RecurringInvoiceDropdown
             v-if="hasAtLeastOneAbility"
             :row="recurringInvoiceStore.newRecurringInvoice"
@@ -30,6 +45,22 @@
       </div>
 
       <template v-else>
+        <div
+          v-if="recurringInvoice.last_error"
+          role="alert"
+          class="flex gap-3 rounded-lg bg-alert-error-bg p-4 text-sm text-alert-error-text"
+        >
+          <BaseIcon
+            name="ExclamationTriangleIcon"
+            class="h-5 w-5 shrink-0"
+            aria-hidden="true"
+          />
+          <div>
+            <p class="font-medium">{{ $t('recurring_invoices.last_run_failed') }}</p>
+            <p class="mt-1">{{ lastError }}</p>
+          </div>
+        </div>
+
         <!-- What each invoice will be, and when the next one goes out -->
         <BaseStatStrip :columns="4">
           <BaseStat :label="$t('recurring_invoices.amount')" emphasis>
@@ -39,7 +70,11 @@
             {{ frequencyText || '-' }}
           </BaseStat>
           <BaseStat :label="$t('recurring_invoices.next_invoice_date')">
-            {{ recurringInvoice.formatted_next_invoice_at || '-' }}
+            {{
+              recurringInvoice.status === 'COMPLETED'
+                ? '-'
+                : recurringInvoice.formatted_next_invoice_at || '-'
+            }}
           </BaseStat>
           <BaseStat :label="$t('recurring_invoices.starts_at')">
             {{ recurringInvoice.formatted_starts_at || '-' }}
@@ -67,13 +102,13 @@
             <BaseDescriptionListItem
               v-if="recurringInvoice.limit_by !== 'NONE'"
               :label="$t('recurring_invoices.limit_by')"
-              :value="recurringInvoice.limit_by"
+              :value="limitByLabel"
             />
 
             <BaseDescriptionListItem
               v-if="recurringInvoice.limit_date && recurringInvoice.limit_by !== 'NONE'"
               :label="$t('recurring_invoices.limit_date')"
-              :value="recurringInvoice.limit_date ?? ''"
+              :value="recurringInvoice.formatted_limit_date || recurringInvoice.limit_date || ''"
             />
 
             <BaseDescriptionListItem
@@ -85,6 +120,11 @@
             <BaseDescriptionListItem
               :label="$t('recurring_invoices.send_automatically')"
               :value="recurringInvoice.send_automatically ? $t('general.yes') : $t('general.no')"
+            />
+
+            <BaseDescriptionListItem
+              :label="$t('recurring_invoices.notify_creator')"
+              :value="recurringInvoice.notify_creator ? $t('general.yes') : $t('general.no')"
             />
           </BaseDescriptionList>
         </BaseCard>
@@ -192,6 +232,9 @@ import { useUserStore } from '../../../../stores/user.store'
 import type { RecurringInvoice } from '../../../../types/domain/recurring-invoice'
 import type { CurrencyConfig } from '@/scripts/utils/format-money'
 import { scrollBehavior } from '@/scripts/utils/motion'
+import { recurringInvoiceService } from '@/scripts/api/services/recurring-invoice.service'
+import { getErrorTranslationKey, handleApiError } from '@/scripts/utils/error-handling'
+import { useNotificationStore } from '@/scripts/stores/notification.store'
 
 interface Props {
   canEdit?: boolean
@@ -213,6 +256,7 @@ const ABILITIES = {
 
 const recurringInvoiceStore = useRecurringInvoiceStore()
 const userStore = useUserStore()
+const notificationStore = useNotificationStore()
 const { t } = useI18n()
 const route = useRoute()
 
@@ -249,7 +293,51 @@ const isFetching = computed<boolean>(() => recurringInvoiceStore.isFetchingViewD
 // The form's state holds the fetched record, response fields included
 const recurringInvoice = computed(() => {
   return recurringInvoiceStore.newRecurringInvoice as typeof recurringInvoiceStore.newRecurringInvoice &
-    Partial<Pick<RecurringInvoice, 'formatted_starts_at' | 'formatted_next_invoice_at'>>
+    Partial<Pick<RecurringInvoice, 'formatted_starts_at' | 'formatted_next_invoice_at' | 'formatted_limit_date'>>
+})
+
+// ---------------------------------------------------------------------------
+// Pause and resume, and why the last run failed
+// ---------------------------------------------------------------------------
+
+const isActing = ref(false)
+
+const canToggle = computed<boolean>(() =>
+  ['ACTIVE', 'ON_HOLD'].includes(recurringInvoice.value.status),
+)
+
+async function toggleStatus(): Promise<void> {
+  if (isActing.value || !recurringInvoice.value.id) return
+  const action = recurringInvoice.value.status === 'ACTIVE' ? 'pause' : 'resume'
+  isActing.value = true
+  try {
+    await recurringInvoiceService.act(Number(recurringInvoice.value.id), action)
+    await recurringInvoiceStore.fetchRecurringInvoice(Number(recurringInvoice.value.id))
+    notificationStore.showNotification({
+      type: 'success',
+      message: t(action === 'pause' ? 'recurring_invoices.paused_message' : 'recurring_invoices.resumed_message'),
+    })
+  } catch (err) {
+    const { message, validationErrors } = handleApiError(err)
+    const code = Object.values(validationErrors ?? {}).flat()[0] ?? message
+    const key = getErrorTranslationKey(code)
+    notificationStore.showNotification({ type: 'error', message: key ? t(key) : code })
+  } finally {
+    isActing.value = false
+  }
+}
+
+const lastError = computed<string>(() => {
+  const key = getErrorTranslationKey(recurringInvoice.value.last_error || '')
+  return key ? t(key) : t('errors.recurring_invoice_failed')
+})
+
+const limitByLabel = computed<string>(() => {
+  const labels: Record<string, string> = {
+    DATE: t('recurring_invoices.limit.date'),
+    COUNT: t('recurring_invoices.limit.count'),
+  }
+  return labels[recurringInvoice.value.limit_by] ?? String(recurringInvoice.value.limit_by)
 })
 
 const documentCurrency = computed<CurrencyConfig | null>(() => {

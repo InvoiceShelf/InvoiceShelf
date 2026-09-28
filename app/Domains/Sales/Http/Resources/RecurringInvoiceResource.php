@@ -42,6 +42,8 @@ class RecurringInvoiceResource extends JsonResource
             'formatted_next_invoice_at' => $recurring->formattedNextInvoiceAt,
             'formatted_limit_date' => $recurring->formattedLimitDate,
             'send_automatically' => $recurring->send_automatically,
+            'notify_creator' => (bool) $recurring->notify_creator,
+            'last_error' => $recurring->last_error,
             'customer_id' => $recurring->customer_id,
             'company_id' => $recurring->company_id,
             'creator_id' => $recurring->creator_id,
