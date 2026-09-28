@@ -41,7 +41,6 @@
         :content-loading="isLoading"
         :calendar-button="true"
         calendar-button-icon="calendar"
-        @change="getNextInvoiceDate()"
       />
     </BaseInputGroup>
 
@@ -56,112 +55,39 @@
         :content-loading="isLoading"
         :calendar-button="true"
         :disabled="true"
-        :loading="isLoadingNextDate"
         calendar-button-icon="calendar"
       />
     </BaseInputGroup>
 
-    <!-- Limit By -->
-    <BaseInputGroup
-      :label="$t('recurring_invoices.limit_by')"
+    <RecurrenceLimitFields
+      v-model:limit-by="recurringInvoiceStore.newRecurringInvoice.limit_by"
+      v-model:limit-count="recurringInvoiceStore.newRecurringInvoice.limit_count"
+      v-model:limit-date="recurringInvoiceStore.newRecurringInvoice.limit_date"
       :content-loading="isLoading"
-      class="lg:mt-0"
-      required
-    >
-      <BaseMultiselect
-        v-model="recurringInvoiceStore.newRecurringInvoice.limit_by"
-        :content-loading="isLoading"
-        :options="limits"
-        label="label"
-        value-prop="value"
-      />
-    </BaseInputGroup>
+    />
 
-    <!-- Limit Date -->
-    <BaseInputGroup
-      v-if="hasLimitBy('DATE')"
-      :label="$t('recurring_invoices.limit_date')"
+    <RecurrenceStatusSelect
+      v-model="recurringInvoiceStore.newRecurringInvoice.status"
+      :include-completed="isEdit"
       :content-loading="isLoading"
-      :required="hasLimitBy('DATE')"
-    >
-      <BaseDatePicker
-        v-model="recurringInvoiceStore.newRecurringInvoice.limit_date"
-        :content-loading="isLoading"
-        calendar-button-icon="calendar"
-      />
-    </BaseInputGroup>
+    />
 
-    <!-- Limit Count -->
-    <BaseInputGroup
-      v-if="hasLimitBy('COUNT')"
-      :label="$t('recurring_invoices.count')"
+    <RecurrenceFrequencyField
+      v-model="recurringInvoiceStore.newRecurringInvoice.frequency"
+      :starts-at="recurringInvoiceStore.newRecurringInvoice.starts_at"
       :content-loading="isLoading"
-      :required="hasLimitBy('COUNT')"
-    >
-      <BaseInput
-        v-model="recurringInvoiceStore.newRecurringInvoice.limit_count"
-        :content-loading="isLoading"
-        type="number"
-      />
-    </BaseInputGroup>
-
-    <!-- Status -->
-    <BaseInputGroup
-      :label="$t('recurring_invoices.status')"
-      required
-      :content-loading="isLoading"
-    >
-      <BaseMultiselect
-        v-model="recurringInvoiceStore.newRecurringInvoice.status"
-        :options="statusOptions"
-        :content-loading="isLoading"
-        :placeholder="$t('recurring_invoices.select_a_status')"
-        value-prop="value"
-        label="key"
-      />
-    </BaseInputGroup>
-
-    <!-- Frequency -->
-    <BaseInputGroup
-      :label="$t('recurring_invoices.frequency.select_frequency')"
-      required
-      :content-loading="isLoading"
-    >
-      <BaseMultiselect
-        v-model="recurringInvoiceStore.newRecurringInvoice.selectedFrequency"
-        :content-loading="isLoading"
-        :options="recurringInvoiceStore.frequencies"
-        label="label"
-        object
-        @change="getNextInvoiceDate"
-      />
-    </BaseInputGroup>
-
-    <!-- Custom Frequency -->
-    <BaseInputGroup
-      v-if="isCustomFrequency"
-      :label="$t('recurring_invoices.frequency.title')"
-      :content-loading="isLoading"
-      required
-    >
-      <BaseInput
-        v-model="recurringInvoiceStore.newRecurringInvoice.frequency"
-        :content-loading="isLoading"
-        :disabled="!isCustomFrequency"
-        :loading="isLoadingNextDate"
-        @update:model-value="debounceNextDate"
-      />
-    </BaseInputGroup>
+      @preview="setNextInvoiceDate"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
-import { useI18n } from 'vue-i18n'
-import { useDebounceFn } from '@vueuse/core'
+import { watch } from 'vue'
 import { useRecurringInvoiceStore } from '../store'
-import type { FrequencyOption } from '../store'
+import RecurrenceFrequencyField from '@/scripts/components/recurrence/RecurrenceFrequencyField.vue'
+import RecurrenceLimitFields from '@/scripts/components/recurrence/RecurrenceLimitFields.vue'
+import RecurrenceStatusSelect from '@/scripts/components/recurrence/RecurrenceStatusSelect.vue'
+import type { RecurrencePreview } from '@/scripts/api/services/recurrence.service'
 
 interface Props {
   isLoading?: boolean
@@ -173,92 +99,34 @@ const props = withDefaults(defineProps<Props>(), {
   isEdit: false,
 })
 
-const route = useRoute()
 const recurringInvoiceStore = useRecurringInvoiceStore()
-const { t } = useI18n()
 
-const isLoadingNextDate = ref<boolean>(false)
-
-interface LimitOption {
-  label: string
-  value: string
-}
-
-const limits = reactive<LimitOption[]>([
-  { label: t('recurring_invoices.limit.none'), value: 'NONE' },
-  { label: t('recurring_invoices.limit.date'), value: 'DATE' },
-  { label: t('recurring_invoices.limit.count'), value: 'COUNT' },
-])
-
-interface StatusOption {
-  key: string
-  value: string
-}
-
-const statusOptions = computed<StatusOption[]>(() => {
-  if (props.isEdit) {
-    return [
-      { key: t('recurring_invoices.active'), value: 'ACTIVE' },
-      { key: t('recurring_invoices.on_hold'), value: 'ON_HOLD' },
-      { key: t('recurring_invoices.completed'), value: 'COMPLETED' },
-    ]
-  }
-  return [
-    { key: t('recurring_invoices.active'), value: 'ACTIVE' },
-    { key: t('recurring_invoices.on_hold'), value: 'ON_HOLD' },
-  ]
-})
-
-const isCustomFrequency = computed<boolean>(() => {
-  return (
-    recurringInvoiceStore.newRecurringInvoice.selectedFrequency != null &&
-    recurringInvoiceStore.newRecurringInvoice.selectedFrequency.value ===
-      'CUSTOM'
-  )
-})
+/**
+ * The schedule as it was loaded. An edited schedule keeps its stored next
+ * invoice date until its frequency or start date changes.
+ */
+let loaded: { frequency: string | null; starts_at: string } | null = null
 
 watch(
-  () => recurringInvoiceStore.newRecurringInvoice.selectedFrequency,
-  (newValue: FrequencyOption | null) => {
-    if (!recurringInvoiceStore.isFetchingInitialSettings) {
-      if (newValue && newValue.value !== 'CUSTOM') {
-        recurringInvoiceStore.newRecurringInvoice.frequency = newValue.value
-      } else {
-        recurringInvoiceStore.newRecurringInvoice.frequency = null
-      }
+  () => props.isLoading,
+  (loading) => {
+    if (!loading && props.isEdit) {
+      const { frequency, starts_at } = recurringInvoiceStore.newRecurringInvoice
+      loaded = { frequency, starts_at }
     }
   },
+  { immediate: true },
 )
 
-onMounted(() => {
-  if (!route.params.id) {
-    getNextInvoiceDate()
-  }
-})
+function setNextInvoiceDate(preview: RecurrencePreview | null): void {
+  const current = recurringInvoiceStore.newRecurringInvoice
+  const unchanged =
+    loaded !== null &&
+    loaded.frequency === current.frequency &&
+    loaded.starts_at === current.starts_at
 
-function hasLimitBy(limitBy: string): boolean {
-  return recurringInvoiceStore.newRecurringInvoice.limit_by === limitBy
-}
-
-const debounceNextDate = useDebounceFn(() => {
-  getNextInvoiceDate()
-}, 500)
-
-async function getNextInvoiceDate(): Promise<void> {
-  const val = recurringInvoiceStore.newRecurringInvoice.frequency
-  if (!val) return
-
-  isLoadingNextDate.value = true
-
-  try {
-    await recurringInvoiceStore.fetchRecurringInvoiceFrequencyDate({
-      starts_at: recurringInvoiceStore.newRecurringInvoice.starts_at,
-      frequency: val,
-    })
-  } catch {
-    // Error handled in store
-  } finally {
-    isLoadingNextDate.value = false
+  if (preview && !unchanged) {
+    current.next_invoice_at = preview.next_invoice_at
   }
 }
 </script>

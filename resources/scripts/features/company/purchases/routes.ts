@@ -13,13 +13,18 @@ const kinds: PurchaseKind[] = [
   'supplier-payments',
   'supplier-credits',
   'supplier-refunds',
+  'recurring-costs',
 ]
+/** Recurring costs sit under Bills or Expenses by mode; see useActiveMenuLink. */
+const menuParent = (kind: PurchaseKind) =>
+  kind === 'recurring-costs' ? undefined : purchaseParent(kind).path
 const forms = {
   suppliers: () => import('./views/SupplierFormView.vue'),
   bills: () => import('./views/BillFormView.vue'),
   'supplier-credits': () => import('./views/BillFormView.vue'),
   'supplier-payments': () => import('./views/PaymentFormView.vue'),
   'supplier-refunds': () => import('./views/RefundFormView.vue'),
+  'recurring-costs': () => import('./views/RecurringCostFormView.vue'),
 }
 export const purchaseRoutes: RouteRecordRaw[] = [
   ...kinds.flatMap((kind): RouteRecordRaw[] => [
@@ -31,7 +36,7 @@ export const purchaseRoutes: RouteRecordRaw[] = [
             component: () => import('./views/PurchaseWorkspaceView.vue'),
             props: { section: kind },
             meta: {
-              menuParent: purchaseParent(kind).path,
+              menuParent: menuParent(kind),
               requiresAuth: true,
               ability: purchaseViews[kind as PurchaseSection].map(
                 (view) => view.ability,
@@ -45,7 +50,7 @@ export const purchaseRoutes: RouteRecordRaw[] = [
             path: kind,
             name: `purchases.${kind}`,
             redirect: (to: RouteLocation) => {
-              const parent = purchaseParent(kind)
+              const parent = purchaseParent(kind, String(to.query.mode || ''))
               return {
                 path: parent.path,
                 query: { ...to.query, ...parent.query },
@@ -59,7 +64,7 @@ export const purchaseRoutes: RouteRecordRaw[] = [
       component: forms[kind],
       props: { kind },
       meta: {
-        menuParent: purchaseParent(kind).path,
+        menuParent: menuParent(kind),
         requiresAuth: true,
         ability: `create-${entityAbility(kind)}`,
         title: `purchases.${kind}`,
@@ -71,13 +76,13 @@ export const purchaseRoutes: RouteRecordRaw[] = [
       component: () => import('./views/PurchaseDetailView.vue'),
       props: { kind },
       meta: {
-        menuParent: purchaseParent(kind).path,
+        menuParent: menuParent(kind),
         requiresAuth: true,
         ability: `view-${entityAbility(kind)}`,
         title: `purchases.${kind}`,
       },
     },
-    ...(['suppliers', 'bills'].includes(kind)
+    ...(['suppliers', 'bills', 'recurring-costs'].includes(kind)
       ? [
           {
             path: `${kind}/:id/edit`,
@@ -85,7 +90,7 @@ export const purchaseRoutes: RouteRecordRaw[] = [
             component: forms[kind],
             props: { kind },
             meta: {
-              menuParent: purchaseParent(kind).path,
+              menuParent: menuParent(kind),
               requiresAuth: true,
               ability: `edit-${entityAbility(kind)}`,
               title: `purchases.${kind}`,

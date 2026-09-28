@@ -22,15 +22,16 @@ import type {
   DocumentItem,
 } from '../../shared/document-form/use-document-calculations'
 import { generateClientId } from '../../../utils'
+import {
+  frequencyPresets,
+  type FrequencyOption,
+} from '../../../components/recurrence/use-frequency-presets'
 
 // ----------------------------------------------------------------
 // Frequency options
 // ----------------------------------------------------------------
 
-export interface FrequencyOption {
-  label: string
-  value: string
-}
+export type { FrequencyOption }
 
 // ----------------------------------------------------------------
 // Stub factories
@@ -253,23 +254,7 @@ export const useRecurringInvoiceStore = defineStore('recurring-invoice', {
 
   actions: {
     initFrequencies(t: (key: string) => string): void {
-      this.frequencies = [
-        // Common business intervals
-        { label: t('recurring_invoices.frequency.every_week'), value: '0 0 * * 0' },
-        { label: t('recurring_invoices.frequency.every_2_weeks'), value: '0 0 */14 * *' },
-        { label: t('recurring_invoices.frequency.every_month'), value: '0 0 1 * *' },
-        { label: t('recurring_invoices.frequency.every_2_months'), value: '0 0 1 */2 *' },
-        { label: t('recurring_invoices.frequency.every_quarter'), value: '0 0 1 */3 *' },
-        { label: t('recurring_invoices.frequency.every_6_month'), value: '0 0 1 */6 *' },
-        { label: t('recurring_invoices.frequency.every_year'), value: '0 0 1 1 *' },
-        // Less common intervals
-        { label: t('recurring_invoices.frequency.every_day'), value: '0 0 * * *' },
-        { label: t('recurring_invoices.frequency.every_15_days_at_midnight'), value: '0 5 */15 * *' },
-        { label: t('recurring_invoices.frequency.every_hour'), value: '0 * * * *' },
-        { label: t('recurring_invoices.frequency.every_minute'), value: '* * * * *' },
-        // Custom cron expression
-        { label: t('recurring_invoices.frequency.custom'), value: 'CUSTOM' },
-      ]
+      this.frequencies = frequencyPresets(t)
     },
 
     resetCurrentRecurringInvoice(): void {
