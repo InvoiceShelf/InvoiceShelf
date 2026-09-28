@@ -218,7 +218,9 @@ foreign-key column names, receipt URLs, and public v1 discriminator strings rema
 A module that queries `payments` or `payment_allocations` directly must switch to
 `customer_payments` and `customer_payment_allocations`; one that goes through the
 `Payment` model or the API is unaffected.
-Historical migrations are retained. A new migration synchronizes owner role grants.
+Historical migrations are retained. The first `migrate` gives the purchasing abilities
+to every company's Owner role, all of them to Manager and the view abilities to
+Read only; a preset the super administrator has edited to leave one out keeps it out.
 
 The new purchasing tables are additive. Historical expenses are not converted and
 suppliers are not inferred. New PHP model namespaces remain canonical; no class aliases
