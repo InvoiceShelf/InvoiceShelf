@@ -78,6 +78,14 @@ test('the frequency preview works in the company time zone and lists the next ru
         ->assertJsonPath('upcoming', ['2026-07-01', '2026-08-01', '2026-09-01', '2026-10-01', '2026-11-01']);
 });
 
+test('the frequency preview counts from now when the form has no start date yet', function () {
+    Carbon::setTestNow('2026-06-15 12:30:00');
+
+    $this->getJson('/api/v1/recurring-invoice-frequency?frequency=0 0 1 * *')
+        ->assertOk()
+        ->assertJsonPath('upcoming.0', '2026-07-01');
+});
+
 test('a frequency the scheduler cannot read is a validation error', function () {
     $this->getJson('/api/v1/recurring-invoice-frequency?frequency=every monday&starts_at=2026-06-15')
         ->assertUnprocessable()

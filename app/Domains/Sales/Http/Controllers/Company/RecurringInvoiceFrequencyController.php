@@ -18,14 +18,15 @@ class RecurringInvoiceFrequencyController extends Controller
      * Read a cron expression and a start date, and answer with the runs they
      * produce, worked out in the company's time zone like the schedule
      * itself. Nothing is gated or written down; an expression or a date the
-     * parser cannot read is a validation error.
+     * parser cannot read is a validation error. Without a start date, which a
+     * form has not always been given yet, the runs are counted from now.
      */
     public function __invoke(RecurrenceFrequencyRequest $request): JsonResponse
     {
         $timezone = CompanySetting::timeZone($request->header('company'));
         $upcoming = Cadence::upcoming(
             $request->validated('frequency'),
-            $request->validated('starts_at'),
+            $request->validated('starts_at') ?? now(),
             $timezone,
         );
 
