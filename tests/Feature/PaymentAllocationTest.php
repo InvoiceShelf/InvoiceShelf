@@ -264,12 +264,12 @@ test('the migration restores an invalid legacy link to unapplied credit and reca
         'exchange_rate' => 1,
     ]);
 
-    Schema::table('payments', fn ($table) => $table->unsignedInteger('invoice_id')->nullable()->index());
+    Schema::table('customer_payments', fn ($table) => $table->unsignedInteger('invoice_id')->nullable()->index());
     Payment::query()->whereKey($payment->id)->update(['invoice_id' => $invoice->id]);
 
-    (require database_path('migrations/2026_08_02_230400_replace_payment_invoice_with_allocations.php'))->up();
+    withLegacyPaymentStorage(fn () => (require database_path('migrations/2026_08_02_230400_replace_payment_invoice_with_allocations.php'))->up());
 
-    expect(Schema::hasColumn('payments', 'invoice_id'))->toBeFalse()
+    expect(Schema::hasColumn('customer_payments', 'invoice_id'))->toBeFalse()
         ->and(PaymentAllocation::where('payment_id', $payment->id)->exists())->toBeFalse()
         ->and($invoice->fresh()->due_amount)->toBe(100)
         ->and($invoice->fresh()->status)->toBe(Invoice::STATUS_SENT)
@@ -287,12 +287,12 @@ test('the migration leaves an invalid legacy credit note target unchanged', func
     ]);
     $payment = allocationPayment($creditNote, 100);
 
-    Schema::table('payments', fn ($table) => $table->unsignedInteger('invoice_id')->nullable()->index());
+    Schema::table('customer_payments', fn ($table) => $table->unsignedInteger('invoice_id')->nullable()->index());
     Payment::query()->whereKey($payment->id)->update(['invoice_id' => $creditNote->id]);
 
-    (require database_path('migrations/2026_08_02_230400_replace_payment_invoice_with_allocations.php'))->up();
+    withLegacyPaymentStorage(fn () => (require database_path('migrations/2026_08_02_230400_replace_payment_invoice_with_allocations.php'))->up());
 
-    expect(Schema::hasColumn('payments', 'invoice_id'))->toBeFalse()
+    expect(Schema::hasColumn('customer_payments', 'invoice_id'))->toBeFalse()
         ->and(PaymentAllocation::where('payment_id', $payment->id)->exists())->toBeFalse()
         ->and($creditNote->fresh()->status)->toBe(Invoice::STATUS_SENT)
         ->and($creditNote->fresh()->paid_status)->toBe(Invoice::STATUS_UNPAID)
@@ -303,10 +303,10 @@ test('the migration allocates only the payable portion of an overpaid legacy pay
     $invoice = allocatableInvoice(100);
     $payment = allocationPayment($invoice, 150);
 
-    Schema::table('payments', fn ($table) => $table->unsignedInteger('invoice_id')->nullable()->index());
+    Schema::table('customer_payments', fn ($table) => $table->unsignedInteger('invoice_id')->nullable()->index());
     Payment::query()->whereKey($payment->id)->update(['invoice_id' => $invoice->id]);
 
-    (require database_path('migrations/2026_08_02_230400_replace_payment_invoice_with_allocations.php'))->up();
+    withLegacyPaymentStorage(fn () => (require database_path('migrations/2026_08_02_230400_replace_payment_invoice_with_allocations.php'))->up());
 
     expect(PaymentAllocation::where('payment_id', $payment->id)->sum('amount'))->toBe(100)
         ->and($invoice->fresh()->due_amount)->toBe(0)
@@ -326,7 +326,7 @@ test('the migration refuses rollback when a payment retains unapplied credit', f
 
     $migration = require database_path('migrations/2026_08_02_230400_replace_payment_invoice_with_allocations.php');
 
-    expect(fn () => $migration->down())->toThrow(RuntimeException::class, 'Cannot roll back payment allocations with unapplied customer credit.');
+    expect(fn () => withLegacyPaymentStorage(fn () => $migration->down()))->toThrow(RuntimeException::class, 'Cannot roll back payment allocations with unapplied customer credit.');
 });
 
 test('a partial migration run with no legacy column still verifies existing allocations', function () {
@@ -344,8 +344,8 @@ test('a partial migration run with no legacy column still verifies existing allo
 
     $migration = require database_path('migrations/2026_08_02_230400_replace_payment_invoice_with_allocations.php');
 
-    expect(Schema::hasColumn('payments', 'invoice_id'))->toBeFalse()
-        ->and(fn () => $migration->up())->toThrow(RuntimeException::class, 'allocation target is not payable');
+    expect(Schema::hasColumn('customer_payments', 'invoice_id'))->toBeFalse()
+        ->and(fn () => withLegacyPaymentStorage(fn () => $migration->up()))->toThrow(RuntimeException::class, 'allocation target is not payable');
 });
 
 test('a partial migration run rejects allocations whose payment no longer exists', function () {
@@ -359,6 +359,6 @@ test('a partial migration run rejects allocations whose payment no longer exists
 
     $migration = require database_path('migrations/2026_08_02_230400_replace_payment_invoice_with_allocations.php');
 
-    expect(Schema::hasColumn('payments', 'invoice_id'))->toBeFalse()
-        ->and(fn () => $migration->up())->toThrow(RuntimeException::class, 'allocation payment is missing');
+    expect(Schema::hasColumn('customer_payments', 'invoice_id'))->toBeFalse()
+        ->and(fn () => withLegacyPaymentStorage(fn () => $migration->up()))->toThrow(RuntimeException::class, 'allocation payment is missing');
 });

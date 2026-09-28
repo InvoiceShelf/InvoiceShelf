@@ -42,7 +42,7 @@ class PaymentsController extends Controller
         $page = Payment::with(['customer', 'allocations.invoice', 'paymentMethod', 'creator'])
             ->whereCustomer($contact)
             ->applyFilters($narrowing)
-            ->select('payments.*')
+            ->select('customer_payments.*')
             ->orderByDesc('created_at')
             ->paginateData($perPage);
 

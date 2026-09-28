@@ -1521,4 +1521,8 @@ async function resolveOptions(query: string): Promise<void> {
     }
   }
 }
+defineExpose({
+  close: closeDropdown,
+  focus: () => rootRef.value?.focus({ preventScroll: true }),
+})
 </script>

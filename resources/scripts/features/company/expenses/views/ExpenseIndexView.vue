@@ -1,15 +1,6 @@
 <template>
   <BasePage>
-    <BasePageHeader :title="$t('expenses.title')">
-      <BaseBreadcrumb>
-        <BaseBreadcrumbItem :title="$t('general.home')" to="dashboard" />
-        <BaseBreadcrumbItem
-          :title="$t('expenses.expense', 2)"
-          to="#"
-          active
-        />
-      </BaseBreadcrumb>
-
+    <PurchaseListHeader section="expenses">
       <template #actions>
         <BaseButton
           v-show="expenseStore.totalExpenses"
@@ -40,7 +31,7 @@
           {{ $t('expenses.add_expense') }}
         </BaseButton>
       </template>
-    </BasePageHeader>
+    </PurchaseListHeader>
 
     <!-- Filters -->
     <BaseFilterWrapper :show="showFilters" @clear="clearFilter">
@@ -210,6 +201,7 @@
 </template>
 
 <script setup lang="ts">
+import PurchaseListHeader from '../../purchases/components/PurchaseListHeader.vue'
 import type { ColumnDef } from '@/scripts/components/table/DataTable.vue'
 import { ref, onMounted, computed, reactive, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'

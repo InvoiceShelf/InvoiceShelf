@@ -53,6 +53,7 @@ class ExpenseResource extends JsonResource
             'amount' => $expense->amount,
             'notes' => $expense->notes,
             'customer_id' => $expense->customer_id,
+            'supplier_id' => $expense->supplier_id,
             'attachment_receipt_url' => $expense->receipt_url,
             'attachment_receipt' => $expense->receipt,
             'attachment_receipt_meta' => $expense->receipt_meta,

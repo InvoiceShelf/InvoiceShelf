@@ -30,6 +30,7 @@ export interface ExpenseFormData {
   expense_number: string
   amount: number
   notes: string | null
+  supplier_id: number | null
   customer_id: number | null
   expense_category_id: number | null
   payment_method_id: number | null
@@ -51,7 +52,8 @@ function createExpenseStub(): ExpenseFormData {
     expense_number: '',
     amount: 0,
     notes: '',
-    customer_id: null,
+    supplier_id: null,
+  customer_id: null,
     expense_category_id: null,
     payment_method_id: null,
     currency_id: null,

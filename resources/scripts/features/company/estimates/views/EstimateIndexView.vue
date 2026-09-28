@@ -1,6 +1,6 @@
 <template>
   <BasePage>
-    <BasePageHeader :title="$t('estimates.title')">
+    <BasePageHeader :help="$t('page_help.estimates')" :title="$t('estimates.title')">
       <BaseBreadcrumb>
         <BaseBreadcrumbItem :title="$t('general.home')" to="dashboard" />
         <BaseBreadcrumbItem :title="$t('estimates.estimate', 2)" to="#" active />

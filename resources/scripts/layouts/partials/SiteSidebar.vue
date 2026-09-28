@@ -40,7 +40,7 @@
       >
         <template v-if="menu[0] && menu[0].group_label">
           <p
-            v-if="showGroupLabels && !isRail"
+            v-if="!isRail && (showGroupLabels || ['documents', 'purchases'].includes(menu[0].group))"
             class="px-2.5 pb-1.5 text-xs font-medium text-chrome-muted whitespace-nowrap"
           >
             {{ $t(menu[0].group_label) }}
@@ -51,13 +51,13 @@
           />
         </template>
 
-        <ul class="space-y-0.5">
+        <ul class="space-y-0.5" :aria-label="menu[0]?.group_label ? $t(menu[0].group_label) : undefined">
           <li v-for="item in menu" :key="item.name">
             <router-link
-              v-tooltip="isRail ? { content: $t(item.title), placement: flipPlacement('right') } : null"
+              v-tooltip="isRail ? { content: menuLabel(item), placement: flipPlacement('right') } : null"
               :to="item.link"
               :aria-current="hasActiveUrl(item.link) ? 'page' : undefined"
-              :aria-label="isRail ? $t(item.title) : undefined"
+              :aria-label="menuLabel(item)"
               :class="[
                 hasActiveUrl(item.link)
                   ? 'bg-chrome-active text-chrome-fg before:absolute before:start-0 before:top-2 before:bottom-2 before:w-0.5 before:rounded-full before:bg-chrome-accent'
@@ -133,6 +133,7 @@
 </template>
 
 <script setup lang="ts">
+import { useMenuLabel } from '@/scripts/composables/use-menu-label'
 import { flipPlacement } from '@/scripts/utils/direction'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
@@ -147,6 +148,7 @@ import CompanySwitcher from './CompanySwitcher.vue'
 import AccountMenu from './AccountMenu.vue'
 import { useUserStore } from '@/scripts/stores/user.store'
 
+const { menuLabel } = useMenuLabel()
 const route = useRoute()
 const globalStore = useGlobalStore()
 const companyStore = useCompanyStore()

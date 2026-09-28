@@ -207,7 +207,7 @@ function removeMultipleCustomers(): void {
 <template>
   <BasePage>
     <!-- Page Header Section -->
-    <BasePageHeader :title="$t('customers.title')">
+    <BasePageHeader :help="$t('page_help.customers')" :title="$t('customers.title')">
       <BaseBreadcrumb>
         <BaseBreadcrumbItem :title="$t('general.home')" to="dashboard" />
         <BaseBreadcrumbItem

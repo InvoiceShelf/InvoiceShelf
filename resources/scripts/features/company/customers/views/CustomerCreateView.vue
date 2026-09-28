@@ -162,7 +162,7 @@ async function submitCustomerData(): Promise<void> {
   <BasePage>
     <form class="flex flex-col gap-4 md:gap-5" @submit.prevent="submitCustomerData">
       <!-- On phones Save moves to the bottom bar, still submitting this form -->
-      <BasePageHeader :title="pageTitle" phone-actions="bar">
+      <BasePageHeader :help="$t('page_help.customers')" :title="pageTitle" phone-actions="bar">
         <BaseBreadcrumb>
           <BaseBreadcrumbItem :title="$t('general.home')" to="dashboard" />
           <BaseBreadcrumbItem

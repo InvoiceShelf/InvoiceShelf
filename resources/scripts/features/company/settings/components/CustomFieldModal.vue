@@ -228,6 +228,7 @@ const isRequiredField = computed<boolean>({
  * rather than a flag so a third destination, the customer portal say, does
  * not need a second column.
  */
+const supportsDocumentPlacement = computed(() => !['Supplier', 'Bill'].includes(currentCustomField.value.model_type))
 const isPrintedOnDocument = computed<boolean>({
   get: () => currentCustomField.value.placement === 'document',
   set: (value: boolean) => {
@@ -324,7 +325,7 @@ async function submitCustomFieldData(): Promise<void> {
     type: currentCustomField.value.type,
     placeholder: currentCustomField.value.placeholder,
     is_required: currentCustomField.value.is_required === 1,
-    placement: currentCustomField.value.placement,
+    placement: supportsDocumentPlacement.value ? currentCustomField.value.placement : 'internal',
     validation: submittedValidation(),
     options: currentCustomField.value.options.map((o) => o.name),
     order: currentCustomField.value.order,
@@ -552,7 +553,7 @@ function closeCustomFieldModal(): void {
                 </span>
               </label>
 
-              <label class="flex items-center gap-3 cursor-pointer">
+              <label v-if="supportsDocumentPlacement" class="flex items-center gap-3 cursor-pointer">
                 <BaseSwitch v-model="isPrintedOnDocument" aria-labelledby="custom-field-printed-label" />
                 <span id="custom-field-printed-label" class="text-sm text-heading">
                   {{ $t('settings.custom_fields.show_on_document') }}

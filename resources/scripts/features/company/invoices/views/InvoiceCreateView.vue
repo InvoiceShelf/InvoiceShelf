@@ -1,7 +1,7 @@
 <template>
   <BasePage class="relative invoice-create-page">
     <form @submit.prevent="submitForm">
-      <BasePageHeader :title="pageTitle">
+      <BasePageHeader :help="$t(isRecurring ? 'page_help.recurring_invoices' : 'page_help.invoices')" :title="pageTitle">
         <BaseBreadcrumb>
           <BaseBreadcrumbItem :title="$t('general.home')" to="/admin/dashboard" />
           <BaseBreadcrumbItem :title="$t('invoices.invoice', 2)" to="/admin/invoices" />

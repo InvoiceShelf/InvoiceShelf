@@ -4,6 +4,7 @@ namespace App\Platform\Mcp\Queries;
 
 use App\Domains\Purchases\Models\Expense;
 use App\Domains\Receivables\Models\Payment;
+use App\Domains\Reporting\Queries\PurchasesQuery;
 use App\Domains\Reporting\Queries\ReceivablesAgingQuery;
 use App\Domains\Sales\Models\Invoice;
 use Carbon\CarbonImmutable;
@@ -43,7 +44,7 @@ class CompanyStatsQuery
         $invoiced = (int) $issued->clone()->where('type', Invoice::TYPE_INVOICE)->sum('base_total');
         $credited = (int) -$issued->clone()->where('type', Invoice::TYPE_CREDIT_NOTE)->sum('base_total');
         $received = (int) $payments->clone()->sum('base_amount');
-        $spent = (int) $expenses->clone()->sum('base_amount');
+        $spent = app(PurchasesQuery::class)->cash($companyId, $from, $to)['net_cash_out'];
 
         return [
             'invoiced' => $invoiced - $credited,

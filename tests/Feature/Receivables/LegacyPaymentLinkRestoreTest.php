@@ -178,18 +178,18 @@ test('the migration files a declined draft link, annotates the payment, and rest
     ]);
     $payment = legacyLinkPayment($invoice, 100, 'Cheque 4471.');
 
-    Schema::table('payments', fn ($table) => $table->unsignedInteger('invoice_id')->nullable()->index());
-    DB::table('payments')->where('id', $payment->id)->update(['invoice_id' => $invoice->id]);
+    Schema::table('customer_payments', fn ($table) => $table->unsignedInteger('invoice_id')->nullable()->index());
+    DB::table('customer_payments')->where('id', $payment->id)->update(['invoice_id' => $invoice->id]);
     DB::table('migrations')
         ->where('migration', '2026_08_02_230400_replace_payment_invoice_with_allocations')
         ->delete();
 
     Log::spy();
 
-    Artisan::call('migrate', [
+    withLegacyPaymentStorage(fn () => Artisan::call('migrate', [
         '--path' => 'database/migrations/2026_08_02_230400_replace_payment_invoice_with_allocations.php',
         '--force' => true,
-    ]);
+    ]));
 
     Log::shouldHaveReceived('warning')
         ->withArgs(fn (string $message, array $context = []): bool => $message === 'Payment legacy invoice link was retained as unapplied customer credit.'
@@ -198,7 +198,7 @@ test('the migration files a declined draft link, annotates the payment, and rest
 
     $link = DB::table('legacy_payment_links')->where('payment_id', $payment->id)->first();
 
-    expect(Schema::hasColumn('payments', 'invoice_id'))->toBeFalse()
+    expect(Schema::hasColumn('customer_payments', 'invoice_id'))->toBeFalse()
         ->and(PaymentAllocation::where('payment_id', $payment->id)->exists())->toBeFalse()
         ->and($link)->not->toBeNull()
         ->and($link->reason)->toBe('draft')
@@ -226,10 +226,10 @@ test('the migration files a mismatched legacy link without annotating the paymen
         'notes' => 'Cheque 4471.',
     ]);
 
-    Schema::table('payments', fn ($table) => $table->unsignedInteger('invoice_id')->nullable()->index());
-    DB::table('payments')->where('id', $payment->id)->update(['invoice_id' => $invoice->id]);
+    Schema::table('customer_payments', fn ($table) => $table->unsignedInteger('invoice_id')->nullable()->index());
+    DB::table('customer_payments')->where('id', $payment->id)->update(['invoice_id' => $invoice->id]);
 
-    (require database_path('migrations/2026_08_02_230400_replace_payment_invoice_with_allocations.php'))->up();
+    withLegacyPaymentStorage(fn () => (require database_path('migrations/2026_08_02_230400_replace_payment_invoice_with_allocations.php'))->up());
 
     expect(DB::table('legacy_payment_links')->where('payment_id', $payment->id)->value('reason'))->toBe('mismatch')
         ->and($payment->fresh()->notes)->toBe('Cheque 4471.')

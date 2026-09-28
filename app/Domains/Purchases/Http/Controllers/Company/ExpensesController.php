@@ -106,7 +106,7 @@ class ExpensesController extends Controller
 
         $deletable = Expense::whereCompany()->whereIn('id', $request->ids)->pluck('id');
 
-        Expense::destroy($deletable);
+        $this->expenseService->delete($deletable->all(), (int) $request->header('company'));
 
         return response()->json(['success' => true]);
     }

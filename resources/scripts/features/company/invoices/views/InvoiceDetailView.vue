@@ -2,7 +2,7 @@
   <div v-if="invoiceData" class="flex min-h-full">
 
     <BasePage class="min-w-0">
-      <BasePageHeader :title="pageTitle">
+      <BasePageHeader :help="$t(invoiceData?.type === 'CREDIT_NOTE' ? 'page_help.credit_notes' : 'page_help.invoices')" :title="pageTitle">
         <BaseBreadcrumb>
           <BaseBreadcrumbItem :title="$t('invoices.invoice', 2)" to="/admin/invoices" />
         </BaseBreadcrumb>

@@ -38,6 +38,7 @@ export interface Expense {
   expense_number: string | null
   amount: number
   notes: string | null
+  supplier_id?: number | null
   customer_id: number | null
   attachment_receipt_url: ReceiptUrl | null
   attachment_receipt: string | null
@@ -65,6 +66,7 @@ export interface CreateExpensePayload {
   expense_date: string
   amount: number
   expense_category_id?: number | null
+  supplier_id?: number | null
   customer_id?: number | null
   payment_method_id?: number | null
   notes?: string | null

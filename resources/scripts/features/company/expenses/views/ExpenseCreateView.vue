@@ -1,8 +1,16 @@
 <template>
   <BasePage class="relative">
-    <form action="" class="flex flex-col gap-4 md:gap-5" @submit.prevent="submitForm">
+    <form
+      id="expense-form"
+      class="flex flex-col gap-4 md:gap-5"
+      @submit.prevent="submitForm"
+    >
       <!-- On phones Save moves to the bottom bar, still submitting this form -->
-      <BasePageHeader :title="pageTitle" phone-actions="bar">
+      <BasePageHeader
+        :help="$t('page_help.expenses')"
+        :title="pageTitle"
+        phone-actions="bar"
+      >
         <BaseBreadcrumb>
           <BaseBreadcrumbItem
             :title="$t('general.home')"
@@ -16,6 +24,22 @@
         </BaseBreadcrumb>
 
         <template #actions>
+          <BaseButton
+            v-if="
+              isEdit &&
+              expenseStore.currentExpense.supplier_id &&
+              userStore.hasAbilities('create-supplier-credit')
+            "
+            variant="white"
+            type="button"
+            @click="
+              $router.push({
+                path: '/admin/supplier-credits/create',
+                query: { expense_id: $route.params.id },
+              })
+            "
+            >{{ $t('purchases.new_credit') }}</BaseButton
+          >
           <BaseButton
             v-if="isEdit && expenseStore.currentExpense.attachment_receipt_url"
             :loading="isDownloadingReceipt"
@@ -35,6 +59,7 @@
             :disabled="isSaving"
             variant="primary"
             type="submit"
+            form="expense-form"
           >
             <template #left="slotProps">
               <BaseIcon
@@ -52,155 +77,174 @@
         </template>
       </BasePageHeader>
 
+      <div
+        class="grid items-start gap-5"
+        :class="userStore.hasAbilities('view-supplier') ? 'lg:grid-cols-2' : ''"
+      >
+        <SupplierPicker
+          v-if="
+            userStore.hasAbilities('view-supplier') && !isFetchingInitialData
+          "
+          v-model="expenseStore.currentExpense.supplier_id"
+          :required="false"
+        />
+        <BaseCard container-class="p-4 md:p-5">
+          <BaseInputGrid>
+            <!-- Category -->
+            <BaseInputGroup
+              :label="$t('expenses.category')"
+              :content-loading="isFetchingInitialData"
+              required
+            >
+              <!-- A new company has no categories: one can be added from here -->
+              <BaseMultiselect
+                v-if="!isFetchingInitialData"
+                :key="categoryReloadKey"
+                v-model="expenseStore.currentExpense.expense_category_id"
+                :content-loading="isFetchingInitialData"
+                value-prop="id"
+                label="name"
+                track-by="id"
+                :options="searchCategory"
+                :filter-results="false"
+                resolve-on-load
+                :delay="500"
+                searchable
+                :placeholder="$t('expenses.categories.select_a_category')"
+              >
+                <template
+                  v-if="
+                    userStore.hasAbilities([
+                      ABILITIES.CREATE_EXPENSE,
+                      ABILITIES.EDIT_EXPENSE,
+                    ])
+                  "
+                  #action
+                >
+                  <BaseSelectAction @click="addCategory">
+                    <BaseIcon
+                      name="PlusIcon"
+                      class="h-4 me-2 -ms-2 text-center text-primary-400"
+                    />
+                    {{ $t('settings.expense_category.add_new_category') }}
+                  </BaseSelectAction>
+                </template>
+              </BaseMultiselect>
+            </BaseInputGroup>
+
+            <!-- Expense Date -->
+            <BaseInputGroup
+              :label="$t('expenses.expense_date')"
+              :content-loading="isFetchingInitialData"
+              required
+            >
+              <BaseDatePicker
+                v-model="expenseStore.currentExpense.expense_date"
+                :content-loading="isFetchingInitialData"
+                :calendar-button="true"
+              />
+            </BaseInputGroup>
+
+            <!-- Expense Number -->
+            <BaseInputGroup
+              :label="$t('expenses.expense_number')"
+              :content-loading="isFetchingInitialData"
+            >
+              <BaseInput
+                v-model="expenseStore.currentExpense.expense_number"
+                :content-loading="isFetchingInitialData"
+                type="text"
+                name="expense_number"
+                :placeholder="$t('expenses.expense_number_placeholder')"
+              />
+            </BaseInputGroup>
+
+            <!-- Amount -->
+            <BaseInputGroup
+              :label="$t('expenses.amount')"
+              :content-loading="isFetchingInitialData"
+              required
+            >
+              <BaseMoney
+                :key="String(expenseStore.currentExpense.selectedCurrency)"
+                v-model="amountData"
+                class="focus:border focus:border-solid focus:border-primary-500"
+                :currency="expenseStore.currentExpense.selectedCurrency"
+              />
+            </BaseInputGroup>
+
+            <!-- Currency -->
+            <BaseInputGroup
+              :label="$t('expenses.currency')"
+              :content-loading="isFetchingInitialData"
+              required
+            >
+              <BaseMultiselect
+                v-model="expenseStore.currentExpense.currency_id"
+                value-prop="id"
+                label="name"
+                track-by="name"
+                :content-loading="isFetchingInitialData"
+                :options="globalStore.currencies"
+                searchable
+                :can-deselect="false"
+                :placeholder="$t('customers.select_currency')"
+                class="w-full"
+                @update:model-value="onCurrencyChange"
+              />
+            </BaseInputGroup>
+
+            <!-- Exchange Rate -->
+            <ExchangeRateConverter
+              :store="expenseStore"
+              store-prop="currentExpense"
+              :v="{
+                exchange_rate: { $error: false, $errors: [], $touch: () => {} },
+              }"
+              :is-loading="isFetchingInitialData"
+              :is-edit="isEdit"
+              :customer-currency="expenseStore.currentExpense.currency_id"
+            />
+
+            <!-- Customer -->
+            <BaseInputGroup
+              :content-loading="isFetchingInitialData"
+              :label="$t('expenses.customer')"
+            >
+              <BaseCustomerSelectInput
+                v-if="!isFetchingInitialData"
+                v-model="expenseStore.currentExpense.customer_id"
+                can-deselect
+                show-action
+              />
+            </BaseInputGroup>
+
+            <!-- Payment Mode -->
+            <BaseInputGroup
+              :content-loading="isFetchingInitialData"
+              :label="$t('payments.payment_mode')"
+            >
+              <PurchaseLookupSelect
+                v-model="expenseStore.currentExpense.payment_method_id"
+                kind="method"
+                :options="expenseStore.paymentModes"
+                :content-loading="isFetchingInitialData"
+              />
+            </BaseInputGroup>
+
+            <!-- Custom fields join the form's own grid rather than forming a
+               band of their own; they are attributes like the rest. -->
+            <CustomFieldInput
+              v-for="field in customFields"
+              :key="field.id"
+              :custom-field-scope="customFieldValidationScope"
+              :field="field"
+            />
+          </BaseInputGrid>
+        </BaseCard>
+      </div>
       <BaseCard container-class="p-4 md:p-5">
         <BaseInputGrid>
-          <!-- Category -->
-          <BaseInputGroup
-            :label="$t('expenses.category')"
-            :content-loading="isFetchingInitialData"
-            required
-          >
-            <!-- A new company has no categories: one can be added from here -->
-            <BaseMultiselect
-              v-if="!isFetchingInitialData"
-              :key="categoryReloadKey"
-              v-model="expenseStore.currentExpense.expense_category_id"
-              :content-loading="isFetchingInitialData"
-              value-prop="id"
-              label="name"
-              track-by="id"
-              :options="searchCategory"
-              :filter-results="false"
-              resolve-on-load
-              :delay="500"
-              searchable
-              :placeholder="$t('expenses.categories.select_a_category')"
-            >
-              <template v-if="userStore.hasAbilities(ABILITIES.VIEW_EXPENSE)" #action>
-                <BaseSelectAction @click="addCategory">
-                  <BaseIcon
-                    name="PlusIcon"
-                    class="h-4 me-2 -ms-2 text-center text-primary-400"
-                  />
-                  {{ $t('settings.expense_category.add_new_category') }}
-                </BaseSelectAction>
-              </template>
-            </BaseMultiselect>
-          </BaseInputGroup>
-
-          <!-- Expense Date -->
-          <BaseInputGroup
-            :label="$t('expenses.expense_date')"
-            :content-loading="isFetchingInitialData"
-            required
-          >
-            <BaseDatePicker
-              v-model="expenseStore.currentExpense.expense_date"
-              :content-loading="isFetchingInitialData"
-              :calendar-button="true"
-            />
-          </BaseInputGroup>
-
-          <!-- Expense Number -->
-          <BaseInputGroup
-            :label="$t('expenses.expense_number')"
-            :content-loading="isFetchingInitialData"
-          >
-            <BaseInput
-              v-model="expenseStore.currentExpense.expense_number"
-              :content-loading="isFetchingInitialData"
-              type="text"
-              name="expense_number"
-              :placeholder="$t('expenses.expense_number_placeholder')"
-            />
-          </BaseInputGroup>
-
-          <!-- Amount -->
-          <BaseInputGroup
-            :label="$t('expenses.amount')"
-            :content-loading="isFetchingInitialData"
-            required
-          >
-            <BaseMoney
-              :key="String(expenseStore.currentExpense.selectedCurrency)"
-              v-model="amountData"
-              class="focus:border focus:border-solid focus:border-primary-500"
-              :currency="expenseStore.currentExpense.selectedCurrency"
-            />
-          </BaseInputGroup>
-
-          <!-- Currency -->
-          <BaseInputGroup
-            :label="$t('expenses.currency')"
-            :content-loading="isFetchingInitialData"
-            required
-          >
-            <BaseMultiselect
-              v-model="expenseStore.currentExpense.currency_id"
-              value-prop="id"
-              label="name"
-              track-by="name"
-              :content-loading="isFetchingInitialData"
-              :options="globalStore.currencies"
-              searchable
-              :can-deselect="false"
-              :placeholder="$t('customers.select_currency')"
-              class="w-full"
-              @update:model-value="onCurrencyChange"
-            />
-          </BaseInputGroup>
-
-          <!-- Exchange Rate -->
-          <ExchangeRateConverter
-            :store="expenseStore"
-            store-prop="currentExpense"
-            :v="{ exchange_rate: { $error: false, $errors: [], $touch: () => {} } }"
-            :is-loading="isFetchingInitialData"
-            :is-edit="isEdit"
-            :customer-currency="expenseStore.currentExpense.currency_id"
-          />
-
-          <!-- Customer -->
-          <BaseInputGroup
-            :content-loading="isFetchingInitialData"
-            :label="$t('expenses.customer')"
-          >
-            <BaseCustomerSelectInput
-              v-if="!isFetchingInitialData"
-              v-model="expenseStore.currentExpense.customer_id"
-              can-deselect
-              show-action
-            />
-          </BaseInputGroup>
-
-          <!-- Payment Mode -->
-          <BaseInputGroup
-            :content-loading="isFetchingInitialData"
-            :label="$t('payments.payment_mode')"
-          >
-            <BaseMultiselect
-              v-model="expenseStore.currentExpense.payment_method_id"
-              :content-loading="isFetchingInitialData"
-              label="name"
-              value-prop="id"
-              track-by="name"
-              :options="expenseStore.paymentModes"
-              :placeholder="$t('payments.select_payment_mode')"
-              searchable
-            />
-          </BaseInputGroup>
-
-          <!-- Custom fields join the form's own grid rather than forming a
-               band of their own; they are attributes like the rest. -->
-          <CustomFieldInput
-            v-for="field in customFields"
-            :key="field.id"
-            :custom-field-scope="customFieldValidationScope"
-            :field="field"
-          />
-        </BaseInputGrid>
-
-        <BaseInputGrid class="mt-4">
           <!-- Notes -->
           <BaseInputGroup
             :content-loading="isFetchingInitialData"
@@ -223,7 +267,6 @@
               @remove="onFileInputRemove"
             />
           </BaseInputGroup>
-
         </BaseInputGrid>
 
         <ExpenseTaxSection
@@ -236,10 +279,17 @@
     </form>
 
     <CategoryModal />
+    <PurchaseLookupModals :context="lookups" />
   </BasePage>
 </template>
 
 <script setup lang="ts">
+import { providePurchaseLookups } from '../../purchases/composables/use-purchase-lookups'
+import PurchaseLookupModals from '../../purchases/components/PurchaseLookupModals.vue'
+import PurchaseLookupSelect from '../../purchases/components/PurchaseLookupSelect.vue'
+const lookups = providePurchaseLookups()
+
+import SupplierPicker from '../../purchases/components/SupplierPicker.vue'
 import { ref, computed, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -250,7 +300,10 @@ import { useNotificationStore } from '../../../../stores/notification.store'
 import { useUserStore } from '../../../../stores/user.store'
 import { useModalStore } from '../../../../stores/modal.store'
 import { ABILITIES } from '../../../../config/abilities'
-import { handleApiError, getErrorTranslationKey } from '@/scripts/utils/error-handling'
+import {
+  handleApiError,
+  getErrorTranslationKey,
+} from '@/scripts/utils/error-handling'
 import { formatDate } from '@/scripts/utils/format-date'
 import CategoryModal from '@/scripts/features/company/settings/components/CategoryModal.vue'
 import { downloadDocument } from '@/scripts/utils/documents'
@@ -340,7 +393,9 @@ function onFileInputRemove(): void {
 }
 
 function onCurrencyChange(currencyId: number): void {
-  const found = globalStore.currencies.find((c: Currency) => c.id === currencyId)
+  const found = globalStore.currencies.find(
+    (c: Currency) => c.id === currencyId,
+  )
   expenseStore.currentExpense.selectedCurrency = found ?? null
 }
 
@@ -348,16 +403,16 @@ function onCurrencyChange(currencyId: number): void {
 const createdCategory = ref<ExpenseCategory | null>(null)
 const categoryReloadKey = ref<number>(0)
 
-async function searchCategory(
-  search: string,
-): Promise<ExpenseCategory[]> {
-  const { expenseService } = await import(
-    '../../../../api/services/expense.service'
-  )
+async function searchCategory(search: string): Promise<ExpenseCategory[]> {
+  const { expenseService } =
+    await import('../../../../api/services/expense.service')
   const res = await expenseService.listCategories({ search })
   const categories = res.data ?? []
 
-  if (createdCategory.value && !categories.some((c) => c.id === createdCategory.value?.id)) {
+  if (
+    createdCategory.value &&
+    !categories.some((c) => c.id === createdCategory.value?.id)
+  ) {
     categories.unshift(createdCategory.value)
   }
 

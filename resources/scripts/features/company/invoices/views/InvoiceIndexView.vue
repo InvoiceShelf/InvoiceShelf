@@ -1,46 +1,19 @@
 <template>
   <BasePage>
-    <BasePageHeader>
-      <template #default>
-        <div class="flex items-center gap-2">
-          <h1 class="font-semibold text-title text-heading">
-            {{ $t('invoices.title') }}
-          </h1>
-          <BaseDropdown position="bottom-start" width-class="w-44">
-            <template #activator>
-              <span
-                class="flex items-center gap-1 px-2 py-1 text-sm font-medium text-muted hover:text-heading rounded-md hover:bg-surface-secondary transition-colors"
-              >
-                <span class="text-xs text-primary-500 bg-primary-50 px-2 py-0.5 rounded-full">
-                  {{ viewMode === 'one-time' ? $t('invoices.one_time') : $t('recurring_invoices.recurring') }}
-                </span>
-                <BaseIcon name="ChevronDownIcon" class="w-4 h-4 text-muted" />
-              </span>
-            </template>
-            <BaseDropdownItem
-              :class="{ 'bg-primary-50 text-primary-600': viewMode === 'one-time' }"
-              @click="setViewMode('one-time')"
-            >
-              <BaseIcon name="DocumentTextIcon" class="w-4 h-4 me-2 text-subtle" />
-              {{ $t('invoices.one_time') }}
-              <BaseIcon v-if="viewMode === 'one-time'" name="CheckIcon" class="w-4 h-4 ms-auto text-primary-500" />
-            </BaseDropdownItem>
-            <BaseDropdownItem
-              v-if="canViewRecurring"
-              :class="{ 'bg-primary-50 text-primary-600': viewMode === 'recurring' }"
-              @click="setViewMode('recurring')"
-            >
-              <BaseIcon name="ArrowPathIcon" class="w-4 h-4 me-2 text-subtle" />
-              {{ $t('recurring_invoices.recurring') }}
-              <BaseIcon v-if="viewMode === 'recurring'" name="CheckIcon" class="w-4 h-4 ms-auto text-primary-500" />
-            </BaseDropdownItem>
-          </BaseDropdown>
-        </div>
-        <BaseBreadcrumb>
-          <BaseBreadcrumbItem :title="$t('general.home')" to="dashboard" />
-          <BaseBreadcrumbItem :title="$t('invoices.invoice', 2)" to="#" active />
-        </BaseBreadcrumb>
+    <BasePageHeader :title="$t('invoices.title')" :help="$t(viewMode === 'recurring' ? 'page_help.recurring_invoices' : 'page_help.invoices')" :help-title="$t(viewMode === 'recurring' ? 'recurring_invoices.title' : 'invoices.title')">
+      <template v-if="invoiceViews.length > 1" #title-suffix>
+        <BaseViewSwitcher
+          :model-value="viewMode"
+          primary-value="one-time"
+          :label="$t('invoices.title')"
+          :options="invoiceViews"
+          @update:model-value="setViewMode"
+        />
       </template>
+      <BaseBreadcrumb>
+        <BaseBreadcrumbItem :title="$t('general.home')" to="dashboard" />
+        <BaseBreadcrumbItem :title="$t('invoices.invoice', 2)" to="#" active />
+      </BaseBreadcrumb>
 
       <template #actions>
         <BaseButton
@@ -81,7 +54,7 @@
       :row-on-xl="true"
       @clear="clearFilter"
     >
-      <BaseInputGroup :label="$t('customers.customer', 1)">
+      <BaseInputGroup v-if="userStore.hasAbilities('view-customer')" :label="$t('customers.customer', 1)">
         <BaseCustomerSelectInput
           v-model="filters.customer_id"
           :placeholder="$t('customers.type_or_click')"
@@ -136,7 +109,7 @@
       v-show="showFilters && viewMode === 'recurring'"
       @clear="clearRecurringFilter"
     >
-      <BaseInputGroup :label="$t('customers.customer', 1)">
+      <BaseInputGroup v-if="userStore.hasAbilities('view-customer')" :label="$t('customers.customer', 1)">
         <BaseCustomerSelectInput
           v-model="recurringFilters.customer_id"
           :placeholder="$t('customers.type_or_click')"
@@ -498,6 +471,7 @@
 </template>
 
 <script setup lang="ts">
+import BaseViewSwitcher, { type ViewSwitcherOption } from '@/scripts/components/base/BaseViewSwitcher.vue'
 import type { ColumnDef } from '@/scripts/components/table/DataTable.vue'
 import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -577,7 +551,13 @@ onMounted(() => {
   recurringInvoiceStore.initFrequencies(t)
 })
 
-function setViewMode(mode: 'one-time' | 'recurring'): void {
+const invoiceViews = computed<ViewSwitcherOption[]>(() => [
+  {value: 'one-time', label: t('view_switcher.one_time'), icon: 'DocumentTextIcon'},
+  ...(canViewRecurring.value ? [{value: 'recurring', label: t('view_switcher.recurring'), icon: 'ArrowPathIcon'}] : []),
+])
+
+function setViewMode(mode: string): void {
+  if (mode !== 'one-time' && mode !== 'recurring') return
   if (mode === 'recurring' && !canViewRecurring.value) return
   viewMode.value = mode
   localStorage.setItem('invoiceViewMode', mode)

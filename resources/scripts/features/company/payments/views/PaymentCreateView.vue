@@ -2,7 +2,7 @@
   <BasePage class="relative payment-create">
     <form class="flex flex-col gap-4 md:gap-5" @submit.prevent="submitPaymentData">
       <!-- On phones Save moves to the bottom bar, still submitting this form -->
-      <BasePageHeader :title="pageTitle" phone-actions="bar">
+      <BasePageHeader :help="$t('page_help.payments')" :title="pageTitle" phone-actions="bar">
         <BaseBreadcrumb>
           <BaseBreadcrumbItem :title="$t('general.home')" to="/admin/dashboard" />
           <BaseBreadcrumbItem :title="$t('payments.payment', 2)" to="/admin/payments" />

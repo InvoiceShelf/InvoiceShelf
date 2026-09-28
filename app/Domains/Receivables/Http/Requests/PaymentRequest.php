@@ -93,7 +93,7 @@ class PaymentRequest extends FormRequest
      */
     private function uniqueNumber(): Unique
     {
-        $rule = Rule::unique('payments')->where('company_id', $this->header('company'));
+        $rule = Rule::unique('customer_payments')->where('company_id', $this->header('company'));
 
         return $this->isMethod('PUT')
             ? $rule->ignore($this->route('payment')->id)

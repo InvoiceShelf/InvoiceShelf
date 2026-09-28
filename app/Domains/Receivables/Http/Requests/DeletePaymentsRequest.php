@@ -29,7 +29,7 @@ class DeletePaymentsRequest extends FormRequest
     {
         return [
             'ids' => ['required'],
-            'ids.*' => ['required', Rule::exists('payments', 'id')],
+            'ids.*' => ['required', Rule::exists('customer_payments', 'id')],
         ];
     }
 }
