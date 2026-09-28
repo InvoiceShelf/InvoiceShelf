@@ -24,6 +24,7 @@ class ModuleAwareAbilityCatalog implements AbilityCatalog
         'model' => null,
         'depends_on' => [],
         'owner_only' => false,
+        'presets' => [],
     ];
 
     /**
