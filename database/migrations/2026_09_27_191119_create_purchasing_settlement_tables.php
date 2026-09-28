@@ -119,6 +119,45 @@ return new class extends Migration
                 $table->unique([$parent, 'bill_id'], $uniqueName);
             });
         }
+
+        // A recurring bill or expense: the same schedule columns as
+        // recurring_invoices, so both run on App\Support\Recurrence.
+        Schema::create('recurring_costs', function (Blueprint $table): void {
+            $table->bigIncrements('id');
+            $table->unsignedInteger('company_id')->index();
+            $table->unsignedInteger('creator_id')->nullable();
+            $table->unsignedBigInteger('supplier_id')->index();
+            $table->string('name');
+            $table->string('mode');
+            $table->string('status')->default('ACTIVE');
+            $table->string('frequency');
+            $table->dateTime('starts_at');
+            $table->dateTime('next_run_at')->nullable()->index();
+            $table->string('limit_by')->default('NONE');
+            $table->unsignedInteger('limit_count')->nullable();
+            $table->date('limit_date')->nullable();
+            $table->unsignedInteger('due_days')->default(30);
+            $table->boolean('create_as_draft')->default(false);
+            $table->boolean('notify_creator')->default(false);
+            $table->text('template');
+            $table->text('last_error')->nullable();
+            $table->timestamps();
+        });
+
+        // What each run generated, one row per scheduled day: a second run of
+        // the same day finds it and writes nothing.
+        Schema::create('recurring_cost_occurrences', function (Blueprint $table): void {
+            $table->bigIncrements('id');
+            $table->unsignedInteger('company_id')->index();
+            $table->unsignedBigInteger('recurring_cost_id')->index();
+            $table->date('scheduled_for');
+            $table->string('record_type');
+            $table->unsignedBigInteger('record_id');
+            $table->timestamps();
+
+            $table->unique(['recurring_cost_id', 'scheduled_for'], 'recurring_cost_occurrence_unique');
+            $table->index(['record_type', 'record_id']);
+        });
     }
 
     /**
@@ -147,6 +186,8 @@ return new class extends Migration
     public function down(): void
     {
         $tables = [
+            'recurring_cost_occurrences',
+            'recurring_costs',
             'supplier_credit_allocations',
             'supplier_payment_allocations',
             'supplier_refunds',

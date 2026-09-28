@@ -6,6 +6,7 @@ use App\Domains\Purchases\Http\Controllers\Company\ExpensesController;
 use App\Domains\Purchases\Http\Controllers\Company\PurchaseAttachmentsController;
 use App\Domains\Purchases\Http\Controllers\Company\PurchaseOptionsController;
 use App\Domains\Purchases\Http\Controllers\Company\PurchasesReportController;
+use App\Domains\Purchases\Http\Controllers\Company\RecurringCostsController;
 use App\Domains\Purchases\Http\Controllers\Company\SupplierCreditsController;
 use App\Domains\Purchases\Http\Controllers\Company\SupplierPaymentsController;
 use App\Domains\Purchases\Http\Controllers\Company\SupplierRefundsController;
@@ -43,6 +44,10 @@ Route::post('supplier-refunds/{supplierRefund}/actions', [SupplierRefundsControl
 Route::apiResource('supplier-refunds', SupplierRefundsController::class)
     ->parameters(['supplier-refunds' => 'supplierRefund'])
     ->only(['index', 'show', 'store']);
+
+Route::post('recurring-costs/{recurringCost}/actions', [RecurringCostsController::class, 'action']);
+Route::apiResource('recurring-costs', RecurringCostsController::class)
+    ->parameters(['recurring-costs' => 'recurringCost']);
 
 // Bills and supplier credits share one attachment endpoint, keyed by {kind}.
 Route::post('{kind}/{record}/attachments', [PurchaseAttachmentsController::class, 'store'])

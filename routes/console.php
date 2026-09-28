@@ -38,6 +38,12 @@ Schedule::command('recurring-invoices:generate')
     ->withoutOverlapping()
     ->when($installed);
 
+// Recurring bills and expenses, on the same recurrence runner.
+Schedule::command('recurring-costs:generate')
+    ->everyMinute()
+    ->withoutOverlapping()
+    ->when($installed);
+
 // Client registrations that never led to a connection, and OAuth tokens
 // long expired.
 Schedule::command('mcp:prune')
