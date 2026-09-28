@@ -24,7 +24,7 @@ class GenerateRecurringInvoices extends Command
         $generated = $service->generateDue();
 
         $this->info($generated === 0
-            ? 'No recurring invoice is due.'
+            ? 'No recurring invoice was generated.'
             : "Recurring invoices generated: {$generated}.");
 
         return self::SUCCESS;

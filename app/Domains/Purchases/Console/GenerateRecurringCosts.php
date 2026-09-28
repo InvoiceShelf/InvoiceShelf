@@ -20,7 +20,7 @@ class GenerateRecurringCosts extends Command
         $generated = $service->generateDue();
 
         $this->info($generated === 0
-            ? 'No recurring bill or expense is due.'
+            ? 'No recurring bill or expense was generated.'
             : "Recurring bills and expenses generated: {$generated}.");
 
         return self::SUCCESS;

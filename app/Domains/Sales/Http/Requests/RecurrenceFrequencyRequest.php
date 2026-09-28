@@ -22,7 +22,7 @@ class RecurrenceFrequencyRequest extends FormRequest
     {
         return [
             'frequency' => ['required', 'string', new CronFrequency],
-            'starts_at' => ['required', 'date'],
+            'starts_at' => ['nullable', 'date'],
         ];
     }
 }
