@@ -108,3 +108,13 @@ test('dashboard exposes current payables only with bill view permission', functi
     BouncerFacade::refresh();
     $this->getJson('/api/v1/dashboard')->assertOk()->assertJsonStructure(['payables' => ['as_of_date', 'outstanding', 'overdue', 'available_advances', 'available_credits']]);
 });
+
+test('a bill without a due date is not counted as overdue', function () {
+    $bill = app(PurchaseDocumentService::class)->saveBill(null, $this->companyId, $this->user->id, purchaseBillPayload($this, 10000));
+    $bill->forceFill(['due_date' => null])->saveQuietly();
+
+    $payables = app(PurchasesQuery::class)->report($this->companyId, '2026-09-01', '2026-09-30')['payables'];
+
+    expect($payables['overdue'])->toBe(0)
+        ->and($payables['due_later'])->toBe(10000);
+});
