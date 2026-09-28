@@ -11,8 +11,11 @@ use App\Domains\Sales\Models\Invoice;
 use App\Domains\Sales\Models\RecurringInvoice;
 use App\Support\MoneyConversion;
 use App\Support\PublicToken;
+use App\Support\Recurrence\Cadence;
+use App\Support\Recurrence\RecurrenceRunner;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class RecurringInvoiceService
 {
@@ -21,6 +24,7 @@ class RecurringInvoiceService
         private readonly InvoiceService $invoiceService,
         private readonly CustomFieldValueWriter $customFieldValueWriter,
         private readonly DocumentExchangeRateRecorder $exchangeRateRecorder,
+        private readonly RecurrenceRunner $runner,
     ) {}
 
     /**
@@ -131,54 +135,47 @@ class RecurringInvoiceService
     }
 
     /**
-     * Mint one invoice from a schedule, if the schedule is still owed one.
+     * Generate every invoice the active schedules have fallen due for, each
+     * dated its scheduled day where the company is. The scheduled command runs
+     * this; see RecurrenceRunner for the locking and retry rules.
      *
-     * `$advanceSchedule` is false when the caller has already claimed the row
-     * by moving `next_invoice_at` on itself, which is how the scheduled
-     * command stops two runs in the same minute from billing twice.
+     * @return int the invoices generated
      */
-    public function generateInvoice(RecurringInvoice $recurringInvoice, bool $advanceSchedule = true): void
+    public function generateDue(): int
+    {
+        return $this->runner->run(
+            RecurringInvoice::query(),
+            fn (RecurringInvoice $schedule, string $date) => $this->createInvoiceFromRecurring($schedule, $date),
+        );
+    }
+
+    /**
+     * Generate one invoice from a schedule now, dated today where the company
+     * is, if the schedule has started and has not reached its limit. A
+     * schedule at its limit is marked completed instead.
+     */
+    public function generateInvoice(RecurringInvoice $recurringInvoice): void
     {
         if (Carbon::now()->lessThan($recurringInvoice->starts_at)) {
             return;
         }
 
-        if ($recurringInvoice->limit_by == 'DATE') {
-            $startDate = Carbon::today()->format('Y-m-d');
-            $endDate = $recurringInvoice->limit_date;
+        $today = Cadence::localDate(Carbon::now(), $recurringInvoice->scheduleTimeZone());
 
-            if ($endDate >= $startDate) {
-                $this->createInvoiceFromRecurring($recurringInvoice);
-                $this->advance($recurringInvoice, $advanceSchedule);
-            } else {
-                $recurringInvoice->markStatusAsCompleted();
-            }
-        } elseif ($recurringInvoice->limit_by == 'COUNT') {
-            $invoiceCount = Invoice::where('recurring_invoice_id', $recurringInvoice->id)->count();
+        if (RecurrenceRunner::limitReached($recurringInvoice, $today)) {
+            $recurringInvoice->markStatusAsCompleted();
 
-            if ($invoiceCount < $recurringInvoice->limit_count) {
-                $this->createInvoiceFromRecurring($recurringInvoice);
-                $this->advance($recurringInvoice, $advanceSchedule);
-            } else {
-                $recurringInvoice->markStatusAsCompleted();
-            }
-        } else {
-            $this->createInvoiceFromRecurring($recurringInvoice);
-            $this->advance($recurringInvoice, $advanceSchedule);
+            return;
         }
+
+        DB::transaction(fn () => $this->createInvoiceFromRecurring($recurringInvoice, $today));
     }
 
     /**
-     * Move the schedule on, unless the caller already did it.
+     * The invoice for one occurrence, dated the given day, with its due date
+     * counted from that day.
      */
-    private function advance(RecurringInvoice $recurringInvoice, bool $advanceSchedule): void
-    {
-        if ($advanceSchedule) {
-            $recurringInvoice->updateNextInvoiceDate();
-        }
-    }
-
-    private function createInvoiceFromRecurring(RecurringInvoice $recurringInvoice): void
+    private function createInvoiceFromRecurring(RecurringInvoice $recurringInvoice, string $date): void
     {
         $serial = (new SerialNumberService)
             ->setModel(new Invoice)
@@ -194,8 +191,8 @@ class RecurringInvoiceService
         }
 
         $newInvoice['creator_id'] = $recurringInvoice->creator_id;
-        $newInvoice['invoice_date'] = Carbon::today()->toDateString();
-        $newInvoice['due_date'] = Carbon::today()->addDays($days)->toDateString();
+        $newInvoice['invoice_date'] = $date;
+        $newInvoice['due_date'] = Carbon::parse($date)->addDays($days)->toDateString();
         $newInvoice['status'] = Invoice::STATUS_DRAFT;
         $newInvoice['company_id'] = $recurringInvoice->company_id;
         $newInvoice['paid_status'] = Invoice::STATUS_UNPAID;
@@ -265,7 +262,8 @@ class RecurringInvoiceService
                 'company' => Company::find($invoice->company_id),
             ];
 
-            $this->invoiceService->send($invoice, $data);
+            // Sent once the invoice is committed, so a rolled-back run mails nothing.
+            DB::afterCommit(fn () => $this->invoiceService->send($invoice, $data));
         }
     }
 }

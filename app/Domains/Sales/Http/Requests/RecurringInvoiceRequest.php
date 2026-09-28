@@ -6,6 +6,7 @@ use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Contacts\Models\Customer;
 use App\Domains\Metadata\Http\Requests\Concerns\ValidatesCustomFields;
 use App\Domains\Sales\Models\RecurringInvoice;
+use App\Rules\CronFrequency;
 use App\Support\DocumentTotals;
 use App\Support\MoneyConversion;
 use Illuminate\Foundation\Http\FormRequest;
@@ -85,6 +86,7 @@ class RecurringInvoiceRequest extends FormRequest
             ],
             'frequency' => [
                 'required',
+                new CronFrequency,
             ],
             'limit_by' => [
                 'required',
@@ -153,7 +155,7 @@ class RecurringInvoiceRequest extends FormRequest
         $rate = $companyCurrency != $submittedCurrency ? $this->exchange_rate : 1;
         $contactCurrency = Customer::find($this->customer_id)->currency_id;
 
-        $nextRun = RecurringInvoice::getNextInvoiceDate($this->frequency, $this->starts_at);
+        $nextRun = RecurringInvoice::getNextInvoiceDate($this->frequency, $this->starts_at, CompanySetting::timeZone($company));
 
         $perItemTax = CompanySetting::getSetting('tax_per_item', $company) ?? 'NO';
         $perItemDiscount = CompanySetting::getSetting('discount_per_item', $company) ?? 'NO';
