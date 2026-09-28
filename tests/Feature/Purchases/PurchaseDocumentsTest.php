@@ -123,3 +123,20 @@ test('a refused purchase answers with a translatable code', function () {
         ->assertUnprocessable()
         ->assertJsonPath('errors.supplier_id.0', 'purchase_supplier_inactive');
 });
+
+test('a purchase tax used on a bill or credit cannot be deleted or repurposed', function () {
+    $used = TaxType::factory()->create(['company_id' => $this->companyId, 'type' => 'GENERAL', 'transaction_type' => 'purchases', 'percent' => 10, 'calculation_type' => 'percentage', 'compound_tax' => false]);
+    $unused = TaxType::factory()->create(['company_id' => $this->companyId, 'type' => 'GENERAL', 'transaction_type' => 'purchases', 'percent' => 5, 'calculation_type' => 'percentage', 'compound_tax' => false]);
+    $payload = purchaseBillPayload($this, 1000);
+    $payload['items'][0]['tax_type_ids'] = [$used->id];
+    $this->postJson('/api/v1/bills', $payload)->assertSuccessful();
+
+    expect(fn () => $used->delete())->toThrow(ValidationException::class)
+        ->and(fn () => $used->update(['transaction_type' => 'sales']))->toThrow(ValidationException::class);
+
+    $used->fresh()->update(['percent' => 12]);
+    $unused->delete();
+
+    expect($used->fresh()->percent)->toEqual(12)
+        ->and(TaxType::query()->find($unused->id))->toBeNull();
+});
