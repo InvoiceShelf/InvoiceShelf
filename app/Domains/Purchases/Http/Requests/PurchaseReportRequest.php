@@ -14,6 +14,11 @@ class PurchaseReportRequest extends FormRequest
 
     public function rules(): array
     {
-        return ['from_date' => ['required', 'date_format:Y-m-d'], 'to_date' => ['required', 'date_format:Y-m-d', 'after_or_equal:from_date'], 'supplier_id' => ['nullable', 'integer', Rule::exists('suppliers', 'id')->where('company_id', $this->header('company'))]];
+        return self::rulesFor((int) $this->header('company'));
+    }
+
+    public static function rulesFor(int $companyId): array
+    {
+        return ['from_date' => ['required', 'date_format:Y-m-d'], 'to_date' => ['required', 'date_format:Y-m-d', 'after_or_equal:from_date'], 'supplier_id' => ['nullable', 'integer', Rule::exists('suppliers', 'id')->where('company_id', $companyId)]];
     }
 }

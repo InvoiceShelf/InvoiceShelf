@@ -110,7 +110,10 @@ export const purchaseRoutes: RouteRecordRaw[] = [
   {
     path: 'reports/purchases',
     name: 'purchases.report',
-    component: () => import('./views/PurchaseReportView.vue'),
+    redirect: (to) => ({
+      path: '/admin/reports',
+      query: { ...to.query, report: 'purchases' },
+    }),
     meta: {
       requiresAuth: true,
       ability: 'view-financial-reports',

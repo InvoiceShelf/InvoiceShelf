@@ -133,7 +133,19 @@ export interface PurchaseOptions {
   }>
   payment_methods: Array<{ id: number; name: string }>
 }
+export interface PurchasePayables {
+  as_of_date: string
+  outstanding: number
+  outstanding_count: number
+  overdue: number
+  overdue_count: number
+  due_soon: number
+  due_later: number
+  available_advances: number
+  available_credits: number
+}
 export interface PurchaseReport {
+  supplier: { id: number; name: string } | null
   currency: Currency
   cash: {
     direct_expenses: number
@@ -150,14 +162,7 @@ export interface PurchaseReport {
     net: number
   }>
   taxes: Array<{ tax_type_id: number; name: string; amount: number }>
-  payables: {
-    outstanding: number
-    overdue: number
-    due_soon: number
-    due_later: number
-    available_advances: number
-    available_credits: number
-  }
+  payables: PurchasePayables
   aging: PurchaseRecord[]
 }
 

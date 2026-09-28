@@ -1,37 +1,63 @@
 <template>
-  <BasePage>
-    <BasePageHeader
-      :help="$t('page_help.purchases_report')"
-      :title="$t('purchases.report')"
-    >
-      <BaseBreadcrumb
-        ><BaseBreadcrumbItem
-          :title="$t('navigation.reports')"
-          to="/admin/reports" /><BaseBreadcrumbItem
-          :title="$t('purchases.report')"
-          to="#"
-          active
-      /></BaseBreadcrumb>
-    </BasePageHeader>
+  <div class="space-y-6 pt-6">
     <BaseCard container-class="p-4 md:p-5">
-      <form class="flex flex-wrap items-end gap-4" @submit.prevent="load">
+      <form class="flex flex-wrap items-end gap-4" @submit.prevent="load()">
         <BaseInputGroup
-          :label="$t('purchases.from_date')"
-          class="max-w-xs"
-          required
-          ><BaseDatePicker v-model="from" required
-        /></BaseInputGroup>
+          :label="$t('reports.sales.date_range')"
+          class="w-full md:w-72"
+        >
+          <BasePeriodPicker
+            v-model="period"
+            :presets="presets"
+            block
+            position="bottom-start"
+          />
+        </BaseInputGroup>
         <BaseInputGroup
-          :label="$t('purchases.to_date')"
-          class="max-w-xs"
-          required
-          ><BaseDatePicker v-model="to" required
-        /></BaseInputGroup>
+          v-if="canViewSuppliers"
+          :label="$t('purchases.supplier')"
+          class="w-full md:w-72"
+        >
+          <BaseMultiselect
+            v-model="supplierId"
+            :options="searchSuppliers"
+            value-prop="id"
+            label="name"
+            searchable
+            :filter-results="false"
+            resolve-on-load
+            :delay="250"
+            :placeholder="$t('purchases.all_suppliers')"
+          />
+        </BaseInputGroup>
         <BaseButton type="submit" :loading="loading">{{
-          $t('purchases.update_report')
+          $t('reports.update_report')
         }}</BaseButton>
+        <BaseButton
+          class="md:hidden"
+          type="button"
+          variant="white"
+          @click="viewPdf"
+          >{{ $t('reports.view_pdf') }}</BaseButton
+        >
       </form>
+      <p
+        v-if="!canViewSuppliers && report?.supplier"
+        class="mt-3 text-sm text-muted"
+      >
+        {{ $t('purchases.supplier') }}: {{ report.supplier.name }}
+        <button
+          type="button"
+          class="ms-3 text-primary-600"
+          @click="clearSupplier"
+        >
+          {{ $t('purchases.all_suppliers') }}
+        </button>
+      </p>
     </BaseCard>
+    <p v-if="loading" role="status" class="text-sm text-muted">
+      {{ $t('general.loading') }}
+    </p>
     <p v-if="error" role="alert" class="text-sm text-danger">{{ error }}</p>
     <template v-if="report">
       <section class="space-y-4">
@@ -95,9 +121,13 @@
       </section>
       <section class="space-y-4">
         <div class="flex items-center gap-2">
-          <h2 class="font-semibold text-section text-heading">
-            {{ $t('purchases.payables_today') }}
-          </h2>
+          <i18n-t
+            keypath="purchases.payables_as_of"
+            tag="h2"
+            class="font-semibold text-section text-heading"
+            ><template #date
+              ><PurchaseDate :value="report.payables.as_of_date" /></template
+          ></i18n-t>
           <BaseHelpPopover
             :title="$t('purchases.payables_today')"
             :text="$t('purchases.payables_help')"
@@ -152,15 +182,23 @@
         ></BaseTable>
       </section>
     </template>
-  </BasePage>
+    <ReportPdfPane ref="pdfPane" :path="null" class="hidden" />
+  </div>
 </template>
 <script setup lang="ts">
 import BaseHelpPopover from '@/scripts/components/base/BaseHelpPopover.vue'
 import PurchaseDate from '../components/PurchaseDate.vue'
-import { ref, onMounted, computed } from 'vue'
+import { ref, computed, watch, onBeforeUnmount } from 'vue'
+import { useRoute } from 'vue-router'
+import { useCompanyStore } from '@/scripts/stores/company.store'
+import { useUserStore } from '@/scripts/stores/user.store'
+import { useGlobalStore } from '@/scripts/stores/global.store'
+import { useReportPeriod } from '../../reports/use-report-period'
+import { useReportDownload } from '../../reports/useReportDownload'
+import ReportPdfPane from '../../reports/components/ReportPdfPane.vue'
 import { purchaseService } from '@/scripts/api/services/purchase.service'
 import type { PurchaseReport } from '@/scripts/types/domain/purchase'
-import { localDate, purchaseError } from '../helpers'
+import { purchaseError } from '../helpers'
 import { useI18n } from 'vue-i18n'
 import type {
   ColumnDef,
@@ -199,12 +237,48 @@ const taxColumns = computed<ColumnDef[]>(() => [
     align: 'end',
   },
 ])
-const today = localDate(),
-  from = ref(`${today.slice(0, 4)}-01-01`),
-  to = ref(today),
-  report = ref<PurchaseReport | null>(null),
+const route = useRoute(),
+  company = useCompanyStore(),
+  user = useUserStore(),
+  global = useGlobalStore()
+const { period, presets, formData, syncUrl } = useReportPeriod()
+const supplierId = ref<number | null>(Number(route.query.supplier_id) || null)
+const canViewSuppliers = computed(() => user.hasAbilities('view-supplier'))
+const report = ref<PurchaseReport | null>(null),
   loading = ref(false),
   error = ref('')
+const pdfPane = ref<InstanceType<typeof ReportPdfPane> | null>(null)
+let request = 0,
+  requestedKey = ''
+async function searchSuppliers(search: string) {
+  const companyId = company.selectedCompany?.id
+  const rows = await purchaseService.suppliers(search)
+  if (supplierId.value && !rows.some((row) => row.id === supplierId.value))
+    rows.unshift(await purchaseService.get('suppliers', supplierId.value))
+  return companyId === company.selectedCompany?.id ? rows : []
+}
+function pdfPath() {
+  const hash = company.selectedCompany?.unique_hash
+  if (!hash) return null
+  const params = new URLSearchParams({
+    from_date: formData.from_date,
+    to_date: formData.to_date,
+  })
+  if (supplierId.value) params.set('supplier_id', String(supplierId.value))
+  return `/reports/purchases/${hash}?${params}`
+}
+global.downloadReport = useReportDownload(() => {
+  void load()
+  return pdfPath()
+})
+function viewPdf() {
+  void load()
+  void pdfPane.value?.view(pdfPath())
+}
+function clearSupplier() {
+  supplierId.value = null
+  void load()
+}
 const cashFields = [
   'direct_expenses',
   'supplier_payments',
@@ -220,16 +294,53 @@ const payableFields = [
   'available_advances',
   'available_credits',
 ] as const
-async function load() {
+async function load(persist = true, force = true) {
+  const companyId = company.selectedCompany?.id
+  if (!companyId) return
+  const params = {
+    from: formData.from_date,
+    to: formData.to_date,
+    supplier: supplierId.value || undefined,
+  }
+  const key = JSON.stringify([companyId, params])
+  if (!force && key === requestedKey) return
+  requestedKey = key
+  const ticket = ++request
   loading.value = true
+  report.value = null
   error.value = ''
+  if (persist)
+    void syncUrl({
+      supplier_id: params.supplier ? String(params.supplier) : undefined,
+    })
   try {
-    report.value = await purchaseService.report(from.value, to.value)
+    const data = await purchaseService.report(
+      params.from,
+      params.to,
+      params.supplier,
+    )
+    if (ticket === request && companyId === company.selectedCompany?.id)
+      report.value = data
   } catch (e) {
-    error.value = purchaseError(e)
+    if (ticket === request) error.value = purchaseError(e)
   } finally {
-    loading.value = false
+    if (ticket === request) loading.value = false
   }
 }
-onMounted(load)
+watch(
+  () => [
+    route.query.from_date,
+    route.query.to_date,
+    route.query.supplier_id,
+    company.selectedCompany?.id,
+  ],
+  () => {
+    supplierId.value = Number(route.query.supplier_id) || null
+    void load(false, false)
+  },
+  { immediate: true },
+)
+onBeforeUnmount(() => {
+  request++
+})
 </script>

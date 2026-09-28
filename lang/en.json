@@ -1189,6 +1189,7 @@
     "list_of_users": "Invite the people who work with you. They show up here once they join."
   },
   "reports": {
+    "purchases": "Purchases",
     "title": "Report",
     "from_date": "From Date",
     "to_date": "To Date",
@@ -2390,6 +2391,8 @@
     "paid_modules_note": "Paid modules are not available on this hosted account yet."
   },
   "purchases": {
+    "all_suppliers": "All suppliers",
+    "payables_as_of": "Current payables — as of {date}",
     "bill": "Bill",
     "title": "Purchases",
     "sales": "Sales",
@@ -2620,8 +2623,8 @@
     "sales_report": "Review invoiced sales for the selected period, grouped by customer or item. Change the grouping and dates before viewing or downloading the report.",
     "profit_loss_report": "Compare income and cash spending for the selected period. This report uses the cash basis: supplier payments, including advances, and supplier refunds affect cash when recorded.",
     "expenses_report": "Review recorded expenses for the selected period. For a combined view of expenses, bills, supplier payments, and refunds, open the Purchases report.",
-    "tax_report": "Review tax totals for the selected period. Purchase taxes recorded on bills and supplier credits are shown in the Purchases report.",
-    "purchases_report": "Review cash movements, purchase costs, and outstanding bills. Cash and purchase costs can differ because they use different records and dates.",
+    "tax_report": "Review tax on issued invoices, expenses, recorded bills, and credits by document date. Unpaid documents are included; payments and refunds do not add tax.",
+    "purchases_report": "Review purchase costs and cash movement for the selected period and supplier. Payables show current balances as of the displayed date.",
     "recurring_costs": "Schedule recurring supplier costs. Bills track an amount to pay; automatically recording a paid expense requires your explicit consent.",
     "credit_notes": "Use a credit note to reduce the charges on a customer invoice. A credit note records the adjustment; it does not itself record money returned to the customer."
   },
@@ -2633,5 +2636,31 @@
     "credits": "Credits",
     "payments": "Payments",
     "refunds": "Refunds"
-  }
+  },
+  "pdf_due_date_label": "Due date",
+  "pdf_purchases_cash_note": "Expenses and supplier payments, less refunds, by transaction date. Advances are included.",
+  "pdf_purchase_tax_basis_note": "Expenses and recorded bills, less supplier credits, by document date. Payments and refunds do not add purchase tax.",
+  "pdf_purchases_report_label": "Purchases report",
+  "pdf_cash_movement_label": "Cash movement",
+  "pdf_direct_expenses_label": "Direct expenses",
+  "pdf_net_cash_out_label": "Net cash paid",
+  "pdf_purchase_costs_label": "Purchase costs",
+  "pdf_category_label": "Category",
+  "pdf_cost_before_tax_label": "Cost before tax",
+  "pdf_tax_amount_label": "Tax",
+  "pdf_cost_including_tax_label": "Cost including tax",
+  "pdf_purchase_taxes_label": "Purchase taxes",
+  "pdf_current_payables_label": "Current payables",
+  "pdf_payables_as_of_note": "Balances as of :date, independent of the selected reporting period. Unapplied advances and credits are shown separately.",
+  "pdf_outstanding_label": "Outstanding",
+  "pdf_overdue_label": "Overdue",
+  "pdf_due_soon_label": "Due within 30 days",
+  "pdf_due_later_label": "Due later",
+  "pdf_available_advances_label": "Available advances",
+  "pdf_available_credits_label": "Available credits",
+  "pdf_open_bills_label": "Outstanding bills",
+  "pdf_bill_label": "Bill",
+  "pdf_supplier_label": "Supplier",
+  "pdf_all_suppliers_label": "All suppliers",
+  "pdf_tax_document_basis_note": "Document-date basis: issued invoices, recorded bills and credits are included whether paid or unpaid. Expenses use their expense date. Payments and refunds do not create additional tax."
 }

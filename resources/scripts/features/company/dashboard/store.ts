@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import type { PurchasePayables } from '@/scripts/types/domain/purchase'
 import { ref, computed } from 'vue'
 import { dashboardService } from '../../../api/services/dashboard.service'
 import type { DashboardParams, DashboardResponse, ChartData, ReceivablesSummary, ResolvedPeriod } from '../../../api/services/dashboard.service'
@@ -83,6 +84,8 @@ export const useDashboardStore = defineStore('dashboard', () => {
     due_later: 0,
   })
 
+  const payables = ref<PurchasePayables | null>(null)
+
   const totalSales = ref<number>(0)
   const totalReceipts = ref<number>(0)
   const totalExpenses = ref<number>(0)
@@ -124,6 +127,8 @@ export const useDashboardStore = defineStore('dashboard', () => {
         receivables.value = response.receivables
       }
 
+      payables.value = response.payables ?? null
+
       // Chart Data
       if (response.chart_data) {
         chartData.value.months = response.chart_data.months
@@ -162,6 +167,7 @@ export const useDashboardStore = defineStore('dashboard', () => {
   return {
     stats,
     receivables,
+    payables,
     chartData,
     totalSales,
     totalReceipts,

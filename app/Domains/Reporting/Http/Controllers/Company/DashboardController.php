@@ -5,6 +5,7 @@ namespace App\Domains\Reporting\Http\Controllers\Company;
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Contacts\Models\Customer;
+use App\Domains\Purchases\Models\Bill;
 use App\Domains\Reporting\Http\Requests\DashboardRequest;
 use App\Domains\Reporting\Queries\CashflowQuery;
 use App\Domains\Reporting\Queries\PurchasesQuery;
@@ -104,7 +105,9 @@ class DashboardController extends Controller
             'total_sales' => $cashflow['total_sales'],
             'total_receipts' => $cashflow['total_receipts'],
             'total_expenses' => $cashflow['total_expenses'],
-            'payables' => app(PurchasesQuery::class)->payables((int) $request->header('company')),
+            'payables' => BouncerFacade::can('view-bill', Bill::class)
+                ? app(PurchasesQuery::class)->payables((int) $companyId)
+                : null,
             'total_net_income' => $cashflow['total_net_income'],
             'period' => $cashflow['period'],
         ]);

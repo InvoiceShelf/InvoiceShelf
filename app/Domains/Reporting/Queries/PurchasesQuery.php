@@ -22,7 +22,7 @@ class PurchasesQuery
             return (int) $model::query()->where('company_id', $companyId)
                 ->when($model !== Expense::class, fn ($q) => $q->where('status', 'OPEN'))
                 ->when($from, fn ($q) => $q->where($date, '>=', $from))
-                ->when($to, fn ($q) => $q->where($date, '<=', $to))
+                ->when($to, fn ($q) => $q->where($date, '<', CarbonImmutable::parse($to)->addDay()->toDateString()))
                 ->when($supplierId, fn ($q) => $q->where('supplier_id', $supplierId))->sum('base_amount');
         };
         $expenses = $total(Expense::class, 'expense_date');
@@ -37,7 +37,7 @@ class PurchasesQuery
         $today = CarbonImmutable::now(CompanySetting::getSetting('time_zone', $companyId) ?: config('app.timezone'));
         $bills = Bill::query()->forCompany($companyId)->where('status', 'OPEN')->where('due_amount', '>', 0)
             ->when($supplierId, fn ($q) => $q->where('supplier_id', $supplierId))->get(['id', 'due_date', 'base_due_amount']);
-        $summary = ['outstanding' => 0, 'outstanding_count' => $bills->count(), 'overdue' => 0, 'overdue_count' => 0, 'due_soon' => 0, 'due_later' => 0];
+        $summary = ['as_of_date' => $today->toDateString(), 'outstanding' => 0, 'outstanding_count' => $bills->count(), 'overdue' => 0, 'overdue_count' => 0, 'due_soon' => 0, 'due_later' => 0];
         foreach ($bills as $bill) {
             $summary['outstanding'] += $bill->base_due_amount;
             $bucket = $bill->due_date < $today->toDateString() ? 'overdue' : ($bill->due_date <= $today->addDays(30)->toDateString() ? 'due_soon' : 'due_later');
@@ -83,7 +83,7 @@ class PurchasesQuery
     }
 
     /** Document dates determine cost and purchase tax; settlement records are deliberately absent. */
-    public function report(int $companyId, string $from, string $to, ?int $supplierId = null): array
+    public function costs(int $companyId, string $from, string $to, ?int $supplierId = null): array
     {
         $categories = [];
         $taxes = [];
@@ -101,7 +101,7 @@ class PurchasesQuery
             $categories[$categoryId]['tax'] += $taxTotal;
             $categories[$categoryId]['net'] += $gross * $sign - $taxTotal;
         };
-        $expenses = Expense::query()->where('company_id', $companyId)->whereBetween('expense_date', [$from, $to])->when($supplierId, fn ($q) => $q->where('supplier_id', $supplierId))->with('taxes')->get();
+        $expenses = Expense::query()->where('company_id', $companyId)->where('expense_date', '>=', $from)->where('expense_date', '<', CarbonImmutable::parse($to)->addDay()->toDateString())->when($supplierId, fn ($q) => $q->where('supplier_id', $supplierId))->with('taxes')->get();
         foreach ($expenses as $expense) {
             $add((int) $expense->expense_category_id, (int) $expense->base_amount, $expense->taxes->toArray(), 1);
         }
@@ -117,11 +117,20 @@ class PurchasesQuery
         $categories = array_values(array_map(fn ($row) => [...$row, 'name' => $names[$row['expense_category_id']] ?? 'Uncategorized'], $categories));
 
         return [
+            'purchases' => ['gross' => array_sum(array_column($categories, 'gross')), 'tax' => array_sum(array_column($categories, 'tax')), 'net' => array_sum(array_column($categories, 'net'))],
+            'categories' => $categories, 'taxes' => array_values($taxes),
+        ];
+    }
+
+    public function report(int $companyId, string $from, string $to, ?int $supplierId = null): array
+    {
+        return [
+            'supplier' => $supplierId ? Supplier::query()->forCompany($companyId)->findOrFail($supplierId)->only(['id', 'name']) : null,
             'period' => ['from_date' => $from, 'to_date' => $to],
             'currency' => Currency::find(CompanySetting::getSetting('currency', $companyId)),
             'cash' => $this->cash($companyId, $from, $to, $supplierId),
-            'purchases' => ['gross' => array_sum(array_column($categories, 'gross')), 'tax' => array_sum(array_column($categories, 'tax')), 'net' => array_sum(array_column($categories, 'net'))],
-            'categories' => $categories, 'taxes' => array_values($taxes), 'payables' => $this->payables($companyId, $supplierId),
+            ...$this->costs($companyId, $from, $to, $supplierId),
+            'payables' => $this->payables($companyId, $supplierId),
             'aging' => Bill::query()->forCompany($companyId)->where('status', 'OPEN')->where('due_amount', '>', 0)->when($supplierId, fn ($q) => $q->where('supplier_id', $supplierId))->with(['supplier:id,name', 'currency'])->orderBy('due_date')->get(['id', 'number', 'supplier_id', 'currency_id', 'due_date', 'due_amount', 'base_due_amount']),
         ];
     }

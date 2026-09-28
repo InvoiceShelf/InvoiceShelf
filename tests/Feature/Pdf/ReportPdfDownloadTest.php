@@ -43,6 +43,7 @@ dataset('reports', [
     'expenses',
     'tax-summary',
     'profit-loss',
+    'purchases',
 ]);
 
 function reportUrl(string $report, string $hash, string $extra = ''): string
