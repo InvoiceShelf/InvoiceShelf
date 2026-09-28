@@ -26,7 +26,7 @@ export const purchaseViews: Record<PurchaseSection, PurchaseView[]> = {
     {
       key: 'bills',
       kind: 'bills',
-      label: 'view_switcher.one_time',
+      label: 'purchases.bills',
       icon: 'DocumentTextIcon',
       ability: 'view-bill',
     },
@@ -42,7 +42,7 @@ export const purchaseViews: Record<PurchaseSection, PurchaseView[]> = {
     {
       key: 'expenses',
       kind: 'expenses',
-      label: 'view_switcher.one_time',
+      label: 'navigation.expenses',
       icon: 'CalculatorIcon',
       ability: 'view-expense',
     },
