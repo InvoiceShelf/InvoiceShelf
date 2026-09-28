@@ -21,7 +21,9 @@ class SuppliersController extends Controller
         $query = Supplier::query()->forCompany((int) $request->header('company'))->with(self::RELATIONS);
         $query->when($request->input('search'), fn ($q, $term) => $q->where('name', 'like', '%'.$term.'%'));
 
-        return SupplierResource::collection($query->orderByDesc('id')->paginate(min(100, max(1, $request->integer('limit', 20)))));
+        $limit = min(100, max(1, $request->integer('limit', 20)));
+
+        return SupplierResource::collection($query->orderByDesc('id')->paginate($limit));
     }
 
     public function show(Supplier $supplier): SupplierResource
@@ -36,13 +38,17 @@ class SuppliersController extends Controller
     {
         $this->authorize('create', Supplier::class);
 
-        return new SupplierResource($service->save(null, (int) $request->header('company'), $request->user()->id, $request->validated())->load(self::RELATIONS));
+        $supplier = $service->save(null, (int) $request->header('company'), $request->user()->id, $request->validated());
+
+        return new SupplierResource($supplier->load(self::RELATIONS));
     }
 
     public function update(SupplierRequest $request, Supplier $supplier, SupplierService $service): SupplierResource
     {
         $this->authorize('update', $supplier);
 
-        return new SupplierResource($service->save($supplier, (int) $request->header('company'), $request->user()->id, $request->validated())->load(self::RELATIONS));
+        $supplier = $service->save($supplier, (int) $request->header('company'), $request->user()->id, $request->validated());
+
+        return new SupplierResource($supplier->load(self::RELATIONS));
     }
 }

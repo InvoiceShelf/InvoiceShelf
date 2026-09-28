@@ -24,7 +24,8 @@ class BillsController extends Controller
         $query->when($request->integer('supplier_id'), fn ($q, $id) => $q->where('supplier_id', $id));
         $query->when($request->input('search'), fn ($q, $term) => $q->where('number', 'like', '%'.$term.'%'));
         $query->when($request->input('status'), fn ($q, $status) => $q->where('status', $status));
-        $query->when($request->input('from_date'), fn ($q, $date) => $q->where('document_date', '>=', $date))->when($request->input('to_date'), fn ($q, $date) => $q->where('document_date', '<=', $date));
+        $query->when($request->input('from_date'), fn ($q, $date) => $q->where('document_date', '>=', $date));
+        $query->when($request->input('to_date'), fn ($q, $date) => $q->where('document_date', '<=', $date));
         $query->when($request->boolean('outstanding'), fn ($q) => $q->where('status', 'OPEN')->where('due_amount', '>', 0));
 
         $settlement = $request->input('settlement_status');
@@ -34,12 +35,14 @@ class BillsController extends Controller
                 'UNPAID' => $query->whereColumn('due_amount', 'total')->where('due_amount', '>', 0),
                 'PARTIAL' => $query->where('due_amount', '>', 0)->whereColumn('due_amount', '<', 'total'),
                 'SETTLED' => $query->where('due_amount', 0),
-                'OVERDUE' => $query->where('due_amount', '>', 0)->where('due_date', '<', CarbonImmutable::now(CompanySetting::getSetting('time_zone', $request->header('company')) ?: config('app.timezone'))->toDateString()),
+                'OVERDUE' => $query->where('due_amount', '>', 0)->where('due_date', '<', $this->companyToday($request)),
                 default => null,
             };
         }
 
-        return BillResource::collection($query->orderByDesc('id')->paginate(min(100, max(1, $request->integer('limit', 20)))));
+        $limit = min(100, max(1, $request->integer('limit', 20)));
+
+        return BillResource::collection($query->orderByDesc('id')->paginate($limit));
     }
 
     public function show(Bill $bill): BillResource
@@ -54,21 +57,35 @@ class BillsController extends Controller
     {
         $this->authorize('create', Bill::class);
 
-        return new BillResource($service->saveBill(null, (int) $request->header('company'), $request->user()->id, $request->validated())->load(self::RELATIONS));
+        $bill = $service->saveBill(null, (int) $request->header('company'), $request->user()->id, $request->validated());
+
+        return new BillResource($bill->load(self::RELATIONS));
     }
 
     public function update(BillRequest $request, Bill $bill, PurchaseDocumentService $service): BillResource
     {
         $this->authorize('update', $bill);
 
-        return new BillResource($service->saveBill($bill, (int) $request->header('company'), $request->user()->id, $request->validated())->load(self::RELATIONS));
+        $bill = $service->saveBill($bill, (int) $request->header('company'), $request->user()->id, $request->validated());
+
+        return new BillResource($bill->load(self::RELATIONS));
     }
 
     public function action(PurchaseActionRequest $request, Bill $bill, PurchaseDocumentService $service): BillResource
     {
         $this->authorize($request->input('action') === 'void' ? 'delete' : 'update', $bill);
-        $service->act($bill, $request->input('action'), $request->input('reason'), $request->user()->id);
+        $service->act($bill, $request->input('action'), $request->input('reason'));
 
         return new BillResource($bill->fresh(self::RELATIONS));
+    }
+
+    /**
+     * Today's date where the company is.
+     */
+    private function companyToday(Request $request): string
+    {
+        $timezone = CompanySetting::getSetting('time_zone', $request->header('company')) ?: config('app.timezone');
+
+        return CarbonImmutable::now($timezone)->toDateString();
     }
 }
