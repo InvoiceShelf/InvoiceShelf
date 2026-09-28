@@ -120,18 +120,34 @@ resuming starts with the next future occurrence and skips the paused dates.
 
 ## Reports
 
-**Purchases report** is available from Reports:
+**Reports → Purchases** offers a period picker, an optional supplier filter, and a
+PDF download of the same figures. The supplier selector is available to users with
+supplier-view permission; financial-report permission is required for the report
+and its PDF. Existing `/admin/reports/purchases` links open the Purchases tab.
 
 - Cash movement uses expense and supplier payment/refund dates. Advances are included.
 - Purchase costs use expense, open-bill, and supplier-credit document dates. Settlement
   records do not add further costs. Purchase tax uses the saved document tax breakdown.
 - Current payables show outstanding bills, overdue balances, due within 30 days, and due
-  later. Unapplied advances and unused credits are separate until explicitly allocated.
+  later. The screen and PDF label the balance date in the company's timezone. These
+  are current balances, independent of the selected period. Unapplied advances and
+  unused credits are separate until explicitly allocated.
 - Company totals use stored base-currency amounts. Supplier balances retain their own
   currency; allocations between different currencies are not supported.
 
 The existing cash dashboard and cash profit/loss report include supplier payments and
 refunds. The profit/loss PDF explicitly labels its cash basis and includes advances.
+The dashboard also displays current payables for users with bill-view permission.
+
+**Reports → Taxes** uses document dates consistently: issued invoices and customer
+credit notes contribute sales tax; expenses and recorded bills, less supplier credits,
+contribute purchase tax. Unpaid and partially paid invoices are included. Drafts and
+void purchase documents are excluded. Payments, refunds, and allocations do not add
+another tax entry. The report uses stored tax amounts, names, and exchange-rate
+snapshots. This replaces the previous sales-tax filter that required fully paid invoices.
+
+The Expenses report continues to cover direct expenses. Historical payables and
+custom-field filtering/grouping are not provided by this reporting pass.
 
 ## API
 
@@ -170,6 +186,14 @@ Example bill body:
 Use IDs returned by the installation's reference endpoints, not the example IDs.
 `GET /api/v1/purchase-options` supplies currencies, categories, purchase taxes, and
 manual payment methods without requiring access to customer payment settings.
+
+`GET /api/v1/reports/purchases` accepts `from_date`, `to_date`, and optional
+`supplier_id`. Its `supplier` identifies the selected supplier (or is `null`), and
+`payables.as_of_date` identifies the current balance date. The dashboard exposes the
+same dated payables summary only to users with bill-view permission.
+`GET /reports/purchases/{hash}` accepts the same filters and supports the existing
+`preview` and `download` flags. The hash identifies the company; authentication,
+report permission, and company membership are still required.
 
 Pass `custom_field_model=Supplier` or `custom_field_model=Bill` to also receive
 the corresponding definitions in `data.custom_fields`. This request uses the

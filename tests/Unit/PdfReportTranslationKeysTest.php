@@ -36,6 +36,7 @@ test('every translation key a report template uses exists in english', function 
 })->with([
     'expenses',
     'profit-loss',
+    'purchases',
     'sales-customers',
     'sales-items',
     'tax-summary',

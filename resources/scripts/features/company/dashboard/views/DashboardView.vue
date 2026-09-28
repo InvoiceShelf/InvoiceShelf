@@ -7,6 +7,7 @@ import { useDashboardStore } from '../store'
 import { ABILITIES } from '@/scripts/config/abilities'
 import { formatPeriodRange, periodParams, yearPresets } from '@/scripts/utils/period'
 import ReceivablesHero from '../components/ReceivablesHero.vue'
+import PayablesCard from '../components/PayablesCard.vue'
 import DashboardChart from '../components/DashboardChart.vue'
 import DashboardTable from '../components/DashboardTable.vue'
 import SendInvoiceModal from '@/scripts/features/company/invoices/components/SendInvoiceModal.vue'
@@ -118,6 +119,7 @@ onMounted(() => {
           </router-link>
         </div>
 
+        <PayablesCard v-if="userStore.hasAbilities('view-bill')" />
         <DashboardChart />
         <DashboardTable />
       </template>

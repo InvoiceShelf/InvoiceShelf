@@ -4975,7 +4975,10 @@
                                             ]
                                         },
                                         "payables": {
-                                            "type": "string"
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
                                         },
                                         "total_net_income": {
                                             "type": "string"
@@ -14506,6 +14509,12 @@
                                         "data": {
                                             "type": "object",
                                             "properties": {
+                                                "supplier": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
                                                 "period": {
                                                     "type": "object",
                                                     "properties": {
@@ -14594,6 +14603,9 @@
                                                 "payables": {
                                                     "type": "object",
                                                     "properties": {
+                                                        "as_of_date": {
+                                                            "type": "string"
+                                                        },
                                                         "outstanding": {
                                                             "type": "integer"
                                                         },
@@ -14621,6 +14633,7 @@
                                                         }
                                                     },
                                                     "required": [
+                                                        "as_of_date",
                                                         "outstanding",
                                                         "outstanding_count",
                                                         "overdue",
@@ -14639,6 +14652,7 @@
                                                 }
                                             },
                                             "required": [
+                                                "supplier",
                                                 "period",
                                                 "currency",
                                                 "cash",

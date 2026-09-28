@@ -5,7 +5,8 @@ namespace App\Domains\Reporting\Http\Controllers;
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Money\Models\Currency;
-use App\Domains\Taxation\Models\Tax;
+use App\Domains\Reporting\Http\Requests\ReportPeriodRequest;
+use App\Domains\Reporting\Queries\TaxSummaryQuery;
 use App\Platform\Http\Controller;
 use App\Platform\Pdf\Facades\Pdf;
 use App\Platform\Pdf\Rendering\PdfPageSetup;
@@ -15,16 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Silber\Bouncer\BouncerFacade;
 
-/**
- * Tax collected against tax paid over a period, per tax type.
- *
- * The collected side counts only tax recorded against invoices that have been
- * settled, since tax on an invoice still owing has not been collected, and it
- * picks up rows attached to a line as readily as rows attached to the document.
- * The paid side has no such condition: an expense is money already out of the
- * door. What is left over is the balance with the tax authority, which is
- * payable when positive and refundable when negative.
- */
+/** Tax on issued sales and recorded purchases by document date, regardless of settlement. */
 class TaxSummaryReportController extends Controller
 {
     /**
@@ -32,30 +24,17 @@ class TaxSummaryReportController extends Controller
      *
      * @param  string  $hash
      */
-    public function __invoke(Request $request, $hash)
+    public function __invoke(ReportPeriodRequest $request, $hash, TaxSummaryQuery $query)
     {
         $company = $this->reportedCompany($hash);
 
         App::setLocale(CompanySetting::getSetting('language', $company->id));
 
-        $window = $request->only(['from_date', 'to_date']);
-
-        $collected = Tax::query()
-            ->with('taxType')
-            ->whereCompany($company->id)
-            ->whereInvoicesFilters($window)
-            ->taxAttributes()
-            ->get();
-
+        $window = $request->validated();
+        $taxes = $query->report($company->id, $window['from_date'], $window['to_date']);
+        $collected = $taxes['sales'];
+        $paid = $taxes['purchases'];
         $collectedTotal = (int) $collected->sum('total_tax_amount');
-
-        $paid = Tax::query()
-            ->with('taxType')
-            ->whereCompany($company->id)
-            ->whereExpensesFilters($window)
-            ->taxAttributes()
-            ->get();
-
         $paidTotal = (int) $paid->sum('total_tax_amount');
 
         view()->share([
@@ -124,19 +103,17 @@ class TaxSummaryReportController extends Controller
      * name dropped into storage/app/templates/pdf/reports/, which the resolver
      * prefers over the built-in one.
      *
-     * The document is built before the preview branch is taken and not after:
-     * a preview costs a full render it never uses, which is wasteful but is
-     * also what the templates have always been exercised through.
+     * HTML previews share the same data and skip the unused PDF render.
      */
     private function emit(Request $request, string $design)
     {
         $design = PdfTemplateUtils::resolveView('reports', $design);
 
-        $document = Pdf::loadView($design, [], PdfPageSetup::forReports());
-
         if ($request->exists('preview')) {
             return view($design);
         }
+
+        $document = Pdf::loadView($design, [], PdfPageSetup::forReports());
 
         return $request->exists('download') ? $document->download() : $document->stream();
     }

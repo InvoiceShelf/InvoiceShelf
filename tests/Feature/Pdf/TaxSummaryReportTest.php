@@ -35,6 +35,8 @@ function reportTax(TaxType $taxType, int $companyId, array $attributes = []): Ta
         'tax_type_id' => $taxType->id,
         'company_id' => $companyId,
         'base_amount' => 0,
+        'name' => $taxType->name,
+        'percent' => $taxType->percent,
     ], $attributes));
 }
 
@@ -43,6 +45,7 @@ function reportInvoice(int $companyId, string $date, string $paidStatus): Invoic
     return Invoice::factory()->create([
         'company_id' => $companyId,
         'invoice_date' => $date,
+        'status' => Invoice::STATUS_SENT,
         'paid_status' => $paidStatus,
     ]);
 }
@@ -55,7 +58,7 @@ function reportExpense(int $companyId, string $date): Expense
     ]);
 }
 
-test('groups paid sales taxes and dated expense taxes separately for a company', function () {
+test('groups issued sales taxes and dated expense taxes separately for a company', function () {
     $outputTaxType = TaxType::factory()->create([
         'company_id' => $this->company->id,
         'name' => 'Output VAT',
@@ -114,14 +117,14 @@ test('groups paid sales taxes and dated expense taxes separately for a company',
 
     $response->assertOk()
         ->assertViewHas('taxTypes')
-        ->assertViewHas('totalTaxAmount', 500)
+        ->assertViewHas('totalTaxAmount', 1000)
         ->assertViewHas('expenseTaxTypes')
         ->assertViewHas('totalExpenseTaxAmount', 200)
-        ->assertViewHas('netTaxAmount', 300);
+        ->assertViewHas('netTaxAmount', 800);
 
     expect($response->viewData('taxTypes')->mapWithKeys(
         fn (Tax $tax) => [$tax->tax_type_id => (int) $tax->total_tax_amount]
-    )->all())->toBe([$outputTaxType->id => 500])
+    )->all())->toBe([$outputTaxType->id => 1000])
         ->and($response->viewData('expenseTaxTypes')->mapWithKeys(
             fn (Tax $tax) => [$tax->tax_type_id => (int) $tax->total_tax_amount]
         )->all())->toBe([$inputTaxType->id => 200]);

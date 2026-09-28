@@ -131,10 +131,15 @@
         font-weight: bold;
     }
 
-    .report-table .report-muted {
+    .report-table .report-muted,
+    p.report-muted {
         font-size: 10px;
         line-height: 15px;
         color: #595959;
+    }
+
+    p.report-muted {
+        margin-bottom: 8px;
     }
 
     /* Collapsed borders make this one rule across the full table width, so a

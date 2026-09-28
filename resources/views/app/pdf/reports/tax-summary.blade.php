@@ -19,6 +19,7 @@
 @section('footer-value'){!! format_money_pdf(abs($netTaxAmount), $currency) !!}@endsection
 
 @section('report-body')
+    <p class="report-muted">@lang('pdf_tax_document_basis_note')</p>
     <div class="report-section">
         <p class="report-section-heading">@lang('pdf_output_tax_label')</p>
         <table class="report-table">
