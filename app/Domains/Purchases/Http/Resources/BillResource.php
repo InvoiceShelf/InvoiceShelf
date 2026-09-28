@@ -8,6 +8,7 @@ use App\Domains\Purchases\Models\Bill;
 use App\Support\CreditNoteAmounts;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Collection;
 
 /** @mixin Bill */
 class BillResource extends JsonResource
@@ -40,7 +41,9 @@ class BillResource extends JsonResource
             'supplier' => new SupplierResource($this->whenLoaded('supplier')),
             'currency' => new CurrencyResource($this->whenLoaded('currency')),
             'items' => PurchaseItemResource::collection($this->whenLoaded('items')),
-            'attachments' => PurchaseAttachmentResource::collection($this->whenLoaded('media', fn () => $this->media->where('collection_name', 'purchase_documents')->values())),
+            'attachments' => PurchaseAttachmentResource::collection(
+                $this->whenLoaded('media', fn () => $this->attachments()),
+            ),
             'creditable_quantities' => $this->whenLoaded('credits', fn () => $this->creditableQuantities()),
             'settlement_status' => (string) $this->settlement_status,
             'payment_allocations' => PurchaseAllocationResource::collection($this->whenLoaded('paymentAllocations')),
@@ -72,5 +75,13 @@ class BillResource extends JsonResource
                 return [$item->id => CreditNoteAmounts::fromHundredths(max(0, $left))];
             })
             ->all();
+    }
+
+    /**
+     * The document's media in the purchase attachments collection.
+     */
+    private function attachments(): Collection
+    {
+        return $this->media->where('collection_name', 'purchase_documents')->values();
     }
 }

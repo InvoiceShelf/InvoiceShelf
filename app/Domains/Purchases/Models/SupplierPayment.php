@@ -62,11 +62,21 @@ class SupplierPayment extends Model
 
     public function getAvailableAmountAttribute(): int
     {
-        return $this->status === 'OPEN' ? (int) $this->amount - (int) $this->allocations->sum('amount') - (int) $this->refunds->where('status', 'OPEN')->sum('amount') : 0;
+        if ($this->status !== 'OPEN') {
+            return 0;
+        }
+
+        return (int) $this->amount
+            - (int) $this->allocations->sum('amount')
+            - (int) $this->refunds->where('status', 'OPEN')->sum('amount');
     }
 
+    /**
+     * Bind route parameters only to the current company's records.
+     */
     public function resolveRouteBindingQuery($query, $value, $field = null)
     {
-        return parent::resolveRouteBindingQuery($query, $value, $field)->where($this->qualifyColumn('company_id'), (int) request()->header('company'));
+        return parent::resolveRouteBindingQuery($query, $value, $field)
+            ->where($this->qualifyColumn('company_id'), (int) request()->header('company'));
     }
 }

@@ -6,6 +6,7 @@ use App\Domains\Money\Http\Resources\CurrencyResource;
 use App\Domains\Purchases\Models\SupplierCredit;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Collection;
 
 /** @mixin SupplierCredit */
 class SupplierCreditResource extends JsonResource
@@ -35,10 +36,20 @@ class SupplierCreditResource extends JsonResource
             'supplier' => new SupplierResource($this->whenLoaded('supplier')),
             'currency' => new CurrencyResource($this->whenLoaded('currency')),
             'items' => PurchaseItemResource::collection($this->whenLoaded('items')),
-            'attachments' => PurchaseAttachmentResource::collection($this->whenLoaded('media', fn () => $this->media->where('collection_name', 'purchase_documents')->values())),
+            'attachments' => PurchaseAttachmentResource::collection(
+                $this->whenLoaded('media', fn () => $this->attachments()),
+            ),
             'available_amount' => (int) $this->available_amount,
             'allocations' => PurchaseAllocationResource::collection($this->whenLoaded('allocations')),
             'refunds' => SupplierRefundResource::collection($this->whenLoaded('refunds')),
         ];
+    }
+
+    /**
+     * The document's media in the purchase attachments collection.
+     */
+    private function attachments(): Collection
+    {
+        return $this->media->where('collection_name', 'purchase_documents')->values();
     }
 }

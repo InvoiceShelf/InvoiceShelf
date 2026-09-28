@@ -12,9 +12,14 @@ class PurchaseReportPdfRequest extends FormRequest
 {
     private ?Company $reportCompany = null;
 
+    /**
+     * The company named by the hash in the report URL, looked up once.
+     */
     public function company(): Company
     {
-        return $this->reportCompany ??= Company::query()->where('unique_hash', $this->route('hash'))->firstOrFail();
+        return $this->reportCompany ??= Company::query()
+            ->where('unique_hash', $this->route('hash'))
+            ->firstOrFail();
     }
 
     public function authorize(): bool

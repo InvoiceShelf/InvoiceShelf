@@ -11,7 +11,15 @@ use App\Domains\Purchases\Models\SupplierCredit;
  */
 class ProtectCreditedExpenses
 {
-    private const FINANCIAL = ['amount', 'base_amount', 'exchange_rate', 'currency_id', 'supplier_id', 'expense_category_id', 'expense_date'];
+    private const FINANCIAL = [
+        'amount',
+        'base_amount',
+        'exchange_rate',
+        'currency_id',
+        'supplier_id',
+        'expense_category_id',
+        'expense_date',
+    ];
 
     public function updating(Expense $expense): void
     {
@@ -34,6 +42,10 @@ class ProtectCreditedExpenses
 
     private function check(Expense $expense): void
     {
-        PurchaseInputs::ensure(! SupplierCredit::query()->where('source_expense_id', $expense->id)->exists(), 'expense', 'An expense with supplier credits must retain its original financial details.');
+        PurchaseInputs::ensure(
+            ! SupplierCredit::query()->where('source_expense_id', $expense->id)->exists(),
+            'expense',
+            'An expense with supplier credits must retain its original financial details.',
+        );
     }
 }

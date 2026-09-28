@@ -56,8 +56,12 @@ class Supplier extends Model
         return $this->hasMany(SupplierRefund::class, 'supplier_id');
     }
 
+    /**
+     * Bind route parameters only to the current company's records.
+     */
     public function resolveRouteBindingQuery($query, $value, $field = null)
     {
-        return parent::resolveRouteBindingQuery($query, $value, $field)->where($this->qualifyColumn('company_id'), (int) request()->header('company'));
+        return parent::resolveRouteBindingQuery($query, $value, $field)
+            ->where($this->qualifyColumn('company_id'), (int) request()->header('company'));
     }
 }

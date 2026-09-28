@@ -7,6 +7,9 @@ use Illuminate\Validation\Rule;
 
 class PurchaseOptionsRequest extends FormRequest
 {
+    /**
+     * Gatekeeping happens in the controller, so let every caller through here.
+     */
     public function authorize(): bool
     {
         return true;
