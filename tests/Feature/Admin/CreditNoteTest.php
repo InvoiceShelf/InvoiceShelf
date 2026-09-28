@@ -1214,7 +1214,9 @@ test('every credit note phrase is translated in all five maintained locales', fu
     }
 
     foreach (array_keys($english) as $key) {
-        if (str_starts_with($key, 'pdf_') && (str_contains($key, 'credit') || str_contains($key, 'cancelled'))) {
+        // Credit note phrases, not every PDF label that mentions credit: a
+        // supplier credit on the purchases report is not one of them.
+        if (str_starts_with($key, 'pdf_') && preg_match('/credit_note|credited|cancelled/', $key)) {
             $expected[] = [null, $key];
         }
     }
