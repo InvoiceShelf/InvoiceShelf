@@ -5,7 +5,8 @@ namespace App\Domains\Reporting\Http\Controllers;
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Money\Models\Currency;
-use App\Domains\Taxation\Models\Tax;
+use App\Domains\Reporting\Http\Requests\ReportPeriodRequest;
+use App\Domains\Reporting\Queries\TaxSummaryQuery;
 use App\Platform\Http\Controller;
 use App\Platform\Pdf\Facades\Pdf;
 use App\Platform\Pdf\Rendering\PdfPageSetup;
@@ -16,13 +17,10 @@ use Illuminate\Support\Facades\App;
 use Silber\Bouncer\BouncerFacade;
 
 /**
- * Tax collected against tax paid over a period, per tax type.
- *
- * The collected side counts only tax recorded against invoices that have been
- * settled, since tax on an invoice still owing has not been collected, and it
- * picks up rows attached to a line as readily as rows attached to the document.
- * The paid side has no such condition: an expense is money already out of the
- * door. What is left over is the balance with the tax authority, which is
+ * Tax on sales against tax on purchases over a period, per tax type, by
+ * document date (TaxSummaryQuery): issued invoices and credit notes on one
+ * side, expenses and recorded bills less supplier credits on the other, paid
+ * or not. What is left over is the balance with the tax authority, which is
  * payable when positive and refundable when negative.
  */
 class TaxSummaryReportController extends Controller
@@ -32,30 +30,18 @@ class TaxSummaryReportController extends Controller
      *
      * @param  string  $hash
      */
-    public function __invoke(Request $request, $hash)
+    public function __invoke(ReportPeriodRequest $request, $hash, TaxSummaryQuery $query)
     {
         $company = $this->reportedCompany($hash);
 
         App::setLocale(CompanySetting::getSetting('language', $company->id));
 
-        $window = $request->only(['from_date', 'to_date']);
+        $taxes = $query->report($company->id, $request->validated('from_date'), $request->validated('to_date'));
 
-        $collected = Tax::query()
-            ->with('taxType')
-            ->whereCompany($company->id)
-            ->whereInvoicesFilters($window)
-            ->taxAttributes()
-            ->get();
-
+        $collected = $taxes['sales'];
         $collectedTotal = (int) $collected->sum('total_tax_amount');
 
-        $paid = Tax::query()
-            ->with('taxType')
-            ->whereCompany($company->id)
-            ->whereExpensesFilters($window)
-            ->taxAttributes()
-            ->get();
-
+        $paid = $taxes['purchases'];
         $paidTotal = (int) $paid->sum('total_tax_amount');
 
         view()->share([

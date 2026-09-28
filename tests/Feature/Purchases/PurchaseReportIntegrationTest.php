@@ -9,6 +9,9 @@ use App\Domains\Purchases\Models\Bill;
 use App\Domains\Purchases\Models\Expense;
 use App\Domains\Purchases\Models\Supplier;
 use App\Domains\Reporting\Queries\PurchasesQuery;
+use App\Domains\Reporting\Queries\TaxSummaryQuery;
+use App\Domains\Sales\Models\Invoice;
+use App\Domains\Sales\Models\InvoiceItem;
 use App\Domains\Taxation\Models\Tax;
 use App\Domains\Taxation\Models\TaxType;
 use Carbon\CarbonImmutable;
@@ -49,6 +52,8 @@ test('purchase PDF and JSON share supplier filtered cash costs taxes and current
     foreach (['cash', 'purchases', 'payables', 'taxes', 'categories'] as $key) {
         expect($pdf->viewData('report')[$key])->toEqual($api[$key]);
     }
+    $taxReport = app(TaxSummaryQuery::class)->report($this->companyId, '2026-09-01', '2026-09-30');
+    expect((int) $taxReport['purchases']->sum('total_tax_amount'))->toBe(3900);
 });
 
 test('payables retain today in the company timezone regardless of report window', function () {
@@ -62,7 +67,31 @@ test('payables retain today in the company timezone regardless of report window'
         ->and($past['payables']['overdue'])->toBe(10000)->and($past['purchases']['gross'])->toBe(0);
 });
 
-test('purchase costs exclude drafts and voids while credits retain their signs', function () {
+test('document tax basis includes unpaid partial paid and credit sales and excludes drafts and outside dates', function () {
+    $type = TaxType::factory()->create(['company_id' => $this->companyId, 'name' => 'Original tax name']);
+    $rows = [
+        ['2026-09-01', 'SENT', 'UNPAID', 'INVOICE', 100],
+        ['2026-09-15', 'VIEWED', 'PARTIALLY_PAID', 'INVOICE', 200],
+        ['2026-09-30', 'COMPLETED', 'PAID', 'INVOICE', 300],
+        ['2026-09-30', 'COMPLETED', 'PAID', 'CREDIT_NOTE', -50],
+        ['2026-09-15', 'DRAFT', 'UNPAID', 'INVOICE', 900],
+        ['2026-10-01', 'SENT', 'PAID', 'INVOICE', 800],
+        ['2026-09-30 23:59:59', 'SENT', 'UNPAID', 'INVOICE', 25],
+    ];
+    foreach ($rows as $index => [$date, $status, $paid, $documentType, $amount]) {
+        $invoice = Invoice::factory()->create(['company_id' => $this->companyId, 'invoice_date' => $date, 'status' => $status, 'paid_status' => $paid, 'type' => $documentType]);
+        $owner = $index === 1
+            ? ['invoice_item_id' => InvoiceItem::factory()->create(['company_id' => $this->companyId, 'invoice_id' => $invoice->id])->id]
+            : ['invoice_id' => $invoice->id];
+        Tax::factory()->create([...$owner, 'company_id' => $this->companyId, 'tax_type_id' => $type->id, 'name' => $type->name, 'percent' => 20, 'amount' => $amount, 'base_amount' => $amount]);
+    }
+    $type->update(['name' => 'Changed definition']);
+    $report = $this->get('/reports/tax-summary/'.$this->company->unique_hash.'?from_date=2026-09-01&to_date=2026-09-30&preview=true')->assertOk()
+        ->assertViewHas('totalTaxAmount', 575)->assertSee('Original tax name')->assertDontSee('Changed definition')->assertSee(__('pdf_tax_document_basis_note'));
+    expect($report->viewData('taxTypes'))->toHaveCount(1);
+});
+
+test('purchase tax reporting excludes drafts and voids while credits retain their signs', function () {
     $tax = TaxType::factory()->create(['company_id' => $this->companyId, 'type' => 'GENERAL', 'transaction_type' => 'purchases', 'percent' => 20, 'calculation_type' => 'percentage', 'compound_tax' => false]);
     $payload = purchaseBillPayload($this, 10000);
     $payload['items'][0]['tax_type_ids'] = [$tax->id];
@@ -75,7 +104,7 @@ test('purchase costs exclude drafts and voids while credits retain their signs',
     $creditPayload = $payload;
     $creditPayload['items'][0]['price'] = 1000;
     $service->createCredit($this->companyId, $this->user->id, $creditPayload);
-    expect(app(PurchasesQuery::class)->report($this->companyId, '2026-09-01', '2026-09-30')['purchases']['tax'])->toBe(1800);
+    expect((int) app(TaxSummaryQuery::class)->report($this->companyId, '2026-09-01', '2026-09-30')['purchases']->sum('total_tax_amount'))->toBe(1800);
 });
 
 test('purchase PDF checks report permission hash membership and supplier company without trusting company headers', function () {
@@ -117,4 +146,11 @@ test('a bill without a due date is not counted as overdue', function () {
 
     expect($payables['overdue'])->toBe(0)
         ->and($payables['due_later'])->toBe(10000);
+});
+
+test('the tax report asks for a complete period', function () {
+    $url = '/reports/tax-summary/'.$this->company->unique_hash;
+
+    $this->getJson($url.'?to_date=2026-09-30&preview=true')->assertUnprocessable()->assertJsonValidationErrors('from_date');
+    $this->getJson($url.'?from_date=2026-09-30&to_date=2026-09-01&preview=true')->assertUnprocessable()->assertJsonValidationErrors('to_date');
 });
