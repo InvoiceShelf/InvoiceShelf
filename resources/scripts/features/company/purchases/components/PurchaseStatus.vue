@@ -32,6 +32,14 @@ const state = computed(() => {
   return props.record.status
 })
 const tone = computed<StatusTone>(() => {
+  // A schedule reads like a recurring invoice: running, held, or done.
+  if (props.kind === 'recurring-costs')
+    return (
+      ({ ACTIVE: 'blue', ON_HOLD: 'yellow', COMPLETED: 'green' }) as Record<
+        string,
+        StatusTone
+      >
+    )[state.value || ''] ?? 'gray'
   if (['SETTLED', 'ACTIVE'].includes(state.value || '')) return 'green'
   if (state.value === 'OVERDUE') return 'red'
   if (['UNPAID', 'PARTIAL'].includes(state.value || '')) return 'yellow'

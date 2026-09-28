@@ -18,7 +18,7 @@
           <template #left="slotProps"
             ><BaseIcon name="PlusIcon" :class="slotProps.class"
           /></template>
-          {{ $t(purchaseCreateLabels[kind]) }}
+          {{ $t(createLabel) }}
         </BaseButton>
       </template>
     </PurchaseListHeader>
@@ -68,14 +68,22 @@
             : 'invoice'
       "
       :ghost="6"
-      :title="$t('purchases.no_records', { type: $t(`purchases.${kind}`) })"
+      :title="
+        $t('purchases.no_records', {
+          type: $t(
+            kind === 'recurring-costs'
+              ? recurringLabel(mode, 'title')
+              : `purchases.${kind}`,
+          ),
+        })
+      "
       :description="$t(emptyDescriptionKey)"
     >
       <template v-if="canCreate" #actions
         ><BaseButton @click="router.push(createLink)"
           ><template #left="slotProps"
             ><BaseIcon name="PlusIcon" :class="slotProps.class" /></template
-          >{{ $t(purchaseCreateLabels[kind]) }}</BaseButton
+          >{{ $t(createLabel) }}</BaseButton
         ></template
       >
     </BaseEmptyPlaceholder>
@@ -92,6 +100,26 @@
           :to="rowLink(row.data)"
           class="font-medium text-primary-600"
           >{{ row.data.number || row.data.name }}</router-link
+        ></template
+      >
+      <template #cell-frequency="{ row }">{{
+        frequencyLabel(row.data.frequency)
+      }}</template>
+      <template #cell-next_run_at="{ row }"
+        ><PurchaseDate
+          :value="
+            row.data.status === 'COMPLETED'
+              ? null
+              : scheduleDate(row.data.next_run_at)
+          "
+      /></template>
+      <template #cell-template_amount="{ row }"
+        ><BaseFormatMoney
+          :amount="recurringAmount(row.data as PurchaseRecord).amount"
+          :currency="templateCurrency(row.data as PurchaseRecord)" /><span
+          v-if="recurringAmount(row.data as PurchaseRecord).plusTax"
+          class="ms-1 text-xs text-muted"
+          >{{ $t('purchases.plus_tax') }}</span
         ></template
       >
       <template
@@ -126,29 +154,66 @@
   </BasePage>
 </template>
 <script setup lang="ts">
-import { ref, computed, reactive, watch, onUnmounted } from 'vue'
+import { ref, computed, reactive, watch, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/scripts/stores/user.store'
 import { purchaseService } from '@/scripts/api/services/purchase.service'
-import type { PurchaseKind } from '@/scripts/types/domain/purchase'
+import { useGlobalStore } from '@/scripts/stores/global.store'
+import type {
+  PurchaseKind,
+  PurchaseRecord,
+  RecurringCostMode,
+} from '@/scripts/types/domain/purchase'
+import type { Currency } from '@/scripts/types/domain/currency'
+import { useFrequencyPresets } from '@/scripts/components/recurrence/use-frequency-presets'
 import type {
   ColumnDef,
   RowData,
 } from '@/scripts/components/table/DataTable.vue'
-import { entityAbility, purchaseError } from '../helpers'
-import { purchaseCreateLabels, type PurchaseSection } from '../navigation'
+import {
+  entityAbility,
+  purchaseError,
+  recurringAmount,
+  scheduleDate,
+} from '../helpers'
+import {
+  purchaseCreateLabels,
+  recurringLabel,
+  type PurchaseSection,
+} from '../navigation'
 import PurchaseListHeader from '../components/PurchaseListHeader.vue'
 import PurchaseDate from '../components/PurchaseDate.vue'
 import PurchaseStatus from '../components/PurchaseStatus.vue'
 const props = defineProps<{
   kind: PurchaseKind
   section: PurchaseSection
+  /** For recurring costs: which schedules to list. */
+  mode?: RecurringCostMode
 }>()
 const router = useRouter(),
   route = useRoute(),
   user = useUserStore(),
+  globalStore = useGlobalStore(),
   { t } = useI18n()
+const recurring = computed(() => props.kind === 'recurring-costs')
+const { labelFor: frequencyLabel } = useFrequencyPresets(t)
+const currencies = ref<Currency[]>([])
+onMounted(async () => {
+  if (!recurring.value) return
+  try {
+    currencies.value = await globalStore.fetchCurrencies()
+  } catch {
+    // Amounts fall back to the company currency.
+  }
+})
+function templateCurrency(row: PurchaseRecord) {
+  return (
+    currencies.value.find(
+      (currency) => currency.id === Number(row.template?.currency_id),
+    ) ?? row.supplier?.currency
+  )
+}
 const table = ref<{ refresh: () => void } | null>(null)
 const total = ref(0),
   error = ref(''),
@@ -162,25 +227,48 @@ const showFilters = ref(!!filters.supplier_id)
 const hasFilters = computed(
   () => !!(filters.search || filters.status || filters.supplier_id),
 )
-const emptyDescriptionKey = computed(() => `purchases.empty_${props.kind}`)
-const canCreate = computed(() =>
-  user.hasAbilities(`create-${entityAbility(props.kind)}`),
+const emptyDescriptionKey = computed(() =>
+  recurring.value
+    ? recurringLabel(props.mode, 'empty')
+    : `purchases.empty_${props.kind}`,
+)
+const createLabel = computed(() =>
+  recurring.value
+    ? recurringLabel(props.mode, 'new')
+    : purchaseCreateLabels[props.kind],
+)
+// A schedule makes its records on its creator's behalf, so creating one
+// also needs the right to create what it generates.
+const canCreate = computed(
+  () =>
+    user.hasAbilities(`create-${entityAbility(props.kind)}`) &&
+    (!recurring.value ||
+      user.hasAbilities(
+        props.mode === 'EXPENSE' ? 'create-expense' : 'create-bill',
+      )),
 )
 const createLink = computed(() => ({
   path: `/admin/${props.kind}/create`,
-  query: filters.supplier_id ? { supplier_id: filters.supplier_id } : {},
+  query: {
+    ...(props.mode ? { mode: props.mode } : {}),
+    ...(filters.supplier_id ? { supplier_id: filters.supplier_id } : {}),
+  },
 }))
 const states = computed(() =>
-  props.kind === 'bills'
-    ? ['DRAFT', 'UNPAID', 'PARTIAL', 'SETTLED', 'OVERDUE', 'VOID']
-    : ['OPEN', 'VOID'],
+  recurring.value
+    ? ['ACTIVE', 'ON_HOLD', 'COMPLETED']
+    : props.kind === 'bills'
+      ? ['DRAFT', 'UNPAID', 'PARTIAL', 'SETTLED', 'OVERDUE', 'VOID']
+      : ['OPEN', 'VOID'],
 )
 const columns = computed<ColumnDef[]>(() => {
   const list: ColumnDef[] = [
     {
       key: 'number',
       label: t(
-        props.kind === 'suppliers' ? 'purchases.name' : 'purchases.reference',
+        props.kind === 'suppliers' || recurring.value
+          ? 'purchases.name'
+          : 'purchases.reference',
       ),
       mobile: 'title',
     },
@@ -193,7 +281,22 @@ const columns = computed<ColumnDef[]>(() => {
       label: t('purchases.supplier'),
       mobile: 'subtitle',
     })
-  if (props.kind !== 'suppliers') {
+  if (recurring.value) {
+    list.push(
+      { key: 'frequency', label: t('purchases.frequency') },
+      {
+        key: 'next_run_at',
+        label: t('purchases.next_run'),
+        mobile: 'subtitle',
+      },
+      {
+        key: 'template_amount',
+        label: t('purchases.amount'),
+        mobile: 'trailing',
+        align: 'end',
+      },
+    )
+  } else if (props.kind !== 'suppliers') {
     list.push({
       key:
         props.kind === 'bills'
@@ -231,7 +334,7 @@ const columns = computed<ColumnDef[]>(() => {
   return list.map((column) => ({ ...column, sortable: false }))
 })
 function rowLink(row: RowData) {
-  return `/admin/${props.kind}/${row.id}/view`
+  return `/admin/${props.kind}/${row.id}/view${props.mode ? `?mode=${props.mode}` : ''}`
 }
 async function searchSuppliers(search = '') {
   const rows = await purchaseService.suppliers(search)
@@ -256,6 +359,7 @@ async function fetchData({ page }: { page: number }) {
       supplier_id: filters.supplier_id,
       status: settlement ? '' : filters.status,
       settlement_status: settlement ? filters.status : '',
+      mode: props.mode,
     })
     total.value = result.meta.total
     initialLoaded.value = true

@@ -10,6 +10,7 @@ export const purchaseService = {
   async save(kind: PurchaseKind, data: unknown, id?: number) {
     return (await (id ? client.put<{data: PurchaseRecord}>(`/api/v1/${kind}/${id}`, data) : client.post<{data: PurchaseRecord}>(`/api/v1/${kind}`, data))).data.data
   },
+  async remove(kind: PurchaseKind, id: number) { await client.delete(`/api/v1/${kind}/${id}`) },
   async action(kind: PurchaseKind, id: number, action: string, reason?: string) {
     return (await client.post<{data: PurchaseRecord}>(`/api/v1/${kind}/${id}/actions`, { action, reason })).data.data
   },

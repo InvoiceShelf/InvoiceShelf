@@ -32,6 +32,7 @@ export interface FrequencyDateParams {
 
 export interface FrequencyDateResponse {
   next_invoice_at: string
+  upcoming?: string[]
 }
 
 export const recurringInvoiceService = {

@@ -1,7 +1,7 @@
 <template>
   <BasePageHeader
     :title="title"
-    :help="active ? $t(purchaseHelpKeys[active.kind]) : ''"
+    :help="helpText"
     :help-title="helpTitle"
   >
     <template v-if="showSwitcher" #title-suffix>
@@ -29,6 +29,7 @@ import BaseViewSwitcher from '@/scripts/components/base/BaseViewSwitcher.vue'
 import {
   purchaseViews,
   purchaseHelpKeys,
+  recurringLabel,
   type PurchaseSection,
 } from '../navigation'
 const { t } = useI18n()
@@ -66,11 +67,19 @@ const showSwitcher = computed(
 )
 const helpTitle = computed(() =>
   t(
-    active.value?.kind === 'expenses'
-      ? 'expenses.title'
-      : `purchases.${active.value?.kind || props.section}`,
+    active.value?.kind === 'recurring-costs'
+      ? recurringLabel(active.value.mode, 'title')
+      : active.value?.kind === 'expenses'
+        ? 'expenses.title'
+        : `purchases.${active.value?.kind || props.section}`,
   ),
 )
+const helpText = computed(() => {
+  if (!active.value) return ''
+  return active.value.kind === 'recurring-costs'
+    ? t(recurringLabel(active.value.mode, 'help'))
+    : t(purchaseHelpKeys[active.value.kind])
+})
 async function selectView(value: string) {
   const view = views.value.find((view) => view.key === value)
   if (!view || view.key === active.value?.key) return

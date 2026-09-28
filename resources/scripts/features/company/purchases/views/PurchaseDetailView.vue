@@ -1,7 +1,11 @@
 <template>
   <BasePage>
     <BasePageHeader
-      :help="$t(purchaseHelpKeys[kind])"
+      :help="
+        kind === 'recurring-costs'
+          ? $t(recurringLabel(record?.mode, 'help'))
+          : $t(purchaseHelpKeys[kind])
+      "
       phone-actions="bar"
       :title="record?.number || record?.name || $t(`purchases.${kind}`)"
       :subtitle="
@@ -17,7 +21,10 @@
           >{{ initials }}</span
         >
       </template>
-      <PurchaseBreadcrumb :kind="kind" />
+      <PurchaseBreadcrumb
+        :kind="kind"
+        :mode="record?.mode || (route.query.mode as string | undefined)"
+      />
       <template v-if="record && !loading && hasActions" #actions>
         <BaseDropdown
           v-if="kind === 'suppliers' && supplierActions.length"
@@ -64,6 +71,26 @@
           >{{ $t('purchases.new_payment') }}</BaseButton
         >
         <BaseButton
+          v-if="
+            kind === 'recurring-costs' &&
+            canEdit &&
+            record.status !== 'COMPLETED'
+          "
+          :variant="record.status === 'ACTIVE' ? 'white' : 'primary'"
+          :loading="busy"
+          :disabled="busy"
+          @click="act(record.status === 'ACTIVE' ? 'pause' : 'resume')"
+          ><template #left="slotProps"
+            ><BaseIcon
+              :name="record.status === 'ACTIVE' ? 'PauseIcon' : 'PlayIcon'"
+              :class="slotProps.class" /></template
+          >{{
+            $t(
+              record.status === 'ACTIVE' ? 'purchases.pause' : 'purchases.resume',
+            )
+          }}</BaseButton
+        >
+        <BaseButton
           v-if="canAllocate && record.status === 'OPEN'"
           @click="editingAllocations = !editingAllocations"
           >{{ $t('purchases.manage_allocations') }}</BaseButton
@@ -84,7 +111,10 @@
           >
           <BaseDropdownItem
             v-if="editable && record.status !== 'VOID'"
-            :to="`/admin/${kind}/${id}/edit`"
+            :to="{
+              path: `/admin/${kind}/${id}/edit`,
+              query: record.mode ? { mode: record.mode } : {},
+            }"
             ><BaseIcon
               name="PencilSquareIcon"
               class="me-3 h-5 w-5 text-muted"
@@ -111,6 +141,11 @@
               },
             }"
             >{{ $t('purchases.new_refund') }}</BaseDropdownItem
+          >
+          <BaseDropdownItem v-if="canDelete" @click="removeSchedule"
+            ><BaseIcon name="TrashIcon" class="me-3 h-5 w-5 text-danger" />{{
+              $t('general.delete')
+            }}</BaseDropdownItem
           >
           <BaseDropdownItem
             v-if="canVoid && record.status !== 'VOID'"
@@ -151,6 +186,10 @@
         </form>
       </BaseCard>
       <SupplierOverview v-if="kind === 'suppliers'" :record="record" />
+      <RecurringCostOverview
+        v-else-if="kind === 'recurring-costs'"
+        :record="record"
+      />
       <template v-else>
         <BaseStatStrip
           v-if="record.amount !== undefined || record.total !== undefined"
@@ -360,7 +399,12 @@ import PurchaseCustomFieldValues from '../components/PurchaseCustomFieldValues.v
 import PurchaseDate from '../components/PurchaseDate.vue'
 import PurchaseBreadcrumb from '../components/PurchaseBreadcrumb.vue'
 import PurchaseStatus from '../components/PurchaseStatus.vue'
-import { purchaseCreateLabels, purchaseHelpKeys } from '../navigation'
+import {
+  purchaseCreateLabels,
+  purchaseHelpKeys,
+  purchaseParent,
+  recurringLabel,
+} from '../navigation'
 
 import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -376,6 +420,8 @@ import AllocationEditor from '../components/AllocationEditor.vue'
 import PurchaseDocumentFiles from '../components/PurchaseDocumentFiles.vue'
 import PurchaseSettlements from '../components/PurchaseSettlements.vue'
 import SupplierOverview from '../components/SupplierOverview.vue'
+import RecurringCostOverview from '../components/RecurringCostOverview.vue'
+import { useDialogStore } from '@/scripts/stores/dialog.store'
 const { t } = useI18n()
 const itemColumns = computed(() => [
   { key: 'description', label: t('purchases.description'), mobile: 'title' },
@@ -387,7 +433,8 @@ const itemColumns = computed(() => [
 const props = defineProps<{ kind: PurchaseKind }>(),
   route = useRoute(),
   router = useRouter(),
-  user = useUserStore()
+  user = useUserStore(),
+  dialogStore = useDialogStore()
 const id = computed(() => Number(route.params.id)),
   record = ref<PurchaseRecord | null>(null),
   error = ref(''),
@@ -401,7 +448,7 @@ const canEdit = computed(() =>
 )
 const editable = computed(
   () =>
-    ['suppliers', 'bills'].includes(props.kind) &&
+    ['suppliers', 'bills', 'recurring-costs'].includes(props.kind) &&
     canEdit.value &&
     record.value?.status !== 'VOID',
 )
@@ -419,8 +466,13 @@ const refundable = computed(
 )
 const canVoid = computed(
   () =>
-    props.kind !== 'suppliers' &&
+    !['suppliers', 'recurring-costs'].includes(props.kind) &&
     user.hasAbilities(`delete-${entityAbility(props.kind)}`),
+)
+const canDelete = computed(
+  () =>
+    props.kind === 'recurring-costs' &&
+    user.hasAbilities('delete-recurring-cost'),
 )
 const initials = computed(() =>
   (record.value?.name || '')
@@ -436,6 +488,7 @@ const supplierActions = computed(() =>
       'bills',
       'supplier-payments',
       'supplier-credits',
+      'recurring-costs',
     ] as PurchaseKind[]
   ).filter((kind) => user.hasAbilities(`create-${entityAbility(kind)}`)),
 )
@@ -444,6 +497,7 @@ const hasSecondaryActions = computed(
     !!record.value &&
     ((editable.value && record.value.status !== 'VOID') ||
       refundable.value ||
+      canDelete.value ||
       (canVoid.value && record.value.status !== 'VOID') ||
       (props.kind === 'bills' &&
         record.value.status === 'OPEN' &&
@@ -460,7 +514,10 @@ const hasActions = computed(() => {
         (current.status === 'OPEN' &&
           (current.due_amount || 0) > 0 &&
           user.hasAbilities('create-supplier-payment')))) ||
-    (canAllocate.value && current.status === 'OPEN')
+    (canAllocate.value && current.status === 'OPEN') ||
+    (props.kind === 'recurring-costs' &&
+      canEdit.value &&
+      current.status !== 'COMPLETED')
   )
 })
 async function allocationsSaved() {
@@ -487,6 +544,29 @@ watch(
   },
   { immediate: true },
 )
+async function removeSchedule() {
+  const confirmed = await dialogStore.openDialog({
+    title: t('general.are_you_sure'),
+    message: t('purchases.confirm_delete_schedule'),
+    yesLabel: t('general.ok'),
+    noLabel: t('general.cancel'),
+    variant: 'danger',
+    hideNoButton: false,
+    size: 'lg',
+  })
+  if (!confirmed || !record.value) return
+  busy.value = true
+  error.value = ''
+  try {
+    const mode = record.value.mode
+    await purchaseService.remove(props.kind, id.value)
+    await router.push(purchaseParent(props.kind, mode))
+  } catch (e) {
+    error.value = purchaseError(e)
+  } finally {
+    busy.value = false
+  }
+}
 async function act(action: string) {
   busy.value = true
   error.value = ''
