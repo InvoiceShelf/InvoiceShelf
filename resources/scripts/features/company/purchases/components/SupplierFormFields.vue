@@ -54,9 +54,10 @@
           :fields="form.customFields"
           :scope="customFieldScope"
         />
-        <BaseCheckbox
+        <BaseSwitch
           v-model="form.enabled"
-          :label="$t('purchases.active_supplier')"
+          class="text-sm font-medium text-body"
+          :label-right="$t('purchases.active_supplier')"
         />
       </div>
     </BaseCard>

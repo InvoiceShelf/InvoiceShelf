@@ -17,7 +17,12 @@
             type="submit"
             form="purchase-recurringcostformview"
             :loading="saving"
-            :disabled="saving || loading || !form.supplier_id"
+            :disabled="
+              saving ||
+              loading ||
+              !form.supplier_id ||
+              (form.mode === 'EXPENSE' && !form.auto_record_paid)
+            "
             >{{ $t('purchases.save') }}</BaseButton
           ></template
         ></PurchaseFormHeader
@@ -116,12 +121,11 @@
                 required
             /></PurchaseField>
           </div>
-          <BaseCheckbox
+          <BaseSwitch
             v-if="form.mode === 'EXPENSE'"
             v-model="form.auto_record_paid"
-            class="mt-1"
-            required
-            :label="$t('purchases.auto_paid_consent')"
+            class="mt-1 text-sm font-medium text-body"
+            :label-right="$t('purchases.auto_paid_consent')"
           />
         </BaseCard>
       </div>
@@ -157,10 +161,11 @@
               step="0.000001"
               required
           /></PurchaseField>
-          <BaseCheckbox
+          <BaseSwitch
             v-if="form.mode === 'BILL'"
             v-model="bill.tax_included"
-            :label="$t('purchases.tax_included')"
+            class="text-sm font-medium text-body"
+            :label-right="$t('purchases.tax_included')"
           />
         </div>
         <PurchaseLinesEditor
@@ -377,6 +382,12 @@ function newExpenseTax() {
   })
 }
 async function save() {
+  if (
+    saving.value ||
+    loading.value ||
+    (form.mode === 'EXPENSE' && !form.auto_record_paid)
+  )
+    return
   clearError()
   if (form.mode === 'BILL' && !(await customValidation.validate())) return
   saving.value = true
