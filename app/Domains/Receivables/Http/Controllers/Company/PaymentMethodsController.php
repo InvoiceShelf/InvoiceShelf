@@ -2,6 +2,7 @@
 
 namespace App\Domains\Receivables\Http\Controllers\Company;
 
+use App\Domains\Purchases\Application\RecurringTemplates;
 use App\Domains\Purchases\Models\SupplierPayment;
 use App\Domains\Purchases\Models\SupplierRefund;
 use App\Domains\Receivables\Http\Requests\PaymentMethodRequest;
@@ -99,7 +100,8 @@ class PaymentMethodsController extends Controller
         }
 
         if (SupplierPayment::query()->where('payment_method_id', $paymentMethod->id)->exists()
-            || SupplierRefund::query()->where('payment_method_id', $paymentMethod->id)->exists()) {
+            || SupplierRefund::query()->where('payment_method_id', $paymentMethod->id)->exists()
+            || RecurringTemplates::usePaymentMethod($paymentMethod->company_id, $paymentMethod->id)) {
             return respondJson('payments_attached', 'Payments Attached.');
         }
         $paymentMethod->delete();

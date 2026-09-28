@@ -2278,7 +2278,12 @@
     "purchase_tax_unknown": "Unknown purchase tax.",
     "purchase_payment_has_refunds": "Void the linked refunds first.",
     "purchase_bill_in_use": "Release settlements and void linked credits before voiding this bill.",
-    "recurrence_frequency_invalid": "Enter a frequency the scheduler can read, such as a cron expression like 0 0 1 * *."
+    "recurrence_frequency_invalid": "Enter a frequency the scheduler can read, such as a cron expression like 0 0 1 * *.",
+    "purchase_recurring_supplier_locked": "This schedule has already generated records, so its supplier and type stay as they are. Create a new schedule instead.",
+    "purchase_recurring_not_active": "Only an active schedule can be paused.",
+    "purchase_recurring_not_paused": "Only a paused schedule can be resumed.",
+    "purchase_recurring_failed": "The record could not be generated. The schedule will try again.",
+    "purchase_recurring_tax_exceeds_amount": "Purchase tax cannot exceed the expense amount."
   },
   "pdf_estimate_label": "Estimate",
   "pdf_estimate_number": "Estimate Number",

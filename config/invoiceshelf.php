@@ -7,6 +7,7 @@ use App\Domains\Metadata\Models\Note;
 use App\Domains\Money\Models\ExchangeRateProvider;
 use App\Domains\Purchases\Models\Bill;
 use App\Domains\Purchases\Models\Expense;
+use App\Domains\Purchases\Models\RecurringCost;
 use App\Domains\Purchases\Models\Supplier;
 use App\Domains\Purchases\Models\SupplierCredit;
 use App\Domains\Purchases\Models\SupplierPayment;
@@ -497,6 +498,7 @@ return [
             'any_abilities' => [
                 ['ability' => 'view-bill', 'model' => Bill::class],
                 ['ability' => 'view-supplier-credit', 'model' => SupplierCredit::class],
+                ['ability' => 'view-recurring-cost', 'model' => RecurringCost::class],
             ],
         ],
         [
@@ -510,6 +512,10 @@ return [
             'owner_only' => false,
             'ability' => 'view-expense',
             'model' => Expense::class,
+            'any_abilities' => [
+                ['ability' => 'view-expense', 'model' => Expense::class],
+                ['ability' => 'view-recurring-cost', 'model' => RecurringCost::class],
+            ],
         ],
         [
             'title' => 'navigation.payments',

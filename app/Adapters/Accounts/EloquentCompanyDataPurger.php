@@ -6,6 +6,8 @@ use App\Domains\Accounts\Contracts\CompanyDataPurger;
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Purchases\Models\Bill;
 use App\Domains\Purchases\Models\BillItem;
+use App\Domains\Purchases\Models\RecurringCost;
+use App\Domains\Purchases\Models\RecurringCostOccurrence;
 use App\Domains\Purchases\Models\Supplier;
 use App\Domains\Purchases\Models\SupplierCredit;
 use App\Domains\Purchases\Models\SupplierCreditAllocation;
@@ -21,6 +23,8 @@ class EloquentCompanyDataPurger implements CompanyDataPurger
     public function purge(Company $company): void
     {
         foreach ([
+            RecurringCostOccurrence::class,
+            RecurringCost::class,
             SupplierRefund::class,
             SupplierPaymentAllocation::class,
             SupplierCreditAllocation::class,

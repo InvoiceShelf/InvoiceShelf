@@ -26,6 +26,8 @@ use App\Domains\Purchases\Models\Bill;
 use App\Domains\Purchases\Models\BillItem;
 use App\Domains\Purchases\Models\Expense;
 use App\Domains\Purchases\Models\ExpenseCategory;
+use App\Domains\Purchases\Models\RecurringCost;
+use App\Domains\Purchases\Models\RecurringCostOccurrence;
 use App\Domains\Purchases\Models\Supplier;
 use App\Domains\Purchases\Models\SupplierCredit;
 use App\Domains\Purchases\Models\SupplierCreditAllocation;
@@ -113,6 +115,8 @@ final class ModelIdentityMap
             'supplier_credit' => SupplierCredit::class,
             'supplier_payment' => SupplierPayment::class,
             'supplier_refund' => SupplierRefund::class,
+            'recurring_cost' => RecurringCost::class,
+            'recurring_cost_occurrence' => RecurringCostOccurrence::class,
             'bill_item' => BillItem::class,
             'supplier_credit_item' => SupplierCreditItem::class,
             'supplier_payment_allocation' => SupplierPaymentAllocation::class,
