@@ -6,6 +6,7 @@ use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Contacts\Models\Address;
 use App\Platform\Operations\Models\Setting;
 use App\Platform\Pdf\Application\FontService;
+use App\Platform\Pdf\Application\PdfFilenameService;
 use App\Platform\Pdf\Rendering\PdfHtmlSanitizer;
 use App\Platform\Storage\Models\FileDisk;
 use Carbon\Carbon;
@@ -54,9 +55,12 @@ trait GeneratesPdf
             $file_name = $this->{$collection_name.'_number'}.'.pdf';
         }
 
+        $filenames = app(PdfFilenameService::class);
+        $file_name = $filenames->filename($this, $collection_name);
+
         return response($body, 200)
             ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', sprintf('inline; filename="%s"', $file_name));
+            ->header('Content-Disposition', $filenames->disposition($file_name));
     }
 
     /**

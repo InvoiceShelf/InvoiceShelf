@@ -16,7 +16,7 @@ interface Props {
    * same-origin URL is still accepted and reduced to its path.
    */
   src: string | false
-  /** Shown on the document card where the PDF is not framed */
+  /** Shown on the document card and in the preview toolbar. */
   title?: string
 }
 
@@ -34,7 +34,7 @@ const previewUrl = ref<string | null>(null)
 // a file rather than framed.
 const canEmbed = computed<boolean>(() => !isNative() && !isPhone.value)
 
-let loaded: FetchedDocument | null = null
+const loaded = ref<FetchedDocument | null>(null)
 // Only the newest request may write to the state; a fast click through two
 // invoices must not end on whichever PDF rendered slower.
 let request = 0
@@ -42,7 +42,7 @@ let request = 0
 function release(): void {
   revokePreviewUrl(previewUrl.value)
   previewUrl.value = null
-  loaded = null
+  loaded.value = null
 }
 
 async function load(path: string): Promise<void> {
@@ -58,7 +58,7 @@ async function load(path: string): Promise<void> {
       return
     }
 
-    loaded = fetched
+    loaded.value = fetched
 
     previewUrl.value = previewUrlFor(fetched.blob)
 
@@ -76,10 +76,14 @@ function retry(): void {
   }
 }
 
-function openPdf(): void {
-  if (loaded) {
-    deliverDocument(loaded.blob, loaded.filename)
+async function downloadPdf(): Promise<void> {
+  if (loaded.value) {
+    await deliverDocument(loaded.value.blob, loaded.value.filename)
   }
+}
+
+function openPdf(): void {
+  void downloadPdf()
 }
 
 watch(
@@ -100,7 +104,7 @@ watch(
 
 onBeforeUnmount(release)
 
-defineExpose({ openPdf, status })
+defineExpose({ downloadPdf, openPdf, status })
 </script>
 
 <template>
@@ -109,6 +113,26 @@ defineExpose({ openPdf, status })
     v-if="canEmbed"
     class="flex flex-col min-h-[560px] h-[78vh] overflow-hidden rounded-lg bg-surface shadow-paper"
   >
+    <div class="flex items-center justify-between gap-3 px-4 py-3 border-b border-line-light bg-surface-secondary">
+      <p class="min-w-0 text-sm font-medium truncate text-heading">
+        {{ loaded?.filename || title || 'PDF' }}
+      </p>
+      <div class="flex items-center gap-2 shrink-0">
+        <BaseButton
+          variant="primary-outline"
+          size="sm"
+          :loading="status === 'loading'"
+          :disabled="status !== 'ready'"
+          @click="downloadPdf"
+        >
+          <template #left="slotProps">
+            <BaseIcon name="ArrowDownTrayIcon" :class="slotProps.class" />
+          </template>
+          {{ $t('general.download_pdf') }}
+        </BaseButton>
+      </div>
+    </div>
+
     <div
       v-if="status === 'loading' || status === 'idle'"
       class="flex items-center justify-center flex-1"
@@ -149,7 +173,7 @@ defineExpose({ openPdf, status })
       <BaseIcon name="DocumentTextIcon" class="w-5 h-5 text-subtle" />
     </div>
     <div class="flex-1 min-w-0">
-      <p class="text-sm font-medium truncate text-heading">{{ title || 'PDF' }}</p>
+      <p class="text-sm font-medium truncate text-heading">{{ loaded?.filename || title || 'PDF' }}</p>
       <p v-if="status === 'error'" class="text-xs text-muted">
         {{ $t('general.unable_to_load_pdf') }}
       </p>
