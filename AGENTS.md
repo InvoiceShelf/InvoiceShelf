@@ -135,7 +135,7 @@ The styling system uses **Tailwind v4 with CSS custom properties as the source o
 - `header-from`, `header-to` — fixed header gradient stops (not dark-mode-aware)
 - `btn-primary`, `btn-primary-hover` — button colors (fixed, always bold)
 - `status-{yellow,green,blue,red,purple}` — status badge text colors
-- `alert-{warning,error,success}-{bg,text}` — alert variants
+- `alert-{warning,error,success,info}-{bg,text}` — alert variants
 
 **Dark mode** is toggled via the `[data-theme="dark"]` attribute on the `<html>` element. The same custom-property names get redefined under that selector — components do **not** need `dark:` variants or conditional logic, they just reference the semantic tokens and the right value is picked up automatically.
 

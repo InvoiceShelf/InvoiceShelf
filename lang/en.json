@@ -2304,7 +2304,8 @@
     "purchase_recurring_template_invalid": "This schedule no longer passes validation. Open it and save it to see what needs fixing.",
     "purchase_recurring_tax_exceeds_amount": "Purchase tax cannot exceed the expense amount.",
     "invoice_reminder_not_due": "Reminders are only sent for invoices that were sent and are not paid yet.",
-    "invoice_reminder_no_email": "This customer has no email address to send a reminder to."
+    "invoice_reminder_no_email": "This customer has no email address to send a reminder to.",
+    "announcement_from_feed": "Announcements from the InvoiceShelf project can only be hidden."
   },
   "pdf_estimate_label": "Estimate",
   "pdf_estimate_number": "Estimate Number",
@@ -2919,5 +2920,49 @@
     "scheduled": "{offset}",
     "customer_pause": "Pause payment reminders",
     "customer_pause_desc": "No automatic reminders are sent for this customer's invoices."
+  },
+  "announcements": {
+    "title": "Announcements",
+    "description": "Tell everyone on this installation something at once. Warning and critical announcements also show as a banner at the top of the app. Announcements from the InvoiceShelf project appear here too; you can hide them.",
+    "add": "Add announcement",
+    "edit": "Edit announcement",
+    "saved": "Announcement saved",
+    "deleted": "Announcement deleted",
+    "confirm_delete": "The announcement disappears for everyone.",
+    "empty_title": "No announcements",
+    "empty_description": "Announcements you add, and those from the InvoiceShelf project, show up here.",
+    "from_feed": "From InvoiceShelf",
+    "shown": "Shown",
+    "open": "Open",
+    "dismiss": "Dismiss",
+    "position": "{current} of {total}",
+    "level_help": "Warning and critical also show as a banner at the top of the app.",
+    "translations": "Translations",
+    "translations_help": "Each person sees the text in their language when there is one, and the text above otherwise.",
+    "add_language": "Add a language",
+    "window_always": "Until removed",
+    "window_from": "From {from}",
+    "window_until": "Until {until}",
+    "window_between": "{from} to {until}",
+    "levels": {
+      "info": "Info",
+      "warning": "Warning",
+      "critical": "Critical"
+    },
+    "audiences": {
+      "everyone": "Everyone",
+      "admins": "Super admins and company owners"
+    },
+    "fields": {
+      "title": "Title",
+      "body": "Message",
+      "link_url": "Button link",
+      "link_label": "Button label",
+      "level": "Level",
+      "audience": "Who sees it",
+      "starts_at": "Show from",
+      "ends_at": "Show until"
+    },
+    "add_button": "Add"
   }
 }
