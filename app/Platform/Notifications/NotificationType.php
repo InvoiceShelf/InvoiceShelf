@@ -8,7 +8,8 @@ namespace App\Platform\Notifications;
  * otherwise.
  *
  * A type with an ability goes to every member of the company who holds it
- * there; a type without one is personal, sent to one named person.
+ * there; a platform type goes to every super admin; a type with neither is
+ * personal, sent to one named person.
  */
 final class NotificationType
 {
@@ -29,6 +30,8 @@ final class NotificationType
      *                                null for a personal notice
      * @param  class-string|null  $model  the model the ability is checked on
      * @param  bool  $mail  whether it is emailed by default
+     * @param  bool  $platform  sent to every super admin, about the whole
+     *                          installation rather than one company
      */
     public function __construct(
         public readonly string $key,
@@ -36,10 +39,11 @@ final class NotificationType
         public readonly ?string $ability = null,
         public readonly ?string $model = null,
         public readonly bool $mail = false,
+        public readonly bool $platform = false,
     ) {}
 
     public function isPersonal(): bool
     {
-        return $this->ability === null;
+        return $this->ability === null && ! $this->platform;
     }
 }

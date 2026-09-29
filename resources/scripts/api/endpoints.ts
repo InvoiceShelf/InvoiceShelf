@@ -190,4 +190,5 @@ export const API = {
   // The bell: the caller's own notices, and where each kind reaches them
   NOTIFICATIONS: '/api/v1/notifications',
   NOTIFICATION_PREFERENCES: '/api/v1/me/notification-preferences',
+  COMPANY_NOTIFICATION_DEFAULTS: '/api/v1/company/notification-defaults', // the owner's, for everyone
 } as const

@@ -3,6 +3,7 @@
 namespace App\Domains\Accounts\Application;
 
 use App\Domains\Accounts\Contracts\CompanyInvitationSender;
+use App\Domains\Accounts\Events\InvitationAnswered;
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\CompanyInvitation;
 use App\Domains\Accounts\Models\User;
@@ -93,6 +94,8 @@ class InvitationService
             'status' => CompanyInvitation::STATUS_ACCEPTED,
             'user_id' => $user->id,
         ]);
+
+        InvitationAnswered::dispatch((int) $invitation->id, (int) $invitation->company_id, CompanyInvitation::STATUS_ACCEPTED);
     }
 
     /**
@@ -112,6 +115,8 @@ class InvitationService
             'status' => CompanyInvitation::STATUS_DECLINED,
             'user_id' => $user->id,
         ]);
+
+        InvitationAnswered::dispatch((int) $invitation->id, (int) $invitation->company_id, CompanyInvitation::STATUS_DECLINED);
     }
 
     /**

@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { required, email, helpers } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { useCompanyStore } from '../../../../stores/company.store'
+import CompanyNotificationDefaultsCard from '../components/CompanyNotificationDefaultsCard.vue'
 
 const companyStore = useCompanyStore()
 const { t } = useI18n()
@@ -81,70 +82,74 @@ async function submitForm(): Promise<void> {
 </script>
 
 <template>
-  <BaseSettingCard
-    :title="$t('settings.notification.title')"
-    :description="$t('settings.notification.description')"
-  >
-    <RouterLink
-      to="/admin/account-settings/notifications"
-      class="inline-flex items-center gap-1.5 text-sm font-medium text-primary-600 hover:text-primary-700"
+  <div class="space-y-6">
+    <BaseSettingCard
+      :title="$t('settings.notification.title')"
+      :description="$t('settings.notification.description')"
     >
-      <BaseIcon name="BellIcon" class="w-4 h-4" aria-hidden="true" />
-      {{ $t('settings.notification.personal_link') }}
-    </RouterLink>
+      <RouterLink
+        to="/admin/account-settings/notifications"
+        class="inline-flex items-center gap-1.5 text-sm font-medium text-primary-600 hover:text-primary-700"
+      >
+        <BaseIcon name="BellIcon" class="w-4 h-4" aria-hidden="true" />
+        {{ $t('settings.notification.personal_link') }}
+      </RouterLink>
 
-    <form action="" @submit.prevent="submitForm">
-      <div class="grid-cols-2 col-span-1 mt-8">
-        <BaseInputGroup
-          :error="
-            v$.notification_email.$error &&
-            v$.notification_email.$errors[0]?.$message
-          "
-          :label="$t('settings.notification.email')"
-          class="my-2"
-          required
-        >
-          <BaseInput
-            v-model.trim="settingsForm.notification_email"
-            :invalid="v$.notification_email.$error"
-            type="email"
-            @input="v$.notification_email.$touch()"
-          />
-        </BaseInputGroup>
-
-        <BaseButton
-          :disabled="isSaving"
-          :loading="isSaving"
-          variant="primary"
-          type="submit"
-          class="mt-6"
-        >
-          <template #left="slotProps">
-            <BaseIcon
-              v-if="!isSaving"
-              :class="slotProps.class"
-              name="ArrowDownOnSquareIcon"
+      <form action="" @submit.prevent="submitForm">
+        <div class="grid-cols-2 col-span-1 mt-8">
+          <BaseInputGroup
+            :error="
+              v$.notification_email.$error &&
+              v$.notification_email.$errors[0]?.$message
+            "
+            :label="$t('settings.notification.email')"
+            class="my-2"
+            required
+          >
+            <BaseInput
+              v-model.trim="settingsForm.notification_email"
+              :invalid="v$.notification_email.$error"
+              type="email"
+              @input="v$.notification_email.$touch()"
             />
-          </template>
-          {{ $t('settings.notification.save') }}
-        </BaseButton>
+          </BaseInputGroup>
+
+          <BaseButton
+            :disabled="isSaving"
+            :loading="isSaving"
+            variant="primary"
+            type="submit"
+            class="mt-6"
+          >
+            <template #left="slotProps">
+              <BaseIcon
+                v-if="!isSaving"
+                :class="slotProps.class"
+                name="ArrowDownOnSquareIcon"
+              />
+            </template>
+            {{ $t('settings.notification.save') }}
+          </BaseButton>
+        </div>
+      </form>
+
+      <BaseDivider class="mt-6 mb-2" />
+
+      <div class="divide-y divide-line-default">
+        <BaseSwitchSection
+          v-model="invoiceViewedField"
+          :title="$t('settings.notification.invoice_viewed')"
+          :description="$t('settings.notification.invoice_viewed_desc')"
+        />
+
+        <BaseSwitchSection
+          v-model="estimateViewedField"
+          :title="$t('settings.notification.estimate_viewed')"
+          :description="$t('settings.notification.estimate_viewed_desc')"
+        />
       </div>
-    </form>
+    </BaseSettingCard>
 
-    <BaseDivider class="mt-6 mb-2" />
-
-    <div class="divide-y divide-line-default">
-      <BaseSwitchSection
-        v-model="invoiceViewedField"
-        :title="$t('settings.notification.invoice_viewed')"
-        :description="$t('settings.notification.invoice_viewed_desc')"
-      />
-
-      <BaseSwitchSection
-        v-model="estimateViewedField"
-        :title="$t('settings.notification.estimate_viewed')"
-        :description="$t('settings.notification.estimate_viewed_desc')"
-      />
-    </div>
-  </BaseSettingCard>
+    <CompanyNotificationDefaultsCard />
+  </div>
 </template>

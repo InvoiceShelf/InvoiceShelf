@@ -2,27 +2,26 @@
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { inboxService } from '@/scripts/api/services/inbox.service'
+import { useCompanyStore } from '@/scripts/stores/company.store'
 import { useNotificationStore } from '@/scripts/stores/notification.store'
 import { handleApiError } from '@/scripts/utils/error-handling'
-import type { InboxGroup, NotificationPreference } from '@/scripts/types/domain/inbox'
+import type { NotificationPreference } from '@/scripts/types/domain/inbox'
+import NotificationTypeTable from '../components/NotificationTypeTable.vue'
 
 type Channel = 'bell' | 'mail'
 
 const { t } = useI18n()
+const companyStore = useCompanyStore()
 const notificationStore = useNotificationStore()
 
 const preferences = ref<NotificationPreference[]>([])
 const isFetching = ref<boolean>(true)
-const saving = ref<string | null>(null)
+const saving = ref<boolean>(false)
 
-/** The types grouped by area, in the order the server lists them. */
-const groups = computed<Array<{ group: InboxGroup; items: NotificationPreference[] }>>(() => {
-  const grouped = new Map<InboxGroup, NotificationPreference[]>()
-  for (const preference of preferences.value) {
-    grouped.set(preference.group, [...(grouped.get(preference.group) ?? []), preference])
-  }
-  return [...grouped.entries()].map(([group, items]) => ({ group, items }))
-})
+const columns = computed(() => [
+  { key: 'bell', label: t('inbox.preferences.bell') },
+  { key: 'mail', label: t('inbox.preferences.mail') },
+])
 
 onMounted(async () => {
   try {
@@ -34,24 +33,29 @@ onMounted(async () => {
   }
 })
 
-async function change(preference: NotificationPreference, channel: Channel, value: boolean): Promise<void> {
-  const previous = preference[channel]
-  preference[channel] = value
-  saving.value = `${preference.type}.${channel}`
-
+async function save(type: string, choice: { bell?: boolean | null; mail?: boolean | null }): Promise<void> {
+  saving.value = true
   try {
-    preferences.value = await inboxService.updatePreferences({ [preference.type]: { [channel]: value } })
+    preferences.value = await inboxService.updatePreferences({ [type]: choice })
     notificationStore.showNotification({ type: 'success', message: 'inbox.preferences.saved' })
   } catch (err: unknown) {
-    preference[channel] = previous
     notificationStore.showNotification({ type: 'error', message: handleApiError(err).message })
   } finally {
-    saving.value = null
+    saving.value = false
   }
 }
 
-function switchLabel(preference: NotificationPreference, channel: Channel): string {
-  return `${t(`inbox.types.${preference.type}.label`)}: ${t(`inbox.preferences.${channel}`)}`
+function change(row: NotificationPreference, key: string, value: boolean): void {
+  row[key as Channel] = value
+  void save(row.type, { [key]: value })
+}
+
+function isCustomised(row: NotificationPreference): boolean {
+  return row.customised.bell || row.customised.mail
+}
+
+function reset(row: NotificationPreference): void {
+  void save(row.type, { bell: null, mail: null })
 }
 </script>
 
@@ -64,50 +68,33 @@ function switchLabel(preference: NotificationPreference, channel: Channel): stri
       <BaseContentPlaceholdersBox
         v-for="placeholder in 3"
         :key="placeholder"
-        class="w-full h-14 mt-4"
+        class="w-full mt-4 h-14"
         rounded
       />
     </BaseContentPlaceholders>
 
-    <div v-else class="border-t border-line-default">
-      <div
-        class="grid grid-cols-[minmax(0,1fr)_4rem_4rem] items-center gap-3 py-2 text-xs font-medium uppercase tracking-wide text-subtle"
-        aria-hidden="true"
-      >
-        <span>{{ $t('inbox.preferences.type') }}</span>
-        <span class="text-center">{{ $t('inbox.preferences.bell') }}</span>
-        <span class="text-center">{{ $t('inbox.preferences.mail') }}</span>
-      </div>
-
-      <section v-for="section in groups" :key="section.group" class="border-t border-line-default">
-        <h3 class="pt-4 pb-1 text-sm font-semibold text-heading">
-          {{ $t(`inbox.groups.${section.group}`) }}
-        </h3>
-
-        <div
-          v-for="preference in section.items"
-          :key="preference.type"
-          class="grid grid-cols-[minmax(0,1fr)_4rem_4rem] items-center gap-3 py-3"
+    <NotificationTypeTable
+      v-else
+      :rows="preferences"
+      :columns="columns"
+      :busy="saving"
+      :row-disabled="(row) => !row.enabled"
+      @change="change"
+    >
+      <template #note="{ row }">
+        <p v-if="!row.enabled" class="mt-1 text-xs text-muted">
+          {{ $t('inbox.preferences.switched_off', { company: companyStore.selectedCompany?.name ?? '' }) }}
+        </p>
+        <button
+          v-else-if="isCustomised(row)"
+          type="button"
+          class="mt-1 text-xs font-medium text-primary-600 hover:text-primary-700"
+          :disabled="saving"
+          @click="reset(row)"
         >
-          <div class="min-w-0">
-            <p class="text-sm font-medium text-body">
-              {{ $t(`inbox.types.${preference.type}.label`) }}
-            </p>
-            <p class="mt-0.5 text-sm text-muted">
-              {{ $t(`inbox.types.${preference.type}.description`) }}
-            </p>
-          </div>
-
-          <div v-for="channel in (['bell', 'mail'] as const)" :key="channel" class="flex justify-center">
-            <BaseSwitch
-              :model-value="preference[channel]"
-              :aria-label="switchLabel(preference, channel)"
-              :disabled="saving !== null"
-              @update:model-value="change(preference, channel, $event)"
-            />
-          </div>
-        </div>
-      </section>
-    </div>
+          {{ $t('inbox.preferences.reset') }}
+        </button>
+      </template>
+    </NotificationTypeTable>
   </BaseSettingCard>
 </template>

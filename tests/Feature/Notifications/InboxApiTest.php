@@ -108,19 +108,17 @@ test('the inbox needs a signed-in user', function () {
 test('preferences list every type with its defaults and save the changes', function () {
     $this->getJson('/api/v1/me/notification-preferences')
         ->assertOk()
-        ->assertJsonPath('data.0', ['type' => 'invoice_viewed', 'group' => 'sales', 'personal' => false, 'bell' => true, 'mail' => false])
-        ->assertJsonFragment(['type' => 'recurring_invoice_failed', 'group' => 'recurring', 'personal' => true, 'bell' => true, 'mail' => true]);
+        ->assertJsonPath('data.0', ['type' => 'invoice_viewed', 'group' => 'sales', 'personal' => false, 'enabled' => true, 'bell' => true, 'mail' => false, 'customised' => ['bell' => false, 'mail' => false]])
+        ->assertJsonFragment(['type' => 'recurring_invoice_failed', 'group' => 'recurring', 'personal' => true, 'enabled' => true, 'bell' => true, 'mail' => true]);
 
     $this->putJson('/api/v1/me/notification-preferences', [
         'preferences' => ['invoice_viewed' => ['mail' => true], 'recurring_invoice_failed' => ['mail' => false, 'bell' => true]],
     ])->assertOk()->assertJsonPath('data.0.mail', true);
 
-    expect(app(NotificationPreferences::class)->for($this->user->fresh()))
-        ->toMatchArray([
-            'invoice_viewed' => ['bell' => true, 'mail' => true],
-            'recurring_invoice_failed' => ['bell' => true, 'mail' => false],
-            'estimate_viewed' => ['bell' => true, 'mail' => false],
-        ]);
+    $saved = app(NotificationPreferences::class)->for($this->user->fresh(), $this->companyId);
+    expect($saved['invoice_viewed'])->toMatchArray(['bell' => true, 'mail' => true])
+        ->and($saved['recurring_invoice_failed'])->toMatchArray(['bell' => true, 'mail' => false])
+        ->and($saved['estimate_viewed'])->toMatchArray(['bell' => true, 'mail' => false]);
 });
 
 test('preferences refuse unknown types and channels', function () {
