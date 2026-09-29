@@ -43,6 +43,7 @@ class UpdateSettingsRequest extends FormRequest
                     }
                 },
             ],
+            'settings.pdf_filename_format' => ['nullable', 'string', 'max:255'],
         ];
     }
 }
