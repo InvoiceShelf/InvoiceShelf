@@ -115,6 +115,9 @@ test('the accounts domain preserves public and super-admin routes', function () 
         'api/v1/super-admin/currencies/refresh',
         'api/v1/super-admin/mcp',
         'api/v1/super-admin/mcp/keys',
+        'api/v1/super-admin/announcements',
+        'api/v1/super-admin/announcements/{announcement}',
+        'api/v1/super-admin/announcements/{announcement}/visibility',
     ];
 
     $adminRoutes = $routes
