@@ -20,6 +20,7 @@ use App\Domains\Sales\Events\EstimateAnswered;
 use App\Domains\Sales\Events\EstimateViewed;
 use App\Domains\Sales\Events\InvoiceBecameOverdue;
 use App\Domains\Sales\Events\InvoicePaid;
+use App\Domains\Sales\Events\InvoiceReminderSent;
 use App\Domains\Sales\Events\InvoiceViewed;
 use App\Domains\Sales\Events\RecurringInvoiceFailed;
 use App\Domains\Sales\Events\RecurringInvoiceGenerated;
@@ -66,6 +67,7 @@ class NotifyStaff
             McpConnectionBound::class => 'mcpConnectionBound',
             ModuleIncompatible::class => 'moduleIncompatible',
             BackupHasFailed::class => 'backupFailed',
+            InvoiceReminderSent::class => 'invoiceReminderSent',
         ];
     }
 
@@ -283,6 +285,27 @@ class NotifyStaff
                 'number' => (string) $invoice->invoice_number,
                 'amount' => $this->money($invoice->due_amount, $invoice->currency),
                 'date' => (string) $invoice->formattedDueDate,
+            ],
+            url: "/admin/invoices/{$invoice->id}/view",
+        ));
+    }
+
+    public function invoiceReminderSent(InvoiceReminderSent $event): void
+    {
+        $invoice = Invoice::query()->with(['customer', 'currency'])->find($event->invoiceId);
+
+        if ($invoice === null) {
+            return;
+        }
+
+        $this->center->send(new NotificationMessage(
+            type: 'invoice_reminder_sent',
+            companyId: $event->companyId,
+            subject: $invoice,
+            params: [
+                'customer' => (string) $invoice->customer?->name,
+                'number' => (string) $invoice->invoice_number,
+                'amount' => $this->money($invoice->due_amount, $invoice->currency),
             ],
             url: "/admin/invoices/{$invoice->id}/view",
         ));

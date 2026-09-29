@@ -26,6 +26,7 @@ export { pdfService } from './pdf.service'
 export { diskService } from './disk.service'
 export { updateService } from './update.service'
 export { inboxService } from './inbox.service'
+export { reminderService } from './reminder.service'
 
 // Re-export service types for convenience
 export type { LoginPayload, LoginResponse, ForgotPasswordPayload, ResetPasswordPayload, RegisterWithInvitationPayload } from './auth.service'
