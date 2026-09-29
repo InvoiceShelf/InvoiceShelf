@@ -40,6 +40,7 @@ class CustomerRequest extends FormRequest
         'contact_name',
         'website',
         'enable_portal',
+        'reminders_paused',
         'estimate_prefix',
         'payment_prefix',
         'invoice_prefix',
@@ -96,6 +97,7 @@ class CustomerRequest extends FormRequest
         }
 
         $rules['enable_portal'] = ['boolean'];
+        $rules['reminders_paused'] = ['sometimes', 'boolean'];
         $rules['currency_id'] = ['nullable'];
 
         foreach (['billing', 'shipping'] as $block) {

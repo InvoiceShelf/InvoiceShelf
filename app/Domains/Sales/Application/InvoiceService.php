@@ -196,6 +196,7 @@ class InvoiceService implements InvoicePdfDataProvider
                 $creditedInvoiceIds[$invoice->related_invoice_id] = $invoice->related_invoice_id;
             }
 
+            $invoice->reminders()->delete();
             $invoice->delete();
         }
 

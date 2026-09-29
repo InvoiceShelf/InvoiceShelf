@@ -20,6 +20,7 @@ use App\Platform\Pdf\Rendering\PdfTemplateUtils;
 use App\Support\MoneyConversion;
 use App\Support\SafeOrderBy;
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -154,6 +155,7 @@ class Invoice extends Model implements HasMedia
             'discount' => 'float',
             'discount_val' => 'integer',
             'exchange_rate' => 'float',
+            'reminders_paused' => 'boolean',
         ];
     }
 
@@ -174,6 +176,11 @@ class Invoice extends Model implements HasMedia
     /**
      * Mail sent about this document.
      */
+    public function reminders(): HasMany
+    {
+        return $this->hasMany(InvoiceReminder::class);
+    }
+
     public function emailLogs(): MorphMany
     {
         return $this->morphMany(EmailLog::class, 'mailable');
@@ -713,7 +720,35 @@ class Invoice extends Model implements HasMedia
             '{INVOICE_DUE_DATE}' => $this->formattedDueDate,
             '{INVOICE_NUMBER}' => $this->invoice_number,
             '{INVOICE_REF_NUMBER}' => $this->reference_number,
+            '{INVOICE_TOTAL}' => $this->plainMoney($this->total),
+            '{INVOICE_DUE_AMOUNT}' => $this->plainMoney($this->due_amount),
+            '{INVOICE_PAID_AMOUNT}' => $this->plainMoney(max(0, (int) $this->total - (int) $this->due_amount)),
+            '{INVOICE_DAYS_OVERDUE}' => (string) $this->daysOverdue(),
         ];
+    }
+
+    /**
+     * Whole days since the due date in the company's time zone; 0 when it is
+     * not yet due or has none.
+     */
+    public function daysOverdue(): int
+    {
+        if (! $this->due_date) {
+            return 0;
+        }
+
+        $today = CarbonImmutable::now(CompanySetting::timeZone($this->company_id))->startOfDay();
+        $due = CarbonImmutable::parse(substr((string) $this->due_date, 0, 10), $today->getTimezone());
+
+        return max(0, (int) $due->diffInDays($today, false));
+    }
+
+    /**
+     * An amount in the invoice's currency as text for an email.
+     */
+    private function plainMoney(mixed $amount): string
+    {
+        return trim(html_entity_decode(strip_tags((string) format_money_pdf((int) $amount, $this->currency))));
     }
 
     /*

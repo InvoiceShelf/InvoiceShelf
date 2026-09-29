@@ -324,6 +324,16 @@ return [
             'model' => '',
         ],
         [
+            'title' => 'settings.menu_title.payment_reminders',
+            'group' => '',
+            'name' => 'Payment reminders',
+            'link' => '/admin/settings/payment-reminders',
+            'icon' => 'ClockIcon',
+            'owner_only' => true,
+            'ability' => '',
+            'model' => '',
+        ],
+        [
             'title' => 'settings.menu_title.tax_types',
             'group' => '',
             'name' => 'Tax types',
