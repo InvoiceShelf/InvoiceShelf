@@ -60,6 +60,16 @@ return [
     'base_url' => env('INVOICESHELF_BASE_URL', 'https://invoiceshelf.com'),
 
     /*
+    * Announcements from the InvoiceShelf project, read every hour from
+    * {base_url}/api/announcements and shown to everyone on the install
+    * alongside the ones a super admin writes here. Set
+    * INVOICESHELF_ANNOUNCEMENTS_FEED=false to stop asking.
+    */
+    'announcements' => [
+        'feed' => (bool) env('INVOICESHELF_ANNOUNCEMENTS_FEED', true),
+    ],
+
+    /*
     |--------------------------------------------------------------------------
     | Thin clients (mobile apps)
     |--------------------------------------------------------------------------
@@ -319,6 +329,16 @@ return [
             'name' => 'Notifications',
             'link' => '/admin/settings/notifications',
             'icon' => 'BellIcon',
+            'owner_only' => true,
+            'ability' => '',
+            'model' => '',
+        ],
+        [
+            'title' => 'settings.menu_title.payment_reminders',
+            'group' => '',
+            'name' => 'Payment reminders',
+            'link' => '/admin/settings/payment-reminders',
+            'icon' => 'ClockIcon',
             'owner_only' => true,
             'ability' => '',
             'model' => '',

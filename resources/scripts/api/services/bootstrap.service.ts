@@ -4,6 +4,7 @@ import type { User, UserSetting } from '@/scripts/types/domain/user'
 import type { Company } from '@/scripts/types/domain/company'
 import type { Currency } from '@/scripts/types/domain/currency'
 import type { Ability } from '@/scripts/types/domain/role'
+import type { ActiveAnnouncement } from '@/scripts/types/domain/announcement'
 
 export interface MenuItem {
   title: string
@@ -37,6 +38,8 @@ export interface BootstrapResponse {
     invited_by: string
     email: string
   }>
+  /** Announcements for this user now, in their language */
+  announcements?: ActiveAnnouncement[]
 }
 
 export interface CurrentCompanyResponse {

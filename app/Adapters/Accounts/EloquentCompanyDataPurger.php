@@ -15,6 +15,7 @@ use App\Domains\Purchases\Models\SupplierPayment;
 use App\Domains\Purchases\Models\SupplierPaymentAllocation;
 use App\Domains\Purchases\Models\SupplierRefund;
 use App\Domains\Receivables\Models\PaymentAllocation;
+use App\Domains\Sales\Models\InvoiceReminder;
 use App\Platform\Recurrence\Models\RecurrenceOccurrence;
 use Illuminate\Database\Eloquent\Model;
 
@@ -24,6 +25,7 @@ class EloquentCompanyDataPurger implements CompanyDataPurger
     {
         foreach ([
             RecurrenceOccurrence::class,
+            InvoiceReminder::class,
             RecurringCost::class,
             SupplierRefund::class,
             SupplierPaymentAllocation::class,

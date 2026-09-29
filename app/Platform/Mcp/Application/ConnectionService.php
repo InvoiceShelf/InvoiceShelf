@@ -6,6 +6,7 @@ use App\Domains\Accounts\Application\AccessRevoker;
 use App\Domains\Accounts\Events\CompanyAccessRevoked;
 use App\Domains\Accounts\Events\UserAccessRevoked;
 use App\Domains\Accounts\Models\User;
+use App\Platform\Mcp\Events\McpConnectionBound;
 use App\Platform\Mcp\Models\McpConnection;
 use Illuminate\Database\Eloquent\Collection;
 use Laravel\Passport\Client;
@@ -40,7 +41,7 @@ class ConnectionService
             $this->revoker->revokeClient($user->id, $client->getKey());
         }
 
-        return McpConnection::query()->updateOrCreate(
+        $connection = McpConnection::query()->updateOrCreate(
             ['user_id' => $user->id, 'oauth_client_id' => $client->getKey()],
             [
                 'company_id' => $companyId,
@@ -49,6 +50,12 @@ class ConnectionService
                 'redirect_host' => $this->redirectHost($client),
             ],
         );
+
+        if ($existing === null || $existing->company_id !== $companyId) {
+            McpConnectionBound::dispatch((int) $connection->id, (int) $user->id, $companyId);
+        }
+
+        return $connection;
     }
 
     /**

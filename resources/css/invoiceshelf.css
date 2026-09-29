@@ -118,6 +118,8 @@
   --color-alert-error-text: var(--color-alert-error-text);
   --color-alert-success-bg: var(--color-alert-success-bg);
   --color-alert-success-text: var(--color-alert-success-text);
+  --color-alert-info-bg: var(--color-alert-info-bg);
+  --color-alert-info-text: var(--color-alert-info-text);
 }
 
 @theme {

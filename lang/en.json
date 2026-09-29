@@ -1288,7 +1288,8 @@
       "address_information": "Address Information",
       "pdf_generation": "PDF Generation",
       "appearance": "Appearance",
-      "module_configuration": "Module Configuration"
+      "module_configuration": "Module Configuration",
+      "payment_reminders": "Payment reminders"
     },
     "appearance": {
       "title": "Appearance",
@@ -1669,15 +1670,16 @@
     },
     "notification": {
       "title": "Notifications",
-      "email": "Send Notifications to",
-      "description": "Which email notifications would you like to receive when something changes?",
+      "email": "Shared mailbox",
+      "description": "Also email customer activity to a shared mailbox, such as your office inbox. Everyone in the company chooses their own notifications, in the app and by email, in their account settings.",
       "invoice_viewed": "Invoice viewed",
-      "invoice_viewed_desc": "When your customer views the invoice sent via invoiceshelf dashboard.",
+      "invoice_viewed_desc": "Email the shared mailbox when a customer opens an invoice you sent.",
       "estimate_viewed": "Estimate viewed",
-      "estimate_viewed_desc": "When your customer views the estimate sent via invoiceshelf dashboard.",
+      "estimate_viewed_desc": "Email the shared mailbox when a customer opens an estimate you sent.",
       "save": "Save",
       "email_save_message": "Email saved successfully",
-      "please_enter_email": "Please Enter Email"
+      "please_enter_email": "Please Enter Email",
+      "personal_link": "Choose your own notifications"
     },
     "roles": {
       "title": "Company Roles",
@@ -2300,7 +2302,10 @@
     "recurring_invoice_failed": "The invoice could not be generated. The schedule will try again.",
     "recurring_invoice_send_failed": "The invoice was created but could not be emailed to the customer. It was kept as a draft.",
     "purchase_recurring_template_invalid": "This schedule no longer passes validation. Open it and save it to see what needs fixing.",
-    "purchase_recurring_tax_exceeds_amount": "Purchase tax cannot exceed the expense amount."
+    "purchase_recurring_tax_exceeds_amount": "Purchase tax cannot exceed the expense amount.",
+    "invoice_reminder_not_due": "Reminders are only sent for invoices that were sent and are not paid yet.",
+    "invoice_reminder_no_email": "This customer has no email address to send a reminder to.",
+    "announcement_from_feed": "Announcements from the InvoiceShelf project can only be hidden."
   },
   "pdf_estimate_label": "Estimate",
   "pdf_estimate_number": "Estimate Number",
@@ -2713,5 +2718,251 @@
   "pdf_bill_label": "Bill",
   "pdf_supplier_label": "Supplier",
   "pdf_all_suppliers_label": "All suppliers",
-  "pdf_tax_document_basis_note": "Document-date basis: issued invoices, recorded bills and credits are included whether paid or unpaid. Expenses use their expense date. Payments and refunds do not create additional tax."
+  "pdf_tax_document_basis_note": "Document-date basis: issued invoices, recorded bills and credits are included whether paid or unpaid. Expenses use their expense date. Payments and refunds do not create additional tax.",
+  "inbox": {
+    "title": "Notifications",
+    "open_panel": "Notifications, {count} unread",
+    "open_panel_none": "Notifications",
+    "mark_all_read": "Mark all as read",
+    "mark_read": "Mark as read",
+    "mark_unread": "Mark as unread",
+    "delete": "Delete",
+    "view_all": "View all",
+    "all": "All",
+    "unread": "Unread",
+    "empty_title": "You're all caught up",
+    "empty_description": "Notices about your invoices, estimates and schedules show up here.",
+    "empty_unread_description": "There is nothing you have not read yet.",
+    "open": "Open in InvoiceShelf",
+    "mail_footer": "Choose which notifications you get by email",
+    "deleted": "Notification deleted",
+    "just_now": "Just now",
+    "groups": {
+      "sales": "Sales",
+      "purchases": "Purchases",
+      "recurring": "Recurring",
+      "team": "Team",
+      "system": "System"
+    },
+    "preferences": {
+      "title": "Notifications",
+      "description": "Choose where each kind of notification reaches you: in the bell at the top of the app, by email, or both.",
+      "type": "Notification",
+      "bell": "In app",
+      "mail": "Email",
+      "personal": "Only about schedules you set up",
+      "saved": "Notification preferences saved",
+      "switched_off": "Switched off for everyone in {company}.",
+      "reset": "Use the company default"
+    },
+    "company_defaults": {
+      "title": "Defaults for members",
+      "description": "Switch a kind of notification off for everyone in the company, or choose where it starts for members who have not chosen for themselves. Members can change the defaults in their account settings, but not a notification you switched off.",
+      "enabled": "On"
+    },
+    "types": {
+      "invoice_viewed": {
+        "label": "Invoice viewed",
+        "description": "A customer opens an invoice you sent.",
+        "title": "Invoice {number} viewed",
+        "body": "{customer} opened invoice {number}."
+      },
+      "estimate_viewed": {
+        "label": "Estimate viewed",
+        "description": "A customer opens an estimate you sent.",
+        "title": "Estimate {number} viewed",
+        "body": "{customer} opened estimate {number}."
+      },
+      "recurring_invoice_generated": {
+        "label": "Recurring invoice created",
+        "description": "One of your recurring invoices creates an invoice. Only for schedules set to notify you.",
+        "title": "Invoice {number} created",
+        "body_sent": "Your recurring invoice for {customer} created invoice {number} dated {date}, for {amount}, and emailed it to the customer.",
+        "body_draft": "Your recurring invoice for {customer} created invoice {number} dated {date}, for {amount}. It was saved as a draft; send it when it is ready."
+      },
+      "recurring_invoice_failed": {
+        "label": "Recurring invoice needs attention",
+        "description": "One of your recurring invoices cannot create or email its invoice.",
+        "title": "Recurring invoice for {customer} needs attention",
+        "body": "Your recurring invoice for {customer} could not create its invoice: {reason} Nothing was created. It tries again every hour until the schedule is fixed.",
+        "body_send_failed": "Your recurring invoice for {customer} created its invoice, but could not email it to the customer: {reason} The invoice was kept as a draft."
+      },
+      "recurring_cost_generated": {
+        "label": "Recurring bill or expense created",
+        "description": "One of your recurring schedules records a bill or an expense. Only for schedules set to notify you.",
+        "title": "{name} recorded",
+        "body_bill": "Your recurring schedule {name} created bill {number} dated {date}, for {amount}.",
+        "body_bill_draft": "Your recurring schedule {name} created bill {number} dated {date}, for {amount}. It was saved as a draft; check it and record it when it is right.",
+        "body_expense": "Your recurring schedule {name} recorded an expense dated {date}, for {amount}."
+      },
+      "recurring_cost_failed": {
+        "label": "Recurring bill or expense needs attention",
+        "description": "One of your recurring schedules cannot record its bill or expense.",
+        "title": "{name} needs attention",
+        "body": "Your recurring schedule {name} could not record its bill or expense: {reason} Nothing was recorded. It tries again every hour until the schedule is fixed."
+      },
+      "estimate_accepted": {
+        "label": "Estimate accepted",
+        "description": "A customer accepts an estimate in the portal.",
+        "title": "Estimate {number} accepted",
+        "body": "{customer} accepted estimate {number}. Convert it to an invoice when you are ready."
+      },
+      "estimate_rejected": {
+        "label": "Estimate rejected",
+        "description": "A customer rejects an estimate in the portal.",
+        "title": "Estimate {number} rejected",
+        "body": "{customer} rejected estimate {number}."
+      },
+      "payment_received": {
+        "label": "Payment received",
+        "description": "A customer pays online, or a colleague records a payment.",
+        "title": "Payment {number} received",
+        "body_online": "{customer} paid {amount} online (payment {number}).",
+        "body_recorded": "{member} recorded a payment of {amount} from {customer} (payment {number})."
+      },
+      "invoice_paid": {
+        "label": "Invoice paid in full",
+        "description": "An invoice has nothing left to pay.",
+        "title": "Invoice {number} paid",
+        "body": "Invoice {number} for {customer} is paid in full ({amount})."
+      },
+      "invoice_overdue": {
+        "label": "Invoice overdue",
+        "description": "An invoice passes its due date unpaid.",
+        "title": "Invoice {number} is overdue",
+        "body": "Invoice {number} for {customer} was due on {date}. {amount} is still unpaid."
+      },
+      "bill_due_soon": {
+        "label": "Bill due soon",
+        "description": "A bill you still have to pay falls due within three days.",
+        "title": "Bill {number} due soon",
+        "body": "Bill {number} from {supplier} is due on {date}. {amount} is still to pay."
+      },
+      "bill_overdue": {
+        "label": "Bill overdue",
+        "description": "A bill you still have to pay passes its due date.",
+        "title": "Bill {number} is overdue",
+        "body": "Bill {number} from {supplier} was due on {date}. {amount} is still to pay."
+      },
+      "invitation_accepted": {
+        "label": "Invitation accepted",
+        "description": "Someone accepts an invitation you sent.",
+        "title": "{email} joined {company}",
+        "body": "{email} accepted your invitation to {company}."
+      },
+      "invitation_declined": {
+        "label": "Invitation declined",
+        "description": "Someone declines an invitation you sent.",
+        "title": "{email} declined your invitation",
+        "body": "{email} declined your invitation to {company}."
+      },
+      "ai_connection_added": {
+        "label": "AI app connected",
+        "description": "An AI app is connected to your account, or, for owners, to the company.",
+        "title": "{app} connected to {company}",
+        "body": "The AI app {app} was connected to your account for {company}. If this was not you, disconnect it in Connected apps.",
+        "body_member": "{member} connected the AI app {app} to {company}. It can use the company's data with their access."
+      },
+      "module_disabled": {
+        "label": "Module switched off",
+        "description": "A module is switched off after an upgrade because it does not fit this version.",
+        "title": "Module {module} was switched off",
+        "body": "{module} does not fit this version of InvoiceShelf and was switched off after the upgrade. {problems}"
+      },
+      "backup_failed": {
+        "label": "Backup failed",
+        "description": "A scheduled or manual backup fails.",
+        "title": "Backup failed",
+        "body": "A backup to {disk} failed: {error}"
+      },
+      "invoice_reminder_sent": {
+        "label": "Payment reminder sent",
+        "description": "A payment reminder is emailed to a customer.",
+        "title": "Reminder sent for invoice {number}",
+        "body": "{customer} was reminded about invoice {number}. {amount} is still open."
+      }
+    }
+  },
+  "reminders": {
+    "title": "Payment reminders",
+    "description": "Email customers about invoices they have not paid yet, on the days you choose around the due date. Reminders stop by themselves once an invoice is paid.",
+    "enabled": "Send payment reminders",
+    "enabled_desc": "Reminders go out for sent invoices that still have an amount due.",
+    "schedule": "Schedule",
+    "days": "Days",
+    "days_help": "Negative numbers are days before the due date, positive ones days after it. Up to 10.",
+    "add_day": "Add",
+    "before_due": "{count} days before the due date | {count} day before the due date | {count} days before the due date",
+    "after_due": "{count} days after the due date | {count} day after the due date | {count} days after the due date",
+    "on_due": "On the due date",
+    "send_hour": "Send at",
+    "send_hour_help": "In your company's time zone.",
+    "email": "Email",
+    "subject": "Subject",
+    "body": "Message",
+    "attach_pdf": "Attach the invoice PDF",
+    "saved": "Payment reminder settings saved",
+    "card_title": "Reminders",
+    "paused": "Pause reminders for this invoice",
+    "customer_paused": "Reminders are paused for this customer.",
+    "company_off": "Payment reminders are switched off for the company.",
+    "not_remindable": "Reminders go out once the invoice is sent, until it is paid.",
+    "no_email": "The customer has no email address, so reminders cannot be sent.",
+    "next": "Next reminder: {date}",
+    "none_next": "No more reminders are scheduled.",
+    "history_empty": "No reminders sent yet.",
+    "send_now": "Send reminder now",
+    "sent_now": "Reminder sent",
+    "status_sent": "Sent",
+    "status_failed": "Failed",
+    "status_skipped": "Skipped",
+    "manual": "Sent by hand",
+    "scheduled": "{offset}",
+    "customer_pause": "Pause payment reminders",
+    "customer_pause_desc": "No automatic reminders are sent for this customer's invoices."
+  },
+  "announcements": {
+    "title": "Announcements",
+    "description": "Tell everyone on this installation something at once. Warning and critical announcements also show as a banner at the top of the app. Announcements from the InvoiceShelf project appear here too; you can hide them.",
+    "add": "Add announcement",
+    "edit": "Edit announcement",
+    "saved": "Announcement saved",
+    "deleted": "Announcement deleted",
+    "confirm_delete": "The announcement disappears for everyone.",
+    "empty_title": "No announcements",
+    "empty_description": "Announcements you add, and those from the InvoiceShelf project, show up here.",
+    "from_feed": "From InvoiceShelf",
+    "shown": "Shown",
+    "open": "Open",
+    "dismiss": "Dismiss",
+    "position": "{current} of {total}",
+    "level_help": "Warning and critical also show as a banner at the top of the app.",
+    "translations": "Translations",
+    "translations_help": "Each person sees the text in their language when there is one, and the text above otherwise.",
+    "add_language": "Add a language",
+    "window_always": "Until removed",
+    "window_from": "From {from}",
+    "window_until": "Until {until}",
+    "window_between": "{from} to {until}",
+    "levels": {
+      "info": "Info",
+      "warning": "Warning",
+      "critical": "Critical"
+    },
+    "audiences": {
+      "everyone": "Everyone",
+      "admins": "Super admins and company owners"
+    },
+    "fields": {
+      "title": "Title",
+      "body": "Message",
+      "link_url": "Button link",
+      "link_label": "Button label",
+      "level": "Level",
+      "audience": "Who sees it",
+      "starts_at": "Show from",
+      "ends_at": "Show until"
+    },
+    "add_button": "Add"
+  }
 }

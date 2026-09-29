@@ -399,6 +399,23 @@ async function submitCustomerData(): Promise<void> {
 
         <BaseDivider class="mb-5 md:mb-8" />
 
+        <!-- Payment reminders -->
+        <div class="grid grid-cols-5 gap-4 mb-8">
+          <h2 class="col-span-5 font-semibold text-start text-section text-heading lg:col-span-1">
+            {{ $t('reminders.title') }}
+          </h2>
+
+          <div class="col-span-5 lg:col-span-4">
+            <BaseSwitchSection
+              v-model="customerStore.currentCustomer.reminders_paused"
+              :title="$t('reminders.customer_pause')"
+              :description="$t('reminders.customer_pause_desc')"
+            />
+          </div>
+        </div>
+
+        <BaseDivider class="mb-5 md:mb-8" />
+
         <!-- Billing Address -->
         <div class="grid grid-cols-5 gap-4 mb-8">
           <h2 class="col-span-5 font-semibold text-start text-section text-heading lg:col-span-1">

@@ -2,6 +2,7 @@
 
 namespace App\Domains\Sales\Console;
 
+use App\Domains\Sales\Events\InvoiceBecameOverdue;
 use App\Domains\Sales\Models\Invoice;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -40,6 +41,8 @@ class CheckInvoiceStatus extends Command
             $invoice->overdue = true;
             printf("Invoice %s is OVERDUE \n", $invoice->invoice_number);
             $invoice->save();
+
+            InvoiceBecameOverdue::dispatch((int) $invoice->id, (int) $invoice->company_id);
         }
     }
 }
