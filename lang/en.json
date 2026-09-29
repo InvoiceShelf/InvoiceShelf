@@ -1669,15 +1669,16 @@
     },
     "notification": {
       "title": "Notifications",
-      "email": "Send Notifications to",
-      "description": "Which email notifications would you like to receive when something changes?",
+      "email": "Shared mailbox",
+      "description": "Also email customer activity to a shared mailbox, such as your office inbox. Everyone in the company chooses their own notifications, in the app and by email, in their account settings.",
       "invoice_viewed": "Invoice viewed",
-      "invoice_viewed_desc": "When your customer views the invoice sent via invoiceshelf dashboard.",
+      "invoice_viewed_desc": "Email the shared mailbox when a customer opens an invoice you sent.",
       "estimate_viewed": "Estimate viewed",
-      "estimate_viewed_desc": "When your customer views the estimate sent via invoiceshelf dashboard.",
+      "estimate_viewed_desc": "Email the shared mailbox when a customer opens an estimate you sent.",
       "save": "Save",
       "email_save_message": "Email saved successfully",
-      "please_enter_email": "Please Enter Email"
+      "please_enter_email": "Please Enter Email",
+      "personal_link": "Choose your own notifications"
     },
     "roles": {
       "title": "Company Roles",
@@ -2713,5 +2714,82 @@
   "pdf_bill_label": "Bill",
   "pdf_supplier_label": "Supplier",
   "pdf_all_suppliers_label": "All suppliers",
-  "pdf_tax_document_basis_note": "Document-date basis: issued invoices, recorded bills and credits are included whether paid or unpaid. Expenses use their expense date. Payments and refunds do not create additional tax."
+  "pdf_tax_document_basis_note": "Document-date basis: issued invoices, recorded bills and credits are included whether paid or unpaid. Expenses use their expense date. Payments and refunds do not create additional tax.",
+  "inbox": {
+    "title": "Notifications",
+    "open_panel": "Notifications, {count} unread",
+    "open_panel_none": "Notifications",
+    "mark_all_read": "Mark all as read",
+    "mark_read": "Mark as read",
+    "mark_unread": "Mark as unread",
+    "delete": "Delete",
+    "view_all": "View all",
+    "all": "All",
+    "unread": "Unread",
+    "empty_title": "You're all caught up",
+    "empty_description": "Notices about your invoices, estimates and schedules show up here.",
+    "empty_unread_description": "There is nothing you have not read yet.",
+    "open": "Open in InvoiceShelf",
+    "mail_footer": "Choose which notifications you get by email",
+    "deleted": "Notification deleted",
+    "just_now": "Just now",
+    "groups": {
+      "sales": "Sales",
+      "purchases": "Purchases",
+      "recurring": "Recurring",
+      "team": "Team",
+      "system": "System"
+    },
+    "preferences": {
+      "title": "Notifications",
+      "description": "Choose where each kind of notification reaches you: in the bell at the top of the app, by email, or both.",
+      "type": "Notification",
+      "bell": "In app",
+      "mail": "Email",
+      "personal": "Only about schedules you set up",
+      "saved": "Notification preferences saved"
+    },
+    "types": {
+      "invoice_viewed": {
+        "label": "Invoice viewed",
+        "description": "A customer opens an invoice you sent.",
+        "title": "Invoice {number} viewed",
+        "body": "{customer} opened invoice {number}."
+      },
+      "estimate_viewed": {
+        "label": "Estimate viewed",
+        "description": "A customer opens an estimate you sent.",
+        "title": "Estimate {number} viewed",
+        "body": "{customer} opened estimate {number}."
+      },
+      "recurring_invoice_generated": {
+        "label": "Recurring invoice created",
+        "description": "One of your recurring invoices creates an invoice. Only for schedules set to notify you.",
+        "title": "Invoice {number} created",
+        "body_sent": "Your recurring invoice for {customer} created invoice {number} dated {date}, for {amount}, and emailed it to the customer.",
+        "body_draft": "Your recurring invoice for {customer} created invoice {number} dated {date}, for {amount}. It was saved as a draft; send it when it is ready."
+      },
+      "recurring_invoice_failed": {
+        "label": "Recurring invoice needs attention",
+        "description": "One of your recurring invoices cannot create or email its invoice.",
+        "title": "Recurring invoice for {customer} needs attention",
+        "body": "Your recurring invoice for {customer} could not create its invoice: {reason} Nothing was created. It tries again every hour until the schedule is fixed.",
+        "body_send_failed": "Your recurring invoice for {customer} created its invoice, but could not email it to the customer: {reason} The invoice was kept as a draft."
+      },
+      "recurring_cost_generated": {
+        "label": "Recurring bill or expense created",
+        "description": "One of your recurring schedules records a bill or an expense. Only for schedules set to notify you.",
+        "title": "{name} recorded",
+        "body_bill": "Your recurring schedule {name} created bill {number} dated {date}, for {amount}.",
+        "body_bill_draft": "Your recurring schedule {name} created bill {number} dated {date}, for {amount}. It was saved as a draft; check it and record it when it is right.",
+        "body_expense": "Your recurring schedule {name} recorded an expense dated {date}, for {amount}."
+      },
+      "recurring_cost_failed": {
+        "label": "Recurring bill or expense needs attention",
+        "description": "One of your recurring schedules cannot record its bill or expense.",
+        "title": "{name} needs attention",
+        "body": "Your recurring schedule {name} could not record its bill or expense: {reason} Nothing was recorded. It tries again every hour until the schedule is fixed."
+      }
+    }
+  }
 }

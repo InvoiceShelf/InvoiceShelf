@@ -4,17 +4,18 @@ use App\Domains\Accounts\Application\RolePresetService;
 use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Accounts\Models\User;
 use App\Domains\Metadata\Models\CustomField;
-use App\Domains\Purchases\Contracts\RecurringCostNotifier;
-use App\Domains\Purchases\Mail\RecurringCostFailedMail;
-use App\Domains\Purchases\Mail\RecurringCostGeneratedMail;
+use App\Domains\Purchases\Events\RecurringCostFailed;
 use App\Domains\Purchases\Models\Bill;
 use App\Domains\Purchases\Models\Expense;
 use App\Domains\Purchases\Models\ExpenseCategory;
 use App\Domains\Purchases\Models\RecurringCost;
+use App\Platform\Notifications\AppNotification;
+use App\Platform\Notifications\Channels\CompanyDatabaseChannel;
 use App\Support\Recurrence\RecurrenceRunner;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Notifications\Events\NotificationSending;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Notification;
 use Laravel\Sanctum\Sanctum;
 use Silber\Bouncer\BouncerFacade;
 
@@ -161,8 +162,8 @@ test('a paused schedule makes nothing, and resuming keeps today but skips the pa
     expect(Bill::query()->sole()->document_date)->toBe('2026-06-01');
 });
 
-test('a failing run keeps its day, emails the creator once and recovers', function () {
-    Mail::fake();
+test('a failing run keeps its day, tells the creator once and recovers', function () {
+    Notification::fake();
     $schedule = overdueSchedule($this, ['notify_creator' => true], '2026-06-01 00:00:00');
     $this->supplier->update(['enabled' => false]);
 
@@ -171,14 +172,16 @@ test('a failing run keeps its day, emails the creator once and recovers', functi
     expect(Bill::query()->count())->toBe(0)
         ->and($schedule->fresh()->last_error)->toBe('purchase_supplier_inactive')
         ->and($schedule->fresh()->next_run_at)->toBe('2026-06-01 00:00:00');
-    Mail::assertSent(RecurringCostFailedMail::class, fn ($mail) => $mail->hasTo($this->user->email));
+    Notification::assertSentTo($this->user, AppNotification::class, fn (AppNotification $notice) => $notice->message->type === 'recurring_cost_failed'
+        && $notice->message->params['reason'] === 'errors.purchase_supplier_inactive'
+        && $notice->via($this->user) === [CompanyDatabaseChannel::class, 'mail']);
 
-    // Within the hour it is left alone; after it, it is tried again without a second email.
+    // Within the hour it is left alone; after it, it is tried again without a second notice.
     Carbon::setTestNow('2026-06-15 12:30:00');
     artisan('recurring-costs:generate')->assertSuccessful();
     Carbon::setTestNow('2026-06-15 14:00:00');
     artisan('recurring-costs:generate')->assertSuccessful();
-    Mail::assertSent(RecurringCostFailedMail::class, 1);
+    Notification::assertSentToTimes($this->user, AppNotification::class, 1);
 
     $this->supplier->update(['enabled' => true]);
     Carbon::setTestNow('2026-06-15 16:00:00');
@@ -186,16 +189,28 @@ test('a failing run keeps its day, emails the creator once and recovers', functi
 
     expect(Bill::query()->count())->toBe(1)
         ->and($schedule->fresh()->last_error)->toBeNull();
-    Mail::assertSent(RecurringCostGeneratedMail::class, fn ($mail) => $mail->hasTo($this->user->email));
+    Notification::assertSentTo($this->user, AppNotification::class, fn (AppNotification $notice) => $notice->message->type === 'recurring_cost_generated'
+        && $notice->message->variant === 'bill'
+        && $notice->message->url === '/admin/bills/'.Bill::query()->sole()->id.'/view');
 });
 
-test('nobody is emailed when the schedule does not ask for it', function () {
-    Mail::fake();
+test('nobody is told about a generated record when the schedule does not ask for it', function () {
+    Notification::fake();
     overdueSchedule($this, [], '2026-06-01 00:00:00');
 
     artisan('recurring-costs:generate')->assertSuccessful();
 
-    Mail::assertNothingSent();
+    Notification::assertNothingSent();
+});
+
+test('a failure is told even when the schedule does not ask about generated records', function () {
+    Notification::fake();
+    overdueSchedule($this, [], '2026-06-01 00:00:00');
+    $this->supplier->update(['enabled' => false]);
+
+    artisan('recurring-costs:generate')->assertSuccessful();
+
+    Notification::assertSentTo($this->user, AppNotification::class, fn (AppNotification $notice) => $notice->message->type === 'recurring_cost_failed');
 });
 
 test('bill custom field answers carry over to each generated bill', function () {
@@ -252,7 +267,7 @@ test('the detail lists what the schedule generated', function () {
 });
 
 test('a mail server that is down fails neither the run nor the runs after it', function () {
-    Mail::shouldReceive('to')->andThrow(new RuntimeException('SMTP is down'));
+    Event::listen(NotificationSending::class, fn () => throw new RuntimeException('SMTP is down'));
     $travel = ExpenseCategory::create(['company_id' => $this->companyId, 'name' => 'Travel']);
     $broken = overdueSchedule($this, [
         'mode' => 'EXPENSE',
@@ -277,15 +292,15 @@ test('a failure from a form rule is shown as a template to fix, in words', funct
     expect($errors)->toHaveKey('purchase_recurring_template_invalid');
 });
 
-test('someone no longer in the company is not emailed about its schedules', function () {
-    Mail::fake();
+test('someone no longer in the company is not told about its schedules', function () {
+    Notification::fake();
     overdueSchedule($this, ['notify_creator' => true], '2026-06-01 00:00:00');
     $this->user->companies()->detach($this->companyId);
 
     artisan('recurring-costs:generate')->assertSuccessful();
 
     expect(Bill::query()->count())->toBe(1);
-    Mail::assertNothingSent();
+    Notification::assertNothingSent();
 });
 
 test('expense custom field answers are required like the form and carry over', function () {
@@ -306,8 +321,8 @@ test('expense custom field answers are required like the form and carry over', f
     expect(Expense::query()->sole()->fields()->first()->defaultAnswer)->toBe('Apollo');
 });
 
-test('saving a failing schedule clears its failure, and a new reason is emailed again', function () {
-    Mail::fake();
+test('saving a failing schedule clears its failure, and a new reason is told again', function () {
+    Notification::fake();
     $schedule = overdueSchedule($this, [
         'mode' => 'EXPENSE',
         'notify_creator' => true,
@@ -318,13 +333,13 @@ test('saving a failing schedule clears its failure, and a new reason is emailed 
     artisan('recurring-costs:generate')->assertSuccessful();
     expect($schedule->fresh()->last_error)->toBe('purchase_supplier_inactive');
 
-    // A different reason after the retry window is a new email.
+    // A different reason after the retry window is a new notice.
     $this->supplier->update(['enabled' => true]);
     ExpenseCategory::query()->whereKey($this->category->id)->delete();
     Carbon::setTestNow('2026-06-15 14:00:00');
     artisan('recurring-costs:generate')->assertSuccessful();
     expect($schedule->fresh()->last_error)->toBe('purchase_recurring_template_invalid');
-    Mail::assertSent(RecurringCostFailedMail::class, 2);
+    Notification::assertSentToTimes($this->user, AppNotification::class, 2);
 
     // Fixing and saving it lets the very next run go ahead.
     $category = ExpenseCategory::create(['company_id' => $this->companyId, 'name' => 'Rent']);
@@ -342,15 +357,7 @@ test('saving a failing schedule clears its failure, and a new reason is emailed 
 });
 
 test('a failure handler that throws does not stop the schedules after it', function () {
-    app()->instance(RecurringCostNotifier::class, new class implements RecurringCostNotifier
-    {
-        public function generated(RecurringCost $schedule, Model $record): void {}
-
-        public function failed(RecurringCost $schedule, string $reason): void
-        {
-            throw new RuntimeException('Notifier is broken');
-        }
-    });
+    Event::listen(RecurringCostFailed::class, fn () => throw new RuntimeException('Listener is broken'));
     $schedule = overdueSchedule($this, ['notify_creator' => true], '2026-06-01 00:00:00');
     $this->supplier->update(['enabled' => false]);
     artisan('recurring-costs:generate')->assertSuccessful();

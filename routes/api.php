@@ -148,6 +148,11 @@ Route::prefix('/v1')->group(function () {
 
         require app_path('Platform/Mcp/routes/api.php');
 
+        // The bell: the caller's own notices
+        // ----------------------------------
+
+        require app_path('Platform/Notifications/routes/company.php');
+
     });
 
     Route::prefix('/{company:slug}/customer')->group(function () {
