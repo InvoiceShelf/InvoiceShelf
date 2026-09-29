@@ -32,7 +32,7 @@ class CompanyNotificationDefaults
         foreach ($this->catalogue->all() as $key => $type) {
             $defaults[$key] = [
                 'enabled' => (bool) ($stored[$key]['enabled'] ?? true),
-                'bell' => (bool) ($stored[$key]['bell'] ?? true),
+                'bell' => (bool) ($stored[$key]['bell'] ?? $type->bell),
                 'mail' => (bool) ($stored[$key]['mail'] ?? $type->mail),
             ];
         }

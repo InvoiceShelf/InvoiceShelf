@@ -26,6 +26,7 @@ class EloquentCustomerDataPurger implements CustomerDataPurger
         $customer->invoices->each(function (Invoice $invoice): void {
             $this->clearDocumentData($invoice);
             $invoice->transactions()->delete();
+            $invoice->reminders()->delete();
             $invoice->delete();
         });
         Invoice::query()->whereIn('related_invoice_id', $invoiceIds)->update(['related_invoice_id' => null]);

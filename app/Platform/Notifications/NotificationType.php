@@ -32,6 +32,7 @@ final class NotificationType
      * @param  bool  $mail  whether it is emailed by default
      * @param  bool  $platform  sent to every super admin, about the whole
      *                          installation rather than one company
+     * @param  bool  $bell  whether it shows in the bell by default
      */
     public function __construct(
         public readonly string $key,
@@ -40,6 +41,7 @@ final class NotificationType
         public readonly ?string $model = null,
         public readonly bool $mail = false,
         public readonly bool $platform = false,
+        public readonly bool $bell = true,
     ) {}
 
     public function isPersonal(): bool
