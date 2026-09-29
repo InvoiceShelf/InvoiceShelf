@@ -9,6 +9,7 @@ use App\Adapters\Purchases\TaxationExpenseTaxManager;
 use App\Domains\Purchases\Application\ClearExpenseTaxes;
 use App\Domains\Purchases\Application\ProtectCreditedExpenses;
 use App\Domains\Purchases\Application\ProtectPurchaseTaxes;
+use App\Domains\Purchases\Console\CheckBillsDue;
 use App\Domains\Purchases\Console\GenerateRecurringCosts;
 use App\Domains\Purchases\Contracts\DocumentNumberAssigner;
 use App\Domains\Purchases\Contracts\ExpenseExchangeRateRecorder;
@@ -46,7 +47,7 @@ class PurchasesServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->commands([GenerateRecurringCosts::class]);
+        $this->commands([GenerateRecurringCosts::class, CheckBillsDue::class]);
         Expense::observe(ClearExpenseTaxes::class);
         TaxType::observe(ProtectPurchaseTaxes::class);
         Expense::observe(ProtectCreditedExpenses::class);
