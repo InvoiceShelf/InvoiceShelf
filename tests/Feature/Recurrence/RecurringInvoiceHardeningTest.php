@@ -6,13 +6,12 @@ use App\Domains\Accounts\Models\User;
 use App\Domains\Contacts\Models\Customer;
 use App\Domains\Metadata\Models\CustomField;
 use App\Domains\Sales\Contracts\InvoiceEmailSender;
-use App\Domains\Sales\Mail\RecurringInvoiceFailedMail;
-use App\Domains\Sales\Mail\RecurringInvoiceGeneratedMail;
 use App\Domains\Sales\Models\Invoice;
 use App\Domains\Sales\Models\RecurringInvoice;
+use App\Platform\Notifications\AppNotification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Laravel\Sanctum\Sanctum;
 
 use function Pest\Laravel\artisan;
@@ -197,8 +196,8 @@ test('a paused schedule makes nothing, and resuming keeps today but skips the pa
     expect(invoicesOf($schedule)->pluck('invoice_date')->all())->toBe(['2026-06-15']);
 });
 
-test('a template that no longer passes fails with a reason, emails once, and a save lets it run again', function () {
-    Mail::fake();
+test('a template that no longer passes fails with a reason, tells the creator once, and a save lets it run again', function () {
+    Notification::fake();
     $schedule = hardenedSchedule($this, ['notify_creator' => true]);
     $field = CustomField::factory()->create(['company_id' => $this->companyId, 'model_type' => 'Invoice', 'type' => 'Input', 'label' => 'PO number', 'name' => 'po_number', 'is_required' => true, 'order' => 0]);
 
@@ -206,11 +205,13 @@ test('a template that no longer passes fails with a reason, emails once, and a s
 
     expect(invoicesOf($schedule)->count())->toBe(0)
         ->and($schedule->fresh()->last_error)->toBe('recurring_invoice_custom_field_required');
-    Mail::assertSent(RecurringInvoiceFailedMail::class, fn ($mail) => $mail->hasTo($this->user->email));
+    Notification::assertSentTo($this->user, AppNotification::class, fn (AppNotification $notice) => $notice->message->type === 'recurring_invoice_failed'
+        && $notice->message->params['reason'] === 'errors.recurring_invoice_custom_field_required'
+        && $notice->message->url === '/admin/recurring-invoices/'.$schedule->id.'/view');
 
     Carbon::setTestNow('2026-06-15 14:00:00');
     artisan('recurring-invoices:generate')->assertSuccessful();
-    Mail::assertSent(RecurringInvoiceFailedMail::class, 1);
+    Notification::assertSentToTimes($this->user, AppNotification::class, 1);
 
     $this->putJson('/api/v1/recurring-invoices/'.$schedule->id, hardenedPayload($schedule, [
         'notify_creator' => true,
@@ -221,11 +222,13 @@ test('a template that no longer passes fails with a reason, emails once, and a s
 
     expect(invoicesOf($schedule)->count())->toBe(1)
         ->and($schedule->fresh()->last_error)->toBeNull();
-    Mail::assertSent(RecurringInvoiceGeneratedMail::class, fn ($mail) => $mail->hasTo($this->user->email));
+    Notification::assertSentTo($this->user, AppNotification::class, fn (AppNotification $notice) => $notice->message->type === 'recurring_invoice_generated'
+        && $notice->message->variant === 'draft'
+        && $notice->message->params['number'] === invoicesOf($schedule)->sole()->invoice_number);
 });
 
-test('nobody is emailed when the schedule does not ask for it, or its creator has left', function () {
-    Mail::fake();
+test('nobody is told when the schedule does not ask for it, or its creator has left', function () {
+    Notification::fake();
     hardenedSchedule($this);
     $leaver = User::factory()->create();
     $leaver->companies()->attach($this->companyId);
@@ -235,7 +238,7 @@ test('nobody is emailed when the schedule does not ask for it, or its creator ha
     artisan('recurring-invoices:generate')->assertSuccessful();
 
     expect(Invoice::query()->whereNotNull('recurring_invoice_id')->count())->toBe(2);
-    Mail::assertNothingSent();
+    Notification::assertNothingSent();
 });
 
 test('an invoice on the 31st is made in the months that have one', function () {

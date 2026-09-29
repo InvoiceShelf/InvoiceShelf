@@ -21,6 +21,8 @@ use App\Domains\Receivables\Models\Payment;
 use App\Domains\Receivables\Models\PaymentAllocation;
 use App\Domains\Receivables\Models\PaymentMethod;
 use App\Domains\Sales\Application\SerialNumberService;
+use App\Domains\Sales\Events\EstimateViewed;
+use App\Domains\Sales\Events\InvoiceViewed;
 use App\Domains\Sales\Models\Estimate;
 use App\Domains\Sales\Models\EstimateItem;
 use App\Domains\Sales\Models\Invoice;
@@ -32,6 +34,7 @@ use App\Platform\Operations\Demo\DemoMode;
 use App\Support\PublicToken;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
+use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Artisan;
 use RuntimeException;
 
@@ -127,6 +130,7 @@ class RealisticDemoSeeder extends Seeder
         $this->seedEstimates();
         $this->seedRecurringInvoice();
         $this->seedExpenses();
+        $this->seedNotifications();
 
         $this->info(sprintf(
             'RealisticDemoSeeder done: %d customers, %d items, %d invoices (%d overdue, %d paid, %d partially_paid), %d payments, %d estimates, %d expenses, %d tax types, %d notes, %d recurring.',
@@ -267,6 +271,36 @@ class RealisticDemoSeeder extends Seeder
         TaxType::where('company_id', $this->companyId)->delete();
         Note::where('company_id', $this->companyId)->delete();
         CustomField::where('company_id', $this->companyId)->delete();
+        DatabaseNotification::query()->where('company_id', $this->companyId)->delete();
+    }
+
+    /**
+     * A few notices in the bell, sent the way the app sends them: customers
+     * opening the latest viewed invoices and an estimate. The oldest is read.
+     */
+    private function seedNotifications(): void
+    {
+        $invoices = Invoice::where('company_id', $this->companyId)
+            ->where('status', Invoice::STATUS_VIEWED)
+            ->latest('invoice_date')
+            ->take(3)
+            ->get();
+
+        foreach ($invoices->reverse() as $invoice) {
+            InvoiceViewed::dispatch((int) $invoice->id, $this->companyId);
+        }
+
+        $estimate = Estimate::where('company_id', $this->companyId)->latest('estimate_date')->first();
+
+        if ($estimate !== null) {
+            EstimateViewed::dispatch((int) $estimate->id, $this->companyId);
+        }
+
+        DatabaseNotification::query()
+            ->where('company_id', $this->companyId)
+            ->oldest()
+            ->first()
+            ?->markAsRead();
     }
 
     private function seedCustomers(): void

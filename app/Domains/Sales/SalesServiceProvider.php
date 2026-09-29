@@ -4,7 +4,6 @@ namespace App\Domains\Sales;
 
 use App\Adapters\Sales\LaravelEstimateEmailSender;
 use App\Adapters\Sales\LaravelInvoiceEmailSender;
-use App\Adapters\Sales\MailRecurringInvoiceNotifier;
 use App\Adapters\Sales\ModuleInvoicePdfAttachments;
 use App\Adapters\Sales\MoneyDocumentExchangeRateRecorder;
 use App\Domains\Sales\Application\EstimateService;
@@ -18,7 +17,6 @@ use App\Domains\Sales\Contracts\EstimatePdfDataProvider;
 use App\Domains\Sales\Contracts\InvoiceEmailSender;
 use App\Domains\Sales\Contracts\InvoicePdfAttachments;
 use App\Domains\Sales\Contracts\InvoicePdfDataProvider;
-use App\Domains\Sales\Contracts\RecurringInvoiceNotifier;
 use App\Domains\Sales\Models\Estimate;
 use App\Domains\Sales\Models\Invoice;
 use App\Domains\Sales\Models\RecurringInvoice;
@@ -51,7 +49,6 @@ class SalesServiceProvider extends ServiceProvider
         $this->app->bind(DocumentExchangeRateRecorder::class, MoneyDocumentExchangeRateRecorder::class);
         $this->app->bind(EstimateEmailSender::class, LaravelEstimateEmailSender::class);
         $this->app->bind(InvoiceEmailSender::class, LaravelInvoiceEmailSender::class);
-        $this->app->bind(RecurringInvoiceNotifier::class, MailRecurringInvoiceNotifier::class);
         $this->app->bind(InvoicePdfAttachments::class, ModuleInvoicePdfAttachments::class);
     }
 

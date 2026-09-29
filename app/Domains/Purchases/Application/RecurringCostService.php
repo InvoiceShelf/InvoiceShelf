@@ -2,7 +2,8 @@
 
 namespace App\Domains\Purchases\Application;
 
-use App\Domains\Purchases\Contracts\RecurringCostNotifier;
+use App\Domains\Purchases\Events\RecurringCostFailed;
+use App\Domains\Purchases\Events\RecurringCostGenerated;
 use App\Domains\Purchases\Http\Requests\BillRequest;
 use App\Domains\Purchases\Http\Requests\RecurringCostRequest;
 use App\Domains\Purchases\Models\RecurringCost;
@@ -35,7 +36,6 @@ class RecurringCostService
         private readonly ExpenseService $expenses,
         private readonly PurchaseCustomFields $customFields,
         private readonly RecurrenceRunner $runner,
-        private readonly RecurringCostNotifier $notifier,
     ) {}
 
     /**
@@ -160,9 +160,12 @@ class RecurringCostService
                 'record_id' => $record->getKey(),
             ]);
 
-            if ($schedule->notify_creator) {
-                DB::afterCommit(fn () => $this->notifier->generated($schedule, $record));
-            }
+            DB::afterCommit(fn () => RecurringCostGenerated::dispatch(
+                (int) $schedule->id,
+                $record->getMorphClass(),
+                (int) $record->getKey(),
+                (int) $schedule->company_id,
+            ));
         }
 
         $schedule->last_error = null;
@@ -198,8 +201,8 @@ class RecurringCostService
     }
 
     /**
-     * Note why a run failed on the schedule, and tell its creator when the
-     * runs start failing or start failing for a different reason; the runner
+     * Note why a run failed on the schedule, and announce it when the runs
+     * start failing or start failing for a different reason; the runner
      * tries again later.
      */
     private function failed(RecurringCost $schedule, Throwable $error): void
@@ -213,8 +216,8 @@ class RecurringCostService
         $newReason = $schedule->last_error !== $reason;
         RecurringCost::query()->whereKey($schedule->id)->update(['last_error' => $reason]);
 
-        if ($newReason && $schedule->notify_creator) {
-            $this->notifier->failed($schedule, $reason);
+        if ($newReason) {
+            RecurringCostFailed::dispatch((int) $schedule->id, (int) $schedule->company_id, $reason);
         }
     }
 
