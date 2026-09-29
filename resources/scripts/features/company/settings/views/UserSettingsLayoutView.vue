@@ -32,6 +32,11 @@ const menuItems = computed<MenuItem[]>(() => [
     icon: 'LockClosedIcon',
   },
   {
+    title: t('inbox.preferences.title'),
+    link: '/admin/account-settings/notifications',
+    icon: 'BellIcon',
+  },
+  {
     title: t('devices.title'),
     link: '/admin/account-settings/devices',
     icon: 'DevicePhoneMobileIcon',

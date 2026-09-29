@@ -49,3 +49,8 @@ Schedule::command('recurring-costs:generate')
 Schedule::command('mcp:prune')
     ->daily()
     ->when($installed);
+
+// Old notices in the bell: read ones after 90 days, unread ones after 180.
+Schedule::command('notifications:prune')
+    ->daily()
+    ->when($installed);
