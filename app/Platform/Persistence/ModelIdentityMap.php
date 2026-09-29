@@ -46,6 +46,8 @@ use App\Domains\Sales\Models\InvoiceReminder;
 use App\Domains\Sales\Models\RecurringInvoice;
 use App\Domains\Taxation\Models\Tax;
 use App\Domains\Taxation\Models\TaxType;
+use App\Platform\Announcements\Models\Announcement;
+use App\Platform\Announcements\Models\AnnouncementDismissal;
 use App\Platform\Mail\Models\EmailLog;
 use App\Platform\Mcp\Models\McpActivity;
 use App\Platform\Mcp\Models\McpConnection;
@@ -119,6 +121,8 @@ final class ModelIdentityMap
             'recurring_cost' => RecurringCost::class,
             'recurrence_occurrence' => RecurrenceOccurrence::class,
             'invoice_reminder' => InvoiceReminder::class,
+            'announcement' => Announcement::class,
+            'announcement_dismissal' => AnnouncementDismissal::class,
             'bill_item' => BillItem::class,
             'supplier_credit_item' => SupplierCreditItem::class,
             'supplier_payment_allocation' => SupplierPaymentAllocation::class,

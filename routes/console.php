@@ -57,6 +57,12 @@ Schedule::command('mcp:prune')
     ->daily()
     ->when($installed);
 
+// Announcements from the InvoiceShelf project (config invoiceshelf.announcements.feed).
+Schedule::command('announcements:sync')
+    ->hourly()
+    ->withoutOverlapping()
+    ->when($installed);
+
 // Old notices in the bell: read ones after 90 days, unread ones after 180.
 Schedule::command('notifications:prune')
     ->daily()

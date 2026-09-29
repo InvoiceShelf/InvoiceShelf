@@ -1,8 +1,10 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { inboxService } from '@/scripts/api/services/inbox.service'
+import { announcementService } from '@/scripts/api/services/announcement.service'
 import { handleApiError } from '@/scripts/utils/error-handling'
 import type { InboxNotice } from '@/scripts/types/domain/inbox'
+import type { ActiveAnnouncement } from '@/scripts/types/domain/announcement'
 
 /** How many notices the bell's panel shows. */
 const RECENT_LIMIT = 8
@@ -19,6 +21,22 @@ export const useInboxStore = defineStore('inbox', () => {
   const recent = ref<InboxNotice[]>([])
   const recentLoaded = ref<boolean>(false)
   const loadingRecent = ref<boolean>(false)
+  /** Announcements for the whole install, from bootstrap; pinned in the bell */
+  const announcements = ref<ActiveAnnouncement[]>([])
+
+  function setAnnouncements(list: ActiveAnnouncement[]): void {
+    announcements.value = list
+  }
+
+  /** Put one away for this user; it stays away until it is changed. */
+  async function dismissAnnouncement(id: number): Promise<void> {
+    announcements.value = announcements.value.filter((a) => a.id !== id)
+    try {
+      await announcementService.dismiss(id)
+    } catch (err: unknown) {
+      handleApiError(err)
+    }
+  }
 
   /**
    * Re-read the unread count. A count that moved means new notices, so the
@@ -107,6 +125,9 @@ export const useInboxStore = defineStore('inbox', () => {
   return {
     unreadCount,
     recent,
+    announcements,
+    setAnnouncements,
+    dismissAnnouncement,
     recentLoaded,
     loadingRecent,
     refreshCount,

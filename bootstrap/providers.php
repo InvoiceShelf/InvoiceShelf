@@ -10,6 +10,7 @@ use App\Domains\Receivables\ReceivablesServiceProvider;
 use App\Domains\Reporting\ReportingServiceProvider;
 use App\Domains\Sales\SalesServiceProvider;
 use App\Domains\Taxation\TaxationServiceProvider;
+use App\Platform\Announcements\AnnouncementsServiceProvider;
 use App\Platform\Mail\MailServiceProvider;
 use App\Platform\Mcp\McpServiceProvider;
 use App\Platform\Modules\ModuleServiceProvider;
@@ -45,5 +46,6 @@ return [
     ModuleServiceProvider::class,
     McpServiceProvider::class,
     NotificationsServiceProvider::class,
+    AnnouncementsServiceProvider::class,
     ScrambleServiceProvider::class,
 ];

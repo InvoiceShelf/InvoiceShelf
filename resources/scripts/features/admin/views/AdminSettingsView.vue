@@ -113,6 +113,11 @@ const allMenuItems = computed<SettingsMenuItem[]>(() => [
     icon: 'UserGroupIcon',
   },
   {
+    title: t('announcements.title'),
+    link: '/admin/administration/settings/announcements',
+    icon: 'MegaphoneIcon',
+  },
+  {
     title: t('settings.menu_title.update_app'),
     link: '/admin/administration/settings/update-app',
     managedHidden: true,
