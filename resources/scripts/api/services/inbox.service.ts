@@ -2,6 +2,7 @@ import { client } from '../client'
 import { API } from '../endpoints'
 import type { ApiResponse } from '@/scripts/types/api'
 import type {
+  CompanyNotificationDefault,
   InboxNotice,
   InboxPage,
   NotificationPreference,
@@ -57,12 +58,30 @@ export const inboxService = {
     return data.data
   },
 
+  /** A null channel goes back to the company's default. */
   async updatePreferences(
-    preferences: Record<string, { bell?: boolean; mail?: boolean }>,
+    preferences: Record<string, { bell?: boolean | null; mail?: boolean | null }>,
   ): Promise<NotificationPreference[]> {
     const { data } = await client.put<ApiResponse<NotificationPreference[]>>(
       API.NOTIFICATION_PREFERENCES,
       { preferences },
+    )
+    return data.data
+  },
+
+  async companyDefaults(): Promise<CompanyNotificationDefault[]> {
+    const { data } = await client.get<ApiResponse<CompanyNotificationDefault[]>>(
+      API.COMPANY_NOTIFICATION_DEFAULTS,
+    )
+    return data.data
+  },
+
+  async updateCompanyDefaults(
+    defaults: Record<string, { enabled?: boolean; bell?: boolean; mail?: boolean }>,
+  ): Promise<CompanyNotificationDefault[]> {
+    const { data } = await client.put<ApiResponse<CompanyNotificationDefault[]>>(
+      API.COMPANY_NOTIFICATION_DEFAULTS,
+      { defaults },
     )
     return data.data
   },

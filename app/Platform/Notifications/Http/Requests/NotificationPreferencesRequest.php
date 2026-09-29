@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 
 /**
  * A person's choices, as `{type: {bell, mail}}` for the types they changed.
+ * A null channel goes back to the company's default.
  */
 class NotificationPreferencesRequest extends FormRequest
 {
@@ -26,8 +27,8 @@ class NotificationPreferencesRequest extends FormRequest
         return [
             'preferences' => ['required', 'array'],
             'preferences.*' => ['array:bell,mail'],
-            'preferences.*.bell' => ['sometimes', 'boolean'],
-            'preferences.*.mail' => ['sometimes', 'boolean'],
+            'preferences.*.bell' => ['sometimes', 'nullable', 'boolean'],
+            'preferences.*.mail' => ['sometimes', 'nullable', 'boolean'],
             'keys' => ['nullable', 'array'],
             'keys.*' => [Rule::in($types)],
         ];
@@ -42,12 +43,12 @@ class NotificationPreferencesRequest extends FormRequest
     }
 
     /**
-     * @return array<string, array{bell?: bool, mail?: bool}>
+     * @return array<string, array{bell?: bool|null, mail?: bool|null}>
      */
     public function choices(): array
     {
         return array_map(
-            fn (array $choice): array => array_map('boolval', $choice),
+            fn (array $choice): array => array_map(fn (mixed $value): ?bool => $value === null ? null : (bool) $value, $choice),
             (array) $this->validated('preferences'),
         );
     }
