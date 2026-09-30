@@ -46,6 +46,26 @@ class UserResource extends JsonResource
             'is_owner' => $user->isOwner(),
             'is_super_admin' => $user->isSuperAdmin(),
             'roles' => $user->roles,
+            'role_labels' => $this->when(
+                array_key_exists('role_labels', $user->getAttributes()),
+                fn () => $user->getAttribute('role_labels') ?? []
+            ),
+            'global_role_keys' => $this->when(
+                $user->relationLoaded('globalRolePresets'),
+                fn () => $user->globalRolePresets->pluck('key')->values()
+            ),
+            'global_roles' => $this->when(
+                $user->relationLoaded('globalRolePresets'),
+                fn () => RolePresetResource::collection($user->globalRolePresets)
+            ),
+            'restricted_company_ids' => $this->when(
+                $user->relationLoaded('restrictedCompanies'),
+                fn () => $user->restrictedCompanies->pluck('id')->values()
+            ),
+            'restricted_companies' => $this->when(
+                $user->relationLoaded('restrictedCompanies'),
+                fn () => CompanyResource::collection($user->restrictedCompanies)
+            ),
             'formatted_created_at' => $user->formattedCreatedAt,
             'currency' => $this->when(
                 $user->currency()->exists(),

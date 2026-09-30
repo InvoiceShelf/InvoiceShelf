@@ -3,6 +3,7 @@
 namespace App\Domains\Accounts\Http\Controllers\Company;
 
 use App\Domains\Accounts\Application\MemberVisibleSettings;
+use App\Domains\Accounts\Application\UserCompanyAccessService;
 use App\Domains\Accounts\Http\Requests\GetSettingsRequest;
 use App\Domains\Accounts\Http\Requests\UpdateSettingsRequest;
 use App\Domains\Accounts\Models\Company;
@@ -12,7 +13,7 @@ use App\Platform\Http\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Silber\Bouncer\BouncerFacade;
+use Illuminate\Support\Facades\DB;
 
 /**
  * The preference store of the company named by the request header, plus the
@@ -25,7 +26,10 @@ use Silber\Bouncer\BouncerFacade;
  */
 class CompanySettingsController extends Controller
 {
-    public function __construct(private readonly MemberVisibleSettings $memberVisibleSettings) {}
+    public function __construct(
+        private readonly MemberVisibleSettings $memberVisibleSettings,
+        private readonly UserCompanyAccessService $companyAccess,
+    ) {}
 
     /**
      * The named preferences of the active company.
@@ -96,10 +100,8 @@ class CompanySettingsController extends Controller
      *
      * The target has to be a member already; a stranger is turned away with a
      * 200 carrying `success: false`, in the same shape as the currency guard.
-     * On success the owner column moves and the target's roles in this company
-     * are replaced by `owner` alone. Nothing is taken away from the outgoing
-     * owner beyond the column itself — their role assignments stay, and with
-     * them everything those roles allow.
+     * On success the owner column moves, the target keeps every existing role
+     * and gains Owner, and the outgoing owner loses only the Owner role.
      */
     public function transferOwnership(Request $request, User $user): JsonResponse
     {
@@ -107,17 +109,26 @@ class CompanySettingsController extends Controller
 
         $this->authorize('transfer company ownership', $company);
 
-        if (! $user->hasCompany($company->id)) {
+        if (! $user->belongsToCompany($company->id)) {
             return response()->json([
                 'success' => false,
                 'message' => 'User does not belong to this company.',
             ]);
         }
 
-        $company->update(['owner_id' => $user->id]);
+        $previousOwner = $company->owner_id === null
+            ? null
+            : User::query()->find($company->owner_id);
 
-        BouncerFacade::scope()->to($company->id);
-        BouncerFacade::sync($user)->roles(['owner']);
+        DB::transaction(function () use ($company, $user, $previousOwner): void {
+            $company->update(['owner_id' => $user->id]);
+
+            if ($previousOwner !== null && $previousOwner->isNot($user)) {
+                $this->companyAccess->removeCompanyRole($previousOwner, (int) $company->id, 'owner');
+            }
+
+            $this->companyAccess->ensureCompanyRole($user, (int) $company->id, 'owner');
+        });
 
         return response()->json([
             'success' => true,

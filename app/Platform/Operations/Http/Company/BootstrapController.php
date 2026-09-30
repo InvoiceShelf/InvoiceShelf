@@ -3,6 +3,7 @@
 namespace App\Platform\Operations\Http\Company;
 
 use App\Domains\Accounts\Application\MemberVisibleSettings;
+use App\Domains\Accounts\Application\UserCompanyAccessService;
 use App\Domains\Accounts\Http\Resources\CompanyInvitationResource;
 use App\Domains\Accounts\Http\Resources\CompanyResource;
 use App\Domains\Accounts\Http\Resources\UserResource;
@@ -34,7 +35,10 @@ class BootstrapController extends Controller
      * Every member gets this payload, so it carries no credentials; see
      * MemberVisibleSettings and Setting::SHELL_SETTINGS.
      */
-    public function __construct(private readonly MemberVisibleSettings $memberVisibleSettings) {}
+    public function __construct(
+        private readonly MemberVisibleSettings $memberVisibleSettings,
+        private readonly UserCompanyAccessService $companyAccess,
+    ) {}
 
     /**
      * Handle the incoming request.
@@ -44,7 +48,7 @@ class BootstrapController extends Controller
     public function __invoke(Request $request)
     {
         $user = $request->user();
-        $memberships = $user->companies;
+        $memberships = $this->companyAccess->accessibleCompanies($user);
 
         if ($user->isSuperAdmin() && $request->has('admin_mode')) {
             return response()->json($this->administrationView($user, $memberships));
@@ -120,8 +124,11 @@ class BootstrapController extends Controller
         // the same company the payload does.
         $request->headers->set('company', (string) $company->id);
 
-        // Both menus are resolved against the abilities Bouncer has cached so
-        // far, i.e. before the refresh further down. Keep that order.
+        // Global preset assignments are stored as unscoped Bouncer roles. A
+        // user may have been assigned one since their last authorization
+        // lookup, so refresh before filtering either menu or abilities.
+        BouncerFacade::refreshFor($user);
+
         $mainMenu = $this->mainMenuWithModules($user);
         $settingMenu = $this->generateMenu('setting_menu', $user);
 
@@ -132,8 +139,6 @@ class BootstrapController extends Controller
         $currency = $companySettings->has('currency')
             ? Currency::find($companySettings->get('currency'))
             : Currency::first();
-
-        BouncerFacade::refreshFor($user);
 
         return array_merge($this->envelope($user, $currency), [
             'current_user_abilities' => $user->getAbilities(),
@@ -155,11 +160,11 @@ class BootstrapController extends Controller
     {
         $requested = Company::find($request->header('company'));
 
-        if ($requested && $user->hasCompany($requested->id)) {
+        if ($requested && $this->companyAccess->canAccessCompany($user, $requested)) {
             return $requested;
         }
 
-        return $user->companies()->first();
+        return $this->companyAccess->firstAccessibleCompany($user);
     }
 
     /**
@@ -171,6 +176,10 @@ class BootstrapController extends Controller
         $menu = $this->generateMenu('main_menu', $user);
 
         foreach (ModuleRegistry::allMenu() as $slug => $entry) {
+            if (! $this->canSeeModuleMenuEntry($user, $entry)) {
+                continue;
+            }
+
             $menu[] = [
                 'title' => __($entry['title']),
                 'link' => $entry['link'],
@@ -183,6 +192,17 @@ class BootstrapController extends Controller
         }
 
         return $menu;
+    }
+
+    /**
+     * Module-owned routes enforce their own ability in the SPA. Keep the
+     * sidebar from advertising pages the same user cannot open.
+     */
+    private function canSeeModuleMenuEntry($user, array $entry): bool
+    {
+        $ability = $entry['ability'] ?? null;
+
+        return ! is_string($ability) || $ability === '' || $user->can($ability);
     }
 
     /**

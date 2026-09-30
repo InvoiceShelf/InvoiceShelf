@@ -3,6 +3,7 @@
 use App\Domains\Accounts\Application\CompanyService;
 use App\Domains\Accounts\Application\RoleGrantWriter;
 use App\Domains\Accounts\Application\RolePresetService;
+use App\Domains\Accounts\Application\UserCompanyAccessService;
 use App\Domains\Accounts\Contracts\AbilityCatalog;
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\CompanyInvitation;
@@ -89,6 +90,29 @@ test('a new company gets Owner, Manager and Read only with their exact abilities
         ->not->toContain('create-custom-field', 'edit-exchange-rate-provider')
         ->and(heldAbilities($readOnly))->toHaveCount(19)
         ->and(collect(heldAbilities($readOnly))->every(fn ($a) => str_starts_with($a, 'view-') || $a === 'dashboard'))->toBeTrue();
+});
+
+test('the global access migration preserves the original preset definitions', function () {
+    $manager = RolePreset::query()->where('key', 'manager')->firstOrFail();
+    $readOnly = RolePreset::query()->where('key', 'read-only')->firstOrFail();
+    $managerCopy = presetCopy($this->company, 'preset:manager');
+    $readOnlyCopy = presetCopy($this->company, 'preset:read-only');
+    $managerSnapshot = [$manager->title, $manager->abilities, heldAbilities($managerCopy)];
+    $readOnlySnapshot = [$readOnly->title, $readOnly->abilities, heldAbilities($readOnlyCopy)];
+
+    $migration = require database_path('migrations/2026_09_30_000001_add_global_role_access.php');
+    $migration->up();
+
+    expect([
+        $manager->refresh()->title,
+        $manager->abilities,
+        heldAbilities(presetCopy($this->company, 'preset:manager')),
+    ])->toBe($managerSnapshot)
+        ->and([
+            $readOnly->refresh()->title,
+            $readOnly->abilities,
+            heldAbilities(presetCopy($this->company, 'preset:read-only')),
+        ])->toBe($readOnlySnapshot);
 });
 
 test('syncing again changes nothing', function () {
@@ -289,6 +313,68 @@ test('the repair command restores a deleted copy and a revoked grant', function 
         ->and(presetCopy($this->company, 'preset:manager'))->not->toBeNull();
 
     $this->artisan('roles:sync-presets', ['--company' => 999999])->assertFailed();
+});
+
+test('the repair command restores revoked grants on a global preset role', function () {
+    $other = presetCompany();
+    $user = User::factory()->create(['role' => 'user']);
+    app(UserCompanyAccessService::class)
+        ->syncUserAccess($user, ['manager'], []);
+
+    $globalRole = Role::query()->withoutGlobalScopes()
+        ->where('name', 'global:preset:manager')
+        ->whereNull('scope')
+        ->firstOrFail();
+
+    $invoiceAbility = DB::table('abilities')
+        ->where('name', 'view-invoice')
+        ->where('entity_type', (new Invoice)->getMorphClass())
+        ->whereNull('entity_id')
+        ->whereNull('scope')
+        ->value('id');
+
+    expect($invoiceAbility)->not->toBeNull()
+        ->and(DB::table('permissions')
+            ->join('abilities', 'abilities.id', '=', 'permissions.ability_id')
+            ->where('permissions.entity_type', $globalRole->getMorphClass())
+            ->where('permissions.entity_id', $globalRole->id)
+            ->whereNotNull('abilities.scope')
+            ->count())->toBe(0);
+
+    DB::table('permissions')
+        ->where('entity_type', $globalRole->getMorphClass())
+        ->where('entity_id', $globalRole->id)
+        ->where('ability_id', $invoiceAbility)
+        ->whereNull('scope')
+        ->delete();
+
+    expect(BouncerFacade::scope()->onceTo($other->id,
+        fn () => $globalRole->fresh()->getAbilities()->pluck('name')->all()
+    ))->not->toContain('view-invoice');
+
+    $this->artisan('roles:sync-presets')->assertSuccessful();
+
+    expect(BouncerFacade::scope()->onceTo($other->id,
+        fn () => $globalRole->fresh()->getAbilities()->pluck('name')->all()
+    ))->toContain('view-invoice');
+});
+
+test('removing a global preset assignment removes its unscoped bouncer role', function () {
+    $user = User::factory()->create(['role' => 'user']);
+    $access = app(UserCompanyAccessService::class);
+
+    $access->syncUserAccess($user, ['manager'], []);
+    expect(Role::query()->withoutGlobalScopes()
+        ->whereNull('scope')
+        ->where('name', 'global:preset:manager')
+        ->exists())->toBeTrue();
+
+    $access->syncUserAccess($user, [], []);
+
+    expect(Role::query()->withoutGlobalScopes()
+        ->whereNull('scope')
+        ->where('name', 'global:preset:manager')
+        ->exists())->toBeFalse();
 });
 
 test('the upgrade gives existing companies the presets and leaves their own roles alone', function () {

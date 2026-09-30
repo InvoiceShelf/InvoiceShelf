@@ -99,11 +99,22 @@
 
         <template #cell-role="{ row }">
           <span
+            v-if="row.data.is_super_admin || (row.data.role === 'admin' && !row.data.role_labels?.length)"
             class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
             :class="getRoleBadgeClass(row.data.role)"
           >
             {{ row.data.role }}
           </span>
+          <div v-else-if="row.data.role_labels?.length" class="flex flex-wrap gap-1">
+            <span
+              v-for="label in row.data.role_labels"
+              :key="label"
+              class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-surface-tertiary text-body"
+            >
+              {{ label }}
+            </span>
+          </div>
+          <span v-else class="text-subtle">-</span>
         </template>
 
         <template #cell-companies="{ row }">

@@ -18,6 +18,8 @@ export interface Company {
   address?: Address
   owner?: User
   user_role?: string | null
+  /** Whether direct company roles are combined with the user's global roles. */
+  include_global_roles?: boolean
   /** Answers to the company's own custom fields, when it has any. */
   fields?: CustomFieldValue[]
 }
@@ -34,11 +36,13 @@ export interface CompanyInvitation {
   company_id: number
   email: string
   token: string
+  role_ids?: number[]
   status: CompanyInvitationStatus
   expires_at: string
   created_at: string
   company?: Company
   role?: Role
+  roles?: Role[]
   invited_by?: User
 }
 

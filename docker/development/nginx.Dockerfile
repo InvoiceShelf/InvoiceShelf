@@ -7,6 +7,7 @@ FROM nginx AS production
     ENV PHP_FPM_HOST="php-fpm:9000"
     COPY --chown=www-data:www-data . /var/www/html
     COPY --from=static_builder --chown=www-data:www-data /var/www/html/public /var/www/html/public
+    RUN rm -f /etc/nginx/conf.d/default.conf
     # Map the PHP-FPM host from the PHP_FPM_HOST environment variable to an nging variable
     RUN mkdir /etc/nginx/templates && cat <<EOF > /etc/nginx/templates/20-invoiceshelf.conf.template
 server {

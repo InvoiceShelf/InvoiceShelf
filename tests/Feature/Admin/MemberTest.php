@@ -6,6 +6,7 @@ use App\Domains\Accounts\Http\Requests\MemberRequest;
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\User;
 use Laravel\Sanctum\Sanctum;
+use Silber\Bouncer\BouncerFacade;
 
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\postJson;
@@ -138,6 +139,21 @@ test('a member is filed into the caller\'s own company with one of its roles', f
     expect(User::where('email', 'new.member@example.com')->firstOrFail()->hasCompany($own->id))->toBeTrue();
 });
 
+test('a member can be filed with multiple roles', function () {
+    $own = User::where('role', 'super admin')->first()->companies()->first();
+
+    postJson('/api/v1/members', memberPayload([[
+        'id' => $own->id,
+        'roles' => ['preset:manager', 'preset:read-only'],
+    ]]))->assertCreated();
+
+    $member = User::where('email', 'new.member@example.com')->firstOrFail();
+
+    expect($member->getRoles()->pluck('name')->all())->toBe([]);
+    expect(BouncerFacade::scope()->onceTo($own->id, fn () => $member->fresh()->getRoles()->all()))
+        ->toEqualCanonicalizing(['preset:manager', 'preset:read-only']);
+});
+
 test('a role must exist in the company it is granted in', function () {
     $own = User::where('role', 'super admin')->first()->companies()->first();
 
@@ -162,7 +178,8 @@ test('an edit leaves a member\'s other companies alone', function () {
     $own = User::where('role', 'super admin')->first()->companies()->first();
     $foreign = foreignCompany();
     $member = User::factory()->create(['role' => 'user']);
-    $member->companies()->attach([$own->id, $foreign->id]);
+    $member->companies()->attach($own->id, ['include_global_roles' => true]);
+    $member->companies()->attach($foreign->id, ['include_global_roles' => true]);
 
     putJson("/api/v1/members/{$member->id}", memberPayload(
         [['id' => $own->id, 'role' => 'owner']],
@@ -170,7 +187,9 @@ test('an edit leaves a member\'s other companies alone', function () {
     ))->assertOk();
 
     expect($member->fresh()->name)->toBe('Renamed')
-        ->and($member->fresh()->hasCompany($foreign->id))->toBeTrue();
+        ->and($member->fresh()->hasCompany($foreign->id))->toBeTrue()
+        ->and($member->fresh()->companies()->where('companies.id', $own->id)->firstOrFail()->pivot->include_global_roles)->toBe(1)
+        ->and($member->fresh()->companies()->where('companies.id', $foreign->id)->firstOrFail()->pivot->include_global_roles)->toBe(1);
 });
 
 test('the credentials of a member who belongs elsewhere too cannot be changed', function () {

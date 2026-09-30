@@ -40,7 +40,7 @@ class CompanyInvitationMail extends Mailable
             with: [
                 'invitation' => $this->invitation,
                 'companyName' => $this->invitation->company->name,
-                'roleName' => $this->invitation->role->title,
+                'roleName' => $this->invitation->roleNames(),
                 'inviterName' => $this->invitation->invitedBy->name,
                 'acceptUrl' => $acceptUrl,
                 'declineUrl' => url("/invitations/{$token}/decline"),

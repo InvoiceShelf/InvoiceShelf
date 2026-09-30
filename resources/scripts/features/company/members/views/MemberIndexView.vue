@@ -10,6 +10,7 @@ import { useNotificationStore } from '../../../../stores/notification.store'
 import MemberDropdown from '../components/MemberDropdown.vue'
 import InviteMemberModal from '../components/InviteMemberModal.vue'
 import AddMemberModal from '../components/AddMemberModal.vue'
+import type { Role } from '../../../../types/domain/role'
 
 type TableColumn = Omit<ColumnDef, 'label'> & { label?: string }
 
@@ -139,7 +140,7 @@ async function fetchData({ page, sort }: FetchParams): Promise<FetchResult> {
     email: filters.email,
     role: filters.role || undefined,
     orderByField: sort.fieldName || 'created_at',
-    orderBy: sort.order || 'desc',
+    orderBy: sort.order === 'asc' ? 'asc' : 'desc',
     page,
   }
 
@@ -368,7 +369,7 @@ function removeMultipleUsers(): void {
         </template>
 
         <template #cell-role="{ row }">
-          <span>{{ row.data.roles?.length ? row.data.roles[0].title : '-' }}</span>
+          <span>{{ row.data.roles?.length ? row.data.roles.map((role: Role) => role.title).join(', ') : '-' }}</span>
         </template>
 
         <template #cell-created_at="{ row }">
@@ -404,7 +405,7 @@ function removeMultipleUsers(): void {
                 {{ invitation.email }}
               </p>
               <p class="text-sm text-muted">
-                {{ invitation.role?.title }} &middot;
+                {{ invitation.roles?.length ? invitation.roles.map((role: Role) => role.title).join(', ') : invitation.role?.title }} &middot;
                 {{ $t('members.invited_by') }}: {{ invitation.invited_by?.name }}
               </p>
             </div>

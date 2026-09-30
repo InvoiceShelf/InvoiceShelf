@@ -4,6 +4,7 @@ use App\Domains\Accounts\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use InvoiceShelf\Modules\Registry;
 use Laravel\Sanctum\Sanctum;
+use Silber\Bouncer\BouncerFacade;
 
 use function Pest\Laravel\getJson;
 
@@ -58,6 +59,34 @@ test('module items support custom group and priority', function () {
 
     expect($moduleItem['group'])->toBe('documents');
     expect($moduleItem['priority'])->toBe(25);
+});
+
+test('module items with an ability are hidden until the user can open the route', function () {
+    $company = User::findOrFail(1)->companies()->firstOrFail();
+    $user = User::factory()->create(['role' => 'user']);
+    $user->companies()->attach($company->id);
+    Sanctum::actingAs($user, ['*']);
+
+    Registry::registerMenu('sales-tax-us', [
+        'title' => 'sales_tax_us::menu.title',
+        'link' => '/admin/modules/sales-tax-us',
+        'icon' => 'CalculatorIcon',
+        'ability' => 'sales-tax-us:view',
+    ]);
+
+    $withoutAbility = collect(getJson('api/v1/bootstrap')->assertOk()->json('main_menu'));
+
+    expect($withoutAbility->firstWhere('name', 'module-sales-tax-us'))->toBeNull();
+
+    BouncerFacade::scope()->onceTo(
+        $company->id,
+        fn () => BouncerFacade::allow($user)->to('sales-tax-us:view')
+    );
+    BouncerFacade::refreshFor($user);
+
+    $withAbility = collect(getJson('api/v1/bootstrap')->assertOk()->json('main_menu'));
+
+    expect($withAbility->firstWhere('name', 'module-sales-tax-us'))->not->toBeNull();
 });
 
 test('bootstrap has no module items when nothing is registered', function () {

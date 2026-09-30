@@ -17,7 +17,7 @@ interface Emits {
 
 interface InviteForm {
   email: string
-  role_id: number | null
+  role_ids: number[]
 }
 
 withDefaults(defineProps<Props>(), {
@@ -33,7 +33,7 @@ const roles = ref<Role[]>([])
 
 const form = reactive<InviteForm>({
   email: '',
-  role_id: null,
+  role_ids: [],
 })
 
 const rules = computed(() => ({
@@ -41,7 +41,7 @@ const rules = computed(() => ({
     required: helpers.withMessage(t('validation.required'), required),
     email: helpers.withMessage(t('validation.email_incorrect'), email),
   },
-  role_id: {
+  role_ids: {
     required: helpers.withMessage(t('validation.required'), required),
   },
 }))
@@ -64,10 +64,10 @@ async function submitInvitation(): Promise<void> {
   try {
     await memberStore.inviteMember({
       email: form.email,
-      role_id: form.role_id,
+      role_ids: form.role_ids,
     })
     form.email = ''
-    form.role_id = null
+    form.role_ids = []
     v$.value.$reset()
     emit('close')
   } catch {
@@ -101,15 +101,16 @@ async function submitInvitation(): Promise<void> {
 
         <BaseInputGroup
           :label="$t('members.role')"
-          :error="v$.role_id.$error && v$.role_id.$errors[0]?.$message"
+          :error="v$.role_ids.$error && v$.role_ids.$errors[0]?.$message"
           required
         >
           <BaseMultiselect
-            v-model="form.role_id"
+            v-model="form.role_ids"
             :options="roles"
             label="title"
             value-prop="id"
             track-by="title"
+            mode="tags"
             :searchable="true"
           />
         </BaseInputGroup>

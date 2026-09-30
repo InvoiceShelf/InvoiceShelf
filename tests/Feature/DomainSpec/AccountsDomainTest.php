@@ -50,12 +50,28 @@ it('provisions a new company with the documented defaults', function () {
 
 it('flips owner-only authorization when ownership is transferred', function () {
     postJson('/api/v1/members', ['name' => 'Heir', 'email' => 'heir@x.test', 'password' => 'secret123',
-        'companies' => [['id' => $this->companyId, 'role' => 'owner']]])->assertSuccessful();
+        'companies' => [['id' => $this->companyId, 'roles' => ['owner', 'preset:read-only']]]])->assertSuccessful();
     $heir = User::where('email', 'heir@x.test')->first();
 
     postJson('/api/v1/company/settings', ['settings' => ['language' => 'de']])->assertOk();
 
     postJson("/api/v1/transfer/ownership/{$heir->id}")->assertOk()->assertJson(['success' => true]);
+
+    expect(DB::table('assigned_roles')
+        ->join('roles', 'roles.id', '=', 'assigned_roles.role_id')
+        ->where('assigned_roles.entity_id', $heir->id)
+        ->where('assigned_roles.entity_type', $heir->getMorphClass())
+        ->where('assigned_roles.scope', $this->companyId)
+        ->pluck('roles.name')
+        ->all())->toEqualCanonicalizing(['owner', 'preset:read-only']);
+
+    expect(DB::table('assigned_roles')
+        ->join('roles', 'roles.id', '=', 'assigned_roles.role_id')
+        ->where('assigned_roles.entity_id', $this->owner->id)
+        ->where('assigned_roles.entity_type', $this->owner->getMorphClass())
+        ->where('assigned_roles.scope', $this->companyId)
+        ->pluck('roles.name')
+        ->all())->not->toContain('owner');
 
     app('auth')->forgetGuards();
     Sanctum::actingAs($this->owner->fresh(), ['*']);
