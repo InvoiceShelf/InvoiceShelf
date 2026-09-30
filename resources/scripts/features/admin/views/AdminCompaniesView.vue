@@ -12,6 +12,13 @@
 
       <template #actions>
         <div class="flex items-center justify-end space-x-5">
+          <BaseButton type="button" @click="openCreateCompanyModal">
+            <template #left="slotProps">
+              <BaseIcon name="PlusIcon" :class="slotProps.class" />
+            </template>
+            {{ $t('company_switcher.add_new_company') }}
+          </BaseButton>
+
           <BaseButton
             variant="primary-outline"
             :aria-expanded="showFilters"
@@ -98,6 +105,7 @@ import type { ColumnDef } from '@/scripts/components/table/DataTable.vue'
 import { computed, ref, reactive, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAdminStore } from '../stores/admin.store'
+import { useModalStore } from '@/scripts/stores/modal.store'
 import AdminCompanyDropdown from '../components/AdminCompanyDropdown.vue'
 import type { Company } from '../../../types/domain/company'
 
@@ -120,6 +128,7 @@ interface TableResult {
 }
 
 const adminStore = useAdminStore()
+const modalStore = useModalStore()
 const { t } = useI18n()
 
 const showFilters = ref<boolean>(false)
@@ -212,5 +221,13 @@ function toggleFilter(): void {
     clearFilter()
   }
   showFilters.value = !showFilters.value
+}
+
+function openCreateCompanyModal(): void {
+  modalStore.openModal({
+    title: t('company_switcher.new_company'),
+    componentName: 'CompanyModal',
+    size: 'sm',
+  })
 }
 </script>

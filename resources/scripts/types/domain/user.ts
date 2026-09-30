@@ -1,7 +1,7 @@
 import type { CustomFieldValue } from './custom-field'
 import type { Currency } from './currency'
 import type { Company } from './company'
-import type { Role } from './role'
+import type { Role, RolePreset } from './role'
 import type { Country } from './customer'
 
 export interface Address {
@@ -48,6 +48,12 @@ export interface User {
   is_owner: boolean
   is_super_admin: boolean
   roles: Role[]
+  /** Readable titles of direct and global roles, when supplied by Administration. */
+  role_labels?: string[]
+  global_role_keys?: string[]
+  global_roles?: RolePreset[]
+  restricted_company_ids?: number[]
+  restricted_companies?: Company[]
   formatted_created_at: string
   currency?: Currency
   companies?: Company[]

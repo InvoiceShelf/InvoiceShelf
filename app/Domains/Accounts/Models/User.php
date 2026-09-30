@@ -2,6 +2,7 @@
 
 namespace App\Domains\Accounts\Models;
 
+use App\Domains\Accounts\Application\UserCompanyAccessService;
 use App\Domains\Accounts\Notifications\MailResetPasswordNotification;
 use App\Domains\Catalog\Models\Item;
 use App\Domains\Contacts\Models\Address;
@@ -121,7 +122,26 @@ class User extends Authenticatable implements HasMedia
      */
     public function companies(): BelongsToMany
     {
-        return $this->belongsToMany(Company::class, 'user_company', 'user_id', 'company_id');
+        return $this->belongsToMany(Company::class, 'user_company', 'user_id', 'company_id')
+            ->withPivot('include_global_roles');
+    }
+
+    /**
+     * Role presets that apply across every non-restricted company.
+     */
+    public function globalRolePresets(): BelongsToMany
+    {
+        return $this->belongsToMany(RolePreset::class, 'user_global_roles', 'user_id', 'role_preset_id')
+            ->withTimestamps();
+    }
+
+    /**
+     * Companies this account is explicitly barred from entering.
+     */
+    public function restrictedCompanies(): BelongsToMany
+    {
+        return $this->belongsToMany(Company::class, 'user_restricted_companies', 'user_id', 'company_id')
+            ->withTimestamps();
     }
 
     /**
@@ -503,7 +523,35 @@ class User extends Authenticatable implements HasMedia
      */
     public function hasCompany(int $company_id): bool
     {
-        return $this->companies()->pluck('company_id')->contains($company_id);
+        // Company-scoped policies use this method for tenant isolation. A
+        // Super Administrator can manage every company from Administration,
+        // but is still not treated as a member of another company's scoped API
+        // context unless the membership row exists.
+        if ($this->isSuperAdmin()) {
+            return $this->belongsToCompany($company_id);
+        }
+
+        if (Schema::hasTable('user_global_roles') && Schema::hasTable('user_restricted_companies')) {
+            return app(UserCompanyAccessService::class)->canAccessCompany($this, $company_id);
+        }
+
+        return $this->belongsToCompany($company_id);
+    }
+
+    /**
+     * Whether this account is directly joined to the given company.
+     */
+    public function belongsToCompany(int $companyId): bool
+    {
+        return $this->companies()->where('companies.id', $companyId)->exists();
+    }
+
+    /**
+     * Whether this account is hard-blocked from the given company.
+     */
+    public function isRestrictedFromCompany(int $companyId): bool
+    {
+        return $this->restrictedCompanies()->where('companies.id', $companyId)->exists();
     }
 
     /**

@@ -52,6 +52,25 @@ test('store company', function () {
     $this->assertDatabaseHas('companies', $company);
 });
 
+test('a super administrator can create a company without an active company header', function () {
+    $this->withoutHeader('company');
+
+    $company = Company::factory()->raw([
+        'currency' => 12,
+        'address' => [
+            'country_id' => 12,
+        ],
+    ]);
+
+    postJson('/api/v1/companies', $company)
+        ->assertCreated();
+
+    $this->assertDatabaseHas('companies', [
+        'name' => $company['name'],
+        'owner_id' => User::find(1)->id,
+    ]);
+});
+
 test('delete company', function () {
     postJson('/api/v1/companies/delete', ['xyz'])
         ->assertStatus(422);

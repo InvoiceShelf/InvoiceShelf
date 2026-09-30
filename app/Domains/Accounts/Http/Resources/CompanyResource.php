@@ -46,7 +46,12 @@ class CompanyResource extends JsonResource
                 $company->relationLoaded('owner'),
                 fn () => new UserResource($company->owner)
             ),
-            'user_role' => $this->assignedRoleTitle(),
+            'user_role' => $this->assignedRoleTitles(),
+            'include_global_roles' => $this->when(
+                $company->pivot !== null
+                    && array_key_exists('include_global_roles', $company->pivot->getAttributes()),
+                fn () => (bool) $company->pivot->include_global_roles
+            ),
             'fields' => $this->when(
                 $this->fields()->exists(),
                 fn () => CustomFieldValueResource::collection($this->fields)
@@ -55,13 +60,14 @@ class CompanyResource extends JsonResource
     }
 
     /**
-     * Title of the role the signed-in account holds inside this company.
+     * Titles of the roles effective for the signed-in account in this company.
      *
-     * Read off the assignment table by company id, so it stays right for a
-     * company other than the active one. Null when nobody is signed in, and
-     * null when the account has no assignment here.
+     * Direct company roles replace global roles unless the membership opts into
+     * combining them. A user with no direct assignment receives the global
+     * preset titles, which keeps the company switcher useful for global-only
+     * access.
      */
-    private function assignedRoleTitle(): ?string
+    private function assignedRoleTitles(): ?string
     {
         $viewer = Auth::user();
 
@@ -69,7 +75,7 @@ class CompanyResource extends JsonResource
             return null;
         }
 
-        return DB::query()
+        $directTitles = DB::query()
             ->from('assigned_roles')
             ->join('roles', 'assigned_roles.role_id', '=', 'roles.id')
             ->where([
@@ -77,6 +83,42 @@ class CompanyResource extends JsonResource
                 ['assigned_roles.entity_id', '=', $viewer->id],
                 ['assigned_roles.scope', '=', $this->id],
             ])
-            ->value('roles.title');
+            ->orderBy('roles.id')
+            ->get(['roles.title', 'roles.name'])
+            ->map(fn (object $role): string => $role->title ?: $role->name)
+            ->filter()
+            ->unique()
+            ->values();
+
+        $includeGlobalRoles = $this->resource->pivot !== null
+            && (bool) $this->resource->pivot->getAttribute('include_global_roles');
+
+        if ($directTitles->isNotEmpty() && $this->resource->pivot === null) {
+            $includeGlobalRoles = (bool) DB::table('user_company')
+                ->where('user_id', $viewer->id)
+                ->where('company_id', $this->id)
+                ->value('include_global_roles');
+        }
+
+        if ($directTitles->isEmpty() || $includeGlobalRoles) {
+            $globalTitles = DB::query()
+                ->from('assigned_roles')
+                ->join('roles', 'assigned_roles.role_id', '=', 'roles.id')
+                ->where([
+                    ['assigned_roles.entity_type', '=', $viewer->getMorphClass()],
+                    ['assigned_roles.entity_id', '=', $viewer->id],
+                ])
+                ->whereNull('assigned_roles.scope')
+                ->where('roles.name', 'like', 'global:preset:%')
+                ->orderBy('roles.id')
+                ->get(['roles.title', 'roles.name'])
+                ->map(fn (object $role): string => $role->title ?: $role->name)
+                ->filter()
+                ->unique();
+
+            $directTitles = $directTitles->concat($globalTitles)->unique()->values();
+        }
+
+        return $directTitles->isNotEmpty() ? $directTitles->implode(', ') : null;
     }
 }

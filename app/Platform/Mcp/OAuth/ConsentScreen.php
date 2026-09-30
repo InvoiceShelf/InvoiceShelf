@@ -2,6 +2,7 @@
 
 namespace App\Platform\Mcp\OAuth;
 
+use App\Domains\Accounts\Application\UserCompanyAccessService;
 use App\Domains\Accounts\Application\UserLocale;
 use App\Domains\Accounts\Models\User;
 use App\Platform\Mcp\Application\ConnectionService;
@@ -24,6 +25,7 @@ class ConsentScreen
 {
     public function __construct(
         private readonly ConnectionService $connections,
+        private readonly UserCompanyAccessService $companyAccess,
     ) {}
 
     /**
@@ -34,12 +36,20 @@ class ConsentScreen
         $client = $parameters['client'];
         $user = $parameters['user'];
 
-        $companies = $user->companies()->orderBy('name')->get(['companies.id', 'companies.name']);
+        $companies = $user->isSuperAdmin()
+            ? $user->companies()->orderBy('name')->get(['companies.id', 'companies.name'])
+            : $this->companyAccess->accessibleCompanies($user);
 
         $existing = McpConnection::query()
             ->where('user_id', $user->id)
             ->where('oauth_client_id', $client->getKey())
             ->first();
+
+        $selectedCompany = old('company_id', $existing?->company_id ?? $companies->first()?->id);
+
+        if (! $companies->contains(fn ($company): bool => (int) $company->id === (int) $selectedCompany)) {
+            $selectedCompany = $companies->first()?->id;
+        }
 
         $locale = UserLocale::for($user, $companies->first()?->id);
 
@@ -49,7 +59,7 @@ class ConsentScreen
             'redirectHost' => $this->connections->redirectHost($client) ?? '',
             'email' => $user->email,
             'companies' => $companies,
-            'selectedCompany' => old('company_id', $existing?->company_id ?? $companies->first()?->id),
+            'selectedCompany' => $selectedCompany,
             'selectedAccess' => old('access', $existing?->access ?? McpConnection::ACCESS_READ),
             'state' => $parameters['request']->input('state'),
             'authToken' => $parameters['authToken'],

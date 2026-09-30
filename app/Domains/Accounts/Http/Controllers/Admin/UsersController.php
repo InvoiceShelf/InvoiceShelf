@@ -3,6 +3,7 @@
 namespace App\Domains\Accounts\Http\Controllers\Admin;
 
 use App\Domains\Accounts\Application\MemberService;
+use App\Domains\Accounts\Application\UserCompanyAccessService;
 use App\Domains\Accounts\Http\Requests\AdminUserRequest;
 use App\Domains\Accounts\Http\Resources\UserResource;
 use App\Domains\Accounts\Models\ImpersonationLog;
@@ -14,23 +15,28 @@ use Laravel\Sanctum\PersonalAccessToken;
 
 class UsersController extends Controller
 {
-    public function __construct(private readonly MemberService $members) {}
+    public function __construct(
+        private readonly MemberService $members,
+        private readonly UserCompanyAccessService $companyAccess,
+    ) {}
 
     public function index(Request $request)
     {
         $limit = $request->has('limit') ? $request->limit : 10;
 
-        $users = User::with('companies')
+        $users = User::with(['companies', 'globalRolePresets', 'restrictedCompanies'])
             ->applyFilters($request->all())
             ->latest()
             ->paginate($limit);
+
+        $this->companyAccess->attachRoleLabels($users->getCollection());
 
         return UserResource::collection($users);
     }
 
     public function show(User $user)
     {
-        $user->load('companies');
+        $user->load(['companies', 'globalRolePresets', 'restrictedCompanies']);
 
         return new UserResource($user);
     }
@@ -41,12 +47,18 @@ class UsersController extends Controller
      */
     public function store(AdminUserRequest $request)
     {
-        $user = DB::transaction(fn () => $this->members->create(
-            $request->accountAttributes() + ['creator_id' => $request->user()->id, 'role' => 'user'],
-            $request->validated('companies', []),
-        ));
+        $user = DB::transaction(function () use ($request): User {
+            $attributes = $request->accountAttributes() + ['creator_id' => $request->user()->id, 'role' => 'user'];
 
-        return (new UserResource($user->fresh('companies')))->response()->setStatusCode(201);
+            return $this->members->create(
+                $attributes,
+                $request->willBeSuperAdmin() ? [] : $request->validated('companies', []),
+                $request->willBeSuperAdmin() ? [] : $request->globalRoleKeys() ?? [],
+                $request->willBeSuperAdmin() ? [] : $request->restrictedCompanyIds() ?? [],
+            );
+        });
+
+        return (new UserResource($user->fresh(['companies', 'globalRolePresets', 'restrictedCompanies'])))->response()->setStatusCode(201);
     }
 
     /**
@@ -56,8 +68,17 @@ class UsersController extends Controller
     public function update(AdminUserRequest $request, User $user)
     {
         DB::transaction(function () use ($request, $user): void {
+            $attributes = $request->accountAttributes();
+
+            if ($request->willBeSuperAdmin()) {
+                $user->update($attributes);
+
+                return;
+            }
+
             if (! $request->has('companies')) {
-                $user->update($request->accountAttributes());
+                $user->update($attributes);
+                $this->companyAccess->syncUserAccess($user, $request->globalRoleKeys(), $request->restrictedCompanyIds());
 
                 return;
             }
@@ -70,10 +91,17 @@ class UsersController extends Controller
                 ->values()
                 ->all();
 
-            $this->members->update($user, $request->accountAttributes(), $companies, $managed);
+            $this->members->update(
+                $user,
+                $attributes,
+                $companies,
+                $managed,
+                $request->globalRoleKeys(),
+                $request->restrictedCompanyIds(),
+            );
         });
 
-        return new UserResource($user->fresh('companies'));
+        return new UserResource($user->fresh(['companies', 'globalRolePresets', 'restrictedCompanies']));
     }
 
     public function impersonate(Request $request, User $user)

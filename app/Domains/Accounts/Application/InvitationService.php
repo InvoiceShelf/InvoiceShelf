@@ -9,22 +9,42 @@ use App\Domains\Accounts\Models\User;
 use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
-use Silber\Bouncer\BouncerFacade;
 use Silber\Bouncer\Database\Role;
 
 class InvitationService
 {
     public function __construct(
         private readonly CompanyInvitationSender $companyInvitationSender,
+        private readonly UserCompanyAccessService $companyAccess,
     ) {}
 
     /**
-     * Invite a user to a company by email with a specific role.
+     * Invite a user to a company by email with one or more roles.
      */
-    public function invite(Company $company, string $email, int $roleId, User $invitedBy): CompanyInvitation
+    public function invite(Company $company, string $email, array $roleIds, User $invitedBy): CompanyInvitation
     {
+        $roleIds = collect($roleIds)
+            ->map(fn (mixed $id): int => (int) $id)
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+
+        $roleCount = Role::query()
+            ->withoutGlobalScopes()
+            ->where('scope', $company->id)
+            ->whereIn('id', $roleIds)
+            ->count();
+
+        if ($roleIds === [] || $roleCount !== count($roleIds)) {
+            throw ValidationException::withMessages([
+                'role_ids' => ['Every selected role must belong to this company.'],
+            ]);
+        }
+
         // Check for existing pending invitation
         $existing = CompanyInvitation::where('company_id', $company->id)
             ->where('email', $email)
@@ -39,7 +59,7 @@ class InvitationService
 
         // Check if user is already a member
         $existingUser = User::where('email', $email)->first();
-        if ($existingUser && $existingUser->hasCompany($company->id)) {
+        if ($existingUser && $existingUser->belongsToCompany($company->id)) {
             throw ValidationException::withMessages([
                 'email' => ['This user is already a member of this company.'],
             ]);
@@ -49,7 +69,10 @@ class InvitationService
             'company_id' => $company->id,
             'user_id' => $existingUser?->id,
             'email' => $email,
-            'role_id' => $roleId,
+            // Keep role_id for compatibility with existing records and
+            // readers; role_ids is the complete assignment.
+            'role_id' => $roleIds[0],
+            'role_ids' => $roleIds,
             'token' => Str::random(64),
             'status' => CompanyInvitation::STATUS_PENDING,
             'invited_by' => $invitedBy->id,
@@ -80,19 +103,43 @@ class InvitationService
             ]);
         }
 
-        // Add user to company
-        $user->companies()->attach($invitation->company_id);
+        if ($this->companyAccess->isRestrictedFromCompany($user, (int) $invitation->company_id)) {
+            throw ValidationException::withMessages([
+                'invitation' => ['You cannot accept an invitation to a restricted company.'],
+            ]);
+        }
 
-        // Assign role scoped to the invitation's company
-        $role = Role::withoutGlobalScopes()->find($invitation->role_id);
-        BouncerFacade::scope()->to($invitation->company_id);
-        $user->assign($role->name);
+        // Validate the stored role set before changing the user's membership.
+        $roleIds = collect($invitation->role_ids ?: [$invitation->role_id])
+            ->map(fn (mixed $id): int => (int) $id)
+            ->filter()
+            ->unique()
+            ->values();
+        $roles = Role::withoutGlobalScopes()
+            ->where('scope', $invitation->company_id)
+            ->whereIn('id', $roleIds)
+            ->get();
 
-        // Update invitation
-        $invitation->update([
-            'status' => CompanyInvitation::STATUS_ACCEPTED,
-            'user_id' => $user->id,
-        ]);
+        if ($roleIds->isEmpty() || $roles->count() !== $roleIds->count()) {
+            throw ValidationException::withMessages([
+                'invitation' => ['This invitation contains an invalid company role.'],
+            ]);
+        }
+
+        DB::transaction(function () use ($invitation, $roles, $user): void {
+            // Add user to company and assign every role in that company's scope.
+            $user->companies()->attach($invitation->company_id);
+            $this->companyAccess->replaceCompanyRoles(
+                $user,
+                (int) $invitation->company_id,
+                $roles->pluck('name')->all(),
+            );
+
+            $invitation->update([
+                'status' => CompanyInvitation::STATUS_ACCEPTED,
+                'user_id' => $user->id,
+            ]);
+        });
     }
 
     /**

@@ -133,6 +133,7 @@ import { DialogContent, DialogOverlay, DialogPortal, DialogRoot, DialogTitle } f
 import { keepForeignLayers } from '@/scripts/utils/dialog-layers'
 import { useDebounceFn, useEventListener } from '@vueuse/core'
 import { useRouter } from 'vue-router'
+import type { RouteLocationRaw } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { client } from '@/scripts/api/client'
 import { API } from '@/scripts/api/endpoints'
@@ -152,7 +153,7 @@ interface PaletteItem {
   subtitle?: string
   amount?: number
   currency?: CurrencyConfig | null
-  to: string
+  to: RouteLocationRaw
   index: number
 }
 
@@ -234,8 +235,8 @@ const pages = computed<RawItem[]>(() => {
 })
 
 const actions = computed<RawItem[]>(() => {
-  return createActions.value.map((action) => ({
-    key: `create-${action.to}`,
+  return createActions.value.map((action, index) => ({
+    key: `create-${index}-${typeof action.to === 'string' ? action.to : index}`,
     icon: action.icon,
     title: t(action.label),
     to: action.to,

@@ -55,10 +55,11 @@ export interface UpdateCompanyData {
   }
 }
 
-/** A company a user belongs to, and the role (by name) they hold there. */
+/** A company a user belongs to, and the roles (by name) they hold there. */
 export interface AdminMembership {
   id: number | null
-  role: string | null
+  roles: string[]
+  include_global_roles: boolean
 }
 
 export interface UpdateUserData {
@@ -67,8 +68,10 @@ export interface UpdateUserData {
   phone?: string
   password?: string
   is_super_admin?: boolean
+  global_roles?: string[]
+  restricted_company_ids?: number[]
   /** Sent to replace every membership; left out to keep them as they are. */
-  companies?: Array<{ id: number; role: string }>
+  companies?: Array<{ id: number; roles: string[]; include_global_roles: boolean }>
 }
 
 /** A role a user can be given in one company. */

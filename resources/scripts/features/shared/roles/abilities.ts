@@ -21,7 +21,9 @@ export type Selection = 'all' | 'view' | 'none'
 
 /** Read-only abilities: seeing records, reports and the dashboard. */
 export function isViewAbility(key: string): boolean {
-  return key.startsWith('view-') || key === 'dashboard'
+  const localAbility = key.slice(key.lastIndexOf(':') + 1)
+
+  return localAbility.startsWith('view-') || localAbility === 'view' || key === 'dashboard'
 }
 
 /**

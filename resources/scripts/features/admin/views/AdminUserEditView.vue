@@ -73,7 +73,53 @@
           />
         </div>
 
-        <div class="mt-6 border-t border-line-light pt-6">
+        <div v-if="managesCompanyAccess" class="mt-6 border-t border-line-light pt-6">
+          <h3 class="text-sm font-medium text-heading">
+            {{ $t('administration.users.global_roles_title') }}
+          </h3>
+          <p class="mt-1 mb-4 text-sm text-muted">
+            {{ $t('administration.users.global_roles_description') }}
+          </p>
+          <BaseInputGroup :label="$t('administration.users.global_roles')">
+            <BaseMultiselect
+              v-model="globalRoleKeys"
+              :options="globalRoleOptions"
+              value-prop="key"
+              label="title"
+              track-by="title"
+              mode="tags"
+              searchable
+              :can-clear="true"
+              :can-deselect="true"
+              :placeholder="$t('administration.users.select_global_role')"
+            />
+          </BaseInputGroup>
+        </div>
+
+        <div v-if="managesCompanyAccess" class="mt-6 border-t border-line-light pt-6">
+          <h3 class="text-sm font-medium text-heading">
+            {{ $t('administration.users.restricted_companies_title') }}
+          </h3>
+          <p class="mt-1 mb-4 text-sm text-muted">
+            {{ $t('administration.users.restricted_companies_description') }}
+          </p>
+          <BaseInputGroup :label="$t('administration.users.restricted_companies')">
+            <BaseMultiselect
+              v-model="restrictedCompanyIds"
+              :options="restrictableCompanies"
+              value-prop="id"
+              label="name"
+              track-by="name"
+              mode="tags"
+              searchable
+              :can-clear="true"
+              :can-deselect="true"
+              :placeholder="$t('administration.users.select_restricted_company')"
+            />
+          </BaseInputGroup>
+        </div>
+
+        <div v-if="managesCompanyAccess" class="mt-6 border-t border-line-light pt-6">
           <h3 class="text-sm font-medium text-heading">
             {{ $t('administration.users.companies_title') }}
           </h3>
@@ -82,7 +128,7 @@
           </p>
           <AdminMembershipRows
             v-model="memberships"
-            :companies="companies"
+            :companies="directAssignableCompanies"
             :locked-company-ids="ownedCompanyIds"
           />
         </div>
@@ -121,6 +167,8 @@ import { useUserStore } from '@/scripts/stores/user.store'
 import { useNotificationStore } from '@/scripts/stores/notification.store'
 import { handleApiError } from '@/scripts/utils/error-handling'
 import AdminMembershipRows from '../components/AdminMembershipRows.vue'
+import { rolePresetService } from '@/scripts/api/services/role-preset.service'
+import type { RolePreset } from '@/scripts/types/domain/role'
 
 /**
  * Creates a user or edits one: the account, whether they are a super
@@ -152,8 +200,27 @@ const userId = ref<number | null>(null)
 const companies = ref<Array<{ id: number; name: string }>>([])
 const memberships = ref<AdminMembership[]>([])
 const ownedCompanyIds = ref<number[]>([])
+const rolePresets = ref<RolePreset[]>([])
+const globalRoleKeys = ref<string[]>([])
+const restrictedCompanyIds = ref<number[]>([])
 
 const editingSelf = computed<boolean>(() => userId.value !== null && userId.value === userStore.currentUser?.id)
+const managesCompanyAccess = computed<boolean>(() => !formData.isSuperAdmin)
+const directCompanyIds = computed<Set<number>>(
+  () => new Set(memberships.value.flatMap((row) => (row.id === null ? [] : [row.id])))
+)
+const restrictedCompanySet = computed<Set<number>>(() => new Set(restrictedCompanyIds.value))
+const globalRoleOptions = computed<RolePreset[]>(() => rolePresets.value.filter((preset) => !preset.is_owner))
+const restrictableCompanies = computed<Array<{ id: number; name: string }>>(() =>
+  companies.value.filter(
+    (company) => !directCompanyIds.value.has(company.id) || restrictedCompanySet.value.has(company.id)
+  )
+)
+const directAssignableCompanies = computed<Array<{ id: number; name: string }>>(() =>
+  companies.value.filter(
+    (company) => !restrictedCompanySet.value.has(company.id) || directCompanyIds.value.has(company.id)
+  )
+)
 
 const formData = reactive<UserFormData>({
   name: '',
@@ -189,6 +256,7 @@ onMounted(async () => {
   // Installs have few companies; one generous page keeps the picker local.
   const companyPage = await adminStore.fetchCompanies({ limit: 500, orderByField: 'name', orderBy: 'asc' })
   companies.value = companyPage.data.map((company) => ({ id: company.id, name: company.name }))
+  rolePresets.value = await rolePresetService.list()
 
   if (!isCreate.value) {
     const response = await adminStore.fetchUser(route.params.id as string)
@@ -199,6 +267,8 @@ onMounted(async () => {
     formData.email = user.email
     formData.phone = user.phone ?? ''
     formData.isSuperAdmin = user.is_super_admin
+    globalRoleKeys.value = user.global_role_keys ?? []
+    restrictedCompanyIds.value = user.restricted_company_ids ?? []
 
     const userCompanies = user.companies ?? []
     for (const company of userCompanies) {
@@ -209,7 +279,8 @@ onMounted(async () => {
 
     memberships.value = userCompanies.map((company) => ({
       id: company.id,
-      role: user.roles?.find((role) => role.scope === company.id)?.name ?? null,
+      roles: user.roles?.filter((role) => role.scope === company.id).map((role) => role.name) ?? [],
+      include_global_roles: company.include_global_roles ?? false,
     }))
     ownedCompanyIds.value = userCompanies
       .filter((company) => company.owner_id === user.id)
@@ -232,9 +303,22 @@ async function submitForm(): Promise<void> {
     name: formData.name,
     email: formData.email,
     phone: formData.phone,
-    companies: memberships.value
-      .filter((row): row is { id: number; role: string } => row.id !== null && row.role !== null)
-      .map((row) => ({ id: row.id, role: row.role })),
+  }
+
+  const companyMemberships = memberships.value
+      .filter((row): row is { id: number; roles: string[]; include_global_roles: boolean } => row.id !== null && row.roles.length > 0)
+      .map((row) => ({
+        id: row.id,
+        roles: row.roles,
+        include_global_roles: row.include_global_roles,
+      }))
+
+  if (managesCompanyAccess.value) {
+    data.global_roles = globalRoleKeys.value
+    data.restricted_company_ids = restrictedCompanyIds.value
+    data.companies = companyMemberships
+  } else if (isCreate.value) {
+    data.companies = []
   }
 
   if (!editingSelf.value) {

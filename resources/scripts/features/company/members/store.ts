@@ -21,8 +21,7 @@ export interface MemberForm {
   email: string
   password: string | null
   phone: string | null
-  role: string | null
-  companies: Array<{ id: number; role?: string }>
+  companies: Array<{ id: number; roles: string[]; include_global_roles?: boolean }>
 }
 
 function createMemberStub(): MemberForm {
@@ -31,7 +30,6 @@ function createMemberStub(): MemberForm {
     email: '',
     password: null,
     phone: null,
-    role: null,
     companies: [],
   }
 }
@@ -80,7 +78,10 @@ export const useMemberStore = defineStore('members', () => {
             if (r.scope === c.id) {
               currentMember.value.companies[i] = {
                 ...currentMember.value.companies[i],
-                role: r.name,
+                roles: [
+                  ...(currentMember.value.companies[i]?.roles ?? []),
+                  r.name,
+                ].filter((name, index, names) => names.indexOf(name) === index),
               }
             }
           })

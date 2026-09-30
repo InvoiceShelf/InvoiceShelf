@@ -71,6 +71,11 @@
       {{ $t('invoices.record_payment') }}
     </BaseDropdownItem>
 
+    <ExtensionSlot
+      name="invoice-actions"
+      :context="invoiceActionContext"
+    />
+
     <!-- Mark as Sent -->
     <BaseDropdownItem v-if="row.status === 'DRAFT' && !isDetailView && canSend" @click="onMarkAsSent">
       <BaseIcon
@@ -127,6 +132,8 @@ import { useDialogStore } from '../../../../stores/dialog.store'
 import { useModalStore } from '../../../../stores/modal.store'
 import { useNotificationStore } from '../../../../stores/notification.store'
 import { absoluteDocumentUrl } from '@/scripts/utils/documents'
+import ExtensionSlot from '@/scripts/extensions/ExtensionSlot.vue'
+import { useUserStore } from '@/scripts/stores/user.store'
 import {
   handleApiError,
   getErrorTranslationKey,
@@ -163,6 +170,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const invoiceStore = useInvoiceStore()
+const userStore = useUserStore()
 const dialogStore = useDialogStore()
 const modalStore = useModalStore()
 const notificationStore = useNotificationStore()
@@ -171,6 +179,12 @@ const route = useRoute()
 const router = useRouter()
 
 const isDetailView = computed<boolean>(() => route.name === 'invoices.view')
+
+const invoiceActionContext = {
+  invoice: () => props.row,
+  isDetailView: () => isDetailView.value,
+  can: (ability: string | string[]) => userStore.hasAbilities(ability),
+}
 
 const canReSendInvoice = computed<boolean>(() => {
   return (
