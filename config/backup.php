@@ -205,15 +205,17 @@ return [
      *
      * You can also use your own notification classes, just make sure the class is named after one of
      * the `Spatie\Backup\Notifications\Notifications` classes.
+     *
+     * The app emails whoever started a backup if they request (CreateBackupJob).
      */
     'notifications' => [
         'notifications' => [
-            BackupHasFailedNotification::class => ['mail'],
-            UnhealthyBackupWasFoundNotification::class => ['mail'],
-            CleanupHasFailedNotification::class => ['mail'],
-            BackupWasSuccessfulNotification::class => ['mail'],
-            HealthyBackupWasFoundNotification::class => ['mail'],
-            CleanupWasSuccessfulNotification::class => ['mail'],
+            BackupHasFailedNotification::class => [],
+            UnhealthyBackupWasFoundNotification::class => [],
+            CleanupHasFailedNotification::class => [],
+            BackupWasSuccessfulNotification::class => [],
+            HealthyBackupWasFoundNotification::class => [],
+            CleanupWasSuccessfulNotification::class => [],
         ],
 
         /*
