@@ -27,6 +27,8 @@ class ProtectPurchaseTaxes
 
     private function check(TaxType $tax): void
     {
+        PurchaseInputs::ensure(! RecurringTemplates::useTax((int) $tax->company_id, (int) $tax->id), 'tax_type', 'purchase_tax_in_use');
+
         foreach ([BillItem::class, SupplierCreditItem::class] as $model) {
             $lines = $model::query()
                 ->forCompany($tax->company_id)

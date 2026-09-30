@@ -24,7 +24,7 @@ class RecurringInvoiceFactory extends Factory
         return [
             'starts_at' => $this->faker->iso8601(),
             'send_automatically' => false,
-            'status' => $this->faker->randomElement(['COMPLETED', 'ON_HOLD', 'ACTIVE']),
+            'status' => $this->faker->randomElement(['ON_HOLD', 'ACTIVE']),
             'tax_per_item' => 'NO',
             'tax_included' => false,
             'discount_per_item' => 'NO',
@@ -38,8 +38,8 @@ class RecurringInvoiceFactory extends Factory
             'company_id' => User::find(1)->companies()->first()->id,
             'frequency' => '* * 18 * *',
             'limit_by' => $this->faker->randomElement(['NONE', 'COUNT', 'DATE']),
-            'limit_count' => $this->faker->randomDigit(),
-            'limit_date' => $this->faker->date(),
+            'limit_count' => $this->faker->numberBetween(1, 9),
+            'limit_date' => $this->faker->dateTimeBetween('+1 year', '+5 years')->format('Y-m-d'),
             'exchange_rate' => $this->faker->randomDigitNotNull(),
         ];
     }

@@ -18,6 +18,6 @@ test('every purchasing error code has English text', function () {
 
     $codes = array_values(array_unique($codes));
 
-    expect($codes)->toHaveCount(32)
+    expect($codes)->toHaveCount(36)
         ->and(array_values(array_diff($codes, array_keys($errors))))->toBe([]);
 });

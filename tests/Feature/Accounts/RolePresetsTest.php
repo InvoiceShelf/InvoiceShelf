@@ -85,9 +85,9 @@ test('a new company gets Owner, Manager and Read only with their exact abilities
         ->and($manager->title)->toBe('Manager')
         ->and($readOnly->title)->toBe('Read only')
         ->and(heldAbilities($owner))->toBe($catalogue)
-        ->and(heldAbilities($manager))->toHaveCount(61)
+        ->and(heldAbilities($manager))->toHaveCount(65)
         ->not->toContain('create-custom-field', 'edit-exchange-rate-provider')
-        ->and(heldAbilities($readOnly))->toHaveCount(18)
+        ->and(heldAbilities($readOnly))->toHaveCount(19)
         ->and(collect(heldAbilities($readOnly))->every(fn ($a) => str_starts_with($a, 'view-') || $a === 'dashboard'))->toBeTrue();
 });
 
@@ -348,7 +348,7 @@ test('the shipped presets start with every current default already applied', fun
 
     expect(app(RolePresetService::class)->applyDefaults())->toBe([])
         ->and($manager->applied_defaults)->toBe($manager->abilities)
-        ->and(heldAbilities(presetCopy($this->company, 'preset:manager')))->toHaveCount(61);
+        ->and(heldAbilities(presetCopy($this->company, 'preset:manager')))->toHaveCount(65);
 });
 
 test('a newly tagged ability reaches the preset and every company copy once', function () {

@@ -2,6 +2,7 @@
 
 namespace App\Domains\Purchases;
 
+use App\Adapters\Purchases\MailRecurringCostNotifier;
 use App\Adapters\Purchases\MediaLibraryExpenseReceiptManager;
 use App\Adapters\Purchases\MoneyExpenseExchangeRateRecorder;
 use App\Adapters\Purchases\SalesDocumentNumberAssigner;
@@ -9,13 +10,16 @@ use App\Adapters\Purchases\TaxationExpenseTaxManager;
 use App\Domains\Purchases\Application\ClearExpenseTaxes;
 use App\Domains\Purchases\Application\ProtectCreditedExpenses;
 use App\Domains\Purchases\Application\ProtectPurchaseTaxes;
+use App\Domains\Purchases\Console\GenerateRecurringCosts;
 use App\Domains\Purchases\Contracts\DocumentNumberAssigner;
 use App\Domains\Purchases\Contracts\ExpenseExchangeRateRecorder;
 use App\Domains\Purchases\Contracts\ExpenseReceiptManager;
 use App\Domains\Purchases\Contracts\ExpenseTaxManager;
+use App\Domains\Purchases\Contracts\RecurringCostNotifier;
 use App\Domains\Purchases\Models\Bill;
 use App\Domains\Purchases\Models\Expense;
 use App\Domains\Purchases\Models\ExpenseCategory;
+use App\Domains\Purchases\Models\RecurringCost;
 use App\Domains\Purchases\Models\Supplier;
 use App\Domains\Purchases\Models\SupplierCredit;
 use App\Domains\Purchases\Models\SupplierPayment;
@@ -23,6 +27,7 @@ use App\Domains\Purchases\Models\SupplierRefund;
 use App\Domains\Purchases\Policies\BillPolicy;
 use App\Domains\Purchases\Policies\ExpenseCategoryPolicy;
 use App\Domains\Purchases\Policies\ExpensePolicy;
+use App\Domains\Purchases\Policies\RecurringCostPolicy;
 use App\Domains\Purchases\Policies\SupplierCreditPolicy;
 use App\Domains\Purchases\Policies\SupplierPaymentPolicy;
 use App\Domains\Purchases\Policies\SupplierPolicy;
@@ -39,10 +44,12 @@ class PurchasesServiceProvider extends ServiceProvider
         $this->app->bind(ExpenseExchangeRateRecorder::class, MoneyExpenseExchangeRateRecorder::class);
         $this->app->bind(ExpenseReceiptManager::class, MediaLibraryExpenseReceiptManager::class);
         $this->app->bind(DocumentNumberAssigner::class, SalesDocumentNumberAssigner::class);
+        $this->app->bind(RecurringCostNotifier::class, MailRecurringCostNotifier::class);
     }
 
     public function boot(): void
     {
+        $this->commands([GenerateRecurringCosts::class]);
         Expense::observe(ClearExpenseTaxes::class);
         TaxType::observe(ProtectPurchaseTaxes::class);
         Expense::observe(ProtectCreditedExpenses::class);
@@ -51,6 +58,7 @@ class PurchasesServiceProvider extends ServiceProvider
         Gate::policy(SupplierPayment::class, SupplierPaymentPolicy::class);
         Gate::policy(SupplierCredit::class, SupplierCreditPolicy::class);
         Gate::policy(SupplierRefund::class, SupplierRefundPolicy::class);
+        Gate::policy(RecurringCost::class, RecurringCostPolicy::class);
 
         Gate::policy(Expense::class, ExpensePolicy::class);
         Gate::policy(ExpenseCategory::class, ExpenseCategoryPolicy::class);

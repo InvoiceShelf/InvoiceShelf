@@ -27,6 +27,18 @@
       {{ $t('general.view') }}
     </BaseDropdownItem>
 
+    <!-- Pause or resume (the detail page has its own button) -->
+    <BaseDropdownItem
+      v-if="canEdit && !isDetailView && ['ACTIVE', 'ON_HOLD'].includes(String(row.status))"
+      @click="toggleStatus"
+    >
+      <BaseIcon
+        :name="row.status === 'ACTIVE' ? 'PauseIcon' : 'PlayIcon'"
+        class="w-5 h-5 me-3 text-subtle group-hover:text-muted"
+      />
+      {{ $t(row.status === 'ACTIVE' ? 'recurring_invoices.pause' : 'recurring_invoices.resume') }}
+    </BaseDropdownItem>
+
     <!-- Delete Recurring Invoice -->
     <BaseDropdownItem v-if="canDelete" @click="removeRecurringInvoice">
       <BaseIcon
@@ -44,6 +56,9 @@ import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { useRecurringInvoiceStore } from '../store'
 import { useDialogStore } from '../../../../stores/dialog.store'
+import { useNotificationStore } from '@/scripts/stores/notification.store'
+import { recurringInvoiceService } from '@/scripts/api/services/recurring-invoice.service'
+import { getErrorTranslationKey, handleApiError } from '@/scripts/utils/error-handling'
 import type { RecurringInvoice } from '../../../../types/domain/recurring-invoice'
 
 interface TableRef {
@@ -69,6 +84,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const recurringInvoiceStore = useRecurringInvoiceStore()
 const dialogStore = useDialogStore()
+const notificationStore = useNotificationStore()
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
@@ -76,6 +92,24 @@ const router = useRouter()
 const isDetailView = computed<boolean>(
   () => route.name === 'recurring-invoices.view',
 )
+
+async function toggleStatus(): Promise<void> {
+  const action = props.row.status === 'ACTIVE' ? 'pause' : 'resume'
+  try {
+    await recurringInvoiceService.act(Number(props.row.id), action)
+    props.table?.refresh()
+    props.loadData?.()
+    notificationStore.showNotification({
+      type: 'success',
+      message: t(action === 'pause' ? 'recurring_invoices.paused_message' : 'recurring_invoices.resumed_message'),
+    })
+  } catch (err) {
+    const { message, validationErrors } = handleApiError(err)
+    const code = Object.values(validationErrors ?? {}).flat()[0] ?? message
+    const key = getErrorTranslationKey(code)
+    notificationStore.showNotification({ type: 'error', message: key ? t(key) : code })
+  }
+}
 
 function removeRecurringInvoice(): void {
   dialogStore.openDialog({

@@ -8,6 +8,37 @@ export type PurchaseKind =
   | 'supplier-payments'
   | 'supplier-credits'
   | 'supplier-refunds'
+  | 'recurring-costs'
+export type RecurringCostMode = 'BILL' | 'EXPENSE'
+export type RecurringCostStatus = 'ACTIVE' | 'ON_HOLD' | 'COMPLETED'
+/**
+ * What each run of a recurring cost generates: a bill without its supplier,
+ * dates and status, or an expense without its supplier and date.
+ */
+export interface RecurringCostTemplate {
+  currency_id?: number
+  exchange_rate?: number
+  notes?: string | null
+  // BILL
+  tax_included?: boolean
+  reference?: string | null
+  items?: PurchaseLine[]
+  customFields?: Array<{ id: number; value: unknown }>
+  // EXPENSE
+  amount?: number
+  expense_category_id?: number | null
+  payment_method_id?: number | null
+  taxes?: Array<{ tax_type_id: number; amount: number }>
+}
+export interface RecurringCostOccurrence {
+  id: number
+  scheduled_for: string
+  record_type: 'bill' | 'expense'
+  record_id: number
+  number: string | null
+  status: string | null
+  amount: number | null
+}
 export interface PurchaseLine {
   id?: number
   source_bill_item_id?: number
@@ -85,6 +116,20 @@ export interface PurchaseRecord {
   supplier_payment_id?: number | null
   supplier_credit_id?: number | null
   void_reason?: string | null
+  // Recurring costs
+  mode?: RecurringCostMode
+  frequency?: string
+  starts_at?: string
+  next_run_at?: string | null
+  limit_by?: 'NONE' | 'COUNT' | 'DATE'
+  limit_count?: number | null
+  limit_date?: string | null
+  due_days?: number
+  create_as_draft?: boolean
+  notify_creator?: boolean
+  template?: RecurringCostTemplate
+  last_error?: string | null
+  occurrences?: RecurringCostOccurrence[]
 }
 export interface Allocation {
   id?: number

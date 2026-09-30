@@ -32,6 +32,7 @@ export interface FrequencyDateParams {
 
 export interface FrequencyDateResponse {
   next_invoice_at: string
+  upcoming?: string[]
 }
 
 export const recurringInvoiceService = {
@@ -55,6 +56,12 @@ export const recurringInvoiceService = {
     payload: Partial<CreateRecurringInvoicePayload>,
   ): Promise<ApiResponse<RecurringInvoice>> {
     const { data } = await client.put(`${API.RECURRING_INVOICES}/${id}`, payload)
+    return data
+  },
+
+  /** Pause a schedule, or resume it from today. */
+  async act(id: number, action: 'pause' | 'resume'): Promise<ApiResponse<RecurringInvoice>> {
+    const { data } = await client.post(`${API.RECURRING_INVOICES}/${id}/actions`, { action })
     return data
   },
 

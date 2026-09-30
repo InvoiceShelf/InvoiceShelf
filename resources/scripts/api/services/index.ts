@@ -3,6 +3,7 @@ export { bootstrapService } from './bootstrap.service'
 export { invoiceService } from './invoice.service'
 export { estimateService } from './estimate.service'
 export { recurringInvoiceService } from './recurring-invoice.service'
+export { recurrenceService } from './recurrence.service'
 export { customerService } from './customer.service'
 export { paymentService } from './payment.service'
 export { expenseService } from './expense.service'
@@ -31,6 +32,7 @@ export type { BootstrapResponse, MenuItem, CurrentCompanyResponse } from './boot
 export type { InvoiceListParams, InvoiceListResponse, SendInvoicePayload, InvoiceStatusPayload, InvoiceTemplatesResponse } from './invoice.service'
 export type { EstimateListParams, EstimateListResponse, SendEstimatePayload, EstimateStatusPayload, EstimateTemplatesResponse } from './estimate.service'
 export type { RecurringInvoiceListParams, RecurringInvoiceListResponse, FrequencyDateParams, FrequencyDateResponse } from './recurring-invoice.service'
+export type { RecurrencePreviewParams, RecurrencePreview } from './recurrence.service'
 export type {
   CustomerListParams,
   CustomerListResponse,

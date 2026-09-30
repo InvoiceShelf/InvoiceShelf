@@ -2,6 +2,7 @@
 
 namespace App\Domains\Purchases\Http\Controllers\Company;
 
+use App\Domains\Purchases\Application\RecurringTemplates;
 use App\Domains\Purchases\Http\Requests\ExpenseCategoryRequest;
 use App\Domains\Purchases\Http\Resources\ExpenseCategoryResource;
 use App\Domains\Purchases\Models\BillItem;
@@ -79,7 +80,8 @@ class ExpenseCategoriesController extends Controller
 
         if (BillItem::query()->where('expense_category_id', $category->id)->exists()
             || SupplierCreditItem::query()->where('expense_category_id', $category->id)->exists()
-            || Supplier::query()->where('expense_category_id', $category->id)->exists()) {
+            || Supplier::query()->where('expense_category_id', $category->id)->exists()
+            || RecurringTemplates::useCategory($category->company_id, $category->id)) {
             return respondJson('expense_attached', 'Expense Attached');
         }
 

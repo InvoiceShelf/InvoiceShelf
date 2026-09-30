@@ -11,7 +11,7 @@ export const expenseRoutes: RouteRecordRaw[] = [
     props: { section: 'expenses' },
     meta: {
       requiresAuth: true,
-      ability: 'view-expense',
+      ability: ['view-expense', 'view-recurring-cost'],
       title: 'expenses.title',
     },
   },

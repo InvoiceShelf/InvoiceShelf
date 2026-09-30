@@ -5,6 +5,7 @@ namespace App\Adapters\Accounts;
 use App\Domains\Accounts\Contracts\MemberReferencesCleaner;
 use App\Domains\Accounts\Models\User;
 use App\Domains\Purchases\Models\Bill;
+use App\Domains\Purchases\Models\RecurringCost;
 use App\Domains\Purchases\Models\Supplier;
 use App\Domains\Purchases\Models\SupplierCredit;
 use App\Domains\Purchases\Models\SupplierPayment;
@@ -25,6 +26,7 @@ class EloquentMemberReferencesCleaner implements MemberReferencesCleaner
         SupplierCredit::class,
         SupplierPayment::class,
         SupplierRefund::class,
+        RecurringCost::class,
     ];
 
     public function clear(User $user): void

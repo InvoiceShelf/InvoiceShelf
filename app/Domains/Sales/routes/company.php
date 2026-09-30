@@ -32,7 +32,9 @@ Route::apiResources(['invoices' => InvoicesController::class]);
 // the same bulk-delete-before-the-resource ordering.
 Route::get('recurring-invoice-frequency', RecurringInvoiceFrequencyController::class);
 Route::post('recurring-invoices/delete', [RecurringInvoiceController::class, 'delete']);
-Route::apiResources(['recurring-invoices' => RecurringInvoiceController::class]);
+Route::post('recurring-invoices/{recurringInvoice}/actions', [RecurringInvoiceController::class, 'action']);
+// Schedules are deleted in bulk through recurring-invoices/delete.
+Route::apiResource('recurring-invoices', RecurringInvoiceController::class)->except('destroy');
 
 Route::get('/estimates/{estimate}/send/preview', [EstimatesController::class, 'sendPreview']);
 Route::post('/estimates/{estimate}/send', [EstimatesController::class, 'send']);

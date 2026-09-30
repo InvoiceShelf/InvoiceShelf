@@ -27,6 +27,8 @@ export interface RecurringInvoice {
   formatted_next_invoice_at: string
   formatted_limit_date: string
   send_automatically: boolean
+  notify_creator: boolean
+  last_error: string | null
   customer_id: number
   company_id: number
   creator_id: number
@@ -66,6 +68,7 @@ export interface CreateRecurringInvoicePayload {
   frequency: string
   customer_id: number
   send_automatically?: boolean
+  notify_creator?: boolean
   limit_by?: RecurringInvoiceLimitBy
   limit_count?: number | null
   limit_date?: string | null

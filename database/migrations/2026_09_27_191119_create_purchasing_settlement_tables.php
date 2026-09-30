@@ -119,6 +119,50 @@ return new class extends Migration
                 $table->unique([$parent, 'bill_id'], $uniqueName);
             });
         }
+
+        // A recurring bill or expense: the same schedule columns as
+        // recurring_invoices, so both run on App\Support\Recurrence.
+        Schema::create('recurring_costs', function (Blueprint $table): void {
+            $table->bigIncrements('id');
+            $table->unsignedInteger('company_id')->index();
+            $table->unsignedInteger('creator_id')->nullable();
+            $table->unsignedBigInteger('supplier_id')->index();
+            $table->string('name');
+            $table->string('mode');
+            $table->string('status')->default('ACTIVE');
+            $table->string('frequency');
+            $table->dateTime('starts_at');
+            $table->dateTime('next_run_at')->nullable()->index();
+            $table->string('limit_by')->default('NONE');
+            $table->unsignedInteger('limit_count')->nullable();
+            $table->date('limit_date')->nullable();
+            $table->unsignedInteger('due_days')->default(30);
+            $table->boolean('create_as_draft')->default(false);
+            $table->boolean('notify_creator')->default(false);
+            $table->longText('template');
+            $table->text('last_error')->nullable();
+            $table->timestamps();
+        });
+
+        // What each run of a recurring schedule generated: recurring bills and
+        // expenses here, recurring invoices too. A run already written for
+        // its moment is not written again, and the rows outlive the records
+        // they point at, so a count limit counts what was generated.
+        Schema::create('recurrence_occurrences', function (Blueprint $table): void {
+            $table->bigIncrements('id');
+            $table->unsignedInteger('company_id')->index();
+            $table->string('schedule_type');
+            $table->unsignedBigInteger('schedule_id');
+            $table->date('scheduled_for');
+            $table->dateTime('scheduled_at');
+            $table->string('record_type');
+            $table->unsignedBigInteger('record_id');
+            $table->timestamps();
+
+            $table->unique(['schedule_type', 'schedule_id', 'scheduled_at'], 'recurrence_occurrence_unique');
+            $table->index(['schedule_type', 'schedule_id', 'scheduled_for'], 'recurrence_occurrence_day');
+            $table->index(['record_type', 'record_id']);
+        });
     }
 
     /**
@@ -147,6 +191,8 @@ return new class extends Migration
     public function down(): void
     {
         $tables = [
+            'recurrence_occurrences',
+            'recurring_costs',
             'supplier_credit_allocations',
             'supplier_payment_allocations',
             'supplier_refunds',

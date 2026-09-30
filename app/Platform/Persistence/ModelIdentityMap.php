@@ -26,6 +26,7 @@ use App\Domains\Purchases\Models\Bill;
 use App\Domains\Purchases\Models\BillItem;
 use App\Domains\Purchases\Models\Expense;
 use App\Domains\Purchases\Models\ExpenseCategory;
+use App\Domains\Purchases\Models\RecurringCost;
 use App\Domains\Purchases\Models\Supplier;
 use App\Domains\Purchases\Models\SupplierCredit;
 use App\Domains\Purchases\Models\SupplierCreditAllocation;
@@ -51,6 +52,7 @@ use App\Platform\Modules\Models\MarketplaceCredential;
 use App\Platform\Modules\Models\MarketplaceOperation;
 use App\Platform\Modules\Models\Module;
 use App\Platform\Operations\Models\Setting;
+use App\Platform\Recurrence\Models\RecurrenceOccurrence;
 use App\Platform\Storage\Models\FileDisk;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -113,6 +115,8 @@ final class ModelIdentityMap
             'supplier_credit' => SupplierCredit::class,
             'supplier_payment' => SupplierPayment::class,
             'supplier_refund' => SupplierRefund::class,
+            'recurring_cost' => RecurringCost::class,
+            'recurrence_occurrence' => RecurrenceOccurrence::class,
             'bill_item' => BillItem::class,
             'supplier_credit_item' => SupplierCreditItem::class,
             'supplier_payment_allocation' => SupplierPaymentAllocation::class,

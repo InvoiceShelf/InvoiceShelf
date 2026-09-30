@@ -8,14 +8,20 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import type { PurchaseKind } from '@/scripts/types/domain/purchase'
-import { purchaseParent } from '../navigation'
+import { purchaseParent, recurringLabel } from '../navigation'
 const props = defineProps<{
   kind: PurchaseKind
+  /** For recurring costs: BILL or EXPENSE. */
+  mode?: string | null
   title?: string
 }>()
 const router = useRouter()
 const parent = computed(
-  () => router.resolve(purchaseParent(props.kind)).fullPath,
+  () => router.resolve(purchaseParent(props.kind, props.mode)).fullPath,
 )
-const label = computed(() => `purchases.${props.kind}`)
+const label = computed(() =>
+  props.kind === 'recurring-costs'
+    ? recurringLabel(props.mode, 'title')
+    : `purchases.${props.kind}`,
+)
 </script>

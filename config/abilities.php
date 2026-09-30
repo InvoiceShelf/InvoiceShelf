@@ -7,6 +7,7 @@ use App\Domains\Metadata\Models\Note;
 use App\Domains\Money\Models\ExchangeRateProvider;
 use App\Domains\Purchases\Models\Bill;
 use App\Domains\Purchases\Models\Expense;
+use App\Domains\Purchases\Models\RecurringCost;
 use App\Domains\Purchases\Models\Supplier;
 use App\Domains\Purchases\Models\SupplierCredit;
 use App\Domains\Purchases\Models\SupplierPayment;
@@ -230,6 +231,45 @@ return [
             'model' => SupplierRefund::class,
             'depends_on' => [
                 'view-supplier-refund',
+            ],
+        ],
+
+        // Recurring bill or expense
+        [
+            'name' => 'view recurring cost',
+            'ability' => 'view-recurring-cost',
+            'presets' => ['manager', 'read-only'],
+            'model' => RecurringCost::class,
+            'depends_on' => [
+            ],
+        ],
+        [
+            'name' => 'create recurring cost',
+            'ability' => 'create-recurring-cost',
+            'presets' => ['manager'],
+            'model' => RecurringCost::class,
+            'depends_on' => [
+                'view-recurring-cost',
+                'view-supplier',
+            ],
+        ],
+        [
+            'name' => 'edit recurring cost',
+            'ability' => 'edit-recurring-cost',
+            'presets' => ['manager'],
+            'model' => RecurringCost::class,
+            'depends_on' => [
+                'view-recurring-cost',
+                'view-supplier',
+            ],
+        ],
+        [
+            'name' => 'delete recurring cost',
+            'ability' => 'delete-recurring-cost',
+            'presets' => ['manager'],
+            'model' => RecurringCost::class,
+            'depends_on' => [
+                'view-recurring-cost',
             ],
         ],
 
