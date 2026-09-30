@@ -17,6 +17,7 @@ export interface BackupListResponse {
 export interface CreateBackupPayload {
   option: 'full' | 'only-db' | 'only-files'
   file_disk_id: number
+  notify?: boolean
 }
 
 export interface DeleteBackupParams {
