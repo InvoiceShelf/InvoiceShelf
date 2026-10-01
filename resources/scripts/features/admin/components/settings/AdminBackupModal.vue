@@ -85,7 +85,11 @@ async function createBackup(): Promise<void> {
     if (response.success) {
       notificationStore.showNotification({
         type: 'success',
-        message: t('settings.backup.created_message'),
+        message: t(
+          form.notify
+            ? 'settings.backup.started_notify_message'
+            : 'settings.backup.started_message',
+        ),
       })
       modalStore.refreshData?.()
       closeModal()
