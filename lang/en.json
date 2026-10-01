@@ -1935,7 +1935,9 @@
       "created_message": "Backup created successfully",
       "invalid_disk_credentials": "Invalid credential of selected disk",
       "empty_title": "No backups yet",
-      "empty_description": "Create a backup to keep a copy of your data and files."
+      "empty_description": "Create a backup to keep a copy of your data and files.",
+      "notify_label": "Email me when the backup finishes",
+      "notify_description": "Sent to your account's email address, whether the backup succeeds or fails."
     },
     "disk": {
       "title": "File Disks | File Disks",

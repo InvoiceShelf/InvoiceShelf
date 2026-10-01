@@ -148,7 +148,7 @@ test('a backup that fails tells whoever asked, and still fails', function () {
         'user_id' => $this->user->id,
     ]);
 
-    expect(fn () => $job->handle())->toThrow(BackupFailed::class);
+    expect(fn () => app()->call([$job, 'handle']))->toThrow(BackupFailed::class);
 
     Mail::assertSent(BackupFailedMail::class, fn (BackupFailedMail $mail) => $mail->hasTo($this->user->email));
     Mail::assertNotSent(BackupCompletedMail::class);
@@ -165,7 +165,7 @@ test('a failed backup that asked for no email sends none', function () {
         'user_id' => $this->user->id,
     ]);
 
-    expect(fn () => $job->handle())->toThrow(BackupFailed::class);
+    expect(fn () => app()->call([$job, 'handle']))->toThrow(BackupFailed::class);
 
     Mail::assertNothingSent();
 });
