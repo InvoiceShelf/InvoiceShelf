@@ -1932,10 +1932,13 @@
       "select_disk": "Select Disk",
       "action": "Action",
       "deleted_message": "Backup deleted successfully",
-      "created_message": "Backup created successfully",
+      "started_message": "Backup started. It will appear in the list once it finishes.",
+      "started_notify_message": "Backup started. We'll email you when it finishes.",
       "invalid_disk_credentials": "Invalid credential of selected disk",
       "empty_title": "No backups yet",
-      "empty_description": "Create a backup to keep a copy of your data and files."
+      "empty_description": "Create a backup to keep a copy of your data and files.",
+      "notify_label": "Email me when the backup finishes",
+      "notify_description": "Sent to your account's email address, whether the backup succeeds or fails."
     },
     "disk": {
       "title": "File Disks | File Disks",
