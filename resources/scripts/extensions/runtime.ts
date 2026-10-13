@@ -8,6 +8,10 @@ import type {
   BootstrapCompletedEvent,
   CompanyChangeEvent,
   ComponentExtensionContribution,
+  CreateActionContribution,
+  InvoiceCreateContext,
+  InvoiceCreateSaveHookContribution,
+  InvoiceExtensionRecord,
   InvoiceShelfExtensionApi,
   InvoiceShelfExtensionEvents,
   PageChildContribution,
@@ -21,6 +25,11 @@ type ComponentSlot =
   | 'headerActions'
   | 'companyLayoutOverlays'
   | 'richEditorToolbarActions'
+  | 'invoiceActions'
+  | 'invoiceDetailActions'
+  | 'invoiceCreateActions'
+  | 'invoiceCreateSections'
+  | 'invoiceDetailPanels'
 
 interface RegisteredComponentContribution extends ComponentExtensionContribution {
   component: ComponentExtensionContribution['component']
@@ -98,6 +107,13 @@ export class ExtensionRegistry {
   readonly headerActions = shallowRef<RegisteredComponentContribution[]>([])
   readonly companyLayoutOverlays = shallowRef<RegisteredComponentContribution[]>([])
   readonly richEditorToolbarActions = shallowRef<RegisteredComponentContribution[]>([])
+  readonly invoiceActions = shallowRef<RegisteredComponentContribution[]>([])
+  readonly invoiceDetailActions = shallowRef<RegisteredComponentContribution[]>([])
+  readonly invoiceCreateActions = shallowRef<RegisteredComponentContribution[]>([])
+  readonly invoiceCreateSections = shallowRef<RegisteredComponentContribution[]>([])
+  readonly invoiceDetailPanels = shallowRef<RegisteredComponentContribution[]>([])
+  readonly createActions = shallowRef<CreateActionContribution[]>([])
+  readonly invoiceCreateSaveHooks = shallowRef<InvoiceCreateSaveHookContribution[]>([])
   readonly companySettingsNavigation = shallowRef<SettingsNavigationContribution[]>([])
   readonly adminSettingsNavigation = shallowRef<SettingsNavigationContribution[]>([])
 
@@ -120,6 +136,41 @@ export class ExtensionRegistry {
 
       return () => {
         target.value = target.value.filter((item) => item !== entry)
+      }
+    })
+  }
+
+  registerCreateAction(contribution: CreateActionContribution): () => void {
+    assertContributionId(contribution.id)
+    const entry = { ...contribution }
+
+    return this.track(() => {
+      this.createActions.value = [
+        ...this.createActions.value.filter((item) => item.id !== entry.id),
+        entry,
+      ].sort(comparePriority)
+
+      return () => {
+        this.createActions.value = this.createActions.value.filter((item) => item !== entry)
+      }
+    })
+  }
+
+  registerInvoiceCreateSaveHook(
+    contribution: InvoiceCreateSaveHookContribution,
+  ): () => void {
+    assertContributionId(contribution.id)
+    const entry = { ...contribution }
+
+    return this.track(() => {
+      this.invoiceCreateSaveHooks.value = [
+        ...this.invoiceCreateSaveHooks.value.filter((item) => item.id !== entry.id),
+        entry,
+      ].sort(comparePriority)
+
+      return () => {
+        this.invoiceCreateSaveHooks.value = this.invoiceCreateSaveHooks.value
+          .filter((item) => item !== entry)
       }
     })
   }
@@ -192,6 +243,44 @@ class ExtensionApi implements InvoiceShelfExtensionApi {
 
   registerRichEditorToolbarAction(contribution: ComponentExtensionContribution): () => void {
     return extensionRegistry.registerComponent('richEditorToolbarActions', contribution)
+  }
+
+  registerCreateAction(contribution: CreateActionContribution): () => void {
+    return extensionRegistry.registerCreateAction(contribution)
+  }
+
+  registerInvoiceAction(contribution: ComponentExtensionContribution): () => void {
+    return extensionRegistry.registerComponent('invoiceActions', contribution)
+  }
+
+  registerInvoiceDetailAction(
+    contribution: ComponentExtensionContribution,
+  ): () => void {
+    return extensionRegistry.registerComponent('invoiceDetailActions', contribution)
+  }
+
+  registerInvoiceCreateAction(
+    contribution: ComponentExtensionContribution,
+  ): () => void {
+    return extensionRegistry.registerComponent('invoiceCreateActions', contribution)
+  }
+
+  registerInvoiceCreateSection(
+    contribution: ComponentExtensionContribution,
+  ): () => void {
+    return extensionRegistry.registerComponent('invoiceCreateSections', contribution)
+  }
+
+  registerInvoiceCreateSaveHook(
+    contribution: InvoiceCreateSaveHookContribution,
+  ): () => void {
+    return extensionRegistry.registerInvoiceCreateSaveHook(contribution)
+  }
+
+  registerInvoiceDetailPanel(
+    contribution: ComponentExtensionContribution,
+  ): () => void {
+    return extensionRegistry.registerComponent('invoiceDetailPanels', contribution)
   }
 
   registerCompanySettingsNavigation(contribution: SettingsNavigationContribution): () => void {
@@ -425,4 +514,17 @@ export function extensionItems<T extends { visible?: () => boolean }>(
   items: readonly T[],
 ): T[] {
   return items.filter(isContributionVisible)
+}
+
+export async function runInvoiceCreateSaveHooks(
+  savedInvoice: InvoiceExtensionRecord,
+  context: InvoiceCreateContext,
+): Promise<boolean> {
+  for (const hook of extensionItems(extensionRegistry.invoiceCreateSaveHooks.value)) {
+    if (await hook.handle(savedInvoice, context)) {
+      return true
+    }
+  }
+
+  return false
 }

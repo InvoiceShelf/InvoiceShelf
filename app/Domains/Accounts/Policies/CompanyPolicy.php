@@ -16,8 +16,9 @@ use Illuminate\Auth\Access\HandlesAuthorization;
  * look at the company being acted on and want the actor to be its recorded
  * owner, header or no header.
  *
- * Nothing in either question consults the platform administrator flag — that
- * account gets no shortcut past these.
+ * The platform administrator may create a company from Administration mode,
+ * where there is no active company header. Transfer and deletion still require
+ * ownership of the named company.
  */
 class CompanyPolicy
 {
@@ -30,7 +31,7 @@ class CompanyPolicy
      */
     public function create(User $user): bool
     {
-        return $user->isOwner();
+        return $user->isSuperAdmin() || $user->isOwner();
     }
 
     /**

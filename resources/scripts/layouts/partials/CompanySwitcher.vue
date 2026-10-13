@@ -202,19 +202,19 @@ function addNewCompany(): void {
 }
 
 async function enterAdminMode(): Promise<void> {
+  globalStore.setIsAppLoaded(false)
   companyStore.setAdminMode(true)
   isShow.value = false
-  router.push('/admin/administration/dashboard')
-  globalStore.setIsAppLoaded(false)
+  await router.push('/admin/administration/dashboard')
   await globalStore.bootstrap()
 }
 
 async function changeCompany(company: Company): Promise<void> {
+  globalStore.setIsAppLoaded(false)
   isShow.value = false
   companyStore.setAdminMode(false)
   companyStore.setSelectedCompany(company)
-  router.push('/admin/dashboard')
-  globalStore.setIsAppLoaded(false)
+  await router.push('/admin/dashboard')
   await globalStore.bootstrap()
 }
 </script>

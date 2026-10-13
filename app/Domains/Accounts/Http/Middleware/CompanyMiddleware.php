@@ -2,6 +2,7 @@
 
 namespace App\Domains\Accounts\Http\Middleware;
 
+use App\Domains\Accounts\Application\UserCompanyAccessService;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
@@ -19,6 +20,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class CompanyMiddleware
 {
+    public function __construct(private readonly UserCompanyAccessService $companyAccess) {}
+
     public function handle(Request $request, Closure $next): Response
     {
         if (! Schema::hasTable('user_company')) {
@@ -31,21 +34,30 @@ class CompanyMiddleware
             return $next($request);
         }
 
-        $fallback = $actor->companies()->first();
-
-        if ($fallback === null) {
-            return $next($request);
-        }
-
         $requested = $request->header('company');
 
         if ($actor->isSuperAdmin() && ! $requested) {
             return $next($request);
         }
 
-        if (! $requested || ! $actor->hasCompany($requested)) {
-            $request->headers->set('company', $fallback->id);
+        if ($requested && $this->companyAccess->isRestrictedFromCompany($actor, (int) $requested)) {
+            abort(403);
         }
+
+        if ($requested && $this->companyAccess->canAccessCompany($actor, (int) $requested)) {
+            return $next($request);
+        }
+
+        $fallback = $this->companyAccess->firstAccessibleCompany($actor);
+
+        if ($fallback === null) {
+            return $next($request);
+        }
+
+        // Preserve the existing behavior for an ordinary foreign or stale
+        // header: use the first accessible company. Restrictions are handled
+        // above as an explicit hard deny and never reach this fallback.
+        $request->headers->set('company', $fallback->id);
 
         return $next($request);
     }

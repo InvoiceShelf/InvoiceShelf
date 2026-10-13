@@ -3,6 +3,7 @@
 namespace App\Domains\Accounts\Http\Controllers\Admin;
 
 use App\Domains\Accounts\Application\CompanyService;
+use App\Domains\Accounts\Application\UserCompanyAccessService;
 use App\Domains\Accounts\Contracts\CompanyAddressWriter;
 use App\Domains\Accounts\Http\Requests\AdminCompanyUpdateRequest;
 use App\Domains\Accounts\Http\Requests\CompaniesRequest;
@@ -19,6 +20,7 @@ class CompaniesController extends Controller
     public function __construct(
         private readonly CompanyService $companyService,
         private readonly CompanyAddressWriter $companyAddressWriter,
+        private readonly UserCompanyAccessService $companyAccess,
     ) {}
 
     public function index(Request $request)
@@ -102,7 +104,7 @@ class CompaniesController extends Controller
 
     public function userCompanies(Request $request)
     {
-        return CompanyResource::collection($request->user()->companies);
+        return CompanyResource::collection($this->companyAccess->accessibleCompanies($request->user()));
     }
 
     /**
@@ -111,6 +113,11 @@ class CompaniesController extends Controller
      */
     public function roles(Company $company): JsonResponse
     {
+        $presetOrder = RolePreset::query()
+            ->orderBy('id')
+            ->pluck('key')
+            ->flip();
+
         $roles = Role::query()->withoutGlobalScopes()
             ->where('scope', $company->id)
             ->get()
@@ -122,7 +129,9 @@ class CompaniesController extends Controller
             ])
             ->sortBy(fn (array $role) => [
                 $role['preset'] === RolePreset::OWNER ? 0 : ($role['preset'] !== null ? 1 : 2),
-                mb_strtolower($role['title']),
+                $role['preset'] !== null
+                    ? ($presetOrder[$role['preset']] ?? PHP_INT_MAX)
+                    : mb_strtolower($role['title']),
             ])
             ->values();
 

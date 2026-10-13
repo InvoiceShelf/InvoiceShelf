@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Collection;
 use Silber\Bouncer\Database\Role;
 
 class CompanyInvitation extends Model
@@ -18,6 +19,13 @@ class CompanyInvitation extends Model
     protected $guarded = ['id'];
 
     protected $dates = ['expires_at'];
+
+    protected function casts(): array
+    {
+        return [
+            'role_ids' => 'array',
+        ];
+    }
 
     public const STATUS_PENDING = 'pending';
 
@@ -50,6 +58,34 @@ class CompanyInvitation extends Model
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class)->withoutGlobalScopes();
+    }
+
+    /**
+     * Roles offered by this invitation, constrained to its company.
+     *
+     * @return Collection<int, Role>
+     */
+    public function roles(): Collection
+    {
+        $ids = collect($this->role_ids ?: [$this->role_id])
+            ->map(fn (mixed $id): int => (int) $id)
+            ->filter()
+            ->unique()
+            ->values();
+
+        return Role::query()
+            ->withoutGlobalScopes()
+            ->where('scope', $this->company_id)
+            ->whereIn('id', $ids)
+            ->get();
+    }
+
+    /**
+     * Titles of all roles offered by this invitation, including legacy rows.
+     */
+    public function roleNames(): string
+    {
+        return $this->roles()->pluck('title')->implode(', ');
     }
 
     public function isExpired(): bool

@@ -2,6 +2,7 @@
 
 namespace App\Platform\Modules\Infrastructure;
 
+use App\Domains\Accounts\Application\UserCompanyAccessService;
 use App\Domains\Accounts\Models\User;
 use App\Domains\Catalog\Models\Item;
 use App\Domains\Contacts\Models\Customer;
@@ -23,14 +24,16 @@ class BouncerModuleAuthorization implements ModuleAuthorization
         'item' => Item::class,
     ];
 
+    public function __construct(private readonly UserCompanyAccessService $companyAccess) {}
+
     public function allows(int $userId, int $companyId, string $ability, ?string $resource = null): bool
     {
-        $user = User::query()
-            ->whereKey($userId)
-            ->whereHas('companies', fn ($query) => $query->whereKey($companyId))
-            ->first();
+        $user = User::query()->find($userId);
 
-        if ($user === null) {
+        $hasCompanyAccess = $user !== null
+            && $this->companyAccess->canAccessCompany($user, $companyId);
+
+        if ($user === null || ! $hasCompanyAccess) {
             return false;
         }
 

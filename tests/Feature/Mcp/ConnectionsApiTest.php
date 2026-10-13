@@ -1,5 +1,7 @@
 <?php
 
+use App\Domains\Accounts\Application\UserCompanyAccessService;
+use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\User;
 use App\Platform\Mcp\Models\McpConnection;
 use Illuminate\Support\Facades\Artisan;
@@ -39,6 +41,30 @@ test('a user sees only their own connections', function () {
         ->assertJsonPath('data.0.redirect_host', 'claude.ai')
         ->assertJsonPath('data.0.company.id', $this->company->id)
         ->assertJsonPath('data.0.access', 'write');
+});
+
+test('global access users do not see connections for restricted companies', function () {
+    $global = User::factory()->create(['role' => 'user']);
+    $restricted = Company::factory()->create();
+    app(UserCompanyAccessService::class)->syncUserAccess($global, ['read-only'], [$restricted->id]);
+
+    $allowedConnection = ($this->connectionFor)($global);
+    $restrictedConnection = McpConnection::query()->create([
+        'user_id' => $global->id,
+        'company_id' => $restricted->id,
+        'oauth_client_id' => (string) Str::uuid(),
+        'access' => McpConnection::ACCESS_READ,
+        'client_name' => 'Claude',
+        'redirect_host' => 'claude.ai',
+    ]);
+
+    Sanctum::actingAs($global, ['*']);
+
+    $this->getJson('/api/v1/mcp/connections')
+        ->assertOk()
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.id', $allowedConnection->id)
+        ->assertJsonMissing(['id' => $restrictedConnection->id]);
 });
 
 test('a connection can be lowered to read only but not raised', function () {

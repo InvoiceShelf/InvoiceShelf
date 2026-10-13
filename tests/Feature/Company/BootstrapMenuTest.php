@@ -1,12 +1,19 @@
 <?php
 
+use App\Domains\Accounts\Application\CompanyService;
+use App\Domains\Accounts\Application\UserCompanyAccessService;
+use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\User;
+use App\Domains\Contacts\Models\Customer;
 use App\Domains\Purchases\Models\SupplierCredit;
 use App\Domains\Purchases\Models\SupplierRefund;
+use App\Domains\Sales\Models\Invoice;
 use App\Providers\AppServiceProvider;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\Sanctum;
 use Silber\Bouncer\BouncerFacade;
+use Silber\Bouncer\Database\Role;
 
 use function Pest\Laravel\getJson;
 
@@ -69,3 +76,117 @@ test('secondary purchase permissions keep their parent navigation accessible', f
     ['view-supplier-credit', SupplierCredit::class, ['Bill']],
     ['view-supplier-refund', SupplierRefund::class, ['SupplierPayment']],
 ]);
+
+test('company roles take precedence over global roles in the active company', function () {
+    $company = User::findOrFail(1)->companies()->firstOrFail();
+    $user = User::factory()->create(['role' => 'user']);
+    $user->companies()->attach($company->id);
+    app(UserCompanyAccessService::class)->syncUserAccess($user, ['manager'], []);
+
+    $roleName = BouncerFacade::scope()->onceTo($company->id, function (): string {
+        $role = Role::query()->create(['name' => 'invoice-viewer', 'title' => 'Invoice viewer']);
+        BouncerFacade::allow($role)->to('view-invoice', Invoice::class);
+
+        return $role->name;
+    });
+    app(UserCompanyAccessService::class)->replaceCompanyRoles($user, $company->id, [$roleName]);
+
+    expect($user->globalRolePresets()->pluck('key')->all())->toBe(['manager'])
+        ->and(DB::table('assigned_roles')
+            ->where('entity_type', $user->getMorphClass())
+            ->where('entity_id', $user->id)
+            ->whereNull('scope')
+            ->exists())->toBeTrue();
+
+    Sanctum::actingAs($user);
+
+    $response = $this->withHeader('company', $company->id)
+        ->getJson('/api/v1/bootstrap')
+        ->assertOk();
+
+    expect(collect($response->json('current_user_abilities'))->pluck('name')->all())
+        ->toContain('view-invoice')
+        ->not->toContain('dashboard', 'view-customer', 'create-invoice')
+        ->and(collect($response->json('main_menu'))->pluck('name')->all())
+        ->toContain('Invoices')
+        ->not->toContain('Dashboard', 'Customers');
+});
+
+test('company roles can explicitly combine with global roles in the active company', function () {
+    $company = User::findOrFail(1)->companies()->firstOrFail();
+    $user = User::factory()->create(['role' => 'user']);
+    $user->companies()->attach($company->id, ['include_global_roles' => true]);
+    app(UserCompanyAccessService::class)->syncUserAccess($user, ['manager'], []);
+
+    $roleName = BouncerFacade::scope()->onceTo($company->id, function (): string {
+        $role = Role::query()->create(['name' => 'invoice-viewer', 'title' => 'Invoice viewer']);
+        BouncerFacade::allow($role)->to('view-invoice', Invoice::class);
+
+        return $role->name;
+    });
+    app(UserCompanyAccessService::class)->replaceCompanyRoles($user, $company->id, [$roleName]);
+    Sanctum::actingAs($user);
+
+    $response = $this->withHeader('company', $company->id)
+        ->getJson('/api/v1/bootstrap')
+        ->assertOk();
+
+    expect(collect($response->json('current_user_abilities'))->pluck('name')->all())
+        ->toContain('view-invoice', 'dashboard', 'view-customer', 'create-invoice')
+        ->and(collect($response->json('main_menu'))->pluck('name')->all())
+        ->toContain('Dashboard', 'Customers', 'Invoices');
+});
+
+test('global manager can use company resource endpoints after selecting a company', function () {
+    $owner = User::factory()->create(['role' => 'user']);
+    $company = Company::factory()->create(['owner_id' => $owner->id]);
+    app(CompanyService::class)->setupDefaults($company);
+    $user = User::factory()->create(['role' => 'user']);
+
+    app(UserCompanyAccessService::class)->syncUserAccess($user, ['manager'], []);
+    Sanctum::actingAs($user);
+
+    $this->withHeader('company', $company->id)
+        ->getJson('/api/v1/bootstrap')
+        ->assertOk()
+        ->assertJsonPath('current_company.id', $company->id);
+
+    expect(collect($user->getAbilities())->pluck('name')->all())
+        ->toContain('view-customer', 'create-customer');
+
+    $this->withHeader('company', $company->id)
+        ->getJson('/api/v1/customers')
+        ->assertOk();
+
+    $this->withHeader('company', $company->id)
+        ->postJson('/api/v1/customers', [
+            'name' => 'Global Role Customer',
+            'email' => 'global-role-customer@example.com',
+            'currency_id' => $company->currency_id,
+            'enable_portal' => false,
+        ])
+        ->assertOk();
+
+    expect(Customer::query()->where('name', 'Global Role Customer')->where('company_id', $company->id)->exists())
+        ->toBeTrue();
+});
+
+test('restricted companies deny access even when direct and global roles are combined', function () {
+    $company = User::findOrFail(1)->companies()->firstOrFail();
+    $user = User::factory()->create(['role' => 'user']);
+    $user->companies()->attach($company->id, ['include_global_roles' => true]);
+
+    app(UserCompanyAccessService::class)->syncUserAccess($user, ['manager'], [$company->id]);
+    $roleName = BouncerFacade::scope()->onceTo($company->id, function (): string {
+        $role = Role::query()->create(['name' => 'invoice-viewer', 'title' => 'Invoice viewer']);
+        BouncerFacade::allow($role)->to('view-invoice', Invoice::class);
+
+        return $role->name;
+    });
+    app(UserCompanyAccessService::class)->replaceCompanyRoles($user, $company->id, [$roleName]);
+    Sanctum::actingAs($user);
+
+    $this->withHeader('company', $company->id)
+        ->getJson('/api/v1/bootstrap')
+        ->assertForbidden();
+});

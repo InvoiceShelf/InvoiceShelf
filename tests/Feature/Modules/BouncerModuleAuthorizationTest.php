@@ -1,5 +1,6 @@
 <?php
 
+use App\Domains\Accounts\Application\UserCompanyAccessService;
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\User;
 use App\Domains\Catalog\Models\Item;
@@ -26,7 +27,7 @@ test('module authorization resolves stable resource keys within the supplied com
     $companyB = Company::factory()->create();
     $user = User::factory()->create();
     $user->companies()->attach([$companyA->id, $companyB->id]);
-    $authorization = new BouncerModuleAuthorization;
+    $authorization = new BouncerModuleAuthorization(app(UserCompanyAccessService::class));
 
     hostGrant($user, $companyA->id, 'view-item', Item::class);
     hostGrant($user, $companyA->id, 'dashboard');
@@ -42,7 +43,7 @@ test('module authorization resolves stable resource keys within the supplied com
 test('module authorization refuses users outside the company and unknown stable resource keys', function () {
     $company = Company::firstOrFail();
     $outsider = User::factory()->create();
-    $authorization = new BouncerModuleAuthorization;
+    $authorization = new BouncerModuleAuthorization(app(UserCompanyAccessService::class));
 
     expect($authorization->allows($outsider->id, $company->id, 'dashboard'))->toBeFalse();
 
@@ -51,4 +52,18 @@ test('module authorization refuses users outside the company and unknown stable 
 
     expect(fn () => $authorization->allows($member->id, $company->id, 'view-widget', 'widget'))
         ->toThrow(LogicException::class);
+});
+
+test('module authorization accepts global roles in allowed companies but not restricted ones', function () {
+    $company = Company::firstOrFail();
+    $restricted = Company::factory()->create();
+    $user = User::factory()->create(['role' => 'user']);
+
+    app(UserCompanyAccessService::class)->syncUserAccess($user, ['manager'], [$restricted->id]);
+
+    $authorization = new BouncerModuleAuthorization(app(UserCompanyAccessService::class));
+
+    expect($authorization->allows($user->id, $company->id, 'dashboard'))->toBeTrue()
+        ->and($authorization->allows($user->id, $company->id, 'view-invoice', 'invoice'))->toBeTrue()
+        ->and($authorization->allows($user->id, $restricted->id, 'dashboard'))->toBeFalse();
 });

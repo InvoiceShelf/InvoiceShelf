@@ -26,7 +26,7 @@ interface AddMemberForm {
   name: string
   email: string
   password: string
-  role: string | null
+  roles: string[]
 }
 
 withDefaults(defineProps<Props>(), {
@@ -45,7 +45,7 @@ const form = reactive<AddMemberForm>({
   name: '',
   email: '',
   password: '',
-  role: null,
+  roles: [],
 })
 
 const rules = computed(() => ({
@@ -60,7 +60,7 @@ const rules = computed(() => ({
     required: helpers.withMessage(t('validation.required'), required),
     minLength: helpers.withMessage(t('validation.password_min_length', { count: 8 }), minLength(8)),
   },
-  role: {
+  roles: {
     required: helpers.withMessage(t('validation.required'), required),
   },
 }))
@@ -79,13 +79,13 @@ function reset(): void {
   form.name = ''
   form.email = ''
   form.password = ''
-  form.role = null
+  form.roles = []
   v$.value.$reset()
 }
 
 async function submit(): Promise<void> {
   v$.value.$touch()
-  if (v$.value.$invalid || !companyStore.selectedCompany || !form.role) return
+  if (v$.value.$invalid || !companyStore.selectedCompany || form.roles.length === 0) return
 
   isSaving.value = true
   try {
@@ -93,7 +93,7 @@ async function submit(): Promise<void> {
       name: form.name,
       email: form.email,
       password: form.password,
-      companies: [{ id: companyStore.selectedCompany.id, role: form.role }],
+      companies: [{ id: companyStore.selectedCompany.id, roles: form.roles }],
     })
     reset()
     emit('added')
@@ -159,15 +159,16 @@ async function submit(): Promise<void> {
 
         <BaseInputGroup
           :label="$t('members.role')"
-          :error="v$.role.$error && v$.role.$errors[0]?.$message"
+          :error="v$.roles.$error && v$.roles.$errors[0]?.$message"
           required
         >
           <BaseMultiselect
-            v-model="form.role"
+            v-model="form.roles"
             :options="roles"
             label="title"
             value-prop="name"
             track-by="title"
+            mode="tags"
             :searchable="true"
           />
         </BaseInputGroup>

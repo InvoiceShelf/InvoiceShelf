@@ -30,6 +30,7 @@ class RolePresetService
     public function __construct(
         private readonly AbilityCatalog $catalog,
         private readonly RoleGrantWriter $grants,
+        private readonly UserCompanyAccessService $globalAccess,
     ) {}
 
     /**
@@ -72,6 +73,10 @@ class RolePresetService
             foreach (Company::query()->lazyById() as $company) {
                 $this->syncCopy($preset, $company->id);
             }
+
+            if ($this->globalAccess->globalUsage($preset) > 0) {
+                $this->globalAccess->syncGlobalRole($preset);
+            }
         });
     }
 
@@ -80,8 +85,8 @@ class RolePresetService
      */
     public function syncAll(): void
     {
-        foreach (Company::query()->lazyById() as $company) {
-            $this->syncCompany($company->id);
+        foreach ($this->all() as $preset) {
+            $this->syncPreset($preset);
         }
     }
 
@@ -147,6 +152,7 @@ class RolePresetService
                 BouncerFacade::scope()->onceTo((int) $role->scope, fn () => $role->delete());
             }
 
+            $this->globalAccess->deleteGlobalRole($preset);
             $preset->delete();
         });
 
@@ -164,22 +170,32 @@ class RolePresetService
     {
         $roleIds = $this->copies($preset)->pluck('id');
 
-        if ($roleIds->isEmpty()) {
-            return ['members' => 0, 'invitations' => 0];
-        }
+        $members = $roleIds->isEmpty()
+            ? 0
+            : Models::query('assigned_roles')
+                ->join('user_company', function ($join): void {
+                    $join->on('user_company.user_id', '=', 'assigned_roles.entity_id')
+                        ->on('user_company.company_id', '=', 'assigned_roles.scope');
+                })
+                ->whereIn('assigned_roles.role_id', $roleIds)
+                ->where('assigned_roles.entity_type', (new User)->getMorphClass())
+                ->count();
 
-        $members = Models::query('assigned_roles')
-            ->join('user_company', function ($join): void {
-                $join->on('user_company.user_id', '=', 'assigned_roles.entity_id')
-                    ->on('user_company.company_id', '=', 'assigned_roles.scope');
+        $invitations = CompanyInvitation::query()
+            ->pending()
+            ->get(['role_id', 'role_ids'])
+            ->filter(function (CompanyInvitation $invitation) use ($roleIds): bool {
+                return collect($invitation->role_ids ?: [$invitation->role_id])
+                    ->map(fn (mixed $id): int => (int) $id)
+                    ->intersect($roleIds)
+                    ->isNotEmpty();
             })
-            ->whereIn('assigned_roles.role_id', $roleIds)
-            ->where('assigned_roles.entity_type', (new User)->getMorphClass())
             ->count();
 
-        $invitations = CompanyInvitation::query()->pending()->whereIn('role_id', $roleIds)->count();
-
-        return ['members' => $members, 'invitations' => $invitations];
+        return [
+            'members' => $members + $this->globalAccess->globalUsage($preset),
+            'invitations' => $invitations,
+        ];
     }
 
     /**

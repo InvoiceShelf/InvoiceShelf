@@ -25,16 +25,16 @@ export interface UpdateMemberPayload {
   email?: string
   phone?: string | null
   password?: string
-  role?: string | null
   companies?: Array<{
     id: number
-    role?: string
+    roles: string[]
+    include_global_roles?: boolean
   }>
 }
 
 export interface InviteMemberPayload {
   email: string
-  role_id: number | null
+  role_ids: number[]
 }
 
 export interface DeleteMembersPayload {
