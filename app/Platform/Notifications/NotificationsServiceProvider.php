@@ -53,6 +53,7 @@ class NotificationsServiceProvider extends ServiceProvider
             new NotificationType('payment_received', NotificationType::GROUP_SALES, 'view-payment', Payment::class),
             new NotificationType('invoice_paid', NotificationType::GROUP_SALES, 'view-invoice', Invoice::class),
             new NotificationType('invoice_overdue', NotificationType::GROUP_SALES, 'view-invoice', Invoice::class),
+            new NotificationType('invoice_reminder_sent', NotificationType::GROUP_SALES, 'view-invoice', Invoice::class, bell: false),
             new NotificationType('bill_due_soon', NotificationType::GROUP_PURCHASES, 'view-bill', Bill::class),
             new NotificationType('bill_overdue', NotificationType::GROUP_PURCHASES, 'view-bill', Bill::class),
             new NotificationType('recurring_invoice_generated', NotificationType::GROUP_RECURRING, mail: true),

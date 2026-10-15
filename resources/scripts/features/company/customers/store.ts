@@ -45,6 +45,7 @@ export interface CustomerForm {
   customFields: unknown[]
   fields: unknown[]
   enable_portal: boolean
+  reminders_paused: boolean
   password_added?: boolean
 }
 
@@ -79,6 +80,7 @@ function createCustomerStub(): CustomerForm {
     customFields: [],
     fields: [],
     enable_portal: false,
+    reminders_paused: false,
   }
 }
 

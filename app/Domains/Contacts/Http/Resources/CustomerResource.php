@@ -32,6 +32,7 @@ class CustomerResource extends JsonResource
             'company_name' => $this->company_name,
             'website' => $this->website,
             'enable_portal' => $this->enable_portal,
+            'reminders_paused' => (bool) $this->reminders_paused,
             'password_added' => (bool) $this->password,
             'currency_id' => $this->currency_id,
             'company_id' => $this->company_id,

@@ -44,6 +44,13 @@ Schedule::command('recurring-costs:generate')
     ->withoutOverlapping()
     ->when($installed);
 
+// Payment reminders to customers, each company at the hour it chose in its
+// own time zone; asking every hour lets each one go out on time.
+Schedule::command('invoices:send-reminders')
+    ->hourly()
+    ->withoutOverlapping()
+    ->when($installed);
+
 // Client registrations that never led to a connection, and OAuth tokens
 // long expired.
 Schedule::command('mcp:prune')
