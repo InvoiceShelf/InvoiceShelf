@@ -71,6 +71,7 @@ class Customer extends Authenticatable implements HasMedia
     {
         return [
             'enable_portal' => 'boolean',
+            'reminders_paused' => 'boolean',
         ];
     }
 

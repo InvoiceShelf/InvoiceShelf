@@ -2,6 +2,7 @@
 
 namespace App\Platform\Modules\Console;
 
+use App\Platform\Modules\Events\ModuleIncompatible;
 use App\Platform\Modules\Models\Module as InstalledModule;
 use App\Platform\Modules\Runtime\DatabaseActivator;
 use App\Platform\Modules\Runtime\ModuleCompatibility;
@@ -49,6 +50,7 @@ class ReconcileModulesCommand extends Command
             ])->save();
             Log::warning('Module disabled: it does not fit this InvoiceShelf version.', ['module' => $module->name, 'problems' => $problems]);
             $this->components->warn("{$module->name} disabled: ".implode(' ', $problems));
+            ModuleIncompatible::dispatch((string) $module->name, implode(' ', $problems));
             $disabled++;
         }
 

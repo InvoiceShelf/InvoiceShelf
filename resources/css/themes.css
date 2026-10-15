@@ -116,6 +116,8 @@
     --color-alert-error-text: #a3261b;
     --color-alert-success-bg: #e7f6ec;
     --color-alert-success-text: #126b34;
+    --color-alert-info-bg: #e9f0fe;
+    --color-alert-info-text: #1a4fb0;
 
     /* Destructive actions and invalid fields */
     --color-danger: #d42a1e;
@@ -222,6 +224,8 @@
     --color-alert-error-text: #f98b82;
     --color-alert-success-bg: rgb(52 199 120 / 0.12);
     --color-alert-success-text: #5fd494;
+    --color-alert-info-bg: rgb(96 150 255 / 0.12);
+    --color-alert-info-text: #86b3ff;
 
     --color-danger: #ef5b4f;
     --color-danger-hover: #f46e63;

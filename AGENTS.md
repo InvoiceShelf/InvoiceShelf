@@ -135,7 +135,7 @@ The styling system uses **Tailwind v4 with CSS custom properties as the source o
 - `header-from`, `header-to` — fixed header gradient stops (not dark-mode-aware)
 - `btn-primary`, `btn-primary-hover` — button colors (fixed, always bold)
 - `status-{yellow,green,blue,red,purple}` — status badge text colors
-- `alert-{warning,error,success}-{bg,text}` — alert variants
+- `alert-{warning,error,success,info}-{bg,text}` — alert variants
 
 **Dark mode** is toggled via the `[data-theme="dark"]` attribute on the `<html>` element. The same custom-property names get redefined under that selector — components do **not** need `dark:` variants or conditional logic, they just reference the semantic tokens and the right value is picked up automatically.
 
@@ -158,6 +158,7 @@ After that the token is usable as `bg-X` / `text-X` / `border-X` in Vue template
 - **PDF generation**: Pluggable driver — `dompdf` (default, via `GeneratesPdfTrait`) or `gotenberg` (headless Chromium). Driver chosen per company through the **PDF Generation** admin settings page.
 - **Outbound hosts**: a setting that names a host the server connects to is checked by `App\Support\Net\PrivateNetworkGuard`, at save time (`PublicHttpUrl`, `PublicHost`) and again when the connection is made. Legitimate private hosts are exempted per feature in `config/network.php` (`GOTENBERG_ALLOWED_PRIVATE_HOST`, `MAIL_ALLOWED_PRIVATE_HOSTS`) through `PrivateNetworkGuard::isExempt($feature, $target)`: the operator names the hosts, never a boolean, never a settings toggle, and one feature's exemption never covers another.
 - **Email**: Mailable classes with `EmailLog` tracking. Mail driver is configurable globally and may be overridden per-company.
+- **Staff notifications** (`app/Platform/Notifications/`): the bell and the emails staff get about their own work. A domain fires an event carrying ids (`app/Domains/*/Events/`), never calling notification code itself; `Listeners/NotifyStaff` turns it into a `NotificationMessage` and `NotificationCenter::send()` delivers it, to every member holding the type's ability in that company (checked in the company's Bouncer scope) or to one named person, on the channels each person chose (`NotificationPreferences`, the user setting `notification_preferences`). Every type is registered in `NotificationsServiceProvider::types()` with its group, ability and default email choice, and needs `inbox.types.{type}.{label,description,title,body}` in `lang/en.json`: the text is never stored, so the bell and the email are written in each reader's language. The stock `notifications` table carries `company_id` (null for a platform notice) and the record it is about (`subject_type`, `subject_id`). A failure to notify is reported and never fails the action it is about.
 - **File storage**: Spatie MediaLibrary backed by the **FileDisk** model — admins create named disk entries (local / S3 / Dropbox / DigitalOcean Spaces) and assign them to purposes (`media_storage`, `pdf_storage`, `backup_storage`) in **Admin → File Disks → Disk Assignments**. New uploads go to the assigned disk; existing files stay where they were and require `php artisan media:secure` to migrate.
 - **Serial numbers**: `SerialNumberService`
 - **Company settings**: `CompanySetting` model (key-value per company)

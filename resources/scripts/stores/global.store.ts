@@ -13,6 +13,7 @@ import type {
   NumberPlaceholder,
 } from '@/scripts/api/services/setting.service'
 import { useCompanyStore } from './company.store'
+import { useInboxStore } from './inbox.store'
 import { useUserStore } from './user.store'
 import { useNotificationStore } from './notification.store'
 import { handleApiError } from '../utils/error-handling'
@@ -111,6 +112,8 @@ export const useGlobalStore = defineStore('global', () => {
         companyStore.selectedCompanySettings = {}
         companyStore.selectedCompanyCurrency = null
       }
+
+      useInboxStore().setAnnouncements(response.announcements ?? [])
 
       isAppLoaded.value = true
 

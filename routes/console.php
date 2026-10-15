@@ -44,8 +44,26 @@ Schedule::command('recurring-costs:generate')
     ->withoutOverlapping()
     ->when($installed);
 
+// Payment reminders to customers, each company at the hour it chose in its
+// own time zone; asking every hour lets each one go out on time.
+Schedule::command('invoices:send-reminders')
+    ->hourly()
+    ->withoutOverlapping()
+    ->when($installed);
+
 // Client registrations that never led to a connection, and OAuth tokens
 // long expired.
 Schedule::command('mcp:prune')
+    ->daily()
+    ->when($installed);
+
+// Announcements from the InvoiceShelf project (config invoiceshelf.announcements.feed).
+Schedule::command('announcements:sync')
+    ->hourly()
+    ->withoutOverlapping()
+    ->when($installed);
+
+// Old notices in the bell: read ones after 90 days, unread ones after 180.
+Schedule::command('notifications:prune')
     ->daily()
     ->when($installed);

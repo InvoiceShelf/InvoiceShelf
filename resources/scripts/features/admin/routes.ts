@@ -17,6 +17,8 @@ const AdminCurrenciesView = () =>
   import('./views/settings/AdminCurrenciesView.vue')
 const AdminRolePresetsView = () =>
   import('./views/settings/AdminRolePresetsView.vue')
+const AdminAnnouncementsView = () =>
+  import('./views/settings/AdminAnnouncementsView.vue')
 const AdminUpdateAppView = () => import('./views/settings/AdminUpdateAppView.vue')
 const AdminAppearanceView = () => import('./views/settings/AdminAppearanceView.vue')
 const AdminMcpView = () => import('./views/settings/AdminMcpView.vue')
@@ -148,6 +150,14 @@ export const adminRoutes: RouteRecordRaw[] = [
               isSuperAdmin: true,
             },
             component: AdminRolePresetsView,
+          },
+          {
+            path: 'announcements',
+            name: 'admin.settings.announcements',
+            meta: {
+              isSuperAdmin: true,
+            },
+            component: AdminAnnouncementsView,
           },
           {
             path: 'update-app',
