@@ -85,8 +85,16 @@ async function submitForm(): Promise<void> {
     :title="$t('settings.notification.title')"
     :description="$t('settings.notification.description')"
   >
+    <RouterLink
+      to="/admin/account-settings/notifications"
+      class="inline-flex items-center gap-1.5 text-sm font-medium text-primary-600 hover:text-primary-700"
+    >
+      <BaseIcon name="BellIcon" class="w-4 h-4" aria-hidden="true" />
+      {{ $t('settings.notification.personal_link') }}
+    </RouterLink>
+
     <form action="" @submit.prevent="submitForm">
-      <div class="grid-cols-2 col-span-1 mt-14">
+      <div class="grid-cols-2 col-span-1 mt-8">
         <BaseInputGroup
           :error="
             v$.notification_email.$error &&

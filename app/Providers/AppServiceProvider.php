@@ -10,7 +10,6 @@ use App\Support\Urls\CustomerUrl;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Silber\Bouncer\Database\Models as BouncerModels;
@@ -58,10 +57,11 @@ class AppServiceProvider extends ServiceProvider
 
         $this->bootBroadcast();
 
-        // The public demo build must never put real mail on the wire.
+        // The public demo build must never put real mail on the wire. Its
+        // notices still reach the bell: the mail channel sends through the
+        // faked mailer too.
         if (config('app.env') === 'demo') {
             Mail::fake();
-            Notification::fake();
         }
     }
 
