@@ -2,23 +2,40 @@
 
 namespace App\Platform\Notifications\Listeners;
 
+use App\Domains\Accounts\Events\InvitationAnswered;
+use App\Domains\Accounts\Models\Company;
+use App\Domains\Accounts\Models\CompanyInvitation;
 use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Accounts\Models\User;
+use App\Domains\Purchases\Events\BillBecameOverdue;
+use App\Domains\Purchases\Events\BillDueSoon;
 use App\Domains\Purchases\Events\RecurringCostFailed;
 use App\Domains\Purchases\Events\RecurringCostGenerated;
 use App\Domains\Purchases\Models\Bill;
 use App\Domains\Purchases\Models\Expense;
 use App\Domains\Purchases\Models\RecurringCost;
+use App\Domains\Receivables\Events\PaymentRecorded;
+use App\Domains\Receivables\Models\Payment;
+use App\Domains\Sales\Events\EstimateAnswered;
 use App\Domains\Sales\Events\EstimateViewed;
+use App\Domains\Sales\Events\InvoiceBecameOverdue;
+use App\Domains\Sales\Events\InvoicePaid;
 use App\Domains\Sales\Events\InvoiceViewed;
 use App\Domains\Sales\Events\RecurringInvoiceFailed;
 use App\Domains\Sales\Events\RecurringInvoiceGenerated;
 use App\Domains\Sales\Models\Estimate;
 use App\Domains\Sales\Models\Invoice;
 use App\Domains\Sales\Models\RecurringInvoice;
+use App\Platform\Mcp\Events\McpConnectionBound;
+use App\Platform\Mcp\Models\McpConnection;
+use App\Platform\Modules\Events\ModuleIncompatible;
 use App\Platform\Notifications\Application\NotificationCenter;
 use App\Platform\Notifications\NotificationMessage;
+use App\Platform\Operations\Managed\ManagedMode;
 use Illuminate\Events\Dispatcher;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
+use Spatie\Backup\Events\BackupHasFailed;
 
 /**
  * Turns what happened in the app into notices for the staff it concerns.
@@ -39,6 +56,16 @@ class NotifyStaff
             RecurringInvoiceFailed::class => 'recurringInvoiceFailed',
             RecurringCostGenerated::class => 'recurringCostGenerated',
             RecurringCostFailed::class => 'recurringCostFailed',
+            EstimateAnswered::class => 'estimateAnswered',
+            PaymentRecorded::class => 'paymentRecorded',
+            InvoicePaid::class => 'invoicePaid',
+            InvoiceBecameOverdue::class => 'invoiceBecameOverdue',
+            BillDueSoon::class => 'billDueSoon',
+            BillBecameOverdue::class => 'billBecameOverdue',
+            InvitationAnswered::class => 'invitationAnswered',
+            McpConnectionBound::class => 'mcpConnectionBound',
+            ModuleIncompatible::class => 'moduleIncompatible',
+            BackupHasFailed::class => 'backupFailed',
         ];
     }
 
@@ -171,6 +198,216 @@ class NotifyStaff
             translate: ['reason'],
             url: "/admin/recurring-costs/{$schedule->id}/view",
         ), $this->creator($schedule->creator_id));
+    }
+
+    public function estimateAnswered(EstimateAnswered $event): void
+    {
+        $estimate = Estimate::query()->with('customer')->find($event->estimateId);
+
+        if ($estimate === null) {
+            return;
+        }
+
+        $this->center->send(new NotificationMessage(
+            type: $event->status === Estimate::STATUS_ACCEPTED ? 'estimate_accepted' : 'estimate_rejected',
+            companyId: $event->companyId,
+            subject: $estimate,
+            params: ['customer' => (string) $estimate->customer?->name, 'number' => (string) $estimate->estimate_number],
+            url: "/admin/estimates/{$estimate->id}/view",
+        ));
+    }
+
+    /**
+     * Whoever recorded it is not told about their own work.
+     */
+    public function paymentRecorded(PaymentRecorded $event): void
+    {
+        $payment = Payment::query()->with(['customer', 'currency'])->find($event->paymentId);
+
+        if ($payment === null) {
+            return;
+        }
+
+        $actor = $event->actorId ? User::query()->find($event->actorId) : null;
+
+        $this->center->send(new NotificationMessage(
+            type: 'payment_received',
+            companyId: $event->companyId,
+            subject: $payment,
+            params: [
+                'customer' => (string) $payment->customer?->name,
+                'number' => (string) $payment->payment_number,
+                'amount' => $this->money($payment->amount, $payment->currency),
+                'member' => (string) $actor?->name,
+            ],
+            variant: $actor ? 'recorded' : 'online',
+            url: "/admin/payments/{$payment->id}/view",
+        ), except: $actor ? [(int) $actor->id] : []);
+    }
+
+    public function invoicePaid(InvoicePaid $event): void
+    {
+        $invoice = Invoice::query()->with(['customer', 'currency'])->find($event->invoiceId);
+
+        if ($invoice === null) {
+            return;
+        }
+
+        $this->center->send(new NotificationMessage(
+            type: 'invoice_paid',
+            companyId: $event->companyId,
+            subject: $invoice,
+            params: [
+                'customer' => (string) $invoice->customer?->name,
+                'number' => (string) $invoice->invoice_number,
+                'amount' => $this->money($invoice->total, $invoice->currency),
+            ],
+            url: "/admin/invoices/{$invoice->id}/view",
+        ));
+    }
+
+    public function invoiceBecameOverdue(InvoiceBecameOverdue $event): void
+    {
+        $invoice = Invoice::query()->with(['customer', 'currency'])->find($event->invoiceId);
+
+        if ($invoice === null) {
+            return;
+        }
+
+        $this->center->sendOnce(new NotificationMessage(
+            type: 'invoice_overdue',
+            companyId: $event->companyId,
+            subject: $invoice,
+            params: [
+                'customer' => (string) $invoice->customer?->name,
+                'number' => (string) $invoice->invoice_number,
+                'amount' => $this->money($invoice->due_amount, $invoice->currency),
+                'date' => (string) $invoice->formattedDueDate,
+            ],
+            url: "/admin/invoices/{$invoice->id}/view",
+        ));
+    }
+
+    public function billDueSoon(BillDueSoon $event): void
+    {
+        $this->bill($event->billId, $event->companyId, 'bill_due_soon');
+    }
+
+    public function billBecameOverdue(BillBecameOverdue $event): void
+    {
+        $this->bill($event->billId, $event->companyId, 'bill_overdue');
+    }
+
+    /**
+     * Told to whoever sent the invitation.
+     */
+    public function invitationAnswered(InvitationAnswered $event): void
+    {
+        $invitation = CompanyInvitation::query()->with(['company', 'invitedBy'])->find($event->invitationId);
+
+        if ($invitation === null || $invitation->invitedBy === null) {
+            return;
+        }
+
+        $this->center->send(new NotificationMessage(
+            type: $event->status === CompanyInvitation::STATUS_ACCEPTED ? 'invitation_accepted' : 'invitation_declined',
+            companyId: $event->companyId,
+            params: ['email' => (string) $invitation->email, 'company' => (string) $invitation->company?->name],
+            url: '/admin/members',
+        ), $invitation->invitedBy);
+    }
+
+    /**
+     * Told to the person, in case it was not them, and to the company's
+     * owner, whose data the app can now read.
+     */
+    public function mcpConnectionBound(McpConnectionBound $event): void
+    {
+        $connection = McpConnection::query()->find($event->connectionId);
+        $user = User::query()->find($event->userId);
+        $company = Company::query()->find($event->companyId);
+
+        if ($connection === null || $user === null || $company === null) {
+            return;
+        }
+
+        $message = new NotificationMessage(
+            type: 'ai_connection_added',
+            companyId: $event->companyId,
+            params: ['app' => (string) $connection->client_name, 'member' => (string) $user->name, 'company' => (string) $company->name],
+            url: '/admin/account-settings/connected-apps',
+        );
+
+        $this->center->send($message, $user);
+
+        $owner = $company->owner_id ? User::query()->find($company->owner_id) : null;
+
+        if ($owner !== null && (int) $owner->id !== (int) $user->id) {
+            $this->center->send(new NotificationMessage(
+                type: 'ai_connection_added',
+                companyId: $event->companyId,
+                params: $message->params,
+                variant: 'member',
+                url: '/admin/members',
+            ), $owner);
+        }
+    }
+
+    /**
+     * Runs at boot, possibly before this release's migrations: nothing is
+     * sent until the notifications table has its company column.
+     */
+    public function moduleIncompatible(ModuleIncompatible $event): void
+    {
+        if (! Schema::hasColumn('notifications', 'company_id')) {
+            return;
+        }
+
+        $this->center->send(new NotificationMessage(
+            type: 'module_disabled',
+            companyId: null,
+            params: ['module' => $event->module, 'problems' => $event->problems],
+            url: '/admin/administration/modules',
+        ));
+    }
+
+    /**
+     * Not on a managed install, where the provider keeps the backups.
+     */
+    public function backupFailed(BackupHasFailed $event): void
+    {
+        if (ManagedMode::enabled()) {
+            return;
+        }
+
+        $this->center->send(new NotificationMessage(
+            type: 'backup_failed',
+            companyId: null,
+            params: ['disk' => (string) $event->diskName, 'error' => Str::limit($event->exception->getMessage(), 200)],
+            url: '/admin/administration/settings/backup',
+        ));
+    }
+
+    private function bill(int $billId, int $companyId, string $type): void
+    {
+        $bill = Bill::query()->with(['supplier', 'currency'])->find($billId);
+
+        if ($bill === null) {
+            return;
+        }
+
+        $this->center->sendOnce(new NotificationMessage(
+            type: $type,
+            companyId: $companyId,
+            subject: $bill,
+            params: [
+                'supplier' => (string) $bill->supplier?->name,
+                'number' => (string) $bill->number,
+                'amount' => $this->money($bill->due_amount, $bill->currency),
+                'date' => (string) $bill->due_date,
+            ],
+            url: "/admin/bills/{$bill->id}/view",
+        ));
     }
 
     /**

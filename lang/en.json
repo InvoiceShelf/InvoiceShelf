@@ -2747,7 +2747,14 @@
       "bell": "In app",
       "mail": "Email",
       "personal": "Only about schedules you set up",
-      "saved": "Notification preferences saved"
+      "saved": "Notification preferences saved",
+      "switched_off": "Switched off for everyone in {company}.",
+      "reset": "Use the company default"
+    },
+    "company_defaults": {
+      "title": "Defaults for members",
+      "description": "Switch a kind of notification off for everyone in the company, or choose where it starts for members who have not chosen for themselves. Members can change the defaults in their account settings, but not a notification you switched off.",
+      "enabled": "On"
     },
     "types": {
       "invoice_viewed": {
@@ -2789,6 +2796,80 @@
         "description": "One of your recurring schedules cannot record its bill or expense.",
         "title": "{name} needs attention",
         "body": "Your recurring schedule {name} could not record its bill or expense: {reason} Nothing was recorded. It tries again every hour until the schedule is fixed."
+      },
+      "estimate_accepted": {
+        "label": "Estimate accepted",
+        "description": "A customer accepts an estimate in the portal.",
+        "title": "Estimate {number} accepted",
+        "body": "{customer} accepted estimate {number}. Convert it to an invoice when you are ready."
+      },
+      "estimate_rejected": {
+        "label": "Estimate rejected",
+        "description": "A customer rejects an estimate in the portal.",
+        "title": "Estimate {number} rejected",
+        "body": "{customer} rejected estimate {number}."
+      },
+      "payment_received": {
+        "label": "Payment received",
+        "description": "A customer pays online, or a colleague records a payment.",
+        "title": "Payment {number} received",
+        "body_online": "{customer} paid {amount} online (payment {number}).",
+        "body_recorded": "{member} recorded a payment of {amount} from {customer} (payment {number})."
+      },
+      "invoice_paid": {
+        "label": "Invoice paid in full",
+        "description": "An invoice has nothing left to pay.",
+        "title": "Invoice {number} paid",
+        "body": "Invoice {number} for {customer} is paid in full ({amount})."
+      },
+      "invoice_overdue": {
+        "label": "Invoice overdue",
+        "description": "An invoice passes its due date unpaid.",
+        "title": "Invoice {number} is overdue",
+        "body": "Invoice {number} for {customer} was due on {date}. {amount} is still unpaid."
+      },
+      "bill_due_soon": {
+        "label": "Bill due soon",
+        "description": "A bill you still have to pay falls due within three days.",
+        "title": "Bill {number} due soon",
+        "body": "Bill {number} from {supplier} is due on {date}. {amount} is still to pay."
+      },
+      "bill_overdue": {
+        "label": "Bill overdue",
+        "description": "A bill you still have to pay passes its due date.",
+        "title": "Bill {number} is overdue",
+        "body": "Bill {number} from {supplier} was due on {date}. {amount} is still to pay."
+      },
+      "invitation_accepted": {
+        "label": "Invitation accepted",
+        "description": "Someone accepts an invitation you sent.",
+        "title": "{email} joined {company}",
+        "body": "{email} accepted your invitation to {company}."
+      },
+      "invitation_declined": {
+        "label": "Invitation declined",
+        "description": "Someone declines an invitation you sent.",
+        "title": "{email} declined your invitation",
+        "body": "{email} declined your invitation to {company}."
+      },
+      "ai_connection_added": {
+        "label": "AI app connected",
+        "description": "An AI app is connected to your account, or, for owners, to the company.",
+        "title": "{app} connected to {company}",
+        "body": "The AI app {app} was connected to your account for {company}. If this was not you, disconnect it in Connected apps.",
+        "body_member": "{member} connected the AI app {app} to {company}. It can use the company's data with their access."
+      },
+      "module_disabled": {
+        "label": "Module switched off",
+        "description": "A module is switched off after an upgrade because it does not fit this version.",
+        "title": "Module {module} was switched off",
+        "body": "{module} does not fit this version of InvoiceShelf and was switched off after the upgrade. {problems}"
+      },
+      "backup_failed": {
+        "label": "Backup failed",
+        "description": "A scheduled or manual backup fails.",
+        "title": "Backup failed",
+        "body": "A backup to {disk} failed: {error}"
       }
     }
   }
