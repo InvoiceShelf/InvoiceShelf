@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class RecurringInvoice extends Model
 {
@@ -285,11 +287,20 @@ class RecurringInvoice extends Model
         }
     }
 
+    /**
+     * Bill the current occurrence and move the schedule on.
+     *
+     * Returns the new invoice, or null when nothing was billed because the
+     * schedule has not started or has reached its limit (it is then marked
+     * completed). The invoice is not mailed here: see sendAutomatically().
+     */
     public function generateInvoice()
     {
         if (Carbon::now()->lessThan($this->starts_at)) {
-            return;
+            return null;
         }
+
+        $invoice = null;
 
         if ($this->limit_by == 'DATE') {
             $startDate = Carbon::today()->format('Y-m-d');
@@ -297,7 +308,7 @@ class RecurringInvoice extends Model
             $endDate = $this->limit_date;
 
             if ($endDate >= $startDate) {
-                $this->createInvoice();
+                $invoice = $this->createInvoice();
 
                 $this->updateNextInvoiceDate();
             } else {
@@ -307,17 +318,99 @@ class RecurringInvoice extends Model
             $invoiceCount = Invoice::where('recurring_invoice_id', $this->id)->count();
 
             if ($invoiceCount < $this->limit_count) {
-                $this->createInvoice();
+                $invoice = $this->createInvoice();
 
                 $this->updateNextInvoiceDate();
             } else {
                 $this->markStatusAsCompleted();
             }
         } else {
-            $this->createInvoice();
+            $invoice = $this->createInvoice();
 
             $this->updateNextInvoiceDate();
         }
+
+        return $invoice;
+    }
+
+    /**
+     * Bill the schedule once if its next run has come.
+     *
+     * The due date on the row decides, not the minute the scheduler happens to
+     * wake up, so a cron that runs late or less often than every minute still
+     * bills. A gap bills one invoice, not one per missed occurrence, and the
+     * schedule moves on to its next run after now.
+     *
+     * The row is locked and re-read inside the transaction, so two schedulers
+     * running at once bill it once, and the invoice and the moved-on date are
+     * written together. Mail goes out after the commit: a mail failure is
+     * reported and leaves the invoice as a draft, instead of rolling it back
+     * and billing again on the next run.
+     */
+    public function generateDueInvoice()
+    {
+        $schedule = null;
+
+        $invoice = DB::transaction(function () use (&$schedule) {
+            $schedule = self::whereKey($this->id)->lockForUpdate()->first();
+
+            if (! $schedule || ! $schedule->isDue()) {
+                return null;
+            }
+
+            // Not started, or nothing owed: a stale date. Recount it rather
+            // than leave the schedule due on every run.
+            if (Carbon::now()->lessThan($schedule->starts_at) || ! $schedule->owesLatestOccurrence()) {
+                $schedule->updateNextInvoiceDate();
+
+                return null;
+            }
+
+            return $schedule->generateInvoice();
+        });
+
+        if ($invoice) {
+            try {
+                $schedule->sendAutomatically($invoice);
+            } catch (Throwable $exception) {
+                report($exception);
+            }
+        }
+
+        return $invoice;
+    }
+
+    /**
+     * Whether the schedule still owes its latest occurrence: one that came
+     * after the schedule was created, with no invoice from the schedule since.
+     *
+     * Saving a schedule used to count its next run from the start date, which
+     * leaves a date in the past on schedules saved since. Billing by that date
+     * alone would bill a period again, or one from before the schedule existed.
+     */
+    public function owesLatestOccurrence()
+    {
+        $appZone = config('app.timezone', 'UTC');
+
+        $latest = (new Cron\CronExpression($this->frequency))
+            ->getPreviousRunDate(Carbon::now(), 0, true, $this->companyTimeZone() ?: $appZone);
+        $latest = Carbon::instance($latest)->setTimezone($appZone);
+
+        if ($this->created_at && $latest->lessThan($this->created_at)) {
+            return false;
+        }
+
+        return ! $this->invoices()->where('created_at', '>=', $latest)->exists();
+    }
+
+    /**
+     * Whether the schedule is active and its next run has come.
+     */
+    public function isDue()
+    {
+        return $this->status === self::ACTIVE
+            && $this->next_invoice_at !== null
+            && Carbon::parse($this->next_invoice_at)->lessThanOrEqualTo(Carbon::now());
     }
 
     public function createInvoice()
@@ -390,20 +483,29 @@ class RecurringInvoice extends Model
             $invoice->addCustomFields($customField);
         }
 
-        // send automatically
-        if ($this->send_automatically == true) {
-            $data = [
-                'body' => CompanySetting::getSetting('invoice_mail_body', $this->company_id),
-                'from' => config('mail.from.address'),
-                'to' => $this->customer->email,
-                'subject' => trans('invoices')['new_invoice'],
-                'invoice' => $invoice->toArray(),
-                'customer' => $invoice->customer->toArray(),
-                'company' => Company::find($invoice->company_id),
-            ];
+        return $invoice;
+    }
 
-            $invoice->send($data);
+    /**
+     * Mail a generated invoice to the customer if the schedule asks for it.
+     */
+    public function sendAutomatically(Invoice $invoice)
+    {
+        if ($this->send_automatically != true) {
+            return;
         }
+
+        $data = [
+            'body' => CompanySetting::getSetting('invoice_mail_body', $this->company_id),
+            'from' => config('mail.from.address'),
+            'to' => $this->customer->email,
+            'subject' => trans('invoices')['new_invoice'],
+            'invoice' => $invoice->toArray(),
+            'customer' => $invoice->customer->toArray(),
+            'company' => Company::find($invoice->company_id),
+        ];
+
+        $invoice->send($data);
     }
 
     public function markStatusAsCompleted()
@@ -457,10 +559,18 @@ class RecurringInvoice extends Model
      */
     public function nextRunCountsFrom($from = null)
     {
+        return self::runCountsFrom($this->starts_at, $from);
+    }
+
+    /**
+     * The same for a schedule that is not saved yet, from its start date.
+     */
+    public static function runCountsFrom($startsAt, $from = null)
+    {
         $moment = Carbon::parse($from ?: Carbon::now());
 
-        if ($this->starts_at && Carbon::parse($this->starts_at)->greaterThan($moment)) {
-            $moment = Carbon::parse($this->starts_at);
+        if ($startsAt && Carbon::parse($startsAt)->greaterThan($moment)) {
+            $moment = Carbon::parse($startsAt);
         }
 
         return $moment->format('Y-m-d H:i:s');

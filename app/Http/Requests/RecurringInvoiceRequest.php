@@ -106,7 +106,15 @@ class RecurringInvoiceRequest extends FormRequest
         $exchange_rate = $company_currency != $current_currency ? $this->exchange_rate : 1;
         $currency = Customer::find($this->customer_id)->currency_id;
 
-        $nextInvoiceAt = RecurringInvoice::getNextInvoiceDate($this->frequency, $this->starts_at);
+        // Counted like every later run: from now, or from the start date while
+        // that is still ahead, in the company's time zone. Counting from the
+        // start date put an edited schedule's next run back in the past, and
+        // recurring-invoices:generate bills any run that is in the past.
+        $nextInvoiceAt = RecurringInvoice::getNextInvoiceDate(
+            $this->frequency,
+            RecurringInvoice::runCountsFrom($this->starts_at),
+            CompanySetting::getSetting('time_zone', $this->header('company')) ?: null
+        );
 
         $tax_per_item = CompanySetting::getSetting('tax_per_item', $this->header('company')) ?? 'NO ';
         $discount_per_item = CompanySetting::getSetting('discount_per_item', $this->header('company')) ?? 'NO';
