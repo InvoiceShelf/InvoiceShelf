@@ -38,6 +38,7 @@ jobs:
                           - 'composer.json'
                           - 'composer.lock'
                           - 'phpunit.xml'
+                          - '.github/workflows/check.yaml'
                       docker:
                           - 'docker/production/**'
                           - '.github/workflows/check.yaml'
