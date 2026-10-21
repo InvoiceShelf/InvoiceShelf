@@ -26,8 +26,9 @@ beforeEach(function () {
 });
 
 /**
- * An active schedule whose next run passed a minute ago. Its expression, once
- * a year at midnight on 1 January, does not match the current minute.
+ * An active two-year-old schedule whose next run passed a minute ago. Its
+ * expression, once a year at midnight on 1 January, does not match the
+ * current minute.
  */
 function dueRecurringInvoice(array $attributes = []): RecurringInvoice
 {
@@ -35,6 +36,7 @@ function dueRecurringInvoice(array $attributes = []): RecurringInvoice
         'status' => RecurringInvoice::ACTIVE,
         'frequency' => '0 0 1 1 *',
         'starts_at' => Carbon::now()->subYears(2)->toDateTimeString(),
+        'created_at' => Carbon::now()->subYears(2)->toDateTimeString(),
         'limit_by' => RecurringInvoice::NONE,
         'send_automatically' => false,
         'next_invoice_at' => Carbon::now()->subMinute()->toDateTimeString(),
@@ -92,11 +94,38 @@ test('a schedule at its count limit is completed instead of billed', function ()
     $schedule = dueRecurringInvoice(['limit_by' => RecurringInvoice::COUNT, 'limit_count' => 1]);
 
     Artisan::call('recurring-invoices:generate');
-    $schedule->fresh()->update(['next_invoice_at' => Carbon::now()->subMinute()->toDateTimeString()]);
+    $this->travelTo(Carbon::parse($schedule->fresh()->next_invoice_at)->addMinute());
     Artisan::call('recurring-invoices:generate');
 
     expect(invoicesFrom($schedule))->toBe(1)
         ->and($schedule->fresh()->status)->toBe(RecurringInvoice::COMPLETED);
+});
+
+test('a stale next run does not bill a period that was already billed', function () {
+    // Saving a schedule used to count its next run from the start date, so a
+    // schedule edited after it billed this period carries a date long past.
+    $schedule = dueRecurringInvoice([
+        'frequency' => '0 0 * * *',
+        'next_invoice_at' => Carbon::now()->subMonths(11)->toDateTimeString(),
+    ]);
+    $schedule->createInvoice();
+
+    Artisan::call('recurring-invoices:generate');
+
+    expect(invoicesFrom($schedule))->toBe(1)
+        ->and(Carbon::parse($schedule->fresh()->next_invoice_at)->isFuture())->toBeTrue();
+});
+
+test('a stale next run does not bill an occurrence from before the schedule existed', function () {
+    $schedule = dueRecurringInvoice([
+        'created_at' => Carbon::now()->toDateTimeString(),
+        'next_invoice_at' => Carbon::now()->subMonths(11)->toDateTimeString(),
+    ]);
+
+    Artisan::call('recurring-invoices:generate');
+
+    expect(invoicesFrom($schedule))->toBe(0)
+        ->and(Carbon::parse($schedule->fresh()->next_invoice_at)->isFuture())->toBeTrue();
 });
 
 test('a failed mail keeps the invoice as a draft and moves the schedule on', function () {
@@ -121,8 +150,8 @@ test('a failed mail keeps the invoice as a draft and moves the schedule on', fun
 
 test('a schedule that fails is retried hourly, not on every run', function () {
     Exceptions::fake();
-    // An expression that no longer parses fails after the invoice is created,
-    // so the whole occurrence rolls back.
+    // An expression that no longer parses fails the occurrence, and nothing
+    // of it is written.
     $schedule = dueRecurringInvoice(['frequency' => 'not a cron expression']);
 
     Artisan::call('recurring-invoices:generate');

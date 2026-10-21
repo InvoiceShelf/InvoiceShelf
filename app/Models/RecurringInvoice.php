@@ -358,9 +358,9 @@ class RecurringInvoice extends Model
                 return null;
             }
 
-            // Not started, yet due: a stale date. Recount it rather than leave
-            // the schedule due on every run.
-            if (Carbon::now()->lessThan($schedule->starts_at)) {
+            // Not started, or nothing owed: a stale date. Recount it rather
+            // than leave the schedule due on every run.
+            if (Carbon::now()->lessThan($schedule->starts_at) || ! $schedule->owesLatestOccurrence()) {
                 $schedule->updateNextInvoiceDate();
 
                 return null;
@@ -378,6 +378,29 @@ class RecurringInvoice extends Model
         }
 
         return $invoice;
+    }
+
+    /**
+     * Whether the schedule still owes its latest occurrence: one that came
+     * after the schedule was created, with no invoice from the schedule since.
+     *
+     * Saving a schedule used to count its next run from the start date, which
+     * leaves a date in the past on schedules saved since. Billing by that date
+     * alone would bill a period again, or one from before the schedule existed.
+     */
+    public function owesLatestOccurrence()
+    {
+        $appZone = config('app.timezone', 'UTC');
+
+        $latest = (new Cron\CronExpression($this->frequency))
+            ->getPreviousRunDate(Carbon::now(), 0, true, $this->companyTimeZone() ?: $appZone);
+        $latest = Carbon::instance($latest)->setTimezone($appZone);
+
+        if ($this->created_at && $latest->lessThan($this->created_at)) {
+            return false;
+        }
+
+        return ! $this->invoices()->where('created_at', '>=', $latest)->exists();
     }
 
     /**
