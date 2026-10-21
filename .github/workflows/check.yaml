@@ -86,6 +86,7 @@ jobs:
             matrix:
                 php-version:
                     - 8.4
+                    - 8.5
         env:
             extensions: bcmath, curl, dom, gd, imagick, json, libxml, mbstring, pcntl, pdo, pdo_mysql, zip
 
