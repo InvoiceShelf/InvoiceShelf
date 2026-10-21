@@ -5,7 +5,13 @@ FROM --platform=$BUILDPLATFORM node:24 AS static_builder
     # corepack activates the pnpm version pinned in package.json's packageManager field.
     RUN corepack enable && pnpm install --frozen-lockfile && pnpm build
 
-FROM serversideup/php:8.4-fpm-nginx-alpine AS base
+# Pinned to a serversideup release, not the floating tag: a floating tag moves
+# to each new major the day it ships, and v5.0.0 (2026-10-08) changed the S6
+# layout under this image's scheduler service. Release tags are never rebuilt,
+# so move this to each new v5 release to pick up PHP and Alpine security fixes,
+# and read the migration guide before a major:
+# https://serversideup.net/open-source/docker-php/docs/guide/major-version-migrations
+FROM serversideup/php:8.4-fpm-nginx-alpine-v5.0.2 AS base
     USER root
     RUN apk add --no-cache bash nano mariadb-client postgresql-client sqlite
     # One invocation, not twelve: the tool sets up and tears down its build
@@ -32,12 +38,21 @@ FROM serversideup/php:8.4-fpm-nginx-alpine AS base
     # starts neither a cron daemon nor a scheduler, so without this service
     # nothing in routes/console.php ever runs: no recurring invoices, no
     # overdue flagging, no estimate expiry. Set SCHEDULER_ENABLED=false to run
-    # the schedule from somewhere else instead.
+    # the schedule from somewhere else instead. The service is registered in
+    # user-bundles.d/user/contents.d, where S6 Overlay 3.2.3 (serversideup v5)
+    # keeps the user bundle; an /etc/s6-overlay/s6-rc.d/user directory makes the
+    # container fail at boot.
     COPY --chmod=755 docker/production/s6-overlay/ /etc/s6-overlay/
 
 FROM base AS production
     ENV AUTORUN_ENABLED=true
     ENV PHP_OPCACHE_ENABLE=1
+    # serversideup v5 defaults this to 0: PHP files are cached until the
+    # container restarts. This image changes PHP at runtime, though: marketplace
+    # modules are installed and updated into Modules/, and custom PDF templates
+    # in storage/ compile to Blade views. Keep checking for changes (every 2s,
+    # as on v4).
+    ENV PHP_OPCACHE_VALIDATE_TIMESTAMPS=1
 
     # Set `www-data` as the user to start FPM
     USER root
