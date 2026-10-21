@@ -7,6 +7,42 @@ section beneath it is what CI publishes to the updater — see
 The 2.x line has its own CHANGELOG.md on the `2.x` branch. Releases are also on
 GitHub: https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 3.0.0-alpha.11 - 2026-10-21
+
+Eleventh public alpha of InvoiceShelf 3.0. It adds purchasing (suppliers, bills, supplier credits, payments and refunds, with recurring bills and expenses) and moves the Docker image to PHP 8.5.12, which fixes two critical PHP vulnerabilities.
+
+⚠️ **Pre-release, not for production.** Back up your database before upgrading and use this release for evaluation and testing only.
+
+### Security
+
+- The Docker image ran PHP 8.4.25, which is affected by CVE-2026-109618 and CVE-2026-109619: remote code execution without signing in. It now ships PHP 8.5.12 on serversideup/php v5.0.2. Manual installs need PHP 8.4.27 or 8.5.12 or later from their host. (#923)
+
+### Highlights
+
+- **Purchasing.** A Purchases menu with Suppliers, Bills, Expenses and Payments. Record a supplier's bill with its lines, purchase taxes and the original document attached, as a draft or recorded into payables, then credit it, pay it and refund payments. Bills, supplier credits, payments and refunds are numbered per company like invoices (`BILL-000001`, `SC-`, `SP-`, `SR-`, with formats in the company settings). Suppliers and bills take custom fields, and purchases show in the reports and on the dashboard.
+- **Recurring bills and expenses.** Bills and Expenses get a Recurring tab. A schedule creates an unpaid bill, or a draft to check first for amounts that change, or a paid expense. Each missed run is generated, dated its own day. Schedules can be paused and resumed, and the creator can be emailed about each record and when runs start failing.
+- **Recurring invoices on the same scheduler.** A generated invoice is dated its scheduled day in the company's time zone, with its due date counted from that day. A schedule that missed runs sends one invoice, dated the latest missed day. Schedules can be paused and resumed, a failed run keeps the period due, shows its reason and is retried hourly, and the form previews the next five run dates.
+
+### Improvements and fixes
+
+- A mail server that is down no longer fails a recurring run: the invoice stays a draft and the schedule shows why.
+- Saving a recurring invoice keeps its next run unless the frequency or the start date changes, so a period already billed is not billed again.
+- A recurring invoice's count limit counts runs, not surviving invoices, so deleting a generated invoice no longer frees a slot.
+- Completed can no longer be chosen by hand. Raising a limit reactivates a completed schedule, which carries on from today.
+- A frequency the scheduler cannot read is a validation error instead of a server error.
+- New abilities reach the Manager and Read only presets and every owner role on `migrate`, without a migration of their own. (#904)
+- The Docker image builds and starts on serversideup v5: the scheduler is registered where v5 expects it, and OPcache keeps checking for changed files, because modules and PDF templates change PHP at runtime. (#919)
+- The dashboard is translated to Spanish. (#868)
+
+### Upgrade notes
+
+- **Module authors:** the customer payment tables are renamed, `payments` to `customer_payments` and `payment_allocations` to `customer_payment_allocations`. A module that queries them directly needs the new names; one that uses the `Payment` model or the API is unaffected.
+- The upgrade creates the purchasing tables and adds `last_error` and `notify_creator` to recurring invoices. The first `migrate` gives Manager every purchasing ability and Read only the view abilities, and tops up owner roles.
+- **API:** the single-schedule `DELETE` route for recurring invoices had no handler and is removed; delete schedules in bulk as before. Pause and resume are `POST recurring-invoices/{id}/actions`.
+- **Docker:** the image runs PHP 8.5.12. `composer.json` still allows PHP 8.4, and CI tests both.
+
+Docker: `invoiceshelf/invoiceshelf:3.0.0-alpha.11` or `ghcr.io/invoiceshelf/invoiceshelf:3.0.0-alpha.11` (also `:next`).
+
 ## 3.0.0-alpha.10 - 2026-09-26
 
 Tenth public alpha of InvoiceShelf 3.0. Owners of a managed install can now add official modules themselves when their host allows it, and every Docker start checks installed modules against the running version.
