@@ -7,6 +7,37 @@ section beneath it is what CI publishes to the updater — see
 Releases before 2.4.0 are on GitHub:
 https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 2.4.7 - 2026-10-21
+
+Moves the Docker image to PHP 8.4.27, which fixes two critical PHP vulnerabilities, and makes recurring invoices generate however the scheduler is run. **Upgrade every Docker install**, and update PHP on manual installs.
+
+### Security
+
+- The Docker image ran PHP 8.4.25, which is affected by CVE-2026-109618 and CVE-2026-109619: remote code execution without signing in. The image is now built on serversideup/php v5.0.2 with PHP 8.4.27. Manual installs run the server's own PHP, which has to be updated separately (see the upgrade notes). (#922)
+
+### Fixes
+
+- **Recurring invoices were not generated** unless the scheduler happened to run in the exact minute a schedule was due, in the company's time zone. A crontab that ran less often than every minute, ran late, or was down for a while skipped the period, and nothing caught it up. The scheduler now bills every schedule whose next invoice date has passed, whenever it runs. (#924)
+- Saving a recurring invoice counted its next invoice date from the start date, so an edited schedule showed a date in the past. It now counts from today, or from the start date while that is still ahead, in the company's time zone. (#924)
+- When a recurring invoice is sent automatically and the email fails, the invoice is kept as a draft to send by hand. (#924)
+- An image built from the 2.x source since 8 October did not start, because the serversideup base it builds on moved to v5. The image now pins serversideup v5.0.2 and registers its scheduler where v5 expects it. (#922)
+
+### Upgrade notes
+
+- **Docker:** pull the new image and recreate the container, for example `docker compose pull && docker compose up -d`. The image runs the scheduler itself, so no cron is needed. `php -v` in the container reports 8.4.27.
+- **Manual installs:** update PHP to 8.4.27 or later through your operating system or host. The scheduler needs a crontab entry that runs every minute:
+
+  ```
+  * * * * * cd /path/to/invoiceshelf && php artisan schedule:run >> /dev/null 2>&1
+  ```
+
+  A less frequent entry no longer loses invoices; they are created at the first run after they fall due.
+- **Hosts without a crontab** that call `/api/cron` from an external scheduler: set `CRON_JOB_AUTH_TOKEN` in `.env` and send the same value in the `x-authorization-token` header. Since 2.4.3 the endpoint refuses every call without it.
+- **Invoices that were missed:** after upgrading, a recurring invoice whose latest period was never billed gets one invoice for it at the next scheduler run, dated that day. Periods missed before that are not billed retroactively; create those by hand. Afterwards, check that each recurring invoice shows the next invoice date you expect.
+- If you build the image yourself, rebuild it from the 2.4.7 source. Dockerfiles from earlier 2.x releases no longer start on the current serversideup base.
+
+Docker: `invoiceshelf/invoiceshelf:2.4.7` (also `:2.4`, `:2` and `:latest`).
+
 ## 2.4.6 - 2026-09-25
 
 Closes two security issues in the file disk settings and fixes foreign-currency documents on PostgreSQL.
