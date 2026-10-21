@@ -85,8 +85,8 @@ InvoiceShelf on a public server.
 
 For a traditional web-server installation, see the
 [manual installation guide](https://docs.invoiceshelf.com/install/manual.html).
-InvoiceShelf 3.x requires PHP 8.4 and supports MySQL/MariaDB, PostgreSQL, and
-SQLite. Docker includes the required application runtime.
+InvoiceShelf 3.x requires PHP 8.4 or 8.5 and supports MySQL/MariaDB,
+PostgreSQL, and SQLite. Docker includes the required application runtime.
 
 ## Learn and get help
 
