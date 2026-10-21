@@ -1,6 +1,6 @@
 {
   "navigation": {
-    "dashboard": "Dashboard",
+    "dashboard": "Übersicht",
     "customers": "Kunden",
     "items": "Artikel",
     "invoices": "Rechnungen",
@@ -185,8 +185,8 @@
       "h1": "Überschrift 1",
       "h2": "Überschrift 2",
       "h3": "Überschrift 3",
-      "bulletList": "Bulleted list",
-      "orderedList": "Numbered list",
+      "bulletList": "Liste mit Aufzählungszeichen",
+      "orderedList": "Nummerierte Liste",
       "blockquote": "Quote",
       "codeBlock": "Code block",
       "undo": "Rückgängig",
@@ -196,17 +196,17 @@
       "alignJustify": "Blocksatz",
       "alignCenter": "Zentriert",
       "addLink": "Link",
-      "link_url": "Link address"
+      "link_url": "Link-Adresse"
     },
-    "email_preview": "Email preview",
-    "pdf_preview": "PDF preview",
-    "step_of": "Step {step} of {count}",
-    "actions_for": "Actions for {name}",
-    "select_named": "Select {name}",
-    "about_page": "About {page}"
+    "email_preview": "E-Mail-Vorschau",
+    "pdf_preview": "PDF-Vorschau",
+    "step_of": "Schritt {step} von {count}",
+    "actions_for": "Aktionen für {name}",
+    "select_named": "{name} auswählen",
+    "about_page": "Über {page}"
   },
   "dashboard": {
-    "load_failed": "The dashboard could not be loaded.",
+    "load_failed": "Die Übersicht konnte nicht geladen werden.",
     "select_year": "Jahr wählen",
     "cards": {
       "due_amount": "Offene Beträge",
@@ -219,50 +219,50 @@
       "total_sales": "Aufträge gesamt",
       "total_receipts": "Zahlungen gesamt",
       "total_expense": "Ausgaben",
-      "net_income": "Net income",
+      "net_income": "Nettoeinkommen",
       "year": "Jahr"
     },
     "monthly_chart": {
       "title": "Umsatz & Ausgaben"
     },
     "recent_invoices_card": {
-      "title": "Due invoices",
-      "due_on": "Due on",
+      "title": "Fällige Rechnungen",
+      "due_on": "Fällig am",
       "customer": "Kunde",
-      "amount_due": "Amount due",
+      "amount_due": "Fälliger Betrag",
       "actions": "Aktionen",
-      "view_all": "View all",
-      "empty_title": "Nothing awaiting payment",
-      "empty_description": "Sent invoices that are still due show up here.",
-      "portal_empty_description": "Invoices you still need to pay show up here."
+      "view_all": "Alle anzeigen",
+      "empty_title": "Keine ausstehenden Zahlungen",
+      "empty_description": "Versandte Rechnungen, die noch fällig sind, werden hier angezeigt.",
+      "portal_empty_description": "Rechnungen, die Sie noch bezahlen müssen, erscheinen hier."
     },
     "recent_estimate_card": {
-      "title": "Recent estimates",
+      "title": "Aktuelle Angebote",
       "date": "Datum",
       "customer": "Kunde",
-      "amount_due": "Amount",
+      "amount_due": "Betrag",
       "actions": "Aktionen",
-      "view_all": "View all",
-      "empty_title": "No estimates yet",
-      "empty_description": "Estimates you send show up here.",
-      "portal_empty_description": "Estimates sent to you show up here."
+      "view_all": "Alle anzeigen",
+      "empty_title": "Keine Angebote vorhanden",
+      "empty_description": "Von Ihnen versendete Angebote erscheinen hier.",
+      "portal_empty_description": "An Sie gesendete Angebote erscheinen hier."
     },
     "receivables": {
-      "title": "Owed to you",
-      "on_invoices": "On {count} sent invoice | On {count} sent invoices",
-      "overdue": "Overdue",
-      "due_soon": "Due in the next 30 days",
-      "due_later": "Due later",
-      "invoice_count": "{count} invoice | {count} invoices",
-      "nothing_owed": "Nothing is owed to you right now.",
-      "first_invoice_hint": "Send your first invoice and what customers owe you shows up here.",
-      "view_invoices": "View invoices"
+      "title": "Dir schuldig",
+      "on_invoices": "Bei {count} versandter Rechnung | Bei {count} versandten Rechnungen",
+      "overdue": "Überfällig",
+      "due_soon": "Fällig in den nächsten 30 Tagen",
+      "due_later": "Später fällig",
+      "invoice_count": "{count} Rechnung | {count} Rechnungen",
+      "nothing_owed": "Im Moment steht dir nichts zu.",
+      "first_invoice_hint": "Senden Sie Ihre erste Rechnung, und die ausstehenden Beträge Ihrer Kunden werden hier angezeigt.",
+      "view_invoices": "Rechnungen anzeigen"
     },
     "cashflow": {
-      "no_activity": "No activity in this period",
-      "no_activity_hint": "Invoices, payments and expenses you record will show up here.",
-      "title": "Cash flow",
-      "show_table": "Show as table",
+      "no_activity": "Keine Aktivität in diesem Zeitraum",
+      "no_activity_hint": "Rechnungen, Zahlungen und Ausgaben, die Sie erfassen, werden hier angezeigt.",
+      "title": "Cashflow",
+      "show_table": "Als Tabelle anzeigen",
       "hide_table": "Tabelle ausblenden",
       "month": "Monat",
       "chart_style": "Diagramm-Stil",
@@ -273,7 +273,7 @@
     "counts": {
       "customers": "Kunde | Kunden",
       "invoices": "Rechnung | Rechnungen",
-      "estimates": "estimate | estimates"
+      "estimates": "Angebot | Angebote"
     }
   },
   "tax_types": {
@@ -284,21 +284,21 @@
     "percentage": "Prozentsatz",
     "fixed_amount": "Festbetrag",
     "tax_type": "Steuerart",
-    "used_for": "Used for",
-    "sales": "Sales",
-    "purchases": "Purchases"
+    "used_for": "Verwendet für",
+    "sales": "Verkäufe",
+    "purchases": "Einkäufe"
   },
   "global_search": {
     "search": "Suchen...",
     "customers": "Kunden",
     "users": "Benutzer",
     "no_results_found": "Keine Ergebnisse gefunden",
-    "placeholder": "Search or jump to…",
-    "go_to": "Go to",
-    "create": "Create"
+    "placeholder": "Suchen oder springen zu…",
+    "go_to": "Gehe zu",
+    "create": "Erstellen"
   },
   "company_switcher": {
-    "label": "Switch company",
+    "label": "Firma wechseln",
     "no_results_found": "Keine Ergebnisse gefunden",
     "add_new_company": "Neues Unternehmen hinzufügen",
     "new_company": "Neues Unternehmen",
@@ -306,20 +306,20 @@
   },
   "dateRange": {
     "today": "Heute",
-    "this_week": "This week",
-    "this_month": "This month",
-    "this_quarter": "This quarter",
-    "this_year": "This year",
-    "previous_week": "Previous week",
-    "previous_month": "Previous month",
-    "previous_quarter": "Previous quarter",
-    "previous_year": "Previous year",
+    "this_week": "Aktuelle Woche",
+    "this_month": "In diesem Monat",
+    "this_quarter": "In diesem Quartal",
+    "this_year": "Dieses Jahr",
+    "previous_week": "Vorherige Woche",
+    "previous_month": "Vorheriger Monat",
+    "previous_quarter": "Vorheriges Quartal",
+    "previous_year": "Vorjahr",
     "custom": "Benutzerdefiniert",
-    "last_12_months": "Last 12 months",
-    "custom_range": "Custom range",
-    "period": "Period",
-    "showing": "Showing {range}",
-    "pick_start": "Pick the first day",
+    "last_12_months": "Letzten 12 Monate",
+    "custom_range": "Benutzerdefinierten Bereich",
+    "period": "Zeitraum",
+    "showing": "Anzeige von {range}",
+    "pick_start": "Wähle den ersten Tag",
     "pick_end": "Now pick the last day",
     "too_long": "Pick a range of up to {years} years"
   },
@@ -400,7 +400,7 @@
     "as_of": "As Of",
     "download_statement": "Download Statement",
     "send_statement": "Send Statement",
-    "invoice_due": "Invoice Due",
+    "invoice_due": "Rechnung fällig",
     "available_credit": "Available Credit",
     "net_account_balance": "Net Account Balance",
     "credit": "Credit",
