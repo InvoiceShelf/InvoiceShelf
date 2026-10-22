@@ -9,8 +9,9 @@ use Illuminate\Support\Str;
 use Silber\Bouncer\Database\Role;
 
 /**
- * A membership's role (`companies.N.role`) names a role that exists in the
- * company of the same entry (`companies.N.id`).
+ * A membership role (`companies.N.roles.*`, or the legacy
+ * `companies.N.role`) names a role that exists in the company of the same
+ * entry (`companies.N.id`).
  *
  * Checked past the Bouncer scope, since the request may be acting in another
  * company or in none. Without it, Bouncer would create a missing role, with
@@ -30,7 +31,10 @@ class RoleExistsInCompany implements DataAwareRule, ValidationRule
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $companyId = data_get($this->data, Str::beforeLast($attribute, '.').'.id');
+        preg_match('/^companies\.(\d+)\./', $attribute, $matches);
+        $companyId = isset($matches[1])
+            ? data_get($this->data, "companies.{$matches[1]}.id")
+            : data_get($this->data, Str::beforeLast($attribute, '.').'.id');
 
         $exists = is_string($value)
             && is_numeric($companyId)

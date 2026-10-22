@@ -2,6 +2,7 @@
 
 namespace App\Domains\Accounts\Http\Middleware;
 
+use App\Domains\Accounts\Application\UserCompanyAccessService;
 use Closure;
 use Illuminate\Http\Request;
 use Silber\Bouncer\Bouncer;
@@ -20,14 +21,17 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ScopeBouncer
 {
-    public function __construct(protected Bouncer $bouncer) {}
+    public function __construct(
+        protected Bouncer $bouncer,
+        private readonly UserCompanyAccessService $companyAccess,
+    ) {}
 
     public function handle(Request $request, Closure $next): Response
     {
         $scope = $request->header('company');
 
         if (! $scope) {
-            $fallback = $request->user()->companies()->first();
+            $fallback = $this->companyAccess->firstAccessibleCompany($request->user());
 
             if ($fallback === null) {
                 return $next($request);

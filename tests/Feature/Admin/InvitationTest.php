@@ -1,5 +1,6 @@
 <?php
 
+use App\Domains\Accounts\Application\UserCompanyAccessService;
 use App\Domains\Accounts\Mail\CompanyInvitationMail;
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\CompanyInvitation;
@@ -7,6 +8,7 @@ use App\Domains\Accounts\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
 use Laravel\Sanctum\Sanctum;
+use Silber\Bouncer\BouncerFacade;
 use Silber\Bouncer\Database\Role;
 
 use function Pest\Laravel\deleteJson;
@@ -55,6 +57,67 @@ test('invite user to company', function () {
     ]);
 
     Mail::assertSent(CompanyInvitationMail::class);
+});
+
+test('invites and accepts multiple roles', function () {
+    Mail::fake();
+
+    $company = Company::first();
+    $roles = Role::withoutGlobalScopes()
+        ->where('scope', $company->id)
+        ->whereIn('name', ['preset:manager', 'preset:read-only'])
+        ->pluck('id')
+        ->all();
+    $newUser = User::factory()->create(['email' => 'multi-role@example.com']);
+
+    $invitation = postJson('api/v1/company-invitations', [
+        'email' => $newUser->email,
+        'role_ids' => $roles,
+    ])->assertOk()->json('invitation');
+
+    expect($invitation['roles'])->toHaveCount(2);
+
+    $storedInvitation = CompanyInvitation::query()->where('email', $newUser->email)->firstOrFail();
+
+    Sanctum::actingAs($newUser, ['*']);
+    postJson("api/v1/invitations/{$storedInvitation->token}/accept")->assertOk();
+
+    expect(BouncerFacade::scope()->onceTo($company->id, fn () => $newUser->fresh()->getRoles()->all()))
+        ->toEqualCanonicalizing(['preset:manager', 'preset:read-only']);
+});
+
+test('cannot accept an invitation to a restricted company', function () {
+    Mail::fake();
+
+    $company = Company::firstOrFail();
+    $role = invitationOwnerRole($company);
+    $newUser = User::factory()->create([
+        'email' => 'restricted-invite@example.com',
+        'role' => 'user',
+    ]);
+    $newUser->restrictedCompanies()->attach($company->id);
+    expect($newUser->fresh()->restrictedCompanies()->pluck('companies.id')->all())->toBe([$company->id]);
+    expect(app(UserCompanyAccessService::class)->isRestrictedFromCompany($newUser->fresh(), $company->id))->toBeTrue();
+
+    $storedInvitation = postJson('api/v1/company-invitations', [
+        'email' => $newUser->email,
+        'role_id' => $role->id,
+    ])->assertOk();
+
+    $invitation = CompanyInvitation::query()
+        ->where('id', $storedInvitation->json('invitation.id'))
+        ->firstOrFail();
+
+    Sanctum::actingAs($newUser, ['*']);
+
+    postJson("api/v1/invitations/{$invitation->token}/accept")
+        ->assertForbidden();
+
+    expect($newUser->fresh()->belongsToCompany($company->id))->toBeFalse();
+    $this->assertDatabaseHas('company_invitations', [
+        'id' => $invitation->id,
+        'status' => CompanyInvitation::STATUS_PENDING,
+    ]);
 });
 
 test('cannot invite user already in company', function () {
@@ -154,7 +217,7 @@ test('accept invitation adds user to company', function () {
     postJson("api/v1/invitations/{$invitation->token}/accept")
         ->assertOk();
 
-    $this->assertTrue($newUser->fresh()->hasCompany($company->id));
+    $this->assertTrue($newUser->fresh()->belongsToCompany($company->id));
     $this->assertDatabaseHas('company_invitations', [
         'token' => 'test-accept-token',
         'status' => 'accepted',
@@ -186,7 +249,7 @@ test('decline invitation', function () {
         'token' => 'test-decline-token',
         'status' => 'declined',
     ]);
-    $this->assertFalse($newUser->fresh()->hasCompany($company->id));
+    $this->assertFalse($newUser->fresh()->belongsToCompany($company->id));
 });
 
 test('cannot accept expired invitation', function () {
@@ -210,7 +273,7 @@ test('cannot accept expired invitation', function () {
     postJson("api/v1/invitations/{$invitation->token}/accept")
         ->assertStatus(422);
 
-    $this->assertFalse($newUser->fresh()->hasCompany($company->id));
+    $this->assertFalse($newUser->fresh()->belongsToCompany($company->id));
 });
 
 test('bootstrap includes pending invitations', function () {
@@ -288,7 +351,7 @@ test('register with invitation creates account and accepts', function () {
 
     $newUser = User::where('email', 'register@example.com')->first();
     $this->assertNotNull($newUser);
-    $this->assertTrue($newUser->hasCompany($company->id));
+    $this->assertTrue($newUser->belongsToCompany($company->id));
     $this->assertDatabaseHas('company_invitations', [
         'token' => 'test-register-token',
         'status' => 'accepted',
@@ -415,6 +478,6 @@ test('only the invited person can accept or decline an invitation', function () 
     postJson("api/v1/invitations/{$invitation->token}/accept")->assertForbidden();
     postJson("api/v1/invitations/{$invitation->token}/decline")->assertForbidden();
 
-    expect($intruder->fresh()->hasCompany($company->id))->toBeFalse();
+    expect($intruder->fresh()->belongsToCompany($company->id))->toBeFalse();
     $this->assertDatabaseHas('company_invitations', ['id' => $invitation->id, 'status' => 'pending']);
 });

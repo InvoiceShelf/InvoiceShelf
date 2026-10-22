@@ -60,16 +60,21 @@ const v$ = useVuelidate(rules, { newCompanyForm })
 
 async function getInitials(): Promise<void> {
   isFetchingInitialData.value = true
-  await globalStore.fetchCurrencies()
-  await globalStore.fetchCountries()
+  try {
+    await Promise.all([globalStore.fetchCurrencies(), globalStore.fetchCountries()])
 
-  newCompanyForm.currency = companyStore.selectedCompanyCurrency?.id ?? ''
-  newCompanyForm.address.country_id =
-    (companyStore.selectedCompany as Record<string, unknown>)?.address
-      ? ((companyStore.selectedCompany as Record<string, unknown>).address as Record<string, unknown>)?.country_id as number | null
+    newCompanyForm.currency =
+      companyStore.selectedCompanyCurrency?.id ?? globalStore.currencies[0]?.id ?? ''
+
+    const selectedCountry = (companyStore.selectedCompany as Record<string, unknown>)?.address
+      ? ((companyStore.selectedCompany as Record<string, unknown>).address as Record<string, unknown>)?.country_id
       : null
 
-  isFetchingInitialData.value = false
+    newCompanyForm.address.country_id =
+      (selectedCountry as number | null | undefined) ?? globalStore.countries[0]?.id ?? null
+  } finally {
+    isFetchingInitialData.value = false
+  }
 }
 
 function onFileInputChange(fileName: string, file: string): void {
@@ -120,6 +125,9 @@ function resetNewCompanyForm(): void {
   newCompanyForm.name = ''
   newCompanyForm.currency = ''
   newCompanyForm.address.country_id = null
+  previewLogo.value = null
+  companyLogoFileBlob.value = null
+  companyLogoName.value = null
   v$.value.$reset()
 }
 

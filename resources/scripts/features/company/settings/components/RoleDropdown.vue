@@ -75,7 +75,7 @@ async function removeRole(id: number): Promise<void> {
     </template>
 
     <BaseDropdownItem
-      v-if="userStore.currentUser?.is_owner"
+      v-if="userStore.currentUser?.is_owner && !isProtected()"
       @click="editRole(row.id)"
     >
       <BaseIcon
@@ -86,7 +86,7 @@ async function removeRole(id: number): Promise<void> {
     </BaseDropdownItem>
 
     <BaseDropdownItem
-      v-if="userStore.currentUser?.is_owner"
+      v-if="userStore.currentUser?.is_owner && !isProtected()"
       @click="removeRole(row.id)"
     >
       <BaseIcon

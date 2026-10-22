@@ -1,6 +1,7 @@
 <?php
 
 use App\Domains\Accounts\Application\MemberService;
+use App\Domains\Accounts\Application\UserCompanyAccessService;
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\User;
 use App\Platform\Mcp\Application\ConnectionService;
@@ -111,6 +112,28 @@ test('the consent screen leads with the redirect host and offers the user\'s com
         ->assertSee('claude.ai')
         ->assertSee($this->company->name)
         ->assertSee('Read only');
+});
+
+test('the consent screen offers eligible companies to a global-role user', function () {
+    McpTesting::enable();
+    $restricted = Company::factory()->create();
+    $global = User::factory()->create(['role' => 'user']);
+    app(UserCompanyAccessService::class)->syncUserAccess($global, ['read-only'], [$restricted->id]);
+    $client = McpTesting::register($this, 'https://claude.ai/api/mcp/auth_callback', 'Claude');
+
+    $this->actingAs($global, 'web')
+        ->get('/oauth/authorize?'.http_build_query([
+            'client_id' => $client->getKey(),
+            'redirect_uri' => 'https://claude.ai/api/mcp/auth_callback',
+            'response_type' => 'code',
+            'scope' => 'mcp:use',
+            'state' => 'abc',
+            'code_challenge' => str_repeat('a', 43),
+            'code_challenge_method' => 'S256',
+        ]))
+        ->assertOk()
+        ->assertSee($this->company->name)
+        ->assertDontSee($restricted->name);
 });
 
 test('a connection works end to end in the company it was granted', function () {

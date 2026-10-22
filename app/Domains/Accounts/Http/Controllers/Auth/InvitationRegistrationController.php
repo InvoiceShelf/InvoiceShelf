@@ -35,7 +35,7 @@ class InvitationRegistrationController extends Controller
         return response()->json([
             'email' => $invitation->email,
             'company_name' => $invitation->company->name,
-            'role_name' => $invitation->role->title,
+            'role_name' => $invitation->roleNames(),
         ]);
     }
 

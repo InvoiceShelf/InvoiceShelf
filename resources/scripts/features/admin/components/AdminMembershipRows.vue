@@ -6,9 +6,9 @@ import type { AdminMembership, CompanyRoleOption } from '../stores/admin.store'
 
 /**
  * The companies a user belongs to, a row each: the company and the role held
- * there. A company the user owns is locked to its Owner role and cannot be
- * removed. Roles are loaded per company, since presets and a company's own
- * roles differ between companies.
+ * there. A company the user owns is locked to its Owner role, but additional
+ * roles may still be assigned. Roles are loaded per company, since presets
+ * and a company's own roles differ between companies.
  */
 const props = defineProps<{
   modelValue: AdminMembership[]
@@ -44,6 +44,15 @@ function companyName(id: number | null): string {
   return props.companies.find((company) => company.id === id)?.name ?? ''
 }
 
+function roleOptions(id: number | null): Array<CompanyRoleOption & { disabled?: boolean }> {
+  if (id === null) return []
+
+  return (rolesByCompany.value[id] ?? []).map((role) => ({
+    ...role,
+    disabled: locked.value.has(id) && role.name === 'owner',
+  }))
+}
+
 function update(index: number, changes: Partial<AdminMembership>): void {
   emit(
     'update:modelValue',
@@ -52,12 +61,26 @@ function update(index: number, changes: Partial<AdminMembership>): void {
 }
 
 function pickCompany(index: number, id: number | null): void {
-  // A role belongs to one company, so a new company starts without one.
-  update(index, { id, role: null })
+  update(index, {
+    id,
+    roles: id !== null && locked.value.has(id) ? ['owner'] : [],
+    include_global_roles: false,
+  })
+}
+
+function updateRoles(index: number, value: unknown): void {
+  const roles = Array.isArray(value) ? value.filter((role): role is string => typeof role === 'string') : []
+  const row = props.modelValue[index]
+
+  if (row?.id !== null && row?.id !== undefined && locked.value.has(row.id) && !roles.includes('owner')) {
+    roles.unshift('owner')
+  }
+
+  update(index, { roles, include_global_roles: roles.length > 0 ? row?.include_global_roles ?? false : false })
 }
 
 function add(): void {
-  emit('update:modelValue', [...props.modelValue, { id: null, role: null }])
+  emit('update:modelValue', [...props.modelValue, { id: null, roles: [], include_global_roles: false }])
 }
 
 function remove(index: number): void {
@@ -70,7 +93,7 @@ function remove(index: number): void {
     <div
       v-for="(row, index) in modelValue"
       :key="index"
-      class="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end"
+      class="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(14rem,auto)_auto] sm:items-end"
     >
       <BaseInputGroup :label="index === 0 ? t('administration.users.company') : ''">
         <BaseMultiselect
@@ -89,17 +112,31 @@ function remove(index: number): void {
 
       <BaseInputGroup :label="index === 0 ? t('administration.users.role') : ''">
         <BaseMultiselect
-          :model-value="row.role"
-          :options="row.id !== null ? (rolesByCompany[row.id] ?? []) : []"
+          :model-value="row.roles"
+          :options="roleOptions(row.id)"
           value-prop="name"
           label="title"
           track-by="title"
-          :disabled="row.id === null || locked.has(row.id)"
+          mode="tags"
+          :disabled="row.id === null"
+          :can-clear="true"
+          :can-deselect="true"
           :placeholder="t('administration.users.select_role')"
           :aria-label="t('administration.users.role')"
-          @update:model-value="(value: unknown) => update(index, { role: (value as string | null) ?? null })"
+          @update:model-value="(value: unknown) => updateRoles(index, value)"
         />
       </BaseInputGroup>
+
+      <div class="flex items-start sm:pt-7">
+        <BaseCheckbox
+          :id="`include-global-roles-${index}`"
+          :model-value="row.include_global_roles"
+          :label="t('administration.users.include_global_roles')"
+          :description="t('administration.users.include_global_roles_description')"
+          :disabled="row.id === null || row.roles.length === 0"
+          @update:model-value="(value: boolean | unknown[]) => update(index, { include_global_roles: value === true })"
+        />
+      </div>
 
       <div class="flex h-10 items-center">
         <p v-if="row.id !== null && locked.has(row.id)" class="text-xs text-muted sm:max-w-40">

@@ -259,16 +259,18 @@ async function submitForm(): Promise<void> {
 
   isSaving.value = true
 
-  await adminStore.updateCompany(route.params.id as string, {
-    name: formData.name,
-    owner_id: formData.owner_id?.id ?? 0,
-    vat_id: formData.vat_id,
-    tax_id: formData.tax_id,
-    address: formData.address,
-  })
+  try {
+    await adminStore.updateCompany(route.params.id as string, {
+      name: formData.name,
+      owner_id: formData.owner_id?.id ?? 0,
+      vat_id: formData.vat_id,
+      tax_id: formData.tax_id,
+      address: formData.address,
+    })
 
-  isSaving.value = false
-
-  router.push({ name: 'admin.companies.index' })
+    router.push({ name: 'admin.companies.index' })
+  } finally {
+    isSaving.value = false
+  }
 }
 </script>

@@ -48,3 +48,8 @@ yarn.lock
 # Browser-verification scratch: playwright-cli writes snapshots, screenshots
 # and console logs next to wherever it was invoked.
 /.playwright-cli/
+Deplay-Changes-to-Docker.ps1
+deploy-payment-plan-test.ps1
+deploy-payment-plan.ps1
+.gitmodules
+/docker/

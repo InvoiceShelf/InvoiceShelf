@@ -5,16 +5,14 @@ namespace App\Domains\Accounts\Application;
 use App\Domains\Accounts\Contracts\MemberReferencesCleaner;
 use App\Domains\Accounts\Models\User;
 use Illuminate\Support\Collection;
-use Silber\Bouncer\BouncerFacade;
 
 /**
  * Every write behind the member endpoints: filing a staff account, pointing it
  * at a set of companies, and erasing one outright.
  *
  * A submitted membership list is authoritative rather than additive — a company
- * left off the list is detached — and each entry names the single role the
- * account is to hold inside that company, displacing whatever it held there
- * before.
+ * left off the list is detached — and each entry names the roles the account is
+ * to hold inside that company, displacing whatever it held there before.
  *
  * Roles are handed out inside each company's own Bouncer scope, which is put
  * back afterwards, so this works the same from a company request and from the
@@ -26,6 +24,7 @@ class MemberService
     public function __construct(
         private readonly MemberReferencesCleaner $memberReferencesCleaner,
         private readonly AccessRevoker $accessRevoker,
+        private readonly UserCompanyAccessService $companyAccess,
     ) {}
 
     /**
@@ -36,9 +35,11 @@ class MemberService
      * than in a frozen copy of the language whoever added them was using.
      *
      * @param  array<string, mixed>  $attributes
-     * @param  iterable<int, array{id: int, role: string}>  $companies
+     * @param  iterable<int, array{id: int, roles?: list<string>, role?: string, include_global_roles?: bool}>  $companies
+     * @param  list<string>  $globalRoles
+     * @param  list<int>  $restrictedCompanyIds
      */
-    public function create(array $attributes, iterable $companies): User
+    public function create(array $attributes, iterable $companies, array $globalRoles = [], array $restrictedCompanyIds = []): User
     {
         $member = User::create($attributes);
 
@@ -46,9 +47,10 @@ class MemberService
 
         $memberships = collect($companies);
 
-        $member->companies()->sync($memberships->pluck('id'));
+        $member->companies()->sync($this->membershipPivotValues($memberships, collect()));
 
         $this->grantRoles($member, $memberships);
+        $this->companyAccess->syncUserAccess($member, $globalRoles, $restrictedCompanyIds);
 
         return $member;
     }
@@ -62,11 +64,19 @@ class MemberService
      * list. Memberships in any other company stay as they are.
      *
      * @param  array<string, mixed>  $attributes
-     * @param  iterable<int, array{id: int, role: string}>  $companies
+     * @param  iterable<int, array{id: int, roles?: list<string>, role?: string, include_global_roles?: bool}>  $companies
      * @param  array<int, int>  $managedCompanyIds
+     * @param  list<string>|null  $globalRoles
+     * @param  list<int>|null  $restrictedCompanyIds
      */
-    public function update(User $user, array $attributes, iterable $companies, array $managedCompanyIds): User
-    {
+    public function update(
+        User $user,
+        array $attributes,
+        iterable $companies,
+        array $managedCompanyIds,
+        ?array $globalRoles = null,
+        ?array $restrictedCompanyIds = null,
+    ): User {
         $user->update($attributes);
 
         $memberships = collect($companies);
@@ -75,7 +85,14 @@ class MemberService
             ->whereNotIn('companies.id', $managedCompanyIds)
             ->pluck('companies.id');
 
-        $changes = $user->companies()->sync($elsewhere->merge($memberships->pluck('id'))->unique()->values());
+        $existingCombinations = $user->companies()
+            ->pluck('user_company.include_global_roles', 'companies.id')
+            ->map(fn (mixed $value): bool => (bool) $value);
+
+        $preserved = $elsewhere->mapWithKeys(fn (mixed $companyId): array => [(int) $companyId => []]);
+        $changes = $user->companies()->sync(
+            $this->membershipPivotValues($memberships, $existingCombinations) + $preserved->all()
+        );
 
         // Access granted to outside clients inside a company the account just
         // left ends with the membership.
@@ -84,12 +101,11 @@ class MemberService
 
             // Or an invitation back into the company would restore the old
             // role next to the new one.
-            BouncerFacade::scope()->onceTo((int) $companyId, function () use ($user): void {
-                BouncerFacade::sync($user)->roles([]);
-            });
+            $this->companyAccess->replaceCompanyRoles($user, (int) $companyId, []);
         }
 
         $this->grantRoles($user, $memberships);
+        $this->companyAccess->syncUserAccess($user, $globalRoles, $restrictedCompanyIds);
 
         return $user;
     }
@@ -129,19 +145,44 @@ class MemberService
     }
 
     /**
-     * Give the account exactly the one role each company named, discarding any
-     * role it already held in that company.
+     * Give the account exactly the roles each company named, discarding any
+     * roles it already held in that company.
      *
-     * @param  Collection<int, array{id: int, role: string}>  $memberships
+     * @param  Collection<int, array{id: int, roles?: list<string>, role?: string}>  $memberships
      */
     private function grantRoles(User $member, Collection $memberships): void
     {
         foreach ($memberships as $membership) {
-            BouncerFacade::scope()->onceTo((int) $membership['id'], function () use ($member, $membership): void {
-                BouncerFacade::sync($member)->roles([$membership['role']]);
-            });
+            $this->companyAccess->replaceCompanyRoles(
+                $member,
+                (int) $membership['id'],
+                $membership['roles'] ?? (isset($membership['role']) ? [$membership['role']] : []),
+            );
         }
+    }
 
-        BouncerFacade::refresh();
+    /**
+     * Convert the form's memberships into the pivot shape accepted by sync.
+     * Missing values intentionally default to false for new and administration
+     * updates. Updates preserve an existing value when an older client omits
+     * the field, while new memberships default to false.
+     *
+     * @param  Collection<int, array{id: int, include_global_roles?: bool}>  $memberships
+     * @param  Collection<int, bool>  $existingCombinations
+     * @return array<int, array{include_global_roles: bool}>
+     */
+    private function membershipPivotValues(Collection $memberships, Collection $existingCombinations): array
+    {
+        return $memberships->mapWithKeys(function (array $membership) use ($existingCombinations): array {
+            $companyId = (int) $membership['id'];
+
+            return [
+                $companyId => [
+                    'include_global_roles' => array_key_exists('include_global_roles', $membership)
+                        ? (bool) $membership['include_global_roles']
+                        : (bool) $existingCombinations->get($companyId, false),
+                ],
+            ];
+        })->all();
     }
 }

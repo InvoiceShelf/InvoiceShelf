@@ -3,6 +3,7 @@
 namespace App\Platform\Mcp\Application;
 
 use App\Domains\Accounts\Application\AccessRevoker;
+use App\Domains\Accounts\Application\UserCompanyAccessService;
 use App\Domains\Accounts\Events\CompanyAccessRevoked;
 use App\Domains\Accounts\Events\UserAccessRevoked;
 use App\Domains\Accounts\Models\User;
@@ -17,6 +18,7 @@ class ConnectionService
 {
     public function __construct(
         private readonly AccessRevoker $revoker,
+        private readonly UserCompanyAccessService $companyAccess,
     ) {}
 
     /**
@@ -52,8 +54,8 @@ class ConnectionService
     }
 
     /**
-     * The connection a token acts through, provided the user still belongs to
-     * its company. Null otherwise.
+     * The connection a token acts through, provided the user still has access
+     * to its company. Null otherwise.
      */
     public function liveFor(User $user, string $clientId): ?McpConnection
     {
@@ -74,9 +76,14 @@ class ConnectionService
      */
     public function forUser(User $user): Collection
     {
+        $companyIds = $user->isSuperAdmin()
+            ? $user->companies()->pluck('companies.id')->all()
+            : $this->companyAccess->accessibleCompanies($user)->modelKeys();
+
         return McpConnection::query()
             ->with('company:id,name')
             ->where('user_id', $user->id)
+            ->whereIn('company_id', $companyIds)
             ->orderByDesc('last_used_at')
             ->orderByDesc('id')
             ->get();

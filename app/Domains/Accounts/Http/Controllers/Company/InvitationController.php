@@ -45,16 +45,20 @@ class InvitationController extends Controller
 
         $company = Company::find($request->header('company'));
 
-        // The role has to be one of this company's own
+        // Every selected role has to be one of this company's own.
         $request->validate([
             'email' => 'required|email',
-            'role_id' => ['required', Rule::exists('roles', 'id')->where('scope', $company->id)],
+            'role_ids' => ['required_without:role_id', 'array', 'min:1'],
+            'role_ids.*' => ['required', 'integer', 'distinct', Rule::exists('roles', 'id')->where('scope', $company->id)],
+            'role_id' => ['required_without:role_ids', 'integer', Rule::exists('roles', 'id')->where('scope', $company->id)],
         ]);
+
+        $roleIds = $request->input('role_ids', [$request->integer('role_id')]);
 
         $invitation = $this->invitationService->invite(
             $company,
             $request->email,
-            $request->role_id,
+            array_values(array_unique(array_map('intval', $roleIds))),
             $request->user()
         );
 

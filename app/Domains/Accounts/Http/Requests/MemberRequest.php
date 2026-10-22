@@ -51,6 +51,11 @@ class MemberRequest extends FormRequest
             : $this->user()->can('create', User::class);
     }
 
+    protected function prepareForValidation(): void
+    {
+        $this->merge(['companies' => $this->normalizeMemberships($this->input('companies'))]);
+    }
+
     /**
      * @return array<string, array<int, mixed>>
      */
@@ -71,7 +76,9 @@ class MemberRequest extends FormRequest
             'password' => $editing ? ['nullable', 'min:8'] : ['required', 'min:8'],
             'companies' => ['required', 'array', 'min:1'],
             'companies.*.id' => ['required', 'integer', 'distinct', Rule::in($this->managedCompanyIds())],
-            'companies.*.role' => ['required', 'string', new RoleExistsInCompany],
+            'companies.*.roles' => ['required', 'array', 'min:1'],
+            'companies.*.roles.*' => ['required', 'string', 'distinct', new RoleExistsInCompany],
+            'companies.*.role' => ['sometimes', 'required', 'string', new RoleExistsInCompany],
         ];
     }
 
@@ -118,6 +125,28 @@ class MemberRequest extends FormRequest
 
         return $belongsElsewhere
             && (filled($this->input('password')) || strcasecmp((string) $this->input('email'), (string) $member->email) !== 0);
+    }
+
+    /**
+     * Accept the legacy one-role shape while making roles the canonical form.
+     */
+    private function normalizeMemberships(mixed $companies): mixed
+    {
+        if (! is_array($companies)) {
+            return $companies;
+        }
+
+        return array_map(static function (mixed $membership): mixed {
+            if (! is_array($membership) || array_key_exists('roles', $membership)) {
+                return $membership;
+            }
+
+            if (array_key_exists('role', $membership)) {
+                $membership['roles'] = [$membership['role']];
+            }
+
+            return $membership;
+        }, $companies);
     }
 
     /**
