@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bd9e96c8dbbfce17a339b359b40199db",
+    "content-hash": "ea93a1fdb678e610a24612d5e7ba82cc",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -365,16 +365,16 @@
         },
         {
             "name": "composer/semver",
-            "version": "3.4.4",
+            "version": "3.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/semver.git",
-                "reference": "198166618906cb2de69b95d7d47e5fa8aa1b2b95"
+                "reference": "9dfce66f1e97360ea5e6d3e38ab14277e4cc591e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/semver/zipball/198166618906cb2de69b95d7d47e5fa8aa1b2b95",
-                "reference": "198166618906cb2de69b95d7d47e5fa8aa1b2b95",
+                "url": "https://api.github.com/repos/composer/semver/zipball/9dfce66f1e97360ea5e6d3e38ab14277e4cc591e",
+                "reference": "9dfce66f1e97360ea5e6d3e38ab14277e4cc591e",
                 "shasum": ""
             },
             "require": {
@@ -416,7 +416,7 @@
                     "homepage": "http://robbast.nl"
                 }
             ],
-            "description": "Semver library that offers utilities, version constraint parsing and validation.",
+            "description": "Version comparison library that offers utilities, version constraint parsing and validation.",
             "keywords": [
                 "semantic",
                 "semver",
@@ -426,7 +426,7 @@
             "support": {
                 "irc": "ircs://irc.libera.chat:6697/composer",
                 "issues": "https://github.com/composer/semver/issues",
-                "source": "https://github.com/composer/semver/tree/3.4.4"
+                "source": "https://github.com/composer/semver/tree/3.5.2"
             },
             "funding": [
                 {
@@ -438,7 +438,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-08-20T19:15:30+00:00"
+            "time": "2026-10-22T15:37:26+00:00"
         },
         {
             "name": "defuse/php-encryption",
@@ -1876,19 +1876,20 @@
         },
         {
             "name": "invoiceshelf/modules",
-            "version": "3.4.0",
+            "version": "dev-feat/bundled-dependencies",
             "source": {
                 "type": "git",
                 "url": "https://github.com/InvoiceShelf/modules.git",
-                "reference": "68e13a4521ba44b19f59c07f0d54a95b821a9883"
+                "reference": "bdfcd9ea819fa26991255d443e803d299e6e478d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/InvoiceShelf/modules/zipball/68e13a4521ba44b19f59c07f0d54a95b821a9883",
-                "reference": "68e13a4521ba44b19f59c07f0d54a95b821a9883",
+                "url": "https://api.github.com/repos/InvoiceShelf/modules/zipball/bdfcd9ea819fa26991255d443e803d299e6e478d",
+                "reference": "bdfcd9ea819fa26991255d443e803d299e6e478d",
                 "shasum": ""
             },
             "require": {
+                "composer/semver": "^3.4",
                 "nikic/php-parser": "^5.0",
                 "nwidart/laravel-modules": "^13.0",
                 "php": "^8.3"
@@ -1937,10 +1938,10 @@
                 "modules"
             ],
             "support": {
-                "source": "https://github.com/InvoiceShelf/modules/tree/3.4.0",
+                "source": "https://github.com/InvoiceShelf/modules/tree/feat/bundled-dependencies",
                 "issues": "https://github.com/InvoiceShelf/modules/issues"
             },
-            "time": "2026-09-16T02:30:03+00:00"
+            "time": "2026-10-23T23:24:54+00:00"
         },
         {
             "name": "laravel/framework",
@@ -14333,9 +14334,18 @@
             "time": "2026-05-20T13:07:01+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "package": "invoiceshelf/modules",
+            "version": "dev-feat/bundled-dependencies",
+            "alias": "3.5.0",
+            "alias_normalized": "3.5.0.0"
+        }
+    ],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "invoiceshelf/modules": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

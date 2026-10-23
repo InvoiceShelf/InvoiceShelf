@@ -6,7 +6,9 @@ use App\Platform\Modules\Events\ModuleEnabledEvent;
 use App\Platform\Modules\Models\Module;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\File;
 use Laravel\Sanctum\Sanctum;
+use Tests\Support\ModuleBundleFixture;
 
 use function Pest\Laravel\postJson;
 
@@ -70,3 +72,21 @@ function missingRuntimeModule(bool $enabled): Module
         'state' => 'installed',
     ]);
 }
+
+it('refuses to enable a module whose bundle no longer fits this host', function () {
+    Event::fake([ModuleEnabledEvent::class]);
+    ModuleBundleFixture::write(base_path('Modules/EnableProbe'), ['sample/enable-probe' => []], ['laravel/framework' => ['sample/enable-probe' => '^9.0']]);
+    $module = Module::query()->create(['name' => 'EnableProbe', 'slug' => 'enable-probe', 'version' => '1.0.0', 'installed' => true, 'enabled' => false, 'state' => 'installed']);
+
+    try {
+        postJson("/api/v1/modules/{$module->name}/enable")
+            ->assertConflict()
+            ->assertJsonPath('error', 'module_incompatible')
+            ->assertJsonPath('message', fn (string $message) => str_contains($message, 'needs laravel/framework ^9.0'));
+
+        expect($module->fresh()->enabled)->toBeFalse();
+        Event::assertNotDispatched(ModuleEnabledEvent::class);
+    } finally {
+        File::deleteDirectory(base_path('Modules/EnableProbe'));
+    }
+});
