@@ -68,8 +68,8 @@ FROM base AS production
     # entrypoint still repairs it on a writable one.
     RUN ln -sfn /var/www/html/storage/app/public /var/www/html/public/storage
     # Authenticate composer against GitHub when a token is provided (build secret),
-    # so multi-arch builds don't exhaust the unauthenticated API rate limit while the
-    # merge-plugin resolves modules. The secret is build-time only (never in the image),
+    # so multi-arch builds don't exhaust the unauthenticated API rate limit while it
+    # reads the SDK's VCS repository. The secret is build-time only (never in the image),
     # and the step still works without it for local builds.
     RUN --mount=type=secret,id=composer_auth,mode=0444 \
         COMPOSER_AUTH="$(cat /run/secrets/composer_auth 2>/dev/null || true)" \
