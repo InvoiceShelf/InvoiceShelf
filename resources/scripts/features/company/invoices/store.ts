@@ -264,8 +264,8 @@ export const useInvoiceStore = defineStore('invoice', {
 
       if (this.newInvoice.tax_per_item === 'YES') {
         this.newInvoice.items.forEach((item) => {
-          if (item.taxes && !item.taxes.length) {
-            item.taxes.push(createTaxStub())
+          if (!item.taxes?.length) {
+            item.taxes = [createTaxStub()]
           }
         })
       }
