@@ -8,6 +8,8 @@ import CustomerViewSidebar from '@/scripts/features/company/customers/components
 import CustomerChart from '@/scripts/features/company/customers/components/CustomerChart.vue'
 import CustomerStatement from '@/scripts/features/company/customers/components/CustomerStatement.vue'
 import type { Customer } from '@/scripts/types/domain/customer'
+import ExtensionSlot from '@/scripts/extensions/ExtensionSlot.vue'
+import { entityContext } from '@/scripts/extensions/records'
 
 const ABILITIES = {
   EDIT_CUSTOMER: 'edit-customer',
@@ -21,6 +23,9 @@ const ABILITIES = {
 } as const
 
 const customerStore = useCustomerStore()
+
+/** Module actions and panels on this page; see registerEntityAction / registerEntityPanel. */
+const extensionContext = entityContext('customer', 'detail', () => customerStore.selectedViewCustomer, () => refreshData())
 const userStore = useUserStore()
 
 const router = useRouter()
@@ -171,6 +176,8 @@ function refreshData(): void {
             </BaseDropdownItem>
           </BaseDropdown>
 
+          <ExtensionSlot name="entity" entity="customer" area="actions:detail" :context="extensionContext" />
+
           <CustomerDropdown
             v-if="hasAtleastOneAbility()"
             :row="customerStore.selectedViewCustomer"
@@ -202,6 +209,8 @@ function refreshData(): void {
           <CustomerStatement v-if="selectedCustomer" :customer="selectedCustomer" />
         </BaseTab>
       </BaseTabGroup>
+
+      <ExtensionSlot name="entity" entity="customer" area="panels" :context="extensionContext" />
     </BasePage>
 
     <!-- The other customers, beside this one (wide screens only) -->

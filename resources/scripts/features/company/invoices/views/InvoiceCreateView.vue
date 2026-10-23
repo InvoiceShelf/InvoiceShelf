@@ -22,10 +22,7 @@
             <span id="make-recurring-label" class="text-sm font-medium text-heading whitespace-nowrap">{{ $t('recurring_invoices.make_recurring') }}</span>
           </div>
 
-          <ExtensionSlot
-            name="invoice-create-actions"
-            :context="invoiceCreateContext"
-          />
+          <ExtensionSlot name="entity" entity="invoice" area="actions:form" :context="extensionFormContext" />
 
           <router-link
             v-if="isEdit"
@@ -78,11 +75,9 @@
         <BaseSwitch v-model="isRecurring" aria-labelledby="make-recurring-sheet-label" />
       </label>
 
-      <div v-if="isPhone && !isEdit" class="flex items-center px-4 py-3 mt-3 border glass rounded-xl">
-        <ExtensionSlot
-          name="invoice-create-actions"
-          :context="invoiceCreateContext"
-        />
+      <!-- Phones have no header actions, so module form actions get a row of their own, only when there are any -->
+      <div v-if="isPhone && formActions.length" class="flex flex-wrap items-center gap-2 px-4 py-3 mt-3 border glass rounded-xl">
+        <ExtensionSlot name="entity" entity="invoice" area="actions:form" :context="extensionFormContext" />
       </div>
 
       <!-- Select Customer & Basic Fields -->
@@ -104,10 +99,7 @@
           store-prop="newInvoice"
         />
 
-        <ExtensionSlot
-          name="invoice-create-sections"
-          :context="invoiceCreateContext"
-        />
+        <ExtensionSlot name="entity" entity="invoice" area="formSections" :context="extensionFormContext" />
 
         <!-- Invoice Footer Section -->
         <div
@@ -168,10 +160,9 @@ import {
   getErrorTranslationKey,
 } from '@/scripts/utils/error-handling'
 import ExtensionSlot from '@/scripts/extensions/ExtensionSlot.vue'
-import {
-  runInvoiceCreateSaveHooks,
-} from '@/scripts/extensions/runtime'
-import type { InvoiceCreateContext, InvoiceExtensionRecord } from '@/scripts/extensions/types'
+import { useEntityContributions } from '@/scripts/extensions/runtime'
+import { currencyCodeOf, entityFormContext } from '@/scripts/extensions/records'
+import { useEntitySaveHooks } from '@/scripts/composables/use-entity-save-hooks'
 import InvoiceBasicFields from '../components/InvoiceBasicFields.vue'
 import {
   DocumentItemsTable,
@@ -181,12 +172,10 @@ import {
   TemplateSelectButton,
   SelectTemplateModal,
 } from '../../../shared/document-form'
-import { useUserStore } from '@/scripts/stores/user.store'
 
 const invoiceStore = useInvoiceStore()
 const recurringInvoiceStore = useRecurringInvoiceStore()
 const companyStore = useCompanyStore()
-const userStore = useUserStore()
 const notificationStore = useNotificationStore()
 const { t } = useI18n()
 const route = useRoute()
@@ -224,15 +213,18 @@ const isRecurringEdit = computed<boolean>(() =>
   route.name === 'recurring-invoices.edit',
 )
 
-const invoiceCreateContext: InvoiceCreateContext = {
+/** Module form actions, sections and save hooks; see registerEntityFormSection / registerEntitySaveHook. */
+const extensionFormContext = entityFormContext('invoice', {
   isEdit: () => isEdit.value,
+  record: () => invoiceStore.newInvoice,
   isRecurring: () => isRecurring.value,
-  can: (ability: string | string[]) => userStore.hasAbilities(ability),
   total: () => invoiceStore.getTotal,
-  currency: () => invoiceStore.newInvoice.selectedCurrency,
-  invoiceDate: () => invoiceStore.newInvoice.invoice_date || null,
+  currencyCode: () => currencyCodeOf(invoiceStore.newInvoice.selectedCurrency),
+  date: () => invoiceStore.newInvoice.invoice_date || null,
   dueDate: () => invoiceStore.newInvoice.due_date || null,
-}
+})
+const formActions = useEntityContributions('actions:form', 'invoice')
+const saveHooks = useEntitySaveHooks()
 
 const rules = computed(() => {
   if (isRecurring.value) {
@@ -489,10 +481,8 @@ async function submitForm(): Promise<void> {
         : invoiceStore.addInvoice
 
       const response = await action(data)
-      const handled = await runInvoiceCreateSaveHooks(
-        response.data.data as unknown as InvoiceExtensionRecord,
-        invoiceCreateContext,
-      )
+      // The invoice is saved; module hooks cannot fail the save (see useEntitySaveHooks).
+      const handled = await saveHooks.run('invoice', response.data.data, extensionFormContext)
 
       if (!handled) {
         router.push(`/admin/invoices/${response.data.data.id}/view`)

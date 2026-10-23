@@ -1,5 +1,5 @@
-import { markRaw, shallowRef } from 'vue'
-import type { ShallowRef } from 'vue'
+import { computed, markRaw, shallowRef } from 'vue'
+import type { ComputedRef, ShallowRef } from 'vue'
 import type { RouteMeta, RouteRecordRaw, Router } from 'vue-router'
 import { client } from '@/scripts/api/client'
 import { useNotificationStore } from '@/scripts/stores/notification.store'
@@ -9,9 +9,9 @@ import type {
   CompanyChangeEvent,
   ComponentExtensionContribution,
   CreateActionContribution,
-  InvoiceCreateContext,
-  InvoiceCreateSaveHookContribution,
-  InvoiceExtensionRecord,
+  EntityActionPlacement,
+  EntitySaveHookContribution,
+  ExtensionEntity,
   InvoiceShelfExtensionApi,
   InvoiceShelfExtensionEvents,
   PageChildContribution,
@@ -25,13 +25,16 @@ type ComponentSlot =
   | 'headerActions'
   | 'companyLayoutOverlays'
   | 'richEditorToolbarActions'
-  | 'invoiceActions'
-  | 'invoiceDetailActions'
-  | 'invoiceCreateActions'
-  | 'invoiceCreateSections'
-  | 'invoiceDetailPanels'
 
-interface RegisteredComponentContribution extends ComponentExtensionContribution {
+/** The record slots: an action in one placement, a detail-page panel, or a form section. */
+export type EntitySlot = `actions:${EntityActionPlacement}` | 'panels' | 'formSections'
+
+/** Registry key of one record slot, such as `panels:invoice`. */
+export function entitySlotKey(slot: EntitySlot, entity: ExtensionEntity): string {
+  return `${slot}:${entity}`
+}
+
+export interface RegisteredComponentContribution extends ComponentExtensionContribution {
   component: ComponentExtensionContribution['component']
 }
 
@@ -107,13 +110,10 @@ export class ExtensionRegistry {
   readonly headerActions = shallowRef<RegisteredComponentContribution[]>([])
   readonly companyLayoutOverlays = shallowRef<RegisteredComponentContribution[]>([])
   readonly richEditorToolbarActions = shallowRef<RegisteredComponentContribution[]>([])
-  readonly invoiceActions = shallowRef<RegisteredComponentContribution[]>([])
-  readonly invoiceDetailActions = shallowRef<RegisteredComponentContribution[]>([])
-  readonly invoiceCreateActions = shallowRef<RegisteredComponentContribution[]>([])
-  readonly invoiceCreateSections = shallowRef<RegisteredComponentContribution[]>([])
-  readonly invoiceDetailPanels = shallowRef<RegisteredComponentContribution[]>([])
+  /** Record slot contributions keyed by `entitySlotKey()`. */
+  readonly entityComponents = shallowRef<Record<string, RegisteredComponentContribution[]>>({})
+  readonly entitySaveHooks = shallowRef<Record<string, EntitySaveHookContribution[]>>({})
   readonly createActions = shallowRef<CreateActionContribution[]>([])
-  readonly invoiceCreateSaveHooks = shallowRef<InvoiceCreateSaveHookContribution[]>([])
   readonly companySettingsNavigation = shallowRef<SettingsNavigationContribution[]>([])
   readonly adminSettingsNavigation = shallowRef<SettingsNavigationContribution[]>([])
 
@@ -156,21 +156,31 @@ export class ExtensionRegistry {
     })
   }
 
-  registerInvoiceCreateSaveHook(
-    contribution: InvoiceCreateSaveHookContribution,
-  ): () => void {
+  registerEntityComponent(key: string, contribution: ComponentExtensionContribution): () => void {
+    assertContributionId(contribution.id)
+    const entry: RegisteredComponentContribution = {
+      ...contribution,
+      component: markRaw(contribution.component),
+    }
+
+    return this.track(() => {
+      this.entityComponents.value = withEntry(this.entityComponents.value, key, entry)
+
+      return () => {
+        this.entityComponents.value = withoutEntry(this.entityComponents.value, key, entry)
+      }
+    })
+  }
+
+  registerEntitySaveHook(entity: ExtensionEntity, contribution: EntitySaveHookContribution): () => void {
     assertContributionId(contribution.id)
     const entry = { ...contribution }
 
     return this.track(() => {
-      this.invoiceCreateSaveHooks.value = [
-        ...this.invoiceCreateSaveHooks.value.filter((item) => item.id !== entry.id),
-        entry,
-      ].sort(comparePriority)
+      this.entitySaveHooks.value = withEntry(this.entitySaveHooks.value, entity, entry)
 
       return () => {
-        this.invoiceCreateSaveHooks.value = this.invoiceCreateSaveHooks.value
-          .filter((item) => item !== entry)
+        this.entitySaveHooks.value = withoutEntry(this.entitySaveHooks.value, entity, entry)
       }
     })
   }
@@ -249,38 +259,24 @@ class ExtensionApi implements InvoiceShelfExtensionApi {
     return extensionRegistry.registerCreateAction(contribution)
   }
 
-  registerInvoiceAction(contribution: ComponentExtensionContribution): () => void {
-    return extensionRegistry.registerComponent('invoiceActions', contribution)
-  }
-
-  registerInvoiceDetailAction(
+  registerEntityAction(
+    entity: ExtensionEntity,
+    placement: EntityActionPlacement,
     contribution: ComponentExtensionContribution,
   ): () => void {
-    return extensionRegistry.registerComponent('invoiceDetailActions', contribution)
+    return extensionRegistry.registerEntityComponent(entitySlotKey(`actions:${placement}`, entity), contribution)
   }
 
-  registerInvoiceCreateAction(
-    contribution: ComponentExtensionContribution,
-  ): () => void {
-    return extensionRegistry.registerComponent('invoiceCreateActions', contribution)
+  registerEntityPanel(entity: ExtensionEntity, contribution: ComponentExtensionContribution): () => void {
+    return extensionRegistry.registerEntityComponent(entitySlotKey('panels', entity), contribution)
   }
 
-  registerInvoiceCreateSection(
-    contribution: ComponentExtensionContribution,
-  ): () => void {
-    return extensionRegistry.registerComponent('invoiceCreateSections', contribution)
+  registerEntityFormSection(entity: ExtensionEntity, contribution: ComponentExtensionContribution): () => void {
+    return extensionRegistry.registerEntityComponent(entitySlotKey('formSections', entity), contribution)
   }
 
-  registerInvoiceCreateSaveHook(
-    contribution: InvoiceCreateSaveHookContribution,
-  ): () => void {
-    return extensionRegistry.registerInvoiceCreateSaveHook(contribution)
-  }
-
-  registerInvoiceDetailPanel(
-    contribution: ComponentExtensionContribution,
-  ): () => void {
-    return extensionRegistry.registerComponent('invoiceDetailPanels', contribution)
+  registerEntitySaveHook(entity: ExtensionEntity, contribution: EntitySaveHookContribution): () => void {
+    return extensionRegistry.registerEntitySaveHook(entity, contribution)
   }
 
   registerCompanySettingsNavigation(contribution: SettingsNavigationContribution): () => void {
@@ -516,15 +512,32 @@ export function extensionItems<T extends { visible?: () => boolean }>(
   return items.filter(isContributionVisible)
 }
 
-export async function runInvoiceCreateSaveHooks(
-  savedInvoice: InvoiceExtensionRecord,
-  context: InvoiceCreateContext,
-): Promise<boolean> {
-  for (const hook of extensionItems(extensionRegistry.invoiceCreateSaveHooks.value)) {
-    if (await hook.handle(savedInvoice, context)) {
-      return true
-    }
-  }
+/** The visible contributions to one record slot, kept in sync with the registry. */
+export function useEntityContributions(
+  slot: EntitySlot,
+  entity: ExtensionEntity,
+): ComputedRef<RegisteredComponentContribution[]> {
+  const key = entitySlotKey(slot, entity)
 
-  return false
+  return computed(() => extensionItems(extensionRegistry.entityComponents.value[key] ?? []))
+}
+
+/** The visible save hooks for one record type, in priority order. */
+export function entitySaveHooks(entity: ExtensionEntity): EntitySaveHookContribution[] {
+  return extensionItems(extensionRegistry.entitySaveHooks.value[entity] ?? [])
+}
+
+function withEntry<T extends { id: string; priority?: number }>(
+  map: Record<string, T[]>,
+  key: string,
+  entry: T,
+): Record<string, T[]> {
+  return {
+    ...map,
+    [key]: [...(map[key] ?? []).filter((item) => item.id !== entry.id), entry].sort(comparePriority),
+  }
+}
+
+function withoutEntry<T>(map: Record<string, T[]>, key: string, entry: T): Record<string, T[]> {
+  return { ...map, [key]: (map[key] ?? []).filter((item) => item !== entry) }
 }

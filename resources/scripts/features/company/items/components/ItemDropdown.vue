@@ -4,6 +4,8 @@ import { useRoute } from 'vue-router'
 import { useItemStore } from '../store'
 import { useDialogStore } from '../../../../stores/dialog.store'
 import { useUserStore } from '../../../../stores/user.store'
+import ExtensionSlot from '@/scripts/extensions/ExtensionSlot.vue'
+import { entityContext } from '@/scripts/extensions/records'
 
 interface RowData {
   id: number
@@ -25,6 +27,11 @@ const props = withDefaults(defineProps<Props>(), {
   row: null,
   table: null,
   loadData: null,
+})
+
+const extensionContext = entityContext('item', 'list', () => props.row, () => {
+  props.table?.refresh()
+  props.loadData?.()
 })
 
 const dialogStore = useDialogStore()
@@ -87,5 +94,13 @@ function removeItem(id: number): void {
       />
       {{ $t('general.delete') }}
     </BaseDropdownItem>
+    <!-- Module actions; see registerEntityAction('item', 'list', ...) -->
+    <ExtensionSlot
+      v-if="table"
+      name="entity"
+      entity="item"
+      area="actions:list"
+      :context="extensionContext"
+    />
   </BaseDropdown>
 </template>

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "042827babcf973f1b5c62255ac85b105",
+    "content-hash": "eb98f3487ce3b9dbbfa04d329e021330",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -1876,16 +1876,16 @@
         },
         {
             "name": "invoiceshelf/modules",
-            "version": "3.4.0",
+            "version": "dev-feat/invoice-extension-slots",
             "source": {
                 "type": "git",
                 "url": "https://github.com/InvoiceShelf/modules.git",
-                "reference": "68e13a4521ba44b19f59c07f0d54a95b821a9883"
+                "reference": "bb939ce4f425eaec64f1cc9a8d827e568353fea9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/InvoiceShelf/modules/zipball/68e13a4521ba44b19f59c07f0d54a95b821a9883",
-                "reference": "68e13a4521ba44b19f59c07f0d54a95b821a9883",
+                "url": "https://api.github.com/repos/InvoiceShelf/modules/zipball/bb939ce4f425eaec64f1cc9a8d827e568353fea9",
+                "reference": "bb939ce4f425eaec64f1cc9a8d827e568353fea9",
                 "shasum": ""
             },
             "require": {
@@ -1937,10 +1937,10 @@
                 "modules"
             ],
             "support": {
-                "source": "https://github.com/InvoiceShelf/modules/tree/3.4.0",
+                "source": "https://github.com/InvoiceShelf/modules/tree/feat/invoice-extension-slots",
                 "issues": "https://github.com/InvoiceShelf/modules/issues"
             },
-            "time": "2026-09-16T02:30:03+00:00"
+            "time": "2026-10-23T23:43:10+00:00"
         },
         {
             "name": "laravel/framework",
@@ -14333,9 +14333,18 @@
             "time": "2026-05-20T13:07:01+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "package": "invoiceshelf/modules",
+            "version": "dev-feat/invoice-extension-slots",
+            "alias": "3.5.0",
+            "alias_normalized": "3.5.0.0"
+        }
+    ],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "invoiceshelf/modules": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

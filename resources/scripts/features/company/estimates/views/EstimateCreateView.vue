@@ -19,6 +19,8 @@
 
         <!-- Phones get these in the bottom bar instead -->
         <template v-if="!isPhone" #actions>
+          <ExtensionSlot name="entity" entity="estimate" area="actions:form" :context="extensionFormContext" />
+
           <router-link
             v-if="isEdit"
             :to="`/estimates/pdf/${estimateStore.newEstimate.unique_hash}`"
@@ -60,6 +62,11 @@
         :pdf-url="isEdit ? `/estimates/pdf/${estimateStore.newEstimate.unique_hash}` : null"
       />
 
+      <!-- Phones have no header actions, so module form actions get a row of their own, only when there are any -->
+      <div v-if="isPhone && formActions.length" class="flex flex-wrap items-center gap-2 px-4 py-3 mt-3 border glass rounded-xl">
+        <ExtensionSlot name="entity" entity="estimate" area="actions:form" :context="extensionFormContext" />
+      </div>
+
       <!-- Select Customer & Basic Fields -->
       <EstimateBasicFields
         :v="v$"
@@ -77,6 +84,8 @@
           :store="estimateStore"
           store-prop="newEstimate"
         />
+
+        <ExtensionSlot name="entity" entity="estimate" area="formSections" :context="extensionFormContext" />
 
         <!-- Estimate Footer Section -->
         <div
@@ -135,6 +144,10 @@ import {
   getErrorTranslationKey,
 } from '@/scripts/utils/error-handling'
 import EstimateBasicFields from '../components/EstimateBasicFields.vue'
+import ExtensionSlot from '@/scripts/extensions/ExtensionSlot.vue'
+import { useEntityContributions } from '@/scripts/extensions/runtime'
+import { currencyCodeOf, entityFormContext } from '@/scripts/extensions/records'
+import { useEntitySaveHooks } from '@/scripts/composables/use-entity-save-hooks'
 import {
   DocumentItemsTable,
   DocumentFormActionBar,
@@ -167,6 +180,18 @@ const pageTitle = computed<string>(() =>
 )
 
 const isEdit = computed<boolean>(() => route.name === 'estimates.edit')
+
+/** Module form actions, sections and save hooks; see registerEntityFormSection / registerEntitySaveHook. */
+const extensionFormContext = entityFormContext('estimate', {
+  isEdit: () => isEdit.value,
+  record: () => estimateStore.newEstimate,
+  total: () => estimateStore.getTotal,
+  currencyCode: () => currencyCodeOf(estimateStore.newEstimate.selectedCurrency),
+  date: () => estimateStore.newEstimate.estimate_date || null,
+  dueDate: () => estimateStore.newEstimate.expiry_date || null,
+})
+const formActions = useEntityContributions('actions:form', 'estimate')
+const saveHooks = useEntitySaveHooks()
 
 const rules = {
   estimate_date: {
@@ -254,7 +279,11 @@ async function submitForm(): Promise<void> {
 
     const res = await action(data)
     if (res.data.data) {
-      router.push(`/admin/estimates/${res.data.data.id}/view`)
+      // The estimate is saved; module hooks cannot fail the save (see useEntitySaveHooks).
+      const handled = await saveHooks.run('estimate', res.data.data, extensionFormContext)
+      if (!handled) {
+        router.push(`/admin/estimates/${res.data.data.id}/view`)
+      }
     }
   } catch (err: unknown) {
     const normalized = handleApiError(err)

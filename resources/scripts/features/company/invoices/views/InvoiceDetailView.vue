@@ -56,10 +56,7 @@
             </BaseButton>
           </router-link>
 
-          <ExtensionSlot
-            name="invoice-detail-actions"
-            :context="invoiceDetailContext"
-          />
+          <ExtensionSlot name="entity" entity="invoice" area="actions:detail" :context="extensionContext" />
 
           <InvoiceDropdown
             :row="invoiceData"
@@ -174,10 +171,7 @@
         </div>
       </BaseCard>
 
-      <ExtensionSlot
-        name="invoice-detail-panels"
-        :context="invoiceDetailContext"
-      />
+      <ExtensionSlot name="entity" entity="invoice" area="panels" :context="extensionContext" />
 
       <BasePdfPreview
         ref="pdfPreview"
@@ -209,10 +203,7 @@
           </template>
           {{ $t('invoices.record_payment') }}
         </BaseButton>
-        <ExtensionSlot
-          name="invoice-detail-actions"
-          :context="invoiceDetailContext"
-        />
+        <ExtensionSlot name="entity" entity="invoice" area="actions:detail" :context="extensionContext" />
         <BaseButton variant="white" class="flex-1" @click="openPdf">
           <template #left="slotProps">
             <BaseIcon name="ArrowUpOnSquareIcon" :class="slotProps.class" />
@@ -303,6 +294,7 @@ import { useModalStore } from '../../../../stores/modal.store'
 import type { Invoice, InvoicePaymentAllocation } from '../../../../types/domain/invoice'
 import { scrollBehavior } from '@/scripts/utils/motion'
 import ExtensionSlot from '@/scripts/extensions/ExtensionSlot.vue'
+import { entityContext } from '@/scripts/extensions/records'
 
 interface Props {
   canEdit?: boolean
@@ -397,10 +389,8 @@ const pdfPreview = ref<InstanceType<typeof BasePdfPreview> | null>(null)
 
 const documentCurrency = computed(() => invoiceData.value?.currency ?? invoiceData.value?.customer?.currency ?? null)
 
-const invoiceDetailContext = {
-  invoice: () => invoiceData.value,
-  can: (ability: string | string[]) => userStore.hasAbilities(ability),
-}
+/** Module actions and panels on this page; see registerEntityAction / registerEntityPanel. */
+const extensionContext = entityContext('invoice', 'detail', () => invoiceData.value, () => loadInvoice())
 
 // Payment can be recorded once the invoice has gone out and money is still owed
 const canRecordPayment = computed<boolean>(() => {

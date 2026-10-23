@@ -71,11 +71,6 @@
       {{ $t('invoices.record_payment') }}
     </BaseDropdownItem>
 
-    <ExtensionSlot
-      name="invoice-actions"
-      :context="invoiceActionContext"
-    />
-
     <!-- Mark as Sent -->
     <BaseDropdownItem v-if="row.status === 'DRAFT' && !isDetailView && canSend" @click="onMarkAsSent">
       <BaseIcon
@@ -120,6 +115,14 @@
       />
       {{ $t('general.delete') }}
     </BaseDropdownItem>
+    <!-- Module actions; see registerEntityAction('invoice', 'list', ...) -->
+    <ExtensionSlot
+      v-if="table"
+      name="entity"
+      entity="invoice"
+      area="actions:list"
+      :context="extensionContext"
+    />
   </BaseDropdown>
 </template>
 
@@ -132,13 +135,13 @@ import { useDialogStore } from '../../../../stores/dialog.store'
 import { useModalStore } from '../../../../stores/modal.store'
 import { useNotificationStore } from '../../../../stores/notification.store'
 import { absoluteDocumentUrl } from '@/scripts/utils/documents'
-import ExtensionSlot from '@/scripts/extensions/ExtensionSlot.vue'
-import { useUserStore } from '@/scripts/stores/user.store'
 import {
   handleApiError,
   getErrorTranslationKey,
 } from '../../../../utils/error-handling'
 import type { Invoice } from '../../../../types/domain/invoice'
+import ExtensionSlot from '@/scripts/extensions/ExtensionSlot.vue'
+import { entityContext } from '@/scripts/extensions/records'
 
 interface TableRef {
   refresh: () => void
@@ -169,8 +172,12 @@ const props = withDefaults(defineProps<Props>(), {
   canCreateEstimate: false,
 })
 
+const extensionContext = entityContext('invoice', 'list', () => props.row, () => {
+  props.table?.refresh()
+  props.loadData?.()
+})
+
 const invoiceStore = useInvoiceStore()
-const userStore = useUserStore()
 const dialogStore = useDialogStore()
 const modalStore = useModalStore()
 const notificationStore = useNotificationStore()
@@ -179,12 +186,6 @@ const route = useRoute()
 const router = useRouter()
 
 const isDetailView = computed<boolean>(() => route.name === 'invoices.view')
-
-const invoiceActionContext = {
-  invoice: () => props.row,
-  isDetailView: () => isDetailView.value,
-  can: (ability: string | string[]) => userStore.hasAbilities(ability),
-}
 
 const canReSendInvoice = computed<boolean>(() => {
   return (

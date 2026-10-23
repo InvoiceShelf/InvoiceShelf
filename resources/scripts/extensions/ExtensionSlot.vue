@@ -1,42 +1,44 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { extensionRegistry, extensionItems } from './runtime'
+import { entitySlotKey, extensionItems, extensionRegistry } from './runtime'
+import type { EntitySlot } from './runtime'
 import type {
-  InvoiceActionContext,
-  InvoiceCreateContext,
-  InvoiceDetailContext,
+  EntityContext,
+  EntityFormContext,
+  ExtensionEntity,
   RichEditorContext,
 } from './types'
 
-type ExtensionSlotContext =
-  | RichEditorContext
-  | InvoiceActionContext
-  | InvoiceDetailContext
-  | InvoiceCreateContext
-
+/**
+ * Renders the module contributions for one slot. Shell slots are named;
+ * record slots also take the entity and the area within it, so one
+ * component serves every record type. Renders nothing when no module
+ * contributes, so a host view looks the same without modules.
+ */
 const props = defineProps<{
   name:
     | 'header-actions'
     | 'company-layout-overlays'
     | 'rich-editor-toolbar-actions'
-    | 'invoice-actions'
-    | 'invoice-detail-actions'
-    | 'invoice-create-actions'
-    | 'invoice-create-sections'
-    | 'invoice-detail-panels'
-  context?: ExtensionSlotContext
+    | 'entity'
+  entity?: ExtensionEntity
+  area?: EntitySlot
+  context?: RichEditorContext | EntityContext | EntityFormContext
 }>()
 
 const contributions = computed(() => {
+  if (props.name === 'entity') {
+    if (!props.entity || !props.area) {
+      return []
+    }
+
+    return extensionItems(extensionRegistry.entityComponents.value[entitySlotKey(props.area, props.entity)] ?? [])
+  }
+
   const items = {
     'header-actions': extensionRegistry.headerActions.value,
     'company-layout-overlays': extensionRegistry.companyLayoutOverlays.value,
     'rich-editor-toolbar-actions': extensionRegistry.richEditorToolbarActions.value,
-    'invoice-actions': extensionRegistry.invoiceActions.value,
-    'invoice-detail-actions': extensionRegistry.invoiceDetailActions.value,
-    'invoice-create-actions': extensionRegistry.invoiceCreateActions.value,
-    'invoice-create-sections': extensionRegistry.invoiceCreateSections.value,
-    'invoice-detail-panels': extensionRegistry.invoiceDetailPanels.value,
   }[props.name]
 
   return extensionItems(items)
