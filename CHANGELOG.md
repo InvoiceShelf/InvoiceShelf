@@ -7,6 +7,32 @@ section beneath it is what CI publishes to the updater — see
 The 2.x line has its own CHANGELOG.md on the `2.x` branch. Releases are also on
 GitHub: https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 3.0.0-alpha.13 - 2026-10-24
+
+Thirteenth public alpha of InvoiceShelf 3.0. Invoices can become EN 16931 e-invoices: tax types and units carry the codes e-invoices are written with, and with Gotenberg the invoice PDF can embed the e-invoice XML, which makes it a ZUGFeRD / Factur-X hybrid. The official E-Invoicing module, ported from the work of André Kinne and iebl, uses both.
+
+⚠️ **Pre-release, not for production.** Back up your database before upgrading and use this release for evaluation and testing only.
+
+### Highlights
+
+- **Tax category codes and unit codes.** A tax type now has an EN 16931 tax category (standard rate, zero rated, exempt, reverse charge, intra-community supply and the rest), with an exemption reason for the exempt categories, and a unit has a UN/ECE unit code chosen from a list. Both are in their settings forms. Ported from the ZUGFeRD work of André Kinne and iebl. (#935)
+- **Hybrid e-invoice PDFs.** With the Gotenberg driver, an invoice PDF can carry an e-invoice XML as `factur-x.xml` in a PDF/A-3b file. Modules supply the XML (module API 1.5) on every way an invoice goes out: download, public link, customer portal, mail attachment and archive. If the XML cannot be produced or embedded, the ordinary PDF goes out instead. (#936, #937)
+
+### Improvements and fixes
+
+- Rendering an invoice or estimate with a tax per line no longer changes the line taxes it reads, so a second render of the same document (a mail after a download, for example) printed inflated tax amounts. (#934)
+- PDF/A files rendered by Gotenberg now pass PDF/A validation: the author was written as a property PDF/A does not allow, so every PDF/A rendered with `GOTENBERG_PDFA` set failed veraPDF. (#936)
+- Archived invoice PDFs are replaced when an invoice changes, instead of the first archive being served forever, and an archive made before a module started adding XML is rendered again rather than served without it. (#937)
+
+### Upgrade notes
+
+- **Existing tax types start as "Standard rate"** and units as "Piece" (C62). Before invoices that use a 0 % tax can become e-invoices, set that tax type to Zero rated or Exempt (with its exemption reason) in Settings → Tax Types.
+- **E-invoices need Gotenberg 8.34 or newer, as the full image** (`gotenberg/gotenberg:8.37.0`, not the `-chromium` one, which cannot convert to PDF/A). The development compose files are pinned to it.
+- **Module API 1.5.0.** Modules that declare `^1.3.0` or `^1.4.0` keep working. An install that pins `MARKETPLACE_MODULE_API_VERSION` to an older value cannot install modules that need 1.5.
+- **Module authors:** SDK 3.6 (`invoiceshelf/modules ^3.6`) adds `InvoiceDocumentReader`, `PdfCapabilities` and invoice PDF attachment providers; its README's "Documents and invoice PDFs" section covers them.
+
+Docker: `invoiceshelf/invoiceshelf:3.0.0-alpha.13` or `ghcr.io/invoiceshelf/invoiceshelf:3.0.0-alpha.13` (also `:next`).
+
 ## 3.0.0-alpha.12 - 2026-10-24
 
 Twelfth public alpha of InvoiceShelf 3.0. Modules can now bring the libraries they need and add to InvoiceShelf's own screens: module API 1.4 lets a module ship third-party packages the host lacks, and adds actions, panels, form sections and save hooks on invoices, estimates, customers, payments and more.
