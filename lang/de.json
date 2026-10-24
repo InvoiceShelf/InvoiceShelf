@@ -32,6 +32,7 @@
     "copy_pdf_url": "PDF-Link kopieren",
     "download_pdf": "PDF herunterladen",
     "save": "Speichern",
+    "extension_save_hook_failed": "Saved. An installed module could not finish its part of the save.",
     "skip": "Überspringen",
     "create": "Erstellen",
     "cancel": "Abbrechen",
