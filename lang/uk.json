@@ -1314,7 +1314,7 @@
       "sidebar_group_labels_desc": "Show section headers such as Administration and Modules. Sales and Purchases are always labelled to distinguish their Payments entries."
     },
     "address_information": {
-      "section_description": " Ви можете оновити Вашу адресну інформацію, скориставшись формою нижче."
+      "section_description": "You can update Your Address information using form below."
     },
     "title": "Налаштування",
     "setting": "Налаштування | Налаштування",
@@ -1575,7 +1575,7 @@
         "disable_on_invoice_partial_paid": "Вимкнути після часткової оплати",
         "disable_on_invoice_paid": "Вимкнути після повної оплати",
         "disable_on_invoice_sent": "Вимкнути після надсилання рахунку",
-        "retrospective_edits_description": "Залежно від законів вашої країни або ваших уподобань, ви можете обмежити редагування завершених рахунків."
+        "retrospective_edits_description": "Based on your country's laws or your preference, you can restrict users from editing finalised invoices."
       },
       "credit_notes": {
         "title": "Credit Notes",
@@ -1786,7 +1786,7 @@
       "new_driver": "Додати нового постачальника",
       "edit_driver": "Редагувати постачальника",
       "select_driver": "Обрати джерело",
-      "update": "виберіть курс обміну ",
+      "update": "select exchange rate",
       "providers_description": "Тут ви можете налаштувати обмінні пункти, щоб автоматично отримувати найновіший курс обміну валют для транзакцій.",
       "key": "Ключ API",
       "name": "Назва",
@@ -1797,7 +1797,7 @@
       "created_message": "Постачальника успішно створено",
       "updated_message": "Постачальника успішно оновлено",
       "deleted_message": "Постачальника успішно видалено",
-      "error": " Ви не можете видалити поточне джерело",
+      "error": "You cannot Delete Active Driver",
       "default_currency_error": "Ця валюта вже використовується в одному з активних провайдерів",
       "exchange_help_text": "Ця валюта вже використовується в одному з активних провайдерів {currency} в {baseCurrency}",
       "currency_freak": "Провайдер Currency Freak",
@@ -1882,7 +1882,7 @@
       "date_format": "Формат дати",
       "time_format": "Формат часу",
       "discount_setting": "Налаштування знижки",
-      "discount_per_item": "Знижка за одиницю ",
+      "discount_per_item": "Discount Per Item",
       "discount_setting_description": "Увімкніть цю опцію, якщо ви хочете додати знижку до окремих позицій інвойсу. За замовчуванням знижка додається безпосередньо до інвойсу.",
       "expire_public_links": "Автоматично закінчується термін дії публічних посилань",
       "expire_setting_description": "Вкажіть, чи хочете ви, щоб усі посилання, надіслані додатком для перегляду рахунків-фактур, кошторисів, платежів тощо, втрачали чинність через певний проміжок часу.",
@@ -2038,7 +2038,7 @@
       "set_default_disk_confirm": "Цей диск буде встановлено за замовчуванням, і всі нові PDF-файли будуть зберігатися на ньому",
       "success_set_default_disk": "Диск встановлено за замовчуванням",
       "save_pdf_to_disk": "Зберегти PDF до диска",
-      "disk_setting_description": " Увімкніть цю опцію, якщо ви бажаєте автоматично зберігати копію кожного інвойсу, кошторису та квитанції про оплату на вашому диску за замовчуванням. Увімкнення цієї опції зменшить час завантаження при перегляді PDF-файлів.",
+      "disk_setting_description": "Enable this, if you wish to save a copy of each Invoice, Estimate & Payment Receipt PDF on your default disk automatically. Turning this option will decrease the load-time when viewing the PDFs.",
       "select_disk": "Виберіть диск",
       "disk_settings": "Налаштування диска",
       "confirm_delete": "Ваші наявні файли та теки на вказаному диску не будуть зачеплені, але конфігурація диска буде видалена з InvoiceShelf",
