@@ -33,21 +33,28 @@ onMounted(async () => {
   }
 })
 
-async function save(type: string, choice: { bell?: boolean | null; mail?: boolean | null }): Promise<void> {
+/** Save one type's choice; false when it did not go through. */
+async function save(type: string, choice: { bell?: boolean | null; mail?: boolean | null }): Promise<boolean> {
   saving.value = true
   try {
     preferences.value = await inboxService.updatePreferences({ [type]: choice })
     notificationStore.showNotification({ type: 'success', message: 'inbox.preferences.saved' })
+    return true
   } catch (err: unknown) {
     notificationStore.showNotification({ type: 'error', message: handleApiError(err).message })
+    return false
   } finally {
     saving.value = false
   }
 }
 
-function change(row: NotificationPreference, key: string, value: boolean): void {
-  row[key as Channel] = value
-  void save(row.type, { [key]: value })
+async function change(row: NotificationPreference, key: string, value: boolean): Promise<void> {
+  const channel = key as Channel
+  const previous = row[channel]
+  row[channel] = value
+  if (!(await save(row.type, { [channel]: value }))) {
+    row[channel] = previous
+  }
 }
 
 function isCustomised(row: NotificationPreference): boolean {

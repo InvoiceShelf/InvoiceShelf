@@ -5,7 +5,10 @@ use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Accounts\Models\User;
 use App\Domains\Contacts\Models\Customer;
 use App\Domains\Money\Models\Currency;
+use App\Domains\Receivables\Application\Composition\PaymentAttributes;
 use App\Domains\Receivables\Application\Composition\PaymentComposer;
+use App\Domains\Receivables\Application\PaymentService;
+use App\Domains\Receivables\Events\PaymentRecorded;
 use App\Domains\Sales\Models\Estimate;
 use App\Domains\Sales\Models\Invoice;
 use App\Platform\Mcp\Events\McpConnectionBound;
@@ -16,6 +19,8 @@ use App\Platform\Operations\Console\CatchUp;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\Sanctum;
@@ -119,6 +124,19 @@ test('a payment recorded by a colleague is told to the others, and a paid invoic
         ->and(noticesOfType('invoice_paid'))->toHaveCount(1)
         ->and(noticesOfType('invoice_paid')->first()->message->params['number'])->toBe($invoice->invoice_number);
     Notification::assertSentTo($colleague, AppNotification::class, fn (AppNotification $notice) => $notice->message->type === 'invoice_paid');
+});
+
+test('a payment taken while a customer is signed in is told as an online payment', function () {
+    Event::fake([PaymentRecorded::class]);
+    $invoice = sentInvoice($this, 10000);
+    $payload = app(PaymentComposer::class)->payment(['allocations' => [['invoice_id' => $invoice->id]]], $this->companyId, null);
+    $attributes = PaymentAttributes::fromInput($payload, $this->companyId, (int) $this->owner->id);
+    Auth::shouldUse('customer');
+    Auth::guard('customer')->setUser($this->customer);
+
+    app(PaymentService::class)->create($attributes, $payload['allocations']);
+
+    Event::assertDispatched(PaymentRecorded::class, fn (PaymentRecorded $event): bool => $event->actorId === null);
 });
 
 test('a part payment does not say the invoice is paid', function () {

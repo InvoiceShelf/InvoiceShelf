@@ -27,12 +27,13 @@ class NotificationPreferences
      * Every type as it applies to the person in the given company, with
      * which channels are their own choice rather than a default.
      *
+     * @param  array<string, array{enabled: bool, bell: bool, mail: bool}>|null  $company  the company's defaults, when the caller already read them
      * @return array<string, array{enabled: bool, bell: bool, mail: bool, customised: array{bell: bool, mail: bool}}>
      */
-    public function for(User $user, ?int $companyId = null): array
+    public function for(User $user, ?int $companyId = null, ?array $company = null): array
     {
         $stored = $this->stored($user);
-        $company = $this->companyDefaults->for($companyId);
+        $company ??= $this->companyDefaults->for($companyId);
         $preferences = [];
 
         foreach (array_keys($this->catalogue->all()) as $key) {
@@ -54,11 +55,12 @@ class NotificationPreferences
      * The channels a notice of this type reaches the person on, in the
      * given company (none for a platform notice).
      *
+     * @param  array<string, array{enabled: bool, bell: bool, mail: bool}>|null  $company  the company's defaults, when the caller already read them
      * @return list<string>
      */
-    public function channels(User $user, string $type, ?int $companyId = null): array
+    public function channels(User $user, string $type, ?int $companyId = null, ?array $company = null): array
     {
-        $choice = $this->for($user, $companyId)[$type] ?? null;
+        $choice = $this->for($user, $companyId, $company)[$type] ?? null;
 
         if ($choice === null || ! $choice['enabled']) {
             return [];

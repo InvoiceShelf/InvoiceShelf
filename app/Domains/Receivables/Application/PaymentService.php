@@ -4,6 +4,7 @@ namespace App\Domains\Receivables\Application;
 
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\CompanySetting;
+use App\Domains\Accounts\Models\User;
 use App\Domains\Metadata\Contracts\CustomFieldValueWriter;
 use App\Domains\Receivables\Contracts\PaymentEmailSender;
 use App\Domains\Receivables\Contracts\PaymentExchangeRateRecorder;
@@ -70,7 +71,10 @@ class PaymentService implements PaymentPdfDataProvider
             return $payment;
         });
 
-        $actorId = Auth::id() !== null ? (int) Auth::id() : null;
+        // Only a staff member counts as whoever recorded it: inside the
+        // customer portal the signed-in account is the customer paying.
+        $actor = Auth::user();
+        $actorId = $actor instanceof User ? (int) $actor->getKey() : null;
         DB::afterCommit(fn () => PaymentRecorded::dispatch((int) $payment->id, (int) $payment->company_id, $actorId));
 
         return $this->loadPayment($payment);

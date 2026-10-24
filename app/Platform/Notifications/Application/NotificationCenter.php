@@ -48,6 +48,7 @@ class NotificationCenter
     {
         $type = $this->catalogue->get($message->type);
         $companyLocale = $this->companyLocale($message->companyId);
+        $companyDefaults = $this->companyDefaults->for($message->companyId);
         $sent = 0;
 
         foreach ($this->recipients($type, $message, $to) as $user) {
@@ -55,7 +56,7 @@ class NotificationCenter
                 continue;
             }
 
-            $channels = $this->preferences->channels($user, $type->key, $message->companyId);
+            $channels = $this->preferences->channels($user, $type->key, $message->companyId, $companyDefaults);
 
             if ($channels === []) {
                 continue;
@@ -116,7 +117,7 @@ class NotificationCenter
     private function recipients(NotificationType $type, NotificationMessage $message, ?User $to): Collection
     {
         if ($type->platform) {
-            return User::query()->where('role', 'super admin')->get();
+            return User::query()->where('role', 'super admin')->with('settings')->get();
         }
 
         if ($type->isPersonal()) {
