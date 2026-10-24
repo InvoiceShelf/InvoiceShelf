@@ -32,6 +32,7 @@
     "copy_pdf_url": "पीडीएफ यूआरएल कॉपी करें",
     "download_pdf": "पीडीऍफ़ डाउनलोड करें",
     "save": "सुरक्षित करें",
+    "extension_save_hook_failed": "Saved. An installed module could not finish its part of the save.",
     "skip": "Skip",
     "create": "बनाएँ",
     "cancel": "रद्द",
