@@ -19,6 +19,9 @@ import { useCompanyStore } from '../../../../stores/company.store'
 import CustomFieldsSection from '@/scripts/features/shared/custom-fields/CustomFieldsSection.vue'
 import CopyInputField from '@/scripts/features/company/customers/components/CopyInputField.vue'
 import { customerBaseUrl } from '@/scripts/utils/documents'
+import ExtensionSlot from '@/scripts/extensions/ExtensionSlot.vue'
+import { entityFormContext } from '@/scripts/extensions/records'
+import { useEntitySaveHooks } from '@/scripts/composables/use-entity-save-hooks'
 
 const customerStore = useCustomerStore()
 const globalStore = useGlobalStore()
@@ -35,6 +38,13 @@ const isFetchingInitialData = ref<boolean>(false)
 const isSaving = ref<boolean>(false)
 
 const isEdit = computed<boolean>(() => route.name === 'customers.edit')
+
+/** Module form actions, sections and save hooks; see registerEntityFormSection / registerEntitySaveHook. */
+const extensionFormContext = entityFormContext('customer', {
+  isEdit: () => isEdit.value,
+  record: () => customerStore.currentCustomer,
+})
+const saveHooks = useEntitySaveHooks()
 
 const isLoadingContent = computed<boolean>(
   () => customerStore.isFetchingInitialSettings
@@ -151,7 +161,11 @@ async function submitCustomerData(): Promise<void> {
       ? customerStore.updateCustomer
       : customerStore.addCustomer
     const response = await action(data)
-    router.push(`/admin/customers/${response.data.id}/view`)
+    // The customer is saved; module hooks cannot fail the save (see useEntitySaveHooks).
+    const handled = await saveHooks.run('customer', response.data, extensionFormContext)
+    if (!handled) {
+      router.push(`/admin/customers/${response.data.id}/view`)
+    }
   } catch {
     isSaving.value = false
   }
@@ -173,6 +187,8 @@ async function submitCustomerData(): Promise<void> {
         </BaseBreadcrumb>
 
         <template #actions>
+          <ExtensionSlot name="entity" entity="customer" area="actions:form" :context="extensionFormContext" />
+
           <BaseButton type="submit" :loading="isSaving" :disabled="isSaving">
             <template #left="slotProps">
               <BaseIcon name="ArrowDownOnSquareIcon" :class="slotProps.class" />
@@ -696,6 +712,8 @@ async function submitCustomerData(): Promise<void> {
           :is-loading="isLoadingContent"
           :scope="customFieldValidationScope"
         />
+
+        <ExtensionSlot name="entity" entity="customer" area="formSections" :context="extensionFormContext" />
       </BaseCard>
     </form>
   </BasePage>

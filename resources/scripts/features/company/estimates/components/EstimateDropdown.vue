@@ -119,6 +119,14 @@
       />
       {{ $t('estimates.mark_as_rejected') }}
     </BaseDropdownItem>
+    <!-- Module actions; see registerEntityAction('estimate', 'list', ...) -->
+    <ExtensionSlot
+      v-if="table"
+      name="entity"
+      entity="estimate"
+      area="actions:list"
+      :context="extensionContext"
+    />
   </BaseDropdown>
 </template>
 
@@ -132,6 +140,8 @@ import { useModalStore } from '../../../../stores/modal.store'
 import { useNotificationStore } from '../../../../stores/notification.store'
 import { absoluteDocumentUrl } from '@/scripts/utils/documents'
 import type { Estimate } from '../../../../types/domain/estimate'
+import ExtensionSlot from '@/scripts/extensions/ExtensionSlot.vue'
+import { entityContext } from '@/scripts/extensions/records'
 
 interface TableRef {
   refresh: () => void
@@ -157,6 +167,8 @@ const props = withDefaults(defineProps<Props>(), {
   canSend: false,
   canCreateInvoice: false,
 })
+
+const extensionContext = entityContext('estimate', 'list', () => props.row, () => props.table?.refresh())
 
 const estimateStore = useEstimateStore()
 const dialogStore = useDialogStore()

@@ -1,14 +1,40 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { extensionRegistry, extensionItems } from './runtime'
-import type { RichEditorContext } from './types'
+import { entitySlotKey, extensionItems, extensionRegistry } from './runtime'
+import type { EntitySlot } from './runtime'
+import type {
+  EntityContext,
+  EntityFormContext,
+  ExtensionEntity,
+  RichEditorContext,
+} from './types'
 
+/**
+ * Renders the module contributions for one slot. Shell slots are named;
+ * record slots also take the entity and the area within it, so one
+ * component serves every record type. Renders nothing when no module
+ * contributes, so a host view looks the same without modules.
+ */
 const props = defineProps<{
-  name: 'header-actions' | 'company-layout-overlays' | 'rich-editor-toolbar-actions'
-  context?: RichEditorContext
+  name:
+    | 'header-actions'
+    | 'company-layout-overlays'
+    | 'rich-editor-toolbar-actions'
+    | 'entity'
+  entity?: ExtensionEntity
+  area?: EntitySlot
+  context?: RichEditorContext | EntityContext | EntityFormContext
 }>()
 
 const contributions = computed(() => {
+  if (props.name === 'entity') {
+    if (!props.entity || !props.area) {
+      return []
+    }
+
+    return extensionItems(extensionRegistry.entityComponents.value[entitySlotKey(props.area, props.entity)] ?? [])
+  }
+
   const items = {
     'header-actions': extensionRegistry.headerActions.value,
     'company-layout-overlays': extensionRegistry.companyLayoutOverlays.value,
