@@ -1314,7 +1314,7 @@
       "sidebar_group_labels_desc": "Shfaq kryet e seksioneve si Administrimi dhe Modulet. Shitjet dhe Blerjet etiketohen gjithmonë për të dalluar hyrjet e tyre të Pagesave."
     },
     "address_information": {
-      "section_description": "Mund të përditësoni informatat e adresës tuaj duke përdorur formularin e mëposhtëm."
+      "section_description": "You can update Your Address information using form below."
     },
     "title": "Cilësimet",
     "setting": "Cilësimi | Cilësimet",
@@ -1575,7 +1575,7 @@
         "disable_on_invoice_partial_paid": "Çaktivizo pasi të regjistrohet një pagesë e pjesëshme",
         "disable_on_invoice_paid": "Çaktivizo pasi të regjistrohet pagesa e plotë",
         "disable_on_invoice_sent": "Çaktivizo pasi të dërgohet fatura",
-        "retrospective_edits_description": " Nën bazën e ligjeve të shtetit tuaj ose preferencave tuaja, mund t'u kufizoni përdoruesve ndryshimin e faturave të finalizuara."
+        "retrospective_edits_description": "Based on your country's laws or your preference, you can restrict users from editing finalised invoices."
       },
       "credit_notes": {
         "title": "Notat kreditore",
@@ -1786,7 +1786,7 @@
       "new_driver": "Shto ofrues të ri",
       "edit_driver": "Ndrysho ofruesin",
       "select_driver": "Zgjidh shtytësin",
-      "update": "Zgjidh kursin e këmbimit ",
+      "update": "select exchange rate",
       "providers_description": "Konfiguroni ofruesit tuaj të kursit të këmbimit këtu për të marrë automatikisht kursin më të fundit në transaksione.",
       "key": "Çelësi i API-së",
       "name": "Emri",
@@ -1797,7 +1797,7 @@
       "created_message": "Ofruesi u krijua me sukses",
       "updated_message": "Ofruesi u përditësua me sukses",
       "deleted_message": "Ofruesi u fshi me sukses",
-      "error": " Nuk mund të fshini shtytësin aktiv",
+      "error": "You cannot Delete Active Driver",
       "default_currency_error": "Kjo valutë është përdorur tashmë te një nga ofruesit aktivë",
       "exchange_help_text": "Shkruani kursin e këmbimit për të konvertuar nga {currency} në {baseCurrency}",
       "currency_freak": "Currency Freak",
@@ -1882,7 +1882,7 @@
       "date_format": "Formati i datës",
       "time_format": "Formati i orës",
       "discount_setting": "Cilësimi i zbritjes",
-      "discount_per_item": "Zbritje për artikull ",
+      "discount_per_item": "Discount Per Item",
       "discount_setting_description": "Aktivizojeni këtë nëse dëshironi të shtoni zbritje në artikujt individualë të faturës. Si parazgjedhje, zbritja i shtohet drejtpërdrejt faturës.",
       "expire_public_links": "Skado automatikisht lidhjet publike",
       "expire_setting_description": "Specifikoni nëse dëshironi t'u skadojë afati të gjitha lidhjeve të dërguara nga aplikacioni për të parë faturat, ofertat & pagesat, etj., pas një kohëzgjatjeje të caktuar.",
@@ -2038,7 +2038,7 @@
       "set_default_disk_confirm": "Ky disk do të caktohet si parazgjedhje dhe të gjitha PDF-të e reja do të ruhen në këtë disk",
       "success_set_default_disk": "Disku u caktua si parazgjedhje me sukses",
       "save_pdf_to_disk": "Ruaj PDF-të në disk",
-      "disk_setting_description": " Aktivizojeni këtë nëse dëshironi të ruani automatikisht një kopje të çdo PDF-je të Faturave, Ofertave & Dëftesave të Pagesave në diskun tuaj parazgjedhur. Aktivizimi i këtij opsioni do të ulë kohën e ngarkimit gjatë shikimit të PDF-ve.",
+      "disk_setting_description": "Enable this, if you wish to save a copy of each Invoice, Estimate & Payment Receipt PDF on your default disk automatically. Turning this option will decrease the load-time when viewing the PDFs.",
       "select_disk": "Zgjidh diskun",
       "disk_settings": "Cilësimet e diskut",
       "confirm_delete": "Skedarët dhe dosjet tuaja ekzistuese në diskun e specifikuar nuk do të tregojnë ndikim por konfigurimi i diskut tuaj do të fshihet nga InvoiceShelf",
