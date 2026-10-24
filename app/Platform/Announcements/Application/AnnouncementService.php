@@ -8,6 +8,7 @@ use App\Domains\Accounts\Models\User;
 use App\Platform\Announcements\Models\Announcement;
 use App\Platform\Announcements\Models\AnnouncementDismissal;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -63,6 +64,14 @@ class AnnouncementService
     {
         if ($announcement?->isFromFeed()) {
             throw ValidationException::withMessages(['announcement' => ['announcement_from_feed']]);
+        }
+
+        // The window arrives with the admin's offset; it is kept in the app's
+        // own time zone so it opens at the moment they meant.
+        foreach (['starts_at', 'ends_at'] as $key) {
+            if (! empty($data[$key])) {
+                $data[$key] = Carbon::parse($data[$key])->setTimezone(config('app.timezone'));
+            }
         }
 
         $announcement ??= new Announcement(['source' => Announcement::SOURCE_LOCAL, 'created_by' => $by->id]);

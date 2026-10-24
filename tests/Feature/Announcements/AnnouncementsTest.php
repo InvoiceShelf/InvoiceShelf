@@ -95,6 +95,19 @@ test('a super admin writes announcements, validated, and a member cannot', funct
     $this->getJson('/api/v1/super-admin/announcements')->assertForbidden();
 });
 
+test('an announcement window opens at the moment the admin meant, whatever their time zone', function () {
+    $this->postJson('/api/v1/super-admin/announcements', [
+        'title' => 'Maintenance',
+        'body' => 'Offline for half an hour.',
+        'level' => 'warning',
+        'audience' => 'everyone',
+        'starts_at' => '2026-10-24T10:00:00+02:00',
+        'ends_at' => '2026-10-24T08:30:00.000Z',
+    ])->assertCreated()
+        ->assertJsonPath('data.starts_at', '2026-10-24T08:00:00+00:00')
+        ->assertJsonPath('data.ends_at', '2026-10-24T08:30:00+00:00');
+});
+
 test('announcements from the feed can only be hidden', function () {
     $fromFeed = Announcement::query()->create(['source' => 'feed', 'external_id' => 'abc', 'title' => 'From feed', 'body' => 'x']);
     $payload = ['title' => 'Changed', 'body' => 'x', 'level' => 'info', 'audience' => 'everyone'];

@@ -5,6 +5,7 @@ import { useGlobalStore } from '@/scripts/stores/global.store'
 import { useNotificationStore } from '@/scripts/stores/notification.store'
 import { announcementService } from '@/scripts/api/services/announcement.service'
 import { getErrorTranslationKey, handleApiError } from '@/scripts/utils/error-handling'
+import { formatDate, parseDate } from '@/scripts/utils/format-date'
 import type {
   Announcement,
   AnnouncementPayload,
@@ -80,8 +81,8 @@ watch(
           link_label: a.link_label,
           level: a.level,
           audience: a.audience,
-          starts_at: a.starts_at,
-          ends_at: a.ends_at,
+          starts_at: toPickerValue(a.starts_at),
+          ends_at: toPickerValue(a.ends_at),
           translations: JSON.parse(JSON.stringify(a.translations ?? {})) as Record<string, AnnouncementTranslation>,
         }
       : blank()
@@ -89,6 +90,19 @@ watch(
   },
   { immediate: true },
 )
+
+/**
+ * The picker shows and returns the admin's own local time; the server keeps
+ * UTC. Without this, a window set in UTC+2 would open two hours late.
+ */
+function toPickerValue(value: string | null): string | null {
+  return value ? formatDate(value, 'yyyy-MM-dd HH:mm') || null : null
+}
+
+function toUtc(value: string | Date | null): string | null {
+  const date = value ? parseDate(value) : null
+  return date ? date.toISOString() : null
+}
 
 function addLanguage(): void {
   if (!newLocale.value) return
@@ -106,7 +120,13 @@ async function save(): Promise<void> {
   isSaving.value = true
   errors.value = {}
   try {
-    const payload = { ...form.value, link_url: form.value.link_url || null, link_label: form.value.link_label || null }
+    const payload = {
+      ...form.value,
+      link_url: form.value.link_url || null,
+      link_label: form.value.link_label || null,
+      starts_at: toUtc(form.value.starts_at),
+      ends_at: toUtc(form.value.ends_at),
+    }
     if (props.announcement) {
       await announcementService.update(props.announcement.id, payload)
     } else {
