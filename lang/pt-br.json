@@ -1314,7 +1314,7 @@
       "sidebar_group_labels_desc": "Show section headers such as Administration and Modules. Sales and Purchases are always labelled to distinguish their Payments entries."
     },
     "address_information": {
-      "section_description": "  Você pode atualizar suas informações de endereço usando o formulário abaixo."
+      "section_description": "You can update Your Address information using form below."
     },
     "title": "Configurações",
     "setting": "Configuração | Configurações",
@@ -1575,7 +1575,7 @@
         "disable_on_invoice_partial_paid": "Desativar após pagamento parcial registrado",
         "disable_on_invoice_paid": "Desativar após pagamento total registrado",
         "disable_on_invoice_sent": "Desativar após fatura enviada",
-        "retrospective_edits_description": " Com base nas leis do seu país ou preferência, você pode restringir usuários de editar faturas finalizadas."
+        "retrospective_edits_description": "Based on your country's laws or your preference, you can restrict users from editing finalised invoices."
       },
       "credit_notes": {
         "title": "Credit Notes",
@@ -1786,7 +1786,7 @@
       "new_driver": "Adicionar Novo Provedor",
       "edit_driver": "Editar Provedor",
       "select_driver": "Selecionar Provedor",
-      "update": "selecionar taxa de câmbio ",
+      "update": "select exchange rate",
       "providers_description": "Configurar seus provedores de taxa de câmbio aqui para buscar automaticamente a última taxa em transações.",
       "key": "Chave API",
       "name": "Nome",
@@ -1797,7 +1797,7 @@
       "created_message": "Provedor criado com sucesso",
       "updated_message": "Provedor atualizado com sucesso",
       "deleted_message": "Provedor excluído com sucesso",
-      "error": " Você não pode excluir um provedor ativo",
+      "error": "You cannot Delete Active Driver",
       "default_currency_error": "Esta moeda já é usada em um dos fornecedores ativos",
       "exchange_help_text": "Insira a taxa de câmbio para converter de {currency} para {baseCurrency}",
       "currency_freak": "Currency Freak",
@@ -1882,7 +1882,7 @@
       "date_format": "Formato da Data",
       "time_format": "Formato de Hora",
       "discount_setting": "Configuração de Desconto",
-      "discount_per_item": "Desconto por Item ",
+      "discount_per_item": "Discount Per Item",
       "discount_setting_description": "Habilite isso se desejar adicionar desconto a itens de Fatura individualmente. Por padrão, o desconto é adicionado diretamente à Fatura.",
       "expire_public_links": "Expirar Links Públicos Automaticamente",
       "expire_setting_description": "Especifique se deseja expirar todos os links enviados pelo aplicativo para visualizar faturas, orçamentos e pagamentos após um período específico.",
@@ -2038,7 +2038,7 @@
       "set_default_disk_confirm": "Este disco será definido como padrão e todos os novos PDFs serão salvos neste disco",
       "success_set_default_disk": "Disco definido como padrão com sucesso",
       "save_pdf_to_disk": "Salvar PDFs no Disco",
-      "disk_setting_description": " Ative isso, se você deseja salvar uma cópia de cada PDF das Faturas, Orçamentos e Recibos de Pagamento em seu disco padrão, automaticamente. Habilitar esta opção diminuirá o tempo de carregamento ao visualizar os PDFs.",
+      "disk_setting_description": "Enable this, if you wish to save a copy of each Invoice, Estimate & Payment Receipt PDF on your default disk automatically. Turning this option will decrease the load-time when viewing the PDFs.",
       "select_disk": "Selecionar Disco",
       "disk_settings": "Configurações de Disco",
       "confirm_delete": "Seus arquivos e pastas existentes no disco especificado não serão afetados, mas sua configuração de disco será excluída do InvoiceShelf",
