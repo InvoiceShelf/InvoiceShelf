@@ -1314,7 +1314,7 @@
       "sidebar_group_labels_desc": "Show section headers such as Administration and Modules. Sales and Purchases are always labelled to distinguish their Payments entries."
     },
     "address_information": {
-      "section_description": "  You can update Your Address information using form below."
+      "section_description": "You can update Your Address information using form below."
     },
     "title": "Ayarlar",
     "setting": "Ayarlar | Ayarlar",
@@ -1575,7 +1575,7 @@
         "disable_on_invoice_partial_paid": "Kısmi ödeme kaydedildikten sonra devre dışı bırak",
         "disable_on_invoice_paid": "Tam ödeme kaydedildikten sonra devre dışı bırak",
         "disable_on_invoice_sent": "Fatura gönderildikten sonra devre dışı bırak",
-        "retrospective_edits_description": "Ülkenizin yasalarına veya tercihinize bağlı olarak, kullanıcıların sonlandırılmış faturaları düzenlemesini kısıtlayabilirsiniz."
+        "retrospective_edits_description": "Based on your country's laws or your preference, you can restrict users from editing finalised invoices."
       },
       "credit_notes": {
         "title": "Credit Notes",
@@ -1786,7 +1786,7 @@
       "new_driver": "Yeni Sağlayıcı Ekle",
       "edit_driver": "Sağlayıcıyı Düzenle",
       "select_driver": "Sürücü Seçin",
-      "update": "döviz kurunu seçin",
+      "update": "select exchange rate",
       "providers_description": "İşlemler sırasında en son döviz kurunu otomatik olarak almak için döviz kuru sağlayıcılarınızı burada yapılandırın.",
       "key": "API Anahtarı",
       "name": "Ad",
@@ -1797,7 +1797,7 @@
       "created_message": "Sağlayıcı başarıyla oluşturuldu",
       "updated_message": "Sağlayıcı başarıyla güncellendi",
       "deleted_message": "Sağlayıcı başarıyla silindi",
-      "error": "Aktif sürücüyü silemezsiniz",
+      "error": "You cannot Delete Active Driver",
       "default_currency_error": "Bu para birimi zaten bir Aktif Sağlayıcıda kullanılıyor",
       "exchange_help_text": "{currency} para biriminden {baseCurrency} para birimine dönüştürmek için döviz kurunu girin",
       "currency_freak": "Currency Freak",
@@ -1882,7 +1882,7 @@
       "date_format": "Tarih Biçimi",
       "time_format": "Time Format",
       "discount_setting": "İndirim Ayarı",
-      "discount_per_item": "Öğe Başı İndirim",
+      "discount_per_item": "Discount Per Item",
       "discount_setting_description": "Bireysel fatura kalemlerine indirim eklemek istiyorsanız bunu etkinleştirin. Varsayılan olarak, indirim doğrudan faturaya eklenir.",
       "expire_public_links": "Genel Bağlantıları Otomatik Olarak Süresi Dolmuş Hale Getir",
       "expire_setting_description": "Belirli bir süre sonra uygulama tarafından gönderilen faturalar, tahminler ve ödemeleri görüntülemek için gönderilen bağlantıların süresinin dolmasını isteyip istemediğinizi belirtin.",
@@ -2038,7 +2038,7 @@
       "set_default_disk_confirm": "Bu disk varsayılan olarak ayarlanacak ve tüm yeni PDF'ler bu diske kaydedilecek",
       "success_set_default_disk": "Disk başarıyla varsayılan olarak ayarlandı",
       "save_pdf_to_disk": "PDF'leri Diske Kaydet",
-      "disk_setting_description": "Her Fatura, Teklif & Ödeme Makbuzu PDF'sinin bir kopyasını varsayılan diskinize otomatik olarak kaydetmek istiyorsanız bunu etkinleştirin. Bu seçeneğin aktif edilmesi, PDF'leri görüntülerken yükleme süresini azaltacaktır.",
+      "disk_setting_description": "Enable this, if you wish to save a copy of each Invoice, Estimate & Payment Receipt PDF on your default disk automatically. Turning this option will decrease the load-time when viewing the PDFs.",
       "select_disk": "Diski Seçin",
       "disk_settings": "Disk Ayarları",
       "confirm_delete": "Belirtilen diskteki mevcut dosya ve klasörleriniz etkilenmeyecek ancak disk yapılandırmanız InvoiceShelf'den silinecek",
