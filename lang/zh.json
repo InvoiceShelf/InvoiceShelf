@@ -1314,7 +1314,7 @@
       "sidebar_group_labels_desc": "Show section headers such as Administration and Modules. Sales and Purchases are always labelled to distinguish their Payments entries."
     },
     "address_information": {
-      "section_description": "  You can update Your Address information using form below."
+      "section_description": "You can update Your Address information using form below."
     },
     "title": "設定",
     "setting": "設定 | 設定",
@@ -1575,7 +1575,7 @@
         "disable_on_invoice_partial_paid": "Disable after partial payment is recorded",
         "disable_on_invoice_paid": "Disable after full payment is recorded",
         "disable_on_invoice_sent": "Disable after invoice is sent",
-        "retrospective_edits_description": " Based on your country's laws or your preference, you can restrict users from editing finalised invoices."
+        "retrospective_edits_description": "Based on your country's laws or your preference, you can restrict users from editing finalised invoices."
       },
       "credit_notes": {
         "title": "Credit Notes",
@@ -1786,7 +1786,7 @@
       "new_driver": "Add New Provider",
       "edit_driver": "Edit Provider",
       "select_driver": "Select Driver",
-      "update": "select exchange rate ",
+      "update": "select exchange rate",
       "providers_description": "Configure your exchange rate providers here to automatically fetch the latest exchange rate on transactions.",
       "key": "API Key",
       "name": "Name",
@@ -1797,7 +1797,7 @@
       "created_message": "Provider Created successfully",
       "updated_message": "Provider Updated Successfully",
       "deleted_message": "Provider Deleted Successfully",
-      "error": " You cannot Delete Active Driver",
+      "error": "You cannot Delete Active Driver",
       "default_currency_error": "This currency is already used in one of the Active Provider",
       "exchange_help_text": "Enter exchange rate to convert from {currency} to {baseCurrency}",
       "currency_freak": "Currency Freak",
@@ -1882,7 +1882,7 @@
       "date_format": "日期格式",
       "time_format": "Time Format",
       "discount_setting": "折扣設定",
-      "discount_per_item": "商品折扣",
+      "discount_per_item": "Discount Per Item",
       "discount_setting_description": "啟用此項, 如果你要將折扣以每個獨立商品計算. 預設折扣以整單發票計算.",
       "expire_public_links": "Automatically Expire Public Links",
       "expire_setting_description": "Specify whether you would like to expire all the links sent by application to view invoices, estimates & payments, etc after a specified duration.",
@@ -2038,7 +2038,7 @@
       "set_default_disk_confirm": "此磁碟將會設為預設, 所有PDF將會保存到此磁碟",
       "success_set_default_disk": "成功預設磁碟",
       "save_pdf_to_disk": "保存PDF到磁碟",
-      "disk_setting_description": "啟動此項, 如果你想自動保存發票, 報價及付款收據的PDF備份到你預設的磁碟. 啟用此選項將會減慢你打開檢視PDF的速度.",
+      "disk_setting_description": "Enable this, if you wish to save a copy of each Invoice, Estimate & Payment Receipt PDF on your default disk automatically. Turning this option will decrease the load-time when viewing the PDFs.",
       "select_disk": "選擇磁碟",
       "disk_settings": "磁碟設定",
       "confirm_delete": "你原來的檔案及資料夾將不受影響, 但你磁碟的設定將會刪除",
