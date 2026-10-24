@@ -2,7 +2,7 @@
     "openapi": "3.1.0",
     "info": {
         "title": "InvoiceShelf API",
-        "version": "3.0.0-alpha.13",
+        "version": "3.0.0-alpha.14",
         "description": "REST API for InvoiceShelf \u2014 open-source invoicing & expense tracking. Authenticate with a Sanctum personal access token (Authorization: Bearer <token>). Company-scoped endpoints additionally require a `company` header carrying the company ID."
     },
     "servers": [
@@ -174,8 +174,7 @@
         "/{company}/customer/estimate/{id}/status": {
             "post": {
                 "operationId": "customerPortal.acceptEstimate",
-                "description": "Known defect, kept as-is: the submitted value is written through\nwithout a whitelist, so the stored status is whatever string arrives.",
-                "summary": "Record the contact's verdict on one of their own offers",
+                "summary": "Record the contact's verdict on one of their own offers, accepted or\nrejected, and let the company know when it is a new one",
                 "tags": [
                     "AcceptEstimate"
                 ],
@@ -201,6 +200,16 @@
                         }
                     }
                 ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AnswerEstimateRequest"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "",
@@ -217,6 +226,9 @@
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
                     }
                 }
             }
@@ -310,6 +322,253 @@
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/super-admin/announcements": {
+            "get": {
+                "operationId": "announcements.index",
+                "tags": [
+                    "Announcements"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `AnnouncementResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/AnnouncementResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "announcements.store",
+                "tags": [
+                    "Announcements"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AnnouncementRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "`AnnouncementResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/AnnouncementResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    }
+                }
+            }
+        },
+        "/super-admin/announcements/{announcement}": {
+            "put": {
+                "operationId": "announcements.update",
+                "tags": [
+                    "Announcements"
+                ],
+                "parameters": [
+                    {
+                        "name": "announcement",
+                        "in": "path",
+                        "required": true,
+                        "description": "The announcement ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AnnouncementRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`AnnouncementResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/AnnouncementResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "announcements.destroy",
+                "tags": [
+                    "Announcements"
+                ],
+                "parameters": [
+                    {
+                        "name": "announcement",
+                        "in": "path",
+                        "required": true,
+                        "description": "The announcement ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "success"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/super-admin/announcements/{announcement}/visibility": {
+            "patch": {
+                "operationId": "announcements.visibility",
+                "tags": [
+                    "Announcements"
+                ],
+                "parameters": [
+                    {
+                        "name": "announcement",
+                        "in": "path",
+                        "required": true,
+                        "description": "The announcement ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AnnouncementVisibilityRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`AnnouncementResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/AnnouncementResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
                     }
                 }
             }
@@ -1504,6 +1763,66 @@
                                                         "$ref": "#/components/schemas/CompanyInvitationResource"
                                                     }
                                                 },
+                                                "announcements": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "source": {
+                                                                "type": "string"
+                                                            },
+                                                            "level": {
+                                                                "type": "string"
+                                                            },
+                                                            "audience": {
+                                                                "type": "string"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "body": {
+                                                                "type": "string"
+                                                            },
+                                                            "link_url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "link_label": {
+                                                                "anyOf": [
+                                                                    {
+                                                                        "type": "string"
+                                                                    },
+                                                                    {
+                                                                        "type": "null"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "starts_at": {
+                                                                "type": "string"
+                                                            },
+                                                            "ends_at": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "source",
+                                                            "level",
+                                                            "audience",
+                                                            "title",
+                                                            "body",
+                                                            "link_url",
+                                                            "link_label",
+                                                            "starts_at",
+                                                            "ends_at"
+                                                        ]
+                                                    }
+                                                },
                                                 "user_menu": {
                                                     "type": "array",
                                                     "items": {
@@ -1548,6 +1867,7 @@
                                                 "setting_menu",
                                                 "modules",
                                                 "pending_invitations",
+                                                "announcements",
                                                 "user_menu"
                                             ]
                                         },
@@ -1639,6 +1959,66 @@
                                                     "items": {
                                                         "$ref": "#/components/schemas/CompanyInvitationResource"
                                                     }
+                                                },
+                                                "announcements": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "source": {
+                                                                "type": "string"
+                                                            },
+                                                            "level": {
+                                                                "type": "string"
+                                                            },
+                                                            "audience": {
+                                                                "type": "string"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "body": {
+                                                                "type": "string"
+                                                            },
+                                                            "link_url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "link_label": {
+                                                                "anyOf": [
+                                                                    {
+                                                                        "type": "string"
+                                                                    },
+                                                                    {
+                                                                        "type": "null"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "starts_at": {
+                                                                "type": "string"
+                                                            },
+                                                            "ends_at": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "source",
+                                                            "level",
+                                                            "audience",
+                                                            "title",
+                                                            "body",
+                                                            "link_url",
+                                                            "link_label",
+                                                            "starts_at",
+                                                            "ends_at"
+                                                        ]
+                                                    }
                                                 }
                                             },
                                             "required": [
@@ -1654,7 +2034,8 @@
                                                 "main_menu",
                                                 "setting_menu",
                                                 "modules",
-                                                "pending_invitations"
+                                                "pending_invitations",
+                                                "announcements"
                                             ]
                                         },
                                         {
@@ -1792,6 +2173,66 @@
                                                         "$ref": "#/components/schemas/CompanyInvitationResource"
                                                     }
                                                 },
+                                                "announcements": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "source": {
+                                                                "type": "string"
+                                                            },
+                                                            "level": {
+                                                                "type": "string"
+                                                            },
+                                                            "audience": {
+                                                                "type": "string"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "body": {
+                                                                "type": "string"
+                                                            },
+                                                            "link_url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "link_label": {
+                                                                "anyOf": [
+                                                                    {
+                                                                        "type": "string"
+                                                                    },
+                                                                    {
+                                                                        "type": "null"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "starts_at": {
+                                                                "type": "string"
+                                                            },
+                                                            "ends_at": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "source",
+                                                            "level",
+                                                            "audience",
+                                                            "title",
+                                                            "body",
+                                                            "link_url",
+                                                            "link_label",
+                                                            "starts_at",
+                                                            "ends_at"
+                                                        ]
+                                                    }
+                                                },
                                                 "admin_mode": {
                                                     "type": "boolean"
                                                 }
@@ -1810,6 +2251,7 @@
                                                 "setting_menu",
                                                 "modules",
                                                 "pending_invitations",
+                                                "announcements",
                                                 "admin_mode"
                                             ]
                                         }
@@ -3095,6 +3537,103 @@
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/company/notification-defaults": {
+            "get": {
+                "operationId": "companyNotificationDefaults.show",
+                "tags": [
+                    "CompanyNotificationDefaults"
+                ],
+                "parameters": [
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {}
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "companyNotificationDefaults.update",
+                "tags": [
+                    "CompanyNotificationDefaults"
+                ],
+                "parameters": [
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CompanyNotificationDefaultsRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {}
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
                     }
                 }
             }
@@ -5813,6 +6352,60 @@
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/announcements/{announcement}/dismiss": {
+            "post": {
+                "operationId": "announcements.dismissAnnouncement",
+                "tags": [
+                    "DismissAnnouncement"
+                ],
+                "parameters": [
+                    {
+                        "name": "announcement",
+                        "in": "path",
+                        "required": true,
+                        "description": "The announcement ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "success"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
@@ -8848,6 +9441,410 @@
                 }
             }
         },
+        "/notifications": {
+            "get": {
+                "operationId": "inbox.index",
+                "tags": [
+                    "Inbox"
+                ],
+                "parameters": [
+                    {
+                        "name": "unread",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean",
+                            "default": false
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 20
+                        }
+                    },
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `NotificationResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/NotificationResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                },
+                                                "unread_count": {
+                                                    "type": "integer",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total",
+                                                "unread_count"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/notifications/unread-count": {
+            "get": {
+                "operationId": "inbox.unreadCount",
+                "tags": [
+                    "Inbox"
+                ],
+                "parameters": [
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "unread_count": {
+                                            "type": "integer",
+                                            "minimum": 0
+                                        }
+                                    },
+                                    "required": [
+                                        "unread_count"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/notifications/read-all": {
+            "post": {
+                "operationId": "inbox.readAll",
+                "tags": [
+                    "Inbox"
+                ],
+                "parameters": [
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "unread_count": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "required": [
+                                        "unread_count"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/notifications/{notification}/read": {
+            "post": {
+                "operationId": "inbox.read",
+                "tags": [
+                    "Inbox"
+                ],
+                "parameters": [
+                    {
+                        "name": "notification",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`NotificationResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/NotificationResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/notifications/{notification}/unread": {
+            "post": {
+                "operationId": "inbox.unread",
+                "tags": [
+                    "Inbox"
+                ],
+                "parameters": [
+                    {
+                        "name": "notification",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`NotificationResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/NotificationResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/notifications/{notification}": {
+            "delete": {
+                "operationId": "inbox.destroy",
+                "tags": [
+                    "Inbox"
+                ],
+                "parameters": [
+                    {
+                        "name": "notification",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/company-invitations": {
             "get": {
                 "operationId": "company-invitations.index",
@@ -9346,6 +10343,450 @@
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/invoices/{invoice}/reminders": {
+            "get": {
+                "operationId": "invoiceReminders.show",
+                "tags": [
+                    "InvoiceReminders"
+                ],
+                "parameters": [
+                    {
+                        "name": "invoice",
+                        "in": "path",
+                        "required": true,
+                        "description": "The invoice ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "enabled": {
+                                                    "type": "boolean"
+                                                },
+                                                "remindable": {
+                                                    "type": "boolean"
+                                                },
+                                                "paused": {
+                                                    "type": "boolean"
+                                                },
+                                                "customer_paused": {
+                                                    "type": "boolean"
+                                                },
+                                                "has_email": {
+                                                    "type": "boolean"
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "date": {
+                                                            "type": "string"
+                                                        },
+                                                        "offset": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "date",
+                                                        "offset"
+                                                    ]
+                                                },
+                                                "history": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "offset_days": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "status": {
+                                                                "type": "string"
+                                                            },
+                                                            "error": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "sent_by": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "offset_days",
+                                                            "status",
+                                                            "error",
+                                                            "sent_by",
+                                                            "created_at"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "enabled",
+                                                "remindable",
+                                                "paused",
+                                                "customer_paused",
+                                                "has_email",
+                                                "next",
+                                                "history"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "invoiceReminders.store",
+                "tags": [
+                    "InvoiceReminders"
+                ],
+                "parameters": [
+                    {
+                        "name": "invoice",
+                        "in": "path",
+                        "required": true,
+                        "description": "The invoice ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "enabled": {
+                                                    "type": "boolean"
+                                                },
+                                                "remindable": {
+                                                    "type": "boolean"
+                                                },
+                                                "paused": {
+                                                    "type": "boolean"
+                                                },
+                                                "customer_paused": {
+                                                    "type": "boolean"
+                                                },
+                                                "has_email": {
+                                                    "type": "boolean"
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "date": {
+                                                            "type": "string"
+                                                        },
+                                                        "offset": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "date",
+                                                        "offset"
+                                                    ]
+                                                },
+                                                "history": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "offset_days": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "status": {
+                                                                "type": "string"
+                                                            },
+                                                            "error": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "sent_by": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "offset_days",
+                                                            "status",
+                                                            "error",
+                                                            "sent_by",
+                                                            "created_at"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "enabled",
+                                                "remindable",
+                                                "paused",
+                                                "customer_paused",
+                                                "has_email",
+                                                "next",
+                                                "history"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "invoiceReminders.update",
+                "tags": [
+                    "InvoiceReminders"
+                ],
+                "parameters": [
+                    {
+                        "name": "invoice",
+                        "in": "path",
+                        "required": true,
+                        "description": "The invoice ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/InvoiceReminderPauseRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "enabled": {
+                                                    "type": "boolean"
+                                                },
+                                                "remindable": {
+                                                    "type": "boolean"
+                                                },
+                                                "paused": {
+                                                    "type": "boolean"
+                                                },
+                                                "customer_paused": {
+                                                    "type": "boolean"
+                                                },
+                                                "has_email": {
+                                                    "type": "boolean"
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "date": {
+                                                            "type": "string"
+                                                        },
+                                                        "offset": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "date",
+                                                        "offset"
+                                                    ]
+                                                },
+                                                "history": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "offset_days": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "status": {
+                                                                "type": "string"
+                                                            },
+                                                            "error": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "sent_by": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "offset_days",
+                                                            "status",
+                                                            "error",
+                                                            "sent_by",
+                                                            "created_at"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "enabled",
+                                                "remindable",
+                                                "paused",
+                                                "customer_paused",
+                                                "has_email",
+                                                "next",
+                                                "history"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
                     }
                 }
             }
@@ -12855,6 +14296,103 @@
                 }
             }
         },
+        "/me/notification-preferences": {
+            "get": {
+                "operationId": "notificationPreferences.show",
+                "tags": [
+                    "NotificationPreferences"
+                ],
+                "parameters": [
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {}
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "notificationPreferences.update",
+                "tags": [
+                    "NotificationPreferences"
+                ],
+                "parameters": [
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/NotificationPreferencesRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {}
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/installation/wizard-step": {
             "get": {
                 "operationId": "onboardingWizard.getStep",
@@ -15653,6 +17191,240 @@
                                         "success",
                                         "next_invoice_at",
                                         "upcoming"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/company/payment-reminders": {
+            "get": {
+                "operationId": "reminderSettings.show",
+                "tags": [
+                    "ReminderSettings"
+                ],
+                "parameters": [
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "enabled": {
+                                                    "type": "boolean"
+                                                },
+                                                "offsets": {
+                                                    "anyOf": [
+                                                        {
+                                                            "type": "array",
+                                                            "items": {}
+                                                        },
+                                                        {
+                                                            "type": "array",
+                                                            "prefixItems": [
+                                                                {
+                                                                    "type": "integer",
+                                                                    "const": -3
+                                                                },
+                                                                {
+                                                                    "type": "integer",
+                                                                    "const": 1
+                                                                },
+                                                                {
+                                                                    "type": "integer",
+                                                                    "const": 7
+                                                                },
+                                                                {
+                                                                    "type": "integer",
+                                                                    "const": 14
+                                                                }
+                                                            ],
+                                                            "minItems": 4,
+                                                            "maxItems": 4,
+                                                            "additionalItems": false
+                                                        }
+                                                    ]
+                                                },
+                                                "send_hour": {
+                                                    "anyOf": [
+                                                        {
+                                                            "type": "null"
+                                                        },
+                                                        {
+                                                            "type": "object"
+                                                        },
+                                                        {
+                                                            "type": "integer",
+                                                            "enum": [
+                                                                9
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                "subject": {
+                                                    "type": "string"
+                                                },
+                                                "body": {
+                                                    "type": "string"
+                                                },
+                                                "attach_pdf": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "enabled",
+                                                "offsets",
+                                                "send_hour",
+                                                "subject",
+                                                "body",
+                                                "attach_pdf"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "reminderSettings.update",
+                "tags": [
+                    "ReminderSettings"
+                ],
+                "parameters": [
+                    {
+                        "name": "company",
+                        "in": "header",
+                        "required": true,
+                        "description": "ID of the company the request operates on (multi-tenancy).",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ReminderSettingsRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "enabled": {
+                                                    "type": "boolean"
+                                                },
+                                                "offsets": {
+                                                    "anyOf": [
+                                                        {
+                                                            "type": "array",
+                                                            "items": {}
+                                                        },
+                                                        {
+                                                            "type": "array",
+                                                            "prefixItems": [
+                                                                {
+                                                                    "type": "integer",
+                                                                    "const": -3
+                                                                },
+                                                                {
+                                                                    "type": "integer",
+                                                                    "const": 1
+                                                                },
+                                                                {
+                                                                    "type": "integer",
+                                                                    "const": 7
+                                                                },
+                                                                {
+                                                                    "type": "integer",
+                                                                    "const": 14
+                                                                }
+                                                            ],
+                                                            "minItems": 4,
+                                                            "maxItems": 4,
+                                                            "additionalItems": false
+                                                        }
+                                                    ]
+                                                },
+                                                "send_hour": {
+                                                    "anyOf": [
+                                                        {
+                                                            "type": "null"
+                                                        },
+                                                        {
+                                                            "type": "object"
+                                                        },
+                                                        {
+                                                            "type": "integer",
+                                                            "enum": [
+                                                                9
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                "subject": {
+                                                    "type": "string"
+                                                },
+                                                "body": {
+                                                    "type": "string"
+                                                },
+                                                "attach_pdf": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "enabled",
+                                                "offsets",
+                                                "send_hour",
+                                                "subject",
+                                                "body",
+                                                "attach_pdf"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
                                     ]
                                 }
                             }
@@ -20966,6 +22738,203 @@
                 ],
                 "title": "AdminUserRequest"
             },
+            "AnnouncementRequest": {
+                "type": "object",
+                "description": "An announcement written on this install: plain text and one optional\nlink, with its text per language.",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "maxLength": 160
+                    },
+                    "body": {
+                        "type": "string",
+                        "maxLength": 2000
+                    },
+                    "link_url": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uri",
+                        "maxLength": 500
+                    },
+                    "link_label": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 60
+                    },
+                    "level": {
+                        "type": "string",
+                        "enum": [
+                            "info",
+                            "warning",
+                            "critical"
+                        ]
+                    },
+                    "audience": {
+                        "type": "string",
+                        "enum": [
+                            "everyone",
+                            "admins"
+                        ]
+                    },
+                    "starts_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "ends_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "translations": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "title": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "maxLength": 160
+                                },
+                                "body": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "maxLength": 2000
+                                },
+                                "link_label": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "maxLength": 60
+                                }
+                            },
+                            "required": [
+                                "title",
+                                "body",
+                                "link_label"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "title",
+                    "body",
+                    "level",
+                    "audience"
+                ],
+                "title": "AnnouncementRequest"
+            },
+            "AnnouncementResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "source": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "body": {
+                        "type": "string"
+                    },
+                    "link_url": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "link_label": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "level": {
+                        "type": "string"
+                    },
+                    "audience": {
+                        "type": "string"
+                    },
+                    "starts_at": {
+                        "type": "string"
+                    },
+                    "ends_at": {
+                        "type": "string"
+                    },
+                    "translations": {
+                        "type": "string"
+                    },
+                    "hidden": {
+                        "type": "boolean"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "source",
+                    "title",
+                    "body",
+                    "link_url",
+                    "link_label",
+                    "level",
+                    "audience",
+                    "starts_at",
+                    "ends_at",
+                    "translations",
+                    "hidden",
+                    "updated_at"
+                ],
+                "title": "AnnouncementResource"
+            },
+            "AnnouncementVisibilityRequest": {
+                "type": "object",
+                "properties": {
+                    "hidden": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "hidden"
+                ],
+                "title": "AnnouncementVisibilityRequest"
+            },
+            "AnswerEstimateRequest": {
+                "type": "object",
+                "description": "A customer's answer to an estimate from the portal: accepted or rejected.\nNothing else may be written through this door.",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "ACCEPTED",
+                            "REJECTED"
+                        ]
+                    }
+                },
+                "required": [
+                    "status"
+                ],
+                "title": "AnswerEstimateRequest"
+            },
             "App.Domains.Accounts.Http.Resources.CustomerPortal.CompanyResource": {
                 "type": "object",
                 "properties": {
@@ -23100,6 +25069,67 @@
                 ],
                 "title": "CompanyMailConfigurationRequest"
             },
+            "CompanyNotificationDefaultsRequest": {
+                "type": "object",
+                "description": "The owner's choices for the company, as `{type: {enabled, bell, mail}}`\nfor the types they changed. Platform notices belong to no company.",
+                "properties": {
+                    "defaults": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean"
+                                },
+                                "bell": {
+                                    "type": "boolean"
+                                },
+                                "mail": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "required": [
+                                "enabled",
+                                "bell",
+                                "mail"
+                            ]
+                        },
+                        "minItems": 1
+                    },
+                    "keys": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "invoice_viewed",
+                                "estimate_viewed",
+                                "estimate_accepted",
+                                "estimate_rejected",
+                                "payment_received",
+                                "invoice_paid",
+                                "invoice_overdue",
+                                "invoice_reminder_sent",
+                                "bill_due_soon",
+                                "bill_overdue",
+                                "recurring_invoice_generated",
+                                "recurring_invoice_failed",
+                                "recurring_cost_generated",
+                                "recurring_cost_failed",
+                                "invitation_accepted",
+                                "invitation_declined",
+                                "ai_connection_added"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "defaults"
+                ],
+                "title": "CompanyNotificationDefaultsRequest"
+            },
             "CompanyRequest": {
                 "type": "object",
                 "description": "The form behind editing the company the request header points at.\n\nThe name has to stay unique across the whole installation, the company being\nedited excepted \u2014 and it is excepted by the header value, not by a routed\nmodel, because this endpoint has no route parameter to work from.",
@@ -24082,6 +26112,9 @@
                             "null"
                         ]
                     },
+                    "reminders_paused": {
+                        "type": "boolean"
+                    },
                     "avatar": {
                         "type": "string"
                     },
@@ -24108,6 +26141,7 @@
                     "updated_at",
                     "prefix",
                     "tax_id",
+                    "reminders_paused",
                     "avatar"
                 ],
                 "title": "Customer"
@@ -24329,6 +26363,9 @@
                     "enable_portal": {
                         "type": "boolean"
                     },
+                    "reminders_paused": {
+                        "type": "boolean"
+                    },
                     "currency_id": {
                         "type": [
                             "string",
@@ -24512,6 +26549,9 @@
                     "enable_portal": {
                         "type": "string"
                     },
+                    "reminders_paused": {
+                        "type": "boolean"
+                    },
                     "password_added": {
                         "type": "boolean"
                     },
@@ -24600,6 +26640,7 @@
                     "company_name",
                     "website",
                     "enable_portal",
+                    "reminders_paused",
                     "password_added",
                     "currency_id",
                     "company_id",
@@ -26223,6 +28264,9 @@
                             "string",
                             "null"
                         ]
+                    },
+                    "reminders_paused": {
+                        "type": "boolean"
                     }
                 },
                 "required": [
@@ -26269,7 +28313,8 @@
                     "tax_included",
                     "type",
                     "related_invoice_id",
-                    "credit_reason"
+                    "credit_reason",
+                    "reminders_paused"
                 ],
                 "title": "Invoice"
             },
@@ -26372,6 +28417,19 @@
                     "recurring_invoice_id"
                 ],
                 "title": "InvoiceItemResource"
+            },
+            "InvoiceReminderPauseRequest": {
+                "type": "object",
+                "description": "Pause or resume the scheduled reminders for one invoice.",
+                "properties": {
+                    "paused": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "paused"
+                ],
+                "title": "InvoiceReminderPauseRequest"
             },
             "InvoiceResource": {
                 "type": "object",
@@ -27212,6 +29270,139 @@
                     "is_default"
                 ],
                 "title": "NotesRequest"
+            },
+            "NotificationPreferencesRequest": {
+                "type": "object",
+                "description": "A person's choices, as `{type: {bell, mail}}` for the types they changed.\nA null channel goes back to the company's default.",
+                "properties": {
+                    "preferences": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "bell": {
+                                    "type": [
+                                        "boolean",
+                                        "null"
+                                    ]
+                                },
+                                "mail": {
+                                    "type": [
+                                        "boolean",
+                                        "null"
+                                    ]
+                                }
+                            },
+                            "required": [
+                                "bell",
+                                "mail"
+                            ]
+                        },
+                        "minItems": 1
+                    },
+                    "keys": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "invoice_viewed",
+                                "estimate_viewed",
+                                "estimate_accepted",
+                                "estimate_rejected",
+                                "payment_received",
+                                "invoice_paid",
+                                "invoice_overdue",
+                                "invoice_reminder_sent",
+                                "bill_due_soon",
+                                "bill_overdue",
+                                "recurring_invoice_generated",
+                                "recurring_invoice_failed",
+                                "recurring_cost_generated",
+                                "recurring_cost_failed",
+                                "invitation_accepted",
+                                "invitation_declined",
+                                "ai_connection_added",
+                                "module_disabled",
+                                "backup_failed"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "preferences"
+                ],
+                "title": "NotificationPreferencesRequest"
+            },
+            "NotificationResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "group": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "string",
+                                "enum": [
+                                    "system"
+                                ]
+                            }
+                        ]
+                    },
+                    "title": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "body": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "params": {
+                        "type": "string"
+                    },
+                    "translate": {
+                        "type": "array",
+                        "items": {}
+                    },
+                    "url": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "read_at": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "type",
+                    "group",
+                    "title",
+                    "body",
+                    "params",
+                    "translate",
+                    "url",
+                    "read_at",
+                    "created_at"
+                ],
+                "title": "NotificationResource"
             },
             "PaymentMethodRequest": {
                 "type": "object",
@@ -28414,6 +30605,41 @@
                     "sales_tax_address_type"
                 ],
                 "title": "RecurringInvoiceResource"
+            },
+            "ReminderSettingsRequest": {
+                "type": "object",
+                "description": "A company's payment reminder settings. The days are counted from the due\ndate, negative before it.",
+                "properties": {
+                    "enabled": {
+                        "type": "boolean"
+                    },
+                    "send_hour": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 23
+                    },
+                    "subject": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "body": {
+                        "type": "string",
+                        "maxLength": 10000
+                    },
+                    "attach_pdf": {
+                        "type": "boolean"
+                    },
+                    "offsets": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "minimum": -365,
+                            "maximum": 365
+                        },
+                        "maxItems": 10
+                    }
+                },
+                "title": "ReminderSettingsRequest"
             },
             "ReplacePaymentAllocationsRequest": {
                 "type": "object",
