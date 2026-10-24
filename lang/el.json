@@ -32,6 +32,7 @@
     "copy_pdf_url": "Αντιγραφή συνδέσμου PDF",
     "download_pdf": "Λήψη PDF",
     "save": "Αποθήκευση",
+    "extension_save_hook_failed": "Saved. An installed module could not finish its part of the save.",
     "skip": "Skip",
     "create": "Δημιουργία",
     "cancel": "Ακύρωση",
