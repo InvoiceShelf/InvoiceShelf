@@ -787,8 +787,9 @@ return [
     /*
     * The public demo (APP_ENV=demo): what `php artisan reset:app` rebuilds on
     * the schedule below, and the sign-ins the login pages offer visitors.
-    * `modules` pins the marketplace releases to install, as slug@version
-    * separated by commas.
+    * `modules` lists the marketplace modules to install, separated by commas:
+    * slug@version pins a release, a bare slug takes the newest release that
+    * fits this version. A module that cannot be installed is left out.
     */
     'demo' => [
         'reset_cron' => env('DEMO_RESET_CRON', '0 */6 * * *'),

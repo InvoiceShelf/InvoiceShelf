@@ -9,12 +9,17 @@
 use App\Domains\Accounts\Models\User;
 use App\Domains\Contacts\Models\Customer;
 use App\Platform\Modules\Marketplace\MarketplaceInstaller;
+use App\Platform\Operations\Demo\DemoMode;
 use App\Platform\Operations\Models\Setting;
+use Database\Seeders\RealisticDemoSeeder;
+use Illuminate\Database\Seeder;
 use Illuminate\Foundation\Testing\RefreshDatabaseState;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Exceptions;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Modules\DemoProbe\Demo\DemoSeeder as ProbeDemoSeeder;
 use Nwidart\Modules\Facades\Module;
 use Silber\Bouncer\BouncerFacade;
@@ -91,14 +96,65 @@ test('uploaded files are removed and templates are kept', function () {
 });
 
 test('the site comes back up when a step fails', function () {
+    app()->bind(RealisticDemoSeeder::class, fn () => new class extends Seeder
+    {
+        public function run(): void
+        {
+            throw new RuntimeException('seeding failed');
+        }
+    });
+
+    expect(fn () => Artisan::call('reset:app', ['--force' => true]))->toThrow(RuntimeException::class, 'seeding failed')
+        ->and(app()->isDownForMaintenance())->toBeFalse();
+});
+
+test('a module that cannot be installed is left out, and the demo still comes up', function () {
+    Exceptions::fake();
     config(['invoiceshelf.demo.modules' => 'nowhere@9.9.9']);
 
     $marketplace = Mockery::mock(MarketplaceInstaller::class);
     $marketplace->shouldReceive('install')->andReturn(['success' => false, 'error' => 'offline']);
     app()->instance(MarketplaceInstaller::class, $marketplace);
 
-    expect(fn () => Artisan::call('reset:app', ['--force' => true]))->toThrow(RuntimeException::class, 'Installing nowhere 9.9.9 failed: offline')
-        ->and(app()->isDownForMaintenance())->toBeFalse();
+    $this->artisan('reset:app', ['--force' => true])
+        ->expectsOutputToContain('Leaving out nowhere: Installing nowhere 9.9.9 failed: offline')
+        ->assertSuccessful();
+
+    expect(app()->isDownForMaintenance())->toBeFalse()
+        ->and(Customer::query()->where('email', DemoMode::credentials()['portal_email'])->exists())->toBeTrue();
+    Exceptions::assertReported(RuntimeException::class);
+});
+
+test('a module listed without a version gets the newest release that fits this version', function () {
+    config(['invoiceshelf.demo.modules' => 'demo-probe']);
+    Http::fake(['*/api/marketplace/v1/modules/demo-probe*' => Http::response(['success' => true, 'module' => [
+        'release' => ['version' => '2.0.0', 'compatibility' => ['invoiceshelf' => '>=1.0.0', 'module_api' => '>=1.0.0', 'extensions' => []]],
+    ]])]);
+
+    $marketplace = Mockery::mock(MarketplaceInstaller::class);
+    $marketplace->shouldReceive('install')->once()->with('demo-probe', '2.0.0', 'stable')->andReturn(['success' => true]);
+    app()->instance(MarketplaceInstaller::class, $marketplace);
+
+    $this->artisan('reset:app', ['--force' => true])
+        ->expectsOutputToContain('Installing demo-probe 2.0.0')
+        ->assertSuccessful();
+});
+
+test('a newest release that needs another version is left out', function () {
+    config(['invoiceshelf.demo.modules' => 'demo-probe']);
+    Http::fake(['*/api/marketplace/v1/modules/demo-probe*' => Http::response(['success' => true, 'module' => [
+        'release' => ['version' => '9.0.0', 'compatibility' => ['invoiceshelf' => '>=99.0.0', 'module_api' => '>=1.0.0', 'extensions' => []]],
+    ]])]);
+
+    $marketplace = Mockery::mock(MarketplaceInstaller::class);
+    $marketplace->shouldNotReceive('install');
+    app()->instance(MarketplaceInstaller::class, $marketplace);
+
+    $this->artisan('reset:app', ['--force' => true])
+        ->expectsOutputToContain('Leaving out demo-probe: no release fits this version')
+        ->assertSuccessful();
+
+    expect(app()->isDownForMaintenance())->toBeFalse();
 });
 
 test('a pinned module is installed after the company exists and its demo seeder is told which company to fill', function () {
