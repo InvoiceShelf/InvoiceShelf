@@ -1314,7 +1314,7 @@
       "sidebar_group_labels_desc": "Show section headers such as Administration and Modules. Sales and Purchases are always labelled to distinguish their Payments entries."
     },
     "address_information": {
-      "section_description": "  Adresu můžete aktualizovat pomocí formuláře níže."
+      "section_description": "You can update Your Address information using form below."
     },
     "title": "Nastavení",
     "setting": "Nastavení | Nastavení",
@@ -1575,7 +1575,7 @@
         "disable_on_invoice_partial_paid": "Zakázat po zaznamenání částečné platby",
         "disable_on_invoice_paid": "Vypnout po zaplacení plné platby",
         "disable_on_invoice_sent": "Vypnout po odeslání faktury",
-        "retrospective_edits_description": " Na základě zákonů vaší země nebo vašich preferencí můžete uživatelům bránit v úpravě dokončených faktur."
+        "retrospective_edits_description": "Based on your country's laws or your preference, you can restrict users from editing finalised invoices."
       },
       "credit_notes": {
         "title": "Credit Notes",
@@ -1786,7 +1786,7 @@
       "new_driver": "Přidat nového poskytovatele",
       "edit_driver": "Upravit poskytovatele",
       "select_driver": "Vybrat ovladač",
-      "update": "vybrat směnný kurz ",
+      "update": "select exchange rate",
       "providers_description": "Nakonfigurujte zde poskytovatele směnných kurzů, aby automaticky načítali nejnovější směnný kurz u transakcí.",
       "key": "API klíč",
       "name": "Název",
@@ -1797,7 +1797,7 @@
       "created_message": "Poskytovatel úspěšně vytvořen",
       "updated_message": "Poskytovatel úspěšně upraven",
       "deleted_message": "Poskytovatel úspěšně odstraněn",
-      "error": " Aktivní ovladač nelze odstranit",
+      "error": "You cannot Delete Active Driver",
       "default_currency_error": "Tato měna je již používána v jednom z aktivních poskytovatelů",
       "exchange_help_text": "Zadejte směnný kurz pro převod z {currency} do {baseCurrency}",
       "currency_freak": "Currency Freak",
@@ -1882,7 +1882,7 @@
       "date_format": "Formát data",
       "time_format": "Time Format",
       "discount_setting": "Nastavení slev",
-      "discount_per_item": "Sleva za položku ",
+      "discount_per_item": "Discount Per Item",
       "discount_setting_description": "Povolte tuto možnost, pokud chcete přidat slevu do jednotlivých položek faktury. Ve výchozím nastavení je sleva přidána přímo na fakturu.",
       "expire_public_links": "Automaticky zrušit platnost veřejných odkazů",
       "expire_setting_description": "Určete, zda chcete zrušit všechny odkazy odeslané aplikací k zobrazení faktur, odhadů, plateb atd. po stanovené době trvání.",
@@ -2038,7 +2038,7 @@
       "set_default_disk_confirm": "Tento disk bude nastaven jako výchozí a všechny nové PDF budou uloženy na tomto disku",
       "success_set_default_disk": "Disk úspěšně nastaven jako výchozí",
       "save_pdf_to_disk": "Ukládat PDF na disk",
-      "disk_setting_description": " Povolte, pokud chcete automaticky uložit kopii PDF každé faktury, odhadu a potvrzení o platbě. Zapnutí této možnosti sníží dobu načítání při prohlížení PDF.",
+      "disk_setting_description": "Enable this, if you wish to save a copy of each Invoice, Estimate & Payment Receipt PDF on your default disk automatically. Turning this option will decrease the load-time when viewing the PDFs.",
       "select_disk": "Vyberte disk",
       "disk_settings": "Nastavení disku",
       "confirm_delete": "Vaše existující soubory a složky na určeném disku nebudou ovlivněny, ale konfigurace disku bude odstraněna z InvoiceShelfu",
