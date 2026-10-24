@@ -78,8 +78,7 @@ class DemoReset
      */
     private function installModule(string $slug, string $version): void
     {
-        Module::scan();
-        $onDisk = collect(Module::all())->first(fn ($module) => $module->get('slug') === $slug && $module->get('version') === $version);
+        $onDisk = collect($this->modulesOnDisk())->first(fn ($module) => $module->get('slug') === $slug && $module->get('version') === $version);
 
         if ($onDisk !== null) {
             $this->artisan('install:module', ['module' => $onDisk->getName(), 'version' => $version]);
@@ -91,8 +90,7 @@ class DemoReset
                 throw new RuntimeException("Installing {$slug} {$version} failed: ".($result['error'] ?? 'unknown error'));
             }
 
-            Module::scan();
-            $name = collect(Module::all())->first(fn ($module) => $module->get('slug') === $slug)?->getName();
+            $name = collect($this->modulesOnDisk())->first(fn ($module) => $module->get('slug') === $slug)?->getName();
         }
 
         $seeder = "Modules\\{$name}\\Demo\\DemoSeeder";
@@ -108,6 +106,21 @@ class DemoReset
      * Everything visitors uploaded: logos, avatars, receipts, attachments and
      * backups. The SQLite database, the key files and custom templates stay.
      */
+    /**
+     * The modules on disk right now. nwidart keeps its first non-empty scan
+     * for the rest of the process (outside unit tests), so without the reset
+     * a module the marketplace installed a moment ago is missing from the list
+     * and gets no sample data: every pinned module after the first.
+     *
+     * @return array<string, \Nwidart\Modules\Module>
+     */
+    private function modulesOnDisk(): array
+    {
+        Module::resetModules();
+
+        return Module::all();
+    }
+
     private function removeFiles(): void
     {
         foreach (File::directories(storage_path('app')) as $directory) {

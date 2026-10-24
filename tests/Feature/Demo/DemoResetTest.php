@@ -120,3 +120,50 @@ test('a pinned module is installed after the company exists and its demo seeder 
 
     expect(ProbeDemoSeeder::$companyId)->toBe(User::query()->sole()->companies()->sole()->id);
 });
+
+test('every module installed from the marketplace gets its sample data, not only the first', function () {
+    require_once base_path('tests/Fixtures/modules/DemoProbeSeeder.php');
+    ProbeDemoSeeder::$companyId = null;
+    config(['invoiceshelf.demo.modules' => 'other-probe@1.0.0,demo-probe@1.2.0']);
+
+    $probe = function (string $slug, string $name) {
+        $module = Mockery::mock();
+        $module->shouldReceive('get')->with('slug')->andReturn($slug);
+        $module->shouldReceive('get')->with('version')->andReturn(null);
+        $module->shouldReceive('getName')->andReturn($name);
+
+        return $module;
+    };
+    $probes = ['other-probe' => $probe('other-probe', 'OtherProbe'), 'demo-probe' => $probe('demo-probe', 'DemoProbe')];
+
+    // nwidart outside unit tests: scan() keeps its first non-empty result for
+    // the rest of the process, and only resetModules() makes it look again.
+    $disk = [];
+    $memo = [];
+    $scan = function () use (&$disk, &$memo): array {
+        if ($memo === []) {
+            $memo = $disk;
+        }
+
+        return $memo;
+    };
+    Module::partialMock()->shouldReceive('scan')->andReturnUsing($scan);
+    Module::shouldReceive('all')->andReturnUsing($scan);
+    Module::shouldReceive('resetModules')->andReturnUsing(function () use (&$memo) {
+        $memo = [];
+
+        return Module::getFacadeRoot();
+    });
+
+    $marketplace = Mockery::mock(MarketplaceInstaller::class);
+    $marketplace->shouldReceive('install')->twice()->andReturnUsing(function (string $slug) use (&$disk, $probes): array {
+        $disk[] = $probes[$slug];
+
+        return ['success' => true];
+    });
+    app()->instance(MarketplaceInstaller::class, $marketplace);
+
+    Artisan::call('reset:app', ['--force' => true]);
+
+    expect(ProbeDemoSeeder::$companyId)->toBe(User::query()->sole()->companies()->sole()->id);
+});
