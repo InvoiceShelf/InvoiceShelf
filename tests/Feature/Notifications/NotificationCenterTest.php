@@ -4,6 +4,8 @@ use App\Domains\Accounts\Application\AccessRevoker;
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Accounts\Models\User;
+use App\Domains\Contacts\Contracts\CustomerDataPurger;
+use App\Domains\Contacts\Models\Customer;
 use App\Domains\Sales\Events\EstimateViewed;
 use App\Domains\Sales\Events\InvoiceViewed;
 use App\Domains\Sales\Models\Estimate;
@@ -19,6 +21,7 @@ use Illuminate\Notifications\Events\NotificationSending;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Exceptions;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\Sanctum;
@@ -176,6 +179,18 @@ test('a failed email does not stop the others, nor the action it is about', func
     expect($reader->notifications()->count())->toBe(1);
 });
 
+test('a notice that cannot be built is reported, and the action it is about goes on', function () {
+    Exceptions::fake();
+    $invoice = Invoice::factory()->create(['company_id' => $this->companyId]);
+    $center = Mockery::mock(NotificationCenter::class);
+    $center->shouldReceive('send')->andThrow(new RuntimeException('Bouncer is down'));
+    app()->instance(NotificationCenter::class, $center);
+
+    InvoiceViewed::dispatch((int) $invoice->id, $this->companyId);
+
+    Exceptions::assertReported(fn (RuntimeException $error): bool => $error->getMessage() === 'Bouncer is down');
+});
+
 test('opening an emailed invoice tells its members, once', function () {
     Event::fake([InvoiceViewed::class]);
     $invoice = Invoice::factory()->create(['company_id' => $this->companyId, 'status' => Invoice::STATUS_SENT]);
@@ -252,4 +267,20 @@ test('leaving a company clears its notices, and a deleted account clears them al
 
     app(AccessRevoker::class)->revokeUser($member->id);
     expect($member->notifications()->count())->toBe(0);
+});
+
+test('a deleted record takes its notices along, and so does a purged customer', function () {
+    $deleted = Invoice::factory()->create(['company_id' => $this->companyId]);
+    $kept = Invoice::factory()->create(['company_id' => $this->companyId]);
+    $customer = Customer::factory()->create(['company_id' => $this->companyId]);
+    $purged = Invoice::factory()->create(['company_id' => $this->companyId, 'customer_id' => $customer->id]);
+
+    foreach ([$deleted, $kept, $purged] as $invoice) {
+        app(NotificationCenter::class)->send(viewedMessage($invoice));
+    }
+
+    $deleted->delete();
+    app(CustomerDataPurger::class)->purge($customer);
+
+    expect($this->owner->notifications()->pluck('subject_id')->all())->toBe([$kept->id]);
 });

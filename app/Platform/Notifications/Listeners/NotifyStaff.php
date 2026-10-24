@@ -19,12 +19,27 @@ use App\Domains\Sales\Models\RecurringInvoice;
 use App\Platform\Notifications\Application\NotificationCenter;
 use App\Platform\Notifications\NotificationMessage;
 use Illuminate\Events\Dispatcher;
+use Throwable;
 
 /**
  * Turns what happened in the app into notices for the staff it concerns.
  */
 class NotifyStaff
 {
+    /**
+     * Each event and the method that turns it into notices.
+     *
+     * @var array<class-string, string>
+     */
+    private const HANDLERS = [
+        InvoiceViewed::class => 'invoiceViewed',
+        EstimateViewed::class => 'estimateViewed',
+        RecurringInvoiceGenerated::class => 'recurringInvoiceGenerated',
+        RecurringInvoiceFailed::class => 'recurringInvoiceFailed',
+        RecurringCostGenerated::class => 'recurringCostGenerated',
+        RecurringCostFailed::class => 'recurringCostFailed',
+    ];
+
     public function __construct(private readonly NotificationCenter $center) {}
 
     /**
@@ -32,14 +47,20 @@ class NotifyStaff
      */
     public function subscribe(Dispatcher $events): array
     {
-        return [
-            InvoiceViewed::class => 'invoiceViewed',
-            EstimateViewed::class => 'estimateViewed',
-            RecurringInvoiceGenerated::class => 'recurringInvoiceGenerated',
-            RecurringInvoiceFailed::class => 'recurringInvoiceFailed',
-            RecurringCostGenerated::class => 'recurringCostGenerated',
-            RecurringCostFailed::class => 'recurringCostFailed',
-        ];
+        return array_fill_keys(array_keys(self::HANDLERS), 'handle');
+    }
+
+    /**
+     * Every event comes through here, so a notice that cannot be built or
+     * sent is reported and never fails the action it is about.
+     */
+    public function handle(object $event): void
+    {
+        try {
+            $this->{self::HANDLERS[$event::class]}($event);
+        } catch (Throwable $error) {
+            report($error);
+        }
     }
 
     public function invoiceViewed(InvoiceViewed $event): void

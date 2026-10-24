@@ -38,6 +38,7 @@ class NotificationCenter
     public function send(NotificationMessage $message, ?User $to = null, array $except = []): int
     {
         $type = $this->catalogue->get($message->type);
+        $companyLocale = $this->companyLocale($message->companyId);
         $sent = 0;
 
         foreach ($this->recipients($type, $message, $to) as $user) {
@@ -51,7 +52,7 @@ class NotificationCenter
                 continue;
             }
 
-            $this->deliver(fn () => $user->notify(new AppNotification($message, $channels, $this->localeFor($user, $message->companyId))));
+            $this->deliver(fn () => $user->notify(new AppNotification($message, $channels, $this->localeFor($user, $companyLocale))));
             $sent++;
         }
 
@@ -89,6 +90,7 @@ class NotificationCenter
 
         return User::query()
             ->whereHas('companies', fn ($query) => $query->whereKey($companyId))
+            ->with('settings')
             ->get()
             ->filter(fn (User $user): bool => BouncerFacade::scope()->onceTo(
                 $companyId,
@@ -109,11 +111,11 @@ class NotificationCenter
     /**
      * The person's own language, or their company's when they follow it.
      */
-    private function localeFor(User $user, ?int $companyId): string
+    private function localeFor(User $user, string $companyLocale): string
     {
-        $language = $user->getSettings(['language'])->get('language');
+        $language = $this->preferences->userSetting($user, 'language');
 
-        return $language && $language !== 'default' ? (string) $language : $this->companyLocale($companyId);
+        return $language && $language !== 'default' ? (string) $language : $companyLocale;
     }
 
     private function companyLocale(?int $companyId): string

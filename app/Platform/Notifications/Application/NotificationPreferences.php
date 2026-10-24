@@ -85,9 +85,22 @@ class NotificationPreferences
     /**
      * @return array<string, array<string, bool>>
      */
+    /**
+     * One of the person's settings, taken from the ones already loaded when a
+     * whole list of recipients was read at once.
+     */
+    public function userSetting(User $user, string $key): mixed
+    {
+        if ($user->relationLoaded('settings')) {
+            return $user->settings->firstWhere('key', $key)?->value;
+        }
+
+        return $user->getSettings([$key])->get($key);
+    }
+
     private function stored(User $user): array
     {
-        $raw = $user->getSettings([self::SETTING])->get(self::SETTING);
+        $raw = $this->userSetting($user, self::SETTING);
         $decoded = is_string($raw) ? json_decode($raw, true) : null;
 
         return is_array($decoded) ? array_filter($decoded, 'is_array') : [];

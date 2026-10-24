@@ -9,6 +9,7 @@ use App\Domains\Sales\Models\Invoice;
 use App\Platform\Notifications\Application\Housekeeping;
 use App\Platform\Notifications\Console\PruneNotifications;
 use App\Platform\Notifications\Listeners\NotifyStaff;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
@@ -34,6 +35,10 @@ class NotificationsServiceProvider extends ServiceProvider
         Event::subscribe(NotifyStaff::class);
         Event::listen(CompanyAccessRevoked::class, [Housekeeping::class, 'handleCompanyAccessRevoked']);
         Event::listen(UserAccessRevoked::class, [Housekeeping::class, 'handleUserAccessRevoked']);
+
+        foreach (Housekeeping::SUBJECTS as $model) {
+            $model::deleted(fn (Model $record) => $this->app->make(Housekeeping::class)->forgetSubject($record));
+        }
     }
 
     /**

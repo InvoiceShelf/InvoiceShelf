@@ -50,14 +50,17 @@ export const useInboxStore = defineStore('inbox', () => {
     }
   }
 
-  /** Apply a notice's new read state to the panel and the count. */
-  function applyReadState(notice: InboxNotice): void {
-    const wasUnread = recent.value.find((n) => n.id === notice.id)?.read_at === null
-    recent.value = recent.value.map((n) => (n.id === notice.id ? notice : n))
+  /**
+   * Apply a notice's new read state to the panel and the count. The count
+   * moves by what the caller last saw, so a notice the panel never loaded
+   * (opened from the full list) is counted once.
+   */
+  function applyReadState(previous: InboxNotice, updated: InboxNotice): void {
+    recent.value = recent.value.map((n) => (n.id === updated.id ? updated : n))
 
-    if (wasUnread && notice.read_at !== null) {
+    if (previous.read_at === null && updated.read_at !== null) {
       unreadCount.value = Math.max(0, unreadCount.value - 1)
-    } else if (!wasUnread && notice.read_at === null) {
+    } else if (previous.read_at !== null && updated.read_at === null) {
       unreadCount.value += 1
     }
   }
@@ -67,19 +70,16 @@ export const useInboxStore = defineStore('inbox', () => {
       return notice
     }
     const updated = await inboxService.markRead(notice.id)
-    if (!recent.value.some((n) => n.id === notice.id)) {
-      unreadCount.value = Math.max(0, unreadCount.value - 1)
-    }
-    applyReadState(updated)
+    applyReadState(notice, updated)
     return updated
   }
 
   async function markUnread(notice: InboxNotice): Promise<InboxNotice> {
-    const updated = await inboxService.markUnread(notice.id)
-    if (!recent.value.some((n) => n.id === notice.id)) {
-      unreadCount.value += 1
+    if (notice.read_at === null) {
+      return notice
     }
-    applyReadState(updated)
+    const updated = await inboxService.markUnread(notice.id)
+    applyReadState(notice, updated)
     return updated
   }
 
