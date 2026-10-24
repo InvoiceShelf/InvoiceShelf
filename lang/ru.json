@@ -1314,7 +1314,7 @@
       "sidebar_group_labels_desc": "Show section headers such as Administration and Modules. Sales and Purchases are always labelled to distinguish their Payments entries."
     },
     "address_information": {
-      "section_description": "  Вы можете обновить информацию о вашем адресе, используя форму ниже."
+      "section_description": "You can update Your Address information using form below."
     },
     "title": "Настройки",
     "setting": "Настройки | Настройки",
@@ -1575,7 +1575,7 @@
         "disable_on_invoice_partial_paid": "Отключить после записи частичного платежа",
         "disable_on_invoice_paid": "Отключить после полной оплаты",
         "disable_on_invoice_sent": "Отключить после отправки счета",
-        "retrospective_edits_description": " Основываясь на законах вашей страны или предпочтениях, вы можете ограничить пользователей редактированием завершенных счетов."
+        "retrospective_edits_description": "Based on your country's laws or your preference, you can restrict users from editing finalised invoices."
       },
       "credit_notes": {
         "title": "Credit Notes",
@@ -1786,7 +1786,7 @@
       "new_driver": "Добавить нового провайдера",
       "edit_driver": "Изменить провайдера",
       "select_driver": "Выберите водителя",
-      "update": "выбрать обменный курс ",
+      "update": "select exchange rate",
       "providers_description": "Настройте здесь свои поставщики обменных курсов, чтобы автоматически получать последние обменные курсы по сделкам.",
       "key": "API Key",
       "name": "Имя",
@@ -1797,7 +1797,7 @@
       "created_message": "Поставщик успешно удален",
       "updated_message": "Провайдер успешно обновлен",
       "deleted_message": "Провайдер успешно обновлен",
-      "error": " Вы не можете удалить активного водителя",
+      "error": "You cannot Delete Active Driver",
       "default_currency_error": "Эта валюта уже используется в одном из активных провайдеров",
       "exchange_help_text": "Введите обменный курс для конвертации из {currency} в {baseCurrency}",
       "currency_freak": "Валютный урод",
@@ -1882,7 +1882,7 @@
       "date_format": "Формат даты",
       "time_format": "Формат времени",
       "discount_setting": "Настройка скидки",
-      "discount_per_item": "Скидка на товар ",
+      "discount_per_item": "Discount Per Item",
       "discount_setting_description": "Включите эту опцию, если хотите добавить скидку к отдельным элементам счета. По умолчанию скидка добавляется непосредственно в счет.",
       "expire_public_links": "Автоматическое истечение срока действия общедоступных ссылок",
       "expire_setting_description": "Укажите, хотите ли вы, чтобы срок действия всех ссылок, отправляемых приложением, для просмотра счетов, оценок, платежей и т. д. истекал по истечении указанного времени.",
@@ -2038,7 +2038,7 @@
       "set_default_disk_confirm": "Этот диск будет установлен по умолчанию, и все новые PDF-файлы будут сохранены на этом диске",
       "success_set_default_disk": "Диск успешно установлен по умолчанию",
       "save_pdf_to_disk": "Сохранить PDF на диск",
-      "disk_setting_description": " Включите эту опцию, если вы хотите сохранить копию каждого счета, оценки и оплаты PDF на диске по умолчанию. Включение этой опции уменьшит время загрузки при просмотре PDF.",
+      "disk_setting_description": "Enable this, if you wish to save a copy of each Invoice, Estimate & Payment Receipt PDF on your default disk automatically. Turning this option will decrease the load-time when viewing the PDFs.",
       "select_disk": "Выберите диск",
       "disk_settings": "Настройки диска",
       "confirm_delete": "Ваши существующие файлы и папки на указанном диске не будут затронуты, но конфигурация диска будет удалена из InvoiceShelf",
