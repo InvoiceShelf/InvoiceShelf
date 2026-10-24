@@ -1314,7 +1314,7 @@
       "sidebar_group_labels_desc": "Show section headers such as Administration and Modules. Sales and Purchases are always labelled to distinguish their Payments entries."
     },
     "address_information": {
-      "section_description": "  You can update Your Address information using form below."
+      "section_description": "You can update Your Address information using form below."
     },
     "title": "Ρυθμίσεις",
     "setting": "Ρύθμιση Ρυθμίσεων",
@@ -1575,7 +1575,7 @@
         "disable_on_invoice_partial_paid": "Απενεργοποίηση μετά την εγγραφή μερικής πληρωμής",
         "disable_on_invoice_paid": "Απενεργοποίηση μετά την εγγραφή μερικής πληρωμής",
         "disable_on_invoice_sent": "Απενεργοποίηση μετά την αποστολή τιμολογίου",
-        "retrospective_edits_description": " Με βάση τους νόμους της χώρας σας ή τις προτιμήσεις σας, μπορείτε να περιορίσετε τους χρήστες από την επεξεργασία οριστικοποιημένων τιμολογίων."
+        "retrospective_edits_description": "Based on your country's laws or your preference, you can restrict users from editing finalised invoices."
       },
       "credit_notes": {
         "title": "Credit Notes",
@@ -1786,7 +1786,7 @@
       "new_driver": "Προσθήκη νέας υπηρεσίας παροχής",
       "edit_driver": "Επεξεργασία παρόχου",
       "select_driver": "Επιλέξτε έναν Οδηγό",
-      "update": "επιλογή συναλλαγματικής ισοτιμίας ",
+      "update": "select exchange rate",
       "providers_description": "Ρυθμίστε τους παρόχους συναλλαγματικών ισοτιμιών σας εδώ για να συγκεντρώσετε αυτόματα την τελευταία συναλλαγματική ισοτιμία στις συναλλαγές.",
       "key": "Κλειδί API",
       "name": "Όνομα",
@@ -1797,7 +1797,7 @@
       "created_message": "Ο πελάτης δημιουργήθηκε με επιτυχία",
       "updated_message": "Ο πελάτης δημιουργήθηκε με επιτυχία",
       "deleted_message": "Ο πελάτης δημιουργήθηκε με επιτυχία",
-      "error": " Δεν μπορείτε να Διαγράψετε το Ενεργό Οδηγό",
+      "error": "You cannot Delete Active Driver",
       "default_currency_error": "Αυτό το νόμισμα χρησιμοποιείται ήδη σε έναν από τους Active Provider",
       "exchange_help_text": "Εισάγετε συναλλαγματική ισοτιμία για μετατροπή από {currency} σε {baseCurrency}",
       "currency_freak": "Νόμισμα Freak",
@@ -1882,7 +1882,7 @@
       "date_format": "Μορφή Ημερομηνίας",
       "time_format": "Time Format",
       "discount_setting": "Ρυθμίσεις Λογαριασμού",
-      "discount_per_item": "Έκπτωση Ανά Στοιχείο ",
+      "discount_per_item": "Discount Per Item",
       "discount_setting_description": "Ενεργοποιήστε το αν θέλετε να προσθέσετε έκπτωση σε μεμονωμένα στοιχεία τιμολογίου. Από προεπιλογή, η έκπτωση προστίθεται απευθείας στο τιμολόγιο.",
       "expire_public_links": "Automatically Expire Public Links",
       "expire_setting_description": "Specify whether you would like to expire all the links sent by application to view invoices, estimates & payments, etc after a specified duration.",
@@ -2038,7 +2038,7 @@
       "set_default_disk_confirm": "Αυτός ο δίσκος θα οριστεί ως προεπιλεγμένος και όλα τα νέα αρχεία PDF θα αποθηκευτούν σε αυτόν τον δίσκο",
       "success_set_default_disk": "Ο δίσκος ορίστηκε ως προκαθορισμένος επιτυχώς",
       "save_pdf_to_disk": "Αποθήκευση κλειδιού στο δίσκο",
-      "disk_setting_description": " Ενεργοποιήστε αυτό, αν θέλετε να αποθηκεύσετε ένα αντίγραφο του κάθε τιμολογίου, Εκτίμηση & παραλαβή πληρωμής PDF στον προεπιλεγμένο δίσκο σας αυτόματα. Η ενεργοποίηση αυτής της επιλογής θα μειώσει το χρόνο φόρτωσης κατά την προβολή των PDF.",
+      "disk_setting_description": "Enable this, if you wish to save a copy of each Invoice, Estimate & Payment Receipt PDF on your default disk automatically. Turning this option will decrease the load-time when viewing the PDFs.",
       "select_disk": "Επιλέξτε δίσκο",
       "disk_settings": "Ρυθμίσεις Δίσκου",
       "confirm_delete": "Τα υπάρχοντα αρχεία και οι φάκελοι σας στον καθορισμένο δίσκο δεν θα επηρεαστούν αλλά η διαμόρφωση του δίσκου σας θα διαγραφεί από τον Κρατήρα",
