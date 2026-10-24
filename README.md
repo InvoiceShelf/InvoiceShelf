@@ -46,9 +46,27 @@ includes sample data and resets automatically.
 - Schedule recurring invoices for repeat work.
 - Give customers a portal for invoices, estimates, and payment history.
 - Manage multiple companies and invite team members with scoped roles.
+- Issue EN 16931 e-invoices: ZUGFeRD / Factur-X PDFs with the e-invoice XML
+  embedded (3.x, with the official E-Invoicing module).
 
 Optional official modules can add specialised features without making the core
 application heavier.
+
+### E-invoicing
+
+InvoiceShelf 3.x issues e-invoices to the European standard EN 16931 through
+the official [E-Invoicing module](https://github.com/InvoiceShelf/module-e-invoicing):
+
+- An invoice's PDF becomes a **ZUGFeRD / Factur-X** hybrid e-invoice, a
+  PDF/A-3 file with the EN 16931 XML inside that accounting software reads.
+  This meets the German B2B e-invoicing rules and is one of the formats the
+  French reform accepts.
+- The XML can also be downloaded on its own, for portals that take a file.
+- Each invoice shows whether it qualifies and, if not, exactly what is missing.
+- Tax types carry their EN 16931 tax category and units their UN/ECE unit code.
+
+It needs the Gotenberg PDF driver. UBL formats (Peppol BIS Billing, XRechnung
+UBL) and sending through Peppol are planned.
 
 ## Install InvoiceShelf
 
