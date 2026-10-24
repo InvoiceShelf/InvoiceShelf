@@ -32,6 +32,7 @@
     "copy_pdf_url": "Kopijuoti PDF Nuorodą",
     "download_pdf": "Atsiųsti PDF",
     "save": "Išsaugoti",
+    "extension_save_hook_failed": "Saved. An installed module could not finish its part of the save.",
     "skip": "Skip",
     "create": "Sukurti",
     "cancel": "Atšaukti",
