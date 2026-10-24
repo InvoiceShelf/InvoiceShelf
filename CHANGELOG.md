@@ -7,6 +7,29 @@ section beneath it is what CI publishes to the updater — see
 The 2.x line has its own CHANGELOG.md on the `2.x` branch. Releases are also on
 GitHub: https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 3.0.0-alpha.12 - 2026-10-24
+
+Twelfth public alpha of InvoiceShelf 3.0. Modules can now bring the libraries they need and add to InvoiceShelf's own screens: module API 1.4 lets a module ship third-party packages the host lacks, and adds actions, panels, form sections and save hooks on invoices, estimates, customers, payments and more.
+
+⚠️ **Pre-release, not for production.** Back up your database before upgrading and use this release for evaluation and testing only.
+
+### Highlights
+
+- **Modules with bundled dependencies.** A module can now ship the third-party packages InvoiceShelf does not include, such as a payment provider's SDK, built into the module at release and signed with it. InvoiceShelf never runs Composer for a module: it loads the bundled code after its own, so a library InvoiceShelf ships always wins, and it checks on install, when a module is enabled and on every start that the bundle still fits, disabling a module whose packages no longer do. (#931)
+- **Modules on your records.** Modules can add actions to the list menus and pages of invoices, estimates, recurring invoices, customers, payments, expenses and items, panels to the record pages, sections to the invoice, estimate and customer forms, and an entry to the New menu. A module that fails while you save a record shows a warning; the record stays saved. Built on a contribution by techjollof. (#932)
+
+### Improvements and fixes
+
+- Enabling a module checks that it still fits this version, the same check that runs on every start, instead of switching it back on regardless. (#931)
+- Module `composer.json` files are no longer merged into InvoiceShelf's own Composer setup, which leaked module packages into local installs and broke `composer update` while a module was present. (#930)
+
+### Upgrade notes
+
+- **Module API 1.4.0.** Modules that declare `^1.3.0` keep working. An install that pins `MARKETPLACE_MODULE_API_VERSION` to an older value cannot install modules that need 1.4.
+- **Module authors:** SDK 3.5 (`invoiceshelf/modules ^3.5`) adds the `bundled` dependency policy, the `invoiceshelf-module bundle` command and the record extension API; its README covers both. When developing a module inside InvoiceShelf, run `composer install` in the module itself, since its dependencies are no longer merged into InvoiceShelf's.
+
+Docker: `invoiceshelf/invoiceshelf:3.0.0-alpha.12` or `ghcr.io/invoiceshelf/invoiceshelf:3.0.0-alpha.12` (also `:next`).
+
 ## 3.0.0-alpha.11 - 2026-10-21
 
 Eleventh public alpha of InvoiceShelf 3.0. It adds purchasing (suppliers, bills, supplier credits, payments and refunds, with recurring bills and expenses) and moves the Docker image to PHP 8.5.12, which fixes two critical PHP vulnerabilities.
