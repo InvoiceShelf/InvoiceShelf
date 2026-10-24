@@ -1314,7 +1314,7 @@
       "sidebar_group_labels_desc": "Show section headers such as Administration and Modules. Sales and Purchases are always labelled to distinguish their Payments entries."
     },
     "address_information": {
-      "section_description": "  Bạn có thể cập nhật thông tin địa chỉ bằng cách sử dụng biếu mẫu duới đây."
+      "section_description": "You can update Your Address information using form below."
     },
     "title": "Cài đặt",
     "setting": "Cài đặt | Cài đặt",
@@ -1575,7 +1575,7 @@
         "disable_on_invoice_partial_paid": "Tắt sau khi thanh toán một phần đuợc ghi nhận",
         "disable_on_invoice_paid": "Tắt sau khi thanh toán đầy đủ đuợc ghi nhận",
         "disable_on_invoice_sent": "Tắt sau khi hoá đơn đuợc gửi",
-        "retrospective_edits_description": " Dựa trên luật pháp của quốc gia hoặc theo tuỳ chọn của bạn, bạn có thể hạn chế quyền chỉnh sửa các hóa đơn đã hoàn tất."
+        "retrospective_edits_description": "Based on your country's laws or your preference, you can restrict users from editing finalised invoices."
       },
       "credit_notes": {
         "title": "Credit Notes",
@@ -1786,7 +1786,7 @@
       "new_driver": "Thêm nhà cung cấp mới",
       "edit_driver": "Chỉnh sửa trình điều khiển",
       "select_driver": "Chọn trình điều khiển",
-      "update": "chọn tỷ giá đối hoái ",
+      "update": "select exchange rate",
       "providers_description": "Thiết lập cấu hình các nhà cung cấp tỷ giá hối đoái của bạn tại đây để tự động lấy tỷ giá hối đoái mới nhất trong các giao dịch.",
       "key": "Mã khóa API",
       "name": "Tên",
@@ -1797,7 +1797,7 @@
       "created_message": "Tạo nhà cung cấp thành công",
       "updated_message": "Cập nhật nhà cung cấp thành công",
       "deleted_message": "Xóa nhà cung cấp thành công",
-      "error": " Bạn không thể xoá trình điều khiển đang hoạt động",
+      "error": "You cannot Delete Active Driver",
       "default_currency_error": "Loại tiền tệ này đã được sử dụng trong một trong các nhà cung cấp đang hoạt động",
       "exchange_help_text": "Nhập tỷ giá hối đoái để chuyển từ {currency} to {baseCurrency}",
       "currency_freak": "Currency Freak",
@@ -1882,7 +1882,7 @@
       "date_format": "Định dạng ngày tháng",
       "time_format": "Time Format",
       "discount_setting": "Cài đặt chiết khấu",
-      "discount_per_item": "Giảm giá cho mỗi mặt hàng ",
+      "discount_per_item": "Discount Per Item",
       "discount_setting_description": "Bật tính năng này nếu bạn muốn thêm Giảm giá vào các mặt hàng hóa đơn riêng lẻ. Theo mặc định, Giảm giá được thêm trực tiếp vào hóa đơn.",
       "expire_public_links": "Tự động hết hạn đuờng dẫn công khai",
       "expire_setting_description": "Xác định bạn có muốn liên kết để xem hóa đơn, ước tính, thanh toán gửi từ ứng dụng hết hạn sau một khoảng thời gian cụ thể hay không.",
@@ -2038,7 +2038,7 @@
       "set_default_disk_confirm": "Đĩa này sẽ được đặt làm mặc định và tất cả các tệp PDF mới sẽ được lưu trên đĩa này",
       "success_set_default_disk": "Đĩa được đặt làm mặc định thành công",
       "save_pdf_to_disk": "Lưu PDF vào đĩa",
-      "disk_setting_description": " Bật tính năng này nếu bạn muốn tự động sao lưu mỗi bản PDF Hoá đơn, Uớc tính & Biên nhận thanh toán trên ổ đĩa mặc định. Bật tính năng này sẽ giảm thời gian tải khi đang xem các tệp PDF.",
+      "disk_setting_description": "Enable this, if you wish to save a copy of each Invoice, Estimate & Payment Receipt PDF on your default disk automatically. Turning this option will decrease the load-time when viewing the PDFs.",
       "select_disk": "Chọn đĩa",
       "disk_settings": "Cài đặt đĩa",
       "confirm_delete": "Tệp hiện có của bạn",
