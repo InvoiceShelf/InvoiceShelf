@@ -32,6 +32,7 @@
     "copy_pdf_url": "Kopírovať PDF adresu",
     "download_pdf": "Stiahnuť PDF",
     "save": "Uložiť",
+    "extension_save_hook_failed": "Saved. An installed module could not finish its part of the save.",
     "skip": "Skip",
     "create": "Vytvoriť",
     "cancel": "Zrušiť",
