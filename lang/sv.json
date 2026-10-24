@@ -1314,7 +1314,7 @@
       "sidebar_group_labels_desc": "Show section headers such as Administration and Modules. Sales and Purchases are always labelled to distinguish their Payments entries."
     },
     "address_information": {
-      "section_description": "  Du kan uppdatera din adressinformation genom att använda formuläret nedan."
+      "section_description": "You can update Your Address information using form below."
     },
     "title": "Inställningar",
     "setting": "Inställning | Inställningar",
@@ -1575,7 +1575,7 @@
         "disable_on_invoice_partial_paid": "Inaktivera efter att delbetalning har registrerats",
         "disable_on_invoice_paid": "Inaktivera efter att full betalning har registrerats",
         "disable_on_invoice_sent": "Inaktivera efter att faktura skickats",
-        "retrospective_edits_description": " Baserat på ditt lands lagar eller dina preferenser kan du begränsa användare från att redigera slutgiltiga fakturor."
+        "retrospective_edits_description": "Based on your country's laws or your preference, you can restrict users from editing finalised invoices."
       },
       "credit_notes": {
         "title": "Kreditnotor",
@@ -1786,7 +1786,7 @@
       "new_driver": "Lägg till ny leverantör",
       "edit_driver": "Redigera leverantör",
       "select_driver": "Välj leverantör",
-      "update": "välj växelkurs ",
+      "update": "select exchange rate",
       "providers_description": "Konfigurera dina valutakursleverantörer här för att automatiskt hämta den senaste växelkursen vid transaktioner.",
       "key": "API-nyckel",
       "name": "Namn",
@@ -1797,7 +1797,7 @@
       "created_message": "Leverantören har skapats",
       "updated_message": "Leverantören har uppdaterats",
       "deleted_message": "Leverantören har raderats",
-      "error": " Du kan inte radera en aktiv leverantör",
+      "error": "You cannot Delete Active Driver",
       "default_currency_error": "Valutan används redan av en aktiv leverantör",
       "exchange_help_text": "Ange växelkurs för att konvertera från {currency} till {baseCurrency}",
       "currency_freak": "Currency Freak",
@@ -1882,7 +1882,7 @@
       "date_format": "Datumformat",
       "time_format": "Tidsformat",
       "discount_setting": "Rabattinställningar",
-      "discount_per_item": "Rabatt per artikel ",
+      "discount_per_item": "Discount Per Item",
       "discount_setting_description": "Aktivera detta om du vill kunna lägga rabatt på enskilda fakturaartiklar. Rabatt ges som standard på hela fakturan.",
       "expire_public_links": "Låt offentliga länkar upphöra automatiskt",
       "expire_setting_description": "Ange om alla länkar som programmet skickar för att visa fakturor, offerter, betalningar osv. ska upphöra efter en viss tid.",
@@ -2038,7 +2038,7 @@
       "set_default_disk_confirm": "Den här disken anges som standarddisk och alla nya PDF-filer sparas på den",
       "success_set_default_disk": "Disken har angetts som standard",
       "save_pdf_to_disk": "Spara PDF-filer på disk",
-      "disk_setting_description": " Aktivera detta om du automatiskt vill spara en PDF-kopia av varje faktura, offert och betalningskvitto på standarddisken. När du aktiverar alternativet går det snabbare att visa PDF-filerna.",
+      "disk_setting_description": "Enable this, if you wish to save a copy of each Invoice, Estimate & Payment Receipt PDF on your default disk automatically. Turning this option will decrease the load-time when viewing the PDFs.",
       "select_disk": "Välj disk",
       "disk_settings": "Diskinställningar",
       "confirm_delete": "Dina befintliga filer och mappar på den angivna disken påverkas inte, men diskkonfigurationen tas bort från InvoiceShelf",
