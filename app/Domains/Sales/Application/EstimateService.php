@@ -165,12 +165,15 @@ class EstimateService implements EstimatePdfDataProvider
                 foreach ($item->taxes as $appliedTax) {
                     // Rows of one tax type collapse onto the first row seen for
                     // it, which then carries the running total for the document.
+                    // That row is a copy: the original belongs to the loaded
+                    // item, and a total written into it would be counted again
+                    // on the next render of the same instance.
                     $running = $taxes->first(fn ($seen) => $seen->tax_type_id == $appliedTax->tax_type_id);
 
                     if ($running) {
                         $running->amount += $appliedTax->amount;
                     } else {
-                        $taxes->push($appliedTax);
+                        $taxes->push(clone $appliedTax);
                     }
                 }
             }
