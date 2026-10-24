@@ -70,7 +70,7 @@ test('the demo is rebuilt without an administrator, with the demo owner and the 
         ->and($owner->role)->not->toBe('super admin')
         ->and(Hash::check('demo', $owner->password))->toBeTrue()
         ->and(BouncerFacade::scope()->onceTo($company->id, fn () => $owner->isAn('owner')))->toBeTrue()
-        ->and($company->slug)->toBe('acme-inc')
+        ->and($company->slug)->toBe('acme-gmbh')
         ->and($portal->company_id)->toBe($company->id)
         ->and($portal->enable_portal)->toBeTrue()
         ->and(Hash::check('demo', $portal->password))->toBeTrue()
