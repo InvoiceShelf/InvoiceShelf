@@ -1314,7 +1314,7 @@
       "sidebar_group_labels_desc": "Show section headers such as Administration and Modules. Sales and Purchases are always labelled to distinguish their Payments entries."
     },
     "address_information": {
-      "section_description": "  Możesz zaktualizować informacje o adresie za pomocą poniższego formularza."
+      "section_description": "You can update Your Address information using form below."
     },
     "title": "Ustawienia",
     "setting": "Ustawienia | Ustawienia",
@@ -1575,7 +1575,7 @@
         "disable_on_invoice_partial_paid": "Wyłącz po zarejestrowaniu płatności częściowej",
         "disable_on_invoice_paid": "Wyłącz po zarejestrowaniu całej płatności",
         "disable_on_invoice_sent": "Wyłącz po wysłaniu faktury",
-        "retrospective_edits_description": " Na podstawie prawa krajowego lub twoich preferencji, możesz ograniczyć użytkowników do edycji ukończonych faktur."
+        "retrospective_edits_description": "Based on your country's laws or your preference, you can restrict users from editing finalised invoices."
       },
       "credit_notes": {
         "title": "Credit Notes",
@@ -1786,7 +1786,7 @@
       "new_driver": "Dodaj nowego dostawcę",
       "edit_driver": "Edytuj dostawcę",
       "select_driver": "Wybierz sterownik",
-      "update": "wybierz kurs wymiany ",
+      "update": "select exchange rate",
       "providers_description": "Skonfiguruj dostawców kursu wymiany walut, aby automatycznie pobierać najnowszy kurs wymiany walut.",
       "key": "Klucz API",
       "name": "Nazwa",
@@ -1797,7 +1797,7 @@
       "created_message": "Dostawca utworzony pomyślnie",
       "updated_message": "Dostawca zaktualizowany pomyślnie",
       "deleted_message": "Dostawca usunięty pomyślnie",
-      "error": " Nie można usunąć aktywnego sterownika",
+      "error": "You cannot Delete Active Driver",
       "default_currency_error": "Ta waluta jest już używana w jednym z aktywnych dostawców",
       "exchange_help_text": "Wprowadź kurs wymiany walut, aby przeliczyć z {currency} na {baseCurrency}",
       "currency_freak": "Currency Freak",
@@ -1882,7 +1882,7 @@
       "date_format": "Format daty",
       "time_format": "Time Format",
       "discount_setting": "Ustawienia rabatu",
-      "discount_per_item": "Rabat na produkt ",
+      "discount_per_item": "Discount Per Item",
       "discount_setting_description": "Włącz to, jeśli chcesz dodać rabat do poszczególnych elementów faktury. Domyślnie rabat jest dodawany bezpośrednio do całej faktury.",
       "expire_public_links": "Automatycznie wygasaj linki publiczne",
       "expire_setting_description": "Określ czy chcesz wygaszać wszystkie linki wysłane przez aplikację w celu przeglądania faktur, ofert i płatności itp. po określonym czasie.",
@@ -2038,7 +2038,7 @@
       "set_default_disk_confirm": "Ten dysk zostanie ustawiony jako domyślny, a wszystkie nowe pliki PDF zostaną zapisane na tym dysku",
       "success_set_default_disk": "Dysk został pomyślnie ustawiony jako domyślny",
       "save_pdf_to_disk": "Zapisz pliki PDF na dysku",
-      "disk_setting_description": " Włącz tę opcję, jeśli chcesz automatycznie zapisać kopię każdej faktury, oferty i potwierdzenia płatności PDF na swoim domyślnym dysku. Włączenie tej opcji spowoduje skrócenie czasu ładowania podczas przeglądania PDF.",
+      "disk_setting_description": "Enable this, if you wish to save a copy of each Invoice, Estimate & Payment Receipt PDF on your default disk automatically. Turning this option will decrease the load-time when viewing the PDFs.",
       "select_disk": "Wybierz dysk",
       "disk_settings": "Ustawienia dysku",
       "confirm_delete": "Twoje istniejące pliki i foldery na określonym dysku nie zostaną zmienione, ale konfiguracja twojego dysku zostanie usunięta z InvoiceShelfa",
