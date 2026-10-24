@@ -1458,7 +1458,7 @@
       "label": "Etikett",
       "type": "Typ",
       "name": "Namn",
-      "slug": "Permalänk",
+      "slug": "Slug",
       "required": "Obligatoriskt",
       "placeholder": "Platshållare",
       "help_text": "Hjälptext",
