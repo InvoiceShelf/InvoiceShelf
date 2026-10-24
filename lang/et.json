@@ -32,6 +32,7 @@
     "copy_pdf_url": "Kopeeri PDF link",
     "download_pdf": "Lae PDF alla",
     "save": "Salvesta",
+    "extension_save_hook_failed": "Saved. An installed module could not finish its part of the save.",
     "skip": "Jäta vahele",
     "create": "Loo",
     "cancel": "Tühista",
