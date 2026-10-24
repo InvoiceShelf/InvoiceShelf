@@ -1314,7 +1314,7 @@
       "sidebar_group_labels_desc": "Show section headers such as Administration and Modules. Sales and Purchases are always labelled to distinguish their Payments entries."
     },
     "address_information": {
-      "section_description": "  Informacije o naslovu lahko posodobite s spodnjim obrazcem."
+      "section_description": "You can update Your Address information using form below."
     },
     "title": "Nastavitve",
     "setting": "Nastavitve | Nastavitve",
@@ -1575,7 +1575,7 @@
         "disable_on_invoice_partial_paid": "Onemogočite po zabeleženem delnem plačilu",
         "disable_on_invoice_paid": "Onemogočite, ko je zabeleženo celotno plačilo",
         "disable_on_invoice_sent": "Onemogočite po pošiljanju računa",
-        "retrospective_edits_description": " Na podlagi zakonov vaše države ali vaših želja lahko uporabnikom omejite urejanje dokončanih računov."
+        "retrospective_edits_description": "Based on your country's laws or your preference, you can restrict users from editing finalised invoices."
       },
       "credit_notes": {
         "title": "Credit Notes",
@@ -1786,7 +1786,7 @@
       "new_driver": "Dodajanje novega ponudnika",
       "edit_driver": "Uredi ponudnika",
       "select_driver": "Izberite gonilnik",
-      "update": "izberite menjalni tečaj",
+      "update": "select exchange rate",
       "providers_description": "Tukaj konfigurirajte ponudnike menjalnih tečajev, da bodo pri transakcijah samodejno pridobili najnovejši menjalni tečaj.",
       "key": "Ključ API",
       "name": "Ime",
@@ -1797,7 +1797,7 @@
       "created_message": "Ponudnik Uspešno ustvarjen",
       "updated_message": "Ponudnik uspešno posodobljen",
       "deleted_message": "Ponudnik uspešno izbrisan",
-      "error": " Aktivnega voznika ne morete izbrisati",
+      "error": "You cannot Delete Active Driver",
       "default_currency_error": "Ta valuta se že uporablja v enem od aktivnih ponudnikov",
       "exchange_help_text": "Vnesite menjalni tečaj za pretvorbo iz {valuta} v {osnovna valuta}",
       "currency_freak": "Valuta Freak",
@@ -1882,7 +1882,7 @@
       "date_format": "Oblika datuma",
       "time_format": "Čas od",
       "discount_setting": "Nastavitev popusta",
-      "discount_per_item": "Popust na element",
+      "discount_per_item": "Discount Per Item",
       "discount_setting_description": "Omogočite to možnost, če želite dodati popust posameznim postavkam računa. Privzeto se popust doda neposredno na račun.",
       "expire_public_links": "Samodejno izteče veljavnost javnih povezav",
       "expire_setting_description": "Določite, ali želite, da po določenem času potečejo vse povezave, ki jih aplikacija pošlje za ogled računov, predračunov in plačil itd.",
@@ -2038,7 +2038,7 @@
       "set_default_disk_confirm": "Ta disk bo nastavljen kot privzeti in vsi novi dokumenti PDF bodo shranjeni na tem disku.",
       "success_set_default_disk": "Disk je uspešno nastavljen kot privzeti",
       "save_pdf_to_disk": "Shranjevanje datotek PDF na disk",
-      "disk_setting_description": " To omogočite, če želite samodejno shraniti kopijo vsakega računa, predračuna in potrdila o plačilu PDF na privzeti disk. Če vklopite to možnost, se bo skrajšal čas nalaganja pri pregledovanju datotek PDF.",
+      "disk_setting_description": "Enable this, if you wish to save a copy of each Invoice, Estimate & Payment Receipt PDF on your default disk automatically. Turning this option will decrease the load-time when viewing the PDFs.",
       "select_disk": "Izberite Disk",
       "disk_settings": "Nastavitve diska",
       "confirm_delete": "Vaše obstoječe datoteke in mape na določenem disku ne bodo prizadete, vendar bo vaša konfiguracija diska izbrisana iz programa InvoiceShelf.",
