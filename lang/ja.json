@@ -1314,7 +1314,7 @@
       "sidebar_group_labels_desc": "Show section headers such as Administration and Modules. Sales and Purchases are always labelled to distinguish their Payments entries."
     },
     "address_information": {
-      "section_description": "  以下のフォームを使用して、住所情報を更新できます。"
+      "section_description": "You can update Your Address information using form below."
     },
     "title": "設定",
     "setting": "設定",
@@ -1575,7 +1575,7 @@
         "disable_on_invoice_partial_paid": "一部支払いが記録された後に無効にする",
         "disable_on_invoice_paid": "全額支払いが記録された後に無効にする",
         "disable_on_invoice_sent": "請求書送信後無効にする",
-        "retrospective_edits_description": " 国の法律や設定に基づいて、確定した請求書をユーザーが編集できないように制限できます。"
+        "retrospective_edits_description": "Based on your country's laws or your preference, you can restrict users from editing finalised invoices."
       },
       "credit_notes": {
         "title": "Credit Notes",
@@ -1786,7 +1786,7 @@
       "new_driver": "新しいプロバイダを追加",
       "edit_driver": "プロバイダを編集する",
       "select_driver": "ドライバを選択",
-      "update": "為替レートの選択 ",
+      "update": "select exchange rate",
       "providers_description": "ここで為替レートプロバイダーを設定すると取引の最新の為替レートが自動的に取得されます。",
       "key": "APIキー",
       "name": "名前",
@@ -1797,7 +1797,7 @@
       "created_message": "プロバイダが正常に作成されました",
       "updated_message": "プロバイダが正常に更新されました",
       "deleted_message": "プロバイダーが正常に削除されました",
-      "error": " アクティブなドライバーを削除することはできません",
+      "error": "You cannot Delete Active Driver",
       "default_currency_error": "この通貨はいずれかのアクティブなプロバイダーで既に使用されています",
       "exchange_help_text": "{currency} から {baseCurrency} に変換する為替レートを入力してください",
       "currency_freak": "Currency Freak",
@@ -1882,7 +1882,7 @@
       "date_format": "日付形式",
       "time_format": "時刻形式",
       "discount_setting": "割引設定",
-      "discount_per_item": "アイテムごとの割引 ",
+      "discount_per_item": "Discount Per Item",
       "discount_setting_description": "個々の請求書項目に割引を追加する場合はこれを有効にします。デフォルトでは割引は請求書に直接追加されます。",
       "expire_public_links": "公開リンクを自動的に期限切れにする",
       "expire_setting_description": "指定した期間後に、請求書、見積り、支払いなどを表示するためにアプリケーションによって送信されたすべてのリンクを期限切れにするかどうかを指定します。",
@@ -2038,7 +2038,7 @@
       "set_default_disk_confirm": "このディスクは既定値として設定され、すべての新しいPDFがこのディスクに保存されます",
       "success_set_default_disk": "ディスクを既定に設定しました",
       "save_pdf_to_disk": "PDFをディスクに保存",
-      "disk_setting_description": " 請求書、見積書、支払い領収書の各PDFのコピーをデフォルトのディスクに自動的に保存する場合は、これを有効にします。このオプションをオンにするとPDFを表示するときの読み込み時間が短縮されます。",
+      "disk_setting_description": "Enable this, if you wish to save a copy of each Invoice, Estimate & Payment Receipt PDF on your default disk automatically. Turning this option will decrease the load-time when viewing the PDFs.",
       "select_disk": "ディスクを選択",
       "disk_settings": "ディスクの設定",
       "confirm_delete": "指定されたディスク内の既存のファイルとフォルダは影響を受けませんが、ディスク構成はInvoiceShelfから削除されます。",
