@@ -2,7 +2,7 @@
     "openapi": "3.1.0",
     "info": {
         "title": "InvoiceShelf API",
-        "version": "3.0.0-alpha.12",
+        "version": "3.0.0-alpha.13",
         "description": "REST API for InvoiceShelf \u2014 open-source invoicing & expense tracking. Authenticate with a Sanctum personal access token (Authorization: Bearer <token>). Company-scoped endpoints additionally require a `company` header carrying the company ID."
     },
     "servers": [
@@ -29884,6 +29884,15 @@
                     },
                     "transaction_type": {
                         "type": "string"
+                    },
+                    "tax_category_code": {
+                        "type": "string"
+                    },
+                    "tax_exemption_reason": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     }
                 },
                 "required": [
@@ -29899,7 +29908,9 @@
                     "type",
                     "calculation_type",
                     "fixed_amount",
-                    "transaction_type"
+                    "transaction_type",
+                    "tax_category_code",
+                    "tax_exemption_reason"
                 ],
                 "title": "TaxType"
             },
@@ -29950,6 +29961,27 @@
                             "sales",
                             "purchases"
                         ]
+                    },
+                    "tax_category_code": {
+                        "type": "string",
+                        "enum": [
+                            "S",
+                            "Z",
+                            "E",
+                            "AE",
+                            "K",
+                            "G",
+                            "O",
+                            "L",
+                            "M"
+                        ]
+                    },
+                    "tax_exemption_reason": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 255
                     }
                 },
                 "required": [
@@ -29988,6 +30020,12 @@
                     "collective_tax": {
                         "type": "string"
                     },
+                    "tax_category_code": {
+                        "type": "string"
+                    },
+                    "tax_exemption_reason": {
+                        "type": "string"
+                    },
                     "description": {
                         "type": "string"
                     },
@@ -30008,6 +30046,8 @@
                     "transaction_type",
                     "compound_tax",
                     "collective_tax",
+                    "tax_category_code",
+                    "tax_exemption_reason",
                     "description",
                     "company_id"
                 ],
@@ -30079,6 +30119,41 @@
                 "properties": {
                     "name": {
                         "type": "string"
+                    },
+                    "unit_code": {
+                        "type": "string",
+                        "description": "Omitting the Unit Code keeps the stored one (C62 for new units);\nsending one means it must be a supported UN/ECE Rec 20 code.",
+                        "enum": [
+                            "C62",
+                            "HUR",
+                            "DAY",
+                            "WEE",
+                            "MON",
+                            "ANN",
+                            "MIN",
+                            "SEC",
+                            "KGM",
+                            "GRM",
+                            "MGM",
+                            "TNE",
+                            "LBR",
+                            "ONZ",
+                            "LTR",
+                            "MLT",
+                            "MTR",
+                            "CMT",
+                            "MMT",
+                            "KMT",
+                            "MTK",
+                            "MTQ",
+                            "INH",
+                            "FOT",
+                            "XBX",
+                            "XPK",
+                            "SET",
+                            "DZN",
+                            "KWH"
+                        ]
                     }
                 },
                 "required": [
@@ -30095,6 +30170,9 @@
                     "name": {
                         "type": "string"
                     },
+                    "unit_code": {
+                        "type": "string"
+                    },
                     "company_id": {
                         "type": "string"
                     },
@@ -30105,6 +30183,7 @@
                 "required": [
                     "id",
                     "name",
+                    "unit_code",
                     "company_id"
                 ],
                 "title": "UnitResource"
