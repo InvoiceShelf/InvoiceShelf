@@ -2,7 +2,9 @@
 
 namespace App\Platform\Operations\Demo;
 
+use App\Platform\Modules\Marketplace\MarketplaceClient;
 use App\Platform\Modules\Marketplace\MarketplaceInstaller;
+use App\Platform\Modules\Runtime\ModuleCompatibility;
 use Database\Seeders\CountriesTableSeeder;
 use Database\Seeders\CurrenciesTableSeeder;
 use Database\Seeders\PublicDemoSeeder;
@@ -11,6 +13,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Nwidart\Modules\Facades\Module;
 use RuntimeException;
+use Throwable;
 
 /**
  * Rebuilds the public demo from nothing: an empty database, no uploaded
@@ -31,6 +34,7 @@ class DemoReset
 
     public function __construct(
         private readonly MarketplaceInstaller $marketplace,
+        private readonly MarketplaceClient $catalog,
     ) {}
 
     /**
@@ -57,8 +61,7 @@ class DemoReset
             $this->seed(RealisticDemoSeeder::class);
 
             foreach (DemoMode::modules() as $module) {
-                $report("Installing {$module['slug']} {$module['version']}");
-                $this->installModule($module['slug'], $module['version']);
+                $this->installDemoModule($module['slug'], $module['version'], $report);
             }
 
             $report('Opening the customer portal');
@@ -76,6 +79,46 @@ class DemoReset
      * already there and from the marketplace otherwise, then give it sample
      * data when it ships a demo seeder (`Modules\{Name}\Demo\DemoSeeder`).
      */
+    /**
+     * Install one DEMO_MODULES entry: the pinned release, or the newest one
+     * that fits this InvoiceShelf when none is pinned. A module that cannot be
+     * installed is reported and left out, so one bad module release never
+     * keeps the demo down.
+     */
+    private function installDemoModule(string $slug, ?string $version, callable $report): void
+    {
+        try {
+            $version ??= $this->newestFittingVersion($slug);
+
+            if ($version === null) {
+                $report("Leaving out {$slug}: no release fits this version");
+
+                return;
+            }
+
+            $report("Installing {$slug} {$version}");
+            $this->installModule($slug, $version);
+        } catch (Throwable $error) {
+            report($error);
+            $report("Leaving out {$slug}: {$error->getMessage()}");
+        }
+    }
+
+    /**
+     * The marketplace's newest release of a module, when it fits this
+     * InvoiceShelf; null when it does not, or there is none.
+     */
+    private function newestFittingVersion(string $slug): ?string
+    {
+        $release = $this->catalog->module($slug)->json('module.release');
+
+        if (! is_array($release) || ! is_string($release['version'] ?? null)) {
+            return null;
+        }
+
+        return ModuleCompatibility::problems($release['compatibility'] ?? null) === [] ? $release['version'] : null;
+    }
+
     private function installModule(string $slug, string $version): void
     {
         $onDisk = collect($this->modulesOnDisk())->first(fn ($module) => $module->get('slug') === $slug && $module->get('version') === $version);
