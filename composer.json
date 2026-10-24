@@ -12,7 +12,7 @@
         "barryvdh/laravel-dompdf": "^v3.0",
         "composer/semver": "^3.4",
         "dragonmantank/cron-expression": "^v3.4",
-        "gotenberg/gotenberg-php": "^2.8",
+        "gotenberg/gotenberg-php": "^2.23",
         "guzzlehttp/guzzle": "^7.9",
         "hashids/hashids": "^5.0",
         "invoiceshelf/modules": "^3.5",

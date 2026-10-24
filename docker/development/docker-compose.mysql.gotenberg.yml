@@ -75,7 +75,7 @@ services:
       - invoiceshelf-dev
 
   pdf:
-    image: gotenberg/gotenberg:8
+    image: gotenberg/gotenberg:8.37.0
     networks:
       - invoiceshelf-dev
 
