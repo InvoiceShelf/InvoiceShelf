@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3726db9e3b43d6793f82283d8475c326",
+    "content-hash": "f461a181538260d4d3413c043a175294",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -1182,22 +1182,22 @@
         },
         {
             "name": "gotenberg/gotenberg-php",
-            "version": "v2.18.0",
+            "version": "v2.26.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/gotenberg/gotenberg-php.git",
-                "reference": "d2e4ada726370a54fdf57963c5ee17970a60b8e4"
+                "reference": "b093562ec726010e588b397ffd5f927246ec048f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gotenberg/gotenberg-php/zipball/d2e4ada726370a54fdf57963c5ee17970a60b8e4",
-                "reference": "d2e4ada726370a54fdf57963c5ee17970a60b8e4",
+                "url": "https://api.github.com/repos/gotenberg/gotenberg-php/zipball/b093562ec726010e588b397ffd5f927246ec048f",
+                "reference": "b093562ec726010e588b397ffd5f927246ec048f",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "ext-mbstring": "*",
-                "guzzlehttp/psr7": "^1 || ^2.1",
+                "guzzlehttp/psr7": "^1 || ^2.1 || ^3",
                 "php": "^8.1|^8.2|^8.3|^8.4|^8.5",
                 "php-http/discovery": "^1.14",
                 "psr/http-client": "^1.0",
@@ -1251,7 +1251,7 @@
             ],
             "support": {
                 "issues": "https://github.com/gotenberg/gotenberg-php/issues",
-                "source": "https://github.com/gotenberg/gotenberg-php/tree/v2.18.0"
+                "source": "https://github.com/gotenberg/gotenberg-php/tree/v2.26.0"
             },
             "funding": [
                 {
@@ -1259,7 +1259,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-03-19T19:54:36+00:00"
+            "time": "2026-10-15T15:00:29+00:00"
         },
         {
             "name": "graham-campbell/guzzle-factory",

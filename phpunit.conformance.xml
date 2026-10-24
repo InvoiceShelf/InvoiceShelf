@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  The PDF conformance suite: needs a running Gotenberg, Mustang CLI and veraPDF,
+  named by the CONFORMANCE_* variables, so no ordinary run loads this file.
+  See .github/workflows/pdf-conformance.yaml.
+-->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd" bootstrap="vendor/autoload.php" colors="true" cacheDirectory=".phpunit.cache/conformance">
+  <testsuites>
+    <testsuite name="Conformance">
+      <directory suffix="Test.php">./tests/Conformance</directory>
+    </testsuite>
+  </testsuites>
+  <php>
+    <env name="APP_ENV" value="testing"/>
+    <env name="BCRYPT_ROUNDS" value="4"/>
+    <env name="CACHE_STORE" value="array"/>
+    <env name="DB_CONNECTION" value="sqlite"/>
+    <env name="DB_DATABASE" value=":memory:"/>
+    <env name="MAIL_MAILER" value="array"/>
+    <env name="QUEUE_CONNECTION" value="sync"/>
+    <env name="SESSION_DRIVER" value="array"/>
+    <env name="APP_URL" value="http://invoiceshelf.test"/>
+  </php>
+    <groups>
+        <exclude>
+            <group>isolated</group>
+        </exclude>
+    </groups>
+  <source>
+    <include>
+      <directory suffix=".php">./app</directory>
+    </include>
+  </source>
+</phpunit>

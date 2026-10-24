@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<report>
+  <buildInformation>
+    <releaseDetails id="core" version="1.30.2" buildDate="2026-06-03T10:43:00+02:00"></releaseDetails>
+    <releaseDetails id="validation-model" version="1.30.2" buildDate="2026-06-03T10:46:00+02:00"></releaseDetails>
+    <releaseDetails id="apps" version="1.30.2" buildDate="2026-06-03T10:55:00+02:00"></releaseDetails>
+  </buildInformation>
+  <jobs>
+    <job>
+      <item size="3545">
+        <name>/artifacts/hybrid-invoice.pdf</name>
+      </item>
+      <validationReport jobEndStatus="normal" profileName="PDF/A-3b validation profile" statement="PDF file is not compliant with Validation Profile requirements." isCompliant="false">
+        <details passedRules="144" failedRules="2" passedChecks="274" failedChecks="2">
+          <rule specification="ISO 19005-3:2012" clause="6.6.4" testNumber="2" status="failed" failedChecks="1">
+            <description>The value of "pdfaid:part" shall be the part number of ISO 19005 to which the file conforms</description>
+            <object>PDFAIdentification</object>
+            <test>part == 3</test>
+            <check status="failed">
+              <context>root/document[0]/metadata[0](2 0 obj PDMetadata)/XMPPackage[0]/PDFAIdentification[0]</context>
+              <errorMessage>The "part" property of the PDF/A Identification Schema is 1 instead of 3 for PDF/A-3 conforming file</errorMessage>
+            </check>
+          </rule>
+          <rule specification="ISO 19005-3:2012" clause="6.6.4" testNumber="3" status="failed" failedChecks="1">
+            <description>A Level A conforming file shall specify the value of pdfaid:conformance as A. A Level B conforming file shall specify the value of pdfaid:conformance as B. A Level U conforming file shall specify the value of pdfaid:conformance as U</description>
+            <object>PDFAIdentification</object>
+            <test>conformance == "B" || conformance == "U" || conformance == "A"</test>
+            <check status="failed">
+              <context>root/document[0]/metadata[0](2 0 obj PDMetadata)/XMPPackage[0]/PDFAIdentification[0]</context>
+              <errorMessage>The "conformance" property of the PDF/A Identification Schema is a instead of "B" for PDF/A-3b conforming file</errorMessage>
+            </check>
+          </rule>
+        </details>
+      </validationReport>
+      <duration start="1786794332223" finish="1786794332340">00:00:00.117</duration>
+    </job>
+  </jobs>
+  <batchSummary totalJobs="1" failedToParse="0" encrypted="0" outOfMemory="0" veraExceptions="0">
+    <validationReports compliant="0" nonCompliant="1" failedJobs="0">1</validationReports>
+    <featureReports failedJobs="0">0</featureReports>
+    <repairReports failedJobs="0">0</repairReports>
+    <duration start="1786794332208" finish="1786794332351">00:00:00.143</duration>
+  </batchSummary>
+</report>
