@@ -32,6 +32,7 @@
     "copy_pdf_url": "Sao chép Url PDF",
     "download_pdf": "Tải PDF",
     "save": "Tiết kiệm",
+    "extension_save_hook_failed": "Saved. An installed module could not finish its part of the save.",
     "skip": "Skip",
     "create": "Tạo nên",
     "cancel": "Huỷ bỏ",
