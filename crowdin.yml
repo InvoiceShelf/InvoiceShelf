@@ -4,6 +4,11 @@
 # File names follow the app's locale files: Crowdin's two-letter code, except
 # where two Crowdin languages share one. Urdu (India) gets a file of its own so
 # it no longer overwrites Urdu (Pakistan), which the app loads as ur.json.
+#
+# Paths are kept as they are (lang/en.json, not en.json), and the workflow
+# works in the Crowdin version branch "3.x", where the project's file and its
+# translations have always lived.
+preserve_hierarchy: true
 files:
   - source: /lang/en.json
     translation: /lang/%two_letters_code%.json
