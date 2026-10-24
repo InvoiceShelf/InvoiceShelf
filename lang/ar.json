@@ -32,6 +32,7 @@
     "copy_pdf_url": "نسخ رابط PDF",
     "download_pdf": "تنزيل PDF",
     "save": "حفظ",
+    "extension_save_hook_failed": "Saved. An installed module could not finish its part of the save.",
     "skip": "Skip",
     "create": "إنشاء",
     "cancel": "تراجع",
