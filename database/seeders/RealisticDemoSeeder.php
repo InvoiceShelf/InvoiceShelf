@@ -119,6 +119,7 @@ class RealisticDemoSeeder extends Seeder
         $this->resolveDemoContext();
         $this->cleanupExistingDemoData();
 
+        $this->seedCompanyProfile();
         $this->seedCompanyLogo();
         $this->seedTaxTypes();
         $this->seedNotes();
@@ -186,13 +187,13 @@ class RealisticDemoSeeder extends Seeder
             );
         }
 
-        // Resolve the USD currency (or fall back to whatever is at id=1 / first).
-        $this->currencyId = Currency::where('code', 'USD')->first()?->id
+        // The demo company bills in euros (or whatever is at id=1 / first).
+        $this->currencyId = Currency::where('code', 'EUR')->first()?->id
             ?? Currency::find(1)?->id
             ?? Currency::first()->id;
 
-        // Resolve country for demo addresses — prefer US if present, else first.
-        $this->countryId = Country::where('code', 'US')->first()?->id
+        // Resolve country for demo addresses — prefer Germany if present, else first.
+        $this->countryId = Country::where('code', 'DE')->first()?->id
             ?? Country::find(1)?->id
             ?? Country::first()?->id;
     }
@@ -223,11 +224,11 @@ class RealisticDemoSeeder extends Seeder
             ?? Unit::create(['name' => 'pc', 'company_id' => $this->companyId]);
         $this->unitId = $unit->id;
 
-        // Override the company's default currency to match the USD id we just
+        // Override the company's default currency to match the EUR id we just
         // resolved. Currency ids are not stable across installations -- an
         // upgraded 2.x database can have the Algerian Dinar at id 1 -- and
         // without this the company would display "DA" while every record it
-        // holds is priced in USD.
+        // holds is priced in euros.
         CompanySetting::setSettings(
             ['currency' => (string) $this->currencyId],
             $this->companyId,
@@ -306,17 +307,17 @@ class RealisticDemoSeeder extends Seeder
     private function seedCustomers(): void
     {
         $customers = [
-            ['Acme Corp', 'Sarah Chen', 'ap@acmecorp.example', '+1-617-555-0142', 'https://acmecorp.example', '100 Industrial Way', 'Boston', 'MA', '02108'],
-            ['Widget Industries LLC', 'Marcus Johnson', 'billing@widget.example', '+1-415-555-0173', 'https://widget.example', '2200 Market Street', 'San Francisco', 'CA', '94114'],
-            ['Global Tech Solutions', 'Priya Patel', 'accounts@globaltech.example', '+1-512-555-0188', 'https://globaltech.example', '800 Congress Avenue', 'Austin', 'TX', '78701'],
-            ['Blue Ridge Consulting', 'James Walker', 'finance@blueridge.example', '+1-303-555-0129', 'https://blueridge.example', '1700 Broadway', 'Denver', 'CO', '80202'],
-            ['Apex Design Studio', 'Elena Rossi', 'hello@apexdesign.example', '+1-212-555-0164', 'https://apexdesign.example', '350 West 42nd Street', 'New York', 'NY', '10036'],
-            ['Evergreen Media Group', 'Thomas Anderson', 'ap@evergreen.example', '+1-206-555-0115', 'https://evergreen.example', '1201 Third Avenue', 'Seattle', 'WA', '98101'],
-            ['Summit Software', 'Maya Sharma', 'billing@summitsw.example', '+1-503-555-0197', 'https://summitsw.example', '621 SW Morrison Street', 'Portland', 'OR', '97205'],
-            ['Pacific Logistics', 'Robert Kim', 'ap@pacificlog.example', '+1-213-555-0108', 'https://pacificlog.example', '400 South Hope Street', 'Los Angeles', 'CA', '90071'],
+            ['Nordwind Logistik GmbH', 'Lena Hoffmann', 'buchhaltung@nordwind.example', '+49 40 5550142', 'https://nordwind.example', 'Speicherstadt 12', 'Hamburg', '20457', 'DE287654321'],
+            ['Brandt & Söhne KG', 'Jonas Brandt', 'rechnung@brandt.example', '+49 89 5550188', 'https://brandt.example', 'Leopoldstraße 44', 'München', '80802', 'DE198765432'],
+            ['Rheinblick Consulting GmbH', 'Markus Weber', 'finanzen@rheinblick.example', '+49 221 5550164', 'https://rheinblick.example', 'Rheinauhafen 7', 'Köln', '50678', 'DE256789012'],
+            ['Kontor Software GmbH', 'Felix Schulz', 'billing@kontor.example', '+49 30 5550197', 'https://kontor.example', 'Torstraße 109', 'Berlin', '10119', 'DE301234567'],
+            ['Elbtal Medien GmbH', 'Sophie Krüger', 'ap@elbtal.example', '+49 351 5550115', 'https://elbtal.example', 'Königsbrücker Straße 21', 'Dresden', '01097', 'DE276543210'],
+            ['Schwarzwald Design Studio', 'Clara Fischer', 'hallo@schwarzwald-design.example', '+49 761 5550129', 'https://schwarzwald-design.example', 'Kaiser-Joseph-Straße 180', 'Freiburg', '79098', 'DE145678901'],
+            ['Hanse Handel AG', 'Tobias Meyer', 'kreditoren@hanse.example', '+49 421 5550173', 'https://hanse.example', 'Am Wall 140', 'Bremen', '28195', 'DE312345678'],
+            ['Mainufer Software GmbH', 'Laura Becker', 'billing@mainufer.example', '+49 69 5550108', 'https://mainufer.example', 'Hanauer Landstraße 126', 'Frankfurt am Main', '60314', 'DE223456789'],
         ];
 
-        foreach ($customers as [$companyName, $contactName, $email, $phone, $website, $street, $city, $state, $zip]) {
+        foreach ($customers as [$companyName, $contactName, $email, $phone, $website, $street, $city, $zip, $vatId]) {
             $customer = Customer::create([
                 'name' => $companyName,
                 'company_name' => $companyName,
@@ -324,6 +325,7 @@ class RealisticDemoSeeder extends Seeder
                 'email' => $email,
                 'phone' => $phone,
                 'website' => $website,
+                'tax_id' => $vatId,
                 'enable_portal' => true,
                 'currency_id' => $this->currencyId,
                 'company_id' => $this->companyId,
@@ -343,7 +345,6 @@ class RealisticDemoSeeder extends Seeder
                     'name' => $companyName,
                     'address_street_1' => $street,
                     'city' => $city,
-                    'state' => $state,
                     'country_id' => $this->countryId,
                     'zip' => $zip,
                     'phone' => $phone,
@@ -757,17 +758,47 @@ class RealisticDemoSeeder extends Seeder
     }
 
     /**
+     * Make the demo company the German business the rest of the data belongs
+     * to: its name, VAT and tax numbers, a Berlin address, and the time zone
+     * and date format a German company would choose. The company keeps the
+     * slug it was created with, so portal links do not move.
+     */
+    private function seedCompanyProfile(): void
+    {
+        $company = Company::find($this->companyId);
+        $company->update([
+            'name' => PublicDemoSeeder::COMPANY,
+            'vat_id' => PublicDemoSeeder::VAT_ID,
+            'tax_id' => PublicDemoSeeder::TAX_ID,
+        ]);
+
+        $company->address()->updateOrCreate([], [
+            ...PublicDemoSeeder::ADDRESS,
+            'name' => PublicDemoSeeder::COMPANY,
+            'address_street_2' => null,
+            'state' => null,
+            'country_id' => $this->countryId,
+        ]);
+
+        CompanySetting::setSettings([
+            'time_zone' => 'Europe/Berlin',
+            'carbon_date_format' => 'd.m.Y',
+            'moment_date_format' => 'DD.MM.YYYY',
+        ], $this->companyId);
+    }
+
+    /**
      * Attach the demo company's logo.
      *
      * Without one the templates fall back to plain company-name text, which is
-     * fine but reads as an unfinished install. The asset is a generated Acme Inc
+     * fine but reads as an unfinished install. The asset is a generated Acme GmbH
      * mark rather than one of InvoiceShelf's own logos, which would make the
      * demo look as though InvoiceShelf were billing the customer.
      */
     private function seedCompanyLogo(): void
     {
         $company = Company::find($this->companyId);
-        $logo = database_path('seeders/assets/acme-inc-logo.png');
+        $logo = database_path('seeders/assets/acme-gmbh-logo.png');
 
         if (! file_exists($logo)) {
             return;
@@ -786,8 +817,8 @@ class RealisticDemoSeeder extends Seeder
     private function seedTaxTypes(): void
     {
         $definitions = [
-            ['name' => 'Sales Tax', 'percent' => 8.5, 'description' => 'State and local sales tax'],
-            ['name' => 'Zero Rated', 'percent' => 0, 'description' => 'Exempt supplies'],
+            ['name' => 'VAT', 'percent' => 19, 'description' => 'Standard rate'],
+            ['name' => 'VAT reduced', 'percent' => 7, 'description' => 'Reduced rate'],
         ];
 
         foreach ($definitions as $definition) {
@@ -845,7 +876,7 @@ class RealisticDemoSeeder extends Seeder
     private function seedCustomFields(): void
     {
         $fields = [
-            ['name' => 'Account Manager', 'type' => 'Input', 'string_answer' => 'Dana Whitfield'],
+            ['name' => 'Account Manager', 'type' => 'Input', 'string_answer' => 'Katrin Vogel'],
             ['name' => 'Contract Renewal', 'type' => 'Date', 'date_answer' => Carbon::now()->addMonths(8)->toDateString()],
         ];
 
