@@ -2,15 +2,12 @@
 
 namespace App\Domains\Sales\Http\Controllers\CustomerPortal;
 
-use App\Domains\Accounts\Models\CompanySetting;
-use App\Domains\Contacts\Models\Customer;
+use App\Domains\Sales\Events\EstimateViewed;
 use App\Domains\Sales\Http\Resources\EstimateResource;
-use App\Domains\Sales\Mail\EstimateViewedMail;
 use App\Domains\Sales\Models\Estimate;
 use App\Platform\Http\Controller;
 use App\Platform\Mail\Models\EmailLog;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 
 class EstimatePdfController extends Controller
 {
@@ -61,8 +58,8 @@ class EstimatePdfController extends Controller
     }
 
     /**
-     * Promote an offer that is still awaiting a reader, and tell the issuer
-     * about it when they asked to be told.
+     * Promote an offer that is still awaiting a reader, and let the issuer
+     * know.
      */
     private function recordReading(Estimate $estimate): void
     {
@@ -74,19 +71,6 @@ class EstimatePdfController extends Controller
 
         $estimate->update(['status' => Estimate::STATUS_VIEWED]);
 
-        $wanted = CompanySetting::getSetting('notify_estimate_viewed', $estimate->company_id);
-
-        if ($wanted != 'YES') {
-            return;
-        }
-
-        $payload = [
-            'estimate' => Estimate::findOrFail($estimate->id)->toArray(),
-            'user' => Customer::find($estimate->customer_id)->toArray(),
-        ];
-
-        $mailbox = CompanySetting::getSetting('notification_email', $estimate->company_id);
-
-        Mail::to($mailbox)->send(new EstimateViewedMail($payload));
+        EstimateViewed::dispatch((int) $estimate->id, (int) $estimate->company_id);
     }
 }

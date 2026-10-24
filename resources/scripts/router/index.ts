@@ -24,6 +24,7 @@ import itemRoutes from '../features/company/items/routes'
 import memberRoutes from '../features/company/members/routes'
 import reportRoutes from '../features/company/reports/routes'
 import settingsRoutes from '../features/company/settings/routes'
+import { notificationRoutes } from '../features/company/notifications/routes'
 
 // Guard
 import { authGuard } from './guards'
@@ -59,6 +60,7 @@ const companyChildren: RouteRecordRaw[] = [
   ...memberRoutes,
   ...reportRoutes,
   ...settingsRoutes,
+  ...notificationRoutes,
 ]
 
 /**

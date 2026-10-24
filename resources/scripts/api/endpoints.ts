@@ -186,4 +186,8 @@ export const API = {
   // MCP: where AI apps connect, and the caller's own connected apps
   MCP_SERVER: '/api/v1/mcp/server',
   MCP_CONNECTIONS: '/api/v1/mcp/connections',
+
+  // The bell: the caller's own notices, and where each kind reaches them
+  NOTIFICATIONS: '/api/v1/notifications',
+  NOTIFICATION_PREFERENCES: '/api/v1/me/notification-preferences',
 } as const
