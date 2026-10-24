@@ -32,6 +32,7 @@
     "copy_pdf_url": "Kopjo URL-në e PDF-së",
     "download_pdf": "Shkarko PDF",
     "save": "Ruaj",
+    "extension_save_hook_failed": "Saved. An installed module could not finish its part of the save.",
     "skip": "Kalo",
     "create": "Krijo",
     "cancel": "Anulo",
