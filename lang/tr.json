@@ -32,6 +32,7 @@
     "copy_pdf_url": "PDF bağlantısını kopyala",
     "download_pdf": "PDF indir",
     "save": "Kaydet",
+    "extension_save_hook_failed": "Saved. An installed module could not finish its part of the save.",
     "skip": "Skip",
     "create": "Oluştur",
     "cancel": "İptal",
