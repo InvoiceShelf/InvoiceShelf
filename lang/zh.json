@@ -32,6 +32,7 @@
     "copy_pdf_url": "複製PDF位址",
     "download_pdf": "下載 PDF",
     "save": "儲存",
+    "extension_save_hook_failed": "Saved. An installed module could not finish its part of the save.",
     "skip": "Skip",
     "create": "新增",
     "cancel": "取消",
