@@ -32,6 +32,7 @@
     "copy_pdf_url": "کپی لینک PDF",
     "download_pdf": "دانلود PDF",
     "save": "ذخیره",
+    "extension_save_hook_failed": "Saved. An installed module could not finish its part of the save.",
     "skip": "Skip",
     "create": "ایجاد",
     "cancel": "لغو",
