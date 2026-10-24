@@ -9,6 +9,8 @@ use App\Platform\Modules\Http\Resources\ModuleResource;
 use App\Platform\Modules\Marketplace\MarketplaceClient;
 use App\Platform\Modules\Models\Module as ModelsModule;
 use App\Platform\Modules\Runtime\DatabaseActivator;
+use App\Platform\Modules\Runtime\ModuleBundle;
+use App\Platform\Modules\Runtime\ModuleCompatibility;
 use Illuminate\Http\JsonResponse;
 use Nwidart\Modules\Facades\Module;
 
@@ -68,6 +70,20 @@ class ModulesController extends Controller
             return response()->json([
                 'success' => false,
                 'error' => 'module_runtime_missing',
+            ], 409);
+        }
+
+        // modules:reconcile disables a module that stopped fitting this host;
+        // switching it back on must not skip the same checks.
+        $problems = [
+            ...ModuleCompatibility::problems($installedModule->get('compatibility')),
+            ...ModuleBundle::problemsFor($installedModule->getPath()),
+        ];
+        if ($problems !== []) {
+            return response()->json([
+                'success' => false,
+                'error' => 'module_incompatible',
+                'message' => implode(' ', $problems),
             ], 409);
         }
 

@@ -3,6 +3,7 @@
 use App\Platform\Modules\Models\Module;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
+use Tests\Support\ModuleBundleFixture;
 
 /*
  * `php artisan modules:reconcile`, which the Docker image runs on start
@@ -52,4 +53,19 @@ it('leaves modules whose files are missing to the modules page', function () {
 
     expect(Artisan::call('modules:reconcile'))->toBe(0)
         ->and($module->fresh()->enabled)->toBeTrue();
+});
+
+it('disables a bundled module whose host packages no longer fit', function () {
+    config(['app.version' => '3.0.0', 'invoiceshelf.marketplace.module_api_version' => '1.4.0']);
+    ModuleBundleFixture::write(base_path('Modules/ReconcileBundled'), ['sample/reconcile' => []], ['laravel/framework' => ['sample/reconcile' => '^9.0']]);
+    $module = Module::query()->create(['name' => 'ReconcileBundled', 'slug' => 'reconcile-bundled', 'version' => '1.0.0', 'installed' => true, 'enabled' => true, 'state' => 'installed']);
+
+    try {
+        Artisan::call('modules:reconcile');
+
+        expect($module->fresh()->enabled)->toBeFalse()
+            ->and($module->fresh()->last_error)->toContain('sample/reconcile needs laravel/framework ^9.0');
+    } finally {
+        File::deleteDirectory(base_path('Modules/ReconcileBundled'));
+    }
 });
