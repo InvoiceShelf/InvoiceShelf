@@ -1292,19 +1292,20 @@
       "tax_types": "Tax Types",
       "expense_category": "Expense Categories",
       "update_app": "Update App",
-      "backup": "Backup",
-      "file_disk": "File Disk",
+      "backup": "Backups",
+      "file_disk": "File Disks",
       "fonts": "Font Packages",
       "currencies": "Currencies",
       "role_presets": "Role Presets",
       "custom_fields": "Custom Fields",
       "payment_modes": "Payment Modes",
-      "notes": "Notes",
+      "notes": "Record Notes",
       "exchange_rate": "Exchange Rate",
       "address_information": "Address Information",
       "pdf_generation": "PDF Generation",
       "appearance": "Appearance",
-      "module_configuration": "Module Configuration"
+      "module_configuration": "Module Configuration",
+      "payment_reminders": "Payment reminders"
     },
     "appearance": {
       "title": "Appearance",
@@ -1376,7 +1377,7 @@
       "from_name": "From Mail Name",
       "from_mail": "From Mail Address",
       "encryption": "Mail Encryption",
-      "mail_config_desc": "Below is the form for Configuring Email driver for sending emails from the app. You can also configure third party providers like Sendgrid, SES etc.",
+      "mail_config_desc": "Configure the Laravel mail driver used to send emails from the application, including provider-specific credentials when needed.",
       "company_mail_config": "Mail Configuration",
       "company_mail_config_desc": "Configure a custom mail driver for this company. When enabled, this overrides the global mail configuration.",
       "company_mail_config_updated": "Company mail configuration updated successfully",
@@ -1694,12 +1695,12 @@
       "reorder_component": "Move {name}, {position} of {count}. Use the up and down arrow keys"
     },
     "account_settings": {
-      "profile_picture": "Profile Picture",
+      "profile_picture": "Profile Photo",
       "name": "Name",
       "email": "Email",
       "password": "Password",
       "confirm_password": "Confirm Password",
-      "account_settings": "Account Settings",
+      "account_settings": "User Settings",
       "general": "General",
       "general_description": "Update your name, email and language preference.",
       "security": "Security",
@@ -1730,7 +1731,7 @@
       "personal_link": "Choose your own notifications"
     },
     "roles": {
-      "title": "Roles",
+      "title": "Company Roles",
       "description": "Manage the roles & permissions of this company",
       "save": "Save",
       "add_new_role": "Add New Role",
@@ -1963,7 +1964,7 @@
       "containerized_message": "The in-app updater is disabled for Docker installs. To upgrade, pull the latest image and recreate the container:"
     },
     "backup": {
-      "title": "Backup | Backups",
+      "title": "Backups | Backups",
       "description": "The backup is a zipfile that contains all files in the directories you specify along with a dump of your database",
       "new_backup": "Add New Backup",
       "create_backup": "Create Backup",
@@ -1988,7 +1989,7 @@
       "empty_description": "Create a backup to keep a copy of your data and files."
     },
     "disk": {
-      "title": "File Disk | File Disks",
+      "title": "File Disks | File Disks",
       "description": "By default, InvoiceShelf will use your local disk for saving backups, avatar and other image files. You can configure more than one disk drivers like DigitalOcean, S3 and Dropbox according to your preference.",
       "created_at": "created at",
       "dropbox": "dropbox",
@@ -2176,7 +2177,7 @@
       "from_name": "From Mail Name",
       "from_mail": "From Mail Address",
       "encryption": "Mail Encryption",
-      "mail_config_desc": "Below is the form for Configuring Email driver for sending emails from the app. You can also configure third party providers like Sendgrid, SES etc.",
+      "mail_config_desc": "Configure the mail driver used to send emails from the application. If you are unsure how to configure this, leave it set to Sendmail.",
       "basic_settings": "Basic Settings",
       "advanced_settings": "Advanced Settings",
       "show_advanced_settings": "Show Advanced Settings",
@@ -2350,7 +2351,11 @@
     "recurring_invoice_failed": "The invoice could not be generated. The schedule will try again.",
     "recurring_invoice_send_failed": "The invoice was created but could not be emailed to the customer. It was kept as a draft.",
     "purchase_recurring_template_invalid": "This schedule no longer passes validation. Open it and save it to see what needs fixing.",
-    "purchase_recurring_tax_exceeds_amount": "Purchase tax cannot exceed the expense amount."
+    "purchase_recurring_tax_exceeds_amount": "Purchase tax cannot exceed the expense amount.",
+    "invoice_reminder_not_due": "Reminders are only sent for invoices that were sent and are not paid yet.",
+    "invoice_reminder_no_email": "This customer has no email address to send a reminder to.",
+    "invoice_reminder_failed": "The reminder could not be sent. Check the company's mail settings and try again.",
+    "announcement_from_feed": "Announcements from the InvoiceShelf project can only be hidden."
   },
   "pdf_estimate_label": "Estimate",
   "pdf_estimate_number": "Estimate Number",
@@ -2919,7 +2924,95 @@
         "description": "A scheduled or manual backup fails.",
         "title": "Backup failed",
         "body": "A backup to {disk} failed: {error}"
+      },
+      "invoice_reminder_sent": {
+        "label": "Payment reminder sent",
+        "description": "A payment reminder is emailed to a customer.",
+        "title": "Reminder sent for invoice {number}",
+        "body": "{customer} was reminded about invoice {number}. {amount} is still open."
       }
     }
+  },
+  "reminders": {
+    "title": "Payment reminders",
+    "description": "Email customers about invoices they have not paid yet, on the days you choose around the due date. Reminders stop by themselves once an invoice is paid.",
+    "enabled": "Send payment reminders",
+    "enabled_desc": "Reminders go out for sent invoices that still have an amount due.",
+    "schedule": "Schedule",
+    "days": "Days",
+    "days_help": "Negative numbers are days before the due date, positive ones days after it. Up to 10.",
+    "add_day": "Add",
+    "before_due": "{count} days before the due date | {count} day before the due date | {count} days before the due date",
+    "after_due": "{count} days after the due date | {count} day after the due date | {count} days after the due date",
+    "on_due": "On the due date",
+    "send_hour": "Send at",
+    "send_hour_help": "In your company's time zone.",
+    "email": "Email",
+    "subject": "Subject",
+    "body": "Message",
+    "attach_pdf": "Attach the invoice PDF",
+    "saved": "Payment reminder settings saved",
+    "card_title": "Reminders",
+    "paused": "Pause reminders for this invoice",
+    "customer_paused": "Reminders are paused for this customer.",
+    "company_off": "Payment reminders are switched off for the company.",
+    "not_remindable": "Reminders go out once the invoice is sent, until it is paid.",
+    "no_email": "The customer has no email address, so reminders cannot be sent.",
+    "next": "Next reminder: {date}",
+    "none_next": "No more reminders are scheduled.",
+    "history_empty": "No reminders sent yet.",
+    "send_now": "Send reminder now",
+    "sent_now": "Reminder sent",
+    "status_sent": "Sent",
+    "status_failed": "Failed",
+    "status_skipped": "Skipped",
+    "manual": "Sent by hand",
+    "scheduled": "{offset}",
+    "customer_pause": "Pause payment reminders",
+    "customer_pause_desc": "No automatic reminders are sent for this customer's invoices."
+  },
+  "announcements": {
+    "title": "Announcements",
+    "description": "Tell everyone on this installation something at once. Warning and critical announcements also show as a banner at the top of the app. Announcements from the InvoiceShelf project appear here too; you can hide them.",
+    "add": "Add announcement",
+    "edit": "Edit announcement",
+    "saved": "Announcement saved",
+    "deleted": "Announcement deleted",
+    "confirm_delete": "The announcement disappears for everyone.",
+    "empty_title": "No announcements",
+    "empty_description": "Announcements you add, and those from the InvoiceShelf project, show up here.",
+    "from_feed": "From InvoiceShelf",
+    "shown": "Shown",
+    "open": "Open",
+    "dismiss": "Dismiss",
+    "position": "{current} of {total}",
+    "level_help": "Warning and critical also show as a banner at the top of the app.",
+    "translations": "Translations",
+    "translations_help": "Each person sees the text in their language when there is one, and the text above otherwise.",
+    "add_language": "Add a language",
+    "window_always": "Until removed",
+    "window_from": "From {from}",
+    "window_until": "Until {until}",
+    "window_between": "{from} to {until}",
+    "levels": {
+      "info": "Info",
+      "warning": "Warning",
+      "critical": "Critical"
+    },
+    "audiences": {
+      "everyone": "Everyone",
+      "admins": "Super admins and company owners"
+    },
+    "fields": {
+      "title": "Title",
+      "body": "Message",
+      "link_url": "Button link",
+      "link_label": "Button label",
+      "level": "Level",
+      "audience": "Who sees it",
+      "starts_at": "Show from",
+      "ends_at": "Show until"
+    },
+    "add_button": "Add"
   }
 }
