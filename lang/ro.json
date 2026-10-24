@@ -32,6 +32,7 @@
     "copy_pdf_url": "Copiază URL PDF",
     "download_pdf": "Descarcă PDF-ul",
     "save": "Salvează",
+    "extension_save_hook_failed": "Saved. An installed module could not finish its part of the save.",
     "skip": "Omiteți",
     "create": "Crează",
     "cancel": "Anulează",
