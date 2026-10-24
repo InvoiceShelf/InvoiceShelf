@@ -2,6 +2,7 @@
 
 use App\Adapters\Sales\LaravelEstimateEmailSender;
 use App\Adapters\Sales\LaravelInvoiceEmailSender;
+use App\Adapters\Sales\ModuleInvoicePdfAttachments;
 use App\Adapters\Sales\MoneyDocumentExchangeRateRecorder;
 use App\Domains\Sales\Application\EstimateService;
 use App\Domains\Sales\Application\InvoiceService;
@@ -9,6 +10,7 @@ use App\Domains\Sales\Contracts\DocumentExchangeRateRecorder;
 use App\Domains\Sales\Contracts\EstimateEmailSender;
 use App\Domains\Sales\Contracts\EstimatePdfDataProvider;
 use App\Domains\Sales\Contracts\InvoiceEmailSender;
+use App\Domains\Sales\Contracts\InvoicePdfAttachments;
 use App\Domains\Sales\Contracts\InvoicePdfDataProvider;
 use App\Domains\Sales\Models\Estimate;
 use App\Domains\Sales\Models\Invoice;
@@ -28,6 +30,7 @@ test('the sales domain owns document behavior authorization and commands', funct
         ->and(app(DocumentExchangeRateRecorder::class))->toBeInstanceOf(MoneyDocumentExchangeRateRecorder::class)
         ->and(app(EstimateEmailSender::class))->toBeInstanceOf(LaravelEstimateEmailSender::class)
         ->and(app(InvoiceEmailSender::class))->toBeInstanceOf(LaravelInvoiceEmailSender::class)
+        ->and(app(InvoicePdfAttachments::class))->toBeInstanceOf(ModuleInvoicePdfAttachments::class)
         ->and(Gate::getPolicyFor(Estimate::class))->toBeInstanceOf(EstimatePolicy::class)
         ->and(Gate::getPolicyFor(Invoice::class))->toBeInstanceOf(InvoicePolicy::class)
         ->and(Gate::getPolicyFor(RecurringInvoice::class))->toBeInstanceOf(RecurringInvoicePolicy::class)

@@ -1,0 +1,100 @@
+{
+    "id": 1,
+    "company_id": 1,
+    "number": "INV-000042",
+    "type": "INVOICE",
+    "invoice_date": "2026-02-01",
+    "due_date": "2026-03-01",
+    "currency_code": "EUR",
+    "currency_precision": 2,
+    "tax_per_item": false,
+    "discount_per_item": false,
+    "tax_included": false,
+    "sub_total": 25000,
+    "discount_val": 0,
+    "tax": 4750,
+    "total": 29750,
+    "due_amount": 29750,
+    "seller": {
+        "name": "Acme GmbH",
+        "company_name": null,
+        "vat_id": "DE123456789",
+        "tax_id": "143/123/45678",
+        "email": null,
+        "phone": "+49 89 1234567",
+        "contact_name": null,
+        "address": {
+            "address_street_1": "Marienplatz 1",
+            "address_street_2": null,
+            "city": "München",
+            "state": "Bayern",
+            "zip": "80331",
+            "country_code": "DE",
+            "phone": "+49 89 1234567"
+        }
+    },
+    "buyer": {
+        "name": "Muster GmbH",
+        "company_name": "Muster GmbH",
+        "vat_id": null,
+        "tax_id": "DE 987 654 321",
+        "email": "buchhaltung@muster.test",
+        "phone": null,
+        "contact_name": "Erika Muster",
+        "address": {
+            "address_street_1": "Hauptstrasse 5",
+            "address_street_2": null,
+            "city": "Berlin",
+            "state": "Berlin",
+            "zip": "10115",
+            "country_code": "DE",
+            "phone": null
+        }
+    },
+    "lines": [
+        {
+            "id": 1,
+            "name": "Consulting",
+            "description": "On site",
+            "quantity": "1",
+            "price": 10000,
+            "discount_val": 0,
+            "total": 10000,
+            "unit_name": "hour",
+            "unit_code": "HUR",
+            "taxes": []
+        },
+        {
+            "id": 2,
+            "name": "Support",
+            "description": null,
+            "quantity": "2",
+            "price": 7500,
+            "discount_val": 0,
+            "total": 15000,
+            "unit_name": null,
+            "unit_code": null,
+            "taxes": []
+        }
+    ],
+    "taxes": [
+        {
+            "tax_type_id": 1,
+            "name": "USt 19%",
+            "percent": "19",
+            "amount": 4750,
+            "calculation_type": "percentage",
+            "fixed_amount": null,
+            "compound": false,
+            "category_code": "S",
+            "exemption_reason": null
+        }
+    ],
+    "reference_number": "PO-4711",
+    "notes": "Thank you for your business, Muster GmbH.",
+    "credit_reason": null,
+    "related": null,
+    "delivery_address": null,
+    "exchange_rate": "1",
+    "company_currency_code": "EUR"
+}

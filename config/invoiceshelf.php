@@ -94,7 +94,7 @@ return [
     */
     'marketplace' => [
         'channel' => env('MARKETPLACE_CHANNEL', 'stable'),
-        'module_api_version' => (string) env('MARKETPLACE_MODULE_API_VERSION', '1.4.0'),
+        'module_api_version' => (string) env('MARKETPLACE_MODULE_API_VERSION', '1.5.0'),
         // JSON object: {"key-id":"base64-ed25519-public-key"}. Keys add to
         // (or replace values in) the built-in pinned map. Key identity is part
         // of the signed release and must match this trusted map.

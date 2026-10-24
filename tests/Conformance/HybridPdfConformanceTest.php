@@ -7,6 +7,9 @@ use App\Platform\Pdf\Facades\Pdf;
 use App\Platform\Pdf\Rendering\FacturXAttachment;
 use App\Platform\Pdf\Rendering\PdfMetadata;
 use Illuminate\Support\Facades\Artisan;
+use InvoiceShelf\Modules\Pdf\Contracts\InvoicePdfAttachmentProvider;
+use InvoiceShelf\Modules\Pdf\Data\FacturXAttachment as ModuleFacturXAttachment;
+use InvoiceShelf\Modules\Registry;
 use Tests\Conformance\Support\ConformanceEnvironment;
 
 /**
@@ -99,3 +102,40 @@ test('an ordinary invoice pdf rendered as configured pdf/a-3b passes verapdf', f
     $veraPdf = ConformanceEnvironment::validateWithVeraPdf($path);
     expect($veraPdf->isCompliant())->toBeTrue($veraPdf->summary());
 });
+
+/**
+ * The whole module path: a provider registered as a module registers it, the
+ * host's real capability check against the running Gotenberg, and the
+ * download path every delivery shares.
+ */
+test('an invoice downloaded with an enabled attachment provider is a conformant e-invoice', function () {
+    Registry::registerInvoicePdfAttachmentProvider('conformance', ConformanceAttachmentProvider::class);
+
+    try {
+        $pdf = $this->invoice->getGeneratedPDFOrStream('invoice')->getContent();
+    } finally {
+        Registry::flushDrivers();
+    }
+
+    $path = ConformanceEnvironment::artifactDirectory().'/module-invoice.pdf';
+    file_put_contents($path, $pdf);
+
+    $mustang = ConformanceEnvironment::validateWithMustang($path);
+    expect($mustang->isValid())->toBeTrue($mustang->summary());
+
+    $veraPdf = ConformanceEnvironment::validateWithVeraPdf($path);
+    expect($veraPdf->isCompliant())->toBeTrue($veraPdf->summary());
+});
+
+final class ConformanceAttachmentProvider implements InvoicePdfAttachmentProvider
+{
+    public function appliesTo(int $companyId): bool
+    {
+        return true;
+    }
+
+    public function attachmentFor(int $companyId, int $invoiceId): ModuleFacturXAttachment
+    {
+        return new ModuleFacturXAttachment((string) file_get_contents(__DIR__.'/fixtures/en16931-invoice.xml'));
+    }
+}

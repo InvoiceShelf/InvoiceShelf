@@ -9,6 +9,7 @@ use App\Domains\Metadata\Contracts\CustomFieldValueWriter;
 use App\Domains\Metadata\Models\CustomField;
 use App\Domains\Sales\Contracts\DocumentExchangeRateRecorder;
 use App\Domains\Sales\Contracts\InvoiceEmailSender;
+use App\Domains\Sales\Contracts\InvoicePdfAttachments;
 use App\Domains\Sales\Contracts\InvoicePdfDataProvider;
 use App\Domains\Sales\Mail\SendInvoiceMail;
 use App\Domains\Sales\Models\Estimate;
@@ -23,6 +24,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\View;
 use Illuminate\Validation\ValidationException;
+use Throwable;
 
 class InvoiceService implements InvoicePdfDataProvider
 {
@@ -38,6 +40,7 @@ class InvoiceService implements InvoicePdfDataProvider
         private readonly CustomFieldValueWriter $customFieldValueWriter,
         private readonly DocumentExchangeRateRecorder $exchangeRateRecorder,
         private readonly InvoiceEmailSender $invoiceEmailSender,
+        private readonly InvoicePdfAttachments $pdfAttachments,
     ) {}
 
     /**
@@ -339,11 +342,30 @@ class InvoiceService implements InvoicePdfDataProvider
             return view($templatePath);
         }
 
-        return Pdf::loadView($templatePath, PdfMetadata::forDocument(
+        $metadata = PdfMetadata::forDocument(
             __($invoice->isCreditNote() ? 'pdf_credit_note_label' : 'pdf_invoice_label'),
             $invoice->invoice_number,
             $company,
-        ));
+        );
+
+        // Every delivery path (download, public link, customer portal, mail
+        // attachment, archive) renders through here, so a module's e-invoice
+        // XML reaches all of them or none.
+        $attachment = $this->pdfAttachments->forInvoice($invoice->company_id, $invoice->id);
+
+        if ($attachment === null) {
+            return Pdf::loadView($templatePath, $metadata);
+        }
+
+        try {
+            return Pdf::loadView($templatePath, $metadata, null, $attachment);
+        } catch (Throwable $exception) {
+            // A PDF service that rejects the attachment must not stop the
+            // invoice from being delivered: the ordinary PDF goes out instead.
+            report($exception);
+
+            return Pdf::loadView($templatePath, $metadata);
+        }
     }
 
     public function clone(Invoice $invoice): Invoice

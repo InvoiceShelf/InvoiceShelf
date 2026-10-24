@@ -60,7 +60,8 @@ trait GeneratesPdf
     }
 
     /**
-     * Locate the archived PDF filed under a media collection.
+     * Locate the newest archived PDF filed under a media collection, as long
+     * as it is still current.
      *
      * A local disk yields a filesystem path; every other driver yields a URL
      * that stays valid for five minutes. Anything that goes wrong on the way —
@@ -72,9 +73,9 @@ trait GeneratesPdf
     public function getGeneratedPDF($collection_name)
     {
         try {
-            $archive = $this->getMedia($collection_name)->first();
+            $archive = $this->getMedia($collection_name)->last();
 
-            if (! $archive) {
+            if (! $archive || ! $this->archivedPdfIsCurrent($archive->custom_properties)) {
                 return false;
             }
 
@@ -127,10 +128,7 @@ trait GeneratesPdf
         Storage::disk('local')->put($temp_file, $pdf->output());
 
         if ($deleteExistingFile) {
-            // Note: the document id is handed over where a collection name
-            // belongs, so this empties a collection nobody files anything
-            // under, and the superseded archive survives. Left as it stands.
-            $this->clearMediaCollection($this->id);
+            $this->clearMediaCollection($collection_name);
         }
 
         $default_disk = FileDisk::whereSetAsDefault(true)->first();
@@ -143,7 +141,7 @@ trait GeneratesPdf
 
         try {
             $this->addMedia($temp_path)
-                ->withCustomProperties(['file_disk_id' => $default_disk->id])
+                ->withCustomProperties(['file_disk_id' => $default_disk->id, ...$this->archivedPdfProperties()])
                 ->usingFileName($file_name.'.pdf')
                 ->toMediaCollection($collection_name, config('filesystems.default'));
 
@@ -153,6 +151,29 @@ trait GeneratesPdf
         } catch (\Exception $e) {
             return $e->getMessage();
         }
+    }
+
+    /**
+     * Properties filed with an archive, which archivedPdfIsCurrent() reads
+     * back. A document whose rendering depends on more than its own data
+     * records that here.
+     *
+     * @return array<string, mixed>
+     */
+    protected function archivedPdfProperties(): array
+    {
+        return [];
+    }
+
+    /**
+     * Whether an archive filed with these properties is still the PDF the
+     * document would render now. The newest archive is served only if it is.
+     *
+     * @param  array<string, mixed>  $properties
+     */
+    protected function archivedPdfIsCurrent(array $properties): bool
+    {
+        return true;
     }
 
     /**
