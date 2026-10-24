@@ -1314,7 +1314,7 @@
       "sidebar_group_labels_desc": "Show section headers such as Administration and Modules. Sales and Purchases are always labelled to distinguish their Payments entries."
     },
     "address_information": {
-      "section_description": "  Можете да ги ажурирате информациите за вашата адреса користејќи ја формата подолу."
+      "section_description": "You can update Your Address information using form below."
     },
     "title": "Поставки",
     "setting": "Поставка | Поставки",
@@ -1575,7 +1575,7 @@
         "disable_on_invoice_partial_paid": "Оневозможи по делумно плаќање",
         "disable_on_invoice_paid": "Оневозможи по целосно плаќање",
         "disable_on_invoice_sent": "Оневозможи откако фактурата е испратена",
-        "retrospective_edits_description": " Врз основа на законите на вашата држава или вашите преференци, можете да им забраните на корисниците да менуваат финализирани фактури."
+        "retrospective_edits_description": "Based on your country's laws or your preference, you can restrict users from editing finalised invoices."
       },
       "credit_notes": {
         "title": "Книжни одобренија",
@@ -1786,7 +1786,7 @@
       "new_driver": "Додај нов провајдер",
       "edit_driver": "Измени провајдер",
       "select_driver": "Избери драјвер",
-      "update": "избери девизен курс ",
+      "update": "select exchange rate",
       "providers_description": "Конфигурирајте ги провајдерите за девизен курс за автоматско преземање на најновиот девизен курс при трансакции.",
       "key": "API клуч",
       "name": "Име",
@@ -1797,7 +1797,7 @@
       "created_message": "Провајдерот е креиран успешно",
       "updated_message": "Провајдерот е ажуриран успешно",
       "deleted_message": "Провајдерот е избришан успешно",
-      "error": " Не можете да избришете активен драјвер",
+      "error": "You cannot Delete Active Driver",
       "default_currency_error": "Оваа валута веќе се користи во еден од активните провајдери",
       "exchange_help_text": "Внесете го девизниот курс за конверзија од {currency} во {baseCurrency}",
       "currency_freak": "Currency Freak",
@@ -1882,7 +1882,7 @@
       "date_format": "Формат на датум",
       "time_format": "Формат на време",
       "discount_setting": "Поставка за попуст",
-      "discount_per_item": "Попуст по ставка ",
+      "discount_per_item": "Discount Per Item",
       "discount_setting_description": "Овозможете го ова ако сакате да додадете попуст на поединечни ставки на фактурата. Стандардно, попустот се додава директно на фактурата.",
       "expire_public_links": "Автоматски истекни ги јавните врски",
       "expire_setting_description": "Одредете дали сакате да ги истекнете сите врски испратени од апликацијата за прегледување на фактури, понуди и плаќања итн. по одредено времетраење.",
@@ -2038,7 +2038,7 @@
       "set_default_disk_confirm": "Овој диск ќе биде поставен како стандарден и сите нови PDF документи ќе бидат зачувани на овој диск",
       "success_set_default_disk": "Дискот е поставен како стандарден успешно",
       "save_pdf_to_disk": "Зачувај PDF документи на диск",
-      "disk_setting_description": " Овозможете го ова ако сакате автоматски да зачувате копија од секоја фактура, понуда и потврда за плаќање како PDF на вашиот стандарден диск. Вклучувањето на оваа опција ќе го намали времето на вчитување при прегледување на PDF документите.",
+      "disk_setting_description": "Enable this, if you wish to save a copy of each Invoice, Estimate & Payment Receipt PDF on your default disk automatically. Turning this option will decrease the load-time when viewing the PDFs.",
       "select_disk": "Избери диск",
       "disk_settings": "Поставки за диск",
       "confirm_delete": "Вашите постоечки датотеки и папки на наведениот диск нема да бидат засегнати, но конфигурацијата на дискот ќе биде избришана од InvoiceShelf",
