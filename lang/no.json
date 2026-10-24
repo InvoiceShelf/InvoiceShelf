@@ -1314,7 +1314,7 @@
       "sidebar_group_labels_desc": "Show section headers such as Administration and Modules. Sales and Purchases are always labelled to distinguish their Payments entries."
     },
     "address_information": {
-      "section_description": "Du kan oppdatere adresseinformasjonen din i skjemaet nedenfor."
+      "section_description": "You can update Your Address information using form below."
     },
     "title": "Innstillinger",
     "setting": "Innstilling | Innstillinger",
@@ -1575,7 +1575,7 @@
         "disable_on_invoice_partial_paid": "Deaktiver etter at delbetaling er registrert",
         "disable_on_invoice_paid": "Deaktiver etter at full betaling er registrert",
         "disable_on_invoice_sent": "Deaktiver etter at fakturaen er sendt",
-        "retrospective_edits_description": "Basert på lovgivningen i landet ditt eller egne preferanser kan du hindre brukere i å redigere ferdigstilte fakturaer."
+        "retrospective_edits_description": "Based on your country's laws or your preference, you can restrict users from editing finalised invoices."
       },
       "credit_notes": {
         "title": "Kreditnotaer",
@@ -1786,7 +1786,7 @@
       "new_driver": "Legg til ny leverandør",
       "edit_driver": "Rediger leverandør",
       "select_driver": "Velg driver",
-      "update": "velg valutakurs",
+      "update": "select exchange rate",
       "providers_description": "Konfigurer valutakursleverandører her for å hente siste valutakurs automatisk ved transaksjoner.",
       "key": "API-nøkkel",
       "name": "Navn",
@@ -1797,7 +1797,7 @@
       "created_message": "Leverandøren ble opprettet",
       "updated_message": "Leverandøren ble oppdatert",
       "deleted_message": "Leverandøren ble slettet",
-      "error": "Du kan ikke slette en aktiv driver",
+      "error": "You cannot Delete Active Driver",
       "default_currency_error": "Denne valutaen brukes allerede av en aktiv leverandør",
       "exchange_help_text": "Angi valutakurs for å konvertere fra {currency} til {baseCurrency}",
       "currency_freak": "Currency Freak",
@@ -1882,7 +1882,7 @@
       "date_format": "Datoformat",
       "time_format": "Tidsformat",
       "discount_setting": "Rabattinnstilling",
-      "discount_per_item": "Rabatt per produkt",
+      "discount_per_item": "Discount Per Item",
       "discount_setting_description": "Aktiver dette hvis du vil legge rabatt på enkelte fakturalinjer. Som standard legges rabatten direkte på fakturaen.",
       "expire_public_links": "Utløp offentlige lenker automatisk",
       "expire_setting_description": "Angi om alle lenker som sendes av applikasjonen for visning av fakturaer, tilbud, betalinger osv. skal utløpe etter en bestemt periode.",
@@ -2038,7 +2038,7 @@
       "set_default_disk_confirm": "Dette lagringsstedet blir satt som standard, og alle nye PDF-er lagres der.",
       "success_set_default_disk": "Lagringsstedet ble satt som standard",
       "save_pdf_to_disk": "Lagre PDF-er på lagringssted",
-      "disk_setting_description": "Aktiver dette hvis du vil lagre en kopi av hver faktura-, tilbuds- og betalingskvitterings-PDF automatisk på standard lagringssted. Dette reduserer lastetiden når PDF-ene vises.",
+      "disk_setting_description": "Enable this, if you wish to save a copy of each Invoice, Estimate & Payment Receipt PDF on your default disk automatically. Turning this option will decrease the load-time when viewing the PDFs.",
       "select_disk": "Velg lagringssted",
       "disk_settings": "Lagringsinnstillinger",
       "confirm_delete": "Eksisterende filer og mapper på det valgte lagringsstedet påvirkes ikke, men konfigurasjonen slettes fra InvoiceShelf.",
