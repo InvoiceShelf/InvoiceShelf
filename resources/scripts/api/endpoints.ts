@@ -183,6 +183,7 @@ export const API = {
   SUPER_ADMIN_MCP_KEYS: '/api/v1/super-admin/mcp/keys',
   SUPER_ADMIN_ROLE_PRESETS: '/api/v1/super-admin/role-presets', // roles every company gets
   SUPER_ADMIN_ABILITIES: '/api/v1/super-admin/abilities', // the ability catalogue, without a company
+  SUPER_ADMIN_ANNOUNCEMENTS: '/api/v1/super-admin/announcements', // announcements for the whole install
 
   // MCP: where AI apps connect, and the caller's own connected apps
   MCP_SERVER: '/api/v1/mcp/server',
@@ -191,5 +192,6 @@ export const API = {
   // The bell: the caller's own notices, and where each kind reaches them
   NOTIFICATIONS: '/api/v1/notifications',
   NOTIFICATION_PREFERENCES: '/api/v1/me/notification-preferences',
+  ANNOUNCEMENTS: '/api/v1/announcements', // dismiss one for the caller
   COMPANY_NOTIFICATION_DEFAULTS: '/api/v1/company/notification-defaults', // the owner's, for everyone
 } as const
