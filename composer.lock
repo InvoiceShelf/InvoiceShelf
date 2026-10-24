@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f027cb0c87054cacd5357c15fc9e44e5",
+    "content-hash": "7be710dfdb6d2a99e3644d1b80c346d3",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -1876,16 +1876,16 @@
         },
         {
             "name": "invoiceshelf/modules",
-            "version": "dev-feat/invoice-documents",
+            "version": "3.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/InvoiceShelf/modules.git",
-                "reference": "83d1e67e4beaf8fa94960eebc3519efea8481834"
+                "reference": "d6a47c2deb65b9285b894ff2e75b7b70e77750ed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/InvoiceShelf/modules/zipball/83d1e67e4beaf8fa94960eebc3519efea8481834",
-                "reference": "83d1e67e4beaf8fa94960eebc3519efea8481834",
+                "url": "https://api.github.com/repos/InvoiceShelf/modules/zipball/d6a47c2deb65b9285b894ff2e75b7b70e77750ed",
+                "reference": "d6a47c2deb65b9285b894ff2e75b7b70e77750ed",
                 "shasum": ""
             },
             "require": {
@@ -1938,10 +1938,10 @@
                 "modules"
             ],
             "support": {
-                "source": "https://github.com/InvoiceShelf/modules/tree/feat/invoice-documents",
+                "source": "https://github.com/InvoiceShelf/modules/tree/3.6.0",
                 "issues": "https://github.com/InvoiceShelf/modules/issues"
             },
-            "time": "2026-10-24T01:42:34+00:00"
+            "time": "2026-10-24T09:40:41+00:00"
         },
         {
             "name": "laravel/framework",
@@ -14334,18 +14334,9 @@
             "time": "2026-05-20T13:07:01+00:00"
         }
     ],
-    "aliases": [
-        {
-            "package": "invoiceshelf/modules",
-            "version": "dev-feat/invoice-documents",
-            "alias": "3.6.0",
-            "alias_normalized": "3.6.0.0"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "invoiceshelf/modules": 20
-    },
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
