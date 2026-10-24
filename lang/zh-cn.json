@@ -32,6 +32,7 @@
     "copy_pdf_url": "复制 PDF 网址",
     "download_pdf": "下载 PDF",
     "save": "保存",
+    "extension_save_hook_failed": "Saved. An installed module could not finish its part of the save.",
     "skip": "Skip",
     "create": "创建",
     "cancel": "取消",
