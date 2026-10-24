@@ -1314,7 +1314,7 @@
       "sidebar_group_labels_desc": "Show section headers such as Administration and Modules. Sales and Purchases are always labelled to distinguish their Payments entries."
     },
     "address_information": {
-      "section_description": "Puede actualizar la información de su dirección utilizando el siguiente formulario."
+      "section_description": "You can update Your Address information using form below."
     },
     "title": "Configuraciones",
     "setting": "Configuraciones | Configuraciones",
@@ -1575,7 +1575,7 @@
         "disable_on_invoice_partial_paid": "Desactivar después de que se registre un pago parcial",
         "disable_on_invoice_paid": "Desactivar después de que se registre el pago completo",
         "disable_on_invoice_sent": "Desactivar después de enviar la factura",
-        "retrospective_edits_description": " Según las leyes de su país o sus preferencias, puede restringir que los usuarios editen las facturas finalizadas."
+        "retrospective_edits_description": "Based on your country's laws or your preference, you can restrict users from editing finalised invoices."
       },
       "credit_notes": {
         "title": "Credit Notes",
@@ -1786,7 +1786,7 @@
       "new_driver": "Añadir nuevo proveedor",
       "edit_driver": "Editar proveedor",
       "select_driver": "Seleccione un controlador",
-      "update": "selecciona un tipo de cambio ",
+      "update": "select exchange rate",
       "providers_description": "Configure sus proveedores de tipos de cambio aquí para obtener automáticamente el tipo de cambio más reciente en las transacciones.",
       "key": "Clave API",
       "name": "Nombre",
@@ -1797,7 +1797,7 @@
       "created_message": "Proveedor creado correctamente",
       "updated_message": "Proveedor actualizado correctamente",
       "deleted_message": "Proveedor eliminado correctamente",
-      "error": " No puede eliminar el controlador activo",
+      "error": "You cannot Delete Active Driver",
       "default_currency_error": "Esta moneda ya se usa en uno de los proveedores activos",
       "exchange_help_text": "Ingrese el tipo de cambio para convertir de {currency} a {baseCurrency}",
       "currency_freak": "Moneda",
@@ -1882,7 +1882,7 @@
       "date_format": "Formato de fecha",
       "time_format": "Formato de hora",
       "discount_setting": "Ajuste de descuento",
-      "discount_per_item": "Descuento por artículo",
+      "discount_per_item": "Discount Per Item",
       "discount_setting_description": "Habilítelo si desea agregar Descuento a artículos de factura individuales. Por defecto, los descuentos se agregan directamente a la factura.",
       "expire_public_links": "Expirar automáticamente enlaces públicos",
       "expire_setting_description": "Especifique si desea expirar todos los enlaces enviados por la aplicación para ver facturas, estimaciones y pagos, etc. después de una duración especificada.",
@@ -2038,7 +2038,7 @@
       "set_default_disk_confirm": "Este disco se establecerá por defecto y todos los nuevos PDFs se guardarán en este disco",
       "success_set_default_disk": "Disco establecido correctamente como predeterminado",
       "save_pdf_to_disk": "Guardar PDFs a disco",
-      "disk_setting_description": " Habilite esto, si desea guardar automáticamente una copia en formato pdf de cada factura, cálculo y recibo de pago en su disco predeterminado. Al activar esta opción, se reducirá el tiempo de carga al visualizar los archivos PDFs.",
+      "disk_setting_description": "Enable this, if you wish to save a copy of each Invoice, Estimate & Payment Receipt PDF on your default disk automatically. Turning this option will decrease the load-time when viewing the PDFs.",
       "select_disk": "Seleccionar Disco",
       "disk_settings": "Configuración del disco",
       "confirm_delete": "Los archivos y carpetas existentes en el disco especificado no se verán afectados, pero su configuración de disco será eliminada de InvoiceShelf",
