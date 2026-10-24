@@ -5,6 +5,7 @@ namespace App\Platform\Modules\Marketplace;
 use App\Platform\Modules\Contracts\ModuleSettingsStore;
 use App\Platform\Modules\Events\ModuleUninstalledEvent;
 use App\Platform\Modules\Models\Module as InstalledModule;
+use App\Platform\Modules\Runtime\ModuleRuntimeAutoloader;
 use App\Platform\Modules\Runtime\OpcacheReset;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
@@ -196,6 +197,7 @@ class MarketplaceUninstaller
         if (File::isDirectory($runtime) && ! File::deleteDirectory($runtime)) {
             throw new RuntimeException('Could not remove module runtime files.');
         }
+        ModuleRuntimeAutoloader::refresh($module->name);
         $this->markUninstalled($module);
         $this->refreshRuntimeCaches();
     }
@@ -212,6 +214,7 @@ class MarketplaceUninstaller
         if (! rename($runtime, $backup)) {
             throw new RuntimeException('Could not move module runtime to the uninstall backup.');
         }
+        ModuleRuntimeAutoloader::refresh($module->name);
 
         return $backup;
     }
@@ -225,6 +228,7 @@ class MarketplaceUninstaller
         $runtime = base_path('Modules/'.$module->name);
         File::deleteDirectory($runtime);
         rename($backup, $runtime);
+        ModuleRuntimeAutoloader::refresh($module->name);
     }
 
     private function removeBackupBestEffort(?string $backup): void

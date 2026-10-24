@@ -4,6 +4,7 @@ namespace App\Platform\Modules\Console;
 
 use App\Platform\Modules\Models\Module as InstalledModule;
 use App\Platform\Modules\Runtime\DatabaseActivator;
+use App\Platform\Modules\Runtime\ModuleBundle;
 use App\Platform\Modules\Runtime\ModuleCompatibility;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
@@ -37,7 +38,10 @@ class ReconcileModulesCommand extends Command
                 continue; // missing runtime files are reported by the modules page
             }
 
-            $problems = ModuleCompatibility::problems(json_decode((string) File::get($manifest), true)['compatibility'] ?? null);
+            $problems = [
+                ...ModuleCompatibility::problems(json_decode((string) File::get($manifest), true)['compatibility'] ?? null),
+                ...ModuleBundle::problemsFor(dirname($manifest)),
+            ];
             if ($problems === []) {
                 continue;
             }
