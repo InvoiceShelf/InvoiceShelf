@@ -3,12 +3,16 @@
 use App\Http\Controllers\V1\Admin\Invoice\InvoicesController;
 use App\Http\Requests\InvoicesRequest;
 use App\Mail\SendInvoiceMail;
+use App\Models\Company;
+use App\Models\CompanySetting;
+use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use App\Models\Tax;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Sanctum\Sanctum;
+use Silber\Bouncer\BouncerFacade;
 
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\postJson;
@@ -222,6 +226,113 @@ test('update validates using a form request', function () {
     );
 });
 
+test('invoice retrospective edit restrictions are reflected in the API', function (string $setting, string $status, string $paid_status, bool $sent, bool $allowed) {
+    $invoice = Invoice::factory()->create([
+        'status' => $status,
+        'paid_status' => $paid_status,
+        'sent' => $sent,
+    ]);
+
+    CompanySetting::setSettings(['retrospective_edits' => $setting], $invoice->company_id);
+
+    expect($invoice->fresh()->allow_edit)->toBe($allowed);
+
+    getJson('api/v1/invoices/'.$invoice->id)
+        ->assertOk()
+        ->assertJsonPath('data.allow_edit', $allowed);
+})->with([
+    'allow unpaid sent invoice' => ['allow', Invoice::STATUS_SENT, Invoice::STATUS_UNPAID, false, true],
+    'allow paid sent invoice' => ['allow', Invoice::STATUS_SENT, Invoice::STATUS_PAID, true, true],
+    'sent restriction allows unsent draft' => ['disable_on_invoice_sent', Invoice::STATUS_DRAFT, Invoice::STATUS_UNPAID, false, true],
+    'sent restriction locks sent invoice' => ['disable_on_invoice_sent', Invoice::STATUS_SENT, Invoice::STATUS_UNPAID, false, false],
+    'sent restriction locks viewed invoice' => ['disable_on_invoice_sent', Invoice::STATUS_VIEWED, Invoice::STATUS_UNPAID, false, false],
+    'sent restriction locks partially paid invoice' => ['disable_on_invoice_sent', Invoice::STATUS_SENT, Invoice::STATUS_PARTIALLY_PAID, false, false],
+    'sent restriction locks completed invoice' => ['disable_on_invoice_sent', Invoice::STATUS_COMPLETED, Invoice::STATUS_PAID, false, false],
+    'sent restriction locks unpaid completed invoice' => ['disable_on_invoice_sent', Invoice::STATUS_COMPLETED, Invoice::STATUS_UNPAID, false, false],
+    'sent restriction locks previously sent draft' => ['disable_on_invoice_sent', Invoice::STATUS_DRAFT, Invoice::STATUS_UNPAID, true, false],
+    'sent restriction allows unsent partially paid draft' => ['disable_on_invoice_sent', Invoice::STATUS_DRAFT, Invoice::STATUS_PARTIALLY_PAID, false, true],
+    'partial payment restriction allows unpaid invoice' => ['disable_on_invoice_partial_paid', Invoice::STATUS_SENT, Invoice::STATUS_UNPAID, true, true],
+    'partial payment restriction locks partially paid invoice' => ['disable_on_invoice_partial_paid', Invoice::STATUS_SENT, Invoice::STATUS_PARTIALLY_PAID, true, false],
+    'partial payment restriction locks paid invoice' => ['disable_on_invoice_partial_paid', Invoice::STATUS_COMPLETED, Invoice::STATUS_PAID, true, false],
+    'full payment restriction allows unpaid invoice' => ['disable_on_invoice_paid', Invoice::STATUS_SENT, Invoice::STATUS_UNPAID, true, true],
+    'full payment restriction allows partially paid invoice' => ['disable_on_invoice_paid', Invoice::STATUS_SENT, Invoice::STATUS_PARTIALLY_PAID, true, true],
+    'full payment restriction locks paid invoice' => ['disable_on_invoice_paid', Invoice::STATUS_COMPLETED, Invoice::STATUS_PAID, true, false],
+]);
+
+test('editable invoices can still be updated', function (string $setting, string $status, bool $sent) {
+    $invoice = Invoice::factory()->create([
+        'status' => $status,
+        'paid_status' => Invoice::STATUS_UNPAID,
+        'sent' => $sent,
+    ]);
+
+    CompanySetting::setSettings(['retrospective_edits' => $setting], $invoice->company_id);
+
+    $update = Invoice::factory()->raw([
+        'customer_id' => $invoice->customer_id,
+        'invoice_number' => $invoice->invoice_number,
+        'notes' => 'Updated invoice notes.',
+        'discount_val' => 0,
+        'items' => [InvoiceItem::factory()->raw(['price' => 1000, 'quantity' => 1])],
+        'taxes' => [],
+    ]);
+
+    putJson('api/v1/invoices/'.$invoice->id, $update)
+        ->assertOk()
+        ->assertJsonPath('data.allow_edit', true);
+
+    expect($invoice->fresh()->notes)->toBe($update['notes']);
+
+    $this->assertDatabaseHas('invoice_items', [
+        'invoice_id' => $invoice->id,
+        'name' => $update['items'][0]['name'],
+    ]);
+})->with([
+    'unsent draft' => ['disable_on_invoice_sent', Invoice::STATUS_DRAFT, false],
+    'sent invoice with edits allowed' => ['allow', Invoice::STATUS_SENT, true],
+]);
+
+test('retrospective edit restrictions use the invoice company settings', function () {
+    $user = User::find(1);
+    $first_company = $user->companies()->first();
+    $second_company = Company::factory()->create(['owner_id' => $user->id]);
+    $second_company->setupDefaultData();
+    $user->companies()->attach($second_company->id);
+    BouncerFacade::scope()->to($second_company->id);
+    $user->assign('super admin');
+
+    CompanySetting::setSettings(['retrospective_edits' => 'disable_on_invoice_sent'], $first_company->id);
+    CompanySetting::setSettings(['retrospective_edits' => 'allow'], $second_company->id);
+
+    $first_invoice = Invoice::factory()->create([
+        'company_id' => $first_company->id,
+        'status' => Invoice::STATUS_SENT,
+        'paid_status' => Invoice::STATUS_UNPAID,
+        'sent' => true,
+    ]);
+    $second_invoice = Invoice::factory()->create([
+        'company_id' => $second_company->id,
+        'customer_id' => Customer::factory()->create(['company_id' => $second_company->id])->id,
+        'recurring_invoice_id' => null,
+        'status' => Invoice::STATUS_SENT,
+        'paid_status' => Invoice::STATUS_UNPAID,
+        'sent' => true,
+    ]);
+
+    foreach ([$first_company, $second_company, $first_company] as $company) {
+        $this->withHeaders(['company' => $company->id]);
+
+        expect($first_invoice->fresh()->allow_edit)->toBeFalse()
+            ->and($second_invoice->fresh()->allow_edit)->toBeTrue();
+
+        $invoice = $company->is($first_company) ? $first_invoice : $second_invoice;
+
+        getJson('api/v1/invoices/'.$invoice->id)
+            ->assertOk()
+            ->assertJsonPath('data.allow_edit', $company->is($second_company));
+    }
+});
+
 test('send invoice to customer', function () {
     Mail::fake();
 
@@ -292,6 +403,67 @@ test('invoice mark as sent', function () {
 
     $this->assertEquals(Invoice::find($invoice->id)->status, Invoice::STATUS_SENT);
 });
+
+test('sent invoices cannot be updated when retrospective edits are disabled', function (string $send_method) {
+    $invoice = Invoice::factory()->hasItems(1)->hasTaxes(1)->create([
+        'status' => Invoice::STATUS_DRAFT,
+        'paid_status' => Invoice::STATUS_UNPAID,
+        'sent' => false,
+    ]);
+
+    CompanySetting::setSettings([
+        'retrospective_edits' => 'disable_on_invoice_sent',
+        'invoice_email_attachment' => 'NO',
+    ], $invoice->company_id);
+
+    if ($send_method === 'email') {
+        Mail::fake();
+
+        postJson('api/v1/invoices/'.$invoice->id.'/send', [
+            'from' => 'john@example.com',
+            'to' => 'doe@example.com',
+            'subject' => 'Invoice',
+            'body' => 'Please find your invoice.',
+        ])->assertOk()->assertJson(['success' => true]);
+
+        Mail::assertSent(SendInvoiceMail::class);
+    } else {
+        postJson('api/v1/invoices/'.$invoice->id.'/status', [
+            'status' => Invoice::STATUS_SENT,
+        ])->assertOk()->assertJson(['success' => true]);
+    }
+
+    $invoice->refresh();
+
+    expect($invoice->status)->toBe(Invoice::STATUS_SENT)
+        ->and($invoice->paid_status)->toBe(Invoice::STATUS_UNPAID)
+        ->and((bool) $invoice->sent)->toBeTrue();
+
+    $original_invoice = $invoice->getRawOriginal();
+    $original_items = $invoice->items()->orderBy('id')->get()->map->getRawOriginal()->all();
+    $original_taxes = $invoice->taxes()->orderBy('id')->get()->map->getRawOriginal()->all();
+
+    $update = Invoice::factory()->raw([
+        'customer_id' => $invoice->customer_id,
+        'invoice_number' => $invoice->invoice_number,
+        'notes' => 'This change must be rejected.',
+        'items' => [InvoiceItem::factory()->raw(['name' => 'Rejected item'])],
+        'taxes' => [Tax::factory()->raw()],
+    ]);
+
+    putJson('api/v1/invoices/'.$invoice->id, $update)->assertForbidden();
+
+    getJson('api/v1/invoices/'.$invoice->id)
+        ->assertOk()
+        ->assertJsonPath('data.allow_edit', false);
+
+    expect($invoice->fresh()->getRawOriginal())->toBe($original_invoice)
+        ->and($invoice->items()->orderBy('id')->get()->map->getRawOriginal()->all())->toBe($original_items)
+        ->and($invoice->taxes()->orderBy('id')->get()->map->getRawOriginal()->all())->toBe($original_taxes);
+})->with([
+    'status endpoint' => ['status'],
+    'email' => ['email'],
+]);
 
 test('search invoices', function () {
     $filters = [

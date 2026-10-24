@@ -147,13 +147,12 @@ class Invoice extends Model implements HasMedia
         $allowed = true;
 
         $status = [
-            self::STATUS_DRAFT,
             self::STATUS_SENT,
             self::STATUS_VIEWED,
             self::STATUS_COMPLETED,
         ];
 
-        if ($retrospective_edit == 'disable_on_invoice_sent' && (in_array($this->status, $status)) && ($this->paid_status === Invoice::STATUS_PARTIALLY_PAID || $this->paid_status === Invoice::STATUS_PAID)) {
+        if ($retrospective_edit == 'disable_on_invoice_sent' && ($this->sent || in_array($this->status, $status))) {
             $allowed = false;
         } elseif ($retrospective_edit == 'disable_on_invoice_partial_paid' && ($this->paid_status === Invoice::STATUS_PARTIALLY_PAID || $this->paid_status === Invoice::STATUS_PAID)) {
             $allowed = false;
