@@ -1314,7 +1314,7 @@
       "sidebar_group_labels_desc": "Affiche les titres des sections comme Administration et Modules. Ventes et Achats sont toujours affichés pour distinguer leurs entrées Paiements."
     },
     "address_information": {
-      "section_description": "Vous pouvez mettre à jour vos informations d'adresse via le formulaire ci-dessous."
+      "section_description": "You can update Your Address information using form below."
     },
     "title": "Paramètres",
     "setting": "Paramètres | Paramètres",
@@ -1575,7 +1575,7 @@
         "disable_on_invoice_partial_paid": "Désactiver après l'enregistrement d'un paiement partiel",
         "disable_on_invoice_paid": "Désactiver après l'enregistrement du paiement intégral",
         "disable_on_invoice_sent": "Désactiver après l'envoi de la facture",
-        "retrospective_edits_description": "Selon la législation de votre pays ou vos préférences, vous pouvez empêcher la modification des factures finalisées."
+        "retrospective_edits_description": "Based on your country's laws or your preference, you can restrict users from editing finalised invoices."
       },
       "credit_notes": {
         "title": "Avoirs",
@@ -1786,7 +1786,7 @@
       "new_driver": "Ajouter un fournisseur",
       "edit_driver": "Modifier ce fournisseur",
       "select_driver": "Sélectionner un fournisseur",
-      "update": "sélectionner le taux de change ",
+      "update": "select exchange rate",
       "providers_description": "Configurez vos fournisseurs de taux de change ici pour récupérer automatiquement le dernier taux de change sur les transactions.",
       "key": "Clé d'API",
       "name": "Nom",
@@ -1797,7 +1797,7 @@
       "created_message": "Fournisseur créé",
       "updated_message": "Fournisseur mis à jour",
       "deleted_message": "Fournisseur supprimé",
-      "error": "Vous ne pouvez pas supprimer le fournisseur actif",
+      "error": "You cannot Delete Active Driver",
       "default_currency_error": "Cette devise est déjà affectée à un fournisseur",
       "exchange_help_text": "Veuillez entrer le taux de change pour convertir {currency} en {baseCurrency}",
       "currency_freak": "Currency Freak",
@@ -1882,7 +1882,7 @@
       "date_format": "Format de date",
       "time_format": "Format de l'heure",
       "discount_setting": "Réglage de remise",
-      "discount_per_item": "Remise par article",
+      "discount_per_item": "Discount Per Item",
       "discount_setting_description": "Activez cette option si vous souhaitez détailler les remises par article. Par défaut, les remises sont ajoutées au sous-total.",
       "expire_public_links": "Expiration automatique des liens publics",
       "expire_setting_description": "Spécifiez si vous souhaitez faire expirer tous les liens publics envoyés par l'application pour consulter les factures, devis, paiements, etc., après une durée spécifique.",
@@ -2038,7 +2038,7 @@
       "set_default_disk_confirm": "Cet espace sera utilisé par défaut pour l'enregistrement des PDF",
       "success_set_default_disk": "Stockage par défaut mis à jour",
       "save_pdf_to_disk": "Enregistrer les PDF sur le disque",
-      "disk_setting_description": "Activez cette option si vous souhaitez enregistrer automatiquement une copie de chaque facture, devis et reçu de paiement PDF sur votre disque par défaut. L'activation de cette option réduira le temps de chargement lors de l'affichage des PDF.",
+      "disk_setting_description": "Enable this, if you wish to save a copy of each Invoice, Estimate & Payment Receipt PDF on your default disk automatically. Turning this option will decrease the load-time when viewing the PDFs.",
       "select_disk": "Emplacement",
       "disk_settings": "Paramètres de stockage",
       "confirm_delete": "Vos fichiers et dossiers existants sur le disque spécifié ne seront pas affectés, mais la configuration de votre disque sera supprimée d'InvoiceShelf",
