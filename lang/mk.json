@@ -32,6 +32,7 @@
     "copy_pdf_url": "Копирај PDF URL",
     "download_pdf": "Преземи PDF",
     "save": "Зачувај",
+    "extension_save_hook_failed": "Saved. An installed module could not finish its part of the save.",
     "skip": "Skip",
     "create": "Креирај",
     "cancel": "Откажи",
