@@ -6,7 +6,7 @@ const OFFICIAL_MARKETPLACE_KEY_ID_2026_09 = 'official-modules-2026-09';
 const OFFICIAL_MARKETPLACE_PUBLIC_KEY_2026_09 = 'VK8b5GsK7T7JFcQutq6Rv/xQ98Ata/HP1C74ZNNlYEo=';
 
 test('marketplace configuration advertises module API 1.4 by default', function () {
-    expect(marketplaceConfigFor(null)['module_api_version'])->toBe('1.4.0');
+    expect(marketplaceConfigFor(null)['module_api_version'])->toBe('1.5.0');
 });
 
 test('marketplace configuration includes the official signing keys by default', function () {

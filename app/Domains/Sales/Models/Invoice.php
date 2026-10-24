@@ -11,6 +11,7 @@ use App\Domains\Money\Models\Currency;
 use App\Domains\Receivables\Models\Payment;
 use App\Domains\Receivables\Models\PaymentAllocation;
 use App\Domains\Receivables\Models\Transaction;
+use App\Domains\Sales\Contracts\InvoicePdfAttachments;
 use App\Domains\Sales\Contracts\InvoicePdfDataProvider;
 use App\Domains\Taxation\Models\Tax;
 use App\Platform\Mail\Models\EmailLog;
@@ -636,6 +637,29 @@ class Invoice extends Model implements HasMedia
     public function getPDFData(): mixed
     {
         return app(InvoicePdfDataProvider::class)->getPdfData($this);
+    }
+
+    /**
+     * An invoice PDF can carry a module's e-invoice XML, so an archive records
+     * whether attachments applied to the company when it was filed.
+     *
+     * @return array<string, mixed>
+     */
+    protected function archivedPdfProperties(): array
+    {
+        return ['pdf_attachments_applied' => app(InvoicePdfAttachments::class)->applyTo($this->company_id)];
+    }
+
+    /**
+     * An archive is current only while that answer still holds: one filed
+     * before e-invoicing was switched on lacks the XML, and one filed while it
+     * was on carries XML it should no longer.
+     *
+     * @param  array<string, mixed>  $properties
+     */
+    protected function archivedPdfIsCurrent(array $properties): bool
+    {
+        return (bool) ($properties['pdf_attachments_applied'] ?? false) === app(InvoicePdfAttachments::class)->applyTo($this->company_id);
     }
 
     /**

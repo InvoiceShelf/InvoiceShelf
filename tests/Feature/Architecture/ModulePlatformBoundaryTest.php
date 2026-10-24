@@ -1,14 +1,20 @@
 <?php
 
+use App\Platform\Modules\Infrastructure\EloquentInvoiceDocumentReader;
+use App\Platform\Modules\Infrastructure\GotenbergPdfCapabilities;
 use App\Platform\Modules\Models\MarketplaceCredential;
 use App\Platform\Modules\Models\MarketplaceOperation;
 use App\Platform\Modules\Models\Module;
 use App\Platform\Modules\ModuleServiceProvider;
 use Illuminate\Routing\Route as IlluminateRoute;
 use Illuminate\Support\Facades\Route;
+use InvoiceShelf\Modules\Contracts\Host\InvoiceDocumentReader;
+use InvoiceShelf\Modules\Contracts\Host\PdfCapabilities;
 
 test('the module platform owns its provider and persistence models', function () {
     expect(app()->getProviders(ModuleServiceProvider::class))->not->toBeEmpty()
+        ->and(app(InvoiceDocumentReader::class))->toBeInstanceOf(EloquentInvoiceDocumentReader::class)
+        ->and(app(PdfCapabilities::class))->toBeInstanceOf(GotenbergPdfCapabilities::class)
         ->and((new Module)->getTable())->toBe('modules')
         ->and((new MarketplaceCredential)->getTable())->toBe('marketplace_credentials')
         ->and((new MarketplaceOperation)->getTable())->toBe('marketplace_operations')
