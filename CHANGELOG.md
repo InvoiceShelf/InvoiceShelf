@@ -7,6 +7,40 @@ section beneath it is what CI publishes to the updater — see
 The 2.x line has its own CHANGELOG.md on the `2.x` branch. Releases are also on
 GitHub: https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 3.0.0-alpha.14 - 2026-10-24
+
+Fourteenth public alpha of InvoiceShelf 3.0. A notification bell tells staff what happened: payments, viewed and answered documents, due dates, team and system events. Customers can be reminded about unpaid invoices automatically, and announcements reach everyone on an install. Translations are up to date again, with about 6,500 more strings translated.
+
+⚠️ **Pre-release, not for production.** Back up your database before upgrading and use this release for evaluation and testing only.
+
+### Highlights
+
+- **Notification bell.** A bell in the header shows an unread count and the latest notices, with the full list under Notifications. Each person chooses, for each kind of notice, whether it reaches them in the bell, by email or both (User Settings → Notifications), and every notice and email is written in its reader's language. The staff emails InvoiceShelf already sent now go through it: a customer opened a document, and a recurring invoice or cost was created or failed. (#910)
+- **More to be told about.** Estimates accepted or rejected in the customer portal, payments received, invoices paid in full or overdue, bills due in three days or overdue, invitations answered and new AI connections. Super admins also hear about a failed backup and a module switched off after an upgrade. Company owners set the defaults for their members, or switch a kind of notice off for everyone, under Company Settings → Notifications. (#911)
+- **Payment reminders.** A company can email its customers about unpaid invoices on the days it chooses around the due date (by default 3 days before, and 1, 7 and 14 days after), at the hour it chooses in its own time zone, with its own subject and message and optionally the PDF. Each reminder goes out once, and one that fails is tried again later. Every invoice shows its reminders with a pause switch and Send reminder now, and a customer can be paused altogether. Every invoice email gains the placeholders `{INVOICE_TOTAL}`, `{INVOICE_DUE_AMOUNT}`, `{INVOICE_PAID_AMOUNT}` and `{INVOICE_DAYS_OVERDUE}`. (#913)
+- **Announcements.** A super admin can post an announcement to everyone on the install, or to super admins only, with an optional link, a time window and translations (Administration → Settings → Announcements). The InvoiceShelf project can publish announcements too, such as a security update, and installs pick them up within an hour. Information appears in the bell; warnings and critical announcements also show as a strip across the top until dismissed. (#915)
+
+### Improvements and fixes
+
+- Translations are up to date with Crowdin: about 6,500 more strings translated, most of them in Albanian, Norwegian, French, Swedish, German and Estonian. A translation that would show wrong, with a translated placeholder or an empty text, now gives way to English; that fixes eight Spanish, Slovenian and Vietnamese messages that failed to display. Translations now sync through a workflow in this repository instead of Crowdin's GitHub app. (#946, #947, #948, #949)
+- Six English strings lost stray spaces at their start or end. (#938)
+- The public demo's company is a German business billing in euros, every module it installs gets its sample data (not only the first), a module listed in `DEMO_MODULES` without a version gets its newest release that fits, and a module that cannot be installed is left out instead of stopping the reset. (#942, #944, #945)
+
+### Upgrade notes
+
+- **Three migrations.** The `notifications` table gains the company and the record a notice is about; `invoice_reminders`, `announcements` and `announcement_dismissals` are new; invoices and customers gain a `reminders_paused` flag.
+- **Staff emails change.** A recurring invoice or cost that fails now always tells the person who created the schedule, in the bell and by email unless they switch the email off; "Notify me" on a schedule now covers only the "created" notice. Invoice viewed and Estimate viewed reach the bell of everyone who can see the document, and email only those who switch it on, plus the company's shared mailbox when it is set under Company Settings → Notifications, as before. The six old staff email templates were removed.
+- **The scheduler matters more.** Payment reminders and the announcement feed run every hour, the bill due-date check and notice pruning once a day, and `invoiceshelf:catch-up` runs the bill check too. An install without a running scheduler sends no reminders.
+- **Payment reminders start switched off** for every company (Settings → Payment reminders), so upgrading emails no customer.
+- **The announcement feed contacts invoiceshelf.com** once an hour, sending the installed version and update channel, as the update check does. Set `INVOICESHELF_ANNOUNCEMENTS_FEED=false` to turn it off.
+- **API.** New endpoints for the bell (`/notifications`), personal and company notification preferences, payment reminder settings, an invoice's reminders (`/invoices/{invoice}/reminders`) and announcements.
+
+### Thanks
+
+- @Seb33300 for the English spacing fixes (#938).
+
+Docker: `invoiceshelf/invoiceshelf:3.0.0-alpha.14` or `ghcr.io/invoiceshelf/invoiceshelf:3.0.0-alpha.14` (also `:next`).
+
 ## 3.0.0-alpha.13 - 2026-10-24
 
 Thirteenth public alpha of InvoiceShelf 3.0. Invoices can become EN 16931 e-invoices: tax types and units carry the codes e-invoices are written with, and with Gotenberg the invoice PDF can embed the e-invoice XML, which makes it a ZUGFeRD / Factur-X hybrid. The official E-Invoicing module, ported from the work of André Kinne and iebl, uses both.
