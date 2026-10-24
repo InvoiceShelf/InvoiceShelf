@@ -1,0 +1,107 @@
+name: Crowdin
+
+# Translations, both ways, without Crowdin's own GitHub integration:
+#
+# - English strings go to Crowdin whenever lang/en.json changes on 3.x.
+# - Once a day (or by hand) Crowdin's translations come back as one pull
+#   request from l10n_3.x. The branch is cut from 3.x on every run, so it
+#   never drifts, and clean-translations.php drops what the app cannot show
+#   before the pull request is opened. Commits are authored by Crowdin Bot,
+#   not by a maintainer.
+#
+# Needs the repository secret CROWDIN_PERSONAL_TOKEN (a Crowdin personal
+# access token with access to the project). Pull requests opened with the
+# workflow token do not start other workflows, which is why the translations
+# are cleaned here and not left to CI.
+on:
+    push:
+        branches:
+            - 3.x
+        paths:
+            - lang/en.json
+    schedule:
+        - cron: '17 4 * * *'
+    workflow_dispatch:
+        inputs:
+            upload_translations:
+                description: 'Also upload the translations in lang/ to Crowdin (one-time import; strings equal to English are skipped)'
+                type: boolean
+                default: false
+
+permissions:
+    contents: write
+    pull-requests: write
+
+concurrency:
+    group: crowdin
+    cancel-in-progress: false
+
+env:
+    CROWDIN_PROJECT_ID: '681236'
+    CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+
+jobs:
+    upload:
+        name: Upload English strings
+        if: github.event_name != 'schedule'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v6
+
+            - name: Upload to Crowdin
+              uses: crowdin/github-action@v3.3.0
+              with:
+                  upload_sources: true
+                  upload_translations: ${{ inputs.upload_translations == true }}
+                  import_eq_suggestions: false
+                  download_translations: false
+                  push_translations: false
+                  create_pull_request: false
+
+    download:
+        name: Download translations
+        needs: upload
+        if: ${{ !cancelled() && !failure() && github.event_name != 'push' }}
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v6
+              with:
+                  ref: 3.x
+
+            - name: Download from Crowdin
+              uses: crowdin/github-action@v3.3.0
+              with:
+                  upload_sources: false
+                  download_translations: true
+                  push_translations: false
+                  create_pull_request: false
+
+            # The Crowdin action runs in a container and leaves its files owned by root.
+            - name: Take ownership of the downloaded files
+              run: sudo chown -R "$(id -u):$(id -g)" lang
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: 8.4
+
+            - name: Clean the translations
+              run: php .github/scripts/clean-translations.php
+
+            - name: Open or update the pull request
+              uses: peter-evans/create-pull-request@v8.1.1
+              with:
+                  branch: l10n_3.x
+                  base: 3.x
+                  add-paths: lang/*.json
+                  author: Crowdin Bot <support+bot@crowdin.com>
+                  committer: Crowdin Bot <support+bot@crowdin.com>
+                  commit-message: Bring the translations up to date with Crowdin
+                  title: Bring the translations up to date with Crowdin
+                  body: |
+                      Translations from [Crowdin](https://crowdin.com/project/invoiceshelf), cleaned by `.github/scripts/clean-translations.php`: keys `en.json` no longer has, translations whose placeholders differ from English and empty strings are left out, so English shows instead.
+
+                      This branch is cut from 3.x on every run and replaced, so it only ever holds the latest translations. Opened by the Crowdin workflow.
+                  delete-branch: true

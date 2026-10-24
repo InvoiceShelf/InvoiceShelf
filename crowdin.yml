@@ -1,3 +1,14 @@
+# Crowdin CLI configuration, used by .github/workflows/crowdin.yml. The project
+# id and token come from the workflow, never from this file.
+#
+# File names follow the app's locale files: Crowdin's two-letter code, except
+# where two Crowdin languages share one. Urdu (India) gets a file of its own so
+# it no longer overwrites Urdu (Pakistan), which the app loads as ur.json.
 files:
   - source: /lang/en.json
     translation: /lang/%two_letters_code%.json
+    languages_mapping:
+      two_letters_code:
+        pt-BR: pt-br
+        zh-CN: zh-cn
+        ur-IN: ur-in
