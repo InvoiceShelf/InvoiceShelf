@@ -32,6 +32,7 @@
     "copy_pdf_url": "Salin URL PDF",
     "download_pdf": "Unduh PDF",
     "save": "Simpan",
+    "extension_save_hook_failed": "Saved. An installed module could not finish its part of the save.",
     "skip": "Skip",
     "create": "Buat",
     "cancel": "Batal",
