@@ -32,6 +32,7 @@
     "copy_pdf_url": "คัดลอก URL PDF",
     "download_pdf": "ดาวน์โหลดไฟล์ PDF",
     "save": "บันทึก",
+    "extension_save_hook_failed": "Saved. An installed module could not finish its part of the save.",
     "skip": "Skip",
     "create": "สร้าง",
     "cancel": "ยกเลิก",
