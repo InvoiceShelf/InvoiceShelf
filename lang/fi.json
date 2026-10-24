@@ -1304,7 +1304,8 @@
       "address_information": "Address Information",
       "pdf_generation": "PDF Generation",
       "appearance": "Appearance",
-      "module_configuration": "Module Configuration"
+      "module_configuration": "Module Configuration",
+      "payment_reminders": "Payment reminders"
     },
     "appearance": {
       "title": "Appearance",
@@ -2350,7 +2351,11 @@
     "recurring_invoice_failed": "The invoice could not be generated. The schedule will try again.",
     "recurring_invoice_send_failed": "The invoice was created but could not be emailed to the customer. It was kept as a draft.",
     "purchase_recurring_template_invalid": "This schedule no longer passes validation. Open it and save it to see what needs fixing.",
-    "purchase_recurring_tax_exceeds_amount": "Purchase tax cannot exceed the expense amount."
+    "purchase_recurring_tax_exceeds_amount": "Purchase tax cannot exceed the expense amount.",
+    "invoice_reminder_not_due": "Reminders are only sent for invoices that were sent and are not paid yet.",
+    "invoice_reminder_no_email": "This customer has no email address to send a reminder to.",
+    "invoice_reminder_failed": "The reminder could not be sent. Check the company's mail settings and try again.",
+    "announcement_from_feed": "Announcements from the InvoiceShelf project can only be hidden."
   },
   "pdf_estimate_label": "Tarjous",
   "pdf_estimate_number": "Tarjousnumero",
@@ -2919,7 +2924,95 @@
         "description": "A scheduled or manual backup fails.",
         "title": "Backup failed",
         "body": "A backup to {disk} failed: {error}"
+      },
+      "invoice_reminder_sent": {
+        "label": "Payment reminder sent",
+        "description": "A payment reminder is emailed to a customer.",
+        "title": "Reminder sent for invoice {number}",
+        "body": "{customer} was reminded about invoice {number}. {amount} is still open."
       }
     }
+  },
+  "reminders": {
+    "title": "Payment reminders",
+    "description": "Email customers about invoices they have not paid yet, on the days you choose around the due date. Reminders stop by themselves once an invoice is paid.",
+    "enabled": "Send payment reminders",
+    "enabled_desc": "Reminders go out for sent invoices that still have an amount due.",
+    "schedule": "Schedule",
+    "days": "Days",
+    "days_help": "Negative numbers are days before the due date, positive ones days after it. Up to 10.",
+    "add_day": "Add",
+    "before_due": "{count} days before the due date | {count} day before the due date | {count} days before the due date",
+    "after_due": "{count} days after the due date | {count} day after the due date | {count} days after the due date",
+    "on_due": "On the due date",
+    "send_hour": "Send at",
+    "send_hour_help": "In your company's time zone.",
+    "email": "Email",
+    "subject": "Subject",
+    "body": "Message",
+    "attach_pdf": "Attach the invoice PDF",
+    "saved": "Payment reminder settings saved",
+    "card_title": "Reminders",
+    "paused": "Pause reminders for this invoice",
+    "customer_paused": "Reminders are paused for this customer.",
+    "company_off": "Payment reminders are switched off for the company.",
+    "not_remindable": "Reminders go out once the invoice is sent, until it is paid.",
+    "no_email": "The customer has no email address, so reminders cannot be sent.",
+    "next": "Next reminder: {date}",
+    "none_next": "No more reminders are scheduled.",
+    "history_empty": "No reminders sent yet.",
+    "send_now": "Send reminder now",
+    "sent_now": "Reminder sent",
+    "status_sent": "Sent",
+    "status_failed": "Failed",
+    "status_skipped": "Skipped",
+    "manual": "Sent by hand",
+    "scheduled": "{offset}",
+    "customer_pause": "Pause payment reminders",
+    "customer_pause_desc": "No automatic reminders are sent for this customer's invoices."
+  },
+  "announcements": {
+    "title": "Announcements",
+    "description": "Tell everyone on this installation something at once. Warning and critical announcements also show as a banner at the top of the app. Announcements from the InvoiceShelf project appear here too; you can hide them.",
+    "add": "Add announcement",
+    "edit": "Edit announcement",
+    "saved": "Announcement saved",
+    "deleted": "Announcement deleted",
+    "confirm_delete": "The announcement disappears for everyone.",
+    "empty_title": "No announcements",
+    "empty_description": "Announcements you add, and those from the InvoiceShelf project, show up here.",
+    "from_feed": "From InvoiceShelf",
+    "shown": "Shown",
+    "open": "Open",
+    "dismiss": "Dismiss",
+    "position": "{current} of {total}",
+    "level_help": "Warning and critical also show as a banner at the top of the app.",
+    "translations": "Translations",
+    "translations_help": "Each person sees the text in their language when there is one, and the text above otherwise.",
+    "add_language": "Add a language",
+    "window_always": "Until removed",
+    "window_from": "From {from}",
+    "window_until": "Until {until}",
+    "window_between": "{from} to {until}",
+    "levels": {
+      "info": "Info",
+      "warning": "Warning",
+      "critical": "Critical"
+    },
+    "audiences": {
+      "everyone": "Everyone",
+      "admins": "Super admins and company owners"
+    },
+    "fields": {
+      "title": "Title",
+      "body": "Message",
+      "link_url": "Button link",
+      "link_label": "Button label",
+      "level": "Level",
+      "audience": "Who sees it",
+      "starts_at": "Show from",
+      "ends_at": "Show until"
+    },
+    "add_button": "Add"
   }
 }
