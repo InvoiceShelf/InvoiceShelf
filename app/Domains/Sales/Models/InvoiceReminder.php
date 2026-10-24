@@ -27,6 +27,7 @@ class InvoiceReminder extends Model
     {
         return [
             'offset_days' => 'integer',
+            'attempts' => 'integer',
         ];
     }
 

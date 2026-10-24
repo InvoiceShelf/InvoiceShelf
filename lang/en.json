@@ -2353,7 +2353,8 @@
     "purchase_recurring_template_invalid": "This schedule no longer passes validation. Open it and save it to see what needs fixing.",
     "purchase_recurring_tax_exceeds_amount": "Purchase tax cannot exceed the expense amount.",
     "invoice_reminder_not_due": "Reminders are only sent for invoices that were sent and are not paid yet.",
-    "invoice_reminder_no_email": "This customer has no email address to send a reminder to."
+    "invoice_reminder_no_email": "This customer has no email address to send a reminder to.",
+    "invoice_reminder_failed": "The reminder could not be sent. Check the company's mail settings and try again."
   },
   "pdf_estimate_label": "Estimate",
   "pdf_estimate_number": "Estimate Number",

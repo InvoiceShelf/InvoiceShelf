@@ -162,6 +162,49 @@ test('a mail failure marks that reminder failed and the next invoice still goes'
     expect($statuses)->toBe([$first->id => InvoiceReminder::STATUS_FAILED, $second->id => InvoiceReminder::STATUS_SENT]);
 });
 
+test('a failed reminder goes out on a later run once the mail server is back', function () {
+    $invoice = unpaidInvoice($this, '2026-06-10');
+    $sender = Mockery::mock(InvoiceEmailSender::class);
+    $sender->shouldReceive('send')->once()->andThrow(new RuntimeException('SMTP is down'));
+    $sender->shouldReceive('send')->once();
+    app()->instance(InvoiceEmailSender::class, $sender);
+
+    expect(runReminders('2026-06-11 10:00:00'))->toBe(0)
+        ->and(runReminders('2026-06-11 11:00:00'))->toBe(0) // too soon to try again
+        ->and(runReminders('2026-06-11 16:00:00'))->toBe(1);
+
+    expect($invoice->reminders()->sole()->only(['offset_days', 'status', 'attempts']))
+        ->toBe(['offset_days' => 1, 'status' => InvoiceReminder::STATUS_SENT, 'attempts' => 2]);
+});
+
+test('a reminder that keeps failing is tried three times at most', function () {
+    $invoice = unpaidInvoice($this, '2026-06-10');
+    $sender = Mockery::mock(InvoiceEmailSender::class);
+    $sender->shouldReceive('send')->times(3)->andThrow(new RuntimeException('SMTP is down'));
+    app()->instance(InvoiceEmailSender::class, $sender);
+
+    foreach (['2026-06-11 10:00:00', '2026-06-11 16:00:00', '2026-06-11 22:00:00', '2026-06-12 10:00:00'] as $at) {
+        expect(runReminders($at))->toBe(0);
+    }
+
+    expect($invoice->reminders()->sole()->only(['status', 'attempts']))
+        ->toBe(['status' => InvoiceReminder::STATUS_FAILED, 'attempts' => 3]);
+});
+
+test('a reminder sent by hand says so when the email fails, and keeps it in the history', function () {
+    $invoice = unpaidInvoice($this, '2026-06-10');
+    $sender = Mockery::mock(InvoiceEmailSender::class);
+    $sender->shouldReceive('send')->once()->andThrow(new RuntimeException('SMTP is down'));
+    app()->instance(InvoiceEmailSender::class, $sender);
+
+    $this->postJson("/api/v1/invoices/{$invoice->id}/reminders")
+        ->assertUnprocessable()
+        ->assertJsonPath('errors.invoice.0', 'invoice_reminder_failed');
+
+    $this->getJson("/api/v1/invoices/{$invoice->id}/reminders")
+        ->assertJsonPath('data.history.0.status', InvoiceReminder::STATUS_FAILED);
+});
+
 test('staff can see, pause and send reminders for an invoice', function () {
     Carbon::setTestNow('2026-06-11 10:00:00');
     $invoice = unpaidInvoice($this, '2026-06-10');

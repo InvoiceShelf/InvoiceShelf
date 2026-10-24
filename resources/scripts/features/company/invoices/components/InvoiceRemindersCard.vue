@@ -109,6 +109,8 @@ async function sendNow(): Promise<void> {
     notificationStore.showNotification({ type: 'success', message: 'reminders.sent_now' })
   } catch (err: unknown) {
     showError(err)
+    // A failed send is still recorded; show it in the history.
+    await load()
   } finally {
     sending.value = false
   }

@@ -20,6 +20,8 @@ return new class extends Migration
             // Days from the due date it was scheduled for; null when sent by hand.
             $table->integer('offset_days')->nullable();
             $table->string('status', 16);
+            // A failed scheduled reminder is tried again a few times.
+            $table->unsignedTinyInteger('attempts')->default(1);
             $table->string('error')->nullable();
             $table->unsignedBigInteger('email_log_id')->nullable();
             $table->unsignedInteger('sent_by')->nullable();

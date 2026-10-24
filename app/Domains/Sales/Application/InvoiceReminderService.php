@@ -32,6 +32,15 @@ class InvoiceReminderService
      */
     public const CATCH_UP_DAYS = 2;
 
+    /**
+     * A scheduled reminder whose email failed is tried again on a later run,
+     * this many times in all, at least RETRY_AFTER_HOURS apart, while it is
+     * still within the catch-up window.
+     */
+    public const MAX_ATTEMPTS = 3;
+
+    public const RETRY_AFTER_HOURS = 6;
+
     public function __construct(
         private readonly InvoiceService $invoiceService,
         private readonly InvoiceEmailSender $emailSender,
@@ -81,13 +90,13 @@ class InvoiceReminderService
             ->where('invoices.company_id', $companyId)
             ->whereDate('due_date', '>=', $earliestDue)
             ->whereDate('due_date', '<=', $latestDue)
-            ->with('reminders:id,invoice_id,offset_days')
+            ->with(['customer', 'reminders:id,invoice_id,offset_days,status,attempts,updated_at'])
             ->get();
 
         foreach ($invoices as $invoice) {
-            $offset = $this->offsetDue($invoice, $settings->offsets, $today);
+            $offset = $this->offsetDue($invoice, $settings->offsets, $today, $now);
 
-            if ($offset !== null && $this->send($invoice, $settings, $offset)) {
+            if ($offset !== null && $this->send($invoice, $settings, $offset, $now)) {
                 $sent++;
             }
         }
@@ -98,7 +107,8 @@ class InvoiceReminderService
     /**
      * Send a reminder now, whatever the schedule says.
      *
-     * @throws ValidationException when the invoice is not one to remind about
+     * @throws ValidationException when the invoice is not one to remind about,
+     *                             or the email could not be sent (the failure stays in the history)
      */
     public function sendNow(Invoice $invoice, ?User $by = null): InvoiceReminder
     {
@@ -113,7 +123,7 @@ class InvoiceReminderService
             'sent_by' => $by?->id,
         ]);
 
-        $this->deliver($invoice, $settings, $reminder);
+        $this->ensure($this->deliver($invoice, $settings, $reminder), 'invoice_reminder_failed');
 
         return $reminder->refresh();
     }
@@ -133,7 +143,9 @@ class InvoiceReminderService
 
         $today = ($now ?? CarbonImmutable::now())->setTimezone(CompanySetting::timeZone($invoice->company_id))->startOfDay();
         $due = CarbonImmutable::parse(substr((string) $invoice->due_date, 0, 10), $today->getTimezone());
-        $sentOffsets = $invoice->reminders()->whereNotNull('offset_days')->pluck('offset_days')->all();
+        $sentOffsets = $invoice->reminders()->whereNotNull('offset_days')->get()
+            ->reject(fn (InvoiceReminder $reminder): bool => $this->willRetry($reminder))
+            ->pluck('offset_days')->all();
         $latestSent = $sentOffsets === [] ? null : max($sentOffsets);
 
         foreach ($settings->offsets as $offset) {
@@ -177,15 +189,20 @@ class InvoiceReminderService
 
     /**
      * The latest scheduled offset that has come round, when it is not too
-     * late for it and it was not sent yet. Earlier ones it passed over are
-     * not sent: a customer gets one reminder at a time.
+     * late for it and it was not sent yet, or its email failed and it may be
+     * tried again now. Earlier ones it passed over are not sent: a customer
+     * gets one reminder at a time.
      *
      * @param  list<int>  $offsets
      */
-    private function offsetDue(Invoice $invoice, array $offsets, CarbonImmutable $today): ?int
+    private function offsetDue(Invoice $invoice, array $offsets, CarbonImmutable $today, CarbonImmutable $now): ?int
     {
         $due = CarbonImmutable::parse(substr((string) $invoice->due_date, 0, 10), $today->getTimezone());
-        $done = $invoice->reminders->pluck('offset_days')->filter(fn ($offset) => $offset !== null)->all();
+        $scheduled = $invoice->reminders->filter(fn (InvoiceReminder $reminder): bool => $reminder->offset_days !== null);
+        $done = $scheduled->reject(fn (InvoiceReminder $reminder): bool => $this->willRetry($reminder))
+            ->pluck('offset_days')->all();
+        $retryable = $scheduled->filter(fn (InvoiceReminder $reminder): bool => $this->canRetryNow($reminder, $now))
+            ->pluck('offset_days')->all();
 
         foreach (array_reverse($offsets) as $offset) {
             $date = $due->addDays($offset);
@@ -202,17 +219,36 @@ class InvoiceReminderService
                 return null;
             }
 
-            return $offset;
+            $claimed = $scheduled->contains(fn (InvoiceReminder $reminder): bool => $reminder->offset_days === $offset);
+
+            return ! $claimed || in_array($offset, $retryable, true) ? $offset : null;
         }
 
         return null;
     }
 
     /**
+     * A failed reminder that has tries left.
+     */
+    private function willRetry(InvoiceReminder $reminder): bool
+    {
+        return $reminder->status === InvoiceReminder::STATUS_FAILED
+            && $reminder->offset_days !== null
+            && $reminder->attempts < self::MAX_ATTEMPTS;
+    }
+
+    private function canRetryNow(InvoiceReminder $reminder, CarbonImmutable $now): bool
+    {
+        return $this->willRetry($reminder)
+            && $reminder->updated_at !== null
+            && $reminder->updated_at->lessThanOrEqualTo($now->subHours(self::RETRY_AFTER_HOURS));
+    }
+
+    /**
      * Claim the offset, then send. The claim is what keeps two runs from
      * sending the same reminder.
      */
-    private function send(Invoice $invoice, ReminderSettings $settings, int $offset): bool
+    private function send(Invoice $invoice, ReminderSettings $settings, int $offset, CarbonImmutable $now): bool
     {
         try {
             $reminder = $invoice->reminders()->create([
@@ -221,7 +257,11 @@ class InvoiceReminderService
                 'status' => InvoiceReminder::STATUS_SENT,
             ]);
         } catch (UniqueConstraintViolationException) {
-            return false;
+            $reminder = $this->reclaim($invoice, $offset, $now);
+
+            if ($reminder === null) {
+                return false;
+            }
         }
 
         if (! $invoice->customer?->email) {
@@ -231,6 +271,27 @@ class InvoiceReminderService
         }
 
         return $this->deliver($invoice, $settings, $reminder);
+    }
+
+    /**
+     * Take a failed reminder back for another try. Only one run wins it, as
+     * the update only matches while it is still failed.
+     */
+    private function reclaim(Invoice $invoice, int $offset, CarbonImmutable $now): ?InvoiceReminder
+    {
+        $query = InvoiceReminder::query()
+            ->where('invoice_id', $invoice->id)
+            ->where('offset_days', $offset)
+            ->where('status', InvoiceReminder::STATUS_FAILED)
+            ->where('attempts', '<', self::MAX_ATTEMPTS)
+            ->where('updated_at', '<=', $now->utc()->subHours(self::RETRY_AFTER_HOURS));
+        $id = (clone $query)->value('id');
+
+        if ($id === null || $query->whereKey($id)->increment('attempts', 1, ['status' => InvoiceReminder::STATUS_SENT, 'error' => null]) !== 1) {
+            return null;
+        }
+
+        return InvoiceReminder::query()->find($id);
     }
 
     /**
