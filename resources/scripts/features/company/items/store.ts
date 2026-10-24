@@ -32,7 +32,11 @@ export interface ItemForm {
 export interface ItemUnitForm {
   id: number | null
   name: string
+  unit_code: string
 }
+
+/** UN/ECE Rec 20 Unit Code every unit starts out with: C62 = piece. */
+export const DEFAULT_UNIT_CODE = 'C62'
 
 function createItemStub(): ItemForm {
   return {
@@ -58,6 +62,7 @@ export const useItemStore = defineStore('item', () => {
   const currentItemUnit = ref<ItemUnitForm>({
     id: null,
     name: '',
+    unit_code: DEFAULT_UNIT_CODE,
   })
   const currentItem = ref<ItemForm>(createItemStub())
 
@@ -227,9 +232,14 @@ export const useItemStore = defineStore('item', () => {
     }
   }
 
-  async function updateItemUnit(data: { id: number; name: string }): Promise<ApiResponse<Unit>> {
+  async function updateItemUnit(
+    data: { id: number } & CreateUnitPayload
+  ): Promise<ApiResponse<Unit>> {
     try {
-      const response = await itemService.updateUnit(data.id, { name: data.name })
+      const response = await itemService.updateUnit(data.id, {
+        name: data.name,
+        unit_code: data.unit_code,
+      })
 
       const pos = itemUnits.value.findIndex(
         (unit) => unit.id === response.data.id
@@ -268,6 +278,7 @@ export const useItemStore = defineStore('item', () => {
       currentItemUnit.value = {
         id: response.data.id,
         name: response.data.name,
+        unit_code: response.data.unit_code || DEFAULT_UNIT_CODE,
       }
       return response
     } catch (err: unknown) {

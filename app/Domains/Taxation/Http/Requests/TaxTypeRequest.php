@@ -75,6 +75,17 @@ class TaxTypeRequest extends FormRequest
                     TaxType::TRANSACTION_TYPE_PURCHASES,
                 ]),
             ],
+            'tax_category_code' => [
+                'sometimes',
+                'required',
+                'string',
+                Rule::in(TaxType::TAX_CATEGORY_CODES),
+            ],
+            'tax_exemption_reason' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
         ];
     }
 
@@ -102,6 +113,19 @@ class TaxTypeRequest extends FormRequest
                 );
             }
         });
+
+        $validator->after(function (Validator $validator): void {
+            if ($validator->errors()->isNotEmpty() || ! $this->requiresTaxExemptionReason()) {
+                return;
+            }
+
+            if (trim((string) $this->effectiveTaxExemptionReason()) === '') {
+                $validator->errors()->add(
+                    'tax_exemption_reason',
+                    'An exemption reason is required for exempt tax category codes.'
+                );
+            }
+        });
     }
 
     /**
@@ -122,6 +146,11 @@ class TaxTypeRequest extends FormRequest
         if (! $this->isEdit() && ! array_key_exists('compound_tax', $payload)) {
             $payload['compound_tax'] = false;
         }
+
+        $payload['tax_category_code'] = $this->effectiveTaxCategoryCode();
+        $payload['tax_exemption_reason'] = $this->requiresTaxExemptionReason()
+            ? $this->effectiveTaxExemptionReason()
+            : null;
 
         $payload['company_id'] = $this->header('company');
         $payload['type'] = TaxType::TYPE_GENERAL;
@@ -152,6 +181,42 @@ class TaxTypeRequest extends FormRequest
         }
 
         return $this->isEdit() ? $this->storedValue($field) : $default;
+    }
+
+    /**
+     * The Tax Category Code the request results in — the submitted one, the
+     * stored one on edits that omit it, or the standard rate on creates.
+     */
+    private function effectiveTaxCategoryCode(): string
+    {
+        if ($this->has('tax_category_code')) {
+            return (string) $this->input('tax_category_code');
+        }
+
+        return $this->isEdit()
+            ? ($this->storedValue('tax_category_code') ?? TaxType::TAX_CATEGORY_CODE_STANDARD)
+            : TaxType::TAX_CATEGORY_CODE_STANDARD;
+    }
+
+    /**
+     * The exemption reason the request results in — the submitted one, or the
+     * stored one on edits that omit it.
+     */
+    private function effectiveTaxExemptionReason(): ?string
+    {
+        if ($this->has('tax_exemption_reason')) {
+            return $this->input('tax_exemption_reason');
+        }
+
+        return $this->isEdit() ? $this->storedValue('tax_exemption_reason') : null;
+    }
+
+    /**
+     * Whether EN 16931 demands an exemption reason for the resulting category.
+     */
+    private function requiresTaxExemptionReason(): bool
+    {
+        return in_array($this->effectiveTaxCategoryCode(), TaxType::EXEMPT_TAX_CATEGORY_CODES, true);
     }
 
     private function storedValue(string $field)

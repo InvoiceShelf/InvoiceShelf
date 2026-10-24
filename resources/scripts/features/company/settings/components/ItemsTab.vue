@@ -36,6 +36,7 @@ interface RowData {
   data: {
     id: number
     name: string
+    unit_code: string
   }
 }
 
@@ -57,6 +58,13 @@ const columns = computed<TableColumn[]>(() => [
     label: t('settings.customization.items.unit_name'),
     thClass: 'extra',
     tdClass: 'font-medium text-heading',
+  },
+  {
+    key: 'unit_code',
+    label: t('settings.customization.items.unit_code'),
+    thClass: 'extra',
+    tdClass: 'font-medium text-muted',
+    sortable: false,
   },
   {
     key: 'actions',

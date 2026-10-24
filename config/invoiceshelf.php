@@ -240,6 +240,46 @@ return [
     ],
 
     /*
+    * Curated list of UN/ECE Recommendation 20 Unit Codes (EN 16931 BT-130).
+    *
+    * This is the single source of truth for the Unit Code: the unit management
+    * UI renders it as a dropdown (via `GET /api/v1/config?key=unit_codes`) and
+    * the Unit API validates submitted codes against it. `C62` (piece) is the
+    * default for every unit.
+    */
+    'unit_codes' => [
+        ['key' => 'settings.customization.items.unit_codes.piece', 'value' => 'C62'],
+        ['key' => 'settings.customization.items.unit_codes.hour', 'value' => 'HUR'],
+        ['key' => 'settings.customization.items.unit_codes.day', 'value' => 'DAY'],
+        ['key' => 'settings.customization.items.unit_codes.week', 'value' => 'WEE'],
+        ['key' => 'settings.customization.items.unit_codes.month', 'value' => 'MON'],
+        ['key' => 'settings.customization.items.unit_codes.year', 'value' => 'ANN'],
+        ['key' => 'settings.customization.items.unit_codes.minute', 'value' => 'MIN'],
+        ['key' => 'settings.customization.items.unit_codes.second', 'value' => 'SEC'],
+        ['key' => 'settings.customization.items.unit_codes.kilogram', 'value' => 'KGM'],
+        ['key' => 'settings.customization.items.unit_codes.gram', 'value' => 'GRM'],
+        ['key' => 'settings.customization.items.unit_codes.milligram', 'value' => 'MGM'],
+        ['key' => 'settings.customization.items.unit_codes.tonne', 'value' => 'TNE'],
+        ['key' => 'settings.customization.items.unit_codes.pound', 'value' => 'LBR'],
+        ['key' => 'settings.customization.items.unit_codes.ounce', 'value' => 'ONZ'],
+        ['key' => 'settings.customization.items.unit_codes.litre', 'value' => 'LTR'],
+        ['key' => 'settings.customization.items.unit_codes.millilitre', 'value' => 'MLT'],
+        ['key' => 'settings.customization.items.unit_codes.metre', 'value' => 'MTR'],
+        ['key' => 'settings.customization.items.unit_codes.centimetre', 'value' => 'CMT'],
+        ['key' => 'settings.customization.items.unit_codes.millimetre', 'value' => 'MMT'],
+        ['key' => 'settings.customization.items.unit_codes.kilometre', 'value' => 'KMT'],
+        ['key' => 'settings.customization.items.unit_codes.square_metre', 'value' => 'MTK'],
+        ['key' => 'settings.customization.items.unit_codes.cubic_metre', 'value' => 'MTQ'],
+        ['key' => 'settings.customization.items.unit_codes.inch', 'value' => 'INH'],
+        ['key' => 'settings.customization.items.unit_codes.foot', 'value' => 'FOT'],
+        ['key' => 'settings.customization.items.unit_codes.box', 'value' => 'XBX'],
+        ['key' => 'settings.customization.items.unit_codes.package', 'value' => 'XPK'],
+        ['key' => 'settings.customization.items.unit_codes.set', 'value' => 'SET'],
+        ['key' => 'settings.customization.items.unit_codes.dozen', 'value' => 'DZN'],
+        ['key' => 'settings.customization.items.unit_codes.kilowatt_hour', 'value' => 'KWH'],
+    ],
+
+    /*
     * List of convert estimate options
     */
     'convert_estimate_options' => [
