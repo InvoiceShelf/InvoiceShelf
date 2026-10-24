@@ -32,6 +32,7 @@
     "copy_pdf_url": "Copier l'URL du PDF",
     "download_pdf": "Télécharger le PDF",
     "save": "Enregistrer",
+    "extension_save_hook_failed": "Saved. An installed module could not finish its part of the save.",
     "skip": "Ignorer",
     "create": "Créer",
     "cancel": "Annuler",
