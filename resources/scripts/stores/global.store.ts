@@ -33,6 +33,7 @@ export const useGlobalStore = defineStore('global', () => {
   const countries = ref<Country[]>([])
   const languages = ref<Array<{ code: string; name: string }>>([])
   const fiscalYears = ref<Array<{ key: string; value: string }>>([])
+  const unitCodes = ref<Array<{ key: string; value: string }>>([])
 
   const mainMenu = ref<MenuItem[]>([])
   const settingMenu = ref<MenuItem[]>([])
@@ -168,6 +169,11 @@ export const useGlobalStore = defineStore('global', () => {
         }>
       } else if ((response as Record<string, unknown>).fiscal_years) {
         fiscalYears.value = (response as Record<string, unknown>).fiscal_years as Array<{
+          key: string
+          value: string
+        }>
+      } else if ((response as Record<string, unknown>).unit_codes) {
+        unitCodes.value = (response as Record<string, unknown>).unit_codes as Array<{
           key: string
           value: string
         }>
@@ -318,6 +324,7 @@ export const useGlobalStore = defineStore('global', () => {
     countries,
     languages,
     fiscalYears,
+    unitCodes,
     mainMenu,
     settingMenu,
     userMenu,

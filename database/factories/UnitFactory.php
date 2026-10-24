@@ -22,6 +22,7 @@ class UnitFactory extends Factory
     {
         return [
             'name' => $this->faker->name(),
+            'unit_code' => Unit::DEFAULT_UNIT_CODE,
             'company_id' => User::find(1)->companies()->first()->id,
         ];
     }
