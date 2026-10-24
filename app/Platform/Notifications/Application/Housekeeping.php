@@ -8,6 +8,7 @@ use App\Domains\Accounts\Models\User;
 use App\Domains\Purchases\Models\Bill;
 use App\Domains\Purchases\Models\Expense;
 use App\Domains\Purchases\Models\RecurringCost;
+use App\Domains\Receivables\Models\Payment;
 use App\Domains\Sales\Models\Estimate;
 use App\Domains\Sales\Models\Invoice;
 use App\Domains\Sales\Models\RecurringInvoice;
@@ -42,6 +43,7 @@ class Housekeeping
         Bill::class,
         Expense::class,
         RecurringCost::class,
+        Payment::class,
     ];
 
     /**

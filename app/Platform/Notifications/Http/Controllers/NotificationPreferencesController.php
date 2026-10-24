@@ -11,7 +11,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 /**
- * The caller's own choice of where each kind of notice reaches them.
+ * The caller's own choice of where each kind of notice reaches them, as it
+ * applies in the company in the header.
  */
 class NotificationPreferencesController extends Controller
 {
@@ -33,20 +34,30 @@ class NotificationPreferencesController extends Controller
     }
 
     /**
-     * Each type with its group and the caller's choice, in catalogue order.
+     * Each type the caller can receive, with its group and their choice, in
+     * catalogue order. Platform notices are listed for super admins only.
      *
-     * @return list<array{type: string, group: string, personal: bool, bell: bool, mail: bool}>
+     * @return list<array<string, mixed>>
      */
     private function present(Request $request): array
     {
-        $choices = $this->preferences->for($request->user());
+        $user = $request->user();
+        $company = $request->header('company');
+        $choices = $this->preferences->for($user, $company ? (int) $company : null);
+
+        $types = array_filter(
+            $this->catalogue->all(),
+            fn (NotificationType $type): bool => ! $type->platform || $user->isSuperAdmin(),
+        );
 
         return array_values(array_map(fn (NotificationType $type): array => [
             'type' => $type->key,
             'group' => $type->group,
             'personal' => $type->isPersonal(),
+            'enabled' => $choices[$type->key]['enabled'],
             'bell' => $choices[$type->key]['bell'],
             'mail' => $choices[$type->key]['mail'],
-        ], $this->catalogue->all()));
+            'customised' => $choices[$type->key]['customised'],
+        ], $types));
     }
 }

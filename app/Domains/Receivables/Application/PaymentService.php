@@ -4,11 +4,13 @@ namespace App\Domains\Receivables\Application;
 
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\CompanySetting;
+use App\Domains\Accounts\Models\User;
 use App\Domains\Metadata\Contracts\CustomFieldValueWriter;
 use App\Domains\Receivables\Contracts\PaymentEmailSender;
 use App\Domains\Receivables\Contracts\PaymentExchangeRateRecorder;
 use App\Domains\Receivables\Contracts\PaymentNumberAssigner;
 use App\Domains\Receivables\Contracts\PaymentPdfDataProvider;
+use App\Domains\Receivables\Events\PaymentRecorded;
 use App\Domains\Receivables\Models\Payment;
 use App\Platform\Mail\Contracts\MailConfigurator;
 use App\Platform\Pdf\Facades\Pdf;
@@ -16,6 +18,7 @@ use App\Platform\Pdf\Rendering\PdfMetadata;
 use App\Platform\Pdf\Rendering\PdfTemplateUtils;
 use App\Support\PublicToken;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -67,6 +70,12 @@ class PaymentService implements PaymentPdfDataProvider
 
             return $payment;
         });
+
+        // Only a staff member counts as whoever recorded it: inside the
+        // customer portal the signed-in account is the customer paying.
+        $actor = Auth::user();
+        $actorId = $actor instanceof User ? (int) $actor->getKey() : null;
+        DB::afterCommit(fn () => PaymentRecorded::dispatch((int) $payment->id, (int) $payment->company_id, $actorId));
 
         return $this->loadPayment($payment);
     }

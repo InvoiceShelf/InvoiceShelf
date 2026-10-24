@@ -1,5 +1,6 @@
 <?php
 
+use App\Platform\Notifications\Http\Controllers\CompanyNotificationDefaultsController;
 use App\Platform\Notifications\Http\Controllers\InboxController;
 use App\Platform\Notifications\Http\Controllers\NotificationPreferencesController;
 use Illuminate\Support\Facades\Route;
@@ -15,3 +16,7 @@ Route::delete('/notifications/{notification}', [InboxController::class, 'destroy
 
 Route::get('/me/notification-preferences', [NotificationPreferencesController::class, 'show']);
 Route::put('/me/notification-preferences', [NotificationPreferencesController::class, 'update']);
+
+// What the owner decided for everyone in the company.
+Route::get('/company/notification-defaults', [CompanyNotificationDefaultsController::class, 'show']);
+Route::put('/company/notification-defaults', [CompanyNotificationDefaultsController::class, 'update']);
