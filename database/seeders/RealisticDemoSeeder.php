@@ -463,6 +463,28 @@ class RealisticDemoSeeder extends Seeder
                 $this->createInvoice($invoiceDate, $dueDate, $status, $paidStatus, $itemCount, $overdue, $customer);
             }
         }
+
+        $this->flagOverdueInvoices();
+    }
+
+    /**
+     * Flag every invoice the daily overdue sweep (check:invoices:status) would.
+     *
+     * The plan marks only the invoices it dates as overdue, but older unpaid
+     * ones fall past their 30-day terms too. The dashboard counts by due date,
+     * while the Overdue badges and the module data reader (the AI Assistant)
+     * read the flag, so until the sweep runs they would disagree. This runs
+     * after the payments, which settle each invoice's final status, and
+     * leaves the seeded timestamps.
+     */
+    private function flagOverdueInvoices(): void
+    {
+        Invoice::withoutTimestamps(fn () => Invoice::query()
+            ->where('company_id', $this->companyId)
+            ->where('type', Invoice::TYPE_INVOICE)
+            ->whereNotIn('status', [Invoice::STATUS_COMPLETED, Invoice::STATUS_DRAFT])
+            ->whereDate('due_date', '<', Carbon::now())
+            ->update(['overdue' => true]));
     }
 
     private function createInvoice(
