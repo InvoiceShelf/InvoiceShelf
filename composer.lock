@@ -1880,12 +1880,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/InvoiceShelf/modules.git",
-                "reference": "bdfcd9ea819fa26991255d443e803d299e6e478d"
+                "reference": "0d649993238282e46d8bf551b717edff0d5e5466"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/InvoiceShelf/modules/zipball/bdfcd9ea819fa26991255d443e803d299e6e478d",
-                "reference": "bdfcd9ea819fa26991255d443e803d299e6e478d",
+                "url": "https://api.github.com/repos/InvoiceShelf/modules/zipball/0d649993238282e46d8bf551b717edff0d5e5466",
+                "reference": "0d649993238282e46d8bf551b717edff0d5e5466",
                 "shasum": ""
             },
             "require": {
@@ -1941,7 +1941,7 @@
                 "source": "https://github.com/InvoiceShelf/modules/tree/feat/bundled-dependencies",
                 "issues": "https://github.com/InvoiceShelf/modules/issues"
             },
-            "time": "2026-10-23T23:24:54+00:00"
+            "time": "2026-10-23T23:58:09+00:00"
         },
         {
             "name": "laravel/framework",
