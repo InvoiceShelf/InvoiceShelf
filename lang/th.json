@@ -1314,7 +1314,7 @@
       "sidebar_group_labels_desc": "Show section headers such as Administration and Modules. Sales and Purchases are always labelled to distinguish their Payments entries."
     },
     "address_information": {
-      "section_description": "  คุณสามารถอัปเดตข้อมูลที่อยู่ของคุณโดยใช้แบบฟอร์มด้านล่าง"
+      "section_description": "You can update Your Address information using form below."
     },
     "title": "การตั้งค่า",
     "setting": "การตั้งค่า | การตั้งค่า",
@@ -1575,7 +1575,7 @@
         "disable_on_invoice_partial_paid": "ปิดการใช้งานหลังจากบันทึกการชำระเงินบางส่วน",
         "disable_on_invoice_paid": "ปิดการใช้งานหลังจากบันทึกการชำระเงินเต็มจำนวน",
         "disable_on_invoice_sent": "ปิดการใช้งานหลังจากส่งใบวางบิล",
-        "retrospective_edits_description": " ขึ้นอยู่กับกฎหมายของประเทศของคุณหรือความต้องการของคุณ คุณสามารถจำกัดผู้ใช้จากการแก้ไขใบวางบิลฉบับสุดท้ายได้"
+        "retrospective_edits_description": "Based on your country's laws or your preference, you can restrict users from editing finalised invoices."
       },
       "credit_notes": {
         "title": "Credit Notes",
@@ -1786,7 +1786,7 @@
       "new_driver": "เพิ่มผู้ให้บริการใหม่",
       "edit_driver": "แก้ไขผู้ให้บริการ",
       "select_driver": "เลือกไดร์เวอร์",
-      "update": "เลือกอัตราแลกเปลี่ยน ",
+      "update": "select exchange rate",
       "providers_description": "กำหนดค่าผู้ให้บริการอัตราแลกเปลี่ยนของคุณที่นี่เพื่อดึงข้อมูลอัตราแลกเปลี่ยนล่าสุดในการทำธุรกรรมโดยอัตโนมัติ",
       "key": "คีย์ API",
       "name": "ชื่อ",
@@ -1797,7 +1797,7 @@
       "created_message": "ผู้ให้บริการสร้างเสร็จเรียบร้อยแล้ว",
       "updated_message": "ผู้ให้บริการอัปเดตเรียบร้อยแล้ว",
       "deleted_message": "ผู้ให้บริการถูกลบเรียบร้อยแล้ว",
-      "error": " คุณไม่สามารถลบโปรแกรมควบคุมที่ใช้งานอยู่",
+      "error": "You cannot Delete Active Driver",
       "default_currency_error": "สกุลเงินนี้มีใช้อยู่แล้วในหนึ่งในผู้ให้บริการที่ใช้งานอยู่",
       "exchange_help_text": "ป้อนอัตราแลกเปลี่ยนเพื่อแปลงจาก {currency} เป็น {baseCurrency}",
       "currency_freak": "สกุลเงินประหลาด",
@@ -1882,7 +1882,7 @@
       "date_format": "รูปแบบวันที่",
       "time_format": "Time Format",
       "discount_setting": "การตั้งค่าส่วนลด",
-      "discount_per_item": "ส่วนลดต่อรายการ ",
+      "discount_per_item": "Discount Per Item",
       "discount_setting_description": "เปิดใช้งานตัวเลือกนี้หากคุณต้องการเพิ่มส่วนลดให้กับรายการใบวางบิลแต่ละรายการโดยค่าเริ่มต้นส่วนลดจะถูกเพิ่มโดยตรงไปยังใบวางบิล",
       "expire_public_links": "ลิงก์สาธารณะหมดอายุโดยอัตโนมัติ",
       "expire_setting_description": "ระบุว่าคุณต้องการให้ลิงก์ทั้งหมดที่ส่งมาออกจากแอปพลิเคชันนี้หมดอายุอัตโนมัติ เพื่อให้สามารถดูใบแจ้งหนี้ การประมาณการ & การชำระเงิน ฯลฯ หลังจากระยะเวลาที่กำหนด",
@@ -2038,7 +2038,7 @@
       "set_default_disk_confirm": "ดิสก์นี้จะถูกตั้งค่าเป็นค่าเริ่มต้นและไฟล์ PDF ใหม่ทั้งหมดจะถูกบันทึกไว้ในดิสก์นี้",
       "success_set_default_disk": "ตั้งค่าดิสก์เป็นค่าเริ่มต้นเรียบร้อยแล้ว",
       "save_pdf_to_disk": "บันทึกไฟล์ PDF ลงในดิสก์",
-      "disk_setting_description": " เปิดใช้งานนี้, หากคุณต้องการบันทึกสำเนาของแต่ละใบวางบิล, ใบเสนอราคาและการชำระเงินใบเสร็จรับเงิน PDF บนดิสก์เริ่มต้นของคุณโดยอัตโนมัติ.การเปิดใช้ตัวเลือกนี้จะลดเวลาในการโหลดเมื่อดูไฟล์ PDF",
+      "disk_setting_description": "Enable this, if you wish to save a copy of each Invoice, Estimate & Payment Receipt PDF on your default disk automatically. Turning this option will decrease the load-time when viewing the PDFs.",
       "select_disk": "เลือกดิสก์",
       "disk_settings": "การตั้งค่าดิสก์",
       "confirm_delete": "ไฟล์และโฟลเดอร์ที่มีอยู่ในดิสก์ที่ระบุจะไม่ได้รับผลกระทบ แต่การกำหนดค่าดิสก์ของคุณจะถูกลบออกจาก InvoiceShelf",
