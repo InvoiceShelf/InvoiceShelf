@@ -6,6 +6,7 @@ import NumberCustomizer from './NumberCustomizer.vue'
 import InvoicesTabDueDate from './InvoicesTabDueDate.vue'
 import InvoicesTabRetrospective from './InvoicesTabRetrospective.vue'
 import InvoicesTabDefaultFormats from './InvoicesTabDefaultFormats.vue'
+import PdfFilenameCustomizer from './PdfFilenameCustomizer.vue'
 
 interface Utils {
   mergeSettings: (target: Record<string, unknown>, source: Record<string, unknown>) => void
@@ -55,6 +56,10 @@ const sendAsAttachmentField = computed<boolean>({
     :type-store="invoiceStore"
     default-series="CN"
   />
+
+  <BaseDivider class="mt-6 mb-2" />
+
+  <PdfFilenameCustomizer />
 
   <BaseDivider class="mt-6 mb-2" />
 
