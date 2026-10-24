@@ -1314,7 +1314,7 @@
       "sidebar_group_labels_desc": "Show section headers such as Administration and Modules. Sales and Purchases are always labelled to distinguish their Payments entries."
     },
     "address_information": {
-      "section_description": "  U kunt uw adresgegevens bijwerken via het onderstaande formulier."
+      "section_description": "You can update Your Address information using form below."
     },
     "title": "Instellingen",
     "setting": "Instellingen | Instellingen",
@@ -1575,7 +1575,7 @@
         "disable_on_invoice_partial_paid": "Uitschakelen nadat gedeeltelijke betaling is opgeslagen",
         "disable_on_invoice_paid": "Uitschakelen nadat volledige betaling is opgenomen",
         "disable_on_invoice_sent": "Uitschakelen nadat factuur is verzonden",
-        "retrospective_edits_description": " Op basis van de wetten van uw land of uw voorkeur, kunt u gebruikers beperken om afgeronde facturen te bewerken."
+        "retrospective_edits_description": "Based on your country's laws or your preference, you can restrict users from editing finalised invoices."
       },
       "credit_notes": {
         "title": "Credit Notes",
@@ -1786,7 +1786,7 @@
       "new_driver": "Voeg nieuwe provider toe",
       "edit_driver": "Provider bewerken",
       "select_driver": "Selecteer stuurprogramma",
-      "update": "selecteer wisselkoers ",
+      "update": "select exchange rate",
       "providers_description": "Configureer hier uw wisselkoersaanbieders om de laatste wisselkoers voor transacties automatisch op te halen.",
       "key": "API sleutel",
       "name": "Naam",
@@ -1797,7 +1797,7 @@
       "created_message": "Provider succesvol aangemaakt",
       "updated_message": "Provider succesvol bijgewerkt",
       "deleted_message": "Provider succesvol verwijderd",
-      "error": " U kunt de actieve stuurprogramma niet verwijderen",
+      "error": "You cannot Delete Active Driver",
       "default_currency_error": "Deze valuta wordt al gebruikt in een van de Actieve Provider",
       "exchange_help_text": "Voer de wisselkoers in om te converteren van {currency} naar {baseCurrency}",
       "currency_freak": "CurrencyFreaks",
@@ -1882,7 +1882,7 @@
       "date_format": "Datumnotatie",
       "time_format": "Time Format",
       "discount_setting": "Kortingsinstelling",
-      "discount_per_item": "Korting per item",
+      "discount_per_item": "Discount Per Item",
       "discount_setting_description": "Schakel dit in als u korting wilt toevoegen aan afzonderlijke factuuritems. Standaard wordt korting rechtstreeks aan de factuur toegevoegd.",
       "expire_public_links": "Publieke links automatisch laten vervallen",
       "expire_setting_description": "Geef aan of je publieke links naar facturen, offertes en betalingen,... die zijn verstuurd door de applicatie na een bepaalde periode wilt laten verlopen.",
@@ -2038,7 +2038,7 @@
       "set_default_disk_confirm": "Deze schijf zal als standaard worden ingesteld en alle nieuwe PDF's worden opgeslagen op deze schijf",
       "success_set_default_disk": "Standaardschijf ingesteld",
       "save_pdf_to_disk": "PDF's opslaan op schijf",
-      "disk_setting_description": " Schakel dit in als je een kopie van elke factuur, raming en betalingsbewijs automatisch op je standaard schijf wilt opslaan. Het inschakelen van deze optie zal de laadtijd verminderen wanneer de PDF's worden bekeken.",
+      "disk_setting_description": "Enable this, if you wish to save a copy of each Invoice, Estimate & Payment Receipt PDF on your default disk automatically. Turning this option will decrease the load-time when viewing the PDFs.",
       "select_disk": "Selecteer Schijf",
       "disk_settings": "Schijfinstellingen",
       "confirm_delete": "Uw bestaande bestanden en mappen in de opgegeven schijf worden niet beïnvloed, maar uw schijfconfiguratie wordt uit InvoiceShelf verwijderd",
