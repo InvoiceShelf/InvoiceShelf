@@ -1040,7 +1040,7 @@
     "update_to": "Mise à jour vers",
     "module_updated": "Le module a bien été mis à jour !",
     "title": "Modules",
-    "module": "Module",
+    "module": "Module | Modules",
     "api_token": "Jeton API",
     "invalid_api_token": "Jeton API invalide.",
     "other_modules": "Autres modules",
