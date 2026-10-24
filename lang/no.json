@@ -32,6 +32,7 @@
     "copy_pdf_url": "Kopier PDF-lenke",
     "download_pdf": "Last ned PDF",
     "save": "Lagre",
+    "extension_save_hook_failed": "Saved. An installed module could not finish its part of the save.",
     "skip": "Hopp over",
     "create": "Opprett",
     "cancel": "Avbryt",
