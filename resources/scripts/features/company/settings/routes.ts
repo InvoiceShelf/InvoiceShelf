@@ -139,6 +139,15 @@ const settingsRoutes: RouteRecordRaw[] = [
         component: () => import('./views/NotesView.vue'),
       },
       {
+        path: 'payment-reminders',
+        name: 'settings.payment-reminders',
+        meta: {
+          requiresAuth: true,
+          isOwner: true,
+        },
+        component: () => import('./views/PaymentRemindersView.vue'),
+      },
+      {
         path: 'notifications',
         name: 'settings.notifications',
         meta: {

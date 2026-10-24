@@ -55,6 +55,7 @@ export const API = {
 
   // Recurring Invoices
   RECURRING_INVOICES: '/api/v1/recurring-invoices',
+  PAYMENT_REMINDERS: '/api/v1/company/payment-reminders', // the company's reminder schedule and email
   RECURRING_INVOICES_DELETE: '/api/v1/recurring-invoices/delete',
   RECURRING_INVOICE_FREQUENCY: '/api/v1/recurring-invoice-frequency',
 

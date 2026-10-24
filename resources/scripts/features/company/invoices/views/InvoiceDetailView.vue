@@ -171,6 +171,12 @@
         </div>
       </BaseCard>
 
+      <InvoiceRemindersCard
+        :invoice-id="invoiceData.id"
+        :invoice-status="`${invoiceData.status}:${invoiceData.paid_status}`"
+        :can-send="canSend"
+      />
+
       <ExtensionSlot name="entity" entity="invoice" area="panels" :context="extensionContext" />
 
       <BasePdfPreview
@@ -282,6 +288,7 @@ import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useInvoiceStore } from '../store'
 import InvoiceDropdown from '../components/InvoiceDropdown.vue'
+import InvoiceRemindersCard from '../components/InvoiceRemindersCard.vue'
 import SendInvoiceModal from '../components/SendInvoiceModal.vue'
 import CreditNoteModal from '../components/CreditNoteModal.vue'
 import RecordListPane from '@/scripts/components/layout/RecordListPane.vue'

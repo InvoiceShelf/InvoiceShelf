@@ -42,6 +42,7 @@ use App\Domains\Sales\Models\Estimate;
 use App\Domains\Sales\Models\EstimateItem;
 use App\Domains\Sales\Models\Invoice;
 use App\Domains\Sales\Models\InvoiceItem;
+use App\Domains\Sales\Models\InvoiceReminder;
 use App\Domains\Sales\Models\RecurringInvoice;
 use App\Domains\Taxation\Models\Tax;
 use App\Domains\Taxation\Models\TaxType;
@@ -117,6 +118,7 @@ final class ModelIdentityMap
             'supplier_refund' => SupplierRefund::class,
             'recurring_cost' => RecurringCost::class,
             'recurrence_occurrence' => RecurrenceOccurrence::class,
+            'invoice_reminder' => InvoiceReminder::class,
             'bill_item' => BillItem::class,
             'supplier_credit_item' => SupplierCreditItem::class,
             'supplier_payment_allocation' => SupplierPaymentAllocation::class,

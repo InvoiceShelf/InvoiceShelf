@@ -211,7 +211,7 @@ export function getErrorTranslationKey(errorMessage: string): string | null {
 
   // Purchasing and recurring invoices send codes that name their own key
   // under `errors`.
-  return /^(purchase|recurring_invoice)_[a-z_]+$/.test(errorMessage)
+  return /^(purchase|recurring_invoice|invoice_reminder)_[a-z_]+$/.test(errorMessage)
     ? `errors.${errorMessage}`
     : null
 }

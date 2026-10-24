@@ -11,6 +11,7 @@ use App\Domains\Sales\Application\InvoiceService;
 use App\Domains\Sales\Console\CheckEstimateStatus;
 use App\Domains\Sales\Console\CheckInvoiceStatus;
 use App\Domains\Sales\Console\GenerateRecurringInvoices;
+use App\Domains\Sales\Console\SendInvoiceReminders;
 use App\Domains\Sales\Contracts\DocumentExchangeRateRecorder;
 use App\Domains\Sales\Contracts\EstimateEmailSender;
 use App\Domains\Sales\Contracts\EstimatePdfDataProvider;
@@ -58,6 +59,7 @@ class SalesServiceProvider extends ServiceProvider
             CheckEstimateStatus::class,
             CheckInvoiceStatus::class,
             GenerateRecurringInvoices::class,
+            SendInvoiceReminders::class,
         ]);
 
         Gate::policy(Estimate::class, EstimatePolicy::class);
