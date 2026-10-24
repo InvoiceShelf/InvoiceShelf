@@ -32,6 +32,7 @@
     "copy_pdf_url": "Kopiera PDF-URL",
     "download_pdf": "Ladda ner PDF",
     "save": "Spara",
+    "extension_save_hook_failed": "Saved. An installed module could not finish its part of the save.",
     "skip": "Hoppa över",
     "create": "Skapa",
     "cancel": "Avbryt",
