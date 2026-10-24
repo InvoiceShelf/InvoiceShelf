@@ -52,6 +52,7 @@ jobs:
             - name: Upload to Crowdin
               uses: crowdin/github-action@v3.3.0
               with:
+                  crowdin_branch_name: 3.x
                   upload_sources: true
                   upload_translations: ${{ inputs.upload_translations == true }}
                   import_eq_suggestions: false
@@ -73,6 +74,7 @@ jobs:
             - name: Download from Crowdin
               uses: crowdin/github-action@v3.3.0
               with:
+                  crowdin_branch_name: 3.x
                   upload_sources: false
                   download_translations: true
                   push_translations: false
