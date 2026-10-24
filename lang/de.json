@@ -1314,7 +1314,7 @@
       "sidebar_group_labels_desc": "Abschnittsüberschriften wie „Administration“ und „Module“ anzeigen. Die Bereiche „Verkäufe“ und „Einkäufe“ werden stets gekennzeichnet, um die jeweiligen Zahlungseinträge voneinander zu unterscheiden."
     },
     "address_information": {
-      "section_description": "  Sie können Ihre Adressinformationen über das untenstehende Formular aktualisieren."
+      "section_description": "You can update Your Address information using form below."
     },
     "title": "Einstellungen",
     "setting": "Einstellung | Einstellungen",
@@ -1575,7 +1575,7 @@
         "disable_on_invoice_partial_paid": "Deaktivieren, nachdem Teilzahlung erfasst wurde",
         "disable_on_invoice_paid": "Deaktivieren, nachdem vollständige Zahlung erfasst wurde",
         "disable_on_invoice_sent": "Deaktivieren, nachdem Rechnung gesendet wurde",
-        "retrospective_edits_description": " Basierend auf den Gesetzen Ihres Landes oder Ihrer Präferenz, können Sie Benutzer daran hindern, fertige Rechnungen zu bearbeiten."
+        "retrospective_edits_description": "Based on your country's laws or your preference, you can restrict users from editing finalised invoices."
       },
       "credit_notes": {
         "title": "Stornorechnungen",
@@ -1786,7 +1786,7 @@
       "new_driver": "Neuen Anbieter hinzufügen",
       "edit_driver": "Anbieter bearbeiten",
       "select_driver": "Treiber auswählen",
-      "update": "wähle Wechselkurs ",
+      "update": "select exchange rate",
       "providers_description": "Konfigurieren Sie hier Ihre Wechselkursanbieter, um automatisch den aktuellen Wechselkurs für Transaktionen abzurufen.",
       "key": "API-Schlüssel",
       "name": "Name",
@@ -1797,7 +1797,7 @@
       "created_message": "Artikel erfolgreich erstellt",
       "updated_message": "Anbieter erfolgreich aktualisiert",
       "deleted_message": "Anbieter erfolgreich gelöscht",
-      "error": " Aktive Treiber können nicht gelöscht werden",
+      "error": "You cannot Delete Active Driver",
       "default_currency_error": "Diese Währung wird bereits in einem der aktiven Anbieter verwendet",
       "exchange_help_text": "Wechselkurs eingeben um von {currency} nach {baseCurrency} zu konvertieren",
       "currency_freak": "CurrencyFreaks",
@@ -1882,7 +1882,7 @@
       "date_format": "Datum-Format",
       "time_format": "Zeitformat",
       "discount_setting": "Einstellung Rabatt",
-      "discount_per_item": "Rabatt pro Artikel ",
+      "discount_per_item": "Discount Per Item",
       "discount_setting_description": "Aktivieren Sie diese Option, wenn Sie einzelnen Rechnungspositionen einen Rabatt hinzufügen möchten. Standardmäßig wird der Rabatt direkt zur Rechnung hinzugefügt.",
       "expire_public_links": "Öffentliche Links automatisch ablaufen lassen",
       "expire_setting_description": "Geben Sie an, ob Sie alle von der Anwendung gesendeten Links zur Ansicht von Rechnungen, Kostenvoranschlägen und Zahlungen usw. nach einer bestimmten Zeit ablaufen lassen möchten.",
@@ -2038,7 +2038,7 @@
       "set_default_disk_confirm": "Dieser Speicherort wird als Standard gesetzt und alle neuen PDFs werden auf diesem gespeichert",
       "success_set_default_disk": "Speicher wurde als Standard festgelegt",
       "save_pdf_to_disk": "PDFs auf Festplatte speichern",
-      "disk_setting_description": " Aktivieren Sie dies, um eine Kopie von jeder Rechnung, jedem Angebot & jedem Zahlungsbeleg als PDF automatisch auf ihrem Standard-Speicher abzulegen. Wenn Sie diese Option aktivieren, verringert sich die Ladezeit beim Betrachten der PDFs.",
+      "disk_setting_description": "Enable this, if you wish to save a copy of each Invoice, Estimate & Payment Receipt PDF on your default disk automatically. Turning this option will decrease the load-time when viewing the PDFs.",
       "select_disk": "Speicherort auswählen",
       "disk_settings": "Speichermedienkonfiguration",
       "confirm_delete": "Ihre existierenden Dateien und Ordner auf der angegebenen Festplatte werden nicht beeinflusst, aber Dieser Speicherort wird aus InvoiceShelf gelöscht",
