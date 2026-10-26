@@ -312,11 +312,16 @@ All of this needs the enrolment from step 0 to have completed.
    download the `.cer`, open it to import into the login keychain, then select the
    certificate **with its private key** and export both as a `.p12` with a
    password.
-2. **App id and profile.** Register the app id `com.invoiceshelf.app`, then create
+2. **App id and profile.** Register the app id `com.invoiceshelf.ios`, then create
    an **App Store** provisioning profile for it against that certificate. Name it
    exactly **`InvoiceShelf App Store`**: `mobile/ios/ExportOptions.plist` and the
    archive step match the profile by name, so a different name fails the export.
    Download the `.mobileprovision`.
+
+   The iOS bundle id is `com.invoiceshelf.ios`, not the Android
+   `com.invoiceshelf.app`: Apple's bundle ids are unique across every developer
+   team and that one was not available. It lives in the Xcode project's
+   `PRODUCT_BUNDLE_IDENTIFIER` and in `ExportOptions.plist`.
 3. **App Store Connect API key.** App Store Connect → Users and Access →
    Integrations → App Store Connect API → generate a key with the **App Manager**
    role. The `.p8` downloads exactly once. The issuer id is printed above the key
