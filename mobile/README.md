@@ -149,6 +149,24 @@ a launcher may mask the adaptive icon to a circle and only the inner two
 thirds survives that, so a mark sized to fill the layer loses its corners.
 The generated PNGs are committed along with the sources.
 
+## The privacy manifest
+
+App Store Connect refuses an upload whose code calls one of Apple's
+"required reason" APIs without declaring why. Capacitor's own manifest declares
+nothing and none of the plugins ship one, so `ios/App/App/PrivacyInfo.xcprivacy`
+declares them on the plugins' behalf:
+
+| API category | Reason | Called by |
+|---|---|---|
+| `UserDefaults` | `CA92.1`, the app's own data | `@capacitor/preferences`, holding the keys `local-storage.ts` mirrors |
+| `FileTimestamp` | `C617.1`, files inside the app container | `@capacitor/filesystem`, listing the share folder in the cache |
+
+**Adding a plugin, or taking a new major of one, means checking its iOS sources
+for those APIs** (UserDefaults, file timestamps, disk space, system boot time,
+active keyboards) and adding a row here and an entry there. The manifest also
+declares no tracking and no collected data, which stays true only while the app
+talks to nothing but the user's own server.
+
 ## Versioning
 
 **The app version is the server tag it is built from.** One tag is one tested
