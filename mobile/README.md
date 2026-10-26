@@ -232,8 +232,8 @@ it.
 
 ### 1. Back it up with sops before GitHub sees it
 
-**Every secret below goes into the `ideologix/vault` repository first, then into
-GitHub.** GitHub cannot return a stored Actions secret: once set, the only copy
+**Every secret below goes into the maintainers' private secrets repository
+first, then into GitHub.** GitHub cannot return a stored Actions secret: once set, the only copy
 that can be read back is the one kept elsewhere, and an Android upload key that
 exists nowhere else is an app that cannot be updated.
 
