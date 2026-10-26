@@ -37,9 +37,9 @@ jobs:
     # Gated on a repository variable rather than on the secrets being present,
     # because a job that fails for a missing secret fails on every single release
     # and trains everyone to ignore a red tick. Until the keystore exists this
-    # whole workflow is a no-op nobody has to look at; set MOBILE_RELEASES_ENABLED
-    # to `true` once the secrets below are in place, and the next published
-    # release builds the apps.
+    # job is a no-op nobody has to look at; set MOBILE_RELEASES_ENABLED to `true`
+    # once the secrets below are in place, and the next published release builds
+    # the Android app. The iOS job has its own switch.
     if: vars.MOBILE_RELEASES_ENABLED == 'true'
     runs-on: ubuntu-latest
     permissions:
@@ -217,11 +217,12 @@ jobs:
   # signing details before then.
   ios:
     name: iOS
-    # Two gates. The shared one, plus an iOS-specific one, because the Apple
-    # signing material arrives separately from the Android keystore and because a
-    # macOS runner is billed at ten times an ubuntu one, so it should not spin up
-    # on every release until it can produce something.
-    if: vars.MOBILE_RELEASES_ENABLED == 'true' && vars.MOBILE_IOS_ENABLED == 'true'
+    # A gate of its own, not the shared one as well, because the Apple signing
+    # material arrives separately from the Android keystore: either platform can
+    # be switched on first without the other failing on every release. A macOS
+    # runner is billed at ten times an ubuntu one, so it does not spin up until
+    # it can produce something.
+    if: vars.MOBILE_IOS_ENABLED == 'true'
     runs-on: macos-latest
 
     steps:
@@ -284,13 +285,21 @@ jobs:
       # `$(CURRENT_PROJECT_VERSION)`; PlistBuddy replaces them with literals, so
       # this must run after `cap sync` (which rewrites parts of the project) and
       # before the archive.
+      #
+      # Unlike Android's versionName, CFBundleShortVersionString may only hold up
+      # to three dot-separated integers, and App Store Connect refuses an upload
+      # carrying `3.0.0-alpha.4`. So iOS gets the tag without its pre-release
+      # part. Every alpha, beta and rc of 3.0.0 is then version 3.0.0, and the
+      # versionCode build number, which keeps rising through those bands, is what
+      # tells the builds apart in TestFlight.
       - name: Set the bundle version
         env:
           VERSION_CODE: ${{ steps.version.outputs.versionCode }}
           VERSION_NAME: ${{ steps.version.outputs.versionName }}
         run: |
           PLIST=mobile/ios/App/App/Info.plist
-          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $VERSION_NAME" "$PLIST"
+          SHORT_VERSION="${VERSION_NAME%%-*}"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $SHORT_VERSION" "$PLIST"
           /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $VERSION_CODE" "$PLIST"
           /usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$PLIST"
           /usr/libexec/PlistBuddy -c "Print :CFBundleVersion" "$PLIST"

@@ -205,7 +205,7 @@ everyone learns to ignore:
 
 | Variable | Gates | Set to `true` when |
 |---|---|---|
-| `MOBILE_RELEASES_ENABLED` | the whole workflow | the Android keystore secrets exist |
+| `MOBILE_RELEASES_ENABLED` | the Android job | the Android keystore secrets exist |
 | `MOBILE_IOS_ENABLED` | the iOS job | the Apple certificate, profile and App Store Connect key exist |
 | `MOBILE_PLAY_UPLOAD_ENABLED` | the Play upload step alone | the app entry exists in the Play Console |
 
@@ -362,3 +362,8 @@ digits reserved as a patch's pre-release runway: alpha `0..29`, beta `30..59`, r
 30th alpha, a fourth pre-release word, a minor above 99 or a tag it cannot parse
 all fail the run rather than being rounded into something plausible: a
 versionCode is spent the moment Play sees it.
+
+iOS takes `versionName` without its pre-release part, because
+`CFBundleShortVersionString` may only be dot-separated integers and App Store
+Connect refuses `3.0.0-beta.1`. Every pre-release of `3.0.0` is version `3.0.0`
+on iOS, and the build number, which is the `versionCode`, tells them apart.

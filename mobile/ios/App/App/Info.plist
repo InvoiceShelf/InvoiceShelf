@@ -86,9 +86,13 @@
 	</dict>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
+	<!--
+		Every device iOS 15 runs on is arm64, and the app is built for nothing
+		else; armv7 was the Capacitor template's leftover from 32-bit days.
+	-->
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
-		<string>armv7</string>
+		<string>arm64</string>
 	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
