@@ -62,9 +62,9 @@ open mobile/ios/App/App.xcworkspace
 leaves behind cannot be built. The Xcode workspace, not the `.xcodeproj`, is
 what opens: the Pods project is the other half of it.
 
-The project builds with Xcode 26 and 27 and runs on iOS 15 and later. Two
-things in it exist only for Xcode 27, and taking either out breaks that build
-again. First, the iOS 27 SDK refuses deployment targets below 15.0, so the
+The project builds with Xcode 27, the only version it has been built with so
+far, and runs on iOS 15 and later. Two things in it exist only for Xcode 27,
+and taking either out breaks that build again. First, the iOS 27 SDK refuses deployment targets below 15.0, so the
 Podfile lifts every pod to 15.0 after install. Capacitor's own helper and the
 plugin podspecs stop at 14.0. Second, the iOS 27 SDK requires the scene
 lifecycle: an app without it traps at launch. `SceneDelegate.swift` and the
@@ -230,20 +230,17 @@ end:
 Open both accounts before the first release the apps should appear in, not with
 it.
 
-### 1. Back it up with sops before GitHub sees it
+### 1. Back it up before GitHub sees it
 
-**Every secret below goes into the devenv `secrets/` directory first, then into
-GitHub.** GitHub cannot return a stored Actions secret: once set, the only copy
-that can be read back is the one kept elsewhere, and an Android upload key that
-exists nowhere else is an app that cannot be updated.
+**Every secret below is backed up first, encrypted, then set in GitHub.** GitHub
+cannot return a stored Actions secret: once set, the only copy that can be read
+back is the one kept elsewhere, and an Android upload key that exists nowhere
+else is an app that cannot be updated.
 
-The procedure is the one in the devenv repository's `AGENTS.md`, under "Secrets
-Backup (sops)": from the devenv workspace root, with `SOPS_AGE_KEY_FILE` pointing
-at the age key, encrypt a plain JSON file holding the credential to the age
-recipient in `.sops.yaml`, write it to `secrets/<name>.sops.json`, `shred` the
-plaintext, and add a row to the table in that file naming what it is and where
-the live copy lives. The age private key is what actually needs backing up; the
-encrypted files are useless without it.
+Encrypt each credential before it is stored anywhere (the maintainers use sops
+with an age key), note what it is, where its live copy is used and when it
+expires, and delete the plaintext. The age private key is what actually needs
+backing up; the encrypted files are useless without it.
 
 ### 2. Android signing key
 
