@@ -62,6 +62,16 @@ open mobile/ios/App/App.xcworkspace
 leaves behind cannot be built. The Xcode workspace, not the `.xcodeproj`, is
 what opens: the Pods project is the other half of it.
 
+The project builds with Xcode 26 and 27 and runs on iOS 15 and later. Two
+things in it exist only for Xcode 27, and taking either out breaks that build
+again. First, the iOS 27 SDK refuses deployment targets below 15.0, so the
+Podfile lifts every pod to 15.0 after install. Capacitor's own helper and the
+plugin podspecs stop at 14.0. Second, the iOS 27 SDK requires the scene
+lifecycle: an app without it traps at launch. `SceneDelegate.swift` and the
+`UIApplicationSceneManifest` in `Info.plist` provide it, and the scene delegate
+forwards opened URLs and universal links to Capacitor, because UIKit no longer
+calls the app delegate for them.
+
 ## The hostname is a contract
 
 ```ts
@@ -149,6 +159,24 @@ a launcher may mask the adaptive icon to a circle and only the inner two
 thirds survives that, so a mark sized to fill the layer loses its corners.
 The generated PNGs are committed along with the sources.
 
+## The privacy manifest
+
+App Store Connect refuses an upload whose code calls one of Apple's
+"required reason" APIs without declaring why. Capacitor's own manifest declares
+nothing and none of the plugins ship one, so `ios/App/App/PrivacyInfo.xcprivacy`
+declares them on the plugins' behalf:
+
+| API category | Reason | Called by |
+|---|---|---|
+| `UserDefaults` | `CA92.1`, the app's own data | `@capacitor/preferences`, holding the keys `local-storage.ts` mirrors |
+| `FileTimestamp` | `C617.1`, files inside the app container | `@capacitor/filesystem`, listing the share folder in the cache |
+
+**Adding a plugin, or taking a new major of one, means checking its iOS sources
+for those APIs** (UserDefaults, file timestamps, disk space, system boot time,
+active keyboards) and adding a row here and an entry there. The manifest also
+declares no tracking and no collected data, which stays true only while the app
+talks to nothing but the user's own server.
+
 ## Versioning
 
 **The app version is the server tag it is built from.** One tag is one tested
@@ -177,7 +205,7 @@ everyone learns to ignore:
 
 | Variable | Gates | Set to `true` when |
 |---|---|---|
-| `MOBILE_RELEASES_ENABLED` | the whole workflow | the Android keystore secrets exist |
+| `MOBILE_RELEASES_ENABLED` | the Android job | the Android keystore secrets exist |
 | `MOBILE_IOS_ENABLED` | the iOS job | the Apple certificate, profile and App Store Connect key exist |
 | `MOBILE_PLAY_UPLOAD_ENABLED` | the Play upload step alone | the app entry exists in the Play Console |
 
@@ -284,11 +312,16 @@ All of this needs the enrolment from step 0 to have completed.
    download the `.cer`, open it to import into the login keychain, then select the
    certificate **with its private key** and export both as a `.p12` with a
    password.
-2. **App id and profile.** Register the app id `com.invoiceshelf.app`, then create
+2. **App id and profile.** Register the app id `com.invoiceshelf.ios`, then create
    an **App Store** provisioning profile for it against that certificate. Name it
    exactly **`InvoiceShelf App Store`**: `mobile/ios/ExportOptions.plist` and the
    archive step match the profile by name, so a different name fails the export.
    Download the `.mobileprovision`.
+
+   The iOS bundle id is `com.invoiceshelf.ios`, not the Android
+   `com.invoiceshelf.app`: Apple's bundle ids are unique across every developer
+   team and that one was not available. It lives in the Xcode project's
+   `PRODUCT_BUNDLE_IDENTIFIER` and in `ExportOptions.plist`.
 3. **App Store Connect API key.** App Store Connect → Users and Access →
    Integrations → App Store Connect API → generate a key with the **App Manager**
    role. The `.p8` downloads exactly once. The issuer id is printed above the key
@@ -334,3 +367,8 @@ digits reserved as a patch's pre-release runway: alpha `0..29`, beta `30..59`, r
 30th alpha, a fourth pre-release word, a minor above 99 or a tag it cannot parse
 all fail the run rather than being rounded into something plausible: a
 versionCode is spent the moment Play sees it.
+
+iOS takes `versionName` without its pre-release part, because
+`CFBundleShortVersionString` may only be dot-separated integers and App Store
+Connect refuses `3.0.0-beta.1`. Every pre-release of `3.0.0` is version `3.0.0`
+on iOS, and the build number, which is the `versionCode`, tells them apart.

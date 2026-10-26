@@ -251,9 +251,10 @@ Notes on the mechanics:
 **The mobile apps ride the same button.** `mobile.yaml` also listens for
 `release: published`, so publishing the draft builds the Android AAB and APK
 (and, separately gated, the iOS archive) from that tag, attaches the APK to the
-release and uploads to the internal store tracks. Both its jobs are gated on the
-repository variable `MOBILE_RELEASES_ENABLED`, so until the signing secrets exist
-the whole workflow is a no-op rather than a failure on every release. The
+release and uploads to the internal store tracks. Each job is gated on a
+repository variable, `MOBILE_RELEASES_ENABLED` for Android and `MOBILE_IOS_ENABLED`
+for iOS, so until a platform's signing secrets exist its job is a no-op rather
+than a failure on every release. The
 variables, the secrets and how to produce each one are a top-to-bottom checklist
 in the Releasing section of `mobile/README.md`; the version numbers come from the
 tag via `mobile/scripts/version-code.mjs` and are never edited by hand.

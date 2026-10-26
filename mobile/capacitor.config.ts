@@ -11,6 +11,11 @@ import type { CapacitorConfig } from '@capacitor/cli'
  * bearer-only, and the server's CORS defaults are built from these two
  * origins: `capacitor://app.invoiceshelf.internal` on iOS and
  * `https://app.invoiceshelf.internal` on Android.
+ *
+ * `appId` is the Android application id. The iOS bundle id is
+ * `com.invoiceshelf.ios`, set in the Xcode project, because
+ * `com.invoiceshelf.app` was not available on the App Store; `cap sync` does
+ * not touch it.
  */
 const config: CapacitorConfig = {
   appId: 'com.invoiceshelf.app',

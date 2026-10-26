@@ -20,6 +20,13 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<!--
+		The app's only encryption is HTTPS through the system's own networking,
+		which is exempt from export documentation. Declaring it here answers App
+		Store Connect's export compliance question once, instead of on every upload.
+	-->
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<!--
@@ -43,15 +50,49 @@
 	<string>InvoiceShelf uses the camera so you can photograph a receipt and attach it to an expense.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>InvoiceShelf uses Face ID to unlock the app, so your account stays closed to anyone else holding your phone.</string>
+	<!--
+		Shown in the permission prompt the first time the app reaches a server on
+		the local network, the LAN case the ATS comment above describes, so the
+		prompt says why the app is asking.
+	-->
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>InvoiceShelf connects to the InvoiceShelf server you choose, which can be on your local network.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>InvoiceShelf reads photos you pick so you can attach an existing receipt image to an expense.</string>
+	<!--
+		The scene lifecycle, which the iOS 27 SDK makes mandatory: without this
+		manifest a build against it traps at launch. One window, no multiple
+		scenes, and the Main storyboard that UIMainStoryboardFile used to name,
+		so the bridge view controller is created exactly as before.
+	-->
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<false/>
+		<key>UISceneConfigurations</key>
+		<dict>
+			<key>UIWindowSceneSessionRoleApplication</key>
+			<array>
+				<dict>
+					<key>UISceneConfigurationName</key>
+					<string>Default Configuration</string>
+					<key>UISceneDelegateClassName</key>
+					<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
+					<key>UISceneStoryboardFile</key>
+					<string>Main</string>
+				</dict>
+			</array>
+		</dict>
+	</dict>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
-	<key>UIMainStoryboardFile</key>
-	<string>Main</string>
+	<!--
+		Every device iOS 15 runs on is arm64, and the app is built for nothing
+		else; armv7 was the Capacitor template's leftover from 32-bit days.
+	-->
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
-		<string>armv7</string>
+		<string>arm64</string>
 	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
