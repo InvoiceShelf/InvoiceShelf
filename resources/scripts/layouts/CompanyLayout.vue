@@ -24,9 +24,12 @@
         hasCompany ? (isExpanded ? 'md:ps-16 lg:ps-64' : 'md:ps-16') : '',
       ]"
     >
-      <ImpersonationBanner />
-      <DemoBanner />
-      <AnnouncementBanner />
+      <!-- Whichever banner comes first takes the status bar area (.safe-banners) -->
+      <div class="flex flex-col shrink-0 safe-banners">
+        <ImpersonationBanner />
+        <DemoBanner />
+        <AnnouncementBanner />
+      </div>
 
       <!--
         The top bar lives inside the scrolling area so content passes under
