@@ -62,6 +62,16 @@ open mobile/ios/App/App.xcworkspace
 leaves behind cannot be built. The Xcode workspace, not the `.xcodeproj`, is
 what opens: the Pods project is the other half of it.
 
+The project builds with Xcode 26 and 27 and runs on iOS 15 and later. Two
+things in it exist only for Xcode 27, and taking either out breaks that build
+again. First, the iOS 27 SDK refuses deployment targets below 15.0, so the
+Podfile lifts every pod to 15.0 after install. Capacitor's own helper and the
+plugin podspecs stop at 14.0. Second, the iOS 27 SDK requires the scene
+lifecycle: an app without it traps at launch. `SceneDelegate.swift` and the
+`UIApplicationSceneManifest` in `Info.plist` provide it, and the scene delegate
+forwards opened URLs and universal links to Capacitor, because UIKit no longer
+calls the app delegate for them.
+
 ## The hostname is a contract
 
 ```ts

@@ -59,10 +59,33 @@
 	<string>InvoiceShelf connects to the InvoiceShelf server you choose, which can be on your local network.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>InvoiceShelf reads photos you pick so you can attach an existing receipt image to an expense.</string>
+	<!--
+		The scene lifecycle, which the iOS 27 SDK makes mandatory: without this
+		manifest a build against it traps at launch. One window, no multiple
+		scenes, and the Main storyboard that UIMainStoryboardFile used to name,
+		so the bridge view controller is created exactly as before.
+	-->
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<false/>
+		<key>UISceneConfigurations</key>
+		<dict>
+			<key>UIWindowSceneSessionRoleApplication</key>
+			<array>
+				<dict>
+					<key>UISceneConfigurationName</key>
+					<string>Default Configuration</string>
+					<key>UISceneDelegateClassName</key>
+					<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
+					<key>UISceneStoryboardFile</key>
+					<string>Main</string>
+				</dict>
+			</array>
+		</dict>
+	</dict>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
-	<key>UIMainStoryboardFile</key>
-	<string>Main</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
