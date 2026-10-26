@@ -212,6 +212,17 @@ everyone learns to ignore:
 They are **variables**, not secrets: Settings → Secrets and variables → Actions →
 Variables.
 
+**A release that does not change the app does not ship one.** The apps are the
+thin-client bundle plus this native shell, so the workflow's first job compares
+the tag with the previous release tag over `resources/client`, `resources/scripts`,
+`resources/css`, `resources/static`, `lang`, the Vite configs, the root
+`package.json` and lockfile, and `mobile/` (its Markdown aside). When none of them
+changed, both platform jobs are skipped and the run summary says so; a
+server-only release reaches nobody's TestFlight. `version.md` is not on the list:
+the version the client reports lags behind until the app changes, which only
+matters if `INVOICESHELF_CLIENT_MIN_VERSION` is raised, and that goes with client
+changes anyway. Running the workflow by hand always builds.
+
 ### 0. Start the accounts first
 
 Both stores gate on paperwork that takes weeks, and neither can be hurried at the
