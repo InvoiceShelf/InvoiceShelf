@@ -403,25 +403,66 @@ jobs:
           NEW="$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles"
           mkdir -p "$OLD" "$NEW"
           printf '%s' "$PROFILE_B64" | base64 -d > "$RUNNER_TEMP/invoiceshelf.mobileprovision"
-          cp "$RUNNER_TEMP/invoiceshelf.mobileprovision" "$OLD/invoiceshelf.mobileprovision"
-          cp "$RUNNER_TEMP/invoiceshelf.mobileprovision" "$NEW/invoiceshelf.mobileprovision"
+          # Named by its UUID, the way Xcode installs profiles itself.
+          UUID=$(security cms -D -i "$RUNNER_TEMP/invoiceshelf.mobileprovision" | plutil -extract UUID raw -)
+          cp "$RUNNER_TEMP/invoiceshelf.mobileprovision" "$OLD/$UUID.mobileprovision"
+          cp "$RUNNER_TEMP/invoiceshelf.mobileprovision" "$NEW/$UUID.mobileprovision"
 
-      # The workspace, not the .xcodeproj: the Pods project is the other half of
-      # it. Manual signing, because the runner has exactly one certificate and one
-      # profile and no Xcode account to ask the portal for more.
-      - name: Archive
+      # Manual signing, because the runner has exactly one certificate and one
+      # profile and no Xcode account to ask the portal for more. It is set on the
+      # App target's Release configuration alone, by editing this checkout's
+      # project: given to xcodebuild on the command line instead, the profile
+      # would reach the CocoaPods framework targets too, and they refuse one
+      # ("does not support provisioning profiles"). The committed project keeps
+      # automatic signing, so a developer's own Xcode account still archives it.
+      #
+      # Inline rather than a script in the repository, because a manual re-run
+      # checks out an older tag with this workflow, and the tag may predate any
+      # script. plutil turns the project into JSON and back into XML, which Xcode
+      # reads as it reads its own format.
+      - name: Sign the App target for the App Store
         env:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          python3 - "$APPLE_TEAM_ID" "InvoiceShelf App Store" <<'PY'
+          import json, subprocess, sys
+
+          PROJECT = 'mobile/ios/App/App.xcodeproj/project.pbxproj'
+          team_id, profile = sys.argv[1], sys.argv[2]
+
+          project = json.loads(subprocess.run(
+              ['plutil', '-convert', 'json', '-o', '-', PROJECT],
+              check=True, capture_output=True,
+          ).stdout)
+          objects = project['objects']
+
+          targets = [o for o in objects.values() if o.get('isa') == 'PBXNativeTarget' and o.get('name') == 'App']
+          assert len(targets) == 1, f'expected one App target, found {len(targets)}'
+          configs = [objects[i] for i in objects[targets[0]['buildConfigurationList']]['buildConfigurations']
+                     if objects[i].get('name') == 'Release']
+          assert len(configs) == 1, f'expected one Release configuration, found {len(configs)}'
+
+          configs[0]['buildSettings'].update({
+              'CODE_SIGN_STYLE': 'Manual',
+              'CODE_SIGN_IDENTITY': 'Apple Distribution',
+              'DEVELOPMENT_TEAM': team_id,
+              'PROVISIONING_PROFILE_SPECIFIER': profile,
+          })
+
+          subprocess.run(['plutil', '-convert', 'xml1', '-o', PROJECT, '-'],
+                         check=True, input=json.dumps(project).encode())
+          print(f'App (Release): manual signing, "Apple Distribution", profile "{profile}".')
+          PY
+
+      # The workspace, not the .xcodeproj: the Pods project is the other half of it.
+      - name: Archive
         run: |
           xcodebuild archive \
             -workspace mobile/ios/App/App.xcworkspace \
             -scheme App \
             -configuration Release \
             -destination 'generic/platform=iOS' \
-            -archivePath "$RUNNER_TEMP/App.xcarchive" \
-            CODE_SIGN_STYLE=Manual \
-            DEVELOPMENT_TEAM="$APPLE_TEAM_ID" \
-            PROVISIONING_PROFILE_SPECIFIER="InvoiceShelf App Store"
+            -archivePath "$RUNNER_TEMP/App.xcarchive"
 
       # mobile/ios/ExportOptions.plist carries the shape; the team id is written
       # into a copy in $RUNNER_TEMP so it is never committed.
