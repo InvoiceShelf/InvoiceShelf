@@ -34,7 +34,7 @@
       <!--
         The top bar lives inside the scrolling area so content passes under
         it; the bottom inset keeps the last rows clear of the phone's
-        floating tab bar or action bar. The header and the page are siblings,
+        tab bar or action bar. The header and the page are siblings,
         so the header is the page's banner rather than part of its content.
       -->
       <div
@@ -129,8 +129,8 @@ watchEffect(() => {
   let bottom = 'env(safe-area-inset-bottom)'
 
   if (showTabBar.value) {
-    // The floating tab bar: 3.75rem tall, 0.5rem above the home indicator, plus breathing room
-    bottom = 'calc(5rem + env(safe-area-inset-bottom))'
+    // The tab bar: 3.75rem tall over the home indicator, plus breathing room
+    bottom = 'calc(4.5rem + env(safe-area-inset-bottom))'
   } else if (isPhone.value && globalStore.actionBarCount > 0) {
     bottom = 'calc(4.5rem + env(safe-area-inset-bottom))'
   }

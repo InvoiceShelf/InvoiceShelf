@@ -1,7 +1,11 @@
 <template>
-  <!-- A floating glass bar above the home indicator; content scrolls under it -->
+  <!--
+    A glass bar pinned to the bottom edge, reaching down behind the home
+    indicator like the action bar that takes its place, so no page content
+    shows below it; content scrolls under it
+  -->
   <nav
-    class="fixed inset-x-3 z-30 border rounded-2xl glass-strong bottom-[calc(env(safe-area-inset-bottom)+0.5rem)]"
+    class="fixed inset-x-0 bottom-0 z-30 border-t glass-bar border-(--glass-edge) safe-bottom"
     :aria-label="$t('navigation.menu')"
   >
     <ul class="grid h-15 px-1" :style="{ gridTemplateColumns: `repeat(${tabs.length + 1}, minmax(0, 1fr))` }">
