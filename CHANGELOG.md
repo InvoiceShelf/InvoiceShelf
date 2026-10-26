@@ -7,6 +7,28 @@ section beneath it is what CI publishes to the updater — see
 The 2.x line has its own CHANGELOG.md on the `2.x` branch. Releases are also on
 GitHub: https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 3.0.0-alpha.15 - 2026-10-26
+
+Fifteenth public alpha of InvoiceShelf 3.0. The iOS app is ready for TestFlight: it builds with the iOS 27 SDK, runs on iOS 15 and later, and releases now upload it automatically. On phones, banners no longer sit under the status bar, the demo notice folds into one line, and the tab bar reaches the bottom edge.
+
+⚠️ **Pre-release, not for production.** Back up your database before upgrading and use this release for evaluation and testing only.
+
+### Highlights
+
+- **iOS app, on its way to TestFlight.** The app adopts the scene lifecycle, which the iOS 27 SDK requires (without it the app closed on launch), and needs iOS 15 or later. It declares the privacy manifest and export compliance App Store Connect asks for, and explains why it asks for local network access. Its bundle id is `com.invoiceshelf.ios`; Android stays `com.invoiceshelf.app`. Publishing a release now archives the app on a macOS runner and uploads it to TestFlight; submitting it to the App Store stays a manual step. (#958)
+- **Phone layout.** On a notched phone the demo, impersonation and announcement banners were drawn under the status bar, with an empty band of header colour below them; the first banner now fills the status bar area itself. The demo notice folds into one line, "Shared demo · resets in 2 h 6 min", that opens to the full text. The tab bar is pinned to the bottom edge instead of floating above it, and the dashboard's "Owed to you" card puts View invoices beside its heading and takes about a third less height. (#959)
+
+### Improvements and fixes
+
+- The demo's sample data flags every invoice past its due date as overdue, so right after a reset the dashboard, the Overdue badges and the AI Assistant agree instead of showing 14 and 4 until the daily check ran. (#951)
+
+### Upgrade notes
+
+- **No migrations.**
+- **iOS app version numbers.** iOS builds carry the version without its pre-release part, so every 3.0.0 alpha, beta and rc is "3.0.0" on iOS, told apart by its build number (3000015 for this release). Android keeps the full version.
+
+Docker: `invoiceshelf/invoiceshelf:3.0.0-alpha.15` or `ghcr.io/invoiceshelf/invoiceshelf:3.0.0-alpha.15` (also `:next`).
+
 ## 3.0.0-alpha.14 - 2026-10-24
 
 Fourteenth public alpha of InvoiceShelf 3.0. A notification bell tells staff what happened: payments, viewed and answered documents, due dates, team and system events. Customers can be reminded about unpaid invoices automatically, and announcements reach everyone on an install. Translations are up to date again, with about 6,500 more strings translated.
