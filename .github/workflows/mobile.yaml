@@ -32,15 +32,94 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # The apps ship the thin-client bundle and the native shell, nothing else, so a
+  # release that leaves both alone would upload the same app again under a new
+  # build number: one more TestFlight build for testers to install, one more
+  # store review once the apps are public. This job compares the tag with the
+  # previous release tag over the paths that make up the app and tells the two
+  # platform jobs whether there is anything new to ship.
+  #
+  # version.md is left out on purpose. It changes on every release, and the only
+  # thing it changes in the bundle is the version the client reports, which the
+  # server gates on (`min_client_version`) only when it is raised deliberately,
+  # together with client changes that are in these paths anyway.
+  #
+  # A previous release with no app of its own does not hide changes: its app
+  # paths were identical to the release before it, so comparing against it is
+  # the same as comparing against the last release that did ship an app.
+  changes:
+    name: App changes
+    runs-on: ubuntu-latest
+    outputs:
+      app: ${{ steps.diff.outputs.app }}
+
+    steps:
+      - name: Resolve the tag being built
+        id: resolve
+        env:
+          EVENT: ${{ github.event_name }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          INPUT_TAG: ${{ inputs.tag }}
+        run: |
+          if [ "$EVENT" = "release" ]; then TAG="$RELEASE_TAG"; else TAG="$INPUT_TAG"; fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout code at that tag, with history
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ steps.resolve.outputs.tag }}
+          fetch-depth: 0
+
+      # workflow_dispatch always builds: it is the repair path for a failed
+      # upload or an expired certificate, where the point is to ship this tag
+      # again whatever changed.
+      - name: Compare the app with the previous release
+        id: diff
+        env:
+          EVENT: ${{ github.event_name }}
+          TAG: ${{ steps.resolve.outputs.tag }}
+        run: |
+          APP_PATHS=(
+            resources/client resources/scripts resources/css resources/static lang
+            vite.client.config.ts vite.shared.mjs package.json pnpm-lock.yaml
+            mobile ':(exclude,glob)mobile/**/*.md'
+          )
+
+          ship() {
+            echo "app=$1" >> "$GITHUB_OUTPUT"
+            echo "$2" >> "$GITHUB_STEP_SUMMARY"
+            echo "$2"
+          }
+
+          if [ "$EVENT" != "release" ]; then
+            ship true "Manual run: building $TAG regardless of changes."
+            exit 0
+          fi
+
+          PREV=$(git describe --tags --abbrev=0 "$TAG^" 2>/dev/null || true)
+          if [ -z "$PREV" ] || [ "${PREV%%.*}" != "${TAG%%.*}" ]; then
+            ship true "No earlier release of this major to compare with: building $TAG."
+            exit 0
+          fi
+
+          CHANGED=$(git diff --name-only "$PREV" "$TAG" -- "${APP_PATHS[@]}")
+          if [ -z "$CHANGED" ]; then
+            ship false "Nothing in the app changed since $PREV: no app build for $TAG."
+          else
+            ship true "The app changed since $PREV ($(echo "$CHANGED" | wc -l | tr -d ' ') files): building $TAG."
+            { echo; echo '```'; echo "$CHANGED" | head -50; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
   android:
     name: Android
+    needs: changes
     # Gated on a repository variable rather than on the secrets being present,
     # because a job that fails for a missing secret fails on every single release
     # and trains everyone to ignore a red tick. Until the keystore exists this
     # job is a no-op nobody has to look at; set MOBILE_RELEASES_ENABLED to `true`
     # once the secrets below are in place, and the next published release builds
     # the Android app. The iOS job has its own switch.
-    if: vars.MOBILE_RELEASES_ENABLED == 'true'
+    if: vars.MOBILE_RELEASES_ENABLED == 'true' && needs.changes.outputs.app == 'true'
     runs-on: ubuntu-latest
     permissions:
       # Only for `gh release upload`, which attaches the APK to the release.
@@ -217,12 +296,13 @@ jobs:
   # signing details before then.
   ios:
     name: iOS
+    needs: changes
     # A gate of its own, not the shared one as well, because the Apple signing
     # material arrives separately from the Android keystore: either platform can
     # be switched on first without the other failing on every release. A macOS
     # runner is billed at ten times an ubuntu one, so it does not spin up until
     # it can produce something.
-    if: vars.MOBILE_IOS_ENABLED == 'true'
+    if: vars.MOBILE_IOS_ENABLED == 'true' && needs.changes.outputs.app == 'true'
     runs-on: macos-latest
 
     steps:
