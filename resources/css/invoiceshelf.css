@@ -513,10 +513,12 @@ body {
 /*
  * A banner above the app bar (demo, impersonation, announcement) is what sits
  * under the status bar then, so the first one grows into that area in its own
- * colour and the app bar below it drops the inset it no longer needs.
+ * colour and the app bar below it drops the inset it no longer needs. The
+ * inset is a transparent top border, which the banner's background paints
+ * through, so it adds to whatever padding the banner has of its own.
  */
 .safe-banners > :first-child {
-    padding-top: calc(0.5rem + env(safe-area-inset-top));
+    border-top: env(safe-area-inset-top) solid transparent;
 }
 
 .safe-banners:has(> *) + #app-scroll .safe-header {
