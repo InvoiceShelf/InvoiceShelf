@@ -16,7 +16,7 @@
         "gotenberg/gotenberg-php": "^2.23",
         "guzzlehttp/guzzle": "^7.9",
         "hashids/hashids": "^5.0",
-        "invoiceshelf/modules": "^3.6",
+        "invoiceshelf/modules": "^3.7",
         "laravel/framework": "^13.0",
         "laravel/helpers": "^1.7",
         "laravel/mcp": "^1.0",
