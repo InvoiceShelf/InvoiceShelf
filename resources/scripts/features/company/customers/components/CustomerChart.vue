@@ -30,6 +30,9 @@ const route = useRoute()
 const { isPhone } = useBreakpoints()
 
 const isLoaded = ref<boolean>(false)
+// A failed load shows a retry rather than placeholders that never resolve.
+// Declared before the immediate watcher below, which calls load() at once.
+const loadError = ref<boolean>(false)
 const chartData = reactive<Partial<CustomerStatsChartData>>({})
 const period = ref<PeriodValue>({ preset: 'this_year' })
 const presets = computed(() => yearPresets(t))
@@ -96,9 +99,6 @@ watch(
   },
   { immediate: true },
 )
-
-// A failed load shows a retry rather than placeholders that never resolve
-const loadError = ref<boolean>(false)
 
 async function load(): Promise<void> {
   loadError.value = false
