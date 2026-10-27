@@ -43,6 +43,8 @@ export interface CompanySettingsMap {
   payment_company_address_format: string
   payment_from_customer_address_format: string
   invoice_email_attachment: 'YES' | 'NO'
+  invoice_payment_link: string
+  invoice_payment_link_qr: 'YES' | 'NO'
   estimate_email_attachment: 'YES' | 'NO'
   payment_email_attachment: 'YES' | 'NO'
   retrospective_edits: string

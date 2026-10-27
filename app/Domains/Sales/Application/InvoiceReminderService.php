@@ -45,6 +45,7 @@ class InvoiceReminderService
         private readonly InvoiceService $invoiceService,
         private readonly InvoiceEmailSender $emailSender,
         private readonly MailConfigurator $mailConfigurator,
+        private readonly InvoicePaymentLinks $paymentLinks,
     ) {}
 
     /**
@@ -312,6 +313,7 @@ class InvoiceReminderService
                 'customer' => $invoice->customer->toArray(),
                 'company' => Company::query()->find($invoice->company_id),
                 'attach' => ['data' => $settings->attachPdf ? $this->invoiceService->getPdfData($invoice) : null],
+                'payment_link' => $this->paymentLinks->forInvoice($invoice),
             ], false);
         } catch (Throwable $error) {
             report($error);
