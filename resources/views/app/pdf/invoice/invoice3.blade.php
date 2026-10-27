@@ -410,6 +410,8 @@
 
                 {!! $notes !!}
             @endif
+
+            @include('app.pdf.partials.payment-link')
         </div>
     </div>
 </body>

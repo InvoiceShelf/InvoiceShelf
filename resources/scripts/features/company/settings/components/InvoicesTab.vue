@@ -4,6 +4,7 @@ import { useCompanyStore } from '@/scripts/stores/company.store'
 import { useInvoiceStore } from '@/scripts/features/company/invoices/store'
 import NumberCustomizer from './NumberCustomizer.vue'
 import InvoicesTabDueDate from './InvoicesTabDueDate.vue'
+import InvoicesTabPaymentLink from './InvoicesTabPaymentLink.vue'
 import InvoicesTabRetrospective from './InvoicesTabRetrospective.vue'
 import InvoicesTabDefaultFormats from './InvoicesTabDefaultFormats.vue'
 
@@ -59,6 +60,10 @@ const sendAsAttachmentField = computed<boolean>({
   <BaseDivider class="mt-6 mb-2" />
 
   <InvoicesTabDueDate />
+
+  <BaseDivider class="mt-6 mb-2" />
+
+  <InvoicesTabPaymentLink />
 
   <BaseDivider class="mt-6 mb-2" />
 

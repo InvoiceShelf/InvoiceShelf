@@ -9,6 +9,7 @@
     "type": "project",
     "require": {
         "php": "^8.4",
+        "bacon/bacon-qr-code": "^3.0",
         "barryvdh/laravel-dompdf": "^v3.0",
         "composer/semver": "^3.4",
         "dragonmantank/cron-expression": "^v3.4",

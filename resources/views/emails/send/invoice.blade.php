@@ -22,6 +22,11 @@
                     @lang('mail_view_invoice')
                 @endcomponent
             @endif
+            @if(!empty($data['payment_link']))
+                @component('mail::button', ['url' => $data['payment_link'], 'color' => 'success'])
+                    @lang('mail_pay_online')
+                @endcomponent
+            @endif
         @endcomponent
     @endslot
 
