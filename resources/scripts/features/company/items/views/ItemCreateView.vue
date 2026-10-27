@@ -158,12 +158,14 @@ async function loadData(): Promise<void> {
   if (isEdit.value) {
     const id = Number(route.params.id)
     await itemStore.fetchItem(id)
-    taxPerItem.value =
+    const itemFlagged =
       itemStore.currentItem.tax_per_item === 1 ||
       itemStore.currentItem.tax_per_item === '1' ||
       itemStore.currentItem.tax_per_item === true
-        ? 'YES'
-        : 'NO'
+
+    if (itemFlagged) {
+      taxPerItem.value = 'YES'
+    }
   }
 
   isFetchingInitialData.value = false
