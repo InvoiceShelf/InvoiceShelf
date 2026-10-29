@@ -827,3 +827,46 @@ test('an invoice for a company with no tax-per-item setting taxes the whole invo
         'tax_per_item' => 'NO',
     ]);
 });
+
+test('disable-after-sent locks a sent invoice even when nothing is paid', function (string $status, bool $sent, bool $editable) {
+    CompanySetting::setSettings(
+        ['retrospective_edits' => 'disable_on_invoice_sent'],
+        User::find(1)->companies()->first()->id
+    );
+
+    $invoice = completionInvoice();
+    $invoice->update(['status' => $status, 'sent' => $sent]);
+
+    getJson("api/v1/invoices/{$invoice->id}")
+        ->assertOk()
+        ->assertJsonPath('data.allow_edit', $editable);
+})->with([
+    'draft' => [Invoice::STATUS_DRAFT, false, true],
+    'sent' => [Invoice::STATUS_SENT, true, false],
+    'viewed' => [Invoice::STATUS_VIEWED, true, false],
+]);
+
+test('disable-after-sent refuses to update a sent unpaid invoice', function () {
+    CompanySetting::setSettings(
+        ['retrospective_edits' => 'disable_on_invoice_sent'],
+        User::find(1)->companies()->first()->id
+    );
+
+    $invoice = completionInvoice();
+
+    putJson("api/v1/invoices/{$invoice->id}", Invoice::factory()->raw([
+        'customer_id' => $invoice->customer_id,
+        'items' => [InvoiceItem::factory()->raw()],
+    ]))->assertForbidden();
+});
+
+test('the other retrospective edit modes still allow editing a sent unpaid invoice', function (string $mode) {
+    CompanySetting::setSettings(
+        ['retrospective_edits' => $mode],
+        User::find(1)->companies()->first()->id
+    );
+
+    getJson('api/v1/invoices/'.completionInvoice()->id)
+        ->assertOk()
+        ->assertJsonPath('data.allow_edit', true);
+})->with(['allow', 'disable_on_invoice_partial_paid', 'disable_on_invoice_paid']);
