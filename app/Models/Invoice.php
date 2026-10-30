@@ -408,9 +408,10 @@ class Invoice extends Model implements HasMedia
         $data['base_due_amount'] = MoneyConversion::toBaseMinor($data['due_amount'], $data['exchange_rate']);
         $data['customer_sequence_number'] = $serial->nextCustomerSequenceNumber;
 
+        $status = $this->status;
         $this->update($data);
 
-        $statusData = $this->getInvoiceStatusByAmount($data['due_amount']);
+        $statusData = $this->getInvoiceStatusByAmount($data['due_amount'], $status);
         if (! empty($statusData)) {
             $this->update($statusData);
         }
@@ -706,7 +707,7 @@ class Invoice extends Model implements HasMedia
      *
      * @return array
      */
-    public function getInvoiceStatusByAmount($amount)
+    public function getInvoiceStatusByAmount($amount, ?string $status = null)
     {
         if ($amount < 0) {
             return [];
@@ -714,7 +715,7 @@ class Invoice extends Model implements HasMedia
 
         if ($amount == 0) {
             $data = [
-                'status' => Invoice::STATUS_COMPLETED,
+                'status' => ($status ?? $this->status) === Invoice::STATUS_DRAFT ? Invoice::STATUS_DRAFT : Invoice::STATUS_COMPLETED,
                 'paid_status' => Invoice::STATUS_PAID,
                 'overdue' => false,
             ];
