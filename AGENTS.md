@@ -1,254 +1,552 @@
 # AGENTS.md
 
-Canonical guide for AI coding agents working in this repository. The tool-specific files
-(`CLAUDE.md`, `GEMINI.md`, `.github/copilot-instructions.md`) are gitignored symlinks to this file —
-run `composer run ai-docs` to (re)create them.
+This is the canonical guide for AI coding agents working in InvoiceShelf. The
+repository-generated files `CLAUDE.md`, `GEMINI.md`, and
+`.github/copilot-instructions.md` point to this file and are ignored by Git.
+Recreate those links with:
 
-## Project Overview
-
-InvoiceShelf is an open-source invoicing and expense tracking application built with Laravel 13 (PHP 8.4) and Vue 3. It supports multi-company tenancy, customer portals, recurring invoices, and PDF generation.
-
-## Common Commands
-
-### Development
 ```bash
-composer run dev          # Starts PHP server, queue listener, log tail, and Vite dev server concurrently
-pnpm dev               # Vite dev server only
-pnpm build             # Production frontend build
+composer run ai-docs
 ```
 
-### Demo data
+## 1. Working Rules
+
+### Before changing code
+
+1. Read this file and any more-specific `AGENTS.md` in the directory being
+   changed.
+2. Inspect the existing implementation, tests, routes, and sibling components.
+3. Check `git status` before editing. Treat existing changes as user-owned.
+4. Identify the smallest module or application boundary that can own the fix.
+
+### While changing code
+
+- Preserve unrelated work. Do not reset, checkout, clean, or delete files
+  unless the user explicitly requests it.
+- Use the repository's existing services, requests, policies, resources, UI
+  components, and tests before adding new abstractions.
+- Keep controllers thin. Put business rules in services.
+- Use `apply_patch` for manual edits.
+- Add or update tests for every behavioral change.
+- Do not commit, push, deploy, or reset data unless the user explicitly asks.
+- Do not expose credentials, tokens, or local `.env` values in logs, tests, or
+  documentation.
+
+### Before finishing
+
+Report:
+
+- Files and behavior changed.
+- Tests, formatters, and builds that passed.
+- Checks that could not run and why.
+- Any remaining risk or required manual verification.
+
+## 2. Project Overview
+
+InvoiceShelf is a Laravel 13 application using PHP 8.4, Vue 3, TypeScript,
+Pinia, Tailwind CSS v4, Sanctum, Passport, and Bouncer. It provides:
+
+- Multi-company accounting and invoicing.
+- Staff administration and company-scoped authorization.
+- Customer portals.
+- Recurring invoices, payments, expenses, reports, and PDFs.
+- Optional first-party modules under `Modules/`.
+
+Important directories:
+
+| Path | Responsibility |
+| --- | --- |
+| `app/` | Host application code |
+| `app/Platform/` | Platform capabilities such as modules, MCP, operations, and PDF |
+| `config/` | Configuration; use `config()` from application code |
+| `database/` | Migrations, factories, seeders |
+| `resources/scripts/` | Host Vue application |
+| `resources/css/` | Tailwind and theme tokens |
+| `Modules/` | Git submodules and module source trees |
+| `routes/` | Host API and web routes |
+| `tests/` | Host Pest tests |
+| `docs/` | User and API documentation |
+| `docker/` | Development and production Docker definitions |
+| `mobile/` | Capacitor Android and iOS shell |
+
+## 3. Local Development
+
+### Preferred Docker environment
+
+The repository includes `./devenv`, a Docker Compose wrapper. Run it once for
+interactive setup, then use:
+
 ```bash
-php artisan db:seed --class=DemoSeeder --force            # demo user + Acme Inc, its address and settings
-php artisan db:seed --class=RealisticDemoSeeder --force   # ~100 records: customers, invoices with tax, estimates, payments, expenses, notes, a recurring invoice
+./devenv start
+./devenv stop
+./devenv shell
+./devenv logs
+./devenv rebuild
+./devenv test
+./devenv format
 ```
 
-`DemoSeeder` is what the test suite and `php artisan reset:app` run — keep it cheap. `RealisticDemoSeeder` is development-only and never runs in tests; it is what to seed when you want the app to look like a real install (a company with a logo and postal address, taxed documents, a populated notes library).
+The default host is `http://invoiceshelf.test`. The setup may also provide:
 
-> **Local environment (preferred):** the repo ships a `./devenv` script — a Docker Compose wrapper for the full local stack. Run `./devenv` once for interactive setup (pick MySQL/PostgreSQL/SQLite, optional Gotenberg; it adds the `invoiceshelf.test` host entry), then drive it with `./devenv start | stop | shell | logs | rebuild | test | format`. App at http://invoiceshelf.test, Adminer at `:8080`, Mailpit at `:8025`; the compose files live in `docker/development/` and your choice is remembered in `.devenvconfig`. (`composer run dev` / `pnpm dev` above are the native, non-Docker alternative.)
+- Adminer at `http://invoiceshelf.test:8080`.
+- Mailpit at `http://invoiceshelf.test:8025`.
 
-### Testing
+The selected compose configuration is stored in `.devenvconfig`.
+
+### Native development
+
 ```bash
-php artisan test --compact                        # Run all tests
-php artisan test --compact --filter=testName       # Run specific test
-./vendor/bin/pest --stop-on-failure                # Run via Pest directly
-make test                                          # Makefile shortcut
+composer install
+pnpm install
+composer run dev
 ```
 
-Tests use SQLite in-memory DB, configured in `phpunit.xml`. Tests seed via `DatabaseSeeder` + `DemoSeeder` in `beforeEach`. Authenticate with `Sanctum::actingAs()` and set the `company` header.
+Use `pnpm dev` when only the Vite server is needed. Use the Docker environment
+when testing MySQL, Gotenberg, container networking, or production-like
+behavior.
 
-### Code Style
-```bash
-vendor/bin/pint --dirty --format agent    # Fix style on modified PHP files
-vendor/bin/pint --test                    # Check style without fixing (CI uses this)
-composer lint        # = pint --test   ;  composer lint:fix = pint
-pnpm lint         # eslint (--max-warnings 0)  ;  pnpm lint:fix = eslint --fix
+### Docker deployment helper
+
+`Deplay-Changes-to-Docker.ps1` is a local, ignored PowerShell helper for the
+development Docker environment. It is not part of the application release.
+
+Normal application/module update:
+
+```powershell
+.\Deplay-Changes-to-Docker.ps1 -InstallModule PaymentPlan
 ```
 
-### Code Quality Gate (pre-commit hook)
-A committed Git hook (`.githooks/pre-commit`) runs **Pint** on staged `.php` and **ESLint** on staged
-`resources/scripts/**` `.{js,cjs,mjs,ts,vue}` files, and **blocks the commit on any failure** (ESLint runs
-with `--max-warnings 0`). It lints **staged files only**, and soft-skips if PHP/Pint or `node_modules` is
-unavailable (CI is the backstop). The hook is enabled via `core.hooksPath`, set automatically by the
-`prepare` script on `pnpm install`; to enable it manually run:
-```bash
-git config core.hooksPath .githooks
+Module-only update:
+
+```powershell
+.\Deplay-Changes-to-Docker.ps1 -ModuleOnly -InstallModule PaymentPlan
 ```
-Bypass intentionally (discouraged): `git commit --no-verify`. Intentional `v-html` is allowed via an
-inline `<!-- eslint-disable-next-line vue/no-v-html -->` with a reason.
 
-### Artisan Generators
-Always use `php artisan make:*` with `--no-interaction` to create new files (models, controllers, migrations, tests, etc.).
+Module-only mode installs the selected module, runs its migrations and ability
+sync, clears caches, builds only the module frontend, and runs that module's
+tests. It does not run host migrations, the host frontend build, host role
+preset synchronization, or the host test suite.
 
-## Architecture
+Data-preserving and destructive operations:
 
-### Multi-Tenancy
-Every major model has a `company_id` foreign key. The `CompanyMiddleware` sets the active company from the `company` request header. Bouncer authorization is scoped to the company level via `DefaultScope` (`app/Bouncer/Scopes/DefaultScope.php`).
+- `php artisan migrate --force` applies pending migrations and preserves data.
+- `-ResetDatabase` runs `migrate:fresh` and permanently deletes application
+  data before seeding the base schema.
+- `-ImportSeedData` also deletes application data, then imports demo data.
+- Never use `migrate:fresh`, `db:wipe`, or the reset switches against a
+  database that must be preserved.
 
-### Roles
-- **`super admin`** — global platform admin (unscoped, manages all companies).
-- **`owner`** — company-level admin (scoped to a company via Bouncer, full access to that company).
-- **Role presets** (`role_presets`, `RolePresetService`): roles the super admin defines once (Administration API `super-admin/role-presets`); every company holds a copy named `owner` (the Owner preset, always the whole catalogue) or `preset:{key}`, which it can assign but not edit or delete (`RolePolicy`). Shipped: Owner, Manager, Read only. `CompanyService::setupRoles` gives a new company its copies; editing a preset rewrites every copy; `roles:sync-presets` repairs them. **A new ability reaches the shipped presets through its `presets` entry in `config/abilities.php` (e.g. `'presets' => ['manager', 'read-only']`), never through a migration:** after every `migrate` run, `RolePresetService::applyDefaults` offers each preset the tagged abilities it has not been offered before, and the Owner preset every new ability in the catalogue (tracked in `role_presets.applied_defaults`), so one the super admin removed stays removed and a deleted preset is not recreated. Don't call `syncAll()` from a migration to hand out a new ability. `roles:apply-preset-defaults` runs it by hand.
-- Every write of a role's grants goes through `RoleGrantWriter`, which runs in the role's own Bouncer scope. A super-admin request has no scope, and Bouncer writes made without one land in the wrong company. Note `BouncerFacade::allow($role)->to('name')` with one argument is lazy and runs when the conductor is destroyed, possibly after a scope set with `onceTo()` has ended; pass the model (or `null`) as a second argument inside a scoped closure.
+## 4. Common Commands
+
+### Backend
+
+```bash
+php artisan migrate
+php artisan optimize:clear
+php artisan route:list
+php artisan config:show invoiceshelf
+composer run ai-docs
+```
+
+### Frontend
+
+```bash
+pnpm build
+pnpm lint
+pnpm lint:fix
+pnpm typecheck
+```
+
+After changing `resources/scripts/`, `lang/en.json`, or a module frontend,
+rebuild the affected bundle. Vite assets are content-hashed, so a hard refresh
+may be required in a browser.
+
+### PHP formatting
+
+```bash
+vendor/bin/pint --dirty --format agent
+vendor/bin/pint --test
+composer lint
+composer lint:fix
+```
+
+## 5. Testing
+
+### Host test suite
+
+```bash
+php artisan test --compact
+php artisan test --compact --filter=testName
+php artisan test --parallel --exclude-group=serial-only
+./vendor/bin/pest --stop-on-failure
+make test
+```
+
+The CI workflow runs:
+
+```bash
+php artisan test --parallel --exclude-group=serial-only
+php artisan test --group=modules
+php artisan test --group=architecture
+php artisan test --group=isolated
+```
+
+Tests normally use an in-memory SQLite database configured by `phpunit.xml`.
+Feature tests seed through `DatabaseSeeder` and `DemoSeeder`, authenticate with
+`Sanctum::actingAs()`, and select a company with the `company` request header.
+
+The PostgreSQL money-conversion group runs against a real PostgreSQL service.
+Migrations and queries must therefore work on SQLite, MySQL/MariaDB, and
+PostgreSQL.
+
+### PaymentPlan module
+
+Run from the InvoiceShelf root:
+
+```bash
+php artisan test --compact Modules/PaymentPlan/tests
+pnpm exec vite build --config Modules/PaymentPlan/vite.config.mjs
+```
+
+On Windows, if pnpm cannot resolve the local executable, the equivalent
+direct Vite command is:
+
+```powershell
+.\node_modules\.bin\vite.cmd build --config Modules/PaymentPlan/vite.config.mjs
+```
+
+Run module-specific tests after module changes. Run the full host suite when
+the change crosses the host/module contract, authorization, migrations, or
+shared frontend infrastructure.
+
+## 6. Git Submodules and Modules
+
+`Modules/PaymentPlan`, `Modules/InventoryPricing`,
+`Modules/DocumentSignatureApproval`, and `Modules/.sdk/modules-master-sdk` are
+Git submodules. A host repository commit records a submodule commit, not the
+module's individual files.
+
+Check both repositories when working on a module:
+
+```bash
+git status
+git -C Modules/PaymentPlan status
+git -C Modules/PaymentPlan branch --show-current
+```
+
+Commit and push module changes from the module repository. Then update the host
+repository's submodule pointer only when the host is meant to reference the
+new module commit. Do not accidentally stage module contents as host files.
+
+A typical module installation path is:
+
+```bash
+composer dump-autoload
+php artisan install:module PaymentPlan 1.0.0
+php artisan modules:sync-abilities PaymentPlan
+php artisan optimize:clear
+```
+
+`install:module` applies the module's pending migrations, enables the module,
+registers its provider, and records its installed version. It does not reset
+or reseed the database.
+
+Each module should keep its own:
+
+- `module.json` manifest.
+- `src/` PHP code and service provider.
+- `database/migrations/`.
+- `resources/scripts/` and `vite.config.mjs`, where applicable.
+- `tests/`.
+- User documentation and implementation notes.
+
+### PaymentPlan settings audit
+
+The authoritative settings audit and hardening plan is:
+
+`Modules/PaymentPlan/dev-docs/PAYMENT-PLAN-SETTINGS-AUDIT-AND-HARDENING.md`
+
+Before adding PaymentPlan settings:
+
+- make the schema, settings UI, API validation, service guardrails, and
+  runtime behavior agree;
+- enforce configured relationship and source-invoice status restrictions at
+  the API and service layers;
+- preserve InvoiceShelf as the source of truth for invoices, payments,
+  allocations, tax, currency precision, and scheduler cadence;
+- classify each setting as either a plan-time financial snapshot or a live
+  company policy;
+- do not add duplicate host settings or silently rewrite existing plan terms;
+- document penalty cap semantics before extending overdue penalty controls.
+
+## 7. Architecture
+
+### Multi-tenancy
+
+Major business models carry a `company_id`. `CompanyMiddleware` selects the
+active company from the `company` request header. Company queries must use the
+existing company scopes and services rather than trusting a request ID.
+
+### Authorization and roles
+
+InvoiceShelf uses Bouncer and policies:
+
+- `super admin` is an installation-wide administrator and is not company
+  scoped.
+- `owner` is the existing company-level administrator role.
+- Role presets are defined by super administrators and copied into each
+  company as assignable, read-only preset roles.
+- Preset copies cannot be edited or deleted by company users.
+- A company user may hold multiple roles in the same company.
+- Global roles can contribute access to companies when the membership is
+  configured to include global roles.
+- A restricted company denies the user's access even when a global role would
+  otherwise grant it. A direct assignment does not override restriction.
+  Access must be explicitly removed from the restricted list before a direct
+  company assignment can be used.
+
+When changing role grants:
+
+- Write grants through `RoleGrantWriter`.
+- Run writes inside the role's Bouncer company scope.
+- Do not write Bouncer grants from an unscoped super-admin request.
+- Avoid lazy `BouncerFacade::allow($role)->to(...)` calls that may execute
+  after a temporary scope has ended; use the scoped form with the model or
+  explicit `null` argument.
+
+New abilities reach shipped presets through the `presets` entry in
+`config/abilities.php`, not through a migration. `RolePresetService::applyDefaults`
+adds abilities that have never been offered while preserving a deliberate
+super-admin removal. Use:
+
+```bash
+php artisan roles:apply-preset-defaults
+```
+
+Do not call `syncAll()` from a migration to grant new permissions.
 
 ### Authentication
-Four guards: `web` (session), `api` (Sanctum tokens for `/api/v1/`), `customer` (session for customer portal) and `oauth` (Passport access tokens, used by the MCP server). API routes use `auth:sanctum` middleware; customer portal uses `auth:customer`.
+
+The application has four relevant guards:
+
+- `web`: staff browser sessions.
+- `api`: Sanctum tokens for `/api/v1/`.
+- `customer`: customer portal sessions.
+- `oauth`: Passport tokens used by the MCP server.
+
+API routes use `auth:sanctum`. Customer portal routes use `auth:customer`.
+Tokens do not expire automatically; users can list and revoke their own tokens
+through the token API. Login is throttled.
 
 ### Routing
-- **API**: All endpoints under `/api/v1/` in `routes/api.php`, grouped with `auth:sanctum`, `company`, and `bouncer` middleware
-- **Web**: `routes/web.php` serves PDF endpoints, auth pages, and catch-all SPA routes (`/admin/{vue?}`, `/{company:slug}/customer/{vue?}`)
 
-### Thin clients
+- API routes live under `/api/v1/` in `routes/api.php`.
+- API groups normally include authentication, company selection, and Bouncer
+  middleware.
+- Web routes in `routes/web.php` serve authentication, PDFs, public documents,
+  and SPA catch-all routes.
+- Staff SPA routes use `/admin/{vue?}`.
+- Customer portal routes use `/{company:slug}/customer/{vue?}`.
 
-Mobile clients run the same SPA from their own origin and never load `resources/views/app.blade.php`, so the public `GET /api/v1/app/client-manifest` stands in for it: version, `min_client_version`, `app_url`, page title, login branding, module script/style URLs, and the demo and managed flags. **It mirrors the Blade shell; change one and change the other** (`ClientManifestService`).
+### Services and controllers
 
-`config/cors.php` is published and covers `api/*`, the module asset routes, `reports/*` and the PDF routes. `allowed_origins` comes from `CORS_ALLOWED_ORIGINS`, defaulting to `capacitor://` and `https://` on `invoiceshelf.client.hostname`. That hostname must never be `localhost` or `127.0.0.1`: Sanctum's default stateful list holds both, so such an origin gets session and CSRF middleware and every bearer POST fails with 419.
+- Controllers authorize, validate through Form Requests, call services, and
+  return Resources or responses.
+- Business rules belong in service classes.
+- Models should contain relationships, scopes, casts, accessors, mutators,
+  constants, and small persistence-focused helpers.
+- Use constructor injection for services.
+- Use API Resources for public response shapes; do not return arbitrary model
+  arrays from new endpoints.
 
-Tokens never expire, so `GET /api/v1/auth/tokens` and `DELETE /api/v1/auth/tokens/{id}` (the caller's own only) exist to cut off a lost device, and `POST /api/v1/auth/login` is throttled to 10 a minute.
+## 8. Database Rules
 
-**Mobile shell** (`mobile/`, see `mobile/README.md`): a Capacitor 7 project wrapping the `pnpm build:client` output in `mobile/www`. `android/` and `ios/` are committed; `www/` and `node_modules/` are not. Native pieces live in `resources/scripts/platform/capacitor.ts` alone (device name, share-sheet file delivery, in-app browser, receipt camera, the biometric check behind the app lock in `resources/scripts/client/lock.ts`), behind a dynamic import gated on `__INVOICESHELF_CLIENT__` so no Capacitor code reaches the web bundle. The plugins are declared twice, in `mobile/package.json` and the root one, and must stay at the same versions. `capacitor.config.ts`'s `server.hostname` is the contract above: never `localhost`.
+- Use Eloquent and query builders instead of vendor-specific SQL.
+- Prefer `Model::query()` over `DB::`.
+- Eager-load relationships to avoid N+1 queries.
+- Every migration must work on SQLite, MySQL/MariaDB, and PostgreSQL.
+- Existing parent IDs are `INT UNSIGNED`.
+- For references to those tables, use:
 
-### Managed mode
+  ```php
+  $table->unsignedInteger('company_id')->index();
+  ```
 
-`INVOICESHELF_MANAGED=true` (`config/managed.php`, deliberately outside `config('invoiceshelf')`, which the SPA bootstrap sends to every member) marks an install that a hosting provider runs for its owner, such as InvoiceShelf Cloud. The provider owns storage and backups, PDF rendering and fonts, the server's mail transport and module installation: those route files are mounted behind the `not-managed` middleware (`EnsureNotManaged`, a 403 with `error: managed_mode`), and the SPA hides their settings entries and the marketplace pairing and install controls (`utils/managed.ts`, fed by `window.managed` or the client manifest). Company mail settings, module enable/disable and everything else stay open. **Modules on a managed install:** marketplace pairing stays with the provider (`not-managed`), but installing, updating and uninstalling official modules (the marketplace serves only official, signed releases) is open when the provider mounts a writable `Modules/` directory (`modules-installable`, `ManagedMode::modulesInstallable()`, told to the SPA as `managed.modules_installable`); without one, the provider handles modules. Paid modules are not offered there yet. On every start the Docker image runs `modules:reconcile` before migrations, which disables modules whose `module.json` compatibility no longer fits this version, and module installs clear the opcode cache (`OpcacheReset`), since the cloud image never re-reads PHP files. Mail on a managed install: the environment sets the server transport and stored global settings are ignored; a company may bring its own SMTP server only (public host, port 465, 587 or 2525, TLS or SSL, no DSN); and mail sent through the provider's transport goes out from `mail.from` with the user's chosen address as Reply-To (`OutgoingSender`, used by every mailable that takes a user-chosen sender). A new provider-owned surface goes behind `not-managed` and is listed in `ManagedModeTest`.
+- Do not use `foreignId()` for these references. It creates a BIGINT and can
+  fail against the application's INT primary keys on MySQL.
+- Do not add database-level foreign key constraints for ordinary application
+  references; relationships and cleanup are handled by application services.
+- The deliberate exception is `ai_messages.conversation_id`, which references
+  the BIGINT `ai_conversations.id` with its existing cascade.
+- Never make a migration depend on data that a fresh SQLite test database does
+  not contain.
 
-### Powered by and the source link
+## 9. Frontend Rules
 
-The "Powered by" line under the sign-in pages, public documents and document emails comes from one place: `App\Support\PoweredBy`, fed by `config('invoiceshelf.powered_by')` (`INVOICESHELF_POWERED_BY`, `_NAME`, `_URL`), rendered by `emails/partials/powered-by.blade.php` and `components/layout/PoweredBy.vue` and handed to the SPA as `window.powered_by` (Blade shell) or the manifest's `branding.powered_by`. A host may rename or hide it. The account menus (staff and customer portal) always link to the running version's source (`INVOICESHELF_SOURCE_URL`, `{version}` filled in), which AGPL section 13 asks of a hosted install. Never hard-code either.
+The host frontend uses Vue 3, TypeScript, Pinia, Vue Router, and Tailwind CSS
+v4.
+
+### Structure
+
+- Entry point: `resources/scripts/main.ts`.
+- Feature code: `resources/scripts/features/{admin,auth,company,customer-portal,...}`.
+- Shared code: `resources/scripts/{api,stores,components,composables,layouts,plugins,utils,types,config}`.
+- Use `<script setup lang="ts">` and the Composition API.
+- Use existing base components and Pinia stores before creating new ones.
+- There is no `@v2` alias. The `@` alias points to `resources/`.
+
+### Styling
+
+Semantic CSS tokens are defined in `resources/css/themes.css` and registered
+for Tailwind in `resources/css/invoiceshelf.css`.
+
+- Add a new color token to both light and dark theme declarations.
+- Register it in the `@theme inline` block.
+- Use semantic classes such as `bg-surface`, `text-heading`,
+  `border-line-default`, and `text-muted`.
+- Do not hard-code hex or RGB colors in Vue components.
+- Do not add a border color directly to a form field when the shared field
+  styles already provide it; invalid-state styles must remain visible.
+- Keep forms and tables responsive. Use stable dimensions for controls and
+  prevent text from overflowing its container.
+- Use the existing icon library for buttons and provide labels/tooltips for
+  unfamiliar icon-only actions.
+- Avoid decorative marketing layouts in operational screens. Prefer dense,
+  scannable, predictable interfaces.
+
+### Localization
+
+- English strings live in `lang/en.json`.
+- Other locale files are Crowdin-managed; do not manually edit them unless
+  specifically requested.
+- Locale filename exceptions are defined in `LOCALE_FILE_MAP` in the i18n
+  plugin.
+- New user-facing module strings should follow the module's localization
+  conventions and be documented in the module development notes.
+
+## 10. Thin Clients and Mobile
+
+Mobile clients load the built SPA from their own origin and do not load the
+server Blade shell. Keep these surfaces synchronized:
+
+- `resources/views/app.blade.php`.
+- `ClientManifestService`.
+- `GET /api/v1/app/client-manifest`.
+
+The client manifest includes version, minimum client version, app URL,
+branding, module assets, demo flags, and managed-mode flags.
+
+The Capacitor shell is under `mobile/`. Native code belongs in
+`resources/scripts/platform/capacitor.ts` and must be dynamically imported
+behind `__INVOICESHELF_CLIENT__` so it does not enter the web bundle. Keep
+plugin versions synchronized between the root and mobile package files.
+`capacitor.config.ts` must not use `localhost` as the client hostname.
+
+## 11. Managed Mode and External Hosts
+
+`INVOICESHELF_MANAGED=true` marks an installation operated by a hosting
+provider. Provider-owned routes use `not-managed` and return the managed-mode
+error when unavailable. The SPA receives managed capabilities through the
+bootstrap data or client manifest.
+
+Module installation on a managed installation is allowed only when the
+provider exposes a writable module directory and the module is an official,
+signed release. Marketplace pairing remains provider-owned.
+
+Outbound host settings must use `PrivateNetworkGuard` both when saved and when
+connections are made. Private-host exceptions are explicit per feature in
+`config/network.php`; never add a general bypass setting.
 
 ### Customer portal host
 
-`CUSTOMER_PORTAL_URL` (with `CUSTOMER_PORTAL_HOSTS` for extra hosts) gives the customer portal a host of its own, such as `portal.example.com`. Every link sent to a customer is built with `App\Support\Urls\CustomerUrl` (`route()`, `to()`), never `route()` or `url()` directly, so it lands there. The global `RestrictPortalHost` middleware lets a portal host serve only the portal pages and API, public documents, PDFs by hash, module assets and `/up`, answering 404 to everything else, and moves customer pages opened on the app host to the portal host with a 301. The staff SPA reads the address as `window.customer_portal_url` (`customerBaseUrl()` in `utils/documents.ts`). Unset, or set to the app's own host, nothing changes.
+`CUSTOMER_PORTAL_URL` and `CUSTOMER_PORTAL_HOSTS` can move customer pages to a
+dedicated host. Build customer links through
+`App\Support\Urls\CustomerUrl`, not direct `route()` or `url()` calls. The
+portal host is restricted to portal pages, portal APIs, public documents,
+hashed PDFs, module assets, and `/up`.
 
-### MCP server
+### Branding and source links
 
-`app/Platform/Mcp/` lets AI assistants (Claude, ChatGPT, Claude Code, Cursor) use the app over the Model Context Protocol at `/mcp`, built on `laravel/mcp` and Passport. It is off until a super admin switches it on (`php artisan mcp:enable`, or Administration → Settings → AI connections). The user guide is `docs/guide/ai-assistants.md` in the docs repo.
+The Powered by line is centralized in `App\Support\PoweredBy` and configured
+through `config('invoiceshelf.powered_by')`. Source links use
+`INVOICESHELF_SOURCE_URL` and the running version. Do not hard-code branding or
+source URLs in views.
 
-- **Connections.** Clients register themselves (DCR) and sign in with OAuth 2.1 and PKCE. The consent screen (`OAuth/ConsentScreen`) binds each connection (`McpConnection`) to one user, one company and an access level, `read` or `write`. `BindMcpConnection` puts that company in the `company` header, so `whereCompany()`, Bouncer scoping and the policies work unchanged. A client never names a company.
-- **Tools** live in `Tools/{area}/*Tool.php` and extend `McpTool`. Each one declares all four annotations and the ability it needs (`ability()`). A tool that writes extends `McpWriteTool`, which hides it from read-only connections, limits a connection to 30 changes a minute, takes an `idempotency_key` when `creates()` is true, and logs every change in `mcp_activity`. Tools that delete or send email take a required `confirm` and do nothing without it (`RequiresConfirmation`). Sends are also limited per connection and per company (`SendsMail`). `ToolCatalogueTest` enforces all of this for every tool on the server.
-- **Writes use the app's own path.** A tool composes the payload the SPA would send (`SalesDocumentComposer`, `PaymentComposer`; the arithmetic is `App\Support\DocumentTaxes`, a port of the document forms), validates it with the domain's form request through `Support/DomainRequestValidator`, and stores it with the same service the controller uses. Never compute amounts in a tool, and never write a model directly.
-- **Reads** return presenters (`Presenters/*`) with explicit fields, never `toArray()`. Money is `{amount, currency, formatted}` with a major-unit decimal string. Company figures sum the `base_*` columns.
-- **Adding a tool:** a class in `Tools/`, listed in `Servers/InvoiceShelfServer::$tools`, and a test. Its name and description are what the model reads, so write them for someone who has never seen the app.
+## 12. MCP Server
 
-### Frontend
-- Vue 3 + TypeScript + Pinia + vue-router + Tailwind v4 (`@tailwindcss/vite`)
-- Entry point: `resources/scripts/main.ts` (single Vite input)
-- Feature-folder layout under `resources/scripts/features/{admin,auth,company,customer-portal,...}` — each feature owns its own `routes.ts`, `views/`, `components/`
-- Shared layers: `resources/scripts/{api,stores,components,composables,layouts,plugins,utils,types,config}`
-- Path aliases: `@` → `resources/` (so most imports look like `@/scripts/api/client`, `@/scripts/stores/global.store`); `$fonts` → `resources/static/fonts`; `$images` → `resources/static/img`. There is no `@v2` alias — that was retired when the legacy v1 SPA was deleted.
-- i18n: `lang/*.json` are dynamically imported by `resources/scripts/plugins/i18n.ts`. Locale-code → filename mismatches (e.g. `pt_BR` → `pt-br.json`) live in `LOCALE_FILE_MAP`. English is statically bundled; other locales lazy-load. Only edit `lang/en.json` directly — other locales are Crowdin-sourced.
-- Vite dev server expects the `invoiceshelf.test` hostname (configured in `vite.config.js`)
+The MCP server lives under `app/Platform/Mcp/` and is disabled until enabled
+by a super administrator.
 
-### CSS Theme Tokens
-The styling system uses **Tailwind v4 with CSS custom properties as the source of truth** — colors are not configured in JS, they live in CSS and are exposed to Tailwind via the `@theme` directive. Two files own this:
+- Connections use OAuth 2.1 and PKCE and bind to one user, company, and access
+  level (`read` or `write`).
+- Tools live under `Tools/{area}` and are listed in
+  `Servers/InvoiceShelfServer::$tools`.
+- Every tool declares its annotations and required ability.
+- Write tools use the application's existing request and service paths.
+- Creating tools requires an idempotency key.
+- Destructive operations and mail sends require explicit confirmation.
+- Read tools return explicit presenters, never `toArray()`.
+- Money values use `{amount, currency, formatted}` with a major-unit decimal
+  string.
+- Add or update a catalogue test for every new tool.
 
-1. **`resources/css/themes.css`** — defines every color as a CSS custom property on `:root` (light) and `[data-theme="dark"]` (dark). This is where you change actual values.
-2. **`resources/css/invoiceshelf.css`** — has an `@theme inline { ... }` block that **registers** each custom property as a Tailwind theme token (e.g. `--color-heading: var(--color-heading);`), making it available as utility classes (`bg-heading`, `text-heading`, `border-heading`, etc.). The block also uses the legacy `@theme { --spacing-88: 22rem; --font-base: Poppins, sans-serif; }` for non-color tokens.
+## 13. PDF and Storage
 
-**Token categories defined today:**
-- `primary-{50…950}` — brand color scale
-- `surface`, `surface-secondary`, `surface-tertiary`, `surface-muted` — background depth tiers
-- `heading`, `body`, `muted`, `subtle` — text emphasis tiers
-- `line-{light,default,strong}` — borders (`line-strong` is also the text field border)
-- `control-border` — checkbox and switch outlines, 3:1 against a modal's glass
-- `hover`, `hover-strong` — hover backgrounds
-- `header-from`, `header-to` — fixed header gradient stops (not dark-mode-aware)
-- `btn-primary`, `btn-primary-hover` — button colors (fixed, always bold)
-- `status-{yellow,green,blue,red,purple}` — status badge text colors
-- `alert-{warning,error,success}-{bg,text}` — alert variants
+PDF generation supports Dompdf and Gotenberg, selected per company.
 
-**Dark mode** is toggled via the `[data-theme="dark"]` attribute on the `<html>` element. The same custom-property names get redefined under that selector — components do **not** need `dark:` variants or conditional logic, they just reference the semantic tokens and the right value is picked up automatically.
+Bundled and downloadable font packages are managed by `FontService`. New font
+packages must:
 
-**Adding a new color token is a two-step ritual:**
-1. Add the custom property to **both** `:root` and `[data-theme="dark"]` in `themes.css`
-2. Add a matching `--color-X: var(--color-X);` line inside the `@theme inline` block in `invoiceshelf.css`
+- Use static TTF files; Dompdf cannot parse variable fonts.
+- Use a release or commit URL, never a moving branch URL.
+- Include a verified SHA-256 checksum.
+- Respect the Dompdf chroot and `PDF_FONTS_PATH`.
 
-After that the token is usable as `bg-X` / `text-X` / `border-X` in Vue templates and as `var(--color-X)` in raw CSS. Skip step 2 and the value exists at the CSS level but Tailwind utility classes won't be generated.
+Dompdf does not perform reliable glyph fallback through a font-family chain.
+Locale-specific fonts therefore need to be selected as the primary font for
+that locale.
 
-**Convention — never hardcode hex/rgb values in components.** Use the semantic tokens: `text-heading` not `text-gray-900`, `bg-surface` not `bg-white`, `border-line-default` not `border-gray-300`. Hardcoded values won't follow dark-mode flips and will diverge from the rest of the app over time. There are **no exceptions** in the project — even the auth pages (which sit outside the admin chrome) use the same `bg-surface` / `text-heading` / `border-line-default` vocabulary as `BaseCard`, just composed differently.
+Media files use the `FileDisk` model and disk assignments for media, PDFs, and
+backups. Existing files remain on their original disk until explicitly
+migrated with the media tooling.
 
-**Form field borders.** Text fields (inputs, textareas, selects, the multiselect, the rich editor) get their border from the form base styles in `invoiceshelf.css`, or from the `field-border` class when the field is a button or a div. Don't give a field a border colour utility such as `border-line-strong`: Tailwind orders same-property utilities alphabetically, so it would outrank `border-danger` and hide the invalid state.
+## 14. Release and CI
 
-**Accessibility.** The app targets WCAG 2.2 AA, and `pnpm lint` runs eslint-plugin-vuejs-accessibility. One known exception, decided on 2026-09-23: text field borders measure 1.5 to 2.3:1 against their background, below the 3:1 that SC 1.4.11 asks of a component's boundary, because 3:1 borders made forms look heavy. Fields are still identified by their labels and layout, focus turns the whole border indigo and an invalid field turns it red. Checkboxes and switches do meet 3:1. Revisit that decision before raising field borders to 3:1.
+GitHub Actions are defined under `.github/workflows/`.
 
-### Backend Patterns
-- **Authorization**: Silber/Bouncer with policies in `app/Policies/`. Controllers use `$this->authorize()`.
-- **Validation**: Form Request classes, never inline validation
-- **API responses**: Eloquent API Resources in `app/Http/Resources/`
-- **PDF generation**: Pluggable driver — `dompdf` (default, via `GeneratesPdfTrait`) or `gotenberg` (headless Chromium). Driver chosen per company through the **PDF Generation** admin settings page.
-- **Outbound hosts**: a setting that names a host the server connects to is checked by `App\Support\Net\PrivateNetworkGuard`, at save time (`PublicHttpUrl`, `PublicHost`) and again when the connection is made. Legitimate private hosts are exempted per feature in `config/network.php` (`GOTENBERG_ALLOWED_PRIVATE_HOST`, `MAIL_ALLOWED_PRIVATE_HOSTS`) through `PrivateNetworkGuard::isExempt($feature, $target)`: the operator names the hosts, never a boolean, never a settings toggle, and one feature's exemption never covers another.
-- **Email**: Mailable classes with `EmailLog` tracking. Mail driver is configurable globally and may be overridden per-company.
-- **File storage**: Spatie MediaLibrary backed by the **FileDisk** model — admins create named disk entries (local / S3 / Dropbox / DigitalOcean Spaces) and assign them to purposes (`media_storage`, `pdf_storage`, `backup_storage`) in **Admin → File Disks → Disk Assignments**. New uploads go to the assigned disk; existing files stay where they were and require `php artisan media:secure` to migrate.
-- **Serial numbers**: `SerialNumberService`
-- **Company settings**: `CompanySetting` model (key-value per company)
-- **User settings**: User-level preferences (notably `language`) stored as JSON via `setSettings()`. The sentinel value `'default'` means "inherit the company-level setting" — used for the per-user language preference so promoting/inviting members doesn't freeze a copy of the inviter's language.
+The main validation workflow runs Pint, parallel Pest tests, serial module/
+architecture/isolated groups, and selected Docker smoke checks. It does not
+build the frontend for ordinary PHP test runs because those tests do not render
+the Vite shell.
 
-### PDF Font System
-PDFs ship with bundled **Noto Sans** (Latin / Greek / Cyrillic) as the default face. Non-Latin scripts come from on-demand **Font Packages** managed in **Admin → Font Packages** and defined in `FontService::FONT_PACKAGES` (`app/Services/FontService.php`). Currently shipped packages: `noto-sans` (bundled, marker only), `noto-sans-{sc,tc,jp,kr}` (CJK), `noto-sans-hebrew`, `noto-naskh-arabic` (covers `ar`/`fa`/`ur`), `noto-sans-devanagari` (`hi`), `sarabun` (Thai). `GeneratesPdfTrait::ensureFontsForLocale()` synchronously installs the matching package on the first PDF render for a given company language.
+Releases are tag-driven:
 
-Two non-obvious constraints when extending the font system:
-1. **dompdf's PHP-Font-Lib does not parse variable fonts** (`fvar`/`gvar` tables). Any new package must source **static TTF** files — Google Fonts' main repo ships variable fonts and produces empty boxes. Reliable static-TTF sources used today: `openmaptiles/fonts` for non-CJK Noto scripts, `life888888/cjk-fonts-ttf` for the CJK packages, `google/fonts/ofl/sarabun` for Thai.
-2. **dompdf does not glyph-fall-back through the `font-family` chain** — it uses the *first* font for ALL characters. So locale-specific packages must be the **primary** font for that locale, not a fallback. Selection happens in `FontService::getFontFamilyForLocale()`. This is also why a Latin-locale company with a Hebrew customer name will still render boxes for the Hebrew text — solving that needs Gotenberg or a custom mid-render font-switching pass.
+1. Add the version and date to `CHANGELOG.md`.
+2. Update `version.md`.
+3. Merge the reviewed change.
+4. Tag and push the merge commit:
 
-Every downloadable file names a release or commit URL (never a branch) and a `sha256`; a download that does not match is refused, and a new package needs both. `pdf:fonts:install --all --path=<dir>` fetches packages ahead of time: an image that bakes them points `PDF_FONTS_PATH` at that directory (it must sit under the app directory, dompdf's chroot; `FontService` checks it before `storage/fonts/`) and sets `PDF_FONTS_DOWNLOAD=false`, which stops run-time and admin downloads.
+   ```bash
+   git tag 3.0.0-alpha.2
+   git push origin 3.0.0-alpha.2
+   ```
 
-The bundled NotoSans is also surfaced as a `bundled: true` package entry (no download URL, files served from `resources/static/fonts/` instead of `storage/fonts/`) so it appears alongside the on-demand packages in the admin UI with a "Bundled" pill instead of an Install button.
+The release workflow creates a draft release. Publish the draft manually;
+publishing triggers downstream registration and Docker/mobile release jobs.
+Do not type release notes directly into GitHub when the repository workflow
+expects `CHANGELOG.md`.
 
-### Database
-Supports MySQL, PostgreSQL, and SQLite — **every migration and query must work on all three** (the test suite runs on SQLite `:memory:`); no vendor-specific SQL. Prefer Eloquent over raw queries. Use `Model::query()` instead of `DB::`. Use eager loading to prevent N+1 queries.
+## 15. Documentation
 
-**Migrations — foreign keys are `unsignedInteger`, never `foreignId()`.** Parent tables (`users`, `companies`, `currencies`, …) key on **INT UNSIGNED**, so every reference column must match that width: declare FKs as `$table->unsignedInteger('company_id')` plus an index. **Don't use `foreignId()`** — it's BIGINT, and a `foreignId()->constrained()` against an INT PK fails on MySQL 8 with error 3780 (type mismatch), which is exactly what breaks the v2→v3 upgrade.
+Update documentation when behavior, settings, API contracts, installation,
+permissions, accounting rules, or operational workflows change.
 
-- **No DB-level FK constraints** for these refs — plain `unsignedInteger` columns + indexes; relationships and cascades are handled in app code, not via `->constrained()` / `cascadeOnDelete()`.
-- This is the codebase-wide convention (~27 migrations use `unsignedInteger`, only 2 use `foreignId()`). The one deliberate exception is `ai_messages.conversation_id`, which references the BIGINT `ai_conversations.id` and keeps `->constrained()->cascadeOnDelete()` — that cascade is intentional and covered by `AiChatFlowTest`.
+Use the appropriate location:
 
-See PRs #618 / #683.
+- `docs/`: host user, API, and settings documentation.
+- `Modules/<Name>/docs/`: module user and API documentation.
+- `Modules/<Name>/dev-docs/`: implementation plans, decisions, and trackers.
+- `AGENTS.md`: repository-wide engineering rules only.
 
-### Service Pattern
-All business logic must live in Service classes (`app/Services/`), not in Models or Controllers. Controllers are thin — they authorize, call the service, and return a response. Models only contain relationships, scopes, accessors, mutators, and constants. Services are injected via constructor injection.
-
-### Testing (TDD)
-InvoiceShelf follows TDD development style:
-- **Feature tests** (`tests/Feature/`) — test API routes end-to-end (HTTP requests, responses, database assertions)
-- **Unit tests** (`tests/Unit/`) — test service classes and business logic in isolation
-- Write tests before or alongside implementation. Every new feature or bug fix must have tests.
-
-## Code Conventions
-
-- PHP: snake_case, constructor property promotion, explicit return types, PHPDoc blocks over inline comments
-- TS / Vue: camelCase, `<script setup lang="ts">`, prefer Composition API + Pinia stores over component-local state for anything cross-cutting
-- Always check sibling files for patterns before creating new ones
-- Use `config()` helper, never `env()` outside config files
-- Every change must have tests
-- Run `vendor/bin/pint --dirty --format agent` after modifying PHP files
-- After editing `lang/en.json` or any file under `resources/scripts/`, rebuild via `pnpm build` — the bundled chunks (including locale chunks) are content-hashed by Vite, so the browser will pick them up on hard refresh
-
-## Releasing
-
-Releases are cut by pushing a tag. Nothing is typed into GitHub by hand.
-
-```bash
-# 1. Add a "## <version> — <date>" section to CHANGELOG.md and bump version.md,
-#    in a PR like any other change — the notes are reviewed with the code.
-# 2. Once merged, tag the merge commit:
-git tag 3.0.0-alpha.2 && git push origin 3.0.0-alpha.2
-```
-
-`release.yaml` then runs the tests, reads the `CHANGELOG.md` section for that tag,
-builds the package with `make clean dist`, and creates a **draft** release with the
-zip attached. It stops there and prints the draft URL in the run summary.
-
-**You publish the draft yourself.** That is deliberate, not an omission: GitHub does
-not start workflow runs from events created with `GITHUB_TOKEN`, so a release
-published by the workflow reaches nothing downstream. Pressing Publish fires
-`release: published` under your own identity, which triggers `publish.yaml` to
-register the release on the updater and build the Docker images. **Until you
-publish, no install is offered anything.**
-
-Notes on the mechanics:
-
-- **A tag with no `CHANGELOG.md` section fails the run** before anything is built,
-  so a release can never go out with empty notes.
-- **`prerelease` and "mark as latest" are set on the draft**, derived from the tag: a
-  `-` suffix (`3.0.0-alpha.2`) means pre-release, which routes it to the **insider**
-  channel so ordinary installs are not offered it. "Latest" is gated on
-  `LATEST_MAJOR` in the workflows — bump it there when 3.x becomes the stable line.
-- **If registration fails**, re-run it without cutting a new release: run the
-  `Publish Release` workflow manually with `register_tag` set to the version.
-  That path is idempotent and does not rebuild the Docker images.
-- `.github/scripts/changelog-section.php <version>` prints what the updater will be
-  sent, so you can check the notes locally before tagging.
-
-**The mobile apps ride the same button.** `mobile.yaml` also listens for
-`release: published`, so publishing the draft builds the Android AAB and APK
-(and, separately gated, the iOS archive) from that tag, attaches the APK to the
-release and uploads to the internal store tracks. Both its jobs are gated on the
-repository variable `MOBILE_RELEASES_ENABLED`, so until the signing secrets exist
-the whole workflow is a no-op rather than a failure on every release. The
-variables, the secrets and how to produce each one are a top-to-bottom checklist
-in the Releasing section of `mobile/README.md`; the version numbers come from the
-tag via `mobile/scripts/version-code.mjs` and are never edited by hand.
-
-## CI Pipeline
-
-GitHub Actions (`check.yaml`): runs Pint style check, then runs Pest tests in parallel (`php artisan test --parallel`) on PHP 8.4 with Xdebug disabled (`coverage: none`). The test job does **not** build the frontend — the suite is API/JSON only and never renders the Vite blade, so no Node/Vite step is needed (release/docker workflows still build assets in their own jobs). When `docker/production/` changes, and on every push to 3.x, it also builds the production image and runs `docker/production/readonly-smoke.sh` on it: read-only root, `INVOICESHELF_DOTENV=false` (no `.env`; the entrypoint refuses to start without `APP_KEY` in the environment), managed mode, headless install. Anything that writes outside `storage/` and `bootstrap/cache` at boot or per request fails it; run it locally with `docker build -f docker/production/Dockerfile -t invoiceshelf:local . && docker/production/readonly-smoke.sh invoiceshelf:local`.
+Keep implementation notes factual and mark unfinished work clearly. Do not
+use the agent guide as a changelog or as a task diary.

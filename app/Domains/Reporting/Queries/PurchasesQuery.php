@@ -21,7 +21,7 @@ class PurchasesQuery
      * Money that left (or came back to) the company in the period, in the base
      * currency: direct expenses, supplier payments and supplier refunds.
      */
-    public function cash(int $companyId, ?string $from = null, ?string $to = null, ?int $supplierId = null): array
+    public function cash(int $companyId, ?string $from = null, ?string $to = null, int|array|null $supplierId = null): array
     {
         $expenses = $this->cashTotal(Expense::class, 'expense_date', $companyId, $from, $to, $supplierId);
         $paid = $this->cashTotal(SupplierPayment::class, 'payment_date', $companyId, $from, $to, $supplierId);
@@ -45,14 +45,14 @@ class PurchasesQuery
         int $companyId,
         ?string $from,
         ?string $to,
-        ?int $supplierId,
+        int|array|null $supplierId,
     ): int {
         return (int) $model::query()
             ->where('company_id', $companyId)
             ->when($model !== Expense::class, fn ($q) => $q->where('status', 'OPEN'))
             ->when($from, fn ($q) => $q->where($date, '>=', $from))
             ->when($to, fn ($q) => $q->where($date, '<', CarbonImmutable::parse($to)->addDay()->toDateString()))
-            ->when($supplierId, fn ($q) => $q->where('supplier_id', $supplierId))
+            ->when($supplierId, fn ($q) => $q->whereIn('supplier_id', (array) $supplierId))
             ->sum('base_amount');
     }
 
@@ -60,7 +60,7 @@ class PurchasesQuery
      * What the company owes its suppliers today, split by how late it is, plus
      * the advances and credits still available to settle it.
      */
-    public function payables(int $companyId, ?int $supplierId = null): array
+    public function payables(int $companyId, int|array|null $supplierId = null): array
     {
         $timezone = CompanySetting::getSetting('time_zone', $companyId) ?: config('app.timezone');
         $today = CarbonImmutable::now($timezone);
@@ -69,7 +69,7 @@ class PurchasesQuery
             ->forCompany($companyId)
             ->where('status', 'OPEN')
             ->where('due_amount', '>', 0)
-            ->when($supplierId, fn ($q) => $q->where('supplier_id', $supplierId))
+            ->when($supplierId, fn ($q) => $q->whereIn('supplier_id', (array) $supplierId))
             ->get(['id', 'due_date', 'base_due_amount']);
 
         $summary = [
@@ -113,12 +113,12 @@ class PurchasesQuery
      * Base-currency value of what open payments or credits still have left to
      * allocate, pro rata to their document amount.
      */
-    private function available(string $model, int $companyId, ?int $supplierId): int
+    private function available(string $model, int $companyId, int|array|null $supplierId): int
     {
         return (int) $model::query()
             ->forCompany($companyId)
             ->where('status', 'OPEN')
-            ->when($supplierId, fn ($q) => $q->where('supplier_id', $supplierId))
+            ->when($supplierId, fn ($q) => $q->whereIn('supplier_id', (array) $supplierId))
             ->with(['allocations', 'refunds'])
             ->get()
             ->sum(function ($record) use ($model) {
@@ -165,7 +165,7 @@ class PurchasesQuery
     }
 
     /** Document dates determine cost and purchase tax; settlement records are deliberately absent. */
-    public function costs(int $companyId, string $from, string $to, ?int $supplierId = null): array
+    public function costs(int $companyId, string $from, string $to, int|array|null $supplierId = null): array
     {
         $categories = [];
         $taxes = [];
@@ -174,7 +174,7 @@ class PurchasesQuery
             ->where('company_id', $companyId)
             ->where('expense_date', '>=', $from)
             ->where('expense_date', '<', CarbonImmutable::parse($to)->addDay()->toDateString())
-            ->when($supplierId, fn ($q) => $q->where('supplier_id', $supplierId))
+            ->when($supplierId, fn ($q) => $q->whereIn('supplier_id', (array) $supplierId))
             ->with('taxes')
             ->get();
 
@@ -194,7 +194,7 @@ class PurchasesQuery
                 ->forCompany($companyId)
                 ->where('status', 'OPEN')
                 ->whereBetween('document_date', [$from, $to])
-                ->when($supplierId, fn ($q) => $q->where('supplier_id', $supplierId))
+                ->when($supplierId, fn ($q) => $q->whereIn('supplier_id', (array) $supplierId))
                 ->with('items')
                 ->get();
 
@@ -267,15 +267,20 @@ class PurchasesQuery
     /**
      * Everything the purchases report shows for a period: cash movements,
      * costs by category and tax, current payables and the open bills by due date.
+     * A null or empty supplier selection includes all company suppliers.
+     *
+     * @param  int|list<int>|null  $supplierId
      */
-    public function report(int $companyId, string $from, string $to, ?int $supplierId = null): array
+    public function report(int $companyId, string $from, string $to, int|array|null $supplierId = null): array
     {
-        $supplier = $supplierId
-            ? Supplier::query()->forCompany($companyId)->findOrFail($supplierId)->only(['id', 'name'])
-            : null;
+        $suppliers = $supplierId
+            ? Supplier::query()->forCompany($companyId)->findOrFail((array) $supplierId)
+            : new Collection;
+        $supplier = $suppliers->count() === 1 ? $suppliers->first()->only(['id', 'name']) : null;
 
         return [
             'supplier' => $supplier,
+            'suppliers' => $suppliers->map(fn (Supplier $supplier) => $supplier->only(['id', 'name']))->values()->all(),
             'period' => ['from_date' => $from, 'to_date' => $to],
             'currency' => Currency::find(CompanySetting::getSetting('currency', $companyId)),
             'cash' => $this->cash($companyId, $from, $to, $supplierId),
@@ -288,13 +293,13 @@ class PurchasesQuery
     /**
      * Open bills with money still owing, earliest due date first.
      */
-    private function aging(int $companyId, ?int $supplierId): Collection
+    private function aging(int $companyId, int|array|null $supplierId): Collection
     {
         return Bill::query()
             ->forCompany($companyId)
             ->where('status', 'OPEN')
             ->where('due_amount', '>', 0)
-            ->when($supplierId, fn ($q) => $q->where('supplier_id', $supplierId))
+            ->when($supplierId, fn ($q) => $q->whereIn('supplier_id', (array) $supplierId))
             ->with(['supplier:id,name', 'currency'])
             ->orderBy('due_date')
             ->get(['id', 'number', 'supplier_id', 'currency_id', 'due_date', 'due_amount', 'base_due_amount']);

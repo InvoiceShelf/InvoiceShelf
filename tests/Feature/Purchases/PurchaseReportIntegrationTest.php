@@ -15,6 +15,7 @@ use App\Domains\Sales\Models\InvoiceItem;
 use App\Domains\Taxation\Models\Tax;
 use App\Domains\Taxation\Models\TaxType;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Laravel\Sanctum\Sanctum;
 use Silber\Bouncer\BouncerFacade;
 
@@ -23,6 +24,66 @@ beforeEach(function () {
     $this->company = Company::findOrFail($this->companyId);
     CompanySetting::setSettings(['language' => 'en', 'carbon_date_format' => 'Y-m-d', 'time_zone' => 'UTC'], $this->companyId);
     config(['pdf.driver' => 'dompdf']);
+});
+
+test('purchase query includes every selected supplier across cash costs payables and aging', function () {
+    $documents = app(PurchaseDocumentService::class);
+    $settlements = app(SupplierSettlementService::class);
+    $suppliers = [];
+
+    foreach ([1, 2, 9] as $factor) {
+        $supplier = Supplier::create(['company_id' => $this->companyId, 'name' => 'Supplier '.$factor, 'currency_id' => $this->currencyId]);
+        $suppliers[] = $supplier;
+        $bill = $documents->saveBill(null, $this->companyId, $this->user->id, [
+            ...purchaseBillPayload($this, 10000 * $factor),
+            'supplier_id' => $supplier->id,
+        ]);
+        $settlements->recordPayment($this->companyId, $this->user->id, [
+            'supplier_id' => $supplier->id, 'currency_id' => $this->currencyId, 'exchange_rate' => 1,
+            'amount' => 2000 * $factor, 'payment_date' => '2026-09-02',
+            'allocations' => [['bill_id' => $bill->id, 'amount' => 1000 * $factor]],
+        ]);
+        $credit = $documents->createCredit($this->companyId, $this->user->id, [
+            ...purchaseBillPayload($this, 10000 * $factor),
+            'supplier_id' => $supplier->id, 'source_bill_id' => $bill->id, 'document_date' => '2026-09-03',
+            'items' => [[...purchaseBillPayload($this, 10000 * $factor)['items'][0], 'source_bill_item_id' => $bill->items[0]->id, 'quantity' => 0.1]],
+        ]);
+        $settlements->recordRefund($this->companyId, $this->user->id, [
+            'supplier_credit_id' => $credit->id, 'amount' => 100 * $factor,
+            'exchange_rate' => 1, 'payment_date' => '2026-09-04',
+        ]);
+        Expense::factory()->create([
+            'company_id' => $this->companyId, 'supplier_id' => $supplier->id,
+            'expense_category_id' => $this->category->id, 'expense_date' => '2026-09-05',
+            'amount' => 500 * $factor, 'base_amount' => 500 * $factor,
+        ]);
+    }
+
+    $query = app(PurchasesQuery::class);
+    $ids = [$suppliers[0]->id, $suppliers[1]->id];
+    $report = $query->report($this->companyId, '2026-09-01', '2026-09-30', $ids);
+
+    expect($report['supplier'])->toBeNull()
+        ->and(array_column($report['suppliers'], 'id'))->toEqualCanonicalizing($ids)
+        ->and($report['cash'])->toBe(['direct_expenses' => 1500, 'supplier_payments' => 6000, 'supplier_refunds' => 300, 'net_cash_out' => 7200])
+        ->and($report['purchases'])->toBe(['gross' => 28500, 'tax' => 0, 'net' => 28500])
+        ->and($report['payables']['outstanding'])->toBe(27000)
+        ->and($report['payables']['outstanding_count'])->toBe(2)
+        ->and($report['payables']['available_advances'])->toBe(3000)
+        ->and($report['payables']['available_credits'])->toBe(2700)
+        ->and($report['aging']->pluck('supplier_id')->all())->toEqualCanonicalizing($ids)
+        ->and(array_sum(array_column($report['categories'], 'gross')))->toBe(28500);
+
+    $single = $query->report($this->companyId, '2026-09-01', '2026-09-30', $ids[0]);
+    expect($single['supplier']['id'])->toBe($ids[0])
+        ->and($single['purchases']['gross'])->toBe(9500)
+        ->and($query->report($this->companyId, '2026-09-01', '2026-09-30', [$ids[0]])['cash'])->toBe($single['cash'])
+        ->and($query->report($this->companyId, '2026-09-01', '2026-09-30', [])['purchases']['gross'])->toBe(114000)
+        ->and($query->report($this->companyId, '2026-09-01', '2026-09-30')['purchases']['gross'])->toBe(114000);
+
+    $foreign = Supplier::create(['company_id' => Company::factory()->create()->id, 'name' => 'Private supplier', 'currency_id' => $this->currencyId]);
+    expect(fn () => $query->report($this->companyId, '2026-09-01', '2026-09-30', [$ids[0], $foreign->id]))
+        ->toThrow(ModelNotFoundException::class);
 });
 afterEach(fn () => CarbonImmutable::setTestNow());
 
