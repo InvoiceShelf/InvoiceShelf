@@ -38,31 +38,57 @@ final class ReportingPeriod
      * read it as month zero, which rolled the window back to the December
      * before.)
      */
-    public static function fiscalYear(?string $fiscalSetting, CarbonInterface $now, bool $previous = false): self
+    public static function fiscalYear(?string $fiscalSetting, CarbonInterface $now, bool $previous = false, int $openingDay = 1): self
     {
-        $openingMonth = intval(explode('-', (string) $fiscalSetting)[0]);
+        $parts = explode('-', (string) $fiscalSetting);
+        $openingMonth = intval($parts[0]);
+        if (isset($parts[2])) {
+            $openingDay = intval($parts[2]);
+        }
 
         if ($openingMonth < 1 || $openingMonth > 12) {
             $openingMonth = 1;
         }
+        $openingDay = max(1, min(31, $openingDay));
 
-        // The first of the month before the month changes, so the last days of
-        // a long month cannot spill the window into the one after
-        $start = CarbonImmutable::instance($now)->startOfMonth();
+        if ($openingDay === 1) {
+            // The first of the month before the month changes, so the last days of
+            // a long month cannot spill the window into the one after
+            $start = CarbonImmutable::instance($now)->startOfMonth();
 
-        // An opening month still ahead in the calendar year belongs to the
-        // fiscal year that opened twelve months ago
-        if ($openingMonth > $start->month) {
-            $start = $start->subYear();
+            // An opening month still ahead in the calendar year belongs to the
+            // fiscal year that opened twelve months ago
+            if ($openingMonth > $start->month) {
+                $start = $start->subYear();
+            }
+
+            $start = $start->month($openingMonth)->startOfMonth();
+
+            if ($previous) {
+                $start = $start->subYear();
+            }
+
+            return new self($start, $start->addMonths(11)->endOfMonth());
         }
 
-        $start = $start->month($openingMonth)->startOfMonth();
+        $nowImm = CarbonImmutable::instance($now)->startOfDay();
+        $monthStart = $nowImm->startOfYear()->month($openingMonth)->startOfMonth();
+        $start = $monthStart->day(min($openingDay, $monthStart->daysInMonth))->startOfDay();
+
+        if ($nowImm->lt($start)) {
+            $prevMonthStart = $monthStart->subYear();
+            $start = $prevMonthStart->day(min($openingDay, $prevMonthStart->daysInMonth))->startOfDay();
+        }
 
         if ($previous) {
-            $start = $start->subYear();
+            $prevYearMonth = $start->startOfMonth()->subYear();
+            $start = $prevYearMonth->day(min($openingDay, $prevYearMonth->daysInMonth))->startOfDay();
         }
 
-        return new self($start, $start->addMonths(11)->endOfMonth());
+        $nextYearMonth = $start->startOfMonth()->addYear();
+        $nextStart = $nextYearMonth->day(min($openingDay, $nextYearMonth->daysInMonth))->startOfDay();
+
+        return new self($start, $nextStart->subDay()->endOfDay());
     }
 
     /** The days from $from to $to, both included. */
