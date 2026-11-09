@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Facades\DB;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -57,11 +58,11 @@ class Payment extends Model implements HasMedia
     protected static function booted()
     {
         static::created(function ($payment) {
-            GeneratePaymentPdfJob::dispatch($payment);
+            GeneratePaymentPdfJob::dispatch($payment)->afterCommit();
         });
 
         static::updated(function ($payment) {
-            GeneratePaymentPdfJob::dispatch($payment, true);
+            GeneratePaymentPdfJob::dispatch($payment, true)->afterCommit();
         });
     }
 
@@ -162,123 +163,129 @@ class Payment extends Model implements HasMedia
 
     public static function createPayment($request)
     {
-        $data = $request->getPaymentPayload();
+        return DB::transaction(function () use ($request) {
+            $data = $request->getPaymentPayload();
 
-        if ($request->invoice_id) {
-            $invoice = Invoice::find($request->invoice_id);
-            $invoice->subtractInvoicePayment($request->amount);
-        }
+            if ($request->invoice_id) {
+                $invoice = Invoice::find($request->invoice_id);
+                $invoice->subtractInvoicePayment($request->amount);
+            }
 
-        $payment = Payment::create($data);
-        $payment->unique_hash = PublicToken::make();
+            $payment = Payment::create($data);
+            $payment->unique_hash = PublicToken::make();
 
-        $serial = (new SerialNumberFormatter)
-            ->setModel($payment)
-            ->setCompany($payment->company_id)
-            ->setCustomer($payment->customer_id)
-            ->setNextNumbers();
+            $serial = (new SerialNumberFormatter)
+                ->setModel($payment)
+                ->setCompany($payment->company_id)
+                ->setCustomer($payment->customer_id)
+                ->setNextNumbers();
 
-        $payment->sequence_number = $serial->nextSequenceNumber;
-        $payment->customer_sequence_number = $serial->nextCustomerSequenceNumber;
-        $payment->save();
+            $payment->sequence_number = $serial->nextSequenceNumber;
+            $payment->customer_sequence_number = $serial->nextCustomerSequenceNumber;
+            $payment->save();
 
-        $company_currency = CompanySetting::getSetting('currency', $request->header('company'));
+            $company_currency = CompanySetting::getSetting('currency', $request->header('company'));
 
-        if ((string) $payment['currency_id'] !== $company_currency) {
-            ExchangeRateLog::addExchangeRateLog($payment);
-        }
+            if ((string) $payment['currency_id'] !== $company_currency) {
+                ExchangeRateLog::addExchangeRateLog($payment);
+            }
 
-        $customFields = $request->customFields;
+            $customFields = $request->customFields;
 
-        if ($customFields) {
-            $payment->addCustomFields($customFields);
-        }
+            if ($customFields) {
+                $payment->addCustomFields($customFields);
+            }
 
-        $payment = Payment::with([
-            'customer',
-            'invoice',
-            'paymentMethod',
-            'fields',
-        ])->find($payment->id);
+            $payment = Payment::with([
+                'customer',
+                'invoice',
+                'paymentMethod',
+                'fields',
+            ])->find($payment->id);
 
-        return $payment;
+            return $payment;
+        });
     }
 
     public function updatePayment($request)
     {
-        $data = $request->getPaymentPayload();
+        return DB::transaction(function () use ($request) {
+            $data = $request->getPaymentPayload();
 
-        if ($request->invoice_id && (! $this->invoice_id || $this->invoice_id !== $request->invoice_id)) {
-            $invoice = Invoice::find($request->invoice_id);
-            $invoice->subtractInvoicePayment($request->amount);
-        }
+            if ($request->invoice_id && (! $this->invoice_id || $this->invoice_id !== $request->invoice_id)) {
+                $invoice = Invoice::find($request->invoice_id);
+                $invoice->subtractInvoicePayment($request->amount);
+            }
 
-        if ($this->invoice_id && (! $request->invoice_id || $this->invoice_id !== $request->invoice_id)) {
-            $invoice = Invoice::find($this->invoice_id);
-            $invoice->addInvoicePayment($this->amount);
-        }
+            if ($this->invoice_id && (! $request->invoice_id || $this->invoice_id !== $request->invoice_id)) {
+                $invoice = Invoice::find($this->invoice_id);
+                $invoice->addInvoicePayment($this->amount);
+            }
 
-        if ($this->invoice_id && $this->invoice_id === $request->invoice_id && $request->amount !== $this->amount) {
-            $invoice = Invoice::find($this->invoice_id);
-            $invoice->addInvoicePayment($this->amount);
-            $invoice->subtractInvoicePayment($request->amount);
-        }
+            if ($this->invoice_id && $this->invoice_id === $request->invoice_id && $request->amount !== $this->amount) {
+                $invoice = Invoice::find($this->invoice_id);
+                $invoice->addInvoicePayment($this->amount);
+                $invoice->subtractInvoicePayment($request->amount);
+            }
 
-        $serial = (new SerialNumberFormatter)
-            ->setModel($this)
-            ->setCompany($this->company_id)
-            ->setCustomer($request->customer_id)
-            ->setModelObject($this->id)
-            ->setNextNumbers();
+            $serial = (new SerialNumberFormatter)
+                ->setModel($this)
+                ->setCompany($this->company_id)
+                ->setCustomer($request->customer_id)
+                ->setModelObject($this->id)
+                ->setNextNumbers();
 
-        $data['customer_sequence_number'] = $serial->nextCustomerSequenceNumber;
-        $this->update($data);
+            $data['customer_sequence_number'] = $serial->nextCustomerSequenceNumber;
+            $this->update($data);
 
-        $company_currency = CompanySetting::getSetting('currency', $request->header('company'));
+            $company_currency = CompanySetting::getSetting('currency', $request->header('company'));
 
-        if ((string) $data['currency_id'] !== $company_currency) {
-            ExchangeRateLog::addExchangeRateLog($this);
-        }
+            if ((string) $data['currency_id'] !== $company_currency) {
+                ExchangeRateLog::addExchangeRateLog($this);
+            }
 
-        $customFields = $request->customFields;
+            $customFields = $request->customFields;
 
-        if ($customFields) {
-            $this->updateCustomFields($customFields);
-        }
+            if ($customFields) {
+                $this->updateCustomFields($customFields);
+            }
 
-        $payment = Payment::with([
-            'customer',
-            'invoice',
-            'paymentMethod',
-        ])
-            ->find($this->id);
+            $payment = Payment::with([
+                'customer',
+                'invoice',
+                'paymentMethod',
+            ])
+                ->find($this->id);
 
-        return $payment;
+            return $payment;
+        });
     }
 
     public static function deletePayments($ids)
     {
-        foreach ($ids as $id) {
-            $payment = Payment::find($id);
+        return DB::transaction(function () use ($ids) {
+            foreach ($ids as $id) {
+                $payment = Payment::find($id);
 
-            if ($payment->invoice_id != null) {
-                $invoice = Invoice::find($payment->invoice_id);
-                $invoice->due_amount = ((int) $invoice->due_amount + (int) $payment->amount);
+                if ($payment->invoice_id != null) {
+                    $invoice = Invoice::find($payment->invoice_id);
+                    $invoice->due_amount = ((int) $invoice->due_amount + (int) $payment->amount);
 
-                if ($invoice->due_amount == $invoice->total) {
-                    $invoice->paid_status = Invoice::STATUS_UNPAID;
-                } else {
-                    $invoice->paid_status = Invoice::STATUS_PARTIALLY_PAID;
+                    if ($invoice->due_amount == $invoice->total) {
+                        $invoice->paid_status = Invoice::STATUS_UNPAID;
+                    } else {
+                        $invoice->paid_status = Invoice::STATUS_PARTIALLY_PAID;
+                    }
+
+                    $invoice->status = $invoice->getPreviousStatus();
+                    $invoice->save();
                 }
 
-                $invoice->status = $invoice->getPreviousStatus();
-                $invoice->save();
+                $payment->delete();
             }
 
-            $payment->delete();
-        }
-
-        return true;
+            return true;
+        });
     }
 
     public function scopeWhereSearch($query, $search)
