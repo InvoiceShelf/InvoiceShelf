@@ -1,5 +1,5 @@
 import { BiometricAuth } from '@aparajita/capacitor-biometric-auth'
-import { Capacitor } from '@capacitor/core'
+import { Capacitor, type PluginListenerHandle } from '@capacitor/core'
 import { Browser } from '@capacitor/browser'
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera'
 import { Device } from '@capacitor/device'
@@ -31,6 +31,13 @@ const SHARE_FOLDER = 'shared'
 
 /** How long a shared file is left behind before the next save collects it. */
 const SHARE_LIFETIME_MS = 60 * 60 * 1000
+
+/**
+ * How long a closed sign-in browser waits for the app link before it counts
+ * as a cancel. Android reports the browser closing when the app comes back to
+ * the front, and the link arriving brings it there too.
+ */
+const SIGN_IN_CANCEL_GRACE_MS = 1500
 
 /** `platform` as the device list should read it, not as the OS spells it. */
 const SYSTEM_LABELS: Readonly<Record<string, string>> = {
@@ -314,5 +321,51 @@ export const capacitorPlatform: Platform = {
     }
 
     await Browser.open({ url })
+  },
+
+  /**
+   * Sign-in with SSO in the in-app browser. The server ends it by sending
+   * that browser to the app's link (`invoiceshelf.client.app_link`, the URL
+   * scheme mobile/android and mobile/ios register), which the OS hands to
+   * the app as `appUrlOpen`. Closing the browser first is a cancel.
+   */
+  async openForAppLink(url: string, appLink: string): Promise<string | null> {
+    if (!isNativeShell()) {
+      return webPlatform.openForAppLink(url, appLink)
+    }
+
+    const { App } = await import('@capacitor/app')
+
+    return new Promise((resolve) => {
+      let settled = false
+      let cancel: ReturnType<typeof setTimeout> | undefined
+      const listeners: Promise<PluginListenerHandle>[] = []
+
+      const finish = (link: string | null): void => {
+        if (!settled) {
+          settled = true
+          clearTimeout(cancel)
+          listeners.forEach((listener) => void listener.then((handle) => handle.remove()))
+          resolve(link)
+        }
+      }
+
+      listeners.push(
+        App.addListener('appUrlOpen', ({ url: opened }) => {
+          if (opened.startsWith(appLink)) {
+            // Android has nothing to close: the link already brought the app back.
+            void Browser.close().catch(() => undefined)
+            finish(opened)
+          }
+        }),
+        Browser.addListener('browserFinished', () => {
+          cancel = setTimeout(() => finish(null), SIGN_IN_CANCEL_GRACE_MS)
+        }),
+      )
+
+      Promise.all(listeners)
+        .then(() => Browser.open({ url }))
+        .catch(() => finish(null))
+    })
   },
 }
