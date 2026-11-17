@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\V1\Admin\Auth\LoginController;
+use App\Http\Controllers\V1\Admin\Auth\OAuth2Controller;
 use App\Http\Controllers\V1\Admin\Expense\ShowReceiptController;
 use App\Http\Controllers\V1\Admin\Report\CustomerSalesReportController;
 use App\Http\Controllers\V1\Admin\Report\ExpensesReportController;
@@ -37,6 +38,14 @@ Route::post('auth/logout', function () {
 
     request()->session()->invalidate();
     request()->session()->regenerateToken();
+});
+
+// Sign-in with SSO (off until configured, see OAuth2Controller)
+// ----------------------------------------------
+
+Route::middleware(['guest', 'throttle:30,1,oauth2'])->prefix('auth/oauth2')->group(function () {
+    Route::get('redirect', [OAuth2Controller::class, 'redirect'])->name('oauth2.redirect');
+    Route::get('callback', [OAuth2Controller::class, 'callback'])->name('oauth2.callback');
 });
 
 // Customer auth

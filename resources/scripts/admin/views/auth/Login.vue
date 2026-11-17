@@ -49,9 +49,26 @@
         </router-link>
       </div>
     </div>
-    <BaseButton :loading="isLoading" type="submit">
-      {{ $t('login.login') }}
-    </BaseButton>
+    <div class="flex flex-wrap items-center gap-3">
+      <BaseButton :loading="isLoading" type="submit">
+        {{ $t('login.login') }}
+      </BaseButton>
+
+      <!-- Styled like the Login button, in white -->
+      <BaseButton
+        v-if="oauth2Login"
+        tag="a"
+        :href="oauth2Login.url"
+        variant="white"
+        class="!border-transparent shadow-xs focus:!ring-offset-2"
+      >
+        {{ $t('login.sign_in_with_sso') }}
+      </BaseButton>
+    </div>
+
+    <p v-if="oauth2Error" class="mt-3 text-sm text-red-600" role="alert">
+      {{ oauth2Error }}
+    </p>
   </form>
 </template>
 
@@ -93,6 +110,27 @@ const getInputType = computed(() => {
     return 'text'
   }
   return 'password'
+})
+
+// Sign-in with SSO, when the server has it set up (app/Support/OAuth2Login.php)
+const oauth2Login = window.oauth2_login
+const oauth2Errors = {
+  failed: 'login.oauth2_failed',
+  no_account: 'login.oauth2_no_account',
+}
+const oauth2Error = ref(null)
+
+onMounted(() => {
+  const error = oauth2Errors[oauth2Login?.error]
+
+  if (error) {
+    oauth2Error.value = t(error)
+  }
+
+  // The error belongs to the sign-in that just came back, not to later visits
+  if (oauth2Login) {
+    oauth2Login.error = null
+  }
 })
 
 async function onSubmit() {

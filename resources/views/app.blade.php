@@ -63,6 +63,11 @@
         window.copyright_text = "{{$copyright_text}}"
 
         @endif
+        @if(isset($oauth2_login))
+
+        window.oauth2_login = @json($oauth2_login)
+
+        @endif
 
         @if(config('app.env') === 'demo')
             window.demo_mode = true
