@@ -20,11 +20,14 @@ use App\Policies\RolePolicy;
 use App\Policies\SettingsPolicy;
 use App\Policies\UserPolicy;
 use App\Space\InstallUtils;
+use App\Support\OAuth2Provider;
 use Gate;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Socialite\Contracts\Factory as SocialiteFactory;
+use Laravel\Socialite\SocialiteManager;
 use Silber\Bouncer\Database\Models as BouncerModels;
 use Silber\Bouncer\Database\Role;
 use View;
@@ -65,6 +68,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->bootAuth();
         $this->bootBroadcast();
+        $this->bootOAuth2();
 
         // In demo mode, prevent all outgoing emails and notifications
         if (config('app.env') === 'demo') {
@@ -156,5 +160,18 @@ class AppServiceProvider extends ServiceProvider
     public function bootBroadcast()
     {
         Broadcast::routes(['middleware' => 'api.auth']);
+    }
+
+    /**
+     * Adds the "oauth2" driver to Socialite once something asks for
+     * Socialite, for sign-in with SSO (OAuth2Controller).
+     */
+    public function bootOAuth2(): void
+    {
+        $this->callAfterResolving(SocialiteFactory::class, function (SocialiteManager $socialite): void {
+            $socialite->extend('oauth2', fn () => $socialite
+                ->buildProvider(OAuth2Provider::class, config('services.oauth2'))
+                ->setEndpoints(config('services.oauth2')));
+        });
     }
 }
