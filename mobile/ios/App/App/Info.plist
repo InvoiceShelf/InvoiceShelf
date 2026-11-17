@@ -8,6 +8,18 @@
         <string>InvoiceShelf</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<!-- Sign-in with SSO: the server sends the browser back to com.invoiceshelf.app:/sso (invoiceshelf.client.app_link). -->
+			<key>CFBundleURLName</key>
+			<string>com.invoiceshelf.app.sso</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.invoiceshelf.app</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>

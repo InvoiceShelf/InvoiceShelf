@@ -45,9 +45,26 @@
       </div>
     </div>
 
-    <BaseButton :loading="isLoading" type="submit" class="w-full justify-center">
-      {{ $t('login.login') }}
-    </BaseButton>
+    <div class="flex gap-3">
+      <BaseButton :loading="isLoading" type="submit" class="flex-1 justify-center">
+        {{ $t('login.login') }}
+      </BaseButton>
+
+      <!-- Styled like the Login button, in white (its outline keeps it visible on the white card) -->
+      <BaseButton
+        v-if="oauth2Login"
+        tag="a"
+        :href="oauth2Href"
+        variant="white"
+        class="flex-1 justify-center"
+      >
+        {{ $t('login.sign_in_with_sso') }}
+      </BaseButton>
+    </div>
+
+    <p v-if="oauth2Error" class="mt-3 text-sm text-danger" role="alert">
+      {{ oauth2Error }}
+    </p>
 
     <div
       v-if="demo"
@@ -81,6 +98,7 @@ import { useNotificationStore } from '../../../stores/notification.store'
 declare global {
   interface Window {
     demo_mode?: boolean
+    oauth2_login?: { url: string; error: string | null }
   }
 }
 
@@ -114,6 +132,22 @@ const rules = {
     required: helpers.withMessage(t('validation.required'), required),
   },
 }
+
+// Sign-in with SSO, when the server has it set up (OAuth2Login::clientState()).
+// The button carries `next` along; the server checks it with PostLoginRedirect.
+const oauth2Login = window.oauth2_login
+const oauth2Error = ref<string | null>(null)
+
+const OAUTH2_ERRORS: Readonly<Record<string, string>> = {
+  failed: 'login.oauth2_failed',
+  no_account: 'login.oauth2_no_account',
+}
+
+const oauth2Href = computed<string>(() => {
+  const next = typeof route.query.next === 'string' ? route.query.next : ''
+
+  return next !== '' ? `${oauth2Login?.url}?next=${encodeURIComponent(next)}` : (oauth2Login?.url ?? '')
+})
 
 const v$ = useVuelidate(
   rules,
@@ -170,6 +204,17 @@ async function onSubmit(): Promise<void> {
 const demo = demoState()
 
 onMounted(() => {
+  const error = oauth2Login?.error ? OAUTH2_ERRORS[oauth2Login.error] : undefined
+
+  if (error) {
+    oauth2Error.value = t(error)
+  }
+
+  // The error belongs to the sign-in that just came back, not to later visits
+  if (oauth2Login) {
+    oauth2Login.error = null
+  }
+
   if (demo) {
     authStore.loginData.email = demo.email
     authStore.loginData.password = demo.password

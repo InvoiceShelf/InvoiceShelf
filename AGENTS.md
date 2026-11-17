@@ -74,6 +74,8 @@ Every major model has a `company_id` foreign key. The `CompanyMiddleware` sets t
 ### Authentication
 Four guards: `web` (session), `api` (Sanctum tokens for `/api/v1/`), `customer` (session for customer portal) and `oauth` (Passport access tokens, used by the MCP server). API routes use `auth:sanctum` middleware; customer portal uses `auth:customer`.
 
+**Sign in with SSO** (`docs/features/single-sign-on.md`) makes this installation a client of an outside OAuth 2.0 / OpenID Connect identity provider, configured by `OAUTH2_*` (`config/services.php`) and off until those are set. Socialite's `oauth2` driver is the generic `OAuth2Provider`, so there is no package per provider. `OAuth2Controller` ends a browser sign-in in the `web` session and goes on through `PostLoginRedirect`. `OAuth2LoginService` links an account to a user once, by email address, and by `users.oauth2_id` after that; it never creates users. The mobile app can't use a web session, so it signs in through a hand-off (`OAuth2Handoffs`). The app keeps a secret and signs in in the in-app browser. The server sends that browser to the app link (`invoiceshelf.client.app_link`, the URL scheme `mobile/android` and `mobile/ios` register) with a one-time code, and the app trades the code and the secret for an ordinary Sanctum token. Never let a client choose where the browser is sent back to: the link is server configuration, so a code can only reach the device that opened the sign-in.
+
 ### Routing
 - **API**: All endpoints under `/api/v1/` in `routes/api.php`, grouped with `auth:sanctum`, `company`, and `bouncer` middleware
 - **Web**: `routes/web.php` serves PDF endpoints, auth pages, and catch-all SPA routes (`/admin/{vue?}`, `/{company:slug}/customer/{vue?}`)

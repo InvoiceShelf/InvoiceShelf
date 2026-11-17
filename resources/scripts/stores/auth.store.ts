@@ -25,6 +25,18 @@ export interface ResetPasswordData {
   token: string
 }
 
+export type SsoSignInFailure = 'cancelled' | 'no_account' | 'failed'
+
+/** Why a sign-in with SSO on a client did not end with a token. */
+export class SsoSignInError extends Error {
+  readonly reason: SsoSignInFailure
+
+  constructor(reason: SsoSignInFailure) {
+    super(`Sign-in with SSO: ${reason}`)
+    this.reason = reason
+  }
+}
+
 export const useAuthStore = defineStore('auth', () => {
   // State
   const loginData = ref<LoginData>({
@@ -70,6 +82,41 @@ export const useAuthStore = defineStore('auth', () => {
     } catch (err: unknown) {
       handleApiError(err)
       throw err
+    }
+  }
+
+  /**
+   * Sign in through the server's SSO, for a client: start a hand-off, sign in
+   * in a browser the server sends back to the app's link, and trade the code
+   * it brings for a token named after this device. Rejects with an
+   * SsoSignInError when it ends without one.
+   */
+  async function loginWithSso(): Promise<void> {
+    const handoff = await authService.startSsoHandoff({
+      device_name: await platform.deviceName(),
+    })
+    const link = await platform.openForAppLink(handoff.url, handoff.app_link)
+
+    if (link === null) {
+      throw new SsoSignInError('cancelled')
+    }
+
+    const answer = new URL(link).searchParams
+    const code = answer.get('code')
+
+    if (answer.get('handoff') !== handoff.id || code === null) {
+      throw new SsoSignInError(answer.get('error') === 'no_account' ? 'no_account' : 'failed')
+    }
+
+    try {
+      const { token } = await authService.finishSsoHandoff(handoff.id, {
+        secret: handoff.secret,
+        code,
+      })
+
+      localStore.set(LS_KEYS.AUTH_TOKEN, `Bearer ${token}`)
+    } catch {
+      throw new SsoSignInError('failed')
     }
   }
 
@@ -131,6 +178,7 @@ export const useAuthStore = defineStore('auth', () => {
     forgotPasswordData,
     resetPasswordData,
     login,
+    loginWithSso,
     logout,
     forgotPassword,
     resetPassword,

@@ -53,4 +53,5 @@ export const platform: Platform = {
   deviceName: () => active.deviceName(),
   saveFile: (blob: Blob, filename: string) => active.saveFile(blob, filename),
   openExternal: (url: string) => active.openExternal(url),
+  openForAppLink: (url: string, appLink: string) => active.openForAppLink(url, appLink),
 }

@@ -55,6 +55,26 @@ return [
         'auth_token' => env('CRON_JOB_AUTH_TOKEN'),
     ],
 
+    /*
+     * Sign-in with SSO over OAuth 2.0 / OpenID Connect, with any identity
+     * provider that has a userinfo endpoint (Authentik, Keycloak, Authelia,
+     * Zitadel, ...). It is on once the client ID, the client secret and the
+     * three endpoint URLs are set. The provider's
+     * /.well-known/openid-configuration lists those URLs as
+     * authorization_endpoint, token_endpoint and userinfo_endpoint. The
+     * redirect URI defaults to /auth/oauth2/callback on whatever host the
+     * sign-in started on. See docs/features/single-sign-on.md.
+     */
+    'oauth2' => [
+        'client_id' => env('OAUTH2_CLIENT_ID'),
+        'client_secret' => env('OAUTH2_CLIENT_SECRET'),
+        'authorize_url' => env('OAUTH2_AUTHORIZE_URL'),
+        'token_url' => env('OAUTH2_TOKEN_URL'),
+        'userinfo_url' => env('OAUTH2_USERINFO_URL'),
+        'scopes' => env('OAUTH2_SCOPES', 'openid profile email'),
+        'redirect' => env('OAUTH2_REDIRECT_URI', '/auth/oauth2/callback'),
+    ],
+
     'ses' => [
         'key' => env('SES_KEY'),
         'secret' => env('SES_SECRET'),
