@@ -54,6 +54,8 @@ export interface ClientManifest {
   managed?: ManagedState | null
   source_url?: string
   customer_portal_url?: string | null
+  /** Whether the server offers sign-in with SSO. Absent from servers older than the field. */
+  oauth2_login?: boolean
 }
 
 export interface ClientBootState {

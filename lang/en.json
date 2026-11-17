@@ -970,7 +970,11 @@
     "password_reset_successfully": "Password Reset Successfully",
     "enter_email": "Enter email",
     "enter_password": "Enter Password",
-    "retype_password": "Retype Password"
+    "retype_password": "Retype Password",
+    "sign_in_with_sso": "Sign in with SSO",
+    "oauth2_failed": "Signing in with SSO did not work. Please try again.",
+    "oauth2_no_account": "Your SSO account does not match a user here. Ask an administrator to add a user with your email address.",
+    "oauth2_cancelled": "Signing in with SSO was cancelled."
   },
   "client": {
     "connect_heading": "Connect to your server",

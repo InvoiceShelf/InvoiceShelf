@@ -39,4 +39,11 @@ export interface Platform {
   saveFile(blob: Blob, filename: string): Promise<void>
   /** Open an address outside the app. */
   openExternal(url: string): Promise<void>
+  /**
+   * Open a server's sign-in page in a browser and wait for the server to send
+   * that browser on to `appLink`, the address this app answers to. Resolves
+   * the full address the browser was sent to, or null when the user closed
+   * the browser first.
+   */
+  openForAppLink(url: string, appLink: string): Promise<string | null>
 }
