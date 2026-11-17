@@ -10,6 +10,7 @@ use App\Http\Controllers\V1\Admin\Report\TaxSummaryReportController;
 use App\Http\Controllers\V1\Customer\Auth\LoginController as CustomerLoginController;
 use App\Http\Controllers\V1\Customer\EstimatePdfController as CustomerEstimatePdfController;
 use App\Http\Controllers\V1\Customer\InvoicePdfController as CustomerInvoicePdfController;
+use App\Http\Controllers\V1\Customer\LegacyEmailLinkController;
 use App\Http\Controllers\V1\Customer\PaymentPdfController as CustomerPaymentPdfController;
 use App\Http\Controllers\V1\Modules\ScriptController;
 use App\Http\Controllers\V1\Modules\StyleController;
@@ -101,6 +102,18 @@ Route::middleware('pdf-auth')->group(function () {
 // -------------------------------------------------
 
 Route::prefix('/customer')->group(function () {
+    // Links in emails sent before 2.4.4 (see LegacyEmailLinkController). Their
+    // tokens are 20 characters long, so these routes come first and leave
+    // every current link to the routes below.
+    Route::get('/{document}/view/{token}', [LegacyEmailLinkController::class, 'show'])
+        ->whereIn('document', ['invoices', 'estimates', 'payments'])
+        ->where('token', LegacyEmailLinkController::TOKEN_PATTERN)
+        ->middleware('throttle:60,1,legacy-email-link');
+
+    Route::post('/{document}/view/{token}', [LegacyEmailLinkController::class, 'resend'])
+        ->whereIn('document', ['invoices', 'estimates', 'payments'])
+        ->where('token', LegacyEmailLinkController::TOKEN_PATTERN);
+
     Route::get('/invoices/{email_log:token}', [CustomerInvoicePdfController::class, 'getInvoice']);
     Route::get('/invoices/view/{email_log:token}', [CustomerInvoicePdfController::class, 'getPdf'])->name('invoice');
 
