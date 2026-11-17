@@ -29,6 +29,17 @@ export interface TokenLoginResponse {
   token: string
 }
 
+/** A sign-in with SSO the mobile client started (see `loginWithSso`). */
+export interface SsoHandoff {
+  id: string
+  /** Proves this device started the hand-off. It never leaves the app. */
+  secret: string
+  /** The server's sign-in page, to open in a browser. */
+  url: string
+  /** Where the server sends that browser once the sign-in is done. */
+  app_link: string
+}
+
 export interface ForgotPasswordPayload {
   email: string
 }
@@ -88,6 +99,27 @@ export const authService = {
    */
   async logoutWithToken(): Promise<void> {
     await client.post(API.TOKEN_LOGOUT)
+  },
+
+  /**
+   * Start a sign-in with SSO for a client, which has no session for the
+   * browser sign-in to end in.
+   */
+  async startSsoHandoff(payload: { device_name: string }): Promise<SsoHandoff> {
+    const { data } = await client.post<SsoHandoff>(API.SSO_HANDOFFS, payload)
+    return data
+  },
+
+  /**
+   * Trade the code the browser brought back, with the hand-off's secret, for
+   * a token named after this device.
+   */
+  async finishSsoHandoff(id: string, payload: { secret: string; code: string }): Promise<TokenLoginResponse> {
+    const { data } = await client.post<TokenLoginResponse>(
+      `${API.SSO_HANDOFFS}/${encodeURIComponent(id)}/token`,
+      payload
+    )
+    return data
   },
 
   async forgotPassword(payload: ForgotPasswordPayload): Promise<ApiResponse<{ success: boolean }>> {
