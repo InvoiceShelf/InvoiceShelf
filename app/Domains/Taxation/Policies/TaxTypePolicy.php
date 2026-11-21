@@ -67,6 +67,6 @@ class TaxTypePolicy
 
     private function sameCompany(User $user, TaxType $taxType): bool
     {
-        return $user->hasCompany($taxType->company_id);
+        return $user->isActingIn($taxType->company_id);
     }
 }

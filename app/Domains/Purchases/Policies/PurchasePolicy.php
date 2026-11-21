@@ -36,7 +36,7 @@ abstract class PurchasePolicy
     private function allows(User $user, Model $record, string $verb): bool
     {
         return (int) request()->header('company') === (int) $record->company_id
-            && $user->hasCompany($record->company_id)
+            && $user->isActingIn($record->company_id)
             && BouncerFacade::can($verb.'-'.static::ABILITY, $record);
     }
 }

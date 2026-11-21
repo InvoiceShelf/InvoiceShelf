@@ -26,6 +26,6 @@ class CreditNotePolicy
     public function create(User $user, Invoice $invoice): bool
     {
         return BouncerFacade::can('create-invoice', Invoice::class)
-            && $user->hasCompany($invoice->company_id);
+            && $user->isActingIn($invoice->company_id);
     }
 }

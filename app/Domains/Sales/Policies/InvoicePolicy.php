@@ -11,10 +11,10 @@ use Silber\Bouncer\BouncerFacade;
  * Who may work with invoices — credit notes included, since those are invoice
  * rows and ride on the same abilities.
  *
- * Every decision has two halves: the Bouncer ability, and — for anything
- * aimed at an existing document — membership of the company that document
- * belongs to, so an ability held in one company never reaches another
- * company's data.
+ * Every decision has two halves: the Bouncer ability, and, for anything
+ * aimed at an existing document, acting in the company that document belongs
+ * to (a member of it, with Bouncer scoped to it), so an ability held in one
+ * company never reaches another company's data.
  *
  * Bouncer answers for the user it currently has scoped, not for the $user
  * handed in; that argument only feeds the membership half.
@@ -104,6 +104,6 @@ class InvoicePolicy
 
     private function sameCompany(User $user, Invoice $invoice): bool
     {
-        return $user->hasCompany($invoice->company_id);
+        return $user->isActingIn($invoice->company_id);
     }
 }

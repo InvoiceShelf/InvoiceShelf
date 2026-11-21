@@ -93,6 +93,6 @@ class EstimatePolicy
 
     private function sameCompany(User $user, Estimate $estimate): bool
     {
-        return $user->hasCompany($estimate->company_id);
+        return $user->isActingIn($estimate->company_id);
     }
 }

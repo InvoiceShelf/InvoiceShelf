@@ -79,6 +79,6 @@ class ExpensePolicy
 
     private function sameCompany(User $user, Expense $expense): bool
     {
-        return $user->hasCompany($expense->company_id);
+        return $user->isActingIn($expense->company_id);
     }
 }
