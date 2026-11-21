@@ -114,6 +114,25 @@
               type="Invoice"
             />
 
+            <!-- Invoice Payment Link: a recurring invoice's copies use the company default -->
+            <BaseInputGroup
+              v-if="!isRecurring"
+              :label="$t('invoices.payment_link')"
+              :help-text="$t('invoices.payment_link_help')"
+              :content-loading="isLoadingContent"
+              :error="v$.payment_link?.$error && v$.payment_link.$errors[0].$message"
+              class="mt-6 mb-6"
+            >
+              <BaseInput
+                v-model="invoiceStore.newInvoice.payment_link"
+                type="url"
+                placeholder="https://"
+                :content-loading="isLoadingContent"
+                :invalid="v$.payment_link?.$error"
+                @input="v$.payment_link?.$touch()"
+              />
+            </BaseInputGroup>
+
             <!-- Invoice Template Button -->
             <TemplateSelectButton
               :store="invoiceStore"
@@ -249,6 +268,12 @@ const rules = computed(() => {
     },
     exchange_rate: {
       required: requiredIf(() => invoiceStore.showExchangeRate),
+    },
+    payment_link: {
+      webAddress: helpers.withMessage(
+        t('settings.customization.invoices.payment_link_invalid'),
+        (value: string | null) => !value || /^https?:\/\/\S+$/i.test(value.trim()),
+      ),
     },
   }
 })

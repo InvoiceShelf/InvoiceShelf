@@ -6,8 +6,10 @@ use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Contacts\Models\Customer;
 use App\Domains\Metadata\Http\Requests\Concerns\ValidatesCustomFields;
 use App\Domains\Sales\Application\Composition\InvoiceAttributes;
+use App\Domains\Sales\Application\InvoicePaymentLinks;
 use App\Domains\Sales\Models\Invoice;
 use App\Platform\Pdf\Rules\PdfTemplateExists;
+use App\Rules\PaymentLink;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Unique;
@@ -47,6 +49,7 @@ class InvoicesRequest extends FormRequest
             'total' => 'numeric|max:999999999999|required',
             'tax' => 'required',
             'template_name' => ['required', new PdfTemplateExists('invoice')],
+            'payment_link' => ['nullable', 'string', 'max:'.InvoicePaymentLinks::MAX_LENGTH, new PaymentLink],
             'items' => 'required|array',
             'items.*' => 'required|max:255',
             'items.*.description' => 'nullable',
