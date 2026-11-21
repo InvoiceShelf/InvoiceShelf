@@ -5,6 +5,8 @@ use App\Domains\Accounts\Notifications\MailResetPasswordNotification;
 use App\Domains\Contacts\Models\Customer;
 use App\Domains\Contacts\Notifications\CustomerMailResetPasswordNotification;
 use App\Domains\Sales\Models\Invoice;
+use App\Platform\Announcements\Models\Announcement;
+use App\Platform\Announcements\Models\AnnouncementDismissal;
 use App\Platform\Mail\Models\EmailLog;
 use App\Platform\Mcp\Servers\InvoiceShelfServer;
 use App\Platform\Mcp\Tools\Contacts\CreateCustomerTool;
@@ -12,6 +14,7 @@ use App\Platform\Mcp\Tools\Contacts\SearchCustomersTool;
 use App\Platform\Operations\Managed\ManagedMode;
 use App\Platform\Operations\Models\Setting;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -124,4 +127,32 @@ test('MCP keeps read tools and refuses write tools even on a write connection', 
 
 test('the signed in token may be revoked while read only', function () {
     $this->postJson('/api/v1/auth/logout')->assertSuccessful();
+});
+
+test('the bell and announcements can still be put away, while notification settings stay closed', function () {
+    $notice = fn () => DatabaseNotification::query()->create([
+        'id' => (string) Str::uuid(), 'type' => 'invoice_viewed',
+        'notifiable_type' => $this->owner->getMorphClass(), 'notifiable_id' => $this->owner->id,
+        'company_id' => $this->company->id, 'data' => ['title' => 'inbox.types.invoice_viewed.title'],
+    ]);
+    [$first, $second] = [$notice(), $notice()];
+
+    $this->postJson("/api/v1/notifications/{$first->id}/read")->assertOk();
+    expect($first->fresh()->read_at)->not->toBeNull();
+    $this->postJson("/api/v1/notifications/{$first->id}/unread")->assertOk();
+    expect($first->fresh()->read_at)->toBeNull();
+    $this->postJson('/api/v1/notifications/read-all')->assertOk()->assertJsonPath('unread_count', 0);
+    $this->deleteJson("/api/v1/notifications/{$second->id}")->assertNoContent();
+    expect(DatabaseNotification::query()->whereKey($second->id)->exists())->toBeFalse();
+
+    $announcement = Announcement::query()->create([
+        'source' => Announcement::SOURCE_LOCAL, 'title' => 'Billing', 'body' => 'Your plan has lapsed.',
+        'level' => 'warning', 'audience' => 'everyone',
+    ]);
+    $this->postJson("/api/v1/announcements/{$announcement->id}/dismiss")->assertOk();
+    expect(AnnouncementDismissal::query()->count())->toBe(1);
+
+    $this->putJson('/api/v1/me/notification-preferences', [])->assertForbidden()->assertJsonPath('error', 'read_only');
+    $this->putJson('/api/v1/company/notification-defaults', [])->assertForbidden()->assertJsonPath('error', 'read_only');
+    $this->postJson('/api/v1/super-admin/announcements', [])->assertForbidden()->assertJsonPath('error', 'read_only');
 });

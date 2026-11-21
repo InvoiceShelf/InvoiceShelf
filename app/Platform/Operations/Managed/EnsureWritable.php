@@ -45,6 +45,13 @@ class EnsureWritable
         if ($request->isMethod('DELETE') && preg_match('#^api/v1/auth/tokens/[^/]+$#', $path)) {
             return true; // the controller can revoke only the caller's own devices
         }
+        // Reading a notice or putting an announcement away is the caller's own reading state.
+        if ($request->isMethod('POST') && preg_match('#^api/v1/(?:notifications/(?:read-all|[^/]+/(?:read|unread))|announcements/[^/]+/dismiss)$#', $path)) {
+            return true;
+        }
+        if ($request->isMethod('DELETE') && preg_match('#^api/v1/notifications/[^/]+$#', $path)) {
+            return true;
+        }
         if ($path === 'api/v1/me' && $request->isMethod('PUT')) {
             return $this->ownPassword($request, $request->user());
         }
