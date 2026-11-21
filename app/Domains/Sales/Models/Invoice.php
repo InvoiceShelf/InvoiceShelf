@@ -316,7 +316,7 @@ class Invoice extends Model implements HasMedia
      * A credited invoice is immutable: its line item ids anchor the lines of
      * every credit note that reverses it. Past that, the company's
      * retrospective-edits setting decides, tightening in three steps from
-     * "sent and part paid" through "part paid" to "paid".
+     * "sent" (or any payment) through "part paid" to "paid".
      */
     public function getAllowEditAttribute()
     {
@@ -329,15 +329,14 @@ class Invoice extends Model implements HasMedia
         $collected = $this->paid_status === self::STATUS_PARTIALLY_PAID
             || $this->paid_status === self::STATUS_PAID;
 
-        $undelivered = [
-            self::STATUS_DRAFT,
-            self::STATUS_SENT,
-            self::STATUS_VIEWED,
-            self::STATUS_COMPLETED,
-        ];
-
         if ($mode == 'disable_on_invoice_sent') {
-            return ! (in_array($this->status, $undelivered) && $collected);
+            $delivered = in_array($this->status, [
+                self::STATUS_SENT,
+                self::STATUS_VIEWED,
+                self::STATUS_COMPLETED,
+            ], true);
+
+            return ! ($delivered || $collected);
         }
 
         if ($mode == 'disable_on_invoice_partial_paid') {
