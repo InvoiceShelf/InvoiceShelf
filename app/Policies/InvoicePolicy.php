@@ -33,7 +33,7 @@ class InvoicePolicy
      */
     public function view(User $user, Invoice $invoice): bool
     {
-        if (BouncerFacade::can('view-invoice', $invoice) && $user->hasCompany($invoice->company_id)) {
+        if (BouncerFacade::can('view-invoice', $invoice) && $user->isActingIn($invoice->company_id)) {
             return true;
         }
 
@@ -61,7 +61,7 @@ class InvoicePolicy
      */
     public function update(User $user, Invoice $invoice): bool
     {
-        if (BouncerFacade::can('edit-invoice', $invoice) && $user->hasCompany($invoice->company_id)) {
+        if (BouncerFacade::can('edit-invoice', $invoice) && $user->isActingIn($invoice->company_id)) {
             return $invoice->allow_edit;
         }
 
@@ -75,7 +75,7 @@ class InvoicePolicy
      */
     public function delete(User $user, Invoice $invoice): bool
     {
-        if (BouncerFacade::can('delete-invoice', $invoice) && $user->hasCompany($invoice->company_id)) {
+        if (BouncerFacade::can('delete-invoice', $invoice) && $user->isActingIn($invoice->company_id)) {
             return true;
         }
 
@@ -89,7 +89,7 @@ class InvoicePolicy
      */
     public function restore(User $user, Invoice $invoice): bool
     {
-        if (BouncerFacade::can('delete-invoice', $invoice) && $user->hasCompany($invoice->company_id)) {
+        if (BouncerFacade::can('delete-invoice', $invoice) && $user->isActingIn($invoice->company_id)) {
             return true;
         }
 
@@ -103,7 +103,7 @@ class InvoicePolicy
      */
     public function forceDelete(User $user, Invoice $invoice): bool
     {
-        if (BouncerFacade::can('delete-invoice', $invoice) && $user->hasCompany($invoice->company_id)) {
+        if (BouncerFacade::can('delete-invoice', $invoice) && $user->isActingIn($invoice->company_id)) {
             return true;
         }
 
@@ -118,7 +118,7 @@ class InvoicePolicy
      */
     public function send(User $user, Invoice $invoice)
     {
-        if (BouncerFacade::can('send-invoice', $invoice) && $user->hasCompany($invoice->company_id)) {
+        if (BouncerFacade::can('send-invoice', $invoice) && $user->isActingIn($invoice->company_id)) {
             return true;
         }
 

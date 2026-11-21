@@ -33,7 +33,7 @@ class RecurringInvoicePolicy
      */
     public function view(User $user, RecurringInvoice $recurringInvoice): bool
     {
-        if (BouncerFacade::can('view-recurring-invoice', $recurringInvoice) && $user->hasCompany($recurringInvoice->company_id)) {
+        if (BouncerFacade::can('view-recurring-invoice', $recurringInvoice) && $user->isActingIn($recurringInvoice->company_id)) {
             return true;
         }
 
@@ -61,7 +61,7 @@ class RecurringInvoicePolicy
      */
     public function update(User $user, RecurringInvoice $recurringInvoice): bool
     {
-        if (BouncerFacade::can('edit-recurring-invoice', $recurringInvoice) && $user->hasCompany($recurringInvoice->company_id)) {
+        if (BouncerFacade::can('edit-recurring-invoice', $recurringInvoice) && $user->isActingIn($recurringInvoice->company_id)) {
             return true;
         }
 
@@ -75,7 +75,7 @@ class RecurringInvoicePolicy
      */
     public function delete(User $user, RecurringInvoice $recurringInvoice): bool
     {
-        if (BouncerFacade::can('delete-recurring-invoice', $recurringInvoice) && $user->hasCompany($recurringInvoice->company_id)) {
+        if (BouncerFacade::can('delete-recurring-invoice', $recurringInvoice) && $user->isActingIn($recurringInvoice->company_id)) {
             return true;
         }
 
@@ -89,7 +89,7 @@ class RecurringInvoicePolicy
      */
     public function restore(User $user, RecurringInvoice $recurringInvoice): bool
     {
-        if (BouncerFacade::can('delete-recurring-invoice', $recurringInvoice) && $user->hasCompany($recurringInvoice->company_id)) {
+        if (BouncerFacade::can('delete-recurring-invoice', $recurringInvoice) && $user->isActingIn($recurringInvoice->company_id)) {
             return true;
         }
 
@@ -103,7 +103,7 @@ class RecurringInvoicePolicy
      */
     public function forceDelete(User $user, RecurringInvoice $recurringInvoice): bool
     {
-        if (BouncerFacade::can('delete-recurring-invoice', $recurringInvoice) && $user->hasCompany($recurringInvoice->company_id)) {
+        if (BouncerFacade::can('delete-recurring-invoice', $recurringInvoice) && $user->isActingIn($recurringInvoice->company_id)) {
             return true;
         }
 

@@ -32,7 +32,7 @@ class ExpensePolicy
      */
     public function view(User $user, Expense $expense): bool
     {
-        if (BouncerFacade::can('view-expense', $expense) && $user->hasCompany($expense->company_id)) {
+        if (BouncerFacade::can('view-expense', $expense) && $user->isActingIn($expense->company_id)) {
             return true;
         }
 
@@ -60,7 +60,7 @@ class ExpensePolicy
      */
     public function update(User $user, Expense $expense): bool
     {
-        if (BouncerFacade::can('edit-expense', $expense) && $user->hasCompany($expense->company_id)) {
+        if (BouncerFacade::can('edit-expense', $expense) && $user->isActingIn($expense->company_id)) {
             return true;
         }
 
@@ -74,7 +74,7 @@ class ExpensePolicy
      */
     public function delete(User $user, Expense $expense): bool
     {
-        if (BouncerFacade::can('delete-expense', $expense) && $user->hasCompany($expense->company_id)) {
+        if (BouncerFacade::can('delete-expense', $expense) && $user->isActingIn($expense->company_id)) {
             return true;
         }
 
@@ -88,7 +88,7 @@ class ExpensePolicy
      */
     public function restore(User $user, Expense $expense): bool
     {
-        if (BouncerFacade::can('delete-expense', $expense) && $user->hasCompany($expense->company_id)) {
+        if (BouncerFacade::can('delete-expense', $expense) && $user->isActingIn($expense->company_id)) {
             return true;
         }
 
@@ -102,7 +102,7 @@ class ExpensePolicy
      */
     public function forceDelete(User $user, Expense $expense): bool
     {
-        if (BouncerFacade::can('delete-expense', $expense) && $user->hasCompany($expense->company_id)) {
+        if (BouncerFacade::can('delete-expense', $expense) && $user->isActingIn($expense->company_id)) {
             return true;
         }
 

@@ -56,7 +56,7 @@ Three guards: `web` (session), `api` (Sanctum tokens for `/api/v1/`), `customer`
 - Vite dev server expects `invoiceshelf.test` hostname
 
 ### Backend Patterns
-- **Authorization**: Silber/Bouncer with policies in `app/Policies/`. Controllers use `$this->authorize()`.
+- **Authorization**: Silber/Bouncer with policies in `app/Policies/`. Controllers use `$this->authorize()`. A policy that is handed a record asks `$user->isActingIn($record->company_id)` (member of that company and Bouncer scoped to it), never `hasCompany()` alone: Bouncer answers with the abilities of the company in the `company` header, so membership by itself would let a role held in one company act on another company's records. Code that authorizes outside the header (PDF links) scopes Bouncer to the record's company first, as `DocumentPdfAccess` does. New record types go into the dataset in `tests/Feature/Admin/ActiveCompanyAuthorizationTest.php`.
 - **Validation**: Form Request classes, never inline validation
 - **API responses**: Eloquent API Resources in `app/Http/Resources/`
 - **PDF generation**: DomPDF (`GeneratesPdfTrait`) or Gotenberg

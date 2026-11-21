@@ -32,7 +32,7 @@ class PaymentPolicy
      */
     public function view(User $user, Payment $payment): bool
     {
-        if (BouncerFacade::can('view-payment', $payment) && $user->hasCompany($payment->company_id)) {
+        if (BouncerFacade::can('view-payment', $payment) && $user->isActingIn($payment->company_id)) {
             return true;
         }
 
@@ -60,7 +60,7 @@ class PaymentPolicy
      */
     public function update(User $user, Payment $payment): bool
     {
-        if (BouncerFacade::can('edit-payment', $payment) && $user->hasCompany($payment->company_id)) {
+        if (BouncerFacade::can('edit-payment', $payment) && $user->isActingIn($payment->company_id)) {
             return true;
         }
 
@@ -74,7 +74,7 @@ class PaymentPolicy
      */
     public function delete(User $user, Payment $payment): bool
     {
-        if (BouncerFacade::can('delete-payment', $payment) && $user->hasCompany($payment->company_id)) {
+        if (BouncerFacade::can('delete-payment', $payment) && $user->isActingIn($payment->company_id)) {
             return true;
         }
 
@@ -88,7 +88,7 @@ class PaymentPolicy
      */
     public function restore(User $user, Payment $payment): bool
     {
-        if (BouncerFacade::can('delete-payment', $payment) && $user->hasCompany($payment->company_id)) {
+        if (BouncerFacade::can('delete-payment', $payment) && $user->isActingIn($payment->company_id)) {
             return true;
         }
 
@@ -102,7 +102,7 @@ class PaymentPolicy
      */
     public function forceDelete(User $user, Payment $payment): bool
     {
-        if (BouncerFacade::can('delete-payment', $payment) && $user->hasCompany($payment->company_id)) {
+        if (BouncerFacade::can('delete-payment', $payment) && $user->isActingIn($payment->company_id)) {
             return true;
         }
 
@@ -116,7 +116,7 @@ class PaymentPolicy
      */
     public function send(User $user, Payment $payment)
     {
-        if (BouncerFacade::can('send-payment', $payment) && $user->hasCompany($payment->company_id)) {
+        if (BouncerFacade::can('send-payment', $payment) && $user->isActingIn($payment->company_id)) {
             return true;
         }
 

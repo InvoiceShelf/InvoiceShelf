@@ -33,7 +33,7 @@ class ExchangeRateProviderPolicy
      */
     public function view(User $user, ExchangeRateProvider $exchangeRateProvider): bool
     {
-        if (BouncerFacade::can('view-exchange-rate-provider', $exchangeRateProvider) && $user->hasCompany($exchangeRateProvider->company_id)) {
+        if (BouncerFacade::can('view-exchange-rate-provider', $exchangeRateProvider) && $user->isActingIn($exchangeRateProvider->company_id)) {
             return true;
         }
 
@@ -61,7 +61,7 @@ class ExchangeRateProviderPolicy
      */
     public function update(User $user, ExchangeRateProvider $exchangeRateProvider): bool
     {
-        if (BouncerFacade::can('edit-exchange-rate-provider', $exchangeRateProvider) && $user->hasCompany($exchangeRateProvider->company_id)) {
+        if (BouncerFacade::can('edit-exchange-rate-provider', $exchangeRateProvider) && $user->isActingIn($exchangeRateProvider->company_id)) {
             return true;
         }
 
@@ -75,7 +75,7 @@ class ExchangeRateProviderPolicy
      */
     public function delete(User $user, ExchangeRateProvider $exchangeRateProvider): bool
     {
-        if (BouncerFacade::can('delete-exchange-rate-provider', $exchangeRateProvider) && $user->hasCompany($exchangeRateProvider->company_id)) {
+        if (BouncerFacade::can('delete-exchange-rate-provider', $exchangeRateProvider) && $user->isActingIn($exchangeRateProvider->company_id)) {
             return true;
         }
 

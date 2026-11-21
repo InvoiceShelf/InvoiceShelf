@@ -18,8 +18,8 @@ class NotePolicy
         }
 
         // When acting on a specific note, enforce tenant isolation: the note
-        // must belong to a company the user is a member of.
-        return $note === null || $user->hasCompany($note->company_id);
+        // must belong to the company the user is acting in.
+        return $note === null || $user->isActingIn($note->company_id);
     }
 
     public function viewNotes(User $user, ?Note $note = null)
@@ -28,6 +28,6 @@ class NotePolicy
             return false;
         }
 
-        return $note === null || $user->hasCompany($note->company_id);
+        return $note === null || $user->isActingIn($note->company_id);
     }
 }

@@ -32,7 +32,7 @@ class CustomFieldPolicy
      */
     public function view(User $user, CustomField $customField): bool
     {
-        if (BouncerFacade::can('view-custom-field', $customField) && $user->hasCompany($customField->company_id)) {
+        if (BouncerFacade::can('view-custom-field', $customField) && $user->isActingIn($customField->company_id)) {
             return true;
         }
 
@@ -60,7 +60,7 @@ class CustomFieldPolicy
      */
     public function update(User $user, CustomField $customField): bool
     {
-        if (BouncerFacade::can('edit-custom-field', $customField) && $user->hasCompany($customField->company_id)) {
+        if (BouncerFacade::can('edit-custom-field', $customField) && $user->isActingIn($customField->company_id)) {
             return true;
         }
 
@@ -74,7 +74,7 @@ class CustomFieldPolicy
      */
     public function delete(User $user, CustomField $customField): bool
     {
-        if (BouncerFacade::can('delete-custom-field', $customField) && $user->hasCompany($customField->company_id)) {
+        if (BouncerFacade::can('delete-custom-field', $customField) && $user->isActingIn($customField->company_id)) {
             return true;
         }
 
@@ -88,7 +88,7 @@ class CustomFieldPolicy
      */
     public function restore(User $user, CustomField $customField): bool
     {
-        if (BouncerFacade::can('delete-custom-field', $customField) && $user->hasCompany($customField->company_id)) {
+        if (BouncerFacade::can('delete-custom-field', $customField) && $user->isActingIn($customField->company_id)) {
             return true;
         }
 
@@ -102,7 +102,7 @@ class CustomFieldPolicy
      */
     public function forceDelete(User $user, CustomField $customField): bool
     {
-        if (BouncerFacade::can('delete-custom-field', $customField) && $user->hasCompany($customField->company_id)) {
+        if (BouncerFacade::can('delete-custom-field', $customField) && $user->isActingIn($customField->company_id)) {
             return true;
         }
 
