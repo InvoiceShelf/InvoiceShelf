@@ -23,7 +23,7 @@ class ExchangeRateProviderPolicy
     public function view(User $user, ExchangeRateProvider $exchangeRateProvider): bool
     {
         return BouncerFacade::can('view-exchange-rate-provider', $exchangeRateProvider)
-            && $user->hasCompany($exchangeRateProvider->company_id);
+            && $user->isActingIn($exchangeRateProvider->company_id);
     }
 
     public function create(User $user): bool
@@ -34,13 +34,13 @@ class ExchangeRateProviderPolicy
     public function update(User $user, ExchangeRateProvider $exchangeRateProvider): bool
     {
         return BouncerFacade::can('edit-exchange-rate-provider', $exchangeRateProvider)
-            && $user->hasCompany($exchangeRateProvider->company_id);
+            && $user->isActingIn($exchangeRateProvider->company_id);
     }
 
     public function delete(User $user, ExchangeRateProvider $exchangeRateProvider): bool
     {
         return BouncerFacade::can('delete-exchange-rate-provider', $exchangeRateProvider)
-            && $user->hasCompany($exchangeRateProvider->company_id);
+            && $user->isActingIn($exchangeRateProvider->company_id);
     }
 
     // Soft deletes are not wired up for providers; these remain declared but

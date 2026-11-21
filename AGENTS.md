@@ -164,7 +164,7 @@ After that the token is usable as `bg-X` / `text-X` / `border-X` in Vue template
 **Accessibility.** The app targets WCAG 2.2 AA, and `pnpm lint` runs eslint-plugin-vuejs-accessibility. One known exception, decided on 2026-09-23: text field borders measure 1.5 to 2.3:1 against their background, below the 3:1 that SC 1.4.11 asks of a component's boundary, because 3:1 borders made forms look heavy. Fields are still identified by their labels and layout, focus turns the whole border indigo and an invalid field turns it red. Checkboxes and switches do meet 3:1. Revisit that decision before raising field borders to 3:1.
 
 ### Backend Patterns
-- **Authorization**: Silber/Bouncer with policies in `app/Policies/`. Controllers use `$this->authorize()`.
+- **Authorization**: Silber/Bouncer with policies in `app/Policies/`. Controllers use `$this->authorize()`. A policy that is handed a company record pairs the ability with `$user->isActingIn($record->company_id)` (member of that company **and** Bouncer scoped to it), never `hasCompany()` alone: abilities are read from the active company, so membership alone lets a member of two companies use one company's role on the other's records. Code that authorizes outside the `company` header (report links, PDF links) scopes Bouncer to the record's company first. `ActiveCompanyAuthorizationTest` covers every such policy; add new record types to its dataset.
 - **Validation**: Form Request classes, never inline validation
 - **API responses**: Eloquent API Resources in `app/Http/Resources/`
 - **PDF generation**: Pluggable driver — `dompdf` (default, via `GeneratesPdfTrait`) or `gotenberg` (headless Chromium). Driver chosen per company through the **PDF Generation** admin settings page.

@@ -46,6 +46,6 @@ class NotePolicy
             return true;
         }
 
-        return $user->hasCompany($note->company_id);
+        return $user->isActingIn($note->company_id);
     }
 }

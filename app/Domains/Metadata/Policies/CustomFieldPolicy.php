@@ -69,6 +69,6 @@ class CustomFieldPolicy
 
     private function sameCompany(User $user, CustomField $customField): bool
     {
-        return $user->hasCompany($customField->company_id);
+        return $user->isActingIn($customField->company_id);
     }
 }
