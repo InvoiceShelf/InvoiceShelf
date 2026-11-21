@@ -71,6 +71,7 @@ class DocumentItemService
                         continue;
                     }
 
+                    $tax = $this->withoutOwnerKeys($tax);
                     $tax['company_id'] = $document->company_id;
                     $tax['exchange_rate'] = $document->exchange_rate;
                     $tax['currency_id'] = $document->currency_id;
@@ -80,12 +81,6 @@ class DocumentItemService
                     }
 
                     if (gettype($tax['amount']) !== 'NULL') {
-                        // A row lifted off a recurring template still carries
-                        // the template's key, which means nothing on the
-                        // generated document. Dropping an absent key is a
-                        // no-op, so it needs no guard.
-                        unset($tax['recurring_invoice_id']);
-
                         $createdItem->taxes()->create($tax);
                     }
                 }
@@ -138,6 +133,7 @@ class DocumentItemService
         $exchangeRate = $document->exchange_rate;
 
         foreach ($taxes as $tax) {
+            $tax = $this->withoutOwnerKeys($tax);
             $tax['company_id'] = $document->company_id;
             $tax['exchange_rate'] = $document->exchange_rate;
             $tax['currency_id'] = $document->currency_id;
@@ -147,11 +143,35 @@ class DocumentItemService
             }
 
             if (gettype($tax['amount']) !== 'NULL') {
-                // Same template key as in createItems(), dropped the same way.
-                unset($tax['recurring_invoice_id']);
-
                 $document->taxes()->create($tax);
             }
         }
+    }
+
+    /**
+     * A tax row without the keys that tie it to the document it was read from.
+     *
+     * Copies (convert, clone, a row lifted off a recurring template) hand over
+     * `$tax->toArray()`; the owner keys it carries would otherwise survive next
+     * to the ones the relation sets, leaving the new row attached to the source
+     * document as well.
+     *
+     * @param  array<string, mixed>  $tax
+     * @return array<string, mixed>
+     */
+    private function withoutOwnerKeys(array $tax): array
+    {
+        unset(
+            $tax['id'],
+            $tax['invoice_id'],
+            $tax['invoice_item_id'],
+            $tax['estimate_id'],
+            $tax['estimate_item_id'],
+            $tax['recurring_invoice_id'],
+            $tax['created_at'],
+            $tax['updated_at'],
+        );
+
+        return $tax;
     }
 }
