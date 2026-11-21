@@ -134,6 +134,15 @@ class User extends Authenticatable implements HasMedia
     }
 
     /**
+     * Accounts at outside identity providers that sign this user in (single
+     * sign-on), one per protocol.
+     */
+    public function ssoIdentities(): HasMany
+    {
+        return $this->hasMany(SsoIdentity::class, 'user_id');
+    }
+
+    /**
      * Contacts this account authored.
      */
     public function customers(): HasMany

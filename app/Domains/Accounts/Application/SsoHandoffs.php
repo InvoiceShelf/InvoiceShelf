@@ -7,18 +7,18 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 /**
- * Sign-in with SSO for the mobile app.
+ * Single sign-on for the mobile app, whatever protocol is behind it.
  *
  * The browser flow ends in a web session, which the app cannot use. The app
  * starts a hand-off instead and keeps its secret, signs in in the system
- * browser (OAuth2Controller::app), and the callback sends that browser back
- * to the app's link (`invoiceshelf.client.app_link`) with a one-time code.
- * Only the holder of the secret can trade the code for an access token, as
- * in RFC 8252: a sign-in address passed to somebody else gets the sender
- * nothing, because the code goes to the device that opened it and the secret
- * never leaves the device that started it.
+ * browser (SsoController::app, which first asks the person there to
+ * confirm), and the callback sends that browser back to the app's link
+ * (`invoiceshelf.client.app_link`) with a one-time code. Only the holder of
+ * the secret can trade the code for an access token, as in RFC 8252: the
+ * code goes to the device that opened the sign-in, and the secret never
+ * leaves the device that started it.
  */
-final class OAuth2Handoffs
+final class SsoHandoffs
 {
     /**
      * Seconds the sign-in in the browser may take.
@@ -56,25 +56,53 @@ final class OAuth2Handoffs
      */
     public function pending(string $id): bool
     {
+        return $this->deviceName($id) !== null;
+    }
+
+    /**
+     * The name of the device that started the hand-off, while it is still
+     * waiting for its sign-in; null otherwise. The app chose it, so it is
+     * not to be trusted as markup.
+     */
+    public function deviceName(string $id): ?string
+    {
         $handoff = Cache::get($this->key($id));
 
-        return is_array($handoff) && $handoff['user_id'] === null;
+        return is_array($handoff) && $handoff['user_id'] === null ? (string) $handoff['device_name'] : null;
+    }
+
+    /**
+     * Ends a hand-off that is still waiting for its sign-in, as when the
+     * person in the browser says they did not start it.
+     */
+    public function cancel(string $id): void
+    {
+        if ($this->pending($id)) {
+            Cache::forget($this->key($id));
+        }
     }
 
     /**
      * Records who signed in and returns the one-time code for the app. Null
      * when the hand-off is gone or already has its sign-in.
+     *
+     * Two callbacks for one hand-off may both find it waiting. Only the one
+     * that adds the completion marker first goes on, so a hand-off is
+     * completed once, for one user.
      */
     public function complete(string $id, User $user): ?string
     {
-        if (! $this->pending($id)) {
+        $handoff = Cache::get($this->key($id));
+
+        if (! is_array($handoff) || $handoff['user_id'] !== null
+            || ! Cache::add($this->key($id).':completed', true, self::SIGN_IN_SECONDS)) {
             return null;
         }
 
         $code = Str::random(64);
 
         Cache::put($this->key($id), [
-            ...Cache::get($this->key($id)),
+            ...$handoff,
             'user_id' => $user->id,
             'code' => hash('sha256', $code),
         ], self::CODE_SECONDS);
@@ -104,8 +132,21 @@ final class OAuth2Handoffs
         return $user ? ['user' => $user, 'device_name' => $handoff['device_name']] : null;
     }
 
+    /**
+     * Where to send the browser back to the app with the outcome of its
+     * hand-off: a one-time `code`, or an `error` (an SsoLogin error code, or
+     * "cancelled"). Never chosen by a client: the link is server
+     * configuration.
+     *
+     * @param  array<string, string>  $outcome
+     */
+    public function appLink(string $id, array $outcome): string
+    {
+        return config('invoiceshelf.client.app_link').'?'.http_build_query(['handoff' => $id, ...$outcome]);
+    }
+
     private function key(string $id): string
     {
-        return "oauth2_handoff:{$id}";
+        return "sso_handoff:{$id}";
     }
 }

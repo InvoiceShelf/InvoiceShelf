@@ -52,9 +52,9 @@
 
       <!-- Styled like the Login button, in white (its outline keeps it visible on the white card) -->
       <BaseButton
-        v-if="oauth2Login"
+        v-if="ssoLogin"
         tag="a"
-        :href="oauth2Href"
+        :href="ssoHref"
         variant="white"
         class="flex-1 justify-center"
       >
@@ -62,8 +62,8 @@
       </BaseButton>
     </div>
 
-    <p v-if="oauth2Error" class="mt-3 text-sm text-danger" role="alert">
-      {{ oauth2Error }}
+    <p v-if="ssoError" class="mt-3 text-sm text-danger" role="alert">
+      {{ ssoError }}
     </p>
 
     <div
@@ -98,7 +98,7 @@ import { useNotificationStore } from '../../../stores/notification.store'
 declare global {
   interface Window {
     demo_mode?: boolean
-    oauth2_login?: { url: string; error: string | null }
+    sso_login?: { url: string; error: string | null }
   }
 }
 
@@ -133,20 +133,21 @@ const rules = {
   },
 }
 
-// Sign-in with SSO, when the server has it set up (OAuth2Login::clientState()).
+// Single sign-on, when the server has it set up (SsoLogin::clientState()).
 // The button carries `next` along; the server checks it with PostLoginRedirect.
-const oauth2Login = window.oauth2_login
-const oauth2Error = ref<string | null>(null)
+const ssoLogin = window.sso_login
+const ssoError = ref<string | null>(null)
 
-const OAUTH2_ERRORS: Readonly<Record<string, string>> = {
-  failed: 'login.oauth2_failed',
-  no_account: 'login.oauth2_no_account',
+const SSO_ERRORS: Readonly<Record<string, string>> = {
+  failed: 'login.sso_failed',
+  no_account: 'login.sso_no_account',
+  email_unverified: 'login.sso_email_unverified',
 }
 
-const oauth2Href = computed<string>(() => {
+const ssoHref = computed<string>(() => {
   const next = typeof route.query.next === 'string' ? route.query.next : ''
 
-  return next !== '' ? `${oauth2Login?.url}?next=${encodeURIComponent(next)}` : (oauth2Login?.url ?? '')
+  return next !== '' ? `${ssoLogin?.url}?next=${encodeURIComponent(next)}` : (ssoLogin?.url ?? '')
 })
 
 const v$ = useVuelidate(
@@ -204,15 +205,15 @@ async function onSubmit(): Promise<void> {
 const demo = demoState()
 
 onMounted(() => {
-  const error = oauth2Login?.error ? OAUTH2_ERRORS[oauth2Login.error] : undefined
+  const error = ssoLogin?.error ? SSO_ERRORS[ssoLogin.error] : undefined
 
   if (error) {
-    oauth2Error.value = t(error)
+    ssoError.value = t(error)
   }
 
   // The error belongs to the sign-in that just came back, not to later visits
-  if (oauth2Login) {
-    oauth2Login.error = null
+  if (ssoLogin) {
+    ssoLogin.error = null
   }
 
   if (demo) {

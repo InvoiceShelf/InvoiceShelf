@@ -155,7 +155,7 @@
 
         <!-- Styled like the Login button, in white (its outline keeps it visible on the white card) -->
         <BaseButton
-          v-if="state.manifest?.oauth2_login"
+          v-if="state.manifest?.sso_login"
           :loading="isSsoBusy"
           :disabled="isBusy || isSsoBusy"
           type="button"
@@ -239,9 +239,10 @@ const isSsoBusy = ref<boolean>(false)
 
 /** What a sign-in with SSO that ended without a token says. */
 const SSO_FAILURES: Readonly<Record<SsoSignInFailure, string>> = {
-  cancelled: 'login.oauth2_cancelled',
-  no_account: 'login.oauth2_no_account',
-  failed: 'login.oauth2_failed',
+  cancelled: 'login.sso_cancelled',
+  no_account: 'login.sso_no_account',
+  email_unverified: 'login.sso_email_unverified',
+  failed: 'login.sso_failed',
 }
 
 const rules = {

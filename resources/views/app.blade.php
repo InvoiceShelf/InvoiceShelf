@@ -86,8 +86,8 @@
         window.source_url = @json(\App\Support\PoweredBy::sourceUrl());
         window.customer_portal_url = @json(\App\Support\Urls\CustomerUrl::portalUrl());
 
-        @if(\App\Domains\Accounts\Application\OAuth2Login::enabled())
-            window.oauth2_login = @json(\App\Domains\Accounts\Application\OAuth2Login::clientState());
+        @if(\App\Domains\Accounts\Application\SsoLogin::enabled())
+            window.sso_login = @json(\App\Domains\Accounts\Application\SsoLogin::clientState());
         @endif
 
         @if(\App\Platform\Operations\Managed\ManagedMode::enabled())

@@ -2,41 +2,41 @@
 
 namespace App\Domains\Accounts\Http\Controllers\Auth;
 
-use App\Domains\Accounts\Application\OAuth2Handoffs;
-use App\Domains\Accounts\Application\OAuth2Login;
-use App\Domains\Accounts\Http\Requests\OAuth2HandoffRequest;
-use App\Domains\Accounts\Http\Requests\OAuth2HandoffTokenRequest;
+use App\Domains\Accounts\Application\SsoHandoffs;
+use App\Domains\Accounts\Application\SsoLogin;
+use App\Domains\Accounts\Http\Requests\SsoHandoffRequest;
+use App\Domains\Accounts\Http\Requests\SsoHandoffTokenRequest;
 use App\Platform\Http\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
 /**
- * Sign-in with SSO for the mobile app, on the public API (OAuth2Handoffs).
+ * Single sign-on for the mobile app, on the public API (SsoHandoffs).
  *
  * The app starts a hand-off here, opens the returned address in the system
  * browser, and once the browser brings the code back to the app's link it
  * trades the code and its secret for a personal access token, the same kind
  * the password sign-in hands out.
  */
-class OAuth2HandoffController extends Controller
+class SsoHandoffController extends Controller
 {
-    public function __construct(private readonly OAuth2Handoffs $handoffs) {}
+    public function __construct(private readonly SsoHandoffs $handoffs) {}
 
     /**
      * Start a hand-off: the address to open in the system browser, the secret
      * that later proves this device started it, and the app link the browser
      * will be sent back to.
      */
-    public function store(OAuth2HandoffRequest $request): JsonResponse
+    public function store(SsoHandoffRequest $request): JsonResponse
     {
-        abort_unless(OAuth2Login::enabled(), 404);
+        abort_unless(SsoLogin::enabled(), 404);
 
         $handoff = $this->handoffs->start($request->device_name);
 
         return response()->json([
             'id' => $handoff['id'],
             'secret' => $handoff['secret'],
-            'url' => route('oauth2.app', ['handoff' => $handoff['id']]),
+            'url' => route('sso.app', ['handoff' => $handoff['id']]),
             'app_link' => config('invoiceshelf.client.app_link'),
         ], 201);
     }
@@ -45,9 +45,9 @@ class OAuth2HandoffController extends Controller
      * Trade the code the browser brought back, with the secret, for a token
      * named after the device that started the hand-off.
      */
-    public function token(OAuth2HandoffTokenRequest $request, string $handoff): JsonResponse
+    public function token(SsoHandoffTokenRequest $request, string $handoff): JsonResponse
     {
-        abort_unless(OAuth2Login::enabled(), 404);
+        abort_unless(SsoLogin::enabled(), 404);
 
         $signedIn = $this->handoffs->redeem($handoff, $request->secret, $request->code);
 

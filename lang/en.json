@@ -972,9 +972,14 @@
     "enter_password": "Enter Password",
     "retype_password": "Retype Password",
     "sign_in_with_sso": "Sign in with SSO",
-    "oauth2_failed": "Signing in with SSO did not work. Please try again.",
-    "oauth2_no_account": "Your SSO account does not match a user here. Ask an administrator to add a user with your email address.",
-    "oauth2_cancelled": "Signing in with SSO was cancelled."
+    "sso_failed": "Signing in with SSO did not work. Please try again.",
+    "sso_no_account": "Your SSO account does not match a user here. Ask an administrator to add a user with your email address.",
+    "sso_cancelled": "Signing in with SSO was cancelled.",
+    "sso_email_unverified": "Your identity provider has not confirmed your email address, so it cannot be matched to a user here. Ask your administrator to verify it there, then try again.",
+    "sso_app_title": "Sign in to the InvoiceShelf app on {device}?",
+    "sso_app_notice": "Continue only if you just started this sign-in in the InvoiceShelf app yourself. If someone sent you this link, cancel: continuing would sign their device in to your account.",
+    "sso_app_continue": "Continue",
+    "sso_app_cancel": "Cancel"
   },
   "client": {
     "connect_heading": "Connect to your server",

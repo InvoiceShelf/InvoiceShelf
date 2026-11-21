@@ -11,11 +11,12 @@ use App\Adapters\Accounts\MediaLibraryCompanyLogoManager;
 use App\Adapters\Accounts\MediaLibraryUserAvatarManager;
 use App\Adapters\Accounts\ModuleAwareAbilityCatalog;
 use App\Domains\Accounts\Application\OAuth\OAuthServer;
-use App\Domains\Accounts\Application\OAuth2Provider;
+use App\Domains\Accounts\Application\OidcDiscovery;
+use App\Domains\Accounts\Application\OidcProvider;
 use App\Domains\Accounts\Console\ApplyRolePresetDefaults as ApplyRolePresetDefaultsCommand;
 use App\Domains\Accounts\Console\GenerateOAuthKeys;
 use App\Domains\Accounts\Console\SyncRolePresets;
-use App\Domains\Accounts\Console\UnlinkOAuth2Account;
+use App\Domains\Accounts\Console\UnlinkSsoAccount;
 use App\Domains\Accounts\Contracts\AbilityCatalog;
 use App\Domains\Accounts\Contracts\CompanyAddressWriter;
 use App\Domains\Accounts\Contracts\CompanyDataPurger;
@@ -57,7 +58,7 @@ class AccountsServiceProvider extends ServiceProvider
         $this->app->bind(UserAvatarManager::class, MediaLibraryUserAvatarManager::class);
 
         $this->registerOAuthServer();
-        $this->registerOAuth2Login();
+        $this->registerOidcLogin();
     }
 
     public function boot(): void
@@ -90,22 +91,23 @@ class AccountsServiceProvider extends ServiceProvider
             ApplyRolePresetDefaultsCommand::class,
             GenerateOAuthKeys::class,
             SyncRolePresets::class,
-            UnlinkOAuth2Account::class,
+            UnlinkSsoAccount::class,
         ]);
     }
 
     /**
-     * Sign-in with SSO, the other direction from the OAuth server below: this
-     * installation as a client of an outside identity provider. Socialite
-     * gets an "oauth2" driver (OAuth2Provider) set up from the endpoint URLs
-     * in config/services.php, once something asks for Socialite.
+     * Single sign-on over OpenID Connect, the other direction from the OAuth
+     * server below: this installation as a client of an outside identity
+     * provider. Socialite gets an "oidc" driver (OidcProvider) set up from
+     * the issuer or the endpoint URLs in config/services.php, once something
+     * asks for Socialite.
      */
-    private function registerOAuth2Login(): void
+    private function registerOidcLogin(): void
     {
-        $this->callAfterResolving(SocialiteFactory::class, function (SocialiteManager $socialite): void {
-            $socialite->extend('oauth2', fn () => $socialite
-                ->buildProvider(OAuth2Provider::class, config('services.oauth2'))
-                ->setEndpoints(config('services.oauth2')));
+        $this->callAfterResolving(SocialiteFactory::class, function (SocialiteManager $socialite, $app): void {
+            $socialite->extend('oidc', fn () => $socialite
+                ->buildProvider(OidcProvider::class, config('services.oidc'))
+                ->configure(config('services.oidc'), $app->make(OidcDiscovery::class)));
         });
     }
 

@@ -6,8 +6,8 @@ import { Device } from '@capacitor/device'
 import { Directory, Filesystem } from '@capacitor/filesystem'
 import { Preferences } from '@capacitor/preferences'
 import { Share } from '@capacitor/share'
-import { webPlatform } from './web'
-import type { Platform } from './types'
+import { isAnswerFor, webPlatform } from './web'
+import type { AppLinkSignIn, Platform } from './types'
 
 /**
  * The Capacitor implementation, reached only from the client build through a
@@ -327,45 +327,50 @@ export const capacitorPlatform: Platform = {
    * Sign-in with SSO in the in-app browser. The server ends it by sending
    * that browser to the app's link (`invoiceshelf.client.app_link`, the URL
    * scheme mobile/android and mobile/ios register), which the OS hands to
-   * the app as `appUrlOpen`. Closing the browser first is a cancel.
+   * the app as `appUrlOpen`. Only the link for this sign-in's hand-off is its
+   * answer. Closing the browser first is a cancel; a browser that would not
+   * open is a failure.
    */
-  async openForAppLink(url: string, appLink: string): Promise<string | null> {
+  async openForAppLink(start: () => Promise<AppLinkSignIn>): Promise<string | null> {
     if (!isNativeShell()) {
-      return webPlatform.openForAppLink(url, appLink)
+      return webPlatform.openForAppLink(start)
     }
 
+    const signIn = await start()
     const { App } = await import('@capacitor/app')
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       let settled = false
       let cancel: ReturnType<typeof setTimeout> | undefined
       const listeners: Promise<PluginListenerHandle>[] = []
 
-      const finish = (link: string | null): void => {
+      const settle = (outcome: () => void): void => {
         if (!settled) {
           settled = true
           clearTimeout(cancel)
           listeners.forEach((listener) => void listener.then((handle) => handle.remove()))
-          resolve(link)
+          outcome()
         }
       }
 
       listeners.push(
         App.addListener('appUrlOpen', ({ url: opened }) => {
-          if (opened.startsWith(appLink)) {
+          if (isAnswerFor(opened, signIn)) {
             // Android has nothing to close: the link already brought the app back.
             void Browser.close().catch(() => undefined)
-            finish(opened)
+            settle(() => resolve(opened))
           }
         }),
         Browser.addListener('browserFinished', () => {
-          cancel = setTimeout(() => finish(null), SIGN_IN_CANCEL_GRACE_MS)
+          cancel = setTimeout(() => settle(() => resolve(null)), SIGN_IN_CANCEL_GRACE_MS)
         }),
       )
 
       Promise.all(listeners)
-        .then(() => Browser.open({ url }))
-        .catch(() => finish(null))
+        .then(() => Browser.open({ url: signIn.url }))
+        .catch((error: unknown) => {
+          settle(() => reject(error instanceof Error ? error : new Error('The sign-in browser could not be opened.')))
+        })
     })
   },
 }

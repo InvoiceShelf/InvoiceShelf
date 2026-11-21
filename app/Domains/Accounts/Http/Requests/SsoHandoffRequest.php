@@ -5,9 +5,9 @@ namespace App\Domains\Accounts\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * Starting a sign-in with SSO for the mobile app (OAuth2HandoffController).
+ * Starting a single sign-on for the mobile app (SsoHandoffController).
  */
-class OAuth2HandoffRequest extends FormRequest
+class SsoHandoffRequest extends FormRequest
 {
     public function authorize(): bool
     {

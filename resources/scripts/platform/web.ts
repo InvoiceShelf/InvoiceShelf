@@ -1,4 +1,4 @@
-import type { Platform } from './types'
+import type { AppLinkSignIn, Platform } from './types'
 
 /**
  * The browser implementation, and the fallback for everything the Capacitor
@@ -48,6 +48,23 @@ function describeBrowser(): string {
   }
 
   return browser ?? system ?? 'InvoiceShelf client'
+}
+
+/**
+ * Whether an address the browser was sent to is the app link's answer for
+ * this sign-in, and not one for another hand-off, such as an earlier sign-in
+ * whose link arrived late.
+ */
+export function isAnswerFor(link: string, signIn: AppLinkSignIn): boolean {
+  if (!link.startsWith(signIn.appLink)) {
+    return false
+  }
+
+  try {
+    return new URL(link).searchParams.get('handoff') === signIn.handoff
+  } catch {
+    return false
+  }
 }
 
 export const webPlatform: Platform = {
@@ -121,14 +138,27 @@ export const webPlatform: Platform = {
    * redirect lands it on `sso-return.html` on this origin, which posts its
    * address back here. That needs the server's INVOICESHELF_CLIENT_APP_LINK
    * to point at that page; the phone apps use their own link (capacitor.ts).
-   * Closing the popup is a cancel.
+   * Closing the popup is a cancel; a popup the browser blocked is a failure.
    */
-  async openForAppLink(url: string, appLink: string): Promise<string | null> {
-    const popup = window.open(url, 'invoiceshelf-sign-in', 'popup,width=520,height=720')
+  async openForAppLink(start: () => Promise<AppLinkSignIn>): Promise<string | null> {
+    // Opened empty before `start` makes its request, while this still runs
+    // in the click: a popup opened after an await may be blocked.
+    const popup = window.open('', 'invoiceshelf-sign-in', 'popup,width=520,height=720')
 
     if (popup === null) {
-      return null
+      throw new Error('The sign-in window could not be opened.')
     }
+
+    let signIn: AppLinkSignIn
+
+    try {
+      signIn = await start()
+    } catch (error: unknown) {
+      popup.close()
+      throw error
+    }
+
+    popup.location.href = signIn.url
 
     return new Promise((resolve) => {
       let settled = false
@@ -145,7 +175,7 @@ export const webPlatform: Platform = {
       const onMessage = (event: MessageEvent): void => {
         const link = (event.data as { appLink?: unknown } | null)?.appLink
 
-        if (event.origin === window.location.origin && typeof link === 'string' && link.startsWith(appLink)) {
+        if (event.origin === window.location.origin && typeof link === 'string' && isAnswerFor(link, signIn)) {
           popup.close()
           finish(link)
         }

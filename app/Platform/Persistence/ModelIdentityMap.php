@@ -9,6 +9,7 @@ use App\Domains\Accounts\Models\CompanyInvitation;
 use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Accounts\Models\ImpersonationLog;
 use App\Domains\Accounts\Models\RolePreset;
+use App\Domains\Accounts\Models\SsoIdentity;
 use App\Domains\Accounts\Models\User;
 use App\Domains\Accounts\Models\UserSetting;
 use App\Domains\Catalog\Models\Item;
@@ -131,6 +132,7 @@ final class ModelIdentityMap
             'recurring_invoice' => RecurringInvoice::class,
             'role_preset' => RolePreset::class,
             'setting' => Setting::class,
+            'sso_identity' => SsoIdentity::class,
             'tax' => Tax::class,
             'tax_type' => TaxType::class,
             'transaction' => Transaction::class,
