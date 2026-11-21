@@ -127,3 +127,24 @@ test('the invoice endpoints refuse another company\'s invoice whichever company 
     $this->withHeaders($asTheirs)->getJson("/api/v1/invoices/{$invoice->id}")->assertOk();
     $this->withHeaders($asTheirs)->postJson("/api/v1/invoices/{$invoice->id}/status", ['status' => Invoice::STATUS_SENT])->assertForbidden();
 });
+
+test('receipt links carry no company header and answer for the expense\'s own company', function () {
+    $own = Expense::factory()->create(['company_id' => $this->mine->id]);
+    $foreign = Expense::factory()->create(['company_id' => $this->theirs->id]);
+    $outside = Expense::factory()->create(['company_id' => Company::factory()->create(['owner_id' => $this->theirs->owner_id])->id]);
+
+    $open = function (Expense $expense, string $link) {
+        // The browser opens these directly, so no middleware has told Bouncer which company applies.
+        BouncerFacade::scope()->to(null);
+        BouncerFacade::refresh();
+
+        return $this->get("/reports/expenses/{$expense->id}/{$link}");
+    };
+
+    // None of these expenses has a receipt, so past authorization the answer is "no receipt".
+    foreach (['receipt', 'download-receipt'] as $link) {
+        expect($open($own, $link)->status())->not->toBe(403)
+            ->and($open($foreign, $link)->status())->not->toBe(403);
+        $open($outside, $link)->assertForbidden();
+    }
+});
