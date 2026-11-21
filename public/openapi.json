@@ -2,7 +2,7 @@
     "openapi": "3.1.0",
     "info": {
         "title": "InvoiceShelf API",
-        "version": "3.0.0-alpha.15",
+        "version": "3.0.0-alpha.16",
         "description": "REST API for InvoiceShelf \u2014 open-source invoicing & expense tracking. Authenticate with a Sanctum personal access token (Authorization: Bearer <token>). Company-scoped endpoints additionally require a `company` header carrying the company ID."
     },
     "servers": [
@@ -24127,6 +24127,9 @@
                     "payment_module_enabled": {
                         "type": "string"
                     },
+                    "payment_link_url": {
+                        "type": "string"
+                    },
                     "overdue": {
                         "type": "string"
                     },
@@ -24195,6 +24198,7 @@
                     "formatted_invoice_date",
                     "formatted_due_date",
                     "payment_module_enabled",
+                    "payment_link_url",
                     "overdue"
                 ],
                 "title": "App.Domains.Sales.Http.Resources.CustomerPortal.InvoiceResource"
@@ -25478,6 +25482,9 @@
                     "payment_module_enabled": {
                         "type": "string"
                     },
+                    "payment_link": {
+                        "type": "string"
+                    },
                     "sales_tax_type": {
                         "type": "string"
                     },
@@ -25620,6 +25627,7 @@
                     "formatted_due_date",
                     "allow_edit",
                     "payment_module_enabled",
+                    "payment_link",
                     "sales_tax_type",
                     "sales_tax_address_type",
                     "overdue",
@@ -28267,6 +28275,12 @@
                     },
                     "reminders_paused": {
                         "type": "boolean"
+                    },
+                    "payment_link": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     }
                 },
                 "required": [
@@ -28314,7 +28328,8 @@
                     "type",
                     "related_invoice_id",
                     "credit_reason",
-                    "reminders_paused"
+                    "reminders_paused",
+                    "payment_link"
                 ],
                 "title": "Invoice"
             },
@@ -28557,6 +28572,9 @@
                     "payment_module_enabled": {
                         "type": "string"
                     },
+                    "payment_link": {
+                        "type": "string"
+                    },
                     "sales_tax_type": {
                         "type": "string"
                     },
@@ -28667,6 +28685,7 @@
                     "formatted_due_date",
                     "allow_edit",
                     "payment_module_enabled",
+                    "payment_link",
                     "sales_tax_type",
                     "sales_tax_address_type",
                     "overdue",
@@ -28717,6 +28736,13 @@
                     },
                     "template_name": {
                         "type": "string"
+                    },
+                    "payment_link": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 2048
                     },
                     "items": {
                         "type": "array",
@@ -32473,14 +32499,26 @@
             },
             "UpdateSettingsRequest": {
                 "type": "object",
-                "description": "The payload behind writing preferences: one map of option names to values.\n\nValues are not constrained, and the currency is guarded by the controller\nonce the books are open. The names are, a little: the mail transport and\nmodule settings are refused, because each has an endpoint of its own that\nvalidates it.",
+                "description": "The payload behind writing preferences: one map of option names to values.\n\nValues are not constrained, apart from the invoice payment link, which is\nprinted for customers to click and so must be a web address; the currency\nis guarded by the controller once the books are open. The names are, a\nlittle: the mail transport and module settings are refused, because each\nhas an endpoint of its own that validates it.",
                 "properties": {
                     "settings": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        },
-                        "minItems": 1
+                        "type": "object",
+                        "properties": {
+                            "invoice_payment_link": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "maxLength": 2048
+                            },
+                            "invoice_payment_link_qr": {
+                                "type": "string",
+                                "enum": [
+                                    "YES",
+                                    "NO"
+                                ]
+                            }
+                        }
                     }
                 },
                 "required": [
