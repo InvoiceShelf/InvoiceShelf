@@ -3032,5 +3032,10 @@
       "ends_at": "Show until"
     },
     "add_button": "Add"
+  },
+  "managed_read_only": {
+    "message": "This instance is read-only. You can still view and download your documents.",
+    "billing": "Manage billing",
+    "support": "Contact your hosting provider"
   }
 }

@@ -1,3 +1,4 @@
+import { allowsManagedAbility } from '@/scripts/utils/managed'
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { userService } from '@/scripts/api/services/user.service'
@@ -126,16 +127,14 @@ export const useUserStore = defineStore('user', () => {
   }
 
   function hasAbilities(abilities: string | string[]): boolean {
-    return !!currentAbilities.value.find((ab) => {
-      if (ab.name === '*') return true
-      if (typeof abilities === 'string') {
-        return ab.name === abilities
-      }
-      return !!abilities.find((p) => ab.name === p)
-    })
+    const requested = (typeof abilities === 'string' ? [abilities] : abilities).filter(allowsManagedAbility)
+    return requested.length > 0 && currentAbilities.value.some((ability) =>
+      ability.name === '*' || requested.includes(ability.name)
+    )
   }
 
   function hasAllAbilities(abilities: string[]): boolean {
+    if (!abilities.every(allowsManagedAbility)) return false
     let isAvailable = true
     currentAbilities.value.filter((ab) => {
       const hasContain = !!abilities.find((p) => ab.name === p)

@@ -25,6 +25,7 @@
 
         <div class="grid gap-6 sm:grid-col-1 md:grid-cols-2 mt-6">
           <BaseInputGroup
+            v-if="!isReadOnly()"
             :label="$t('settings.account_settings.profile_picture')"
           >
             <BaseFileUploader
@@ -45,6 +46,7 @@
           >
             <BaseInput
               v-model="formData.name"
+              :disabled="isReadOnly()"
               autocomplete="name"
               :invalid="v$.name.$error"
               @input="v$.name.$touch()"
@@ -58,6 +60,7 @@
           >
             <BaseInput
               v-model="formData.email"
+              :disabled="isReadOnly()"
               autocomplete="email"
               :invalid="v$.email.$error"
               @input="v$.email.$touch()"
@@ -93,7 +96,7 @@
           </BaseInputGroup>
         </div>
 
-        <BaseButton :loading="isSaving" :disabled="isSaving" class="mt-6">
+        <BaseButton :loading="isSaving" :disabled="isSaving || (isReadOnly() && !formData.password)" class="mt-6">
           <template #left="slotProps">
             <BaseIcon v-if="!isSaving" name="ArrowDownOnSquareIcon" :class="slotProps.class" />
           </template>
@@ -105,6 +108,7 @@
 </template>
 
 <script setup lang="ts">
+import { isReadOnly } from '@/scripts/utils/managed'
 import { ref, reactive, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import {
@@ -196,11 +200,11 @@ async function updateCustomerData(): Promise<void> {
     data.append('password', formData.password)
   }
 
-  if (avatarFileBlob.value) {
+  if (!isReadOnly() && avatarFileBlob.value) {
     data.append('customer_avatar', avatarFileBlob.value)
   }
 
-  data.append('is_customer_avatar_removed', String(isCustomerAvatarRemoved.value))
+  if (!isReadOnly()) data.append('is_customer_avatar_removed', String(isCustomerAvatarRemoved.value))
 
   try {
     const res = await store.updateCurrentUser(data)

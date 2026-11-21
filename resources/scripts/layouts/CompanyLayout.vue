@@ -28,6 +28,7 @@
       <div class="flex flex-col shrink-0 safe-banners">
         <ImpersonationBanner />
         <DemoBanner />
+        <ReadOnlyBanner />
         <AnnouncementBanner />
       </div>
 
@@ -77,6 +78,7 @@ import NotificationRoot from '@/scripts/components/notifications/NotificationRoo
 import ImpersonationBanner from './partials/ImpersonationBanner.vue'
 import DemoBanner from './partials/DemoBanner.vue'
 import AnnouncementBanner from './partials/AnnouncementBanner.vue'
+import ReadOnlyBanner from './partials/ReadOnlyBanner.vue'
 import MobileTabBar from './partials/MobileTabBar.vue'
 import CommandPalette from './partials/CommandPalette.vue'
 import { useBreakpoints } from '@/scripts/composables/use-breakpoints'

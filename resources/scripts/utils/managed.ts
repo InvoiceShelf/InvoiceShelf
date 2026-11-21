@@ -6,6 +6,8 @@
  */
 export interface ManagedState {
   support_url: string | null
+  billing_url?: string | null
+  read_only?: boolean
   /** The provider mounted a writable Modules directory: owners install official modules. */
   modules_installable?: boolean
 }
@@ -28,4 +30,14 @@ export function managedState(): ManagedState | null {
  */
 export function providerManagesModules(): boolean {
   return isManaged() && managedState()?.modules_installable !== true
+}
+
+/** Read-only hosting stops business writes, independent of a user's normal grants. */
+export function isReadOnly(): boolean {
+  return isManaged() && managedState()?.read_only === true
+}
+
+/** Keep readable pages and exports available while hiding business-write controls. */
+export function allowsManagedAbility(ability: string): boolean {
+  return !isReadOnly() || !/(^|[._ -])(create|edit|update|delete|send|manage|write|accept|decline|mark|install|uninstall|publish)([._ -]|$)/i.test(ability)
 }
