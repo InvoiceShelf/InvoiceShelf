@@ -13,7 +13,7 @@ class ReportPolicy
 
     public function viewReport(User $user, Company $company)
     {
-        if (BouncerFacade::can('view-financial-reports') && $user->hasCompany($company->id)) {
+        if (BouncerFacade::can('view-financial-reports') && $user->isActingIn($company->id)) {
             return true;
         }
 

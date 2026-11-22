@@ -33,7 +33,7 @@ class PaymentMethodPolicy
      */
     public function view(User $user, PaymentMethod $paymentMethod): bool
     {
-        if (BouncerFacade::can('view-payment', Payment::class) && $user->hasCompany($paymentMethod->company_id)) {
+        if (BouncerFacade::can('view-payment', Payment::class) && $user->isActingIn($paymentMethod->company_id)) {
             return true;
         }
 
@@ -61,7 +61,7 @@ class PaymentMethodPolicy
      */
     public function update(User $user, PaymentMethod $paymentMethod): bool
     {
-        if (BouncerFacade::can('view-payment', Payment::class) && $user->hasCompany($paymentMethod->company_id)) {
+        if (BouncerFacade::can('view-payment', Payment::class) && $user->isActingIn($paymentMethod->company_id)) {
             return true;
         }
 
@@ -75,7 +75,7 @@ class PaymentMethodPolicy
      */
     public function delete(User $user, PaymentMethod $paymentMethod): bool
     {
-        if (BouncerFacade::can('view-payment', Payment::class) && $user->hasCompany($paymentMethod->company_id)) {
+        if (BouncerFacade::can('view-payment', Payment::class) && $user->isActingIn($paymentMethod->company_id)) {
             return true;
         }
 
@@ -89,7 +89,7 @@ class PaymentMethodPolicy
      */
     public function restore(User $user, PaymentMethod $paymentMethod): bool
     {
-        if (BouncerFacade::can('view-payment', Payment::class) && $user->hasCompany($paymentMethod->company_id)) {
+        if (BouncerFacade::can('view-payment', Payment::class) && $user->isActingIn($paymentMethod->company_id)) {
             return true;
         }
 
@@ -103,7 +103,7 @@ class PaymentMethodPolicy
      */
     public function forceDelete(User $user, PaymentMethod $paymentMethod): bool
     {
-        if (BouncerFacade::can('view-payment', Payment::class) && $user->hasCompany($paymentMethod->company_id)) {
+        if (BouncerFacade::can('view-payment', Payment::class) && $user->isActingIn($paymentMethod->company_id)) {
             return true;
         }
 

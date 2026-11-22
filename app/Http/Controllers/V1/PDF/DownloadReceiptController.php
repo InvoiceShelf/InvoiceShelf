@@ -5,6 +5,7 @@ namespace App\Http\Controllers\V1\PDF;
 use App\Http\Controllers\Controller;
 use App\Models\Expense;
 use Illuminate\Http\Request;
+use Silber\Bouncer\BouncerFacade;
 
 class DownloadReceiptController extends Controller
 {
@@ -17,6 +18,9 @@ class DownloadReceiptController extends Controller
      */
     public function __invoke(Expense $expense)
     {
+        // The link carries no `company` header, so the expense's company is the one to answer for.
+        BouncerFacade::scope()->to($expense->company_id);
+
         $this->authorize('view', $expense);
 
         if ($expense) {

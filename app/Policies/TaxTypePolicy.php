@@ -32,7 +32,7 @@ class TaxTypePolicy
      */
     public function view(User $user, TaxType $taxType): bool
     {
-        if (BouncerFacade::can('view-tax-type', $taxType) && $user->hasCompany($taxType->company_id)) {
+        if (BouncerFacade::can('view-tax-type', $taxType) && $user->isActingIn($taxType->company_id)) {
             return true;
         }
 
@@ -60,7 +60,7 @@ class TaxTypePolicy
      */
     public function update(User $user, TaxType $taxType): bool
     {
-        if (BouncerFacade::can('edit-tax-type', $taxType) && $user->hasCompany($taxType->company_id)) {
+        if (BouncerFacade::can('edit-tax-type', $taxType) && $user->isActingIn($taxType->company_id)) {
             return true;
         }
 
@@ -74,7 +74,7 @@ class TaxTypePolicy
      */
     public function delete(User $user, TaxType $taxType): bool
     {
-        if (BouncerFacade::can('delete-tax-type', $taxType) && $user->hasCompany($taxType->company_id)) {
+        if (BouncerFacade::can('delete-tax-type', $taxType) && $user->isActingIn($taxType->company_id)) {
             return true;
         }
 
@@ -88,7 +88,7 @@ class TaxTypePolicy
      */
     public function restore(User $user, TaxType $taxType): bool
     {
-        if (BouncerFacade::can('delete-tax-type', $taxType) && $user->hasCompany($taxType->company_id)) {
+        if (BouncerFacade::can('delete-tax-type', $taxType) && $user->isActingIn($taxType->company_id)) {
             return true;
         }
 
@@ -102,7 +102,7 @@ class TaxTypePolicy
      */
     public function forceDelete(User $user, TaxType $taxType): bool
     {
-        if (BouncerFacade::can('delete-tax-type', $taxType) && $user->hasCompany($taxType->company_id)) {
+        if (BouncerFacade::can('delete-tax-type', $taxType) && $user->isActingIn($taxType->company_id)) {
             return true;
         }
 

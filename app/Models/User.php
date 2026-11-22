@@ -316,6 +316,24 @@ class User extends Authenticatable implements HasMedia
         return in_array($company_id, $companies);
     }
 
+    /**
+     * Whether the user is a member of the company and is acting in it.
+     *
+     * Bouncer answers with the abilities of the company it is scoped to, the one
+     * named in the `company` header. A policy that is handed a record has to ask
+     * this rather than hasCompany() alone, or a role held in one company would
+     * apply to the records of every other company the user belongs to.
+     */
+    public function isActingIn($company_id): bool
+    {
+        $active = BouncerFacade::scope()->get();
+
+        return $company_id !== null
+            && $active !== null
+            && (int) $active === (int) $company_id
+            && $this->hasCompany($company_id);
+    }
+
     public function getAllSettings()
     {
         return $this->settings()->get()->mapWithKeys(function ($item) {

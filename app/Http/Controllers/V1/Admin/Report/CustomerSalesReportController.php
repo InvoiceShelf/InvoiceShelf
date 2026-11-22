@@ -12,6 +12,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use PDF;
+use Silber\Bouncer\BouncerFacade;
 
 class CustomerSalesReportController extends Controller
 {
@@ -23,7 +24,10 @@ class CustomerSalesReportController extends Controller
      */
     public function __invoke(Request $request, $hash)
     {
-        $company = Company::where('unique_hash', $hash)->first();
+        $company = Company::where('unique_hash', $hash)->firstOrFail();
+
+        // The link carries no `company` header, so the report's company is the one to answer for.
+        BouncerFacade::scope()->to($company->id);
 
         $this->authorize('view report', $company);
 

@@ -33,7 +33,7 @@ class UnitPolicy
      */
     public function view(User $user, Unit $unit): bool
     {
-        if (BouncerFacade::can('view-item', Item::class) && $user->hasCompany($unit->company_id)) {
+        if (BouncerFacade::can('view-item', Item::class) && $user->isActingIn($unit->company_id)) {
             return true;
         }
 
@@ -61,7 +61,7 @@ class UnitPolicy
      */
     public function update(User $user, Unit $unit): bool
     {
-        if (BouncerFacade::can('view-item', Item::class) && $user->hasCompany($unit->company_id)) {
+        if (BouncerFacade::can('view-item', Item::class) && $user->isActingIn($unit->company_id)) {
             return true;
         }
 
@@ -75,7 +75,7 @@ class UnitPolicy
      */
     public function delete(User $user, Unit $unit): bool
     {
-        if (BouncerFacade::can('view-item', Item::class) && $user->hasCompany($unit->company_id)) {
+        if (BouncerFacade::can('view-item', Item::class) && $user->isActingIn($unit->company_id)) {
             return true;
         }
 
@@ -89,7 +89,7 @@ class UnitPolicy
      */
     public function restore(User $user, Unit $unit): bool
     {
-        if (BouncerFacade::can('view-item', Item::class) && $user->hasCompany($unit->company_id)) {
+        if (BouncerFacade::can('view-item', Item::class) && $user->isActingIn($unit->company_id)) {
             return true;
         }
 
@@ -103,7 +103,7 @@ class UnitPolicy
      */
     public function forceDelete(User $user, Unit $unit): bool
     {
-        if (BouncerFacade::can('view-item', Item::class) && $user->hasCompany($unit->company_id)) {
+        if (BouncerFacade::can('view-item', Item::class) && $user->isActingIn($unit->company_id)) {
             return true;
         }
 
