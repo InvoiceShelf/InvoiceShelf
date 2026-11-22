@@ -7,6 +7,22 @@ section beneath it is what CI publishes to the updater — see
 The 2.x line has its own CHANGELOG.md on the `2.x` branch. Releases are also on
 GitHub: https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 3.0.0-alpha.17 - 2026-11-21
+
+Seventeenth public alpha of InvoiceShelf 3.0. A security release with one fix, for installs where a user belongs to more than one company.
+
+⚠️ **Pre-release, not for production.** Back up your database before upgrading and use this release for evaluation and testing only.
+
+### Security
+
+- A user who belongs to two companies could use the role they hold in one on the records of the other, by acting in the first company while addressing a record of the second. Someone with read-only access to a company could, for example, change the status of its invoices. Roles now apply only inside the company that granted them. Installs with a single company, or where every user has one company, were not affected. (#992, #994)
+
+### Upgrade notes
+
+- No migrations.
+
+Docker: `invoiceshelf/invoiceshelf:3.0.0-alpha.17` or `ghcr.io/invoiceshelf/invoiceshelf:3.0.0-alpha.17` (also `:next`).
+
 ## 3.0.0-alpha.16 - 2026-11-21
 
 Sixteenth public alpha of InvoiceShelf 3.0. Invoices can carry a payment link and a QR code that send the customer to a payment page you already have, the country list follows ISO 3166-1, and per-item taxes and the "Disable after invoice is sent" setting get four fixes.
