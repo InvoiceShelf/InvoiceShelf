@@ -7,11 +7,15 @@ section beneath it is what CI publishes to the updater — see
 The 2.x line has its own CHANGELOG.md on the `2.x` branch. Releases are also on
 GitHub: https://github.com/InvoiceShelf/InvoiceShelf/releases
 
-## 3.0.0-alpha.17 - 2026-11-21
+## 3.0.0-alpha.17 - 2026-11-22
 
-Seventeenth public alpha of InvoiceShelf 3.0. A security release with one fix, for installs where a user belongs to more than one company.
+Seventeenth public alpha of InvoiceShelf 3.0. Existing users can sign in through an OpenID Connect identity provider, on the web and in the mobile app, and a security issue is fixed for installs where a user belongs to more than one company.
 
 ⚠️ **Pre-release, not for production.** Back up your database before upgrading and use this release for evaluation and testing only.
+
+### Highlights
+
+- **Single sign-on with OpenID Connect.** An installation can let its users sign in through one identity provider. Set `OIDC_ISSUER`, `OIDC_CLIENT_ID` and `OIDC_CLIENT_SECRET`, register `/auth/oidc/callback` at the provider, and a **Sign in with SSO** button appears next to **Login**, on the web and in the mobile app. The email and password form keeps working and the customer portal doesn't change. Single sign-on never creates users: the first sign-in links an existing user by email address, and by default only when the provider says it has verified that address (`OIDC_REQUIRE_VERIFIED_EMAIL`). Run end to end against Keycloak, Authentik, Authelia, Zitadel, Dex, Logto, Casdoor and Pocket ID. The setup guide, with a note for each of those providers, is in `docs/features/single-sign-on.md`. The sign-in in the mobile app has not been run on a device yet. (#996, closes #124)
 
 ### Security
 
@@ -19,7 +23,12 @@ Seventeenth public alpha of InvoiceShelf 3.0. A security release with one fix, f
 
 ### Upgrade notes
 
-- No migrations.
+- **One migration.** It adds the `sso_identities` table. Nothing else changes until single sign-on is configured.
+- **Authentik:** its stock email mapping reports every address as unverified, so a first sign-in is refused until the mapping is changed or `OIDC_REQUIRE_VERIFIED_EMAIL=false` is set. The guide covers both.
+
+### Thanks
+
+- @AleytiaFairlight for the first implementation of single sign-on (#989), and @nedlane for asking for it (#124).
 
 Docker: `invoiceshelf/invoiceshelf:3.0.0-alpha.17` or `ghcr.io/invoiceshelf/invoiceshelf:3.0.0-alpha.17` (also `:next`).
 
