@@ -2,8 +2,10 @@
 
 namespace App\Domains\Sales\Application;
 
+use App\Domains\Sales\Events\InvoicePaid;
 use App\Domains\Sales\Models\Invoice;
 use App\Support\MoneyConversion;
+use Illuminate\Support\Facades\DB;
 
 class InvoiceBalanceService
 {
@@ -45,6 +47,15 @@ class InvoiceBalanceService
                 : Invoice::STATUS_UNPAID;
         }
 
+        $newlyPaid = $invoice->paid_status === Invoice::STATUS_PAID
+            && $invoice->getOriginal('paid_status') !== Invoice::STATUS_PAID
+            && ! $invoice->isCreditNote()
+            && (int) $invoice->total > 0;
+
         $invoice->save();
+
+        if ($newlyPaid) {
+            DB::afterCommit(fn () => InvoicePaid::dispatch((int) $invoice->id, (int) $invoice->company_id));
+        }
     }
 }

@@ -30,6 +30,8 @@ class TaxTypeResource extends JsonResource
             'transaction_type' => $this->transaction_type,
             'compound_tax' => $this->compound_tax,
             'collective_tax' => $this->collective_tax,
+            'tax_category_code' => $this->tax_category_code,
+            'tax_exemption_reason' => $this->tax_exemption_reason,
             'description' => $this->description,
             'company_id' => $this->company_id,
             'company' => $this->when(

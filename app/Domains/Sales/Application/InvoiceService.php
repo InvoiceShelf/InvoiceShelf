@@ -9,6 +9,7 @@ use App\Domains\Metadata\Contracts\CustomFieldValueWriter;
 use App\Domains\Metadata\Models\CustomField;
 use App\Domains\Sales\Contracts\DocumentExchangeRateRecorder;
 use App\Domains\Sales\Contracts\InvoiceEmailSender;
+use App\Domains\Sales\Contracts\InvoicePdfAttachments;
 use App\Domains\Sales\Contracts\InvoicePdfDataProvider;
 use App\Domains\Sales\Mail\SendInvoiceMail;
 use App\Domains\Sales\Models\Estimate;
@@ -17,12 +18,14 @@ use App\Platform\Mail\Contracts\MailConfigurator;
 use App\Platform\Pdf\Facades\Pdf;
 use App\Platform\Pdf\Rendering\PdfMetadata;
 use App\Platform\Pdf\Rendering\PdfTemplateUtils;
+use App\Platform\Pdf\Rendering\QrCode;
 use App\Support\MoneyConversion;
 use App\Support\PublicToken;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\View;
 use Illuminate\Validation\ValidationException;
+use Throwable;
 
 class InvoiceService implements InvoicePdfDataProvider
 {
@@ -38,6 +41,8 @@ class InvoiceService implements InvoicePdfDataProvider
         private readonly CustomFieldValueWriter $customFieldValueWriter,
         private readonly DocumentExchangeRateRecorder $exchangeRateRecorder,
         private readonly InvoiceEmailSender $invoiceEmailSender,
+        private readonly InvoicePdfAttachments $pdfAttachments,
+        private readonly InvoicePaymentLinks $paymentLinks,
     ) {}
 
     /**
@@ -196,6 +201,7 @@ class InvoiceService implements InvoicePdfDataProvider
                 $creditedInvoiceIds[$invoice->related_invoice_id] = $invoice->related_invoice_id;
             }
 
+            $invoice->reminders()->delete();
             $invoice->delete();
         }
 
@@ -229,6 +235,7 @@ class InvoiceService implements InvoicePdfDataProvider
         $data['subject'] = $invoice->getEmailString($data['subject']);
         $data['body'] = $invoice->getEmailString($data['body']);
         $data['attach']['data'] = ($invoice->getEmailAttachmentSetting()) ? $this->getPdfData($invoice) : null;
+        $data['payment_link'] = $this->paymentLinks->forInvoice($invoice);
 
         return $data;
     }
@@ -269,12 +276,15 @@ class InvoiceService implements InvoicePdfDataProvider
                 foreach ($item->taxes as $appliedTax) {
                     // Rows of one tax type collapse onto the first row seen for
                     // it, which then carries the running total for the document.
+                    // That row is a copy: the original belongs to the loaded
+                    // item, and a total written into it would be counted again
+                    // on the next render of the same instance.
                     $running = $taxes->first(fn ($seen) => $seen->tax_type_id == $appliedTax->tax_type_id);
 
                     if ($running) {
                         $running->amount += $appliedTax->amount;
                     } else {
-                        $taxes->push($appliedTax);
+                        $taxes->push(clone $appliedTax);
                     }
                 }
             }
@@ -315,6 +325,8 @@ class InvoiceService implements InvoicePdfDataProvider
         // Absent for a company that never uploaded one; the templates cope.
         $logo = $company->logo_path;
 
+        $paymentLink = $this->paymentLinks->forInvoice($invoice);
+
         View::share([
             'invoice' => $invoice,
             'customFields' => $customFields,
@@ -325,6 +337,10 @@ class InvoiceService implements InvoicePdfDataProvider
             'notes' => $invoice->getNotes(),
             'logo' => $logo ?? null,
             'taxes' => $taxes,
+            'payment_link' => $paymentLink === null ? null : [
+                'url' => $paymentLink,
+                'qr' => $this->paymentLinks->printsQrCode($invoice->company_id) ? QrCode::svgDataUri($paymentLink) : null,
+            ],
         ]);
 
         $templatePath = PdfTemplateUtils::resolveView('invoice', $invoiceTemplate, 'invoice1');
@@ -336,11 +352,30 @@ class InvoiceService implements InvoicePdfDataProvider
             return view($templatePath);
         }
 
-        return Pdf::loadView($templatePath, PdfMetadata::forDocument(
+        $metadata = PdfMetadata::forDocument(
             __($invoice->isCreditNote() ? 'pdf_credit_note_label' : 'pdf_invoice_label'),
             $invoice->invoice_number,
             $company,
-        ));
+        );
+
+        // Every delivery path (download, public link, customer portal, mail
+        // attachment, archive) renders through here, so a module's e-invoice
+        // XML reaches all of them or none.
+        $attachment = $this->pdfAttachments->forInvoice($invoice->company_id, $invoice->id);
+
+        if ($attachment === null) {
+            return Pdf::loadView($templatePath, $metadata);
+        }
+
+        try {
+            return Pdf::loadView($templatePath, $metadata, null, $attachment);
+        } catch (Throwable $exception) {
+            // A PDF service that rejects the attachment must not stop the
+            // invoice from being delivered: the ordinary PDF goes out instead.
+            report($exception);
+
+            return Pdf::loadView($templatePath, $metadata);
+        }
     }
 
     public function clone(Invoice $invoice): Invoice
@@ -366,6 +401,8 @@ class InvoiceService implements InvoicePdfDataProvider
 
         // Columns the copy inherits unchanged. Everything outside this list is
         // either dated today, renumbered, or derived from the exchange rate.
+        // The invoice's own payment link stays behind: it was made for that
+        // invoice, and on the copy it would collect for the wrong one.
         $carriedOver = $invoice->only([
             'reference_number',
             'customer_id',

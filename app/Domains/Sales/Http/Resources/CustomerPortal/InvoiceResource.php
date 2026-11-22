@@ -6,6 +6,7 @@ use App\Domains\Accounts\Http\Resources\CustomerPortal\CompanyResource;
 use App\Domains\Contacts\Http\Resources\CustomerPortal\CustomerResource;
 use App\Domains\Metadata\Http\Resources\CustomerPortal\CustomFieldValueResource;
 use App\Domains\Money\Http\Resources\CustomerPortal\CurrencyResource;
+use App\Domains\Sales\Application\InvoicePaymentLinks;
 use App\Domains\Taxation\Http\Resources\CustomerPortal\TaxResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -18,7 +19,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * no editability flag, no crediting or allocation detail, and no sales-tax
  * configuration. What is left is what the customer's own copy of the invoice
  * shows -- the figures, the dates in the company's format, the shareable PDF
- * link and whether the document is overdue.
+ * link and whether the document is overdue. The payment link goes out filled
+ * in (`payment_link_url`), and only while something is left to pay; the stored
+ * link and the company's default stay on the admin side.
  *
  * The notes are published twice, in two different renderings: `notes` carries
  * the placeholders already interpolated, `formatted_notes` the model's own
@@ -71,6 +74,7 @@ class InvoiceResource extends JsonResource
             'formatted_invoice_date' => $invoice->formattedInvoiceDate,
             'formatted_due_date' => $invoice->formattedDueDate,
             'payment_module_enabled' => $invoice->payment_module_enabled,
+            'payment_link_url' => app(InvoicePaymentLinks::class)->forInvoice($invoice),
             'overdue' => $invoice->overdue,
             'items' => $this->when(
                 $invoice->items()->exists(),

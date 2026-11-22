@@ -13,38 +13,26 @@
     />
 
     <template v-if="loaded">
-      <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-        <div class="min-w-0">
-          <h2 :id="headingId" class="flex items-center gap-2.5 text-sm font-medium text-chrome-fg/80">
-            <span
-              class="flex items-center justify-center w-9 h-9 rounded-xl bg-chrome-fg/12 ring-1 ring-inset ring-chrome-fg/15 text-chrome-fg"
-              aria-hidden="true"
-            >
-              <BaseIcon name="WalletIcon" class="w-5 h-5" />
-            </span>
-            {{ $t('dashboard.receivables.title') }}
-          </h2>
-          <p class="mt-4 font-semibold leading-none tracking-tight text-[2.5rem] md:text-[3.25rem]">
-            <BaseFormatMoney
-              :amount="summary.outstanding"
-              :currency="companyStore.selectedCompanyCurrency"
-              proportional
-            />
-          </p>
-          <p v-if="summary.outstanding > 0" class="mt-3 text-sm text-chrome-fg/75">
-            {{ $t('dashboard.receivables.on_invoices', { count: summary.outstanding_count }, summary.outstanding_count) }}
-          </p>
-          <!-- A company with no invoices yet is told how this fills up, not that nothing is owed -->
-          <p v-else class="mt-3 text-sm text-chrome-fg/75">
-            {{ isFirstRun ? $t('dashboard.receivables.first_invoice_hint') : $t('dashboard.receivables.nothing_owed') }}
-          </p>
-        </div>
+      <!--
+        The heading and the invoices link share the top row, so on a phone the
+        link does not take a row of its own; the figure spans the width below
+      -->
+      <div class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4">
+        <h2 :id="headingId" class="flex items-center min-w-0 gap-2.5 text-sm font-medium text-chrome-fg/80">
+          <span
+            class="flex items-center justify-center w-9 h-9 rounded-xl bg-chrome-fg/12 ring-1 ring-inset ring-chrome-fg/15 text-chrome-fg"
+            aria-hidden="true"
+          >
+            <BaseIcon name="WalletIcon" class="w-5 h-5" />
+          </span>
+          {{ $t('dashboard.receivables.title') }}
+        </h2>
 
         <router-link
           v-if="isFirstRun && canCreateInvoice"
           to="/admin/invoices/create"
           class="
-            inline-flex items-center gap-1.5 self-start h-9 px-3.5 text-sm font-semibold transition-colors rounded-lg shrink-0
+            inline-flex items-center gap-1.5 h-9 px-3.5 text-sm font-semibold transition-colors rounded-lg shrink-0
             bg-chrome-fg text-hero-from hover:bg-chrome-fg/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-chrome-fg
           "
         >
@@ -56,18 +44,33 @@
           v-else-if="canViewInvoices"
           to="/admin/invoices"
           class="
-            inline-flex items-center self-start h-9 px-3.5 text-sm font-medium transition-colors border rounded-lg shrink-0
+            inline-flex items-center h-9 px-3.5 text-sm font-medium transition-colors border rounded-lg shrink-0
             border-chrome-fg/20 bg-chrome-fg/10 hover:bg-chrome-fg/15 focus-visible:outline-2 focus-visible:outline-chrome-fg
           "
         >
           {{ $t('dashboard.receivables.view_invoices') }}
         </router-link>
+
+        <p class="col-span-2 mt-3 font-semibold leading-none tracking-tight text-[2.25rem] sm:text-[2.5rem] md:mt-4 md:text-[3.25rem]">
+          <BaseFormatMoney
+            :amount="summary.outstanding"
+            :currency="companyStore.selectedCompanyCurrency"
+            proportional
+          />
+        </p>
+        <p v-if="summary.outstanding > 0" class="col-span-2 mt-2 text-sm md:mt-3 text-chrome-fg/75">
+          {{ $t('dashboard.receivables.on_invoices', { count: summary.outstanding_count }, summary.outstanding_count) }}
+        </p>
+        <!-- A company with no invoices yet is told how this fills up, not that nothing is owed -->
+        <p v-else class="col-span-2 mt-2 text-sm md:mt-3 text-chrome-fg/75">
+          {{ isFirstRun ? $t('dashboard.receivables.first_invoice_hint') : $t('dashboard.receivables.nothing_owed') }}
+        </p>
       </div>
 
       <template v-if="summary.outstanding > 0">
         <!-- The aging bar: each segment's width is its share of what is owed -->
         <div
-          class="flex w-full h-3 gap-0.5 mt-6 overflow-hidden rounded-full"
+          class="flex w-full h-3 gap-0.5 mt-5 overflow-hidden rounded-full md:mt-6"
           role="img"
           :aria-label="barLabel"
         >
@@ -80,7 +83,7 @@
           />
         </div>
 
-        <dl class="grid gap-3 mt-5 sm:grid-cols-3 sm:gap-6">
+        <dl class="grid gap-2.5 mt-4 sm:grid-cols-3 sm:gap-6 md:mt-5">
           <div
             v-for="bucket in buckets"
             :key="bucket.key"

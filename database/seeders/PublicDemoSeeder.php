@@ -23,14 +23,31 @@ use Illuminate\Database\Seeder;
  */
 class PublicDemoSeeder extends Seeder
 {
-    public const COMPANY = 'Acme Inc';
+    public const COMPANY = 'Acme GmbH';
 
-    public const PORTAL_CUSTOMER = 'Acme Corp';
+    public const VAT_ID = 'DE123456789';
+
+    public const TAX_ID = '27/123/45678';
+
+    /**
+     * The company's Berlin address; RealisticDemoSeeder writes the same one
+     * onto a local demo company.
+     *
+     * @var array<string, string>
+     */
+    public const ADDRESS = [
+        'address_street_1' => 'Friedrichstraße 68',
+        'city' => 'Berlin',
+        'zip' => '10117',
+        'phone' => '+49 30 5550100',
+    ];
+
+    public const PORTAL_CUSTOMER = 'Nordwind Logistik GmbH';
 
     public function run(CompanyService $companies): void
     {
         $credentials = DemoMode::credentials();
-        $usd = (int) Currency::query()->where('code', 'USD')->value('id');
+        $eur = (int) Currency::query()->where('code', 'EUR')->value('id');
 
         $owner = User::query()->create([
             'email' => $credentials['email'],
@@ -41,26 +58,21 @@ class PublicDemoSeeder extends Seeder
 
         $company = $companies->createFor($owner, [
             'name' => self::COMPANY,
-            'vat_id' => 'US123456789',
-            'tax_id' => '84-1234567',
-        ], $usd);
+            'vat_id' => self::VAT_ID,
+            'tax_id' => self::TAX_ID,
+        ], $eur);
 
         $company->address()->create([
-            'address_street_1' => '1180 Market Street',
-            'address_street_2' => 'Suite 400',
-            'city' => 'San Francisco',
-            'state' => 'CA',
-            'zip' => '94102',
-            'phone' => '+1 415 555 0142',
-            'country_id' => Country::query()->where('code', 'US')->value('id'),
+            ...self::ADDRESS,
+            'country_id' => Country::query()->where('code', 'DE')->value('id'),
         ]);
 
         CompanySetting::setSettings([
-            'currency' => $usd,
-            'time_zone' => 'UTC',
+            'currency' => $eur,
+            'time_zone' => 'Europe/Berlin',
             'fiscal_year' => '1-12',
-            'carbon_date_format' => 'Y/m/d',
-            'moment_date_format' => 'YYYY/MM/DD',
+            'carbon_date_format' => 'd.m.Y',
+            'moment_date_format' => 'DD.MM.YYYY',
         ], $company->id);
 
         $owner->setSettings(['language' => 'en']);

@@ -118,6 +118,8 @@
   --color-alert-error-text: var(--color-alert-error-text);
   --color-alert-success-bg: var(--color-alert-success-bg);
   --color-alert-success-text: var(--color-alert-success-text);
+  --color-alert-info-bg: var(--color-alert-info-bg);
+  --color-alert-info-text: var(--color-alert-info-text);
 }
 
 @theme {
@@ -506,6 +508,21 @@ body {
  */
 .safe-header {
     padding-top: env(safe-area-inset-top);
+}
+
+/*
+ * A banner above the app bar (demo, impersonation, announcement) is what sits
+ * under the status bar then, so the first one grows into that area in its own
+ * colour and the app bar below it drops the inset it no longer needs. The
+ * inset is a transparent top border, which the banner's background paints
+ * through, so it adds to whatever padding the banner has of its own.
+ */
+.safe-banners > :first-child {
+    border-top: env(safe-area-inset-top) solid transparent;
+}
+
+.safe-banners:has(> *) + #app-scroll .safe-header {
+    padding-top: 0;
 }
 
 .safe-content {

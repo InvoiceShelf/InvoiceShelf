@@ -569,3 +569,72 @@ test('create estimate with tax included', function () {
         'tax_included' => $estimate['tax_included'],
     ]);
 });
+
+test('editing an estimate with per-item taxes does not duplicate the item taxes', function () {
+    $payload = Estimate::factory()->raw([
+        'estimate_number' => 'EST-000007',
+        'tax_per_item' => 'YES',
+        'items' => [
+            EstimateItem::factory()->raw(['taxes' => [Tax::factory()->raw()]]),
+            EstimateItem::factory()->raw(['taxes' => [Tax::factory()->raw()]]),
+        ],
+    ]);
+
+    $created = postJson('api/v1/estimates', $payload)->assertStatus(201)->json('data');
+
+    // The form sends the loaded items back, ids included.
+    $edit = fn (array $estimate): array => array_merge($payload, [
+        'items' => collect($estimate['items'])->map(fn (array $item): array => [
+            'id' => $item['id'],
+            'name' => $item['name'],
+            'description' => $item['description'],
+            'price' => $item['price'],
+            'quantity' => $item['quantity'],
+            'discount_type' => $item['discount_type'],
+            'discount' => $item['discount'],
+            'discount_val' => $item['discount_val'],
+            'tax' => $item['tax'],
+            'total' => $item['total'],
+            'taxes' => collect($item['taxes'])->map(fn (array $tax): array => [
+                'tax_type_id' => $tax['tax_type_id'],
+                'name' => $tax['name'],
+                'percent' => $tax['percent'],
+                'amount' => $tax['amount'],
+                'calculation_type' => $tax['calculation_type'],
+                'compound_tax' => $tax['compound_tax'],
+            ])->all(),
+        ])->all(),
+    ]);
+
+    $once = putJson('api/v1/estimates/'.$created['id'], $edit($created))->assertOk()->json('data');
+    $twice = putJson('api/v1/estimates/'.$created['id'], $edit($once))->assertOk()->json('data');
+
+    expect(collect($twice['items'])->map(fn (array $item): int => count($item['taxes']))->all())->toBe([1, 1]);
+
+    $itemIds = collect($twice['items'])->pluck('id');
+    expect(Tax::query()->whereIn('estimate_item_id', $itemIds)->count())->toBe(2);
+});
+
+test('converting an estimate leaves its own item taxes alone', function () {
+    $payload = Estimate::factory()->raw([
+        'estimate_number' => 'EST-000008',
+        'tax_per_item' => 'YES',
+        'items' => [
+            EstimateItem::factory()->raw(['taxes' => [Tax::factory()->raw()]]),
+            EstimateItem::factory()->raw(['taxes' => [Tax::factory()->raw()]]),
+        ],
+        'taxes' => [Tax::factory()->raw()],
+    ]);
+
+    $created = postJson('api/v1/estimates', $payload)->assertStatus(201)->json('data');
+    $estimate = Estimate::findOrFail($created['id']);
+    $itemIds = $estimate->items()->pluck('id');
+
+    $before = Tax::query()->whereIn('estimate_item_id', $itemIds)->count();
+
+    postJson("api/v1/estimates/{$estimate->id}/convert-to-invoice")->assertOk();
+
+    expect(Tax::query()->whereIn('estimate_item_id', $itemIds)->count())->toBe($before)
+        ->and(Tax::query()->whereNotNull('estimate_item_id')->whereNotNull('invoice_item_id')->count())->toBe(0)
+        ->and(Tax::query()->whereNotNull('estimate_id')->whereNotNull('invoice_id')->count())->toBe(0);
+});

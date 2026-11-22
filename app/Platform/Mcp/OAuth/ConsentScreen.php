@@ -6,6 +6,7 @@ use App\Domains\Accounts\Application\UserLocale;
 use App\Domains\Accounts\Models\User;
 use App\Platform\Mcp\Application\ConnectionService;
 use App\Platform\Mcp\Models\McpConnection;
+use App\Support\SpaStylesheets;
 use App\Support\SpaTranslations;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -53,7 +54,7 @@ class ConsentScreen
             'selectedAccess' => old('access', $existing?->access ?? McpConnection::ACCESS_READ),
             'state' => $parameters['request']->input('state'),
             'authToken' => $parameters['authToken'],
-            'stylesheets' => $this->stylesheets(),
+            'stylesheets' => SpaStylesheets::urls(),
             'theme' => get_app_setting('admin_portal_theme') ?? 'invoiceshelf',
             'locale' => $locale,
             'direction' => $this->directionOf($locale),
@@ -70,36 +71,5 @@ class ConsentScreen
         $language = Str::before(str_replace('-', '_', $locale), '_');
 
         return in_array($language, (array) config('invoiceshelf.rtl_languages', []), true) ? 'rtl' : 'ltr';
-    }
-
-    /**
-     * The SPA's stylesheet, so the page shares its theme tokens and look.
-     *
-     * Taken from the Vite manifest entry of the SPA rather than added as an
-     * entry of its own: Tailwind already scans resources/views, so every
-     * class used here is in that bundle.
-     *
-     * @return list<string>
-     */
-    private function stylesheets(): array
-    {
-        $hot = public_path('hot');
-
-        if (is_file($hot)) {
-            return [rtrim((string) file_get_contents($hot)).'/resources/css/invoiceshelf.css'];
-        }
-
-        $manifest = public_path('build/manifest.json');
-
-        if (! is_file($manifest)) {
-            return [];
-        }
-
-        $entries = json_decode((string) file_get_contents($manifest), true);
-
-        return array_values(array_map(
-            fn (string $file): string => asset('build/'.$file),
-            $entries['resources/scripts/main.ts']['css'] ?? [],
-        ));
     }
 }

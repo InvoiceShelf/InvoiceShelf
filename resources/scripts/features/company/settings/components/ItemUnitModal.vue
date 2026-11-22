@@ -4,14 +4,20 @@ import { useI18n } from 'vue-i18n'
 import { required, minLength, helpers } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import { useModalStore } from '@/scripts/stores/modal.store'
-import { useItemStore } from '@/scripts/features/company/items/store'
+import { useGlobalStore } from '@/scripts/stores/global.store'
+import {
+  useItemStore,
+  DEFAULT_UNIT_CODE,
+} from '@/scripts/features/company/items/store'
 
 interface ItemUnitForm {
   id: number | null
   name: string
+  unit_code: string
 }
 
 const modalStore = useModalStore()
+const globalStore = useGlobalStore()
 const itemStore = useItemStore()
 const { t } = useI18n()
 
@@ -21,10 +27,18 @@ const isEdit = ref<boolean>(false)
 const currentItemUnit = ref<ItemUnitForm>({
   id: null,
   name: '',
+  unit_code: DEFAULT_UNIT_CODE,
 })
 
 const modalActive = computed<boolean>(
   () => modalStore.active && modalStore.componentName === 'ItemUnitModal'
+)
+
+const unitCodeOptions = computed(() =>
+  globalStore.unitCodes.map((option) => ({
+    value: option.value,
+    label: `${t(option.key)} (${option.value})`,
+  }))
 )
 
 const rules = computed(() => ({
@@ -35,17 +49,25 @@ const rules = computed(() => ({
       minLength(2)
     ),
   },
+  unit_code: {
+    required: helpers.withMessage(t('validation.required'), required),
+  },
 }))
 
 const v$ = useVuelidate(rules, currentItemUnit)
 
 async function setInitialData(): Promise<void> {
+  if (!globalStore.unitCodes.length) {
+    await globalStore.fetchConfig({ key: 'unit_codes' })
+  }
+
   if (modalStore.data && typeof modalStore.data === 'number') {
     isEdit.value = true
     await itemStore.fetchItemUnit(modalStore.data)
     currentItemUnit.value = {
       id: itemStore.currentItemUnit.id ?? null,
       name: itemStore.currentItemUnit.name,
+      unit_code: itemStore.currentItemUnit.unit_code || DEFAULT_UNIT_CODE,
     }
   } else {
     isEdit.value = false
@@ -67,10 +89,12 @@ async function submitItemUnit(): Promise<void> {
       res = await itemStore.updateItemUnit({
         id: currentItemUnit.value.id,
         name: currentItemUnit.value.name,
+        unit_code: currentItemUnit.value.unit_code,
       })
     } else {
       res = await itemStore.addItemUnit({
         name: currentItemUnit.value.name,
+        unit_code: currentItemUnit.value.unit_code,
       })
     }
 
@@ -86,7 +110,11 @@ async function submitItemUnit(): Promise<void> {
 }
 
 function resetForm(): void {
-  currentItemUnit.value = { id: null, name: '' }
+  currentItemUnit.value = {
+    id: null,
+    name: '',
+    unit_code: DEFAULT_UNIT_CODE,
+  }
 }
 
 function closeItemUnitModal(): void {
@@ -123,6 +151,29 @@ function closeItemUnitModal(): void {
             :invalid="v$.name.$error"
             type="text"
             @input="v$.name.$touch()"
+          />
+        </BaseInputGroup>
+
+        <BaseInputGroup
+          :label="$t('settings.customization.items.unit_code')"
+          :help-text="$t('settings.customization.items.unit_code_help')"
+          :error="v$.unit_code.$error && v$.unit_code.$errors[0].$message"
+          variant="horizontal"
+          class="mt-4"
+          required
+        >
+          <BaseMultiselect
+            v-model="currentItemUnit.unit_code"
+            :options="unitCodeOptions"
+            label="label"
+            value-prop="value"
+            track-by="label"
+            :invalid="v$.unit_code.$error"
+            :can-deselect="false"
+            :can-clear="false"
+            :searchable="true"
+            class="w-full"
+            @select="v$.unit_code.$touch()"
           />
         </BaseInputGroup>
       </div>

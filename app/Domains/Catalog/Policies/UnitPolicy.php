@@ -77,6 +77,6 @@ class UnitPolicy
 
     private function sameCompany(User $user, Unit $unit): bool
     {
-        return $user->hasCompany($unit->company_id);
+        return $user->isActingIn($unit->company_id);
     }
 }

@@ -60,6 +60,16 @@ return [
     'base_url' => env('INVOICESHELF_BASE_URL', 'https://invoiceshelf.com'),
 
     /*
+    * Announcements from the InvoiceShelf project, read every hour from
+    * {base_url}/api/announcements and shown to everyone on the install
+    * alongside the ones a super admin writes here. Set
+    * INVOICESHELF_ANNOUNCEMENTS_FEED=false to stop asking.
+    */
+    'announcements' => [
+        'feed' => (bool) env('INVOICESHELF_ANNOUNCEMENTS_FEED', true),
+    ],
+
+    /*
     |--------------------------------------------------------------------------
     | Thin clients (mobile apps)
     |--------------------------------------------------------------------------
@@ -74,10 +84,15 @@ return [
     | `min_version` is the oldest client build this server will talk to; the
     | client reads it from the manifest and tells the user to update.
     |
+    | `app_link` is where sign-in with SSO sends the system browser back to the
+    | app: the URL scheme mobile/android and mobile/ios register. Only an app
+    | built with another scheme needs it changed.
+    |
     */
     'client' => [
         'hostname' => env('INVOICESHELF_CLIENT_HOSTNAME', 'app.invoiceshelf.internal'),
         'min_version' => env('INVOICESHELF_CLIENT_MIN_VERSION', '3.0.0-alpha.4'),
+        'app_link' => env('INVOICESHELF_CLIENT_APP_LINK', 'com.invoiceshelf.app:/sso'),
     ],
 
     /*
@@ -94,7 +109,7 @@ return [
     */
     'marketplace' => [
         'channel' => env('MARKETPLACE_CHANNEL', 'stable'),
-        'module_api_version' => (string) env('MARKETPLACE_MODULE_API_VERSION', '1.3.0'),
+        'module_api_version' => (string) env('MARKETPLACE_MODULE_API_VERSION', '1.6.0'),
         // JSON object: {"key-id":"base64-ed25519-public-key"}. Keys add to
         // (or replace values in) the built-in pinned map. Key identity is part
         // of the signed release and must match this trusted map.
@@ -240,6 +255,46 @@ return [
     ],
 
     /*
+    * Curated list of UN/ECE Recommendation 20 Unit Codes (EN 16931 BT-130).
+    *
+    * This is the single source of truth for the Unit Code: the unit management
+    * UI renders it as a dropdown (via `GET /api/v1/config?key=unit_codes`) and
+    * the Unit API validates submitted codes against it. `C62` (piece) is the
+    * default for every unit.
+    */
+    'unit_codes' => [
+        ['key' => 'settings.customization.items.unit_codes.piece', 'value' => 'C62'],
+        ['key' => 'settings.customization.items.unit_codes.hour', 'value' => 'HUR'],
+        ['key' => 'settings.customization.items.unit_codes.day', 'value' => 'DAY'],
+        ['key' => 'settings.customization.items.unit_codes.week', 'value' => 'WEE'],
+        ['key' => 'settings.customization.items.unit_codes.month', 'value' => 'MON'],
+        ['key' => 'settings.customization.items.unit_codes.year', 'value' => 'ANN'],
+        ['key' => 'settings.customization.items.unit_codes.minute', 'value' => 'MIN'],
+        ['key' => 'settings.customization.items.unit_codes.second', 'value' => 'SEC'],
+        ['key' => 'settings.customization.items.unit_codes.kilogram', 'value' => 'KGM'],
+        ['key' => 'settings.customization.items.unit_codes.gram', 'value' => 'GRM'],
+        ['key' => 'settings.customization.items.unit_codes.milligram', 'value' => 'MGM'],
+        ['key' => 'settings.customization.items.unit_codes.tonne', 'value' => 'TNE'],
+        ['key' => 'settings.customization.items.unit_codes.pound', 'value' => 'LBR'],
+        ['key' => 'settings.customization.items.unit_codes.ounce', 'value' => 'ONZ'],
+        ['key' => 'settings.customization.items.unit_codes.litre', 'value' => 'LTR'],
+        ['key' => 'settings.customization.items.unit_codes.millilitre', 'value' => 'MLT'],
+        ['key' => 'settings.customization.items.unit_codes.metre', 'value' => 'MTR'],
+        ['key' => 'settings.customization.items.unit_codes.centimetre', 'value' => 'CMT'],
+        ['key' => 'settings.customization.items.unit_codes.millimetre', 'value' => 'MMT'],
+        ['key' => 'settings.customization.items.unit_codes.kilometre', 'value' => 'KMT'],
+        ['key' => 'settings.customization.items.unit_codes.square_metre', 'value' => 'MTK'],
+        ['key' => 'settings.customization.items.unit_codes.cubic_metre', 'value' => 'MTQ'],
+        ['key' => 'settings.customization.items.unit_codes.inch', 'value' => 'INH'],
+        ['key' => 'settings.customization.items.unit_codes.foot', 'value' => 'FOT'],
+        ['key' => 'settings.customization.items.unit_codes.box', 'value' => 'XBX'],
+        ['key' => 'settings.customization.items.unit_codes.package', 'value' => 'XPK'],
+        ['key' => 'settings.customization.items.unit_codes.set', 'value' => 'SET'],
+        ['key' => 'settings.customization.items.unit_codes.dozen', 'value' => 'DZN'],
+        ['key' => 'settings.customization.items.unit_codes.kilowatt_hour', 'value' => 'KWH'],
+    ],
+
+    /*
     * List of convert estimate options
     */
     'convert_estimate_options' => [
@@ -319,6 +374,16 @@ return [
             'name' => 'Notifications',
             'link' => '/admin/settings/notifications',
             'icon' => 'BellIcon',
+            'owner_only' => true,
+            'ability' => '',
+            'model' => '',
+        ],
+        [
+            'title' => 'settings.menu_title.payment_reminders',
+            'group' => '',
+            'name' => 'Payment reminders',
+            'link' => '/admin/settings/payment-reminders',
+            'icon' => 'ClockIcon',
             'owner_only' => true,
             'ability' => '',
             'model' => '',
@@ -727,8 +792,9 @@ return [
     /*
     * The public demo (APP_ENV=demo): what `php artisan reset:app` rebuilds on
     * the schedule below, and the sign-ins the login pages offer visitors.
-    * `modules` pins the marketplace releases to install, as slug@version
-    * separated by commas.
+    * `modules` lists the marketplace modules to install, separated by commas:
+    * slug@version pins a release, a bare slug takes the newest release that
+    * fits this version. A module that cannot be installed is left out.
     */
     'demo' => [
         'reset_cron' => env('DEMO_RESET_CRON', '0 */6 * * *'),

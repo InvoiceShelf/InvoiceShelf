@@ -92,6 +92,6 @@ class PaymentPolicy
 
     private function sameCompany(User $user, Payment $payment): bool
     {
-        return $user->hasCompany($payment->company_id);
+        return $user->isActingIn($payment->company_id);
     }
 }

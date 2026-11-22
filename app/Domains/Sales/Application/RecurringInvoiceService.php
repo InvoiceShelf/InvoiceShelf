@@ -8,7 +8,8 @@ use App\Domains\Contacts\Models\Customer;
 use App\Domains\Metadata\Contracts\CustomFieldValueWriter;
 use App\Domains\Metadata\Models\CustomField;
 use App\Domains\Sales\Contracts\DocumentExchangeRateRecorder;
-use App\Domains\Sales\Contracts\RecurringInvoiceNotifier;
+use App\Domains\Sales\Events\RecurringInvoiceFailed;
+use App\Domains\Sales\Events\RecurringInvoiceGenerated;
 use App\Domains\Sales\Models\Invoice;
 use App\Domains\Sales\Models\RecurringInvoice;
 use App\Support\MoneyConversion;
@@ -32,7 +33,6 @@ class RecurringInvoiceService
         private readonly CustomFieldValueWriter $customFieldValueWriter,
         private readonly DocumentExchangeRateRecorder $exchangeRateRecorder,
         private readonly RecurrenceRunner $runner,
-        private readonly RecurringInvoiceNotifier $notifier,
     ) {}
 
     /**
@@ -361,9 +361,11 @@ class RecurringInvoiceService
             DB::afterCommit(fn () => $this->sendToCustomer($recurringInvoice, $invoice));
         }
 
-        if ($recurringInvoice->notify_creator) {
-            DB::afterCommit(fn () => $this->notifier->generated($recurringInvoice, $invoice));
-        }
+        DB::afterCommit(fn () => RecurringInvoiceGenerated::dispatch(
+            (int) $recurringInvoice->id,
+            (int) $invoice->id,
+            (int) $recurringInvoice->company_id,
+        ));
     }
 
     /**
@@ -444,7 +446,7 @@ class RecurringInvoiceService
     }
 
     /**
-     * Store a failure reason on the schedule, and tell its creator when the
+     * Store a failure reason on the schedule, and announce it when the
      * reason is new.
      */
     private function recordFailure(RecurringInvoice $recurringInvoice, string $reason): void
@@ -452,8 +454,8 @@ class RecurringInvoiceService
         $previous = RecurringInvoice::query()->whereKey($recurringInvoice->id)->value('last_error');
         RecurringInvoice::query()->whereKey($recurringInvoice->id)->update(['last_error' => $reason]);
 
-        if ($previous !== $reason && $recurringInvoice->notify_creator) {
-            $this->notifier->failed($recurringInvoice, $reason);
+        if ($previous !== $reason) {
+            RecurringInvoiceFailed::dispatch((int) $recurringInvoice->id, (int) $recurringInvoice->company_id, $reason);
         }
     }
 

@@ -22,6 +22,6 @@ class DashboardPolicy
     public function view(User $user, Company $company): bool
     {
         return BouncerFacade::can('dashboard')
-            && $user->hasCompany($company->id);
+            && $user->isActingIn($company->id);
     }
 }

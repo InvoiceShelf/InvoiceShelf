@@ -2,10 +2,12 @@
 
 use App\Domains\Sales\Http\Controllers\Company\EstimatesController;
 use App\Domains\Sales\Http\Controllers\Company\EstimateTemplatesController;
+use App\Domains\Sales\Http\Controllers\Company\InvoiceRemindersController;
 use App\Domains\Sales\Http\Controllers\Company\InvoicesController;
 use App\Domains\Sales\Http\Controllers\Company\InvoiceTemplatesController;
 use App\Domains\Sales\Http\Controllers\Company\RecurringInvoiceController;
 use App\Domains\Sales\Http\Controllers\Company\RecurringInvoiceFrequencyController;
+use App\Domains\Sales\Http\Controllers\Company\ReminderSettingsController;
 use App\Domains\Sales\Http\Controllers\Company\SerialNumberController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +20,11 @@ Route::post('/invoices/{invoice}/clone', [InvoicesController::class, 'clone']);
 Route::post('/invoices/{invoice}/convert-to-estimate', [InvoicesController::class, 'convertToEstimate']);
 Route::post('/invoices/{invoice}/credit-note', [InvoicesController::class, 'createCreditNote']);
 Route::post('/invoices/{invoice}/status', [InvoicesController::class, 'changeStatus']);
+Route::get('/invoices/{invoice}/reminders', [InvoiceRemindersController::class, 'show']);
+Route::post('/invoices/{invoice}/reminders', [InvoiceRemindersController::class, 'store']);
+Route::put('/invoices/{invoice}/reminders', [InvoiceRemindersController::class, 'update']);
+Route::get('/company/payment-reminders', [ReminderSettingsController::class, 'show']);
+Route::put('/company/payment-reminders', [ReminderSettingsController::class, 'update']);
 
 // Two collection-level endpoints that are not resource verbs. Both are
 // declared ahead of the resource, so neither literal segment can ever be

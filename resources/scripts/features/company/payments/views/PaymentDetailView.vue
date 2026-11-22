@@ -20,6 +20,8 @@
             {{ $t('payments.send_payment_receipt') }}
           </BaseButton>
 
+          <ExtensionSlot name="entity" entity="payment" area="actions:detail" :context="extensionContext" />
+
           <PaymentDropdown
             :content-loading="isFetching"
             :row="paymentData"
@@ -85,6 +87,8 @@
         <p v-else class="py-2 text-sm text-muted">{{ $t('payments.no_allocations') }}</p>
       </BaseCard>
 
+      <ExtensionSlot name="entity" entity="payment" area="panels" :context="extensionContext" />
+
       <BasePdfPreview
         :src="shareableLink"
         :title="currentPayment.payment_number ? `${currentPayment.payment_number}.pdf` : ''"
@@ -139,6 +143,8 @@ import { useModalStore } from '../../../../stores/modal.store'
 import type { Payment, PaymentAllocation } from '../../../../types/domain/payment'
 import type { Invoice } from '../../../../types/domain/invoice'
 import { scrollBehavior } from '@/scripts/utils/motion'
+import ExtensionSlot from '@/scripts/extensions/ExtensionSlot.vue'
+import { entityContext } from '@/scripts/extensions/records'
 
 interface Props {
   canEdit?: boolean
@@ -162,6 +168,9 @@ const ABILITIES = {
 } as const
 
 const paymentStore = usePaymentStore()
+
+/** Module actions and panels on this page; see registerEntityAction / registerEntityPanel. */
+const extensionContext = entityContext('payment', 'detail', () => paymentData.value, () => loadPayment())
 const userStore = useUserStore()
 const modalStore = useModalStore()
 const { t } = useI18n()

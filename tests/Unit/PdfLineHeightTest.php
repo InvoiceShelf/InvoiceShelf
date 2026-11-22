@@ -23,7 +23,13 @@
  */
 function notoSansHeightAt(float $size): float
 {
-    $metrics = app('dompdf.wrapper')->getDomPDF()->getFontMetrics();
+    // dompdf registers a face the first time a document declares it. Render one
+    // that does, or this depends on another test in the same worker having
+    // rendered a PDF first, which a fresh checkout does not guarantee.
+    $pdf = app('dompdf.wrapper');
+    $pdf->loadView('app.pdf.partials.fonts')->output();
+
+    $metrics = $pdf->getDomPDF()->getFontMetrics();
     $font = $metrics->getFont('NotoSans', 'normal');
 
     expect($font)->not->toBeFalsy('NotoSans should resolve; it is the bundled default face');

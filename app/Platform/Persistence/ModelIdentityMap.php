@@ -9,6 +9,7 @@ use App\Domains\Accounts\Models\CompanyInvitation;
 use App\Domains\Accounts\Models\CompanySetting;
 use App\Domains\Accounts\Models\ImpersonationLog;
 use App\Domains\Accounts\Models\RolePreset;
+use App\Domains\Accounts\Models\SsoIdentity;
 use App\Domains\Accounts\Models\User;
 use App\Domains\Accounts\Models\UserSetting;
 use App\Domains\Catalog\Models\Item;
@@ -42,9 +43,12 @@ use App\Domains\Sales\Models\Estimate;
 use App\Domains\Sales\Models\EstimateItem;
 use App\Domains\Sales\Models\Invoice;
 use App\Domains\Sales\Models\InvoiceItem;
+use App\Domains\Sales\Models\InvoiceReminder;
 use App\Domains\Sales\Models\RecurringInvoice;
 use App\Domains\Taxation\Models\Tax;
 use App\Domains\Taxation\Models\TaxType;
+use App\Platform\Announcements\Models\Announcement;
+use App\Platform\Announcements\Models\AnnouncementDismissal;
 use App\Platform\Mail\Models\EmailLog;
 use App\Platform\Mcp\Models\McpActivity;
 use App\Platform\Mcp\Models\McpConnection;
@@ -117,6 +121,9 @@ final class ModelIdentityMap
             'supplier_refund' => SupplierRefund::class,
             'recurring_cost' => RecurringCost::class,
             'recurrence_occurrence' => RecurrenceOccurrence::class,
+            'invoice_reminder' => InvoiceReminder::class,
+            'announcement' => Announcement::class,
+            'announcement_dismissal' => AnnouncementDismissal::class,
             'bill_item' => BillItem::class,
             'supplier_credit_item' => SupplierCreditItem::class,
             'supplier_payment_allocation' => SupplierPaymentAllocation::class,
@@ -125,6 +132,7 @@ final class ModelIdentityMap
             'recurring_invoice' => RecurringInvoice::class,
             'role_preset' => RolePreset::class,
             'setting' => Setting::class,
+            'sso_identity' => SsoIdentity::class,
             'tax' => Tax::class,
             'tax_type' => TaxType::class,
             'transaction' => Transaction::class,

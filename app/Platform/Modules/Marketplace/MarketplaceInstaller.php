@@ -5,12 +5,15 @@ namespace App\Platform\Modules\Marketplace;
 use App\Platform\Modules\Events\ModuleEnabledEvent;
 use App\Platform\Modules\Events\ModuleInstalledEvent;
 use App\Platform\Modules\Models\Module as InstalledModule;
+use App\Platform\Modules\Runtime\ModuleBundle;
 use App\Platform\Modules\Runtime\ModuleCompatibility;
 use App\Platform\Modules\Runtime\ModuleRuntimeAutoloader;
 use App\Platform\Modules\Runtime\OpcacheReset;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use InvoiceShelf\Modules\Manifest\ModuleManifest;
+use InvoiceShelf\Modules\Manifest\PackageValidator;
 use Nwidart\Modules\Facades\Module;
 use RuntimeException;
 use Throwable;
@@ -55,11 +58,13 @@ class MarketplaceInstaller
             $extracted = $workspace.'/extracted';
             $this->extractAndValidate($zipPath, $extracted, $slug, $version, $moduleName, $manifest);
             $this->assertSafeMigrations($extracted.'/'.$moduleName);
+            $this->assertBundleFits($extracted.'/'.$moduleName);
 
             $previous = $installed?->only(['version', 'installed', 'enabled', 'state', 'last_error', 'last_failed_at']);
             $backup = $this->swap($extracted.'/'.$moduleName, $moduleName, (string) $operation->id);
 
             try {
+                ModuleRuntimeAutoloader::refresh($moduleName);
                 ModuleRuntimeAutoloader::register($moduleName);
                 $migrationPath = base_path("Modules/{$moduleName}/database/migrations");
                 if (File::isDirectory($migrationPath)) {
@@ -104,6 +109,7 @@ class MarketplaceInstaller
                 return ['success' => true, 'operation_id' => $operation->id];
             } catch (Throwable $exception) {
                 $this->restore($moduleName, $backup);
+                ModuleRuntimeAutoloader::refresh($moduleName);
                 OpcacheReset::afterCodeChange();
                 $this->restoreDatabaseState($moduleName, $previous, $slug, $exception);
                 throw $exception;
@@ -408,7 +414,8 @@ class MarketplaceInstaller
 
     private function assertDependencyPolicy(string $modulePath, array $metadata): void
     {
-        if (($metadata['dependency_policy'] ?? null) !== 'host-provided-only' || ! is_array($metadata['module_dependencies'] ?? null)) {
+        $bundled = ($metadata['dependency_policy'] ?? null) === ModuleManifest::POLICY_BUNDLED && ($metadata['schema_version'] ?? null) === 2;
+        if ((($metadata['dependency_policy'] ?? null) !== ModuleManifest::POLICY_HOST_PROVIDED && ! $bundled) || ! is_array($metadata['module_dependencies'] ?? null)) {
             throw new RuntimeException('Module dependency policy is invalid.');
         }
         foreach ($metadata['module_dependencies'] as $dependencySlug => $constraint) {
@@ -432,6 +439,11 @@ class MarketplaceInstaller
             throw new RuntimeException('Module composer manifest is invalid.');
         }
         foreach ($data['require'] as $package => $constraint) {
+            // The SDK validator has already matched a bundled module's
+            // third-party requirements against its bundle.json.
+            if ($bundled && is_string($package) && is_string($constraint) && $constraint !== '' && PackageValidator::isThirdParty($package)) {
+                continue;
+            }
             if (! is_string($package) || ! is_string($constraint)
                 || ($package !== 'php' && $package !== 'invoiceshelf/modules' && ! str_starts_with($package, 'ext-'))
                 || (in_array($package, ['php', 'invoiceshelf/modules'], true) && ! $this->isSemverConstraint($constraint))
@@ -460,7 +472,8 @@ class MarketplaceInstaller
             || ! is_array($metadata['assets'] ?? null) || ! array_is_list($metadata['assets'])
             || ! in_array($metadata['schema_version'] ?? null, [1, 2], true)
             || ($metadata['migration_policy'] ?? null) !== (($metadata['schema_version'] ?? null) === 2 ? 'reversible' : 'forward-only')
-            || ($metadata['dependency_policy'] ?? null) !== 'host-provided-only') {
+            || ! in_array($metadata['dependency_policy'] ?? null, [ModuleManifest::POLICY_HOST_PROVIDED, ModuleManifest::POLICY_BUNDLED], true)
+            || (($metadata['dependency_policy'] ?? null) === ModuleManifest::POLICY_BUNDLED && ($metadata['schema_version'] ?? null) !== 2)) {
             throw new RuntimeException('Module package manifest has an invalid schema.');
         }
 
@@ -514,6 +527,15 @@ class MarketplaceInstaller
             if (preg_match('/\b(drop|rename|truncate|delete|update)\w*\s*\(/i', $source) === 1) {
                 throw new RuntimeException('Module migrations must be forward-only additive migrations.');
             }
+        }
+    }
+
+    /** A bundled module whose packages, classes or functions clash with this host or another module is refused before it is swapped in. */
+    private function assertBundleFits(string $modulePath): void
+    {
+        $problems = ModuleBundle::problemsFor($modulePath);
+        if ($problems !== []) {
+            throw new RuntimeException('Module bundle does not fit this InvoiceShelf: '.implode(' ', $problems));
         }
     }
 

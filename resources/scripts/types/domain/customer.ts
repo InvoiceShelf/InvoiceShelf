@@ -19,6 +19,7 @@ export interface Customer {
   company_name: string | null
   website: string | null
   enable_portal: boolean
+  reminders_paused?: boolean
   password_added: boolean
   currency_id: number | null
   company_id: number
@@ -55,6 +56,7 @@ export interface CreateCustomerPayload {
   billing?: Partial<Address>
   shipping?: Partial<Address>
   enable_portal?: boolean
+  reminders_paused?: boolean
   customFields?: CustomFieldValue[]
   fields?: CustomFieldValue[]
 }

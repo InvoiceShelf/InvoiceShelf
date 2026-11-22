@@ -54,6 +54,8 @@ export interface ClientManifest {
   managed?: ManagedState | null
   source_url?: string
   customer_portal_url?: string | null
+  /** Whether the server offers single sign-on. Absent from servers older than the field. */
+  sso_login?: boolean
 }
 
 export interface ClientBootState {

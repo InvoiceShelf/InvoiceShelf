@@ -84,6 +84,6 @@ class ExpenseCategoryPolicy
 
     private function belongs(User $user, ExpenseCategory $expenseCategory): bool
     {
-        return $user->hasCompany($expenseCategory->company_id);
+        return $user->isActingIn($expenseCategory->company_id);
     }
 }

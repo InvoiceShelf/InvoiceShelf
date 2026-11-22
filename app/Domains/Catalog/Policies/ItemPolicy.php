@@ -78,6 +78,6 @@ class ItemPolicy
 
     private function sameCompany(User $user, Item $item): bool
     {
-        return $user->hasCompany($item->company_id);
+        return $user->isActingIn($item->company_id);
     }
 }

@@ -7,6 +7,7 @@ use App\Platform\Modules\Events\ModuleInstalledEvent;
 use App\Platform\Modules\Models\Module as ModelsModule;
 use Illuminate\Support\Facades\Artisan;
 use Nwidart\Modules\Facades\Module;
+use RuntimeException;
 
 class ModuleInstaller
 {
@@ -24,6 +25,13 @@ class ModuleInstaller
     public static function complete($module, $version): bool
     {
         Module::register();
+
+        // A module copied in by hand gets the check the marketplace runs on every
+        // archive: a bundled module must carry a bundle/ that fits this host.
+        $problems = ModuleBundle::problemsFor(Module::findOrFail($module)->getPath());
+        if ($problems !== []) {
+            throw new RuntimeException("{$module} cannot be installed: ".implode(' ', $problems));
+        }
 
         // `module:migrate` only runs paths the framework migrator already knows,
         // and a module's path is registered when its provider boots. A module that

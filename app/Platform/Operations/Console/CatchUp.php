@@ -7,8 +7,8 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 
 /**
- * Runs the once-a-day status sweeps (overdue invoices, expired estimates) if
- * they have not run today.
+ * Runs the once-a-day status sweeps (overdue invoices, expired estimates,
+ * bills falling due) if they have not run today.
  *
  * The scheduler asks every hour and the Docker entrypoint asks at boot, so an
  * install that was down at midnight catches up at the first chance instead of
@@ -19,7 +19,7 @@ class CatchUp extends Command
 {
     public const LAST_RUN_SETTING = 'daily_sweeps_ran_on';
 
-    public const SWEEPS = ['check:invoices:status', 'check:estimates:status'];
+    public const SWEEPS = ['check:invoices:status', 'check:estimates:status', 'bills:check-due'];
 
     protected $signature = 'invoiceshelf:catch-up {--force : Run the sweeps even if they already ran today}';
 

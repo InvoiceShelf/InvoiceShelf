@@ -37,6 +37,24 @@ test('realistic demo payments are allocated and leave invoice balances consisten
     }
 });
 
+test('realistic demo flags exactly the invoices the overdue sweep would', function () {
+    Artisan::call('db:seed', ['--class' => 'RealisticDemoSeeder', '--force' => true]);
+
+    $company = User::where('email', 'demo@invoiceshelf.com')->firstOrFail()->companies()->firstOrFail();
+    $today = Carbon::now()->startOfDay();
+    $invoices = Invoice::query()->where('company_id', $company->id)->get();
+
+    // The rule of check:invoices:status: an invoice that left the draft stage,
+    // is not completed, and whose due date fell before today.
+    $pastDue = $invoices->filter(fn (Invoice $invoice): bool => $invoice->type === Invoice::TYPE_INVOICE
+        && ! in_array($invoice->status, [Invoice::STATUS_COMPLETED, Invoice::STATUS_DRAFT], true)
+        && Carbon::parse($invoice->due_date)->lt($today));
+
+    expect($pastDue->count())->toBeGreaterThan(4)
+        ->and($invoices->filter(fn (Invoice $invoice): bool => (bool) $invoice->overdue)->modelKeys())
+        ->toEqualCanonicalizing($pastDue->modelKeys());
+});
+
 test('realistic demo provides current-month account activity for every customer', function () {
     Artisan::call('db:seed', ['--class' => 'RealisticDemoSeeder', '--force' => true]);
 

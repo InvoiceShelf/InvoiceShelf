@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<!--
+	The app's privacy manifest, which App Store Connect requires before it accepts
+	an upload. Capacitor's own manifest declares nothing and none of the plugins
+	ship one, so the required-reason APIs the plugins call are declared here, on
+	their behalf. A new plugin, or a new major of an existing one, means checking
+	its iOS sources for those APIs again (mobile/README.md, "The privacy manifest").
+
+	Nothing is collected and nothing tracks: the app only talks to the server the
+	user typed in on the connect screen, which is theirs, not ours.
+-->
+<dict>
+	<key>NSPrivacyTracking</key>
+	<false/>
+	<key>NSPrivacyTrackingDomains</key>
+	<array/>
+	<key>NSPrivacyCollectedDataTypes</key>
+	<array/>
+	<key>NSPrivacyAccessedAPITypes</key>
+	<array>
+		<!-- @capacitor/preferences keeps the session keys local-storage.ts mirrors out of the WebView in UserDefaults. -->
+		<dict>
+			<key>NSPrivacyAccessedAPIType</key>
+			<string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+			<key>NSPrivacyAccessedAPITypeReasons</key>
+			<array>
+				<string>CA92.1</string>
+			</array>
+		</dict>
+		<!-- @capacitor/filesystem returns ctime and mtime when it lists the share folder in the app's cache. -->
+		<dict>
+			<key>NSPrivacyAccessedAPIType</key>
+			<string>NSPrivacyAccessedAPICategoryFileTimestamp</string>
+			<key>NSPrivacyAccessedAPITypeReasons</key>
+			<array>
+				<string>C617.1</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>

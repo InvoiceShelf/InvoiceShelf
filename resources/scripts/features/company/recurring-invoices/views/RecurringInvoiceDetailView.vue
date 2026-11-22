@@ -30,6 +30,8 @@
               )
             }}
           </BaseButton>
+          <ExtensionSlot name="entity" entity="recurring-invoice" area="actions:detail" :context="extensionContext" />
+
           <RecurringInvoiceDropdown
             v-if="hasAtLeastOneAbility"
             :row="recurringInvoiceStore.newRecurringInvoice"
@@ -128,6 +130,8 @@
             />
           </BaseDescriptionList>
         </BaseCard>
+
+        <ExtensionSlot name="entity" entity="recurring-invoice" area="panels" :context="extensionContext" />
 
         <section class="flex flex-col gap-3">
           <BaseHeading>
@@ -235,6 +239,8 @@ import { scrollBehavior } from '@/scripts/utils/motion'
 import { recurringInvoiceService } from '@/scripts/api/services/recurring-invoice.service'
 import { getErrorTranslationKey, handleApiError } from '@/scripts/utils/error-handling'
 import { useNotificationStore } from '@/scripts/stores/notification.store'
+import ExtensionSlot from '@/scripts/extensions/ExtensionSlot.vue'
+import { entityContext } from '@/scripts/extensions/records'
 
 interface Props {
   canEdit?: boolean
@@ -255,6 +261,9 @@ const ABILITIES = {
 } as const
 
 const recurringInvoiceStore = useRecurringInvoiceStore()
+
+/** Module actions and panels on this page; see registerEntityAction / registerEntityPanel. */
+const extensionContext = entityContext('recurring-invoice', 'detail', () => recurringInvoiceStore.newRecurringInvoice, () => loadRecurringInvoice())
 const userStore = useUserStore()
 const notificationStore = useNotificationStore()
 const { t } = useI18n()

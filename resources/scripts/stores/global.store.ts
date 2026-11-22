@@ -13,6 +13,7 @@ import type {
   NumberPlaceholder,
 } from '@/scripts/api/services/setting.service'
 import { useCompanyStore } from './company.store'
+import { useInboxStore } from './inbox.store'
 import { useUserStore } from './user.store'
 import { useNotificationStore } from './notification.store'
 import { handleApiError } from '../utils/error-handling'
@@ -33,6 +34,7 @@ export const useGlobalStore = defineStore('global', () => {
   const countries = ref<Country[]>([])
   const languages = ref<Array<{ code: string; name: string }>>([])
   const fiscalYears = ref<Array<{ key: string; value: string }>>([])
+  const unitCodes = ref<Array<{ key: string; value: string }>>([])
 
   const mainMenu = ref<MenuItem[]>([])
   const settingMenu = ref<MenuItem[]>([])
@@ -112,6 +114,8 @@ export const useGlobalStore = defineStore('global', () => {
         companyStore.selectedCompanyCurrency = null
       }
 
+      useInboxStore().setAnnouncements(response.announcements ?? [])
+
       isAppLoaded.value = true
 
       // Load UI language: user preference > company setting > English
@@ -168,6 +172,11 @@ export const useGlobalStore = defineStore('global', () => {
         }>
       } else if ((response as Record<string, unknown>).fiscal_years) {
         fiscalYears.value = (response as Record<string, unknown>).fiscal_years as Array<{
+          key: string
+          value: string
+        }>
+      } else if ((response as Record<string, unknown>).unit_codes) {
+        unitCodes.value = (response as Record<string, unknown>).unit_codes as Array<{
           key: string
           value: string
         }>
@@ -318,6 +327,7 @@ export const useGlobalStore = defineStore('global', () => {
     countries,
     languages,
     fiscalYears,
+    unitCodes,
     mainMenu,
     settingMenu,
     userMenu,

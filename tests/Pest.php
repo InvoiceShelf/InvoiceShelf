@@ -12,6 +12,7 @@ use Tests\TestCase;
 
 uses(TestCase::class, RefreshDatabase::class)->in('Feature');
 uses(TestCase::class, RefreshDatabase::class)->in('Unit');
+uses(TestCase::class, RefreshDatabase::class)->in('Conformance');
 
 // Module-system tests scaffold, install, and remove real directories under
 // Modules. Paratest isolates the database but not that shared filesystem path,

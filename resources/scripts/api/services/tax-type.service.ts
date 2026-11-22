@@ -1,6 +1,7 @@
 import { client } from '../client'
 import { API } from '../endpoints'
 import type {
+  TaxCategoryCode,
   TaxType,
   TaxTypeTransactionType,
 } from '@/scripts/types/domain/tax'
@@ -27,6 +28,8 @@ export interface CreateTaxTypePayload {
   transaction_type: TaxTypeTransactionType
   compound_tax?: boolean
   collective_tax?: number | null
+  tax_category_code?: TaxCategoryCode
+  tax_exemption_reason?: string | null
   description?: string | null
 }
 

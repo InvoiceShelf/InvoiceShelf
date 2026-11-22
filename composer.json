@@ -9,17 +9,20 @@
     "type": "project",
     "require": {
         "php": "^8.4",
+        "bacon/bacon-qr-code": "^3.0",
         "barryvdh/laravel-dompdf": "^v3.0",
+        "composer/semver": "^3.4",
         "dragonmantank/cron-expression": "^v3.4",
-        "gotenberg/gotenberg-php": "^2.8",
+        "gotenberg/gotenberg-php": "^2.23",
         "guzzlehttp/guzzle": "^7.9",
         "hashids/hashids": "^5.0",
-        "invoiceshelf/modules": "^3.4",
+        "invoiceshelf/modules": "^3.7",
         "laravel/framework": "^13.0",
         "laravel/helpers": "^1.7",
         "laravel/mcp": "^1.0",
         "laravel/passport": "^13.0",
         "laravel/sanctum": "^4.0",
+        "laravel/socialite": "^5.31",
         "laravel/tinker": "^3.0",
         "laravel/ui": "^4.6",
         "lavary/laravel-menu": "^1.8",
@@ -97,18 +100,6 @@
     "extra": {
         "laravel": {
             "dont-discover": []
-        },
-        "merge-plugin": {
-            "include": [
-                "Modules/*/composer.json"
-            ],
-            "recurse": true,
-            "replace": false,
-            "ignore-duplicates": false,
-            "merge-dev": true,
-            "merge-extra": false,
-            "merge-extra-deep": false,
-            "merge-scripts": false
         }
     },
     "config": {
@@ -118,7 +109,7 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true,
             "php-http/discovery": true,
-            "wikimedia/composer-merge-plugin": true
+            "wikimedia/composer-merge-plugin": false
         }
     },
     "minimum-stability": "stable",

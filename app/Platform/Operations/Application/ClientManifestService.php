@@ -2,6 +2,7 @@
 
 namespace App\Platform\Operations\Application;
 
+use App\Domains\Accounts\Application\SsoLogin;
 use App\Platform\Modules\Runtime\ModuleAssetVersion;
 use App\Platform\Operations\Demo\DemoMode;
 use App\Platform\Operations\Managed\ManagedMode;
@@ -46,6 +47,7 @@ class ClientManifestService
             'managed' => ManagedMode::enabled() ? ManagedMode::clientState() : null,
             'source_url' => PoweredBy::sourceUrl(),
             'customer_portal_url' => CustomerUrl::portalUrl(),
+            'sso_login' => SsoLogin::enabled(),
         ];
     }
 

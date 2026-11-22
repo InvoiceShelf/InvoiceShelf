@@ -11,6 +11,7 @@ use App\Domains\Money\Models\Currency;
 use App\Domains\Receivables\Models\Payment;
 use App\Domains\Receivables\Models\PaymentAllocation;
 use App\Domains\Receivables\Models\Transaction;
+use App\Domains\Sales\Contracts\InvoicePdfAttachments;
 use App\Domains\Sales\Contracts\InvoicePdfDataProvider;
 use App\Domains\Taxation\Models\Tax;
 use App\Platform\Mail\Models\EmailLog;
@@ -20,6 +21,7 @@ use App\Platform\Pdf\Rendering\PdfTemplateUtils;
 use App\Support\MoneyConversion;
 use App\Support\SafeOrderBy;
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -154,6 +156,7 @@ class Invoice extends Model implements HasMedia
             'discount' => 'float',
             'discount_val' => 'integer',
             'exchange_rate' => 'float',
+            'reminders_paused' => 'boolean',
         ];
     }
 
@@ -174,6 +177,11 @@ class Invoice extends Model implements HasMedia
     /**
      * Mail sent about this document.
      */
+    public function reminders(): HasMany
+    {
+        return $this->hasMany(InvoiceReminder::class);
+    }
+
     public function emailLogs(): MorphMany
     {
         return $this->morphMany(EmailLog::class, 'mailable');
@@ -308,7 +316,7 @@ class Invoice extends Model implements HasMedia
      * A credited invoice is immutable: its line item ids anchor the lines of
      * every credit note that reverses it. Past that, the company's
      * retrospective-edits setting decides, tightening in three steps from
-     * "sent and part paid" through "part paid" to "paid".
+     * "sent" (or any payment) through "part paid" to "paid".
      */
     public function getAllowEditAttribute()
     {
@@ -321,15 +329,14 @@ class Invoice extends Model implements HasMedia
         $collected = $this->paid_status === self::STATUS_PARTIALLY_PAID
             || $this->paid_status === self::STATUS_PAID;
 
-        $undelivered = [
-            self::STATUS_DRAFT,
-            self::STATUS_SENT,
-            self::STATUS_VIEWED,
-            self::STATUS_COMPLETED,
-        ];
-
         if ($mode == 'disable_on_invoice_sent') {
-            return ! (in_array($this->status, $undelivered) && $collected);
+            $delivered = in_array($this->status, [
+                self::STATUS_SENT,
+                self::STATUS_VIEWED,
+                self::STATUS_COMPLETED,
+            ], true);
+
+            return ! ($delivered || $collected);
         }
 
         if ($mode == 'disable_on_invoice_partial_paid') {
@@ -639,6 +646,29 @@ class Invoice extends Model implements HasMedia
     }
 
     /**
+     * An invoice PDF can carry a module's e-invoice XML, so an archive records
+     * whether attachments applied to the company when it was filed.
+     *
+     * @return array<string, mixed>
+     */
+    protected function archivedPdfProperties(): array
+    {
+        return ['pdf_attachments_applied' => app(InvoicePdfAttachments::class)->applyTo($this->company_id)];
+    }
+
+    /**
+     * An archive is current only while that answer still holds: one filed
+     * before e-invoicing was switched on lacks the XML, and one filed while it
+     * was on carries XML it should no longer.
+     *
+     * @param  array<string, mixed>  $properties
+     */
+    protected function archivedPdfIsCurrent(array $properties): bool
+    {
+        return (bool) ($properties['pdf_attachments_applied'] ?? false) === app(InvoicePdfAttachments::class)->applyTo($this->company_id);
+    }
+
+    /**
      * Whether outgoing mail should carry the PDF. Anything other than an
      * explicit refusal counts as consent.
      */
@@ -713,7 +743,35 @@ class Invoice extends Model implements HasMedia
             '{INVOICE_DUE_DATE}' => $this->formattedDueDate,
             '{INVOICE_NUMBER}' => $this->invoice_number,
             '{INVOICE_REF_NUMBER}' => $this->reference_number,
+            '{INVOICE_TOTAL}' => $this->plainMoney($this->total),
+            '{INVOICE_DUE_AMOUNT}' => $this->plainMoney($this->due_amount),
+            '{INVOICE_PAID_AMOUNT}' => $this->plainMoney(max(0, (int) $this->total - (int) $this->due_amount)),
+            '{INVOICE_DAYS_OVERDUE}' => (string) $this->daysOverdue(),
         ];
+    }
+
+    /**
+     * Whole days since the due date in the company's time zone; 0 when it is
+     * not yet due or has none.
+     */
+    public function daysOverdue(): int
+    {
+        if (! $this->due_date) {
+            return 0;
+        }
+
+        $today = CarbonImmutable::now(CompanySetting::timeZone($this->company_id))->startOfDay();
+        $due = CarbonImmutable::parse(substr((string) $this->due_date, 0, 10), $today->getTimezone());
+
+        return max(0, (int) $due->diffInDays($today, false));
+    }
+
+    /**
+     * An amount in the invoice's currency as text for an email.
+     */
+    private function plainMoney(mixed $amount): string
+    {
+        return trim(html_entity_decode(strip_tags((string) format_money_pdf((int) $amount, $this->currency))));
     }
 
     /*

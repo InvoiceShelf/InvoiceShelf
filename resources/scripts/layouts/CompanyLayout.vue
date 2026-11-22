@@ -24,13 +24,17 @@
         hasCompany ? (isExpanded ? 'md:ps-16 lg:ps-64' : 'md:ps-16') : '',
       ]"
     >
-      <ImpersonationBanner />
-      <DemoBanner />
+      <!-- Whichever banner comes first takes the status bar area (.safe-banners) -->
+      <div class="flex flex-col shrink-0 safe-banners">
+        <ImpersonationBanner />
+        <DemoBanner />
+        <AnnouncementBanner />
+      </div>
 
       <!--
         The top bar lives inside the scrolling area so content passes under
         it; the bottom inset keeps the last rows clear of the phone's
-        floating tab bar or action bar. The header and the page are siblings,
+        tab bar or action bar. The header and the page are siblings,
         so the header is the page's banner rather than part of its content.
       -->
       <div
@@ -72,6 +76,7 @@ import SiteSidebar from './partials/SiteSidebar.vue'
 import NotificationRoot from '@/scripts/components/notifications/NotificationRoot.vue'
 import ImpersonationBanner from './partials/ImpersonationBanner.vue'
 import DemoBanner from './partials/DemoBanner.vue'
+import AnnouncementBanner from './partials/AnnouncementBanner.vue'
 import MobileTabBar from './partials/MobileTabBar.vue'
 import CommandPalette from './partials/CommandPalette.vue'
 import { useBreakpoints } from '@/scripts/composables/use-breakpoints'
@@ -124,8 +129,8 @@ watchEffect(() => {
   let bottom = 'env(safe-area-inset-bottom)'
 
   if (showTabBar.value) {
-    // The floating tab bar: 3.75rem tall, 0.5rem above the home indicator, plus breathing room
-    bottom = 'calc(5rem + env(safe-area-inset-bottom))'
+    // The tab bar: 3.75rem tall over the home indicator, plus breathing room
+    bottom = 'calc(4.5rem + env(safe-area-inset-bottom))'
   } else if (isPhone.value && globalStore.actionBarCount > 0) {
     bottom = 'calc(4.5rem + env(safe-area-inset-bottom))'
   }

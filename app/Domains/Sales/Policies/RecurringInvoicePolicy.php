@@ -86,6 +86,6 @@ class RecurringInvoicePolicy
 
     private function sameCompany(User $user, RecurringInvoice $recurringInvoice): bool
     {
-        return $user->hasCompany($recurringInvoice->company_id);
+        return $user->isActingIn($recurringInvoice->company_id);
     }
 }

@@ -12,15 +12,22 @@ use App\Platform\Modules\Events\ModuleUninstalledEvent;
 use App\Platform\Modules\Infrastructure\BouncerModuleAuthorization;
 use App\Platform\Modules\Infrastructure\EloquentCompanyDataReader;
 use App\Platform\Modules\Infrastructure\EloquentHostSettingsStore;
+use App\Platform\Modules\Infrastructure\EloquentInvoiceDocumentReader;
 use App\Platform\Modules\Infrastructure\EloquentModuleSettingsStore;
+use App\Platform\Modules\Infrastructure\GotenbergPdfCapabilities;
+use App\Platform\Modules\Infrastructure\HostQrCodeGenerator;
 use App\Platform\Modules\Listeners\SyncModuleAbilities;
 use App\Platform\Modules\Policies\ModulePolicy;
+use App\Platform\Modules\Runtime\ModuleRuntimeAutoloader;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use InvoiceShelf\Modules\Contracts\Host\CompanyDataReader;
+use InvoiceShelf\Modules\Contracts\Host\InvoiceDocumentReader;
 use InvoiceShelf\Modules\Contracts\Host\ModuleAuthorization;
+use InvoiceShelf\Modules\Contracts\Host\PdfCapabilities;
+use InvoiceShelf\Modules\Contracts\Host\QrCodeGenerator;
 use InvoiceShelf\Modules\Contracts\Host\SettingsStore;
 
 class ModuleServiceProvider extends ServiceProvider
@@ -31,6 +38,21 @@ class ModuleServiceProvider extends ServiceProvider
         $this->app->bind(SettingsStore::class, EloquentHostSettingsStore::class);
         $this->app->bind(ModuleAuthorization::class, BouncerModuleAuthorization::class);
         $this->app->bind(CompanyDataReader::class, EloquentCompanyDataReader::class);
+        $this->app->bind(InvoiceDocumentReader::class, EloquentInvoiceDocumentReader::class);
+        $this->app->bind(PdfCapabilities::class, GotenbergPdfCapabilities::class);
+        $this->app->bind(QrCodeGenerator::class, HostQrCodeGenerator::class);
+
+        // nwidart fires modules.{name}.register only for enabled modules, after
+        // their providers are registered and before they boot: the point where
+        // a bundled module's Composer `files` entries may run. Listening here,
+        // in register(), puts the listener in place before nwidart's boot
+        // registers the modules.
+        Event::listen('modules.*.register', function (string $event, array $payload): void {
+            $module = $payload[0] ?? null;
+            if (is_object($module) && method_exists($module, 'getName')) {
+                ModuleRuntimeAutoloader::loadBundleFiles($module->getName());
+            }
+        });
     }
 
     public function boot(): void

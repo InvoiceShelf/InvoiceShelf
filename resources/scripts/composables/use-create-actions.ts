@@ -1,12 +1,15 @@
 import { computed } from 'vue'
+import type { RouteLocationRaw } from 'vue-router'
 import { useUserStore } from '@/scripts/stores/user.store'
 import { useCompanyStore } from '@/scripts/stores/company.store'
 import { ABILITIES } from '@/scripts/config/abilities'
+import { extensionItems, extensionRegistry } from '@/scripts/extensions/runtime'
+import type { CreateActionContribution } from '@/scripts/extensions/types'
 
 export interface CreateAction {
   label: string
   icon: string
-  to: string
+  to: RouteLocationRaw
 }
 
 const ACTIONS: Array<CreateAction & { ability: string }> = [
@@ -31,9 +34,21 @@ export function useCreateActions() {
       return []
     }
 
-    return ACTIONS.filter((action) => userStore.hasAbilities(action.ability)).map(
+    const hostActions = ACTIONS.filter((action) => userStore.hasAbilities(action.ability)).map(
       ({ label, icon, to }) => ({ label, icon, to }),
     )
+
+    const moduleActions = extensionItems(extensionRegistry.createActions.value)
+      .filter((action: CreateActionContribution) =>
+        !action.ability || userStore.hasAbilities(action.ability),
+      )
+      .map(({ label, icon, to }) => ({
+        label,
+        icon,
+        to,
+      }))
+
+    return [...hostActions, ...moduleActions]
   })
 
   return { createActions }

@@ -150,6 +150,10 @@ function getFields(): void {
         { label: 'Due Date', value: 'INVOICE_DUE_DATE' },
         { label: 'Number', value: 'INVOICE_NUMBER' },
         { label: 'Ref Number', value: 'INVOICE_REF_NUMBER' },
+        { label: 'Total', value: 'INVOICE_TOTAL' },
+        { label: 'Amount Due', value: 'INVOICE_DUE_AMOUNT' },
+        { label: 'Amount Paid', value: 'INVOICE_PAID_AMOUNT' },
+        { label: 'Days Overdue', value: 'INVOICE_DAYS_OVERDUE' },
         ...invoiceFields.value.map((i) => ({
           label: i.label,
           value: i.slug,

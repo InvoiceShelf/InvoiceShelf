@@ -22,6 +22,8 @@
             <span id="make-recurring-label" class="text-sm font-medium text-heading whitespace-nowrap">{{ $t('recurring_invoices.make_recurring') }}</span>
           </div>
 
+          <ExtensionSlot name="entity" entity="invoice" area="actions:form" :context="extensionFormContext" />
+
           <router-link
             v-if="isEdit"
             :to="`/invoices/pdf/${invoiceStore.newInvoice.unique_hash}`"
@@ -73,6 +75,11 @@
         <BaseSwitch v-model="isRecurring" aria-labelledby="make-recurring-sheet-label" />
       </label>
 
+      <!-- Phones have no header actions, so module form actions get a row of their own, only when there are any -->
+      <div v-if="isPhone && formActions.length" class="flex flex-wrap items-center gap-2 px-4 py-3 mt-3 border glass rounded-xl">
+        <ExtensionSlot name="entity" entity="invoice" area="actions:form" :context="extensionFormContext" />
+      </div>
+
       <!-- Select Customer & Basic Fields -->
       <InvoiceBasicFields
         :v="v$"
@@ -92,6 +99,8 @@
           store-prop="newInvoice"
         />
 
+        <ExtensionSlot name="entity" entity="invoice" area="formSections" :context="extensionFormContext" />
+
         <!-- Invoice Footer Section -->
         <div
           class="block mt-10 invoice-foot lg:flex lg:justify-between lg:items-start"
@@ -104,6 +113,25 @@
               :fields="invoiceNoteFieldList"
               type="Invoice"
             />
+
+            <!-- Invoice Payment Link: a recurring invoice's copies use the company default -->
+            <BaseInputGroup
+              v-if="!isRecurring"
+              :label="$t('invoices.payment_link')"
+              :help-text="$t('invoices.payment_link_help')"
+              :content-loading="isLoadingContent"
+              :error="v$.payment_link?.$error && v$.payment_link.$errors[0].$message"
+              class="mt-6 mb-6"
+            >
+              <BaseInput
+                v-model="invoiceStore.newInvoice.payment_link"
+                type="url"
+                placeholder="https://"
+                :content-loading="isLoadingContent"
+                :invalid="v$.payment_link?.$error"
+                @input="v$.payment_link?.$touch()"
+              />
+            </BaseInputGroup>
 
             <!-- Invoice Template Button -->
             <TemplateSelectButton
@@ -150,6 +178,10 @@ import {
   handleApiError,
   getErrorTranslationKey,
 } from '@/scripts/utils/error-handling'
+import ExtensionSlot from '@/scripts/extensions/ExtensionSlot.vue'
+import { useEntityContributions } from '@/scripts/extensions/runtime'
+import { currencyCodeOf, entityFormContext } from '@/scripts/extensions/records'
+import { useEntitySaveHooks } from '@/scripts/composables/use-entity-save-hooks'
 import InvoiceBasicFields from '../components/InvoiceBasicFields.vue'
 import {
   DocumentItemsTable,
@@ -200,6 +232,19 @@ const isRecurringEdit = computed<boolean>(() =>
   route.name === 'recurring-invoices.edit',
 )
 
+/** Module form actions, sections and save hooks; see registerEntityFormSection / registerEntitySaveHook. */
+const extensionFormContext = entityFormContext('invoice', {
+  isEdit: () => isEdit.value,
+  record: () => invoiceStore.newInvoice,
+  isRecurring: () => isRecurring.value,
+  total: () => invoiceStore.getTotal,
+  currencyCode: () => currencyCodeOf(invoiceStore.newInvoice.selectedCurrency),
+  date: () => invoiceStore.newInvoice.invoice_date || null,
+  dueDate: () => invoiceStore.newInvoice.due_date || null,
+})
+const formActions = useEntityContributions('actions:form', 'invoice')
+const saveHooks = useEntitySaveHooks()
+
 const rules = computed(() => {
   if (isRecurring.value) {
     return {
@@ -223,6 +268,12 @@ const rules = computed(() => {
     },
     exchange_rate: {
       required: requiredIf(() => invoiceStore.showExchangeRate),
+    },
+    payment_link: {
+      webAddress: helpers.withMessage(
+        t('settings.customization.invoices.payment_link_invalid'),
+        (value: string | null) => !value || /^https?:\/\/\S+$/i.test(value.trim()),
+      ),
     },
   }
 })
@@ -455,7 +506,12 @@ async function submitForm(): Promise<void> {
         : invoiceStore.addInvoice
 
       const response = await action(data)
-      router.push(`/admin/invoices/${response.data.data.id}/view`)
+      // The invoice is saved; module hooks cannot fail the save (see useEntitySaveHooks).
+      const handled = await saveHooks.run('invoice', response.data.data, extensionFormContext)
+
+      if (!handled) {
+        router.push(`/admin/invoices/${response.data.data.id}/view`)
+      }
     }
   } catch (err: unknown) {
     const normalized = handleApiError(err)

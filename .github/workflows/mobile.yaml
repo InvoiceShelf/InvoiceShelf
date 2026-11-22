@@ -32,15 +32,94 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # The apps ship the thin-client bundle and the native shell, nothing else, so a
+  # release that leaves both alone would upload the same app again under a new
+  # build number: one more TestFlight build for testers to install, one more
+  # store review once the apps are public. This job compares the tag with the
+  # previous release tag over the paths that make up the app and tells the two
+  # platform jobs whether there is anything new to ship.
+  #
+  # version.md is left out on purpose. It changes on every release, and the only
+  # thing it changes in the bundle is the version the client reports, which the
+  # server gates on (`min_client_version`) only when it is raised deliberately,
+  # together with client changes that are in these paths anyway.
+  #
+  # A previous release with no app of its own does not hide changes: its app
+  # paths were identical to the release before it, so comparing against it is
+  # the same as comparing against the last release that did ship an app.
+  changes:
+    name: App changes
+    runs-on: ubuntu-latest
+    outputs:
+      app: ${{ steps.diff.outputs.app }}
+
+    steps:
+      - name: Resolve the tag being built
+        id: resolve
+        env:
+          EVENT: ${{ github.event_name }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          INPUT_TAG: ${{ inputs.tag }}
+        run: |
+          if [ "$EVENT" = "release" ]; then TAG="$RELEASE_TAG"; else TAG="$INPUT_TAG"; fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout code at that tag, with history
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ steps.resolve.outputs.tag }}
+          fetch-depth: 0
+
+      # workflow_dispatch always builds: it is the repair path for a failed
+      # upload or an expired certificate, where the point is to ship this tag
+      # again whatever changed.
+      - name: Compare the app with the previous release
+        id: diff
+        env:
+          EVENT: ${{ github.event_name }}
+          TAG: ${{ steps.resolve.outputs.tag }}
+        run: |
+          APP_PATHS=(
+            resources/client resources/scripts resources/css resources/static lang
+            vite.client.config.ts vite.shared.mjs package.json pnpm-lock.yaml
+            mobile ':(exclude,glob)mobile/**/*.md'
+          )
+
+          ship() {
+            echo "app=$1" >> "$GITHUB_OUTPUT"
+            echo "$2" >> "$GITHUB_STEP_SUMMARY"
+            echo "$2"
+          }
+
+          if [ "$EVENT" != "release" ]; then
+            ship true "Manual run: building $TAG regardless of changes."
+            exit 0
+          fi
+
+          PREV=$(git describe --tags --abbrev=0 "$TAG^" 2>/dev/null || true)
+          if [ -z "$PREV" ] || [ "${PREV%%.*}" != "${TAG%%.*}" ]; then
+            ship true "No earlier release of this major to compare with: building $TAG."
+            exit 0
+          fi
+
+          CHANGED=$(git diff --name-only "$PREV" "$TAG" -- "${APP_PATHS[@]}")
+          if [ -z "$CHANGED" ]; then
+            ship false "Nothing in the app changed since $PREV: no app build for $TAG."
+          else
+            ship true "The app changed since $PREV ($(echo "$CHANGED" | wc -l | tr -d ' ') files): building $TAG."
+            { echo; echo '```'; echo "$CHANGED" | head -50; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
   android:
     name: Android
+    needs: changes
     # Gated on a repository variable rather than on the secrets being present,
     # because a job that fails for a missing secret fails on every single release
     # and trains everyone to ignore a red tick. Until the keystore exists this
-    # whole workflow is a no-op nobody has to look at; set MOBILE_RELEASES_ENABLED
-    # to `true` once the secrets below are in place, and the next published
-    # release builds the apps.
-    if: vars.MOBILE_RELEASES_ENABLED == 'true'
+    # job is a no-op nobody has to look at; set MOBILE_RELEASES_ENABLED to `true`
+    # once the secrets below are in place, and the next published release builds
+    # the Android app. The iOS job has its own switch.
+    if: vars.MOBILE_RELEASES_ENABLED == 'true' && needs.changes.outputs.app == 'true'
     runs-on: ubuntu-latest
     permissions:
       # Only for `gh release upload`, which attaches the APK to the release.
@@ -210,18 +289,20 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
   # UNTESTED. Every step below is written from the documented behaviour of the
-  # actions and of xcodebuild; none of it has run, because it needs an Apple
-  # organisation account, a distribution certificate and an App Store Connect app
-  # record, none of which exist yet. Treat the first green run on a macOS runner
-  # as the point at which this comment comes out, and expect to fix signing
-  # details before then.
+  # actions and of xcodebuild; none of it has run. The organisation account is
+  # enrolled, but the distribution certificate, the provisioning profile and the
+  # App Store Connect app record do not exist yet. Treat the first green run on a
+  # macOS runner as the point at which this comment comes out, and expect to fix
+  # signing details before then.
   ios:
     name: iOS
-    # Two gates. The shared one, plus an iOS-specific one, because the Apple side
-    # lands months after the Android side (organisation enrolment needs a D-U-N-S
-    # number) and because a macOS runner is billed at ten times an ubuntu one, so
-    # it should not spin up on every release until it can produce something.
-    if: vars.MOBILE_RELEASES_ENABLED == 'true' && vars.MOBILE_IOS_ENABLED == 'true'
+    needs: changes
+    # A gate of its own, not the shared one as well, because the Apple signing
+    # material arrives separately from the Android keystore: either platform can
+    # be switched on first without the other failing on every release. A macOS
+    # runner is billed at ten times an ubuntu one, so it does not spin up until
+    # it can produce something.
+    if: vars.MOBILE_IOS_ENABLED == 'true' && needs.changes.outputs.app == 'true'
     runs-on: macos-latest
 
     steps:
@@ -284,13 +365,21 @@ jobs:
       # `$(CURRENT_PROJECT_VERSION)`; PlistBuddy replaces them with literals, so
       # this must run after `cap sync` (which rewrites parts of the project) and
       # before the archive.
+      #
+      # Unlike Android's versionName, CFBundleShortVersionString may only hold up
+      # to three dot-separated integers, and App Store Connect refuses an upload
+      # carrying `3.0.0-alpha.4`. So iOS gets the tag without its pre-release
+      # part. Every alpha, beta and rc of 3.0.0 is then version 3.0.0, and the
+      # versionCode build number, which keeps rising through those bands, is what
+      # tells the builds apart in TestFlight.
       - name: Set the bundle version
         env:
           VERSION_CODE: ${{ steps.version.outputs.versionCode }}
           VERSION_NAME: ${{ steps.version.outputs.versionName }}
         run: |
           PLIST=mobile/ios/App/App/Info.plist
-          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $VERSION_NAME" "$PLIST"
+          SHORT_VERSION="${VERSION_NAME%%-*}"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $SHORT_VERSION" "$PLIST"
           /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $VERSION_CODE" "$PLIST"
           /usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$PLIST"
           /usr/libexec/PlistBuddy -c "Print :CFBundleVersion" "$PLIST"
@@ -314,25 +403,66 @@ jobs:
           NEW="$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles"
           mkdir -p "$OLD" "$NEW"
           printf '%s' "$PROFILE_B64" | base64 -d > "$RUNNER_TEMP/invoiceshelf.mobileprovision"
-          cp "$RUNNER_TEMP/invoiceshelf.mobileprovision" "$OLD/invoiceshelf.mobileprovision"
-          cp "$RUNNER_TEMP/invoiceshelf.mobileprovision" "$NEW/invoiceshelf.mobileprovision"
+          # Named by its UUID, the way Xcode installs profiles itself.
+          UUID=$(security cms -D -i "$RUNNER_TEMP/invoiceshelf.mobileprovision" | plutil -extract UUID raw -)
+          cp "$RUNNER_TEMP/invoiceshelf.mobileprovision" "$OLD/$UUID.mobileprovision"
+          cp "$RUNNER_TEMP/invoiceshelf.mobileprovision" "$NEW/$UUID.mobileprovision"
 
-      # The workspace, not the .xcodeproj: the Pods project is the other half of
-      # it. Manual signing, because the runner has exactly one certificate and one
-      # profile and no Xcode account to ask the portal for more.
-      - name: Archive
+      # Manual signing, because the runner has exactly one certificate and one
+      # profile and no Xcode account to ask the portal for more. It is set on the
+      # App target's Release configuration alone, by editing this checkout's
+      # project: given to xcodebuild on the command line instead, the profile
+      # would reach the CocoaPods framework targets too, and they refuse one
+      # ("does not support provisioning profiles"). The committed project keeps
+      # automatic signing, so a developer's own Xcode account still archives it.
+      #
+      # Inline rather than a script in the repository, because a manual re-run
+      # checks out an older tag with this workflow, and the tag may predate any
+      # script. plutil turns the project into JSON and back into XML, which Xcode
+      # reads as it reads its own format.
+      - name: Sign the App target for the App Store
         env:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          python3 - "$APPLE_TEAM_ID" "InvoiceShelf App Store" <<'PY'
+          import json, subprocess, sys
+
+          PROJECT = 'mobile/ios/App/App.xcodeproj/project.pbxproj'
+          team_id, profile = sys.argv[1], sys.argv[2]
+
+          project = json.loads(subprocess.run(
+              ['plutil', '-convert', 'json', '-o', '-', PROJECT],
+              check=True, capture_output=True,
+          ).stdout)
+          objects = project['objects']
+
+          targets = [o for o in objects.values() if o.get('isa') == 'PBXNativeTarget' and o.get('name') == 'App']
+          assert len(targets) == 1, f'expected one App target, found {len(targets)}'
+          configs = [objects[i] for i in objects[targets[0]['buildConfigurationList']]['buildConfigurations']
+                     if objects[i].get('name') == 'Release']
+          assert len(configs) == 1, f'expected one Release configuration, found {len(configs)}'
+
+          configs[0]['buildSettings'].update({
+              'CODE_SIGN_STYLE': 'Manual',
+              'CODE_SIGN_IDENTITY': 'Apple Distribution',
+              'DEVELOPMENT_TEAM': team_id,
+              'PROVISIONING_PROFILE_SPECIFIER': profile,
+          })
+
+          subprocess.run(['plutil', '-convert', 'xml1', '-o', PROJECT, '-'],
+                         check=True, input=json.dumps(project).encode())
+          print(f'App (Release): manual signing, "Apple Distribution", profile "{profile}".')
+          PY
+
+      # The workspace, not the .xcodeproj: the Pods project is the other half of it.
+      - name: Archive
         run: |
           xcodebuild archive \
             -workspace mobile/ios/App/App.xcworkspace \
             -scheme App \
             -configuration Release \
             -destination 'generic/platform=iOS' \
-            -archivePath "$RUNNER_TEMP/App.xcarchive" \
-            CODE_SIGN_STYLE=Manual \
-            DEVELOPMENT_TEAM="$APPLE_TEAM_ID" \
-            PROVISIONING_PROFILE_SPECIFIER="InvoiceShelf App Store"
+            -archivePath "$RUNNER_TEMP/App.xcarchive"
 
       # mobile/ios/ExportOptions.plist carries the shape; the team id is written
       # into a copy in $RUNNER_TEMP so it is never committed.

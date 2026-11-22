@@ -8,6 +8,40 @@ export enum TaxTypeCategory {
 
 export type TaxTypeTransactionType = 'sales' | 'purchases'
 
+/**
+ * EN 16931 Tax Category Codes (UNTDID 5305 subset) classifying a tax rate.
+ * Mirrors `TaxType::TAX_CATEGORY_CODES` on the backend.
+ */
+export const TAX_CATEGORY_CODES = [
+  'S',
+  'Z',
+  'E',
+  'AE',
+  'K',
+  'G',
+  'O',
+  'L',
+  'M',
+] as const
+
+export type TaxCategoryCode = (typeof TAX_CATEGORY_CODES)[number]
+
+/**
+ * Tax Category Codes whose EN 16931 business rules demand an exemption reason
+ * text (BT-120). Mirrors `TaxType::EXEMPT_TAX_CATEGORY_CODES`.
+ */
+export const EXEMPT_TAX_CATEGORY_CODES: readonly TaxCategoryCode[] = [
+  'E',
+  'AE',
+  'K',
+  'G',
+  'O',
+]
+
+export function requiresTaxExemptionReason(code: TaxCategoryCode): boolean {
+  return EXEMPT_TAX_CATEGORY_CODES.includes(code)
+}
+
 export interface TaxType {
   id: number
   name: string
@@ -18,6 +52,8 @@ export interface TaxType {
   type: TaxTypeCategory
   compound_tax: boolean
   collective_tax: number | null
+  tax_category_code: TaxCategoryCode
+  tax_exemption_reason: string | null
   description: string | null
   company_id: number
   company?: Company

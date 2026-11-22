@@ -33,10 +33,11 @@ final class DemoMode
     }
 
     /**
-     * The marketplace releases the demo installs, from DEMO_MODULES
-     * ("tasks-projects@0.2.0,other@1.0.0").
+     * The marketplace modules the demo installs, from DEMO_MODULES
+     * ("tasks-projects@0.2.1,e-invoicing"): slug@version pins a release, a
+     * bare slug takes the newest release that fits this InvoiceShelf.
      *
-     * @return list<array{slug: string, version: string}>
+     * @return list<array{slug: string, version: ?string}>
      */
     public static function modules(): array
     {
@@ -45,8 +46,8 @@ final class DemoMode
         foreach (explode(',', (string) config('invoiceshelf.demo.modules')) as $entry) {
             [$slug, $version] = array_pad(explode('@', trim($entry), 2), 2, '');
 
-            if ($slug !== '' && $version !== '') {
-                $modules[] = ['slug' => $slug, 'version' => $version];
+            if ($slug !== '') {
+                $modules[] = ['slug' => $slug, 'version' => $version !== '' ? $version : null];
             }
         }
 

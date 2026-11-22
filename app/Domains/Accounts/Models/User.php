@@ -26,6 +26,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 use Laravel\Sanctum\HasApiTokens;
+use Silber\Bouncer\BouncerFacade;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -130,6 +131,15 @@ class User extends Authenticatable implements HasMedia
     public function settings(): HasMany
     {
         return $this->hasMany(UserSetting::class, 'user_id');
+    }
+
+    /**
+     * Accounts at outside identity providers that sign this user in (single
+     * sign-on), one per protocol.
+     */
+    public function ssoIdentities(): HasMany
+    {
+        return $this->hasMany(SsoIdentity::class, 'user_id');
     }
 
     /**
@@ -504,6 +514,26 @@ class User extends Authenticatable implements HasMedia
     public function hasCompany(int $company_id): bool
     {
         return $this->companies()->pluck('company_id')->contains($company_id);
+    }
+
+    /**
+     * Whether this account is acting in the given company right now: a member
+     * of it, and Bouncer is weighing abilities against that same company.
+     *
+     * Policies ask this about the company a record belongs to. Membership
+     * alone is not enough there: abilities are read from the company Bouncer
+     * is scoped to, so a member of two companies could otherwise take what one
+     * grants to the other's records by naming the first in the `company`
+     * header. An unscoped Bouncer acts in no company.
+     */
+    public function isActingIn(?int $company_id): bool
+    {
+        $active = BouncerFacade::scope()->get();
+
+        return $company_id !== null
+            && $active !== null
+            && (int) $active === $company_id
+            && $this->hasCompany($company_id);
     }
 
     /**

@@ -1,0 +1,141 @@
+name: PDF Conformance
+
+# Proof that the PDFs this application renders around an embedded Factur-X XML
+# are conformant hybrid e-invoices: a real Gotenberg renders an invoice with a
+# canned EN 16931 XML, Mustang judges the e-invoice (XML, container, Factur-X
+# metadata) and veraPDF the PDF/A-3b file.
+#
+# Its own workflow because it needs a service container and a JVM; the suite
+# lives in phpunit.conformance.xml, which no other run loads.
+
+on:
+    push:
+        branches:
+            - '3.x'
+        paths:
+            - 'app/Platform/Pdf/**'
+            - 'resources/views/app/pdf/**'
+            - 'tests/Conformance/**'
+            - 'composer.lock'
+            - 'phpunit.conformance.xml'
+            - '.github/workflows/pdf-conformance.yaml'
+    pull_request:
+        paths:
+            - 'app/Platform/Pdf/**'
+            - 'resources/views/app/pdf/**'
+            - 'tests/Conformance/**'
+            - 'composer.lock'
+            - 'phpunit.conformance.xml'
+            - '.github/workflows/pdf-conformance.yaml'
+    workflow_dispatch:
+
+jobs:
+    conformance:
+        name: 🧾 Factur-X conformance (Mustang + veraPDF)
+        runs-on: ubuntu-latest
+
+        services:
+            # Factur-X needs Gotenberg 8.34 or newer, and PDF/A conversion needs
+            # LibreOffice, so the full image rather than the -chromium one.
+            # Matches the pin in docker/development/.
+            gotenberg:
+                image: gotenberg/gotenberg:8.37.0
+                ports:
+                    - 3000:3000
+
+        env:
+            extensions: bcmath, curl, dom, gd, imagick, json, libxml, mbstring, pcntl, pdo, pdo_mysql, zip
+            # Both validators are pinned so a new version cannot change the
+            # verdict unnoticed.
+            MUSTANG_VERSION: 2.25.0
+            VERAPDF_VERSION: 1.30.2
+            TOOLS_DIR: ${{ github.workspace }}/.conformance
+            # What tests/Conformance/Support/ConformanceEnvironment.php reads.
+            CONFORMANCE_GOTENBERG_HOST: http://localhost:3000
+            CONFORMANCE_MUSTANG_JAR: ${{ github.workspace }}/.conformance/Mustang-CLI.jar
+            CONFORMANCE_VERAPDF_BIN: ${{ github.workspace }}/.conformance/verapdf/verapdf
+            CONFORMANCE_ARTIFACT_DIR: ${{ github.workspace }}/.conformance/artifacts
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v6
+
+            - name: Setup PHP Action
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: 8.4
+                  extensions: ${{ env.extensions }}
+                  coverage: none
+                  tools: composer
+
+            - name: Install Composer dependencies
+              uses: ramsey/composer-install@4.0.0
+
+            - name: Set up Java
+              uses: actions/setup-java@v5
+              with:
+                  distribution: temurin
+                  java-version: 21
+
+            - name: Install Mustang CLI
+              run: |
+                  mkdir -p "$TOOLS_DIR"
+                  curl -sSfL -o "$CONFORMANCE_MUSTANG_JAR" \
+                      "https://github.com/ZUGFeRD/mustangproject/releases/download/core-${MUSTANG_VERSION}/Mustang-CLI-${MUSTANG_VERSION}.jar"
+
+            - name: Install veraPDF
+              run: |
+                  mkdir -p "$TOOLS_DIR"
+                  curl -sSfL -o "$TOOLS_DIR/verapdf-installer.zip" \
+                      "https://software.verapdf.org/rel/1.30/verapdf-greenfield-${VERAPDF_VERSION}-installer.zip"
+                  unzip -q -o "$TOOLS_DIR/verapdf-installer.zip" -d "$TOOLS_DIR/installer"
+                  # The installer is an IzPack bundle; this is its documented
+                  # unattended-install descriptor, reduced to the CLI packs.
+                  cat > "$TOOLS_DIR/auto-install.xml" <<XML
+                  <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+                  <AutomatedInstallation langpack="eng">
+                      <com.izforge.izpack.panels.htmlhello.HTMLHelloPanel id="welcome"/>
+                      <com.izforge.izpack.panels.target.TargetPanel id="install_dir">
+                          <installpath>${{ github.workspace }}/.conformance/verapdf</installpath>
+                      </com.izforge.izpack.panels.target.TargetPanel>
+                      <com.izforge.izpack.panels.packs.PacksPanel id="sdk_pack_select">
+                          <pack index="0" name="veraPDF GUI" selected="true"/>
+                          <pack index="1" name="veraPDF Mac and *nix Scripts" selected="true"/>
+                          <pack index="2" name="veraPDF Validation model" selected="false"/>
+                          <pack index="3" name="veraPDF Documentation" selected="false"/>
+                          <pack index="4" name="veraPDF Sample Plugins" selected="false"/>
+                      </com.izforge.izpack.panels.packs.PacksPanel>
+                      <com.izforge.izpack.panels.install.InstallPanel id="install"/>
+                      <com.izforge.izpack.panels.finish.SimpleFinishPanel id="finish"/>
+                  </AutomatedInstallation>
+                  XML
+                  java -jar "$TOOLS_DIR/installer/verapdf-greenfield-${VERAPDF_VERSION}/verapdf-izpack-installer-${VERAPDF_VERSION}.jar" \
+                      "$TOOLS_DIR/auto-install.xml"
+                  "$CONFORMANCE_VERAPDF_BIN" --version
+
+            - name: Wait for Gotenberg
+              run: |
+                  for attempt in $(seq 1 30); do
+                      if curl -fsS "$CONFORMANCE_GOTENBERG_HOST/health" > /dev/null; then
+                          exit 0
+                      fi
+                      sleep 2
+                  done
+                  echo "Gotenberg did not become healthy at $CONFORMANCE_GOTENBERG_HOST"
+                  exit 1
+
+            - name: Render hybrid PDFs and validate them
+              run: vendor/bin/pest --configuration=phpunit.conformance.xml
+
+            # A run that rendered nothing must fail, so the job cannot pass
+            # without validating anything.
+            - name: Assert a hybrid PDF was produced
+              run: test -s "$CONFORMANCE_ARTIFACT_DIR/hybrid-invoice.pdf"
+
+            - name: Upload the rendered PDFs
+              uses: actions/upload-artifact@v6
+              if: always()
+              with:
+                  name: conformance-pdfs
+                  path: ${{ env.CONFORMANCE_ARTIFACT_DIR }}
+                  if-no-files-found: warn

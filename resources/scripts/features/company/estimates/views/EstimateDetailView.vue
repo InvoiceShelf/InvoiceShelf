@@ -48,6 +48,8 @@
             {{ $t('estimates.convert_to_invoice') }}
           </BaseButton>
 
+          <ExtensionSlot name="entity" entity="estimate" area="actions:detail" :context="extensionContext" />
+
           <EstimateDropdown
             :row="estimateData"
             :can-edit="canEdit"
@@ -83,6 +85,8 @@
           </span>
         </BaseStat>
       </BaseStatStrip>
+
+      <ExtensionSlot name="entity" entity="estimate" area="panels" :context="extensionContext" />
 
       <BasePdfPreview
         ref="pdfPreview"
@@ -130,6 +134,7 @@
           </template>
           {{ $t('pdf.open_pdf') }}
         </BaseButton>
+        <ExtensionSlot name="entity" entity="estimate" area="actions:detail" :context="extensionContext" />
         <EstimateDropdown
           :row="estimateData"
           :can-edit="canEdit"
@@ -197,6 +202,8 @@ import { useDialogStore } from '../../../../stores/dialog.store'
 import { useModalStore } from '../../../../stores/modal.store'
 import type { Estimate } from '../../../../types/domain/estimate'
 import { scrollBehavior } from '@/scripts/utils/motion'
+import ExtensionSlot from '@/scripts/extensions/ExtensionSlot.vue'
+import { entityContext } from '@/scripts/extensions/records'
 
 interface Props {
   canEdit?: boolean
@@ -226,6 +233,9 @@ const ABILITIES = {
 } as const
 
 const estimateStore = useEstimateStore()
+
+/** Module actions and panels on this page; see registerEntityAction / registerEntityPanel. */
+const extensionContext = entityContext('estimate', 'detail', () => estimateData.value, () => loadEstimate())
 const userStore = useUserStore()
 const dialogStore = useDialogStore()
 const modalStore = useModalStore()

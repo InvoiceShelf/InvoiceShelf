@@ -39,6 +39,14 @@ class UnitRequest extends FormRequest
 
         return [
             'name' => ['required', $free],
+            // Omitting the Unit Code keeps the stored one (C62 for new units);
+            // sending one means it must be a supported UN/ECE Rec 20 code.
+            'unit_code' => [
+                'sometimes',
+                'required',
+                'string',
+                Rule::in($this->availableUnitCodes()),
+            ],
         ];
     }
 
@@ -53,5 +61,15 @@ class UnitRequest extends FormRequest
         return array_merge($this->validated(), [
             'company_id' => $this->header('company'),
         ]);
+    }
+
+    /**
+     * The curated UN/ECE Rec 20 Unit Codes this installation accepts.
+     *
+     * @return list<string>
+     */
+    private function availableUnitCodes(): array
+    {
+        return array_column(config('invoiceshelf.unit_codes', []), 'value');
     }
 }

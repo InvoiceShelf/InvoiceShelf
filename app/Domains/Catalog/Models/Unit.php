@@ -22,7 +22,16 @@ class Unit extends Model
 {
     use HasFactory;
 
+    /**
+     * UN/ECE Rec 20 code used when no Unit Code is given: C62 = piece.
+     */
+    public const DEFAULT_UNIT_CODE = 'C62';
+
     protected $table = 'units';
+
+    protected $attributes = [
+        'unit_code' => self::DEFAULT_UNIT_CODE,
+    ];
 
     /**
      * The company is mass-assignable because callers stamp it from the
@@ -30,6 +39,7 @@ class Unit extends Model
      */
     protected $fillable = [
         'name',
+        'unit_code',
         'company_id',
     ];
 

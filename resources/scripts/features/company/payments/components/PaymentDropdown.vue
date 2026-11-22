@@ -60,6 +60,14 @@
       />
       {{ $t('general.delete') }}
     </BaseDropdownItem>
+    <!-- Module actions; see registerEntityAction('payment', 'list', ...) -->
+    <ExtensionSlot
+      v-if="table"
+      name="entity"
+      entity="payment"
+      area="actions:list"
+      :context="extensionContext"
+    />
   </BaseDropdown>
 </template>
 
@@ -72,6 +80,8 @@ import { useDialogStore } from '../../../../stores/dialog.store'
 import { useModalStore } from '../../../../stores/modal.store'
 import { absoluteDocumentUrl } from '@/scripts/utils/documents'
 import type { Payment } from '../../../../types/domain/payment'
+import ExtensionSlot from '@/scripts/extensions/ExtensionSlot.vue'
+import { entityContext } from '@/scripts/extensions/records'
 
 interface TableRef {
   refresh: () => void
@@ -95,6 +105,8 @@ const props = withDefaults(defineProps<Props>(), {
   canDelete: false,
   canSend: false,
 })
+
+const extensionContext = entityContext('payment', 'list', () => props.row, () => props.table?.refresh())
 
 const paymentStore = usePaymentStore()
 const dialogStore = useDialogStore()

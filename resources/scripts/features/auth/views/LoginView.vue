@@ -45,9 +45,26 @@
       </div>
     </div>
 
-    <BaseButton :loading="isLoading" type="submit" class="w-full justify-center">
-      {{ $t('login.login') }}
-    </BaseButton>
+    <div class="flex gap-3">
+      <BaseButton :loading="isLoading" type="submit" class="flex-1 justify-center">
+        {{ $t('login.login') }}
+      </BaseButton>
+
+      <!-- Styled like the Login button, in white (its outline keeps it visible on the white card) -->
+      <BaseButton
+        v-if="ssoLogin"
+        tag="a"
+        :href="ssoHref"
+        variant="white"
+        class="flex-1 justify-center"
+      >
+        {{ $t('login.sign_in_with_sso') }}
+      </BaseButton>
+    </div>
+
+    <p v-if="ssoError" class="mt-3 text-sm text-danger" role="alert">
+      {{ ssoError }}
+    </p>
 
     <div
       v-if="demo"
@@ -81,6 +98,7 @@ import { useNotificationStore } from '../../../stores/notification.store'
 declare global {
   interface Window {
     demo_mode?: boolean
+    sso_login?: { url: string; error: string | null }
   }
 }
 
@@ -114,6 +132,23 @@ const rules = {
     required: helpers.withMessage(t('validation.required'), required),
   },
 }
+
+// Single sign-on, when the server has it set up (SsoLogin::clientState()).
+// The button carries `next` along; the server checks it with PostLoginRedirect.
+const ssoLogin = window.sso_login
+const ssoError = ref<string | null>(null)
+
+const SSO_ERRORS: Readonly<Record<string, string>> = {
+  failed: 'login.sso_failed',
+  no_account: 'login.sso_no_account',
+  email_unverified: 'login.sso_email_unverified',
+}
+
+const ssoHref = computed<string>(() => {
+  const next = typeof route.query.next === 'string' ? route.query.next : ''
+
+  return next !== '' ? `${ssoLogin?.url}?next=${encodeURIComponent(next)}` : (ssoLogin?.url ?? '')
+})
 
 const v$ = useVuelidate(
   rules,
@@ -170,6 +205,17 @@ async function onSubmit(): Promise<void> {
 const demo = demoState()
 
 onMounted(() => {
+  const error = ssoLogin?.error ? SSO_ERRORS[ssoLogin.error] : undefined
+
+  if (error) {
+    ssoError.value = t(error)
+  }
+
+  // The error belongs to the sign-in that just came back, not to later visits
+  if (ssoLogin) {
+    ssoLogin.error = null
+  }
+
   if (demo) {
     authStore.loginData.email = demo.email
     authStore.loginData.password = demo.password

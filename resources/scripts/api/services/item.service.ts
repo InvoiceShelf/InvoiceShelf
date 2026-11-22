@@ -34,6 +34,7 @@ export interface CreateItemPayload {
 
 export interface CreateUnitPayload {
   name: string
+  unit_code?: string
 }
 
 export const itemService = {

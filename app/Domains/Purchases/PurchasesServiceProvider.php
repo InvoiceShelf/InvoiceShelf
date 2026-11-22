@@ -2,7 +2,6 @@
 
 namespace App\Domains\Purchases;
 
-use App\Adapters\Purchases\MailRecurringCostNotifier;
 use App\Adapters\Purchases\MediaLibraryExpenseReceiptManager;
 use App\Adapters\Purchases\MoneyExpenseExchangeRateRecorder;
 use App\Adapters\Purchases\SalesDocumentNumberAssigner;
@@ -10,12 +9,12 @@ use App\Adapters\Purchases\TaxationExpenseTaxManager;
 use App\Domains\Purchases\Application\ClearExpenseTaxes;
 use App\Domains\Purchases\Application\ProtectCreditedExpenses;
 use App\Domains\Purchases\Application\ProtectPurchaseTaxes;
+use App\Domains\Purchases\Console\CheckBillsDue;
 use App\Domains\Purchases\Console\GenerateRecurringCosts;
 use App\Domains\Purchases\Contracts\DocumentNumberAssigner;
 use App\Domains\Purchases\Contracts\ExpenseExchangeRateRecorder;
 use App\Domains\Purchases\Contracts\ExpenseReceiptManager;
 use App\Domains\Purchases\Contracts\ExpenseTaxManager;
-use App\Domains\Purchases\Contracts\RecurringCostNotifier;
 use App\Domains\Purchases\Models\Bill;
 use App\Domains\Purchases\Models\Expense;
 use App\Domains\Purchases\Models\ExpenseCategory;
@@ -44,12 +43,11 @@ class PurchasesServiceProvider extends ServiceProvider
         $this->app->bind(ExpenseExchangeRateRecorder::class, MoneyExpenseExchangeRateRecorder::class);
         $this->app->bind(ExpenseReceiptManager::class, MediaLibraryExpenseReceiptManager::class);
         $this->app->bind(DocumentNumberAssigner::class, SalesDocumentNumberAssigner::class);
-        $this->app->bind(RecurringCostNotifier::class, MailRecurringCostNotifier::class);
     }
 
     public function boot(): void
     {
-        $this->commands([GenerateRecurringCosts::class]);
+        $this->commands([GenerateRecurringCosts::class, CheckBillsDue::class]);
         Expense::observe(ClearExpenseTaxes::class);
         TaxType::observe(ProtectPurchaseTaxes::class);
         Expense::observe(ProtectCreditedExpenses::class);

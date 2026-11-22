@@ -47,6 +47,14 @@
       />
       {{ $t('general.delete') }}
     </BaseDropdownItem>
+    <!-- Module actions; see registerEntityAction('recurring-invoice', 'list', ...) -->
+    <ExtensionSlot
+      v-if="table"
+      name="entity"
+      entity="recurring-invoice"
+      area="actions:list"
+      :context="extensionContext"
+    />
   </BaseDropdown>
 </template>
 
@@ -60,6 +68,8 @@ import { useNotificationStore } from '@/scripts/stores/notification.store'
 import { recurringInvoiceService } from '@/scripts/api/services/recurring-invoice.service'
 import { getErrorTranslationKey, handleApiError } from '@/scripts/utils/error-handling'
 import type { RecurringInvoice } from '../../../../types/domain/recurring-invoice'
+import ExtensionSlot from '@/scripts/extensions/ExtensionSlot.vue'
+import { entityContext } from '@/scripts/extensions/records'
 
 interface TableRef {
   refresh: () => void
@@ -80,6 +90,11 @@ const props = withDefaults(defineProps<Props>(), {
   canEdit: false,
   canView: false,
   canDelete: false,
+})
+
+const extensionContext = entityContext('recurring-invoice', 'list', () => props.row, () => {
+  props.table?.refresh()
+  props.loadData?.()
 })
 
 const recurringInvoiceStore = useRecurringInvoiceStore()

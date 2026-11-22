@@ -47,6 +47,18 @@
           >
             {{ $t('invoices.pay_invoice') }}
           </BaseButton>
+
+          <!-- The company's payment link, when no payment module takes the payment -->
+          <BaseButton
+            v-else-if="currentInvoice?.payment_link_url"
+            variant="primary"
+            tag="a"
+            :href="currentInvoice.payment_link_url"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {{ $t('invoices.pay_invoice') }}
+          </BaseButton>
         </template>
       </BasePageHeader>
 

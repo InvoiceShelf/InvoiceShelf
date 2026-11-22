@@ -2,15 +2,12 @@
 
 namespace App\Domains\Sales\Http\Controllers\CustomerPortal;
 
-use App\Domains\Accounts\Models\CompanySetting;
-use App\Domains\Contacts\Models\Customer;
+use App\Domains\Sales\Events\InvoiceViewed;
 use App\Domains\Sales\Http\Resources\CustomerPortal\InvoiceResource;
-use App\Domains\Sales\Mail\InvoiceViewedMail;
 use App\Domains\Sales\Models\Invoice;
 use App\Platform\Http\Controller;
 use App\Platform\Mail\Models\EmailLog;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 
 class InvoicePdfController extends Controller
 {
@@ -70,8 +67,8 @@ class InvoicePdfController extends Controller
     }
 
     /**
-     * Promote a document that is still awaiting a reader, and tell the issuer
-     * about it when they asked to be told.
+     * Promote a document that is still awaiting a reader, and let the issuer
+     * know.
      */
     private function recordReading(Invoice $invoice): void
     {
@@ -86,19 +83,6 @@ class InvoicePdfController extends Controller
             'viewed' => true,
         ]);
 
-        $wanted = CompanySetting::getSetting('notify_invoice_viewed', $invoice->company_id);
-
-        if ($wanted != 'YES') {
-            return;
-        }
-
-        $payload = [
-            'invoice' => Invoice::findOrFail($invoice->id)->toArray(),
-            'user' => Customer::find($invoice->customer_id)->toArray(),
-        ];
-
-        $mailbox = CompanySetting::getSetting('notification_email', $invoice->company_id);
-
-        Mail::to($mailbox)->send(new InvoiceViewedMail($payload));
+        InvoiceViewed::dispatch((int) $invoice->id, (int) $invoice->company_id);
     }
 }

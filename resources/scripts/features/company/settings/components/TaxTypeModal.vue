@@ -3,6 +3,7 @@ import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import {
   required,
+  requiredIf,
   minLength,
   maxLength,
   between,
@@ -14,7 +15,12 @@ import { useCompanyStore } from '@/scripts/stores/company.store'
 import { useNotificationStore } from '@/scripts/stores/notification.store'
 import { taxTypeService } from '@/scripts/api/services/tax-type.service'
 import type { CreateTaxTypePayload } from '@/scripts/api/services/tax-type.service'
+import {
+  TAX_CATEGORY_CODES,
+  requiresTaxExemptionReason,
+} from '@/scripts/types/domain/tax'
 import type {
+  TaxCategoryCode,
   TaxType,
   TaxTypeTransactionType,
 } from '@/scripts/types/domain/tax'
@@ -27,6 +33,8 @@ interface TaxTypeForm {
   percent: number
   fixed_amount: number
   compound_tax: boolean
+  tax_category_code: TaxCategoryCode
+  tax_exemption_reason: string
   description: string
 }
 
@@ -63,10 +71,23 @@ const currentTaxType = ref<TaxTypeForm>({
   percent: 0,
   fixed_amount: 0,
   compound_tax: false,
+  tax_category_code: 'S',
+  tax_exemption_reason: '',
   description: '',
 })
 
 const defaultCurrency = computed(() => companyStore.selectedCompanyCurrency)
+
+const taxCategoryCodeOptions = computed(() =>
+  TAX_CATEGORY_CODES.map((code) => ({
+    id: code,
+    label: `${t(`tax_types.tax_category_codes.${code}`)} (${code})`,
+  }))
+)
+
+const showExemptionReason = computed<boolean>(() =>
+  requiresTaxExemptionReason(currentTaxType.value.tax_category_code)
+)
 
 const modalActive = dialog.active
 
@@ -100,6 +121,19 @@ const rules = computed(() => ({
   fixed_amount: {
     required: helpers.withMessage(t('validation.required'), required),
   },
+  tax_category_code: {
+    required: helpers.withMessage(t('validation.required'), required),
+  },
+  tax_exemption_reason: {
+    required: helpers.withMessage(
+      t('validation.required'),
+      requiredIf(showExemptionReason)
+    ),
+    maxLength: helpers.withMessage(
+      t('validation.description_maxlength', { count: 255 }),
+      maxLength(255)
+    ),
+  },
   description: {
     maxLength: helpers.withMessage(
       t('validation.description_maxlength', { count: 255 }),
@@ -129,6 +163,15 @@ watch(
   },
 )
 
+watch(
+  () => currentTaxType.value.tax_category_code,
+  () => {
+    if (!showExemptionReason.value) {
+      currentTaxType.value.tax_exemption_reason = ''
+    }
+  }
+)
+
 async function setInitialData(): Promise<void> {
   dialog.clearErrors()
   v$.value.$reset()
@@ -145,6 +188,8 @@ async function setInitialData(): Promise<void> {
         percent: tax.percent,
         fixed_amount: tax.fixed_amount,
         compound_tax: tax.compound_tax ?? false,
+        tax_category_code: tax.tax_category_code ?? 'S',
+        tax_exemption_reason: tax.tax_exemption_reason ?? '',
         description: tax.description ?? '',
       }
     }
@@ -174,6 +219,10 @@ async function submitTaxTypeData(): Promise<void> {
       calculation_type: currentTaxType.value.calculation_type,
       transaction_type: currentTaxType.value.transaction_type,
       compound_tax: currentTaxType.value.compound_tax,
+      tax_category_code: currentTaxType.value.tax_category_code,
+      tax_exemption_reason: showExemptionReason.value
+        ? currentTaxType.value.tax_exemption_reason
+        : null,
       description: currentTaxType.value.description || null,
     }
 
@@ -215,6 +264,8 @@ function resetForm(): void {
     percent: 0,
     fixed_amount: 0,
     compound_tax: false,
+    tax_category_code: 'S',
+    tax_exemption_reason: '',
     description: '',
   }
 }
@@ -367,6 +418,48 @@ function closeTaxTypeModal(): void {
             variant="horizontal"
           >
             <BaseSwitch v-model="currentTaxType.compound_tax" />
+          </BaseInputGroup>
+
+          <BaseInputGroup
+            :label="$t('tax_types.tax_category_code')"
+            :help-text="$t('tax_types.tax_category_code_description')"
+            :error="
+              v$.tax_category_code.$error &&
+              v$.tax_category_code.$errors[0].$message
+            "
+            variant="horizontal"
+            required
+          >
+            <BaseSelectInput
+              v-model="currentTaxType.tax_category_code"
+              :invalid="v$.tax_category_code.$error"
+              :options="taxCategoryCodeOptions"
+              :allow-empty="false"
+              value-prop="id"
+              label-prop="label"
+              track-by="label"
+              :searchable="false"
+              @update:model-value="v$.tax_category_code.$touch()"
+            />
+          </BaseInputGroup>
+
+          <BaseInputGroup
+            v-if="showExemptionReason"
+            :label="$t('tax_types.tax_exemption_reason')"
+            :help-text="$t('tax_types.tax_exemption_reason_description')"
+            :error="
+              v$.tax_exemption_reason.$error &&
+              v$.tax_exemption_reason.$errors[0].$message
+            "
+            variant="horizontal"
+            required
+          >
+            <BaseInput
+              v-model="currentTaxType.tax_exemption_reason"
+              :invalid="v$.tax_exemption_reason.$error"
+              type="text"
+              @input="v$.tax_exemption_reason.$touch()"
+            />
           </BaseInputGroup>
 
           <BaseInputGroup

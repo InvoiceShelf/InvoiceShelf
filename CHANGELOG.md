@@ -7,6 +7,212 @@ section beneath it is what CI publishes to the updater — see
 The 2.x line has its own CHANGELOG.md on the `2.x` branch. Releases are also on
 GitHub: https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 3.0.0-alpha.17 - 2026-11-22
+
+Seventeenth public alpha of InvoiceShelf 3.0. Existing users can sign in through an OpenID Connect identity provider, on the web and in the mobile app, and two security issues are fixed for installs that hold more than one company.
+
+⚠️ **Pre-release, not for production.** Back up your database before upgrading and use this release for evaluation and testing only.
+
+### Highlights
+
+- **Single sign-on with OpenID Connect.** An installation can let its users sign in through one identity provider. Set `OIDC_ISSUER`, `OIDC_CLIENT_ID` and `OIDC_CLIENT_SECRET`, register `/auth/oidc/callback` at the provider, and a **Sign in with SSO** button appears next to **Login**, on the web and in the mobile app. The email and password form keeps working and the customer portal doesn't change. Single sign-on never creates users: the first sign-in links an existing user by email address, and by default only when the provider says it has verified that address (`OIDC_REQUIRE_VERIFIED_EMAIL`). Run end to end against Keycloak, Authentik, Authelia, Zitadel, Dex, Logto, Casdoor and Pocket ID. The setup guide, with a note for each of those providers, is in `docs/features/single-sign-on.md`. The sign-in in the mobile app has not been run on a device yet. (#996, closes #124)
+
+### Security
+
+- A user who belongs to two companies could use the role they hold in one on the records of the other, by acting in the first company while addressing a record of the second. Someone with read-only access to a company could, for example, change the status of its invoices. Roles now apply only inside the company that granted them. Installs with a single company, or where every user has one company, were not affected. (#992, #994)
+- The one-time exchange-rate update for documents created before documents carried an exchange rate changed every company's documents in the chosen currency, not only the active company's, and also documents that already had a rate. The owner of any company could start it again through company settings. It now changes only the active company's documents that have no rate, and company settings can no longer start it again. Only amounts in the company's currency were affected (dashboard, reports, customer statements), never document totals. (#1000)
+
+### Improvements and fixes
+
+- Translations are up to date with Crowdin. (#997)
+
+### Upgrade notes
+
+- **One migration.** It adds the `sso_identities` table. Nothing else changes until single sign-on is configured.
+- **Authentik:** its stock email mapping reports every address as unverified, so a first sign-in is refused until the mapping is changed or `OIDC_REQUIRE_VERIFIED_EMAIL=false` is set. The guide covers both.
+
+### Thanks
+
+- @AleytiaFairlight for the first implementation of single sign-on (#989), and @nedlane for asking for it (#124).
+
+Docker: `invoiceshelf/invoiceshelf:3.0.0-alpha.17` or `ghcr.io/invoiceshelf/invoiceshelf:3.0.0-alpha.17` (also `:next`).
+
+## 3.0.0-alpha.16 - 2026-11-21
+
+Sixteenth public alpha of InvoiceShelf 3.0. Invoices can carry a payment link and a QR code that send the customer to a payment page you already have, the country list follows ISO 3166-1, and per-item taxes and the "Disable after invoice is sent" setting get four fixes.
+
+⚠️ **Pre-release, not for production.** Back up your database before upgrading and use this release for evaluation and testing only.
+
+### Highlights
+
+- **Payment links and QR codes on invoices.** A company can point customers at a payment link it already has, such as a Stripe or PayPal payment link or a Wise or Payoneer request. Set a default under Settings → Customization → Invoices, with `{INVOICE_NUMBER}`, `{INVOICE_DUE_AMOUNT}` and `{INVOICE_CURRENCY}` filled in for each invoice, or give one invoice its own link on the invoice form. While something is left to pay, the invoice PDF prints a Pay Online block with a QR code on all three templates (the QR code can be switched off), invoice and reminder emails get a Pay Online button, and the Pay Invoice button on the public page and in the customer portal opens the link. Only http and https links are accepted, and payments made through the link are not recorded automatically. A cloned invoice does not keep its own link; recurring invoices use the default. (#965)
+- **Country list on ISO 3166-1.** The Isle of Man, Jersey, Guernsey and Timor-Leste were filed under made-up codes (XM, XJ, XU, TP), so documents printed names like "Man (Isle of)" and an e-invoice could not name them. They now carry their ISO codes. Montenegro, Curaçao, Sint Maarten, the Åland Islands, St. Barthélemy, St. Martin and the Caribbean Netherlands are added, old spellings such as "Korea South" and "Bahamas The" become the current English names, and the country list is sorted by name with accents folded. (#967, closes #957)
+
+### Improvements and fixes
+
+- "Disable after invoice is sent" (Settings → Customization → Invoices → Retrospective Edits) now locks an invoice once it is sent, viewed or completed. Until now it locked only after a payment was recorded, so sent, unpaid invoices stayed editable. Drafts stay editable and the other modes are unchanged. (#971, fixes #952)
+- Converting an estimate to an invoice no longer leaves the estimate showing each per-item tax two or three times, with totals to match. The copied tax rows kept the estimate's keys and so belonged to both documents. (#968)
+- With per-item taxes on, a line that has no tax can be given one when an estimate or invoice is edited. The tax selector was missing on such lines. (#969)
+- The item form shows the Taxes field whenever the company uses per-item taxes. An item created while the company used document-level taxes could never be given a tax. (#970)
+- Opening a customer no longer leaves the cash flow chart empty; its first load failed with a script error. (#966)
+- Translations are up to date with Crowdin. (#986)
+- The iOS release job signs its archive correctly, and a release that changes nothing in the apps no longer pushes identical builds to TestFlight and the store tracks.
+
+### Upgrade notes
+
+- **Two migrations.** One adds `invoices.payment_link`. The other corrects the country list in place: addresses keep their country, and a country name you corrected by hand is kept.
+- **"Disable after invoice is sent" is stricter.** Companies that use this mode will find sent, unpaid invoices locked. The default mode, Allow, is unaffected.
+- **Estimates converted before this release** keep their duplicated tax rows. This release stops new ones.
+- **Module API 1.6.0.** It adds `QrCodeGenerator` (SDK 3.7.0). Modules that declare `^1.3.0`, `^1.4.0` or `^1.5.0` keep working. An install that pins `MARKETPLACE_MODULE_API_VERSION` to an older value cannot install modules that need 1.6.
+
+### Thanks
+
+- @iebl for the three per-item tax fixes (#968, #969, #970).
+- @pathmaka for the sent-invoice lock (#971), and @FEmser for reporting it (#952).
+
+Docker: `invoiceshelf/invoiceshelf:3.0.0-alpha.16` or `ghcr.io/invoiceshelf/invoiceshelf:3.0.0-alpha.16` (also `:next`).
+
+## 3.0.0-alpha.15 - 2026-10-26
+
+Fifteenth public alpha of InvoiceShelf 3.0. The iOS app is ready for TestFlight: it builds with the iOS 27 SDK, runs on iOS 15 and later, and releases now upload it automatically. On phones, banners no longer sit under the status bar, the demo notice folds into one line, and the tab bar reaches the bottom edge.
+
+⚠️ **Pre-release, not for production.** Back up your database before upgrading and use this release for evaluation and testing only.
+
+### Highlights
+
+- **iOS app, on its way to TestFlight.** The app adopts the scene lifecycle, which the iOS 27 SDK requires (without it the app closed on launch), and needs iOS 15 or later. It declares the privacy manifest and export compliance App Store Connect asks for, and explains why it asks for local network access. Its bundle id is `com.invoiceshelf.ios`; Android stays `com.invoiceshelf.app`. Publishing a release now archives the app on a macOS runner and uploads it to TestFlight; submitting it to the App Store stays a manual step. (#958)
+- **Phone layout.** On a notched phone the demo, impersonation and announcement banners were drawn under the status bar, with an empty band of header colour below them; the first banner now fills the status bar area itself. The demo notice folds into one line, "Shared demo · resets in 2 h 6 min", that opens to the full text. The tab bar is pinned to the bottom edge instead of floating above it, and the dashboard's "Owed to you" card puts View invoices beside its heading and takes about a third less height. (#959)
+
+### Improvements and fixes
+
+- The demo's sample data flags every invoice past its due date as overdue, so right after a reset the dashboard, the Overdue badges and the AI Assistant agree instead of showing 14 and 4 until the daily check ran. (#951)
+
+### Upgrade notes
+
+- **No migrations.**
+- **iOS app version numbers.** iOS builds carry the version without its pre-release part, so every 3.0.0 alpha, beta and rc is "3.0.0" on iOS, told apart by its build number (3000015 for this release). Android keeps the full version.
+
+Docker: `invoiceshelf/invoiceshelf:3.0.0-alpha.15` or `ghcr.io/invoiceshelf/invoiceshelf:3.0.0-alpha.15` (also `:next`).
+
+## 3.0.0-alpha.14 - 2026-10-24
+
+Fourteenth public alpha of InvoiceShelf 3.0. A notification bell tells staff what happened: payments, viewed and answered documents, due dates, team and system events. Customers can be reminded about unpaid invoices automatically, and announcements reach everyone on an install. Translations are up to date again, with about 6,500 more strings translated.
+
+⚠️ **Pre-release, not for production.** Back up your database before upgrading and use this release for evaluation and testing only.
+
+### Highlights
+
+- **Notification bell.** A bell in the header shows an unread count and the latest notices, with the full list under Notifications. Each person chooses, for each kind of notice, whether it reaches them in the bell, by email or both (User Settings → Notifications), and every notice and email is written in its reader's language. The staff emails InvoiceShelf already sent now go through it: a customer opened a document, and a recurring invoice or cost was created or failed. (#910)
+- **More to be told about.** Estimates accepted or rejected in the customer portal, payments received, invoices paid in full or overdue, bills due in three days or overdue, invitations answered and new AI connections. Super admins also hear about a failed backup and a module switched off after an upgrade. Company owners set the defaults for their members, or switch a kind of notice off for everyone, under Company Settings → Notifications. (#911)
+- **Payment reminders.** A company can email its customers about unpaid invoices on the days it chooses around the due date (by default 3 days before, and 1, 7 and 14 days after), at the hour it chooses in its own time zone, with its own subject and message and optionally the PDF. Each reminder goes out once, and one that fails is tried again later. Every invoice shows its reminders with a pause switch and Send reminder now, and a customer can be paused altogether. Every invoice email gains the placeholders `{INVOICE_TOTAL}`, `{INVOICE_DUE_AMOUNT}`, `{INVOICE_PAID_AMOUNT}` and `{INVOICE_DAYS_OVERDUE}`. (#913)
+- **Announcements.** A super admin can post an announcement to everyone on the install, or to super admins only, with an optional link, a time window and translations (Administration → Settings → Announcements). The InvoiceShelf project can publish announcements too, such as a security update, and installs pick them up within an hour. Information appears in the bell; warnings and critical announcements also show as a strip across the top until dismissed. (#915)
+
+### Improvements and fixes
+
+- Translations are up to date with Crowdin: about 6,500 more strings translated, most of them in Albanian, Norwegian, French, Swedish, German and Estonian. A translation that would show wrong, with a translated placeholder or an empty text, now gives way to English; that fixes eight Spanish, Slovenian and Vietnamese messages that failed to display. Translations now sync through a workflow in this repository instead of Crowdin's GitHub app. (#946, #947, #948, #949)
+- Six English strings lost stray spaces at their start or end. (#938)
+- The public demo's company is a German business billing in euros, every module it installs gets its sample data (not only the first), a module listed in `DEMO_MODULES` without a version gets its newest release that fits, and a module that cannot be installed is left out instead of stopping the reset. (#942, #944, #945)
+
+### Upgrade notes
+
+- **Three migrations.** The `notifications` table gains the company and the record a notice is about; `invoice_reminders`, `announcements` and `announcement_dismissals` are new; invoices and customers gain a `reminders_paused` flag.
+- **Staff emails change.** A recurring invoice or cost that fails now always tells the person who created the schedule, in the bell and by email unless they switch the email off; "Notify me" on a schedule now covers only the "created" notice. Invoice viewed and Estimate viewed reach the bell of everyone who can see the document, and email only those who switch it on, plus the company's shared mailbox when it is set under Company Settings → Notifications, as before. The six old staff email templates were removed.
+- **The scheduler matters more.** Payment reminders and the announcement feed run every hour, the bill due-date check and notice pruning once a day, and `invoiceshelf:catch-up` runs the bill check too. An install without a running scheduler sends no reminders.
+- **Payment reminders start switched off** for every company (Settings → Payment reminders), so upgrading emails no customer.
+- **The announcement feed contacts invoiceshelf.com** once an hour, sending the installed version and update channel, as the update check does. Set `INVOICESHELF_ANNOUNCEMENTS_FEED=false` to turn it off.
+- **API.** New endpoints for the bell (`/notifications`), personal and company notification preferences, payment reminder settings, an invoice's reminders (`/invoices/{invoice}/reminders`) and announcements.
+
+### Thanks
+
+- @Seb33300 for the English spacing fixes (#938).
+
+Docker: `invoiceshelf/invoiceshelf:3.0.0-alpha.14` or `ghcr.io/invoiceshelf/invoiceshelf:3.0.0-alpha.14` (also `:next`).
+
+## 3.0.0-alpha.13 - 2026-10-24
+
+Thirteenth public alpha of InvoiceShelf 3.0. Invoices can become EN 16931 e-invoices: tax types and units carry the codes e-invoices are written with, and with Gotenberg the invoice PDF can embed the e-invoice XML, which makes it a ZUGFeRD / Factur-X hybrid. The official E-Invoicing module, ported from the work of André Kinne and iebl, uses both.
+
+⚠️ **Pre-release, not for production.** Back up your database before upgrading and use this release for evaluation and testing only.
+
+### Highlights
+
+- **Tax category codes and unit codes.** A tax type now has an EN 16931 tax category (standard rate, zero rated, exempt, reverse charge, intra-community supply and the rest), with an exemption reason for the exempt categories, and a unit has a UN/ECE unit code chosen from a list. Both are in their settings forms. Ported from the ZUGFeRD work of André Kinne and iebl. (#935)
+- **Hybrid e-invoice PDFs.** With the Gotenberg driver, an invoice PDF can carry an e-invoice XML as `factur-x.xml` in a PDF/A-3b file. Modules supply the XML (module API 1.5) on every way an invoice goes out: download, public link, customer portal, mail attachment and archive. If the XML cannot be produced or embedded, the ordinary PDF goes out instead. (#936, #937)
+
+### Improvements and fixes
+
+- Rendering an invoice or estimate with a tax per line no longer changes the line taxes it reads, so a second render of the same document (a mail after a download, for example) printed inflated tax amounts. (#934)
+- PDF/A files rendered by Gotenberg now pass PDF/A validation: the author was written as a property PDF/A does not allow, so every PDF/A rendered with `GOTENBERG_PDFA` set failed veraPDF. (#936)
+- Archived invoice PDFs are replaced when an invoice changes, instead of the first archive being served forever, and an archive made before a module started adding XML is rendered again rather than served without it. (#937)
+
+### Upgrade notes
+
+- **Existing tax types start as "Standard rate"** and units as "Piece" (C62). Before invoices that use a 0 % tax can become e-invoices, set that tax type to Zero rated or Exempt (with its exemption reason) in Settings → Tax Types.
+- **E-invoices need Gotenberg 8.34 or newer, as the full image** (`gotenberg/gotenberg:8.37.0`, not the `-chromium` one, which cannot convert to PDF/A). The development compose files are pinned to it.
+- **Module API 1.5.0.** Modules that declare `^1.3.0` or `^1.4.0` keep working. An install that pins `MARKETPLACE_MODULE_API_VERSION` to an older value cannot install modules that need 1.5.
+- **Module authors:** SDK 3.6 (`invoiceshelf/modules ^3.6`) adds `InvoiceDocumentReader`, `PdfCapabilities` and invoice PDF attachment providers; its README's "Documents and invoice PDFs" section covers them.
+
+Docker: `invoiceshelf/invoiceshelf:3.0.0-alpha.13` or `ghcr.io/invoiceshelf/invoiceshelf:3.0.0-alpha.13` (also `:next`).
+
+## 3.0.0-alpha.12 - 2026-10-24
+
+Twelfth public alpha of InvoiceShelf 3.0. Modules can now bring the libraries they need and add to InvoiceShelf's own screens: module API 1.4 lets a module ship third-party packages the host lacks, and adds actions, panels, form sections and save hooks on invoices, estimates, customers, payments and more.
+
+⚠️ **Pre-release, not for production.** Back up your database before upgrading and use this release for evaluation and testing only.
+
+### Highlights
+
+- **Modules with bundled dependencies.** A module can now ship the third-party packages InvoiceShelf does not include, such as a payment provider's SDK, built into the module at release and signed with it. InvoiceShelf never runs Composer for a module: it loads the bundled code after its own, so a library InvoiceShelf ships always wins, and it checks on install, when a module is enabled and on every start that the bundle still fits, disabling a module whose packages no longer do. (#931)
+- **Modules on your records.** Modules can add actions to the list menus and pages of invoices, estimates, recurring invoices, customers, payments, expenses and items, panels to the record pages, sections to the invoice, estimate and customer forms, and an entry to the New menu. A module that fails while you save a record shows a warning; the record stays saved. Built on a contribution by techjollof. (#932)
+
+### Improvements and fixes
+
+- Enabling a module checks that it still fits this version, the same check that runs on every start, instead of switching it back on regardless. (#931)
+- Module `composer.json` files are no longer merged into InvoiceShelf's own Composer setup, which leaked module packages into local installs and broke `composer update` while a module was present. (#930)
+
+### Upgrade notes
+
+- **Module API 1.4.0.** Modules that declare `^1.3.0` keep working. An install that pins `MARKETPLACE_MODULE_API_VERSION` to an older value cannot install modules that need 1.4.
+- **Module authors:** SDK 3.5 (`invoiceshelf/modules ^3.5`) adds the `bundled` dependency policy, the `invoiceshelf-module bundle` command and the record extension API; its README covers both. When developing a module inside InvoiceShelf, run `composer install` in the module itself, since its dependencies are no longer merged into InvoiceShelf's.
+
+Docker: `invoiceshelf/invoiceshelf:3.0.0-alpha.12` or `ghcr.io/invoiceshelf/invoiceshelf:3.0.0-alpha.12` (also `:next`).
+
+## 3.0.0-alpha.11 - 2026-10-21
+
+Eleventh public alpha of InvoiceShelf 3.0. It adds purchasing (suppliers, bills, supplier credits, payments and refunds, with recurring bills and expenses) and moves the Docker image to PHP 8.5.12, which fixes two critical PHP vulnerabilities.
+
+⚠️ **Pre-release, not for production.** Back up your database before upgrading and use this release for evaluation and testing only.
+
+### Security
+
+- The Docker image ran PHP 8.4.25, which is affected by CVE-2026-109618 and CVE-2026-109619: remote code execution without signing in. It now ships PHP 8.5.12 on serversideup/php v5.0.2. Manual installs need PHP 8.4.27 or 8.5.12 or later from their host. (#923)
+
+### Highlights
+
+- **Purchasing.** A Purchases menu with Suppliers, Bills, Expenses and Payments. Record a supplier's bill with its lines, purchase taxes and the original document attached, as a draft or recorded into payables, then credit it, pay it and refund payments. Bills, supplier credits, payments and refunds are numbered per company like invoices (`BILL-000001`, `SC-`, `SP-`, `SR-`, with formats in the company settings). Suppliers and bills take custom fields, and purchases show in the reports and on the dashboard.
+- **Recurring bills and expenses.** Bills and Expenses get a Recurring tab. A schedule creates an unpaid bill, or a draft to check first for amounts that change, or a paid expense. Each missed run is generated, dated its own day. Schedules can be paused and resumed, and the creator can be emailed about each record and when runs start failing.
+- **Recurring invoices on the same scheduler.** A generated invoice is dated its scheduled day in the company's time zone, with its due date counted from that day. A schedule that missed runs sends one invoice, dated the latest missed day. Schedules can be paused and resumed, a failed run keeps the period due, shows its reason and is retried hourly, and the form previews the next five run dates.
+
+### Improvements and fixes
+
+- A mail server that is down no longer fails a recurring run: the invoice stays a draft and the schedule shows why.
+- Saving a recurring invoice keeps its next run unless the frequency or the start date changes, so a period already billed is not billed again.
+- A recurring invoice's count limit counts runs, not surviving invoices, so deleting a generated invoice no longer frees a slot.
+- Completed can no longer be chosen by hand. Raising a limit reactivates a completed schedule, which carries on from today.
+- A frequency the scheduler cannot read is a validation error instead of a server error.
+- New abilities reach the Manager and Read only presets and every owner role on `migrate`, without a migration of their own. (#904)
+- The Docker image builds and starts on serversideup v5: the scheduler is registered where v5 expects it, and OPcache keeps checking for changed files, because modules and PDF templates change PHP at runtime. (#919)
+- The dashboard is translated to Spanish. (#868)
+
+### Upgrade notes
+
+- **Module authors:** the customer payment tables are renamed, `payments` to `customer_payments` and `payment_allocations` to `customer_payment_allocations`. A module that queries them directly needs the new names; one that uses the `Payment` model or the API is unaffected.
+- The upgrade creates the purchasing tables and adds `last_error` and `notify_creator` to recurring invoices. The first `migrate` gives Manager every purchasing ability and Read only the view abilities, and tops up owner roles.
+- **API:** the single-schedule `DELETE` route for recurring invoices had no handler and is removed; delete schedules in bulk as before. Pause and resume are `POST recurring-invoices/{id}/actions`.
+- **Docker:** the image runs PHP 8.5.12. `composer.json` still allows PHP 8.4, and CI tests both.
+
+Docker: `invoiceshelf/invoiceshelf:3.0.0-alpha.11` or `ghcr.io/invoiceshelf/invoiceshelf:3.0.0-alpha.11` (also `:next`).
+
 ## 3.0.0-alpha.10 - 2026-09-26
 
 Tenth public alpha of InvoiceShelf 3.0. Owners of a managed install can now add official modules themselves when their host allows it, and every Docker start checks installed modules against the running version.

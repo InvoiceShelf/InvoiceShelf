@@ -56,6 +56,8 @@
             </BaseButton>
           </router-link>
 
+          <ExtensionSlot name="entity" entity="invoice" area="actions:detail" :context="extensionContext" />
+
           <InvoiceDropdown
             :row="invoiceData"
             :load-data="refreshInvoiceList"
@@ -169,6 +171,14 @@
         </div>
       </BaseCard>
 
+      <InvoiceRemindersCard
+        :invoice-id="invoiceData.id"
+        :invoice-status="`${invoiceData.status}:${invoiceData.paid_status}`"
+        :can-send="canSend"
+      />
+
+      <ExtensionSlot name="entity" entity="invoice" area="panels" :context="extensionContext" />
+
       <BasePdfPreview
         ref="pdfPreview"
         :src="shareableLink"
@@ -199,6 +209,7 @@
           </template>
           {{ $t('invoices.record_payment') }}
         </BaseButton>
+        <ExtensionSlot name="entity" entity="invoice" area="actions:detail" :context="extensionContext" />
         <BaseButton variant="white" class="flex-1" @click="openPdf">
           <template #left="slotProps">
             <BaseIcon name="ArrowUpOnSquareIcon" :class="slotProps.class" />
@@ -277,6 +288,7 @@ import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useInvoiceStore } from '../store'
 import InvoiceDropdown from '../components/InvoiceDropdown.vue'
+import InvoiceRemindersCard from '../components/InvoiceRemindersCard.vue'
 import SendInvoiceModal from '../components/SendInvoiceModal.vue'
 import CreditNoteModal from '../components/CreditNoteModal.vue'
 import RecordListPane from '@/scripts/components/layout/RecordListPane.vue'
@@ -288,6 +300,8 @@ import { useDialogStore } from '../../../../stores/dialog.store'
 import { useModalStore } from '../../../../stores/modal.store'
 import type { Invoice, InvoicePaymentAllocation } from '../../../../types/domain/invoice'
 import { scrollBehavior } from '@/scripts/utils/motion'
+import ExtensionSlot from '@/scripts/extensions/ExtensionSlot.vue'
+import { entityContext } from '@/scripts/extensions/records'
 
 interface Props {
   canEdit?: boolean
@@ -381,6 +395,9 @@ const { isPhone } = useBreakpoints()
 const pdfPreview = ref<InstanceType<typeof BasePdfPreview> | null>(null)
 
 const documentCurrency = computed(() => invoiceData.value?.currency ?? invoiceData.value?.customer?.currency ?? null)
+
+/** Module actions and panels on this page; see registerEntityAction / registerEntityPanel. */
+const extensionContext = entityContext('invoice', 'detail', () => invoiceData.value, () => loadInvoice())
 
 // Payment can be recorded once the invoice has gone out and money is still owed
 const canRecordPayment = computed<boolean>(() => {

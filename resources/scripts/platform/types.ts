@@ -28,6 +28,16 @@ export interface PlatformBiometrics {
   verify(reason: string): Promise<boolean>
 }
 
+/** A sign-in a server started for this app (see `openForAppLink`). */
+export interface AppLinkSignIn {
+  /** The server's sign-in page, to open in a browser. */
+  url: string
+  /** The address this app answers to, where the server sends that browser at the end. */
+  appLink: string
+  /** The hand-off the sign-in belongs to. A link for any other is not its answer. */
+  handoff: string
+}
+
 export interface Platform {
   /** Durable key/value storage. On a device this outlives the WebView cache. */
   storage: PlatformStorage
@@ -39,4 +49,17 @@ export interface Platform {
   saveFile(blob: Blob, filename: string): Promise<void>
   /** Open an address outside the app. */
   openExternal(url: string): Promise<void>
+  /**
+   * Open a browser for a server's sign-in and wait for the server to send
+   * that browser on to the app link with the answer for this hand-off.
+   *
+   * `start` asks the server for the sign-in. It is called once the browser
+   * side is ready, so that a browser tab can open its popup straight from
+   * the click, before any request is made, where popup blockers allow it.
+   *
+   * Resolves the full address the browser was sent to, or null when the user
+   * closed the browser first. Rejects when `start` does, or when no browser
+   * could be opened.
+   */
+  openForAppLink(start: () => Promise<AppLinkSignIn>): Promise<string | null>
 }

@@ -15,8 +15,17 @@ use Illuminate\Support\Facades\App;
  */
 class DompdfDriver implements PdfDriver
 {
-    public function loadView(string $template, array $metadata = [], ?PdfPageSetup $page = null): ResponseStream
-    {
+    /**
+     * The `$attachment` argument is accepted and ignored: dompdf cannot build
+     * the PDF/A-3 container a hybrid e-invoice needs. Nothing passes one
+     * either, since PdfCapabilities reports no Factur-X support for dompdf.
+     */
+    public function loadView(
+        string $template,
+        array $metadata = [],
+        ?PdfPageSetup $page = null,
+        ?FacturXAttachment $attachment = null,
+    ): ResponseStream {
         $page ??= PdfPageSetup::fromConfig();
 
         $html = $this->withPageMargins(view($template)->render(), $page);

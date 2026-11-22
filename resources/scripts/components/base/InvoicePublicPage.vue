@@ -21,6 +21,7 @@ interface InvoicePublicData {
   total: number
   formatted_notes?: string | null
   payment_module_enabled?: boolean
+  payment_link_url?: string | null
   currency?: Currency
   company?: Pick<Company, 'name' | 'slug'>
   customer?: Pick<Customer, 'name'>
@@ -126,6 +127,19 @@ function payInvoice(): void {
             >
               {{ $t('general.pay_invoice') }}
             </BaseButton>
+
+            <!-- The company's payment link, when no payment module takes the payment -->
+            <a
+              v-else-if="invoiceData?.payment_link_url"
+              :href="invoiceData.payment_link_url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="block w-full rounded-lg"
+            >
+              <BaseButton tag="span" variant="primary" class="justify-center w-full">
+                {{ $t('general.pay_invoice') }}
+              </BaseButton>
+            </a>
           </div>
         </template>
       </BasePageHeader>

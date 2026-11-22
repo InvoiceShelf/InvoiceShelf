@@ -30,6 +30,20 @@ class TaxTypeFactory extends Factory
             'description' => $this->faker->text(),
             'compound_tax' => 0,
             'collective_tax' => 0,
+            'tax_category_code' => TaxType::TAX_CATEGORY_CODE_STANDARD,
         ];
+    }
+
+    /**
+     * A tax type exempt from VAT, carrying the exemption reason EN 16931
+     * requires (BT-120).
+     */
+    public function exempt(string $reason = '§ 19 UStG'): static
+    {
+        return $this->state(fn (): array => [
+            'percent' => 0,
+            'tax_category_code' => TaxType::TAX_CATEGORY_CODE_EXEMPT,
+            'tax_exemption_reason' => $reason,
+        ]);
     }
 }

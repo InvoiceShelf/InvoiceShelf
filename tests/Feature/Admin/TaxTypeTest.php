@@ -345,6 +345,141 @@ test('rejects a type change that leaves compound tax enabled', function () {
         ->assertJsonValidationErrors('compound_tax');
 });
 
+test('defaults new tax types to the standard tax category code', function () {
+    $taxType = TaxType::factory()->raw();
+    unset($taxType['tax_category_code']);
+
+    postJson('api/v1/tax-types', $taxType)
+        ->assertCreated()
+        ->assertJsonPath('data.tax_category_code', TaxType::TAX_CATEGORY_CODE_STANDARD)
+        ->assertJsonPath('data.tax_exemption_reason', null);
+
+    $this->assertDatabaseHas('tax_types', [
+        'name' => $taxType['name'],
+        'tax_category_code' => TaxType::TAX_CATEGORY_CODE_STANDARD,
+        'tax_exemption_reason' => null,
+    ]);
+});
+
+test('defaults tax types created before the migration to the standard tax category code', function () {
+    TaxType::query()->insert([
+        'name' => 'Legacy Tax',
+        'percent' => 19,
+        'calculation_type' => 'percentage',
+        'transaction_type' => TaxType::TRANSACTION_TYPE_SALES,
+        'type' => TaxType::TYPE_GENERAL,
+        'compound_tax' => 0,
+        'collective_tax' => 0,
+        'company_id' => User::find(1)->companies()->first()->id,
+    ]);
+
+    expect(TaxType::where('name', 'Legacy Tax')->firstOrFail()->tax_category_code)
+        ->toBe(TaxType::TAX_CATEGORY_CODE_STANDARD);
+});
+
+test('creates a tax type with an exempt category code and an exemption reason', function () {
+    $taxType = TaxType::factory()->raw([
+        'percent' => 0,
+        'tax_category_code' => TaxType::TAX_CATEGORY_CODE_EXEMPT,
+        'tax_exemption_reason' => '§ 19 UStG',
+    ]);
+
+    postJson('api/v1/tax-types', $taxType)
+        ->assertCreated()
+        ->assertJsonPath('data.tax_category_code', TaxType::TAX_CATEGORY_CODE_EXEMPT)
+        ->assertJsonPath('data.tax_exemption_reason', '§ 19 UStG');
+
+    $this->assertDatabaseHas('tax_types', $taxType);
+});
+
+test('rejects unknown tax category codes', function () {
+    $taxType = TaxType::factory()->raw([
+        'tax_category_code' => 'XX',
+    ]);
+
+    postJson('api/v1/tax-types', $taxType)
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors('tax_category_code');
+});
+
+test('requires an exemption reason for exempt tax category codes', function () {
+    $taxType = TaxType::factory()->raw([
+        'tax_category_code' => TaxType::TAX_CATEGORY_CODE_EXEMPT,
+    ]);
+
+    postJson('api/v1/tax-types', $taxType)
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors('tax_exemption_reason');
+});
+
+test('rejects an exemption reason longer than the stored maximum', function () {
+    $taxType = TaxType::factory()->raw([
+        'tax_category_code' => TaxType::TAX_CATEGORY_CODE_EXEMPT,
+        'tax_exemption_reason' => str_repeat('a', 256),
+    ]);
+
+    postJson('api/v1/tax-types', $taxType)
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors('tax_exemption_reason');
+});
+
+test('updates a tax type to a reverse charge category code', function () {
+    $taxType = TaxType::factory()->create();
+
+    $payload = TaxType::factory()->raw([
+        'tax_category_code' => TaxType::TAX_CATEGORY_CODE_REVERSE_CHARGE,
+        'tax_exemption_reason' => 'Reverse charge',
+    ]);
+
+    putJson("api/v1/tax-types/{$taxType->id}", $payload)
+        ->assertOk()
+        ->assertJsonPath('data.tax_category_code', TaxType::TAX_CATEGORY_CODE_REVERSE_CHARGE)
+        ->assertJsonPath('data.tax_exemption_reason', 'Reverse charge');
+
+    $this->assertDatabaseHas('tax_types', [
+        'id' => $taxType->id,
+        'tax_category_code' => TaxType::TAX_CATEGORY_CODE_REVERSE_CHARGE,
+        'tax_exemption_reason' => 'Reverse charge',
+    ]);
+});
+
+test('preserves the tax category code when updates omit it', function () {
+    $taxType = TaxType::factory()->exempt('§ 19 UStG')->create();
+
+    $payload = TaxType::factory()->raw();
+    unset($payload['tax_category_code'], $payload['tax_exemption_reason']);
+
+    putJson("api/v1/tax-types/{$taxType->id}", $payload)
+        ->assertOk()
+        ->assertJsonPath('data.tax_category_code', TaxType::TAX_CATEGORY_CODE_EXEMPT)
+        ->assertJsonPath('data.tax_exemption_reason', '§ 19 UStG');
+
+    $this->assertDatabaseHas('tax_types', [
+        'id' => $taxType->id,
+        'tax_category_code' => TaxType::TAX_CATEGORY_CODE_EXEMPT,
+        'tax_exemption_reason' => '§ 19 UStG',
+    ]);
+});
+
+test('clears the exemption reason when the tax category code no longer needs one', function () {
+    $taxType = TaxType::factory()->exempt('§ 19 UStG')->create();
+
+    $payload = TaxType::factory()->raw([
+        'tax_category_code' => TaxType::TAX_CATEGORY_CODE_STANDARD,
+    ]);
+
+    putJson("api/v1/tax-types/{$taxType->id}", $payload)
+        ->assertOk()
+        ->assertJsonPath('data.tax_category_code', TaxType::TAX_CATEGORY_CODE_STANDARD)
+        ->assertJsonPath('data.tax_exemption_reason', null);
+
+    $this->assertDatabaseHas('tax_types', [
+        'id' => $taxType->id,
+        'tax_category_code' => TaxType::TAX_CATEGORY_CODE_STANDARD,
+        'tax_exemption_reason' => null,
+    ]);
+});
+
 test('allows clearing compound tax while changing its type', function () {
     $taxType = TaxType::factory()->create([
         'compound_tax' => true,

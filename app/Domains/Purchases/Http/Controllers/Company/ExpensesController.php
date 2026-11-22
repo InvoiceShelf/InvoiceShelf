@@ -13,6 +13,7 @@ use App\Domains\Purchases\Models\Expense;
 use App\Platform\Http\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Silber\Bouncer\BouncerFacade;
 
 class ExpensesController extends Controller
 {
@@ -116,7 +117,7 @@ class ExpensesController extends Controller
      */
     public function showReceipt(Expense $expense)
     {
-        $this->authorize('view', $expense);
+        $this->authorizeReceipt($expense);
 
         $receipt = $this->expenseReceiptManager->first($expense);
 
@@ -155,7 +156,7 @@ class ExpensesController extends Controller
      */
     public function downloadReceipt(Expense $expense)
     {
-        $this->authorize('view', $expense);
+        $this->authorizeReceipt($expense);
 
         $receipt = $this->expenseReceiptManager->first($expense);
 
@@ -195,5 +196,20 @@ class ExpensesController extends Controller
         }
 
         return new PendingExpenseReceipt($upload->getPathname(), $upload->getClientOriginalName());
+    }
+
+    /**
+     * Receipt links under /reports are opened by the browser, which sends no
+     * `company` header, so nothing has told Bouncer which company to answer
+     * for. The expense's own company is the only one that can apply. A request
+     * that did name a company keeps it.
+     */
+    private function authorizeReceipt(Expense $expense): void
+    {
+        if (BouncerFacade::scope()->get() === null) {
+            BouncerFacade::scope()->to($expense->company_id);
+        }
+
+        $this->authorize('view', $expense);
     }
 }

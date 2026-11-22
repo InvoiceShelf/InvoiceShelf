@@ -143,9 +143,29 @@
         </router-link>
       </div>
 
-      <BaseButton :loading="isBusy" type="submit" class="w-full justify-center">
-        {{ $t('login.login') }}
-      </BaseButton>
+      <div class="flex gap-3">
+        <BaseButton
+          :loading="isBusy"
+          :disabled="isSsoBusy"
+          type="submit"
+          class="flex-1 justify-center"
+        >
+          {{ $t('login.login') }}
+        </BaseButton>
+
+        <!-- Styled like the Login button, in white (its outline keeps it visible on the white card) -->
+        <BaseButton
+          v-if="state.manifest?.sso_login"
+          :loading="isSsoBusy"
+          :disabled="isBusy || isSsoBusy"
+          type="button"
+          variant="white"
+          class="flex-1 justify-center"
+          @click="onSignInWithSso"
+        >
+          {{ $t('login.sign_in_with_sso') }}
+        </BaseButton>
+      </div>
 
       <div
         class="
@@ -189,7 +209,8 @@ import {
   setServerBaseUrl,
 } from '@/scripts/config/runtime'
 import { flushClientState } from '@/scripts/utils/local-storage'
-import { useAuthStore } from '@/scripts/stores/auth.store'
+import { SsoSignInError, useAuthStore } from '@/scripts/stores/auth.store'
+import type { SsoSignInFailure } from '@/scripts/stores/auth.store'
 import { useNotificationStore } from '@/scripts/stores/notification.store'
 
 /**
@@ -214,6 +235,15 @@ const connectError = ref<string>('')
 const warnings = ref<string[]>([])
 const acknowledged = ref<string>('')
 const isBusy = ref<boolean>(false)
+const isSsoBusy = ref<boolean>(false)
+
+/** What a sign-in with SSO that ended without a token says. */
+const SSO_FAILURES: Readonly<Record<SsoSignInFailure, string>> = {
+  cancelled: 'login.sso_cancelled',
+  no_account: 'login.sso_no_account',
+  email_unverified: 'login.sso_email_unverified',
+  failed: 'login.sso_failed',
+}
 
 const rules = {
   email: {
@@ -384,23 +414,7 @@ async function onSubmit(): Promise<void> {
   try {
     await authStore.login(authStore.loginData)
 
-    // Honour a ?next= query param if present (set by the 401 response
-    // interceptor so users land back on the page they were trying to
-    // reach). Sanitize to in-app paths only: reject protocol-relative
-    // (`//evil.com`) and absolute URLs so a crafted link can never
-    // open-redirect.
-    const nextRaw = typeof route.query.next === 'string' ? route.query.next : ''
-    const safeNext =
-      nextRaw.startsWith('/') && !nextRaw.startsWith('//')
-        ? nextRaw
-        : '/admin/dashboard'
-
-    router.push(safeNext)
-
-    notificationStore.showNotification({
-      type: 'success',
-      message: 'Logged in successfully.',
-    })
+    continueSignedIn()
   } catch (err: unknown) {
     const { handleApiError } = await import('@/scripts/utils/error-handling')
     const normalized = handleApiError(err)
@@ -410,6 +424,52 @@ async function onSubmit(): Promise<void> {
     })
     isBusy.value = false
   }
+}
+
+/**
+ * Sign in in the system browser through the server's SSO
+ * (`authStore.loginWithSso`). A cancel says so and leaves the form as it was.
+ */
+async function onSignInWithSso(): Promise<void> {
+  isSsoBusy.value = true
+
+  try {
+    await authStore.loginWithSso()
+
+    continueSignedIn()
+  } catch (err: unknown) {
+    const reason: SsoSignInFailure = err instanceof SsoSignInError ? err.reason : 'failed'
+
+    notificationStore.showNotification({
+      type: reason === 'cancelled' ? 'info' : 'error',
+      message: t(SSO_FAILURES[reason]),
+    })
+  } finally {
+    isSsoBusy.value = false
+  }
+}
+
+/**
+ * Go on once a token is stored, by either way of signing in.
+ *
+ * Honour a ?next= query param if present (set by the 401 response
+ * interceptor so users land back on the page they were trying to reach).
+ * Sanitize to in-app paths only: reject protocol-relative (`//evil.com`) and
+ * absolute URLs so a crafted link can never open-redirect.
+ */
+function continueSignedIn(): void {
+  const nextRaw = typeof route.query.next === 'string' ? route.query.next : ''
+  const safeNext =
+    nextRaw.startsWith('/') && !nextRaw.startsWith('//')
+      ? nextRaw
+      : '/admin/dashboard'
+
+  router.push(safeNext)
+
+  notificationStore.showNotification({
+    type: 'success',
+    message: 'Logged in successfully.',
+  })
 }
 
 onMounted(() => {

@@ -87,6 +87,7 @@ class InvoiceResource extends JsonResource
             'formatted_due_date' => $invoice->formattedDueDate,
             'allow_edit' => $invoice->allow_edit,
             'payment_module_enabled' => $invoice->payment_module_enabled,
+            'payment_link' => $invoice->payment_link,
             'sales_tax_type' => $invoice->sales_tax_type,
             'sales_tax_address_type' => $invoice->sales_tax_address_type,
             'overdue' => $invoice->overdue,

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<validation filename="hybrid-invoice.pdf" datetime="2026-08-15 13:44:42">
+  <pdf>ValidationResult [flavour=3u, totalAssertions=11133, assertions=[], isCompliant=true]
+    <info>
+      <signature>Mustang</signature>
+      <duration unit="ms">542</duration>
+    </info>
+    <summary status="valid"/>
+  </pdf>  
+  <xml>
+    <info>
+      <version>2</version>
+      <profile>urn:cen.eu:en16931:2017:compliant:factur-x.eu:1p0:extended</profile>
+      <validator version="2.25.0"/>
+      <rules>
+        <fired>134</fired>
+        <failed>4</failed>
+      </rules>
+      <duration unit="ms">790</duration>
+    </info>
+    <messages>
+      <error type="18">schema validation fails:org.xml.sax.SAXParseException; lineNumber: 157; columnNumber: 16; cvc-complex-type.2.4.d: Invalid content was found starting with element 'ram:Name'. No child element is expected at this point.</error>  
+      <error type="25">Unsupported profile type urn:cen.eu:en16931:2017:compliant:factur-x.eu:1p0:extended</error>  
+      <warning type="4" location="/*:CrossIndustryInvoice[namespace-uri()='urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100'][1]/*:SupplyChainTradeTransaction[namespace-uri()='urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100'][1]/*:IncludedSupplyChainTradeLineItem[namespace-uri()='urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100'][1]/*:SpecifiedTradeProduct[namespace-uri()='urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100'][1]/*:Description[namespace-uri()='urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100'][1]" criterion="false">[PEPPOL-EN16931-R008]-Document MUST not contain empty elements. (still status warning) [ID PEPPOL-EN16931-R008] from /xslt/ZF_250/FACTUR-X_EXTENDED.xslt)</warning>  
+      <warning type="4" location="/*:CrossIndustryInvoice[namespace-uri()='urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100'][1]/*:SupplyChainTradeTransaction[namespace-uri()='urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100'][1]/*:IncludedSupplyChainTradeLineItem[namespace-uri()='urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100'][2]/*:SpecifiedTradeProduct[namespace-uri()='urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100'][1]/*:Description[namespace-uri()='urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100'][1]" criterion="false">[PEPPOL-EN16931-R008]-Document MUST not contain empty elements. (still status warning) [ID PEPPOL-EN16931-R008] from /xslt/ZF_250/FACTUR-X_EXTENDED.xslt)</warning>  
+      <warning type="4" location="/*:CrossIndustryInvoice[namespace-uri()='urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100'][1]/*:SupplyChainTradeTransaction[namespace-uri()='urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100'][1]/*:IncludedSupplyChainTradeLineItem[namespace-uri()='urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100'][3]/*:SpecifiedTradeProduct[namespace-uri()='urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100'][1]/*:Description[namespace-uri()='urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100'][1]" criterion="false">[PEPPOL-EN16931-R008]-Document MUST not contain empty elements. (still status warning) [ID PEPPOL-EN16931-R008] from /xslt/ZF_250/FACTUR-X_EXTENDED.xslt)</warning>  
+      <error type="4" location="/*:CrossIndustryInvoice[namespace-uri()='urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100'][1]/*:ExchangedDocumentContext[namespace-uri()='urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100'][1]/*:GuidelineSpecifiedDocumentContextParameter[namespace-uri()='urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100'][1]/*:ID[namespace-uri()='urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100'][1]" criterion="string-length($codeValue1)=0 or document('FACTUR-X_EXTENDED_codedb.xml')/codedb/cl[@id=1]/enumeration[@value=$codeValue1]">Value of 'ram:ID' is not allowed. [ID FX-SCH-A-000636] from /xslt/ZF_250/FACTUR-X_EXTENDED.xslt)</error> 
+    </messages>
+    <summary status="invalid"/>
+  </xml>
+  <messages></messages>
+  <summary status="invalid"/>
+</validation>
+

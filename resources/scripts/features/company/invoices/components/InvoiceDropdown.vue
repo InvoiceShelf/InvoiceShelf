@@ -115,6 +115,14 @@
       />
       {{ $t('general.delete') }}
     </BaseDropdownItem>
+    <!-- Module actions; see registerEntityAction('invoice', 'list', ...) -->
+    <ExtensionSlot
+      v-if="table"
+      name="entity"
+      entity="invoice"
+      area="actions:list"
+      :context="extensionContext"
+    />
   </BaseDropdown>
 </template>
 
@@ -132,6 +140,8 @@ import {
   getErrorTranslationKey,
 } from '../../../../utils/error-handling'
 import type { Invoice } from '../../../../types/domain/invoice'
+import ExtensionSlot from '@/scripts/extensions/ExtensionSlot.vue'
+import { entityContext } from '@/scripts/extensions/records'
 
 interface TableRef {
   refresh: () => void
@@ -160,6 +170,11 @@ const props = withDefaults(defineProps<Props>(), {
   canSend: false,
   canCreatePayment: false,
   canCreateEstimate: false,
+})
+
+const extensionContext = entityContext('invoice', 'list', () => props.row, () => {
+  props.table?.refresh()
+  props.loadData?.()
 })
 
 const invoiceStore = useInvoiceStore()

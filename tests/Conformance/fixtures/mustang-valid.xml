@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<validation filename="hybrid-invoice.pdf" datetime="2026-08-15 13:44:34">
+  <pdf>ValidationResult [flavour=3b, totalAssertions=12540, assertions=[], isCompliant=true]
+    <info>
+      <signature>unknown</signature>
+      <duration unit="ms">547</duration>
+    </info>
+    <summary status="valid"/>
+  </pdf>  
+  <xml>
+    <info>
+      <version>2</version>
+      <profile>urn:cen.eu:en16931:2017</profile>
+      <validator version="2.25.0"/>
+      <rules>
+        <fired>22</fired>
+        <failed>7</failed>
+      </rules>
+      <duration unit="ms">657</duration>
+    </info>
+    <messages>
+      <notice type="27" location="/rsm:CrossIndustryInvoice/rsm:ExchangedDocumentContext[1]" criterion="ram:BusinessProcessSpecifiedDocumentContextParameter/ram:ID">Business process MUST be provided. [ID PEPPOL-EN16931-R001] from /xslt/XR_30/XRechnung-CII-validation.xslt)</notice>  
+      <notice type="27" location="/rsm:CrossIndustryInvoice/rsm:SupplyChainTradeTransaction[1]/ram:ApplicableHeaderTradeAgreement[1]/ram:SellerTradeParty[1]" criterion="ram:URIUniversalCommunication/ram:URIID">Seller electronic address MUST be provided [ID PEPPOL-EN16931-R020] from /xslt/XR_30/XRechnung-CII-validation.xslt)</notice>  
+      <notice type="27" location="/rsm:CrossIndustryInvoice/rsm:SupplyChainTradeTransaction[1]/ram:ApplicableHeaderTradeAgreement[1]/ram:BuyerTradeParty[1]" criterion="ram:URIUniversalCommunication/ram:URIID">Buyer electronic address MUST be provided [ID PEPPOL-EN16931-R010] from /xslt/XR_30/XRechnung-CII-validation.xslt)</notice>  
+      <notice type="27" location="/rsm:CrossIndustryInvoice" criterion="rsm:SupplyChainTradeTransaction/ram:ApplicableHeaderTradeSettlement/ram:SpecifiedTradeSettlementPaymentMeans">[BR-DE-1] Eine Rechnung (INVOICE) muss Angaben zu "PAYMENT INSTRUCTIONS" (BG-16) enthalten. [ID BR-DE-1] from /xslt/XR_30/XRechnung-CII-validation.xslt)</notice>  
+      <notice type="27" location="/rsm:CrossIndustryInvoice" criterion="rsm:SupplyChainTradeTransaction/ram:ApplicableHeaderTradeAgreement/ram:BuyerReference[boolean(normalize-space(.))]">[BR-DE-15] Das Element "Buyer reference" (BT-10) muss übermittelt werden. [ID BR-DE-15] from /xslt/XR_30/XRechnung-CII-validation.xslt)</notice>  
+      <notice type="27" location="/rsm:CrossIndustryInvoice/rsm:ExchangedDocumentContext[1]" criterion="ram:GuidelineSpecifiedDocumentContextParameter/ram:ID = $XR-CIUS-ID or ram:GuidelineSpecifiedDocumentContextParameter/ram:ID = $XR-EXTENSION-ID or ram:GuidelineSpecifiedDocumentContextParameter/ram:ID = $XR-CVD-ID">[BR-DE-21] Das Element "Specification identifier" (BT-24) soll syntaktisch der Kennung des Standards XRechnung entsprechen. [ID BR-DE-21] from /xslt/XR_30/XRechnung-CII-validation.xslt)</notice>  
+      <notice type="27" location="/rsm:CrossIndustryInvoice/rsm:SupplyChainTradeTransaction[1]/ram:ApplicableHeaderTradeAgreement[1]/ram:SellerTradeParty[1]" criterion="ram:DefinedTradeContact">[BR-DE-2] Die Gruppe "SELLER CONTACT" (BG-6) muss übermittelt werden. [ID BR-DE-2] from /xslt/XR_30/XRechnung-CII-validation.xslt)</notice> 
+    </messages>
+    <summary status="valid"/>
+  </xml>
+  <messages></messages>
+  <summary status="valid"/>
+</validation>
+

@@ -23,6 +23,14 @@
       />
       {{ $t('general.delete') }}
     </BaseDropdownItem>
+    <!-- Module actions; see registerEntityAction('expense', 'list', ...) -->
+    <ExtensionSlot
+      v-if="table"
+      name="entity"
+      entity="expense"
+      area="actions:list"
+      :context="extensionContext"
+    />
   </BaseDropdown>
 </template>
 
@@ -31,6 +39,8 @@ import { useI18n } from 'vue-i18n'
 import { useExpenseStore } from '../store'
 import { useDialogStore } from '../../../../stores/dialog.store'
 import type { Expense } from '../../../../types/domain/expense'
+import ExtensionSlot from '@/scripts/extensions/ExtensionSlot.vue'
+import { entityContext } from '@/scripts/extensions/records'
 
 interface TableRef {
   refresh: () => void
@@ -49,6 +59,11 @@ const props = withDefaults(defineProps<Props>(), {
   loadData: null,
   canEdit: false,
   canDelete: false,
+})
+
+const extensionContext = entityContext('expense', 'list', () => props.row, () => {
+  props.table?.refresh()
+  props.loadData?.()
 })
 
 const expenseStore = useExpenseStore()

@@ -9,6 +9,7 @@ use App\Domains\Accounts\Http\Resources\UserResource;
 use App\Domains\Accounts\Models\Company;
 use App\Domains\Accounts\Models\CompanyInvitation;
 use App\Domains\Money\Models\Currency;
+use App\Platform\Announcements\Application\AnnouncementService;
 use App\Platform\Http\Controller;
 use App\Platform\Modules\Models\Module;
 use App\Platform\Operations\Http\Concerns\GeneratesMenu;
@@ -34,7 +35,10 @@ class BootstrapController extends Controller
      * Every member gets this payload, so it carries no credentials; see
      * MemberVisibleSettings and Setting::SHELL_SETTINGS.
      */
-    public function __construct(private readonly MemberVisibleSettings $memberVisibleSettings) {}
+    public function __construct(
+        private readonly MemberVisibleSettings $memberVisibleSettings,
+        private readonly AnnouncementService $announcements,
+    ) {}
 
     /**
      * Handle the incoming request.
@@ -88,6 +92,7 @@ class BootstrapController extends Controller
             'pending_invitations' => CompanyInvitationResource::collection(
                 $this->openInvitations($user)
             ),
+            'announcements' => $this->announcements->activeFor($user, null),
         ];
     }
 
@@ -144,6 +149,7 @@ class BootstrapController extends Controller
             'setting_menu' => $settingMenu,
             'modules' => Module::where('enabled', true)->pluck('name'),
             'user_menu' => $this->moduleUserMenu(),
+            'announcements' => $this->announcements->activeFor($user, (int) $company->id),
         ]);
     }
 

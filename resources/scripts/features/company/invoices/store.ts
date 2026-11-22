@@ -73,6 +73,7 @@ export interface InvoiceFormData {
   invoice_date: string
   due_date: string
   notes: string | null
+  payment_link: string | null
   discount: number
   discount_type: DiscountType
   discount_val: number
@@ -106,6 +107,7 @@ function createInvoiceStub(): InvoiceFormData {
     invoice_date: '',
     due_date: '',
     notes: '',
+    payment_link: null,
     discount: 0,
     discount_type: 'fixed',
     discount_val: 0,
@@ -264,8 +266,8 @@ export const useInvoiceStore = defineStore('invoice', {
 
       if (this.newInvoice.tax_per_item === 'YES') {
         this.newInvoice.items.forEach((item) => {
-          if (item.taxes && !item.taxes.length) {
-            item.taxes.push(createTaxStub())
+          if (!item.taxes?.length) {
+            item.taxes = [createTaxStub()]
           }
         })
       }

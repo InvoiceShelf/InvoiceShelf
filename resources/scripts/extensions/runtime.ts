@@ -1,5 +1,5 @@
-import { markRaw, shallowRef } from 'vue'
-import type { ShallowRef } from 'vue'
+import { computed, markRaw, shallowRef } from 'vue'
+import type { ComputedRef, ShallowRef } from 'vue'
 import type { RouteMeta, RouteRecordRaw, Router } from 'vue-router'
 import { client } from '@/scripts/api/client'
 import { useNotificationStore } from '@/scripts/stores/notification.store'
@@ -8,6 +8,10 @@ import type {
   BootstrapCompletedEvent,
   CompanyChangeEvent,
   ComponentExtensionContribution,
+  CreateActionContribution,
+  EntityActionPlacement,
+  EntitySaveHookContribution,
+  ExtensionEntity,
   InvoiceShelfExtensionApi,
   InvoiceShelfExtensionEvents,
   PageChildContribution,
@@ -22,7 +26,15 @@ type ComponentSlot =
   | 'companyLayoutOverlays'
   | 'richEditorToolbarActions'
 
-interface RegisteredComponentContribution extends ComponentExtensionContribution {
+/** The record slots: an action in one placement, a detail-page panel, or a form section. */
+export type EntitySlot = `actions:${EntityActionPlacement}` | 'panels' | 'formSections'
+
+/** Registry key of one record slot, such as `panels:invoice`. */
+export function entitySlotKey(slot: EntitySlot, entity: ExtensionEntity): string {
+  return `${slot}:${entity}`
+}
+
+export interface RegisteredComponentContribution extends ComponentExtensionContribution {
   component: ComponentExtensionContribution['component']
 }
 
@@ -98,6 +110,10 @@ export class ExtensionRegistry {
   readonly headerActions = shallowRef<RegisteredComponentContribution[]>([])
   readonly companyLayoutOverlays = shallowRef<RegisteredComponentContribution[]>([])
   readonly richEditorToolbarActions = shallowRef<RegisteredComponentContribution[]>([])
+  /** Record slot contributions keyed by `entitySlotKey()`. */
+  readonly entityComponents = shallowRef<Record<string, RegisteredComponentContribution[]>>({})
+  readonly entitySaveHooks = shallowRef<Record<string, EntitySaveHookContribution[]>>({})
+  readonly createActions = shallowRef<CreateActionContribution[]>([])
   readonly companySettingsNavigation = shallowRef<SettingsNavigationContribution[]>([])
   readonly adminSettingsNavigation = shallowRef<SettingsNavigationContribution[]>([])
 
@@ -120,6 +136,51 @@ export class ExtensionRegistry {
 
       return () => {
         target.value = target.value.filter((item) => item !== entry)
+      }
+    })
+  }
+
+  registerCreateAction(contribution: CreateActionContribution): () => void {
+    assertContributionId(contribution.id)
+    const entry = { ...contribution }
+
+    return this.track(() => {
+      this.createActions.value = [
+        ...this.createActions.value.filter((item) => item.id !== entry.id),
+        entry,
+      ].sort(comparePriority)
+
+      return () => {
+        this.createActions.value = this.createActions.value.filter((item) => item !== entry)
+      }
+    })
+  }
+
+  registerEntityComponent(key: string, contribution: ComponentExtensionContribution): () => void {
+    assertContributionId(contribution.id)
+    const entry: RegisteredComponentContribution = {
+      ...contribution,
+      component: markRaw(contribution.component),
+    }
+
+    return this.track(() => {
+      this.entityComponents.value = withEntry(this.entityComponents.value, key, entry)
+
+      return () => {
+        this.entityComponents.value = withoutEntry(this.entityComponents.value, key, entry)
+      }
+    })
+  }
+
+  registerEntitySaveHook(entity: ExtensionEntity, contribution: EntitySaveHookContribution): () => void {
+    assertContributionId(contribution.id)
+    const entry = { ...contribution }
+
+    return this.track(() => {
+      this.entitySaveHooks.value = withEntry(this.entitySaveHooks.value, entity, entry)
+
+      return () => {
+        this.entitySaveHooks.value = withoutEntry(this.entitySaveHooks.value, entity, entry)
       }
     })
   }
@@ -192,6 +253,30 @@ class ExtensionApi implements InvoiceShelfExtensionApi {
 
   registerRichEditorToolbarAction(contribution: ComponentExtensionContribution): () => void {
     return extensionRegistry.registerComponent('richEditorToolbarActions', contribution)
+  }
+
+  registerCreateAction(contribution: CreateActionContribution): () => void {
+    return extensionRegistry.registerCreateAction(contribution)
+  }
+
+  registerEntityAction(
+    entity: ExtensionEntity,
+    placement: EntityActionPlacement,
+    contribution: ComponentExtensionContribution,
+  ): () => void {
+    return extensionRegistry.registerEntityComponent(entitySlotKey(`actions:${placement}`, entity), contribution)
+  }
+
+  registerEntityPanel(entity: ExtensionEntity, contribution: ComponentExtensionContribution): () => void {
+    return extensionRegistry.registerEntityComponent(entitySlotKey('panels', entity), contribution)
+  }
+
+  registerEntityFormSection(entity: ExtensionEntity, contribution: ComponentExtensionContribution): () => void {
+    return extensionRegistry.registerEntityComponent(entitySlotKey('formSections', entity), contribution)
+  }
+
+  registerEntitySaveHook(entity: ExtensionEntity, contribution: EntitySaveHookContribution): () => void {
+    return extensionRegistry.registerEntitySaveHook(entity, contribution)
   }
 
   registerCompanySettingsNavigation(contribution: SettingsNavigationContribution): () => void {
@@ -425,4 +510,34 @@ export function extensionItems<T extends { visible?: () => boolean }>(
   items: readonly T[],
 ): T[] {
   return items.filter(isContributionVisible)
+}
+
+/** The visible contributions to one record slot, kept in sync with the registry. */
+export function useEntityContributions(
+  slot: EntitySlot,
+  entity: ExtensionEntity,
+): ComputedRef<RegisteredComponentContribution[]> {
+  const key = entitySlotKey(slot, entity)
+
+  return computed(() => extensionItems(extensionRegistry.entityComponents.value[key] ?? []))
+}
+
+/** The visible save hooks for one record type, in priority order. */
+export function entitySaveHooks(entity: ExtensionEntity): EntitySaveHookContribution[] {
+  return extensionItems(extensionRegistry.entitySaveHooks.value[entity] ?? [])
+}
+
+function withEntry<T extends { id: string; priority?: number }>(
+  map: Record<string, T[]>,
+  key: string,
+  entry: T,
+): Record<string, T[]> {
+  return {
+    ...map,
+    [key]: [...(map[key] ?? []).filter((item) => item.id !== entry.id), entry].sort(comparePriority),
+  }
+}
+
+function withoutEntry<T>(map: Record<string, T[]>, key: string, entry: T): Record<string, T[]> {
+  return { ...map, [key]: (map[key] ?? []).filter((item) => item !== entry) }
 }

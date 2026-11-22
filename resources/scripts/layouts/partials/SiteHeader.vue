@@ -18,6 +18,8 @@
         <BaseIcon name="MagnifyingGlassIcon" class="w-5.5 h-5.5" />
       </button>
 
+      <InboxBell v-if="companyStore.selectedCompany" />
+
       <ul class="flex items-center m-0 list-none header-actions">
         <ExtensionSlot name="header-actions" />
       </ul>
@@ -90,6 +92,9 @@
           </BaseDropdownItem>
         </BaseDropdown>
 
+        <!-- Notices for the company being looked at -->
+        <InboxBell v-if="companyStore.selectedCompany" />
+
         <!-- Theme: light, dark, then follow the system -->
         <button
           v-tooltip="{ content: themeLabel }"
@@ -117,6 +122,7 @@ import { THEME } from '@/scripts/config/constants'
 import type { Theme } from '@/scripts/config/constants'
 import CompanySwitcher from './CompanySwitcher.vue'
 import AccountMenu from './AccountMenu.vue'
+import InboxBell from './InboxBell.vue'
 import ExtensionSlot from '@/scripts/extensions/ExtensionSlot.vue'
 
 const globalStore = useGlobalStore()

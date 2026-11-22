@@ -80,6 +80,6 @@ class CustomerPolicy
 
     private function sameCompany(User $user, Customer $customer): bool
     {
-        return $user->hasCompany($customer->company_id);
+        return $user->isActingIn($customer->company_id);
     }
 }

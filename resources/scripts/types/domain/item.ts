@@ -5,6 +5,8 @@ import type { Tax } from './tax'
 export interface Unit {
   id: number
   name: string
+  /** UN/ECE Rec 20 Unit Code (EN 16931 BT-130), e.g. C62 = piece, HUR = hour. */
+  unit_code: string
   company_id: number
   company?: Company
 }

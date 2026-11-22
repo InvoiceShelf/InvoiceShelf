@@ -5,6 +5,8 @@ import { useRoute } from 'vue-router'
 import { useCustomerStore } from '../store'
 import { useDialogStore } from '../../../../stores/dialog.store'
 import { useUserStore } from '../../../../stores/user.store'
+import ExtensionSlot from '@/scripts/extensions/ExtensionSlot.vue'
+import { entityContext } from '@/scripts/extensions/records'
 
 interface RowData {
   id?: number | string | null
@@ -31,6 +33,11 @@ const props = withDefaults(defineProps<Props>(), {
   row: null,
   table: null,
   loadData: null,
+})
+
+const extensionContext = entityContext('customer', 'list', () => props.row, () => {
+  props.table?.refresh()
+  props.loadData?.()
 })
 
 const emit = defineEmits<Emits>()
@@ -149,5 +156,13 @@ function onRemoveCustomer(): void {
       />
       {{ $t('general.delete') }}
     </BaseDropdownItem>
+    <!-- Module actions; see registerEntityAction('customer', 'list', ...) -->
+    <ExtensionSlot
+      v-if="table"
+      name="entity"
+      entity="customer"
+      area="actions:list"
+      :context="extensionContext"
+    />
   </BaseDropdown>
 </template>

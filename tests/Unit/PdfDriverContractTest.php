@@ -2,6 +2,7 @@
 
 use App\Platform\Pdf\Rendering\DompdfDriver;
 use App\Platform\Pdf\Rendering\DompdfResponse;
+use App\Platform\Pdf\Rendering\FacturXAttachment;
 use App\Platform\Pdf\Rendering\GotenbergPdfDriver;
 use App\Platform\Pdf\Rendering\GotenbergPdfResponse;
 use App\Platform\Pdf\Rendering\PdfDriver;
@@ -49,6 +50,17 @@ test('dompdf renders a real pdf through the contract', function () {
 
     expect($pdf)->toBeInstanceOf(ResponseStream::class)
         ->and($pdf->output())->toStartWith('%PDF-');
+});
+
+/**
+ * dompdf cannot build the PDF/A-3 container a hybrid e-invoice needs, so it
+ * takes the attachment the contract allows and renders the ordinary PDF.
+ */
+test('dompdf accepts a factur-x attachment and renders the ordinary pdf', function () {
+    $pdf = (new DompdfDriver)->loadView('app.pdf.partials.fonts', [], null, new FacturXAttachment('<x/>'));
+
+    expect($pdf->output())->toStartWith('%PDF-')
+        ->not->toContain('factur-x.xml');
 });
 
 test('dompdf offers the document as an attachment when downloaded', function () {
