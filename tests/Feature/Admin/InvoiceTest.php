@@ -250,7 +250,7 @@ test('invoice retrospective edit restrictions are reflected in the API', functio
     'sent restriction locks completed invoice' => ['disable_on_invoice_sent', Invoice::STATUS_COMPLETED, Invoice::STATUS_PAID, false, false],
     'sent restriction locks unpaid completed invoice' => ['disable_on_invoice_sent', Invoice::STATUS_COMPLETED, Invoice::STATUS_UNPAID, false, false],
     'sent restriction locks previously sent draft' => ['disable_on_invoice_sent', Invoice::STATUS_DRAFT, Invoice::STATUS_UNPAID, true, false],
-    'sent restriction allows unsent partially paid draft' => ['disable_on_invoice_sent', Invoice::STATUS_DRAFT, Invoice::STATUS_PARTIALLY_PAID, false, true],
+    'sent restriction locks unsent partially paid draft' => ['disable_on_invoice_sent', Invoice::STATUS_DRAFT, Invoice::STATUS_PARTIALLY_PAID, false, false],
     'partial payment restriction allows unpaid invoice' => ['disable_on_invoice_partial_paid', Invoice::STATUS_SENT, Invoice::STATUS_UNPAID, true, true],
     'partial payment restriction locks partially paid invoice' => ['disable_on_invoice_partial_paid', Invoice::STATUS_SENT, Invoice::STATUS_PARTIALLY_PAID, true, false],
     'partial payment restriction locks paid invoice' => ['disable_on_invoice_partial_paid', Invoice::STATUS_COMPLETED, Invoice::STATUS_PAID, true, false],

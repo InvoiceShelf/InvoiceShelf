@@ -152,9 +152,14 @@ class Invoice extends Model implements HasMedia
             self::STATUS_COMPLETED,
         ];
 
-        if ($retrospective_edit == 'disable_on_invoice_sent' && ($this->sent || in_array($this->status, $status))) {
+        $collected = $this->paid_status === Invoice::STATUS_PARTIALLY_PAID || $this->paid_status === Invoice::STATUS_PAID;
+
+        // A payment locks the invoice under this mode too: 2.x accepts payments
+        // on drafts, and money recorded against an invoice must not have its
+        // amounts changed underneath it.
+        if ($retrospective_edit == 'disable_on_invoice_sent' && ($this->sent || in_array($this->status, $status) || $collected)) {
             $allowed = false;
-        } elseif ($retrospective_edit == 'disable_on_invoice_partial_paid' && ($this->paid_status === Invoice::STATUS_PARTIALLY_PAID || $this->paid_status === Invoice::STATUS_PAID)) {
+        } elseif ($retrospective_edit == 'disable_on_invoice_partial_paid' && $collected) {
             $allowed = false;
         } elseif ($retrospective_edit == 'disable_on_invoice_paid' && $this->paid_status === Invoice::STATUS_PAID) {
             $allowed = false;
