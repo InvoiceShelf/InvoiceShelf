@@ -2,7 +2,7 @@
     "openapi": "3.1.0",
     "info": {
         "title": "InvoiceShelf API",
-        "version": "3.0.0-alpha.16",
+        "version": "3.0.0-alpha.17",
         "description": "REST API for InvoiceShelf \u2014 open-source invoicing & expense tracking. Authenticate with a Sanctum personal access token (Authorization: Bearer <token>). Company-scoped endpoints additionally require a `company` header carrying the company ID."
     },
     "servers": [
@@ -2532,6 +2532,9 @@
                                                 "string",
                                                 "null"
                                             ]
+                                        },
+                                        "sso_login": {
+                                            "type": "boolean"
                                         }
                                     },
                                     "required": [
@@ -2546,7 +2549,8 @@
                                         "managed_mode",
                                         "managed",
                                         "source_url",
-                                        "customer_portal_url"
+                                        "customer_portal_url",
+                                        "sso_login"
                                     ]
                                 }
                             }
@@ -8409,9 +8413,6 @@
                                 }
                             }
                         }
-                    },
-                    "403": {
-                        "$ref": "#/components/responses/AuthorizationException"
                     },
                     "404": {
                         "$ref": "#/components/responses/ModelNotFoundException"
@@ -18880,6 +18881,123 @@
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/auth/sso/handoffs": {
+            "post": {
+                "operationId": "ssoHandoff.store",
+                "summary": "Start a hand-off: the address to open in the system browser, the secret\nthat later proves this device started it, and the app link the browser\nwill be sent back to",
+                "tags": [
+                    "SsoHandoff"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SsoHandoffRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "string"
+                                        },
+                                        "secret": {
+                                            "type": "string"
+                                        },
+                                        "url": {
+                                            "type": "string"
+                                        },
+                                        "app_link": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "id",
+                                        "secret",
+                                        "url",
+                                        "app_link"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/auth/sso/handoffs/{handoff}/token": {
+            "post": {
+                "operationId": "ssoHandoff.token",
+                "summary": "Trade the code the browser brought back, with the secret, for a token\nnamed after the device that started the hand-off",
+                "tags": [
+                    "SsoHandoff"
+                ],
+                "parameters": [
+                    {
+                        "name": "handoff",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SsoHandoffTokenRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "const": "Bearer"
+                                        },
+                                        "token": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "type",
+                                        "token"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -31074,6 +31192,39 @@
                     "settings"
                 ],
                 "title": "SettingRequest"
+            },
+            "SsoHandoffRequest": {
+                "type": "object",
+                "description": "Starting a single sign-on for the mobile app (SsoHandoffController).",
+                "properties": {
+                    "device_name": {
+                        "type": "string",
+                        "maxLength": 255
+                    }
+                },
+                "required": [
+                    "device_name"
+                ],
+                "title": "SsoHandoffRequest"
+            },
+            "SsoHandoffTokenRequest": {
+                "type": "object",
+                "description": "Finishing a single sign-on for the mobile app (SsoHandoffController):\nthe secret the app kept and the code the browser brought back.",
+                "properties": {
+                    "secret": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "code": {
+                        "type": "string",
+                        "maxLength": 255
+                    }
+                },
+                "required": [
+                    "secret",
+                    "code"
+                ],
+                "title": "SsoHandoffTokenRequest"
             },
             "SupplierAllocationRequest": {
                 "type": "object",
