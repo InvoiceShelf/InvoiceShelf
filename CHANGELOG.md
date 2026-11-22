@@ -9,7 +9,7 @@ GitHub: https://github.com/InvoiceShelf/InvoiceShelf/releases
 
 ## 3.0.0-alpha.17 - 2026-11-22
 
-Seventeenth public alpha of InvoiceShelf 3.0. Existing users can sign in through an OpenID Connect identity provider, on the web and in the mobile app, and a security issue is fixed for installs where a user belongs to more than one company.
+Seventeenth public alpha of InvoiceShelf 3.0. Existing users can sign in through an OpenID Connect identity provider, on the web and in the mobile app, and two security issues are fixed for installs that hold more than one company.
 
 ⚠️ **Pre-release, not for production.** Back up your database before upgrading and use this release for evaluation and testing only.
 
@@ -20,6 +20,11 @@ Seventeenth public alpha of InvoiceShelf 3.0. Existing users can sign in through
 ### Security
 
 - A user who belongs to two companies could use the role they hold in one on the records of the other, by acting in the first company while addressing a record of the second. Someone with read-only access to a company could, for example, change the status of its invoices. Roles now apply only inside the company that granted them. Installs with a single company, or where every user has one company, were not affected. (#992, #994)
+- The one-time exchange-rate update for documents created before documents carried an exchange rate changed every company's documents in the chosen currency, not only the active company's, and also documents that already had a rate. The owner of any company could start it again through company settings. It now changes only the active company's documents that have no rate, and company settings can no longer start it again. Only amounts in the company's currency were affected (dashboard, reports, customer statements), never document totals. (#1000)
+
+### Improvements and fixes
+
+- Translations are up to date with Crowdin. (#997)
 
 ### Upgrade notes
 
