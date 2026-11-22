@@ -740,7 +740,8 @@ test('an ID token that passes the checks signs in', function (array $claims, arr
 })->with([
     'plain' => [[], []],
     'with several audiences' => [['aud' => ['another-client', 'invoiceshelf']], []],
-    'expired within the allowed skew' => [['exp' => time() - 30], []],
+    // Worked out when the test runs: a dataset is built when the file loads, long before.
+    'expired within the allowed skew' => [fn (): array => ['exp' => time() - 30], []],
     'from the configured issuer' => [[], ['issuer' => 'https://sso.test/realms/acme']],
     'from the configured issuer, but for a trailing slash' => [['iss' => 'https://sso.test/realms/acme/'], ['issuer' => 'https://sso.test/realms/acme']],
 ]);
