@@ -24,7 +24,6 @@ interface BackupTypeOption {
 interface BackupForm {
   option: BackupOption | ''
   file_disk_id: number | null
-  notify: boolean
 }
 
 const modalStore = useModalStore()
@@ -36,7 +35,6 @@ const isSaving = ref(false)
 const form = reactive<BackupForm>({
   option: 'full',
   file_disk_id: null,
-  notify: false,
 })
 
 const backupTypeOptions: BackupTypeOption[] = [
@@ -79,17 +77,12 @@ async function createBackup(): Promise<void> {
     const response = await backupService.create({
       option: form.option as BackupOption,
       file_disk_id: form.file_disk_id,
-      notify: form.notify,
     })
 
     if (response.success) {
       notificationStore.showNotification({
         type: 'success',
-        message: t(
-          form.notify
-            ? 'settings.backup.started_notify_message'
-            : 'settings.backup.started_message',
-        ),
+        message: t('settings.backup.started_message'),
       })
       modalStore.refreshData?.()
       closeModal()
@@ -114,7 +107,6 @@ function showApiError(error: unknown): void {
 function resetForm(): void {
   form.option = 'full'
   form.file_disk_id = null
-  form.notify = false
   v$.value.$reset()
 }
 
@@ -149,12 +141,6 @@ function closeModal(): void {
               @update:model-value="v$.option.$touch()"
             />
           </BaseInputGroup>
-
-          <BaseCheckbox
-            v-model="form.notify"
-            :label="$t('settings.backup.notify_label')"
-            :description="$t('settings.backup.notify_description')"
-          />
         </BaseInputGrid>
       </div>
 

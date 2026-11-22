@@ -1991,7 +1991,6 @@
       "select_disk": "Wybierz dysk",
       "action": "Akcja",
       "deleted_message": "Kopia zapasowa usunięta pomyślnie",
-      "created_message": "Kopia zapasowa utworzona pomyślnie",
       "invalid_disk_credentials": "Nieprawidłowe dane uwierzytelniające wybranego dysku",
       "empty_title": "No backups yet",
       "empty_description": "Create a backup to keep a copy of your data and files."

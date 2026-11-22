@@ -4,7 +4,6 @@ namespace App\Platform\Storage\Http;
 
 use App\Platform\Http\Controller;
 use App\Platform\Storage\Application\BackupService;
-use App\Platform\Storage\Http\Requests\CreateBackupRequest;
 use App\Platform\Storage\Jobs\CreateBackupJob;
 use App\Platform\Storage\Rules\PathToZip;
 use Illuminate\Http\JsonResponse;
@@ -78,20 +77,15 @@ class BackupsController extends Controller
      *
      * The whole body is handed to the job untouched -- `option` (everything,
      * database only, or files only) and the disk selection are read there, and
-     * the reply says nothing about whether the run later succeeded. Only
-     * `notify` is validated at this end, so an unrecognised option is a
-     * job-time problem, not a request-time one. With `notify`, the job emails
-     * the user who asked once the run is over.
+     * the reply says nothing about whether the run later succeeded. Nothing is
+     * validated at this end, so an unrecognised option is a job-time problem,
+     * not a request-time one.
      */
-    public function store(CreateBackupRequest $request): JsonResponse
+    public function store(Request $request): JsonResponse
     {
         $this->authorize('manage backups');
 
-        $payload = [
-            ...$request->all(),
-            'notify' => $request->boolean('notify'),
-            'user_id' => $request->user()->id,
-        ];
+        $payload = $request->all();
 
         dispatch(new CreateBackupJob($payload))->onQueue(config('backup.queue.name'));
 

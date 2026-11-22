@@ -1988,7 +1988,6 @@
       "select_disk": "Selecteer Disk",
       "action": "Actie",
       "deleted_message": "Back-up is succesvol verwijderd",
-      "created_message": "Back-up successvol gemaakt",
       "invalid_disk_credentials": "Ongeldige inloggegevens voor geselecteerde schijf",
       "empty_title": "No backups yet",
       "empty_description": "Create a backup to keep a copy of your data and files."

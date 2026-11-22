@@ -1992,7 +1992,6 @@
       "select_disk": "Избери диск",
       "action": "Акција",
       "deleted_message": "Резервната копија е избришана успешно",
-      "created_message": "Резервната копија е креирана успешно",
       "invalid_disk_credentials": "Невалидни акредитиви на избраниот диск",
       "empty_title": "No backups yet",
       "empty_description": "Create a backup to keep a copy of your data and files."

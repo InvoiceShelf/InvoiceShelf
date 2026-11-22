@@ -1991,7 +1991,6 @@
       "select_disk": "Chọn đĩa",
       "action": "Hoạt động",
       "deleted_message": "Đã xóa bản sao lưu thành công",
-      "created_message": "Đã tạo thành công bản sao lưu",
       "invalid_disk_credentials": "Thông tin đăng nhập không hợp lệ của đĩa đã chọn",
       "empty_title": "No backups yet",
       "empty_description": "Create a backup to keep a copy of your data and files."

@@ -1985,7 +1985,6 @@
       "select_disk": "Seleccionar Disco",
       "action": "Acción",
       "deleted_message": "Copia de seguridad eliminada exitosamente",
-      "created_message": "Copia de seguridad creada satisfactoriamente",
       "invalid_disk_credentials": "Credencial no válida del disco seleccionado",
       "empty_title": "No backups yet",
       "empty_description": "Create a backup to keep a copy of your data and files."

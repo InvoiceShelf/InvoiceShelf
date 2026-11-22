@@ -1992,7 +1992,6 @@
       "select_disk": "Velg lagringssted",
       "action": "Handling",
       "deleted_message": "Sikkerhetskopien ble slettet",
-      "created_message": "Sikkerhetskopien ble opprettet",
       "invalid_disk_credentials": "Ugyldig tilgangsinformasjon for valgt lagringssted",
       "empty_title": "Ingen sikkerhetskopier ennå",
       "empty_description": "Opprett en sikkerhetskopi av data og filer."

@@ -1992,7 +1992,6 @@
       "select_disk": "Emplacement",
       "action": "Action",
       "deleted_message": "Sauvegarde supprimée",
-      "created_message": "Sauvegarde créée",
       "invalid_disk_credentials": "Informations d'identification invalides de l'espace de stockage",
       "empty_title": "Aucune sauvegarde pour le moment",
       "empty_description": "Créez une sauvegarde pour conserver une copie de vos données et fichiers."

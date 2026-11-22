@@ -1992,7 +1992,6 @@
       "select_disk": "เลือกดิสก์",
       "action": "จัดการ",
       "deleted_message": "การสำรองข้อมูลถูกลบเรียบร้อยแล้ว",
-      "created_message": "สร้างการสำรองข้อมูลเรียบร้อยแล้ว",
       "invalid_disk_credentials": "ข้อมูลประจำตัวของดิสก์ที่เลือกไม่ถูกต้อง",
       "empty_title": "No backups yet",
       "empty_description": "Create a backup to keep a copy of your data and files."

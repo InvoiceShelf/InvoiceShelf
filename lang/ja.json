@@ -1991,7 +1991,6 @@
       "select_disk": "ディスクを選択",
       "action": "アクション",
       "deleted_message": "バックアップは正常に削除されました",
-      "created_message": "バックアップは正常に作成されました。",
       "invalid_disk_credentials": "選択したディスクの認証情報が無効です",
       "empty_title": "No backups yet",
       "empty_description": "Create a backup to keep a copy of your data and files."

@@ -1992,7 +1992,6 @@
       "select_disk": "Välj disk",
       "action": "Åtgärd",
       "deleted_message": "Säkerhetskopia raderad",
-      "created_message": "Säkerhetskopia skapades",
       "invalid_disk_credentials": "Ogiltiga autentiseringsuppgifter för den valda disken",
       "empty_title": "Inga säkerhetskopior ännu",
       "empty_description": "Skapa en säkerhetskopia för att behålla en kopia av dina data och filer."

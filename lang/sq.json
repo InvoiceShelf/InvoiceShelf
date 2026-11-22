@@ -1992,7 +1992,6 @@
       "select_disk": "Zgjidh disku",
       "action": "Veprimi",
       "deleted_message": "Kopja e sigurisë u fshi me sukses",
-      "created_message": "Kopja e sigurisë u krijua me sukses",
       "invalid_disk_credentials": "Kredencialet e pavlefshme të diskut të zgjedhur",
       "empty_title": "Nuk ka ende kopje sigurie",
       "empty_description": "Krijoni një kopje sigurie për të mbajtur një kopje të të dhënave dhe skedarëve tuaj."

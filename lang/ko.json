@@ -845,7 +845,6 @@
       "select_disk": "디스크 선택",
       "action": "동작",
       "deleted_message": "백업이 성공적으로 삭제되었습니다.",
-      "created_message": "백업이 성공적으로 생성되었습니다.",
       "invalid_disk_credentials": "선택한 디스크의 잘못된 자격 증명"
     },
     "disk": {

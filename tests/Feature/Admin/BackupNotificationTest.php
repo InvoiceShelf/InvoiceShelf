@@ -2,8 +2,6 @@
 
 use App\Domains\Accounts\Models\User;
 use App\Platform\Storage\Jobs\CreateBackupJob;
-use App\Platform\Storage\Mail\BackupCompletedMail;
-use App\Platform\Storage\Mail\BackupFailedMail;
 use App\Platform\Storage\Models\FileDisk;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
@@ -84,7 +82,7 @@ test('a mail server that is down does not fail a backup that was written', funct
     expect(writtenBackups($this->scratch))->toHaveCount(1);
 });
 
-test('a backup started without asking for an email sends none', function () {
+test('a backup sends no email of its own', function () {
     Mail::fake();
 
     postJson('/api/v1/backups', [
@@ -97,83 +95,17 @@ test('a backup started without asking for an email sends none', function () {
     Mail::assertNothingQueued();
 });
 
-test('a backup started with an email asked for tells whoever started it', function () {
-    Mail::fake();
-
-    postJson('/api/v1/backups', [
-        'option' => 'only-files',
-        'file_disk_id' => $this->disk->id,
-        'notify' => true,
-    ])->assertOk();
-
-    $archive = writtenBackups($this->scratch)[0]->getFilename();
-
-    Mail::assertSent(BackupCompletedMail::class, 1);
-    Mail::assertSent(
-        BackupCompletedMail::class,
-        fn (BackupCompletedMail $mail) => $mail->hasTo($this->user->email)
-            && $mail->filename === $archive
-            && $mail->diskName === $this->disk->name,
-    );
-});
-
-test('the completion email names the backup and where it was kept', function () {
-    $mail = new BackupCompletedMail('only-files', 'only-files-2026-09-30-21-17-35.zip', 'Local');
-
-    $mail->assertSeeInHtml('only-files-2026-09-30-21-17-35.zip')
-        ->assertSeeInHtml('Local')
-        ->assertSeeInHtml(url('/admin/administration/settings/backup'));
-});
-
-test('a mail server that is down does not fail a backup that asked for an email', function () {
-    mailServerIsDown();
-
-    postJson('/api/v1/backups', [
-        'option' => 'only-files',
-        'file_disk_id' => $this->disk->id,
-        'notify' => true,
-    ])->assertOk()->assertJson(['success' => true]);
-
-    expect(writtenBackups($this->scratch))->toHaveCount(1);
-});
-
-test('a backup that fails tells whoever asked, and still fails', function () {
+test('a backup that fails still fails, and sends no email of its own', function () {
     Mail::fake();
     config(['backup.backup.source.files.include' => [$this->scratch.'/nothing-here']]);
 
     $job = new CreateBackupJob([
         'option' => 'only-files',
         'file_disk_id' => $this->disk->id,
-        'notify' => true,
-        'user_id' => $this->user->id,
-    ]);
-
-    expect(fn () => app()->call([$job, 'handle']))->toThrow(BackupFailed::class);
-
-    Mail::assertSent(BackupFailedMail::class, fn (BackupFailedMail $mail) => $mail->hasTo($this->user->email));
-    Mail::assertNotSent(BackupCompletedMail::class);
-    expect(writtenBackups($this->scratch))->toBeEmpty();
-});
-
-test('a failed backup that asked for no email sends none', function () {
-    Mail::fake();
-    config(['backup.backup.source.files.include' => [$this->scratch.'/nothing-here']]);
-
-    $job = new CreateBackupJob([
-        'option' => 'only-files',
-        'file_disk_id' => $this->disk->id,
-        'user_id' => $this->user->id,
     ]);
 
     expect(fn () => app()->call([$job, 'handle']))->toThrow(BackupFailed::class);
 
     Mail::assertNothingSent();
-});
-
-test('asking for an email must be a yes or a no', function () {
-    postJson('/api/v1/backups', [
-        'option' => 'only-files',
-        'file_disk_id' => $this->disk->id,
-        'notify' => 'whenever',
-    ])->assertUnprocessable()->assertJsonValidationErrors('notify');
+    expect(writtenBackups($this->scratch))->toBeEmpty();
 });

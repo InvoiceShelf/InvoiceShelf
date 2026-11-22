@@ -1991,7 +1991,6 @@
       "select_disk": "Izaberi Disk",
       "action": "Akcija",
       "deleted_message": "Bekap uspešno obrisan",
-      "created_message": "Bekap uspešno napravljen",
       "invalid_disk_credentials": "Pogrešni kredencijali za odabrani disk",
       "empty_title": "No backups yet",
       "empty_description": "Create a backup to keep a copy of your data and files."

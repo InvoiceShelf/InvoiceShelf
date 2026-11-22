@@ -1991,7 +1991,6 @@
       "select_disk": "選擇磁碟",
       "action": "操作",
       "deleted_message": "成功刪除備份",
-      "created_message": "成功新增備份",
       "invalid_disk_credentials": "選擇的磁碟權限有誤",
       "empty_title": "No backups yet",
       "empty_description": "Create a backup to keep a copy of your data and files."
