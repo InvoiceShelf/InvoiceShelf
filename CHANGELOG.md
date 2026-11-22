@@ -7,6 +7,18 @@ section beneath it is what CI publishes to the updater — see
 Releases before 2.4.0 are on GitHub:
 https://github.com/InvoiceShelf/InvoiceShelf/releases
 
+## 2.4.8 - 2026-11-22
+
+A security release with one fix, for installs where a user belongs to more than one company.
+
+### Security
+
+- A user who belongs to two companies could use the role they hold in one on the records of the other, by acting in the first company while addressing a record of the second. Someone with view-only access to a company could, for example, change the status of its invoices. Roles now apply only inside the company that granted them. Installs with a single company, or where every user has one company, were not affected. (#995)
+
+### Upgrade notes
+
+- No migrations.
+
 ## 2.4.7 - 2026-10-21
 
 Moves the Docker image to PHP 8.4.27, which fixes two critical PHP vulnerabilities, and makes recurring invoices generate however the scheduler is run. **Upgrade every Docker install**, and update PHP on manual installs.
