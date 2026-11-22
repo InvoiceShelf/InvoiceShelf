@@ -12,6 +12,9 @@ export const API = {
   // interceptor's exempt list covers them without a second entry.
   TOKEN_LOGIN: '/api/v1/auth/login',
   TOKEN_LOGOUT: '/api/v1/auth/logout',
+  // Single sign-on for the mobile client: start a hand-off here, then trade
+  // its code for a token at `${SSO_HANDOFFS}/{id}/token`.
+  SSO_HANDOFFS: '/api/v1/auth/sso/handoffs',
   REGISTER_WITH_INVITATION: '/api/v1/auth/register-with-invitation',
   INSTALLATION_LOGIN: '/api/v1/installation/login',
   INSTALLATION_SET_DOMAIN: '/api/v1/installation/set-domain',

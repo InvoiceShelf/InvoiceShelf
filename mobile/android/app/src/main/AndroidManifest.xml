@@ -19,6 +19,18 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <!--
+                Sign-in with SSO: the server sends the browser back to
+                com.invoiceshelf.app:/sso (invoiceshelf.client.app_link), and
+                this brings that link to the app as appUrlOpen.
+            -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="com.invoiceshelf.app" />
+            </intent-filter>
         </activity>
 
         <provider

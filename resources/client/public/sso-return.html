@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>InvoiceShelf</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+
+<body>
+    <!--
+        The end of a sign-in with SSO while the client bundle runs in a browser
+        tab (`pnpm dev:client`, see openForAppLink in platform/web.ts): the
+        server sends the sign-in popup here when INVOICESHELF_CLIENT_APP_LINK
+        points at this page, and the page hands its address back to the tab
+        that opened it. The phone apps use their own link instead.
+    -->
+    <p>You can close this window.</p>
+
+    <script>
+        if (window.opener) {
+            window.opener.postMessage({ appLink: window.location.href }, window.location.origin);
+        }
+    </script>
+</body>
+
+</html>

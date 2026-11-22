@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { authService } from '@/scripts/api/services/auth.service'
-import type { LoginPayload, ForgotPasswordPayload, ResetPasswordPayload } from '@/scripts/api/services/auth.service'
+import type { LoginPayload, ForgotPasswordPayload, ResetPasswordPayload, SsoHandoff } from '@/scripts/api/services/auth.service'
 import { useNotificationStore } from './notification.store'
 import { handleApiError } from '../utils/error-handling'
 import * as localStore from '../utils/local-storage'
@@ -23,6 +23,23 @@ export interface ResetPasswordData {
   password: string
   password_confirmation: string
   token: string
+}
+
+export type SsoSignInFailure = 'cancelled' | 'no_account' | 'email_unverified' | 'failed'
+
+/** The failure an app link's `error` names; anything unknown is 'failed'. */
+function ssoFailureFrom(error: string | null): SsoSignInFailure {
+  return error === 'cancelled' || error === 'no_account' || error === 'email_unverified' ? error : 'failed'
+}
+
+/** Why a sign-in with SSO on a client did not end with a token. */
+export class SsoSignInError extends Error {
+  readonly reason: SsoSignInFailure
+
+  constructor(reason: SsoSignInFailure) {
+    super(`Sign-in with SSO: ${reason}`)
+    this.reason = reason
+  }
 }
 
 export const useAuthStore = defineStore('auth', () => {
@@ -70,6 +87,57 @@ export const useAuthStore = defineStore('auth', () => {
     } catch (err: unknown) {
       handleApiError(err)
       throw err
+    }
+  }
+
+  /**
+   * Sign in through the server's SSO, for a client: start a hand-off, sign in
+   * in a browser the server sends back to the app's link, and trade the code
+   * it brings for a token named after this device. Rejects with an
+   * SsoSignInError when it ends without one.
+   *
+   * The browser is asked for first, before any await, so that a browser tab
+   * can open its popup while this still runs in the click.
+   */
+  async function loginWithSso(): Promise<void> {
+    const started: { handoff?: SsoHandoff } = {}
+    let link: string | null
+
+    try {
+      link = await platform.openForAppLink(async () => {
+        const handoff = await authService.startSsoHandoff({
+          device_name: await platform.deviceName(),
+        })
+        started.handoff = handoff
+
+        return { url: handoff.url, appLink: handoff.app_link, handoff: handoff.id }
+      })
+    } catch {
+      throw new SsoSignInError('failed')
+    }
+
+    const handoff = started.handoff
+
+    if (link === null) {
+      throw new SsoSignInError('cancelled')
+    }
+
+    const answer = new URL(link).searchParams
+    const code = answer.get('code')
+
+    if (handoff === undefined || answer.get('handoff') !== handoff.id || code === null) {
+      throw new SsoSignInError(ssoFailureFrom(answer.get('error')))
+    }
+
+    try {
+      const { token } = await authService.finishSsoHandoff(handoff.id, {
+        secret: handoff.secret,
+        code,
+      })
+
+      localStore.set(LS_KEYS.AUTH_TOKEN, `Bearer ${token}`)
+    } catch {
+      throw new SsoSignInError('failed')
     }
   }
 
@@ -131,6 +199,7 @@ export const useAuthStore = defineStore('auth', () => {
     forgotPasswordData,
     resetPasswordData,
     login,
+    loginWithSso,
     logout,
     forgotPassword,
     resetPassword,

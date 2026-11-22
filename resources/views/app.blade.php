@@ -86,6 +86,10 @@
         window.source_url = @json(\App\Support\PoweredBy::sourceUrl());
         window.customer_portal_url = @json(\App\Support\Urls\CustomerUrl::portalUrl());
 
+        @if(\App\Domains\Accounts\Application\SsoLogin::enabled())
+            window.sso_login = @json(\App\Domains\Accounts\Application\SsoLogin::clientState());
+        @endif
+
         @if(\App\Platform\Operations\Managed\ManagedMode::enabled())
             window.managed_mode = true
             window.managed = @json(\App\Platform\Operations\Managed\ManagedMode::clientState())
