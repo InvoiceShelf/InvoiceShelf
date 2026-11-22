@@ -9,15 +9,25 @@ https://github.com/InvoiceShelf/InvoiceShelf/releases
 
 ## 2.4.8 - 2026-11-22
 
-A security release with one fix, for installs where a user belongs to more than one company.
+A security release with two fixes for installs that hold more than one company, and a fix to amounts due after a payment is deleted.
 
 ### Security
 
 - A user who belongs to two companies could use the role they hold in one on the records of the other, by acting in the first company while addressing a record of the second. Someone with view-only access to a company could, for example, change the status of its invoices. Roles now apply only inside the company that granted them. Installs with a single company, or where every user has one company, were not affected. (#995)
+- The one-time exchange-rate update for documents created before documents carried an exchange rate changed every company's documents in the chosen currency, not only the active company's, and also documents that already had a rate. The owner of any company could start it again through company settings. It now changes only the active company's documents that have no rate, and company settings can no longer start it again. Only amounts in the company's currency were affected (dashboard, reports, customer balances), never document totals. Installs with a single company were not affected by the first part. (#1001)
+
+### Fixes
+
+- Deleting a payment restored the invoice's amount due but not its amount due in the company's currency, so the dashboard and customer balances still counted the deleted payment as owed. (#983, fixes #978)
 
 ### Upgrade notes
 
 - No migrations.
+- Invoices that had a payment deleted before this release keep the wrong amount due in the company's currency until a payment is recorded on them or they are saved again.
+
+### Thanks
+
+- @daheym for the amount due fix (#983) and the report (#978).
 
 ## 2.4.7 - 2026-10-21
 
