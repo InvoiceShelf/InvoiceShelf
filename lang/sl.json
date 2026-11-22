@@ -1982,7 +1982,6 @@
       "select_disk": "Izberite Disk",
       "action": "Akcija",
       "deleted_message": "Varnostno kopiranje uspešno izbrisano",
-      "created_message": "Varnostna kopija je bila uspešno ustvarjena",
       "invalid_disk_credentials": "Neveljavno pooblastilo izbranega diska",
       "empty_title": "No backups yet",
       "empty_description": "Create a backup to keep a copy of your data and files."

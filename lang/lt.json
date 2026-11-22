@@ -1991,7 +1991,6 @@
       "select_disk": "Pasirinkite Diską",
       "action": "Veiksmas",
       "deleted_message": "Atsarginė kopija sėkmingai ištrinta",
-      "created_message": "Atsarginė kopija sėkmingai sukurta",
       "invalid_disk_credentials": "Invalid credential of selected disk",
       "empty_title": "No backups yet",
       "empty_description": "Create a backup to keep a copy of your data and files."

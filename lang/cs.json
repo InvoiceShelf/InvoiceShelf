@@ -1991,7 +1991,6 @@
       "select_disk": "Vyberte disk",
       "action": "Akce",
       "deleted_message": "Záloha úspěšně odstraněna",
-      "created_message": "Záloha byla úspěšně vytvořena",
       "invalid_disk_credentials": "Nesprávné přihlašovací údaje pro vybraný disk",
       "empty_title": "No backups yet",
       "empty_description": "Create a backup to keep a copy of your data and files."

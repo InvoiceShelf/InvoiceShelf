@@ -1991,7 +1991,6 @@
       "select_disk": "Speicher auswählen",
       "action": "Aktion",
       "deleted_message": "Sicherung erfolgreich gelöscht",
-      "created_message": "Backup erfolgreich erstellt",
       "invalid_disk_credentials": "Ungültige Anmeldeinformationen für ausgewählten Speicher",
       "empty_title": "No backups yet",
       "empty_description": "Create a backup to keep a copy of your data and files."

@@ -1991,7 +1991,6 @@
       "select_disk": "حدد القرص",
       "action": "عمل",
       "deleted_message": "تم حذف النسخة الاحتياطية بنجاح",
-      "created_message": "تم إنشاء النسخة الاحتياطية بنجاح",
       "invalid_disk_credentials": "بيانات اعتماد غير صالحة للقرص المحدد",
       "empty_title": "No backups yet",
       "empty_description": "Create a backup to keep a copy of your data and files."

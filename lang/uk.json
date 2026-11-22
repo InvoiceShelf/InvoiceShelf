@@ -1992,7 +1992,6 @@
       "select_disk": "Виберіть диск",
       "action": "Дія",
       "deleted_message": "Резервну копію видалено",
-      "created_message": "Резервну копію створено успішно",
       "invalid_disk_credentials": "Неправильні облікові дані вибраного диска",
       "empty_title": "No backups yet",
       "empty_description": "Create a backup to keep a copy of your data and files."

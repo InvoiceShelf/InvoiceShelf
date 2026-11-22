@@ -1983,7 +1983,6 @@
       "select_disk": "Select Disk",
       "action": "Action",
       "deleted_message": "Backup deleted successfully",
-      "created_message": "Backup created successfully",
       "invalid_disk_credentials": "Invalid credential of selected disk",
       "empty_title": "No backups yet",
       "empty_description": "Create a backup to keep a copy of your data and files."

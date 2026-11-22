@@ -1991,7 +1991,6 @@
       "select_disk": "Επιλέξτε δίσκο",
       "action": "Ενέργεια",
       "deleted_message": "Η διαγραφή των αντιγράφων ασφαλείας ολοκληρώθηκε επιτυχώς",
-      "created_message": "Η δημιουργία αντιγράφου ασφαλείας ολοκληρώθηκε με επιτυχία",
       "invalid_disk_credentials": "Μη έγκυρο διαπιστευτήριο του επιλεγμένου δίσκου",
       "empty_title": "No backups yet",
       "empty_description": "Create a backup to keep a copy of your data and files."

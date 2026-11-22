@@ -205,15 +205,20 @@ return [
      *
      * You can also use your own notification classes, just make sure the class is named after one of
      * the `Spatie\Backup\Notifications\Notifications` classes.
+     *
+     * InvoiceShelf sends none of these. They would go to the `mail.to` address
+     * below, and a mail server that is down would turn a backup that was written
+     * into a failed one. A failed backup reaches the people who look after the
+     * installation as a staff notification instead (NotifyStaff::backupFailed).
      */
     'notifications' => [
         'notifications' => [
-            BackupHasFailedNotification::class => ['mail'],
-            UnhealthyBackupWasFoundNotification::class => ['mail'],
-            CleanupHasFailedNotification::class => ['mail'],
-            BackupWasSuccessfulNotification::class => ['mail'],
-            HealthyBackupWasFoundNotification::class => ['mail'],
-            CleanupWasSuccessfulNotification::class => ['mail'],
+            BackupHasFailedNotification::class => [],
+            UnhealthyBackupWasFoundNotification::class => [],
+            CleanupHasFailedNotification::class => [],
+            BackupWasSuccessfulNotification::class => [],
+            HealthyBackupWasFoundNotification::class => [],
+            CleanupWasSuccessfulNotification::class => [],
         ],
 
         /*
