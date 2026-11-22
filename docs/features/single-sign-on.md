@@ -1,10 +1,10 @@
 # Sign in with SSO
 
-InvoiceShelf can sign users in through an outside identity provider with single sign-on (OpenID Connect). Any OpenID Connect provider with a userinfo endpoint should work, such as Keycloak, Authentik, Authelia or Zitadel. The [provider notes](#provider-notes) below cover the first three. Plain OAuth 2.0 providers that are not OpenID Connect providers (no `sub` claim, no userinfo endpoint) are not supported.
+InvoiceShelf can sign users in through an outside identity provider with single sign-on (OpenID Connect). Any OpenID Connect provider with a userinfo endpoint should work, such as Keycloak or Authentik. The [provider notes](#provider-notes) below cover the eight providers that were tested. Plain OAuth 2.0 providers that are not OpenID Connect providers (no `sub` claim, no userinfo endpoint) are not supported.
 
 One identity provider per installation is supported. The settings belong to the protocol: `OIDC_*` for OpenID Connect, the only protocol today.
 
-<!-- VERIFY: list the providers this has been run against end to end once the provider runs are done. -->
+It was run end to end against Keycloak 26.8.2, Authentik 2026.8.6, Authelia 4.39.28, Zitadel 4.20.5, Dex 2.46.1, Logto 1.46.0, Casdoor 4.30.0 and Pocket ID 2.19.3. Other providers and versions were not tested.
 
 When it is set up, a **Sign in with SSO** button appears next to **Login**, both on the web and in the mobile app. The email and password form keeps working, and the customer portal doesn't change.
 
@@ -111,7 +111,7 @@ The app shows **Sign in with SSO** when the server's client manifest says it is 
 
 1. The app starts a hand-off on the API and keeps its secret.
 2. It opens the sign-in in the in-app browser. The browser first shows "Sign in to the InvoiceShelf app on *device*?" with **Continue** and **Cancel**.
-3. **Continue** goes on to the identity provider, which is asked to have the person sign in again (`prompt=login`), even if they are signed in there already. <!-- VERIFY: that Keycloak, Authentik and Authelia each ask for the password again on prompt=login. -->
+3. **Continue** goes on to the identity provider, which is asked to have the person sign in again (`prompt=login`), even if they are signed in there already.
 4. When the sign-in is done, the server sends the browser to the app link `com.invoiceshelf.app:/sso` with a one-time code.
 5. The app trades the code and its secret for an access token named after the device, as a password sign-in does.
 
@@ -124,59 +124,82 @@ The confirmation is there because anyone can start a hand-off and send its addre
 
 ## Provider notes
 
-### Keycloak
+These notes come from the test runs, one per provider and version. In each, the aim was the three lines `OIDC_ISSUER`, `OIDC_CLIENT_ID` and `OIDC_CLIENT_SECRET`, unless a note says otherwise. Where the test ran over plain `http`, use `https` for real installations.
 
-- **Issuer:** `https://keycloak.example.com/realms/<realm>`, without a trailing slash. Keycloak versions before 17 put `/auth` in front: `https://keycloak.example.com/auth/realms/<realm>`.
-- **Client:** in the realm, open **Clients → Create client**. Choose *OpenID Connect*, enter the client ID, turn **Client authentication** on and keep **Standard flow**. Copy the secret from the client's **Credentials** tab. <!-- VERIFY: Keycloak admin console labels (Clients → Create client, Client authentication, Standard flow, Credentials tab) in the current release. -->
-- **Redirect URI:** the client's **Valid redirect URIs**, on its **Settings** tab. <!-- VERIFY: field name and tab. -->
-- **`email_verified`:** Keycloak sends the user's **Email verified** flag. Turn it on for each user under **Users → (user) → Details**, or have Keycloak check addresses itself with **Realm settings → Login → Verify email**. Users an administrator creates start unverified unless that flag is set. <!-- VERIFY: where the Email verified toggle and the Verify email realm setting live in the current admin console. -->
-- `OIDC_CLIENT_AUTH=auto` works: Keycloak's token endpoint takes both methods.
+What providers send as `email_verified`, which decides what the first sign-in needs:
 
-### Authentik
+| What the provider does | Providers |
+| --- | --- |
+| Reports the real status per account | Keycloak, Dex, Casdoor, Pocket ID |
+| Stops unverified accounts itself | Zitadel |
+| Reports every account as verified | Authelia, Logto |
+| Reports every account as unverified with its stock mapping | Authentik |
 
-- **Issuer:** `https://authentik.example.com/application/o/<application slug>/`, with the trailing slash. The provider's overview page shows it as **OpenID Configuration Issuer**. <!-- VERIFY: label on the provider overview page. -->
-- **Client:** open **Applications → Applications** and choose **Create with provider**. Pick *OAuth2/OpenID Provider* and set **Client type** to *Confidential*. Bind the group that may use InvoiceShelf. To have the tile in a user's library sign them in, set the application's **Launch URL** to `https://invoices.example.com/auth/sso/redirect`. <!-- VERIFY: wizard labels in the current release. -->
-- **Redirect URI:** the provider's **Redirect URIs**, one entry with matching mode *Strict*. <!-- VERIFY: field name and matching mode label. -->
-- **`email_verified`:** Authentik 2025.10 and later sends `false` by default, so the first sign-in is refused until you choose one of these: <!-- VERIFY: the version that changed the default, and that it is false rather than absent. -->
-  1. **Mark addresses as verified at Authentik.** Create a scope mapping under **Customization → Property Mappings → Create → Scope Mapping**, with scope name `email` and an expression such as the one below, and select it in the provider's **Advanced protocol settings → Scopes** in place of the default email mapping. Only do this if Authentik's addresses can be trusted (see the next option). <!-- VERIFY: menu path, the Scopes field location, and that replacing the default email mapping is how it is applied. -->
+### Keycloak (26.8.2)
 
-     ```python
-     return {
-         "email": request.user.email,
-         "email_verified": True,
-     }
-     ```
+- **Issuer:** `https://keycloak.example.com/realms/<realm>`, without a trailing slash.
+- **Client:** confidential (client authentication on, client authenticator `client-secret`), standard flow only, with the redirect URI above. The realm's default client scopes supplied `openid profile email`. The client authenticator takes both secret methods, so `OIDC_CLIENT_AUTH=auto` works.
+- **`email_verified`:** sent per account, from the user's email verified flag (`emailVerified` in a realm import). Turn it on for each person who should sign in.
+- Keycloak's discovery document does not list `email_verified` among its claims, but it sends it. The ID token's `aud` is a string and `sub` is the user's UUID.
 
-  2. **Set `OIDC_REQUIRE_VERIFIED_EMAIL=false`.** Only when users can't change their own address (leave **System → Settings → Allow users to change email** off, the default) and nobody can enroll without an address check. If people can create their own accounts, limit InvoiceShelf to a group those accounts don't join by themselves. <!-- VERIFY: the settings path and its default. -->
-- `OIDC_CLIENT_AUTH=auto` works.
+### Authentik (2026.8.6, the version tested)
 
-### Authelia
+- **Issuer:** `https://authentik.example.com/application/o/<application slug>/`, with the trailing slash.
+- **Client:** an OAuth2/OpenID provider (client type confidential) with strict redirect URIs, and an application that uses it. The provider must list its grant types (`authorization_code`, `refresh_token`): a provider made from a blueprint without them answers every authorization request with `error=invalid_request`. `OIDC_CLIENT_AUTH=auto` works.
+- **`email_verified`:** the stock mapping "authentik default OAuth Mapping: OpenID 'email'" sends `email_verified: false` for every account, so every first sign-in is refused with "has not confirmed your email address", and so is an account with no InvoiceShelf user, because the verified check runs first. Either give the provider a scope mapping (scope name `email`) that sends `true` for people you trust, for example one that reads a user attribute, or set `OIDC_REQUIRE_VERIFIED_EMAIL=false` where only administrators can change addresses. The test used this mapping, in place of the stock one in the provider's property mappings:
 
-- **Issuer:** Authelia's own address, such as `https://auth.example.com`. Its discovery document is at `https://auth.example.com/.well-known/openid-configuration`.
-- **Client:** add it under `identity_providers.oidc.clients` in Authelia's configuration, with `client_secret` stored as a hash, `public: false`, `authorization_policy` set as you need, `scopes: ['openid', 'profile', 'email']` and `grant_types: ['authorization_code']`.
-- **Redirect URI:** the client's `redirect_uris` list.
-- **Client authentication:** Authelia holds each client to its `token_endpoint_auth_method`, and its discovery document lists both methods, so `auto` picks `post`. Either set `token_endpoint_auth_method: 'client_secret_post'` on the client, or keep Authelia's default and set `OIDC_CLIENT_AUTH=basic`. <!-- VERIFY: that client_secret_basic is Authelia's default for confidential clients, and that a mismatched method is refused with invalid_client. -->
-- **Userinfo:** leave `userinfo_signed_response_alg` at `none`. InvoiceShelf needs a plain JSON userinfo answer. <!-- VERIFY: option name. -->
-- **`email_verified`:** Authelia has no address check of its own and sends the claim as `true`. Its addresses come from your user file or LDAP directory, which only administrators edit. <!-- VERIFY: that Authelia sends email_verified true for file and LDAP users. -->
+  ```python
+  return {
+      "email": request.user.email,
+      "email_verified": bool(request.user.attributes.get("email_verified", False)),
+  }
+  ```
 
-```yaml
-identity_providers:
-  oidc:
-    clients:
-      - client_id: 'invoiceshelf'
-        client_name: 'InvoiceShelf'
-        client_secret: '$pbkdf2-sha512$...'
-        public: false
-        authorization_policy: 'two_factor'
-        redirect_uris:
-          - 'https://invoices.example.com/auth/oidc/callback'
-        scopes: ['openid', 'profile', 'email']
-        grant_types: ['authorization_code']
-        response_types: ['code']
-        token_endpoint_auth_method: 'client_secret_post'
-```
+- The stored issuer has no trailing slash, although authentik's `iss` has one.
 
-<!-- VERIFY: the Authelia client example against the current configuration reference. -->
+### Authelia (4.39.28)
+
+- **Issuer:** Authelia's own address, such as `https://auth.example.com`. Authelia requires HTTPS for itself. A private certificate authority must be trusted by the PHP of the InvoiceShelf server, which makes the token and userinfo requests.
+- **Client:** under `identity_providers.oidc.clients`, with `client_secret` stored as a digest, `public: false`, `scopes: ['openid', 'profile', 'email']`, `grant_types: ['authorization_code']` and `response_types: ['code']`.
+- **Client authentication:** Authelia accepts only the method the client registers, and its default for a confidential client is `client_secret_basic`. The test registered `token_endpoint_auth_method: 'client_secret_post'`. Authelia's discovery document lists both methods, so `auto` picks `post` and no `OIDC_CLIENT_AUTH` setting was needed. With Authelia's default, set `OIDC_CLIENT_AUTH=basic` (not tested).
+- **Userinfo:** the test client set `userinfo_signed_response_alg: 'none'`, which gives plain JSON.
+- **`email_verified`:** sent as `true` for every account, including one set up as unverified, so the rule cannot tell accounts apart. The test used the file user backend. Authelia puts only `sub` and protocol claims in the ID token, and the email in userinfo.
+- Authelia shows a consent screen on every sign-in. On a mobile hand-off with an existing Authelia session it shows consent first and then asks for the password again on the same page, because the hand-off asks for a fresh sign-in (`prompt=login`). Don't replace that with `max_age=0`: Authelia 4.39 then never finishes the sign-in.
+
+### Zitadel (4.20.5)
+
+- **Issuer:** Zitadel's own address, such as `https://id.example.com`.
+- **Client:** a project with an OIDC application of type web, authentication method POST (`client_secret_post`), authorization code. Zitadel generates the client ID and the secret, so copy them from the application.
+- **`email_verified`:** Zitadel itself stops an account with an unverified email at an "E-Mail Verification" screen asking for a code, so such an account never reaches InvoiceShelf. People must verify their address at Zitadel first.
+- The ID token's `aud` has two values, the client and the project, and carries no email claims (they are in userinfo). `sub` is a numeric user ID. The access token is opaque. On a first sign-in Zitadel offered a "2-Factor Setup" step.
+
+### Dex (2.46.1)
+
+- **Issuer:** Dex's issuer, such as `https://id.example.com/dex`.
+- **Client:** an entry under `staticClients` with `id`, `secret` and `redirectURIs`. Dex accepts both secret methods.
+- **`email_verified`:** sent per account. In the test setup it came from the `emailVerified` field of each entry under `staticPasswords`. Dex signs these accounts in by email address.
+- Dex shows its "Grant Access" consent page on every sign-in (`skipApprovalScreen: false`) and keeps no browser session. `sub` is an encoded value (the user ID and the connector name), stable when `userID` is fixed.
+
+### Logto (1.46.0)
+
+- **Issuer:** `https://id.example.com/oidc`.
+- **Client:** a Traditional application (confidential) with the redirect URI above. The test created it by inserting rows into Logto's database, because Logto's open source edition has no bootstrap token; that depends on Logto's internal schema. `OIDC_CLIENT_AUTH=auto` works.
+- **`email_verified`:** sent as `true` for every account with a primary email, including one set up as unverified, so the rule cannot tell accounts apart and that account was linked.
+- The ID token is signed with ES384, which InvoiceShelf accepted. The first-party application shows no consent screen.
+
+### Casdoor (4.30.0)
+
+- **Issuer:** the value of Casdoor's `origin` setting, such as `https://id.example.com`, without a path.
+- **Client:** an application with a client ID, a secret, grant type authorization code, JWT token format and the redirect URI above. A Casdoor application object needs its full set of login page fields, so the test used a copy of Casdoor's built-in application. `OIDC_CLIENT_AUTH=auto` works.
+- **`email_verified`:** sent per account. It is in the ID token, and the userinfo answer leaves it out when false. InvoiceShelf reads the ID token's value when userinfo has none, so an unverified account is refused.
+- The ID token carries the whole Casdoor user object and `aud` is a list. No consent screen appears.
+
+### Pocket ID (2.19.3)
+
+- **Issuer:** Pocket ID's address, a domain name: Pocket ID refuses an IP address as its address. The test used `http://localhost:8188`.
+- **Client:** a confidential client (not public) with the callback URL above. Pocket ID generates a client secret when the client is created. Both secret methods are accepted.
+- **`email_verified`:** sent per account, from the user's `emailVerified` property.
+- Pocket ID asks for consent on a client's first use. It offers passkeys and login codes, not passwords. The test signed in with a one-time access code, not a passkey. The mobile hand-off asks the provider for a fresh sign-in, which Pocket ID answers with a passkey prompt that the automated test could not complete, so the hand-off with a real passkey is untested.
 
 ## Troubleshooting
 
@@ -192,7 +215,7 @@ When InvoiceShelf refuses a sign-in, `storage/logs/laravel.log` records why. The
 | "did not work" | the discovery document has no userinfo_endpoint (or another endpoint) | Set the matching `OIDC_*_URL`. |
 | "did not work" | the identity provider's token endpoint (or userinfo endpoint) did not answer in time, or could not be reached | The server can't reach that URL, or the provider is too slow. Check DNS, the firewall and the TLS certificate from the InvoiceShelf server. |
 | "did not work" | the identity provider answered with an error | The log has the provider's `error` and `error_description`, such as `access_denied` or `invalid_scope`. The person may also have cancelled. |
-| "did not work" | an exception with `invalid_client` or HTTP 401 from the token endpoint | Wrong client secret, or the provider expects the other client authentication method: set `OIDC_CLIENT_AUTH`. |
+| "did not work" | an exception reported from the token request (the sign-in code does not catch it, so the message is the HTTP client's error for the provider's answer, such as the status it returned) | Check the client secret, and try the other value of `OIDC_CLIENT_AUTH`. |
 | "did not work" | the userinfo endpoint did not answer with a JSON object | Turn off signed userinfo answers at the provider, and keep `openid` in `OIDC_SCOPES`. |
 | "did not work" | the identity provider sent no "sub" claim | The userinfo answer has no `sub`. Keep `openid` in `OIDC_SCOPES`. |
 | "did not work" | the ID token could not be decoded | The provider sends encrypted ID tokens, which aren't supported. Turn ID token encryption off. |
