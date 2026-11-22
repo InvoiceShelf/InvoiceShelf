@@ -190,7 +190,7 @@ class ExchangeRateProviderController extends Controller
 
     public function usedCurrenciesWithoutRate(Request $request)
     {
-        $ids = $this->exchangeRateBackfill->currencyIdsMissingRates();
+        $ids = $this->exchangeRateBackfill->currencyIdsMissingRates((int) $request->header('company'));
 
         return response()->json([
             'currencies' => Currency::whereIn('id', $ids)->get(),

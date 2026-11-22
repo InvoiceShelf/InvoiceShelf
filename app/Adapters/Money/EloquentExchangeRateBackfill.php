@@ -13,16 +13,21 @@ use App\Support\MoneyConversion;
 /**
  * Coordinates the one-time exchange-rate backfill across durable document
  * tables while the Money context owns the workflow contract.
+ *
+ * It fills in documents written before documents carried an exchange rate, so
+ * it touches one company's documents, and only those still without a rate:
+ * other companies use the same currencies at their own rates, and a document
+ * that has a rate already has the one it was issued with.
  */
 class EloquentExchangeRateBackfill implements ExchangeRateBackfill
 {
-    public function currencyIdsMissingRates(): array
+    public function currencyIdsMissingRates(int $companyId): array
     {
         return array_merge(
-            Invoice::whereNull('exchange_rate')->pluck('currency_id')->all(),
-            Tax::whereNull('exchange_rate')->pluck('currency_id')->all(),
-            Estimate::whereNull('exchange_rate')->pluck('currency_id')->all(),
-            Payment::whereNull('exchange_rate')->pluck('currency_id')->all(),
+            Invoice::query()->where('company_id', $companyId)->whereNull('exchange_rate')->pluck('currency_id')->all(),
+            Tax::query()->where('company_id', $companyId)->whereNull('exchange_rate')->pluck('currency_id')->all(),
+            Estimate::query()->where('company_id', $companyId)->whereNull('exchange_rate')->pluck('currency_id')->all(),
+            Payment::query()->where('company_id', $companyId)->whereNull('exchange_rate')->pluck('currency_id')->all(),
         );
     }
 
@@ -35,7 +40,7 @@ class EloquentExchangeRateBackfill implements ExchangeRateBackfill
         foreach ($currencies as $currency) {
             $rate = $currency['exchange_rate'] ?? 1;
 
-            foreach (Invoice::where('currency_id', $currency['id'])->get() as $invoice) {
+            foreach (Invoice::query()->where('company_id', $companyId)->where('currency_id', $currency['id'])->whereNull('exchange_rate')->get() as $invoice) {
                 $invoice->update([
                     'exchange_rate' => $rate,
                     'base_discount_val' => MoneyConversion::toBaseMinor($invoice->discount_val, $rate),
@@ -48,7 +53,7 @@ class EloquentExchangeRateBackfill implements ExchangeRateBackfill
                 $this->updateItemsExchangeRate($invoice);
             }
 
-            foreach (Estimate::where('currency_id', $currency['id'])->get() as $estimate) {
+            foreach (Estimate::query()->where('company_id', $companyId)->where('currency_id', $currency['id'])->whereNull('exchange_rate')->get() as $estimate) {
                 $estimate->update([
                     'exchange_rate' => $rate,
                     'base_discount_val' => MoneyConversion::toBaseMinor($estimate->discount_val, $rate),
@@ -60,14 +65,14 @@ class EloquentExchangeRateBackfill implements ExchangeRateBackfill
                 $this->updateItemsExchangeRate($estimate);
             }
 
-            foreach (Tax::where('currency_id', $currency['id'])->get() as $tax) {
+            foreach (Tax::query()->where('company_id', $companyId)->where('currency_id', $currency['id'])->whereNull('exchange_rate')->get() as $tax) {
                 $tax->update([
                     'exchange_rate' => $rate,
                     'base_amount' => MoneyConversion::toBaseMinor($tax->amount, $rate),
                 ]);
             }
 
-            foreach (Payment::where('currency_id', $currency['id'])->get() as $payment) {
+            foreach (Payment::query()->where('company_id', $companyId)->where('currency_id', $currency['id'])->whereNull('exchange_rate')->get() as $payment) {
                 $payment->update([
                     'exchange_rate' => $rate,
                     'base_amount' => MoneyConversion::toBaseMinor($payment->amount, $rate),

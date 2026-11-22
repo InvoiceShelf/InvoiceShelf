@@ -64,6 +64,28 @@ class UpdateSettingsRequest extends FormRequest
     }
 
     /**
+     * Preferences the application keeps itself are dropped rather than refused:
+     * the preferences page sends back every setting it was given, these
+     * included, and nothing may change them.
+     */
+    protected function prepareForValidation(): void
+    {
+        $settings = $this->input('settings');
+
+        if (! is_array($settings)) {
+            return;
+        }
+
+        $visibility = app(MemberVisibleSettings::class);
+
+        $this->merge(['settings' => array_filter(
+            $settings,
+            fn (int|string $key): bool => ! $visibility->isKeptByTheApplication((string) $key),
+            ARRAY_FILTER_USE_KEY,
+        )]);
+    }
+
+    /**
      * An emptied payment link arrives as null (ConvertEmptyStringsToNull),
      * and a setting cannot hold null, so it is stored as an empty string:
      * no link.

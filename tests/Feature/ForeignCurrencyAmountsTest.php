@@ -258,6 +258,9 @@ test('exchange rate backfill uses original discounts and taxes without convertin
         'estimate_id' => $estimate->id, 'company_id' => $this->company->id,
         'currency_id' => $this->eur->id, 'amount' => 13, 'base_amount' => 999,
     ]);
+    // The backfill is for documents written before documents carried a rate.
+    $estimate->update(['exchange_rate' => null]);
+    $invoice->update(['exchange_rate' => null]);
     CompanySetting::setSettings(['bulk_exchange_rate_configured' => 'NO'], $this->company->id);
     $this->postJson('/api/v1/currencies/bulk-update-exchange-rate', [
         'currencies' => [['id' => $this->eur->id, 'exchange_rate' => '1.125']],
