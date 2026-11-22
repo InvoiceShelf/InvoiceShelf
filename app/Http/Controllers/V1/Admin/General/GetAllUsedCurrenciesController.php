@@ -20,13 +20,15 @@ class GetAllUsedCurrenciesController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $invoices = Invoice::where('exchange_rate', null)->pluck('currency_id')->toArray();
+        $companyId = $request->header('company');
 
-        $taxes = Tax::where('exchange_rate', null)->pluck('currency_id')->toArray();
+        $invoices = Invoice::where('company_id', $companyId)->whereNull('exchange_rate')->pluck('currency_id')->toArray();
 
-        $estimates = Estimate::where('exchange_rate', null)->pluck('currency_id')->toArray();
+        $taxes = Tax::where('company_id', $companyId)->whereNull('exchange_rate')->pluck('currency_id')->toArray();
 
-        $payments = Payment::where('exchange_rate', null)->pluck('currency_id')->toArray();
+        $estimates = Estimate::where('company_id', $companyId)->whereNull('exchange_rate')->pluck('currency_id')->toArray();
+
+        $payments = Payment::where('company_id', $companyId)->whereNull('exchange_rate')->pluck('currency_id')->toArray();
 
         $currencies = array_merge($invoices, $taxes, $estimates, $payments);
 

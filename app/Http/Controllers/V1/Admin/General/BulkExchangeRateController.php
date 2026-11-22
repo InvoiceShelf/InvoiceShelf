@@ -10,27 +10,32 @@ use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\Tax;
 use App\Support\MoneyConversion;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class BulkExchangeRateController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Fill in the exchange rate on documents written before documents carried
+     * one, once. Only the active company's documents that still have no rate
+     * are touched: other companies use the same currencies at their own rates,
+     * and a document that has a rate already has the one it was issued with.
      *
-     * @param  Request  $request
      * @return Response
      */
     public function __invoke(BulkExchangeRateRequest $request)
     {
-        $bulkExchangeRate = CompanySetting::getSetting('bulk_exchange_rate_configured', $request->header('company'));
+        $companyId = $request->header('company');
+        $bulkExchangeRate = CompanySetting::getSetting('bulk_exchange_rate_configured', $companyId);
 
         if ($bulkExchangeRate == 'NO') {
             if ($request->currencies) {
                 foreach ($request->currencies as $currency) {
                     $currency['exchange_rate'] = $currency['exchange_rate'] ?? 1;
 
-                    $invoices = Invoice::where('currency_id', $currency['id'])->get();
+                    $invoices = Invoice::where('company_id', $companyId)
+                        ->where('currency_id', $currency['id'])
+                        ->whereNull('exchange_rate')
+                        ->get();
 
                     if ($invoices) {
                         foreach ($invoices as $invoice) {
@@ -47,7 +52,10 @@ class BulkExchangeRateController extends Controller
                         }
                     }
 
-                    $estimates = Estimate::where('currency_id', $currency['id'])->get();
+                    $estimates = Estimate::where('company_id', $companyId)
+                        ->where('currency_id', $currency['id'])
+                        ->whereNull('exchange_rate')
+                        ->get();
 
                     if ($estimates) {
                         foreach ($estimates as $estimate) {
@@ -63,7 +71,10 @@ class BulkExchangeRateController extends Controller
                         }
                     }
 
-                    $taxes = Tax::where('currency_id', $currency['id'])->get();
+                    $taxes = Tax::where('company_id', $companyId)
+                        ->where('currency_id', $currency['id'])
+                        ->whereNull('exchange_rate')
+                        ->get();
 
                     if ($taxes) {
                         foreach ($taxes as $tax) {
@@ -73,7 +84,10 @@ class BulkExchangeRateController extends Controller
                         }
                     }
 
-                    $payments = Payment::where('currency_id', $currency['id'])->get();
+                    $payments = Payment::where('company_id', $companyId)
+                        ->where('currency_id', $currency['id'])
+                        ->whereNull('exchange_rate')
+                        ->get();
 
                     if ($payments) {
                         foreach ($payments as $payment) {
@@ -89,7 +103,7 @@ class BulkExchangeRateController extends Controller
                 'bulk_exchange_rate_configured' => 'YES',
             ];
 
-            CompanySetting::setSettings($settings, $request->header('company'));
+            CompanySetting::setSettings($settings, $companyId);
 
             return response()->json([
                 'success' => true,
