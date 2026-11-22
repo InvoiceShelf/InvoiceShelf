@@ -24,6 +24,7 @@ Seventeenth public alpha of InvoiceShelf 3.0. Existing users can sign in through
 
 ### Improvements and fixes
 
+- A backup no longer reports an error when the mail server is down or not set up. After each backup the backup library emailed a placeholder address, and a failed email failed the whole run even though the zip had been written. Those emails are off; a failed backup still reaches staff as a notification. The message after starting a backup now says it has started, since it runs in the background. (#917)
 - Translations are up to date with Crowdin. (#997)
 
 ### Upgrade notes
@@ -34,6 +35,7 @@ Seventeenth public alpha of InvoiceShelf 3.0. Existing users can sign in through
 ### Thanks
 
 - @AleytiaFairlight for the first implementation of single sign-on (#989), and @nedlane for asking for it (#124).
+- @cornelisonc for the backup fix (#917).
 
 Docker: `invoiceshelf/invoiceshelf:3.0.0-alpha.17` or `ghcr.io/invoiceshelf/invoiceshelf:3.0.0-alpha.17` (also `:next`).
 
